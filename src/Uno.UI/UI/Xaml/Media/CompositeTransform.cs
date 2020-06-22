@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(CenterXProperty, value);
 		}
 
-		public static readonly DependencyProperty CenterXProperty =
+		public static DependencyProperty CenterXProperty { get ; } =
 			DependencyProperty.Register("CenterX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double CenterY
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(CenterYProperty, value);
 		}
 
-		public static readonly DependencyProperty CenterYProperty =
+		public static DependencyProperty CenterYProperty { get ; } =
 			DependencyProperty.Register("CenterY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double Rotation
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(RotationProperty, value);
 		}
 
-		public static readonly DependencyProperty RotationProperty =
+		public static DependencyProperty RotationProperty { get ; } =
 			DependencyProperty.Register("Rotation", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double ScaleX
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(ScaleXProperty, value);
 		}
 
-		public static readonly DependencyProperty ScaleXProperty =
+		public static DependencyProperty ScaleXProperty { get ; } =
 			DependencyProperty.Register("ScaleX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(1.0d, NotifyChangedCallback));
 
 		public double ScaleY
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(ScaleYProperty, value);
 		}
 
-		public static readonly DependencyProperty ScaleYProperty =
+		public static DependencyProperty ScaleYProperty { get ; } =
 			DependencyProperty.Register("ScaleY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(1.0d, NotifyChangedCallback));
 
 		public double SkewX
@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(SkewXProperty, value);
 		}
 
-		public static readonly DependencyProperty SkewXProperty =
+		public static DependencyProperty SkewXProperty { get ; } =
 			DependencyProperty.Register("SkewX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double SkewY
@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(SkewYProperty, value);
 		}
 
-		public static readonly DependencyProperty SkewYProperty =
+		public static DependencyProperty SkewYProperty { get ; } =
 			DependencyProperty.Register("SkewY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double TranslateX
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(TranslateXProperty, value);
 		}
 
-		public static readonly DependencyProperty TranslateXProperty =
+		public static DependencyProperty TranslateXProperty { get ; } =
 			DependencyProperty.Register("TranslateX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double TranslateY
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(TranslateYProperty, value);
 		}
 
-		public static readonly DependencyProperty TranslateYProperty =
+		public static DependencyProperty TranslateYProperty { get ; } =
 			DependencyProperty.Register("TranslateY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 	}

@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(ForegroundProperty, value);
 		}
 
-		internal static readonly DependencyProperty ForegroundProperty =
+		internal static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				name: "Foreground",
 				propertyType: typeof(Brush),

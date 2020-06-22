@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Media
 			GradientStops = new GradientStopCollection();
 		}
 
-		public static readonly DependencyProperty FallbackColorProperty = DependencyProperty.Register(
+		public static DependencyProperty FallbackColorProperty { get ; } = DependencyProperty.Register(
 			"FallbackColor", typeof(Color), typeof(GradientBrush), new PropertyMetadata(default(Color)));
 		public Color FallbackColor
 		{
@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Media
 			set => SetValue(FallbackColorProperty, value);
 		}
 
-		public static readonly DependencyProperty GradientStopsProperty = DependencyProperty.Register(
+		public static DependencyProperty GradientStopsProperty { get ; } = DependencyProperty.Register(
 			"GradientStops",
 			typeof(GradientStopCollection),
 			typeof(GradientBrush),
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Media
 			set => SetValue(GradientStopsProperty, value);
 		}
 
-		public static readonly DependencyProperty MappingModeProperty =
+		public static DependencyProperty MappingModeProperty { get ; } =
 			DependencyProperty.Register(
 				"MappingMode",
 				typeof(BrushMappingMode),

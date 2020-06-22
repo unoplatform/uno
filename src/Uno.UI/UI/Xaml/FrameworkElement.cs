@@ -309,7 +309,7 @@ namespace Windows.UI.Xaml
 			set => SetValue(StyleProperty, value);
 		}
 
-		public static readonly DependencyProperty StyleProperty =
+		public static DependencyProperty StyleProperty { get ; } =
 			DependencyProperty.Register(
 				nameof(Style),
 				typeof(Style),

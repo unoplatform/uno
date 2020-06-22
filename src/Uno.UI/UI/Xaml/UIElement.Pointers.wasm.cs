@@ -295,7 +295,7 @@ namespace Windows.UI.Xaml
 		/// <remarks>
 		/// This property should never be directly set, and its value should always be calculated through coercion (see <see cref="CoerceHitTestVisibility(DependencyObject, object, bool)"/>.
 		/// </remarks>
-		private static readonly DependencyProperty HitTestVisibilityProperty =
+		private static DependencyProperty HitTestVisibilityProperty { get ; } =
 			DependencyProperty.Register(
 				"HitTestVisibility",
 				typeof(HitTestVisibility),

@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(IsIndeterminateProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsIndeterminateProperty =
+		public static DependencyProperty IsIndeterminateProperty { get ; } =
 			DependencyProperty.Register(
 				"IsIndeterminate",
 				typeof(bool),
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ShowErrorProperty, value); }
 		}
 
-		public static readonly DependencyProperty ShowErrorProperty =
+		public static DependencyProperty ShowErrorProperty { get ; } =
 			DependencyProperty.Register(
 				"ShowError",
 				typeof(bool),
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ShowPausedProperty, value); }
 		}
 
-		public static readonly DependencyProperty ShowPausedProperty =
+		public static DependencyProperty ShowPausedProperty { get ; } =
 			DependencyProperty.Register(
 				"ShowPaused",
 				typeof(bool),

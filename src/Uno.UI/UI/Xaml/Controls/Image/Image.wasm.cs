@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(SourceProperty, value);
 		}
 
-		public static readonly DependencyProperty SourceProperty =
+		public static DependencyProperty SourceProperty { get ; } =
 			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new PropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
 
 		private void OnSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		public static readonly DependencyProperty StretchProperty =
+		public static DependencyProperty StretchProperty { get ; } =
 			DependencyProperty.Register(
 				"Stretch",
 				typeof(Stretch),

@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml
 		#region Transitions Dependency Property
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static readonly DependencyProperty TransitionsProperty = CreateTransitionsProperty();
+		public static DependencyProperty TransitionsProperty { get ; } = CreateTransitionsProperty();
 
 		public TransitionCollection Transitions
 		{
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml
 		#region Background DependencyProperty
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static readonly DependencyProperty BackgroundProperty = CreateBackgroundProperty();
+		public static DependencyProperty BackgroundProperty { get ; } = CreateBackgroundProperty();
 
 		public Brush Background
 		{
@@ -204,7 +204,7 @@ namespace Windows.UI.Xaml
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
 		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static readonly DependencyProperty IsEnabledProperty = CreateIsEnabledProperty();
+		public static DependencyProperty IsEnabledProperty { get ; } = CreateIsEnabledProperty();
 
 		public bool IsEnabled
 		{

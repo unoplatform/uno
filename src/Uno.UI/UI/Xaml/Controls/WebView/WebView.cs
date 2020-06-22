@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 			private set { SetValue(CanGoBackProperty, value); }
 		}
 
-		public static readonly DependencyProperty CanGoBackProperty =
+		public static DependencyProperty CanGoBackProperty { get ; } =
 			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(WebView), new PropertyMetadata(false));
 
 		#endregion
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 			private set { SetValue(CanGoForwardProperty, value); }
 		}
 
-		public static readonly DependencyProperty CanGoForwardProperty =
+		public static DependencyProperty CanGoForwardProperty { get ; } =
 			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(WebView), new PropertyMetadata(false));
 
 		#endregion
@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(SourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty SourceProperty =
+		public static DependencyProperty SourceProperty { get ; } =
 			DependencyProperty.Register("Source", typeof(Uri), typeof(WebView), new PropertyMetadata(null,
 				(s, e) => ((WebView)s)?.Navigate((Uri)e.NewValue)));
 
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(IsScrollEnabledProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsScrollEnabledProperty =
+		public static DependencyProperty IsScrollEnabledProperty { get ; } =
 			DependencyProperty.Register("IsScrollEnabled", typeof(bool), typeof(WebView), new PropertyMetadata(true,
 				(s, e) => ((WebView)s)?.OnScrollEnabledChangedPartial((bool)e.NewValue)));
 

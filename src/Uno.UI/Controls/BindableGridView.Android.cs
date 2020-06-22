@@ -79,7 +79,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemsSourceProperty =
+		public static DependencyProperty ItemsSourceProperty { get ; } =
 			DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(BindableGridView), new PropertyMetadata(null, (s,e) => ((BindableGridView)s)?.InternalOnItemsSourceChanged(e)));
 
 		private void InternalOnItemsSourceChanged(DependencyPropertyChangedEventArgs args)
@@ -99,7 +99,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(ItemTemplateProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemTemplateProperty =
+		public static DependencyProperty ItemTemplateProperty { get ; } =
 			DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(BindableGridView), new PropertyMetadata(defaultValue: default(DataTemplate), propertyChangedCallback: (d, s) => (d as BindableGridView)?.OnItemTemplateChanged()));
 
 		private void OnItemTemplateChanged()

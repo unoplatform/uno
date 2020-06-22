@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Documents
 			set => SetValue(NavigationTargetProperty, value);
 		}
 
-		public static readonly DependencyProperty NavigationTargetProperty = DependencyProperty.Register(
+		public static DependencyProperty NavigationTargetProperty { get ; } = DependencyProperty.Register(
 			"NavigationTarget",
 			typeof(NavigationTarget),
 			typeof(Hyperlink),

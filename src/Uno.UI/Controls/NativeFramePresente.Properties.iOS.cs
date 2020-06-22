@@ -26,7 +26,7 @@ namespace Uno.UI.Controls
 			set => SetValue(IsNavigationBarHiddenProperty, value);
 		}
 
-		public static readonly DependencyProperty IsNavigationBarHiddenProperty =
+		public static DependencyProperty IsNavigationBarHiddenProperty { get ; } =
 			DependencyProperty.Register(
 				"IsNavigationBarHidden", 
 				typeof(int),

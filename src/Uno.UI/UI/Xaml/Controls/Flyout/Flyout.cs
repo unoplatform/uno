@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for FlyoutPresenterStyle.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty FlyoutPresenterStyleProperty =
+		public static DependencyProperty FlyoutPresenterStyleProperty { get ; } =
 			DependencyProperty.Register(
 				"FlyoutPresenterStyle",
 				typeof(Style),
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentProperty =
+		public static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
 				typeof(IUIElement),

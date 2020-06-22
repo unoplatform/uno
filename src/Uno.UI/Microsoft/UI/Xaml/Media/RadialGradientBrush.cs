@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Media
 {
 	public sealed partial class RadialGradientBrush : GradientBrush
 	{
-		public static readonly DependencyProperty CenterProperty = DependencyProperty.Register(
+		public static DependencyProperty CenterProperty { get ; } = DependencyProperty.Register(
 			"Center", typeof(Point), typeof(RadialGradientBrush), new PropertyMetadata(new Point(0.5d, 0.5d)));
 
 		public Point Center
@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Media
 			set => SetValue(CenterProperty, value);
 		}
 
-		public static readonly DependencyProperty RadiusXProperty = DependencyProperty.Register(
+		public static DependencyProperty RadiusXProperty { get ; } = DependencyProperty.Register(
 			"RadiusX", typeof(double), typeof(RadialGradientBrush), new PropertyMetadata(0.5d));
 
 		public double RadiusX
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Media
 			set => SetValue(RadiusXProperty, value);
 		}
 
-		public static readonly DependencyProperty RadiusYProperty = DependencyProperty.Register(
+		public static DependencyProperty RadiusYProperty { get ; } = DependencyProperty.Register(
 			"RadiusY", typeof(double), typeof(RadialGradientBrush), new PropertyMetadata(0.5d));
 
 		public double RadiusY
@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Media
 			set => SetValue(RadiusYProperty, value);
 		}
 
-		public static readonly DependencyProperty GradientOriginProperty = DependencyProperty.Register(
+		public static DependencyProperty GradientOriginProperty { get ; } = DependencyProperty.Register(
 			"GradientOrigin", typeof(Point), typeof(RadialGradientBrush), new PropertyMetadata(new Point(0.5d, 0.5d)));
 
 		[NotImplemented]
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Media
 			set => SetValue(GradientOriginProperty, value);
 		}
 
-		public static readonly DependencyProperty InterpolationSpaceProperty = DependencyProperty.Register(
+		public static DependencyProperty InterpolationSpaceProperty { get ; } = DependencyProperty.Register(
 			"InterpolationSpace", typeof(CompositionColorSpace), typeof(RadialGradientBrush), new PropertyMetadata(default(CompositionColorSpace)));
 
 		[NotImplemented]

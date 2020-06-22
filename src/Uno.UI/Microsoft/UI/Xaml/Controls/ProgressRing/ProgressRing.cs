@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly ILottieVisualSourceProvider _lottieProvider;
 
-		public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register(
+		public static DependencyProperty IsActiveProperty { get ; } = DependencyProperty.Register(
 			"IsActive", typeof(bool), typeof(ProgressRing), new PropertyMetadata(true, OnIsActivePropertyChanged));
 
 		private AnimatedVisualPlayer _player;

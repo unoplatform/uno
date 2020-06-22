@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(BeginTimeProperty, value);
 		}
 
-		public static readonly DependencyProperty BeginTimeProperty =
+		public static DependencyProperty BeginTimeProperty { get ; } =
 			DependencyProperty.Register("BeginTime", typeof(TimeSpan?), typeof(Timeline), new PropertyMetadata(TimeSpan.Zero));
 
 		public Duration Duration
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(DurationProperty, value);
 		}
 
-		public static readonly DependencyProperty DurationProperty =
+		public static DependencyProperty DurationProperty { get ; } =
 			DependencyProperty.Register("Duration", typeof(Duration), typeof(Timeline), new PropertyMetadata(Duration.Automatic));
 
 		public FillBehavior FillBehavior
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(FillBehaviorProperty, value);
 		}
 
-		public static readonly DependencyProperty FillBehaviorProperty =
+		public static DependencyProperty FillBehaviorProperty { get ; } =
 			DependencyProperty.Register("FillBehavior", typeof(FillBehavior), typeof(Timeline), new PropertyMetadata(FillBehavior.HoldEnd));
 
 		public RepeatBehavior RepeatBehavior
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(RepeatBehaviorProperty, value);
 		}
 
-		public static readonly DependencyProperty RepeatBehaviorProperty =
+		public static DependencyProperty RepeatBehaviorProperty { get ; } =
 			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new PropertyMetadata(new RepeatBehavior()));
 
 

@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(IsCheckedProperty, value);
 		}
 
-		public static readonly DependencyProperty IsCheckedProperty =
+		public static DependencyProperty IsCheckedProperty { get ; } =
 			DependencyProperty.Register(
 				"IsChecked",
 				typeof(bool?),

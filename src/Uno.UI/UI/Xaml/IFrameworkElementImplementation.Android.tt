@@ -166,7 +166,7 @@ namespace <#= mixin.NamespaceName #>
 		#region Background Dependency Property
 
 		[GeneratedDependencyProperty(DefaultValue = null, Options=FrameworkPropertyMetadataOptions.ValueInheritsDataContext, ChangedCallback = true)]
-		public static readonly DependencyProperty BackgroundProperty = CreateBackgroundProperty();
+		public static DependencyProperty BackgroundProperty { get ; } = CreateBackgroundProperty();
 
 		public new Brush Background
 		{
@@ -191,7 +191,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		// Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty OpacityProperty =
+		public static DependencyProperty OpacityProperty { get ; } =
 			DependencyProperty.Register("Opacity", typeof(double), typeof(<#= mixin.ClassName #>), new PropertyMetadata(defaultValue: 1.0, propertyChangedCallback: (s, a) => ((<#= mixin.ClassName #>)s).OnOpacityChanged()));
 
 		private void OnOpacityChanged()
@@ -208,7 +208,7 @@ namespace <#= mixin.NamespaceName #>
 			set { SetValue(StyleProperty, value); }
 		}
 
-		public static readonly DependencyProperty StyleProperty =
+		public static DependencyProperty StyleProperty { get ; } =
 			DependencyProperty.Register(
 				"Style", 
 				typeof(Style),
@@ -259,7 +259,7 @@ namespace <#= mixin.NamespaceName #>
 			, CoerceCallback = true
 #endif
 		)]
-		public static readonly DependencyProperty IsEnabledProperty = CreateIsEnabledProperty();
+		public static DependencyProperty IsEnabledProperty { get ; } = CreateIsEnabledProperty();
 
 		public virtual bool IsEnabled
 		{
@@ -300,7 +300,7 @@ namespace <#= mixin.NamespaceName #>
 			set { this.SetValue(IsHitTestVisibleProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsHitTestVisibleProperty =
+		public static DependencyProperty IsHitTestVisibleProperty { get ; } =
 			DependencyProperty.Register(
 				"IsHitTestVisible",
 				typeof(bool),
@@ -436,7 +436,7 @@ namespace <#= mixin.NamespaceName #>
 #if !<#= mixin.IsFrameworkElement #>
 		#region Visibility Dependency Property
 
-		public static readonly DependencyProperty VisibilityProperty =
+		public static DependencyProperty VisibilityProperty { get ; } =
 			DependencyProperty.Register(
 				"Visibility",
 				typeof(Visibility), 
@@ -492,7 +492,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
-		public static readonly DependencyProperty NameProperty = CreateNameProperty();
+		public static DependencyProperty NameProperty { get ; } = CreateNameProperty();
 
 		public virtual string Name
 		{
@@ -503,7 +503,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region Margin Dependency Property
 		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty MarginProperty = CreateMarginProperty();
+		public static DependencyProperty MarginProperty { get ; } = CreateMarginProperty();
 
 		public virtual Thickness Margin
 		{
@@ -515,7 +515,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region HorizontalAlignment Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty HorizontalAlignmentProperty = CreateHorizontalAlignmentProperty();
+		public static DependencyProperty HorizontalAlignmentProperty { get ; } = CreateHorizontalAlignmentProperty();
 
 		public HorizontalAlignment HorizontalAlignment
 		{
@@ -526,7 +526,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region VerticalAlignment Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty VerticalAlignmentProperty = CreateVerticalAlignmentProperty();
+		public static DependencyProperty VerticalAlignmentProperty { get ; } = CreateVerticalAlignmentProperty();
 
 		public VerticalAlignment VerticalAlignment
 		{
@@ -537,7 +537,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region Width Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = double.NaN, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty WidthProperty = CreateWidthProperty();
+		public static DependencyProperty WidthProperty { get ; } = CreateWidthProperty();
 
 		public <#= mixin.HasNewWidthHeight #> double Width
 		{
@@ -548,7 +548,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region Height Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = double.NaN, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty HeightProperty = CreateHeightProperty();
+		public static DependencyProperty HeightProperty { get ; } = CreateHeightProperty();
 
 		public <#= mixin.HasNewWidthHeight #> double Height
 		{
@@ -559,7 +559,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region MinWidth Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = 0.0, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty MinWidthProperty = CreateMinWidthProperty();
+		public static DependencyProperty MinWidthProperty { get ; } = CreateMinWidthProperty();
 
 		public <#= mixin.HasNewMinWidthHeight #> double MinWidth
 		{
@@ -570,7 +570,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region MinHeight Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = 0.0, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty MinHeightProperty = CreateMinHeightProperty();
+		public static DependencyProperty MinHeightProperty { get ; } = CreateMinHeightProperty();
 
 		public <#= mixin.HasNewMinWidthHeight #> double MinHeight
 		{
@@ -581,7 +581,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region MaxWidth Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty MaxWidthProperty = CreateMaxWidthProperty();
+		public static DependencyProperty MaxWidthProperty { get ; } = CreateMaxWidthProperty();
 
 		public <#= mixin.HasNewMaxWidthHeight #> double MaxWidth
 		{
@@ -592,7 +592,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region MaxHeight Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty MaxHeightProperty = CreateMaxHeightProperty();
+		public static DependencyProperty MaxHeightProperty { get ; } = CreateMaxHeightProperty();
 
 		public <#= mixin.HasNewMaxWidthHeight #> double MaxHeight
 		{
@@ -609,7 +609,7 @@ namespace <#= mixin.NamespaceName #>
 			set { this.SetValue(TransitionsProperty, value); }
 		}
 
-		public static readonly DependencyProperty TransitionsProperty =
+		public static DependencyProperty TransitionsProperty { get ; } =
 			DependencyProperty.Register("Transitions", typeof(TransitionCollection), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnTransitionsChanged));
 			
 		private static void OnTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -649,7 +649,7 @@ namespace <#= mixin.NamespaceName #>
 			set { this.SetValue(TagProperty, value); }
 		}
 
-		public static readonly DependencyProperty TagProperty =
+		public static DependencyProperty TagProperty { get ; } =
 			DependencyProperty.Register("Tag", typeof(object), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, (s, e) => (s as <#= mixin.ClassName #>).OnTagChanged(e)));
 
 		private void OnTagChanged(DependencyPropertyChangedEventArgs e)
@@ -673,7 +673,7 @@ namespace <#= mixin.NamespaceName #>
 		/// <summary>
 		/// Backing dependency property for <see cref="RenderTransform"/>
 		/// </summary>
-		public static readonly DependencyProperty RenderTransformProperty =
+		public static DependencyProperty RenderTransformProperty { get ; } =
 			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnRenderTransformChanged));
 
 		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -723,7 +723,7 @@ namespace <#= mixin.NamespaceName #>
 		/// <summary>
 		/// Backing dependency property for <see cref="RenderTransformOrigin"/>
 		/// </summary>
-		public static readonly DependencyProperty RenderTransformOriginProperty =
+		public static DependencyProperty RenderTransformOriginProperty { get ; } =
 			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(<#= mixin.ClassName #>), new PropertyMetadata(default(Point), OnRenderTransformOriginChanged));
 
 		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)

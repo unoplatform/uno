@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set { this.SetValue(PowerProperty, value); }
 		}
 
-		public static readonly DependencyProperty PowerProperty =
+		public static DependencyProperty PowerProperty { get ; } =
 			DependencyProperty.Register("Power", typeof(int), typeof(PowerEase), new PropertyMetadata(2));
 
 		public override double Ease(double currentTime, double startValue, double finalValue, double duration)

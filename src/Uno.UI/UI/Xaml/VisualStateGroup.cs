@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for States.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty StatesProperty =
+		public static DependencyProperty StatesProperty { get ; } =
 			DependencyProperty.Register(
 				"States",
 				typeof(IList<VisualState>),
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TransitionsProperty =
+		public static DependencyProperty TransitionsProperty { get ; } =
 			DependencyProperty.Register(
 				"Transitions",
 				typeof(IList<VisualTransition>),

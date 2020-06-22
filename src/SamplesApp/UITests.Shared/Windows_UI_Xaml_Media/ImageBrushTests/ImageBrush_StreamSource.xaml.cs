@@ -65,7 +65,7 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 		}
 
 		// Using a DependencyProperty as the backing store for MySource.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty MySourceProperty =
+		public static DependencyProperty MySourceProperty { get ; } =
 			DependencyProperty.Register("MySource", typeof(ImageSource), typeof(ImageBrush_StreamSource_Data), new PropertyMetadata(null));
 
 #endregion

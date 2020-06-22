@@ -38,7 +38,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemsSourceProperty =
+		public static DependencyProperty ItemsSourceProperty { get ; } =
 			DependencyProperty.Register("ItemsSource", typeof(object), typeof(ParallaxListView), new PropertyMetadata(null));
 
 		#endregion
@@ -51,7 +51,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(ItemTemplateSelectorProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemTemplateSelectorProperty =
+		public static DependencyProperty ItemTemplateSelectorProperty { get ; } =
 			DependencyProperty.Register("ItemTemplateSelector", typeof(DataTemplateSelector), typeof(ParallaxListView), new PropertyMetadata(null));
 
 		#endregion
@@ -64,7 +64,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(ItemContainerStyleProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemContainerStyleProperty =
+		public static DependencyProperty ItemContainerStyleProperty { get ; } =
 			DependencyProperty.Register("ItemContainerStyle", typeof(Style), typeof(ParallaxListView), new PropertyMetadata(null));
 
 		#endregion
@@ -77,7 +77,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(ItemCommandProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemCommandProperty =
+		public static DependencyProperty ItemCommandProperty { get ; } =
 			DependencyProperty.Register("ItemCommand", typeof(ICommand), typeof(ParallaxListView), new PropertyMetadata(null));
 
 		#endregion
@@ -90,7 +90,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(TitleProperty, value); }
 		}
 
-		public static readonly DependencyProperty TitleProperty =
+		public static DependencyProperty TitleProperty { get ; } =
 			DependencyProperty.Register("Title", typeof(string), typeof(ParallaxListView), new PropertyMetadata(string.Empty));
 
 		#endregion
@@ -103,7 +103,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(VisibleTitleProperty, value); }
 		}
 
-		public static readonly DependencyProperty VisibleTitleProperty =
+		public static DependencyProperty VisibleTitleProperty { get ; } =
 			DependencyProperty.Register("VisibleTitle", typeof(string), typeof(ParallaxListView), new PropertyMetadata("  "));
 
 		#endregion
@@ -116,7 +116,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(HeaderBackgroundImageProperty, value); }
 		}
 
-		public static readonly DependencyProperty HeaderBackgroundImageProperty =
+		public static DependencyProperty HeaderBackgroundImageProperty { get ; } =
 			DependencyProperty.Register("HeaderBackgroundImage", typeof(string), typeof(ParallaxListView), new PropertyMetadata(string.Empty));
 
 		#endregion
@@ -129,7 +129,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(HeaderForegroundTemplateProperty, value); }
 		}
 
-		public static readonly DependencyProperty HeaderForegroundTemplateProperty =
+		public static DependencyProperty HeaderForegroundTemplateProperty { get ; } =
 			DependencyProperty.Register("HeaderForegroundTemplate", typeof(DataTemplate), typeof(ParallaxListView), new PropertyMetadata(null));
 
 		#endregion

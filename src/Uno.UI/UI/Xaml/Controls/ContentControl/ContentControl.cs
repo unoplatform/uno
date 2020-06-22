@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ContentProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentProperty =
+		public static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
 				typeof(object),
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for ContentTemplate.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ContentTemplateProperty =
+		public static DependencyProperty ContentTemplateProperty { get ; } =
 			DependencyProperty.Register(
 				"ContentTemplate",
 				typeof(DataTemplate),
@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ContentTemplateSelectorProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentTemplateSelectorProperty =
+		public static DependencyProperty ContentTemplateSelectorProperty { get ; } =
 			DependencyProperty.Register(
 				"ContentTemplateSelector",
 				typeof(DataTemplateSelector),
@@ -250,7 +250,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ContentTransitionsProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentTransitionsProperty =
+		public static DependencyProperty ContentTransitionsProperty { get ; } =
 			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentControl), new PropertyMetadata(null, OnContentTransitionsChanged));
 
 		private static void OnContentTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)

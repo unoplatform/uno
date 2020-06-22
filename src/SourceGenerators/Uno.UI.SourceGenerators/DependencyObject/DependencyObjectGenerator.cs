@@ -657,7 +657,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					}}
 
 					// Using a DependencyProperty as the backing store for DataContext.  This enables animation, styling, binding, etc...
-					public static readonly DependencyProperty DataContextProperty =
+					public static DependencyProperty DataContextProperty {{ get ; }} =
 						DependencyProperty.Register(
 							name: nameof(DataContext),
 							propertyType: typeof(object),
@@ -686,7 +686,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					}}
 
 					// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
-					public static readonly DependencyProperty TemplatedParentProperty =
+					public static DependencyProperty TemplatedParentProperty {{ get ; }} =
 						DependencyProperty.Register(
 							name: nameof(TemplatedParent),
 							propertyType: typeof(DependencyObject),
