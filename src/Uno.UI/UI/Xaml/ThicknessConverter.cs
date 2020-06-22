@@ -7,6 +7,8 @@ namespace Windows.UI.Xaml
 {
 	public class ThicknessConverter : TypeConverter
 	{
+		private static readonly char[] _valueSeparator = new char[] { ',', ' ', '\t', '\r', '\n' };
+
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
 			var canConvert = sourceType == typeof(string)
@@ -27,7 +29,7 @@ namespace Windows.UI.Xaml
 			if (value is string stringValue)
 			{
 				var values = stringValue
-					.Split(new[] { ',' })
+					.Split(_valueSeparator, StringSplitOptions.RemoveEmptyEntries)
 					.Select(s => double.Parse(s, CultureInfo.InvariantCulture))
 					.ToArray();
 
@@ -44,7 +46,7 @@ namespace Windows.UI.Xaml
 					return new Thickness(values[0], values[0], values[0], values[0]);
 				}
 			}
-			else if(value is double doubleValue)
+			else if (value is double doubleValue)
 			{
 				return new Thickness(doubleValue);
 			}

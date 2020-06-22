@@ -3819,7 +3819,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// This is until we find an appropriate way to convert strings to Thickness.
 			if (!memberValue.Contains(","))
 			{
-				memberValue = memberValue.Replace(" ", ",");
+				memberValue = ReplaceWhitespaceByCommas(memberValue);
 			}
 
 			if (memberValue.Contains("."))
@@ -3827,7 +3827,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Append 'f' to every decimal value in the thickness
 				memberValue = AppendFloatSuffix(memberValue);
 			}
-
+			
 			return "new global::Windows.UI.Xaml.Thickness(" + memberValue + ")";
 		}
 
@@ -3837,10 +3837,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// ensure commas are used for the constructor
 			if (!memberValue.Contains(","))
 			{
-				memberValue = string.Join(",", memberValue.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries));				
+				memberValue = ReplaceWhitespaceByCommas(memberValue);
 			}
 
 			return $"new {XamlConstants.Types.CornerRadius}({memberValue})";
+		}
+
+		private static string ReplaceWhitespaceByCommas(string memberValue)
+		{
+			// empty delimiter array = whitespace in string.Split
+			return string.Join(",", memberValue.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries));
 		}
 
 		private static string AppendFloatSuffix(string memberValue)
