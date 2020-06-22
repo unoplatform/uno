@@ -7,7 +7,7 @@ namespace Windows.System
 	#endif
 	public  partial class Launcher 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathAsync( string path)
 		{
@@ -91,7 +91,7 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LaunchUriResult> Launcher.LaunchUriForResultsForUserAsync(User user, Uri uri, LauncherOptions options, ValueSet inputData) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync( global::Windows.Storage.IStorageFile file)
 		{
@@ -113,7 +113,7 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchUriAsync(Uri uri, LauncherOptions options) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderAsync( global::Windows.Storage.IStorageFolder folder)
 		{
