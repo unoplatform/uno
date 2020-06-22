@@ -542,7 +542,7 @@ namespace <#= mixin.NamespaceName #>
 
 		partial void OnLoadingPartial();
 
-		protected virtual void OnLoaded()
+		private protected virtual void OnLoaded()
 		{
 			IsLoaded = true;
 
@@ -554,7 +554,7 @@ namespace <#= mixin.NamespaceName #>
 
 		partial void OnLoadedPartial();
 
-		protected virtual void OnUnloaded()
+		private protected virtual void OnUnloaded()
 		{
 			IsLoaded = false;
 

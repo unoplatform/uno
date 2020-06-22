@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool IsMultiline { get; }
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 			SetTextNative(_textBox.Text);
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 			

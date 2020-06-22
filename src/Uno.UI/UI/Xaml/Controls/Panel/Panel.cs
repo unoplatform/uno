@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 			=> OnChildrenChanged();
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnLoadedPartial();
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 

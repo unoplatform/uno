@@ -292,7 +292,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(MediaPlayerElement);
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 

@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 			);
 		#endregion
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 

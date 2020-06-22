@@ -1140,6 +1140,83 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.MediaTransportControls.set_FastPlayFallbackBehaviour(System.Boolean value)"
 				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition" />				
+
+			<!-- Begin OnLoaded/OnUnloaded removal -->
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ProgressRing.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ProgressRing.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativePagedView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativePagedView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ProgressRing.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ProgressRing.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativePagedView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativePagedView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ProgressRing.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ProgressRing.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Picker.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Picker.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.MultilineTextBoxView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.MultilineTextBoxView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SecureTextBoxView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SecureTextBoxView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
+			<!-- End OnLoaded/OnUnloaded removal -->
 		</Methods>
 
 		<Properties>
