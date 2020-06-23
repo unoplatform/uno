@@ -35,10 +35,16 @@ namespace Windows.Storage
             Name = name;
         }
 
-        public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderFromPathAsync(string path) =>
+#if !__WASM__
+		private static async Task TryInitializeStorage() { }
+#endif
+
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderFromPathAsync(string path) =>
             AsyncOperation.FromTask(async ct =>
             {
-                if (Directory.Exists(path))
+				await TryInitializeStorage();
+
+				if (Directory.Exists(path))
                 {
                     return new StorageFolder(path);
                 }
@@ -54,8 +60,9 @@ namespace Windows.Storage
         public IAsyncOperation<StorageFolder> CreateFolderAsync(string folderName, CreationCollisionOption option) =>
             AsyncOperation.FromTask(async ct =>
             {
+				await TryInitializeStorage();
 
-                var path = global::System.IO.Path.Combine(Path, folderName);
+				var path = global::System.IO.Path.Combine(Path, folderName);
                 DirectoryInfo di;
                 switch (option)
                 {
@@ -108,13 +115,17 @@ namespace Windows.Storage
         public IAsyncOperation<StorageFile> SafeGetFileAsync(string path) =>
             AsyncOperation.FromTask(async ct =>
             {
-                return await StorageFile.GetFileFromPathAsync(global::System.IO.Path.Combine(Path, path));
+				await TryInitializeStorage();
+
+				return await StorageFile.GetFileFromPathAsync(global::System.IO.Path.Combine(Path, path));
             });
 
         public IAsyncOperation<StorageFile> GetFileAsync(string path) =>
             AsyncOperation.FromTask(async ct =>
             {
-                var filePath = global::System.IO.Path.Combine(Path, path);
+				await TryInitializeStorage();
+
+				var filePath = global::System.IO.Path.Combine(Path, path);
 
                 if (!File.Exists(filePath))
                 {
@@ -127,7 +138,9 @@ namespace Windows.Storage
         public IAsyncOperation<global::Windows.Storage.IStorageItem> GetItemAsync(string name) =>
             AsyncOperation.FromTask(async ct =>
             {
-                var itemPath = global::System.IO.Path.Combine(Path, name);
+				await TryInitializeStorage();
+
+				var itemPath = global::System.IO.Path.Combine(Path, name);
 
                 var fileExists = File.Exists(itemPath);
                 var directoryExists = Directory.Exists(itemPath);
@@ -150,7 +163,9 @@ namespace Windows.Storage
         public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderAsync(string name) =>
             AsyncOperation.FromTask(async ct =>
             {
-                var itemPath = global::System.IO.Path.Combine(Path, name);
+				await TryInitializeStorage();
+
+				var itemPath = global::System.IO.Path.Combine(Path, name);
 
                 var directoryExists = Directory.Exists(itemPath);
 
@@ -165,7 +180,9 @@ namespace Windows.Storage
         public IAsyncOperation<IStorageItem> TryGetItemAsync(string path) =>
                 AsyncOperation.FromTask(async ct =>
                 {
-                    var filePath = global::System.IO.Path.Combine(Path, path);
+					await TryInitializeStorage();
+
+					var filePath = global::System.IO.Path.Combine(Path, path);
 
                     var result = File.Exists(filePath)
                         ? await StorageFile.GetFileFromPathAsync(filePath)
@@ -179,6 +196,8 @@ namespace Windows.Storage
         public IAsyncOperation<StorageFile> CreateFileAsync(string desiredName, CreationCollisionOption options) =>
             AsyncOperation.FromTask(async ct =>
             {
+                await TryInitializeStorage();
+
                 if (File.Exists(global::System.IO.Path.Combine(Path, desiredName)))
                 {
                     switch (options)
@@ -219,7 +238,9 @@ namespace Windows.Storage
         public IAsyncAction DeleteAsync() =>
             AsyncAction.FromTask(async ct =>
             {
-                Directory.Delete(this.Path, true);
+				await TryInitializeStorage();
+
+				Directory.Delete(this.Path, true);
             });
     }
 }

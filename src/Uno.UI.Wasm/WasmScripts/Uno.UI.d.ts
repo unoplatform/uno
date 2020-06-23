@@ -921,6 +921,7 @@ declare namespace Windows.Storage {
 declare namespace Windows.Storage {
     class StorageFolder {
         private static _isInit;
+        private static dispatchStorageInitialized;
         /**
          * Determine if IndexDB is available, some browsers and modes disable it.
          * */
@@ -933,6 +934,7 @@ declare namespace Windows.Storage {
          * Setup the storage persistence of a given path.
          * */
         static setupStorage(path: string): void;
+        private static onStorageInitialized;
         /**
          * Synchronize the IDBFS memory cache back to IndexDB
          * */
