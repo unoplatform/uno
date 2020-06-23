@@ -1,4 +1,4 @@
-﻿# Embedding Existing JavaScript Components Into Uno-WASM - Part 2
+# Embedding Existing JavaScript Components Into Uno-WASM - Part 2
 Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://prismjs.com/). This library is simple and is self-contained - there's no external dependencies.
 # Integration of PrismJS in a project
 ## 0. Before starting
@@ -7,27 +7,33 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 🎯 This section is very similar to the [Creating an app - Tutorial](https://platform.uno/docs/articles/getting-started-tutorial-1.html) in the official documentation.
 1. Start **Visual Studio 2019**
 2. Click `Create a new project`
+
    ![Create new project](assets/image-20200325113112235.png)
 3. **Search for "Uno"** and pick `Cross-Platform App (Uno Platform)`.
+
    ![Search for Uno](assets/image-20200325113532758.png)
    Select it and click `Next`.
 4. Give a project name and folder as you wish. It will be named `PrismJsDemo` here.
 5. Click `Create` button.
 6. Right-click on the solution and pick `Manage NuGet Packages for Solution...`
+
    ![Manage Nuget for Solution item](assets/image-20200325114155796.png)
 7. Update to latest version of `Uno` dependencies. **DO NOT UPDATE THE `Microsoft.Extensions.Logging` dependencies** to latest versions.
-   
+
    > This step of upgrading is not absolutely required, but it's a good practice to start a project with the latest version of the library.
 8. Right-click on the `.Wasm` project in the _Solution Explorer_ and pick `Set as Startup Project`.
+
    ![Set as Startup Project item](assets/image-20200420123443823.png)
-   
+
    > Note: this article will concentrate on build Wasm-only code, so it won't compile on other platforms' projects.
 9. Press `CTRL-F5`. App should compile and start a browser session showing this:
    ![Run Result](assets/image-20200325114609689.png)
-   
+
    > Note: when compiling using Uno platform the first time, it could take some time to download the latest .NET for WebAssembly SDK into a temporary folder.
 ## 2. Create a control in managed code
+
 🎯  In this section, a control named `PrismJsView` is created in code and used in the XAML page (`MainPage.xaml`) to present it.
+
 1. From the `.Shared` project, create a new class file named `PrismJsView.cs`. and copy the following code:
    ```csharp
    using System;
@@ -112,23 +118,29 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    </Page>
    ```
 3. Press CTRL-F5.  You should see this:
+
    ![Browser image](assets/image-20200414144707425.png)
 4. Press F12 (on Chrome, may vary on other browsers).
 5. Click on the first button and select the light-blue part in the app.
+
    ![Select Item button - F12](assets/image-20200325132528604.png)
 6. It will bring the DOM explorer to a `xamltype=Windows.UI.Xaml.Controls.Border` node. The `PrismJsView` should be right below after opening it.
+
    ![Html Explorer](assets/image-20200325132859849.png)
    The `xamltype="PrismJsDemo.Shared.PrismJsView"`) control is there!
-ðŸ“ The project is now ready to integrate PrismJS.
+
+👌 The project is now ready to integrate PrismJS.
 ## 3. Add JavaScript & CSS files
+
 🎯  In this section, PrismJS files are downloaded from their website and placed as assets in the app.
+
 1. Go to this link: https://prismjs.com/download.html
 2. Choose desired Themes & Languages (`Default` theme + all languages is used for the demo)
 3. Press the `DOWNLOAD JS` button and put the `prism.js` file in the `WasmScripts` folder of the `.Wasm` project.
-   
+
    > Putting the `.js` file in this folder will instruct the Uno Wasm Bootstrapper to automatically load the JavaScript file during startup.
 4. Press the `DOWNLOAD CSS` button and put the `prism.css` file in the `WasmCSS` folder of the `.Wasm` project.
-   
+
    > Putting the `.css` file in this folder will instruct the Uno Wasm Bootstrapper to automatically inject a `<link>` HTML instruction in the resulting `index.html` file to load it with the browser.
 5. Right-click on the `.Wasm` project node in the Solution Explorer, and pick `Edit Project File` (it can also work by just selecting the project, if the `Preview Selected Item` option is activated).
 6. Insert this in the appropriate `<ItemGroup>`:
@@ -211,7 +223,8 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
        Loaded += (snd, evt) => UpdateDisplay(newLanguage: Language);
    }
    ```
-5. Compile & run.  It should work like this:
+5. Compile & run. It should work like this:
+
    ![Final browser result](assets/image-20200415135422628.png)
 ## 🔬 Going further
 This sample is a very simple integration as there is no _callback_ from HTML to managed code and _PrismJS_ is a self-contained framework (it does not download any other JavaScript dependencies).

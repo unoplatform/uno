@@ -72,7 +72,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   ``` csharp
   // Setting only one CSS style
   SetStyle("text-shadow", "2px 2px red");
-  
+
   // Setting many CSS styles at once using C# tuples
   SetStyle(("text-shadow", "2px 2px blue"), ("color", "var(--app-fg-color1)"));
   ```
@@ -82,7 +82,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   ``` csharp
   // Reset text-shadow style to its default value
   ResetStyle("text-shadow");
-  
+
   // Reset both text-shadow and color to their default values
   ResetStyle("text-shadow", "color");
   ```
@@ -92,10 +92,10 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   ``` csharp
   // Set the "href" attribute of an <a> element
   SetAttribute("href", "#section2");
-  
+
   // Set many attributes at once
   SetAttribute(("target", "_blank"), ("referrerpolicy", "no-referrer"));
-  
+
   // Remove attribute from DOM element
   RemoveAttribute("href");
   ```

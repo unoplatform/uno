@@ -32,7 +32,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    ``` javascript
    (function () {
        const head = document.getElementsByTagName("head")[0];
-   
+
        // Load Flatpickr CSS from CDN
        const link = document.createElement("link");
        link.rel = "stylesheet";
@@ -67,7 +67,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    using Windows.UI.Xaml;
    using Uno.Foundation;
    using Uno.Extensions;
-   
+
    namespace FlatpickrDemo.Shared
    {
        public class FlatpickrView : FrameworkElement
@@ -75,58 +75,58 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
            // *************************
            // * Dependency Properties *
            // *************************
-   
+
            public static readonly DependencyProperty SelectedDateTimeProperty = DependencyProperty.Register(
                "SelectedDateTime", typeof(DateTimeOffset?), typeof(FlatpickrView), new PropertyMetadata(default(DateTimeOffset?)));
-   
+
            public DateTimeOffset? SelectedDateTime
            {
                get => (DateTimeOffset) GetValue(SelectedDateTimeProperty);
                set => SetValue(SelectedDateTimeProperty, value);
            }
-   
+
            public static readonly DependencyProperty IsPickerOpenedProperty = DependencyProperty.Register(
                "IsPickerOpened", typeof(bool), typeof(FlatpickrView), new PropertyMetadata(false));
-   
+
            public bool IsPickerOpened
            {
                get { return (bool)GetValue(IsPickerOpenedProperty); }
                set { SetValue(IsPickerOpenedProperty, value); }
            }
-   
+
            // ***************
            // * Constructor *
            // ***************
-   
+
            public FlatpickrView() : base("input") // Flatpickr requires an <input> HTML element
            {
                // XAML behavior: a non-null background is required on an element to be "visible to pointers".
                // Uno reproduces this behavior, so we must set it here even if we're not using the background.
                // Not doing this will lead to a `pointer-events: none` CSS style on the control.
                Background = SolidColorBrushHelper.Transparent;
-   
+
                // When the control is loaded into DOM, we activate Flatpickr on it.
                Loaded += OnLoaded;
            }
-   
+
            // ******************
            // * Event Handlers *
            // ******************
-   
+
            private void OnLoaded(object sender, RoutedEventArgs e)
            {
                // For demo purposes, Flatpickr is loaded directly from CDN.
                // Uno uses AMD module loading, so you must give a callback when the resource is loaded.
                var javascript = $@"require([""https://cdn.jsdelivr.net/npm/flatpickr""], f => f(document.getElementById(""{HtmlId}"")));";
-   
+
                WebAssemblyRuntime.InvokeJS(javascript);
            }
        }
    }
-   
+
    ```
 
-   
+
 
 2. Change the `MainPage.xaml` in the `.Shared` project like this:
 
@@ -139,7 +139,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        mc:Ignorable="d">
-   
+
        <StackPanel Spacing="10" Padding="20">
    		<TextBlock FontSize="15">
    			Is Picker opened: <Run FontSize="20" FontWeight="Bold" Text="{Binding IsPickerOpened, ElementName=picker}" />
@@ -179,7 +179,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
            SelectedDateTime = dto;
        }
    }
-   
+
    private void OnOpenedStateChanged(object sender, HtmlCustomEventArgs e)
    {
        switch(e.Detail)
@@ -204,7 +204,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
        var javascript = $@"require([""https://cdn.jsdelivr.net/npm/flatpickr""], f => {{
                // Get HTML <input> element
                const element = document.getElementById(""{HtmlId}"");
-   
+
                // Route Flatpickr events following Uno's documentation
                // https://platform.uno/docs/articles/wasm-custom-events.html
                const options = {{
@@ -212,11 +212,11 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
                        onOpen: () => element.dispatchEvent(new CustomEvent(""OpenedStateChanged"", {{detail: ""open""}})),
                        onClose: () => element.dispatchEvent(new CustomEvent(""OpenedStateChanged"", {{detail: ""closed""}}))
                    }};
-   
+
                // Instantiate Flatpickr on the element
                f(element, options);
            }});";
-   
+
        WebAssemblyRuntime.InvokeJS(javascript);
    }
    ```
