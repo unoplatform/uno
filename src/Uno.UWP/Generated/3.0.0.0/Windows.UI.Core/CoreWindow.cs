@@ -432,7 +432,7 @@ namespace Windows.UI.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.WindowSizeChangedEventArgs> SizeChanged
 		{

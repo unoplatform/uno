@@ -80,6 +80,7 @@ namespace Windows.UI.Xaml
 		private void RaiseSizeChanged(WindowSizeChangedEventArgs windowSizeChangedEventArgs)
 		{
 			SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+			CoreWindow.GetForCurrentThread()?.OnSizeChanged(windowSizeChangedEventArgs);
 
 			foreach (var action in _sizeChangedHandlers)
 			{

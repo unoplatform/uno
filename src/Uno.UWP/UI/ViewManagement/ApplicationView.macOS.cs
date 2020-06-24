@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 using AppKit;
 using Uno.Extensions;
 using Uno.Logging;
+using Windows.Foundation;
+using CoreGraphics;
 
 namespace Windows.UI.ViewManagement
 {
@@ -62,6 +64,24 @@ namespace Windows.UI.ViewManagement
 			{
 				NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
 			}
+		}
+
+
+		public bool TryResizeView(Size value)
+		{
+			VerifyKeyWindowInitialized();
+
+			var window = NSApplication.SharedApplication.KeyWindow;
+			var frame = window.Frame;
+			frame.Size = new CGSize(value.Width, value.Height);
+			window.SetFrame(frame, true, true);
+			return true;
+		}
+
+		public void SetPreferredMinSize(Size minSize)
+		{
+			var window = NSApplication.SharedApplication.KeyWindow;
+			window.MinSize = new CGSize(minSize.Width, minSize.Height);
 		}
 
 		private void VerifyKeyWindowInitialized([CallerMemberName]string propertyName = null)

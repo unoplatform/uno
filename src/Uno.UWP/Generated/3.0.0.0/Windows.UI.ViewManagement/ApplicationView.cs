@@ -240,14 +240,14 @@ namespace Windows.UI.ViewManagement
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ShowStandardSystemOverlays()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  bool TryResizeView( global::Windows.Foundation.Size value)
 		{
 			throw new global::System.NotImplementedException("The member bool ApplicationView.TryResizeView(Size value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  void SetPreferredMinSize( global::Windows.Foundation.Size minSize)
 		{
