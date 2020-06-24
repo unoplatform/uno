@@ -140,6 +140,7 @@
       name: Embedding Existing JavaScript Components Into Uno-WASM - Part 3
       href: interop/wasm-javascript-3.md
 - name: Contributing to Uno
+  topicHref: uno-development\contributing-intro.md
   items:
     - name: Guidelines for creating tests
       href: contributing\guidelines\creating-tests.md
