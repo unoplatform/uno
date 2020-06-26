@@ -475,10 +475,7 @@ namespace Windows.UI.Xaml.Controls
 					var scrollAdjustment = itemOffset * _averageLineHeight; // TODO: not appropriate for ItemsWrapGrid
 					ApplyScrollAdjustment(scrollAdjustment);
 				}
-				else
-				{
-					// TODO NOW: handle the case where seed was removed (the first subsequent remaining item should be used)
-				}
+				// TODO: handle the case where seed was removed
 			}
 
 			_pendingCollectionChanges.Clear();
@@ -491,9 +488,20 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			// Set adjustment before calling ChangeView(), because OnScrollChanged() will be called synchronously on some platforms
-			_scrollAdjustmentForCollectionChanges = scrollAdjustment; // TODO NOW: check if out of range
 			_dynamicSeedStart += scrollAdjustment;
+
+			if ((scrollAdjustment < 0 && IsScrolledToStart()) ||
+				(scrollAdjustment > 0 && IsScrolledToEnd())
+			)
+			{
+				// Don't call ChangeView() if there's no room to scroll, because if we set _scrollAdjustmentForCollectionChanges then we expect it to be
+				// handled in OnScrollChanged
+				// TODO: Handle this better, because it leads to an unwanted jump in the position of visible elements.
+				return;
+			}
+
+			// Set adjustment before calling ChangeView(), because OnScrollChanged() will be called synchronously on some platforms
+			_scrollAdjustmentForCollectionChanges = scrollAdjustment;
 
 			if (ScrollOrientation == Orientation.Vertical)
 			{
@@ -504,6 +512,20 @@ namespace Windows.UI.Xaml.Controls
 				ScrollViewer.ChangeView(ScrollViewer.HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
 			}
 		}
+
+		/// <summary>
+		/// True if the scroll position is right at the start of the list.
+		/// </summary>
+		private bool IsScrolledToStart() => ScrollOrientation == Orientation.Vertical ?
+			ScrollViewer.VerticalOffset <= 0 :
+			ScrollViewer.HorizontalOffset <= 0;
+
+		/// <summary>
+		/// True if the scroll position is all the way to the end of the list.
+		/// </summary>
+		private bool IsScrolledToEnd() => ScrollOrientation == Orientation.Vertical ?
+			ScrollViewer.VerticalOffset >= ScrollViewer.ScrollableHeight :
+			ScrollViewer.HorizontalOffset >= ScrollViewer.ScrollableWidth;
 
 		/// <summary>
 		/// Estimate the 'correct' size of the panel.
