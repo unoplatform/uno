@@ -419,6 +419,53 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(), RemovedItems=(3, 0, 1, 2, )");
 		}
 
+		[Test]
+		[AutoRetry]
+		public void ListView_ObservableCollection_Creation_Count()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ListView.ListView_ObservableCollection_CreationCount");
+
+			const string StatusText = "AutomationStepTextBlock";
+			const string AutomateButton = "AutomateButton";
+
+			_app.WaitForElement(StatusText);
+
+			_app.FastTap(AutomateButton);
+			_app.WaitForText(StatusText, "Added");
+			_app.FastTap(AutomateButton);
+			_app.WaitForText(StatusText, "Scrolled1");
+
+			var expectedTemplateCreationCount = GetTemplateCreationCount();
+			//var expectedTemplateBindCount = GetTemplateBindCount(); // For some reason WASM performs extra bindings on scrolling
+			var expectedContainerCreationCount = GetContainerCreationCount();
+
+			_app.FastTap(AutomateButton);
+			_app.WaitForText(StatusText, "Scrolled2");
+
+			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
+			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
+
+			var expectedTemplateBindCount = GetTemplateBindCount();
+
+			_app.FastTap(AutomateButton);
+			_app.WaitForText(StatusText, "Added above");
+
+			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
+			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
+			Assert.AreEqual(expectedTemplateBindCount, GetTemplateBindCount()); // Note: this doesn't actually seem to be the case on Windows - the bind count increases for some reason
+
+			_app.FastTap(AutomateButton);
+			_app.WaitForText(StatusText, "Removed above");
+
+			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
+			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
+			Assert.AreEqual(expectedTemplateBindCount, GetTemplateBindCount());
+
+			int GetTemplateCreationCount() => int.Parse(_app.GetText("CreationCountText"));
+			int GetTemplateBindCount() => int.Parse(_app.GetText("BindCountText"));
+			int GetContainerCreationCount() => int.Parse(_app.GetText("CreationCount2Text"));
+		}
+
 		private void ClickCheckBoxAt(int i)
 		{
 			_app.Marked("CheckBox").AtIndex(i).Tap();
