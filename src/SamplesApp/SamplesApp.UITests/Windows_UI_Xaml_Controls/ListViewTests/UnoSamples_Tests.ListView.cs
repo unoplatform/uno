@@ -160,7 +160,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			Assert.AreEqual(3 * heightBefore, heightAfter);
 		}
-		
+
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2615
@@ -271,7 +271,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			string heightBefore = fixedHeightContainer.GetDependencyPropertyValue("Height")?.ToString();
 			heightChangeButton.Tap();
 			string heightAfter = fixedHeightContainer.GetDependencyPropertyValue("Height")?.ToString();
-			Assert.AreNotEqual(heightBefore, heightAfter);			
+			Assert.AreNotEqual(heightBefore, heightAfter);
 		}
 
 		[Test]
@@ -342,7 +342,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
 			var screenshot2 = TakeScreenshot("Expanded State");
-			ImageAssert.AreNotEqual(screenshot1, screenshot2);		
+			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse and compare
 			checkBoxHeader.Tap();
@@ -355,7 +355,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabledListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_Tests https://github.com/unoplatform/uno/issues/2615
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2615
 		public void ListView_ExpandableItemLarge_ExpandHeaderWithSingleItem_Validation()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
@@ -379,6 +379,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
+		[Test]
+		[AutoRetry]
 		public void ListView_SelectedItems()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSelectedItems");
