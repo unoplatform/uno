@@ -2,7 +2,9 @@
 	wakeLock : WakeLock;
 }
 
-enum WakeLockType { "screen" };
+enum WakeLockType {
+	screen = "screen"
+};
 
 interface WakeLock {
 	request(type: WakeLockType): Promise<WakeLockSentinel>;

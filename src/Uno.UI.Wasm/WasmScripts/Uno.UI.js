@@ -3299,6 +3299,36 @@ var Windows;
         })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
     })(Networking = Windows.Networking || (Windows.Networking = {}));
 })(Windows || (Windows = {}));
+var WakeLockType;
+(function (WakeLockType) {
+    WakeLockType["screen"] = "screen";
+})(WakeLockType || (WakeLockType = {}));
+;
+;
+;
+var Windows;
+(function (Windows) {
+    var System;
+    (function (System) {
+        var Display;
+        (function (Display) {
+            class DisplayRequest {
+                static activateScreenLock() {
+                    if (navigator.wakeLock) {
+                        DisplayRequest.activeScreenLockPromise = navigator.wakeLock.request(WakeLockType.screen);
+                    }
+                }
+                static deactivateScreenLock() {
+                    if (DisplayRequest.activeScreenLockPromise) {
+                        DisplayRequest.activeScreenLockPromise.then(sentinel => sentinel.release());
+                        DisplayRequest.activeScreenLockPromise = null;
+                    }
+                }
+            }
+            Display.DisplayRequest = DisplayRequest;
+        })(Display = System.Display || (System.Display = {}));
+    })(System = Windows.System || (Windows.System = {}));
+})(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
     var System;
