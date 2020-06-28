@@ -10,7 +10,7 @@ Want to contribute to Uno, but not sure where to start? [Get some ideas here](TO
 
 For a refresher on what Uno is and what it does and does not do, read [What is the Uno Platform?](../intro.md)
 
-Get an [in-depth introduction to how Uno works](TODO), or jump straight to platform-specific details on how Uno works on [Android](TODO), [iOS](TODO), [WebAssembly](TODO), or [MacOS](TODO).
+Get an [in-depth introduction to how Uno works](uno-internals-overview.md), or jump straight to platform-specific details on how Uno works on [Android](uno-internals-android.md), [iOS](uno-internals-ios.md), [WebAssembly](uno-internals-wasm.md), or [macOS](uno-internals-macos.md).
 
 Orient yourself in Uno's codebase with a[ structural overview of what goes where](TODO). You may want to read this after you've opened and compiled Uno's solution (see the next section).
 
