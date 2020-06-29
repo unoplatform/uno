@@ -56,7 +56,8 @@ namespace Uno.UI.Tests.BinderTests
 			var SUT = new Binder_INPC_Data();
 			SUT.SetBinding(
 				Binder_INPC_Data.MyValueProperty,
-				new Binding {
+				new Binding
+				{
 					Path = new PropertyPath("Value"),
 					Converter = new Binder_INPC_DummyConverter()
 				});
@@ -72,6 +73,34 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(SUT.MyValue, master.Value);
 			Assert.AreEqual(4, master.ValueGetCount);
 			Assert.AreEqual(0, master.ValueSetCount);
+		}
+
+		[TestMethod]
+		public void When_INPC_Raise_All_Updated()
+		{
+			var SUT = new Binder_INPC_Data();
+			SUT.SetBinding(
+				Binder_INPC_Data.MyValueProperty,
+				new Binding
+				{
+					Path = new PropertyPath("Class1.Value")
+				});
+
+			SUT.SetBinding(
+				Binder_INPC_Data.MyValue2Property,
+				new Binding
+				{
+					Path = new PropertyPath("Value"),
+					Converter = new Binder_INPC_DummyConverter()
+				});
+
+			var master = new Binder_INPC_Base_Class();
+			SUT.DataContext = master;
+
+			master.RaiseAllUpdated();
+
+			Assert.AreEqual(SUT.MyValue, master.Class1.Value);
+			Assert.AreEqual(SUT.MyValue2, master.Value);
 		}
 	}
 
@@ -92,6 +121,15 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			MyValuePropertyValueDuringChange = MyValue;
 		}
+
+		public string MyValue2
+		{
+			get => GetMyValue2Value();
+			set => SetMyValue2Value(value);
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = "")]
+		public static DependencyProperty MyValue2Property { get; } = CreateMyValue2Property();
 	}
 
 	public class Binder_INPC_Base_Class : Binder_INPC_BaseViewModel
