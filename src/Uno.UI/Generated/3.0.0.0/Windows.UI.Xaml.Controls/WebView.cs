@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || NET461 || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebView 
@@ -221,13 +221,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.WebView(Windows.UI.Xaml.Controls.WebViewExecutionMode)
-		#if false || false || NET461 || false || false
-		[global::Uno.NotImplemented]
-		public WebView() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "WebView.WebView()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.WebView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.WebView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.Source.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.Source.set
@@ -358,13 +352,7 @@ namespace Windows.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "void WebView.NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)");
 		}
 		#endif
-		#if false || false || NET461 || false || false
-		[global::Uno.NotImplemented]
-		public  bool Focus( global::Windows.UI.Xaml.FocusState value)
-		{
-			throw new global::System.NotImplementedException("The member bool WebView.Focus(FocusState value) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.Focus(Windows.UI.Xaml.FocusState)
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.ContainsFullScreenElement.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.ContainsFullScreenElementChanged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.ContainsFullScreenElementChanged.remove

@@ -559,20 +559,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.TopHeader.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ViewChanging.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ViewChanging.remove
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool ChangeView( double? horizontalOffset,  double? verticalOffset,  float? zoomFactor)
-		{
-			throw new global::System.NotImplementedException("The member bool ScrollViewer.ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor) is not implemented in Uno.");
-		}
-		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool ChangeView( double? horizontalOffset,  double? verticalOffset,  float? zoomFactor,  bool disableAnimation)
-		{
-			throw new global::System.NotImplementedException("The member bool ScrollViewer.ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollViewer.ChangeView(double?, double?, float?)
+		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollViewer.ChangeView(double?, double?, float?, bool)
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.DirectManipulationStarted.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.DirectManipulationStarted.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.DirectManipulationCompleted.add

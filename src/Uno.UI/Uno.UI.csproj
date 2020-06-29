@@ -348,10 +348,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\LaunchActivatedEventArgs.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>BaseActivity.Callbacks.Implementation.Android.cs</LastGenOutput>

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Animation
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SplineColorKeyFrame : global::Windows.UI.Xaml.Media.Animation.ColorKeyFrame
@@ -29,13 +29,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.KeySpline)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public SplineColorKeyFrame() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame", "SplineColorKeyFrame.SplineColorKeyFrame()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame.SplineColorKeyFrame()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame.SplineColorKeyFrame()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySpline.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySpline.set
