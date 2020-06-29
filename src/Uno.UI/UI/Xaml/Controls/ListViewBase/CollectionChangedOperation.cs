@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="indexPath">The index in the collection prior to the operation</param>
 		/// <returns>The offset position, or null if this position is no longer valid (ie because it has been removed by the operation).</returns>
-		public IndexPath? Offset(IndexPath indexPath)
+		public Uno.UI.IndexPath? Offset(Uno.UI.IndexPath indexPath)
 		{
 			var section = indexPath.Section;
 			var row = indexPath.Row;
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 					break;
 			}
 
-			return IndexPath.FromRowSection(row, section);
+			return Uno.UI.IndexPath.FromRowSection(row, section);
 		}
 
 		/// <summary>
@@ -90,13 +90,13 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="index">The index in the collection prior to the operation</param>
 		/// <param name="collectionChanges">The changes to be applied, in order from oldest to newest.</param>
 		/// <returns>The offset position, or null if this position is no longer valid (ie because it has been removed by one of the operations).</returns>
-		public static IndexPath? Offset(IndexPath index, IEnumerable<CollectionChangedOperation> collectionChanges)
+		public static Uno.UI.IndexPath? Offset(Uno.UI.IndexPath index, IEnumerable<CollectionChangedOperation> collectionChanges)
 		{
-			IndexPath? newIndex = index;
+			Uno.UI.IndexPath? newIndex = index;
 
 			foreach (var change in collectionChanges)
 			{
-				if (newIndex is IndexPath newIndexValue)
+				if (newIndex is Uno.UI.IndexPath newIndexValue)
 				{
 					newIndex = change.Offset(newIndexValue);
 				}
@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 			return newIndex;
 		}
 
-		public static int? Offset(int index, IEnumerable<CollectionChangedOperation> collectionChanges) => Offset(IndexPath.FromRowSection(index, section: 0), collectionChanges)?.Row;
+		public static int? Offset(int index, IEnumerable<CollectionChangedOperation> collectionChanges) => Offset(Uno.UI.IndexPath.FromRowSection(index, section: 0), collectionChanges)?.Row;
 
 		public enum Element
 		{

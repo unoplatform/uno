@@ -464,10 +464,10 @@ namespace Windows.UI.Xaml.Controls
 			// Call before applying scroll, because scroll is applied synchronously on some platforms
 			Generator.UpdateForCollectionChanges(_pendingCollectionChanges);
 
-			if (_dynamicSeedIndex is IndexPath dynamicSeedIndex)
+			if (_dynamicSeedIndex is Uno.UI.IndexPath dynamicSeedIndex)
 			{
 				var updated = CollectionChangedOperation.Offset(dynamicSeedIndex, _pendingCollectionChanges);
-				if (updated is IndexPath updatedValue)
+				if (updated is Uno.UI.IndexPath updatedValue)
 				{
 					_dynamicSeedIndex = updated;
 
@@ -606,7 +606,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void AddItems(int firstItem, int count, int section)
 		{
 			_pendingCollectionChanges.Enqueue(new CollectionChangedOperation(
-				startingIndex: IndexPath.FromRowSection(firstItem, section),
+				startingIndex: Uno.UI.IndexPath.FromRowSection(firstItem, section),
 				range: count,
 				action: NotifyCollectionChangedAction.Add,
 				elementType: CollectionChangedOperation.Element.Item
@@ -618,7 +618,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void RemoveItems(int firstItem, int count, int section)
 		{
 			_pendingCollectionChanges.Enqueue(new CollectionChangedOperation(
-				startingIndex: IndexPath.FromRowSection(firstItem, section),
+				startingIndex: Uno.UI.IndexPath.FromRowSection(firstItem, section),
 				range: count,
 				action: NotifyCollectionChangedAction.Remove,
 				elementType: CollectionChangedOperation.Element.Item
