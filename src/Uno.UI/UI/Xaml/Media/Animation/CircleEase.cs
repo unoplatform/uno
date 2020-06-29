@@ -13,7 +13,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			var b = startValue;
 			var d = duration;
 
-
 			//Depending on the mode we have different functions for the return value.
 			switch (this.EasingMode)
 			{
