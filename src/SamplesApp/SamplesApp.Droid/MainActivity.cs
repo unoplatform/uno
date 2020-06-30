@@ -31,6 +31,9 @@ namespace SamplesApp.Droid
 		[Export("IsTestDone")]
 		public bool IsTestDone(string testId) => App.IsTestDone(testId);
 
+		[Export("GetDisplayScreenScaling")]
+		public string GetDisplayScreenScaling(string displayId) => App.GetDisplayScreenScaling(displayId);
+
 		[Export("SetFullScreenMode")]
 		public void SetFullScreenMode(bool fullscreen)
 		{

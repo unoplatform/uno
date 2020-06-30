@@ -31,6 +31,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
+		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+
 
 #if !__WASM__
 		public TextBlock()
@@ -395,8 +397,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnForegroundChanged()
 		{
-			OnForegroundChangedPartial();
-			InvalidateTextBlock();
+			void refreshForeground()
+			{
+				OnForegroundChangedPartial();
+				InvalidateTextBlock();
+			}
+
+			_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
 		}
 
 		partial void OnForegroundChangedPartial();

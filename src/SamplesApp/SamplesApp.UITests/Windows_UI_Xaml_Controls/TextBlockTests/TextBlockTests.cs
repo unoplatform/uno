@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -102,7 +103,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			text02.SetDependencyPropertyValue("TextDecorations", "2"); // Strikethrough
 
 			var after = TakeScreenshot("Updated");
-			
+
 			ImageAssert.AreNotEqual(before, after);
 
 			text01.SetDependencyPropertyValue("TextDecorations", "0"); // None
@@ -133,6 +134,26 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			Assert.IsTrue(widthBefore < widthAfter);
 			Assert.IsTrue(heightBefore == heightAfter);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Foreground_Brush_Color_Changed()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_BrushColorChanging");
+
+			var textColor = _app.Marked("textColor");
+
+			var rectBefore = _app.GetRect("textResult");
+			var beforeColorChanged = TakeScreenshot("beforeColor");
+
+			textColor.SetDependencyPropertyValue("Text", "Blue");
+
+			var afterColorChanged = TakeScreenshot("afterColor");
+			ImageAssert.AreNotEqual(afterColorChanged, beforeColorChanged);
+
+			var scale = (float)GetDisplayScreenScaling();
+			ImageAssert.HasColorAt(afterColorChanged, (rectBefore.X + 10) * scale, (rectBefore.Y + 10) * scale, Color.Blue);
 		}
 	}
 }
