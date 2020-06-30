@@ -448,7 +448,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(HorizontalTextAlignmentProperty, value); }
 		}
 
-		public static readonly DependencyProperty HorizontalTextAlignmentProperty =
+		public static DependencyProperty HorizontalTextAlignmentProperty { get; } =
 			DependencyProperty.Register(
 				"HorizontalTextAlignment",
 				typeof(TextAlignment),
