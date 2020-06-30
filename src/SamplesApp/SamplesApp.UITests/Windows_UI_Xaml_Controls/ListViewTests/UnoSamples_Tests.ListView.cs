@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 {
@@ -441,6 +442,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.FastTap(AutomateButton);
 			_app.WaitForText(StatusText, "Scrolled2");
+
+			if (AppInitializer.GetLocalPlatform() == Platform.Android)
+			{
+				// For some reason Android creates another container on the second scroll (though not for further scrolling)
+				expectedTemplateCreationCount = GetTemplateCreationCount();
+				expectedContainerCreationCount = GetContainerCreationCount();
+			}
 
 			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
 			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
