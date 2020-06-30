@@ -431,11 +431,41 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnTextAlignmentChanged()
 		{
+			HorizontalTextAlignment = TextAlignment;
 			OnTextAlignmentChangedPartial();
 			InvalidateTextBlock();
 		}
 
 		partial void OnTextAlignmentChangedPartial();
+
+#endregion
+
+#region HorizontalTextAlignment Dependency Property
+
+		public new TextAlignment HorizontalTextAlignment
+		{
+			get { return (TextAlignment)this.GetValue(HorizontalTextAlignmentProperty); }
+			set { this.SetValue(HorizontalTextAlignmentProperty, value); }
+		}
+
+		public static readonly DependencyProperty HorizontalTextAlignmentProperty =
+			DependencyProperty.Register(
+				"HorizontalTextAlignment",
+				typeof(TextAlignment),
+				typeof(TextBlock),
+				new PropertyMetadata(
+					defaultValue: TextAlignment.Left,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnHorizontalTextAlignmentChanged()
+				)
+			);
+
+		// This property provides the same functionality as the TextAlignment property.
+		// If both properties are set to conflicting values, the last one set is used.
+		// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.textbox.horizontaltextalignment#remarks
+		private void OnHorizontalTextAlignmentChanged()
+		{
+			TextAlignment = HorizontalTextAlignment;
+		}
 
 #endregion
 
