@@ -73,13 +73,15 @@ namespace Windows.UI.ViewManagement
 
 			var window = NSApplication.SharedApplication.KeyWindow;
 			var frame = window.Frame;
-			frame.Size = new CGSize(value.Width, value.Height);
+			frame.Size = value;
 			window.SetFrame(frame, true, true);
 			return true;
 		}
 
 		public void SetPreferredMinSize(Size minSize)
 		{
+			VerifyKeyWindowInitialized();
+
 			var window = NSApplication.SharedApplication.KeyWindow;
 			window.MinSize = new CGSize(minSize.Width, minSize.Height);
 		}
