@@ -3,7 +3,7 @@
 }
 
 enum WakeLockType {
-	screen = "screen"
+	screen = "screen",
 };
 
 interface WakeLock {
@@ -22,7 +22,10 @@ namespace Windows.System.Display {
 		public static activateScreenLock() {
 			if (navigator.wakeLock) {
 				DisplayRequest.activeScreenLockPromise = navigator.wakeLock.request(WakeLockType.screen);
-				DisplayRequest.activeScreenLockPromise.catch(reason => console.log("Could not acquire screen lock (" + reason + ")"));
+				DisplayRequest.activeScreenLockPromise.catch(
+					reason => console.log("Could not acquire screen lock (" + reason + ")"));
+			} else {
+				console.log("Wake Lock API is not available in this browser.");
 			}
 		}
 
