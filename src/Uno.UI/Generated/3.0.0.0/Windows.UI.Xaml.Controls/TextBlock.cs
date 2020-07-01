@@ -377,20 +377,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Skipping already declared property TextDecorations
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.TextAlignment HorizontalTextAlignment
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.TextAlignment)this.GetValue(HorizontalTextAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalTextAlignmentProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property HorizontalTextAlignment
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsTextTrimmed
@@ -610,14 +597,7 @@ namespace Windows.UI.Xaml.Controls
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared property TextDecorationsProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalTextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextAlignment)));
-		#endif
+		// Skipping already declared property HorizontalTextAlignmentProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTextTrimmedProperty { get; } = 
