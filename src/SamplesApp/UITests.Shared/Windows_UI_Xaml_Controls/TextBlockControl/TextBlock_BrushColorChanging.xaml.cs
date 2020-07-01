@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlockControl")]
+	[Sample("TextBlockControl")]
 	public sealed partial class TextBlock_BrushColorChanging : UserControl
 	{
 		public TextBlock_BrushColorChanging()
