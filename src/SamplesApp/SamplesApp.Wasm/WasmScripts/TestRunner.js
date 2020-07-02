@@ -6,6 +6,7 @@
             this._getAllTests = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:GetAllTests");
             this._runTest = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:RunTest");
             this._isTestDone = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:IsTestDone");
+            this._getDisplayScreenScaling = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:GetDisplayScreenScaling");
         }
     }
 
@@ -32,5 +33,10 @@
     static GetAllTests() {
         SampleRunner.init();
         return this._getAllTests();
+    } 
+
+    static GetDisplayScreenScaling(displayId) {
+        SampleRunner.init();
+        return this._getDisplayScreenScaling(displayId);
     } 
 }

@@ -334,7 +334,7 @@ namespace Windows.UI.Xaml
 		[GeneratedDependencyProperty(
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
 		public static readonly DependencyProperty MarginProperty = CreateMarginProperty();
@@ -352,7 +352,7 @@ namespace Windows.UI.Xaml
 			DefaultValue = Xaml.HorizontalAlignment.Stretch,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
 		public static readonly DependencyProperty HorizontalAlignmentProperty = CreateHorizontalAlignmentProperty();
@@ -369,7 +369,7 @@ namespace Windows.UI.Xaml
 			DefaultValue = Xaml.HorizontalAlignment.Stretch,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
 		public static readonly DependencyProperty VerticalAlignmentProperty = CreateVerticalAlignmentProperty();
@@ -386,7 +386,7 @@ namespace Windows.UI.Xaml
 			DefaultValue = double.NaN,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
 		public static readonly DependencyProperty WidthProperty = CreateWidthProperty();
@@ -403,7 +403,7 @@ namespace Windows.UI.Xaml
 			DefaultValue = double.NaN,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
 		public static readonly DependencyProperty HeightProperty = CreateHeightProperty();
@@ -420,7 +420,7 @@ namespace Windows.UI.Xaml
 			DefaultValue = 0.0d,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
 		public static readonly DependencyProperty MinWidthProperty = CreateMinWidthProperty();
@@ -438,7 +438,7 @@ namespace Windows.UI.Xaml
 			DefaultValue = 0.0d,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
 		public static readonly DependencyProperty MinHeightProperty = CreateMinHeightProperty();
@@ -455,7 +455,7 @@ namespace Windows.UI.Xaml
 			DefaultValue = double.PositiveInfinity,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
 		public static readonly DependencyProperty MaxWidthProperty = CreateMaxWidthProperty();
@@ -473,7 +473,7 @@ namespace Windows.UI.Xaml
 			DefaultValue = double.PositiveInfinity,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
 		public static readonly DependencyProperty MaxHeightProperty = CreateMaxHeightProperty();
@@ -485,11 +485,11 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
-				((FrameworkElement)dependencyObject).UpdateDOMProperties();
+				UpdateDOMProperties();
 			}
 		}
 

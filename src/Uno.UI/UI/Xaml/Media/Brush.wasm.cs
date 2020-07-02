@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Media
 {
 	public abstract partial class Brush
 	{
-		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Windows.UI.Color> colorSetter)
+		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Windows.UI.Color> colorSetter, Action imageBrushCallback = null)
 		{
 			if (b is SolidColorBrush colorBrush)
 			{
