@@ -431,17 +431,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForElement(StatusText);
 
-			_app.FastTap(AutomateButton);
-			_app.WaitForText(StatusText, "Added");
-			_app.FastTap(AutomateButton);
-			_app.WaitForText(StatusText, "Scrolled1");
+			AdvanceAutomation("Added");
+
+			AdvanceAutomation("Scrolled1");
 
 			var expectedTemplateCreationCount = GetTemplateCreationCount();
 			//var expectedTemplateBindCount = GetTemplateBindCount(); // For some reason WASM performs extra bindings on scrolling
 			var expectedContainerCreationCount = GetContainerCreationCount();
 
-			_app.FastTap(AutomateButton);
-			_app.WaitForText(StatusText, "Scrolled2");
+			AdvanceAutomation("Scrolled2");
 
 			if (AppInitializer.GetLocalPlatform() == Platform.Android)
 			{
@@ -455,15 +453,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			var expectedTemplateBindCount = GetTemplateBindCount();
 
-			_app.FastTap(AutomateButton);
-			_app.WaitForText(StatusText, "Added above");
+			AdvanceAutomation("Added above");
 
 			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
 			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
 			Assert.AreEqual(expectedTemplateBindCount, GetTemplateBindCount()); // Note: this doesn't actually seem to be the case on Windows - the bind count increases for some reason
 
-			_app.FastTap(AutomateButton);
-			_app.WaitForText(StatusText, "Removed above");
+			AdvanceAutomation("Removed above");
 
 			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
 			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
@@ -472,6 +468,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			int GetTemplateCreationCount() => int.Parse(_app.GetText("CreationCountText"));
 			int GetTemplateBindCount() => int.Parse(_app.GetText("BindCountText"));
 			int GetContainerCreationCount() => int.Parse(_app.GetText("CreationCount2Text"));
+
+			void AdvanceAutomation(string automationStep)
+			{
+				_app.FastTap(AutomateButton);
+				_app.WaitForText(StatusText, automationStep);
+				TakeScreenshot(automationStep);
+			}
 		}
 
 		private void ClickCheckBoxAt(int i)
