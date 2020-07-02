@@ -30,6 +30,35 @@ This difference is particularly visible for custom panel implementations.
 
 The implementations of the ListView for iOS and Android use the native controls for performance reasons, see the [ListViewBase implementation documentation](controls/ListViewBase.md#internal-implementation).
 
+## Styles
+
+Uno Platform implements styling in XAML as per the [Microsoft UWP documentation](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/xaml-styles). You can declare a `Style` as a resource globally or inline. Uno supports implicit and explicit styling. However, in versions of Uno Platform before 3.0, resources cannot be declared as implicit and inline.
+
+For example, this `Style` works and will apply a red background to a `ListViewItem`.
+
+```xml
+<Page.Resources>
+  <Style TargetType="ListViewItem" x:Key="redlistviewitem">
+    <Setter Property="Background"  Value="Red"></Setter>
+  </Style>
+</Page.Resources>
+
+ <ListView ItemContainerStyle="{StaticResource redlistviewitem}"  />
+```
+However, this XAML will cause a compilation error
+
+```xml
+<Page.Resources>
+  <Style TargetType="ListViewItem" >
+    <Setter Property="Background"  Value="Red"></Setter>
+  </Style>
+</Page.Resources>
+```
+
+> Implicit styles in inline resources are not supported (Page, Line 1:2)
+
+To resolve the issue, add an `x:Key` to the `Style` or move the `Style` to a global XAML location. This issue [has been fixed in V3](https://github.com/unoplatform/uno/pull/1766). At the time of writing, V3 is not in release mode.
+
 ## Themes
 
 `FrameworkElement.RequestedTheme` is not supported yet. The `Application.Current.RequestedTheme` property
