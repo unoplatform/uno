@@ -15,7 +15,7 @@ pr:
 resources:
   containers:
   - container: nv-bionic-wasm
-    image: unoplatform/wasm-build:2.0
+    image: unoplatform/wasm-build:2.1.1
 
 variables:
   windowsVMImage: 'windows-2019'
