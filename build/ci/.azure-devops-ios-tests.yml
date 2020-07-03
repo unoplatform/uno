@@ -89,3 +89,27 @@ jobs:
     xCodeRoot: ${{ parameters.xCodeRoot }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Snaphot_Tests_Group_03'
+    JobDisplayName: 'iOS Snaphot Tests Group 03'
+    JobTimeoutInMinutes: 45
+    vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: true
+    UITEST_SNAPSHOTS_GROUP: 02
+    xCodeRoot: ${{ parameters.xCodeRoot }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Snaphot_Tests_Group_04'
+    JobDisplayName: 'iOS Snaphot Tests Group 04'
+    JobTimeoutInMinutes: 45
+    vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: true
+    UITEST_SNAPSHOTS_GROUP: 03
+    xCodeRoot: ${{ parameters.xCodeRoot }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+
