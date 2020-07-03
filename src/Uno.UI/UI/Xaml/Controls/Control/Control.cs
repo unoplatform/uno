@@ -57,6 +57,30 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override bool IsSimpleLayout => true;
 
+		private void SetDefaultForeground()
+		{
+			//override the default value from dependency property based on application theme
+			//and requested element theme
+			if (RequestedTheme == ElementTheme.Default)
+			{
+				this.SetValue(
+					ForegroundProperty,
+					Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
+						? SolidColorBrushHelper.Black
+						: SolidColorBrushHelper.White,
+					DependencyPropertyValuePrecedences.DefaultValue);
+			}
+			else
+			{
+				this.SetValue(
+					ForegroundProperty,
+					RequestedTheme == ElementTheme.Light
+						? SolidColorBrushHelper.Black
+						: SolidColorBrushHelper.White,
+					DependencyPropertyValuePrecedences.DefaultValue);
+			}
+		}
+		
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 
 		internal override void UpdateThemeBindings()

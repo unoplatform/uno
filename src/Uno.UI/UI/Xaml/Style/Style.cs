@@ -69,7 +69,19 @@ namespace Windows.UI.Xaml
 				ResourceResolver.PushNewScope(_xamlScope);
 				foreach (var pair in flattenedSetters)
 				{
-					pair.Value(o);
+					ResourceResolver.PushNewScope(_xamlScope);
+					foreach (var pair in flattenedSetters)
+					{
+						pair.Value(o);
+					}
+
+					var elementTheme = ElementTheme.Default;
+					if (o is FrameworkElement frameworkElement)
+					{
+						elementTheme = frameworkElement.RequestedTheme;
+					}
+					// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
+					(o as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: false, elementTheme);
 				}
 
 				// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values

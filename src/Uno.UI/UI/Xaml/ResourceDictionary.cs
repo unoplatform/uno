@@ -310,7 +310,7 @@ namespace Windows.UI.Xaml
 		private ResourceDictionary GetThemeDictionary(in ResourceKey theme)
 		{
 			object dict = null;
-			if (_themeDictionaries?.TryGetValue(theme, out dict, shouldCheckSystem: false) ?? false)
+			if (_themeDictionaries?.TryGetValue(themeKey, out dict, shouldCheckSystem: false, ElementTheme.Default) ?? false)
 			{
 				return dict as ResourceDictionary;
 			}

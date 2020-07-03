@@ -176,7 +176,11 @@ namespace Windows.UI.Xaml
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
 		public void ApplyCompiledBindings()
-			=> _properties.ApplyCompiledBindings();
+		{
+			_properties.ApplyCompiledBindings();
+			InvokeCompiledBindingsCallbacks();
+			UpdateResourceBindings(isThemeChangedUpdate: false, ElementTheme.Default);
+		}
 
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.

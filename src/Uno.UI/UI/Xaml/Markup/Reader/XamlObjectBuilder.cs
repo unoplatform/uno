@@ -499,7 +499,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					.Flatten(i => (i.Parent as FrameworkElement))
 					.Select(fe =>
 					{
-						if (fe.Resources.TryGetValue(keyName, out var resource, shouldCheckSystem: false))
+						if (fe.Resources.TryGetValue(keyName, out var resource, shouldCheckSystem: false, fe.RequestedTheme))
 						{
 							return resource;
 						}
