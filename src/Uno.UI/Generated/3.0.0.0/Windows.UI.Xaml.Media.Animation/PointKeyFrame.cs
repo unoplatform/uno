@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			typeof(global::Windows.UI.Xaml.Media.Animation.PointKeyFrame), 
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 		#endif
-		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		protected PointKeyFrame() : base()
 		{

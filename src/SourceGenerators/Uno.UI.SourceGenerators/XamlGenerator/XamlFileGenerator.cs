@@ -4255,7 +4255,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.Append("() => ");
 						// This case is to support the layout switching for the ListViewBaseLayout, which is not
 						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
-						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
+						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
 
 						BuildChildThroughSubclass(writer, contentOwner, returnType);
 
@@ -4458,7 +4458,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (phases.Any())
 				{
 					var phasesValue = phases.OrderBy(i => i).Select(s => s.ToString()).JoinBy(",");
-					return $"Uno.UI.FrameworkElementHelper.SetDataTemplateRenderPhases({ownerVariable}, new []{{{phasesValue}}});";
+					return $"global::Uno.UI.FrameworkElementHelper.SetDataTemplateRenderPhases({ownerVariable}, new []{{{phasesValue}}});";
 				}
 			}
 
@@ -4727,7 +4727,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (hasContextConstructor)
 					{
-						return "(Uno.UI.ContextHelper.Current)";
+						return "(global::Uno.UI.ContextHelper.Current)";
 					}
 				}
 			}

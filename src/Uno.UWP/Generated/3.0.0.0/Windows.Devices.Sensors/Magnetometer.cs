@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-	#if false || false || NET461 || false || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Magnetometer 
@@ -122,7 +122,7 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Magnetometer> Magnetometer.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Sensors.Magnetometer GetDefault()
 		{

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-	#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HingeAngleSensor 
@@ -61,7 +61,7 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member string HingeAngleSensor.GetDeviceSelector() is not implemented in Uno.");
 		}
 		#endif
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleSensor> GetDefaultAsync()
 		{

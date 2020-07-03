@@ -594,6 +594,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateDimensionProperties()
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug)
+				&& (ActualHeight != ViewportHeight || ActualWidth != ViewportWidth)
+			)
+			{
+				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
+			}
+
 			ViewportHeight = this.ActualHeight;
 			ViewportWidth = this.ActualWidth;
 
@@ -602,11 +609,6 @@ namespace Windows.UI.Xaml.Controls
 
 			ScrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
 			ScrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ViewportHeight}, ViewportWidth={ViewportWidth}");
-			}
 		}
 
 		/// <summary>
@@ -800,6 +802,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>true if the view is changed; otherwise, false.</returns>
 		public bool ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"ChangeView(horizontalOffset={horizontalOffset}, verticalOffset={verticalOffset}, zoomFactor={zoomFactor}, disableAnimation={disableAnimation})");
+			}
+
 			var verticalOffsetChanged = verticalOffset != null && verticalOffset != VerticalOffset;
 			var horizontalOffsetChanged = horizontalOffset != null && horizontalOffset != HorizontalOffset;
 

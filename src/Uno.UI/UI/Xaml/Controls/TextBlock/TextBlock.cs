@@ -31,6 +31,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
+		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+
 
 #if !__WASM__
 		public TextBlock()
@@ -395,8 +397,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnForegroundChanged()
 		{
-			OnForegroundChangedPartial();
-			InvalidateTextBlock();
+			void refreshForeground()
+			{
+				OnForegroundChangedPartial();
+				InvalidateTextBlock();
+			}
+
+			_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
 		}
 
 		partial void OnForegroundChangedPartial();
@@ -424,11 +431,41 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnTextAlignmentChanged()
 		{
+			HorizontalTextAlignment = TextAlignment;
 			OnTextAlignmentChangedPartial();
 			InvalidateTextBlock();
 		}
 
 		partial void OnTextAlignmentChangedPartial();
+
+#endregion
+
+#region HorizontalTextAlignment Dependency Property
+
+		public new TextAlignment HorizontalTextAlignment
+		{
+			get { return (TextAlignment)this.GetValue(HorizontalTextAlignmentProperty); }
+			set { this.SetValue(HorizontalTextAlignmentProperty, value); }
+		}
+
+		public static DependencyProperty HorizontalTextAlignmentProperty { get; } =
+			DependencyProperty.Register(
+				"HorizontalTextAlignment",
+				typeof(TextAlignment),
+				typeof(TextBlock),
+				new PropertyMetadata(
+					defaultValue: TextAlignment.Left,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnHorizontalTextAlignmentChanged()
+				)
+			);
+
+		// This property provides the same functionality as the TextAlignment property.
+		// If both properties are set to conflicting values, the last one set is used.
+		// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.textbox.horizontaltextalignment#remarks
+		private void OnHorizontalTextAlignmentChanged()
+		{
+			TextAlignment = HorizontalTextAlignment;
+		}
 
 #endregion
 
