@@ -174,6 +174,14 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class Binding
+		{
+			/// <summary>
+			/// Determines if the binding engine should ignore identical references in binding paths.
+			/// </summary>
+			public static bool IgnoreINPCSameReferences { get; set; } = false;
+		}
+
 		public static class Popup
 		{
 #if __ANDROID__
