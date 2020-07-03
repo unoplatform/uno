@@ -355,11 +355,11 @@ namespace Uno.UI.DataBinding
 
 				System.ComponentModel.PropertyChangedEventHandler handler = (s, args) =>
 				{
-					if (args.PropertyName == propertyName)
+					if (args.PropertyName == propertyName || args.PropertyName == string.Empty)
 					{
 						if (typeof(BindingPath).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 						{
-							typeof(BindingPath).Log().Debug("Property changed for {0} on [{1}]".InvariantCultureFormat(propertyName, dataContextReference.Target?.GetType()));
+							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{dataContextReference.Target?.GetType()}]");
 						}
 
 						if (!newValueActionWeak.IsDisposed)
@@ -430,8 +430,18 @@ namespace Uno.UI.DataBinding
 				get => _dataContextWeakStorage?.Target;
 				set
 				{
-					if (!_disposed && DependencyObjectStore.AreDifferent(DataContext, value))
+					if (!_disposed)
 					{
+						// Historically, Uno was processing property changes using INPC. Since the inclusion of DependencyObject
+						// values changes are now filtered by DependencyProperty updates, making equality updates at this location
+						// detrimental to the use of INPC events processing.
+						// In case of an INPC, the bindings engine must reevaluate the path completely from the raising point, regardless
+						// of the reference being changed.
+						if(FeatureConfiguration.Binding.IgnoreINPCSameReferences && !DependencyObjectStore.AreDifferent(DataContext, value))
+						{
+							return;
+						}
+
 						var weakDataContext = WeakReferencePool.RentWeakReference(this, value);
 						SetWeakDataContext(weakDataContext);
 					}
