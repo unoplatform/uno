@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-
-using ViewGroup = Windows.UI.Xaml.UIElement;
-using View = Windows.UI.Xaml.UIElement;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI
 {
@@ -18,8 +17,8 @@ namespace Uno.UI
 		/// <param name="childLevelLimit">Defines the max depth, null if not limit (Should never be used)</param>
 		/// <param name="includeCurrent">Indicates if the current view should also be tested or not.</param>
 		/// <returns></returns>
-		public static T FindFirstChild<T>(this ViewGroup view, int? childLevelLimit = null, bool includeCurrent = true)
-			where T : View
+		public static T FindFirstChild<T>(this UIElement view, int? childLevelLimit = null, bool includeCurrent = true)
+			where T : UIElement
 		{
 			return view.FindFirstChild<T>(null, childLevelLimit, includeCurrent);
 		}
@@ -33,34 +32,90 @@ namespace Uno.UI
 		/// <param name="childLevelLimit">Defines the max depth, null if not limit (Should never be used)</param>
 		/// <param name="includeCurrent">Indicates if the current view should also be tested or not.</param>
 		/// <returns></returns>
-		public static T FindFirstChild<T>(this ViewGroup view, Func<T, bool> selector, int? childLevelLimit = null, bool includeCurrent = true)
-			where T : View
+		public static T FindFirstChild<T>(this UIElement view, Func<T, bool> selector, int? childLevelLimit = null, bool includeCurrent = true)
+			where T : UIElement
 		{
-			Func<View, bool> childSelector;
+			Func<UIElement, bool> childSelector;
 			if (selector == null)
 			{
 				childSelector = child => child is T;
 			}
 			else
 			{
-				childSelector = child =>
-				{
-					var t = child as T;
-					return t != null && selector(t);
-				};
+				childSelector = child => child is T t && selector(t);
 			}
 
-			if (includeCurrent
-				&& childSelector(view))
+			if (includeCurrent && childSelector(view))
 			{
 				return view as T;
 			}
 
-			var maxDepth = childLevelLimit.HasValue
-				? childLevelLimit.Value
-				: Int32.MaxValue;
+			var maxDepth = childLevelLimit ?? int.MaxValue;
 
 			return (T)view.EnumerateAllChildren(childSelector, maxDepth).FirstOrDefault();
+		}
+
+		public static string ShowDescendants(this UIElement view, StringBuilder sb = null, string spacing = "", UIElement viewOfInterest = null)
+		{
+			sb = sb ?? new StringBuilder();
+			AppendView(view);
+			spacing += "  ";
+			foreach (var child in view._children)
+			{
+				ShowDescendants(child, sb, spacing, viewOfInterest);
+			}
+
+			return sb.ToString();
+
+			StringBuilder AppendView(UIElement innerView)
+			{
+				var name = (innerView as IFrameworkElement)?.Name;
+				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
+
+				var uiElement = innerView as UIElement;
+				var desiredSize = uiElement?.DesiredSize.ToString() ?? "<native/unk>";
+				var fe = innerView as IFrameworkElement;
+				var layoutSlot = innerView.LayoutSlot;
+
+				return sb
+					.Append(spacing)
+					.Append(innerView == viewOfInterest ? "*>" : ">")
+					.Append(innerView + namePart)
+					.Append($"-({layoutSlot.Width}x{layoutSlot.Height})@({layoutSlot.X},{layoutSlot.Y})")
+					.Append($" d:{desiredSize}")
+#if __IOS__
+						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
+#endif
+					.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+					.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
+					.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
+					.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
+					.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}" : "")
+					.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
+					.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
+					.AppendLine();
+			}
+		}
+
+
+		public static string ShowLocalVisualTree(this UIElement element, int fromHeight = 0)
+		{
+			var root = element;
+
+			for (int i = 0; i < fromHeight; i++)
+			{
+				var parent = root.GetParent() as UIElement;
+				if (parent != null)
+				{
+					root = parent;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			return ShowDescendants(root, viewOfInterest: element);
 		}
 	}
 }
