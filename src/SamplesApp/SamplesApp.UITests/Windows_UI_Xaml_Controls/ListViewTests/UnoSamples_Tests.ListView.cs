@@ -422,6 +422,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser, Platform.iOS)]
 		public void ListView_ObservableCollection_Creation_Count()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ListView.ListView_ObservableCollection_CreationCount");
@@ -432,7 +433,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(StatusText);
 
 			AdvanceAutomation("Added");
-
 			AdvanceAutomation("Scrolled1");
 
 			var expectedTemplateCreationCount = GetTemplateCreationCount();
@@ -440,13 +440,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			var expectedContainerCreationCount = GetContainerCreationCount();
 
 			AdvanceAutomation("Scrolled2");
-
-			if (AppInitializer.GetLocalPlatform() == Platform.Android)
-			{
-				// For some reason Android creates another container on the second scroll (though not for further scrolling)
-				expectedTemplateCreationCount = GetTemplateCreationCount();
-				expectedContainerCreationCount = GetContainerCreationCount();
-			}
 
 			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
 			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
