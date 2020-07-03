@@ -12,15 +12,13 @@ namespace Windows.UI.Xaml.Controls
 		private readonly List<UIElement> _elements;
 		private readonly FrameworkElement _owner;
 
-		private readonly UIElement _owner;
-
 		public UIElementCollection(FrameworkElement view)
 		{
 			_elements = view._children;
 			_owner = view;
 		}
 
-		protected override void AddCore(View item) => _owner.AddChild(item);
+		private void AddCore(View item) => _owner.AddChild(item);
 
 		private IEnumerable<View> ClearCore()
 		{
@@ -48,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private int IndexOfCore(View item) => _elements.IndexOf(item);
 
-		protected override void InsertCore(int index, View item) => _owner.AddChild(item, index);
+		private void InsertCore(int index, View item) => _owner.AddChild(item, index);
 
 		private void MoveCore(uint oldIndex, uint newIndex)
 		{
@@ -60,12 +58,12 @@ namespace Windows.UI.Xaml.Controls
 			var item = _elements.ElementAtOrDefault(index);
 			if (item != null)
 			{
-				_view.RemoveChild(item);
+				_owner.RemoveChild(item);
 			}
 			return item;
 		}
 
-		protected override bool RemoveCore(View item) => _owner.RemoveChild(item) != null;
+		private bool RemoveCore(View item) => _owner.RemoveChild(item) != null;
 
 		private View SetAtIndexCore(int index, View value) => _elements[index] = value;
 	}

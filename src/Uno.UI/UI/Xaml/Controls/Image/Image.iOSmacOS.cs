@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void SetImage(UIImage image)
+		private void SetImage(_UIImage image)
 		{
 			using (
 				_imageTrace.WriteEventActivity(
