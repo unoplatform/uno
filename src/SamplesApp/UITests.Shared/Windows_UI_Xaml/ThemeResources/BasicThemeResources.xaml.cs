@@ -29,7 +29,7 @@ namespace UITests.Shared.Windows_UI_Xaml.ThemeResources
 			set
 			{
 				SetValue(LocalThemeProperty, value);
-				RequestedTheme = value;
+				RootGrid.RequestedTheme = value;
 			}
 		}
 

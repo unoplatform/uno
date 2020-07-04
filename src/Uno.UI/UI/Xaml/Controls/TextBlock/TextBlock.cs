@@ -393,6 +393,44 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
+
+		private void SetDefaultForeground()
+		{
+			//override the default value from dependency property based on application theme
+			//and requested element theme
+			if (RequestedTheme == ElementTheme.Default)
+			{
+				// Ensure the implicit style is unset before setting application default
+				this.SetValue(
+					ForegroundProperty,
+					DependencyProperty.UnsetValue,
+					DependencyPropertyValuePrecedences.ImplicitStyle);
+
+				this.SetValue(
+					ForegroundProperty,
+					Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
+						? SolidColorBrushHelper.Black
+						: SolidColorBrushHelper.White,
+					DependencyPropertyValuePrecedences.DefaultStyle);
+			}
+			else
+			{
+				// When requested theme is set, it should override the inherited value.
+				this.SetValue(
+					ForegroundProperty,
+					RequestedTheme == ElementTheme.Light
+						? SolidColorBrushHelper.Black
+						: SolidColorBrushHelper.White,
+					DependencyPropertyValuePrecedences.ImplicitStyle);
+			}
+		}
+
+		internal override void UpdateThemeBindings()
+		{
+			base.UpdateThemeBindings();
+			SetDefaultForeground();
+		}
+
 		private void OnForegroundChanged()
 		{
 			void refreshForeground()

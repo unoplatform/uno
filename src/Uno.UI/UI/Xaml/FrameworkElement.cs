@@ -486,8 +486,8 @@ namespace Windows.UI.Xaml
 				// Set application theme as actual
 				this.SetValue(
 					ActualThemeProperty,
-					Application.Current.RequestedTheme == ApplicationTheme.Light ?
-						ElementTheme.Light : ElementTheme.Dark,
+					Application.Current?.RequestedTheme == ApplicationTheme.Dark ?
+						ElementTheme.Dark : ElementTheme.Light,
 					DependencyPropertyValuePrecedences.DefaultValue);
 			}
 			else

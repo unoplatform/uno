@@ -3,8 +3,7 @@
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  mc:Ignorable="d"
-	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	  mc:Ignorable="d">
 
 	<Page.Resources>
 		<ResourceDictionary>
@@ -32,91 +31,101 @@
 							 Color="Green" />
 		</ResourceDictionary>
 	</Page.Resources>
-
-	<StackPanel Spacing="10" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<TextBlock>
+	<Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<StackPanel Spacing="10">
+			<TextBlock>
 			ApplicationTheme=<Run Text="{x:Bind ApplicationTheme}" />
 			<LineBreak />
 			LocalTheme=<Run Text="{Binding LocalTheme}" />
 			<LineBreak />
 			ParentTheme=<Run Text="{Binding ParentTheme}" />
-		</TextBlock>
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
-			<StackPanel Spacing="10"
+			</TextBlock>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<StackPanel Spacing="10"
 						RequestedTheme="Default">
-				<Border Width="300"
+					<Border Width="300"
 						Height="50"
 						Background="{ThemeResource LocalThemeColor}">
-					<TextBlock>{ThemeResource} on a themed resource</TextBlock>
-				</Border>
-				<Border Width="300"
+						<TextBlock>{ThemeResource} on a themed resource</TextBlock>
+					</Border>
+					<Border Width="300"
 						Height="50"
 						Background="{StaticResource LocalThemeColor}">
-					<TextBlock>{StaticResource} on a themed resource</TextBlock>
-				</Border>
-				<Border Width="300"
+						<TextBlock>{StaticResource} on a themed resource</TextBlock>
+					</Border>
+					<Border Width="300"
 						Height="50"
 						Background="{ThemeResource LocalThemeColor2}">
-					<TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
-				</Border>
-				<Border Width="300"
+						<TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
+					</Border>
+					<Border Width="300"
 						Height="50"
 						Background="{StaticResource LocalThemeColor2}">
-					<TextBlock>{StaticResource} on a static resource (green)</TextBlock>
-				</Border>
-			</StackPanel>
-			<StackPanel Spacing="10"
+						<TextBlock>{StaticResource} on a static resource (green)</TextBlock>
+					</Border>
+				</StackPanel>
+				<StackPanel Spacing="10"
 						RequestedTheme="Dark"
 						Grid.Column="1">
-				<Border Width="300"
+					<Border x:Name="TestThemeBorder" Width="300"
 						Height="50"
 						Background="{ThemeResource LocalThemeColor}">
-					<TextBlock>{ThemeResource} on a themed resource</TextBlock>
-				</Border>
-				<Border Width="300"
+						<TextBlock>{ThemeResource} on a themed resource</TextBlock>
+					</Border>
+					<Border Width="300"
 						Height="50"
 						Background="{StaticResource LocalThemeColor}">
-					<TextBlock>{StaticResource} on a themed resource</TextBlock>
-				</Border>
-				<Border Width="300"
+						<TextBlock>{StaticResource} on a themed resource</TextBlock>
+					</Border>
+					<Border Width="300"
 						Height="50"
 						Background="{ThemeResource LocalThemeColor2}">
-					<TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
-				</Border>
-				<Border Width="300"
+						<TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
+					</Border>
+					<Border Width="300"
 						Height="50"
 						Background="{StaticResource LocalThemeColor2}">
-					<TextBlock>{StaticResource} on a static resource (green)</TextBlock>
-				</Border>
-			</StackPanel>
-			<StackPanel Spacing="10"
+						<TextBlock>{StaticResource} on a static resource (green)</TextBlock>
+					</Border>
+				</StackPanel>
+				<StackPanel Spacing="10"
 						RequestedTheme="Light"
 						Grid.Column="2">
-				<Border Width="300"
+					<Border Width="300"
 						Height="50"
 						Background="{ThemeResource LocalThemeColor}">
-					<TextBlock>{ThemeResource} on a themed resource</TextBlock>
-				</Border>
-				<Border Width="300"
+						<TextBlock>{ThemeResource} on a themed resource</TextBlock>
+					</Border>
+					<Border Width="300"
 						Height="50"
 						Background="{StaticResource LocalThemeColor}">
-					<TextBlock>{StaticResource} on a themed resource</TextBlock>
-				</Border>
-				<Border Width="300"
+						<TextBlock>{StaticResource} on a themed resource</TextBlock>
+					</Border>
+					<Border Width="300"
 						Height="50"
 						Background="{ThemeResource LocalThemeColor2}">
-					<TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
-				</Border>
-				<Border Width="300"
+						<TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
+					</Border>
+					<Border Width="300"
 						Height="50"
 						Background="{StaticResource LocalThemeColor2}">
-					<TextBlock>{StaticResource} on a static resource (green)</TextBlock>
-				</Border>
+						<TextBlock>{StaticResource} on a static resource (green)</TextBlock>
+					</Border>
+				</StackPanel>
+			</Grid>
+			<TextBlock>Blue=dark, Yellow=Light, Red=High Contrast</TextBlock>
+			<StackPanel Orientation="Horizontal">
+				<Button Click="LocalDefault">Local Default</Button>
+				<Button Click="LocalDark">Local Dark</Button>
+				<Button Click="LocalLight">Local Light</Button>
+				<Button Click="ParentDefault">Parent Default</Button>
+				<Button Click="ParentDark">Parent Dark</Button>
+				<Button Click="ParentLight">Parent Light</Button>
 			</StackPanel>
 		</Grid>
 		<Image Source="ms-appx:///Assets/ThemeTestImage.png" Width="200" Stretch="UniformToFill"/>
@@ -130,5 +139,6 @@
 			<Button Click="ParentLight">Parent Light</Button>
 		</StackPanel>
 
-	</StackPanel>
+		</StackPanel>
+	</Grid>
 </Page>
