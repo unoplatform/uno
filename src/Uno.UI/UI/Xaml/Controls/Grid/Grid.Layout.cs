@@ -43,6 +43,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private Memory<DoubleRange> _calculatedRows;
 		private Memory<DoubleRange> _calculatedColumns;
+		private bool _considerStarColumnsAsAuto;
+		private bool _considerStarRowsAsAuto;
 
 		private Memory<Column> GetColumns(bool considerStarAsAuto)
 		{
@@ -154,11 +156,11 @@ namespace Windows.UI.Xaml.Controls
 			var spacingSize = new Size(ColumnSpacing * (definedColumns.Length - 1), RowSpacing * (definedRows.Length - 1));
 			availableSize = availableSize.Subtract(spacingSize);
 
-			var considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
-			var considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
+			_considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
+			_considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
 
-			var columns = GetColumns(considerStarColumnsAsAuto).Span;
-			var rows = GetRows(considerStarRowsAsAuto).Span;
+			var columns = GetColumns(_considerStarColumnsAsAuto).Span;
+			var rows = GetRows(_considerStarRowsAsAuto).Span;
 
 			Size size;
 			if (!TryMeasureUsingFastPath(availableSize, columns, definedColumns, rows, definedRows, out size))
@@ -216,11 +218,8 @@ namespace Windows.UI.Xaml.Controls
 				.Subtract(borderAndPaddingSize)
 				.Subtract(spacingSize);
 
-			var considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
-			var considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
-
-			var columns = GetColumns(considerStarColumnsAsAuto).Span;
-			var rows = GetRows(considerStarRowsAsAuto).Span;
+			var columns = GetColumns(_considerStarColumnsAsAuto).Span;
+			var rows = GetRows(_considerStarRowsAsAuto).Span;
 
 			var positions = GetPositions(columns.Length, rows.Length);
 
