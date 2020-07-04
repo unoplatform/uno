@@ -51,9 +51,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var rd = new ResourceDictionary();
 
-			//var retrieved = rd["Nope"]; //Throws on UWP
-
-			;
+			Assert.ThrowsException<KeyNotFoundException>(() => rd["Nope"]); //Throws on UWP
 		}
 
 		[TestMethod]
@@ -202,7 +200,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_Has_Multiple_Themes()
 		{
 #if !NETFX_CORE
-			UnitTestsApp.App.EnsureApplication();			
+			UnitTestsApp.App.EnsureApplication();
 #endif
 
 			var rd = new ResourceDictionary();
