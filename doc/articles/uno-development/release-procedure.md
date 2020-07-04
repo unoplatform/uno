@@ -1,6 +1,6 @@
 # Uno.UI release procedure
 
-Uno.UI uses [GitVersion])(https://gitversion.readthedocs.io/en/latest/) for its versioning, in `mainline` mode for the `release/stable` branches, and **ContinuousDeployment** for the `master` branch.
+Uno.UI uses [GitVersion](https://gitversion.readthedocs.io/en/latest/) for its versioning, in `mainline` mode for the `release/stable` branches, and **ContinuousDeployment** for the `master` branch.
 
 Tagging is the main driver for planning releases.
 

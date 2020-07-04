@@ -243,7 +243,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
     ```
 
     > [!IMPORTANT]
-    > We can bring in [Platform-Specific namespaces]((platform-specific-xaml.md)) like shown above to specifically set properties for a specific platform.
+    > We can bring in [Platform-Specific namespaces](platform-specific-xaml.md) like shown above to specifically set properties for a specific platform.
 
 1. Now we will add the `StringFormatConverter` we created earlier to our Page Resources as shown below:
 
