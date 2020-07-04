@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeControl()
 		{
-			UpdateForeground();
+			UpdateDefaultForeground();
 			SubscribeToOverridenRoutedEvents();
 			OnIsFocusableChanged();
 
@@ -57,28 +57,18 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override bool IsSimpleLayout => true;
 
-		private void UpdateForeground()
+		private void UpdateDefaultForeground()
 		{
-			//override the default value from dependency property based on application theme
-			//and requested element theme
-			if (RequestedTheme == ElementTheme.Default)
+			// override the default value from dependency property based on actual theme
+			if (ActualTheme == ElementTheme.Default)
 			{
-				this.SetValue(
-					ForegroundProperty,
-					Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
-						? SolidColorBrushHelper.Black
-						: SolidColorBrushHelper.White,
-					DependencyPropertyValuePrecedences.DefaultValue);
+				throw new InvalidOperationException("Actual theme may not be default");
 			}
-			else
-			{
-				this.SetValue(
-					ForegroundProperty,
-					RequestedTheme == ElementTheme.Light
-						? SolidColorBrushHelper.Black
-						: SolidColorBrushHelper.White,
-					DependencyPropertyValuePrecedences.DefaultValue);
-			}
+			this.SetValue(
+				ForegroundProperty,
+				ActualTheme == ElementTheme.Light ?
+					SolidColorBrushHelper.Black : SolidColorBrushHelper.White,
+				DependencyPropertyValuePrecedences.DefaultValue);
 		}
 		
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
@@ -87,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.UpdateThemeBindings();
 
-			UpdateForeground();
+			UpdateDefaultForeground();
 		}
 
 		private protected override Type GetDefaultStyleKey() => DefaultStyleKey as Type;

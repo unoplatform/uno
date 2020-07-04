@@ -396,32 +396,53 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetDefaultForeground()
 		{
-			//override the default value from dependency property based on application theme
-			//and requested element theme
-			if (RequestedTheme == ElementTheme.Default)
+			// override the default value from dependency property based on actual theme
+			if (ActualTheme == ElementTheme.Default)
 			{
-				// Ensure the implicit style is unset before setting application default
-				this.SetValue(
-					ForegroundProperty,
-					DependencyProperty.UnsetValue,
-					DependencyPropertyValuePrecedences.ImplicitStyle);
+				throw new InvalidOperationException("Actual theme may not be default");
+			}
 
-				this.SetValue(
-					ForegroundProperty,
-					Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
-						? SolidColorBrushHelper.Black
-						: SolidColorBrushHelper.White,
-					DependencyPropertyValuePrecedences.DefaultStyle);
+			// find nearest parent with set Foreground or RequestedTheme
+			object candidate = this;
+			while (candidate != null)
+			{
+				if (candidate is FrameworkElement candidateFe)
+				{
+					if (candidateFe.RequestedTheme != ElementTheme.Default ||
+						candidateFe.GetCurrentHighestValuePrecedence(Control.ForegroundProperty) < DependencyPropertyValuePrecedences.Inheritance)
+					{
+						break;
+					}
+				}
+				candidate = candidate?.GetParent();
+			}
+
+			if (candidate != null)
+			{
+				var foregroundSource = (FrameworkElement)candidate;
+				if (foregroundSource.RequestedTheme != ElementTheme.Default)
+				{
+					this.SetValue(
+						ForegroundProperty,
+						foregroundSource.RequestedTheme == ElementTheme.Light ?
+							SolidColorBrushHelper.Black : SolidColorBrushHelper.White,
+						DependencyPropertyValuePrecedences.ImplicitStyle);
+				}
+				else
+				{
+					this.SetValue(
+						ForegroundProperty,
+						foregroundSource.GetValue(Control.ForegroundProperty),
+						DependencyPropertyValuePrecedences.ImplicitStyle);
+				}
 			}
 			else
 			{
-				// When requested theme is set, it should override the inherited value.
 				this.SetValue(
 					ForegroundProperty,
-					RequestedTheme == ElementTheme.Light
-						? SolidColorBrushHelper.Black
-						: SolidColorBrushHelper.White,
-					DependencyPropertyValuePrecedences.ImplicitStyle);
+					ActualTheme == ElementTheme.Light ?
+						SolidColorBrushHelper.Black : SolidColorBrushHelper.White,
+					DependencyPropertyValuePrecedences.DefaultValue);
 			}
 		}
 

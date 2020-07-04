@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml
 			var theme = ElementTheme.Default;
 			if(ActualInstance is FrameworkElement frameworkElement)
 			{
-				theme = frameworkElement.RequestedTheme;
+				theme = frameworkElement.ActualTheme;
 			}
 			UpdateResourceBindings(isThemeChangedUpdate: false, theme);
 		}
@@ -362,6 +362,12 @@ namespace Windows.UI.Xaml
 			{
 				throw new NotSupportedException($"Target {target?.GetType()} must be a DependencyObject");
 			}
+		}
+
+		public void SetResourceBinding(DependencyProperty dependencyProperty, object resourceKey, bool isTheme, object context)
+		{
+			var binding = new ResourceBinding(resourceKey, isTheme, context, _precedenceOverride ?? DependencyPropertyValuePrecedences.Local);
+			SetBinding(dependencyProperty, binding);
 		}
 
 		/// <summary>

@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml
 					var elementTheme = ElementTheme.Default;
 					if (o is FrameworkElement frameworkElement)
 					{
-						elementTheme = frameworkElement.RequestedTheme;
+						elementTheme = frameworkElement.ActualTheme;
 					}
 					// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
 					(o as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: false, elementTheme);
