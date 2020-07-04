@@ -70,7 +70,8 @@ export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/uitests-android-
 
 cd $BUILD_SOURCESDIRECTORY/build
 
-mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version 3.10.0
+export NUNIT_VERSION=3.11.1
+mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
@@ -78,11 +79,14 @@ mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 # required by Xamarin.UITest
 cd $UNO_UITEST_SCREENSHOT_PATH
 
-mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
+mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
+	--trace=Verbose \
+	--framework=mono \
 	--inprocess \
 	--agents=1 \
 	--workers=1 \
 	--result=$BUILD_SOURCESDIRECTORY/build/TestResult.xml \
+	--timeout=120000 \
 	--where "$TEST_FILTERS" \
 	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/$BUILDCONFIGURATION/net47/SamplesApp.UITests.dll \
 	|| true
