@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +20,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _eventSubscriptions = new SerialDisposable();
 
+		private ContentPresenter _headerContentPresenter;
 		private Thumb _switchThumb;
 		private FrameworkElement _switchKnob;
 		private FrameworkElement _switchKnobBounds;
@@ -187,13 +188,22 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty HeaderProperty =
-			DependencyProperty.Register("Header", typeof(object), typeof(ToggleSwitch), new PropertyMetadata(null)); 
+			DependencyProperty.Register("Header", typeof(object), typeof(ToggleSwitch), new PropertyMetadata(null, (s, e) => ((ToggleSwitch)s)?.OnHeaderChanged(e)));
+
+		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e)
+		{
+			if (_headerContentPresenter != null)
+			{
+				_headerContentPresenter.Visibility = e.NewValue != null ? Visibility.Visible : Visibility.Collapsed;
+			}
+		}
 		#endregion
 
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
 
+			_headerContentPresenter = GetTemplateChild("HeaderContentPresenter") as ContentPresenter;
 			_switchThumb = GetTemplateChild("SwitchThumb") as Thumb;
 			_switchKnob = GetTemplateChild("SwitchKnob") as FrameworkElement;
 			_switchKnobBounds = GetTemplateChild("SwitchKnobBounds") as FrameworkElement;
@@ -253,7 +263,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnDragCompleted(object sender, DragCompletedEventArgs e)
 		{
-			// If the user only drags the thumb by a few pixels before releasing it, 
+			// If the user only drags the thumb by a few pixels before releasing it,
 			// we interpret it as a Tap rather than a drag gesture.
 			// Note: We do not use the Tapped event as this offers a better sync between
 			//		 the drag state / events and the IsOn update.
