@@ -64,11 +64,19 @@ namespace Windows.UI.Xaml
 			return _values.ContainsKey(keyName);
 		}
 
+		/// <summary>
+		/// Adds a new entry to the ResourceDictionary.
+		/// </summary>
+		/// <param name="key">The object key for the resource to insert.</param>
+		/// <param name="value">The object value for the resource to insert.</param>
+		/// <returns>True if calling the method replaced a value that already existed for the key;
+		/// false if calling the method defined a new key.</returns>
 		public bool Insert(object key, object value)
 		{
-			_values[key] = value;
-			return true;
-		}
+			var existed = _values.ContainsKey(key);
+			Set(key, value);
+			return existed;
+		}		
 
 		public bool Remove(object key) => _values.Remove(key);
 
@@ -129,7 +137,20 @@ namespace Windows.UI.Xaml
 
 				return value;
 			}
-			set => Add(key, value);
+			set => Set(key, value);
+		}
+
+		private void Set(object key, object value)
+		{
+			if (value is ResourceInitializer resourceInitializer)
+			{
+				_hasUnmaterializedItems = true;
+				_values[key] = new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer);
+			}
+			else
+			{
+				_values[key] = value;
+			}
 		}
 
 		/// <summary>
