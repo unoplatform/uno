@@ -1,25 +1,12 @@
 # Guidelines for Code style
 
-There are a mixture of patterns within the codebase of Uno and in the interest to ensure the correct patterns proliferate this page serves as the projects north star. When you are resolving a bug or feature please refactor the surrounding code thus [leave the code cleaner than you found it](https://www.matheus.ro/2017/12/11/clean-code-boy-scout-rule/) whilst keeping the changes minimal:
+Uno uses EditorConfig ([here's our configuration](https://github.com/unoplatform/uno/blob/master/.editorconfig)) to maintain consistent coding styles and settings in our codebase, such as indent style, tab width, end of line characters, encoding, and more. Most IDEs should respect the `EditorConfig` settings by default when applying formatting. We typically observe the [Microsoft C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions) with one notable exception - Uno uses Tabs. If you install this [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=mynkow.FormatdocumentonSave) it will automatically format your contributions upon file save.
 
-> Some developers, when faced with fixing, or adding a feature to an open source project are under the mistaken impression that the first step before any fixing takes place, or before adding a new feature takes place is to make the code "easier for them" to work on.
->
-> "Easier for them" usually is a combination of renaming methods, fields, properties, locals; Refactoring of methods, classes; Gratuitous split of code in different files, or merging of code into a single file; Reorganization by alphabetical order, or functional order, or grouping functions closer to each other, or having helper methods first, or helper methods last. Changing indentation, aligning variables, or parameters or dozen other smaller changes.
->
-> This is *not how you contribute to an open source project*.
->
-> When you contribute fixes or new features to an open source project you should use the existing coding style, the existing coding patterns and stick by the active maintainer's choice for his code organization.
->
-> The maintainer is in for the long-haul, and has been working on this code for longer than you have. Chances are, he will keep doing this even after you have long moved into your next project.
->
-> Sending a maintainer a patch, or a pull request that consists of your "fix" mixed with a dozen renames, refactoring changes, variable renames, method renames, file splitting, layout changing code is not really a contribution, it is home work.
->
-> The maintainer now has to look at your mess of a patch and extract the actual improvement, wasting precious time that could have gone to something else. This sometimes negates the effort of your "contribution".
->
-> *Open Source Contribution Etiquette by Miguel de Icaza - https://tirania.org/blog/archive/2010/Dec-31.html*
+## Refactoring
 
+Pure refactoring for its own sake should generally be done in a separate, refactoring-only pull request, and you should generally open an issue to initiate discussion with the core team before you start such a refactoring, to determine if it's really appropriate. See [this blog post on Open Source Contribution Etiquette](https://tirania.org/blog/archive/2010/Dec-31.html) for some explanation of the reasons why. Consistently-observed conventions are essential to the longterm health of the codebase.
 
-Uno uses EditorConfig ([here's our configuration](https://github.com/unoplatform/uno/blob/master/.editorconfig)) to maintain consistent coding styles and settings in our codebase, such as indent style, tab width, end of line characters, encoding, and more. We typically observe the [Microsoft C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions) with one notable exception - Uno uses Tabs. If you install this [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=mynkow.FormatdocumentonSave) it will automatically format your contributions upon file save.
+Within a bugfix or enhancement PR, refactoring should be restricted to the relevant files, and it should respect the conventions of existing Uno code.
 
 ## Conventions
 
@@ -94,9 +81,3 @@ public class LocalSettings_Tests : SampleControlUITestBase
     }
 }
 ```
-
-## Runtime Tests
-
-## Performance Tests
-
-## Windows.UI Controls
