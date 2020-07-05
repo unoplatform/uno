@@ -415,7 +415,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 				candidate = candidate?.GetParent();
-			}
+			}			
 
 			if (candidate != null)
 			{
@@ -438,6 +438,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
+				// Unset the "implicit" value to ensure proper fallback 
+				this.SetValue(
+					ForegroundProperty,
+					DependencyProperty.UnsetValue,
+					DependencyPropertyValuePrecedences.ImplicitStyle);
+
 				this.SetValue(
 					ForegroundProperty,
 					ActualTheme == ElementTheme.Light ?

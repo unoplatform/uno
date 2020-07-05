@@ -23,16 +23,20 @@ using Uno.UI.Xaml;
 using Windows.UI.Xaml.Media;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
+using ViewGroup = Android.Views.ViewGroup;
 #elif XAMARIN_IOS_UNIFIED
 using View = UIKit.UIView;
+using ViewGroup = UIKit.UIView;	
 using UIKit;
 #elif __MACOS__
 using AppKit;
 using View = AppKit.NSView;
+using ViewGroup = AppKit.NSView;	
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
 using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml

@@ -38,11 +38,11 @@ namespace UITests.Shared.Windows_UI_Xaml.ThemeResources
 
 		public ElementTheme ParentTheme
 		{
-			get => ((FrameworkElement)Parent).RequestedTheme;
+			get => RequestedTheme;
 			set
 			{
 				SetValue(ParentThemeProperty, value);
-				((FrameworkElement) Parent).RequestedTheme = value;
+				RequestedTheme = value;
 			}
 		}
 
@@ -52,10 +52,10 @@ namespace UITests.Shared.Windows_UI_Xaml.ThemeResources
 
 		private void LocalLight(object sender, RoutedEventArgs e) => LocalTheme = ElementTheme.Light;
 
-		private void ParentDefault(object sender, RoutedEventArgs e) => LocalTheme = ElementTheme.Default;
+		private void ParentDefault(object sender, RoutedEventArgs e) => ParentTheme = ElementTheme.Default;
 
-		private void ParentDark(object sender, RoutedEventArgs e) => LocalTheme = ElementTheme.Dark;
+		private void ParentDark(object sender, RoutedEventArgs e) => ParentTheme = ElementTheme.Dark;
 
-		private void ParentLight(object sender, RoutedEventArgs e) => LocalTheme = ElementTheme.Light;
+		private void ParentLight(object sender, RoutedEventArgs e) => ParentTheme = ElementTheme.Light;
 	}
 }
