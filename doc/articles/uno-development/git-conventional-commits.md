@@ -29,7 +29,7 @@ Only certain _types_ are permitted, with the most common being:
 
  One scope with special meaning is `reg`, short for regression. This is used for fixes for bugs that weren't present in the most recent stable release.
 
- ### Breaking changes
+### Breaking changes
 
 Breaking changes are indicated by putting `BREAKING CHANGE:` at the start of the message body, for any commit type. Optionally they may be emphasised by appending a `!` after the type and scope. The message body should provide appropriate guidance for developers affected by the breaking change.
 
