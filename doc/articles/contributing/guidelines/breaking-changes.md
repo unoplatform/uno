@@ -17,7 +17,7 @@ Changes that break compatibility with the public API surface of UWP are generall
 
 ### Restoring cross-platform compatibility - ok, but discuss with core team
 
-In some cases, Uno's existing API is close to UWP, but not identical. (Hypothetical xample: a property with type `DependencyObject[]` on Uno, but type `IList<DependencyObject>` on UWP.) This is mostly the case for older code that was written before the use of [generated `NotImplemented` stubs](../../uno-development/uno-internals-overview.md#generated-notimplemented-stubs) and the `PackageDiff` tool, which act in combination to prevent these kinds of errors when implementing new features.
+In some cases, Uno's existing API is close to UWP, but not identical. (Hypothetical example: a property with type `DependencyObject[]` on Uno, but type `IList<DependencyObject>` on UWP.) This is mostly the case for older code that was written before the use of [generated `NotImplemented` stubs](../../uno-development/uno-internals-overview.md#generated-notimplemented-stubs) and the `PackageDiff` tool, which act in combination to prevent these kinds of errors when implementing new features.
 
 In these cases, we do want to align Uno with UWP, even at the expense of a breaking change. However, we tend to be more careful with when we merge these changes, compared to other bugfixes. We prefer to 'batch' many such breaking changes into a single stable release cycle, rather than wear out consumers' patience with a steady trickle of breaking changes each release.
 

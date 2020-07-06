@@ -23,7 +23,7 @@ Only certain _types_ are permitted, with the most common being:
  - `perf:` a commit that improves performance, without functional changes.
  - `chore:` a catch-all type for any other commits. For instance, if you're implementing a single feature and it makes sense to divide the work into multiple commits, you should mark one commit as `feat` and the rest as `chore`.
 
- ### Scope
+### Scope
 
  The _scope_ optionally provides extra context. If you're fixing a `ListView` bug, for example, you might use `fix(listview)`. 
 

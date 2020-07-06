@@ -9,7 +9,7 @@ Recall that the  Uno Platform is a cross-platform projection of Microsoft's UWP 
 Broadly then, Uno has two jobs to do:
 
 * duplicate the types provided by UWP, including views in the `Windows.UI.Xaml` namespace, and non-UI APIs such as `Windows.Foundation`, `Windows.Storage` etc
-* perform compile-time tasks related to non-C# aspects of the UWP app contract (parse Xaml files, process assets to platform-specific formats, etc)
+* perform compile-time tasks related to non-C# aspects of the UWP app contract (parse XAML files, process assets to platform-specific formats, etc)
 
 Like UWP, Uno provides access to the standard .NET libraries, via [Mono](https://www.mono-project.com/).
 
@@ -67,9 +67,9 @@ For more details on how Uno runs on each platform, see platform-specific informa
 
 ### Parsing Xaml to C# code
 
-This is the most substantial compile-time task that Uno carries out. Whenever an app or class library is built, all contained Xaml files are parsed and converted to C# files, which are then compiled in the usual way. (Note that this differs from UWP, which parses Xaml to Xaml Binary Format (.xbf) files which are processed by the UWP runtime.)
+This is the most substantial compile-time task that Uno carries out. Whenever an app or class library is built, all contained XAML files are parsed and converted to C# files, which are then compiled in the usual way. (Note that this differs from UWP, which parses XAML to XAML Binary Format (.xbf) files which are processed by the UWP runtime.)
 
-Uno uses existing libraries to parse a given Xaml file into a Xaml object tree, then Uno-specific code is responsible for interpreting the Xaml object tree as a tree of visual elements and their properties. Most of this takes place within the [`XamlFileGenerator`](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) class.
+Uno uses existing libraries to parse a given XAML file into a Xaml object tree, then Uno-specific code is responsible for interpreting the XAML object tree as a tree of visual elements and their properties. Most of this takes place within the [`XamlFileGenerator`](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) class.
 
 ### DependencyObject implementation generator
 

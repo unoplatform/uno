@@ -7,7 +7,7 @@ This article explores iOS-specific details of Uno's internals, with a focus on i
 `UIElement` in Uno is a native view on iOS, inheriting from the general `UIView` type. To elaborate, `UIElement`'s base classes are the following:
 `UIKit.UIView` → `Uno.UI.Controls.BindableUIView` → `Windows.UI.Xaml.UIElement`
 
-Recall that `UIElement` implements `DependencyObect` [as an interface](uno-internals-overview.md) in Uno.
+Recall that `UIElement` implements `DependencyObject` [as an interface](uno-internals-overview.md) in Uno.
 
 ## Layouting
 

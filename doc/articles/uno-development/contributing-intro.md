@@ -36,7 +36,7 @@ See the [Guidelines for creating tests](../contributing/guidelines/creating-test
 
 ## Creating a Pull Request
 
-Uno uses [Git](https://git-scm.com/) for version control, and GitHub to host the [main repository](https://github.com/unoplatform/Uno). You'll need to know the basics of Git to submit changes to Uno, but never fear, there are plenty of [great](https://git-scm.com/book/en/v2) [guides](https://guides.github.com/introduction/git-handbook/) [available](https://www.atlassian.com/git/tutorials).
+Uno uses [Git](https://git-scm.com/) for version control, and GitHub to host the [main repository](https://github.com/unoplatform/uno). You'll need to know the basics of Git to submit changes to Uno, but never fear, there are plenty of [great](https://git-scm.com/book/en/v2) [guides](https://guides.github.com/introduction/git-handbook/) [available](https://www.atlassian.com/git/tutorials).
 
 > [!IMPORTANT]
 > Before you commit your code, take a minute to familiarize yourself with the [Conventional Commits format](git-conventional-commits.md) Uno uses.
