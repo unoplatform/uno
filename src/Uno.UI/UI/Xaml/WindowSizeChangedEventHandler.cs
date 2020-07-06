@@ -6,5 +6,5 @@ using Windows.UI.Core;
 
 namespace Windows.UI.Xaml
 {
-	public delegate void WindowSizeChangedEventHandler(object sender, WindowSizeChangedEventArgs e);
+	public delegate void WindowSizeChangedEventHandler(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e);
 }
