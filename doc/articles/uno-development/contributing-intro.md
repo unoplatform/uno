@@ -24,7 +24,7 @@ Whether you're fixing a bug or working on a new feature, [inspecting the visual 
 
 ## Writing code in Uno
 
-See [Uno's code style conventions here](../contributing/guidelines/code-style.md).
+See [Uno's code conventions and common patterns here](../contributing/guidelines/code-style.md).
 
 ## Adding tests
 
