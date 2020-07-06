@@ -13,7 +13,7 @@ namespace Uno.UI.Samples.Helper
 #if NETFX_CORE && !HAS_UNO_WINUI
 			new Thickness(left, top, right, bottom);
 #else
-			ThicknessHelper.FromLengths(left, top, right, bottom)
+			ThicknessHelper.FromLengths(left, top, right, bottom);
 #endif
 
 		public static Thickness FromUniformLength(double uniformLength) =>
