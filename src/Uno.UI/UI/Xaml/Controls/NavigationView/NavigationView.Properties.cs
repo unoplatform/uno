@@ -300,7 +300,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(bool),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(
-				default(bool),
+				defaultValue: true,
 				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnPropertyChanged(e)
 			)
 		);
