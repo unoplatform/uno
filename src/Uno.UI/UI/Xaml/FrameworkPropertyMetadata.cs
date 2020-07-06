@@ -47,8 +47,45 @@ namespace Windows.UI.Xaml
 			object defaultValue,
 			FrameworkPropertyMetadataOptions options,
 			PropertyChangedCallback propertyChangedCallback,
+			BackingFieldUpdateCallback backingFieldUpdateCallback
+		) : base(defaultValue, propertyChangedCallback, backingFieldUpdateCallback)
+		{
+			Options = options;
+		}
+
+		internal FrameworkPropertyMetadata(
+			object defaultValue,
+			BackingFieldUpdateCallback backingFieldUpdateCallback
+		) : base(defaultValue, null, backingFieldUpdateCallback)
+		{
+		}
+
+		internal FrameworkPropertyMetadata(
+			object defaultValue,
+			FrameworkPropertyMetadataOptions options,
+			BackingFieldUpdateCallback backingFieldUpdateCallback
+		) : base(defaultValue, null, backingFieldUpdateCallback)
+		{
+			Options = options;
+		}
+
+		internal FrameworkPropertyMetadata(
+			object defaultValue,
+			FrameworkPropertyMetadataOptions options,
+			PropertyChangedCallback propertyChangedCallback,
 			CoerceValueCallback coerceValueCallback
-		) : base(defaultValue, propertyChangedCallback, coerceValueCallback)
+		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, null)
+		{
+			Options = options;
+		}
+
+		internal FrameworkPropertyMetadata(
+			object defaultValue,
+			FrameworkPropertyMetadataOptions options,
+			PropertyChangedCallback propertyChangedCallback,
+			CoerceValueCallback coerceValueCallback,
+			BackingFieldUpdateCallback backingFieldUpdateCallback
+		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, backingFieldUpdateCallback)
 		{
 			Options = options;
 		}
@@ -63,8 +100,16 @@ namespace Windows.UI.Xaml
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
 			PropertyChangedCallback propertyChangedCallback,
+			BackingFieldUpdateCallback backingFieldUpdateCallback
+		) : base(defaultValue, propertyChangedCallback, backingFieldUpdateCallback)
+		{
+		}
+
+		internal FrameworkPropertyMetadata(
+			object defaultValue,
+			PropertyChangedCallback propertyChangedCallback,
 			CoerceValueCallback coerceValueCallback
-		) : base(defaultValue, propertyChangedCallback, coerceValueCallback)
+		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, null)
 		{
 		}
 		
@@ -81,7 +126,7 @@ namespace Windows.UI.Xaml
 			PropertyChangedCallback propertyChangedCallback,
 			CoerceValueCallback coerceValueCallback,
 			UpdateSourceTrigger defaultUpdateSourceTrigger
-		) : base(defaultValue, propertyChangedCallback, coerceValueCallback)
+		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, null)
 		{
 			Options = options;
 			DefaultUpdateSourceTrigger = defaultUpdateSourceTrigger;

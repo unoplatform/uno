@@ -1,4 +1,5 @@
 ﻿declare const require: any;
+declare const config: any;
 
 namespace Uno.UI {
 	import AnimationData = Lottie.AnimationData;
@@ -242,7 +243,7 @@ namespace Uno.UI {
 			if (Lottie._player) {
 				action(Lottie._player);
 			} else {
-				require(["lottie"], (p: LottiePlayer) => {
+				require([`${config.uno_app_base}/lottie`], (p: LottiePlayer) => {
 					if (!Lottie._player) {
 						Lottie._player = p;
 					}

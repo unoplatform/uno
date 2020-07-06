@@ -27,26 +27,26 @@ namespace Uno.UWPSyncGenerator
 
 			if (mode == SyncMode || mode == AllMode)
 			{
-				new SyncGenerator().Build(@"..\..\..\..\Uno.Foundation", "Uno.Foundation", "Windows.Foundation.FoundationContract");
-				new SyncGenerator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Foundation.UniversalApiContract");
-				new SyncGenerator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Phone.PhoneContract");
-				new SyncGenerator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Networking.Connectivity.WwanContract");
-				new SyncGenerator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.ApplicationModel.Calls.CallsPhoneContract");
+				new SyncGenerator().Build(@"..\..\..\Uno.Foundation", "Uno.Foundation", "Windows.Foundation.FoundationContract");
+				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Foundation.UniversalApiContract");
+				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Phone.PhoneContract");
+				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Networking.Connectivity.WwanContract");
+				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.ApplicationModel.Calls.CallsPhoneContract");
 
 #if HAS_UNO_WINUI
-				new SyncGenerator().Build(@"..\..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI");
-				new SyncGenerator().Build(@"..\..\..\..\Uno.UI", "Uno.UI", "Microsoft.System");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.System");
 #else
-				new SyncGenerator().Build(@"..\..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
 #endif
 			}
 
 			if (mode == DocMode || mode == AllMode)
 			{
 #if HAS_UNO_WINUI
-				new DocGenerator().Build(@"..\..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI");
+				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI");
 #else
-				new DocGenerator().Build(@"..\..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
+				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
 #endif
 			}
 		}

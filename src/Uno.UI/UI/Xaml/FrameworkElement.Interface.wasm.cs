@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.Disposables;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -72,16 +73,16 @@ namespace Windows.UI.Xaml
 
 		#region Transitions Dependency Property
 
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		public static readonly DependencyProperty TransitionsProperty = CreateTransitionsProperty();
+
 		public TransitionCollection Transitions
 		{
-			get { return (TransitionCollection)this.GetValue(TransitionsProperty); }
-			set { this.SetValue(TransitionsProperty, value); }
+			get => GetTransitionsValue();
+			set => SetTransitionsValue(value);
 		}
 
-		public static readonly DependencyProperty TransitionsProperty =
-			DependencyProperty.Register("Transitions", typeof(TransitionCollection), typeof(FrameworkElement), new PropertyMetadata(null, OnTransitionsChanged));
-
-		private static void OnTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void OnTransitionsChanged(DependencyPropertyChangedEventArgs args)
 		{
 
 		}
@@ -103,16 +104,14 @@ namespace Windows.UI.Xaml
 
 		#region Background DependencyProperty
 
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		public static readonly DependencyProperty BackgroundProperty = CreateBackgroundProperty();
+
 		public Brush Background
 		{
-			get => (Brush)GetValue(BackgroundProperty);
-			set => SetValue(BackgroundProperty, value);
+			get => GetBackgroundValue();
+			set => SetBackgroundValue(value);
 		}
-
-		// Using a DependencyProperty as the backing store for Background.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BackgroundProperty =
-			DependencyProperty.Register("Background", typeof(Brush), typeof(FrameworkElement), new PropertyMetadata(null, (s, e) => ((FrameworkElement)s)?.OnBackgroundChanged(e)));
-
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -120,7 +119,32 @@ namespace Windows.UI.Xaml
 			var brush = e.NewValue as Brush;
 			SetBackgroundBrush(brush);
 
-			_backgroundSubscription.Disposable = Brush.AssignAndObserveBrush(brush, _ => SetBackgroundBrush(brush));
+			if (brush is ImageBrush imgBrush)
+			{
+				RecalculateBrushOnSizeChanged(false);
+				_backgroundSubscription.Disposable = imgBrush.Subscribe(img =>
+				{
+					switch (img.Kind)
+					{
+						case ImageDataKind.Empty:
+						case ImageDataKind.Error:
+							ResetStyle("background-color");
+							ResetStyle("background-image");
+							break;
+
+						case ImageDataKind.Base64:
+						case ImageDataKind.Url:
+						default:
+							ResetStyle("background-color");
+							SetStyle("background-image", "url(" + img.Value + ")");
+							break;
+					}
+				});
+			}
+			else
+			{
+				_backgroundSubscription.Disposable = Brush.AssignAndObserveBrush(brush, _ => SetBackgroundBrush(brush));
+			}
 		}
 
 		private protected void SetBackgroundBrush(Brush brush)
@@ -130,9 +154,11 @@ namespace Windows.UI.Xaml
 				case SolidColorBrush solidColorBrush:
 					var color = solidColorBrush.ColorWithOpacity;
 					SetStyle("background-color", color.ToHexString());
+					ResetStyle("background-image");
 					RecalculateBrushOnSizeChanged(false);
 					break;
 				case GradientBrush gradientBrush:
+					ResetStyle("background-color");
 					SetStyle("background-image", gradientBrush.ToCssString(RenderSize));
 					RecalculateBrushOnSizeChanged(true);
 					break;
@@ -177,29 +203,20 @@ namespace Windows.UI.Xaml
 
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
+		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static readonly DependencyProperty IsEnabledProperty = CreateIsEnabledProperty();
+
 		public bool IsEnabled
 		{
-			get { return (bool)GetValue(IsEnabledProperty); }
-			set { SetValue(IsEnabledProperty, value); }
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
 		}
 
-		public static readonly DependencyProperty IsEnabledProperty =
-			DependencyProperty.Register(
-				name: "IsEnabled",
-				propertyType: typeof(bool),
-				ownerType: typeof(FrameworkElement),
-				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: true,
-					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) =>
-					{
-						var elt = (FrameworkElement)s;
-						elt?.OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
-						elt?.IsEnabledChanged?.Invoke(s, e);
-					},
-					coerceValueCallback: (s, v) => (s as FrameworkElement)?.CoerceIsEnabled(v)
-				)
-		);
+		protected virtual void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
+		{
+			OnIsEnabledChanged((bool)args.OldValue, (bool)args.NewValue);
+			IsEnabledChanged?.Invoke(this, args);
+		}
 
 		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
 		{

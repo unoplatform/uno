@@ -72,6 +72,8 @@
     href: features/SpeechRecognition.md
   - name: PowerManager
     href: features/windows-system-power.md
+  - name: ProgressRing
+    href: features/progressring.md
   - name: Windows.System.Profile
     href: features/windows-system-profile.md
   - name: PasswordVault
@@ -102,6 +104,8 @@
     href: features\windows-devices-geolocation.md
   - name: Windows.System
     href: features\windows-system.md
+  - name: Windows.Storage
+    href: features\windows-storage.md
   - name: Windows.UI.ViewManagement
     href: features\windows-ui-viewmanagement.md
   - name: CommandBar
@@ -127,14 +131,18 @@
   topicHref: implemented-views.md
 - name: Using Uno - advanced topics
   items:
+    - name: Azure Authentication using MSAL
+      href: interop/MSAL.md
     - name: (Wasm) Handling custom HTML events
       href: wasm-custom-events.md
     - name: Using Uno Platform Controls in Xamarin.Forms
       href: howto-use-uno-in-xamarin-forms.md
-- name: Advanced Interoperability
-  item:
-    - name: Azure Authentication using MSAL
-      href: introp/msal.md
+      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 1
+      href: interop/wasm-javascript-1.md
+      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 2
+      href: interop/wasm-javascript-2.md
+      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 3
+      href: interop/wasm-javascript-3.md
 - name: Contributing to Uno
   items:
     - name: Guidelines for creating tests

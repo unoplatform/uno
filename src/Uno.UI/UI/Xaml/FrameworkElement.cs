@@ -239,7 +239,7 @@ namespace Windows.UI.Xaml
 		protected void ArrangeElement(View view, Rect finalRect)
 		{
 #if __WASM__
-			var adjust = GetThicknessAdjust();
+			var adjust = GetBorderThickness();
 
 			// HTML moves the origin along with the border thickness.
 			// Adjust the child based on this element's border thickness.
@@ -401,9 +401,9 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args)
 		{
-			((FrameworkElement)dependencyObject)._constraintsChanged = true;
+			_constraintsChanged = true;
 		}
 
 		/// <summary>
@@ -602,10 +602,10 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Update ThemeResource references. 
 		/// </summary>
-		internal void UpdateThemeBindings()
+		internal virtual void UpdateThemeBindings()
 		{
 			//TODO: should update bindings on non-UI DO children
-			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings();
+			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
 		}
 
 		#region AutomationPeer

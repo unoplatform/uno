@@ -30,7 +30,7 @@ namespace Uno.UI.Controls
 			_layout.Initialize(this);
 		}
 
-		private ManagedVirtualizingPanelLayout GetLayouter()
+		internal ManagedVirtualizingPanelLayout GetLayouter()
 		{
 			CreateLayoutIfNeeded();
 			return _layout;

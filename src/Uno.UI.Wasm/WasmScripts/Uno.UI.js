@@ -811,8 +811,10 @@ var Uno;
                 const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
                 var style = element.style;
-                style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
+                const matrix = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
+                style.transform = matrix;
                 this.setAsArranged(element);
+                this.setClipToBounds(element, params.ClipToBounds);
                 return true;
             }
             setPointerEvents(htmlId, enabled) {
@@ -878,6 +880,94 @@ var Uno;
                 this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventExtractorId);
                 return true;
             }
+            registerPointerEventsOnView(pParams) {
+                const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
+                element.addEventListener("pointerleave", WindowManager.onPointerLeaveReceived);
+                element.addEventListener("pointerdown", WindowManager.onPointerEventReceived);
+                element.addEventListener("pointerup", WindowManager.onPointerEventReceived);
+                element.addEventListener("pointercancel", WindowManager.onPointerEventReceived);
+            }
+            static onPointerEventReceived(evt) {
+                const element = evt.currentTarget;
+                const payload = WindowManager.pointerEventExtractor(evt);
+                const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
+                if (handled) {
+                    evt.stopPropagation();
+                }
+            }
+            static onPointerEnterReceived(evt) {
+                const element = evt.target;
+                const e = evt;
+                if (e.explicitOriginalTarget) { // FF only
+                    // It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
+                    // we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
+                    // which is unexpected as the "pointerenter" should not bubble.
+                    // So we have to validate that this event is effectively due to the pointer entering the control.
+                    // We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
+                    for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
+                        if (elt == element) {
+                            // We found our target element, we can raise the event and stop the loop
+                            WindowManager.onPointerEventReceived(evt);
+                            return;
+                        }
+                        let htmlElt = elt;
+                        if (htmlElt.style.pointerEvents != "none") {
+                            // This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
+                            // However, if this 'htmlElt' is one of our child it means that the event was legitimate
+                            // and we have to raise it for the 'element'.
+                            while (htmlElt.parentElement) {
+                                htmlElt = htmlElt.parentElement;
+                                if (htmlElt == element) {
+                                    WindowManager.onPointerEventReceived(evt);
+                                    return;
+                                }
+                            }
+                            // We found an element this is capable to handle the pointers but which is not one of our child
+                            // (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
+                            // not have bubble to the element, and we can mute it.
+                            return;
+                        }
+                    }
+                }
+                else {
+                    WindowManager.onPointerEventReceived(evt);
+                }
+            }
+            static onPointerLeaveReceived(evt) {
+                const element = evt.target;
+                const e = evt;
+                if (e.explicitOriginalTarget // FF only
+                    && e.explicitOriginalTarget !== event.currentTarget
+                    && event.isOver(element)) {
+                    // If the event was re-targeted, it's suspicious as the leave event should not bubble
+                    // This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
+                    // So we have to validate that this event is effectively due to the pointer leaving the element.
+                    // We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
+                    // It's common to get a move right after the leave with the same pointer's location,
+                    // so we wait up to 3 pointer move before dropping the leave event.
+                    var attempt = 3;
+                    WindowManager.current.ensurePendingLeaveEventProcessing();
+                    WindowManager.current.processPendingLeaveEvent = (move) => {
+                        if (!move.isOverDeep(element)) {
+                            // Raising deferred pointerleave on element " + element.id);
+                            WindowManager.onPointerEventReceived(evt);
+                            WindowManager.current.processPendingLeaveEvent = null;
+                        }
+                        else if (--attempt <= 0) {
+                            // Drop deferred pointerleave on element " + element.id);
+                            WindowManager.current.processPendingLeaveEvent = null;
+                        }
+                        else {
+                            // Requeue deferred pointerleave on element " + element.id);
+                        }
+                    };
+                }
+                else {
+                    WindowManager.onPointerEventReceived(evt);
+                }
+            }
             /**
              * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
              */
@@ -911,95 +1001,26 @@ var Uno;
                         event.stopPropagation();
                     }
                 };
-                if (eventName == "pointerenter") {
-                    const enterPointerHandler = (event) => {
-                        const e = event;
-                        if (e.explicitOriginalTarget) { // FF only
-                            // It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
-                            // we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
-                            // which is unexpected as the "pointerenter" should not bubble.
-                            // So we have to validate that this event is effectively due to the pointer entering the control.
-                            // We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
-                            const evt = event;
-                            for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
-                                if (elt == element) {
-                                    // We found our target element, we can raise the event and stop the loop
-                                    eventHandler(event);
-                                    return;
-                                }
-                                let htmlElt = elt;
-                                if (htmlElt.style.pointerEvents != "none") {
-                                    // This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
-                                    // However, if this 'htmlElt' is one of our child it means that the event was legitimate
-                                    // and we have to raise it for the 'element'.
-                                    while (htmlElt.parentElement) {
-                                        htmlElt = htmlElt.parentElement;
-                                        if (htmlElt == element) {
-                                            eventHandler(event);
-                                            return;
-                                        }
-                                    }
-                                    // We found an element this is capable to handle the pointers but which is not one of our child
-                                    // (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
-                                    // not have bubble to the element, and we can mute it.
-                                    return;
-                                }
-                            }
-                        }
-                        else {
-                            eventHandler(event);
-                        }
-                    };
-                    element.addEventListener(eventName, enterPointerHandler, onCapturePhase);
-                }
-                else if (eventName == "pointerleave") {
-                    const leavePointerHandler = (event) => {
-                        const e = event;
-                        if (e.explicitOriginalTarget // FF only
-                            && e.explicitOriginalTarget !== event.currentTarget
-                            && event.isOver(element)) {
-                            // If the event was re-targeted, it's suspicious as the leave event should not bubble
-                            // This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
-                            // So we have to validate that this event is effectively due to the pointer leaving the element.
-                            // We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
-                            // It's common to get a move right after the leave with the same pointer's location,
-                            // so we wait up to 3 pointer move before dropping the leave event.
-                            var attempt = 3;
-                            this.ensurePendingLeaveEventProcessing();
-                            this.processPendingLeaveEvent = (move) => {
-                                if (!move.isOverDeep(element)) {
-                                    console.log("Raising deferred pointerleave on element " + elementId);
-                                    eventHandler(event);
-                                    this.processPendingLeaveEvent = null;
-                                }
-                                else if (--attempt <= 0) {
-                                    console.log("Drop deferred pointerleave on element " + elementId);
-                                    this.processPendingLeaveEvent = null;
-                                }
-                                else {
-                                    console.log("Requeue deferred pointerleave on element " + elementId);
-                                }
-                            };
-                        }
-                        else {
-                            eventHandler(event);
-                        }
-                    };
-                    element.addEventListener(eventName, leavePointerHandler, onCapturePhase);
-                }
-                else {
-                    element.addEventListener(eventName, eventHandler, onCapturePhase);
-                }
+                element.addEventListener(eventName, eventHandler, onCapturePhase);
             }
             /**
              * pointer event extractor to be used with registerEventOnView
              * @param evt
              */
-            pointerEventExtractor(evt) {
+            static pointerEventExtractor(evt) {
                 if (!evt) {
                     return "";
                 }
                 let src = evt.target;
+                if (src) {
+                    // The XAML SvgElement are UIElement in Uno (so they have a XamlHandle),
+                    // but as on WinUI they are not part of the visual tree, they should not be used as OriginalElement.
+                    // Instead we should use the actual parent <svg /> which is the XAML Shape.
+                    const shape = src.ownerSVGElement;
+                    if (shape) {
+                        src = shape;
+                    }
+                }
                 let srcHandle = "0";
                 while (src) {
                     let handle = src.getAttribute("XamlHandle");
@@ -1052,7 +1073,7 @@ var Uno;
                     const fontSize = window.getComputedStyle(el).fontSize;
                     document.body.removeChild(el);
                     this._wheelLineSize = fontSize ? parseInt(fontSize) : 16; /* 16 = The current common default font size */
-                    // Based on observations, even if the even reports 3 lines (the settings of windows),
+                    // Based on observations, even if the event reports 3 lines (the settings of windows),
                     // the browser will actually scroll of about 6 lines of text.
                     this._wheelLineSize *= 2.0;
                 }
@@ -1075,7 +1096,7 @@ var Uno;
                     : "";
             }
             /**
-             * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+             * focus event extractor to be used with registerEventOnView
              * @param evt
              */
             focusEventExtractor(evt) {
@@ -1113,7 +1134,7 @@ var Uno;
                     //
                     switch (eventExtractorId) {
                         case 1:
-                            return this.pointerEventExtractor;
+                            return WindowManager.pointerEventExtractor;
                         case 3:
                             return this.keyboardEventExtractor;
                         case 2:
@@ -1436,26 +1457,21 @@ var Uno;
                 elt.scrollTo(opts);
                 return true;
             }
-            setImageRawData(viewId, dataPtr, width, height) {
-                const element = this.getView(viewId);
-                if (element.tagName.toUpperCase() === "IMG") {
-                    const imgElement = element;
-                    const rawCanvas = document.createElement("canvas");
-                    rawCanvas.width = width;
-                    rawCanvas.height = height;
-                    const ctx = rawCanvas.getContext("2d");
-                    const imgData = ctx.createImageData(width, height);
-                    const bufferSize = width * height * 4;
-                    for (let i = 0; i < bufferSize; i += 4) {
-                        imgData.data[i + 0] = Module.HEAPU8[dataPtr + i + 2];
-                        imgData.data[i + 1] = Module.HEAPU8[dataPtr + i + 1];
-                        imgData.data[i + 2] = Module.HEAPU8[dataPtr + i + 0];
-                        imgData.data[i + 3] = Module.HEAPU8[dataPtr + i + 3];
-                    }
-                    ctx.putImageData(imgData, 0, 0);
-                    imgElement.src = rawCanvas.toDataURL();
-                    return "ok";
+            rawPixelsToBase64EncodeImage(dataPtr, width, height) {
+                const rawCanvas = document.createElement("canvas");
+                rawCanvas.width = width;
+                rawCanvas.height = height;
+                const ctx = rawCanvas.getContext("2d");
+                const imgData = ctx.createImageData(width, height);
+                const bufferSize = width * height * 4;
+                for (let i = 0; i < bufferSize; i += 4) {
+                    imgData.data[i + 0] = Module.HEAPU8[dataPtr + i + 2];
+                    imgData.data[i + 1] = Module.HEAPU8[dataPtr + i + 1];
+                    imgData.data[i + 2] = Module.HEAPU8[dataPtr + i + 0];
+                    imgData.data[i + 3] = Module.HEAPU8[dataPtr + i + 3];
                 }
+                ctx.putImageData(imgData, 0, 0);
+                return rawCanvas.toDataURL();
             }
             /**
              * Sets the provided image with a mono-chrome version of the provided url.
@@ -1734,7 +1750,7 @@ var Uno;
         WindowManager.MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
         UI.WindowManager = WindowManager;
         if (typeof define === "function") {
-            define(["AppManifest"], () => {
+            define([`${config.uno_app_base}/AppManifest`], () => {
             });
         }
         else {
@@ -2210,6 +2226,16 @@ class WindowManagerRegisterEventOnViewParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerRegisterPointerEventsOnViewParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerRegisterPointerEventsOnViewParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerRegisterUIElementParams {
     static unmarshal(pData) {
         const ret = new WindowManagerRegisterUIElementParams();
@@ -2460,25 +2486,28 @@ class WindowManagerSetElementTransformParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetElementTransformParams();
         {
-            ret.M11 = Number(Module.getValue(pData + 0, "double"));
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            ret.M12 = Number(Module.getValue(pData + 8, "double"));
+            ret.M11 = Number(Module.getValue(pData + 8, "double"));
         }
         {
-            ret.M21 = Number(Module.getValue(pData + 16, "double"));
+            ret.M12 = Number(Module.getValue(pData + 16, "double"));
         }
         {
-            ret.M22 = Number(Module.getValue(pData + 24, "double"));
+            ret.M21 = Number(Module.getValue(pData + 24, "double"));
         }
         {
-            ret.M31 = Number(Module.getValue(pData + 32, "double"));
+            ret.M22 = Number(Module.getValue(pData + 32, "double"));
         }
         {
-            ret.M32 = Number(Module.getValue(pData + 40, "double"));
+            ret.M31 = Number(Module.getValue(pData + 40, "double"));
         }
         {
-            ret.HtmlId = Number(Module.getValue(pData + 48, "*"));
+            ret.M32 = Number(Module.getValue(pData + 48, "double"));
+        }
+        {
+            ret.ClipToBounds = Boolean(Module.getValue(pData + 56, "i32"));
         }
         return ret;
     }
@@ -2901,6 +2930,7 @@ var Windows;
         Storage.ApplicationDataContainer = ApplicationDataContainer;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
+// eslint-disable-next-line @typescript-eslint/no-namespace
 var Windows;
 (function (Windows) {
     var Storage;
@@ -2934,32 +2964,42 @@ var Windows;
             static setupStorage(path) {
                 if (Uno.UI.WindowManager.isHosted) {
                     console.debug("Hosted Mode: skipping IndexDB initialization");
+                    StorageFolder.onStorageInitialized();
                     return;
                 }
                 if (!this.isIndexDBAvailable()) {
                     console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
+                    StorageFolder.onStorageInitialized();
                     return;
                 }
                 if (typeof IDBFS === 'undefined') {
                     console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
+                    StorageFolder.onStorageInitialized();
                     return;
                 }
                 console.debug("Making persistent: " + path);
                 FS.mkdir(path);
                 FS.mount(IDBFS, {}, path);
-                // Request an initial sync to populate the file system
-                const that = this;
-                FS.syncfs(true, err => {
-                    if (err) {
-                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
-                    }
-                });
                 // Ensure to sync pseudo file system on unload (and periodically for safety)
                 if (!this._isInit) {
+                    // Request an initial sync to populate the file system
+                    FS.syncfs(true, err => {
+                        if (err) {
+                            console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
+                        }
+                        StorageFolder.onStorageInitialized();
+                    });
                     window.addEventListener("beforeunload", this.synchronizeFileSystem);
                     setInterval(this.synchronizeFileSystem, 10000);
                     this._isInit = true;
                 }
+            }
+            static onStorageInitialized() {
+                if (!StorageFolder.dispatchStorageInitialized) {
+                    StorageFolder.dispatchStorageInitialized =
+                        Module.mono_bind_static_method("[Uno] Windows.Storage.StorageFolder:DispatchStorageInitialized");
+                }
+                StorageFolder.dispatchStorageInitialized();
             }
             /**
              * Synchronize the IDBFS memory cache back to IndexDB
@@ -2967,7 +3007,7 @@ var Windows;
             static synchronizeFileSystem() {
                 FS.syncfs(err => {
                     if (err) {
-                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
                     }
                 });
             }
@@ -3120,69 +3160,6 @@ var Windows;
             }
             Geolocation.Geolocator = Geolocator;
         })(Geolocation = Devices.Geolocation || (Devices.Geolocation = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Midi;
-        (function (Midi) {
-            class MidiInPort {
-                constructor(managedId, inputPort) {
-                    this.messageReceived = (event) => {
-                        var serializedMessage = event.data[0].toString();
-                        for (var i = 1; i < event.data.length; i++) {
-                            serializedMessage += ':' + event.data[i];
-                        }
-                        MidiInPort.dispatchMessage(this.managedId, serializedMessage, event.timeStamp);
-                    };
-                    this.managedId = managedId;
-                    this.inputPort = inputPort;
-                }
-                static createPort(managedId, encodedDeviceId) {
-                    const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                    const deviceId = decodeURIComponent(encodedDeviceId);
-                    const input = midi.inputs.get(deviceId);
-                    MidiInPort.instanceMap[managedId] = new MidiInPort(managedId, input);
-                }
-                static removePort(managedId) {
-                    MidiInPort.stopMessageListener(managedId);
-                    delete MidiInPort.instanceMap[managedId];
-                }
-                static startMessageListener(managedId) {
-                    if (!MidiInPort.dispatchMessage) {
-                        MidiInPort.dispatchMessage = Module.mono_bind_static_method("[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
-                    }
-                    const instance = MidiInPort.instanceMap[managedId];
-                    instance.inputPort.addEventListener("midimessage", instance.messageReceived);
-                }
-                static stopMessageListener(managedId) {
-                    const instance = MidiInPort.instanceMap[managedId];
-                    instance.inputPort.removeEventListener("midimessage", instance.messageReceived);
-                }
-            }
-            MidiInPort.instanceMap = {};
-            Midi.MidiInPort = MidiInPort;
-        })(Midi = Devices.Midi || (Devices.Midi = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Midi;
-        (function (Midi) {
-            class MidiOutPort {
-                static sendBuffer(encodedDeviceId, timestamp, ...args) {
-                    const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                    const deviceId = decodeURIComponent(encodedDeviceId);
-                    const output = midi.outputs.get(deviceId);
-                    output.send(args, timestamp);
-                }
-            }
-            Midi.MidiOutPort = MidiOutPort;
-        })(Midi = Devices.Midi || (Devices.Midi = {}));
     })(Devices = Windows.Devices || (Windows.Devices = {}));
 })(Windows || (Windows = {}));
 var Windows;
@@ -3517,7 +3494,7 @@ var Windows;
                 }
                 static observeSystemTheme() {
                     if (!this.dispatchThemeChange) {
-                        this.dispatchThemeChange = Module.mono_bind_static_method("[Uno] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
+                        this.dispatchThemeChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
                     }
                     if (window.matchMedia) {
                         window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", () => {
@@ -3544,36 +3521,6 @@ var Windows;
         })(Xaml = UI.Xaml || (UI.Xaml = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
-var Uno;
-(function (Uno) {
-    var Devices;
-    (function (Devices) {
-        var Midi;
-        (function (Midi) {
-            var Internal;
-            (function (Internal) {
-                class WasmMidiAccess {
-                    static request(systemExclusive) {
-                        if (navigator.requestMIDIAccess) {
-                            return navigator.requestMIDIAccess({ sysex: systemExclusive })
-                                .then((midi) => {
-                                WasmMidiAccess.midiAccess = midi;
-                                return "true";
-                            }, () => "false");
-                        }
-                        else {
-                            return Promise.resolve("false");
-                        }
-                    }
-                    static getMidi() {
-                        return WasmMidiAccess.midiAccess;
-                    }
-                }
-                Internal.WasmMidiAccess = WasmMidiAccess;
-            })(Internal = Midi.Internal || (Midi.Internal = {}));
-        })(Midi = Devices.Midi || (Devices.Midi = {}));
-    })(Devices = Uno.Devices || (Uno.Devices = {}));
-})(Uno || (Uno = {}));
 var Windows;
 (function (Windows) {
     var Phone;
@@ -3599,84 +3546,87 @@ var Windows;
         })(Devices = Phone.Devices || (Phone.Devices = {}));
     })(Phone = Windows.Phone || (Windows.Phone = {}));
 })(Windows || (Windows = {}));
-var Uno;
-(function (Uno) {
-    var Devices;
-    (function (Devices) {
-        var Enumeration;
-        (function (Enumeration) {
-            var Internal;
-            (function (Internal) {
-                var Providers;
-                (function (Providers) {
-                    var Midi;
-                    (function (Midi) {
-                        class MidiDeviceClassProvider {
-                            static findDevices(findInputDevices) {
-                                var result = "";
-                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                                if (findInputDevices) {
-                                    midi.inputs.forEach((input, key) => {
-                                        const inputId = input.id;
-                                        const name = input.name;
-                                        const encodedMetadata = encodeURIComponent(inputId) + '#' + encodeURIComponent(name);
-                                        result += encodedMetadata + '&';
-                                    });
-                                }
-                                else {
-                                    midi.outputs.forEach((output, key) => {
-                                        const outputId = output.id;
-                                        const name = output.name;
-                                        const encodedMetadata = encodeURIComponent(outputId) + '#' + encodeURIComponent(name);
-                                        result += encodedMetadata + '&';
-                                    });
-                                }
-                                return result;
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            var Media;
+            (function (Media) {
+                var Animation;
+                (function (Animation) {
+                    class RenderingLoopFloatAnimator {
+                        constructor(managedHandle) {
+                            this.managedHandle = managedHandle;
+                            this._isEnabled = false;
+                        }
+                        static createInstance(managedHandle, jsHandle) {
+                            RenderingLoopFloatAnimator.activeInstances[jsHandle] = new RenderingLoopFloatAnimator(managedHandle);
+                        }
+                        static getInstance(jsHandle) {
+                            return RenderingLoopFloatAnimator.activeInstances[jsHandle];
+                        }
+                        static destroyInstance(jsHandle) {
+                            delete RenderingLoopFloatAnimator.activeInstances[jsHandle];
+                        }
+                        SetStartFrameDelay(delay) {
+                            this.unscheduleFrame();
+                            if (this._isEnabled) {
+                                this.scheduleDelayedFrame(delay);
                             }
                         }
-                        Midi.MidiDeviceClassProvider = MidiDeviceClassProvider;
-                    })(Midi = Providers.Midi || (Providers.Midi = {}));
-                })(Providers = Internal.Providers || (Internal.Providers = {}));
-            })(Internal = Enumeration.Internal || (Enumeration.Internal = {}));
-        })(Enumeration = Devices.Enumeration || (Devices.Enumeration = {}));
-    })(Devices = Uno.Devices || (Uno.Devices = {}));
-})(Uno || (Uno = {}));
-var Uno;
-(function (Uno) {
-    var Devices;
-    (function (Devices) {
-        var Enumeration;
-        (function (Enumeration) {
-            var Internal;
-            (function (Internal) {
-                var Providers;
-                (function (Providers) {
-                    var Midi;
-                    (function (Midi) {
-                        class MidiDeviceConnectionWatcher {
-                            static startStateChanged() {
-                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                                midi.addEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
-                            }
-                            static stopStateChanged() {
-                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                                midi.removeEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
-                            }
-                            static onStateChanged(event) {
-                                if (!MidiDeviceConnectionWatcher.dispatchStateChanged) {
-                                    MidiDeviceConnectionWatcher.dispatchStateChanged =
-                                        Module.mono_bind_static_method("[Uno] Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher:DispatchStateChanged");
-                                }
-                                const port = event.port;
-                                const isInput = port.type == "input";
-                                const isConnected = port.state == "connected";
-                                MidiDeviceConnectionWatcher.dispatchStateChanged(port.id, port.name, isInput, isConnected);
+                        SetAnimationFramesInterval() {
+                            this.unscheduleFrame();
+                            if (this._isEnabled) {
+                                this.onFrame();
                             }
                         }
-                        Midi.MidiDeviceConnectionWatcher = MidiDeviceConnectionWatcher;
-                    })(Midi = Providers.Midi || (Providers.Midi = {}));
-                })(Providers = Internal.Providers || (Internal.Providers = {}));
-            })(Internal = Enumeration.Internal || (Enumeration.Internal = {}));
-        })(Enumeration = Devices.Enumeration || (Devices.Enumeration = {}));
-    })(Devices = Uno.Devices || (Uno.Devices = {}));
-})(Uno || (Uno = {}));
+                        EnableFrameReporting() {
+                            if (this._isEnabled) {
+                                return;
+                            }
+                            this._isEnabled = true;
+                            this.scheduleAnimationFrame();
+                        }
+                        DisableFrameReporting() {
+                            this._isEnabled = false;
+                            this.unscheduleFrame();
+                        }
+                        onFrame() {
+                            Uno.Foundation.Interop.ManagedObject.dispatch(this.managedHandle, "OnFrame", null);
+                            // Schedule a new frame only if still enabled and no frame was scheduled by the managed OnFrame
+                            if (this._isEnabled && this._frameRequestId == null && this._delayRequestId == null) {
+                                this.scheduleAnimationFrame();
+                            }
+                        }
+                        unscheduleFrame() {
+                            if (this._delayRequestId != null) {
+                                clearTimeout(this._delayRequestId);
+                                this._delayRequestId = null;
+                            }
+                            if (this._frameRequestId != null) {
+                                window.cancelAnimationFrame(this._frameRequestId);
+                                this._frameRequestId = null;
+                            }
+                        }
+                        scheduleDelayedFrame(delay) {
+                            this._delayRequestId = setTimeout(() => {
+                                this._delayRequestId = null;
+                                this.onFrame();
+                            }, delay);
+                        }
+                        scheduleAnimationFrame() {
+                            this._frameRequestId = window.requestAnimationFrame(() => {
+                                this._frameRequestId = null;
+                                this.onFrame();
+                            });
+                        }
+                    }
+                    RenderingLoopFloatAnimator.activeInstances = {};
+                    Animation.RenderingLoopFloatAnimator = RenderingLoopFloatAnimator;
+                })(Animation = Media.Animation || (Media.Animation = {}));
+            })(Media = Xaml.Media || (Xaml.Media = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));

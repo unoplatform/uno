@@ -543,7 +543,7 @@ namespace SampleControl.Presentation
 				let content = GetContent(type, sampleAttribute)
 				from category in content.Categories
 				group content by category into contentByCategory
-				orderby contentByCategory.Key
+				orderby contentByCategory.Key.ToLower(CultureInfo.CurrentUICulture)
 				select new SampleChooserCategory(contentByCategory);
 
 			return categories.AsParallel().ToList();

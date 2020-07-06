@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
+using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -631,7 +632,25 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var fromResources = testControl.Resources["SubliminalGradientBrush"] as LinearGradientBrush;
 			Assert.IsNotNull(fromResources);
 			Assert.AreEqual(2, fromResources.GradientStops.Count);
-			;
+		}
+
+		[TestMethod]
+		public void When_Accessing_System_Resource()
+		{
+			var rd = new ResourceDictionary();
+
+			Assert.IsTrue(rd.ContainsKey("SystemAltHighColor"));
+			var systemColor = (Color)rd["SystemAltHighColor"];
+			Assert.AreEqual(Colors.White, systemColor);
+		}
+
+		[TestMethod]
+		public void When_Relative_Path_With_Leading_Slash_From_Root()
+		{
+			var withSlash = XamlFilePathHelper.ResolveAbsoluteSource("App.xaml", "/App/Xaml/Test_Dictionary.xaml");
+			var withoutSlash = XamlFilePathHelper.ResolveAbsoluteSource("App.xaml", "App/Xaml/Test_Dictionary.xaml");
+
+			Assert.AreEqual(withoutSlash, withSlash);
 		}
 	}
 }

@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void EnsureForward()
 		{
-			PopupPanel.Superview?.BringSubviewToFront(PopupPanel);
+			PopupPanel?.Superview?.BringSubviewToFront(PopupPanel);
 		}
 	}
 }

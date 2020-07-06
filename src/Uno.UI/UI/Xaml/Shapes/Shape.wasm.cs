@@ -37,9 +37,9 @@ namespace Windows.UI.Xaml.Shapes
 		protected void InitCommonShapeProperties() // Should be called from base class constructor
 		{
 			// Initialize
-			OnFillUpdatedPartial();
-			OnStrokeUpdatedPartial();
-			OnStrokeThicknessUpdatedPartial();
+			OnFillUpdatedPartial(); // Required to properly update the HitTest
+			// Don't OnStrokeUpdatedPartial(); => Stroke is still at its default value in the ctor, and it will always results to ResetStyle("stroke")
+			// Don't OnStrokeThicknessUpdatedPartial(); => The default value is set in Uno.UI.css
 		}
 
 		protected abstract SvgElement GetMainSvgElement();
@@ -140,13 +140,14 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var svgElement = GetMainSvgElement();
 
-			if (StrokeThickness == default)
+			var strokeThickness = StrokeThickness;
+			if (strokeThickness == default)
 			{
 				svgElement.ResetStyle("stroke-width");
 			}
 			else
 			{
-				svgElement.SetStyle("stroke-width", $"{StrokeThickness}px");
+				svgElement.SetStyle("stroke-width", $"{strokeThickness}px");
 			}
 		}
 

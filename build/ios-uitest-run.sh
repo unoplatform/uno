@@ -13,7 +13,8 @@ msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/Sampl
 
 cd $BUILD_SOURCESDIRECTORY/build
 
-mono nuget/nuget.exe install NUnit.ConsoleRunner -Version 3.10.0
+export NUNIT_VERSION=3.11.1
+mono nuget/nuget.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
 
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
 then
@@ -46,7 +47,8 @@ else
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media_Animation' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests'
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Shapes.Basics_Shapes_Tests'
 	"
 fi
 
@@ -62,11 +64,9 @@ chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
 # required by Xamarin.UITest
 cd $UNO_UITEST_SCREENSHOT_PATH
 
-mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
-	--inprocess \
-	--agents=1 \
-	--workers=1 \
+mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
 	--result=$BUILD_SOURCESDIRECTORY/build/TestResult.xml \
+	--timeout=120000 \
 	--where "$TEST_FILTERS" \
 	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll \
 	|| true

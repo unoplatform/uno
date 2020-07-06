@@ -43,6 +43,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			},
 		};
 
+		private static readonly string[] FrameworkTemplateTypes = new[] { "DataTemplate", "ControlTemplate", "ItemsPanelTemplate" };
+
 		private readonly Dictionary<string, XamlObjectDefinition> _namedResources = new Dictionary<string, XamlObjectDefinition>();
 		private readonly List<string> _partials = new List<string>();
 		/// <summary>
@@ -75,6 +77,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// True if the file currently being parsed contains a top-level ResourceDictionary definition.
 		/// </summary>
 		private bool _isTopLevelDictionary;
+		private readonly bool _isUnoAssembly;
 
 		/// <summary>
 		/// The current DefaultBindMode for x:Bind bindings, as set by app code for the current Xaml subtree.
@@ -148,7 +151,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isWasm,
 			bool isDebug,
 			bool skipUserControlsInVisualTree,
-			bool shouldAnnotateGeneratedXaml
+			bool shouldAnnotateGeneratedXaml,
+			bool isUnoAssembly
 		)
 		{
 			_fileDefinition = file;
@@ -195,6 +199,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith(XamlConstants.Types.CreateFromStringAttribute).ToList();
 
 			_isWasm = isWasm;
+
+			_isUnoAssembly = isUnoAssembly;
 		}
 
 		/// <summary>
@@ -268,6 +274,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineInvariant("using Uno.Extensions;");
 			writer.AppendLineInvariant("using Uno;");
+			writer.AppendLineInvariant("using Uno.UI.Helpers.Xaml;");
 
 			writer.AppendLineInvariant("using {0};", _defaultNamespace);
 
@@ -992,6 +999,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						TrySetParsing(writer, topLevelControl, isInitializer: true);
 					}
+					if (_isUnoAssembly)
+					{
+						writer.AppendLineInvariant("IsSystemDictionary = true,");
+					}
 					BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
 					BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
 					BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true);
@@ -1283,16 +1294,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						);
 					}
 
+						var valueObject = valueNode.Objects.First();
 					if (HasMarkupExtension(valueNode))
 					{
 						writer.AppendLineInvariant(BuildBindingOption(valueNode, propertyType, prependCastToType: true));
 					}
 					else
 					{
-						BuildChild(writer, valueNode, valueNode.Objects.First());
+						BuildChild(writer, valueNode, valueObject);
 					}
 
-					writer.AppendLineInvariant(")" + lineEnding);
+					writer.AppendLineInvariant(")");
+
+					if (valueObject.Type.Name == "ThemeResource")
+					{
+						writer.AppendLineInvariant(".ApplyThemeResourceUpdateValues(\"{0}\", {1})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess);
+					}
+
+					writer.AppendLineInvariant(lineEnding);
 				}
 			}
 			else
@@ -2484,6 +2503,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												closureName);
 							}
 							else if (
+								member.Member.Name == "TargetName" &&
+								!IsAttachedProperty(member) &&
+								(member.Member.DeclaringType?.Name.EndsWith("ThemeAnimation") ?? false)
+							)
+							{
+								// Those special animations (xxxThemeAnimation) needs to resolve their target at runtime.
+								writer.AppendLineInvariant(@"NameScope.SetNameScope({0}, nameScope);", closureName);
+							}
+							else if (
 								member.Member.Name == "TargetProperty" &&
 								IsAttachedProperty(member) &&
 								member.Member.DeclaringType?.Name == "Storyboard"
@@ -2590,7 +2618,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
 			// the DataContext, not the control's instance.
-			var isInsideDataTemplate = IsMemberInsideDataTemplate(member.Owner);
+			var isInsideDataTemplate = IsMemberInsideFrameworkTemplate(member.Owner);
 
 			void writeEvent(string ownerPrefix)
 			{
@@ -3303,10 +3331,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private (bool isInside, XamlObjectDefinition xamlObject) IsMemberInsideDataTemplate(XamlObjectDefinition xamlObject)
 			=> IsMemberInside(xamlObject, "DataTemplate");
 
-		private bool IsMemberInsideFrameworkTemplate(XamlObjectDefinition xamlObject)
-			=> IsMemberInside(xamlObject, "DataTemplate").isInside
-			|| IsMemberInside(xamlObject, "ControlTemplate").isInside
-			|| IsMemberInside(xamlObject, "ItemsPanelTemplate").isInside;
+		private (bool isInside, XamlObjectDefinition xamlObject) IsMemberInsideFrameworkTemplate(XamlObjectDefinition xamlObject) =>
+			FrameworkTemplateTypes
+				.Select(n => IsMemberInside(xamlObject, n))
+				.FirstOrDefault(n => n.isInside);
 
 		private bool IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject)
 			=> IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: 1).isInside;
@@ -3486,7 +3514,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return BuildThickness(memberValue);
 
 					case XamlConstants.Types.CornerRadius:
-						return $"new {XamlConstants.Types.CornerRadius}({memberValue})";
+						return BuildCornerRadius(memberValue);
 
 					case XamlConstants.Types.FontFamily:
 						return $@"new {propertyType.ToDisplayString()}(""{memberValue}"")";
@@ -3791,7 +3819,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// This is until we find an appropriate way to convert strings to Thickness.
 			if (!memberValue.Contains(","))
 			{
-				memberValue = memberValue.Replace(" ", ",");
+				memberValue = ReplaceWhitespaceByCommas(memberValue);
 			}
 
 			if (memberValue.Contains("."))
@@ -3799,8 +3827,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Append 'f' to every decimal value in the thickness
 				memberValue = AppendFloatSuffix(memberValue);
 			}
-
+			
 			return "new global::Windows.UI.Xaml.Thickness(" + memberValue + ")";
+		}
+
+		private static string BuildCornerRadius(string memberValue)
+		{
+			// values can be separated by commas or whitespace
+			// ensure commas are used for the constructor
+			if (!memberValue.Contains(","))
+			{
+				memberValue = ReplaceWhitespaceByCommas(memberValue);
+			}
+
+			return $"new {XamlConstants.Types.CornerRadius}({memberValue})";
+		}
+
+		private static string ReplaceWhitespaceByCommas(string memberValue)
+		{
+			// empty delimiter array = whitespace in string.Split
+			return string.Join(",", memberValue.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries));
 		}
 
 		private static string AppendFloatSuffix(string memberValue)
@@ -4209,7 +4255,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.Append("() => ");
 						// This case is to support the layout switching for the ListViewBaseLayout, which is not
 						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
-						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
+						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
 
 						BuildChildThroughSubclass(writer, contentOwner, returnType);
 
@@ -4412,7 +4458,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (phases.Any())
 				{
 					var phasesValue = phases.OrderBy(i => i).Select(s => s.ToString()).JoinBy(",");
-					return $"Uno.UI.FrameworkElementHelper.SetDataTemplateRenderPhases({ownerVariable}, new []{{{phasesValue}}});";
+					return $"global::Uno.UI.FrameworkElementHelper.SetDataTemplateRenderPhases({ownerVariable}, new []{{{phasesValue}}});";
 				}
 			}
 
@@ -4681,7 +4727,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (hasContextConstructor)
 					{
-						return "(Uno.UI.ContextHelper.Current)";
+						return "(global::Uno.UI.ContextHelper.Current)";
 					}
 				}
 			}

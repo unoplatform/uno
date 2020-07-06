@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 		internal event EventHandler Invalidated;
 
-		public IBuffer PixelBuffer { get; private set; }
+		public IBuffer PixelBuffer { get; }
 
 		public WriteableBitmap(int pixelWidth, int pixelHeight) : base()
 		{
@@ -21,6 +21,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public void Invalidate()
 		{
+#if __WASM__
+			InvalidateSource();
+#endif
 			Invalidated?.Invoke(this, EventArgs.Empty);
 		}
 	}

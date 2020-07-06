@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
+using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
+#if __IOS__ || __MACOS__
+		, ICustomClippingElement
+#endif
 	{
 		private double _compactHeight;
 		private double _minimalHeight;
@@ -144,5 +148,28 @@ namespace Windows.UI.Xaml.Controls
 			TemplateSettings.HiddenVerticalDelta = -contentHeight;
 			TemplateSettings.NegativeHiddenVerticalDelta = contentHeight;
 		}
+
+#if __IOS__ || __MACOS__
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			// On WinUI the CommandBar does not constraints its children (it only clips them)
+			// (It's the responsibility of each child to constraint itself)
+			// Note: This override is used only for the XAML command bar, not the native!
+			var infinity = new Size(double.PositiveInfinity, double.PositiveInfinity);
+			var result = base.MeasureOverride(infinity);
+
+			var height = ClosedDisplayMode switch
+			{
+				AppBarClosedDisplayMode.Compact => _compactHeight,
+				AppBarClosedDisplayMode.Minimal => _minimalHeight,
+				_ => 0
+			};
+
+			return new Size(result.Width, height);
+		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+#endif
 	}
 }

@@ -22,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Suite\SpanBench\SimpleSpanBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetControl.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetTestsPage.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\DependencyPropertyBench\SimpleDPBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\UIElementPerf\UIElementCreationBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\GridBench\SimpleGridBenchmark.cs" />
   </ItemGroup>

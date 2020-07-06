@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
@@ -50,49 +51,36 @@ namespace Windows.UI.Xaml.Shapes
 		/// <returns></returns>
 		private string ToStreamGeometry(PathGeometry geometry)
 		{
-			List<string> pathlist = new List<string>();
-
-			foreach (PathFigure figure in geometry.Figures)
+			IEnumerable<IFormattable> GenerateDataParts()
 			{
-				pathlist.Add("M " + figure.StartPoint.X + "," + figure.StartPoint.Y);
-
-				foreach (PathSegment segment in figure.Segments)
+				foreach (var figure in geometry.Figures)
 				{
-					if (segment is LineSegment lineSegment)
+					yield return $"M {figure.StartPoint.X},{figure.StartPoint.Y}";
+
+					foreach (var segment in figure.Segments)
 					{
-						pathlist.Add("L " + lineSegment.Point.X + "," + lineSegment.Point.Y);
+						yield return segment switch
+						{
+							LineSegment lineSegment =>
+								$"L {lineSegment.Point.X},{lineSegment.Point.Y}",
+							BezierSegment bezierSegment =>
+								$"C {bezierSegment.Point1.X},{bezierSegment.Point1.Y} {bezierSegment.Point2.X},{bezierSegment.Point2.Y} {bezierSegment.Point3.X},{bezierSegment.Point3.Y}",
+							QuadraticBezierSegment quadraticBezierSegment =>
+								$"Q {quadraticBezierSegment.Point1.X},{quadraticBezierSegment.Point1.Y} {quadraticBezierSegment.Point2.X},{quadraticBezierSegment.Point2.Y}",
+							ArcSegment arcSegment =>
+								$"A {arcSegment.Size.Width} {arcSegment.Size.Height} {arcSegment.RotationAngle} {(arcSegment.IsLargeArc ? "1" : "0")} {(arcSegment.SweepDirection == SweepDirection.Clockwise ? "1" : "0")} {arcSegment.Point.X},{arcSegment.Point.Y}",
+							_ => $""
+						};
 					}
-					else if (segment is BezierSegment bezierSegment)
+
+					if (figure.IsClosed)
 					{
-						pathlist.Add(
-							"C " +
-							 bezierSegment.Point1.X + "," + bezierSegment.Point1.Y + " " +
-							 bezierSegment.Point2.X + "," + bezierSegment.Point2.Y + " " +
-							 bezierSegment.Point3.X + "," + bezierSegment.Point3.Y);
-					}
-					else if (segment is QuadraticBezierSegment quadraticBezierSegment)
-					{
-						pathlist.Add(
-							 "Q " +
-							 quadraticBezierSegment.Point1.X + "," + quadraticBezierSegment.Point1.Y + " " +
-							 quadraticBezierSegment.Point2.X + "," + quadraticBezierSegment.Point2.Y);
-					}
-					else if (segment is ArcSegment arcSegment)
-					{
-						pathlist.Add(
-							 "A " +
-							 arcSegment.Size.Width + " " + arcSegment.Size.Height + " " +
-							 arcSegment.RotationAngle + " " +
-							 (arcSegment.IsLargeArc ? "1" : "0") + " " +
-							 (arcSegment.SweepDirection == SweepDirection.Clockwise ? "1" : "0") + " " +
-							 arcSegment.Point.X + "," + arcSegment.Point.Y);
+						yield return $"Z";
 					}
 				}
-
-				if (figure.IsClosed)
-					pathlist.Add("Z");
 			}
-			return FormattableString.Invariant($"{string.Join(" ", pathlist.ToArray())}");
+
+			return string.Join(" ", GenerateDataParts().Select(p=>p.ToString(null, CultureInfo.InvariantCulture)));
 		}
 	}
 }

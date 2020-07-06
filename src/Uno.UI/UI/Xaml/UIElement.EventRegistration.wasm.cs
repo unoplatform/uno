@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml
 
 		private class EventRegistration
 		{
-			private static readonly string[] noRegistrationEventNames = { "loading", "loaded", "unloaded" };
+			private static readonly string[] noRegistrationEventNames = { "loading", "loaded", "unloaded", "pointerenter", "pointerleave", "pointerdown", "pointerup", "pointercancel" };
 
 			private readonly UIElement _owner;
 			private readonly string _eventName;
@@ -200,11 +200,11 @@ namespace Windows.UI.Xaml
 
 				var registered = string.Join(", ", _eventHandlers.Keys);
 
-				this.Log().Warn(message: $"{this}: No Handler for {n}. Registered: {registered}");
+				this.Log().Warn(message: $"{this}-{HtmlId}: No Handler for {n}. Registered: {registered}");
 			}
 			catch (Exception e)
 			{
-				this.Log().Error(message: $"{this}/{eventName}/\"{nativeEventPayload}\": Error: {e}");
+				this.Log().Error(message: $"{this}-{HtmlId}/{eventName}/\"{nativeEventPayload}\": Error: {e}");
 				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 			}
 

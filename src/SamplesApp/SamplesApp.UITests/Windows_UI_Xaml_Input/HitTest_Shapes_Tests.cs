@@ -59,8 +59,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			_app.TapCoordinates(target.CenterX + offsetX * dpiScale, target.CenterY + offsetY * dpiScale);
 
 			var result = _app.Marked("LastPressed").GetDependencyPropertyValue<string>("Text");
+			var resultSrc = _app.Marked("LastPressedSrc").GetDependencyPropertyValue<string>("Text");
 
 			result.Should().Be(expected);
+			resultSrc.Should().Be(expected);
 		}
 	}
 }
