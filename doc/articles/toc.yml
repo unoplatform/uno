@@ -147,19 +147,20 @@
     - name: Ways to contribute
       href: uno-development\ways-to-contribute.md
     - name: How Uno works
-      href: uno-development\uno-internals-overview.md
-    - name: How Uno works - Android
-      href: uno-development\uno-internals-android.md
-    - name: Layouting in Android
-      href: uno-development\Uno-UI-Layouting-Android.md
-    - name: How Uno works - iOS
-      href: uno-development\uno-internals-ios.md
-    - name: Layouting in iOS
-      href: uno-development\Uno-UI-Layouting-iOS.md
-    - name: How Uno works - WASM
-      href: uno-development\uno-internals-wasm.md
-    - name: How Uno works - macOS
-      href: uno-development\uno-internals-macos.md
+      topicHref: uno-development\uno-internals-overview.md
+      items:
+        - name: Android
+          href: uno-development\uno-internals-android.md
+        - name: Layouting in Android
+          href: uno-development\Uno-UI-Layouting-Android.md
+        - name: iOS
+          href: uno-development\uno-internals-ios.md
+        - name: Layouting in iOS
+          href: uno-development\Uno-UI-Layouting-iOS.md
+        - name: WASM
+          href: uno-development\uno-internals-wasm.md
+        - name: macOS
+          href: uno-development\uno-internals-macos.md
     - name: Building and debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
     - name: Building Uno.UI for macOS using Visual Studio for Mac
