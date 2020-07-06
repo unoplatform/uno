@@ -64,19 +64,13 @@ namespace Windows.UI.Xaml
 			return _values.ContainsKey(keyName);
 		}
 
-		/// <summary>
-		/// Adds a new entry to the ResourceDictionary.
-		/// </summary>
-		/// <param name="key">The object key for the resource to insert.</param>
-		/// <param name="value">The object value for the resource to insert.</param>
-		/// <returns>True if calling the method replaced a value that already existed for the key;
-		/// false if calling the method defined a new key.</returns>
+		/// <remarks>This method does not exist in C# UWP API
+		/// and can be removed as breaking change later.</remarks>
 		public bool Insert(object key, object value)
 		{
-			var existed = _values.ContainsKey(key);
 			Set(key, value);
-			return existed;
-		}		
+			return true;
+		}
 
 		public bool Remove(object key) => _values.Remove(key);
 
