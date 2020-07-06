@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="docfx.console" Version="2.55.0" GeneratePathProperty="true" />
+		<PackageReference Include="docfx.console" Version="2.56.1" GeneratePathProperty="true" />
 		<PackageReference Include="MSBuildTasks">
 			<Version>1.5.0.235</Version>
 		</PackageReference>
