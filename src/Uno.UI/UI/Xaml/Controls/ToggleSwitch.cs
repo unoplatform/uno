@@ -194,9 +194,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_headerContentPresenter != null)
 			{
-				_headerContentPresenter.Visibility = e.NewValue != null ? Visibility.Visible : Visibility.Collapsed;
+				UpdateHeaderContentVisibility();
 			}
 		}
+
+		private void UpdateHeaderContentVisibility() => _headerContentPresenter.Visibility = Header != null ? Visibility.Visible : Visibility.Collapsed;
+
 		#endregion
 
 		protected override void OnApplyTemplate()
