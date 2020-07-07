@@ -207,6 +207,10 @@ namespace Windows.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			_headerContentPresenter = GetTemplateChild("HeaderContentPresenter") as ContentPresenter;
+			if (_headerContentPresenter != null)
+			{
+				UpdateHeaderContentVisibility();
+			}
 			_switchThumb = GetTemplateChild("SwitchThumb") as Thumb;
 			_switchKnob = GetTemplateChild("SwitchKnob") as FrameworkElement;
 			_switchKnobBounds = GetTemplateChild("SwitchKnobBounds") as FrameworkElement;

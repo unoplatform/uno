@@ -44,17 +44,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_Header");
 
-			var toggleSwitchWithHeader = _app.Marked("toggleSwitchWithHeader");
-			_app.WaitForElement(toggleSwitchWithHeader);
-
-
 			var toggleSwitchHeaderContentTextBlock = _app.Marked("toggleSwitchHeaderContent");
 			_app.WaitForElement(toggleSwitchHeaderContentTextBlock);
 
 			var toggleSwitchNoHeader = _app.Marked("toggleSwitchNoHeader");
 			_app.WaitForElement(toggleSwitchNoHeader);
 
-			Assert.AreEqual("Visible", toggleSwitchWithHeader.GetDependencyPropertyValue("Visibility").ToString());
 			Assert.AreEqual("Test ToggleSwitch Header", toggleSwitchHeaderContentTextBlock.GetDependencyPropertyValue("Text").ToString());
 			Assert.AreEqual("", toggleSwitchNoHeader.GetDependencyPropertyValue("Header"));
 		}
