@@ -58,7 +58,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 
 			Assert.AreEqual("Visible", toggleSwitchWithHeader.GetDependencyPropertyValue("Visibility").ToString());
 			Assert.AreEqual("Test ToggleSwitch Header", toggleSwitchHeaderContentTextBlock.GetDependencyPropertyValue("Text").ToString());
-			Assert.IsNull(toggleSwitchNoHeader.GetDependencyPropertyValue("Header.Content"));
+			Assert.AreEqual("", toggleSwitchNoHeader.GetDependencyPropertyValue("Header"));
 		}
 	}
 }
