@@ -44,6 +44,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_Header");
 
+			var toggleSwitchWithHeader = _app.Marked("toggleSwitchWithHeader");
+			_app.WaitForElement(toggleSwitchWithHeader);
+
 			var toggleSwitchHeaderContentTextBlock = _app.Marked("toggleSwitchHeaderContent");
 			_app.WaitForElement(toggleSwitchHeaderContentTextBlock);
 
