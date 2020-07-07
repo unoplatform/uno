@@ -17,7 +17,7 @@
 	<StackPanel>
 		<ToggleSwitch x:Name="toggleSwitchNoHeader"/>
 
-		<ToggleSwitch>
+		<ToggleSwitch x:Name="toggleSwitchWithHeader">
 			<ToggleSwitch.Header>
 				<TextBlock x:Name="toggleSwitchHeaderContent"
 								   Text="Test ToggleSwitch Header"/>
