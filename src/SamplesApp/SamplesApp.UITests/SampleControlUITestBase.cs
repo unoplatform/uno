@@ -137,6 +137,12 @@ namespace SamplesApp.UITests
 
 		public FileInfo TakeScreenshot(string stepName, ScreenshotOptions options)
 		{
+			if(_app == null)
+			{
+				Console.WriteLine($"Skipping TakeScreenshot _app is not available");
+				return null;
+			}
+
 			var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"
 				.Replace(" ", "_")
 				.Replace(".", "_");
