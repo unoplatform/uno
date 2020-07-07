@@ -210,6 +210,8 @@ namespace Windows.UI.Xaml.Controls
 			_switchThumb = GetTemplateChild("SwitchThumb") as Thumb;
 			_switchKnob = GetTemplateChild("SwitchKnob") as FrameworkElement;
 			_switchKnobBounds = GetTemplateChild("SwitchKnobBounds") as FrameworkElement;
+			
+	        UpdateToggleState(false);
 			_knobTranslateTransform = GetTemplateChild("KnobTranslateTransform") as TranslateTransform;
 
 			_eventSubscriptions.Disposable = RegisterHandlers();
