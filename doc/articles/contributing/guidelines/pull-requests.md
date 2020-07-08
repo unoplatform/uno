@@ -1,5 +1,29 @@
 # Guidelines for pull-requests
 
+If you don't know what a pull request is read this article: https://help.github.com/articles/using-pull-requests. 
+
+## Creating a PR
+
+If you are an outside contributor, please fork the Uno Platform repository you would like to contribute to your account. See the GitHub documentation for [forking a repo](https://help.github.com/articles/fork-a-repo/) if you have any questions about this.
+
+Make sure the repository can build and all tests pass, as well as follow the current [coding guidelines](code-style.md).
+
+Pull requests should all be made to the **master** branch.
+
+All commits **must** be in the [Conventional Commits format](../../uno-development/git-conventional-commits.md). We use this to automatically generate release notes for new releases.
+
+**Commit/Pull Request Format**
+
+```
+Summary of the changes (Less than 80 chars)
+ - Detail 1
+ - Detail 2
+
+Addresses #bugnumber (in this specific format)
+```
+
+If you haven't [added tests](creating-tests.md) appropriate to your changes, the reviewers will probably ask you to add some.
+
 ## Reviewing
 
 Maintainers, contributors and the community can participate in reviewing pull-requests. We require `two approvals` before the pull-request can be merged. Please apply the appropriate labels to the pull-request when reviewing. If the pull-request requires minor touch ups, consider doing them in the GitHub editor rather than asking the initiator of the pull-request to do them for you.
