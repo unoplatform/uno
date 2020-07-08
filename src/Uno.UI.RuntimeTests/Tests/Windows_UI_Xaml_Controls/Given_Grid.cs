@@ -11,7 +11,9 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using FluentAssertions.Execution;
+using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -206,19 +208,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		private static SolidColorBrush Gray = new SolidColorBrush { Color = Colors.Gray };
+		private static SolidColorBrush Blue = new SolidColorBrush { Color = Colors.Blue };
+		private static SolidColorBrush White = new SolidColorBrush { Color = Colors.White };
+		private static SolidColorBrush Red = new SolidColorBrush { Color = Colors.Red };
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_MeasuredInfinite_AndStarColumns()
 		{
-			var sut = new Grid {BorderBrush = SolidColorBrushHelper.Gray, BorderThickness = new Thickness(5)};
+			var sut = new Grid {BorderBrush = Gray, BorderThickness = new Thickness(5)};
 
 			sut.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.Auto});
 			sut.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.FromString("*")});
 			sut.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.FromString("2*")});
 
-			var border1 = new Border {MinWidth = 100, MinHeight = 160, Background = SolidColorBrushHelper.Blue};
-			var border2 = new Border {MinWidth = 100, MinHeight = 160, Background = SolidColorBrushHelper.White};
-			var border3 = new Border {MinWidth = 100, MinHeight = 160, Background = SolidColorBrushHelper.Red};
+			var border1 = new Border {MinWidth = 100, MinHeight = 160, Background = Blue};
+			var border2 = new Border {MinWidth = 100, MinHeight = 160, Background = White};
+			var border3 = new Border {MinWidth = 100, MinHeight = 160, Background = Red};
 
 			Grid.SetColumn(border1, 0);
 			Grid.SetColumn(border2, 1);
@@ -251,19 +258,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_MeasuredInfinite_AndStarRows()
 		{
-			var sut = new Grid {BorderBrush = SolidColorBrushHelper.Gray, BorderThickness = new Thickness(5)};
+			var sut = new Grid {BorderBrush = Gray, BorderThickness = new Thickness(5)};
 
 			sut.RowDefinitions.Add(new RowDefinition {Height = GridLength.Auto});
 			sut.RowDefinitions.Add(new RowDefinition {Height = GridLength.FromString("*")});
 			sut.RowDefinitions.Add(new RowDefinition {Height = GridLength.FromString("2*")});
 
-			var border1 = new Border {MinWidth = 160, MinHeight = 100, Background = SolidColorBrushHelper.Blue};
-			var border2 = new Border {MinWidth = 160, MinHeight = 100, Background = SolidColorBrushHelper.White};
-			var border3 = new Border {MinWidth = 160, MinHeight = 100, Background = SolidColorBrushHelper.Red};
+			var border1 = new Border {MinWidth = 160, MinHeight = 100, Background = Blue};
+			var border2 = new Border {MinWidth = 160, MinHeight = 100, Background = White};
+			var border3 = new Border {MinWidth = 160, MinHeight = 100, Background = Red};
 
 			Grid.SetRow(border1, 0);
 			Grid.SetRow(border2, 1);
