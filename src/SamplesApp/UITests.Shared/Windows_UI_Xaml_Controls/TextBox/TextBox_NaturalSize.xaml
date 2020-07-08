@@ -7,7 +7,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<StackPanel HorizontalAlignment="Left">
+	<StackPanel HorizontalAlignment="Left" Margin="10">
 		<TextBlock FontSize="22">
 			An empty TextBox render width should be 64px.
 			<LineBreak />So it should be the same width as the red rectangle.
@@ -17,5 +17,11 @@
 		<StackPanel Orientation="Horizontal" Background="Yellow" HorizontalAlignment="Left" x:Name="yellowpanel">
 			<TextBox x:Name="textbox_sut" Background="White" />
 		</StackPanel>
+
+		<Rectangle Height="20" />
+		<TextBlock FontSize="22">Should be identical to this (when containing no text):</TextBlock>
+		<Rectangle Width="64" Height="9" Fill="Red" HorizontalAlignment="Left" Margin="0" />
+		<TextBox Background="White" Width="64" HorizontalAlignment="Left" />
+
 	</StackPanel>
 </Page>
