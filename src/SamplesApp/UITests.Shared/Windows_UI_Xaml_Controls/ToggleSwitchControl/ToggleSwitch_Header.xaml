@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_Header"
 	xmlns:controls="using:Uno.UI.Samples.Controls"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -15,8 +15,6 @@
 	d:DesignWidth="400">
 
 	<StackPanel>
-		<ToggleSwitch x:Name="toggleSwitchNoHeader"/>
-
 		<ToggleSwitch x:Name="toggleSwitchWithHeader">
 			<ToggleSwitch.Header>
 				<TextBlock x:Name="toggleSwitchHeaderContent"

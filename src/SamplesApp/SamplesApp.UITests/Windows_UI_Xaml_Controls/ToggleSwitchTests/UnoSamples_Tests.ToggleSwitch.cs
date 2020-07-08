@@ -50,11 +50,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 			var toggleSwitchHeaderContentTextBlock = _app.Marked("toggleSwitchHeaderContent");
 			_app.WaitForElement(toggleSwitchHeaderContentTextBlock);
 
-			var toggleSwitchNoHeader = _app.Marked("toggleSwitchNoHeader");
-			_app.WaitForElement(toggleSwitchNoHeader);
-
 			Assert.AreEqual("Test ToggleSwitch Header", toggleSwitchHeaderContentTextBlock.GetDependencyPropertyValue("Text").ToString());
-			Assert.AreEqual("", toggleSwitchNoHeader.GetDependencyPropertyValue("Header"));
 		}
 	}
 }
