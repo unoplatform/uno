@@ -43,6 +43,11 @@ namespace Windows.UI.Xaml
 			Options = options.WithDefault();
 		}
 
+		internal FrameworkPropertyMetadata(PropertyChangedCallback propertyChangedCallback)
+			: base(default, propertyChangedCallback)
+		{
+		}
+
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
 			FrameworkPropertyMetadataOptions options,
