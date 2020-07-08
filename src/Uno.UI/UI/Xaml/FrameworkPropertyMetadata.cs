@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 			FrameworkPropertyMetadataOptions options
 		) : base(defaultValue)
 		{
-			Options = options;
+			Options = options.WithDefault();
 		}
 
 		public FrameworkPropertyMetadata(
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml
 			PropertyChangedCallback propertyChangedCallback
 		) : base(defaultValue, propertyChangedCallback)
 		{
-			Options = options;
+			Options = options.WithDefault();
 		}
 
 		internal FrameworkPropertyMetadata(
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml
 			BackingFieldUpdateCallback backingFieldUpdateCallback
 		) : base(defaultValue, propertyChangedCallback, backingFieldUpdateCallback)
 		{
-			Options = options;
+			Options = options.WithDefault();
 		}
 
 		internal FrameworkPropertyMetadata(
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml
 			BackingFieldUpdateCallback backingFieldUpdateCallback
 		) : base(defaultValue, null, backingFieldUpdateCallback)
 		{
-			Options = options;
+			Options = options.WithDefault();
 		}
 
 		internal FrameworkPropertyMetadata(
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml
 			CoerceValueCallback coerceValueCallback
 		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, null)
 		{
-			Options = options;
+			Options = options.WithDefault();
 		}
 
 		internal FrameworkPropertyMetadata(
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml
 			BackingFieldUpdateCallback backingFieldUpdateCallback
 		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, backingFieldUpdateCallback)
 		{
-			Options = options;
+			Options = options.WithDefault();
 		}
 
 		internal FrameworkPropertyMetadata(
@@ -128,11 +128,11 @@ namespace Windows.UI.Xaml
 			UpdateSourceTrigger defaultUpdateSourceTrigger
 		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, null)
 		{
-			Options = options;
+			Options = options.WithDefault();
 			DefaultUpdateSourceTrigger = defaultUpdateSourceTrigger;
 		}
-		
-		public FrameworkPropertyMetadataOptions Options { get; set; }
+
+		public FrameworkPropertyMetadataOptions Options { get; set; } = FrameworkPropertyMetadataOptions.Default;
 
 		public UpdateSourceTrigger DefaultUpdateSourceTrigger
 		{

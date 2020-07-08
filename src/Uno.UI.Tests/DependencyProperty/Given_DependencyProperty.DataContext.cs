@@ -199,6 +199,38 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			Assert.AreEqual(42, SUT.DataContext);
 
 		}
+
+		[TestMethod]
+		public void When_DataContext_Inherited_And_Child_Removed()
+		{
+			var SUT = new MyControl();
+
+			var independentChild = new MyControl();
+			var parent = new Grid
+			{
+				Children = { independentChild, SUT },
+				DataContext = 42
+			};
+
+			// And here is the trick: the SUT does have a reference to the child
+			SUT.InnerControl = independentChild;
+
+			int parentCtxChanged = 0, childCtxChanged = 0, SUTCtxChanged = 0;
+			parent.RegisterPropertyChangedCallback(Control.DataContextProperty, (snd, dp) => parentCtxChanged++);
+			independentChild.RegisterPropertyChangedCallback(Control.DataContextProperty, (snd, dp) => childCtxChanged++);
+			SUT.RegisterPropertyChangedCallback(Control.DataContextProperty, (snd, dp) => SUTCtxChanged++);
+
+			Assert.AreEqual(42, SUT.DataContext);
+
+			// And here the issue: when we remove the SUT from the parent,
+			// it will propagate to the independentChild the DataContext change ... while it should not!
+			parent.Children.Remove(SUT);
+
+			Assert.AreEqual(null, SUT.DataContext);
+			Assert.AreEqual(0, parentCtxChanged);
+			Assert.AreEqual(1, SUTCtxChanged);
+			Assert.AreEqual(0, childCtxChanged);
+		}
 	}
 
 	public partial class MyBasicListType : DependencyObject
@@ -264,6 +296,18 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 		}
 
 		#endregion
+	}
 
+	public partial class MyControl : Control
+	{
+		// Just a standard DP defined by a project / third party component
+		public static readonly DependencyProperty InnerControlProperty = DependencyProperty.Register(
+			"InnerControl", typeof(MyControl), typeof(MyControl), new PropertyMetadata(default(MyControl)));
+
+		public MyControl InnerControl
+		{
+			get { return (MyControl)GetValue(InnerControlProperty); }
+			set { SetValue(InnerControlProperty, value); }
+		}
 	}
 }

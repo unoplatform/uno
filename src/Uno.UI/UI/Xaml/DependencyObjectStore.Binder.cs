@@ -494,7 +494,7 @@ namespace Windows.UI.Xaml
 
 			var (hasValueInherits, hasValueDoesNotInherit) = GetPropertyInheritanceConfiguration(propertyDetails);
 
-			if (!hasValueDoesNotInherit && (hasValueInherits || propertyDetails.Property.HasAutoDataContextInherit))
+			if (!hasValueDoesNotInherit && hasValueInherits)
 			{
 				if(args.NewValue is IDependencyObjectStoreProvider provider)
 				{
