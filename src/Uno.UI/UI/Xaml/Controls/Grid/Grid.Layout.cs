@@ -156,8 +156,11 @@ namespace Windows.UI.Xaml.Controls
 			var spacingSize = new Size(ColumnSpacing * (definedColumns.Length - 1), RowSpacing * (definedRows.Length - 1));
 			availableSize = availableSize.Subtract(spacingSize);
 
-			_considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
-			_considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
+
+			// Star sizes revert to auto in the cases where the star sized items are not allowed to stretch.
+			// This occurs when the maximum allowed size is infinite.
+			_considerStarColumnsAsAuto = double.IsPositiveInfinity(availableSize.Width);
+			_considerStarRowsAsAuto = double.IsPositiveInfinity(availableSize.Height);
 
 			var columns = GetColumns(_considerStarColumnsAsAuto).Span;
 			var rows = GetRows(_considerStarRowsAsAuto).Span;
@@ -980,32 +983,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return res.Slice(0, count);
-		}
-
-		// Star sizes revert to auto in the cases where the star sized items are not allowed to stretch.
-		// Only exception is when MinHeight is set on the Grid in order to match UWP behavior.
-		// In that specific case, star sized items will take at least the entire MinHeight available space
-		private bool ConsiderStarRowsAsAuto(double availableHeight)
-		{
-			var hasMinHeight = MinHeight != 0;
-			var hasFixedHeight = !double.IsNaN(Height);
-			var isStretch = VerticalAlignment == VerticalAlignment.Stretch;
-			var isInsideInfinity = double.IsInfinity(availableHeight);
-
-			return !hasFixedHeight && !((isStretch || hasMinHeight) && !isInsideInfinity);
-		}
-
-		// Star sizes revert to auto in the cases where the star sized items are not allowed to stretch.
-		// Only exception is when MinWidth is set on the Grid in order to match UWP behavior.
-		// In that specific case, star sized items will take at least the entire MinWidth available space
-		private bool ConsiderStarColumnsAsAuto(double availableWidth)
-		{
-			var hasMinWidth = MinWidth != 0;
-			var hasFixedWidth = !double.IsNaN(Width);
-			var isStretch = HorizontalAlignment == HorizontalAlignment.Stretch;
-			var isInsideInfinity = double.IsInfinity(availableWidth);
-
-			return !hasFixedWidth && !((isStretch || hasMinWidth) && !isInsideInfinity);
 		}
 
 		private static void GetSizes(int index, int span, Span<Column> sizes, Span<GridSizeEntry> result)

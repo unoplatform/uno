@@ -303,6 +303,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				border3.RenderSize.Should().BeOfHeight(100, because: "r3");
 			}
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_MeasuredInfinite_AndStarRows_WithinSizedContainer()
+		{
+			var sut = new Grid { BorderBrush = Gray, BorderThickness = new Thickness(5) };
+
+			sut.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+			sut.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+			sut.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
+
+			var border1 = new Border { MinWidth = 160, MinHeight = 100, Background = Blue };
+			var border2 = new Border { MinWidth = 160, MinHeight = 100, Background = White };
+			var border3 = new Border { MinWidth = 160, MinHeight = 100, Background = Red };
+
+			Grid.SetRow(border1, 0);
+			Grid.SetRow(border2, 1);
+			Grid.SetRow(border3, 2);
+
+			sut.Children.Add(border1);
+			sut.Children.Add(border2);
+			sut.Children.Add(border3);
+
+			var canvas = new Canvas();
+			canvas.Children.Add(sut);
+
+			TestServices.WindowHelper.WindowContent = canvas;
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			using (new AssertionScope())
+			{
+				sut.DesiredSize.Should().BeOfWidth(170, because: "desired width")
+					.And.BeOfHeight(310, because: "desired height");
+				border1.DesiredSize.Should().BeOfHeight(100, because: "d1");
+				border2.DesiredSize.Should().BeOfHeight(100, because: "d2");
+				border3.DesiredSize.Should().BeOfHeight(100, because: "d3");
+
+				sut.RenderSize.Should().BeOfWidth(170, because: "actual width")
+					.And.BeOfHeight(310, because: "actual height");
+				border1.RenderSize.Should().BeOfHeight(100, because: "r1");
+				border2.RenderSize.Should().BeOfHeight(100, because: "r2");
+				border3.RenderSize.Should().BeOfHeight(100, because: "r3");
+			}
+		}
 	}
 }
 
