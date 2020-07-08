@@ -208,10 +208,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		private static SolidColorBrush Gray = new SolidColorBrush { Color = Colors.Gray };
-		private static SolidColorBrush Blue = new SolidColorBrush { Color = Colors.Blue };
-		private static SolidColorBrush White = new SolidColorBrush { Color = Colors.White };
-		private static SolidColorBrush Red = new SolidColorBrush { Color = Colors.Red };
+		private static readonly SolidColorBrush Gray = new SolidColorBrush { Color = Colors.Gray };
+		private static readonly SolidColorBrush Blue = new SolidColorBrush { Color = Colors.Blue };
+		private static readonly SolidColorBrush White = new SolidColorBrush { Color = Colors.White };
+		private static readonly SolidColorBrush Red = new SolidColorBrush { Color = Colors.Red };
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -220,8 +220,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sut = new Grid {BorderBrush = Gray, BorderThickness = new Thickness(5)};
 
 			sut.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.Auto});
-			sut.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.FromString("*")});
-			sut.ColumnDefinitions.Add(new ColumnDefinition {Width = GridLength.FromString("2*")});
+			sut.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)});
+			sut.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(2, GridUnitType.Star)});
 
 			var border1 = new Border {MinWidth = 100, MinHeight = 160, Background = Blue};
 			var border2 = new Border {MinWidth = 100, MinHeight = 160, Background = White};
@@ -266,8 +266,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sut = new Grid {BorderBrush = Gray, BorderThickness = new Thickness(5)};
 
 			sut.RowDefinitions.Add(new RowDefinition {Height = GridLength.Auto});
-			sut.RowDefinitions.Add(new RowDefinition {Height = GridLength.FromString("*")});
-			sut.RowDefinitions.Add(new RowDefinition {Height = GridLength.FromString("2*")});
+			sut.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)});
+			sut.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(2, GridUnitType.Star)});
 
 			var border1 = new Border {MinWidth = 160, MinHeight = 100, Background = Blue};
 			var border2 = new Border {MinWidth = 160, MinHeight = 100, Background = White};
