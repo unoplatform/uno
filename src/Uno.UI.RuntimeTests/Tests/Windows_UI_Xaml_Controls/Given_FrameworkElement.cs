@@ -13,6 +13,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 #if __IOS__
@@ -355,7 +357,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Negative_Margin_NonZero_Size()
 		{
-			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = ThicknessHelper.FromLengths(0, -16, 0, 0), Height = 120 };
+			var SUT = new Grid
+			{
+				VerticalAlignment = VerticalAlignment.Top,
+				Margin = ThicknessHelper.FromLengths(0, -16, 0, 0),
+				Height = 120,
+				MinWidth = 20
+			};
 
 			var hostPanel = new Grid();
 			hostPanel.Children.Add(SUT);
@@ -363,7 +371,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = hostPanel;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(104d, Math.Round(SUT.DesiredSize.Height));
+			using (new AssertionScope())
+			{
+				SUT.DesiredSize.Should().BeOfHeight(104);
+				SUT.DesiredSize.Should().BeOfWidth(20);
+
+				hostPanel.DesiredSize.Should().BeOfHeight(104);
+				hostPanel.DesiredSize.Should().BeOfWidth(20);
+			}
 		}
 
 		[TestMethod]

@@ -294,12 +294,6 @@ namespace Windows.UI.Xaml.Controls
 				finalSize.Height = row.Height.PixelSize.Value;
 			}
 
-			var isMeasureRequired = column.Width.IsAuto || row.Height.IsAuto;
-			if (isMeasureRequired)
-			{
-				finalSize = MeasureChildren(finalSize, column.Width.IsAuto, row.Height.IsAuto);
-			}
-
 			var offset = GetChildrenOffset();
 			foreach (var child in Children)
 			{

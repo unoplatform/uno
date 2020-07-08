@@ -90,7 +90,8 @@ namespace Uno.UI
 					.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
 					.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 					.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
-					.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}" : "")
+					.Append(uiElement != null ? $" AvailableSize={uiElement.DesiredSize}" : "")
+					.Append(uiElement != null ? $" DesiredSize={uiElement.LastAvailableSize}" : "")
 					.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
 					.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
 					.AppendLine();
