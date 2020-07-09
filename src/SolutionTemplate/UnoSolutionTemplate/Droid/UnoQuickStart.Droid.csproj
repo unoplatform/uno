@@ -14,8 +14,7 @@
 		<FileAlignment>512</FileAlignment>
 		<AndroidApplication>true</AndroidApplication>
 		<AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
-		<!-- AndroidUseAapt2 is disabled until https://github.com/unoplatform/uno/issues/1382 is resolved -->
-		<AndroidUseAapt2>false</AndroidUseAapt2>
+		<AndroidUseAapt2>true</AndroidUseAapt2>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
 		<TargetFrameworkVersion>v10.0</TargetFrameworkVersion>
