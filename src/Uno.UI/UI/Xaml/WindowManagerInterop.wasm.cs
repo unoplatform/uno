@@ -434,6 +434,63 @@ namespace Uno.UI.Xaml
 			WebAssemblyRuntime.InvokeJS(command);
 		}
 
+		#region SetUnsetCssClasses
+		internal static void SetUnsetCssClasses(IntPtr htmlId, string[] cssClassesToSet, string[] cssClassesToUnset)
+		{
+			if (UseJavascriptEval)
+			{
+				var setClasses =
+					cssClassesToSet == null
+						? "null"
+						: "[" +
+						  string.Join(", ", cssClassesToSet
+							  .Select(WebAssemblyRuntime.EscapeJs)
+							  .Select(s => "\"" + s + "\""))
+						  + "]";
+				var unsetClasses =
+					cssClassesToUnset == null
+						? "null"
+						: "[" +
+						  string.Join(", ", cssClassesToUnset
+							  .Select(WebAssemblyRuntime.EscapeJs)
+							  .Select(s => "\"" + s + "\""))
+						  + "]";
+				var command = "Uno.UI.WindowManager.current.setUnsetClasses(" + htmlId + ", " + setClasses + ", " + unsetClasses + ");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetUnsetClassesParams
+				{
+					HtmlId = htmlId,
+					CssClassesToSet = cssClassesToSet,
+					CssClassesToSet_Length = cssClassesToSet?.Length ?? 0,
+					CssClassesToUnset = cssClassesToUnset,
+					CssClassesToUnset_Length = cssClassesToUnset?.Length ?? 0
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetUnsetClassesParams>("Uno:setUnsetClassesNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetUnsetClassesParams
+		{
+			public IntPtr HtmlId;
+
+			public int CssClassesToSet_Length;
+
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
+			public string[] CssClassesToSet;
+
+			public int CssClassesToUnset_Length;
+
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
+			public string[] CssClassesToUnset;
+		}
+		#endregion
+
 		#region SetClasses
 
 		internal static void SetClasses(IntPtr htmlId, string[] cssClasses, int index)

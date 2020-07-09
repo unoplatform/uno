@@ -747,7 +747,28 @@ var Uno;
                 }
             }
             /**
-             * Set CSS classes on an element
+             * Set + Unset CSS classes on an element
+             */
+            setUnsetClasses(elementId, cssClassesToSet, cssClassesToUnset) {
+                const element = this.getView(elementId);
+                if (cssClassesToSet) {
+                    cssClassesToSet.forEach(c => {
+                        element.classList.add(c);
+                    });
+                }
+                if (cssClassesToUnset) {
+                    cssClassesToUnset.forEach(c => {
+                        element.classList.remove(c);
+                    });
+                }
+            }
+            setUnsetClassesNative(pParams) {
+                const params = WindowManagerSetUnsetClassesParams.unmarshal(pParams);
+                this.setUnsetClasses(params.HtmlId, params.CssClassesToSet, params.CssClassesToUnset);
+                return true;
+            }
+            /**
+             * Set CSS classes on an element from a specified list
              */
             setClasses(elementId, cssClassesList, classIndex) {
                 const element = this.getView(elementId);
@@ -2646,6 +2667,58 @@ class WindowManagerSetSvgElementRectParams {
         }
         {
             ret.HtmlId = Number(Module.getValue(pData + 32, "*"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetUnsetClassesParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetUnsetClassesParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.CssClassesToSet_Length = Number(Module.getValue(pData + 4, "i32"));
+        }
+        {
+            const pArray = Module.getValue(pData + 8, "*");
+            if (pArray !== 0) {
+                ret.CssClassesToSet = new Array();
+                for (var i = 0; i < ret.CssClassesToSet_Length; i++) {
+                    const value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.CssClassesToSet.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.CssClassesToSet.push(null);
+                    }
+                }
+            }
+            else {
+                ret.CssClassesToSet = null;
+            }
+        }
+        {
+            ret.CssClassesToUnset_Length = Number(Module.getValue(pData + 12, "i32"));
+        }
+        {
+            const pArray = Module.getValue(pData + 16, "*");
+            if (pArray !== 0) {
+                ret.CssClassesToUnset = new Array();
+                for (var i = 0; i < ret.CssClassesToUnset_Length; i++) {
+                    const value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.CssClassesToUnset.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.CssClassesToUnset.push(null);
+                    }
+                }
+            }
+            else {
+                ret.CssClassesToUnset = null;
+            }
         }
         return ret;
     }
