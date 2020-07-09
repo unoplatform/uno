@@ -170,7 +170,7 @@ namespace Uno.UI.Controls.Legacy
                 "ItemContainerStyle",
                 typeof(Style),
                 typeof(HorizontalListView),
-                new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: OnItemContainerStyleChanged)
+                new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, propertyChangedCallback: OnItemContainerStyleChanged)
             );
 
         public Style ItemContainerStyle

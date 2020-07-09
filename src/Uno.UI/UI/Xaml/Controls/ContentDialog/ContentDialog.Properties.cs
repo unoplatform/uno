@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"CloseButtonStyle", typeof(Style),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(default(Style)));
+			new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty CloseButtonTextProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -224,12 +224,12 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"PrimaryButtonStyle", typeof(Style),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(default(Style)));
+			new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty SecondaryButtonStyleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"SecondaryButtonStyle", typeof(Style),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(default(Style)));
+			new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 	}
 }

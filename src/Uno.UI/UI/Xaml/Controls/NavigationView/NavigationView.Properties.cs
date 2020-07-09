@@ -412,6 +412,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(Style),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(Style),
+				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnPropertyChanged(e)));
 
 		public static DependencyProperty MenuItemContainerStyleSelectorProperty { get; } =
@@ -478,6 +479,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(Style),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(null,
+				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnPropertyChanged(e))
 		);
 

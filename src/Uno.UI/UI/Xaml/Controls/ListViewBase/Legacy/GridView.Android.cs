@@ -179,6 +179,7 @@ namespace Uno.UI.Controls.Legacy
 				typeof(GridView),
 				new FrameworkPropertyMetadata(
 					(Style)null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					(s, e) => ((GridView)s)?.OnItemContainerStyleChanged((Style)e.OldValue, (Style)e.NewValue)
 				)
 			);

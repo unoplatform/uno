@@ -320,6 +320,7 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty ItemContainerStyleProperty { get ; } =
 					DependencyProperty.Register("ItemContainerStyle", typeof(Style), typeof(ItemsControl), new FrameworkPropertyMetadata(
 						default(Style),
+						FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 						(o, e) => ((ItemsControl)o).OnItemContainerStyleChanged((Style)e.OldValue, (Style)e.NewValue))
 					);
 

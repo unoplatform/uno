@@ -24,7 +24,7 @@
 				.Property("SelectedItem", "object", "null")
 				.Property("SelectedIndex", "int", "-1")
 				.Property("ItemTemplate", "DataTemplate", "null")
-				.Property("ItemContainerStyle", "Style", "null")
+				.Property("ItemContainerStyle", "Style", "null", frameworkPropertyOption: "ValueDoesNotInheritDataContext")
 				.Property("ItemTemplateSelector", "DataTemplateSelector", "null")
 				.Property("DisplayMemberPath", "string", "string.Empty") // TODO: Move to ItemsControl
 				.Property("Placeholder", "object", "null")

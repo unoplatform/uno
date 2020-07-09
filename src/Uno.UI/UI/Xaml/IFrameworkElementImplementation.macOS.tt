@@ -425,8 +425,9 @@ namespace <#= mixin.NamespaceName #>
 				typeof(Style),
 				typeof(<#= mixin.ClassName #>),
 				new FrameworkPropertyMetadata(
-					null,
-					(s, e) => ((<#= mixin.ClassName #>)s)?.OnStyleChanged((Style)e.OldValue, (Style)e.NewValue)
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					propertyChangedCallback: (s, e) => ((<#= mixin.ClassName #>)s)?.OnStyleChanged((Style)e.OldValue, (Style)e.NewValue)
 				)
 			);
 
