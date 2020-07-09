@@ -245,7 +245,11 @@ namespace SamplesApp.UITests
 		{
 			if (waitForSampleControl)
 			{
-				_app.WaitForElement("sampleControl", timeout: TimeSpan.FromSeconds(sampleLoadTimeout));
+				var sampleControlQuery = AppInitializer.GetLocalPlatform() == Platform.Browser
+					? new QueryEx(q => q.Marked("sampleControl"))
+					: new QueryEx(q => q.All().Marked("sampleControl"));
+
+				_app.WaitForElement(sampleControlQuery, timeout: TimeSpan.FromSeconds(sampleLoadTimeout));
 			}
 
 			var testRunId = _app.InvokeGeneric("browser:SampleRunner|RunTest", metadataName);
