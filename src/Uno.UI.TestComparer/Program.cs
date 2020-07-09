@@ -188,14 +188,14 @@ namespace Umbrella.UI.TestComparer
 			{
 				var summaryQuery =
 					from result in results
-					from test in result.Tests
 					let lastChangedTests = result.Tests.Where(t => t.ResultRun.LastOrDefault()?.HasChanged ?? false).ToList()
 					select $"`{result.Platform}`: **{lastChangedTests.Count}**";
 
 				var summary = string.Join(", ", summaryQuery);
 
+				comment.AppendLine($"The [build {currentBuild}](https://dev.azure.com/uno-platform/Uno%20Platform/_build/results?buildId={currentBuild}) found UI Test snapshots differences: {summary}\r\n");
 				comment.AppendLine("<details>");
-				comment.AppendLine($"<summary>The build {currentBuild} found UI Test snapshots differences: {summary}</summary>\r\n");
+				comment.AppendLine($"<summary>Details</summary>\r\n");
 				comment.AppendLine("");
 
 				foreach (var result in results)
