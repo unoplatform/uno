@@ -121,8 +121,8 @@ namespace Uno.UI.Toolkit
 		public static void SetPaddingMask(DependencyObject obj, PaddingMask value)
 			=> obj.SetValue(PaddingMaskProperty, value);
 
-		public static DependencyProperty PaddingMaskProperty { get ; } =
-			DependencyProperty.RegisterAttached("PaddingMask", typeof(PaddingMask), typeof(_VisibleBoundsPadding), new FrameworkPropertyMetadata(PaddingMask.None, OnIsPaddingMaskChanged));
+		public static DependencyProperty PaddingMaskProperty { get; } =
+			DependencyProperty.RegisterAttached("PaddingMask", typeof(PaddingMask), typeof(_VisibleBoundsPadding), new PropertyMetadata(PaddingMask.None, OnIsPaddingMaskChanged));
 
 		private static void OnIsPaddingMaskChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 			=> VisibleBoundsDetails.GetInstance(dependencyObject as FrameworkElement).OnIsPaddingMaskChanged((PaddingMask)args.OldValue, (PaddingMask)args.NewValue);

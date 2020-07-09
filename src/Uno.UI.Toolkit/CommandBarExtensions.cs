@@ -21,7 +21,7 @@ namespace Uno.UI.Toolkit
 				"Subtitle",
 				typeof(string),
 				typeof(CommandBarExtensions),
-				new FrameworkPropertyMetadata(null)
+				new PropertyMetadata(null)
 			);
 
 		public static void SetSubtitle(this CommandBar commandBar, string subtitle)
@@ -46,7 +46,7 @@ namespace Uno.UI.Toolkit
 #if XAMARIN
 				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueInheritsDataContext)
 #else
-				new FrameworkPropertyMetadata(null)
+				new PropertyMetadata(null)
 #endif
 			);
 
@@ -69,7 +69,7 @@ namespace Uno.UI.Toolkit
 				"BackButtonTitle",
 				typeof(string),
 				typeof(CommandBarExtensions),
-				new FrameworkPropertyMetadata(null)
+				new PropertyMetadata(null)
 			);
 
 		public static void SetBackButtonTitle(this CommandBar commandBar, string backButtonTitle)
@@ -91,7 +91,7 @@ namespace Uno.UI.Toolkit
 				"BackButtonVisibility",
 				typeof(Visibility),
 				typeof(CommandBarExtensions),
-				new FrameworkPropertyMetadata(Visibility.Collapsed)
+				new PropertyMetadata(Visibility.Collapsed)
 			);
 
 		public static void SetBackButtonVisibility(this CommandBar commandBar, Visibility BackButtonVisibility)
@@ -113,7 +113,11 @@ namespace Uno.UI.Toolkit
 				"BackButtonForeground",
 				typeof(Brush),
 				typeof(CommandBarExtensions),
-				new FrameworkPropertyMetadata(null)
+#if XAMARIN
+				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueInheritsDataContext)
+#else
+				new PropertyMetadata()
+#endif
 			);
 
 		public static void SetBackButtonForeground(this CommandBar commandBar, Brush backButtonForeground)
@@ -135,7 +139,7 @@ namespace Uno.UI.Toolkit
 				"BackButtonIcon",
 				typeof(IconElement),
 				typeof(CommandBarExtensions),
-				new FrameworkPropertyMetadata(null)
+				new PropertyMetadata(null)
 			);
 
 		public static void SetBackButtonIcon(this CommandBar commandBar, IconElement backButtonIcon)
