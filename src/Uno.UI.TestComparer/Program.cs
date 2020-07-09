@@ -186,7 +186,17 @@ namespace Umbrella.UI.TestComparer
 
 			if (hasErrors)
 			{
-				comment.AppendLine($"The build {currentBuild} found UI Test snapshots differences.\r\n");
+				var summaryQuery =
+					from result in results
+					from test in result.Tests
+					let lastChangedTests = result.Tests.Where(t => t.ResultRun.LastOrDefault()?.HasChanged ?? false).ToList()
+					select $"`{result.Platform}`: **{lastChangedTests.Count}**";
+
+				var summary = string.Join(", ", summaryQuery);
+
+				comment.AppendLine("<details>");
+				comment.AppendLine($"<summary>The build {currentBuild} found UI Test snapshots differences: {summary}</summary>\r\n");
+				comment.AppendLine("");
 
 				foreach (var result in results)
 				{
@@ -210,6 +220,8 @@ namespace Umbrella.UI.TestComparer
 						comment.AppendLine("");
 					}
 				}
+
+				comment.AppendLine("</details>");
 			}
 			else
 			{
