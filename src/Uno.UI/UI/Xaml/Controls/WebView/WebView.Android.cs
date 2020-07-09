@@ -252,11 +252,15 @@ namespace Windows.UI.Xaml.Controls
 			public InternalClient(WebView webView)
 			{
 				_webView = webView;
-				//SetLayerType disables hardware acceleration for a single view.
-				//This is required to remove glitching issues particularly when having a keyboard pop-up with a webview present.
-				//http://developer.android.com/guide/topics/graphics/hardware-accel.html
-				//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
-				_webView.SetLayerType(LayerType.Software, null);
+
+				if (FeatureConfiguration.WebView.ForceSoftwareRendering)
+				{
+					//SetLayerType disables hardware acceleration for a single view.
+					//This is required to remove glitching issues particularly when having a keyboard pop-up with a webview present.
+					//http://developer.android.com/guide/topics/graphics/hardware-accel.html
+					//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
+					_webView.SetLayerType(LayerType.Software, null);
+				}
 			}
 
 #pragma warning disable CS0672 // Member overrides obsolete member

@@ -1,6 +1,7 @@
 ﻿#if !NET461
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -27,8 +28,10 @@ namespace Windows.UI.Xaml.Controls
 		private readonly Dictionary<int, Stack<FrameworkElement>> _itemContainerCache = new Dictionary<int, Stack<FrameworkElement>>();
 		/// <summary>
 		/// Caching the id is more efficient, and also important in the case of the ItemsSource changing, when the (former) item may no longer be in the new collection.
+		///
+		/// Key == item index, Value = template id
 		/// </summary>
-		private Dictionary<int, int> _idCache = new Dictionary<int, int>();
+		private readonly Dictionary<int, int> _idCache = new Dictionary<int, int>();
 
 		/// <summary>
 		/// Items that have been temporarily scrapped and can be reused without being rebound.
@@ -195,6 +198,39 @@ namespace Windows.UI.Xaml.Controls
 					// the visual tree, but we should probably go to greater effort to conceal it from, eg, traversals of the visual tree.
 					view.Visibility = Visibility.Collapsed;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Update cache indices for pending collection updates.
+		/// </summary>
+		public void UpdateForCollectionChanges(Queue<CollectionChangedOperation> collectionChanges)
+		{
+			var scrapCacheCopy = _scrapCache.ToList();
+			_scrapCache.Clear();
+			foreach (var kvp in scrapCacheCopy)
+			{
+				if (CollectionChangedOperation.Offset(kvp.Key, collectionChanges) is int finalNewIndexValue)
+				{
+					_scrapCache[finalNewIndexValue] = kvp.Value;
+				}
+				else
+				{
+					// Item has been removed, take out container from scrap so that we don't reuse it without rebinding.
+					// Note: we update scrap before _idCache, so we can access the correct, cached template id in RecycleViewForItem()
+					RecycleViewForItem(kvp.Value, kvp.Key);
+				}
+			}
+
+			var idCacheCopy = _idCache.ToList();
+			_idCache.Clear();
+			foreach (var kvp in idCacheCopy)
+			{
+				if (CollectionChangedOperation.Offset(kvp.Key, collectionChanges) is int finalNewIndexValue)
+				{
+					_idCache[finalNewIndexValue] = kvp.Value;
+				}
+				// else - item has been removed, the cached id is no longer valid so we don't restore it
 			}
 		}
 

@@ -811,8 +811,10 @@ var Uno;
                 const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
                 var style = element.style;
-                style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
+                const matrix = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
+                style.transform = matrix;
                 this.setAsArranged(element);
+                this.setClipToBounds(element, params.ClipToBounds);
                 return true;
             }
             setPointerEvents(htmlId, enabled) {
@@ -1010,6 +1012,15 @@ var Uno;
                     return "";
                 }
                 let src = evt.target;
+                if (src) {
+                    // The XAML SvgElement are UIElement in Uno (so they have a XamlHandle),
+                    // but as on WinUI they are not part of the visual tree, they should not be used as OriginalElement.
+                    // Instead we should use the actual parent <svg /> which is the XAML Shape.
+                    const shape = src.ownerSVGElement;
+                    if (shape) {
+                        src = shape;
+                    }
+                }
                 let srcHandle = "0";
                 while (src) {
                     let handle = src.getAttribute("XamlHandle");
@@ -2475,25 +2486,28 @@ class WindowManagerSetElementTransformParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetElementTransformParams();
         {
-            ret.M11 = Number(Module.getValue(pData + 0, "double"));
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            ret.M12 = Number(Module.getValue(pData + 8, "double"));
+            ret.M11 = Number(Module.getValue(pData + 8, "double"));
         }
         {
-            ret.M21 = Number(Module.getValue(pData + 16, "double"));
+            ret.M12 = Number(Module.getValue(pData + 16, "double"));
         }
         {
-            ret.M22 = Number(Module.getValue(pData + 24, "double"));
+            ret.M21 = Number(Module.getValue(pData + 24, "double"));
         }
         {
-            ret.M31 = Number(Module.getValue(pData + 32, "double"));
+            ret.M22 = Number(Module.getValue(pData + 32, "double"));
         }
         {
-            ret.M32 = Number(Module.getValue(pData + 40, "double"));
+            ret.M31 = Number(Module.getValue(pData + 40, "double"));
         }
         {
-            ret.HtmlId = Number(Module.getValue(pData + 48, "*"));
+            ret.M32 = Number(Module.getValue(pData + 48, "double"));
+        }
+        {
+            ret.ClipToBounds = Boolean(Module.getValue(pData + 56, "i32"));
         }
         return ret;
     }
@@ -2916,6 +2930,7 @@ var Windows;
         Storage.ApplicationDataContainer = ApplicationDataContainer;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
+// eslint-disable-next-line @typescript-eslint/no-namespace
 var Windows;
 (function (Windows) {
     var Storage;
@@ -2949,32 +2964,42 @@ var Windows;
             static setupStorage(path) {
                 if (Uno.UI.WindowManager.isHosted) {
                     console.debug("Hosted Mode: skipping IndexDB initialization");
+                    StorageFolder.onStorageInitialized();
                     return;
                 }
                 if (!this.isIndexDBAvailable()) {
                     console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
+                    StorageFolder.onStorageInitialized();
                     return;
                 }
                 if (typeof IDBFS === 'undefined') {
                     console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
+                    StorageFolder.onStorageInitialized();
                     return;
                 }
                 console.debug("Making persistent: " + path);
                 FS.mkdir(path);
                 FS.mount(IDBFS, {}, path);
-                // Request an initial sync to populate the file system
-                const that = this;
-                FS.syncfs(true, err => {
-                    if (err) {
-                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
-                    }
-                });
                 // Ensure to sync pseudo file system on unload (and periodically for safety)
                 if (!this._isInit) {
+                    // Request an initial sync to populate the file system
+                    FS.syncfs(true, err => {
+                        if (err) {
+                            console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
+                        }
+                        StorageFolder.onStorageInitialized();
+                    });
                     window.addEventListener("beforeunload", this.synchronizeFileSystem);
                     setInterval(this.synchronizeFileSystem, 10000);
                     this._isInit = true;
                 }
+            }
+            static onStorageInitialized() {
+                if (!StorageFolder.dispatchStorageInitialized) {
+                    StorageFolder.dispatchStorageInitialized =
+                        Module.mono_bind_static_method("[Uno] Windows.Storage.StorageFolder:DispatchStorageInitialized");
+                }
+                StorageFolder.dispatchStorageInitialized();
             }
             /**
              * Synchronize the IDBFS memory cache back to IndexDB
@@ -2982,7 +3007,7 @@ var Windows;
             static synchronizeFileSystem() {
                 FS.syncfs(err => {
                     if (err) {
-                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
                     }
                 });
             }
@@ -3283,6 +3308,37 @@ var Windows;
         })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
     })(Networking = Windows.Networking || (Windows.Networking = {}));
 })(Windows || (Windows = {}));
+var WakeLockType;
+(function (WakeLockType) {
+    WakeLockType["screen"] = "screen";
+})(WakeLockType || (WakeLockType = {}));
+;
+;
+;
+var Windows;
+(function (Windows) {
+    var System;
+    (function (System) {
+        var Display;
+        (function (Display) {
+            class DisplayRequest {
+                static activateScreenLock() {
+                    if (navigator.wakeLock) {
+                        DisplayRequest.activeScreenLockPromise = navigator.wakeLock.request(WakeLockType.screen);
+                        DisplayRequest.activeScreenLockPromise.catch(reason => console.log("Could not acquire screen lock (" + reason + ")"));
+                    }
+                }
+                static deactivateScreenLock() {
+                    if (DisplayRequest.activeScreenLockPromise) {
+                        DisplayRequest.activeScreenLockPromise.then(sentinel => sentinel.release());
+                        DisplayRequest.activeScreenLockPromise = null;
+                    }
+                }
+            }
+            Display.DisplayRequest = DisplayRequest;
+        })(Display = System.Display || (System.Display = {}));
+    })(System = Windows.System || (Windows.System = {}));
+})(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
     var System;
@@ -3520,4 +3576,88 @@ var Windows;
             })(Notification = Devices.Notification || (Devices.Notification = {}));
         })(Devices = Phone.Devices || (Phone.Devices = {}));
     })(Phone = Windows.Phone || (Windows.Phone = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            var Media;
+            (function (Media) {
+                var Animation;
+                (function (Animation) {
+                    class RenderingLoopFloatAnimator {
+                        constructor(managedHandle) {
+                            this.managedHandle = managedHandle;
+                            this._isEnabled = false;
+                        }
+                        static createInstance(managedHandle, jsHandle) {
+                            RenderingLoopFloatAnimator.activeInstances[jsHandle] = new RenderingLoopFloatAnimator(managedHandle);
+                        }
+                        static getInstance(jsHandle) {
+                            return RenderingLoopFloatAnimator.activeInstances[jsHandle];
+                        }
+                        static destroyInstance(jsHandle) {
+                            delete RenderingLoopFloatAnimator.activeInstances[jsHandle];
+                        }
+                        SetStartFrameDelay(delay) {
+                            this.unscheduleFrame();
+                            if (this._isEnabled) {
+                                this.scheduleDelayedFrame(delay);
+                            }
+                        }
+                        SetAnimationFramesInterval() {
+                            this.unscheduleFrame();
+                            if (this._isEnabled) {
+                                this.onFrame();
+                            }
+                        }
+                        EnableFrameReporting() {
+                            if (this._isEnabled) {
+                                return;
+                            }
+                            this._isEnabled = true;
+                            this.scheduleAnimationFrame();
+                        }
+                        DisableFrameReporting() {
+                            this._isEnabled = false;
+                            this.unscheduleFrame();
+                        }
+                        onFrame() {
+                            Uno.Foundation.Interop.ManagedObject.dispatch(this.managedHandle, "OnFrame", null);
+                            // Schedule a new frame only if still enabled and no frame was scheduled by the managed OnFrame
+                            if (this._isEnabled && this._frameRequestId == null && this._delayRequestId == null) {
+                                this.scheduleAnimationFrame();
+                            }
+                        }
+                        unscheduleFrame() {
+                            if (this._delayRequestId != null) {
+                                clearTimeout(this._delayRequestId);
+                                this._delayRequestId = null;
+                            }
+                            if (this._frameRequestId != null) {
+                                window.cancelAnimationFrame(this._frameRequestId);
+                                this._frameRequestId = null;
+                            }
+                        }
+                        scheduleDelayedFrame(delay) {
+                            this._delayRequestId = setTimeout(() => {
+                                this._delayRequestId = null;
+                                this.onFrame();
+                            }, delay);
+                        }
+                        scheduleAnimationFrame() {
+                            this._frameRequestId = window.requestAnimationFrame(() => {
+                                this._frameRequestId = null;
+                                this.onFrame();
+                            });
+                        }
+                    }
+                    RenderingLoopFloatAnimator.activeInstances = {};
+                    Animation.RenderingLoopFloatAnimator = RenderingLoopFloatAnimator;
+                })(Animation = Media.Animation || (Media.Animation = {}));
+            })(Media = Xaml.Media || (Xaml.Media = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));

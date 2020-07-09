@@ -636,8 +636,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(bool),
 				typeof(Control),
 				new PropertyMetadata(
-					(bool)true,
-					(s, e) => ((Control)s)?.OnIsFocusableChanged()
+					defaultValue: (bool)true,
+					propertyChangedCallback: (s, e) => ((Control)s)?.OnIsFocusableChanged()
 				)
 			);
 		#endregion

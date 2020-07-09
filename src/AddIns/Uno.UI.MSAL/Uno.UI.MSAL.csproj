@@ -42,7 +42,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Identity.Client" Version="4.14.0" />
+	  <PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.17763'">

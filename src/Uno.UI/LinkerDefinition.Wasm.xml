@@ -41,7 +41,10 @@
       <method name="DispatchAccessRequest" />
       <method name="DispatchGeoposition" />
       <method name="DispatchError" />      
-    </type>    
+    </type>
+	<type fullname="Windows.Storage.StorageFolder">
+	  <method name="DispatchStorageInitialized" />
+	</type>
   </assembly>
   
   <assembly fullname="Uno.Foundation">

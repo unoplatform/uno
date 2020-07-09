@@ -24,6 +24,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Automation;
+using Uno.UI.Xaml;
 
 <# 
 	foreach(var mixin in _mixins) { 
@@ -215,16 +216,6 @@ namespace <#= mixin.NamespaceName #>
 
 		#region Name Dependency Property
 
-		public static readonly DependencyProperty NameProperty =
-			DependencyProperty.Register(
-				"Name",
-				typeof(string),
-				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata("",
-					(s, e) => (s as <#= mixin.ClassName #>).OnNameChanged((string)e.OldValue, (string)e.NewValue)
-				)
-		);
-
 		private void OnNameChanged(string oldValue, string newValue) {
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
@@ -232,187 +223,115 @@ namespace <#= mixin.NamespaceName #>
 			}
 		}
 
+		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
+		public static readonly DependencyProperty NameProperty = CreateNameProperty();
+
 		public virtual string Name
 		{
-			get { return (string)this.GetValue(NameProperty); }
-			set { this.SetValue(NameProperty, value); }
+            get => GetNameValue();
+            set => SetNameValue(value);
 		}
 		#endregion
 
 		#region Margin Dependency Property
-
-		public static readonly DependencyProperty MarginProperty =
-			DependencyProperty.Register(
-				"Margin",
-				typeof(Thickness),
-				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata(Thickness.Empty, OnGenericPropertyUpdated)
-		);
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static readonly DependencyProperty MarginProperty = CreateMarginProperty();
 
 		public virtual Thickness Margin
 		{
-			get { return (Thickness)this.GetValue(MarginProperty); }
-			set { this.SetValue(MarginProperty, value); }
+            get => GetMarginValue();
+            set => SetMarginValue(value);
 		}
+		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
 		#endregion
 
 		#region HorizontalAlignment Dependency Property
 
-		public static readonly DependencyProperty HorizontalAlignmentProperty =
-			DependencyProperty.Register(
-				"HorizontalAlignment",
-				typeof(HorizontalAlignment),
-				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata(HorizontalAlignment.Stretch, OnGenericPropertyUpdated)
-			);
+		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static readonly DependencyProperty HorizontalAlignmentProperty = CreateHorizontalAlignmentProperty();
 
 		public <#= mixin.IsUIControl #> HorizontalAlignment HorizontalAlignment
 		{
-			get { return (HorizontalAlignment)this.GetValue(HorizontalAlignmentProperty); }
-			set { this.SetValue(HorizontalAlignmentProperty, value); }
+            get => GetHorizontalAlignmentValue();
+            set => SetHorizontalAlignmentValue(value);
 		}
 		#endregion
 
 		#region VerticalAlignment Dependency Property
 
-		public static readonly DependencyProperty VerticalAlignmentProperty =
-			DependencyProperty.Register(
-				"VerticalAlignment",
-				typeof(VerticalAlignment),
-				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata(VerticalAlignment.Stretch, OnGenericPropertyUpdated)
-			);
+		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static readonly DependencyProperty VerticalAlignmentProperty = CreateVerticalAlignmentProperty();
 
 		public <#= mixin.IsUIControl #> VerticalAlignment VerticalAlignment
 		{
-			get { return (VerticalAlignment)this.GetValue(VerticalAlignmentProperty); }
-			set { this.SetValue(VerticalAlignmentProperty, value); }
+            get => GetVerticalAlignmentValue();
+            set => SetVerticalAlignmentValue(value);
 		}
 		#endregion
 
 		#region Width Dependency Property
-
-		public static readonly DependencyProperty WidthProperty =
-			DependencyProperty.Register(
-				"Width",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.NaN,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = double.NaN, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static readonly DependencyProperty WidthProperty = CreateWidthProperty();
 
 		public double Width
 		{
-			get { return (double)this.GetValue(WidthProperty); }
-			set { this.SetValue(WidthProperty, value); }
+            get => GetWidthValue();
+            set => SetWidthValue(value);
 		}
 		#endregion
 
 		#region Height Dependency Property
-
-		public static readonly DependencyProperty HeightProperty =
-			DependencyProperty.Register(
-				"Height",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.NaN,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = double.NaN, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static readonly DependencyProperty HeightProperty = CreateHeightProperty();
 
 		public double Height
 		{
-			get { return (double)this.GetValue(HeightProperty); }
-			set { this.SetValue(HeightProperty, value); }
+            get => GetHeightValue();
+            set => SetHeightValue(value);
 		}
 		#endregion
 
 		#region MinWidth Dependency Property
-
-		public static readonly DependencyProperty MinWidthProperty =
-			DependencyProperty.Register(
-				"MinWidth",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = 0.0, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static readonly DependencyProperty MinWidthProperty = CreateMinWidthProperty();
 
 		public double MinWidth
 		{
-			get { return (double)this.GetValue(MinWidthProperty); }
-			set { this.SetValue(MinWidthProperty, value); }
+            get => GetMinWidthValue();
+            set => SetMinWidthValue(value);
 		}
 		#endregion
 
 		#region MinHeight Dependency Property
-
-		public static readonly DependencyProperty MinHeightProperty =
-			DependencyProperty.Register(
-				"MinHeight",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = 0.0, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static readonly DependencyProperty MinHeightProperty = CreateMinHeightProperty();
 
 		public double MinHeight
 		{
-			get { return (double)this.GetValue(MinHeightProperty); }
-			set { this.SetValue(MinHeightProperty, value); }
+            get => GetMinHeightValue();
+            set => SetMinHeightValue(value);
 		}
 		#endregion
 
 		#region MaxWidth Dependency Property
-
-		public static readonly DependencyProperty MaxWidthProperty =
-			DependencyProperty.Register(
-				"MaxWidth",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.PositiveInfinity,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static readonly DependencyProperty MaxWidthProperty = CreateMaxWidthProperty();
 
 		public double MaxWidth
 		{
-			get { return (double)this.GetValue(MaxWidthProperty); }
-			set { this.SetValue(MaxWidthProperty, value); }
+            get => GetMaxWidthValue();
+            set => SetMaxWidthValue(value);
 		}
 		#endregion
 
 		#region MaxHeight Dependency Property
-
-		public static readonly DependencyProperty MaxHeightProperty =
-			DependencyProperty.Register(
-				"MaxHeight",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.PositiveInfinity,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static readonly DependencyProperty MaxHeightProperty = CreateMaxHeightProperty();
 
 		public double MaxHeight
 		{
-			get { return (double)this.GetValue(MaxHeightProperty); }
-			set { this.SetValue(MaxHeightProperty, value); }
+            get => GetMaxHeightValue();
+            set => SetMaxHeightValue(value);
 		}
 		#endregion
 
@@ -502,22 +421,14 @@ namespace <#= mixin.NamespaceName #>
 
 		#region Style DependencyProperty
 
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		public static readonly DependencyProperty StyleProperty = CreateStyleProperty();
+
 		public Style Style
 		{
-			get { return (Style)GetValue(StyleProperty); }
-			set { SetValue(StyleProperty, value); }
+			get => GetStyleValue();
+			set => SetStyleValue(value);
 		}
-
-		public static readonly DependencyProperty StyleProperty =
-			DependencyProperty.Register(
-				"Style", 
-				typeof(Style),
-				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata(
-					null,
-					(s, e) => ((<#= mixin.ClassName #>)s)?.OnStyleChanged((Style)e.OldValue, (Style)e.NewValue)
-				)
-			);
 
 		protected virtual void OnStyleChanged(Style oldValue, Style newValue)
 		{
@@ -659,30 +570,28 @@ namespace <#= mixin.NamespaceName #>
 
 		#region IsEnabled Dependency Property
 
+		[GeneratedDependencyProperty(
+			DefaultValue = true,
+			Options = FrameworkPropertyMetadataOptions.Inherits,
+			ChangedCallback = true
+#if <#= mixin.IsFrameworkElement #>
+			, CoerceCallback = true
+#endif
+		)]
+		public static readonly DependencyProperty IsEnabledProperty = CreateIsEnabledProperty();
+
 		public bool IsEnabled
 		{
-			get { return (bool)this.GetValue(IsEnabledProperty); }
-			set { this.SetValue(IsEnabledProperty, value); }
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
 		}
 
-		public static readonly DependencyProperty IsEnabledProperty =
-			DependencyProperty.Register(
-				"IsEnabled", 
-				typeof(bool), 
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: true,
-					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => {
-						((<#= mixin.ClassName #>)s).OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
-						((<#= mixin.ClassName #>)s).IsEnabledChanged?.Invoke(s, e);
-					}
-#if <#= mixin.IsFrameworkElement #>
-					, coerceValueCallback: (s, v) => (s as FrameworkElement)?.CoerceIsEnabled(v)
-#endif
-				)
-			);
-		
+		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs e)
+		{
+			OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
+			IsEnabledChanged?.Invoke(this, e);
+		}
+
 		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
 		{
 			UserInteractionEnabled = newValue;
@@ -932,23 +841,14 @@ namespace <#= mixin.NamespaceName #>
 		
 		#region Background Dependency Property
 
+		[GeneratedDependencyProperty(DefaultValue = null, Options=FrameworkPropertyMetadataOptions.ValueInheritsDataContext, ChangedCallback = true)]
+		public static readonly DependencyProperty BackgroundProperty = CreateBackgroundProperty();
+
 		public <#= mixin.IsNewBackground #> Brush Background
 		{
-			get { return (Brush)this.GetValue(BackgroundProperty); }
-			set { this.SetValue(BackgroundProperty, value); }
+			get => GetBackgroundValue();
+			set => SetBackgroundValue(value);
 		}
-
-		public static readonly DependencyProperty BackgroundProperty =
-			DependencyProperty.Register(
-				"Background", 
-				typeof(Brush),
-				typeof(<#= mixin.ClassName #>), 
-				new FrameworkPropertyMetadata(
-					null,
-					propertyChangedCallback: (s, e) => ((<#= mixin.ClassName #>)s).OnBackgroundChanged(e),
-					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext
-				)
-			);
 
 		
 		SerialDisposable _brushColorChanged = new SerialDisposable();
@@ -1046,13 +946,13 @@ namespace <#= mixin.NamespaceName #>
 		}
 #endif
 		
-		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
-			OnGenericPropertyUpdatedPartial(dependencyObject, args);
-			((UIView)dependencyObject).SetNeedsLayout();
+			OnGenericPropertyUpdatedPartial(args);
+			SetNeedsLayout();
 		}
 
-		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
+		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 		
 		private static readonly Uri _defaultUri = new Uri("ms-appx:///");
 		public Uri BaseUri { get; internal set; } = _defaultUri;

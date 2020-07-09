@@ -7,14 +7,15 @@ using Uno.Extensions;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
 
-#if __WASM__
+#if __ANDROID__
+using _View = Android.Views.View;
+#elif __IOS__
+using _View = UIKit.UIView;
+#elif __MACOS__
+using _View = AppKit.NSView;
+#elif __WASM__ || NET461
 using _View = Windows.UI.Xaml.UIElement;
-#elif NET461
-using _View = Windows.UI.Xaml.UIElement;
-#else
-using _View = Windows.UI.Xaml.DependencyObject;
 #endif
-
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -42,18 +43,19 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (child is _View childView)
 				{
-					var desiredSize = GetElementDesiredSize(child);
+					var childAsDO = child as DependencyObject;
+					var desiredSize = GetElementDesiredSize(childView);
 
 					var childRect = new Rect
 					{
-						X = GetLeft(childView),
-						Y = GetTop(childView),
+						X = GetLeft(childAsDO),
+						Y = GetTop(childAsDO),
 						Width = desiredSize.Width,
 						Height = desiredSize.Height,
 					};
 
 #if __IOS__
-					child.Layer.ZPosition = (nfloat)GetZIndex(childView);
+					child.Layer.ZPosition = (nfloat)GetZIndex(childAsDO);
 #endif
 
 					ArrangeElement(child, childRect);

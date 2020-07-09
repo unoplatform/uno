@@ -23,6 +23,12 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 	public sealed partial class BasicAutoSuggestBox : UserControl
 	{
 		private ObservableCollection<string> _suggestions = new ObservableCollection<string>();
+		int suggests = 0;
+		int querys = 0;
+		int textChangeds = 0;
+		int userInput = 0;
+		int programmatic = 0;
+		int suggestionChosen = 0;
 
 		public BasicAutoSuggestBox()
 		{
@@ -33,22 +39,43 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 
 		private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
 		{
-			if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-			{
-				if (ShouldClear || _suggestions.Count > 10)
-				{
-					_suggestions.Clear();
-				}
+			textChangeds += 1;
 
-				_suggestions.Add(sender.Text + "1");
-				_suggestions.Add(sender.Text + "2");
+			switch (args.Reason)
+			{
+				case AutoSuggestionBoxTextChangeReason.UserInput:
+					userInput += 1;
+
+					if (ShouldClear || _suggestions.Count > 10)
+					{
+						_suggestions.Clear();
+					}
+
+					_suggestions.Add(sender.Text + "1");
+					_suggestions.Add(sender.Text + "2");
+					box1.ItemsSource = _suggestions;
+					break;
+				case AutoSuggestionBoxTextChangeReason.ProgrammaticChange:
+					programmatic += 1;
+					break;
+				case AutoSuggestionBoxTextChangeReason.SuggestionChosen:
+					suggestionChosen += 1;
+					break;
 			}
-			box1.ItemsSource = _suggestions;
+
+			textChanged.Text = $"{textChangeds}:\n\tUserInputs: {userInput}\n\tProgrammatic Changes: {programmatic}\n\tSuggestions Chosen: {suggestionChosen}";
 		}
 
 		private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
 		{
-			result.Text = args.SelectedItem.ToString();
+			suggests += 1;
+			suggest.Text = "SuggestionChosen: " + suggests + " " + args.SelectedItem.ToString();
+		}
+
+		private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+		{
+			querys += 1;
+			query.Text = "QuerySubmitted: " + querys + " " + args.QueryText;
 		}
 	}
 }

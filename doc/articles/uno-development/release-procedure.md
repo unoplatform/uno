@@ -1,6 +1,6 @@
 # Uno.UI release procedure
 
-Uno.UI uses [GitVersion])(https://gitversion.readthedocs.io/en/latest/) for its versioning, in `mainline` mode for the `release/stable` branches, and **ContinuousDeployment** for the `master` branch.
+Uno.UI uses [GitVersion](https://gitversion.readthedocs.io/en/latest/) for its versioning, in `mainline` mode for the `release/stable` branches, and **ContinuousDeployment** for the `master` branch.
 
 Tagging is the main driver for planning releases.
 
@@ -22,3 +22,9 @@ Tagging is the main driver for planning releases.
 - Once a release is planned, make a branch in `release/stable` (e.g. `release/stable/1.29`), and tag the commit using the requested version (e.g. `1.29`). Tagging will automatically the version in the `master` increased by a **minor** number.
 - Commits to `release/stable/1.29` will automatically keep the `1.29` version.
 - Publish the release on GitHub using the patch number (e.g. `1.29.0` if there where no changes)
+
+## Canaries
+
+A 'canary' in Uno parlance is a version of a real-world application (or class library) that is used to test changes to Uno. There are continuous integration (CI) pipelines configured that consume the latest development builds of Uno and produce new nightly canary versions of applications (eg [Calculator](https://github.com/unoplatform/calculator), [UADO](https://github.com/unoplatform/uado) etc). If the builds of these applications fail then then it's an early signal that overnight a breaking compilation change may have been accidentally introduced into Uno. This style of regression (binary breaking change) is rare as there are API approval tests that are run on every pull-request to master. Typically if a regression slips in then it's something that only integration testing would have picked up - ie. package incompatility between dependencies.
+
+The Uno team does manual QA on canary failures to determine the differences between the canary build and the previous stable version of Uno. Fixes to regressions are resolved as quickly as possible by the team.

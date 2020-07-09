@@ -70,7 +70,7 @@ var MSAL;
                             completeWithError(finalUrlOrMessage);
                         }
                     };
-                    timerSubscription = this.startMonitoringRedirect(win, urlRedirect, onFinalUrlReached);
+                    timerSubscription = WebUI.startMonitoringRedirect(win, urlRedirect, onFinalUrlReached);
                 }
                 catch (e) {
                     completeWithError(`${e}`);

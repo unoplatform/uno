@@ -2,6 +2,8 @@
 
 There are lots of ways to contribute to the Uno Platform, and we appreciate the help from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions.
 
+For a full list of topics, visit our [documentation for contributors](https://platform.uno/docs/articles/uno-development/contributing-intro.html).
+
 Contribute to Uno in your browser using [GitPod.io](https://gitpod.io): [![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno).
 
 ## Code of conduct
@@ -16,27 +18,36 @@ We want to hear about your experience, scenarios, and requirements.
 
 ### Report a bug
 
-If you think you've found a bug, please log a new issue in the [Uno Platform GitHub issue tracker](https://github.com/unoplatform/uno/issues). When filing issues, please use our [bug filing template](https://github.com/unoplatform/uno/blob/master/.github/ISSUE_TEMPLATE/bug-report.md).
+If you think you've found a bug, the first thing to do is [search the existing issues](https://github.com/unoplatform/Uno/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fbug) to check if it's already been reported.
+
+If not, please [log a new bug report](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fbug%2C+triage%2Funtriaged&template=bug-report.md).
 
 The best way to get your bug fixed is to be as detailed as you can be about the problem.
 Providing a minimal project with steps to reproduce the problem is ideal.
 Here are questions you can answer before you file a bug to make sure you're not missing any important information.
 
-1. Did you read the [documentation](https://github.com/unoplatform/uno/tree/master/doc/index.md)?
+1. Did you read the [documentation](https://platform.uno/docs/articles/intro.html)?
 2. Did you include the snippet of the broken code in the issue?
 3. What are the *EXACT* steps to reproduce this problem?
 4. What specific version or build are you using?
 5. What operating system are you using?
+6. What platform(s) are you targeting?
 
-GitHub supports [markdown](https://help.github.com/articles/github-flavored-markdown/), so when filing bugs make sure you check the formatting before clicking submit.
+GitHub supports [Markdown](https://help.github.com/articles/github-flavored-markdown/), so when filing issues, be sure to check the formatting in the 'Preview' tab before hitting submit.
 
-### Make a suggestion
+### Request a feature
 
-If you have an idea for a new feature or enhancement, let us know by filing an [issue](https://github.com/unoplatform/uno/issues). To help us understand and prioritize your idea, please provide as much detail about your scenario and why the feature or enhancement would be useful.
+If you need a [UWP feature](https://docs.microsoft.com/en-us/uwp/api/) or [WinUI feature](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls) that Uno doesn't support yet, you should [submit a feature request](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fenhancement%2C+triage%2Funtriaged&template=enhancement.md). Check [existing issues first](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fenhancement) in case the same feature request already exists (in which case you can upvote the existing issue).
 
-### Ask questions
+To help us understand and prioritize your idea, please provide as much detail about your scenario and why the feature or enhancement would be useful.
 
-If you have a question, be sure first to check out our [documentation](https://github.com/unoplatform/uno/tree/master/doc/index.md). But if you are still stuck, you'll have a better chance of getting help on [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) and we'll do our best to answer it. Questions asked there should be tagged with `uno-platform.`
+Wherever we possible we prefer to implement UWP/WinUI APIs for maximum cross-platform compatibility and existing code support, but for features/functionality not covered by UWP's API, the same feature request process applies.
+
+### Ask (and answer) questions
+
+If you have a question, be sure first to check out our [documentation](https://platform.uno/docs/articles/intro.html). But if you are still stuck, you'll have a better chance of getting help on [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) and we'll do our best to answer it. Questions asked there should be tagged with `uno-platform.`
+
+If you've already done some Uno development, maybe there's a StackOverflow question you can answer, giving another user the benefit of your experience.
 
 For a more direct conversation, [visit our Discord Channel #uno-platform](https://discord.gg/eBHZSKG).
 
@@ -59,6 +70,8 @@ If you are an outside contributor, please fork the Uno Platform repository you w
 If you don't know what a pull request is read this article: https://help.github.com/articles/using-pull-requests. Make sure the repository can build and all tests pass, as well as follow the current coding guidelines.
 
 Pull requests should all be made to the **master** branch.
+
+All commits **must** be in the [Conventional Commits format](doc\articles\uno-development\git-conventional-commits.md). We use this to automatically generate release notes for new releases.
 
 **Commit/Pull Request Format**
 

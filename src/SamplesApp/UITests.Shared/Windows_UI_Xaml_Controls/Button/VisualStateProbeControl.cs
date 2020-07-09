@@ -35,7 +35,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 
 		// Using a DependencyProperty as the backing store for ProbeLabel.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ProbeLabelProperty =
-			DependencyProperty.Register("ProbeLabel", typeof(string), typeof(VisualStateProbeControl), new PropertyMetadata("", (o, e) => ((VisualStateProbeControl)o).ApplyValue()));
+			DependencyProperty.Register("ProbeLabel", typeof(string), typeof(VisualStateProbeControl), new PropertyMetadata(defaultValue: "", propertyChangedCallback: (o, e) => ((VisualStateProbeControl)o).ApplyValue()));
 
 		private void OnCurrentStateChanged(string newValue)
 		{

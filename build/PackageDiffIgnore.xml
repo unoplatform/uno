@@ -1060,6 +1060,9 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)"
 				reason="Not part of the WinUI API." />
+			<Member
+					fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Storage.StorageFile&gt; Windows.Storage.StorageFolder.CreateFileAsync(System.String path, Windows.Storage.CreationCollisionOption option)"
+					reason="UWP alignment" />
 			<!-- Styles overhaul -->
 			<Member
 				fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnStyleChanged(Windows.UI.Xaml.Style oldStyle, Windows.UI.Xaml.Style newStyle)"
@@ -1110,6 +1113,24 @@
 			<Member 
 				fullName="System.Int32 Windows.UI.Text.FontWeight.get_Weight()"
 				reason="Changed from int to ushort to replicate uwp definition"/>
+			<Member
+				fullName="System.Void Windows.Devices.Sensors.HingeAngleSensor..ctor()"
+				reason="Constructor not part of UWP API" />
+			<Member
+				fullName="System.Void Windows.Devices.Sensors.Pedometer..ctor()"
+				reason="Constructor not part of UWP API" />
+			<Member
+				fullName="System.Void Windows.Devices.Sensors.Accelerometer..ctor()"
+				reason="Constructor not part of UWP API" />
+			<Member
+				fullName="System.Void Windows.Devices.Sensors.Barometer..ctor()"
+				reason="Constructor not part of UWP API" />
+			<Member
+				fullName="System.Void Windows.Devices.Sensors.Gyrometer..ctor()"
+				reason="Constructor not part of UWP API" />
+			<Member
+				fullName="System.Void Windows.Devices.Sensors.Magnetometer..ctor()"
+				reason="Constructor not part of UWP API" />															
 		</Methods>
 
 		<Properties>

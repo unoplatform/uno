@@ -16,6 +16,7 @@ namespace SamplesApp.UITests
 	{
 		protected IApp _app;
 		private static int _totalTestFixtureCount;
+		private double? _scaling;
 
 		public SampleControlUITestBase()
 		{
@@ -267,6 +268,26 @@ namespace SamplesApp.UITests
 			{
 				return _app.GetScreenDimensions();
 			}
+		}
+
+		internal double GetDisplayScreenScaling()
+		{
+			var scalingRaw = _app.InvokeGeneric("browser:SampleRunner|GetDisplayScreenScaling", "0");
+
+			if (_scaling == null)
+			{
+				if (double.TryParse(scalingRaw?.ToString(), out var scaling))
+				{
+					Console.WriteLine($"Display Scaling: {scaling}");
+					_scaling = scaling / 100;
+				}
+				else
+				{
+					_scaling = 1;
+				}
+			}
+
+			return _scaling.Value;
 		}
 	}
 }

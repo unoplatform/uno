@@ -1389,6 +1389,23 @@ namespace Uno.UI.Tests.BinderTests
 			changes.Count.Should().Be(4);
 			changes.Last().NewValue.Should().Be(42);
 		}
+
+		[TestMethod]
+		public void When_Set_Within_Style_Application()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var button = new Button();
+			button.RegisterPropertyChangedCallback(Button.PaddingProperty, (o, e) =>
+			{
+				button.Content = "Frogurt";
+			});
+
+			app.HostView.Children.Add(button); // Causes default style to be applied
+
+			var localContent = button.ReadLocalValue(Button.ContentProperty);
+			Assert.AreEqual("Frogurt", localContent);
+		}
 	}
 
 	#region DependencyObjects

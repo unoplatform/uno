@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Display
 {
-	#if false || false || NET461 || __WASM__ || false
+	#if false || false || NET461 || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DisplayRequest 
 	{
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public DisplayRequest() 
 		{
@@ -15,14 +15,14 @@ namespace Windows.System.Display
 		}
 		#endif
 		// Forced skipping of method Windows.System.Display.DisplayRequest.DisplayRequest()
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  void RequestActive()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Display.DisplayRequest", "void DisplayRequest.RequestActive()");
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  void RequestRelease()
 		{

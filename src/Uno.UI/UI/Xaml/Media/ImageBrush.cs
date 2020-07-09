@@ -48,11 +48,11 @@ namespace Windows.UI.Xaml.Media
 
 		#region Stretch DP
 		public static readonly DependencyProperty StretchProperty =
-		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new PropertyMetadata(Stretch.Fill, null));
+		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new PropertyMetadata(defaultValue: Stretch.Fill, propertyChangedCallback: null));
 
 #if __WASM__
 		[NotImplemented]
-#endif
+#endif		
 		public Stretch Stretch
 		{
 			get => (Stretch)this.GetValue(StretchProperty);
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Media
 
 		#region ImageSource DP
 		public static DependencyProperty ImageSourceProperty { get; } =
-			DependencyProperty.Register("ImageSource", typeof(ImageSource), typeof(ImageBrush), new PropertyMetadata(null, (s, e) =>
+			DependencyProperty.Register("ImageSource", typeof(ImageSource), typeof(ImageBrush), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) =>
 			((ImageBrush)s).OnSourceChangedPartial((ImageSource)e.NewValue, (ImageSource)e.OldValue)));
 
 		public ImageSource ImageSource

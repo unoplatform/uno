@@ -750,13 +750,14 @@ declare class WindowManagerSetContentHtmlParams {
     static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
 }
 declare class WindowManagerSetElementTransformParams {
+    HtmlId: number;
     M11: number;
     M12: number;
     M21: number;
     M22: number;
     M31: number;
     M32: number;
-    HtmlId: number;
+    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerSetElementTransformParams;
 }
 declare class WindowManagerSetNameParams {
@@ -920,6 +921,7 @@ declare namespace Windows.Storage {
 declare namespace Windows.Storage {
     class StorageFolder {
         private static _isInit;
+        private static dispatchStorageInitialized;
         /**
          * Determine if IndexDB is available, some browsers and modes disable it.
          * */
@@ -932,6 +934,7 @@ declare namespace Windows.Storage {
          * Setup the storage persistence of a given path.
          * */
         static setupStorage(path: string): void;
+        private static onStorageInitialized;
         /**
          * Synchronize the IDBFS memory cache back to IndexDB
          * */
@@ -1013,6 +1016,25 @@ declare namespace Windows.Networking.Connectivity {
         static networkStatusChanged(): void;
     }
 }
+interface Navigator {
+    wakeLock: WakeLock;
+}
+declare enum WakeLockType {
+    screen = "screen"
+}
+interface WakeLock {
+    request(type: WakeLockType): Promise<WakeLockSentinel>;
+}
+interface WakeLockSentinel {
+    release(): Promise<void>;
+}
+declare namespace Windows.System.Display {
+    class DisplayRequest {
+        private static activeScreenLockPromise;
+        static activateScreenLock(): void;
+        static deactivateScreenLock(): void;
+    }
+}
 interface Window {
     opr: any;
     opera: any;
@@ -1077,5 +1099,26 @@ declare namespace Windows.Phone.Devices.Notification {
     class VibrationDevice {
         static initialize(): boolean;
         static vibrate(duration: number): boolean;
+    }
+}
+declare namespace Windows.UI.Xaml.Media.Animation {
+    class RenderingLoopFloatAnimator {
+        private managedHandle;
+        private static activeInstances;
+        static createInstance(managedHandle: string, jsHandle: number): void;
+        static getInstance(jsHandle: number): RenderingLoopFloatAnimator;
+        static destroyInstance(jsHandle: number): void;
+        private constructor();
+        SetStartFrameDelay(delay: number): void;
+        SetAnimationFramesInterval(): void;
+        EnableFrameReporting(): void;
+        DisableFrameReporting(): void;
+        private onFrame;
+        private unscheduleFrame;
+        private scheduleDelayedFrame;
+        private scheduleAnimationFrame;
+        private _delayRequestId?;
+        private _frameRequestId?;
+        private _isEnabled;
     }
 }
