@@ -1016,6 +1016,25 @@ declare namespace Windows.Networking.Connectivity {
         static networkStatusChanged(): void;
     }
 }
+interface Navigator {
+    wakeLock: WakeLock;
+}
+declare enum WakeLockType {
+    screen = "screen"
+}
+interface WakeLock {
+    request(type: WakeLockType): Promise<WakeLockSentinel>;
+}
+interface WakeLockSentinel {
+    release(): Promise<void>;
+}
+declare namespace Windows.System.Display {
+    class DisplayRequest {
+        private static activeScreenLockPromise;
+        static activateScreenLock(): void;
+        static deactivateScreenLock(): void;
+    }
+}
 interface Window {
     opr: any;
     opera: any;
