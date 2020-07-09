@@ -141,8 +141,8 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(ItemTemplateProperty, value); }
 		}
 
-		public static DependencyProperty ItemTemplateProperty { get ; } =
-			DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(ListView), new FrameworkPropertyMetadata(defaultValue: default(DataTemplate), propertyChangedCallback: (d, s) => (d as ListView)?.OnItemTemplateChanged()));
+		public static DependencyProperty ItemTemplateProperty { get; } =
+			DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(ListView), new FrameworkPropertyMetadata(defaultValue: default(DataTemplate), options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, propertyChangedCallback: (d, s) => (d as ListView)?.OnItemTemplateChanged()));
 
 		private void OnItemTemplateChanged()
 		{
@@ -160,8 +160,8 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(HeaderTemplateProperty, value); }
 		}
 
-		public static DependencyProperty HeaderTemplateProperty { get ; } =
-			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(ListView), new FrameworkPropertyMetadata(defaultValue: default(DataTemplate), propertyChangedCallback: (d, s) => (d as ListView)?.OnHeaderTemplateChanged()));
+		public static DependencyProperty HeaderTemplateProperty { get; } =
+			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(ListView), new FrameworkPropertyMetadata(defaultValue: default(DataTemplate), options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, propertyChangedCallback: (d, s) => (d as ListView)?.OnHeaderTemplateChanged()));
 
 		private void OnHeaderTemplateChanged()
 		{
@@ -179,8 +179,8 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(FooterTemplateProperty, value); }
 		}
 
-		public static DependencyProperty FooterTemplateProperty { get ; } =
-			DependencyProperty.Register("FooterTemplate", typeof(DataTemplate), typeof(ListView), new FrameworkPropertyMetadata(defaultValue: default(DataTemplate), propertyChangedCallback: (d, s) => (d as ListView)?.OnFooterTemplateChanged()));
+		public static DependencyProperty FooterTemplateProperty { get; } =
+			DependencyProperty.Register("FooterTemplate", typeof(DataTemplate), typeof(ListView), new FrameworkPropertyMetadata(defaultValue: default(DataTemplate), options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, propertyChangedCallback: (d, s) => (d as ListView)?.OnFooterTemplateChanged()));
 
 		private void OnFooterTemplateChanged()
 		{

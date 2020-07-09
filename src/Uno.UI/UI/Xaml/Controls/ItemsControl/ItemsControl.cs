@@ -185,6 +185,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ItemsControl),
 				new FrameworkPropertyMetadata(
 					(DataTemplate)null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					(s, e) => ((ItemsControl)s)?.OnItemTemplateChanged((DataTemplate)e.OldValue, (DataTemplate)e.NewValue)
 				)
 			);

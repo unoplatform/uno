@@ -93,6 +93,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					(s, e) => ((ContentPresenter)s)?.OnContentTemplateChanged(e.OldValue as DataTemplate, e.NewValue as DataTemplate)
 				)
 			);

@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"TitleTemplate", typeof(DataTemplate),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(default(DataTemplate)));
+			new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty CloseButtonCommandParameterProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(

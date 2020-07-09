@@ -487,7 +487,9 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("HeaderTemplate",
 				typeof(DataTemplate),
 				typeof(TextBox),
-				new FrameworkPropertyMetadata(defaultValue: null,
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnHeaderChanged()
 				)
 			);

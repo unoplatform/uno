@@ -608,8 +608,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for HeaderTemplate.  This enables animation, styling, binding, etc...
-		public static DependencyProperty HeaderTemplateProperty { get ; } =
-			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(Slider), new FrameworkPropertyMetadata(null, (s, e) => ((Slider)s)?.OnHeaderTemplateChanged(e)));
+		public static DependencyProperty HeaderTemplateProperty { get; } =
+			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(Slider), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => ((Slider)s)?.OnHeaderTemplateChanged(e)));
 
 
 		private void OnHeaderTemplateChanged(DependencyPropertyChangedEventArgs e)
