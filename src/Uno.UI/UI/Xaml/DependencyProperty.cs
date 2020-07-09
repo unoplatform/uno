@@ -44,7 +44,6 @@ namespace Windows.UI.Xaml
 		private readonly bool _isAttached;
 		private readonly bool _isTypeNullable;
 		private readonly int _uniqueId;
-		private readonly bool _hasAutoDataContextInherit;
 		private readonly bool _isDependencyObjectCollection;
 		private readonly bool _hasWeakStorage;
 		private object _fallbackDefaultValue;
@@ -57,7 +56,6 @@ namespace Windows.UI.Xaml
 			_propertyType = propertyType;
 			_ownerType = attached || IsTypeDependencyObject(ownerType) ? ownerType : typeof(_View);
 			_isAttached = attached;
-			_hasAutoDataContextInherit = CanAutoInheritDataContext(propertyType);
 			_isDependencyObjectCollection = typeof(DependencyObjectCollection).IsAssignableFrom(propertyType);
 			_isTypeNullable = propertyType.IsNullableCached();
 			_uniqueId = Interlocked.Increment(ref _globalId);
@@ -69,19 +67,6 @@ namespace Windows.UI.Xaml
 			// Improve the performance of the hash code by
 			CachedHashCode = _name.GetHashCode() ^ ownerType.GetHashCode();
 		}
-
-		/// <summary>
-		/// Determines of the provided property type can inherit a DataContext.
-		/// </summary>
-		/// <remarks>
-		/// The types checked by this method are generally types that do not contain any
-		/// dependency property, or that cannot be used in a data binding context. Those types
-		/// are forcibly ignored, even if they inherit from <see cref="DependencyObject"/>.
-		/// </remarks>
-		private static bool CanAutoInheritDataContext(Type propertyType)
-			=> typeof(DependencyObject).IsAssignableFrom(propertyType)
-			&& propertyType != typeof(Style)
-			&& !typeof(FrameworkTemplate).IsAssignableFrom(propertyType);
 
 		/// <summary>
 		/// Provides a unique identifier for the dependency property lookup
@@ -270,11 +255,6 @@ namespace Windows.UI.Xaml
 
 		internal object GetFallbackDefaultValue()
 			=> _fallbackDefaultValue != null ? _fallbackDefaultValue : _fallbackDefaultValue = Activator.CreateInstance(Type);
-
-		/// <summary>
-		/// Determines if the Type of the property is a <see cref="DependencyObject"/>
-		/// </summary>
-		internal bool HasAutoDataContextInherit => _hasAutoDataContextInherit;
 
 		internal string Name
 		{
@@ -501,11 +481,9 @@ namespace Windows.UI.Xaml
 
 				if (
 					(
-						prop.HasAutoDataContextInherit
-
 						// We must include explicitly marked properties for now, until the
 						// metadata generator can provide this information.
-						|| propertyOptions.HasValueInheritsDataContext()
+						propertyOptions.HasValueInheritsDataContext()
 					)
 					&& !propertyOptions.HasValueDoesNotInheritDataContext()
 				)
