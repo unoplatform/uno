@@ -332,9 +332,9 @@ namespace Windows.UI.Xaml.Controls
 
 		#region FastPlayFallbackBehaviour Property
 
-		public bool FastPlayFallbackBehaviour
+		public Media.FastPlayFallbackBehaviour FastPlayFallbackBehaviour
 		{
-			get { return (bool)GetValue(FastPlayFallbackBehaviourProperty); }
+			get { return (Media.FastPlayFallbackBehaviour)GetValue(FastPlayFallbackBehaviourProperty); }
 			set { SetValue(FastPlayFallbackBehaviourProperty, value); }
 		}
 
