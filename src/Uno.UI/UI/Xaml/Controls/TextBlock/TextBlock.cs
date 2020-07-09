@@ -417,6 +417,9 @@ namespace Windows.UI.Xaml.Controls
 				candidate = candidate?.GetParent();
 			}			
 
+			// We set values defined by the nearest explicit provider of Foreground
+			// as ImplicitStyle to ensure that the value overrides the inherited value,
+			// as RequestedTheme must "break" the inheritance
 			if (candidate != null)
 			{
 				var foregroundSource = (FrameworkElement)candidate;
