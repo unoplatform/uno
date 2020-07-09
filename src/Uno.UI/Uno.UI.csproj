@@ -46,56 +46,31 @@
 		<Compile Remove="Mixins\**\*.cs" />
 		<None Include="Mixins\**\*.cs" />
 
-		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" Condition="$(IsMonoAndroid)">
+		<Compile Include="Mixins\*.g.cs" />
+		<Compile Include="Mixins\Android\**\*.g.cs" Condition="$(IsMonoAndroid)" />
+		<Compile Include="Mixins\macOS\**\*.g.cs" Condition="$(IsXamarinMac)" />
+		<Compile Include="Mixins\iOS\**\*.g.cs" Condition="$(IsXamarinIOS)" />
+		<Compile Include="Mixins\net461\**\*.g.cs" Condition="'$(TargetFramework)'=='net461'" />
+		<Compile Include="Mixins\Wasm\**\*.g.cs" Condition="'$(TargetFramework)'=='netstandard2.0'" />
+
+		<None Update="**\*.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>%(RecursiveDir)%(Filename).g.cs</LastGenOutput>
+		</None>
+
+		<Compile Update="**\*.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
-			<DependentUpon>BaseActivity.Callbacks.tt</DependentUpon>
+			<DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
 		</Compile>
-		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" Condition="$(IsMonoAndroid)">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>FrameworkElementMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\Android\VisualStatesMixins.g.cs" Condition="$(IsMonoAndroid)">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\DependencyPropertyMixins.g.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>DependencyPropertyMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinMac)">
-			<DependentUpon>FrameworkElementMixins.tt</DependentUpon>
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-		</Compile>
-		<Compile Include="Mixins\macOS\VisualStatesMixins.g.cs" Condition="$(IsXamarinMac)">
-			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-		</Compile>
-		<Compile Include="Mixins\iOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinIOS)">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>FrameworkElementMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\iOS\VisualStatesMixins.g.cs" Condition="$(IsXamarinIOS)">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\net461\VisualStatesMixins.g.cs" Condition="'$(TargetFramework)'=='net461'">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\Wasm\VisualStatesMixins.g.cs" Condition="'$(TargetFramework)'=='netstandard2.0'">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
-		</Compile>
+		<None Update="**\*.g.cs">
+			<DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
+		</None>
+
+		<None Remove="UI\Xaml\DependencyPropertiesImplementation.cs" />
+		<Compile Remove="UI\Xaml\DependencyPropertiesImplementation.cs" />
+		<None Remove="UI\Xaml\IFrameworkElementImplementation.*.cs" />
+		<Compile Remove="UI\Xaml\IFrameworkElementImplementation.*.cs" />
 	</ItemGroup>
 
 	<Choose>
@@ -124,33 +99,6 @@
 		<None Include="Resources\AboutResources.txt" />
 		<None Include="Resources\Values\Attrs.xml" />
 		<None Include="Resources\Values\Styles.xml" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Mixins\Android\BaseActivity.Callbacks.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>BaseActivity.Callbacks.g.cs</LastGenOutput>
-		</None>
-		<None Include="Mixins\Android\FrameworkElementMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-		</None>
-		<None Include="Mixins\Android\VisualStatesMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
-		<None Include="Mixins\DependencyPropertyMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>DependencyPropertyMixins.g.cs</LastGenOutput>
-		</None>
-		<None Include="Mixins\iOS\FrameworkElementMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-		</None>
-		<None Include="Mixins\iOS\VisualStatesMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
 		<None Include="Resources\IResourceRegistry.cs" />
 		<None Include="Resources\ResourceRegistry.cs" />
 		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />
@@ -345,50 +293,6 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>BaseActivity.Callbacks.Implementation.Android.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\Android\FrameworkElementMixins.g.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
-	  </None>
-	  <None Update="UI\Xaml\Controls\ProgressRing\ProgressRing.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="Mixins\Android\FrameworkElementMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\Android\VisualStatesMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\macOS\FrameworkElementMixins.g.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
-	  </None>
-	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\macOS\VisualStatesMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\net461\VisualStatesMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
 	</ItemGroup>
 
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
