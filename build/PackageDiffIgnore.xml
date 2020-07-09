@@ -1130,7 +1130,16 @@
 				reason="Constructor not part of UWP API" />
 			<Member
 				fullName="System.Void Windows.Devices.Sensors.Magnetometer..ctor()"
-				reason="Constructor not part of UWP API" />															
+				reason="Constructor not part of UWP API" />
+			<Member
+				fullName="System.Void Windows.Media.Playback.MediaPlaybackSession..ctor()"
+				reason="Constructor not part of UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.MediaTransportControls.get_FastPlayFallbackBehaviour()"
+				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.MediaTransportControls.set_FastPlayFallbackBehaviour(System.Boolean value)"
+				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition" />				
 		</Methods>
 
 		<Properties>
@@ -1148,6 +1157,9 @@
 			<Member 
 				fullName="System.Int32 Windows.UI.Text.FontWeight::Weight()"
 				reason="Changed from int to ushort to replicate uwp definition"/>	
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.MediaTransportControls::FastPlayFallbackBehaviour()"
+				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition"/>
 		</Properties>
 
 		<Fields>
