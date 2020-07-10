@@ -294,7 +294,12 @@ declare namespace Uno.UI {
         resetStyleNative(pParams: number): boolean;
         private resetStyleInternal;
         /**
-         * Set CSS classes on an element
+         * Set + Unset CSS classes on an element
+         */
+        setUnsetClasses(elementId: number, cssClassesToSet: string[], cssClassesToUnset: string[]): void;
+        setUnsetClassesNative(pParams: number): boolean;
+        /**
+         * Set CSS classes on an element from a specified list
          */
         setClasses(elementId: number, cssClassesList: string[], classIndex: number): string;
         setClassesNative(pParams: number): boolean;
@@ -795,6 +800,14 @@ declare class WindowManagerSetSvgElementRectParams {
     Height: number;
     HtmlId: number;
     static unmarshal(pData: number): WindowManagerSetSvgElementRectParams;
+}
+declare class WindowManagerSetUnsetClassesParams {
+    HtmlId: number;
+    CssClassesToSet_Length: number;
+    CssClassesToSet: Array<string>;
+    CssClassesToUnset_Length: number;
+    CssClassesToUnset: Array<string>;
+    static unmarshal(pData: number): WindowManagerSetUnsetClassesParams;
 }
 declare class WindowManagerSetXUidParams {
     HtmlId: number;
