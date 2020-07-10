@@ -17,11 +17,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // Disabled for Browser because of missing top level .All() support
 		public void When_Visibility_Changed_During_Arrange()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Visibility_Arrange");
 
-			var textBlock = _app.Marked("SubjectTextBlock");
+			QueryEx textBlock = new QueryEx(q => q.All().Marked("SubjectTextBlock"));
 
 			_app.WaitForElement(textBlock);
 
