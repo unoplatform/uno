@@ -51,5 +51,7 @@ namespace Windows.UI.Xaml.Controls
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+
+		private protected override Thickness GetBorderThickness() => BorderThickness;
 	}
 }

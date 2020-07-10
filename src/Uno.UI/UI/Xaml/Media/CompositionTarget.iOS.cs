@@ -41,7 +41,12 @@ namespace Windows.UI.Xaml.Media
 
 		private static void OnFrame()
 		{
-			_handlers.ToList().ForEach(h => h(null, null));
+			var handlers = _handlers.ToList();
+			foreach (var handler in handlers)
+			{
+				handler(null, null);
+			}
+
 		}
 	}
 }

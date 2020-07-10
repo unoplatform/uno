@@ -111,7 +111,7 @@ namespace Uno.UI
 				}
 			}
 
-			(owner as IDependencyObjectStoreProvider).Store.SetBinding(property, new ResourceBinding(resourceKey, isThemeResourceExtension));
+			(owner as IDependencyObjectStoreProvider).Store.SetBinding(property, new ResourceBinding(resourceKey, isThemeResourceExtension, context));
 		}
 
 		/// <summary>
@@ -123,7 +123,7 @@ namespace Uno.UI
 			{
 				var dictionary = (source.Target as FrameworkElement)?.Resources
 					?? source.Target as ResourceDictionary;
-				if (dictionary != null && dictionary.TryGetValue(resourceKey, out value))
+				if (dictionary != null && dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 				{
 					return true;
 				}
@@ -136,18 +136,19 @@ namespace Uno.UI
 			}
 			return topLevel;
 		}
+
 		/// <summary>
 		/// Tries to retrieve a resource from top-level resources (Application-level and system level).
 		/// </summary>
 		/// <param name="resourceKey">The resource key</param>
 		/// <param name="value">Out parameter to which the retrieved resource is assigned.</param>
 		/// <returns>True if the resource was found, false if not.</returns>
-		private static bool TryTopLevelRetrieval(object resourceKey, object context, out object value)
+		internal static bool TryTopLevelRetrieval(object resourceKey, object context, out object value)
 		{
 			value = null;
-			return (Application.Current?.Resources.TryGetValue(resourceKey, out value) ?? false) ||
+			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false) ||
 				TryAssemblyResourceRetrieval(resourceKey, context, out value) ||
-				MasterDictionary.TryGetValue(resourceKey, out value);
+				TrySystemResourceRetrieval(resourceKey, out value);
 		}
 
 		/// <summary>
@@ -172,7 +173,7 @@ namespace Uno.UI
 				foreach (var kvp in assemblyDict)
 				{
 					var rd = kvp.Value as ResourceDictionary;
-					if (rd.TryGetValue(resourceKey, out value))
+					if (rd.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 					{
 						return true;
 					}
@@ -183,6 +184,13 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// Try to retrieve a resource value from system-level resources.
+		/// </summary>
+		internal static bool TrySystemResourceRetrieval(object resourceKey, out object value) => MasterDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false);
+
+		internal static bool ContainsKeySystem(object resourceKey) => MasterDictionary.ContainsKey(resourceKey, shouldCheckSystem: false);
+
+		/// <summary>
 		/// Get a system-level resource with the given key.
 		/// </summary>
 		/// <remarks>
@@ -191,7 +199,7 @@ namespace Uno.UI
 		/// </remarks>
 		internal static T GetSystemResource<T>(object key)
 		{
-			if (MasterDictionary.TryGetValue(key, out var value) && value is T t)
+			if (MasterDictionary.TryGetValue(key, out var value, shouldCheckSystem: false) && value is T t)
 			{
 				return t;
 			}

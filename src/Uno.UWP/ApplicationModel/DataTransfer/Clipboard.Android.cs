@@ -28,13 +28,15 @@ namespace Windows.ApplicationModel.DataTransfer
 				items.Add(new ClipData.Item(content.Text));
 				mimeTypes.Add("text/plaintext");
 			}
-			else if (content.Uri != null)
+			
+			if (content.Uri != null)
 			{
 				var androidUri = Android.Net.Uri.Parse(content.Uri.ToString());
 				items.Add(new ClipData.Item(androidUri));
 				mimeTypes.Add("text/uri-list");
 			}
-			else if (content.Html != null)
+			
+			if (content.Html != null)
 			{
 				// Matches all tags
 				Regex regex = new Regex("(<.*?>\\s*)+", RegexOptions.Singleline);

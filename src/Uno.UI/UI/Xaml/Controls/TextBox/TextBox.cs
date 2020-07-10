@@ -633,10 +633,15 @@ namespace Windows.UI.Xaml.Controls
 			//		 AND ** only KeyDown ** is handled (not KeyUp)
 			switch (args.Key)
 			{
-				case VirtualKey.Left:
-				case VirtualKey.Right:
 				case VirtualKey.Up:
 				case VirtualKey.Down:
+					if (AcceptsReturn)
+					{
+						args.Handled = true;
+					}
+					break;
+				case VirtualKey.Left:
+				case VirtualKey.Right:
 				case VirtualKey.Home:
 				case VirtualKey.End:
 					args.Handled = true;

@@ -45,7 +45,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (IsLoaded)
 			{
-				backgroundImage = backgroundImage ?? (Background as ImageBrush)?.ImageSource?.ImageData;
+				if (backgroundImage == null)
+				{
+					(Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImage);
+				}
 
 				BoundsPath = _borderRenderer.UpdateLayer(
 					this,

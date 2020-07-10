@@ -462,7 +462,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 		public async Task ValidateLayoutRoundingForPixelDimensions()
 		{
 			TestCleanupWrapper cleanup;
-			Rectangle child = null;
+			Border child = null;
 
 			await TestServices.RunOnUIThread(() =>
 			{
@@ -474,7 +474,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 				column2.Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star);
 				grid.ColumnDefinitions.Add(column1);
 				grid.ColumnDefinitions.Add(column2);
-				child = new Rectangle();
+				child = new Border();
 
 				grid.Children.Add(child);
 				Grid.SetColumnSpan(child, 2);
@@ -664,7 +664,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 		public async Task CanAutoSizeCellDefaultToZero()
 		{
 			TestCleanupWrapper cleanup;
-			Rectangle child = null;
+			Border child = null;
 
 			await TestServices.RunOnUIThread(() =>
 			{
@@ -684,7 +684,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 					"  </Grid.RowDefinitions>" +
 
 					"</Grid>"));
-				child = new Rectangle();
+				child = new Border();
 
 				grid.Children.Add(child);
 				TestServices.WindowHelper.WindowContent = grid;

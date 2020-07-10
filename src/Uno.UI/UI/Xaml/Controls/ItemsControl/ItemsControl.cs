@@ -1132,7 +1132,7 @@ namespace Windows.UI.Xaml.Controls
 		public DependencyObject ContainerFromItem(object item)
 		{
 			var index = IndexFromItem(item);
-			return MaterializedContainers.FirstOrDefault(container => Equals(container.GetValue(IndexForItemContainerProperty), index));
+			return index == -1 ? null : MaterializedContainers.FirstOrDefault(container => Equals(IndexFromContainer(container), index));
 		}
 
 		public int IndexFromContainer(DependencyObject container)

@@ -85,7 +85,7 @@
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinmac20\Uno.UI.RemoteControl.pdb" target="lib\xamarinmac20" />
 
 	<!-- Remote Control host and integration -->
-    <file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\netcoreapp2.2\*.*" target="tools\rc\host" />
+    <file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\netcoreapp3.1\*.*" target="tools\rc\host" />
     <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.dll" target="tools\rc" />
     <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.pdb" target="tools\rc" />
     <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\Newtonsoft.Json.dll" target="tools\rc" />

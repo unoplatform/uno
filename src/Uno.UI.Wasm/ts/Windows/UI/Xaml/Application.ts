@@ -17,7 +17,7 @@
 
 		public static observeSystemTheme() {
 			if (!this.dispatchThemeChange) {
-				this.dispatchThemeChange = (<any>Module).mono_bind_static_method("[Uno] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
+				this.dispatchThemeChange = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
 			}
 
 			if (window.matchMedia)

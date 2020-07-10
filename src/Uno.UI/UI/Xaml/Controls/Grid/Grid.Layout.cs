@@ -949,13 +949,28 @@ namespace Windows.UI.Xaml.Controls
 			var res = new Memory<ViewPosition>(new ViewPosition[positions.Length]);
 			int count = 0;
 
+			// Use local function to avoid the use of Enumerable.Any. foreach on List<T> uses allocation less
+			bool hasStarChildren(View key)
+			{
+				foreach (var child in autoSizeChildren)
+				{
+					if (child.Key == key)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+
+
 			for (int i = 0; i < positions.Length; i++)
 			{
 				var item = positions[i];
 
 				if (
 					!pixelSizeChildren.Span.Any(c => c.Key == item.Key)
-					&& !autoSizeChildren.Any(c => c.Key == item.Key)
+					&& !hasStarChildren(item.Key)
 				)
 				{
 					res.Span[count++] = item;

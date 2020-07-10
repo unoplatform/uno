@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml
 			_layouter.Arrange(frame);
 		}
 
-		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
+		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
 		public bool IsLoaded { get; private set; }
 

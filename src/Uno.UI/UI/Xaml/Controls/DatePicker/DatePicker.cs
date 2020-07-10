@@ -98,8 +98,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty DayVisibleProperty =
-			DependencyProperty.Register("DayVisible", typeof(bool), typeof(DatePicker), new PropertyMetadata(true,
-				(s, e) => ((DatePicker)s).OnDayVisibleChangedPartial()));
+			DependencyProperty.Register("DayVisible", typeof(bool), typeof(DatePicker), new PropertyMetadata(defaultValue: true,
+				propertyChangedCallback: (s, e) => ((DatePicker)s).OnDayVisibleChangedPartial()));
 
 		partial void OnDayVisibleChangedPartial();
 		#endregion
@@ -112,8 +112,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty MonthVisibleProperty =
-			DependencyProperty.Register("MonthVisible", typeof(bool), typeof(DatePicker), new PropertyMetadata(true,
-				(s, e) => ((DatePicker)s).OnMonthVisibleChangedPartial()));
+			DependencyProperty.Register("MonthVisible", typeof(bool), typeof(DatePicker), new PropertyMetadata(defaultValue: true,
+				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMonthVisibleChangedPartial()));
 
 		partial void OnMonthVisibleChangedPartial();
 		#endregion
@@ -126,8 +126,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty YearVisibleProperty =
-			DependencyProperty.Register("YearVisible", typeof(bool), typeof(DatePicker), new PropertyMetadata(true,
-				(s, e) => ((DatePicker)s).OnYearVisibleChangedPartial()));
+			DependencyProperty.Register("YearVisible", typeof(bool), typeof(DatePicker), new PropertyMetadata(defaultValue: true,
+				propertyChangedCallback: (s, e) => ((DatePicker)s).OnYearVisibleChangedPartial()));
 
 		partial void OnYearVisibleChangedPartial();
 		#endregion
@@ -140,8 +140,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty MaxYearProperty =
-			DependencyProperty.Register("MaxYear", typeof(DateTimeOffset), typeof(DatePicker), new PropertyMetadata(DateTimeOffset.MaxValue,
-				(s, e) => ((DatePicker)s).OnMaxYearChangedPartial()));
+			DependencyProperty.Register("MaxYear", typeof(DateTimeOffset), typeof(DatePicker), new PropertyMetadata(defaultValue: DateTimeOffset.MaxValue,
+				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMaxYearChangedPartial()));
 
 		partial void OnMaxYearChangedPartial();
 		#endregion
@@ -154,8 +154,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty MinYearProperty =
-			DependencyProperty.Register("MinYear", typeof(DateTimeOffset), typeof(DatePicker), new PropertyMetadata(DateTimeOffset.MinValue,
-				(s, e) => ((DatePicker)s).OnMinYearChangedPartial()));
+			DependencyProperty.Register("MinYear", typeof(DateTimeOffset), typeof(DatePicker), new PropertyMetadata(defaultValue: DateTimeOffset.MinValue,
+				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMinYearChangedPartial()));
 
 		partial void OnMinYearChangedPartial();
 		#endregion

@@ -142,7 +142,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		public static readonly DependencyProperty ItemTemplateProperty =
-			DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(ListView), new PropertyMetadata(default(DataTemplate), (d, s) => (d as ListView)?.OnItemTemplateChanged()));
+			DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(ListView), new PropertyMetadata(defaultValue: default(DataTemplate), propertyChangedCallback: (d, s) => (d as ListView)?.OnItemTemplateChanged()));
 
 		private void OnItemTemplateChanged()
 		{
@@ -161,7 +161,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		public static readonly DependencyProperty HeaderTemplateProperty =
-			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(ListView), new PropertyMetadata(default(DataTemplate), (d, s) => (d as ListView)?.OnHeaderTemplateChanged()));
+			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(ListView), new PropertyMetadata(defaultValue: default(DataTemplate), propertyChangedCallback: (d, s) => (d as ListView)?.OnHeaderTemplateChanged()));
 
 		private void OnHeaderTemplateChanged()
 		{
@@ -180,7 +180,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		public static readonly DependencyProperty FooterTemplateProperty =
-			DependencyProperty.Register("FooterTemplate", typeof(DataTemplate), typeof(ListView), new PropertyMetadata(default(DataTemplate), (d, s) => (d as ListView)?.OnFooterTemplateChanged()));
+			DependencyProperty.Register("FooterTemplate", typeof(DataTemplate), typeof(ListView), new PropertyMetadata(defaultValue: default(DataTemplate), propertyChangedCallback: (d, s) => (d as ListView)?.OnFooterTemplateChanged()));
 
 		private void OnFooterTemplateChanged()
 		{
@@ -199,7 +199,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		public static readonly DependencyProperty ItemTemplateSelectorProperty =
-			DependencyProperty.Register("ItemTemplateSelector", typeof(DataTemplateSelector), typeof(ListView), new PropertyMetadata(default(DataTemplateSelector), (d, s) => (d as ListView)?.OnItemTemplateSelectorChanged()));
+			DependencyProperty.Register("ItemTemplateSelector", typeof(DataTemplateSelector), typeof(ListView), new PropertyMetadata(defaultValue: default(DataTemplateSelector), propertyChangedCallback: (d, s) => (d as ListView)?.OnItemTemplateSelectorChanged()));
 
 		private void OnItemTemplateSelectorChanged()
 		{
@@ -243,7 +243,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		public static readonly DependencyProperty HeaderProperty =
-			DependencyProperty.Register("Header", typeof(object), typeof(ListView), new PropertyMetadata(default(object), (d, s) => (d as ListView)?.OnHeaderChanged()));
+			DependencyProperty.Register("Header", typeof(object), typeof(ListView), new PropertyMetadata(defaultValue: default(object), propertyChangedCallback: (d, s) => (d as ListView)?.OnHeaderChanged()));
 
 		private void OnHeaderChanged()
 		{
@@ -262,7 +262,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		public static readonly DependencyProperty FooterProperty =
-			DependencyProperty.Register("Footer", typeof(object), typeof(ListView), new PropertyMetadata(default(object), (d, s) => (d as ListView)?.OnFooterChanged()));
+			DependencyProperty.Register("Footer", typeof(object), typeof(ListView), new PropertyMetadata(defaultValue: default(object), propertyChangedCallback: (d, s) => (d as ListView)?.OnFooterChanged()));
 
 		private void OnFooterChanged()
 		{

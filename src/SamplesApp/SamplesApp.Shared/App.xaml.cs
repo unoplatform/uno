@@ -24,6 +24,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Logging;
+using Windows.Graphics.Display;
+using System.Globalization;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -225,6 +227,7 @@ namespace SamplesApp
 
 						// Generic Xaml events
 						// { "Windows.UI.Xaml", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Media", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Shapes", LogLevel.Debug },
 						// { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
 						// { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
@@ -281,6 +284,9 @@ namespace SamplesApp
 
 		public static string GetAllTests()
 			=> SampleControl.Presentation.SampleChooserViewModel.Instance.GetAllSamplesNames();
+
+		public static string GetDisplayScreenScaling(string displayId)
+			=> DisplayInformation.GetForCurrentView().LogicalDpi.ToString(CultureInfo.InvariantCulture);
 
 		public static string RunTest(string metadataName)
 		{
@@ -358,6 +364,9 @@ namespace SamplesApp
 
 		[Foundation.Export("isTestDone:")] // notice the colon at the end of the method name
 		public Foundation.NSString IsTestDoneBackdoor(Foundation.NSString value) => new Foundation.NSString(IsTestDone(value).ToString());
+
+		[Foundation.Export("getDisplayScreenScaling:")] // notice the colon at the end of the method name
+		public Foundation.NSString GetDisplayScreenScalingBackdoor(Foundation.NSString value) => new Foundation.NSString(GetDisplayScreenScaling(value).ToString());
 #endif
 
 		public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;

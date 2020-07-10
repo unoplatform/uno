@@ -114,6 +114,7 @@ declare namespace MonoSupport {
         private static getMethodMapId;
     }
 }
+declare const config: any;
 declare namespace Uno.UI {
     class WindowManager {
         private containerElementId;
@@ -346,6 +347,10 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         registerEventOnViewNative(pParams: number): boolean;
+        registerPointerEventsOnView(pParams: number): void;
+        static onPointerEventReceived(evt: PointerEvent): void;
+        static onPointerEnterReceived(evt: PointerEvent): void;
+        static onPointerLeaveReceived(evt: PointerEvent): void;
         private processPendingLeaveEvent;
         private _isPendingLeaveProcessingEnabled;
         /**
@@ -363,7 +368,7 @@ declare namespace Uno.UI {
          * pointer event extractor to be used with registerEventOnView
          * @param evt
          */
-        private pointerEventExtractor;
+        private static pointerEventExtractor;
         private static _wheelLineSize;
         private static readonly wheelLineSize;
         /**
@@ -377,7 +382,7 @@ declare namespace Uno.UI {
          */
         private tappedEventExtractor;
         /**
-         * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+         * focus event extractor to be used with registerEventOnView
          * @param evt
          */
         private focusEventExtractor;
@@ -461,7 +466,7 @@ declare namespace Uno.UI {
         private measureElement;
         private measureViewInternal;
         scrollTo(pParams: number): boolean;
-        setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
+        rawPixelsToBase64EncodeImage(dataPtr: number, width: number, height: number): string;
         /**
          * Sets the provided image with a mono-chrome version of the provided url.
          * @param viewId the image to manipulate
@@ -680,6 +685,10 @@ declare class WindowManagerRegisterEventOnViewParams {
     EventExtractorId: number;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
 }
+declare class WindowManagerRegisterPointerEventsOnViewParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerRegisterPointerEventsOnViewParams;
+}
 declare class WindowManagerRegisterUIElementParams {
     TypeName: string;
     IsFrameworkElement: boolean;
@@ -741,13 +750,14 @@ declare class WindowManagerSetContentHtmlParams {
     static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
 }
 declare class WindowManagerSetElementTransformParams {
+    HtmlId: number;
     M11: number;
     M12: number;
     M21: number;
     M22: number;
     M31: number;
     M32: number;
-    HtmlId: number;
+    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerSetElementTransformParams;
 }
 declare class WindowManagerSetNameParams {
@@ -911,6 +921,7 @@ declare namespace Windows.Storage {
 declare namespace Windows.Storage {
     class StorageFolder {
         private static _isInit;
+        private static dispatchStorageInitialized;
         /**
          * Determine if IndexDB is available, some browsers and modes disable it.
          * */
@@ -923,6 +934,7 @@ declare namespace Windows.Storage {
          * Setup the storage persistence of a given path.
          * */
         static setupStorage(path: string): void;
+        private static onStorageInitialized;
         /**
          * Synchronize the IDBFS memory cache back to IndexDB
          * */
@@ -1004,6 +1016,25 @@ declare namespace Windows.Networking.Connectivity {
         static networkStatusChanged(): void;
     }
 }
+interface Navigator {
+    wakeLock: WakeLock;
+}
+declare enum WakeLockType {
+    screen = "screen"
+}
+interface WakeLock {
+    request(type: WakeLockType): Promise<WakeLockSentinel>;
+}
+interface WakeLockSentinel {
+    release(): Promise<void>;
+}
+declare namespace Windows.System.Display {
+    class DisplayRequest {
+        private static activeScreenLockPromise;
+        static activateScreenLock(): void;
+        static deactivateScreenLock(): void;
+    }
+}
 interface Window {
     opr: any;
     opera: any;
@@ -1048,7 +1079,9 @@ declare namespace Windows.UI.ViewManagement {
 }
 declare namespace Windows.UI.Xaml {
     class Application {
+        private static dispatchThemeChange;
         static getDefaultSystemTheme(): string;
+        static observeSystemTheme(): void;
     }
 }
 declare namespace Windows.UI.Xaml {
@@ -1066,5 +1099,26 @@ declare namespace Windows.Phone.Devices.Notification {
     class VibrationDevice {
         static initialize(): boolean;
         static vibrate(duration: number): boolean;
+    }
+}
+declare namespace Windows.UI.Xaml.Media.Animation {
+    class RenderingLoopFloatAnimator {
+        private managedHandle;
+        private static activeInstances;
+        static createInstance(managedHandle: string, jsHandle: number): void;
+        static getInstance(jsHandle: number): RenderingLoopFloatAnimator;
+        static destroyInstance(jsHandle: number): void;
+        private constructor();
+        SetStartFrameDelay(delay: number): void;
+        SetAnimationFramesInterval(): void;
+        EnableFrameReporting(): void;
+        DisableFrameReporting(): void;
+        private onFrame;
+        private unscheduleFrame;
+        private scheduleDelayedFrame;
+        private scheduleAnimationFrame;
+        private _delayRequestId?;
+        private _frameRequestId?;
+        private _isEnabled;
     }
 }

@@ -347,18 +347,14 @@ namespace Windows.UI.Xaml.Controls
 			{
 				try
 				{
-					if (imageSource is WriteableBitmap wb)
-					{
-						SetFromWriteableBitmap(wb);
-					}
 					// We want to reset the image when there is no source provided.
-					else if (!imageSource?.HasSource() ?? true)
+					if (!imageSource?.HasSource() ?? true)
 					{
 						ResetSource();
 					}
-					else if (imageSource.ImageData != null)
+					else if (imageSource.TryOpenSync(out var bitmap))
 					{
-						SetSourceBitmap(imageSource);
+						SetSourceBitmap((imageSource, bitmap));
 					}
 					else if (imageSource.BitmapDrawable != null)
 					{
@@ -512,48 +508,22 @@ namespace Windows.UI.Xaml.Controls
 			OnImageOpened(newImageSource);
 		}
 
-		private void SetSourceBitmap(ImageSource newImageSource)
+		private void SetSourceBitmap((ImageSource src, Bitmap data) image)
 		{
 			if (MustDispatchSetSource())
 			{
-				Dispatch(ct => SetSourceBitmapAsync(ct, newImageSource));
+				Dispatch(ct => SetSourceBitmapAsync(ct, image));
 			}
 			else
 			{
-				var unused = SetSourceBitmapAsync(CancellationToken.None, newImageSource);
+				var unused = SetSourceBitmapAsync(CancellationToken.None, image);
 			}
 		}
 
-		private void SetFromWriteableBitmap(WriteableBitmap bitmap)
+		private async Task SetSourceBitmapAsync(CancellationToken ct, (ImageSource src, Bitmap data) image)
 		{
-			var drawableBuffer = new int[bitmap.PixelWidth * bitmap.PixelHeight];
-			var sourceBuffer = (bitmap.PixelBuffer as InMemoryBuffer).Data;
-
-			// WriteableBitmap PixelBuffer is using BGRA format, Android's bitmap input buffer
-			// requires Argb8888, so we swap bytes to conform to this format.
-
-			for (int i = 0; i < drawableBuffer.Length; i++)
-			{
-				var a = sourceBuffer[i * 4 + 3];
-				var r = sourceBuffer[i * 4 + 2];
-				var g = sourceBuffer[i * 4 + 1];
-				var b = sourceBuffer[i * 4 + 0];
-
-				drawableBuffer[i] = (a << 24) | (r << 16) | (g << 8) | b;
-			}
-
-			var bm = Bitmap.CreateBitmap(drawableBuffer, bitmap.PixelWidth, bitmap.PixelHeight, Bitmap.Config.Argb8888);
-			var drawable = new BitmapDrawable(Context.Resources, bm);
-
-			SetImageDrawable(drawable);
-			UpdateSourceImageSize(new Windows.Foundation.Size(bm.Width, bm.Height), isLogicalPixels: true);
-			OnImageOpened(bitmap);
-		}
-
-		private async Task SetSourceBitmapAsync(CancellationToken ct, ImageSource newImageSource)
-		{
-			SetImageBitmap(newImageSource.ImageData);
-			OnImageOpened(newImageSource);
+			SetImageBitmap(image.data);
+			OnImageOpened(image.src);
 		}
 
 		/// <summary>

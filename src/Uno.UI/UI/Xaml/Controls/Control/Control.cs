@@ -57,11 +57,17 @@ namespace Windows.UI.Xaml.Controls
 		private void SetDefaultForeground()
 		{
 			//override the default value from dependency property based on application theme
-			//in the future, this will need to respond to the inherited RequestedTheme and its changes
 			this.SetValue(ForegroundProperty,
 				Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
 					? SolidColorBrushHelper.Black
 					: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
+		}
+
+		internal override void UpdateThemeBindings()
+		{
+			base.UpdateThemeBindings();
+
+			SetDefaultForeground();
 		}
 
 		private protected override Type GetDefaultStyleKey() => DefaultStyleKey as Type;
@@ -630,8 +636,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(bool),
 				typeof(Control),
 				new PropertyMetadata(
-					(bool)true,
-					(s, e) => ((Control)s)?.OnIsFocusableChanged()
+					defaultValue: (bool)true,
+					propertyChangedCallback: (s, e) => ((Control)s)?.OnIsFocusableChanged()
 				)
 			);
 		#endregion
@@ -1002,7 +1008,9 @@ namespace Windows.UI.Xaml.Controls
 			=> DefaultStyleKey = typeof(TDerived);
 
 #if DEBUG
+#if !__IOS__
 		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
+#endif
 
 		public string[] VisualStateGroupNames => VisualStateGroups.Select(vsg => vsg.Name).ToArray();
 

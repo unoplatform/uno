@@ -135,6 +135,8 @@
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid10.0\Uno.UI.Toolkit.pdb" target="lib\MonoAndroid10.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\Uno.UI.Toolkit.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\Uno.UI.Toolkit.pdb" target="lib\xamarinios10" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinmac20\Uno.UI.Toolkit.dll" target="lib\xamarinmac20" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinmac20\Uno.UI.Toolkit.pdb" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="lib\netstandard2.0" />
 

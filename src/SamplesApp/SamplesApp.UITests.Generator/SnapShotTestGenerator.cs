@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace Uno.Samples.UITest.Generator
 {
 	public class SnapShotTestGenerator : SourceGenerator
 	{
+		private const int GroupCount = 4;
+
 		private INamedTypeSymbol _sampleControlInfoSymbol;
 		private INamedTypeSymbol _sampleSymbol;
 
@@ -58,13 +61,38 @@ namespace Uno.Samples.UITest.Generator
 			}
 			else
 			{
+				var categories = attr
+					.ConstructorArguments
+					.Where(arg => arg.Kind == TypedConstantKind.Array)
+					.Select(arg => GetCategories(arg.Values))
+					.SingleOrDefault()
+					?? GetCategories(attr.ConstructorArguments);
+
+				if (categories?.Any(string.IsNullOrWhiteSpace) ?? false)
+				{
+					throw new InvalidOperationException(
+						"Invalid syntax for the SampleAttribute (found an empty category name). "
+						+ "Usually this is because you used nameof(Control) to set the categories, which is not supported by the compiler. "
+						+ "You should instead use the overload which accepts type (i.e. use typeof() instead of nameof()).");
+				}
+
 				return (
-					categories: !attr.ConstructorArguments.IsDefaultOrEmpty && !attr.ConstructorArguments.Single().Values.IsDefaultOrEmpty
-						? attr.ConstructorArguments.Single().Values.Select(arg => arg.Value.ToString()).ToArray()
-						: new[] { "Default" },
+					categories: (categories?.Any() ?? false) ? categories : new[] { "Default" },
 					name: AlignName(GetAttributePropertyValue(attr, "Name")?.ToString() ?? symbol.ToDisplayString()),
 					ignoreInSnapshotTests: GetAttributePropertyValue(attr, "IgnoreInSnapshotTests") is bool b && b
 				);
+
+				string[] GetCategories(ImmutableArray<TypedConstant> args) => args
+					.Select(v =>
+					{
+						switch (v.Kind)
+						{
+							case TypedConstantKind.Primitive: return v.Value.ToString();
+							case TypedConstantKind.Type: return ((ITypeSymbol)v.Value).Name;
+							default: return null;
+						}
+					})
+					.ToArray();
 			}
 		}
 
@@ -121,7 +149,7 @@ namespace Uno.Samples.UITest.Generator
 						foreach (var test in group.Symbols)
 						{
 							builder.AppendLineInvariant("[global::NUnit.Framework.Test]");
-							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % 2:00}, automated:{test.symbol.ToDisplayString()}\")]");
+							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % GroupCount:00}, automated:{test.symbol.ToDisplayString()}\")]");
 
 							if (test.ignoreInSnapshotTests)
 							{
@@ -129,9 +157,14 @@ namespace Uno.Samples.UITest.Generator
 							}
 
 							builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.AutoRetry]");
-							using (builder.BlockInvariant($"public void {Sanitize(test.categories.First())}_{Sanitize(test.name)}()"))
+							// Set to 60 seconds to cover possible restart of the device
+							builder.AppendLineInvariant("[global::NUnit.Framework.Timeout(60000)]");
+							var testName = $"{Sanitize(test.categories.First())}_{Sanitize(test.name)}";
+							using (builder.BlockInvariant($"public void {testName}()"))
 							{
+								builder.AppendLineInvariant($"Console.WriteLine(\"Running test [{testName}]\");");
 								builder.AppendLineInvariant($"Run(\"{test.symbol}\", waitForSampleControl: false);");
+								builder.AppendLineInvariant($"Console.WriteLine(\"Ran test [{testName}]\");");
 							}
 						}
 					}

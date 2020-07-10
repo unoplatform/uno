@@ -65,6 +65,7 @@ namespace Uno.SourceGeneration.Host
 			properties["Configuration"] = configuration;
 			properties["UseHostCompilerIfAvailable"] = "true";
 			properties["UseSharedCompilation"] = "true";
+			properties["LangVersion"] = "8.0";
 
 			// Platform is intentionally kept as not defined, to avoid having 
 			// dependent projects being loaded with a platform they don't support.

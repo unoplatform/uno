@@ -35,6 +35,7 @@ namespace Windows.UI.Xaml
 		private readonly static Dictionary<CachedTuple<Type, FrameworkPropertyMetadataOptions>, DependencyProperty[]> _getFrameworkPropertiesForType = new Dictionary<CachedTuple<Type, FrameworkPropertyMetadataOptions>, DependencyProperty[]>(CachedTuple<Type, FrameworkPropertyMetadataOptions>.Comparer);
 		private readonly static Dictionary<Type, DependencyProperty[]> _getDependencyObjectPropertiesForType = new Dictionary<Type, DependencyProperty[]>(Uno.Core.Comparison.FastTypeComparer.Default);
 
+		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
 		private readonly Dictionary<Type, PropertyMetadata> _metadata = new Dictionary<Type, PropertyMetadata>(Uno.Core.Comparison.FastTypeComparer.Default);
 
 		private string _name;
@@ -62,7 +63,8 @@ namespace Windows.UI.Xaml
 			_uniqueId = Interlocked.Increment(ref _globalId);
 			_hasWeakStorage = (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() ?? false;
 
-			_metadata.Add(_ownerType, defaultMetadata ?? new PropertyMetadata(null));
+			_ownerTypeMetadata = defaultMetadata ?? new PropertyMetadata(null);
+			_metadata.Add(_ownerType, _ownerTypeMetadata);
 
 			// Improve the performance of the hash code by
 			CachedHashCode = _name.GetHashCode() ^ ownerType.GetHashCode();
@@ -175,15 +177,21 @@ namespace Windows.UI.Xaml
 		/// <returns>A property metadata object.</returns>
 		public PropertyMetadata GetMetadata(Type forType)
 		{
+			if (forType == _ownerType)
+			{
+				return _ownerTypeMetadata;
+			}
+
 			PropertyMetadata metadata = null;
 			if (!_metadata.TryGetValue(forType, out metadata))
 			{
 				if (
 					!IsTypeDependencyObject(forType)
-
+#if !__WASM__ // Perf: On WASM the Panel.Children are UIElement, so avoid costly check
 					// This check must be removed when Panel.Children will support only
 					// UIElement as its elements. See #103492
 					&& !forType.Is<_View>()
+#endif
 				)
 				{
 					throw new ArgumentException($"'{forType}' type must derive from DependencyObject.", nameof(forType));

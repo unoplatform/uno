@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Windows.UI;
+using System.Dynamic;
 
 namespace Windows.UI.Xaml
 {
@@ -181,7 +182,7 @@ namespace Windows.UI.Xaml
 		private protected virtual double GetActualWidth() => _actualSize.Width;
 		private protected virtual double GetActualHeight() => _actualSize.Height;
 
-		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
+		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
 		private event RoutedEventHandler _loading;
 		public event RoutedEventHandler Loading
@@ -330,226 +331,165 @@ namespace Windows.UI.Xaml
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 
 		#region Margin Dependency Property
-
-		public static readonly DependencyProperty MarginProperty =
-			DependencyProperty.Register(
-				"Margin",
-				typeof(Thickness),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: Thickness.Empty,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+		[GeneratedDependencyProperty(
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-					,
-					propertyChangedCallback: OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
-				)
-		);
+		)]
+		public static readonly DependencyProperty MarginProperty = CreateMarginProperty();
 
 		public virtual Thickness Margin
 		{
-			get { return (Thickness)this.GetValue(MarginProperty); }
-			set { this.SetValue(MarginProperty, value); }
+			get => GetMarginValue();
+			set => SetMarginValue(value);
 		}
+		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
 		#endregion
 
 		#region HorizontalAlignment Dependency Property
-
-		public static readonly DependencyProperty HorizontalAlignmentProperty =
-			DependencyProperty.Register(
-				"HorizontalAlignment",
-				typeof(HorizontalAlignment),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: Xaml.HorizontalAlignment.Stretch,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+		[GeneratedDependencyProperty(
+			DefaultValue = Xaml.HorizontalAlignment.Stretch,
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-					,
-					propertyChangedCallback: OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
-				)
-			);
+		)]
+		public static readonly DependencyProperty HorizontalAlignmentProperty = CreateHorizontalAlignmentProperty();
 
 		public HorizontalAlignment HorizontalAlignment
 		{
-			get { return (HorizontalAlignment)this.GetValue(HorizontalAlignmentProperty); }
-			set { this.SetValue(HorizontalAlignmentProperty, value); }
+			get => GetHorizontalAlignmentValue();
+			set => SetHorizontalAlignmentValue(value);
 		}
 		#endregion
 
 		#region HorizontalAlignment Dependency Property
-
-		public static readonly DependencyProperty VerticalAlignmentProperty =
-			DependencyProperty.Register(
-				"VerticalAlignment",
-				typeof(VerticalAlignment),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: Xaml.VerticalAlignment.Stretch,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+		[GeneratedDependencyProperty(
+			DefaultValue = Xaml.HorizontalAlignment.Stretch,
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-					,
-					propertyChangedCallback: OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
-				)
-			);
+		)]
+		public static readonly DependencyProperty VerticalAlignmentProperty = CreateVerticalAlignmentProperty();
 
 		public VerticalAlignment VerticalAlignment
 		{
-			get { return (VerticalAlignment)this.GetValue(VerticalAlignmentProperty); }
-			set { this.SetValue(VerticalAlignmentProperty, value); }
+			get => GetVerticalAlignmentValue();
+			set => SetVerticalAlignmentValue(value);
 		}
 		#endregion
 
 		#region Width Dependency Property
-
-		public static readonly DependencyProperty WidthProperty =
-			DependencyProperty.Register(
-				"Width",
-				typeof(double),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.NaN,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+		[GeneratedDependencyProperty(
+			DefaultValue = double.NaN,
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-					,
-					propertyChangedCallback: OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
-				)
-			);
+		)]
+		public static readonly DependencyProperty WidthProperty = CreateWidthProperty();
 
 		public double Width
 		{
-			get { return (double)this.GetValue(WidthProperty); }
-			set { this.SetValue(WidthProperty, value); }
+			get => GetWidthValue();
+			set => SetWidthValue(value);
 		}
 		#endregion
 
 		#region Height Dependency Property
-
-		public static readonly DependencyProperty HeightProperty =
-			DependencyProperty.Register(
-				"Height",
-				typeof(double),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.NaN,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+		[GeneratedDependencyProperty(
+			DefaultValue = double.NaN,
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-					,
-					propertyChangedCallback: OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
-				)
-			);
+		)]
+		public static readonly DependencyProperty HeightProperty = CreateHeightProperty();
 
 		public double Height
 		{
-			get { return (double)this.GetValue(HeightProperty); }
-			set { this.SetValue(HeightProperty, value); }
+			get => GetHeightValue();
+			set => SetHeightValue(value);
 		}
 		#endregion
 
 		#region MinWidth Dependency Property
-
-		public static readonly DependencyProperty MinWidthProperty =
-			DependencyProperty.Register(
-				"MinWidth",
-				typeof(double),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: 0.0d,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+		[GeneratedDependencyProperty(
+			DefaultValue = 0.0d,
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-					,
-					propertyChangedCallback: OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
-				)
-			);
+		)]
+		public static readonly DependencyProperty MinWidthProperty = CreateMinWidthProperty();
 
 		public double MinWidth
 		{
-			get { return (double)this.GetValue(MinWidthProperty); }
-			set { this.SetValue(MinWidthProperty, value); }
+			get => GetMinWidthValue();
+			set => SetMinWidthValue(value);
 		}
 		#endregion
 
 		#region MinHeight Dependency Property
 
-		public static readonly DependencyProperty MinHeightProperty =
-			DependencyProperty.Register(
-				"MinHeight",
-				typeof(double),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: 0.0d,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+		[GeneratedDependencyProperty(
+			DefaultValue = 0.0d,
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-					,
-					propertyChangedCallback: OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
-					)
-			);
+		)]
+		public static readonly DependencyProperty MinHeightProperty = CreateMinHeightProperty();
 
 		public double MinHeight
 		{
-			get { return (double)this.GetValue(MinHeightProperty); }
-			set { this.SetValue(MinHeightProperty, value); }
+			get => GetMinHeightValue();
+			set => SetMinHeightValue(value);
 		}
 		#endregion
 
 		#region MaxWidth Dependency Property
-
-		public static readonly DependencyProperty MaxWidthProperty =
-			DependencyProperty.Register(
-				"MaxWidth",
-				typeof(double),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.PositiveInfinity,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+		[GeneratedDependencyProperty(
+			DefaultValue = double.PositiveInfinity,
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-					,
-					propertyChangedCallback: OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
-					)
-			);
+		)]
+		public static readonly DependencyProperty MaxWidthProperty = CreateMaxWidthProperty();
 
 		public double MaxWidth
 		{
-			get { return (double)this.GetValue(MaxWidthProperty); }
-			set { this.SetValue(MaxWidthProperty, value); }
+			get => GetMaxWidthValue();
+			set => SetMaxWidthValue(value);
 		}
 		#endregion
 
 		#region MaxHeight Dependency Property
 
-		public static readonly DependencyProperty MaxHeightProperty =
-			DependencyProperty.Register(
-				"MaxHeight",
-				typeof(double),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.PositiveInfinity,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+		[GeneratedDependencyProperty(
+			DefaultValue = double.PositiveInfinity,
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-					,
-					propertyChangedCallback: OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
-					)
-			);
+		)]
+		public static readonly DependencyProperty MaxHeightProperty = CreateMaxHeightProperty();
 
 		public double MaxHeight
 		{
-			get { return (double)this.GetValue(MaxHeightProperty); }
-			set { this.SetValue(MaxHeightProperty, value); }
+			get => GetMaxHeightValue();
+			set => SetMaxHeightValue(value);
 		}
 		#endregion
 
-		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
-				((FrameworkElement)dependencyObject).UpdateDOMProperties();
+				UpdateDOMProperties();
 			}
 		}
 

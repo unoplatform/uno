@@ -100,7 +100,7 @@ namespace Uno.UI.Controls
 		}
 
 		public static readonly DependencyProperty ItemTemplateProperty =
-			DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(BindableGridView), new PropertyMetadata(default(DataTemplate), (d, s) => (d as BindableGridView)?.OnItemTemplateChanged()));
+			DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(BindableGridView), new PropertyMetadata(defaultValue: default(DataTemplate), propertyChangedCallback: (d, s) => (d as BindableGridView)?.OnItemTemplateChanged()));
 
 		private void OnItemTemplateChanged()
 		{

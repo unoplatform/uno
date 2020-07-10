@@ -8,7 +8,11 @@ jobs:
     - Wasm_UITests_Snap
     - Wasm_UITests_Automated
     - Android_Tests
-    - iOS_Tests
+    - iOS_Automated_Tests
+    - iOS_Snaphot_Tests_Group_01
+    - iOS_Snaphot_Tests_Group_02
+    - iOS_Snaphot_Tests_Group_03
+    - iOS_Snaphot_Tests_Group_04
   condition: succeededOrFailed()
 
   pool:

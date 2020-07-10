@@ -39,8 +39,14 @@ namespace Windows.UI.Xaml
 
 		public IList<ResourceDictionary> MergedDictionaries { get; } = new List<ResourceDictionary>();
 
-		private IDictionary<object, object> _themeDictionaries;
+		private ResourceDictionary _themeDictionaries;
 		public IDictionary<object, object> ThemeDictionaries { get => _themeDictionaries = _themeDictionaries ?? new ResourceDictionary(); }
+
+		/// <summary>
+		/// Is this a ResourceDictionary created from system resources, ie within the Uno.UI assembly?
+		/// </summary>
+		internal bool IsSystemDictionary { get; set; }
+
 		internal object Lookup(object key)
 		{
 			if (!TryGetValue(key, out var value))
@@ -83,9 +89,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public bool ContainsKey(object key) => _values.ContainsKey(key) || ContainsKeyMerged(key) || ContainsKeyTheme(key);
+		public bool ContainsKey(object key) => ContainsKey(key, shouldCheckSystem: true);
+		public bool ContainsKey(object key, bool shouldCheckSystem) => _values.ContainsKey(key) || ContainsKeyMerged(key) || ContainsKeyTheme(key)
+			|| (shouldCheckSystem && !IsSystemDictionary && ResourceResolver.ContainsKeySystem(key));
 
-		public bool TryGetValue(object key, out object value)
+		public bool TryGetValue(object key, out object value) => TryGetValue(key, out value, shouldCheckSystem: true);
+		public bool TryGetValue(object key, out object value, bool shouldCheckSystem)
 		{
 			if (_values.TryGetValue(key, out value))
 			{
@@ -98,7 +107,17 @@ namespace Windows.UI.Xaml
 				return true;
 			}
 
-			return GetFromTheme(key, out value);
+			if (GetFromTheme(key, out value))
+			{
+				return true;
+			}
+
+			if (shouldCheckSystem && !IsSystemDictionary) // We don't fall back on system resources from within a system-defined dictionary, to avoid an infinite recurse
+			{
+				return ResourceResolver.TrySystemResourceRetrieval(key, out value);
+			}
+
+			return false;
 		}
 
 		public object this[object key]
@@ -145,7 +164,7 @@ namespace Windows.UI.Xaml
 			// Check last dictionary first - //https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/resourcedictionary-and-xaml-resource-references#merged-resource-dictionaries
 			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
 			{
-				if (MergedDictionaries[i].TryGetValue(key, out value))
+				if (MergedDictionaries[i].TryGetValue(key, out value, shouldCheckSystem: false))
 				{
 					return true;
 				}
@@ -160,7 +179,7 @@ namespace Windows.UI.Xaml
 		{
 			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
 			{
-				if (MergedDictionaries[i].ContainsKey(key))
+				if (MergedDictionaries[i].ContainsKey(key, shouldCheckSystem: false))
 				{
 					return true;
 				}
@@ -174,7 +193,7 @@ namespace Windows.UI.Xaml
 		private ResourceDictionary GetThemeDictionary(string theme)
 		{
 			object dict = null;
-			if (_themeDictionaries?.TryGetValue(theme, out dict) ?? false)
+			if (_themeDictionaries?.TryGetValue(theme, out dict, shouldCheckSystem: false) ?? false)
 			{
 				return dict as ResourceDictionary;
 			}
@@ -186,7 +205,7 @@ namespace Windows.UI.Xaml
 		{
 			var dict = GetThemeDictionary();
 
-			if (dict != null && dict.TryGetValue(key, out value))
+			if (dict != null && dict.TryGetValue(key, out value, shouldCheckSystem: false))
 			{
 				return true;
 			}
@@ -212,7 +231,7 @@ namespace Windows.UI.Xaml
 
 		private bool ContainsKeyTheme(object key)
 		{
-			return GetThemeDictionary()?.ContainsKey(key) ?? ContainsKeyThemeMerged(key);
+			return GetThemeDictionary()?.ContainsKey(key, shouldCheckSystem: false) ?? ContainsKeyThemeMerged(key);
 		}
 
 		private bool ContainsKeyThemeMerged(object key)
