@@ -1,9 +1,13 @@
 using System;
 using AVFoundation;
-using UIKit;
 using Uno.Extensions;
 using Uno.Media.Playback;
 using Windows.UI.Xaml.Media;
+#if __IOS__
+using _View = UIKit.UIView;
+#else
+using _View = AppKit.NSView;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -11,8 +15,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private void SetVideoSurface(IVideoSurface videoSurface)
 		{
-			Child = videoSurface as UIView;
-			((UIView)videoSurface).Frame = this.Frame;
+			Child = videoSurface as _View;
+			((_View)videoSurface).Frame = this.Frame;
 		}
 		
 		private void OnStretchChanged(Stretch newValue, Stretch oldValue)

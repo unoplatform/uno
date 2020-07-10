@@ -1,4 +1,4 @@
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__ || __MACOS__
 using System;
 using Uno.Extensions;
 using Windows.Media.Playback;
@@ -152,9 +152,9 @@ namespace Windows.UI.Xaml.Controls
 					ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
 
 #if __ANDROID__
-					this.RemoveView(_layoutRoot);
-#elif __IOS__
-					_layoutRoot.RemoveFromSuperview();
+				this.RemoveView(_layoutRoot);
+#elif __IOS__ || __MACOS__
+				_layoutRoot.RemoveFromSuperview();
 #endif
 
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
@@ -166,9 +166,11 @@ namespace Windows.UI.Xaml.Controls
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
 
 #if __ANDROID__
-					this.AddView(_layoutRoot);
+				this.AddView(_layoutRoot);
 #elif __IOS__
-					this.Add(_layoutRoot);
+				this.Add(_layoutRoot);
+#elif __MACOS__
+				this.AddSubview(_layoutRoot);
 #endif
 				}
 			}
