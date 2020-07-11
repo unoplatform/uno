@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__ || NET461
+#if __ANDROID__ || __IOS__ || NET461 || __MACOS__
 using System;
 using System.Timers;
 using Uno.UI.Converters;
@@ -11,6 +11,8 @@ using Uno.UI.Xaml.Controls.MediaPlayer.Internal;
 
 #if __IOS__
 using UIKit;
+#elif __MACOS__
+using AppKit;
 #elif __ANDROID__
 using Uno.UI;
 #endif

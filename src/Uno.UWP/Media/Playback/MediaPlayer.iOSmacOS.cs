@@ -168,7 +168,7 @@ namespace Windows.Media.Playback
 			_videoLayer.Frame = ((VideoSurface)RenderSurface).Frame;
 			_videoLayer.VideoGravity = AVLayerVideoGravity.ResizeAspect;
 			((VideoSurface)RenderSurface).Layer.AddSublayer(_videoLayer);
-
+#if __IOS__
 			var avSession = AVAudioSession.SharedInstance();
 			avSession.SetCategory(AVAudioSessionCategory.Playback);
 
@@ -178,7 +178,7 @@ namespace Windows.Media.Playback
 			{
 				this.Log().WarnIfEnabled(() => $"Could not activate audio session: {activationError.LocalizedDescription}");
 			}
-
+#endif
 			_videoLayer.AddObserver(_observer, new NSString("videoRect"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _videoLayer.Handle);
 			_player.AddObserver(_observer, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, RateObservationContext.Handle);
 
@@ -287,7 +287,7 @@ namespace Windows.Media.Playback
 			return new NSUrl(uri.ToString());
 		}
 
-		#endregion
+#endregion
 
 		public void Play()
 		{

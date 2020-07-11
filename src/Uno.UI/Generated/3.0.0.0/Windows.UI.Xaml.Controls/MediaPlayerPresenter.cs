@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class MediaPlayerPresenter 
 	{
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Stretch Stretch
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  bool IsFullWindow
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFullWindowProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerPresenter), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MediaPlayerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.Media.Playback.MediaPlayer)));
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

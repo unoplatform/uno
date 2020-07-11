@@ -160,11 +160,15 @@ namespace Windows.UI.Xaml.Controls
 		private void AddItems(int firstItem, int count, int section)
 		{
 			NativePanel?.InsertItems(GetIndexPathsFromStartAndCount(firstItem, count, section));
+
+			ManagedVirtualizingPanel?.GetLayouter().AddItems(firstItem, count, section);
 		}
 
 		private void RemoveItems(int firstItem, int count, int section)
 		{
 			NativePanel?.DeleteItems(GetIndexPathsFromStartAndCount(firstItem, count, section));
+
+			ManagedVirtualizingPanel?.GetLayouter().RemoveItems(firstItem, count, section);
 		}
 
 		/// <summary>
@@ -175,16 +179,31 @@ namespace Windows.UI.Xaml.Controls
 		private void AddGroup(int groupIndexInView)
 		{
 			NativePanel?.InsertSections(NSIndexSet.FromIndex(groupIndexInView));
+
+			if (ManagedVirtualizingPanel != null)
+			{
+				Refresh();
+			}
 		}
 
 		private void RemoveGroup(int groupIndexInView)
 		{
 			NativePanel?.DeleteSections(NSIndexSet.FromIndex(groupIndexInView));
+
+			if (ManagedVirtualizingPanel != null)
+			{
+				Refresh();
+			}
 		}
 
 		private void ReplaceGroup(int groupIndexInView)
 		{
 			NativePanel?.ReloadSections(NSIndexSet.FromIndex(groupIndexInView));
+
+			if (ManagedVirtualizingPanel != null)
+			{
+				Refresh();
+			}
 		}
 
 		private NSIndexPath[] GetIndexPathsFromStartAndCount(int startIndex, int count, int section)
@@ -197,6 +216,13 @@ namespace Windows.UI.Xaml.Controls
 		private void Refresh()
 		{
 			NativePanel?.Refresh();
+
+			if (ManagedVirtualizingPanel != null)
+			{
+				ManagedVirtualizingPanel.GetLayouter().Refresh();
+
+				InvalidateMeasure();
+			}
 		}
 	}
 }

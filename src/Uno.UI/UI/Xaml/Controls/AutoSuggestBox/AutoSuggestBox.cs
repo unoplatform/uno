@@ -27,6 +27,8 @@ namespace Windows.UI.Xaml.Controls
 		private Grid _layoutRoot;
 		private ListView _suggestionsList;
 		private Button _queryButton;
+		private AutoSuggestionBoxTextChangeReason textChangeReason;
+		private string userInput;
 
 		public AutoSuggestBox() : base()
 		{
@@ -127,6 +129,17 @@ namespace Windows.UI.Xaml.Controls
 					LayoutPopup();
 				}
 			}
+		}
+
+		private void UpdateTextFromSuggestion(Object o)
+		{
+			textChangeReason = AutoSuggestionBoxTextChangeReason.SuggestionChosen;
+			Text = GetObjectText(o);
+		}
+
+		private void UpdateUserInput(Object o)
+		{
+			userInput = GetObjectText(o);
 		}
 
 		private void LayoutPopup()
@@ -268,8 +281,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug($"Suggestion item clicked {e.ClickedItem}");
 			}
 
-			SuggestionChosen?.Invoke(this, new AutoSuggestBoxSuggestionChosenEventArgs(e.ClickedItem));
-			IsSuggestionListOpen = false;
+			ChoseItem(e.ClickedItem);
+			SubmitSearch();
 		}
 
 		private void OnQueryButtonClick(object sender, RoutedEventArgs e)
@@ -290,7 +303,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
 		{
-			if(e.Key == Windows.System.VirtualKey.Enter)
+			if (e.Key == Windows.System.VirtualKey.Enter)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
@@ -299,13 +312,95 @@ namespace Windows.UI.Xaml.Controls
 
 				SubmitSearch();
 			}
+			else if ((e.Key == Windows.System.VirtualKey.Up || e.Key == Windows.System.VirtualKey.Down) && IsSuggestionListOpen)
+			{
+				HandleUpDownKeys(e);
+			}
+			else if (e.Key == Windows.System.VirtualKey.Escape && IsSuggestionListOpen)
+			{
+				RevertTextToUserInput();
+				IsSuggestionListOpen = false;
+			} else
+			{
+				textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
+			}
+		}
+
+		private void HandleUpDownKeys(KeyRoutedEventArgs e)
+		{
+			int currentIndex = _suggestionsList.SelectedIndex;
+			int numSuggestions = _suggestionsList.NumberOfItems;
+			int nextIndex = -1;
+
+			if (e.Key == Windows.System.VirtualKey.Up)
+			{
+				// C# modulo isn't actually a modulo it's a remainder, so need to account for negative index
+				nextIndex = ((currentIndex % numSuggestions) + numSuggestions) % numSuggestions - ((currentIndex == -1) ? 0 : 1);
+			}
+			else if (e.Key == Windows.System.VirtualKey.Down)
+			{
+				int indexPlusOne = currentIndex + 1;
+				// The next step after the last index should be -1, not 0.
+				nextIndex = ((indexPlusOne % numSuggestions) + numSuggestions) % numSuggestions - ((indexPlusOne == numSuggestions) ? 1 : 0);
+			}
+
+			_suggestionsList.SelectedIndex = nextIndex;
+
+			if (nextIndex == -1)
+			{
+				RevertTextToUserInput();
+			} else
+			{
+				ChoseSuggestion();
+			}
+		}
+
+		private void ChoseSuggestion()
+		{
+			ChoseItem(_suggestionsList.SelectedItem);
+		}
+
+		private void ChoseItem(Object o)
+		{
+			if (UpdateTextOnSelect)
+			{
+				UpdateTextFromSuggestion(o);
+			}
+
+			SuggestionChosen?.Invoke(this, new AutoSuggestBoxSuggestionChosenEventArgs(o));
+		}
+
+		private void RevertTextToUserInput()
+		{
+			_suggestionsList.SelectedIndex = -1;
+			textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
+			Text = userInput;
+		}
+
+		private string GetObjectText(Object o)
+		{
+			string text = "";
+			if (TextMemberPath != null)
+			{
+				text = (string)o.GetValue(TextMemberPathProperty);
+			}
+			else
+			{
+				text = o.ToString();
+			}
+			return text;
 		}
 
 		private static void OnTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			if(dependencyObject is AutoSuggestBox tb)
 			{
-				tb.TextChanged?.Invoke(tb, new AutoSuggestBoxTextChangedEventArgs() { Reason = AutoSuggestionBoxTextChangeReason.UserInput });
+				if (tb.textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
+				{
+					tb.UpdateUserInput(args.NewValue);
+				}
+
+				tb.TextChanged?.Invoke(tb, new AutoSuggestBoxTextChangedEventArgs() { Reason = tb.textChangeReason });
 			}
 		}
 

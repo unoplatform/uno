@@ -74,8 +74,6 @@
     href: features/windows-system-power.md
   - name: ProgressRing
     href: features/progressring.md
-  - name: Windows.System.Profile
-    href: features/windows-system-profile.md
   - name: PasswordVault
     href: features\PasswordVault.md
   - name: URI Protocol activation
@@ -100,6 +98,10 @@
     href: features\windows-devices-geolocation.md
   - name: Windows.System
     href: features\windows-system.md
+  - name: Windows.System.Display
+    href: features\windows-system-display.md
+  - name: Windows.System.Profile
+    href: features/windows-system-profile.md
   - name: Windows.Storage
     href: features\windows-storage.md
   - name: Windows.UI.ViewManagement
@@ -140,42 +142,60 @@
       name: Embedding Existing JavaScript Components Into Uno-WASM - Part 3
       href: interop/wasm-javascript-3.md
 - name: Contributing to Uno
+  topicHref: uno-development\contributing-intro.md
   items:
-    - name: Guidelines for creating tests
-      href: contributing\guidelines\creating-tests.md
-    - name: Guidelines for breaking changes
-      href: contributing\guidelines\breaking-changes.md
-    - name: Guidelines for code style
-      href: contributing\guidelines\code-style.md
-    - name: Guidelines for creating a new release
-      href: contributing\guidelines\creating-a-new-release.md
-    - name: Guidelines for issue triage
-      href: contributing\guidelines\issue-triage.md
-    - name: Guidelines for pull-requests
-      href: contributing\guidelines\pull-requests.md
-    - name: Build Artifacts
-      href: contributing\build-artifacts.md
+    - name: Code of Conduct
+      href: https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md
+    - name: Ways to contribute
+      href: uno-development\ways-to-contribute.md
+    - name: How Uno works
+      topicHref: uno-development\uno-internals-overview.md
+      items:
+        - name: Android
+          href: uno-development\uno-internals-android.md
+        - name: Layouting in Android
+          href: uno-development\Uno-UI-Layouting-Android.md
+        - name: iOS
+          href: uno-development\uno-internals-ios.md
+        - name: Layouting in iOS
+          href: uno-development\Uno-UI-Layouting-iOS.md
+        - name: WASM
+          href: uno-development\uno-internals-wasm.md
+        - name: macOS
+          href: uno-development\uno-internals-macos.md
     - name: Building and debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
     - name: Building Uno.UI for macOS using Visual Studio for Mac
       href: uno-development\building-uno-macos.md
-    - name: Working with the samples applications
-      href: uno-development\working-with-the-samples-apps.md
-    - name: Inspecting the visual tree
-      href: uno-development\debugging-inspect-visual-tree.md
     - name: Using GitPod
       href: features\working-with-gitpod.md
+    - name: Inspecting the visual tree
+      href: uno-development\debugging-inspect-visual-tree.md
+    - name: Guidelines for code style
+      href: contributing\guidelines\code-style.md
+    - name: Guidelines for creating tests
+      href: contributing\guidelines\creating-tests.md
+    - name: Working with the samples applications
+      href: uno-development\working-with-the-samples-apps.md
+    - name: Conventional Commits format
+      href: uno-development\git-conventional-commits.md
+    - name: Guidelines for pull-requests
+      href: contributing\guidelines\pull-requests.md
+    - name: Guidelines for breaking changes
+      href: contributing\guidelines\breaking-changes.md
+    - name: Guidelines for updating dependencies
+      href: contributing\guidelines\updating-dependencies.md
+    - name: Guidelines for issue triage
+      href: contributing\guidelines\issue-triage.md
+    - name: Uno.UI release procedure
+      href: uno-development\release-procedure.md
+    - name: Build Artifacts
+      href: contributing\build-artifacts.md
+- name: Contributing to Uno - advanced topics
+  items:
     - name: Adding functionality with API extensions
       href: uno-development\api-extensions.md
     - name: The WeakEventHelper class
       href: uno-development\Internal-WeakEventHelper.md
-    - name: Layouting in Android
-      href: uno-development\Uno-UI-Layouting-Android.md
-    - name: Layouting in iOS
-      href: uno-development\Uno-UI-Layouting-iOS.md
     - name: Debugging Uno.UI Java code with Android studio
       href: uno-development\Uno-UI-Debugging-Android-Studio.md
-    - name: Uno.UI release procedure
-      href: uno-development\release-procedure.md
-    - name: Guidelines for updating dependencies
-      href: contributing\guidelines\updating-dependencies.md

@@ -19,6 +19,7 @@ using Windows.Foundation;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
+using Uno;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -61,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 			OnTextChanged(string.Empty, Text);
 		}
 
-#region Inlines
+		#region Inlines
 
 		/// <summary>
 		/// Gets an InlineCollection containing the top-level Inline elements that comprise the contents of the TextBlock.
@@ -84,10 +85,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void InvalidateInlines()
-		{
-			OnInlinesChanged();
-		}
+		internal void InvalidateInlines() => OnInlinesChanged();
 
 		private void OnInlinesChanged()
 		{
@@ -100,14 +98,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnInlinesChangedPartial();
 
-#endregion
+		#endregion
 
-#region FontStyle Dependency Property
+		#region FontStyle Dependency Property
 
 		public FontStyle FontStyle
 		{
-			get { return (FontStyle)this.GetValue(FontStyleProperty); }
-			set { this.SetValue(FontStyleProperty, value); }
+			get => (FontStyle)GetValue(FontStyleProperty);
+			set => SetValue(FontStyleProperty, value);
 		}
 
 		public static readonly DependencyProperty FontStyleProperty =
@@ -130,14 +128,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnFontStyleChangedPartial();
 
-#endregion
+		#endregion
 
-#region TextWrapping Dependency Property
+		#region TextWrapping Dependency Property
 
 		public TextWrapping TextWrapping
 		{
-			get { return (TextWrapping)this.GetValue(TextWrappingProperty); }
-			set { this.SetValue(TextWrappingProperty, value); }
+			get => (TextWrapping)GetValue(TextWrappingProperty);
+			set => SetValue(TextWrappingProperty, value);
 		}
 
 		public static readonly DependencyProperty TextWrappingProperty =
@@ -159,14 +157,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextWrappingChangedPartial();
 
-#endregion
+		#endregion
 
-#region FontWeight Dependency Property
+		#region FontWeight Dependency Property
 
 		public FontWeight FontWeight
 		{
-			get { return (FontWeight)this.GetValue(FontWeightProperty); }
-			set { this.SetValue(FontWeightProperty, value); }
+			get => (FontWeight)GetValue(FontWeightProperty);
+			set => SetValue(FontWeightProperty, value);
 		}
 
 		public static readonly DependencyProperty FontWeightProperty =
@@ -189,18 +187,18 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnFontWeightChangedPartial();
 
-#endregion
+		#endregion
 
-#region Text Dependency Property
+		#region Text Dependency Property
 
 		public
 #if XAMARIN_IOS
 			new
 #endif
-		string Text
+			string Text
 		{
-			get { return (string)this.GetValue(TextProperty); }
-			set { this.SetValue(TextProperty, value); }
+			get { return (string)GetValue(TextProperty); }
+			set { SetValue(TextProperty, value); }
 		}
 
 		public static readonly DependencyProperty TextProperty =
@@ -211,16 +209,15 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					defaultValue: string.Empty,
 					coerceValueCallback: CoerceText,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextChanged((string)e.OldValue, (string)e.NewValue)
+					propertyChangedCallback: (s, e) =>
+						((TextBlock)s).OnTextChanged((string)e.OldValue, (string)e.NewValue)
 				)
 			);
 
-		internal static object CoerceText(DependencyObject dependencyObject, object baseValue)
-		{
-			return baseValue is string
+		internal static object CoerceText(DependencyObject dependencyObject, object baseValue) =>
+			baseValue is string
 				? baseValue
 				: string.Empty;
-		}
 
 		protected virtual void OnTextChanged(string oldValue, string newValue)
 		{
@@ -232,9 +229,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextChangedPartial();
 
-#endregion
+		#endregion
 
-#region FontFamily Dependency Property
+		#region FontFamily Dependency Property
 
 #if XAMARIN_IOS
 		/// <summary>
@@ -243,8 +240,8 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		public FontFamily FontFamily
 		{
-			get { return (FontFamily)this.GetValue(FontFamilyProperty); }
-			set { this.SetValue(FontFamilyProperty, value); }
+			get => (FontFamily)GetValue(FontFamilyProperty);
+			set => SetValue(FontFamilyProperty, value);
 		}
 
 		public static readonly DependencyProperty FontFamilyProperty =
@@ -267,14 +264,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnFontFamilyChangedPartial();
 
-#endregion
+		#endregion
 
-#region FontSize Dependency Property
+		#region FontSize Dependency Property
 
 		public double FontSize
 		{
-			get { return (double)this.GetValue(FontSizeProperty); }
-			set { this.SetValue(FontSizeProperty, value); }
+			get => (double)GetValue(FontSizeProperty);
+			set => SetValue(FontSizeProperty, value);
 		}
 
 		public static readonly DependencyProperty FontSizeProperty =
@@ -297,14 +294,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnFontSizeChangedPartial();
 
-#endregion
+		#endregion
 
-#region MaxLines Dependency Property
+		#region MaxLines Dependency Property
 
 		public int MaxLines
 		{
-			get { return (int)this.GetValue(MaxLinesProperty); }
-			set { this.SetValue(MaxLinesProperty, value); }
+			get => (int)GetValue(MaxLinesProperty);
+			set => SetValue(MaxLinesProperty, value);
 		}
 
 		public static readonly DependencyProperty MaxLinesProperty =
@@ -326,14 +323,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnMaxLinesChangedPartial();
 
-#endregion
+		#endregion
 
-#region TextTrimming Dependency Property
+		#region TextTrimming Dependency Property
 
 		public TextTrimming TextTrimming
 		{
-			get { return (TextTrimming)this.GetValue(TextTrimmingProperty); }
-			set { this.SetValue(TextTrimmingProperty, value); }
+			get => (TextTrimming)GetValue(TextTrimmingProperty);
+			set => SetValue(TextTrimmingProperty, value);
 		}
 
 		public static readonly DependencyProperty TextTrimmingProperty =
@@ -355,15 +352,15 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextTrimmingChangedPartial();
 
-#endregion
+		#endregion
 
-#region Foreground Dependency Property
+		#region Foreground Dependency Property
 
 		public
 #if __ANDROID_23__
 		new
 #endif
-		Brush Foreground
+			Brush Foreground
 		{
 			get => (Brush)GetValue(ForegroundProperty);
 			set
@@ -378,7 +375,7 @@ namespace Windows.UI.Xaml.Controls
 					throw new NotSupportedException("Only SolidColorBrush or GradientBrush's FallbackColor are supported.");
 				}
 #else
-				this.SetValue(ForegroundProperty, value);
+				SetValue(ForegroundProperty, value);
 #endif
 			}
 		}
@@ -403,19 +400,49 @@ namespace Windows.UI.Xaml.Controls
 				InvalidateTextBlock();
 			}
 
-			_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+			_foregroundChanged.Disposable =
+				Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
 		}
 
 		partial void OnForegroundChangedPartial();
 
-#endregion
+		#endregion
 
-#region TextAlignment Dependency Property
+		#region IsTextSelectionEnabled Dependency Property
+
+#if !__WASM__
+		[NotImplemented]
+#endif
+		public bool IsTextSelectionEnabled
+		{
+			get => (bool)GetValue(IsTextSelectionEnabledProperty);
+			set => SetValue(IsTextSelectionEnabledProperty, value);
+		}
+
+#if !__WASM__
+		[NotImplemented]
+#endif
+		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsTextSelectionEnabled),
+				typeof(bool),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					defaultValue: false,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnIsTextSelectionEnabledChangedPartial()
+				)
+			);
+
+		partial void OnIsTextSelectionEnabledChangedPartial();
+
+		#endregion
+
+		#region TextAlignment Dependency Property
 
 		public new TextAlignment TextAlignment
 		{
-			get { return (TextAlignment)this.GetValue(TextAlignmentProperty); }
-			set { this.SetValue(TextAlignmentProperty, value); }
+			get => (TextAlignment)GetValue(TextAlignmentProperty);
+			set => SetValue(TextAlignmentProperty, value);
 		}
 
 		public static readonly DependencyProperty TextAlignmentProperty =
@@ -438,14 +465,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextAlignmentChangedPartial();
 
-#endregion
+		#endregion
 
-#region HorizontalTextAlignment Dependency Property
+		#region HorizontalTextAlignment Dependency Property
 
 		public new TextAlignment HorizontalTextAlignment
 		{
-			get { return (TextAlignment)this.GetValue(HorizontalTextAlignmentProperty); }
-			set { this.SetValue(HorizontalTextAlignmentProperty, value); }
+			get => (TextAlignment)GetValue(HorizontalTextAlignmentProperty);
+			set => SetValue(HorizontalTextAlignmentProperty, value);
 		}
 
 		public static DependencyProperty HorizontalTextAlignmentProperty { get; } =
@@ -462,19 +489,16 @@ namespace Windows.UI.Xaml.Controls
 		// This property provides the same functionality as the TextAlignment property.
 		// If both properties are set to conflicting values, the last one set is used.
 		// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.textbox.horizontaltextalignment#remarks
-		private void OnHorizontalTextAlignmentChanged()
-		{
-			TextAlignment = HorizontalTextAlignment;
-		}
+		private void OnHorizontalTextAlignmentChanged() => TextAlignment = HorizontalTextAlignment;
 
-#endregion
+		#endregion
 
-#region LineHeight Dependency Property
+		#region LineHeight Dependency Property
 
 		public double LineHeight
 		{
-			get { return (double)GetValue(LineHeightProperty); }
-			set { SetValue(LineHeightProperty, value); }
+			get => (double)GetValue(LineHeightProperty);
+			set => SetValue(LineHeightProperty, value);
 		}
 
 		public static readonly DependencyProperty LineHeightProperty =
@@ -490,19 +514,20 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnLineHeightChangedPartial();
 
-#endregion
+		#endregion
 
-#region LineStackingStrategy Dependency Property
+		#region LineStackingStrategy Dependency Property
 
 		public LineStackingStrategy LineStackingStrategy
 		{
-			get { return (LineStackingStrategy)GetValue(LineStackingStrategyProperty); }
-			set { SetValue(LineStackingStrategyProperty, value); }
+			get => (LineStackingStrategy)GetValue(LineStackingStrategyProperty);
+			set => SetValue(LineStackingStrategyProperty, value);
 		}
 
 		public static readonly DependencyProperty LineStackingStrategyProperty =
-			DependencyProperty.Register("LineStackingStrategy", typeof(LineStackingStrategy), typeof(TextBlock), new PropertyMetadata(LineStackingStrategy.MaxHeight,
-				propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineStackingStrategyChanged())
+			DependencyProperty.Register("LineStackingStrategy", typeof(LineStackingStrategy), typeof(TextBlock),
+				new PropertyMetadata(LineStackingStrategy.MaxHeight,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineStackingStrategyChanged())
 			);
 
 		private void OnLineStackingStrategyChanged()
@@ -513,14 +538,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnLineStackingStrategyChangedPartial();
 
-#endregion
+		#endregion
 
-#region Padding Dependency Property
+		#region Padding Dependency Property
 
 		public Thickness Padding
 		{
-			get { return (Thickness)this.GetValue(PaddingProperty); }
-			set { this.SetValue(PaddingProperty, value); }
+			get => (Thickness)GetValue(PaddingProperty);
+			set => SetValue(PaddingProperty, value);
 		}
 
 		public static DependencyProperty PaddingProperty =
@@ -528,7 +553,8 @@ namespace Windows.UI.Xaml.Controls
 				"Padding",
 				typeof(Thickness),
 				typeof(TextBlock),
-				new PropertyMetadata((Thickness)Thickness.Empty, propertyChangedCallback: (s, e) => ((TextBlock)s).OnPaddingChanged())
+				new PropertyMetadata((Thickness)Thickness.Empty,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnPaddingChanged())
 			);
 
 		private void OnPaddingChanged()
@@ -539,14 +565,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnPaddingChangedPartial();
 
-#endregion
+		#endregion
 
-#region CharacterSpacing Dependency Property
+		#region CharacterSpacing Dependency Property
 
 		public int CharacterSpacing
 		{
-			get { return (int)this.GetValue(CharacterSpacingProperty); }
-			set { this.SetValue(CharacterSpacingProperty, value); }
+			get => (int)GetValue(CharacterSpacingProperty);
+			set => SetValue(CharacterSpacingProperty, value);
 		}
 
 		public static DependencyProperty CharacterSpacingProperty =
@@ -575,8 +601,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public TextDecorations TextDecorations
 		{
-			get { return (TextDecorations)this.GetValue(TextDecorationsProperty); }
-			set { this.SetValue(TextDecorationsProperty, value); }
+			get => (TextDecorations)GetValue(TextDecorationsProperty);
+			set => SetValue(TextDecorationsProperty, value);
 		}
 
 		public static DependencyProperty TextDecorationsProperty =
@@ -639,7 +665,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			if (this.ReadLocalValue(TextProperty) is UnsetValue)
+			if (ReadLocalValue(TextProperty) is UnsetValue)
 			{
 				Inlines.Clear();
 				ClearTextPartial();
@@ -656,6 +682,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void ClearTextPartial();
 
 		#region Hyperlinks
+
 #if __WASM__
 		// As on wasm the TextElements are UIElement, when the hosting TextBlock will capture the pointer on Pressed,
 		// the original source of the Release event will be this TextBlock (and we won't receive 'pointerup' nor 'click'
@@ -773,7 +800,8 @@ namespace Windows.UI.Xaml.Controls
 			return aborted;
 		}
 
-		private readonly List<(int start, int end, Hyperlink hyperlink)> _hyperlinks = new List<(int start, int end, Hyperlink hyperlink)>();
+		private readonly List<(int start, int end, Hyperlink hyperlink)> _hyperlinks =
+			new List<(int start, int end, Hyperlink hyperlink)>();
 
 		private void UpdateHyperlinks()
 		{
@@ -852,25 +880,20 @@ namespace Windows.UI.Xaml.Controls
 			return hyperlink;
 		}
 #endif
+
 		#endregion
 
 		private void InvalidateTextBlock()
 		{
 			InvalidateTextBlockPartial();
-			this.InvalidateMeasure();
+			InvalidateMeasure();
 		}
 
 		partial void InvalidateTextBlockPartial();
 
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return new TextBlockAutomationPeer(this);
-		}
+		protected override AutomationPeer OnCreateAutomationPeer() => new TextBlockAutomationPeer(this);
 
-		public override string GetAccessibilityInnerText()
-		{
-			return Text;
-		}
+		public override string GetAccessibilityInnerText() => Text;
 
 		// This approximates UWP behavior
 		private protected override double GetActualWidth() => DesiredSize.Width;
