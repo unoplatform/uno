@@ -98,7 +98,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			});
 		}
 
-		protected override void OnNavigatedFrom(NavigationEventArgs e)
+		protected internal override void OnNavigatedFrom(NavigationEventArgs e)
 		{
 			// Unset all override flags to avoid impacting subsequent tests
 			//TODO:
@@ -520,7 +520,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			AutomationProperties.SetName(lastItem, "CustomDragUIOverrideDropTarget");
 		}
 
-		private void Item_DragEnter(object sender, DragEventArgs e)
+		private void Item_DragEnter(object sender, Windows.UI.Xaml.DragEventArgs e)
 		{
 			e.DragUIOverride.Caption = "test caption";
 			e.DragUIOverride.IsCaptionVisible = true;
@@ -529,7 +529,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			e.Handled = true;
 		}
 
-		private async void TreeView_Drop(object sender, DragEventArgs e)
+		private async void TreeView_Drop(object sender, Windows.UI.Xaml.DragEventArgs e)
 		{
 			try
 			{
@@ -542,14 +542,14 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			}
 		}
 
-		private void Draggable_DragStarting(UIElement sender, DragStartingEventArgs args)
+		private void Draggable_DragStarting(UIElement sender, Windows.UI.Xaml.DragStartingEventArgs args)
 		{
 			args.Data.SetText("Test Item");
 			args.Data.RequestedOperation = DataPackageOperation.Copy;
 			Results.Text = "Drag started";
 		}
 
-		private void TreeView_DragOver(object sender, DragEventArgs e)
+		private void TreeView_DragOver(object sender, Windows.UI.Xaml.DragEventArgs e)
 		{
 			e.AcceptedOperation = DataPackageOperation.Copy;
 		}
@@ -560,12 +560,12 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			TestTreeView2.Height = 200;
 		}
 
-		private void DropTarget_DragOver(object sender, DragEventArgs e)
+		private void DropTarget_DragOver(object sender, Windows.UI.Xaml.DragEventArgs e)
 		{
 			e.AcceptedOperation = DataPackageOperation.Copy;
 		}
 
-		private async void DropTarget_Drop(object sender, DragEventArgs e)
+		private async void DropTarget_Drop(object sender, Windows.UI.Xaml.DragEventArgs e)
 		{
 			try
 			{
@@ -704,13 +704,13 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			ContentModeTestTreeView2.Drop += DropForApiTest;
 		}
 
-		private void DragEnterForApiTest(object sender, DragEventArgs args)
+		private void DragEnterForApiTest(object sender, Windows.UI.Xaml.DragEventArgs args)
 		{
 			args.AcceptedOperation = DataPackageOperation.Copy;
 			Results.Text = "DragEnter";
 		}
 
-		private void DragOverForApiTest(object sender, DragEventArgs args)
+		private void DragOverForApiTest(object sender, Windows.UI.Xaml.DragEventArgs args)
 		{
 			args.AcceptedOperation = DataPackageOperation.Copy;
 			if (!Results.Text.Contains("DragOver"))
@@ -719,12 +719,12 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			}
 		}
 
-		private void DragLeaveForApiTest(object sender, DragEventArgs args)
+		private void DragLeaveForApiTest(object sender, Windows.UI.Xaml.DragEventArgs args)
 		{
 			Results.Text += "->DragLeave";
 		}
 
-		private void DropForApiTest(object sender, DragEventArgs args)
+		private void DropForApiTest(object sender, Windows.UI.Xaml.DragEventArgs args)
 		{
 			Results.Text += "->Drop";
 		}

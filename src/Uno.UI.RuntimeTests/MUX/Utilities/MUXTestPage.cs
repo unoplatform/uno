@@ -11,7 +11,7 @@ namespace MUXControlsTestApp.Utilities
 {
     public partial class MUXTestPage : Page
     {
-		DependencyObject SearchVisualTree(DependencyObject root, string name)
+		public static DependencyObject SearchVisualTree(DependencyObject root, string name)
 		{
 			int size = VisualTreeHelper.GetChildrenCount(root);
 			DependencyObject child = null;

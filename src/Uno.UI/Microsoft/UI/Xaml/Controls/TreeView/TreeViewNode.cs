@@ -30,8 +30,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public TreeViewNode Parent
 		{
-			get => m_parentNode.TryGetTarget(out var parentNode) ? parentNode : null;
-			private set
+			get
+			{
+				TreeViewNode parentNode = null;
+				m_parentNode?.TryGetTarget(out parentNode);
+				return parentNode;				
+			}
+
+			internal set
 			{
 				if (value != null)
 				{

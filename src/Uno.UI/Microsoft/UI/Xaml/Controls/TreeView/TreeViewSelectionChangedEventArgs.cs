@@ -15,8 +15,8 @@ namespace Microsoft.UI.Xaml.Controls
 			RemovedItems = removedItems;
 		}
 
-		IList<object> AddedItems { get; }
+		public IList<object> AddedItems { get; }
 
-		IList<object> RemovedItems { get; }
+		public IList<object> RemovedItems { get; }
 	}
 }

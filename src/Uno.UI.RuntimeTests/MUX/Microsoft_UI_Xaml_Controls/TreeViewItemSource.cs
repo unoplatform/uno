@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace MUXControlsTestApp
 {
-	internal partial class TreeViewItemSource : INotifyPropertyChanged
+	public partial class TreeViewItemSource : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 		public String Content { get; set; }
