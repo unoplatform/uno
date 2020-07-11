@@ -371,7 +371,7 @@ namespace Microsoft.UI.Xaml.Controls
 					var selectedNodes = viewModel.SelectedNodes;
 					foreach (var node in m_pendingSelectedNodes)
 					{
-						selectedNodes.Append(node);
+						selectedNodes.Add(node);
 					}
 					m_pendingSelectedNodes.Clear();
 				}

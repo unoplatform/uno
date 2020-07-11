@@ -199,7 +199,7 @@ namespace Microsoft.UI.Xaml.Controls
 				int size = Count;
 				for (int i = 0; i < size; i++)
 				{
-					vector.Append(GetNodeAt(i).Content);
+					vector.Add(GetNodeAt(i).Content);
 				}
 				return vector.Skip(startIndex).ToArray();
 			}

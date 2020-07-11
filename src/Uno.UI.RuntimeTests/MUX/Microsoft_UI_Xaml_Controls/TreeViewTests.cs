@@ -197,8 +197,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			treeViewNode1.Children.Add(treeViewNode5);
 
 			var treeView = new TreeView();
-			Content = treeView;
-			Content.UpdateLayout();
+			TestServices.WindowHelper.WindowContent = treeView;
+			treeView.UpdateLayout();
 			var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
 			treeView.RootNodes.Add(treeViewNode1);
 			Verify.AreEqual(listControl.Items.Count, 1);
@@ -240,8 +240,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			stackPanel.Children.Add(inheritedTreeView);
 			stackPanel.Children.Add(inheritedTreeViewList);
 			inheritedTreeViewList.ItemsSource = data;
-			Content = stackPanel;
-			Content.UpdateLayout();
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			stackPanel.UpdateLayout();
 		}
 
 		[TestMethod]
@@ -249,8 +249,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		public void VerifyTreeViewIsNotTabStop()
 		{
 			var treeView = new TreeView();
-			Content = treeView;
-			Content.UpdateLayout();
+			TestServices.WindowHelper.WindowContent = treeView;
+			treeView.UpdateLayout();
 			Verify.IsFalse(treeView.IsTabStop);
 		}
 
@@ -261,8 +261,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			var treeViewNode1 = new TreeViewNode();
 			var treeView = new TreeView();
 
-			Content = treeView;
-			Content.UpdateLayout();
+			TestServices.WindowHelper.WindowContent = treeView;
+			treeView.UpdateLayout();
 			var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
 			treeView.RootNodes.Add(treeViewNode1);
 			var children = (treeViewNode1.Children as IObservableVector<TreeViewNode>);
@@ -330,12 +330,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			var collection = new ObservableCollection<int>();
 			collection.Add(5);
 			treeView.ItemsSource = collection;
-			Content = treeView;
-			Content.UpdateLayout();
+			TestServices.WindowHelper.WindowContent = treeView;
+			treeView.UpdateLayout();
 			var tvi = (TreeViewItem)treeView.ContainerFromItem(5);
 			Verify.AreEqual(tvi.GlyphOpacity, 0.0);
 			tvi.ItemsSource = collection;
-			Content.UpdateLayout();
+			treeView.UpdateLayout();
 			Verify.AreEqual(tvi.GlyphOpacity, 1.0);
 		}
 
@@ -445,8 +445,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			treeView.RootNodes.Add(node2);
 			treeView.SelectedNodes.Add(node1);
 
-			Content = treeView;
-			Content.UpdateLayout();
+			TestServices.WindowHelper.WindowContent = treeView;
+			treeView.UpdateLayout();
 			Verify.AreEqual(true, IsMultiSelectCheckBoxChecked(treeView, node1));
 			Verify.AreEqual(false, IsMultiSelectCheckBoxChecked(treeView, node2));
 		}
@@ -479,8 +479,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			var collection = new ObservableCollection<int> { 1, 2, 3 };
 			treeView.ItemsSource = collection;
-			Content = treeView;
-			Content.UpdateLayout();
+			TestServices.WindowHelper.WindowContent = treeView;
+			treeView.UpdateLayout();
 			var tvi1 = (TreeViewItem)treeView.ContainerFromItem(1);
 			var tvi2 = (TreeViewItem)treeView.ContainerFromItem(2);
 
@@ -559,8 +559,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			treeView.RootNodes.Add(node1);
 			treeView.RootNodes.Add(node2);
 			treeView.RootNodes.Add(node3);
-			Content = treeView;
-			Content.UpdateLayout();
+			TestServices.WindowHelper.WindowContent = treeView;
+			treeView.UpdateLayout();
 
 			var tvi1 = (TreeViewItem)treeView.ContainerFromItem(node1);
 			var tvi11 = (TreeViewItem)treeView.ContainerFromItem(node11);
