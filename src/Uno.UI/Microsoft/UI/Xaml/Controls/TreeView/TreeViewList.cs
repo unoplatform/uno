@@ -1,6 +1,9 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX reference de78834
+
 using System.Collections.Generic;
-using System.Linq;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Xaml;
@@ -24,8 +27,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public TreeViewList()
 		{
 			ListViewModel = new TreeViewViewModel();
-
-			Style = Style.DefaultStyleForType(typeof(ListView));
 
 			DragItemsStarting += OnDragItemsStarting;
 			DragItemsCompleted += OnDragItemsCompleted;
@@ -63,11 +64,11 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							if (IsContentMode)
 							{
-								args.Items.Append(node.Content);
+								args.Items.Add(node.Content);
 							}
 							else
 							{
-								args.Items.Append(node);
+								args.Items.Add(node);
 							}
 						}
 					}
@@ -99,14 +100,24 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var targetItem = (TreeViewItem)args.ItemContainer;
 				var targetNode = NodeFromContainer(targetItem);
+
 				var treeViewItem = targetItem;
+				var treeViewNode = targetNode;
+
+				var itemsSource = targetItem.ItemsSource;
+				if (itemsSource != null)
+				{
+					if (treeViewNode.ItemsSource == null)
+					{
+						treeViewItem.SetItemsSource(targetNode, itemsSource);
+					}
+				}
 				treeViewItem.UpdateIndentation(targetNode.Depth);
 				treeViewItem.UpdateSelectionVisual(targetNode.SelectionState);
 			}
 		}
 
-		// IControlOverrides
-		
+		// IControlOverrides		
 		protected override void OnDrop(Windows.UI.Xaml.DragEventArgs e)
 		{
 			var args = e;
@@ -123,7 +134,6 @@ namespace Microsoft.UI.Xaml.Controls
 						// Multiselect drag and drop. In the selected items, find all the selected subtrees 
 						// and move each of those subtrees.
 						var selectedRootNodes = GetRootsOfSelectedSubtrees();
-						var selectionSize = selectedRootNodes.Count;
 
 						// Loop through in reverse order because we are inserting above the previous item to get the order correct.
 						for (int i = selectedRootNodes.Count - 1; i >= 0; --i)
@@ -310,7 +320,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
 		{
-			var itemNode = (TreeViewNode)NodeFromContainer(element);
+			var itemNode = NodeFromContainer(element);
 			TreeViewItem itemContainer = (TreeViewItem)element;
 			var selectionState = itemNode.SelectionState;
 
@@ -325,9 +335,9 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					var dispatcher = new DispatcherHelper(this);
 					dispatcher.RunAsync(() =>
-							{
-								itemNode.IsExpanded = itemContainer.IsExpanded;
-							});
+					{
+						itemNode.IsExpanded = itemContainer.IsExpanded;
+					});
 				}
 			}
 			else
@@ -358,7 +368,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override DependencyObject GetContainerForItemOverride()
 		{
-			var targetItem = new TreeViewItem() { IsGeneratedContainer = true };
+			var targetItem = new TreeViewItem() { IsGeneratedContainer = true }; // Uno specific IsGeneratedContainer
 			return targetItem;
 		}
 
@@ -407,10 +417,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				var listItem = ContainerFromItem(m_draggedOverItem) as TreeViewItem;
+				var listItem = ContainerFromItem(m_draggedOverItem);
 				if (listItem != null)
 				{
-					dragItem = listItem;
+					dragItem = (TreeViewItem)listItem;
 				}
 			}
 
@@ -424,7 +434,7 @@ namespace Microsoft.UI.Xaml.Controls
 				dragItemPeer = FrameworkElementAutomationPeer.FromElement(dragItem);
 				if (dragItemPeer != null)
 				{
-					dragItemString = dragItemPeer.GetName();//TODO: dragItemPeer.GetNameCore();
+					dragItemString = dragItemPeer.GetName(); //dragItemPeer.GetNameCore();
 				}
 
 				if (string.IsNullOrEmpty(dragItemString))
@@ -441,6 +451,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
+					//unused variables in MUX source
 					//TreeViewItem itemAfterInsertPosition = null;
 					//TreeViewItem itemBeforeInsertPosition = null;
 
@@ -449,7 +460,7 @@ namespace Microsoft.UI.Xaml.Controls
 						AutomationPeer draggedOverItemPeer = FrameworkElementAutomationPeer.FromElement(m_draggedOverItem);
 						if (draggedOverItemPeer != null)
 						{
-							draggedOverString = draggedOverItemPeer.GetName(); //TODO: draggedOverItemPeer.GetNameCore();
+							draggedOverString = draggedOverItemPeer.GetName(); //draggedOverItemPeer.GetNameCore();
 						}
 					}
 					else
@@ -587,7 +598,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsIndexValid(index))
 			{
 				var interim = ContainerFromIndex(index) as TreeViewItem;
-				if (item != null)
+				if (interim != null)
 				{
 					item = interim;
 				}
@@ -598,7 +609,7 @@ namespace Microsoft.UI.Xaml.Controls
 				AutomationPeer itemPeer = FrameworkElementAutomationPeer.FromElement(item);
 				if (itemPeer != null)
 				{
-					automationName = itemPeer.GetName(); //TODO: itemPeer.GetNameCore();
+					automationName = itemPeer.GetName(); //itemPeer.GetNameCore();
 				}
 			}
 
@@ -662,7 +673,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return current;
-			throw new NotImplementedException();
 		}
 
 		internal TreeViewNode NodeFromContainer(DependencyObject container)

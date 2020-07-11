@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Media;
 using System.Collections.ObjectModel;
-#if HAS_UNO
+
 using TreeViewSelectionMode = Microsoft.UI.Xaml.Controls.TreeViewSelectionMode;
 using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
 using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
@@ -23,33 +23,31 @@ using TreeViewDragItemsStartingEventArgs = Microsoft.UI.Xaml.Controls.TreeViewDr
 using TreeViewDragItemsCompletedEventArgs = Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs;
 using TreeViewList = Microsoft.UI.Xaml.Controls.TreeViewList;
 using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
-#endif
+//using MaterialHelperTestApi = Microsoft.UI.Private.Media.MaterialHelperTestApi;
 using System.Threading.Tasks;
+
+// Uno specific
 using Uno.UI.Samples.Controls;
 using MUXControlsTestApp.Utilities;
-using MUXControlsTestApp;
-using MUX.UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
-	[SampleControlInfo("TreeView", "MUX_Test_TreeViewPage")]
-	public sealed partial class TreeViewPage : MUXTestPage
-	{
-#if HAS_UNO
+	[SampleControlInfo("TreeView", "MUX_Test_TreeViewPage")]    
+    public sealed partial class TreeViewPage : MUXTestPage
+    {
 		bool _disableClickToExpand;
 		public TreeViewItem flyoutTVI;
 		TreeViewNode _visualRoot;
 		TreeViewNode _virtualizedNode;
 		public ObservableCollection<TreeViewItemSource> TestTreeViewItemsSource { get; set; }
 		public ObservableCollection<TreeViewItemSource> TestTreeView2ItemsSource { get; set; }
-#endif
 
 		public TreeViewPage()
 		{
 			this.DataContext = this;
 			this.InitializeComponent();
-#if HAS_UNO
-			//TODO
+
+			//TODO:
 			//MaterialHelperTestApi.IgnoreAreEffectsFast = true;
 			//MaterialHelperTestApi.SimulateDisabledByPolicy = false;
 
@@ -68,10 +66,8 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			var item1 = new TreeViewItemSource() { Content = "item1" };
 			var item2 = new TreeViewItemSource() { Content = "item2" };
 			TestTreeView2ItemsSource = new ObservableCollection<TreeViewItemSource>() { item1, item2 };
-#endif
 		}
 
-#if HAS_UNO
 		private ObservableCollection<TreeViewItemSource> PrepareItemsSource(bool expandRootNode = false)
 		{
 			var root0 = new TreeViewItemSource() { Content = "Root.0" };
@@ -102,14 +98,14 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			});
 		}
 
-		//protected override void OnNavigatedFrom(global::Windows.UI.Xaml.Navigation.NavigationEventArgs e)
-		//{
-		//	// Unset all override flags to avoid impacting subsequent tests
-		//	//TODO
-		//	//MaterialHelperTestApi.IgnoreAreEffectsFast = false;
-		//	//MaterialHelperTestApi.SimulateDisabledByPolicy = false;
-		//	base.OnNavigatedFrom(e);
-		//}
+		protected override void OnNavigatedFrom(NavigationEventArgs e)
+		{
+			// Unset all override flags to avoid impacting subsequent tests
+			//TODO:
+			//MaterialHelperTestApi.IgnoreAreEffectsFast = false;
+			//MaterialHelperTestApi.SimulateDisabledByPolicy = false;
+			base.OnNavigatedFrom(e);
+		}
 
 		private string GetSelection(TreeView tree)
 		{
@@ -236,7 +232,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private void SetAutomationIdForNodes(TreeView tree)
 		{
-			var listControl = VisualTreeUtils.FindVisualChildByName(this.TestTreeView, "ListControl") as TreeViewList;
+			var listControl = FindVisualChildByName(this.TestTreeView, "ListControl") as TreeViewList;
 			Stack<TreeViewNode> pendingNodes = new Stack<TreeViewNode>();
 			foreach (var node in tree.RootNodes)
 			{
@@ -352,10 +348,10 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		private void GetItemCommonStates_Click(object sender, RoutedEventArgs e)
 		{
 			string commonStates = string.Empty;
-			var listControl = VisualTreeUtils.FindVisualChildByName(this.TestTreeView, "ListControl") as TreeViewList;
+			var listControl = FindVisualChildByName(this.TestTreeView, "ListControl") as TreeViewList;
 			if (IsInContentMode())
 			{
-				listControl = VisualTreeUtils.FindVisualChildByName(ContentModeTestTreeView, "ListControl") as TreeViewList;
+				listControl = FindVisualChildByName(ContentModeTestTreeView, "ListControl") as TreeViewList;
 			}
 
 			for (int i = 0; i < listControl.Items.Count; i++)
@@ -411,27 +407,27 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private void GetItemCount_Click(object sender, RoutedEventArgs e)
 		{
-			var listControl = VisualTreeUtils.FindVisualChildByName(TestTreeView, "ListControl") as TreeViewList;
+			var listControl = FindVisualChildByName(TestTreeView, "ListControl") as TreeViewList;
 			if (IsInContentMode())
 			{
-				listControl = VisualTreeUtils.FindVisualChildByName(ContentModeTestTreeView, "ListControl") as TreeViewList;
+				listControl = FindVisualChildByName(ContentModeTestTreeView, "ListControl") as TreeViewList;
 			}
 			Results.Text = (listControl.Items.Count).ToString();
 		}
 
 		private void GetTree2ItemCount_Click(object sender, RoutedEventArgs e)
 		{
-			var listControl = VisualTreeUtils.FindVisualChildByName(TestTreeView2, "ListControl") as TreeViewList;
+			var listControl = FindVisualChildByName(TestTreeView2, "ListControl") as TreeViewList;
 			if (IsInContentMode())
 			{
-				listControl = VisualTreeUtils.FindVisualChildByName(ContentModeTestTreeView2, "ListControl") as TreeViewList;
+				listControl = FindVisualChildByName(ContentModeTestTreeView2, "ListControl") as TreeViewList;
 			}
 			Results.Text = (listControl.Items.Count).ToString();
 		}
 
 		private void GetFlyoutTreeViewItemCount_Click(object sender, RoutedEventArgs e)
 		{
-			var listControl = VisualTreeUtils.FindVisualChildByName(this.FlyoutTreeView, "ListControl") as TreeViewList;
+			var listControl = FindVisualChildByName(this.FlyoutTreeView, "ListControl") as TreeViewList;
 			flyoutTVI = (TreeViewItem)listControl.ContainerFromIndex(0);
 			Results.Text = (listControl.Items.Count).ToString();
 		}
@@ -439,7 +435,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		private void SetupNoReorderNodes_Click(object sender, RoutedEventArgs e)
 		{
 			var treeView = IsInContentMode() ? ContentModeTestTreeView : TestTreeView;
-			var listControl = VisualTreeUtils.FindVisualChildByName(treeView, "ListControl") as TreeViewList;
+			var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
 			var lockedItem = (TreeViewItem)listControl.ContainerFromIndex(1);
 			lockedItem.AllowDrop = false;
 
@@ -524,7 +520,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			AutomationProperties.SetName(lastItem, "CustomDragUIOverrideDropTarget");
 		}
 
-		private void Item_DragEnter(object sender, Windows.UI.Xaml.DragEventArgs e)
+		private void Item_DragEnter(object sender, DragEventArgs e)
 		{
 			e.DragUIOverride.Caption = "test caption";
 			e.DragUIOverride.IsCaptionVisible = true;
@@ -533,7 +529,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			e.Handled = true;
 		}
 
-		private async void TreeView_Drop(object sender, Windows.UI.Xaml.DragEventArgs e)
+		private async void TreeView_Drop(object sender, DragEventArgs e)
 		{
 			try
 			{
@@ -553,7 +549,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			Results.Text = "Drag started";
 		}
 
-		private void TreeView_DragOver(object sender, Windows.UI.Xaml.DragEventArgs e)
+		private void TreeView_DragOver(object sender, DragEventArgs e)
 		{
 			e.AcceptedOperation = DataPackageOperation.Copy;
 		}
@@ -564,12 +560,12 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			TestTreeView2.Height = 200;
 		}
 
-		private void DropTarget_DragOver(object sender, Windows.UI.Xaml.DragEventArgs e)
+		private void DropTarget_DragOver(object sender, DragEventArgs e)
 		{
 			e.AcceptedOperation = DataPackageOperation.Copy;
 		}
 
-		private async void DropTarget_Drop(object sender, Windows.UI.Xaml.DragEventArgs e)
+		private async void DropTarget_Drop(object sender, DragEventArgs e)
 		{
 			try
 			{
@@ -708,13 +704,13 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			ContentModeTestTreeView2.Drop += DropForApiTest;
 		}
 
-		private void DragEnterForApiTest(object sender, Windows.UI.Xaml.DragEventArgs args)
+		private void DragEnterForApiTest(object sender, DragEventArgs args)
 		{
 			args.AcceptedOperation = DataPackageOperation.Copy;
 			Results.Text = "DragEnter";
 		}
 
-		private void DragOverForApiTest(object sender, Windows.UI.Xaml.DragEventArgs args)
+		private void DragOverForApiTest(object sender, DragEventArgs args)
 		{
 			args.AcceptedOperation = DataPackageOperation.Copy;
 			if (!Results.Text.Contains("DragOver"))
@@ -723,12 +719,12 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			}
 		}
 
-		private void DragLeaveForApiTest(object sender, Windows.UI.Xaml.DragEventArgs args)
+		private void DragLeaveForApiTest(object sender, DragEventArgs args)
 		{
 			Results.Text += "->DragLeave";
 		}
 
-		private void DropForApiTest(object sender, Windows.UI.Xaml.DragEventArgs args)
+		private void DropForApiTest(object sender, DragEventArgs args)
 		{
 			Results.Text += "->Drop";
 		}
@@ -834,7 +830,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 					pendingNodes.Push(currentNode.Children[size - 1 - i]);
 				}
 				var treeViewItem = tree.ContainerFromNode(currentNode) as TreeViewItem;
-				var checkBox = VisualTreeUtils.FindVisualChildByName(treeViewItem, "MultiSelectCheckBox") as CheckBox;
+				var checkBox = FindVisualChildByName(treeViewItem, "MultiSelectCheckBox") as CheckBox;
 				if (checkBox.IsChecked == true)
 				{
 					// selected
@@ -974,8 +970,8 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		}
 
 		private void TreeViewLateDataInitTestPage_Click(object sender, RoutedEventArgs e)
-		{			
-			this.Frame.Navigate(typeof(TreeViewLateDataInitTest));
+		{
+			Frame.Navigate(typeof(TreeViewLateDataInitTest));
 		}
 
 		private void ToggleRoot0Selection_Click(object sender, RoutedEventArgs e)
@@ -987,6 +983,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		private void TreeViewNodeInMarkupTestPage_Click(object sender, RoutedEventArgs e)
 		{
 			Frame.Navigate(typeof(TreeViewNodeInMarkupTestPage));
+		}
+
+		private void TreeViewUnrealizedChildrenTestPage_Click(object sender, RoutedEventArgs e)
+		{
+			Frame.Navigate(typeof(TreeViewUnrealizedChildrenTestPage));
 		}
 
 		private void ClearException_Click(object sender, RoutedEventArgs e)
@@ -1009,6 +1010,32 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		{
 			TestTreeViewItemsSource[0].IsExpanded = !TestTreeViewItemsSource[0].IsExpanded;
 		}
-#endif
+
+		private void SwapItemsSource_Click(object sender, RoutedEventArgs e)
+		{
+			if (ContentModeTestTreeView.ItemsSource == TestTreeView2ItemsSource)
+			{
+				this.ContentModeTestTreeView.ItemsSource = TestTreeViewItemsSource;
+			}
+			else
+			{
+				this.ContentModeTestTreeView.ItemsSource = TestTreeView2ItemsSource;
+			}
+		}
+
+		private void TwoWayBoundButton_Click(object sender, RoutedEventArgs e)
+		{
+			TwoWayBoundButton.Content = TestTreeView.RootNodes[0].Children[1];
+		}
+
+		private void SelectRoot2Item_Click(object sender, RoutedEventArgs e)
+		{
+			TestTreeView.SelectedItem = TestTreeView.RootNodes[0].Children[2];
+		}
+		private void ReadBindingResult_Click(object sender, RoutedEventArgs e)
+		{
+			Results.Text = (TwoWayBoundButton.Content as TreeViewNode).Content as string
+				+ ";" + (TestTreeView.SelectedItem as TreeViewNode).Content as string;
+		}
 	}
 }

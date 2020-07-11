@@ -7,7 +7,6 @@ using System.ComponentModel;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
 using MUXControlsTestApp;
-using MUX.UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
@@ -16,7 +15,6 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
     {
 		public event PropertyChangedEventHandler PropertyChanged;
 
-#if HAS_UNO
         private ObservableCollection<TreeViewItemSource> m_testTreeViewItemsSource;
         public ObservableCollection<TreeViewItemSource> TestTreeViewItemsSource
         {
@@ -30,14 +28,12 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
                 }
             }
         }
-#endif
 
 		public TreeViewLateDataInitTest()
         {
             this.InitializeComponent();
         }
 
-#if HAS_UNO
 		private void InitializeItemsSource_Click(object sender, RoutedEventArgs e)
         {
             TestTreeViewItemsSource = PrepareItemsSource();
@@ -51,7 +47,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 
             return new ObservableCollection<TreeViewItemSource> { root };
         }
-#endif
+
 		private void NotifyPropertyChanged(String propertyName)
         {
             if (PropertyChanged != null)

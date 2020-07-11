@@ -1,4 +1,9 @@
-﻿using Windows.UI.Xaml;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX reference de78834
+
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -60,10 +65,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty CollapsedGlyphProperty =
-			DependencyProperty.Register(nameof(CollapsedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE0E3")); // UWP uses uE76C
+			DependencyProperty.Register(nameof(CollapsedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE0E3")); // TODO: UWP uses uE76C, align when "Segoe" symbol font is introduced
 
 		public static readonly DependencyProperty ExpandedGlyphProperty =
-			DependencyProperty.Register(nameof(ExpandedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE0E5")); // UWP uses uE70D
+			DependencyProperty.Register(nameof(ExpandedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE0E5")); // TODO: UWP uses uE70D, align when "Segoe" symbol font is introduced
 
 		public static readonly DependencyProperty GlyphBrushProperty =
 			DependencyProperty.Register(nameof(GlyphBrush), typeof(Brush), typeof(TreeViewItem), new PropertyMetadata(null));

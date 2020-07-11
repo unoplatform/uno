@@ -1,7 +1,11 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX reference de78834
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -17,6 +21,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private TreeViewNode m_originNode;
 		private TreeViewList m_TreeViewList;
+		private TreeView m_TreeView;
+
+		private int m_selectionTrackingCounter = 0;
+		private List<WeakReference<object>> m_addedSelectedItems = new List<WeakReference<object>>();
+		private List<object> m_removedSelectedItems = new List<object>();
 
 		public TreeViewViewModel()
 		{
@@ -52,19 +61,128 @@ namespace Microsoft.UI.Xaml.Controls
 			value.IsExpanded = false;
 		}
 
-		internal event TypedEventHandler<TreeViewNode, object> NodeExpanding;
-
-		internal event TypedEventHandler<TreeViewNode, object> NodeCollapsed;
-
 		internal void SelectAll()
 		{
-			UpdateSelection(m_originNode, TreeNodeSelectionState.Selected);
+			try
+			{
+				BeginSelectionChanges();
+
+				UpdateSelection(m_originNode, TreeNodeSelectionState.Selected);
+			}
+			finally
+			{
+				EndSelectionChanges();
+			}
 		}
 
-		internal void ModifySelectByIndex(int index, TreeNodeSelectionState state)
+		internal void SelectSingleItem(object item)
 		{
-			var targetNode = GetNodeAt(index);
-			UpdateSelection(targetNode, state);
+			try
+			{
+				BeginSelectionChanges();
+
+				var selectedItems = SelectedItems;
+				if (selectedItems.Count > 0)
+				{
+					selectedItems.Clear();
+				}
+				if (item != null)
+				{
+					selectedItems.Add(item);
+				}
+			}
+			finally
+			{
+				EndSelectionChanges();
+			}
+		}
+
+		internal void SelectNode(TreeViewNode node, bool isSelected)
+		{
+			try
+			{
+				BeginSelectionChanges();
+
+				var selectedNodes = SelectedNodes;
+				if (isSelected)
+				{
+					if (IsInSingleSelectionMode() && selectedNodes.Count > 0)
+					{
+						selectedNodes.Clear();
+					}
+					selectedNodes.Add(node);
+				}
+				else
+				{
+					int index;
+					if ((index = selectedNodes.IndexOf(node)) > -1)
+					{
+						selectedNodes.RemoveAt(index);
+					}
+				}
+			}
+			finally
+			{
+				EndSelectionChanges();
+			}
+		}
+
+		internal void SelectByIndex(int index, TreeNodeSelectionState state)
+		{
+			try
+			{
+				BeginSelectionChanges();
+
+				var targetNode = GetNodeAt(index);
+				UpdateSelection(targetNode, state);
+			}
+			finally
+			{
+				EndSelectionChanges();
+			}
+		}
+
+		internal void BeginSelectionChanges()
+		{
+			if (!IsInSingleSelectionMode())
+			{
+				m_selectionTrackingCounter++;
+				if (m_selectionTrackingCounter == 1)
+				{
+					m_addedSelectedItems.Clear();
+					m_removedSelectedItems.Clear();
+				}
+			}
+		}
+
+		internal void EndSelectionChanges()
+		{
+			if (!IsInSingleSelectionMode())
+			{
+				m_selectionTrackingCounter--;
+				if (m_selectionTrackingCounter == 0 &&
+					(m_addedSelectedItems.Count > 0 || m_removedSelectedItems.Count > 0))
+				{
+					var treeView = m_TreeView;
+
+					var added = new List<object>();
+					for (int i = 0; i < m_addedSelectedItems.Count; i++)
+					{
+						var weakReference = m_addedSelectedItems[i];
+						if (weakReference.TryGetTarget(out var item))
+						{
+							added.Add(item);
+						}
+					}
+					var removed = new List<object>();
+					for (int i = 0; i < m_removedSelectedItems.Count; i++)
+					{
+						var item = m_removedSelectedItems[i];
+						removed.Add(item);
+					}
+					treeView.RaiseSelectionChanged(added, removed);
+				}
+			}
 		}
 
 		private object GetAt(int index)
@@ -73,14 +191,8 @@ namespace Microsoft.UI.Xaml.Controls
 			return IsContentMode ? node.Content : node;
 		}
 
-		private new int IndexOf(object value)
-		{
-			//GetCustomIndexOfFunction not used			
-			return base.IndexOf(value);
-		}
-
 		private object[] GetMany(int startIndex)
-		{			
+		{
 			if (IsContentMode)
 			{
 				var vector = new List<object>();
@@ -100,7 +212,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal TreeViewNode GetNodeAt(int index)
-		{			
+		{
 			return (TreeViewNode)base[index];
 		}
 
@@ -116,7 +228,7 @@ namespace Microsoft.UI.Xaml.Controls
 			tvnCurrent.ExpandedChanged -= TreeViewNodePropertyChanged;
 
 			// Hook up events and replace tokens
-			var tvnNewNode = (TreeViewNode)newNode;
+			var tvnNewNode = newNode;
 			tvnNewNode.ChildrenChanged += TreeViewNodeVectorChanged;
 			tvnNewNode.ExpandedChanged += TreeViewNodePropertyChanged;
 		}
@@ -142,7 +254,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public override void Insert(int index, object item) => InsertAt(index, item);
 
 		public override void RemoveAt(int index)
-		{			
+		{
 			var current = (TreeViewNode)base[index];
 			base.RemoveAt(index);
 
@@ -196,7 +308,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		//// Helper function
+		// Helper function
 		internal void PrepareView(TreeViewNode originNode)
 		{
 			// Remove any existing RootNode events/children
@@ -209,10 +321,11 @@ namespace Microsoft.UI.Xaml.Controls
 					RemoveNodeAndDescendantsFromView(removeNode);
 				}
 
+				//TODO:
 				existingOriginNode.ChildrenChanged -= TreeViewNodeVectorChanged;
 			}
 
-			//	// Add new RootNode & children
+			// Add new RootNode & children
 			m_originNode = originNode;
 			originNode.ChildrenChanged += TreeViewNodeVectorChanged;
 			originNode.IsExpanded = true;
@@ -226,9 +339,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void SetOwningList(TreeViewList owningList)
+		internal void SetOwners(TreeViewList owningList, TreeView owningTreeView)
 		{
 			m_TreeViewList = owningList;
+			m_TreeView = owningTreeView;
 		}
 
 		internal TreeViewList ListControl => m_TreeViewList;
@@ -270,7 +384,7 @@ namespace Microsoft.UI.Xaml.Controls
 				int size = value.Children.Count;
 				for (int i = 0; i < size; i++)
 				{
-					var childNode = (TreeViewNode)value.Children[i];
+					var childNode = value.Children[i];
 					RemoveNodeAndDescendantsFromView(childNode);
 				}
 			}
@@ -351,7 +465,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private int IndexOfNextSibling(TreeViewNode childNode)
 		{
-			var parentNode = childNode.Parent;
+			var child = childNode;
+			var parentNode = child.Parent;
 			int stopIndex;
 			bool isLastRelativeChild = true;
 			while (parentNode != null && isLastRelativeChild)
@@ -363,7 +478,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					childNode = parentNode;
+					child = parentNode;
 					parentNode = parentNode.Parent;
 				}
 			}
@@ -387,7 +502,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var allOpenedDescendantsCount = 0;
 			for (var i = 0; i < parentNode.Children.Count; i++)
 			{
-				var childNode = (TreeViewNode)parentNode.Children[i];
+				var childNode = parentNode.Children[i];
 				allOpenedDescendantsCount++;
 				if (childNode.IsExpanded)
 				{
@@ -506,7 +621,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return hasSelectedChildren ? TreeNodeSelectionState.Selected : TreeNodeSelectionState.UnSelected;
-			throw new NotImplementedException();
 		}
 
 		internal void NotifyContainerOfSelectionChange(TreeViewNode targetNode, TreeNodeSelectionState selectionState)
@@ -525,6 +639,22 @@ namespace Microsoft.UI.Xaml.Controls
 		internal IList<TreeViewNode> SelectedNodes => m_selectedNodes;
 
 		internal IList<object> SelectedItems => m_selectedItems;
+
+		private void TrackItemSelected(object item)
+		{
+			if (m_selectionTrackingCounter > 0 && item != m_originNode)
+			{
+				m_addedSelectedItems.Add(new WeakReference<object>(item));
+			}
+		}
+
+		private void TrackItemUnselected(object item)
+		{
+			if (m_selectionTrackingCounter > 0 && item != m_originNode)
+			{
+				m_removedSelectedItems.Add(item);
+			}
+		}
 
 		internal TreeViewNode GetAssociatedNode(object item)
 		{
@@ -550,7 +680,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// toggles a collapse / expand to ensure order.
 				case (CollectionChange.Reset):
 					{
-						var resetNode = (TreeViewNode)sender;
+						var resetNode = sender;
 						if (resetNode.IsExpanded)
 						{
 							//The lowIndex is the index of the first child, while the high index is the index of the last descendant in the list.
@@ -635,6 +765,7 @@ namespace Microsoft.UI.Xaml.Controls
 						if (changingNodeParent.IsExpanded)
 						{
 							var removedNode = GetRemovedChildTreeViewNodeByIndex(changingNodeParent, index);
+							//TODO: gsl:suppress?
 							if (!IndexOfNode(removedNode, out var removedNodeIndex))
 							{
 								throw new InvalidOperationException("Node does not exist");
@@ -660,14 +791,19 @@ namespace Microsoft.UI.Xaml.Controls
 			var vectorChangedArgs = (IVectorChangedEventArgs)args;
 			CollectionChange collectionChange = vectorChangedArgs.CollectionChange;
 			var index = (int)vectorChangedArgs.Index; // Cast to int to be able to index
-			var changingChildrenNode = (TreeViewNode)sender;
+			var changingChildrenNode = sender;
 
 			switch (collectionChange)
 			{
 				case (CollectionChange.ItemInserted):
 					{
 						var newNode = changingChildrenNode.Children[index];
-						UpdateNodeSelection(newNode, NodeSelectionState(changingChildrenNode));
+
+						// If we are in multi select, we want the new child items to be also selected.
+						if (!IsInSingleSelectionMode())
+						{
+							UpdateNodeSelection(newNode, NodeSelectionState(changingChildrenNode));
+						}
 						break;
 					}
 
@@ -689,9 +825,7 @@ namespace Microsoft.UI.Xaml.Controls
 							if (ancestorNode != m_originNode)
 							{
 								selectedNodes.RemoveAtCore(i);
-								//TODO
 								selectNode.ChildrenChanged -= SelectedNodeChildrenChanged;
-								//m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
 							}
 						}
 						break;
@@ -723,13 +857,10 @@ namespace Microsoft.UI.Xaml.Controls
 							{
 								selectedNodes.RemoveAtCore(i);
 								selectNode.ChildrenChanged -= SelectedNodeChildrenChanged;
-								//TODO
-								//m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
 							}
 						}
 						break;
 					}
-
 			}
 		}
 
@@ -748,7 +879,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void TreeViewNodeIsExpandedPropertyChanged(TreeViewNode sender, DependencyPropertyChangedEventArgs args)
 		{
-			var targetNode = (TreeViewNode)sender;
+			var targetNode = sender;
 			if (targetNode.IsExpanded)
 			{
 				if (targetNode.Children.Count != 0)
@@ -758,8 +889,7 @@ namespace Microsoft.UI.Xaml.Controls
 					index = index + 1;
 					for (var i = 0; i < targetNode.Children.Count; i++)
 					{
-						TreeViewNode childNode = null;
-						childNode = (TreeViewNode)targetNode.Children[i];
+						TreeViewNode childNode = targetNode.Children[i];
 						AddNodeToView(childNode, index + i + openedDescendantOffset);
 						openedDescendantOffset = AddNodeDescendantsToView(childNode, index + i, openedDescendantOffset);
 					}
@@ -772,8 +902,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				for (var i = 0; i < targetNode.Children.Count; i++)
 				{
-					TreeViewNode childNode = null;
-					childNode = (TreeViewNode)targetNode.Children[i];
+					TreeViewNode childNode = targetNode.Children[i];
 					RemoveNodeAndDescendantsFromView(childNode);
 				}
 
@@ -796,7 +925,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public bool IsContentMode { get => m_isContentMode; set => m_isContentMode = value; }
+		public bool IsContentMode
+		{
+			get => m_isContentMode;
+			set => m_isContentMode = value;
+		}
 
 		private void ClearEventTokenVectors()
 		{
@@ -827,6 +960,5 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
-
 	}
 }

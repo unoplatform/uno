@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX reference de78834
+
+using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -9,6 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private const string c_listControlName = "ListControl";
 
+		private TreeViewList m_listControl;
 		private TreeViewNode m_rootNode;
 		private IList<TreeViewNode> m_pendingSelectedNodes;
 
@@ -18,13 +24,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_rootNode = new TreeViewNode();
 			m_pendingSelectedNodes = new List<TreeViewNode>();
-
-			//this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
 		}
 
-		internal TreeViewList ListControl { get; private set; }
-
 		public IList<TreeViewNode> RootNodes => m_rootNode.Children;
+
+		internal TreeViewList ListControl => m_listControl;
+
+		internal TreeViewList MutableListControl => m_listControl;
 
 		public object ItemFromContainer(DependencyObject container) =>
 			ListControl?.ItemFromContainer(container);
@@ -68,25 +74,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public object SelectedItem
-		{
-			get
-			{
-				return SelectedItems.Count > 0 ? SelectedItems[0] : null;
-			}
-			set
-			{
-				if (SelectedItems.Count > 0)
-				{
-					SelectedItems.Clear();
-				}
-				if (value != null)
-				{
-					SelectedItems.Add(value);
-				}
-			}
-		}
-
 		public IList<object> SelectedItems => ListControl?.ListViewModel?.SelectedItems;
 
 		internal void UpdateSelection(TreeViewNode node, bool isSelected)
@@ -96,23 +83,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (isSelected != viewModel.IsNodeSelected(node))
 				{
-					var selectedNodes = viewModel.SelectedNodes;
-					if (isSelected)
-					{
-						if (SelectionMode == TreeViewSelectionMode.Single && selectedNodes.Count > 0)
-						{
-							selectedNodes.Clear();
-						}
-						selectedNodes.Append(node);
-					}
-					else
-					{
-						var index = selectedNodes.IndexOf(node);
-						if (index > -1)
-						{
-							selectedNodes.RemoveAt(index);
-						}
-					}
+					viewModel.SelectNode(node, isSelected);
 				}
 			}
 		}
@@ -234,6 +205,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 				m_rootNode.ItemsSource = ItemsSource;
 			}
+			else if (property == SelectedItemProperty)
+			{
+				var items = SelectedItems;
+				var selected = items.Count > 0 ? items[0] : null;
+				if (args.NewValue != selected)
+				{
+					ListControl?.ListViewModel?.SelectSingleItem(args.NewValue);
+				}
+			}
 		}
 
 		private void OnListControlDragItemsStarting(object sender, DragItemsStartingEventArgs args)
@@ -266,11 +246,47 @@ namespace Microsoft.UI.Xaml.Controls
 			DragItemsCompleted?.Invoke(this, treeViewArgs);
 		}
 
+		private void OnListControlSelectionChanged(object sender, SelectionChangedEventArgs args)
+		{
+			if (SelectionMode == TreeViewSelectionMode.Single)
+			{
+				RaiseSelectionChanged(args.AddedItems, args.RemovedItems);
+
+				object GetNewSelectedItem(SelectionChangedEventArgs args)
+				{
+					var newItems = args.AddedItems;
+					if (newItems != null)
+					{
+						if (newItems.Count > 0)
+						{
+							return newItems[0];
+						}
+						else
+						{
+							return null;
+						}
+					}
+					else
+					{
+						return null;
+					}
+				};
+				var newSelectedItem = GetNewSelectedItem(args);
+
+				if (SelectedItem != newSelectedItem)
+				{
+					SelectedItem = newSelectedItem;
+				}
+			}
+		}
 
 		private void UpdateItemsSelectionMode(bool isMultiSelect)
 		{
 			var listControl = ListControl;
-			listControl.EnableMultiselect(isMultiSelect);
+			if (listControl.IsMultiselect != isMultiSelect)
+			{
+				listControl.EnableMultiselect(isMultiSelect);
+			}
 
 			var viewModel = listControl.ListViewModel;
 			int size = viewModel.Count;
@@ -303,9 +319,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnApplyTemplate()
+		internal void RaiseSelectionChanged(IList<object> addedItems, IList<object> removedItems)
 		{
-			ListControl = (TreeViewList)GetTemplateChild(c_listControlName);
+			var treeViewArgs = new TreeViewSelectionChangedEventArgs(addedItems, removedItems);
+			SelectionChanged?.Invoke(this, treeViewArgs);
+		}
+
+		protected override void OnApplyTemplate()
+		{			
+			m_listControl = (TreeViewList)GetTemplateChild(c_listControlName);
 			if (ListControl != null)
 			{
 				var listPtr = ListControl;
@@ -320,7 +342,7 @@ namespace Microsoft.UI.Xaml.Controls
 					viewModel.IsContentMode = true;
 				}
 				viewModel.PrepareView(m_rootNode);
-				viewModel.SetOwningList(ListControl);
+				viewModel.SetOwners(ListControl, this);
 				viewModel.NodeExpanding += OnNodeExpanding;
 				viewModel.NodeCollapsed += OnNodeCollapsed;
 
@@ -342,6 +364,7 @@ namespace Microsoft.UI.Xaml.Controls
 				ListControl.ContainerContentChanging += OnContainerContentChanging;
 				ListControl.DragItemsStarting += OnListControlDragItemsStarting;
 				ListControl.DragItemsCompleted += OnListControlDragItemsCompleted;
+				ListControl.SelectionChanged += OnListControlSelectionChanged;
 
 				if (m_pendingSelectedNodes != null && m_pendingSelectedNodes.Count > 0)
 				{

@@ -7,7 +7,7 @@ using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	//// Similiar to SelectedNodesVector above, we need to make decisions before the item is inserted or removed.
+	//// Similiar to SelectedNodesVector, we need to make decisions before the item is inserted or removed.
 	//// we can't use vector change events because the event already happened when event hander gets called.
 	internal class SelectedItemsVector : ObservableVector<object>
 	{

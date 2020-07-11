@@ -5,7 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace MUX.UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
+namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
 	public partial class TreeViewItemSource : INotifyPropertyChanged
 	{

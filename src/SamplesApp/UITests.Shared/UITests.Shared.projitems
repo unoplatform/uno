@@ -61,6 +61,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewUnrealizedChildrenTestPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TwoPaneViewTests\TwoPaneViewPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3473,6 +3477,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewNodeInMarkupTestPage.xaml.cs">
       <DependentUpon>TreeViewNodeInMarkupTestPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewUnrealizedChildrenTestPage.xaml.cs">
+      <DependentUpon>TreeViewUnrealizedChildrenTestPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\VirtualizingDataSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TwoPaneViewTests\TwoPaneViewPage.xaml.cs">
       <DependentUpon>TwoPaneViewPage.xaml</DependentUpon>
     </Compile>

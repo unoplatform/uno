@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX reference de78834
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation;
@@ -10,8 +15,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TreeViewNode : DependencyObject, ICustomPropertyProvider, IStringable
 	{
-		private TreeViewNode _parent;
-		private bool _hasUnrealizedChildren;
+		private WeakReference<TreeViewNode> m_parentNode;
+		private bool m_HasUnrealizedChildren;
 		private object m_itemsSource = null;
 		private ItemsSourceView m_itemsDataSource = null;
 
@@ -21,35 +26,43 @@ namespace Microsoft.UI.Xaml.Controls
 			collection.SetParent(this);
 			Children = collection;
 			collection.VectorChanged += ChildVectorChanged;
-
-			//this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
 		}
 
 		public TreeViewNode Parent
 		{
-			get => _parent;
-			internal set
+			get => m_parentNode.TryGetTarget(out var parentNode) ? parentNode : null;
+			private set
 			{
-				_parent = value;
+				if (value != null)
+				{
+					m_parentNode = new WeakReference<TreeViewNode>(value);
+				}
+				else
+				{
+					m_parentNode = null;
+				}
+
+				//A parentless node has a depth of -1, and the first level of visible nodes in
+				// the tree view will have a depth of 0 (-1 + 1);
 				UpdateDepth(value != null ? value.Depth + 1 : -1);
 			}
 		}
 
 		public bool HasUnrealizedChildren
 		{
-			get => _hasUnrealizedChildren;
+			get => m_HasUnrealizedChildren;
 			set
 			{
-				_hasUnrealizedChildren = value;
+				m_HasUnrealizedChildren = value;
 				UpdateHasChildren();
 			}
 		}
 
+		public IList<TreeViewNode> Children { get; }
+
 		internal bool IsContentMode { get; set; }
 
 		internal TreeNodeSelectionState SelectionState { get; set; }
-
-		public IList<TreeViewNode> Children { get; }
 
 		private void UpdateDepth(int depth)
 		{
@@ -65,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateHasChildren()
 		{
-			bool hasChildren = Children.Count != 0 || HasUnrealizedChildren;
+			bool hasChildren = Children.Count != 0 || m_HasUnrealizedChildren;
 			SetValue(HasChildrenProperty, hasChildren);
 		}
 
@@ -233,11 +246,13 @@ namespace Microsoft.UI.Xaml.Controls
 					return resultStringable.ToString();
 				}
 
-				return content as string ?? GetType().Name;
+				return content?.ToString() ?? GetType().Name;
 			}
 
 			return GetType().Name;
 		}
+
+		#region ICustomPropertyProvider
 
 		Type ICustomPropertyProvider.Type => typeof(TreeViewNode);
 
@@ -247,9 +262,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		string ICustomPropertyProvider.GetStringRepresentation() => GetContentAsString();
 
+		#endregion
+
+		#region IStringable
+
 		public override string ToString()
 		{
 			return GetContentAsString();
 		}
+
+		#endregion
 	}
 }

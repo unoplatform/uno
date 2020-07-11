@@ -3,10 +3,9 @@
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-#if HAS_UNO
+
 using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
 using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
-#endif
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
 
@@ -14,44 +13,40 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
 	[SampleControlInfo("TreeView", "MUX_Test_TreeViewItemTemplateSelector")]
 	public sealed partial class TreeViewItemTemplateSelectorTestPage : MUXTestPage
-    {
-        public TreeViewItemTemplateSelectorTestPage()
-        {
-            this.InitializeComponent();
-#if HAS_UNO
+	{
+		public TreeViewItemTemplateSelectorTestPage()
+		{
+			this.InitializeComponent();
 			TestTreeView.RootNodes.Add(new TreeViewNode() { Content = 1 });
-            TestTreeView.RootNodes.Add(new TreeViewNode() { Content = 2 });
-#endif
+			TestTreeView.RootNodes.Add(new TreeViewNode() { Content = 2 });
 		}
-    }
+	}
 
-#if HAS_UNO
 	public class TreeViewItemTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate Template1 { get; set; }
-        public DataTemplate Template2 { get; set; }
+	{
+		public DataTemplate Template1 { get; set; }
+		public DataTemplate Template2 { get; set; }
 
-        protected override DataTemplate SelectTemplateCore(object item)
-        {
-            var node = (TreeViewNode)item;
-            int content = (int)node.Content;
-            if (content % 2 == 0) return Template2;
-            return Template1;
-        }
-    }
+		protected override DataTemplate SelectTemplateCore(object item)
+		{
+			var node = (TreeViewNode)item;
+			int content = (int)node.Content;
+			if (content % 2 == 0) return Template2;
+			return Template1;
+		}
+	}
 
-    public class TreeViewItemStyleSelector : StyleSelector
-    {
-        public Style Style1 { get; set; }
-        public Style Style2 { get; set; }
+	public class TreeViewItemStyleSelector : StyleSelector
+	{
+		public Style Style1 { get; set; }
+		public Style Style2 { get; set; }
 
-        protected override Style SelectStyleCore(object item, DependencyObject container)
-        {
-            var node = (TreeViewNode)item;
-            int content = (int)node.Content;
-            if (content % 2 == 0) return Style2;
-            return Style1;
-        }
-    }
-#endif
+		protected override Style SelectStyleCore(object item, DependencyObject container)
+		{
+			var node = (TreeViewNode)item;
+			int content = (int)node.Content;
+			if (content % 2 == 0) return Style2;
+			return Style1;
+		}
+	}
 }

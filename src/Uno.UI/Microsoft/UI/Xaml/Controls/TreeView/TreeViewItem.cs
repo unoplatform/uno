@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX reference de78834
+
+using System;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Core;
@@ -29,10 +34,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(TreeViewItem);
 			SetValue(TreeViewItemTemplateSettingsProperty, new TreeViewItemTemplateSettings());
-
-			//this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
 		}
 
+		// IControlOverrides
 		protected override void OnKeyDown(KeyRoutedEventArgs e)
 		{
 			var targetNode = TreeNode;
@@ -42,6 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var key = e.Key;
 				var originalKey = e.OriginalKey;
 
+				// If in multi-selection and gamepad a is pressed
 				if (originalKey == VirtualKey.GamepadA &&
 					treeView.ListControl.IsMultiselect)
 				{
@@ -103,7 +108,7 @@ namespace Microsoft.UI.Xaml.Controls
 							}
 
 							args.Handled = true;
-							treeViewList.OnDropInternal(args);
+							treeView.MutableListControl.OnDropInternal(args);
 						}
 						else
 						{
@@ -121,7 +126,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 								// If not set to true then the Reorder code of listview will override what is being done here.
 								args.Handled = true;
-								treeViewList.OnDropInternal(args);
+								treeView.MutableListControl.OnDropInternal(args);
 							}
 							else
 							{
@@ -151,12 +156,12 @@ namespace Microsoft.UI.Xaml.Controls
 						if (treeViewList.IsSelected(draggedOverNode))
 						{
 							args.AcceptedOperation = DataPackageOperation.None;
-							treeViewList.SetDraggedOverItem(null);
+							treeView.MutableListControl.SetDraggedOverItem(null);
 						}
 						else
 						{
 							args.AcceptedOperation = DataPackageOperation.Move;
-							treeViewList.SetDraggedOverItem(draggedOverItem);
+							treeView.MutableListControl.SetDraggedOverItem(draggedOverItem);
 						}
 					}
 					else
@@ -167,10 +172,11 @@ namespace Microsoft.UI.Xaml.Controls
 							walkNode = walkNode.Parent;
 						}
 
+						var mutableTreeViewList = treeView.MutableListControl;
 						if (walkNode != draggedNode && draggedNode != draggedOverNode)
 						{
 							args.AcceptedOperation = DataPackageOperation.Move;
-							treeViewList.SetDraggedOverItem(draggedOverItem);
+							mutableTreeViewList.SetDraggedOverItem(draggedOverItem);
 						}
 
 						treeViewList.UpdateDropTargetDropEffect(false, false, null);
@@ -254,19 +260,19 @@ namespace Microsoft.UI.Xaml.Controls
 					m_expandContentTimer.Stop();
 				}
 			}
+
 			base.OnDragLeave(args);
 		}
 
+		// IUIElementOverrides
 		protected override AutomationPeer OnCreateAutomationPeer() =>
 			new TreeViewItemAutomationPeer(this);
 
 		// IFrameworkElementOverrides
-
 		protected override void OnApplyTemplate()
 		{
 			RecycleEvents();
 
-			var controlProtected = this;
 			m_selectionBox = (CheckBox)GetTemplateChild(c_multiSelectCheckBoxName);
 			RegisterPropertyChangedCallback(SelectorItem.IsSelectedProperty, OnIsSelectedChanged);
 
@@ -288,13 +294,8 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateNodeIsExpandedAsync(node, IsExpanded);
 				node.HasUnrealizedChildren = HasUnrealizedChildren;
 			}
-			base.OnApplyTemplate();
-		}
 
-		~TreeViewItem()
-		{
-			// We only need to use safe_get in the deconstruction loop
-			RecycleEvents(true /* useSafeGet */);
+			base.OnApplyTemplate();
 		}
 
 		private T GetAncestorView<T>()
@@ -339,22 +340,26 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (property == ItemsSourceProperty)
 				{
-					object value = args.NewValue;
-
-					var treeViewNode = node;
-					treeViewNode.ItemsSource = value;
-					if (IsInContentMode)
-					{
-						// The children have changed, validate and update GlyphOpacity
-						bool hasChildren = HasUnrealizedChildren || treeViewNode.HasChildren;
-						GlyphOpacity = hasChildren ? 1.0 : 0.0;
-					}
+					SetItemsSource(node, args.NewValue);
 				}
 				else if (property == HasUnrealizedChildrenProperty)
 				{
 					bool value = (bool)args.NewValue;
 					node.HasUnrealizedChildren = value;
 				}
+			}
+		}
+
+		internal void SetItemsSource(TreeViewNode node, object value)
+		{
+			var treeViewNode = node;
+			treeViewNode.ItemsSource = value;
+
+			if (IsInContentMode)
+			{
+				// The children have changed, validate and update GlyphOpacity
+				bool hasChildren = HasUnrealizedChildren || treeViewNode.HasChildren;
+				GlyphOpacity = hasChildren ? 1.0 : 0.0;
 			}
 		}
 
@@ -429,7 +434,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var listControl = treeView.ListControl;
 				int index = listControl.IndexFromContainer(this);
 				var selectionState = CheckBoxSelectionState((CheckBox)sender);
-				listControl.ListViewModel.ModifySelectByIndex(index, selectionState);
+				listControl.ListViewModel.SelectByIndex(index, selectionState);
 				UpdateTreeViewItemVisualState(selectionState);
 				RaiseSelectionChangeEvents(selectionState == TreeNodeSelectionState.Selected);
 			}
@@ -460,7 +465,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var node = TreeNode;
 				if (node != null)
 				{
-					treeView?.UpdateSelection(node, isSelected);
+					treeView.UpdateSelection(node, isSelected);
 				}
 			}
 		}
@@ -571,7 +576,8 @@ namespace Microsoft.UI.Xaml.Controls
 			children.InsertAt(childIndex + positionModifier, targetNode);
 			listControl.UpdateLayout();
 
-			var lvi = AncestorTreeView.ContainerFromNode(targetNode) as TreeViewItem;
+			var treeView = AncestorTreeView;
+			var lvi = treeView.ContainerFromNode(targetNode) as TreeViewItem;
 			if (lvi != null)
 			{
 				var targetItem = lvi;
@@ -718,10 +724,11 @@ namespace Microsoft.UI.Xaml.Controls
 			TreeViewNode targetNode = TreeNode;
 			var isExpanded = !targetNode.IsExpanded;
 			targetNode.IsExpanded = isExpanded;
+
 			args.Handled = true;
 		}
 
-		private void RecycleEvents(bool useSafeGet = false)
+		private void RecycleEvents()
 		{
 			var chevron = m_expandCollapseChevron;
 			if (chevron != null)
@@ -771,6 +778,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return TreeNodeSelectionState.PartialSelected;
+		}
+
+		~TreeViewItem()
+		{
+			// We only need to use safe_get in the deconstruction loop
+			RecycleEvents(/* useSafeGet */);
 		}
 	}
 }
