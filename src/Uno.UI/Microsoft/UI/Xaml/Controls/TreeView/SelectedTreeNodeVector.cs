@@ -102,6 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 					if (item != null)
 					{
 						selectedItems.Insert(index, item);
+						viewModel.TrackItemSelected(item);
 					}
 				}
 			}
@@ -118,7 +119,9 @@ namespace Microsoft.UI.Xaml.Controls
 				var selectedItems = viewModel.SelectedItems;
 				if (Count != selectedItems.Count)
 				{
+					var item = selectedItems[index];
 					selectedItems.RemoveAt(index);
+					viewModel.TrackItemUnselected(item);
 				}
 			}
 		}

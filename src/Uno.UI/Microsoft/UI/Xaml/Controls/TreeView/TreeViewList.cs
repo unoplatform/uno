@@ -372,6 +372,8 @@ namespace Microsoft.UI.Xaml.Controls
 			return targetItem;
 		}
 
+		protected override bool IsItemItsOwnContainerOverride(object item) => item is TreeViewItem;
+
 		// IFrameworkElementOverrides
 		protected override void OnApplyTemplate()
 		{

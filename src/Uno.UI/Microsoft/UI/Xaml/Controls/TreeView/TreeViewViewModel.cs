@@ -640,7 +640,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IList<object> SelectedItems => m_selectedItems;
 
-		private void TrackItemSelected(object item)
+		internal void TrackItemSelected(object item)
 		{
 			if (m_selectionTrackingCounter > 0 && item != m_originNode)
 			{
@@ -648,7 +648,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void TrackItemUnselected(object item)
+		internal void TrackItemUnselected(object item)
 		{
 			if (m_selectionTrackingCounter > 0 && item != m_originNode)
 			{
