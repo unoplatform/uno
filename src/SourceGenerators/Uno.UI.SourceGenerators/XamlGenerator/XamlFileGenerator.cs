@@ -2566,7 +2566,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (_isDebug && IsFrameworkElement(objectDefinition.Type))
 					{
-						writer.AppendLineInvariant($"global::Uno.UI.FrameworkElementHelper.SetBaseUri({closureName}, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
+						var lines = $"LN{objectDefinition.LineNumber}_{objectDefinition.LinePosition}";
+						writer.AppendLineInvariant($"global::Uno.UI.FrameworkElementHelper.SetBaseUri({closureName}, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#{lines}\");");
 					}
 
 					if (_isUiAutomationMappingEnabled)

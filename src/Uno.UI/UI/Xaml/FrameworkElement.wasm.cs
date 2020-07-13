@@ -514,6 +514,7 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(MaxWidth), MaxWidth);
 				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
 				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
+				UpdateDOMXamlProperty("Source", BaseUri);
 
 				base.UpdateDOMProperties();
 			}
