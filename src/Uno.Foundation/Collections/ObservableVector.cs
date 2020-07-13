@@ -51,7 +51,7 @@ namespace Windows.Foundation.Collections
 
 		public void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
 
-		public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
+		public virtual IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
 
 		public int IndexOf(T item) => _list.IndexOf(item);
 
@@ -85,7 +85,7 @@ namespace Windows.Foundation.Collections
 			RaiseVectorChanged(CollectionChange.ItemRemoved, index);
 		}
 
-		IEnumerator IEnumerable.GetEnumerator() => _list.GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
 		private void RaiseVectorChanged(CollectionChange change, int index)
 		{

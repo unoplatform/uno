@@ -260,7 +260,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
-		//[TestMethod] Disabled with issue number #1775
+		//[TestMethod] Disabled with issue number #1775 (WinUI issue)
 		public void TreeViewInheritanceTest()
 		{
 			StackPanel stackPanel = new StackPanel();
@@ -298,203 +298,237 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
-		//[TestMethod]
-		//[RunsOnUIThread]
-		//public void VerifyClearingNodeWithNoChildren()
-		//{
-		//	var treeViewNode1 = new TreeViewNode();
-		//	var treeView = new TreeView();
+		[TestMethod]
+		public async Task VerifyClearingNodeWithNoChildren()
+		{
+			TreeView treeView = null;
+			TreeViewNode treeViewNode1 = null;
+			await RunOnUIThread.Execute(() =>
+			{
+				treeViewNode1 = new TreeViewNode();
+				treeView = new TreeView();
+				TestServices.WindowHelper.WindowContent = treeView;
+			});
 
-		//	TestServices.WindowHelper.WindowContent = treeView;
-		//	treeView.UpdateLayout();
-		//	var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
-		//	treeView.RootNodes.Add(treeViewNode1);
-		//	var children = (treeViewNode1.Children as IObservableVector<TreeViewNode>);
-		//	children.VectorChanged += (vector, args) =>
-		//	{
-		//		if (((IVectorChangedEventArgs)args).CollectionChange == CollectionChange.Reset)
-		//		{
-		//			// should not reset if there are not children items
-		//			throw new InvalidOperationException();
-		//		}
-		//	};
-		//	Verify.AreEqual(listControl.Items.Count, 1);
+			await TestServices.WindowHelper.WaitForIdle();
 
-		//	// this should no-op and not crash
-		//	treeViewNode1.Children.Clear();
-		//}
+			await RunOnUIThread.Execute(() =>
+			{
+				var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
+				treeView.RootNodes.Add(treeViewNode1);
+				var children = (treeViewNode1.Children as IObservableVector<TreeViewNode>);
+				children.VectorChanged += (vector, args) =>
+				{
+					if (((IVectorChangedEventArgs)args).CollectionChange == CollectionChange.Reset)
+					{
+						// should not reset if there are not children items
+						throw new InvalidOperationException();
+					}
+				};
+				Verify.AreEqual(listControl.GetItems()?.Count(), 1);
 
-		//[TestMethod]
-		//[RunsOnUIThread]
-		//public void TreeViewNodeDPTest()
-		//{
-		//	TreeViewNode rootNode = new TreeViewNode() { Content = "Root" };
-		//	TreeViewNode childNode = new TreeViewNode() { Content = "Child" };
-		//	rootNode.Children.Add(childNode);
-		//	rootNode.IsExpanded = true;
+				// this should no-op and not crash
+				treeViewNode1.Children.Clear();
+			});
 
-		//	Verify.AreEqual((string)rootNode.GetValue(TreeViewNode.ContentProperty), "Root");
-		//	Verify.AreEqual((string)childNode.GetValue(TreeViewNode.ContentProperty), "Child");
+			await TestServices.WindowHelper.WaitForIdle();
+		}
 
-		//	Verify.AreEqual((int)rootNode.GetValue(TreeViewNode.DepthProperty), -1);
-		//	Verify.AreEqual((int)childNode.GetValue(TreeViewNode.DepthProperty), 0);
+		[TestMethod]
+		[RunsOnUIThread]
+		public void TreeViewNodeDPTest()
+		{
+			TreeViewNode rootNode = new TreeViewNode() { Content = "Root" };
+			TreeViewNode childNode = new TreeViewNode() { Content = "Child" };
+			rootNode.Children.Add(childNode);
+			rootNode.IsExpanded = true;
 
-		//	Verify.AreEqual((bool)rootNode.GetValue(TreeViewNode.IsExpandedProperty), true);
-		//	Verify.AreEqual((bool)childNode.GetValue(TreeViewNode.IsExpandedProperty), false);
+			Verify.AreEqual((string)rootNode.GetValue(TreeViewNode.ContentProperty), "Root");
+			Verify.AreEqual((string)childNode.GetValue(TreeViewNode.ContentProperty), "Child");
 
-		//	Verify.AreEqual((bool)rootNode.GetValue(TreeViewNode.HasChildrenProperty), true);
-		//	Verify.AreEqual((bool)childNode.GetValue(TreeViewNode.HasChildrenProperty), false);
-		//}
+			Verify.AreEqual((int)rootNode.GetValue(TreeViewNode.DepthProperty), -1);
+			Verify.AreEqual((int)childNode.GetValue(TreeViewNode.DepthProperty), 0);
 
-		//[TestMethod]
-		//[RunsOnUIThread]
-		//public void TreeViewItemTemplateTest()
-		//{
-		//	TreeView treeView = new TreeView();
-		//	treeView.Loaded += (object sender, RoutedEventArgs e) =>
-		//	{
-		//		var dataTemplate = (DataTemplate)XamlReader.Load(
-		//	   @"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
-  //                        <TextBlock Text='TreeViewItemTemplate'/>
-  //                    </DataTemplate>");
-		//		treeView.ItemTemplate = dataTemplate;
-		//		var node = new TreeViewNode();
-		//		treeView.RootNodes.Add(node);
-		//		var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
-		//		var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
-		//		Verify.AreEqual(treeViewItem.ContentTemplate, dataTemplate);
-		//	};
-		//}
+			Verify.AreEqual((bool)rootNode.GetValue(TreeViewNode.IsExpandedProperty), true);
+			Verify.AreEqual((bool)childNode.GetValue(TreeViewNode.IsExpandedProperty), false);
 
-		//[TestMethod]
-		//[RunsOnUIThread]
-		//public void ValidateTreeViewItemSourceChangeUpdatesChevronOpacity()
-		//{
-		//	var treeView = new TreeView();
-		//	var collection = new ObservableCollection<int>();
-		//	collection.Add(5);
-		//	treeView.ItemsSource = collection;
-		//	TestServices.WindowHelper.WindowContent = treeView;
-		//	treeView.UpdateLayout();
-		//	var tvi = (TreeViewItem)treeView.ContainerFromItem(5);
-		//	Verify.AreEqual(tvi.GlyphOpacity, 0.0);
-		//	tvi.ItemsSource = collection;
-		//	treeView.UpdateLayout();
-		//	Verify.AreEqual(tvi.GlyphOpacity, 1.0);
-		//}
+			Verify.AreEqual((bool)rootNode.GetValue(TreeViewNode.HasChildrenProperty), true);
+			Verify.AreEqual((bool)childNode.GetValue(TreeViewNode.HasChildrenProperty), false);
+		}
 
-		//[TestMethod]
-		//[RunsOnUIThread]
-		//public void TreeViewItemContainerStyleTest()
-		//{
-		//	TreeView treeView = new TreeView();
-		//	treeView.Loaded += (object sender, RoutedEventArgs e) =>
-		//	{
-		//		var style = (Style)XamlReader.Load(
-		//	   @"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
-  //                        <Setter Property='Background' Value='Green'/>
-  //                    </Style>");
-		//		treeView.ItemContainerStyle = style;
-		//		var node = new TreeViewNode();
-		//		treeView.RootNodes.Add(node);
-		//		var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
-		//		var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
-		//		Verify.AreEqual(treeViewItem.Style, style);
-		//	};
-		//}
+		[TestMethod]
+		[RunsOnUIThread]
+		public void TreeViewItemTemplateTest()
+		{
+			TreeView treeView = new TreeView();
+			treeView.Loaded += (object sender, RoutedEventArgs e) =>
+			{
+				var dataTemplate = (DataTemplate)XamlReader.Load(
+			   @"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
+		                        <TextBlock Text='TreeViewItemTemplate'/>
+		                    </DataTemplate>");
+				treeView.ItemTemplate = dataTemplate;
+				var node = new TreeViewNode();
+				treeView.RootNodes.Add(node);
+				var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
+				var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
+				Verify.AreEqual(treeViewItem.ContentTemplate, dataTemplate);
+			};
+		}
 
-		//[TestMethod]
-		//[RunsOnUIThread]
-		//public void TreeViewItemContainerTransitionTest()
-		//{
-		//	TreeView treeView = new TreeView();
-		//	treeView.Loaded += (object sender, RoutedEventArgs e) =>
-		//	{
-		//		var transition = (TransitionCollection)XamlReader.Load(
-		//	   @"<TransitionCollection xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
-  //                          <ContentThemeTransition />
-  //                    </TransitionCollection>");
-		//		treeView.ItemContainerTransitions = transition;
-		//		var node = new TreeViewNode();
-		//		treeView.RootNodes.Add(node);
-		//		var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
-		//		var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
-		//		Verify.AreEqual(treeViewItem.ContentTransitions, transition);
-		//	};
-		//}
+		[TestMethod]
+		public async Task ValidateTreeViewItemSourceChangeUpdatesChevronOpacity()
+		{
+			TreeView treeView = null;
+			ObservableCollection<int> collection = null;
+			await RunOnUIThread.Execute(() =>
+			{
+				treeView = new TreeView();
+				collection = new ObservableCollection<int>();
+				collection.Add(5);
+				treeView.ItemsSource = collection;
+				TestServices.WindowHelper.WindowContent = treeView;
+			});
 
-		//[TestMethod]
-		//[RunsOnUIThread]
-		//public void TreeViewItemsSourceTest()
-		//{
-		//	var treeView = new TreeView();
-		//	var items = CreateTreeViewItemsSource();
-		//	treeView.ItemsSource = items;
+			await TestServices.WindowHelper.WaitForIdle();
 
-		//	Verify.AreEqual(treeView.RootNodes.Count, 2);
-		//	Verify.AreEqual(treeView.RootNodes[0].Content as TreeViewItemSource, items[0]);
-		//}
+			TreeViewItem tvi = null;
 
-		//[TestMethod]
-		//[RunsOnUIThread]
-		//public void TreeViewItemsSourceUpdateTest()
-		//{
-		//	var treeView = new TreeView();
-		//	var items = CreateTreeViewItemsSource();
-		//	treeView.ItemsSource = items;
+			await RunOnUIThread.Execute(() =>
+			{
+				tvi = (TreeViewItem)treeView.ContainerFromItem(5);
+				Verify.AreEqual(tvi.GlyphOpacity, 0.0);
+				tvi.ItemsSource = collection;
+			});
 
-		//	// Insert
-		//	var newItem = new TreeViewItemSource() { Content = "newItem" };
-		//	items.Add(newItem);
-		//	Verify.AreEqual(treeView.RootNodes.Count, 3);
-		//	var itemFromNode = treeView.RootNodes[2].Content as TreeViewItemSource;
-		//	Verify.AreEqual(newItem.Content, itemFromNode.Content);
+			await TestServices.WindowHelper.WaitForIdle();
 
-		//	// Remove
-		//	items.Remove(newItem);
-		//	Verify.AreEqual(treeView.RootNodes.Count, 2);
+			await RunOnUIThread.Execute(() =>
+			{
+				Verify.AreEqual(tvi.GlyphOpacity, 1.0);
+			});
+		}
 
-		//	// Replace
-		//	var item3 = new TreeViewItemSource() { Content = "3" };
-		//	items[1] = item3;
-		//	itemFromNode = treeView.RootNodes[1].Content as TreeViewItemSource;
-		//	Verify.AreEqual(item3.Content, itemFromNode.Content);
+		[TestMethod]
+		[RunsOnUIThread]
+		public void TreeViewItemContainerStyleTest()
+		{
+			TreeView treeView = new TreeView();
+			treeView.Loaded += (object sender, RoutedEventArgs e) =>
+			{
+				var style = (Style)XamlReader.Load(
+			   @"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
+		                        <Setter Property='Background' Value='Green'/>
+		                    </Style>");
+				treeView.ItemContainerStyle = style;
+				var node = new TreeViewNode();
+				treeView.RootNodes.Add(node);
+				var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
+				var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
+				Verify.AreEqual(treeViewItem.Style, style);
+			};
+		}
 
-		//	// Clear
-		//	items.Clear();
-		//	Verify.AreEqual(treeView.RootNodes.Count, 0);
-		//}
+		[TestMethod]
+		public void TreeViewItemContainerTransitionTest()
+		{
+			TreeView treeView = new TreeView();
+			treeView.Loaded += (object sender, RoutedEventArgs e) =>
+			{
+				var transition = (TransitionCollection)XamlReader.Load(
+			   @"<TransitionCollection xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
+		                          <ContentThemeTransition />
+		                    </TransitionCollection>");
+				treeView.ItemContainerTransitions = transition;
+				var node = new TreeViewNode();
+				treeView.RootNodes.Add(node);
+				var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
+				var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
+				Verify.AreEqual(treeViewItem.ContentTransitions, transition);
+			};
+		}
 
-		//[TestMethod]
-		//[RunsOnUIThread]
-		//public void TreeViewNodeStringableTest()
-		//{
-		//	var node = new TreeViewNode() { Content = "Node" };
-		//	Verify.AreEqual(node.Content, node.ToString());
+		[TestMethod]
+		public void TreeViewItemsSourceTest()
+		{
+			var treeView = new TreeView();
+			var items = CreateTreeViewItemsSource();
+			treeView.ItemsSource = items;
 
-		//	// Test inherited type
-		//	var node2 = new TreeViewNode2() { Content = "Inherited from TreeViewNode" };
-		//	Verify.AreEqual(node2.Content, node2.ToString());
-		//}
+			Verify.AreEqual(treeView.RootNodes.Count, 2);
+			Verify.AreEqual(treeView.RootNodes[0].Content as TreeViewItemSource, items[0]);
+		}
 
-		//[TestMethod]
-		//public async Task TreeViewPendingSelectedNodesTest()
-		//{
-		//	var treeView = new TreeView();
-		//	treeView.SelectionMode = TreeViewSelectionMode.Multiple;
+		[TestMethod]
+		[RunsOnUIThread]
+		public void TreeViewItemsSourceUpdateTest()
+		{
+			var treeView = new TreeView();
+			var items = CreateTreeViewItemsSource();
+			treeView.ItemsSource = items;
 
-		//	var node1 = new TreeViewNode() { Content = "Node1" };
-		//	var node2 = new TreeViewNode() { Content = "Node2" };
-		//	treeView.RootNodes.Add(node1);
-		//	treeView.RootNodes.Add(node2);
-		//	treeView.SelectedNodes.Add(node1);
+			// Insert
+			var newItem = new TreeViewItemSource() { Content = "newItem" };
+			items.Add(newItem);
+			Verify.AreEqual(treeView.RootNodes.Count, 3);
+			var itemFromNode = treeView.RootNodes[2].Content as TreeViewItemSource;
+			Verify.AreEqual(newItem.Content, itemFromNode.Content);
 
-		//	TestServices.WindowHelper.WindowContent = treeView;
-		//	treeView.UpdateLayout();
-		//	await Task.Delay(100);
-		//	Verify.AreEqual(true, IsMultiSelectCheckBoxChecked(treeView, node1));
-		//	Verify.AreEqual(false, IsMultiSelectCheckBoxChecked(treeView, node2));
-		//}
+			// Remove
+			items.Remove(newItem);
+			Verify.AreEqual(treeView.RootNodes.Count, 2);
+
+			// Replace
+			var item3 = new TreeViewItemSource() { Content = "3" };
+			items[1] = item3;
+			itemFromNode = treeView.RootNodes[1].Content as TreeViewItemSource;
+			Verify.AreEqual(item3.Content, itemFromNode.Content);
+
+			// Clear
+			items.Clear();
+			Verify.AreEqual(treeView.RootNodes.Count, 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void TreeViewNodeStringableTest()
+		{
+			var node = new TreeViewNode() { Content = "Node" };
+			Verify.AreEqual(node.Content, node.ToString());
+
+			// Test inherited type
+			var node2 = new TreeViewNode2() { Content = "Inherited from TreeViewNode" };
+			Verify.AreEqual(node2.Content, node2.ToString());
+		}
+
+		[TestMethod]
+		public async Task TreeViewPendingSelectedNodesTest()
+		{
+			TreeView treeView = null;
+			TreeViewNode node1 = null;
+			TreeViewNode node2 = null;
+			await RunOnUIThread.Execute(() =>
+			{
+				treeView = new TreeView();
+				treeView.SelectionMode = TreeViewSelectionMode.Multiple;
+
+				node1 = new TreeViewNode() { Content = "Node1" };
+				node2 = new TreeViewNode() { Content = "Node2" };
+				treeView.RootNodes.Add(node1);
+				treeView.RootNodes.Add(node2);
+				treeView.SelectedNodes.Add(node1);
+
+				TestServices.WindowHelper.WindowContent = treeView;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread.Execute(() =>
+			{
+				Verify.AreEqual(true, IsMultiSelectCheckBoxChecked(treeView, node1));
+				Verify.AreEqual(false, IsMultiSelectCheckBoxChecked(treeView, node2));
+			});
+		}
 
 		////TODO:
 		////[TestMethod]

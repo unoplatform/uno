@@ -239,7 +239,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get => GetAt(index);
 			set => SetAt(index, value);
 		}
-
+		
 		internal void InsertAt(int index, object value)
 		{
 			base.Insert(index, value);
@@ -945,7 +945,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			// Remove SelectedNodeChildrenChangtedEvent
+			// Remove SelectedNodeChildrenChangedEvent
 			var selectedNodes = m_selectedNodes;
 			if (selectedNodes != null)
 			{
@@ -960,5 +960,49 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
+
+		#region Uno specific
+
+		/// <summary>
+		/// The custom enumerator is necessary to ensure that when IsContentMode
+		/// is set to true, the IndexFromItem method works properly (it must enumerate
+		/// actual items, not TreeViewNodes).
+		/// </summary>
+		/// <returns></returns>
+		public override IEnumerator<object> GetEnumerator()
+		{
+			return new TreeViewViewModelEnumerator(this);
+		}
+
+		private class TreeViewViewModelEnumerator : IEnumerator<object>
+		{
+			private TreeViewViewModel _treeViewViewModel;
+			private int _currentIndex = -1;
+
+			public TreeViewViewModelEnumerator(TreeViewViewModel treeViewViewModel)
+			{
+				_treeViewViewModel = treeViewViewModel;
+			}
+
+			public object Current => _treeViewViewModel[_currentIndex];
+
+			public bool MoveNext()
+			{
+				_currentIndex++;
+				return _currentIndex < _treeViewViewModel.Count;
+			}
+
+			public void Reset()
+			{
+				_currentIndex = -1;
+			}
+
+			public void Dispose()
+			{
+				GC.SuppressFinalize(this);
+			}
+		}
+
+		#endregion
 	}
 }
