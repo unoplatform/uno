@@ -142,6 +142,11 @@ For the following control class:
 ```csharp
     public class MyUserControl : Control  
     {  
+        public MyUserControl()
+        {
+            InitializeComponent();
+        }
+        
         public string MyCustomContent  
         {  
             get { return (string)GetValue(MyCustomContentProperty); }  
