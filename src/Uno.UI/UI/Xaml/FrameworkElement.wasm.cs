@@ -26,6 +26,10 @@ namespace Windows.UI.Xaml
 
 		partial void OnLoadingPartial();
 
+		internal virtual void OnPostLoading()
+		{
+		}
+
 		/*
 			About NativeOn** vs ManagedOn** methods:
 				The flag FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded will configure which set of methods will be used
