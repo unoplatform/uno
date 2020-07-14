@@ -54,6 +54,8 @@ namespace Windows.UI.Xaml
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
 
+			OnPostLoading();
+
 			// Explicit propagation of the loading even must be performed
 			// after the compiled bindings are applied (cf. OnLoading), as there may be altered
 			// properties that affect the visual tree.

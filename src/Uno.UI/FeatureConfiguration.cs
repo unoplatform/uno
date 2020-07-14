@@ -87,6 +87,16 @@ namespace Uno.UI
 			/// in the constructor of a control.
 			/// </summary>
 			public static bool UseLegacyLazyApplyTemplate { get; set; } = false;
+
+			/// <summary>
+			/// If the "loaded" event should be deferred to mimic UWP sequence of events.
+			/// </summary>
+			public static bool UseDeferredApplyTemplate { get; set; }
+#if __WASM__
+				= true;
+#else
+				= false;
+#endif
 		}
 
 		public static class DataTemplateSelector
