@@ -38,18 +38,29 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;" Visible="False" />
+	<!-- The excluded files can be restored as the types are made available in Uno. Note: the NavigationView style can be restored once ItemsRepeater is available. -->
+		<WinUIStylePage Include="Themes\WinUI\Resources\**\*.xaml"
+			Exclude="Themes\WinUI\Resources\RadioButtons.xaml;Themes\WinUI\Resources\RadioButtons_themeresources.xaml;Themes\WinUI\Resources\RadioMenuFlyoutItem_themeresources.xaml;Themes\WinUI\Resources\TabView.xaml;Themes\WinUI\Resources\TabView_themeresources.xaml;Themes\WinUI\Resources\TeachingTip.xaml;Themes\WinUI\Resources\TeachingTip_themeresources.xaml;Themes\WinUI\Resources\NavigationView.xaml;" />
+	</ItemGroup>
+	<UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
+  <Target Name="GenerateThemeResourceFile" BeforeTargets="_IncludeXamlFiles" Inputs="@(WinUIStylePage)" Outputs="Themes\WinUI\themeresources.xaml">
+    <Message Text="Generating theme resources XAML file " />
+    <BatchMergeXaml Pages="@(WinUIStylePage)" MergedXamlFile="Themes\WinUI\themeresources.xaml" TlogReadFilesOutputPath="$(TLogLocation)GenerateThemeResourceFile.read.1u.tlog" TlogWriteFilesOutputPath="$(TLogLocation)GenerateThemeResourceFile.write.1u.tlog" />
+  </Target>
+
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;Themes\WinUI\Resources\**\*.xaml;" Visible="False" />
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
 
 	<Choose>
 		<When Condition="'$(TargetFramework)'=='net461'">
 			<ItemGroup>
-				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
+				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
 				<Page Remove="@(Page)" />
 			</ItemGroup>
 			<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
-				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
+				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
 			</ItemGroup>
 		</When>
 		<When Condition="'$(TargetFramework)'=='netstandard2.0'">
@@ -62,11 +73,11 @@
 		</When>
 		<Otherwise>
 			<ItemGroup>
-				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
+				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
 
 				<!-- remove files included by msbuild extras -->
 				<Page Remove="@(Page)" />
-				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
+				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
