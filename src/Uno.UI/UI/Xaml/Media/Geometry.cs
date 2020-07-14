@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(TransformProperty, value);
 		}
 
-		public static readonly DependencyProperty TransformProperty =
+		public static DependencyProperty TransformProperty { get ; } =
 			DependencyProperty.Register(
 				"Transform",
 				typeof(Transform),

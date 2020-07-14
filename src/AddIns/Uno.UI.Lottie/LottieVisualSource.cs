@@ -22,7 +22,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		private AnimatedVisualPlayer _player;
 
-		public static readonly DependencyProperty UriSourceProperty = DependencyProperty.Register(
+		public static DependencyProperty UriSourceProperty { get ; } = DependencyProperty.Register(
 			"UriSource",
 			typeof(Uri),
 			typeof(LottieVisualSource),
@@ -37,7 +37,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			set => SetValue(UriSourceProperty, value);
 		}
 
-		public static readonly DependencyProperty OptionsProperty = DependencyProperty.Register(
+		public static DependencyProperty OptionsProperty { get ; } = DependencyProperty.Register(
 			"Options", typeof(LottieVisualOptions), typeof(LottieVisualSource), new PropertyMetadata(LottieVisualOptions.None));
 
 		[NotImplemented]

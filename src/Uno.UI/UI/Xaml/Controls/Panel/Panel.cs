@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ChildrenTransitionsProperty =
+		public static DependencyProperty ChildrenTransitionsProperty { get ; } =
 			DependencyProperty.Register("ChildrenTransitions", typeof(TransitionCollection), typeof(Panel), new PropertyMetadata(null, OnChildrenTransitionsChanged));
 
 		private static void OnChildrenTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PaddingProperty, value); }
 		}
 
-		public static readonly DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get ; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(BorderThicknessProperty, value); }
 		}
 
-		public static readonly DependencyProperty BorderThicknessProperty =
+		public static DependencyProperty BorderThicknessProperty { get ; } =
 			DependencyProperty.Register(
 				"BorderThickness",
 				typeof(Thickness),
@@ -184,7 +184,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static readonly DependencyProperty BorderBrushProperty =
+		public static DependencyProperty BorderBrushProperty { get ; } =
 			DependencyProperty.Register(
 				"BorderBrush",
 				typeof(Brush),
@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for CornerRadius.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CornerRadiusProperty =
+		public static DependencyProperty CornerRadiusProperty { get ; } =
 			DependencyProperty.Register(
 				"CornerRadius",
 				typeof(CornerRadius),
@@ -220,7 +220,7 @@ namespace Windows.UI.Xaml.Controls
 #endregion
 
 #region IsItemsHost DependencyProperty
-		public static readonly DependencyProperty IsItemsHostProperty = DependencyProperty.Register(
+		public static DependencyProperty IsItemsHostProperty { get ; } = DependencyProperty.Register(
 			"IsItemsHost", typeof(bool), typeof(Panel), new PropertyMetadata(default(bool)));
 
 		public bool IsItemsHost

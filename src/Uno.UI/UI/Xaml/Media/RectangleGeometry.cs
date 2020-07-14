@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Media
 			set { this.SetValue(RectProperty, value); }
 		}
 
-		public static readonly DependencyProperty RectProperty =
+		public static DependencyProperty RectProperty { get ; } =
 			DependencyProperty.Register(
 				"Rect",
 				typeof(Rect), typeof(RectangleGeometry),

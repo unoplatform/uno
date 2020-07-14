@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		internal static readonly DependencyProperty ContentProperty =
+		internal static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
 				typeof(IUIElement),

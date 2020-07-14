@@ -110,7 +110,7 @@ namespace Uno.UI.Controls.Legacy
 
 		#region SelectionMode Dependency Property
 
-		public static readonly DependencyProperty SelectionModeProperty =
+		public static DependencyProperty SelectionModeProperty { get ; } =
 			DependencyProperty.Register(
 				"SelectionMode",
 				typeof(ListViewSelectionMode),
@@ -133,7 +133,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		// Using a DependencyProperty as the backing store for SelectedItems.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SelectedItemsProperty =
+		public static DependencyProperty SelectedItemsProperty { get ; } =
 			DependencyProperty.Register(
 				"SelectedItems",
 				typeof(IList<object>),
@@ -153,7 +153,7 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(SelectedItemProperty, value); }
 		}
 
-		public static readonly DependencyProperty SelectedItemProperty =
+		public static DependencyProperty SelectedItemProperty { get ; } =
 			DependencyProperty.Register(
 				"SelectedItem",
 				typeof(object),
@@ -201,7 +201,7 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(UnselectOnClickProperty, value); }
 		}
 
-		public static readonly DependencyProperty UnselectOnClickProperty =
+		public static DependencyProperty UnselectOnClickProperty { get ; } =
 			DependencyProperty.Register("UnselectOnClick", typeof(bool), typeof(GridView), new PropertyMetadata(default(bool)));
 
 		#endregion

@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Data
 		}
 
 		// Using a DependencyProperty as the backing store for IsSourceGrouped.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IsSourceGroupedProperty =
+		public static DependencyProperty IsSourceGroupedProperty { get ; } =
 			DependencyProperty.Register(nameof(IsSourceGrouped), typeof(bool), typeof(CollectionViewSource), new PropertyMetadata(defaultValue: false, propertyChangedCallback: (o, e) => ((CollectionViewSource)o).UpdateView()));
 
 		public object Source
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Data
 		}
 
 		// Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SourceProperty =
+		public static DependencyProperty SourceProperty { get ; } =
 			DependencyProperty.Register(nameof(Source), typeof(object), typeof(CollectionViewSource), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((CollectionViewSource)o).UpdateView()));
 
 		private void UpdateView()

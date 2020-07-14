@@ -133,7 +133,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(IsLeftPaneEnabledProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsLeftPaneEnabledProperty =
+		public static DependencyProperty IsLeftPaneEnabledProperty { get ; } =
 			DependencyProperty.Register(
 				"IsLeftPaneEnabled",
 				typeof(bool),
@@ -161,7 +161,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(IsRightPaneEnabledProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsRightPaneEnabledProperty =
+		public static DependencyProperty IsRightPaneEnabledProperty { get ; } =
 			DependencyProperty.Register(
 				"IsRightPaneEnabled",
 				typeof(bool),

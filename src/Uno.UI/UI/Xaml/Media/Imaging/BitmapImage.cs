@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for UriSource.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty UriSourceProperty =
+		public static DependencyProperty UriSourceProperty { get ; } =
 			DependencyProperty.Register("UriSource", typeof(Uri), typeof(BitmapImage), new PropertyMetadata(null, (s, e) => ((BitmapImage)s)?.OnUriSourceChanged(e)));
 
 		private void OnUriSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for DecodePixelType.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty DecodePixelTypeProperty =
+		public static DependencyProperty DecodePixelTypeProperty { get ; } =
 			DependencyProperty.Register("DecodePixelType", typeof(DecodePixelType), typeof(BitmapImage), new PropertyMetadata(DecodePixelType.Physical, (s, e) => ((BitmapImage)s)?.OnDecodePixelTypeChanged(e)));
 
 
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for DecodePixelWidth.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty DecodePixelWidthProperty =
+		public static DependencyProperty DecodePixelWidthProperty { get ; } =
 			DependencyProperty.Register("DecodePixelWidth", typeof(int), typeof(BitmapImage), new PropertyMetadata(0, (s, e) => ((BitmapImage)s)?.OnDecodePixelWidthChanged(e)));
 
 
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for DecodePixelHeight.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty DecodePixelHeightProperty =
+		public static DependencyProperty DecodePixelHeightProperty { get ; } =
 			DependencyProperty.Register("DecodePixelHeight", typeof(int), typeof(BitmapImage), new PropertyMetadata(0, (s, e) => ((BitmapImage)s)?.OnDecodePixelHeightChanged(e)));
 
 
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for CreateOptions.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CreateOptionsProperty =
+		public static DependencyProperty CreateOptionsProperty { get ; } =
 			DependencyProperty.Register("CreateOptions", typeof(BitmapCreateOptions), typeof(BitmapImage), new PropertyMetadata(BitmapCreateOptions.None, (s, e) => ((BitmapImage)s)?.OnCreateOptionsChanged(e)));
 
 

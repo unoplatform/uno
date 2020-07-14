@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(WidthProperty, value); }
 		}
 
-		public static readonly DependencyProperty WidthProperty =
+		public static DependencyProperty WidthProperty { get ; } =
 			DependencyProperty.Register(
 				"Width",
 				typeof(GridLength),

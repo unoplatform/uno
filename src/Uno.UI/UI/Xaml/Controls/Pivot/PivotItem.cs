@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(HeaderProperty, value); }
 		}
 
-		public static readonly DependencyProperty HeaderProperty =
+		public static DependencyProperty HeaderProperty { get ; } =
 			DependencyProperty.Register("Header", typeof(object), typeof(PivotItem), new PropertyMetadata(null));
 
 #if XAMARIN_ANDROID

@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignBottomWithPanelProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignBottomWithPanelProperty =
+		public static DependencyProperty AlignBottomWithPanelProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignBottomWithPanel", typeof(bool), typeof(RelativePanel), new PropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static bool GetAlignLeftWithPanel(DependencyObject view)
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignLeftWithPanelProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignLeftWithPanelProperty =
+		public static DependencyProperty AlignLeftWithPanelProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignLeftWithPanel", typeof(bool), typeof(RelativePanel), new PropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static bool GetAlignRightWithPanel(DependencyObject view)
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignRightWithPanelProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignRightWithPanelProperty =
+		public static DependencyProperty AlignRightWithPanelProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignRightWithPanel", typeof(bool), typeof(RelativePanel), new PropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static bool GetAlignTopWithPanel(DependencyObject view)
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignTopWithPanelProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignTopWithPanelProperty =
+		public static DependencyProperty AlignTopWithPanelProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignTopWithPanel", typeof(bool), typeof(RelativePanel), new PropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static bool GetAlignHorizontalCenterWithPanel(DependencyObject view)
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignHorizontalCenterWithPanelProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignHorizontalCenterWithPanelProperty =
+		public static DependencyProperty AlignHorizontalCenterWithPanelProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignHorizontalCenterWithPanel", typeof(bool), typeof(RelativePanel), new PropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static bool GetAlignVerticalCenterWithPanel(DependencyObject view)
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignVerticalCenterWithPanelProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignVerticalCenterWithPanelProperty =
+		public static DependencyProperty AlignVerticalCenterWithPanelProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignVerticalCenterWithPanel", typeof(bool), typeof(RelativePanel), new PropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 		#endregion
 
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignBottomWithProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignBottomWithProperty =
+		public static DependencyProperty AlignBottomWithProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignBottomWith", typeof(object), typeof(RelativePanel), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static object GetAlignLeftWith(DependencyObject view)
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignLeftWithProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignLeftWithProperty =
+		public static DependencyProperty AlignLeftWithProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignLeftWith", typeof(object), typeof(RelativePanel), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static object GetAlignRightWith(DependencyObject view)
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignRightWithProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignRightWithProperty =
+		public static DependencyProperty AlignRightWithProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignRightWith", typeof(object), typeof(RelativePanel), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static object GetAlignTopWith(DependencyObject view)
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignTopWithProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignTopWithProperty =
+		public static DependencyProperty AlignTopWithProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignTopWith", typeof(object), typeof(RelativePanel), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static object GetAlignHorizontalCenterWith(DependencyObject view)
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignHorizontalCenterWithProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignHorizontalCenterWithProperty =
+		public static DependencyProperty AlignHorizontalCenterWithProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignHorizontalCenterWith", typeof(object), typeof(RelativePanel), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static object GetAlignVerticalCenterWith(DependencyObject view)
@@ -164,7 +164,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AlignVerticalCenterWithProperty, value);
 		}
 
-		public static readonly DependencyProperty AlignVerticalCenterWithProperty =
+		public static DependencyProperty AlignVerticalCenterWithProperty { get ; } =
 			DependencyProperty.RegisterAttached("AlignVerticalCenterWith", typeof(object), typeof(RelativePanel), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		#endregion
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(AboveProperty, value);
 		}
 
-		public static readonly DependencyProperty AboveProperty =
+		public static DependencyProperty AboveProperty { get ; } =
 			DependencyProperty.RegisterAttached("Above", typeof(object), typeof(RelativePanel), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static object GetBelow(DependencyObject view)
@@ -194,7 +194,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(BelowProperty, value);
 		}
 
-		public static readonly DependencyProperty BelowProperty =
+		public static DependencyProperty BelowProperty { get ; } =
 			DependencyProperty.RegisterAttached("Below", typeof(object), typeof(RelativePanel), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static object GetLeftOf(DependencyObject view)
@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(LeftOfProperty, value);
 		}
 
-		public static readonly DependencyProperty LeftOfProperty =
+		public static DependencyProperty LeftOfProperty { get ; } =
 			DependencyProperty.RegisterAttached("LeftOf", typeof(object), typeof(RelativePanel), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		public static object GetRightOf(DependencyObject view)
@@ -220,7 +220,7 @@ namespace Windows.UI.Xaml.Controls
 			view.SetValue(RightOfProperty, value);
 		}
 
-		public static readonly DependencyProperty RightOfProperty =
+		public static DependencyProperty RightOfProperty { get ; } =
 			DependencyProperty.RegisterAttached("RightOf", typeof(object), typeof(RelativePanel), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 		#endregion

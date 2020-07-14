@@ -178,7 +178,7 @@ namespace Uno.UI.Controls.Legacy
 		public GroupStyle GroupStyle { get; set; }
 
 		#region Dependency Properties
-		public static readonly DependencyProperty ItemsSourceProperty =
+		public static DependencyProperty ItemsSourceProperty { get ; } =
 			DependencyProperty.Register(
 				"ItemsSource",
 				typeof(object),
@@ -195,7 +195,7 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty SelectedItemProperty =
+		public static DependencyProperty SelectedItemProperty { get ; } =
 			DependencyProperty.Register(
 				"SelectedItem",
 				typeof(object),
@@ -213,7 +213,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		// Using a DependencyProperty as the backing store for SelectedItems.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SelectedItemsProperty =
+		public static DependencyProperty SelectedItemsProperty { get ; } =
 			DependencyProperty.Register(
 				"SelectedItems",
 				typeof(IList<object>),
@@ -230,7 +230,7 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(SelectedItemsProperty, value); }
 		}
 
-		public static readonly DependencyProperty SelectionModeProperty =
+		public static DependencyProperty SelectionModeProperty { get ; } =
 			DependencyProperty.Register(
 				"SelectionMode",
 				typeof(ListViewSelectionMode),
@@ -247,7 +247,7 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(SelectionModeProperty, value); }
 		}
 
-		public static readonly DependencyProperty HeaderProperty =
+		public static DependencyProperty HeaderProperty { get ; } =
 			DependencyProperty.Register(
 				"Header",
 				typeof(object),
@@ -264,7 +264,7 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(HeaderProperty, value); }
 		}
 
-		public static readonly DependencyProperty FooterProperty =
+		public static DependencyProperty FooterProperty { get ; } =
 			DependencyProperty.Register(
 				"Footer",
 				typeof(object),
@@ -292,7 +292,7 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(UnselectOnClickProperty, value); }
 		}
 
-		public static readonly DependencyProperty UnselectOnClickProperty =
+		public static DependencyProperty UnselectOnClickProperty { get ; } =
 			DependencyProperty.Register("UnselectOnClick", typeof(bool), typeof(ListViewBase), new PropertyMetadata(default(bool)));
 		private ListViewBaseLayoutTemplate _layoutTemplate;
 		#endregion

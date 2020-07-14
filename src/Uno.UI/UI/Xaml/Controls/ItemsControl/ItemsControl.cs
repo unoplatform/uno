@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemsSourceProperty =
+		public static DependencyProperty ItemsSourceProperty { get ; } =
 			DependencyProperty.Register(
 				"ItemsSource",
 				typeof(object),
@@ -317,7 +317,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemContainerStyleProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemContainerStyleProperty =
+		public static DependencyProperty ItemContainerStyleProperty { get ; } =
 					DependencyProperty.Register("ItemContainerStyle", typeof(Style), typeof(ItemsControl), new PropertyMetadata(
 						default(Style),
 						(o, e) => ((ItemsControl)o).OnItemContainerStyleChanged((Style)e.OldValue, (Style)e.NewValue))
@@ -333,7 +333,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemContainerStyleSelectorProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemContainerStyleSelectorProperty =
+		public static DependencyProperty ItemContainerStyleSelectorProperty { get ; } =
 			DependencyProperty.Register("ItemContainerStyleSelector", typeof(StyleSelector), typeof(ItemsControl), new PropertyMetadata(
 				default(StyleSelector),
 				(o, e) => ((ItemsControl)o).OnItemContainerStyleSelectorChanged((StyleSelector)e.OldValue, (StyleSelector)e.NewValue))
@@ -352,13 +352,13 @@ namespace Windows.UI.Xaml.Controls
 			private set { SetValue(IsGroupingProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsGroupingProperty =
+		public static DependencyProperty IsGroupingProperty { get ; } =
 			DependencyProperty.Register("IsGrouping", typeof(bool), typeof(ItemsControl), new PropertyMetadata(false));
 		#endregion
 
 		#region Internal Attached Properties
 
-		internal static readonly DependencyProperty IndexForItemContainerProperty =
+		internal static DependencyProperty IndexForItemContainerProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"IndexForItemContainer",
 				typeof(int),
@@ -366,7 +366,7 @@ namespace Windows.UI.Xaml.Controls
 				new PropertyMetadata(-1)
 			);
 
-		internal static readonly DependencyProperty ItemsControlForItemContainerProperty =
+		internal static DependencyProperty ItemsControlForItemContainerProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"ItemsControlForItemContainer",
 				typeof(WeakReference<ItemsControl>),

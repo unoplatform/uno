@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(ChildProperty, value);
 		}
 
-		public static readonly DependencyProperty ChildProperty =
+		public static DependencyProperty ChildProperty { get ; } =
 			DependencyProperty.Register(
 				"Child",
 				typeof(View),//TODO Should be UIElement
@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(CornerRadiusProperty, value);
 		}
 
-		public static readonly DependencyProperty CornerRadiusProperty =
+		public static DependencyProperty CornerRadiusProperty { get ; } =
 			DependencyProperty.Register(
 				nameof(CornerRadius),
 				typeof(CornerRadius),
@@ -126,7 +126,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ChildTransitionsProperty =
+		public static DependencyProperty ChildTransitionsProperty { get ; } =
 			DependencyProperty.Register("ChildTransitions", typeof(TransitionCollection), typeof(Border), new PropertyMetadata(null));
 
 		private void ReAttachChildTransitions(View originalChild, View child)
@@ -168,7 +168,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(PaddingProperty, value);
 		}
 
-		public static readonly DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get ; } =
 			DependencyProperty.Register(
 				nameof(Padding),
 				typeof(Thickness),
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BorderThickness.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BorderThicknessProperty =
+		public static DependencyProperty BorderThicknessProperty { get ; } =
 			DependencyProperty.Register(
 				nameof(BorderThickness),
 				typeof(Thickness),
@@ -245,7 +245,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BorderBrush.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BorderBrushProperty =
+		public static DependencyProperty BorderBrushProperty { get ; } =
 			DependencyProperty.Register(
 				"BorderBrush",
 				typeof(Brush),

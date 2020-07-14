@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Stretch.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty StretchProperty =
+		public static DependencyProperty StretchProperty { get ; } =
 			DependencyProperty.Register("Stretch", typeof(Stretch), typeof(Image), new PropertyMetadata(Stretch.Uniform, (s, e) =>
 			((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SourceProperty =
+		public static DependencyProperty SourceProperty { get ; } =
 			DependencyProperty.Register(
 				"Source",
 				typeof(ImageSource),

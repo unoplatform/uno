@@ -59,7 +59,7 @@ namespace <#= @namespace.Name #>
             set { this.SetValue(<#= dp.Name #>Property, value); }
         }
 
-        public static readonly DependencyProperty <#= dp.Name #>Property =
+        public static DependencyProperty <#= dp.Name #>Property { get ; } =
             DependencyProperty.Register(
                 "<#= dp.Name #>",
                 typeof(<#= dp.PropertyType #>),

@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ContentProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentProperty =
+		public static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
 				typeof(object),
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for ContentTemplate.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ContentTemplateProperty =
+		public static DependencyProperty ContentTemplateProperty { get ; } =
 			DependencyProperty.Register(
 				"ContentTemplate",
 				typeof(DataTemplate),
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ContentTemplateSelectorProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentTemplateSelectorProperty =
+		public static DependencyProperty ContentTemplateSelectorProperty { get ; } =
 			DependencyProperty.Register(
 				"ContentTemplateSelector",
 				typeof(DataTemplateSelector),
@@ -126,7 +126,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ContentTransitionsProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentTransitionsProperty =
+		public static DependencyProperty ContentTransitionsProperty { get ; } =
 			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentPresenter), new PropertyMetadata(null, OnContentTransitionsChanged));
 
 		private static void OnContentTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -156,7 +156,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ForegroundProperty, value); }
 		}
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -178,7 +178,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontWeightProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontWeightProperty =
+		public static DependencyProperty FontWeightProperty { get ; } =
 			DependencyProperty.Register(
 				"FontWeight",
 				typeof(FontWeight),
@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontSizeProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontSizeProperty =
+		public static DependencyProperty FontSizeProperty { get ; } =
 			DependencyProperty.Register(
 				"FontSize",
 				typeof(double),
@@ -222,7 +222,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontFamilyProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontFamilyProperty =
+		public static DependencyProperty FontFamilyProperty { get ; } =
 			DependencyProperty.Register(
 				"FontFamily",
 				typeof(FontFamily),
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontStyleProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontStyleProperty =
+		public static DependencyProperty FontStyleProperty { get ; } =
 			DependencyProperty.Register(
 				"FontStyle",
 				typeof(FontStyle),
@@ -264,7 +264,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(TextWrappingProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextWrappingProperty =
+		public static DependencyProperty TextWrappingProperty { get ; } =
 			DependencyProperty.Register(
 				"TextWrapping",
 				typeof(TextWrapping),
@@ -292,7 +292,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(MaxLinesProperty, value); }
 		}
 
-		public static readonly DependencyProperty MaxLinesProperty =
+		public static DependencyProperty MaxLinesProperty { get ; } =
 			DependencyProperty.Register(
 				"MaxLines",
 				typeof(int),
@@ -320,7 +320,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(TextTrimmingProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextTrimmingProperty =
+		public static DependencyProperty TextTrimmingProperty { get ; } =
 			DependencyProperty.Register(
 				"TextTrimming",
 				typeof(TextTrimming),
@@ -352,7 +352,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(TextAlignmentProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextAlignmentProperty =
+		public static DependencyProperty TextAlignmentProperty { get ; } =
 			DependencyProperty.Register(
 				"TextAlignment",
 				typeof(TextAlignment),
@@ -380,7 +380,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(HorizontalContentAlignmentProperty, value); }
 		}
 
-		public static readonly DependencyProperty HorizontalContentAlignmentProperty =
+		public static DependencyProperty HorizontalContentAlignmentProperty { get ; } =
 			DependencyProperty.Register(
 				"HorizontalContentAlignment",
 				typeof(HorizontalAlignment),
@@ -409,7 +409,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(VerticalContentAlignmentProperty, value); }
 		}
 
-		public static readonly DependencyProperty VerticalContentAlignmentProperty =
+		public static DependencyProperty VerticalContentAlignmentProperty { get ; } =
 			DependencyProperty.Register(
 				"VerticalContentAlignment",
 				typeof(VerticalAlignment),

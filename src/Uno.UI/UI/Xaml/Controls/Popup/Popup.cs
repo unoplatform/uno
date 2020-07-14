@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(PopupPanelProperty, value);
 		}
 
-		public static readonly DependencyProperty PopupPanelProperty =
+		public static DependencyProperty PopupPanelProperty { get ; } =
 			DependencyProperty.Register("PopupPanel", typeof(PopupPanel), typeof(Popup), new PropertyMetadata(null, (s, e) => ((Popup)s)?.OnPopupPanelChanged((PopupPanel)e.OldValue, (PopupPanel)e.NewValue)));
 
 		private void OnPopupPanelChanged(PopupPanel oldHost, PopupPanel newHost)
@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(Popup), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
 	}
 }

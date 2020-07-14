@@ -267,7 +267,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ReturnKeyTypeProperty, value); }
 		}
 
-		public static readonly DependencyProperty ReturnKeyTypeProperty =
+		public static DependencyProperty ReturnKeyTypeProperty { get ; } =
 			DependencyProperty.Register(
 				"ReturnKeyType",
 				typeof(UIReturnKeyType),
@@ -304,7 +304,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(KeyboardAppearanceProperty, value); }
 		}
 
-		public static readonly DependencyProperty KeyboardAppearanceProperty =
+		public static DependencyProperty KeyboardAppearanceProperty { get ; } =
 			DependencyProperty.Register(
 				"KeyboardAppearance",
 				typeof(UIKeyboardAppearance),

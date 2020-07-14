@@ -27,7 +27,7 @@ namespace Uno.UI.Behaviors
 			return obj.GetValue(NextControlProperty);
 		}
 		
-		public static readonly DependencyProperty NextControlProperty =
+		public static DependencyProperty NextControlProperty { get ; } =
 			DependencyProperty.RegisterAttached("NextControl", typeof(object), typeof(TextBoxBehavior),
 			new PropertyMetadata( null,  new PropertyChangedCallback(OnNextControlChanged)));
 
@@ -79,7 +79,7 @@ namespace Uno.UI.Behaviors
 
 #region Attached property: Text
 
-		public static readonly DependencyProperty TextProperty =
+		public static DependencyProperty TextProperty { get ; } =
 			DependencyProperty.RegisterAttached("Text", typeof(string), typeof(TextBoxBehavior), new PropertyMetadata(default(string), OnTextChanged));
 
 		private static void OnTextChanged(object d, DependencyPropertyChangedEventArgs e)

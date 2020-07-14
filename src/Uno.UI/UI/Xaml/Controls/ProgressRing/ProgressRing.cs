@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ForegroundProperty, value); }
 		}
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register("Foreground", typeof(Brush), typeof(ProgressRing), new PropertyMetadata(SolidColorBrushHelper.Black, OnForegroundChanged));
 
 		#endregion
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(IsActiveProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsActiveProperty =
+		public static DependencyProperty IsActiveProperty { get ; } =
 			DependencyProperty.Register("IsActive", typeof(bool), typeof(ProgressRing), new PropertyMetadata(false, OnIsActiveChanged));
 
 		#endregion

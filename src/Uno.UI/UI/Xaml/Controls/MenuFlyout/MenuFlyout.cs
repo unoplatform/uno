@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 			private set => this.SetValue(ItemsProperty, value);
 		}
 
-		public static readonly DependencyProperty ItemsProperty =
+		public static DependencyProperty ItemsProperty { get ; } =
 			DependencyProperty.Register(
 				"Items",
 				typeof(IList<MenuFlyoutItemBase>),

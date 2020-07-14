@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml
 			set => this.SetValue(StoryboardProperty, value);
 		}
 
-		public static readonly DependencyProperty StoryboardProperty =
+		public static DependencyProperty StoryboardProperty { get ; } =
 			DependencyProperty.Register(
 				"Storyboard",
 				typeof(Storyboard),
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml
 			internal set => SetValue(SettersProperty, value);
 		}
 
-		internal static readonly DependencyProperty SettersProperty =
+		internal static DependencyProperty SettersProperty { get ; } =
 			DependencyProperty.Register(
 				name: "Setters",
 				propertyType: typeof(SetterBaseCollection),
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml
 			internal set => SetValue(StateTriggersProperty, value);
 		}
 
-		internal static readonly DependencyProperty StateTriggersProperty =
+		internal static DependencyProperty StateTriggersProperty { get ; } =
 			DependencyProperty.Register(
 				name: "StateTriggers", 
 				propertyType: typeof(IList<StateTriggerBase>), 

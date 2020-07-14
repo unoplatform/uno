@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for StretchAffectsMeasure.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty StretchAffectsMeasureProperty =
+		public static DependencyProperty StretchAffectsMeasureProperty { get ; } =
 			DependencyProperty.Register("StretchAffectsMeasure", typeof(bool), typeof(FrameworkElement), new PropertyMetadata(false));
 
 		#endregion

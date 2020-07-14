@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for VisualStateGroups.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty VisualStateGroupsProperty =
+		public static DependencyProperty VisualStateGroupsProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"VisualStateGroups",
 				typeof(IList<VisualStateGroup>),
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml
 			obj.SetValue(VisualStateManagerProperty, value);
 		}
 
-		internal static readonly DependencyProperty VisualStateManagerProperty =
+		internal static DependencyProperty VisualStateManagerProperty { get ; } =
 			DependencyProperty.RegisterAttached("VisualStateManager", typeof(VisualStateManager), typeof(VisualStateManager), new PropertyMetadata(null));
 
 		#endregion

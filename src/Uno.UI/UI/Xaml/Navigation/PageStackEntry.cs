@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Navigation
 		}
 
 		// Using a DependencyProperty as the backing store for SourcePageType.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SourcePageTypeProperty =
+		public static DependencyProperty SourcePageTypeProperty { get ; } =
 			DependencyProperty.Register(
 				"SourcePageType", 
 				typeof(Type),
