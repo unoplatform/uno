@@ -185,6 +185,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnPostLoading();
 
+			TryCallOnApplyTemplate();
+		}
+
+		private void TryCallOnApplyTemplate()
+		{
 			if (_applyTemplateShouldBeInvoked)
 			{
 				_applyTemplateShouldBeInvoked = false;
@@ -322,6 +327,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var currentTemplateRoot = _templatedRoot;
 			SetUpdateControlTemplate(forceUpdate: true);
+
+			// When .ApplyTemplate is called manually, we should not defer the call to OnApplyTemplate
+			TryCallOnApplyTemplate();
 
 			return currentTemplateRoot != _templatedRoot;
 		}
