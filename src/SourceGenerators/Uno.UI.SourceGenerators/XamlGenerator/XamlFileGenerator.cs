@@ -4857,6 +4857,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return "{0}{1}".InvariantCultureFormat(memberValue.TrimEnd("px"), isDouble ? "d" : "f");
 			}
 
+			// UWP's Xaml parsing ignores curly brackets at beginning and end of a double literal
+			memberValue = memberValue.Trim('{', '}');
+
 			return "{0}{1}".InvariantCultureFormat(memberValue, isDouble ? "d" : "f");
 		}
 
