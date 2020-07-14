@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(TextBox),
 			new FrameworkPropertyMetadata(false));
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			SetupTextBoxView();

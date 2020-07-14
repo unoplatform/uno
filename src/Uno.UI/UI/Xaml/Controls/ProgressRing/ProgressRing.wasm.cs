@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			// The initial call to OnIsActiveChanged fires before ProgressRing is Loaded, so we also need to set a proper VisualState here

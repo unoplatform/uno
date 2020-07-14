@@ -838,7 +838,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateItemsPanelRoot();
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 		}

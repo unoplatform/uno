@@ -23,13 +23,13 @@ namespace Windows.UI.Xaml.Controls
 			_popupWindow.Touchable = true;
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			_popupWindow.DismissEvent += OnDismissEvent;
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 			_popupWindow.DismissEvent -= OnDismissEvent;
