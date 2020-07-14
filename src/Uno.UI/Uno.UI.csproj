@@ -43,15 +43,49 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MixinInput Include=".\Mixins\DependencyPropertyMixins.tt" />
+		<MixinInput Include=".\Mixins\Android\BaseActivity.Callbacks.tt" Condition="$(IsMonoAndroid)" />
+		<MixinInput Include=".\Mixins\Android\FrameworkElementMixins.tt" Condition="$(IsMonoAndroid)" />
+		<MixinInput Include=".\Mixins\Android\VisualStatesMixins.tt" Condition="$(IsMonoAndroid)" />
+		<MixinInput Include=".\Mixins\iOS\FrameworkElementMixins.tt" Condition="$(IsXamarinIOS)" />
+		<MixinInput Include=".\Mixins\iOS\VisualStatesMixins.tt" Condition="$(IsXamarinIOS)" />
+		<MixinInput Include=".\Mixins\macOS\FrameworkElementMixins.tt" Condition="$(IsXamarinMac)" />
+		<MixinInput Include=".\Mixins\macOS\VisualStatesMixins.tt" Condition="$(IsXamarinMac)" />
+		<MixinInput Include=".\Mixins\Wasm\VisualStatesMixins.tt" Condition="'$(TargetFramework)'=='netstandard2.0'" />
+		<MixinInput Include=".\Mixins\net461\VisualStatesMixins.tt" Condition="'$(TargetFramework)'=='net461'" />
+
+		<MixinInput Include=".\UI\Xaml\DependencyPropertiesImplementation.tt" />
+		<MixinInput Include=".\UI\Xaml\Controls\VisualStatesImplementation.tt" />
+		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.Android.tt" Condition="$(IsMonoAndroid)" />
+		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.iOS.tt" Condition="$(IsXamarinIOS)" />
+		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.macOS.tt" Condition="$(IsXamarinMac)" />
+
+		<MixinOutput Include=".\Mixins\DependencyPropertyMixins.g.cs" />
+		<MixinOutput Include=".\Mixins\Android\BaseActivity.Callbacks.g.cs" Condition="$(IsMonoAndroid)" />
+		<MixinOutput Include=".\Mixins\Android\FrameworkElementMixins.g.cs" Condition="$(IsMonoAndroid)" />
+		<MixinOutput Include=".\Mixins\Android\VisualStatesMixins.g.cs" Condition="$(IsMonoAndroid)" />
+		<MixinOutput Include=".\Mixins\iOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinIOS)" />
+		<MixinOutput Include=".\Mixins\iOS\VisualStatesMixins.g.cs" Condition="$(IsXamarinIOS)" />
+		<MixinOutput Include=".\Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinMac)" />
+		<MixinOutput Include=".\Mixins\macOS\VisualStatesMixins.g.cs" Condition="$(IsXamarinMac)" />
+		<MixinOutput Include=".\Mixins\Wasm\VisualStatesMixins.g.cs" Condition="'$(TargetFramework)'=='netstandard2.0'" />
+		<MixinOutput Include=".\Mixins\net461\VisualStatesMixins.g.cs" Condition="'$(TargetFramework)'=='net461'" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Remove="Mixins\**\*.cs" />
 		<None Include="Mixins\**\*.cs" />
 
-		<Compile Include="Mixins\*.g.cs" />
-		<Compile Include="Mixins\Android\**\*.g.cs" Condition="$(IsMonoAndroid)" />
-		<Compile Include="Mixins\macOS\**\*.g.cs" Condition="$(IsXamarinMac)" />
-		<Compile Include="Mixins\iOS\**\*.g.cs" Condition="$(IsXamarinIOS)" />
-		<Compile Include="Mixins\net461\**\*.g.cs" Condition="'$(TargetFramework)'=='net461'" />
-		<Compile Include="Mixins\Wasm\**\*.g.cs" Condition="'$(TargetFramework)'=='netstandard2.0'" />
+		<Compile Include=".\Mixins\DependencyPropertyMixins.g.cs" />
+		<Compile Include=".\Mixins\Android\BaseActivity.Callbacks.g.cs" Condition="$(IsMonoAndroid)" />
+		<Compile Include=".\Mixins\Android\FrameworkElementMixins.g.cs" Condition="$(IsMonoAndroid)" />
+		<Compile Include=".\Mixins\Android\VisualStatesMixins.g.cs" Condition="$(IsMonoAndroid)" />
+		<Compile Include=".\Mixins\iOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinIOS)" />
+		<Compile Include=".\Mixins\iOS\VisualStatesMixins.g.cs" Condition="$(IsXamarinIOS)" />
+		<Compile Include=".\Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinMac)" />
+		<Compile Include=".\Mixins\macOS\VisualStatesMixins.g.cs" Condition="$(IsXamarinMac)" />
+		<Compile Include=".\Mixins\Wasm\VisualStatesMixins.g.cs" Condition="'$(TargetFramework)'=='netstandard2.0'" />
+		<Compile Include=".\Mixins\net461\VisualStatesMixins.g.cs" Condition="'$(TargetFramework)'=='net461'" />
 
 		<None Update="**\*.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
@@ -154,35 +188,6 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<MixinInput Include=".\Mixins\Android\BaseActivity.Callbacks.tt" Condition="$(IsMonoAndroid)" />
-		<MixinInput Include=".\Mixins\Android\FrameworkElementMixins.tt" Condition="$(IsMonoAndroid)" />
-		<MixinInput Include=".\Mixins\Android\VisualStatesMixins.tt" Condition="$(IsMonoAndroid)" />
-		<MixinInput Include=".\Mixins\DependencyPropertyMixins.tt" />
-		<MixinInput Include=".\UI\Xaml\DependencyPropertiesImplementation.tt" />
-		<MixinInput Include=".\UI\Xaml\Controls\VisualStatesImplementation.tt" />
-		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.Android.tt" Condition="$(IsMonoAndroid)" />
-		<MixinInput Include=".\Mixins\iOS\FrameworkElementMixins.tt" Condition="$(IsXamarinIOS)" />
-		<MixinInput Include=".\Mixins\iOS\VisualStatesMixins.tt" Condition="$(IsXamarinIOS)" />
-		<MixinInput Include=".\Mixins\macOS\FrameworkElementMixins.tt" Condition="$(IsXamarinMac)" />
-		<MixinInput Include=".\Mixins\macOS\VisualStatesMixins.tt" Condition="$(IsXamarinMac)" />
-		<MixinInput Include=".\Mixins\Wasm\VisualStatesMixins.tt" Condition="'$(TargetFramework)'=='netstandard2.0'" />
-		<MixinInput Include=".\Mixins\net461\VisualStatesMixins.tt" Condition="'$(TargetFramework)'=='net461'" />
-		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.iOS.tt" Condition="$(IsXamarinIOS)" />
-		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.macOS.tt" Condition="$(IsXamarinMac)" />
-
-		<MixinOutput Include=".\Mixins\Android\BaseActivity.Callbacks.g.cs" Condition="$(IsMonoAndroid)" />
-		<MixinOutput Include=".\Mixins\Android\FrameworkElementMixins.g.cs" Condition="$(IsMonoAndroid)" />
-		<MixinOutput Include=".\Mixins\Android\VisualStatesMixins.g.cs" Condition="$(IsMonoAndroid)" />
-		<MixinOutput Include=".\Mixins\DependencyPropertyMixins.g.cs" />
-		<MixinOutput Include=".\Mixins\iOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinIOS)" />
-		<MixinOutput Include=".\Mixins\iOS\VisualStatesMixins.g.cs" Condition="$(IsXamarinIOS)" />
-		<MixinOutput Include=".\Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinMac)" />
-		<MixinOutput Include=".\Mixins\macOS\VisualStatesMixins.g.cs" Condition="$(IsXamarinMac)" />
-		<MixinOutput Include=".\Mixins\Wasm\VisualStatesMixins.g.cs" Condition="'$(TargetFramework)'=='netstandard2.0'" />
-		<MixinOutput Include=".\Mixins\net461\VisualStatesMixins.g.cs" Condition="'$(TargetFramework)'=='net461'" />
 	</ItemGroup>
 
 	<!--

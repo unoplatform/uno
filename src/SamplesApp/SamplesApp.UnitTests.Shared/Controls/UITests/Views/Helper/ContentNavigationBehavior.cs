@@ -32,7 +32,7 @@ namespace Uno.UI.Samples.Helper
 				"IsAttached",
 				typeof(bool),
 				typeof(ContentNavigationBehavior),
-				new FrameworkPropertyMetadataHelper(new PropertyChangedCallback(OnIsAttached)));
+				new PropertyMetadataHelper(new PropertyChangedCallback(OnIsAttached)));
 
 		public static bool GetCanNavigateBack(DependencyObject obj)
 		{

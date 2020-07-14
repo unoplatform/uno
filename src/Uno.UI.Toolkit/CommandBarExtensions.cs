@@ -116,7 +116,7 @@ namespace Uno.UI.Toolkit
 #if XAMARIN
 				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueInheritsDataContext)
 #else
-				new PropertyMetadata()
+				new PropertyMetadata(null)
 #endif
 			);
 

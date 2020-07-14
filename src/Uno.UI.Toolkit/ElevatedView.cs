@@ -67,7 +67,7 @@ namespace Uno.UI.Toolkit
 		}
 
 		public static DependencyProperty ElevationProperty { get ; } = DependencyProperty.Register(
-			"Elevation", typeof(double), typeof(ElevatedView), new FrameworkPropertyMetadata(default(double), OnChanged));
+			"Elevation", typeof(double), typeof(ElevatedView), new PropertyMetadata(default(double), OnChanged));
 
 #if __ANDROID__
 		public new double Elevation
@@ -80,7 +80,7 @@ namespace Uno.UI.Toolkit
 		}
 
 		public static DependencyProperty ShadowColorProperty { get ; } = DependencyProperty.Register(
-			"ShadowColor", typeof(Color), typeof(ElevatedView), new FrameworkPropertyMetadata(Color.FromArgb(64, 0, 0, 0), OnChanged));
+			"ShadowColor", typeof(Color), typeof(ElevatedView), new PropertyMetadata(Color.FromArgb(64, 0, 0, 0), OnChanged));
 
 		public Color ShadowColor
 		{
@@ -89,7 +89,7 @@ namespace Uno.UI.Toolkit
 		}
 
 		public static DependencyProperty ElevatedContentProperty { get ; } = DependencyProperty.Register(
-			"ElevatedContent", typeof(object), typeof(ElevatedView), new FrameworkPropertyMetadata(default(object)));
+			"ElevatedContent", typeof(object), typeof(ElevatedView), new PropertyMetadata(default(object)));
 
 		public object ElevatedContent
 		{

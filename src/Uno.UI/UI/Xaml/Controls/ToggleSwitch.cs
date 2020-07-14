@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(OffContentTemplateProperty, value);
 		}
 
-		public readonly DependencyProperty OffContentTemplateProperty { get; } =
+		public static DependencyProperty OffContentTemplateProperty { get; } =
 			DependencyProperty.Register("OffContentTemplate", typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 		#endregion
 
