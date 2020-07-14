@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CustomTasks
+namespace Uno.UI.Tasks.BatchMerge
 {
     public abstract class CustomTask : Microsoft.Build.Utilities.Task
     {

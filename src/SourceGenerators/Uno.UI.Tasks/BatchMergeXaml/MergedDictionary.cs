@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 
 
-namespace CustomTasks
+namespace Uno.UI.Tasks.BatchMerge
 {
     public class MergedDictionary
     {

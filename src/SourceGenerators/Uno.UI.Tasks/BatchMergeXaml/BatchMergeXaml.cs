@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace CustomTasks
+namespace Uno.UI.Tasks.BatchMerge
 {
     public class BatchMergeXaml : CustomTask
     {
