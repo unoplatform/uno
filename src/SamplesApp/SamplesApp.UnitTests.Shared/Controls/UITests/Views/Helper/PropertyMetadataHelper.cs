@@ -27,11 +27,11 @@ namespace Uno.UI.Samples.Helper
 		{
 			if (value.Callback == null)
 			{
-				return new FrameworkPropertyMetadata(value.DefaultValue);
+				return new PropertyMetadata(value.DefaultValue);
 			}
 			else
 			{
-				return new FrameworkPropertyMetadata(value.DefaultValue, value.Callback);
+				return new PropertyMetadata(value.DefaultValue, value.Callback);
 			}
 		}
 

@@ -50,7 +50,7 @@ namespace XamlGenerationTests.Shared.MarkupExtensions
 				"IsAttached",
 				typeof(bool),
 				typeof(AttachedTest),
-				new FrameworkPropertyMetadata(false));
+				new PropertyMetadata(false));
 	}
 
 	[MarkupExtensionReturnType(ReturnType = typeof(string))]
@@ -150,7 +150,7 @@ namespace XamlGenerationTests.Shared.MarkupExtensions
 				"CustomText",
 				typeof(string),
 				typeof(MarkupExtensionTestBehavior),
-				new FrameworkPropertyMetadata(string.Empty, OnCustomTextChanged));
+				new PropertyMetadata(string.Empty, OnCustomTextChanged));
 
 		private static void OnCustomTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

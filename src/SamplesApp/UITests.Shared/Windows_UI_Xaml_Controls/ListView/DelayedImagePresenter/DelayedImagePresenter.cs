@@ -28,7 +28,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 				"Source",
 				typeof(ImageSource),
 				typeof(DelayedImagePresenter),
-				new FrameworkPropertyMetadata(
+				new PropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((DelayedImagePresenter)s).OnSourceChanged((ImageSource)e.OldValue, (ImageSource)e.NewValue))
 				);

@@ -467,7 +467,7 @@ namespace Uno.UI.Samples.Controls
 			"Orientation",
 			typeof(Orientation),
 			typeof(StarStackPanel),
-			new FrameworkPropertyMetadata(Orientation.Vertical, InvalidateLayoutOnChanged)
+			new PropertyMetadata(Orientation.Vertical, InvalidateLayoutOnChanged)
 		);
 		#endregion
 
@@ -487,13 +487,13 @@ namespace Uno.UI.Samples.Controls
 			"Priority",
 			typeof(int),
 			typeof(StarStackPanel),
-			new FrameworkPropertyMetadata(0)
+			new PropertyMetadata(0)
 		);
 		#endregion
 
 		#region Sizes DependencyProperty
 		public static DependencyProperty SizesProperty { get ; } = DependencyProperty.Register(
-			"Sizes", typeof(string), typeof(StarStackPanel), new FrameworkPropertyMetadata(null, HandleSizesChanged));
+			"Sizes", typeof(string), typeof(StarStackPanel), new PropertyMetadata(null, HandleSizesChanged));
 
 		public string Sizes
 		{
@@ -597,7 +597,7 @@ namespace Uno.UI.Samples.Controls
 		#region InterElementSpacing DependencyProperty
 
 		public static DependencyProperty InterElementSpacingProperty { get ; } = DependencyProperty.Register(
-			"InterElementSpacing", typeof(double), typeof(StarStackPanel), new FrameworkPropertyMetadata((double)0.0, InvalidateLayoutOnChanged));
+			"InterElementSpacing", typeof(double), typeof(StarStackPanel), new PropertyMetadata((double)0.0, InvalidateLayoutOnChanged));
 
 		public double InterElementSpacing
 		{
@@ -622,7 +622,7 @@ namespace Uno.UI.Samples.Controls
 			"Size",
 			typeof(GridLength),
 			typeof(StarStackPanel),
-			new FrameworkPropertyMetadata(GridLengthHelper2.Auto, HandleSizePropertyChanged)
+			new PropertyMetadata(GridLengthHelper2.Auto, HandleSizePropertyChanged)
 		);
 
 		private static void HandleSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -645,7 +645,7 @@ namespace Uno.UI.Samples.Controls
 
 		// Using a DependencyProperty as the backing store for Padding.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PaddingProperty { get ; } =
-			DependencyProperty.Register("Padding", typeof(Thickness), typeof(StarStackPanel), new FrameworkPropertyMetadata(default(Thickness), InvalidateLayoutOnChanged));
+			DependencyProperty.Register("Padding", typeof(Thickness), typeof(StarStackPanel), new PropertyMetadata(default(Thickness), InvalidateLayoutOnChanged));
 
 		#endregion
 #endif

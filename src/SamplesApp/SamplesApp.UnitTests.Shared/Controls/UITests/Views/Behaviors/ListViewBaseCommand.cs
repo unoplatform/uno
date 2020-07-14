@@ -34,7 +34,7 @@ namespace Uno.UI.Samples.Behaviors
 			DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(ListViewBaseCommand), new PropertyMetadataHelper(new PropertyChangedCallback(OnCommandChanged)));
 
 		public static DependencyProperty CommandParameterProperty { get ; } =
-			DependencyProperty.RegisterAttached("CommandParameter", typeof(object), typeof(ListViewBaseCommand), new FrameworkPropertyMetadata(null));
+			DependencyProperty.RegisterAttached("CommandParameter", typeof(object), typeof(ListViewBaseCommand), new PropertyMetadata(null));
 
 		public static ICommand GetCommand(ListViewBase obj)
 		{

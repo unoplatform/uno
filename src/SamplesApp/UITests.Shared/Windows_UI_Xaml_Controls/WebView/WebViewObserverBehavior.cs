@@ -20,7 +20,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		}
 
 		public static DependencyProperty IsAttachedProperty { get ; } =
-			DependencyProperty.RegisterAttached("IsAttached", typeof(bool), typeof(WebViewObserverBehavior), new FrameworkPropertyMetadata(false, OnIsAttachedChanged));
+			DependencyProperty.RegisterAttached("IsAttached", typeof(bool), typeof(WebViewObserverBehavior), new PropertyMetadata(false, OnIsAttachedChanged));
 
 		private static void OnIsAttachedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
@@ -52,7 +52,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		}
 
 		public static DependencyProperty MessageProperty { get ; } =
-			DependencyProperty.RegisterAttached("Message", typeof(string), typeof(WebViewObserverBehavior), new FrameworkPropertyMetadata(null));
+			DependencyProperty.RegisterAttached("Message", typeof(string), typeof(WebViewObserverBehavior), new PropertyMetadata(null));
 
 		#endregion
 

@@ -17,7 +17,7 @@ namespace UITests.Shared.Windows_UI_Xaml.MarkupExtensionTests.Behaviors
 				"CustomText",
 				typeof(string),
 				typeof(MarkupExtensionBehaviors),
-				new FrameworkPropertyMetadata(string.Empty, OnCustomTextChanged));
+				new PropertyMetadata(string.Empty, OnCustomTextChanged));
 
 		private static void OnCustomTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
