@@ -156,13 +156,13 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool IsViewHit() => Source?.HasSource() ?? false;
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			TryOpenImage();
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
