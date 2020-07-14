@@ -92,10 +92,10 @@ namespace Uno.UI
 			/// If the "loaded" event should be deferred to mimic UWP sequence of events.
 			/// </summary>
 			public static bool UseDeferredApplyTemplate { get; set; }
-#if __WASM__
-				= true;
+#if __ANDROID__ || __IOS__ || __MACOS__
+				= false; // opt-in for iOS/Android/macOS
 #else
-				= false;
+				= true;
 #endif
 		}
 
