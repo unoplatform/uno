@@ -2029,7 +2029,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineInvariant(closingPunctuation);
 				}
 
-				if (name != null)
+				if (name != null && !_isTopLevelDictionary)
 				{
 					if (_namedResources.ContainsKey(name))
 					{
