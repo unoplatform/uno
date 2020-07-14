@@ -2031,6 +2031,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (name != null)
 				{
+					if (_namedResources.ContainsKey(name))
+					{
+						throw new InvalidOperationException($"There is already a resource with name {name}");
+					}
 					_namedResources.Add(name, resource);
 				}
 			}
