@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty OrientationProperty { get ; } =
-			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(VirtualizingPanelLayout), new PropertyMetadata(Orientation.Vertical, (o, e) => ((VirtualizingPanelLayout)o).OnOrientationChanged((Orientation)e.NewValue)));
+			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(VirtualizingPanelLayout), new FrameworkPropertyMetadata(Orientation.Vertical, (o, e) => ((VirtualizingPanelLayout)o).OnOrientationChanged((Orientation)e.NewValue)));
 
 		/// <summary>
 		/// Whether the content should be stretched in breadth (ie perpendicular to the direction of scroll).

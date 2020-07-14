@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 		
 		public static DependencyProperty EasingModeProperty { get ; } =
-			DependencyProperty.Register("EasingMode", typeof(EasingMode), typeof(EasingFunctionBase), new PropertyMetadata(EasingMode.EaseOut));
+			DependencyProperty.Register("EasingMode", typeof(EasingMode), typeof(EasingFunctionBase), new FrameworkPropertyMetadata(EasingMode.EaseOut));
 
 		public virtual double Ease(double currentTime, double startValue, double finalValue, double duration) =>
 			// Return linear interpolation instead of an exception for unimplemented easing functions.

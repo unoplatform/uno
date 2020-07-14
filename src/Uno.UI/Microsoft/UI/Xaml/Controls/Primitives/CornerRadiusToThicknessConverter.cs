@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class CornerRadiusToThicknessConverter: DependencyObject, IValueConverter
 	{
 		public static DependencyProperty ConversionKindProperty { get ; } = DependencyProperty.Register(
-			"ConversionKind", typeof(CornerRadiusToThicknessConverterKind), typeof(CornerRadiusToThicknessConverter), new PropertyMetadata(CornerRadiusToThicknessConverterKind.FilterLeftAndRightFromTop));
+			"ConversionKind", typeof(CornerRadiusToThicknessConverterKind), typeof(CornerRadiusToThicknessConverter), new FrameworkPropertyMetadata(CornerRadiusToThicknessConverterKind.FilterLeftAndRightFromTop));
 
 		public CornerRadiusToThicknessConverterKind ConversionKind
 		{

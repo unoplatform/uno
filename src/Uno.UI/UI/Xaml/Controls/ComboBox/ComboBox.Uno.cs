@@ -49,7 +49,7 @@ namespace Uno.UI.Xaml.Controls
 			"DropDownPreferredLocation",
 			typeof(DropDownPlacement),
 			typeof(ComboBox),
-			new PropertyMetadata(FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement));
+			new FrameworkPropertyMetadata(FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement));
 
 		/// <summary>
 		/// Sets the preferred <see cref="DropDownPlacement"/> of a ComboBox. (cf. Remarks)

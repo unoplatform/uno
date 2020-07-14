@@ -21,7 +21,7 @@ namespace Uno.UI.Samples.UITests.Image
 		public ComboBoxItem[] VerticalAlignments { get; } = GetValues<VerticalAlignment>().ToArray();
 
 		public static DependencyProperty ModeProperty { get ; } = DependencyProperty.Register(
-			"Mode", typeof(string), typeof(Image_Stretch_Modes_Picker), new PropertyMetadata(default(string), ModeChanged));
+			"Mode", typeof(string), typeof(Image_Stretch_Modes_Picker), new FrameworkPropertyMetadata(default(string), ModeChanged));
 
 		public string Mode
 		{
@@ -33,7 +33,7 @@ namespace Uno.UI.Samples.UITests.Image
 			"Items",
 			typeof(List<StretchModeItem>),
 			typeof(Image_Stretch_Modes_Picker),
-			new PropertyMetadata(default(List<StretchModeItem>)));
+			new FrameworkPropertyMetadata(default(List<StretchModeItem>)));
 
 		private static void ModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{

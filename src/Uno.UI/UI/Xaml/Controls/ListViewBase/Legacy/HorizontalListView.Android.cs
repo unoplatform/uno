@@ -113,7 +113,7 @@ namespace Uno.UI.Controls.Legacy
                 "SelectionMode",
                 typeof(ListViewSelectionMode),
                 typeof(HorizontalListView),
-                new PropertyMetadata(defaultValue: ListViewSelectionMode.None, propertyChangedCallback: OnSelectionModeChanged)
+                new FrameworkPropertyMetadata(defaultValue: ListViewSelectionMode.None, propertyChangedCallback: OnSelectionModeChanged)
             );
         public ListViewSelectionMode SelectionMode
         {
@@ -136,7 +136,7 @@ namespace Uno.UI.Controls.Legacy
                 "SelectedItems",
                 typeof(object[]),
                 typeof(HorizontalListView),
-                new PropertyMetadata(
+                new FrameworkPropertyMetadata(
                     defaultValue: new object[0],
                     propertyChangedCallback: OnSelectedItemsChanged
                 )
@@ -150,7 +150,7 @@ namespace Uno.UI.Controls.Legacy
                 "SelectedItem",
                 typeof(object),
                 typeof(HorizontalListView),
-                new PropertyMetadata(
+                new FrameworkPropertyMetadata(
                     defaultValue: null,
                     propertyChangedCallback: (s, e) => (s as HorizontalListView).OnSelectedItemChanged(e.OldValue, e.NewValue)
                 )
@@ -170,7 +170,7 @@ namespace Uno.UI.Controls.Legacy
                 "ItemContainerStyle",
                 typeof(Style),
                 typeof(HorizontalListView),
-                new PropertyMetadata(defaultValue: null, propertyChangedCallback: OnItemContainerStyleChanged)
+                new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: OnItemContainerStyleChanged)
             );
 
         public Style ItemContainerStyle
@@ -190,7 +190,7 @@ namespace Uno.UI.Controls.Legacy
         }
 
         public static DependencyProperty IsItemClickEnabledProperty { get ; } =
-            DependencyProperty.Register("IsItemClickEnabled", typeof(bool), typeof(HorizontalListView), new PropertyMetadata(false));
+            DependencyProperty.Register("IsItemClickEnabled", typeof(bool), typeof(HorizontalListView), new FrameworkPropertyMetadata(false));
         #endregion
 
         public event SelectionChangedEventHandler SelectionChanged;

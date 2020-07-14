@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 				"Padding",
 				typeof(Thickness),
 				typeof(ItemsPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
 					(s, e) => ((ItemsPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)

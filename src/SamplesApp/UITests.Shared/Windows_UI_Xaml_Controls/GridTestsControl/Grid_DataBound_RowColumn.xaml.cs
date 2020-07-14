@@ -65,7 +65,7 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 
 		// Using a DependencyProperty as the backing store for CurrentColumn.  This enables animation, styling, binding, etc...
 		public static DependencyProperty CurrentColumnProperty { get ; } =
-			DependencyProperty.Register("CurrentColumn", typeof(int), typeof(Grid_DataBound_RowColumn_Data), new PropertyMetadata(0));
+			DependencyProperty.Register("CurrentColumn", typeof(int), typeof(Grid_DataBound_RowColumn_Data), new FrameworkPropertyMetadata(0));
 
 		public int CurrentRow
 		{
@@ -75,7 +75,7 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 
 		// Using a DependencyProperty as the backing store for CurrentColumn.  This enables animation, styling, binding, etc...
 		public static DependencyProperty CurrentRowProperty { get ; } =
-			DependencyProperty.Register("CurrentRow", typeof(int), typeof(Grid_DataBound_RowColumn_Data), new PropertyMetadata(0));
+			DependencyProperty.Register("CurrentRow", typeof(int), typeof(Grid_DataBound_RowColumn_Data), new FrameworkPropertyMetadata(0));
 
 	}
 }

@@ -88,7 +88,7 @@ namespace Uno.UI.Controls.Legacy
 				"Padding",
 				typeof(Thickness),
 				typeof(GridView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
 					(s, e) => ((GridView)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -115,7 +115,7 @@ namespace Uno.UI.Controls.Legacy
 				"SelectionMode",
 				typeof(ListViewSelectionMode),
 				typeof(GridView),
-				new PropertyMetadata(defaultValue: ListViewSelectionMode.None, propertyChangedCallback: OnSelectionModeChanged)
+				new FrameworkPropertyMetadata(defaultValue: ListViewSelectionMode.None, propertyChangedCallback: OnSelectionModeChanged)
 			);
 		public ListViewSelectionMode SelectionMode
 		{
@@ -138,7 +138,7 @@ namespace Uno.UI.Controls.Legacy
 				"SelectedItems",
 				typeof(IList<object>),
 				typeof(GridView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: new List<object>(),
 					propertyChangedCallback: OnSelectedItemsChanged
 				)
@@ -158,7 +158,7 @@ namespace Uno.UI.Controls.Legacy
 				"SelectedItem",
 				typeof(object),
 				typeof(GridView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((GridView)s)?.OnSelectedItemChanged(e.OldValue, e.NewValue)));
 
@@ -177,7 +177,7 @@ namespace Uno.UI.Controls.Legacy
 				"ItemContainerStyle",
 				typeof(Style),
 				typeof(GridView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(Style)null,
 					(s, e) => ((GridView)s)?.OnItemContainerStyleChanged((Style)e.OldValue, (Style)e.NewValue)
 				)
@@ -202,7 +202,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		public static DependencyProperty UnselectOnClickProperty { get ; } =
-			DependencyProperty.Register("UnselectOnClick", typeof(bool), typeof(GridView), new PropertyMetadata(default(bool)));
+			DependencyProperty.Register("UnselectOnClick", typeof(bool), typeof(GridView), new FrameworkPropertyMetadata(default(bool)));
 
 		#endregion
 

@@ -33,7 +33,7 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_GetDefaultValue()
 		{
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_GetDefaultValue), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var testProperty = DependencyProperty.Register(nameof(When_GetDefaultValue), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
 
 			Assert.AreEqual("42", SUT.GetValue(testProperty));
 		}
@@ -51,7 +51,7 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_GetDefaultValue_And_PropertyType_Is_ValueType_And_DefaultValue_Is_Null()
 		{
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_GetDefaultValue_And_PropertyType_Is_ValueType_And_DefaultValue_Is_Null), typeof(int), typeof(MockDependencyObject), new PropertyMetadata(null));
+			var testProperty = DependencyProperty.Register(nameof(When_GetDefaultValue_And_PropertyType_Is_ValueType_And_DefaultValue_Is_Null), typeof(int), typeof(MockDependencyObject), new FrameworkPropertyMetadata(null));
 
 			Assert.AreEqual(default(int), SUT.GetValue(testProperty));
 		}
@@ -62,7 +62,7 @@ namespace Uno.UI.Tests.BinderTests
 			var defaultValue = "test";
 
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_GetDefaultValue_And_PropertyType_Is_ValueType_And_DefaultValue_Is_Different_Type), typeof(int), typeof(MockDependencyObject), new PropertyMetadata(defaultValue));
+			var testProperty = DependencyProperty.Register(nameof(When_GetDefaultValue_And_PropertyType_Is_ValueType_And_DefaultValue_Is_Different_Type), typeof(int), typeof(MockDependencyObject), new FrameworkPropertyMetadata(defaultValue));
 
 			Assert.AreEqual(defaultValue, SUT.GetValue(testProperty));
 		}
@@ -71,7 +71,7 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_SetValue_Registration_NotRaised()
 		{
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_SetValue_Registration_NotRaised), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var testProperty = DependencyProperty.Register(nameof(When_SetValue_Registration_NotRaised), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
 
 			SUT.RegisterDisposablePropertyChangedCallback(testProperty, (s, e) =>
 			{
@@ -110,7 +110,7 @@ namespace Uno.UI.Tests.BinderTests
 			bool raised = false;
 
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_SetValue_and_DefaultValue_Registration_Raised), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var testProperty = DependencyProperty.Register(nameof(When_SetValue_and_DefaultValue_Registration_Raised), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
 
 			SUT.RegisterDisposablePropertyChangedCallback(testProperty, (s, e) =>
 			{
@@ -133,7 +133,7 @@ namespace Uno.UI.Tests.BinderTests
 			int raisedCount = 0;
 
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_SetValue_and_DefaultValue_Registration_RaisedTwice), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var testProperty = DependencyProperty.Register(nameof(When_SetValue_and_DefaultValue_Registration_RaisedTwice), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
 
 			SUT.RegisterDisposablePropertyChangedCallback(testProperty, (s, e) =>
 			{
@@ -172,7 +172,7 @@ namespace Uno.UI.Tests.BinderTests
 			};
 
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_SetValue_And_DefaultValue_Then_StaticRegistration_NotRaised), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42", cb));
+			var testProperty = DependencyProperty.Register(nameof(When_SetValue_And_DefaultValue_Then_StaticRegistration_NotRaised), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42", cb));
 
 			Assert.AreEqual("42", SUT.GetValue(testProperty));
 		}
@@ -186,7 +186,7 @@ namespace Uno.UI.Tests.BinderTests
 			};
 
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_SetValue_And_NoDefaultValue_Then_StaticRegistration_NotRaised), typeof(string), typeof(MockDependencyObject), new PropertyMetadata(null, cb));
+			var testProperty = DependencyProperty.Register(nameof(When_SetValue_And_NoDefaultValue_Then_StaticRegistration_NotRaised), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata(null, cb));
 
 			Assert.AreEqual(null, SUT.GetValue(testProperty));
 		}
@@ -204,7 +204,7 @@ namespace Uno.UI.Tests.BinderTests
 			};
 
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_SetValue_And_DefaultValue_Then_StaticRegistration_Raised), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42", cb));
+			var testProperty = DependencyProperty.Register(nameof(When_SetValue_And_DefaultValue_Then_StaticRegistration_Raised), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42", cb));
 
 			SUT.SetValue(testProperty, "test");
 
@@ -241,7 +241,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			};
 
-			var testProperty = DependencyProperty.Register(nameof(When_SetValue_And_DefaultValue_Then_StaticRegistration_RaisedMultiple), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42", cb));
+			var testProperty = DependencyProperty.Register(nameof(When_SetValue_And_DefaultValue_Then_StaticRegistration_RaisedMultiple), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42", cb));
 
 			SUT.SetValue(testProperty, "test");
 			Assert.AreEqual("test", SUT.GetValue(testProperty));
@@ -285,7 +285,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			};
 
-			var testProperty = DependencyProperty.Register(nameof(When_SetValue_Integer_And_SameValue_Then_RaisedOnce), typeof(int), typeof(MockDependencyObject), new PropertyMetadata(0, cb));
+			var testProperty = DependencyProperty.Register(nameof(When_SetValue_Integer_And_SameValue_Then_RaisedOnce), typeof(int), typeof(MockDependencyObject), new FrameworkPropertyMetadata(0, cb));
 
 			SUT.SetValue(testProperty, 42);
 			Assert.AreEqual(42, SUT.GetValue(testProperty));
@@ -329,7 +329,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			};
 
-			var testProperty = DependencyProperty.Register(nameof(When_SetValue_Thickness_And_SameValue_Then_RaisedOnce), typeof(Thickness), typeof(MockDependencyObject), new PropertyMetadata(Thickness.Empty, cb));
+			var testProperty = DependencyProperty.Register(nameof(When_SetValue_Thickness_And_SameValue_Then_RaisedOnce), typeof(Thickness), typeof(MockDependencyObject), new FrameworkPropertyMetadata(Thickness.Empty, cb));
 
 			SUT.SetValue(testProperty, new Thickness(2));
 			Assert.AreEqual(new Thickness(2), SUT.GetValue(testProperty));
@@ -376,7 +376,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			};
 
-			var testProperty = DependencyProperty.Register(nameof(When_SetValue_Reference_And_SameValue_Then_RaisedOnce), typeof(object), typeof(MockDependencyObject), new PropertyMetadata(null, cb));
+			var testProperty = DependencyProperty.Register(nameof(When_SetValue_Reference_And_SameValue_Then_RaisedOnce), typeof(object), typeof(MockDependencyObject), new FrameworkPropertyMetadata(null, cb));
 
 			SUT.SetValue(testProperty, o1);
 			Assert.AreEqual(o1, SUT.GetValue(testProperty));
@@ -395,15 +395,15 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_Property_RegisterTwice_then_Fail()
 		{
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
-			var testProperty2 = DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var testProperty = DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
+			var testProperty2 = DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
 		}
 
 		[TestMethod]
 		public void When_Local_Value_Cleared_Then_Default_Returned()
 		{
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_Local_Value_Cleared_Then_Default_Returned), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var testProperty = DependencyProperty.Register(nameof(When_Local_Value_Cleared_Then_Default_Returned), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
 
 			SUT.SetValue(testProperty, "Not42");
 
@@ -418,7 +418,7 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_Two_Precedences_Set_Then_Only_Highest_Returned()
 		{
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_Two_Precedences_Set_Then_Only_Highest_Returned), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var testProperty = DependencyProperty.Register(nameof(When_Two_Precedences_Set_Then_Only_Highest_Returned), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
 
 			SUT.SetValue(testProperty, "Not42");
 			SUT.SetValue(testProperty, "ALowPriorityValue", DependencyPropertyValuePrecedences.ImplicitStyle);
@@ -430,7 +430,7 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_Animating_And_Animation_Is_Done_Then_Returns_Local()
 		{
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_Animating_And_Animation_Is_Done_Then_Returns_Local), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var testProperty = DependencyProperty.Register(nameof(When_Animating_And_Animation_Is_Done_Then_Returns_Local), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
 
 			SUT.SetValue(testProperty, "Not42");
 
@@ -449,7 +449,7 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_Setting_UnsetValue_Then_Property_Reverts_To_Default()
 		{
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_Setting_UnsetValue_Then_Property_Reverts_To_Default), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var testProperty = DependencyProperty.Register(nameof(When_Setting_UnsetValue_Then_Property_Reverts_To_Default), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
 
 			SUT.SetValue(testProperty, "Not42");
 
@@ -465,7 +465,7 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_Setting_UnsetValue_On_DefaultValue_Then_Fails()
 		{
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_Setting_UnsetValue_On_DefaultValue_Then_Fails), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var testProperty = DependencyProperty.Register(nameof(When_Setting_UnsetValue_On_DefaultValue_Then_Fails), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
 
 			SUT.SetValue(testProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.DefaultValue);
 		}
@@ -474,7 +474,7 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_Setting_Value_Then_Current_Highest_Is_Local()
 		{
 			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_Setting_Value_Then_Current_Highest_Is_Local), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var testProperty = DependencyProperty.Register(nameof(When_Setting_Value_Then_Current_Highest_Is_Local), typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata("42"));
 
 			SUT.SetValue(testProperty, "Not42");
 
@@ -518,7 +518,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_SetValue_Null_And_PropertyType_Is_ValueType_Then_GetValue_Explicit_DefaultValue),
 				typeof(int),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(defaultValue)
+				new FrameworkPropertyMetadata(defaultValue)
 			);
 
 			SUT.SetValue(testProperty, null);
@@ -552,7 +552,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CoerceValueCallback_Now_And_CoerceValue),
 				typeof(DateTime),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					null,
 					Now
@@ -597,7 +597,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CoerceValueCallback_Custom_And_CoerceValue),
 				typeof(string),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					null,
 					Custom
@@ -619,7 +619,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CoerceValueCallback_ReturnNull_DefaultValue_Not_Coerced),
 				typeof(string),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					"default",
 					null,
 					ReturnNull
@@ -656,7 +656,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CoerceValueCallback_PreventSet),
 				typeof(int),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue,
 					null,
 					PreventSet
@@ -681,7 +681,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CoerceValueCallback_DoNothing),
 				typeof(int),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue,
 					null,
 					DoNothing
@@ -706,7 +706,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CoerceValueCallback_ReturnNull),
 				typeof(string),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue,
 					null,
 					ReturnNull
@@ -731,7 +731,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CoerceValueCallback_ReadLocalValue),
 				typeof(string),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue,
 					null,
 					ReturnNull
@@ -758,7 +758,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CoerceValueCallback_ReturnNull_Integer),
 				typeof(int),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue,
 					null,
 					ReturnNull
@@ -783,7 +783,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CoerceValueCallback_AbsoluteInteger),
 				typeof(int),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue,
 					null,
 					AbsoluteInteger
@@ -808,7 +808,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CoerceValueCallback_IgnoreNegative),
 				typeof(int),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue,
 					null,
 					IgnoreNegative
@@ -833,7 +833,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CoerceValueCallback_StringTake10),
 				typeof(int),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue,
 					null,
 					StringTake10
@@ -855,7 +855,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_CorceValueCallback_Now),
 				typeof(DateTime),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					null,
 					Now
@@ -940,7 +940,7 @@ namespace Uno.UI.Tests.BinderTests
 				new FrameworkPropertyMetadata(null)
 			);
 
-			testProperty.OverrideMetadata(typeof(MockDependencyObject2), new PropertyMetadata(null));
+			testProperty.OverrideMetadata(typeof(MockDependencyObject2), new FrameworkPropertyMetadata(null));
 		}
 
 		[TestMethod]
@@ -954,14 +954,14 @@ namespace Uno.UI.Tests.BinderTests
 				null
 			);
 
-			testProperty.OverrideMetadata(typeof(MockDependencyObject), new PropertyMetadata("test"));
+			testProperty.OverrideMetadata(typeof(MockDependencyObject), new FrameworkPropertyMetadata("test"));
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentException))]
 		public void When_OverrideMetadata_With_Same_ForType_Twice_Then_Fail()
 		{
-			MyDependencyObject1.MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject2), new PropertyMetadata("test"));
+			MyDependencyObject1.MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject2), new FrameworkPropertyMetadata("test"));
 		}
 
 		[TestMethod]
@@ -1151,7 +1151,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_SetValue_Null_And_PropertyType_Is_ReferenceType_Then_GetValue_Null),
 				typeof(string),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(defaultValue)
+				new FrameworkPropertyMetadata(defaultValue)
 			);
 
 			SUT.SetValue(testProperty, null);
@@ -1171,7 +1171,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_SetValue_Null_And_PropertyType_Is_Nullable_ValueType_Then_GetValue_Null),
 				typeof(int?),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(defaultValue)
+				new FrameworkPropertyMetadata(defaultValue)
 			);
 
 			SUT.SetValue(testProperty, null);
@@ -1189,7 +1189,7 @@ namespace Uno.UI.Tests.BinderTests
 				nameof(When_SetValue_Null_And_PropertyType_Is_ValueType_Then_GetValue_DefaultValue),
 				typeof(int),
 				typeof(MockDependencyObject),
-				new PropertyMetadata(defaultValue)
+				new FrameworkPropertyMetadata(defaultValue)
 			);
 
 			SUT.SetValue(testProperty, null);
@@ -1277,7 +1277,7 @@ namespace Uno.UI.Tests.BinderTests
 			// Try reading the property before it gets registered to validate against caches cleanup
 			Assert.IsNull(DependencyProperty.GetProperty(typeof(MockDependencyObject), "TestProperty"));
 
-			var dp1 = DependencyProperty.Register("TestProperty", typeof(string), typeof(MockDependencyObject), new PropertyMetadata(null));
+			var dp1 = DependencyProperty.Register("TestProperty", typeof(string), typeof(MockDependencyObject), new FrameworkPropertyMetadata(null));
 
 			var o = new MockDependencyObject();
 			o.SetBinding(dp1, new Binding { Path = new PropertyPath("MyProperty") });
@@ -1315,9 +1315,9 @@ namespace Uno.UI.Tests.BinderTests
 			{
 			};
 
-			property1 = DependencyProperty.Register("Property1", typeof(int), typeof(MockDependencyObject), new PropertyMetadata(0, OnProperty1Changed));
-			property2 = DependencyProperty.Register("Property2", typeof(int), typeof(MockDependencyObject), new PropertyMetadata(0, OnProperty2Changed));
-			property3 = DependencyProperty.Register("Property3", typeof(int), typeof(MockDependencyObject), new PropertyMetadata(0, OnProperty3Changed));
+			property1 = DependencyProperty.Register("Property1", typeof(int), typeof(MockDependencyObject), new FrameworkPropertyMetadata(0, OnProperty1Changed));
+			property2 = DependencyProperty.Register("Property2", typeof(int), typeof(MockDependencyObject), new FrameworkPropertyMetadata(0, OnProperty2Changed));
+			property3 = DependencyProperty.Register("Property3", typeof(int), typeof(MockDependencyObject), new FrameworkPropertyMetadata(0, OnProperty3Changed));
 
 			SUT.SetValue(property1, 1);
 
@@ -1426,7 +1426,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		public static readonly DependencyProperty MyPropertyProperty =
 			DependencyProperty.Register("MyProperty", typeof(string), typeof(SimpleDependencyObject1),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					"default1",
 					(s, e) => {
 						(s as SimpleDependencyObject1).PropertyChangedCallbacks.Add("changed1: " + e.NewValue);
@@ -1446,7 +1446,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		public static readonly DependencyProperty MyPropertyProperty =
 			DependencyProperty.Register("MyProperty", typeof(string), typeof(MyDependencyObject1),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					"default1",
 					(s, e) => { (s as MyDependencyObject1).PropertyChangedCallbacks.Add("changed1: " + e.NewValue); },
 					(s, baseValue) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion1: " + baseValue; }
@@ -1508,7 +1508,7 @@ namespace Uno.UI.Tests.BinderTests
 				"MyNullable",
 				typeof(int?),
 				typeof(NullablePropertyOwner),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((NullablePropertyOwner)s)?.OnMyNullableChanged(e)
 				)

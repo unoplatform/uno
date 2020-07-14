@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Automation
 				"Name",
 				typeof(string),
 				typeof(AutomationProperties),
-				new PropertyMetadata(string.Empty, OnNamePropertyChanged)
+				new FrameworkPropertyMetadata(string.Empty, OnNamePropertyChanged)
 			);
 
 

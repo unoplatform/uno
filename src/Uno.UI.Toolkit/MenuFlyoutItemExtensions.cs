@@ -22,7 +22,7 @@ namespace Uno.UI.Toolkit
 				"IsDestructive",
 				typeof(bool),
 				typeof(MenuFlyoutItemExtensions),
-				new PropertyMetadata(false)
+				new FrameworkPropertyMetadata(false)
 			);
 
 		public static void SetIsDestructive(this MenuFlyoutItem menuFlyoutItem, bool isDestructive)

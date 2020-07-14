@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_Devices
 		}
 		
 		public static DependencyProperty GeopositionProperty { get ; } =
-			DependencyProperty.Register(nameof(Geoposition), typeof(Geoposition), typeof(GeopositionDisplayControl), new PropertyMetadata(null, GeopositionChanged));		
+			DependencyProperty.Register(nameof(Geoposition), typeof(Geoposition), typeof(GeopositionDisplayControl), new FrameworkPropertyMetadata(null, GeopositionChanged));		
 
 
 		private static void GeopositionChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)

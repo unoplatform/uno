@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml
 		}
 
 		internal static DependencyProperty VisualStateManagerProperty { get ; } =
-			DependencyProperty.RegisterAttached("VisualStateManager", typeof(VisualStateManager), typeof(VisualStateManager), new PropertyMetadata(null));
+			DependencyProperty.RegisterAttached("VisualStateManager", typeof(VisualStateManager), typeof(VisualStateManager), new FrameworkPropertyMetadata(null));
 
 		#endregion
 

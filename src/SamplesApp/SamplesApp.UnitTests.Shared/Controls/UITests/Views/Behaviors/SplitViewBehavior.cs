@@ -41,7 +41,7 @@ namespace Uno.UI.Samples.Behaviors
 		/// - It must derive from ButtonBase or be an item of a ListViewBase.
 		/// </summary>
 		public static DependencyProperty OpenOnClickProperty { get ; } =
-			DependencyProperty.RegisterAttached("OpenOnClick", typeof(bool), typeof(SplitViewBehavior), new PropertyMetadata(default(bool), OnOpenOnClickChanged));
+			DependencyProperty.RegisterAttached("OpenOnClick", typeof(bool), typeof(SplitViewBehavior), new FrameworkPropertyMetadata(default(bool), OnOpenOnClickChanged));
 
 		private static void OnOpenOnClickChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -69,7 +69,7 @@ namespace Uno.UI.Samples.Behaviors
 		/// - It must derive from ButtonBase or be an item of a ListViewBase.
 		/// </summary>
 		public static DependencyProperty CloseOnClickProperty { get ; } =
-			DependencyProperty.RegisterAttached("CloseOnClick", typeof(bool), typeof(SplitViewBehavior), new PropertyMetadata(default(bool), OnCloseOnClickChanged));
+			DependencyProperty.RegisterAttached("CloseOnClick", typeof(bool), typeof(SplitViewBehavior), new FrameworkPropertyMetadata(default(bool), OnCloseOnClickChanged));
 
 		private static void OnCloseOnClickChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

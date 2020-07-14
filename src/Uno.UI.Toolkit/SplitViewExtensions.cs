@@ -22,7 +22,7 @@ namespace Uno.UI.Toolkit
 				"IsPaneEnabled",
 				typeof(bool),
 				typeof(SplitViewExtensions),
-				new PropertyMetadata(true)
+				new FrameworkPropertyMetadata(true)
 			);
 
 		public static void SetIsPaneEnabled(this SplitView splitView, bool isPaneEnabled)

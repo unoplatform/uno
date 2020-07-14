@@ -122,7 +122,7 @@ namespace Uno.UI.Toolkit
 			=> obj.SetValue(PaddingMaskProperty, value);
 
 		public static DependencyProperty PaddingMaskProperty { get ; } =
-			DependencyProperty.RegisterAttached("PaddingMask", typeof(PaddingMask), typeof(_VisibleBoundsPadding), new PropertyMetadata(PaddingMask.None, OnIsPaddingMaskChanged));
+			DependencyProperty.RegisterAttached("PaddingMask", typeof(PaddingMask), typeof(_VisibleBoundsPadding), new FrameworkPropertyMetadata(PaddingMask.None, OnIsPaddingMaskChanged));
 
 		private static void OnIsPaddingMaskChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 			=> VisibleBoundsDetails.GetInstance(dependencyObject as FrameworkElement).OnIsPaddingMaskChanged((PaddingMask)args.OldValue, (PaddingMask)args.NewValue);

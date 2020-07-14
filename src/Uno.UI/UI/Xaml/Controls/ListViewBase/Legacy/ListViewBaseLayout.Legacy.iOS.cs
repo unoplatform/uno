@@ -117,7 +117,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		public static DependencyProperty AreStickyGroupHeadersEnabledProperty { get ; } =
-			DependencyProperty.Register("AreStickyGroupHeadersEnabled", typeof(bool), typeof(ListViewBaseLayout), new PropertyMetadata(false, OnAreStickyGroupHeadersEnabledChanged));
+			DependencyProperty.Register("AreStickyGroupHeadersEnabled", typeof(bool), typeof(ListViewBaseLayout), new FrameworkPropertyMetadata(false, OnAreStickyGroupHeadersEnabledChanged));
 
 		private static void OnAreStickyGroupHeadersEnabledChanged(object o, DependencyPropertyChangedEventArgs e)
 		{

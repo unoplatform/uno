@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Media
 				"Opacity", 
 				typeof(double), 
 				typeof(Brush),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: 1d,
 					propertyChangedCallback: (s, e) => ((Brush)s).OnOpacityChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Media
 				"RelativeTransform",
 				typeof(Transform),
 				typeof(Brush),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 
 					propertyChangedCallback: (s, e) =>

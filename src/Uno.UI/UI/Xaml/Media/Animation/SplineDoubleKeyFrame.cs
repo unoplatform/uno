@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set { this.SetValue(KeySplineProperty, value); }
 		}
 		public static DependencyProperty KeySplineProperty { get ; } =
-			DependencyProperty.Register("KeySpline", typeof(KeySpline), typeof(SplineDoubleKeyFrame), new PropertyMetadata(new KeySpline()));
+			DependencyProperty.Register("KeySpline", typeof(KeySpline), typeof(SplineDoubleKeyFrame), new FrameworkPropertyMetadata(new KeySpline()));
 
 		internal override IEasingFunction GetEasingFunction()
 		{

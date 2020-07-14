@@ -429,7 +429,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 				"TriggerCollection",
 				typeof(DependencyObjectCollection),
 				typeof(CompositeTrigger),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((CompositeTrigger)s)?.OnTriggerCollectionChanged(e)
 				)
@@ -514,7 +514,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.Register("MyProperty", typeof(int), typeof(SubObject), new PropertyMetadata(0, OnPropertyChanged));
+			DependencyProperty.Register("MyProperty", typeof(int), typeof(SubObject), new FrameworkPropertyMetadata(0, OnPropertyChanged));
 
 		private static void OnPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -534,7 +534,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 		// Using a DependencyProperty as the backing store for MyStringProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyStringPropertyProperty =
-			DependencyProperty.Register("MyStringProperty", typeof(string), typeof(SubObject), new PropertyMetadata("", OnStringPropertyChanged));
+			DependencyProperty.Register("MyStringProperty", typeof(string), typeof(SubObject), new FrameworkPropertyMetadata("", OnStringPropertyChanged));
 
 		private static void OnStringPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

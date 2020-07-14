@@ -35,7 +35,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Default_undefined_PropertyProperty =
-			DependencyProperty.Register("Default_undefined_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Default_undefined_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 		public string Default_undefined_OneWay_Property
 		{
@@ -44,7 +44,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Default_undefined_OneWay_PropertyProperty =
-			DependencyProperty.Register("Default_undefined_OneWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Default_undefined_OneWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 		public string Default_undefined_TwoWay_Property
 		{
@@ -53,7 +53,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Default_undefined_TwoWay_PropertyProperty =
-			DependencyProperty.Register("Default_undefined_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Default_undefined_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 			
 		public string Default_OneWay_Property
 		{
@@ -62,7 +62,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Default_OneWay_PropertyProperty =
-			DependencyProperty.Register("Default_OneWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Default_OneWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 		public string Default_OneWay_OneWay_Property
 		{
@@ -71,7 +71,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Default_OneWay_OneWay_PropertyProperty =
-			DependencyProperty.Register("Default_OneWay_OneWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Default_OneWay_OneWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 
 		public string Default_OneWay_TwoWay_Property
@@ -81,7 +81,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Default_OneWay_TwoWay_PropertyProperty =
-			DependencyProperty.Register("Default_OneWay_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Default_OneWay_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 		public string Default_TwoWay_Property
 		{
@@ -90,7 +90,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Default_TwoWay_PropertyProperty =
-			DependencyProperty.Register("Default_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Default_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 		public string Default_TwoWay_OneWay_Property
 		{
@@ -99,7 +99,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Default_TwoWay_OneWay_PropertyProperty =
-			DependencyProperty.Register("Default_TwoWay_OneWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Default_TwoWay_OneWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 		public string Default_TwoWay_TwoWay_Property
 		{
@@ -108,7 +108,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Default_TwoWay_TwoWay_PropertyProperty =
-			DependencyProperty.Register("Default_TwoWay_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Default_TwoWay_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 		public string Nested_Default_1_Property
 		{
@@ -117,7 +117,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Nested_Default_1_PropertyProperty =
-			DependencyProperty.Register("Nested_Default_1_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Nested_Default_1_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 		public string Nested_Default_2_Property
 		{
@@ -126,7 +126,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Nested_Default_2_PropertyProperty =
-			DependencyProperty.Register("Nested_Default_2_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Nested_Default_2_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 		public string Nested_Default_OneWay_OneWay_Property
 		{
@@ -135,7 +135,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Nested_Default_OneWay_OneWay_PropertyProperty =
-			DependencyProperty.Register("Nested_Default_OneWay_OneWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Nested_Default_OneWay_OneWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 		public string Nested_Default_OneWay_TwoWay_Property
 		{
@@ -144,7 +144,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Nested_Default_OneWay_TwoWay_PropertyProperty =
-			DependencyProperty.Register("Nested_Default_OneWay_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Nested_Default_OneWay_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 
 		public string Nested_Default_OneWay_OneTime_Property
 		{
@@ -153,6 +153,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty Nested_Default_OneWay_OneTime_PropertyProperty =
-			DependencyProperty.Register("Nested_Default_OneWay_OneTime_Property", typeof(string), typeof(Binding_DefaultBindMode), new PropertyMetadata(null));
+			DependencyProperty.Register("Nested_Default_OneWay_OneTime_Property", typeof(string), typeof(Binding_DefaultBindMode), new FrameworkPropertyMetadata(null));
 	}
 }

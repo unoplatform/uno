@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		// Using a DependencyProperty as the backing store for FromHorizontalOffset.  This enables animation, styling, binding, etc...
 		public static DependencyProperty FromHorizontalOffsetProperty { get ; } =
-			DependencyProperty.Register("FromHorizontalOffset", typeof(float), typeof(EntranceThemeTransition), new PropertyMetadata(40f));
+			DependencyProperty.Register("FromHorizontalOffset", typeof(float), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(40f));
 
 		#endregion
 
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		// Using a DependencyProperty as the backing store for FromVerticalOffset.  This enables animation, styling, binding, etc...
 		public static DependencyProperty FromVerticalOffsetProperty { get ; } =
-			DependencyProperty.Register("FromVerticalOffset", typeof(float), typeof(EntranceThemeTransition), new PropertyMetadata(0f));
+			DependencyProperty.Register("FromVerticalOffset", typeof(float), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(0f));
 
 		#endregion
 
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		// Using a DependencyProperty as the backing store for IsStaggeringEnabled.  This enables animation, styling, binding, etc...
 		public static DependencyProperty IsStaggeringEnabledProperty { get ; } =
-			DependencyProperty.Register("IsStaggeringEnabled", typeof(bool), typeof(EntranceThemeTransition), new PropertyMetadata(true));
+			DependencyProperty.Register("IsStaggeringEnabled", typeof(bool), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(true));
 
 		#endregion
 

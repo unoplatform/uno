@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Navigation
 				"SourcePageType", 
 				typeof(Type),
 				typeof(PageStackEntry),
-				new PropertyMetadata(null, (s, e) => ((PageStackEntry)s)?.OnSourcePageTypeChanged(e))
+				new FrameworkPropertyMetadata(null, (s, e) => ((PageStackEntry)s)?.OnSourcePageTypeChanged(e))
 			);
 
 		private void OnSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)

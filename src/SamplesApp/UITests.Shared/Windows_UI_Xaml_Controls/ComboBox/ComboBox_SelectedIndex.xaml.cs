@@ -19,7 +19,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 		public List<string> Items { get; } = Enumerable.Range(0, 5).Select(i => $"item #{i}").ToList();
 
 		public static DependencyProperty SelectedValueProperty { get ; } = DependencyProperty.Register(
-			"SelectedValue", typeof(object), typeof(ComboBox_SelectedIndex), new PropertyMetadata(default));
+			"SelectedValue", typeof(object), typeof(ComboBox_SelectedIndex), new FrameworkPropertyMetadata(default));
 
 		public object SelectedValue
 		{

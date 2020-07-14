@@ -33,7 +33,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 		}
 
 		public static DependencyProperty IsAnimatingProperty { get ; } =
-			DependencyProperty.Register("IsAnimating", typeof(bool), typeof(AnimatedContentControl), new PropertyMetadata(false, OnIsAnimatingChanged));
+			DependencyProperty.Register("IsAnimating", typeof(bool), typeof(AnimatedContentControl), new FrameworkPropertyMetadata(false, OnIsAnimatingChanged));
 
 		private static void OnIsAnimatingChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
 		{
@@ -58,7 +58,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 		}
 
 		public static DependencyProperty DisableOnUnloadProperty { get ; } =
-			DependencyProperty.Register("DisableOnUnload", typeof(bool), typeof(AnimatedContentControl), new PropertyMetadata(true));
+			DependencyProperty.Register("DisableOnUnload", typeof(bool), typeof(AnimatedContentControl), new FrameworkPropertyMetadata(true));
 
 		protected override void OnApplyTemplate()
 		{

@@ -170,7 +170,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 		#region Test automation support
 		public static DependencyProperty RunTestProperty { get ; } = DependencyProperty.Register(
-			"RunTest", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string), (snd, e) => ((Basic_Shapes)snd).RunTests((string)e.NewValue)));
+			"RunTest", typeof(string), typeof(Basic_Shapes), new FrameworkPropertyMetadata(default(string), (snd, e) => ((Basic_Shapes)snd).RunTests((string)e.NewValue)));
 
 		public string RunTest
 		{
@@ -179,7 +179,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		}
 
 		public static DependencyProperty TestResultProperty { get ; } = DependencyProperty.Register(
-			"TestResult", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string)));
+			"TestResult", typeof(string), typeof(Basic_Shapes), new FrameworkPropertyMetadata(default(string)));
 
 		public string TestResult
 		{
@@ -188,7 +188,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		}
 
 		public static DependencyProperty RunningTestProperty { get ; } = DependencyProperty.Register(
-			"RunningTest", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string), (snd, e) => ((Basic_Shapes)snd)._runningTest.Text = e.NewValue?.ToString()));
+			"RunningTest", typeof(string), typeof(Basic_Shapes), new FrameworkPropertyMetadata(default(string), (snd, e) => ((Basic_Shapes)snd)._runningTest.Text = e.NewValue?.ToString()));
 
 		public string RunningTest
 		{

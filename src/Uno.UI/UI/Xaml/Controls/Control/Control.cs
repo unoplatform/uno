@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for Template.  This enables animation, styling, binding, etc...
 		public static DependencyProperty TemplateProperty { get ; } =
-			DependencyProperty.Register("Template", typeof(ControlTemplate), typeof(Control), new PropertyMetadata(null, (s, e) => ((Control)s)?.OnTemplateChanged(e)));
+			DependencyProperty.Register("Template", typeof(ControlTemplate), typeof(Control), new FrameworkPropertyMetadata(null, (s, e) => ((Control)s)?.OnTemplateChanged(e)));
 
 		private void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -615,7 +615,7 @@ namespace Windows.UI.Xaml.Controls
 				"FocusState",
 				typeof(FocusState),
 				typeof(Control),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(FocusState)FocusState.Unfocused
 				)
 			);
@@ -635,7 +635,7 @@ namespace Windows.UI.Xaml.Controls
 				"IsTabStop",
 				typeof(bool),
 				typeof(Control),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: (bool)true,
 					propertyChangedCallback: (s, e) => ((Control)s)?.OnIsFocusableChanged()
 				)

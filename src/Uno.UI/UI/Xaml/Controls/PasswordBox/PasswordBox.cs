@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 				"Password",
 				typeof(string),
 				typeof(PasswordBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: string.Empty,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnPasswordChanged(e)
 				)
@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsPasswordRevealButtonEnabled),
 				typeof(bool),
 				typeof(PasswordBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: true,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnIsPasswordRevealButtonEnabledChanged(e)
 				)

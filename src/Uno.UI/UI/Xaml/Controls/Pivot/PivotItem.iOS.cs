@@ -14,6 +14,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ImageProperty { get ; } =
-			DependencyProperty.Register("Image", typeof(UIImage), typeof(PivotItem), new PropertyMetadata(default(UIImage)));
+			DependencyProperty.Register("Image", typeof(UIImage), typeof(PivotItem), new FrameworkPropertyMetadata(default(UIImage)));
 	}
 }

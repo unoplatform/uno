@@ -406,7 +406,7 @@ namespace Windows.UI.Xaml
 						dependencyProperty, 
 						propertyType,
 						originalObjectType,
-						new PropertyMetadata(null)
+						new FrameworkPropertyMetadata(null)
 					);
 				}
 

@@ -25,7 +25,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 
 		// Using a DependencyProperty as the backing store for CurrentState.  This enables animation, styling, binding, etc...
 		public static DependencyProperty CurrentStateProperty { get ; } =
-			DependencyProperty.Register("CurrentState", typeof(string), typeof(VisualStateProbeControl), new PropertyMetadata("<Unset>", (o, e) => ((VisualStateProbeControl)o).OnCurrentStateChanged((string)e.NewValue)));
+			DependencyProperty.Register("CurrentState", typeof(string), typeof(VisualStateProbeControl), new FrameworkPropertyMetadata("<Unset>", (o, e) => ((VisualStateProbeControl)o).OnCurrentStateChanged((string)e.NewValue)));
 
 		public string ProbeLabel
 		{
@@ -35,7 +35,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 
 		// Using a DependencyProperty as the backing store for ProbeLabel.  This enables animation, styling, binding, etc...
 		public static DependencyProperty ProbeLabelProperty { get ; } =
-			DependencyProperty.Register("ProbeLabel", typeof(string), typeof(VisualStateProbeControl), new PropertyMetadata(defaultValue: "", propertyChangedCallback: (o, e) => ((VisualStateProbeControl)o).ApplyValue()));
+			DependencyProperty.Register("ProbeLabel", typeof(string), typeof(VisualStateProbeControl), new FrameworkPropertyMetadata(defaultValue: "", propertyChangedCallback: (o, e) => ((VisualStateProbeControl)o).ApplyValue()));
 
 		private void OnCurrentStateChanged(string newValue)
 		{

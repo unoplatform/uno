@@ -31,7 +31,7 @@ namespace Uno.UI.Controls
 				"IsNavigationBarHidden", 
 				typeof(int),
 				typeof(NativeFramePresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false, 
 					(s, e) => ((NativeFramePresenter)s)?.OnIsNavigationBarHiddenChanged(e)
 				)

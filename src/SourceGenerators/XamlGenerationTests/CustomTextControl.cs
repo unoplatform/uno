@@ -21,7 +21,7 @@ namespace XamlGenerationTests
 
 		// Using a DependencyProperty as the backing store for CustomText.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty CustomTextProperty =
-			DependencyProperty.Register("CustomText", typeof(string), typeof(CustomTextControl), new PropertyMetadata(null, (o, __) => ((CustomTextControl)o).OnPropertyChanged()));
+			DependencyProperty.Register("CustomText", typeof(string), typeof(CustomTextControl), new FrameworkPropertyMetadata(null, (o, __) => ((CustomTextControl)o).OnPropertyChanged()));
 
 		public object CustomTextObj
 		{
@@ -31,7 +31,7 @@ namespace XamlGenerationTests
 
 		// Using a DependencyProperty as the backing store for CustomTextObj.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty CustomTextObjProperty =
-			DependencyProperty.Register("CustomTextObj", typeof(object), typeof(CustomTextControl), new PropertyMetadata(null, (o, __) => ((CustomTextControl)o).OnPropertyChanged()));
+			DependencyProperty.Register("CustomTextObj", typeof(object), typeof(CustomTextControl), new FrameworkPropertyMetadata(null, (o, __) => ((CustomTextControl)o).OnPropertyChanged()));
 
 		public string CustomTextPlain
 		{

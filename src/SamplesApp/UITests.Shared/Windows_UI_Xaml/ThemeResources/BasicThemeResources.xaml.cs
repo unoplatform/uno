@@ -21,7 +21,7 @@ namespace UITests.Shared.Windows_UI_Xaml.ThemeResources
 		private ApplicationTheme ApplicationTheme { get; }
 
 		public static DependencyProperty LocalThemeProperty { get ; } = DependencyProperty.Register(
-			"LocalTheme", typeof(ElementTheme), typeof(BasicThemeResources), new PropertyMetadata(default(ElementTheme)));
+			"LocalTheme", typeof(ElementTheme), typeof(BasicThemeResources), new FrameworkPropertyMetadata(default(ElementTheme)));
 
 		public ElementTheme LocalTheme
 		{
@@ -34,7 +34,7 @@ namespace UITests.Shared.Windows_UI_Xaml.ThemeResources
 		}
 
 		public static DependencyProperty ParentThemeProperty { get ; } = DependencyProperty.Register(
-			"ParentTheme", typeof(ElementTheme), typeof(BasicThemeResources), new PropertyMetadata(default(ElementTheme)));
+			"ParentTheme", typeof(ElementTheme), typeof(BasicThemeResources), new FrameworkPropertyMetadata(default(ElementTheme)));
 
 		public ElementTheme ParentTheme
 		{

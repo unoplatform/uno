@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Media
 			DependencyProperty.Register(
 				"Rect",
 				typeof(Rect), typeof(RectangleGeometry),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((RectangleGeometry)s)?.OnRectChanged(e)
 				)

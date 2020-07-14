@@ -302,7 +302,7 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 	{
 		// Just a standard DP defined by a project / third party component
 		public static readonly DependencyProperty InnerControlProperty = DependencyProperty.Register(
-			"InnerControl", typeof(MyControl), typeof(MyControl), new PropertyMetadata(default(MyControl)));
+			"InnerControl", typeof(MyControl), typeof(MyControl), new FrameworkPropertyMetadata(default(MyControl)));
 
 		public MyControl InnerControl
 		{

@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml
 			_uniqueId = Interlocked.Increment(ref _globalId);
 			_hasWeakStorage = (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() ?? false;
 
-			_ownerTypeMetadata = defaultMetadata ?? new PropertyMetadata(null);
+			_ownerTypeMetadata = defaultMetadata ?? new FrameworkPropertyMetadata(null);
 			_metadata.Add(_ownerType, _ownerTypeMetadata);
 
 			// Improve the performance of the hash code by

@@ -19,7 +19,7 @@ namespace Uno.UI.Toolkit
 			"CancelTextIosOverride",
 			typeof(string),
 			typeof(MenuFlyoutExtensions),
-			new PropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string)));
 
 		public static string GetCancelTextIosOverride(MenuFlyout obj) => (string)obj.GetValue(CancelTextIosOverrideProperty);
 

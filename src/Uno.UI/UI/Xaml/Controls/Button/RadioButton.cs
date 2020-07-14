@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 				"GroupName", 
 				typeof(string), 
 				typeof(RadioButton), 
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(string)null, 
 					propertyChangedCallback: (s, e) => (s as RadioButton)?.OnGroupNameChanged((string)e.OldValue, (string)e.NewValue)
 				)

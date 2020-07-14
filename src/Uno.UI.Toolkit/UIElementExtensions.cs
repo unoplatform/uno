@@ -41,7 +41,7 @@ namespace Uno.UI.Toolkit
 				"Elevation",
 				typeof(double),
 				typeof(UIElementExtensions),
-				new PropertyMetadata(0, OnElevationChanged)
+				new FrameworkPropertyMetadata(0, OnElevationChanged)
 			);
 
 		private static readonly Color ElevationColor = Color.FromArgb(64, 0, 0, 0);

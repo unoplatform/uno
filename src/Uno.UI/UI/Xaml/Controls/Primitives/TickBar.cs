@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		// Using a DependencyProperty as the backing store for Fill.  This enables animation, styling, binding, etc...
 		public static DependencyProperty FillProperty { get ; } =
-			DependencyProperty.Register("Fill", typeof(Brush), typeof(TickBar), new PropertyMetadata(null, (s, e) => ((TickBar)s)?.OnFillChanged(e)));
+			DependencyProperty.Register("Fill", typeof(Brush), typeof(TickBar), new FrameworkPropertyMetadata(null, (s, e) => ((TickBar)s)?.OnFillChanged(e)));
 
 
 		private void OnFillChanged(DependencyPropertyChangedEventArgs e)

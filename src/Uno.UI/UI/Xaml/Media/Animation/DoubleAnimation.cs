@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty ByProperty { get ; } =
-			DependencyProperty.Register("By", typeof(double?), typeof(DoubleAnimation), new PropertyMetadata(null));
+			DependencyProperty.Register("By", typeof(double?), typeof(DoubleAnimation), new FrameworkPropertyMetadata(null));
 
 		public double? From
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty FromProperty { get ; } =
-			DependencyProperty.Register("From", typeof(double?), typeof(DoubleAnimation), new PropertyMetadata(null));
+			DependencyProperty.Register("From", typeof(double?), typeof(DoubleAnimation), new FrameworkPropertyMetadata(null));
 
 		public double? To
 		{
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty ToProperty { get ; } =
-			DependencyProperty.Register("To", typeof(double?), typeof(DoubleAnimation), new PropertyMetadata(null));
+			DependencyProperty.Register("To", typeof(double?), typeof(DoubleAnimation), new FrameworkPropertyMetadata(null));
 
 		public bool EnableDependentAnimation
 		{
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		bool IAnimation<float>.EnableDependentAnimation => EnableDependentAnimation;
 
 		public static DependencyProperty EnableDependentAnimationProperty { get ; } =
-			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimation), new PropertyMetadata(false));
+			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimation), new FrameworkPropertyMetadata(false));
 
 		public IEasingFunction EasingFunction
 		{
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		float? IAnimation<float>.By => (float?)By;
 
 		public static DependencyProperty EasingFunctionProperty { get ; } =
-			DependencyProperty.Register("EasingFunction", typeof(IEasingFunction), typeof(DoubleAnimation), new PropertyMetadata(null));
+			DependencyProperty.Register("EasingFunction", typeof(IEasingFunction), typeof(DoubleAnimation), new FrameworkPropertyMetadata(null));
 
 		void ITimeline.Begin() => _animationImplementation.Begin();
 

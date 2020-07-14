@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				"IsChecked",
 				typeof(bool?),
 				typeof(ToggleButton),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					propertyChangedCallback: (s, e) => ((ToggleButton)s).OnIsCheckedChanged(e.OldValue as bool?, e.NewValue as bool?)
 				)

@@ -424,7 +424,7 @@ namespace <#= mixin.NamespaceName #>
 				"Style", 
 				typeof(Style),
 				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((<#= mixin.ClassName #>)s)?.OnStyleChanged((Style)e.OldValue, (Style)e.NewValue)
 				)
@@ -611,7 +611,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		public static DependencyProperty OpacityProperty { get ; } =
-			DependencyProperty.Register("Opacity", typeof(double), typeof(<#= mixin.ClassName #>), new PropertyMetadata(1.0, (s, a) => ((<#= mixin.ClassName #>)s).OnOpacityChanged(a)));
+			DependencyProperty.Register("Opacity", typeof(double), typeof(<#= mixin.ClassName #>), new FrameworkPropertyMetadata(1.0, (s, a) => ((<#= mixin.ClassName #>)s).OnOpacityChanged(a)));
 
 		private void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -640,7 +640,7 @@ namespace <#= mixin.NamespaceName #>
 				"Visibility",
 				typeof(Visibility), 
 				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					Visibility.Visible,
 					(s, e) => (s as <#= mixin.ClassName #>).OnVisibilityChanged((Visibility)e.OldValue, (Visibility)e.NewValue)
 				)
@@ -706,7 +706,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		public static DependencyProperty IsHitTestVisibleProperty { get ; } =
-			DependencyProperty.Register("IsHitTestVisible", typeof(bool), typeof(<#= mixin.ClassName #>), new PropertyMetadata(true, (s, e) => (s as <#= mixin.ClassName #>).OnIsHitTestVisibleChanged(e)));
+			DependencyProperty.Register("IsHitTestVisible", typeof(bool), typeof(<#= mixin.ClassName #>), new FrameworkPropertyMetadata(true, (s, e) => (s as <#= mixin.ClassName #>).OnIsHitTestVisibleChanged(e)));
 
 		private void OnIsHitTestVisibleChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -724,7 +724,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		public static DependencyProperty TagProperty { get ; } =
-			DependencyProperty.Register("Tag", typeof(object), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, (s, e) => (s as <#= mixin.ClassName #>).OnTagChanged(e)));
+			DependencyProperty.Register("Tag", typeof(object), typeof(<#= mixin.ClassName #>), new FrameworkPropertyMetadata(null, (s, e) => (s as <#= mixin.ClassName #>).OnTagChanged(e)));
 
 		private void OnTagChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -741,7 +741,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		public static DependencyProperty TransitionsProperty { get ; } =
-			DependencyProperty.Register("Transitions", typeof(TransitionCollection), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnTransitionsChanged));
+			DependencyProperty.Register("Transitions", typeof(TransitionCollection), typeof(<#= mixin.ClassName #>), new FrameworkPropertyMetadata(null, OnTransitionsChanged));
 			
 		private static void OnTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -788,7 +788,7 @@ namespace <#= mixin.NamespaceName #>
 		/// Backing dependency property for <see cref="RenderTransform"/>
 		/// </summary>
 		public static DependencyProperty RenderTransformProperty { get ; } =
-			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnRenderTransformChanged));
+			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(<#= mixin.ClassName #>), new FrameworkPropertyMetadata(null, OnRenderTransformChanged));
 
 		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -825,7 +825,7 @@ namespace <#= mixin.NamespaceName #>
 		/// Backing dependency property for <see cref="RenderTransformOrigin"/>
 		/// </summary>
 		public static DependencyProperty RenderTransformOriginProperty { get ; } =
-			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(<#= mixin.ClassName #>), new PropertyMetadata(default(Point), OnRenderTransformOriginChanged));
+			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(<#= mixin.ClassName #>), new FrameworkPropertyMetadata(default(Point), OnRenderTransformOriginChanged));
 
 		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
