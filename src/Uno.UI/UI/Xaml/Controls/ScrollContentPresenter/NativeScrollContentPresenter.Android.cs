@@ -17,9 +17,11 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : UnoTwoDScrollView, IShadowChildrenProvider, DependencyObject
+	partial class NativeScrollContentPresenter : UnoTwoDScrollView, IShadowChildrenProvider, DependencyObject
 	{
 		private static readonly List<View> _emptyList = new List<View>(0);
+
+		private ScrollViewer ScrollOwner => (Parent as FrameworkElement)?.TemplatedParent as ScrollViewer;
 
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		public ScrollBarVisibility VerticalScrollBarVisibility
@@ -67,11 +69,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private ILayouter _layouter;
 
-		public ScrollContentPresenter()
+		public NativeScrollContentPresenter()
 			: base(ContextHelper.Current)
 		{
-			InitializeBinder();
-			InitializeScrollContentPresenter();
 			InitializeScrollbars();
 
 			SetForegroundGravity(GravityFlags.Fill);
@@ -174,11 +174,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private class ScrollViewerLayouter : Layouter
 		{
-			public ScrollViewerLayouter(ScrollContentPresenter view) : base(view)
+			public ScrollViewerLayouter(NativeScrollContentPresenter view) : base(view)
 			{
 			}
 
-			private ScrollContentPresenter ScrollContentPresenter => Panel as ScrollContentPresenter;
+			private NativeScrollContentPresenter ScrollContentPresenter => Panel as NativeScrollContentPresenter;
 
 			protected override void MeasureChild(View child, int widthSpec, int heightSpec)
 			{
@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var desiredChildSize = DesiredChildSize(child);
 
-					var occludedPadding = (Panel as ScrollContentPresenter)._occludedRectPadding;
+					var occludedPadding = ScrollContentPresenter._occludedRectPadding;
 					slotSize.Width -= occludedPadding.Left + occludedPadding.Right;
 					slotSize.Height -= occludedPadding.Top + occludedPadding.Bottom;
 
@@ -245,7 +245,7 @@ namespace Windows.UI.Xaml.Controls
 			// Does nothing, so avoid useless interop!
 			// base.OnScrollChanged(scrollX, scrollY, isIntermediate);
 
-			(TemplatedParent as ScrollViewer)?.OnScrollInternal(
+			ScrollOwner?.OnScrollInternal(
 				ViewHelper.PhysicalToLogicalPixels(scrollX),
 				ViewHelper.PhysicalToLogicalPixels(scrollY),
 				isIntermediate
@@ -254,7 +254,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnZoomScaleChanged(float p0, float p1)
 		{
-			(TemplatedParent as ScrollViewer)?.OnZoomInternal(p1);
+			ScrollOwner?.OnZoomInternal(p1);
 		}
 
 		public Rect MakeVisible(UIElement visual, Rect rectangle)

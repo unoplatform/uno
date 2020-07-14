@@ -321,7 +321,7 @@ namespace Windows.UI.Xaml.Controls
 		public DependencyObject GetTemplateChild(string childName)
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as DependencyObject
-				?? FindName(childName);
+				?? FindName(childName) as DependencyObject;
 		}
 
 		private static object FindNameInScope(IFrameworkElement root, string name)

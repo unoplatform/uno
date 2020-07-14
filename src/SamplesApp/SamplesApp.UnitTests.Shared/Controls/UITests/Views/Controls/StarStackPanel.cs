@@ -14,16 +14,6 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 #endif
-#if __ANDROID__ || __IOS__ || __WASM__ || __MACOS__
-using DependencyObject = System.Object;
-#endif
-#if __ANDROID__
-using UIElement = Android.Views.View;
-#elif __IOS__
-using UIElement = UIKit.UIView;
-#elif __MACOS__
-using UIElement = AppKit.NSView;
-#endif
 
 namespace Uno.UI.Samples.Controls
 {

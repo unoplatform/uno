@@ -201,7 +201,7 @@
 			<PackageNamePrefix Condition="'$(UNO_UWP_BUILD)'=='true'">Uno.UI</PackageNamePrefix>
 		</PropertyGroup>
 
-		<Exec Command="dotnet tool install --global Uno.PackageDiff --version 1.0.0-dev.32" IgnoreExitCode="true" />
+		<Exec Command="dotnet tool install --global Uno.PackageDiff --version 1.0.0-dev.34" IgnoreExitCode="true" />
 		<Exec Command="$(USERPROFILE)\.dotnet\tools\generatepkgdiff --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
 	</Target>
 

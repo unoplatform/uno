@@ -1006,6 +1006,58 @@
 				fullName="Uno.UI.Controls.BindableSearchView"
 				reason="Removed unused Uno-only legacy control." />
 			<!-- ^^ Styles overhaul -->
+
+		  <!-- Begin remove IFrameworkElement -->
+		  <Member
+				  fullName="Windows.UI.Xaml.IUIElement"
+				  reason="Removed non-WinUI type"/>
+		  <Member
+				  fullName="Windows.UI.Xaml.Controls.BatchCollection`1"
+				  reason="Removed non-WinUI type"/>
+		  <Member
+				  fullName="Windows.UI.Xaml.Controls.IImage"
+				  reason="Removed non-WinUI type"/>
+
+		  <Member
+				  fullName="Windows.UI.Xaml.Controls.Image"
+				  reason="Now inherits correctly from FrameworkElement, all IFrameworkElement members removed"/>
+		  <Member
+				  fullName="Windows.UI.Xaml.Controls.ScrollContentPresenter"
+				  reason="Now inherits correctly from FrameworkElement, all IFrameworkElement members removed"/>
+		  <Member
+				  fullName="Windows.UI.Xaml.Controls.ProgressRing"
+				  reason="Now inherits correctly from FrameworkElement, all IFrameworkElement members removed"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement"
+			  reason="Made internal, now it isn't needed by framework types"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.Controls.IItemsControl"
+			  reason="Made non-standard interface internal"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.Controls.IListView"
+			  reason="Made non-standard interface internal"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.Controls.ISelector"
+			  reason="Made non-standard interface internal"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.Controls.ILayouter"
+			  reason="Made internal. Layouter is an implementation detail that may be removed in the future."/>
+		  <Member
+			  fullName="Windows.UI.Xaml.Controls.Layouter"
+			  reason="Made internal. Layouter is an implementation detail that may be removed in the future."/>
+		  <Member
+			  fullName="Windows.UI.Xaml.FrameworkElementExtensions"
+			  reason="Made non-WinUI helper methods internal"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElementHelper"
+			  reason="Made non-WinUI helper methods internal"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.Controls.ItemsControlExtensions"
+			  reason="Made non-WinUI helper methods internal"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.Controls.LayouterExtensions"
+			  reason="Made non-WinUI helper methods internal"/>
+		  <!-- End remove IFrameworkElement -->
 		</Types>
 
 		<Events>
@@ -1247,6 +1299,274 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnUnloaded()" reason="Removed OnLoaded/OnUnloaded"/>
 			<!-- End OnLoaded/OnUnloaded removal -->
+
+		  <!-- Begin remove IFrameworkElement -->
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.FrameworkElement.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.VisualStateGroup&gt; Windows.UI.Xaml.VisualStateManager.GetVisualStateGroups(Windows.UI.Xaml.IFrameworkElement obj)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.VisualStateManager.SetVisualStateGroups(Windows.UI.Xaml.IFrameworkElement obj, System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.VisualStateGroup&gt; value)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="System.Boolean Windows.UI.Xaml.VisualStateManager.GoToStateCore(Windows.UI.Xaml.Controls.Control control, Windows.UI.Xaml.IFrameworkElement templateRoot, System.String stateName, Windows.UI.Xaml.VisualStateGroup group, Windows.UI.Xaml.VisualState state, System.Boolean useTransitions)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Controls.Control.GetTemplateRoot()"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.Panel.OnChildAdded(Windows.UI.Xaml.IFrameworkElement element)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Controls.NativeListViewBase.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Controls.NativePagedView.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Controls.PivotItemFragment.get_TemplatedParent()"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PivotItemFragment.set_TemplatedParent(Windows.UI.Xaml.IFrameworkElement value)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Controls.TextBoxView.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer..ctor(Windows.UI.Xaml.IFrameworkElement buttonBase)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.get_Owner()"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer..ctor(Windows.UI.Xaml.IFrameworkElement element)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.Automation.Peers.AutomationPeer Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.CreatePeerForIFrameworkElement(Windows.UI.Xaml.IFrameworkElement element)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.Automation.Peers.AutomationPeer Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.FromIFrameworkElement(Windows.UI.Xaml.IFrameworkElement element)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer..ctor(Windows.UI.Xaml.IFrameworkElement e)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="System.Void Uno.UI.FrameworkElementHelper.SetRenderPhase(Windows.UI.Xaml.IFrameworkElement target, System.Int32 phase)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="System.Void Uno.UI.FrameworkElementHelper.SetBaseUri(Windows.UI.Xaml.IFrameworkElement target, System.String uri)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Uno.UI.Controls.Legacy.GridView.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Uno.UI.Controls.Legacy.HorizontalGridView.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Uno.UI.Controls.Legacy.HorizontalListView.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Uno.UI.Controls.Legacy.ListView.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Controls.Picker.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Controls.MultilineTextBoxView.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Controls.SinglelineTextBoxView.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Uno.UI.Controls.Legacy.ListViewBase.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>;
+		  <Member
+			  fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Controls.SecureTextBoxView.FindName(System.String name)"
+			  reason="Removed public references to IFrameworkElement"/>
+
+		  <Member
+			  fullName="Windows.UI.Xaml.IUIElement Windows.UI.Xaml.Controls.Flyout.get_Content()"
+			  reason="Removed IUIElement"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.Flyout.set_Content(Windows.UI.Xaml.IUIElement value)"
+			  reason="Removed IUIElement"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.IUIElement Windows.UI.Xaml.Automation.AutomationProperties.GetLabeledBy(Windows.UI.Xaml.DependencyObject element)"
+			  reason="Removed IUIElement"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Automation.AutomationProperties.SetLabeledBy(Windows.UI.Xaml.DependencyObject element, Windows.UI.Xaml.IUIElement value)"
+			  reason="Removed IUIElement"/>
+
+		  <Member
+			  fullName="Android.Views.View Windows.UI.Xaml.Controls.Border.get_Child()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.Border.set_Child(Android.Views.View value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.Border.OnChildChanged(Android.Views.View oldValue, Android.Views.View newValue)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.Panel.Add(Android.Views.View view)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="Android.Views.View Windows.UI.Xaml.Controls.SplitView.get_Content()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.SplitView.set_Content(Android.Views.View value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="Android.Views.View Windows.UI.Xaml.Controls.SplitView.get_Pane()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.SplitView.set_Pane(Android.Views.View value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="Android.Views.View Windows.UI.Xaml.Controls.PopupBase.get_Child()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.set_Child(Android.Views.View value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnChildChanged(Android.Views.View oldChild, Android.Views.View newChild)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Collections.Generic.List`1/Enumerator&lt;Android.Views.View&gt; Windows.UI.Xaml.Controls.UIElementCollection.GetEnumerator()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="Android.Views.View Uno.UI.Controls.BindableDrawerLayout.get_Content()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Uno.UI.Controls.BindableDrawerLayout.set_Content(Android.Views.View value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Uno.UI.Controls.BindableDrawerLayout.OnContentChanged(Android.Views.View oldValue, Android.Views.View newValue)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="Android.Views.View Uno.UI.Controls.BindableDrawerLayout.get_RightPane()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Uno.UI.Controls.BindableDrawerLayout.set_RightPane(Android.Views.View value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Uno.UI.Controls.BindableDrawerLayout.OnRightPaneChanged(Android.Views.View oldValue, Android.Views.View newValue)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="Android.Views.View Uno.UI.Controls.BindableDrawerLayout.get_LeftPane()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Uno.UI.Controls.BindableDrawerLayout.set_LeftPane(Android.Views.View value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Uno.UI.Controls.BindableDrawerLayout.OnLeftPaneChanged(Android.Views.View oldValue, Android.Views.View newValue)"
+			  reason="Removed references to native view"/>
+
+		  <Member
+			  fullName="UIKit.UIView Windows.UI.Xaml.Controls.Border.get_Child()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.Border.set_Child(UIKit.UIView value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.Border.OnChildChanged(UIKit.UIView oldValue, UIKit.UIView newValue)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="UIKit.UIView Windows.UI.Xaml.Controls.SplitView.get_Content()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.SplitView.set_Content(UIKit.UIView value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="UIKit.UIView Windows.UI.Xaml.Controls.SplitView.get_Pane()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.SplitView.set_Pane(UIKit.UIView value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="UIKit.UIView Windows.UI.Xaml.Controls.UserControl.get_Content()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.UserControl.set_Content(UIKit.UIView value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="UIKit.UIView Windows.UI.Xaml.Controls.PopupBase.get_Child()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.set_Child(UIKit.UIView value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnChildChanged(UIKit.UIView oldChild, UIKit.UIView newChild)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Collections.Generic.List`1/Enumerator&lt;UIKit.UIView&gt; Windows.UI.Xaml.Controls.UIElementCollection.GetEnumerator()"
+			  reason="Removed references to native view"/>
+
+		  <Member
+			  fullName="AppKit.NSView Windows.UI.Xaml.Controls.Border.get_Child()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.Border.set_Child(AppKit.NSView value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.Border.OnChildChanged(AppKit.NSView oldValue, AppKit.NSView newValue)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="AppKit.NSView Windows.UI.Xaml.Controls.UserControl.get_Content()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.UserControl.set_Content(AppKit.NSView value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="AppKit.NSView Windows.UI.Xaml.Controls.PopupBase.get_Child()"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.set_Child(AppKit.NSView value)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnChildChanged(AppKit.NSView oldChild, AppKit.NSView newChild)"
+			  reason="Removed references to native view"/>
+		  <Member
+			  fullName="System.Collections.Generic.List`1/Enumerator&lt;AppKit.NSView&gt; Windows.UI.Xaml.Controls.UIElementCollection.GetEnumerator()"
+			  reason="Removed references to native view"/>
+
+		  <Member
+			  fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Controls.PopupBase.get_Child()"
+			  reason="Property type corrected from FrameworkElement to UIElement as part of native views clean-up"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.set_Child(Windows.UI.Xaml.FrameworkElement value)"
+			  reason="Property type corrected from FrameworkElement to UIElement as part of native views clean-up"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnChildChanged(Windows.UI.Xaml.FrameworkElement oldChild, Windows.UI.Xaml.FrameworkElement newChild)"
+			  reason="Property type corrected from FrameworkElement to UIElement as part of native views clean-up"/>
+
+		  <Member
+			  fullName="System.Object Uno.UI.Controls.BindableProgressBar.get_DataContext()"
+			  reason="Since ProgressRing no longer inherits from this type, DataContext no longer implements IDataContextProvider.DataContext, and it is therefore no longer flagged as a virtual method, which is picked up as a binary breaking change"/>
+		  <Member
+			  fullName="System.Void Uno.UI.Controls.BindableProgressBar.set_DataContext(System.Object value)"
+			  reason="ProgressRing no longer inherits from this type, so this method is no longer implementing interface"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.DependencyObject Uno.UI.Controls.BindableProgressBar.get_TemplatedParent()"
+			  reason="ProgressRing no longer inherits from this type, so this method is no longer implementing interface"/>
+		  <Member
+			  fullName="System.Void Uno.UI.Controls.BindableProgressBar.set_TemplatedParent(Windows.UI.Xaml.DependencyObject value)"
+			  reason="ProgressRing no longer inherits from this type, so this method is no longer implementing interface"/>
+
+		  <Member
+			  fullName="System.Object Uno.UI.Views.Controls.BindableUIActivityIndicatorView.get_DataContext()"
+			  reason="ProgressRing no longer inherits from this type, so this method is no longer implementing interface"/>
+		  <Member
+			  fullName="System.Void Uno.UI.Views.Controls.BindableUIActivityIndicatorView.set_DataContext(System.Object value)"
+			  reason="ProgressRing no longer inherits from this type, so this method is no longer implementing interface"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.DependencyObject Uno.UI.Views.Controls.BindableUIActivityIndicatorView.get_TemplatedParent()"
+			  reason="ProgressRing no longer inherits from this type, so this method is no longer implementing interface"/>
+		  <Member
+			  fullName="System.Void Uno.UI.Views.Controls.BindableUIActivityIndicatorView.set_TemplatedParent(Windows.UI.Xaml.DependencyObject value)"
+			  reason="ProgressRing no longer inherits from this type, so this method is no longer implementing interface"/>
+		  <!-- End remove IFrameworkElement -->
 		</Methods>
 
 		<Events>
@@ -1280,6 +1600,71 @@
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.Controls.MediaTransportControls::FastPlayFallbackBehaviour()"
 				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition"/>
+
+			<!-- Begin remove IFrameworkElement -->
+			<Member
+				fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Controls.PivotItemFragment::TemplatedParent()"
+				reason="Removed public references to IFrameworkElement"/>
+			<Member
+				fullName="Windows.UI.Xaml.IFrameworkElement Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer::Owner()"
+				reason="Removed public references to IFrameworkElement"/>
+
+			<Member
+				fullName="Windows.UI.Xaml.IUIElement Windows.UI.Xaml.Controls.Flyout::Content()"
+				reason="Removed IUIElement"/>
+
+			<Member
+				fullName="Android.Views.View Windows.UI.Xaml.Controls.Border::Child()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="Android.Views.View Windows.UI.Xaml.Controls.SplitView::Content()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="Android.Views.View Windows.UI.Xaml.Controls.SplitView::Pane()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="Android.Views.View Windows.UI.Xaml.Controls.PopupBase::Child()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="Android.Views.View Uno.UI.Controls.BindableDrawerLayout::Content()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="Android.Views.View Uno.UI.Controls.BindableDrawerLayout::RightPane()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="Android.Views.View Uno.UI.Controls.BindableDrawerLayout::LeftPane()"
+				reason="Removed references to native view"/>
+
+			<Member
+				fullName="UIKit.UIView Windows.UI.Xaml.Controls.Border::Child()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="UIKit.UIView Windows.UI.Xaml.Controls.SplitView::Content()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="UIKit.UIView Windows.UI.Xaml.Controls.SplitView::Pane()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="UIKit.UIView Windows.UI.Xaml.Controls.UserControl::Content()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="UIKit.UIView Windows.UI.Xaml.Controls.PopupBase::Child()"
+				reason="Removed references to native view"/>
+
+			<Member
+				fullName="AppKit.NSView Windows.UI.Xaml.Controls.Border::Child()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="AppKit.NSView Windows.UI.Xaml.Controls.UserControl::Content()"
+				reason="Removed references to native view"/>
+			<Member
+				fullName="AppKit.NSView Windows.UI.Xaml.Controls.PopupBase::Child()"
+				reason="Removed references to native view"/>
+				
+			<Member
+				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Controls.PopupBase::Child()"
+				reason="Property type corrected from FrameworkElement to UIElement as part of native views clean-up"/>
+			<!-- End remove IFrameworkElement -->
 		</Properties>
 
 		<Fields>

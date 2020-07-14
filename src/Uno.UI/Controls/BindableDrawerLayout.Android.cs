@@ -7,7 +7,6 @@ using Android.Util;
 using Android.Views;
 using Android.Graphics;
 using Android.Widget;
-using UIElement = Android.Views.View;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Uno.UI;

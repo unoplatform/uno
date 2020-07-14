@@ -77,7 +77,7 @@
     <Compile Remove="**\*.Xamarin.cs" />
     <Compile Include="**\*.Xamarin.cs"
                      Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs"
-                     Condition="$(_IsAndroid) or $(_IsIOS)" />
+                     Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsMacOS)" />
 
     <None Include="**\*.UWP.cs" Exclude="bin\**\*.UWP.cs;obj\**\*.UWP.cs" />
     <Compile Remove="**\*.UWP.cs" />

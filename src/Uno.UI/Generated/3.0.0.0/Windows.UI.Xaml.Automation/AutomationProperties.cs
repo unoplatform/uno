@@ -495,7 +495,7 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.LabeledByProperty.get
 		// Skipping already declared method Windows.UI.Xaml.Automation.AutomationProperties.GetLabeledBy(Windows.UI.Xaml.DependencyObject)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static void SetLabeledBy( global::Windows.UI.Xaml.DependencyObject element,  global::Windows.UI.Xaml.UIElement value)
 		{

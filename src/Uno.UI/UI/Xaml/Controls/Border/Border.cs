@@ -52,38 +52,38 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			void Add(View view)
 		{
-			Child = view;
+			Child = VisualTreeHelper.TryAdaptNative(view);
 		}
 
 		protected override bool IsSimpleLayout => true;
 
 		#region Child DependencyProperty
 
-		public virtual View Child
+		public virtual UIElement Child
 		{
-			get => (View)this.GetValue(ChildProperty);
+			get => (UIElement)this.GetValue(ChildProperty);
 			set => this.SetValue(ChildProperty, value);
 		}
 
 		public static DependencyProperty ChildProperty { get ; } =
 			DependencyProperty.Register(
 				"Child",
-				typeof(View),//TODO Should be UIElement
+				typeof(UIElement),
 				typeof(Border),
 				new PropertyMetadata(
 					null,
-					(s, e) => ((Border)s)?.OnChildChanged((View)e.OldValue, (View)e.NewValue)
+					(s, e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
 				)
 			);
 
-		protected void OnChildChanged(View oldValue, View newValue)
+		protected void OnChildChanged(UIElement oldValue, UIElement newValue)
 		{
 			ReAttachChildTransitions(oldValue, newValue);
 
 			OnChildChangedPartial(oldValue, newValue);
 		}
 
-		partial void OnChildChangedPartial(View previousValue, View newValue);
+		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue);
 
 		#endregion
 
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty ChildTransitionsProperty { get ; } =
 			DependencyProperty.Register("ChildTransitions", typeof(TransitionCollection), typeof(Border), new PropertyMetadata(null));
 
-		private void ReAttachChildTransitions(View originalChild, View child)
+		private void ReAttachChildTransitions(UIElement originalChild, UIElement child)
 		{
 			if (this.ChildTransitions == null)
 			{
