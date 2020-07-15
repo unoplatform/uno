@@ -221,5 +221,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(Popup), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+
+		[Uno.NotImplemented]
+		public bool ShouldConstrainToRootBounds { get; set; }
 	}
 }
