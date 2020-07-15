@@ -429,7 +429,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 				"TriggerCollection",
 				typeof(DependencyObjectCollection),
 				typeof(CompositeTrigger),
-				new FrameworkPropertyMetadata(
+				new PropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((CompositeTrigger)s)?.OnTriggerCollectionChanged(e)
 				)
