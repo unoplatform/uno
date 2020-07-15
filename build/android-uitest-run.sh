@@ -51,6 +51,13 @@ msbuild /r /p:Configuration=$BUILDCONFIGURATION $BUILD_SOURCESDIRECTORY/src/Samp
 # Wait for the emulator to finish booting
 $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 
+# Restart the emulator to avoid running first-time tasks
+$ANDROID_HOME/platform-tools/adb reboot
+
+# Wait for the emulator to finish booting
+$BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
+
+# list devices
 $ANDROID_HOME/platform-tools/adb devices
 
 echo "Emulator started"
