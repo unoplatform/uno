@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly UIElementCollection _repeaterChildren;
 		UIElementCollection IPanel.Children => _repeaterChildren;
-		internal IList<UIElement> Children => _repeaterChildren.AsUIElementList();
+		internal IList<UIElement> Children => _repeaterChildren;
 
 
 		// Change to 'true' to turn on debugging outputs in Output window

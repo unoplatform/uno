@@ -85,7 +85,7 @@ namespace Microsoft.UI.Xaml.Controls
 						var panel = elementInfo.Owner;
 						if (panel != null)
 						{
-							int childIndex = panel.Children.AsUIElementList().IndexOf(elementInfo.Element);
+							int childIndex = panel.Children.IndexOf(elementInfo.Element);
 							if (childIndex < 0)
 							{
 								throw new InvalidOperationException("ItemsRepeater's child not found in its Children collection.");
