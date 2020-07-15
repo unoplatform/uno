@@ -45,7 +45,7 @@
 	<UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
   <Target Name="GenerateThemeResourceFile" BeforeTargets="_IncludeXamlFiles" Inputs="@(WinUIStylePage)" Outputs="Themes\WinUI\themeresources.xaml">
     <Message Text="Generating theme resources XAML file " />
-    <BatchMergeXaml Pages="@(WinUIStylePage)" MergedXamlFile="Themes\WinUI\themeresources.xaml" TlogReadFilesOutputPath="$(TLogLocation)GenerateThemeResourceFile.read.1u.tlog" TlogWriteFilesOutputPath="$(TLogLocation)GenerateThemeResourceFile.write.1u.tlog" />
+    <BatchMergeXaml Pages="@(WinUIStylePage)" MergedXamlFile="Themes\WinUI\themeresources.xaml" TlogReadFilesOutputPath="$(IntermediateOutputPath)\GenerateThemeResourceFile.read.1u.tlog" TlogWriteFilesOutputPath="$(IntermediateOutputPath)\GenerateThemeResourceFile.write.1u.tlog" />
   </Target>
 
 	<ItemGroup>
