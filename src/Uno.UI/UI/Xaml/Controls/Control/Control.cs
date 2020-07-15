@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-						if (FeatureConfiguration.Control.UseDeferredApplyTemplate)
+						if (FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
 						{
 							// It's too soon the call the .ApplyTemplate method: it should be invoked right before the Loading event.
 							_applyTemplateShouldBeInvoked = true;

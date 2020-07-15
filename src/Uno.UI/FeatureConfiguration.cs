@@ -89,9 +89,13 @@ namespace Uno.UI
 			public static bool UseLegacyLazyApplyTemplate { get; set; } = false;
 
 			/// <summary>
-			/// If the "loaded" event should be deferred to mimic UWP sequence of events.
+			/// If the call to "OnApplyTemplate" should be deferred to mimic UWP sequence of events.
 			/// </summary>
-			public static bool UseDeferredApplyTemplate { get; set; }
+			/// <remarks>
+			/// Will never be deferred when .ApplyTemplate() is called explicitly.
+			/// More information there: https://github.com/unoplatform/uno/issues/3519
+			/// </remarks>
+			public static bool UseDeferredOnApplyTemplate { get; set; }
 #if __ANDROID__ || __IOS__ || __MACOS__
 				= false; // opt-in for iOS/Android/macOS
 #else
