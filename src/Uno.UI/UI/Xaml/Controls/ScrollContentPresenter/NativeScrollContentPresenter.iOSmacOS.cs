@@ -26,7 +26,7 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : _NativeScrollView, DependencyObject
+	partial class NativeScrollContentPresenter : _NativeScrollView, DependencyObject
 	{
 		private CGSize _measuredSize;
 		private bool _requiresMeasure;

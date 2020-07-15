@@ -8,13 +8,6 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
 using Uno.UI.DataBinding;
-#if XAMARIN_IOS
-using View = UIKit.UIView;
-#elif XAMARIN_ANDROID
-using View = Android.Views.View;
-#else
-using View = Windows.UI.Xaml.UIElement;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -53,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(CompactPaneLengthProperty, value); }
 		}
 
-		public static readonly DependencyProperty CompactPaneLengthProperty =
+		public static DependencyProperty CompactPaneLengthProperty { get ; } =
 			DependencyProperty.Register(
 				"CompactPaneLength",
 				typeof(double), typeof(SplitView),
@@ -72,16 +65,16 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Content DependencyProperty
 
-		public View Content
+		public UIElement Content
 		{
-			get { return (View)this.GetValue(ContentProperty); }
+			get { return (UIElement)this.GetValue(ContentProperty); }
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentProperty =
+		public static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
-				typeof(View),
+				typeof(UIElement),
 				typeof(SplitView),
 				new PropertyMetadata(
 					null,
@@ -98,16 +91,16 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Pane DependencyProperty
 
-		public View Pane
+		public UIElement Pane
 		{
-			get { return (View)this.GetValue(PaneProperty); }
+			get { return (UIElement)this.GetValue(PaneProperty); }
 			set { this.SetValue(PaneProperty, value); }
 		}
 
-		public static readonly DependencyProperty PaneProperty =
+		public static DependencyProperty PaneProperty { get ; } =
 			DependencyProperty.Register(
 				"Pane",
-				typeof(View),
+				typeof(UIElement),
 				typeof(SplitView),
 				new PropertyMetadata(
 					null,
@@ -129,7 +122,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(DisplayModeProperty, value); }
 		}
 
-		public static readonly DependencyProperty DisplayModeProperty =
+		public static DependencyProperty DisplayModeProperty { get ; } =
 			DependencyProperty.Register(
 				"DisplayMode",
 				typeof(SplitViewDisplayMode),
@@ -156,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		//There is an error in the MSDN docs saying that the default value for IsPaneOpen is true, it is actually false
-		public static readonly DependencyProperty IsPaneOpenProperty =
+		public static DependencyProperty IsPaneOpenProperty { get ; } =
 			DependencyProperty.Register(
 				"IsPaneOpen",
 				typeof(bool),
@@ -182,7 +175,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(OpenPaneLengthProperty, value); }
 		}
 
-		public static readonly DependencyProperty OpenPaneLengthProperty =
+		public static DependencyProperty OpenPaneLengthProperty { get ; } =
 			DependencyProperty.Register(
 				"OpenPaneLength",
 				typeof(double),
@@ -208,7 +201,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PaneBackgroundProperty, value); }
 		}
 
-		public static readonly DependencyProperty PaneBackgroundProperty =
+		public static DependencyProperty PaneBackgroundProperty { get ; } =
 			DependencyProperty.Register(
 				"PaneBackground",
 				typeof(Brush),
@@ -233,7 +226,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PanePlacementProperty, value); }
 		}
 
-		public static readonly DependencyProperty PanePlacementProperty =
+		public static DependencyProperty PanePlacementProperty { get ; } =
 			DependencyProperty.Register(
 				"PanePlacement",
 				typeof(SplitViewPanePlacement),
@@ -259,7 +252,7 @@ namespace Windows.UI.Xaml.Controls
 			private set { this.SetValue(TemplateSettingsProperty, value); }
 		}
 
-		public static readonly DependencyProperty TemplateSettingsProperty =
+		public static DependencyProperty TemplateSettingsProperty { get ; } =
 			DependencyProperty.Register(
 				"TemplateSettings",
 				typeof(SplitViewTemplateSettings),
@@ -300,7 +293,7 @@ namespace Windows.UI.Xaml.Controls
 			SynchronizeContentTemplatedParent();
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -313,7 +306,7 @@ namespace Windows.UI.Xaml.Controls
 			SynchronizeContentTemplatedParent();
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 

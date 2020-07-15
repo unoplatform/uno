@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for GroupName.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty GroupNameProperty =
+		public static DependencyProperty GroupNameProperty { get ; } =
 			DependencyProperty.Register(
 				"GroupName", 
 				typeof(string), 
@@ -121,14 +121,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
 			RegisterInGroup(this, GroupName).DisposeWith(_groupMembership);
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 

@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set { SetValue(IsCheckedProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsCheckedProperty =
+		public static DependencyProperty IsCheckedProperty { get ; } =
 			DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(ToggleSplitButton), new PropertyMetadata(false, OnIsCheckedPropertyChanged));
 
 		private static void OnIsCheckedPropertyChanged(

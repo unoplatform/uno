@@ -7,13 +7,6 @@ using System;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 
-#if XAMARIN_ANDROID
-using View = Android.Views.View;
-#elif NET461 || __WASM__
-using View = Windows.UI.Xaml.FrameworkElement;
-#endif
-
-
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class Popup
@@ -38,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializeNativePartial();
 
-		protected override void OnChildChanged(View oldChild, View newChild)
+		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
 		{
 			base.OnChildChanged(oldChild, newChild);
 

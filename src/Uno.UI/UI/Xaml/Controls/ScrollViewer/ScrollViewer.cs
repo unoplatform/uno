@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(HorizontalScrollBarVisibilityProperty, value);
 		}
 
-		public static readonly DependencyProperty HorizontalScrollBarVisibilityProperty =
+		public static DependencyProperty HorizontalScrollBarVisibilityProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"HorizontalScrollBarVisibility",
 				typeof(ScrollBarVisibility),
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(VerticalScrollBarVisibilityProperty, value);
 		}
 
-		public static readonly DependencyProperty VerticalScrollBarVisibilityProperty =
+		public static DependencyProperty VerticalScrollBarVisibilityProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"VerticalScrollBarVisibility",
 				typeof(ScrollBarVisibility),
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(HorizontalScrollModeProperty, value);
 		}
 
-		public static readonly DependencyProperty HorizontalScrollModeProperty =
+		public static DependencyProperty HorizontalScrollModeProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"HorizontalScrollMode",
 				typeof(ScrollMode),
@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for VerticalScrollMode.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty VerticalScrollModeProperty =
+		public static DependencyProperty VerticalScrollModeProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"VerticalScrollMode",
 				typeof(ScrollMode),
@@ -299,7 +299,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(ZoomModeProperty, value);
 		}
 
-		public static readonly DependencyProperty ZoomModeProperty =
+		public static DependencyProperty ZoomModeProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"ZoomMode",
 				typeof(ZoomMode),
@@ -326,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MinZoomFactorProperty, value);
 		}
 
-		public static readonly DependencyProperty MinZoomFactorProperty =
+		public static DependencyProperty MinZoomFactorProperty { get ; } =
 			DependencyProperty.Register("MinZoomFactor", typeof(float), typeof(ScrollViewer), new PropertyMetadata(0.1f, (o, e) => ((ScrollViewer)o).OnMinZoomFactorChanged(e)));
 
 		private void OnMinZoomFactorChanged(DependencyPropertyChangedEventArgs args)
@@ -342,7 +342,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MaxZoomFactorProperty, value);
 		}
 
-		public static readonly DependencyProperty MaxZoomFactorProperty =
+		public static DependencyProperty MaxZoomFactorProperty { get ; } =
 			DependencyProperty.Register("MaxZoomFactor", typeof(float), typeof(ScrollViewer), new PropertyMetadata(10f, (o, e) => ((ScrollViewer)o).OnMaxZoomFactorChanged(e)));
 
 		private void OnMaxZoomFactorChanged(DependencyPropertyChangedEventArgs args)
@@ -358,7 +358,7 @@ namespace Windows.UI.Xaml.Controls
 			private set { SetValue(ZoomFactorProperty, value); }
 		}
 
-		public static readonly DependencyProperty ZoomFactorProperty =
+		public static DependencyProperty ZoomFactorProperty { get ; } =
 			DependencyProperty.Register("ZoomFactor", typeof(float), typeof(ScrollViewer), new PropertyMetadata(1f));
 		#endregion
 
@@ -629,12 +629,29 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			_sv = this.GetTemplateChild(ScrollContentPresenterPartName) as IScrollContentPresenter;
+			var scpTemplatePart = this.GetTemplateChild(ScrollContentPresenterPartName);
+			_sv = scpTemplatePart as IScrollContentPresenter;
+
+#if XAMARIN
+			if (scpTemplatePart is ScrollContentPresenter scp)
+			{
+				// For Android/iOS/MacOS, ensure that the ScrollContentPresenter contains a native scroll viewer,
+				// which will handle the actual scrolling
+				var nativeSCP = new NativeScrollContentPresenter();
+				scp.Content = nativeSCP;
+				_sv = nativeSCP;
+			}
+#endif
 
 			if (_sv == null)
 			{
 				throw new InvalidOperationException("The template part ScrollContentPresenter could not be found or is not a ScrollContentPresenter");
 			}
+
+			_sv.HorizontalScrollBarVisibility = HorizontalScrollBarVisibility;
+			_sv.VerticalScrollBarVisibility = VerticalScrollBarVisibility;
+			_sv.HorizontalScrollMode = HorizontalScrollMode;
+			_sv.VerticalScrollMode = VerticalScrollMode;
 
 			ApplyScrollContentPresenterContent();
 

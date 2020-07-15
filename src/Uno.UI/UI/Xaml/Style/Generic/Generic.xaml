@@ -4534,11 +4534,7 @@
 							<ScrollContentPresenter x:Name="ScrollContentPresenter"
 													win:Grid.RowSpan="2"
 													win:Grid.ColumnSpan="2"
-													Margin="{TemplateBinding Padding}"
-													xamarin:HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
-													xamarin:VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
-													xamarin:HorizontalScrollMode="{TemplateBinding HorizontalScrollMode}"
-													xamarin:VerticalScrollMode="{TemplateBinding VerticalScrollMode}" />
+													Margin="{TemplateBinding Padding}" />
 							<!--Currently in Uno scrollbars are handled by the ScrollContentPresenter, which inherits from the native scroll viewer.-->
 							<win:ScrollBar x:Name="VerticalScrollBar"
 										   Grid.Column="1"

@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter
+	public partial class ScrollContentPresenter : ContentPresenter, IScrollContentPresenter
 	{
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		private ScrollBarVisibility _horizotalScrollBarVisibility;
@@ -196,13 +196,13 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			RegisterEventHandler("scroll", (EventHandler)OnScroll);
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 			UnregisterEventHandler("scroll", (EventHandler)OnScroll);
@@ -241,6 +241,17 @@ namespace Windows.UI.Xaml.Controls
 				verticalOffset,
 				isIntermediate
 			);
+		}
+
+
+		void IScrollContentPresenter.OnMinZoomFactorChanged(float newValue)
+		{
+			MinimumZoomScale = newValue;
+		}
+
+		void IScrollContentPresenter.OnMaxZoomFactorChanged(float newValue)
+		{
+			MaximumZoomScale = newValue;
 		}
 
 		internal override bool IsViewHit()

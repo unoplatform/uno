@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Orientation.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty OrientationProperty =
+		public static DependencyProperty OrientationProperty { get ; } =
 			DependencyProperty.Register(
 				"Orientation",
 				typeof(Orientation),
@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(SpacingProperty, value);
 		}
 
-		public static readonly DependencyProperty SpacingProperty =
+		public static DependencyProperty SpacingProperty { get ; } =
 			DependencyProperty.Register(
 				name: "Spacing", 
 				propertyType: typeof(double), 

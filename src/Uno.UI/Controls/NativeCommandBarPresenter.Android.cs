@@ -15,7 +15,7 @@ namespace Uno.UI.Controls
 {
 	public partial class NativeCommandBarPresenter : ContentPresenter
 	{
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			

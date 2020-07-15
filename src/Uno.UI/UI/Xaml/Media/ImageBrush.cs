@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Media
 		public event ExceptionRoutedEventHandler ImageFailed;
 
 		#region AlignmentX DP
-		public static readonly DependencyProperty AlignmentXProperty =
+		public static DependencyProperty AlignmentXProperty { get ; } =
 			DependencyProperty.Register("AlignmentX", typeof(AlignmentX), typeof(ImageBrush), new PropertyMetadata(AlignmentX.Center));
 
 #if __WASM__
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Media
 		#endregion
 
 		#region AlignmentY DP
-		public static readonly DependencyProperty AlignmentYProperty =
+		public static DependencyProperty AlignmentYProperty { get ; } =
 			DependencyProperty.Register("AlignmentY", typeof(AlignmentY), typeof(ImageBrush), new PropertyMetadata(AlignmentY.Center));
 
 #if __WASM__
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media
 		#endregion
 
 		#region Stretch DP
-		public static readonly DependencyProperty StretchProperty =
+		public static DependencyProperty StretchProperty { get ; } =
 		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new PropertyMetadata(defaultValue: Stretch.Fill, propertyChangedCallback: null));
 
 #if __WASM__

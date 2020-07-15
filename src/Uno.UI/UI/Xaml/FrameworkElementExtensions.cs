@@ -21,7 +21,7 @@ using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml
 {
-	public static class FrameworkElementExtensions
+	internal static class FrameworkElementExtensions
 	{
 		public static T Style<T>(this T element, Style style) where T : IFrameworkElement
 		{

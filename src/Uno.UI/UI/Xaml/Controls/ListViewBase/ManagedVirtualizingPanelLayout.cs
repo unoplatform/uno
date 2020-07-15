@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(OrientationProperty, value); }
 		}
 
-		public static readonly DependencyProperty OrientationProperty =
+		public static DependencyProperty OrientationProperty { get ; } =
 			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(ManagedVirtualizingPanelLayout), new PropertyMetadata(Orientation.Vertical, (o, e) => ((ManagedVirtualizingPanelLayout)o).OnOrientationChanged((Orientation)e.NewValue)));
 
 		#region CacheLength DependencyProperty
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(CacheLengthProperty, value); }
 		}
 
-		public static readonly DependencyProperty CacheLengthProperty =
+		public static DependencyProperty CacheLengthProperty { get ; } =
 			DependencyProperty.Register(
 				"CacheLength",
 				typeof(double),

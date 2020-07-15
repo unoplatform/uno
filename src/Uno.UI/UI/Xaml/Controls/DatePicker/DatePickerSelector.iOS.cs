@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 		private NSDate _initialValue;
 		private NSDate _newValue;
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdatMinMaxYears();
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 			_picker.ValueChanged -= OnPickerValueChanged;

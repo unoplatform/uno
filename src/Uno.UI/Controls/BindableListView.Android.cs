@@ -107,7 +107,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemsSourceProperty =
+		public static DependencyProperty ItemsSourceProperty { get ; } =
 			DependencyProperty.Register("ItemsSource", typeof(object), typeof(BindableListView), new PropertyMetadata(null, OnItemsSourceChanged));
 
 		private static void OnItemsSourceChanged(object d, DependencyPropertyChangedEventArgs e)

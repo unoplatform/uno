@@ -151,6 +151,40 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
+		/// Add/Set CSS classes to the HTML element.
+		/// </summary>
+		/// <remarks>
+		/// No effect for classes already present on the element.
+		/// </remarks>
+		protected internal void SetCssClasses(params string[] classesToSet)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetUnsetCssClasses(HtmlId, classesToSet, null);
+		}
+
+		/// <summary>
+		/// Remove/Unset CSS classes to the HTML element.
+		/// </summary>
+		/// <remarks>
+		/// No effect for classes already absent from the element.
+		/// </remarks>
+		protected internal void UnsetCssClasses(params string[] classesToUnset)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetUnsetCssClasses(HtmlId, null, classesToUnset);
+
+		}
+
+		/// <summary>
+		/// Set and Unset css classes on a HTML element in a single operation.
+		/// </summary>
+		/// <remarks>
+		/// Identical to calling <see cref="SetCssClasses"/> followed by <see cref="UnsetCssClasses"/>.
+		/// </remarks>
+		protected internal void SetUnsetCssClasses(string[] classesToSet, string[] classesToUnset)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetUnsetCssClasses(HtmlId, classesToSet, classesToUnset);
+		}
+
+		/// <summary>
 		/// Set a specified CSS class to an element from a set of possible values.
 		/// All other possible values will be removed from the element.
 		/// </summary>

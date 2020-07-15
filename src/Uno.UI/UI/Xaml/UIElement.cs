@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml
 			set { this.SetValue(ClipProperty, value); }
 		}
 
-		public static readonly DependencyProperty ClipProperty =
+		public static DependencyProperty ClipProperty { get ; } =
 			DependencyProperty.Register(
 				"Clip",
 				typeof(RectangleGeometry),
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Backing dependency property for <see cref="RenderTransform"/>
 		/// </summary>
-		public static readonly DependencyProperty RenderTransformProperty =
+		public static DependencyProperty RenderTransformProperty { get ; } =
 			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(UIElement), new PropertyMetadata(null, (s, e) => OnRenderTransformChanged(s, e)));
 
 		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for RenderTransformOrigin.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty RenderTransformOriginProperty =
+		public static DependencyProperty RenderTransformOriginProperty { get ; } =
 			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(UIElement), new PropertyMetadata(default(Point), (s, e) => OnRenderTransformOriginChanged(s, e)));
 
 		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)

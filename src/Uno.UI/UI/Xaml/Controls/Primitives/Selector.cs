@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		}
 
-		public static readonly DependencyProperty SelectedItemProperty =
+		public static DependencyProperty SelectedItemProperty { get ; } =
 		DependencyProperty.Register(
 			"SelectedItem",
 			typeof(object),
@@ -190,7 +190,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		// Using a DependencyProperty as the backing store for SelectedIndex.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SelectedIndexProperty =
+		public static DependencyProperty SelectedIndexProperty { get ; } =
 			DependencyProperty.Register("SelectedIndex", typeof(int), typeof(Selector), new PropertyMetadata(-1,
 				(s, e) => (s as Selector).OnSelectedIndexChanged((int)e.OldValue, (int)e.NewValue)
 			)

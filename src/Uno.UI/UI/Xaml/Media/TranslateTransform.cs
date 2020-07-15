@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media
 			set => SetValue(XProperty, value);
 		}
 
-		public static readonly DependencyProperty XProperty =
+		public static DependencyProperty XProperty { get ; } =
 			DependencyProperty.Register("X", typeof(double), typeof(TranslateTransform), new PropertyMetadata(0.0, Transform.NotifyChangedCallback));
 
 		public double Y
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Media
 			set => SetValue(YProperty, value);
 		}
 
-		public static readonly DependencyProperty YProperty =
+		public static DependencyProperty YProperty { get ; } =
 			DependencyProperty.Register("Y", typeof(double), typeof(TranslateTransform), new PropertyMetadata(0.0, Transform.NotifyChangedCallback));
 	}
 }

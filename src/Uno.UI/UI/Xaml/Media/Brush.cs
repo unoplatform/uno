@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		// Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty OpacityProperty =
+		public static DependencyProperty OpacityProperty { get ; } =
 			DependencyProperty.Register(
 				"Opacity", 
 				typeof(double), 
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Media
 			set => SetValue(RelativeTransformProperty, value);
 		}
 
-		public static readonly DependencyProperty RelativeTransformProperty =
+		public static DependencyProperty RelativeTransformProperty { get ; } =
 			DependencyProperty.Register(
 				"RelativeTransform",
 				typeof(Transform),

@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			get { return (EasingFunctionBase)GetValue(EasingFunctionProperty); }
 			set { this.SetValue(EasingFunctionProperty, value); }
 		}
-		public static readonly DependencyProperty EasingFunctionProperty =
+		public static DependencyProperty EasingFunctionProperty { get ; } =
 			DependencyProperty.Register("EasingFunction", typeof(EasingFunctionBase), typeof(EasingDoubleKeyFrame), new PropertyMetadata(null));
 
 		internal override IEasingFunction GetEasingFunction()

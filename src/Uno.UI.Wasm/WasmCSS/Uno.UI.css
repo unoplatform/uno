@@ -93,14 +93,17 @@ embed.uno-frameworkelement.uno-unarranged {
   height: 0;
 }
 
-.uno-textblock {
-  text-rendering: optimizeLegibility; /* iOS Safari */
+.uno-textblock:not(.selectionEnabled) {
   -webkit-touch-callout: none; /* Safari */
   -webkit-user-select: none; /* iOSSafari */
   -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.uno-textblock {
+  text-rendering: optimizeLegibility; /* iOS Safari */
 
   /* Following are required for gradient brush as Foreground on text. Should not affect normal rendering. */
   -ms-background-clip: text !important;
