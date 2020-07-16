@@ -104,7 +104,7 @@ namespace Uno.UI.Toolkit
 					const double y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
 					const double blur = 0.5f;
 
-					var str = $"{x * elevation}px {y * elevation}px {blur * elevation}px {shadowColor.ToCssString()}";
+					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {shadowColor.ToCssString()}";
 					uiElement.SetStyle("box-shadow", str);
 				}
 				else
