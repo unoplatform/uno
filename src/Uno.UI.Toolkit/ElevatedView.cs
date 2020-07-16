@@ -129,7 +129,7 @@ namespace Uno.UI.Toolkit
 		{
 			// Manual propagation of the templated parent to the content property
 			// until we get the propagation running properly
-			if (ElevatedContent is IFrameworkElement content)
+			if (ElevatedContent is FrameworkElement content)
 			{
 				content.TemplatedParent = this.TemplatedParent;
 			}
