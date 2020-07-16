@@ -90,6 +90,8 @@ namespace SamplesApp
 #if __IOS__
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
+
+			LaunchiOSWatchDog();
 #endif
 #if NETFX_CORE
 			Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
@@ -113,6 +115,48 @@ namespace SamplesApp
 
 			DisplayLaunchArguments(e);
 		}
+
+#if __IOS__
+		/// <summary>
+		/// Launches a watchdog that will terminate the app if the dispatcher does not process
+		/// messages within a specific time.
+		///
+		/// Restarting the app is required in some cases where either the test engine, or Xamarin.UITest stall
+		/// while processing the events of the app.
+		///
+		/// See https://github.com/unoplatform/uno/issues/3363 for details
+		/// </summary>
+		private void LaunchiOSWatchDog()
+		{
+			if (!Debugger.IsAttached)
+			{
+				Console.WriteLine("Starting dispatcher WatchDog...");
+
+				var dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+
+				Task.Run(async () =>
+				{
+
+					while (true)
+					{
+						var delayTask = Task.Delay(TimeSpan.FromSeconds(60));
+						var messageTask = dispatcher.RunAsync(CoreDispatcherPriority.High, () => { }).AsTask();
+
+						if (await Task.WhenAny(delayTask, messageTask) == delayTask)
+						{
+							ThreadPool.QueueUserWorkItem(
+								_ => {
+								Console.WriteLine("WatchDog detecting a stall in the dispatcher, terminating the app");
+								throw new Exception($"Watchdog failed");
+							});
+						}
+
+						await Task.Delay(TimeSpan.FromSeconds(5));
+					}
+				});
+			}
+		}
+#endif
 
 		protected
 #if HAS_UNO
