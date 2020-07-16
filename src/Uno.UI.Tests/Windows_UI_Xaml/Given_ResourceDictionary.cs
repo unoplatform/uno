@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
@@ -651,6 +652,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var withoutSlash = XamlFilePathHelper.ResolveAbsoluteSource("App.xaml", "App/Xaml/Test_Dictionary.xaml");
 
 			Assert.AreEqual(withoutSlash, withSlash);
+		}
+
+		[TestMethod]
+		public void When_XamlControlsResources()
+		{
+			var xcr = new XamlControlsResources();
+			Assert.IsTrue(xcr.ContainsKey(typeof(Button)));
+			Assert.IsInstanceOfType(xcr[typeof(Button)], typeof(Style));
 		}
 	}
 }
