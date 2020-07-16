@@ -33,6 +33,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var files = new List<XamlFileDefinition>();
 
 			return xamlSourceFiles
+				.Distinct()
 				.AsParallel()
 				.Select(ParseFile)
 				.ToArray();
