@@ -26,6 +26,10 @@ namespace Windows.UI.Xaml
 
 		partial void OnLoadingPartial();
 
+		private protected virtual void OnPostLoading()
+		{
+		}
+
 		/*
 			About NativeOn** vs ManagedOn** methods:
 				The flag FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded will configure which set of methods will be used
@@ -53,6 +57,8 @@ namespace Windows.UI.Xaml
 				_log.Error("ManagedOnLoading failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
+
+			OnPostLoading();
 
 			// Explicit propagation of the loading even must be performed
 			// after the compiled bindings are applied (cf. OnLoading), as there may be altered

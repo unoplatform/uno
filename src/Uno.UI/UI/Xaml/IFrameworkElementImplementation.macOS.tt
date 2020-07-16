@@ -534,10 +534,13 @@ namespace <#= mixin.NamespaceName #>
 		/// </summary>
 		public bool IsLoaded { get; private set; }
 
+		private protected virtual void OnPostLoading() {}
+
 		internal virtual void OnLoading()
 		{
 			OnLoadingPartial();
 			Loading?.Invoke(this, null);
+			OnPostLoading();
 			ApplyCompiledBindings();
 		}
 

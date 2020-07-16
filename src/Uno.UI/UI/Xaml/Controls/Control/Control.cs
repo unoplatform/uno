@@ -12,6 +12,7 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Markup;
 using System.ComponentModel;
 using System.Reflection;
+using Windows.UI.Core;
 using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -164,9 +165,35 @@ namespace Windows.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-						OnApplyTemplate();
+						if (FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
+						{
+							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
+							_applyTemplateShouldBeInvoked = true;
+						}
+						else
+						{
+							OnApplyTemplate();
+						}
 					}
 				}
+			}
+		}
+
+		private bool _applyTemplateShouldBeInvoked = false;
+
+		private protected override void OnPostLoading()
+		{
+			base.OnPostLoading();
+
+			TryCallOnApplyTemplate();
+		}
+
+		private void TryCallOnApplyTemplate()
+		{
+			if (_applyTemplateShouldBeInvoked)
+			{
+				_applyTemplateShouldBeInvoked = false;
+				OnApplyTemplate();
 			}
 		}
 
@@ -300,6 +327,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var currentTemplateRoot = _templatedRoot;
 			SetUpdateControlTemplate(forceUpdate: true);
+
+			// When .ApplyTemplate is called manually, we should not defer the call to OnApplyTemplate
+			TryCallOnApplyTemplate();
 
 			return currentTemplateRoot != _templatedRoot;
 		}
