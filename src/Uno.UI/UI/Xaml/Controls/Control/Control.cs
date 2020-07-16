@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 
 						if (FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
 						{
-							// It's too soon the call the .ApplyTemplate method: it should be invoked right before the Loading event.
+							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
 							_applyTemplateShouldBeInvoked = true;
 						}
 						else
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _applyTemplateShouldBeInvoked = false;
 
-		internal override void OnPostLoading()
+		private protected override void OnPostLoading()
 		{
 			base.OnPostLoading();
 

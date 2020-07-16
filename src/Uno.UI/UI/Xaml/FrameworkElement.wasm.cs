@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnLoadingPartial();
 
-		internal virtual void OnPostLoading()
+		private protected virtual void OnPostLoading()
 		{
 		}
 

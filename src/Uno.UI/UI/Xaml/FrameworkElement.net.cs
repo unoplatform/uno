@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml
 
 		internal List<View> _children = new List<View>();
 
-		internal virtual void OnPostLoading() { }
+		private protected virtual void OnPostLoading() { }
 
 		partial void OnLoadingPartial();
 
