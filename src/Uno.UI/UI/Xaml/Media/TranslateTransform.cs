@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty XProperty { get ; } =
-			DependencyProperty.Register("X", typeof(double), typeof(TranslateTransform), new PropertyMetadata(0.0, Transform.NotifyChangedCallback));
+			DependencyProperty.Register("X", typeof(double), typeof(TranslateTransform), new FrameworkPropertyMetadata(0.0, Transform.NotifyChangedCallback));
 
 		public double Y
 		{
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty YProperty { get ; } =
-			DependencyProperty.Register("Y", typeof(double), typeof(TranslateTransform), new PropertyMetadata(0.0, Transform.NotifyChangedCallback));
+			DependencyProperty.Register("Y", typeof(double), typeof(TranslateTransform), new FrameworkPropertyMetadata(0.0, Transform.NotifyChangedCallback));
 	}
 }
 

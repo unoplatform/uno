@@ -314,8 +314,9 @@ namespace Windows.UI.Xaml
 				nameof(Style),
 				typeof(Style),
 				typeof(FrameworkElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					propertyChangedCallback: (s, e) => ((FrameworkElement)s)?.OnStyleChanged((Style)e.OldValue, (Style)e.NewValue)
 				)
 			);

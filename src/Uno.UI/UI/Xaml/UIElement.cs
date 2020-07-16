@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml
 				"Clip",
 				typeof(RectangleGeometry),
 				typeof(UIElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((UIElement)s)?.OnClipChanged(e)
 				)
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml
 		/// Backing dependency property for <see cref="RenderTransform"/>
 		/// </summary>
 		public static DependencyProperty RenderTransformProperty { get ; } =
-			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(UIElement), new PropertyMetadata(null, (s, e) => OnRenderTransformChanged(s, e)));
+			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(UIElement), new FrameworkPropertyMetadata(null, (s, e) => OnRenderTransformChanged(s, e)));
 
 		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml
 
 		// Using a DependencyProperty as the backing store for RenderTransformOrigin.  This enables animation, styling, binding, etc...
 		public static DependencyProperty RenderTransformOriginProperty { get ; } =
-			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(UIElement), new PropertyMetadata(default(Point), (s, e) => OnRenderTransformOriginChanged(s, e)));
+			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(UIElement), new FrameworkPropertyMetadata(default(Point), (s, e) => OnRenderTransformOriginChanged(s, e)));
 
 		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -497,7 +497,7 @@ namespace Windows.UI.Xaml
 				"FocusState",
 				typeof(FocusState),
 				typeof(UIElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(FocusState)FocusState.Unfocused
 				)
 			);
@@ -517,7 +517,7 @@ namespace Windows.UI.Xaml
 				"IsTabStop",
 				typeof(bool),
 				typeof(UIElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(bool)true,
 					(s, e) => ((Control)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
 				)

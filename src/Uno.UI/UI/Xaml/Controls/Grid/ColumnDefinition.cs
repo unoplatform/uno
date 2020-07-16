@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 				"Width",
 				typeof(GridLength),
 				typeof(ColumnDefinition),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					GridLengthHelper.OneStar,
 					(s, e) => ((ColumnDefinition)s)?.OnWidthChanged(e)
 				)

@@ -327,7 +327,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MinZoomFactorProperty { get ; } =
-			DependencyProperty.Register("MinZoomFactor", typeof(float), typeof(ScrollViewer), new PropertyMetadata(0.1f, (o, e) => ((ScrollViewer)o).OnMinZoomFactorChanged(e)));
+			DependencyProperty.Register("MinZoomFactor", typeof(float), typeof(ScrollViewer), new FrameworkPropertyMetadata(0.1f, (o, e) => ((ScrollViewer)o).OnMinZoomFactorChanged(e)));
 
 		private void OnMinZoomFactorChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -343,7 +343,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MaxZoomFactorProperty { get ; } =
-			DependencyProperty.Register("MaxZoomFactor", typeof(float), typeof(ScrollViewer), new PropertyMetadata(10f, (o, e) => ((ScrollViewer)o).OnMaxZoomFactorChanged(e)));
+			DependencyProperty.Register("MaxZoomFactor", typeof(float), typeof(ScrollViewer), new FrameworkPropertyMetadata(10f, (o, e) => ((ScrollViewer)o).OnMaxZoomFactorChanged(e)));
 
 		private void OnMaxZoomFactorChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -359,7 +359,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ZoomFactorProperty { get ; } =
-			DependencyProperty.Register("ZoomFactor", typeof(float), typeof(ScrollViewer), new PropertyMetadata(1f));
+			DependencyProperty.Register("ZoomFactor", typeof(float), typeof(ScrollViewer), new FrameworkPropertyMetadata(1f));
 		#endregion
 
 		#region HorizontalSnapPointsType (DP)
@@ -525,7 +525,7 @@ namespace Windows.UI.Xaml.Controls
 				"VerticalOffset",
 				typeof(double),
 				typeof(ScrollViewer),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: (double)0,
 					propertyChangedCallback: null
 				)
@@ -545,7 +545,7 @@ namespace Windows.UI.Xaml.Controls
 				"HorizontalOffset",
 				typeof(double),
 				typeof(ScrollViewer),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: (double)0,
 					propertyChangedCallback: null
 				)

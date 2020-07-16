@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 				"Orientation",
 				typeof(Orientation),
 				typeof(StackPanel),
-				new PropertyMetadata(Orientation.Vertical, (s, e) => ((StackPanel)s)?.OnOrientationChanged(e))
+				new FrameworkPropertyMetadata(Orientation.Vertical, (s, e) => ((StackPanel)s)?.OnOrientationChanged(e))
 			);
 
 

@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml
 				name: "Setters",
 				propertyType: typeof(SetterBaseCollection),
 				ownerType: typeof(VisualState),
-				typeMetadata: new PropertyMetadata(defaultValue: null)
+				typeMetadata: new FrameworkPropertyMetadata(defaultValue: null)
 			);
 
 		#endregion
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml
 				name: "StateTriggers", 
 				propertyType: typeof(IList<StateTriggerBase>), 
 				ownerType: typeof(VisualState), 
-				typeMetadata: new PropertyMetadata(
+				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: StateTriggersChanged
 				)

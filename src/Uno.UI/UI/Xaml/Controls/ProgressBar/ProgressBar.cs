@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 
 		static ProgressBar()
 		{
-			MaximumProperty.OverrideMetadata(typeof(ProgressBar), new PropertyMetadata(100d));
+			MaximumProperty.OverrideMetadata(typeof(ProgressBar), new FrameworkPropertyMetadata(100d));
 		}
 
 		public ProgressBar()
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 				"IsIndeterminate",
 				typeof(bool),
 				typeof(ProgressBar),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					(s, e) => (s as ProgressBar)?.OnIsIndeterminateChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 				"ShowError",
 				typeof(bool),
 				typeof(ProgressBar),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					(s, e) => (s as ProgressBar)?.OnShowErrorChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Controls
 				"ShowPaused",
 				typeof(bool),
 				typeof(ProgressBar),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					(s, e) => (s as ProgressBar)?.OnShowPausedChanged((bool)e.OldValue, (bool)e.NewValue)
 				)

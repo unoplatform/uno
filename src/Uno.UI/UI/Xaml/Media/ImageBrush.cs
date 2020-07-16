@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Media
 
 		#region AlignmentX DP
 		public static DependencyProperty AlignmentXProperty { get ; } =
-			DependencyProperty.Register("AlignmentX", typeof(AlignmentX), typeof(ImageBrush), new PropertyMetadata(AlignmentX.Center));
+			DependencyProperty.Register("AlignmentX", typeof(AlignmentX), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentX.Center));
 
 #if __WASM__
 		[NotImplemented]
@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Media
 
 		#region AlignmentY DP
 		public static DependencyProperty AlignmentYProperty { get ; } =
-			DependencyProperty.Register("AlignmentY", typeof(AlignmentY), typeof(ImageBrush), new PropertyMetadata(AlignmentY.Center));
+			DependencyProperty.Register("AlignmentY", typeof(AlignmentY), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentY.Center));
 
 #if __WASM__
 		[NotImplemented]
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Media
 
 		#region Stretch DP
 		public static DependencyProperty StretchProperty { get ; } =
-		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new PropertyMetadata(defaultValue: Stretch.Fill, propertyChangedCallback: null));
+		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new FrameworkPropertyMetadata(defaultValue: Stretch.Fill, propertyChangedCallback: null));
 
 #if __WASM__
 		[NotImplemented]
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Media
 
 		#region ImageSource DP
 		public static DependencyProperty ImageSourceProperty { get; } =
-			DependencyProperty.Register("ImageSource", typeof(ImageSource), typeof(ImageBrush), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) =>
+			DependencyProperty.Register("ImageSource", typeof(ImageSource), typeof(ImageBrush), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) =>
 			((ImageBrush)s).OnSourceChangedPartial((ImageSource)e.NewValue, (ImageSource)e.OldValue)));
 
 		public ImageSource ImageSource

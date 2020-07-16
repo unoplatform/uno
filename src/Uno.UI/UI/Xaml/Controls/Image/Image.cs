@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for Stretch.  This enables animation, styling, binding, etc...
 		public static DependencyProperty StretchProperty { get ; } =
-			DependencyProperty.Register("Stretch", typeof(Stretch), typeof(Image), new PropertyMetadata(Stretch.Uniform, (s, e) =>
+			DependencyProperty.Register("Stretch", typeof(Stretch), typeof(Image), new FrameworkPropertyMetadata(Stretch.Uniform, (s, e) =>
 			((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue);
@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml.Controls
 				"Source",
 				typeof(ImageSource),
 				typeof(Image),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((Image)s).OnSourceChanged((ImageSource)e.OldValue, (ImageSource)e.NewValue))
 				);

@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 				"Child",
 				typeof(UIElement),
 				typeof(Border),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
 				)
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
 		public static DependencyProperty ChildTransitionsProperty { get ; } =
-			DependencyProperty.Register("ChildTransitions", typeof(TransitionCollection), typeof(Border), new PropertyMetadata(null));
+			DependencyProperty.Register("ChildTransitions", typeof(TransitionCollection), typeof(Border), new FrameworkPropertyMetadata(null));
 
 		private void ReAttachChildTransitions(UIElement originalChild, UIElement child)
 		{

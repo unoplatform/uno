@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Media
 		/// Backing dependency property for the <see cref="Children"/>
 		/// </summary>
 		public static DependencyProperty ChildrenProperty { get ; } =
-			DependencyProperty.Register("Children", typeof(TransformCollection), typeof(TransformGroup), new PropertyMetadata(OnChildrenChanged));
+			DependencyProperty.Register("Children", typeof(TransformCollection), typeof(TransformGroup), new FrameworkPropertyMetadata(OnChildrenChanged));
 
 		public TransformCollection Children
 		{

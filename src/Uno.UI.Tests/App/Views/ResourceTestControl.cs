@@ -35,7 +35,7 @@ namespace Uno.UI.Tests.App.Views
 		}
 		
 		public static readonly DependencyProperty MyStringDPProperty =
-			DependencyProperty.Register("MyStringDP", typeof(string), typeof(ResourceTestControl), new PropertyMetadata("DefaultValue"));
+			DependencyProperty.Register("MyStringDP", typeof(string), typeof(ResourceTestControl), new FrameworkPropertyMetadata("DefaultValue"));
 
 		public MyDependencyObject DObjDP
 		{
@@ -44,7 +44,7 @@ namespace Uno.UI.Tests.App.Views
 		}
 		
 		public static readonly DependencyProperty DObjDPProperty =
-			DependencyProperty.Register("DObjDP", typeof(MyDependencyObject), typeof(ResourceTestControl), new PropertyMetadata(null));
+			DependencyProperty.Register("DObjDP", typeof(MyDependencyObject), typeof(ResourceTestControl), new FrameworkPropertyMetadata(null));
 
 
 

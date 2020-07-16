@@ -135,7 +135,7 @@ namespace Uno.UI.Tests.BinderTests
 			}
 
 			public static readonly DependencyProperty MyPropertyProperty =
-				DependencyProperty.Register("MyProperty", typeof(string), typeof(MyControl), new PropertyMetadata(null));
+				DependencyProperty.Register("MyProperty", typeof(string), typeof(MyControl), new FrameworkPropertyMetadata(null));
 		}
 	}
 }

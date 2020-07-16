@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Media
 			"StartPoint",
 			typeof(Point),
 			typeof(LinearGradientBrush),
-			new PropertyMetadata(default(Point))
+			new FrameworkPropertyMetadata(default(Point))
 		);
 
 		public Point EndPoint
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Media
 			"EndPoint",
 			typeof(Point),
 			typeof(LinearGradientBrush),
-			new PropertyMetadata(new Point(1,1))
+			new FrameworkPropertyMetadata(new Point(1,1))
 		);
 	}
 }

@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Documents
 			"NavigationTarget",
 			typeof(NavigationTarget),
 			typeof(Hyperlink),
-			new PropertyMetadata(_defaultNavigationTarget, (s, e) => ((Hyperlink)s).OnNavigationTargetChanged(e)));
+			new FrameworkPropertyMetadata(_defaultNavigationTarget, (s, e) => ((Hyperlink)s).OnNavigationTargetChanged(e)));
 
 		private void OnNavigationTargetChanged(DependencyPropertyChangedEventArgs e)
 			=> UpdateNavigationProperties(NavigateUri, (NavigationTarget)e.NewValue);

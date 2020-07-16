@@ -38,7 +38,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 		public static DependencyProperty OptionsProperty { get ; } = DependencyProperty.Register(
-			"Options", typeof(LottieVisualOptions), typeof(LottieVisualSource), new PropertyMetadata(LottieVisualOptions.None));
+			"Options", typeof(LottieVisualOptions), typeof(LottieVisualSource), new FrameworkPropertyMetadata(LottieVisualOptions.None));
 
 		[NotImplemented]
 		public LottieVisualOptions Options

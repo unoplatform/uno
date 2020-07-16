@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty BeginTimeProperty { get ; } =
-			DependencyProperty.Register("BeginTime", typeof(TimeSpan?), typeof(Timeline), new PropertyMetadata(TimeSpan.Zero));
+			DependencyProperty.Register("BeginTime", typeof(TimeSpan?), typeof(Timeline), new FrameworkPropertyMetadata(TimeSpan.Zero));
 
 		public Duration Duration
 		{
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty DurationProperty { get ; } =
-			DependencyProperty.Register("Duration", typeof(Duration), typeof(Timeline), new PropertyMetadata(Duration.Automatic));
+			DependencyProperty.Register("Duration", typeof(Duration), typeof(Timeline), new FrameworkPropertyMetadata(Duration.Automatic));
 
 		public FillBehavior FillBehavior
 		{
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty FillBehaviorProperty { get ; } =
-			DependencyProperty.Register("FillBehavior", typeof(FillBehavior), typeof(Timeline), new PropertyMetadata(FillBehavior.HoldEnd));
+			DependencyProperty.Register("FillBehavior", typeof(FillBehavior), typeof(Timeline), new FrameworkPropertyMetadata(FillBehavior.HoldEnd));
 
 		public RepeatBehavior RepeatBehavior
 		{
@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty RepeatBehaviorProperty { get ; } =
-			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new PropertyMetadata(new RepeatBehavior()));
+			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior()));
 
 
 		public event EventHandler<object> Completed;

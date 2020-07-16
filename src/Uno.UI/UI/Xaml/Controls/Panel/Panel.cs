@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
 		public static DependencyProperty ChildrenTransitionsProperty { get ; } =
-			DependencyProperty.Register("ChildrenTransitions", typeof(TransitionCollection), typeof(Panel), new PropertyMetadata(null, OnChildrenTransitionsChanged));
+			DependencyProperty.Register("ChildrenTransitions", typeof(TransitionCollection), typeof(Panel), new FrameworkPropertyMetadata(null, OnChildrenTransitionsChanged));
 
 		private static void OnChildrenTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -211,7 +211,7 @@ namespace Windows.UI.Xaml.Controls
 				"CornerRadius",
 				typeof(CornerRadius),
 				typeof(Panel),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					CornerRadius.None,
 					(s, e) => ((Panel)s)?.OnCornerRadiusChanged((CornerRadius)e.OldValue, (CornerRadius)e.NewValue)
 				)
@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml.Controls
 
 #region IsItemsHost DependencyProperty
 		public static DependencyProperty IsItemsHostProperty { get ; } = DependencyProperty.Register(
-			"IsItemsHost", typeof(bool), typeof(Panel), new PropertyMetadata(default(bool)));
+			"IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(default(bool)));
 
 		public bool IsItemsHost
 		{
