@@ -115,47 +115,59 @@ namespace Uno.UI.Toolkit
 #elif NETFX_CORE
 			if (element is UIElement uiElement)
 			{
-				SpriteVisual spriteVisual;
-				Compositor compositor = ElementCompositionPreview.GetElementVisual(uiElement).Compositor;
-				spriteVisual = compositor.CreateSpriteVisual();
+				var compositor = ElementCompositionPreview.GetElementVisual(uiElement).Compositor;
+				var spriteVisual = compositor.CreateSpriteVisual();
 
-				Vector2 newSize = new Vector2(0, 0);
+				var newSize = new Vector2(0, 0);
 				if (uiElement is FrameworkElement contentFE)
 				{
 					newSize = new Vector2((float)contentFE.ActualWidth, (float)contentFE.ActualHeight);
 				}
 
+				if (!(host is UIElement uiHost))
+				{
+					return;
+				}
+
 				spriteVisual.Size = newSize;
-				DropShadow shadow = compositor.CreateDropShadow();
-				shadow.Offset = new Vector3(0, (float)elevation, -(float)elevation);
+				if (elevation > 0)
+				{
+					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
+					const float x = 0.25f;
+					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
+					const float blur = 0.5f;
 
-				// GetAlphaMask is only available for shapes, images, and textblocks
-				if (uiElement is Shape shape)
-				{
-					shadow.Mask = shape.GetAlphaMask();
-				}
-				else if (uiElement is Image image)
-				{
-					shadow.Mask = image.GetAlphaMask();
-				}
-				else if (uiElement is TextBlock tb)
-				{
-					shadow.Mask = tb.GetAlphaMask();
+					var shadow = compositor.CreateDropShadow();
+					shadow.Offset = new Vector3((float)elevation*x, (float)elevation*y, -(float)elevation);
+					shadow.BlurRadius = (float)(blur * elevation);
+
+					shadow.Mask = uiElement switch
+					{
+						// GetAlphaMask is only available for shapes, images, and textblocks
+						Shape shape => shape.GetAlphaMask(),
+						Image image => image.GetAlphaMask(),
+						TextBlock tb => tb.GetAlphaMask(),
+						_ => shadow.Mask
+					};
+
+					if (!cornerRadius.Equals(default))
+					{
+						// We'll need a better solution like https://stackoverflow.com/a/57274707/1176099
+
+						var averageRadius =
+							(cornerRadius.TopLeft +
+							cornerRadius.TopRight +
+							cornerRadius.BottomLeft +
+							cornerRadius.BottomRight) / 4f;
+
+						shadow.BlurRadius = (float)averageRadius * 3f;
+					}
+
+					shadow.Color = shadowColor;
+					spriteVisual.Shadow = shadow;
 				}
 
-				if (!cornerRadius.Equals(default(CornerRadius)))
-				{
-					// Only one value for radius cnan be specified, using BottomLeft
-					shadow.BlurRadius = (float)cornerRadius.BottomLeft;
-				}
-
-				shadow.Color = shadowColor;
-				spriteVisual.Shadow = shadow;
-
-				if (host != null && host is UIElement uiHost)
-				{
-					ElementCompositionPreview.SetElementChildVisual(uiHost, spriteVisual);
-				}
+				ElementCompositionPreview.SetElementChildVisual(uiHost, spriteVisual);
 			}
 #endif
 		}
