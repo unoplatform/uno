@@ -52,14 +52,14 @@ namespace Windows.UI.Xaml
 #else
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
-
+		
 		private bool _constraintsChanged;
 		private bool _suppressIsEnabled;
 
 		private bool _defaultStyleApplied = false;
 		private protected bool IsDefaultStyleApplied => _defaultStyleApplied;
 		/// <summary>
-		/// The current user-determined 'active Style'.
+		/// The current user-determined 'active Style'. This will either be the explicitly-set Style, if there is one, or otherwise the resolved implicit Style (either in the view hierarchy or in Application.Resources).
 		/// </summary>
 		private Style _activeStyle = null;
 
