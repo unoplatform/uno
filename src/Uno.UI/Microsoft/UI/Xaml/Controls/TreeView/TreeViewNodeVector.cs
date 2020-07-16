@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public override void Add(TreeViewNode item) => Append(item);
 
 		public void InsertAt(int index, TreeViewNode item, bool updateItemsSource = true)
-		{			
+		{
 			if (m_parent == null)
 			{
 				throw new InvalidOperationException("Parent node must be set");
@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void SetAt(int index, TreeViewNode item, bool updateItemsSource = true)
 		{
-			RemoveAt(index, updateItemsSource);
+			RemoveAt(index, updateItemsSource, false /* updateIsExpanded */);
 			InsertAt(index, item, updateItemsSource);
 		}
 
@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetAt(index, value);
 		}
 
-		public void RemoveAt(int index, bool updateItemsSource = true)
+		public void RemoveAt(int index, bool updateItemsSource = true, bool updateIsExpanded = true)
 		{
 			var targetNode = this[index];
 			targetNode.Parent = null;
@@ -95,6 +95,20 @@ namespace Microsoft.UI.Xaml.Controls
 				if (source != null)
 				{
 					source.RemoveAt(index);
+				}
+			}
+
+			if (updateIsExpanded && base.Count == 0)
+			{
+				var ownerNode = m_parent;
+				if (ownerNode != null)
+				{
+					// Only set IsExpanded to false if we are not the root node
+					var ownerParent = ownerNode.Parent;
+					if (ownerParent != null)
+					{
+						ownerNode.IsExpanded = false;
+					}
 				}
 			}
 		}
@@ -137,8 +151,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void Clear(bool updateItemsSource = true)
-		{			
+		public void Clear(bool updateItemsSource = true, bool updateIsExpanded = true)
+		{
 			var count = Count;
 
 			if (count > 0)
@@ -160,8 +174,22 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}
+
+			if (updateIsExpanded)
+			{
+				var ownerNode = m_parent;
+				if (ownerNode != null)
+				{
+					// Only set IsExpanded to false if we are not the root node
+					var ownerParent = ownerNode.Parent;
+					if (ownerParent != null)
+					{
+						ownerNode.IsExpanded = false;
+					}
+				}
+			}
 		}
 
-		public override void Clear() => Clear(true);
+		public override void Clear() => Clear(true, true);
 	}
 }

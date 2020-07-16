@@ -198,7 +198,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!AreChildrenNodesEqualToItemsSource())
 			{
 				var children = (TreeViewNodeVector)Children;
-				children.Clear(false /* updateItemsSource */);
+				children.Clear(false /* updateItemsSource */, false /* updateIsExpanded */);
 
 				var size = m_itemsDataSource != null ? m_itemsDataSource.Count : 0;
 				for (var i = 0; i < size; i++)

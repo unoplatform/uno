@@ -156,13 +156,14 @@ namespace Windows.UI.Xaml.Controls
 				{
 					if (!SelectedItems.Contains(item))
 					{
-						if (!IsSelectionMultiple
-							&& SelectedItems.FirstOrDefault() is object selectedItem)
+						if (!IsSelectionMultiple && SelectedItems.Count > 0)
 						{
-							SelectedItems.Remove(selectedItem);
+							SelectedItems[0] = item;
 						}
-
-						SelectedItems.Add(item);
+						else
+						{
+							SelectedItems.Add(item);
+						}
 					}
 				}
 			}
