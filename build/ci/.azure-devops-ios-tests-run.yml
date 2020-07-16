@@ -60,7 +60,15 @@ jobs:
     inputs:
       testRunTitle: 'iOS Test Run ($(Agent.JobName))'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
+      failTaskOnFailedTests: false
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'iOS Test Run Retry Failed ($(Agent.JobName))'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-failed-rerun.xml'
       failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
