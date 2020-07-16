@@ -67,6 +67,10 @@ namespace Uno.UI.Toolkit
 			if (element is Android.Views.View view)
 			{
 				AndroidX.Core.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
+#if __ANDROID_28__
+				view.SetOutlineAmbientShadowColor(shadowColor);
+				view.SetOutlineSpotShadowColor(shadowColor);
+#endif
 			}
 #elif __IOS__
 			if (element is UIKit.UIView view)
