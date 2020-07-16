@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(TimeProperty, value); }
 		}
 
-		public static readonly DependencyProperty TimeProperty =
+		public static DependencyProperty TimeProperty { get ; } =
 			DependencyProperty.Register(
 				"Time",
 				typeof(TimeSpan),
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(MinuteIncrementProperty, value); }
 		}
 
-		public static readonly DependencyProperty MinuteIncrementProperty =
+		public static DependencyProperty MinuteIncrementProperty { get ; } =
 			DependencyProperty.Register(
 				"MinuteIncrement",
 				typeof(int),
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FlyoutPlacementProperty, value); }
 		}
 
-		public static readonly DependencyProperty FlyoutPlacementProperty =
+		public static DependencyProperty FlyoutPlacementProperty { get ; } =
 			DependencyProperty.Register(
 				"FlyoutPlacement",
 				typeof(FlyoutPlacementMode),
@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(TimePicker), new PropertyMetadata(null));
 
 		protected override void OnApplyTemplate()

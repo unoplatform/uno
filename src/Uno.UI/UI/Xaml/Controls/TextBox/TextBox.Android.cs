@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ImeOptionsProperty, value); }
 		}
 
-		public static readonly DependencyProperty ImeOptionsProperty =
+		public static DependencyProperty ImeOptionsProperty { get ; } =
 			DependencyProperty.Register("ImeOptions",
 				typeof(ImeAction),
 				typeof(TextBox),

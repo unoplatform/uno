@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BackStackDepth.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BackStackDepthProperty =
+		public static DependencyProperty BackStackDepthProperty { get ; } =
 			DependencyProperty.Register("BackStackDepth", typeof(int), typeof(Frame), new PropertyMetadata(0, (s, e) => ((Frame)s)?.OnBackStackDepthChanged(e)));
 
 
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BackStack.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BackStackProperty =
+		public static DependencyProperty BackStackProperty { get ; } =
 			DependencyProperty.Register("BackStack", typeof(IList<PageStackEntry>), typeof(Frame), new PropertyMetadata(null, (s, e) => ((Frame)s)?.OnBackStackChanged(e)));
 
 		private void OnBackStackChanged(DependencyPropertyChangedEventArgs e)
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for CacheSize.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CacheSizeProperty =
+		public static DependencyProperty CacheSizeProperty { get ; } =
 			DependencyProperty.Register("CacheSize", typeof(int), typeof(Frame), new PropertyMetadata(0, (s, e) => ((Frame)s)?.OnCacheSizeChanged(e)));
 
 
@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for CanGoBack.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CanGoBackProperty =
+		public static DependencyProperty CanGoBackProperty { get ; } =
 			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(Frame), new PropertyMetadata(false, (s, e) => ((Frame)s)?.OnCanGoBackChanged(e)));
 
 
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for CanGoForward.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CanGoForwardProperty =
+		public static DependencyProperty CanGoForwardProperty { get ; } =
 			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(Frame), new PropertyMetadata(true, (s, e) => ((Frame)s)?.OnCanGoForwardChanged(e)));
 
 
@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for CurrentSourcePageType.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CurrentSourcePageTypeProperty =
+		public static DependencyProperty CurrentSourcePageTypeProperty { get ; } =
 			DependencyProperty.Register("CurrentSourcePageType", typeof(Type), typeof(Frame), new PropertyMetadata(null, (s, e) => ((Frame)s)?.OnCurrentSourcePageTypeChanged(e)));
 
 
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for ForwardStack.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ForwardStackProperty =
+		public static DependencyProperty ForwardStackProperty { get ; } =
 			DependencyProperty.Register("ForwardStack", typeof(IList<PageStackEntry>), typeof(Frame), new PropertyMetadata(null, (s, e) => ((Frame)s)?.OnForwardStackChanged(e)));
 
 
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for SourcePageType.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SourcePageTypeProperty =
+		public static DependencyProperty SourcePageTypeProperty { get ; } =
 			DependencyProperty.Register("SourcePageType", typeof(Type), typeof(Frame), new PropertyMetadata(null, (s, e) => ((Frame)s)?.OnSourcePageTypeChanged(e)));
 
 		private void OnSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)

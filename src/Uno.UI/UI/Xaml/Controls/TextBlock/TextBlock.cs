@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontStyleProperty, value);
 		}
 
-		public static readonly DependencyProperty FontStyleProperty =
+		public static DependencyProperty FontStyleProperty { get ; } =
 			DependencyProperty.Register(
 				"FontStyle",
 				typeof(FontStyle),
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextWrappingProperty, value);
 		}
 
-		public static readonly DependencyProperty TextWrappingProperty =
+		public static DependencyProperty TextWrappingProperty { get ; } =
 			DependencyProperty.Register(
 				"TextWrapping",
 				typeof(TextWrapping),
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontWeightProperty, value);
 		}
 
-		public static readonly DependencyProperty FontWeightProperty =
+		public static DependencyProperty FontWeightProperty { get ; } =
 			DependencyProperty.Register(
 				"FontWeight",
 				typeof(FontWeight),
@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(TextProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextProperty =
+		public static DependencyProperty TextProperty { get ; } =
 			DependencyProperty.Register(
 				"Text",
 				typeof(string),
@@ -244,7 +244,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontFamilyProperty, value);
 		}
 
-		public static readonly DependencyProperty FontFamilyProperty =
+		public static DependencyProperty FontFamilyProperty { get ; } =
 			DependencyProperty.Register(
 				"FontFamily",
 				typeof(FontFamily),
@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontSizeProperty, value);
 		}
 
-		public static readonly DependencyProperty FontSizeProperty =
+		public static DependencyProperty FontSizeProperty { get ; } =
 			DependencyProperty.Register(
 				"FontSize",
 				typeof(double),
@@ -304,7 +304,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MaxLinesProperty, value);
 		}
 
-		public static readonly DependencyProperty MaxLinesProperty =
+		public static DependencyProperty MaxLinesProperty { get ; } =
 			DependencyProperty.Register(
 				"MaxLines",
 				typeof(int),
@@ -333,7 +333,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextTrimmingProperty, value);
 		}
 
-		public static readonly DependencyProperty TextTrimmingProperty =
+		public static DependencyProperty TextTrimmingProperty { get ; } =
 			DependencyProperty.Register(
 				"TextTrimming",
 				typeof(TextTrimming),
@@ -380,7 +380,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -445,7 +445,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextAlignmentProperty, value);
 		}
 
-		public static readonly DependencyProperty TextAlignmentProperty =
+		public static DependencyProperty TextAlignmentProperty { get ; } =
 			DependencyProperty.Register(
 				"TextAlignment",
 				typeof(TextAlignment),
@@ -501,7 +501,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(LineHeightProperty, value);
 		}
 
-		public static readonly DependencyProperty LineHeightProperty =
+		public static DependencyProperty LineHeightProperty { get ; } =
 			DependencyProperty.Register("LineHeight", typeof(double), typeof(TextBlock), new PropertyMetadata(0d,
 				propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged())
 			);
@@ -524,7 +524,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(LineStackingStrategyProperty, value);
 		}
 
-		public static readonly DependencyProperty LineStackingStrategyProperty =
+		public static DependencyProperty LineStackingStrategyProperty { get; } =
 			DependencyProperty.Register("LineStackingStrategy", typeof(LineStackingStrategy), typeof(TextBlock),
 				new PropertyMetadata(LineStackingStrategy.MaxHeight,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineStackingStrategyChanged())

@@ -39,7 +39,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxControl
 			set { SetValue(MyStringProperty, value); }
 		}
 
-		public static readonly DependencyProperty MyStringProperty =
+		public static DependencyProperty MyStringProperty { get ; } =
 			DependencyProperty.Register("MyString", typeof(string), typeof(TextBox_Binding_Null), new PropertyMetadata(null, OnMyStringChanged));
 
 		private static void OnMyStringChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

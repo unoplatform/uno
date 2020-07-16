@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 			IsOpen = false;
 		}
 
-		protected override void OnChildChanged(View oldChild, View newChild)
+		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
 		{
 			base.OnChildChanged(oldChild, newChild);
 			_popupWindow.ContentView = newChild;

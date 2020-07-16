@@ -20,7 +20,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.xLoad
 			var sut = new UserControl_TopLevelBinding();
 			sut.ForceLoaded();
 
-			var uc01 = sut.FindName("uc01");
+			var uc01 = sut.FindName("uc01") as DependencyObject;
 
 			Assert.AreEqual(0, UserControl_TopLevelBinding_AttachedProperty.MyPropertyChangedCount);
 			Assert.AreEqual(0, UserControl_TopLevelBinding_AttachedProperty.GetMyProperty(uc01));

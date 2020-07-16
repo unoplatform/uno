@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static readonly DependencyProperty TextProperty =
+		public static DependencyProperty TextProperty { get ; } =
 			DependencyProperty.Register(
 				"Text",
 				typeof(string),
@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(PlaceholderTextProperty, value);
 		}
 
-		public static readonly DependencyProperty PlaceholderTextProperty =
+		public static DependencyProperty PlaceholderTextProperty { get ; } =
 			DependencyProperty.Register(
 				"PlaceholderText",
 				typeof(string),
@@ -325,7 +325,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(InputScopeProperty, value);
 		}
 
-		public static readonly DependencyProperty InputScopeProperty =
+		public static DependencyProperty InputScopeProperty { get ; } =
 			DependencyProperty.Register(
 				"InputScope",
 				typeof(InputScope),
@@ -358,7 +358,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(MaxLengthProperty, value);
 		}
 
-		public static readonly DependencyProperty MaxLengthProperty =
+		public static DependencyProperty MaxLengthProperty { get ; } =
 			DependencyProperty.Register(
 				"MaxLength",
 				typeof(int),
@@ -383,7 +383,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(AcceptsReturnProperty, value);
 		}
 
-		public static readonly DependencyProperty AcceptsReturnProperty =
+		public static DependencyProperty AcceptsReturnProperty { get ; } =
 			DependencyProperty.Register(
 				"AcceptsReturn",
 				typeof(bool),
@@ -411,7 +411,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(TextWrappingProperty, value);
 		}
 
-		public static readonly DependencyProperty TextWrappingProperty =
+		public static DependencyProperty TextWrappingProperty { get ; } =
 			DependencyProperty.Register(
 				"TextWrapping",
 				typeof(TextWrapping),
@@ -439,7 +439,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsReadOnlyProperty, value);
 		}
 
-		public static readonly DependencyProperty IsReadOnlyProperty =
+		public static DependencyProperty IsReadOnlyProperty { get ; } =
 			DependencyProperty.Register(
 				"IsReadOnly",
 				typeof(bool),
@@ -468,7 +468,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderProperty, value);
 		}
 
-		public static readonly DependencyProperty HeaderProperty =
+		public static DependencyProperty HeaderProperty { get ; } =
 			DependencyProperty.Register("Header",
 				typeof(object),
 				typeof(TextBox),
@@ -483,7 +483,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderTemplateProperty, value);
 		}
 
-		public static readonly DependencyProperty HeaderTemplateProperty =
+		public static DependencyProperty HeaderTemplateProperty { get ; } =
 			DependencyProperty.Register("HeaderTemplate",
 				typeof(DataTemplate),
 				typeof(TextBox),
@@ -512,7 +512,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(IsSpellCheckEnabledProperty, value);
 		}
 
-		public static readonly DependencyProperty IsSpellCheckEnabledProperty =
+		public static DependencyProperty IsSpellCheckEnabledProperty { get ; } =
 			DependencyProperty.Register(
 				"IsSpellCheckEnabled",
 				typeof(bool),
@@ -539,7 +539,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		[Uno.NotImplemented]
-		public static readonly DependencyProperty IsTextPredictionEnabledProperty =
+		public static DependencyProperty IsTextPredictionEnabledProperty { get ; } =
 			DependencyProperty.Register(
 				"IsTextPredictionEnabled",
 				typeof(bool),
@@ -568,7 +568,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(TextAlignmentProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextAlignmentProperty =
+		public static DependencyProperty TextAlignmentProperty { get ; } =
 			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new PropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged(e)));
 
 

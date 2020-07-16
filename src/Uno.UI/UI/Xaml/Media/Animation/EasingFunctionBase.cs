@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => this.SetValue(EasingModeProperty, value);
 		}
 		
-		public static readonly DependencyProperty EasingModeProperty =
+		public static DependencyProperty EasingModeProperty { get ; } =
 			DependencyProperty.Register("EasingMode", typeof(EasingMode), typeof(EasingFunctionBase), new PropertyMetadata(EasingMode.EaseOut));
 
 		public virtual double Ease(double currentTime, double startValue, double finalValue, double duration) =>

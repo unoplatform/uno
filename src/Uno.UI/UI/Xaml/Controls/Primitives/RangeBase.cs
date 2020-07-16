@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { this.SetValue(ValueProperty, value); }
 		}
 
-		public static readonly DependencyProperty ValueProperty =
+		public static DependencyProperty ValueProperty { get ; } =
 			DependencyProperty.Register(
 				"Value",
 				typeof(double),
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { this.SetValue(MinimumProperty, value); }
 		}
 
-		public static readonly DependencyProperty MinimumProperty =
+		public static DependencyProperty MinimumProperty { get ; } =
 			DependencyProperty.Register(
 				"Minimum",
 				typeof(double),
@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { this.SetValue(MaximumProperty, value); }
 		}
 
-		public static readonly DependencyProperty MaximumProperty =
+		public static DependencyProperty MaximumProperty { get ; } =
 			DependencyProperty.Register(
 				"Maximum",
 				typeof(double),
@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { this.SetValue(SmallChangeProperty, value); }
 		}
 
-		public static readonly DependencyProperty SmallChangeProperty =
+		public static DependencyProperty SmallChangeProperty { get ; } =
 			DependencyProperty.Register(
 				"SmallChange",
 				typeof(double),
@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { this.SetValue(LargeChangeProperty, value); }
 		}
 
-		public static readonly DependencyProperty LargeChangeProperty =
+		public static DependencyProperty LargeChangeProperty { get ; } =
 			DependencyProperty.Register(
 				"LargeChange",
 				typeof(double),
@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			private set { this.SetValue(ActualValueProperty, value); }
 		}
 
-		public static readonly DependencyProperty ActualValueProperty =
+		public static DependencyProperty ActualValueProperty { get ; } =
 			DependencyProperty.Register(
 				"ActualValue",
 				typeof(double),

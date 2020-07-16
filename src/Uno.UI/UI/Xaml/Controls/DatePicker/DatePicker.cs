@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		//#18331 If the Date property of DatePickerFlyout is two way binded, the ViewModel receives the control's default value while the ViewModel sends its default value which desynchronizes the values
 		//Set initial value of DatePicker to DateTimeOffset.MinValue to avoid 2 way binding issue where the DatePicker reset Date(DateTimeOffset.MinValue) after the initial binding value.
 		//We assume that this is the view model who will set the initial value just the time to fix #18331
-		public static readonly DependencyProperty DateProperty =
+		public static DependencyProperty DateProperty { get ; } =
 			DependencyProperty.Register("Date", typeof(DateTimeOffset), typeof(DatePicker), new PropertyMetadata(UnsetDateValue,
 				(s, e) => ((DatePicker)s).OnDatePropertyChanged((DateTimeOffset)e.NewValue, (DateTimeOffset)e.OldValue)));
 
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(DayVisibleProperty, value); }
 		}
 
-		public static readonly DependencyProperty DayVisibleProperty =
+		public static DependencyProperty DayVisibleProperty { get ; } =
 			DependencyProperty.Register("DayVisible", typeof(bool), typeof(DatePicker), new PropertyMetadata(defaultValue: true,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnDayVisibleChangedPartial()));
 
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(MonthVisibleProperty, value); }
 		}
 
-		public static readonly DependencyProperty MonthVisibleProperty =
+		public static DependencyProperty MonthVisibleProperty { get ; } =
 			DependencyProperty.Register("MonthVisible", typeof(bool), typeof(DatePicker), new PropertyMetadata(defaultValue: true,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMonthVisibleChangedPartial()));
 
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(YearVisibleProperty, value); }
 		}
 
-		public static readonly DependencyProperty YearVisibleProperty =
+		public static DependencyProperty YearVisibleProperty { get ; } =
 			DependencyProperty.Register("YearVisible", typeof(bool), typeof(DatePicker), new PropertyMetadata(defaultValue: true,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnYearVisibleChangedPartial()));
 
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(MaxYearProperty, value); }
 		}
 
-		public static readonly DependencyProperty MaxYearProperty =
+		public static DependencyProperty MaxYearProperty { get ; } =
 			DependencyProperty.Register("MaxYear", typeof(DateTimeOffset), typeof(DatePicker), new PropertyMetadata(defaultValue: DateTimeOffset.MaxValue,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMaxYearChangedPartial()));
 
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(MinYearProperty, value); }
 		}
 
-		public static readonly DependencyProperty MinYearProperty =
+		public static DependencyProperty MinYearProperty { get ; } =
 			DependencyProperty.Register("MinYear", typeof(DateTimeOffset), typeof(DatePicker), new PropertyMetadata(defaultValue: DateTimeOffset.MinValue,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMinYearChangedPartial()));
 
@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(DatePicker), new PropertyMetadata(null));
 
 		#region Template parts

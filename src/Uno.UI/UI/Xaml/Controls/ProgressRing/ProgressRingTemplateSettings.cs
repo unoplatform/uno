@@ -1,4 +1,3 @@
-﻿#if __WASM__
 
 using Windows.UI.Xaml;
 
@@ -14,5 +13,3 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public double MaxSideLength { get; set; }
 	}
 }
-
-#endif

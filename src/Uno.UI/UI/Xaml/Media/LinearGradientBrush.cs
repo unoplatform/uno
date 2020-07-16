@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Media
 			get => (Point)GetValue(StartPointProperty);
 			set => SetValue(StartPointProperty, value);
 		}
-		public static readonly DependencyProperty StartPointProperty = DependencyProperty.Register(
+		public static DependencyProperty StartPointProperty { get ; } = DependencyProperty.Register(
 			"StartPoint",
 			typeof(Point),
 			typeof(LinearGradientBrush),
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Media
 			get => (Point)GetValue(EndPointProperty);
 			set => SetValue(EndPointProperty, value);
 		}
-		public static readonly DependencyProperty EndPointProperty = DependencyProperty.Register(
+		public static DependencyProperty EndPointProperty { get ; } = DependencyProperty.Register(
 			"EndPoint",
 			typeof(Point),
 			typeof(LinearGradientBrush),

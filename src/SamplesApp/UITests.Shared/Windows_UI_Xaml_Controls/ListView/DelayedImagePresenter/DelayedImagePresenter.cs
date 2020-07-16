@@ -23,7 +23,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		}
 
 		// Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SourceProperty =
+		public static DependencyProperty SourceProperty { get ; } =
 			DependencyProperty.Register(
 				"Source",
 				typeof(ImageSource),

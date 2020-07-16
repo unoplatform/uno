@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(CenterYProperty, value);
 		}
 
-		public static readonly DependencyProperty CenterYProperty =
+		public static DependencyProperty CenterYProperty { get ; } =
 			DependencyProperty.Register("CenterY", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double CenterX
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(CenterXProperty, value);
 		}
 
-		public static readonly DependencyProperty CenterXProperty =
+		public static DependencyProperty CenterXProperty { get ; } =
 			DependencyProperty.Register("CenterX", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double AngleX
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(AngleXProperty, value);
 		}
 
-		public static readonly DependencyProperty AngleXProperty =
+		public static DependencyProperty AngleXProperty { get ; } =
 			DependencyProperty.Register("AngleX", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
 
 
@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(AngleYProperty, value);
 		}
 
-		public static readonly DependencyProperty AngleYProperty =
+		public static DependencyProperty AngleYProperty { get ; } =
 			DependencyProperty.Register("AngleY", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
 	}
 }

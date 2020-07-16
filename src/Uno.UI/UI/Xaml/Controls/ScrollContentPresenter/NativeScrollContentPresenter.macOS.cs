@@ -13,15 +13,14 @@ using AppKit;
 using Uno.UI;
 using Foundation;
 using CoreGraphics;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : NSScrollView, IHasSizeThatFits
+	partial class NativeScrollContentPresenter : NSScrollView, IHasSizeThatFits
 	{
-		public ScrollContentPresenter()
+		public NativeScrollContentPresenter()
 		{
-			InitializeScrollContentPresenter();
-
 			Notifications.ObserveDidLiveScroll(this, OnLiveScroll);
 
 			DrawsBackground = false;
@@ -89,5 +88,8 @@ namespace Windows.UI.Xaml.Controls
 			var offset = DocumentVisibleRect.Location;
 			(TemplatedParent as ScrollViewer)?.OnScrollInternal(offset.X, offset.Y, isIntermediate: false);
 		}
+
+		public Rect MakeVisible(UIElement visual, Rect rectangle) =>
+			throw new NotImplementedException("The member Rect ScrollContentPresenter.MakeVisible(UIElement visual, Rect rectangle) is not implemented in Uno.");
 	}
 }

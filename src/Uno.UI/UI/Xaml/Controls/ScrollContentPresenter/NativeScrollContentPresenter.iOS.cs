@@ -18,7 +18,7 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : UIScrollView, DependencyObject
+	partial class NativeScrollContentPresenter : UIScrollView, DependencyObject
 	{
 		/// <summary>
 		/// Is the UIScrollView currently undergoing animated scrolling, either user-initiated or programmatic.
@@ -28,11 +28,9 @@ namespace Windows.UI.Xaml.Controls
 		internal CGPoint UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
 		CGPoint IUIScrollView.UpperScrollLimit { get { return UpperScrollLimit; } }
 
-		public ScrollContentPresenter()
+		public NativeScrollContentPresenter()
 		{
 			TouchesManager = new ScrollContentPresenterManipulationManager(this);
-			InitializeBinder();
-			InitializeScrollContentPresenter();
 			Scrolled += OnScrolled;
 			ViewForZoomingInScrollView = _ => Content;
 			DidZoom += OnZoom;
@@ -186,9 +184,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private class ScrollContentPresenterManipulationManager : UIElement.TouchesManager
 		{
-			private readonly ScrollContentPresenter _scrollPresenter;
+			private readonly NativeScrollContentPresenter _scrollPresenter;
 
-			public ScrollContentPresenterManipulationManager(ScrollContentPresenter scrollPresenter)
+			public ScrollContentPresenterManipulationManager(NativeScrollContentPresenter scrollPresenter)
 			{
 				_scrollPresenter = scrollPresenter;
 			}

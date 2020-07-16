@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PasswordProperty, value); }
 		}
 
-		public static readonly DependencyProperty PasswordProperty =
+		public static DependencyProperty PasswordProperty { get ; } =
 			DependencyProperty.Register(
 				"Password",
 				typeof(string),

@@ -69,19 +69,19 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Content DependencyProperty
-		internal IUIElement Content
+		internal IFrameworkElement Content
 		{
 
-			get { return (IUIElement)this.GetValue(ContentProperty); }
+			get { return (IFrameworkElement)this.GetValue(ContentProperty); }
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		internal static readonly DependencyProperty ContentProperty =
+		internal static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
-				typeof(IUIElement),
+				typeof(IFrameworkElement),
 				typeof(TimePickerFlyout),
-				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
+				new FrameworkPropertyMetadata(default(IFrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
 		private TimePickerFlyoutPresenter _timePickerPresenter;
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)

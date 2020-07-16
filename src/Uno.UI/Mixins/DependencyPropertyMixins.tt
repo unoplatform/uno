@@ -10,7 +10,7 @@
 				.Property("VerticalContentAlignment", "VerticalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)")				
 			.Class("PopupBase")
 				.Property("IsOpen", "bool", "false")
-				.Property("Child", "View", "null", frameworkPropertyOption: "ValueInheritsDataContext") // TODO: Change View to UIElement
+				.Property("Child", "UIElement", "null", frameworkPropertyOption: "ValueInheritsDataContext")
 				.Property("IsLightDismissEnabled", "bool", "true")
 				//.Property("ChildTransitions", "TransitionCollection", "null")
 				.Property("HorizontalOffset", "double", "0")
