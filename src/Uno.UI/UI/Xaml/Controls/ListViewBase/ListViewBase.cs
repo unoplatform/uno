@@ -102,6 +102,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_modifyingSelectionInternally = true;
 				SelectedItem = SelectedItems.Where(item => items.Contains(item)).FirstOrDefault();
+				SelectedIndex = items.IndexOf(SelectedItem);
 
 				TryUpdateSelectorItemIsSelected(validRemovals, false);
 				TryUpdateSelectorItemIsSelected(validAdditions, true);
