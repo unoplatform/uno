@@ -608,9 +608,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					// Generate all the partial methods, even if they don't exist. That avoids
 					// having to sync the generation of the files with this global table.
-					foreach (var file in files)
+					foreach (var file in files.Select(f=>f.UniqueID).Distinct())
 					{
-						writer.AppendLineInvariant("static partial void RegisterDefaultStyles_{0}();", file.UniqueID);
+						writer.AppendLineInvariant("static partial void RegisterDefaultStyles_{0}();", file);
 					}
 
 					writer.AppendLineInvariant("[global::System.Obsolete(\"This method is provided for binary backward compatibility. It will always return null.\")]");
