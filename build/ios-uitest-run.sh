@@ -80,12 +80,18 @@ pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
 popd
 
-# Rerun failed tests
-echo Retrying failed tests
+if [ -n "`cat $UNO_TESTS_FAILED_LIST`" ]; then
 
-mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
-	--result=$UNO_RERUN_TEST_RESULTS \
-	--timeout=120000 \
-	--testlist $UNO_TESTS_FAILED_LIST \
-	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll \
-	|| true
+	# Rerun failed tests
+	echo Retrying failed tests
+
+	echo Terminating Simulator instance
+	killall Simulator || echo "Simulator was not running"
+
+	mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
+		--result=$UNO_RERUN_TEST_RESULTS \
+		--timeout=120000 \
+		--testlist $UNO_TESTS_FAILED_LIST \
+		$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll \
+		|| true
+fi
