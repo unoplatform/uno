@@ -15,6 +15,8 @@ using Uno.Extensions.Specialized;
 using Microsoft.Extensions.Logging;
 using Uno.UI.Extensions;
 using System.ComponentModel;
+using Windows.UI.Xaml.Controls.Primitives;
+using Android.App;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -1104,8 +1106,13 @@ namespace Windows.UI.Xaml.Controls
 
 			var item = ItemFromIndex(index);
 			PrepareContainerForItemOverride(container, item);
+			ContainerPreparedForItem(item, container as SelectorItem, index);
 
 			_containerBeingPrepared = null;
+		}
+
+		internal virtual void ContainerPreparedForItem(object item, SelectorItem itemContainer, int itemIndex)
+		{
 		}
 
 		/// <summary>
