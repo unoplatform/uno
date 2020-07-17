@@ -1,5 +1,60 @@
 ﻿<linker>
-  <assembly fullname="Uno.UI.Wasm">
-    <type fullname="Uno.UI.Wasm.WasmHttpHandler" />
+  <assembly fullname="Uno.UI">
+	<type fullname="Uno.UI.Wasm.WasmHttpHandler" />
+
+	<type fullname="Windows.UI.Xaml.UIElement" />
+	<type fullname="Windows.UI.Xaml.Window" />
+	<type fullname="Windows.UI.Xaml.Media.BrushConverter" />
+	<type fullname="Windows.UI.Xaml.Media.ImageSourceConverter" />
+	<type fullname="Windows.UI.Xaml.CornerRadiusConverter" />
+	<type fullname="Uno.Media.GeometryConverter" />
+	<type fullname="Windows.UI.Xaml.ThicknessConverter" />
+	<type fullname="Windows.UI.Xaml.ObservableVectorWrapper" />
+	<type fullname="Windows.UI.Xaml.Input.FocusManager">
+	  <method name="ReceiveFocusNative" />
+	</type>
+	<type fullname="Windows.UI.Xaml.Application">
+	  <method name="DispatchSuspending" />
+	  <method name="DispatchSystemThemeChange" />
+	</type>
   </assembly>
+
+  <assembly fullname="Uno">
+	<type fullname="Windows.ApplicationModel.DataTransfer.Clipboard">
+	  <method name="DispatchContentChanged" />
+	</type>
+	<type fullname="Windows.UI.Core.CoreDispatcher" />
+	<type fullname="Windows.UI.Core.SystemNavigationManager" />
+	<type fullname="Windows.Devices.Sensors.Accelerometer">
+	  <method name="DispatchReading" />
+	</type>
+	<type fullname="Windows.Devices.Sensors.Magnetometer">
+	  <method name="DispatchReading" />
+	</type>
+	<type fullname="Windows.Networking.Connectivity.NetworkInformation">
+	  <method name="DispatchStatusChanged" />
+	</type>
+	<type fullname="Windows.Devices.Sensors.Gyrometer">
+	  <method name="DispatchReading" />
+	</type>
+	<type fullname="Windows.Devices.Geolocation.Geolocator">
+	  <method name="DispatchAccessRequest" />
+	  <method name="DispatchGeoposition" />
+	  <method name="DispatchError" />
+	</type>
+	<type fullname="Windows.Storage.StorageFolder">
+	  <method name="DispatchStorageInitialized" />
+	</type>
+  </assembly>
+
+  <assembly fullname="Uno.Foundation">
+	<type fullname="Uno.Foundation.Interop.JSObject" />
+	<type fullname="Windows.Foundation.SizeConverter" />
+  </assembly>
+
+  <assembly fullname="System">
+	<type fullname="System.ComponentModel.*Converter" />
+	<type fullname="System.*Converter" />
+  </assembly>
+
 </linker>

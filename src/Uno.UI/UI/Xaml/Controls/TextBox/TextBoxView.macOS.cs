@@ -12,7 +12,7 @@ using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextBoxView : _TextField, ITextBoxView, DependencyObject, IFontScalable
+	internal partial class TextBoxView : _TextField, ITextBoxView, DependencyObject, IFontScalable
 	{
 		private TextBoxViewDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;

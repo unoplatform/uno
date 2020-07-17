@@ -19,6 +19,7 @@ using System.Threading;
 using Uno;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
+using System.Diagnostics;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {

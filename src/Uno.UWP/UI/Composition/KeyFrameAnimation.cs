@@ -1,5 +1,4 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
@@ -8,6 +7,12 @@ namespace Windows.UI.Composition
 	public partial class KeyFrameAnimation : CompositionAnimation
 	{
 		private ImmutableArray<KeyFrame> _keys = ImmutableArray<KeyFrame>.Empty;
+
+		internal KeyFrameAnimation() => throw new NotSupportedException();
+
+		internal KeyFrameAnimation(Compositor compositor) : base(compositor)
+		{
+		}
 
 		public AnimationStopBehavior StopBehavior { get; set; }
 

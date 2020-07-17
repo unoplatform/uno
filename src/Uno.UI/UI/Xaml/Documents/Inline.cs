@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Documents
 {
-	public partial class Inline : TextElement
+	public abstract partial class Inline : TextElement
 	{
 		internal void InvalidateInlines()
 		{

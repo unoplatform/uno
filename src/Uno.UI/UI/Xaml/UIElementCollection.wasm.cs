@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly UIElement _owner;
 
-		public UIElementCollection(UIElement view)
+		internal UIElementCollection(UIElement view)
 		{
 			_owner = view;
 		}

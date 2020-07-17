@@ -1,4 +1,4 @@
-﻿#if !XAMARIN_IOS && !XAMARIN_ANDROID && !__WASM__ && !__MACOS__
+﻿#if !XAMARIN_IOS && !XAMARIN_ANDROID && !NETSTANDARD2_0 && !__MACOS__
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls

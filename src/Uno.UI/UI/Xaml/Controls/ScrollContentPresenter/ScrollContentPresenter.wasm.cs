@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter, IScrollContentPresenter
+	public partial class ScrollContentPresenter : ContentPresenter
 	{
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		private ScrollBarVisibility _horizotalScrollBarVisibility;
@@ -146,56 +146,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override Size MeasureOverride(Size size)
-		{
-			var child = Content as UIElement;
-			if (child != null)
-			{
-				var slotSize = size;
-				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				{
-					slotSize.Height = double.PositiveInfinity;
-				}
-				if (HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				{
-					slotSize.Width = double.PositiveInfinity;
-				}
-
-				child.Measure(slotSize);
-
-				return new Size(
-					Math.Min(size.Width, child.DesiredSize.Width),
-					Math.Min(size.Height, child.DesiredSize.Height)
-				);
-			}
-
-			return new Size(0, 0);
-		}
-
-		protected override Size ArrangeOverride(Size finalSize)
-		{
-			var child = Content as UIElement;
-			if (child != null)
-			{
-				var slotSize = finalSize;
-
-				var desiredChildSize = child.DesiredSize;
-
-				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				{
-					slotSize.Height = Math.Max(desiredChildSize.Height, finalSize.Height);
-				}
-				if (HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				{
-					slotSize.Width = Math.Max(desiredChildSize.Width, finalSize.Width);
-				}
-
-				child.Arrange(new Rect(new Point(0, 0), slotSize));
-			}
-
-			return finalSize;
-		}
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -241,22 +191,6 @@ namespace Windows.UI.Xaml.Controls
 				verticalOffset,
 				isIntermediate
 			);
-		}
-
-
-		void IScrollContentPresenter.OnMinZoomFactorChanged(float newValue)
-		{
-			MinimumZoomScale = newValue;
-		}
-
-		void IScrollContentPresenter.OnMaxZoomFactorChanged(float newValue)
-		{
-			MaximumZoomScale = newValue;
-		}
-
-		internal override bool IsViewHit()
-		{
-			return true;
 		}
 	}
 }

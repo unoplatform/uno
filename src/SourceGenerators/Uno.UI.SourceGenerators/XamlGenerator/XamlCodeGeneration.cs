@@ -224,12 +224,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var filesQuery = files
 					.ToArray();
 
-				var outputFiles = filesQuery
-					.Distinct()
-#if !DEBUG
-					.AsParallel()
-#endif
-					.Select(file => new KeyValuePair<string, string>(
+				IEnumerable<XamlFileDefinition> filesToProcess = filesQuery;
+
+				if (!Debugger.IsAttached)
+				{
+					filesToProcess = filesToProcess.AsParallel();
+				}
+
+				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, string>(
+
 							file.UniqueID,
 							new XamlFileGenerator(
 									file: file,
@@ -531,7 +534,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									}
 								}
 
-								if (IsUnoAssembly)
+								if (IsUnoAssembly && _xamlSourceFiles.Any())
 								{
 									// Build master dictionary
 									foreach (var dictProperty in map.GetAllDictionaryProperties(_baseResourceDependencies))

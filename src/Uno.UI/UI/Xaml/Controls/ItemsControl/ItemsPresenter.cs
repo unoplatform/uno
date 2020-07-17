@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml.Controls
 				this.AddSubview(_itemsPanel);
 #elif XAMARIN_ANDROID
 			this.AddView(_itemsPanel);
-#elif __WASM__ || NET461
+#elif NETSTANDARD || NET461
 			AddChild(_itemsPanel);
 #endif
 
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 #elif XAMARIN_ANDROID
 			this.RemoveAllViews();
-#elif __WASM__
+#elif NETSTANDARD
 			ClearChildren();
 #endif
 		}
