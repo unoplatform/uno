@@ -52,6 +52,7 @@ namespace Uno.UI.Toolkit
 		public ElevatedView()
 		{
 			DefaultStyleKey = typeof(ElevatedView);
+			Background = new SolidColorBrush(Colors.Transparent);
 
 #if !NETFX_CORE
 			Loaded += (snd, evt) => SynchronizeContentTemplatedParent();
