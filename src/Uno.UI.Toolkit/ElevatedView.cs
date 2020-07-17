@@ -158,14 +158,13 @@ namespace Uno.UI.Toolkit
 #if __WASM__
 				this.SetElevationInternal(Elevation, ShadowColor);
 				this.SetCornerRadius(CornerRadius);
-#elif __IOS__
+#elif __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
 				_border.SetElevationInternal(Elevation, ShadowColor);
 #elif NETFX_CORE
 				(ElevatedContent as DependencyObject).SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
 #endif
-				// TODO: MacOS
 			}
 		}
 

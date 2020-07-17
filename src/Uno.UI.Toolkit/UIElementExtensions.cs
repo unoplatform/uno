@@ -55,7 +55,7 @@ namespace Uno.UI.Toolkit
 			}
 		}
 
-#if __IOS__
+#if __IOS__ || __MACOS__
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
 #elif NETFX_CORE
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, DependencyObject host = null, CornerRadius cornerRadius = default(CornerRadius))
@@ -72,8 +72,12 @@ namespace Uno.UI.Toolkit
 				view.SetOutlineSpotShadowColor(shadowColor);
 #endif
 			}
-#elif __IOS__
+#elif __IOS__ || __MACOS__
+#if __MACOS__
+			if (element is AppKit.NSView view)
+#else
 			if (element is UIKit.UIView view)
+	#endif
 			{
 				if (elevation > 0)
 				{
@@ -82,14 +86,22 @@ namespace Uno.UI.Toolkit
 					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
 					const float blur = 0.5f;
 
+	#if __MACOS__
+					view.WantsLayer = true;
+					view.Shadow ??= new AppKit.NSShadow();
+	#endif
 					view.Layer.MasksToBounds = false;
 					view.Layer.ShadowOpacity = shadowColor.A / 255f;
+	#if __MACOS__
+					view.Layer.ShadowColor = AppKit.NSColor.FromRgb(shadowColor.R, shadowColor.G, shadowColor.B).CGColor;
+	#else
 					view.Layer.ShadowColor = UIKit.UIColor.FromRGB(shadowColor.R, shadowColor.G, shadowColor.B).CGColor;
+	#endif
 					view.Layer.ShadowRadius = (nfloat)(blur * elevation);
 					view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * elevation, y * elevation);
 					view.Layer.ShadowPath = path;
 				}
-				else
+				else if(view.Layer != null)
 				{
 					view.Layer.ShadowOpacity = 0;
 				}
@@ -170,9 +182,9 @@ namespace Uno.UI.Toolkit
 				ElementCompositionPreview.SetElementChildVisual(uiHost, spriteVisual);
 			}
 #endif
-		}
+				}
 
-		#endregion
+#endregion
 
 		internal static Thickness GetPadding(this UIElement uiElement)
 		{
