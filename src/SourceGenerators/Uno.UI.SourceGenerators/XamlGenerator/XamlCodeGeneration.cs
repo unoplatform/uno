@@ -478,11 +478,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (files.Any())
 					{
 						writer.AppendLineInvariant("private static bool _stylesRegistered;");
-
-						if (!IsUnoAssembly)
-						{
-							writer.AppendLineInvariant("private static bool _dictionariesRegistered;");
-						}
+					}
+					if (!IsUnoAssembly)
+					{
+						writer.AppendLineInvariant("private static bool _dictionariesRegistered;");
 					}
 
 					using (writer.BlockInvariant("internal static global::Uno.UI.Xaml.XamlParseContext {0} {{get; }} = new global::Uno.UI.Xaml.XamlParseContext()", ParseContextPropertyName))
@@ -550,9 +549,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							using (writer.BlockInvariant("if(!_stylesRegistered)"))
 							{
 								writer.AppendLineInvariant("_stylesRegistered = true;");
-								foreach (var file in files)
+								foreach (var file in files.Select(f=>f.UniqueID).Distinct())
 								{
-									writer.AppendLineInvariant("RegisterDefaultStyles_{0}();", file.UniqueID);
+									writer.AppendLineInvariant("RegisterDefaultStyles_{0}();", file);
 								}
 							}
 						}
@@ -563,21 +562,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLineInvariant("// Register ResourceDictionaries using ms-appx:/// syntax, this is called for external resources");
 						using (writer.BlockInvariant("public static void RegisterResourceDictionariesBySource()"))
 						{
-							if (files.Any())
+							using (writer.BlockInvariant("if(!_dictionariesRegistered)"))
 							{
-								using (writer.BlockInvariant("if(!_dictionariesRegistered)"))
+								writer.AppendLineInvariant("_dictionariesRegistered = true;");
+								foreach (var file in files.Where(IsResourceDictionary))
 								{
-									writer.AppendLineInvariant("_dictionariesRegistered = true;");
-									foreach (var file in files.Where(IsResourceDictionary))
-									{
-										writer.AppendLineInvariant(
-											"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"ms-appx:///{0}/{1}\", context: {2}, dictionary: () => {3}_ResourceDictionary);",
-											_metadataHelper.AssemblyName,
-											map.GetSourceLink(file),
-											ParseContextPropertyName,
-											file.UniqueID
-										);
-									}
+									writer.AppendLineInvariant(
+										"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"ms-appx:///{0}/{1}\", context: {2}, dictionary: () => {3}_ResourceDictionary);",
+										_metadataHelper.AssemblyName,
+										map.GetSourceLink(file),
+										ParseContextPropertyName,
+										file.UniqueID
+									);
 								}
 							}
 						}
