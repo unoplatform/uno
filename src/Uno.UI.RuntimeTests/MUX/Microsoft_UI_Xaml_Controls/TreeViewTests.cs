@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+#if !WINDOWS_UWP
 
 using MUXControlsTestApp.Utilities;
 using System;
@@ -430,6 +431,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public void TreeViewItemContainerTransitionTest()
 		{
 			TreeView treeView = new TreeView();
@@ -449,6 +451,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public void TreeViewItemsSourceTest()
 		{
 			var treeView = new TreeView();
@@ -818,3 +821,4 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 	}
 }
+#endif
