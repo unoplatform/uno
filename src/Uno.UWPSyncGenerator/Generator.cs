@@ -91,6 +91,7 @@ namespace Uno.UWPSyncGenerator
 #if HAS_UNO_WINUI
 				"Microsoft.UI.Xaml",
 				"Microsoft.UI.Composition",
+				"Microsoft.UI.Text",
 				"Microsoft.System"
 #endif
 			};
@@ -170,6 +171,7 @@ namespace Uno.UWPSyncGenerator
 #if HAS_UNO_WINUI
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.System")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Text")
 #endif
 			))
 			{
