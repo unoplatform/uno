@@ -295,6 +295,11 @@ namespace Microsoft.UI.Xaml.Controls
 				node.HasUnrealizedChildren = HasUnrealizedChildren;
 			}
 
+			if (node != null)
+			{
+				UpdateSelectionVisual(node.SelectionState);
+			}
+
 			base.OnApplyTemplate();
 		}
 
