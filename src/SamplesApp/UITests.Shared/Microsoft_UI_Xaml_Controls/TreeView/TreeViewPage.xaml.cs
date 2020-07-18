@@ -29,12 +29,15 @@ using System.Threading.Tasks;
 // Uno specific
 using Uno.UI.Samples.Controls;
 using MUXControlsTestApp.Utilities;
+using Uno.Extensions.Specialized;
+
+// Replace listControl.GetItems().Count() with listControl.GetItems().Count()
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
-	[SampleControlInfo("TreeView", "MUX_Test_TreeViewPage")]    
-    public sealed partial class TreeViewPage : MUXTestPage
-    {
+	[SampleControlInfo("TreeView", "MUX_Test_TreeViewPage")]
+	public sealed partial class TreeViewPage : MUXTestPage
+	{
 		bool _disableClickToExpand;
 		public TreeViewItem flyoutTVI;
 		TreeViewNode _visualRoot;
@@ -80,7 +83,8 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private async Task<ObservableCollection<TreeViewItemSource>> PrepareItemsSourceAsync()
 		{
-			return await Task.Run(() => {
+			return await Task.Run(() =>
+			{
 				var items = PrepareItemsSource(expandRootNode: true);
 
 				var root0 = items[0].Children[0];
@@ -98,7 +102,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			});
 		}
 
-		protected internal override void OnNavigatedFrom(NavigationEventArgs e)
+		protected
+#if !WINDOWS_UWP
+			internal
+#endif
+			override void OnNavigatedFrom(NavigationEventArgs e)
 		{
 			// Unset all override flags to avoid impacting subsequent tests
 			//TODO:
@@ -250,6 +258,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 				if (container != null)
 				{
 					AutomationProperties.SetAutomationId(container as DependencyObject, GetNodeContent(currentNode));
+					(container as FrameworkElement).SetValue(FrameworkElement.NameProperty, GetNodeContent(currentNode));
 				}
 			}
 		}
@@ -354,7 +363,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 				listControl = FindVisualChildByName(ContentModeTestTreeView, "ListControl") as TreeViewList;
 			}
 
-			for (int i = 0; i < listControl.Items.Count; i++)
+			for (int i = 0; i < GetItemsCount(listControl); i++)
 			{
 				var container = (TreeViewItem)listControl.ContainerFromIndex(0);
 				var groups = VisualStateManager.GetVisualStateGroups((FrameworkElement)VisualTreeHelper.GetChild(container, 0));
@@ -412,7 +421,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			{
 				listControl = FindVisualChildByName(ContentModeTestTreeView, "ListControl") as TreeViewList;
 			}
-			Results.Text = (listControl.Items.Count).ToString();
+			Results.Text = GetItemsCount(listControl).ToString();
 		}
 
 		private void GetTree2ItemCount_Click(object sender, RoutedEventArgs e)
@@ -422,14 +431,14 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			{
 				listControl = FindVisualChildByName(ContentModeTestTreeView2, "ListControl") as TreeViewList;
 			}
-			Results.Text = (listControl.Items.Count).ToString();
+			Results.Text = GetItemsCount(listControl).ToString();
 		}
 
 		private void GetFlyoutTreeViewItemCount_Click(object sender, RoutedEventArgs e)
 		{
 			var listControl = FindVisualChildByName(this.FlyoutTreeView, "ListControl") as TreeViewList;
 			flyoutTVI = (TreeViewItem)listControl.ContainerFromIndex(0);
-			Results.Text = (listControl.Items.Count).ToString();
+			Results.Text = GetItemsCount(listControl).ToString();
 		}
 
 		private void SetupNoReorderNodes_Click(object sender, RoutedEventArgs e)
@@ -1037,5 +1046,16 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			Results.Text = (TwoWayBoundButton.Content as TreeViewNode).Content as string
 				+ ";" + (TestTreeView.SelectedItem as TreeViewNode).Content as string;
 		}
+
+#region Uno specific
+		public int GetItemsCount(TreeViewList listControl)
+		{
+#if !WINDOWS_UWP
+			return listControl.GetItems().Count();
+#else
+			return listControl.Items.Count;
+#endif
+		}
+#endregion
 	}
 }
