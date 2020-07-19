@@ -170,9 +170,13 @@ namespace Windows.UI.Xaml
 					SetStyle("background-image", gradientBrush.ToCssString(RenderSize));
 					RecalculateBrushOnSizeChanged(true);
 					break;
+				case AcrylicBrush acrylicBrush:
+					acrylicBrush.SetStyle(this);
+					break;
 				default:
 					ResetStyle("background-color");
 					ResetStyle("background-image");
+					AcrylicBrush.ResetStyle(this);
 					RecalculateBrushOnSizeChanged(false);
 					break;
 			}
