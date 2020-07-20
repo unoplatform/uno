@@ -1,4 +1,5 @@
-﻿using Android.App;
+﻿#if __ANDROID__
+using Android.App;
 using Android.Content;
 
 namespace Uno
@@ -9,9 +10,9 @@ namespace Uno
 	/// <param name="ct">CancellationToken</param>
 	/// <param name="intent">The Intent you want to send</param>
 	/// <param name="requestCode">A specific Response code, this is useful if you send more than one type of request in parallel</param>
-	public class OnActivityResultArgs
+	public class ActivityResultArgs
 	{
-		public OnActivityResultArgs(int requestCode, Result resultCode, Intent intent)
+		public ActivityResultArgs(int requestCode, Result resultCode, Intent intent)
 		{
 			RequestCode = requestCode;
 			ResultCode = resultCode;
@@ -24,3 +25,4 @@ namespace Uno
 		public Result ResultCode { get; }
 	}
 }
+#endif

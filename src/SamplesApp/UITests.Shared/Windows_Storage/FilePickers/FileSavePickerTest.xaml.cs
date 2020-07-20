@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using Uno.UI.Samples.Controls;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.Storage.Provider;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
-using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_Storage.FilePickers
 {
@@ -20,35 +20,73 @@ namespace UITests.Shared.Windows_Storage.FilePickers
 
 		private async void SaveFileButton_Click(object sender, RoutedEventArgs e)
 		{
-			// Clear previous returned file name, if it exists, between iterations of this scenario
-			OutputTextBlock.Text = "";
 
+			var actionsText = new StringBuilder();
+			actionsText.AppendLine("Button Clicked.");
 			var savePicker = new FileSavePicker { SuggestedStartLocation = PickerLocationId.DocumentsLibrary };
-			// Dropdown of file types the user can save the file as
 			savePicker.FileTypeChoices.Add("text/plain", new List<string>() { ".txt" });
-			// Default file name if the user does not type one in or select a file to replace
-			savePicker.SuggestedFileName = "New Document";
+			savePicker.SuggestedFileName = "New Documents";
 			var file = await savePicker.PickSaveFileAsync();
+
 			if (file != null)
 			{
-				//// Prevent updates to the remote version of the file until we finish making changes and call CompleteUpdatesAsync.
-				//CachedFileManager.DeferUpdates(file);
-				//// write to file
-				await 
-				//// Let Windows know that we're finished changing the file so the other app can update the remote version of the file.
-				//// Completing updates may require Windows to ask for user input.
-				//var status = await CachedFileManager.CompleteUpdatesAsync(file);
-				OutputTextBlock.Text = "File picked.";
-                //{
-                //	FileUpdateStatus.Complete => "File " + file.Name + " was saved.",
-                //	FileUpdateStatus.CompleteAndRenamed => "File " + file.Name + " was renamed and saved.",
-                //	_ => "File " + file.Name + " couldn't be saved."
-                //};
-                }
+				UpdateFileStatus(actionsText, file);
+				WriteToFile(actionsText, file);
+				ReadFile(actionsText, file);
+				//{
+				//	FileUpdateStatus.Complete => "File " + file.Name + " was saved.",
+				//	FileUpdateStatus.CompleteAndRenamed => "File " + file.Name + " was renamed and saved.",
+				//	_ => "File " + file.Name + " couldn't be saved."
+				//};
+			}
 			else
 			{
-				OutputTextBlock.Text = "Operation cancelled.";
+				actionsText.AppendLine("Operation cancelled.");
 			}
+			OutputTextBlock.Text = actionsText.ToString();
+			actionsText.Clear();
+		}
+
+		private void UpdateFileStatus(StringBuilder actionsText, StorageFile file)
+		{
+			FileName.Text = file.Name;
+			FilePath.Text = file.Path;
+			actionsText.AppendLine("File created.");
+		}
+
+		private static void WriteToFile(StringBuilder actionsText, Windows.Storage.StorageFile file)
+		{
+			// Prevent updates to the remote version of the file until we finish making changes and call CompleteUpdatesAsync.
+			CachedFileManager.DeferUpdates(file);
+
+			// write to file
+			using (var writer = new BinaryWriter(File.Create(file.Path)))
+			{
+				for (var i = 0; i < 11; i++)
+				{
+					writer.Write(i);
+				}
+			}
+
+			//// Let Windows know that we're finished changing the file so the other app can update the remote version of the file.
+			//// Completing updates may require Windows to ask for user input.
+			//var status = await CachedFileManager.CompleteUpdatesAsync(file);
+			actionsText.AppendLine("Written to file.");
+		}
+
+		private void ReadFile(StringBuilder actionsText, Windows.Storage.StorageFile file)
+		{
+			using (var reader = new BinaryReader(File.OpenRead(file.Path)))
+			{
+				var fileContent = new StringBuilder();
+				for (var i = 0; i < 11; i++)
+				{
+					fileContent.AppendLine(reader.ReadInt32().ToString());
+					FileContent.Text = fileContent.ToString();
+				}
+				fileContent.Clear();
+			}
+			actionsText.AppendLine("File read.");
 		}
 	}
 }
