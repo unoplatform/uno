@@ -207,7 +207,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var resourceKeys = GetResourceKeys();
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces).ParseFiles(_xamlSourceFiles);
-				var files = filesFull.Trim()
+				var files = filesFull
+					.Trim()
 					.OrderBy(f => f.UniqueID)
 					.ToArray();
 
@@ -224,33 +225,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.ToArray();
 
 				var outputFiles = filesQuery
+					.Distinct()
 #if !DEBUG
-				.AsParallel()
+					.AsParallel()
 #endif
-				.Select(file => new KeyValuePair<string, string>(
-						file.UniqueID,
-						new XamlFileGenerator(
-							file: file,
-							targetPath: _targetPath,
-							defaultNamespace: _defaultNamespace,
-							metadataHelper: _metadataHelper,
-							fileUniqueId: file.UniqueID,
-							lastReferenceUpdateTime: lastBinaryUpdateTime,
-							analyzerSuppressions: _analyzerSuppressions,
-							globalStaticResourcesMap: globalStaticResourcesMap,
-							outputSourceComments: _outputSourceComments,
-							resourceKeys: resourceKeys,
-							isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
-							uiAutomationMappings: _uiAutomationMappings,
-							defaultLanguage: _defaultLanguage,
-							isWasm: _isWasm,
-							isDebug: _isDebug,
-							skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
-							shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
-							isUnoAssembly: IsUnoAssembly
+					.Select(file => new KeyValuePair<string, string>(
+							file.UniqueID,
+							new XamlFileGenerator(
+									file: file,
+									targetPath: _targetPath,
+									defaultNamespace: _defaultNamespace,
+									metadataHelper: _metadataHelper,
+									fileUniqueId: file.UniqueID,
+									lastReferenceUpdateTime: lastBinaryUpdateTime,
+									analyzerSuppressions: _analyzerSuppressions,
+									globalStaticResourcesMap: globalStaticResourcesMap,
+									outputSourceComments: _outputSourceComments,
+									resourceKeys: resourceKeys,
+									isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
+									uiAutomationMappings: _uiAutomationMappings,
+									defaultLanguage: _defaultLanguage,
+									isWasm: _isWasm,
+									isDebug: _isDebug,
+									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
+									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
+									isUnoAssembly: IsUnoAssembly
+								)
+								.GenerateFile()
 						)
-						.GenerateFile()
-					)
 					)
 					.ToList();
 
@@ -474,7 +476,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 				{
 					writer.AppendLineInvariant("static bool _initialized;");
-					writer.AppendLineInvariant("private static bool _stylesRegistered;");
+					if (files.Any())
+					{
+						writer.AppendLineInvariant("private static bool _stylesRegistered;");
+					}
 					if (!IsUnoAssembly)
 					{
 						writer.AppendLineInvariant("private static bool _dictionariesRegistered;");
@@ -540,12 +545,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (writer.BlockInvariant("public static void RegisterDefaultStyles()"))
 					{
-						using (writer.BlockInvariant("if(!_stylesRegistered)"))
+						if (files.Any())
 						{
-							writer.AppendLineInvariant("_stylesRegistered = true;");
-							foreach (var file in files)
+							using (writer.BlockInvariant("if(!_stylesRegistered)"))
 							{
-								writer.AppendLineInvariant("RegisterDefaultStyles_{0}();", file.UniqueID);
+								writer.AppendLineInvariant("_stylesRegistered = true;");
+								foreach (var file in files.Select(f=>f.UniqueID).Distinct())
+								{
+									writer.AppendLineInvariant("RegisterDefaultStyles_{0}();", file);
+								}
 							}
 						}
 					}
@@ -560,7 +568,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineInvariant("_dictionariesRegistered = true;");
 								foreach (var file in files.Where(IsResourceDictionary))
 								{
-									writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"ms-appx:///{0}/{1}\", context: {2}, dictionary: () => {3}_ResourceDictionary);",
+									writer.AppendLineInvariant(
+										"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"ms-appx:///{0}/{1}\", context: {2}, dictionary: () => {3}_ResourceDictionary);",
 										_metadataHelper.AssemblyName,
 										map.GetSourceLink(file),
 										ParseContextPropertyName,
@@ -600,9 +609,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					// Generate all the partial methods, even if they don't exist. That avoids
 					// having to sync the generation of the files with this global table.
-					foreach (var file in files)
+					foreach (var file in files.Select(f=>f.UniqueID).Distinct())
 					{
-						writer.AppendLineInvariant("static partial void RegisterDefaultStyles_{0}();", file.UniqueID);
+						writer.AppendLineInvariant("static partial void RegisterDefaultStyles_{0}();", file);
 					}
 
 					writer.AppendLineInvariant("[global::System.Obsolete(\"This method is provided for binary backward compatibility. It will always return null.\")]");
