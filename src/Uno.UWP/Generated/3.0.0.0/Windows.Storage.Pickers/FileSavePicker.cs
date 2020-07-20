@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
-	public  partial class FileSavePicker
+#endif
+	public partial class FileSavePicker
 	{
-#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if false || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Pickers.PickerLocationId SuggestedStartLocation
 		{
@@ -65,7 +65,7 @@ namespace Windows.Storage.Pickers
 #endif
 #if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  string DefaultFileExtension
+		public string DefaultFileExtension
 		{
 			get
 			{
@@ -103,17 +103,17 @@ namespace Windows.Storage.Pickers
 #endif
 #if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.Collections.ValueSet ContinuationData
+		public global::Windows.Foundation.Collections.ValueSet ContinuationData
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member ValueSet FileSavePicker.ContinuationData is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  string EnterpriseId
+		public string EnterpriseId
 		{
 			get
 			{
@@ -146,7 +146,7 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedSaveFile.set
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedFileName.get
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedFileName.set
-#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if false || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSaveFileAsync()
 		{
@@ -156,11 +156,11 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.ContinuationData.get
 #if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  void PickSaveFileAndContinue()
+		public void PickSaveFileAndContinue()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "void FileSavePicker.PickSaveFileAndContinue()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.EnterpriseId.get
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.EnterpriseId.set
 	}

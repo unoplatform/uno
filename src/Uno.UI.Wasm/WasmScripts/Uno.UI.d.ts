@@ -783,6 +783,13 @@ declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
 declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
 declare const UnoAppManifest: Uno.UI.IAppManifest;
 declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;
+declare namespace Windows.Storage.Pickers {
+    class FileSavePicker {
+        static SelectFileLocation(fileTypeChoices: {
+            [fileType: string]: string[];
+        }, suggestedStartLocation: string, suggestedFileName: string): string;
+    }
+}
 declare namespace Windows.Storage {
     class StorageFolder {
         private static _isInit;

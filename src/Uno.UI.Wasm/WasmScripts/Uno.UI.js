@@ -2458,6 +2458,24 @@ var Windows;
 (function (Windows) {
     var Storage;
     (function (Storage) {
+        var Pickers;
+        (function (Pickers) {
+            class FileSavePicker {
+                static SelectFileLocation(fileTypeChoices, suggestedStartLocation, suggestedFileName) {
+                    console.log(fileTypeChoices);
+                    console.log(suggestedStartLocation);
+                    console.log(suggestedFileName);
+                    return 'C:\\Users\\Alex\\Documents\\Test.txt';
+                }
+            }
+            Pickers.FileSavePicker = FileSavePicker;
+        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
         class StorageFolder {
             /**
              * Determine if IndexDB is available, some browsers and modes disable it.

@@ -40,11 +40,21 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <None Remove="Storage\CachedFileManager.wasm.cs" />
+	  <None Remove="Storage\Pickers\FileSavePicker.wasm.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="ActivityResultArgs.Android.cs" />
+	  <UpToDateCheckInput Remove="Storage\CachedFileManager.wasm.cs" />
+	  <UpToDateCheckInput Remove="Storage\Pickers\FileSavePicker.wasm.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.MonoAnalyzers" />
-		<PackageReference Include="Xamarin.Forms" Version="4.6.0.800" />
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">

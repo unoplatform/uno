@@ -28,6 +28,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="ts\Windows\Storage\FileSavePicker.ts" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <EmbeddedResource Include="LinkerDefinition.xml">
 		<LogicalName>$(AssemblyName).xml</LogicalName>
 	  </EmbeddedResource>
