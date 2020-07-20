@@ -18,7 +18,7 @@ namespace Uno.UI.Tests.App.Views
 
 		// Using a DependencyProperty as the backing store for Rugosity.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty RugosityProperty =
-			DependencyProperty.Register("Rugosity", typeof(string), typeof(StylesTestControl), new PropertyMetadata("FromDefault"));
+			DependencyProperty.Register("Rugosity", typeof(string), typeof(StylesTestControl), new FrameworkPropertyMetadata("FromDefault"));
 	}
 
 	public partial class StylesTestButton : Button
@@ -33,7 +33,7 @@ namespace Uno.UI.Tests.App.Views
 
 		// Using a DependencyProperty as the backing store for Animosity.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty AnimosityProperty =
-			DependencyProperty.Register("Animosity", typeof(string), typeof(StylesTestButton), new PropertyMetadata("FromDefault"));
+			DependencyProperty.Register("Animosity", typeof(string), typeof(StylesTestButton), new FrameworkPropertyMetadata("FromDefault"));
 
 
 	}

@@ -20,7 +20,7 @@ namespace Uno.UI.Tests.ViewLibrary
 		}
 
 		public static readonly DependencyProperty MyTagProperty =
-			DependencyProperty.Register("MyTag", typeof(string), typeof(MyExtControl), new PropertyMetadata("Default"));
+			DependencyProperty.Register("MyTag", typeof(string), typeof(MyExtControl), new FrameworkPropertyMetadata("Default"));
 
 		public string MyTag2
 		{
@@ -29,7 +29,7 @@ namespace Uno.UI.Tests.ViewLibrary
 		}
 
 		public static readonly DependencyProperty MyTag2Property =
-			DependencyProperty.Register("MyTag2", typeof(string), typeof(MyExtControl), new PropertyMetadata("Default"));
+			DependencyProperty.Register("MyTag2", typeof(string), typeof(MyExtControl), new FrameworkPropertyMetadata("Default"));
 
 
 		public string MyTagThemed1
@@ -40,7 +40,7 @@ namespace Uno.UI.Tests.ViewLibrary
 
 		// Using a DependencyProperty as the backing store for MyTagThemed1.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyTagThemed1Property =
-			DependencyProperty.Register("MyTagThemed1", typeof(string), typeof(MyExtControl), new PropertyMetadata("Default"));
+			DependencyProperty.Register("MyTagThemed1", typeof(string), typeof(MyExtControl), new FrameworkPropertyMetadata("Default"));
 
 
 		public string MyTagThemed2
@@ -51,7 +51,7 @@ namespace Uno.UI.Tests.ViewLibrary
 
 		// Using a DependencyProperty as the backing store for MyTagThemed2.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyTagThemed2Property =
-			DependencyProperty.Register("MyTagThemed2", typeof(string), typeof(MyExtControl), new PropertyMetadata("Default"));
+			DependencyProperty.Register("MyTagThemed2", typeof(string), typeof(MyExtControl), new FrameworkPropertyMetadata("Default"));
 
 	}
 }

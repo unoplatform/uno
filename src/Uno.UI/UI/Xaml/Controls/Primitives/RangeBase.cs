@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				"Value",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)0,
 					(s, e) => (s as RangeBase)?.OnValueChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				"Minimum",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)0,
 					(s, e) => (s as RangeBase)?.OnMinimumChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				"Maximum",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)1,
 					(s, e) => (s as RangeBase)?.OnMaximumChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				"SmallChange",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
                     (double)0.1,
 					(s, e) => (s as RangeBase)?.OnSmallChangeChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				"LargeChange",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)1,
 					(s, e) => OnLargeChangeChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				"ActualValue",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)0,
 					(s, e) => (s as RangeBase)?.OnActualValueChanged((double)e.OldValue, (double)e.NewValue)
 				)

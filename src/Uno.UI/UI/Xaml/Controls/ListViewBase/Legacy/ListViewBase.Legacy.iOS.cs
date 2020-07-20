@@ -183,7 +183,7 @@ namespace Uno.UI.Controls.Legacy
 				"ItemsSource",
 				typeof(object),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((ListViewBase)s).OnItemsSourceChanged(e)
 				)
@@ -200,7 +200,7 @@ namespace Uno.UI.Controls.Legacy
 				"SelectedItem",
 				typeof(object),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => (s as ListViewBase).OnSelectedItemChanged(e.OldValue, e.NewValue)
 				)
@@ -218,7 +218,7 @@ namespace Uno.UI.Controls.Legacy
 				"SelectedItems",
 				typeof(IList<object>),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					new List<object>(),
 					(s, e) => ((ListViewBase)s)?.OnSelectedItemsChanged(e.OldValue as IList<object>, e.NewValue as IList<object>)
 				)
@@ -235,7 +235,7 @@ namespace Uno.UI.Controls.Legacy
 				"SelectionMode",
 				typeof(ListViewSelectionMode),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: ListViewSelectionMode.Single,
 					propertyChangedCallback: (s, e) => ((ListViewBase)s).OnSelectionModeChanged((ListViewSelectionMode)e.NewValue)
 				)
@@ -252,7 +252,7 @@ namespace Uno.UI.Controls.Legacy
 				"Header",
 				typeof(object),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((ListViewBase)s).OnHeaderChanged(e)
 				)
@@ -269,7 +269,7 @@ namespace Uno.UI.Controls.Legacy
 				"Footer",
 				typeof(object),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((ListViewBase)s).OnFooterChanged(e)
 				)
@@ -293,7 +293,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		public static DependencyProperty UnselectOnClickProperty { get ; } =
-			DependencyProperty.Register("UnselectOnClick", typeof(bool), typeof(ListViewBase), new PropertyMetadata(default(bool)));
+			DependencyProperty.Register("UnselectOnClick", typeof(bool), typeof(ListViewBase), new FrameworkPropertyMetadata(default(bool)));
 		private ListViewBaseLayoutTemplate _layoutTemplate;
 		#endregion
 		#endregion

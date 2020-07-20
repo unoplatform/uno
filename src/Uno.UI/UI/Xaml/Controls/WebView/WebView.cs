@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CanGoBackProperty { get ; } =
-			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(WebView), new PropertyMetadata(false));
+			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
 		#endregion
 
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CanGoForwardProperty { get ; } =
-			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(WebView), new PropertyMetadata(false));
+			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
 		#endregion
 
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SourceProperty { get ; } =
-			DependencyProperty.Register("Source", typeof(Uri), typeof(WebView), new PropertyMetadata(null,
+			DependencyProperty.Register("Source", typeof(Uri), typeof(WebView), new FrameworkPropertyMetadata(null,
 				(s, e) => ((WebView)s)?.Navigate((Uri)e.NewValue)));
 
 		#endregion
@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DocumentTitleProperty { get; } =
-			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(null));
 #endif
 		#endregion
 
@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsScrollEnabledProperty { get ; } =
-			DependencyProperty.Register("IsScrollEnabled", typeof(bool), typeof(WebView), new PropertyMetadata(true,
+			DependencyProperty.Register("IsScrollEnabled", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(true,
 				(s, e) => ((WebView)s)?.OnScrollEnabledChangedPartial((bool)e.NewValue)));
 
 		partial void OnScrollEnabledChangedPartial(bool scrollingEnabled);

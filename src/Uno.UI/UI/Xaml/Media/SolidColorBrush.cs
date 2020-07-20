@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Media
 				"Color",
 				typeof(Windows.UI.Color),
 				typeof(SolidColorBrush),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					Colors.Transparent,
 					(s, e) => ((SolidColorBrush)s).OnColorChanged((Windows.UI.Color)e.OldValue, (Windows.UI.Color)e.NewValue)
 				)

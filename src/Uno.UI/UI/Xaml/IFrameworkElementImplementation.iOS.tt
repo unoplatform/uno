@@ -421,8 +421,8 @@ namespace <#= mixin.NamespaceName #>
 
 		#region Style DependencyProperty
 
-		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static DependencyProperty StyleProperty { get ; } = CreateStyleProperty();
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext)]
+		public static DependencyProperty StyleProperty { get; } = CreateStyleProperty();
 
 		public Style Style
 		{
@@ -533,10 +533,13 @@ namespace <#= mixin.NamespaceName #>
 		/// </summary>
 		public bool IsLoaded { get; private set; }
 
+		private protected virtual void OnPostLoading() {}
+
 		internal virtual void OnLoading()
 		{
 			OnLoadingPartial();
 			Loading?.Invoke(this, null);
+			OnPostLoading();
 			ApplyCompiledBindings();
 		}
 

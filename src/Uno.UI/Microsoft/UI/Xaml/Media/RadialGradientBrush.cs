@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Media
 	public sealed partial class RadialGradientBrush : GradientBrush
 	{
 		public static DependencyProperty CenterProperty { get ; } = DependencyProperty.Register(
-			"Center", typeof(Point), typeof(RadialGradientBrush), new PropertyMetadata(new Point(0.5d, 0.5d)));
+			"Center", typeof(Point), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(new Point(0.5d, 0.5d)));
 
 		public Point Center
 		{
@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		public static DependencyProperty RadiusXProperty { get ; } = DependencyProperty.Register(
-			"RadiusX", typeof(double), typeof(RadialGradientBrush), new PropertyMetadata(0.5d));
+			"RadiusX", typeof(double), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(0.5d));
 
 		public double RadiusX
 		{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		public static DependencyProperty RadiusYProperty { get ; } = DependencyProperty.Register(
-			"RadiusY", typeof(double), typeof(RadialGradientBrush), new PropertyMetadata(0.5d));
+			"RadiusY", typeof(double), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(0.5d));
 
 		public double RadiusY
 		{
@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		public static DependencyProperty GradientOriginProperty { get ; } = DependencyProperty.Register(
-			"GradientOrigin", typeof(Point), typeof(RadialGradientBrush), new PropertyMetadata(new Point(0.5d, 0.5d)));
+			"GradientOrigin", typeof(Point), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(new Point(0.5d, 0.5d)));
 
 		[NotImplemented]
 		public Point GradientOrigin
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		public static DependencyProperty InterpolationSpaceProperty { get ; } = DependencyProperty.Register(
-			"InterpolationSpace", typeof(CompositionColorSpace), typeof(RadialGradientBrush), new PropertyMetadata(default(CompositionColorSpace)));
+			"InterpolationSpace", typeof(CompositionColorSpace), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(default(CompositionColorSpace)));
 
 		[NotImplemented]
 		public CompositionColorSpace InterpolationSpace

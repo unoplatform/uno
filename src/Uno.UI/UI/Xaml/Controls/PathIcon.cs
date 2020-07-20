@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for Data.  This enables animation, styling, binding, etc...
 		public static DependencyProperty DataProperty { get ; } =
-			DependencyProperty.Register("Data", typeof(Geometry), typeof(PathIcon), new PropertyMetadata(null, propertyChangedCallback: (s, e) => ((PathIcon)s).OnDataChanged(e)));
+			DependencyProperty.Register("Data", typeof(Geometry), typeof(PathIcon), new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, e) => ((PathIcon)s).OnDataChanged(e)));
 
 		protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
 		{

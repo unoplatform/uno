@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
-			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(TimePicker), new PropertyMetadata(null));
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(TimePicker), new FrameworkPropertyMetadata(null));
 
 		protected override void OnApplyTemplate()
 		{

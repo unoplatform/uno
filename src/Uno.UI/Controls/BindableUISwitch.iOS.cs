@@ -66,7 +66,7 @@ namespace Uno.UI.Views.Controls
 		}
 
 		public static DependencyProperty ThumbTintColorBrushProperty { get ; } =
-			DependencyProperty.Register("ThumbTintColorBrush", typeof(Brush), typeof(BindableUISwitch), new PropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnThumbTintColorBrushChanged((Brush)e.NewValue)));
+			DependencyProperty.Register("ThumbTintColorBrush", typeof(Brush), typeof(BindableUISwitch), new FrameworkPropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnThumbTintColorBrushChanged((Brush)e.NewValue)));
 
 		private void OnThumbTintColorBrushChanged(Brush newValue)
 		{
@@ -109,7 +109,7 @@ namespace Uno.UI.Views.Controls
 		}
 
 		public static DependencyProperty OnTintColorBrushProperty { get ; } =
-			DependencyProperty.Register("OnTintColorBrush", typeof(Brush), typeof(BindableUISwitch), new PropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnOnTintColorBrushChanged((Brush)e.NewValue)));
+			DependencyProperty.Register("OnTintColorBrush", typeof(Brush), typeof(BindableUISwitch), new FrameworkPropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnOnTintColorBrushChanged((Brush)e.NewValue)));
 
 		private void OnOnTintColorBrushChanged(Brush newValue)
 		{
@@ -152,7 +152,7 @@ namespace Uno.UI.Views.Controls
 		}
 
 		public static DependencyProperty TintColorBrushProperty { get ; } =
-			DependencyProperty.Register("TintColorBrush", typeof(Brush), typeof(BindableUISwitch), new PropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnTintColorBrushChanged((Brush)e.NewValue)));
+			DependencyProperty.Register("TintColorBrush", typeof(Brush), typeof(BindableUISwitch), new FrameworkPropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnTintColorBrushChanged((Brush)e.NewValue)));
 
 		private void OnTintColorBrushChanged(Brush newValue)
 		{
@@ -173,7 +173,7 @@ namespace Uno.UI.Views.Controls
 		}
 
 		public static DependencyProperty IsOnProperty { get ; } =
-			DependencyProperty.Register("IsOn", typeof(bool), typeof(BindableUISwitch), new PropertyMetadata(default(bool), (s, e) => ((BindableUISwitch)s)?.OnIsOnChanged(e)));
+			DependencyProperty.Register("IsOn", typeof(bool), typeof(BindableUISwitch), new FrameworkPropertyMetadata(default(bool), (s, e) => ((BindableUISwitch)s)?.OnIsOnChanged(e)));
 
 
 		private void OnIsOnChanged(DependencyPropertyChangedEventArgs e)

@@ -184,7 +184,7 @@ namespace Uno.UI.Tests.BinderTests
 			public const string FallbackValue = "__fallback__";
 
 			public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-				"Value", typeof(string), typeof(MyTarget), new PropertyMetadata(DefaultValue));
+				"Value", typeof(string), typeof(MyTarget), new FrameworkPropertyMetadata(DefaultValue));
 
 			public string Value
 			{

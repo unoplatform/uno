@@ -40,7 +40,7 @@ namespace NamespaceClashPoint.Example
 			"Asd",
 			typeof(Asd),
 			typeof(GridAsdHelper),
-			new PropertyMetadata(default(Asd)));
+			new FrameworkPropertyMetadata(default(Asd)));
 
 		public static Asd GetAsd(Grid obj) => (Asd)obj.GetValue(AsdProperty);
 		public static void SetAsd(Grid obj, Asd value) => obj.SetValue(AsdProperty, value);

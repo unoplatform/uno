@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SourceProperty { get ; } =
-			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new PropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
+			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new FrameworkPropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
 
 		private void OnSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml.Controls
 				"Stretch",
 				typeof(Stretch),
 				typeof(Image),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					Media.Stretch.Uniform,
 					(s, e) => ((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 

@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		// Using a DependencyProperty as the backing store for IsDragging.  This enables animation, styling, binding, etc...
 		public static DependencyProperty IsDraggingProperty { get ; } =
-			DependencyProperty.Register("IsDragging", typeof(bool), typeof(Thumb), new PropertyMetadata(false, (s, e) => ((Thumb)s)?.OnIsDraggingChanged(e)));
+			DependencyProperty.Register("IsDragging", typeof(bool), typeof(Thumb), new FrameworkPropertyMetadata(false, (s, e) => ((Thumb)s)?.OnIsDraggingChanged(e)));
 
 		private void OnIsDraggingChanged(DependencyPropertyChangedEventArgs e)
 		{

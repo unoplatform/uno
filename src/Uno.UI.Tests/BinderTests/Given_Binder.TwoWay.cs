@@ -133,7 +133,7 @@ namespace Uno.UI.Tests.BinderTests
 			}
 
 			public static readonly DependencyProperty MyIntProperty =
-				DependencyProperty.Register("MyInt", typeof(int), typeof(MyDP), new PropertyMetadata(0));
+				DependencyProperty.Register("MyInt", typeof(int), typeof(MyDP), new FrameworkPropertyMetadata(0));
 		}
 
 		public class IncrementConverter : IValueConverter

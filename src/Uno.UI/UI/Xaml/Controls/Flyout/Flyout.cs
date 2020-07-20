@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 				"FlyoutPresenterStyle",
 				typeof(Style),
 				typeof(Flyout),
-				new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.AffectsMeasure, OnFlyoutPresenterStyleChanged));
+				new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure, OnFlyoutPresenterStyleChanged));
 
 		private static void OnFlyoutPresenterStyleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

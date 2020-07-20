@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media
 				"Color",
 				typeof(Windows.UI.Color),
 				typeof(GradientStop),
-				new PropertyMetadata(Colors.Transparent)
+				new FrameworkPropertyMetadata(Colors.Transparent)
 			);
 
 		public double Offset
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Media
 				"Offset",
 				typeof(double),
 				typeof(GradientStop),
-				new PropertyMetadata(default(double))
+				new FrameworkPropertyMetadata(default(double))
 			);
 	}
 }

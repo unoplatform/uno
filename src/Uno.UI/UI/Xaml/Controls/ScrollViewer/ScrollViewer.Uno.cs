@@ -38,7 +38,7 @@ namespace Uno.UI.Xaml.Controls
 			"UpdatesMode",
 			typeof(ScrollViewerUpdatesMode),
 			typeof(ScrollViewer),
-			new PropertyMetadata(
+			new FrameworkPropertyMetadata(
 				FeatureConfiguration.ScrollViewer.DefaultUpdatesMode,
 				(snd, e) => ((Windows.UI.Xaml.Controls.ScrollViewer)snd).UpdatesMode = (ScrollViewerUpdatesMode)e.NewValue));
 

@@ -25,7 +25,7 @@ namespace Uno.UI.Tests.App.Views
 
 		// Using a DependencyProperty as the backing store for Poco.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty PocoProperty =
-			DependencyProperty.Register("Poco", typeof(MyPoco), typeof(MyControl), new PropertyMetadata(null, OnPocoChanged));
+			DependencyProperty.Register("Poco", typeof(MyPoco), typeof(MyControl), new FrameworkPropertyMetadata(null, OnPocoChanged));
 
 		private static void OnPocoChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -39,7 +39,7 @@ namespace Uno.UI.Tests.App.Views
 
 		// Using a DependencyProperty as the backing store for MyInterval.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyIntervalProperty =
-			DependencyProperty.Register("MyInterval", typeof(TimeSpan), typeof(MyControl), new PropertyMetadata(default(TimeSpan)));
+			DependencyProperty.Register("MyInterval", typeof(TimeSpan), typeof(MyControl), new FrameworkPropertyMetadata(default(TimeSpan)));
 
 
 	}

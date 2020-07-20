@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty CenterYProperty { get ; } =
-			DependencyProperty.Register("CenterY", typeof(double), typeof(RotateTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("CenterY", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double CenterX
 		{
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty CenterXProperty { get ; } =
-			DependencyProperty.Register("CenterX", typeof(double), typeof(RotateTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("CenterX", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double Angle
 		{
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty AngleProperty { get ; } =
-			DependencyProperty.Register("Angle", typeof(double), typeof(RotateTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("Angle", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 	}
 }
 

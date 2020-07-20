@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty OrientationProperty { get ; } =
-			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(ManagedVirtualizingPanelLayout), new PropertyMetadata(Orientation.Vertical, (o, e) => ((ManagedVirtualizingPanelLayout)o).OnOrientationChanged((Orientation)e.NewValue)));
+			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(ManagedVirtualizingPanelLayout), new FrameworkPropertyMetadata(Orientation.Vertical, (o, e) => ((ManagedVirtualizingPanelLayout)o).OnOrientationChanged((Orientation)e.NewValue)));
 
 		#region CacheLength DependencyProperty
 

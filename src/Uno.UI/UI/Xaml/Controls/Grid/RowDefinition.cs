@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 				"Height",
 				typeof(GridLength),
 				typeof(RowDefinition),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					GridLengthHelper.OneStar,
 					(s, e) => ((RowDefinition)s)?.OnHeightChanged(e)
 				)

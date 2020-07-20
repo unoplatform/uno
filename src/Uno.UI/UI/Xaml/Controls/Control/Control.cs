@@ -12,6 +12,7 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Markup;
 using System.ComponentModel;
 using System.Reflection;
+using Windows.UI.Core;
 using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -108,8 +109,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Template.  This enables animation, styling, binding, etc...
-		public static DependencyProperty TemplateProperty { get ; } =
-			DependencyProperty.Register("Template", typeof(ControlTemplate), typeof(Control), new PropertyMetadata(null, (s, e) => ((Control)s)?.OnTemplateChanged(e)));
+		public static DependencyProperty TemplateProperty { get; } =
+			DependencyProperty.Register("Template", typeof(ControlTemplate), typeof(Control), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => ((Control)s)?.OnTemplateChanged(e)));
 
 		private void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -164,9 +165,35 @@ namespace Windows.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-						OnApplyTemplate();
+						if (FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
+						{
+							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
+							_applyTemplateShouldBeInvoked = true;
+						}
+						else
+						{
+							OnApplyTemplate();
+						}
 					}
 				}
+			}
+		}
+
+		private bool _applyTemplateShouldBeInvoked = false;
+
+		private protected override void OnPostLoading()
+		{
+			base.OnPostLoading();
+
+			TryCallOnApplyTemplate();
+		}
+
+		private void TryCallOnApplyTemplate()
+		{
+			if (_applyTemplateShouldBeInvoked)
+			{
+				_applyTemplateShouldBeInvoked = false;
+				OnApplyTemplate();
 			}
 		}
 
@@ -300,6 +327,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var currentTemplateRoot = _templatedRoot;
 			SetUpdateControlTemplate(forceUpdate: true);
+
+			// When .ApplyTemplate is called manually, we should not defer the call to OnApplyTemplate
+			TryCallOnApplyTemplate();
 
 			return currentTemplateRoot != _templatedRoot;
 		}
@@ -615,7 +645,7 @@ namespace Windows.UI.Xaml.Controls
 				"FocusState",
 				typeof(FocusState),
 				typeof(Control),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(FocusState)FocusState.Unfocused
 				)
 			);
@@ -635,7 +665,7 @@ namespace Windows.UI.Xaml.Controls
 				"IsTabStop",
 				typeof(bool),
 				typeof(Control),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: (bool)true,
 					propertyChangedCallback: (s, e) => ((Control)s)?.OnIsFocusableChanged()
 				)

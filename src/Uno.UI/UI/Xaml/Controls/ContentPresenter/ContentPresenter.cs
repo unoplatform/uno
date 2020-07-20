@@ -91,8 +91,9 @@ namespace Windows.UI.Xaml.Controls
 				"ContentTemplate",
 				typeof(DataTemplate),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					(s, e) => ((ContentPresenter)s)?.OnContentTemplateChanged(e.OldValue as DataTemplate, e.NewValue as DataTemplate)
 				)
 			);
@@ -111,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 				"ContentTemplateSelector",
 				typeof(DataTemplateSelector),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((ContentPresenter)s)?.OnContentTemplateSelectorChanged(e.OldValue as DataTemplateSelector, e.NewValue as DataTemplateSelector)
 				)
@@ -127,7 +128,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContentTransitionsProperty { get ; } =
-			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentPresenter), new PropertyMetadata(null, OnContentTransitionsChanged));
+			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentPresenter), new FrameworkPropertyMetadata(null, OnContentTransitionsChanged));
 
 		private static void OnContentTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -269,7 +270,7 @@ namespace Windows.UI.Xaml.Controls
 				"TextWrapping",
 				typeof(TextWrapping),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnTextWrappingChanged()
 				)
@@ -297,7 +298,7 @@ namespace Windows.UI.Xaml.Controls
 				"MaxLines",
 				typeof(int),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: 0,
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnMaxLinesChanged()
 				)
@@ -325,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 				"TextTrimming",
 				typeof(TextTrimming),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: TextTrimming.None,
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnTextTrimmingChanged()
 				)
@@ -357,7 +358,7 @@ namespace Windows.UI.Xaml.Controls
 				"TextAlignment",
 				typeof(TextAlignment),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: TextAlignment.Left,
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnTextAlignmentChanged()
 				)
@@ -385,7 +386,7 @@ namespace Windows.UI.Xaml.Controls
 				"HorizontalContentAlignment",
 				typeof(HorizontalAlignment),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					HorizontalAlignment.Stretch,
 					(s, e) => ((ContentPresenter)s)?.OnHorizontalContentAlignmentChanged((HorizontalAlignment)e.OldValue, (HorizontalAlignment)e.NewValue)
 				)
@@ -414,7 +415,7 @@ namespace Windows.UI.Xaml.Controls
 				"VerticalContentAlignment",
 				typeof(VerticalAlignment),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					VerticalAlignment.Stretch,
 					(s, e) => ((ContentPresenter)s)?.OnVerticalContentAlignmentChanged((VerticalAlignment)e.OldValue, (VerticalAlignment)e.NewValue)
 				)
@@ -443,7 +444,7 @@ namespace Windows.UI.Xaml.Controls
 				"Padding",
 				typeof(Thickness),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
 					(s, e) => ((ContentPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -471,7 +472,7 @@ namespace Windows.UI.Xaml.Controls
 				"BorderThickness",
 				typeof(Thickness),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
 					(s, e) => ((ContentPresenter)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -497,7 +498,7 @@ namespace Windows.UI.Xaml.Controls
 				"BorderBrush",
 				typeof(Brush),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((ContentPresenter)s)?.OnBorderBrushChanged((Brush)e.OldValue, (Brush)e.NewValue)
 				)

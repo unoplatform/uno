@@ -99,7 +99,7 @@ namespace Uno.UI.Toolkit
 
 #if !NETFX_CORE
 		public new static DependencyProperty BackgroundProperty { get ; } = DependencyProperty.Register(
-			"Background", typeof(Brush), typeof(ElevatedView), new PropertyMetadata(default(Brush)));
+			"Background", typeof(Brush), typeof(ElevatedView), new FrameworkPropertyMetadata(default(Brush)));
 
 		public new Brush Background
 		{
@@ -108,7 +108,7 @@ namespace Uno.UI.Toolkit
 		}
 
 		public static DependencyProperty CornerRadiusProperty { get ; } = DependencyProperty.Register(
-			"CornerRadius", typeof(CornerRadius), typeof(ElevatedView), new PropertyMetadata(default(CornerRadius), OnChanged));
+			"CornerRadius", typeof(CornerRadius), typeof(ElevatedView), new FrameworkPropertyMetadata(default(CornerRadius), OnChanged));
 
 		public CornerRadius CornerRadius
 		{

@@ -87,6 +87,20 @@ namespace Uno.UI
 			/// in the constructor of a control.
 			/// </summary>
 			public static bool UseLegacyLazyApplyTemplate { get; set; } = false;
+
+			/// <summary>
+			/// If the call to "OnApplyTemplate" should be deferred to mimic UWP sequence of events.
+			/// </summary>
+			/// <remarks>
+			/// Will never be deferred when .ApplyTemplate() is called explicitly.
+			/// More information there: https://github.com/unoplatform/uno/issues/3519
+			/// </remarks>
+			public static bool UseDeferredOnApplyTemplate { get; set; }
+#if __ANDROID__ || __IOS__ || __MACOS__
+				= false; // opt-in for iOS/Android/macOS
+#else
+				= true;
+#endif
 		}
 
 		public static class DataTemplateSelector

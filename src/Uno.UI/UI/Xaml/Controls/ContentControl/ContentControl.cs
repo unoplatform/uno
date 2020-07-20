@@ -120,8 +120,9 @@ namespace Windows.UI.Xaml.Controls
 				"ContentTemplate",
 				typeof(DataTemplate),
 				typeof(ContentControl),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					(s, e) => ((ContentControl)s)?.OnContentTemplateChanged(e.OldValue as DataTemplate, e.NewValue as DataTemplate)
 				)
 			);
@@ -140,7 +141,7 @@ namespace Windows.UI.Xaml.Controls
 				"ContentTemplateSelector",
 				typeof(DataTemplateSelector),
 				typeof(ContentControl),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((ContentControl)s)?.OnContentTemplateSelectorChanged(e.OldValue as DataTemplateSelector, e.NewValue as DataTemplateSelector)
 				)
@@ -251,7 +252,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContentTransitionsProperty { get ; } =
-			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentControl), new PropertyMetadata(null, OnContentTransitionsChanged));
+			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentControl), new FrameworkPropertyMetadata(null, OnContentTransitionsChanged));
 
 		private static void OnContentTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

@@ -309,7 +309,7 @@ namespace Windows.UI.Xaml.Controls
 				"KeyboardAppearance",
 				typeof(UIKeyboardAppearance),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					UIKeyboardAppearance.Default,
 					(s, e) => ((TextBox)s)?.OnKeyboardAppearanceChanged((UIKeyboardAppearance)e.NewValue)
 				)

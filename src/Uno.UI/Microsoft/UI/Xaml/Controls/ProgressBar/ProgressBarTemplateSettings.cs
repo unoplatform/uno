@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ProgressBarTemplateSettings : DependencyObject
 	{
 		public static DependencyProperty ContainerAnimationStartPositionProperty { get ; } = DependencyProperty.Register(
-			"ContainerAnimationStartPosition", typeof(double), typeof(ProgressBarTemplateSettings), new PropertyMetadata(default(double)));
+			"ContainerAnimationStartPosition", typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(default(double)));
 
 		public double ContainerAnimationStartPosition
 		{
@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContainerAnimationEndPositionProperty { get ; } = DependencyProperty.Register(
-			"ContainerAnimationEndPosition", typeof(double), typeof(ProgressBarTemplateSettings), new PropertyMetadata(default(double)));
+			"ContainerAnimationEndPosition", typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(default(double)));
 
 		public double ContainerAnimationEndPosition
 		{
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContainerAnimationStartPosition2Property { get ; } = DependencyProperty.Register(
-			"ContainerAnimationStartPosition2", typeof(double), typeof(ProgressBarTemplateSettings), new PropertyMetadata(default(double)));
+			"ContainerAnimationStartPosition2", typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(default(double)));
 
 		public double ContainerAnimationStartPosition2
 		{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContainerAnimationEndPosition2Property { get ; } = DependencyProperty.Register(
-			"ContainerAnimationEndPosition2", typeof(double), typeof(ProgressBarTemplateSettings), new PropertyMetadata(default(double)));
+			"ContainerAnimationEndPosition2", typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(default(double)));
 
 		public double ContainerAnimationEndPosition2
 		{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContainerAnimationMidPositionProperty { get ; } = DependencyProperty.Register(
-			"ContainerAnimationMidPosition", typeof(double), typeof(ProgressBarTemplateSettings), new PropertyMetadata(default(double)));
+			"ContainerAnimationMidPosition", typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(default(double)));
 
 		public double ContainerAnimationMidPosition
 		{
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IndicatorLengthDeltaProperty { get ; } = DependencyProperty.Register(
-			"IndicatorLengthDelta", typeof(double), typeof(ProgressBarTemplateSettings), new PropertyMetadata(default(double)));
+			"IndicatorLengthDelta", typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(default(double)));
 
 		public double IndicatorLengthDelta
 		{
@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ClipRectProperty { get ; } = DependencyProperty.Register(
-			"ClipRect", typeof(RectangleGeometry), typeof(ProgressBarTemplateSettings), new PropertyMetadata(default(RectangleGeometry)));
+			"ClipRect", typeof(RectangleGeometry), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(default(RectangleGeometry)));
 
 		public RectangleGeometry ClipRect
 		{
