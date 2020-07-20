@@ -30,7 +30,7 @@
 								<VisualState x:Name="Normal"/>
 								<VisualState x:Name="PointerOver">
 									<VisualState.Setters>
-										<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="PointerOver" />
+										<!--<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="PointerOver" />--> <!-- TODO: RevealBrush -->
 										<Setter Target="ContentPresenterGrid.Background" Value="{ThemeResource TreeViewItemBackgroundPointerOver}" />
 										<Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TreeViewItemForegroundPointerOver}" />
 										<Setter Target="ContentPresenterGrid.BorderBrush" Value="{ThemeResource TreeViewItemBorderBrushPointerOver}" />
@@ -38,7 +38,7 @@
 								</VisualState>
 								<VisualState x:Name="Pressed">
 									<VisualState.Setters>
-										<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="Pressed" />
+										<!--<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="Pressed" />--> <!-- TODO: RevealBrush -->
 										<Setter Target="ContentPresenterGrid.Background" Value="{ThemeResource TreeViewItemBackgroundPressed}" />
 										<Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TreeViewItemForegroundPressed}" />
 										<Setter Target="ContentPresenterGrid.BorderBrush" Value="{ThemeResource TreeViewItemBorderBrushPressed}" />
@@ -60,7 +60,7 @@
 								</VisualState>
 								<VisualState x:Name="PointerOverSelected">
 									<VisualState.Setters>
-										<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="PointerOver" />
+										<!--<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="PointerOver" />--> <!-- TODO: RevealBrush -->
 										<Setter Target="ContentPresenterGrid.Background" Value="{ThemeResource TreeViewItemBackgroundSelectedPointerOver}" />
 										<Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TreeViewItemForegroundSelectedPointerOver}" />
 										<Setter Target="ContentPresenterGrid.BorderBrush" Value="{ThemeResource TreeViewItemBorderBrushSelectedPointerOver}" />
@@ -68,7 +68,7 @@
 								</VisualState>
 								<VisualState x:Name="PressedSelected">
 									<VisualState.Setters>
-										<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="Pressed" />
+										<!--<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="Pressed" />--> <!-- TODO: RevealBrush -->
 										<Setter Target="ContentPresenterGrid.Background" Value="{ThemeResource TreeViewItemBackgroundSelectedPressed}" />
 										<Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TreeViewItemForegroundSelectedPressed}" />
 										<Setter Target="ContentPresenterGrid.BorderBrush" Value="{ThemeResource TreeViewItemBorderBrushSelectedPressed}" />
