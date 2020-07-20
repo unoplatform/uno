@@ -7,7 +7,7 @@ Tagging is the main driver for planning releases.
 ## Branches 
 - On the `master` branch, the main development is happening and is considered unstable. The nuget packages produced end with `-dev.X`, where X is the number of commits since the last initiated release.
 - On the `release/beta` branch, stabilisation occurs to get a stable release. The version is inherited from the branch point from master. The nuget packages produced end with `-beta.X`, where X is the number of commits since the last stable release.
-- On the `release/stable` branch, stable nuget packages are produced for each pushed merge or commit. The **Patch** number is increased by the number of commits since the release tagging occured.
+- On the `release/stable` branch, stable nuget packages are produced for each pushed merge or commit. The **Patch** number is increased by the number of commits since the release tagging occurred.
 - On `dev`, `feature`, and `project` branches, the behavior is to inherit from the base branch it was created from and create a nuget package with an experimental tag. Those branches must not be tagged.
 
 ## Creating a release

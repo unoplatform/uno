@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || NET461
 using System;
 using System.Timers;
 using Uno.UI.Converters;
@@ -112,8 +112,10 @@ namespace Windows.UI.Xaml.Controls
 			};
 
 			_controlsVisibilityTimer.Elapsed += ControlsVisibilityTimerElapsed;
+
+			DefaultStyleKey = typeof(MediaTransportControls);
 		}
-		
+
 		internal void SetMediaPlayerElement(MediaPlayerElement mediaPlayerElement)
 		{
 			_mpe = mediaPlayerElement;

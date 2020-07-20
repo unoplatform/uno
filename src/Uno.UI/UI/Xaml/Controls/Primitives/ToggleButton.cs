@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				OnToggle();
 			};
+
+			DefaultStyleKey = typeof(ToggleButton);
 		}
 
 		/// <summary>

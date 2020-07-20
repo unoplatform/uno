@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
+using Windows.UI;
 
 namespace Windows.UI.Xaml
 {
@@ -36,6 +37,8 @@ namespace Windows.UI.Xaml
 
 		internal sealed override void ManagedOnLoading()
 		{
+			base.IsLoading = true;
+
 			OnLoadingPartial();
 			ApplyCompiledBindings();
 
@@ -76,6 +79,7 @@ namespace Windows.UI.Xaml
 			{
 				// Make sure to set the flag before raising the loaded event (duplicated with the base.ManagedOnLoaded)
 				base.IsLoaded = true;
+				base.IsLoading = false;
 
 				if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 				{

@@ -13,6 +13,7 @@
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					xmlns:toolkit="using:Uno.UI.Toolkit"
+					xmlns:legacy="using:Uno.UI.Controls.Legacy"
 					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:wasm="http://uno.ui/wasm"
@@ -20,14 +21,6 @@
 					xmlns:net461="http://uno.ui/net461"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
 					mc:Ignorable="d xamarin ios android wasm not_wasm net461 macos">
-
-	<wasm:ResourceDictionary.MergedDictionaries>
-		<!--
-			On WASM we don't  necessarily have native style, so we reference the Windows styles as "native" so we are able
-			to multi-target their usage in application without having to discover which native styles are available or not.
-		-->
-		<ResourceDictionary Source="Generic.xaml" />
-	</wasm:ResourceDictionary.MergedDictionaries>
 
 	<!-- Default native Button styles -->
 	<android:Style x:Key="NativeDefaultButton"
@@ -77,6 +70,7 @@
 
 	<xamarin:Style
 		TargetType="Button"
+		xamarin:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultButton}" />
 
 	<!-- Default native CheckBox styles -->
@@ -132,6 +126,7 @@
 
 	<xamarin:Style
 		TargetType="CheckBox"
+		xamarin:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultCheckBox}" />
 
 	<!-- Default native RadioButton styles -->
@@ -189,6 +184,7 @@
 
 	<xamarin:Style
 		TargetType="ToggleSwitch"
+		xamarin:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultToggleSwitch}" />
 
 	<!-- Default native Slider styles -->
@@ -232,6 +228,7 @@
 
 	<xamarin:Style
 		BasedOn="{StaticResource NativeDefaultSlider}"
+		xamarin:IsNativeStyle="True"
 		TargetType="Slider" />
 
 	<converters:UnoNativeDefaultProgressBarReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
@@ -246,8 +243,8 @@
 						<Grid.Resources>
 						</Grid.Resources>
 						<ProgressRing IsActive="{TemplateBinding IsIndeterminate}"
-									  Foreground="{TemplateBinding Foreground}"
-									  Hidden="{TemplateBinding IsIndeterminate, Converter={StaticResource nativeDefaultProgressBarReverseBool}}" />
+											 Foreground="{TemplateBinding Foreground}"
+											 Hidden="{TemplateBinding IsIndeterminate, Converter={StaticResource nativeDefaultProgressBarReverseBool}}" />
 						<BindableUIProgressView IsActive="{TemplateBinding IsIndeterminate}"
 												Progress="{TemplateBinding ActualValue}"
 												Foreground="{TemplateBinding Foreground}" />
@@ -285,6 +282,7 @@
 
 	<xamarin:Style
 		TargetType="ProgressBar" 
+		xamarin:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultProgressBar}" />
 
 	<!-- Default native TextBox styles -->
@@ -321,6 +319,7 @@
 	</xamarin:Style>
 
 	<not_wasm:Style BasedOn="{StaticResource NativeDefaultTextBox}"
+					xamarin:IsNativeStyle="True"
 					TargetType="TextBox" />
 
 	<!-- Default native Pivot styles -->
@@ -367,10 +366,12 @@
 
 	<not_wasm:Style
 		TargetType="Pivot"
+		xamarin:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultPivot}" />
 
 	<wasm:Style
 		TargetType="Pivot"
+		xamarin:IsNativeStyle="True"
 		BasedOn="{StaticResource XamlDefaultPivot}" />
 
 	<ios:Style x:Key="NativeDefaultCommandBar"
@@ -419,7 +420,7 @@
 	<wasm:Style
 		x:Key="NativeDefaultCommandBar"
 		TargetType="CommandBar"
-		BasedOn="{StaticResource XamlCommandBar}" />
+		BasedOn="{StaticResource XamlDefaultCommandBar}" />
 
 	<macos:Style
 		x:Key="NativeDefaultCommandBar"
@@ -428,6 +429,7 @@
 
 	<xamarin:Style
 		TargetType="CommandBar"
+		xamarin:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultCommandBar}" />
 
 	<ios:Style x:Key="NativeDefaultAppBarButton"
@@ -458,6 +460,7 @@
 
 	<xamarin:Style
 		TargetType="AppBarButton"
+		xamarin:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultAppBarButton}" />
 
 	<!-- Default native Frame styles -->
@@ -503,6 +506,7 @@
 
 	<xamarin:Style
 		TargetType="Frame"
+		xamarin:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultFrame}" />
 
 	<!--

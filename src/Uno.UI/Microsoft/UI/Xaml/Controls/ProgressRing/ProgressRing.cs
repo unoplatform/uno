@@ -12,12 +12,12 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ProgressRing : Control
 	{
-		private AnimatedVisualPlayer.ILottieVisualSourceProvider _lottieProvider;
+		private ILottieVisualSourceProvider _lottieProvider;
 
 		public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register(
 			"IsActive", typeof(bool), typeof(ProgressRing), new PropertyMetadata(true, OnIsActivePropertyChanged));
 
-		private Windows.UI.Xaml.Controls.AnimatedVisualPlayer _player;
+		private AnimatedVisualPlayer _player;
 
 		public bool IsActive
 		{

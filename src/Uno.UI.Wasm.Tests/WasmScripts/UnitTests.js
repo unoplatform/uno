@@ -1,4 +1,4 @@
-require(["Uno.UI"], () => {
+require([`${config.uno_app_base}/Uno.UI`], () => {
     MonoSupport.jsCallDispatcher.registerScope("TSBindingsUnitTests", new TSBindingsTests());
 });
 class TSBindingsTests {

@@ -57,7 +57,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
-	public partial interface IFrameworkElement : IUIElement, IDataContextProvider
+	public partial interface IFrameworkElement : IUIElement, IDataContextProvider, IDependencyObjectParse
 	{
 		event RoutedEventHandler Loaded;
 		event RoutedEventHandler Unloaded;
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// The frame applied to this child when last arranged by its parent. This may differ from the current UIView.Frame if a RenderTransform is set.
 		/// </summary>
-		Foundation.Rect AppliedFrame { get; }
+		Rect AppliedFrame { get; }
 
 		void SetSubviewsNeedLayout();
 #endif
@@ -148,11 +148,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public static void Initialize(IFrameworkElement e)
 		{
-			if (FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
-			{
-				e.Style = Xaml.Style.DefaultStyleForType(e.GetType());
-			}
-
 			if (e is UIElement uiElement)
 			{
 #if __IOS__

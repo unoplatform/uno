@@ -4,6 +4,7 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -64,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			Unloaded += (s, e) => Windows.UI.Xaml.Window.Current.SizeChanged -= Current_SizeChanged;
 		}
 
-		private void Current_SizeChanged(object sender, Core.WindowSizeChangedEventArgs e)
+		private void Current_SizeChanged(object sender, WindowSizeChangedEventArgs e)
 			=> InvalidateMeasure();
 
 		protected abstract FlyoutPlacementMode PopupPlacement { get; }

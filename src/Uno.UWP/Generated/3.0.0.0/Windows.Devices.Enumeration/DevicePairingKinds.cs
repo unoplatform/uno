@@ -23,6 +23,9 @@ namespace Windows.Devices.Enumeration
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		ConfirmPinMatch,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		ProvidePasswordCredential,
+		#endif
 	}
 	#endif
 }

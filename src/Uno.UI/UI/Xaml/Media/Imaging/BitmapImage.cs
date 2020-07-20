@@ -32,6 +32,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 				UnloadImageData();
 			}
 			InitFromUri(e.NewValue as Uri);
+#if __WASM__
+			InvalidateSource();
+#endif
 		}
 
 		#endregion

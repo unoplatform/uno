@@ -8,13 +8,18 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls.Primitives;
 
+#if HAS_UNO_WINUI
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+#else
+using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
+
 namespace Windows.UI.Xaml
 {
 	public partial class Application
 	{
 		public Application()
 		{
-			Windows.UI.Xaml.GenericStyles.Initialize();
 			Window.Current.ToString();
 			Current = this;
 			PermissionsHelper.Initialize();
@@ -32,7 +37,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnSuspendingPartial()
 		{
-			Suspending?.Invoke(this, new ApplicationModel.SuspendingEventArgs(new ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
+			Suspending?.Invoke(this, new Windows.ApplicationModel.SuspendingEventArgs(new Windows.ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
 		}
 
 		private ApplicationTheme GetDefaultSystemTheme()

@@ -157,24 +157,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.0-dev.304" />
-		<PackageReference Include="Uno.Core" Version="2.0.0-dev.5" />
-		<PackageReference Include="Uno.Core.Build" Version="2.0.0-dev.5" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0-dev.4">
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
+		<PackageReference Include="Uno.Core" Version="2.0.0" />
+		<PackageReference Include="Uno.Core.Build" Version="2.0.0" />
+		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
 		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
 		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
@@ -202,6 +202,10 @@
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.json" />
 		<Reference Include="System.Memory" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -344,13 +348,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
+	  <UpToDateCheckInput Remove="UI\Xaml\LaunchActivatedEventArgs.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>BaseActivity.Callbacks.Implementation.Android.cs</LastGenOutput>
+	  </None>
+	  <None Update="Mixins\Android\FrameworkElementMixins.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
+	  </None>
+	  <None Update="UI\Xaml\Controls\ProgressRing\ProgressRing.xaml">
+	    <Generator>MSBuild:Compile</Generator>
 	  </None>
 	  <None Update="Mixins\Android\FrameworkElementMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
@@ -359,6 +371,11 @@
 	  <None Update="Mixins\Android\VisualStatesMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+	  </None>
+	  <None Update="Mixins\macOS\FrameworkElementMixins.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
 	  </None>
 	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>

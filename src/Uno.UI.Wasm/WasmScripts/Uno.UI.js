@@ -3,11 +3,24 @@ var Uno;
     var Utils;
     (function (Utils) {
         class Clipboard {
+            static startContentChanged() {
+                ['cut', 'copy', 'paste'].forEach(function (event) {
+                    document.addEventListener(event, Clipboard.onClipboardChanged);
+                });
+            }
+            static stopContentChanged() {
+                ['cut', 'copy', 'paste'].forEach(function (event) {
+                    document.removeEventListener(event, Clipboard.onClipboardChanged);
+                });
+            }
             static setText(text) {
                 const nav = navigator;
                 if (nav.clipboard) {
                     // Use clipboard object when available
-                    nav.clipboard.setText(text);
+                    nav.clipboard.writeText(text);
+                    // Trigger change notification, as clipboard API does
+                    // not execute "copy".
+                    Clipboard.onClipboardChanged();
                 }
                 else {
                     // Hack when the clipboard is not available
@@ -19,6 +32,20 @@ var Uno;
                     document.body.removeChild(textarea);
                 }
                 return "ok";
+            }
+            static getText() {
+                const nav = navigator;
+                if (nav.clipboard) {
+                    return nav.clipboard.readText();
+                }
+                return Promise.resolve(null);
+            }
+            static onClipboardChanged() {
+                if (!Clipboard.dispatchContentChanged) {
+                    Clipboard.dispatchContentChanged =
+                        Module.mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
+                }
+                Clipboard.dispatchContentChanged();
             }
         }
         Utils.Clipboard = Clipboard;
@@ -38,8 +65,6 @@ var Windows;
                     MonoSupport.jsCallDispatcher.registerScope("CoreDispatcher", Windows.UI.Core.CoreDispatcher);
                     CoreDispatcher.initMethods();
                     CoreDispatcher._isReady = isReady;
-                    CoreDispatcher._isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                    CoreDispatcher._isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
                 }
                 /**
                  * Enqueues a core dispatcher callback on the javascript's event loop
@@ -64,27 +89,15 @@ var Windows;
                     return true;
                 }
                 static InnerWakeUp() {
-                    if ((CoreDispatcher._isIOS || CoreDispatcher._isSafari) && CoreDispatcher._isFirstCall) {
-                        //
-                        // This is a workaround for the available call stack during the first 5 (?) seconds
-                        // of the startup of an application. See https://github.com/mono/mono/issues/12357 for
-                        // more details.
-                        //
-                        CoreDispatcher._isFirstCall = false;
-                        console.warn("Detected iOS, delaying first CoreDispatcher dispatch for 5 seconds (see https://github.com/mono/mono/issues/12357)");
-                        window.setTimeout(() => this.WakeUp(), 5000);
-                    }
-                    else {
-                        window.setImmediate(() => {
-                            try {
-                                CoreDispatcher._coreDispatcherCallback();
-                            }
-                            catch (e) {
-                                console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
-                                throw e;
-                            }
-                        });
-                    }
+                    window.setImmediate(() => {
+                        try {
+                            CoreDispatcher._coreDispatcherCallback();
+                        }
+                        catch (e) {
+                            console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
+                            throw e;
+                        }
+                    });
                 }
                 static initMethods() {
                     if (Uno.UI.WindowManager.isHosted) {
@@ -234,6 +247,7 @@ var MonoSupport;
                 if (!jsCallDispatcher._isUnoRegistered) {
                     jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
                     jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_StorageFolder", Windows.Storage.StorageFolder);
+                    jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_ApplicationDataContainer", Windows.Storage.ApplicationDataContainer);
                     jsCallDispatcher._isUnoRegistered = true;
                 }
                 const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
@@ -864,6 +878,94 @@ var Uno;
                 this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventExtractorId);
                 return true;
             }
+            registerPointerEventsOnView(pParams) {
+                const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
+                element.addEventListener("pointerleave", WindowManager.onPointerLeaveReceived);
+                element.addEventListener("pointerdown", WindowManager.onPointerEventReceived);
+                element.addEventListener("pointerup", WindowManager.onPointerEventReceived);
+                element.addEventListener("pointercancel", WindowManager.onPointerEventReceived);
+            }
+            static onPointerEventReceived(evt) {
+                const element = evt.currentTarget;
+                const payload = WindowManager.pointerEventExtractor(evt);
+                const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
+                if (handled) {
+                    evt.stopPropagation();
+                }
+            }
+            static onPointerEnterReceived(evt) {
+                const element = evt.target;
+                const e = evt;
+                if (e.explicitOriginalTarget) { // FF only
+                    // It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
+                    // we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
+                    // which is unexpected as the "pointerenter" should not bubble.
+                    // So we have to validate that this event is effectively due to the pointer entering the control.
+                    // We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
+                    for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
+                        if (elt == element) {
+                            // We found our target element, we can raise the event and stop the loop
+                            WindowManager.onPointerEventReceived(evt);
+                            return;
+                        }
+                        let htmlElt = elt;
+                        if (htmlElt.style.pointerEvents != "none") {
+                            // This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
+                            // However, if this 'htmlElt' is one of our child it means that the event was legitimate
+                            // and we have to raise it for the 'element'.
+                            while (htmlElt.parentElement) {
+                                htmlElt = htmlElt.parentElement;
+                                if (htmlElt == element) {
+                                    WindowManager.onPointerEventReceived(evt);
+                                    return;
+                                }
+                            }
+                            // We found an element this is capable to handle the pointers but which is not one of our child
+                            // (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
+                            // not have bubble to the element, and we can mute it.
+                            return;
+                        }
+                    }
+                }
+                else {
+                    WindowManager.onPointerEventReceived(evt);
+                }
+            }
+            static onPointerLeaveReceived(evt) {
+                const element = evt.target;
+                const e = evt;
+                if (e.explicitOriginalTarget // FF only
+                    && e.explicitOriginalTarget !== event.currentTarget
+                    && event.isOver(element)) {
+                    // If the event was re-targeted, it's suspicious as the leave event should not bubble
+                    // This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
+                    // So we have to validate that this event is effectively due to the pointer leaving the element.
+                    // We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
+                    // It's common to get a move right after the leave with the same pointer's location,
+                    // so we wait up to 3 pointer move before dropping the leave event.
+                    var attempt = 3;
+                    WindowManager.current.ensurePendingLeaveEventProcessing();
+                    WindowManager.current.processPendingLeaveEvent = (move) => {
+                        if (!move.isOverDeep(element)) {
+                            // Raising deferred pointerleave on element " + element.id);
+                            WindowManager.onPointerEventReceived(evt);
+                            WindowManager.current.processPendingLeaveEvent = null;
+                        }
+                        else if (--attempt <= 0) {
+                            // Drop deferred pointerleave on element " + element.id);
+                            WindowManager.current.processPendingLeaveEvent = null;
+                        }
+                        else {
+                            // Requeue deferred pointerleave on element " + element.id);
+                        }
+                    };
+                }
+                else {
+                    WindowManager.onPointerEventReceived(evt);
+                }
+            }
             /**
              * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
              */
@@ -897,91 +999,13 @@ var Uno;
                         event.stopPropagation();
                     }
                 };
-                if (eventName == "pointerenter") {
-                    const enterPointerHandler = (event) => {
-                        const e = event;
-                        if (e.explicitOriginalTarget) { // FF only
-                            // It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
-                            // we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
-                            // which is unexpected as the "pointerenter" should not bubble.
-                            // So we have to validate that this event is effectively due to the pointer entering the control.
-                            // We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
-                            const evt = event;
-                            for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
-                                if (elt == element) {
-                                    // We found our target element, we can raise the event and stop the loop
-                                    eventHandler(event);
-                                    return;
-                                }
-                                let htmlElt = elt;
-                                if (htmlElt.style.pointerEvents != "none") {
-                                    // This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
-                                    // However, if this 'htmlElt' is one of our child it means that the event was legitimate
-                                    // and we have to raise it for the 'element'.
-                                    while (htmlElt.parentElement) {
-                                        htmlElt = htmlElt.parentElement;
-                                        if (htmlElt == element) {
-                                            eventHandler(event);
-                                            return;
-                                        }
-                                    }
-                                    // We found an element this is capable to handle the pointers but which is not one of our child
-                                    // (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
-                                    // not have bubble to the element, and we can mute it.
-                                    return;
-                                }
-                            }
-                        }
-                        else {
-                            eventHandler(event);
-                        }
-                    };
-                    element.addEventListener(eventName, enterPointerHandler, onCapturePhase);
-                }
-                else if (eventName == "pointerleave") {
-                    const leavePointerHandler = (event) => {
-                        const e = event;
-                        if (e.explicitOriginalTarget // FF only
-                            && e.explicitOriginalTarget !== event.currentTarget
-                            && event.isOver(element)) {
-                            // If the event was re-targeted, it's suspicious as the leave event should not bubble
-                            // This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
-                            // So we have to validate that this event is effectively due to the pointer leaving the element.
-                            // We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
-                            // It's common to get a move right after the leave with the same pointer's location,
-                            // so we wait up to 3 pointer move before dropping the leave event.
-                            var attempt = 3;
-                            this.ensurePendingLeaveEventProcessing();
-                            this.processPendingLeaveEvent = (move) => {
-                                if (!move.isOverDeep(element)) {
-                                    console.log("Raising deferred pointerleave on element " + elementId);
-                                    eventHandler(event);
-                                    this.processPendingLeaveEvent = null;
-                                }
-                                else if (--attempt <= 0) {
-                                    console.log("Drop deferred pointerleave on element " + elementId);
-                                    this.processPendingLeaveEvent = null;
-                                }
-                                else {
-                                    console.log("Requeue deferred pointerleave on element " + elementId);
-                                }
-                            };
-                        }
-                        else {
-                            eventHandler(event);
-                        }
-                    };
-                    element.addEventListener(eventName, leavePointerHandler, onCapturePhase);
-                }
-                else {
-                    element.addEventListener(eventName, eventHandler, onCapturePhase);
-                }
+                element.addEventListener(eventName, eventHandler, onCapturePhase);
             }
             /**
              * pointer event extractor to be used with registerEventOnView
              * @param evt
              */
-            pointerEventExtractor(evt) {
+            static pointerEventExtractor(evt) {
                 if (!evt) {
                     return "";
                 }
@@ -1038,7 +1062,7 @@ var Uno;
                     const fontSize = window.getComputedStyle(el).fontSize;
                     document.body.removeChild(el);
                     this._wheelLineSize = fontSize ? parseInt(fontSize) : 16; /* 16 = The current common default font size */
-                    // Based on observations, even if the even reports 3 lines (the settings of windows),
+                    // Based on observations, even if the event reports 3 lines (the settings of windows),
                     // the browser will actually scroll of about 6 lines of text.
                     this._wheelLineSize *= 2.0;
                 }
@@ -1061,7 +1085,7 @@ var Uno;
                     : "";
             }
             /**
-             * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+             * focus event extractor to be used with registerEventOnView
              * @param evt
              */
             focusEventExtractor(evt) {
@@ -1099,7 +1123,7 @@ var Uno;
                     //
                     switch (eventExtractorId) {
                         case 1:
-                            return this.pointerEventExtractor;
+                            return WindowManager.pointerEventExtractor;
                         case 3:
                             return this.keyboardEventExtractor;
                         case 2:
@@ -1422,26 +1446,21 @@ var Uno;
                 elt.scrollTo(opts);
                 return true;
             }
-            setImageRawData(viewId, dataPtr, width, height) {
-                const element = this.getView(viewId);
-                if (element.tagName.toUpperCase() === "IMG") {
-                    const imgElement = element;
-                    const rawCanvas = document.createElement("canvas");
-                    rawCanvas.width = width;
-                    rawCanvas.height = height;
-                    const ctx = rawCanvas.getContext("2d");
-                    const imgData = ctx.createImageData(width, height);
-                    const bufferSize = width * height * 4;
-                    for (let i = 0; i < bufferSize; i += 4) {
-                        imgData.data[i + 0] = Module.HEAPU8[dataPtr + i + 2];
-                        imgData.data[i + 1] = Module.HEAPU8[dataPtr + i + 1];
-                        imgData.data[i + 2] = Module.HEAPU8[dataPtr + i + 0];
-                        imgData.data[i + 3] = Module.HEAPU8[dataPtr + i + 3];
-                    }
-                    ctx.putImageData(imgData, 0, 0);
-                    imgElement.src = rawCanvas.toDataURL();
-                    return "ok";
+            rawPixelsToBase64EncodeImage(dataPtr, width, height) {
+                const rawCanvas = document.createElement("canvas");
+                rawCanvas.width = width;
+                rawCanvas.height = height;
+                const ctx = rawCanvas.getContext("2d");
+                const imgData = ctx.createImageData(width, height);
+                const bufferSize = width * height * 4;
+                for (let i = 0; i < bufferSize; i += 4) {
+                    imgData.data[i + 0] = Module.HEAPU8[dataPtr + i + 2];
+                    imgData.data[i + 1] = Module.HEAPU8[dataPtr + i + 1];
+                    imgData.data[i + 2] = Module.HEAPU8[dataPtr + i + 0];
+                    imgData.data[i + 3] = Module.HEAPU8[dataPtr + i + 3];
                 }
+                ctx.putImageData(imgData, 0, 0);
+                return rawCanvas.toDataURL();
             }
             /**
              * Sets the provided image with a mono-chrome version of the provided url.
@@ -1581,6 +1600,7 @@ var Uno;
                 if (UnoAppManifest.displayName) {
                     document.title = UnoAppManifest.displayName;
                 }
+                window.addEventListener("beforeunload", () => WindowManager.dispatchSuspendingMethod());
             }
             static initMethods() {
                 if (WindowManager.isHosted) {
@@ -1595,6 +1615,9 @@ var Uno;
                     }
                     if (!WindowManager.focusInMethod) {
                         WindowManager.focusInMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+                    }
+                    if (!WindowManager.dispatchSuspendingMethod) {
+                        WindowManager.dispatchSuspendingMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
                     }
                 }
             }
@@ -1716,7 +1739,7 @@ var Uno;
         WindowManager.MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
         UI.WindowManager = WindowManager;
         if (typeof define === "function") {
-            define(["AppManifest"], () => {
+            define([`${config.uno_app_base}/AppManifest`], () => {
             });
         }
         else {
@@ -1727,6 +1750,246 @@ var Uno;
 // Ensure the "Uno" namespace is available globally
 window.Uno = Uno;
 window.Windows = Windows;
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_ClearParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_ClearParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_ContainsKeyParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_ContainsKeyParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Key = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Value = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Value = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 8, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_ContainsKeyReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.ContainsKey, "i32");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetCountParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_GetCountParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetCountReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.Count, "i32");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetKeyByIndexParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_GetKeyByIndexParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        {
+            ret.Index = Number(Module.getValue(pData + 4, "i32"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetKeyByIndexReturn {
+    marshal(pData) {
+        {
+            const stringLength = lengthBytesUTF8(this.Value);
+            const pString = Module._malloc(stringLength + 1);
+            stringToUTF8(this.Value, pString, stringLength + 1);
+            Module.setValue(pData + 0, pString, "*");
+        }
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetValueByIndexParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_GetValueByIndexParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        {
+            ret.Index = Number(Module.getValue(pData + 4, "i32"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetValueByIndexReturn {
+    marshal(pData) {
+        {
+            const stringLength = lengthBytesUTF8(this.Value);
+            const pString = Module._malloc(stringLength + 1);
+            stringToUTF8(this.Value, pString, stringLength + 1);
+            Module.setValue(pData + 0, pString, "*");
+        }
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_RemoveParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_RemoveParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Key = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_RemoveReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.Removed, "i32");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_SetValueParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_SetValueParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Key = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Value = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Value = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 8, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_TryGetValueParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_TryGetValueParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Key = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_TryGetValueReturn {
+    marshal(pData) {
+        {
+            const stringLength = lengthBytesUTF8(this.Value);
+            const pString = Module._malloc(stringLength + 1);
+            stringToUTF8(this.Value, pString, stringLength + 1);
+            Module.setValue(pData + 0, pString, "*");
+        }
+        Module.setValue(pData + 4, this.HasValue, "i32");
+    }
+}
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class StorageFolderMakePersistentParams {
     static unmarshal(pData) {
@@ -1947,6 +2210,16 @@ class WindowManagerRegisterEventOnViewParams {
         }
         {
             ret.EventExtractorId = Number(Module.getValue(pData + 12, "i32"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerRegisterPointerEventsOnViewParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerRegisterPointerEventsOnViewParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         return ret;
     }
@@ -2406,6 +2679,48 @@ PointerEvent.prototype.isOverDeep = function (element) {
 };
 var Uno;
 (function (Uno) {
+    var UI;
+    (function (UI) {
+        var Interop;
+        (function (Interop) {
+            class AsyncInteropHelper {
+                static init() {
+                    if (AsyncInteropHelper.dispatchErrorMethod) {
+                        return; // already initialized
+                    }
+                    const w = window;
+                    AsyncInteropHelper.dispatchResultMethod =
+                        w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
+                    AsyncInteropHelper.dispatchErrorMethod =
+                        w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
+                }
+                static Invoke(handle, promiseFunction) {
+                    AsyncInteropHelper.init();
+                    try {
+                        promiseFunction()
+                            .then(str => {
+                            if (typeof str == "string") {
+                                AsyncInteropHelper.dispatchResultMethod(handle, str);
+                            }
+                            else {
+                                AsyncInteropHelper.dispatchResultMethod(handle, null);
+                            }
+                        })
+                            .catch(err => {
+                            AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                        });
+                    }
+                    catch (err) {
+                        AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                    }
+                }
+            }
+            Interop.AsyncInteropHelper = AsyncInteropHelper;
+        })(Interop = UI.Interop || (UI.Interop = {}));
+    })(UI = Uno.UI || (Uno.UI = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
     var Foundation;
     (function (Foundation) {
         var Interop;
@@ -2454,6 +2769,153 @@ var Uno;
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
 // ReSharper disable InconsistentNaming
+// eslint-disable-next-line @typescript-eslint/no-namespace
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer {
+            static buildStorageKey(locality, key) {
+                return `UnoApplicationDataContainer_${locality}_${key}`;
+            }
+            static buildStoragePrefix(locality) {
+                return `UnoApplicationDataContainer_${locality}_`;
+            }
+            /**
+             * Try to get a value from localStorage
+             * */
+            static tryGetValue(pParams, pReturn) {
+                const params = ApplicationDataContainer_TryGetValueParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_TryGetValueReturn();
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                if (localStorage.hasOwnProperty(storageKey)) {
+                    ret.HasValue = true;
+                    ret.Value = localStorage.getItem(storageKey);
+                }
+                else {
+                    ret.Value = "";
+                    ret.HasValue = false;
+                }
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Set a value to localStorage
+             * */
+            static setValue(pParams) {
+                const params = ApplicationDataContainer_SetValueParams.unmarshal(pParams);
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                localStorage.setItem(storageKey, params.Value);
+                return true;
+            }
+            /**
+             * Determines if a key is contained in localStorage
+             * */
+            static containsKey(pParams, pReturn) {
+                const params = ApplicationDataContainer_ContainsKeyParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_ContainsKeyReturn();
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                ret.ContainsKey = localStorage.hasOwnProperty(storageKey);
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Gets a key by index in localStorage
+             * */
+            static getKeyByIndex(pParams, pReturn) {
+                const params = ApplicationDataContainer_GetKeyByIndexParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
+                let localityIndex = 0;
+                let returnKey = "";
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        if (localityIndex === params.Index) {
+                            returnKey = storageKey.substr(prefix.length);
+                        }
+                        localityIndex++;
+                    }
+                }
+                ret.Value = returnKey;
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Determines the number of items contained in localStorage
+             * */
+            static getCount(pParams, pReturn) {
+                const params = ApplicationDataContainer_GetCountParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_GetCountReturn();
+                ret.Count = 0;
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        ret.Count++;
+                    }
+                }
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Clears items contained in localStorage
+             * */
+            static clear(pParams) {
+                const params = ApplicationDataContainer_ClearParams.unmarshal(pParams);
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                const itemsToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        itemsToRemove.push(storageKey);
+                    }
+                }
+                for (const item in itemsToRemove) {
+                    localStorage.removeItem(itemsToRemove[item]);
+                }
+                return true;
+            }
+            /**
+             * Removes an item contained in localStorage
+             * */
+            static remove(pParams, pReturn) {
+                const params = ApplicationDataContainer_RemoveParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_RemoveReturn();
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                ret.Removed = localStorage.hasOwnProperty(storageKey);
+                if (ret.Removed) {
+                    localStorage.removeItem(storageKey);
+                }
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Gets a key by index in localStorage
+             * */
+            static getValueByIndex(pParams, pReturn) {
+                const params = ApplicationDataContainer_GetValueByIndexParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
+                let localityIndex = 0;
+                let returnKey = "";
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        if (localityIndex === params.Index) {
+                            returnKey = localStorage.getItem(storageKey);
+                        }
+                        localityIndex++;
+                    }
+                }
+                ret.Value = returnKey;
+                ret.marshal(pReturn);
+                return true;
+            }
+        }
+        Storage.ApplicationDataContainer = ApplicationDataContainer;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
     var Storage;
@@ -2799,6 +3261,48 @@ var Windows;
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
+    var Networking;
+    (function (Networking) {
+        var Connectivity;
+        (function (Connectivity) {
+            class ConnectionProfile {
+                static hasInternetAccess() {
+                    return navigator.onLine;
+                }
+            }
+            Connectivity.ConnectionProfile = ConnectionProfile;
+        })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
+    })(Networking = Windows.Networking || (Windows.Networking = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Networking;
+    (function (Networking) {
+        var Connectivity;
+        (function (Connectivity) {
+            class NetworkInformation {
+                static startStatusChanged() {
+                    window.addEventListener("online", NetworkInformation.networkStatusChanged);
+                    window.addEventListener("offline", NetworkInformation.networkStatusChanged);
+                }
+                static stopStatusChanged() {
+                    window.removeEventListener("online", NetworkInformation.networkStatusChanged);
+                    window.removeEventListener("offline", NetworkInformation.networkStatusChanged);
+                }
+                static networkStatusChanged() {
+                    if (NetworkInformation.dispatchStatusChanged == null) {
+                        NetworkInformation.dispatchStatusChanged =
+                            Module.mono_bind_static_method("[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");
+                    }
+                    NetworkInformation.dispatchStatusChanged();
+                }
+            }
+            Connectivity.NetworkInformation = NetworkInformation;
+        })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
+    })(Networking = Windows.Networking || (Windows.Networking = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
     var System;
     (function (System) {
         var Profile;
@@ -2971,13 +3475,25 @@ var Windows;
         (function (Xaml) {
             class Application {
                 static getDefaultSystemTheme() {
-                    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                        return Xaml.ApplicationTheme.Dark;
-                    }
-                    if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-                        return Xaml.ApplicationTheme.Light;
+                    if (window.matchMedia) {
+                        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                            return Xaml.ApplicationTheme.Dark;
+                        }
+                        if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+                            return Xaml.ApplicationTheme.Light;
+                        }
                     }
                     return null;
+                }
+                static observeSystemTheme() {
+                    if (!this.dispatchThemeChange) {
+                        this.dispatchThemeChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
+                    }
+                    if (window.matchMedia) {
+                        window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", () => {
+                            Application.dispatchThemeChange();
+                        });
+                    }
                 }
             }
             Xaml.Application = Application;

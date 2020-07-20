@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PointerDevice 
@@ -37,16 +37,7 @@ namespace Windows.Devices.Input
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Input.PointerDeviceType PointerDeviceType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PointerDeviceType PointerDevice.PointerDeviceType is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property PointerDeviceType
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Rect ScreenRect

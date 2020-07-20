@@ -42,7 +42,7 @@ namespace UITests.Windows_UI_ViewManagement
 				return;
 			}
 
-			var canvasRect = new Rect(canvasOrigin, canvas.ActualSize);
+			var canvasRect = new Rect(canvasOrigin, canvas.InternalActualSize);
 
 			var displayRects = spanningRects
 				.Select(r => r.PhysicalToLogicalPixels().IntersectWith(canvasRect))

@@ -1,10 +1,9 @@
 ﻿#if NET461
-#pragma warning disable CS0067 
+#pragma warning disable CS0067
 #endif
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -45,8 +44,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
 
-		internal Foundation.Size ViewportMeasureSize { get; private set; }
-		internal Foundation.Size ViewportArrangeSize { get; private set; }
+		internal Size ViewportMeasureSize { get; private set; }
+		internal Size ViewportArrangeSize { get; private set; }
 
 		static ScrollViewer()
 		{
@@ -65,6 +64,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public ScrollViewer()
 		{
+			DefaultStyleKey = typeof(ScrollViewer);
+
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
 		}
@@ -247,13 +248,13 @@ namespace Windows.UI.Xaml.Controls
 #if __IOS__
 		[global::Uno.NotImplemented]
 #endif
-		public static bool GetBringIntoViewOnFocusChange( global::Windows.UI.Xaml.DependencyObject element)
+		public static bool GetBringIntoViewOnFocusChange(global::Windows.UI.Xaml.DependencyObject element)
 			=> (bool)element.GetValue(BringIntoViewOnFocusChangeProperty);
 
 #if __IOS__
 		[global::Uno.NotImplemented]
 #endif
-		public static void SetBringIntoViewOnFocusChange( global::Windows.UI.Xaml.DependencyObject element,  bool bringIntoViewOnFocusChange)
+		public static void SetBringIntoViewOnFocusChange(global::Windows.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
 			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
 
 #if __IOS__
@@ -567,7 +568,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override Foundation.Size MeasureOverride(Foundation.Size availableSize)
+		protected override Size MeasureOverride(Size availableSize)
 		{
 			ViewportMeasureSize = availableSize;
 
@@ -578,7 +579,7 @@ namespace Windows.UI.Xaml.Controls
 		private IScrollContentPresenter _sv;
 #pragma warning restore 649 // unused member for Unit tests
 
-		protected override Foundation.Size ArrangeOverride(Foundation.Size finalSize)
+		protected override Size ArrangeOverride(Size finalSize)
 		{
 			ViewportArrangeSize = finalSize;
 
@@ -608,15 +609,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#if !NET461
 		/// <summary>
 		/// Sets the content of the ScrollViewer
 		/// </summary>
 		/// <param name="view"></param>
 		/// <remarks>Used in the context of member initialization</remarks>
 		public
-#if !__WASM__ && !__MACOS__
-			new 
+#if !__WASM__ && !__MACOS__ && !NET461
+			new
 #endif
 			void Add(View view)
 		{
@@ -829,6 +829,5 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation);
 		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation);
-#endif
 	}
 }

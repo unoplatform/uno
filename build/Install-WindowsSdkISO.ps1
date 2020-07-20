@@ -242,6 +242,12 @@ if ($InstallWindowsSDK)
     # Note: there is a delay from Windows SDK announcements to availability via the static link
     $uri = "https://go.microsoft.com/fwlink/?prd=11966&pver=1.0&plcid=0x409&clcid=0x409&ar=Flight&sar=Sdsurl&o1=$buildNumber"
 
+    if($buildNumber -eq 19041)
+    {
+        # Workaround for missing SDK
+        $uri = "https://software-download.microsoft.com/download/pr/19041.1.191206-1406.vb_release_WindowsSDK.iso";
+    }
+
     if ($env:TEMP -eq $null)
     {
         $env:TEMP = Join-Path $env:SystemDrive 'temp'

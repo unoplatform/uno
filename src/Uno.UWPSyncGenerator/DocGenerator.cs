@@ -15,7 +15,7 @@ namespace Uno.UWPSyncGenerator
 	/// </summary>
 	class DocGenerator : Generator
 	{
-		private const string DocPath = @"..\..\..\..\..\doc\articles";
+		private const string DocPath = @"..\..\..\..\doc\articles";
 		private const string ImplementedViewsFileName = "implemented-views.md";
 		private const string ImplementedPath = @"./implemented/";
 

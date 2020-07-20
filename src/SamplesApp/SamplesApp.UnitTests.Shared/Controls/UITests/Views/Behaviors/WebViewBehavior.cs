@@ -1,4 +1,4 @@
-﻿#if NETFX_CORE || XAMARIN || __WASM__
+﻿#if XAMARIN || __WASM__
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,17 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Dom
 {
-	#if false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IXmlNodeSelector 
 	{
-		#if false
-		global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNode( string xpath);
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.XmlNodeList SelectNodes( string xpath);
-		#endif
+		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNodeSelector.SelectSingleNode(string)
+		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNodeSelector.SelectNodes(string)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS( string xpath,  object namespaces);
 		#endif

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Hosting
     {
         public static global::Windows.UI.Composition.Visual GetElementVisual(global::Windows.UI.Xaml.UIElement element)
         {
-            return new Composition.Visual() { NativeOwner = element };
+            return new Windows.UI.Composition.Visual() { NativeOwner = element };
         }
 
         public static void SetElementChildVisual(global::Windows.UI.Xaml.UIElement element, global::Windows.UI.Composition.Visual visual)

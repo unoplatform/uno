@@ -10,6 +10,9 @@ using Uno.UI.Common;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace Uno.UI.Samples.UITests.ImageTests.Models
 {
 	public class ImageWithLateSourceViewModel : ViewModelBase

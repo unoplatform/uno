@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
@@ -37,7 +38,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		{
 			var SUT = new Binding_StateTrigger();
 
-			Assert.IsNull(SUT._StringField.Text);
+			Assert.AreEqual(string.Empty, SUT._StringField.Text);
 
 			SUT.ForceLoaded();
 
@@ -583,13 +584,109 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.ForceLoaded();
 
-			var inner = SUT.root.FindName("inner") as Windows.UI.Xaml.Controls.TextBlock;
+			var inner = SUT.root.FindName("inner") as TextBlock;
 
-			Assert.IsNull(inner.Text);
+			Assert.AreEqual(string.Empty, inner.Text);
 
 			SUT.root.Content = "hello!";
 
 			Assert.AreEqual("hello!", inner.Text);
+		}
+
+		[TestMethod]
+		public void When_TypeMismatch()
+		{
+			var SUT = new Binding_TypeMismatch();
+
+			SUT.ForceLoaded();
+
+			var slider = SUT.FindName("mySlider") as Slider;
+			var textBlock = SUT.FindName("myTextBlock") as TextBlock;
+
+			Assert.AreEqual(0.0, slider.Value);
+			Assert.AreEqual("0", textBlock.Text);
+			Assert.AreEqual(0, SUT.MyInteger);
+
+			slider.Minimum = 10.0;
+
+			Assert.AreEqual(10.0, slider.Value);
+			Assert.AreEqual(10, SUT.MyInteger);
+			Assert.AreEqual("10", textBlock.Text);
+		}
+
+		[TestMethod]
+		public void When_TypeMismatch_DataTemplate()
+		{
+			var SUT = new Binding_TypeMismatch_DataTemplate();
+
+			var rootData = new Binding_TypeMismatch_DataTemplate_Data();
+			SUT.root.Content = rootData;
+
+			Assert.AreEqual(0, rootData.MyInteger);
+
+			SUT.ForceLoaded();
+
+			var slider = SUT.FindName("mySlider") as Slider;
+			var textBlock = SUT.FindName("myTextBlock") as TextBlock;
+
+			Assert.AreEqual(0.0, slider.Value);
+			Assert.AreEqual(0, rootData.MyInteger);
+			Assert.AreEqual("0", textBlock.Text);
+
+			slider.Minimum = 10.0;
+
+			Assert.AreEqual(10.0, slider.Value);
+			Assert.AreEqual(10, rootData.MyInteger);
+			Assert.AreEqual("10", textBlock.Text);
+		}
+
+		[TestMethod]
+		public void When_Event()
+		{
+			var SUT = new Binding_Event();
+
+			SUT.ForceLoaded();
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, SUT.CheckedRaised);
+			Assert.AreEqual(0, SUT.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, SUT.CheckedRaised);
+			Assert.AreEqual(0, SUT.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, SUT.CheckedRaised);
+			Assert.AreEqual(1, SUT.UncheckedRaised);
+		}
+
+		[TestMethod]
+		public void When_Event_DataTemplate()
+		{
+			var SUT = new Binding_Event_DataTemplate();
+
+			var rootData = new Binding_Event_DataTemplate_Model();
+			SUT.root.Content = rootData;
+
+			SUT.ForceLoaded();
+
+			var checkBox = SUT.root.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, rootData.CheckedRaised);
+			Assert.AreEqual(0, rootData.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, rootData.CheckedRaised);
+			Assert.AreEqual(0, rootData.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, rootData.CheckedRaised);
+			Assert.AreEqual(1, rootData.UncheckedRaised);
 		}
 	}
 }

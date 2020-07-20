@@ -12,15 +12,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public const string BundleResourcePrefix = "ms-appx:///";
 
 		public const string RootFoundationNamespace = "Windows.Foundation";
-		public const string RootUINamespace = "Windows.UI";
-		public const string BaseXamlNamespace = RootUINamespace + ".Xaml";
+		public const string RootWUINamespace = "Windows" + ".UI"; // Keep split for the WinUI conversion tool
+		public const string RootMUINamespace = "Windows.UI";
+		public const string BaseXamlNamespace = "Windows.UI.Xaml";
 		public const string UnoXamlNamespace = "Windows.UI.Xaml";
 
 		public static class Namespaces
 		{
 			public const string Controls = BaseXamlNamespace + ".Controls";
 			public const string Primitives = Controls + ".Primitives";
-			public const string Text = RootUINamespace + ".Text";
+			public const string Text = RootWUINamespace + ".Text";
 			public const string Data = BaseXamlNamespace + ".Data";
 			public const string Documents = BaseXamlNamespace + ".Documents";
 			public const string Media = BaseXamlNamespace + ".Media";
@@ -34,7 +35,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				Shapes,
 				Media,
 				MediaAnimation,
-				RootUINamespace,
+				RootWUINamespace,
 				BaseXamlNamespace,
 				Data,
 				Documents,
@@ -63,12 +64,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string DependencyObjectExtensions = BaseXamlNamespace + ".DependencyObjectExtensions";
 			public const string DependencyProperty = BaseXamlNamespace + ".DependencyProperty";
 			public const string IFrameworkElement = UnoXamlNamespace + ".IFrameworkElement";
+			public const string FrameworkElement = UnoXamlNamespace + ".FrameworkElement";
 			public const string UIElement = UnoXamlNamespace + ".UIElement";
 			public const string Style = BaseXamlNamespace + ".Style";
+			public const string ResourceDictionary = BaseXamlNamespace + ".ResourceDictionary";
 			public const string ElementStub = BaseXamlNamespace + ".ElementStub";
 			public const string ContentPresenter = Namespaces.Controls + ".ContentPresenter";
 			public const string Markup = BaseXamlNamespace + ".Markup";
 			public const string Metadata = RootFoundationNamespace + ".Metadata";
+			public const string IDependencyObjectParse = UnoXamlNamespace + ".IDependencyObjectParse";
 
 			// Attributes
 			public const string ContentPropertyAttribute = Markup + ".ContentPropertyAttribute";
@@ -84,8 +88,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string SolidColorBrushHelper = BaseXamlNamespace + ".SolidColorBrushHelper";
 			public const string GridLength = BaseXamlNamespace + ".GridLength";
 			public const string GridUnitType = BaseXamlNamespace + ".GridUnitType";
-			public const string Color = RootUINamespace + ".Color";
-			public const string Colors = RootUINamespace + ".Colors";
+			public const string Color = RootWUINamespace + ".Color";
+			public const string Colors = RootMUINamespace + ".Colors";
+			public const string ColorHelper = RootMUINamespace + ".ColorHelper";
 			public const string Thickness = BaseXamlNamespace + ".Thickness";
 			public const string Application = BaseXamlNamespace + ".Application";
 

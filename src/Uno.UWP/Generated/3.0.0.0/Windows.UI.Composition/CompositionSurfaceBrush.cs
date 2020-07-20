@@ -175,6 +175,20 @@ namespace Windows.UI.Composition
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool SnapToPixels
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CompositionSurfaceBrush.SnapToPixels is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSurfaceBrush", "bool CompositionSurfaceBrush.SnapToPixels");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.BitmapInterpolationMode.get
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.BitmapInterpolationMode.set
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.HorizontalAlignmentRatio.get
@@ -199,5 +213,7 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.Scale.set
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.TransformMatrix.get
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.TransformMatrix.set
+		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.SnapToPixels.get
+		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.SnapToPixels.set
 	}
 }

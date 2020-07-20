@@ -33,6 +33,11 @@
 
     <!-- Disable source link when not building on GitHub -->
     <SourceLinkEnabled Condition="'$(BUILD_REPOSITORY_PROVIDER)'!='GitHub'">false</SourceLinkEnabled>
+	<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
+	<Deterministic>true</Deterministic>
+	
+	<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
+	<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -41,8 +46,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<!-- Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)-->
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+	<!--
+	Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)
+	Make sure to include on the versions that are needed to avoid growing the nuget cache unnecessarily.
+	-->
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.0" PrivateAssets="All" />
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
   <PropertyGroup>

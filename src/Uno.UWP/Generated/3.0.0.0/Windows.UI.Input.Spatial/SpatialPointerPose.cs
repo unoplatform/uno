@@ -27,6 +27,26 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Perception.People.EyesPose Eyes
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member EyesPose SpatialPointerPose.Eyes is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsHeadCapturedBySystem
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SpatialPointerPose.IsHeadCapturedBySystem is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.Timestamp.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.Head.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
@@ -36,6 +56,8 @@ namespace Windows.UI.Input.Spatial
 			throw new global::System.NotImplementedException("The member SpatialPointerInteractionSourcePose SpatialPointerPose.TryGetInteractionSourcePose(SpatialInteractionSource source) is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.Eyes.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.IsHeadCapturedBySystem.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetAtTimestamp( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem,  global::Windows.Perception.PerceptionTimestamp timestamp)

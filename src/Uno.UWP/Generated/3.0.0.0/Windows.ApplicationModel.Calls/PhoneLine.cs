@@ -127,6 +127,16 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string TransportDeviceId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PhoneLine.TransportDeviceId is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.LineChanged.add
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.LineChanged.remove
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.Id.get
@@ -162,6 +172,14 @@ namespace Windows.ApplicationModel.Calls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLine", "void PhoneLine.DialWithOptions(PhoneDialOptions options)");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void EnableTextReply( bool value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLine", "void PhoneLine.EnableTextReply(bool value)");
+		}
+		#endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.TransportDeviceId.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLine> FromIdAsync( global::System.Guid lineId)

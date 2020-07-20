@@ -881,6 +881,25 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		#region registerPointerEventsOnView
+		internal static void RegisterPointerEventsOnView(IntPtr htmlId)
+		{
+			var parms = new WindowManagerRegisterPointerEventsOnViewParams()
+			{
+				HtmlId = htmlId,
+			};
+
+			TSInteropMarshaller.InvokeJS<WindowManagerRegisterPointerEventsOnViewParams>("Uno:registerPointerEventsOnView", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerRegisterPointerEventsOnViewParams
+		{
+			public IntPtr HtmlId;
+		}
+		#endregion
+
 		#region GetBBox
 
 		internal static Rect GetBBox(IntPtr htmlId)

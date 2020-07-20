@@ -1,4 +1,5 @@
-﻿
+﻿declare const config: any;
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Uno.UI {
 
@@ -144,6 +145,7 @@ namespace Uno.UI {
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
 		private static focusInMethod: any;
+		private static dispatchSuspendingMethod: any;
 		private static getDependencyPropertyValueMethod: any;
 		private static setDependencyPropertyValueMethod: any;
 
@@ -729,7 +731,7 @@ namespace Uno.UI {
 			elementId: number,
 			eventName: string,
 			onCapturePhase: boolean = false,
-			eventExtractorId: number,
+			eventExtractorId: number
 		): string {
 			this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventExtractorId);
 			return "ok";
@@ -741,9 +743,7 @@ namespace Uno.UI {
 			* @param eventName The name of the event
 			* @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
 			*/
-		public registerEventOnViewNative(
-			pParams: number
-		): boolean {
+		public registerEventOnViewNative(pParams: number): boolean {
 			const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
 
 			this.registerEventOnViewInternal(
@@ -753,6 +753,107 @@ namespace Uno.UI {
 				params.EventExtractorId);
 
 			return true;
+		}
+
+		public registerPointerEventsOnView(pParams: number): void {
+			const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+			const element = this.getView(params.HtmlId);
+
+			element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
+			element.addEventListener("pointerleave", WindowManager.onPointerLeaveReceived);
+			element.addEventListener("pointerdown", WindowManager.onPointerEventReceived);
+			element.addEventListener("pointerup", WindowManager.onPointerEventReceived);
+			element.addEventListener("pointercancel", WindowManager.onPointerEventReceived);
+		}
+
+		public static onPointerEventReceived(evt: PointerEvent): void {
+			const element = evt.currentTarget as HTMLElement | SVGElement;
+			const payload = WindowManager.pointerEventExtractor(evt);
+			const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
+			if (handled) {
+				evt.stopPropagation();
+			}
+		}
+
+		public static onPointerEnterReceived(evt: PointerEvent): void {
+			const element = evt.target as HTMLElement | SVGElement;
+			const e = evt as any;
+
+			if (e.explicitOriginalTarget) { // FF only
+
+				// It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
+				// we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
+				// which is unexpected as the "pointerenter" should not bubble.
+				// So we have to validate that this event is effectively due to the pointer entering the control.
+				// We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
+
+				for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
+					if (elt == element) {
+						// We found our target element, we can raise the event and stop the loop
+						WindowManager.onPointerEventReceived(evt);
+						return;
+					}
+
+					let htmlElt = elt as HTMLElement;
+					if (htmlElt.style.pointerEvents != "none") {
+						// This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
+						// However, if this 'htmlElt' is one of our child it means that the event was legitimate
+						// and we have to raise it for the 'element'.
+						while (htmlElt.parentElement) {
+							htmlElt = htmlElt.parentElement;
+							if (htmlElt == element) {
+								WindowManager.onPointerEventReceived(evt);
+								return;
+							}
+						}
+
+						// We found an element this is capable to handle the pointers but which is not one of our child
+						// (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
+						// not have bubble to the element, and we can mute it.
+						return;
+					}
+				}
+			} else {
+				WindowManager.onPointerEventReceived(evt);
+			}
+		}
+
+		public static onPointerLeaveReceived(evt: PointerEvent): void {
+			const element = evt.target as HTMLElement | SVGElement;
+			const e = evt as any;
+
+			if (e.explicitOriginalTarget // FF only
+				&& e.explicitOriginalTarget !== event.currentTarget
+				&& (event as PointerEvent).isOver(element)) {
+
+				// If the event was re-targeted, it's suspicious as the leave event should not bubble
+				// This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
+				// So we have to validate that this event is effectively due to the pointer leaving the element.
+				// We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
+
+				// It's common to get a move right after the leave with the same pointer's location,
+				// so we wait up to 3 pointer move before dropping the leave event.
+				var attempt = 3;
+
+				WindowManager.current.ensurePendingLeaveEventProcessing();
+				WindowManager.current.processPendingLeaveEvent = (move: PointerEvent) => {
+					if (!move.isOverDeep(element)) {
+						// Raising deferred pointerleave on element " + element.id);
+						WindowManager.onPointerEventReceived(evt);
+
+						WindowManager.current.processPendingLeaveEvent = null;
+					} else if (--attempt <= 0) {
+						// Drop deferred pointerleave on element " + element.id);
+
+						WindowManager.current.processPendingLeaveEvent = null;
+					} else {
+						// Requeue deferred pointerleave on element " + element.id);
+					}
+				};
+
+			} else {
+				WindowManager.onPointerEventReceived(evt);
+			}
 		}
 
 		private processPendingLeaveEvent: (evt: PointerEvent) => void;
@@ -789,7 +890,7 @@ namespace Uno.UI {
 			elementId: number,
 			eventName: string,
 			onCapturePhase: boolean = false,
-			eventExtractorId: number,
+			eventExtractorId: number
 		): void {
 			const element = this.getView(elementId);
 			const eventExtractor = this.getEventExtractor(eventExtractorId);
@@ -804,100 +905,14 @@ namespace Uno.UI {
 				}
 			};
 
-			if (eventName == "pointerenter") {
-				const enterPointerHandler = (event: Event) => {
-					const e = event as any;
-
-					if (e.explicitOriginalTarget) { // FF only
-
-						// It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
-						// we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
-						// which is unexpected as the "pointerenter" should not bubble.
-						// So we have to validate that this event is effectively due to the pointer entering the control.
-						// We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
-
-						const evt = event as PointerEvent;
-						for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
-							if (elt == element) {
-								// We found our target element, we can raise the event and stop the loop
-								eventHandler(event);
-								return;
-							}
-
-							let htmlElt = elt as HTMLElement;
-							if (htmlElt.style.pointerEvents != "none") {
-								// This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
-								// However, if this 'htmlElt' is one of our child it means that the event was legitimate
-								// and we have to raise it for the 'element'.
-								while (htmlElt.parentElement) {
-									htmlElt = htmlElt.parentElement;
-									if (htmlElt == element) {
-										eventHandler(event);
-										return;
-									}
-								}
-
-								// We found an element this is capable to handle the pointers but which is not one of our child
-								// (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
-								// not have bubble to the element, and we can mute it.
-								return;
-							}
-						}
-					} else {
-						eventHandler(event);
-					}
-				}
-
-				element.addEventListener(eventName, enterPointerHandler, onCapturePhase);
-			} else if (eventName == "pointerleave") {
-				const leavePointerHandler = (event: Event) => {
-					const e = event as any;
-
-					if (e.explicitOriginalTarget // FF only
-						&& e.explicitOriginalTarget !== event.currentTarget
-						&& (event as PointerEvent).isOver(element)) {
-
-						// If the event was re-targeted, it's suspicious as the leave event should not bubble
-						// This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
-						// So we have to validate that this event is effectively due to the pointer leaving the element.
-						// We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
-
-						// It's common to get a move right after the leave with the same pointer's location,
-						// so we wait up to 3 pointer move before dropping the leave event.
-						var attempt = 3;
-
-						this.ensurePendingLeaveEventProcessing();
-						this.processPendingLeaveEvent = (move: PointerEvent) => {
-							if (!move.isOverDeep(element)) {
-								console.log("Raising deferred pointerleave on element " + elementId);
-								eventHandler(event);
-
-								this.processPendingLeaveEvent = null;
-							} else if (--attempt <= 0) {
-								console.log("Drop deferred pointerleave on element " + elementId);
-
-								this.processPendingLeaveEvent = null;
-							} else {
-								console.log("Requeue deferred pointerleave on element " + elementId);
-							}
-						};
-
-					} else {
-						eventHandler(event);
-					}
-				}
-
-				element.addEventListener(eventName, leavePointerHandler, onCapturePhase);
-			} else {
-				element.addEventListener(eventName, eventHandler, onCapturePhase);
-			}
+			element.addEventListener(eventName, eventHandler, onCapturePhase);
 		}
 
 		/**
 		 * pointer event extractor to be used with registerEventOnView
 		 * @param evt
 		 */
-		private pointerEventExtractor(evt: PointerEvent|WheelEvent): string {
+		private static pointerEventExtractor(evt: PointerEvent|WheelEvent): string {
 			if (!evt) {
 				return "";
 			}
@@ -962,7 +977,7 @@ namespace Uno.UI {
 
 				this._wheelLineSize = fontSize ? parseInt(fontSize) : 16; /* 16 = The current common default font size */
 
-				// Based on observations, even if the even reports 3 lines (the settings of windows),
+				// Based on observations, even if the event reports 3 lines (the settings of windows),
 				// the browser will actually scroll of about 6 lines of text.
 				this._wheelLineSize *= 2.0;
 			}
@@ -989,7 +1004,7 @@ namespace Uno.UI {
 		}
 
 		/**
-		 * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+		 * focus event extractor to be used with registerEventOnView
 		 * @param evt
 		 */
 		private focusEventExtractor(evt: FocusEvent): string {
@@ -1037,8 +1052,7 @@ namespace Uno.UI {
 
 				switch (eventExtractorId) {
 					case 1:
-						return this.pointerEventExtractor;
-
+						return WindowManager.pointerEventExtractor;
 					case 3:
 						return this.keyboardEventExtractor;
 
@@ -1462,33 +1476,25 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string {
-			const element = this.getView(viewId);
+		public rawPixelsToBase64EncodeImage(dataPtr: number, width: number, height: number): string {
+			const rawCanvas = document.createElement("canvas");
+			rawCanvas.width = width;
+			rawCanvas.height = height;
 
-			if (element.tagName.toUpperCase() === "IMG") {
-				const imgElement = element as HTMLImageElement;
+			const ctx = rawCanvas.getContext("2d");
+			const imgData = ctx.createImageData(width, height);
 
-				const rawCanvas = document.createElement("canvas");
-				rawCanvas.width = width;
-				rawCanvas.height = height;
+			const bufferSize = width * height * 4;
 
-				const ctx = rawCanvas.getContext("2d");
-				const imgData = ctx.createImageData(width, height);
-
-				const bufferSize = width * height * 4;
-
-				for (let i = 0; i < bufferSize; i += 4) {
-					imgData.data[i + 0] = Module.HEAPU8[dataPtr + i + 2];
-					imgData.data[i + 1] = Module.HEAPU8[dataPtr + i + 1];
-					imgData.data[i + 2] = Module.HEAPU8[dataPtr + i + 0];
-					imgData.data[i + 3] = Module.HEAPU8[dataPtr + i + 3];
-				}
-				ctx.putImageData(imgData, 0, 0);
-
-				imgElement.src = rawCanvas.toDataURL();
-
-				return "ok";
+			for (let i = 0; i < bufferSize; i += 4) {
+				imgData.data[i + 0] = Module.HEAPU8[dataPtr + i + 2];
+				imgData.data[i + 1] = Module.HEAPU8[dataPtr + i + 1];
+				imgData.data[i + 2] = Module.HEAPU8[dataPtr + i + 0];
+				imgData.data[i + 3] = Module.HEAPU8[dataPtr + i + 3];
 			}
+			ctx.putImageData(imgData, 0, 0);
+
+			return rawCanvas.toDataURL();
 		}
 
 
@@ -1668,6 +1674,10 @@ namespace Uno.UI {
 				document.title = UnoAppManifest.displayName;
 			}
 
+			window.addEventListener(
+				"beforeunload",
+				() => WindowManager.dispatchSuspendingMethod()
+			);
 		}
 
 		private static initMethods() {
@@ -1685,6 +1695,10 @@ namespace Uno.UI {
 
 				if (!WindowManager.focusInMethod) {
 					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+				}
+
+				if (!WindowManager.dispatchSuspendingMethod) {
+					WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
 				}
 			}
 		}
@@ -1820,7 +1834,7 @@ namespace Uno.UI {
 
 	if (typeof define === "function") {
 		define(
-			["AppManifest"],
+			[`${config.uno_app_base}/AppManifest`],
 			() => {
 			}
 		);

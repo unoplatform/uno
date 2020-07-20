@@ -39,15 +39,11 @@ namespace Windows.UI.Xaml.Controls
 			OnFontWeightChangedPartial();
 			OnTextChangedPartial();
 			OnFontFamilyChangedPartial();
+			OnFontSizeChangedPartial();
 			OnCharacterSpacingChangedPartial();
 			OnLineHeightChangedPartial();
 			OnTextAlignmentChangedPartial();
 			OnTextWrappingChangedPartial();
-		}
-
-		partial void InvalidateTextBlockPartial()
-		{
-
 		}
 
 		private void ConditionalUpdate(ref bool condition, Action action)

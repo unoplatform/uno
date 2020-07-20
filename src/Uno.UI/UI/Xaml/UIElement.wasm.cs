@@ -14,6 +14,7 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.System;
 
 namespace Windows.UI.Xaml
 {
@@ -22,6 +23,11 @@ namespace Windows.UI.Xaml
 		// Even if this a concept of FrameworkElement, the loaded state is handled by the UIElement in order to avoid
 		// to cast to FrameworkElement each time a child is added or removed.
 		internal bool IsLoaded;
+
+		/// <summary>
+		/// This flag is transiently set while element is 'loading' but not yet 'loaded'.
+		/// </summary>
+		internal bool IsLoading;
 
 		private readonly GCHandle _gcHandle;
 		private readonly bool _isFrameworkElement;
@@ -523,7 +529,7 @@ namespace Windows.UI.Xaml
 		private void OnAddingChild(UIElement child)
 		{
 			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-				&& IsLoaded
+				&& (IsLoaded || IsLoading)
 				&& child._isFrameworkElement)
 			{
 				if (child.IsLoaded)
@@ -577,6 +583,8 @@ namespace Windows.UI.Xaml
 
 		internal virtual void ManagedOnLoading()
 		{
+			IsLoading = true;
+			
 			for (var i = 0; i < _children.Count; i++)
 			{
 				var child = _children[i];
@@ -586,6 +594,7 @@ namespace Windows.UI.Xaml
 
 		internal virtual void ManagedOnLoaded(int depth)
 		{
+			IsLoading = false;
 			IsLoaded = true;
 			Depth = depth;
 
@@ -598,6 +607,7 @@ namespace Windows.UI.Xaml
 
 		internal virtual void ManagedOnUnloaded()
 		{
+			IsLoading = false;
 			IsLoaded = false;
 			Depth = null;
 
@@ -670,7 +680,7 @@ namespace Windows.UI.Xaml
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			return new KeyRoutedEventArgs(src, System.VirtualKeyHelper.FromKey(payload)) {CanBubbleNatively = true};
+			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload)) {CanBubbleNatively = true};
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)

@@ -1,10 +1,38 @@
-﻿using System;
+using System;
 using Uno;
+using Uno.UI;
 using Uno.Diagnostics.Eventing;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.ApplicationModel.Core;
+using Windows.ApplicationModel;
+
+#if HAS_UNO_WINUI
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+#else
+using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
+
+#if XAMARIN_ANDROID
+using View = Android.Views.View;	
+using ViewGroup = Android.Views.ViewGroup;	
+using Font = Android.Graphics.Typeface;	
+using Android.Graphics;	
+using DependencyObject = System.Object;	
+#elif XAMARIN_IOS
+using View = UIKit.UIView;	
+using ViewGroup = UIKit.UIView;	
+using UIKit;	
+#elif __MACOS__
+using View = AppKit.NSView;	
+using ViewGroup = AppKit.NSView;	
+using AppKit;	
+#else
+using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -13,6 +41,7 @@ namespace Windows.UI.Xaml
 		private bool _initializationComplete = false;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private ApplicationTheme? _requestedTheme;
+		private bool _themeSetExplicitly = false;
 
 		[Preserve]
 		public static class TraceProvider
@@ -32,14 +61,25 @@ namespace Windows.UI.Xaml
 
 		public ApplicationTheme RequestedTheme
 		{
-			get => _requestedTheme ?? (_requestedTheme = GetDefaultSystemTheme()).Value;
+			get
+			{
+				if (_requestedTheme == null)
+				{
+					// just cache the theme, but do not notify about a change unnecessarily	
+					_requestedTheme = GetDefaultSystemTheme();
+					ObserveSystemThemeChanges();
+				}
+				return _requestedTheme.Value;
+			}
 			set
 			{
 				if (_initializationComplete)
 				{
 					throw new NotSupportedException("Operation not supported");
 				}
-				_requestedTheme = value;
+				// this flag makes sure the app will not respond to OS events	
+				_themeSetExplicitly = true;
+				SetRequestedTheme(value);
 			}
 		}
 
@@ -55,6 +95,16 @@ namespace Windows.UI.Xaml
 
 		public event UnhandledExceptionEventHandler UnhandledException;
 
+		public void OnSystemThemeChanged()
+		{
+			// if user overrides theme, don't apply system theme
+			if (!_themeSetExplicitly)
+			{
+				var theme = GetDefaultSystemTheme();
+				SetRequestedTheme(theme);
+			}
+		}
+
 #if !__ANDROID__
 		[NotImplemented]
 		public void Exit()
@@ -67,6 +117,8 @@ namespace Windows.UI.Xaml
 		{
 			StartPartial(callback);
 		}
+
+		partial void ObserveSystemThemeChanges();
 
 		static partial void StartPartial(ApplicationInitializationCallback callback);
 
@@ -96,7 +148,7 @@ namespace Windows.UI.Xaml
 
 		internal void OnResuming()
 		{
-			ApplicationModel.Core.CoreApplication.RaiseResuming();
+			CoreApplication.RaiseResuming();
 
 			OnResumingPartial();
 		}
@@ -105,7 +157,7 @@ namespace Windows.UI.Xaml
 
 		internal void OnSuspending()
 		{
-			ApplicationModel.Core.CoreApplication.RaiseSuspending(new ApplicationModel.SuspendingEventArgs(new ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
+			CoreApplication.RaiseSuspending(new SuspendingEventArgs(new SuspendingOperation(DateTime.Now.AddSeconds(30))));
 
 			OnSuspendingPartial();
 		}
@@ -119,6 +171,49 @@ namespace Windows.UI.Xaml
 		internal void RaiseWindowCreated(Window window)
 		{
 			OnWindowCreated(new WindowCreatedEventArgs(window));
+		}
+
+		internal void SetRequestedTheme(ApplicationTheme requestedTheme)
+		{
+			if (requestedTheme != _requestedTheme)
+			{
+				_requestedTheme = requestedTheme;
+
+				OnRequestedThemeChanged();
+			}
+		}
+
+		private void OnRequestedThemeChanged()
+		{
+			if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
+			{
+				PropagateThemeChanged(root);
+			}
+
+			void PropagateThemeChanged(object instance)
+			{
+				// Update ThemeResource references that have changed
+				if (instance is FrameworkElement fe)
+				{
+					fe.UpdateThemeBindings();
+				}
+
+				//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations
+				if (instance is Controls.Panel p)
+				{
+					foreach (object o in p.Children)
+					{
+						PropagateThemeChanged(o);
+					}
+				}
+				else if (instance is ViewGroup g)
+				{
+					foreach (object o in g.GetChildren())
+					{
+						PropagateThemeChanged(o);
+					}
+				}
+			}
 		}
 	}
 }

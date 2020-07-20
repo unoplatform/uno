@@ -269,7 +269,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FontStretch", typeof(global::Windows.UI.Text.FontStretch), 
+			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
 		#endif
@@ -277,21 +277,14 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FontWeightProperty
 		// Skipping already declared property ForegroundProperty
 		// Skipping already declared property HorizontalContentAlignmentProperty
-		#if false || false || NET461 || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsEnabled", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
+		// Skipping already declared property IsEnabledProperty
 		// Skipping already declared property IsTabStopProperty
 		// Skipping already declared property PaddingProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TabIndexProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TabIndex", typeof(int), 
+			nameof(TabIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -299,7 +292,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TabNavigationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TabNavigation", typeof(global::Windows.UI.Xaml.Input.KeyboardNavigationMode), 
+			nameof(TabNavigation), typeof(global::Windows.UI.Xaml.Input.KeyboardNavigationMode), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyboardNavigationMode)));
 		#endif
@@ -311,7 +304,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CharacterSpacingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CharacterSpacing", typeof(int), 
+			nameof(CharacterSpacing), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -319,7 +312,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DefaultStyleKeyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DefaultStyleKey", typeof(object), 
+			nameof(DefaultStyleKey), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -327,7 +320,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsTextScaleFactorEnabled", typeof(bool), 
+			nameof(IsTextScaleFactorEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -343,7 +336,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty UseSystemFocusVisualsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"UseSystemFocusVisuals", typeof(bool), 
+			nameof(UseSystemFocusVisuals), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -351,7 +344,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ElementSoundMode", typeof(global::Windows.UI.Xaml.ElementSoundMode), 
+			nameof(ElementSoundMode), typeof(global::Windows.UI.Xaml.ElementSoundMode), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
 		#endif
@@ -359,7 +352,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFocusEngagedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsFocusEngaged", typeof(bool), 
+			nameof(IsFocusEngaged), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -367,7 +360,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFocusEngagementEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsFocusEngagementEnabled", typeof(bool), 
+			nameof(IsFocusEngagementEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -375,7 +368,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RequiresPointerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"RequiresPointer", typeof(global::Windows.UI.Xaml.Controls.RequiresPointer), 
+			nameof(RequiresPointer), typeof(global::Windows.UI.Xaml.Controls.RequiresPointer), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RequiresPointer)));
 		#endif
@@ -383,7 +376,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusDownProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusDown", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(XYFocusDown), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
@@ -391,7 +384,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusLeftProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusLeft", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(XYFocusLeft), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
@@ -399,7 +392,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusRightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusRight", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(XYFocusRight), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
@@ -407,7 +400,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusUpProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusUp", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(XYFocusUp), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
@@ -415,7 +408,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DefaultStyleResourceUriProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DefaultStyleResourceUri", typeof(global::System.Uri), 
+			nameof(DefaultStyleResourceUri), typeof(global::System.Uri), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::System.Uri)));
 		#endif
@@ -431,7 +424,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CornerRadiusProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CornerRadius", typeof(global::Windows.UI.Xaml.CornerRadius), 
+			nameof(CornerRadius), typeof(global::Windows.UI.Xaml.CornerRadius), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.CornerRadius)));
 		#endif
@@ -439,7 +432,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"BackgroundSizing", typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
+			nameof(BackgroundSizing), typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
 		#endif
@@ -531,98 +524,20 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnPointerReleased(Windows.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnPointerExited(Windows.UI.Xaml.Input.PointerRoutedEventArgs)
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		protected virtual void OnPointerCaptureLost( global::Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnPointerCaptureLost(PointerRoutedEventArgs e)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnPointerCaptureLost(Windows.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs)
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		protected virtual void OnPointerWheelChanged( global::Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnPointerWheelChanged(PointerRoutedEventArgs e)");
-		}
-		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		protected virtual void OnTapped( global::Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnTapped(TappedRoutedEventArgs e)");
-		}
-		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		protected virtual void OnDoubleTapped( global::Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnDoubleTapped(DoubleTappedRoutedEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		protected virtual void OnHolding( global::Windows.UI.Xaml.Input.HoldingRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnHolding(HoldingRoutedEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		protected virtual void OnRightTapped( global::Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnRightTapped(RightTappedRoutedEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		protected virtual void OnManipulationStarting( global::Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnManipulationStarting(ManipulationStartingRoutedEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		protected virtual void OnManipulationInertiaStarting( global::Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnManipulationInertiaStarting(ManipulationInertiaStartingRoutedEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		protected virtual void OnManipulationStarted( global::Windows.UI.Xaml.Input.ManipulationStartedRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnManipulationStarted(ManipulationStartedRoutedEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		protected virtual void OnManipulationDelta( global::Windows.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnManipulationDelta(ManipulationDeltaRoutedEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		protected virtual void OnManipulationCompleted( global::Windows.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)");
-		}
-		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		protected virtual void OnKeyUp( global::Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnKeyUp(KeyRoutedEventArgs e)");
-		}
-		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		protected virtual void OnKeyDown( global::Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnKeyDown(KeyRoutedEventArgs e)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnPointerWheelChanged(Windows.UI.Xaml.Input.PointerRoutedEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnTapped(Windows.UI.Xaml.Input.TappedRoutedEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnDoubleTapped(Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnHolding(Windows.UI.Xaml.Input.HoldingRoutedEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnRightTapped(Windows.UI.Xaml.Input.RightTappedRoutedEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnManipulationStarting(Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnManipulationInertiaStarting(Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnManipulationStarted(Windows.UI.Xaml.Input.ManipulationStartedRoutedEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnManipulationDelta(Windows.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnManipulationCompleted(Windows.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnKeyUp(Windows.UI.Xaml.Input.KeyRoutedEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnKeyDown(Windows.UI.Xaml.Input.KeyRoutedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnGotFocus(Windows.UI.Xaml.RoutedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnLostFocus(Windows.UI.Xaml.RoutedEventArgs)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__

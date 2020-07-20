@@ -2,6 +2,8 @@ using System;
 using Uno.Disposables;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI.Core;
+
 namespace Windows.UI.Xaml
 {
 	public partial class AdaptiveTrigger : StateTriggerBase
@@ -13,7 +15,7 @@ namespace Windows.UI.Xaml
 			UpdateState();
 		}
 
-		private void OnCurrentWindowSizeChanged(object sender, Core.WindowSizeChangedEventArgs e)
+		private void OnCurrentWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
 		{
 			UpdateState();
 		}

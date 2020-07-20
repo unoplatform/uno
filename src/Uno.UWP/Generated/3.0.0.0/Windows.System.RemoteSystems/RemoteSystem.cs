@@ -107,6 +107,16 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.System.User User
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member User RemoteSystem.User is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.DisplayName.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Id.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Kind.get
@@ -124,6 +134,21 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.ModelDisplayName.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Platform.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Apps.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.User.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.System.RemoteSystems.RemoteSystemWatcher CreateWatcherForUser( global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member RemoteSystemWatcher RemoteSystem.CreateWatcherForUser(User user) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.System.RemoteSystems.RemoteSystemWatcher CreateWatcherForUser( global::Windows.System.User user,  global::System.Collections.Generic.IEnumerable<global::Windows.System.RemoteSystems.IRemoteSystemFilter> filters)
+		{
+			throw new global::System.NotImplementedException("The member RemoteSystemWatcher RemoteSystem.CreateWatcherForUser(User user, IEnumerable<IRemoteSystemFilter> filters) is not implemented in Uno.");
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsAuthorizationKindEnabled( global::Windows.System.RemoteSystems.RemoteSystemAuthorizationKind kind)

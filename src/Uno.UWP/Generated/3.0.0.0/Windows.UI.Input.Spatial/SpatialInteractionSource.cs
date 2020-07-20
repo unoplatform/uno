@@ -91,5 +91,19 @@ namespace Windows.UI.Input.Spatial
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSource.Handedness.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Perception.People.HandMeshObserver TryCreateHandMeshObserver()
+		{
+			throw new global::System.NotImplementedException("The member HandMeshObserver SpatialInteractionSource.TryCreateHandMeshObserver() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.People.HandMeshObserver> TryCreateHandMeshObserverAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<HandMeshObserver> SpatialInteractionSource.TryCreateHandMeshObserverAsync() is not implemented in Uno.");
+		}
+		#endif
 	}
 }

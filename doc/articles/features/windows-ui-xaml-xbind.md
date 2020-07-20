@@ -1,6 +1,6 @@
 # Uno Support for x:Bind
 
-Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension) WinUI feature, which gives the ability the bind to normal fields and properties, static classes fields, and functions with multiple parameters.
+Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension) WinUI feature, which gives the ability the bind to normal fields and properties, static classes fields, functions with multiple parameters, and events.
 
 # Examples
 - Properties
@@ -65,6 +65,16 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
   {
     MyInteger = int.Parse(text);
   }
+  ```
+
+- Bind to events
+  ```xaml
+  <CheckBox Checked="{x:Bind OnCheckedRaised}" Unchecked="{x:Bind OnUncheckedRaised}" />
+  ```
+  where these methods are available in the code behind:
+  ```csharp
+  public void OnCheckedRaised() { }
+  public void OnUncheckedRaised(object sender, RoutedEventArgs args) { }
   ```
 
 # Not supported

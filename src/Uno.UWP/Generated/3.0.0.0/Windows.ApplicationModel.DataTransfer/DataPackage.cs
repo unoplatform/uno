@@ -7,20 +7,7 @@ namespace Windows.ApplicationModel.DataTransfer
 	#endif
 	public  partial class DataPackage 
 	{
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.ApplicationModel.DataTransfer.DataPackageOperation RequestedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DataPackageOperation DataPackage.RequestedOperation is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "DataPackageOperation DataPackage.RequestedOperation");
-			}
-		}
-		#endif
+		// Skipping already declared property RequestedOperation
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.DataTransfer.DataPackagePropertySet Properties
@@ -43,7 +30,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		#endif
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackage.DataPackage()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.DataPackage()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.DataTransfer.DataPackageView GetView()
 		{
@@ -78,14 +65,14 @@ namespace Windows.ApplicationModel.DataTransfer
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "void DataPackage.SetText(string value)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  void SetUri( global::System.Uri value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "void DataPackage.SetUri(Uri value)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  void SetHtmlFormat( string value)
 		{
@@ -128,7 +115,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "void DataPackage.SetApplicationLink(Uri value)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  void SetWebLink( global::System.Uri value)
 		{
@@ -137,6 +124,8 @@ namespace Windows.ApplicationModel.DataTransfer
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.ShareCompleted.add
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.ShareCompleted.remove
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.ShareCanceled.add
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.ShareCanceled.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.DataTransfer.DataPackage, object> Destroyed
@@ -182,6 +171,22 @@ namespace Windows.ApplicationModel.DataTransfer
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "event TypedEventHandler<DataPackage, ShareCompletedEventArgs> DataPackage.ShareCompleted");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.DataTransfer.DataPackage, object> ShareCanceled
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "event TypedEventHandler<DataPackage, object> DataPackage.ShareCanceled");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "event TypedEventHandler<DataPackage, object> DataPackage.ShareCanceled");
 			}
 		}
 		#endif

@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DisplayMemberPathProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DisplayMemberPath", typeof(string), 
+			nameof(DisplayMemberPath), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
+			nameof(ItemTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemsSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemsSource", typeof(object), 
+			nameof(ItemsSource), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectedIndexProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedIndex", typeof(int), 
+			nameof(SelectedIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectedItemProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedItem", typeof(object), 
+			nameof(SelectedItem), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectedValuePathProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedValuePath", typeof(string), 
+			nameof(SelectedValuePath), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectedValueProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedValue", typeof(object), 
+			nameof(SelectedValue), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -189,7 +189,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectionMode", typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyoutSelectionMode), 
+			nameof(SelectionMode), typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyoutSelectionMode), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ListPickerFlyoutSelectionMode)));
 		#endif

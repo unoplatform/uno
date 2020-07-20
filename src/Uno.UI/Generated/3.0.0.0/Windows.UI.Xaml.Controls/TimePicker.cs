@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class TimePicker : global::Windows.UI.Xaml.Controls.Control
 	{
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan Time
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  int MinuteIncrement
 		{
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Skipping already declared property ClockIdentifier
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Header", typeof(object), 
+			nameof(Header), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -105,31 +105,31 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
+			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MinuteIncrementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinuteIncrement", typeof(int), 
+			nameof(MinuteIncrement), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TimeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Time", typeof(global::System.TimeSpan), 
+			nameof(Time), typeof(global::System.TimeSpan), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
 		#endif
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"LightDismissOverlayMode", typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
+			nameof(LightDismissOverlayMode), typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
 		#endif
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectedTimeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedTime", typeof(global::System.TimeSpan?), 
+			nameof(SelectedTime), typeof(global::System.TimeSpan?), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(global::System.TimeSpan?)));
 		#endif

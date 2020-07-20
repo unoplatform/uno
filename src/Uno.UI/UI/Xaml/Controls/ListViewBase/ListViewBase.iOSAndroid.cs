@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI;
 #if XAMARIN_ANDROID
 using _View = Android.Views.View;
 #elif XAMARIN_IOS
@@ -46,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 				// Propagate the DataContext manually, since ItemsPanelRoot isn't really part of the visual tree
 				ItemsPanelRoot.SetValue(DataContextProperty, DataContext, DependencyPropertyValuePrecedences.Inheritance);
 
-				if (ScrollViewer?.Style?.Precedence == DependencyPropertyValuePrecedences.ImplicitStyle)
+				if (ScrollViewer?.Style == null)
 				{
 					throw new InvalidOperationException($"Performance hit: {this} is using a ScrollViewer in its template with a default style, which would break virtualization. A Style containing {nameof(ListViewBaseScrollContentPresenter)} must be used.");
 				}
@@ -59,10 +60,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				if (ScrollViewer?.Style == Uno.UI.GlobalStaticResources.ListViewBaseScrollViewerStyle)
+				if (ScrollViewer?.Style != null && ScrollViewer.Style == ResourceResolver.GetSystemResource<Style>("ListViewBaseScrollViewerStyle")) //TODO: this, too, properly
 				{
-					// We're not using NativeListViewBase so we need a 'real' ScrollViewer
-					ScrollViewer.Style = Uno.UI.GlobalStaticResources.DefaultScrollViewerStyle;
+					// We're not using NativeListViewBase so we need a 'real' ScrollViewer, remove the internal custom style
+					ScrollViewer.Style = null;
 				}
 			}
 		}

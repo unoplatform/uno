@@ -6,6 +6,9 @@
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<PackageType>Template</PackageType>
 		<ContentTargetFolders>content</ContentTargetFolders>
+
+		<!-- Disable package generation for WinUI converted build -->
+		<IsPackable Condition="'$(UNO_UWP_BUILD)'=='false'">false</IsPackable>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -34,6 +37,8 @@
 			<Pack>true</Pack>
 			<PackagePath>content/xamarinforms-wasm</PackagePath>
 		</Content>
+		<Content Include="content\unoapp\global.json" />
+		<Content Include="content\unoapp\UnoQuickStart.sln" />
 		<Content Include="content/xamarinforms-wasm/UnoXFQuickStart.Wasm/**/*.*">
 			<Pack>true</Pack>
 			<PackagePath>content/xamarinforms-wasm/UnoXFQuickStart.Wasm</PackagePath>
@@ -42,19 +47,7 @@
 			<Pack>true</Pack>
 			<PackagePath>content/xamarinforms-wasm/.template.config</PackagePath>
 		</Content>
-		<Content Include="content\unoapp\.template.config\**">
-			<PackagePath>content/unoapp/.template.config</PackagePath>
-			<Pack>true</Pack>
-		</Content>
-		<Content Include="content\unoapp\.vscode\**">
-			<PackagePath>content/unoapp/.vscode</PackagePath>
-			<Pack>true</Pack>
-		</Content>
-		<Content Include="content\unoapp\UnoQuickStart\**">
-			<PackagePath>content\unoapp</PackagePath>
-			<Pack>true</Pack>
-		</Content>
-		<Content Include="content\unoapp\UnoQuickStart\**">
+		<Content Include="content\unoapp\**">
 			<PackagePath>content\unoapp</PackagePath>
 			<Pack>true</Pack>
 		</Content>
@@ -62,29 +55,41 @@
 			<PackagePath>content\unoapp-prism</PackagePath>
 			<Pack>true</Pack>
 		</Content>
+		<Content Include="content\unoapp-winui\**">
+			<PackagePath>content\unoapp-winui</PackagePath>
+			<Pack>true</Pack>
+		</Content>
+		<Content Include="content\unoapp\UnoWinUIQuickStart\**">
+			<PackagePath>content\unoapp</PackagePath>
+			<Pack>true</Pack>
+		</Content>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\**\*.vstemplate" />
+		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\__*.png" />
+		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\**\obj\**" />
+		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\**\bin\**" />
+		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\Properties\**" />
+		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\UnoSolutionTemplate.csproj" />
+
+		<_TemplateFiles Include="..\UnoSolutionTemplate\**" Exclude="@(_TemplateFilesExclude)" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Folder Include="content\unoapp\UnoQuickStart\" />
 	</ItemGroup>
 
-	<Target Name="CopyTemplate" BeforeTargets="Build">
-		<ItemGroup>
-			<_TemplateFilesExclude Include="..\UnoSolutionTemplate\**\*.vstemplate" />
-			<_TemplateFilesExclude Include="..\UnoSolutionTemplate\__*.png" />
-			<_TemplateFilesExclude Include="..\UnoSolutionTemplate\**\obj\**" />
-			<_TemplateFilesExclude Include="..\UnoSolutionTemplate\**\bin\**" />
-			<_TemplateFilesExclude Include="..\UnoSolutionTemplate\Properties\**" />
-			<_TemplateFilesExclude Include="..\UnoSolutionTemplate\UnoSolutionTemplate.csproj" />
-
-			<_TemplateFiles Include="..\UnoSolutionTemplate\**" Exclude="@(_TemplateFilesExclude)" />
-		</ItemGroup>
-
+	<Target Name="CopyUnoAppTemplate" BeforeTargets="Build">
 		<PropertyGroup>
 			<IntermediateTemplatePath>$(IntermediateOutputPath)\UnoQuickStart</IntermediateTemplatePath>
 		</PropertyGroup>
 
 		<RemoveDir Directories="$(IntermediateTemplatePath)" />
-		
+
 		<Copy SourceFiles="@(_TemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
 
-		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" />
+		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="False" />
 
 		<ItemGroup>
 			<Content Include="$(IntermediateTemplatePath)/**/*.*">
@@ -94,10 +99,31 @@
 		</ItemGroup>
 	</Target>
 
+	<Target Name="CopyUnoAppWinUITemplate" BeforeTargets="Build">
+		<PropertyGroup>
+			<IntermediateTemplatePath>$(IntermediateOutputPath)\unoapp-winui</IntermediateTemplatePath>
+		</PropertyGroup>
+
+		<RemoveDir Directories="$(IntermediateTemplatePath)" />
+
+		<Copy SourceFiles="@(_TemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+
+		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="True" />
+		<RenameSolution SourcePath="$(IntermediateTemplatePath)" SourceName="UnoQuickStart" TargetName="UnoWinUIQuickStart" />
+
+		<ItemGroup>
+			<Content Include="$(IntermediateTemplatePath)/**/*.*">
+				<Pack>true</Pack>
+				<PackagePath>content/unoapp-winui</PackagePath>
+			</Content>
+		</ItemGroup>
+	</Target>
+
 	<UsingTask TaskName="ReplaceContent" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<SourcePath ParameterType="System.String" Required="True" Output="False" />
 			<SafeProjectName ParameterType="System.String" Required="True" Output="False" />
+			<IsWinUI ParameterType="System.Boolean" Required="True" Output="False" />
 		</ParameterGroup>
 		<Task>
 			<Reference Include="System.Xml" />
@@ -125,6 +151,45 @@
 							.Replace("$safeprojectname$", SafeProjectName)
 							;
 
+						if(IsWinUI)
+						{
+							if(file.EndsWith("UWP.csproj", StringComparison.OrdinalIgnoreCase))
+							{
+								var replacedProps = @"
+		<ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+		<WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
+		<IsWinUIAlpha Condition=""'$(IsWinUIAlpha)' == ''"">true</IsWinUIAlpha>
+		<WindowsKitsPath Condition=""'$(IsWinUIAlpha)' == 'true'"">WinUI-Alpha-Projects-Don-t-Use-SDK-Xaml-Tools</WindowsKitsPath>";
+
+								s = s
+									.Replace("<ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>", replacedProps);
+
+								var replacedNuget = @"
+		<PackageReference Include=""Microsoft.WinUI"">
+			<Version>3.0.0-preview1.200515.3</Version>
+		</PackageReference>
+		<PackageReference Include=""Microsoft.NETCore.UniversalWindowsPlatform"">";
+		
+								s = s
+									.Replace(@"<PackageReference Include=""Microsoft.NETCore.UniversalWindowsPlatform"">", replacedNuget);
+							}
+							else
+							{
+								s = s
+									.Replace("Include=\"Uno.UI", "Include=\"Uno.WinUI")
+									.Replace("e.PreviousExecutionState", "e.UWPLaunchActivatedEventArgs.PreviousExecutionState")
+									.Replace("e.PrelaunchActivated", "e.UWPLaunchActivatedEventArgs.PrelaunchActivated")
+									.Replace("Windows.UI.Xaml", "Microsoft.UI.Xaml");
+									
+								var replacedLogging = @"
+						{ ""Windows"", LogLevel.Warning },
+						{ ""Microsoft"", LogLevel.Warning },";
+		
+								s = s
+									.Replace(@"{ ""Windows"", LogLevel.Warning },", replacedLogging);
+							}
+						}
+
 						File.WriteAllText(file, s);
 
 					}
@@ -134,6 +199,69 @@
 					foreach(var platform in platforms)
 					{
 						Directory.Move(Path.Combine(SourcePath, platform), Path.Combine(SourcePath, SafeProjectName + "." + platform));
+					}
+				]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<UsingTask TaskName="RenameSolution" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<SourcePath ParameterType="System.String" Required="True" Output="False" />
+			<SourceName ParameterType="System.String" Required="True" Output="False" />
+			<TargetName ParameterType="System.String" Required="True" Output="False" />
+		</ParameterGroup>
+		<Task>
+			<Reference Include="System.Xml" />
+			<Using Namespace="System" />
+			<Using Namespace="System.Linq" />
+			<Using Namespace="System.IO" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln" };
+
+					foreach (var file in filters.SelectMany(f => Directory.EnumerateFiles(SourcePath, f, SearchOption.AllDirectories)))
+					{
+						Log.LogMessage("Converting file: " + file);
+
+						var s = File.ReadAllText(file);
+
+						s = s
+							.Replace(SourceName, TargetName)
+							;
+
+						var fileName = Path.GetFileName(file);
+						var filePath = Path.GetDirectoryName(file);
+						var updatedFileName = fileName.Replace(SourceName, TargetName);
+						
+						File.WriteAllText(file, s);
+
+						if(updatedFileName != fileName)
+						{
+							File.Move(file, Path.Combine(filePath, updatedFileName));
+						}
+					}
+
+					Func<string[]> getFolders = () => Directory.GetDirectories(SourcePath, "*.*", SearchOption.AllDirectories);
+					var folders = getFolders();
+
+					for (int i = 0; i < folders.Length; i++)
+					{
+						var dir = folders[i];
+
+						var dirName = Path.GetFileName(dir);
+						var path = Path.GetDirectoryName(dir);
+
+						var updatedDirName = dirName.Replace(SourceName, TargetName);
+
+						if(updatedDirName != dirName)
+						{
+							i = 0;
+							folders = getFolders();
+							var target = Path.Combine(path, updatedDirName);
+							Log.LogMessage("Moving: " + dir + " to " + target);
+							Directory.Move(dir, target);
+						}
 					}
 				]]>
 			</Code>

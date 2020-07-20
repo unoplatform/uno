@@ -51,5 +51,16 @@
 	</dict>
     <key>NSMotionUsageDescription</key>
     <string>This is a step counter, and we&apos;d like to track motion. </string>
+	<key>CFBundleURLTypes</key>
+	<array>
+	  <dict>
+        <key>CFBundleURLName</key>
+        <string>Uno Samples Test scheme</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+		  <string>uno-samples-test</string>
+		</array>
+	  </dict>
+	</array>
 </dict>
 </plist>

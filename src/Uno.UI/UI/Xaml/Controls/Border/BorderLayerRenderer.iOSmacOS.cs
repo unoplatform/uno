@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
+using Windows.UI;
 
 #if __IOS__
 using UIKit;
@@ -138,8 +139,8 @@ namespace Windows.UI.Xaml.Shapes
 				}
 				else if (background is ImageBrush imgBackground)
 				{
-					var uiImage = imgBackground.ImageSource?.ImageData;
-					if (uiImage != null && uiImage.Size != CGSize.Empty)
+					var imgSrc = imgBackground.ImageSource;
+					if (imgSrc != null && imgSrc.TryOpenSync(out var uiImage) && uiImage.Size != CGSize.Empty)
 					{
 						var fillMask = new CAShapeLayer()
 						{
@@ -206,8 +207,8 @@ namespace Windows.UI.Xaml.Shapes
 				}
 				else if (background is ImageBrush imgBackground)
 				{
-					var uiImage = imgBackground.ImageSource?.ImageData;
-					if (uiImage != null && uiImage.Size != CGSize.Empty)
+					var bgSrc = imgBackground.ImageSource;
+					if (bgSrc != null && bgSrc.TryOpenSync(out var uiImage) && uiImage.Size != CGSize.Empty)
 					{
 						var fullArea = new CGRect(
 								area.X + borderThickness.Left,
@@ -345,7 +346,7 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="fillMask">Optional mask layer (for when we use rounded corners)</param>
 		private static void CreateImageBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, ImageBrush imageBrush, CAShapeLayer fillMask)
 		{
-			var uiImage = imageBrush.ImageSource.ImageData;
+			imageBrush.ImageSource.TryOpenSync(out var uiImage);
 
 			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
 			var imageContainerLayer = new CALayer

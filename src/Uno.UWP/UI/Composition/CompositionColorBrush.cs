@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
+using Windows.UI;
 
 namespace Windows.UI.Composition
 {

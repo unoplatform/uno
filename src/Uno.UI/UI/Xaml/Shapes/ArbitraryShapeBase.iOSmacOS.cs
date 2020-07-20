@@ -208,9 +208,7 @@ namespace Windows.UI.Xaml.Shapes
 		private void CreateImageBrushLayers(CALayer layer, ImageBrush imageBrush, CAShapeLayer fillMask)
 		{
 
-			var uiImage = imageBrush.ImageSource.ImageData;
-
-			if (uiImage == null)
+			if (imageBrush.ImageSource == null || !imageBrush.ImageSource.TryOpenSync(out var uiImage))
 			{
 				return;
 			}

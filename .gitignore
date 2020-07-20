@@ -252,3 +252,4 @@ msbuild.binlog
 /src/SamplesApp/SamplesApp.Wasm.UITests/out
 /src/Uno.UI.TestComparer/Properties/launchSettings.json
 
+src/AddIns/Uno.UI.MSAL/WasmScripts/*.d.ts

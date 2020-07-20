@@ -21,6 +21,12 @@ namespace Windows.System
 		Neutral,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		Arm64,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		X86OnArm64,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		Unknown,
 		#endif
 	}

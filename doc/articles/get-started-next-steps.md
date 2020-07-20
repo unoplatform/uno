@@ -22,6 +22,6 @@ Already [completed the tutorial](getting-started-tutorial-1.md)? Ready to build 
 
 * If you're ready to contributing to Uno, great! Check out our guides on [building Uno](uno-development/debugging-uno-ui.md) and [creating UI samples](uno-development/working-with-the-samples-apps.md).
 
-* To chat with the Uno Platform team and the Uno community, visit our [Gitter channel](https://gitter.im/uno-platform/Lobby).
+* To chat with the Uno Platform team and the Uno community, visit our [Discord Channel #uno-platform](https://discord.gg/eBHZSKG).
 
-* A knowledge of working with GitHub and Forks, Pull and Push requests is desireable. To learn more about Forks please see official GitHub documentation. [GitHub - Forks](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/working-with-forks).
+* A knowledge of working with GitHub and Forks, Pull and Push requests is desirable. To learn more about Forks please see official GitHub documentation. [GitHub - Forks](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/working-with-forks).

@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if __ANDROID__
 				Dispatcher.RunAnimation(() =>
 #else
-				Dispatcher.RunAsync(Core.CoreDispatcherPriority.High, () =>
+				Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 #endif
 				{
 #endif

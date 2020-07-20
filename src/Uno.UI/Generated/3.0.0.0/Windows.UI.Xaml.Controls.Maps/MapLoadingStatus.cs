@@ -17,6 +17,9 @@ namespace Windows.UI.Xaml.Controls.Maps
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		DataUnavailable,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		DownloadedMapsManagerUnavailable,
+		#endif
 	}
 	#endif
 }

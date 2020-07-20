@@ -191,13 +191,6 @@ namespace Windows.UI.Composition
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Compositor", "void Compositor.Dispose()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.AmbientLight CreateAmbientLight()
 		{
 			throw new global::System.NotImplementedException("The member AmbientLight Compositor.CreateAmbientLight() is not implemented in Uno.");
@@ -485,6 +478,48 @@ namespace Windows.UI.Composition
 		public  global::Windows.UI.Composition.BooleanKeyFrameAnimation CreateBooleanKeyFrameAnimation()
 		{
 			throw new global::System.NotImplementedException("The member BooleanKeyFrameAnimation Compositor.CreateBooleanKeyFrameAnimation() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionProjectedShadowCaster CreateProjectedShadowCaster()
+		{
+			throw new global::System.NotImplementedException("The member CompositionProjectedShadowCaster Compositor.CreateProjectedShadowCaster() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionProjectedShadow CreateProjectedShadow()
+		{
+			throw new global::System.NotImplementedException("The member CompositionProjectedShadow Compositor.CreateProjectedShadow() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionProjectedShadowReceiver CreateProjectedShadowReceiver()
+		{
+			throw new global::System.NotImplementedException("The member CompositionProjectedShadowReceiver Compositor.CreateProjectedShadowReceiver() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionRadialGradientBrush CreateRadialGradientBrush()
+		{
+			throw new global::System.NotImplementedException("The member CompositionRadialGradientBrush Compositor.CreateRadialGradientBrush() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionVisualSurface CreateVisualSurface()
+		{
+			throw new global::System.NotImplementedException("The member CompositionVisualSurface Compositor.CreateVisualSurface() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Compositor", "void Compositor.Dispose()");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Composition.Compositor.MaxGlobalPlaybackRate.get

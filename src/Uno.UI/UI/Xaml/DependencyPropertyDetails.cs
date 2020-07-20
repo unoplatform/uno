@@ -23,10 +23,20 @@ namespace Windows.UI.Xaml
 		private readonly List<BindingExpression> _bindings = new List<BindingExpression>();
 
 		private const int MaxIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
+		private const int _stackLength = MaxIndex + 1;
+		private static readonly object[] _unsetStack;
+		static DependencyPropertyDetails()
+		{
+			_unsetStack = new object[_stackLength];
+			for (var i = 0; i < _stackLength; i++)
+			{
+				_unsetStack[i] = DependencyProperty.UnsetValue;
+			}
+		}
 
         private DependencyPropertyDetails()
 		{
-			_stack = _pool.Rent(MaxIndex + 1);
+			_stack = _pool.Rent(_stackLength);
 		}
 
 		public void Dispose()
@@ -50,10 +60,7 @@ namespace Windows.UI.Xaml
             Property = property;
 			_hasWeakStorage = property.HasWeakStorage;
 
-			for (int i = 0; i < MaxIndex; i++)
-			{
-				_stack[i] = DependencyProperty.UnsetValue;
-			}
+			Array.Copy(_unsetStack, _stack, _stackLength);
 
 			var defaultValue = Property.GetMetadata(dependencyObjectType).DefaultValue;
 
@@ -206,5 +213,10 @@ namespace Windows.UI.Xaml
 		}
 
 		#endregion
+
+		public override string ToString()
+		{
+			return $"DependencyPropertyDetails({Property.Name})";
+		}
 	}
 }

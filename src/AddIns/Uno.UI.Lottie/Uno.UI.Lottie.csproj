@@ -12,17 +12,18 @@
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
 		<UpToDateCheckInput Remove="WasmScripts\uno-lottie.js" />
 		<UpToDateCheckInput Include="ts\**\*" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.9.2" />
+	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="3.6.0" />
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.6.0" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0-dev.4" />
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.32.0" />
+		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">

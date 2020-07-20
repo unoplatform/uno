@@ -16,8 +16,6 @@ namespace Uno.UI.Tests
 			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 			Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
-			GenericStyles.Initialize();
-
 #if DEBUG
 			Uno.Extensions.LogExtensionPoint
 				.AmbientLoggerFactory

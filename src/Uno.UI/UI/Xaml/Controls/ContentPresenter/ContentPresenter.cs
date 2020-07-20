@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
-					11.0,
+					15.0,
 					FrameworkPropertyMetadataOptions.Inherits,
 					(s, e) => ((ContentPresenter)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -990,7 +990,7 @@ namespace Windows.UI.Xaml.Controls
 				var padding = Padding;
 				var borderThickness = BorderThickness;
 
-				var finalRect = new Foundation.Rect(
+				var finalRect = new Windows.Foundation.Rect(
 					padding.Left + borderThickness.Left,
 					padding.Top + borderThickness.Top,
 					finalSize.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,

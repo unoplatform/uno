@@ -3,13 +3,14 @@ using System;
 using Windows.UI.Xaml;
 using SamplesApp.Windows_UI_Xaml_Controls.WebView;
 using Windows.UI.Xaml.Controls;
-using Windows.Web.Http;
+using System.Net.Http;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
 	[SampleControlInfo("WebView", "WebView_WithHeaders", typeof(WebViewViewModel))]
 	public sealed partial class WebView_WithHeaders : UserControl
 	{
+#if HAS_UNO
 		public WebView_WithHeaders()
 		{
 			InitializeComponent();
@@ -29,5 +30,6 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 			request.Headers.Add("HELLO2", "TEST111");
 			MyWebView2.NavigateWithHttpRequestMessage(request);
 		}
+#endif
 	}
 }

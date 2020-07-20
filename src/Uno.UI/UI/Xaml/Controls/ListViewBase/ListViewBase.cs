@@ -633,7 +633,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			for (int i = 0; i < count; i++)
 			{
-				var unoIndexPath = IndexPath.FromRowSection(firstItem + i, section);
+				var unoIndexPath = Uno.UI.IndexPath.FromRowSection(firstItem + i, section);
 				var flatIndex = GetIndexFromIndexPath(unoIndexPath);
 				var container = ContainerFromIndex(flatIndex);
 				if (container != null)

@@ -38,7 +38,7 @@ If you have an idea for a new feature or enhancement, let us know by filing an [
 
 If you have a question, be sure first to check out our [documentation](https://github.com/unoplatform/uno/tree/master/doc/index.md). But if you are still stuck, you'll have a better chance of getting help on [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) and we'll do our best to answer it. Questions asked there should be tagged with `uno-platform.`
 
-For a more direct conversation, [our Gitter is also a good place to visit](https://gitter.im/uno-platform/Lobby).
+For a more direct conversation, [visit our Discord Channel #uno-platform](https://discord.gg/eBHZSKG).
 
 ## Contributing code and content
 

@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty EdgeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Edge", typeof(global::Windows.UI.Xaml.Controls.Primitives.EdgeTransitionLocation), 
+			nameof(Edge), typeof(global::Windows.UI.Xaml.Controls.Primitives.EdgeTransitionLocation), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.EdgeUIThemeTransition), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.EdgeTransitionLocation)));
 		#endif

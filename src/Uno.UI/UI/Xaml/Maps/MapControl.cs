@@ -1,3 +1,4 @@
+#if !HAS_UNO_WINUI
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 using System;
@@ -11,6 +12,8 @@ namespace Windows.UI.Xaml.Controls.Maps
 		public MapControl()
 		{
 			Children = new DependencyObjectCollection(this);
+
+			DefaultStyleKey = typeof(MapControl);
 		}
 
 		public MapStyle Style
@@ -725,3 +728,4 @@ namespace Windows.UI.Xaml.Controls.Maps
 			=> ZoomLevelChanged?.Invoke(this, p);
 	}
 }
+#endif

@@ -8,6 +8,14 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
+  strategy:
+    matrix:
+      UWP:
+        UNO_UWP_BUILD: true
+
+      WinUI:
+        UNO_UWP_BUILD: false
+
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
@@ -33,8 +41,14 @@ jobs:
   # Required for the Wasm uitests project
   - task: NodeTool@0
 
-  - powershell: .\build\Install-WindowsSdkISO.ps1 17763
-    displayName: Insider SDK
+  - template: templates/install-windows-sdk.yml
+
+  - powershell: |
+        cd $(build.sourcesdirectory)\src\Uno.WinUIRevert
+        dotnet run "$(build.sourcesdirectory)"
+
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+    displayName: Convert source tree to WinUI 3 structure
 
   - task: MSBuild@1
     inputs:
@@ -42,7 +56,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary # /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer).binlog
+      msbuildArguments: /r /m "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary # /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer).binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

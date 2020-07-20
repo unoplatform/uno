@@ -96,13 +96,6 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayWindow.TryClearTextAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayWindow", "void LineDisplayWindow.Dispose()");
-		}
-		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.Cursor.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.Marquee.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
@@ -152,6 +145,13 @@ namespace Windows.Devices.PointOfService
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryDisplayStorageFileBitmapAtPointAsync( global::Windows.Storage.StorageFile bitmap,  global::Windows.Foundation.Point offsetInPixels,  int widthInPixels)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayWindow.TryDisplayStorageFileBitmapAtPointAsync(StorageFile bitmap, Point offsetInPixels, int widthInPixels) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayWindow", "void LineDisplayWindow.Dispose()");
 		}
 		#endif
 		// Processing: System.IDisposable

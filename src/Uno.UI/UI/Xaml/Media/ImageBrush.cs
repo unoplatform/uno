@@ -8,6 +8,7 @@ using Uno.Logging;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Uno;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Media
@@ -17,41 +18,61 @@ namespace Windows.UI.Xaml.Media
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
 
-		public AlignmentX AlignmentX
-		{
-			get { return (AlignmentX)GetValue(AlignmentXProperty); }
-			set { this.SetValue(AlignmentXProperty, value); }
-		}
+		#region AlignmentX DP
 		public static readonly DependencyProperty AlignmentXProperty =
 			DependencyProperty.Register("AlignmentX", typeof(AlignmentX), typeof(ImageBrush), new PropertyMetadata(AlignmentX.Center));
 
-		public AlignmentY AlignmentY
+#if __WASM__
+		[NotImplemented]
+#endif
+		public AlignmentX AlignmentX
 		{
-			get { return (AlignmentY)GetValue(AlignmentYProperty); }
-			set { this.SetValue(AlignmentYProperty, value); }
+			get => (AlignmentX)GetValue(AlignmentXProperty);
+			set => this.SetValue(AlignmentXProperty, value);
 		}
+		#endregion
+
+		#region AlignmentY DP
 		public static readonly DependencyProperty AlignmentYProperty =
 			DependencyProperty.Register("AlignmentY", typeof(AlignmentY), typeof(ImageBrush), new PropertyMetadata(AlignmentY.Center));
 
+#if __WASM__
+		[NotImplemented]
+#endif
+		public AlignmentY AlignmentY
+		{
+			get => (AlignmentY)GetValue(AlignmentYProperty);
+			set => this.SetValue(AlignmentYProperty, value);
+		}
+		#endregion
+
+		#region Stretch DP
 		public static readonly DependencyProperty StretchProperty =
 		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new PropertyMetadata(Stretch.Fill, null));
+
+#if __WASM__
+		[NotImplemented]
+#endif
 		public Stretch Stretch
 		{
-			get { return (Stretch)this.GetValue(StretchProperty); }
-			set { this.SetValue(StretchProperty, value); }
+			get => (Stretch)this.GetValue(StretchProperty);
+			set => this.SetValue(StretchProperty, value);
 		}
+		#endregion
 
+		#region ImageSource DP
 		public static DependencyProperty ImageSourceProperty { get; } =
 			DependencyProperty.Register("ImageSource", typeof(ImageSource), typeof(ImageBrush), new PropertyMetadata(null, (s, e) =>
 			((ImageBrush)s).OnSourceChangedPartial((ImageSource)e.NewValue, (ImageSource)e.OldValue)));
 
 		public ImageSource ImageSource
 		{
-			get { return (ImageSource)this.GetValue(ImageSourceProperty); }
-			set { this.SetValue(ImageSourceProperty, value); }
+			get => (ImageSource)this.GetValue(ImageSourceProperty);
+			set => this.SetValue(ImageSourceProperty, value);
 		}
 
-		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue);
+		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue); 
+		#endregion
 
 		internal Rect GetArrangedImageRect(Size sourceSize, Rect targetRect)
 		{

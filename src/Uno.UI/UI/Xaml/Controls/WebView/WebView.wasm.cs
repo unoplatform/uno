@@ -24,6 +24,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			throw new NotSupportedException();
 		}
+
+		public async Task<string> InvokeScriptAsync(string script, string[] arguments)
+		{
+			throw new NotSupportedException();
+		}
 	}
 }
 

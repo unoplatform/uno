@@ -92,7 +92,7 @@ namespace SamplesApp.Samples.RoutedEvents
 			};
 
 			grid.BorderBrush = white;
-			grid.BorderThickness = new Thickness(3.5);
+			grid.BorderThickness = ThicknessHelper.FromUniformLength(3.5);
 
 			grid.GotFocus += (s, e) => textBlock.Text += ".F";
 			grid.LostFocus += (s, e) => textBlock.Text += ".f";

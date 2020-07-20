@@ -31,6 +31,8 @@ namespace Windows.UI.Xaml.Controls
 		public AutoSuggestBox() : base()
 		{
 			Items.VectorChanged += OnItemsChanged;
+
+			DefaultStyleKey = typeof(AutoSuggestBox);
 		}
 
 		protected override void OnApplyTemplate()
@@ -288,7 +290,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
 		{
-			if(e.Key == System.VirtualKey.Enter)
+			if(e.Key == Windows.System.VirtualKey.Enter)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
