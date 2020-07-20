@@ -11,9 +11,6 @@ using static Uno.Foundation.WebAssemblyRuntime;
 
 namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 {
-	/// <summary>
-	/// Must be public to allow for WASM binding
-	/// </summary>
 	internal abstract class MidiDeviceClassProviderBase : IDeviceClassProvider
 	{
 		private const string JsType = "Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceClassProvider";
