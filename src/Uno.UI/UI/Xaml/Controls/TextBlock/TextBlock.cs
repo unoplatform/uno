@@ -31,6 +31,7 @@ namespace Windows.UI.Xaml.Controls
 	[ContentProperty(Name = "Text")]
 	public partial class TextBlock : DependencyObject
 	{
+		private bool _requestedThemeForegroundOverride = false;
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
@@ -394,7 +395,7 @@ namespace Windows.UI.Xaml.Controls
 			);
 
 
-		private void SetDefaultForeground()
+		private void SetImplicitForeground()
 		{
 			// override the default value from dependency property based on actual theme
 			if (ActualTheme == ElementTheme.Default)
@@ -415,7 +416,17 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 				candidate = candidate?.GetParent();
-			}			
+			}
+
+			if (_requestedThemeForegroundOverride)
+			{
+				// Unset the implicit value previously applied by requested theme
+				this.SetValue(
+					ForegroundProperty,
+					DependencyProperty.UnsetValue,
+					DependencyPropertyValuePrecedences.ImplicitStyle);
+				_requestedThemeForegroundOverride = false;
+			}
 
 			// We set values defined by the nearest explicit provider of Foreground
 			// as ImplicitStyle to ensure that the value overrides the inherited value,
@@ -425,28 +436,18 @@ namespace Windows.UI.Xaml.Controls
 				var foregroundSource = (FrameworkElement)candidate;
 				if (foregroundSource.RequestedTheme != ElementTheme.Default)
 				{
+					// set foreground on implicit style level and flag, so we can later
+					// know if it can be unset
 					this.SetValue(
 						ForegroundProperty,
 						foregroundSource.RequestedTheme == ElementTheme.Light ?
 							SolidColorBrushHelper.Black : SolidColorBrushHelper.White,
 						DependencyPropertyValuePrecedences.ImplicitStyle);
-				}
-				else
-				{
-					this.SetValue(
-						ForegroundProperty,
-						foregroundSource.GetValue(Control.ForegroundProperty),
-						DependencyPropertyValuePrecedences.ImplicitStyle);
+					_requestedThemeForegroundOverride = true;
 				}
 			}
 			else
 			{
-				// Unset the "implicit" value to ensure proper fallback 
-				this.SetValue(
-					ForegroundProperty,
-					DependencyProperty.UnsetValue,
-					DependencyPropertyValuePrecedences.ImplicitStyle);
-
 				this.SetValue(
 					ForegroundProperty,
 					ActualTheme == ElementTheme.Light ?
@@ -458,7 +459,7 @@ namespace Windows.UI.Xaml.Controls
 		internal override void UpdateThemeBindings()
 		{
 			base.UpdateThemeBindings();
-			SetDefaultForeground();
+			SetImplicitForeground();
 		}
 
 		private void OnForegroundChanged()
