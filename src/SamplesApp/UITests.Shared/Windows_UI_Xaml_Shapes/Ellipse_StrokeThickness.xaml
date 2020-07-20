@@ -8,12 +8,16 @@
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<StackPanel Spacing="10">
-		<TextBlock FontSize="22">Those 5 ellipses should be identical:</TextBlock>
+		<TextBlock FontSize="22">Those 6 ellipses should be identical:</TextBlock>
 		<Grid>
 			<StackPanel Orientation="Horizontal" VerticalAlignment="Top" Spacing="5">
 				<Grid>
 					<Ellipse Fill="Red" Height="100" Width="100" />
 					<Ellipse Fill="Yellow" Height="50" Width="50" />
+				</Grid>
+				<Grid>
+					<Ellipse Fill="Red" Height="100" Width="100" StrokeThickness="45" />
+					<Ellipse Fill="Yellow" Height="50" Width="50" StrokeThickness="15"/>
 				</Grid>
 				<Grid>
 					<Ellipse Fill="Yellow" Height="100" Width="100" />
@@ -25,8 +29,8 @@
 					<Ellipse Fill="Yellow" Stroke="Red" StrokeThickness="25" />
 				</Border>
 			</StackPanel>
-			<Line Stroke="Black" Y1="25" Y2="25" X1="0" X2="520" VerticalAlignment="Top" StrokeDashArray="5 4" StrokeThickness="1" />
-			<Line Stroke="Black" Y1="75" Y2="75" X1="0" X2="520" VerticalAlignment="Top" StrokeDashArray="5 4" StrokeThickness="1" />
+			<Line Stroke="Black" Y1="25" Y2="25" X1="0" X2="630" VerticalAlignment="Top" StrokeDashArray="5 4" StrokeThickness="1" />
+			<Line Stroke="Black" Y1="75" Y2="75" X1="0" X2="630" VerticalAlignment="Top" StrokeDashArray="5 4" StrokeThickness="1" />
 		</Grid>
 	</StackPanel>
 </Page>
