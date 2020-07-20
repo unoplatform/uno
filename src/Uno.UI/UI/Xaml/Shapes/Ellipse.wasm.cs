@@ -37,8 +37,8 @@ namespace Windows.UI.Xaml.Shapes
 			_ellipse.SetAttribute(
 				("cx", cx.ToStringInvariant()),
 				("cy", cy.ToStringInvariant()),
-				("rx", (cx - strokeThickness).ToStringInvariant()),
-				("ry", (cy - strokeThickness).ToStringInvariant()));
+				("rx", (cx - strokeThickness/2).ToStringInvariant()),
+				("ry", (cy - strokeThickness/2).ToStringInvariant()));
 
 			return base.ArrangeOverride(finalSize);
 		}
