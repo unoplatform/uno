@@ -1,5 +1,5 @@
 # ElevatedView
-On many design language like _Material Design_, there's a notion of elevation where a portion of the UI should be presented as been _elevated_ over the rest of the content.
+On many design languages like _Material Design_, there's a notion of elevation where a portion of the UI should be presented has been _elevated_ over the rest of the content.
 
 In this case, the UWP proposed solution can't work on all platforms because of technical limitations. To address this problem, Uno provides a control called `ElevatedView`, able to produce a similar result on all platforms, providing an elevated result.
 
@@ -7,7 +7,7 @@ This control is very useful to create cards with both rounded corners and elevat
 
 ## How to use the `ElevatedView`
 
-Fist you need to add the `toolkit` namespace in your XAML file:
+First you need to add the `toolkit` namespace in your XAML file:
 
 ```
 xmlns:toolkit="using:Uno.UI.Toolkit"
@@ -29,6 +29,8 @@ After that, use the `ElevatedView` to host the content you need to be elevated:
 Will produce the following result:
 
 ![ElevatedView sample](../Assets/features/elevatedview/elevatedview-sample.png)
+
+> **ATTENTION FOR UWP**: When there is an error seeing the `<toolkit:ElevatedView>` on UWP, the common mistake is to forget to include the `Uno.UI` package for all platforms, including UWP. On this platform, the only available component is the Toolkit.
 
 ## Settings
 
