@@ -1567,6 +1567,36 @@
 			  fullName="System.Void Uno.UI.Views.Controls.BindableUIActivityIndicatorView.set_TemplatedParent(Windows.UI.Xaml.DependencyObject value)"
 			  reason="ProgressRing no longer inherits from this type, so this method is no longer implementing interface"/>
 		  <!-- End remove IFrameworkElement -->
+			<Member
+				fullName="System.Void Windows.Devices.Midi.MidiMessageReceivedEventArgs..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Devices.Midi.MidiOutPort..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceInformation..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceInformationCollection..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceInformationUpdate..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceWatcher..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer.get_Capacity()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer.get_Length()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Storage.Streams.InMemoryBuffer.set_Length(System.UInt32 value)"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Devices.Midi.MidiInPort..ctor()"
+				reason="UWP does not have this ctor" />		    
 		</Methods>
 
 		<Events>
@@ -1665,36 +1695,7 @@
 				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Controls.PopupBase::Child()"
 				reason="Property type corrected from FrameworkElement to UIElement as part of native views clean-up"/>
 			<!-- End remove IFrameworkElement -->
-			<Member
-			  fullName="System.Void Windows.Devices.Midi.MidiMessageReceivedEventArgs..ctor()"
-			  reason="UWP does not have this ctor" />
-			<Member
-				  fullName="System.Void Windows.Devices.Midi.MidiOutPort..ctor()"
-				  reason="UWP does not have this ctor" />
-			<Member
-				  fullName="System.Void Windows.Devices.Enumeration.DeviceInformation..ctor()"
-				  reason="UWP does not have this ctor" />
-			<Member
-				  fullName="System.Void Windows.Devices.Enumeration.DeviceInformationCollection..ctor()"
-				  reason="UWP does not have this ctor" />
-			<Member
-				  fullName="System.Void Windows.Devices.Enumeration.DeviceInformationUpdate..ctor()"
-				  reason="UWP does not have this ctor" />
-			<Member
-				  fullName="System.Void Windows.Devices.Enumeration.DeviceWatcher..ctor()"
-				  reason="UWP does not have this ctor" />
-			<Member
-				  fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer.get_Capacity()"
-				  reason="UWP does not have this ctor" />
-			<Member
-				  fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer.get_Length()"
-				  reason="UWP does not have this ctor" />
-			<Member
-				  fullName="System.Void Windows.Storage.Streams.InMemoryBuffer.set_Length(System.UInt32 value)"
-				  reason="UWP does not have this ctor" />
-			<Member
-				  fullName="System.Void Windows.Devices.Midi.MidiInPort..ctor()"
-				  reason="UWP does not have this ctor" />		    
+			
 		</Properties>
 
 		<Fields>
