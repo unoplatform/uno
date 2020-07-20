@@ -225,33 +225,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.ToArray();
 
 				var outputFiles = filesQuery
+					.Distinct()
 #if !DEBUG
-				.AsParallel()
+					.AsParallel()
 #endif
-				.Select(file => new KeyValuePair<string, string>(
-						file.UniqueID,
-						new XamlFileGenerator(
-							file: file,
-							targetPath: _targetPath,
-							defaultNamespace: _defaultNamespace,
-							metadataHelper: _metadataHelper,
-							fileUniqueId: file.UniqueID,
-							lastReferenceUpdateTime: lastBinaryUpdateTime,
-							analyzerSuppressions: _analyzerSuppressions,
-							globalStaticResourcesMap: globalStaticResourcesMap,
-							outputSourceComments: _outputSourceComments,
-							resourceKeys: resourceKeys,
-							isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
-							uiAutomationMappings: _uiAutomationMappings,
-							defaultLanguage: _defaultLanguage,
-							isWasm: _isWasm,
-							isDebug: _isDebug,
-							skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
-							shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
-							isUnoAssembly: IsUnoAssembly
+					.Select(file => new KeyValuePair<string, string>(
+							file.UniqueID,
+							new XamlFileGenerator(
+									file: file,
+									targetPath: _targetPath,
+									defaultNamespace: _defaultNamespace,
+									metadataHelper: _metadataHelper,
+									fileUniqueId: file.UniqueID,
+									lastReferenceUpdateTime: lastBinaryUpdateTime,
+									analyzerSuppressions: _analyzerSuppressions,
+									globalStaticResourcesMap: globalStaticResourcesMap,
+									outputSourceComments: _outputSourceComments,
+									resourceKeys: resourceKeys,
+									isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
+									uiAutomationMappings: _uiAutomationMappings,
+									defaultLanguage: _defaultLanguage,
+									isWasm: _isWasm,
+									isDebug: _isDebug,
+									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
+									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
+									isUnoAssembly: IsUnoAssembly
+								)
+								.GenerateFile()
 						)
-						.GenerateFile()
-					)
 					)
 					.ToList();
 
