@@ -12,6 +12,11 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
+		private float _lastKnownDpi;
+		private DisplayOrientations _lastKnownOrientation;
+
+		private const float BaseDpi = 96.0f;
+
 		private static readonly Lazy<DisplayInformation> _lazyInstance = new Lazy<DisplayInformation>(() => new DisplayInformation());
 		private static readonly object _syncLock = new object();
 
@@ -110,5 +115,21 @@ namespace Windows.Graphics.Display
 		private void OnOrientationChanged() => _orientationChanged?.Invoke(this, null);
 
 		private void OnDpiChanged() => _dpiChanged?.Invoke(this, null);
+
+		private void OnDisplayMetricsChanged()
+		{
+			var newOrientation = CurrentOrientation;
+			var newDpi = LogicalDpi;
+			if (_lastKnownOrientation != newOrientation)
+			{
+				OnOrientationChanged();
+				_lastKnownOrientation = newOrientation;
+			}
+			if (Math.Abs(_lastKnownDpi - newDpi) > 0.01)
+			{
+				OnDpiChanged();
+				_lastKnownDpi = newDpi;
+			}
+		}
 	}
 }
