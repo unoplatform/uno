@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Media
 				sb.Append(p.X.ToStringInvariant());
 				sb.Append(',');
 				sb.Append(p.Y.ToStringInvariant());
-				sb.Append(' ');
+				sb.Append(' '); // We will have an extra space at the end ... which is going to be ignored by browsers!
 			}
 			return sb.ToString();
 		}

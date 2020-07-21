@@ -35,8 +35,10 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					var polyline = (Polyline)s;
 					polyline.OnPointsChanged();
+#if __WASM__
 					(e.OldValue as PointCollection)?.UnRegisterChangedListener(polyline.OnPointsChanged);
 					(e.NewValue as PointCollection)?.RegisterChangedListener(polyline.OnPointsChanged);
+#endif
 				}
 #else
 				propertyChangedCallback: (s, e) =>

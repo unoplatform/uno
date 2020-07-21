@@ -36,8 +36,10 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					var polygon = (Polygon)s;
 					polygon.OnPointsChanged();
+#if __WASM__
 					(e.OldValue as PointCollection)?.UnRegisterChangedListener(polygon.OnPointsChanged);
 					(e.NewValue as PointCollection)?.RegisterChangedListener(polygon.OnPointsChanged);
+#endif
 				}
 #else
 				propertyChangedCallback: (s, e) =>
