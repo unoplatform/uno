@@ -7,6 +7,7 @@ Use Uno with your favorite tools.
 * [Visual Studio](#Visual-Studio)
 * [VS Code](#VS-Code)
 * [Visual Studio for Mac](#Visual-Studio-For-Mac)
+* [JetBrains Rider](#JetBrains-Rider)
 
 ## Visual Studio 
 ### Prerequisites
