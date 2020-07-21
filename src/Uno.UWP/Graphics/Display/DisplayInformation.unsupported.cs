@@ -4,7 +4,6 @@ namespace Windows.Graphics.Display
 {
 	public partial class DisplayInformation
     {
-
 #if __WASM__ || NET461 || __SKIA__ || __NETSTD_REFERENCE__
 		/// <summary>
 		//// Gets the native orientation of the display monitor, 

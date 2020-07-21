@@ -11,9 +11,6 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		private DisplayOrientations _lastKnownOrientation;
-		private float _lastKnownDpi;
-
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
 		{
 			var currentActivity = ContextHelper.Current as Activity;
