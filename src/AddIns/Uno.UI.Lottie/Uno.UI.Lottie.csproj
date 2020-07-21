@@ -34,7 +34,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.13" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
