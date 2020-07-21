@@ -24,7 +24,9 @@
 			DisplayInformation.lastDpi = window.devicePixelRatio;
 
 			// start polling the devicePixel
-			DisplayInformation.dpiWatcher = window.setInterval(DisplayInformation.updateDpi, DisplayInformation.DpiCheckInterval);
+			DisplayInformation.dpiWatcher = window.setInterval(
+				DisplayInformation.updateDpi, 
+				DisplayInformation.DpiCheckInterval);
 		}
 
 		public static stopDpiChanged() {
