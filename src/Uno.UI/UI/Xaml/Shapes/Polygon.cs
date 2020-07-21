@@ -32,7 +32,13 @@ namespace Windows.UI.Xaml.Shapes
 				defaultValue: default(PointCollection),
 				options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
 #if LEGACY_SHAPE_MEASURE
-				propertyChangedCallback: (s, e) => ((Polygon)s).OnPointsChanged()
+				propertyChangedCallback: (s, e) =>
+				{
+					var polygon = (Polygon)s;
+					polygon.OnPointsChanged();
+					(e.OldValue as PointCollection)?.UnRegisterChangedListener(polygon.OnPointsChanged);
+					(e.NewValue as PointCollection)?.RegisterChangedListener(polygon.OnPointsChanged);
+				}
 #else
 				propertyChangedCallback: (s, e) =>
 				{
