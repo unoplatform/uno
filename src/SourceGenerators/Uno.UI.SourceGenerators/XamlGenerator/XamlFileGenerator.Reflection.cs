@@ -164,7 +164,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsImplementingInterface(INamedTypeSymbol symbol, INamedTypeSymbol interfaceName)
 		{
 			bool isSameType(INamedTypeSymbol source, INamedTypeSymbol iface) =>
-				source == iface || source.OriginalDefinition == iface;
+				Equals(source, iface) || Equals(source.OriginalDefinition, iface);
 
 			if (symbol != null)
 			{
@@ -249,7 +249,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Is the type one of the base view types in WinUI? (UIElement is most commonly used to mean 'any WinUI view type,' but
 		/// FrameworkElement is valid too)
 		/// </summary>
-		private bool IsManagedViewBaseType(INamedTypeSymbol targetType) => targetType == _uiElementSymbol || targetType == _frameworkElementSymbol;
+		private bool IsManagedViewBaseType(INamedTypeSymbol targetType) => Equals(targetType, _uiElementSymbol) || Equals(targetType, _frameworkElementSymbol);
 
 		private bool IsTransform(XamlType xamlType)
 		{
@@ -636,10 +636,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool IsExactlyCollectionOrListType(INamedTypeSymbol type)
 		{
-			return type == _iCollectionSymbol
-				|| type.OriginalDefinition == _iCollectionOfTSymbol
-				|| type == _iListSymbol
-				|| type.OriginalDefinition == _iListOfTSymbol;
+			return Equals(type, _iCollectionSymbol)
+				|| Equals(type.OriginalDefinition, _iCollectionOfTSymbol)
+				|| Equals(type, _iListSymbol)
+				|| Equals(type.OriginalDefinition, _iListOfTSymbol);
 		}
 
 		/// <summary>
