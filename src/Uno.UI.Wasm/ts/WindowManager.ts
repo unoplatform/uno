@@ -944,7 +944,7 @@ namespace Uno.UI {
 			}
 
 			let src = evt.target as HTMLElement | SVGElement;
-			if (src as SVGElement) {
+			if (src instanceof SVGElement) {
 				// The XAML SvgElement are UIElement in Uno (so they have a XamlHandle),
 				// but as on WinUI they are not part of the visual tree, they should not be used as OriginalElement.
 				// Instead we should use the actual parent <svg /> which is the XAML Shape.
@@ -952,7 +952,11 @@ namespace Uno.UI {
 				if (shape) {
 					src = shape;
 				}
+			} else if (src instanceof HTMLImageElement) {
+				// Same as above for images (<img /> == HtmlImage, we use the parent <div /> which is the XAML Image).
+				src = src.parentElement;
 			}
+
 			let srcHandle = "0";
 			while (src) {
 				let handle = src.getAttribute("XamlHandle");
