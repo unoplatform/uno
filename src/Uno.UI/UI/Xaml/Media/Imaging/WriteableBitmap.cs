@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 		internal event EventHandler Invalidated;
 
-		private UwpBuffer _buffer;
+		private readonly UwpBuffer _buffer;
 
 		public IBuffer PixelBuffer => _buffer;
 
