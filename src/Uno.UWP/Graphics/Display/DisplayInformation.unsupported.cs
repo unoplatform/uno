@@ -53,9 +53,6 @@ namespace Windows.Graphics.Display
 		public DisplayOrientations CurrentOrientation => DisplayOrientations.None;
 
 		[NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public DisplayOrientations NativeOrientation => DisplayOrientations.None;
-
-		[NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint ScreenHeightInRawPixels => 0;
 
 		[NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
