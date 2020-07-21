@@ -12,7 +12,9 @@ namespace Windows.Graphics.Display
 		///  on the device match the orientation of the monitor.
 		/// </summary>
 		public DisplayOrientations NativeOrientation { get; private set; } = DisplayOrientations.None;
+#endif
 
+#if __WASM__ || __IOS__ || __MACOS__
 		/// <summary>
 		/// Gets the raw dots per inch (DPI) along the x axis of the display monitor.
 		/// </summary>
@@ -32,8 +34,9 @@ namespace Windows.Graphics.Display
 		/// </remarks>
 		[NotImplemented]
 		public float RawDpiY { get; private set; } = 0;
+#endif
 
-		
+#if __WASM__ || __IOS__
 		/// <summary>
 		/// Diagonal size of the display in inches.
 		/// </summary>

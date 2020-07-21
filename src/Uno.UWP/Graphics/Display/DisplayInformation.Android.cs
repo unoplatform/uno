@@ -11,8 +11,6 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		private const float BaseDpi = 96.0f;
-
 		private DisplayOrientations _lastKnownOrientation;
 		private float _lastKnownDpi;
 
@@ -26,6 +24,15 @@ namespace Windows.Graphics.Display
 		}
 
 		public DisplayOrientations CurrentOrientation => GetCurrentOrientation();
+
+		
+		/// <summary>
+		//// Gets the native orientation of the display monitor, 
+		///  which is typically the orientation where the buttons
+		///  on the device match the orientation of the monitor.
+		/// </summary>
+		public DisplayOrientations NativeOrientation => GetNativeOrientation();
+
 
 		public uint ScreenHeightInRawPixels
 		{
@@ -48,6 +55,17 @@ namespace Windows.Graphics.Display
 				}
 			}
 		}
+		
+		public double RawPixelsPerViewPixel
+		{
+			get
+			{
+				using (var realDisplayMetrics = CreateRealDisplayMetrics())
+				{
+					return 1.0f * (int)realDisplayMetrics.DensityDpi / (int)DisplayMetricsDensity.Default;
+				}
+			}
+		}
 
 		public float LogicalDpi
 		{
@@ -62,17 +80,6 @@ namespace Windows.Graphics.Display
 			}
 		}
 
-		public double RawPixelsPerViewPixel
-		{
-			get
-			{
-				using (var realDisplayMetrics = CreateRealDisplayMetrics())
-				{
-					return 1.0f * (int)realDisplayMetrics.DensityDpi / (int)DisplayMetricsDensity.Default;
-				}
-			}
-		}
-
 		public ResolutionScale ResolutionScale
 		{
 			get
@@ -83,13 +90,6 @@ namespace Windows.Graphics.Display
 				}
 			}
 		}
-
-		/// <summary>
-		//// Gets the native orientation of the display monitor, 
-		///  which is typically the orientation where the buttons
-		///  on the device match the orientation of the monitor.
-		/// </summary>
-		public DisplayOrientations NativeOrientation => GetNativeOrientation();
 
 		/// <summary>
 		/// Gets the raw dots per inch (DPI) along the x axis of the display monitor.
@@ -279,18 +279,7 @@ namespace Windows.Graphics.Display
 
 		internal void HandleConfigurationChange()
 		{
-			var newOrientation = CurrentOrientation;
-			var newDpi = LogicalDpi;
-			if (_lastKnownOrientation != newOrientation)
-			{
-				_orientationChanged?.Invoke(this, null);
-				_lastKnownOrientation = newOrientation;
-			}
-			if (Math.Abs(_lastKnownDpi - newDpi) > 0.01)
-			{
-				_dpiChanged?.Invoke(this, null);
-				_lastKnownDpi = newDpi;
-			}
+			OnDisplayMetricsChanged();
 		}
 	}
 }

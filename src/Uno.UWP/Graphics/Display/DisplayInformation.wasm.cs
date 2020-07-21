@@ -8,15 +8,12 @@ namespace Windows.Graphics.Display
 	{
 		private const string JsType = "Windows.Graphics.Display.DisplayInformation";
 
-		// devicePixelRatio of 1 = https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio
-		private const float BaseDpi = 96.0f;
-
 		[Preserve]
 		public static int DispatchDpiChanged()
 		{
 			if (_lazyInstance.IsValueCreated)
 			{
-				_lazyInstance.Value.OnDpiChanged();
+				_lazyInstance.Value.OnDisplayMetricsChanged();
 			}
 			return 0;
 		}
@@ -26,7 +23,7 @@ namespace Windows.Graphics.Display
 		{
 			if (_lazyInstance.IsValueCreated)
 			{
-				_lazyInstance.Value.OnOrientationChanged();
+				_lazyInstance.Value.OnDisplayMetricsChanged();
 			}
 			return 0;
 		}
@@ -107,6 +104,7 @@ namespace Windows.Graphics.Display
 
 		partial void StartOrientationChanged()
 		{
+			_lastKnownOrientation = CurrentOrientation;
 			var command = $"{JsType}.startOrientationChanged()";
 			WebAssemblyRuntime.InvokeJS(command);
 		}
@@ -119,6 +117,7 @@ namespace Windows.Graphics.Display
 
 		partial void StartDpiChanged()
 		{
+			_lastKnownDpi = LogicalDpi;
 			var command = $"{JsType}.startDpiChanged()";
 			WebAssemblyRuntime.InvokeJS(command);
 		}
