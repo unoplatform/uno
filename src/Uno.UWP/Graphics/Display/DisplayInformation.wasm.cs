@@ -40,13 +40,6 @@ namespace Windows.Graphics.Display
 			}
 		}
 
-		/// <summary>
-		//// Gets the native orientation of the display monitor, 
-		///  which is typically the orientation where the buttons
-		///  on the device match the orientation of the monitor.
-		/// </summary>
-		public DisplayOrientations NativeOrientation { get; private set; } = DisplayOrientations.None;
-
 		public uint ScreenHeightInRawPixels
 		{
 			get
@@ -101,7 +94,14 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				return (ResolutionScale)LogicalDpi;
+				if (TryReadJsFloat("window.devicePixelRatio", out var devicePixelRatio))
+				{
+					return (ResolutionScale)(int)(devicePixelRatio * 100);
+				}
+				else
+				{
+					return ResolutionScale.Scale100Percent;
+				}
 			}
 		}
 

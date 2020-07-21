@@ -7,6 +7,13 @@ namespace Windows.Graphics.Display
 
 #if __WASM__
 		/// <summary>
+		//// Gets the native orientation of the display monitor, 
+		///  which is typically the orientation where the buttons
+		///  on the device match the orientation of the monitor.
+		/// </summary>
+		public DisplayOrientations NativeOrientation { get; private set; } = DisplayOrientations.None;
+
+		/// <summary>
 		/// Gets the raw dots per inch (DPI) along the x axis of the display monitor.
 		/// </summary>
 		/// <remarks>
