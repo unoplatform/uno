@@ -543,7 +543,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								if (IsUnoAssembly && _xamlSourceFiles.Any())
 								{
 									// Build master dictionary
-									foreach (var dictProperty in map.GetAllDictionaryProperties(_baseResourceDependencies))
+									foreach (var dictProperty in map.GetAllDictionaryProperties(_baseResourceDependencies, _nonSystemResources))
 									{
 										writer.AppendLineInvariant("MasterDictionary.MergedDictionaries.Add({0});", dictProperty);
 									}
@@ -554,15 +554,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (writer.BlockInvariant("public static void RegisterDefaultStyles()"))
 					{
-						if (files.Any())
+						using (writer.BlockInvariant("if(!_stylesRegistered)"))
 						{
-							using (writer.BlockInvariant("if(!_stylesRegistered)"))
+							writer.AppendLineInvariant("_stylesRegistered = true;");
+							foreach (var file in files.Where(f => IsIncludedResource(f, map)).Select(f => f.UniqueID).Distinct())
 							{
-								writer.AppendLineInvariant("_stylesRegistered = true;");
-								foreach (var file in files.Select(f=>f.UniqueID).Distinct())
-								{
-									writer.AppendLineInvariant("RegisterDefaultStyles_{0}();", file);
-								}
+								writer.AppendLineInvariant("RegisterDefaultStyles_{0}();", file);
 							}
 						}
 					}
@@ -646,5 +643,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";
+
+		/// <summary>
+		/// Should this Xaml be included when defining default styles? Outside of Uno this is always true. In Uno, this excludes WinUI Fluent resources (which consumer code accesses via XamlControlsResources)
+		/// </summary>
+		private bool IsIncludedResource(XamlFileDefinition xamlFileDefinition, XamlGlobalStaticResourcesMap map) => !IsUnoAssembly
+			|| _nonSystemResources.None(s => map.GetSourceLink(xamlFileDefinition).EndsWith(s));
 	}
 }
