@@ -36,7 +36,7 @@ namespace Windows.Graphics.Display
 		public float RawDpiY { get; private set; } = 0;
 #endif
 
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __MACOS__
 		/// <summary>
 		/// Diagonal size of the display in inches.
 		/// </summary>

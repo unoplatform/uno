@@ -102,24 +102,18 @@ namespace Windows.Graphics.Display
 			}
 		}
 
-		partial void StartOrientationChanged()
-		{
-			_lastKnownOrientation = CurrentOrientation;
-			ObserveDisplayMetricsChanges();
-		}
+		partial void StartOrientationChanged() => ObserveDisplayMetricsChanges();
 
 		partial void StopOrientationChanged() => UnobserveDisplayMetricsChanges();
 
-		partial void StartDpiChanged()
-		{
-			_lastKnownDpi = LogicalDpi;
-			ObserveDisplayMetricsChanges();
-		}
+		partial void StartDpiChanged() => ObserveDisplayMetricsChanges();
 
 		partial void StopDpiChanged() => UnobserveDisplayMetricsChanges();
 
 		private void ObserveDisplayMetricsChanges()
 		{
+			_lastKnownOrientation = CurrentOrientation;
+			_lastKnownDpi = LogicalDpi;
 			if (_didChangeStatusBarOrientationObserver == null)
 			{
 				_didChangeStatusBarOrientationObserver = NSNotificationCenter
