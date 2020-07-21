@@ -717,26 +717,26 @@
 	  </Properties>
 	</IgnoreSet>
 
-		<IgnoreSet baseVersion="2.1.37">
-			<Types>
-			</Types>
+	<IgnoreSet baseVersion="2.1.37">
+	  <Types>
+	  </Types>
 
-			<Methods>
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs..ctor()"
-					reason="Not part of the WinUI API." />
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.DatePickerValueChangedEventArgs..ctor(System.DateTimeOffset newDate, System.DateTimeOffset oldDate)"
-					reason="Not part of the WinUI API." />
-				<Member
-					fullName="System.Boolean Windows.UI.Xaml.Controls.TextBox.FocusTextView()"
-					reason="Not part of the WinUI API, Uno-specific implementation detail." />
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnFocusStateChanged(Windows.UI.Xaml.FocusState oldValue, Windows.UI.Xaml.FocusState newValue)"
-					reason="Not part of the WinUI API, Uno-specific implementation detail." />
-				<Member
-					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_DatePickerSelector()"
-					reason="Style removed from monoandroid (xamarin:Style with only ios:Setter)" />
+	  <Methods>
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs..ctor()"
+			reason="Not part of the WinUI API." />
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.DatePickerValueChangedEventArgs..ctor(System.DateTimeOffset newDate, System.DateTimeOffset oldDate)"
+			reason="Not part of the WinUI API." />
+		<Member
+			fullName="System.Boolean Windows.UI.Xaml.Controls.TextBox.FocusTextView()"
+			reason="Not part of the WinUI API, Uno-specific implementation detail." />
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnFocusStateChanged(Windows.UI.Xaml.FocusState oldValue, Windows.UI.Xaml.FocusState newValue)"
+			reason="Not part of the WinUI API, Uno-specific implementation detail." />
+		<Member
+			fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_DatePickerSelector()"
+			reason="Style removed from monoandroid (xamarin:Style with only ios:Setter)" />
 
 		<Member
 			fullName="System.Void Windows.UI.Xaml.Controls.Primitives.DragCompletedEventArgs..ctor(System.Object originalSource, System.Double horizontalChange, System.Double verticalChange, System.Boolean canceled)"
@@ -768,95 +768,95 @@
 			fullName="System.Void Windows.UI.Xaml.Controls.TextBox.SetIsPassword(System.Boolean isPassword)"
 			reason="macOS only breaking change, internal API"/>
 
-				<Member
-					fullName="System.Object Windows.UI.Xaml.Controls.ScrollContentPresenter.get_DataContext()"
-					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_DataContext(System.Object value)"
-					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
-				<Member
-					fullName="Windows.UI.Xaml.DependencyObject Windows.UI.Xaml.Controls.ScrollContentPresenter.get_TemplatedParent()"
-					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_TemplatedParent(Windows.UI.Xaml.DependencyObject value)"
-					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerPressed(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Wrong parameter name, restored the WinUI one"/>
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerReleased(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Wrong parameter name, restored the WinUI one"/>
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerEntered(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Wrong parameter name, restored the WinUI one"/>
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerExited(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Wrong parameter name, restored the WinUI one"/>
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Wrong parameter name, restored the WinUI one"/>
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Wrong parameter name, restored the WinUI one"/>
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerCaptureLost(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Wrong parameter name, restored the WinUI one"/>
+		<Member
+			fullName="System.Object Windows.UI.Xaml.Controls.ScrollContentPresenter.get_DataContext()"
+			reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_DataContext(System.Object value)"
+			reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+		<Member
+			fullName="Windows.UI.Xaml.DependencyObject Windows.UI.Xaml.Controls.ScrollContentPresenter.get_TemplatedParent()"
+			reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_TemplatedParent(Windows.UI.Xaml.DependencyObject value)"
+			reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerPressed(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+			reason="Wrong parameter name, restored the WinUI one"/>
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerReleased(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+			reason="Wrong parameter name, restored the WinUI one"/>
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerEntered(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+			reason="Wrong parameter name, restored the WinUI one"/>
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerExited(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+			reason="Wrong parameter name, restored the WinUI one"/>
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+			reason="Wrong parameter name, restored the WinUI one"/>
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+			reason="Wrong parameter name, restored the WinUI one"/>
+		<Member
+			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerCaptureLost(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+			reason="Wrong parameter name, restored the WinUI one"/>
 
-			</Methods>
-			<Properties>
-				<Member
-					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_DatePickerSelector()"
-					reason="Style removed from monoandroid (xamarin:Style with only ios:Setter)" />
+	  </Methods>
+	  <Properties>
+		<Member
+			fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_DatePickerSelector()"
+			reason="Style removed from monoandroid (xamarin:Style with only ios:Setter)" />
 
-			</Properties>
-			<Fields>
-			</Fields>
-		</IgnoreSet>
-		<IgnoreSet baseVersion="2.2.0">
-			<Methods>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.DtdEntity..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.DtdNotation..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlAttribute..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlCDataSection..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlComment..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlDocumentFragment..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlDocumentType..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlDomImplementation..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlElement..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlEntityReference..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlNamedNodeMap..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlNodeList..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlProcessingInstruction..ctor()"
-					reason="Not part of UWP"/>
-				<Member
-					fullName="System.Void Windows.Data.Xml.Dom.XmlText..ctor()"
-					reason="Not part of UWP"/>
-        <Member
+	  </Properties>
+	  <Fields>
+	  </Fields>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="2.2.0">
+	  <Methods>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.DtdEntity..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.DtdNotation..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlAttribute..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlCDataSection..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlComment..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlDocumentFragment..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlDocumentType..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlDomImplementation..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlElement..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlEntityReference..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlNamedNodeMap..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlNodeList..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlProcessingInstruction..ctor()"
+			reason="Not part of UWP"/>
+		<Member
+			fullName="System.Void Windows.Data.Xml.Dom.XmlText..ctor()"
+			reason="Not part of UWP"/>
+		<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.AnimatedVisualPlayer.set_IsPlaying(System.Boolean value)"
 					reason="Refactoring, not part of WinUI contract anyway." />
 		<Member
@@ -976,6 +976,10 @@
 	</IgnoreSet>
 
 	<IgnoreSet baseVersion="2.4.4">
+		<Assemblies>
+			<Member fullName="Uno.UI.Wasm" reason="Moved to another package" />
+		</Assemblies>
+		
 		<Types>
 			<Member
 				fullName="Windows.Gaming.UI.GameMonitor"
@@ -1058,10 +1062,42 @@
 			  fullName="Windows.UI.Xaml.Controls.LayouterExtensions"
 			  reason="Made non-WinUI helper methods internal"/>
 		  <!-- End remove IFrameworkElement -->
+		<!-- Begin Skia Import -->
+		<Member fullName="Windows.UI.Xaml.Wasm.SvgElement" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Windows.UI.Xaml.RoutedEventHandlerWithHandled" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Windows.UI.Xaml.Media.GeometryData" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Windows.UI.Xaml.Documents.NavigationTarget" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Windows.UI.Xaml.Controls.HtmlImage" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.UI.Services.ResourcesService" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Foundation.WebAssemblyRuntime" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Foundation.Interop.TSInteropMessageAttribute" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Foundation.Interop.TSInteropMarshaller" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Foundation.Interop.JSObjectHandle" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Foundation.Interop.JSObject" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Foundation.Interop.IJSObjectMetadata" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Foundation.Interop.IJSObject" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Extensions.UIElementExtensions" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Diagnostics.Eventing.Tracing" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Diagnostics.Eventing.NullEventProvider" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Diagnostics.Eventing.IEventProviderFactory" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Diagnostics.Eventing.IEventProvider" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Diagnostics.Eventing.EventProviderExtensions" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Diagnostics.Eventing.EventOpcode" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Diagnostics.Eventing.EventDescriptor" reason="Removed unused Uno-only legacy control." />
+		<Member fullName="Uno.Diagnostics.Eventing.EventActivity" reason="Removed unused Uno-only legacy control." />
+
+		<Member fullName="Windows.UI.Xaml.Controls.TextBoxView" reason="Type not present in reference API" />
+		<Member fullName="Windows.UI.Xaml.Font" reason="Type not present in reference API" />
+		<Member fullName="Windows.UI.Xaml.Controls.TextBoxViewDelegate" reason="Type not present in reference API" />
+
+		<!-- End Skia Import -->
 		</Types>
 
-		<Events>
-		</Events>
+	  <Events>
+		<!-- Begin Skia Import -->
+		<Member fullName="Windows.UI.Xaml.DependencyPropertyChangedEventHandler Windows.UI.Xaml.FrameworkElement::IsEnabledChanged" reason="Removed unused Uno-only legacy control." />
+		<!-- End Skia Import -->
+	  </Events>
 
 		<Methods>
 			<Member
@@ -1567,6 +1603,150 @@
 			  fullName="System.Void Uno.UI.Views.Controls.BindableUIActivityIndicatorView.set_TemplatedParent(Windows.UI.Xaml.DependencyObject value)"
 			  reason="ProgressRing no longer inherits from this type, so this method is no longer implementing interface"/>
 		  <!-- End remove IFrameworkElement -->
+
+			<!-- Begin Skia Import -->
+			<Member fullName="Windows.UI.Xaml.Wasm.SvgElement Windows.UI.Xaml.Shapes.Shape.GetMainSvgElement()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.UIElement.FindFirstChild()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.UI.Xaml.Media.Brush Windows.UI.Xaml.Controls.TextBoxView.get_Foreground()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.UI.Xaml.FrameworkElement Uno.UI.Extensions.UIElementExtensions.GetTopLevelParent(Windows.UI.Xaml.UIElement view)" reason="reference API does not contain this API" />
+			<Member fullName="Windows.UI.Xaml.Documents.NavigationTarget Windows.UI.Xaml.Documents.Hyperlink.get_NavigationTarget()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.UI.Xaml.Documents.Inline Windows.UI.Xaml.Documents.InlineCollection.get_Item(System.Int32 index)" reason="reference API does not contain this API" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TimePicker.get_TimeProperty()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TimePicker.get_MinuteIncrementProperty()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Control.get_IsEnabledProperty()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.UI.Xaml.Controls.UIElementCollection Windows.UI.Xaml.Shapes.Shape.get_SvgChildren()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.UI.Composition.Compositor Windows.UI.Composition.Compositor.get_Current()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.Foundation.Size Windows.UI.Xaml.UIElement.MeasureView(Windows.Foundation.Size availableSize)" reason="reference API does not contain this API" />
+			<Member fullName="Windows.Foundation.Size Windows.UI.Xaml.UIElement.get_AvailableMeasureSize()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.Foundation.Rect Windows.UI.Xaml.UIElement.get_Arranged()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.Foundation.Point Windows.UI.Xaml.UIElement.get_RenderTransformOrigin()" reason="reference API does not contain this API" />
+			<Member fullName="Windows.Foundation.Point Windows.UI.Xaml.IFrameworkElement.get_RenderTransformOrigin()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Window.Resize(System.Double width, System.Double height)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_RequestedDesiredSize(System.Nullable`1&lt;Windows.Foundation.Size&gt; value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_RenderTransformOrigin(Windows.Foundation.Point value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_MeasureCallCount(System.Int32 value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_DesiredSizeSelector(System.Func`2&lt;Windows.Foundation.Size,Windows.Foundation.Size&gt; value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_AvailableMeasureSize(Windows.Foundation.Size value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_Arranged(Windows.Foundation.Rect value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_ArrangeCallCount(System.Int32 value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.ClearChildren()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.AddChild(Windows.UI.Xaml.UIElement child, System.Nullable`1&lt;System.Int32&gt; index)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement..ctor(System.String htmlTag, System.Boolean isSvg)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnChildrenChanged()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.InitCommonShapeProperties()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Input.FocusManager.ReceiveFocusNative(System.Int32 handle)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.IFrameworkElement.set_RenderTransformOrigin(Windows.Foundation.Point value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.SetCornerRadius(Windows.UI.Xaml.CornerRadius cornerRadius)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.SetBorder(Windows.UI.Xaml.Thickness thickness, Windows.UI.Xaml.Media.Brush brush, Windows.UI.Xaml.CornerRadius cornerRadius)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.remove_Loading(Windows.UI.Xaml.RoutedEventHandler value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.remove_IsEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventHandler value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.add_Loading(Windows.UI.Xaml.RoutedEventHandler value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.add_IsEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventHandler value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement..ctor(System.String htmlTag, System.Boolean isSvg)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Documents.TextElement..ctor(System.String htmlTag)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Documents.Span..ctor(System.String htmlTag)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Documents.InlineCollection.set_Item(System.Int32 index, Windows.UI.Xaml.Documents.Inline value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Documents.InlineCollection.RemoveAt(System.Int32 index)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Documents.InlineCollection.Insert(System.Int32 index, Windows.UI.Xaml.Documents.Inline item)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Documents.InlineCollection.CopyTo(Windows.UI.Xaml.Documents.Inline[] array, System.Int32 arrayIndex)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Documents.InlineCollection.Clear()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Documents.InlineCollection.Add(Windows.UI.Xaml.Documents.Inline item)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Documents.InlineCollection..ctor(Windows.UI.Xaml.UIElement containerElement)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Documents.Inline..ctor(System.String htmlTag)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Documents.Hyperlink.set_NavigationTarget(Windows.UI.Xaml.Documents.NavigationTarget value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebView.set_IsScrollEnabled(System.Boolean value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebView.NavigateWithHttpRequestMessage(System.Net.Http.HttpRequestMessage requestMessage)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebView.Navigate(System.Uri uri)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.UIElementCollection..ctor(Windows.UI.Xaml.UIElement view)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.set_SelectionStart(System.Int32 value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.set_SelectionEnd(System.Int32 value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.set_Foreground(Windows.UI.Xaml.Media.Brush value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView..ctor(Windows.UI.Xaml.Controls.TextBox textBox, System.Boolean isMultiline)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.SetIsPassword(System.Boolean isPassword)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.ScrollTo(System.Nullable`1&lt;System.Double&gt; horizontalOffset, System.Nullable`1&lt;System.Double&gt; verticalOffset, System.Boolean disableAnimation)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ProgressRingTemplateSettings.set_MaxSideLength(System.Double value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ProgressRingTemplateSettings.set_EllipseOffset(Windows.UI.Xaml.Thickness value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ProgressRingTemplateSettings.set_EllipseDiameter(System.Double value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Panel.UpdateBorder()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Panel.Add(Windows.UI.Xaml.UIElement view)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.remove_ImageFailed(Windows.UI.Xaml.RoutedEventHandler value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.add_ImageFailed(Windows.UI.Xaml.RoutedEventHandler value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Control..ctor(System.String htmlTag)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Core.PointerEventArgs..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.VisualCollection..ctor(Windows.UI.Composition.Visual owner)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.Visual..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.SpriteVisual..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.ShapeVisual..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.ScalarKeyFrameAnimation..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.KeyFrameAnimation..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionSpriteShape..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionShapeCollection.set_IsReadOnly(System.Boolean value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionShapeCollection.set_Count(System.Int32 value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionShapeCollection..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionScopedBatch..ctor(Windows.UI.Composition.CompositionBatchTypes batchType)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionPathGeometry..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionObject..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionGeometry..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionColorBrush..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionBrush..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionAnimation..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.Security.Credentials.PasswordVault..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.UInt32 Windows.UI.Xaml.Documents.InlineCollection.get_Size()" reason="reference API does not contain this API" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.Devices.Geolocation.Geoposition&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionAsync(System.TimeSpan maximumAge, System.TimeSpan timeout)" reason="reference API does not contain this API" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.Devices.Geolocation.Geoposition&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionAsync()" reason="reference API does not contain this API" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.Devices.Geolocation.GeolocationAccessStatus&gt; Windows.Devices.Geolocation.Geolocator.RequestAccessAsync()" reason="reference API does not contain this API" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Windows.UI.Xaml.Controls.WebView.InvokeScriptAsync(System.Threading.CancellationToken ct, System.String script, System.String[] arguments)" reason="reference API does not contain this API" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Windows.System.Launcher.LaunchUriPlatformAsync(System.Uri uri)" reason="reference API does not contain this API" />
+			<Member fullName="System.String Windows.UI.Xaml.UIElement.get_HtmlTag()" reason="reference API does not contain this API" />
+			<Member fullName="System.String Windows.UI.Text.FontWeight.ToCssString()" reason="reference API does not contain this API" />
+			<Member fullName="System.String Windows.UI.Color.ToCssString()" reason="reference API does not contain this API" />
+			<Member fullName="System.String Uno.UI.Helpers.Automation.SetDependencyPropertyValue(System.Int32 handle, System.String dependencyPropertyNameAndValue)" reason="reference API does not contain this API" />
+			<Member fullName="System.String Uno.UI.Helpers.Automation.GetDependencyPropertyValue(System.Int32 handle, System.String propertyName)" reason="reference API does not contain this API" />
+			<Member fullName="System.Nullable`1&lt;Windows.Foundation.Size&gt; Windows.UI.Xaml.UIElement.get_RequestedDesiredSize()" reason="reference API does not contain this API" />
+			<Member fullName="System.IntPtr Windows.UI.Xaml.UIElement.get_HtmlId()" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.UIElement.get_MeasureCallCount()" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.UIElement.get_ArrangeCallCount()" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Documents.InlineCollection.IndexOf(Windows.UI.Xaml.Documents.Inline item)" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Documents.InlineCollection.get_Count()" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Controls.TextBoxView.get_SelectionStart()" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Controls.TextBoxView.get_SelectionEnd()" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.Devices.Sensors.Magnetometer.DispatchReading(System.Single x, System.Single y, System.Single z)" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.Devices.Sensors.Gyrometer.DispatchReading(System.Single x, System.Single y, System.Single z)" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.Devices.Sensors.Accelerometer.DispatchReading(System.Single x, System.Single y, System.Single z)" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.Devices.Geolocation.Geolocator.DispatchGeoposition(System.String serializedGeoposition, System.String requestId)" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.Devices.Geolocation.Geolocator.DispatchError(System.String currentPositionRequestResult, System.String requestId)" reason="reference API does not contain this API" />
+			<Member fullName="System.Int32 Windows.Devices.Geolocation.Geolocator.DispatchAccessRequest(System.String serializedAccessStatus)" reason="reference API does not contain this API" />
+			<Member fullName="System.Func`2&lt;Windows.Foundation.Size,Windows.Foundation.Size&gt; Windows.UI.Xaml.UIElement.get_DesiredSizeSelector()" reason="reference API does not contain this API" />
+			<Member fullName="System.Collections.IEnumerator Windows.UI.Xaml.Controls.Panel.GetEnumerator()" reason="reference API does not contain this API" />
+			<Member fullName="System.Collections.Generic.IEnumerator`1&lt;Windows.UI.Xaml.Documents.Inline&gt; Windows.UI.Xaml.Documents.InlineCollection.GetEnumerator()" reason="reference API does not contain this API" />
+			<Member fullName="System.Collections.Generic.IEnumerable`1&lt;Windows.UI.Xaml.UIElement&gt; Windows.UI.Xaml.UIElement.GetChildren()" reason="reference API does not contain this API" />
+			<Member fullName="System.Collections.Generic.IEnumerable`1&lt;System.Object&gt; Uno.UI.ViewExtensions.GetChildren(System.Object group)" reason="reference API does not contain this API" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.UIElement.RemoveChild(Windows.UI.Xaml.UIElement child)" reason="reference API does not contain this API" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.UIElement.get_HtmlTagIsSvg()" reason="reference API does not contain this API" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.UIElement.DispatchEvent(System.Int32 handle, System.String eventName, System.String eventArgs)" reason="reference API does not contain this API" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Documents.InlineCollection.Remove(Windows.UI.Xaml.Documents.Inline item)" reason="reference API does not contain this API" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Documents.InlineCollection.get_IsReadOnly()" reason="reference API does not contain this API" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Documents.InlineCollection.Contains(Windows.UI.Xaml.Documents.Inline item)" reason="reference API does not contain this API" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.WebView.get_IsScrollEnabled()" reason="reference API does not contain this API" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.Control.IsDelegatingFocusToTemplateChild()" reason="reference API does not contain this API" />
+			<Member fullName="System.Boolean Windows.UI.Core.SystemNavigationManager.DispatchBackRequest()" reason="reference API does not contain this API" />
+
+			<Member fullName="Android.Views.View Windows.UI.Composition.Visual.get_NativeOwner()" reason="reference API does not contain this API" />
+			<Member fullName="UIKit.UIView Windows.UI.Composition.Visual.get_NativeOwner()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.Visual.set_NativeOwner(Android.Views.View value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.Visual.set_NativeOwner(UIKit.UIView value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.Visual.set_NativeOwner(System.Object value)" reason="reference API does not contain this API" />
+			<Member fullName="System.Object Windows.UI.Composition.Visual.get_NativeOwner()" reason="reference API does not contain this API" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.FrameworkElement.HasParent()" reason="reference API does not contain this API" />
+			<Member fullName="CoreAnimation.CALayer Windows.UI.Composition.Visual.get_NativeLayer()" reason="reference API does not contain this API" />
+
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebView..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.Devices.Sensors.AccelerometerReading..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.Devices.Sensors.AccelerometerReadingChangedEventArgs..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.Devices.Sensors.AccelerometerShakenEventArgs..ctor()" reason="reference API does not contain this API" />
+
+		  <!-- End Skia Import -->
+
 		</Methods>
 
 		<Events>
@@ -1665,6 +1845,39 @@
 				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Controls.PopupBase::Child()"
 				reason="Property type corrected from FrameworkElement to UIElement as part of native views clean-up"/>
 			<!-- End remove IFrameworkElement -->
+
+			<!-- Begin Skia Import -->
+			<Member fullName="Windows.UI.Xaml.Media.Brush Windows.UI.Xaml.Controls.TextBoxView::Foreground()" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.Documents.NavigationTarget Windows.UI.Xaml.Documents.Hyperlink::NavigationTarget()" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.Documents.Inline Windows.UI.Xaml.Documents.InlineCollection::Item(System.Int32)" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TimePicker::TimeProperty()" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TimePicker::MinuteIncrementProperty()" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Control::IsEnabledProperty()" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.Controls.UIElementCollection Windows.UI.Xaml.Shapes.Shape::SvgChildren()" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Composition.Compositor Windows.UI.Composition.Compositor::Current()" reason="Reference API does not contain this" />
+			<Member fullName="Windows.Foundation.Size Windows.UI.Xaml.UIElement::AvailableMeasureSize()" reason="Reference API does not contain this" />
+			<Member fullName="Windows.Foundation.Rect Windows.UI.Xaml.UIElement::Arranged()" reason="Reference API does not contain this" />
+			<Member fullName="Windows.Foundation.Point Windows.UI.Xaml.IFrameworkElement::RenderTransformOrigin()" reason="Reference API does not contain this" />
+			<Member fullName="System.UInt32 Windows.UI.Xaml.Documents.InlineCollection::Size()" reason="Reference API does not contain this" />
+			<Member fullName="System.String Windows.UI.Xaml.UIElement::HtmlTag()" reason="Reference API does not contain this" />
+			<Member fullName="System.Nullable`1&lt;Windows.Foundation.Size&gt; Windows.UI.Xaml.UIElement::RequestedDesiredSize()" reason="Reference API does not contain this" />
+			<Member fullName="System.IntPtr Windows.UI.Xaml.UIElement::HtmlId()" reason="Reference API does not contain this" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.UIElement::MeasureCallCount()" reason="Reference API does not contain this" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.UIElement::ArrangeCallCount()" reason="Reference API does not contain this" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Documents.InlineCollection::Count()" reason="Reference API does not contain this" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Controls.TextBoxView::SelectionStart()" reason="Reference API does not contain this" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Controls.TextBoxView::SelectionEnd()" reason="Reference API does not contain this" />
+			<Member fullName="System.Func`2&lt;Windows.Foundation.Size,Windows.Foundation.Size&gt; Windows.UI.Xaml.UIElement::DesiredSizeSelector()" reason="Reference API does not contain this" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.UIElement::HtmlTagIsSvg()" reason="Reference API does not contain this" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Documents.InlineCollection::IsReadOnly()" reason="Reference API does not contain this" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.WebView::IsScrollEnabled()" reason="Reference API does not contain this" />
+
+			<Member fullName="UIKit.UIView Windows.UI.Composition.Visual::NativeOwner()" reason="Reference API does not contain this" />
+			<Member fullName="Android.Views.View Windows.UI.Composition.Visual::NativeOwner()" reason="Reference API does not contain this" />
+			<Member fullName="Android.Views.View Windows.UI.Composition.Visual::NativeOwner()" reason="Reference API does not contain this" />
+			<Member fullName="System.Object Windows.UI.Composition.Visual::NativeOwner()" reason="Reference API does not contain this" />
+			<Member fullName="CoreAnimation.CALayer Windows.UI.Composition.Visual::NativeLayer()" reason="Reference API does not contain this" />
+		  <!-- End Skia Import -->
 		</Properties>
 
 		<Fields>
@@ -2766,6 +2979,26 @@
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableNSView::DataContextProperty" reason="DP declarations must be properties"/>
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableNSView::TemplatedParentProperty" reason="DP declarations must be properties"/>
 			<!-- ^^ DP Fields to properties -->
+			<!-- Begin Skia Import -->
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::WidthProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::VerticalAlignmentProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::TransitionsProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::MinWidthProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::MinHeightProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::MaxWidthProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::MaxHeightProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::MarginProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::HorizontalAlignmentProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::HeightProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Documents.Hyperlink::NavigationTargetProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.WebView::SourceProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.WebView::IsScrollEnabledProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.WebView::CanGoForwardProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.WebView::CanGoBackProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Image::StretchProperty" reason="Reference API does not contain this" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Image::SourceProperty" reason="Reference API does not contain this" />
+			<Member fullName="System.Action`1&lt;System.Action&gt; Windows.UI.Core.CoreDispatcher::DispatchOverride" reason="Reference API does not contain this" />
+			<!-- End Skia Import -->
 		</Fields>
 	</IgnoreSet>
   </IgnoreSets>

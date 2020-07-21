@@ -11,7 +11,7 @@ using Uno.UI.UI.Xaml.Documents;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextBoxView : FrameworkElement
+	internal partial class TextBoxView : FrameworkElement
 	{
 		private readonly TextBox _textBox;
 

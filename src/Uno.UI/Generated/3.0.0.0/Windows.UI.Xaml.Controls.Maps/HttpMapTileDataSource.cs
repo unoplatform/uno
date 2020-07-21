@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HttpMapTileDataSource : global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string UriFormatString
 		{
 			get
@@ -21,8 +21,8 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool AllowCaching
 		{
 			get
@@ -35,8 +35,8 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IDictionary<string, string> AdditionalRequestHeaders
 		{
 			get
@@ -45,16 +45,16 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public HttpMapTileDataSource() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.HttpMapTileDataSource", "HttpMapTileDataSource.HttpMapTileDataSource()");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.HttpMapTileDataSource.HttpMapTileDataSource()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public HttpMapTileDataSource( string uriFormatString) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.HttpMapTileDataSource", "HttpMapTileDataSource.HttpMapTileDataSource(string uriFormatString)");
@@ -68,16 +68,16 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.HttpMapTileDataSource.AllowCaching.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.HttpMapTileDataSource.UriRequested.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.HttpMapTileDataSource.UriRequested.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.HttpMapTileDataSource, global::Windows.UI.Xaml.Controls.Maps.MapTileUriRequestedEventArgs> UriRequested
 		{
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.HttpMapTileDataSource", "event TypedEventHandler<HttpMapTileDataSource, MapTileUriRequestedEventArgs> HttpMapTileDataSource.UriRequested");
 			}
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.HttpMapTileDataSource", "event TypedEventHandler<HttpMapTileDataSource, MapTileUriRequestedEventArgs> HttpMapTileDataSource.UriRequested");

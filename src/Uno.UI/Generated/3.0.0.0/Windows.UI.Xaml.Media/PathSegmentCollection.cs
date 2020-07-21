@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PathSegmentCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.PathSegment>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.PathSegment>

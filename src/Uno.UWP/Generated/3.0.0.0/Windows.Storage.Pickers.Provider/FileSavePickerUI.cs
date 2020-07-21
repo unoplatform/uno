@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers.Provider
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FileSavePickerUI 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Title
 		{
 			get
@@ -21,8 +21,8 @@ namespace Windows.Storage.Pickers.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<string> AllowedFileTypes
 		{
 			get
@@ -31,8 +31,8 @@ namespace Windows.Storage.Pickers.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string FileName
 		{
 			get
@@ -41,8 +41,8 @@ namespace Windows.Storage.Pickers.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string SettingsIdentifier
 		{
 			get
@@ -56,8 +56,8 @@ namespace Windows.Storage.Pickers.Provider
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.AllowedFileTypes.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.SettingsIdentifier.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.FileName.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Pickers.Provider.SetFileNameResult TrySetFileName( string value)
 		{
 			throw new global::System.NotImplementedException("The member SetFileNameResult FileSavePickerUI.TrySetFileName(string value) is not implemented in Uno.");
@@ -67,32 +67,32 @@ namespace Windows.Storage.Pickers.Provider
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.FileNameChanged.remove
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.TargetFileRequested.add
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.TargetFileRequested.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Pickers.Provider.FileSavePickerUI, object> FileNameChanged
 		{
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.Provider.FileSavePickerUI", "event TypedEventHandler<FileSavePickerUI, object> FileSavePickerUI.FileNameChanged");
 			}
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.Provider.FileSavePickerUI", "event TypedEventHandler<FileSavePickerUI, object> FileSavePickerUI.FileNameChanged");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Pickers.Provider.FileSavePickerUI, global::Windows.Storage.Pickers.Provider.TargetFileRequestedEventArgs> TargetFileRequested
 		{
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.Provider.FileSavePickerUI", "event TypedEventHandler<FileSavePickerUI, TargetFileRequestedEventArgs> FileSavePickerUI.TargetFileRequested");
 			}
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.Provider.FileSavePickerUI", "event TypedEventHandler<FileSavePickerUI, TargetFileRequestedEventArgs> FileSavePickerUI.TargetFileRequested");

@@ -18,7 +18,8 @@ resources:
     image: unoplatform/wasm-build:2.1.1
 
 variables:
-  windowsVMImage: 'windows-2019'
+  windowsHostedVMImage: 'windows-2019'
+  scaledPool: 'Windows2019-20200608'
   linuxVMImage: 'ubuntu-16.04'
   macOSVMImage: 'macOS-10.15'
   xCodeRoot: '/Applications/Xcode_11.5.app'
@@ -27,23 +28,23 @@ variables:
 jobs:
 - template: build/ci/.azure-devops-windows.yml
   parameters:
-    vmImage: '$(windowsVMImage)'
+    poolName: '$(scaledPool)'
 
 - template: build/ci/.azure-devops-project-template-tests.yml
   parameters:
-    vmImage: '$(windowsVMImage)'
+    vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-uap.yml
   parameters:
-    vmImage: '$(windowsVMImage)'
+    vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-unit-tests.yml
   parameters:
-    vmImage: '$(windowsVMImage)'
+    vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-docs.yml
   parameters:
-    vmImage: '$(windowsVMImage)'
+    vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-wasm-uitests.yml
   parameters:
@@ -69,4 +70,4 @@ jobs:
 
 - template: build/ci/.azure-devops-screenshot-compare.yml
   parameters:
-    vmImage: '$(windowsVMImage)'
+    vmImage: '$(windowsHostedVMImage)'

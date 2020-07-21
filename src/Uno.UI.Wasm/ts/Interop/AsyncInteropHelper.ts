@@ -10,9 +10,9 @@
 			}
 			const w = window as any;
 			AsyncInteropHelper.dispatchResultMethod =
-				w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
+				w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.Wasm] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
 			AsyncInteropHelper.dispatchErrorMethod =
-				w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
+				w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.Wasm] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
 		}
 
 		public static Invoke(handle: number, promiseFunction: () => Promise<string>): void {

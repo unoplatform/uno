@@ -1,5 +1,4 @@
-﻿#if __IOS__ || __ANDROID__ || __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,6 +6,12 @@ namespace Windows.Devices.Sensors
 {
 	public partial class AccelerometerReading
 	{
+		private AccelerometerReading()
+		{
+
+		}
+
+#if __IOS__ || __ANDROID__ || __WASM__
 		internal AccelerometerReading(
 			double accelerationX,
 			double accelerationY,
@@ -26,6 +31,6 @@ namespace Windows.Devices.Sensors
 		public double AccelerationZ { get; }
 
 		public DateTimeOffset Timestamp { get; }
+#endif
 	}
 }
-#endif

@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<WasmHead>true</WasmHead>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 		<NoWarn>NU1701</NoWarn>
 	</PropertyGroup>

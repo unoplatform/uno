@@ -13,6 +13,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	public partial class LottieVisualSource
 	{
+		private static readonly string UNO_BOOTSTRAP_APP_BASE = global::System.Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
+
 		private AnimatedVisualPlayer _initializedPlayer;
 		private bool _isPlaying;
 		private Size _compositionSize = new Size(0, 0);
@@ -66,6 +68,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 			else
 			{
+				var documentPath = string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE)
+					? UriSource?.PathAndQuery
+					: UNO_BOOTSTRAP_APP_BASE + "/" + UriSource?.PathAndQuery;
 
 				js = new[]
 				{
@@ -73,7 +78,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					"elementId:",
 					player.HtmlId.ToString(),
 					",jsonPath:\"",
-					UriSource?.PathAndQuery ?? "",
+					documentPath ?? "",
 					"\",autoplay:",
 					player.AutoPlay ? "true" : "false",
 					",stretch:\"",

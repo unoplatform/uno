@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Input.Preview
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GazeMovedPreviewEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Handled
 		{
 			get
@@ -21,8 +21,8 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Input.Preview.GazePointPreview CurrentPoint
 		{
 			get
@@ -34,8 +34,8 @@ namespace Windows.Devices.Input.Preview
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.Handled.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.Handled.set
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.CurrentPoint.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IList<global::Windows.Devices.Input.Preview.GazePointPreview> GetIntermediatePoints()
 		{
 			throw new global::System.NotImplementedException("The member IList<GazePointPreview> GazeMovedPreviewEventArgs.GetIntermediatePoints() is not implemented in Uno.");

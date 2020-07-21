@@ -1,0 +1,72 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.Toolkit</AssemblyName>
+		<RootNamespace>Uno.UI.Toolkit</RootNamespace>
+		<Product>$(AssemblyName) ($(TargetFramework))</Product>
+		<DefaultLanguage>en-US</DefaultLanguage>
+		
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+		
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Skia</UnoRuntimeIdentifier>
+		<PlatformItemsBasePath>..\Uno.UI.Toolkit\</PlatformItemsBasePath>
+
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />
+	</ItemGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+
+  <ItemGroup>
+    <PackageReference Include="Uno.SourceGenerationTasks" />
+    <PackageReference Include="Uno.Core" />
+		<PackageReference Include="Uno.Core.Build" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Uno.MonoAnalyzers" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.Skia\Uno.UI.Skia.csproj">
+		</ProjectReference>
+		<ProjectReference Include="..\Uno.UWP.Skia\Uno.Skia.csproj">
+		</ProjectReference>
+		<ProjectReference Include="..\Uno.Foundation.Skia\Uno.Foundation.Skia.csproj">
+		</ProjectReference>
+	</ItemGroup>
+
+	<!-- Override existing target, this project cannot be published -->
+	<Target Name="Publish" />
+	
+	<PropertyGroup>
+		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+	</PropertyGroup>
+
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) or '$(TargetFramework)'=='netstandard2.0'" />
+
+	<Import Project="..\Common.targets" />
+	
+	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\uno-runtime\$(_OverrideTargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)**" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
+</Project>

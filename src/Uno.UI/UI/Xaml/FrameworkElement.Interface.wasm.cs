@@ -36,7 +36,15 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize();
 
-		public FrameworkElement(string htmlTag = "div", bool isSvg = false) : base(htmlTag, isSvg)
+		public FrameworkElement() : this(DefaultHtmlTag, false)
+		{
+		}
+
+		public FrameworkElement(string htmlTag) : this(htmlTag, false)
+		{
+		}
+
+		public FrameworkElement(string htmlTag, bool isSvg) : base(htmlTag, isSvg)
 		{
 			Initialize();
 

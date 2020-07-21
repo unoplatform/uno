@@ -1,3 +1,4 @@
+#if XAMARIN || NETSTANDARD
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -14,7 +15,6 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ProgressRing);
 		}
 
-		#region IsActive
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the <see cref="ProgressRing"/> is showing progress.
@@ -25,10 +25,8 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(IsActiveProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsActiveProperty =
-			DependencyProperty.Register("IsActive", typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(false, OnIsActiveChanged));
-
-		#endregion
+		public static DependencyProperty IsActiveProperty { get; } =
+			DependencyProperty.Register("IsActive", typeof(bool), typeof(ProgressRing), new PropertyMetadata(defaultValue: false, propertyChangedCallback: OnIsActiveChanged));
 
 		private static void OnIsActiveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -46,6 +44,8 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnUnloadedPartial();
 
 		partial void OnIsActiveChangedPartial(bool newValue);
+
+#if !NETSTANDARD && !__MACOS__ && !__NETSTD_REFERENCE__
 
 		private protected override void OnLoaded()
 		{
@@ -81,5 +81,7 @@ namespace Windows.UI.Xaml.Controls
 				return result;
 			}
 		}
+#endif
 	}
 }
+#endif

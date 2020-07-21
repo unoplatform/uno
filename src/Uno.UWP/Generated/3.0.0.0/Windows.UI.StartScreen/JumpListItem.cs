@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.StartScreen
 {
-	#if false || false || NET461 || __WASM__ || __MACOS__
+	#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class JumpListItem 
 	{
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Uri Logo
 		{
 			get
@@ -21,8 +21,8 @@ namespace Windows.UI.StartScreen
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GroupName
 		{
 			get
@@ -35,8 +35,8 @@ namespace Windows.UI.StartScreen
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string DisplayName
 		{
 			get
@@ -49,8 +49,8 @@ namespace Windows.UI.StartScreen
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Description
 		{
 			get
@@ -63,8 +63,8 @@ namespace Windows.UI.StartScreen
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Arguments
 		{
 			get
@@ -73,8 +73,8 @@ namespace Windows.UI.StartScreen
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.StartScreen.JumpListItemKind Kind
 		{
 			get
@@ -83,8 +83,8 @@ namespace Windows.UI.StartScreen
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool RemovedByUser
 		{
 			get
@@ -104,15 +104,15 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.GroupName.set
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Logo.get
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Logo.set
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.StartScreen.JumpListItem CreateWithArguments( string arguments,  string displayName)
 		{
 			throw new global::System.NotImplementedException("The member JumpListItem JumpListItem.CreateWithArguments(string arguments, string displayName) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.StartScreen.JumpListItem CreateSeparator()
 		{
 			throw new global::System.NotImplementedException("The member JumpListItem JumpListItem.CreateSeparator() is not implemented in Uno.");

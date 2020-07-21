@@ -1,0 +1,30 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>Uno.Foundation</AssemblyName>
+    <RootNamespace>Windows.Foundation</RootNamespace>
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+		
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<PlatformItemsBasePath>..\Uno.Foundation\</PlatformItemsBasePath>
+	</PropertyGroup>
+
+	<ItemGroup>
+    <PackageReference Include="Uno.SourceGenerationTasks" />
+    <PackageReference Include="Uno.Core" />
+		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="System.Memory" />
+		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
+		<PackageReference Include="Uno.Diagnostics.Eventing" Version="1.0.0-dev.4" />
+	</ItemGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+
+</Project>

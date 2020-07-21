@@ -3,8 +3,7 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<WasmHead>true</WasmHead>
-		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO</DefineConstants>
+		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
 		<NoWarn>NU1701,CS1998</NoWarn>
 		<LangVersion>7.3</LangVersion>
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
@@ -76,16 +75,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.csproj" />
-		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie.Wasm\Uno.UI.Lottie.Wasm.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL.Wasm\Uno.UI.MSAL.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation.Runtime.Wasm\Uno.Foundation.Runtime.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation.Wasm\Uno.Foundation.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl.Wasm\Uno.UI.RemoteControl.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests.Wasm\Uno.UI.RuntimeTests.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Toolkit.Wasm\Uno.UI.Toolkit.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Wasm.Tests\Uno.UI.Wasm.Tests.csproj" />
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Wasm\Uno.UI.Runtime.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Wasm\Uno.UI.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP.Wasm\Uno.Wasm.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -107,4 +107,7 @@
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
 	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
 	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
+
+	<Import Project="..\..\..\build\*.WebAssembly.props" />
+	<Import Project="..\..\..\build\*.WebAssembly.targets" />
 </Project>
