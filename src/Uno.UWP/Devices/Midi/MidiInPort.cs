@@ -1,4 +1,4 @@
-﻿#if !NET461
+﻿#if !NET461 && !__SKIA__ && !__NETSTD_REFERENCE__
 using System;
 using Microsoft.Extensions.Logging;
 using Uno.Devices.Enumeration.Internal;
