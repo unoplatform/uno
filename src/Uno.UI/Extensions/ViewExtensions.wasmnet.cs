@@ -1,4 +1,4 @@
-#if NET461 || __WASM__
+#if NET461 || NETSTANDARD2_0
 using System;
 using System.Collections.Generic;
 using System.Linq;

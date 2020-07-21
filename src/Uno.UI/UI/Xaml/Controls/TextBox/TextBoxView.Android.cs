@@ -23,7 +23,7 @@ using AndroidX.Core.Graphics;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextBoxView : EditText, DependencyObject
+	internal partial class TextBoxView : EditText, DependencyObject
 	{
 		private bool _isRunningTextChanged;
 		private bool _isInitialized = false;

@@ -31,7 +31,7 @@ using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
-#elif __WASM__ || NET461
+#elif NETSTANDARD2_0 || NET461
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
@@ -1030,5 +1030,7 @@ namespace Windows.UI.Xaml.Controls
 				measuredSize.Height + padding.Top + padding.Bottom + borderThickness.Top + borderThickness.Bottom
 			);
 		}
+
+		private protected override Thickness GetBorderThickness() => BorderThickness;
 	}
 }

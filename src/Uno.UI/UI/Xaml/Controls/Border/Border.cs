@@ -57,6 +57,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override bool IsSimpleLayout => true;
 
+		private protected override Thickness GetBorderThickness() => BorderThickness;
+
+
 		#region Child DependencyProperty
 
 		public virtual UIElement Child

@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.iOS.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.netstd.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.skia.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.Uwa.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Behaviors\ListViewBaseCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Behaviors\SplitViewBehavior.cs" />

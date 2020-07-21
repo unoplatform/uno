@@ -1,4 +1,4 @@
-﻿#if !__WASM__
+﻿#if !NETSTANDARD
 using System;
 using System.Collections.Generic;
 using System.Globalization;

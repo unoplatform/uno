@@ -2,53 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CompositionGeometry : global::Windows.UI.Composition.CompositionObject
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float TrimStart
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionGeometry.TrimStart is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionGeometry", "float CompositionGeometry.TrimStart");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float TrimOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionGeometry.TrimOffset is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionGeometry", "float CompositionGeometry.TrimOffset");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float TrimEnd
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionGeometry.TrimEnd is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionGeometry", "float CompositionGeometry.TrimEnd");
-			}
-		}
-		#endif
+		// Skipping already declared property TrimStart
+		// Skipping already declared property TrimOffset
+		// Skipping already declared property TrimEnd
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.TrimEnd.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.TrimEnd.set
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.TrimOffset.get

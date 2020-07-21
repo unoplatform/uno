@@ -52,6 +52,7 @@ namespace Uno.UI.Toolkit
 		public ElevatedView()
 		{
 			DefaultStyleKey = typeof(ElevatedView);
+			Background = new SolidColorBrush(Colors.Transparent);
 
 #if !NETFX_CORE
 			Loaded += (snd, evt) => SynchronizeContentTemplatedParent();
@@ -129,7 +130,7 @@ namespace Uno.UI.Toolkit
 		{
 			// Manual propagation of the templated parent to the content property
 			// until we get the propagation running properly
-			if (ElevatedContent is IFrameworkElement content)
+			if (ElevatedContent is FrameworkElement content)
 			{
 				content.TemplatedParent = this.TemplatedParent;
 			}
@@ -158,14 +159,13 @@ namespace Uno.UI.Toolkit
 #if __WASM__
 				this.SetElevationInternal(Elevation, ShadowColor);
 				this.SetCornerRadius(CornerRadius);
-#elif __IOS__
+#elif __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
 				_border.SetElevationInternal(Elevation, ShadowColor);
 #elif NETFX_CORE
 				(ElevatedContent as DependencyObject).SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
 #endif
-				// TODO: MacOS
 			}
 		}
 

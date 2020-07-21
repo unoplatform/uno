@@ -26,12 +26,14 @@
     <!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
     <Version>255.255.255.255</Version>
 
-    <Product>$(AssemblyName) ($(TargetFramework))</Product>
     <DefaultLanguage>en-US</DefaultLanguage>
 
-    <UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
+	<UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
 
-    <!-- Disable source link when not building on GitHub -->
+	<!-- Disable generation controller to conserver CI server memory -->
+	<UnoSourceGeneratorUseGenerationController Condition="'$(CI_Build)'=='true'">false</UnoSourceGeneratorUseGenerationController>
+
+	<!-- Disable source link when not building on GitHub -->
     <SourceLinkEnabled Condition="'$(BUILD_REPOSITORY_PROVIDER)'!='GitHub'">false</SourceLinkEnabled>
 	<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
 	<Deterministic>true</Deterministic>

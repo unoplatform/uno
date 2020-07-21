@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+  </PropertyGroup>
+  
+  <Target Name="_UnoSkiaWpfFeatureDefines"
+		  BeforeTargets="BeforeCompile">
+
+	<PropertyGroup>
+	  <UnoDefineConstants>$(UnoDefineConstants);HAS_UNO_SKIA;HAS_UNO_SKIA_WPF</UnoDefineConstants>
+	</PropertyGroup>
+
+	<!-- Merge the UnoDefineConstants with the existing constants -->
+	<CreateProperty Value="$(DefineConstants);$(UnoDefineConstants)">
+	  <Output TaskParameter="Value" PropertyName="DefineConstants" />
+	</CreateProperty>
+  </Target>
+
+</Project>

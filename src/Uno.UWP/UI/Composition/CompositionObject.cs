@@ -1,5 +1,6 @@
 
 using System;
+using Windows.UI.Core;
 
 namespace Windows.UI.Composition
 {
@@ -7,7 +8,18 @@ namespace Windows.UI.Composition
 	{
 		private object _gate = new object();
 
-		public Compositor Compositor => Compositor.Current;
+		internal CompositionObject()
+		{
+		}
+
+		internal CompositionObject(Compositor compositor)
+		{
+			Compositor = compositor;
+		}
+
+		public Compositor Compositor { get; }
+
+		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
@@ -18,7 +30,8 @@ namespace Windows.UI.Composition
 
 		public void StopAnimation(string propertyName)
 		{
-
 		}
+
+		public string Comment { get; set; }
 	}
 }

@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ProgressRing 
 	{
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || false || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public  bool IsActive
 		{
 			get
@@ -20,9 +20,9 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(IsActiveProperty, value);
 			}
 		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.Primitives.ProgressRingTemplateSettings TemplateSettings
 		{
 			get
@@ -30,9 +30,9 @@ namespace Windows.UI.Xaml.Controls
 				throw new global::System.NotImplementedException("The member ProgressRingTemplateSettings ProgressRing.TemplateSettings is not implemented in Uno.");
 			}
 		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || NET461 || false || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsActiveProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsActive), typeof(bool), 

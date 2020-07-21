@@ -214,7 +214,7 @@ var Uno;
                 if (this.dispatchResponseMethod) {
                     return; // already initialized.
                 }
-                const asm = MonoRuntime.assembly_load("Uno.UI.Wasm");
+                const asm = MonoRuntime.assembly_load("Uno.UI.Runtime.Wasm");
                 const httpClass = MonoRuntime.find_class(asm, "Uno.UI.Wasm", "WasmHttpHandler");
                 this.dispatchResponseMethod = MonoRuntime.find_method(httpClass, "DispatchResponse", -1);
                 this.dispatchErrorMethod = MonoRuntime.find_method(httpClass, "DispatchError", -1);
@@ -2777,9 +2777,9 @@ var Uno;
                     }
                     const w = window;
                     AsyncInteropHelper.dispatchResultMethod =
-                        w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
+                        w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.Wasm] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
                     AsyncInteropHelper.dispatchErrorMethod =
-                        w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
+                        w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.Wasm] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
                 }
                 static Invoke(handle, promiseFunction) {
                     AsyncInteropHelper.init();
@@ -2814,7 +2814,7 @@ var Uno;
         (function (Interop) {
             class ManagedObject {
                 static init() {
-                    ManagedObject.dispatchMethod = Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.Interop.JSObject:Dispatch");
+                    ManagedObject.dispatchMethod = Module.mono_bind_static_method("[Uno.Foundation.Runtime.Wasm] Uno.Foundation.Interop.JSObject:Dispatch");
                 }
                 static dispatch(handle, method, parameters) {
                     if (!ManagedObject.dispatchMethod) {
@@ -3399,6 +3399,9 @@ var Windows;
                     if (navigator.wakeLock) {
                         DisplayRequest.activeScreenLockPromise = navigator.wakeLock.request(WakeLockType.screen);
                         DisplayRequest.activeScreenLockPromise.catch(reason => console.log("Could not acquire screen lock (" + reason + ")"));
+                    }
+                    else {
+                        console.log("Wake Lock API is not available in this browser.");
                     }
                 }
                 static deactivateScreenLock() {

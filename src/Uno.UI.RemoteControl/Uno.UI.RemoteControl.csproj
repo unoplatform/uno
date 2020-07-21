@@ -32,16 +32,14 @@
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
-			<LogicalName>$(AssemblyName).xml</LogicalName>
-		</EmbeddedResource>
-	</ItemGroup>
-
 	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
 		<EmbeddedResource Include="LinkerDefinition.Xamarin.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="buildTransitive\Uno.UI.RemoteControl.targets" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -58,6 +56,13 @@
 	  <UpToDateCheckInput Remove="ProjectConfigurationAttribute.cs" />
 	  <UpToDateCheckInput Remove="RemoteControlClient.cs" />
 	  <UpToDateCheckInput Remove="ServerEndpointAttribute.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="buildTransitive\Uno.UI.RemoteControl.targets">
+	    <PackagePath>build</PackagePath>
+	    <Pack>true</Pack>
+	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>

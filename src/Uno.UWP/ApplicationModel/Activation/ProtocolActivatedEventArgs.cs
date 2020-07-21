@@ -1,5 +1,4 @@
-﻿#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
-using System;
+﻿using System;
 
 namespace Windows.ApplicationModel.Activation
 {
@@ -14,6 +13,12 @@ namespace Windows.ApplicationModel.Activation
 		IViewSwitcherProvider,
 		IActivatedEventArgsWithUser
 	{
+		internal ProtocolActivatedEventArgs()
+		{
+
+		}
+
+#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
 		/// <summary>
 		/// Internal-only constructor for protocol activation.
 		/// </summary>
@@ -39,6 +44,6 @@ namespace Windows.ApplicationModel.Activation
 		/// Gets the Uniform Resource Identifier (URI) for which the app was activated.
 		/// </summary>
 		public Uri Uri { get; }
+#endif
 	}
 }
-#endif

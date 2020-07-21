@@ -4,9 +4,13 @@ namespace Windows.UI.Composition
 {
 	public partial class ContainerVisual : global::Windows.UI.Composition.Visual
 	{
-		internal ContainerVisual()
+		internal ContainerVisual() : base(null)
 		{
-			Children = new VisualCollection(this);
+		}
+
+		internal ContainerVisual(Compositor compositor) : base(compositor)
+		{
+			Children = new VisualCollection(compositor, this);
 		}
 
 		public VisualCollection Children { get; }

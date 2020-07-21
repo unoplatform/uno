@@ -264,7 +264,7 @@ namespace Windows.UI.Xaml
 			remove => RemoveHandler(PointerReleasedEvent, value);
 		}
 
-#if !__WASM__
+#if !__WASM__ && !__SKIA__
 		[global::Uno.NotImplemented]
 #endif
 		public event PointerEventHandler PointerWheelChanged

@@ -32,7 +32,7 @@ using Uno.UI.Xaml;
 
 namespace <#= mixin.NamespaceName #>
 {
-	public partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider, IFrameworkElementInternal
+	partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider, IFrameworkElementInternal
 	{
 		string IXUidProvider.Uid { get; set; }
 

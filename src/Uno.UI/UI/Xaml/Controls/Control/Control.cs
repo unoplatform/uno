@@ -31,7 +31,7 @@ using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using AppKit;
-#elif __WASM__ || NET461
+#elif NETSTANDARD2_0 || NET461
 using View = Windows.UI.Xaml.UIElement;
 #endif
 

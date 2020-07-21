@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml
 			public const int FrameworkElement_InvalidateMeasure = 5;
 		}
 
-#if !__WASM__
+#if !NETSTANDARD
 		private FrameworkElementLayouter _layouter;
 #else
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize()
 		{
-#if !__WASM__
+#if !NETSTANDARD2_0
 			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
 #endif
 			Resources = new Windows.UI.Xaml.ResourceDictionary();
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml
 		/// <returns>The size that this object determines it needs during layout, based on its calculations of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
 		protected virtual Size MeasureOverride(Size availableSize)
 		{
-#if !__WASM__
+#if !NETSTANDARD2_0
 			LastAvailableSize = availableSize;
 #endif
 
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml
 
 			if (child != null)
 			{
-#if __WASM__
+#if NETSTANDARD
 				child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
 #else
 				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if !__WASM__
+#if !NETSTANDARD
 		/// <summary>
 		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
 		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml
 		/// <returns>The measured size - INCLUDES THE MARGIN</returns>
 		protected Size MeasureElement(View view, Size availableSize)
 		{
-#if __WASM__
+#if NETSTANDARD
 			view.Measure(availableSize);
 			return view.DesiredSize;
 #else
@@ -238,7 +238,7 @@ namespace Windows.UI.Xaml
 		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
 		protected void ArrangeElement(View view, Rect finalRect)
 		{
-#if __WASM__
+#if NETSTANDARD
 			var adjust = GetBorderThickness();
 
 			// HTML moves the origin along with the border thickness.
@@ -256,7 +256,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		protected Size GetElementDesiredSize(View view)
 		{
-#if __WASM__
+#if NETSTANDARD
 			return view.DesiredSize;
 #else
 			return (_layouter as ILayouter).GetDesiredSize(view);
@@ -509,6 +509,8 @@ namespace Windows.UI.Xaml
 			LayoutUpdated?.Invoke(this, new RoutedEventArgs(this));
 		}
 
+		private protected virtual Thickness GetBorderThickness() => Thickness.Empty;
+
 #if XAMARIN
 		private static FrameworkElement FindPhaseEnabledRoot(ContentControl content)
 		{
@@ -662,7 +664,7 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
-#if !__WASM__
+#if !NETSTANDARD
 		private class FrameworkElementLayouter : Layouter
 		{
 			private readonly MeasureOverrideHandler _measureOverrideHandler;

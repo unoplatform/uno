@@ -50,10 +50,5 @@ namespace Uno.Extensions
 		{
 			element.UnregisterEventHandler(eventName, handler);
 		}
-		
-		/// <summary>
-		/// Get the parent view in the visual tree.
-		/// </summary>
-		public static UIElement GetVisualTreeParent(this UIElement element) => element?.GetParent() as UIElement;
 	}
 }

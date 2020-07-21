@@ -2,7 +2,7 @@
 #pragma warning disable CS0067, CS0414
 #endif
 
-#if XAMARIN || __WASM__
+#if XAMARIN || __WASM__ || __SKIA__
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using System;
@@ -98,10 +98,12 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnScrollEnabledChangedPartial(bool scrollingEnabled);
 		#endregion
 
+#pragma warning disable 67
 		public event TypedEventHandler<WebView, WebViewNavigationStartingEventArgs> NavigationStarting;
 		public event TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs> NavigationCompleted;
 		public event TypedEventHandler<WebView, WebViewNewWindowRequestedEventArgs> NewWindowRequested;
 		public event TypedEventHandler<WebView, WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
+#pragma warning restore 67
 
 		//Remove pragma when implemented for Android
 #pragma warning disable 0067
