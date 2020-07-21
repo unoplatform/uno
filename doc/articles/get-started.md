@@ -143,7 +143,7 @@ While it is easier to create apps using Uno on Windows, you can also create all 
 
 ### Prerequisites
 * [**Visual Studio for Mac**](https://visualstudio.microsoft.com/vs/mac/)
-* [**XCode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
+* [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
 * .NET Core 3.1
 
