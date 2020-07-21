@@ -42,8 +42,8 @@ namespace Windows.Devices.Enumeration
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceWatcher", "void DeviceWatcher.Stop()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Background.DeviceWatcherTrigger GetBackgroundTrigger( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Enumeration.DeviceWatcherEventKind> requestedEventKinds)
 		{
 			throw new global::System.NotImplementedException("The member DeviceWatcherTrigger DeviceWatcher.GetBackgroundTrigger(IEnumerable<DeviceWatcherEventKind> requestedEventKinds) is not implemented in Uno.");

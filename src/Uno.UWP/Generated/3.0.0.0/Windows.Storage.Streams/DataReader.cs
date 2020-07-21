@@ -21,8 +21,8 @@ namespace Windows.Storage.Streams
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]		
 		public  global::Windows.Storage.Streams.InputStreamOptions InputStreamOptions
 		{
 			get
@@ -59,8 +59,8 @@ namespace Windows.Storage.Streams
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]		
 		public DataReader( global::Windows.Storage.Streams.IInputStream inputStream) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReader", "DataReader.DataReader(IInputStream inputStream)");
@@ -186,8 +186,8 @@ namespace Windows.Storage.Streams
 			throw new global::System.NotImplementedException("The member TimeSpan DataReader.ReadTimeSpan() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]		
 		public  global::Windows.Storage.Streams.DataReaderLoadOperation LoadAsync( uint count)
 		{
 			throw new global::System.NotImplementedException("The member DataReaderLoadOperation DataReader.LoadAsync(uint count) is not implemented in Uno.");
@@ -200,8 +200,8 @@ namespace Windows.Storage.Streams
 			throw new global::System.NotImplementedException("The member IBuffer DataReader.DetachBuffer() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]		
 		public  global::Windows.Storage.Streams.IInputStream DetachStream()
 		{
 			throw new global::System.NotImplementedException("The member IInputStream DataReader.DetachStream() is not implemented in Uno.");
