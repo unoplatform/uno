@@ -28,7 +28,7 @@
 			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_NO_IDEPENDENCYOBJECT</UnoDefineConstants>
 		</PropertyGroup>
 
-		<PropertyGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard'">
+		<PropertyGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard' or '$(TargetFrameworkIdentifier)'=='.NETCoreApp'">
 			<UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API</UnoDefineConstants>
 		</PropertyGroup>
 
@@ -68,6 +68,11 @@
 	  <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)/../../uno-runtime/$(UnoRuntime.ToLowerInvariant())/**" />
 	</ItemGroup>
   </Target>
+
+  <!-- Force a rebuild on runtime files changes -->
+  <ItemGroup Condition="'$(UnoRuntime)'!=''">
+	<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../../uno-runtime/*" />
+  </ItemGroup>
 
   <!-- Backward compatibility validation -->
   <Target Name="_ValidateTopLevelPackageWasmUpgrade"
