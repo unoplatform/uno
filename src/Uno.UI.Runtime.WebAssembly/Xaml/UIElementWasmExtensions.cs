@@ -30,9 +30,9 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Clear one or may CSS styles from a HTML element.
+		/// Clear one or many CSS styles from a HTML element.
 		/// </summary>
-		public static void ResetCssStyle(this UIElement element, params string[] names)
+		public static void ClearCssStyle(this UIElement element, params string[] names)
 		{
 			WindowManagerInterop.ResetStyle(element.HtmlId, names);
 		}
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Set multiple HTML attributes to an element at the same time.
 		/// </summary>
-		public static void SetHtmlAttributes(this UIElement element, params (string name, string value)[] attributes)
+		public static void SetHtmlAttribute(this UIElement element, params (string name, string value)[] attributes)
 		{
 			WindowManagerInterop.SetAttributes(element.HtmlId, attributes);
 		}
@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Clear/remove a HTML attribute from an element.
 		/// </summary>
-		public static void RemoteHtmlAttribute(this UIElement element, string name)
+		public static void ClearHtmlAttribute(this UIElement element, string name)
 		{
 			WindowManagerInterop.RemoveAttribute(element.HtmlId, name);
 		}
@@ -158,7 +158,7 @@ return __f(element);
 		/// For use with CustomEvent("name", {detail:{detail here}}).
 		/// </remarks>
 		/// <param name="isDetailJson">
-		/// True will JSON.stringify the content. False will treat the content as a string.
+		/// True will JSON.stringify the detail (payload). False will treat the detail as a string.
 		/// </param>
 		public static void RegisterHtmlCustomEventHandler(this UIElement element, string eventName, EventHandler<HtmlCustomEventArgs> handler, bool isDetailJson = false)
 		{

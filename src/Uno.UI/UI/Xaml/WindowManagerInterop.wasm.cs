@@ -864,6 +864,7 @@ namespace Uno.UI.Xaml
 			if (names == null || names.Length == 0)
 			{
 				// nothing to do
+				return;
 			}
 
 			if (UseJavascriptEval)
