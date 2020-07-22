@@ -163,7 +163,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.NUnitTransformTool", "U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.MSAL.Wasm", "AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Wasm.csproj", "{C1543178-9756-4739-BF96-30633E07B2ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Foundation.Runtime.Wasm", "Uno.Foundation.Runtime.Wasm\Uno.Foundation.Runtime.Wasm.csproj", "{D13CB6DD-3934-4858-8BBE-FDCF1B699789}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Foundation.Runtime.WebAssembly", "Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj", "{D13CB6DD-3934-4858-8BBE-FDCF1B699789}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.WebAssembly", "Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj", "{07C6B075-9EA2-4B03-B756-B7D607BC1844}"
 EndProject

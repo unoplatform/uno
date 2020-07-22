@@ -18,7 +18,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Foundation.Runtime.Wasm\Uno.Foundation.Runtime.Wasm.csproj" />
+		<ProjectReference Include="..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
 	</ItemGroup>
 

@@ -16,7 +16,7 @@
 
 	<dependencies>
 	  <dependency id="Uno.WinUI" version="1.0.0" />
-	  <dependency id="Uno.Foundation.Runtime.Wasm" version="1.0.0" />
+	  <dependency id="Uno.Foundation.Runtime.WebAssembly" version="1.0.0" />
 	  <dependency id="Uno.WinUI.Runtime.WebAssembly" version="1.0.0" />
     </dependencies>
 

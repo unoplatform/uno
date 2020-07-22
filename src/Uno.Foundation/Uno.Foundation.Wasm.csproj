@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Uno.Foundation.Runtime.Wasm\Uno.Foundation.Runtime.Wasm.csproj" />
+	  <ProjectReference Include="..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

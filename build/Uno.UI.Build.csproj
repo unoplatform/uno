@@ -195,8 +195,8 @@
 		<!-- Update Uno.WinUI references version -->
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 		
-		<!-- Update Uno.Foundation.Runtime.Wasm references version -->
-		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.Wasm']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
+		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 
 		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.WebAssembly']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />

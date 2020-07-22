@@ -17,7 +17,7 @@
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "T4Generator\\T4Generator.csproj",
-      "Uno.Foundation.Runtime.Wasm\\Uno.Foundation.Runtime.Wasm.csproj",
+      "Uno.Foundation.Runtime.WebAssembly\\Uno.Foundation.Runtime.WebAssembly.csproj",
       "Uno.Foundation\\Uno.Foundation.Wasm.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Wasm.csproj",

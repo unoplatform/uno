@@ -2781,9 +2781,9 @@ var Uno;
                     }
                     const w = window;
                     AsyncInteropHelper.dispatchResultMethod =
-                        w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.Wasm] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
+                        w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
                     AsyncInteropHelper.dispatchErrorMethod =
-                        w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.Wasm] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
+                        w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
                 }
                 static Invoke(handle, promiseFunction) {
                     AsyncInteropHelper.init();
@@ -2818,7 +2818,7 @@ var Uno;
         (function (Interop) {
             class ManagedObject {
                 static init() {
-                    ManagedObject.dispatchMethod = Module.mono_bind_static_method("[Uno.Foundation.Runtime.Wasm] Uno.Foundation.Interop.JSObject:Dispatch");
+                    ManagedObject.dispatchMethod = Module.mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.Interop.JSObject:Dispatch");
                 }
                 static dispatch(handle, method, parameters) {
                     if (!ManagedObject.dispatchMethod) {
