@@ -2,7 +2,6 @@
   "solution": {
     "path": "Uno.UI.sln",
     "projects": [
-      "..\\build\\Uno.UI.Build.csproj",
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Wasm.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Wasm.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
@@ -22,6 +21,7 @@
       "Uno.Foundation\\Uno.Foundation.Wasm.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Wasm.csproj",
+      "Uno.UI.Runtime.WebAssembly.Compatibility\\Uno.UI.Runtime.WebAssembly.Compatibility.csproj",
       "Uno.UI.Runtime.WebAssembly\\Uno.UI.Runtime.WebAssembly.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.Wasm.csproj",
       "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
