@@ -35,9 +35,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Uno.Foundation.Skia\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-	  <ProjectReference Include="..\Uno.UI.Skia\Uno.UI.Skia.csproj" />
-	  <ProjectReference Include="..\Uno.UWP.Skia\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+	  <ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+	  <ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
+	  <ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>

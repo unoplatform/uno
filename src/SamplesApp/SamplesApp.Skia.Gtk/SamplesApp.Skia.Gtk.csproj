@@ -18,10 +18,10 @@
 	
 	<ItemGroup>
 	  <ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-	  <ProjectReference Include="..\..\Uno.Foundation.Skia\Uno.Foundation.Skia.csproj" />
+	  <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 	  <ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Gtk\Uno.UI.Runtime.Skia.Gtk.csproj" />
-	  <ProjectReference Include="..\..\Uno.UI.Skia\Uno.UI.Skia.csproj" />
-	  <ProjectReference Include="..\..\Uno.UWP.Skia\Uno.Skia.csproj" />
+	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+	  <ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
 	  <ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
 	</ItemGroup>
 

@@ -68,8 +68,8 @@ namespace Uno.UWPSyncGenerator
 			_macCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinmac20");
 
 			_netstdReferenceCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "netstandard2.0");
-			_wasmCompilation = LoadProject($@"{basePath}.Wasm\{baseName}.Wasm.csproj", "netstandard2.0");
-			_skiaCompilation = LoadProject($@"{basePath}.Skia\{baseName}.Skia.csproj", "netstandard2.0");
+			_wasmCompilation = LoadProject($@"{basePath}\{baseName}.Wasm.csproj", "netstandard2.0");
+			_skiaCompilation = LoadProject($@"{basePath}\{baseName}.Skia.csproj", "netstandard2.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_androidBaseSymbol = _androidCompilation.GetTypeByMetadataName("Android.Views.View");

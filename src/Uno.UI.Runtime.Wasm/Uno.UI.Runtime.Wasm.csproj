@@ -28,9 +28,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.UI.Wasm\Uno.UI.Wasm.csproj" />
-		<ProjectReference Include="..\Uno.UWP.Wasm\Uno.Wasm.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-		<ProjectReference Include="..\Uno.Foundation.Wasm\Uno.Foundation.Wasm.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 	
 	<ItemGroup>
