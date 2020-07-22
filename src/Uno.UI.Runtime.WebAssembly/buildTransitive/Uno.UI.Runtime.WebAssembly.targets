@@ -25,11 +25,11 @@
 	</PropertyGroup>
 
 	<!--
-	Generate a class that will keep the Uno.UI.Runtime.Wasm assembly within the package.
+	Generate a class that will keep the Uno.UI.Runtime.WebAssembly assembly within the package.
 	-->
 	<WriteLinesToFile
 		Overwrite="true"
-		Lines="[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)] internal class __UnoUIRuntimeWasmKeepAlive : Uno.UI.Runtime.Wasm.CompileAnchor { }"
+		Lines="[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)] internal class __UnoUIRuntimeWasmKeepAlive : Uno.UI.Runtime.WebAssembly.CompileAnchor { }"
 		File="$(_unouiruntimewasm_keepalive)" />
 
 	<ItemGroup>

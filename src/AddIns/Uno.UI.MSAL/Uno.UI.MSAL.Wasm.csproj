@@ -40,7 +40,7 @@
 	<Import Project="..\..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Wasm\Uno.UI.Runtime.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Wasm.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 			<PrivateAssets>all</PrivateAssets>

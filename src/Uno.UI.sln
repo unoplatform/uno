@@ -165,7 +165,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.MSAL.Wasm", "AddIns\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Foundation.Runtime.Wasm", "Uno.Foundation.Runtime.Wasm\Uno.Foundation.Runtime.Wasm.csproj", "{D13CB6DD-3934-4858-8BBE-FDCF1B699789}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.Wasm", "Uno.UI.Runtime.Wasm\Uno.UI.Runtime.Wasm.csproj", "{07C6B075-9EA2-4B03-B756-B7D607BC1844}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.WebAssembly", "Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj", "{07C6B075-9EA2-4B03-B756-B7D607BC1844}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Foundation.Skia", "Uno.Foundation\Uno.Foundation.Skia.csproj", "{E1AFCB3E-0FD1-4063-BC2E-5B76670D5B16}"
 EndProject

@@ -89,7 +89,7 @@
 				return; // already initialized.
 			}
 
-			const asm = MonoRuntime.assembly_load("Uno.UI.Runtime.Wasm");
+			const asm = MonoRuntime.assembly_load("Uno.UI.Runtime.WebAssembly");
 			const httpClass = MonoRuntime.find_class(asm, "Uno.UI.Wasm", "WasmHttpHandler");
 			this.dispatchResponseMethod = MonoRuntime.find_method(httpClass, "DispatchResponse", -1);
 			this.dispatchErrorMethod = MonoRuntime.find_method(httpClass, "DispatchError", -1);

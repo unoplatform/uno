@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml
 			{
 				if (_htmlElementAttribute == null)
 				{
-					_htmlElementAttribute = Assembly.Load("Uno.UI.Runtime.Wasm").GetType("Uno.UI.Runtime.Wasm.HtmlElementAttribute", true);
+					_htmlElementAttribute = Assembly.Load("Uno.UI.Runtime.WebAssembly").GetType("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute", true);
 					_htmlTagAttributeTagGetter = _htmlElementAttribute.GetProperty("Tag");
 				}
 

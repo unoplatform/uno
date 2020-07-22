@@ -14,7 +14,7 @@
 
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">WebAssembly</UnoRuntimeIdentifier>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Wasm</PackageId>
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.WebAssembly</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -59,7 +59,7 @@
 	</Target>
 	
 	<ItemGroup>
-		<Content Include="buildTransitive/*.targets">
+		<Content Include="buildTransitive/*.*">
 			<Pack>true</Pack>
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>

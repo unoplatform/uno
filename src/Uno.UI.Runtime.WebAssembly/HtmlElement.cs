@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Uno.UI.Runtime.Wasm
+namespace Uno.UI.Runtime.WebAssembly
 {
 	/// <summary>
 	/// Defines the HtmlElement properties to use for the WebAssembly+Html target.

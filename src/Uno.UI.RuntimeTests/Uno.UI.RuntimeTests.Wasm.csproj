@@ -22,7 +22,7 @@
 		<PackageReference Include="FluentAssertions" Version="5.10.3" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<ProjectReference Include="..\Uno.UI.Runtime.Wasm\Uno.UI.Runtime.Wasm.csproj" />
+		<ProjectReference Include="..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />
 		<Reference Include="System.Xml" />
 		<Reference Include="System.Xml.Linq" />
