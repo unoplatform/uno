@@ -38,9 +38,25 @@ namespace Windows.UI.Xaml
 
         }
 
-        public TransitionCollection Transitions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public object FindName(string name)
+		#region Transitions Dependency Property
+
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		public static DependencyProperty TransitionsProperty { get; } = CreateTransitionsProperty();
+
+		public TransitionCollection Transitions
+		{
+			get => GetTransitionsValue();
+			set => SetTransitionsValue(value);
+		}
+
+		private void OnTransitionsChanged(DependencyPropertyChangedEventArgs args)
+		{
+
+		}
+		#endregion
+
+		public object FindName(string name)
             => IFrameworkElementHelper.FindName(this, GetChildren(), name);
 
 
