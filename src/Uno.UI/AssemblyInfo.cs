@@ -5,6 +5,7 @@
 [assembly: InternalsVisibleTo("Uno.UI.Tests.Performance")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 [assembly: InternalsVisibleTo("Uno.UI.RemoteControl")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.Skia")]
