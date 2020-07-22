@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -22,22 +23,18 @@ namespace UITests.Shared.Windows_Storage.FilePickers
 		{
 
 			var actionsText = new StringBuilder();
-			actionsText.AppendLine("Button Clicked.");
-			var savePicker = new FileSavePicker { SuggestedStartLocation = PickerLocationId.DocumentsLibrary };
-			savePicker.FileTypeChoices.Add("text/plain", new List<string>() { ".txt" });
-			savePicker.SuggestedFileName = "New Documents";
-			var file = await savePicker.PickSaveFileAsync();
+			var file = await GetFile();
+			actionsText.AppendLine("Got file.");
 
 			if (file != null)
 			{
-				UpdateFileStatus(actionsText, file);
-				WriteToFile(actionsText, file);
-				ReadFile(actionsText, file);
-				//{
-				//	FileUpdateStatus.Complete => "File " + file.Name + " was saved.",
-				//	FileUpdateStatus.CompleteAndRenamed => "File " + file.Name + " was renamed and saved.",
-				//	_ => "File " + file.Name + " couldn't be saved."
-				//};
+				UpdateFileStatus(file);
+
+				await WriteToFile(file);
+				actionsText.AppendLine("Written to file.");
+
+				await ReadFile(file);
+				actionsText.AppendLine("File read.");
 			}
 			else
 			{
@@ -47,46 +44,45 @@ namespace UITests.Shared.Windows_Storage.FilePickers
 			actionsText.Clear();
 		}
 
-		private void UpdateFileStatus(StringBuilder actionsText, StorageFile file)
+		private static async Task<StorageFile> GetFile()
+		{
+			var savePicker = new FileSavePicker { SuggestedStartLocation = PickerLocationId.DocumentsLibrary };
+			savePicker.FileTypeChoices.Add("plain/text", new List<string>() { ".txt" });
+			savePicker.SuggestedFileName = "New Documents";
+			var file = await savePicker.PickSaveFileAsync();
+			return file;
+		}
+
+		private void UpdateFileStatus(StorageFile file)
 		{
 			FileName.Text = file.Name;
 			FilePath.Text = file.Path;
-			actionsText.AppendLine("File created.");
 		}
 
-		private static void WriteToFile(StringBuilder actionsText, Windows.Storage.StorageFile file)
+		private async Task WriteToFile(StorageFile file)
 		{
-			// Prevent updates to the remote version of the file until we finish making changes and call CompleteUpdatesAsync.
+			FileUpdateStatus.Text = "Deferring";
 			CachedFileManager.DeferUpdates(file);
 
-			// write to file
-			using (var writer = new BinaryWriter(File.Create(file.Path)))
+			var stream = await file.OpenStreamForWriteAsync();
+			using (var writer = new StreamWriter(stream))
 			{
-				for (var i = 0; i < 11; i++)
-				{
-					writer.Write(i);
-				}
+				writer.Write("Hi, this is the content of the file.");
 			}
-
-			//// Let Windows know that we're finished changing the file so the other app can update the remote version of the file.
-			//// Completing updates may require Windows to ask for user input.
-			//var status = await CachedFileManager.CompleteUpdatesAsync(file);
-			actionsText.AppendLine("Written to file.");
+			var status = await CachedFileManager.CompleteUpdatesAsync(file);
+			FileUpdateStatus.Text = status.ToString();
 		}
 
-		private void ReadFile(StringBuilder actionsText, Windows.Storage.StorageFile file)
+		private async Task ReadFile(StorageFile file)
 		{
-			using (var reader = new BinaryReader(File.OpenRead(file.Path)))
+			var stream = await file.OpenStreamForReadAsync();
+			using (var reader = new StreamReader(stream))
 			{
 				var fileContent = new StringBuilder();
-				for (var i = 0; i < 11; i++)
-				{
-					fileContent.AppendLine(reader.ReadInt32().ToString());
-					FileContent.Text = fileContent.ToString();
-				}
+				fileContent.AppendLine(reader.ReadLine());
+				FileContent.Text = fileContent.ToString();
 				fileContent.Clear();
 			}
-			actionsText.AppendLine("File read.");
 		}
 	}
 }
