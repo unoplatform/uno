@@ -200,19 +200,27 @@
 
 	<!-- netstandard2.0 WebAssembly -->
 	<file src="..\src\Uno.UI.Wasm\Bin\Release\netstandard2.0\Uno.dll" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI.Wasm\Bin\Release\netstandard2.0\Uno.pdb" target="uno-runtime\webassembly" />
 	<file src="..\src\Uno.UI.Wasm\Bin\Release\netstandard2.0\Uno.Foundation.dll" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI.Wasm\Bin\Release\netstandard2.0\Uno.Foundation.pdb" target="uno-runtime\webassembly" />
 	<file src="..\src\Uno.UI.Wasm\Bin\Release\netstandard2.0\Uno.UI.dll" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI.Wasm\Bin\Release\netstandard2.0\Uno.UI.pdb" target="uno-runtime\webassembly" />
 	<file src="..\src\Uno.UI.Wasm\bin\Release\netstandard2.0\*.xml" target="uno-runtime\webassembly" />
 	<file src="..\src\Uno.UI.Wasm\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI.Wasm\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\webassembly" />
 	<file src="..\src\Uno.UI.Toolkit.Wasm\bin\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="uno-runtime\webassembly" />
 	<file src="..\src\Uno.UI.Toolkit.Wasm\bin\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="uno-runtime\webassembly" />
 
 	<!-- netstandard2.0 WebAssembly -->
 	<file src="..\src\Uno.UI.Skia\Bin\Release\netstandard2.0\Uno.dll" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI.Skia\Bin\Release\netstandard2.0\Uno.pdb" target="uno-runtime\skia" />
 	<file src="..\src\Uno.UI.Skia\Bin\Release\netstandard2.0\Uno.Foundation.dll" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI.Skia\Bin\Release\netstandard2.0\Uno.Foundation.pdb" target="uno-runtime\skia" />
 	<file src="..\src\Uno.UI.Skia\Bin\Release\netstandard2.0\Uno.UI.dll" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI.Skia\Bin\Release\netstandard2.0\Uno.UI.pdb" target="uno-runtime\skia" />
 	<file src="..\src\Uno.UI.Skia\bin\Release\netstandard2.0\*.xml" target="uno-runtime\skia" />
 	<file src="..\src\Uno.UI.Skia\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI.Skia\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\skia" />
 	<file src="..\src\Uno.UI.Toolkit.Skia\bin\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="uno-runtime\skia" />
 	<file src="..\src\Uno.UI.Toolkit.Skia\bin\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="uno-runtime\skia" />
 
