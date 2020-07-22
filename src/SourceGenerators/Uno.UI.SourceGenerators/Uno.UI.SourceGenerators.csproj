@@ -3,6 +3,7 @@
 		<TargetFramework>net461</TargetFramework>
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<WarningsAsErrors>true</WarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>

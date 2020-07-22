@@ -75,10 +75,10 @@
 	<file src="..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />
 
 	<!-- netstandard2.0 WebAssembly -->
-	<file src="..\src\AddIns\Uno.UI.Lottie.Wasm\Bin\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\webassembly" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\webassembly" />
 
 	<!-- netstandard2.0 Skia -->
-	<file src="..\src\AddIns\Uno.UI.Lottie.Skia\Bin\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\skia" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\skia" />
 
   </files>
 </package>

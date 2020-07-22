@@ -7,10 +7,6 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
-	</PropertyGroup>
-
 	<PackageReference Include="Uno.UI" Version="2.2.0" />
 	
 	<ItemGroup>

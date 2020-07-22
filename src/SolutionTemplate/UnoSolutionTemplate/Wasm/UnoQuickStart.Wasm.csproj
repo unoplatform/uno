@@ -14,8 +14,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-    	<Content Include="Assets\SplashScreen.png" />
-  	</ItemGroup>
+		<Content Include="Assets\SplashScreen.png" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="..\$ext_safeprojectname$.Shared\**\*.xaml" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="WasmCSS\Fonts.css" />
