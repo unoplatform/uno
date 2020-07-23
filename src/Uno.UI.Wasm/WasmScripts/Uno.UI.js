@@ -2923,11 +2923,18 @@ var Windows;
         var Pickers;
         (function (Pickers) {
             class FileSavePicker {
-                static SelectFileLocation(fileTypeChoices, suggestedStartLocation, suggestedFileName) {
-                    console.log(fileTypeChoices);
-                    console.log(suggestedStartLocation);
-                    console.log(suggestedFileName);
-                    return 'C:\\Users\\Alex\\Documents\\Test.txt';
+                static SaveAs(fileName, dataPtr, size) {
+                    var buffer = new Uint8Array(size);
+                    for (var i = 0; i < size; i++) {
+                        buffer[i] = Module.getValue(dataPtr + i, "i8");
+                    }
+                    var a = window.document.createElement('a');
+                    var blob = new Blob([buffer]);
+                    a.href = window.URL.createObjectURL(blob);
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
                 }
             }
             Pickers.FileSavePicker = FileSavePicker;

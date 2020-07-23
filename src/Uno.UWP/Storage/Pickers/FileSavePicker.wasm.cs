@@ -2,10 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
+using Uno.Foundation;
 using Windows.Foundation;
+using Windows.Storage.Provider;
 
 namespace Windows.Storage.Pickers
 {
@@ -13,51 +17,29 @@ namespace Windows.Storage.Pickers
 	{
 		public PickerLocationId SuggestedStartLocation { get; set; }
 
+		private const string LocalCachePath = "/LocalCache";
+
 		public IAsyncOperation<StorageFile> PickSaveFileAsync() => PickFilesTask().AsAsyncOperation();
-
-		//private async Task<StorageFile> PickFilesTask()
-		//{
-		//	var test = DictionnaryToString(FileTypeChoices);
-		//	Console.WriteLine(test);
-
-		//	var location = @"C:\Users\Alex\Documents\Test.txt";
-		//	//	WebAssemblyRuntime.InvokeJS($"Windows.Storage.Pickers.FileSavePicker.SelectFileLocation(" +
-		//	//	$"{test}, " +
-		//	//	$"{SuggestedStartLocation}, " +
-		//	//	$"{SuggestedFileName } ) ");
-		//	Console.WriteLine(location);
-
-		//	var what = File.Create(location);
-		//	what.Close();
-
-		//	return await StorageFile.GetFileFromPathAsync(location);
-		//}
 
 		private async Task<StorageFile> PickFilesTask()
 		{
-			var temporaryFolder = ApplicationData.Current.LocalFolder;
-			var file = await temporaryFolder.CreateFileAsync(SuggestedFileName, CreationCollisionOption.ReplaceExisting);
-			return file;
-		}
-
-		private string DictionnaryToString(IDictionary<string, IList<string>> fileTypeChoices)
-		{
-			var result = new StringBuilder();
-			result.Append("{");
-
-			foreach (var fileType in fileTypeChoices)
+			if (!FileTypeChoices.Any())
 			{
-				result.Append($"{fileType.Key}: [");
-				foreach (var extensions in fileType.Value)
-				{
-					result.Append($"{extensions},");
-				}
-				result.Length--;
-				result.Append($"],");
+				throw new COMException();
 			}
-				result.Length--;
 
-			return result.Append("}").ToString();
+			if (SuggestedSaveFile == null)
+			{
+				var temporaryFolder = new StorageFolder(LocalCachePath);
+				if (!Directory.Exists(LocalCachePath))
+				{
+					temporaryFolder.MakePersistent();
+				}
+				// The mime type is chosen by the extension, and we cannot reliably send multiple mime type in the browser
+				var fileName = SuggestedFileName + FileTypeChoices.First().Value[0];
+				SuggestedSaveFile = await temporaryFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+			}
+			return SuggestedSaveFile;
 		}
 	}
 }

@@ -879,13 +879,6 @@ declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
 declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
 declare const UnoAppManifest: Uno.UI.IAppManifest;
 declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;
-declare namespace Windows.Storage.Pickers {
-    class FileSavePicker {
-        static SelectFileLocation(fileTypeChoices: {
-            [fileType: string]: string[];
-        }, suggestedStartLocation: string, suggestedFileName: string): string;
-    }
-}
 declare namespace Windows.Storage {
     class ApplicationDataContainer {
         private static buildStorageKey;
@@ -922,6 +915,11 @@ declare namespace Windows.Storage {
          * Gets a key by index in localStorage
          * */
         private static getValueByIndex;
+    }
+}
+declare namespace Windows.Storage.Pickers {
+    class FileSavePicker {
+        static SaveAs(fileName: string, dataPtr: any, size: number): void;
     }
 }
 declare namespace Windows.Storage {

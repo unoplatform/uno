@@ -8,7 +8,9 @@
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<StackPanel>
-		<Button Content="Save file" Click="SaveFileButton_Click" Margin="0,10,10,0"/>
+		<Button Content="Save pdf" Click="SavePdfButton_Click" Margin="0,10,10,0"/>
+		<Button Content="Save image" Click="SaveImgButton_Click" Margin="0,10,10,0"/>
+		<Button Content="Save txt" Click="SaveTxtButton_Click" Margin="0,10,10,0"/>
 
 		<TextBlock Text="File name:"/>
 		<TextBlock x:Name="FileName"/>
@@ -16,14 +18,12 @@
 		<TextBlock Text="File path:" />
 		<TextBlock x:Name="FilePath"/>
 
-		<TextBlock Text="File content:" />
-		<TextBlock x:Name="FileContent"/>
-
 		<TextBlock Text="File Status:" />
 		<TextBlock x:Name="FileUpdateStatus"/>
 
 		<TextBlock Text="Action output:"/>
 		<TextBlock x:Name="OutputTextBlock"/>
+
 	</StackPanel>
 	
 </Page>
