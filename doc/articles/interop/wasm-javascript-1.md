@@ -86,7 +86,7 @@ Once created, it is possible to interact directly with this element by calling h
 
 Here is a list of helper methods used to facilitate the integration with the HTML DOM:
 
-* The method `element.SetCssStyle()` can be used to set a CSS Style on the HTML element. Example:
+* The extension method `element.SetCssStyle()` can be used to set a CSS Style on the HTML element. Example:
 
   ``` csharp
   // Setting only one CSS style
@@ -98,7 +98,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
 
   
 
-* The `element.ClearCssStyle()` method extension can be used to set CSS styles to their default values. Example:
+* The `element.ClearCssStyle()` extension method can be used to set CSS styles to their default values. Example:
 
   ``` csharp
   // Reset text-shadow style to its default value
@@ -108,7 +108,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   this.ClearCssStyle("text-shadow", "color");
   ```
 
-* The `element.SetHtmlAttribute()` and `element.ClearHtmlAttribute()` method extensions can be used to set HTML attributes on the element:
+* The `element.SetHtmlAttribute()` and `element.ClearHtmlAttribute()` extension methods can be used to set HTML attributes on the element:
 
   ``` csharp
   // Set the "href" attribute of an <a> element
@@ -121,7 +121,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   this.ClearHtmlAttribute("href");
   ```
 
-* The `element.SetCssClass()` and `element.UnsetCssClass()` method extensions can be used to add or remove CSS classes to the HTML Element:
+* The `element.SetCssClass()` and `element.UnsetCssClass()` extension methods can be used to add or remove CSS classes to the HTML Element:
 
   ``` csharp
   // Add the class to element
@@ -136,19 +136,19 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   this.SetCssClass(allClasses, 2); // set to "Large"
   ```
 
-* The `element.SetHtmlContent()` method extension can be used to set arbitrary HTML content as child of the control.
+* The `element.SetHtmlContent()` extension method can be used to set arbitrary HTML content as child of the control.
 
   ``` csharp
   this.SetHtmlContent("<h2>Welcome to Uno Platform!</h2>");
   ```
 
-  > **IMPORTANT**: should not be used when children "managed" controls are present: doing so can result in inconsistent runtime errors because of desynchronized visual tree.
+  > **IMPORTANT**: This method should not be used when children "managed" controls are present: doing so can result in inconsistent runtime errors because of desynchronized visual tree.
 
 * Finally, it is possible to invoke an arbitrary JavaScript code by using the static method `WebAssembleRuntime.InvokeJS()`. The script is directly executed in the context of the browser, giving the ability to perform anything that JavaScript can do. See next section for more details.
 
 ## Invoke JavaScript code From C#
 
-Whenever there's a need to invoke a JavaScript code in the browser, the `WebAssembly.WebAssemblyRuntime` static class should be used. There is also helpers you can call as _method extensions_ on the elements.
+Whenever there's a need to invoke a JavaScript code in the browser, the `WebAssembly.WebAssemblyRuntime` static class should be used. There is also helpers you can call as _extension methods_ on the elements.
 
 ``` csharp
 // Invoke javascript synchronously
