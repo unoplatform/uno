@@ -57,70 +57,105 @@ The [philosophy of Uno](https://platform.uno/docs/articles/concepts/overview/phi
 That also means that it is possible to control how this element is created.  By default it is a `<div>`, but it can be changed in the constructor by providing the `htmlTag` parameter to the one required. For example:
 
 ``` csharp
-// MyControl constructors
-public MyControl() : base() // will create a "div" HTML element
-public MyControl() : base("input") // Will create an "input" HTML element
-public MyControl() : base(htmlTag: "span") // Will create a "span" HTML element
+public partial sealed class MyDivControl : FrameworkElement
+{
+    public MyDivControl() // will create a <div> HTML element (by default)
+    {
+    }
+}
+
+[HtmlElement("input")] 
+public partial sealed class MyInputControl : FrameworkElement
+{
+    public MyInputControl() // Will create an <input> HTML element
+    {
+    }
+}
+
+[HtmlElement("span")]
+public partial sealed class MyInputControl : FrameworkElement
+{
+    public MyInputControl() // Will create a <span> HTML element
+    {
+    }
+}
+
 ```
 
 Once created, it is possible to interact directly with this element by calling helper methods available in Uno. Note that those methods are only available when targeting the _Wasm_ platform. It is possible to use [conditional code](https://platform.uno/docs/articles/platform-specific-csharp.html) to use these methods in a multi-platform project.
 
 Here is a list of helper methods used to facilitate the integration with the HTML DOM:
 
-* The method `base.SetStyle()` can be used to set a CSS Style on the HTML element. Example:
+* The extension method `element.SetCssStyle()` can be used to set a CSS Style on the HTML element. Example:
 
   ``` csharp
   // Setting only one CSS style
-  SetStyle("text-shadow", "2px 2px red");
-
+  this.SetCssStyle("text-shadow", "2px 2px red");
+  
   // Setting many CSS styles at once using C# tuples
-  SetStyle(("text-shadow", "2px 2px blue"), ("color", "var(--app-fg-color1)"));
+  this.SetCssStyle(("text-shadow", "2px 2px blue"), ("color", "var(--app-fg-color1)"));
   ```
 
-* The method `base.ResetStyle()` can be used to set CSS styles to their default values. Example:
+  
+
+* The `element.ClearCssStyle()` extension method can be used to set CSS styles to their default values. Example:
 
   ``` csharp
   // Reset text-shadow style to its default value
-  ResetStyle("text-shadow");
+  this.ClearCssStyle("text-shadow");
 
   // Reset both text-shadow and color to their default values
-  ResetStyle("text-shadow", "color");
+  this.ClearCssStyle("text-shadow", "color");
   ```
 
-* The `base.SetAttribute()` and `base.RemoteAttribute()` methods can be used to set HTML attributes on the element:
+* The `element.SetHtmlAttribute()` and `element.ClearHtmlAttribute()` extension methods can be used to set HTML attributes on the element:
 
   ``` csharp
   // Set the "href" attribute of an <a> element
-  SetAttribute("href", "#section2");
+  this.SetHtmlAttribute("href", "#section2");
 
   // Set many attributes at once
-  SetAttribute(("target", "_blank"), ("referrerpolicy", "no-referrer"));
+  this.SetHtmlAttribute(("target", "_blank"), ("referrerpolicy", "no-referrer"));
 
   // Remove attribute from DOM element
-  RemoveAttribute("href");
+  this.ClearHtmlAttribute("href");
   ```
 
-* The method `base.SetHtmlContent()` can be used to set arbitrary HTML content as child of the control.
+* The `element.SetCssClass()` and `element.UnsetCssClass()` extension methods can be used to add or remove CSS classes to the HTML Element:
 
   ``` csharp
-  SetHtmlContent("<h2>Welcome to Uno Platform!</h2>");
+  // Add the class to element
+  this.SetCssClass("warning");
+  
+  // Remove class from element
+  this.UnsetCssClass("paused");
+  
+  // You can also set one class from a list of possible values.
+  // Like a radio-button, like non-selected values will be unset
+  var allClasses = new [] { "Small", "Medium", "Large"};
+  this.SetCssClass(allClasses, 2); // set to "Large"
   ```
 
-  > Note: should not be used when children "managed" controls are present: doing so can result in inconsistent runtime errors because of desynchronized visual tree.
+* The `element.SetHtmlContent()` extension method can be used to set arbitrary HTML content as child of the control.
 
-* Finally, it is possible to invoke an arbitrary JavaScript code by using the static method `WebAssembleRuntime.InvokeJS()`. The script is directly executed in the context of the browser, giving the ability to perform anything that JavaScript can do. The `HtmlId` property of the element can be used to locate it in JavaScript code.
-  If the control has been loaded (after the `Loaded` routed event has been raised), it will be available immediately by calling `document.getElementById()`. But it is also possible to access it before that by using the  `Uno.UI.WindowManager.current.getView(<HtmlId>)` function in JavaScript.
+  ``` csharp
+  this.SetHtmlContent("<h2>Welcome to Uno Platform!</h2>");
+  ```
+
+  > **IMPORTANT**: This method should not be used when children "managed" controls are present: doing so can result in inconsistent runtime errors because of desynchronized visual tree.
+
+* Finally, it is possible to invoke an arbitrary JavaScript code by using the static method `WebAssembleRuntime.InvokeJS()`. The script is directly executed in the context of the browser, giving the ability to perform anything that JavaScript can do. See next section for more details.
 
 ## Invoke JavaScript code From C#
 
-Whenever there's a need to invoke a JavaScript code in the browser, the `WebAssembly.WebAssemblyRuntime` static class should be used.
+Whenever there's a need to invoke a JavaScript code in the browser, the `WebAssembly.WebAssemblyRuntime` static class should be used. There is also helpers you can call as _extension methods_ on the elements.
 
 ``` csharp
 // Invoke javascript synchronously
 WebAssemblyRuntime.InvokeJS("alert(\"It works!\");");
 
 // Use "string" return value of .InvokeJS()
-var html = WebAssemblyRuntime.InvokeJS("document.getElementById('ctl').innerHTML");
+var html = WebAssemblyRuntime.InvokeJS("document.getElementById('banner').innerHTML");
 
 // Invoke javascript asynchronously and await completition
 await WebAssemblyRuntime.InvokeAsync(
@@ -134,11 +169,16 @@ var str = await WebAssemblyRuntime.InvokeAsync(
 var escapedUserId = WebAssemblyRuntime.EscapeJS(userId);
 WebAssemblyRuntime.InvokeJS($"MyApp.setUserId(\"{escapedUserId}\");");
 
+// Call javascript in the context os a specific UIElement.
+// In this case, it will be available as "element" in the execution scope.
+MyControl.ExecuteJavascript("element.toggleAttribute(\"readonly\");"); // sync
+await MyControl.ExecuteJavascriptAsync("element.requestFullScreen();"); // async
 ```
 
 * `InvokeAsync` should return a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) or, be an `async` method.
 * Any Promise _rejected_ result will get translated into an `ApplicationException` exception.
 * Remember to always use `InvariantCulture` when generating JavaScript for numbers. There's also a helper in [`Uno.Core`](https://www.nuget.org/packages/Uno.Core) called `.ToStringInvariant()`: this dependency is already present in any Uno projects in the namespace `Uno.Extensions`.
+* Calling the javascript `document.getElementById()` with the element's `HtmlId` will only work when the element is actually loaded in the DOM. So it's better to call the extensions `<element>.ExecuteJavascript()` or `<element>.ExecuteJavascriptAsync()`: they will work all the time.
 
 ## Invoke C# code From JavaScipt
 
@@ -183,6 +223,8 @@ There's 2 ways to _callback_ to managed C# code from JavaScript:
    ```
 
    More details [on this page](https://platform.uno/docs/articles/wasm-custom-events.html).
+   
+   > Note: current there's no easy way to asynchronously call managed (dotnet) code from JavaScript.
 
 ## 🔬 Going further
 
