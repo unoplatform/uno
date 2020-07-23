@@ -269,6 +269,9 @@ namespace Windows.UI.Xaml.Controls
 			var rowSpacing = RowSpacing;
 			var columnSpacing = ColumnSpacing;
 
+			Span<double> calculatedPixelColumnsMinValue = stackalloc double[calculatedPixelColumns.Length];
+			Span<double> calculatedPixelRowsMinValue = stackalloc double[calculatedPixelRows.Length];
+
 			// Layout the children
 			var offset = GetChildrenOffset();
 			foreach (var child in Children)
@@ -280,10 +283,8 @@ namespace Windows.UI.Xaml.Controls
 				x += columnSpacing * gridPosition.Column;
 				y += rowSpacing * gridPosition.Row;
 
-				Span<double> calculatedPixelColumnsMinValue = stackalloc double[calculatedPixelColumns.Length];
 				calculatedPixelColumns.SelectToSpan(calculatedPixelColumnsMinValue, cs => cs.MinValue);
 
-				Span<double> calculatedPixelRowsMinValue = stackalloc double[calculatedPixelRows.Length];
 				calculatedPixelRows.SelectToSpan(calculatedPixelRowsMinValue, cs => cs.MinValue);
 
 				var width = GetSpanSum(gridPosition.Column, gridPosition.ColumnSpan, calculatedPixelColumnsMinValue);
@@ -377,6 +378,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			Span<GridSizeEntry> columnSizes = stackalloc GridSizeEntry[columns.Length];
+
 			// Auto size: This type of measure is always required. 
 			// It's the type of size that depends directly on the size of its content.
 			foreach (var autoChild in autoSizeChildrenX)
@@ -395,7 +398,6 @@ namespace Windows.UI.Xaml.Controls
 					GetElementDesiredSize(autoChild.Key);
 				maxHeightMeasured = Math.Max(maxHeightMeasured, childSize.Height);
 
-				Span<GridSizeEntry> columnSizes = stackalloc GridSizeEntry[columns.Length];
 				GetSizes(autoChild.Value.Column, autoChild.Value.ColumnSpan, columns, columnSizes);
 
 				var autoColumns = columnSizes.WhereToMemory(pair => pair.Value.IsAuto);
@@ -698,6 +700,10 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			Span<GridSizeEntry> rowSizes = stackalloc GridSizeEntry[rows.Length];
+			Span<GridSizeEntry> autoRowsTemp = stackalloc GridSizeEntry[rowSizes.Length];
+			Span<GridSizeEntry> pixelRowsTemp = stackalloc GridSizeEntry[rowSizes.Length];
+
 			foreach (var autoChild in autoSizeChildrenY)
 			{
 				var gridPosition = autoChild.Value;
@@ -715,13 +721,10 @@ namespace Windows.UI.Xaml.Controls
 					GetElementDesiredSize(autoChild.Key);
 				maxMeasuredWidth = Math.Max(maxMeasuredWidth, childSize.Width);
 
-				Span<GridSizeEntry> rowSizes = stackalloc GridSizeEntry[rows.Length];
 				GetSizes(autoChild.Value.Row, autoChild.Value.RowSpan, rows, rowSizes);
 
-				Span<GridSizeEntry> autoRowsTemp = stackalloc GridSizeEntry[rowSizes.Length];
 				var autoRows = rowSizes.WhereToSpan(autoRowsTemp, pair => pair.Value.IsAuto);
 
-				Span<GridSizeEntry> pixelRowsTemp = stackalloc GridSizeEntry[rowSizes.Length];
 				var pixelRows = rowSizes.WhereToSpan(pixelRowsTemp, pair => pair.Value.IsPixelSize);
 
 				var pixelSize = pixelRows.Sum(pair => pair.Value.PixelSize.GetValueOrDefault());

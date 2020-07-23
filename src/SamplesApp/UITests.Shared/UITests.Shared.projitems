@@ -237,6 +237,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\HitTest_Image.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\HitTest_Shapes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3465,6 +3469,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\Capture.xaml.cs">
       <DependentUpon>Capture.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\HitTest_Image.xaml.cs">
+      <DependentUpon>HitTest_Image.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\HitTest_Shapes.xaml.cs">
       <DependentUpon>HitTest_Shapes.xaml</DependentUpon>

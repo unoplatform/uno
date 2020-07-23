@@ -39,10 +39,6 @@
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard'">
-		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
-	</ItemGroup>
-
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>

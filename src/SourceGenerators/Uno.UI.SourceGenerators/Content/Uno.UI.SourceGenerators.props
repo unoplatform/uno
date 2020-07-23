@@ -11,8 +11,8 @@
 		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or $(TargetFramework.ToLower().StartsWith('xamarinios'))">ios</XamarinProjectType>
 		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or $(TargetFramework.ToLower().StartsWith('monoandroid'))">android</XamarinProjectType>
 		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFramework)'=='xamarinmac20'">macos</XamarinProjectType>
-      <XamarinProjectType Condition="'$(TargetFramework)'=='netstandard2.0'">wasm</XamarinProjectType>
-      <XamarinProjectType Condition="'$(TargetFramework)'=='net461'">net461</XamarinProjectType>
+		<XamarinProjectType Condition="'$(TargetFramework)'=='netstandard2.0'">wasm</XamarinProjectType>
+		<XamarinProjectType Condition="'$(TargetFramework)'=='net461'">net461</XamarinProjectType>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -477,7 +477,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						let sym = _metadataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
 						where sym != null
 						from attribute in sym.GetAllAttributes()
-						where attribute.AttributeClass == apiExtensionAttributeSymbol
+						where Equals(attribute.AttributeClass, apiExtensionAttributeSymbol)
 						select attribute.ConstructorArguments;
 
 			foreach (var registration in query)
@@ -962,7 +962,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var targetType = GetType(targetTypeName);
 					var implicitKey = GetImplicitDictionaryResourceKey(style);
-					if (targetType.ContainingAssembly == _metadataHelper.Compilation.Assembly)
+					if (Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
 					{
 						var isNativeStyle = style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string == "True";
 						writer.AppendLineInvariant("global::Windows.UI.Xaml.Style.RegisterDefaultStyleForType({0}, () => {1}, /*isNativeStyle:*/{2});",
@@ -1713,7 +1713,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 											// Explicitly instantiate the collection and set it using the content property
 											if (implicitContentChild.Objects.Count == 1
-												&& contentProperty.Type == FindType(implicitContentChild.Objects[0].Type))
+												&& Equals(contentProperty.Type, FindType(implicitContentChild.Objects[0].Type)))
 											{
 												writer.AppendFormatInvariant(contentProperty.Name + " = ");
 												BuildChild(writer, implicitContentChild, implicitContentChild.Objects[0]);
@@ -2754,7 +2754,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			if (
-				FindType(objectDefinition.Type) == _contentPresenterSymbol
+				Equals(FindType(objectDefinition.Type), _contentPresenterSymbol)
 				&& member.Member.Name == "Content"
 			)
 			{
@@ -2930,7 +2930,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					TryAnnotateWithGeneratorSource(writer);
 					var isAttachedProperty = IsDependencyProperty(member.Member);
-					var isBindingType = FindPropertyType(member.Member) == _dataBindingSymbol;
+					var isBindingType = Equals(FindPropertyType(member.Member), _dataBindingSymbol);
 
 					var bindEvalFunction = bindNode != null ? BuildXBindEvalFunction(member, bindNode) : "";
 
@@ -4140,7 +4140,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var firstElementType = GetType(first.Type);
 
-					return collectionType != firstElementType;
+					return !Equals(collectionType, firstElementType);
 				}
 			}
 

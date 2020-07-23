@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml
 		internal virtual void OnElementLoaded()
 		{
 			IsLoaded = true;
-			foreach (var innerChild in _children)
+			foreach (var innerChild in _children.ToArray())
 			{
 				innerChild.OnElementLoaded();
 			}
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml
 
 		internal void ClearChildren()
 		{
-			foreach (var child in _children)
+			foreach (var child in _children.ToArray())
 			{
 				child.SetParent(null);
 				// OnChildRemoved(child);
