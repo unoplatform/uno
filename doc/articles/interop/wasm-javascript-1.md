@@ -129,6 +129,11 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   
   // Remove class from element
   this.UnsetCssClass("paused");
+  
+  // You can also set one class from a list of possible values.
+  // Like a radio-button, like non-selected values will be unset
+  var allClasses = new [] { "Small", "Medium", "Large"};
+  this.SetCssClass(allClasses, 2); // set to "Large"
   ```
 
 * The `element.SetHtmlContent()` method extension can be used to set arbitrary HTML content as child of the control.

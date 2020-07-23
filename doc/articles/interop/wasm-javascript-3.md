@@ -202,23 +202,22 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
        // For demo purposes, Flatpickr is loaded directly from CDN.
        // Uno uses AMD module loading, so you must give a callback when the resource is loaded.
        var javascript = $@"require([""https://cdn.jsdelivr.net/npm/flatpickr""], f => {{
-               // Route Flatpickr events following Uno's documentation
-               // https://platform.uno/docs/articles/wasm-custom-events.html
-            const options = {{
-                       onChange: (dates, str) => element.dispatchEvent(new CustomEvent(""DateChanged"", {{detail: str}})),
-                       onOpen: () => element.dispatchEvent(new CustomEvent(""OpenedStateChanged"", {{detail: ""open""}})),
-                       onClose: () => element.dispatchEvent(new CustomEvent(""OpenedStateChanged"", {{detail: ""closed""}}))
-                   }};
-   
-               // Instantiate Flatpickr on the element
-               f(element, options);
-        }});";
-   
+           // Route Flatpickr events following Uno's documentation
+           // https://platform.uno/docs/articles/wasm-custom-events.html
+           const options = {{
+               onChange: (dates, str) => element.dispatchEvent(new CustomEvent(""DateChanged"", {{detail: str}})),
+               onOpen: () => element.dispatchEvent(new CustomEvent(""OpenedStateChanged"", {{detail: ""open""}})),
+               onClose: () => element.dispatchEvent(new CustomEvent(""OpenedStateChanged"", {{detail: ""closed""}}))
+            }};
+
+            // Instantiate Flatpickr on the element
+            f(element, options);
+       }});";
+
        this.ExecuteJavascript(javascript);
    }
    ```
-```
-   
+
 4. Compile & Run. Here's the result:
 
    ![Final result](assets/flatpickr-final.gif)
