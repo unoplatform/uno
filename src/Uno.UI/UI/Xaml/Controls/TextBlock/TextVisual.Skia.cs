@@ -35,7 +35,11 @@ namespace Windows.UI.Composition
 
 		internal Size Measure(Size availableSize)
 		{
-			_paint.Typeface = _getTypeFace(_owner.FontFamily.Source);
+			if (_owner.FontFamily?.Source != null)
+			{
+				_paint.Typeface = _getTypeFace(_owner.FontFamily.Source);
+			}
+
 			_paint.TextSize = (float)_owner.FontSize;
 
 			var metrics = _paint.FontMetrics;

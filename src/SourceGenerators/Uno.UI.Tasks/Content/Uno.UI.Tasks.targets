@@ -21,7 +21,7 @@
   <Target Name="UnoResourcesGeneration"
 				  BeforeTargets="PrepareForBuild;_CheckForContent"
                   DependsOnTargets="ResolveProjectReferences"
-				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
+				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
 
     <CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln'" />
 
@@ -46,7 +46,12 @@
       <AndroidResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
       <EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
     </ItemGroup>
+  </Target>
 
+  <Target Name="UnoAssetsGeneration"
+				  BeforeTargets="PrepareForBuild;_CheckForContent"
+                  DependsOnTargets="ResolveProjectReferences"
+				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
     <!-- Assets -->
     <PropertyGroup>
       <UseHighDPIResources Condition="'$(UseHighDPIResources)'==''">True</UseHighDPIResources>

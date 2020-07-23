@@ -1,0 +1,61 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<Deterministic>true</Deterministic>
+
+		<AssemblyName>Uno.UI.Lottie</AssemblyName>
+		<RootNamespace>Uno.UI.Lottie</RootNamespace>
+
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">WebAssembly</UnoRuntimeIdentifier>
+		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="WasmScripts\**\*.js" />
+		<UpToDateCheckInput Remove="WasmScripts\uno-lottie.js" />
+		<UpToDateCheckInput Include="ts\**\*" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.9.2" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
+	</ItemGroup>
+
+	<Import Project="..\..\Common.targets" />
+	<Import Project="..\..\Uno.CrossTargetting.props" />
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Wasm.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<UnoUIGeneratorsBinPath>..\..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+	</PropertyGroup>
+
+	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+	<Target Name="_UnoUILottieOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.Lottie\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)**" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
+
+</Project>

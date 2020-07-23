@@ -37,34 +37,28 @@
   <ItemGroup>
     <AndroidResource Include="Resources\**\*.xml" Condition="$(_IsAndroid)" />
 
-	<UpToDateCheckInput Include="$(PlatformItemsBasePath)**\*.cs" Exclude="$(PlatformItemsBasePath)bin\**\*.cs;.$(PlatformItemsBasePath)obj\**\*.cs;" Visible="False" />
-
-	<Compile Include="$(PlatformItemsBasePath)**\*.cs"
-		     Exclude="$(PlatformItemsBasePath)bin\**\*.cs;$(PlatformItemsBasePath)obj\**\*.cs;"
-		     Condition="'$(PlatformItemsBasePath)'!=''"/>
-
-	<None Include="$(PlatformItemsBasePath)**\*.netstd.cs" Exclude="$(PlatformItemsBasePath)bin\**\*.netstd.cs;$(PlatformItemsBasePath)obj\**\*.netstd.cs" />
-    <Compile Remove="$(PlatformItemsBasePath)**\*.netstd.cs" />
-    <Compile Include="$(PlatformItemsBasePath)**\*.netstd.cs"
-                     Exclude="$(PlatformItemsBasePath)bin\**\*.netstd.cs;$(PlatformItemsBasePath)obj\**\*.netstd.cs"
+	<None Include="**\*.netstd.cs" Exclude="bin\**\*.netstd.cs;obj\**\*.netstd.cs" />
+    <Compile Remove="**\*.netstd.cs" />
+    <Compile Include="**\*.netstd.cs"
+                     Exclude="bin\**\*.netstd.cs;obj\**\*.netstd.cs"
                      Condition="'$(TargetFramework)'=='netstandard2.0'" />
 
-	<None Include="$(PlatformItemsBasePath)**\*.wasm.cs" Exclude="$(PlatformItemsBasePath)bin\**\*.wasm.cs;$(PlatformItemsBasePath)obj\**\*.wasm.cs" />
-	<Compile Remove="$(PlatformItemsBasePath)**\*.wasm.cs" />
-	<Compile Include="$(PlatformItemsBasePath)**\*.wasm.cs"
-                     Exclude="$(PlatformItemsBasePath)bin\**\*.wasm.cs;$(PlatformItemsBasePath)obj\**\*.wasm.cs"
+	<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" />
+	<Compile Remove="**\*.wasm.cs" />
+	<Compile Include="**\*.wasm.cs"
+                     Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs"
                      Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='WebAssembly'" />
 
-	<None Include="$(PlatformItemsBasePath)**\*.skia.cs" Exclude="$(PlatformItemsBasePath)bin\**\*.skia.cs;$(PlatformItemsBasePath)obj\**\*.skia.cs" />
-	<Compile Remove="$(PlatformItemsBasePath)**\*.skia.cs" />
-	<Compile Include="$(PlatformItemsBasePath)**\*.skia.cs"
-                     Exclude="$(PlatformItemsBasePath)bin\**\*.skia.cs;$(PlatformItemsBasePath)obj\**\*.skia.cs"
+	<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" />
+	<Compile Remove="**\*.skia.cs" />
+	<Compile Include="**\*.skia.cs"
+                     Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs"
                      Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Skia'" />
 
-	<None Include="$(PlatformItemsBasePath)**\*.netstdref.cs" Exclude="$(PlatformItemsBasePath)bin\**\*.netstdref.cs;$(PlatformItemsBasePath)obj\**\*.netstdref.cs" />
-	<Compile Remove="$(PlatformItemsBasePath)**\*.netstdref.cs" />
-	<Compile Include="$(PlatformItemsBasePath)**\*.netstdref.cs"
-                     Exclude="$(PlatformItemsBasePath)bin\**\*.netstdref.cs;$(PlatformItemsBasePath)obj\**\*.netstdref.cs"
+	<None Include="**\*.netstdref.cs" Exclude="bin\**\*.netstdref.cs;obj\**\*.netstdref.cs" />
+	<Compile Remove="**\*.netstdref.cs" />
+	<Compile Include="**\*.netstdref.cs"
+                     Exclude="bin\**\*.netstdref.cs;obj\**\*.netstdref.cs"
                      Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'" />
 
 	<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" />
@@ -115,8 +109,8 @@
                      Exclude="bin\**\*.net.cs;obj\**\*.net.cs"
                      Condition="'$(TargetFramework)'=='net461'" />
 
-    <Page Include="$(PlatformItemsBasePath)**\*.xaml"
-                Exclude="$(PlatformItemsBasePath)bin/**/*.xaml;$(PlatformItemsBasePath)obj/**/*.xaml"
+    <Page Include="**\*.xaml"
+                Exclude="bin/**/*.xaml;obj/**/*.xaml"
                 Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsUWP) or $(_IsNetStd) or $(_IsMacOS)" />
 
   </ItemGroup>

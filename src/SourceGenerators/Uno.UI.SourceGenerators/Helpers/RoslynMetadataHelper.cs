@@ -142,7 +142,7 @@ namespace Uno.Roslyn
 					.OfType<INamedTypeSymbol>()
 					.Where(r => r.Kind != SymbolKind.ErrorType && r.TypeArguments.Length == 0)
 					// Apply legacy
-					.Where(r => legacyType == null || r.OriginalDefinition.Name != name || r.OriginalDefinition == legacyType)
+					.Where(r => legacyType == null || r.OriginalDefinition.Name != name || Equals(r.OriginalDefinition, legacyType))
 					.ToArray();
 			}
 

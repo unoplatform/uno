@@ -195,11 +195,11 @@
 		<!-- Update Uno.WinUI references version -->
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 		
-		<!-- Update Uno.Foundation.Runtime.Wasm references version -->
-		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.Wasm']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
+		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 
-		<!-- Update Uno.Foundation.Runtime.Wasm references version -->
-		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Wasm']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
+		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.WebAssembly']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 
 		<!-- Update Uno.WinUI.Runtime.Skia.Gtk references version -->
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Gtk']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
@@ -227,7 +227,7 @@
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@id" Value="$(PackageNamePrefix)" Namespace="$(NugetNamespace)" Prefix="x" />
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Gtk']/@id" Value="$(PackageNamePrefix).Runtime.Skia.Gtk" Namespace="$(NugetNamespace)" Prefix="x" />
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Wpf']/@id" Value="$(PackageNamePrefix).Runtime.Skia.Wpf" Namespace="$(NugetNamespace)" Prefix="x" />
-		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Wasm']/@id" Value="$(PackageNamePrefix).Runtime.Wasm" Namespace="$(NugetNamespace)" Prefix="x" />
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.WebAssembly']/@id" Value="$(PackageNamePrefix).Runtime.WebAssembly" Namespace="$(NugetNamespace)" Prefix="x" />
 
 		<!-- Adjust build targets file to match WinUI / UWP-->
 		<Move SourceFiles=".\uno.winui.targets" DestinationFiles=".\$(PackageNamePrefix).targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
@@ -265,8 +265,8 @@
 		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.Gtk\buildTransitive\Uno.UI.Runtime.Skia.Gtk.targets" DestinationFiles="..\src\Uno.UI.Runtime.Skia.Gtk\buildTransitive\$(PackageNamePrefix).Runtime.Skia.Gtk.targets" />
 		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.Wpf\buildTransitive\Uno.UI.Runtime.Skia.Wpf.props" DestinationFiles="..\src\Uno.UI.Runtime.Skia.Wpf\buildTransitive\$(PackageNamePrefix).Runtime.Skia.Wpf.props" />
 		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.Wpf\buildTransitive\Uno.UI.Runtime.Skia.Wpf.targets" DestinationFiles="..\src\Uno.UI.Runtime.Skia.Wpf\buildTransitive\$(PackageNamePrefix).Runtime.Skia.Wpf.targets" />
-		<Move SourceFiles="..\src\Uno.UI.Runtime.Wasm\buildTransitive\Uno.UI.Runtime.Wasm.props" DestinationFiles="..\src\Uno.UI.Runtime.Wasm\buildTransitive\$(PackageNamePrefix).Runtime.Wasm.props" />
-		<Move SourceFiles="..\src\Uno.UI.Runtime.Wasm\buildTransitive\Uno.UI.Runtime.Wasm.targets" DestinationFiles="..\src\Uno.UI.Runtime.Wasm\buildTransitive\$(PackageNamePrefix).Runtime.Wasm.targets" />
+		<Move SourceFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\Uno.UI.Runtime.WebAssembly.props" DestinationFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\$(PackageNamePrefix).Runtime.WebAssembly.props" />
+		<Move SourceFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\Uno.UI.Runtime.WebAssembly.targets" DestinationFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\$(PackageNamePrefix).Runtime.WebAssembly.targets" />
 	</Target>
 
 	<Target Name="BuildNuGetPackage">

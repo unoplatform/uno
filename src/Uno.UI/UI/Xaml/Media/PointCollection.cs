@@ -22,6 +22,12 @@ namespace Windows.UI.Xaml.Media
 			_points = coordinates.ToList();
 		}
 
+		// For implicit conversion from string, avoids to uselessly clone the points list.
+		private PointCollection(List<Point> points)
+		{
+			_points = points;
+		}
+
 		public int Count => _points.Count;
 
 		public bool IsReadOnly => false;
