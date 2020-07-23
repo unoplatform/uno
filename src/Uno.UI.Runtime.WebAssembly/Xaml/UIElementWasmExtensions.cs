@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Add one or many CSS classes to a HTML element, if not present.
 		/// </summary>
-		public static void SetCssClasses(this UIElement element, params string[] classesToSet)
+		public static void SetCssClass(this UIElement element, params string[] classesToSet)
 		{
 			WindowManagerInterop.SetUnsetCssClasses(element.HtmlId, classesToSet, null);
 		}
@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Remove one or many CSS classes from a HTML element, if defined.
 		/// </summary>
-		public static void UnsetCssClasses(this UIElement element, params string[] classesToUnset)
+		public static void UnsetCssClass(this UIElement element, params string[] classesToUnset)
 		{
 			WindowManagerInterop.SetUnsetCssClasses(element.HtmlId, null, classesToUnset);
 		}
