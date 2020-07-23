@@ -248,6 +248,12 @@
 	<file src="Uno.WinUI.targets" target="buildTransitive\xamarinios10" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\xamarinmac20" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\netstandard2.0" />
+	
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\MonoAndroid" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\xamarinios10" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\xamarinmac20" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\netstandard2.0" />
+	
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\MonoAndroid" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinios10" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinmac20" />

@@ -65,6 +65,7 @@
 
 	<Import Project="..\..\Common.targets" />
 	<Import Project="..\..\Uno.CrossTargetting.props" />
+	<Import Project="..\..\..\build\uno.winui.cross-runtime.targets"/>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
@@ -82,6 +83,7 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
 
 	<Target Name="IncludeRuntimeAssets" BeforeTargets="BeforeCompile">
 
