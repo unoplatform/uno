@@ -25,6 +25,12 @@
 	</type>
 	<type fullname="Windows.UI.Core.CoreDispatcher" />
 	<type fullname="Windows.UI.Core.SystemNavigationManager" />
+    <type fullname="Windows.Devices.Midi.MidiInPort">
+      <method name="DispatchMessage" />
+    </type>
+    <type fullname="Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher">
+      <method name="DispatchStateChanged" />
+    </type>
 	<type fullname="Windows.Devices.Sensors.Accelerometer">
 	  <method name="DispatchReading" />
 	</type>
