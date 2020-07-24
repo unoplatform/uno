@@ -43,7 +43,7 @@ This control will create an easily organized grid that will allow you to create 
 ```<controls:DataGrid x:Name="dataGrid"></controls:DataGrid>```
 
 2. Add columns. Similar to how you would configure columns for a XAML `Grid` layout, you can add column defintions within your `DataGrid` control:
-   ``` xml
+   ``` xaml
 <controls:DataGrid.Columns>
     <controls:DataGridTextColumn Header="Rank"/>
     <controls:DataGridComboBoxColumn Header="Mountain"/>
