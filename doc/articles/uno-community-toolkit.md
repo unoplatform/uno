@@ -1,5 +1,5 @@
 # Port of  Windows Community Toolkit
-The Windows Community Toolkit is a collection of helper functions, custom controls, and app services. It simplifies and demonstrates common developer patterns when building experiences for Windows 10.
+The [Windows Community Toolkit](https://docs.microsoft.com/en-us/windows/communitytoolkit/) is a collection of helper functions, custom controls, and app services. It simplifies and demonstrates common developer patterns when building experiences for Windows 10.
 
 Uno has ported the Windows Community Toolkit for use in Uno applications to allow for use on Windows,
 Android, iOS, macOS, and WebAssembly.
