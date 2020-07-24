@@ -109,7 +109,7 @@ jobs:
       testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME) Test Run'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
-      failTaskOnFailedTests: true
+      failTaskOnFailedTests: false
 
   - task: PublishTestResults@2
     condition: always()
