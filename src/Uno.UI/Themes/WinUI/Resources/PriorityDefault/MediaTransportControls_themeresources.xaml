@@ -46,7 +46,8 @@
                                 <Setter Property="AllowFocusOnInteraction" Value="True" />
                             </Style>
                             <!-- New CommandBar Style -->
-                            <Style x:Key="CommandBarStyle" TargetType="CommandBar">
+                            <!-- UNO Explicitly inherit from standard CommandBar style, because we don't want to be given the native template if native CommandBar styling is enabled -->
+                            <Style x:Key="CommandBarStyle" TargetType="CommandBar" BasedOn="{StaticResource DefaultCommandBarStyle}">
                                 <Setter Property="Height" Value="{ThemeResource MTCMediaButtonHeight}" />
                                 <Setter Property="Background" Value="Transparent" />
                             </Style>
@@ -254,7 +255,9 @@
                                                         <Thumb x:Name="HorizontalThumb" Style="{StaticResource SliderThumbStyle}" Height="24" Width="24" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" FocusVisualMargin="-14,-6,-14,-6" AutomationProperties.AccessibilityView="Raw">
                                                             <ToolTipService.ToolTip>
                                                                 <ToolTip x:Name="ThumbnailTooltip">
-                                                                    <ContentPresenter Content="{Binding}" />
+                                                                    <!-- UNO TODO Binding ContentPresenter.Content is flagged as an error by Uno because it can have unpredictable results -->
+                                                                    <!--<ContentPresenter Content="{Binding}" />-->
+                                                                    <ContentControl Content="{Binding}" />
                                                                 </ToolTip>
                                                             </ToolTipService.ToolTip>
                                                             <Thumb.DataContext>
