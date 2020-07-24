@@ -7,7 +7,8 @@
 		<NoWarn>NU1701,CS1998</NoWarn>
 		<LangVersion>7.3</LangVersion>
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
-	<UseUnoXamlParser>true</UseUnoXamlParser>
+		<UseUnoXamlParser>true</UseUnoXamlParser>
+		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -30,11 +31,11 @@
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
 		<UpToDateCheckInput Include="WasmScripts\**\*" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
 	</ItemGroup>
@@ -79,7 +80,7 @@
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.RemoteControl.Wasm\Uno.UI.RemoteControl.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Wasm.Tests\Uno.UI.Wasm.Tests.csproj" />
