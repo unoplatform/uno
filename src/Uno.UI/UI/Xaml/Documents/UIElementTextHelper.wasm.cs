@@ -107,7 +107,15 @@ namespace Uno.UI.UI.Xaml.Documents
 
 		internal static void SetMaxLines(this UIElement element, object localValue)
 		{
-			// Not available yet
+			if (localValue is UnsetValue)
+			{
+				element.ResetStyle("display", "-webkit-line-clamp", "webkit-box-orient");
+			}
+			else
+			{
+				var value = (int)localValue;
+				element.SetStyle(("display", "-webkit-box"), ("-webkit-line-clamp", value.ToStringInvariant()), ("-webkit-box-orient", "vertical"));
+			}
 		}
 
 		private static void SetTextTrimming(this UIElement element, object localValue)
