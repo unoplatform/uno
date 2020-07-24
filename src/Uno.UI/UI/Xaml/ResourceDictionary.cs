@@ -183,7 +183,10 @@ namespace Windows.UI.Xaml
 			get
 			{
 				object value;
-				TryGetValue(key, out value);
+				if (!TryGetValue(key, out value))
+				{
+					throw new KeyNotFoundException($"Resource with key {key} was not found.");
+				}
 
 				return value;
 			}
