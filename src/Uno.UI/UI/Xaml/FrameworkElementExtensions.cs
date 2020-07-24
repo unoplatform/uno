@@ -345,6 +345,39 @@ namespace Windows.UI.Xaml
 
 			return false;
 		}
+
+		internal static bool TryGetCornerRadius(this IFrameworkElement frameworkElement, out CornerRadius cornerRadius)
+		{
+			switch (frameworkElement)
+			{
+				case Grid g:
+					cornerRadius = g.CornerRadius;
+					return true;
+
+				case StackPanel sp:
+					cornerRadius = sp.CornerRadius;
+					return true;
+
+				case Control c:
+					cornerRadius = c.CornerRadius;
+					return true;
+
+				case ContentPresenter cp:
+					cornerRadius = cp.CornerRadius;
+					return true;
+
+				case Border b:
+					cornerRadius = b.CornerRadius;
+					return true;
+
+				case Panel p:
+					cornerRadius = p.CornerRadius;
+					return true;
+			}
+
+			cornerRadius = default;
+			return false;
+		}
 	}
 }
 #endif
