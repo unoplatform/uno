@@ -19,8 +19,7 @@ The following packages are available:
 - [Uno.Microsoft.Toolkit.Uwp.Connectivity](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Uwp.Connectivity)
 
 ## Add Windows Community Toolkit to Uno Project
-This tutorial will walk through adding and implementing the DataGrid control but the steps can be followed for any of the Uno ported
-Windows Community Toolkit controls.  
+This tutorial will walk through adding and implementing the DataGrid control but the steps can be followed for any of the Uno ported Windows Community Toolkit controls.  
   
 1. Install Nuget package for targeted control  
  ![datagrid-nuget](uno-development/assets/controls/datagrid-nuget.JPG)  
