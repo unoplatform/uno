@@ -2,7 +2,7 @@
 The Windows Community Toolkit is a collection of helper functions, custom controls, and app services. It simplifies and demonstrates common developer patterns when building experiences for Windows 10.
 
 Uno has ported the Windows Community Toolkit for use in Uno applications to allow for use on Windows,
-Android, iOS, and WebAssembly.
+Android, iOS, macOS, and WebAssembly.
 
 The following packages are available:
 - [Uno.Microsoft.Toolkit](https://www.nuget.org/packages/Uno.Microsoft.Toolkit )
