@@ -23,7 +23,7 @@ namespace Windows.Devices.Midi
 		private const string JsType = "Windows.Devices.Midi.MidiOutPort";
 		private readonly string _wasmId;
 
-		public MidiOutPort(string deviceId, string wasmId)
+		private MidiOutPort(string deviceId, string wasmId)
 		{
 			DeviceId = deviceId;
 			_wasmId = wasmId;

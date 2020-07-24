@@ -21,6 +21,12 @@ namespace Windows.Devices.Midi
 
 		private TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> _messageReceived;
 
+#if __SKIA__ || __NETSTD_REFERENCE__
+		private MidiInPort()
+		{
+		}
+#endif
+
 		/// <summary>
 		/// Gets the id of the device that was used to initialize the MidiInPort.
 		/// </summary>
