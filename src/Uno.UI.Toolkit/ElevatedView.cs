@@ -60,6 +60,7 @@ namespace Uno.UI.Toolkit
 			// Patch to deactivate the clipping by ContentControl
 			RenderTransform = new CompositeTransform();
 #endif
+			SizeChanged += (snd, evt) => UpdateElevation();
 		}
 
 		protected override void OnApplyTemplate()
