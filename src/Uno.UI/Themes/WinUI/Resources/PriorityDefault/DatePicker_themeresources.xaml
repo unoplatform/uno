@@ -342,7 +342,8 @@
         </Setter>
     </Style>
 
-    <Style TargetType="DatePickerFlyoutPresenter" BasedOn="{StaticResource DefaultDatePickerFlyoutPresenterStyle}" />
+    <!--UNO TODO Currently only the native date picker widget is supported -->
+    <!--<Style TargetType="DatePickerFlyoutPresenter" BasedOn="{StaticResource DefaultDatePickerFlyoutPresenterStyle}" />-->
 
     <Style x:Key="DefaultDatePickerFlyoutPresenterStyle" TargetType="DatePickerFlyoutPresenter">
         <Setter Property="Width" Value="296" />

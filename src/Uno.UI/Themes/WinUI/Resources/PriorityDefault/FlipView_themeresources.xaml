@@ -75,7 +75,8 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
-    <Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
+    <!-- UNO TODO Currently only style using native flip view control is supported -->
+    <!--<Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />-->
 
     <Style x:Key="DefaultFlipViewStyle" TargetType="FlipView">
         <Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
