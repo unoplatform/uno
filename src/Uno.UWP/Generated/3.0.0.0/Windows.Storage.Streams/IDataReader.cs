@@ -14,7 +14,7 @@ namespace Windows.Storage.Streams
 			set;
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.InputStreamOptions InputStreamOptions
 		{
 			get;
@@ -89,13 +89,13 @@ namespace Windows.Storage.Streams
 		#if false || false || false || false || false
 		global::System.TimeSpan ReadTimeSpan();
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.DataReaderLoadOperation LoadAsync( uint count);
 		#endif
 		#if false || false || false || false || false
 		global::Windows.Storage.Streams.IBuffer DetachBuffer();
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.IInputStream DetachStream();
 		#endif
 	}
