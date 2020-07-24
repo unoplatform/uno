@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno;
+using Uno.UI.Xaml;
 using Windows.Foundation;
+using Windows.Storage;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
@@ -18,7 +20,20 @@ namespace Windows.UI.Composition
 
 		private static SKTypeface FromFamilyName(string name)
 		{
-			return SKTypeface.FromFamilyName(name);
+			if (name.StartsWith(XamlFilePathHelper.AppXIdentifier))
+			{
+				var path = new Uri(name).PathAndQuery;
+
+				var filePath = global::System.IO.Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path, path.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar));
+
+				var font = SKTypeface.FromFile(filePath);
+
+				return font;
+			}
+			else
+			{
+				return SKTypeface.FromFamilyName(name);
+			}
 		}
 
 		public TextVisual(Compositor compositor, TextBlock owner) : base(compositor)
