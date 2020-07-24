@@ -2101,7 +2101,7 @@
 	<SolidColorBrush x:Key="IOSTimePickerDismissButtonForegroundBrush"
 					 Color="#055bb7" />
 	<SolidColorBrush x:Key="IOSTimePickerHeaderBackgroundBrush"
-					 Color="#f8f8f8" />
+					 Color="{ThemeResource SystemListLowColor}" />
 
 	<ios:Style x:Key="IOSTimePickerDoneCancelButtonStyle"
 			   TargetType="Button">
@@ -2140,8 +2140,9 @@
 	</ios:Style>
 
 	<ios:Style TargetType="TimePickerFlyoutPresenter">
+		<!-- System Color that properly changes for iOS, from white/black in light/dark theme -->
 		<Setter Property="Background"
-				Value="White" />
+				Value="{ThemeResource TimePickerForegroundThemeBrush}" />
 		<Setter Property="VerticalAlignment"
 				Value="Stretch" />
 		<Setter Property="HorizontalAlignment"
