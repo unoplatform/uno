@@ -88,9 +88,14 @@ namespace Windows.UI.Xaml.Controls
 
 					return false;
 				}
+				if (TemplatedRoot is UIElement tr && tr.RenderTransform != null)
+				{
+					// Same for TemplatedRoot
 
-				// Same for TemplatedRoot
-				return TemplatedRoot?.RenderTransform == null;
+					return false;
+				}
+
+				return true; // Clipping allowed
 			}
 		}
 
