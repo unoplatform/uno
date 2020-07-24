@@ -3,13 +3,13 @@
 
   <!-- Target used to override the runtime for netstandard2.0 based targets -->
   <Target Name="ReplaceUnoRemoteControlRuntime"
-				  Condition="'$(UnoRuntime)'!='' and '$(IsUnoHead)'=='true'"
+				  Condition="'$(UnoRuntimeIdentifier)'!='' and '$(IsUnoHead)'=='true'"
 				  BeforeTargets="_CopyFilesMarkedCopyLocal;CopyFilesToOutputDirectory">
 	<ItemGroup>
 	  <_ItemsFromUnoToRemove Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.NuGetPackageId)'=='Uno.UI.RemoteControl' or '%(RuntimeCopyLocalItems.NuGetPackageId)'=='Uno.WinUI.RemoteControl'" />
 	  <ReferenceCopyLocalPaths Remove="@(_ItemsFromUnoToRemove)" />
 
-	  <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)/../uno-runtime/$(UnoRuntime.ToLowerInvariant())/**" />
+	  <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/**" />
 	</ItemGroup>
   </Target>
 

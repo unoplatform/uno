@@ -861,6 +861,12 @@ namespace Uno.UI.Xaml
 		#region ResetStyle
 		internal static void ResetStyle(IntPtr htmlId, string[] names)
 		{
+			if (names == null || names.Length == 0)
+			{
+				// nothing to do
+				return;
+			}
+
 			if (UseJavascriptEval)
 			{
 				if (names.Length == 1)

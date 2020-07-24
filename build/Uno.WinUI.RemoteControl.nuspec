@@ -103,10 +103,10 @@
 	<file src="..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
 
 	<!-- netstandard2.0 WebAssembly -->
-	<file src="..\src\Uno.UI.RemoteControl.Wasm\Bin\Release\netstandard2.0\Uno.UI.RemoteControl.*" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\netstandard2.0\Uno.UI.RemoteControl.*" target="uno-runtime\webassembly" />
 
 	<!-- netstandard2.0 Skia -->
-	<file src="..\src\Uno.UI.RemoteControl.Skia\Bin\Release\netstandard2.0\Uno.UI.RemoteControl.*" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\netstandard2.0\Uno.UI.RemoteControl.*" target="uno-runtime\skia" />
 
 	<!-- Remote Control host and integration -->
     <file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\netcoreapp3.1\*.*" target="tools\rc\host" />

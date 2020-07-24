@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml
 		private static Dictionary<Type, string> _htmlTagCache = new Dictionary<Type, string>(FastTypeComparer.Default);
 		private static Type _htmlElementAttribute;
 		private static PropertyInfo _htmlTagAttributeTagGetter;
-		private static Assembly _unoUIAssembly = typeof(UIElement).Assembly;
+		private static readonly Assembly _unoUIAssembly = typeof(UIElement).Assembly;
 
 		private string GetHtmlTag(string htmlTag)
 		{
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml
 			{
 				if (_htmlElementAttribute == null)
 				{
-					_htmlElementAttribute = Assembly.Load("Uno.UI.Runtime.Wasm").GetType("Uno.UI.Runtime.Wasm.HtmlElementAttribute", true);
+					_htmlElementAttribute = Assembly.Load("Uno.UI.Runtime.WebAssembly").GetType("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute", true);
 					_htmlTagAttributeTagGetter = _htmlElementAttribute.GetProperty("Tag");
 				}
 
@@ -278,11 +278,6 @@ namespace Windows.UI.Xaml
 
 		protected internal void ResetStyle(params string[] names)
 		{
-			if (names == null || names.Length == 0)
-			{
-				// nothing to do
-			}
-
 			Uno.UI.Xaml.WindowManagerInterop.ResetStyle(HtmlId, names);
 
 		}

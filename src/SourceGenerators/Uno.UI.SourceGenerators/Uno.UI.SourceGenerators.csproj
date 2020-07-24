@@ -3,6 +3,7 @@
 		<TargetFramework>net461</TargetFramework>
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<WarningsAsErrors>true</WarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -32,7 +33,7 @@
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
-			<Version>3.1.5</Version>
+			<Version>3.1.6</Version>
 		</PackageReference>
 		<PackageReference Include="Mono.Cecil">
 			<Version>0.10.1</Version>

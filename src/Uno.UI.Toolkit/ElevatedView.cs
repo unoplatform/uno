@@ -100,7 +100,7 @@ namespace Uno.UI.Toolkit
 
 #if !NETFX_CORE
 		public new static DependencyProperty BackgroundProperty { get ; } = DependencyProperty.Register(
-			"Background", typeof(Brush), typeof(ElevatedView), new FrameworkPropertyMetadata(default(Brush)));
+			"Background", typeof(Brush), typeof(ElevatedView), new FrameworkPropertyMetadata(default(Brush), OnChanged));
 
 		public new Brush Background
 		{

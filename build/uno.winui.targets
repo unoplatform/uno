@@ -28,7 +28,7 @@
 			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_NO_IDEPENDENCYOBJECT</UnoDefineConstants>
 		</PropertyGroup>
 
-		<PropertyGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard'">
+		<PropertyGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard' or '$(TargetFrameworkIdentifier)'=='.NETCoreApp'">
 			<UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API</UnoDefineConstants>
 		</PropertyGroup>
 
@@ -59,15 +59,20 @@
 
   <!-- Target used to override the runtime for netstandard2.0 based targets -->
   <Target Name="ReplaceUnoRuntime"
-				  Condition="'$(UnoRuntime)'!=''"
+				  Condition="'$(UnoRuntimeIdentifier)'!=''"
 				  BeforeTargets="_CopyFilesMarkedCopyLocal;CopyFilesToOutputDirectory">
 	<ItemGroup>
 	  <_ItemsFromUnoToRemove Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.NuGetPackageId)'=='Uno.UI' or '%(RuntimeCopyLocalItems.NuGetPackageId)'=='Uno.WinUI'" />
 	  <ReferenceCopyLocalPaths Remove="@(_ItemsFromUnoToRemove)" />
 
-	  <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)/../../uno-runtime/$(UnoRuntime.ToLowerInvariant())/**" />
+	  <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)/../../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/**" />
 	</ItemGroup>
   </Target>
+
+  <!-- Force a rebuild on runtime files changes -->
+  <ItemGroup Condition="'$(UnoRuntimeIdentifier)'!=''">
+	<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../../uno-runtime/*" />
+  </ItemGroup>
 
   <!-- Backward compatibility validation -->
   <Target Name="_ValidateTopLevelPackageWasmUpgrade"
@@ -76,6 +81,85 @@
 
 	<Error Text="WebAssembly head projects need to be updated to use the [Uno.UI.WebAssembly] package instead of the [Uno.UI] NuGet package." />
   </Target>
+
+  <!--
+  Cross-runtime libraries creation targets
+  -->
+  <Target Name="PrepareUnoRuntimeProjectReferences" BeforeTargets="BeforeBuild">
+
+	<!--
+	Build the ProjectReference item group for UnoRuntimeProjectReference items.
+	The references are added as non-referencing ProjectReferences to enable the inclusion
+	of their output in the final nuget package.
+	-->
+	<ItemGroup>
+	  <ProjectReference Include="%(UnoRuntimeProjectReference.Identity)">
+		<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+		<UndefineProperties>TargetFramework</UndefineProperties>
+	  </ProjectReference>
+	</ItemGroup>
+
+  </Target>
+
+  <Target Name="ResolvePrepareUnoRuntimeProjectReferences" AfterTargets="ResolveProjectReferences">
+
+	<!-- Execute UnoRuntimeGetTargetPath for all UnoRuntimeProjectReference to get their actual output -->
+	<MSBuild
+	  Projects="@(UnoRuntimeProjectReference)"
+	  Targets="UnoRuntimeGetTargetPath"
+	  BuildInParallel="$(BuildInParallel)"
+	  Properties="Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(TargetFramework)"
+	  ContinueOnError="!$(BuildingProject)">
+
+	  <Output TaskParameter="TargetOutputs" ItemName="UnoRuntimeProjectReferenceOutput" />
+	</MSBuild>
+
+	<ItemGroup>
+	  <!-- Add the appropriate metadata to include those files -->
+	  <UnoRuntimeProjectReferenceOutput Update="@(UnoRuntimeProjectReferenceOutput)">
+		<Pack>true</Pack>
+		<PackagePath>uno-runtime/%(UnoRuntimeIdentifier)</PackagePath>
+	  </UnoRuntimeProjectReferenceOutput>
+
+	  <!-- Include symbols as well, if available -->
+	  <UnoRuntimeProjectReferenceOutput
+		  Include="@(UnoRuntimeProjectReferenceOutput->'%(rootdir)%(directory)%(filename).pdb')"
+		  Condition="exists('%(rootdir)%(directory)%(filename).pdb')">
+		<Pack>true</Pack>
+		<PackagePath>uno-runtime/%(UnoRuntimeIdentifier)</PackagePath>
+	  </UnoRuntimeProjectReferenceOutput>
+
+	</ItemGroup>
+
+	<ItemGroup>
+	  <TfmSpecificPackageFile Include="@(UnoRuntimeProjectReferenceOutput)" />
+	</ItemGroup>
+
+	<RemoveDuplicates Inputs="@(TfmSpecificPackageFile)">
+	  <Output TaskParameter="Filtered" ItemName="FilteredUnoRuntimeProjectReferenceOutput" />
+	</RemoveDuplicates>
+	
+	<ItemGroup>
+	  <TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)" />
+	  <TfmSpecificPackageFile Include="@(FilteredUnoRuntimeProjectReferenceOutput)" />
+	</ItemGroup>
+  </Target>
+
+  <!-- Target used to determine the outputs of a project alongs with its associated UnoRuntimeIdentifier -->
+  <Target
+	  Name="UnoRuntimeGetTargetPath"
+	  DependsOnTargets="GetTargetPath"
+	  Returns="@(UnoRuntimeTargetPathWithTargetPlatformMoniker)">
+
+	<ItemGroup>
+	  <UnoRuntimeTargetPathWithTargetPlatformMoniker
+		  Include="@(TargetPathWithTargetPlatformMoniker)"
+		  UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLower())" />
+	</ItemGroup>
+
+  </Target>
+
 
   <!--
   Target used to warn the developer that overriden package binaries have been placed in the nuget cache.
@@ -102,5 +186,7 @@
              Text="======================================"
              ContinueOnError="true" />
   </Target>
+
+  <Import Project="uno.winui.cross-runtime.targets" />
 
 </Project>

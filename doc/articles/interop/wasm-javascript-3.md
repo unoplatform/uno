@@ -103,7 +103,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
                // XAML behavior: a non-null background is required on an element to be "visible to pointers".
                // Uno reproduces this behavior, so we must set it here even if we're not using the background.
                // Not doing this will lead to a `pointer-events: none` CSS style on the control.
-               Background = SolidColorBrushHelper.Transparent;
+               Background = new SolidColorBrush(Colors.Transparent);
 
                // When the control is loaded into DOM, we activate Flatpickr on it.
                Loaded += OnLoaded;
@@ -117,9 +117,9 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
            {
                // For demo purposes, Flatpickr is loaded directly from CDN.
                // Uno uses AMD module loading, so you must give a callback when the resource is loaded.
-               var javascript = $@"require([""https://cdn.jsdelivr.net/npm/flatpickr""], f => f(document.getElementById(""{HtmlId}"")));";
+               var javascript = $@"require([""https://cdn.jsdelivr.net/npm/flatpickr""], f => f(element));";
 
-               WebAssemblyRuntime.InvokeJS(javascript);
+               this.ExecuteJavascript(javascript);
            }
        }
    }
@@ -202,22 +202,19 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
        // For demo purposes, Flatpickr is loaded directly from CDN.
        // Uno uses AMD module loading, so you must give a callback when the resource is loaded.
        var javascript = $@"require([""https://cdn.jsdelivr.net/npm/flatpickr""], f => {{
-               // Get HTML <input> element
-               const element = document.getElementById(""{HtmlId}"");
+           // Route Flatpickr events following Uno's documentation
+           // https://platform.uno/docs/articles/wasm-custom-events.html
+           const options = {{
+               onChange: (dates, str) => element.dispatchEvent(new CustomEvent(""DateChanged"", {{detail: str}})),
+               onOpen: () => element.dispatchEvent(new CustomEvent(""OpenedStateChanged"", {{detail: ""open""}})),
+               onClose: () => element.dispatchEvent(new CustomEvent(""OpenedStateChanged"", {{detail: ""closed""}}))
+            }};
 
-               // Route Flatpickr events following Uno's documentation
-               // https://platform.uno/docs/articles/wasm-custom-events.html
-               const options = {{
-                       onChange: (dates, str) => element.dispatchEvent(new CustomEvent(""DateChanged"", {{detail: str}})),
-                       onOpen: () => element.dispatchEvent(new CustomEvent(""OpenedStateChanged"", {{detail: ""open""}})),
-                       onClose: () => element.dispatchEvent(new CustomEvent(""OpenedStateChanged"", {{detail: ""closed""}}))
-                   }};
+            // Instantiate Flatpickr on the element
+            f(element, options);
+       }});";
 
-               // Instantiate Flatpickr on the element
-               f(element, options);
-           }});";
-
-       WebAssemblyRuntime.InvokeJS(javascript);
+       this.ExecuteJavascript(javascript);
    }
    ```
 
@@ -234,3 +231,5 @@ More steps could be done to make the code production ready:
 * **Make the control multi-platform**. Many date/time pickers exist on all platforms. It should be easy on other platforms to connect the same control to another great date picker native to the platform - no need to embed a WebView for this on other platforms.
 * **Create script files instead of generating dynamic JavaScript**. As in previous article, this would have the advantage of improving performance and increase the ability to debug it.
 * **Support more Flatpickr features**. There are a [lot of features in Flatpickr](https://flatpickr.js.org/examples/) you can leverage to make a perfect versatile control.
+
+```
