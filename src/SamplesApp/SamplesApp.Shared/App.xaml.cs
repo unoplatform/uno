@@ -95,9 +95,6 @@ namespace SamplesApp
 
 			LaunchiOSWatchDog();
 #endif
-#if NETFX_CORE
-			Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
-#endif
 
 #if __SKIA__
 			var runAutoScreenshotsParam =

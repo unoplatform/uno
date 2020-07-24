@@ -22,6 +22,7 @@ using System.IO;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI.Common;
+using Microsoft.UI.Xaml.Controls;
 
 #if XAMARIN || NETSTANDARD2_0
 using Windows.UI.Xaml.Controls;
@@ -51,6 +52,7 @@ namespace SampleControl.Presentation
 		private bool _isFavoritedSample = false;
 		private bool _isAnyContentVisible = false;
 		private bool _contentAttachedToWindow;
+		private bool _useFluentStyles;
 		private object _contentPhone = null;
 		private string _searchTerm = "";
 
@@ -66,6 +68,7 @@ namespace SampleControl.Presentation
 		private SampleChooserContent _selectedFavoriteSample;
 		private SampleChooserContent _selectedSearchSample;
 		private List<SampleChooserContent> _filteredSamples;
+		private XamlControlsResources _fluentResources;
 
 		private void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 		{
@@ -387,6 +390,25 @@ namespace SampleControl.Presentation
 			set
 			{
 				_contentAttachedToWindow = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool UseFluentStyles
+		{
+			get => _useFluentStyles;
+			set
+			{
+				_useFluentStyles = value;
+				if (_useFluentStyles)
+				{
+					_fluentResources = _fluentResources ?? new XamlControlsResources();
+					Application.Current.Resources.MergedDictionaries.Add(_fluentResources);
+				}
+				else
+				{
+					Application.Current.Resources.MergedDictionaries.Remove(_fluentResources);
+				}
 				RaisePropertyChanged();
 			}
 		}
