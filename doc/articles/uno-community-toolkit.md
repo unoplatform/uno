@@ -81,4 +81,4 @@ Then, set the binding on each column
 ![datagrid-full-sample](uno-development/assets/controls/datagrid-full-sample.gif)
 
 
-For a deeper dive into the code, check out the full Uno Window Community Toolkit Sample: [Uno.Samples](https://github.com/unoplatform/Uno.Samples)
+For a deeper dive into the code, check out the [full Uno Windows Community Toolkit Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoWCTDataGridSample) in [Uno.Samples](https://github.com/unoplatform/Uno.Samples).
