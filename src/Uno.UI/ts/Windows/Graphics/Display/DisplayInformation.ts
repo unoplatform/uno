@@ -1,7 +1,7 @@
 ﻿namespace Windows.Graphics.Display {
 
 	export class DisplayInformation {
-		private static readonly DpiCheckInterval = 500;
+		private static readonly DpiCheckInterval = 1000;
 
 		private static lastDpi: number;
 		private static dpiWatcher: number;
