@@ -91,14 +91,14 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction FileIO.AppendLinesAsync(IStorageFile file, IEnumerable<string> lines, UnicodeEncoding encoding) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> ReadBufferAsync( global::Windows.Storage.IStorageFile file)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> FileIO.ReadBufferAsync(IStorageFile file) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncAction WriteBufferAsync( global::Windows.Storage.IStorageFile file,  global::Windows.Storage.Streams.IBuffer buffer)
 		{
