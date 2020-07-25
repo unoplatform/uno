@@ -14,12 +14,6 @@ namespace Windows.Devices.Midi
 		private readonly static string MidiOutAqsFilter =
 			"System.Devices.InterfaceClassGuid:=\"{" + DeviceClassGuids.MidiOut + "}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";
 
-#if __SKIA__ || __NETSTD_REFERENCE__
-		private MidiOutPort()
-		{
-		}
-#endif
-
 		/// <summary>
 		/// Gets the id of the device that was used to initialize the MidiOutPort.
 		/// </summary>
