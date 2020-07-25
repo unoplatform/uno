@@ -3345,6 +3345,53 @@ var Windows;
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
+    var Graphics;
+    (function (Graphics) {
+        var Display;
+        (function (Display) {
+            class DisplayInformation {
+                static startOrientationChanged() {
+                    window.screen.orientation.addEventListener("change", DisplayInformation.onOrientationChange);
+                }
+                static stopOrientationChanged() {
+                    window.screen.orientation.removeEventListener("change", DisplayInformation.onOrientationChange);
+                }
+                static startDpiChanged() {
+                    // DPI can be observed using matchMedia query, but only for certain breakpoints
+                    // for accurate observation, we use polling
+                    DisplayInformation.lastDpi = window.devicePixelRatio;
+                    // start polling the devicePixel
+                    DisplayInformation.dpiWatcher = window.setInterval(DisplayInformation.updateDpi, DisplayInformation.DpiCheckInterval);
+                }
+                static stopDpiChanged() {
+                    window.clearInterval(DisplayInformation.dpiWatcher);
+                }
+                static updateDpi() {
+                    const currentDpi = window.devicePixelRatio;
+                    if (Math.abs(DisplayInformation.lastDpi - currentDpi) > 0.001) {
+                        if (DisplayInformation.dispatchDpiChanged == null) {
+                            DisplayInformation.dispatchDpiChanged =
+                                Module.mono_bind_static_method("[Uno] Windows.Graphics.Display.DisplayInformation:DispatchDpiChanged");
+                        }
+                        DisplayInformation.dispatchDpiChanged(currentDpi);
+                    }
+                    DisplayInformation.lastDpi = currentDpi;
+                }
+                static onOrientationChange() {
+                    if (DisplayInformation.dispatchOrientationChanged == null) {
+                        DisplayInformation.dispatchOrientationChanged =
+                            Module.mono_bind_static_method("[Uno] Windows.Graphics.Display.DisplayInformation:DispatchOrientationChanged");
+                    }
+                    DisplayInformation.dispatchOrientationChanged(window.screen.orientation.type);
+                }
+            }
+            DisplayInformation.DpiCheckInterval = 500;
+            Display.DisplayInformation = DisplayInformation;
+        })(Display = Graphics.Display || (Graphics.Display = {}));
+    })(Graphics = Windows.Graphics || (Windows.Graphics = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
     var Networking;
     (function (Networking) {
         var Connectivity;

@@ -34,6 +34,10 @@
 	<type fullname="Windows.Networking.Connectivity.NetworkInformation">
 	  <method name="DispatchStatusChanged" />
 	</type>
+	<type fullname="Windows.Graphics.Display.DisplayInformation">
+      <method name="DispatchDpiChanged" />
+      <method name="DispatchOrientationChanged" />
+    </type>
 	<type fullname="Windows.Devices.Sensors.Gyrometer">
 	  <method name="DispatchReading" />
 	</type>
