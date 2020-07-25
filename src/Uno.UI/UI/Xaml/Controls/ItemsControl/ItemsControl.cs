@@ -16,7 +16,6 @@ using Microsoft.Extensions.Logging;
 using Uno.UI.Extensions;
 using System.ComponentModel;
 using Windows.UI.Xaml.Controls.Primitives;
-using Android.App;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
