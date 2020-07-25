@@ -1,56 +1,483 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Resources;
-using Windows.ApplicationModel.Resources.Core;
-
-// Testing Append, Write and Read in one test method
+using Windows.Storage;
 
 namespace Uno.UI.RuntimeTests.Tests
 {
 	[TestClass]
 	public class Given_FileIO
 	{
-
-		[TestInitialize]
-		public void Init()
+		[TestMethod]
+		public async Task When_WriteTextAsyncNoEncoding()
 		{
-		}
+			StorageFile targetFile = null;
+			try
+			{
+				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
+				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(GenerateRandomFileName(), CreationCollisionOption.ReplaceExisting);
+				await FileIO.WriteTextAsync(targetFile, contents);
 
-		[TestCleanup]
-		public void Cleanup()
-		{
+				var realContents = await File.ReadAllTextAsync(targetFile.Path);
+				Assert.AreEqual(contents, realContents);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
 		}
 
 		[TestMethod]
-		public async Task When_WriteReadAppendRead()
+		public async Task When_WriteLinesAsyncNoEncoding()
 		{
-			var folderForTestFile = Windows.Storage.ApplicationData.Current.LocalFolder;
-			Assert.IsNotNull(folderForTestFile, "cannot get LocalFolder - error outside tested method");
+			StorageFile targetFile = null;
+			try
+			{
+				var lines = new[]
+				{
+					"First line",
+					"3527535205",
+					"šěššýétžščžíé"
+				};
+				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(GenerateRandomFileName(), CreationCollisionOption.ReplaceExisting);
+				await FileIO.WriteLinesAsync(targetFile, lines);
 
-			var testFile = await folderForTestFile.CreateFileAsync("storage-read-write-append.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-			Assert.IsNotNull(testFile, "cannot create file - error outside tested method");
+				var realContents = await File.ReadAllLinesAsync(targetFile.Path);
+				CollectionAssert.AreEqual(realContents, lines);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
 
-			string initialContent = "first line of file\n";
-			await Windows.Storage.FileIO.WriteTextAsync(testFile, initialContent);
+		[TestMethod]
+		public async Task When_WriteTextAsyncWithEncoding()
+		{
+			StorageFile targetFile = null;
+			try
+			{
+				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
+				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(GenerateRandomFileName(), CreationCollisionOption.ReplaceExisting);
+				await FileIO.WriteTextAsync(targetFile, contents, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);
 
-			string readedText = await Windows.Storage.FileIO.ReadTextAsync(testFile);
-			Assert.AreEqual(readedText, initialContent, false, "error in WriteTextAsync or in ReadTextAsync - error in tested method");
+				var realContents = await File.ReadAllTextAsync(targetFile.Path, Encoding.BigEndianUnicode);
+				Assert.AreEqual(contents, realContents);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
 
-			string appendContent = "next line\n";
-			await Windows.Storage.FileIO.AppendTextAsync(testFile, appendContent);
-			readedText = await Windows.Storage.FileIO.ReadTextAsync(testFile);
-			Assert.AreEqual(readedText, initialContent, false, "error in AppendTextAsync (not appending?) - error in tested method");
+		[TestMethod]
+		public async Task When_WriteLinesAsyncWithEncoding()
+		{
+			StorageFile targetFile = null;
+			try
+			{
+				var lines = new[]
+				{
+					"First line",
+					"3527535205",
+					"šěššýétžščžíé"
+				};
+				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(GenerateRandomFileName(), CreationCollisionOption.ReplaceExisting);
+				await FileIO.WriteLinesAsync(targetFile, lines, Windows.Storage.Streams.UnicodeEncoding.Utf16LE);
 
-			initialContent = "new first line of file\n";
-			await Windows.Storage.FileIO.WriteTextAsync(testFile, initialContent);
-			readedText = await Windows.Storage.FileIO.ReadTextAsync(testFile);
-			Assert.AreEqual(readedText, initialContent, false, "error in WriteTextAsync (appending?) - error in tested method");
+				var realContents = await File.ReadAllLinesAsync(targetFile.Path, Encoding.Unicode);
+				CollectionAssert.AreEqual(realContents, lines);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AppendTextAsyncNoEncoding()
+		{
+			StorageFile targetFile = null;
+			try
+			{
+				var originalContent = "First line3527535205šěššýétžščžíé";
+				var appendedContent = "New line33251164535205věšřěšřčžčšžž";
+
+				var fileName = GenerateRandomFileName();
+				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
+				await File.WriteAllTextAsync(filePath, originalContent);
+				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+				await FileIO.AppendTextAsync(targetFile, appendedContent);
+
+				var realContents = await File.ReadAllTextAsync(targetFile.Path);
+				Assert.AreEqual(originalContent + appendedContent, realContents);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AppendTextAsyncRecognizesEncoding()
+		{
+			StorageFile targetFile = null;
+			try
+			{
+				var originalContent = "First line3527535205šěššýétžščžíé";
+				var appendedContent = "New line33251164535205věšřěšřčžčšžž";
+
+				var fileName = GenerateRandomFileName();
+				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
+				await File.WriteAllTextAsync(filePath, originalContent, Encoding.Unicode);
+				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+				await FileIO.AppendTextAsync(targetFile, appendedContent);
+
+				var realContents = await File.ReadAllTextAsync(targetFile.Path, Encoding.Unicode);
+				Assert.AreEqual(originalContent + appendedContent, realContents);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AppendTextAsyncWithEncoding()
+		{
+			StorageFile targetFile = null;
+			try
+			{
+				var originalContent = "First line3527535205šěššýétžščžíé";
+				var appendedContent = "New line33251164535205věšřěšřčžčšžž";
+
+				var fileName = GenerateRandomFileName();
+				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
+				await File.WriteAllTextAsync(filePath, originalContent, Encoding.BigEndianUnicode);
+				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+				await FileIO.AppendTextAsync(targetFile, appendedContent, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);
+
+				var realContents = await File.ReadAllTextAsync(targetFile.Path, Encoding.BigEndianUnicode);
+				Assert.AreEqual(originalContent + appendedContent, realContents);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AppendLinesAsyncNoEncoding()
+		{
+			StorageFile targetFile = null;
+			try
+			{
+				var firstLines = new[]
+				{
+					"First line",
+					"3527535205",
+					"šěššýétžščžíé"
+				};
+				var appendedLines = new[]
+				{
+					"New line",
+					"33251164535205",
+					"věšřěšřčžčšžž"
+				};
+				var fileName = GenerateRandomFileName();
+				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
+				await File.WriteAllLinesAsync(filePath, firstLines);
+				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+				await FileIO.AppendLinesAsync(targetFile, appendedLines);
+
+				var realContents = await File.ReadAllLinesAsync(targetFile.Path);
+				CollectionAssert.AreEqual(firstLines.Concat(appendedLines).ToArray(), realContents);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AppendLinesAsyncRecognizesEncoding()
+		{
+			StorageFile targetFile = null;
+			try
+			{
+				var firstLines = new[]
+				{
+					"First line",
+					"3527535205",
+					"šěššýétžščžíé"
+				};
+				var appendedLines = new[]
+				{
+					"New line",
+					"33251164535205",
+					"věšřěšřčžčšžž"
+				};
+				var fileName = GenerateRandomFileName();
+				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
+				await File.WriteAllLinesAsync(filePath, firstLines, Encoding.BigEndianUnicode);
+				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+				await FileIO.AppendLinesAsync(targetFile, appendedLines);
+
+				var realContents = await File.ReadAllLinesAsync(targetFile.Path, Encoding.BigEndianUnicode);
+				CollectionAssert.AreEqual(firstLines.Concat(appendedLines).ToArray(), realContents);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AppendLinesAsyncWithEncoding()
+		{
+			StorageFile targetFile = null;
+			try
+			{
+				var firstLines = new[]
+				{
+					"First line",
+					"3527535205",
+					"šěššýétžščžíé"
+				};
+				var appendedLines = new[]
+				{
+					"New line",
+					"33251164535205",
+					"věšřěšřčžčšžž"
+				};
+				var fileName = GenerateRandomFileName();
+				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
+				await File.WriteAllLinesAsync(filePath, firstLines, Encoding.Unicode);
+				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+				await FileIO.AppendLinesAsync(targetFile, appendedLines, Windows.Storage.Streams.UnicodeEncoding.Utf16LE);
+
+				var realContents = await File.ReadAllLinesAsync(targetFile.Path, Encoding.Unicode);
+				CollectionAssert.AreEqual(firstLines.Concat(appendedLines).ToArray(), realContents);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadTextAsyncNoEncoding()
+		{
+			IStorageFile sourceFile = null;
+			try
+			{
+				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
+				var fileName = GenerateRandomFileName();
+				await File.WriteAllTextAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), contents);
+				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+
+				var realContents = await FileIO.ReadTextAsync(sourceFile);
+				Assert.AreEqual(contents, realContents);
+			}
+			finally
+			{
+				DeleteFile(sourceFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadLinesAsyncNoEncoding()
+		{
+			IStorageFile sourceFile = null;
+			try
+			{
+				var lines = new[]
+				{
+					"First line",
+					"3527535205",
+					"šěššýétžščžíé"
+				};
+				var fileName = GenerateRandomFileName();
+				await File.WriteAllLinesAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), lines);
+				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+
+				var realContents = await FileIO.ReadLinesAsync(sourceFile);
+				CollectionAssert.AreEqual(realContents.ToArray(), lines);
+			}
+			finally
+			{
+				DeleteFile(sourceFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadTextAsyncWithEncoding()
+		{
+			IStorageFile sourceFile = null;
+			try
+			{
+				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
+				var fileName = GenerateRandomFileName();
+				await File.WriteAllTextAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), contents, Encoding.Unicode);
+				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+
+				var realContents = await FileIO.ReadTextAsync(sourceFile, Windows.Storage.Streams.UnicodeEncoding.Utf16LE);
+				Assert.AreEqual(contents, realContents);
+			}
+			finally
+			{
+				DeleteFile(sourceFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadLinesAsyncWithEncoding()
+		{
+			IStorageFile sourceFile = null;
+			try
+			{
+				var lines = new[]
+				{
+					"First line",
+					"3527535205",
+					"šěššýétžščžíé"
+				};
+				var fileName = GenerateRandomFileName();
+				await File.WriteAllLinesAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), lines, Encoding.BigEndianUnicode);
+				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+
+				var realContents = await FileIO.ReadLinesAsync(sourceFile, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);
+				CollectionAssert.AreEqual(realContents.ToArray(), lines);
+			}
+			finally
+			{
+				DeleteFile(sourceFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadTextAsyncCanRecognizeEncoding()
+		{
+			IStorageFile sourceFile = null;
+			try
+			{
+				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
+				var fileName = GenerateRandomFileName();
+				await File.WriteAllTextAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), contents, Encoding.BigEndianUnicode);
+				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+
+				var realContents = await FileIO.ReadTextAsync(sourceFile);
+				Assert.AreEqual(contents, realContents);
+			}
+			finally
+			{
+				DeleteFile(sourceFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadLinesAsyncCanRecognizeEncoding()
+		{
+			IStorageFile sourceFile = null;
+			try
+			{
+				var lines = new[]
+				{
+					"First line",
+					"3527535205",
+					"šěššýétžščžíé"
+				};
+				var fileName = GenerateRandomFileName();
+				await File.WriteAllLinesAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), lines, Encoding.Unicode);
+				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+
+				var realContents = await FileIO.ReadLinesAsync(sourceFile);
+				CollectionAssert.AreEqual(realContents.ToArray(), lines);
+			}
+			finally
+			{
+				DeleteFile(sourceFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_WriteBytesAsync()
+		{
+			IStorageFile targetFile = null;
+			try
+			{
+				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
+				var bytes = Encoding.UTF8.GetBytes(contents);
+				var fileName = GenerateRandomFileName();
+				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName);
+				await FileIO.WriteBytesAsync(targetFile, bytes);
+
+				var realContents = await File.ReadAllBytesAsync(targetFile.Path);
+				CollectionAssert.AreEqual(bytes, realContents);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_WriteBufferAsync()
+		{
+			IStorageFile targetFile = null;
+			try
+			{
+				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
+				var bytes = Encoding.UTF8.GetBytes(contents);
+				var buffer = bytes.AsBuffer();
+				var fileName = GenerateRandomFileName();
+				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+				await FileIO.WriteBufferAsync(targetFile, buffer);
+
+				var realContents = await File.ReadAllBytesAsync(targetFile.Path);
+				CollectionAssert.AreEqual(bytes, realContents);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadBufferAsync()
+		{
+			IStorageFile sourceFile = null;
+			try
+			{
+				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
+				var bytes = Encoding.UTF8.GetBytes(contents);
+				var fileName = GenerateRandomFileName();
+				var path = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
+				await File.WriteAllBytesAsync(path, bytes);
+				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+
+				var buffer = await FileIO.ReadBufferAsync(sourceFile);
+				var realBytes = buffer.ToArray();
+				CollectionAssert.AreEqual(bytes, realBytes);
+			}
+			finally
+			{
+				DeleteFile(sourceFile);
+			}
+		}
+
+		private string GenerateRandomFileName() => $"{Guid.NewGuid()}.txt";
+
+		private void DeleteFile(IStorageFile file)
+		{
+			if (file != null)
+			{
+				File.Delete(file.Path);
+			}
 		}
 	}
 }
