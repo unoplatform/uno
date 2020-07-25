@@ -74,7 +74,7 @@ namespace Windows.Storage
 		/// <param name="encoding">The character encoding of the file.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction WriteTextAsync(IStorageFile file, string contents, UwpUnicodeEncoding encoding) =>
-			WriteTextAsync(file, contents, append: false, encoding).AsAsyncAction();
+			WriteTextTaskAsync(file, contents, append: false, encoding).AsAsyncAction();
 
 		/// <summary>
 		/// Writes lines of text to the specified file.
@@ -102,7 +102,7 @@ namespace Windows.Storage
 		/// <param name="contents">The text to append.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction AppendTextAsync(IStorageFile file, string contents) =>
-			AppendWriteTextAsync(file, contents, append: true).AsAsyncAction();
+			WriteTextTaskAsync(file, contents, append: true).AsAsyncAction();
 
 		/// <summary>
 		/// Appends text to the specified file using the specified character encoding.
@@ -112,7 +112,7 @@ namespace Windows.Storage
 		/// <param name="encoding">The character encoding of the file.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction AppendTextAsync(IStorageFile file, string contents, UwpUnicodeEncoding encoding) =>
-			WriteTextAsync(file, contents, append: true, encoding).AsAsyncAction();
+			WriteTextTaskAsync(file, contents, append: true, encoding).AsAsyncAction();
 
 		/// <summary>
 		/// Appends lines of text to the specified file.
@@ -161,68 +161,51 @@ namespace Windows.Storage
 		public static IAsyncAction WriteBufferAsync(IStorageFile file, IBuffer buffer) =>
 			WriteBufferTaskAsync(file, buffer).AsAsyncAction();
 
-		private static async Task<string> ReadTextTaskAsync(IStorageFile file, UwpUnicodeEncoding encoding = UwpUnicodeEncoding.Utf8)
+		private static async Task<string> ReadTextTaskAsync(IStorageFile file, UwpUnicodeEncoding? encoding = null)
 		{
 			if (file is null)
 			{
 				throw new ArgumentNullException(nameof(file));
 			}
 
-			var systemEncoding = UwpEncodingToSystemEncoding(encoding);
+			Encoding systemEncoding;
+			if (encoding == null)
+			{
+				systemEncoding = await GetEncodingFromFileAsync(file);
+			}
+			else
+			{
+				systemEncoding = UwpEncodingToSystemEncoding(encoding.Value);
+			}
 
 			using Stream fileStream = await file.OpenStreamForReadAsync();
 			using StreamReader streamReader = new StreamReader(fileStream, systemEncoding);
 			return await streamReader.ReadToEndAsync();
 		}
 
-		private static async Task<IList<string>> ReadLinesTaskAsync(IStorageFile file, UwpUnicodeEncoding encoding = UwpUnicodeEncoding.Utf8)
+		private static async Task<IList<string>> ReadLinesTaskAsync(IStorageFile file, UwpUnicodeEncoding? encoding = null)
 		{
 			var output = await ReadTextTaskAsync(file, encoding);
 			var separators = new[] { Environment.NewLine };
 			return output.Split(separators, StringSplitOptions.None);
 		}
 
-		private static async Task AppendWriteTextAsync(IStorageFile file, string contents, bool append)
-		{
-			UwpUnicodeEncoding unicodeEncoding = UwpUnicodeEncoding.Utf8;
-
-			using (var fileReadStream = await file.OpenStreamForReadAsync())
-			{
-				using (BinaryReader binReader = new BinaryReader(fileReadStream))
-				{
-					try
-					{
-						byte firstByte = binReader.ReadByte();
-						switch (firstByte)
-						{
-							case 0xfe:
-								unicodeEncoding = UwpUnicodeEncoding.Utf16BE;
-								break;
-							case 0xff:
-								unicodeEncoding = UwpUnicodeEncoding.Utf16LE;
-								break;
-						}
-					}
-					catch
-					{
-						// probably file is empty
-					}
-
-				}
-			}
-
-			WriteTextAsync(file, contents, append, unicodeEncoding);
-		}
-
-		private static async Task WriteTextAsync(IStorageFile file, string contents, bool append, UwpUnicodeEncoding encoding = UwpUnicodeEncoding.Utf8)
+		private static async Task WriteTextTaskAsync(IStorageFile file, string contents, bool append, UwpUnicodeEncoding? encoding = null)
 		{
 			if (file is null)
 			{
 				throw new ArgumentNullException(nameof(file));
 			}
 
-			var systemEncoding = UwpEncodingToSystemEncoding(encoding);
-
+			Encoding systemEncoding;
+			if (encoding == null)
+			{
+				systemEncoding = await GetEncodingFromFileAsync(file);
+			}
+			else
+			{
+				systemEncoding = UwpEncodingToSystemEncoding(encoding.Value);
+			}
 
 			using var fileStream = await file.OpenStreamForWriteAsync();
 
@@ -239,7 +222,6 @@ namespace Windows.Storage
 			using StreamWriter streamWriter = new StreamWriter(fileStream, systemEncoding);
 			await streamWriter.WriteAsync(contents);
 		}
-
 
 		private static async Task WriteBytesTaskAsync(IStorageFile file, byte[] buffer)
 		{
@@ -269,6 +251,24 @@ namespace Windows.Storage
 			}
 
 			await File.WriteAllBytesAsync(file.Path, inMemoryBuffer.Data);
+		}
+
+		private static async Task<Encoding> GetEncodingFromFileAsync(IStorageFile file)
+		{
+			using Stream fileStream = await file.OpenStreamForReadAsync();
+			var bytes = new byte[2];
+			if (await fileStream.ReadAsync(bytes) != -1)
+			{
+				if (bytes[0] == 0xff && bytes[1] == 0xfe)
+				{
+					return Encoding.Unicode;
+				}
+				else if (bytes[0] == 0xfe && bytes[1] == 0xff)
+				{
+					return Encoding.BigEndianUnicode;
+				}
+			}
+			return Encoding.UTF8;
 		}
 
 		private static string ConvertLinesToString(IEnumerable<string> lines)
