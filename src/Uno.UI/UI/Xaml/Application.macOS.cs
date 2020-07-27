@@ -26,6 +26,7 @@ namespace Windows.UI.Xaml
 	[Register("UnoAppDelegate")]
 	public partial class Application : NSApplicationDelegate
 	{
+		private Version _systemVersion = null;
 		private NSUrl[] _launchUrls = null;
 
 		public Application()
@@ -110,31 +111,44 @@ namespace Windows.UI.Xaml
 		/// <returns>System theme</returns>
 		private ApplicationTheme GetDefaultSystemTheme()
 		{
-			const string AutoSwitchKey = "AppleInterfaceStyleSwitchesAutomatically";
-			var autoChange = NSUserDefaults.StandardUserDefaults[AutoSwitchKey];
-			if (autoChange != null)
+			var version = GetSystemVersion();
+			if (version >= new Version(10, 14))
 			{
-				var autoChangeEnabled = NSUserDefaults.StandardUserDefaults.BoolForKey(AutoSwitchKey);
-				if (autoChangeEnabled)
+				var app = NSAppearance.CurrentAppearance?.FindBestMatch(new string[]
 				{
-					if (NSUserDefaults.StandardUserDefaults["AppleInterfaceStyle"] == null)
-					{
-						return ApplicationTheme.Dark;
-					}
-					else
-					{
-						return ApplicationTheme.Light;
-					}
+					NSAppearance.NameAqua,
+					NSAppearance.NameDarkAqua
+				});
+
+				if (app == NSAppearance.NameDarkAqua)
+				{
+					return ApplicationTheme.Dark;
 				}
 			}
-			if (NSUserDefaults.StandardUserDefaults["AppleInterfaceStyle"] == null)
+			return ApplicationTheme.Light;
+		}
+
+		private Version GetSystemVersion()
+		{
+			if (_systemVersion == null)
 			{
-				return ApplicationTheme.Light;
+				using var info = new NSProcessInfo();
+				var version = info.OperatingSystemVersion.ToString();
+				if (Version.TryParse(version, out var number))
+				{
+					_systemVersion = number;
+				}
+				else if (int.TryParse(version, out var major))
+				{
+					_systemVersion = new Version(major, 0);
+				}
+				else
+				{
+					_systemVersion = new Version(0, 0);
+				}
 			}
-			else
-			{
-				return ApplicationTheme.Dark;
-			}
+
+			return _systemVersion;
 		}
 
 		private void SetCurrentLanguage()
