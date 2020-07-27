@@ -717,8 +717,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		#endregion
-#endif
-
+	
 		#region Tag Dependency Property
 
 		public new object Tag
@@ -735,7 +734,8 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		#endregion
-	
+#endif
+
 		#region Transitions Dependency Property
 
 		public TransitionCollection Transitions

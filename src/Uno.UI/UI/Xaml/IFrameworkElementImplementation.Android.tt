@@ -642,6 +642,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 		#endregion
 
+#if !<#= mixin.IsFrameworkElement #>
 		#region Tag Dependency Property
 
 		public new object Tag
@@ -659,7 +660,6 @@ namespace <#= mixin.NamespaceName #>
 
 		#endregion
 
-#if !<#= mixin.IsFrameworkElement #>
 		#region RenderTransform Dependency Property
 	
 		/// <summary>

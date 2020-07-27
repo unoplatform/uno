@@ -35,20 +35,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  object Tag
-		{
-			get
-			{
-				return (object)this.GetValue(TagProperty);
-			}
-			set
-			{
-				this.SetValue(TagProperty, value);
-			}
-		}
-		#endif
 		// Skipping already declared property Style
 		// Skipping already declared property Resources
 		// Skipping already declared property Name
@@ -410,15 +396,6 @@ namespace Windows.UI.Xaml
 			nameof(Name), typeof(string), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		// Skipping already declared property StyleProperty
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TagProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Tag), typeof(object), 
-			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(object)));
 		#endif
 		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]

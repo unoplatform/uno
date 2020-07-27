@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -79,6 +80,23 @@ namespace Windows.UI.Xaml
 		/// Indicates that this view can participate in layout optimizations using the simplest logic.
 		/// </summary>
 		protected virtual bool IsSimpleLayout => false;
+
+		#region Tag Dependency Property
+
+#if __IOS__ || __MACOS__ || __ANDROID__
+#pragma warning disable 114 // Error CS0114: 'FrameworkElement.Tag' hides inherited member 'UIView.Tag'
+#endif
+		public object Tag
+		{
+			get => GetTagValue();
+			set => SetTagValue(value);
+		}
+#pragma warning restore 114 // Error CS0114: 'FrameworkElement.Tag' hides inherited member 'UIView.Tag'
+
+		[GeneratedDependencyProperty(DefaultValue = null)]
+		public static DependencyProperty TagProperty { get; } = CreateTagProperty();
+
+#endregion
 
 		partial void Initialize()
 		{
@@ -301,7 +319,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#region Style DependencyProperty
+#region Style DependencyProperty
 
 		public Style Style
 		{
@@ -321,7 +339,7 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-		#endregion
+#endregion
 
 		private void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
@@ -611,7 +629,7 @@ namespace Windows.UI.Xaml
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
 		}
 
-		#region AutomationPeer
+#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
@@ -662,7 +680,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		#endregion
+#endregion
 
 #if !NETSTANDARD
 		private class FrameworkElementLayouter : Layouter
