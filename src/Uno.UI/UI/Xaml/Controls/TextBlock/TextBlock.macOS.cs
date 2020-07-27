@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 			_drawRect = GetDrawRect(rect);
 			if(UseLayoutManager)
 			{
-				_layoutManager?.DrawBackgroundForGlyphRange(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
+				_layoutManager?.DrawGlyphsForGlyphRange(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
 			}
 			else
 			{
@@ -335,14 +335,13 @@ namespace Windows.UI.Xaml.Controls
 				_textContainer.LineBreakMode = GetLineBreakMode();
 				_textContainer.MaximumNumberOfLines = (nuint)GetLines();
 
-				// Configure textStorage
-				_textStorage = new NSTextStorage();
-				_textStorage.SetString(_attributedString);
-
 				// Configure layoutManager
 				_layoutManager = new NSLayoutManager();
 				_layoutManager.AddTextContainer(_textContainer);
 
+				// Configure textStorage
+				_textStorage = new NSTextStorage();
+				_textStorage.SetString(_attributedString);
 				_textStorage.AddLayoutManager(_layoutManager);
 			}
 		}
