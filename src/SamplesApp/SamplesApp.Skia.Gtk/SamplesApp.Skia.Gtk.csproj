@@ -10,7 +10,7 @@
   </PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Jellyfin.SkiaSharp.NativeAssets.LinuxArm" Version="1.68.0" />
+		<PackageReference Include="Jellyfin.SkiaSharp.NativeAssets.LinuxArm" Version="1.68.1" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="GtkSharp" Version="3.22.25.98" />
