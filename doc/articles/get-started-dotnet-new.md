@@ -32,6 +32,10 @@ A basic example:
 ```
 dotnet new unoapp-winui -o MyApp
 ```
+Requires preview templates 3.0
+```
+dotnet new -i Uno.ProjectTemplates.Dotnet::3.0.0-dev.*
+```
 
 ## Uno Platform Blank Prism Application
 
@@ -64,4 +68,4 @@ To use it:
 1. Open or Reload the solution in Visual Studio 
 1. Set the Wasm project as the startup project 
 1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest **stable** package 
-1. Run the app using **Ctrl+F5** (without the Visual Studio debugger), and you’re good to go!
+1. Run the app using **Ctrl+F5** (without the Visual Studio debugger), and youâ€™re good to go!
