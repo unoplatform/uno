@@ -1747,6 +1747,36 @@
 
 		  <!-- End Skia Import -->
 
+			<Member
+				fullName="System.Void Windows.Devices.Midi.MidiMessageReceivedEventArgs..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Devices.Midi.MidiOutPort..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Devices.Midi.MidiInPort..ctor()"
+				reason="UWP does not have this ctor" />	
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceInformation..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceInformationCollection..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceInformationUpdate..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceWatcher..ctor()"
+				reason="UWP does not have this ctor" />
+			<Member
+				fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer.get_Capacity()"
+				reason="UWP does not have this method" />
+			<Member
+				fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer.get_Length()"
+				reason="UWP does not have this method" />
+			<Member
+				fullName="System.Void Windows.Storage.Streams.InMemoryBuffer.set_Length(System.UInt32 value)"
+				reason="UWP does not have this method" />	    
 		</Methods>
 
 		<Events>
@@ -1878,6 +1908,13 @@
 			<Member fullName="System.Object Windows.UI.Composition.Visual::NativeOwner()" reason="Reference API does not contain this" />
 			<Member fullName="CoreAnimation.CALayer Windows.UI.Composition.Visual::NativeLayer()" reason="Reference API does not contain this" />
 		  <!-- End Skia Import -->
+			<Member
+				fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer::Length()"
+				reason="Property not available in UWP"/>
+			<Member
+				fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer::Capacity()"
+				reason="Property not available in UWP"/>
+				
 		</Properties>
 
 		<Fields>
