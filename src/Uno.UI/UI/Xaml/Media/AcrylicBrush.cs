@@ -70,5 +70,7 @@ namespace Windows.UI.Xaml.Media
 				typeof(double?), 
 				typeof(AcrylicBrush), 
 				new FrameworkPropertyMetadata(default(double?)));
+
+		internal Color FallbackColorWithOpacity => GetColorWithOpacity(FallbackColor);
 	}
 }

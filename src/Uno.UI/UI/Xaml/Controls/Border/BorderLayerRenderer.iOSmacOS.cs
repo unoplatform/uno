@@ -80,7 +80,6 @@ namespace Windows.UI.Xaml.Shapes
 
 		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, LayoutState state)
 		{
-
 			var area = state.Area;
 			var background = state.Background;
 			var borderThickness = state.BorderThickness;
@@ -112,8 +111,8 @@ namespace Windows.UI.Xaml.Shapes
 
 				Brush.AssignAndObserveBrush(borderBrush, color => layer.StrokeColor = color)
 					.DisposeWith(disposables);
-				var path = GetRoundedPath(cornerRadius, adjustedArea);
 
+				var path = GetRoundedPath(cornerRadius, adjustedArea);
 				var outerPath = GetRoundedPath(cornerRadius, area);
 
 				var insertionIndex = 0;
@@ -153,6 +152,19 @@ namespace Windows.UI.Xaml.Shapes
 						adjustedArea = adjustedArea.Shrink((nfloat)adjustedLineWidthOffset);
 
 						CreateImageBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask);
+					}
+				}
+				else if (background is AcrylicBrush acrylicBrush)
+				{
+					// TODO: react to AlwaysUseFallback changes
+					if (acrylicBrush.AlwaysUseFallback)
+					{
+						Brush.AssignAndObserveBrush(acrylicBrush, color => layer.FillColor = color)
+							.DisposeWith(disposables);
+					}
+					else
+					{
+
 					}
 				}
 				else
@@ -220,6 +232,24 @@ namespace Windows.UI.Xaml.Shapes
 						var insertionIndex = 0;
 
 						CreateImageBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask: null);
+					}
+				}
+				else if (background is AcrylicBrush acrylicBrush)
+				{
+					// TODO: react to AlwaysUseFallback changes
+					if (acrylicBrush.AlwaysUseFallback)
+					{
+						Brush.AssignAndObserveBrush(acrylicBrush, c => parent.BackgroundColor = c)
+							.DisposeWith(disposables);
+
+						// This is required because changing the CornerRadius changes the background drawing 
+						// implementation and we don't want a rectangular background behind a rounded background.
+						Disposable.Create(() => parent.BackgroundColor = null)
+							.DisposeWith(disposables);
+					}
+					else
+					{
+
 					}
 				}
 				else
@@ -407,6 +437,11 @@ namespace Windows.UI.Xaml.Shapes
 
 			layer.InsertSublayer(gradientContainerLayer, insertionIndex++);
 			sublayers.Add(gradientContainerLayer);
+		}
+
+		private static void CreateAcrylicBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, GradientBrush gradientBrush, CAShapeLayer fillMask)
+		{
+
 		}
 
 		private class LayoutState : IEquatable<LayoutState>
