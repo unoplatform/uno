@@ -59,7 +59,7 @@ Alternatively, you can use the `AutoGenerateColumns` attribute on your `DataGrid
 <controls:DataGrid x:Name="dataGrid" AutoGenerateColumns="True" />
 ```
 
-3. Format your rows in the same way as your columns or use a `Data Template` added as an attribute on the `DataGrid` control  
+3. Format your rows in the same way as your columns or use a `DataTemplate` added as an attribute on the `DataGrid` control  
 ``` xml
 <controls:DataGrid x:Name="dataGrid" RowDetailsTemplate="{StaticResource RowDetailsTemplate}">
 ```
