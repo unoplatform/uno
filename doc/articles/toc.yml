@@ -46,6 +46,8 @@
       href: howto-migrate-existing-code.md
     - name: Migrating existing UWP app to Uno
       href: migrating-apps.md
+    - name: Adding native views
+      href: native-views.md
 - name: Using Uno - features and controls
   items:
   - name: Accessibility
