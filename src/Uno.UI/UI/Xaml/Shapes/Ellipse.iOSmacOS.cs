@@ -7,12 +7,17 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Ellipse : Shape
 	{
+		static Ellipse()
+		{
+			StretchProperty.OverrideMetadata(typeof(Ellipse), new FrameworkPropertyMetadata(defaultValue: Media.Stretch.Fill));
+		}
+
 		public Ellipse()
 		{
 #if __IOS__
 			ClipsToBounds = true;
 #endif
-			Stretch = Stretch.Fill;
+			SetValue(StretChProperty, Fill, Default);
 		}
 
 		/// <inheritdoc />
