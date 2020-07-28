@@ -64,6 +64,7 @@ namespace Windows.UI.Xaml.Controls
 
 			OnUnloadedPartial();
 		}
+#endif
 
 		public ProgressRingTemplateSettings TemplateSettings
 		{
@@ -81,7 +82,6 @@ namespace Windows.UI.Xaml.Controls
 				return result;
 			}
 		}
-#endif
 	}
 }
 #endif
