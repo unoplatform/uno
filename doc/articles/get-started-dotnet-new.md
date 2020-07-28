@@ -32,7 +32,8 @@ A basic example:
 ```
 dotnet new unoapp-winui -o MyApp
 ```
-Requires preview templates 3.0
+
+Using this templates requires Uno 3.0 (preview or later) templates. You can install those using:
 ```
 dotnet new -i Uno.ProjectTemplates.Dotnet::3.0.0-dev.*
 ```
