@@ -1,0 +1,209 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					xmlns:local="using:GenericApp.Views.Controls"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					xmlns:localConverters="using:GenericApp.Views.Converters"
+					xmlns:u="using:Uno.UI.Controls"
+					xmlns:xamarin="http://uno.ui/xamarin"
+					xmlns:ios="http://uno.ui/ios"
+					xmlns:android="http://uno.ui/android"
+					xmlns:not_wasm="http://uno.ui/not_wasm"
+					xmlns:wasm="http://uno.ui/wasm"
+					xmlns:netstdref="http://uno.ui/netstdref"
+					xmlns:not_netstdref="http://uno.ui/not_netstdref"
+					xmlns:skia="http://uno.ui/skia"
+					xmlns:macos="http://uno.ui/macos"
+					xmlns:native_ios="using:UIKit"
+					xmlns:native_android="using:Android.Widget"
+					xmlns:uBehaviors="using:Uno.UI.Behaviors"
+					mc:Ignorable="d xamarin ios android not_wasm wasm netstdref not_netstdref macos skia">
+
+	<!-- Default style for Windows.UI.Xaml.Controls.ScrollViewer -->
+	<xamarin:Style TargetType="ScrollViewer"
+				   x:Key="DefaultScrollViewerStyle">
+		<Setter Property="HorizontalScrollMode"
+				Value="Auto" />
+		<Setter Property="VerticalScrollMode"
+				Value="Auto" />
+		<Setter Property="IsHorizontalRailEnabled"
+				Value="True" />
+		<Setter Property="IsVerticalRailEnabled"
+				Value="True" />
+		<Setter Property="IsTabStop"
+				Value="False" />
+		<Setter Property="ZoomMode"
+				Value="Disabled" />
+		<Setter Property="HorizontalContentAlignment"
+				Value="Left" />
+		<Setter Property="VerticalContentAlignment"
+				Value="Top" />
+		<Setter Property="VerticalScrollBarVisibility"
+				Value="Visible" />
+		<Setter Property="Padding"
+				Value="0" />
+		<Setter Property="BorderThickness"
+				Value="0" />
+		<Setter Property="BorderBrush"
+				Value="Transparent" />
+		<Setter Property="Background"
+				Value="Transparent" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ScrollViewer">
+					<Border BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="{TemplateBinding CornerRadius}">
+						<win:VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="ScrollingIndicatorStates">
+								<VisualStateGroup.Transitions>
+									<VisualTransition From="MouseIndicator"
+													  To="NoIndicator">
+										<Storyboard>
+											<FadeOutThemeAnimation TargetName="ScrollBarSeparator"
+																   BeginTime="0:0:3" />
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar"
+																		   Storyboard.TargetProperty="IndicatorMode">
+												<DiscreteObjectKeyFrame KeyTime="0:0:3">
+													<DiscreteObjectKeyFrame.Value>
+														<ScrollingIndicatorMode>None</ScrollingIndicatorMode>
+													</DiscreteObjectKeyFrame.Value>
+												</DiscreteObjectKeyFrame>
+											</ObjectAnimationUsingKeyFrames>
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar"
+																		   Storyboard.TargetProperty="IndicatorMode">
+												<DiscreteObjectKeyFrame KeyTime="0:0:3">
+													<DiscreteObjectKeyFrame.Value>
+														<ScrollingIndicatorMode>None</ScrollingIndicatorMode>
+													</DiscreteObjectKeyFrame.Value>
+												</DiscreteObjectKeyFrame>
+											</ObjectAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualTransition>
+									<VisualTransition From="TouchIndicator"
+													  To="NoIndicator">
+										<Storyboard>
+											<FadeOutThemeAnimation TargetName="ScrollBarSeparator" />
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar"
+																		   Storyboard.TargetProperty="IndicatorMode">
+												<DiscreteObjectKeyFrame KeyTime="0:0:0.5">
+													<DiscreteObjectKeyFrame.Value>
+														<ScrollingIndicatorMode>None</ScrollingIndicatorMode>
+													</DiscreteObjectKeyFrame.Value>
+												</DiscreteObjectKeyFrame>
+											</ObjectAnimationUsingKeyFrames>
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar"
+																		   Storyboard.TargetProperty="IndicatorMode">
+												<DiscreteObjectKeyFrame KeyTime="0:0:0.5">
+													<DiscreteObjectKeyFrame.Value>
+														<ScrollingIndicatorMode>None</ScrollingIndicatorMode>
+													</DiscreteObjectKeyFrame.Value>
+												</DiscreteObjectKeyFrame>
+											</ObjectAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualTransition>
+								</VisualStateGroup.Transitions>
+
+								<VisualState x:Name="NoIndicator">
+									<Storyboard>
+										<FadeOutThemeAnimation TargetName="ScrollBarSeparator" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="TouchIndicator">
+									<Storyboard>
+										<FadeOutThemeAnimation TargetName="ScrollBarSeparator" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar"
+																	   Storyboard.TargetProperty="IndicatorMode"
+																	   Duration="0">
+											<DiscreteObjectKeyFrame KeyTime="0">
+												<DiscreteObjectKeyFrame.Value>
+													<ScrollingIndicatorMode>TouchIndicator</ScrollingIndicatorMode>
+												</DiscreteObjectKeyFrame.Value>
+											</DiscreteObjectKeyFrame>
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar"
+																	   Storyboard.TargetProperty="IndicatorMode"
+																	   Duration="0">
+											<DiscreteObjectKeyFrame KeyTime="0">
+												<DiscreteObjectKeyFrame.Value>
+													<ScrollingIndicatorMode>TouchIndicator</ScrollingIndicatorMode>
+												</DiscreteObjectKeyFrame.Value>
+											</DiscreteObjectKeyFrame>
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="MouseIndicator">
+									<Storyboard>
+										<FadeInThemeAnimation TargetName="ScrollBarSeparator" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar"
+																	   Storyboard.TargetProperty="IndicatorMode"
+																	   Duration="0">
+											<DiscreteObjectKeyFrame KeyTime="0">
+												<DiscreteObjectKeyFrame.Value>
+													<ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
+												</DiscreteObjectKeyFrame.Value>
+											</DiscreteObjectKeyFrame>
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar"
+																	   Storyboard.TargetProperty="IndicatorMode"
+																	   Duration="0">
+											<DiscreteObjectKeyFrame KeyTime="0">
+												<DiscreteObjectKeyFrame.Value>
+													<ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
+												</DiscreteObjectKeyFrame.Value>
+											</DiscreteObjectKeyFrame>
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</win:VisualStateManager.VisualStateGroups>
+						<Grid Background="{TemplateBinding Background}">
+							<win:Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+							</win:Grid.ColumnDefinitions>
+							<win:Grid.RowDefinitions>
+								<RowDefinition Height="*" />
+								<RowDefinition Height="Auto" />
+							</win:Grid.RowDefinitions>
+							<!-- ContentTemplate not yet supported for ScrollContentPresenter-->
+							<ScrollContentPresenter x:Name="ScrollContentPresenter"
+													win:Grid.RowSpan="2"
+													win:Grid.ColumnSpan="2"
+													Margin="{TemplateBinding Padding}" />
+							<!--Currently in Uno scrollbars are handled by the ScrollContentPresenter, which inherits from the native scroll viewer.-->
+							<win:ScrollBar x:Name="VerticalScrollBar"
+										   Grid.Column="1"
+										   IsTabStop="False"
+										   Maximum="{TemplateBinding ScrollableHeight}"
+										   Orientation="Vertical"
+										   Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+										   Value="{TemplateBinding VerticalOffset}"
+										   ViewportSize="{TemplateBinding ViewportHeight}"
+										   HorizontalAlignment="Right" />
+							<win:ScrollBar x:Name="HorizontalScrollBar"
+										   IsTabStop="False"
+										   Maximum="{TemplateBinding ScrollableWidth}"
+										   Orientation="Horizontal"
+										   Grid.Row="1"
+										   Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+										   Value="{TemplateBinding HorizontalOffset}"
+										   ViewportSize="{TemplateBinding ViewportWidth}" />
+							<win:Border x:Name="ScrollBarSeparator"
+										Grid.Row="1"
+										Grid.Column="1"
+										Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" />
+						</Grid>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</xamarin:Style>
+
+	<xamarin:Style TargetType="ScrollViewer"
+				   BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+
+
+</ResourceDictionary>
