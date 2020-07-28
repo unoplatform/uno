@@ -733,7 +733,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (type != null)
 			{
-				var ns = _fileDefinition.Namespaces.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
+				var ns = _fileDefinition
+					.Namespaces
+					// Ensure that prefixless declaration (generally xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation") is considered first, otherwise PreferredXamlNamespace matching can go awry
+					.OrderByDescending(n => n.Prefix.IsNullOrEmpty())
+					.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
 				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
 
 				if (
