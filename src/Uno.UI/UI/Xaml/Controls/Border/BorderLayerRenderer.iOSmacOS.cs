@@ -6,6 +6,8 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
 using Windows.UI;
+using CoreImage;
+using Foundation;
 
 #if __IOS__
 using UIKit;
@@ -79,7 +81,7 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, LayoutState state)
-		{
+		{			
 			var area = state.Area;
 			var background = state.Background;
 			var borderThickness = state.BorderThickness;
@@ -249,7 +251,24 @@ namespace Windows.UI.Xaml.Shapes
 					}
 					else
 					{
+						var fullArea = new CGRect(
+						area.X + borderThickness.Left,
+						area.Y + borderThickness.Top,
+						area.Width - borderThickness.Left - borderThickness.Right,
+						area.Height - borderThickness.Top - borderThickness.Bottom);
 
+						var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
+						var insertionIndex = 0;
+
+						CreateAcrylicBrushLayers(
+							owner,
+							fullArea,
+							insideArea,
+							parent,
+							sublayers,
+							ref insertionIndex,
+							acrylicBrush,
+							fillMask: null);
 					}
 				}
 				else
@@ -439,9 +458,47 @@ namespace Windows.UI.Xaml.Shapes
 			sublayers.Add(gradientContainerLayer);
 		}
 
-		private static void CreateAcrylicBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, GradientBrush gradientBrush, CAShapeLayer fillMask)
-		{
+		private static void CreateAcrylicBrushLayers(
+			UIElement owner,
+			CGRect fullArea,
+			CGRect insideArea,
+			CALayer layer,
+			List<CALayer> sublayers,
+			ref int insertionIndex,
+			AcrylicBrush acrylicBrush,
+			CAShapeLayer fillMask)
+		{			
+			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
+			var acrylicContainerLayer = new CALayer
+			{
+				Frame = fullArea,
+				Mask = fillMask,
+				BackgroundColor = new CGColor(0, 0, 0, 0),
+				MasksToBounds = true,
+			};
 
+			layer.InsertSublayer(acrylicContainerLayer, insertionIndex++);
+			var gradientFrame = new CGRect(new CGPoint(insideArea.X, insideArea.Y), insideArea.Size);
+
+			var acrylicLayer = new CALayer();			
+			acrylicLayer.Frame = gradientFrame;
+			acrylicLayer.MasksToBounds = true;
+			acrylicLayer.Opacity = 0.5f;
+			acrylicLayer.BackgroundColor = Colors.Blue;
+
+			var blurView = new UIVisualEffectView() { ClipsToBounds = true, BackgroundColor = UIColor.Clear };
+			blurView.Frame = gradientFrame;
+			blurView.Effect = UIBlurEffect.FromStyle(UIBlurEffectStyle.ExtraDark);
+
+			owner.AddSubview(blurView);
+
+			//var blurFilter = new CIGaussianBlur();
+			//blurFilter.SetValueForKey(NSNumber.FromInt32(20), CIFilterInputKey.Radius);
+			//acrylicLayer.BackgroundFilters = new[] { blurFilter };
+
+			acrylicContainerLayer.AddSublayer(acrylicLayer);
+
+			sublayers.Add(acrylicContainerLayer);
 		}
 
 		private class LayoutState : IEquatable<LayoutState>
