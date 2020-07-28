@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 		private NSDate _initialTime;
 		private NSDate _newDate;
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 			return new NSLocale(localeID);
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			_picker.ValueChanged -= OnValueChanged;
 

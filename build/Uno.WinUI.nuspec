@@ -22,9 +22,10 @@
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Fragment" version="1.1.0" />
-		<dependency id="Uno.SourceGenerationTasks" version="2.0.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="2.0.13" />
 		<dependency id="Uno.Core" version="2.0.0" />
 		<dependency id="Uno.Core.Build" version="2.0.0" />
+		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
 	  <!-- Android 10.0 -->
@@ -32,34 +33,38 @@
 		<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0" />
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
-		<dependency id="Uno.SourceGenerationTasks" version="2.0.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="2.0.13" />
 		<dependency id="Uno.Core" version="2.0.0" />
 		<dependency id="Uno.Core.Build" version="2.0.0" />
+		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
 	  <!-- iOS -->
 	  <group targetFramework="xamarinios10">
-		<dependency id="Uno.SourceGenerationTasks" version="2.0.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="2.0.13" />
 		<dependency id="Uno.Core" version="2.0.0" />
 		<dependency id="Uno.Core.Build" version="2.0.0" />
+		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
-      <!-- iOS -->
+      <!-- macOS -->
       <group targetFramework="xamarinmac20">
-        <dependency id="Uno.SourceGenerationTasks" version="2.0.6" />
+        <dependency id="Uno.SourceGenerationTasks" version="2.0.13" />
         <dependency id="Uno.Core" version="2.0.0" />
         <dependency id="Uno.Core.Build" version="2.0.0" />
-      </group>
+		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
+	  </group>
 
       <!-- .NET Standard 2.0 -->
       <group targetFramework="netstandard2.0">
-        <dependency id="Uno.SourceGenerationTasks" version="2.0.6" />
+        <dependency id="Uno.SourceGenerationTasks" version="2.0.13" />
         <dependency id="Uno.Core" version="2.0.0" />
         <dependency id="Uno.Core.Build" version="2.0.0" />
         <dependency id="System.Numerics.Vectors" version="4.5.0" />
         <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
         <dependency id="System.Memory" version="4.5.2" />
-      </group>
+		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
+	  </group>
     </dependencies>
 
 	<frameworkAssemblies>
@@ -77,14 +82,13 @@
 	</frameworkAssemblies>
 
 	<references>
-	  <!-- .NET Standard 2.0 -->
+	  <!-- .NET Standard 2.0 Reference -->
 	  <group targetFramework="netstandard2.0">
 		<reference file="Uno.Xaml.dll" />
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.dll" />
 		<reference file="Uno.UI.Toolkit.dll" />
-		<reference file="Uno.UI.Wasm.dll" />
 	  </group>
 
 	  <!-- iOS -->
@@ -96,7 +100,7 @@
 		<reference file="Uno.UI.Toolkit.dll" />
 	  </group>
 
-	  <!-- iOS -->
+	  <!-- macOS -->
 	  <group targetFramework="xamarinmac20">
 		<reference file="Uno.Xaml.dll" />
 		<reference file="Uno.UI.dll" />
@@ -124,21 +128,11 @@
   </metadata>
   <files>
 
-	<!-- Uno.UI.Toolkit -->
+	<!-- UAP -->
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit.dll" target="lib\UAP" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit.pdb" target="lib\UAP" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit.pri" target="lib\UAP" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit\**" target="lib\UAP\Uno.UI.Toolkit" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid90\Uno.UI.Toolkit.dll" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid90\Uno.UI.Toolkit.pdb" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid10.0\Uno.UI.Toolkit.dll" target="lib\MonoAndroid10.0" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid10.0\Uno.UI.Toolkit.pdb" target="lib\MonoAndroid10.0" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\Uno.UI.Toolkit.dll" target="lib\xamarinios10" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\Uno.UI.Toolkit.pdb" target="lib\xamarinios10" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinmac20\Uno.UI.Toolkit.dll" target="lib\xamarinmac20" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinmac20\Uno.UI.Toolkit.pdb" target="lib\xamarinmac20" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="lib\netstandard2.0" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="lib\netstandard2.0" />
 
 	<!-- Android 9.0 -->
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.dll" target="lib\MonoAndroid90" />
@@ -152,6 +146,8 @@
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.Xaml.dll" target="lib\MonoAndroid90" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.Xaml.pdb" target="lib\MonoAndroid90" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\*.xml" target="lib\MonoAndroid90" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid90\Uno.UI.Toolkit.dll" target="lib\MonoAndroid90" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid90\Uno.UI.Toolkit.pdb" target="lib\MonoAndroid90" />
 
 	<!-- Android 10.0 -->
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid10.0\Uno.dll" target="lib\MonoAndroid10.0" />
@@ -165,6 +161,8 @@
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid10.0\Uno.Xaml.dll" target="lib\MonoAndroid10.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid10.0\Uno.Xaml.pdb" target="lib\MonoAndroid10.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid10.0\*.xml" target="lib\MonoAndroid10.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid10.0\Uno.UI.Toolkit.dll" target="lib\MonoAndroid10.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid10.0\Uno.UI.Toolkit.pdb" target="lib\MonoAndroid10.0" />
 
 	<!-- iOS -->
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.dll" target="lib\xamarinios10" />
@@ -176,6 +174,8 @@
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Xaml.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Xaml.pdb" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\bin\Release\xamarinios10\*.xml" target="lib\xamarinios10" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\Uno.UI.Toolkit.dll" target="lib\xamarinios10" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\Uno.UI.Toolkit.pdb" target="lib\xamarinios10" />
 
 	<!-- macOS -->
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.dll" target="lib\xamarinmac20" />
@@ -187,20 +187,46 @@
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Xaml.dll" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Xaml.pdb" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI\bin\Release\xamarinmac20\*.xml" target="lib\xamarinmac20" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinmac20\Uno.UI.Toolkit.dll" target="lib\xamarinmac20" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinmac20\Uno.UI.Toolkit.pdb" target="lib\xamarinmac20" />
 
-	<!-- .NET Standard 2.0 -->
+	<!-- netstandard2.0 reference -->
 	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.dll" target="lib\netstandard2.0" />
-	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.pdb" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.Foundation.dll" target="lib\netstandard2.0" />
-	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.Foundation.pdb" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.UI.dll" target="lib\netstandard2.0" />
-	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.UI.pdb" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\netstandard2.0" />
-	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\netstandard2.0" />
-	<file src="..\src\Uno.UI.Wasm\bin\Release\netstandard2.0\Uno.UI.Wasm.dll" target="lib\netstandard2.0" />
-	<file src="..\src\Uno.UI.Wasm\bin\Release\netstandard2.0\Uno.UI.Wasm.pdb" target="lib\netstandard2.0" />
-	<file src="..\src\Uno.UI\bin\Release\netstandard2.0\*.xml" target="lib\netstandard2.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="lib\netstandard2.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="lib\netstandard2.0" />
 
+	<!-- netstandard2.0 WebAssembly -->
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.dll" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.pdb" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Foundation.dll" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Foundation.pdb" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.dll" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.pdb" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI\bin\Uno.UI.Wasm\Release\netstandard2.0\*.xml" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI.Runtime.WebAssembly.Compatibility\Bin\Release\netstandard2.0\Uno.UI.Wasm.*" target="uno-runtime\webassembly" />
+
+	<!-- netstandard2.0 Skia -->
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.dll" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.pdb" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.Foundation.dll" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.Foundation.pdb" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.dll" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.pdb" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI\bin\Uno.UI.Skia\Release\netstandard2.0\*.xml" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="uno-runtime\skia" />
+
+	<!-- Analyzers -->
 	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.dll" target="analyzers" />
 	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.pdb" target="analyzers" />
 
@@ -215,22 +241,28 @@
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\System.Diagnostics.DiagnosticSource.dll" target="tools" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Microsoft.DotNet.PlatformAbstractions.dll" target="tools" />
 
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.dll" target="build\Uno.UI.Tasks" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.pdb" target="build\Uno.UI.Tasks" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.dll" target="buildTransitive\Uno.UI.Tasks" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.pdb" target="buildTransitive\Uno.UI.Tasks" />
 
-	<file src="Uno.WinUI.targets" target="build\MonoAndroid" />
-	<file src="Uno.WinUI.targets" target="build\xamarinios10" />
-	<file src="Uno.WinUI.targets" target="build\xamarinmac20" />
-	<file src="Uno.WinUI.targets" target="build\netstandard2.0" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\MonoAndroid" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\xamarinios10" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\xamarinmac20" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\netstandard2.0" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\MonoAndroid" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\xamarinios10" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\xamarinmac20" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\netstandard2.0" />
+	
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\MonoAndroid" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\xamarinios10" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\xamarinmac20" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\netstandard2.0" />
+	
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\MonoAndroid" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinios10" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinmac20" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\netstandard2.0" />
 
 	<!-- Force UAP to ignore netstandard 2.0 -->
-	<file src="_._" target="build\uap10.0.16299" />
-	<file src="_._" target="build\uap10.0.17763" />
+	<file src="_._" target="buildTransitive\uap10.0.16299" />
+	<file src="_._" target="buildTransitive\uap10.0.17763" />
 
-	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="build" />
+	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />
   </files>
 </package>

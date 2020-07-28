@@ -92,18 +92,18 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Content DependencyProperty
-		internal IUIElement Content
+		internal IFrameworkElement Content
 		{
-			get { return (IUIElement)this.GetValue(ContentProperty); }
+			get { return (IFrameworkElement)this.GetValue(ContentProperty); }
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		internal static readonly DependencyProperty ContentProperty =
+		internal static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
-				typeof(IUIElement),
+				typeof(IFrameworkElement),
 				typeof(DatePickerFlyout),
-				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.ValueInheritsDataContext, OnContentChanged));
+				new FrameworkPropertyMetadata(default(IFrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.ValueInheritsDataContext, OnContentChanged));
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

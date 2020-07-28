@@ -15,6 +15,8 @@ namespace Uno.Samples.UITest.Generator
 {
 	public class SnapShotTestGenerator : SourceGenerator
 	{
+		private const int GroupCount = 4;
+
 		private INamedTypeSymbol _sampleControlInfoSymbol;
 		private INamedTypeSymbol _sampleSymbol;
 
@@ -147,7 +149,7 @@ namespace Uno.Samples.UITest.Generator
 						foreach (var test in group.Symbols)
 						{
 							builder.AppendLineInvariant("[global::NUnit.Framework.Test]");
-							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % 2:00}, automated:{test.symbol.ToDisplayString()}\")]");
+							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % GroupCount:00}, automated:{test.symbol.ToDisplayString()}\")]");
 
 							if (test.ignoreInSnapshotTests)
 							{
@@ -155,9 +157,14 @@ namespace Uno.Samples.UITest.Generator
 							}
 
 							builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.AutoRetry]");
-							using (builder.BlockInvariant($"public void {Sanitize(test.categories.First())}_{Sanitize(test.name)}()"))
+							// Set to 60 seconds to cover possible restart of the device
+							builder.AppendLineInvariant("[global::NUnit.Framework.Timeout(60000)]");
+							var testName = $"{Sanitize(test.categories.First())}_{Sanitize(test.name)}";
+							using (builder.BlockInvariant($"public void {testName}()"))
 							{
+								builder.AppendLineInvariant($"Console.WriteLine(\"Running test [{testName}]\");");
 								builder.AppendLineInvariant($"Run(\"{test.symbol}\", waitForSampleControl: false);");
+								builder.AppendLineInvariant($"Console.WriteLine(\"Ran test [{testName}]\");");
 							}
 						}
 					}

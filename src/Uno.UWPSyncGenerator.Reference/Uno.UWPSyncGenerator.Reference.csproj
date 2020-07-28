@@ -122,7 +122,7 @@
       <Version>6.2.9</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.WinUI">
-      <Version>3.0.0-preview1.200515.3</Version>
+      <Version>3.0.0-preview2.200713.0</Version>
     </PackageReference>
     <SDKReference Include="WindowsDesktop, Version=10.0.19041.0">
       <Name>Windows Desktop Extensions for the UWP</Name>

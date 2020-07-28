@@ -154,8 +154,9 @@ namespace Windows.UI.Xaml.Controls
 				"ItemsPanel",
 				typeof(ItemsPanelTemplate),
 				typeof(ItemsControl),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(ItemsPanelTemplate)null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					(s, e) => ((ItemsControl)s)?.OnItemsPanelChanged((ItemsPanelTemplate)e.OldValue, (ItemsPanelTemplate)e.NewValue)
 				)
 			);
@@ -183,8 +184,9 @@ namespace Windows.UI.Xaml.Controls
 				"ItemTemplate",
 				typeof(DataTemplate),
 				typeof(ItemsControl),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(DataTemplate)null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					(s, e) => ((ItemsControl)s)?.OnItemTemplateChanged((DataTemplate)e.OldValue, (DataTemplate)e.NewValue)
 				)
 			);
@@ -209,7 +211,7 @@ namespace Windows.UI.Xaml.Controls
 				"ItemTemplateSelector",
 				typeof(DataTemplateSelector),
 				typeof(ItemsControl),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(DataTemplateSelector)null,
 					(s, e) => ((ItemsControl)s)?.OnItemTemplateSelectorChanged((DataTemplateSelector)e.OldValue, (DataTemplateSelector)e.NewValue)
 				)
@@ -229,12 +231,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemsSourceProperty =
+		public static DependencyProperty ItemsSourceProperty { get ; } =
 			DependencyProperty.Register(
 				"ItemsSource",
 				typeof(object),
 				typeof(ItemsControl),
-				new PropertyMetadata(null, (s, e) => ((ItemsControl)s).OnItemsSourceChanged(e))
+				new FrameworkPropertyMetadata(null, (s, e) => ((ItemsControl)s).OnItemsSourceChanged(e))
 		);
 		#endregion
 
@@ -317,9 +319,10 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemContainerStyleProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemContainerStyleProperty =
-					DependencyProperty.Register("ItemContainerStyle", typeof(Style), typeof(ItemsControl), new PropertyMetadata(
+		public static DependencyProperty ItemContainerStyleProperty { get ; } =
+					DependencyProperty.Register("ItemContainerStyle", typeof(Style), typeof(ItemsControl), new FrameworkPropertyMetadata(
 						default(Style),
+						FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 						(o, e) => ((ItemsControl)o).OnItemContainerStyleChanged((Style)e.OldValue, (Style)e.NewValue))
 					);
 
@@ -333,8 +336,8 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemContainerStyleSelectorProperty, value); }
 		}
 
-		public static readonly DependencyProperty ItemContainerStyleSelectorProperty =
-			DependencyProperty.Register("ItemContainerStyleSelector", typeof(StyleSelector), typeof(ItemsControl), new PropertyMetadata(
+		public static DependencyProperty ItemContainerStyleSelectorProperty { get ; } =
+			DependencyProperty.Register("ItemContainerStyleSelector", typeof(StyleSelector), typeof(ItemsControl), new FrameworkPropertyMetadata(
 				default(StyleSelector),
 				(o, e) => ((ItemsControl)o).OnItemContainerStyleSelectorChanged((StyleSelector)e.OldValue, (StyleSelector)e.NewValue))
 			);
@@ -352,26 +355,26 @@ namespace Windows.UI.Xaml.Controls
 			private set { SetValue(IsGroupingProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsGroupingProperty =
-			DependencyProperty.Register("IsGrouping", typeof(bool), typeof(ItemsControl), new PropertyMetadata(false));
+		public static DependencyProperty IsGroupingProperty { get ; } =
+			DependencyProperty.Register("IsGrouping", typeof(bool), typeof(ItemsControl), new FrameworkPropertyMetadata(false));
 		#endregion
 
 		#region Internal Attached Properties
 
-		internal static readonly DependencyProperty IndexForItemContainerProperty =
+		internal static DependencyProperty IndexForItemContainerProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"IndexForItemContainer",
 				typeof(int),
 				typeof(ItemsControl),
-				new PropertyMetadata(-1)
+				new FrameworkPropertyMetadata(-1)
 			);
 
-		internal static readonly DependencyProperty ItemsControlForItemContainerProperty =
+		internal static DependencyProperty ItemsControlForItemContainerProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"ItemsControlForItemContainer",
 				typeof(WeakReference<ItemsControl>),
 				typeof(ItemsControl),
-				new PropertyMetadata(DependencyProperty.UnsetValue)
+				new FrameworkPropertyMetadata(DependencyProperty.UnsetValue)
 			);
 
 		#endregion
@@ -838,7 +841,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateItemsPanelRoot();
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 		}
@@ -920,7 +923,7 @@ namespace Windows.UI.Xaml.Controls
 						return container;
 					});
 
-				var results = ItemsPanelRoot.Children.UpdateWithResults(containers.OfType<View>(), comparer: new ViewComparer());
+				var results = ItemsPanelRoot.Children.UpdateWithResults(containers.OfType<UIElement>(), comparer: new ViewComparer());
 
 				foreach (var removed in results.Removed)
 				{

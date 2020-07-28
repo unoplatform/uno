@@ -29,6 +29,8 @@ namespace Uno.UI.Tests.ContentDialogTests
 				Content = border
 			};
 
+			dialog.ForceLoaded();
+
 			Assert.AreEqual("Starfish", dialog.DataContext);
 			var dummy = dialog.ShowAsync();
 			Assert.AreEqual("Starfish", border.DataContext);

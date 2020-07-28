@@ -18,13 +18,17 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public EasingMode EasingMode
 		{
-			get { return (EasingMode)this.GetValue(EasingModeProperty); }
-			set { this.SetValue(EasingModeProperty, value); }
+			get => (EasingMode)this.GetValue(EasingModeProperty);
+			set => this.SetValue(EasingModeProperty, value);
 		}
 		
-		public static readonly DependencyProperty EasingModeProperty =
-			DependencyProperty.Register("EasingMode", typeof(EasingMode), typeof(EasingFunctionBase), new PropertyMetadata(EasingMode.EaseOut));
+		public static DependencyProperty EasingModeProperty { get ; } =
+			DependencyProperty.Register("EasingMode", typeof(EasingMode), typeof(EasingFunctionBase), new FrameworkPropertyMetadata(EasingMode.EaseOut));
 
-		public virtual double Ease(double currentTime, double startValue, double finalValue, double duration) { throw new NotSupportedException(); }
+		public virtual double Ease(double currentTime, double startValue, double finalValue, double duration) =>
+			// Return linear interpolation instead of an exception for unimplemented easing functions.
+			currentTime == 0 ? startValue : Lerp(startValue, finalValue, currentTime / duration);
+
+		private static double Lerp(double first, double last, double by) => first * (1.0 - @by) + last * @by;
 	}
 }

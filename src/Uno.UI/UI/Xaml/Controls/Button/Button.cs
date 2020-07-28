@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FlyoutProperty, value); }
 		}
 
-		public static readonly DependencyProperty FlyoutProperty =
+		public static DependencyProperty FlyoutProperty { get ; } =
 			DependencyProperty.Register(
 				"Flyout",
 				typeof(FlyoutBase),
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 			);
 		#endregion
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 

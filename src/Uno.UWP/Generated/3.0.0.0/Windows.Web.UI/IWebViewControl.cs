@@ -2,55 +2,55 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.UI
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IWebViewControl 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		bool CanGoBack
 		{
 			get;
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		bool CanGoForward
 		{
 			get;
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		bool ContainsFullScreenElement
 		{
 			get;
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.UI.Color DefaultBackgroundColor
 		{
 			get;
 			set;
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::System.Collections.Generic.IReadOnlyList<global::Windows.Web.UI.WebViewControlDeferredPermissionRequest> DeferredPermissionRequests
 		{
 			get;
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		string DocumentTitle
 		{
 			get;
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Web.UI.WebViewControlSettings Settings
 		{
 			get;
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::System.Uri Source
 		{
 			get;
@@ -67,43 +67,43 @@ namespace Windows.Web.UI
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.ContainsFullScreenElement.get
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.Settings.get
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.DeferredPermissionRequests.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void GoForward();
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void GoBack();
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void Refresh();
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void Stop();
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void Navigate( global::System.Uri source);
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void NavigateToString( string text);
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void NavigateToLocalStreamUri( global::System.Uri source,  global::Windows.Web.IUriToStreamResolver streamResolver);
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void NavigateWithHttpRequestMessage( global::Windows.Web.Http.HttpRequestMessage requestMessage);
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Foundation.IAsyncOperation<string> InvokeScriptAsync( string scriptName,  global::System.Collections.Generic.IEnumerable<string> arguments);
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync( global::Windows.Storage.Streams.IRandomAccessStream stream);
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackage> CaptureSelectedContentToDataPackageAsync();
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::System.Uri BuildLocalStreamUri( string contentIdentifier,  string relativePath);
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void GetDeferredPermissionRequestById( uint id, out global::Windows.Web.UI.WebViewControlDeferredPermissionRequest result);
 		#endif
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.NavigationStarting.add
@@ -140,55 +140,55 @@ namespace Windows.Web.UI
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.ContainsFullScreenElementChanged.remove
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.WebResourceRequested.add
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.WebResourceRequested.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, object> ContainsFullScreenElementChanged;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlContentLoadingEventArgs> ContentLoading;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs> DOMContentLoaded;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlContentLoadingEventArgs> FrameContentLoading;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs> FrameDOMContentLoaded;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlNavigationCompletedEventArgs> FrameNavigationCompleted;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlNavigationStartingEventArgs> FrameNavigationStarting;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs> LongRunningScriptDetected;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlNavigationCompletedEventArgs> NavigationCompleted;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlNavigationStartingEventArgs> NavigationStarting;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs> NewWindowRequested;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlPermissionRequestedEventArgs> PermissionRequested;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlScriptNotifyEventArgs> ScriptNotify;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, object> UnsafeContentWarningDisplaying;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs> UnviewableContentIdentified;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlWebResourceRequestedEventArgs> WebResourceRequested;
 		#endif
 	}

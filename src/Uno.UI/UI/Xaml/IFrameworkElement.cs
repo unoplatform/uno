@@ -57,14 +57,14 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
-	public partial interface IFrameworkElement : IUIElement, IDataContextProvider, IDependencyObjectParse
+	internal partial interface IFrameworkElement : IDataContextProvider, DependencyObject, IDependencyObjectParse
 	{
 		event RoutedEventHandler Loaded;
 		event RoutedEventHandler Unloaded;
 		event EventHandler<object> LayoutUpdated;
 		event SizeChangedEventHandler SizeChanged;
 
-		IFrameworkElement FindName(string name);
+		object FindName(string name);
 
 		DependencyObject Parent { get; }
 
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml
 		string GetAccessibilityInnerText();
 	}
 
-	public static class IFrameworkElementHelper
+	internal static class IFrameworkElementHelper
 	{
 		/// <summary>
 		/// Initializes the standard properties for this framework element.
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml
 		/// <param name="name">The name of the template part</param>
 		public static DependencyObject GetTemplateChild(this IFrameworkElement e, string name)
 		{
-			return e.FindName(name);
+			return e.FindName(name) as IFrameworkElement;
 		}
 
 		public static void InvalidateMeasure(this IFrameworkElement e)
@@ -240,7 +240,7 @@ namespace Windows.UI.Xaml
 
 			foreach (var frameworkElement in frameworkElements)
 			{
-				var subviewResult = frameworkElement.FindName(name);
+				var subviewResult = frameworkElement.FindName(name) as IFrameworkElement;
 				if (subviewResult != null)
 				{
 					return subviewResult.ConvertFromStubToElement(e, name);
@@ -263,8 +263,8 @@ namespace Windows.UI.Xaml
 		private static IFrameworkElement FindInFlyout(string name, Controls.Primitives.FlyoutBase flyoutBase)
 			=> flyoutBase switch
 			{
-				MenuFlyout f => f.Items.Select(i => i.FindName(name)).Trim().FirstOrDefault(),
-				Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name)
+				MenuFlyout f => f.Items.Select(i => i.FindName(name) as IFrameworkElement).Trim().FirstOrDefault(),
+				Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name) as IFrameworkElement
 			};
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
@@ -376,7 +376,7 @@ namespace Windows.UI.Xaml
 			if (elementStub != null)
 			{
 				elementStub.Materialize();
-				element = originalRootElement.FindName(name);
+				element = originalRootElement.FindName(name) as IFrameworkElement;
 			}
 			return element;
 		}

@@ -4,6 +4,12 @@ namespace Windows.UI.Composition
 {
 	public  partial class CompositionAnimation
 	{
-		
+		internal CompositionAnimation() : base(null)
+		{
+
+		}
+		internal CompositionAnimation(Compositor compositor) : base(compositor)
+		{
+		}
 	}
 }

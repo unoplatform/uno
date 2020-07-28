@@ -10,13 +10,5 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class RadioButton : ToggleButton
 	{
-		private IEnumerable<RadioButton> GetOtherHierarchicalGroupMembers()
-		{
-			return (Parent as FrameworkElement)?
-				.GetChildren()
-				.OfType<RadioButton>()
-				.Where(rb => rb != this)
-				?? Enumerable.Empty<RadioButton>();
-		}
 	}
 }

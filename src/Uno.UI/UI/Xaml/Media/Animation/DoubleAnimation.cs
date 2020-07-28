@@ -25,8 +25,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(ByProperty, value);
 		}
 
-		public static readonly DependencyProperty ByProperty =
-			DependencyProperty.Register("By", typeof(double?), typeof(DoubleAnimation), new PropertyMetadata(null));
+		public static DependencyProperty ByProperty { get ; } =
+			DependencyProperty.Register("By", typeof(double?), typeof(DoubleAnimation), new FrameworkPropertyMetadata(null));
 
 		public double? From
 		{
@@ -34,8 +34,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(FromProperty, value);
 		}
 
-		public static readonly DependencyProperty FromProperty =
-			DependencyProperty.Register("From", typeof(double?), typeof(DoubleAnimation), new PropertyMetadata(null));
+		public static DependencyProperty FromProperty { get ; } =
+			DependencyProperty.Register("From", typeof(double?), typeof(DoubleAnimation), new FrameworkPropertyMetadata(null));
 
 		public double? To
 		{
@@ -43,8 +43,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(ToProperty, value);
 		}
 
-		public static readonly DependencyProperty ToProperty =
-			DependencyProperty.Register("To", typeof(double?), typeof(DoubleAnimation), new PropertyMetadata(null));
+		public static DependencyProperty ToProperty { get ; } =
+			DependencyProperty.Register("To", typeof(double?), typeof(DoubleAnimation), new FrameworkPropertyMetadata(null));
 
 		public bool EnableDependentAnimation
 		{
@@ -54,8 +54,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		bool IAnimation<float>.EnableDependentAnimation => EnableDependentAnimation;
 
-		public static readonly DependencyProperty EnableDependentAnimationProperty =
-			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimation), new PropertyMetadata(false));
+		public static DependencyProperty EnableDependentAnimationProperty { get ; } =
+			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimation), new FrameworkPropertyMetadata(false));
 
 		public IEasingFunction EasingFunction
 		{
@@ -71,8 +71,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		float? IAnimation<float>.By => (float?)By;
 
-		public static readonly DependencyProperty EasingFunctionProperty =
-			DependencyProperty.Register("EasingFunction", typeof(IEasingFunction), typeof(DoubleAnimation), new PropertyMetadata(null));
+		public static DependencyProperty EasingFunctionProperty { get ; } =
+			DependencyProperty.Register("EasingFunction", typeof(IEasingFunction), typeof(DoubleAnimation), new FrameworkPropertyMetadata(null));
 
 		void ITimeline.Begin() => _animationImplementation.Begin();
 

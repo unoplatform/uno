@@ -21,14 +21,36 @@ The other approach is to use the [Stetho package](https://www.nuget.org/packages
 Unfortunately neither of these approaches give you an easy way to inspect properties defined on UIElement, FrameworkElement, and other managed types. You can however look at native properties to obtain information like layout size, opacity, etc. 
 
 ## iOS 
-In principle it's possible to use XCode's 'Debug View Hierarchy' feature on any iOS app, including Uno apps. In practice it seems to be rather brittle with recent versions of XCode. The breakpoint method described below is available as an alternative. 
+In principle it's possible to use XCode's 'Debug View Hierarchy' feature on any iOS app, including Uno apps. The steps are the following:
+
+1. Launch XCode
+2. Create a dummy iOS app (or open an existing one) - you won't actually run this app.
+3. Run the app whose layout you wish to inspect.
+4. Set the device or simulator you're using as the active device in the upper toolbar.
+5. Select Debug -> Attach to Process -> [name of the app]
+6. Once the debugger has successfully attached, select Debug -> View Debugging -> Capture View Hierarchy.
+
+In practice, XCode is somewhat temperamental, and this approach may fail for some apps. It's recommended to fall back on the breakpoint-based inspection method described below. 
 
 ## Web 
 For an Uno.WASM app you can simply use the layout inspection tools built into whatever browser you're using. For example, for Chrome, open the 'Developer tools' panel (`F12`) and select the 'Elements' tab, or just right-click any element in the visual tree and choose 'Inspect.'
 
 ![DOM tree in Chrome](assets/debugging-inspect-visual-tree/WASM-DOM-Elements.jpg)
 
-## Retrieving the visual tree through code/at a breakpoint (Android + iOS) 
+You can configure Uno to annotate the DOM with the values of common Xaml properties. Just add the following somewhere in your app's entry point (eg the constructor of `App.xaml.cs`):
+
+```csharp
+#if DEBUG && __WASM__
+        // Annotate generated DOM elements with x:Name
+        Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlName = true;
+        // Annotate generated DOM elements with commonly-used Xaml properties (height/width, alignment etc)
+        Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlProperties = true;
+#endif
+```
+
+**Note:** for performance reasons, if a _release build_ of Uno.UI is used, `AssignDOMXamlProperties` will only display the values of properties as they were when the element was loaded - that is, they may be stale in some cases. If a _debug build_ of Uno.UI is used, this limitation is lifted and the DOM annotation will reflect the most up-to-date values.
+
+## Retrieving the visual tree through code or at a breakpoint (Android/iOS/WebAssembly/macOS) 
 It's common enough when debugging Uno to be at a breakpoint and want to quickly know exactly where the view is in the visual tree, that we added a helper method.  
 
 If you're using a debug build of Uno, this is directly available on UIElement as the `public string ShowLocalVisualTree(int fromHeight)` method (for ease of use in the watch window). If you're using the release version of Uno, the same method is available as an extension in UIKit.UIViewExtensions for iOS or Uno.UI.ViewExtensions for Android.  

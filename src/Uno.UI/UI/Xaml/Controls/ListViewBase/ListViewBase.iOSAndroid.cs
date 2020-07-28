@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
+using Uno.UI.Controls;
 #if XAMARIN_ANDROID
 using _View = Android.Views.View;
 #elif XAMARIN_IOS
@@ -15,7 +16,18 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
-		internal NativeListViewBase NativePanel { get { return InternalItemsPanelRoot as NativeListViewBase; } }
+		/// <summary>
+		/// The native ListView type which is providing the implementation. This will be null if a panel other than <see cref="ItemsStackPanel"/>
+		/// or <see cref="ItemsWrapGrid"/> is being used.
+		/// </summary>
+		internal NativeListViewBase NativePanel => InternalItemsPanelRoot as NativeListViewBase;
+
+		/// <summary>
+		/// The managed implementation of ItemsStackPanel, if it is set as ItemsPanel (normally only in a debugging scenario).
+		/// </summary>
+		private ManagedItemsStackPanel ManagedVirtualizingPanel => ItemsPanelRoot as ManagedItemsStackPanel;
+
+		private protected override bool ShouldItemsControlManageChildren => ItemsPanelRoot == InternalItemsPanelRoot && ManagedVirtualizingPanel == null;
 
 		/// <summary>
 		/// The number of currently visible items, ie a 'page' from the point of view of incremental data loading.

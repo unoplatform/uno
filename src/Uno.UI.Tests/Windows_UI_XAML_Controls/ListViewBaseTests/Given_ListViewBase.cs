@@ -39,6 +39,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				}
 			};
 
+			SUT.ApplyTemplate();
+
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
 			Assert.IsNotNull(panel.FindName("b1"));
@@ -87,6 +89,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				}
 			);
 
+			SUT.ApplyTemplate();
+
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
 			Assert.IsNotNull(panel.FindName("b1"));
@@ -127,6 +131,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			};
 
 			SUT.ItemsSource = new int[] { 1, 2, 3 };
+
 			SUT.OnItemClicked(0);
 
 			SUT.ItemsSource = null;
@@ -258,11 +263,15 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.IsNull(SUT.SelectedItem);
 			Assert.AreEqual(-1, SUT.SelectedIndex);
 
+			SUT.ForceLoaded();
+
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 			SUT.SelectionChanged += (s, e) => selectionChanged.Add(e);
+
 			SUT.SelectedItem = source[1];
 
 			Assert.AreEqual(1, SUT.SelectedIndex);
+			Assert.AreEqual(1, selectionChanged.Count);
 
 			if (SUT.ContainerFromIndex(1) is ListViewItem s1)
 			{

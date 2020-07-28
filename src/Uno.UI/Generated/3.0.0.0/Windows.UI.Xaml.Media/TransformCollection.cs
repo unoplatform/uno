@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TransformCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Transform>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.Transform>
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint Size
 		{
 			get
@@ -36,8 +36,8 @@ namespace Windows.UI.Xaml.Media
 		// Skipping already implement System.Collections.Generic.IList<Windows.UI.Xaml.Media.Transform>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Windows.UI.Xaml.Media.Transform>
 		// Skipping already implement System.Collections.Generic.ICollection<Windows.UI.Xaml.Media.Transform>.Count
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsReadOnly
 		{
 			get

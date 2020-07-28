@@ -1,5 +1,13 @@
 ﻿$ErrorActionPreference = 'Stop'
 
+function Assert-ExitCodeIsZero()
+{
+    if ($LASTEXITCODE -ne 0)
+    {
+        throw "Exit code must be zero."
+	}
+}
+
 function Get-TemplateConfiguration(
     [bool]$uwp = $false,
     [bool]$android = $false,
@@ -57,25 +65,35 @@ $configurations =
 # Default
 dotnet new unoapp -n UnoAppAll
 & $msbuild $debug UnoAppAll\UnoAppAll.sln
+Assert-ExitCodeIsZero
 
 # Heads - Release
 for($i = 0; $i -lt $configurations.Length; $i++)
 {
     dotnet new unoapp -n "UnoApp$i" $configurations[$i][0]
     & $msbuild $configurations[$i][1] "UnoApp$i\UnoApp$i.sln"
+    Assert-ExitCodeIsZero
 }
 
 # VS Code
 dotnet new unoapp -n UnoAppVsCode (Get-TemplateConfiguration -wasm 1 -wasmVsCode 1)
 dotnet build -p:RestoreConfigFile=$env:NUGET_CI_CONFIG UnoAppVsCode\UnoAppVsCode.sln
+Assert-ExitCodeIsZero
 
 # Namespace Tests
 dotnet new unoapp -n MyApp.Uno
 & $msbuild $debug MyApp.Uno\MyApp.Uno.sln
+Assert-ExitCodeIsZero
 
 dotnet new unoapp -n MyApp.Android (Get-TemplateConfiguration -android 1)
 & $msbuild $debug MyApp.Android\MyApp.Android.sln
+Assert-ExitCodeIsZero
+
+dotnet new unolib-crossruntime -n MyCrossRuntimeLib
+& $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln
+Assert-ExitCodeIsZero
 
 # WinUI - Default
 # dotnet new unoapp-winui -n UnoAppWinUI
 # & $msbuild $debug UnoAppWinUI\UnoAppWinUI.sln
+# Assert-ExitCodeIsZero

@@ -26,6 +26,10 @@ namespace Windows.UI.Xaml
 
 		partial void OnLoadingPartial();
 
+		private protected virtual void OnPostLoading()
+		{
+		}
+
 		/*
 			About NativeOn** vs ManagedOn** methods:
 				The flag FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded will configure which set of methods will be used
@@ -53,6 +57,8 @@ namespace Windows.UI.Xaml
 				_log.Error("ManagedOnLoading failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
+
+			OnPostLoading();
 
 			// Explicit propagation of the loading even must be performed
 			// after the compiled bindings are applied (cf. OnLoading), as there may be altered
@@ -334,10 +340,10 @@ namespace Windows.UI.Xaml
 		[GeneratedDependencyProperty(
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static readonly DependencyProperty MarginProperty = CreateMarginProperty();
+		public static DependencyProperty MarginProperty { get ; } = CreateMarginProperty();
 
 		public virtual Thickness Margin
 		{
@@ -352,10 +358,10 @@ namespace Windows.UI.Xaml
 			DefaultValue = Xaml.HorizontalAlignment.Stretch,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static readonly DependencyProperty HorizontalAlignmentProperty = CreateHorizontalAlignmentProperty();
+		public static DependencyProperty HorizontalAlignmentProperty { get ; } = CreateHorizontalAlignmentProperty();
 
 		public HorizontalAlignment HorizontalAlignment
 		{
@@ -369,10 +375,10 @@ namespace Windows.UI.Xaml
 			DefaultValue = Xaml.HorizontalAlignment.Stretch,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static readonly DependencyProperty VerticalAlignmentProperty = CreateVerticalAlignmentProperty();
+		public static DependencyProperty VerticalAlignmentProperty { get ; } = CreateVerticalAlignmentProperty();
 
 		public VerticalAlignment VerticalAlignment
 		{
@@ -386,10 +392,10 @@ namespace Windows.UI.Xaml
 			DefaultValue = double.NaN,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static readonly DependencyProperty WidthProperty = CreateWidthProperty();
+		public static DependencyProperty WidthProperty { get ; } = CreateWidthProperty();
 
 		public double Width
 		{
@@ -403,10 +409,10 @@ namespace Windows.UI.Xaml
 			DefaultValue = double.NaN,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static readonly DependencyProperty HeightProperty = CreateHeightProperty();
+		public static DependencyProperty HeightProperty { get ; } = CreateHeightProperty();
 
 		public double Height
 		{
@@ -420,10 +426,10 @@ namespace Windows.UI.Xaml
 			DefaultValue = 0.0d,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static readonly DependencyProperty MinWidthProperty = CreateMinWidthProperty();
+		public static DependencyProperty MinWidthProperty { get ; } = CreateMinWidthProperty();
 
 		public double MinWidth
 		{
@@ -438,10 +444,10 @@ namespace Windows.UI.Xaml
 			DefaultValue = 0.0d,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static readonly DependencyProperty MinHeightProperty = CreateMinHeightProperty();
+		public static DependencyProperty MinHeightProperty { get ; } = CreateMinHeightProperty();
 
 		public double MinHeight
 		{
@@ -455,10 +461,10 @@ namespace Windows.UI.Xaml
 			DefaultValue = double.PositiveInfinity,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static readonly DependencyProperty MaxWidthProperty = CreateMaxWidthProperty();
+		public static DependencyProperty MaxWidthProperty { get ; } = CreateMaxWidthProperty();
 
 		public double MaxWidth
 		{
@@ -473,10 +479,10 @@ namespace Windows.UI.Xaml
 			DefaultValue = double.PositiveInfinity,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = OnGenericPropertyUpdated
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static readonly DependencyProperty MaxHeightProperty = CreateMaxHeightProperty();
+		public static DependencyProperty MaxHeightProperty { get ; } = CreateMaxHeightProperty();
 
 		public double MaxHeight
 		{
@@ -485,11 +491,11 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
-				((FrameworkElement)dependencyObject).UpdateDOMProperties();
+				UpdateDOMProperties();
 			}
 		}
 

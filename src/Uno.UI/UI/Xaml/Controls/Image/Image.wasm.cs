@@ -76,9 +76,12 @@ namespace Windows.UI.Xaml.Controls
 			remove => _htmlImage.UnregisterEventHandler("load", value);
 		}
 
-		public event RoutedEventHandler ImageFailed
+		private ExceptionRoutedEventArgs ImageFailedConverter(object sender, string e)
+			=> new ExceptionRoutedEventArgs(sender, e);
+
+		public event ExceptionRoutedEventHandler ImageFailed
 		{
-			add => _htmlImage.RegisterEventHandler("error", value);
+			add => _htmlImage.RegisterEventHandler("error", value, payloadConverter: ImageFailedConverter);
 			remove => _htmlImage.UnregisterEventHandler("error", value);
 		}
 
@@ -90,8 +93,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(SourceProperty, value);
 		}
 
-		public static readonly DependencyProperty SourceProperty =
-			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new PropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
+		public static DependencyProperty SourceProperty { get ; } =
+			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new FrameworkPropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
 
 		private void OnSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -139,12 +142,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		public static readonly DependencyProperty StretchProperty =
+		public static DependencyProperty StretchProperty { get ; } =
 			DependencyProperty.Register(
 				"Stretch",
 				typeof(Stretch),
 				typeof(Image),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					Media.Stretch.Uniform,
 					(s, e) => ((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
@@ -201,7 +204,7 @@ namespace Windows.UI.Xaml.Controls
 			// Calculate the position of the image to follow stretch and alignment requirements
 			var finalPosition = this.ArrangeSource(finalSize, containerSize);
 
-			_htmlImage.ArrangeElementNative(finalPosition, false, clipRect: null);
+			_htmlImage.ArrangeVisual(finalPosition, false, clipRect: null);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{

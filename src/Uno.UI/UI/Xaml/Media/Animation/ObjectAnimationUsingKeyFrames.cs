@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				name: "KeyFrames", 
 				propertyType: typeof(ObjectKeyFrameCollection), 
 				ownerType: typeof(ObjectAnimationUsingKeyFrames), 
-				typeMetadata: new PropertyMetadata(
+				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: null
 				)
 			);

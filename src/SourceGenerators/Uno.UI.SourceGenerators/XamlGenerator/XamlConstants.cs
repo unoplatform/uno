@@ -39,6 +39,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				BaseXamlNamespace,
 				Data,
 				Documents,
+				Text,
 				"System",
 			};
 

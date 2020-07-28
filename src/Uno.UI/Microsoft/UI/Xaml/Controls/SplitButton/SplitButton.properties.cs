@@ -29,14 +29,14 @@ namespace Microsoft.UI.Xaml.Controls
 			set { SetValue(FlyoutProperty, value); }
 		}		
 		
-		public static readonly DependencyProperty CommandProperty =
-			DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(SplitButton), new PropertyMetadata(null, OnCommandChanged));
+		public static DependencyProperty CommandProperty { get ; } =
+			DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(SplitButton), new FrameworkPropertyMetadata(null, OnCommandChanged));
 
-		public static readonly DependencyProperty CommandParameterProperty =
-			DependencyProperty.Register(nameof(CommandParameter), typeof(object), typeof(SplitButton), new PropertyMetadata(null, OnCommandParameterChanged));
+		public static DependencyProperty CommandParameterProperty { get ; } =
+			DependencyProperty.Register(nameof(CommandParameter), typeof(object), typeof(SplitButton), new FrameworkPropertyMetadata(null, OnCommandParameterChanged));
 
-		public static readonly DependencyProperty FlyoutProperty =
-			DependencyProperty.Register(nameof(Flyout), typeof(FlyoutBase), typeof(SplitButton), new PropertyMetadata(null, OnFlyoutChanged));
+		public static DependencyProperty FlyoutProperty { get ; } =
+			DependencyProperty.Register(nameof(Flyout), typeof(FlyoutBase), typeof(SplitButton), new FrameworkPropertyMetadata(null, OnFlyoutChanged));
 
 		private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{

@@ -37,6 +37,10 @@
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
 	  </group>
+	  <group targetFramework="MonoAndroid10.0">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
+	  </group>
 
 	</dependencies>
 
@@ -54,6 +58,9 @@
 	  <group targetFramework="MonoAndroid90">
 		<reference file="Uno.UI.Lottie.dll" />
 	  </group>
+	  <group targetFramework="MonoAndroid10.0">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
 	  <!-- For UAP (UWP), the reference to Microsoft.Toolkit.Uwp.UI.Lottie will be added manually -->
 	</references>
   </metadata>
@@ -63,5 +70,15 @@
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinmac20\Uno.UI.Lottie.dll" target="lib\xamarinmac20" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid90\Uno.UI.Lottie.dll" target="lib\MonoAndroid90" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid10.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid10.0" />
+
+	<!-- Build targets -->
+	<file src="..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />
+
+	<!-- netstandard2.0 WebAssembly -->
+	<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\webassembly" />
+
+	<!-- netstandard2.0 Skia -->
+	<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\skia" />
+
   </files>
 </package>

@@ -56,8 +56,8 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for MinWindowHeight.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty MinWindowHeightProperty =
-			DependencyProperty.Register("MinWindowHeight", typeof(double), typeof(AdaptiveTrigger), new PropertyMetadata(-1d, (s, e) => ((AdaptiveTrigger)s)?.OnMinWindowHeightChanged(e)));
+		public static DependencyProperty MinWindowHeightProperty { get ; } =
+			DependencyProperty.Register("MinWindowHeight", typeof(double), typeof(AdaptiveTrigger), new FrameworkPropertyMetadata(-1d, (s, e) => ((AdaptiveTrigger)s)?.OnMinWindowHeightChanged(e)));
 
 		private void OnMinWindowHeightChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -75,8 +75,8 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for MinWindowWidthProperty.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty MinWindowWidthProperty =
-			DependencyProperty.Register("MinWindowWidthProperty", typeof(double), typeof(AdaptiveTrigger), new PropertyMetadata(-1d, (s, e) => ((AdaptiveTrigger)s)?.OnMinWindowWidthChanged(e)));
+		public static DependencyProperty MinWindowWidthProperty { get ; } =
+			DependencyProperty.Register("MinWindowWidthProperty", typeof(double), typeof(AdaptiveTrigger), new FrameworkPropertyMetadata(-1d, (s, e) => ((AdaptiveTrigger)s)?.OnMinWindowWidthChanged(e)));
 
 
 		private void OnMinWindowWidthChanged(DependencyPropertyChangedEventArgs e)
