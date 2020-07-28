@@ -21,6 +21,7 @@ namespace Windows.UI.Xaml.Media
 			get => (Point)GetValue(StartPointProperty);
 			set => SetValue(StartPointProperty, value);
 		}
+
 		public static DependencyProperty StartPointProperty { get ; } = DependencyProperty.Register(
 			"StartPoint",
 			typeof(Point),
@@ -33,6 +34,7 @@ namespace Windows.UI.Xaml.Media
 			get => (Point)GetValue(EndPointProperty);
 			set => SetValue(EndPointProperty, value);
 		}
+
 		public static DependencyProperty EndPointProperty { get ; } = DependencyProperty.Register(
 			"EndPoint",
 			typeof(Point),

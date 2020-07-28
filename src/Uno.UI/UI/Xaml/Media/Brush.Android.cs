@@ -93,6 +93,25 @@ namespace Windows.UI.Xaml.Media
 					ImageBrush.RelativeTransformProperty,
 					(_, __) => imageBrushCallback()
 				).DisposeWith(disposables);
+
+				return disposables;
+			}
+			else if (b is AcrylicBrush acrylicBrush)
+			{
+				var disposables = new CompositeDisposable(2);
+
+				colorSetter(acrylicBrush.FallbackColorWithOpacity);
+
+				acrylicBrush.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.FallbackColorProperty,
+					(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
+					.DisposeWith(disposables);
+
+				acrylicBrush.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.OpacityProperty,
+					(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
+					.DisposeWith(disposables);
+
 				return disposables;
 			}
 			else
