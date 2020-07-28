@@ -7,8 +7,8 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class Image 
 	{
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || NET461 || false || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public  global::Windows.UI.Xaml.Media.Stretch Stretch
 		{
 			get
@@ -21,8 +21,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || NET461 || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public  global::Windows.UI.Xaml.Media.ImageSource Source
 		{
 			get
@@ -75,16 +75,16 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.Media.PlayTo.PlayToSource)));
 		#endif
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || NET461 || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Source), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || NET461 || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Stretch), typeof(global::Windows.UI.Xaml.Media.Stretch), 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -11,6 +12,8 @@ using Uno.Logging;
 using Uno.Foundation.Extensibility;
 using Windows.UI.Core;
 using Windows.Foundation;
+using System.Threading;
+using System.Numerics;
 
 namespace Windows.UI.Xaml
 {
@@ -38,8 +41,8 @@ namespace Windows.UI.Xaml
 				PropagateEvent(args, e =>
 				{
 					var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-					var pointerArgs = new PointerRoutedEventArgs(args, pointer, e) { CanBubbleNatively = true };
-					TraverseAncestors(e, pointerArgs, e2 => e2.OnNativePointerWheel(pointerArgs));
+					var pointerArgs = new PointerRoutedEventArgs(args, pointer, e);
+					e.OnNativePointerWheel(pointerArgs);
 				});
 			}
 
@@ -73,17 +76,22 @@ namespace Windows.UI.Xaml
 				{
 					foreach(var target in capture.Targets)
 					{
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, target.Element) { CanBubbleNatively = true };
-						TraverseAncestors(target.Element, pointerArgs, e => e.OnNativePointerUp(pointerArgs));
+						var pointerArgs = new PointerRoutedEventArgs(args, pointer, target.Element);
+						target.Element.OnNativePointerUp(pointerArgs);
 					}
 				}
 				else
 				{
 					PropagateEvent(args, e =>
 					{
-						// Console.WriteLine($"PointerManager.Released [{e}/{e.GetHashCode():X8}");
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, e) { CanBubbleNatively = true };
-						TraverseAncestors(e, pointerArgs, e2 => e2.OnNativePointerUp(pointerArgs));
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"PointerManager.Released [{e}/{e.GetHashCode():X8}");
+						}
+
+						var pointerArgs = new PointerRoutedEventArgs(args, pointer, e);
+
+						TraverseAncestors(e, e => e.OnNativePointerUp(pointerArgs));
 					});
 				}
 			}
@@ -97,11 +105,35 @@ namespace Windows.UI.Xaml
 
 				PropagateEvent(args, e =>
 				{
-					// Console.WriteLine($"PointerManager.Pressed [{e}/{e.GetHashCode():X8}");
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"PointerManager.Pressed [{e}/{e.GetHashCode():X8}]");
+					}
+
 					var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-					var pointerArgs = new PointerRoutedEventArgs(args, pointer, e) { CanBubbleNatively = true };
-					TraverseAncestors(e, pointerArgs, e2 => e2.OnNativePointerDown(pointerArgs));
+					var pointerArgs = new PointerRoutedEventArgs(args, pointer, e);
+
+					TraverseAncestors(e, e => e.OnNativePointerDown(pointerArgs));
 				});
+			}
+
+			private void TraverseAncestors(UIElement element, Func<UIElement, bool> action)
+			{
+				if (!action(element))
+				{
+					foreach (var parent in element.GetParents().OfType<UIElement>())
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"TraverseAncestors for [{element}/{element.GetHashCode():X8}] = {parent}/{parent.GetHashCode():X8}");
+						}
+
+						if (action(parent))
+						{
+							return;
+						}
+					}
+				}
 			}
 
 			private void CoreWindow_PointerMoved(CoreWindow sender, PointerEventArgs args)
@@ -117,9 +149,9 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var target in capture.Targets)
 					{
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, target.Element) { CanBubbleNatively = true };
+						var pointerArgs = new PointerRoutedEventArgs(args, pointer, target.Element);
 
-						TraverseAncestors(target.Element, pointerArgs, e => e.OnNativePointerMove(pointerArgs));
+						target.Element.OnNativePointerMove(pointerArgs);
 					}
 				}
 				else
@@ -127,98 +159,88 @@ namespace Windows.UI.Xaml
 					PropagateEvent(args, e =>
 					{
 						var pointerArgs = new PointerRoutedEventArgs(args, pointer, e) { CanBubbleNatively = true };
-						TraverseAncestors(e, pointerArgs, e2 => e2.OnNativePointerMove(pointerArgs));
+						e.OnNativePointerMove(pointerArgs);
 					});
-				}
-			}
-
-			private void TraverseAncestors(UIElement element, PointerRoutedEventArgs args, Action<UIElement> action)
-			{
-				action(element);
-
-				foreach(var parent in element.GetParents().OfType<UIElement>())
-				{
-					action(parent);
-
-					if (args.Handled)
-					{
-						break;
-					}
 				}
 			}
 
 			private void PropagateEvent(PointerEventArgs args, Action<UIElement> raiseEvent)
 			{
-				if(Window.Current.Content is UIElement root)
+				if(Window.Current.RootElement is UIElement root)
 				{
-					PropagageEventRecursive(args, new Point(0, 0), root, raiseEvent);
+					PropagageEventRecursive(args, new Point(0, 0), root, Matrix3x2.Identity, raiseEvent);
 				}
 			}
 
-			private bool PropagageEventRecursive(PointerEventArgs args, Point root, UIElement element, Action<UIElement> raiseEvent)
+			private bool PropagageEventRecursive(PointerEventArgs args, Point root, UIElement element, Matrix3x2 currentTransform, Action<UIElement> raiseEvent)
 			{
 				bool raised = false;
-				var rect = element.LayoutSlotWithMarginsAndAlignments;
-				rect.X += root.X;
-				rect.Y += root.Y;
+				var elementRect = element.LayoutSlotWithMarginsAndAlignments;
+				elementRect.X += root.X;
+				elementRect.Y += root.Y;
 
 				var position = args.CurrentPoint.Position;
+				var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
+				var pointerArgs = new PointerRoutedEventArgs(args, pointer, element);
 
 				if (element.RenderTransform != null)
 				{
-					position = element.RenderTransform.Inverse.TransformPoint(position);
+					currentTransform *= element.RenderTransform.MatrixCore;
+					elementRect = currentTransform.Transform(elementRect);
 				}
 
-				if (position.X >= rect.X	
-					&& position.Y >= rect.Y
-					&& position.X <= rect.X + rect.Width
-					&& position.Y <= rect.Y + rect.Height)
+				if (elementRect.Contains(position))
 				{
-
-					foreach (var e in element.GetChildren().ToArray())
+					foreach (var e in element.GetChildren().Reverse().ToArray())
 					{
-						raised |= PropagageEventRecursive(args, rect.Location, e, raiseEvent);
+						if(PropagageEventRecursive(args, elementRect.Location, e, currentTransform, raiseEvent))
+						{
+							return true;
+						}
 					}
 
 					var isHitTestVisible =
 						element.GetValue(HitTestVisibilityProperty) is HitTestVisibility hitTestVisibility
 						&& hitTestVisibility == HitTestVisibility.Visible;
 
-					if (!raised && isHitTestVisible)
+					if (isHitTestVisible)
 					{
-						if (!element._pointerEntered)
+						if (!element.IsOver(pointer))
 						{
-							// Console.WriteLine($"PointerManager.Entered [{element}/{element.GetHashCode():X8}");
-							element._pointerEntered = true;
-
-							var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-
-							var pointerArgs = new PointerRoutedEventArgs(args, pointer, element);
-							TraverseAncestors(element, pointerArgs, e => e.OnNativePointerEnter(pointerArgs));
+							element.OnNativePointerEnter(pointerArgs);
 						}
 
 						raiseEvent(element);
-						raised = true;
+						return true;
 					}
 				}
 				else
 				{
-					if (element._pointerEntered)
+					bool RecursePointerExited(UIElement e)
 					{
-						element._pointerEntered = false;
-						// Console.WriteLine($"PointerManager.Exited [{element}/{element.GetHashCode():X8}");
+						if (e.IsOver(pointer))
+						{
+							foreach(var child in e.GetChildren().Reverse().ToArray())
+							{
+								if (RecursePointerExited(child))
+								{
+									return true;
+								}
+							}
 
-						var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, element);
-						TraverseAncestors(element, pointerArgs, e => e.OnNativePointerExited(pointerArgs));
+							e.OnNativePointerExited(pointerArgs);
+							return true;
+						}
+
+						return false;
 					}
+
+					RecursePointerExited(element);
 				}
 
 				return raised;
 			}
 		}
-
-		private bool _pointerEntered;
 
 		// TODO Should be per CoreWindow
 		private static PointerManager _pointerManager;

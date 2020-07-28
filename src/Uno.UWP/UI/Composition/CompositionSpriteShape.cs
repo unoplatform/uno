@@ -4,7 +4,7 @@ namespace Windows.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{
-		internal CompositionSpriteShape(CompositionGeometry geometry = null)
+		internal CompositionSpriteShape(Compositor compositor, CompositionGeometry geometry = null) : base(compositor)
 		{
 			Geometry = geometry;
 		}

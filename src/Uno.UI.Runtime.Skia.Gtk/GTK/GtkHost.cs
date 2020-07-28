@@ -26,6 +26,8 @@ namespace Uno.UI.Runtime.Skia
 			Gtk.Application.Init();
 
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkUIElementPointersSupport(o));
+			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
+			ApiExtensibility.Register(typeof(IApplicationExtension), o => new GtkApplicationExtension(o));
 
 			_window = new Gtk.Window("Uno Host");
 			_window.SetDefaultSize(1024, 800);

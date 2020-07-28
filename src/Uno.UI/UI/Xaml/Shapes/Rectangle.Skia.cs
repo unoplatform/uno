@@ -13,42 +13,45 @@ using Windows.Graphics;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	public partial class Rectangle
+	public partial class Rectangle : Shape
 	{
+		static Rectangle()
+		{
+			StretchProperty.OverrideMetadata(typeof(Rectangle), new FrameworkPropertyMetadata(defaultValue: Media.Stretch.Fill));
+		}
 
 		public Rectangle()
 		{
 		}
 
-		internal override SkiaGeometrySource2D GetGeometry(Size finalSize)
+		/// <inheritdoc />
+		protected override Size MeasureOverride(Size availableSize)
+			=> base.MeasureRelativeShape(availableSize);
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
+
+			SkiaGeometrySource2D path;
+
+			if (renderingArea.Width > 0 && renderingArea.Height > 0)
+			{
+				path = GetGeometry(renderingArea.Size);
+			}
+			else
+			{
+				path = null;
+			}
+
+			Render(path);
+
+			return shapeSize;
+		}
+
+		private SkiaGeometrySource2D GetGeometry(Size finalSize)
 		{
 			var area = new Rect(0, 0, finalSize.Width, finalSize.Height);
-
-			switch (Stretch)
-			{
-				default:
-				case Stretch.None:
-					break;
-				case Stretch.Fill:
-					area = new Rect(0, 0, finalSize.Width, finalSize.Height);
-					break;
-				case Stretch.Uniform:
-					area = (area.Height > area.Width)
-						? (new Rect((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width))
-						: (new Rect((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height));
-					break;
-				case Stretch.UniformToFill:
-					area = (area.Height > area.Width)
-						? (new Rect((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height))
-						: (new Rect((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width));
-					break;
-			}
-
-			var shrinkValue = -ActualStrokeThickness / 2;
-			if (area != Rect.Empty)
-			{
-				area.Inflate(shrinkValue, shrinkValue);
-			}
 
 			var geometry = new SkiaGeometrySource2D();
 
@@ -63,17 +66,5 @@ namespace Windows.UI.Xaml.Shapes
 
 			return geometry;
 		}
-
-
-		partial void OnRadiusXChangedPartial()
-		{
-			InvalidateMeasure();
-		}
-
-		partial void OnRadiusYChangedPartial()
-		{
-			InvalidateMeasure();
-		}
-
 	}
 }

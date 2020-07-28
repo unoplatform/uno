@@ -79,5 +79,19 @@ namespace Windows.UI.Xaml.Controls
 			return this.IsHeightConstrainedSimple() ?? (Parent as ILayoutConstraints)?.IsHeightConstrained(this) ?? false;
 #endif
 		}
+
+		public double ExtentHeight
+		{
+			get => Content is FrameworkElement fe ? fe.DesiredSize.Height : 0;
+		}
+
+		public double ExtentWidth
+		{
+			get => Content is FrameworkElement fe ? fe.DesiredSize.Width : 0;
+		}
+
+		public double ViewportHeight => DesiredSize.Height;
+
+		public double ViewportWidth => DesiredSize.Width;
 	}
 }

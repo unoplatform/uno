@@ -40,4 +40,8 @@
 
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
 
+	<ItemGroup>
+		<Content Update="@(Content)" CopyToOutputDirectory="Always" />
+	</ItemGroup>
+
 </Project>

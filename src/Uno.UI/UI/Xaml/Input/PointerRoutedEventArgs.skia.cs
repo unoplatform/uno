@@ -15,8 +15,6 @@ namespace Windows.UI.Xaml.Input
 	{
 		private readonly PointerEventArgs _pointerEventArgs;
 		private readonly Point _absolutePosition;
-		private static long _pseudoNextFrameId;
-		private readonly uint _pseudoFrameId = (uint)Interlocked.Increment(ref _pseudoNextFrameId);
 		private readonly ulong _pseudoTimestamp = (ulong)DateTime.UtcNow.Ticks;
 
 		internal PointerRoutedEventArgs(
@@ -27,9 +25,12 @@ namespace Windows.UI.Xaml.Input
 			_pointerEventArgs = pointerEventArgs;
 			_absolutePosition = pointerEventArgs.CurrentPoint.RawPosition;
 
-			FrameId = _pseudoFrameId;
+			FrameId = pointerEventArgs.CurrentPoint.FrameId;
 			Pointer = pointer;
 			OriginalSource = source;
+
+			// All events bubble in managed mode.
+			CanBubbleNatively = false;
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)

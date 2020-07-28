@@ -56,9 +56,9 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override void OnArrangeVisual(Rect rect, Rect? clip)
 		{
-			base.OnArrangeVisual(rect, clip);
-
 			UpdateBorder();
+
+			base.OnArrangeVisual(rect, clip);
 		}
 
 		private protected override void OnLoaded()

@@ -137,23 +137,6 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member QuaternionKeyFrameAnimation Compositor.CreateQuaternionKeyFrameAnimation() is not implemented in Uno.");
 		}
 		#endif
-		// Skipping already declared method Windows.UI.Composition.Compositor.CreateScalarKeyFrameAnimation()
-		// Skipping already declared method Windows.UI.Composition.Compositor.CreateScopedBatch(Windows.UI.Composition.CompositionBatchTypes)
-		// Skipping already declared method Windows.UI.Composition.Compositor.CreateSpriteVisual()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionSurfaceBrush CreateSurfaceBrush()
-		{
-			throw new global::System.NotImplementedException("The member CompositionSurfaceBrush Compositor.CreateSurfaceBrush() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionSurfaceBrush CreateSurfaceBrush( global::Windows.UI.Composition.ICompositionSurface surface)
-		{
-			throw new global::System.NotImplementedException("The member CompositionSurfaceBrush Compositor.CreateSurfaceBrush(ICompositionSurface surface) is not implemented in Uno.");
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionTarget CreateTargetForCurrentView()

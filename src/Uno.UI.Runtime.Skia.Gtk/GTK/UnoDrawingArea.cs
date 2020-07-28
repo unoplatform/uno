@@ -1,5 +1,7 @@
 ﻿using System;
 using SkiaSharp;
+using Uno.Extensions;
+using Uno.Logging;
 using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia
@@ -8,35 +10,55 @@ namespace Uno.UI.Runtime.Skia
 	{
 		private SKBitmap bitmap;
 		private int renderCount;
-		private int InvalidateRenderCount;
 
 		public UnoDrawingArea()
 		{
 			WUX.Window.Current.InvalidateRender
 				+= () =>
 				{
-					QueueDrawArea(0, 0, 10000, 1000);
+					Invalidate();
 				};
+		}
+
+		private void Invalidate()
+			=> QueueDrawArea(0, 0, 10000, 10000);
+
+		private void Screen_MonitorsChanged(object sender, EventArgs e)
+		{
+			UpdateDpi();
+			Invalidate();
+		}
+
+		private void UpdateDpi()
+		{
 		}
 
 		protected override bool OnDrawn(Cairo.Context cr)
 		{
 			int width, height;
 
-			Console.WriteLine($"Render {renderCount++}");
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+			{
+				this.Log().Trace($"Render {renderCount++}");
+			}
+
+			var dpi = (Window.Screen?.Resolution ?? 1) / 96.0;
 
 			width = (int)AllocatedWidth;
 			height = (int)AllocatedHeight;
 
-			var info = new SKImageInfo(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+			var scaledWidth = (int)(width * dpi);
+			var scaledHeight = (int)(height * dpi);
+
+			var info = new SKImageInfo(scaledWidth, scaledHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 
 			// reset the bitmap if the size has changed
 			if (bitmap == null || info.Width != bitmap.Width || info.Height != bitmap.Height)
 			{
-				bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
+				bitmap = new SKBitmap(scaledWidth, scaledHeight, SKColorType.Rgba8888, SKAlphaType.Premul);
 			}
 
-			using (var surface = SKSurface.Create(info, bitmap.GetPixels(out var len)))
+			using (var surface = SKSurface.Create(info, bitmap.GetPixels(out _)))
 			{
 				surface.Canvas.Clear(SKColors.White);
 

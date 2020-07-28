@@ -1,14 +1,45 @@
 
 using SkiaSharp;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using Windows.Services.Maps;
+using Windows.UI.Core;
 
 namespace Windows.UI.Composition
 {
 	public partial class Compositor
 	{
+		private Stack<float> _opacityStack = new Stack<float>();
+		private float _currentOpacity = 1.0f;
+
+		private OpacityDisposable PushOpacity(float opacity)
+		{
+			_opacityStack.Push(_currentOpacity);
+			_currentOpacity *= opacity;
+
+			return new OpacityDisposable(this);
+		}
+
+		private struct OpacityDisposable : IDisposable
+		{
+			private readonly Compositor Compositor;
+
+			public OpacityDisposable(Compositor compositor)
+			{
+				Compositor = compositor;
+			}
+
+			public void Dispose()
+			{
+				Compositor._currentOpacity = Compositor._opacityStack.Pop();
+			}
+		}
+
 		internal ContainerVisual RootVisual { get; set; }
+
+		internal float CurrentOpacity => _currentOpacity;
 
 		//public CompositionSurfaceBrush CreateSurfaceBrush()
 		//{
@@ -37,7 +68,7 @@ namespace Windows.UI.Composition
 			// global::System.Console.WriteLine($"Render time {sw.Elapsed}");
 		}
 
-		private static void RenderVisual(SKSurface surface, SKImageInfo info, Visual visual)
+		private void RenderVisual(SKSurface surface, SKImageInfo info, Visual visual)
 		{
 			if (visual.Opacity != 0)
 			{
@@ -59,15 +90,9 @@ namespace Windows.UI.Composition
 
 				surface.Canvas.SetMatrix(visualMatrix);
 
-				if(visual.Clip is InsetClip insetClip)
-				{
-					surface.Canvas.ClipRect(new SKRect {
-						Top = insetClip.TopInset,
-						Bottom = insetClip.BottomInset,
-						Left = insetClip.LeftInset,
-						Right = insetClip.RightInset
-					});
-				}
+				ApplyClip(surface, visual);
+
+				using var opacityDisposable = PushOpacity(visual.Opacity);
 
 				visual.Render(surface, info);
 
@@ -90,6 +115,49 @@ namespace Windows.UI.Composition
 
 				surface.Canvas.Restore();
 			}
+		}
+
+		private static void ApplyClip(SKSurface surface, Visual visual)
+		{
+			if (visual.Clip is InsetClip insetClip)
+			{
+				var clipRect = new SKRect
+				{
+					Top = insetClip.TopInset - 1,
+					Bottom = insetClip.BottomInset + 1,
+					Left = insetClip.LeftInset - 1,
+					Right = insetClip.RightInset + 1
+				};
+
+				surface.Canvas.ClipRect(clipRect, SKClipOperation.Intersect, true);
+			}
+			else if (visual.Clip is CompositionGeometricClip geometricClip)
+			{
+				if (geometricClip.Geometry is CompositionPathGeometry cpg)
+				{
+					if (cpg.Path.GeometrySource is SkiaGeometrySource2D geometrySource)
+					{
+						surface.Canvas.ClipPath(geometrySource.Geometry, antialias: true);
+					}
+					else
+					{
+						throw new InvalidOperationException($"Clipping with source {cpg.Path.GeometrySource} is not supported");
+					}
+				}
+				else if(geometricClip.Geometry is null)
+				{
+					// null is nop
+				}
+				else
+				{
+					throw new InvalidOperationException($"Clipping with {geometricClip.Geometry} is not supported");
+				}
+			}
+		}
+
+		partial void InvalidateRenderPartial()
+		{
+			CoreWindow.QueueInvalidateRender();
 		}
 	}
 }

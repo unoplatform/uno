@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Gdk;
 using Gtk;
@@ -21,6 +22,7 @@ namespace Uno.UI.Runtime.Skia
 	{
 		private readonly CoreWindow _owner;
 		private ICoreWindowEvents _ownerEvents;
+		private static int _currentFrameId;
 
 		public GtkUIElementPointersSupport(object owner)
 		{
@@ -30,7 +32,6 @@ namespace Uno.UI.Runtime.Skia
 			GtkHost.Window.AddEvents((int)(
 				Gdk.EventMask.PointerMotionMask
 				| EventMask.ButtonPressMask
-				| EventMask.ScrollMask
 				| EventMask.SmoothScrollMask
 			));
 			GtkHost.Window.MotionNotifyEvent += OnMotionEvent;
@@ -40,24 +41,30 @@ namespace Uno.UI.Runtime.Skia
 			GtkHost.Window.LeaveNotifyEvent += Window_LeaveEvent;
 			GtkHost.Window.ScrollEvent += Window_ScrollEvent;
 		}
+
+		private static uint GetNextFrameId() => (uint)Interlocked.Increment(ref _currentFrameId);
+
 		private void Window_ScrollEvent(object o, ScrollEventArgs args)
 		{
 			try
 			{
-				_ownerEvents.RaisePointerWheelChanged(
-					new PointerEventArgs(
-						new Windows.UI.Input.PointerPoint(
-							frameId: 0,
-							timestamp: args.Event.Time,
-							device: PointerDevice.For(PointerDeviceType.Mouse),
-							pointerId: 0,
-							rawPosition: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
-							position: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
-							isInContact: false,
-							properties: BuildProperties(args.Event)
+				if (args.Event.Direction == ScrollDirection.Smooth)
+				{
+					_ownerEvents.RaisePointerWheelChanged(
+						new PointerEventArgs(
+							new Windows.UI.Input.PointerPoint(
+								frameId: GetNextFrameId(),
+								timestamp: args.Event.Time,
+								device: PointerDevice.For(PointerDeviceType.Mouse),
+								pointerId: 0,
+								rawPosition: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
+								position: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
+								isInContact: false,
+								properties: BuildProperties(args.Event)
+							)
 						)
-					)
-				);
+					);
+				}
 			}
 			catch (Exception e)
 			{
@@ -79,7 +86,7 @@ namespace Uno.UI.Runtime.Skia
 				_ownerEvents.RaisePointerExited(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
-							frameId: 0,
+							frameId: GetNextFrameId(),
 							timestamp: args.Event.Time,
 							device: PointerDevice.For(PointerDeviceType.Mouse),
 							pointerId: 0,
@@ -104,7 +111,7 @@ namespace Uno.UI.Runtime.Skia
 				_ownerEvents.RaisePointerEntered(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
-							frameId: 0,
+							frameId: GetNextFrameId(),
 							timestamp: args.Event.Time,
 							device: PointerDevice.For(PointerDeviceType.Mouse),
 							pointerId: 0,
@@ -129,7 +136,7 @@ namespace Uno.UI.Runtime.Skia
 				_ownerEvents.RaisePointerReleased(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
-							frameId: 0,
+							frameId: GetNextFrameId(),
 							timestamp: args.Event.Time,
 							device: PointerDevice.For(PointerDeviceType.Mouse),
 							pointerId: 0,
@@ -154,7 +161,7 @@ namespace Uno.UI.Runtime.Skia
 				_ownerEvents.RaisePointerPressed(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
-							frameId: 0,
+							frameId: GetNextFrameId(),
 							timestamp: args.Event.Time,
 							device: PointerDevice.For(PointerDeviceType.Mouse),
 							pointerId: 0,
@@ -196,7 +203,7 @@ namespace Uno.UI.Runtime.Skia
 						_ownerEvents.RaisePointerMoved(
 							new PointerEventArgs(
 								new Windows.UI.Input.PointerPoint(
-									frameId: 0,
+									frameId: GetNextFrameId(),
 									timestamp: args.Event.Time,
 									device: PointerDevice.For(PointerDeviceType.Mouse),
 									pointerId: 0,

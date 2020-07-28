@@ -970,6 +970,25 @@ declare namespace Windows.Devices.Geolocation {
         private static getAccurateCurrentPosition;
     }
 }
+declare namespace Windows.Devices.Midi {
+    class MidiInPort {
+        private static dispatchMessage;
+        private static instanceMap;
+        private managedId;
+        private inputPort;
+        private constructor();
+        static createPort(managedId: string, encodedDeviceId: string): void;
+        static removePort(managedId: string): void;
+        static startMessageListener(managedId: string): void;
+        static stopMessageListener(managedId: string): void;
+        private messageReceived;
+    }
+}
+declare namespace Windows.Devices.Midi {
+    class MidiOutPort {
+        static sendBuffer(encodedDeviceId: string, timestamp: number, ...args: number[]): void;
+    }
+}
 interface Window {
     DeviceMotionEvent(): void;
 }
@@ -1118,6 +1137,13 @@ declare namespace Windows.UI.Xaml {
         Dark = "Dark"
     }
 }
+declare namespace Uno.Devices.Midi.Internal {
+    class WasmMidiAccess {
+        private static midiAccess;
+        static request(systemExclusive: boolean): Promise<string>;
+        static getMidi(): WebMidi.MIDIAccess;
+    }
+}
 interface Navigator {
     webkitVibrate(pattern: number | number[]): boolean;
     mozVibrate(pattern: number | number[]): boolean;
@@ -1148,5 +1174,18 @@ declare namespace Windows.UI.Xaml.Media.Animation {
         private _delayRequestId?;
         private _frameRequestId?;
         private _isEnabled;
+    }
+}
+declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
+    class MidiDeviceClassProvider {
+        static findDevices(findInputDevices: boolean): string;
+    }
+}
+declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
+    class MidiDeviceConnectionWatcher {
+        private static dispatchStateChanged;
+        static startStateChanged(): void;
+        static stopStateChanged(): void;
+        static onStateChanged(event: WebMidi.MIDIConnectionEvent): void;
     }
 }

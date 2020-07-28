@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
+using System.IO;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -70,7 +71,8 @@ namespace Windows.UI.Xaml.Controls
 		// an appropriate size.
 		const double ScrollViewerMinHeightToReflowAroundOcclusions = 32.0f;
 
-
+		private double _verticalOffset;
+		private double _horizontalOffset;
 
 		public ScrollMode HorizontalScrollMode { get; set; }
 
@@ -84,9 +86,66 @@ namespace Windows.UI.Xaml.Controls
 
 		public ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
 
-		public double HorizontalOffset { get; internal set; }
+		public double HorizontalOffset
+		{
+			get => _horizontalOffset;
+		}
 
-		public double VerticalOffset { get; internal set; }
+		public double VerticalOffset
+		{
+			get => _verticalOffset;
+		}
+
+		public void SetVerticalOffset(double offset)
+		{
+			var extentHeight = ExtentHeight;
+			var viewportHeight = ViewportHeight;
+
+			var scrollY = ValidateInputOffset(offset, 0, extentHeight - viewportHeight);
+
+			if (!NumericExtensions.AreClose(_verticalOffset, scrollY))
+			{
+				_verticalOffset = scrollY;
+			}
+
+			UpdateTransform();
+		}
+
+		private void UpdateTransform()
+		{
+			if (Content is UIElement c)
+			{
+				c.RenderTransform = new TranslateTransform() { X = -_horizontalOffset, Y = -_verticalOffset };
+			}
+
+			(TemplatedParent as ScrollViewer)?.OnScrollInternal(_horizontalOffset, _verticalOffset, false);
+		}
+
+		public void SetHorizontalOffset(double offset)
+		{
+			var extentWidth = ExtentWidth;
+			var viewportWidth = ViewportWidth;
+
+			var scrollX = ValidateInputOffset(offset, 0, extentWidth - viewportWidth);
+
+			if (!NumericExtensions.AreClose(_horizontalOffset, scrollX))
+			{
+				_horizontalOffset = scrollX;
+			}
+
+			UpdateTransform();
+		}
+
+		// Ensure the offset we're scrolling to is valid.
+		private double ValidateInputOffset(double offset, int minOffset, double maxOffset)
+		{
+			if (offset.IsNaN())
+			{
+				throw new InvalidOperationException($"Invalid scroll offset value");
+			}
+
+			return Math.Max(minOffset, Math.Min(offset, maxOffset));
+		}
 
 		internal Size ScrollBarSize
 		{
@@ -109,20 +168,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (properties.IsHorizontalMouseWheel)
 				{
-					HorizontalOffset += GetHorizontalScrollWheelDelta(c.RenderSize, properties.MouseWheelDelta);
+					SetHorizontalOffset(HorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, properties.MouseWheelDelta * ScrollViewerDefaultMouseWheelDelta));
 				}
 				else
 				{
-					VerticalOffset += GetVerticalScrollWheelDelta(c.RenderSize, properties.MouseWheelDelta);
+					SetVerticalOffset(VerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, properties.MouseWheelDelta * ScrollViewerDefaultMouseWheelDelta));
 				}
-
-				c.RenderTransform = new TranslateTransform() { X = -HorizontalOffset, Y = -VerticalOffset };
-
-				Window.Current.QueueInvalidateRender();
 			}
-
-
-			(TemplatedParent as ScrollViewer)?.OnScrollInternal(HorizontalOffset, VerticalOffset, false);
 		}
 	}
 }

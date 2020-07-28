@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __WASM__
+﻿#if __ANDROID__ || NETSTANDARD
 using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Logging;

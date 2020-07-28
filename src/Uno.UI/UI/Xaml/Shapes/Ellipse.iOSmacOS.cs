@@ -17,7 +17,6 @@ namespace Windows.UI.Xaml.Shapes
 #if __IOS__
 			ClipsToBounds = true;
 #endif
-			SetValue(StretChProperty, Fill, Default);
 		}
 
 		/// <inheritdoc />
