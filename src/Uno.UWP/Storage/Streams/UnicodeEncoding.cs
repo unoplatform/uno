@@ -1,6 +1,6 @@
 namespace Windows.Storage.Streams
 {
-	public enum UnicodeEncoding 
+	public enum UnicodeEncoding
 	{
 		Utf8,
 		Utf16LE,

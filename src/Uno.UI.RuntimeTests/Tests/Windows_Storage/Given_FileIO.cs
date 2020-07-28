@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(GenerateRandomFileName(), CreationCollisionOption.ReplaceExisting);
 				await FileIO.WriteTextAsync(targetFile, contents);
 
-				var realContents = await File.ReadAllTextAsync(targetFile.Path);
+				var realContents = File.ReadAllText(targetFile.Path);
 				Assert.AreEqual(contents, realContents);
 			}
 			finally
@@ -46,7 +46,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(GenerateRandomFileName(), CreationCollisionOption.ReplaceExisting);
 				await FileIO.WriteLinesAsync(targetFile, lines);
 
-				var realContents = await File.ReadAllLinesAsync(targetFile.Path);
+				var realContents = File.ReadAllLines(targetFile.Path);
 				CollectionAssert.AreEqual(realContents, lines);
 			}
 			finally
@@ -65,7 +65,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(GenerateRandomFileName(), CreationCollisionOption.ReplaceExisting);
 				await FileIO.WriteTextAsync(targetFile, contents, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);
 
-				var realContents = await File.ReadAllTextAsync(targetFile.Path, Encoding.BigEndianUnicode);
+				var realContents = File.ReadAllText(targetFile.Path, Encoding.BigEndianUnicode);
 				Assert.AreEqual(contents, realContents);
 			}
 			finally
@@ -89,7 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(GenerateRandomFileName(), CreationCollisionOption.ReplaceExisting);
 				await FileIO.WriteLinesAsync(targetFile, lines, Windows.Storage.Streams.UnicodeEncoding.Utf16LE);
 
-				var realContents = await File.ReadAllLinesAsync(targetFile.Path, Encoding.Unicode);
+				var realContents = File.ReadAllLines(targetFile.Path, Encoding.Unicode);
 				CollectionAssert.AreEqual(realContents, lines);
 			}
 			finally
@@ -109,11 +109,11 @@ namespace Uno.UI.RuntimeTests.Tests
 
 				var fileName = GenerateRandomFileName();
 				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
-				await File.WriteAllTextAsync(filePath, originalContent);
+				File.WriteAllText(filePath, originalContent);
 				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 				await FileIO.AppendTextAsync(targetFile, appendedContent);
 
-				var realContents = await File.ReadAllTextAsync(targetFile.Path);
+				var realContents = File.ReadAllText(targetFile.Path);
 				Assert.AreEqual(originalContent + appendedContent, realContents);
 			}
 			finally
@@ -133,11 +133,11 @@ namespace Uno.UI.RuntimeTests.Tests
 
 				var fileName = GenerateRandomFileName();
 				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
-				await File.WriteAllTextAsync(filePath, originalContent, Encoding.Unicode);
+				File.WriteAllText(filePath, originalContent, Encoding.Unicode);
 				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 				await FileIO.AppendTextAsync(targetFile, appendedContent);
 
-				var realContents = await File.ReadAllTextAsync(targetFile.Path, Encoding.Unicode);
+				var realContents = File.ReadAllText(targetFile.Path, Encoding.Unicode);
 				Assert.AreEqual(originalContent + appendedContent, realContents);
 			}
 			finally
@@ -157,11 +157,11 @@ namespace Uno.UI.RuntimeTests.Tests
 
 				var fileName = GenerateRandomFileName();
 				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
-				await File.WriteAllTextAsync(filePath, originalContent, Encoding.BigEndianUnicode);
+				File.WriteAllText(filePath, originalContent, Encoding.BigEndianUnicode);
 				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 				await FileIO.AppendTextAsync(targetFile, appendedContent, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);
 
-				var realContents = await File.ReadAllTextAsync(targetFile.Path, Encoding.BigEndianUnicode);
+				var realContents = File.ReadAllText(targetFile.Path, Encoding.BigEndianUnicode);
 				Assert.AreEqual(originalContent + appendedContent, realContents);
 			}
 			finally
@@ -190,11 +190,11 @@ namespace Uno.UI.RuntimeTests.Tests
 				};
 				var fileName = GenerateRandomFileName();
 				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
-				await File.WriteAllLinesAsync(filePath, firstLines);
+				File.WriteAllLines(filePath, firstLines);
 				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 				await FileIO.AppendLinesAsync(targetFile, appendedLines);
 
-				var realContents = await File.ReadAllLinesAsync(targetFile.Path);
+				var realContents = File.ReadAllLines(targetFile.Path);
 				CollectionAssert.AreEqual(firstLines.Concat(appendedLines).ToArray(), realContents);
 			}
 			finally
@@ -223,11 +223,11 @@ namespace Uno.UI.RuntimeTests.Tests
 				};
 				var fileName = GenerateRandomFileName();
 				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
-				await File.WriteAllLinesAsync(filePath, firstLines, Encoding.BigEndianUnicode);
+				File.WriteAllLines(filePath, firstLines, Encoding.BigEndianUnicode);
 				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 				await FileIO.AppendLinesAsync(targetFile, appendedLines);
 
-				var realContents = await File.ReadAllLinesAsync(targetFile.Path, Encoding.BigEndianUnicode);
+				var realContents = File.ReadAllLines(targetFile.Path, Encoding.BigEndianUnicode);
 				CollectionAssert.AreEqual(firstLines.Concat(appendedLines).ToArray(), realContents);
 			}
 			finally
@@ -256,11 +256,11 @@ namespace Uno.UI.RuntimeTests.Tests
 				};
 				var fileName = GenerateRandomFileName();
 				var filePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
-				await File.WriteAllLinesAsync(filePath, firstLines, Encoding.Unicode);
+				File.WriteAllLines(filePath, firstLines, Encoding.Unicode);
 				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 				await FileIO.AppendLinesAsync(targetFile, appendedLines, Windows.Storage.Streams.UnicodeEncoding.Utf16LE);
 
-				var realContents = await File.ReadAllLinesAsync(targetFile.Path, Encoding.Unicode);
+				var realContents = File.ReadAllLines(targetFile.Path, Encoding.Unicode);
 				CollectionAssert.AreEqual(firstLines.Concat(appendedLines).ToArray(), realContents);
 			}
 			finally
@@ -277,7 +277,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			{
 				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
 				var fileName = GenerateRandomFileName();
-				await File.WriteAllTextAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), contents);
+				File.WriteAllText(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), contents);
 				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 
 				var realContents = await FileIO.ReadTextAsync(sourceFile);
@@ -302,7 +302,7 @@ namespace Uno.UI.RuntimeTests.Tests
 					"šěššýétžščžíé"
 				};
 				var fileName = GenerateRandomFileName();
-				await File.WriteAllLinesAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), lines);
+				File.WriteAllLines(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), lines);
 				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 
 				var realContents = await FileIO.ReadLinesAsync(sourceFile);
@@ -322,7 +322,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			{
 				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
 				var fileName = GenerateRandomFileName();
-				await File.WriteAllTextAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), contents, Encoding.Unicode);
+				File.WriteAllText(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), contents, Encoding.Unicode);
 				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 
 				var realContents = await FileIO.ReadTextAsync(sourceFile, Windows.Storage.Streams.UnicodeEncoding.Utf16LE);
@@ -347,7 +347,7 @@ namespace Uno.UI.RuntimeTests.Tests
 					"šěššýétžščžíé"
 				};
 				var fileName = GenerateRandomFileName();
-				await File.WriteAllLinesAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), lines, Encoding.BigEndianUnicode);
+				File.WriteAllLines(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), lines, Encoding.BigEndianUnicode);
 				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 
 				var realContents = await FileIO.ReadLinesAsync(sourceFile, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);
@@ -367,7 +367,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			{
 				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
 				var fileName = GenerateRandomFileName();
-				await File.WriteAllTextAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), contents, Encoding.BigEndianUnicode);
+				File.WriteAllText(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), contents, Encoding.BigEndianUnicode);
 				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 
 				var realContents = await FileIO.ReadTextAsync(sourceFile);
@@ -392,7 +392,7 @@ namespace Uno.UI.RuntimeTests.Tests
 					"šěššýétžščžíé"
 				};
 				var fileName = GenerateRandomFileName();
-				await File.WriteAllLinesAsync(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), lines, Encoding.Unicode);
+				File.WriteAllLines(Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName), lines, Encoding.Unicode);
 				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 
 				var realContents = await FileIO.ReadLinesAsync(sourceFile);
@@ -416,7 +416,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName);
 				await FileIO.WriteBytesAsync(targetFile, bytes);
 
-				var realContents = await File.ReadAllBytesAsync(targetFile.Path);
+				var realContents = File.ReadAllBytes(targetFile.Path);
 				CollectionAssert.AreEqual(bytes, realContents);
 			}
 			finally
@@ -438,7 +438,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 				await FileIO.WriteBufferAsync(targetFile, buffer);
 
-				var realContents = await File.ReadAllBytesAsync(targetFile.Path);
+				var realContents = File.ReadAllBytes(targetFile.Path);
 				CollectionAssert.AreEqual(bytes, realContents);
 			}
 			finally
@@ -457,7 +457,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				var bytes = Encoding.UTF8.GetBytes(contents);
 				var fileName = GenerateRandomFileName();
 				var path = Path.Combine(ApplicationData.Current.LocalFolder.Path, fileName);
-				await File.WriteAllBytesAsync(path, bytes);
+				File.WriteAllBytes(path, bytes);
 				sourceFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
 
 				var buffer = await FileIO.ReadBufferAsync(sourceFile);

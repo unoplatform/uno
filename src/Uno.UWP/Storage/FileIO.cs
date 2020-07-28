@@ -6,6 +6,7 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using System.Collections.Generic;
 using UwpUnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
+using Uno.Extensions;
 
 namespace Windows.Storage
 {
@@ -263,7 +264,8 @@ namespace Windows.Storage
 
 		private static async Task<IBuffer> ReadBufferTaskAsync(IStorageFile file)
 		{
-			var bytes = await File.ReadAllBytesAsync(file.Path);
+			using var fs = File.OpenRead(file.Path);
+			var bytes = await fs.ReadBytesAsync();
 			return new InMemoryBuffer(bytes);
 		}
 
@@ -274,7 +276,8 @@ namespace Windows.Storage
 				throw new NotSupportedException("The current implementation can only write a InMemoryBuffer");
 			}
 
-			await File.WriteAllBytesAsync(file.Path, inMemoryBuffer.Data);
+			using var fs = File.OpenWrite(file.Path);
+			await fs.WriteAsync(inMemoryBuffer.Data, 0, inMemoryBuffer.Data.Length);
 		}
 
 		private static async Task<Encoding> GetEncodingFromFileAsync(IStorageFile file)
@@ -283,7 +286,7 @@ namespace Windows.Storage
 			{
 				using Stream fileStream = await file.OpenStreamForReadAsync();
 				var bytes = new byte[2];
-				if (await fileStream.ReadAsync(bytes) != -1)
+				if (await fileStream.ReadAsync(bytes, 0, bytes.Length) == 2)
 				{
 					if (bytes[0] == 0xff && bytes[1] == 0xfe)
 					{
