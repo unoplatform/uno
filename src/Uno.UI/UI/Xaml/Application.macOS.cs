@@ -15,6 +15,8 @@ using Uno.Logging;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Selector = ObjCRuntime.Selector;
+using Windows.System.Profile;
+using Uno.Helpers;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -114,7 +116,7 @@ namespace Windows.UI.Xaml
 		/// <returns>System theme</returns>
 		private ApplicationTheme GetDefaultSystemTheme()
 		{
-			var version = GetSystemVersion();
+			var version = DeviceHelper.OperatingSystemVersion;
 			if (version >= new Version(10, 14))
 			{
 				var app = NSAppearance.CurrentAppearance?.FindBestMatch(new string[]
@@ -129,29 +131,6 @@ namespace Windows.UI.Xaml
 				}
 			}
 			return ApplicationTheme.Light;
-		}
-
-		private Version GetSystemVersion()
-		{
-			if (_systemVersion == null)
-			{
-				using var info = new NSProcessInfo();
-				var version = info.OperatingSystemVersion.ToString();
-				if (Version.TryParse(version, out var number))
-				{
-					_systemVersion = number;
-				}
-				else if (int.TryParse(version, out var major))
-				{
-					_systemVersion = new Version(major, 0);
-				}
-				else
-				{
-					_systemVersion = new Version(0, 0);
-				}
-			}
-
-			return _systemVersion;
 		}
 
 		private void SetCurrentLanguage()
