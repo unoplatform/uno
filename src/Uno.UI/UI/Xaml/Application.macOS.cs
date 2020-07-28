@@ -28,7 +28,6 @@ namespace Windows.UI.Xaml
 	[Register("UnoAppDelegate")]
 	public partial class Application : NSApplicationDelegate
 	{
-		private Version _systemVersion = null;
 		private readonly NSString _themeChangedNotification = new NSString("AppleInterfaceThemeChangedNotification");
 		private readonly Selector _modeSelector = new Selector("themeChanged:");
 
