@@ -127,7 +127,7 @@ if [ -n "`cat $UNO_TESTS_FAILED_LIST`" ]; then
 		--agents=1 \
 		--workers=1 \
 		--result=$UNO_RERUN_TEST_RESULTS \
-		--timeout=120000 \
+		--timeout=300000 \
 		--testlist $UNO_TESTS_FAILED_LIST \
 		$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/$BUILDCONFIGURATION/net47/SamplesApp.UITests.dll \
 		|| true
