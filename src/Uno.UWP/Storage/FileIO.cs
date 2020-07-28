@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using System.Collections.Generic;
-using UwpUnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
 using Uno.Extensions;
+using UwpUnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
+using UwpBuffer = Windows.Storage.Streams.Buffer;
 
 namespace Windows.Storage
 {
@@ -266,14 +267,14 @@ namespace Windows.Storage
 		{
 			using var fs = File.OpenRead(file.Path);
 			var bytes = await fs.ReadBytesAsync();
-			return new InMemoryBuffer(bytes);
+			return new UwpBuffer(bytes);
 		}
 
 		private static async Task WriteBufferTaskAsync(IStorageFile file, IBuffer buffer)
 		{
-			if (!(buffer is InMemoryBuffer inMemoryBuffer))
+			if (!(buffer is UwpBuffer inMemoryBuffer))
 			{
-				throw new NotSupportedException("The current implementation can only write a InMemoryBuffer");
+				throw new NotSupportedException("The current implementation can only write a UwpBuffer");
 			}
 
 			using var fs = File.OpenWrite(file.Path);
