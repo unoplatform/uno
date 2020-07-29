@@ -1,0 +1,36 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_ScrollBars"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ScrollViewerTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+		<ScrollViewer Width="256" Height="256" BorderBrush="Black" BorderThickness="5">
+			<Grid Width="1024" Height="1024">
+				<Grid.Background>
+					<LinearGradientBrush StartPoint=".45,.05" EndPoint=".65,.95">
+						<LinearGradientBrush.GradientStops>
+							<GradientStopCollection>
+								<GradientStop Offset="0.06" Color="#FF0018" />
+								<GradientStop Offset="0.14" Color="#FFA52C" />
+								<GradientStop Offset="0.26" Color="#FFA52C" />
+								<GradientStop Offset="0.34" Color="#FFFF41" />
+								<GradientStop Offset="0.46" Color="#FFFF41" />
+								<GradientStop Offset="0.54" Color="#008018" />
+								<GradientStop Offset="0.66" Color="#008018" />
+								<GradientStop Offset="0.74" Color="#0000F9" />
+								<GradientStop Offset="0.86" Color="#0000F9" />
+								<GradientStop Offset="0.94" Color="#86007D" />
+							</GradientStopCollection>
+						</LinearGradientBrush.GradientStops>
+					</LinearGradientBrush>
+				</Grid.Background>
+				<TextBlock Text="Hello, world!" Margin="20" FontSize="30" />
+			</Grid>
+		</ScrollViewer>
+	</Grid>
+</Page>
