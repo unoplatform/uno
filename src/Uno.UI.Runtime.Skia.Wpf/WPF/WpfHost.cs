@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Uno.Foundation.Extensibility;
 using WinUI = Windows.UI.Xaml;
 
 namespace Uno.UI.Skia.Platform
@@ -18,6 +19,10 @@ namespace Uno.UI.Skia.Platform
 
 		public WpfHost(Func<WinUI.Application> appBuilder)
 		{
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfUIElementPointersSupport(o));
+			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
+			ApiExtensibility.Register(typeof(WinUI.IApplicationExtension), o => new WpfApplicationExtension(o));
+
 			designMode = DesignerProperties.GetIsInDesignMode(this);
 			_appBuilder = appBuilder;
 
