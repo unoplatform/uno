@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var parent = owner.Visual;
 			var compositor = parent.Compositor;
-			var area = state.Area;
+			var area = owner.LayoutRound(state.Area);
 			var background = state.Background;
 			var borderThickness = state.BorderThickness;
 			var borderBrush = state.BorderBrush;

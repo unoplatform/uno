@@ -193,14 +193,14 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			// For the Rectangle and the Ellipse, half of the StrokeThickness has to be excluded on each side of the shape.
-			var twoHalfStrokeThickness = StrokeThickness;
+			var twoHalfStrokeThickness = ActualStrokeThickness;
 			var halfStrokeThickness = twoHalfStrokeThickness / 2.0;
 			renderingArea.X += halfStrokeThickness;
 			renderingArea.Y += halfStrokeThickness;
 			renderingArea.Width -= twoHalfStrokeThickness;
 			renderingArea.Height -= twoHalfStrokeThickness;
 
-			return (size, renderingArea);
+			return (LayoutRound(size), LayoutRound(renderingArea));
 		}
 
 #if !IS_DESIRED_SMALLER_THAN_CONSTRAINTS_ALLOWED

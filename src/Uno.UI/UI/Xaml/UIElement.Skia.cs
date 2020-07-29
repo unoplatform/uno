@@ -292,16 +292,20 @@ namespace Windows.UI.Xaml
 
 		internal virtual void OnArrangeVisual(Rect rect, Rect? clip)
 		{
-			Visual.Offset = new Vector3((float)rect.X, (float)rect.Y, 0);
-			Visual.Size = new Vector2((float)rect.Width, (float)rect.Height);
+			var roundedRect = LayoutRound(rect);
+
+			Visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0);
+			Visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
 
 			if (clip is Rect rectClip)
 			{
+				var roundedRectClip = LayoutRound(rectClip);
+
 				Visual.Clip = new InsetClip() {
-					TopInset = (float)rectClip.Top,
-					LeftInset = (float)rectClip.Left,
-					BottomInset = (float)rectClip.Bottom,
-					RightInset = (float)rectClip.Right,
+					TopInset = (float)roundedRectClip.Top,
+					LeftInset = (float)roundedRectClip.Left),
+					BottomInset = (float)roundedRectClip.Bottom,
+					RightInset = (float)roundedRectClip.Right,
 				};
 			}
 			else
