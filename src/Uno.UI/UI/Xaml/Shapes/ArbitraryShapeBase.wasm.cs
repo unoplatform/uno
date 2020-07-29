@@ -21,6 +21,8 @@ namespace Windows.UI.Xaml.Shapes
 
 		private Size GetActualSize() => Size.Empty;
 
+		protected virtual void InvalidateShape() { }
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			// We make sure to invoke native methods while not in the visual tree
@@ -29,6 +31,8 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				return new Size();
 			}
+
+			InvalidateShape();
 
 			var measurements = GetMeasurements(availableSize);
 			var desiredSize = measurements.desiredSize;
