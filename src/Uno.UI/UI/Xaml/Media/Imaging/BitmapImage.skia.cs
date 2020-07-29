@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 						var path = UriSource.PathAndQuery;
 
 						var filePath = global::System.IO.Path.Combine(
-							Windows.Application­Model.Package.Current.Installed­Location.Path,
+							Windows.ApplicationÂ­Model.Package.Current.InstalledÂ­Location.Path,
 							path.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
 						);
 
