@@ -36,39 +36,39 @@ namespace Windows.UI.Xaml.Media
 			set => SetValue(TintLuminosityOpacityProperty, value);
 		}
 
-		public static DependencyProperty AlwaysUseFallbackProperty { get; } = 
+		public static DependencyProperty AlwaysUseFallbackProperty { get; } =
 			DependencyProperty.Register(
 				nameof(AlwaysUseFallback),
-				typeof(bool), 
-				typeof(AcrylicBrush), 
+				typeof(bool),
+				typeof(AcrylicBrush),
 				new FrameworkPropertyMetadata(default(bool)));
 
-		public static DependencyProperty BackgroundSourceProperty { get; } = 
+		public static DependencyProperty BackgroundSourceProperty { get; } =
 			DependencyProperty.Register(
 				nameof(BackgroundSource),
-				typeof(AcrylicBackgroundSource), 
-				typeof(AcrylicBrush), 
-				new FrameworkPropertyMetadata(default(AcrylicBackgroundSource)));
+				typeof(AcrylicBackgroundSource),
+				typeof(AcrylicBrush),
+				new FrameworkPropertyMetadata(AcrylicBackgroundSource.Backdrop));
 
 		public static DependencyProperty TintColorProperty { get; } =
 			DependencyProperty.Register(
 				nameof(TintColor),
-				typeof(Color), 
-				typeof(AcrylicBrush), 
+				typeof(Color),
+				typeof(AcrylicBrush),
 				new FrameworkPropertyMetadata(default(Color)));
 
 		public static DependencyProperty TintOpacityProperty { get; } =
 			DependencyProperty.Register(
 				nameof(TintOpacity),
-				typeof(double), 
-				typeof(AcrylicBrush), 
-				new FrameworkPropertyMetadata(default(double)));
+				typeof(double),
+				typeof(AcrylicBrush),
+				new FrameworkPropertyMetadata(0.5));
 
 		public static DependencyProperty TintLuminosityOpacityProperty { get; } =
 			DependencyProperty.Register(
 				nameof(TintLuminosityOpacity),
-				typeof(double?), 
-				typeof(AcrylicBrush), 
+				typeof(double?),
+				typeof(AcrylicBrush),
 				new FrameworkPropertyMetadata(default(double?)));
 
 		internal Color FallbackColorWithOpacity => GetColorWithOpacity(FallbackColor);
