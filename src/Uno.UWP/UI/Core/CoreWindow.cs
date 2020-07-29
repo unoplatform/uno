@@ -20,7 +20,10 @@ namespace Windows.UI.Core
 		internal CoreWindow()
 		{
 			_current = this;
+			InitializePartial();
 		}
+
+		partial void InitializePartial();
 
 		public CoreDispatcher Dispatcher
 			=> CoreDispatcher.Main;

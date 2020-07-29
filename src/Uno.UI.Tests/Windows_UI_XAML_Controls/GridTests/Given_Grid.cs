@@ -1266,6 +1266,7 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.RowDefinitions.Should().HaveCount(0);
 		}
+
 		[TestMethod]
 		public void When_Zero_Star_Size()
 		{
@@ -1290,6 +1291,47 @@ namespace Uno.UI.Tests.GridTests
 				Grid.SetRow(border, row);
 				SUT.Children.Add(border);
 			}
+		}
+
+		[TestMethod]
+		public void When_RowSpan_Reuse()
+		{
+			// This sample is taken from the ToggleSwitch template
+
+			var SUT = new StackPanel();
+
+			var topLevel = new Grid();
+			SUT.Children.Add(topLevel);
+
+			topLevel.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+			topLevel.RowDefinitions.Add(new RowDefinition { Height = GridLengthHelper.FromPixels(10) });
+			topLevel.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+			topLevel.RowDefinitions.Add(new RowDefinition { Height = GridLengthHelper.FromPixels(10) });
+
+			topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+			topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLengthHelper.FromPixels(12), MaxWidth = 12 });
+			topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLengthHelper.FromPixels(12) });
+			topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+			topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLengthHelper.OneStar });
+
+			var spacer = new Grid() { Margin = new Thickness(0, 5) };
+			topLevel.Children.Add(spacer);
+			Grid.SetRow(spacer, 1);
+			Grid.SetRowSpan(spacer, 3);
+			Grid.SetColumnSpan(spacer, 3);
+
+			var knob = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				Width = 20,
+				Height = 20
+			};
+
+			Grid.SetRow(spacer, 2);
+			topLevel.Children.Add(knob);
+
+			SUT.Measure(new Size(800, 800));
+			Assert.AreEqual(new Size(20, 20), knob.DesiredSize);
 		}
 	}
 }

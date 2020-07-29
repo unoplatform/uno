@@ -19,12 +19,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { this.SetValue(ValueProperty, value); }
 		}
 
-		public static readonly DependencyProperty ValueProperty =
+		public static DependencyProperty ValueProperty { get ; } =
 			DependencyProperty.Register(
 				"Value",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)0,
 					(s, e) => (s as RangeBase)?.OnValueChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -47,12 +47,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { this.SetValue(MinimumProperty, value); }
 		}
 
-		public static readonly DependencyProperty MinimumProperty =
+		public static DependencyProperty MinimumProperty { get ; } =
 			DependencyProperty.Register(
 				"Minimum",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)0,
 					(s, e) => (s as RangeBase)?.OnMinimumChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -82,12 +82,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { this.SetValue(MaximumProperty, value); }
 		}
 
-		public static readonly DependencyProperty MaximumProperty =
+		public static DependencyProperty MaximumProperty { get ; } =
 			DependencyProperty.Register(
 				"Maximum",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)1,
 					(s, e) => (s as RangeBase)?.OnMaximumChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -114,12 +114,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { this.SetValue(SmallChangeProperty, value); }
 		}
 
-		public static readonly DependencyProperty SmallChangeProperty =
+		public static DependencyProperty SmallChangeProperty { get ; } =
 			DependencyProperty.Register(
 				"SmallChange",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
                     (double)0.1,
 					(s, e) => (s as RangeBase)?.OnSmallChangeChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -140,12 +140,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { this.SetValue(LargeChangeProperty, value); }
 		}
 
-		public static readonly DependencyProperty LargeChangeProperty =
+		public static DependencyProperty LargeChangeProperty { get ; } =
 			DependencyProperty.Register(
 				"LargeChange",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)1,
 					(s, e) => OnLargeChangeChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -166,12 +166,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			private set { this.SetValue(ActualValueProperty, value); }
 		}
 
-		public static readonly DependencyProperty ActualValueProperty =
+		public static DependencyProperty ActualValueProperty { get ; } =
 			DependencyProperty.Register(
 				"ActualValue",
 				typeof(double),
 				typeof(RangeBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)0,
 					(s, e) => (s as RangeBase)?.OnActualValueChanged((double)e.OldValue, (double)e.NewValue)
 				)

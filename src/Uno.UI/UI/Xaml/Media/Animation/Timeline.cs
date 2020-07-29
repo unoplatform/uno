@@ -54,8 +54,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(BeginTimeProperty, value);
 		}
 
-		public static readonly DependencyProperty BeginTimeProperty =
-			DependencyProperty.Register("BeginTime", typeof(TimeSpan?), typeof(Timeline), new PropertyMetadata(TimeSpan.Zero));
+		public static DependencyProperty BeginTimeProperty { get ; } =
+			DependencyProperty.Register("BeginTime", typeof(TimeSpan?), typeof(Timeline), new FrameworkPropertyMetadata(TimeSpan.Zero));
 
 		public Duration Duration
 		{
@@ -63,8 +63,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(DurationProperty, value);
 		}
 
-		public static readonly DependencyProperty DurationProperty =
-			DependencyProperty.Register("Duration", typeof(Duration), typeof(Timeline), new PropertyMetadata(Duration.Automatic));
+		public static DependencyProperty DurationProperty { get ; } =
+			DependencyProperty.Register("Duration", typeof(Duration), typeof(Timeline), new FrameworkPropertyMetadata(Duration.Automatic));
 
 		public FillBehavior FillBehavior
 		{
@@ -72,8 +72,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(FillBehaviorProperty, value);
 		}
 
-		public static readonly DependencyProperty FillBehaviorProperty =
-			DependencyProperty.Register("FillBehavior", typeof(FillBehavior), typeof(Timeline), new PropertyMetadata(FillBehavior.HoldEnd));
+		public static DependencyProperty FillBehaviorProperty { get ; } =
+			DependencyProperty.Register("FillBehavior", typeof(FillBehavior), typeof(Timeline), new FrameworkPropertyMetadata(FillBehavior.HoldEnd));
 
 		public RepeatBehavior RepeatBehavior
 		{
@@ -81,8 +81,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(RepeatBehaviorProperty, value);
 		}
 
-		public static readonly DependencyProperty RepeatBehaviorProperty =
-			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new PropertyMetadata(new RepeatBehavior()));
+		public static DependencyProperty RepeatBehaviorProperty { get ; } =
+			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior()));
 
 
 		public event EventHandler<object> Completed;
@@ -182,7 +182,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (GetVisualParent() is FrameworkElement fe)
 			{
-				return fe.FindName(Storyboard.GetTargetName(this));
+				return fe.FindName(Storyboard.GetTargetName(this)) as DependencyObject;
 			}
 			else
 			{

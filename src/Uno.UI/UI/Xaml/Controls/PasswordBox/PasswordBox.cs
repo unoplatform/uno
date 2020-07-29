@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			RegisterSetPasswordScope();
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void EndRevealPartial();
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 			_revealButtonSubscription.Disposable = null;
@@ -88,12 +88,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PasswordProperty, value); }
 		}
 
-		public static readonly DependencyProperty PasswordProperty =
+		public static DependencyProperty PasswordProperty { get ; } =
 			DependencyProperty.Register(
 				"Password",
 				typeof(string),
 				typeof(PasswordBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: string.Empty,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnPasswordChanged(e)
 				)
@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsPasswordRevealButtonEnabled),
 				typeof(bool),
 				typeof(PasswordBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: true,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnIsPasswordRevealButtonEnabledChanged(e)
 				)

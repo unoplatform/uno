@@ -64,8 +64,8 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		// Using a DependencyProperty as the backing store for ItemMaxWidth.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ItemMaxWidthProperty =
-			DependencyProperty.Register("ItemMaxWidth", typeof(double), typeof(GridViewWrapGridLayout), new PropertyMetadata(0.0, (s, e) => ((GridViewWrapGridLayout)s)?.OnItemMaxWidthChanged(e)));
+		public static DependencyProperty ItemMaxWidthProperty { get ; } =
+			DependencyProperty.Register("ItemMaxWidth", typeof(double), typeof(GridViewWrapGridLayout), new FrameworkPropertyMetadata(0.0, (s, e) => ((GridViewWrapGridLayout)s)?.OnItemMaxWidthChanged(e)));
 
 		private void OnItemMaxWidthChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -84,8 +84,8 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		// Using a DependencyProperty as the backing store for MaximumRowsOrColumns.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty MaximumRowsOrColumnsProperty =
-			DependencyProperty.Register("MaximumRowsOrColumns", typeof(int), typeof(GridViewWrapGridLayout), new PropertyMetadata(0, (s, e) => ((GridViewWrapGridLayout)s)?.OnMaximumRowsOrColumnsChanged(e)));
+		public static DependencyProperty MaximumRowsOrColumnsProperty { get ; } =
+			DependencyProperty.Register("MaximumRowsOrColumns", typeof(int), typeof(GridViewWrapGridLayout), new FrameworkPropertyMetadata(0, (s, e) => ((GridViewWrapGridLayout)s)?.OnMaximumRowsOrColumnsChanged(e)));
 
 		private void OnMaximumRowsOrColumnsChanged(DependencyPropertyChangedEventArgs e)
 		{

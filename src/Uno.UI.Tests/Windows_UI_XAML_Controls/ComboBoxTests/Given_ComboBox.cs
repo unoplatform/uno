@@ -63,6 +63,8 @@ namespace Uno.UI.Tests.ComboBoxTests
 				ItemsSource = view
 			};
 
+			comboBox.ApplyTemplate();
+
 			comboBox.IsDropDownOpen = true;
 
 			Assert.IsNotNull(comboBox.InternalItemsPanelRoot);

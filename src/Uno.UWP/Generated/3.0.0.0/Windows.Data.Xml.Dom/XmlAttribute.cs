@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Dom
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class XmlAttribute : global::Windows.Data.Xml.Dom.IXmlNode,global::Windows.Data.Xml.Dom.IXmlNodeSerializer,global::Windows.Data.Xml.Dom.IXmlNodeSelector
@@ -54,15 +54,15 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlAttribute.Prefix.set
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlAttribute.SelectSingleNode(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlAttribute.SelectNodes(string)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode XmlAttribute.SelectSingleNodeNS(string xpath, object namespaces) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member XmlNodeList XmlAttribute.SelectNodesNS(string xpath, object namespaces) is not implemented in Uno.");

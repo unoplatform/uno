@@ -4,12 +4,14 @@ using Android.Widget;
 using Windows.UI.Xaml.Controls;
 using Android.Runtime;
 using Uno.Extensions;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Controls
 {
-    public abstract class ItemContainerHolderAdapter : BaseAdapter
-    {
-        public Windows.UI.Xaml.Controls.Orientation? ItemContainerHolderStretchOrientation { get; set; }
+	public abstract class ItemContainerHolderAdapter : BaseAdapter
+	{
+		public Windows.UI.Xaml.Controls.Orientation? ItemContainerHolderStretchOrientation { get; set; }
 
 		/// <summary>
 		/// An optional secondary view pool that can handle control reloads.
@@ -17,7 +19,7 @@ namespace Uno.UI.Controls
 		public ISecondaryViewPool SecondaryPool { get; set; }
 
 		public override View GetView(int position, View convertView, ViewGroup parent)
-        {
+		{
 			try
 			{
 				var wrapper = (convertView ?? SecondaryPool?.GetView(position)) as ItemContainerHolder;
@@ -29,7 +31,7 @@ namespace Uno.UI.Controls
 					};
 				}
 
-				wrapper.Child = GetContainerView(position, wrapper.Child, parent);
+				wrapper.Child = VisualTreeHelper.TryAdaptNative(GetContainerView(position, wrapper.Child, parent));
 
 				var viewGroup = wrapper as ViewGroup;
 				if (viewGroup != null)
@@ -51,14 +53,14 @@ namespace Uno.UI.Controls
 
 				return wrapper;
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 
 				return new Windows.UI.Xaml.FrameworkElement();
 			}
-        }
+		}
 
-        protected abstract View GetContainerView(int position, View convertView, ViewGroup parent);
-    }
+		protected abstract View GetContainerView(int position, View convertView, ViewGroup parent);
+	}
 }

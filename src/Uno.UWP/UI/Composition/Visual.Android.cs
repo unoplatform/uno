@@ -7,7 +7,7 @@ namespace Windows.UI.Composition
 {
 	public partial class Visual : global::Windows.UI.Composition.CompositionObject
 	{
-		public View NativeOwner { get; set; }
+		internal View NativeOwner { get; set; }
 	}
 }
 #endif

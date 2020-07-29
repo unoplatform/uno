@@ -19,7 +19,9 @@ namespace Windows.UI.Xaml.Controls
 		/// This binary compatibility workaround that can be removed
 		public new static DependencyProperty IsEnabledProperty => FrameworkElement.IsEnabledProperty;
 
-		public Control(string htmlTag = "div") : base(htmlTag)
+		public Control() : this("div") { }
+
+		public Control(string htmlTag) : base(htmlTag)
 		{
 			InitializeControl();
 		}
@@ -41,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Gets the first sub-view of this control or null if there is none
 		/// </summary>
-		public IFrameworkElement GetTemplateRoot()
+		internal IFrameworkElement GetTemplateRoot()
 		{
 			return this.GetChildren()?.FirstOrDefault() as IFrameworkElement;
 		}

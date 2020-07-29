@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Shapes
 			var hasUserSize = userSize != 0 && !double.IsNaN(userSize) && !double.IsInfinity(userSize);
 			var hasAvailableSize = !double.IsNaN(availableSize);
 
-#if __WASM__
+#if NETSTANDARD
 			// The measuring algorithms for shapes in Wasm and iOS/Android/macOS are not using the
 			// infinity the same way.
 			// Those implementation will need to be merged.
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Shapes
 			return naNFallbackValue;
 		}
 
-#if !__WASM__
+#if !NETSTANDARD
 		protected internal override void OnInvalidateMeasure()
 		{
 			base.OnInvalidateMeasure();

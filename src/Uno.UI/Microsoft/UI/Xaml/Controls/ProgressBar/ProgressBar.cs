@@ -19,8 +19,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string s_DeterminateStateName = "Determinate";
 		private const string s_UpdatingStateName = "Updating";
 
-		public static readonly DependencyProperty IsIndeterminateProperty = DependencyProperty.Register(
-			"IsIndeterminate", typeof(bool), typeof(ProgressBar), new PropertyMetadata(false, OnIsIndeterminateChanged));
+		public static DependencyProperty IsIndeterminateProperty { get ; } = DependencyProperty.Register(
+			"IsIndeterminate", typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnIsIndeterminateChanged));
 
 		public bool IsIndeterminate
 		{
@@ -28,8 +28,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsIndeterminateProperty, value);
 		}
 
-		public static readonly DependencyProperty ShowErrorProperty = DependencyProperty.Register(
-			"ShowError", typeof(bool), typeof(ProgressBar), new PropertyMetadata(false, OnShowErrorChanged));
+		public static DependencyProperty ShowErrorProperty { get ; } = DependencyProperty.Register(
+			"ShowError", typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnShowErrorChanged));
 
 		public bool ShowError
 		{
@@ -37,8 +37,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ShowErrorProperty, value);
 		}
 
-		public static readonly DependencyProperty ShowPausedProperty = DependencyProperty.Register(
-			"ShowPaused", typeof(bool), typeof(ProgressBar), new PropertyMetadata(false, OnShowPausedChanged));
+		public static DependencyProperty ShowPausedProperty { get ; } = DependencyProperty.Register(
+			"ShowPaused", typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnShowPausedChanged));
 
 		public bool ShowPaused
 		{
@@ -46,8 +46,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ShowPausedProperty, value);
 		}
 
-		public static readonly DependencyProperty TemplateSettingsProperty = DependencyProperty.Register(
-			"TemplateSettings", typeof(ProgressBarTemplateSettings), typeof(ProgressBar), new PropertyMetadata(default(ProgressBarTemplateSettings)));
+		public static DependencyProperty TemplateSettingsProperty { get ; } = DependencyProperty.Register(
+			"TemplateSettings", typeof(ProgressBarTemplateSettings), typeof(ProgressBar), new FrameworkPropertyMetadata(default(ProgressBarTemplateSettings)));
 
 		public ProgressBarTemplateSettings TemplateSettings
 		{

@@ -34,7 +34,7 @@ namespace SamplesApp.UnitTests.Controls.UITests.Views.Extensions
 		/// <summary>
 		/// Property for IsPanIntoView, which only triggers the first time the FrameworkElement is displayed 
 		/// </summary>
-		public static readonly DependencyProperty IsPanIntoViewProperty =
+		public static DependencyProperty IsPanIntoViewProperty { get ; } =
 			DependencyProperty.RegisterAttached("IsPanIntoView", typeof(bool), typeof(InputPanelExtensions), new PropertyMetadata(false, IsPanIntoViewChanged));
 
 		/// <summary>

@@ -42,9 +42,9 @@ You can change the flyout button by copying and modifying TimePickerFlyoutButton
 You can change the flyout button by copying and modifying TimePickerFlyoutPresenterStyle.
 
 Some ColorBrushes are specific to IOS and could be changed by copying and redoing the new style so they use your own color brushes  
- IOSTimePickerAcceptButtonForegroundBrush  Color="#324f85"
- IOSTimePickerDismissButtonForegroundBrush  Color="#324f85"
- IOSTimePickerHeaderBackgroundBrush  Color="#f8f8f8" 
+ IOSTimePickerAcceptButtonForegroundBrush  Color="#055bb7"
+ IOSTimePickerDismissButtonForegroundBrush  Color="#055bb7"
+ IOSTimePickerHeaderBackgroundBrush  Color="{ThemeResource SystemListLowColor}" 
 
 If you want to show a dimmed overlay underneath the picker, set the `TimePicker.LightDismissOverlayMode` property to `On`.
 

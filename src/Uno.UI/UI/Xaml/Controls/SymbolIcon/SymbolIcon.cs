@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SymbolProperty { get; } =
-			DependencyProperty.Register("Symbol", typeof(Symbol), typeof(SymbolIcon), new PropertyMetadata(Symbol.Emoji, OnSymbolChanged));
+			DependencyProperty.Register("Symbol", typeof(Symbol), typeof(SymbolIcon), new FrameworkPropertyMetadata(Symbol.Emoji, OnSymbolChanged));
 
 		private static void OnSymbolChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

@@ -1,4 +1,4 @@
-﻿#if __WASM__ || __MACOS__
+﻿#if NETSTANDARD || __MACOS__
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 using System;
@@ -28,12 +28,26 @@ namespace Windows.UI.Xaml.Controls
 
 		private void AddItems(int firstItem, int count, int section)
 		{
-			Refresh();
+			if (VirtualizingPanel != null)
+			{
+				VirtualizingPanel.GetLayouter().AddItems(firstItem, count, section);
+			}
+			else
+			{
+				Refresh();
+			}
 		}
 
 		private void RemoveItems(int firstItem, int count, int section)
 		{
-			Refresh();
+			if (VirtualizingPanel != null)
+			{
+				VirtualizingPanel.GetLayouter().RemoveItems(firstItem, count, section);
+			}
+			else
+			{
+				Refresh();
+			}
 		}
 
 		private void AddGroup(int groupIndexInView)

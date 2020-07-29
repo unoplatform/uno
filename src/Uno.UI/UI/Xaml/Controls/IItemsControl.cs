@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Controls
 {
-	public interface IItemsControl : IFrameworkElement
+	internal interface IItemsControl : IFrameworkElement
 	{
 		object ItemsSource { get; set; }
 

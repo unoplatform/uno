@@ -36,7 +36,15 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize();
 
-		public FrameworkElement(string htmlTag = "div", bool isSvg = false) : base(htmlTag, isSvg)
+		public FrameworkElement() : this(DefaultHtmlTag, false)
+		{
+		}
+
+		public FrameworkElement(string htmlTag) : this(htmlTag, false)
+		{
+		}
+
+		public FrameworkElement(string htmlTag, bool isSvg) : base(htmlTag, isSvg)
 		{
 			Initialize();
 
@@ -61,12 +69,12 @@ namespace Windows.UI.Xaml
 			internal set;
 		} = DefaultBaseUri;
 
-		protected virtual void OnLoaded()
+		private protected virtual void OnLoaded()
 		{
 
 		}
 
-		protected virtual void OnUnloaded()
+		private protected virtual void OnUnloaded()
 		{
 
 		}
@@ -74,7 +82,7 @@ namespace Windows.UI.Xaml
 		#region Transitions Dependency Property
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static readonly DependencyProperty TransitionsProperty = CreateTransitionsProperty();
+		public static DependencyProperty TransitionsProperty { get ; } = CreateTransitionsProperty();
 
 		public TransitionCollection Transitions
 		{
@@ -88,7 +96,7 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		public IFrameworkElement FindName(string name)
+		public object FindName(string name)
 			=> IFrameworkElementHelper.FindName(this, GetChildren(), name);
 
 
@@ -105,7 +113,7 @@ namespace Windows.UI.Xaml
 		#region Background DependencyProperty
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static readonly DependencyProperty BackgroundProperty = CreateBackgroundProperty();
+		public static DependencyProperty BackgroundProperty { get ; } = CreateBackgroundProperty();
 
 		public Brush Background
 		{
@@ -204,7 +212,7 @@ namespace Windows.UI.Xaml
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
 		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static readonly DependencyProperty IsEnabledProperty = CreateIsEnabledProperty();
+		public static DependencyProperty IsEnabledProperty { get ; } = CreateIsEnabledProperty();
 
 		public bool IsEnabled
 		{

@@ -23,8 +23,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for UseTouchAnimationsForAllNavigation.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty UseTouchAnimationsForAllNavigationProperty =
-			DependencyProperty.Register("UseTouchAnimationsForAllNavigation", typeof(bool), typeof(FlipView), new PropertyMetadata(true));
+		public static DependencyProperty UseTouchAnimationsForAllNavigationProperty { get ; } =
+			DependencyProperty.Register("UseTouchAnimationsForAllNavigation", typeof(bool), typeof(FlipView), new FrameworkPropertyMetadata(true));
 
 		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
 		{

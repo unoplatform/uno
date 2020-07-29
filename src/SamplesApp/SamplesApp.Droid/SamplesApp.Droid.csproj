@@ -19,8 +19,7 @@
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
-    <!-- AndroidUseAapt2 is disabled until https://github.com/unoplatform/uno/issues/1382 is resolved -->
-    <AndroidUseAapt2>false</AndroidUseAapt2>
+    <AndroidUseAapt2>true</AndroidUseAapt2>
   </PropertyGroup>
   <PropertyGroup>
     <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
@@ -43,7 +42,7 @@
     <MandroidI18n />
     <AndroidSupportedAbis>armeabi-v7a;x86;arm64-v8a</AndroidSupportedAbis>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
-    <AndroidUseAapt2>false</AndroidUseAapt2>
+    <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -78,7 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Graph">
-      <Version>3.7.0</Version>
+      <Version>3.8.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Identity.Client">
       <Version>4.15.0</Version>

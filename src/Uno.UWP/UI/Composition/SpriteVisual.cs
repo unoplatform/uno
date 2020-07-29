@@ -6,6 +6,11 @@ namespace Windows.UI.Composition
 	{
 		private CompositionBrush _brush;
 
+		public SpriteVisual(Compositor compositor) : base(compositor)
+		{
+
+		}
+
 		public CompositionBrush Brush
 		{
 			get

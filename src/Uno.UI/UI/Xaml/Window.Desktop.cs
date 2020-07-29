@@ -1,4 +1,4 @@
-#if NET461
+#if NET461 || __NETSTD_REFERENCE__
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;

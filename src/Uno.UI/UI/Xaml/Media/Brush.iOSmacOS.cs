@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Media
 	// iOS partial for SolidColorBrush
 	public partial class Brush
 	{
-		internal static IDisposable AssignAndObserveBrush(Brush b, Action<CGColor> colorSetter)
+		internal static IDisposable AssignAndObserveBrush(Brush b, Action<CGColor> colorSetter, Action imageBrushCallback = null)
 		{
 
 			if (b is SolidColorBrush colorBrush)

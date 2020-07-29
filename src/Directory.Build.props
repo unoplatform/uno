@@ -26,18 +26,49 @@
     <!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
     <Version>255.255.255.255</Version>
 
-    <Product>$(AssemblyName) ($(TargetFramework))</Product>
     <DefaultLanguage>en-US</DefaultLanguage>
 
-    <UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
+	<UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
 
-    <!-- Disable source link when not building on GitHub -->
+	<!-- Disable generation controller to conserver CI server memory -->
+	<UnoSourceGeneratorUseGenerationController Condition="'$(CI_Build)'=='true'">false</UnoSourceGeneratorUseGenerationController>
+
+	<!-- Disable source link when not building on GitHub -->
     <SourceLinkEnabled Condition="'$(BUILD_REPOSITORY_PROVIDER)'!='GitHub'">false</SourceLinkEnabled>
 	<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
 	<Deterministic>true</Deterministic>
 	
 	<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
 	<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
+  </PropertyGroup>
+
+  <!--
+  Adjust the output paths for runtime project in order for those
+  projects to stay in the same folder as the original reference one.
+  -->
+  <PropertyGroup>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RuntimeTests.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RuntimeTests.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Skia.csproj</_AdjustedOutputProjects>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(_AdjustedOutputProjects.Contains('$(MSBuildProjectFile)'))">
+	<BaseOutputPath>bin\$(MSBuildProjectName)</BaseOutputPath>
+	<BaseIntermediateOutputPath>obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+	<DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Gets the first sub-view of this control or null if there is none
 		/// </summary>
-		public IFrameworkElement GetTemplateRoot()
+		internal IFrameworkElement GetTemplateRoot()
 		{
 			return this.GetChildren()?.FirstOrDefault() as IFrameworkElement;
 		}

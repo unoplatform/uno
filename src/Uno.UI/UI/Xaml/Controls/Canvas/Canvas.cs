@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 
 
 		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true)]
-		public static readonly DependencyProperty LeftProperty = CreateLeftProperty();
+		public static DependencyProperty LeftProperty { get ; } = CreateLeftProperty();
 
 		private static void OnLeftChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 			=> SetTopValue(obj, value);
 
 		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true)]
-		public static readonly DependencyProperty TopProperty = CreateTopProperty();
+		public static DependencyProperty TopProperty { get ; } = CreateTopProperty();
 
 		private static void OnTopChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 			=> SetZIndexValue(obj, value);
 
 		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true)]
-		public static readonly DependencyProperty ZIndexProperty = CreateZIndexProperty();
+		public static DependencyProperty ZIndexProperty { get ; } = CreateZIndexProperty();
 
 		private static void OnZIndexChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

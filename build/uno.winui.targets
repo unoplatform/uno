@@ -4,6 +4,8 @@
 	<PropertyGroup>
 		<SourceGeneratorBasePath Condition="'$(SourceGeneratorBasePath)'==''">..\</SourceGeneratorBasePath>
 		<UnoUIMSBuildTasksTargetPath Condition="'$(UnoUIMSBuildTasksTargetPath)'==''"></UnoUIMSBuildTasksTargetPath>
+
+		<_IsUnoPlatform>true</_IsUnoPlatform>
 	</PropertyGroup>
 
 	<Import Project="$(SourceGeneratorBasePath)Uno.UI.SourceGenerators.props" />
@@ -24,6 +26,10 @@
 			<UnoDefineConstants Condition="'$(MSBuildThisFile)'=='uno.winui.targets'">$(UnoDefineConstants);HAS_UNO_WINUI</UnoDefineConstants>
 			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_FRAMEWORKELEMENT_MEASUREOVERRIDE</UnoDefineConstants>
 			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_NO_IDEPENDENCYOBJECT</UnoDefineConstants>
+		</PropertyGroup>
+
+		<PropertyGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard' or '$(TargetFrameworkIdentifier)'=='.NETCoreApp'">
+			<UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API</UnoDefineConstants>
 		</PropertyGroup>
 
 		<!-- Merge the UnoDefineConstants with the existing constants -->
@@ -51,6 +57,130 @@
     <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
   </ItemGroup>
 
+  <!-- List of packages that provide an uno-runtime folder -->
+  <ItemGroup>
+	<UnoRuntimeEnabledPackage Include="Uno.UI" PackageBasePath="$(MSBuildThisFileDirectory).." />
+	<UnoRuntimeEnabledPackage Include="Uno.WinUI" PackageBasePath="$(MSBuildThisFileDirectory).." />
+  </ItemGroup>
+
+  <!-- Target used to override the runtime for netstandard2.0 based targets -->
+  <Target Name="ReplaceUnoRuntime"
+				Condition="'$(UnoRuntimeIdentifier)'!=''"
+				BeforeTargets="_CopyFilesMarkedCopyLocal;CopyFilesToOutputDirectory">
+	<ItemGroup>
+
+	  <!-- Create a list of all copy local items that are part of the UnoRuntimeEnabledPackage items -->
+	  <_ItemsFromUnoToRemove Include="@(RuntimeCopyLocalItems)" EnabledIdentity="%(UnoRuntimeEnabledPackage.Identity)" />
+	  <_ItemsFromUnoToRemove Remove="@(_ItemsFromUnoToRemove)" Condition="'%(_ItemsFromUnoToRemove.NuGetPackageId)'!='%(_ItemsFromUnoToRemove.EnabledIdentity)'" />
+
+	  <!-- Remove them from the files to be copied to the output -->
+	  <ReferenceCopyLocalPaths Remove="@(_ItemsFromUnoToRemove)" />
+
+	  <_UnoRuntimeEnabledPackage_EmptyPackageBasePath
+	  Include="@(UnoRuntimeEnabledPackage)"
+	  Condition="'%(UnoRuntimeEnabledPackage.PackageBasePath)'==''" />
+
+	  <!-- Add the files for the current selected runtime identifier -->
+	  <ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/**" />
+	</ItemGroup>
+
+	<Error
+		Text="The package(s) [@(_UnoRuntimeEnabledPackage_EmptyPackageBasePath)] do not define the UnoRuntimeEnabledPackage.PackageBasePath metadata. Make sure to add one to specify the current location of the targets file."
+		Condition="'@(_UnoRuntimeEnabledPackage_EmptyPackageBasePath)'!=''" />
+  </Target>
+
+  <!-- Force a rebuild on runtime files changes -->
+  <ItemGroup Condition="'$(UnoRuntimeIdentifier)'!=''">
+	<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../../uno-runtime/*" />
+  </ItemGroup>
+
+  <!-- Backward compatibility validation -->
+  <Target Name="_ValidateTopLevelPackageWasmUpgrade"
+				  Condition="'$(IsUnoHead)'!='true' and '$(WasmHead)'!=''"
+				  BeforeTargets="BeforeBuild">
+
+	<Error Text="WebAssembly head projects need to be updated to use the [Uno.UI.WebAssembly] package instead of the [Uno.UI] NuGet package." />
+  </Target>
+
+  <!--
+  Cross-runtime libraries creation targets
+  -->
+  <Target Name="PrepareUnoRuntimeProjectReferences" BeforeTargets="BeforeBuild">
+
+	<!--
+	Build the ProjectReference item group for UnoRuntimeProjectReference items.
+	The references are added as non-referencing ProjectReferences to enable the inclusion
+	of their output in the final nuget package.
+	-->
+	<ItemGroup>
+	  <ProjectReference Include="%(UnoRuntimeProjectReference.Identity)">
+		<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+		<UndefineProperties>TargetFramework</UndefineProperties>
+	  </ProjectReference>
+	</ItemGroup>
+
+  </Target>
+
+  <Target Name="ResolvePrepareUnoRuntimeProjectReferences" AfterTargets="ResolveProjectReferences">
+
+	<!-- Execute UnoRuntimeGetTargetPath for all UnoRuntimeProjectReference to get their actual output -->
+	<MSBuild
+	  Projects="@(UnoRuntimeProjectReference)"
+	  Targets="UnoRuntimeGetTargetPath"
+	  BuildInParallel="$(BuildInParallel)"
+	  Properties="Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(TargetFramework)"
+	  ContinueOnError="!$(BuildingProject)">
+
+	  <Output TaskParameter="TargetOutputs" ItemName="UnoRuntimeProjectReferenceOutput" />
+	</MSBuild>
+
+	<ItemGroup>
+	  <!-- Add the appropriate metadata to include those files -->
+	  <UnoRuntimeProjectReferenceOutput Update="@(UnoRuntimeProjectReferenceOutput)">
+		<Pack>true</Pack>
+		<PackagePath>uno-runtime/%(UnoRuntimeIdentifier)</PackagePath>
+	  </UnoRuntimeProjectReferenceOutput>
+
+	  <!-- Include symbols as well, if available -->
+	  <UnoRuntimeProjectReferenceOutput
+		  Include="@(UnoRuntimeProjectReferenceOutput->'%(rootdir)%(directory)%(filename).pdb')"
+		  Condition="exists('%(rootdir)%(directory)%(filename).pdb')">
+		<Pack>true</Pack>
+		<PackagePath>uno-runtime/%(UnoRuntimeIdentifier)</PackagePath>
+	  </UnoRuntimeProjectReferenceOutput>
+
+	</ItemGroup>
+
+	<ItemGroup>
+	  <TfmSpecificPackageFile Include="@(UnoRuntimeProjectReferenceOutput)" />
+	</ItemGroup>
+
+	<RemoveDuplicates Inputs="@(TfmSpecificPackageFile)">
+	  <Output TaskParameter="Filtered" ItemName="FilteredUnoRuntimeProjectReferenceOutput" />
+	</RemoveDuplicates>
+	
+	<ItemGroup>
+	  <TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)" />
+	  <TfmSpecificPackageFile Include="@(FilteredUnoRuntimeProjectReferenceOutput)" />
+	</ItemGroup>
+  </Target>
+
+  <!-- Target used to determine the outputs of a project alongs with its associated UnoRuntimeIdentifier -->
+  <Target
+	  Name="UnoRuntimeGetTargetPath"
+	  DependsOnTargets="GetTargetPath"
+	  Returns="@(UnoRuntimeTargetPathWithTargetPlatformMoniker)">
+
+	<ItemGroup>
+	  <UnoRuntimeTargetPathWithTargetPlatformMoniker
+		  Include="@(TargetPathWithTargetPlatformMoniker)"
+		  UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLower())" />
+	</ItemGroup>
+
+  </Target>
+
+
   <!--
   Target used to warn the developer that overriden package binaries have been placed in the nuget cache.
   -->
@@ -76,5 +206,7 @@
              Text="======================================"
              ContinueOnError="true" />
   </Target>
+
+  <Import Project="uno.winui.cross-runtime.targets" />
 
 </Project>
