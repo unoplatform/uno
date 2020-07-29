@@ -2951,7 +2951,8 @@
     </Setter>
   </Style>
   <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemRevealStyle}" />
-  <Style TargetType="GridViewItem" BasedOn="{StaticResource GridViewItemRevealStyle}" />
+  <!--UNO TODO: ListViewItemPresenter isn't supported https://github.com/unoplatform/uno/issues/1444-->
+  <!--<Style TargetType="GridViewItem" BasedOn="{StaticResource GridViewItemRevealStyle}" />-->
   <Style TargetType="ComboBoxItem" BasedOn="{StaticResource ComboBoxItemRevealStyle}" />
   <Style TargetType="CommandBar" BasedOn="{StaticResource CommandBarRevealStyle}" />
 </ResourceDictionary>

@@ -8150,7 +8150,6 @@
     </Setter>
   </Style>
   <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemExpanded}" />
-  <Style TargetType="GridViewItem" BasedOn="{StaticResource GridViewItemRevealStyle}" />
   <Style TargetType="ComboBoxItem">
     <Setter Property="Foreground" Value="{ThemeResource ComboBoxItemForeground}" />
     <Setter Property="Background" Value="{ThemeResource ComboBoxItemBackground}" />
