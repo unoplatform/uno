@@ -80,7 +80,11 @@ namespace Windows.UI.Composition
 			switch (_owner.Foreground)
 			{
 				case SolidColorBrush scb:
-					_paint.Color = new SKColor(red: scb.Color.R, green: scb.Color.G, blue: scb.Color.B, alpha: scb.Color.A);
+					_paint.Color = new SKColor(
+						red: scb.Color.R,
+						green: scb.Color.G,
+						blue: scb.Color.B,
+						alpha: (byte)(scb.Color.A * Compositor.CurrentOpacity));
 					break;
 			}
 		}
