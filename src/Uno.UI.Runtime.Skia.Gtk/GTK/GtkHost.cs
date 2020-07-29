@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.Extensions;
 using Uno.Foundation.Extensibility;
+using Uno.Logging;
 using Windows.UI.Xaml;
 using WUX = Windows.UI.Xaml;
 
@@ -11,13 +13,16 @@ namespace Uno.UI.Runtime.Skia
 {
 	public class GtkHost
 	{
+		private readonly string[] _args;
 		private Func<WUX.Application> _appBuilder;
 		private static Gtk.Window _window;
+		private UnoDrawingArea _area;
 
 		public static Gtk.Window Window => _window;
 
 		public GtkHost(Func<WUX.Application> appBuilder, string[] args)
 		{
+			_args = args;
 			_appBuilder = appBuilder;
 		}
 
@@ -48,7 +53,11 @@ namespace Uno.UI.Runtime.Skia
 
 				   GLib.Idle.Add(delegate
 				   {
-					   Console.WriteLine("iteration");
+					   if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+					   {
+						   this.Log().Trace($"Iteration");
+					   }
+
 					   try
 					   {
 						   d();
@@ -71,11 +80,11 @@ namespace Uno.UI.Runtime.Skia
 				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
 			};
 
-			var area = new UnoDrawingArea();
-			_window.Add(area);
+			_area = new UnoDrawingArea();
+			_window.Add(_area);
 
 			/* avoids double invokes at window level */
-			area.AddEvents((int)(
+			_area.AddEvents((int)(
 				Gdk.EventMask.PointerMotionMask
 			 | Gdk.EventMask.ButtonPressMask
 			 | Gdk.EventMask.ButtonReleaseMask
@@ -83,9 +92,14 @@ namespace Uno.UI.Runtime.Skia
 
 			_window.ShowAll();
 
-			WUX.Application.Start(_ => _appBuilder());
+			WUX.Application.Start(_ => _appBuilder(), _args);
 
 			Gtk.Application.Run();
+		}
+
+		public void TakeScreenshot(string filePath)
+		{
+			_area.TakeScreenshot(filePath);
 		}
 	}
 }

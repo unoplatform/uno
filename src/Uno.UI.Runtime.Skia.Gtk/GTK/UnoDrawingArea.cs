@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.Logging;
@@ -42,7 +43,7 @@ namespace Uno.UI.Runtime.Skia
 				this.Log().Trace($"Render {renderCount++}");
 			}
 
-			var dpi = (Window.Screen?.Resolution ?? 1) / 96.0;
+			var dpi = 1; // (Window.Screen?.Resolution ?? 1) / 96.0;
 
 			width = (int)AllocatedWidth;
 			height = (int)AllocatedHeight;
@@ -77,6 +78,14 @@ namespace Uno.UI.Runtime.Skia
 			}
 
 			return true;
+		}
+
+		internal void TakeScreenshot(string filePath)
+		{
+			using Stream memStream = File.Open(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+			using SKManagedWStream wstream = new SKManagedWStream(memStream);
+
+			bitmap.Encode(wstream, SKEncodedImageFormat.Png, 100);
 		}
 	}
 }

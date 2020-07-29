@@ -237,13 +237,13 @@ namespace SampleControl.Presentation
 			"Animations.EasingDoubleKeyFrame_CompositeTransform",
 		};
 
-		private async Task RecordAllTests(CancellationToken ct)
+		internal async Task RecordAllTests(CancellationToken ct, string screenShotPath = "")
 		{
 			try
 			{
 				IsSplitVisible = false;
 
-				var folderName = "UITests-" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff", CultureInfo.InvariantCulture);
+				var folderName = Path.Combine(screenShotPath, "UITests-" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff", CultureInfo.InvariantCulture));
 
 				await DumpOutputFolderName(ct, folderName);
 

@@ -391,7 +391,6 @@ namespace SampleControl.Presentation
 			}
 		}
 
-
 		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 	}
 }

@@ -18,6 +18,7 @@ namespace Windows.UI.Xaml
 	public partial class Application : IApplicationEvents
 	{
 		private static bool _startInvoked = false;
+		private static string[] _args;
 		private readonly IApplicationExtension _coreWindowExtension;
 
 		public Application()
@@ -33,6 +34,11 @@ namespace Windows.UI.Xaml
 			}
 
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+		}
+		internal static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback, string[] args)
+		{
+			_args = args;
+			Start(callback);
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
@@ -55,7 +61,7 @@ namespace Windows.UI.Xaml
 
 				Current = this;
 
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, ""));
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, string.Join(";", _args)));
 			}
 		}
 
