@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 		internal static bool UseContentInsetAdjustmentBehavior => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
 
 		/// <summary>
-		/// The <see cref="UIScrollView"/> which will actually scroll. Mostly this will be identical to <see cref="_sv"/>, but if we're inside a
+		/// The <see cref="UIScrollView"/> which will actually scroll. Mostly this will be identical to <see cref="_presenter"/>, but if we're inside a
 		/// multi-line TextBox we set it to <see cref="MultilineTextBoxView"/>.
 		/// </summary>
 		private IUIScrollView _scrollableContainer;
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetScrollableContainer()
 		{
-			_scrollableContainer = _sv;
+			_scrollableContainer = _presenter;
 
 			if (this.FindFirstParent<TextBox>() != null)
 			{
@@ -75,12 +75,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				case ZoomMode.Disabled:
 				default:
-					_sv?.OnMinZoomFactorChanged(1f);
-					_sv?.OnMaxZoomFactorChanged(1f);
+					_presenter?.OnMinZoomFactorChanged(1f);
+					_presenter?.OnMaxZoomFactorChanged(1f);
 					break;
 				case ZoomMode.Enabled:
-					_sv?.OnMinZoomFactorChanged(MinZoomFactor);
-					_sv?.OnMaxZoomFactorChanged(MaxZoomFactor);
+					_presenter?.OnMinZoomFactorChanged(MinZoomFactor);
+					_presenter?.OnMaxZoomFactorChanged(MaxZoomFactor);
 					break;
 			}
 		}
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				_sv.ContentInset = new UIEdgeInsets((nfloat)insetTop, (nfloat)insetLeft, 0, 0);
+				_presenter.ContentInset = new UIEdgeInsets((nfloat)insetTop, (nfloat)insetLeft, 0, 0);
 			}
 		}
 

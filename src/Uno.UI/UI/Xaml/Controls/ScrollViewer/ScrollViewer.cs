@@ -36,16 +36,13 @@ namespace Windows.UI.Xaml.Controls
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
 		internal const string ScrollContentPresenterPartName = "ScrollContentPresenter";
+		private const string VerticalScrollBarPartName = "VerticalScrollBar";
+		private const string HorizontalScrollBarPartName = "HorizontalScrollBar";
 
 		/// <summary>
 		/// Occurs when manipulations such as scrolling and zooming have caused the view to change.
 		/// </summary>
 		public event EventHandler<ScrollViewerViewChangedEventArgs> ViewChanged;
-
-		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
-
-		internal Size ViewportMeasureSize { get; private set; }
-		internal Size ViewportArrangeSize { get; private set; }
 
 		static ScrollViewer()
 		{
@@ -71,19 +68,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void InitializePartial();
-
-		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
-		{
-			if (VerticalOffset != 0 || HorizontalOffset != 0 || ZoomFactor != 1)
-			{
-				ChangeView(
-					horizontalOffset: 0,
-					verticalOffset: 0,
-					zoomFactor: 1,
-					disableAnimation: true
-				);
-			}
-		}
 
 		#region HorizontalScrollBarVisibility (Attached DP - inherited)
 		public static ScrollBarVisibility GetHorizontalScrollBarVisibility(DependencyObject obj)
@@ -115,9 +99,9 @@ namespace Windows.UI.Xaml.Controls
 #if XAMARIN
 			var view = dependencyObject as ScrollViewer;
 
-			if (view?._sv != null)
+			if (view?._presenter != null)
 			{
-				view._sv.HorizontalScrollBarVisibility = view.HorizontalScrollBarVisibility;
+				view._presenter.HorizontalScrollBarVisibility = view.HorizontalScrollBarVisibility;
 				view.InvalidateMeasure();
 			}
 #endif
@@ -152,10 +136,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 #if XAMARIN
 			var view = dependencyObject as ScrollViewer;
-			if (view?._sv != null)
+			if (view?._presenter != null)
 			{
 
-				view._sv.VerticalScrollBarVisibility = view.VerticalScrollBarVisibility;
+				view._presenter.VerticalScrollBarVisibility = view.VerticalScrollBarVisibility;
 				view.InvalidateMeasure();
 			}
 #endif
@@ -192,9 +176,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 #if XAMARIN
 			var view = dependencyObject as ScrollViewer;
-			if (view?._sv != null)
+			if (view?._presenter != null)
 			{
-				view._sv.HorizontalScrollMode = view.HorizontalScrollMode;
+				view._presenter.HorizontalScrollMode = view.HorizontalScrollMode;
 				view.InvalidateMeasure();
 			}
 #endif
@@ -234,9 +218,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 #if XAMARIN
 			var view = dependencyObject as ScrollViewer;
-			if (view?._sv != null)
+			if (view?._presenter != null)
 			{
-				view._sv.VerticalScrollMode = view.VerticalScrollMode;
+				view._presenter.VerticalScrollMode = view.VerticalScrollMode;
 				view.InvalidateMeasure();
 			}
 #endif
@@ -331,7 +315,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnMinZoomFactorChanged(DependencyPropertyChangedEventArgs args)
 		{
-			_sv?.OnMinZoomFactorChanged((float)args.NewValue);
+			_presenter?.OnMinZoomFactorChanged((float)args.NewValue);
 		}
 		#endregion
 
@@ -347,7 +331,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnMaxZoomFactorChanged(DependencyPropertyChangedEventArgs args)
 		{
-			_sv?.OnMaxZoomFactorChanged((float)args.NewValue);
+			_presenter?.OnMaxZoomFactorChanged((float)args.NewValue);
 		}
 		#endregion
 
@@ -482,6 +466,36 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(default(double)));
 		#endregion
 
+		#region ComputedHorizontalScrollBarVisibility (DP - readonly)
+		public static DependencyProperty ComputedHorizontalScrollBarVisibilityProperty { get; } =
+			DependencyProperty.Register(
+				"ComputedHorizontalScrollBarVisibility",
+				typeof(Visibility),
+				typeof(ScrollViewer),
+				new PropertyMetadata(default(Visibility)));
+
+		public Visibility ComputedHorizontalScrollBarVisibility
+		{
+			get => (Visibility)GetValue(ComputedHorizontalScrollBarVisibilityProperty);
+			private set => SetValue(ComputedHorizontalScrollBarVisibilityProperty, value);
+		}
+		#endregion
+
+		#region ComputedVerticalScrollBarVisibilityProperty (DP - readonly)
+		public static DependencyProperty ComputedVerticalScrollBarVisibilityProperty { get; } =
+			DependencyProperty.Register(
+				"ComputedVerticalScrollBarVisibility",
+				typeof(Visibility),
+				typeof(ScrollViewer),
+				new PropertyMetadata(default(Visibility)));
+
+		public Visibility ComputedVerticalScrollBarVisibility
+		{
+			get => (Visibility)GetValue(ComputedVerticalScrollBarVisibilityProperty);
+			private set => SetValue(ComputedVerticalScrollBarVisibilityProperty, value);
+		} 
+		#endregion
+
 		#region ScrollableHeight (DP - readonly)
 		public double ScrollableHeight
 		{
@@ -494,8 +508,20 @@ namespace Windows.UI.Xaml.Controls
 				"ScrollableHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(default(double), OnScrollableHeightChanged));
 
+		private static void OnScrollableHeightChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
+		{
+			if (o is ScrollViewer sv)
+			{
+				var scrollable = (double)args.NewValue;
+				var visibility = sv.VerticalScrollBarVisibility;
+				var mode = sv.VerticalScrollMode;
+
+				sv.ComputedVerticalScrollBarVisibility = ComputeScrollBarVisibility(scrollable, visibility);
+				sv.ComputedCanScrollVertically = ComputeCanScroll(scrollable, visibility, mode);
+			}
+		}
 		#endregion
 
 		#region ScrollableWidth (DP - readonly)
@@ -510,7 +536,20 @@ namespace Windows.UI.Xaml.Controls
 				"ScrollableWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(default(double), OnScrollableWidthChanged));
+
+		private static void OnScrollableWidthChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
+		{
+			if (o is ScrollViewer sv)
+			{
+				var scrollable = (double)args.NewValue;
+				var visibility = sv.HorizontalScrollBarVisibility;
+				var mode = sv.HorizontalScrollMode;
+
+				sv.ComputedHorizontalScrollBarVisibility = ComputeScrollBarVisibility(scrollable, visibility);
+				sv.ComputedCanScrollHorizontally = ComputeCanScroll(scrollable, visibility, mode);
+			}
+		}
 		#endregion
 
 		#region VerticalOffset (DP - readonly)
@@ -552,21 +591,50 @@ namespace Windows.UI.Xaml.Controls
 			);
 		#endregion
 
+		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
+
+#pragma warning disable 649 // unused member for Unit tests
+		private IScrollContentPresenter _presenter;
+#pragma warning restore 649 // unused member for Unit tests
+		private ScrollBar _verticalScrollbar;
+		private ScrollBar _horizontalScrollbar;
+
+		/// <summary>
+		/// Gets the size of the Viewport used in the **CURRENT** (cf. remarks) or last measure
+		/// </summary>
+		/// <remarks>Unlike the LayoutInformation.GetAvailableSize(), this property is set **BEFORE** measuring the children of the ScrollViewer</remarks>
+		internal Size ViewportMeasureSize { get; private set; }
+
+		/// <summary>
+		/// Gets the size of the Viewport used in the **CURRENT** (cf. remarks) or last arrange
+		/// </summary>
+		/// <remarks>Unlike the LayoutInformation.GetLayoutSlot(), this property is set **BEFORE** arranging the children of the ScrollViewer</remarks>
+		internal Size ViewportArrangeSize { get; private set; }
+
 		/// <summary>
 		/// Cached value of <see cref="Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty"/>,
 		/// in order to not access the DP on each scroll (perf considerations)
 		/// </summary>
 		internal Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode UpdatesMode { get; set; }
 
-		private static void OnGenericPropertyChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var view = dependencyObject as View;
+		/// <summary>
+		/// If this flag is enabled, the ScrollViewer will report offsets less than 0 and greater than <see cref="ScrollableHeight"/> when 
+		/// 'overscrolling' on iOS. By default this is false, matching Windows behaviour.
+		/// </summary>
+		[UnoOnly]
+		public bool ShouldReportNegativeOffsets { get; set; } = false;
 
-			if (view != null)
-			{
-				view.InvalidateMeasure();
-			}
-		}
+		/// <summary>
+		/// Determines if the vertical scrolling is allowed or not.
+		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
+		/// </summary>
+		internal bool ComputedCanScrollVertically { get; private set; } = false;
+
+		/// <summary>
+		/// Determines if the vertical scrolling is allowed or not.
+		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
+		/// </summary>
+		internal bool ComputedCanScrollHorizontally { get; private set; } = false;
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -575,10 +643,6 @@ namespace Windows.UI.Xaml.Controls
 			return base.MeasureOverride(availableSize);
 		}
 
-#pragma warning disable 649 // unused member for Unit tests
-		private IScrollContentPresenter _sv;
-#pragma warning restore 649 // unused member for Unit tests
-
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			ViewportArrangeSize = finalSize;
@@ -586,7 +650,6 @@ namespace Windows.UI.Xaml.Controls
 			var size = base.ArrangeOverride(finalSize);
 
 			UpdateDimensionProperties();
-
 			UpdateZoomedContentAlignment();
 
 			return size;
@@ -601,8 +664,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
 			}
 
-			ViewportHeight = this.ActualHeight;
-			ViewportWidth = this.ActualWidth;
+			ViewportHeight = ActualHeight;
+			ViewportWidth = ActualWidth;
 
 			ExtentHeight = (Content as IFrameworkElement)?.ActualHeight ?? 0;
 			ExtentWidth = (Content as IFrameworkElement)?.ActualWidth ?? 0;
@@ -610,6 +673,31 @@ namespace Windows.UI.Xaml.Controls
 			ScrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
 			ScrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
 		}
+
+		private static Visibility ComputeScrollBarVisibility(double scrollable, ScrollBarVisibility visibility)
+		{
+			// Note: The ScrollMode DOES NOT impact the visibility of the ScrollBar, but just it's hit testability!
+
+			switch (visibility)
+			{
+				case ScrollBarVisibility.Auto when scrollable > 0:
+				case ScrollBarVisibility.Visible:
+					return Visibility.Visible;
+
+				default:
+				// case ScrollBarVisibility.Auto when scrollable <= 0:
+				// case ScrollBarVisibility.Hidden:
+				// case ScrollBarVisibility.Disabled:
+					return Visibility.Collapsed;
+			}
+		}
+
+		// Determines if the scrolling is enabled or not.
+		// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
+		private static bool ComputeCanScroll(double scrollable, ScrollBarVisibility visibility, ScrollMode mode)
+			=> scrollable > 0
+				&& visibility != ScrollBarVisibility.Disabled
+				&& mode != ScrollMode.Disabled;
 
 		/// <summary>
 		/// Sets the content of the ScrollViewer
@@ -627,10 +715,34 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
+			// Clean up previous template
+			if (_verticalScrollbar != null)
+			{
+				_verticalScrollbar.Scroll -= OnVerticalScrollBarScrolled;
+			}
+
+			if (_horizontalScrollbar != null)
+			{
+				_horizontalScrollbar.Scroll -= OnHorizontalScrollBarScrolled;
+			}
+
 			base.OnApplyTemplate();
 
-			var scpTemplatePart = this.GetTemplateChild(ScrollContentPresenterPartName);
-			_sv = scpTemplatePart as IScrollContentPresenter;
+			// Load new template
+			_verticalScrollbar = GetTemplateChild(VerticalScrollBarPartName) as ScrollBar;
+			if (_verticalScrollbar != null)
+			{
+				_verticalScrollbar.Scroll += OnVerticalScrollBarScrolled;
+			}
+
+			_horizontalScrollbar = GetTemplateChild(HorizontalScrollBarPartName) as ScrollBar;
+			if (_horizontalScrollbar != null)
+			{
+				_horizontalScrollbar.Scroll += OnHorizontalScrollBarScrolled;
+			}
+
+			var scpTemplatePart = GetTemplateChild(ScrollContentPresenterPartName);
+			_presenter = scpTemplatePart as IScrollContentPresenter;
 
 #if XAMARIN
 			if (scpTemplatePart is ScrollContentPresenter scp)
@@ -639,19 +751,19 @@ namespace Windows.UI.Xaml.Controls
 				// which will handle the actual scrolling
 				var nativeSCP = new NativeScrollContentPresenter();
 				scp.Content = nativeSCP;
-				_sv = nativeSCP;
+				_presenter = nativeSCP;
 			}
 #endif
 
-			if (_sv == null)
+			if (_presenter == null)
 			{
 				throw new InvalidOperationException("The template part ScrollContentPresenter could not be found or is not a ScrollContentPresenter");
 			}
 
-			_sv.HorizontalScrollBarVisibility = HorizontalScrollBarVisibility;
-			_sv.VerticalScrollBarVisibility = VerticalScrollBarVisibility;
-			_sv.HorizontalScrollMode = HorizontalScrollMode;
-			_sv.VerticalScrollMode = VerticalScrollMode;
+			_presenter.HorizontalScrollBarVisibility = HorizontalScrollBarVisibility;
+			_presenter.VerticalScrollBarVisibility = VerticalScrollBarVisibility;
+			_presenter.HorizontalScrollMode = HorizontalScrollMode;
+			_presenter.VerticalScrollMode = VerticalScrollMode;
 
 			ApplyScrollContentPresenterContent();
 
@@ -665,11 +777,25 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnApplyTemplatePartial();
 
+		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
+		{
+			if (VerticalOffset != 0 || HorizontalOffset != 0 || ZoomFactor != 1)
+			{
+				ChangeView(
+					horizontalOffset: 0,
+					verticalOffset: 0,
+					zoomFactor: 1,
+					disableAnimation: true
+				);
+			}
+		}
+
+		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
 		protected override void OnContentChanged(object oldValue, object newValue)
 		{
 			base.OnContentChanged(oldValue, newValue);
 
-			if (_sv != null)
+			if (_presenter != null)
 			{
 				// remove the explicit templated parent propagation
 				// for the lack of TemplatedParentScope support
@@ -687,21 +813,17 @@ namespace Windows.UI.Xaml.Controls
 			// This prevents issues when the a ScrollViewer is hosted in a control template
 			// and its content is a ContentControl or ContentPresenter, which has a TemplateBinding
 			// on the Content property. This can make the Content added twice in the visual tree.
-			StopContentTemplatedParentPropagation();
-
-			_sv.Content = Content as View;
-
-			// Propagate the ScrollViewer's own templated parent, instead of 
-			// the scrollviewer itself (through ScrollContentPreset
-			SynchronizeContentTemplatedParent(TemplatedParent);
-		}
-
-		private void StopContentTemplatedParentPropagation()
-		{
 			if (Content is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.SetValue(provider.Store.TemplatedParentProperty, null, DependencyPropertyValuePrecedences.Local);
 			}
+
+			// Then explicitly propagate the Content to the _presenter
+			_presenter.Content = Content as View;
+
+			// Propagate the ScrollViewer's own templated parent, instead of 
+			// the scrollviewer itself (through ScrollContentPresenter)
+			SynchronizeContentTemplatedParent(TemplatedParent);
 		}
 
 		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)
@@ -716,11 +838,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_sizeChangedSubscription.Disposable = null;
 			}
-		}
 
-		private void OnElementSizeChanged(object sender, SizeChangedEventArgs args)
-		{
-			UpdateDimensionProperties();
+			void OnElementSizeChanged(object sender, SizeChangedEventArgs args)
+				=> UpdateDimensionProperties();
 		}
 
 		internal protected override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
@@ -745,14 +865,41 @@ namespace Windows.UI.Xaml.Controls
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
+		#endregion
 
-		/// <summary>
-		/// If this flag is enabled, the ScrollViewer will report offsets less than 0 and greater than <see cref="ScrollableHeight"/> when 
-		/// 'overscrolling' on iOS. By default this is false, matching Windows behaviour.
-		/// </summary>
-		[UnoOnly]
-		public bool ShouldReportNegativeOffsets { get; set; } = false;
+		private void OnVerticalScrollBarScrolled(object sender, ScrollEventArgs e)
+		{
+			// We animate only if the user clicked in the scroll bar, and disable otherwise
+			// (especially, we disable animation when dragging the thumb)
+			var immediate = e.ScrollEventType switch
+			{
+				ScrollEventType.LargeIncrement => false,
+				ScrollEventType.LargeDecrement => false,
+				ScrollEventType.SmallIncrement => false,
+				ScrollEventType.SmallDecrement => false,
+				_ => true
+			};
 
+			ChangeViewScroll(null, e.NewValue, disableAnimation: immediate);
+		}
+
+		private void OnHorizontalScrollBarScrolled(object sender, ScrollEventArgs e)
+		{
+			// We animate only if the user clicked in the scroll bar, and disable otherwise
+			// (especially, we disable animation when dragging the thumb)
+			var immediate = e.ScrollEventType switch
+			{
+				ScrollEventType.LargeIncrement => false,
+				ScrollEventType.LargeDecrement => false,
+				ScrollEventType.SmallIncrement => false,
+				ScrollEventType.SmallDecrement => false,
+				_ => true
+			};
+
+			ChangeViewScroll(e.NewValue, null, disableAnimation: immediate);
+		}
+
+		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
 			_pendingHorizontalOffset = horizontalOffset;
@@ -768,6 +915,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		// Presenter to Control, i.e. OnPresenterZoomed
 		internal void OnZoomInternal(float zoomFactor)
 		{
 			ZoomFactor = zoomFactor;
@@ -848,7 +996,6 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="verticalOffset">A value between 0 and ScrollableHeight that specifies the distance the content should be scrolled vertically.</param>
 		/// <param name="zoomFactor">A value between MinZoomFactor and MaxZoomFactor that specifies the required target ZoomFactor.</param>
 		/// <returns>true if the view is changed; otherwise, false.</returns>
-
 		public bool ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor) => ChangeView(horizontalOffset, verticalOffset, zoomFactor, false);
 
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation);

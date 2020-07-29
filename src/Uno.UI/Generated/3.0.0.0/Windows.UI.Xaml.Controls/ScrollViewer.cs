@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property VerticalSnapPointsAlignment
 		// Skipping already declared property VerticalScrollMode
 		// Skipping already declared property VerticalScrollBarVisibility
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Visibility ComputedHorizontalScrollBarVisibility
 		{
@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Visibility ComputedVerticalScrollBarVisibility
 		{
@@ -314,7 +314,7 @@ namespace Windows.UI.Xaml.Controls
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<float>)));
 		#endif
 		// Skipping already declared property BringIntoViewOnFocusChangeProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ComputedHorizontalScrollBarVisibilityProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -322,7 +322,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ComputedVerticalScrollBarVisibilityProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

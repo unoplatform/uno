@@ -160,21 +160,21 @@
 							</VisualStateGroup>
 						</win:VisualStateManager.VisualStateGroups>
 						<Grid Background="{TemplateBinding Background}">
-							<win:Grid.ColumnDefinitions>
+							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="Auto" />
-							</win:Grid.ColumnDefinitions>
-							<win:Grid.RowDefinitions>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
 								<RowDefinition Height="*" />
 								<RowDefinition Height="Auto" />
-							</win:Grid.RowDefinitions>
+							</Grid.RowDefinitions>
 							<!-- ContentTemplate not yet supported for ScrollContentPresenter-->
 							<ScrollContentPresenter x:Name="ScrollContentPresenter"
 													win:Grid.RowSpan="2"
 													win:Grid.ColumnSpan="2"
 													Margin="{TemplateBinding Padding}" />
 							<!--Currently in Uno scrollbars are handled by the ScrollContentPresenter, which inherits from the native scroll viewer.-->
-							<win:ScrollBar x:Name="VerticalScrollBar"
+							<ScrollBar x:Name="VerticalScrollBar"
 										   Grid.Column="1"
 										   IsTabStop="False"
 										   Maximum="{TemplateBinding ScrollableHeight}"
@@ -183,7 +183,7 @@
 										   Value="{TemplateBinding VerticalOffset}"
 										   ViewportSize="{TemplateBinding ViewportHeight}"
 										   HorizontalAlignment="Right" />
-							<win:ScrollBar x:Name="HorizontalScrollBar"
+							<ScrollBar x:Name="HorizontalScrollBar"
 										   IsTabStop="False"
 										   Maximum="{TemplateBinding ScrollableWidth}"
 										   Orientation="Horizontal"
@@ -191,7 +191,7 @@
 										   Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
 										   Value="{TemplateBinding HorizontalOffset}"
 										   ViewportSize="{TemplateBinding ViewportWidth}" />
-							<win:Border x:Name="ScrollBarSeparator"
+							<Border x:Name="ScrollBarSeparator"
 										Grid.Row="1"
 										Grid.Column="1"
 										Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" />

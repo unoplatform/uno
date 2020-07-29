@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer 
 	{
-		internal Size ScrollBarSize => (_sv as ScrollContentPresenter)?.ScrollBarSize ?? default;
+		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
 		public Color BackgroundColor
 		{
