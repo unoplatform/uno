@@ -2,18 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false
-	#if false
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum ByteOrder 
 	{
-		#if false
-		LittleEndian,
-		#endif
-		#if false
-		BigEndian,
-		#endif
+		// Skipping already declared field Windows.Storage.Streams.ByteOrder.LittleEndian
+		// Skipping already declared field Windows.Storage.Streams.ByteOrder.BigEndian
 	}
 	#endif
 }

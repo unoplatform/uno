@@ -2,72 +2,32 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if false
-	#if false
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum MidiMessageType 
 	{
-		#if false
-		None,
-		#endif
-		#if false
-		NoteOff,
-		#endif
-		#if false
-		NoteOn,
-		#endif
-		#if false
-		PolyphonicKeyPressure,
-		#endif
-		#if false
-		ControlChange,
-		#endif
-		#if false
-		ProgramChange,
-		#endif
-		#if false
-		ChannelPressure,
-		#endif
-		#if false
-		PitchBendChange,
-		#endif
-		#if false
-		SystemExclusive,
-		#endif
-		#if false
-		MidiTimeCode,
-		#endif
-		#if false
-		SongPositionPointer,
-		#endif
-		#if false
-		SongSelect,
-		#endif
-		#if false
-		TuneRequest,
-		#endif
-		#if false
-		EndSystemExclusive,
-		#endif
-		#if false
-		TimingClock,
-		#endif
-		#if false
-		Start,
-		#endif
-		#if false
-		Continue,
-		#endif
-		#if false
-		Stop,
-		#endif
-		#if false
-		ActiveSensing,
-		#endif
-		#if false
-		SystemReset,
-		#endif
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.None
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.NoteOff
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.NoteOn
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.PolyphonicKeyPressure
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.ControlChange
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.ProgramChange
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.ChannelPressure
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.PitchBendChange
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.SystemExclusive
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.MidiTimeCode
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.SongPositionPointer
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.SongSelect
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.TuneRequest
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.EndSystemExclusive
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.TimingClock
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.Start
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.Continue
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.Stop
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.ActiveSensing
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.SystemReset
 	}
 	#endif
 }

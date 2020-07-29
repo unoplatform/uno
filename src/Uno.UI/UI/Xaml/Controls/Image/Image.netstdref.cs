@@ -16,7 +16,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class Image : FrameworkElement
 	{
+#pragma warning disable 67
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
+#pragma warning restore 67
 	}
 }

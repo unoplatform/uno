@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !__NETSTD_REFERENCE__
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
@@ -64,3 +65,4 @@ namespace Windows.UI.Xaml.Controls
 
 	}
 }
+#endif

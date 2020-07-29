@@ -16,6 +16,7 @@ using Uno;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
+using Windows.Devices.Enumeration;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -65,8 +66,13 @@ namespace Windows.UI.Xaml.Media
 		#region Implementers API
 		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
+#if __NETSTD_REFERENCE__
+			image = default;
+			return false;
+#else
 			// Unlike other platforms, on WASM all the legacy sources are handled synchronously.
 			return TryOpenSourceLegacy(out image);
+#endif
 		}
 
 		private protected virtual bool TryOpenSourceAsync(int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
@@ -83,7 +89,7 @@ namespace Windows.UI.Xaml.Media
 				RequestOpen();
 			}
 		}
-		#endregion
+#endregion
 
 		private void RequestOpen(int? targetWidth = null, int? targetHeight = null)
 		{

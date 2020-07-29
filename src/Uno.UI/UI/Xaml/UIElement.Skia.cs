@@ -303,7 +303,7 @@ namespace Windows.UI.Xaml
 
 				Visual.Clip = new InsetClip() {
 					TopInset = (float)roundedRectClip.Top,
-					LeftInset = (float)roundedRectClip.Left),
+					LeftInset = (float)roundedRectClip.Left,
 					BottomInset = (float)roundedRectClip.Bottom,
 					RightInset = (float)roundedRectClip.Right,
 				};
