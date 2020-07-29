@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
-using GenericApp.Presentation.SamplePages;
+using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 #if NETFX_CORE
 using Windows.Foundation;

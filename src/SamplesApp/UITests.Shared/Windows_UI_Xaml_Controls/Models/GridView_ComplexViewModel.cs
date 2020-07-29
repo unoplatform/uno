@@ -1,36 +1,29 @@
-﻿using nVentive.Umbrella.Extensions;
-using nVentive.Umbrella.Presentation.Light;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Text;
-#if XAMARIN
-using nVentive.Umbrella.Views.UI.Xaml.Controls;
-#else
+using Uno.UI.Samples.UITests.Helpers;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
-#endif
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
 	public class GridView_ComplexViewModel : ViewModelBase
 	{
-		public GridView_ComplexViewModel()
+		public GridView_ComplexViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
 		{
-			Build(b => b
-				.Properties(pb => pb
-					.Attach("SampleItems", () => GetSampleItems())
-				)
-			);
+			SampleItems = GetSampleItems(coreDispatcher);
 		}
 
+		public object SampleItems { get; } 
 
-		private GridView_ComplexItemViewModel[] GetSampleItems()
+		private GridView_ComplexItemViewModel[] GetSampleItems(CoreDispatcher coreDispatcher)
 		{
 			return Enumerable
 				.Range(0, 100)
-				.Select(i => new GridView_ComplexItemViewModel
+				.Select(i => new GridView_ComplexItemViewModel(coreDispatcher)
 				{
 					Client_FirstName = $"FirstName {i}",
 					Client_LastName = $"LastName {i}",
@@ -53,12 +46,8 @@ namespace Uno.UI.Samples.Content.UITests.GridView
 
 	public class GridView_ComplexItemViewModel : ViewModelBase
 	{
-		public GridView_ComplexItemViewModel()
+		public GridView_ComplexItemViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
 		{
-			Build(b => b
-				.Properties(pb => pb
-				)
-			);
 		}
 
 		public string PatientImage { get; set; }

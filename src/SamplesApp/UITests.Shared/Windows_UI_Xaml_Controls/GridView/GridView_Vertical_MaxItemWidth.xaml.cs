@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Presentation.SamplePages;
 
 #if NETFX_CORE
 using Windows.Foundation;
@@ -22,7 +23,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "GridView_Vertical_MaxItemWidth", typeof(Presentation.SamplePages.GridView_Vertical_MaxItemWidthViewModel))]
+	[SampleControlInfoAttribute("GridView", "GridView_Vertical_MaxItemWidth", typeof(GridView_Vertical_MaxItemWidthViewModel))]
 	public sealed partial class GridView_Vertical_MaxItemWidth : UserControl
 	{
 		public GridView_Vertical_MaxItemWidth()

@@ -5,27 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using nVentive.Umbrella.Presentation.Light;
-using nVentive.Umbrella.Presentation.Light.Extensions;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using nVentive.Umbrella.Concurrency;
+using Uno.UI.Samples.UITests.Helpers;
+using Windows.UI.Core;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
 	public partial class ItemTemplateSelectorTestPageViewModel : ViewModelBase
 	{
 
-		public ItemTemplateSelectorTestPageViewModel()
+		public ItemTemplateSelectorTestPageViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
 		{
-			Build(b => b
-				.Properties(pb => pb
-					.Attach("ListItemsObsStatic", () => Observable.Interval(TimeSpan.FromMilliseconds(100), Schedulers.Default)
-						 .Select(i => GetSampleItemsSync()))
-				)
-			);
+			ListItemsObsStatic = GetSampleItemsSync();
 		}
-		
+
+		public object ListItemsObsStatic { get; }
+
+
 		private ListItem[] GetSampleItemsSync()
 		{
 			return ColourList;

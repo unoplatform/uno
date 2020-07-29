@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using nVentive.Umbrella.Views.Extensions;
+using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
-
+using Uno.UI.Samples.UITests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "GridViewFirstVisibleIndex", typeof(nVentive.Umbrella.Presentation.Light.ViewModelBase), description: "GridView with FirstVisibleIndex and LastVisibleIndex shown")]
+	[SampleControlInfoAttribute("GridView", "GridViewFirstVisibleIndex", typeof(ViewModelBase), description: "GridView with FirstVisibleIndex and LastVisibleIndex shown")]
 	public sealed partial class GridViewFirstVisibleIndex : UserControl
 	{
 		public GridViewFirstVisibleIndex()

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
+using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 #if NETFX_CORE
 using Windows.Foundation;
@@ -22,7 +23,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "HorizontalGridViewVariableItemHeight", typeof(Presentation.SamplePages.ListViewViewModel))]
+	[SampleControlInfoAttribute("GridView", "HorizontalGridViewVariableItemHeight", typeof(ListViewViewModel))]
 	public sealed partial class HorizontalGridViewVariableItemHeight : UserControl
 	{
 		public HorizontalGridViewVariableItemHeight()

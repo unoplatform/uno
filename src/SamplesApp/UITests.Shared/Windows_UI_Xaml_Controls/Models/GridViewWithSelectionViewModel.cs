@@ -1,10 +1,10 @@
-﻿using nVentive.Umbrella.Presentation.Light;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Text;
+using Uno.UI.Samples.UITests.Helpers;
+using Windows.UI.Core;
 #if XAMARIN
 using Windows.UI.Xaml.Controls;
 #else
@@ -15,20 +15,35 @@ namespace Uno.UI.Samples.Presentation.SamplePages.GridView
 {
 	public class GridViewWithSelectionViewModel : ViewModelBase
 	{
-		public GridViewWithSelectionViewModel()
+
+		public GridViewWithSelectionViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
 		{
-			Build(b => b
-				.Properties(pb => pb
-					.Attach("SampleItems", () => GetSampleItems())
-					.Attach(SelectionMode, () => ListViewSelectionMode.Single)
-					.AttachUserCommand("NoneSelection", async ct => SelectionMode.Value.OnNext(ListViewSelectionMode.None))
-					.AttachUserCommand("SingleSelection", async ct => SelectionMode.Value.OnNext(ListViewSelectionMode.Single))
-					.AttachUserCommand("MultipleSelection", async ct => SelectionMode.Value.OnNext(ListViewSelectionMode.Multiple))
-				)
-			);
+			// TODO: restore commands
+			//Build(b => b
+			//	.Properties(pb => pb
+			//		.Attach("SampleItems", () => GetSampleItems())
+			//		.Attach(SelectionMode, () => ListViewSelectionMode.Single)
+			//		.AttachUserCommand("NoneSelection", async ct => SelectionMode.Value.OnNext(ListViewSelectionMode.None))
+			//		.AttachUserCommand("SingleSelection", async ct => SelectionMode.Value.OnNext(ListViewSelectionMode.Single))
+			//		.AttachUserCommand("MultipleSelection", async ct => SelectionMode.Value.OnNext(ListViewSelectionMode.Multiple))
+			//	)
+			//);
+
+			SampleItems = GetSampleItems();
 		}
 
-		private IDynamicProperty<ListViewSelectionMode> SelectionMode => this.GetProperty<ListViewSelectionMode>();
+		public object SampleItems { get; }
+
+		private ListViewSelectionMode _selectionMode;
+		public ListViewSelectionMode SelectionMode
+		{
+			get => _selectionMode;
+			set
+			{
+				_selectionMode = value;
+				RaisePropertyChanged();
+			}
+		}
 
 
 		private string[] GetSampleItems()

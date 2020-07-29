@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 #if NETFX_CORE
 using Windows.Foundation;
@@ -22,7 +23,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-    [SampleControlInfo("GridView", "GridView_HeaderFooterTemplate", typeof(Uno.UI.Samples.Presentation.SamplePages.ListViewViewModel))]
+    [SampleControlInfo("GridView", "GridView_HeaderFooterTemplate", typeof(ListViewViewModel))]
     public sealed partial class GridView_HeaderFooterTemplate : UserControl
     {
         public GridView_HeaderFooterTemplate()

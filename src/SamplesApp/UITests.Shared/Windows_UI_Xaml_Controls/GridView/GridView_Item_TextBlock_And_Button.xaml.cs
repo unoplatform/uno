@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -18,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "GridView_Item_TextBlock_And_Button", typeof(Presentation.SamplePages.ListViewViewModel), description: "On Android, the TextBlock is trimmed and the button doesn't appear.")]
+	[SampleControlInfoAttribute("GridView", "GridView_Item_TextBlock_And_Button", typeof(ListViewViewModel), description: "On Android, the TextBlock is trimmed and the button doesn't appear.")]
 	public sealed partial class GridView_Item_TextBlock_And_Button : UserControl
     {
         public GridView_Item_TextBlock_And_Button()

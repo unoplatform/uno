@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Uno.UI.Samples.Controls;
 
 using Windows.Foundation;
@@ -17,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "GridViewVerticalGrouped", typeof(GenericApp.Presentation.SamplePages.ListViewGroupedViewModel))]
+	[SampleControlInfoAttribute("GridView", "GridViewVerticalGrouped", typeof(ListViewGroupedViewModel))]
 	public sealed partial class GridViewVerticalGrouped : UserControl
 	{
 		public GridViewVerticalGrouped()

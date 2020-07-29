@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 #if NETFX_CORE
 using Windows.Foundation;
@@ -22,7 +23,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "GridView_Inside_ScrollViewer", typeof(GenericApp.Presentation.SamplePages.ListViewGroupedViewModel))]
+	[SampleControlInfoAttribute("GridView", "GridView_Inside_ScrollViewer", typeof(ListViewGroupedViewModel))]
 	public sealed partial class GridView_Inside_ScrollViewer : UserControl
 	{
 		public GridView_Inside_ScrollViewer()

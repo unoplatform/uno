@@ -5,15 +5,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Reactive.Subjects;
-using System.Reactive.Threading.Tasks;
-using System.Reactive.Linq;
-using nVentive.Umbrella.Presentation;
-using nVentive.Umbrella.Extensions;
 using Uno.Extensions;
-using nVentive.Umbrella.Views.Services;
-using System.Reactive.Concurrency;
-using nVentive.Umbrella.Views.Extensions;
 using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -35,7 +27,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "GridView_ComplexItemTemplate", typeof(GridView_ComplexViewModel), ignoreInAutomatedTests: true)]
+	[SampleControlInfoAttribute("GridView", "GridView_ComplexItemTemplate", typeof(GridView_ComplexViewModel), ignoreInSnapshotTests: true)]
 	public sealed partial class GridView_ComplexItemTemplate : UserControl
 	{
 		public GridView_ComplexItemTemplate()
