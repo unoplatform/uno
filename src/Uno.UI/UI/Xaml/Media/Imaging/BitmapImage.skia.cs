@@ -40,7 +40,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 					{
 						var path = UriSource.PathAndQuery;
 
-						var filePath = global::System.IO.Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path, path.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar));
+						var filePath = global::System.IO.Path.Combine(
+							Windows.Application­Model.Package.Current.Installed­Location.Path,
+							path.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
+						);
 
 						using var fileStream = File.OpenRead(filePath);
 
