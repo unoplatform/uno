@@ -327,6 +327,11 @@ namespace Windows.UI.Xaml
 		{
 			ApplyStyle();
 			ApplyDefaultStyle();
+
+			if (this.GetVisualTreeParent() is FrameworkElement fe)
+			{
+				PropagateThemeScope(this, fe.ActualTheme);
+			}
 		}
 
 		/// <summary>

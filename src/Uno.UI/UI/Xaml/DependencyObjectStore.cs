@@ -1737,12 +1737,6 @@ namespace Windows.UI.Xaml
 
 		private void OnParentChanged(object? previousParent, object? value)
 		{
-			// if parent is FrameworkElement, propagate theme
-			if (value is FrameworkElement fe)
-			{
-				FrameworkElement.PropagateThemeScope(ActualInstance, fe.ActualTheme);
-			}
-
 			if (_parentChangedCallbacks.Data.Length != 0)
 			{
 				var actualInstanceAlias = ActualInstance;
