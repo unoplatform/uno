@@ -58,6 +58,10 @@ namespace Windows.UI.Xaml.Controls
 			_drawRect = GetDrawRect(rect);
 			if(UseLayoutManager)
 			{
+				// DrawGlyphsForGlyphRange is the method we want to use here since DrawBackgroundForGlyphRange is intended for something different.
+				// While DrawBackgroundForGlyphRange will draw the background mark for specified Glyphs DrawGlyphsForGlyphRange will draw the actual Glyphs.
+
+				// Note: This part of the code is called only under very specific situations. For most of the scenarios DrawString is used to draw the text.
 				_layoutManager?.DrawGlyphsForGlyphRange(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
 			}
 			else
