@@ -30,6 +30,14 @@
       href: platform-specific-csharp.md
     - name: Platform-specific XAML markup
       href: platform-specific-xaml.md
+    - name: Material Design
+      items:
+        - name: Getting started
+          href: material-design.md
+        - name: Android ToggleSwitch
+          href: material-toggleswitch.md
+        - name: Android DatePicker and TimePicker
+          href: material-datepicker-timepicker.md
     - name: Feature flags
       href: feature-flags.md
     - name: Uno.UI.Toolkit
