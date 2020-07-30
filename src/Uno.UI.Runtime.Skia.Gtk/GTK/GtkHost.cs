@@ -17,15 +17,9 @@ namespace Uno.UI.Runtime.Skia
 		private readonly Func<WUX.Application> _appBuilder;
 		private static Gtk.Window _window;
 		private UnoDrawingArea _area;
+		private GtkDisplayInformationExtension _displayInformationExtension;
 
 		public static Gtk.Window Window => _window;
-
-		static GtkHost()
-		{
-			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkUIElementPointersSupport(o));
-			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
-			ApiExtensibility.Register(typeof(IApplicationExtension), o => new GtkApplicationExtension(o));
-		}
 
 		public GtkHost(Func<WUX.Application> appBuilder, string[] args)
 		{
@@ -36,6 +30,11 @@ namespace Uno.UI.Runtime.Skia
 		public void Run()
 		{
 			Gtk.Application.Init();
+
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkUIElementPointersSupport(o));
+			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
+			ApiExtensibility.Register(typeof(IApplicationExtension), o => new GtkApplicationExtension(o));
+			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
 
 			_window = new Gtk.Window("Uno Host");
 			_window.SetDefaultSize(1024, 800);

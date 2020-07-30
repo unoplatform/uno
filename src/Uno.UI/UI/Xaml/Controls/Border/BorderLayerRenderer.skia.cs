@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Shapes
 			var compositor = parent.Compositor;
 			var area = owner.LayoutRound(state.Area);
 			var background = state.Background;
-			var borderThickness = state.BorderThickness;
+			var borderThickness = owner.LayoutRound(state.BorderThickness);
 			var borderBrush = state.BorderBrush;
 			var cornerRadius = state.CornerRadius;
 
@@ -108,8 +108,6 @@ namespace Windows.UI.Xaml.Shapes
 				Brush.AssignAndObserveBrush(borderBrush, color => spriteShape.StrokeBrush = compositor.CreateColorBrush(color))
 					.DisposeWith(disposables);
 				var path = GetRoundedPath(cornerRadius, adjustedArea);
-
-				var outerPath = GetRoundedPath(cornerRadius, area);
 
 				if (background is GradientBrush gradientBackground)
 				{
@@ -181,7 +179,7 @@ namespace Windows.UI.Xaml.Shapes
 						area.Height - borderThickness.Top - borderThickness.Bottom);
 
 					var insideArea = new Rect(default, fullArea.Size);
-					var insertionIndex = 0;
+					// var insertionIndex = 0;
 
 					// CreateGradientBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask: null);
 				}

@@ -1,0 +1,37 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: VS_Latest
+  timeoutInMinutes: 90
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    # This is required to be able to use hard links as much as possible
+    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: uno-skia-artifacts
+
+  - script: xcopy /s/e $(System.ArtifactsDirectory)\uno-skia-artifacts $(Build.SourcesDirectory)\build\skia-bin\
+    displayName: Copy Artifacts to build folder
+
+  - powershell: |
+        cd $(Build.SourcesDirectory)\build\skia-bin\
+        SamplesApp.Skia.Gtk.exe --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
+
+    displayName: Run Skia UI Tests
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container

@@ -48,7 +48,7 @@ namespace Windows.Graphics.Display
 		public double? DiagonalSizeInInches { get; private set; }
 #endif
 
-#if NET461 || __SKIA__ || __NETSTD_REFERENCE__
+#if NET461 || __NETSTD_REFERENCE__
 		[NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DisplayOrientations CurrentOrientation => DisplayOrientations.None;
 

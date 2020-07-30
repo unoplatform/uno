@@ -11,7 +11,7 @@ namespace Windows.UI.Composition
 {
 	public partial class Compositor
 	{
-		private Stack<float> _opacityStack = new Stack<float>();
+		private readonly Stack<float> _opacityStack = new Stack<float>();
 		private float _currentOpacity = 1.0f;
 
 		private OpacityDisposable PushOpacity(float opacity)

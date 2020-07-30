@@ -43,7 +43,7 @@ namespace Uno.UI.Runtime.Skia
 				this.Log().Trace($"Render {renderCount++}");
 			}
 
-			var dpi = 1; // (Window.Screen?.Resolution ?? 1) / 96.0;
+			var dpi = (Window.Screen?.Resolution ?? 1) / 96.0;
 
 			width = (int)AllocatedWidth;
 			height = (int)AllocatedHeight;
@@ -63,6 +63,8 @@ namespace Uno.UI.Runtime.Skia
 			{
 				surface.Canvas.Clear(SKColors.White);
 
+				surface.Canvas.Scale((float)dpi);
+
 				WUX.Window.Current.Compositor.Render(surface, info);
 
 				using (var gtkSurface = new Cairo.ImageSurface(
@@ -72,6 +74,7 @@ namespace Uno.UI.Runtime.Skia
 					bitmap.Width * 4))
 				{
 					gtkSurface.MarkDirty();
+					cr.Scale(1 / dpi, 1 / dpi);
 					cr.SetSourceSurface(gtkSurface, 0, 0);
 					cr.Paint();
 				}
