@@ -9,8 +9,8 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 	{
 		public List<CustomContent> Children = new List<CustomContent>();
 
-		private int nestingLevel;
-		private int index;
+		private readonly int nestingLevel;
+		private readonly int index;
 
 		public CustomContent(int nestingLevel = 3, int index = 0)
 		{
