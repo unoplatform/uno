@@ -21,8 +21,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || false || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public  global::Windows.UI.Xaml.Controls.Primitives.ProgressRingTemplateSettings TemplateSettings
 		{
 			get
