@@ -14,7 +14,7 @@ namespace Uno.UI.Runtime.Skia
 	public class GtkHost : ISkiaHost
 	{
 		private readonly string[] _args;
-		private Func<WUX.Application> _appBuilder;
+		private readonly Func<WUX.Application> _appBuilder;
 		private static Gtk.Window _window;
 		private UnoDrawingArea _area;
 

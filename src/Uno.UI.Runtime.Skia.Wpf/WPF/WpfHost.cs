@@ -2,6 +2,7 @@
 using SkiaSharp;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -26,9 +27,20 @@ namespace Uno.UI.Skia.Platform
 		[ThreadStatic] private static WpfHost _current;
 		public static WpfHost Current => _current;
 
-		public WpfHost(Func<WinUI.Application> appBuilder)
+		/// <summary>
+		/// Creates a WpfHost element to host a Uno-Skia into a WPF application.
+		/// </summary>
+		/// <remarks>
+		/// If args are omitted, those from Environment.GetCommandLineArgs() will be used.
+		/// </remarks>
+		public WpfHost(Func<WinUI.Application> appBuilder, string[] args = null)
 		{
 			_current = this;
+
+			args ??= Environment
+				.GetCommandLineArgs()
+				.Skip(1)
+				.ToArray();
 
 			designMode = DesignerProperties.GetIsInDesignMode(this);
 
@@ -38,7 +50,7 @@ namespace Uno.UI.Skia.Platform
 				app.Host = this;
 			}
 
-			WinUI.Application.Start(CreateApp);
+			WinUI.Application.Start(CreateApp, args);
 
 			WinUI.Window.Current.InvalidateRender += () => InvalidateVisual();
 
