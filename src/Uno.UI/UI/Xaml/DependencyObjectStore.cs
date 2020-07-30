@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml
 					{
 						TryRegisterInheritedProperties(parentProvider);
 					}
-					
+
 					OnParentChanged(previousParent, value);
 				}
 			}
@@ -1065,7 +1065,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.		
+		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
 		/// </summary>
 		/// <param name="isThemeChangedUpdate">Indicates whether the update is caused by theme change.</param>
 		/// <param name="elementTheme">Requested theme of the element.</param>

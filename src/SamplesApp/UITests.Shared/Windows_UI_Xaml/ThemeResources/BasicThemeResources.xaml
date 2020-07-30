@@ -72,7 +72,7 @@
 				<StackPanel Spacing="10"
 						RequestedTheme="Dark"
 						Grid.Column="1">
-					<Border x:Name="TestThemeBorder" Width="300"
+					<Border Width="300"
 						Height="50"
 						Background="{ThemeResource LocalThemeColor}">
 						<TextBlock>{ThemeResource} on a themed resource</TextBlock>

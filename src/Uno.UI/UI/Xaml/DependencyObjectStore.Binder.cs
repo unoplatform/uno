@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml
 			InvokeCompiledBindingsCallbacks();
 			
 			var theme = ElementTheme.Default;
-			if(ActualInstance is FrameworkElement frameworkElement)
+			if (ActualInstance is FrameworkElement frameworkElement)
 			{
 				theme = frameworkElement.ActualTheme;
 			}
