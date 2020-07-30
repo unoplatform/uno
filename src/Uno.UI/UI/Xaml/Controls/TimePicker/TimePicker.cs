@@ -115,6 +115,24 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		#region FlyoutPresenterStyle DependencyProperty
+		// FlyoutPresenterStyle is an Uno-only property to allow the styling of the TimePicker's FlyoutPresenter.
+		public Style FlyoutPresenterStyle
+		{
+			get { return (Style)this.GetValue(FlyoutPresenterStyleProperty); }
+			set { this.SetValue(FlyoutPresenterStyleProperty, value); }
+		}
+
+		public static DependencyProperty FlyoutPresenterStyleProperty { get; } =
+			DependencyProperty.Register(
+				"FlyoutPresenterStyle",
+				typeof(Style),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(
+					default(Style),
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+		#endregion
 
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -196,6 +214,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 #if __IOS__
 					Placement = FlyoutPlacement,
+					TimePickerFlyoutPresenterStyle = this.FlyoutPresenterStyle,
 #endif
 					Time = this.Time,
 					MinuteIncrement = this.MinuteIncrement,

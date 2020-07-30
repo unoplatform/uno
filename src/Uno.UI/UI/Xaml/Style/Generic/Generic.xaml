@@ -2140,9 +2140,8 @@
 	</ios:Style>
 
 	<ios:Style TargetType="TimePickerFlyoutPresenter">
-		<!-- System Color that properly changes for iOS, from white/black in light/dark theme -->
 		<Setter Property="Background"
-				Value="{ThemeResource TimePickerForegroundThemeBrush}" />
+				Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
 		<Setter Property="VerticalAlignment"
 				Value="Stretch" />
 		<Setter Property="HorizontalAlignment"
