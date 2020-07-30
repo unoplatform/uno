@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Shapes
 	{
 
 		#region RadiusY (DP)
-		public static readonly DependencyProperty RadiusYProperty = DependencyProperty.Register(
+		public static DependencyProperty RadiusYProperty { get ; } = DependencyProperty.Register(
 			"RadiusY",
 			typeof(double),
 			typeof(Rectangle),
@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Shapes
 		#endregion
 
 		#region RadiusX (DP)
-		public static readonly DependencyProperty RadiusXProperty = DependencyProperty.Register(
+		public static DependencyProperty RadiusXProperty { get ; } = DependencyProperty.Register(
 			"RadiusX",
 			typeof(double),
 			typeof(Rectangle),

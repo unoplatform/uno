@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private IFrameworkElement _templatedParent;
-		public IFrameworkElement TemplatedParent
+		internal IFrameworkElement TemplatedParent
 		{
 			get { return _templatedParent; }
 			set

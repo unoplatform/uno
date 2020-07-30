@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public class TextBoxViewDelegate : NSTextFieldDelegate
+	internal class TextBoxViewDelegate : NSTextFieldDelegate
 	{
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly WeakReference<TextBoxView> _textBoxView;

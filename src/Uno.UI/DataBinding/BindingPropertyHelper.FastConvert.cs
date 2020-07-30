@@ -58,6 +58,7 @@ namespace Uno.UI.DataBinding
 			{
 				Enum _ => FastEnumConvert(outputType, input, ref output),
 				bool boolInput => FastBooleanConvert(outputType, boolInput, ref output),
+				Windows.UI.Color color => FastColorConvert(outputType, color, ref output),
 				SolidColorBrush solidColorBrush => FastSolidColorBrushConvert(outputType, solidColorBrush, ref output),
 				ColorOffset colorOffsetInput => FastColorOffsetConvert(outputType, colorOffsetInput, ref output),
 				_ => false
@@ -91,6 +92,17 @@ namespace Uno.UI.DataBinding
 			if (outputType == typeof(Windows.UI.Color))
 			{
 				output = (Windows.UI.Color)input;
+				return true;
+			}
+
+			return false;
+		}
+
+		private static bool FastColorConvert(Type outputType, Windows.UI.Color color, ref object output)
+		{
+			if (outputType == typeof(SolidColorBrush))
+			{
+				output = new SolidColorBrush(color);
 				return true;
 			}
 

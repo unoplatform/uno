@@ -63,12 +63,12 @@ namespace Windows.UI.Xaml
 			set { this.SetValue(ClipProperty, value); }
 		}
 
-		public static readonly DependencyProperty ClipProperty =
+		public static DependencyProperty ClipProperty { get ; } =
 			DependencyProperty.Register(
 				"Clip",
 				typeof(RectangleGeometry),
 				typeof(UIElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((UIElement)s)?.OnClipChanged(e)
 				)
@@ -104,8 +104,8 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Backing dependency property for <see cref="RenderTransform"/>
 		/// </summary>
-		public static readonly DependencyProperty RenderTransformProperty =
-			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(UIElement), new PropertyMetadata(null, (s, e) => OnRenderTransformChanged(s, e)));
+		public static DependencyProperty RenderTransformProperty { get ; } =
+			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(UIElement), new FrameworkPropertyMetadata(null, (s, e) => OnRenderTransformChanged(s, e)));
 
 		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -142,8 +142,8 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for RenderTransformOrigin.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty RenderTransformOriginProperty =
-			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(UIElement), new PropertyMetadata(default(Point), (s, e) => OnRenderTransformOriginChanged(s, e)));
+		public static DependencyProperty RenderTransformOriginProperty { get ; } =
+			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(UIElement), new FrameworkPropertyMetadata(default(Point), (s, e) => OnRenderTransformOriginChanged(s, e)));
 
 		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -317,7 +317,7 @@ namespace Windows.UI.Xaml
 
 			if (NeedsClipToSlot)
 			{
-#if __WASM__
+#if NETSTANDARD
 				var boundsClipping = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
 #else
 				var boundsClipping = ClippedFrame ?? Rect.Empty;
@@ -395,7 +395,7 @@ namespace Windows.UI.Xaml
 
 		internal bool NeedsClipToSlot { get; set; }
 
-#if !__WASM__
+#if !NETSTANDARD
 		/// <summary>
 		/// Backing property for <see cref="Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize(UIElement)"/>
 		/// </summary>
@@ -422,7 +422,7 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-#if !__WASM__
+#if !NETSTANDARD
 		/// <summary>
 		/// This is the Frame that should be used as "available Size" for the Arrange phase.
 		/// </summary>
@@ -492,12 +492,12 @@ namespace Windows.UI.Xaml
 			internal set { SetValue(FocusStateProperty, value); }
 		}
 
-		public static DependencyProperty FocusStateProperty =
+		public static DependencyProperty FocusStateProperty { get; } =
 			DependencyProperty.Register(
 				"FocusState",
 				typeof(FocusState),
 				typeof(UIElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(FocusState)FocusState.Unfocused
 				)
 			);
@@ -512,12 +512,12 @@ namespace Windows.UI.Xaml
 			set { SetValue(IsTabStopProperty, value); }
 		}
 
-		public static DependencyProperty IsTabStopProperty =
+		public static DependencyProperty IsTabStopProperty { get; } =
 			DependencyProperty.Register(
 				"IsTabStop",
 				typeof(bool),
 				typeof(UIElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(bool)true,
 					(s, e) => ((Control)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
 				)

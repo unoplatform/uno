@@ -9,13 +9,9 @@ using Windows.UI.Xaml.Media;
 using CoreGraphics;
 #if __IOS__
 using UIKit;
-using _View = UIKit.UIView;
-using _Color = UIKit.UIColor;
 using _Image = UIKit.UIImage;
 #elif __MACOS__
 using AppKit;
-using _View = AppKit.NSView;
-using _Color = AppKit.NSColor;
 using _Image = AppKit.NSImage;
 #endif
 
@@ -99,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorderLayer();
 		}
 
-        partial void OnChildChangedPartial(_View previousValue, _View newValue)
+        partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
 		{
 			previousValue?.RemoveFromSuperview();
 

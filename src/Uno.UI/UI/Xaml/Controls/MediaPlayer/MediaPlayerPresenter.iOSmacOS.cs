@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private void SetVideoSurface(IVideoSurface videoSurface)
 		{
-			Child = videoSurface as _View;
+			Add(videoSurface as _View);
 			((_View)videoSurface).Frame = this.Frame;
 		}
 		

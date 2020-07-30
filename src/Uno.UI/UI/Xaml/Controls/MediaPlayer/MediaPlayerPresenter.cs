@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal bool IsTogglingFullscreen { get; set; }
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			// The control will get unloaded when going to full screen mode.
 			// Similar to UWP, the video should keep playing while changing mode.

@@ -16,7 +16,7 @@ using System.Collections;
 
 namespace Uno.UI.Controls
 {
-	public partial class BindableNSView : NSView, INotifyPropertyChanged, DependencyObject, IShadowChildrenProvider, IEnumerable
+	public partial class BindableNSView : NSView, DependencyObject, IShadowChildrenProvider, IEnumerable
 	{
 		private MaterializableList<NSView> _shadowChildren = new MaterializableList<NSView>(0);
 
@@ -48,8 +48,6 @@ namespace Uno.UI.Controls
 				_shadowChildren.RemoveAt(position);
 			}
 		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
 
 		public BindableNSView()
 		{
@@ -100,14 +98,6 @@ namespace Uno.UI.Controls
 			{
 				// TODO: Use AddSubview with foremost
 				// BringSubviewToFront(newShadow[i]);
-			}
-		}
-
-		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			if (PropertyChanged != null)
-			{
-				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 

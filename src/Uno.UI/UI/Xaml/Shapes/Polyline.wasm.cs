@@ -27,8 +27,15 @@ namespace Windows.UI.Xaml.Shapes
 
 		partial void OnPointsChanged()
 		{
-			var points = string.Join(" ", Points.Select(p => $"{p.X.ToStringInvariant()},{p.Y.ToStringInvariant()}"));
-			_polyline.SetAttribute("points", points);
+			var points = Points;
+			if (points == null)
+			{
+				_polyline.RemoveAttribute("points");
+			}
+			else
+			{
+				_polyline.SetAttribute("points", points.ToCssString());
+			}
 		}
 	}
 }

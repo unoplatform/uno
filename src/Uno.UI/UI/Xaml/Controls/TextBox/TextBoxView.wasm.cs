@@ -11,7 +11,7 @@ using Uno.UI.UI.Xaml.Documents;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextBoxView : FrameworkElement
+	internal partial class TextBoxView : FrameworkElement
 	{
 		private readonly TextBox _textBox;
 
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(ForegroundProperty, value);
 		}
 
-		internal static readonly DependencyProperty ForegroundProperty =
+		internal static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				name: "Foreground",
 				propertyType: typeof(Brush),
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool IsMultiline { get; }
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 			SetTextNative(_textBox.Text);
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 			

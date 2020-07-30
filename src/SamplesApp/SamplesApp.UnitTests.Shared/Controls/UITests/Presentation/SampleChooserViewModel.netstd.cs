@@ -1,4 +1,4 @@
-﻿#if __WASM__
+﻿#if __SKIA__
 using SampleControl.Entities;
 using System;
 using System.Collections;

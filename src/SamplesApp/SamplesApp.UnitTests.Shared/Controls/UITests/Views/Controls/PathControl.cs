@@ -31,7 +31,7 @@ namespace Uno.UI.Samples.Controls
 			get { return (Stretch)GetValue(StretchProperty); }
 			set { SetValue(StretchProperty, value); }
 		}
-		public static readonly DependencyProperty StretchProperty =
+		public static DependencyProperty StretchProperty { get ; } =
 			DependencyProperty.Register("Stretch", typeof(Stretch), typeof(PathControl), new PropertyMetadata(default(Stretch)));
 
 		public Geometry Data
@@ -40,7 +40,7 @@ namespace Uno.UI.Samples.Controls
 			set { SetValue(DataProperty, value); }
 		}
 
-		public static readonly DependencyProperty DataProperty =
+		public static DependencyProperty DataProperty { get ; } =
 			DependencyProperty.Register("Data", typeof(Geometry), typeof(PathControl), new PropertyMetadata(default(Geometry)));
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
@@ -65,7 +65,7 @@ namespace Uno.UI.Samples.Controls
 			set { SetValue(AnimationStoppedProperty, value); }
 		}
 
-		public static readonly DependencyProperty AnimationStoppedProperty =
+		public static DependencyProperty AnimationStoppedProperty { get ; } =
 			DependencyProperty.Register("AnimationStopped", typeof(bool), typeof(PathControl), new PropertyMetadata(false, OnAnimationStoppedChanged));
 
 		private static void OnAnimationStoppedChanged(object d, DependencyPropertyChangedEventArgs e)

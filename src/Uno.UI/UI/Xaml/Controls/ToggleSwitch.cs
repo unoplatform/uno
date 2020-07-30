@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ToggleSwitch);
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnLoadedPartial();
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
@@ -121,8 +121,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsOnProperty, value);
 		}
 
-		public static readonly DependencyProperty IsOnProperty =
-			DependencyProperty.Register("IsOn", typeof(bool), typeof(ToggleSwitch), new PropertyMetadata(false, propertyChangedCallback: (s, e) => ((ToggleSwitch)s).OnIsOnChanged(e)));
+		public static DependencyProperty IsOnProperty { get ; } =
+			DependencyProperty.Register("IsOn", typeof(bool), typeof(ToggleSwitch), new FrameworkPropertyMetadata(false, propertyChangedCallback: (s, e) => ((ToggleSwitch)s).OnIsOnChanged(e)));
 		#endregion
 
 		#region OnContentTemplate (DP)
@@ -132,8 +132,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(OnContentTemplateProperty, value);
 		}
 
-		public static readonly DependencyProperty OnContentTemplateProperty =
-			DependencyProperty.Register("OnContentTemplate", typeof(DataTemplate), typeof(ToggleSwitch), new PropertyMetadata(null));
+		public static DependencyProperty OnContentTemplateProperty { get; } =
+			DependencyProperty.Register("OnContentTemplate", typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 		#endregion
 
 		#region OffContentTemplate (DP)
@@ -143,8 +143,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(OffContentTemplateProperty, value);
 		}
 
-		public static readonly DependencyProperty OffContentTemplateProperty =
-			DependencyProperty.Register("OffContentTemplate", typeof(DataTemplate), typeof(ToggleSwitch), new PropertyMetadata(null));
+		public static DependencyProperty OffContentTemplateProperty { get; } =
+			DependencyProperty.Register("OffContentTemplate", typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 		#endregion
 
 		#region HeaderTemplate (DP)
@@ -154,8 +154,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderTemplateProperty, value);
 		}
 
-		public static readonly DependencyProperty HeaderTemplateProperty =
-			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(ToggleSwitch), new PropertyMetadata(null));
+		public static DependencyProperty HeaderTemplateProperty { get; } =
+			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 		#endregion
 
 		#region OnContent (DP)
@@ -165,8 +165,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(OnContentProperty, value);
 		}
 
-		public static readonly DependencyProperty OnContentProperty =
-			DependencyProperty.Register("OnContent", typeof(object), typeof(ToggleSwitch), new PropertyMetadata(null));
+		public static DependencyProperty OnContentProperty { get ; } =
+			DependencyProperty.Register("OnContent", typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null));
 		#endregion
 
 		#region OffContent (DP)
@@ -176,8 +176,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(OffContentProperty, value);
 		}
 
-		public static readonly DependencyProperty OffContentProperty =
-			DependencyProperty.Register("OffContent", typeof(object), typeof(ToggleSwitch), new PropertyMetadata(null));
+		public static DependencyProperty OffContentProperty { get ; } =
+			DependencyProperty.Register("OffContent", typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null));
 		#endregion
 
 		#region Header (DP)
@@ -187,8 +187,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderProperty, value);
 		}
 
-		public static readonly DependencyProperty HeaderProperty =
-			DependencyProperty.Register("Header", typeof(object), typeof(ToggleSwitch), new PropertyMetadata(null, (s, e) => ((ToggleSwitch)s)?.OnHeaderChanged(e)));
+		public static DependencyProperty HeaderProperty { get; } =
+			DependencyProperty.Register("Header", typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, (s, e) => ((ToggleSwitch)s)?.OnHeaderChanged(e)));
 
 		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e)
 		{

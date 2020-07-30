@@ -28,12 +28,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for FlyoutPresenterStyle.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty FlyoutPresenterStyleProperty =
+		public static DependencyProperty FlyoutPresenterStyleProperty { get ; } =
 			DependencyProperty.Register(
 				"FlyoutPresenterStyle",
 				typeof(Style),
 				typeof(Flyout),
-				new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.AffectsMeasure, OnFlyoutPresenterStyleChanged));
+				new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure, OnFlyoutPresenterStyleChanged));
 
 		private static void OnFlyoutPresenterStyleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -45,18 +45,18 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Content DependencyProperty
-		public IUIElement Content
+		public UIElement Content
 		{
-			get { return (IUIElement)this.GetValue(ContentProperty); }
+			get { return (UIElement)this.GetValue(ContentProperty); }
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentProperty =
+		public static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
-				typeof(IUIElement),
+				typeof(UIElement),
 				typeof(Flyout),
-				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
+				new FrameworkPropertyMetadata(default(UIElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
 		private FlyoutPresenter _presenter;
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)

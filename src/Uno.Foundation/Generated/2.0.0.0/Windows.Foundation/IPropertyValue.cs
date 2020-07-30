@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IPropertyValue 
@@ -43,7 +43,7 @@ namespace Windows.Foundation
 		// Skipping already declared method Windows.Foundation.IPropertyValue.GetStringArray(out string[])
 		// Skipping already declared method Windows.Foundation.IPropertyValue.GetInspectableArray(out object[])
 		// Skipping already declared method Windows.Foundation.IPropertyValue.GetGuidArray(out System.Guid[])
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void GetDateTimeArray(out global::System.DateTimeOffset[] value);
 		#endif
 		// Skipping already declared method Windows.Foundation.IPropertyValue.GetTimeSpanArray(out System.TimeSpan[])

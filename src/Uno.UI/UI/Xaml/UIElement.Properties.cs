@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
 		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true)]
-		public static readonly DependencyProperty IsHitTestVisibleProperty = CreateIsHitTestVisibleProperty();
+		public static DependencyProperty IsHitTestVisibleProperty { get ; } = CreateIsHitTestVisibleProperty();
 
 		public bool IsHitTestVisible
 		{
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = 1.0, ChangedCallback = true)]
-		public static readonly DependencyProperty OpacityProperty = CreateOpacityProperty();
+		public static DependencyProperty OpacityProperty { get ; } = CreateOpacityProperty();
 
 		public double Opacity
 		{
@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml
 		/// Sets the visibility of the current view
 		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = Visibility.Visible, ChangedCallback = true)]
-		public static readonly DependencyProperty VisibilityProperty = CreateVisibilityProperty();
+		public static DependencyProperty VisibilityProperty { get ; } = CreateVisibilityProperty();
 
 		public
 #if __ANDROID__
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = null)]
-		internal static readonly DependencyProperty KeyboardAcceleratorsProperty = CreateKeyboardAcceleratorsProperty();
+		internal static DependencyProperty KeyboardAcceleratorsProperty { get ; } = CreateKeyboardAcceleratorsProperty();
 
 		public IList<KeyboardAccelerator> KeyboardAccelerators
 		{

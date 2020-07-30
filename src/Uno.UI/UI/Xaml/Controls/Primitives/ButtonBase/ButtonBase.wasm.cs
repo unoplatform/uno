@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Tapped += (snd, evt) => { };
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			KeyDown += OnKeyDown;
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 

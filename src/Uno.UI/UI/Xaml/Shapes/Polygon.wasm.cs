@@ -23,8 +23,15 @@ namespace Windows.UI.Xaml.Shapes
 
 		partial void OnPointsChanged()
 		{
-			var points = string.Join(" ", Points.Select(p => $"{p.X.ToStringInvariant()},{p.Y.ToStringInvariant()}"));
-			_polygon.SetAttribute("points", points);
+			var points = Points;
+			if (points == null)
+			{
+				_polygon.RemoveAttribute("points");
+			}
+			else
+			{
+				_polygon.SetAttribute("points", points.ToCssString());
+			}
 		}
 	}
 }

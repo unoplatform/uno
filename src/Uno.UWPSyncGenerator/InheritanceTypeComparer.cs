@@ -10,7 +10,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			while(y?.BaseType?.Name != "Object")
 			{
-				if(x == y)
+				if(SymbolEqualityComparer.Default.Equals(x, y))
 				{
 					return true;
 				}

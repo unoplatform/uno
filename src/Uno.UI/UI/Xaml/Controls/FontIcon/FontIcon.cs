@@ -47,8 +47,8 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(GlyphProperty, value); }
 		}
 
-		public static readonly DependencyProperty GlyphProperty =
-			DependencyProperty.Register("Glyph", typeof(string), typeof(FontIcon), new PropertyMetadata(null,
+		public static DependencyProperty GlyphProperty { get ; } =
+			DependencyProperty.Register("Glyph", typeof(string), typeof(FontIcon), new FrameworkPropertyMetadata(null,
 				(s, e) => ((FontIcon)s).OnGlyphChanged((string)e.NewValue)));
 
 		private void OnGlyphChanged(string newValue)
@@ -69,12 +69,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontFamilyProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontFamilyProperty =
+		public static DependencyProperty FontFamilyProperty { get ; } =
 			DependencyProperty.Register(
 				name: nameof(FontFamily),
 				propertyType: typeof(FontFamily),
 				ownerType: typeof(FontIcon),
-				typeMetadata: new PropertyMetadata(
+				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont),
 					propertyChangedCallback: (s, e) => ((FontIcon)s).OnFontFamilyChanged((FontFamily)e.NewValue)
 				)
@@ -98,8 +98,8 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(FontStyleProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontStyleProperty =
-			DependencyProperty.Register("FontStyle", typeof(FontStyle), typeof(FontIcon), new PropertyMetadata(FontStyle.Normal,
+		public static DependencyProperty FontStyleProperty { get ; } =
+			DependencyProperty.Register("FontStyle", typeof(FontStyle), typeof(FontIcon), new FrameworkPropertyMetadata(FontStyle.Normal,
 				(s, e) => ((FontIcon)s).OnFontStyleChanged((FontStyle)e.NewValue)));
 
 		private void OnFontStyleChanged(FontStyle newValue)
@@ -120,8 +120,8 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontSizeProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontSizeProperty =
-			DependencyProperty.Register("FontSize", typeof(double), typeof(FontIcon), new PropertyMetadata(15.0,
+		public static DependencyProperty FontSizeProperty { get ; } =
+			DependencyProperty.Register("FontSize", typeof(double), typeof(FontIcon), new FrameworkPropertyMetadata(15.0,
 				(s, e) => ((FontIcon)s).OnFontSizeChanged((double)e.NewValue)));
 
 		private void OnFontSizeChanged(double newValue)

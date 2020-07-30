@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml
 			set { this.SetValue(StoryboardProperty, value); }
 		}
 
-		public static readonly DependencyProperty StoryboardProperty =
+		public static DependencyProperty StoryboardProperty { get ; } =
 			DependencyProperty.Register(
 				"Storyboard",
 				typeof(Storyboard),

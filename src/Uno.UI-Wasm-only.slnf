@@ -2,8 +2,8 @@
   "solution": {
     "path": "Uno.UI.sln",
     "projects": [
-      "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
-      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.csproj",
+      "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Wasm.csproj",
+      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Wasm.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
@@ -17,16 +17,20 @@
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "T4Generator\\T4Generator.csproj",
-      "Uno.Foundation\\Uno.Foundation.csproj",
+      "Uno.Foundation.Runtime.WebAssembly\\Uno.Foundation.Runtime.WebAssembly.csproj",
+      "Uno.Foundation\\Uno.Foundation.Wasm.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
-      "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.csproj",
-      "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
+      "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Wasm.csproj",
+      "Uno.UI.Runtime.WebAssembly.Compatibility\\Uno.UI.Runtime.WebAssembly.Compatibility.csproj",
+      "Uno.UI.Runtime.WebAssembly\\Uno.UI.Runtime.WebAssembly.csproj",
+      "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.Wasm.csproj",
       "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
-      "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
+      "Uno.UI.Toolkit\\Uno.UI.Toolkit.Wasm.csproj",
       "Uno.UI.Wasm.Tests\\Uno.UI.Wasm.Tests.csproj",
-      "Uno.UI.Wasm\\Uno.UI.Wasm.csproj",
-      "Uno.UI\\Uno.UI.csproj",
-      "Uno.UWP\\Uno.csproj"
+      "Uno.UI\\Uno.UI.Wasm.csproj",
+      "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
+      "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
+      "Uno.UWP\\Uno.Wasm.csproj"
     ]
   }
 }

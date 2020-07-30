@@ -42,7 +42,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.UserControlTests
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.RegisterAttached("MyProperty", typeof(int), typeof(UserControl_TopLevelBinding_AttachedProperty), new PropertyMetadata(0, OnMyPropertyChanged));
+			DependencyProperty.RegisterAttached("MyProperty", typeof(int), typeof(UserControl_TopLevelBinding_AttachedProperty), new FrameworkPropertyMetadata(0, OnMyPropertyChanged));
 
 		public static int MyPropertyChangedCount { get; private set; }
 

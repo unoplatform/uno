@@ -22,7 +22,7 @@ namespace UITests.Shared.Windows_Devices
 			set { SetValue(GeopositionProperty, value); }
 		}
 		
-		public static readonly DependencyProperty GeopositionProperty =
+		public static DependencyProperty GeopositionProperty { get ; } =
 			DependencyProperty.Register(nameof(Geoposition), typeof(Geoposition), typeof(GeopositionDisplayControl), new PropertyMetadata(null, GeopositionChanged));		
 
 

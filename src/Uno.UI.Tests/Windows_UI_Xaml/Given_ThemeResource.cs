@@ -11,6 +11,8 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -84,6 +86,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			control.InlineTemplateControl.ApplyTemplate();
 			control.TemplateFromResourceControl.ApplyTemplate();
+
+			control.ApplyTemplate();
 
 			var text2InlineBefore = control.InlineTemplateControl.TextBlock2.Text;
 			Assert.AreEqual("LocalVisualTree", text2InlineBefore);

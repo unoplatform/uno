@@ -16,14 +16,21 @@
 
     <dependencies>
 
-      <!-- Android 9.0 -->
-      <group targetFramework="MonoAndroid90">
-        <dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+	  <!-- Android 9.0 -->
+	  <group targetFramework="MonoAndroid90">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
-        <dependency id="Newtonsoft.Json" version="12.0.2" />
-      </group>
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+	  </group>
+	  
+	  <!-- Android 10.0 -->
+	  <group targetFramework="MonoAndroid10.0">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
-      <!-- iOS -->
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+	  </group>
+
+	  <!-- iOS -->
       <group targetFramework="xamarinios10">
         <dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
@@ -57,32 +64,49 @@
         <reference file="Uno.UI.RemoteControl.dll" />
       </group>
 
-      <!-- iOS -->
+      <!-- macOS -->
       <group targetFramework="xamarinmac20">
         <reference file="Uno.UI.RemoteControl.dll" />
       </group>
 
-      <!-- Android -->
-      <group targetFramework="MonoAndroid">
-        <reference file="Uno.UI.RemoteControl.dll" />
-      </group>
-      
-    </references>
+	  <!-- Android 9.0 -->
+	  <group targetFramework="MonoAndroid90">
+		<reference file="Uno.UI.RemoteControl.dll" />
+	  </group>
+
+	  <!-- Android 10.0 -->
+	  <group targetFramework="MonoAndroid10.0">
+		<reference file="Uno.UI.RemoteControl.dll" />
+	  </group>
+
+	</references>
   </metadata>
   
   <files>
     <!-- Remote Control -->
     <file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.dll" target="lib\netstandard2.0" />
     <file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.pdb" target="lib\netstandard2.0" />
-    
-    <file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid90\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid90" />
-    <file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid90\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid90" />
+
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid90\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid90" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid90\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid90" />
+
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid10.0\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid10.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid10.0\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid10.0" />
 
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinios10\Uno.UI.RemoteControl.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinios10\Uno.UI.RemoteControl.pdb" target="lib\xamarinios10" />
 
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinmac20\Uno.UI.RemoteControl.dll" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinmac20\Uno.UI.RemoteControl.pdb" target="lib\xamarinmac20" />
+
+	<!-- Build targets -->
+	<file src="..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
+
+	<!-- netstandard2.0 WebAssembly -->
+	<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\netstandard2.0\Uno.UI.RemoteControl.*" target="uno-runtime\webassembly" />
+
+	<!-- netstandard2.0 Skia -->
+	<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\netstandard2.0\Uno.UI.RemoteControl.*" target="uno-runtime\skia" />
 
 	<!-- Remote Control host and integration -->
     <file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\netcoreapp3.1\*.*" target="tools\rc\host" />

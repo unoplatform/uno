@@ -19,6 +19,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly bool _isPassword;
 		private ITextBoxView _textBoxView;
+		private TextBoxView _revealView;
+		private bool _isSecured = true;
 
 		protected TextBox(bool isPassword)
 		{
@@ -77,6 +79,8 @@ namespace Windows.UI.Xaml.Controls
 				if (_isPassword)
 				{
 					_textBoxView = new SecureTextBoxView(this) { UsesSingleLineMode = true };
+					_revealView = new TextBoxView(this) { UsesSingleLineMode = true };
+					_isSecured = true;
 				}
 				else
 				{
@@ -106,10 +110,8 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateFontPartial()
 		{
-			if (_textBoxView != null)
-			{
-				_textBoxView.UpdateFont();
-			}
+			_textBoxView?.UpdateFont();
+			_revealView?.UpdateFont();
 		}
 
 		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e)
@@ -199,11 +201,37 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_textBoxView.Foreground = newValue;
 			}
+			if (_revealView != null)
+			{
+				_revealView.Foreground = newValue;
+			}
 		}
 
-        protected void SetSecureTextEntry(bool isSecure)
-        {
-        }
+		protected void SetSecureTextEntry(bool isSecure)
+		{
+			if (_textBoxView == null || _revealView == null)
+			{
+				return;
+			}
+
+			if (_isSecured == isSecure)
+			{
+				return;
+			}
+
+			if (isSecure)
+			{
+				_contentElement.Content = _textBoxView;
+			}
+			else
+			{
+				_revealView.SetTextNative(Text);
+				_revealView.Frame = _contentElement.Frame;
+				_contentElement.Content = _revealView;
+			}
+
+			_isSecured = isSecure;
+		}
 
 	}
 }
