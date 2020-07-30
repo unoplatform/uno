@@ -399,7 +399,7 @@ You should see something similar to the screenshot below. You can [download the 
 In this tutorial, through creating a simple Bug Tracking app you have learned how to:
 
 - Add the Uno Project Templates to Visual Studio
-- Create a new Project with Uno Platform
+- Create a new Project with Uno
 - Use the basics of Model Binding
 
 <div class="NOTE alert alert-info">

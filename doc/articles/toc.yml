@@ -23,7 +23,11 @@
     - name: Getting Started on Rider
       href: get-started-rider.md
     - name: Creating an app - Tutorial
-      href: getting-started-tutorial-1.md
+      items:
+        - name: Getting Started Tutorial 1
+          href: getting-started-tutorial-1.md
+        - name: Getting Started Tutorial 2
+          href: getting-started-tutorial-2.md
     - name: Next steps
       href: get-started-next-steps.md
     - name: Getting Started with VS Code and WebAssembly
