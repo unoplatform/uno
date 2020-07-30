@@ -2,8 +2,11 @@ parameters:
   vmImage: ''
 
 jobs:
-- job: VS_Latest
+- job: Skia_UI_Tests
   timeoutInMinutes: 90
+
+  dependsOn:
+    - VS_Latest
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -20,11 +23,13 @@ jobs:
     inputs:
       artifactName: uno-skia-artifacts
 
-  - script: xcopy /s/e $(System.ArtifactsDirectory)\uno-skia-artifacts $(Build.SourcesDirectory)\build\skia-bin\
+  - script: |
+        xcopy /s/e $(System.ArtifactsDirectory)\uno-skia-artifacts $(Build.SourcesDirectory)\build\skia-bin\
+        del /f/s/q $(System.ArtifactsDirectory)\uno-skia-artifacts
     displayName: Copy Artifacts to build folder
 
   - powershell: |
-        cd $(Build.SourcesDirectory)\build\skia-bin\
+        cd $(Build.SourcesDirectory)\build\skia-bin\uno-skia-artifacts
         SamplesApp.Skia.Gtk.exe --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
 
     displayName: Run Skia UI Tests
