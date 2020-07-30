@@ -163,8 +163,8 @@ namespace Windows.UI.Xaml.Controls
 		private CGSize AdjustContentSize(CGSize measuredSize)
 		{
 			//ScrollMode does not affect the measure pass, so we only take it into account when setting the ContentSize of the UIScrollView and not in the SizeThatFits
-			var isHorizontalScrollDisabled = HorizontalScrollMode == ScrollMode.Disabled || HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled;
-			var isVerticalScrollDisabled = VerticalScrollMode == ScrollMode.Disabled || VerticalScrollBarVisibility == ScrollBarVisibility.Disabled;
+			var isHorizontalScrollDisabled = HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled;
+			var isVerticalScrollDisabled = VerticalScrollBarVisibility == ScrollBarVisibility.Disabled;
 
 			//UIScrollView will not scroll if its ContentSize is smaller than the available size
 			//Therefore, force the ContentSize dimension to 0 when we do not want to scroll
@@ -252,7 +252,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// Apply ScrollMode
-			if (HorizontalScrollMode == ScrollMode.Disabled || HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled)
+			if (HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled)
 			{
 				// Make it at most as big as the view port
 				adjustedWidth = (nfloat)Math.Min(adjustedWidth, viewPortWidth);
@@ -331,7 +331,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// Apply ScrollMode
-			if (VerticalScrollMode == ScrollMode.Disabled || VerticalScrollBarVisibility == ScrollBarVisibility.Disabled)
+			if (VerticalScrollBarVisibility == ScrollBarVisibility.Disabled)
 			{
 				// Make it at most as big as the view port
 				adjustedHeight = (nfloat)Math.Min(adjustedHeight, viewPortHeight);

@@ -16,10 +16,10 @@ using Uno;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -69,6 +69,13 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePartial();
 
+		#region Common DP callbacks
+		private static PropertyChangedCallback OnHorizontalScrollabilityPropertyChanged = (obj, _)
+			=> (obj as ScrollViewer)?.UpdateComputedHorizontalScrollability(invalidate: true);
+		private static PropertyChangedCallback OnVerticalScrollabilityPropertyChanged = (obj, _)
+			=> (obj as ScrollViewer)?.UpdateComputedVerticalScrollability(invalidate: true);
+		#endregion
+
 		#region HorizontalScrollBarVisibility (Attached DP - inherited)
 		public static ScrollBarVisibility GetHorizontalScrollBarVisibility(DependencyObject obj)
 			=> (ScrollBarVisibility)obj.GetValue(HorizontalScrollBarVisibilityProperty);
@@ -89,23 +96,10 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Disabled,
-					propertyChangedCallback: OnHorizontalScrollBarVisibilityPropertyChanged,
+					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged,
 					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
-
-		private static void OnHorizontalScrollBarVisibilityPropertyChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-#if XAMARIN
-			var view = dependencyObject as ScrollViewer;
-
-			if (view?._presenter != null)
-			{
-				view._presenter.HorizontalScrollBarVisibility = view.HorizontalScrollBarVisibility;
-				view.InvalidateMeasure();
-			}
-#endif
-		}
 		#endregion
 
 		#region VerticalScrollBarVisibility (Attached DP - inherited)
@@ -128,22 +122,10 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Auto,
-					propertyChangedCallback: OnVerticalScrollBarVisibilityPropertyChanged,
+					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged,
 					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
-		private static void OnVerticalScrollBarVisibilityPropertyChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-#if XAMARIN
-			var view = dependencyObject as ScrollViewer;
-			if (view?._presenter != null)
-			{
-
-				view._presenter.VerticalScrollBarVisibility = view.VerticalScrollBarVisibility;
-				view.InvalidateMeasure();
-			}
-#endif
-		}
 		#endregion
 
 		#region HorizontalScrollMode (Attached DP - inherited)
@@ -166,24 +148,10 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
-					propertyChangedCallback: OnHorizontalScrollModeChanged,
+					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged,
 					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
-
-
-		private static void OnHorizontalScrollModeChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-#if XAMARIN
-			var view = dependencyObject as ScrollViewer;
-			if (view?._presenter != null)
-			{
-				view._presenter.HorizontalScrollMode = view.HorizontalScrollMode;
-				view.InvalidateMeasure();
-			}
-#endif
-		}
-
 		#endregion
 
 		#region VerticalScrollMode (Attached DP - inherited)
@@ -208,24 +176,10 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
-					propertyChangedCallback: OnVerticalScrollModeChanged,
+					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged,
 					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
-
-
-		private static void OnVerticalScrollModeChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-#if XAMARIN
-			var view = dependencyObject as ScrollViewer;
-			if (view?._presenter != null)
-			{
-				view._presenter.VerticalScrollMode = view.VerticalScrollMode;
-				view.InvalidateMeasure();
-			}
-#endif
-		}
-
 		#endregion
 
 		#region BringIntoViewOnFocusChange (Attached DP - inherited)
@@ -508,20 +462,7 @@ namespace Windows.UI.Xaml.Controls
 				"ScrollableHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double), OnScrollableHeightChanged));
-
-		private static void OnScrollableHeightChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
-		{
-			if (o is ScrollViewer sv)
-			{
-				var scrollable = (double)args.NewValue;
-				var visibility = sv.VerticalScrollBarVisibility;
-				var mode = sv.VerticalScrollMode;
-
-				sv.ComputedVerticalScrollBarVisibility = ComputeScrollBarVisibility(scrollable, visibility);
-				sv.ComputedCanScrollVertically = ComputeCanScroll(scrollable, visibility, mode);
-			}
-		}
+				new FrameworkPropertyMetadata(default(double)));
 		#endregion
 
 		#region ScrollableWidth (DP - readonly)
@@ -536,20 +477,7 @@ namespace Windows.UI.Xaml.Controls
 				"ScrollableWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double), OnScrollableWidthChanged));
-
-		private static void OnScrollableWidthChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
-		{
-			if (o is ScrollViewer sv)
-			{
-				var scrollable = (double)args.NewValue;
-				var visibility = sv.HorizontalScrollBarVisibility;
-				var mode = sv.HorizontalScrollMode;
-
-				sv.ComputedHorizontalScrollBarVisibility = ComputeScrollBarVisibility(scrollable, visibility);
-				sv.ComputedCanScrollHorizontally = ComputeCanScroll(scrollable, visibility, mode);
-			}
-		}
+				new FrameworkPropertyMetadata(default(double)));
 		#endregion
 
 		#region VerticalOffset (DP - readonly)
@@ -628,13 +556,13 @@ namespace Windows.UI.Xaml.Controls
 		/// Determines if the vertical scrolling is allowed or not.
 		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
 		/// </summary>
-		internal bool ComputedCanScrollVertically { get; private set; } = false;
+		internal bool ComputedIsHorizontalScrollEnabled { get; private set; } = false;
 
 		/// <summary>
 		/// Determines if the vertical scrolling is allowed or not.
 		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
 		/// </summary>
-		internal bool ComputedCanScrollHorizontally { get; private set; } = false;
+		internal bool ComputedIsVerticalScrollEnabled { get; private set; } = false;
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -672,6 +600,60 @@ namespace Windows.UI.Xaml.Controls
 
 			ScrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
 			ScrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
+
+			UpdateComputedVerticalScrollability(invalidate: false);
+			UpdateComputedHorizontalScrollability(invalidate: false);
+#if __WASM__
+			Console.WriteLine($"[{this}-{HtmlId}] ViewPort:{ViewportWidth:N0}x{ViewportHeight:N0} "
+				+ $"| Extent:{ExtentWidth:N0}x{ExtentHeight:N0} "
+				+ $"| Scrollable:{ScrollableWidth:N0}x{ScrollableHeight:N0} "
+				+ $"| ComputedVisibility:{ComputedHorizontalScrollBarVisibility}/{ComputedHorizontalScrollBarVisibility} "
+				+ $"| ComputedIsEnabled:{ComputedIsHorizontalScrollEnabled}/{ComputedIsVerticalScrollEnabled}");
+#endif
+		}
+
+		private void UpdateComputedVerticalScrollability(bool invalidate)
+		{
+			var scrollable = ScrollableHeight;
+			var visibility = VerticalScrollBarVisibility;
+			var mode = VerticalScrollMode;
+
+			ComputedVerticalScrollBarVisibility = ComputeScrollBarVisibility(scrollable, visibility);
+			ComputedIsVerticalScrollEnabled = ComputeIsScrollEnabled(scrollable, visibility, mode);
+
+			if (_presenter == default)
+			{
+				return; // Control not ready yet
+			}
+
+			// Support for the native scroll bars (delegated to the native _presenter).
+			_presenter.HorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(visibility, mode, _verticalScrollbar);
+			if (invalidate && _verticalScrollbar == default)
+			{
+				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
+			}
+		}
+
+		private void UpdateComputedHorizontalScrollability(bool invalidate)
+		{
+			var scrollable = ScrollableWidth;
+			var visibility = HorizontalScrollBarVisibility;
+			var mode = HorizontalScrollMode;
+
+			ComputedHorizontalScrollBarVisibility = ComputeScrollBarVisibility(scrollable, visibility);
+			ComputedIsHorizontalScrollEnabled = ComputeIsScrollEnabled(scrollable, visibility, mode);
+
+			if (_presenter == default)
+			{
+				return; // Control not ready yet
+			}
+
+			// Support for the native scroll bars (delegated to the native _presenter).
+			_presenter.HorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(visibility, mode, _horizontalScrollbar);
+			if (invalidate && _horizontalScrollbar == default)
+			{
+				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
+			}
 		}
 
 		private static Visibility ComputeScrollBarVisibility(double scrollable, ScrollBarVisibility visibility)
@@ -684,20 +666,24 @@ namespace Windows.UI.Xaml.Controls
 				case ScrollBarVisibility.Visible:
 					return Visibility.Visible;
 
-				default:
-				// case ScrollBarVisibility.Auto when scrollable <= 0:
-				// case ScrollBarVisibility.Hidden:
-				// case ScrollBarVisibility.Disabled:
+				default: // i.e.: Auto when scrollable <= 0; Hidden; Disabled;
 					return Visibility.Collapsed;
 			}
 		}
 
 		// Determines if the scrolling is enabled or not.
 		// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
-		private static bool ComputeCanScroll(double scrollable, ScrollBarVisibility visibility, ScrollMode mode)
+		private static bool ComputeIsScrollEnabled(double scrollable, ScrollBarVisibility visibility, ScrollMode mode)
 			=> scrollable > 0
 				&& visibility != ScrollBarVisibility.Disabled
 				&& mode != ScrollMode.Disabled;
+
+		private static ScrollBarVisibility ComputeNativeScrollBarVisibility(ScrollBarVisibility visibility, ScrollMode mode, ScrollBar managedScrollbar)
+			=> mode == ScrollMode.Disabled
+				? ScrollBarVisibility.Disabled
+				: managedScrollbar == default
+					? ScrollBarVisibility.Hidden // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
+					: visibility;
 
 		/// <summary>
 		/// Sets the content of the ScrollViewer
@@ -744,7 +730,7 @@ namespace Windows.UI.Xaml.Controls
 			var scpTemplatePart = GetTemplateChild(ScrollContentPresenterPartName);
 			_presenter = scpTemplatePart as IScrollContentPresenter;
 
-#if XAMARIN
+#if !NETSTANDARD
 			if (scpTemplatePart is ScrollContentPresenter scp)
 			{
 				// For Android/iOS/MacOS, ensure that the ScrollContentPresenter contains a native scroll viewer,
@@ -760,10 +746,10 @@ namespace Windows.UI.Xaml.Controls
 				throw new InvalidOperationException("The template part ScrollContentPresenter could not be found or is not a ScrollContentPresenter");
 			}
 
-			_presenter.HorizontalScrollBarVisibility = HorizontalScrollBarVisibility;
-			_presenter.VerticalScrollBarVisibility = VerticalScrollBarVisibility;
-			_presenter.HorizontalScrollMode = HorizontalScrollMode;
-			_presenter.VerticalScrollMode = VerticalScrollMode;
+			// We update the scrollability properties here in order to make sure to set the right scrollbar visibility
+			// on the _presenter as soon as possible
+			UpdateComputedVerticalScrollability(invalidate: false);
+			UpdateComputedHorizontalScrollability(invalidate: false);
 
 			ApplyScrollContentPresenterContent();
 

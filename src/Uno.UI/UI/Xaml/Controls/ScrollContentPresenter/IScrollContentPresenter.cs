@@ -30,8 +30,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
 		ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
-		ScrollMode HorizontalScrollMode { get; set; }
-		ScrollMode VerticalScrollMode { get; set; }
 		View Content { get; set; }
 
 		void OnMinZoomFactorChanged(float newValue);

@@ -170,8 +170,8 @@
 							</Grid.RowDefinitions>
 							<!-- ContentTemplate not yet supported for ScrollContentPresenter-->
 							<ScrollContentPresenter x:Name="ScrollContentPresenter"
-													win:Grid.RowSpan="2"
-													win:Grid.ColumnSpan="2"
+													Grid.RowSpan="2"
+													Grid.ColumnSpan="2"
 													Margin="{TemplateBinding Padding}" />
 							<!--Currently in Uno scrollbars are handled by the ScrollContentPresenter, which inherits from the native scroll viewer.-->
 							<ScrollBar x:Name="VerticalScrollBar"

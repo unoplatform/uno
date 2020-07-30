@@ -19,10 +19,10 @@ namespace Windows.UI.Xaml.Controls
 	{
 		protected override Size MeasureOverride(Size size)
 		{
-			var child = Content as UIElement;
-			if (child != null)
+			if (Content is UIElement child)
 			{
 				var slotSize = size;
+
 				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
 				{
 					slotSize.Height = double.PositiveInfinity;
@@ -31,6 +31,12 @@ namespace Windows.UI.Xaml.Controls
 				{
 					slotSize.Width = double.PositiveInfinity;
 				}
+
+#if __WASM__
+				Console.WriteLine($"[{this}-{HtmlId}] MEASURE:"
+					+ $" available: {size}"
+					+ $" availableForChild: {slotSize}");
+#endif
 
 				child.Measure(slotSize);
 
@@ -45,11 +51,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var child = Content as UIElement;
-			if (child != null)
+			if (Content is UIElement child)
 			{
 				var slotSize = finalSize;
-
 				var desiredChildSize = child.DesiredSize;
 
 				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
@@ -60,6 +64,13 @@ namespace Windows.UI.Xaml.Controls
 				{
 					slotSize.Width = Math.Max(desiredChildSize.Width, finalSize.Width);
 				}
+
+#if __WASM__
+				Console.WriteLine($"[{this}-{HtmlId}] ARRANGE:"
+					+ $" available: {finalSize}"
+					+ $" availableForChild: {slotSize}"
+					+ $" desiredByChild: {desiredChildSize}");
+#endif
 
 				child.Arrange(new Rect(new Point(0, 0), slotSize));
 			}
