@@ -29,8 +29,8 @@ jobs:
     displayName: Copy Artifacts to build folder
 
   - powershell: |
-        cd $(Build.SourcesDirectory)\build\skia-bin\uno-skia-artifacts
-        SamplesApp.Skia.Gtk.exe --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
+        cd $(Build.SourcesDirectory)\build\skia-bin
+        .\SamplesApp.Skia.Gtk.exe --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
 
     displayName: Run Skia UI Tests
 
