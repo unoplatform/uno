@@ -156,5 +156,40 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			var scale = (float)GetDisplayScreenScaling();
 			ImageAssert.HasColorAt(afterColorChanged, (rectBefore.X + 10) * scale, (rectBefore.Y + 10) * scale, Color.Blue);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void When_MaxLines_Changed_With_TextWrapping()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.SimpleText_MaxLines_Different_Font_Size");
+			var maxLineContainer = _app.Marked("container3");
+
+			var rectBefore = _app.GetRect("container3");
+			var heightBefore = rectBefore.Height;
+
+			maxLineContainer.SetDependencyPropertyValue("MaxLines", "2");
+			var rectAfter = _app.GetRect("container3");
+			var heightAfter = rectAfter.Height;
+
+			Assert.IsTrue(heightAfter > heightBefore);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_MaxLines_Changed_Without_TextWrapping()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.SimpleText_MaxLines_Different_Font_Size");
+			var maxLineContainer = _app.Marked("container3");
+			maxLineContainer.SetDependencyPropertyValue("TextWrapping", "NoWrap");
+
+			var rectBefore = _app.GetRect("container3");
+			var heightBefore = rectBefore.Height;
+
+			maxLineContainer.SetDependencyPropertyValue("MaxLines", "2");
+			var rectAfter = _app.GetRect("container3");
+			var heightAfter = rectAfter.Height;
+
+			Assert.IsTrue(heightAfter == heightBefore);
+		}
 	}
 }

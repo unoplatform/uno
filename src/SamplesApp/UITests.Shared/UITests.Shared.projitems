@@ -61,6 +61,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Toolkit\ElevationView_Clipping.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Utilities\ControlStateViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -125,7 +129,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\Midi\MidiDeviceEnumeration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\Midi\MidiDeviceInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\PedometerTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\Midi\MidiDeviceOutput.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -133,7 +149,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Windows_Graphics_Display\DisplayInformation\DisplayInformation_Properties.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Graphics_Display\DisplayInformationTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -946,6 +962,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SplitView\SplitViewClip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Different_Font_Size.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2709,6 +2729,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\BrushesTests\Brushes_ImplicitConvert.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\GradientBrushTests\GradientsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3351,6 +3375,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Toolkit\Elevation.xaml.cs">
       <DependentUpon>Elevation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Toolkit\ElevationView_Clipping.xaml.cs">
+      <DependentUpon>ElevationView_Clipping.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ControlStateViewer.xaml.cs">
       <DependentUpon>ControlStateViewer.xaml</DependentUpon>
     </Compile>
@@ -3398,14 +3425,24 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml.cs">
       <DependentUpon>MagnetometerTests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\Midi\MidiDeviceEnumeration.xaml.cs">
+      <DependentUpon>MidiDeviceEnumeration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\Midi\MidiDeviceInput.xaml.cs">
+      <DependentUpon>MidiDeviceInput.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\Midi\MidiDeviceOutput.xaml.cs">
+      <DependentUpon>MidiDeviceOutput.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\Midi\MidiDeviceWatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\PedometerTests.xaml.cs">
       <DependentUpon>PedometerTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Globalization\Language_Properties.xaml.cs">
       <DependentUpon>Language_Properties.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_Graphics_Display\DisplayInformation\DisplayInformation_Properties.xaml.cs">
-      <DependentUpon>DisplayInformation_Properties.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Graphics_Display\DisplayInformationTests.xaml.cs">
+      <DependentUpon>DisplayInformationTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Networking\NetworkInformationTests.xaml.cs">
       <DependentUpon>NetworkInformationTests.xaml</DependentUpon>
@@ -3887,6 +3924,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SplitView\SplitViewClip.xaml.cs">
       <DependentUpon>SplitViewClip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Different_Font_Size.xaml.cs">
+      <DependentUpon>SimpleText_MaxLines_Different_Font_Size.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_BrushColorChanging.xaml.cs">
       <DependentUpon>TextBlock_BrushColorChanging.xaml</DependentUpon>
@@ -4717,6 +4757,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\RoutedEvents\RoutedEvent_TappedControl.xaml.cs">
       <DependentUpon>RoutedEvent_TappedControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\BrushesTests\Brushes_ImplicitConvert.xaml.cs">
+      <DependentUpon>Brushes_ImplicitConvert.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\BrushesTests\ColorPresenter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\GradientBrushTests\GradientsPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\ImageBrush_WriteableBitmap.xaml.cs">
       <DependentUpon>ImageBrush_WriteableBitmap.xaml</DependentUpon>

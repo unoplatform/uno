@@ -137,7 +137,7 @@ namespace Uno.UI.Toolkit
 					newSize = new Vector2((float)contentFE.ActualWidth, (float)contentFE.ActualHeight);
 				}
 
-				if (!(host is UIElement uiHost))
+				if (!(host is UIElement uiHost) || newSize == default)
 				{
 					return;
 				}

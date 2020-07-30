@@ -60,7 +60,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\uno-runtime\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\uno-runtime\webassembly</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

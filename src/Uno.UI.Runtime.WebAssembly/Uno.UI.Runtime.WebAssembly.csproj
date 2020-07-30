@@ -30,6 +30,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 	

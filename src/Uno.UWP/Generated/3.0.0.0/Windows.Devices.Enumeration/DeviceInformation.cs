@@ -2,10 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Enumeration
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class DeviceInformation 
+	public  partial class DeviceInformation
+
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -17,8 +18,8 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public  string Id
 		{
 			get
@@ -27,8 +28,8 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public  bool IsDefault
 		{
 			get
@@ -37,8 +38,8 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public  bool IsEnabled
 		{
 			get
@@ -47,8 +48,8 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public  string Name
 		{
 			get
@@ -57,8 +58,8 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties
 		{
 			get
@@ -172,8 +173,8 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync(DeviceClass deviceClass) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync( string aqsFilter)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync(string aqsFilter) is not implemented in Uno.");
@@ -200,8 +201,8 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(DeviceClass deviceClass) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher( string aqsFilter)
 		{
 			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(string aqsFilter) is not implemented in Uno.");

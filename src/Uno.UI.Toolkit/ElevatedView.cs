@@ -56,7 +56,11 @@ namespace Uno.UI.Toolkit
 
 #if !NETFX_CORE
 			Loaded += (snd, evt) => SynchronizeContentTemplatedParent();
+
+			// Patch to deactivate the clipping by ContentControl
+			RenderTransform = new CompositeTransform();
 #endif
+			SizeChanged += (snd, evt) => UpdateElevation();
 		}
 
 		protected override void OnApplyTemplate()

@@ -1016,6 +1016,21 @@ declare namespace Windows.Devices.Sensors {
         private static readingChangedHandler;
     }
 }
+declare namespace Windows.Graphics.Display {
+    class DisplayInformation {
+        private static readonly DpiCheckInterval;
+        private static lastDpi;
+        private static dpiWatcher;
+        private static dispatchOrientationChanged;
+        private static dispatchDpiChanged;
+        static startOrientationChanged(): void;
+        static stopOrientationChanged(): void;
+        static startDpiChanged(): void;
+        static stopDpiChanged(): void;
+        private static updateDpi;
+        private static onOrientationChange;
+    }
+}
 declare namespace Windows.Networking.Connectivity {
     class ConnectionProfile {
         static hasInternetAccess(): boolean;

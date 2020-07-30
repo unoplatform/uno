@@ -366,7 +366,7 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 #if !__WASM__
-				if (Foreground is SolidColorBrush || Foreground is GradientBrush)
+				if (value is SolidColorBrush || value is GradientBrush || value is null)
 				{
 					SetValue(ForegroundProperty, value);
 				}
