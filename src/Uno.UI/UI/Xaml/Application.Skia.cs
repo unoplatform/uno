@@ -21,6 +21,8 @@ namespace Windows.UI.Xaml
 		private static string[] _args;
 		private readonly IApplicationExtension _coreWindowExtension;
 
+		internal ISkiaHost Host { get; set; }
+
 		public Application()
 		{
 			if (!ApiExtensibility.CreateInstance(this, out _coreWindowExtension))
@@ -77,6 +79,9 @@ namespace Windows.UI.Xaml
 
 	internal interface IApplicationEvents
 	{
+	}
 
+	internal interface ISkiaHost
+	{
 	}
 }

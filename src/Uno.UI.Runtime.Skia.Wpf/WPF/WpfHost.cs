@@ -10,23 +10,35 @@ using WinUI = Windows.UI.Xaml;
 
 namespace Uno.UI.Skia.Platform
 {
-	public class WpfHost : FrameworkElement
+	public class WpfHost : FrameworkElement, WinUI.ISkiaHost
 	{
 		private readonly bool designMode;
-		private readonly Func<WinUI.Application> _appBuilder;
 		private WriteableBitmap bitmap;
 		private bool ignorePixelScaling;
 
-		public WpfHost(Func<WinUI.Application> appBuilder)
+		static WpfHost()
 		{
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfUIElementPointersSupport(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(WinUI.IApplicationExtension), o => new WpfApplicationExtension(o));
+		}
+
+		[ThreadStatic] private static WpfHost _current;
+		public static WpfHost Current => _current;
+
+		public WpfHost(Func<WinUI.Application> appBuilder)
+		{
+			_current = this;
 
 			designMode = DesignerProperties.GetIsInDesignMode(this);
-			_appBuilder = appBuilder;
 
-			WinUI.Application.Start(_ => appBuilder());
+			void CreateApp(WinUI.ApplicationInitializationCallbackParams _)
+			{
+				var app = appBuilder();
+				app.Host = this;
+			}
+
+			WinUI.Application.Start(CreateApp);
 
 			WinUI.Window.Current.InvalidateRender += () => InvalidateVisual();
 
