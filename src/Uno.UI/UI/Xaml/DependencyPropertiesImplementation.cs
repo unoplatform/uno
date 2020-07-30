@@ -21,10 +21,13 @@ using Windows.UI.Xaml.Controls.Primitives;
 #if XAMARIN_IOS
 using Color = UIKit.UIColor;
 using View = UIKit.UIView;
+#elif __MACOS__
+using Color = AppKit.NSColor;
+using View = AppKit.NSView;
 #elif XAMARIN_ANDROID
 using Color = Android.Resource.Color;
 using View = Android.Views.View;
-#elif NET461
+#elif NET461 || NETSTANDARD2_0
 using Color = System.Object;
 using View = Windows.UI.Xaml.FrameworkElement;
 #endif  

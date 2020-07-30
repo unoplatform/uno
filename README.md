@@ -11,7 +11,6 @@
 [![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/release/beta/Batman?label=release/beta/Batman)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
 [![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/release/stable/Batman?label=release/stable/Batman)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com)
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat)](https://twitter.com/unoplatform)
 [![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?label=github%20stars)](https://github.com/unoplatform/uno/stargazers/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/uno.ui.svg)](https://www.nuget.org/packages/uno.ui)
@@ -20,9 +19,9 @@
 
 # What is the Uno Platform
 
-The Uno Platform (Pronounced 'Oono' or 'Ouno') is a Universal Windows Platform Bridge that allows UWP-based code (C# and XAML) to run on iOS, Android, and WebAssembly. It provides the full definitions of the UWP [Windows 10 2004 (19041)](https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-19041), and the implementation of a growing number of parts of the UWP API, such as **Windows.UI.Xaml**, to enable UWP applications to run on these platforms.
+The Uno Platform (Pronounced 'Oono' or 'Ouno') is a Universal Windows Platform Bridge that allows UWP-based code (C# and XAML) to run on iOS, Android, macOS, and WebAssembly. It provides the full definitions of the UWP [Windows 10 2004 (19041)](https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-19041), and the implementation of a growing number of parts of the UWP API, such as **Windows.UI.Xaml**, to enable UWP and WinUI applications to run on these platforms.
 
-Use the UWP tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android and WebAssembly.
+Use the UWP/WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS and WebAssembly.
 
 Visit [our documentation](doc/articles/intro.md) for more details.
 
@@ -113,7 +112,7 @@ Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stack
 
 # Contributing
 
-There are many ways that you can contribute to the Uno Platform, as the UWP API is pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements. Come visit us on our [visit our Gitter](https://gitter.im/uno-platform/Lobby) for help on how to contribute!
+There are many ways that you can contribute to the Uno Platform, as the UWP API is pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements. Come visit us on our [visit our Discord Channel #uno-platform](https://discord.gg/eBHZSKG) for help on how to contribute!
 
 Contribute to Uno in your browser using [GitPod.io](https://gitpod.io), follow [our guide here](doc/articles/features/working-with-gitpod.md).
 

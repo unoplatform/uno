@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal bool IsTogglingFullscreen { get; set; }
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			// The control will get unloaded when going to full screen mode.
 			// Similar to UWP, the video should keep playing while changing mode.
@@ -130,7 +130,10 @@ namespace Windows.UI.Xaml.Controls
 			if (double.IsNaN(Width) && double.IsNaN(Height))
 			{
 				availableSize.Width = availableSize.Width;
-				availableSize.Height = availableSize.Width / _currentRatio;
+				if (_currentRatio != 0)
+				{
+					availableSize.Height = availableSize.Width / _currentRatio;
+				}
 			}
 			else if (double.IsNaN(Width))
 			{

@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Connectivity
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	public delegate void NetworkStatusChangedEventHandler(object @sender);
-	#endif
+	// Skipping already declared delegate Windows.Networking.Connectivity.NetworkStatusChangedEventHandler
 }

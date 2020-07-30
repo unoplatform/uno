@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.UI.Tests.App.Views;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -13,8 +14,13 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Resources;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+#if HAS_UNO_WINUI
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+#else
+using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
 
 namespace UnitTestsApp
 {
@@ -24,8 +30,10 @@ namespace UnitTestsApp
 	sealed partial class App : Application
 	{
 		public Grid HostView { get; private set; }
+
 		public App()
 		{
+			CustomXamlResourceLoader.Current = new MyResourceLoader();
 			this.InitializeComponent();
 		}
 
@@ -58,12 +66,19 @@ namespace UnitTestsApp
 			if (Current == null)
 			{
 				var application = new App();
+#if !NETFX_CORE
 				application.InitializationCompleted();
+#endif
 				application.OnLaunched(null);
 			}
 
-			var app = Current as App;			
+			var app = Current as App;
 			app.HostView.Children.Clear();
+
+#if !NETFX_CORE
+			//Clear custom theme
+			Uno.UI.ApplicationHelper.RequestedCustomTheme = null;
+#endif
 
 			return app;
 		}

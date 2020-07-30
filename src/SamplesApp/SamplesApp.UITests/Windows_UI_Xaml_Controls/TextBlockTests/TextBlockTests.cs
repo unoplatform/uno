@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,11 +17,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // Disabled for Browser because of missing top level .All() support
 		public void When_Visibility_Changed_During_Arrange()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Visibility_Arrange");
 
-			var textBlock = _app.Marked("SubjectTextBlock");
+			QueryEx textBlock = new QueryEx(q => q.All().Marked("SubjectTextBlock"));
 
 			_app.WaitForElement(textBlock);
 
@@ -102,7 +104,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			text02.SetDependencyPropertyValue("TextDecorations", "2"); // Strikethrough
 
 			var after = TakeScreenshot("Updated");
-			
+
 			ImageAssert.AreNotEqual(before, after);
 
 			text01.SetDependencyPropertyValue("TextDecorations", "0"); // None
@@ -111,6 +113,83 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			var restored = TakeScreenshot("Restored");
 
 			ImageAssert.AreEqual(before, restored);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_FontWeight_Changed()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_FontWeight_Dynamic");
+
+			var testBlock = _app.Marked("testBlock");
+
+			testBlock.SetDependencyPropertyValue("FontWeight", "Thin");
+			var rectBefore = _app.GetRect("testBlock");
+			var widthBefore = rectBefore.Width;
+			var heightBefore = rectBefore.Height;
+
+			testBlock.SetDependencyPropertyValue("FontWeight", "Heavy");
+			var rectAfter = _app.GetRect("testBlock");
+			var widthAfter = rectAfter.Width;
+			var heightAfter = rectAfter.Height;
+
+			Assert.IsTrue(widthBefore < widthAfter);
+			Assert.IsTrue(heightBefore == heightAfter);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Foreground_Brush_Color_Changed()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_BrushColorChanging");
+
+			var textColor = _app.Marked("textColor");
+
+			var rectBefore = _app.GetRect("textResult");
+			var beforeColorChanged = TakeScreenshot("beforeColor");
+
+			textColor.SetDependencyPropertyValue("Text", "Blue");
+
+			var afterColorChanged = TakeScreenshot("afterColor");
+			ImageAssert.AreNotEqual(afterColorChanged, beforeColorChanged);
+
+			var scale = (float)GetDisplayScreenScaling();
+			ImageAssert.HasColorAt(afterColorChanged, (rectBefore.X + 10) * scale, (rectBefore.Y + 10) * scale, Color.Blue);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_MaxLines_Changed_With_TextWrapping()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.SimpleText_MaxLines_Different_Font_Size");
+			var maxLineContainer = _app.Marked("container3");
+
+			var rectBefore = _app.GetRect("container3");
+			var heightBefore = rectBefore.Height;
+
+			maxLineContainer.SetDependencyPropertyValue("MaxLines", "2");
+			var rectAfter = _app.GetRect("container3");
+			var heightAfter = rectAfter.Height;
+
+			Assert.IsTrue(heightAfter > heightBefore);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_MaxLines_Changed_Without_TextWrapping()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.SimpleText_MaxLines_Different_Font_Size");
+			var maxLineContainer = _app.Marked("container3");
+			maxLineContainer.SetDependencyPropertyValue("TextWrapping", "NoWrap");
+
+			var rectBefore = _app.GetRect("container3");
+			var heightBefore = rectBefore.Height;
+
+			maxLineContainer.SetDependencyPropertyValue("MaxLines", "2");
+			var rectAfter = _app.GetRect("container3");
+			var heightAfter = rectAfter.Height;
+
+			Assert.IsTrue(heightAfter == heightBefore);
 		}
 	}
 }

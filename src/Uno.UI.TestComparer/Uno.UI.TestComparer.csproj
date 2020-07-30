@@ -13,7 +13,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.AppCenter" Version="3.2.1" />
+		<PackageReference Include="Microsoft.AppCenter" Version="3.2.2" />
 		<PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.153.0" />
 		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
 		<PackageReference Include="NUnit" Version="3.12.0" />

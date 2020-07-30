@@ -16,10 +16,6 @@ namespace Uno.UI.Tests.ContentDialogTests
 		public void Init()
 		{
 			UnitTestsApp.App.EnsureApplication();
-
-			// The real Style contains a template, which causes ContentControl.IsContentPresenterBypassEnabled to return false. This is a workaround
-			// which shouldn't be necessary once Styles handling is overhauled.
-			Style.RegisterDefaultStyleForType(typeof(ContentDialog), new Style());
 		}
 
 		[TestMethod]
@@ -32,10 +28,12 @@ namespace Uno.UI.Tests.ContentDialogTests
 				DataContext = dc,
 				Content = border
 			};
-			Assert.AreEqual("Starfish", border.DataContext);
+
+			dialog.ForceLoaded();
+
+			Assert.AreEqual("Starfish", dialog.DataContext);
 			var dummy = dialog.ShowAsync();
 			Assert.AreEqual("Starfish", border.DataContext);
-			;
 		}
 	}
 }

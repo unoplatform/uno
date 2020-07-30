@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -79,14 +79,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
 			PopupPanel?.RemoveFromSuperview();
 		}
 
-		protected override void OnChildChanged(UIView oldChild, UIView newChild)
+		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
 		{
 			base.OnChildChanged(oldChild, newChild);
 
@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void EnsureForward()
 		{
-			PopupPanel.Superview?.BringSubviewToFront(PopupPanel);
+			PopupPanel?.Superview?.BringSubviewToFront(PopupPanel);
 		}
 	}
 }

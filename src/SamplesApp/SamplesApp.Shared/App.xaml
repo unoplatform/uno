@@ -25,6 +25,10 @@
 		</ResourceDictionary>
 	  </ResourceDictionary.ThemeDictionaries>
 
+		<ResourceDictionary.MergedDictionaries>
+			<ResourceDictionary Source="Windows_UI_Xaml_Controls\ListView\MeasureDetectorControl\MeasureDetectorControl.xaml" />
+		</ResourceDictionary.MergedDictionaries>
+
 	  <SolidColorBrush x:Key="GlobalStaticResource_Test01"
 						Color="Purple" />
 

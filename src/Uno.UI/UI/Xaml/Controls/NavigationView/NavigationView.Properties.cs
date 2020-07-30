@@ -300,7 +300,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(bool),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(
-				default(bool),
+				defaultValue: true,
 				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnPropertyChanged(e)
 			)
 		);
@@ -373,6 +373,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(DataTemplate),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(DataTemplate),
+				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnPropertyChanged(e)));
 
 		public static DependencyProperty IsPaneOpenProperty { get; } =
@@ -412,6 +413,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(Style),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(Style),
+				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnPropertyChanged(e)));
 
 		public static DependencyProperty MenuItemContainerStyleSelectorProperty { get; } =
@@ -428,6 +430,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(DataTemplate),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(DataTemplate),
+				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnPropertyChanged(e)));
 
 		public static DependencyProperty MenuItemTemplateSelectorProperty { get; } =
@@ -478,6 +481,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(Style),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(null,
+				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnPropertyChanged(e))
 		);
 

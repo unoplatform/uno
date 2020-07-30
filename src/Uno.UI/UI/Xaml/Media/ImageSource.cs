@@ -90,8 +90,8 @@ namespace Windows.UI.Xaml.Media
 
 		public ImageSource(Stream stream) : this()
 		{
-            throw new NotSupportedException("ImageSource does not support direct Stream assignment");
-        }
+			throw new NotSupportedException("ImageSource does not support direct Stream assignment");
+		}
 
 		internal void InitFromUri(Uri uri)
 		{

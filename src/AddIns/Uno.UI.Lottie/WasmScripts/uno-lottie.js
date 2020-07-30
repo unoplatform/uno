@@ -144,7 +144,7 @@ var Uno;
                         scaleMode = "xMidYMid slice";
                         break;
                     case "Fill":
-                        scaleMode = "noScale";
+                        scaleMode = "none";
                         break;
                 }
                 const containerElement = Uno.UI.WindowManager.current.getView(properties.elementId);
@@ -174,7 +174,7 @@ var Uno;
                     action(Lottie._player);
                 }
                 else {
-                    require(["lottie"], (p) => {
+                    require([`${config.uno_app_base}/lottie`], (p) => {
                         if (!Lottie._player) {
                             Lottie._player = p;
                         }

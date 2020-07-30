@@ -46,8 +46,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static void SetTargetName(Timeline timeline, string value) => timeline.SetValue(TargetNameProperty, value);
 
 		// Using a DependencyProperty as the backing store for TargetName.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TargetNameProperty =
-			DependencyProperty.RegisterAttached("TargetName", typeof(string), typeof(Storyboard), new PropertyMetadata(null));
+		public static DependencyProperty TargetNameProperty { get ; } =
+			DependencyProperty.RegisterAttached("TargetName", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(null));
 		#endregion
 
 		#region TargetProperty Attached Property
@@ -56,8 +56,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static void SetTargetProperty(Timeline timeline, string value) => timeline.SetValue(TargetPropertyProperty, value);
 
 		// Using a DependencyProperty as the backing store for TargetProperty.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TargetPropertyProperty =
-			DependencyProperty.RegisterAttached("TargetProperty", typeof(string), typeof(Storyboard), new PropertyMetadata(null));
+		public static DependencyProperty TargetPropertyProperty { get ; } =
+			DependencyProperty.RegisterAttached("TargetProperty", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(null));
 		#endregion
 
 		public static void SetTarget(Timeline timeline, DependencyObject target) => timeline.Target = target;
@@ -260,6 +260,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					((ITimeline)child).Stop();
 				}
 			}
+			State = TimelineState.Stopped;
 		}
 
 		public ClockState GetCurrentState()

@@ -63,10 +63,10 @@ namespace Uno.UI.Controls
 		{
 			// Content
 			Native.Title = Element.Content as string;
-			Native.TitleView = Element.Content is UIView
+			Native.TitleView = Element.Content is UIElement
 				? _titleView
 				: null;
-			_titleView.Child = Element.Content as UIView;
+			_titleView.Child = Element.Content as UIElement;
 
 			// PrimaryCommands
 			Native.RightBarButtonItems = Element

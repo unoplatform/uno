@@ -10,7 +10,7 @@
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" /> 
-		<PackageReference Include="Xamarin.UITest" Version="3.0.7-dev2" />
+		<PackageReference Include="Xamarin.UITest" Version="3.0.7" />
 		<PackageReference Include="Uno.UITest" />
 		<PackageReference Include="Uno.UITest.Selenium" />
 		<PackageReference Include="Uno.UITest.Xamarin" />
@@ -28,6 +28,16 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\*.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

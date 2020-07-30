@@ -34,11 +34,11 @@ namespace Uno.UI.Xaml.Controls
 		/// <summary>
 		/// Backing property for the <see cref="ScrollViewerUpdatesMode"/> of a ScrollViewer.
 		/// </summary>
-		public static readonly DependencyProperty UpdatesModeProperty = DependencyProperty.RegisterAttached(
+		public static DependencyProperty UpdatesModeProperty { get ; } = DependencyProperty.RegisterAttached(
 			"UpdatesMode",
 			typeof(ScrollViewerUpdatesMode),
 			typeof(ScrollViewer),
-			new PropertyMetadata(
+			new FrameworkPropertyMetadata(
 				FeatureConfiguration.ScrollViewer.DefaultUpdatesMode,
 				(snd, e) => ((Windows.UI.Xaml.Controls.ScrollViewer)snd).UpdatesMode = (ScrollViewerUpdatesMode)e.NewValue));
 

@@ -39,15 +39,12 @@ namespace Windows.UI.Xaml.Controls
 			OnFontWeightChangedPartial();
 			OnTextChangedPartial();
 			OnFontFamilyChangedPartial();
+			OnFontSizeChangedPartial();
 			OnCharacterSpacingChangedPartial();
 			OnLineHeightChangedPartial();
 			OnTextAlignmentChangedPartial();
 			OnTextWrappingChangedPartial();
-		}
-
-		partial void InvalidateTextBlockPartial()
-		{
-
+			OnIsTextSelectionEnabledChangedPartial();
 		}
 
 		private void ConditionalUpdate(ref bool condition, Action action)
@@ -123,6 +120,18 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnFontStyleChangedPartial() => _fontStyleChanged = true;
 
 		partial void OnFontWeightChangedPartial() => _fontWeightChanged = true;
+
+		partial void OnIsTextSelectionEnabledChangedPartial()
+		{
+			if (IsTextSelectionEnabled)
+			{
+				SetCssClasses("selectionEnabled");
+			}
+			else
+			{
+				UnsetCssClasses("selectionEnabled");
+			}
+		}
 
 		partial void OnTextChangedPartial()
 		{

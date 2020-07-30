@@ -55,12 +55,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public ComboBox()
 		{
-			LightDismissOverlayBackground = Resources["ComboBoxLightDismissOverlayBackground"] as Brush ??
-				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
-				// Resources/Styles are overhauled (and the above will no longer be valid)
-				Uno.UI.GlobalStaticResources.ComboBoxLightDismissOverlayBackground as Brush;
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true);
 
 			IsItemClickEnabled = true;
+			DefaultStyleKey = typeof(ComboBox);
 		}
 
 		public global::Windows.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings TemplateSettings { get; } = new Primitives.ComboBoxTemplateSettings();
@@ -125,6 +123,8 @@ namespace Windows.UI.Xaml.Controls
 						_contentPresenter.DataContext = null; // Remove problematic inherited DataContext
 					}
 				};
+
+				UpdateCommonStates();
 			}
 		}
 
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Controls
 			Xaml.Window.Current.SizeChanged += OnWindowSizeChanged;
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
@@ -419,8 +419,8 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
-			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new PropertyMetadata(null));
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new FrameworkPropertyMetadata(null));
 
 		private class DropDownLayouter : PopupBase.IDynamicPopupLayouter
 		{
@@ -587,7 +587,7 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().Debug($"Layout the combo's dropdown at {frame} (desired: {desiredSize} / available: {finalSize} / visible: {visibleBounds} / selected: {selectedIndex} of {itemsCount})");
 				}
 
-				if(upperLeftLocation is Point offset)
+				if (upperLeftLocation is Point offset)
 				{
 					// Compensate for origin location is some popup providers (Android
 					// is one, particularly when the status bar is translucent)

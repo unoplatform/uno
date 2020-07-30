@@ -1,4 +1,4 @@
-﻿#if NET461 || __WASM__ || __MACOS__
+﻿#if NET461 || NETSTANDARD2_0 || __MACOS__
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -72,6 +72,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			InitializeVisualStates();
 			this.RegisterParentChangedCallback(this, OnParentChanged);
+
+			DefaultStyleKey = typeof(TextBox);
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args) => UpdateFontPartial();
@@ -158,7 +160,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static readonly DependencyProperty TextProperty =
+		public static DependencyProperty TextProperty { get ; } =
 			DependencyProperty.Register(
 				"Text",
 				typeof(string),
@@ -305,12 +307,12 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(PlaceholderTextProperty, value);
 		}
 
-		public static readonly DependencyProperty PlaceholderTextProperty =
+		public static DependencyProperty PlaceholderTextProperty { get ; } =
 			DependencyProperty.Register(
 				"PlaceholderText",
 				typeof(string),
 				typeof(TextBox),
-				new PropertyMetadata(defaultValue: string.Empty)
+				new FrameworkPropertyMetadata(defaultValue: string.Empty)
 			);
 
 		#endregion
@@ -323,12 +325,12 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(InputScopeProperty, value);
 		}
 
-		public static readonly DependencyProperty InputScopeProperty =
+		public static DependencyProperty InputScopeProperty { get ; } =
 			DependencyProperty.Register(
 				"InputScope",
 				typeof(InputScope),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: new InputScope()
 					{
 						Names =
@@ -356,12 +358,12 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(MaxLengthProperty, value);
 		}
 
-		public static readonly DependencyProperty MaxLengthProperty =
+		public static DependencyProperty MaxLengthProperty { get ; } =
 			DependencyProperty.Register(
 				"MaxLength",
 				typeof(int),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: 0,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnMaxLengthChanged(e)
 				)
@@ -381,12 +383,12 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(AcceptsReturnProperty, value);
 		}
 
-		public static readonly DependencyProperty AcceptsReturnProperty =
+		public static DependencyProperty AcceptsReturnProperty { get ; } =
 			DependencyProperty.Register(
 				"AcceptsReturn",
 				typeof(bool),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: false,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnAcceptsReturnChanged(e)
 				)
@@ -409,12 +411,12 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(TextWrappingProperty, value);
 		}
 
-		public static readonly DependencyProperty TextWrappingProperty =
+		public static DependencyProperty TextWrappingProperty { get ; } =
 			DependencyProperty.Register(
 				"TextWrapping",
 				typeof(TextWrapping),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextWrappingChanged(e))
 				);
@@ -437,12 +439,12 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsReadOnlyProperty, value);
 		}
 
-		public static readonly DependencyProperty IsReadOnlyProperty =
+		public static DependencyProperty IsReadOnlyProperty { get ; } =
 			DependencyProperty.Register(
 				"IsReadOnly",
 				typeof(bool),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsReadonlyChanged(e)
 				)
@@ -466,11 +468,11 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderProperty, value);
 		}
 
-		public static readonly DependencyProperty HeaderProperty =
+		public static DependencyProperty HeaderProperty { get ; } =
 			DependencyProperty.Register("Header",
 				typeof(object),
 				typeof(TextBox),
-				new PropertyMetadata(defaultValue: null,
+				new FrameworkPropertyMetadata(defaultValue: null,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnHeaderChanged()
 				)
 			);
@@ -481,11 +483,13 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderTemplateProperty, value);
 		}
 
-		public static readonly DependencyProperty HeaderTemplateProperty =
+		public static DependencyProperty HeaderTemplateProperty { get ; } =
 			DependencyProperty.Register("HeaderTemplate",
 				typeof(DataTemplate),
 				typeof(TextBox),
-				new PropertyMetadata(defaultValue: null,
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnHeaderChanged()
 				)
 			);
@@ -510,12 +514,12 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(IsSpellCheckEnabledProperty, value);
 		}
 
-		public static readonly DependencyProperty IsSpellCheckEnabledProperty =
+		public static DependencyProperty IsSpellCheckEnabledProperty { get ; } =
 			DependencyProperty.Register(
 				"IsSpellCheckEnabled",
 				typeof(bool),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: true,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsSpellCheckEnabledChanged(e)
 				)
@@ -537,12 +541,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		[Uno.NotImplemented]
-		public static readonly DependencyProperty IsTextPredictionEnabledProperty =
+		public static DependencyProperty IsTextPredictionEnabledProperty { get ; } =
 			DependencyProperty.Register(
 				"IsTextPredictionEnabled",
 				typeof(bool),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: true,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsTextPredictionEnabledChanged(e)
 				)
@@ -566,8 +570,8 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(TextAlignmentProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextAlignmentProperty =
-			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new PropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged(e)));
+		public static DependencyProperty TextAlignmentProperty { get ; } =
+			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new FrameworkPropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged(e)));
 
 
 		protected virtual void OnTextAlignmentChanged(DependencyPropertyChangedEventArgs e) => OnTextAlignmentChangedPartial(e);
@@ -631,10 +635,15 @@ namespace Windows.UI.Xaml.Controls
 			//		 AND ** only KeyDown ** is handled (not KeyUp)
 			switch (args.Key)
 			{
-				case VirtualKey.Left:
-				case VirtualKey.Right:
 				case VirtualKey.Up:
 				case VirtualKey.Down:
+					if (AcceptsReturn)
+					{
+						args.Handled = true;
+					}
+					break;
+				case VirtualKey.Left:
+				case VirtualKey.Right:
 				case VirtualKey.Home:
 				case VirtualKey.End:
 					args.Handled = true;

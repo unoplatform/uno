@@ -63,6 +63,10 @@
 			<PackagePath>content\unoapp</PackagePath>
 			<Pack>true</Pack>
 		</Content>
+		<Content Include="content\unolib-crossruntime\**">
+			<PackagePath>content\unolib-crossruntime</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -75,6 +79,7 @@
 
 		<_TemplateFiles Include="..\UnoSolutionTemplate\**" Exclude="@(_TemplateFilesExclude)" />
 	</ItemGroup>
+	
 	
 	<ItemGroup>
 	  <Folder Include="content\unoapp\UnoQuickStart\" />
@@ -166,7 +171,7 @@
 
 								var replacedNuget = @"
 		<PackageReference Include=""Microsoft.WinUI"">
-			<Version>3.0.0-alpha.200210.0</Version>
+			<Version>3.0.0-preview1.200515.3</Version>
 		</PackageReference>
 		<PackageReference Include=""Microsoft.NETCore.UniversalWindowsPlatform"">";
 		
@@ -177,6 +182,8 @@
 							{
 								s = s
 									.Replace("Include=\"Uno.UI", "Include=\"Uno.WinUI")
+									.Replace("e.PreviousExecutionState", "e.UWPLaunchActivatedEventArgs.PreviousExecutionState")
+									.Replace("e.PrelaunchActivated", "e.UWPLaunchActivatedEventArgs.PrelaunchActivated")
 									.Replace("Windows.UI.Xaml", "Microsoft.UI.Xaml");
 									
 								var replacedLogging = @"

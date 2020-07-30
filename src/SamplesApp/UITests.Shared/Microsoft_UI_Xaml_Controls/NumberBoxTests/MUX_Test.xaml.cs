@@ -1,9 +1,9 @@
-﻿using System;
+﻿#pragma warning disable CS0105 // Using directive appeared previously in this namespace
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -15,17 +15,16 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Globalization.NumberFormatting;
 using Microsoft.UI.Xaml.Controls;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	[SampleControlInfo("NumberBox", "MUX_Test")]
+	[Sample("NumberBox", "WinUI", Name="MUX_Test")]
 	public sealed partial class MUX_Test : UserControl
-    {
-        public MUX_Test()
-        {
-            this.InitializeComponent();
+	{
+		public MUX_Test()
+		{
+			this.InitializeComponent();
 #if HAS_UNO
 			TestNumberBox.RegisterPropertyChangedCallback(NumberBox.TextProperty, new DependencyPropertyChangedCallback(TextPropertyChanged));
 #endif

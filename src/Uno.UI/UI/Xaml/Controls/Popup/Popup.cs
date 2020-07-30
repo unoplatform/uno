@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -55,10 +56,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			InitializePartial();
 
-			LightDismissOverlayBackground = Resources["PopupLightDismissOverlayBackground"] as Brush ??
-				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
-				// Resources/Styles are overhauled (and the above will no longer be valid)
-				Uno.UI.GlobalStaticResources.PopupLightDismissOverlayBackground as Brush;
+				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "PopupLightDismissOverlayBackground", isThemeResourceExtension: true);
 
 			ApplyLightDismissOverlayMode();
 		}
@@ -74,8 +72,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(PopupPanelProperty, value);
 		}
 
-		public static readonly DependencyProperty PopupPanelProperty =
-			DependencyProperty.Register("PopupPanel", typeof(PopupPanel), typeof(Popup), new PropertyMetadata(null, (s, e) => ((Popup)s)?.OnPopupPanelChanged((PopupPanel)e.OldValue, (PopupPanel)e.NewValue)));
+		public static DependencyProperty PopupPanelProperty { get ; } =
+			DependencyProperty.Register("PopupPanel", typeof(PopupPanel), typeof(Popup), new FrameworkPropertyMetadata(null, (s, e) => ((Popup)s)?.OnPopupPanelChanged((PopupPanel)e.OldValue, (PopupPanel)e.NewValue)));
 
 		private void OnPopupPanelChanged(PopupPanel oldHost, PopupPanel newHost)
 		{
@@ -183,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 		DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
 			typeof(Popup),
-			new FrameworkPropertyMetadata(default(LightDismissOverlayMode), (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+			new FrameworkPropertyMetadata(defaultValue: default(LightDismissOverlayMode), propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
 
 		private void ApplyLightDismissOverlayMode()
 		{
@@ -221,7 +219,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
-			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(Popup), new PropertyMetadata(null, (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(Popup), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
 	}
 }

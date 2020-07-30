@@ -12,14 +12,14 @@
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>full</DebugType>
 		<Optimize>false</Optimize>
-		<DefineConstants>TRACE;DEBUG;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION;NET46</DefineConstants>
+		<DefineConstants>$(DefineConstants);TRACE;DEBUG;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION;NET46</DefineConstants>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>full</DebugType>
 		<Optimize>false</Optimize>
-		<DefineConstants>TRACE;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION</DefineConstants>
+		<DefineConstants>$(DefineConstants);TRACE;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -27,13 +27,13 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
-		<PackageReference Include="MSTest.TestAdapter"/>
-    <PackageReference Include="MSTest.TestFramework"/>
+		<PackageReference Include="MSTest.TestAdapter" />
+    <PackageReference Include="MSTest.TestFramework" />
     <PackageReference Include="FluentAssertions">
       <Version>5.10.3</Version>
     </PackageReference>
     <PackageReference Include="Moq">
-      <Version>4.14.1</Version>
+      <Version>4.14.5</Version>
     </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
       <Version>1.7.0</Version>
@@ -93,19 +93,30 @@
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
+		<Page Include="Windows_UI_Xaml\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Data\**\*.xaml" />
+		<Page Include="Windows_UI_Xaml_Controls\**\*.xaml" />
 		<Page Include="App\App.xaml" />
 		<Page Include="App\Xaml\Test_CreateFromString.xaml" />
 		<Page Include="App\Xaml\Test_Dictionary.xaml" />
+		<Page Include="App\Xaml\Test_Dictionary_Inner.xaml" />
+		<Page Include="App\Xaml\Test_Dictionary_Theme.xaml" />
+		<Page Include="App\Xaml\Test_Dictionary_Isolated.xaml" />
+		<Page Include="App\Xaml\Test_Dictionary_Isolated_2.xaml" />
+		<Page Include="App\Xaml\Subclassed_Dictionary.xaml" />
+		<Page Include="..\SamplesApp\UITests.Shared\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 		<Page Include="App\Xaml\Test_Control.xaml" />
 		<Page Include="App\Xaml\Test_MarkupExtension.xaml" />
+		<Page Include="App\Xaml\Test_Styles.xaml" />
+		<Page Include="App\Xaml\Test_Page.xaml" />
+		<Page Include="App\Xaml\Test_Page_Other.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
 	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
+		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
 

@@ -15,7 +15,7 @@ namespace Uno.UWPSyncGenerator
 	/// </summary>
 	class DocGenerator : Generator
 	{
-		private const string DocPath = @"..\..\..\..\..\doc\articles";
+		private const string DocPath = @"..\..\..\..\doc\articles";
 		private const string ImplementedViewsFileName = "implemented-views.md";
 		private const string ImplementedPath = @"./implemented/";
 
@@ -256,7 +256,7 @@ namespace Uno.UWPSyncGenerator
 				return false;
 			}
 
-			if (type == UIElementSymbol)
+			if (SymbolEqualityComparer.Default.Equals(type, UIElementSymbol))
 			{
 				return true;
 			}

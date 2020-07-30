@@ -9,8 +9,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public abstract class NativePage : BaseActivity
     {
-		private Style _style;
-
 		public NativePage(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 		{
 		}
@@ -22,8 +20,6 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
-
-			Style = null;
 			
 			InitializeComponent();
 
@@ -52,19 +48,6 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				SetContentView(value, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent));
-			}
-		}
-
-		public virtual Style Style
-		{
-			get
-			{
-				return _style;
-			}
-			set
-			{
-				_style = value ?? Style.DefaultStyleForType(typeof(NativePage));
-				_style.ApplyTo(this);
 			}
 		}
     }

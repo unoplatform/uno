@@ -16,7 +16,7 @@ namespace Windows.UI.Popups
 
 		public IAsyncOperation<IUICommand> ShowAsync()
 		{
-			var command = $"Uno.UI.WindowManager.current.alert(\"{Content}\");";
+			var command = $"Uno.UI.WindowManager.current.alert(\"{Uno.Foundation.WebAssemblyRuntime.EscapeJs(Content)}\");";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 
 			return AsyncOperation.FromTask<IUICommand>(

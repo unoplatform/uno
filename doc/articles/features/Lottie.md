@@ -5,6 +5,15 @@ This is an experimental implementation, **still incomplete**.
 
 ## Using the `LottieVisualSource`:
 
+Add the following namespaces:
+```xml
+<Page
+    ...
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+	xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+    ...>
+```
+
 ```xml
 <winui:AnimatedVisualPlayer
     x:Name="player"

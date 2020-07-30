@@ -41,7 +41,7 @@ You can try the Uno Platform using the [Uno Platform Playground](https://playgro
 The [Uno Platform Playground](https://playground.platform.uno) is a convenient way to experiment with the Uno platform, using only a WebAssembly compatible web browser.
 
 ## Where can I get support?
-Support is available through our [Gitter](https://gitter.im/uno-platform/Lobby), [Twitter account](https://twitter.com/unoplatform), and email [info@platform.uno](mailto:info@platform.uno).
+Support is available through [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform), [Twitter account](https://twitter.com/unoplatform), and email [info@platform.uno](mailto:info@platform.uno).
 
 ## How can I get involved?
 There are lots of ways to contribute to the Uno Platform and we appreciate the help from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions.
@@ -99,7 +99,7 @@ Yes, those are called Templated Controls in the UWP dialect because they inherit
 
 ## Is the iPhone X supported by Uno.UI ?
 
-Yes, use the [VisibleBoundsPadding](articles/features/VisibleBoundsPadding.md)
+Yes, use the [VisibleBoundsPadding](features/VisibleBoundsPadding.md)
 behavior to manage the _notch_ correctly.
 
 ## What features will Uno Platform support?

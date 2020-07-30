@@ -326,7 +326,7 @@ namespace Windows.UI.Xaml
 			{
 				switch (view)
 				{
-					case ScrollContentPresenter presenter:
+					case NativeScrollContentPresenter presenter:
 						manager = presenter.TouchesManager;
 						return true;
 

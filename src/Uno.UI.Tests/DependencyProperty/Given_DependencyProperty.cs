@@ -1124,8 +1124,8 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.IsInstanceOfType(metadata2, typeof(FrameworkPropertyMetadata));
 			Assert.IsInstanceOfType(metadata3, typeof(FrameworkPropertyMetadata));
 
-			Assert.AreEqual(FrameworkPropertyMetadataOptions.Inherits, (metadata2 as FrameworkPropertyMetadata).Options);
-			Assert.AreEqual(FrameworkPropertyMetadataOptions.Inherits, (metadata3 as FrameworkPropertyMetadata).Options);
+			Assert.AreEqual(FrameworkPropertyMetadataOptions.Default | FrameworkPropertyMetadataOptions.Inherits, (metadata2 as FrameworkPropertyMetadata).Options);
+			Assert.AreEqual(FrameworkPropertyMetadataOptions.Default | FrameworkPropertyMetadataOptions.Inherits, (metadata3 as FrameworkPropertyMetadata).Options);
 		}
 
 		[TestMethod]
@@ -1335,7 +1335,8 @@ namespace Uno.UI.Tests.BinderTests
 			var o2 = new Windows.UI.Xaml.Controls.Border();
 			o2.SetBinding(
 				Windows.UI.Xaml.Controls.Border.TagProperty,
-				new Binding() {
+				new Binding()
+				{
 					Path = "Tag.MyNullable.Value",
 					CompiledSource = SUT
 				}
@@ -1350,9 +1351,9 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_DataContext_Changing()
 		{
 			var SUT = new NullablePropertyOwner();
-			var datacontext1 = new NullablePropertyOwner {MyNullable = 42};
-			var datacontext2 = new NullablePropertyOwner {MyNullable = 42};
-			var datacontext3 = new NullablePropertyOwner {MyNullable = 84};
+			var datacontext1 = new NullablePropertyOwner { MyNullable = 42 };
+			var datacontext2 = new NullablePropertyOwner { MyNullable = 42 };
+			var datacontext3 = new NullablePropertyOwner { MyNullable = 84 };
 
 			var changes = new List<DependencyPropertyChangedEventArgs>();
 
@@ -1360,7 +1361,8 @@ namespace Uno.UI.Tests.BinderTests
 
 			SUT.SetBinding(
 				NullablePropertyOwner.MyNullableProperty,
-				new Binding() {
+				new Binding()
+				{
 					Path = "MyNullable"
 				}
 			);
@@ -1380,7 +1382,7 @@ namespace Uno.UI.Tests.BinderTests
 			changes.Count.Should().Be(3);
 			changes.Last().NewValue.Should().Be(null);
 
-			var parent = new Border {Child = SUT};
+			var parent = new Border { Child = SUT };
 
 			parent.DataContext = datacontext1;
 			changes.Count.Should().Be(3);
@@ -1388,6 +1390,23 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.DataContext = DependencyProperty.UnsetValue; // Propagate the datacontext from parent
 			changes.Count.Should().Be(4);
 			changes.Last().NewValue.Should().Be(42);
+		}
+
+		[TestMethod]
+		public void When_Set_Within_Style_Application()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var button = new Button();
+			button.RegisterPropertyChangedCallback(Button.PaddingProperty, (o, e) =>
+			{
+				button.Content = "Frogurt";
+			});
+
+			app.HostView.Children.Add(button); // Causes default style to be applied
+
+			var localContent = button.ReadLocalValue(Button.ContentProperty);
+			Assert.AreEqual("Frogurt", localContent);
 		}
 	}
 

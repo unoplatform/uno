@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				OnToggle();
 			};
+
+			DefaultStyleKey = typeof(ToggleButton);
 		}
 
 		/// <summary>
@@ -48,12 +50,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(IsCheckedProperty, value);
 		}
 
-		public static readonly DependencyProperty IsCheckedProperty =
+		public static DependencyProperty IsCheckedProperty { get ; } =
 			DependencyProperty.Register(
 				"IsChecked",
 				typeof(bool?),
 				typeof(ToggleButton),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					propertyChangedCallback: (s, e) => ((ToggleButton)s).OnIsCheckedChanged(e.OldValue as bool?, e.NewValue as bool?)
 				)

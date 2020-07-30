@@ -76,9 +76,12 @@ namespace Windows.UI.Xaml.Controls
 			remove => _htmlImage.UnregisterEventHandler("load", value);
 		}
 
-		public event RoutedEventHandler ImageFailed
+		private ExceptionRoutedEventArgs ImageFailedConverter(object sender, string e)
+			=> new ExceptionRoutedEventArgs(sender, e);
+
+		public event ExceptionRoutedEventHandler ImageFailed
 		{
-			add => _htmlImage.RegisterEventHandler("error", value);
+			add => _htmlImage.RegisterEventHandler("error", value, payloadConverter: ImageFailedConverter);
 			remove => _htmlImage.UnregisterEventHandler("error", value);
 		}
 
@@ -90,129 +93,61 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(SourceProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SourceProperty =
-			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new PropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
+		public static DependencyProperty SourceProperty { get ; } =
+			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new FrameworkPropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
 
 		private void OnSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
 			UpdateHitTest();
 
-			var source = e.NewValue as ImageSource;
-
 			_lastMeasuredSize = _zeroSize;
 
-			var stream = source?.Stream;
-			if (stream != null)
+			if (e.NewValue is ImageSource source)
 			{
-				stream.Position = 0;
-				var encodedBytes = Convert.ToBase64String(stream.ReadBytes());
-				var url = "data:application/octet-stream;base64," + encodedBytes;
-				SetImageUrl(url);
-			}
-			else if (source is WriteableBitmap wb)
-			{
-				void setImageContent()
+				_sourceDisposable.Disposable = source.Subscribe(img =>
 				{
-					if (wb.PixelBuffer is InMemoryBuffer mb)
+					switch (img.Kind)
 					{
-						var gch = GCHandle.Alloc(mb.Data, GCHandleType.Pinned);
-						var pinnedData = gch.AddrOfPinnedObject();
+						case ImageDataKind.Empty:
+							_htmlImage.SetAttribute("src", "");
+							break;
 
-						try
-						{
-							WebAssemblyRuntime.InvokeJS(
-								"Uno.UI.WindowManager.current.setImageRawData(" + _htmlImage.HtmlId + ", " + pinnedData + ", " + wb.PixelWidth + ", " + wb.PixelHeight + ");"
-							);
-
-							InvalidateMeasure();
-						}
-						finally
-						{
-							gch.Free();
-						}
-					}
-				}
-
-				void OnInvalidated(object sdn, EventArgs args)
-				{
-					setImageContent();
-				}
-
-				wb.Invalidated += OnInvalidated;
-				_sourceDisposable.Disposable = Disposable.Create(() => wb.Invalidated -= OnInvalidated);
-				setImageContent();
-			}
-			else
-			{
-				void setImageContent()
-				{
-					var url = source?.WebUri;
-
-					if (url != null)
-					{
-						if (url.IsAbsoluteUri)
-						{
-							if (url.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase))
+						case ImageDataKind.Base64:
+						case ImageDataKind.Url:
+						default:
+							if (MonochromeColor != null)
 							{
-								// Local files are assumed as coming from the remoter server
-								SetImageUrl(url.PathAndQuery);
+								WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.setImageAsMonochrome("
+									+ _htmlImage.HtmlId + ", \""
+									+ img.Value + "\", \""
+									+ MonochromeColor.Value.ToHexString() + "\");");
 							}
 							else
 							{
-								SetImageUrl(url.AbsoluteUri);
+								_htmlImage.SetAttribute("src", img.Value);
 							}
-						}
-						else
-						{
-							SetImageUrl(url.OriginalString);
-						}
+							break;
+
+						case ImageDataKind.Error:
+							_htmlImage.SetAttribute("src", "");
+							_htmlImage.InternalDispatchEvent("error", EventArgs.Empty);
+							break;
 					}
-					else
-					{
-						SetImageUrl("");
-					}
-				}
-
-				_sourceDisposable.Disposable = null;
-
-				_sourceDisposable.Disposable =
-					Source?.RegisterDisposablePropertyChangedCallback(
-						BitmapImage.UriSourceProperty, (o, args) =>
-						{
-							if (!object.Equals(e.OldValue, args.NewValue))
-							{
-								setImageContent();
-							}
-						}
-					);
-
-				setImageContent();
-			}
-		}
-
-		private void SetImageUrl(string url)
-		{
-			if (MonochromeColor != null)
-			{
-				WebAssemblyRuntime.InvokeJS(
-					"Uno.UI.WindowManager.current.setImageAsMonochrome(" + _htmlImage.HtmlId + ", \"" + url + "\", \"" + MonochromeColor.Value.ToHexString() + "\");"
-				);
+				});
 			}
 			else
 			{
-				_htmlImage.SetAttribute("src", url);
+				_htmlImage.SetAttribute("src", "");
 			}
 		}
-
 		#endregion
 
-		public static readonly DependencyProperty StretchProperty =
+		public static DependencyProperty StretchProperty { get ; } =
 			DependencyProperty.Register(
 				"Stretch",
 				typeof(Stretch),
 				typeof(Image),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					Media.Stretch.Uniform,
 					(s, e) => ((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
@@ -269,7 +204,7 @@ namespace Windows.UI.Xaml.Controls
 			// Calculate the position of the image to follow stretch and alignment requirements
 			var finalPosition = this.ArrangeSource(finalSize, containerSize);
 
-			_htmlImage.ArrangeElementNative(finalPosition, false, clipRect: null);
+			_htmlImage.ArrangeVisual(finalPosition, false, clipRect: null);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{

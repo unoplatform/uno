@@ -61,6 +61,15 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal bool IsGeneratedContainer { get; set; }
 
+		public ContentControl()
+		{
+			DefaultStyleKey = typeof(ContentControl);
+
+			InitializePartial();
+		}
+
+		partial void InitializePartial();
+
 		#region Content DependencyProperty
 
 		public virtual object Content
@@ -84,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ContentProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentProperty =
+		public static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
 				typeof(object),
@@ -106,13 +115,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for ContentTemplate.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ContentTemplateProperty =
+		public static DependencyProperty ContentTemplateProperty { get ; } =
 			DependencyProperty.Register(
 				"ContentTemplate",
 				typeof(DataTemplate),
 				typeof(ContentControl),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					(s, e) => ((ContentControl)s)?.OnContentTemplateChanged(e.OldValue as DataTemplate, e.NewValue as DataTemplate)
 				)
 			);
@@ -126,12 +136,12 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ContentTemplateSelectorProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentTemplateSelectorProperty =
+		public static DependencyProperty ContentTemplateSelectorProperty { get ; } =
 			DependencyProperty.Register(
 				"ContentTemplateSelector",
 				typeof(DataTemplateSelector),
 				typeof(ContentControl),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((ContentControl)s)?.OnContentTemplateSelectorChanged(e.OldValue as DataTemplateSelector, e.NewValue as DataTemplateSelector)
 				)
@@ -241,8 +251,8 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ContentTransitionsProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentTransitionsProperty =
-			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentControl), new PropertyMetadata(null, OnContentTransitionsChanged));
+		public static DependencyProperty ContentTransitionsProperty { get ; } =
+			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentControl), new FrameworkPropertyMetadata(null, OnContentTransitionsChanged));
 
 		private static void OnContentTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -285,7 +295,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -429,14 +439,14 @@ namespace Windows.UI.Xaml.Controls
 		/// we know that the IsContentPresenterBypassEnabled will be false once the style has been set.
 		/// Return false in this case, even if the Template is null.
 		/// </remarks>
-		internal bool IsContentPresenterBypassEnabled => Template == null && !HasDefaultTemplate(GetDefaultStyleType());
+		internal bool IsContentPresenterBypassEnabled => Template == null && !HasDefaultTemplate(GetDefaultStyleKey());
 
 		/// <summary>
 		/// Gets whether the default style for the given type sets a non-null Template.
 		/// </summary>
 		private static Func<Type, bool> HasDefaultTemplate =
 			Funcs.CreateMemoized((Type type) =>
-				Style.DefaultStyleForType(type) is Style defaultStyle
+				Style.GetDefaultStyleForType(type) is Style defaultStyle
 					&& defaultStyle
 						.Flatten(s => s.BasedOn)
 						.SelectMany(s => s.Setters)

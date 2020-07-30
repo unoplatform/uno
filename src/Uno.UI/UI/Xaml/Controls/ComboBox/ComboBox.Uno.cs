@@ -45,11 +45,11 @@ namespace Uno.UI.Xaml.Controls
 		/// This is only the preferred placement, the combo will still ensure to keep its drop down in the visual bounds of the window
 		/// (When content cannot be rendered out of the current window ...)
 		/// </remarks>
-		public static readonly DependencyProperty DropDownPreferredPlacementProperty = DependencyProperty.RegisterAttached(
+		public static DependencyProperty DropDownPreferredPlacementProperty { get ; } = DependencyProperty.RegisterAttached(
 			"DropDownPreferredLocation",
 			typeof(DropDownPlacement),
 			typeof(ComboBox),
-			new PropertyMetadata(FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement));
+			new FrameworkPropertyMetadata(FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement));
 
 		/// <summary>
 		/// Sets the preferred <see cref="DropDownPlacement"/> of a ComboBox. (cf. Remarks)

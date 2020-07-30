@@ -39,6 +39,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				}
 			};
 
+			SUT.ApplyTemplate();
+
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
 			Assert.IsNotNull(panel.FindName("b1"));
@@ -87,6 +89,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				}
 			);
 
+			SUT.ApplyTemplate();
+
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
 			Assert.IsNotNull(panel.FindName("b1"));
@@ -127,6 +131,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			};
 
 			SUT.ItemsSource = new int[] { 1, 2, 3 };
+
 			SUT.OnItemClicked(0);
 
 			SUT.ItemsSource = null;
@@ -206,6 +211,42 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		}
 
 		[TestMethod]
+		public void When_SelectionChanged_Changes_Order()
+		{
+			var list = new ListView()
+			{
+				Style = null,
+				ItemContainerStyle = BuildBasicContainerStyle(),
+			};
+			list.ItemsSource = Enumerable.Range(0, 20);
+			var callbackCount = 0;
+
+			list.SelectionChanged += OnSelectionChanged;
+			list.SelectedItem = 7;
+
+			using (new AssertionScope())
+			{
+				list.SelectedItem.Should().Be(7);
+				list.SelectedIndex.Should().Be(7);
+				list.SelectedValue.Should().Be(7);
+				callbackCount.Should().Be(1); //Unlike eg TextBox.TextChanged there is no guard on reentrant modification
+			}
+
+			void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+			{
+				callbackCount++;
+
+				using (new AssertionScope())
+				{
+					list.SelectedItem.Should().Be(7);
+					list.SelectedIndex.Should().Be(7);
+					list.SelectedValue.Should().Be(7);
+					callbackCount.Should().Be(1);
+				}
+			}
+		}
+
+		[TestMethod]
 		public void When_ViewModelSource_SelectionChanged_Changes_Selection()
 		{
 			var SUT = new ListView()
@@ -222,11 +263,15 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.IsNull(SUT.SelectedItem);
 			Assert.AreEqual(-1, SUT.SelectedIndex);
 
+			SUT.ForceLoaded();
+
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 			SUT.SelectionChanged += (s, e) => selectionChanged.Add(e);
+
 			SUT.SelectedItem = source[1];
 
 			Assert.AreEqual(1, SUT.SelectedIndex);
+			Assert.AreEqual(1, selectionChanged.Count);
 
 			if (SUT.ContainerFromIndex(1) is ListViewItem s1)
 			{

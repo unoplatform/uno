@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public Pivot()
 		{
+			DefaultStyleKey = typeof(Pivot);
 			Loaded += (s, e) => RegisterHeaderEvents();
 			Unloaded += (s, e) => UnregisterHeaderEvents();
 			Items.VectorChanged += OnItemsVectorChanged;
@@ -158,6 +159,9 @@ namespace Windows.UI.Xaml.Controls
 							RelativeSource = RelativeSource.TemplatedParent
 						}
 					);
+
+					// Materialize template to ensure visual states are set correctly.
+					headerItem.EnsureTemplate();
 
 					_staticHeader.Children.Add(headerItem);
 				}

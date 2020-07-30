@@ -13,6 +13,12 @@ using Uno.UI.Services;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
 
+#if HAS_UNO_WINUI
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+#else
+using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
+
 namespace Windows.UI.Xaml
 {
 	[Register("UnoAppDelegate")]
@@ -26,7 +32,6 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
-			Windows.UI.Xaml.GenericStyles.Initialize();
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 		}
 

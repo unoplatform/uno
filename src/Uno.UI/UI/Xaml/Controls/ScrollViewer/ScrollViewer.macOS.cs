@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 			SetScrollableContainer();
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			SetScrollableContainer();
 			base.OnLoaded();

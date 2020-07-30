@@ -2,24 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Connectivity
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum NetworkCostType 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Unknown,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Unrestricted,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Fixed,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Variable,
-		#endif
+		// Skipping already declared field Windows.Networking.Connectivity.NetworkCostType.Unknown
+		// Skipping already declared field Windows.Networking.Connectivity.NetworkCostType.Unrestricted
+		// Skipping already declared field Windows.Networking.Connectivity.NetworkCostType.Fixed
+		// Skipping already declared field Windows.Networking.Connectivity.NetworkCostType.Variable
 	}
 	#endif
 }

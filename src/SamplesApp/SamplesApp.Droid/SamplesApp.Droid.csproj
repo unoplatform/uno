@@ -19,10 +19,7 @@
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
-    <!-- AndroidUseAapt2 is disabled until https://github.com/unoplatform/uno/issues/1382 is resolved -->
-    <AndroidUseAapt2>false</AndroidUseAapt2>
-    <!-- https://github.com/unoplatform/uno/issues/61 -->
-    <UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
+    <AndroidUseAapt2>true</AndroidUseAapt2>
   </PropertyGroup>
   <PropertyGroup>
     <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
@@ -45,7 +42,7 @@
     <MandroidI18n />
     <AndroidSupportedAbis>armeabi-v7a;x86;arm64-v8a</AndroidSupportedAbis>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
-    <AndroidUseAapt2>false</AndroidUseAapt2>
+    <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -79,6 +76,12 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Graph">
+      <Version>3.8.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Identity.Client">
+      <Version>4.15.0</Version>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>
     </PackageReference>
@@ -86,17 +89,29 @@
       <Version>1.32.0</Version>
     </PackageReference>
     <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.32" />
+    <PackageReference Include="Xamarin.AndroidX.AppCompat.AppCompatResources">
+      <Version>1.1.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.AndroidX.Browser">
+      <Version>1.0.0</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
     <PackageReference Include="Uno.SourceGenerationTasks" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.1.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.1.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
       <Project>{f9277925-fc11-4a97-8ca1-b4a33e726f55}</Project>
       <Name>Uno.UI.Lottie</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.csproj">
+      <Project>{2569663D-293A-4A1D-BB84-AA8C7B4B7F92}</Project>
+      <Name>Uno.UI.MSAL</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj">
       <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>

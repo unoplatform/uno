@@ -33,12 +33,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		}
 
-		public static readonly DependencyProperty SelectedItemProperty =
+		public static DependencyProperty SelectedItemProperty { get ; } =
 		DependencyProperty.Register(
 			"SelectedItem",
 			typeof(object),
 			typeof(Selector),
-			new PropertyMetadata(
+			new FrameworkPropertyMetadata(
 				defaultValue: null,
 				propertyChangedCallback: (s, e) => (s as Selector).OnSelectedItemChanged(e.OldValue, e.NewValue, updateItemSelectedState: true)
 			)
@@ -113,10 +113,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				SelectedIndex = newIndex;
 			}
 
-			InvokeSelectionChanged(wasSelectionUnset ? new object[] { } : new[] { oldSelectedItem },
-				isSelectionUnset ? new object[] { } : new[] { selectedItem }
-			);
-
 			OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
 
 			UpdateSelectedValue();
@@ -126,6 +122,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
+
+			InvokeSelectionChanged(wasSelectionUnset ? new object[] { } : new[] { oldSelectedItem },
+				isSelectionUnset ? new object[] { } : new[] { selectedItem }
+			);
 		}
 
 		internal void TryUpdateSelectorItemIsSelected(object item, bool isSelected)
@@ -190,8 +190,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		// Using a DependencyProperty as the backing store for SelectedIndex.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SelectedIndexProperty =
-			DependencyProperty.Register("SelectedIndex", typeof(int), typeof(Selector), new PropertyMetadata(-1,
+		public static DependencyProperty SelectedIndexProperty { get ; } =
+			DependencyProperty.Register("SelectedIndex", typeof(int), typeof(Selector), new FrameworkPropertyMetadata(-1,
 				(s, e) => (s as Selector).OnSelectedIndexChanged((int)e.OldValue, (int)e.NewValue)
 			)
 		);

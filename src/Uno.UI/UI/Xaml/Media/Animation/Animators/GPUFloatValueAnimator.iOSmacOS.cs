@@ -412,7 +412,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				this.Log().DebugFormat("Finalizing animation for GPU Float value animator on property {0}.", _bindingPath.LastOrDefault().PropertyName);
 			}
 
-			if (_valueAnimator.IsRunning)
+			if (_valueAnimator?.IsRunning ?? false)
 			{
 				_valueAnimator.Cancel();
 			}

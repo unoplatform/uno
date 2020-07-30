@@ -17,10 +17,7 @@ namespace Windows.UI.Xaml.Shapes
 		private double _scaleY;
 #pragma warning restore CS0067, CS0649
 
-		private IDisposable BuildDrawableLayer()
-		{
-			return Disposable.Empty;
-		}
+		private IDisposable BuildDrawableLayer() => Disposable.Empty;
 
 		private Size GetActualSize() => Size.Empty;
 

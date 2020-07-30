@@ -1,38 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
-	[Markup.ContentProperty(Name = "Setters")] 
+	[Markup.ContentProperty(Name = "Setters")]
 	public partial class Style
 	{
-        private delegate void ApplyToHandler(DependencyObject instance);
+		private delegate void ApplyToHandler(DependencyObject instance);
 
-        public delegate Style StyleProviderHandler();
+		public delegate Style StyleProviderHandler();
 
 		private readonly static Dictionary<Type, StyleProviderHandler> _lookup = new Dictionary<Type, StyleProviderHandler>(Uno.Core.Comparison.FastTypeComparer.Default);
 		private readonly static Dictionary<Type, Style> _defaultStyleCache = new Dictionary<Type, Style>(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly static Dictionary<Type, StyleProviderHandler> _nativeLookup = new Dictionary<Type, StyleProviderHandler>(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly static Dictionary<Type, Style> _nativeDefaultStyleCache = new Dictionary<Type, Style>(Uno.Core.Comparison.FastTypeComparer.Default);
 
 		/// <summary>
-		/// Default style precedence to apply when using the Style property.
+		/// The xaml scope in force at the time the Style was created.
 		/// </summary>
-		internal static DependencyPropertyValuePrecedences DefaultStylePrecedence
-			 => DependencyPropertyValuePrecedences.ImplicitStyle;
-
-		// Note: These conditionals are placed for legacy reasons, when Uno.UI xaml-style code
-		// was considered. This is approach has been abandoned since then but style is still referenced 
-		// by windows platforms. Once it's removed we can safely remove these conditionals.
-		internal DependencyPropertyValuePrecedences Precedence { get; }
+		private readonly XamlScope _xamlScope;
 
 		public Style()
 		{
-			Precedence = DependencyPropertyValuePrecedences.ExplicitStyle;
+			_xamlScope = ResourceResolver.CurrentScope;
 		}
 
-		public Style(Type targetType)
+		public Style(Type targetType) : this()
 		{
 			if (targetType == null)
 			{
@@ -40,46 +39,6 @@ namespace Windows.UI.Xaml
 			}
 
 			TargetType = targetType;
-
-			Precedence = DependencyPropertyValuePrecedences.ExplicitStyle;
-		}
-
-		public Style(Type targetType, Style basedOn)
-			: this(targetType, basedOn, false)
-		{
-			if (targetType == null)
-			{
-				throw new ArgumentNullException(nameof(targetType));
-			}
-
-			if (basedOn == null)
-			{
-				throw new ArgumentNullException(nameof(basedOn));
-			}
-
-			TargetType = targetType;
-			BasedOn = basedOn;
-
-			Precedence = DependencyPropertyValuePrecedences.ExplicitStyle;
-		}
-
-		internal Style(Type targetType, Style basedOn, bool defaultStyle)
-		{
-			if (targetType == null)
-			{
-				throw new ArgumentNullException(nameof(targetType));
-			}
-
-			if (basedOn == null)
-			{
-				throw new ArgumentNullException(nameof(basedOn));
-			}
-
-			TargetType = targetType;
-			BasedOn = basedOn;
-
-			// The style is specified as Implicit until locally defined styles are correctly supported.
-			Precedence = defaultStyle ? DefaultStylePrecedence : DependencyPropertyValuePrecedences.ExplicitStyle;
 		}
 
 		public Type TargetType { get; set; }
@@ -88,7 +47,7 @@ namespace Windows.UI.Xaml
 
 		public SetterBaseCollection Setters { get; } = new SetterBaseCollection();
 
-		public void ApplyTo(DependencyObject o)
+		internal void ApplyTo(DependencyObject o, DependencyPropertyValuePrecedences precedence)
 		{
 			if (o == null)
 			{
@@ -96,35 +55,47 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			using (DependencyObjectExtensions.OverrideLocalPrecedence(o, Precedence))
+			using (DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence))
 			{
 				var flattenedSetters = CreateSetterMap();
-
-				foreach (var pair in flattenedSetters)
+#if !HAS_EXPENSIVE_TRYFINALLY
+				try
+#endif
 				{
-					pair.Value(o);
+					ResourceResolver.PushNewScope(_xamlScope);
+					foreach (var pair in flattenedSetters)
+					{
+						pair.Value(o);
+					}
+
+					// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
+					(o as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: false);
+				}
+#if !HAS_EXPENSIVE_TRYFINALLY
+				finally
+#endif
+				{
+					ResourceResolver.PopScope();
 				}
 			}
 		}
 
 		/// <summary>
-		/// Clears the current style from the specified dependency object.
+		/// Clear properties from the current Style that are not set by the incoming Style. (The remaining properties will be overwritten
+		/// when the incoming Style is applied.)
 		/// </summary>
-		/// <param name="dependencyObject">The target dependency object</param>
-		/// <remarks>
-		/// This method should be included in the calls to update of the Style
-		/// property. Automatic style removal is not implemented for now because
-		/// of breaking changes.
-		/// </remarks>
-		internal void ClearStyle(DependencyObject dependencyObject)
+		internal void ClearInvalidProperties(DependencyObject dependencyObject, Style incomingStyle, DependencyPropertyValuePrecedences precedence)
 		{
-			var type = dependencyObject.GetType();
-
-			foreach (var setter in CreateSetterMap())
+			var oldSetters = CreateSetterMap();
+			var newSetters = incomingStyle?.CreateSetterMap();
+			foreach (var kvp in oldSetters)
 			{
-				if (setter.Key is DependencyProperty dp)
+				if (kvp.Key is DependencyProperty dp)
 				{
-					DependencyObjectExtensions.ClearValue(dependencyObject, dp, Precedence);
+					if (newSetters == null || !newSetters.ContainsKey(dp))
+					{
+						DependencyObjectExtensions.ClearValue(dependencyObject, dp, precedence);
+					}
 				}
 			}
 		}
@@ -143,7 +114,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Lazily enumerates all the styles for the complete hierarchy.
+		/// Enumerates all the styles for the complete hierarchy.
 		/// </summary>
 		private void EnumerateSetters(Style style, Dictionary<object, ApplyToHandler> map)
 		{
@@ -156,11 +127,11 @@ namespace Windows.UI.Xaml
 			{
 				foreach (var setter in style.Setters)
 				{
-					if(setter is Setter s)
+					if (setter is Setter s)
 					{
 						map[s.Property] = setter.ApplyTo;
 					}
-					else if(setter is ICSharpPropertySetter propertySetter)
+					else if (setter is ICSharpPropertySetter propertySetter)
 					{
 						map[propertySetter.Property] = setter.ApplyTo;
 					}
@@ -168,42 +139,91 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-        public static void RegisterDefaultStyleForType(Type type, Style style)
-        {
-            _lookup[type] = () => style;
-        }
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider) => RegisterDefaultStyleForType(type, styleProvider, isNative: false);
 
-        public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider)
-        {
-            _lookup[type] = styleProvider;
-        }
-
-		public static Style DefaultStyleForType(Type type)
+		/// <summary>
+		/// Register lazy default style provider for the nominated type.
+		/// </summary>
+		/// <param name="type">The type to which the style applies</param>
+		/// <param name="styleProvider">Function which generates the style. This will be called once when first used, then cached.</param>
+		/// <param name="isNative">True if is is the native default style, false if it is the UWP default style.</param>
+		/// <remarks>This method should normally only be called from Xaml-generated code. </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider, bool isNative)
 		{
-			if (!_defaultStyleCache.TryGetValue(type, out var style))
+			if (isNative)
 			{
-				if (_lookup.TryGetValue(type, out var styleProvider))
+				_nativeLookup[type] = styleProvider;
+			}
+			else
+			{
+				_lookup[type] = styleProvider;
+			}
+		}
+
+		/// <summary>
+		/// Returns the default Style for given type. 
+		/// </summary>
+		internal static Style GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, ShouldUseUWPDefaultStyle(type));
+
+		private static Style GetDefaultStyleForType(Type type, bool useUWPDefaultStyles)
+		{
+			if (type == null)
+			{
+				return null;
+			}
+
+			var styleCache = useUWPDefaultStyles ? _defaultStyleCache
+				: _nativeDefaultStyleCache;
+			var lookup = useUWPDefaultStyles ? _lookup
+				: _nativeLookup;
+
+			if (!styleCache.TryGetValue(type, out var style))
+			{
+				if (lookup.TryGetValue(type, out var styleProvider))
 				{
-					style = new Style(targetType: type, basedOn: styleProvider(), defaultStyle: true);
+					style = styleProvider();
+
+					styleCache[type] = style;
+				}
+			}
+
+			if (style == null && !useUWPDefaultStyles)
+			{
+
+				if (typeof(Style).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(Style).Log().LogDebug($"No native style found for type {type}, falling back on UWP style");
+				}
+
+				// If no native style found, fall back on UWP style
+				style = GetDefaultStyleForType(type, useUWPDefaultStyles: true);
+			}
+
+			if (typeof(Style).Log().IsEnabled(LogLevel.Debug))
+			{
+				if (style != null)
+				{
+					typeof(Style).Log().LogDebug($"Returning {(useUWPDefaultStyles ? "UWP" : "native")} style {style} for type {type}");
 				}
 				else
 				{
-					style = new Style(targetType: type);
+					typeof(Style).Log().LogDebug($"No {(useUWPDefaultStyles ? "UWP" : "native")} style found for type {type}");
 				}
-
-				_defaultStyleCache[type] = style;
 			}
 
 			return style;
 		}
-	}
 
-	public class Style<T> : Style
-	{
-		public Style()
-			: base(typeof(T))
+		private static bool ShouldUseUWPDefaultStyle(Type type)
 		{
+			if (type != null && FeatureConfiguration.Style.UseUWPDefaultStylesOverride.TryGetValue(type, out var value))
+			{
+				return value;
+			}
 
+			return FeatureConfiguration.Style.UseUWPDefaultStyles;
 		}
 	}
 }

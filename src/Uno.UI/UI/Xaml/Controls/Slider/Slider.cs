@@ -36,8 +36,8 @@ namespace Windows.UI.Xaml.Controls
 
 		static Slider()
 		{
-			MaximumProperty.OverrideMetadata(typeof(Slider), new PropertyMetadata(100d));
-			SmallChangeProperty.OverrideMetadata(typeof(Slider), new PropertyMetadata(1d));
+			MaximumProperty.OverrideMetadata(typeof(Slider), new FrameworkPropertyMetadata(100d));
+			SmallChangeProperty.OverrideMetadata(typeof(Slider), new FrameworkPropertyMetadata(1d));
 		}
 
 		public Slider()
@@ -45,6 +45,8 @@ namespace Windows.UI.Xaml.Controls
 #if XAMARIN
 			RegisterLoadActions(SubscribeSliderContainerPressed, () => _sliderContainerSubscription.Disposable = null);
 #endif
+
+			DefaultStyleKey = typeof(Slider);
 		}
 
 		protected override void OnApplyTemplate()
@@ -84,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateCommonState(useTransitions: false);
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -108,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool HasXamlTemplate => _horizontalThumb != null || _verticalThumb != null;
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
@@ -385,8 +387,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for IsTrackerEnabled.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IsTrackerEnabledProperty =
-			DependencyProperty.Register("IsTrackerEnabled", typeof(bool), typeof(Slider), new PropertyMetadata(true));
+		public static DependencyProperty IsTrackerEnabledProperty { get ; } =
+			DependencyProperty.Register("IsTrackerEnabled", typeof(bool), typeof(Slider), new FrameworkPropertyMetadata(true));
 		#endregion
 
 		#region StepFrequency DependencyProperty
@@ -397,8 +399,8 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(StepFrequencyProperty, value); }
 		}
 
-		public static readonly DependencyProperty StepFrequencyProperty =
-			DependencyProperty.Register("StepFrequency", typeof(double), typeof(Slider), new PropertyMetadata(1.0, (s, e) => ((Slider)s)?.OnStepFrequencyChanged(e)));
+		public static DependencyProperty StepFrequencyProperty { get ; } =
+			DependencyProperty.Register("StepFrequency", typeof(double), typeof(Slider), new FrameworkPropertyMetadata(1.0, (s, e) => ((Slider)s)?.OnStepFrequencyChanged(e)));
 
 		private void OnStepFrequencyChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -416,8 +418,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Orientation.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty OrientationProperty =
-			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(Slider), new PropertyMetadata(Orientation.Horizontal, (s, e) => ((Slider)s)?.OnOrientationChanged(e)));
+		public static DependencyProperty OrientationProperty { get ; } =
+			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(Slider), new FrameworkPropertyMetadata(Orientation.Horizontal, (s, e) => ((Slider)s)?.OnOrientationChanged(e)));
 
 
 		private void OnOrientationChanged(DependencyPropertyChangedEventArgs e)
@@ -466,8 +468,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for SnapsTo.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SnapsToProperty =
-			DependencyProperty.Register("SnapsTo", typeof(SliderSnapsTo), typeof(Slider), new PropertyMetadata(SliderSnapsTo.StepValues, (s, e) => ((Slider)s)?.OnSnapsToChanged(e)));
+		public static DependencyProperty SnapsToProperty { get ; } =
+			DependencyProperty.Register("SnapsTo", typeof(SliderSnapsTo), typeof(Slider), new FrameworkPropertyMetadata(SliderSnapsTo.StepValues, (s, e) => ((Slider)s)?.OnSnapsToChanged(e)));
 
 
 		private void OnSnapsToChanged(DependencyPropertyChangedEventArgs e)
@@ -486,8 +488,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for IsThumbToolTipEnabled.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IsThumbToolTipEnabledProperty =
-			DependencyProperty.Register("IsThumbToolTipEnabled", typeof(bool), typeof(Slider), new PropertyMetadata(false, (s, e) => ((Slider)s)?.OnIsThumbToolTipEnabledChanged(e)));
+		public static DependencyProperty IsThumbToolTipEnabledProperty { get ; } =
+			DependencyProperty.Register("IsThumbToolTipEnabled", typeof(bool), typeof(Slider), new FrameworkPropertyMetadata(false, (s, e) => ((Slider)s)?.OnIsThumbToolTipEnabledChanged(e)));
 
 
 		private void OnIsThumbToolTipEnabledChanged(DependencyPropertyChangedEventArgs e)
@@ -506,8 +508,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for IsDirectionReversed.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IsDirectionReversedProperty =
-			DependencyProperty.Register("IsDirectionReversed", typeof(bool), typeof(Slider), new PropertyMetadata(false, (s, e) => ((Slider)s)?.OnIsDirectionReversedChanged(e)));
+		public static DependencyProperty IsDirectionReversedProperty { get ; } =
+			DependencyProperty.Register("IsDirectionReversed", typeof(bool), typeof(Slider), new FrameworkPropertyMetadata(false, (s, e) => ((Slider)s)?.OnIsDirectionReversedChanged(e)));
 
 
 		private void OnIsDirectionReversedChanged(DependencyPropertyChangedEventArgs e)
@@ -526,8 +528,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for IntermediateValue.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IntermediateValueProperty =
-			DependencyProperty.Register("IntermediateValue", typeof(double), typeof(Slider), new PropertyMetadata(.5, (s, e) => ((Slider)s)?.OnIntermediateValueChanged(e)));
+		public static DependencyProperty IntermediateValueProperty { get ; } =
+			DependencyProperty.Register("IntermediateValue", typeof(double), typeof(Slider), new FrameworkPropertyMetadata(.5, (s, e) => ((Slider)s)?.OnIntermediateValueChanged(e)));
 
 
 		private void OnIntermediateValueChanged(DependencyPropertyChangedEventArgs e)
@@ -546,8 +548,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for TickPlacement.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TickPlacementProperty =
-			DependencyProperty.Register("TickPlacement", typeof(TickPlacement), typeof(Slider), new PropertyMetadata(TickPlacement.None, (s, e) => ((Slider)s)?.OnTickPlacementChanged(e)));
+		public static DependencyProperty TickPlacementProperty { get ; } =
+			DependencyProperty.Register("TickPlacement", typeof(TickPlacement), typeof(Slider), new FrameworkPropertyMetadata(TickPlacement.None, (s, e) => ((Slider)s)?.OnTickPlacementChanged(e)));
 
 
 		private void OnTickPlacementChanged(DependencyPropertyChangedEventArgs e)
@@ -566,8 +568,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for TickFrequency.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TickFrequencyProperty =
-			DependencyProperty.Register("TickFrequency", typeof(double), typeof(Slider), new PropertyMetadata(0.0, (s, e) => ((Slider)s)?.OnTickFrequencyChanged(e)));
+		public static DependencyProperty TickFrequencyProperty { get ; } =
+			DependencyProperty.Register("TickFrequency", typeof(double), typeof(Slider), new FrameworkPropertyMetadata(0.0, (s, e) => ((Slider)s)?.OnTickFrequencyChanged(e)));
 
 
 		private void OnTickFrequencyChanged(DependencyPropertyChangedEventArgs e)
@@ -586,8 +588,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for ThumbToolTipValueConverter.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ThumbToolTipValueConverterProperty =
-			DependencyProperty.Register("ThumbToolTipValueConverter", typeof(IValueConverter), typeof(Slider), new PropertyMetadata(null, (s, e) => ((Slider)s)?.OnThumbToolTipValueConverterChanged(e)));
+		public static DependencyProperty ThumbToolTipValueConverterProperty { get ; } =
+			DependencyProperty.Register("ThumbToolTipValueConverter", typeof(IValueConverter), typeof(Slider), new FrameworkPropertyMetadata(null, (s, e) => ((Slider)s)?.OnThumbToolTipValueConverterChanged(e)));
 
 
 		private void OnThumbToolTipValueConverterChanged(DependencyPropertyChangedEventArgs e)
@@ -606,8 +608,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for HeaderTemplate.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty HeaderTemplateProperty =
-			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(Slider), new PropertyMetadata(null, (s, e) => ((Slider)s)?.OnHeaderTemplateChanged(e)));
+		public static DependencyProperty HeaderTemplateProperty { get; } =
+			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(Slider), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => ((Slider)s)?.OnHeaderTemplateChanged(e)));
 
 
 		private void OnHeaderTemplateChanged(DependencyPropertyChangedEventArgs e)
@@ -626,8 +628,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Header.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty HeaderProperty =
-			DependencyProperty.Register("Header", typeof(object), typeof(Slider), new PropertyMetadata(null, (s, e) => ((Slider)s)?.OnHeaderChanged(e)));
+		public static DependencyProperty HeaderProperty { get ; } =
+			DependencyProperty.Register("Header", typeof(object), typeof(Slider), new FrameworkPropertyMetadata(null, (s, e) => ((Slider)s)?.OnHeaderChanged(e)));
 
 		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e)
 		{

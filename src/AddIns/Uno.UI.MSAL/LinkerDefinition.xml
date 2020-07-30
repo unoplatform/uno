@@ -1,0 +1,3 @@
+﻿<linker>
+	<assembly fullname="Microsoft.Identity.Client" />
+</linker>
