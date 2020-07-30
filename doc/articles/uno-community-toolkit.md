@@ -1,8 +1,8 @@
 # Port of  Windows Community Toolkit
-The Windows Community Toolkit is a collection of helper functions, custom controls, and app services. It simplifies and demonstrates common developer patterns when building experiences for Windows 10.
+The [Windows Community Toolkit](https://docs.microsoft.com/en-us/windows/communitytoolkit/) is a collection of helper functions, custom controls, and app services. It simplifies and demonstrates common developer patterns when building experiences for Windows 10.
 
 Uno has ported the Windows Community Toolkit for use in Uno applications to allow for use on Windows,
-Android, iOS, and WebAssembly.
+Android, iOS, macOS, and WebAssembly.
 
 The following packages are available:
 - [Uno.Microsoft.Toolkit](https://www.nuget.org/packages/Uno.Microsoft.Toolkit )
@@ -19,8 +19,7 @@ The following packages are available:
 - [Uno.Microsoft.Toolkit.Uwp.Connectivity](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Uwp.Connectivity)
 
 ## Add Windows Community Toolkit to Uno Project
-This tutorial will walk through adding and implementing the DataGrid control but the steps can be followed for any of the Uno ported
-Windows Community Toolkit controls.  
+This tutorial will walk through adding and implementing the DataGrid control but the steps can be followed for any of the Uno ported Windows Community Toolkit controls.  
   
 1. Install Nuget package for targeted control  
  ![datagrid-nuget](uno-development/assets/controls/datagrid-nuget.JPG)  
@@ -45,8 +44,8 @@ This control will create an easily organized grid that will allow you to create 
 1. Begin by adding the control using the syntax below. Change the `x:Name` to the name of your DataGrid.  
 ```<controls:DataGrid x:Name="dataGrid"></controls:DataGrid>```
 
-2. Add columns. Similar to how you would configure columns for a XAML `Grid` layout, you can add column defintions within your `DataGrid` control:
-   ``` xml
+2. Add columns. Similar to how you would configure columns for a XAML `Grid` layout, you can add column definitions within your `DataGrid` control:
+   ``` xaml
 <controls:DataGrid.Columns>
     <controls:DataGridTextColumn Header="Rank"/>
     <controls:DataGridComboBoxColumn Header="Mountain"/>
@@ -62,7 +61,7 @@ Alternatively, you can use the `AutoGenerateColumns` attribute on your `DataGrid
 <controls:DataGrid x:Name="dataGrid" AutoGenerateColumns="True" />
 ```
 
-3. Format your rows in the same way as your columns or use a `Data Template` added as an attribute on the `DataGrid` control  
+3. Format your rows in the same way as your columns or use a `DataTemplate` added as an attribute on the `DataGrid` control  
 ``` xml
 <controls:DataGrid x:Name="dataGrid" RowDetailsTemplate="{StaticResource RowDetailsTemplate}">
 ```
@@ -84,4 +83,4 @@ Then, set the binding on each column
 ![datagrid-full-sample](uno-development/assets/controls/datagrid-full-sample.gif)
 
 
-For a deeper dive into the code, check out the full Uno Window Community Toolkit Sample: [Uno.Samples](https://github.com/unoplatform/Uno.Samples)
+For a deeper dive into the code, check out the [full Uno Windows Community Toolkit Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoWCTDataGridSample) in [Uno.Samples](https://github.com/unoplatform/Uno.Samples).
