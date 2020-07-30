@@ -2,21 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false
-	#if false
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum UnicodeEncoding 
 	{
-		#if false
-		Utf8,
-		#endif
-		#if false
-		Utf16LE,
-		#endif
-		#if false
-		Utf16BE,
-		#endif
+		// Skipping already declared field Windows.Storage.Streams.UnicodeEncoding.Utf8
+		// Skipping already declared field Windows.Storage.Streams.UnicodeEncoding.Utf16LE
+		// Skipping already declared field Windows.Storage.Streams.UnicodeEncoding.Utf16BE
 	}
 	#endif
 }

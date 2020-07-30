@@ -1,4 +1,4 @@
-﻿#if __WASM__
+﻿#if NETSTANDARD
 #define USE_HARD_REFERENCES
 #endif
 

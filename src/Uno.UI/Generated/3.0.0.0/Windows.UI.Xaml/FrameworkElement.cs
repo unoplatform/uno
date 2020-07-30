@@ -35,6 +35,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
+		// Skipping already declared property Tag
 		// Skipping already declared property Style
 		// Skipping already declared property Resources
 		// Skipping already declared property Name
@@ -397,6 +398,8 @@ namespace Windows.UI.Xaml
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
+		// Skipping already declared property StyleProperty
+		// Skipping already declared property TagProperty
 		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalAlignmentProperty { get; } = 

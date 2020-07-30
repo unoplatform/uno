@@ -1745,6 +1745,9 @@
 			<Member fullName="System.Void Windows.Devices.Sensors.AccelerometerReadingChangedEventArgs..ctor()" reason="reference API does not contain this API" />
 			<Member fullName="System.Void Windows.Devices.Sensors.AccelerometerShakenEventArgs..ctor()" reason="reference API does not contain this API" />
 
+			<Member fullName="System.Void Windows.UI.Composition.CompositionShape..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionSurfaceBrush..ctor()" reason="reference API does not contain this API" />
+
 		  <!-- End Skia Import -->
 
 			<Member

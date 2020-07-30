@@ -25,7 +25,7 @@ namespace Windows.UI.Core
 		{
 			if(!ApiExtensibility.CreateInstance(this, out _coreWindowExtension))
 			{
-			//	throw new InvalidOperationException($"Unable to find ICoreWindowExtension extension");
+				throw new InvalidOperationException($"Unable to find ICoreWindowExtension extension");
 			}
 		}
 

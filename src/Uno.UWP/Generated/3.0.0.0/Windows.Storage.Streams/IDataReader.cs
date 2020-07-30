@@ -2,18 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IDataReader 
 	{
-		#if false || false || false || false || false
-		global::Windows.Storage.Streams.ByteOrder ByteOrder
-		{
-			get;
-			set;
-		}
-		#endif
+		// Skipping already declared property ByteOrder
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.InputStreamOptions InputStreamOptions
 		{
@@ -21,19 +15,8 @@ namespace Windows.Storage.Streams
 			set;
 		}
 		#endif
-		#if false || false || false || false || false
-		uint UnconsumedBufferLength
-		{
-			get;
-		}
-		#endif
-		#if false || false || false || false || false
-		global::Windows.Storage.Streams.UnicodeEncoding UnicodeEncoding
-		{
-			get;
-			set;
-		}
-		#endif
+		// Skipping already declared property UnconsumedBufferLength
+		// Skipping already declared property UnicodeEncoding
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnconsumedBufferLength.get
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnicodeEncoding.get
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnicodeEncoding.set
@@ -41,60 +24,26 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.ByteOrder.set
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.InputStreamOptions.get
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.InputStreamOptions.set
-		#if false || false || false || false || false
-		byte ReadByte();
-		#endif
-		#if false || false || false || false || false
-		void ReadBytes( byte[] value);
-		#endif
-		#if false || false || false || false || false
-		global::Windows.Storage.Streams.IBuffer ReadBuffer( uint length);
-		#endif
-		#if false || false || false || false || false
-		bool ReadBoolean();
-		#endif
-		#if false || false || false || false || false
-		global::System.Guid ReadGuid();
-		#endif
-		#if false || false || false || false || false
-		short ReadInt16();
-		#endif
-		#if false || false || false || false || false
-		int ReadInt32();
-		#endif
-		#if false || false || false || false || false
-		long ReadInt64();
-		#endif
-		#if false || false || false || false || false
-		ushort ReadUInt16();
-		#endif
-		#if false || false || false || false || false
-		uint ReadUInt32();
-		#endif
-		#if false || false || false || false || false
-		ulong ReadUInt64();
-		#endif
-		#if false || false || false || false || false
-		float ReadSingle();
-		#endif
-		#if false || false || false || false || false
-		double ReadDouble();
-		#endif
-		#if false || false || false || false || false
-		string ReadString( uint codeUnitCount);
-		#endif
-		#if false || false || false || false || false
-		global::System.DateTimeOffset ReadDateTime();
-		#endif
-		#if false || false || false || false || false
-		global::System.TimeSpan ReadTimeSpan();
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadByte()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadBytes(byte[])
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadBuffer(uint)
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadBoolean()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadGuid()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadInt16()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadInt32()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadInt64()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadUInt16()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadUInt32()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadUInt64()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadSingle()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadDouble()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadString(uint)
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadDateTime()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadTimeSpan()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.DataReaderLoadOperation LoadAsync( uint count);
 		#endif
-		#if false || false || false || false || false
-		global::Windows.Storage.Streams.IBuffer DetachBuffer();
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.DetachBuffer()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.IInputStream DetachStream();
 		#endif

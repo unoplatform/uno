@@ -483,6 +483,95 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsViewHit() => true;
 
+		internal double LayoutRound(double value)
+		{
+#if __SKIA__
+			double scaleFactor = GetScaleFactorForLayoutRounding();
+
+			return LayoutRound(value, scaleFactor);
+#else
+			return value;
+#endif
+		}
+
+		internal Rect LayoutRound(Rect value)
+		{
+#if __SKIA__
+			double scaleFactor = GetScaleFactorForLayoutRounding();
+
+			return new Rect(
+				x: LayoutRound(value.X, scaleFactor),
+				y: LayoutRound(value.Y, scaleFactor),
+				width: LayoutRound(value.Width, scaleFactor),
+				height: LayoutRound(value.Height, scaleFactor)
+			);
+#else
+			return value;
+#endif
+		}
+
+		internal Vector2 LayoutRound(Vector2 value)
+		{
+#if __SKIA__
+			double scaleFactor = GetScaleFactorForLayoutRounding();
+
+			return new Vector2(
+				x: (float)LayoutRound(value.X, scaleFactor),
+				y: (float)LayoutRound(value.Y, scaleFactor)
+			);
+#else
+			return value;
+#endif
+		}
+
+		internal Size LayoutRound(Size value)
+		{
+#if __SKIA__
+			double scaleFactor = GetScaleFactorForLayoutRounding();
+
+			return new Size(
+				width: LayoutRound(value.Width, scaleFactor),
+				height: LayoutRound(value.Height, scaleFactor)
+			);
+#else
+			return value;
+#endif
+		}
+
+		private double LayoutRound(double value, double scaleFactor)
+		{
+			double returnValue = value;
+
+			// Plateau scale is applied as a scale transform on the root element. All values computed by layout
+			// will be multiplied by this scale. Layout assumes a plateau of 1, and values rounded to
+			// integers at layout plateau of 1 will not be integer values when scaled by plateau transform, causing
+			// sub-pixel rendering at plateau != 1. To correctly put element edges at device pixel boundaries, layout rounding
+			// needs to take plateau into account and produce values that will be rounded after plateau scaling is applied,
+			// i.e. multiples of 1/Plateau.
+			if (scaleFactor != 1.0)
+			{
+				returnValue = XcpRound(returnValue * scaleFactor) / scaleFactor;
+			}
+			else
+			{
+				// Avoid unnecessary multiply/divide at scale factor 1.
+				returnValue = XcpRound(returnValue);
+			}
+
+			return returnValue;
+		}
+
+		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
+		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
+		private double GetScaleFactorForLayoutRounding()
+		{
+			// TODO use actual scaling based on current transforms.
+			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / 96.0f; // 100%
+		}
+
+		int XcpRound(double x)
+			=> (int)Math.Floor(x + 0.5);
+
 #if HAS_UNO_WINUI
 		#region FocusState DependencyProperty
 

@@ -13,7 +13,7 @@
   "name": "Cross-Runtime Library (Uno Platform)",
   "identity": "Uno.Platform.UnoCrossRuntimeLib",
   "groupIdentity": "Uno.Platform.BlankCrossRuntimeLib",
-  "description": "Solution template for creating a cross-runtime Uno Platform library targets UWP, Android, iOS, macOS, and WebAssembly.",
+  "description": "Solution template for creating a cross-runtime Uno Platform library that targets UWP, Android, iOS, macOS, and WebAssembly.",
   "precedence": "6001",
   "tags": {
     "language": "C#",

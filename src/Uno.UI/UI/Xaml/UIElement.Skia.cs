@@ -79,6 +79,8 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal Point RelativePosition => _visualOffset;
 
+		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+
 		public void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)
@@ -107,9 +109,18 @@ namespace Windows.UI.Xaml
 			child.SetParent(this);
 			OnAddingChild(child);
 
-			_children.Add(child);
+			if (index is int actualIndex && actualIndex != _children.Count)
+			{
+				var currentVisual = _children[actualIndex];
+				_children.Insert(actualIndex, child);
+				Visual.Children.InsertAbove(child.Visual, currentVisual.Visual);
+			}
+			else
+			{
+				_children.Add(child);
+				Visual.Children.InsertAtTop(child.Visual);
+			}
 
-			UpdateChildVisual(child);
 			OnChildAdded(child);
 
 			InvalidateMeasure();
@@ -161,11 +172,9 @@ namespace Windows.UI.Xaml
 			UpdateHitTest();
 		}
 
-		private void UpdateOpacity() => Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
-
-		private void UpdateChildVisual(UIElement child)
+		private void UpdateOpacity()
 		{
-			Visual.Children.InsertAtTop(child.Visual);
+			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
 		}
 
 		internal UIElement RemoveChild(UIElement child)
@@ -255,10 +264,14 @@ namespace Windows.UI.Xaml
 
 				Rect? getClip()
 				{
-					// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
-					// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
 					if (this is Controls.ScrollViewer)
 					{
+						return null;
+					}
+					else if (ClippingIsSetByCornerRadius)
+					{
+						// The clip geometry is set by the corner radius
+						// of Border, Grid, StackPanel, etc...
 						return null;
 					}
 					else if (Clip != null)
@@ -279,16 +292,20 @@ namespace Windows.UI.Xaml
 
 		internal virtual void OnArrangeVisual(Rect rect, Rect? clip)
 		{
-			Visual.Offset = new Vector3((float)rect.X, (float)rect.Y, 0);
-			Visual.Size = new Vector2((float)rect.Width, (float)rect.Height);
+			var roundedRect = LayoutRound(rect);
+
+			Visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0);
+			Visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
 
 			if (clip is Rect rectClip)
 			{
+				var roundedRectClip = LayoutRound(rectClip);
+
 				Visual.Clip = new InsetClip() {
-					TopInset = (float)rectClip.Top,
-					LeftInset = (float)rectClip.Left,
-					BottomInset = (float)rectClip.Bottom,
-					RightInset = (float)rectClip.Right,
+					TopInset = (float)roundedRectClip.Top,
+					LeftInset = (float)roundedRectClip.Left,
+					BottomInset = (float)roundedRectClip.Bottom,
+					RightInset = (float)roundedRectClip.Right,
 				};
 			}
 			else

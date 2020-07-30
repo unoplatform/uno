@@ -6,6 +6,7 @@
 
 		partial void OnFrame(IValueAnimator currentAnimator)
 		{
+			SetValue(currentAnimator.AnimatedValue);
 		}
 	}
 }

@@ -1355,7 +1355,10 @@
 	The defaults styles map to symbol codes from this open-source font
 	https://github.com/Microsoft/fonts/tree/master/Symbols
 	-->
-			<not_android:FontFamily x:Key="SymbolThemeFontFamily">Symbols</not_android:FontFamily>
+			<ios:FontFamily x:Key="SymbolThemeFontFamily">Symbols</ios:FontFamily>
+			<macos:FontFamily x:Key="SymbolThemeFontFamily">Symbols</macos:FontFamily>
+			<wasm:FontFamily x:Key="SymbolThemeFontFamily">Symbols</wasm:FontFamily>
+			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</skia:FontFamily>
 			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</android:FontFamily>
 			<x:Double x:Key="CheckBoxBorderThemeThickness">2</x:Double>
 			<x:Double x:Key="CheckBoxCheckedStrokeThickness">0</x:Double>
@@ -2642,10 +2645,13 @@
 			<x:Boolean x:Key="UseSystemFocusVisuals">true</x:Boolean>
 
 			<!-- 
-	The defaults styles map to symbol codes from this open-source font
-	https://github.com/Microsoft/fonts/tree/master/Symbols
-	-->
-			<not_android:FontFamily x:Key="SymbolThemeFontFamily">Symbols</not_android:FontFamily>
+			The defaults styles map to symbol codes from this open-source font
+			https://github.com/Microsoft/fonts/tree/master/Symbols
+			-->
+			<ios:FontFamily x:Key="SymbolThemeFontFamily">Symbols</ios:FontFamily>
+			<macos:FontFamily x:Key="SymbolThemeFontFamily">Symbols</macos:FontFamily>
+			<wasm:FontFamily x:Key="SymbolThemeFontFamily">Symbols</wasm:FontFamily>
+			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</skia:FontFamily>
 			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</android:FontFamily>
 			<x:Double x:Key="CheckBoxBorderThemeThickness">2</x:Double>
 			<x:Double x:Key="CheckBoxCheckedStrokeThickness">0</x:Double>

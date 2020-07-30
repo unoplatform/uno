@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
@@ -23,6 +23,10 @@
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 	  <ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
 	  <ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Compile Update="Program.cs" />
 	</ItemGroup>
 
 	<Import Project="..\..\..\build\*.Skia.Gtk.props" />

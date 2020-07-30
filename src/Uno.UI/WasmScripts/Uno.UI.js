@@ -3243,6 +3243,69 @@ var Windows;
 (function (Windows) {
     var Devices;
     (function (Devices) {
+        var Midi;
+        (function (Midi) {
+            class MidiInPort {
+                constructor(managedId, inputPort) {
+                    this.messageReceived = (event) => {
+                        var serializedMessage = event.data[0].toString();
+                        for (var i = 1; i < event.data.length; i++) {
+                            serializedMessage += ':' + event.data[i];
+                        }
+                        MidiInPort.dispatchMessage(this.managedId, serializedMessage, event.timeStamp);
+                    };
+                    this.managedId = managedId;
+                    this.inputPort = inputPort;
+                }
+                static createPort(managedId, encodedDeviceId) {
+                    const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                    const deviceId = decodeURIComponent(encodedDeviceId);
+                    const input = midi.inputs.get(deviceId);
+                    MidiInPort.instanceMap[managedId] = new MidiInPort(managedId, input);
+                }
+                static removePort(managedId) {
+                    MidiInPort.stopMessageListener(managedId);
+                    delete MidiInPort.instanceMap[managedId];
+                }
+                static startMessageListener(managedId) {
+                    if (!MidiInPort.dispatchMessage) {
+                        MidiInPort.dispatchMessage = Module.mono_bind_static_method("[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
+                    }
+                    const instance = MidiInPort.instanceMap[managedId];
+                    instance.inputPort.addEventListener("midimessage", instance.messageReceived);
+                }
+                static stopMessageListener(managedId) {
+                    const instance = MidiInPort.instanceMap[managedId];
+                    instance.inputPort.removeEventListener("midimessage", instance.messageReceived);
+                }
+            }
+            MidiInPort.instanceMap = {};
+            Midi.MidiInPort = MidiInPort;
+        })(Midi = Devices.Midi || (Devices.Midi = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Midi;
+        (function (Midi) {
+            class MidiOutPort {
+                static sendBuffer(encodedDeviceId, timestamp, ...args) {
+                    const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                    const deviceId = decodeURIComponent(encodedDeviceId);
+                    const output = midi.outputs.get(deviceId);
+                    output.send(args, timestamp);
+                }
+            }
+            Midi.MidiOutPort = MidiOutPort;
+        })(Midi = Devices.Midi || (Devices.Midi = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
         var Sensors;
         (function (Sensors) {
             class Accelerometer {
@@ -3385,7 +3448,7 @@ var Windows;
                     DisplayInformation.dispatchOrientationChanged(window.screen.orientation.type);
                 }
             }
-            DisplayInformation.DpiCheckInterval = 500;
+            DisplayInformation.DpiCheckInterval = 1000;
             Display.DisplayInformation = DisplayInformation;
         })(Display = Graphics.Display || (Graphics.Display = {}));
     })(Graphics = Windows.Graphics || (Windows.Graphics = {}));
@@ -3679,6 +3742,36 @@ var Windows;
         })(Xaml = UI.Xaml || (UI.Xaml = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
+var Uno;
+(function (Uno) {
+    var Devices;
+    (function (Devices) {
+        var Midi;
+        (function (Midi) {
+            var Internal;
+            (function (Internal) {
+                class WasmMidiAccess {
+                    static request(systemExclusive) {
+                        if (navigator.requestMIDIAccess) {
+                            return navigator.requestMIDIAccess({ sysex: systemExclusive })
+                                .then((midi) => {
+                                WasmMidiAccess.midiAccess = midi;
+                                return "true";
+                            }, () => "false");
+                        }
+                        else {
+                            return Promise.resolve("false");
+                        }
+                    }
+                    static getMidi() {
+                        return WasmMidiAccess.midiAccess;
+                    }
+                }
+                Internal.WasmMidiAccess = WasmMidiAccess;
+            })(Internal = Midi.Internal || (Midi.Internal = {}));
+        })(Midi = Devices.Midi || (Devices.Midi = {}));
+    })(Devices = Uno.Devices || (Uno.Devices = {}));
+})(Uno || (Uno = {}));
 var Windows;
 (function (Windows) {
     var Phone;
@@ -3788,3 +3881,84 @@ var Windows;
         })(Xaml = UI.Xaml || (UI.Xaml = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
+var Uno;
+(function (Uno) {
+    var Devices;
+    (function (Devices) {
+        var Enumeration;
+        (function (Enumeration) {
+            var Internal;
+            (function (Internal) {
+                var Providers;
+                (function (Providers) {
+                    var Midi;
+                    (function (Midi) {
+                        class MidiDeviceClassProvider {
+                            static findDevices(findInputDevices) {
+                                var result = "";
+                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                                if (findInputDevices) {
+                                    midi.inputs.forEach((input, key) => {
+                                        const inputId = input.id;
+                                        const name = input.name;
+                                        const encodedMetadata = encodeURIComponent(inputId) + '#' + encodeURIComponent(name);
+                                        result += encodedMetadata + '&';
+                                    });
+                                }
+                                else {
+                                    midi.outputs.forEach((output, key) => {
+                                        const outputId = output.id;
+                                        const name = output.name;
+                                        const encodedMetadata = encodeURIComponent(outputId) + '#' + encodeURIComponent(name);
+                                        result += encodedMetadata + '&';
+                                    });
+                                }
+                                return result;
+                            }
+                        }
+                        Midi.MidiDeviceClassProvider = MidiDeviceClassProvider;
+                    })(Midi = Providers.Midi || (Providers.Midi = {}));
+                })(Providers = Internal.Providers || (Internal.Providers = {}));
+            })(Internal = Enumeration.Internal || (Enumeration.Internal = {}));
+        })(Enumeration = Devices.Enumeration || (Devices.Enumeration = {}));
+    })(Devices = Uno.Devices || (Uno.Devices = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
+    var Devices;
+    (function (Devices) {
+        var Enumeration;
+        (function (Enumeration) {
+            var Internal;
+            (function (Internal) {
+                var Providers;
+                (function (Providers) {
+                    var Midi;
+                    (function (Midi) {
+                        class MidiDeviceConnectionWatcher {
+                            static startStateChanged() {
+                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                                midi.addEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
+                            }
+                            static stopStateChanged() {
+                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                                midi.removeEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
+                            }
+                            static onStateChanged(event) {
+                                if (!MidiDeviceConnectionWatcher.dispatchStateChanged) {
+                                    MidiDeviceConnectionWatcher.dispatchStateChanged =
+                                        Module.mono_bind_static_method("[Uno] Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher:DispatchStateChanged");
+                                }
+                                const port = event.port;
+                                const isInput = port.type == "input";
+                                const isConnected = port.state == "connected";
+                                MidiDeviceConnectionWatcher.dispatchStateChanged(port.id, port.name, isInput, isConnected);
+                            }
+                        }
+                        Midi.MidiDeviceConnectionWatcher = MidiDeviceConnectionWatcher;
+                    })(Midi = Providers.Midi || (Providers.Midi = {}));
+                })(Providers = Internal.Providers || (Internal.Providers = {}));
+            })(Internal = Enumeration.Internal || (Enumeration.Internal = {}));
+        })(Enumeration = Devices.Enumeration || (Devices.Enumeration = {}));
+    })(Devices = Uno.Devices || (Uno.Devices = {}));
+})(Uno || (Uno = {}));

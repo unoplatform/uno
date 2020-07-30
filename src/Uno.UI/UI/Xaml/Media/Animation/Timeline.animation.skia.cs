@@ -9,6 +9,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		partial class AnimationImplementation<T>
 		{
 			private bool ReportEachFrame() => true;
+			partial void OnFrame()
+			{
+				SetValue(_animator.AnimatedValue);
+			}
 		}
 	}
 }

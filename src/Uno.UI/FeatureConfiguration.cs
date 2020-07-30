@@ -119,7 +119,9 @@ namespace Uno.UI
 			/// Defines the default font to be used when displaying symbols, such as in SymbolIcon.
 			/// </summary>
 			public static string SymbolsFont { get; set; } =
-#if !__ANDROID__
+#if __SKIA__
+				"ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols";
+#elif !__ANDROID__
 				"Symbols";
 #else
 				"ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols";

@@ -14,6 +14,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Composition;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
@@ -27,6 +28,7 @@ namespace Windows.UI.Xaml
 		// private PopupRoot _popupRoot;
 		// private ScrollViewer _rootScrollViewer;
 		private Border _rootBorder;
+		private PopupRoot _popupRoot;
 		private UIElement _content;
 
 		public Window()
@@ -40,15 +42,22 @@ namespace Windows.UI.Xaml
 		{
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow();
+			CoreWindow.SetInvalidateRender(QueueInvalidateRender);
 		}
 
 		internal Action InvalidateRender;
+		private bool _renderQueued = false;
 
 		internal void QueueInvalidateRender()
 		{
-			if (!_isMeasuring)
+			if (!_isMeasuring && !_renderQueued)
 			{
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => { InvalidateRender(); });
+				_renderQueued = true;
+
+				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => {
+					_renderQueued = false;
+					InvalidateRender();
+				});
 			}
 		}
 
@@ -113,12 +122,16 @@ namespace Windows.UI.Xaml
 
 				InvalidateMeasure();
 				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
+
+				ApplicationView.GetForCurrentView().SetVisibleBounds(newBounds);
 			}
 		}
 
         public Compositor Compositor { get; }
 
-        partial void InternalActivate()
+		internal Grid RootElement => _window;
+
+		partial void InternalActivate()
 		{
 			// WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.activate();");
 		}
@@ -128,28 +141,14 @@ namespace Windows.UI.Xaml
 			if (_window == null)
 			{
 				_rootBorder = new Border();
-				//_rootScrollViewer = new ScrollViewer()
-				//{
-				//	VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
-				//	HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-				//	VerticalScrollMode = ScrollMode.Disabled,
-				//	HorizontalScrollMode = ScrollMode.Disabled,
-				//	Content = _rootBorder
-				//};
-				//// _popupRoot = new PopupRoot();
-				//_window = new Grid()
-				//{
-				//	Visual = Compositor.CreateContainerVisual(),
-				//	Children =
-				//	{
-				//		_rootScrollViewer,
-				//		// , _popupRoot
-				//	}
-				//};
+				_popupRoot = new PopupRoot();
 
 				_window = new Grid {
 					IsLoaded = true,
-					Children = { _rootBorder }
+					Children = {
+						_rootBorder
+						, _popupRoot
+					}
 				};
 
 				Compositor.RootVisual = _window.Visual;
@@ -176,9 +175,9 @@ namespace Windows.UI.Xaml
 			{
 				this.Log().Debug($"Creating popup");
 			}
-			
-			var popupChild = popup.Child;
-			//_popupRoot.Children.Add(popupChild);
+
+			var popupPanel = popup.PopupPanel;
+			_popupRoot.Children.Add(popupPanel);
 
 			return new CompositeDisposable(
 				Disposable.Create(() => {
@@ -188,7 +187,7 @@ namespace Windows.UI.Xaml
 						this.Log().Debug($"Closing popup");
 					}
 
-					//_popupRoot.Children.Remove(popupChild);
+					_popupRoot.Children.Remove(popupPanel);
 				}),
 				VisualTreeHelper.RegisterOpenPopup(popup)
 			);

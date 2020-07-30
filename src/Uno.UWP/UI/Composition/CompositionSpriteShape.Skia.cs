@@ -10,10 +10,6 @@ namespace Windows.UI.Composition
 		private SKPaint _strokePaint;
 		private SKPaint _fillPaint;
 
-		public CompositionSpriteShape()
-		{
-		}
-
 		internal override void Render(SKSurface surface, SKImageInfo info)
 		{
 			if (Geometry is CompositionPathGeometry cpg)
@@ -26,7 +22,8 @@ namespace Windows.UI.Composition
 
 						if (FillBrush is CompositionColorBrush fill)
 						{
-							_fillPaint.Color = fill.Color.ToSKColor();
+							_fillPaint.Color = fill.Color.ToSKColor(Compositor.CurrentOpacity);
+
 						}
 
 						surface.Canvas.DrawPath(geometrySource.Geometry, _fillPaint);
@@ -39,11 +36,15 @@ namespace Windows.UI.Composition
 						if (StrokeBrush is CompositionColorBrush stroke)
 						{
 							_strokePaint.StrokeWidth = StrokeThickness;
-							_strokePaint.Color = stroke.Color.ToSKColor();
+							_strokePaint.Color = stroke.Color.ToSKColor(Compositor.CurrentOpacity);
 						}
 
 						surface.Canvas.DrawPath(geometrySource.Geometry, _strokePaint);
 					}
+				}
+				else if(cpg.Path.GeometrySource is null)
+				{
+
 				}
 				else
 				{

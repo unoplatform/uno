@@ -99,11 +99,25 @@ namespace SamplesApp
 			Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
 #endif
 
+#if __SKIA__
+			var runAutoScreenshotsParam =
+				e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
+
+			var screenshotsPath = runAutoScreenshotsParam?.Split('=').LastOrDefault();
+#endif
+
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
 				_ =>
 				{
 					Console.WriteLine("Done loading " + sw.Elapsed);
+
+#if __SKIA__
+					if (!string.IsNullOrEmpty(screenshotsPath))
+					{
+						SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath);
+					}
+#endif
 				});
 
 #if DEBUG

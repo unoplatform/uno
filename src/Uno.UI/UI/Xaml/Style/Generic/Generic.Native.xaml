@@ -17,10 +17,11 @@
 					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:wasm="http://uno.ui/wasm"
+					xmlns:skia="http://uno.ui/skia"
 					xmlns:macos="http://uno.ui/macos"
 					xmlns:net461="http://uno.ui/net461"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
-					mc:Ignorable="d xamarin ios android wasm not_wasm net461 macos">
+					mc:Ignorable="d xamarin ios android skia wasm not_wasm net461 macos">
 
 	<!-- Default native Button styles -->
 	<android:Style x:Key="NativeDefaultButton"
@@ -60,6 +61,11 @@
 			   TargetType="Button" />
 
 	<wasm:Style
+		x:Key="NativeDefaultButton"
+		TargetType="Button"
+				BasedOn="{StaticResource XamlDefaultButton}" />
+
+	<skia:Style
 		x:Key="NativeDefaultButton"
 		TargetType="Button"
 				BasedOn="{StaticResource XamlDefaultButton}" />
@@ -111,6 +117,11 @@
 	</ios:Style>
 
 	<wasm:Style
+		x:Key="NativeDefaultCheckBox"
+		TargetType="CheckBox"
+				BasedOn="{StaticResource XamlDefaultCheckBox}" />
+
+	<skia:Style
 		x:Key="NativeDefaultCheckBox"
 		TargetType="CheckBox"
 				BasedOn="{StaticResource XamlDefaultCheckBox}" />
@@ -177,6 +188,11 @@
 		TargetType="ToggleSwitch"
 		BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
 
+	<skia:Style
+		x:Key="NativeDefaultToggleSwitch"
+		TargetType="ToggleSwitch"
+		BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
+
 	<macos:Style
 		x:Key="NativeDefaultToggleSwitch"
 		TargetType="ToggleSwitch"
@@ -217,6 +233,11 @@
 	</android:Style>
 
 	<wasm:Style
+		x:Key="NativeDefaultSlider"
+		TargetType="Slider"
+		BasedOn="{StaticResource XamlDefaultSlider}" />
+
+	<skia:Style
 		x:Key="NativeDefaultSlider"
 		TargetType="Slider"
 		BasedOn="{StaticResource XamlDefaultSlider}" />
@@ -271,6 +292,11 @@
 	</android:Style>
 
 	<wasm:Style
+		x:Key="NativeDefaultProgressBar"
+		TargetType="ProgressBar" 
+		BasedOn="{StaticResource XamlDefaultProgressBar}" />
+
+	<skia:Style
 		x:Key="NativeDefaultProgressBar"
 		TargetType="ProgressBar" 
 		BasedOn="{StaticResource XamlDefaultProgressBar}" />
@@ -422,6 +448,11 @@
 		TargetType="CommandBar"
 		BasedOn="{StaticResource XamlDefaultCommandBar}" />
 
+	<skia:Style
+		x:Key="NativeDefaultCommandBar"
+		TargetType="CommandBar"
+		BasedOn="{StaticResource XamlDefaultCommandBar}" />
+
 	<macos:Style
 		x:Key="NativeDefaultCommandBar"
 		TargetType="CommandBar"
@@ -449,6 +480,11 @@
 	</android:Style>
 
 	<wasm:Style
+		x:Key="NativeDefaultAppBarButton"
+		TargetType="AppBarButton"
+		BasedOn="{StaticResource XamlAppBarButton}" />
+
+	<skia:Style
 		x:Key="NativeDefaultAppBarButton"
 		TargetType="AppBarButton"
 		BasedOn="{StaticResource XamlAppBarButton}" />
@@ -490,6 +526,10 @@
 
 	<!-- Default native Frame styles -->
 	<wasm:Style
+		x:Key="NativeDefaultFrame"
+		TargetType="Frame"
+				BasedOn="{StaticResource XamlDefaultFrame}" />
+	<skia:Style
 		x:Key="NativeDefaultFrame"
 		TargetType="Frame"
 				BasedOn="{StaticResource XamlDefaultFrame}" />
