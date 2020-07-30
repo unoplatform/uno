@@ -133,3 +133,5 @@ if [ -n "`cat $UNO_TESTS_FAILED_LIST`" ]; then
 		|| true
 fi
 
+$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log.2.txt
+
