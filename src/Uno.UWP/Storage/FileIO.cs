@@ -256,11 +256,8 @@ namespace Windows.Storage
 				throw new ArgumentNullException(nameof(file));
 			}
 
-			using (Stream fileStream = await file.OpenStreamForWriteAsync())
-			{
-				fileStream.SetLength(0);
-				fileStream.Write(buffer, 0, buffer.Length);
-			}
+			using var fs = File.Create(file.Path);
+			await fs.WriteAsync(buffer, 0, buffer.Length);
 		}
 
 		private static async Task<IBuffer> ReadBufferTaskAsync(IStorageFile file)
@@ -277,8 +274,7 @@ namespace Windows.Storage
 				throw new NotSupportedException("The current implementation can only write a UwpBuffer");
 			}
 
-			using var fs = File.OpenWrite(file.Path);
-			await fs.WriteAsync(inMemoryBuffer.Data, 0, inMemoryBuffer.Data.Length);
+			await WriteBytesTaskAsync(file, inMemoryBuffer.Data);
 		}
 
 		private static async Task<Encoding> GetEncodingFromFileAsync(IStorageFile file)
