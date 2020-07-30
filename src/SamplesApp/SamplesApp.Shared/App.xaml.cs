@@ -26,7 +26,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Logging;
 using Windows.Graphics.Display;
 using System.Globalization;
-
+using Windows.UI.ViewManagement;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -128,6 +128,8 @@ namespace SamplesApp
 #endif
 			InitializeFrame(e.Arguments);
 			Windows.UI.Xaml.Window.Current.Activate();
+
+			ApplicationView.GetForCurrentView().Title = "Uno Samples";
 
 			DisplayLaunchArguments(e);
 		}
