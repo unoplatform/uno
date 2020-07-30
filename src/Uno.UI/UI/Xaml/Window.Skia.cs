@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml
 				Bounds = newBounds;
 
 				InvalidateMeasure();
-				RaiseSizeChanged(new WindowSizeChangedEventArgs(size));
+				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 			}
 		}
 

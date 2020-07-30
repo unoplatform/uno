@@ -24,6 +24,8 @@ namespace Windows.UI.Core
 		}
 
 		partial void InitializePartial();
+    
+		public event TypedEventHandler<CoreWindow, WindowSizeChangedEventArgs> SizeChanged;
 
 		public CoreDispatcher Dispatcher
 			=> CoreDispatcher.Main;
@@ -53,6 +55,11 @@ namespace Windows.UI.Core
 		internal interface IPointerEventArgs
 		{
 			Point GetLocation();
+		}
+
+		internal void OnSizeChanged(WindowSizeChangedEventArgs windowSizeChangedEventArgs)
+		{
+			SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
 		}
 	}
 }
