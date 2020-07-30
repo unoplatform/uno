@@ -8,31 +8,34 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel>
-		<Path x:Name="Path" Stroke="Black" StrokeThickness="1">
-			<Path.Data>
-				<PathGeometry>
-					<PathGeometry.Figures>
-						<PathFigureCollection>
-							<PathFigure IsClosed="True" StartPoint="10,100">
-								<PathFigure.Segments>
-									<PathSegmentCollection>
-										<LineSegment Point="100,100" />
-										<LineSegment Point="100,50" />
-									</PathSegmentCollection>
-								</PathFigure.Segments>
-							</PathFigure>
-							<PathFigure IsClosed="True" StartPoint="10,10">
-								<PathFigure.Segments>
-									<PathSegmentCollection>
-										<LineSegment Point="100,10" />
-										<LineSegment Point="100,40" />
-									</PathSegmentCollection>
-								</PathFigure.Segments>
-							</PathFigure>
-						</PathFigureCollection>
-					</PathGeometry.Figures>
-				</PathGeometry>
-			</Path.Data>
-		</Path>
+		<Button x:Name="MovePointButton" Click="MovePointClick" Content="Move point" />
+		<Canvas x:Name="CanvasWrapper" Width="100" Height="100">
+		  <Path x:Name="Path" Stroke="Black" StrokeThickness="4">
+			  <Path.Data>
+				  <PathGeometry>
+					  <PathGeometry.Figures>
+						  <PathFigureCollection>
+							  <PathFigure IsClosed="True" StartPoint="10,100">
+								  <PathFigure.Segments>
+									  <PathSegmentCollection>
+										  <LineSegment x:Name="LineToChange" Point="100,100" />
+										  <LineSegment Point="100,50" />
+									  </PathSegmentCollection>
+								  </PathFigure.Segments>
+							  </PathFigure>
+							  <PathFigure IsClosed="True" StartPoint="10,10">
+								  <PathFigure.Segments>
+									  <PathSegmentCollection>
+										  <LineSegment Point="100,10" />
+										  <LineSegment Point="100,40" />
+									  </PathSegmentCollection>
+								  </PathFigure.Segments>
+							  </PathFigure>
+						  </PathFigureCollection>
+					  </PathGeometry.Figures>
+				  </PathGeometry>
+			  </Path.Data>
+		  </Path>
+	    </Canvas>
 	</StackPanel>
 </Page>

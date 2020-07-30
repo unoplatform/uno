@@ -23,5 +23,10 @@ namespace SamplesApp.Windows_UI_Xaml_Media.Geometry
 		{
 			this.InitializeComponent();
 		}
+
+		public void MovePointClick(object sender, RoutedEventArgs args)
+		{
+			LineToChange.Point = new Point(LineToChange.Point.X - 20, LineToChange.Point.Y - 20);
+		}
 	}
 }
