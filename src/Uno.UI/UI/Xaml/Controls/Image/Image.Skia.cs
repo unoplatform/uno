@@ -51,6 +51,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_currentSurface?.Image != null)
 			{
+
 				_lastMeasuredSize = new Size(_currentSurface.Image.Width, _currentSurface.Image.Height);
 
 				Size ret;
@@ -100,9 +101,9 @@ namespace Windows.UI.Xaml.Controls
 				var containerSize = this.MeasureSource(finalSize, _lastMeasuredSize);
 
 				// Calculate the position of the image to follow stretch and alignment requirements
-				var finalPosition = this.ArrangeSource(finalSize, containerSize);
+				var finalPosition = LayoutRound(this.ArrangeSource(finalSize, containerSize));
 
-				_imageSprite.Size = new Vector2((float)containerSize.Width, (float)containerSize.Height);
+				_imageSprite.Size = LayoutRound(new Vector2((float)containerSize.Width, (float)containerSize.Height));
 				_imageSprite.Offset = new Vector3((float)finalPosition.X, (float)finalPosition.Y, 0);
 
 				var transform = Matrix3x2.CreateScale(_imageSprite.Size.X / _currentSurface.Image.Width, _imageSprite.Size.Y / _currentSurface.Image.Height);
