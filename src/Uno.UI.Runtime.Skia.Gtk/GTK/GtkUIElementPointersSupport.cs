@@ -10,6 +10,7 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Logging;
 using Uno.UI.Runtime.Skia;
+using Windows.ApplicationModel;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Composition;

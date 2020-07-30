@@ -26,6 +26,7 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
+			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			if (!ApiExtensibility.CreateInstance(this, out _coreWindowExtension))
 			{

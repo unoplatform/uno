@@ -14,7 +14,7 @@ namespace Uno.UI.Runtime.Skia
 
 		public UnoDrawingArea()
 		{
-			WUX.Window.Current.InvalidateRender
+			WUX.Window.InvalidateRender
 				+= () =>
 				{
 					Invalidate();

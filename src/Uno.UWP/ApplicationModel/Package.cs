@@ -30,19 +30,17 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented]
 		public string Description => "";
 
-#if !__ANDROID__ && !__IOS__ && !__MACOS__
-		[global::Uno.NotImplemented]
-		public string DisplayName => "";
-#endif
-
 		[global::Uno.NotImplemented]
 		public bool IsBundle => false;
 
 		[global::Uno.NotImplemented]
 		public bool IsResourcePackage => false;
 
+
+#if (__IOS__ || __ANDROID__ || __MACOS__)
 		[global::Uno.NotImplemented]
 		public global::System.Uri Logo => new Uri("http://example.com");
+#endif
 
 		[global::Uno.NotImplemented]
 		public string PublisherDisplayName => "";
