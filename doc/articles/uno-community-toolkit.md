@@ -24,7 +24,9 @@ Windows Community Toolkit controls.
   
 1. Install Nuget package for targeted control  
  ![datagrid-nuget](uno-development/assets/controls/datagrid-nuget.JPG)  
-Note: Be aware of which versions of Uno.UI are compatible with the Nuget package of each control.
+Note: Be aware of which versions of Uno.UI are compatible with the Nuget package of each control.  
+      If using version `3.0.0` or higher of `Uno.UI`, use version `6.1.0` or higher of `DataGrid` Nuget package.
+      
 
 2. Add a reference to the UWP UI Controls 
 
