@@ -25,6 +25,8 @@ namespace Windows.UI.Xaml
 
 		public Application()
 		{
+			Current = this;
+
 			if (!ApiExtensibility.CreateInstance(this, out _coreWindowExtension))
 			{
 				throw new InvalidOperationException($"Unable to find IApplicationExtension extension");
@@ -37,6 +39,7 @@ namespace Windows.UI.Xaml
 
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
+
 		internal static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback, string[] args)
 		{
 			_args = args;
@@ -60,8 +63,6 @@ namespace Windows.UI.Xaml
 			{
 				// Force init
 				Window.Current.ToString();
-
-				Current = this;
 
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, string.Join(";", _args)));
 			}
