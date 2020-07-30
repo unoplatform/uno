@@ -435,7 +435,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				var bytes = Encoding.UTF8.GetBytes(contents);
 				var buffer = bytes.AsBuffer();
 				var fileName = GenerateRandomFileName();
-				targetFile = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName);
 				await FileIO.WriteBufferAsync(targetFile, buffer);
 
 				var realContents = File.ReadAllBytes(targetFile.Path);
