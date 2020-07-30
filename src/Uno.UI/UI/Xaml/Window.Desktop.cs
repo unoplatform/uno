@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml
 			{
 				Bounds = new Rect(0, 0, size.Width, size.Height);
 
-				RaiseSizeChanged(new WindowSizeChangedEventArgs(size));
+				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 			}
 		}
 	}

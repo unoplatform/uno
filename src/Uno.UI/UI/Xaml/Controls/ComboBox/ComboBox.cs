@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 			Xaml.Window.Current.SizeChanged -= OnWindowSizeChanged;
 		}
 
-		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
+		private void OnWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
 		{
 			IsDropDownOpen = false;
 		}

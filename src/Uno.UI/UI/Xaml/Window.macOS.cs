@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml
 			CoreWindow = new CoreWindow(_window);
 
 			InitializeCommon();
-		}		
+		}
 
 		private void ObserveOrientationAndSize()
 		{
@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml
 				}
 
 				RaiseSizeChanged(
-					new WindowSizeChangedEventArgs(
+					new Windows.UI.Core.WindowSizeChangedEventArgs(
 						new Windows.Foundation.Size((float)size.Width, (float)size.Height)
 					)
 				);
@@ -160,6 +160,6 @@ namespace Windows.UI.Xaml
 			{
 				applicationView.SetCoreBounds(_window, Bounds);
 			}
-		}		
+		}
 	}
 }

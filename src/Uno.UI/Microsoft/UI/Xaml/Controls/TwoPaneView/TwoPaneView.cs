@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs args)
+		void OnWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs args)
 		{
 			UpdateMode();
 		}

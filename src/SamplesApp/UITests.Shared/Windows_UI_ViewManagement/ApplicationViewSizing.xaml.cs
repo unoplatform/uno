@@ -20,7 +20,7 @@ namespace UITests.Windows_UI_ViewManagement
 			this.Unloaded += ApplicationViewSizing_Unloaded;
 		}
 
-		private void ApplicationViewSizing_SizeChanged(CoreWindow sender, WindowSizeChangedEventArgs args)
+		private void ApplicationViewSizing_SizeChanged(CoreWindow sender, Windows.UI.Core.WindowSizeChangedEventArgs args)
 		{
 			LastSizeTime.Text = DateTime.Now.ToLongTimeString();
 			LastSize.Text = args.Size.Width + "x" + args.Size.Height;
