@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			"EnableDependentAnimation",
 			typeof(bool),
 			typeof(ColorAnimationUsingKeyFrames),
-			new PropertyMetadata(false));
+			new FrameworkPropertyMetadata(false));
 		public bool EnableDependentAnimation
 		{
 			get => (bool)GetValue(EnableDependentAnimationProperty);
@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			"KeyFrames",
 			typeof(ColorKeyFrameCollection),
 			typeof(ColorAnimationUsingKeyFrames),
-			new PropertyMetadata(default(ColorKeyFrameCollection)));
+			new FrameworkPropertyMetadata(default(ColorKeyFrameCollection)));
 		public ColorKeyFrameCollection KeyFrames
 		{
 			get => (ColorKeyFrameCollection)GetValue(KeyFramesProperty);

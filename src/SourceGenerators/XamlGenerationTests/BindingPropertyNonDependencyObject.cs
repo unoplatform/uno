@@ -30,7 +30,7 @@ namespace XamlGenerationTests.Shared
 				"MyAttached",
 				typeof(BindingPropertyNonDependencyObject),
 				typeof(BindingPropertyNonDependencyObject),
-				new PropertyMetadata(null)
+				new FrameworkPropertyMetadata(null)
 			);
 	}
 }

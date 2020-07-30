@@ -12,14 +12,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class RadioButton : ToggleButton
 	{
-		private IEnumerable<RadioButton> GetOtherHierarchicalGroupMembers()
-		{
-			return Superview?
-					.Subviews
-					.OfType<RadioButton>()
-					.Where(rb => rb != this)
-					?? Enumerable.Empty<RadioButton>();
-		}
 	}
 }
 

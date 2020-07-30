@@ -142,8 +142,9 @@ namespace Windows.UI.Xaml
 			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(0), () => completed = true);
 
 			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
+			operation.EventRaiseCompleted();
 
-			if(!completed && this.Log().IsEnabled(LogLevel.Warning))
+			if (!completed && this.Log().IsEnabled(LogLevel.Warning))
 			{
 				this.Log().LogWarning($"This platform does not support asynchronous Suspending deferral. Code executed after the of the method called by Suspending may not get executed.");
 			}

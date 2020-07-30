@@ -111,12 +111,12 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			var isiOSApp = projectInstance.GetPropertyValue("ProjectTypeGuids")?.Equals("{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
 			var ismacOSApp = projectInstance.GetPropertyValue("ProjectTypeGuids")?.Equals("{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
 			var isExe = projectInstance.GetPropertyValue("OutputType")?.Equals("Exe", StringComparison.OrdinalIgnoreCase) ?? false;
-			var isWasm = projectInstance.GetPropertyValue("WasmHead")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+			var isUnoHead = projectInstance.GetPropertyValue("IsUnoHead")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
 
 			return isAndroidApp
 				|| (isiOSApp && isExe)
 				|| (ismacOSApp && isExe)
-				|| isWasm;
+				|| isUnoHead;
 		}
 	}
 }

@@ -26,6 +26,6 @@ namespace XamlGenerationTests.Shared
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.RegisterAttached("MyProperty", typeof(UIElementCollection), typeof(AttachedProperty_CollectionProperty_Data), new PropertyMetadata(null));
+			DependencyProperty.RegisterAttached("MyProperty", typeof(UIElementCollection), typeof(AttachedProperty_CollectionProperty_Data), new FrameworkPropertyMetadata(null));
 	}
 }

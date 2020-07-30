@@ -45,8 +45,8 @@ namespace Uno.UI.Controls
 			set { this.SetValue(TextColorProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextColorProperty =
-			DependencyProperty.Register("TextColor", typeof(Brush), typeof(BindableSwitchCompat), new PropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTextColorChanged((Brush)e.NewValue)));
+		public static DependencyProperty TextColorProperty { get ; } =
+			DependencyProperty.Register("TextColor", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTextColorChanged((Brush)e.NewValue)));
 
 		private void OnTextColorChanged(Brush newValue)
 		{
@@ -69,8 +69,8 @@ namespace Uno.UI.Controls
 			set { this.SetValue(ThumbTintProperty, value); }
 		}
 
-		public static readonly DependencyProperty ThumbTintProperty =
-			DependencyProperty.Register("ThumbTint", typeof(Brush), typeof(BindableSwitchCompat), new PropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnThumbTintChanged((Brush)e.NewValue)));
+		public static DependencyProperty ThumbTintProperty { get ; } =
+			DependencyProperty.Register("ThumbTint", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnThumbTintChanged((Brush)e.NewValue)));
 
 		private void OnThumbTintChanged(Brush newValue)
 		{
@@ -99,8 +99,8 @@ namespace Uno.UI.Controls
 			set { this.SetValue(TrackTintProperty, value); }
 		}
 
-		public static readonly DependencyProperty TrackTintProperty =
-			DependencyProperty.Register("TrackTint", typeof(Brush), typeof(BindableSwitchCompat), new PropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTrackTintChanged((Brush)e.NewValue)));
+		public static DependencyProperty TrackTintProperty { get ; } =
+			DependencyProperty.Register("TrackTint", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTrackTintChanged((Brush)e.NewValue)));
 
 		private void OnTrackTintChanged(Brush newValue)
 		{

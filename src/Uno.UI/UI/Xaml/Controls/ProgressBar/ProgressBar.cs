@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 
 		static ProgressBar()
 		{
-			MaximumProperty.OverrideMetadata(typeof(ProgressBar), new PropertyMetadata(100d));
+			MaximumProperty.OverrideMetadata(typeof(ProgressBar), new FrameworkPropertyMetadata(100d));
 		}
 
 		public ProgressBar()
@@ -37,12 +37,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(IsIndeterminateProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsIndeterminateProperty =
+		public static DependencyProperty IsIndeterminateProperty { get ; } =
 			DependencyProperty.Register(
 				"IsIndeterminate",
 				typeof(bool),
 				typeof(ProgressBar),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					(s, e) => (s as ProgressBar)?.OnIsIndeterminateChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
@@ -67,12 +67,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ShowErrorProperty, value); }
 		}
 
-		public static readonly DependencyProperty ShowErrorProperty =
+		public static DependencyProperty ShowErrorProperty { get ; } =
 			DependencyProperty.Register(
 				"ShowError",
 				typeof(bool),
 				typeof(ProgressBar),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					(s, e) => (s as ProgressBar)?.OnShowErrorChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
@@ -93,12 +93,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ShowPausedProperty, value); }
 		}
 
-		public static readonly DependencyProperty ShowPausedProperty =
+		public static DependencyProperty ShowPausedProperty { get ; } =
 			DependencyProperty.Register(
 				"ShowPaused",
 				typeof(bool),
 				typeof(ProgressBar),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					(s, e) => (s as ProgressBar)?.OnShowPausedChanged((bool)e.OldValue, (bool)e.NewValue)
 				)

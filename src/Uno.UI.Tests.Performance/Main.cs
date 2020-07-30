@@ -130,7 +130,7 @@ namespace Uno.UI.Tests.Performance
 
 		// Using a DependencyProperty as the backing store for Children.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ChildrenProperty =
-			DependencyProperty.Register("Children", typeof(DependencyObjectCollection<MyClass>), typeof(MyClass), new PropertyMetadata(null, (s, e) => ((MyClass)s)?.OnChildrenChanged(e)));
+			DependencyProperty.Register("Children", typeof(DependencyObjectCollection<MyClass>), typeof(MyClass), new FrameworkPropertyMetadata(null, (s, e) => ((MyClass)s)?.OnChildrenChanged(e)));
 
 		private void OnChildrenChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -157,7 +157,7 @@ namespace Uno.UI.Tests.Performance
 
 		// Using a DependencyProperty as the backing store for Children.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ChildrenProperty =
-			DependencyProperty.Register("Children", typeof(DependencyObjectCollection<MyNamedPropertyClass>), typeof(MyNamedPropertyClass), new PropertyMetadata(null, (s, e) => ((MyNamedPropertyClass)s)?.OnChildrenChanged(e)));
+			DependencyProperty.Register("Children", typeof(DependencyObjectCollection<MyNamedPropertyClass>), typeof(MyNamedPropertyClass), new FrameworkPropertyMetadata(null, (s, e) => ((MyNamedPropertyClass)s)?.OnChildrenChanged(e)));
 
 		private void OnChildrenChanged(DependencyPropertyChangedEventArgs e)
 		{

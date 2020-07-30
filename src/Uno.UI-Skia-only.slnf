@@ -1,0 +1,35 @@
+{
+  "solution": {
+    "path": "Uno.UI.sln",
+    "projects": [
+      "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Skia.csproj",
+      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Skia.csproj",
+      "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
+      "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
+      "SamplesApp\\SamplesApp.Skia.Gtk\\SamplesApp.Skia.Gtk.csproj",
+      "SamplesApp\\SamplesApp.Skia.WPF\\SamplesApp.Skia.WPF.csproj",
+      "SamplesApp\\SamplesApp.Skia\\SamplesApp.Skia.csproj",
+      "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
+      "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
+      "SamplesApp\\SamplesApp.UWP.Design\\SamplesApp.UWP.Design.csproj",
+      "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
+      "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
+      "SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\Uno.ProjectTemplates.Dotnet.csproj",
+      "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
+      "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
+      "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
+      "T4Generator\\T4Generator.csproj",
+      "Uno.Foundation\\Uno.Foundation.Skia.csproj",
+      "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Skia.csproj",
+      "Uno.UI.Runtime.Skia.Gtk\\Uno.UI.Runtime.Skia.Gtk.csproj",
+      "Uno.UI.Runtime.Skia.Wpf\\Uno.UI.Runtime.Skia.Wpf.csproj",
+      "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.Skia.csproj",
+      "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
+      "Uno.UI.Toolkit\\Uno.UI.Toolkit.Skia.csproj",
+      "Uno.UI\\Uno.UI.Skia.csproj",
+      "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
+      "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
+      "Uno.UWP\\Uno.Skia.csproj"
+    ]
+  }
+}

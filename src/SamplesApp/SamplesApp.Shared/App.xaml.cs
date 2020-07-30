@@ -24,6 +24,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Logging;
+using Windows.Graphics.Display;
+using System.Globalization;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -60,6 +62,7 @@ namespace SamplesApp
 		/// <seealso cref="https://github.com/unoplatform/uno/issues/1741"/>
 		public void AssertIssue1790()
 		{
+#if !__SKIA__ // SKIA TODO
 			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
 			{
 				const string issue1790 = nameof(issue1790);
@@ -72,6 +75,7 @@ namespace SamplesApp
 
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
+#endif
 		}
 
 		/// <summary>
@@ -88,6 +92,8 @@ namespace SamplesApp
 #if __IOS__
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
+
+			LaunchiOSWatchDog();
 #endif
 #if NETFX_CORE
 			Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
@@ -111,6 +117,48 @@ namespace SamplesApp
 
 			DisplayLaunchArguments(e);
 		}
+
+#if __IOS__
+		/// <summary>
+		/// Launches a watchdog that will terminate the app if the dispatcher does not process
+		/// messages within a specific time.
+		///
+		/// Restarting the app is required in some cases where either the test engine, or Xamarin.UITest stall
+		/// while processing the events of the app.
+		///
+		/// See https://github.com/unoplatform/uno/issues/3363 for details
+		/// </summary>
+		private void LaunchiOSWatchDog()
+		{
+			if (!Debugger.IsAttached)
+			{
+				Console.WriteLine("Starting dispatcher WatchDog...");
+
+				var dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+
+				Task.Run(async () =>
+				{
+
+					while (true)
+					{
+						var delayTask = Task.Delay(TimeSpan.FromSeconds(60));
+						var messageTask = dispatcher.RunAsync(CoreDispatcherPriority.High, () => { }).AsTask();
+
+						if (await Task.WhenAny(delayTask, messageTask) == delayTask)
+						{
+							ThreadPool.QueueUserWorkItem(
+								_ => {
+								Console.WriteLine("WatchDog detecting a stall in the dispatcher, terminating the app");
+								throw new Exception($"Watchdog failed");
+							});
+						}
+
+						await Task.Delay(TimeSpan.FromSeconds(5));
+					}
+				});
+			}
+		}
+#endif
 
 		protected
 #if HAS_UNO
@@ -283,6 +331,9 @@ namespace SamplesApp
 		public static string GetAllTests()
 			=> SampleControl.Presentation.SampleChooserViewModel.Instance.GetAllSamplesNames();
 
+		public static string GetDisplayScreenScaling(string displayId)
+			=> DisplayInformation.GetForCurrentView().LogicalDpi.ToString(CultureInfo.InvariantCulture);
+
 		public static string RunTest(string metadataName)
 		{
 			try
@@ -359,6 +410,9 @@ namespace SamplesApp
 
 		[Foundation.Export("isTestDone:")] // notice the colon at the end of the method name
 		public Foundation.NSString IsTestDoneBackdoor(Foundation.NSString value) => new Foundation.NSString(IsTestDone(value).ToString());
+
+		[Foundation.Export("getDisplayScreenScaling:")] // notice the colon at the end of the method name
+		public Foundation.NSString GetDisplayScreenScalingBackdoor(Foundation.NSString value) => new Foundation.NSString(GetDisplayScreenScaling(value).ToString());
 #endif
 
 		public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;

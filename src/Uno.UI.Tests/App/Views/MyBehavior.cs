@@ -22,7 +22,7 @@ namespace Uno.UI.Tests.App.Views
 
 		// Using a DependencyProperty as the backing store for Bulbousness.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty BulbousnessProperty =
-			DependencyProperty.RegisterAttached("Bulbousness", typeof(double), typeof(MyBehavior), new PropertyMetadata(0d));
+			DependencyProperty.RegisterAttached("Bulbousness", typeof(double), typeof(MyBehavior), new FrameworkPropertyMetadata(0d));
 
 		public static double GetNoDPProperty(FrameworkElement obj)
 		{

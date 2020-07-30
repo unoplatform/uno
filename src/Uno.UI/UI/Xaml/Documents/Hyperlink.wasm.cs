@@ -25,11 +25,11 @@ namespace Windows.UI.Xaml.Documents
 			set => SetValue(NavigationTargetProperty, value);
 		}
 
-		public static readonly DependencyProperty NavigationTargetProperty = DependencyProperty.Register(
+		public static DependencyProperty NavigationTargetProperty { get ; } = DependencyProperty.Register(
 			"NavigationTarget",
 			typeof(NavigationTarget),
 			typeof(Hyperlink),
-			new PropertyMetadata(_defaultNavigationTarget, (s, e) => ((Hyperlink)s).OnNavigationTargetChanged(e)));
+			new FrameworkPropertyMetadata(_defaultNavigationTarget, (s, e) => ((Hyperlink)s).OnNavigationTargetChanged(e)));
 
 		private void OnNavigationTargetChanged(DependencyPropertyChangedEventArgs e)
 			=> UpdateNavigationProperties(NavigateUri, (NavigationTarget)e.NewValue);
@@ -67,6 +67,40 @@ namespace Windows.UI.Xaml.Documents
 
 		internal override bool IsViewHit()
 			=> NavigateUri != null || base.IsViewHit();
+
+		public new event global::Windows.UI.Xaml.RoutedEventHandler GotFocus
+		{
+			add => base.GotFocus += value;
+			remove => base.GotFocus -= value;
+		}
+
+		public new event global::Windows.UI.Xaml.RoutedEventHandler LostFocus
+		{
+			add => base.LostFocus += value;
+			remove => base.LostFocus -= value;
+		}
+
+#if HAS_UNO_WINUI
+		// The properties below have moved to UIElement in WinUI, but Hyperlink does not inherit from UIElement and does in Wasm.
+		// This makes the properties move down incorrectly.
+		// This section places those properties at the same location as the reference implementation.
+
+		public new bool IsTabStop
+		{
+			get => base.IsTabStop;
+			set => base.IsTabStop = value;
+		}
+
+		public static new DependencyProperty IsTabStopProperty { get; } = UIElement.IsTabStopProperty;
+
+		public new FocusState FocusState
+		{
+			get => base.FocusState;
+			set => base.FocusState = value;
+		}
+
+		public static new DependencyProperty FocusStateProperty { get; } = UIElement.FocusStateProperty;
+#endif
 	}
 
 	public enum NavigationTarget

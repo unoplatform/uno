@@ -117,7 +117,7 @@ namespace Uno.UI.Tests.BinderTests.Inversion
 
 		// Using a DependencyProperty as the backing store for MyBoolean.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyIntegerProperty =
-			DependencyProperty.Register("MyInteger", typeof(int), typeof(MyDependencyObject), new PropertyMetadata(0, OnMyIntegerChanged));
+			DependencyProperty.Register("MyInteger", typeof(int), typeof(MyDependencyObject), new FrameworkPropertyMetadata(0, OnMyIntegerChanged));
 
 		private static void OnMyIntegerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{

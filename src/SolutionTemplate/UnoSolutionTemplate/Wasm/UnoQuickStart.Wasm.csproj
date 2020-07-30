@@ -3,8 +3,6 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<WasmHead>true</WasmHead>
-		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 		<NoWarn>NU1701</NoWarn>
 	</PropertyGroup>
 
@@ -16,8 +14,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-    	<Content Include="Assets\SplashScreen.png" />
-  	</ItemGroup>
+		<Content Include="Assets\SplashScreen.png" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="..\$ext_safeprojectname$.Shared\**\*.xaml" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="WasmCSS\Fonts.css" />
@@ -44,10 +46,10 @@
 		<!-- Note that for WebAssembly version 1.1.1 of the console logger required -->
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-		<PackageReference Include="Uno.UI" Version="2.2.0" />
+		<PackageReference Include="Uno.UI.WebAssembly" Version="2.2.0" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.2.0" />
-		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="1.2.0" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.3.0" />
+		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="1.3.0" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />

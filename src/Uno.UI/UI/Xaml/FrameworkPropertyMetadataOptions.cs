@@ -18,10 +18,6 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Specifies that this property's value or values will inherit the DataContext of its or their parent.
 		/// </summary>
-		/// <remarks>
-		/// This property is ignored and ValueInheritsDataContext is interpreted as true for properties of type <see cref="DependencyObject"/>.
-		/// Use ValueDoesNotInheritDataContext to prevent this default behavior.
-		/// </remarks>
 		ValueInheritsDataContext = 1 << 1,
 
 		/// <summary>
@@ -33,7 +29,8 @@ namespace Windows.UI.Xaml
 		/// Prevents this property's value or values from inheriting the DataContext of its or their parent.
 		/// </summary>
 		/// <remarks>
-		/// This is useful for properties of type <see cref="DependencyObject"/> for which ValueInheritsDataContext is always interpreted as true.
+		/// This is useful for framework properties of type <see cref="DependencyObject"/> for which ValueInheritsDataContext is enabled by default
+		/// (cf. <see cref="Default"/>).
 		/// </remarks>
 		ValueDoesNotInheritDataContext = 1 << 3,
 
@@ -62,5 +59,12 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		AffectsRender = 1 << 8,
 
+		/// <summary>
+		/// The default options set when creating a <see cref="FrameworkPropertyMetadata"/>.
+		/// </summary>
+		/// <remarks>
+		/// By default all DP declared by the framework will inherit the DataContext while DP declared by application won't.
+		/// </remarks>
+		Default = ValueInheritsDataContext,
 	}
 }

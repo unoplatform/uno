@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 
 using System;
 using Windows.Media.Playback;
@@ -332,9 +332,9 @@ namespace Windows.UI.Xaml.Controls
 
 		#region FastPlayFallbackBehaviour Property
 
-		public bool FastPlayFallbackBehaviour
+		public Media.FastPlayFallbackBehaviour FastPlayFallbackBehaviour
 		{
-			get { return (bool)GetValue(FastPlayFallbackBehaviourProperty); }
+			get { return (Media.FastPlayFallbackBehaviour)GetValue(FastPlayFallbackBehaviourProperty); }
 			set { SetValue(FastPlayFallbackBehaviourProperty, value); }
 		}
 

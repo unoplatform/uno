@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaPlaybackCommandManagerPlayReceivedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Handled
 		{
 			get
@@ -23,8 +23,8 @@ namespace Windows.Media.Playback
 		#endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.Handled.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs.Handled.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member Deferral MediaPlaybackCommandManagerPlayReceivedEventArgs.GetDeferral() is not implemented in Uno.");

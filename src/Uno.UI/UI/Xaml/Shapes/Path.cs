@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Shapes
 			set => this.SetValue(DataProperty, value);
 		}
 
-		public static readonly DependencyProperty DataProperty =
+		public static DependencyProperty DataProperty { get ; } =
 			DependencyProperty.Register(
 				"Data",
 				typeof(Geometry), 

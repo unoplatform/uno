@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			"Value",
 			typeof(Color),
 			typeof(ColorKeyFrame),
-			new PropertyMetadata(default(Color)));
+			new FrameworkPropertyMetadata(default(Color)));
 
 		public Color Value
 		{
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			"KeyTime",
 			typeof(KeyTime),
 			typeof(ColorKeyFrame),
-			new PropertyMetadata(default(KeyTime)));
+			new FrameworkPropertyMetadata(default(KeyTime)));
 
 		public KeyTime KeyTime
 		{

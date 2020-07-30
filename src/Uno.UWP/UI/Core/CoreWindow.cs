@@ -20,8 +20,11 @@ namespace Windows.UI.Core
 		internal CoreWindow()
 		{
 			_current = this;
+			InitializePartial();
 		}
 
+		partial void InitializePartial();
+    
 		public event TypedEventHandler<CoreWindow, WindowSizeChangedEventArgs> SizeChanged;
 
 		public CoreDispatcher Dispatcher
