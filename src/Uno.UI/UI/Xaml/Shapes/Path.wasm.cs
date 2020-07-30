@@ -26,7 +26,9 @@ namespace Windows.UI.Xaml.Shapes
 			return _path;
 		}
 
-		partial void OnDataChanged()
+		partial void OnDataChanged() => InvalidateMeasure();
+
+		protected override void InvalidateShape()
 		{
 			switch (Data)
 			{
@@ -43,6 +45,7 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 			}
 		}
+
 		/// <summary>
 		/// Transform the figures collection into a SVG Path according to :
 		/// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
