@@ -19,6 +19,8 @@ using Uno.UI.Controls;
 using Uno.Logging;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
+using Windows.UI.Core.Preview;
+using System.Threading.Tasks;
 
 namespace Uno.UI.Controls
 {
@@ -39,6 +41,7 @@ namespace Uno.UI.Controls
 		public Window(CGRect contentRect, NSWindowStyle aStyle, NSBackingStore bufferingType, bool deferCreation)
 			: base(contentRect, aStyle, bufferingType, deferCreation)
 		{
+			Delegate = new WindowDelegate();
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Window = this;
 		}
@@ -114,5 +117,41 @@ namespace Uno.UI.Controls
 			scrollView.ScrollRectToVisible(viewRectInScrollView);
 		}
 
+		private class WindowDelegate : NSWindowDelegate
+		{
+			public override async void DidBecomeMain(NSNotification notification)
+			{
+				// Ensure custom cursor is reset after window activation.
+				// Artificial delay is necessary due to the fact that setting cursor
+				// immediately after window becoming main does not have any effect.
+				await Task.Delay(100);
+				CoreWindow.GetForCurrentThread().RefreshCursor();
+			}
+
+			public override bool WindowShouldClose(NSObject sender)
+			{
+				var manager = SystemNavigationManagerPreview.GetForCurrentView();
+				if (!manager.HasConfirmedClose)
+				{
+					manager.OnCloseRequested();
+					if (!manager.HasConfirmedClose)
+					{
+						// Close was either deferred or canceled synchronously.
+						return false;
+					}
+				}
+
+				// closing should continue, perform suspension
+
+				if (!Application.Current.Suspended)
+				{
+					Application.Current.OnSuspending();
+					return Application.Current.Suspended;
+				}
+
+				// all prerequisites passed, can safely close
+				return true;
+			}
+		}
 	}
 }
