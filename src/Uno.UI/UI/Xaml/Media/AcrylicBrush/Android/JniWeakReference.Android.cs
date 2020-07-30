@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Uno.UI.Xaml.Media.Acrylic
+namespace Uno.UI.Xaml.Media
 {
     internal class JniWeakReference<T>
         where T : Java.Lang.Object

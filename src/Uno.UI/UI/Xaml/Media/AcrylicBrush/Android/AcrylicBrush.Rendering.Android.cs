@@ -5,23 +5,24 @@ using Android.Support.V4.View;
 #endif
 using System;
 using System.ComponentModel;
-
 using Android.Content;
 using Android.Graphics.Drawables;
 using Android.Runtime;
 using Java.IO;
 using Android.Graphics;
+using Windows.UI.Xaml.Media;
+using Uno.Extensions;
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
 
-namespace Uno.UI.Xaml.Media.Acrylic
+namespace Windows.UI.Xaml.Media
 {
 	/// <summary>
 	/// Renderer to update all frames with better shadows matching material design standards.
-	/// </summary>
-	[Preserve]
-	public partial class AndroidMaterialFrameRenderer
+	/// </summary>	
+	public partial class AcrylicBrush
 	{
 		private GradientDrawable _mainDrawable;
-
 		private GradientDrawable _acrylicLayer;
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -116,8 +117,8 @@ namespace Uno.UI.Xaml.Media.Acrylic
 
 		private void UpdateCornerRadius()
 		{
-			_acrylicLayer?.SetCornerRadius(Context.ToPixels(MaterialFrame.CornerRadius));
-			_realtimeBlurView?.SetCornerRadius(Context.ToPixels(MaterialFrame.CornerRadius));
+			_acrylicLayer?.SetCornerRadius(ContextHelper.Current.ToPixels(MaterialFrame.CornerRadius));
+			_realtimeBlurView?.SetCornerRadius(ContextHelper.Current.ToPixels(MaterialFrame.CornerRadius));
 		}
 
 		private void UpdateElevation()
@@ -152,28 +153,6 @@ namespace Uno.UI.Xaml.Media.Acrylic
 			_acrylicLayer?.SetColor(MaterialFrame.AcrylicGlowColor.ToAndroid());
 		}
 
-		private void UpdateMaterialTheme()
-		{
-			switch (MaterialFrame.MaterialTheme)
-			{
-				case MaterialFrame.Theme.Acrylic:
-					SetAcrylicTheme();
-					break;
-
-				case MaterialFrame.Theme.Dark:
-					SetDarkTheme();
-					break;
-
-				case MaterialFrame.Theme.Light:
-					SetLightTheme();
-					break;
-
-				case MaterialFrame.Theme.AcrylicBlur:
-					SetAcrylicBlurTheme();
-					break;
-			}
-		}
-
 		private void SetAcrylicBlurTheme()
 		{
 			_mainDrawable.SetColor(Color.Transparent.ToAndroid());
@@ -183,28 +162,6 @@ namespace Uno.UI.Xaml.Media.Acrylic
 			UpdateElevation();
 
 			EnableBlur();
-		}
-
-		private void SetDarkTheme()
-		{
-			DisableBlur();
-
-			_mainDrawable.SetColor(MaterialFrame.ElevationToColor().ToAndroid());
-
-			this.SetBackground(_mainDrawable);
-
-			UpdateElevation();
-		}
-
-		private void SetLightTheme()
-		{
-			DisableBlur();
-
-			_mainDrawable.SetColor(MaterialFrame.LightThemeBackgroundColor.ToAndroid());
-
-			this.SetBackground(_mainDrawable);
-
-			UpdateElevation();
 		}
 
 		private void SetAcrylicTheme()
@@ -223,12 +180,17 @@ namespace Uno.UI.Xaml.Media.Acrylic
 			LayerDrawable layer = new LayerDrawable(new Drawable[] { _acrylicLayer, _mainDrawable });
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
 			{
-				layer.SetLayerInsetTop(1, (int)Context.ToPixels(2));
+				layer.SetLayerInsetTop(1, (int)ContextHelper.Current.ToPixels(2));
 			}
 			else
 			{
-				System.Console.WriteLine(
-					$"{DateTime.Now:MM-dd H:mm:ss.fff} | Sharpnado.MaterialFrame | WARNING | The Acrylic glow is only supported on android API 23 or greater (starting from Marshmallow)");
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn(
+						$"The Acrylic glow is only supported on android API 23 " +
+						$"or greater (starting Marshmallow)");
+				}
+				
 			}
 
 			this.SetBackground(layer);

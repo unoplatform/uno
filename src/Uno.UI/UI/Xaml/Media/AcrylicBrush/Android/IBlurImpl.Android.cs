@@ -25,9 +25,9 @@
 using Android.Content;
 using Android.Graphics;
 
-namespace Uno.UI.Xaml.Media.Acrylic
+namespace Uno.UI.Xaml.Media
 {
-    public interface IBlurImpl
+	internal interface IBlurImpl
     {
         bool Prepare(Context context, Bitmap buffer, float radius);
 

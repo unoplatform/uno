@@ -1,14 +1,16 @@
 ﻿using System;
-
+using System.Drawing;
+using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 using View = Android.Views.View;
 
-namespace Uno.UI.Xaml.Media.Acrylic
+namespace Windows.UI.Xaml.Media
 {
-	public partial class AndroidMaterialFrameRenderer
+	public partial class AcrylicBrush
 	{
 		private const double StyledBlurRadius = 64;
 
@@ -174,7 +176,7 @@ namespace Uno.UI.Xaml.Media.Acrylic
 		{
 			if (IsAndroidBlurPropertySet)
 			{
-				_realtimeBlurView?.SetBlurRadius(Context.ToPixels(MaterialFrame.AndroidBlurRadius), invalidate);
+				_realtimeBlurView?.SetBlurRadius(ContextHelper.Current.ToPixels(MaterialFrame.AndroidBlurRadius), invalidate);
 			}
 		}
 
@@ -204,7 +206,10 @@ namespace Uno.UI.Xaml.Media.Acrylic
 
 		private void EnableBlur()
 		{
-			InternalLogger.Info(FormsId, "Renderer::EnableBlur()");
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInformation("Renderer::EnableBlur()");
+			}
 
 			if (_realtimeBlurView == null)
 			{
@@ -226,7 +231,10 @@ namespace Uno.UI.Xaml.Media.Acrylic
 				return;
 			}
 
-			InternalLogger.Info(FormsId, "Renderer::EnableBlur() => adding pre draw listener");
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInformation("Renderer::EnableBlur() => adding pre draw listener");
+			}
 			AddView(
 				_realtimeBlurView,
 				0,
@@ -245,7 +253,10 @@ namespace Uno.UI.Xaml.Media.Acrylic
 				return;
 			}
 
-			InternalLogger.Info(FormsId, "Renderer::DisableBlur() => removing pre draw listener");
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInformation("Renderer::DisableBlur() => removing pre draw listener");
+			}
 			RemoveView(_realtimeBlurView);
 		}
 	}

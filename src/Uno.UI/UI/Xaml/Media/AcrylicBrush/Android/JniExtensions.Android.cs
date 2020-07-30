@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Uno.UI.Xaml.Media.Acrylic
+namespace Uno.UI.Xaml.Media
 {
     internal static class JniExtensions
     {

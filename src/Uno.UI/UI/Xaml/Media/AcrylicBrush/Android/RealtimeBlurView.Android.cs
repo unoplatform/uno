@@ -39,7 +39,7 @@ using Math = System.Math;
 using Uno.Extensions;
 using Uno.Logging;
 
-namespace Uno.UI.Xaml.Media.Acrylic
+namespace Uno.UI.Xaml.Media
 {
 	/**
      * A realtime blurring overlay (like iOS UIVisualEffectView). Just put it above
@@ -50,7 +50,7 @@ namespace Uno.UI.Xaml.Media.Acrylic
      * <li>realtimeOverlayColor (#aaffffff)</li>
      * </ul>
      */
-	public class RealtimeBlurView : View
+	internal class RealtimeBlurView : View
 	{
 		private static int RealtimeBlurViewInstanceCount;
 
@@ -295,7 +295,7 @@ namespace Uno.UI.Xaml.Media.Acrylic
 								mDecorView.PostInvalidate();
 							}
 						},
-					AndroidMaterialFrameRenderer.BlurProcessingDelayMilliseconds);
+					AndroidAcrylicRenderer.BlurProcessingDelayMilliseconds);
 			}
 			else
 			{
@@ -350,7 +350,7 @@ namespace Uno.UI.Xaml.Media.Acrylic
 
 					SubscribeToPreDraw(mDecorView);
 				},
-				AndroidMaterialFrameRenderer.BlurAutoUpdateDelayMilliseconds);
+				AndroidAcrylicRenderer.BlurAutoUpdateDelayMilliseconds);
 		}
 
 		private void DisableAutoUpdate()
@@ -650,7 +650,7 @@ namespace Uno.UI.Xaml.Media.Acrylic
 			if (mIsRendering)
 			{
 				// Quit here, don't draw views above me
-				if (AndroidMaterialFrameRenderer.ThrowStopExceptionOnDraw)
+				if (AndroidAcrylicRenderer.ThrowStopExceptionOnDraw)
 				{
 					throw STOP_EXCEPTION;
 				}

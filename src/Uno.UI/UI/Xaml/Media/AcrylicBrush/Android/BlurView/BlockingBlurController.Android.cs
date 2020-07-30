@@ -30,9 +30,9 @@ using Android.Graphics.Drawables;
 using Android.Runtime;
 using Android.Views;
 
-namespace Uno.UI.Xaml.Media.Acrylic.BlurView
+namespace Uno.UI.Xaml.Media
 {
-    /**
+	/**
  * Blur Controller that handles all blur logic for the attached View.
  * It honors View size changes, View animation and Visibility changes.
  * <p>
@@ -44,7 +44,7 @@ namespace Uno.UI.Xaml.Media.Acrylic.BlurView
  * <p>
  * Blur is done on the main thread.
  */
-    public class BlockingBlurController : IBlurViewFacade
+	internal class BlockingBlurController : IBlurViewFacade
     {
 
         // Bitmap size should be divisible by ROUNDING_VALUE to meet stride requirement.

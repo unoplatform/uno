@@ -26,9 +26,9 @@ using Android.Content;
 using Android.Graphics;
 using Android.Renderscripts;
 
-namespace Uno.UI.Xaml.Media.Acrylic
+namespace Uno.UI.Xaml.Media
 {
-    public class AndroidStockBlurImpl : IBlurImpl
+    internal class AndroidStockBlurImpl : IBlurImpl
     {
 #if DEBUG
         private const bool DEBUG = true;

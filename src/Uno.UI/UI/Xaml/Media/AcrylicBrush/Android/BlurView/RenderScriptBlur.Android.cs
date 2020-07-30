@@ -26,9 +26,9 @@ using Android.Content;
 using Android.Graphics;
 using Android.Renderscripts;
 
-namespace Uno.UI.Xaml.Media.Acrylic.BlurView
+namespace Uno.UI.Xaml.Media
 {
-    public class RenderScriptBlur
+	internal class RenderScriptBlur
     {
         private readonly RenderScript _renderScript;
 
