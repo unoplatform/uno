@@ -38,6 +38,9 @@ echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emu
 
 echo $ANDROID_HOME/emulator/emulator -list-avds
 
+echo "Checking for hardware acceleration"
+$ANDROID_HOME/emulator/emulator -accel-check
+
 echo "Starting emulator"
 
 # Start emulator in background
