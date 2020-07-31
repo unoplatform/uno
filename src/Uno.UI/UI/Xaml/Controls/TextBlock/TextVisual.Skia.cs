@@ -6,6 +6,7 @@ using Uno;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
@@ -13,12 +14,18 @@ namespace Windows.UI.Composition
 {
 	internal class TextVisual : Visual
 	{
-		private SKPaint _paint;
-		private static Func<string, SKTypeface> _getTypeFace = Funcs.CreateMemoized<string, SKTypeface>(FromFamilyName);
+		private readonly SKPaint _paint;
+		private static readonly Func<string, SKFontStyleWeight, SKFontStyleWidth, SKFontStyleSlant, SKTypeface> _getTypeFace =
+			Funcs.CreateMemoized<string, SKFontStyleWeight, SKFontStyleWidth, SKFontStyleSlant, SKTypeface>(
+				(nm, wt, wh, sl) => FromFamilyName(nm, wt, wh, sl));
 
 		private readonly TextBlock _owner;
 
-		private static SKTypeface FromFamilyName(string name)
+		private static SKTypeface FromFamilyName(
+			string name,
+			SKFontStyleWeight weight,
+			SKFontStyleWidth width,
+			SKFontStyleSlant slant)
 		{
 			if (name.StartsWith(XamlFilePathHelper.AppXIdentifier))
 			{
@@ -32,7 +39,7 @@ namespace Windows.UI.Composition
 			}
 			else
 			{
-				return SKTypeface.FromFamilyName(name);
+				return SKTypeface.FromFamilyName(name, weight, width, slant);
 			}
 		}
 
@@ -40,19 +47,26 @@ namespace Windows.UI.Composition
 		{
 			_owner = owner;
 
-			_paint = new SKPaint();
-			_paint.TextEncoding = SKTextEncoding.Utf16;
-			_paint.IsStroke = false;
-			_paint.IsAntialias = true;
-			_paint.LcdRenderText = true;
-			_paint.SubpixelText = true;
+			_paint = new SKPaint
+			{
+				TextEncoding = SKTextEncoding.Utf16,
+				IsStroke = false,
+				IsAntialias = true,
+				LcdRenderText = true,
+				SubpixelText = true
+			};
 		}
 
 		internal Size Measure(Size availableSize)
 		{
 			if (_owner.FontFamily?.Source != null)
 			{
-				_paint.Typeface = _getTypeFace(_owner.FontFamily.Source);
+				var weight = _owner.FontWeight.ToSkiaWeight();
+				//var width = _owner.FontStretch.ToSkiaWidth(); -- FontStretch not supported by Uno yet
+				var width = SKFontStyleWidth.Normal;
+				var slant = _owner.FontStyle.ToSkiaSlant();
+				var font = _getTypeFace(_owner.FontFamily.Source, weight, width, slant);
+				_paint.Typeface = font;
 			}
 
 			_paint.TextSize = (float)_owner.FontSize;

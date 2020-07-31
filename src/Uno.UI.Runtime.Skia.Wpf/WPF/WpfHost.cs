@@ -2,26 +2,55 @@
 using SkiaSharp;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Uno.Foundation.Extensibility;
 using WinUI = Windows.UI.Xaml;
 
 namespace Uno.UI.Skia.Platform
 {
-	public class WpfHost : FrameworkElement
+	public class WpfHost : FrameworkElement, WinUI.ISkiaHost
 	{
 		private readonly bool designMode;
-		private readonly Func<WinUI.Application> _appBuilder;
 		private WriteableBitmap bitmap;
 		private bool ignorePixelScaling;
 
-		public WpfHost(Func<WinUI.Application> appBuilder)
+		static WpfHost()
 		{
-			designMode = DesignerProperties.GetIsInDesignMode(this);
-			_appBuilder = appBuilder;
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfUIElementPointersSupport(o));
+			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
+			ApiExtensibility.Register(typeof(WinUI.IApplicationExtension), o => new WpfApplicationExtension(o));
+		}
 
-			WinUI.Application.Start(_ => appBuilder());
+		[ThreadStatic] private static WpfHost _current;
+		public static WpfHost Current => _current;
+
+		/// <summary>
+		/// Creates a WpfHost element to host a Uno-Skia into a WPF application.
+		/// </summary>
+		/// <remarks>
+		/// If args are omitted, those from Environment.GetCommandLineArgs() will be used.
+		/// </remarks>
+		public WpfHost(Func<WinUI.Application> appBuilder, string[] args = null)
+		{
+			_current = this;
+
+			args ??= Environment
+				.GetCommandLineArgs()
+				.Skip(1)
+				.ToArray();
+
+			designMode = DesignerProperties.GetIsInDesignMode(this);
+
+			void CreateApp(WinUI.ApplicationInitializationCallbackParams _)
+			{
+				var app = appBuilder();
+				app.Host = this;
+			}
+
+			WinUI.Application.Start(CreateApp, args);
 
 			WinUI.Window.Current.InvalidateRender += () => InvalidateVisual();
 

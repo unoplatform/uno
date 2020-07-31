@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml
 				var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
 				if (UIElement.PointerCapture.TryGet(pointer, out var capture))
 				{
-					foreach(var target in capture.Targets)
+					foreach(var target in capture.Targets.ToArray())
 					{
 						var pointerArgs = new PointerRoutedEventArgs(args, pointer, target.Element);
 						target.Element.OnNativePointerUp(pointerArgs);
