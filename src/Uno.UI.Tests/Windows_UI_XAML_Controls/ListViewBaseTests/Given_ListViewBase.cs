@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NETFX_CORE
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,6 @@ namespace Uno.UI.Tests.ListViewBaseTests
 	[TestClass]
 	public class Given_ListViewBase
 	{
-#if !NETFX_CORE
 		// Make sure to have a valid custom theme set, so it won't try to read it from the Application.Current(<<== null).RequestedTheme
 		[TestInitialize] public void Init() => global::Uno.UI.ApplicationHelper.RequestedCustomTheme = "HighContrast";
 
@@ -136,7 +136,6 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			SUT.ItemsSource = null;
 		}
-#endif
 
 		[TestMethod]
 		public void When_SelectionChanged_Changes_Selection()
@@ -663,3 +662,4 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		}
 	}
 }
+#endif
