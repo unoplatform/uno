@@ -137,14 +137,6 @@ embed.uno-frameworkelement.uno-unarranged {
   -webkit-overflow-scrolling: touch;
 }
 
-  .uno-scrollcontentpresenter.scrollmode-x-disabled {
-    overflow-x: hidden !important; /* disabled here override display mode */
-  }
-
-  .uno-scrollcontentpresenter.scrollmode-y-disabled {
-    overflow-y: hidden !important; /* disabled here override display mode */
-  }
-
   .uno-scrollcontentpresenter.scroll-x-auto {
     overflow-x: auto;
   }
@@ -162,9 +154,9 @@ embed.uno-frameworkelement.uno-unarranged {
     scrollbar-height: none;
   }
 
-    .uno-scrollcontentpresenter.scroll-x-hidden::-webkit-scrollbar {
-      height: 0;
-    }
+  .uno-scrollcontentpresenter.scroll-x-hidden::-webkit-scrollbar {
+    height: 0;
+  }
 
   .uno-scrollcontentpresenter.scroll-y-disabled {
     overflow-y: hidden;
@@ -175,9 +167,9 @@ embed.uno-frameworkelement.uno-unarranged {
     scrollbar-width: none;
   }
 
-    .uno-scrollcontentpresenter.scroll-y-hidden::-webkit-scrollbar {
-      width: 0;
-    }
+  .uno-scrollcontentpresenter.scroll-y-hidden::-webkit-scrollbar {
+    width: 0;
+  }
 
   .uno-scrollcontentpresenter.scroll-x-visible {
     overflow-x: scroll;
