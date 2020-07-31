@@ -7,7 +7,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="toolkit:ElevatedView">
 					<Grid>
-						<Grid x:Name="PART_ShadowHost" />
+						<Canvas x:Name="PART_ShadowHost" />
 						
 						<Border x:Name="PART_Border"
 								Background="{TemplateBinding Background}"

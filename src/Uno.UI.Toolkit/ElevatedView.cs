@@ -47,7 +47,7 @@ namespace Uno.UI.Toolkit
 		 */
 
 		private Border _border;
-		private Grid _shadowHost;
+		private Canvas _shadowHost;
 
 		public ElevatedView()
 		{
@@ -66,7 +66,7 @@ namespace Uno.UI.Toolkit
 		protected override void OnApplyTemplate()
 		{
 			_border = GetTemplateChild("PART_Border") as Border;
-			_shadowHost = GetTemplateChild("PART_ShadowHost") as Grid;
+			_shadowHost = GetTemplateChild("PART_ShadowHost") as Canvas;
 
 			UpdateElevation();
 		}
