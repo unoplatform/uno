@@ -150,6 +150,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			{
 				if (await SwapSystemTheme())
 				{
+					if (control.Parent == null)
+					{
+						app.HostView.Children.Add(control); // On UWP the control may have been removed by another test after the async swap
+					}
 					var textDarkThemeMarkup = control.TemplateFromResourceControl.TextBlock6.Text;
 					Assert.AreEqual("LocalVisualTreeDark", textDarkThemeMarkup); //ThemeResource markup change lookup uses the visual tree (rather than original XAML namescope)
 				}
@@ -277,6 +281,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			}
 		}
 
+#if NETFX_CORE
+		private static Task _swapTask;
+
+		private static async Task GetSwapTask()
+		{
+			var content = new StackPanel();
+			content.Children.Add(new TextBlock { Text = "Set default app mode as 'dark' in settings" });
+			content.Children.Add(new HyperlinkButton { Content = "Go to settings", NavigateUri = new Uri("ms-settings:personalization-colors") });
+			var dialog = new ContentDialog { Content = content, CloseButtonText = "Done" };
+			await dialog.ShowAsync();
+		}
+#endif
+
 		[TestMethod]
 		public async Task When_Direct_Assignment_Incompatible()
 		{
@@ -294,15 +311,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				ApplicationTheme.Dark :
 				ApplicationTheme.Light;
 #if NETFX_CORE
-			if (!UnitTestsApp.App.EnableInteractiveTests)
+			if (!UnitTestsApp.App.EnableInteractiveTests || targetTheme == ApplicationTheme.Light)
 			{
 				return false;
 			}
 
-			var dialog = new ContentDialog { Content = "Set default app mode as 'dark' in settings", CloseButtonText = "Done" };
-			await dialog.ShowAsync();
+			_swapTask = _swapTask ?? GetSwapTask();
+
+			await _swapTask;
 #else
-			Application.Current.SetRequestedTheme(targetTheme); 
+			Application.Current.SetRequestedTheme(targetTheme);
 #endif
 			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
 			return true;
