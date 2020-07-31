@@ -46,6 +46,12 @@ namespace Uno.UI.Toolkit
 		 *
 		 */
 
+#if __ANDROID__
+		private static readonly Color DefaultShadowColor = Colors.Black;
+#else
+		private static readonly Color DefaultShadowColor = Color.FromArgb(64, 0, 0, 0);
+#endif
+
 		private Border _border;
 		private Grid _shadowHost;
 
@@ -85,7 +91,7 @@ namespace Uno.UI.Toolkit
 		}
 
 		public static DependencyProperty ShadowColorProperty { get ; } = DependencyProperty.Register(
-			"ShadowColor", typeof(Color), typeof(ElevatedView), new PropertyMetadata(Color.FromArgb(64, 0, 0, 0), OnChanged));
+			"ShadowColor", typeof(Color), typeof(ElevatedView), new PropertyMetadata(DefaultShadowColor, OnChanged));
 
 		public Color ShadowColor
 		{
