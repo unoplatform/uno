@@ -32,12 +32,6 @@ namespace Windows.UI.Xaml.Controls
 					slotSize.Width = double.PositiveInfinity;
 				}
 
-#if __WASM__
-				Console.WriteLine($"[{this}-{HtmlId}] MEASURE:"
-					+ $" available: {size}"
-					+ $" availableForChild: {slotSize}");
-#endif
-
 				child.Measure(slotSize);
 
 				return new Size(
@@ -64,13 +58,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					slotSize.Width = Math.Max(desiredChildSize.Width, finalSize.Width);
 				}
-
-#if __WASM__
-				Console.WriteLine($"[{this}-{HtmlId}] ARRANGE:"
-					+ $" available: {finalSize}"
-					+ $" availableForChild: {slotSize}"
-					+ $" desiredByChild: {desiredChildSize}");
-#endif
 
 				child.Arrange(new Rect(new Point(0, 0), slotSize));
 			}

@@ -93,30 +93,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		//private static readonly string[] HorizontalModeClasses = { "scrollmode-x-disabled", "scrollmode-x-enabled", "scrollmode-x-auto" };
-
-		//public ScrollMode HorizontalScrollMode
-		//{
-		//	get => _horizontalScrollMode1;
-		//	set
-		//	{
-		//		_horizontalScrollMode1 = value;
-		//		SetClasses(HorizontalModeClasses, (int)value);
-		//	}
-		//}
-
-		//private static readonly string[] VerticalModeClasses = { "scrollmode-y-disabled", "scrollmode-y-enabled", "scrollmode-y-auto" };
-
-		//public ScrollMode VerticalScrollMode
-		//{
-		//	get => _verticalScrollMode1;
-		//	set
-		//	{
-		//		_verticalScrollMode1 = value;
-		//		SetClasses(VerticalModeClasses, (int)value);
-		//	}
-		//}
-
 		public float MinimumZoomScale { get; private set; }
 
 		public float MaximumZoomScale { get; private set; }
@@ -128,11 +104,6 @@ namespace Windows.UI.Xaml.Controls
 			get { return _verticalScrollBarVisibility; }
 			set
 			{
-#if __WASM__
-				Console.WriteLine($"[{this}-{HtmlId}] setting VerticalScrollBarVisibility:{value} ({(int)value} - {VerticalVisibilityClasses[(int)value]})"
-					+ $" (was: {_verticalScrollBarVisibility} ({(int)_verticalScrollBarVisibility} - {VerticalVisibilityClasses[(int)_verticalScrollBarVisibility]}))");
-#endif
-
 				if (_verticalScrollBarVisibility != value)
 				{
 					_verticalScrollBarVisibility = value;
