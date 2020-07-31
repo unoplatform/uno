@@ -7,11 +7,14 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Windows.Devices.Input;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Input;
 using Uno;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
@@ -35,9 +38,51 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
-		internal const string ScrollContentPresenterPartName = "ScrollContentPresenter";
-		private const string VerticalScrollBarPartName = "VerticalScrollBar";
-		private const string HorizontalScrollBarPartName = "HorizontalScrollBar";
+		private static class Parts
+		{
+			public static class Uwp
+			{
+				public const string ScrollContentPresenter = "ScrollContentPresenter";
+				public const string VerticalScrollBar = "VerticalScrollBar";
+				public const string HorizontalScrollBar = "HorizontalScrollBar";
+			}
+
+			public static class WinUI3
+			{
+				public const string Scroller = "PART_Scroller";
+				public const string VerticalScrollBar = "PART_VerticalScrollBar";
+				public const string HorizontalScrollBar = "PART_HorizontalScrollBar";
+			}
+		}
+
+		private static class VisualStates
+		{
+			public static class ScrollingIndicator
+			{
+				public const string None = "NoIndicator";
+				public const string Touch = "TouchIndicator";
+				public const string Mouse = "MouseIndicator";
+				// public const string MouseFull = "MouseIndicatorFull"; // No supported yet
+			}
+
+			public static class ScrollBarsSeparator
+			{
+				public const string Collapsed = "ScrollBarSeparatorCollapsed";
+				public const string Expanded = "ScrollBarSeparatorExpanded";
+				public const string ExpandedWithoutAnimation = "ScrollBarSeparatorExpandedWithoutAnimation";
+				public const string CollapsedWithoutAnimation = "ScrollBarSeparatorCollapsedWithoutAnimation";
+
+				// On WinUI3 visuals states are prefixed with "ScrolBar***s***" (with a trailing 's')
+				//public const string Collapsed = "ScrollBarsSeparatorCollapsed";
+				//public const string CollapsedDisabled = "ScrollBarsSeparatorCollapsedDisabled"; // Not supported yet
+				//public const string Expanded = "ScrollBarsSeparatorExpanded";
+				//public const string DisplayedWithoutAnimation = "ScrollBarsSeparatorDisplayedWithoutAnimation"; // Not supported yet
+				//public const string ExpandedWithoutAnimation = "ScrollBarsSeparatorExpandedWithoutAnimation";
+				//public const string CollapsedWithoutAnimation = "ScrollBarsSeparatorCollapsedWithoutAnimation";
+			}
+		}
+
+		private static bool IsAnimationEnabled => Uno.UI.Helpers.WinUI.SharedHelpers.IsAnimationsEnabled();
 
 		/// <summary>
 		/// Occurs when manipulations such as scrolling and zooming have caused the view to change.
@@ -65,11 +110,13 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
+
+			Unloaded += ResetScrollIndicator;
 		}
 
 		partial void InitializePartial();
 
-		#region Common DP callbacks
+		#region -- Common DP callbacks --
 		private static PropertyChangedCallback OnHorizontalScrollabilityPropertyChanged = (obj, _)
 			=> (obj as ScrollViewer)?.UpdateComputedHorizontalScrollability(invalidate: true);
 		private static PropertyChangedCallback OnVerticalScrollabilityPropertyChanged = (obj, _)
@@ -603,13 +650,6 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateComputedVerticalScrollability(invalidate: false);
 			UpdateComputedHorizontalScrollability(invalidate: false);
-#if __WASM__
-			Console.WriteLine($"[{this}-{HtmlId}] ViewPort:{ViewportWidth:N0}x{ViewportHeight:N0} "
-				+ $"| Extent:{ExtentWidth:N0}x{ExtentHeight:N0} "
-				+ $"| Scrollable:{ScrollableWidth:N0}x{ScrollableHeight:N0} "
-				+ $"| ComputedVisibility:{ComputedHorizontalScrollBarVisibility}/{ComputedHorizontalScrollBarVisibility} "
-				+ $"| ComputedIsEnabled:{ComputedIsHorizontalScrollEnabled}/{ComputedIsVerticalScrollEnabled}");
-#endif
 		}
 
 		private void UpdateComputedVerticalScrollability(bool invalidate)
@@ -627,7 +667,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// Support for the native scroll bars (delegated to the native _presenter).
-			_presenter.HorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(visibility, mode, _verticalScrollbar);
+			_presenter.VerticalScrollBarVisibility = ComputeNativeScrollBarVisibility(visibility, mode, _verticalScrollbar);
 			if (invalidate && _verticalScrollbar == default)
 			{
 				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
@@ -682,8 +722,8 @@ namespace Windows.UI.Xaml.Controls
 			=> mode == ScrollMode.Disabled
 				? ScrollBarVisibility.Disabled
 				: managedScrollbar == default
-					? ScrollBarVisibility.Hidden // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
-					: visibility;
+					? visibility
+					: ScrollBarVisibility.Hidden; // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
 
 		/// <summary>
 		/// Sets the content of the ScrollViewer
@@ -701,33 +741,53 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
-			// Clean up previous template
+			// Cleanup previous template
 			if (_verticalScrollbar != null)
 			{
 				_verticalScrollbar.Scroll -= OnVerticalScrollBarScrolled;
+				_verticalScrollbar.PointerEntered -= ShowScrollBarSeparator;
+				_verticalScrollbar.PointerExited -= HideScrollBarSeparator;
 			}
 
 			if (_horizontalScrollbar != null)
 			{
 				_horizontalScrollbar.Scroll -= OnHorizontalScrollBarScrolled;
+				_horizontalScrollbar.PointerEntered -= ShowScrollBarSeparator;
+				_horizontalScrollbar.PointerExited -= HideScrollBarSeparator;
 			}
+
+			PointerMoved -= ShowScrollIndicator;
 
 			base.OnApplyTemplate();
 
 			// Load new template
-			_verticalScrollbar = GetTemplateChild(VerticalScrollBarPartName) as ScrollBar;
-			if (_verticalScrollbar != null)
+			_verticalScrollbar = (GetTemplateChild(Parts.WinUI3.VerticalScrollBar) ?? GetTemplateChild(Parts.Uwp.VerticalScrollBar)) as ScrollBar;
+			_horizontalScrollbar = (GetTemplateChild(Parts.WinUI3.HorizontalScrollBar) ?? GetTemplateChild(Parts.Uwp.HorizontalScrollBar)) as ScrollBar;
+
+			var hasManagedVerticalScrollBar = _verticalScrollbar != null;
+			var hasManagedHorizontalScrollBar = _horizontalScrollbar != null;
+			if (hasManagedVerticalScrollBar)
 			{
 				_verticalScrollbar.Scroll += OnVerticalScrollBarScrolled;
 			}
-
-			_horizontalScrollbar = GetTemplateChild(HorizontalScrollBarPartName) as ScrollBar;
-			if (_horizontalScrollbar != null)
+			if (hasManagedHorizontalScrollBar)
 			{
 				_horizontalScrollbar.Scroll += OnHorizontalScrollBarScrolled;
 			}
+			if (hasManagedVerticalScrollBar || hasManagedHorizontalScrollBar)
+			{
+				PointerMoved += ShowScrollIndicator;
 
-			var scpTemplatePart = GetTemplateChild(ScrollContentPresenterPartName);
+				if (hasManagedVerticalScrollBar && hasManagedHorizontalScrollBar)
+				{
+					_verticalScrollbar.PointerEntered += ShowScrollBarSeparator;
+					_horizontalScrollbar.PointerEntered += ShowScrollBarSeparator;
+					_verticalScrollbar.PointerExited += HideScrollBarSeparator;
+					_horizontalScrollbar.PointerExited += HideScrollBarSeparator;
+				}
+			}
+
+			var scpTemplatePart = GetTemplateChild(Parts.WinUI3.Scroller) ?? GetTemplateChild(Parts.Uwp.ScrollContentPresenter);
 			_presenter = scpTemplatePart as IScrollContentPresenter;
 
 #if !NETSTANDARD
@@ -759,6 +819,8 @@ namespace Windows.UI.Xaml.Controls
 			OnZoomModeChanged(ZoomMode);
 
 			OnBringIntoViewOnFocusChangeChangedPartial(BringIntoViewOnFocusChange);
+
+			ResetScrollIndicator(forced: true);
 		}
 
 		partial void OnApplyTemplatePartial();
@@ -986,5 +1048,86 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation);
 		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation);
+
+		#region Scroll indicators visual states (Managed scroll bars only)
+		private DispatcherQueueTimer _indicatorResetTimer;
+		private string _indicatorState;
+
+		private static void ShowScrollIndicator(object sender, PointerRoutedEventArgs e) // OnPointerMove
+			=> (sender as ScrollViewer)?.ShowScrollIndicator(e.Pointer.PointerDeviceType);
+
+		private void ShowScrollIndicator(PointerDeviceType type)
+		{
+			if (!ComputedIsVerticalScrollEnabled && !ComputedIsHorizontalScrollEnabled)
+			{
+				return;
+			}
+
+			var indicatorState = type switch
+			{
+				PointerDeviceType.Touch => VisualStates.ScrollingIndicator.Touch,
+				_ => VisualStates.ScrollingIndicator.Mouse // Mouse and pen are using the MouseIndicator
+			};
+			if (_indicatorState != indicatorState) // Avoid costly GoToState if useless
+			{
+				VisualStateManager.GoToState(this, indicatorState, true);
+				_indicatorState = indicatorState;
+			}
+
+			// Automatically hide the scroll indicator after a delay without any interaction
+			if (_indicatorResetTimer == null)
+			{
+				var weakRef = WeakReferencePool.RentSelfWeakReference(this);
+				_indicatorResetTimer = new DispatcherQueueTimer
+				{
+					Interval = TimeSpan.FromSeconds(4),
+					IsRepeating = false
+				};
+				_indicatorResetTimer.Tick += (snd, e) => (weakRef.Target as ScrollViewer)?.ResetScrollIndicator();
+			}
+			_indicatorResetTimer.Start(); // Starts or restarts the reset timer
+		}
+
+		private static void ResetScrollIndicator(object sender, RoutedEventArgs _) // OnUnloaded
+			=> (sender as ScrollViewer)?.ResetScrollIndicator(forced: true);
+
+		private void ResetScrollIndicator(bool forced = false)
+		{
+			_indicatorResetTimer?.Stop();
+
+			if (!forced && ((_horizontalScrollbar?.IsPointerOver ?? false) || (_verticalScrollbar?.IsPointerOver ?? false)))
+			{
+				// We don't auto hide the indicators if the pointer is over it!
+				// Note: the pointer has to move over this ScrollViewer to exit the ScrollBar, so we will restart the reset timer!
+				return; 
+			}
+
+			VisualStateManager.GoToState(this, VisualStates.ScrollingIndicator.None, true);
+			_indicatorState = VisualStates.ScrollingIndicator.None;
+
+			VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.Collapsed, true);
+		}
+
+		private void ShowScrollBarSeparator(object sender, PointerRoutedEventArgs e) // ScrollBar.OnPointerEntered
+		{
+			if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
+			{
+				return; // The separator is needed only for the MouseIndicator (Mouse and Pen)
+			}
+
+			if (IsAnimationEnabled || !VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.ExpandedWithoutAnimation, true))
+			{
+				VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.Expanded, true);
+			}
+		}
+
+		private void HideScrollBarSeparator(object sender, PointerRoutedEventArgs e) // ScrollBar.OnPointerExited
+		{
+			if (IsAnimationEnabled || !VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.CollapsedWithoutAnimation, true))
+			{
+				VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.Collapsed, true);
+			}
+		}
+		#endregion
 	}
 }
