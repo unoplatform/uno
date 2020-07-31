@@ -1,5 +1,5 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
+#nullable enable
+
 namespace Windows.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
@@ -11,13 +11,13 @@ namespace Windows.UI.Composition
 		private CompositionStrokeCap _strokeEndCap;
 		private float _strokeDashOffset;
 		private CompositionStrokeCap _strokeDashCap;
-		private CompositionBrush _strokeBrush;
+		private CompositionBrush? _strokeBrush;
 		private bool _isStrokeNonScaling;
-		private CompositionGeometry _geometry;
-		private CompositionBrush _fillBrush;
-		private CompositionStrokeDashArray _strokeDashArray;
+		private CompositionGeometry? _geometry;
+		private CompositionBrush? _fillBrush;
+		private CompositionStrokeDashArray? _strokeDashArray;
 
-		internal CompositionSpriteShape(Compositor compositor, CompositionGeometry geometry = null) : base(compositor)
+		internal CompositionSpriteShape(Compositor compositor, CompositionGeometry? geometry = null) : base(compositor)
 		{
 			Geometry = geometry;
 		}
@@ -85,7 +85,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		public CompositionBrush StrokeBrush
+		public CompositionBrush? StrokeBrush
 		{
 			get => _strokeBrush; set
 			{
@@ -103,7 +103,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		public CompositionGeometry Geometry
+		public CompositionGeometry? Geometry
 		{
 			get => _geometry; set
 			{
@@ -112,7 +112,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		public CompositionBrush FillBrush
+		public CompositionBrush? FillBrush
 		{
 			get => _fillBrush; set
 			{
@@ -121,7 +121,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		public CompositionStrokeDashArray StrokeDashArray
+		public CompositionStrokeDashArray? StrokeDashArray
 		{
 			get => _strokeDashArray; set
 			{

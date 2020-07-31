@@ -150,7 +150,7 @@ namespace Windows.UI.Xaml.Shapes
 				owner.ClippingIsSetByCornerRadius = cornerRadius != CornerRadius.None;
 				if (owner.ClippingIsSetByCornerRadius)
 				{
-					parent.Clip = new CompositionGeometricClip() { Geometry = spriteShape.Geometry };
+					parent.Clip = compositor.CreateGeometricClip(spriteShape.Geometry);
 				}
 			}
 			else

@@ -1,4 +1,7 @@
+#nullable enable
+
 using System.Linq;
+using Windows.UI.Composition;
 
 namespace Windows.UI.Xaml.Hosting
 {
@@ -6,23 +9,31 @@ namespace Windows.UI.Xaml.Hosting
 	{
 		private const string ChildVisualName = "childVisual";
 
-		public static global::Windows.UI.Composition.Visual GetElementVisual(global::Windows.UI.Xaml.UIElement element)
+#if !__SKIA__
+		static readonly Compositor _compositor = new Compositor();
+#endif
+
+		public static Visual GetElementVisual(UIElement element)
 		{
 #if __SKIA__
 			return element.Visual;
 #else
-			return new Composition.Visual(null) { NativeOwner = element };
+			return new Composition.Visual(_compositor) { NativeOwner = element };
 #endif
 		}
 
-		public static void SetElementChildVisual(global::Windows.UI.Xaml.UIElement element, global::Windows.UI.Composition.Visual visual)
+		public static void SetElementChildVisual(UIElement element, Visual visual)
 		{
 #if __IOS__
             element.Layer.AddSublayer(visual.NativeLayer);
             visual.NativeOwner = element;
             element.ClipsToBounds = false;
-            (element as FrameworkElement).SizeChanged += 
-                (s, e) => visual.NativeLayer.Frame = new CoreGraphics.CGRect(0, 0, element.Frame.Width, element.Frame.Height);
+
+			if (element is FrameworkElement fe)
+			{
+				fe.SizeChanged +=
+					(s, e) => visual.NativeLayer.Frame = new CoreGraphics.CGRect(0, 0, element.Frame.Width, element.Frame.Height);
+			}
 #elif __SKIA__
 
 			var container = new Composition.ContainerVisual(element.Visual.Compositor) { Comment = ChildVisualName };

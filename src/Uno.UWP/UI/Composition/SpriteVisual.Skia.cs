@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -19,7 +21,7 @@ namespace Windows.UI.Composition
 				IsAntialias = true,
 			};
 
-		partial void OnBrushChangedPartial(CompositionBrush brush)
+		partial void OnBrushChangedPartial(CompositionBrush? brush)
 		{
 			_csbSubscription.Disposable = null;
 
@@ -34,7 +36,7 @@ namespace Windows.UI.Composition
 
 		private void UpdatePaint()
 		{
-			Brush.UpdatePaint(_paint);
+			Brush?.UpdatePaint(_paint);
 		}
 
 		internal override void Render(SKSurface surface, SKImageInfo info)

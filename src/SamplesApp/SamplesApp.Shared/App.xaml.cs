@@ -142,8 +142,7 @@ namespace SamplesApp
 							CoreDispatcherPriority.Normal,
 							async () =>
 							{
-								// await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath);
-								System.Environment.Exit(0);
+								await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
 							}
 						);
 					}

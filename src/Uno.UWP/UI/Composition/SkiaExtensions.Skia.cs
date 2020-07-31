@@ -1,4 +1,6 @@
-﻿using SkiaSharp;
+﻿#nullable enable
+
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Numerics;

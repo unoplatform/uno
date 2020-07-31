@@ -1,3 +1,4 @@
+#nullable enable
 
 using SkiaSharp;
 using System;
@@ -37,19 +38,9 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		internal ContainerVisual RootVisual { get; set; }
+		internal ContainerVisual? RootVisual { get; set; }
 
 		internal float CurrentOpacity => _currentOpacity;
-
-		//public CompositionSurfaceBrush CreateSurfaceBrush()
-		//{
-		//	throw new global::System.NotImplementedException("The member CompositionSurfaceBrush Compositor.CreateSurfaceBrush() is not implemented in Uno.");
-		//}
-
-		//public CompositionSurfaceBrush CreateSurfaceBrush(ICompositionSurface surface)
-		//{
-		//	throw new global::System.NotImplementedException("The member CompositionSurfaceBrush Compositor.CreateSurfaceBrush(ICompositionSurface surface) is not implemented in Uno.");
-		//}
 
 		internal void Render(SKSurface surface, SKImageInfo info)
 		{
@@ -135,13 +126,13 @@ namespace Windows.UI.Composition
 			{
 				if (geometricClip.Geometry is CompositionPathGeometry cpg)
 				{
-					if (cpg.Path.GeometrySource is SkiaGeometrySource2D geometrySource)
+					if (cpg.Path?.GeometrySource is SkiaGeometrySource2D geometrySource)
 					{
 						surface.Canvas.ClipPath(geometrySource.Geometry, antialias: true);
 					}
 					else
 					{
-						throw new InvalidOperationException($"Clipping with source {cpg.Path.GeometrySource} is not supported");
+						throw new InvalidOperationException($"Clipping with source {cpg.Path?.GeometrySource} is not supported");
 					}
 				}
 				else if(geometricClip.Geometry is null)

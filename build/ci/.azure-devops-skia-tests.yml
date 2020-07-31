@@ -5,9 +5,6 @@ jobs:
 - job: Skia_UI_Tests
   timeoutInMinutes: 90
 
-  dependsOn:
-    - VS_Latest
-
   pool:
     vmImage: ${{ parameters.vmImage }}
 
@@ -20,14 +17,11 @@ jobs:
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
   steps:
-  - task: DownloadBuildArtifacts@0
+   
+  - task: MSBuild@1
     inputs:
-      artifactName: uno-skia-artifacts
-
-  - script: |
-        xcopy /s/e $(System.ArtifactsDirectory)\uno-skia-artifacts $(Build.SourcesDirectory)\build\skia-bin\
-        del /f/s/q $(System.ArtifactsDirectory)\uno-skia-artifacts
-    displayName: Copy Artifacts to build folder
+      solution: src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj
+      msbuildArguments: /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
 
   - powershell: |
         $source = "$(GTK_RUNTIME_URL)"
@@ -39,7 +33,7 @@ jobs:
 
   - script: |
         set PATH=C:\Program Files\GTK3-Runtime Win64\bin;%PATH%
-        cd $(Build.SourcesDirectory)\build\skia-bin
+        cd $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
         SamplesApp.Skia.Gtk.exe --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
 
     displayName: Run Skia UI Tests
