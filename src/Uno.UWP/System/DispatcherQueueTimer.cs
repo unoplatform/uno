@@ -7,8 +7,7 @@ using Windows.Foundation;
 
 namespace Windows.System
 {
-	public partial class 
-		DispatcherQueueTimer 
+	public partial class DispatcherQueueTimer 
 	{
 		private static class States
 		{
@@ -45,12 +44,7 @@ namespace Windows.System
 
 		public bool IsRunning => _state == States.Running;
 
-		public bool IsRepeating
-		{
-			get => true;
-			[global::Uno.NotImplemented]
-			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.DispatcherQueueTimer", "bool DispatcherQueueTimer.IsRepeating");
-		}
+		public bool IsRepeating { get; set; }
 
 		/// <summary>
 		/// An internal state that can be used to store a value in order to prevent a closure in the click handler.
@@ -106,7 +100,7 @@ namespace Windows.System
 			var elapsed = now - _lastTick;
 			if (elapsed >= interval)
 			{
-				RaiseTick();
+				RaiseTick(isTickForRestart: true);
 
 				if (IsRunning) // be sure to not self restart if the timer was Stopped by the Tick event handler
 				{
@@ -119,7 +113,7 @@ namespace Windows.System
 			}
 		}
 
-		private void RaiseTick()
+		private void RaiseTick(bool isTickForRestart = false)
 		{
 			try
 			{
@@ -136,6 +130,11 @@ namespace Windows.System
 				{
 					this.Log().Error("Raising tick failed", e);
 				}
+			}
+
+			if (!isTickForRestart && !IsRepeating)
+			{
+				Stop();
 			}
 		}
 
