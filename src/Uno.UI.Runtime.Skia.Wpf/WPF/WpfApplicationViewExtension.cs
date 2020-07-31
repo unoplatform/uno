@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using Windows.UI.ViewManagement;
 
 using WpfApplication = System.Windows.Application;
@@ -19,17 +20,41 @@ namespace Uno.UI.Skia.Platform
 			_mainWpfWindow = WpfApplication.Current.MainWindow;
 		}
 
-#if !DEBUG
-#error TODO
-#endif
 		public string Title
 		{
 			get => _mainWpfWindow.Title;
 			set => _mainWpfWindow.Title = value;
 		}
 
-		public bool TryEnterFullScreenMode() => throw new NotImplementedException();
+		private bool _isFullScreen = false;
+		private (WindowStyle WindowStyle, WindowState WindowState) _previousModes;
 
-		public void ExitFullScreenMode() => throw new NotImplementedException();
+		public bool TryEnterFullScreenMode()
+		{
+			if (_isFullScreen || _mainWpfWindow.WindowStyle == WindowStyle.None)
+			{
+				return false;
+			}
+
+			_previousModes = (_mainWpfWindow.WindowStyle, _mainWpfWindow.WindowState);
+
+			_mainWpfWindow.WindowStyle = WindowStyle.None;
+			_mainWpfWindow.WindowState = WindowState.Maximized;
+			_isFullScreen = true;
+
+			return true;
+		}
+
+		public void ExitFullScreenMode()
+		{
+			if (!_isFullScreen)
+			{
+				return;
+			}
+
+			_isFullScreen = false;
+			_mainWpfWindow.WindowStyle = _previousModes.WindowStyle;
+			_mainWpfWindow.WindowState = _previousModes.WindowState;
+		}
 	}
 }
