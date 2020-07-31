@@ -7,27 +7,46 @@ using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using WpfApplication = System.Windows.Application;
 using WpfWindow = System.Windows.Window;
 using System.Threading;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
 using Windows.UI.Input;
 using MouseDevice = System.Windows.Input.MouseDevice;
+using System.Reflection;
 
 namespace Uno.UI.Skia.Platform
 {
 	public class WpfUIElementPointersSupport : ICoreWindowExtension
 	{
-		private CoreWindow _owner;
-		private ICoreWindowEvents _ownerEvents;
-		private WpfWindow _mainWpfWindow;
-		private WpfHost _host;
+		private readonly ICoreWindowEvents _ownerEvents;
+		private readonly WpfHost _host;
 
 		private static int _currentFrameId;
+		private HwndSource _hwndSource;
+
+		// Win32 constants
+		private const int WM_MOUSEWHEEL = 0x020A;
+		private const int WM_MOUSEHWHEEL = 0x020E;
+		private const int WM_DPICHANGED = 0x02E0;
+
+		[Flags]
+		private enum MouseModifierKeys : int
+		{
+			MK_LBUTTON = 0x0001,
+			MK_RBUTTON = 0x0002,
+			MK_SHIFT = 0x0004,
+			MK_CONTROL = 0x0008,
+			MK_MBUTTON = 0x0010,
+			MK_XBUTTON1 = 0x0020,
+			MK_XBUTTON2 = 0x0040,
+		};
+
 
 		public WpfUIElementPointersSupport(object owner)
 		{
-			_owner = (CoreWindow)owner;
 			_ownerEvents = (ICoreWindowEvents)owner;
 
-			_mainWpfWindow = WpfApplication.Current.MainWindow;
 			_host = WpfHost.Current;
 
 			_host.MouseEnter += HostOnMouseEnter;
@@ -35,28 +54,34 @@ namespace Uno.UI.Skia.Platform
 			_host.MouseMove += HostOnMouseMove;
 			_host.MouseDown += HostOnMouseDown;
 			_host.MouseUp += HostOnMouseUp;
-			_host.MouseWheel += HostOnMouseWheel;
 
+			// Hook for native events
+			_host.Loaded += HookNative;
+
+			void HookNative(object sender, RoutedEventArgs e)
+			{
+				_host.Loaded -= HookNative;
+
+				var win = Window.GetWindow(_host);
+				var fromDependencyObject = PresentationSource.FromDependencyObject(win);
+				_hwndSource = fromDependencyObject as HwndSource;
+				_hwndSource?.AddHook(OnWmMessage);
+			}
 		}
 
 		private static uint GetNextFrameId() => (uint)Interlocked.Increment(ref _currentFrameId);
 
-		private static PointerPointProperties BuildPointerProperties(MouseEventArgs args, int wheelDelta = 0)
-		{
-			var properties = new PointerPointProperties
+		private static PointerPointProperties BuildPointerProperties(MouseEventArgs args) =>
+			new PointerPointProperties
 			{
 				IsLeftButtonPressed = args.LeftButton == MouseButtonState.Pressed,
+				IsMiddleButtonPressed = args.MiddleButton == MouseButtonState.Pressed,
 				IsRightButtonPressed = args.RightButton == MouseButtonState.Pressed,
-				IsPrimary = true
+				IsXButton1Pressed = args.XButton1 == MouseButtonState.Pressed,
+				IsXButton2Pressed = args.XButton2 == MouseButtonState.Pressed,
+				IsPrimary = true,
+				IsInRange = true,
 			};
-
-			if (wheelDelta != 0)
-			{
-				properties.MouseWheelDelta = -wheelDelta / 10;
-			}
-
-			return properties;
-		}
 
 		private static PointerDevice GetPointerDevice(MouseEventArgs args)
 		{
@@ -75,6 +100,7 @@ namespace Uno.UI.Skia.Platform
 			{
 				var position = args.GetPosition(_host);
 
+				var properties = BuildPointerProperties(args);
 				_ownerEvents.RaisePointerEntered(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
@@ -84,8 +110,8 @@ namespace Uno.UI.Skia.Platform
 							pointerId: 0,
 							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
 							position: new Windows.Foundation.Point(position.X, position.Y),
-							isInContact: false,
-							properties: BuildPointerProperties(args)
+							isInContact: properties.HasPressedButton,
+							properties: properties
 						)
 					)
 				);
@@ -102,6 +128,7 @@ namespace Uno.UI.Skia.Platform
 			{
 				var position = args.GetPosition(_host);
 
+				var properties = BuildPointerProperties(args);
 				_ownerEvents.RaisePointerExited(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
@@ -111,8 +138,8 @@ namespace Uno.UI.Skia.Platform
 							pointerId: 0,
 							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
 							position: new Windows.Foundation.Point(position.X, position.Y),
-							isInContact: false,
-							properties: BuildPointerProperties(args)
+							isInContact: properties.HasPressedButton,
+							properties: properties
 						)
 					)
 				);
@@ -129,6 +156,7 @@ namespace Uno.UI.Skia.Platform
 			{
 				var position = args.GetPosition(_host);
 
+				var properties = BuildPointerProperties(args);
 				_ownerEvents.RaisePointerMoved(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
@@ -138,8 +166,8 @@ namespace Uno.UI.Skia.Platform
 							pointerId: 0,
 							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
 							position: new Windows.Foundation.Point(position.X, position.Y),
-							isInContact: false,
-							properties: BuildPointerProperties(args)
+							isInContact: properties.HasPressedButton,
+							properties: properties
 						)
 					)
 				);
@@ -165,7 +193,7 @@ namespace Uno.UI.Skia.Platform
 							pointerId: 0,
 							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
 							position: new Windows.Foundation.Point(position.X, position.Y),
-							isInContact: false,
+							isInContact: true,
 							properties: BuildPointerProperties(args)
 						)
 					)
@@ -183,6 +211,7 @@ namespace Uno.UI.Skia.Platform
 			{
 				var position = args.GetPosition(_host);
 
+				var properties = BuildPointerProperties(args);
 				_ownerEvents.RaisePointerReleased(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
@@ -192,8 +221,8 @@ namespace Uno.UI.Skia.Platform
 							pointerId: 0,
 							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
 							position: new Windows.Foundation.Point(position.X, position.Y),
-							isInContact: false,
-							properties: BuildPointerProperties(args)
+							isInContact: properties.HasPressedButton,
+							properties: properties
 						)
 					)
 				);
@@ -204,31 +233,66 @@ namespace Uno.UI.Skia.Platform
 			}
 		}
 
-		private void HostOnMouseWheel(object sender, MouseWheelEventArgs args)
+		private IntPtr OnWmMessage(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam, ref bool handled)
 		{
-			try
-			{
-				var position = args.GetPosition(_host);
+			static short GetLoWord(int i) => (short)(i & 0xFFFF);
+			static short GetHiWord(int i) => (short)(i >> 16);
 
-				_ownerEvents.RaisePointerWheelChanged(
-					new PointerEventArgs(
-						new Windows.UI.Input.PointerPoint(
-							frameId: GetNextFrameId(),
-							timestamp: (uint)args.Timestamp,
-							device: GetPointerDevice(args),
-							pointerId: 0,
-							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
-							position: new Windows.Foundation.Point(position.X, position.Y),
-							isInContact: false,
-							properties: BuildPointerProperties(args, args.Delta)
-						)
-					)
-				);
-			}
-			catch (Exception e)
+			switch (msg)
 			{
-				this.Log().Error("Failed to raise PointerWheelChanged", e);
+				case WM_DPICHANGED:
+					break;
+				case WM_MOUSEHWHEEL:
+				case WM_MOUSEWHEEL:
+				{
+					var keys = (MouseModifierKeys)wparam;
+
+					// Horizontal Mouse wheel is also supported by holding SHIFT key
+					// That's a very usual practice on most OS & applications
+					var isHorizontalMouseWheel = msg == WM_MOUSEHWHEEL || keys.HasFlag(MouseModifierKeys.MK_SHIFT);
+
+					// Vertical: https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mousewheel
+					// Horizontal: https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mousehwheel
+
+					var l = (int)lparam;
+					var screenPosition = new Point(GetLoWord(l), GetHiWord(l));
+					var wpfPosition = _host.PointFromScreen(screenPosition);
+					var position = new Windows.Foundation.Point(wpfPosition.X, wpfPosition.Y);
+
+					var properties = new PointerPointProperties
+					{
+						IsLeftButtonPressed = keys.HasFlag(MouseModifierKeys.MK_LBUTTON),
+						IsMiddleButtonPressed = keys.HasFlag(MouseModifierKeys.MK_MBUTTON),
+						IsRightButtonPressed = keys.HasFlag(MouseModifierKeys.MK_RBUTTON),
+						IsXButton1Pressed = keys.HasFlag(MouseModifierKeys.MK_XBUTTON1),
+						IsXButton2Pressed = keys.HasFlag(MouseModifierKeys.MK_XBUTTON2),
+						IsHorizontalMouseWheel = isHorizontalMouseWheel,
+						IsPrimary = true,
+						IsInRange = true,
+						MouseWheelDelta = -((int)wparam >> 16) / 10
+					};
+
+
+					_ownerEvents.RaisePointerWheelChanged(
+						new PointerEventArgs(
+							new Windows.UI.Input.PointerPoint(
+								frameId: GetNextFrameId(),
+								timestamp: (uint)Environment.TickCount,
+								device: PointerDevice.For(PointerDeviceType.Mouse),
+								pointerId: 0,
+								rawPosition: position,
+								position: position,
+								isInContact: properties.HasPressedButton,
+								properties: properties
+							)
+						)
+					);
+
+					break;
+				}
 			}
+
+			return IntPtr.Zero;
 		}
 	}
 }
