@@ -20,11 +20,7 @@ namespace Windows.UI.Composition
 					{
 						TryCreateFillPaint();
 
-						if (FillBrush is CompositionColorBrush fill)
-						{
-							_fillPaint.Color = fill.Color.ToSKColor(Compositor.CurrentOpacity);
-
-						}
+						FillBrush.UpdatePaint(_fillPaint);
 
 						surface.Canvas.DrawPath(geometrySource.Geometry, _fillPaint);
 					}
@@ -52,6 +48,7 @@ namespace Windows.UI.Composition
 				}
 			}
 		}
+
 
 		private void TryCreateStrokePaint()
 		{
