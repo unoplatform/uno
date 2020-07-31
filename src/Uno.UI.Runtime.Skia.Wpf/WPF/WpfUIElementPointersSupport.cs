@@ -288,6 +288,7 @@ namespace Uno.UI.Skia.Platform
 						)
 					);
 
+					handled = true;
 					break;
 				}
 			}
