@@ -26,7 +26,7 @@ namespace Windows.UI.Composition
 			get => transformMatrix; set
 			{
 				transformMatrix = value;
-				Compositor.InvalidateRender();
+				Compositor?.InvalidateRender();
 			}
 		}
 		public Vector3 Offset
@@ -36,7 +36,7 @@ namespace Windows.UI.Composition
 			{
 				_offset = value;
 				OnOffsetChanged(value);
-				Compositor.InvalidateRender();
+				Compositor?.InvalidateRender();
 			}
 		}
 
@@ -47,7 +47,7 @@ namespace Windows.UI.Composition
 			get => isVisible; set
 			{
 				isVisible = value;
-				Compositor.InvalidateRender();
+				Compositor?.InvalidateRender();
 			}
 		}
 
@@ -59,7 +59,7 @@ namespace Windows.UI.Composition
 			set
 			{
 				_centerPoint = value; OnCenterPointChanged(value);
-				Compositor.InvalidateRender();
+				Compositor?.InvalidateRender();
 			}
 		}
 
@@ -71,7 +71,7 @@ namespace Windows.UI.Composition
 			set
 			{
 				_scale = value; OnScaleChanged(value);
-				Compositor.InvalidateRender();
+				Compositor?.InvalidateRender();
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Windows.UI.Composition
 			set
 			{
 				_rotationAngleInDegrees = value; OnRotationAngleInDegreesChanged(value);
-				Compositor.InvalidateRender();
+				Compositor?.InvalidateRender();
 			}
 		}
 
@@ -95,7 +95,7 @@ namespace Windows.UI.Composition
 			set
 			{
 				_size = value; OnSizeChanged(value);
-				Compositor.InvalidateRender();
+				Compositor?.InvalidateRender();
 			}
 		}
 
@@ -106,7 +106,7 @@ namespace Windows.UI.Composition
 			get => opacity; set
 			{
 				opacity = value;
-				Compositor.InvalidateRender();
+				Compositor?.InvalidateRender();
 			}
 		}
 		public Vector3 RotationAxis
@@ -115,7 +115,7 @@ namespace Windows.UI.Composition
 			set
 			{
 				_rotationAxis = value; OnRotationAxisChanged(value);
-				Compositor.InvalidateRender();
+				Compositor?.InvalidateRender();
 			}
 		}
 
