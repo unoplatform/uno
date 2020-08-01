@@ -19,6 +19,12 @@ namespace Windows.Foundation.Metadata
 					// See https://docs.microsoft.com/en-us/uwp/extension-sdks/windows-universal-sdk
 					return majorVersion <= 6; // SDK 10.0.17134.1
 
+				case "Uno.WinUI":
+#if HAS_UNO_WINUI
+					return true;
+#else
+					return false;
+#endif
 				default:
 					return false;
 			}
