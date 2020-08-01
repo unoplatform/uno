@@ -12,7 +12,7 @@
 					xmlns:android="http://uno.ui/android"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
-					xmlns:toolkit="using:Uno.UI.Toolkit"
+					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					xmlns:legacy="using:Uno.UI.Controls.Legacy"
 					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps"
@@ -668,7 +668,8 @@
 
 						<Grid Grid.Row="0"
 							  x:Name="AcceptDismissHostGrid"
-							  Height="44">
+							  Height="44"
+							  uBehaviors:InternalVisibleBoundsPadding.PaddingMask="Left">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />
@@ -773,7 +774,8 @@
 
 						<Grid Grid.Row="0"
 							  x:Name="AcceptDismissHostGrid"
-							  Height="44">
+							  Height="44"
+							  uBehaviors:InternalVisibleBoundsPadding.PaddingMask="Left">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />
