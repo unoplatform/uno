@@ -164,11 +164,15 @@ namespace Windows.UI.Xaml.Controls
 				//We only need to set a background if the drawArea is non-zero
 				if (!drawArea.HasZeroArea())
 				{
-					var imageBrushBackground = background as ImageBrush;
-					if (imageBrushBackground != null)
+					if (background is ImageBrush imageBrushBackground)
 					{
 						var setBackground = DispatchSetImageBrushAsBackground(view, imageBrushBackground, drawArea, onImageSet);
 						disposables.Add(setBackground);
+					}
+					else if (background is AcrylicBrush acrylicBrush)
+					{
+						var apply = acrylicBrush.Apply(view);
+						disposables.Add(apply);
 					}
 					else
 					{

@@ -38,6 +38,7 @@ using Math = System.Math;
 
 using Uno.Extensions;
 using Uno.Logging;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Media
 {
@@ -52,7 +53,7 @@ namespace Uno.UI.Xaml.Media
      */
 	internal class RealtimeBlurView : View
 	{
-		private static int RealtimeBlurViewInstanceCount;
+		//private static int RealtimeBlurViewInstanceCount;
 
 		private int _subscriptionCount;
 
@@ -65,8 +66,6 @@ namespace Uno.UI.Xaml.Media
 		private float mCornerRadius; // default 0
 
 		private readonly IBlurImpl mBlurImpl;
-
-		private readonly string _formsId;
 
 		private bool mDirty;
 
@@ -97,13 +96,12 @@ namespace Uno.UI.Xaml.Media
 
 		private static int BLUR_IMPL;
 
-		public RealtimeBlurView(Context context, string formsId)
+		public RealtimeBlurView(Context context)
 			: base(context)
 		{
 			mBlurImpl = GetBlurImpl(); // provide your own by override getBlurImpl()
 			mPaint = new Paint();
 
-			_formsId = formsId;
 			_isContainerShown = true;
 			_autoUpdate = true;
 
@@ -295,7 +293,7 @@ namespace Uno.UI.Xaml.Media
 								mDecorView.PostInvalidate();
 							}
 						},
-					AndroidAcrylicRenderer.BlurProcessingDelayMilliseconds);
+					AcrylicBrush.BlurProcessingDelayMilliseconds);
 			}
 			else
 			{
@@ -350,7 +348,7 @@ namespace Uno.UI.Xaml.Media
 
 					SubscribeToPreDraw(mDecorView);
 				},
-				AndroidAcrylicRenderer.BlurAutoUpdateDelayMilliseconds);
+				AcrylicBrush.BlurAutoUpdateDelayMilliseconds);
 		}
 
 		private void DisableAutoUpdate()
@@ -535,7 +533,7 @@ namespace Uno.UI.Xaml.Media
 				{
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
-						this.Log().Debug($"OnPreDraw(formsId: {blurView._formsId}) => calling draw on decor");
+						this.Log().Debug($"OnPreDraw() => calling draw on decor");
 					}
 
 					bool redrawBitmap = blurView.mBlurredBitmap != oldBmp;
@@ -571,14 +569,14 @@ namespace Uno.UI.Xaml.Media
 					{
 						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 						{
-							this.Log().Debug($"OnPreDraw(formsId: {blurView._formsId}) => in catch StopException");
+							this.Log().Debug($"OnPreDraw() => in catch StopException");
 						}
 					}
 					catch (Exception)
 					{
 						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 						{
-							this.Log().Debug($"OnPreDraw(formsId: {blurView._formsId}) => in catch global exception");
+							this.Log().Debug($"OnPreDraw() => in catch global exception");
 						}
 					}
 					finally
@@ -650,7 +648,7 @@ namespace Uno.UI.Xaml.Media
 			if (mIsRendering)
 			{
 				// Quit here, don't draw views above me
-				if (AndroidAcrylicRenderer.ThrowStopExceptionOnDraw)
+				if (AcrylicBrush.ThrowStopExceptionOnDraw)
 				{
 					throw STOP_EXCEPTION;
 				}
@@ -708,7 +706,7 @@ namespace Uno.UI.Xaml.Media
 				mPaint.Reset();
 				mPaint.AntiAlias = true;
 				BitmapShader shader = new BitmapShader(blurredBitmap, Shader.TileMode.Clamp, Shader.TileMode.Clamp);
-				Matrix matrix = new Matrix();
+				Android.Graphics.Matrix matrix = new Android.Graphics.Matrix();
 				matrix.PostScale(mRectF.Width() / blurredBitmap.Width, mRectF.Height() / blurredBitmap.Height);
 				shader.SetLocalMatrix(matrix);
 				mPaint.SetShader(shader);

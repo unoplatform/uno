@@ -14,6 +14,9 @@ using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
+using Uno.UI.Controls;
+using Uno.UI;
+using Android.Views;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -25,177 +28,95 @@ namespace Windows.UI.Xaml.Media
 		private GradientDrawable _mainDrawable;
 		private GradientDrawable _acrylicLayer;
 
-		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+		protected void UpdateProperties()
 		{
-			switch (e.PropertyName)
-			{
-				case nameof(MaterialFrame.CornerRadius):
-					UpdateCornerRadius();
-					base.OnElementPropertyChanged(sender, e);
-					break;
-
-				case nameof(MaterialFrame.Elevation):
-					UpdateElevation();
-					break;
-
-				case nameof(MaterialFrame.LightThemeBackgroundColor):
-					UpdateLightThemeBackgroundColor();
-					break;
-
-				case nameof(MaterialFrame.AcrylicGlowColor):
-					UpdateAcrylicGlowColor();
-					break;
-
-				case nameof(MaterialFrame.AndroidBlurOverlayColor):
-					UpdateAndroidBlurOverlayColor();
-					break;
-
-				case nameof(MaterialFrame.AndroidBlurRadius):
-					UpdateAndroidBlurRadius();
-					break;
-
-				case nameof(MaterialFrame.AndroidBlurRootElement):
-					UpdateAndroidBlurRootElement();
-					break;
-
-				case nameof(MaterialFrame.MaterialTheme):
-					UpdateMaterialTheme();
-					break;
-
-				case nameof(MaterialFrame.MaterialBlurStyle):
-					UpdateMaterialBlurStyle();
-					break;
-
-				default:
-					base.OnElementPropertyChanged(sender, e);
-					break;
-			}
+			UpdateCornerRadius();
+			UpdateAcrylicGlowColor();
+			UpdateAndroidBlurOverlayColor();
+			UpdateAndroidBlurRadius();
+			//UpdateAndroidBlurRootElement();
+			UpdateMaterialBlurStyle();
 		}
 
-		protected override void Dispose(bool disposing)
+		protected void Cleanup(ViewGroup view)
 		{
-			if (disposing)
-			{
-				MaterialFrame?.Unsubscribe();
-				Destroy();
-
-				_mainDrawable = null;
-
-				_acrylicLayer?.Dispose();
-				_acrylicLayer = null;
-			}
-
-			base.Dispose(disposing);
-		}
-
-		protected override void OnElementChanged(ElementChangedEventArgs<Frame> e)
-		{
-			base.OnElementChanged(e);
-
-			((MaterialFrame)e.OldElement)?.Unsubscribe();
-			Destroy();
-
-			if (e.NewElement == null)
-			{
-				return;
-			}
-
-			_mainDrawable = (GradientDrawable)Background;
-
-			UpdateMaterialTheme();
-		}
-
-		private void Destroy()
-		{
+			//TODO:
+			//MaterialFrame?.Unsubscribe();
 			_mainDrawable = null;
 
-			DestroyBlur();
+			DestroyBlur(view);
+
+			_acrylicLayer?.Dispose();
+			_acrylicLayer = null;
+
+			_mainDrawable = null;
 
 			_acrylicLayer?.Dispose();
 			_acrylicLayer = null;
 		}
 
+		protected void OnElementChanged()
+		{
+			//TODO:
+			//MaterialFrame)e.OldElement)?.Unsubscribe();
+			//Destroy();
+
+			//if (e.NewElement == null)
+			//{
+			//	return;
+			//}
+
+			//_mainDrawable = (GradientDrawable)Background;
+
+			//UpdateMaterialTheme();
+		}
+
 		private void UpdateCornerRadius()
 		{
-			_acrylicLayer?.SetCornerRadius(ContextHelper.Current.ToPixels(MaterialFrame.CornerRadius));
-			_realtimeBlurView?.SetCornerRadius(ContextHelper.Current.ToPixels(MaterialFrame.CornerRadius));
+			//TODO
+			//_acrylicLayer?.SetCornerRadius(ContextHelper.Current.ToPixels(MaterialFrame.CornerRadius));
+			//_realtimeBlurView?.SetCornerRadius(ContextHelper.Current.ToPixels(MaterialFrame.CornerRadius));
 		}
 
-		private void UpdateElevation()
+		private void UpdateElevation(BindableView view)
 		{
-			if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark || MaterialFrame.MaterialTheme == MaterialFrame.Theme.AcrylicBlur)
-			{
-				ViewCompat.SetElevation(this, 0);
-				return;
-			}
-
-			bool isAcrylicTheme = MaterialFrame.MaterialTheme == MaterialFrame.Theme.Acrylic;
-
-			// we need to reset the StateListAnimator to override the setting of Elevation on touch down and release.
-			StateListAnimator = new Android.Animation.StateListAnimator();
-
-			// set the elevation manually
-			ViewCompat.SetElevation(this, isAcrylicTheme ? MaterialFrame.AcrylicElevation : MaterialFrame.Elevation);
-		}
-
-		private void UpdateLightThemeBackgroundColor()
-		{
-			if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark || MaterialFrame.MaterialTheme == MaterialFrame.Theme.AcrylicBlur)
-			{
-				return;
-			}
-
-			_mainDrawable.SetColor(MaterialFrame.LightThemeBackgroundColor.ToAndroid());
+			ViewCompat.SetElevation(view, 0);
 		}
 
 		private void UpdateAcrylicGlowColor()
 		{
-			_acrylicLayer?.SetColor(MaterialFrame.AcrylicGlowColor.ToAndroid());
+			Android.Graphics.Color androidColor = TintColor;
+			_acrylicLayer?.SetColor(androidColor);
 		}
 
-		private void SetAcrylicBlurTheme()
+		private void SetAcrylicBlur(BindableView view)
 		{
-			_mainDrawable.SetColor(Color.Transparent.ToAndroid());
+			_mainDrawable = new GradientDrawable();
+			_mainDrawable.SetShape(ShapeType.Rectangle);
 
-			this.SetBackground(_mainDrawable);
+			Android.Graphics.Color androidColor = Colors.Transparent;
+			_mainDrawable.SetColor(androidColor);
 
-			UpdateElevation();
+			SetBackground(view, _mainDrawable);
 
-			EnableBlur();
+			view.LayoutChange += (s,e)=> LayoutBlurView(view);
+			UpdateElevation(view);
+
+			EnableBlur(view);
 		}
 
-		private void SetAcrylicTheme()
+		private void SetBackground(BindableView view, Drawable drawable)
 		{
-			if (_acrylicLayer == null)
+			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean)
 			{
-				_acrylicLayer = new GradientDrawable();
-				_acrylicLayer.SetShape(ShapeType.Rectangle);
-			}
-
-			UpdateAcrylicGlowColor();
-			UpdateCornerRadius();
-
-			_mainDrawable.SetColor(MaterialFrame.LightThemeBackgroundColor.ToAndroid());
-
-			LayerDrawable layer = new LayerDrawable(new Drawable[] { _acrylicLayer, _mainDrawable });
-			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
-			{
-				layer.SetLayerInsetTop(1, (int)ContextHelper.Current.ToPixels(2));
+#pragma warning disable 618 // Using older method for compatibility with API 15
+				view.SetBackgroundDrawable(drawable);
+#pragma warning restore 618
 			}
 			else
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().Warn(
-						$"The Acrylic glow is only supported on android API 23 " +
-						$"or greater (starting Marshmallow)");
-				}
-				
+				view.Background = drawable;
 			}
-
-			this.SetBackground(layer);
-
-			UpdateElevation();
 		}
 	}
 }

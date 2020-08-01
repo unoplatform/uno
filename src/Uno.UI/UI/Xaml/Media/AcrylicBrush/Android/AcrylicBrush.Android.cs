@@ -1,9 +1,16 @@
-﻿namespace Windows.UI.Xaml.Media
+﻿using System;
+using Uno.Disposables;
+using Uno.UI.Controls;
+
+namespace Windows.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
     {
-        internal void Apply(UIElement owner)
-		{
+        internal IDisposable Apply(BindableView owner)
+		{			
+			SetAcrylicBlur(owner);
+			UpdateProperties();
+			return new CompositeDisposable();
 		}
     }
 }
