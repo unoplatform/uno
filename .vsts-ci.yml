@@ -46,6 +46,10 @@ jobs:
   parameters:
     vmImage: '$(windowsHostedVMImage)'
 
+- template: build/ci/.azure-devops-skia-tests.yml
+  parameters:
+    vmImage: '$(windowsHostedVMImage)'
+
 - template: build/ci/.azure-devops-wasm-uitests.yml
   parameters:
     vmImage: '$(linuxVMImage)'
@@ -70,4 +74,4 @@ jobs:
 
 - template: build/ci/.azure-devops-screenshot-compare.yml
   parameters:
-    poolName: '$(windowsScaledPool)'
+    vmImage: '$(windowsHostedVMImage)'

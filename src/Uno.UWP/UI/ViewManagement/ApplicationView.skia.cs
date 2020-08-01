@@ -7,6 +7,7 @@ using Windows.Foundation;
 using System.Globalization;
 using Uno.Foundation.Extensibility;
 using Uno.Disposables;
+using Windows.ApplicationModel;
 
 namespace Windows.UI.ViewManagement
 {

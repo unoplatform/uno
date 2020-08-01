@@ -77,8 +77,6 @@ namespace Windows.UI.Composition
 
 			var lineHeight = descent - ascent;
 
-			UpdateForeground();
-
 			var bounds = new SKRect(0, 0, (float)availableSize.Width, (float)availableSize.Height);
 			_paint.MeasureText(string.IsNullOrEmpty(_owner.Text) ? " " : _owner.Text, ref bounds);
 
@@ -107,6 +105,8 @@ namespace Windows.UI.Composition
 		{
 			if (!string.IsNullOrEmpty(_owner.Text))
 			{
+				UpdateForeground();
+
 				var metrics = _paint.FontMetrics;
 				var descent = metrics.Descent;
 				var ascent = metrics.Ascent;

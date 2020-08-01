@@ -1,3 +1,5 @@
+#nullable enable
+
 using Windows.UI;
 
 namespace Windows.UI.Composition
@@ -53,6 +55,22 @@ namespace Windows.UI.Composition
 
 		public CompositionSurfaceBrush CreateSurfaceBrush(ICompositionSurface surface)
 			=> new CompositionSurfaceBrush(this, surface);
+
+		public CompositionGeometricClip CreateGeometricClip()
+			=> new CompositionGeometricClip(this);
+		public CompositionGeometricClip CreateGeometricClip(CompositionGeometry geometry)
+			=> new CompositionGeometricClip(this) { Geometry = geometry };
+
+		public InsetClip CreateInsetClip()
+			=> new InsetClip(this);
+
+		public InsetClip CreateInsetClip(float leftInset, float topInset, float rightInset, float bottomInset)
+			=> new InsetClip(this) {
+				LeftInset = leftInset,
+				TopInset = topInset,
+				RightInset = rightInset,
+				BottomInset = bottomInset
+			};
 
 		internal void InvalidateRender() => InvalidateRenderPartial();
 

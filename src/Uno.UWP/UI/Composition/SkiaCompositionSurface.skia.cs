@@ -1,4 +1,5 @@
 ﻿#nullable enable
+
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using System;

@@ -38,6 +38,9 @@ echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emu
 
 echo $ANDROID_HOME/emulator/emulator -list-avds
 
+echo "Checking for hardware acceleration"
+$ANDROID_HOME/emulator/emulator -accel-check
+
 echo "Starting emulator"
 
 # Start emulator in background
@@ -132,4 +135,6 @@ if [ -n "`cat $UNO_TESTS_FAILED_LIST`" ]; then
 		$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/$BUILDCONFIGURATION/net47/SamplesApp.UITests.dll \
 		|| true
 fi
+
+$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log.2.txt
 

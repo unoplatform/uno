@@ -9,10 +9,10 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public abstract partial class ArbitraryShapeBase : Shape
 	{
-#pragma warning disable 649 // unused member
+#pragma warning disable 169 // unused member
 		private float _scaleX;
 		private float _scaleY;
-#pragma warning restore 649 // unused member
+#pragma warning restore 169 // unused member
 
 		private IDisposable BuildDrawableLayer() { return null; }
 

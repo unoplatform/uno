@@ -34,17 +34,15 @@ namespace Uno.UI.Runtime.Skia
 
 		private static ApplicationTheme GetWindowsTheme()
 		{
-			// Not yet working because of theme propagation issue. Uncomment to dynamically select the theme
+			var subKey = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
 
-			//var subKey = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
-
-			//if (Microsoft.Win32.Registry.CurrentUser.OpenSubKey(subKey) is RegistryKey key)
-			//{
-			//	if (key.GetValue("AppsUseLightTheme") is int useLightTheme)
-			//	{
-			//		return useLightTheme != 0 ? ApplicationTheme.Light : ApplicationTheme.Dark;
-			//	}
-			//}
+			if (Microsoft.Win32.Registry.CurrentUser.OpenSubKey(subKey) is RegistryKey key)
+			{
+				if (key.GetValue("AppsUseLightTheme") is int useLightTheme)
+				{
+					return useLightTheme != 0 ? ApplicationTheme.Light : ApplicationTheme.Dark;
+				}
+			}
 
 			return ApplicationTheme.Light;
 		}

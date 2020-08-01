@@ -35,10 +35,7 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		private Rect GetPathBoundingBox(SkiaGeometrySource2D path)
-		{
-			var bounds = path.Geometry.Bounds;
-			return new Rect(bounds.Top, bounds.Left, bounds.Width, bounds.Height);
-		}
+			=> path.Geometry.Bounds.ToRect();
 
 		private bool IsFinite(double value) => !double.IsInfinity(value);
 
@@ -62,7 +59,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			var thicknessOffset = (float)StrokeThickness / 2.0f;
-			_pathSpriteShape.Offset = LayoutRound(new Vector2((float)(renderOriginX ?? 0) + thicknessOffset, (float)(renderOriginY ?? 0) + thicknessOffset));
+			_pathSpriteShape.Offset = LayoutRound(new Vector2((float)(renderOriginX ?? 0) + thicknessOffset , (float)(renderOriginY ?? 0) + thicknessOffset));
 
 			_rectangleVisual.Shapes.Clear();
 			_rectangleVisual.Shapes.Add(_pathSpriteShape);

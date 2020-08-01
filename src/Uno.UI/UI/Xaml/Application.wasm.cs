@@ -39,7 +39,9 @@ namespace Windows.UI.Xaml
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
+
 			Current = this;
+			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}

@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -19,7 +21,7 @@ namespace Windows.UI.Composition
 				IsAntialias = true,
 			};
 
-		partial void OnBrushChangedPartial(CompositionBrush brush)
+		partial void OnBrushChangedPartial(CompositionBrush? brush)
 		{
 			_csbSubscription.Disposable = null;
 
@@ -34,27 +36,7 @@ namespace Windows.UI.Composition
 
 		private void UpdatePaint()
 		{
-			if (Brush is CompositionColorBrush b)
-			{
-				_paint.Color = b.Color.ToSKColor(Compositor.CurrentOpacity);
-			}
-			else if (Brush is CompositionSurfaceBrush csb)
-			{
-				if (csb.Surface is SkiaCompositionSurface scs)
-				{
-					var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, csb.TransformMatrix.ToSKMatrix());
-					var opacity = 255 * Compositor.CurrentOpacity;
-					var filteredImageShader = SKShader.CreateColorFilter(imageShader, SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)opacity), SKBlendMode.Multiply));
-
-					_paint.Shader = filteredImageShader;
-
-					_paint.IsAntialias = true;
-				}
-			}
-			else
-			{
-				this.Log().Error($"The brush type {Brush?.GetType()} is not supported for sprite visuals.");
-			}
+			Brush?.UpdatePaint(_paint);
 		}
 
 		internal override void Render(SKSurface surface, SKImageInfo info)
