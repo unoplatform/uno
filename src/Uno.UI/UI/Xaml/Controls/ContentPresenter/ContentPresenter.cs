@@ -53,6 +53,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
+		/// <summary>
+		/// Determines if the current ContentPresenter is hosting a native control.
+		/// </summary>
+		/// <remarks>This is used to alter the propagation of the templated parent.</remarks>
+		internal bool IsNativeHost { get; set; }
+
 		protected override bool IsSimpleLayout => true;
 
 		#region Content DependencyProperty
@@ -674,18 +680,28 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SynchronizeContentTemplatedParent()
 		{
-			if (_contentTemplateRoot is IFrameworkElement binder)
+			if (IsNativeHost)
 			{
-				var templatedParent = _contentTemplateRoot is ImplicitTextBlock
-					? this // ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
-					: (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
-
-				binder.TemplatedParent = templatedParent;
+				if (_contentTemplateRoot is IFrameworkElement binder)
+				{
+					binder.TemplatedParent = this.TemplatedParent;
+				}
 			}
-			else if (_contentTemplateRoot is DependencyObject dependencyObject)
+			else
 			{
-				// Propagate binding context correctly
-				dependencyObject.SetParent(this);
+				if (_contentTemplateRoot is IFrameworkElement binder)
+				{
+					var templatedParent = _contentTemplateRoot is ImplicitTextBlock
+						? this // ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
+						: (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
+
+					binder.TemplatedParent = templatedParent;
+				}
+				else if (_contentTemplateRoot is DependencyObject dependencyObject)
+				{
+					// Propagate binding context correctly
+					dependencyObject.SetParent(this);
+				}
 			}
 		}
 
