@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+  </PropertyGroup>
+
+    <!-- Copy Content files to the output folder like APPX packaging does. -->
+	<Target Name="AfterBuild">
+        <Copy
+        SourceFiles = "@(ContentWithTargetPath)"
+        DestinationFiles = "@(ContentWithTargetPath->'$(TargetDir)%(TargetPath)')" 
+		Condition="'%(ContentWithTargetPath.CopyToOutputDirectory)'=='Never'"/>
+	</Target>
+
+</Project>
