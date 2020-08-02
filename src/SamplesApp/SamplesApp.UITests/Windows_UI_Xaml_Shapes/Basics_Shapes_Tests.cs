@@ -52,7 +52,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			// se we increase the pixel offset tolerance to ignore it.
 			var tolerance = new PixelTolerance()
 				.WithColor(132) // We are almost only trying to detect edges
-				.WithOffset(6, 6, LocationToleranceKind.PerPixel) 
+				.WithOffset(10, 10, LocationToleranceKind.PerPixel) 
 				.Discrete(2);
 				
 			ValidateShape("Polygon", tolerance);
