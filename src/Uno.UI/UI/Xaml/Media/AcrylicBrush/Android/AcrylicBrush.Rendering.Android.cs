@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Media
 			UpdateMaterialBlurStyle();
 		}
 
-		protected void Cleanup(ViewGroup view)
+		protected void Cleanup(BindableView view)
 		{
 			//TODO:
 			//MaterialFrame?.Unsubscribe();
@@ -53,22 +53,6 @@ namespace Windows.UI.Xaml.Media
 
 			_acrylicLayer?.Dispose();
 			_acrylicLayer = null;
-		}
-
-		protected void OnElementChanged()
-		{
-			//TODO:
-			//MaterialFrame)e.OldElement)?.Unsubscribe();
-			//Destroy();
-
-			//if (e.NewElement == null)
-			//{
-			//	return;
-			//}
-
-			//_mainDrawable = (GradientDrawable)Background;
-
-			//UpdateMaterialTheme();
 		}
 
 		private void UpdateCornerRadius()
@@ -99,8 +83,9 @@ namespace Windows.UI.Xaml.Media
 
 			SetBackground(view, _mainDrawable);
 
-			view.LayoutChange += (s,e)=> LayoutBlurView(view);
+			//view.LayoutChange += (s,e)=> LayoutBlurView(view);
 			UpdateElevation(view);
+			//LayoutBlurView(view);
 
 			EnableBlur(view);
 		}

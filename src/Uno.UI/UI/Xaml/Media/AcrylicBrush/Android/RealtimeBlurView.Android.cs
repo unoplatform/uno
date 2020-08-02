@@ -1,6 +1,6 @@
 ﻿//------------------------------------------------------------------------------
 //
-// https://github.com/mmin18/RealtimeBlurView
+// https://github.com/mmin18/SharpnadoBlurView
 // Latest commit    82df352     on 24 May 2019
 //
 // Copyright 2016 Tu Yimin (http://github.com/mmin18)
@@ -51,9 +51,9 @@ namespace Uno.UI.Xaml.Media
      * <li>realtimeOverlayColor (#aaffffff)</li>
      * </ul>
      */
-	internal class RealtimeBlurView : View
+	internal class SharpnadoBlurView : View
 	{
-		//private static int RealtimeBlurViewInstanceCount;
+		//private static int SharpnadoBlurViewInstanceCount;
 
 		private int _subscriptionCount;
 
@@ -96,22 +96,23 @@ namespace Uno.UI.Xaml.Media
 
 		private static int BLUR_IMPL;
 
-		public RealtimeBlurView(Context context)
+		public SharpnadoBlurView(Context context)
 			: base(context)
 		{
 			mBlurImpl = GetBlurImpl(); // provide your own by override getBlurImpl()
 			mPaint = new Paint();
 
 			_isContainerShown = true;
-			_autoUpdate = true;
+			
 
 			preDrawListener = new PreDrawListener(this);
 
-			//RealtimeBlurViewInstanceCount++;
-			//InternalLogger.Debug("RealtimeBlurView", $"Constructor => Active instances: {RealtimeBlurViewInstanceCount}");
+			EnableAutoUpdate();
+			//SharpnadoBlurViewInstanceCount++;
+			//InternalLogger.Debug("SharpnadoBlurView", $"Constructor => Active instances: {SharpnadoBlurViewInstanceCount}");
 		}
 
-		public RealtimeBlurView(IntPtr javaReference, JniHandleOwnership transfer)
+		public SharpnadoBlurView(IntPtr javaReference, JniHandleOwnership transfer)
 			: base(javaReference, transfer)
 		{
 		}
@@ -120,8 +121,8 @@ namespace Uno.UI.Xaml.Media
 		//{
 		//    base.JavaFinalize();
 
-		//    RealtimeBlurViewInstanceCount--;
-		//    InternalLogger.Debug("RealtimeBlurView", $"JavaFinalize() => Active instances: {RealtimeBlurViewInstanceCount}");
+		//    SharpnadoBlurViewInstanceCount--;
+		//    InternalLogger.Debug("SharpnadoBlurView", $"JavaFinalize() => Active instances: {SharpnadoBlurViewInstanceCount}");
 		//}
 
 		protected IBlurImpl GetBlurImpl()
@@ -495,11 +496,11 @@ namespace Uno.UI.Xaml.Media
 
 		private class PreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
 		{
-			private readonly JniWeakReference<RealtimeBlurView> _weakBlurView;
+			private readonly JniWeakReference<SharpnadoBlurView> _weakBlurView;
 
-			public PreDrawListener(RealtimeBlurView blurView)
+			public PreDrawListener(SharpnadoBlurView blurView)
 			{
-				_weakBlurView = new JniWeakReference<RealtimeBlurView>(blurView);
+				_weakBlurView = new JniWeakReference<SharpnadoBlurView>(blurView);
 			}
 
 			public PreDrawListener(IntPtr handle, JniHandleOwnership transfer)

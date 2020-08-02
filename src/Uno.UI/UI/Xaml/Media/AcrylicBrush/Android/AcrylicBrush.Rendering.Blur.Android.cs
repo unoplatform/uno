@@ -7,6 +7,7 @@ using Android.Widget;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Controls;
 using Uno.UI.Xaml.Media;
 using View = Android.Views.View;
 
@@ -114,7 +115,7 @@ namespace Windows.UI.Xaml.Media
 			_realtimeBlurView.Layout(0, 0, width, height);
 		}
 
-		private void DestroyBlur(ViewGroup view)
+		private void DestroyBlur(BindableView view)
 		{
 			if (!_realtimeBlurView.IsNullOrDisposed())
 			{
@@ -185,9 +186,10 @@ namespace Windows.UI.Xaml.Media
 		{
 			if (IsAndroidBlurPropertySet)
 			{
-				_realtimeBlurView?.SetBlurRadius(
-					ContextHelper.Current.ToPixels(AndroidBlurRadius),
-					invalidate);
+				//TODO
+				//_realtimeBlurView?.SetBlurRadius(
+				//	ContextHelper.Current.ToPixels(AndroidBlurRadius),
+				//	invalidate);
 			}
 		}
 
@@ -198,9 +200,10 @@ namespace Windows.UI.Xaml.Media
 				return;
 			}
 
-			_realtimeBlurView.SetBlurRadius(
-				ContextHelper.Current.ToPixels(StyledBlurRadius),
-				invalidate);
+			//TODO
+			//_realtimeBlurView.SetBlurRadius(
+			//	ContextHelper.Current.ToPixels(StyledBlurRadius),
+			//	invalidate);
 
 			Android.Graphics.Color color = DarkBlurOverlayColor;
 			_realtimeBlurView.SetOverlayColor(color, invalidate);
@@ -215,7 +218,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (_realtimeBlurView == null)
 			{
-				_realtimeBlurView = new RealtimeBlurView(ContextHelper.Current);
+				_realtimeBlurView = new RealtimeBlurView(view.Context);
 			}
 
 			UpdateAndroidBlurRadius();
