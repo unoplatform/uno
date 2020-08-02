@@ -9,7 +9,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public sealed class XamlControlsResources : ResourceDictionary
+	public sealed partial class XamlControlsResources : ResourceDictionary
 	{
 		public XamlControlsResources()
 		{
