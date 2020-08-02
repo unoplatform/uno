@@ -102,7 +102,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			foreach (var testGroup in testGroups)
 			{
 				ctrl.SetDependencyPropertyValue("RunTest", string.Join(";", testGroup));
-				_app.WaitFor(() => !string.IsNullOrWhiteSpace(ctrl.GetDependencyPropertyValue<string>("TestResult")));
+				_app.WaitFor(() => !string.IsNullOrWhiteSpace(ctrl.GetDependencyPropertyValue<string>("TestResult")), timeout: TimeSpan.FromMinutes(1));
 				var testResultsRaw = ctrl.GetDependencyPropertyValue<string>("TestResult");
 
 				var testResults= testResultsRaw
