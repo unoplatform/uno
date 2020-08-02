@@ -42,5 +42,20 @@
 				</Flyout>
 			</Button.Flyout>
 		</Button>
+		<ContentControl
+			x:Name="innerFrameworkElement"
+			   x:FieldModifier="public"
+				Tag="42">
+			<ContentControl.Template>
+				<ControlTemplate TargetType="ContentControl">
+					<Border>
+						<local:NativeViewIFrameworkElement
+							x:FieldModifier="public"
+							x:Name="nativeViewIFrameworkElement01"
+							MyValue="{TemplateBinding Tag}" />
+					</Border>
+				</ControlTemplate>
+			</ContentControl.Template>
+		</ContentControl>
 	</StackPanel>
 </Page>

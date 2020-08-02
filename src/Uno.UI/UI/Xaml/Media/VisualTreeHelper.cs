@@ -174,6 +174,7 @@ namespace Windows.UI.Xaml.Media
 
 			return new ContentPresenter
 			{
+				IsNativeHost = true,
 				Content = nativeView
 			};
 		}
