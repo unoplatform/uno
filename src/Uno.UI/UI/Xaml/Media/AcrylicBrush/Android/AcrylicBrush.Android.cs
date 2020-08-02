@@ -4,6 +4,7 @@ using Android.Graphics.Drawables;
 using Android.Views;
 using Uno.Disposables;
 using Uno.UI.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -12,6 +13,12 @@ namespace Windows.UI.Xaml.Media
 		bool ready = false;
         internal IDisposable Apply(BindableView owner)
 		{
+			if(!(owner is Border))
+			{
+				throw new InvalidOperationException(
+					"AcrylicBrush can currently be applied " +
+					"to empty border only on Android");
+			}
 			View v = owner;
 			
 			if (!ready)
@@ -23,20 +30,6 @@ namespace Windows.UI.Xaml.Media
 			}
 			return new CompositeDisposable();
 
-		}
-	}
-
-	public class AcrylicDrawable : BitmapDrawable
-	{
-		public AcrylicDrawable(Android.Content.Res.Resources res, Bitmap bitmap)
-			: base(res, bitmap)
-		{
-
-		}
-
-		public override void Draw(Canvas canvas)
-		{
-			base.Draw(canvas);
 		}
 	}
 }

@@ -17,6 +17,7 @@ using Uno.Logging;
 using Uno.UI.Controls;
 using Uno.UI;
 using Android.Views;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -75,6 +76,7 @@ namespace Windows.UI.Xaml.Media
 
 		private void SetAcrylicBlur(BindableView view)
 		{
+			Border b = (Border)(view);
 			_mainDrawable = new GradientDrawable();
 			_mainDrawable.SetShape(ShapeType.Rectangle);
 

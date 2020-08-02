@@ -114,7 +114,7 @@ namespace Uno.UI.Xaml.Media
             _mBlurInput.CopyFrom(input);
             _mBlurScript.SetInput(_mBlurInput);
             _mBlurScript.ForEach(_mBlurOutput);
-			_mBlurInput.CopyTo(output);
+			_mBlurOutput.CopyTo(output);
         }
     }
 }

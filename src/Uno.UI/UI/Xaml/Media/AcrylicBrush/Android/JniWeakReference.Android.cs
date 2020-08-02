@@ -26,9 +26,6 @@ namespace Uno.UI.Xaml.Media
             return target != null;
         }
 
-        public override string ToString()
-        {
-            return $"[JniWeakReference] {_reference}";
-        }
-    }
+		public override string ToString() => $"[JniWeakReference] {_reference}";
+	}
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Android.App;
 using Android.Content;
 using Android.Graphics;
@@ -10,7 +8,6 @@ using Android.Util;
 using Android.Views;
 using Uno.Extensions;
 using Uno.Logging;
-using Uno.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Media
 {

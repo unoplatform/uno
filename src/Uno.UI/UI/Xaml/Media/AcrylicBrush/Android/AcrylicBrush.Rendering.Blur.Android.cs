@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
 using View = Android.Views.View;
 
 namespace Windows.UI.Xaml.Media
@@ -241,15 +242,16 @@ namespace Windows.UI.Xaml.Media
 				this.Log().LogInformation("Renderer::EnableBlur() => adding pre draw listener");
 			}
 
-			view.AddView(
-				_realtimeBlurView,
-				0,
-				new FrameLayout.LayoutParams(
-					ViewGroup.LayoutParams.MatchParent,
-					ViewGroup.LayoutParams.MatchParent,
-					GravityFlags.NoGravity));
-
-			LayoutBlurView(view);
+			//view.AddView(
+			//	_realtimeBlurView,
+			//	0,
+			//	new FrameLayout.LayoutParams(
+			//		ViewGroup.LayoutParams.MatchParent,
+			//		ViewGroup.LayoutParams.MatchParent,
+			//		GravityFlags.NoGravity));
+			var b = (Border)view;
+			b.Child = new ContentPresenter() { Content = _realtimeBlurView, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+			//LayoutBlurView(view);
 		}
 
 		private void DisableBlur(ViewGroup view)
