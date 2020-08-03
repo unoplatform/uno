@@ -946,10 +946,11 @@ namespace Windows.UI.Xaml
 					IsAutoPropertyInheritanceEnabled
 					|| force
 
-					// these two cases may be required in case the
+					// these cases may be required in case the
 					// graph is built in reverse (such as with the
 					// XamlReader)
 					|| _properties.HasBindings
+					|| _resourceBindings?.Count > 0
 					|| _childrenStores.Count != 0
 				)
 			)
@@ -1112,6 +1113,7 @@ namespace Windows.UI.Xaml
 		{
 			if (_resourceBindings == null || _resourceBindings.Count == 0)
 			{
+				UpdateChildResourceBindings(isThemeChangedUpdate);
 				return;
 			}
 
@@ -1145,6 +1147,19 @@ namespace Windows.UI.Xaml
 			{
 				// TryRemoveResourceBinding() will have removed the entries - we just put them straight back again.
 				_resourceBindings[kvp.Key] = kvp.Value;
+			}
+
+			UpdateChildResourceBindings(isThemeChangedUpdate);
+		}
+
+		private void UpdateChildResourceBindings(bool isThemeChangedUpdate)
+		{
+			foreach (var childStore in _childrenStores.Data)
+			{
+				if (!(childStore.ActualInstance is FrameworkElement)) // FrameworkElements are updated separately by traversing the visual tree
+				{
+					childStore.UpdateResourceBindings(isThemeChangedUpdate);
+				}
 			}
 		}
 

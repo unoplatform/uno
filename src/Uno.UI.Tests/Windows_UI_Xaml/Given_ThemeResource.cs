@@ -28,6 +28,69 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public async Task When_Visual_States_Keyframe_Theme_Changed_Reapplied()
+		{
+			var page = new ThemeResource_In_Visual_States_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			await WaitForIdle();
+
+			var control = page.VisualStatesTestControl;
+
+			await GoTo("ActiveMidground");
+
+			Assert.AreEqual(Colors.DarkGreen, (control.InnerMyControl.Midground as SolidColorBrush).Color);
+
+			await GoTo("NormalMidground");
+
+			await SwapSystemTheme();
+
+			await GoTo("ActiveMidground");
+
+			Assert.AreEqual(Colors.LightGreen, (control.InnerMyControl.Midground as SolidColorBrush).Color);
+
+			async Task GoTo(string stateName)
+			{
+				var goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
+				Assert.IsTrue(goToResult);
+				await WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		[Ignore("DoubleAnimation not supported by Uno.NET461")]
+		public async Task When_Visual_States_DoubleAnimation_Theme_Changed_Reapplied()
+		{
+			var page = new ThemeResource_In_Visual_States_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			await WaitForIdle();
+
+			var control = page.VisualStatesTestControl;
+
+			await GoTo("HighArduousness");
+
+			Assert.AreEqual(29, control.InnerMyControl.Arduousness);
+
+			await GoTo("NormalArduousness");
+
+			await SwapSystemTheme();
+
+			await GoTo("HighArduousness");
+
+			Assert.AreEqual(47, control.InnerMyControl.Arduousness);
+
+			async Task GoTo(string stateName)
+			{
+				var goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
+				Assert.IsTrue(goToResult);
+				await WaitForIdle();
+			}
+		}
+
+		[TestMethod]
 		[Ignore("To support changing an already-set value when system theme changes, we need to resolve the DP pointed to by the BindingPath in Setter.ApplyValue(). (Which can be done, but hasn't.)")]
 		public async Task When_ThemeResource_In_Visual_States_Setter_Theme_Changed()
 		{
@@ -51,11 +114,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			await SwapSystemTheme();
 			var darkPilleability = control.InnerMyControl.Pilleability;
 			Assert.AreEqual(47, darkPilleability);
-			;
+
 			void GoTo(string stateName)
 			{
-				var goToResult = false;
-				goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
+				var goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
 				Assert.IsTrue(goToResult);
 			}
 		}
@@ -76,24 +138,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				app.HostView.Children.Add(page); // On UWP the control may have been removed by another test after the async pause
 			}
 
-			GoTo("HighPilleability");
-			await WaitForIdle();
+			await GoTo("HighPilleability");
 			var lightPilleability = control.InnerMyControl.Pilleability;
 			Assert.AreEqual(29, lightPilleability);
-			GoTo("NormalPilleability");
-			await WaitForIdle();
+			await GoTo("NormalPilleability");
 			Assert.AreEqual(0, control.InnerMyControl.Pilleability);
 			await SwapSystemTheme();
-			GoTo("HighPilleability");
-			await WaitForIdle();
+			await GoTo("HighPilleability");
 			var darkPilleability = control.InnerMyControl.Pilleability;
 			Assert.AreEqual(47, darkPilleability);
-			;
-			void GoTo(string stateName)
+
+			async Task GoTo(string stateName)
 			{
-				var goToResult = false;
-				goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
+				var goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
 				Assert.IsTrue(goToResult);
+				await WaitForIdle();
 			}
 		}
 

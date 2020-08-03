@@ -5,12 +5,17 @@
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Light">
 			<x:Double x:Key="HighPilleabilityResourceValue">29</x:Double>
+			<SolidColorBrush x:Key="AmiabilityColorBrush"
+							 Color="DarkGreen" />
 		</ResourceDictionary>
 		<ResourceDictionary x:Key="Dark">
 			<x:Double x:Key="HighPilleabilityResourceValue">47</x:Double>
+			<SolidColorBrush x:Key="AmiabilityColorBrush"
+							 Color="LightGreen" />
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
-	<Style TargetType="local:StylesTestControl" x:Key="VisualStatesTestStyle">
+	<Style TargetType="local:StylesTestControl"
+		   x:Key="VisualStatesTestStyle">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="local:StylesTestControl">
@@ -29,6 +34,29 @@
 										<Setter Target="MyControl.Pilleability"
 												Value="{ThemeResource HighPilleabilityResourceValue}" />
 									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="MidgroundSetterStates">
+								<VisualState x:Name="NormalMidground" />
+								<VisualState x:Name="ActiveMidground">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="MyControl"
+																	   Storyboard.TargetProperty="Midground">
+											<DiscreteObjectKeyFrame KeyTime="0"
+																	Value="{ThemeResource AmiabilityColorBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="ArduousnessSetterStates">
+								<VisualState x:Name="NormalArduousness" />
+								<VisualState x:Name="HighArduousness">
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="MyControl"
+														 Storyboard.TargetProperty="Arduousness"
+														 To="{ThemeResource HighPilleabilityResourceValue}"
+														 Duration="0" />
+									</Storyboard>
 								</VisualState>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
