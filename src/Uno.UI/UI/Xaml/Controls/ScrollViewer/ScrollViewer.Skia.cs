@@ -30,5 +30,21 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateZoomedContentAlignment() { }
 
+
+		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		{
+			if (_presenter is ScrollContentPresenter presenter)
+			{
+				if (horizontalOffset.HasValue)
+				{
+					presenter.SetHorizontalOffset(horizontalOffset.Value);
+				}
+
+				if (verticalOffset.HasValue)
+				{
+					presenter.SetVerticalOffset(verticalOffset.Value);
+				}
+			}
+		}
 	}
 }
