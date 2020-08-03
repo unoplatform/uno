@@ -82,6 +82,14 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
+		/// Get the HTML attribute value of an element
+		/// </summary>
+		public static string GetHtmlAttribute(this UIElement element, string name)
+		{
+			return WindowManagerInterop.GetAttribute(element.HtmlId, name);
+		}
+
+		/// <summary>
 		/// Clear/remove a HTML attribute from an element.
 		/// </summary>
 		public static void ClearHtmlAttribute(this UIElement element, string name)
