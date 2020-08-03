@@ -1,3 +1,5 @@
+#nullable enable
+
 #if __IOS__
 using System;
 

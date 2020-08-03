@@ -61,5 +61,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			page.flyoutHostButton.Flyout.Hide();
 			TestServices.WindowHelper.WindowContent = null;
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Inner_IFrameworkElement()
+		{
+			var page = new NativeView_Page();
+
+			TestServices.WindowHelper.WindowContent = page;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Validates that the templated parent of the native child is the immediate parent's one, not the one from
+			// the outer parent.
+			var nativeViewIFrameworkElement01 = page.innerFrameworkElement.FindFirstChild<NativeViewIFrameworkElement>();
+			Assert.IsNotNull(nativeViewIFrameworkElement01);
+			Assert.AreEqual(page.innerFrameworkElement.Tag, nativeViewIFrameworkElement01.MyValue);
+		}
 	}
 }

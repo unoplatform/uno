@@ -1747,8 +1747,11 @@
 
 			<Member fullName="System.Void Windows.UI.Composition.CompositionShape..ctor()" reason="reference API does not contain this API" />
 			<Member fullName="System.Void Windows.UI.Composition.CompositionSurfaceBrush..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionClip..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.CompositionGeometricClip..ctor()" reason="reference API does not contain this API" />
+			<Member fullName="System.Void Windows.UI.Composition.InsetClip..ctor()" reason="reference API does not contain this API" />
 
-		  <!-- End Skia Import -->
+			<!-- End Skia Import -->
 
 			<Member
 				fullName="System.Void Windows.Devices.Midi.MidiMessageReceivedEventArgs..ctor()"

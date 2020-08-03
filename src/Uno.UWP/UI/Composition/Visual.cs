@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Numerics;
 using Windows.UI.Core;
@@ -18,8 +20,10 @@ namespace Windows.UI.Composition
 
 		internal Visual(Compositor compositor) : base(compositor)
 		{
-
+			InitializePartial();
 		}
+
+		partial void InitializePartial();
 
 		public Matrix4x4 TransformMatrix
 		{
@@ -121,6 +125,6 @@ namespace Windows.UI.Composition
 
 		partial void OnRotationAxisChanged(Vector3 value);
 
-		public ContainerVisual Parent { get; set; }
+		public ContainerVisual? Parent { get; set; }
 	}
 }

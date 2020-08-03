@@ -1,4 +1,6 @@
-﻿using SkiaSharp;
+﻿#nullable enable
+
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,11 +10,11 @@ namespace Windows.UI.Composition
 {
 	public class SkiaGeometrySource2D : IGeometrySource2D
 	{
-		public SkiaGeometrySource2D(SKPath source = null)
+		public SkiaGeometrySource2D(SKPath? source = null)
 		{
 			Geometry = new SKPath();
 		}
 
-		public SKPath Geometry { get; }
+		public SKPath? Geometry { get; }
 	}
 }

@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -23,13 +24,13 @@ namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
-		private static Window _current;
-		private Grid _window;
+		private static Window? _current;
+		private Grid? _window;
 		// private PopupRoot _popupRoot;
 		// private ScrollViewer _rootScrollViewer;
-		private Border _rootBorder;
-		private PopupRoot _popupRoot;
-		private UIElement _content;
+		private Border? _rootBorder;
+		private PopupRoot? _popupRoot;
+		private UIElement? _content;
 
 		public Window()
 		{
@@ -45,7 +46,7 @@ namespace Windows.UI.Xaml
 			CoreWindow.SetInvalidateRender(QueueInvalidateRender);
 		}
 
-		internal Action InvalidateRender;
+		internal static Action InvalidateRender = () => { };
 		private bool _renderQueued = false;
 
 		internal void QueueInvalidateRender()
@@ -129,7 +130,7 @@ namespace Windows.UI.Xaml
 
         public Compositor Compositor { get; }
 
-		internal Grid RootElement => _window;
+		internal Grid RootElement => _window!;
 
 		partial void InternalActivate()
 		{
@@ -154,10 +155,13 @@ namespace Windows.UI.Xaml
 				Compositor.RootVisual = _window.Visual;
 			}
 
-			_rootBorder.Child = _content = content;
+			if (_rootBorder != null)
+			{
+				_rootBorder.Child = _content = content;
+			}
 		}
 
-		private UIElement InternalGetContent() => _content;
+		private UIElement InternalGetContent() => _content!;
 
 		private static Window InternalGetCurrentWindow()
 		{
@@ -176,21 +180,27 @@ namespace Windows.UI.Xaml
 				this.Log().Debug($"Creating popup");
 			}
 
-			var popupPanel = popup.PopupPanel;
-			_popupRoot.Children.Add(popupPanel);
+			if (_popupRoot != null)
+			{
+				var popupPanel = popup.PopupPanel;
+				_popupRoot.Children.Add(popupPanel);
 
-			return new CompositeDisposable(
-				Disposable.Create(() => {
-
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				return new CompositeDisposable(
+					Disposable.Create(() =>
 					{
-						this.Log().Debug($"Closing popup");
-					}
 
-					_popupRoot.Children.Remove(popupPanel);
-				}),
-				VisualTreeHelper.RegisterOpenPopup(popup)
-			);
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"Closing popup");
+						}
+
+						_popupRoot.Children.Remove(popupPanel);
+					}),
+					VisualTreeHelper.RegisterOpenPopup(popup)
+				);
+			}
+
+			return new CompositeDisposable();
 		}
 	}
 }

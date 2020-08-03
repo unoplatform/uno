@@ -53,6 +53,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
+		/// <summary>
+		/// Determines if the current ContentPresenter is hosting a native control.
+		/// </summary>
+		/// <remarks>This is used to alter the propagation of the templated parent.</remarks>
+		internal bool IsNativeHost { get; set; }
+
 		protected override bool IsSimpleLayout => true;
 
 		#region Content DependencyProperty
@@ -674,18 +680,32 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SynchronizeContentTemplatedParent()
 		{
-			if (_contentTemplateRoot is IFrameworkElement binder)
+			if (IsNativeHost)
 			{
-				var templatedParent = _contentTemplateRoot is ImplicitTextBlock
-					? this // ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
-					: (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
-
-				binder.TemplatedParent = templatedParent;
+				// In this case, the ContentPresenter is not used as part of the child of a
+				// templated control, and we must not take the outer templated parent, but rather
+				// the immediate template parent (as if the native view was not wrapped).
+				// Needs to be reevaluated with https://github.com/unoplatform/uno/issues/1621
+				if (_contentTemplateRoot is IFrameworkElement binder)
+				{
+					binder.TemplatedParent = this.TemplatedParent;
+				}
 			}
-			else if (_contentTemplateRoot is DependencyObject dependencyObject)
+			else
 			{
-				// Propagate binding context correctly
-				dependencyObject.SetParent(this);
+				if (_contentTemplateRoot is IFrameworkElement binder)
+				{
+					var templatedParent = _contentTemplateRoot is ImplicitTextBlock
+						? this // ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
+						: (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
+
+					binder.TemplatedParent = templatedParent;
+				}
+				else if (_contentTemplateRoot is DependencyObject dependencyObject)
+				{
+					// Propagate binding context correctly
+					dependencyObject.SetParent(this);
+				}
 			}
 		}
 

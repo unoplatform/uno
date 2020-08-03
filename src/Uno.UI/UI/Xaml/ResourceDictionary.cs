@@ -64,9 +64,11 @@ namespace Windows.UI.Xaml
 			return _values.ContainsKey(keyName);
 		}
 
+		/// <remarks>This method does not exist in C# UWP API
+		/// and can be removed as breaking change later.</remarks>
 		public bool Insert(object key, object value)
 		{
-			_values[key] = value;
+			Set(key, value);
 			return true;
 		}
 
@@ -129,7 +131,20 @@ namespace Windows.UI.Xaml
 
 				return value;
 			}
-			set => Add(key, value);
+			set => Set(key, value);
+		}
+
+		private void Set(object key, object value)
+		{
+			if (value is ResourceInitializer resourceInitializer)
+			{
+				_hasUnmaterializedItems = true;
+				_values[key] = new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer);
+			}
+			else
+			{
+				_values[key] = value;
+			}
 		}
 
 		/// <summary>

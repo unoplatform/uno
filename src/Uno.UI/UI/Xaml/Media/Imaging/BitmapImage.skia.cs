@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Transactions;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.Graphics.Display;
 using Windows.UI.Composition;
 
 namespace Windows.UI.Xaml.Media.Imaging
@@ -40,10 +42,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 					{
 						var path = UriSource.PathAndQuery;
 
-						var filePath = global::System.IO.Path.Combine(
-							Windows.Application­Model.Package.Current.Installed­Location.Path,
-							path.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
-						);
+						var filePath = GetScaledPath(path);
 
 						using var fileStream = File.OpenRead(filePath);
 
@@ -88,6 +87,57 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 
 			return base.TryOpenSourceSync(targetWidth, targetHeight, out image);
+		}
+
+		private static int[] KnownScales =
+		{
+			(int)ResolutionScale.Scale100Percent,
+			(int)ResolutionScale.Scale120Percent,
+			(int)ResolutionScale.Scale125Percent,
+			(int)ResolutionScale.Scale140Percent,
+			(int)ResolutionScale.Scale150Percent,
+			(int)ResolutionScale.Scale160Percent,
+			(int)ResolutionScale.Scale175Percent,
+			(int)ResolutionScale.Scale180Percent,
+			(int)ResolutionScale.Scale200Percent,
+			(int)ResolutionScale.Scale225Percent,
+			(int)ResolutionScale.Scale250Percent,
+			(int)ResolutionScale.Scale300Percent,
+			(int)ResolutionScale.Scale350Percent,
+			(int)ResolutionScale.Scale400Percent,
+			(int)ResolutionScale.Scale450Percent,
+			(int)ResolutionScale.Scale500Percent
+		};
+
+		private static string GetScaledPath(string rawPath)
+		{
+			var originalLocalPath =
+				Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path,
+					 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
+				);
+
+			var resolutionScale = (int)DisplayInformation.GetForCurrentView().ResolutionScale;
+
+			var baseDirectory = Path.GetDirectoryName(originalLocalPath);
+			var baseFileName = Path.GetFileNameWithoutExtension(originalLocalPath);
+			var baseExtension = Path.GetExtension(originalLocalPath);
+
+			for (var i = KnownScales.Length - 1; i >= 0; i--)
+			{
+				var probeScale = KnownScales[i];
+
+				if (resolutionScale >= probeScale)
+				{
+					var filePath = Path.Combine(baseDirectory, $"{baseFileName}.scale-{probeScale}{baseExtension}");
+
+					if (File.Exists(filePath))
+					{
+						return filePath;
+					}
+				}
+			}
+
+			return originalLocalPath;
 		}
 	}
 }

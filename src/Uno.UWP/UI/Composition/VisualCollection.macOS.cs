@@ -1,3 +1,5 @@
+#nullable enable
+
 #if __MACOS__
 using System;
 

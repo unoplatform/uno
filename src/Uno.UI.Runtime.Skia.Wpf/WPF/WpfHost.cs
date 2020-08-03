@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Uno.Foundation.Extensibility;
+using Windows.Graphics.Display;
 using WinUI = Windows.UI.Xaml;
 using WpfApplication = System.Windows.Application;
 
@@ -22,7 +23,8 @@ namespace Uno.UI.Skia.Platform
 		{
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfUIElementPointersSupport(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
-			ApiExtensibility.Register(typeof(WinUI.IApplicationExtension), o => new WpfApplicationExtension(o));		
+			ApiExtensibility.Register(typeof(WinUI.IApplicationExtension), o => new WpfApplicationExtension(o));
+			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));
 		}
 
 		[ThreadStatic] private static WpfHost _current;
@@ -53,7 +55,7 @@ namespace Uno.UI.Skia.Platform
 
 			WinUI.Application.Start(CreateApp, args);
 
-			WinUI.Window.Current.InvalidateRender += () => InvalidateVisual();
+			WinUI.Window.InvalidateRender += () => InvalidateVisual();
 
 			SizeChanged += WpfHost_SizeChanged;
 			Loaded += WpfHost_Loaded;

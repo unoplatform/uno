@@ -1,3 +1,5 @@
+#nullable enable
+
 #if !__IOS__
 using System.Numerics;
 using System;
@@ -12,7 +14,7 @@ namespace Windows.UI.Composition
 
 		}
 
-		public CompositionClip Clip
+		public CompositionClip? Clip
 		{
 			get;
 			set;

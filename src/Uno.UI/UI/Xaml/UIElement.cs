@@ -510,6 +510,22 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
+		internal Thickness LayoutRound(Thickness value)
+		{
+#if __SKIA__
+			double scaleFactor = GetScaleFactorForLayoutRounding();
+
+			return new Thickness(
+				top: LayoutRound(value.Top, scaleFactor),
+				bottom: LayoutRound(value.Bottom, scaleFactor),
+				left: LayoutRound(value.Left, scaleFactor),
+				right: LayoutRound(value.Right, scaleFactor)
+			);
+#else
+			return value;
+#endif
+		}
+
 		internal Vector2 LayoutRound(Vector2 value)
 		{
 #if __SKIA__

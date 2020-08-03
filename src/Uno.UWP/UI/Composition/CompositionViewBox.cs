@@ -1,5 +1,5 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
+#nullable enable
+
 using System.Numerics;
 
 namespace Windows.UI.Composition

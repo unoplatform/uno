@@ -296,17 +296,18 @@ namespace Windows.UI.Xaml
 
 			Visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0);
 			Visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
+			Visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 
 			if (clip is Rect rectClip)
 			{
 				var roundedRectClip = LayoutRound(rectClip);
 
-				Visual.Clip = new InsetClip() {
-					TopInset = (float)roundedRectClip.Top,
-					LeftInset = (float)roundedRectClip.Left,
-					BottomInset = (float)roundedRectClip.Bottom,
-					RightInset = (float)roundedRectClip.Right,
-				};
+				Visual.Clip = Visual.Compositor.CreateInsetClip(
+					topInset: (float)roundedRectClip.Top,
+					leftInset: (float)roundedRectClip.Left,
+					bottomInset: (float)roundedRectClip.Bottom,
+					rightInset: (float)roundedRectClip.Right
+				);
 			}
 			else
 			{

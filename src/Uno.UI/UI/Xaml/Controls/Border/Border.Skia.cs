@@ -87,11 +87,11 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
 		{
-			base.OnBackgroundChanged(e);
+			base.OnBackgroundChanged(args);
+
 			UpdateBorder();
-			// UpdateHitTest();
 		}
 
 		internal override bool IsViewHit()

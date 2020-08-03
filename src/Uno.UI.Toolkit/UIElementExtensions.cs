@@ -7,6 +7,7 @@ using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.Logging;
@@ -137,7 +138,7 @@ namespace Uno.UI.Toolkit
 					newSize = new Vector2((float)contentFE.ActualWidth, (float)contentFE.ActualHeight);
 				}
 
-				if (!(host is UIElement uiHost) || newSize == default)
+				if (!(host is Canvas uiHost) || newSize == default)
 				{
 					return;
 				}
@@ -165,18 +166,31 @@ namespace Uno.UI.Toolkit
 
 					if (!cornerRadius.Equals(default))
 					{
-						// We'll need a better solution like https://stackoverflow.com/a/57274707/1176099
-
 						var averageRadius =
 							(cornerRadius.TopLeft +
 							cornerRadius.TopRight +
 							cornerRadius.BottomLeft +
 							cornerRadius.BottomRight) / 4f;
 
-						shadow.BlurRadius = (float)averageRadius * 3f;
+						// Create a rectangle with similar corner radius (average for now)
+						var rect = new Rectangle()
+						{
+							Fill = new SolidColorBrush(Colors.White),
+							Width = newSize.X,
+							Height = newSize.Y,
+							RadiusX = averageRadius,
+							RadiusY = averageRadius
+						};
+
+						uiHost.Children.Add(rect); // The rect need to be in th VisualTree for .GetAlphaMask() to work
+
+						shadow.Mask = rect.GetAlphaMask();
+
+						uiHost.Children.Remove(rect); // No need anymore, we can discard it.
 					}
 
 					shadow.Color = shadowColor;
+					shadow.Opacity = shadowColor.A/255f;
 					spriteVisual.Shadow = shadow;
 				}
 

@@ -11,6 +11,7 @@ using Windows.UI;
 using Windows.UI.Composition;
 using System.Numerics;
 using Uno.UI;
+using SkiaSharp;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -49,6 +50,7 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				if (
 					background != null ||
+					cornerRadius != CornerRadius.None ||
 					(borderThickness != Thickness.Empty && borderBrush != null)
 				)
 				{
@@ -80,7 +82,7 @@ namespace Windows.UI.Xaml.Shapes
 			var compositor = parent.Compositor;
 			var area = owner.LayoutRound(state.Area);
 			var background = state.Background;
-			var borderThickness = state.BorderThickness;
+			var borderThickness = owner.LayoutRound(state.BorderThickness);
 			var borderBrush = state.BorderBrush;
 			var cornerRadius = state.CornerRadius;
 
@@ -107,9 +109,6 @@ namespace Windows.UI.Xaml.Shapes
 
 				Brush.AssignAndObserveBrush(borderBrush, color => spriteShape.StrokeBrush = compositor.CreateColorBrush(color))
 					.DisposeWith(disposables);
-				var path = GetRoundedPath(cornerRadius, adjustedArea);
-
-				var outerPath = GetRoundedPath(cornerRadius, area);
 
 				if (background is GradientBrush gradientBackground)
 				{
@@ -132,26 +131,14 @@ namespace Windows.UI.Xaml.Shapes
 				}
 				else if (background is ImageBrush imgBackground)
 				{
-					//var imgSrc = imgBackground.ImageSource;
-					//if (imgSrc != null && imgSrc.TryOpenSync(out var uiImage) && uiImage.Size != CGSize.Empty)
-					//{
-					//	var fillMask = new CAShapeLayer()
-					//	{
-					//		Path = path,
-					//		Frame = area,
-					//		// We only use the fill color to create the mask area
-					//		FillColor = _Color.White.CGColor,
-					//	};
-					//	// We reduce the adjustedArea again so that the image is inside the border (like in Windows)
-					//	adjustedArea = adjustedArea.Shrink((float)adjustedStrokeThicknessOffset);
-
-					//	CreateImageBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask);
-					//}
+					adjustedArea = CreateImageLayer(compositor, disposables, adjustedStrokeThicknessOffset, adjustedArea, spriteShape, adjustedArea, imgBackground);
 				}
 				else
 				{
 					spriteShape.FillBrush = null;
 				}
+
+				var path = GetRoundedPath(cornerRadius, adjustedArea);
 
 				spriteShape.Geometry = compositor.CreatePathGeometry(path);
 				var shapeVisual = compositor.CreateShapeVisual();
@@ -163,7 +150,7 @@ namespace Windows.UI.Xaml.Shapes
 				owner.ClippingIsSetByCornerRadius = cornerRadius != CornerRadius.None;
 				if (owner.ClippingIsSetByCornerRadius)
 				{
-					parent.Clip = new CompositionGeometricClip() { Geometry = spriteShape.Geometry };
+					parent.Clip = compositor.CreateGeometricClip(spriteShape.Geometry);
 				}
 			}
 			else
@@ -171,6 +158,8 @@ namespace Windows.UI.Xaml.Shapes
 				var shapeVisual = compositor.CreateShapeVisual();
 
 				var backgroundShape = compositor.CreateSpriteShape();
+
+				var backgroundArea = area;
 
 				if (background is GradientBrush gradientBackground)
 				{
@@ -181,7 +170,7 @@ namespace Windows.UI.Xaml.Shapes
 						area.Height - borderThickness.Top - borderThickness.Bottom);
 
 					var insideArea = new Rect(default, fullArea.Size);
-					var insertionIndex = 0;
+					// var insertionIndex = 0;
 
 					// CreateGradientBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask: null);
 				}
@@ -197,20 +186,7 @@ namespace Windows.UI.Xaml.Shapes
 				}
 				else if (background is ImageBrush imgBackground)
 				{
-					//var bgSrc = imgBackground.ImageSource;
-					//if (bgSrc != null && bgSrc.TryOpenSync(out var uiImage) && uiImage.Size != CGSize.Empty)
-					//{
-					//	var fullArea = new Rect(
-					//			area.X + borderThickness.Left,
-					//			area.Y + borderThickness.Top,
-					//			area.Width - borderThickness.Left - borderThickness.Right,
-					//			area.Height - borderThickness.Top - borderThickness.Bottom);
-
-					//	var insideArea = new Rect(CGPoint.Empty, fullArea.Size);
-					//	var insertionIndex = 0;
-
-					//	CreateImageBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask: null);
-					//}
+					backgroundArea = CreateImageLayer(compositor, disposables, adjustedStrokeThicknessOffset, adjustedArea, backgroundShape, backgroundArea, imgBackground);
 				}
 				else
 				{
@@ -220,7 +196,7 @@ namespace Windows.UI.Xaml.Shapes
 				var geometrySource = new SkiaGeometrySource2D();
 				var geometry = geometrySource.Geometry;
 
-				geometry.AddRect(area.ToSKRect());
+				geometry.AddRect(backgroundArea.ToSKRect());
 
 				backgroundShape.Geometry = compositor.CreatePathGeometry(new CompositionPath(geometrySource));
 
@@ -313,6 +289,37 @@ namespace Windows.UI.Xaml.Shapes
 			compositor.InvalidateRender();
 
 			return disposables;
+		}
+
+		private static Rect CreateImageLayer(Compositor compositor, CompositeDisposable disposables, double adjustedStrokeThicknessOffset, Rect adjustedArea, CompositionSpriteShape backgroundShape, Rect backgroundArea, ImageBrush imgBackground)
+		{
+			imgBackground.Subscribe(imageData =>
+			{
+
+				if (imageData.Error is null)
+				{
+					var surfaceBrush = compositor.CreateSurfaceBrush(imageData.Value);
+
+					var sourceImageSize = new Size(imageData.Value.Image.Width, imageData.Value.Image.Height);
+
+					// We reduce the adjustedArea again so that the image is inside the border (like in Windows)
+					var imageArea = adjustedArea.DeflateBy(new Thickness((float)adjustedStrokeThicknessOffset));
+
+					backgroundArea = imgBackground.GetArrangedImageRect(sourceImageSize, imageArea);
+
+					// surfaceBrush.Offset = new Vector2((float)imageFrame.Left, (float)imageFrame.Top);
+					var matrix = Matrix3x2.CreateScale((float)(backgroundArea.Width / sourceImageSize.Width), (float)(backgroundArea.Height / sourceImageSize.Height));
+					matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+					surfaceBrush.TransformMatrix = matrix;
+
+					backgroundShape.FillBrush = surfaceBrush;
+				}
+				else
+				{
+					backgroundShape.FillBrush = null;
+				}
+			}).DisposeWith(disposables);
+			return backgroundArea;
 		}
 
 		/// <summary>
