@@ -301,6 +301,28 @@
 
 	<Style
 		TargetType="ScrollViewer"
+		BasedOn="{StaticResource DefaultScrollViewerStyle}"
+		x:Key="NativeScrollViewerStyle">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ScrollViewer">
+					<Border
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}"
+						Background="{TemplateBinding Background}">
+						<!-- ContentTemplate not yet supported for ScrollContentPresenter-->
+						<ScrollContentPresenter
+							x:Name="ScrollContentPresenter"
+							Margin="{TemplateBinding Padding}" />
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style
+		TargetType="ScrollViewer"
 		BasedOn="{StaticResource DefaultScrollViewerStyle}" />
 
 </ResourceDictionary>
