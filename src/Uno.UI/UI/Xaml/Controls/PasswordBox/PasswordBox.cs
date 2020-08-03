@@ -15,13 +15,14 @@ namespace Windows.UI.Xaml.Controls
 		public const string RevealButtonPartName = "RevealButton";
 		private Button _revealButton;
 		private readonly SerialDisposable _revealButtonSubscription = new SerialDisposable();
+		private bool UseIsPasswordEnabledProperty => this.IsDependencyPropertySet(IsPasswordRevealButtonEnabledProperty) && !this.IsDependencyPropertySet(PasswordRevealModeProperty);
 
 		public PasswordBox()
 #if __MACOS__
 			: base(true)
 #endif
 		{
-
+			DefaultStyleKey = typeof(PasswordBox);
 		}
 
 		private protected override void OnLoaded()
@@ -56,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 				});
 			}
 
-			SetPasswordScope(true);
+			CheckRevealModeForScope();
 		}
 
 		private void BeginReveal(object sender, PointerRoutedEventArgs e)
@@ -88,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PasswordProperty, value); }
 		}
 
-		public static DependencyProperty PasswordProperty { get ; } =
+		public static DependencyProperty PasswordProperty { get; } =
 			DependencyProperty.Register(
 				"Password",
 				typeof(string),
@@ -106,6 +107,12 @@ namespace Windows.UI.Xaml.Controls
 			PasswordChanged?.Invoke(this, new RoutedEventArgs(this));
 
 			OnPasswordChangedPartial(e);
+
+			if (Password.IsNullOrEmpty() && 
+                ((PasswordRevealMode == PasswordRevealMode.Peek) || (UseIsPasswordEnabledProperty && IsPasswordRevealButtonEnabled)))
+			{
+				_isButtonEnabled = true;
+			}
 		}
 
 		partial void OnPasswordChangedPartial(DependencyPropertyChangedEventArgs e);
@@ -127,17 +134,17 @@ namespace Windows.UI.Xaml.Controls
 		public override string GetAccessibilityInnerText()
 		{
 			// We don't want to reveal the password
-			return null; 
+			return null;
 		}
 
 		#region IsPasswordRevealButtonEnabled DependencyProperty
 		public bool IsPasswordRevealButtonEnabled
 		{
 			get => (bool)this.GetValue(IsPasswordRevealButtonEnabledProperty);
-			set => this.SetValue(IsPasswordRevealButtonEnabledProperty, value);			
+			set => this.SetValue(IsPasswordRevealButtonEnabledProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty IsPasswordRevealButtonEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsPasswordRevealButtonEnabledProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsPasswordRevealButtonEnabled),
 				typeof(bool),
@@ -150,21 +157,101 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnIsPasswordRevealButtonEnabledChanged(DependencyPropertyChangedEventArgs e)
 		{
-			_isButtonEnabled = IsPasswordRevealButtonEnabled;
-
-			if (IsPasswordRevealButtonEnabled)
-			{
-				VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
-			}
-			else
-			{
-				VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
-			}
-
+			CheckRevealModeForScope();
 			OnIsPasswordRevealButtonEnabledChangedPartial(e);
 		}
 
 		partial void OnIsPasswordRevealButtonEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 		#endregion
+
+		#region PasswordRevealMode DependencyProperty
+		public PasswordRevealMode PasswordRevealMode
+		{
+			get => (PasswordRevealMode)this.GetValue(PasswordRevealModeProperty);
+			set => this.SetValue(PasswordRevealModeProperty, value);
+		}
+
+		public static global::Windows.UI.Xaml.DependencyProperty PasswordRevealModeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(PasswordRevealMode),
+				typeof(bool),
+				typeof(PasswordBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: PasswordRevealMode.Peek,
+					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnPasswordRevealModeChanged(e)
+				)
+			);
+
+		private void OnPasswordRevealModeChanged(DependencyPropertyChangedEventArgs e)
+		{
+			CheckRevealModeForScope();
+		}
+
+		private void CheckRevealModeForScope()
+		{
+			// Only use IsPasswordRevealButtonEnabled if it is set and PasswordRevealMode is not
+			if (UseIsPasswordEnabledProperty)
+			{
+				SetPasswordScope(true);
+			} 
+            else
+			{
+				switch (PasswordRevealMode)
+				{
+					case PasswordRevealMode.Visible:
+						SetPasswordScope(false);
+						break;
+					case PasswordRevealMode.Hidden:
+					case PasswordRevealMode.Peek:
+					default:
+						SetPasswordScope(true);
+						break;
+				}
+			}
+		}
+		#endregion
+
+		internal override void UpdateFocusState(FocusState focusState)
+		{
+			var oldValue = FocusState;
+			base.UpdateFocusState(focusState);
+			OnFocusStateChanged(oldValue, focusState);
+		}
+
+		private void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
+		{
+			if (oldValue == newValue) { return; }
+
+
+			if (oldValue == FocusState.Unfocused)
+			{
+				if (UseIsPasswordEnabledProperty)
+				{
+					_isButtonEnabled = IsPasswordRevealButtonEnabled;
+
+					if (_isButtonEnabled)
+					{
+						VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
+					}
+					else
+					{
+						VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
+					}
+				} 
+                else
+				{
+					if (PasswordRevealMode == PasswordRevealMode.Peek && Password.IsNullOrEmpty())
+					{
+						_isButtonEnabled = true;
+					}
+					else
+					{
+						_isButtonEnabled = false;
+					}
+
+					VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
+				}
+			}
+		}
 	}
 }

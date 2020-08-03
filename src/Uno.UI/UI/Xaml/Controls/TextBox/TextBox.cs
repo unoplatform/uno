@@ -43,6 +43,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ContentPresenter _header;
 		protected private bool _isButtonEnabled = true;
+		protected private bool CanShowButton => Text.HasValue() && FocusState != FocusState.Unfocused && !IsReadOnly && !AcceptsReturn && TextWrapping == TextWrapping.NoWrap;
 
 		public event TextChangedEventHandler TextChanged;
 		public event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextChanging;
@@ -651,19 +652,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateButtonStates()
+		protected virtual void UpdateButtonStates()
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug(nameof(UpdateButtonStates));
 			}
 
-			if (_isButtonEnabled
-				&& Text.HasValue()
-				&& FocusState != FocusState.Unfocused
-				&& !IsReadOnly
-				&& !AcceptsReturn
-				&& TextWrapping == TextWrapping.NoWrap
+			if (CanShowButton && _isButtonEnabled
 			// TODO (https://github.com/unoplatform/uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
 			)
 			{
