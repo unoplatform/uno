@@ -1789,8 +1789,19 @@
 			<Member
 				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationManagerPreview..ctor()"
 				reason="This ctor does not exist in UWP"/> 
-		</Methods>
-
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.get_HorizontalScrollMode()"
+				reason="Not part of WinUI API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.set_HorizontalScrollMode(Windows.UI.Xaml.Controls.ScrollMode value)"
+				reason="Not part of WinUI API"/>
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.get_VerticalScrollMode()"
+				reason="Not part of WinUI API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.set_VerticalScrollMode(Windows.UI.Xaml.Controls.ScrollMode value)"
+				reason="Not part of WinUI API"/>
+			</Methods>
 		<Events>
 			<!-- INPC on base view removal -->
 		  <Member
@@ -1926,7 +1937,12 @@
 			<Member
 				fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer::Capacity()"
 				reason="Property not available in UWP"/>
-				
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::HorizontalScrollMode()"
+				reason="Not part of WinUI API"/>
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::VerticalScrollMode()"
+				reason="Not part of WinUI API"/>
 		</Properties>
 
 		<Fields>
