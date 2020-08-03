@@ -5,10 +5,13 @@
 	xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ScrollViewerTests"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
+	xmlns:skia="http://uno.ui/skia"
+	xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	mc:Ignorable="d skia"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<Page.Resources>
+		<!--Note: This template is the same as the XamlDefaultStyle except that is does not have platform specific flags -->
 		<ControlTemplate TargetType="ScrollViewer" x:Key="WithManagedScrollBars">
 			<Border
 				BorderBrush="{TemplateBinding BorderBrush}"
@@ -35,7 +38,9 @@
 									</ObjectAnimationUsingKeyFrames>
 								</Storyboard>
 							</VisualTransition>
-							<!--<VisualTransition From="MouseIndicatorFull" To="NoIndicator">
+							<!--
+							State not supported by Uno yet
+							<VisualTransition From="MouseIndicatorFull" To="NoIndicator">
 								<Storyboard>
 									<ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
 										<DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
@@ -93,12 +98,7 @@
 
 						<VisualState x:Name="NoIndicator" />
 						<VisualState x:Name="TouchIndicator">
-							<!--<VisualState.Setters>
-								<Setter Target="VerticalScrollBar" Property="IndicatorMode" Value="TouchIndicator" />
-								<Setter Target="HorizontalScrollBar" Property="IndicatorMode" Value="TouchIndicator" />
-							</VisualState.Setters>-->
 							<Storyboard>
-								<!--<FadeOutThemeAnimation TargetName="ScrollBarSeparator" />-->
 								<ObjectAnimationUsingKeyFrames
 									Storyboard.TargetName="VerticalScrollBar"
 									Storyboard.TargetProperty="IndicatorMode"
@@ -122,10 +122,6 @@
 							</Storyboard>
 						</VisualState>
 						<VisualState x:Name="MouseIndicator">
-							<!--<VisualState.Setters>
-								<Setter Target="VerticalScrollBar" Property="IndicatorMode" Value="MouseIndicator" />
-								<Setter Target="HorizontalScrollBar" Property="IndicatorMode" Value="MouseIndicator" />
-							</VisualState.Setters>-->
 							<Storyboard>
 								<ObjectAnimationUsingKeyFrames
 									Storyboard.TargetName="VerticalScrollBar"
@@ -149,7 +145,9 @@
 								</ObjectAnimationUsingKeyFrames>
 							</Storyboard>
 						</VisualState>
-						<!--<VisualState x:Name="MouseIndicatorFull">
+						<!--
+						State not supported by Uno yet
+						<VisualState x:Name="MouseIndicatorFull">
 							<Storyboard>
 								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
 									<DiscreteObjectKeyFrame KeyTime="0">
@@ -242,8 +240,7 @@
 						Value="{TemplateBinding VerticalOffset}"
 						ViewportSize="{TemplateBinding ViewportHeight}"
 						HorizontalAlignment="Right"
-
-						Width="15"/><!--Note: Fixed Width is required for Skia-->
+						skia:Width="16"/><!--Note: Fixed Width is required for Skia Style="{StaticResource MyScrollBarStyle}"-->
 
 					<ScrollBar
 						x:Name="HorizontalScrollBar"
@@ -254,8 +251,7 @@
 						Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
 						Value="{TemplateBinding HorizontalOffset}"
 						ViewportSize="{TemplateBinding ViewportWidth}"
-
-						Height="15"/><!--Note: Fixed Height is required for Skia-->
+						skia:Height="16"/><!--Note: Fixed Height is required for Skia-->
 
 					<Border
 						x:Name="ScrollBarSeparator"
@@ -290,8 +286,8 @@
 				VerticalScrollBarVisibility="Visible"
 				HorizontalScrollMode="Enabled"
 				HorizontalScrollBarVisibility="Visible">
-				<Grid Width="1024" Height="1024">
-					<Grid.Background>
+				<Grid Width="1024" Height="1024" skia:Background="Red">
+					<not_skia:Grid.Background>
 						<LinearGradientBrush StartPoint=".45,.05" EndPoint=".65,.95">
 							<LinearGradientBrush.GradientStops>
 								<GradientStopCollection>
@@ -308,7 +304,7 @@
 								</GradientStopCollection>
 							</LinearGradientBrush.GradientStops>
 						</LinearGradientBrush>
-					</Grid.Background>
+					</not_skia:Grid.Background>
 					<TextBlock Text="Managed scroll bars!" Margin="20" FontSize="30" />
 				</Grid>
 			</ScrollViewer>
@@ -322,8 +318,8 @@
 				VerticalScrollBarVisibility="Visible"
 				HorizontalScrollMode="Enabled"
 				HorizontalScrollBarVisibility="Visible">
-				<Grid Width="1024" Height="1024">
-					<Grid.Background>
+				<Grid Width="1024" Height="1024" skia:Background="Red">
+					<not_skia:Grid.Background>
 						<LinearGradientBrush StartPoint=".45,.05" EndPoint=".65,.95">
 							<LinearGradientBrush.GradientStops>
 								<GradientStopCollection>
@@ -340,7 +336,7 @@
 								</GradientStopCollection>
 							</LinearGradientBrush.GradientStops>
 						</LinearGradientBrush>
-					</Grid.Background>
+					</not_skia:Grid.Background>
 					<TextBlock Text="Native scroll bars!" Margin="20" FontSize="30" />
 				</Grid>
 			</ScrollViewer>
