@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 				var canScrollHorizontally = HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
 				var canScrollVertically = VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
 
-				if (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers.HasFlag(System.VirtualKeyModifiers.Shift))
+				if (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers.HasFlag(global::Windows.System.VirtualKeyModifiers.Shift))
 				{
 					if (canScrollHorizontally)
 					{
