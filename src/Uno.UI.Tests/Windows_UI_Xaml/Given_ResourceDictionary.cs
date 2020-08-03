@@ -652,5 +652,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(withoutSlash, withSlash);
 		}
+
+		[TestMethod]
+		public void When_XamlControlsResources()
+		{
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			Assert.IsTrue(xcr.ContainsKey(typeof(Button)));
+			Assert.IsInstanceOfType(xcr[typeof(Button)], typeof(Style));
+		}
 	}
 }

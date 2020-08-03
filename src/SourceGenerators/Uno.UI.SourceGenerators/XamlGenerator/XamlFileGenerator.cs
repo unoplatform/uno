@@ -50,7 +50,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Names of generated properties associated with resource definitions. These are created for top-level ResourceDictionary declarations only.
 		/// </summary>
-		private readonly Dictionary<(string Theme, string ResourceKey), string> _topLevelDictionaryProperties = new Dictionary<(string, string), string>();
+		private readonly Dictionary<(string Theme, string ResourceKey), (string PropertyName, INamedTypeSymbol PropertyType)> _topLevelDictionaryProperties = new Dictionary<(string, string), (string, INamedTypeSymbol)>();
 		private readonly Stack<NameScope> _scopeStack = new Stack<NameScope>();
 		private readonly XamlFileDefinition _fileDefinition;
 		private readonly string _targetPath;
@@ -832,7 +832,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					throw new InvalidOperationException($"Dictionary Item {resource?.Type?.Name} has duplicate key `{key}` { (theme != null ? $" in theme {theme}" : "")}.");
 				}
-				_topLevelDictionaryProperties[(theme, key)] = propertyName;
+				_topLevelDictionaryProperties[(theme, key)] = (propertyName, FindType(resource.Type));
 			}
 
 			//Create static properties
@@ -849,7 +849,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				_dictionaryPropertyIndex++;
 				var propertyName = GetPropertyNameForResourceKey(_dictionaryPropertyIndex);
-				if (_topLevelDictionaryProperties[(theme, key)] != propertyName)
+				if (_topLevelDictionaryProperties[(theme, key)].PropertyName != propertyName)
 				{
 					throw new InvalidOperationException($"Property was not created correctly for {key} (theme={theme}).");
 				}
@@ -2029,8 +2029,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineInvariant(closingPunctuation);
 				}
 
-				if (name != null)
+				if (name != null && !_isTopLevelDictionary)
 				{
+					if (_namedResources.ContainsKey(name))
+					{
+						throw new InvalidOperationException($"There is already a resource with name {name}");
+					}
 					_namedResources.Add(name, resource);
 				}
 			}
@@ -2955,7 +2959,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (resourceKey != null)
 				{
 					TryAnnotateWithGeneratorSource(writer);
-					var directProperty = GetResourceDictionaryPropertyName(resourceKey);
+					(var directProperty, var directPropertyType) = GetResourceDictionaryPropertyDetails(resourceKey);
 
 					if (directProperty != null)
 					{
@@ -2969,7 +2973,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else
 						{
-							rightSide = "{0}{1}".InvariantCultureFormat(GetCastString(type, null), directProperty);
+							var rightSideInner = directProperty;
+							if (isThemeResourceExtension && type != null && !type.Equals(directPropertyType))
+							{
+								// ThemeResource assignations are 'binding-like' in that they permit assignations that couldn't be directly made - perform the conversion if necessary
+								rightSideInner = $"global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({type}), {directProperty})";
+							}
+							rightSide = "{0}{1}".InvariantCultureFormat(GetCastString(type, null), rightSideInner);
 						}
 						if (generateAssignation)
 						{
@@ -3455,14 +3465,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Get the name of global static property associated with the given resource key, if one exists, otherwise null.
 		/// </summary>
-		private string GetResourceDictionaryPropertyName(string keyStr)
+		private string GetResourceDictionaryPropertyName(string keyStr) => GetResourceDictionaryPropertyDetails(keyStr).PropertyName;
+
+		private (string PropertyName, INamedTypeSymbol PropertyType) GetResourceDictionaryPropertyDetails(string keyStr)
 		{
-			if (_topLevelDictionaryProperties.TryGetValue((_themeDictionaryCurrentlyBuilding, keyStr), out var propertyName))
+			if (_topLevelDictionaryProperties.TryGetValue((_themeDictionaryCurrentlyBuilding, keyStr), out var propertyDetails))
 			{
-				return "global::{0}.GlobalStaticResources.{1} /*{2}*/".InvariantCultureFormat(_defaultNamespace, propertyName, keyStr);
+				return ("global::{0}.GlobalStaticResources.{1} /*{2}*/".InvariantCultureFormat(_defaultNamespace, propertyDetails.PropertyName, keyStr), propertyDetails.PropertyType);
 			}
 
-			return null;
+			return (null, null);
 		}
 
 		private INamedTypeSymbol FindUnderlyingType(INamedTypeSymbol propertyType)
@@ -4852,6 +4864,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				this.Log().Warn($"The value [{memberValue}] is specified in pixel and is not yet supported. ({owner?.LineNumber}, {owner?.LinePosition} in {_fileDefinition.FilePath})");
 				return "{0}{1}".InvariantCultureFormat(memberValue.TrimEnd("px"), isDouble ? "d" : "f");
 			}
+
+			// UWP's Xaml parsing ignores curly brackets at beginning and end of a double literal
+			memberValue = memberValue.Trim('{', '}');
 
 			return "{0}{1}".InvariantCultureFormat(memberValue, isDouble ? "d" : "f");
 		}

@@ -306,12 +306,10 @@ namespace Windows.UI.Xaml
 			{
 				rect = Clip.Rect;
 
-				// Currently only TranslateTransform is supported on a clipping mask
-				// (because the calculated mask is a Rect right now...)
-				if (Clip?.Transform is TranslateTransform translateTransform)
+				//// Apply transform to clipping mask, if any
+				if (Clip.Transform != null)
 				{
-					rect.X += translateTransform.X;
-					rect.Y += translateTransform.Y;
+					rect = Clip.Transform.TransformBounds(rect);
 				}
 			}
 

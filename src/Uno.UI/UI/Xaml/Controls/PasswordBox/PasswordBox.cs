@@ -5,6 +5,7 @@ using Uno.Disposables;
 using System.Text;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -13,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 		public event RoutedEventHandler PasswordChanged;
 
 		public const string RevealButtonPartName = "RevealButton";
-		private Button _revealButton;
+		private ButtonBase _revealButton;
 		private readonly SerialDisposable _revealButtonSubscription = new SerialDisposable();
 
 		public PasswordBox()
@@ -21,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			: base(true)
 #endif
 		{
-
+			DefaultStyleKey = typeof(PasswordBox);
 		}
 
 		private protected override void OnLoaded()
@@ -32,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void RegisterSetPasswordScope()
 		{
-			_revealButton = this.GetTemplateChild(RevealButtonPartName) as Button;
+			_revealButton = this.GetTemplateChild(RevealButtonPartName) as ButtonBase;
 
 			if (_revealButton != null)
 			{

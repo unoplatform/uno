@@ -95,9 +95,6 @@ namespace SamplesApp
 
 			LaunchiOSWatchDog();
 #endif
-#if NETFX_CORE
-			Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
-#endif
 
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(

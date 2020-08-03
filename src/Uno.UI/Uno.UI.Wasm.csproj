@@ -86,11 +86,11 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 	
 	<ItemGroup>
-		<None Include="$(PlatformItemsBasePath)**/*.xaml" Exclude="$(PlatformItemsBasePath)bin/**/*.xaml;$(PlatformItemsBasePath)obj/**/*.xaml" />
+		<None Include="$(PlatformItemsBasePath)**/*.xaml" Exclude="$(PlatformItemsBasePath)bin/**/*.xaml;$(PlatformItemsBasePath)obj/**/*.xaml;$(PlatformItemsBasePath)Themes\WinUI\Resources\**\*.xaml" />
 
 		<!-- remove files included by msbuild extras -->
 		<Page Remove="@(Page)" />
-		<Page Include="$(PlatformItemsBasePath)**/*.xaml" Exclude="$(PlatformItemsBasePath)bin/**/*.xaml;$(PlatformItemsBasePath)obj/**/*.xaml" />
+		<Page Include="$(PlatformItemsBasePath)**/*.xaml" Exclude="$(PlatformItemsBasePath)bin/**/*.xaml;$(PlatformItemsBasePath)obj/**/*.xaml;$(PlatformItemsBasePath)Themes\WinUI\Resources\**\*.xaml" />
 	</ItemGroup>
 
 	<PropertyGroup>

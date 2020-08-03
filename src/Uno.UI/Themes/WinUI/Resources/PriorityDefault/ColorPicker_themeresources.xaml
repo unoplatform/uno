@@ -1,0 +1,33 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Microsoft.UI.Xaml.Controls">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <StaticResource x:Key="ColorPickerSliderThumbBackground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+            <StaticResource x:Key="ColorPickerSliderThumbBackgroundPointerOver" ResourceKey="SystemControlHighlightChromeAltLowBrush" />
+            <StaticResource x:Key="ColorPickerSliderThumbBackgroundPressed" ResourceKey="SystemControlForegroundChromeHighBrush" />
+            <StaticResource x:Key="ColorPickerSliderThumbBackgroundDisabled" ResourceKey="SystemControlDisabledChromeDisabledHighBrush" />
+            <StaticResource x:Key="ColorPickerSliderTrackFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <StaticResource x:Key="ColorPickerSliderThumbBackground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+            <StaticResource x:Key="ColorPickerSliderThumbBackgroundPointerOver" ResourceKey="SystemControlHighlightChromeAltLowBrush" />
+            <StaticResource x:Key="ColorPickerSliderThumbBackgroundPressed" ResourceKey="SystemControlForegroundChromeHighBrush" />
+            <StaticResource x:Key="ColorPickerSliderThumbBackgroundDisabled" ResourceKey="SystemControlDisabledChromeDisabledHighBrush" />
+            <StaticResource x:Key="ColorPickerSliderTrackFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <StaticResource x:Key="ColorPickerSliderThumbBackground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+            <StaticResource x:Key="ColorPickerSliderThumbBackgroundPointerOver" ResourceKey="SystemControlHighlightChromeAltLowBrush" />
+            <StaticResource x:Key="ColorPickerSliderThumbBackgroundPressed" ResourceKey="SystemControlForegroundChromeHighBrush" />
+            <StaticResource x:Key="ColorPickerSliderThumbBackgroundDisabled" ResourceKey="SystemControlDisabledChromeDisabledHighBrush" />
+            <StaticResource x:Key="ColorPickerSliderTrackFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+    <Style x:Key="ColorPickerBorderStyle" TargetType="Shape">
+        <Setter Property="Stroke" Value="{ThemeResource SystemControlForegroundListLowBrush}" />
+        <Setter Property="StrokeThickness" Value="2" />
+    </Style>
+</ResourceDictionary>

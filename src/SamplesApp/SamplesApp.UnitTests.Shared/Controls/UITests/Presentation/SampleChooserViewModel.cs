@@ -78,6 +78,9 @@ namespace SampleControl.Presentation
 			// Disable all pooling so that controls get collected quickly.
 			Windows.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
 #endif
+#if NETFX_CORE
+			UseFluentStyles = true;
+#endif
 			InitializeCommands();
 			ObserveChanges();
 
