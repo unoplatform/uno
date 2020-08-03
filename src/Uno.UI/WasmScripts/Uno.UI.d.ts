@@ -931,6 +931,11 @@ declare namespace Windows.Storage {
         private static getValueByIndex;
     }
 }
+declare namespace Windows.Storage.Pickers {
+    class FileSavePicker {
+        static SaveAs(fileName: string, dataPtr: any, size: number): void;
+    }
+}
 declare namespace Windows.Storage {
     class StorageFolder {
         private static _isInit;

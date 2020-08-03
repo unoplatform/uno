@@ -3007,6 +3007,31 @@ var Windows;
         Storage.ApplicationDataContainer = ApplicationDataContainer;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        var Pickers;
+        (function (Pickers) {
+            class FileSavePicker {
+                static SaveAs(fileName, dataPtr, size) {
+                    const buffer = new Uint8Array(size);
+                    for (var i = 0; i < size; i++) {
+                        buffer[i] = Module.getValue(dataPtr + i, "i8");
+                    }
+                    const a = window.document.createElement('a');
+                    const blob = new Blob([buffer]);
+                    a.href = window.URL.createObjectURL(blob);
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+            }
+            Pickers.FileSavePicker = FileSavePicker;
+        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
 // eslint-disable-next-line @typescript-eslint/no-namespace
 var Windows;
 (function (Windows) {
