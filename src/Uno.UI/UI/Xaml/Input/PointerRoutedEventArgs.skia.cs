@@ -25,6 +25,7 @@ namespace Windows.UI.Xaml.Input
 
 			FrameId = pointerEventArgs.CurrentPoint.FrameId;
 			Pointer = GetPointer(pointerEventArgs);
+			KeyModifiers = pointerEventArgs.KeyModifiers;
 			OriginalSource = source;
 
 			// All events bubble in managed mode.
