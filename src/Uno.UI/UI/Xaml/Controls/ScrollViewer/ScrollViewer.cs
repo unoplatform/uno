@@ -790,7 +790,7 @@ namespace Windows.UI.Xaml.Controls
 			var scpTemplatePart = GetTemplateChild(Parts.WinUI3.Scroller) ?? GetTemplateChild(Parts.Uwp.ScrollContentPresenter);
 			_presenter = scpTemplatePart as IScrollContentPresenter;
 
-#if !NETSTANDARD
+#if __IOS__ || __MACOS__ || __ANDROID__
 			if (scpTemplatePart is ScrollContentPresenter scp)
 			{
 				// For Android/iOS/MacOS, ensure that the ScrollContentPresenter contains a native scroll viewer,
