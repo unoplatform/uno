@@ -4404,6 +4404,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 						}
 					}
+
+					// Set ThemeResource information, if any, on Setter
+					var valueObject = valueNode.Objects.FirstOrDefault();
+					if (valueObject?.Type.Name == "ThemeResource")
+					{
+						writer.AppendLineInvariant(".ApplyThemeResourceUpdateValues(\"{0}\", {1})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess);
+					}
 				}
 				else if (fullTypeName == XamlConstants.Types.ResourceDictionary)
 				{

@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -25,6 +26,82 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			UnitTestsApp.App.EnsureApplication();
 		}
+
+		[TestMethod]
+		[Ignore("To support changing an already-set value when system theme changes, we need to resolve the DP pointed to by the BindingPath in Setter.ApplyValue(). (Which can be done, but hasn't.)")]
+		public async Task When_ThemeResource_In_Visual_States_Setter_Theme_Changed()
+		{
+			var page = new ThemeResource_In_Visual_States_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			await WaitForIdle();
+
+			var control = page.VisualStatesTestControl;
+
+			if (page.Parent == null)
+			{
+				app.HostView.Children.Add(page); // On UWP the control may have been removed by another test after the async pause
+			}
+
+			GoTo("HighPilleability");
+			await WaitForIdle();
+			var lightPilleability = control.InnerMyControl.Pilleability;
+			Assert.AreEqual(29, lightPilleability);
+			await SwapSystemTheme();
+			var darkPilleability = control.InnerMyControl.Pilleability;
+			Assert.AreEqual(47, darkPilleability);
+			;
+			void GoTo(string stateName)
+			{
+				var goToResult = false;
+				goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
+				Assert.IsTrue(goToResult);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ThemeResource_In_Visual_States_Setter_Theme_Changed_Reapplied()
+		{
+			var page = new ThemeResource_In_Visual_States_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			await WaitForIdle();
+
+			var control = page.VisualStatesTestControl;
+
+			if (page.Parent == null)
+			{
+				app.HostView.Children.Add(page); // On UWP the control may have been removed by another test after the async pause
+			}
+
+			GoTo("HighPilleability");
+			await WaitForIdle();
+			var lightPilleability = control.InnerMyControl.Pilleability;
+			Assert.AreEqual(29, lightPilleability);
+			GoTo("NormalPilleability");
+			await WaitForIdle();
+			Assert.AreEqual(0, control.InnerMyControl.Pilleability);
+			await SwapSystemTheme();
+			GoTo("HighPilleability");
+			await WaitForIdle();
+			var darkPilleability = control.InnerMyControl.Pilleability;
+			Assert.AreEqual(47, darkPilleability);
+			;
+			void GoTo(string stateName)
+			{
+				var goToResult = false;
+				goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
+				Assert.IsTrue(goToResult);
+			}
+		}
+
+#if NETFX_CORE
+		private static async Task WaitForIdle() => await Task.Delay(100);
+#else
+		private static Task WaitForIdle() => Task.CompletedTask;
+#endif
 
 		[TestMethod]
 		public void When_System_ThemeResource_Light()
@@ -286,6 +363,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 		private static async Task GetSwapTask()
 		{
+			await Task.Delay(800);
 			var content = new StackPanel();
 			content.Children.Add(new TextBlock { Text = "Set default app mode as 'dark' in settings" });
 			content.Children.Add(new HyperlinkButton { Content = "Go to settings", NavigateUri = new Uri("ms-settings:personalization-colors") });

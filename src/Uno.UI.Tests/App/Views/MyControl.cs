@@ -42,5 +42,20 @@ namespace Uno.UI.Tests.App.Views
 			DependencyProperty.Register("MyInterval", typeof(TimeSpan), typeof(MyControl), new PropertyMetadata(default(TimeSpan)));
 
 
+
+		public double Pilleability
+		{
+			get { return (double)GetValue(PilleabilityProperty); }
+			set { SetValue(PilleabilityProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for Pilleability.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty PilleabilityProperty =
+			DependencyProperty.Register("Pilleability", typeof(double), typeof(MyControl), new PropertyMetadata(0d, OnPilleabilityChanged));
+
+		private static void OnPilleabilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			;
+		}
 	}
 }
