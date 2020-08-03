@@ -661,7 +661,7 @@ namespace Uno.UI.Xaml
 		#region GetAttribute
 		internal static string GetAttribute(IntPtr htmlId, string name)
 		{
-			var command = "Uno.UI.WindowManager.current.setAttributes(\"" + htmlId + "\", \"" + name + "\");";
+			var command = "Uno.UI.WindowManager.current.getAttribute(\"" + htmlId + "\", \"" + name + "\");";
 
 			return WebAssemblyRuntime.InvokeJS(command);
 		}
