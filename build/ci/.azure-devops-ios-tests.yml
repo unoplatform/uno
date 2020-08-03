@@ -59,7 +59,7 @@ jobs:
     nugetPackages: $(NUGET_PACKAGES)
     JobName: 'iOS_Automated_Tests'
     JobDisplayName: 'iOS Automated Tests'
-    JobTimeoutInMinutes: 75
+    JobTimeoutInMinutes: 100
     vmImage: ${{ parameters.vmImage }}
     UITEST_SNAPSHOTS_ONLY: false
     xCodeRoot: ${{ parameters.xCodeRoot }}
