@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(HorizontalScrollBarVisibilityProperty, value);
 		}
 
-		public static DependencyProperty HorizontalScrollBarVisibilityProperty { get ; } =
+		public static DependencyProperty HorizontalScrollBarVisibilityProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"HorizontalScrollBarVisibility",
 				typeof(ScrollBarVisibility),
@@ -162,7 +162,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(VerticalScrollBarVisibilityProperty, value);
 		}
 
-		public static DependencyProperty VerticalScrollBarVisibilityProperty { get ; } =
+		public static DependencyProperty VerticalScrollBarVisibilityProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"VerticalScrollBarVisibility",
 				typeof(ScrollBarVisibility),
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(HorizontalScrollModeProperty, value);
 		}
 
-		public static DependencyProperty HorizontalScrollModeProperty { get ; } =
+		public static DependencyProperty HorizontalScrollModeProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"HorizontalScrollMode",
 				typeof(ScrollMode),
@@ -216,7 +216,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for VerticalScrollMode.  This enables animation, styling, binding, etc...
-		public static DependencyProperty VerticalScrollModeProperty { get ; } =
+		public static DependencyProperty VerticalScrollModeProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"VerticalScrollMode",
 				typeof(ScrollMode),
@@ -284,7 +284,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(ZoomModeProperty, value);
 		}
 
-		public static DependencyProperty ZoomModeProperty { get ; } =
+		public static DependencyProperty ZoomModeProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"ZoomMode",
 				typeof(ZoomMode),
@@ -311,7 +311,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MinZoomFactorProperty, value);
 		}
 
-		public static DependencyProperty MinZoomFactorProperty { get ; } =
+		public static DependencyProperty MinZoomFactorProperty { get; } =
 			DependencyProperty.Register("MinZoomFactor", typeof(float), typeof(ScrollViewer), new FrameworkPropertyMetadata(0.1f, (o, e) => ((ScrollViewer)o).OnMinZoomFactorChanged(e)));
 
 		private void OnMinZoomFactorChanged(DependencyPropertyChangedEventArgs args)
@@ -327,7 +327,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MaxZoomFactorProperty, value);
 		}
 
-		public static DependencyProperty MaxZoomFactorProperty { get ; } =
+		public static DependencyProperty MaxZoomFactorProperty { get; } =
 			DependencyProperty.Register("MaxZoomFactor", typeof(float), typeof(ScrollViewer), new FrameworkPropertyMetadata(10f, (o, e) => ((ScrollViewer)o).OnMaxZoomFactorChanged(e)));
 
 		private void OnMaxZoomFactorChanged(DependencyPropertyChangedEventArgs args)
@@ -343,7 +343,7 @@ namespace Windows.UI.Xaml.Controls
 			private set { SetValue(ZoomFactorProperty, value); }
 		}
 
-		public static DependencyProperty ZoomFactorProperty { get ; } =
+		public static DependencyProperty ZoomFactorProperty { get; } =
 			DependencyProperty.Register("ZoomFactor", typeof(float), typeof(ScrollViewer), new FrameworkPropertyMetadata(1f));
 		#endregion
 
@@ -494,7 +494,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get => (Visibility)GetValue(ComputedVerticalScrollBarVisibilityProperty);
 			private set => SetValue(ComputedVerticalScrollBarVisibilityProperty, value);
-		} 
+		}
 		#endregion
 
 		#region ScrollableHeight (DP - readonly)
@@ -661,14 +661,14 @@ namespace Windows.UI.Xaml.Controls
 			ComputedVerticalScrollBarVisibility = ComputeScrollBarVisibility(scrollable, visibility);
 			ComputedIsVerticalScrollEnabled = ComputeIsScrollEnabled(scrollable, visibility, mode);
 
-			if (_presenter == default)
+			if (_presenter is null)
 			{
 				return; // Control not ready yet
 			}
 
 			// Support for the native scroll bars (delegated to the native _presenter).
 			_presenter.VerticalScrollBarVisibility = ComputeNativeScrollBarVisibility(visibility, mode, _verticalScrollbar);
-			if (invalidate && _verticalScrollbar == default)
+			if (invalidate && _verticalScrollbar is null)
 			{
 				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
 			}
@@ -683,14 +683,14 @@ namespace Windows.UI.Xaml.Controls
 			ComputedHorizontalScrollBarVisibility = ComputeScrollBarVisibility(scrollable, visibility);
 			ComputedIsHorizontalScrollEnabled = ComputeIsScrollEnabled(scrollable, visibility, mode);
 
-			if (_presenter == default)
+			if (_presenter is null)
 			{
 				return; // Control not ready yet
 			}
 
 			// Support for the native scroll bars (delegated to the native _presenter).
 			_presenter.HorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(visibility, mode, _horizontalScrollbar);
-			if (invalidate && _horizontalScrollbar == default)
+			if (invalidate && _horizontalScrollbar is null)
 			{
 				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
 			}
@@ -719,13 +719,15 @@ namespace Windows.UI.Xaml.Controls
 				&& mode != ScrollMode.Disabled;
 
 		private static ScrollBarVisibility ComputeNativeScrollBarVisibility(ScrollBarVisibility visibility, ScrollMode mode, ScrollBar managedScrollbar)
-			=> mode == ScrollMode.Disabled
-				? ScrollBarVisibility.Disabled
-				: managedScrollbar == default
-					? visibility
-					: ScrollBarVisibility.Hidden; // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
+			=> mode switch
+			{
+				ScrollMode.Disabled => ScrollBarVisibility.Disabled,
+				_ when managedScrollbar is null => visibility,
+				_ when visibility == ScrollBarVisibility.Disabled => ScrollBarVisibility.Disabled,
+				_ => ScrollBarVisibility.Hidden // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
+			};
 
-		/// <summary>
+	/// <summary>
 		/// Sets the content of the ScrollViewer
 		/// </summary>
 		/// <param name="view"></param>
