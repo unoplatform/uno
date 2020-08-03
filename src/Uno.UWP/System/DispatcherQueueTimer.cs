@@ -44,7 +44,7 @@ namespace Windows.System
 
 		public bool IsRunning => _state == States.Running;
 
-		public bool IsRepeating { get; set; }
+		public bool IsRepeating { get; set; } = true;
 
 		/// <summary>
 		/// An internal state that can be used to store a value in order to prevent a closure in the click handler.
@@ -117,7 +117,14 @@ namespace Windows.System
 		{
 			try
 			{
-				if (IsRunning)
+				var isRunning = IsRunning;
+
+				if (isRunning && !isTickForRestart && !IsRepeating)
+				{
+					Stop();
+				}
+
+				if (isRunning)
 				{
 					_lastTick = DateTimeOffset.UtcNow;
 
@@ -130,11 +137,6 @@ namespace Windows.System
 				{
 					this.Log().Error("Raising tick failed", e);
 				}
-			}
-
-			if (!isTickForRestart && !IsRepeating)
-			{
-				Stop();
 			}
 		}
 
