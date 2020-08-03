@@ -54,6 +54,10 @@
 				return _path;
 			}
 		}
+
+		/// <inheritdoc />
+		public override string ToString()
+			=> _path;
 	}
 }
 
