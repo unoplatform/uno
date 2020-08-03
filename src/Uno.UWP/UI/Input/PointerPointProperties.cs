@@ -40,7 +40,7 @@ namespace Windows.UI.Input
 		public float YTilt { get; internal set; } = 0f;
 #endif
 
-#if !__WASM__
+#if __IOS__ || __MACOS__ || __ANDROID__
 		[global::Uno.NotImplemented]
 #endif
 		public int MouseWheelDelta { get; internal set; }

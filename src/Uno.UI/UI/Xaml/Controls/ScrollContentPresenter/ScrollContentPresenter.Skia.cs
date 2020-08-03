@@ -166,9 +166,15 @@ namespace Windows.UI.Xaml.Controls
 
 			if (Content is UIElement c)
 			{
-				if (properties.IsHorizontalMouseWheel)
+				var canScrollHorizontally = HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
+				var canScrollVertically = VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
+
+				if (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers.HasFlag(System.VirtualKeyModifiers.Shift))
 				{
-					SetHorizontalOffset(HorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, properties.MouseWheelDelta * ScrollViewerDefaultMouseWheelDelta));
+					if (canScrollHorizontally)
+					{
+						SetHorizontalOffset(HorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, -properties.MouseWheelDelta * ScrollViewerDefaultMouseWheelDelta));
+					}
 				}
 				else
 				{

@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml
 				PropagateEvent(args, e =>
 				{
 					var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-					var pointerArgs = new PointerRoutedEventArgs(args, pointer, e);
+					var pointerArgs = new PointerRoutedEventArgs(args, e);
 					e.OnNativePointerWheel(pointerArgs);
 				});
 			}
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml
 				{
 					foreach(var target in capture.Targets.ToArray())
 					{
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, target.Element);
+						var pointerArgs = new PointerRoutedEventArgs(args, target.Element);
 						target.Element.OnNativePointerUp(pointerArgs);
 					}
 				}
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml
 							this.Log().Trace($"PointerManager.Released [{e}/{e.GetHashCode():X8}");
 						}
 
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, e);
+						var pointerArgs = new PointerRoutedEventArgs(args, e);
 
 						TraverseAncestors(e, e => e.OnNativePointerUp(pointerArgs));
 					});
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml
 					}
 
 					var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-					var pointerArgs = new PointerRoutedEventArgs(args, pointer, e);
+					var pointerArgs = new PointerRoutedEventArgs(args, e);
 
 					TraverseAncestors(e, e => e.OnNativePointerDown(pointerArgs));
 				});
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var target in capture.Targets)
 					{
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, target.Element);
+						var pointerArgs = new PointerRoutedEventArgs(args, target.Element);
 
 						target.Element.OnNativePointerMove(pointerArgs);
 					}
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml
 				{
 					PropagateEvent(args, e =>
 					{
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, e) { CanBubbleNatively = true };
+						var pointerArgs = new PointerRoutedEventArgs(args, e);
 						e.OnNativePointerMove(pointerArgs);
 					});
 				}
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml
 
 				var position = args.CurrentPoint.Position;
 				var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-				var pointerArgs = new PointerRoutedEventArgs(args, pointer, element);
+				var pointerArgs = new PointerRoutedEventArgs(args, element);
 
 				if (element.RenderTransform != null)
 				{

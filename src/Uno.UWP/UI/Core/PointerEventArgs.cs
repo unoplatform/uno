@@ -1,30 +1,24 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
+using System.Collections.Generic;
+using Windows.System;
 using Windows.UI.Input;
 
 namespace Windows.UI.Core
 {
 	public partial class PointerEventArgs : ICoreWindowEventArgs
 	{
-		internal PointerEventArgs(PointerPoint currentPoint)
+		internal PointerEventArgs(PointerPoint currentPoint, VirtualKeyModifiers keyModifiers)
 		{
 			CurrentPoint = currentPoint;
+			KeyModifiers = keyModifiers;
 		}
 
-		public bool Handled
-		{
-			get;
-			set;
-		}
+		public bool Handled { get; set; }
 
 		public PointerPoint CurrentPoint { get; }
 
-		[global::Uno.NotImplemented]
-		public global::Windows.System.VirtualKeyModifiers KeyModifiers
-			=> throw new global::System.NotImplementedException("The member VirtualKeyModifiers PointerEventArgs.KeyModifiers is not implemented in Uno.");
+		public VirtualKeyModifiers KeyModifiers { get; }
 
-		[global::Uno.NotImplemented]
-		public global::System.Collections.Generic.IList<global::Windows.UI.Input.PointerPoint> GetIntermediatePoints()
-			=> throw new global::System.NotImplementedException("The member IList<PointerPoint> PointerEventArgs.GetIntermediatePoints() is not implemented in Uno.");
+		public IList<PointerPoint> GetIntermediatePoints()
+			=> new List<PointerPoint> {CurrentPoint};
 	}
 }

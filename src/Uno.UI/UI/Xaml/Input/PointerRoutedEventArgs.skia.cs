@@ -15,18 +15,16 @@ namespace Windows.UI.Xaml.Input
 	{
 		private readonly PointerEventArgs _pointerEventArgs;
 		private readonly Point _absolutePosition;
-		private readonly ulong _pseudoTimestamp = (ulong)DateTime.UtcNow.Ticks;
 
 		internal PointerRoutedEventArgs(
 			PointerEventArgs pointerEventArgs,
-			Pointer pointer,
 			UIElement source) : this()
 		{
 			_pointerEventArgs = pointerEventArgs;
 			_absolutePosition = pointerEventArgs.CurrentPoint.RawPosition;
 
 			FrameId = pointerEventArgs.CurrentPoint.FrameId;
-			Pointer = pointer;
+			Pointer = GetPointer(pointerEventArgs);
 			OriginalSource = source;
 
 			// All events bubble in managed mode.
@@ -39,10 +37,17 @@ namespace Windows.UI.Xaml.Input
 			var position = relativeTo == null
 				? _absolutePosition
 				: relativeTo.TransformToVisual(null).Inverse.TransformPoint(_absolutePosition);
-
+			var timestamp = _pointerEventArgs.CurrentPoint.Timestamp;
 			var properties = _pointerEventArgs.CurrentPoint.Properties;
 
-			return new PointerPoint(FrameId, _pseudoTimestamp, device, 0, _absolutePosition, position, true, properties);
+			return new PointerPoint(FrameId, timestamp, device, 0, _absolutePosition, position, true, properties);
 		}
+
+		private Pointer GetPointer(PointerEventArgs args)
+			=> new Pointer(
+				args.CurrentPoint.PointerId,
+				args.CurrentPoint.PointerDevice.PointerDeviceType,
+				isInContact: args.CurrentPoint.IsInContact,
+				isInRange: args.CurrentPoint.Properties.IsInRange);
 	}
 }
