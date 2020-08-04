@@ -77,10 +77,16 @@ namespace Windows.UI.Xaml
 				{
 					throw new NotSupportedException("Operation not supported");
 				}
-				// this flag makes sure the app will not respond to OS events	
-				_themeSetExplicitly = true;
-				SetRequestedTheme(value);
+				SetExplicitRequestedTheme(value);
 			}
+		}
+
+		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
+		{
+			// this flag makes sure the app will not respond to OS events
+			_themeSetExplicitly = explicitTheme.HasValue;
+			var theme = explicitTheme ?? GetDefaultSystemTheme();
+			SetRequestedTheme(theme);
 		}
 
 		public ResourceDictionary Resources { get; } = new ResourceDictionary();
@@ -174,7 +180,7 @@ namespace Windows.UI.Xaml
 			OnWindowCreated(new WindowCreatedEventArgs(window));
 		}
 
-		internal void SetRequestedTheme(ApplicationTheme requestedTheme)
+		private void SetRequestedTheme(ApplicationTheme requestedTheme)
 		{
 			if (requestedTheme != _requestedTheme)
 			{

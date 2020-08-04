@@ -221,13 +221,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 #if !NETFX_CORE //Not legal on UWP to change theme after app has launched
 			try
 			{
-				Application.Current.SetRequestedTheme(ApplicationTheme.Dark);
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
 				var retrieved2 = rd["Blu"];
 				Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved2).Color);
 			}
 			finally
 			{
-				Application.Current.SetRequestedTheme(ApplicationTheme.Light);
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
 			}
 #endif
 		}

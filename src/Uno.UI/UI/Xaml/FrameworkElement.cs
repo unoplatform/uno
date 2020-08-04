@@ -17,6 +17,7 @@ using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
+using Uno.UI.Extensions;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -377,6 +378,31 @@ namespace Windows.UI.Xaml
 		}
 
 		private Style ResolveImplicitStyle() => (this as IDependencyObjectStoreProvider).Store.GetImplicitStyle();
+
+		#region Requested theme dependency property
+
+		public ElementTheme RequestedTheme
+		{
+			get => (ElementTheme)GetValue(RequestedThemeProperty);
+			set => SetValue(RequestedThemeProperty, value);
+		}
+
+		public static DependencyProperty RequestedThemeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(RequestedTheme),
+				typeof(ElementTheme),
+				typeof(FrameworkElement),
+				new PropertyMetadata(
+					ElementTheme.Default,
+					(o, e) => ((FrameworkElement)o).OnRequestedThemeChanged((ElementTheme)e.OldValue, (ElementTheme)e.NewValue)));
+
+		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
+			// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
+			// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
+			=> Application.Current.SetExplicitRequestedTheme(newValue.ToApplicationThemeOrDefault());
+
+
+		#endregion
 
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined

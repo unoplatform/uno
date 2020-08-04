@@ -42,6 +42,28 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Element_Theme_Changed()
+		{
+			var page = new ThemeResource_Themed_Color_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+
+			page.RequestedTheme = ElementTheme.Dark;
+			Assert.AreEqual(Colors.DarkBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+
+			page.RequestedTheme = ElementTheme.Light;
+			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+
+			page.RequestedTheme = ElementTheme.Dark;
+			Assert.AreEqual(Colors.DarkBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+
+			page.RequestedTheme = ElementTheme.Default;
+			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
 		public async Task When_Visual_States_Keyframe_Theme_Changed_Reapplied()
 		{
 			var page = new ThemeResource_In_Visual_States_Page();
@@ -471,7 +493,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			await _swapTask;
 #else
-			Application.Current.SetRequestedTheme(targetTheme);
+			Application.Current.SetExplicitRequestedTheme(targetTheme);
 #endif
 			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
 			return true;
