@@ -29,27 +29,43 @@ then
 	"
 else
 	export SCREENSHOTS_FOLDERNAME=ios
-	export TEST_FILTERS=" \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests' or \
-		namespace = 'SamplesApp.UITests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Input.VisualState_Tests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests' or \
-		namespace = 'SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media_Animation' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests' or \
-		class = 'SamplesApp.UITests.Windows_UI_Xaml_Shapes.Basics_Shapes_Tests'
-	"
+
+	# Note for test authors, add tests in the last group, notify devops
+	# notify devops when the group gets too big.
+	# See https://github.com/unoplatform/uno/issues/1955 for additional details
+
+	if [ "$UITEST_AUTOMATED_GROUP" == '1' ];
+	then
+		export TEST_FILTERS=" \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests' or \
+			namespace = 'SamplesApp.UITests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Input.VisualState_Tests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests'
+		"
+	elif [ "$UITEST_AUTOMATED_GROUP" == '2' ];
+	then
+		export TEST_FILTERS=" \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests' or \
+			namespace = 'SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests'
+		"
+	elif [ "$UITEST_AUTOMATED_GROUP" == '3' ];
+	then
+		export TEST_FILTERS=" \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media_Animation' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests' or \
+			class = 'SamplesApp.UITests.Windows_UI_Xaml_Shapes.Basics_Shapes_Tests'
+		"
+	fi
 fi
 
 export UNO_UITEST_PLATFORM=iOS
