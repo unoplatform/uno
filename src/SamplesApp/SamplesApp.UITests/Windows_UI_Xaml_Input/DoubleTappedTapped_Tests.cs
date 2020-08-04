@@ -34,8 +34,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			var result = GestureResult.Get(_app.Marked("LastDoubleTapped"));
 			result.Element.Should().Be(targetName);
-			((int)result.X).Should().Be(tapX);
-			((int)result.Y).Should().Be(tapY);
+			((int)result.X).Should().BeInRange(tapX - 1, tapX + 1);
+			((int)result.Y).Should().BeInRange(tapY - 1, tapY + 1);
 		}
 
 		[Test]
