@@ -111,6 +111,8 @@ namespace Windows.UI.Xaml.Controls
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
 
+			Loaded += AttachScrollBars;
+			Unloaded += DetachScrollBars;
 			Unloaded += ResetScrollIndicator;
 		}
 
@@ -744,21 +746,8 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			// Cleanup previous template
-			if (_verticalScrollbar != null)
-			{
-				_verticalScrollbar.Scroll -= OnVerticalScrollBarScrolled;
-				_verticalScrollbar.PointerEntered -= ShowScrollBarSeparator;
-				_verticalScrollbar.PointerExited -= HideScrollBarSeparator;
-			}
-
-			if (_horizontalScrollbar != null)
-			{
-				_horizontalScrollbar.Scroll -= OnHorizontalScrollBarScrolled;
-				_horizontalScrollbar.PointerEntered -= ShowScrollBarSeparator;
-				_horizontalScrollbar.PointerExited -= HideScrollBarSeparator;
-			}
-
-			PointerMoved -= ShowScrollIndicator;
+			DetachScrollBars();
+			
 
 			base.OnApplyTemplate();
 
@@ -766,28 +755,7 @@ namespace Windows.UI.Xaml.Controls
 			_verticalScrollbar = (GetTemplateChild(Parts.WinUI3.VerticalScrollBar) ?? GetTemplateChild(Parts.Uwp.VerticalScrollBar)) as ScrollBar;
 			_horizontalScrollbar = (GetTemplateChild(Parts.WinUI3.HorizontalScrollBar) ?? GetTemplateChild(Parts.Uwp.HorizontalScrollBar)) as ScrollBar;
 
-			var hasManagedVerticalScrollBar = _verticalScrollbar != null;
-			var hasManagedHorizontalScrollBar = _horizontalScrollbar != null;
-			if (hasManagedVerticalScrollBar)
-			{
-				_verticalScrollbar.Scroll += OnVerticalScrollBarScrolled;
-			}
-			if (hasManagedHorizontalScrollBar)
-			{
-				_horizontalScrollbar.Scroll += OnHorizontalScrollBarScrolled;
-			}
-			if (hasManagedVerticalScrollBar || hasManagedHorizontalScrollBar)
-			{
-				PointerMoved += ShowScrollIndicator;
-
-				if (hasManagedVerticalScrollBar && hasManagedHorizontalScrollBar)
-				{
-					_verticalScrollbar.PointerEntered += ShowScrollBarSeparator;
-					_horizontalScrollbar.PointerEntered += ShowScrollBarSeparator;
-					_verticalScrollbar.PointerExited += HideScrollBarSeparator;
-					_horizontalScrollbar.PointerExited += HideScrollBarSeparator;
-				}
-			}
+			AttachScrollBars();
 
 			var scpTemplatePart = GetTemplateChild(Parts.WinUI3.Scroller) ?? GetTemplateChild(Parts.Uwp.ScrollContentPresenter);
 			_presenter = scpTemplatePart as IScrollContentPresenter;
@@ -917,6 +885,60 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
+		#region Managed scroll bars support
+		private static void DetachScrollBars(object sender, RoutedEventArgs e)
+			=> (sender as ScrollViewer)?.DetachScrollBars();
+
+		private void DetachScrollBars()
+		{
+			if (_verticalScrollbar != null)
+			{
+				_verticalScrollbar.Scroll -= OnVerticalScrollBarScrolled;
+				_verticalScrollbar.PointerEntered -= ShowScrollBarSeparator;
+				_verticalScrollbar.PointerExited -= HideScrollBarSeparator;
+			}
+
+			if (_horizontalScrollbar != null)
+			{
+				_horizontalScrollbar.Scroll -= OnHorizontalScrollBarScrolled;
+				_horizontalScrollbar.PointerEntered -= ShowScrollBarSeparator;
+				_horizontalScrollbar.PointerExited -= HideScrollBarSeparator;
+			}
+
+			PointerMoved -= ShowScrollIndicator;
+		}
+
+		private static void AttachScrollBars(object sender, RoutedEventArgs e)
+			=> (sender as ScrollViewer)?.AttachScrollBars();
+
+		private void AttachScrollBars()
+		{
+			var hasManagedVerticalScrollBar = _verticalScrollbar != null;
+			var hasManagedHorizontalScrollBar = _horizontalScrollbar != null;
+			if (hasManagedVerticalScrollBar)
+			{
+				_verticalScrollbar.Scroll += OnVerticalScrollBarScrolled;
+			}
+
+			if (hasManagedHorizontalScrollBar)
+			{
+				_horizontalScrollbar.Scroll += OnHorizontalScrollBarScrolled;
+			}
+
+			if (hasManagedVerticalScrollBar || hasManagedHorizontalScrollBar)
+			{
+				PointerMoved += ShowScrollIndicator;
+
+				if (hasManagedVerticalScrollBar && hasManagedHorizontalScrollBar)
+				{
+					_verticalScrollbar.PointerEntered += ShowScrollBarSeparator;
+					_horizontalScrollbar.PointerEntered += ShowScrollBarSeparator;
+					_verticalScrollbar.PointerExited += HideScrollBarSeparator;
+					_horizontalScrollbar.PointerExited += HideScrollBarSeparator;
+				}
+			}
+		}
+
 		private void OnVerticalScrollBarScrolled(object sender, ScrollEventArgs e)
 		{
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
@@ -947,7 +969,8 @@ namespace Windows.UI.Xaml.Controls
 			};
 
 			ChangeViewScroll(e.NewValue, null, disableAnimation: immediate);
-		}
+		} 
+		#endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
