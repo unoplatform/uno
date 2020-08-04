@@ -9,7 +9,9 @@ jobs:
     - Wasm_UITests_Automated
     - Android_Tests
     - Skia_UI_Tests
-    - iOS_Automated_Tests
+    - iOS_Automated_Tests_Group_01
+    - iOS_Automated_Tests_Group_02
+    - iOS_Automated_Tests_Group_03
     - iOS_Snaphot_Tests_Group_01
     - iOS_Snaphot_Tests_Group_02
     - iOS_Snaphot_Tests_Group_03

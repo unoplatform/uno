@@ -57,11 +57,36 @@ jobs:
 - template: .azure-devops-ios-tests-run.yml
   parameters:
     nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Automated_Tests'
-    JobDisplayName: 'iOS Automated Tests'
-    JobTimeoutInMinutes: 100
+    JobName: 'iOS_Automated_Tests_Group_01'
+    JobDisplayName: 'iOS Automated Tests Group 01'
+    JobTimeoutInMinutes: 30
     vmImage: ${{ parameters.vmImage }}
     UITEST_SNAPSHOTS_ONLY: false
+    UITEST_AUTOMATED_GROUP: 1
+    xCodeRoot: ${{ parameters.xCodeRoot }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Automated_Tests_Group_02'
+    JobDisplayName: 'iOS Automated Tests Group 02'
+    JobTimeoutInMinutes: 30
+    vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: false
+    UITEST_AUTOMATED_GROUP: 2
+    xCodeRoot: ${{ parameters.xCodeRoot }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Automated_Tests_Group_03'
+    JobDisplayName: 'iOS Automated Tests Group 03'
+    JobTimeoutInMinutes: 30
+    vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: false
+    UITEST_AUTOMATED_GROUP: 3
     xCodeRoot: ${{ parameters.xCodeRoot }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
