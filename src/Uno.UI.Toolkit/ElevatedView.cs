@@ -178,7 +178,7 @@ namespace Uno.UI.Toolkit
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 
-		protected override Size ArrangeOverride(Size finalSize)
+		protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
 		{
 			return base.ArrangeOverride(this.ApplySizeConstraints(finalSize));
 		}
