@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public ResourceDictionary Resources { get; } = new ResourceDictionary();
+		public ResourceDictionary Resources { get; set; } = new ResourceDictionary();
 
 #pragma warning disable CS0067 // The event is never used
 		public event EventHandler<object> Resuming;
