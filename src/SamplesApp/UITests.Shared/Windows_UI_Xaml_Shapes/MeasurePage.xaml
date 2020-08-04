@@ -12,6 +12,19 @@
 		<StackPanel>
 			<TextBlock Text="Collapsed in a small ScrollViewer (might enable scrolling on WASM)" />
 			<ScrollViewer Height="100" Width="100" Background="DeepSkyBlue" HorizontalAlignment="Left" x:Name="CollapsedInSmallScrollViewer">
+				<ScrollViewer.Template>
+					<ControlTemplate TargetType="ScrollViewer">
+						<Border
+							BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="{TemplateBinding CornerRadius}"
+							Background="{TemplateBinding Background}">
+							<ScrollContentPresenter
+								x:Name="ScrollContentPresenter"
+								Margin="{TemplateBinding Padding}" />
+						</Border>
+					</ControlTemplate>
+				</ScrollViewer.Template>
 				<Grid Height="100" Width="100">
 					<Ellipse Fill="DeepPink" Visibility="Collapsed" />
 					<TextBlock Text="This must not be scrollable" />
