@@ -17,7 +17,6 @@ using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
-using Uno.UI.Extensions;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -399,7 +398,7 @@ namespace Windows.UI.Xaml
 		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
 			// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
 			// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
-			=> Application.Current.SetExplicitRequestedTheme(newValue.ToApplicationThemeOrDefault());
+			=> Application.Current.SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(newValue));
 
 
 		#endregion
