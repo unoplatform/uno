@@ -41,6 +41,11 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\FluentIcon_Medium.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\FluentIcon_Medium.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\FluentIcon_Medium.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\FluentIcon_Medium.scale-300.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\FluentIcon_Medium.scale-400.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\home.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\play.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\lockscreenlogo.scale-200.png" />
@@ -64,8 +69,5 @@
     <Compile Update="$(MSBuildThisFileDirectory)Samples\UnitTests\HttpUnitTests.xaml.cs">
       <DependentUpon>HttpUnitTests.xaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Assets\Icons\" />
   </ItemGroup>
 </Project>

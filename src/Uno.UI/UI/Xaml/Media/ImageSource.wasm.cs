@@ -50,36 +50,6 @@ namespace Windows.UI.Xaml.Media
 				return true;
 			}
 
-			var url = WebUri;
-			if (url != null)
-			{
-				string value;
-				if (url.IsAbsoluteUri)
-				{
-					value = url.Scheme switch
-					{
-						// Local files are assumed as coming from the remoter server
-						"file" when UNO_BOOTSTRAP_APP_BASE == null => url.PathAndQuery,
-						"file" => UNO_BOOTSTRAP_APP_BASE + "/" + url.PathAndQuery,
-						_ => url.AbsoluteUri
-					};
-				}
-				else
-				{
-					value = UNO_BOOTSTRAP_APP_BASE == null
-						? url.OriginalString
-						: UNO_BOOTSTRAP_APP_BASE + "/" + url.OriginalString;
-				}
-					
-
-				img = new ImageData
-				{
-					Kind = ImageDataKind.Url,
-					Value = value
-				};
-				return true;
-			}
-
 			img = default;
 			return false;
 		}
