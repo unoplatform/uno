@@ -14,7 +14,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -25,6 +24,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void Init()
 		{
 			UnitTestsApp.App.EnsureApplication();
+		}
+
+		[TestCleanup]
+		public async Task Cleanup()
+		{
+			if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+			{
+				await SwapSystemTheme();
+			}
 		}
 
 		[TestMethod]
