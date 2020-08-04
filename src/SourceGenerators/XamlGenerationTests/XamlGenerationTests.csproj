@@ -38,6 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="ApplicationResourcesSetter.xaml" />
 	  <None Remove="NamedColorsTest.xaml" />
 	  <None Remove="NonDPAssignableTest.xaml" />
 	  <None Remove="StoryboardTargetTest.xaml" />
