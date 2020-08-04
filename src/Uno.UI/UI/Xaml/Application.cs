@@ -193,6 +193,12 @@ namespace Windows.UI.Xaml
 
 			void PropagateThemeChanged(object instance)
 			{
+				// Update theme bindings in application resources
+				Resources?.UpdateThemeBindings();
+
+				// Update theme bindings in system resources
+				ResourceResolver.UpdateSystemThemeBindings();
+
 				// Update ThemeResource references that have changed
 				if (instance is FrameworkElement fe)
 				{

@@ -28,6 +28,20 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public async Task When_Themed_Color_Theme_Changed()
+		{
+			var page = new ThemeResource_Themed_Color_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+
+			await SwapSystemTheme();
+
+			Assert.AreEqual(Colors.DarkBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
 		public async Task When_Visual_States_Keyframe_Theme_Changed_Reapplied()
 		{
 			var page = new ThemeResource_In_Visual_States_Page();

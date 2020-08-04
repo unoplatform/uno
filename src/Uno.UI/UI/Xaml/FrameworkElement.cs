@@ -627,7 +627,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal virtual void UpdateThemeBindings()
 		{
-			//TODO: should update bindings on non-UI DO children
+			Resources?.UpdateThemeBindings();
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
 		}
 

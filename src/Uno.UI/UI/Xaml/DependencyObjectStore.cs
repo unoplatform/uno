@@ -1109,7 +1109,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
 		/// </summary>
-		internal void UpdateResourceBindings(bool isThemeChangedUpdate)
+		internal void UpdateResourceBindings(bool isThemeChangedUpdate, ResourceDictionary? containingDictionary = null)
 		{
 			if (_resourceBindings == null || _resourceBindings.Count == 0)
 			{
@@ -1117,7 +1117,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false).ToArray();
+			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
 
 			var bindings = _resourceBindings.ToArray(); //The original dictionary may be mutated during DP assignations
 
@@ -1166,8 +1166,12 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
 		/// </summary>
-		private IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources)
+		private IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources, ResourceDictionary? containingDictionary = null)
 		{
+			if (containingDictionary != null)
+			{
+				yield return containingDictionary;
+			}
 			var candidate = ActualInstance;
 			while (candidate != null)
 			{
