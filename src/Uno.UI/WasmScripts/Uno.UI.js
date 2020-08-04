@@ -746,6 +746,12 @@ var Uno;
                     element.style.setProperty(name, "");
                 }
             }
+            isCssPropertySupported(propertyName, value) {
+                return CSS.supports(propertyName, value);
+            }
+            isCssConditionSupported(supportCondition) {
+                return CSS.supports(supportCondition);
+            }
             /**
              * Set + Unset CSS classes on an element
              */

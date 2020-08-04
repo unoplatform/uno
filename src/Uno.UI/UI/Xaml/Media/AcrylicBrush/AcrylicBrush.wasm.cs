@@ -1,42 +1,74 @@
-﻿using System.Text;
+﻿using System;
+using Uno.Disposables;
 using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
 	{
+		private const string BlurSize = "20px";
 		private const string CssSupportCondition =
 			"(backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))";
 
 		private static bool? _isBackdropFilterSupported = null;
 
-		internal string CheckCssString()
+		internal IDisposable Subscribe(UIElement uiElement)
 		{
-			return $@"background-color: {FallbackColor.ToCssString()}
-				@supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px)) {{
-					-webkit-backdrop-filter: blur(20px);
-					backdrop-filter: blur(20px);
-					background-color: {TintColor.ToCssString()};
-				}}";
+			var compositeDisposable = new CompositeDisposable(4);
+
+			this.RegisterDisposablePropertyChangedCallback(
+				AlwaysUseFallbackProperty,
+				(_, __) => Apply(uiElement))
+					.DisposeWith(compositeDisposable);
+
+			this.RegisterDisposablePropertyChangedCallback(
+				TintColorProperty,
+				(_, __) => Apply(uiElement))
+					.DisposeWith(compositeDisposable);
+
+			this.RegisterDisposablePropertyChangedCallback(
+				TintOpacityProperty,
+				(_, __) => Apply(uiElement))
+					.DisposeWith(compositeDisposable);
+
+			this.RegisterDisposablePropertyChangedCallback(
+				OpacityProperty,
+				(_, __) => Apply(uiElement))
+					.DisposeWith(compositeDisposable);
+
+			// Apply the current state of the brush
+			Apply(uiElement);
+
+			return compositeDisposable;
 		}
 
-		internal void SetStyle(UIElement element)
+		/// <summary>
+		/// Applies the current state of Acrylic brush to a given UIElement
+		/// </summary>
+		/// <param name="uiElement">UIElement to set background brush to.</param>
+		internal void Apply(UIElement uiElement)
 		{
-			if (IsBackdropFilterSupported())
-			{				
-				// "real" acrylic
-				element.SetStyle(
-					("-webkit-backdrop-filter", "blur(20px)"),
-					("backdrop-filter", "blur(20px)"),
-					("background-color", TintColor.ToCssString()));
-			}
-			else
+			var isBackdropSupported = IsBackdropFilterSupported();
+			ResetStyle(uiElement);
+			if (AlwaysUseFallback || !isBackdropSupported)
 			{
-				// Set fallback color instead
-				element.SetStyle("background-color", FallbackColor.ToCssString());
+				// Use plain fallback color
+				uiElement.SetStyle("background-color", FallbackColorWithOpacity.ToCssString());
+			}
+			else if (isBackdropSupported)
+			{
+				// "real" acrylic
+				uiElement.SetStyle(
+					("-webkit-backdrop-filter", $"blur({BlurSize})"),
+					("backdrop-filter", $"blur({BlurSize})"),
+					("background-color", TintColorWithTintOpacity.ToCssString()));
 			}
 		}
 
+		/// <summary>
+		/// Resets the AcrylicBrush-related properties on a give UIElement.
+		/// </summary>
+		/// <param name="element">Element.</param>
 		internal static void ResetStyle(UIElement element)
 		{
 			element.ResetStyle(
@@ -45,6 +77,10 @@ namespace Windows.UI.Xaml.Media
 				"background-color");
 		}
 
+		/// <summary>
+		/// Verifies if the current browser supports backdrop filter in CSS.
+		/// </summary>
+		/// <returns>Value indicating whether backdrop filter is supported.</returns>
 		private static bool IsBackdropFilterSupported() =>
 			_isBackdropFilterSupported ??= WindowManagerInterop.IsCssFeatureSupported(CssSupportCondition);
 	}

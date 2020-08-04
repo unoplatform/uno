@@ -95,6 +95,10 @@ namespace Windows.UI.Xaml.Shapes
 						() => GetDefs().Remove(gradient)
 					);
 					break;
+				case AcrylicBrush ab:
+					svgElement.SetStyle("fill", ab.FallbackColorWithOpacity.ToHexString());
+					_fillBrushSubscription.Disposable = null;
+					break;
 				case null:
 					// The default is black if the style is not set in Web's' SVG. So if the Fill property is not set,
 					// we explicitly set the style to transparent in order to match the UWP behavior.
@@ -126,6 +130,10 @@ namespace Windows.UI.Xaml.Shapes
 					_strokeBrushSubscription.Disposable = new DisposableAction(
 						() => GetDefs().Remove(gradient)
 					);
+					break;
+				case AcrylicBrush ab:
+					svgElement.SetStyle("stroke", ab.FallbackColorWithOpacity.ToHexString());
+					_strokeBrushSubscription.Disposable = null;
 					break;
 				default:
 					svgElement.ResetStyle("stroke");

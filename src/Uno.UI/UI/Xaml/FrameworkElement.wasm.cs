@@ -327,6 +327,15 @@ namespace Windows.UI.Xaml
 							("border-width", borderWidth),
 							("border-radius", borderRadius));
 						break;
+					case AcrylicBrush acrylicBrush:
+						var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
+						SetStyle(
+							("border", ""),
+							("border-style", "solid"),
+							("border-color", acrylicFallbackColor.ToHexString()),
+							("border-width", borderWidth),
+							("border-radius", borderRadius));
+						break;
 					default:
 						ResetStyle("border-style", "border-color", "border-image", "border-width", "border-radius");
 						break;
