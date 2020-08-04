@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 			SetBorder(BorderThickness, BorderBrush, CornerRadius);
 		}
 			
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			UpdateBorder();
@@ -73,7 +73,5 @@ namespace Windows.UI.Xaml.Controls
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
-
-		private protected override Thickness GetBorderThickness() => BorderThickness;
 	}
 }

@@ -1,4 +1,4 @@
-#if NET461
+#if NET461 || __NETSTD_REFERENCE__
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml
 			{
 				Bounds = new Rect(0, 0, size.Width, size.Height);
 
-				RaiseSizeChanged(new WindowSizeChangedEventArgs(size));
+				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 			}
 		}
 	}

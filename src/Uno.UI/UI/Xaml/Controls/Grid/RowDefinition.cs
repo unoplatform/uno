@@ -21,12 +21,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(HeightProperty, value); }
 		}
 
-		public static readonly DependencyProperty HeightProperty =
+		public static DependencyProperty HeightProperty { get ; } =
 			DependencyProperty.Register(
 				"Height",
 				typeof(GridLength),
 				typeof(RowDefinition),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					GridLengthHelper.OneStar,
 					(s, e) => ((RowDefinition)s)?.OnHeightChanged(e)
 				)

@@ -41,9 +41,16 @@
 	</CreateProperty>
   </Target>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
+	<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY</DefineConstants>
+  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-	<DefineConstants>$(DefineConstants);__WASM__;HAS_EXPENSIVE_TRYFINALLY</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Skia'">
+	<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
+	<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsXamarinIOS)">
@@ -87,7 +94,7 @@
   <Target Name="_UnoOverrideNuget"
 		AfterTargets="AfterBuild"
 		DependsOnTargets="BuiltProjectOutputGroup"
-		Condition="'$(UnoNugetOverrideVersion)'!=''">
+		Condition="'$(UnoNugetOverrideVersion)'!='' and ('$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference')">
 
 	<PropertyGroup>
 	  <_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>

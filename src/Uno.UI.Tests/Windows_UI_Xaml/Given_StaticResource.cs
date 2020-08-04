@@ -147,6 +147,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			control.InlineTemplateControl.ApplyTemplate();
 			control.TemplateFromResourceControl.ApplyTemplate();
 
+			control.ForceLoaded();
+
 			var text1InlineBefore = control.InlineTemplateControl.TextBlock1.Text;
 			var text1ResourceTemplateBefore = control.TemplateFromResourceControl.TextBlock1.Text;
 

@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if !__ANDROID__
+#if !__ANDROID__ && !__MACOS__
 		[NotImplemented]
 		public void Exit()
 		{
@@ -157,8 +157,9 @@ namespace Windows.UI.Xaml
 
 		internal void OnSuspending()
 		{
-			CoreApplication.RaiseSuspending(new SuspendingEventArgs(new SuspendingOperation(DateTime.Now.AddSeconds(30))));
-
+			var suspendingEventArgs = new SuspendingEventArgs(new SuspendingOperation(DateTime.Now.AddSeconds(30)));
+			CoreApplication.RaiseSuspending(suspendingEventArgs);
+			
 			OnSuspendingPartial();
 		}
 

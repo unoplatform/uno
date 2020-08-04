@@ -2,38 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IDataReader 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		global::Windows.Storage.Streams.ByteOrder ByteOrder
-		{
-			get;
-			set;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		// Skipping already declared property ByteOrder
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.InputStreamOptions InputStreamOptions
 		{
 			get;
 			set;
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		uint UnconsumedBufferLength
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		global::Windows.Storage.Streams.UnicodeEncoding UnicodeEncoding
-		{
-			get;
-			set;
-		}
-		#endif
+		// Skipping already declared property UnconsumedBufferLength
+		// Skipping already declared property UnicodeEncoding
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnconsumedBufferLength.get
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnicodeEncoding.get
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.UnicodeEncoding.set
@@ -41,61 +24,27 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.ByteOrder.set
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.InputStreamOptions.get
 		// Forced skipping of method Windows.Storage.Streams.IDataReader.InputStreamOptions.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		byte ReadByte();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void ReadBytes( byte[] value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		global::Windows.Storage.Streams.IBuffer ReadBuffer( uint length);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		bool ReadBoolean();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		global::System.Guid ReadGuid();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		short ReadInt16();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		int ReadInt32();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		long ReadInt64();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ushort ReadUInt16();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		uint ReadUInt32();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ulong ReadUInt64();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		float ReadSingle();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		double ReadDouble();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		string ReadString( uint codeUnitCount);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		global::System.DateTimeOffset ReadDateTime();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		global::System.TimeSpan ReadTimeSpan();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadByte()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadBytes(byte[])
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadBuffer(uint)
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadBoolean()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadGuid()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadInt16()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadInt32()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadInt64()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadUInt16()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadUInt32()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadUInt64()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadSingle()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadDouble()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadString(uint)
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadDateTime()
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadTimeSpan()
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.DataReaderLoadOperation LoadAsync( uint count);
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		global::Windows.Storage.Streams.IBuffer DetachBuffer();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		// Skipping already declared method Windows.Storage.Streams.IDataReader.DetachBuffer()
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.IInputStream DetachStream();
 		#endif
 	}

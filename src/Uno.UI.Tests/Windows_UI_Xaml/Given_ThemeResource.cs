@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
+using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -84,6 +87,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			control.InlineTemplateControl.ApplyTemplate();
 			control.TemplateFromResourceControl.ApplyTemplate();
+
+			control.ApplyTemplate();
 
 			var text2InlineBefore = control.InlineTemplateControl.TextBlock2.Text;
 			Assert.AreEqual("LocalVisualTree", text2InlineBefore);
@@ -270,6 +275,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			{
 				await SwapSystemTheme();
 			}
+		}
+
+		[TestMethod]
+		public async Task When_Direct_Assignment_Incompatible()
+		{
+			var page = new ThemeResource_Direct_Assignment_Incompatible_Page();
+			var transform = page.Resources["MyTransform"] as TranslateTransform;
+
+			Assert.AreEqual(115, transform.Y); //Standard double resource
+			Assert.AreEqual(490, transform.X); // Resource is actually a Thickness!
 		}
 
 		private static async Task<bool> SwapSystemTheme()

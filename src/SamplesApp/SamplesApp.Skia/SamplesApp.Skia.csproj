@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
+		<IsUnoHead>true</IsUnoHead>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+
+		<PackageReference Include="Microsoft.Graph" Version="3.8.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
+		<PackageReference Include="System.Management" Version="4.6.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="Uno.CodeGen" Version="1.32.0" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
+	</ItemGroup>
+
+	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
+
+	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" />
+
+	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
+
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
+
+	<ItemGroup>
+		<Content Update="@(Content)" CopyToOutputDirectory="Always" />
+	</ItemGroup>
+
+</Project>

@@ -90,7 +90,7 @@ namespace Microsoft.CodeAnalysis
 		{
 			do
 			{
-				if (symbol == other)
+				if (Equals(symbol, other))
 				{
 					return true;
 				}
@@ -118,7 +118,7 @@ namespace Microsoft.CodeAnalysis
 			symbol.DeclaredAccessibility == Accessibility.Public
 			||
 			(
-				symbol.Locations.Any(l => l.MetadataModule == currentSymbol)
+				symbol.Locations.Any(l => Equals(l.MetadataModule, currentSymbol))
 				&& symbol.DeclaredAccessibility == Accessibility.Internal
 			);
 
@@ -166,12 +166,12 @@ namespace Microsoft.CodeAnalysis
 
 		public static AttributeData FindAttribute(this ISymbol property, INamedTypeSymbol attributeClassSymbol)
 		{
-			return property.GetAttributes().FirstOrDefault(a => a.AttributeClass == attributeClassSymbol);
+			return property.GetAttributes().FirstOrDefault(a => Equals(a.AttributeClass, attributeClassSymbol));
 		}
 
 		public static AttributeData FindAttributeFlattened(this ISymbol property, INamedTypeSymbol attributeClassSymbol)
 		{
-			return property.GetAllAttributes().FirstOrDefault(a => a.AttributeClass == attributeClassSymbol);
+			return property.GetAllAttributes().FirstOrDefault(a => Equals(a.AttributeClass, attributeClassSymbol));
 		}
 
 		/// <summary>
@@ -402,7 +402,7 @@ namespace Microsoft.CodeAnalysis
 
 		public static IFieldSymbol FindField(this INamedTypeSymbol symbol, INamedTypeSymbol fieldType, string fieldName, StringComparison comparison = default)
 		{
-			return symbol.GetFields().FirstOrDefault(x => x.Type == fieldType && x.Name.Equals(fieldName, comparison));
+			return symbol.GetFields().FirstOrDefault(x => Equals(x.Type, fieldType) && x.Name.Equals(fieldName, comparison));
 		}
 	}
 }

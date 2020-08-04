@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 
-	partial class Image : FrameworkElement, ICustomClippingElement
+	partial class Image : FrameworkElement
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
 
@@ -65,35 +65,22 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		/// <summary>
-		/// When set, the resulting image is tentatively converted to Monochrome.
-		/// </summary>
-		internal Color? MonochromeColor { get; set; }
-
 		public event RoutedEventHandler ImageOpened
 		{
 			add => _htmlImage.RegisterEventHandler("load", value);
 			remove => _htmlImage.UnregisterEventHandler("load", value);
 		}
 
-		public event RoutedEventHandler ImageFailed
+		private ExceptionRoutedEventArgs ImageFailedConverter(object sender, string e)
+			=> new ExceptionRoutedEventArgs(sender, e);
+
+		public event ExceptionRoutedEventHandler ImageFailed
 		{
-			add => _htmlImage.RegisterEventHandler("error", value);
+			add => _htmlImage.RegisterEventHandler("error", value, payloadConverter: ImageFailedConverter);
 			remove => _htmlImage.UnregisterEventHandler("error", value);
 		}
 
-		#region Source DependencyProperty
-
-		public ImageSource Source
-		{
-			get => (ImageSource)GetValue(SourceProperty);
-			set => SetValue(SourceProperty, value);
-		}
-
-		public static readonly DependencyProperty SourceProperty =
-			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new PropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
-
-		private void OnSourceChanged(DependencyPropertyChangedEventArgs e)
+		partial void OnSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
 			UpdateHitTest();
 
@@ -137,24 +124,6 @@ namespace Windows.UI.Xaml.Controls
 				_htmlImage.SetAttribute("src", "");
 			}
 		}
-		#endregion
-
-		public static readonly DependencyProperty StretchProperty =
-			DependencyProperty.Register(
-				"Stretch",
-				typeof(Stretch),
-				typeof(Image),
-				new PropertyMetadata(
-					Media.Stretch.Uniform,
-					(s, e) => ((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
-
-		public Stretch Stretch
-		{
-			get => (Stretch)GetValue(StretchProperty);
-			set => SetValue(StretchProperty, value);
-		}
-
-		private void OnStretchChanged(Stretch newValue, Stretch oldValue) => InvalidateArrange();
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -201,7 +170,7 @@ namespace Windows.UI.Xaml.Controls
 			// Calculate the position of the image to follow stretch and alignment requirements
 			var finalPosition = this.ArrangeSource(finalSize, containerSize);
 
-			_htmlImage.ArrangeElementNative(finalPosition, false, clipRect: null);
+			_htmlImage.ArrangeVisual(finalPosition, false, clipRect: null);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -211,11 +180,5 @@ namespace Windows.UI.Xaml.Controls
 			// Image has no direct child that needs to be arranged explicitly
 			return finalSize;
 		}
-
-		internal override bool IsViewHit() => Source != null || base.IsViewHit();
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 	}
 }

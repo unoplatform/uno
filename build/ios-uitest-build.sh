@@ -4,4 +4,4 @@ IFS=$'\n\t'
 
 cd $BUILD_SOURCESDIRECTORY
 
-msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.iOS/SamplesApp.iOS.csproj
+msbuild /m /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.iOS/SamplesApp.iOS.csproj

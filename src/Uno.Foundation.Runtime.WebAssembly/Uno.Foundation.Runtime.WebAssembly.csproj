@@ -1,0 +1,53 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+		
+		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<Authors>nventive</Authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides the .NET interoperability support for WebAssembly in Uno Platform projects.</Description>
+		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+    <PackageReference Include="Uno.Core" />
+		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="Uno.Diagnostics.Eventing" Version="1.0.0-dev.4" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_IsNetStd) or $(_IsNet)">
+		<PackageReference Include="System.Memory" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="AssemblyInfo.cs" />
+	</ItemGroup>
+
+</Project>

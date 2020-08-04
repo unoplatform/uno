@@ -5,6 +5,7 @@ using Uno.Disposables;
 using System.Text;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -13,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 		public event RoutedEventHandler PasswordChanged;
 
 		public const string RevealButtonPartName = "RevealButton";
-		private Button _revealButton;
+		private ButtonBase _revealButton;
 		private readonly SerialDisposable _revealButtonSubscription = new SerialDisposable();
 
 		public PasswordBox()
@@ -21,10 +22,10 @@ namespace Windows.UI.Xaml.Controls
 			: base(true)
 #endif
 		{
-
+			DefaultStyleKey = typeof(PasswordBox);
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			RegisterSetPasswordScope();
@@ -32,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void RegisterSetPasswordScope()
 		{
-			_revealButton = this.GetTemplateChild(RevealButtonPartName) as Button;
+			_revealButton = this.GetTemplateChild(RevealButtonPartName) as ButtonBase;
 
 			if (_revealButton != null)
 			{
@@ -72,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void EndRevealPartial();
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 			_revealButtonSubscription.Disposable = null;
@@ -88,12 +89,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PasswordProperty, value); }
 		}
 
-		public static readonly DependencyProperty PasswordProperty =
+		public static DependencyProperty PasswordProperty { get ; } =
 			DependencyProperty.Register(
 				"Password",
 				typeof(string),
 				typeof(PasswordBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: string.Empty,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnPasswordChanged(e)
 				)
@@ -142,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsPasswordRevealButtonEnabled),
 				typeof(bool),
 				typeof(PasswordBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: true,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnIsPasswordRevealButtonEnabledChanged(e)
 				)

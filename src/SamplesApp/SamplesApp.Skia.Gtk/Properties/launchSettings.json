@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SamplesApp.Skia.Gtk": {
+      "commandName": "Project",
+      "commandLineArgs": "--auto-screenshots=C:\\temp\\screenshots",
+      "nativeDebugging": false
+    }
+  }
+}

@@ -25,6 +25,8 @@
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
+		
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
 
 		<!--
 		Use to avoid namespace conflicts with the default namespace of this
@@ -37,6 +39,10 @@
 	
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Composition\ICompositionSurface.cs" />
 	</ItemGroup>
 	
 	<ItemGroup>

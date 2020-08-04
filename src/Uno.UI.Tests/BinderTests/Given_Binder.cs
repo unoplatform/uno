@@ -939,7 +939,7 @@ namespace Uno.UI.Tests.BinderTests
 					name: "ChildrenBinders",
 					propertyType: typeof(IList<DependencyObject>),
 					ownerType: typeof(BaseTarget),
-					typeMetadata: new PropertyMetadata(null, (s, e) => ((BaseTarget)s)?.OnChildrenBindersChanged(e))
+					typeMetadata: new FrameworkPropertyMetadata(null, (s, e) => ((BaseTarget)s)?.OnChildrenBindersChanged(e))
 				);
 
 
@@ -974,7 +974,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			// Using a DependencyProperty as the backing store for TargetValue.  This enables animation, styling, binding, etc...
 			public static readonly DependencyProperty TargetValueProperty =
-				DependencyProperty.Register("TargetValue", typeof(int), typeof(Target2), new PropertyMetadata(0, (s, e) => ((Target2)s)?.OnTargetValueChanged(e)));
+				DependencyProperty.Register("TargetValue", typeof(int), typeof(Target2), new FrameworkPropertyMetadata(0, (s, e) => ((Target2)s)?.OnTargetValueChanged(e)));
 
 
 			private void OnTargetValueChanged(DependencyPropertyChangedEventArgs e)
@@ -999,7 +999,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			// Using a DependencyProperty as the backing store for Brush.  This enables animation, styling, binding, etc...
 			public static readonly DependencyProperty BrushProperty =
-				DependencyProperty.Register("Brush", typeof(Brush), typeof(Target2), new PropertyMetadata(null, (s, e) => ((Target2)s)?.OnBrushChanged(e)));
+				DependencyProperty.Register("Brush", typeof(Brush), typeof(Target2), new FrameworkPropertyMetadata(null, (s, e) => ((Target2)s)?.OnBrushChanged(e)));
 
 
 			private void OnBrushChanged(DependencyPropertyChangedEventArgs e)
@@ -1022,7 +1022,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			// Using a DependencyProperty as the backing store for Object.  This enables animation, styling, binding, etc...
 			public static readonly DependencyProperty ObjectProperty =
-				DependencyProperty.Register("Object", typeof(Object), typeof(Target2), new PropertyMetadata(null, (s, e) => ((Target2)s)?.OnObjectChanged(e)));
+				DependencyProperty.Register("Object", typeof(Object), typeof(Target2), new FrameworkPropertyMetadata(null, (s, e) => ((Target2)s)?.OnObjectChanged(e)));
 
 
 			private void OnObjectChanged(DependencyPropertyChangedEventArgs e)
@@ -1120,7 +1120,7 @@ namespace Uno.UI.Tests.BinderTests
 					"MyValue",
 					typeof(int),
 					typeof(Attachable),
-					new PropertyMetadata(0)
+					new FrameworkPropertyMetadata(0)
 				);
 
 			public static int GetMyValue(object view)
@@ -1138,7 +1138,7 @@ namespace Uno.UI.Tests.BinderTests
 					"MyExplicitValue",
 					typeof(int),
 					typeof(Attachable),
-					new PropertyMetadata(0)
+					new FrameworkPropertyMetadata(0)
 				);
 
 			public static int GetMyExplicitValue(Target1 view)
@@ -1192,7 +1192,7 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		public static readonly DependencyProperty Property1Property =
-			DependencyProperty.Register("Property1", typeof(int), typeof(SelfBindingTest), new PropertyMetadata(-1));
+			DependencyProperty.Register("Property1", typeof(int), typeof(SelfBindingTest), new FrameworkPropertyMetadata(-1));
 
 		public int Property2
 		{
@@ -1201,7 +1201,7 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		public static readonly DependencyProperty Property2Property =
-			DependencyProperty.Register("Property2", typeof(int), typeof(SelfBindingTest), new PropertyMetadata(-2));
+			DependencyProperty.Register("Property2", typeof(int), typeof(SelfBindingTest), new FrameworkPropertyMetadata(-2));
 	}
 
 	public partial class MyObjectTest : DependencyObject
@@ -1216,7 +1216,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.Register("MyProperty", typeof(int), typeof(MyObjectTest), new PropertyMetadata(0));
+			DependencyProperty.Register("MyProperty", typeof(int), typeof(MyObjectTest), new FrameworkPropertyMetadata(0));
 
 
 		private void OnMyPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -1242,7 +1242,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.Register("MyProperty", typeof(int), typeof(MyControl), new PropertyMetadata(0));
+			DependencyProperty.Register("MyProperty", typeof(int), typeof(MyControl), new FrameworkPropertyMetadata(0));
 
 		public Brush MyBrushProperty
 		{
@@ -1252,7 +1252,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		// Using a DependencyProperty as the backing store for MyBrushProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyBrushPropertyProperty =
-			DependencyProperty.Register("MyBrushProperty", typeof(Brush), typeof(MyControl), new PropertyMetadata(null));
+			DependencyProperty.Register("MyBrushProperty", typeof(Brush), typeof(MyControl), new FrameworkPropertyMetadata(null));
 
 
 		public Visibility MyVisibilityProperty
@@ -1263,7 +1263,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		// Using a DependencyProperty as the backing store for MyVisibilityProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyVisibilityPropertyProperty =
-			DependencyProperty.Register("MyVisibilityProperty", typeof(Visibility), typeof(MyControl), new PropertyMetadata(Visibility.Visible));
+			DependencyProperty.Register("MyVisibilityProperty", typeof(Visibility), typeof(MyControl), new FrameworkPropertyMetadata(Visibility.Visible));
 
 	}
 

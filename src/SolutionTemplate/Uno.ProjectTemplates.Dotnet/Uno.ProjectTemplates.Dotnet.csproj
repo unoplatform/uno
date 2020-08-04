@@ -63,6 +63,10 @@
 			<PackagePath>content\unoapp</PackagePath>
 			<Pack>true</Pack>
 		</Content>
+		<Content Include="content\unolib-crossruntime\**">
+			<PackagePath>content\unolib-crossruntime</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -75,6 +79,7 @@
 
 		<_TemplateFiles Include="..\UnoSolutionTemplate\**" Exclude="@(_TemplateFilesExclude)" />
 	</ItemGroup>
+	
 	
 	<ItemGroup>
 	  <Folder Include="content\unoapp\UnoQuickStart\" />

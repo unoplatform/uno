@@ -1,0 +1,57 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        SystemControlTransparentBrush isn't defined in TH2. In RS1 and RS2, it's set to Transparent
+        for all the themes. We explicitly set it here to ensure it's always defined.
+    -->
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Default">
+            <SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent" />
+            <x:Boolean x:Key="UseSystemFocusVisuals">True</x:Boolean>
+            <Thickness x:Key="TextControlBorderThemeThickness">1</Thickness>
+            <Thickness x:Key="TextControlBorderThemeThicknessFocused">2</Thickness>
+            <Thickness x:Key="TextControlThemePadding">10,6,6,5</Thickness>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent" />
+            <x:Boolean x:Key="UseSystemFocusVisuals">True</x:Boolean>
+            <Thickness x:Key="TextControlBorderThemeThickness">1</Thickness>
+            <Thickness x:Key="TextControlBorderThemeThicknessFocused">2</Thickness>
+            <Thickness x:Key="TextControlThemePadding">10,6,6,5</Thickness>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent" />
+            <x:Boolean x:Key="UseSystemFocusVisuals">True</x:Boolean>
+            <Thickness x:Key="TextControlBorderThemeThickness">1</Thickness>
+            <Thickness x:Key="TextControlBorderThemeThicknessFocused">2</Thickness>
+            <Thickness x:Key="TextControlThemePadding">10,6,6,5</Thickness>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+   
+    <!-- DateTimeFlyoutBorderPadding is defined since RS5. set it here to ensure it's always defined. -->
+    <Thickness x:Key="DateTimeFlyoutBorderPadding">0</Thickness>
+
+    <!-- Default DataTemplate used for the IInputValidationControl.ErrorTemplate property -->
+    <DataTemplate x:Key="DefaultInputValidationErrorTemplate">
+        <ItemsControl ItemsSource="{Binding ValidationErrors}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding ErrorMessage}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </DataTemplate>
+
+    <!-- Default DataTemplate used for the compact presentation of errors -->
+    <DataTemplate x:Key="DefaultCompactErrorIconTemplate">
+        <FontIcon Foreground="{StaticResource SystemControlErrorTextForegroundBrush}" Glyph="&#xE946;" FontSize="16" Width="20" Height="20" Margin="3,0,0,0">
+            <ToolTipService.ToolTip>
+                <ToolTip Placement="Right" />
+            </ToolTipService.ToolTip>
+        </FontIcon>
+    </DataTemplate>
+    
+    <x:String x:Key="RequiredHeaderContent">*</x:String>
+</ResourceDictionary>

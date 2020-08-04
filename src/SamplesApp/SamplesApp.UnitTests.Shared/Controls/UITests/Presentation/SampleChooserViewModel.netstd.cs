@@ -1,4 +1,4 @@
-﻿#if __WASM__
+﻿#if __SKIA__
 using SampleControl.Entities;
 using System;
 using System.Collections;
@@ -22,6 +22,8 @@ namespace SampleControl.Presentation
 
 	public partial class SampleChooserViewModel
 	{
+		public static Action<string> TakeScreenShot;
+
 		public void PrintViewHierarchy(UIElement vg, StringBuilder sb, int level = 0)
 		{
 			
@@ -36,7 +38,9 @@ namespace SampleControl.Presentation
 
 		private async Task GenerateBitmap(CancellationToken ct, string folderName, string fileName, IFrameworkElement content)
 		{
-			
+			Directory.CreateDirectory(folderName);
+
+			TakeScreenShot(Path.Combine(folderName, fileName));
 		}
 	}
 }

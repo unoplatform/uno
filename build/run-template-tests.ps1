@@ -89,6 +89,10 @@ dotnet new unoapp -n MyApp.Android (Get-TemplateConfiguration -android 1)
 & $msbuild $debug MyApp.Android\MyApp.Android.sln
 Assert-ExitCodeIsZero
 
+dotnet new unolib-crossruntime -n MyCrossRuntimeLib
+& $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln
+Assert-ExitCodeIsZero
+
 # WinUI - Default
 # dotnet new unoapp-winui -n UnoAppWinUI
 # & $msbuild $debug UnoAppWinUI\UnoAppWinUI.sln

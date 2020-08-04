@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml
 				Bounds = newBounds;
 
 				RaiseSizeChanged(
-					new WindowSizeChangedEventArgs(
+					new Windows.UI.Core.WindowSizeChangedEventArgs(
 						new Windows.Foundation.Size((float)size.Width, (float)size.Height)
 					)
 				);

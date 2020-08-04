@@ -12,11 +12,14 @@
 					xmlns:android="http://uno.ui/android"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
 					xmlns:wasm="http://uno.ui/wasm"
+					xmlns:netstdref="http://uno.ui/netstdref"
+					xmlns:not_netstdref="http://uno.ui/not_netstdref"
+					xmlns:skia="http://uno.ui/skia"
 					xmlns:macos="http://uno.ui/macos"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
-					mc:Ignorable="d xamarin ios android not_wasm wasm macos">
+					mc:Ignorable="d xamarin ios android not_wasm wasm netstdref not_netstdref macos skia">
 
 	<!-- TODO: ItemsControl should inject ItemsPresenter directly if no template is found. (Change this once template is materialized on Measure) -->
 	<xamarin:Style TargetType="ItemsControl">
@@ -35,7 +38,7 @@
 				Value="Left" />
 		<Setter Property="VerticalContentAlignment"
 				Value="Top" />
-		<wasm:Setter Property="Template">
+		<netstdref:Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ContentControl">
 					<ContentPresenter Content="{TemplateBinding Content}"
@@ -47,7 +50,7 @@
 									  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 				</ControlTemplate>
 			</Setter.Value>
-		</wasm:Setter>
+		</netstdref:Setter>
 	</Style>
 
 	<!-- FRAMEWORK STYLES -->
@@ -2098,7 +2101,7 @@
 	<SolidColorBrush x:Key="IOSTimePickerDismissButtonForegroundBrush"
 					 Color="#055bb7" />
 	<SolidColorBrush x:Key="IOSTimePickerHeaderBackgroundBrush"
-					 Color="#f8f8f8" />
+					 Color="{ThemeResource SystemListLowColor}" />
 
 	<ios:Style x:Key="IOSTimePickerDoneCancelButtonStyle"
 			   TargetType="Button">
@@ -2138,7 +2141,7 @@
 
 	<ios:Style TargetType="TimePickerFlyoutPresenter">
 		<Setter Property="Background"
-				Value="White" />
+				Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
 		<Setter Property="VerticalAlignment"
 				Value="Stretch" />
 		<Setter Property="HorizontalAlignment"
@@ -2602,16 +2605,16 @@
 								<VisualState x:Name="Closed">
 									<!-- Workaround because values aren't properly reset on Wasm.-->
 									<Storyboard>
-										<wasm:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility"
+										<netstdref:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility"
 																			Storyboard.TargetName="PaneRoot">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																	Value="Collapsed" />
-										</wasm:ObjectAnimationUsingKeyFrames>
-										<wasm:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)"
+										</netstdref:ObjectAnimationUsingKeyFrames>
+										<netstdref:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)"
 																			Storyboard.TargetName="ContentRoot">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																	Value="0" />
-										</wasm:ObjectAnimationUsingKeyFrames>
+										</netstdref:ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
 								<VisualState x:Name="ClosedCompactLeft">
@@ -4343,7 +4346,7 @@
 			<Setter.Value>
 				<ItemsPanelTemplate>
 					<not_wasm:ItemsWrapGrid Orientation="Horizontal" />
-					<wasm:WrapPanel />
+					<netstdref:WrapPanel />
 				</ItemsPanelTemplate>
 			</Setter.Value>
 		</Setter>
@@ -4534,11 +4537,7 @@
 							<ScrollContentPresenter x:Name="ScrollContentPresenter"
 													win:Grid.RowSpan="2"
 													win:Grid.ColumnSpan="2"
-													Margin="{TemplateBinding Padding}"
-													xamarin:HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
-													xamarin:VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
-													xamarin:HorizontalScrollMode="{TemplateBinding HorizontalScrollMode}"
-													xamarin:VerticalScrollMode="{TemplateBinding VerticalScrollMode}" />
+													Margin="{TemplateBinding Padding}" />
 							<!--Currently in Uno scrollbars are handled by the ScrollContentPresenter, which inherits from the native scroll viewer.-->
 							<win:ScrollBar x:Name="VerticalScrollBar"
 										   Grid.Column="1"
@@ -8007,7 +8006,7 @@
                                         <Setter Target="VerticalThumb.Opacity" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
-                                <wasm:VisualState x:Name="NoIndicator">
+								<netstdref:VisualState x:Name="NoIndicator">
 									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 --> 
 									<VisualState.Setters>
 										<Setter Target="HorizontalThumb.Background.Color" Value="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
@@ -8035,7 +8034,7 @@
 										<Setter Target="HorizontalPanningRoot.Visibility" Value="Collapsed" />
 										<Setter Target="VerticalPanningRoot.Visibility" Value="Collapsed" />
 									</VisualState.Setters>
-								</wasm:VisualState>
+								</netstdref:VisualState>
                                 <not_wasm:VisualState x:Name="NoIndicator">
                                     <Storyboard>
                                         <ColorAnimation Duration="{ThemeResource ScrollBarContractDuration}" Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" To="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
@@ -8120,7 +8119,7 @@
                                 <VisualState x:Name="Collapsed" />
 
                                 <VisualState x:Name="Expanded">
-                                    <wasm:VisualState.Setters>
+									<netstdref:VisualState.Setters>
                                         <Setter Target="Root.Background" Value="{ThemeResource ScrollBarBackgroundPointerOver}" />
                                         <Setter Target="Root.BorderBrush" Value="{ThemeResource ScrollBarBorderBrushPointerOver}" />
                                         <Setter Target="HorizontalTrackRect.Stroke" Value="{ThemeResource ScrollBarTrackStrokePointerOver}" />
@@ -8145,7 +8144,7 @@
 										<Setter Target="HorizontalLargeDecrease.Opacity" Value="1" />
 										<Setter Target="HorizontalSmallDecrease.Opacity" Value="1" />
 										<Setter Target="HorizontalTrackRect.Opacity" Value="1" />
-									</wasm:VisualState.Setters>
+									</netstdref:VisualState.Setters>
                                 </VisualState>
                                 <not_wasm:VisualState x:Name="Expanded">
                                     <VisualState.Setters>
@@ -8176,7 +8175,7 @@
                                         <DoubleAnimation Duration="{ThemeResource ScrollBarExpandDuration}" BeginTime="{ThemeResource ScrollBarExpandBeginTime}" Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Opacity" To="1" />
                                     </Storyboard>
                                 </not_wasm:VisualState>
-                                <wasm:VisualState x:Name="ExpandedWithoutAnimation">
+								<netstdref:VisualState x:Name="ExpandedWithoutAnimation">
                                     <VisualState.Setters>
                                         <Setter Target="Root.Background" Value="{ThemeResource ScrollBarBackgroundPointerOver}" />
                                         <Setter Target="Root.BorderBrush" Value="{ThemeResource ScrollBarBorderBrushPointerOver}" />
@@ -8204,7 +8203,7 @@
 										<Setter Target="HorizontalTrackRect.Opacity" Value="1" />
 
 									</VisualState.Setters>
-                                </wasm:VisualState>
+                                </netstdref:VisualState>
                                 <not_wasm:VisualState x:Name="ExpandedWithoutAnimation">
                                     <VisualState.Setters>
                                         <Setter Target="Root.Background" Value="{ThemeResource ScrollBarBackgroundPointerOver}" />
@@ -8236,7 +8235,7 @@
                                         <DoubleAnimation Duration="0" BeginTime="{ThemeResource ScrollBarExpandBeginTime}" Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Opacity" To="1" />
                                     </Storyboard>
                                 </not_wasm:VisualState>
-                                <wasm:VisualState x:Name="CollapsedWithoutAnimation">
+								<netstdref:VisualState x:Name="CollapsedWithoutAnimation">
 									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 									
 									<!-- The storyboard below cannot be moved to a transition since transitions
@@ -8260,7 +8259,7 @@
 										<Setter Target="HorizontalSmallDecrease.Opacity" Value="0" />
 										<Setter Target="HorizontalTrackRect.Opacity" Value="0" />
 									</VisualState.Setters>
-								</wasm:VisualState>
+								</netstdref:VisualState>
                                 <not_wasm:VisualState x:Name="CollapsedWithoutAnimation">
                                     <!-- The storyboard below cannot be moved to a transition since transitions
                                              will not be run by the framework when animations are disabled in the system -->
@@ -8577,7 +8576,7 @@
 	</Style>
 
 
-	<not_wasm:Style TargetType="FlipView">
+	<not_netstdref:Style TargetType="FlipView">
 		<Setter Property="ItemsPanel">
 			<Setter.Value>
 				<ItemsPanelTemplate>
@@ -8592,9 +8591,9 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</not_wasm:Style>
+	</not_netstdref:Style>
 
-	<not_wasm:Style TargetType="WebView">
+	<not_netstdref:Style TargetType="WebView">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
@@ -8602,6 +8601,81 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</not_wasm:Style>
+	</not_netstdref:Style>
+	
+	<Style x:Key="TextBlockButtonStyle" TargetType="ButtonBase">
+        <Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
+        <Setter Property="Foreground" Value="{ThemeResource HyperlinkButtonForeground}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ButtonBase">
+                    <Grid Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                        <ContentPresenter x:Name="Text"
+                            Content="{TemplateBinding Content}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+
+                                <VisualState x:Name="PointerOver">
+
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonForegroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="Pressed">
+
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonForegroundPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="Disabled">
+
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonForegroundDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+
+                            </VisualStateGroup>
+
+                        </VisualStateManager.VisualStateGroups>
+
+                    </Grid>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

@@ -49,6 +49,7 @@ namespace Windows.UI.Xaml.Media
 			if (_imageSourceChanged || !drawRect.Equals(_lastDrawRect))
 			{
 				_imageSourceChanged = false;
+				_lastDrawRect = drawRect;
 
 				if (ImageSource != null)
 				{
@@ -58,7 +59,6 @@ namespace Windows.UI.Xaml.Media
 				{
 					_refreshPaint.Disposable = null;
 				}
-				_lastDrawRect = drawRect;
 			}
 		}
 

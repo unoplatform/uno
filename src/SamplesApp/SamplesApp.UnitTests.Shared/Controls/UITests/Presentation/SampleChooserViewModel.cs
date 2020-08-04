@@ -78,6 +78,9 @@ namespace SampleControl.Presentation
 			// Disable all pooling so that controls get collected quickly.
 			Windows.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
 #endif
+#if NETFX_CORE
+			UseFluentStyles = true;
+#endif
 			InitializeCommands();
 			ObserveChanges();
 
@@ -237,13 +240,13 @@ namespace SampleControl.Presentation
 			"Animations.EasingDoubleKeyFrame_CompositeTransform",
 		};
 
-		private async Task RecordAllTests(CancellationToken ct)
+		internal async Task RecordAllTests(CancellationToken ct, string screenShotPath = "", Action doneAction = null)
 		{
 			try
 			{
 				IsSplitVisible = false;
 
-				var folderName = "UITests-" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff", CultureInfo.InvariantCulture);
+				var folderName = Path.Combine(screenShotPath, "UITests-" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff", CultureInfo.InvariantCulture));
 
 				await DumpOutputFolderName(ct, folderName);
 
@@ -348,6 +351,9 @@ namespace SampleControl.Presentation
 					Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
 					Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
 #endif
+
+					// Done action is needed as awaiting the task is not enough to deterine the end of this method.
+					doneAction?.Invoke();
 				});
 			}
 			catch (Exception e)
@@ -361,6 +367,7 @@ namespace SampleControl.Presentation
 			{
 				IsSplitVisible = true;
 			}
+
 		}
 
 		partial void LogMemoryStatistics();

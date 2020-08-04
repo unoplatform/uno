@@ -2,72 +2,32 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum MidiMessageType 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		NoteOff,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		NoteOn,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		PolyphonicKeyPressure,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ControlChange,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ProgramChange,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ChannelPressure,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		PitchBendChange,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		SystemExclusive,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		MidiTimeCode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		SongPositionPointer,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		SongSelect,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		TuneRequest,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		EndSystemExclusive,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		TimingClock,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Start,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Continue,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Stop,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ActiveSensing,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		SystemReset,
-		#endif
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.None
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.NoteOff
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.NoteOn
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.PolyphonicKeyPressure
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.ControlChange
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.ProgramChange
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.ChannelPressure
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.PitchBendChange
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.SystemExclusive
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.MidiTimeCode
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.SongPositionPointer
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.SongSelect
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.TuneRequest
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.EndSystemExclusive
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.TimingClock
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.Start
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.Continue
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.Stop
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.ActiveSensing
+		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.SystemReset
 	}
 	#endif
 }

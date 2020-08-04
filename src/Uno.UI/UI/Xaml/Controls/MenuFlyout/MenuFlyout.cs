@@ -72,12 +72,12 @@ namespace Windows.UI.Xaml.Controls
 			private set => this.SetValue(ItemsProperty, value);
 		}
 
-		public static readonly DependencyProperty ItemsProperty =
+		public static DependencyProperty ItemsProperty { get ; } =
 			DependencyProperty.Register(
 				"Items",
 				typeof(IList<MenuFlyoutItemBase>),
 				typeof(MenuFlyout),
-				new PropertyMetadata(defaultValue: null)
+				new FrameworkPropertyMetadata(defaultValue: null)
 			);
 
 		#endregion
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 			"MenuFlyoutPresenterStyle",
 			typeof(Style),
 			typeof(MenuFlyout),
-			new PropertyMetadata(null, (s, e) => (s as MenuFlyout).OnPropertyChanged2(s, e)));
+			new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => (s as MenuFlyout).OnPropertyChanged2(s, e)));
 
 		public void ShowAt(UIElement targetElement, Point point)
 		{

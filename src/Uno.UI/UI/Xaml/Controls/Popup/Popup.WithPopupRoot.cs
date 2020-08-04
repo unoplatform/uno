@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __WASM__
+﻿#if __ANDROID__ || __WASM__ || __SKIA__
 using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Logging;
@@ -6,13 +6,6 @@ using Windows.UI.Xaml.Controls.Primitives;
 using System;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
-
-#if XAMARIN_ANDROID
-using View = Android.Views.View;
-#elif NET461 || __WASM__
-using View = Windows.UI.Xaml.FrameworkElement;
-#endif
-
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -38,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializeNativePartial();
 
-		protected override void OnChildChanged(View oldChild, View newChild)
+		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
 		{
 			base.OnChildChanged(oldChild, newChild);
 

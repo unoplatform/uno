@@ -2,58 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MidiSongPositionPointerMessage : global::Windows.Devices.Midi.IMidiMessage
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Storage.Streams.IBuffer RawData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer MidiSongPositionPointerMessage.RawData is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.TimeSpan Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MidiSongPositionPointerMessage.Timestamp is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Midi.MidiMessageType Type
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MidiMessageType MidiSongPositionPointerMessage.Type is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  ushort Beats
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort MidiSongPositionPointerMessage.Beats is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public MidiSongPositionPointerMessage( ushort beats) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSongPositionPointerMessage", "MidiSongPositionPointerMessage.MidiSongPositionPointerMessage(ushort beats)");
-		}
-		#endif
+		// Skipping already declared property RawData
+		// Skipping already declared property Timestamp
+		// Skipping already declared property Type
+		// Skipping already declared property Beats
+		// Skipping already declared method Windows.Devices.Midi.MidiSongPositionPointerMessage.MidiSongPositionPointerMessage(ushort)
 		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.MidiSongPositionPointerMessage(ushort)
 		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.Beats.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.Timestamp.get

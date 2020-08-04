@@ -14,6 +14,8 @@ namespace Windows.UI.Xaml
 
 		internal List<View> _children = new List<View>();
 
+		private protected virtual void OnPostLoading() { }
+
 		partial void OnLoadingPartial();
 
 		public T AddChild<T>(T child) where T : View
@@ -108,6 +110,7 @@ namespace Windows.UI.Xaml
 			{
 				ApplyCompiledBindings();
 				OnLoading();
+				OnPostLoading();
 				OnLoaded();
 
 				foreach (var child in _children.OfType<FrameworkElement>())

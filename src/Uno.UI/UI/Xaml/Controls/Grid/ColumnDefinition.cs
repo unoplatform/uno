@@ -21,12 +21,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(WidthProperty, value); }
 		}
 
-		public static readonly DependencyProperty WidthProperty =
+		public static DependencyProperty WidthProperty { get ; } =
 			DependencyProperty.Register(
 				"Width",
 				typeof(GridLength),
 				typeof(ColumnDefinition),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					GridLengthHelper.OneStar,
 					(s, e) => ((ColumnDefinition)s)?.OnWidthChanged(e)
 				)

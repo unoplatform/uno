@@ -1,3 +1,5 @@
+#nullable enable
+
 #if __IOS__
 using CoreAnimation;
 using System.Numerics;
@@ -9,13 +11,12 @@ namespace Windows.UI.Composition
 {
 	public partial class Visual : global::Windows.UI.Composition.CompositionObject
 	{
-		public UIView NativeOwner { get; set; }
+		internal UIView? NativeOwner { get; set; }
 
-		public CALayer NativeLayer { get; }
+		internal CALayer NativeLayer { get; } = new CALayer();
 
-		internal Visual()
+		partial void InitializePartial()
 		{
-			NativeLayer = new CALayer();
 			NativeLayer.MasksToBounds = false;
 		}
 

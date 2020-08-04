@@ -19,6 +19,7 @@ using System.Threading;
 using Uno;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
+using System.Diagnostics;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -163,7 +164,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsImplementingInterface(INamedTypeSymbol symbol, INamedTypeSymbol interfaceName)
 		{
 			bool isSameType(INamedTypeSymbol source, INamedTypeSymbol iface) =>
-				source == iface || source.OriginalDefinition == iface;
+				Equals(source, iface) || Equals(source.OriginalDefinition, iface);
 
 			if (symbol != null)
 			{
@@ -221,7 +222,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsFrameworkElement(XamlType xamlType)
 		{
-			return IsImplementingInterface(FindType(xamlType), _iFrameworkElementSymbol);
+			return IsType(xamlType, XamlConstants.Types.FrameworkElement);
 		}
 
 		private bool IsAndroidView(XamlType xamlType)
@@ -233,6 +234,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			return IsType(xamlType, "UIKit.UIView");
 		}
+
+		private bool IsMacOSNSView(XamlType xamlType)
+		{
+			return IsType(xamlType, "AppKit.NSView");
+		}
+
+		/// <summary>
+		/// Is the type derived from the native view type on a Xamarin platform?
+		/// </summary>
+		private bool IsNativeView(XamlType xamlType) => IsAndroidView(xamlType) || IsIOSUIView(xamlType) || IsMacOSNSView(xamlType);
+
+		/// <summary>
+		/// Is the type one of the base view types in WinUI? (UIElement is most commonly used to mean 'any WinUI view type,' but
+		/// FrameworkElement is valid too)
+		/// </summary>
+		private bool IsManagedViewBaseType(INamedTypeSymbol targetType) => Equals(targetType, _uiElementSymbol) || Equals(targetType, _frameworkElementSymbol);
 
 		private bool IsTransform(XamlType xamlType)
 		{
@@ -619,10 +636,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool IsExactlyCollectionOrListType(INamedTypeSymbol type)
 		{
-			return type == _iCollectionSymbol
-				|| type.OriginalDefinition == _iCollectionOfTSymbol
-				|| type == _iListSymbol
-				|| type.OriginalDefinition == _iListOfTSymbol;
+			return Equals(type, _iCollectionSymbol)
+				|| Equals(type.OriginalDefinition, _iCollectionOfTSymbol)
+				|| Equals(type, _iListSymbol)
+				|| Equals(type.OriginalDefinition, _iListOfTSymbol);
 		}
 
 		/// <summary>
@@ -716,7 +733,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (type != null)
 			{
-				var ns = _fileDefinition.Namespaces.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
+				var ns = _fileDefinition
+					.Namespaces
+					// Ensure that prefixless declaration (generally xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation") is considered first, otherwise PreferredXamlNamespace matching can go awry
+					.OrderByDescending(n => n.Prefix.IsNullOrEmpty())
+					.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
 				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
 
 				if (

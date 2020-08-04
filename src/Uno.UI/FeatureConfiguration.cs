@@ -87,6 +87,20 @@ namespace Uno.UI
 			/// in the constructor of a control.
 			/// </summary>
 			public static bool UseLegacyLazyApplyTemplate { get; set; } = false;
+
+			/// <summary>
+			/// If the call to "OnApplyTemplate" should be deferred to mimic UWP sequence of events.
+			/// </summary>
+			/// <remarks>
+			/// Will never be deferred when .ApplyTemplate() is called explicitly.
+			/// More information there: https://github.com/unoplatform/uno/issues/3519
+			/// </remarks>
+			public static bool UseDeferredOnApplyTemplate { get; set; }
+#if __ANDROID__ || __IOS__ || __MACOS__
+				= false; // opt-in for iOS/Android/macOS
+#else
+				= true;
+#endif
 		}
 
 		public static class DataTemplateSelector
@@ -105,7 +119,9 @@ namespace Uno.UI
 			/// Defines the default font to be used when displaying symbols, such as in SymbolIcon.
 			/// </summary>
 			public static string SymbolsFont { get; set; } =
-#if !__ANDROID__
+#if __SKIA__
+				"ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols";
+#elif !__ANDROID__
 				"Symbols";
 #else
 				"ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols";
@@ -139,9 +155,8 @@ namespace Uno.UI
 			public static bool AndroidUseManagedLoadedUnloaded { get; set; } = true;
 #endif
 
-#if __WASM__
 			/// <summary>
-			/// Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
+			/// [WebAssembly Only] Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
 			/// <see cref="Windows.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
 			/// or native visual tree traversal.
 			/// </summary>
@@ -150,7 +165,6 @@ namespace Uno.UI
 			/// Setting it to <see cref="true"/> avoids the use of costly JavaScript->C# interop.
 			/// </remarks>
 			public static bool WasmUseManagedLoadedUnloaded { get; set; } = true;
-#endif
 		}
 
 		public static class Image
@@ -164,14 +178,12 @@ namespace Uno.UI
 
 		public static class Interop
 		{
-#if __WASM__
 			/// <summary>
-			/// Used to control the behavior of the C#/Javascript interop. Setting this
+			/// [WebAssembly Only] Used to control the behavior of the C#/Javascript interop. Setting this
 			/// flag to true forces the use of the Javascript eval mode, instead of binary interop.
 			/// This flag has no effect when running in hosted mode.
 			/// </summary>
 			public static bool ForceJavascriptInterop { get; set; } = false;
-#endif
 		}
 
 		public static class Binding
@@ -276,7 +288,7 @@ namespace Uno.UI
 		public static class TextBlock
 		{
 			/// <summary>
-			/// Determines if the measure cache is enabled. (WASM only)
+			/// [WebAssembly Only] Determines if the measure cache is enabled.
 			/// </summary>
 			public static bool IsMeasureCacheEnabled { get; set; } = true;
 		}
@@ -352,21 +364,20 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool ShowClippingBounds { get; set; } = false;
 
-#if __WASM__
 			/// <summary>
-			/// Enable the assignation of the "xamlname", "xuid" and "xamlautomationid" attributes on DOM elements created
+			/// [WebAssembly Only] Enable the assignation of the "xamlname", "xuid" and "xamlautomationid" attributes on DOM elements created
 			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
 			/// in the DOM for automation purposes.
 			/// </summary>
 			public static bool AssignDOMXamlName { get; set; } = false;
 
 			/// <summary>
-			/// Enable UIElement.ToString() to return the element's unique ID
+			/// [WebAssembly Only] Enable UIElement.ToString() to return the element's unique ID
 			/// </summary>
 			public static bool RenderToStringWithId { get; set; } = true;
 
 			/// <summary>
-			/// Enables the assignation of properties from the XAML visual tree as DOM attributes: Height -> "xamlheight",
+			/// [WebAssembly Only] Enables the assignation of properties from the XAML visual tree as DOM attributes: Height -> "xamlheight",
 			/// HorizontalAlignment -> "xamlhorizontalalignment" etc. 
 			/// </summary>
 			/// <remarks>
@@ -376,7 +387,8 @@ namespace Uno.UI
 			/// the values change subsequently. This restriction doesn't apply to debug Uno builds.
 			/// </remarks>
 			public static bool AssignDOMXamlProperties { get; set; } = false;
-#elif __ANDROID__
+
+#if __ANDROID__
 			/// <summary>
 			/// When this is set, non-UIElements will always be clipped to their bounds (<see cref="Android.Views.ViewGroup.ClipChildren"/> will
 			/// always be set to true on their parent). 

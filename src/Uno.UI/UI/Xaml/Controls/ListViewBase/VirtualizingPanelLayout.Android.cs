@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Android.Graphics;
 using Uno.UI.Extensions;
 using Uno.UI.DataBinding;
+using Windows.Networking.NetworkOperators;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -199,17 +200,40 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool CanScrollVertically()
 		{
-			return ScrollOrientation == Orientation.Vertical && ChildCount > 0;
+			try
+			{
+				return ScrollOrientation == Orientation.Vertical && ChildCount > 0;
+			}
+			catch (Exception e)
+			{
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return false;
+			}
 		}
 
 		public override bool CanScrollHorizontally()
 		{
-			return ScrollOrientation == Orientation.Horizontal && ChildCount > 0;
+			try
+			{
+				return ScrollOrientation == Orientation.Horizontal && ChildCount > 0;
+			}
+			catch (Exception e)
+			{
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return false;
+			}
 		}
 
 		public override void ScrollToPosition(int position)
 		{
-			ScrollToPosition(position, ScrollIntoViewAlignment.Default);
+			try
+			{
+				ScrollToPosition(position, ScrollIntoViewAlignment.Default);
+			}
+			catch (Exception e)
+			{
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+			}
 		}
 
 		internal void ScrollToPosition(int position, ScrollIntoViewAlignment alignment)
@@ -412,9 +436,16 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public override void OffsetChildrenHorizontal(int dx)
 		{
-			base.OffsetChildrenHorizontal(dx);
-			Debug.Assert(ScrollOrientation == Orientation.Horizontal);
-			ApplyOffset(dx);
+			try
+			{
+				base.OffsetChildrenHorizontal(dx);
+				Debug.Assert(ScrollOrientation == Orientation.Horizontal);
+				ApplyOffset(dx);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+			}
 		}
 
 		/// <summary>
@@ -422,39 +453,94 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public override void OffsetChildrenVertical(int dy)
 		{
-			base.OffsetChildrenVertical(dy);
-			Debug.Assert(ScrollOrientation == Orientation.Vertical);
-			ApplyOffset(dy);
+			try
+			{
+				base.OffsetChildrenVertical(dy);
+				Debug.Assert(ScrollOrientation == Orientation.Vertical);
+				ApplyOffset(dy);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+			}
 		}
 
 		public override int ComputeHorizontalScrollExtent(RecyclerView.State state)
 		{
-			return ComputeScrollExtent(state);
+			try
+			{
+				return ComputeScrollExtent(state);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override int ComputeHorizontalScrollOffset(RecyclerView.State state)
 		{
-			return ComputeScrollOffset(state);
+			try
+			{
+				return ComputeScrollOffset(state);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override int ComputeHorizontalScrollRange(RecyclerView.State state)
 		{
-			return ComputeScrollRange(state);
+			try
+			{
+				return ComputeScrollRange(state);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override int ComputeVerticalScrollExtent(RecyclerView.State state)
 		{
-			return ComputeScrollExtent(state);
+			try
+			{
+				return ComputeScrollExtent(state);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override int ComputeVerticalScrollOffset(RecyclerView.State state)
 		{
-			return ComputeScrollOffset(state);
+			try
+			{
+				return ComputeScrollOffset(state);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override int ComputeVerticalScrollRange(RecyclerView.State state)
 		{
-			return ComputeScrollRange(state);
+			try
+			{
+				return ComputeScrollRange(state);
+			}
+			catch(Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override bool OnRequestChildFocus(RecyclerView parent, RecyclerView.State state, View child, View focused)

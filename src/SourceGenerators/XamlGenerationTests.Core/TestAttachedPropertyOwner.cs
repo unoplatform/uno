@@ -15,7 +15,7 @@ namespace XamlGenerationTests.Core
 		}
 
 		public static readonly DependencyProperty CustomStyleProperty =
-			DependencyProperty.RegisterAttached("CustomStyle", typeof(Style), typeof(TestAttachedPropertyOwner), new PropertyMetadata(null));
+			DependencyProperty.RegisterAttached("CustomStyle", typeof(Style), typeof(TestAttachedPropertyOwner), new FrameworkPropertyMetadata(null));
 
 		public static bool GetHasStuff(DependencyObject obj)
 		{
@@ -28,7 +28,7 @@ namespace XamlGenerationTests.Core
 		}
 
 		public static readonly DependencyProperty HasStuffProperty =
-			DependencyProperty.RegisterAttached("HasStuff", typeof(bool), typeof(TestAttachedPropertyOwner), new PropertyMetadata(false));
+			DependencyProperty.RegisterAttached("HasStuff", typeof(bool), typeof(TestAttachedPropertyOwner), new FrameworkPropertyMetadata(false));
 
 		public static object GetExtraContent(DependencyObject obj)
 		{
@@ -41,7 +41,7 @@ namespace XamlGenerationTests.Core
 		}
 
 		public static readonly DependencyProperty ExtraContentProperty =
-			DependencyProperty.RegisterAttached("ExtraContent", typeof(object), typeof(TestAttachedPropertyOwner), new PropertyMetadata(null));
+			DependencyProperty.RegisterAttached("ExtraContent", typeof(object), typeof(TestAttachedPropertyOwner), new FrameworkPropertyMetadata(null));
 
 		public static object GetMoreContent(DependencyObject obj)
 		{
@@ -54,7 +54,7 @@ namespace XamlGenerationTests.Core
 		}
 
 		public static readonly DependencyProperty MoreContentProperty =
-			DependencyProperty.RegisterAttached("MoreContent", typeof(object), typeof(TestAttachedPropertyOwner), new PropertyMetadata(null));
+			DependencyProperty.RegisterAttached("MoreContent", typeof(object), typeof(TestAttachedPropertyOwner), new FrameworkPropertyMetadata(null));
 
 		public static int? GetNullableType(DependencyObject obj) => (int?)obj.GetValue(NullableTypeProperty);
 		
@@ -64,7 +64,7 @@ namespace XamlGenerationTests.Core
 		}
 
 		public static readonly DependencyProperty NullableTypeProperty =
-			DependencyProperty.RegisterAttached("NullableType", typeof(int?), typeof(TestAttachedPropertyOwner), new PropertyMetadata(0));
+			DependencyProperty.RegisterAttached("NullableType", typeof(int?), typeof(TestAttachedPropertyOwner), new FrameworkPropertyMetadata(0));
 
 		public static HorizontalAlignment? GetNullableEnum(DependencyObject obj) => (HorizontalAlignment?)obj.GetValue(NullableEnumProperty);
 		
@@ -74,6 +74,6 @@ namespace XamlGenerationTests.Core
 		}
 
 		public static readonly DependencyProperty NullableEnumProperty =
-			DependencyProperty.RegisterAttached("NullableEnum", typeof(HorizontalAlignment?), typeof(TestAttachedPropertyOwner), new PropertyMetadata(null));
+			DependencyProperty.RegisterAttached("NullableEnum", typeof(HorizontalAlignment?), typeof(TestAttachedPropertyOwner), new FrameworkPropertyMetadata(null));
 	}
 }

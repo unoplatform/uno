@@ -46,6 +46,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    namespace PrismJsDemo.Shared
    {
        [ContentProperty(Name = "Code")]
+       [HtmlElement("code")] // PrismJS requires a <code> element
        public class PrismJsView : Control
        {
            // *************************
@@ -56,28 +57,33 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
                typeof(string),
                typeof(PrismJsView),
                new PropertyMetadata(default(string), CodeChanged));
+   
            public string Code
            {
                get => (string)GetValue(CodeProperty);
                set => SetValue(CodeProperty, value);
            }
+   
            public static readonly DependencyProperty LanguageProperty = DependencyProperty.Register(
                "Language",
                typeof(string),
                typeof(PrismJsView),
                new PropertyMetadata(default(string), LanguageChanged));
+   
            public string Language
            {
                get => (string)GetValue(LanguageProperty);
                set => SetValue(LanguageProperty, value);
            }
+   
            // ***************
            // * Constructor *
            // ***************
-           public PrismJsView() : base("code") // PrismJS requires a <code> element
+           public PrismJsView()
            {
                // Any HTML initialization here
            }
+   
            // ******************************
            // * Property Changed Callbacks *
            // ******************************
@@ -85,6 +91,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
            {
                // TODO: generate HTML using PrismJS here
            }
+   
            private static void LanguageChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
            {
                // TODO: generate HTML using PrismJS here
@@ -160,11 +167,11 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 🎯  In this section, PrismJS is used from the app.
 1. First, there is a requirement for _PrismJS_ to set the  `white-space` style at a specific value, as [documented here](https://github.com/PrismJS/prism/issues/1237#issuecomment-369846817). An easy way to do this is to set in directly in the constructor like this:
    ``` csharp
-   public PrismJsView() : base("code") // PrismJS requires a <code> element
+   public PrismJsView()
    {
        // This is required to set to <code> style for PrismJS to works well
        // https://github.com/PrismJS/prism/issues/1237#issuecomment-369846817
-       SetStyle("white-space", "pre-wrap");
+       this.SetCssStyle("white-space", "pre-wrap");
    }
    ```
 2. Now, we need to create an `UpdateDisplay()` method, used to generate HTML each time there's a new version to update. Here's the code for the method to add in the `PrismJsView` class:
@@ -185,10 +192,8 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
                    // When the specified language is supported by PrismJS...
                    html = prism.highlight(code, prism.languages[language], language);
                }}
-               // Get HTML element
-               const element = document.getElementById(""{HtmlId}"");
-               if(!element) return; // Not in DOM yet
-               // Display result
+   
+   			// Display result
                element.innerHTML = html;
                // Set CSS classes, when required
                if(oldLanguageCss) {{
@@ -198,7 +203,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
                    element.classList.add(newLanguageCss);
                }}
            }})();";
-       WebAssemblyRuntime.InvokeJS(javascript);
+       this.ExecuteJavascript(javascript);
    }
    ```
 3. Change `CodeChanged()` and `LanguageChanged()` to call the new `UpdateDisplay()` method:
@@ -214,11 +219,11 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    ```
 4. We also need to update the result when the control is loaded in the DOM. So we need to change the constructor again like this:
    ``` csharp
-   public PrismJsView() : base("code") // PrismJS requires a <code> element
+   public PrismJsView()
    {
        // This is required to set to <code> style for PrismJS to works well
        // https://github.com/PrismJS/prism/issues/1237#issuecomment-369846817
-       SetStyle("white-space", "pre-wrap");
+       this.SetCssStyle("white-space", "pre-wrap");
        // Update the display when the element is loaded in the DOM
        Loaded += (snd, evt) => UpdateDisplay(newLanguage: Language);
    }

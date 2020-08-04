@@ -2,30 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Enumeration
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum DeviceWatcherStatus 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Created,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Started,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		EnumerationCompleted,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Stopping,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Stopped,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Aborted,
-		#endif
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.Created
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.Started
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.EnumerationCompleted
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.Stopping
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.Stopped
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.Aborted
 	}
 	#endif
 }

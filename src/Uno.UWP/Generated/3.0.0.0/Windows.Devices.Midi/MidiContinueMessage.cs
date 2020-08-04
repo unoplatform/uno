@@ -2,48 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MidiContinueMessage : global::Windows.Devices.Midi.IMidiMessage
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Storage.Streams.IBuffer RawData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer MidiContinueMessage.RawData is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.TimeSpan Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MidiContinueMessage.Timestamp is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Midi.MidiMessageType Type
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MidiMessageType MidiContinueMessage.Type is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public MidiContinueMessage() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiContinueMessage", "MidiContinueMessage.MidiContinueMessage()");
-		}
-		#endif
+		// Skipping already declared property RawData
+		// Skipping already declared property Timestamp
+		// Skipping already declared property Type
+		// Skipping already declared method Windows.Devices.Midi.MidiContinueMessage.MidiContinueMessage()
 		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.MidiContinueMessage()
 		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.RawData.get
