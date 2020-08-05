@@ -37,19 +37,6 @@ namespace Windows.UI.Xaml
 			Initialize();
 		}
 
-		private protected virtual void OnLoading()
-		{
-			OnLoadingPartial();
-		}
-
-		private protected virtual void OnLoaded()
-		{
-		}
-
-		private protected virtual void OnUnloaded()
-		{
-		}
-
 		#region Transitions Dependency Property
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]

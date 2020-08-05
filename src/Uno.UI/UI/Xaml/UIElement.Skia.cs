@@ -7,6 +7,7 @@ using System.Text;
 using System.Linq;
 using Windows.UI.Composition;
 using System.Numerics;
+using Windows.Foundation.Metadata;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
@@ -16,10 +17,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		// Even if this a concept of FrameworkElement, the loaded state is handled by the UIElement in order to avoid
-		// to cast to FrameworkElement each time a child is added or removed.
-		internal bool IsLoaded;
-
 		internal Size _unclippedDesiredSize;
 		internal Point _visualOffset;
 		internal List<UIElement> _children = new List<UIElement>();
@@ -29,10 +26,10 @@ namespace Windows.UI.Xaml
 		internal double _canvasLeft;
 		private Rect _currentFinalRect;
 
-		private protected int? Depth { get; private set; }
-
 		public UIElement()
 		{
+			_isFrameworkElement = this is FrameworkElement;
+
 			Initialize();
 			InitializePointers();
 
@@ -58,6 +55,21 @@ namespace Windows.UI.Xaml
 			UpdateHitTest();
 
 			_visibilityCache = (Visibility)GetValue(VisibilityProperty);
+		}
+
+		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
+		{
+			UpdateOpacity();
+		}
+
+		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
+		{
+			UpdateHitTest();
+		}
+
+		private void UpdateOpacity()
+		{
+			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
 		}
 
 		internal ContainerVisual Visual
@@ -126,68 +138,27 @@ namespace Windows.UI.Xaml
 			InvalidateMeasure();
 		}
 
-		private void OnChildAdded(UIElement child)
+		internal void MoveChildTo(int oldIndex, int newIndex)
 		{
-
+			ApiInformation.TryRaiseNotImplemented("UIElement", "MoveChildTo");
 		}
 
-		internal virtual void OnElementLoaded()
+		internal bool RemoveChild(UIElement child)
 		{
-			IsLoaded = true;
-			foreach (var innerChild in _children.ToArray())
+			if (_children.Remove(child))
 			{
-				innerChild.OnElementLoaded();
+				child.SetParent(null);
+
+				Visual?.Children.Remove(child.Visual);
+
+				OnChildRemoved(child);
+
+				return true;
 			}
-		}
-
-		private bool IsParentLoaded()
-		{
-			var root = Window.Current.Content;
-
-			var current = this.GetParent();
-
-			while (current != null && current != root)
+			else
 			{
-				current = this.GetParent();
+				return false;
 			}
-
-			return current == root;
-		}
-
-		private void OnAddingChild(UIElement child)
-		{
-			if (IsLoaded)
-			{
-				child.OnElementLoaded();
-			}
-		}
-
-		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
-		{
-			UpdateOpacity();
-		}
-
-		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
-		{
-			UpdateHitTest();
-		}
-
-		private void UpdateOpacity()
-		{
-			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
-		}
-
-		internal UIElement RemoveChild(UIElement child)
-		{
-			_children.Remove(child);
-			child.SetParent(null);
-
-			if (Visual != null)
-			{
-				Visual.Children.Remove(child.Visual);
-			}
-
-			return child;
 		}
 
 		internal void ClearChildren()
@@ -195,7 +166,7 @@ namespace Windows.UI.Xaml
 			foreach (var child in _children.ToArray())
 			{
 				child.SetParent(null);
-				// OnChildRemoved(child);
+				OnChildRemoved(child);
 			}
 
 			_children.Clear();
@@ -215,9 +186,6 @@ namespace Windows.UI.Xaml
 		public virtual IEnumerable<UIElement> GetChildren() => _children;
 
 		public IntPtr Handle { get; set; }
-
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
-			=> TransformToVisual(relativeTo).TransformPoint(position);
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{

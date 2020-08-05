@@ -24,11 +24,7 @@ namespace Windows.UI.Xaml
 	{
 		bool IFrameworkElementInternal.HasLayouter => true;
 
-		partial void OnLoadingPartial();
 
-		private protected virtual void OnPostLoading()
-		{
-		}
 
 		/*
 			About NativeOn** vs ManagedOn** methods:
@@ -39,31 +35,6 @@ namespace Windows.UI.Xaml
 				the FrameworkElement only makes it publicly available by overriding methods from UIElement and raising events.
 				The propagation of this loaded state is also made by the UIElement.
 		 */
-
-		internal sealed override void ManagedOnLoading()
-		{
-			base.IsLoading = true;
-
-			OnLoadingPartial();
-
-			try
-			{
-				// Raise event before invoking base in order to raise them top to bottom
-				_loading?.Invoke(this, new RoutedEventArgs(this));
-			}
-			catch (Exception error)
-			{
-				_log.Error("ManagedOnLoading failed in FrameworkElement", error);
-				Application.Current.RaiseRecoverableUnhandledException(error);
-			}
-
-			OnPostLoading();
-
-			// Explicit propagation of the loading even must be performed
-			// after the compiled bindings are applied (cf. OnLoading), as there may be altered
-			// properties that affect the visual tree.
-			base.ManagedOnLoading();
-		}
 
 		private void NativeOnLoading(object sender, RoutedEventArgs args)
 		{
@@ -78,34 +49,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal sealed override void ManagedOnLoaded(int depth)
-		{
-			if (!base.IsLoaded)
-			{
-				// Make sure to set the flag before raising the loaded event (duplicated with the base.ManagedOnLoaded)
-				base.IsLoaded = true;
-				base.IsLoading = false;
-
-				if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-				{
-					UpdateDOMProperties();
-				}
-
-				try
-				{
-					// Raise event before invoking base in order to raise them top to bottom
-					OnLoaded();
-					_loaded?.Invoke(this, new RoutedEventArgs(this));
-				}
-				catch (Exception error)
-				{
-					_log.Error("ManagedOnLoaded failed in FrameworkElement", error);
-					Application.Current.RaiseRecoverableUnhandledException(error);
-				}
-			}
-
-			base.ManagedOnLoaded(depth);
-		}
 
 		private void NativeOnLoaded(object sender, RoutedEventArgs args)
 		{
@@ -127,22 +70,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal sealed override void ManagedOnUnloaded()
-		{
-			base.ManagedOnUnloaded(); // Will set flag IsLoaded to false
-
-			try
-			{
-				// Raise event after invoking base in order to raise them bottom to top
-				OnUnloaded();
-				_unloaded?.Invoke(this, new RoutedEventArgs(this));
-			}
-			catch (Exception error)
-			{
-				_log.Error("ManagedOnUnloaded failed in FrameworkElement", error);
-				Application.Current.RaiseRecoverableUnhandledException(error);
-			}
-		}
 
 		private void NativeOnUnloaded(object sender, RoutedEventArgs args)
 		{

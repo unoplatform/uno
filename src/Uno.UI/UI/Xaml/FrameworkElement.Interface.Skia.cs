@@ -31,14 +31,14 @@ namespace Windows.UI.Xaml
 		}
 
 		private protected virtual void OnLoaded()
-		{
+        {
 
-		}
+        }
 
 		private protected virtual void OnUnloaded()
-		{
+        {
 
-		}
+        }
 
 
 		#region Transitions Dependency Property
