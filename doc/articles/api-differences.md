@@ -13,8 +13,7 @@ The implementations of the ListView for iOS and Android use the native controls 
 
 ## Themes
 
-`FrameworkElement.RequestedTheme` is not supported yet. The `Application.Current.RequestedTheme` property
-must be set at launch time. Documentation: [`Application.RequestedTheme`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.application.requestedtheme)
+`FrameworkElement.RequestedTheme` is supported in a very limited form. Setting `FrameworkElement.RequestedTheme` on *any* element will currently apply the nominated theme to the *entire* visual tree.
 
 ### Custom Themes
 

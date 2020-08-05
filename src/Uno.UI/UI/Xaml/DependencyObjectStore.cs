@@ -946,10 +946,11 @@ namespace Windows.UI.Xaml
 					IsAutoPropertyInheritanceEnabled
 					|| force
 
-					// these two cases may be required in case the
+					// these cases may be required in case the
 					// graph is built in reverse (such as with the
 					// XamlReader)
 					|| _properties.HasBindings
+					|| _resourceBindings?.Count > 0
 					|| _childrenStores.Count != 0
 				)
 			)
@@ -1108,14 +1109,15 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
 		/// </summary>
-		internal void UpdateResourceBindings(bool isThemeChangedUpdate)
+		internal void UpdateResourceBindings(bool isThemeChangedUpdate, ResourceDictionary? containingDictionary = null)
 		{
 			if (_resourceBindings == null || _resourceBindings.Count == 0)
 			{
+				UpdateChildResourceBindings(isThemeChangedUpdate);
 				return;
 			}
 
-			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false).ToArray();
+			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
 
 			var bindings = _resourceBindings.ToArray(); //The original dictionary may be mutated during DP assignations
 
@@ -1146,13 +1148,30 @@ namespace Windows.UI.Xaml
 				// TryRemoveResourceBinding() will have removed the entries - we just put them straight back again.
 				_resourceBindings[kvp.Key] = kvp.Value;
 			}
+
+			UpdateChildResourceBindings(isThemeChangedUpdate);
+		}
+
+		private void UpdateChildResourceBindings(bool isThemeChangedUpdate)
+		{
+			foreach (var childStore in _childrenStores.Data)
+			{
+				if (!(childStore.ActualInstance is FrameworkElement)) // FrameworkElements are updated separately by traversing the visual tree
+				{
+					childStore.UpdateResourceBindings(isThemeChangedUpdate);
+				}
+			}
 		}
 
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
 		/// </summary>
-		private IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources)
+		private IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources, ResourceDictionary? containingDictionary = null)
 		{
+			if (containingDictionary != null)
+			{
+				yield return containingDictionary;
+			}
 			var candidate = ActualInstance;
 			while (candidate != null)
 			{

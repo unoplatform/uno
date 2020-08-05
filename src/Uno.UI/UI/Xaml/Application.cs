@@ -77,13 +77,19 @@ namespace Windows.UI.Xaml
 				{
 					throw new NotSupportedException("Operation not supported");
 				}
-				// this flag makes sure the app will not respond to OS events	
-				_themeSetExplicitly = true;
-				SetRequestedTheme(value);
+				SetExplicitRequestedTheme(value);
 			}
 		}
 
-		public ResourceDictionary Resources { get; } = new ResourceDictionary();
+		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
+		{
+			// this flag makes sure the app will not respond to OS events
+			_themeSetExplicitly = explicitTheme.HasValue;
+			var theme = explicitTheme ?? GetDefaultSystemTheme();
+			SetRequestedTheme(theme);
+		}
+
+		public ResourceDictionary Resources { get; set; } = new ResourceDictionary();
 
 #pragma warning disable CS0067 // The event is never used
 		public event EventHandler<object> Resuming;
@@ -174,7 +180,7 @@ namespace Windows.UI.Xaml
 			OnWindowCreated(new WindowCreatedEventArgs(window));
 		}
 
-		internal void SetRequestedTheme(ApplicationTheme requestedTheme)
+		private void SetRequestedTheme(ApplicationTheme requestedTheme)
 		{
 			if (requestedTheme != _requestedTheme)
 			{
@@ -193,6 +199,12 @@ namespace Windows.UI.Xaml
 
 			void PropagateThemeChanged(object instance)
 			{
+				// Update theme bindings in application resources
+				Resources?.UpdateThemeBindings();
+
+				// Update theme bindings in system resources
+				ResourceResolver.UpdateSystemThemeBindings();
+
 				// Update ThemeResource references that have changed
 				if (instance is FrameworkElement fe)
 				{

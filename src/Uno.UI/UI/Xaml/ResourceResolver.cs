@@ -327,5 +327,7 @@ namespace Uno.UI
 
 			return default(T);
 		}
+
+		internal static void UpdateSystemThemeBindings() => MasterDictionary.UpdateThemeBindings();
 	}
 }
