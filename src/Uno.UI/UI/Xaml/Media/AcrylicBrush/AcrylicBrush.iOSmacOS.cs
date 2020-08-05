@@ -2,8 +2,19 @@
 using System.Collections.Generic;
 using CoreAnimation;
 using CoreGraphics;
-using UIKit;
 using Uno.Disposables;
+using Windows.UI.Xaml.Controls;
+#if __IOS__
+using UIKit;
+using _Color = UIKit.UIColor;
+using _View = UIKit.UIView;
+using _VisualEffectView = UIKit.UIVisualEffectView;
+#else
+using AppKit;
+using _Color = AppKit.NSColor;
+using _View = AppKit.NSView;
+using _VisualEffectView = AppKit.NSVisualEffectView;
+#endif
 
 namespace Windows.UI.Xaml.Media
 {
@@ -54,6 +65,11 @@ namespace Windows.UI.Xaml.Media
 				(_, __) => Apply(state))
 					.DisposeWith(compositeDisposable);
 
+			this.RegisterDisposablePropertyChangedCallback(
+				BackgroundSourceProperty,
+				(_, __) => Apply(state))
+					.DisposeWith(compositeDisposable);
+
 			Apply(state);
 
 			Disposable.Create(() => state.ApplyDisposable.Disposable = null)
@@ -82,7 +98,7 @@ namespace Windows.UI.Xaml.Media
 				{
 					Frame = acrylicState.FullArea,
 					Mask = acrylicState.FillMask,
-					BackgroundColor = UIColor.Clear.CGColor,
+					BackgroundColor = _Color.Clear.CGColor,
 					MasksToBounds = true,
 				};
 				acrylicState.Parent.InsertSublayer(acrylicState.AcrylicContainerLayer, acrylicState.InsertionIndex);
@@ -102,7 +118,7 @@ namespace Windows.UI.Xaml.Media
 			}
 			else
 			{
-				acrylicState.AcrylicContainerLayer.BackgroundColor = UIColor.Clear.CGColor;
+				acrylicState.AcrylicContainerLayer.BackgroundColor = _Color.Clear.CGColor;
 
 				var acrylicFrame = new CGRect(new CGPoint(acrylicState.InsideArea.X, acrylicState.InsideArea.Y), acrylicState.InsideArea.Size);
 
@@ -114,24 +130,89 @@ namespace Windows.UI.Xaml.Media
 					BackgroundColor = TintColor
 				};
 
-				acrylicState.BlurView = new UIVisualEffectView()
-				{
-					ClipsToBounds = true,
-					BackgroundColor = UIColor.Clear,
-					Frame = acrylicFrame,
-					Effect = UIBlurEffect.FromStyle(UIBlurEffectStyle.Light)
-				};
-
-				acrylicState.Owner.InsertSubview(acrylicState.BlurView, 0);
+				acrylicState.BlurViews = CreateBlurViews(acrylicFrame);
+				InsertViewsAtStart(acrylicState.Owner, acrylicState.BlurViews);
 
 				acrylicState.AcrylicContainerLayer.AddSublayer(acrylicLayer);
 
 				Disposable.Create(() =>
 				{
 					acrylicState.AcrylicContainerLayer.Sublayers[0].RemoveFromSuperLayer();
-					acrylicState.BlurView.RemoveFromSuperview();
-					acrylicState.BlurView = null;
+					RemoveViews(acrylicState.Owner, acrylicState.BlurViews);
+					acrylicState.BlurViews = null;
 				}).DisposeWith(compositeDisposable);
+			}
+		}
+
+		private _View[] CreateBlurViews(CGRect acrylicFrame)
+		{
+#if __IOS__
+			return new _View[]
+			{
+				new _VisualEffectView()
+				{
+					ClipsToBounds = true,
+					BackgroundColor = _Color.Clear,
+					Frame = acrylicFrame,
+					Effect = UIBlurEffect.FromStyle(UIBlurEffectStyle.Light)
+				}
+			};
+#else
+			var blurView = new _VisualEffectView()
+			{
+				BlendingMode = BackgroundSource == AcrylicBackgroundSource.HostBackdrop ?
+					NSVisualEffectBlendingMode.BehindWindow : NSVisualEffectBlendingMode.WithinWindow,
+				Material = NSVisualEffectMaterial.Light,
+				State = NSVisualEffectState.Active,
+				Frame = acrylicFrame
+			};
+			var tintView = new NSView()
+			{
+				WantsLayer = true,
+				Frame = acrylicFrame
+			};
+			tintView.Layer.BackgroundColor = TintColor;
+			tintView.Layer.Opacity = (float)TintOpacity;
+			return new _View[]
+			{
+				blurView,
+				tintView
+			};
+#endif
+		}
+
+		private void InsertViewsAtStart(_View owner, _View[] subviews)
+		{
+#if __IOS__
+			for (int i = 0; i < subviews.Length; i++)
+			{
+				var subview = subviews[i];
+				owner.InsertSubview(subview, i);
+			}
+#else
+			for (int i = 0; i < subviews.Length; i++)
+			{
+				var subview = subviews[i];
+				if (i == 0)
+				{
+					// First view goes below everything
+					owner.AddSubview(subview, NSWindowOrderingMode.Below, null);
+				}
+				else
+				{
+					// Other views go above previous
+					owner.AddSubview(subview, NSWindowOrderingMode.Above, subviews[i - 1]);
+				}
+			}
+#endif
+		}
+
+		private void RemoveViews(_View owner, _View[] subviews)
+		{
+			for (int i = 0; i < subviews.Length; i++)
+			{
+				var subview = subviews[i];
+				subview.RemoveFromSuperview();
 			}
 		}
 
@@ -155,7 +236,7 @@ namespace Windows.UI.Xaml.Media
 
 			public CALayer AcrylicContainerLayer { get; set; }
 
-			public UIVisualEffectView BlurView { get; set; }
+			public _View[] BlurViews { get; set; }
 
 			public UIElement Owner { get; }
 
