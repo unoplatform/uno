@@ -362,10 +362,13 @@ namespace Windows.UI.Xaml.Shapes
 						pathBounds.Y == 0 ? pathBounds.Height + strokeThickness : pathBounds.Bottom + halfStrokeThickness);
 					var (userMinSize, userMaxSize) = GetMinMax(userSize);
 
-					size = pathNaturalSize.AtMost(userMaxSize).AtLeast(userMinSize); // The size defined on the Shape has priority over the size of the geometry itself!
+					var clampedSize = pathNaturalSize.AtMost(userMaxSize).AtLeast(userMinSize); // The size defined on the Shape has priority over the size of the geometry itself!
 					renderScale = (1, 1);
 					renderOrigin = (0, 0);
-					renderOverflow = (size.Width - finalSize.Width, size.Height - finalSize.Height); // We do not add halfStrokeThickness: The stroke is allowed to flow out of container for None
+					renderOverflow = (clampedSize.Width - finalSize.Width, clampedSize.Height - finalSize.Height); // We do not add halfStrokeThickness: The stroke is allowed to flow out of container for None
+
+					// Stretch none forces top/left alignment in the parent.
+					size = finalSize;
 					break;
 
 				case Stretch.Fill:
