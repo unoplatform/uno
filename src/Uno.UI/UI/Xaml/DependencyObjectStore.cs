@@ -1388,7 +1388,7 @@ namespace Windows.UI.Xaml
 			var wr = WeakReferencePool.RentWeakReference(null, callback);
 
 			PropertyChangedCallback weakDelegate =
-				(s, e) => (wr.Target as PropertyChangedCallback)?.Invoke(s, e);
+				(s, e) => (!wr.IsDisposed ? wr.Target as PropertyChangedCallback : null)?.Invoke(s, e);
 
 			return (weakDelegate, Disposable.Create(() => WeakReferencePool.ReturnWeakReference(null, wr)));
 		}
