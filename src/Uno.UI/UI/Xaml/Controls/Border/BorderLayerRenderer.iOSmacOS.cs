@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, LayoutState state)
-		{			
+		{
 			var area = state.Area;
 			var background = state.Background;
 			var borderThickness = state.BorderThickness;
@@ -159,16 +159,18 @@ namespace Windows.UI.Xaml.Shapes
 				}
 				else if (background is AcrylicBrush acrylicBrush)
 				{
-					// TODO: react to AlwaysUseFallback changes
-					if (acrylicBrush.AlwaysUseFallback)
+					var fillMask = new CAShapeLayer()
 					{
-						Brush.AssignAndObserveBrush(acrylicBrush, color => layer.FillColor = color)
-							.DisposeWith(disposables);
-					}
-					else
-					{
+						Path = path,
+						Frame = area,
+						// We only use the fill color to create the mask area
+						FillColor = _Color.White.CGColor,
+					};
+					// We reduce the adjustedArea again so that the acrylic is inside the border (like in Windows)
+					adjustedArea = adjustedArea.Shrink((nfloat)adjustedLineWidthOffset);
 
-					}
+					acrylicBrush.Subscribe(owner, area, adjustedArea, parent, sublayers, ref insertionIndex, fillMask)
+						.DisposeWith(disposables);
 				}
 				else
 				{
@@ -239,37 +241,16 @@ namespace Windows.UI.Xaml.Shapes
 				}
 				else if (background is AcrylicBrush acrylicBrush)
 				{
-					// TODO: react to AlwaysUseFallback changes
-					if (acrylicBrush.AlwaysUseFallback)
-					{
-						Brush.AssignAndObserveBrush(acrylicBrush, c => parent.BackgroundColor = c)
-							.DisposeWith(disposables);
+					var fullArea = new CGRect(
+							area.X + borderThickness.Left,
+							area.Y + borderThickness.Top,
+							area.Width - borderThickness.Left - borderThickness.Right,
+							area.Height - borderThickness.Top - borderThickness.Bottom);
 
-						// This is required because changing the CornerRadius changes the background drawing 
-						// implementation and we don't want a rectangular background behind a rounded background.
-						Disposable.Create(() => parent.BackgroundColor = null)
-							.DisposeWith(disposables);
-					}
-					else
-					{
-						var fullArea = new CGRect(
-						area.X + borderThickness.Left,
-						area.Y + borderThickness.Top,
-						area.Width - borderThickness.Left - borderThickness.Right,
-						area.Height - borderThickness.Top - borderThickness.Bottom);
+					var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
+					var insertionIndex = 0;
 
-						var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
-						var insertionIndex = 0;
-
-						acrylicBrush.CreateAcrylicBrushLayers(
-							owner,
-							fullArea,
-							insideArea,
-							parent,
-							sublayers,
-							ref insertionIndex,
-							fillMask: null);
-					}
+					acrylicBrush.Subscribe(owner, fullArea, insideArea, parent, sublayers, ref insertionIndex, fillMask: null);
 				}
 				else
 				{
@@ -458,7 +439,7 @@ namespace Windows.UI.Xaml.Shapes
 			sublayers.Add(gradientContainerLayer);
 		}
 
-		
+
 
 		private class LayoutState : IEquatable<LayoutState>
 		{

@@ -12,9 +12,14 @@ namespace Windows.UI.Xaml.Media
 
 		private static bool? _isBackdropFilterSupported = null;
 
+		/// <summary>
+        /// Subscribes to AcrylicBrush for a given UI element and applies it.
+        /// </summary>
+        /// <param name="uiElement">UI element.</param>
+        /// <returns>Disposable.</returns>
 		internal IDisposable Subscribe(UIElement uiElement)
 		{
-			var compositeDisposable = new CompositeDisposable(4);
+			var compositeDisposable = new CompositeDisposable(5);
 
 			this.RegisterDisposablePropertyChangedCallback(
 				AlwaysUseFallbackProperty,
@@ -39,13 +44,16 @@ namespace Windows.UI.Xaml.Media
 			// Apply the current state of the brush
 			Apply(uiElement);
 
+			Disposable.Create(() => ResetStyle(uiElement))
+				.DisposeWith(compositeDisposable);
+
 			return compositeDisposable;
 		}
 
 		/// <summary>
-		/// Applies the current state of Acrylic brush to a given UIElement
+		/// Applies the current state of Acrylic brush to a given UI element
 		/// </summary>
-		/// <param name="uiElement">UIElement to set background brush to.</param>
+		/// <param name="uiElement">UI element to set background brush to.</param>
 		internal void Apply(UIElement uiElement)
 		{
 			var isBackdropSupported = IsBackdropFilterSupported();

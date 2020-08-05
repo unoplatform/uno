@@ -1,13 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CoreAnimation;
 using CoreGraphics;
 using UIKit;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
 	{
-		internal void CreateAcrylicBrushLayers(
+		/// <summary>
+		/// Subscribes to AcrylicBrush for a given UI element and applies it.
+		/// </summary>
+		/// <param name="uiElement">UI element.</param>
+		/// <returns>Disposable.</returns>
+		internal IDisposable Subscribe(
 			UIElement owner,
 			CGRect fullArea,
 			CGRect insideArea,
@@ -16,39 +23,153 @@ namespace Windows.UI.Xaml.Media
 			ref int insertionIndex,
 			CAShapeLayer fillMask)
 		{
-			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
-			var acrylicContainerLayer = new CALayer
+			var state = new AcrylicState(
+				owner,
+				fullArea,
+				insideArea,
+				layer,
+				sublayers,
+				insertionIndex++, // we always use a single layer for acrylic
+				fillMask);
+
+			var compositeDisposable = new CompositeDisposable(5);
+
+			this.RegisterDisposablePropertyChangedCallback(
+				AlwaysUseFallbackProperty,
+				(_, __) => Apply(state))
+					.DisposeWith(compositeDisposable);
+
+			this.RegisterDisposablePropertyChangedCallback(
+				TintColorProperty,
+				(_, __) => Apply(state))
+					.DisposeWith(compositeDisposable);
+
+			this.RegisterDisposablePropertyChangedCallback(
+				TintOpacityProperty,
+				(_, __) => Apply(state))
+					.DisposeWith(compositeDisposable);
+
+			this.RegisterDisposablePropertyChangedCallback(
+				OpacityProperty,
+				(_, __) => Apply(state))
+					.DisposeWith(compositeDisposable);
+
+			Apply(state);
+
+			Disposable.Create(() => state.ApplyDisposable.Disposable = null)
+				.DisposeWith(compositeDisposable);
+
+			return compositeDisposable;
+		}
+
+		/// <summary>
+		/// Applies the current state of Acrylic brush to a given UIElement
+		/// </summary>
+		/// <param name="uiElement">UIElement to set background brush to.</param>
+		private void Apply(AcrylicState acrylicState)
+		{
+			var compositeDisposable = new CompositeDisposable();
+
+			// Reset existing layers
+			acrylicState.ApplyDisposable.Disposable = compositeDisposable;
+
+			if (acrylicState.AcrylicContainerLayer == null)
 			{
-				Frame = fullArea,
-				Mask = fillMask,
-				BackgroundColor = UIColor.Clear.CGColor,
-				MasksToBounds = true,
-			};
+				// Initialize the container layer.
+				// This is done only once and the layer is reused if brush
+				// properties change.
+				acrylicState.AcrylicContainerLayer = new CALayer
+				{
+					Frame = acrylicState.FullArea,
+					Mask = acrylicState.FillMask,
+					BackgroundColor = UIColor.Clear.CGColor,
+					MasksToBounds = true,
+				};
+				acrylicState.Parent.InsertSublayer(acrylicState.AcrylicContainerLayer, acrylicState.InsertionIndex);
+				acrylicState.Sublayers.Add(acrylicState.AcrylicContainerLayer);
 
-			layer.InsertSublayer(acrylicContainerLayer, insertionIndex++);
-			var gradientFrame = new CGRect(new CGPoint(insideArea.X, insideArea.Y), insideArea.Size);
+				// The layer itself is removed automatically by the BorderLayoutRenderer
+			}
 
-			var acrylicLayer = new CALayer
+			if (AlwaysUseFallback)
 			{
-				Frame = gradientFrame,
-				MasksToBounds = true,
-				Opacity = (float)TintOpacity,
-				BackgroundColor = TintColor
-			};
+				// Apply solid color only
+				var previousColor = acrylicState.AcrylicContainerLayer.BackgroundColor;
+				acrylicState.AcrylicContainerLayer.BackgroundColor = FallbackColorWithOpacity;
 
-			var blurView = new UIVisualEffectView()
-			{				
-				ClipsToBounds = true,
-				BackgroundColor = UIColor.Clear
-			};
-			blurView.Frame = gradientFrame;
-			blurView.Effect = UIBlurEffect.FromStyle(UIBlurEffectStyle.Dark);
+				Disposable.Create(() => acrylicState.AcrylicContainerLayer.BackgroundColor = previousColor)
+					.DisposeWith(compositeDisposable);
+			}
+			else
+			{
+				acrylicState.AcrylicContainerLayer.BackgroundColor = UIColor.Clear.CGColor;
 
-			owner.InsertSubview(blurView, 0);
+				var acrylicFrame = new CGRect(new CGPoint(acrylicState.InsideArea.X, acrylicState.InsideArea.Y), acrylicState.InsideArea.Size);
 
-			acrylicContainerLayer.InsertSublayer(acrylicLayer, 0);
+				var acrylicLayer = new CALayer
+				{
+					Frame = acrylicFrame,
+					MasksToBounds = true,
+					Opacity = (float)TintOpacity,
+					BackgroundColor = TintColor
+				};
 
-			sublayers.Add(acrylicContainerLayer);
+				acrylicState.BlurView = new UIVisualEffectView()
+				{
+					ClipsToBounds = true,
+					BackgroundColor = UIColor.Clear,
+					Frame = acrylicFrame,
+					Effect = UIBlurEffect.FromStyle(UIBlurEffectStyle.Light)
+				};
+
+				acrylicState.Owner.InsertSubview(acrylicState.BlurView, 0);
+
+				acrylicState.AcrylicContainerLayer.AddSublayer(acrylicLayer);
+
+				Disposable.Create(() =>
+				{
+					acrylicState.AcrylicContainerLayer.Sublayers[0].RemoveFromSuperLayer();
+					acrylicState.BlurView.RemoveFromSuperview();
+					acrylicState.BlurView = null;
+				}).DisposeWith(compositeDisposable);
+			}
+		}
+
+		/// <summary>
+		/// Wraps the acrylic brush metadata for a single UI element.
+		/// </summary>
+		private class AcrylicState
+		{
+			public AcrylicState(UIElement owner, CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, int insertionIndex, CAShapeLayer fillMask)
+			{
+				Owner = owner;
+				FullArea = fullArea;
+				InsideArea = insideArea;
+				Parent = layer;
+				Sublayers = sublayers;
+				InsertionIndex = insertionIndex;
+				FillMask = fillMask;
+			}
+
+			public SerialDisposable ApplyDisposable { get; } = new SerialDisposable();
+
+			public CALayer AcrylicContainerLayer { get; set; }
+
+			public UIVisualEffectView BlurView { get; set; }
+
+			public UIElement Owner { get; }
+
+			public CGRect FullArea { get; }
+
+			public CGRect InsideArea { get; }
+
+			public CALayer Parent { get; }
+
+			public List<CALayer> Sublayers { get; }
+
+			public int InsertionIndex { get; }
+
+			public CAShapeLayer FillMask { get; }
 		}
 	}
 }
