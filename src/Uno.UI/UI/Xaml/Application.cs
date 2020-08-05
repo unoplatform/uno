@@ -201,16 +201,17 @@ namespace Windows.UI.Xaml
 		{
 			if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
 			{
-				PropagateThemeChanged(root);
-			}
-
-			void PropagateThemeChanged(object instance)
-			{
 				// Update theme bindings in application resources
 				Resources?.UpdateThemeBindings();
 
 				// Update theme bindings in system resources
 				ResourceResolver.UpdateSystemThemeBindings();
+
+				PropagateThemeChanged(root);
+			}
+
+			void PropagateThemeChanged(object instance)
+			{
 
 				// Update ThemeResource references that have changed
 				if (instance is FrameworkElement fe)
