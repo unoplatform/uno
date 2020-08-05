@@ -26,8 +26,8 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var drawSize = default(Windows.Foundation.Size);
 
-			var suggestedWidth = double.IsNaN(Width) ? canvas.Width : Width;
-			var suggestedHeight = double.IsNaN(Height) ? canvas.Height : Height;
+			var suggestedWidth = canvas.Width;
+			var suggestedHeight = canvas.Height;
 
 			switch (Stretch)
 			{
