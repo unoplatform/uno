@@ -396,12 +396,21 @@ namespace Windows.UI.Xaml
 					(o, e) => ((FrameworkElement)o).OnRequestedThemeChanged((ElementTheme)e.OldValue, (ElementTheme)e.NewValue)));
 
 		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
-			// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
-			// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
-			=> Application.Current.SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(newValue));
+		{
+			if (IsWindowRoot) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
+			{
+				// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
+				// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
+				Application.Current.SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(newValue));
+			}
+		}
 
 
 		#endregion
+
+		public ElementTheme ActualTheme => IsWindowRoot ?
+			Application.Current?.ActualElementTheme ?? ElementTheme.Default
+			: ElementTheme.Default;
 
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined

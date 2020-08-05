@@ -81,6 +81,13 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal ElementTheme ActualElementTheme => (_themeSetExplicitly, RequestedTheme) switch
+		{
+			(true, ApplicationTheme.Light) => ElementTheme.Light,
+			(true, ApplicationTheme.Dark) => ElementTheme.Dark,
+			_ => ElementTheme.Default
+		};
+
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
 			// this flag makes sure the app will not respond to OS events
