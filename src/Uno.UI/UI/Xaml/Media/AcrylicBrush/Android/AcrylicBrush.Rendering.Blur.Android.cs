@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Drawing;
-using Android.Content;
-using Android.OS;
 using Android.Views;
-using Android.Widget;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
-using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
-using View = Android.Views.View;
 
 namespace Windows.UI.Xaml.Media
 {

@@ -169,11 +169,12 @@ namespace Windows.UI.Xaml.Controls
 						var setBackground = DispatchSetImageBrushAsBackground(view, imageBrushBackground, drawArea, onImageSet);
 						disposables.Add(setBackground);
 					}
-					else if (background is AcrylicBrush acrylicBrush)
-					{
-						var apply = acrylicBrush.Apply(view);
-						disposables.Add(apply);
-					}
+					//TODO: AcrylicBrush on Android
+					//else if (background is AcrylicBrush acrylicBrush)
+					//{
+					//	var apply = acrylicBrush.Apply(view);
+					//	disposables.Add(apply);
+					//}
 					else
 					{
 						var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };

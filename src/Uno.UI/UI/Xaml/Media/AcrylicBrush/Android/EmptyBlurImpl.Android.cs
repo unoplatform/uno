@@ -1,10 +1,9 @@
 ﻿using Android.Content;
 using Android.Graphics;
-using Uno.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Media
 {
-	public class EmptyBlurImpl : IBlurImpl
+	internal class EmptyBlurImpl : IBlurImpl
 	{
 		public bool Prepare(Context context, Bitmap buffer, float radius) => false;
 

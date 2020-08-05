@@ -10,6 +10,11 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
     {
+		protected override Paint GetPaintInner(Foundation.Rect destinationRect)
+		{
+			return new Paint() { Color = FallbackColorWithOpacity, AntiAlias = true };
+		}
+
 		bool ready = false;
         internal IDisposable Apply(BindableView owner)
 		{
