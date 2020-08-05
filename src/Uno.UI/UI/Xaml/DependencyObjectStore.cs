@@ -1129,7 +1129,7 @@ namespace Windows.UI.Xaml
 					if (dict.TryGetValue(kvp.Value.ResourceKey, out var value, shouldCheckSystem: false))
 					{
 						wasSet = true;
-						SetValue(kvp.Key, value);
+						SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value));
 						break;
 					}
 				}
@@ -1138,7 +1138,7 @@ namespace Windows.UI.Xaml
 				{
 					if (ResourceResolver.TryTopLevelRetrieval(kvp.Value.ResourceKey, kvp.Value.ParseContext, out var value))
 					{
-						SetValue(kvp.Key, value);
+						SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value));
 					}
 				}
 			}
