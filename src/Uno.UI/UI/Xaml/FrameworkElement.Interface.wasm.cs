@@ -136,15 +136,19 @@ namespace Windows.UI.Xaml
 					{
 						case ImageDataKind.Empty:
 						case ImageDataKind.Error:
-							ResetStyle("background-color");
-							ResetStyle("background-image");
+							ResetStyle("background-color", "background-image", "background-size");
 							break;
 
 						case ImageDataKind.Base64:
 						case ImageDataKind.Url:
 						default:
-							ResetStyle("background-color");
-							SetStyle("background-image", "url(" + img.Value + ")");
+							SetStyle(
+								("background-color", ""),
+								("background-origin", "content-box"),
+								("background-position", imgBrush.ToCssPosition()),
+								("background-size", imgBrush.ToCssBackgroundSize()),
+								("background-image", "url(" + img.Value + ")")
+							);
 							break;
 					}
 				});
@@ -171,8 +175,7 @@ namespace Windows.UI.Xaml
 					RecalculateBrushOnSizeChanged(true);
 					break;
 				default:
-					ResetStyle("background-color");
-					ResetStyle("background-image");
+					ResetStyle("background-color", "background-image", "background-size");
 					RecalculateBrushOnSizeChanged(false);
 					break;
 			}
