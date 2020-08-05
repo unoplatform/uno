@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Media
 				// Use plain fallback color
 				uiElement.SetStyle("background-color", FallbackColorWithOpacity.ToCssString());
 			}
-			else if (isBackdropSupported)
+			else
 			{
 				// "real" acrylic
 				uiElement.SetStyle(
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		/// <summary>
-		/// Resets the AcrylicBrush-related properties on a give UIElement.
+		/// Resets the AcrylicBrush-related properties on a given UIElement.
 		/// </summary>
 		/// <param name="element">Element.</param>
 		internal static void ResetStyle(UIElement element)

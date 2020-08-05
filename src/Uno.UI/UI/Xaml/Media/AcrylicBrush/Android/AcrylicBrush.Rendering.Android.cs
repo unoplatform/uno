@@ -1,4 +1,11 @@
-﻿#if __ANDROID_29__
+﻿/*
+
+Implementation based on https://github.com/roubachof/Sharpnado.MaterialFrame.
+with some modifications and removal of unused features.
+
+*/
+
+#if __ANDROID_29__
 using AndroidX.Core.View;
 #else
 using Android.Support.V4.View;

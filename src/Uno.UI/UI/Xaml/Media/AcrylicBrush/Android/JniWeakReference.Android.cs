@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+
+Implementation based on https://github.com/roubachof/Sharpnado.MaterialFrame.
+with some modifications and removal of unused features.
+
+*/
+
+using System;
 
 namespace Uno.UI.Xaml.Media
 {

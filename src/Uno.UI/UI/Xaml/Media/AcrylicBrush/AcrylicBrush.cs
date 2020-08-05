@@ -115,11 +115,6 @@ namespace Windows.UI.Xaml.Media
 				new FrameworkPropertyMetadata(default(bool)));
 
 		/// <summary>
-		/// Returns the fallback color mixed with opacity value.
-		/// </summary>
-		internal Color FallbackColorWithOpacity => FallbackColor.WithOpacity(Opacity);
-
-		/// <summary>
 		/// Returns the tint color mixed with tint opacity value.
 		/// </summary>
 		internal Color TintColorWithTintOpacity => TintColor.WithOpacity(TintOpacity);

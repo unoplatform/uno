@@ -23,7 +23,12 @@ namespace Windows.UI.Xaml.Media
 				nameof(FallbackColor), typeof(Color), 
 				typeof(XamlCompositionBrushBase), 
 				new FrameworkPropertyMetadata(default(Color)));
-		
+
+		/// <summary>
+		/// Returns the fallback color mixed with opacity value.
+		/// </summary>
+		internal Color FallbackColorWithOpacity => FallbackColor.WithOpacity(Opacity);
+
 		protected virtual void OnConnected()
 		{
 		}

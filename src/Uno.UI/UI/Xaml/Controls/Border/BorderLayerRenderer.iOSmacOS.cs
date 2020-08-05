@@ -30,7 +30,6 @@ namespace Windows.UI.Xaml.Shapes
 
 		private SerialDisposable _layerDisposable = new SerialDisposable();
 
-
 		/// <summary>
 		/// Updates or creates a sublayer to render a border-like shape.
 		/// </summary>
@@ -47,8 +46,7 @@ namespace Windows.UI.Xaml.Shapes
 			Thickness borderThickness,
 			Brush borderBrush,
 			CornerRadius cornerRadius,
-			_Image backgroundImage
-		)
+			_Image backgroundImage)		
 		{
 			// Bounds is captured to avoid calling twice calls below.
 			var bounds = owner.Bounds;
@@ -438,8 +436,6 @@ namespace Windows.UI.Xaml.Shapes
 			layer.InsertSublayer(gradientContainerLayer, insertionIndex++);
 			sublayers.Add(gradientContainerLayer);
 		}
-
-
 
 		private class LayoutState : IEquatable<LayoutState>
 		{
