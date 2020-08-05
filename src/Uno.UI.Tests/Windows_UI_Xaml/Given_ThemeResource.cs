@@ -36,6 +36,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public async Task When_Theme_Changed_ApplicationPageBackground()
+		{
+
+			var page = new ThemeResource_Themed_Color_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			Assert.AreEqual(Colors.White, (page.Background as SolidColorBrush).Color);
+
+			await SwapSystemTheme();
+
+			Assert.AreEqual(Colors.Black, (page.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
 		public async Task When_Themed_Color_Theme_Changed()
 		{
 			var page = new ThemeResource_Themed_Color_Page();
