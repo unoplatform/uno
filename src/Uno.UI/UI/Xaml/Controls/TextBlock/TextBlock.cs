@@ -898,5 +898,12 @@ namespace Windows.UI.Xaml.Controls
 		// This approximates UWP behavior
 		private protected override double GetActualWidth() => DesiredSize.Width;
 		private protected override double GetActualHeight() => DesiredSize.Height;
+
+		internal override void UpdateThemeBindings()
+		{
+			base.UpdateThemeBindings();
+
+			SetDefaultForeground(ForegroundProperty);
+		}
 	}
 }
