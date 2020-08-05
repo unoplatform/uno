@@ -8,6 +8,7 @@ using Uno.Disposables;
 using Uno.UI.Controls;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -18,14 +19,14 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		/// <param name="destinationRect">Destination rect.</param>
 		/// <returns></returns>
-		protected override Paint GetPaintInner(Foundation.Rect destinationRect) =>
+		protected override Paint GetPaintInner(Rect destinationRect) =>
 			new Paint()
 			{
 				Color = FallbackColorWithOpacity,
 				AntiAlias = true
 			};
 
-		internal IDisposable Subscribe(BindableView owner, Foundation.Rect drawArea, Path maskingPath)
+		internal IDisposable Subscribe(BindableView owner, Rect drawArea, Path maskingPath)
 		{
 			var state = new AcrylicState(owner, drawArea, maskingPath);
 
@@ -74,7 +75,7 @@ namespace Windows.UI.Xaml.Media
 				state.BlurDisposable.Disposable = null;
 
 				// Fall back to solid color
-				var fillPaint = GetFillPaint(Foundation.Rect.Empty);
+				var fillPaint = GetFillPaint(Rect.Empty);
 				ExecuteWithNoRelayout(state.Owner, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(this, state.DrawArea, fillPaint, state.MaskingPath)));
 
 				if (state.FallbackDisposable.Disposable == null)
@@ -110,7 +111,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		private class AcrylicState
 		{
-			public AcrylicState(BindableView owner, Foundation.Rect drawArea, Path maskingPath)
+			public AcrylicState(BindableView owner, Rect drawArea, Path maskingPath)
 			{
 				Owner = owner;
 				DrawArea = drawArea;
@@ -129,7 +130,7 @@ namespace Windows.UI.Xaml.Media
 
 			public BindableView Owner { get; }
 
-			public Foundation.Rect DrawArea { get; }
+			public Rect DrawArea { get; }
 
 			public Path MaskingPath { get; }
 		}
