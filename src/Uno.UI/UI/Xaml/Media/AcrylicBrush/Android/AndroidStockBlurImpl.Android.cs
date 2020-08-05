@@ -28,7 +28,7 @@ using Android.Renderscripts;
 
 namespace Uno.UI.Xaml.Media
 {
-    internal class AndroidStockBlurImpl : IBlurImpl
+    internal class AndroidStockBlur : IBlurImpl
     {
 #if DEBUG
         private const bool DEBUG = true;

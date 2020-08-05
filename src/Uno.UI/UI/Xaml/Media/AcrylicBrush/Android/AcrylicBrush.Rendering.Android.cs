@@ -26,34 +26,10 @@ namespace Windows.UI.Xaml.Media
 	/// </summary>	
 	public partial class AcrylicBrush
 	{
-		private GradientDrawable _mainDrawable;
-		private GradientDrawable _acrylicLayer;
-
-		protected void UpdateProperties()
+		private void UpdateProperties(AcrylicState state)
 		{
 			UpdateCornerRadius();
-			UpdateAcrylicGlowColor();
-			UpdateAndroidBlurOverlayColor();
-			UpdateAndroidBlurRadius();
-			//UpdateAndroidBlurRootElement();
-			UpdateMaterialBlurStyle();
-		}
-
-		protected void Cleanup(BindableView view)
-		{
-			//TODO:
-			//MaterialFrame?.Unsubscribe();
-			_mainDrawable = null;
-
-			DestroyBlur(view);
-
-			_acrylicLayer?.Dispose();
-			_acrylicLayer = null;
-
-			_mainDrawable = null;
-
-			_acrylicLayer?.Dispose();
-			_acrylicLayer = null;
+			UpdateTint(state);
 		}
 
 		private void UpdateCornerRadius()
@@ -63,33 +39,37 @@ namespace Windows.UI.Xaml.Media
 			//_realtimeBlurView?.SetCornerRadius(ContextHelper.Current.ToPixels(MaterialFrame.CornerRadius));
 		}
 
-		private void UpdateElevation(BindableView view)
+		private void ApplyAcrylicBlur(AcrylicState state)
 		{
-			ViewCompat.SetElevation(view, 0);
+			ApplyBackground(state);
+
+			EnableBlur(state);
+
+			UpdateProperties(state);
 		}
 
-		private void UpdateAcrylicGlowColor()
+		private void ApplyBackground(AcrylicState state)
 		{
-			Android.Graphics.Color androidColor = TintColor;
-			_acrylicLayer?.SetColor(androidColor);
+			if (state.BackgroundDrawable == null)
+			{
+				state.BackgroundDrawable = new GradientDrawable();
+				state.BackgroundDrawable.SetShape(ShapeType.Rectangle);
+				Android.Graphics.Color androidColor = Colors.Transparent;
+
+				state.BackgroundDrawable.SetColor(androidColor);
+
+				SetBackground(state.Owner, state.BackgroundDrawable);				 
+			}
 		}
 
-		private void SetAcrylicBlur(BindableView view)
+		private void RemoveAcrylicBlur(AcrylicState state)
 		{
-			Border b = (Border)(view);
-			_mainDrawable = new GradientDrawable();
-			_mainDrawable.SetShape(ShapeType.Rectangle);
+			SetBackground(state.Owner, null);
+			state.BackgroundDrawable?.Dispose();
+			state.BackgroundDrawable = null;
 
-			Android.Graphics.Color androidColor = Colors.Transparent;
-			_mainDrawable.SetColor(androidColor);
-
-			SetBackground(view, _mainDrawable);
-
-			//view.LayoutChange += (s,e)=> LayoutBlurView(view);
-			UpdateElevation(view);
-			//LayoutBlurView(view);
-
-			EnableBlur(view);
+			DisableBlur(state);
+			DestroyBlur(state);
 		}
 
 		private void SetBackground(BindableView view, Drawable drawable)

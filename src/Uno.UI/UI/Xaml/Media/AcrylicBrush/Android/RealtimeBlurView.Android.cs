@@ -129,7 +129,7 @@ namespace Uno.UI.Xaml.Media
 		{
 			try
 			{
-				AndroidStockBlurImpl impl = new AndroidStockBlurImpl();
+				AndroidStockBlur impl = new AndroidStockBlur();
 				Bitmap bmp = Bitmap.CreateBitmap(4, 4, Bitmap.Config.Argb8888);
 				impl.Prepare(Context, bmp, 4);
 				impl.Release();
@@ -153,7 +153,7 @@ namespace Uno.UI.Xaml.Media
 			switch (BLUR_IMPL)
 			{
 				case 3:
-					return new AndroidStockBlurImpl();
+					return new AndroidStockBlur();
 				default:
 					return new EmptyBlurImpl();
 			}

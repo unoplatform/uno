@@ -43,10 +43,15 @@ namespace Windows.UI.Xaml.Media
 				insertionIndex++, // we always use a single layer for acrylic
 				fillMask);
 
-			var compositeDisposable = new CompositeDisposable(5);
+			var compositeDisposable = new CompositeDisposable(7);
 
 			this.RegisterDisposablePropertyChangedCallback(
 				AlwaysUseFallbackProperty,
+				(_, __) => Apply(state))
+					.DisposeWith(compositeDisposable);
+
+			this.RegisterDisposablePropertyChangedCallback(
+				FallbackColorProperty,
 				(_, __) => Apply(state))
 					.DisposeWith(compositeDisposable);
 
@@ -65,10 +70,12 @@ namespace Windows.UI.Xaml.Media
 				(_, __) => Apply(state))
 					.DisposeWith(compositeDisposable);
 
+#if __MACOS__
 			this.RegisterDisposablePropertyChangedCallback(
 				BackgroundSourceProperty,
 				(_, __) => Apply(state))
 					.DisposeWith(compositeDisposable);
+#endif
 
 			Apply(state);
 

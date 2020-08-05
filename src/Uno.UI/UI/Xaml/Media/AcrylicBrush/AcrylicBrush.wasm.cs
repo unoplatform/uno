@@ -19,10 +19,15 @@ namespace Windows.UI.Xaml.Media
         /// <returns>Disposable.</returns>
 		internal IDisposable Subscribe(UIElement uiElement)
 		{
-			var compositeDisposable = new CompositeDisposable(5);
+			var compositeDisposable = new CompositeDisposable(6);
 
 			this.RegisterDisposablePropertyChangedCallback(
 				AlwaysUseFallbackProperty,
+				(_, __) => Apply(uiElement))
+					.DisposeWith(compositeDisposable);
+
+			this.RegisterDisposablePropertyChangedCallback(
+				FallbackColorProperty,
 				(_, __) => Apply(uiElement))
 					.DisposeWith(compositeDisposable);
 

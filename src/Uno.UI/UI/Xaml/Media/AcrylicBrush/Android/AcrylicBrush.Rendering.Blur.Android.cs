@@ -1,7 +1,12 @@
 ﻿using System;
+using Android.Content;
+using Android.Graphics;
+using Android.OS;
 using Android.Views;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Uno.Logging;
+using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
@@ -10,62 +15,13 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
 	{
-		private const float AndroidBlurRadius = 20;
+		private static bool? _isStockBlurSupported = null;
 
+		private const float AndroidBlurRadius = 20;
 		private const float StyledBlurRadius = 64;
 
-		private static readonly Color DarkBlurOverlayColor = Color.FromArgb(128, 0, 0, 0);
-
-		//private static readonly Color LightBlurOverlayColor = Color.FromHex("#40FFFFFF");
-
-		//private static readonly Color ExtraLightBlurOverlayColor = Color.FromHex("#B0FFFFFF");
-
-		private static int blurAutoUpdateDelayMilliseconds = 100;
-		private static int blurProcessingDelayMilliseconds = 10;
-
-		private RealtimeBlurView _realtimeBlurView;
-
-		//private View _blurRootView;
-
-		/// <summary>
-		/// When a page visibility changes we activate or deactivate blur updates.
-		/// Setting a bigger delay could improve performance and rendering.
-		/// </summary>
-		public static int BlurAutoUpdateDelayMilliseconds
-		{
-			get => blurAutoUpdateDelayMilliseconds;
-			set
-			{
-				if (value < 0)
-				{
-					throw new ArgumentException(
-						"The blur processing delay cannot be negative",
-						nameof(BlurAutoUpdateDelayMilliseconds));
-				}
-
-				blurAutoUpdateDelayMilliseconds = value;
-			}
-		}
-
-		/// <summary>
-		/// Sometimes the computation of the background can take some times (svg images for example).
-		/// Setting a bigger delay to be sure that the background is rendered first can fix some glitches.
-		/// </summary>
-		public static int BlurProcessingDelayMilliseconds
-		{
-			get => blurProcessingDelayMilliseconds;
-			set
-			{
-				if (value < 0)
-				{
-					throw new ArgumentException(
-						"The blur processing delay cannot be negative",
-						nameof(BlurProcessingDelayMilliseconds));
-				}
-
-				blurProcessingDelayMilliseconds = value;
-			}
-		}
+		internal const int BlurAutoUpdateDelayMilliseconds = 100;
+		internal const int BlurProcessingDelayMilliseconds = 10;
 
 		/// <summary>
 		/// If set to <see langword="true"/>, the rendering result could be better (clearer blur not mixing front elements).
@@ -96,9 +52,9 @@ namespace Windows.UI.Xaml.Media
 		//	LayoutBlurView();
 		//}
 
-		private void LayoutBlurView(ViewGroup view)
+		private void LayoutBlurView(AcrylicState state, ViewGroup view)
 		{
-			if (view.MeasuredWidth == 0 || view.MeasuredHeight == 0 || _realtimeBlurView == null)
+			if (view.MeasuredWidth == 0 || view.MeasuredHeight == 0 || state.BlurView == null)
 			{
 				return;
 			}
@@ -106,126 +62,53 @@ namespace Windows.UI.Xaml.Media
 			int width = view.MeasuredWidth;
 			int height = view.MeasuredHeight;
 
-			_realtimeBlurView.Measure(width, height);
-			_realtimeBlurView.Layout(0, 0, width, height);
+			state.BlurView.Measure(width, height);
+			state.BlurView.Layout(0, 0, width, height);
 		}
 
-		private void DestroyBlur(BindableView view)
+		private void DestroyBlur(AcrylicState state)
 		{
-			if (!_realtimeBlurView.IsNullOrDisposed())
+			if (!state.BlurView.IsNullOrDisposed())
 			{
-				view.RemoveView(_realtimeBlurView);
+				state.Owner.RemoveView(state.BlurView);
 			}
 
-			_realtimeBlurView?.Destroy();
-			_realtimeBlurView = null;
+			state.BlurView?.Destroy();
+			state.BlurView = null;
 		}
 
-		//private void UpdateAndroidBlurRootElement()
-		//{
-		//	if (MaterialFrame.AndroidBlurRootElement == null)
-		//	{
-		//		return;
-		//	}
-
-		//	var formsView = MaterialFrame.AndroidBlurRootElement;
-		//	var renderer = Platform.GetRenderer(formsView);
-		//	if (renderer == null)
-		//	{
-		//		return;
-		//	}
-
-		//	bool IsAncestor(Element child, Layout parent)
-		//	{
-		//		if (child.Parent == null)
-		//		{
-		//			return false;
-		//		}
-
-		//		if (child.Parent == parent)
-		//		{
-		//			return true;
-		//		}
-
-		//		return IsAncestor(child.Parent, parent);
-		//	}
-
-		//	if (!IsAncestor(MaterialFrame, MaterialFrame.AndroidBlurRootElement))
-		//	{
-		//		throw new InvalidOperationException(
-		//			"The AndroidBlurRootElement of the MaterialFrame should be an ancestor of the MaterialFrame.");
-		//	}
-
-		//	Platform.SetRenderer(formsView, renderer);
-		//	_blurRootView = renderer.View;
-
-		//	_realtimeBlurView?.SetRootView(_blurRootView);
-		//}
-
-		private void UpdateAndroidBlurOverlayColor(bool invalidate = true)
+		private void UpdateTint(AcrylicState state, bool invalidate = true)
 		{
-			if (IsAndroidBlurPropertySet)
-			{
-				var tintColorWithOpacity =
-					Color.FromArgb(
-						(byte)(TintOpacity * TintColor.A),
-						TintColor.R,
-						TintColor.G,
-						TintColor.B);
-				Android.Graphics.Color tintColor = tintColorWithOpacity;
-				_realtimeBlurView?.SetOverlayColor(tintColor, invalidate);
-			}
+			var tintColorWithOpacity =
+				Color.FromArgb(
+					(byte)(TintOpacity * TintColor.A),
+					TintColor.R,
+					TintColor.G,
+					TintColor.B);
+			Android.Graphics.Color tintColor = tintColorWithOpacity;
+			state.BlurView?.SetOverlayColor(tintColor, invalidate);
 		}
 
-		private void UpdateAndroidBlurRadius(bool invalidate = true)
-		{
-			if (IsAndroidBlurPropertySet)
-			{
-				//TODO
-				//_realtimeBlurView?.SetBlurRadius(
-				//	ContextHelper.Current.ToPixels(AndroidBlurRadius),
-				//	invalidate);
-			}
-		}
-
-		private void UpdateMaterialBlurStyle(bool invalidate = true)
-		{
-			if (_realtimeBlurView == null || IsAndroidBlurPropertySet)
-			{
-				return;
-			}
-
-			//TODO
-			//_realtimeBlurView.SetBlurRadius(
-			//	ContextHelper.Current.ToPixels(StyledBlurRadius),
-			//	invalidate);
-
-			Android.Graphics.Color color = DarkBlurOverlayColor;
-			_realtimeBlurView.SetOverlayColor(color, invalidate);
-		}
-
-		private void EnableBlur(ViewGroup view)
+		private void EnableBlur(AcrylicState state)
 		{
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
 				this.Log().LogInformation("Renderer::EnableBlur()");
 			}
 
-			if (_realtimeBlurView == null)
+			if (state.BlurView == null)
 			{
-				_realtimeBlurView = new RealtimeBlurView(view.Context);
+				state.BlurView = new RealtimeBlurView(state.Owner.Context);
 			}
 
-			UpdateAndroidBlurRadius();
-			UpdateAndroidBlurOverlayColor();
-			UpdateMaterialBlurStyle();
-			//UpdateAndroidBlurRootElement();
+			state.BlurView.SetBlurRadius(state.Owner.Context.ToPixels(AndroidBlurRadius));
+			UpdateTint(state);
 
-			_realtimeBlurView.SetDownsampleFactor(CurrentBlurRadius <= 10 ? 1 : 2);
+			state.BlurView.SetDownsampleFactor(CurrentBlurRadius <= 10 ? 1 : 2);
 
 			UpdateCornerRadius();
 
-			if (view.ChildCount > 0 && ReferenceEquals(view.GetChildAt(0), _realtimeBlurView))
+			if (state.Owner.ChildCount > 0 && ReferenceEquals(state.Owner.GetChildAt(0), state.BlurViewWrapper))
 			{
 				// Already added
 				return;
@@ -236,21 +119,19 @@ namespace Windows.UI.Xaml.Media
 				this.Log().LogInformation("Renderer::EnableBlur() => adding pre draw listener");
 			}
 
-			//view.AddView(
-			//	_realtimeBlurView,
-			//	0,
-			//	new FrameLayout.LayoutParams(
-			//		ViewGroup.LayoutParams.MatchParent,
-			//		ViewGroup.LayoutParams.MatchParent,
-			//		GravityFlags.NoGravity));
-			var b = (Border)view;
-			b.Child = new ContentPresenter() { Content = _realtimeBlurView, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
-			//LayoutBlurView(view);
+			var blurViewWrapper = new ContentPresenter()
+			{
+				Content = state.BlurView,
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				VerticalAlignment = VerticalAlignment.Stretch
+			};
+			state.Owner.AddView(blurViewWrapper, 0);
+			state.BlurViewWrapper = blurViewWrapper;
 		}
 
-		private void DisableBlur(ViewGroup view)
+		private void DisableBlur(AcrylicState state)
 		{
-			if (view.ChildCount == 0 || !ReferenceEquals(view.GetChildAt(0), _realtimeBlurView))
+			if (state.Owner.ChildCount == 0 || !ReferenceEquals(state.Owner.GetChildAt(0), state.BlurViewWrapper))
 			{
 				return;
 			}
@@ -260,7 +141,58 @@ namespace Windows.UI.Xaml.Media
 				this.Log().LogInformation("Renderer::DisableBlur() => removing pre draw listener");
 			}
 
-			view.RemoveView(_realtimeBlurView);
+			state.Owner.RemoveView(state.BlurViewWrapper);
+		}
+
+		/// <summary>
+		/// Checks if blurring is available on the current
+		/// device.
+		/// </summary>
+		/// <returns>Value indicating whether blur is available.</returns>
+		private static bool SupportsBlur()
+		{
+			if (_isStockBlurSupported == null)
+			{
+				// try to use stock impl first
+				if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBeanMr1)
+				{
+					if (ContextHelper.Current != null)
+					{
+						try
+						{
+							var stockBlurImplementation = new AndroidStockBlur();
+							var bmp = Bitmap.CreateBitmap(4, 4, Bitmap.Config.Argb8888);
+							stockBlurImplementation.Prepare(ContextHelper.Current, bmp, 4);
+							stockBlurImplementation.Release();
+							bmp.Recycle();
+							_isStockBlurSupported = true;
+						}
+						catch (Exception)
+						{
+							if (typeof(AcrylicBrush).Log().IsEnabled(LogLevel.Warning))
+							{
+								typeof(AcrylicBrush).Log().LogWarning("Android Stock Blur implementation is not available");
+							}
+							_isStockBlurSupported = false;
+						}
+					}
+					else
+					{
+						// Context has not been set yet, so we can't determine if blur is supported or not.
+						// We return false but don't set the flag so next evaluation can check again.
+						if (typeof(AcrylicBrush).Log().IsEnabled(LogLevel.Warning))
+						{
+							typeof(AcrylicBrush).Log().LogWarning("AcrylicBrush applied too early. Android Context must be initialized first.");
+						}
+						return false;
+					}
+				}
+				else
+				{
+					_isStockBlurSupported = false;
+				}
+			}
+			return _isStockBlurSupported.Value;
 		}
 	}
 }
