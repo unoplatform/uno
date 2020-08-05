@@ -15,6 +15,7 @@ using Uno.Extensions.Specialized;
 using Microsoft.Extensions.Logging;
 using Uno.UI.Extensions;
 using System.ComponentModel;
+using Windows.Media.Core;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -1011,15 +1012,12 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="item">The item to display.</param>
 		protected virtual void PrepareContainerForItemOverride(DependencyObject element, object item)
 		{
-			var isOwnContainer = element == item;
-
-			ContentControl containerAsContentControl;
-			ContentPresenter containerAsContentPresenter;
+			var isOwnContainer = ReferenceEquals(element, item);
 
 			var styleFromItemsControl = ItemContainerStyle ?? ItemContainerStyleSelector?.SelectStyle(item, element);
 
 			//Prepare ContentPresenter
-			if ((containerAsContentPresenter = element as ContentPresenter) != null)
+			if (element is ContentPresenter containerAsContentPresenter)
 			{
 				if (styleFromItemsControl != null)
 				{
@@ -1030,24 +1028,17 @@ namespace Windows.UI.Xaml.Controls
 					containerAsContentPresenter.Style = null;
 				}
 
-				containerAsContentPresenter.ContentTemplate = ItemTemplate;
-				containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
-
 				if (!isOwnContainer)
 				{
-					containerAsContentPresenter.Content = item;
+					containerAsContentPresenter.TrySetDataContextFromContent(item);
 				}
 			}
-
-			//Prepare ContentControl
-			if ((containerAsContentControl = element as ContentControl) != null)
+			else if (element is ContentControl containerAsContentControl)
 			{
 				if (styleFromItemsControl != null)
 				{
 					containerAsContentControl.Style = styleFromItemsControl;
 				}
-				containerAsContentControl.ContentTemplate = ItemTemplate;
-				containerAsContentControl.ContentTemplateSelector = ItemTemplateSelector;
 
 				if (!isOwnContainer)
 				{
@@ -1056,11 +1047,6 @@ namespace Windows.UI.Xaml.Controls
 					// This avoids the inner content to go through a partial content being
 					// the result of the fallback value of the binding set below.
 					containerAsContentControl.DataContext = item;
-
-					if (containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
-					{
-						containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
-					}
 				}
 			}
 		}
@@ -1115,13 +1101,53 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var item = ItemFromIndex(index);
 
-			var container = IsItemItsOwnContainerOverride(item)
-				? item as DependencyObject
-				: GetContainerForItemOverride();
+			DependencyObject elementTemplateRoot = DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item, null)?.LoadContentCached() as DependencyObject;
+
+			var isItemItsOwnContainer = IsItemItsOwnContainerOverride(item);
+			var isContainerFromTemplateRoot = !isItemItsOwnContainer
+				&& this is Primitives.Selector
+				&& IsItemItsOwnContainerOverride(elementTemplateRoot);
+
+			DependencyObject container;
+
+			if (isItemItsOwnContainer)
+			{
+				container = item as DependencyObject;
+
+				// The item here is left untouched, it's not being applied
+				// the ItemTemplate/ItemTemplateSelector
+			}
+			else if (isContainerFromTemplateRoot)
+			{
+				container = elementTemplateRoot;
+				SetContainerContent(container, item, isGeneratedContainer: true);
+			}
+			else
+			{
+				container = GetContainerForItemOverride();
+				SetContainerContent(container, elementTemplateRoot ?? item);
+			}
 
 			container.SetValue(ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(this));
 
 			return container;
+
+			static void SetContainerContent(DependencyObject container, object content, bool isGeneratedContainer = false)
+			{
+				if (container is ContentPresenter containerAsContentPresenter)
+				{
+					containerAsContentPresenter.Content = content;
+				}
+				else if (container is ContentControl containerAsContentControl)
+				{
+					containerAsContentControl.Content = content;
+
+					if (isGeneratedContainer)
+					{
+						containerAsContentControl.IsGeneratedContainer = isGeneratedContainer;
+					}
+				}
+			}
 		}
 
 		public object ItemFromContainer(DependencyObject container)
