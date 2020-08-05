@@ -177,6 +177,11 @@ namespace Uno.UI.Toolkit
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false; // Never clip, since it will remove the shadow
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+
+		protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
+		{
+			return base.ArrangeOverride(this.ApplySizeConstraints(finalSize));
+		}
 #endif
 	}
 }
