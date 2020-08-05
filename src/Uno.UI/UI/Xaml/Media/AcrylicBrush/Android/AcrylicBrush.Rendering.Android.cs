@@ -5,11 +5,6 @@ with some modifications and removal of unused features.
 
 */
 
-#if __ANDROID_29__
-using AndroidX.Core.View;
-#else
-using Android.Support.V4.View;
-#endif
 using System;
 using System.ComponentModel;
 using Android.Content;
@@ -65,7 +60,7 @@ namespace Windows.UI.Xaml.Media
 
 				state.BackgroundDrawable.SetColor(androidColor);
 
-				SetBackground(state.Owner, state.BackgroundDrawable);				 
+				SetBackground(state.Owner, state.BackgroundDrawable);
 			}
 		}
 
@@ -81,16 +76,9 @@ namespace Windows.UI.Xaml.Media
 
 		private void SetBackground(BindableView view, Drawable drawable)
 		{
-			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean)
-			{
 #pragma warning disable 618 // Using older method for compatibility with API 15
-				view.SetBackgroundDrawable(drawable);
+			view.SetBackgroundDrawable(drawable);
 #pragma warning restore 618
-			}
-			else
-			{
-				view.Background = drawable;
-			}
 		}
 	}
 }
