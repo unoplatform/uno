@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using System.Numerics;
 using System.Linq;
 using static System.Math;
+using Uno.Extensions;
 
 #if __IOS__
 using UIKit;
@@ -133,11 +134,20 @@ namespace Uno.Media
 			);
 
 #elif __MACOS__
-			bezierPath.AppendPathWithArc(center,
+//Ugly workaround. check if all vars are defined
+			if (!double.IsNaN(radius) && !double.IsNaN(startAngle) && !double.IsNaN(endAngle)) {
+
+				//Convert to degrees in a 0 =< x =< 360 deg range
+				startAngle = MathEx.ToDegreeNormalized(startAngle);
+				endAngle = MathEx.ToDegreeNormalized(endAngle);
+				bezierPath.AppendPathWithArc(center,
 										 (nfloat)radius,
 										 (nfloat)startAngle,
-										 (nfloat)endAngle,
-										 sweepDirection == SweepDirection.Clockwise);
+										 (nfloat)endAngle);
+
+				//Move to startPoint. To prevent segment being drawn to the startPoint from the end of the arc
+				bezierPath.MoveTo(startPoint);
+			}
 #elif __ANDROID__
 			var sweepAngle = endAngle - startAngle;
 
