@@ -67,6 +67,8 @@ namespace Uno.UI
 			return default(T);
 		}
 
+#if false
+		// disabled because of https://github.com/mono/mono/issues/20195
 		/// <summary>
 		/// Retrieve a resource from top-level resources (Application-level and system level).
 		/// </summary>
@@ -81,6 +83,50 @@ namespace Uno.UI
 		internal static T ResolveTopLevelResource<T>(object key, T fallbackValue = default)
 		{
 			if (TryTopLevelRetrieval(key, context: null, out var value) && value is T tValue)
+			{
+				return tValue;
+			}
+
+			return fallbackValue;
+		}
+#endif
+
+		/// <summary>
+		/// Retrieve a resource from top-level resources (Application-level and system level).
+		/// </summary>
+		/// <typeparam name="T">The expected resource type</typeparam>
+		/// <param name="key">The resource key to search for</param>
+		/// <param name="fallbackValue">Fallback value to use if no resource is found</param>
+		/// <returns>The resource, is one of the given key and type is found, else <paramref name="fallbackValue"/></returns>
+		/// <remarks>
+		/// Use <see cref="ResolveTopLevelResource{T}(object, T)"/> when user-defined Application-level values should be considered (most
+		/// of the time), use <see cref="GetSystemResource{T}(object)"/> if they shouldn't
+		/// </remarks>
+		internal static double ResolveTopLevelResourceDouble(object key, double fallbackValue = default)
+		{
+			if (TryTopLevelRetrieval(key, context: null, out var value) && value is double tValue)
+			{
+				return tValue;
+			}
+
+			return fallbackValue;
+		}
+
+
+		/// <summary>
+		/// Retrieve a resource from top-level resources (Application-level and system level).
+		/// </summary>
+		/// <typeparam name="T">The expected resource type</typeparam>
+		/// <param name="key">The resource key to search for</param>
+		/// <param name="fallbackValue">Fallback value to use if no resource is found</param>
+		/// <returns>The resource, is one of the given key and type is found, else <paramref name="fallbackValue"/></returns>
+		/// <remarks>
+		/// Use <see cref="ResolveTopLevelResource{T}(object, T)"/> when user-defined Application-level values should be considered (most
+		/// of the time), use <see cref="GetSystemResource{T}(object)"/> if they shouldn't
+		/// </remarks>
+		internal static object ResolveTopLevelResource(object key, object fallbackValue = default)
+		{
+			if (TryTopLevelRetrieval(key, context: null, out var value) && value is object tValue)
 			{
 				return tValue;
 			}
