@@ -70,7 +70,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				var documentPath = string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE)
 					? UriSource?.PathAndQuery
-					: UNO_BOOTSTRAP_APP_BASE + "/" + UriSource?.PathAndQuery;
+					: UNO_BOOTSTRAP_APP_BASE + UriSource?.PathAndQuery;
 
 				js = new[]
 				{
