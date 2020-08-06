@@ -17,6 +17,7 @@ using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
+using Color = Windows.UI.Color;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -41,23 +42,6 @@ namespace Windows.UI.Xaml.Media
 
 		private double CurrentBlurRadius =>
 			IsAndroidBlurPropertySet ? AndroidBlurRadius : StyledBlurRadius;
-
-		//TODO
-		//protected void OnAttachedToWindow()
-		//{
-		//	if (MaterialFrame.AndroidBlurRootElement != null && _blurRootView == null)
-		//	{
-		//		UpdateAndroidBlurRootElement();
-		//	}
-		//}
-
-		//TODO
-		//protected void OnSizeChanged(int w, int h, int oldw, int oldh)
-		//{
-		//	base.OnSizeChanged(w, h, oldw, oldh);
-
-		//	LayoutBlurView();
-		//}
 
 		private void LayoutBlurView(AcrylicState state, ViewGroup view)
 		{
