@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml
 
 		private void OnRequestedThemeChanged()
 		{
-			if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
+			if (GetTreeRoot() is FrameworkElement root)
 			{
 				// Update theme bindings in application resources
 				Resources?.UpdateThemeBindings();
@@ -234,6 +234,19 @@ namespace Windows.UI.Xaml
 						PropagateThemeChanged(o);
 					}
 				}
+			}
+
+			// On some platforms, the user-set root is not the topmost FrameworkElement
+			FrameworkElement GetTreeRoot()
+			{
+				var current = Windows.UI.Xaml.Window.Current.Content as FrameworkElement;
+				var parent = current?.GetVisualTreeParent();
+				while (parent is FrameworkElement feParent)
+				{
+					current = feParent;
+					parent = current?.GetVisualTreeParent();
+				}
+				return current;
 			}
 		}
 	}
