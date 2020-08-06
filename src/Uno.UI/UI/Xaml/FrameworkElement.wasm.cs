@@ -24,8 +24,6 @@ namespace Windows.UI.Xaml
 	{
 		bool IFrameworkElementInternal.HasLayouter => true;
 
-
-
 		/*
 			About NativeOn** vs ManagedOn** methods:
 				The flag FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded will configure which set of methods will be used
@@ -195,8 +193,6 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
-
-		public new bool IsLoaded => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible
 
 		private bool IsTopLevelXamlView() => throw new NotSupportedException();
 

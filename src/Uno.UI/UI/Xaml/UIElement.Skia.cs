@@ -8,6 +8,7 @@ using System.Linq;
 using Windows.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
@@ -19,7 +20,6 @@ namespace Windows.UI.Xaml
 	{
 		internal Size _unclippedDesiredSize;
 		internal Point _visualOffset;
-		internal List<UIElement> _children = new List<UIElement>();
 		private ContainerVisual _visual;
 		private Visibility _visibilityCache;
 		internal double _canvasTop;
@@ -28,6 +28,8 @@ namespace Windows.UI.Xaml
 
 		public UIElement()
 		{
+			_log = this.Log();
+			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 			_isFrameworkElement = this is FrameworkElement;
 
 			Initialize();

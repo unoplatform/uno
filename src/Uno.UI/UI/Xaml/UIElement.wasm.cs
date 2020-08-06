@@ -16,6 +16,7 @@ using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Uno.Core.Comparison;
 
 namespace Windows.UI.Xaml
@@ -25,7 +26,6 @@ namespace Windows.UI.Xaml
 		internal const string DefaultHtmlTag = "div";
 
 		private readonly GCHandle _gcHandle;
-
 
 		private static class UIElementNativeRegistrar
 		{
@@ -79,6 +79,9 @@ namespace Windows.UI.Xaml
 
 		public UIElement(string htmlTag, bool isSvg)
 		{
+			_log = this.Log();
+			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
+
 			Initialize();
 
 			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
@@ -357,7 +360,6 @@ namespace Windows.UI.Xaml
 
 		private Rect _arranged;
 		private string _name;
-		internal readonly IList<UIElement> _children = new MaterializableList<UIElement>();
 
 		public string Name
 		{

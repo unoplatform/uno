@@ -16,22 +16,27 @@ using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Uno.Core.Comparison;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
+		internal protected readonly ILogger _log;
+		private protected readonly ILogger _logDebug;
+
 		private readonly bool _isFrameworkElement;
+		internal readonly MaterializableList<UIElement> _children = new MaterializableList<UIElement>();
 
 		// Even if this a concept of FrameworkElement, the loaded state is handled by the UIElement in order to avoid
 		// to cast to FrameworkElement each time a child is added or removed.
-		internal bool IsLoaded;
+		internal bool IsLoaded { get; private protected set; }
 
 		/// <summary>
 		/// This flag is transiently set while element is 'loading' but not yet 'loaded'.
 		/// </summary>
-		internal bool IsLoading;
+		internal bool IsLoading { get; private protected set; }
 
 		private protected int Depth { get; private set; } = int.MinValue;
 
@@ -49,7 +54,7 @@ namespace Windows.UI.Xaml
 			IsLoading = true;
 			Depth = depth;
 
-			foreach (var child in _children.ToArray())
+			foreach (var child in _children)
 			{
 				child.OnElementLoading(depth + 1);
 			}
@@ -60,7 +65,7 @@ namespace Windows.UI.Xaml
 			IsLoading = false;
 			IsLoaded = true;
 
-			foreach (var child in _children.ToArray())
+			foreach (var child in _children)
 			{
 				child.OnElementLoaded();
 			}
@@ -71,7 +76,7 @@ namespace Windows.UI.Xaml
 			IsLoaded = false;
 			Depth = int.MinValue;
 
-			foreach (var child in _children.ToArray())
+			foreach (var child in _children)
 			{
 				child.OnElementUnloaded();
 			}

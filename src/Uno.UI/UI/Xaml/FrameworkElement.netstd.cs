@@ -22,6 +22,8 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
+		public new bool IsLoaded => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible
+
 		private protected override sealed void OnElementLoading(int depth)
 		{
 			base.IsLoading = true;
@@ -37,7 +39,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception error)
 			{
-				_log.Error("OnELoading failed in FrameworkElement", error);
+				_log.Error("OnElementLoading failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
 
@@ -71,7 +73,7 @@ namespace Windows.UI.Xaml
 				}
 				catch (Exception error)
 				{
-					_log.Error("ManagedOnLoaded failed in FrameworkElement", error);
+					_log.Error("OnElementLoaded failed in FrameworkElement", error);
 					Application.Current.RaiseRecoverableUnhandledException(error);
 				}
 			}
@@ -94,7 +96,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception error)
 			{
-				_log.Error("ManagedOnUnloaded failed in FrameworkElement", error);
+				_log.Error("OnElementUnloaded failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
 		}
