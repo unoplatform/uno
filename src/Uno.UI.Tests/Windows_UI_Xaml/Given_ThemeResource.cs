@@ -56,6 +56,22 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public async Task When_Theme_Changed_Default_Style_Overridden()
+		{
+			var page = new ThemeResource_Themed_Color_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			var button = page.TestButton;
+
+			Assert.AreEqual(Colors.Peru, (button.Foreground as SolidColorBrush).Color);
+
+			await SwapSystemTheme();
+
+			Assert.AreEqual(Colors.Peru, (button.Foreground as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
 		public async Task When_Themed_Color_Theme_Changed()
 		{
 			var page = new ThemeResource_Themed_Color_Page();

@@ -111,7 +111,7 @@ namespace Uno.UI
 				}
 			}
 
-			(owner as IDependencyObjectStoreProvider).Store.SetBinding(property, new ResourceBinding(resourceKey, isThemeResourceExtension, context));
+			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, resourceKey, isThemeResourceExtension, context);
 		}
 
 		/// <summary>

@@ -351,6 +351,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		public void SetResourceBinding(DependencyProperty dependencyProperty, object resourceKey, bool isTheme, object context)
+		{
+			var binding = new ResourceBinding(resourceKey, isTheme, context, _precedenceOverride ?? DependencyPropertyValuePrecedences.Local);
+			SetBinding(dependencyProperty, binding);
+		}
+
 		public void SetBinding(string dependencyProperty, BindingBase binding)
 		{
 			TryRegisterInheritedProperties(force: true);
