@@ -496,7 +496,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 						return null;
 					})
-					.Concat(ResourceResolver.ResolveTopLevelResource<object>(keyName))
+					.Concat(ResourceResolver.ResolveTopLevelResource(keyName))
 					.Trim()
 					.FirstOrDefault();
 

@@ -717,7 +717,7 @@ namespace Windows.UI.Xaml.Controls
 			if (ownerFlyout != null && templateSettingsConcrete != null)
 			{
 				// Query MenuFlyout Content MinWidth, given the input mode, from resource dictionary.
-				var flyoutContentMinWidth = ResourceResolver.ResolveTopLevelResource<double>(
+				var flyoutContentMinWidth = ResourceResolver.ResolveTopLevelResourceDouble(
 					(ownerFlyout.InputDeviceTypeUsedToOpen == FocusInputDeviceKind.Touch || ownerFlyout.InputDeviceTypeUsedToOpen == FocusInputDeviceKind.GameController)
 						? "FlyoutThemeTouchMinWidth" : "FlyoutThemeMinWidth"
 				);

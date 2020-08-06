@@ -3017,7 +3017,7 @@ namespace Windows.UI.Xaml.Controls
 				var splitView = m_rootSplitView;
 				if (splitView != null)
 				{
-					var width = ResourceResolver.ResolveTopLevelResource<double>(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
+					var width = ResourceResolver.ResolveTopLevelResourceDouble(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
 					double togglePaneButtonWidth = width;
 
 					if (ShouldShowBackButton() && splitView.DisplayMode == SplitViewDisplayMode.Overlay)
@@ -3116,7 +3116,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				double width = 0;
 
-				var buttonSize = ResourceResolver.ResolveTopLevelResource<double>(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
+				var buttonSize = ResourceResolver.ResolveTopLevelResourceDouble(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
 
 				width += buttonSize;
 
