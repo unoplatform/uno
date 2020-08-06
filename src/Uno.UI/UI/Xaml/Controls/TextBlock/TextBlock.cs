@@ -402,6 +402,8 @@ namespace Windows.UI.Xaml.Controls
 
 			_foregroundChanged.Disposable =
 				Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+
+			refreshForeground();
 		}
 
 		partial void OnForegroundChangedPartial();
