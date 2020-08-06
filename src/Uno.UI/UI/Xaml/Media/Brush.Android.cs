@@ -7,6 +7,9 @@ using Uno.Disposables;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Rect = Windows.Foundation.Rect;
+using Windows.UI.Input.Spatial;
+using Android.Graphics.Drawables;
+using Android.Graphics.Drawables.Shapes;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -93,6 +96,25 @@ namespace Windows.UI.Xaml.Media
 					ImageBrush.RelativeTransformProperty,
 					(_, __) => imageBrushCallback()
 				).DisposeWith(disposables);
+
+				return disposables;
+			}
+			else if (b is AcrylicBrush acrylicBrush)
+			{
+				var disposables = new CompositeDisposable(2);
+
+				colorSetter(acrylicBrush.FallbackColorWithOpacity);
+
+				acrylicBrush.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.FallbackColorProperty,
+					(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
+					.DisposeWith(disposables);
+
+				acrylicBrush.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.OpacityProperty,
+					(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
+					.DisposeWith(disposables);
+
 				return disposables;
 			}
 			else
@@ -101,6 +123,45 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			return Disposable.Empty;
+		}
+
+		internal static Drawable GetBackgroundDrawable(Brush background, Windows.Foundation.Rect drawArea, Paint fillPaint, Path maskingPath = null)
+		{
+			if (background is ImageBrush)
+			{
+				throw new InvalidOperationException($"This method should not be called for ImageBrush, use BorderLayerRenderer.DispatchSetImageBrushAsBackground instead");
+			}
+
+			if (maskingPath == null)
+			{
+				if (background is SolidColorBrush solidBrush)
+				{
+					return new ColorDrawable(solidBrush.ColorWithOpacity);
+				}
+				else if (background is AcrylicBrush acrylicBrush)
+				{
+					return new ColorDrawable(acrylicBrush.FallbackColorWithOpacity);
+				}
+
+				if (fillPaint != null)
+				{
+					var linearDrawable = new PaintDrawable();
+					var drawablePaint = linearDrawable.Paint;
+					drawablePaint.Color = fillPaint.Color;
+					drawablePaint.SetShader(fillPaint.Shader);
+
+					return linearDrawable;
+				}
+
+				return null;
+			}
+
+			var drawable = new PaintDrawable();
+			drawable.Shape = new PathShape(maskingPath, (float)drawArea.Width, (float)drawArea.Height);
+			var paint = drawable.Paint;
+			paint.Color = fillPaint.Color;
+			paint.SetShader(fillPaint.Shader);
+			return drawable;
 		}
 	}
 }

@@ -128,18 +128,22 @@ namespace Windows.UI.Xaml.Controls
 					//We only need to set a background if the drawArea is non-zero
 					if (!drawArea.HasZeroArea())
 					{
-						var imageBrushBackground = background as ImageBrush;
-						if (imageBrushBackground != null)
+						if (background is ImageBrush imageBrushBackground)
 						{
 							//Copy the path because it will be disposed when we exit the using block
 							var pathCopy = new Path(path);
 							var setBackground = DispatchSetImageBrushAsBackground(view, imageBrushBackground, drawArea, onImageSet, pathCopy);
 							disposables.Add(setBackground);
 						}
+						else if (background is AcrylicBrush acrylicBrush)
+						{
+							var apply = acrylicBrush.Subscribe(view, drawArea, path);
+							disposables.Add(apply);
+						}
 						else
 						{
 							var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
-							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(GetBackgroundDrawable(background, drawArea, fillPaint, path)));
+							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, path)));
 						}
 						disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 					}
@@ -164,16 +168,20 @@ namespace Windows.UI.Xaml.Controls
 				//We only need to set a background if the drawArea is non-zero
 				if (!drawArea.HasZeroArea())
 				{
-					var imageBrushBackground = background as ImageBrush;
-					if (imageBrushBackground != null)
+					if (background is ImageBrush imageBrushBackground)
 					{
 						var setBackground = DispatchSetImageBrushAsBackground(view, imageBrushBackground, drawArea, onImageSet);
 						disposables.Add(setBackground);
 					}
+					else if (background is AcrylicBrush acrylicBrush)
+					{
+						var apply = acrylicBrush.Subscribe(view, drawArea, maskingPath: null);
+						disposables.Add(apply);
+					}
 					else
 					{
 						var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
-						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(GetBackgroundDrawable(background, drawArea, fillPaint)));
+						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint)));
 					}
 					disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 				}
@@ -195,43 +203,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return disposables;
-		}
-
-		private static Drawable GetBackgroundDrawable(Brush background, Windows.Foundation.Rect drawArea, Paint fillPaint, Path maskingPath = null)
-		{
-			if (background is ImageBrush)
-			{
-				throw new InvalidOperationException($"This method should not be called for ImageBrush, use {nameof(DispatchSetImageBrushAsBackground)} instead");
-			}
-
-			if (maskingPath == null)
-			{
-				var solidBrush = background as SolidColorBrush;
-
-				if (solidBrush != null)
-				{
-					return new ColorDrawable(solidBrush.ColorWithOpacity);
-				}
-
-				if (fillPaint != null)
-				{
-					var linearDrawable = new PaintDrawable();
-					var drawablePaint = linearDrawable.Paint;
-					drawablePaint.Color = fillPaint.Color;
-					drawablePaint.SetShader(fillPaint.Shader);
-
-					return linearDrawable;
-				}
-
-				return null;
-			}
-
-			var drawable = new PaintDrawable();
-			drawable.Shape = new PathShape(maskingPath, (float)drawArea.Width, (float)drawArea.Height);
-			var paint = drawable.Paint;
-			paint.Color = fillPaint.Color;
-			paint.SetShader(fillPaint.Shader);
-			return drawable;
 		}
 
 		private static void SetDrawableAlpha(Drawable drawable, int alpha)

@@ -583,6 +583,14 @@ namespace Uno.UI {
 				element.style.setProperty(name, "");
 			}
 		}
+
+		public isCssPropertySupported(propertyName: string, value: string): boolean {
+			return CSS.supports(propertyName, value);
+		}
+
+		public isCssConditionSupported(supportCondition: string): boolean {
+			return CSS.supports(supportCondition);
+		}
 		/**
 		 * Set + Unset CSS classes on an element
 		 */

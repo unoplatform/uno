@@ -13,6 +13,7 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty FallbackColorProperty { get ; } = DependencyProperty.Register(
 			"FallbackColor", typeof(Color), typeof(GradientBrush), new FrameworkPropertyMetadata(default(Color)));
+
 		public Color FallbackColor
 		{
 			get => (Color)GetValue(FallbackColorProperty);

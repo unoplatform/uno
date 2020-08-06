@@ -293,6 +293,8 @@ declare namespace Uno.UI {
             */
         resetStyleNative(pParams: number): boolean;
         private resetStyleInternal;
+        isCssPropertySupported(propertyName: string, value: string): boolean;
+        isCssConditionSupported(supportCondition: string): boolean;
         /**
          * Set + Unset CSS classes on an element
          */

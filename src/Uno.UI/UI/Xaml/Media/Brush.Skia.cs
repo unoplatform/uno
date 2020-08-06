@@ -15,10 +15,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (b != null)
 			{
-				var colorBrush = b as SolidColorBrush;
-				var imageBrush = b as ImageBrush;
-
-				if (colorBrush != null)
+				if (b is SolidColorBrush colorBrush)
 				{
 					colorSetter(colorBrush.ColorWithOpacity);
 
@@ -34,7 +31,7 @@ namespace Windows.UI.Xaml.Media
 					)
 					.DisposeWith(disposables);
 				}
-				//else if (imageBrush != null)
+				//else if (b is ImageBrush imageBrush)
 				//{
 				//	Action<_Image> action = _ => colorSetter(SolidColorBrushHelper.Transparent.Color);
 
@@ -42,6 +39,22 @@ namespace Windows.UI.Xaml.Media
 
 				//	disposables.Add(() => imageBrush.ImageChanged -= action);
 				//}
+				else if (b is AcrylicBrush acrylicBrush)
+                {
+					colorSetter(acrylicBrush.FallbackColorWithOpacity);
+
+					acrylicBrush.RegisterDisposablePropertyChangedCallback(
+						AcrylicBrush.FallbackColorProperty,
+						(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
+						.DisposeWith(disposables);
+
+					acrylicBrush.RegisterDisposablePropertyChangedCallback(
+						AcrylicBrush.OpacityProperty,
+						(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
+						.DisposeWith(disposables);
+
+					return disposables;
+				}
 				else
 				{
 					colorSetter(SolidColorBrushHelper.Transparent.Color);
