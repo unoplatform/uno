@@ -29,10 +29,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestCleanup]
 		public async Task Cleanup()
 		{
+			if (Window.Current?.Content is FrameworkElement root)
+			{
+				root.RequestedTheme = ElementTheme.Default;
+			}
+
 			if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
 			{
 				await SwapSystemTheme();
 			}
+		}
+
+		[TestMethod]
+		public async Task When_Theme_Changed_ApplicationPageBackground()
+		{
+
+			var page = new ThemeResource_Themed_Color_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			Assert.AreEqual(Colors.White, (page.Background as SolidColorBrush).Color);
+
+			await SwapSystemTheme();
+
+			Assert.AreEqual(Colors.Black, (page.Background as SolidColorBrush).Color);
 		}
 
 		[TestMethod]
@@ -58,16 +78,20 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
 
-			page.RequestedTheme = ElementTheme.Dark;
+			var root = Window.Current.Content as FrameworkElement;
+
+			Assert.IsNotNull(root);
+
+			root.RequestedTheme = ElementTheme.Dark;
 			Assert.AreEqual(Colors.DarkBlue, (page.TestBorder.Background as SolidColorBrush).Color);
 
-			page.RequestedTheme = ElementTheme.Light;
+			root.RequestedTheme = ElementTheme.Light;
 			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
 
-			page.RequestedTheme = ElementTheme.Dark;
+			root.RequestedTheme = ElementTheme.Dark;
 			Assert.AreEqual(Colors.DarkBlue, (page.TestBorder.Background as SolidColorBrush).Color);
 
-			page.RequestedTheme = ElementTheme.Default;
+			root.RequestedTheme = ElementTheme.Default;
 			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
 		}
 

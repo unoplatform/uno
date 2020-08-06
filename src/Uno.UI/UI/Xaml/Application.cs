@@ -81,6 +81,13 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal ElementTheme ActualElementTheme => (_themeSetExplicitly, RequestedTheme) switch
+		{
+			(true, ApplicationTheme.Light) => ElementTheme.Light,
+			(true, ApplicationTheme.Dark) => ElementTheme.Dark,
+			_ => ElementTheme.Default
+		};
+
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
 			// this flag makes sure the app will not respond to OS events
@@ -194,16 +201,17 @@ namespace Windows.UI.Xaml
 		{
 			if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
 			{
-				PropagateThemeChanged(root);
-			}
-
-			void PropagateThemeChanged(object instance)
-			{
 				// Update theme bindings in application resources
 				Resources?.UpdateThemeBindings();
 
 				// Update theme bindings in system resources
 				ResourceResolver.UpdateSystemThemeBindings();
+
+				PropagateThemeChanged(root);
+			}
+
+			void PropagateThemeChanged(object instance)
+			{
 
 				// Update ThemeResource references that have changed
 				if (instance is FrameworkElement fe)

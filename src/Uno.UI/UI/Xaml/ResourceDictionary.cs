@@ -384,11 +384,11 @@ namespace Windows.UI.Xaml
 				{
 					provider.Store.UpdateResourceBindings(isThemeChangedUpdate: true, containingDictionary: this);
 				}
+			}
 
-				foreach (var mergedDict in MergedDictionaries)
-				{
-					mergedDict.UpdateThemeBindings();
-				}
+			foreach (var mergedDict in MergedDictionaries)
+			{
+				mergedDict.UpdateThemeBindings();
 			}
 		}
 
