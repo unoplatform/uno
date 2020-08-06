@@ -113,12 +113,15 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   ``` csharp
   // Set the "href" attribute of an <a> element
   this.SetHtmlAttribute("href", "#section2");
-
+  
   // Set many attributes at once
   this.SetHtmlAttribute(("target", "_blank"), ("referrerpolicy", "no-referrer"));
-
+  
   // Remove attribute from DOM element
   this.ClearHtmlAttribute("href");
+  
+  // Get the value of an attribute of a DOM element
+  var href = this.GetHtmlAttribute("href");
   ```
 
 * The `element.SetCssClass()` and `element.UnsetCssClass()` extension methods can be used to add or remove CSS classes to the HTML Element:

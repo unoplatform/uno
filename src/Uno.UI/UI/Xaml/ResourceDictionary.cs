@@ -373,6 +373,25 @@ namespace Windows.UI.Xaml
 			ResourceResolver.PopSourceFromScope();
 		}
 
+		/// <summary>
+		/// Update theme bindings on DependencyObjects in the dictionary.
+		/// </summary>
+		internal void UpdateThemeBindings()
+		{
+			foreach (var item in _values.Values)
+			{
+				if (item is IDependencyObjectStoreProvider provider && provider.Store.Parent == null)
+				{
+					provider.Store.UpdateResourceBindings(isThemeChangedUpdate: true, containingDictionary: this);
+				}
+			}
+
+			foreach (var mergedDict in MergedDictionaries)
+			{
+				mergedDict.UpdateThemeBindings();
+			}
+		}
+
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public delegate object ResourceInitializer();
 

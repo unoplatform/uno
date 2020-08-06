@@ -36,6 +36,11 @@ namespace Windows.UI.Xaml
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private string _uid;
 
+		/// <summary>
+		/// Is this view set to Window.Current.Content?
+		/// </summary>
+		internal bool IsWindowRoot { get; set; }
+
 		private void Initialize()
 		{
 			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(0), DependencyPropertyValuePrecedences.DefaultValue);

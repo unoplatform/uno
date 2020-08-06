@@ -4,8 +4,12 @@ using Windows.UI.Xaml.Controls;
 using System.Linq;
 using Windows.Foundation;
 using FluentAssertions;
-using FluentAssertions.Execution;
+#if NETFX_CORE
+using View = Uno.UI.Tests.Views.TestView;
+#else
 using View = Windows.UI.Xaml.FrameworkElement;
+#endif
+using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.StackPanelTest
 {

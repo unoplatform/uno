@@ -658,6 +658,15 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region GetAttribute
+		internal static string GetAttribute(IntPtr htmlId, string name)
+		{
+			var command = "Uno.UI.WindowManager.current.getAttribute(\"" + htmlId + "\", \"" + name + "\");";
+
+			return WebAssemblyRuntime.InvokeJS(command);
+		}
+		#endregion
+
 		#region ClearAttribute
 		internal static void RemoveAttribute(IntPtr htmlId, string name)
 		{

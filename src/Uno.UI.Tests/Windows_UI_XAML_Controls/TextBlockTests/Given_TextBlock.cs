@@ -33,6 +33,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 			Assert.AreEqual(DefaultFontSize, cp.FontSize);
 		}
 
+#if !NETFX_CORE
 		[TestMethod]
 		public void When_Changing_Foreground_Property()
 		{
@@ -46,6 +47,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 			tb.Foreground = SolidColorBrushHelper.AliceBlue;
 			Assert.AreEqual(SolidColorBrushHelper.AliceBlue.Color, (tb.Foreground as SolidColorBrush)?.Color);
 		}
+#endif
 	}
 
 	public partial class MyControl : Control { }

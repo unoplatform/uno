@@ -378,6 +378,40 @@ namespace Windows.UI.Xaml
 
 		private Style ResolveImplicitStyle() => (this as IDependencyObjectStoreProvider).Store.GetImplicitStyle();
 
+		#region Requested theme dependency property
+
+		public ElementTheme RequestedTheme
+		{
+			get => (ElementTheme)GetValue(RequestedThemeProperty);
+			set => SetValue(RequestedThemeProperty, value);
+		}
+
+		public static DependencyProperty RequestedThemeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(RequestedTheme),
+				typeof(ElementTheme),
+				typeof(FrameworkElement),
+				new PropertyMetadata(
+					ElementTheme.Default,
+					(o, e) => ((FrameworkElement)o).OnRequestedThemeChanged((ElementTheme)e.OldValue, (ElementTheme)e.NewValue)));
+
+		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
+		{
+			if (IsWindowRoot) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
+			{
+				// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
+				// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
+				Application.Current.SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(newValue));
+			}
+		}
+
+
+		#endregion
+
+		public ElementTheme ActualTheme => IsWindowRoot ?
+			Application.Current?.ActualElementTheme ?? ElementTheme.Default
+			: ElementTheme.Default;
+
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
 		/// 'active style' and for the baked-in 'default style'.
@@ -627,8 +661,20 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal virtual void UpdateThemeBindings()
 		{
-			//TODO: should update bindings on non-UI DO children
+			Resources?.UpdateThemeBindings();
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
+		}
+
+		/// <summary>
+		/// Set correct default foreground for the current theme.
+		/// </summary>
+		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
+		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
+		{
+			(this).SetValue(foregroundProperty,
+							Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
+								? SolidColorBrushHelper.Black
+								: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
 #region AutomationPeer

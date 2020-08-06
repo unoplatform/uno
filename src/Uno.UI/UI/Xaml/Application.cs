@@ -77,10 +77,23 @@ namespace Windows.UI.Xaml
 				{
 					throw new NotSupportedException("Operation not supported");
 				}
-				// this flag makes sure the app will not respond to OS events	
-				_themeSetExplicitly = true;
-				SetRequestedTheme(value);
+				SetExplicitRequestedTheme(value);
 			}
+		}
+
+		internal ElementTheme ActualElementTheme => (_themeSetExplicitly, RequestedTheme) switch
+		{
+			(true, ApplicationTheme.Light) => ElementTheme.Light,
+			(true, ApplicationTheme.Dark) => ElementTheme.Dark,
+			_ => ElementTheme.Default
+		};
+
+		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
+		{
+			// this flag makes sure the app will not respond to OS events
+			_themeSetExplicitly = explicitTheme.HasValue;
+			var theme = explicitTheme ?? GetDefaultSystemTheme();
+			SetRequestedTheme(theme);
 		}
 
 		public ResourceDictionary Resources { get; set; } = new ResourceDictionary();
@@ -174,7 +187,7 @@ namespace Windows.UI.Xaml
 			OnWindowCreated(new WindowCreatedEventArgs(window));
 		}
 
-		internal void SetRequestedTheme(ApplicationTheme requestedTheme)
+		private void SetRequestedTheme(ApplicationTheme requestedTheme)
 		{
 			if (requestedTheme != _requestedTheme)
 			{
@@ -188,11 +201,18 @@ namespace Windows.UI.Xaml
 		{
 			if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
 			{
+				// Update theme bindings in application resources
+				Resources?.UpdateThemeBindings();
+
+				// Update theme bindings in system resources
+				ResourceResolver.UpdateSystemThemeBindings();
+
 				PropagateThemeChanged(root);
 			}
 
 			void PropagateThemeChanged(object instance)
 			{
+
 				// Update ThemeResource references that have changed
 				if (instance is FrameworkElement fe)
 				{
