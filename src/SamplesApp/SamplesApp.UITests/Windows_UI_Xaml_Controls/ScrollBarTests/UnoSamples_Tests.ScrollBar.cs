@@ -12,7 +12,7 @@ using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
+namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 {
 	[TestFixture]
 	public class UnoSamplesTests_ScrollBar : SampleControlUITestBase
