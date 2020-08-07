@@ -827,15 +827,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ApplyScrollContentPresenterContent()
 		{
-			// Stop the automatic propagation of the templated parent on the Content
-			// This prevents issues when the a ScrollViewer is hosted in a control template
-			// and its content is a ContentControl or ContentPresenter, which has a TemplateBinding
-			// on the Content property. This can make the Content added twice in the visual tree.
-			if (Content is IDependencyObjectStoreProvider provider)
-			{
-				provider.Store.SetValue(provider.Store.TemplatedParentProperty, null, DependencyPropertyValuePrecedences.Local);
-			}
-
 			// Then explicitly propagate the Content to the _presenter
 			_presenter.Content = Content as View;
 
