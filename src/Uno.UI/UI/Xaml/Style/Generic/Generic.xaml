@@ -2418,6 +2418,9 @@
 									</Storyboard>
 								</VisualState>
 								<VisualState x:Name="ClosedCompactLeft">
+									<VisualState.Setters>
+										<Setter Target="PaneTransform.TranslateX" Value="0" />
+									</VisualState.Setters>
 									<Storyboard>
 										<xamarin:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
 																			   Storyboard.TargetName="PaneRoot">
@@ -2542,7 +2545,15 @@
 									</Storyboard>
 								</VisualState>
 								<VisualState x:Name="OpenInlineLeft">
+									<VisualState.Setters>
+										<Setter Target="PaneTransform.TranslateX" Value="0" />
+									</VisualState.Setters>
 									<Storyboard>
+										<xamarin:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
+																			   Storyboard.TargetName="PaneRoot">
+											<DiscreteObjectKeyFrame KeyTime="0:0:0"
+																	Value="{x:Null}" />
+										</xamarin:ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
 																	   Storyboard.TargetProperty="(Grid.Column)">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
