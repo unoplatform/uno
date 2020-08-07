@@ -114,7 +114,16 @@ namespace Windows.UI.Xaml.Media
 				nameof(AlwaysUseFallback),
 				typeof(bool),
 				typeof(AcrylicBrush),
-				new FrameworkPropertyMetadata(default(bool)));
+				new FrameworkPropertyMetadata(
+					// Due to the fact that additional subviews are added to acrylic owner views
+					// on non-WASM platforms, we default to using fallback where not completely safe
+					// When this is explicitly set to false, Acrylic will be displayed
+#if __WASM__
+					false
+#else
+					true
+#endif
+					));
 
 		/// <summary>
 		/// Returns the tint color mixed with tint opacity value.
