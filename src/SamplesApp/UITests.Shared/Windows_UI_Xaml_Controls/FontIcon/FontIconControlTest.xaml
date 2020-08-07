@@ -26,7 +26,7 @@
 						<TextBlock Text="Button with ms-appx: font-family" />
 						<Button Content="&#xE082;"
 								HorizontalAlignment="Center"
-								FontFamily="ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols" />
+								FontFamily="ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols" />
 
 						<TextBlock Text="Glyph World" />
 						<FontIcon Glyph="&#xE909;" />
