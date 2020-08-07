@@ -13,13 +13,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.AutoSuggestBoxTextChangedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.Reason.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.Reason.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CheckCurrent()
-		{
-			throw new global::System.NotImplementedException("The member bool AutoSuggestBoxTextChangedEventArgs.CheckCurrent() is not implemented in Uno.");
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.ReasonProperty.get
 	}
 }
