@@ -49,11 +49,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (disableAnimation)
 			{
-				_sv.ScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
+				_presenter.ScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
 			}
 			else
 			{
-				_sv.SmoothScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
+				_presenter.SmoothScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
 			}
 		}
 
@@ -63,9 +63,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().Warn("ChangeView: Animated zoom not yet implemented for Android.");
 			}
-			if (_sv != null)
+			if (_presenter != null)
 			{
-				_sv.ZoomScale = zoomFactor;
+				_presenter.ZoomScale = zoomFactor;
 			}
 		}
 		
@@ -134,21 +134,21 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnZoomModeChangedPartial(ZoomMode zoomMode)
 		{
-			if (_sv != null)
+			if (_presenter != null)
 			{
-				_sv.IsZoomEnabled = zoomMode == ZoomMode.Enabled;
+				_presenter.IsZoomEnabled = zoomMode == ZoomMode.Enabled;
 
-				// Apply these in case _sv was not initialized when they were set
-				_sv.MinimumZoomScale = MinZoomFactor;
-				_sv.MaximumZoomScale = MaxZoomFactor;
+				// Apply these in case _presenter was not initialized when they were set
+				_presenter.MinimumZoomScale = MinZoomFactor;
+				_presenter.MaximumZoomScale = MaxZoomFactor;
 			}
 		}
 
 		partial void OnBringIntoViewOnFocusChangeChangedPartial(bool newValue)
 		{
-			if (_sv != null)
+			if (_presenter != null)
 			{
-				_sv.BringIntoViewOnFocusChange = newValue;
+				_presenter.BringIntoViewOnFocusChange = newValue;
 			}
 		}
 

@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer 
 	{
-		internal Size ScrollBarSize => (_sv as ScrollContentPresenter)?.ScrollBarSize ?? default;
+		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
 		public Color BackgroundColor
 		{
@@ -30,5 +30,21 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateZoomedContentAlignment() { }
 
+
+		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		{
+			if (_presenter is ScrollContentPresenter presenter)
+			{
+				if (horizontalOffset.HasValue)
+				{
+					presenter.SetHorizontalOffset(horizontalOffset.Value);
+				}
+
+				if (verticalOffset.HasValue)
+				{
+					presenter.SetVerticalOffset(verticalOffset.Value);
+				}
+			}
+		}
 	}
 }

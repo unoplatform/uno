@@ -45,28 +45,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ScrollMode _horizontalScrollMode;
-		public ScrollMode HorizontalScrollMode
-		{
-			get { return _horizontalScrollMode; }
-			set
-			{
-				_horizontalScrollMode = value;
-				UpdateScrollSettings();
-			}
-		}
-
-		private ScrollMode _verticalScrollMode;
-		public ScrollMode VerticalScrollMode
-		{
-			get { return _verticalScrollMode; }
-			set
-			{
-				_verticalScrollMode = value;
-				UpdateScrollSettings();
-			}
-		}
-
 		private ILayouter _layouter;
 
 		public NativeScrollContentPresenter()
@@ -161,9 +139,9 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateScrollSettings()
 		{
 			var verticalScrollVisible = VerticalScrollBarVisibility == ScrollBarVisibility.Auto || VerticalScrollBarVisibility == ScrollBarVisibility.Visible;
-			var verticalScrollEnabled = VerticalScrollBarVisibility != ScrollBarVisibility.Disabled && VerticalScrollMode != ScrollMode.Disabled;
+			var verticalScrollEnabled = VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
 			var horizontalScrollVisible = HorizontalScrollBarVisibility == ScrollBarVisibility.Auto || HorizontalScrollBarVisibility == ScrollBarVisibility.Visible;
-			var horizontalScrollEnabled = HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled && HorizontalScrollMode != ScrollMode.Disabled;
+			var horizontalScrollEnabled = HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
 
 			VerticalScrollBarEnabled = verticalScrollVisible;
 			HorizontalScrollBarEnabled = horizontalScrollVisible;

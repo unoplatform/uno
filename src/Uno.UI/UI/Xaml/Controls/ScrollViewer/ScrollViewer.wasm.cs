@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class ScrollViewer : ICustomClippingElement
 	{
-		internal Size ScrollBarSize => (_sv as ScrollContentPresenter)?.ScrollBarSize ?? default;
+		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
 		private void UpdateZoomedContentAlignment()
 		{
@@ -21,9 +21,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
 		{
-			if (_sv != null)
+			if (_presenter != null)
 			{
-				_sv.ScrollTo(horizontalOffset, verticalOffset, disableAnimation);
+				_presenter.ScrollTo(horizontalOffset, verticalOffset, disableAnimation);
 			}
 			else if (_log.IsEnabled(LogLevel.Warning))
 			{

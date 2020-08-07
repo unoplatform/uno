@@ -23,16 +23,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollBar.ScrollBar_Simple");
 
-			var indicatorModeCombo = _app.Marked("IndicatorModeCombo");
-			var verticalScrollBar = _app.Marked("VerticalScrollBar");
-			var verticalValue = _app.Marked("VerticalValue");
-			var scrollValue = _app.Marked("scrollValue");
+			var indicatorModeCombo = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("IndicatorModeCombo");
+			var verticalScrollBar = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("VerticalScrollBar");
+			var verticalValue = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("VerticalValue");
+			var scrollValue = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("scrollValue");
 
-			var verticalScrollBarThumb = _app.Marked("VerticalScrollBar").Descendant().Marked("VerticalThumb");
-			var verticalScrollBarSmallDecrease = _app.Marked("VerticalScrollBar").Descendant().Marked("VerticalSmallDecrease");
-			var verticalScrollBarLargeDecrease = _app.Marked("VerticalScrollBar").Descendant().Marked("VerticalLargeDecrease");
-			var verticalScrollBarSmallIncrease = _app.Marked("VerticalScrollBar").Descendant().Marked("VerticalSmallIncrease");
-			var verticalScrollBarLargeIncrease = _app.Marked("VerticalScrollBar").Descendant().Marked("VerticalLargeIncrease");
+			var verticalScrollBarThumb = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("VerticalScrollBar").Descendant().Marked("VerticalThumb");
+			var verticalScrollBarSmallDecrease = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("VerticalScrollBar").Descendant().Marked("VerticalSmallDecrease");
+			var verticalScrollBarLargeDecrease = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("VerticalScrollBar").Descendant().Marked("VerticalLargeDecrease");
+			var verticalScrollBarSmallIncrease = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("VerticalScrollBar").Descendant().Marked("VerticalSmallIncrease");
+			var verticalScrollBarLargeIncrease = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("VerticalScrollBar").Descendant().Marked("VerticalLargeIncrease");
 
 			_app.WaitForElement(indicatorModeCombo);
 
@@ -69,16 +69,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollBar.ScrollBar_Simple");
 
-			var indicatorModeCombo = _app.Marked("IndicatorModeCombo");
-			var horizontalScrollBar = _app.Marked("HorizontalScrollBar");
-			var horizontalValue = _app.Marked("HorizontalValue");
-			var scrollValue = _app.Marked("scrollValue");
+			var indicatorModeCombo = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("IndicatorModeCombo");
+			var horizontalScrollBar = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("HorizontalScrollBar");
+			var horizontalValue = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("HorizontalValue");
+			var scrollValue = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("scrollValue");
 
-			var horizontalScrollBarThumb = _app.Marked("HorizontalScrollBar").Descendant().Marked("HorizontalThumb");
-			var horizontalScrollBarSmallDecrease = _app.Marked("HorizontalScrollBar").Descendant().Marked("HorizontalSmallDecrease");
-			var horizontalScrollBarLargeDecrease = _app.Marked("HorizontalScrollBar").Descendant().Marked("HorizontalLargeDecrease");
-			var horizontalScrollBarSmallIncrease = _app.Marked("HorizontalScrollBar").Descendant().Marked("HorizontalSmallIncrease");
-			var horizontalScrollBarLargeIncrease = _app.Marked("HorizontalScrollBar").Descendant().Marked("HorizontalLargeIncrease");
+			var horizontalScrollBarThumb = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("HorizontalScrollBar").Descendant().Marked("HorizontalThumb");
+			var horizontalScrollBarSmallDecrease = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("HorizontalScrollBar").Descendant().Marked("HorizontalSmallDecrease");
+			var horizontalScrollBarLargeDecrease = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("HorizontalScrollBar").Descendant().Marked("HorizontalLargeDecrease");
+			var horizontalScrollBarSmallIncrease = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("HorizontalScrollBar").Descendant().Marked("HorizontalSmallIncrease");
+			var horizontalScrollBarLargeIncrease = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("HorizontalScrollBar").Descendant().Marked("HorizontalLargeIncrease");
 
 			_app.WaitForElement(indicatorModeCombo);
 
@@ -116,13 +116,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollBar.ScrollBar_Simple");
 
-			var indicatorModeCombo = _app.Marked("IndicatorModeCombo");
-			var horizontalScrollBar = _app.Marked("HorizontalScrollBar");
-			var horizontalValue = _app.Marked("HorizontalValue");
-			var scrollValue = _app.Marked("scrollValue");
+			var indicatorModeCombo = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("IndicatorModeCombo");
+			var horizontalScrollBar = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("HorizontalScrollBar");
+			var horizontalValue = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("HorizontalValue");
+			var scrollValue = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("scrollValue");
 
-			var horizontalScrollBarThumb = _app.Marked("HorizontalScrollBar").Descendant().Marked("HorizontalThumb");
-			var horizontalScrollBarSmallDecrease = _app.Marked("HorizontalScrollBar").Descendant().Marked("HorizontalSmallDecrease");
+			var horizontalScrollBarThumb = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("HorizontalScrollBar").Descendant().Marked("HorizontalThumb");
+			var horizontalScrollBarSmallDecrease = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("HorizontalScrollBar").Descendant().Marked("HorizontalSmallDecrease");
 
 			_app.WaitForElement(indicatorModeCombo);
 
@@ -150,13 +150,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollBar.ScrollBar_Simple");
 
-			var indicatorModeCombo = _app.Marked("IndicatorModeCombo");
-			var verticalScrollBar = _app.Marked("VerticalScrollBar");
-			var verticalValue = _app.Marked("VerticalValue");
-			var scrollValue = _app.Marked("scrollValue");
+			var indicatorModeCombo = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("IndicatorModeCombo");
+			var verticalScrollBar = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("VerticalScrollBar");
+			var verticalValue = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("VerticalValue");
+			var scrollValue = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("scrollValue");
 
-			var verticalScrollBarThumb = _app.Marked("VerticalScrollBar").Descendant().Marked("VerticalThumb");
-			var verticalScrollBarSmallDecrease = _app.Marked("VerticalScrollBar").Descendant().Marked("VerticalSmallDecrease");
+			var verticalScrollBarThumb = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("VerticalScrollBar").Descendant().Marked("VerticalThumb");
+			var verticalScrollBarSmallDecrease = _app.Marked("ScrollBar_Simple_Root").Descendant().Marked("VerticalScrollBar").Descendant().Marked("VerticalSmallDecrease");
 
 			_app.WaitForElement(indicatorModeCombo);
 

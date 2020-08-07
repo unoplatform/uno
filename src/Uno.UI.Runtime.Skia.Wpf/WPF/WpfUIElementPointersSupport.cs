@@ -14,6 +14,7 @@ using System.Windows.Media;
 using Windows.UI.Input;
 using MouseDevice = System.Windows.Input.MouseDevice;
 using System.Reflection;
+using Windows.System;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -69,10 +70,11 @@ namespace Uno.UI.Skia.Platform
 			}
 		}
 
-		private static uint GetNextFrameId() => (uint)Interlocked.Increment(ref _currentFrameId);
+		private static uint GetNextFrameId()
+			=> (uint)Interlocked.Increment(ref _currentFrameId);
 
-		private static PointerPointProperties BuildPointerProperties(MouseEventArgs args) =>
-			new PointerPointProperties
+		private static PointerPointProperties BuildPointerProperties(MouseEventArgs args)
+			=> new PointerPointProperties
 			{
 				IsLeftButtonPressed = args.LeftButton == MouseButtonState.Pressed,
 				IsMiddleButtonPressed = args.MiddleButton == MouseButtonState.Pressed,
@@ -84,23 +86,25 @@ namespace Uno.UI.Skia.Platform
 			};
 
 		private static PointerDevice GetPointerDevice(MouseEventArgs args)
-		{
-			return args.Device switch
+			=> args.Device switch
 			{
 				MouseDevice _ => PointerDevice.For(PointerDeviceType.Mouse),
 				StylusDevice _ => PointerDevice.For(PointerDeviceType.Pen),
 				TouchDevice _ => PointerDevice.For(PointerDeviceType.Touch),
 				_ => PointerDevice.For(PointerDeviceType.Mouse),
 			};
-		}
+
+		private VirtualKeyModifiers GetKeyModifiers()
+			=> VirtualKeyModifiers.None;
 
 		private void HostOnMouseEnter(object sender, MouseEventArgs args)
 		{
 			try
 			{
 				var position = args.GetPosition(_host);
-
 				var properties = BuildPointerProperties(args);
+				var modifiers = GetKeyModifiers();
+
 				_ownerEvents.RaisePointerEntered(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
@@ -112,7 +116,8 @@ namespace Uno.UI.Skia.Platform
 							position: new Windows.Foundation.Point(position.X, position.Y),
 							isInContact: properties.HasPressedButton,
 							properties: properties
-						)
+						),
+						modifiers
 					)
 				);
 			}
@@ -127,8 +132,9 @@ namespace Uno.UI.Skia.Platform
 			try
 			{
 				var position = args.GetPosition(_host);
-
 				var properties = BuildPointerProperties(args);
+				var modifiers = GetKeyModifiers();
+
 				_ownerEvents.RaisePointerExited(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
@@ -140,7 +146,8 @@ namespace Uno.UI.Skia.Platform
 							position: new Windows.Foundation.Point(position.X, position.Y),
 							isInContact: properties.HasPressedButton,
 							properties: properties
-						)
+						),
+						modifiers
 					)
 				);
 			}
@@ -155,8 +162,9 @@ namespace Uno.UI.Skia.Platform
 			try
 			{
 				var position = args.GetPosition(_host);
-
 				var properties = BuildPointerProperties(args);
+				var modifiers = GetKeyModifiers();
+
 				_ownerEvents.RaisePointerMoved(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
@@ -168,7 +176,8 @@ namespace Uno.UI.Skia.Platform
 							position: new Windows.Foundation.Point(position.X, position.Y),
 							isInContact: properties.HasPressedButton,
 							properties: properties
-						)
+						),
+						modifiers
 					)
 				);
 			}
@@ -183,6 +192,8 @@ namespace Uno.UI.Skia.Platform
 			try
 			{
 				var position = args.GetPosition(_host);
+				var properties = BuildPointerProperties(args);
+				var modifiers = GetKeyModifiers();
 
 				_ownerEvents.RaisePointerPressed(
 					new PointerEventArgs(
@@ -194,8 +205,9 @@ namespace Uno.UI.Skia.Platform
 							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
 							position: new Windows.Foundation.Point(position.X, position.Y),
 							isInContact: true,
-							properties: BuildPointerProperties(args)
-						)
+							properties: properties
+						),
+						modifiers
 					)
 				);
 			}
@@ -210,8 +222,9 @@ namespace Uno.UI.Skia.Platform
 			try
 			{
 				var position = args.GetPosition(_host);
-
 				var properties = BuildPointerProperties(args);
+				var keys = GetKeyModifiers();
+
 				_ownerEvents.RaisePointerReleased(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
@@ -223,7 +236,8 @@ namespace Uno.UI.Skia.Platform
 							position: new Windows.Foundation.Point(position.X, position.Y),
 							isInContact: properties.HasPressedButton,
 							properties: properties
-						)
+						),
+						keys
 					)
 				);
 			}
@@ -247,10 +261,6 @@ namespace Uno.UI.Skia.Platform
 				{
 					var keys = (MouseModifierKeys)wparam;
 
-					// Horizontal Mouse wheel is also supported by holding SHIFT key
-					// That's a very usual practice on most OS & applications
-					var isHorizontalMouseWheel = msg == WM_MOUSEHWHEEL || keys.HasFlag(MouseModifierKeys.MK_SHIFT);
-
 					// Vertical: https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mousewheel
 					// Horizontal: https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mousehwheel
 
@@ -266,12 +276,20 @@ namespace Uno.UI.Skia.Platform
 						IsRightButtonPressed = keys.HasFlag(MouseModifierKeys.MK_RBUTTON),
 						IsXButton1Pressed = keys.HasFlag(MouseModifierKeys.MK_XBUTTON1),
 						IsXButton2Pressed = keys.HasFlag(MouseModifierKeys.MK_XBUTTON2),
-						IsHorizontalMouseWheel = isHorizontalMouseWheel,
+						IsHorizontalMouseWheel = msg == WM_MOUSEHWHEEL,
 						IsPrimary = true,
 						IsInRange = true,
 						MouseWheelDelta = -((int)wparam >> 16) / 10
 					};
-
+					var modifiers = VirtualKeyModifiers.None;
+					if (keys.HasFlag(MouseModifierKeys.MK_SHIFT))
+					{
+						modifiers |= VirtualKeyModifiers.Shift;
+					}
+					if (keys.HasFlag(MouseModifierKeys.MK_CONTROL))
+					{
+						modifiers |= VirtualKeyModifiers.Control;
+					}
 
 					_ownerEvents.RaisePointerWheelChanged(
 						new PointerEventArgs(
@@ -284,7 +302,8 @@ namespace Uno.UI.Skia.Platform
 								position: position,
 								isInContact: properties.HasPressedButton,
 								properties: properties
-							)
+							),
+							modifiers
 						)
 					);
 

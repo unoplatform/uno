@@ -35,10 +35,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public CGPoint UpperScrollLimit { get; }
 
-		public ScrollMode HorizontalScrollMode { get; set; }
-
-		public ScrollMode VerticalScrollMode { get; set; }
-
 		public float MinimumZoomScale { get; set; }
 
 		public float MaximumZoomScale { get; set; }

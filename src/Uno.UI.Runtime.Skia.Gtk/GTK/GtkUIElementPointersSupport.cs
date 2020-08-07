@@ -13,6 +13,7 @@ using Uno.UI.Runtime.Skia;
 using Windows.ApplicationModel;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Composition;
 using Windows.UI.Core;
 using Windows.UI.Input;
@@ -35,80 +36,23 @@ namespace Uno.UI.Runtime.Skia
 				| EventMask.ButtonPressMask
 				| EventMask.SmoothScrollMask
 			));
-			GtkHost.Window.MotionNotifyEvent += OnMotionEvent;
-			GtkHost.Window.ButtonPressEvent += Window_ButtonPressEvent;
-			GtkHost.Window.ButtonReleaseEvent += Window_ButtonReleaseEvent;
-			GtkHost.Window.EnterNotifyEvent += Window_EnterEvent;
-			GtkHost.Window.LeaveNotifyEvent += Window_LeaveEvent;
-			GtkHost.Window.ScrollEvent += Window_ScrollEvent;
+			GtkHost.Window.MotionNotifyEvent += OnWindowMotionEvent;
+			GtkHost.Window.ButtonPressEvent += OnWindowButtonPressEvent;
+			GtkHost.Window.ButtonReleaseEvent += OnWindowButtonReleaseEvent;
+			GtkHost.Window.EnterNotifyEvent += OnWindowEnterEvent;
+			GtkHost.Window.LeaveNotifyEvent += OnWindowLeaveEvent;
+			GtkHost.Window.ScrollEvent += OnWindowScrollEvent;
 		}
 
 		private static uint GetNextFrameId() => (uint)Interlocked.Increment(ref _currentFrameId);
 
-		private void Window_ScrollEvent(object o, ScrollEventArgs args)
+		private void OnWindowEnterEvent(object o, EnterNotifyEventArgs args)
 		{
 			try
 			{
-				if (args.Event.Direction == ScrollDirection.Smooth)
-				{
-					_ownerEvents.RaisePointerWheelChanged(
-						new PointerEventArgs(
-							new Windows.UI.Input.PointerPoint(
-								frameId: GetNextFrameId(),
-								timestamp: args.Event.Time,
-								device: PointerDevice.For(PointerDeviceType.Mouse),
-								pointerId: 0,
-								rawPosition: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
-								position: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
-								isInContact: false,
-								properties: BuildProperties(args.Event)
-							)
-						)
-					);
-				}
-			}
-			catch (Exception e)
-			{
-				this.Log().Error("Failed to raise PointerExited", e);
-			}
-		}
+				var properties = BuildProperties(args.Event);
+				var modifiers = GetKeyModifiers();
 
-		private PointerPointProperties BuildProperties(EventScroll scrollEvent)
-			=> new PointerPointProperties
-			   {
-				   MouseWheelDelta = scrollEvent.DeltaX != 0 ? (int)scrollEvent.DeltaX : (int)scrollEvent.DeltaY,
-				   IsHorizontalMouseWheel = scrollEvent.DeltaX != 0,
-				};
-
-		private void Window_LeaveEvent(object o, LeaveNotifyEventArgs args)
-		{
-			try
-			{
-				_ownerEvents.RaisePointerExited(
-					new PointerEventArgs(
-						new Windows.UI.Input.PointerPoint(
-							frameId: GetNextFrameId(),
-							timestamp: args.Event.Time,
-							device: PointerDevice.For(PointerDeviceType.Mouse),
-							pointerId: 0,
-							rawPosition: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
-							position: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
-							isInContact: false,
-							properties: BuildProperties(args.Event)
-						)
-					)
-				);
-			}
-			catch(Exception e)
-			{
-				this.Log().Error("Failed to raise PointerExited", e);
-			}
-		}
-
-		private void Window_EnterEvent(object o, EnterNotifyEventArgs args)
-		{
-			try
-			{
 				_ownerEvents.RaisePointerEntered(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
@@ -118,9 +62,10 @@ namespace Uno.UI.Runtime.Skia
 							pointerId: 0,
 							rawPosition: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
 							position: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
-							isInContact: false,
-							properties: BuildProperties(args.Event)
-						)
+							isInContact: properties.HasPressedButton,
+							properties: properties
+						),
+						modifiers
 					)
 				);
 			}
@@ -130,11 +75,14 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void Window_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
+		private void OnWindowLeaveEvent(object o, LeaveNotifyEventArgs args)
 		{
 			try
 			{
-				_ownerEvents.RaisePointerReleased(
+				var properties = BuildProperties(args.Event);
+				var modifiers = GetKeyModifiers();
+
+				_ownerEvents.RaisePointerExited(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
@@ -143,22 +91,26 @@ namespace Uno.UI.Runtime.Skia
 							pointerId: 0,
 							rawPosition: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
 							position: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
-							isInContact: false,
-							properties: BuildProperties(args.Event)
-						)
+							isInContact: properties.HasPressedButton,
+							properties: properties
+						),
+						modifiers
 					)
 				);
 			}
 			catch (Exception e)
 			{
-				this.Log().Error("Failed to raise PointerReleased", e);
+				this.Log().Error("Failed to raise PointerExited", e);
 			}
 		}
 
-		private void Window_ButtonPressEvent(object o, ButtonPressEventArgs args)
+		private void OnWindowButtonPressEvent(object o, ButtonPressEventArgs args)
 		{
 			try
 			{
+				var properties = BuildProperties(args.Event);
+				var modifiers = GetKeyModifiers();
+
 				_ownerEvents.RaisePointerPressed(
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
@@ -168,9 +120,10 @@ namespace Uno.UI.Runtime.Skia
 							pointerId: 0,
 							rawPosition: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
 							position: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
-							isInContact: false,
-							properties: BuildProperties(args.Event)
-						)
+							isInContact: true,
+							properties: properties
+						),
+						modifiers
 					)
 				);
 			}
@@ -180,27 +133,45 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private PointerPointProperties BuildProperties(EventButton eventButton)
-			=> new PointerPointProperties
+		private void OnWindowButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
+		{
+			try
 			{
-				IsLeftButtonPressed = eventButton.Button == 1,
-				IsRightButtonPressed = eventButton.Button == 3,
-			};
+				var properties = BuildProperties(args.Event);
+				var modifiers = GetKeyModifiers();
 
-		private PointerPointProperties BuildProperties(EventCrossing eventCrossing)
-			=> new PointerPointProperties
+				_ownerEvents.RaisePointerReleased(
+					new PointerEventArgs(
+						new Windows.UI.Input.PointerPoint(
+							frameId: GetNextFrameId(),
+							timestamp: args.Event.Time,
+							device: PointerDevice.For(PointerDeviceType.Mouse),
+							pointerId: 0,
+							rawPosition: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
+							position: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
+							isInContact: properties.HasPressedButton,
+							properties: properties
+						),
+						modifiers
+					)
+				);
+			}
+			catch (Exception e)
 			{
-				IsLeftButtonPressed = (eventCrossing.State & ModifierType.Button1Mask) != 0,
-				IsRightButtonPressed = (eventCrossing.State & ModifierType.Button4Mask) != 0,
-			};
+				this.Log().Error("Failed to raise PointerReleased", e);
+			}
+		}
 
-		private void OnMotionEvent(object o, MotionNotifyEventArgs args)
+		private void OnWindowMotionEvent(object o, MotionNotifyEventArgs args) // a.k.a. move
 		{
 			try
 			{
 				switch (args.Event.Type)
 				{
 					case Gdk.EventType.MotionNotify:
+						var properties = BuildProperties(args.Event);
+						var modifiers = GetKeyModifiers();
+
 						_ownerEvents.RaisePointerMoved(
 							new PointerEventArgs(
 								new Windows.UI.Input.PointerPoint(
@@ -210,9 +181,10 @@ namespace Uno.UI.Runtime.Skia
 									pointerId: 0,
 									rawPosition: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
 									position: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
-									isInContact: false,
-									properties: BuildProperties(args.Event)
-								)
+									isInContact: properties.HasPressedButton,
+									properties: properties
+								),
+								modifiers
 							)
 						);
 						break;
@@ -228,11 +200,67 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
+		private void OnWindowScrollEvent(object o, ScrollEventArgs args)
+		{
+			try
+			{
+				if (args.Event.Direction == ScrollDirection.Smooth)
+				{
+					var properties = BuildProperties(args.Event);
+					var modifiers = GetKeyModifiers();
+
+					_ownerEvents.RaisePointerWheelChanged(
+						new PointerEventArgs(
+							new Windows.UI.Input.PointerPoint(
+								frameId: GetNextFrameId(),
+								timestamp: args.Event.Time,
+								device: PointerDevice.For(PointerDeviceType.Mouse),
+								pointerId: 0,
+								rawPosition: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
+								position: new Windows.Foundation.Point(args.Event.X, args.Event.Y),
+								isInContact: properties.HasPressedButton,
+								properties: properties
+							),
+							modifiers
+						)
+					);
+				}
+			}
+			catch (Exception e)
+			{
+				this.Log().Error("Failed to raise PointerExited", e);
+			}
+		}
+
 		private PointerPointProperties BuildProperties(EventMotion eventMotion)
 			=> new Windows.UI.Input.PointerPointProperties()
 			{
 				IsLeftButtonPressed = (eventMotion.State & Gdk.ModifierType.Button1Mask) != 0,
 				IsRightButtonPressed = (eventMotion.State & Gdk.ModifierType.Button2Mask) != 0
 			};
+
+		private PointerPointProperties BuildProperties(EventButton eventButton)
+			=> new PointerPointProperties
+			{
+				IsLeftButtonPressed = eventButton.Button == 1,
+				IsRightButtonPressed = eventButton.Button == 3,
+			};
+
+		private PointerPointProperties BuildProperties(EventCrossing eventCrossing)
+			=> new PointerPointProperties
+			{
+				IsLeftButtonPressed = (eventCrossing.State & ModifierType.Button1Mask) != 0,
+				IsRightButtonPressed = (eventCrossing.State & ModifierType.Button4Mask) != 0,
+			};
+
+		private PointerPointProperties BuildProperties(EventScroll scrollEvent)
+			=> new PointerPointProperties
+			{
+				MouseWheelDelta = scrollEvent.DeltaX != 0 ? (int)scrollEvent.DeltaX : (int)scrollEvent.DeltaY,
+				IsHorizontalMouseWheel = scrollEvent.DeltaX != 0,
+			};
+
+		private VirtualKeyModifiers GetKeyModifiers()
+			=> VirtualKeyModifiers.None;
 	}
 }

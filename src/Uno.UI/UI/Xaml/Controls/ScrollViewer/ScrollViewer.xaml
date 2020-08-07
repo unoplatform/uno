@@ -1,0 +1,68 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:u="using:Uno.UI.Controls"
+	xmlns:ios="http://uno.ui/ios"
+	xmlns:android="http://uno.ui/android"
+	xmlns:wasm="http://uno.ui/wasm"
+	xmlns:netstdref="http://uno.ui/netstdref"
+	xmlns:skia="http://uno.ui/skia"
+	xmlns:macos="http://uno.ui/macos"
+	xmlns:uBehaviors="using:Uno.UI.Behaviors"
+	mc:Ignorable="d ios android wasm netstdref macos skia">
+
+	<!-- Default style for Windows.UI.Xaml.Controls.ScrollViewer -->
+	<Style TargetType="ScrollViewer"
+		   x:Key="DefaultScrollViewerStyle">
+		<Setter Property="HorizontalScrollMode"
+				Value="Auto" />
+		<Setter Property="VerticalScrollMode"
+				Value="Auto" />
+		<Setter Property="IsHorizontalRailEnabled"
+				Value="True" />
+		<Setter Property="IsVerticalRailEnabled"
+				Value="True" />
+		<Setter Property="IsTabStop"
+				Value="False" />
+		<Setter Property="ZoomMode"
+				Value="Disabled" />
+		<Setter Property="HorizontalContentAlignment"
+				Value="Left" />
+		<Setter Property="VerticalContentAlignment"
+				Value="Top" />
+		<Setter Property="VerticalScrollBarVisibility"
+				Value="Visible" />
+		<Setter Property="Padding"
+				Value="0" />
+		<Setter Property="BorderThickness"
+				Value="0" />
+		<Setter Property="BorderBrush"
+				Value="Transparent" />
+		<Setter Property="Background"
+				Value="Transparent" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ScrollViewer">
+					<Border
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}"
+						Background="{TemplateBinding Background}">
+						<!-- ContentTemplate not yet supported for ScrollContentPresenter-->
+						<ScrollContentPresenter
+							x:Name="ScrollContentPresenter"
+							Margin="{TemplateBinding Padding}" />
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style
+		TargetType="ScrollViewer"
+		BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+
+</ResourceDictionary>

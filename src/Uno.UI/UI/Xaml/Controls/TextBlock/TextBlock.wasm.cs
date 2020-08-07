@@ -163,7 +163,5 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextWrappingChangedPartial() => _textWrappingChanged = true;
 
 		partial void OnPaddingChangedPartial() => _paddingChangedChanged = true;
-
-		internal override bool IsViewHit() => Text != null || base.IsViewHit();
 	}
 }
