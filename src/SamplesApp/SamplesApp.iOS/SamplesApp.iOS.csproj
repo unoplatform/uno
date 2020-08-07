@@ -107,7 +107,7 @@
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Entitlements.plist" />
-    <BundleResource Include="Resources\Fonts\winjs-symbols.ttf">
+    <BundleResource Include="Resources\Fonts\uno-fluentui-assets.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </BundleResource>
     <None Include="Resources\LaunchScreen.xib" />

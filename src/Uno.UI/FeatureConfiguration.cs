@@ -120,11 +120,11 @@ namespace Uno.UI
 			/// </summary>
 			public static string SymbolsFont { get; set; } =
 #if __SKIA__
-				"ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols";
+				"ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
 #elif !__ANDROID__
 				"Symbols";
 #else
-				"ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols";
+				"ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
 #endif
 			/// <summary>
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.

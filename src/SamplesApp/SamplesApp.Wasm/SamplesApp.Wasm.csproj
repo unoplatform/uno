@@ -23,7 +23,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Content Update="..\SamplesApp.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
-		<Content Update="Fonts\winjs-symbols.woff2" />
+		<Content Update="Fonts\uno-fluentui-assets.woff2" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="WasmCSS\**\*.css" />

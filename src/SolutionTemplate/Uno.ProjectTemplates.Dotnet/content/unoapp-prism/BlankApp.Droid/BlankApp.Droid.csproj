@@ -79,7 +79,7 @@
     <Compile Include="Main.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Fonts\winjs-symbols.ttf" />
+    <AndroidAsset Include="Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
