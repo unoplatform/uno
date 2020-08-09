@@ -72,6 +72,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static bool ResolveResourceStatic(object key, out object value, object context = null)
 			=> TryStaticRetrieval(key, context, out value);
 
