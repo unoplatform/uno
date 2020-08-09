@@ -200,7 +200,7 @@
 
 					}
 
-					var platforms = new string[] { "iOS", "UWP", "Wasm", "Droid", "macOS", "Shared" };
+					var platforms = new string[] { "iOS", "UWP", "Wasm", "Droid", "macOS", "Shared", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host" };
 
 					foreach(var platform in platforms)
 					{
@@ -254,6 +254,8 @@
 					for (int i = 0; i < folders.Length; i++)
 					{
 						var dir = folders[i];
+
+						if(!Directory.Exists(dir)) continue;
 
 						var dirName = Path.GetFileName(dir);
 						var path = Path.GetDirectoryName(dir);

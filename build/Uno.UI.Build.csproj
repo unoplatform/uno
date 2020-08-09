@@ -75,6 +75,7 @@
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.macOS.csproj"/>
 
 			<_sdkProject Include="..\src\SolutionTemplate\**\*.Wasm.csproj"/>
+			<_sdkProject Include="..\src\SolutionTemplate\**\*.Skia.*.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"/>
 
 			<_sdkProject Include="..\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\content\unolib-crossruntime\UnoCrossRuntimeLib\*.csproj"/>

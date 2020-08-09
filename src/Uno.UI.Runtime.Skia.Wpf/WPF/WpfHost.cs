@@ -36,7 +36,7 @@ namespace Uno.UI.Skia.Platform
 		/// <remarks>
 		/// If args are omitted, those from Environment.GetCommandLineArgs() will be used.
 		/// </remarks>
-		public WpfHost(Func<WinUI.Application> appBuilder, string[] args = null)
+		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null)
 		{
 			_current = this;
 
@@ -52,6 +52,9 @@ namespace Uno.UI.Skia.Platform
 				var app = appBuilder();
 				app.Host = this;
 			}
+
+			Windows.UI.Core.CoreDispatcher.DispatchOverride
+				= d => dispatcher.BeginInvoke(d);
 
 			WinUI.Application.Start(CreateApp, args);
 
