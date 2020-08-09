@@ -11,13 +11,13 @@ namespace Windows.Foundation.Metadata
 		private static HashSet<string> _notImplementedOnce = new HashSet<string>();
 		private static readonly object _gate = new object();
 		private static Dictionary<string, bool> _isTypePresent = new Dictionary<string, bool>();
-		private static Dictionary<(string typeName, string methodName, uint inputParameterCount), bool> _isMethodPresent 
+		private static Dictionary<(string typeName, string methodName, uint inputParameterCount), bool> _isMethodPresent
 			= new Dictionary<(string typeName, string methodName, uint inputParameterCount), bool>();
 
-		private readonly static string[] _assemblies = new string[] {
-			"Uno.UI",
-			"Uno.Foundation",
-			"Uno"
+		private readonly static Assembly[] _assemblies = new[] {
+			Assembly.Load("Uno.UI"),
+			Assembly.Load("Uno.Foundation"),
+			Assembly.Load("Uno")
 		};
 
 		private static bool IsImplementedByUno(MemberInfo member) => (member?.GetCustomAttributes(typeof(Uno.NotImplementedAttribute), false)?.Length ?? -1) == 0;
@@ -35,10 +35,10 @@ namespace Windows.Foundation.Metadata
 			}
 		}
 
-		public static bool IsMethodPresent(string typeName, string methodName) 
+		public static bool IsMethodPresent(string typeName, string methodName)
 			=> GetValidType(typeName)?.GetMethod(methodName) != null;
 
-		public static bool IsMethodPresent(string typeName, string methodName, uint inputParameterCount) 
+		public static bool IsMethodPresent(string typeName, string methodName, uint inputParameterCount)
 			=> GetValidType(typeName)
 				?.GetMethods()
 				?.Where(m => m.Name == methodName && m.GetParameters().Length == inputParameterCount)
@@ -49,7 +49,7 @@ namespace Windows.Foundation.Metadata
 				GetValidType(typeName)
 				?.GetEvent(eventName));
 
-		public static bool IsPropertyPresent(string typeName, string propertyName) 
+		public static bool IsPropertyPresent(string typeName, string propertyName)
 			=> IsImplementedByUno(
 				GetValidType(typeName)
 				?.GetProperty(propertyName));
@@ -59,7 +59,7 @@ namespace Windows.Foundation.Metadata
 			var property = GetValidType(typeName)
 				?.GetProperty(propertyName);
 
-			if(IsImplementedByUno(property))
+			if (IsImplementedByUno(property))
 			{
 				return property.GetMethod != null && property.SetMethod == null;
 			}
@@ -80,7 +80,7 @@ namespace Windows.Foundation.Metadata
 			return false;
 		}
 
-		public static bool IsEnumNamedValuePresent(string enumTypeName, string valueName) 
+		public static bool IsEnumNamedValuePresent(string enumTypeName, string valueName)
 			=> GetValidType(enumTypeName)?.GetField(valueName) != null;
 
 		/// <summary>
@@ -97,7 +97,7 @@ namespace Windows.Foundation.Metadata
 		{
 			foreach (var assembly in _assemblies)
 			{
-				var type = Type.GetType(typeName + ", " + assembly);
+				var type = assembly.GetType(typeName);
 
 				if (type != null)
 				{
@@ -118,13 +118,13 @@ namespace Windows.Foundation.Metadata
 			}
 			else
 			{
-				lock(_notImplementedOnce)
+				lock (_notImplementedOnce)
 				{
-					if(!_notImplementedOnce.Contains(memberName) || AlwaysLogNotImplementedMessages)
+					if (!_notImplementedOnce.Contains(memberName) || AlwaysLogNotImplementedMessages)
 					{
 						_notImplementedOnce.Add(memberName);
 
-                        Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory.CreateLogger(type).Error(message);
+						Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory.CreateLogger(type).Error(message);
 					}
 				}
 			}
