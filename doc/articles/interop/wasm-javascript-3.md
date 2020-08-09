@@ -67,7 +67,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    using Windows.UI.Xaml.Media;
    using Uno.Foundation;
    using Uno.Extensions;
-using Uno.UI.Runtime.WebAssembly;
+   using Uno.UI.Runtime.WebAssembly;
    
    namespace FlatpickrDemo.Shared
    {
