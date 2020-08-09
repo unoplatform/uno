@@ -3443,6 +3443,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private int _staticResourceResolverOutputIndex = 0;
+
 		/// <summary>
 		/// Returns code for simple initialization-time retrieval for StaticResource/ThemeResource markup.
 		/// </summary>
@@ -3456,8 +3458,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			targetPropertyType = targetPropertyType ?? _objectSymbol;
-			var staticRetrieval = "global::Uno.UI.ResourceResolver.ResolveResourceStatic<{0}>(\"{1}\", context: {2})"
-				.InvariantCultureFormat(targetPropertyType.ToDisplayString(), keyStr, ParseContextPropertyAccess);
+
+			var targetPropertyFQT = targetPropertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+			var propertyOutputVar = $"staticResourceResolverOutputIndex{_staticResourceResolverOutputIndex++}";
+
+			var conversion = targetPropertyType.IsValueType
+				? $"(({targetPropertyFQT}){propertyOutputVar})"
+				: $"(({propertyOutputVar} as {targetPropertyFQT}) ?? default({targetPropertyFQT}))";
+
+
+			var staticRetrieval = $"(" +
+				$"global::Uno.UI.ResourceResolver.ResolveResourceStatic(" +
+				$"\"{keyStr}\", " +
+				$"out var {propertyOutputVar}, " +
+				$"context: {ParseContextPropertyAccess}) " +
+				$"? {conversion}" +
+				$" : default({targetPropertyFQT})" +
+				$")";
 			TryAnnotateWithGeneratorSource(ref staticRetrieval);
 			return staticRetrieval;
 		}

@@ -67,6 +67,14 @@ namespace Uno.UI
 			return default(T);
 		}
 
+		/// <summary>
+		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
+		/// </summary>
+		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static bool ResolveResourceStatic(object key, out object value, object context = null)
+			=> TryStaticRetrieval(key, context, out value);
+
 #if false
 		// disabled because of https://github.com/mono/mono/issues/20195
 		/// <summary>
