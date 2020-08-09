@@ -127,6 +127,18 @@
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
+	<Target Name="IncludeGeneratedJavascript" AfterTargets="CompileTypeScript" BeforeTargets="PrepareResources;PrepareForBuild">
+		<ItemGroup>
+			<JSOutputFiles Include="$(MSBuildThisFileDirectory)obj\tsoutput\**\*.js"/>
+			<EmbeddedResource Include="@(JSOutputFiles)" LogicalName="$(AssemblyName).WasmScripts.%(Filename)%(Extension)" KeepDuplicates="false" />
+			<EmbeddedResource Include="@(GeneratedJavascript)" LogicalName="$(AssemblyName).WasmScripts.%(Filename)%(Extension)" KeepDuplicates="false" />
+		</ItemGroup>
+		<Message Text="JSOutputFiles: @(JSOutputFiles)" />
+		<Message Text="BaseIntermediateOutputPath: $(BaseIntermediateOutputPath)" />
+		<Message Text="GeneratedJavascript: @(GeneratedJavascript)" />
+		<Message Text="EmbeddedResources: @(EmbeddedResource)" />
+	</Target>
+
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -144,5 +156,22 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
+
+	<Target Name="_UnoWasmOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\$(PackageId)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_DebugSymbolsIntermediatePath)" DestinationFiles="@(_DebugSymbolsIntermediatePath->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	</Target>
 
 </Project>

@@ -4,7 +4,7 @@
 			"declaration": true,
 			"diagnostics": true,
 			"noImplicitAny": true,
-			"outFile": "WasmScripts/Uno.UI.js",
+			"outFile": "obj/tsoutput/Uno.UI.js",
 			//"inlineSourceMap": true,
 			"locale": "en-US",
 			"target": "es6"

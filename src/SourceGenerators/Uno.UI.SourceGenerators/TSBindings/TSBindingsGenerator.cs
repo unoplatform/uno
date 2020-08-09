@@ -102,7 +102,15 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 				var outputPath = Path.Combine(_bindingsPaths, $"{messageType.Name}.ts");
 
-				File.WriteAllText(outputPath, sb.ToString());
+				var fileExists = File.Exists(outputPath);
+				var output = sb.ToString();
+
+				if (
+					(fileExists && File.ReadAllText(outputPath) != output)
+					|| !fileExists)
+				{
+					File.WriteAllText(outputPath, output);
+				}
 			}
 		}
 
