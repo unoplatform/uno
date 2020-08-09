@@ -12,7 +12,7 @@
   "include": [
     "ts/**/*",
     "tsbindings/**/*",
-    "../Uno.UI/WasmScripts/Uno.UI.d.ts",
+    "../Uno.UI/obj/tsoutput/Uno.UI.d.ts",
     "../Uno.UI/ts/types/**/*"
   ]
 }
