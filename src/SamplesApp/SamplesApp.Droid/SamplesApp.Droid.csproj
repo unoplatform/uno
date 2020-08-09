@@ -149,6 +149,10 @@
       <Project>{58332380-4302-4259-8F36-AF572C53827F}</Project>
       <Name>Uno.UI.BindingHelper.Android</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj">
+      <Project>{535339e2-6c01-4478-9889-f6e76b1c00f4}</Project>
+      <Name>Uno.UI.FluentTheme</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <ItemGroup>

@@ -427,6 +427,10 @@ namespace Uno.UWPSyncGenerator
 				case "Windows.ApplicationModel.Store.Preview.WebAuthenticationCoreManagerHelper":
 					// Skipped because a cross layer dependency to Windows.UI.Xaml
 					return true;
+
+				case "Microsoft.UI.Xaml.Controls.XamlControlsResources":
+					// Skipped because the type is placed in the Uno.UI.FluentTheme assembly
+					return true;
 			}
 
 

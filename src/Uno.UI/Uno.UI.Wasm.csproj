@@ -127,18 +127,6 @@
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
-	<Target Name="IncludeGeneratedJavascript" AfterTargets="CompileTypeScript" BeforeTargets="PrepareResources;PrepareForBuild">
-		<ItemGroup>
-			<JSOutputFiles Include="$(MSBuildThisFileDirectory)obj\tsoutput\**\*.js"/>
-			<EmbeddedResource Include="@(JSOutputFiles)" LogicalName="$(AssemblyName).WasmScripts.%(Filename)%(Extension)" KeepDuplicates="false" />
-			<EmbeddedResource Include="@(GeneratedJavascript)" LogicalName="$(AssemblyName).WasmScripts.%(Filename)%(Extension)" KeepDuplicates="false" />
-		</ItemGroup>
-		<Message Text="JSOutputFiles: @(JSOutputFiles)" />
-		<Message Text="BaseIntermediateOutputPath: $(BaseIntermediateOutputPath)" />
-		<Message Text="GeneratedJavascript: @(GeneratedJavascript)" />
-		<Message Text="EmbeddedResources: @(EmbeddedResource)" />
-	</Target>
-
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>

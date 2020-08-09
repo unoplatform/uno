@@ -154,6 +154,10 @@
       <Project>{2569663D-293A-4A1D-BB84-AA8C7B4B7F92}</Project>
       <Name>Uno.UI.MSAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj">
+      <Project>{535339e2-6c01-4478-9889-f6e76b1c00f4}</Project>
+      <Name>Uno.UI.FluentTheme</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj">
       <Project>{80798130-cb7e-4968-b4f6-554cc0fc8feb}</Project>
       <Name>Uno.UI.HotReload</Name>
