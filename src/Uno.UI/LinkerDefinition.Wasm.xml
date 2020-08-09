@@ -52,6 +52,12 @@
 	  <method name="DispatchGeoposition" />
 	  <method name="DispatchError" />
 	</type>
+    <type fullname="Windows.Media.SpeechRecognition.SpeechRecognizer">
+      <method name="DispatchStatus" />
+      <method name="DispatchResult" />
+      <method name="DispatchHypothesis" />
+      <method name="DispatchError" />
+    </type>
 	<type fullname="Windows.Storage.StorageFolder">
 	  <method name="DispatchStorageInitialized" />
 	</type>

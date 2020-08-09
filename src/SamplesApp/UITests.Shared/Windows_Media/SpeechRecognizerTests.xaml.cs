@@ -32,7 +32,7 @@ namespace UITests.Windows_Media
 
 		public SpeechRecognizerTestsViewModel Model { get; private set; }
 
-		private void SpeechRecognizerTests_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+		private void SpeechRecognizerTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
 			Model = args.NewValue as SpeechRecognizerTestsViewModel;
 		}

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Uno;
+using Uno.Extensions;
 using Uno.Foundation;
 using Windows.Foundation;
 
@@ -31,11 +33,51 @@ namespace Windows.Media.SpeechRecognition
 			return 0;
 		}
 
-		private void InitializeSpeechRecognizer()
+		[Preserve]
+		public static int DispatchError(string instanceId, string error)
 		{
-			var command = $"{JsType}.initialize('{_instanceId}')";
-			WebAssemblyRuntime.InvokeJS(command);
-			_instances.GetOrAdd(_instanceId.ToString(), this);
+			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
+			{
+				if (speechRecognizer._currentCompletionSource != null)
+				{
+					speechRecognizer._currentCompletionSource.SetException(
+						new InvalidOperationException($"Speech recognition failed with '{error}'"));
+				}
+				else
+				{
+					if (typeof(SpeechRecognizer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+					{
+						typeof(SpeechRecognizer).Log().LogError($"Speech recognition failed with '{error}'");
+					}
+				}
+			}
+			return 0;
+		}
+
+		[Preserve]
+		public static int DispatchHypothesis(string instanceId, string hypothesis)
+		{
+			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
+			{
+				speechRecognizer.OnHypothesisGenerated(hypothesis);
+			}
+			return 0;
+		}
+
+		[Preserve]
+		public static int DispatchResult(string instanceId, string result, double confidence)
+		{
+			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
+			{
+				speechRecognizer.OnStateChanged(SpeechRecognizerState.Idle);
+				var recognitionResult = new SpeechRecognitionResult()
+				{
+					Text = result,
+					RawConfidence = confidence
+				};
+				speechRecognizer?._currentCompletionSource.SetResult(recognitionResult);
+			}
+			return 0;
 		}
 
 		public IAsyncOperation<SpeechRecognitionResult> RecognizeAsync() =>
@@ -51,18 +93,31 @@ namespace Windows.Media.SpeechRecognition
 
 			_currentCompletionSource = new TaskCompletionSource<SpeechRecognitionResult>();
 
-
+			var command = $"{JsType}.recognize('{_instanceId}')";
+			var recognizeResult = WebAssemblyRuntime.InvokeJS(command);
+			if (!bool.TryParse(recognizeResult, out var canRecognize) || !canRecognize)
+			{
+				throw new InvalidOperationException(
+					"Speech recognizer is not available on this device.");
+			}
 
 			var result = await _currentCompletionSource.Task;
 			_currentCompletionSource = null;
 			return result;
 		}
 
-
-
 		public void Dispose()
 		{
-			
+			_currentCompletionSource?.SetCanceled();
+			var removeInstanceCommand = $"{JsType}.removeInstance('{_instanceId}')";
+			WebAssemblyRuntime.InvokeJS(removeInstanceCommand);
+		}
+
+		private void InitializeSpeechRecognizer()
+		{
+			var command = $"{JsType}.initialize('{_instanceId}')";
+			WebAssemblyRuntime.InvokeJS(command);
+			_instances.GetOrAdd(_instanceId.ToString(), this);
 		}
 	}
 }

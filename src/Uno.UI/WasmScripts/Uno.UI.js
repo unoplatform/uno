@@ -2866,6 +2866,69 @@ var Uno;
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
 // ReSharper disable InconsistentNaming
+var Windows;
+(function (Windows) {
+    var Media;
+    (function (Media) {
+        class SpeechRecognizer {
+            constructor(managedId) {
+                this.onResult = (event) => {
+                    if (event.results[0].isFinal) {
+                        if (!SpeechRecognizer.dispatchResult) {
+                            SpeechRecognizer.dispatchResult = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchResult");
+                        }
+                        SpeechRecognizer.dispatchResult(this.managedId, event.results[0][0].transcript, event.results[0][0].confidence);
+                    }
+                    else {
+                        if (!SpeechRecognizer.dispatchHypothesis) {
+                            SpeechRecognizer.dispatchHypothesis = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchHypothesis");
+                        }
+                        SpeechRecognizer.dispatchHypothesis(this.managedId, event.results[0][0].transcript);
+                    }
+                };
+                this.onSpeechStart = () => {
+                    if (!SpeechRecognizer.dispatchStatus) {
+                        SpeechRecognizer.dispatchStatus = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchStatus");
+                    }
+                    SpeechRecognizer.dispatchStatus(this.managedId, "SpeechDetected");
+                };
+                this.managedId = managedId;
+                if (window.SpeechRecognition) {
+                    this.recognition = new window.SpeechRecognition();
+                }
+                else if (window.webkitSpeechRecognition) {
+                    this.recognition = new window.webkitSpeechRecognition();
+                }
+                if (this.recognition) {
+                    this.recognition.addEventListener("result", this.onResult);
+                    this.recognition.addEventListener("speechstart", this.onSpeechStart);
+                    this.recognition.addEventListener("error", this.onError);
+                }
+            }
+            static initialize(managedId) {
+                const recognizer = new SpeechRecognizer(managedId);
+                SpeechRecognizer.instanceMap[managedId] = recognizer;
+            }
+            static recognize(managedId) {
+                const recognizer = SpeechRecognizer.instanceMap[managedId];
+                recognizer.recognition.continuous = false;
+                recognizer.recognition.interimResults = true;
+                recognizer.recognition.start();
+            }
+            static removeInstance(managedId) {
+                const recognizer = SpeechRecognizer.instanceMap[managedId];
+                recognizer.recognition.removeEventListener("result", recognizer.onResult);
+                recognizer.recognition.removeEventListener("speechstart", recognizer.onSpeechStart);
+                recognizer.recognition.removeEventListener("error", recognizer.onError);
+                delete SpeechRecognizer.instanceMap[managedId];
+            }
+            onError(event) {
+            }
+        }
+        SpeechRecognizer.instanceMap = {};
+        Media.SpeechRecognizer = SpeechRecognizer;
+    })(Media = Windows.Media || (Windows.Media = {}));
+})(Windows || (Windows = {}));
 // eslint-disable-next-line @typescript-eslint/no-namespace
 var Windows;
 (function (Windows) {
