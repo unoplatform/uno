@@ -917,7 +917,9 @@ var Uno;
                 element.addEventListener("pointercancel", WindowManager.onPointerEventReceived);
             }
             static onPointerEventReceived(evt) {
-                const element = evt.currentTarget;
+                WindowManager.dispatchPointerEvent(evt.currentTarget, evt);
+            }
+            static dispatchPointerEvent(element, evt) {
                 const payload = WindowManager.pointerEventExtractor(evt);
                 const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
                 if (handled) {
@@ -925,7 +927,7 @@ var Uno;
                 }
             }
             static onPointerEnterReceived(evt) {
-                const element = evt.target;
+                const element = evt.currentTarget;
                 const e = evt;
                 if (e.explicitOriginalTarget) { // FF only
                     // It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
@@ -963,10 +965,10 @@ var Uno;
                 }
             }
             static onPointerLeaveReceived(evt) {
-                const element = evt.target;
+                const element = evt.currentTarget;
                 const e = evt;
                 if (e.explicitOriginalTarget // FF only
-                    && e.explicitOriginalTarget !== event.currentTarget
+                    && e.explicitOriginalTarget !== element
                     && event.isOver(element)) {
                     // If the event was re-targeted, it's suspicious as the leave event should not bubble
                     // This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
@@ -979,7 +981,10 @@ var Uno;
                     WindowManager.current.processPendingLeaveEvent = (move) => {
                         if (!move.isOverDeep(element)) {
                             // Raising deferred pointerleave on element " + element.id);
-                            WindowManager.onPointerEventReceived(evt);
+                            // Note The 'evt.currentTarget' is available only while in the event handler.
+                            //		So we manually keep a reference ('element') and explicit dispatch event to it.
+                            //		https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
+                            WindowManager.dispatchPointerEvent(element, evt);
                             WindowManager.current.processPendingLeaveEvent = null;
                         }
                         else if (--attempt <= 0) {

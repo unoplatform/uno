@@ -801,7 +801,10 @@ namespace Uno.UI {
 		}
 
 		public static onPointerEventReceived(evt: PointerEvent): void {
-			const element = evt.currentTarget as HTMLElement | SVGElement;
+			WindowManager.dispatchPointerEvent(evt.currentTarget as HTMLElement | SVGElement, evt);
+		}
+
+		public static dispatchPointerEvent(element: HTMLElement | SVGElement, evt: PointerEvent): void {
 			const payload = WindowManager.pointerEventExtractor(evt);
 			const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
 			if (handled) {
@@ -810,7 +813,7 @@ namespace Uno.UI {
 		}
 
 		public static onPointerEnterReceived(evt: PointerEvent): void {
-			const element = evt.target as HTMLElement | SVGElement;
+			const element = evt.currentTarget as HTMLElement | SVGElement;
 			const e = evt as any;
 
 			if (e.explicitOriginalTarget) { // FF only
@@ -853,11 +856,11 @@ namespace Uno.UI {
 		}
 
 		public static onPointerLeaveReceived(evt: PointerEvent): void {
-			const element = evt.target as HTMLElement | SVGElement;
+			const element = evt.currentTarget as HTMLElement | SVGElement;
 			const e = evt as any;
 
 			if (e.explicitOriginalTarget // FF only
-				&& e.explicitOriginalTarget !== event.currentTarget
+				&& e.explicitOriginalTarget !== element
 				&& (event as PointerEvent).isOver(element)) {
 
 				// If the event was re-targeted, it's suspicious as the leave event should not bubble
@@ -873,7 +876,10 @@ namespace Uno.UI {
 				WindowManager.current.processPendingLeaveEvent = (move: PointerEvent) => {
 					if (!move.isOverDeep(element)) {
 						// Raising deferred pointerleave on element " + element.id);
-						WindowManager.onPointerEventReceived(evt);
+						// Note The 'evt.currentTarget' is available only while in the event handler.
+						//		So we manually keep a reference ('element') and explicit dispatch event to it.
+						//		https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
+						WindowManager.dispatchPointerEvent(element, evt);
 
 						WindowManager.current.processPendingLeaveEvent = null;
 					} else if (--attempt <= 0) {

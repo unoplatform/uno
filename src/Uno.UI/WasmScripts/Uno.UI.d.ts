@@ -356,6 +356,7 @@ declare namespace Uno.UI {
         registerEventOnViewNative(pParams: number): boolean;
         registerPointerEventsOnView(pParams: number): void;
         static onPointerEventReceived(evt: PointerEvent): void;
+        static dispatchPointerEvent(element: HTMLElement | SVGElement, evt: PointerEvent): void;
         static onPointerEnterReceived(evt: PointerEvent): void;
         static onPointerLeaveReceived(evt: PointerEvent): void;
         private processPendingLeaveEvent;
