@@ -145,11 +145,11 @@
       href: wasm-custom-events.md
     - name: Using Uno Platform Controls in Xamarin.Forms
       href: howto-use-uno-in-xamarin-forms.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 1
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 1
       href: interop/wasm-javascript-1.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 2
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 2
       href: interop/wasm-javascript-2.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 3
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 3
       href: interop/wasm-javascript-3.md
 - name: Contributing to Uno
   topicHref: uno-development\contributing-intro.md
