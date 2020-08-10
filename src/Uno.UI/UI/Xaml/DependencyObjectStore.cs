@@ -1123,22 +1123,32 @@ namespace Windows.UI.Xaml
 
 			foreach (var kvp in bindings)
 			{
-				var wasSet = false;
-				foreach (var dict in dictionariesInScope)
+				try
 				{
-					if (dict.TryGetValue(kvp.Value.ResourceKey, out var value, shouldCheckSystem: false))
+					var wasSet = false;
+					foreach (var dict in dictionariesInScope)
 					{
-						wasSet = true;
-						SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value), kvp.Value.Precedence);
-						break;
+						if (dict.TryGetValue(kvp.Value.ResourceKey, out var value, shouldCheckSystem: false))
+						{
+							wasSet = true;
+							SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value), kvp.Value.Precedence);
+							break;
+						}
+					}
+
+					if (!wasSet && isThemeChangedUpdate && kvp.Value.IsThemeResourceExtension)
+					{
+						if (ResourceResolver.TryTopLevelRetrieval(kvp.Value.ResourceKey, kvp.Value.ParseContext, out var value))
+						{
+							SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value), kvp.Value.Precedence);
+						}
 					}
 				}
-
-				if (!wasSet && isThemeChangedUpdate && kvp.Value.IsThemeResourceExtension)
+				catch (Exception e)
 				{
-					if (ResourceResolver.TryTopLevelRetrieval(kvp.Value.ResourceKey, kvp.Value.ParseContext, out var value))
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
 					{
-						SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value), kvp.Value.Precedence);
+						this.Log().Warn($"Failed to update binding, target may have been disposed", e);
 					}
 				}
 			}
