@@ -152,7 +152,7 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.ContinuousRecognitionSession.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.State.get
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StopRecognitionAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpeechRecognizer.StopRecognitionAsync() is not implemented in Uno.");
