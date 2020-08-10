@@ -23,13 +23,13 @@ namespace Windows.Media {
 		private managedId: string;
 		private recognition: SpeechRecognition;
 
-		private constructor(managedId: string) {
+		private constructor(managedId: string, culture: string) {
 			this.managedId = managedId;
 			if (window.SpeechRecognition) {
-				this.recognition = new window.SpeechRecognition();
+				this.recognition = new window.SpeechRecognition(culture);
 			}
 			else if (window.webkitSpeechRecognition) {
-				this.recognition = new window.webkitSpeechRecognition();
+				this.recognition = new window.webkitSpeechRecognition(culture);
 			}
 			if (this.recognition) {
 				this.recognition.addEventListener("result", this.onResult);
@@ -38,8 +38,8 @@ namespace Windows.Media {
 			}
 		}
 
-		public static initialize(managedId: string) {
-			const recognizer = new SpeechRecognizer(managedId);
+		public static initialize(managedId: string, culture: string) {
+			const recognizer = new SpeechRecognizer(managedId, culture);
 			SpeechRecognizer.instanceMap[managedId] = recognizer;
 		}
 

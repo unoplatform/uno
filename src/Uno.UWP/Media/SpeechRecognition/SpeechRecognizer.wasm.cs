@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Uno;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation;
 using Windows.Foundation;
@@ -115,7 +116,7 @@ namespace Windows.Media.SpeechRecognition
 
 		private void InitializeSpeechRecognizer()
 		{
-			var command = $"{JsType}.initialize('{_instanceId}')";
+			var command = $"{JsType}.initialize('{_instanceId}','{CurrentLanguage.LanguageTag}')";
 			WebAssemblyRuntime.InvokeJS(command);
 			_instances.GetOrAdd(_instanceId.ToString(), this);
 		}
