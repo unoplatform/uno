@@ -65,8 +65,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			"Generic.xaml",
 			"Generic.Native.xaml",
 		};
-		private const string WinUIThemeResourcePathSuffix = "themeresources.xaml";
-		private const string WinUICompactPathSuffix = "DensityStyles/Compact.xaml";
+		private const string WinUIThemeResourcePathSuffix = "/themeresources.xaml";
+		private const string WinUICompactPathSuffix = "/DensityStyles/Compact.xaml";
 
 		/// <summary>
 		/// ResourceDictionaries that aren't counted as default system resources (eg WinUI Fluent resources)
@@ -233,60 +233,54 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				TrackStartGeneration(files);
 
-				if (files.Any())
+
+				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files, filesFull, _xamlSourceLinks);
+
+				var filesQuery = files
+					.ToArray();
+
+				IEnumerable<XamlFileDefinition> filesToProcess = filesQuery;
+
+				if (!Debugger.IsAttached)
 				{
+					filesToProcess = filesToProcess.AsParallel();
+				}
 
-					var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files, filesFull, _xamlSourceLinks);
+				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, string>(
 
-					var filesQuery = files
-						.ToArray();
-
-					IEnumerable<XamlFileDefinition> filesToProcess = filesQuery;
-
-					if (!Debugger.IsAttached)
-					{
-						filesToProcess = filesToProcess.AsParallel();
-					}
-
-					var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, string>(
-
-								file.UniqueID,
-								new XamlFileGenerator(
-										file: file,
-										targetPath: _targetPath,
-										defaultNamespace: _defaultNamespace,
-										metadataHelper: _metadataHelper,
-										fileUniqueId: file.UniqueID,
-										lastReferenceUpdateTime: lastBinaryUpdateTime,
-										analyzerSuppressions: _analyzerSuppressions,
-										globalStaticResourcesMap: globalStaticResourcesMap,
-										outputSourceComments: _outputSourceComments,
-										resourceKeys: resourceKeys,
-										isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
-										uiAutomationMappings: _uiAutomationMappings,
-										defaultLanguage: _defaultLanguage,
-										isWasm: _isWasm,
-										isDebug: _isDebug,
-										skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
-										shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
-										isUnoAssembly: IsUnoAssembly
-									)
-									.GenerateFile()
-							)
+							file.UniqueID,
+							new XamlFileGenerator(
+									file: file,
+									targetPath: _targetPath,
+									defaultNamespace: _defaultNamespace,
+									metadataHelper: _metadataHelper,
+									fileUniqueId: file.UniqueID,
+									lastReferenceUpdateTime: lastBinaryUpdateTime,
+									analyzerSuppressions: _analyzerSuppressions,
+									globalStaticResourcesMap: globalStaticResourcesMap,
+									outputSourceComments: _outputSourceComments,
+									resourceKeys: resourceKeys,
+									isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
+									uiAutomationMappings: _uiAutomationMappings,
+									defaultLanguage: _defaultLanguage,
+									isWasm: _isWasm,
+									isDebug: _isDebug,
+									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
+									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
+									isUnoAssembly: IsUnoAssembly
+								)
+								.GenerateFile()
 						)
-						.ToList();
+					)
+					.ToList();
 
 
-					outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
+				outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
 
-					TrackGenerationDone(stopwatch.Elapsed);
+				TrackGenerationDone(stopwatch.Elapsed);
 
-					return outputFiles.ToArray();
-				}
-				else
-				{
-					return Array.Empty<KeyValuePair<string, string>>();
-				}
+				return outputFiles.ToArray();
+
 			}
 			catch (Exception e)
 			{
@@ -581,13 +575,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							writer.AppendLineInvariant("_dictionariesRegistered = true;");
 
-							if (IsUnoFluentAssembly && files.Any()) // The NETSTD reference assembly contains no Xaml files
-							{
-								// For Uno assembly, we expose WinUI resources using same uri as on Windows
-								RegisterForFile(files.FirstOrDefault(f => map.GetSourceLink(f).EndsWith(WinUIThemeResourcePathSuffix)), XamlFilePathHelper.WinUIThemeResourceURL);
-								RegisterForFile(files.FirstOrDefault(f => map.GetSourceLink(f).EndsWith(WinUICompactPathSuffix)), XamlFilePathHelper.WinUICompactURL);
-							}
-							else
+							if(!IsUnoAssembly && !IsUnoFluentAssembly)
 							{
 								// For third-party libraries, expose all files using standard uri
 								foreach (var file in files.Where(IsResourceDictionary))
@@ -595,6 +583,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									var url = "{0}/{1}".InvariantCultureFormat(_metadataHelper.AssemblyName, map.GetSourceLink(file));
 									RegisterForFile(file, url);
 								}
+							}
+							else if (files.Any()) // The NETSTD reference assembly contains no Xaml files
+							{
+								// For Uno assembly, we expose WinUI resources using same uri as on Windows
+								RegisterForFile(files.FirstOrDefault(f => map.GetSourceLink(f).EndsWith(WinUIThemeResourcePathSuffix)), XamlFilePathHelper.WinUIThemeResourceURL);
+								RegisterForFile(files.FirstOrDefault(f => map.GetSourceLink(f).EndsWith(WinUICompactPathSuffix)), XamlFilePathHelper.WinUICompactURL);
 							}
 
 							void RegisterForFile(XamlFileDefinition file, string url)
