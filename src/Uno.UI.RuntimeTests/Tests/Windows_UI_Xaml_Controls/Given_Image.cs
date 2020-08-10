@@ -41,6 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			image.InvalidateMeasure();
 
 			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			outerGrid.Measure(new Size(1000, 1000));
 			var desiredContainer = innerGrid.DesiredSize;
