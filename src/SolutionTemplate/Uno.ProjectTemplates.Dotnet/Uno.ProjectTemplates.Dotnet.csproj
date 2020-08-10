@@ -80,6 +80,10 @@
 		<_TemplateFiles Include="..\UnoSolutionTemplate\**" Exclude="@(_TemplateFilesExclude)" />
 	</ItemGroup>
 	
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="content\unolib-crossruntime\UnoCrossRuntimeLib\UnoCrossRuntimeLib.Skia.csproj" />
+	</ItemGroup>
+	
 	
 	<ItemGroup>
 	  <Folder Include="content\unoapp\UnoQuickStart\" />
