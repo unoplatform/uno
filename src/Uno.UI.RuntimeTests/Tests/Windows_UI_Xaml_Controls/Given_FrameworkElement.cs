@@ -380,6 +380,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0d, Math.Round(SUT.DesiredSize.Height));
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_Then_Load_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid();
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var loadCount = 0;
+			sut.Loaded += (snd, e) => loadCount++;
+
+			hostPanel.Children.Add(sut);
+
+			Assert.AreEqual(1, loadCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_Then_Unload_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid {Children = {sut}};
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var unloadCount = 0;
+			sut.Unloaded += (snd, e) => unloadCount++;
+
+			hostPanel.Children.Remove(sut);
+
+			Assert.AreEqual(1, unloadCount);
+#if NETSTANDARD2_0
+			Assert.IsFalse(hostPanel._children.Contains(sut));
+#endif
+		}
 	}
 
 	public partial class MyControl01 : FrameworkElement
