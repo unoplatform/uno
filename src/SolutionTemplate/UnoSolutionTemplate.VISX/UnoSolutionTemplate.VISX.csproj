@@ -166,7 +166,7 @@
     <PackageReference Include="Microsoft.VisualStudio.CoreUtility" version="15.6.27740" />
     <PackageReference Include="Microsoft.VisualStudio.ImageCatalog" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Imaging" version="15.9.28307" />
-    <PackageReference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime" version="14.3.26930" />
+    <PackageReference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime" version="16.7.30328.74" />
     <PackageReference Include="Microsoft.VisualStudio.OLE.Interop" version="7.10.6071" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem">
       <Version>16.0.374-pre</Version>
