@@ -904,12 +904,13 @@ declare namespace Windows.Media {
         private static dispatchResult;
         private static dispatchHypothesis;
         private static dispatchStatus;
+        private static dispatchError;
         private static instanceMap;
         private managedId;
         private recognition;
         private constructor();
-        static initialize(managedId: string): void;
-        static recognize(managedId: string): void;
+        static initialize(managedId: string, culture: string): void;
+        static recognize(managedId: string): boolean;
         static removeInstance(managedId: string): void;
         private onResult;
         private onSpeechStart;

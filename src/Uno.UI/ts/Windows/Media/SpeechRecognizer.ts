@@ -87,7 +87,7 @@ namespace Windows.Media {
 			SpeechRecognizer.dispatchStatus(this.managedId, "SpeechDetected")
 		}
 
-		private onError(event: SpeechSynthesisErrorEvent) {
+		private onError = (event: SpeechSynthesisErrorEvent) => {
 			if (!SpeechRecognizer.dispatchError) {
 				SpeechRecognizer.dispatchError = (<any>Module).mono_bind_static_method(
 					"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchError");

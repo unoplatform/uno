@@ -2871,7 +2871,7 @@ var Windows;
     var Media;
     (function (Media) {
         class SpeechRecognizer {
-            constructor(managedId) {
+            constructor(managedId, culture) {
                 this.onResult = (event) => {
                     if (event.results[0].isFinal) {
                         if (!SpeechRecognizer.dispatchResult) {
@@ -2892,12 +2892,18 @@ var Windows;
                     }
                     SpeechRecognizer.dispatchStatus(this.managedId, "SpeechDetected");
                 };
+                this.onError = (event) => {
+                    if (!SpeechRecognizer.dispatchError) {
+                        SpeechRecognizer.dispatchError = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchError");
+                    }
+                    SpeechRecognizer.dispatchError(this.managedId, event.error);
+                };
                 this.managedId = managedId;
                 if (window.SpeechRecognition) {
-                    this.recognition = new window.SpeechRecognition();
+                    this.recognition = new window.SpeechRecognition(culture);
                 }
                 else if (window.webkitSpeechRecognition) {
-                    this.recognition = new window.webkitSpeechRecognition();
+                    this.recognition = new window.webkitSpeechRecognition(culture);
                 }
                 if (this.recognition) {
                     this.recognition.addEventListener("result", this.onResult);
@@ -2905,15 +2911,21 @@ var Windows;
                     this.recognition.addEventListener("error", this.onError);
                 }
             }
-            static initialize(managedId) {
-                const recognizer = new SpeechRecognizer(managedId);
+            static initialize(managedId, culture) {
+                const recognizer = new SpeechRecognizer(managedId, culture);
                 SpeechRecognizer.instanceMap[managedId] = recognizer;
             }
             static recognize(managedId) {
                 const recognizer = SpeechRecognizer.instanceMap[managedId];
-                recognizer.recognition.continuous = false;
-                recognizer.recognition.interimResults = true;
-                recognizer.recognition.start();
+                if (recognizer.recognition) {
+                    recognizer.recognition.continuous = false;
+                    recognizer.recognition.interimResults = true;
+                    recognizer.recognition.start();
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
             static removeInstance(managedId) {
                 const recognizer = SpeechRecognizer.instanceMap[managedId];
@@ -2921,8 +2933,6 @@ var Windows;
                 recognizer.recognition.removeEventListener("speechstart", recognizer.onSpeechStart);
                 recognizer.recognition.removeEventListener("error", recognizer.onError);
                 delete SpeechRecognizer.instanceMap[managedId];
-            }
-            onError(event) {
             }
         }
         SpeechRecognizer.instanceMap = {};

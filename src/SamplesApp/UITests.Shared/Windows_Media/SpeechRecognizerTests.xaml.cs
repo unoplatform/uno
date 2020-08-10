@@ -40,7 +40,8 @@ namespace UITests.Windows_Media
 
 	public class SpeechRecognizerTestsViewModel : ViewModelBase
 	{
-		private SpeechRecognizer _speechRecognizer = new SpeechRecognizer(new Windows.Globalization.Language("en-US"));
+		private readonly SpeechRecognizer _speechRecognizer = new SpeechRecognizer(new Windows.Globalization.Language("en-US"));
+
 		private string _lastResult = "";
 
 		public SpeechRecognizerTestsViewModel(CoreDispatcher dispatcher)
