@@ -5962,7 +5962,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\DefaultIcon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\DropdownButton.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\FlipView.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\winjs-symbols.ttf" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\uno-fluentui-assets.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\icon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\menu.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\search.png" />
