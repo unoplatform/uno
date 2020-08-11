@@ -14,6 +14,10 @@ namespace Microsoft.UI.Xaml.Controls
 		public XamlControlsResources()
 		{
 			UpdateSource();
+
+#if !__NETSTD_REFERENCE__
+			Uno.UI.FluentTheme.GlobalStaticResources.Initialize();
+#endif
 		}
 
 		private void UpdateSource() => Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);

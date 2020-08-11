@@ -38,19 +38,6 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
-	<!-- The excluded files can be restored as the types are made available in Uno. 
-		Note: the NavigationView style can be restored once ItemsRepeater is available. https://github.com/unoplatform/uno/issues/3192
-		Note: The ProgressRing style can be restored once determinate mode is implemented. https://github.com/unoplatform/uno/issues/3604 -->
-		<WinUIStylePage Include="Themes\WinUI\Resources\**\*.xaml" Exclude="Themes\WinUI\Resources\PriorityDefault\RadioButtons.xaml;Themes\WinUI\Resources\PriorityDefault\RadioButtons_themeresources.xaml;Themes\WinUI\Resources\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml;Themes\WinUI\Resources\PriorityDefault\TabView.xaml;Themes\WinUI\Resources\PriorityDefault\TabView_themeresources.xaml;Themes\WinUI\Resources\PriorityDefault\TeachingTip.xaml;Themes\WinUI\Resources\PriorityDefault\TeachingTip_themeresources.xaml;Themes\WinUI\Resources\PriorityDefault\NavigationView.xaml;Themes\WinUI\Resources\PriorityDefault\ProgressRing.xaml;" />
-	</ItemGroup>
-	<UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
-  <Target Name="GenerateThemeResourceFile" BeforeTargets="_IncludeXamlFiles" Inputs="@(WinUIStylePage)" Outputs="Themes\WinUI\themeresources.xaml">
-    <Message Text="Generating theme resources XAML file " />
-    <BatchMergeXaml Pages="@(WinUIStylePage)" MergedXamlFile="Themes\WinUI\themeresources.xaml" TlogReadFilesOutputPath="$(IntermediateOutputPath)\GenerateThemeResourceFile.read.1u.tlog" TlogWriteFilesOutputPath="$(IntermediateOutputPath)\GenerateThemeResourceFile.write.1u.tlog" />
-    <Message Text="Theme resources XAML file was generated" />
-  </Target>
-
-	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;Themes\WinUI\Resources\**\*.xaml;" Visible="False" />
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>

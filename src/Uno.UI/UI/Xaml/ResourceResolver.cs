@@ -20,7 +20,12 @@ namespace Uno.UI
 		/// <summary>
 		/// The master system resources dictionary.
 		/// </summary>
-		private static ResourceDictionary MasterDictionary => Uno.UI.GlobalStaticResources.MasterDictionary;
+		private static ResourceDictionary MasterDictionary =>
+#if __NETSTD_REFERENCE__
+			throw new InvalidOperationException();
+#else
+			Uno.UI.GlobalStaticResources.MasterDictionary;
+#endif
 
 		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>();
 		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new Dictionary<string, ResourceDictionary>();
@@ -66,6 +71,15 @@ namespace Uno.UI
 
 			return default(T);
 		}
+
+		/// <summary>
+		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
+		/// </summary>
+		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static bool ResolveResourceStatic(object key, out object value, object context = null)
+			=> TryStaticRetrieval(key, context, out value);
 
 #if false
 		// disabled because of https://github.com/mono/mono/issues/20195

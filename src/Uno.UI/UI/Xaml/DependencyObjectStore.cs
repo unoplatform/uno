@@ -950,7 +950,7 @@ namespace Windows.UI.Xaml
 					// graph is built in reverse (such as with the
 					// XamlReader)
 					|| _properties.HasBindings
-					|| _resourceBindings?.Count > 0
+					// || _resourceBindings?.Count > 0 // Commented out for performance, will be adjusted
 					|| _childrenStores.Count != 0
 				)
 			)

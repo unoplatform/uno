@@ -20,6 +20,7 @@
       "Uno.Foundation.Runtime.WebAssembly\\Uno.Foundation.Runtime.WebAssembly.csproj",
       "Uno.Foundation\\Uno.Foundation.Wasm.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
+      "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Wasm.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Wasm.csproj",
       "Uno.UI.Runtime.WebAssembly.Compatibility\\Uno.UI.Runtime.WebAssembly.Compatibility.csproj",

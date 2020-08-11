@@ -17,7 +17,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				context.Project
 			);
 
-			if (PlatformHelper.IsValidPlatform(context))
+			if (PlatformHelper.IsValidPlatform(context)
+				&& !PlatformHelper.IsReferenceUnoRuntimeIdentifier(context))
 			{
 				var genereratedTrees = gen.Generate();
 
