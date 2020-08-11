@@ -892,7 +892,7 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Managed scroll bars support
-		private static void DetachScrollBars(object sender, RoutedEventArgs e)
+		private static void DetachScrollBars(object sender, RoutedEventArgs e) // OnUnloaded
 			=> (sender as ScrollViewer)?.DetachScrollBars();
 
 		private void DetachScrollBars()
@@ -914,8 +914,14 @@ namespace Windows.UI.Xaml.Controls
 			PointerMoved -= ShowScrollIndicator;
 		}
 
-		private static void AttachScrollBars(object sender, RoutedEventArgs e)
-			=> (sender as ScrollViewer)?.AttachScrollBars();
+		private static void AttachScrollBars(object sender, RoutedEventArgs e) // OnLoaded
+		{
+			if (sender is ScrollViewer sv)
+			{
+				sv.DetachScrollBars(); // Avoid double subscribe due to OnApplyTemplate
+				sv.AttachScrollBars();
+			}
+		}
 
 		private void AttachScrollBars()
 		{
