@@ -18,13 +18,5 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return !evaluatedValue.Equals("UAP", StringComparison.OrdinalIgnoreCase);
 		}
-
-		public static bool IsReferenceUnoRuntimeIdentifier(SourceGeneratorContext context)
-		{
-			return context
-				.GetProjectInstance()
-				.GetProperty("UnoRuntimeIdentifier")?.EvaluatedValue?.Equals("Reference", StringComparison.OrdinalIgnoreCase) ?? false;
-		}
-
 	}
 }
