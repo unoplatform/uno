@@ -112,7 +112,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[Ignore]
 		public async Task When_Visual_States_Keyframe_Theme_Changed_Reapplied()
 		{
 			var page = new ThemeResource_In_Visual_States_Page();

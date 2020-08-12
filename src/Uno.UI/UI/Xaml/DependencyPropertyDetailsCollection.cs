@@ -174,5 +174,7 @@ namespace Windows.UI.Xaml
 				_pool.Return(_entries, clearArray: true);
 			}
 		}
+
+		internal IEnumerable<DependencyPropertyDetails> GetAllDetails() => _entries.Trim();
 	}
 }

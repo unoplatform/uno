@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Diagnostics;
 using Windows.UI.Xaml.Data;
 using Uno.UI;
+using System.Collections;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -950,7 +951,6 @@ namespace Windows.UI.Xaml
 					// graph is built in reverse (such as with the
 					// XamlReader)
 					|| _properties.HasBindings
-					// || _resourceBindings?.Count > 0 // Commented out for performance, will be adjusted
 					|| _childrenStores.Count != 0
 				)
 			)
@@ -1162,13 +1162,70 @@ namespace Windows.UI.Xaml
 			UpdateChildResourceBindings(isThemeChangedUpdate);
 		}
 
+		private bool _isUpdatingChildResourceBindings;
+
 		private void UpdateChildResourceBindings(bool isThemeChangedUpdate)
 		{
-			foreach (var childStore in _childrenStores.Data)
+			if (_isUpdatingChildResourceBindings)
 			{
-				if (!(childStore.ActualInstance is FrameworkElement)) // FrameworkElements are updated separately by traversing the visual tree
+				// Some DPs might be creating reference cycles, so we make sure not to enter an infinite loop.
+				return;
+			}
+			if (isThemeChangedUpdate)
+			{
+				try
 				{
-					childStore.UpdateResourceBindings(isThemeChangedUpdate);
+					_isUpdatingChildResourceBindings = true;
+					foreach (var child in GetChildrenDependencyObjects())
+					{
+						if (!(child is IFrameworkElement) && child is IDependencyObjectStoreProvider storeProvider)
+						{
+							storeProvider.Store.UpdateResourceBindings(isThemeChangedUpdate);
+						}
+					}
+				}
+				finally
+				{
+					_isUpdatingChildResourceBindings = false;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns all discoverable child dependency objects.
+		/// </summary>
+		/// <remarks>
+		/// This method is potentially slow and should only be used where performance isn't a concern (eg updating resource bindings
+		/// when the app theme changes).
+		/// </remarks>
+		private IEnumerable<DependencyObject> GetChildrenDependencyObjects()
+		{
+			var propertyValues = _properties.GetAllDetails()
+				.Except(_dataContextPropertyDetails, _templatedParentPropertyDetails)
+				.Select(d => GetValue(d));
+			foreach (var propertyValue in propertyValues)
+			{
+				if (propertyValue is DependencyObject dependencyObject)
+				{
+					yield return dependencyObject;
+				}
+
+				if (propertyValue is IEnumerable<DependencyObject> dependencyObjectCollection &&
+					(propertyValue is ICollection || propertyValue is DependencyObjectCollectionBase)
+				)
+				{
+					foreach (var innerValue in dependencyObjectCollection)
+					{
+						yield return innerValue;
+					}
+				}
+
+				if (propertyValue is INeedsThemeBindingUpdates updateable)
+				{
+					foreach (var innerValue in updateable.GetAdditionalChildObjects())
+					{
+						yield return innerValue;
+					}
 				}
 			}
 		}
