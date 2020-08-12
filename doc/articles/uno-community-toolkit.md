@@ -22,7 +22,7 @@ The following packages are available:
 This tutorial will walk through adding and implementing the DataGrid control but the steps can be followed for any of the Uno ported Windows Community Toolkit controls.  
   
 1. Install Nuget package for targeted control  
- ![datagrid-nuget](uno-development/assets/controls/datagrid-nuget.JPG)  
+ ![datagrid-nuget](Assets/datagrid-nuget.JPG)  
 Note: Be aware of which versions of Uno.UI are compatible with the Nuget package of each control.  
       If using version `3.0.0` or higher of `Uno.UI`, use version `6.1.0` or higher of `DataGrid` Nuget package.
       
@@ -54,7 +54,7 @@ This control will create an easily organized grid that will allow you to create 
 
     This will create two columns that can be adjusted by the user  
 
-![datagrid-column-gif](uno-development/assets/controls/datagrid-basic-columns.gif)
+![datagrid-column-gif](Assets/datagrid-basic-columns.gif)
 
 Alternatively, you can use the `AutoGenerateColumns` attribute on your `DataGrid` control if you do not know how many columns your data will require.  
 ``` xml
@@ -80,7 +80,7 @@ Then, set the binding on each column
 </controls:DataGrid.Columns>
 ```  
 
-![datagrid-full-sample](uno-development/assets/controls/datagrid-full-sample.gif)
+![datagrid-full-sample](Assets/datagrid-full-sample.gif)
 
 
 For a deeper dive into the code, check out the [full Uno Windows Community Toolkit Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoWCTDataGridSample) in [Uno.Samples](https://github.com/unoplatform/Uno.Samples).
