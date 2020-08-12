@@ -35,26 +35,26 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 ``` xaml
 <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <StackPanel>
-		<TextBlock Text="Hello World" Margin="20" FontSize="30" />
-	</StackPanel>
+        <TextBlock Text="Hello World" Margin="20" FontSize="30" />
+    </StackPanel>
 </Grid>
 ```
 6. Add a `Slider`
 ``` xaml
 <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-	<StackPanel>
-		<TextBlock Text="Hello World" Margin="20" FontSize="30" />
-		<Slider x:Name="slider"/>
+    <StackPanel>
+        <TextBlock Text="Hello World" Margin="20" FontSize="30" />
+        <Slider x:Name="slider"/>
     </StackPanel>
 </Grid>
 ```
 7. Bind the `Text` value of your `TextBlock` to the value of the `Slider`
 ``` xaml
 <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-	<StackPanel>
-		<TextBlock Text="{Binding Value, ElementName=slider}" Margin="20" FontSize="30" />
-		<Slider x:Name="slider"/>
-	</StackPanel>
+    <StackPanel>
+        <TextBlock Text="{Binding Value, ElementName=slider}" Margin="20" FontSize="30" />
+        <Slider x:Name="slider"/>
+    </StackPanel>
 </Grid>
 ```
 8. Select `UWP` as the Startup Project and `Run`  
