@@ -14,12 +14,20 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AssemblyName>Uno.UI.FluentTheme</AssemblyName>
 		<RootNamespace>Uno.UI.FluentTheme</RootNamespace>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
-	
+
+		<!--
+		Disable source generation for Uno.UI.Fluent for netstandard2.0 so
+		that we don't generate the global static resources for the reference target.
+		This will allow for the Uno.UI.Fluent to be linked out if XamlControlsResources
+		is not referenced in the app.
+		-->
+		<BuildingInsideUnoSourceGenerator Condition="'$(UnoRuntimeIdentifier)'=='Reference'">true</BuildingInsideUnoSourceGenerator>
+
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
