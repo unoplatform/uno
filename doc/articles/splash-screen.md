@@ -1,6 +1,8 @@
 # Splash Screens
 
-Navigate to `YourProject.Shared > Assets` and add all [scales](#table-of-scales) of your spash screen image.
+This article covers how to add a splash screen to your application.
+
+As a first step, navigate to `YourProject.Shared > Assets` and add all [scales](#table-of-scales) of your splash screen image.
 
 ## UWP
 
@@ -14,25 +16,25 @@ In your UWP project head, navigate to `Package.appxmaifest > Visual Assets > Spl
 
 2. Add an `android:windowBackground` `item` to the `AppTheme` style.  
 ```xaml
-<item name=“android:windowBackground“>@drawable/splash</item>
+<item name=â€œandroid:windowBackgroundâ€œ>@drawable/splash</item>
 ```
 
 3. Navigate to `Resources/drawable`
 
 4. Create a `splash.xml` drawable  
 ``` xaml
-<?xml version=“1.0“ encoding=“utf-8“?>
-<layer-list xmlns:android=“http://schemas.android.com/apk/res/android“>
+<?xml version=â€œ1.0â€œ encoding=â€œutf-8â€œ?>
+<layer-list xmlns:android=â€œhttp://schemas.android.com/apk/res/androidâ€œ>
 <item>
-<!– background color –>
-<color android:color=“#101010“/>
+<!â€“ background color â€“>
+<color android:color=â€œ#101010â€œ/>
 </item>
 <item>
-<!– splash image –>
+<!â€“ splash image â€“>
 <bitmap
-android:src=“@drawable/splashscreen“
-android:tileMode=“disabled“
-android:gravity=“center“ />
+android:src=â€œ@drawable/splashscreenâ€œ
+android:tileMode=â€œdisabledâ€œ
+android:gravity=â€œcenterâ€œ />
 </item>
 </layer-list>
 ```
@@ -64,7 +66,7 @@ android:gravity=“center“ />
 8. Add your image path to the `Image View`
 
 ``` xaml
-<imageView … image=“Assets/SplashScreen“>
+<imageView â€¦ image=â€œAssets/SplashScreenâ€œ>
 ```
 
 9. Navigate to `info.plist > Visual Assets > Launch Images` and update the `Launch Screen` value to `SplashScreen`.
@@ -75,11 +77,11 @@ android:gravity=“center“ />
 
 2. Add your splash screen image
 
-``` xaml
+``` javascript
 var UnoAppManifest = {
-splashScreenImage: “Assets/SplashScreen.scale-200.png”,
-splashScreenColor: “#101010”,
-displayName: “Uno.SplashScreenEverywhere”
+splashScreenImage: â€œAssets/SplashScreen.scale-200.pngâ€,
+splashScreenColor: â€œ#101010â€,
+displayName: â€œUno.SplashScreenEverywhereâ€
 }
 ```
 Note: Currently, you need to set an explicit scale of the splash screen image.
