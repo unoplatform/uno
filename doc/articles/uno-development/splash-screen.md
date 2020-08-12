@@ -77,7 +77,7 @@ android:gravity=“center“ />
 
 2. Add your splash screen image
 
-``` xaml
+``` javascript
 var UnoAppManifest = {
 splashScreenImage: “Assets/SplashScreen.scale-200.png”,
 splashScreenColor: “#101010”,
