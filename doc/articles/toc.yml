@@ -60,6 +60,8 @@
     href: features/working-with-animations.md
   - name: Lottie animations
     href: features/Lottie.md
+  - name: SignalR
+    href: signalr.md
   - name: Custom fonts
     href: features/custom-fonts.md
   - name: Themes
