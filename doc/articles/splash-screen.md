@@ -45,19 +45,19 @@ android:gravity=“center“ />
 
 3. In the `Toolbox` window, drag and drop a `View Controller` and then an `ImageView` inside the `View Controller`. 
 
-![viewcontroller-imageview](assets/viewcontroller-imageview.png)
+![viewcontroller-imageview](Assets/viewcontroller-imageview.png)
 
 4. To have an image fill the screen, set your constraints as below
 
-![ios-constraintes](assets/ios-constraints.png)
+![ios-constraintes](Assets/ios-constraints.png)
 
 5. Set the `Content Mode` to `Aspect Fit` 
 
-![ios-content-fit](assets/ios-content-fit.png)
+![ios-content-fit](Assets/ios-content-fit.png)
 
 6. In the `Properties > Storyboard Document` window, select the `Can be Launch Screen` checkbox.
 
-![can-be-launch](assets/can-be-launch.png)
+![can-be-launch](Assets/can-be-launch.png)
 
 7. Close the designer and open the `.storyboard` file.
 
