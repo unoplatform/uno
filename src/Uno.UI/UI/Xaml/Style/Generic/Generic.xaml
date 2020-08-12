@@ -4156,7 +4156,7 @@
 		<Setter Property="ItemsPanel">
 			<Setter.Value>
 				<ItemsPanelTemplate>
-					<not_wasm:ItemsWrapGrid Orientation="Horizontal" />
+					<not_netstdref:ItemsWrapGrid Orientation="Horizontal" />
 					<netstdref:WrapPanel />
 				</ItemsPanelTemplate>
 			</Setter.Value>

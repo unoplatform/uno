@@ -11,7 +11,7 @@ If you need to determine the parameters available for a template use `dotnet new
 
 ## Uno Platform Blank Application
 
-This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly and macOS.
+This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly macOS, Skia/GTK (Windows, Linux, macOS) and Skia/Wpf (Windows 7 and 10).
 
 A basic example:
 ```
@@ -31,6 +31,15 @@ This template can be used to create a blank cross-platform application for iOS, 
 A basic example:
 ```
 dotnet new unoapp-winui -o MyApp
+```
+
+## Uno Platform Blank Cross-Runtime library
+
+This template can be used to create a blank cross-runtime library, when platform specific code needs to be created for Skia and WebAssembly.
+
+A basic example:
+```
+dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
 ```
 
 ## Uno Platform Blank Prism Application
@@ -64,4 +73,4 @@ To use it:
 1. Open or Reload the solution in Visual Studio 
 1. Set the Wasm project as the startup project 
 1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest **stable** package 
-1. Run the app using **Ctrl+F5** (without the Visual Studio debugger), and you’re good to go!
+1. Run the app using **Ctrl+F5** (without the Visual Studio debugger), and youï¿½re good to go!

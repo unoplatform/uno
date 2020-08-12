@@ -1,5 +1,4 @@
-﻿using SkiaSharp.Views.WPF;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,9 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Uno.UI.Skia.Platform;
 
-namespace SamplesApp.WPF
+namespace $ext_safeprojectname$.WPF.Host
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
@@ -25,8 +23,8 @@ namespace SamplesApp.WPF
 		public MainWindow()
 		{
 			InitializeComponent();
-
-			root.Content = new WpfHost(Dispatcher, () => new SamplesApp.App());
+	
+			root.Content = new Uno.UI.Skia.Platform.WpfHost(Dispatcher, () => new $ext_safeprojectname$.App());
 		}
 	}
 }
