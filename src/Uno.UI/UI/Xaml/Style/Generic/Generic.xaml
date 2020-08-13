@@ -297,11 +297,6 @@
 																	Value="{ThemeResource SystemControlPageTextChromeBlackMediumLowBrush}" />
 										</ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
-																	   Storyboard.TargetProperty="Background">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlBackgroundChromeWhiteBrush}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
 																	   Storyboard.TargetProperty="Opacity">
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="{ThemeResource TextControlBackgroundFocusedOpacity}" />
@@ -310,16 +305,6 @@
 																	   Storyboard.TargetProperty="BorderBrush">
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="{ThemeResource SystemControlHighlightAccentBrush}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement"
-																	   Storyboard.TargetProperty="Foreground">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlForegroundChromeBlackHighBrush}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement"
-																	   Storyboard.TargetProperty="RequestedTheme">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="Light" />
 										</ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -4365,11 +4350,6 @@
 																	Value="{ThemeResource SystemControlPageTextChromeBlackMediumLowBrush}" />
 										</ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
-																	   Storyboard.TargetProperty="Background">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlBackgroundChromeWhiteBrush}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
 																	   Storyboard.TargetProperty="Opacity">
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="{ThemeResource TextControlBackgroundFocusedOpacity}" />
@@ -4378,11 +4358,6 @@
 																	   Storyboard.TargetProperty="BorderBrush">
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="{ThemeResource SystemControlHighlightAccentBrush}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement"
-																	   Storyboard.TargetProperty="Foreground">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlForegroundChromeBlackHighBrush}" />
 										</ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>

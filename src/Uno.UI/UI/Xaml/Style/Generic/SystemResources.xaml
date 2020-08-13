@@ -1031,11 +1031,11 @@
     -->
 			<SolidColorBrush x:Key="TextControlForeground"  Color="{StaticResource SystemBaseHighColor}" />
 			<SolidColorBrush x:Key="TextControlForegroundPointerOver"  Color="{StaticResource SystemBaseHighColor}" />
-			<SolidColorBrush x:Key="TextControlForegroundFocused" Color="{StaticResource SystemChromeBlackHighColor}" />
+			<SolidColorBrush x:Key="TextControlForegroundFocused" Color="{StaticResource SystemChromeWhiteColor}" />
 			<SolidColorBrush x:Key="TextControlForegroundDisabled" Color="{StaticResource SystemChromeDisabledLowColor}" />
 			<SolidColorBrush x:Key="TextControlBackground" Color="{StaticResource SystemAltMediumLowColor}" />
 			<SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="{StaticResource SystemAltMediumColor}" />
-			<SolidColorBrush x:Key="TextControlBackgroundFocused" Color="{StaticResource SystemChromeWhiteColor}" />
+			<SolidColorBrush x:Key="TextControlBackgroundFocused" Color="{StaticResource SystemAltMediumLowColor}" />
 			<SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="{StaticResource SystemBaseLowColor}" />
 			<SolidColorBrush x:Key="TextControlBorderBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 			<SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="{StaticResource SystemBaseMediumColor}"/>
