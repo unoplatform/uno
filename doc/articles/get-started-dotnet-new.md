@@ -33,6 +33,15 @@ A basic example:
 dotnet new unoapp-winui -o MyApp
 ```
 
+## Uno Platform Blank library
+
+This template can be used to create a blank library. With this type of library, Skia and WebAssembly do not need to built separately, but cannot be differentiated.
+
+A basic example:
+```
+dotnet new unolib -o MyUnoLib
+```
+
 ## Uno Platform Blank Cross-Runtime library
 
 This template can be used to create a blank cross-runtime library, when platform specific code needs to be created for Skia and WebAssembly.
