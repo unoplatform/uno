@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +16,24 @@ namespace Windows.Foundation.Metadata
 		private static Dictionary<(string typeName, string methodName, uint inputParameterCount), bool> _isMethodPresent
 			= new Dictionary<(string typeName, string methodName, uint inputParameterCount), bool>();
 
-		private readonly static Assembly[] _assemblies = new[] {
-			Assembly.Load("Uno.UI"),
-			Assembly.Load("Uno.Foundation"),
-			Assembly.Load("Uno")
+		private readonly static Dictionary<string, Type> _typeCache = new Dictionary<string, Type>();
+		private readonly static List<Assembly> _assemblies = new List<Assembly>(3 /* All three uno assemblies */) {
+			typeof(ApiInformation).Assembly
 		};
 
-		private static bool IsImplementedByUno(MemberInfo member) => (member?.GetCustomAttributes(typeof(Uno.NotImplementedAttribute), false)?.Length ?? -1) == 0;
+		/// <summary>
+		/// Registers an assembly as part of the Is*Present methods
+		/// </summary>
+		/// <param name="assembly"></param>
+		internal static void RegisterAssembly(Assembly assembly)
+		{
+			lock (_assemblies)
+			{
+				_assemblies.Add(assembly);
+			}
+		}
+
+		private static bool IsImplementedByUno(MemberInfo? member) => (member?.GetCustomAttributes(typeof(Uno.NotImplementedAttribute), false)?.Length ?? -1) == 0;
 
 		public static bool IsTypePresent(string typeName)
 		{
@@ -61,7 +74,7 @@ namespace Windows.Foundation.Metadata
 
 			if (IsImplementedByUno(property))
 			{
-				return property.GetMethod != null && property.SetMethod == null;
+				return property?.GetMethod != null && property.SetMethod == null;
 			}
 
 			return false;
@@ -74,7 +87,7 @@ namespace Windows.Foundation.Metadata
 
 			if (IsImplementedByUno(property))
 			{
-				return property.GetMethod != null && property.SetMethod != null;
+				return property?.GetMethod != null && property.SetMethod != null;
 			}
 
 			return false;
@@ -93,15 +106,23 @@ namespace Windows.Foundation.Metadata
 		/// </summary>
 		public static bool AlwaysLogNotImplementedMessages { get; set; }
 
-		private static Type GetValidType(string typeName)
+		private static Type? GetValidType(string typeName)
 		{
-			foreach (var assembly in _assemblies)
+			lock (_assemblies)
 			{
-				var type = assembly.GetType(typeName);
-
-				if (type != null)
+				if (!_typeCache.TryGetValue(typeName, out var type))
 				{
-					return type;
+					foreach (var assembly in _assemblies)
+					{
+						type = assembly.GetType(typeName);
+
+						if (type != null)
+						{
+							_typeCache[typeName] = type;
+
+							return type;
+						}
+					}
 				}
 			}
 
