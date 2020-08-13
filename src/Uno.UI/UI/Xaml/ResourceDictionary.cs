@@ -4,6 +4,7 @@ using System.Threading;
 using Uno.UI;
 using Uno.Extensions;
 using System.ComponentModel;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -101,6 +102,7 @@ namespace Windows.UI.Xaml
 			if (_values.TryGetValue(key, out value))
 			{
 				TryMaterializeLazy(key, ref value);
+				TryResolveAlias(ref value);
 				return true;
 			}
 
@@ -171,6 +173,14 @@ namespace Windows.UI.Xaml
 					_values[key] = newValue; // If Initializer threw an exception this will push null, to avoid running buggy initialization again and again (and avoid surfacing initializer to consumer code)
 					ResourceResolver.PopScope();
 				}
+			}
+		}
+
+		private void TryResolveAlias(ref object value)
+		{
+			if (value is StaticResourceAliasRedirect alias && ResourceResolver.ResolveResourceStatic(alias.ResourceKey, out var resourceKeyTarget, alias.ParseContext))
+			{
+				value = resourceKeyTarget;
 			}
 		}
 
@@ -281,6 +291,7 @@ namespace Windows.UI.Xaml
 
 		public global::System.Collections.Generic.ICollection<object> Keys => _values.Keys;
 
+			// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
 
 		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => Add(item.Key, item.Value);
@@ -324,12 +335,14 @@ namespace Windows.UI.Xaml
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<object, object>> GetEnumerator()
 		{
 			TryMaterializeAll();
+			// TODO: need a custom enumerator to handle aliases
 			return _values.GetEnumerator();
 		}
 
 		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
 		{
 			TryMaterializeAll();
+			// TODO: need a custom enumerator to handle aliases
 			return _values.GetEnumerator();
 		}
 
@@ -409,6 +422,24 @@ namespace Windows.UI.Xaml
 				Initializer = initializer;
 			}
 		}
+
+		/// <summary>
+		/// Allows resources set by a StaticResource alias to be resolved with the correct theme at time of resolution (eg in response to the
+		/// app theme changing).
+		/// </summary>
+		private class StaticResourceAliasRedirect
+		{
+			public StaticResourceAliasRedirect(string resourceKey, XamlParseContext parseContext)
+			{
+				ResourceKey = resourceKey;
+				ParseContext = parseContext;
+			}
+
+			public string ResourceKey { get; }
+			public XamlParseContext ParseContext { get; }
+		}
+
+		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
 
 		private static class Themes
 		{

@@ -833,7 +833,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					throw new InvalidOperationException($"Dictionary Item {resource?.Type?.Name} has duplicate key `{key}` { (theme != null ? $" in theme {theme}" : "")}.");
 				}
-				_topLevelDictionaryProperties[(theme, key)] = (propertyName, FindType(resource.Type));
+				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
+				if (!isStaticResourceAlias
+					// TODO: this case should be eventually removed, and the same behaviour applied within Uno.UI, to support the scenario where app code
+					// overrides the aliased value. Perf impact needs to be evaluated.
+					|| _isUnoAssembly)
+				{
+					_topLevelDictionaryProperties[(theme, key)] = (propertyName, FindType(resource.Type)); 
+				}
 			}
 
 			//Create static properties
@@ -849,25 +856,35 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				_dictionaryPropertyIndex++;
-				var propertyName = GetPropertyNameForResourceKey(_dictionaryPropertyIndex);
-				if (_topLevelDictionaryProperties[(theme, key)].PropertyName != propertyName)
-				{
-					throw new InvalidOperationException($"Property was not created correctly for {key} (theme={theme}).");
-				}
-				writer.AppendLineInvariant("// Property for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
-				void BuildPropertyBody()
+				if (isStaticResourceAlias
+					// TODO: this case should be eventually removed, and the same behaviour applied within Uno.UI, to support the scenario where app code
+					// overrides the aliased value. Perf impact needs to be evaluated.
+					&& !_isUnoAssembly)
 				{
-					if (isStaticResourceAlias)
-					{
-						BuildStaticResourceResourceKeyReference(writer, resource);
-					}
-					else
-					{
-						BuildChild(writer, resourcesRoot, resource);
-					}
+					writer.AppendLineInvariant("// Skipping static property {0} for {1} {2} - StaticResource ResourceKey aliases are added directly to dictionary",_dictionaryPropertyIndex, key, theme);
 				}
-				BuildSingleTimeInitializer(writer, isStaticResourceAlias ? "global::System.Object" : resource.Type.Name, propertyName, BuildPropertyBody);
+				else
+				{
+					var propertyName = GetPropertyNameForResourceKey(_dictionaryPropertyIndex);
+					if (_topLevelDictionaryProperties[(theme, key)].PropertyName != propertyName)
+					{
+						throw new InvalidOperationException($"Property was not created correctly for {key} (theme={theme}).");
+					}
+					writer.AppendLineInvariant("// Property for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
+					void BuildPropertyBody()
+					{
+						if (isStaticResourceAlias)
+						{
+							BuildStaticResourceResourceKeyReference(writer, resource);
+						}
+						else
+						{
+							BuildChild(writer, resourcesRoot, resource);
+						}
+					}
+					BuildSingleTimeInitializer(writer, isStaticResourceAlias ? "global::System.Object" : resource.Type.Name, propertyName, BuildPropertyBody);
+				}
 			}
 			_themeDictionaryCurrentlyBuilding = former;
 		}
@@ -880,7 +897,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			var targetKey = resourceDefinition.Members.FirstOrDefault(m => m.Member.Name == "ResourceKey")?.Value as string;
 
-			writer.AppendLineInvariant(GetSimpleStaticResourceRetrieval(null, targetKey));
+			var directProperty = GetResourceDictionaryPropertyName(targetKey);
+			if (directProperty != null)
+			{
+				// TODO: this case should be eventually removed, even when a match is present in the same dictionary, it should insert the passthrough to allow for
+				// the scenario where app code overrides the aliased value. Perf impact needs to be evaluated.
+				writer.AppendLineInvariant(directProperty);
+			}
+			else if (_isUnoAssembly)
+			{
+				writer.AppendLineInvariant(GetSimpleStaticResourceRetrieval(null, targetKey));
+			}
+			else
+			{
+				writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ResolveStaticResourceAlias(\"{0}\", {1})", targetKey, ParseContextPropertyAccess);
+			}
 		}
 
 		/// <summary>
@@ -2014,13 +2045,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var directproperty = GetResourceDictionaryPropertyName(key);
 					using (ShouldLazyInitializeResource(resource) ? BuildLazyResourceInitializer(writer) : null)
 					{
-						if (directproperty != null)
-						{
-							writer.AppendLineInvariant(directproperty);
-						}
-						else if (resource.Type.Name == "StaticResource")
+						if (resource.Type.Name == "StaticResource") // Direct properties aren't built for StaticResource aliases
 						{
 							BuildStaticResourceResourceKeyReference(writer, resource);
+						}
+						else if (directproperty != null)
+						{
+							writer.AppendLineInvariant(directproperty);
 						}
 						else
 						{

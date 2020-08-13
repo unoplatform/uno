@@ -56,6 +56,33 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public async Task When_Theme_Changed_ResourceKey()
+		{
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			try
+			{
+				var app = UnitTestsApp.App.EnsureApplication();
+				app.Resources.MergedDictionaries.Insert(0, xcr);
+
+				var page = new Test_Page_Other();
+
+				app.HostView.Children.Add(page);
+
+				var textBlock = page.ResourceKeyThemedTextBlock;
+
+				Assert.AreEqual(Colors.Black, (textBlock.Foreground as SolidColorBrush).Color);
+
+				await SwapSystemTheme();
+
+				Assert.AreEqual(Colors.White, (textBlock.Foreground as SolidColorBrush).Color);
+			}
+			finally
+			{
+				Application.Current.Resources.MergedDictionaries.Remove(xcr);
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Theme_Changed_Default_Style_Overridden()
 		{
 			var page = new ThemeResource_Themed_Color_Page();
