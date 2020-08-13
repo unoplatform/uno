@@ -7,7 +7,9 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 	</PropertyGroup>
 
-	<PackageReference Include="Uno.UI" Version="2.2.0" />
+	<ItemGroup>
+		<PackageReference Include="Uno.UI" Version="2.2.0" />
+	</ItemGroup>
 	
 	<ItemGroup>
 	  <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
