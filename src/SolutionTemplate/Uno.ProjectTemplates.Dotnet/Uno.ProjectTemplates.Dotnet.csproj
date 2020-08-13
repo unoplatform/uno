@@ -51,6 +51,10 @@
 			<PackagePath>content\unoapp</PackagePath>
 			<Pack>true</Pack>
 		</Content>
+		<Content Include="content\unolib\**">
+			<PackagePath>content\unolib</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 		<Content Include="content\unoapp-prism\**">
 			<PackagePath>content\unoapp-prism</PackagePath>
 			<Pack>true</Pack>
@@ -70,14 +74,25 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\**\*.vstemplate" />
-		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\__*.png" />
-		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\**\obj\**" />
-		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\**\bin\**" />
-		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\Properties\**" />
-		<_TemplateFilesExclude Include="..\UnoSolutionTemplate\UnoSolutionTemplate.csproj" />
+		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\*.vstemplate" />
+		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\__*.png" />
+		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\obj\**" />
+		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\bin\**" />
+		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\Properties\**" />
+		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\UnoSolutionTemplate.csproj" />
 
-		<_TemplateFiles Include="..\UnoSolutionTemplate\**" Exclude="@(_TemplateFilesExclude)" />
+		<_UnoAppTemplateFiles Include="..\UnoSolutionTemplate\**" Exclude="@(_UnoAppTemplateFilesExclude)" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\*.vstemplate" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\__*.png" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\obj\**" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\bin\**" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\Properties\**" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\UnoLibraryTemplate.csproj" />
+
+		<_UnoLibTemplateFiles Include="..\UnoLibraryTemplate\**" Exclude="@(_UnoLibTemplateFilesExclude)" />
 	</ItemGroup>
 	
 	
@@ -92,7 +107,7 @@
 
 		<RemoveDir Directories="$(IntermediateTemplatePath)" />
 
-		<Copy SourceFiles="@(_TemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(_UnoAppTemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
 
 		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="False" />
 
@@ -104,6 +119,25 @@
 		</ItemGroup>
 	</Target>
 
+	<Target Name="CopyUnoLibTemplate" BeforeTargets="Build">
+		<PropertyGroup>
+			<IntermediateTemplatePath>$(IntermediateOutputPath)\unolib</IntermediateTemplatePath>
+		</PropertyGroup>
+
+		<RemoveDir Directories="$(IntermediateTemplatePath)" />
+
+		<Copy SourceFiles="@(_UnoLibTemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+
+		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="CrossTargetedLibrary" IsWinUI="False" />
+
+		<ItemGroup>
+			<Content Include="$(IntermediateTemplatePath)/**/*.*">
+				<Pack>true</Pack>
+				<PackagePath>content/unolib</PackagePath>
+			</Content>
+		</ItemGroup>
+	</Target>
+
 	<Target Name="CopyUnoAppWinUITemplate" BeforeTargets="Build">
 		<PropertyGroup>
 			<IntermediateTemplatePath>$(IntermediateOutputPath)\unoapp-winui</IntermediateTemplatePath>
@@ -111,7 +145,7 @@
 
 		<RemoveDir Directories="$(IntermediateTemplatePath)" />
 
-		<Copy SourceFiles="@(_TemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(_UnoAppTemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
 
 		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="True" />
 		<RenameSolution SourcePath="$(IntermediateTemplatePath)" SourceName="UnoQuickStart" TargetName="UnoWinUIQuickStart" />
@@ -204,7 +238,12 @@
 
 					foreach(var platform in platforms)
 					{
-						Directory.Move(Path.Combine(SourcePath, platform), Path.Combine(SourcePath, SafeProjectName + "." + platform));
+						var source = Path.Combine(SourcePath, platform);
+
+						if(Directory.Exists(source))
+						{
+							Directory.Move(Path.Combine(SourcePath, platform), Path.Combine(SourcePath, SafeProjectName + "." + platform));
+						}
 					}
 				]]>
 			</Code>
