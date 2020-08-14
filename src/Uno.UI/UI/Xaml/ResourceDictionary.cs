@@ -176,12 +176,20 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void TryResolveAlias(ref object value)
+		/// <summary>
+		/// If <paramref name="value"/> is a <see cref="StaticResourceAliasRedirect"/>, replace it with the target of ResourceKey, or null if no matching resource is found.
+		/// </summary>
+		/// <returns>True if <paramref name="value"/> is a <see cref="StaticResourceAliasRedirect"/>, false otherwise</returns>
+		private bool TryResolveAlias(ref object value)
 		{
-			if (value is StaticResourceAliasRedirect alias && ResourceResolver.ResolveResourceStatic(alias.ResourceKey, out var resourceKeyTarget, alias.ParseContext))
+			if (value is StaticResourceAliasRedirect alias)
 			{
+				ResourceResolver.ResolveResourceStatic(alias.ResourceKey, out var resourceKeyTarget, alias.ParseContext);
 				value = resourceKeyTarget;
+				return true;
 			}
+
+			return false;
 		}
 
 		private bool GetFromMerged(object key, out object value)
@@ -332,19 +340,25 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<object, object>> GetEnumerator()
+		public IEnumerator<KeyValuePair<object, object>> GetEnumerator()
 		{
 			TryMaterializeAll();
-			// TODO: need a custom enumerator to handle aliases
-			return _values.GetEnumerator();
+
+			foreach (var kvp in _values)
+			{
+				var aliased = kvp.Value;
+				if (TryResolveAlias(ref aliased))
+				{
+					yield return new KeyValuePair<object, object>(kvp.Key, aliased);
+				}
+				else
+				{
+					yield return kvp;
+				}
+			}
 		}
 
-		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			TryMaterializeAll();
-			// TODO: need a custom enumerator to handle aliases
-			return _values.GetEnumerator();
-		}
+		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
 		/// <summary>
 		/// Ensure all lazily-set values are materialized, prior to enumeration.
