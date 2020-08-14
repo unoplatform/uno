@@ -2,7 +2,7 @@
 #pragma warning disable CS0067, CS0414
 #endif
 
-#if XAMARIN || __WASM__
+#if XAMARIN || __WASM__ || __SKIA__
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using System;
@@ -39,8 +39,8 @@ namespace Windows.UI.Xaml.Controls
 			private set { SetValue(CanGoBackProperty, value); }
 		}
 
-		public static readonly DependencyProperty CanGoBackProperty =
-			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(WebView), new PropertyMetadata(false));
+		public static DependencyProperty CanGoBackProperty { get ; } =
+			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
 		#endregion
 
@@ -52,8 +52,8 @@ namespace Windows.UI.Xaml.Controls
 			private set { SetValue(CanGoForwardProperty, value); }
 		}
 
-		public static readonly DependencyProperty CanGoForwardProperty =
-			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(WebView), new PropertyMetadata(false));
+		public static DependencyProperty CanGoForwardProperty { get ; } =
+			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
 		#endregion
 
@@ -65,8 +65,8 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(SourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty SourceProperty =
-			DependencyProperty.Register("Source", typeof(Uri), typeof(WebView), new PropertyMetadata(null,
+		public static DependencyProperty SourceProperty { get ; } =
+			DependencyProperty.Register("Source", typeof(Uri), typeof(WebView), new FrameworkPropertyMetadata(null,
 				(s, e) => ((WebView)s)?.Navigate((Uri)e.NewValue)));
 
 		#endregion
@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DocumentTitleProperty { get; } =
-			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(null));
 #endif
 		#endregion
 
@@ -91,17 +91,19 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(IsScrollEnabledProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsScrollEnabledProperty =
-			DependencyProperty.Register("IsScrollEnabled", typeof(bool), typeof(WebView), new PropertyMetadata(true,
+		public static DependencyProperty IsScrollEnabledProperty { get ; } =
+			DependencyProperty.Register("IsScrollEnabled", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(true,
 				(s, e) => ((WebView)s)?.OnScrollEnabledChangedPartial((bool)e.NewValue)));
 
 		partial void OnScrollEnabledChangedPartial(bool scrollingEnabled);
 		#endregion
 
+#pragma warning disable 67
 		public event TypedEventHandler<WebView, WebViewNavigationStartingEventArgs> NavigationStarting;
 		public event TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs> NavigationCompleted;
 		public event TypedEventHandler<WebView, WebViewNewWindowRequestedEventArgs> NewWindowRequested;
 		public event TypedEventHandler<WebView, WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
+#pragma warning restore 67
 
 		//Remove pragma when implemented for Android
 #pragma warning disable 0067
@@ -157,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void NavigateWithHttpRequestMessagePartial(HttpRequestMessage requestMessage);
 		partial void StopPartial();
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 

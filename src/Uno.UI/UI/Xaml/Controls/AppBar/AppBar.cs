@@ -125,8 +125,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			_compactHeight = ResourceResolver.ResolveTopLevelResource<double>("AppBarThemeCompactHeight");
-			_minimalHeight = ResourceResolver.ResolveTopLevelResource<double>("AppBarThemeMinimalHeight");
+			_compactHeight = ResourceResolver.ResolveTopLevelResourceDouble("AppBarThemeCompactHeight");
+			_minimalHeight = ResourceResolver.ResolveTopLevelResourceDouble("AppBarThemeMinimalHeight");
 
 			UpdateTemplateSettings();
 

@@ -256,7 +256,7 @@ namespace Uno.UWPSyncGenerator
 				return false;
 			}
 
-			if (type == UIElementSymbol)
+			if (SymbolEqualityComparer.Default.Equals(type, UIElementSymbol))
 			{
 				return true;
 			}

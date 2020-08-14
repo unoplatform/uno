@@ -58,7 +58,7 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 		}
 
 
-        protected override void OnUnloaded()
+        private protected override void OnUnloaded()
         {
             base.OnUnloaded();
 

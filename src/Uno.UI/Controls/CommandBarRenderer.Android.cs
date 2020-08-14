@@ -150,10 +150,10 @@ namespace Uno.UI.Controls
 		{
 			// Content
 			Native.Title = Element.Content as string;
-			_contentContainer.Child = Element.Content as View;
+			_contentContainer.Child = Element.Content as UIElement;
 			_contentContainer.VerticalAlignment = Element.VerticalContentAlignment;
 			_contentContainer.HorizontalAlignment = Element.HorizontalContentAlignment;
-			_contentContainer.Visibility = Element.Content is View
+			_contentContainer.Visibility = Element.Content is UIElement
 				? Visibility.Visible
 				: Visibility.Collapsed;
 

@@ -30,10 +30,10 @@ namespace Uno.UI.Samples.Behaviors
 
 		#region Attached Properties
 
-		public static readonly DependencyProperty CommandProperty =
+		public static DependencyProperty CommandProperty { get ; } =
 			DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(ListViewBaseCommand), new PropertyMetadataHelper(new PropertyChangedCallback(OnCommandChanged)));
 
-		public static readonly DependencyProperty CommandParameterProperty =
+		public static DependencyProperty CommandParameterProperty { get ; } =
 			DependencyProperty.RegisterAttached("CommandParameter", typeof(object), typeof(ListViewBaseCommand), new PropertyMetadata(null));
 
 		public static ICommand GetCommand(ListViewBase obj)

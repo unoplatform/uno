@@ -15,6 +15,14 @@
 			<Button x:Name="lowElevation" Tag="4" Click="SetElevationClick">LOW ELEVATION (4)</Button>
 			<Button x:Name="highElevation" Tag="20" Click="SetElevationClick">HIGH ELEVATION (20)</Button>
 		</StackPanel>
+		<TextBlock>
+			ElevatedView With Default Color
+		</TextBlock>
+		<Grid Padding="16">
+			<toolkit:ElevatedView Background="Orange" Elevation="{Binding Value, ElementName=elevation1}">
+				<Rectangle Fill="Red"  Width="60" Height="60" />
+			</toolkit:ElevatedView>
+		</Grid>
 		<StackPanel Orientation="Horizontal" Spacing="10">
 			<Button x:Name="blackColor" Tag="Black" Click="SetColor" Background="Black" Foreground="White">BLACK SHADOW</Button>
 			<Button x:Name="yellowColor" Tag="Yellow" Click="SetColor" Background="Yellow">YELLOW SHADOW</Button>

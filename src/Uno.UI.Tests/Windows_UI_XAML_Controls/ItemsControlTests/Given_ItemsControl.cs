@@ -41,6 +41,8 @@ namespace Uno.UI.Tests.ItemsControlTests
 				}
 			};
 
+			SUT.ApplyTemplate();
+
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
 			Assert.IsNotNull(panel.FindName("b1"));

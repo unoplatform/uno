@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Samples.Helper;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests;
 using Windows.Foundation;
@@ -123,7 +124,7 @@ namespace Uno.UI.Samples.Tests
 				{
 					TextWrapping = TextWrapping.Wrap,
 					FontFamily = new FontFamily("Courier New"),
-					Margin = ThicknessHelper.FromLengths(8, 0, 0, 0),
+					Margin = ThicknessHelper2.FromLengths(8, 0, 0, 0),
 					Foreground = new SolidColorBrush(Colors.LightGray)
 				};
 

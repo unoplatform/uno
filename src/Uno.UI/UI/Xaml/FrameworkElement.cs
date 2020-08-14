@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -46,19 +47,19 @@ namespace Windows.UI.Xaml
 			public const int FrameworkElement_InvalidateMeasure = 5;
 		}
 
-#if !__WASM__
+#if !NETSTANDARD
 		private FrameworkElementLayouter _layouter;
 #else
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
-
+		
 		private bool _constraintsChanged;
 		private bool _suppressIsEnabled;
 
 		private bool _defaultStyleApplied = false;
 		private protected bool IsDefaultStyleApplied => _defaultStyleApplied;
 		/// <summary>
-		/// The current user-determined 'active Style'.
+		/// The current user-determined 'active Style'. This will either be the explicitly-set Style, if there is one, or otherwise the resolved implicit Style (either in the view hierarchy or in Application.Resources).
 		/// </summary>
 		private Style _activeStyle = null;
 
@@ -80,9 +81,26 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		protected virtual bool IsSimpleLayout => false;
 
+		#region Tag Dependency Property
+
+#if __IOS__ || __MACOS__ || __ANDROID__
+#pragma warning disable 114 // Error CS0114: 'FrameworkElement.Tag' hides inherited member 'UIView.Tag'
+#endif
+		public object Tag
+		{
+			get => GetTagValue();
+			set => SetTagValue(value);
+		}
+#pragma warning restore 114 // Error CS0114: 'FrameworkElement.Tag' hides inherited member 'UIView.Tag'
+
+		[GeneratedDependencyProperty(DefaultValue = null)]
+		public static DependencyProperty TagProperty { get; } = CreateTagProperty();
+
+#endregion
+
 		partial void Initialize()
 		{
-#if !__WASM__
+#if !NETSTANDARD2_0
 			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
 #endif
 			Resources = new Windows.UI.Xaml.ResourceDictionary();
@@ -139,7 +157,7 @@ namespace Windows.UI.Xaml
 		/// <returns>The size that this object determines it needs during layout, based on its calculations of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
 		protected virtual Size MeasureOverride(Size availableSize)
 		{
-#if !__WASM__
+#if !NETSTANDARD2_0
 			LastAvailableSize = availableSize;
 #endif
 
@@ -158,7 +176,7 @@ namespace Windows.UI.Xaml
 
 			if (child != null)
 			{
-#if __WASM__
+#if NETSTANDARD
 				child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
 #else
 				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
@@ -171,7 +189,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if !__WASM__
+#if !NETSTANDARD
 		/// <summary>
 		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
 		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
@@ -223,7 +241,7 @@ namespace Windows.UI.Xaml
 		/// <returns>The measured size - INCLUDES THE MARGIN</returns>
 		protected Size MeasureElement(View view, Size availableSize)
 		{
-#if __WASM__
+#if NETSTANDARD
 			view.Measure(availableSize);
 			return view.DesiredSize;
 #else
@@ -246,6 +264,8 @@ namespace Windows.UI.Xaml
 			var rect = new Rect(finalRect.X - adjust.Left, finalRect.Y - adjust.Top, finalRect.Width, finalRect.Height);
 
 			view.Arrange(rect);
+#elif NETSTANDARD
+			view.Arrange(finalRect);
 #else
 			_layouter.ArrangeElement(view, finalRect);
 #endif
@@ -256,7 +276,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		protected Size GetElementDesiredSize(View view)
 		{
-#if __WASM__
+#if NETSTANDARD
 			return view.DesiredSize;
 #else
 			return (_layouter as ILayouter).GetDesiredSize(view);
@@ -301,7 +321,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#region Style DependencyProperty
+#region Style DependencyProperty
 
 		public Style Style
 		{
@@ -309,18 +329,19 @@ namespace Windows.UI.Xaml
 			set => SetValue(StyleProperty, value);
 		}
 
-		public static readonly DependencyProperty StyleProperty =
+		public static DependencyProperty StyleProperty { get ; } =
 			DependencyProperty.Register(
 				nameof(Style),
 				typeof(Style),
 				typeof(FrameworkElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					propertyChangedCallback: (s, e) => ((FrameworkElement)s)?.OnStyleChanged((Style)e.OldValue, (Style)e.NewValue)
 				)
 			);
 
-		#endregion
+#endregion
 
 		private void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
@@ -356,6 +377,40 @@ namespace Windows.UI.Xaml
 		}
 
 		private Style ResolveImplicitStyle() => (this as IDependencyObjectStoreProvider).Store.GetImplicitStyle();
+
+		#region Requested theme dependency property
+
+		public ElementTheme RequestedTheme
+		{
+			get => (ElementTheme)GetValue(RequestedThemeProperty);
+			set => SetValue(RequestedThemeProperty, value);
+		}
+
+		public static DependencyProperty RequestedThemeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(RequestedTheme),
+				typeof(ElementTheme),
+				typeof(FrameworkElement),
+				new PropertyMetadata(
+					ElementTheme.Default,
+					(o, e) => ((FrameworkElement)o).OnRequestedThemeChanged((ElementTheme)e.OldValue, (ElementTheme)e.NewValue)));
+
+		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
+		{
+			if (IsWindowRoot) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
+			{
+				// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
+				// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
+				Application.Current.SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(newValue));
+			}
+		}
+
+
+		#endregion
+
+		public ElementTheme ActualTheme => IsWindowRoot ?
+			Application.Current?.ActualElementTheme ?? ElementTheme.Default
+			: ElementTheme.Default;
 
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
@@ -508,6 +563,8 @@ namespace Windows.UI.Xaml
 			LayoutUpdated?.Invoke(this, new RoutedEventArgs(this));
 		}
 
+		private protected virtual Thickness GetBorderThickness() => Thickness.Empty;
+
 #if XAMARIN
 		private static FrameworkElement FindPhaseEnabledRoot(ContentControl content)
 		{
@@ -604,11 +661,23 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal virtual void UpdateThemeBindings()
 		{
-			//TODO: should update bindings on non-UI DO children
+			Resources?.UpdateThemeBindings();
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
 		}
 
-		#region AutomationPeer
+		/// <summary>
+		/// Set correct default foreground for the current theme.
+		/// </summary>
+		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
+		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
+		{
+			(this).SetValue(foregroundProperty,
+							Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
+								? SolidColorBrushHelper.Black
+								: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
+		}
+
+#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
@@ -659,9 +728,9 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		#endregion
+#endregion
 
-#if !__WASM__
+#if !NETSTANDARD
 		private class FrameworkElementLayouter : Layouter
 		{
 			private readonly MeasureOverrideHandler _measureOverrideHandler;

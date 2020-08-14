@@ -20,7 +20,7 @@ namespace UITests.Shared.Wasm
 		}
 
 #if __WASM__
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			var genericId = genericEvent.HtmlId;
 			var stringId = customEventString.HtmlId;

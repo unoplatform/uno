@@ -40,7 +40,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 				data.Flush();
 			}
 #else
-			if (_bitmap.PixelBuffer is InMemoryBuffer buffer
+			if (_bitmap.PixelBuffer is Windows.Storage.Streams.Buffer buffer
 				&& buffer.GetType().GetProperty("Data", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(buffer) is byte[] data)
 			{
 				// Half of the image in green, alpha 100% (bgra buffer)

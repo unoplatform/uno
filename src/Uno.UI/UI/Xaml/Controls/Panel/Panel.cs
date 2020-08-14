@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 	[Markup.ContentProperty(Name = "Children")]
 	public partial class Panel : FrameworkElement, ICustomClippingElement
 	{
-#if NET461 || __WASM__
+#if NET461 || NETSTANDARD2_0
 		private new UIElementCollection _children;
 #else
 		private UIElementCollection _children;
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 			=> OnChildrenChanged();
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnLoadedPartial();
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnUnloadedPartial();
 
-		protected virtual void OnChildAdded(IFrameworkElement element)
+		private protected virtual void OnChildAdded(IFrameworkElement element)
 		{
 			UpdateTransitions(element);
 		}
@@ -89,8 +89,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ChildrenTransitionsProperty =
-			DependencyProperty.Register("ChildrenTransitions", typeof(TransitionCollection), typeof(Panel), new PropertyMetadata(null, OnChildrenTransitionsChanged));
+		public static DependencyProperty ChildrenTransitionsProperty { get ; } =
+			DependencyProperty.Register("ChildrenTransitions", typeof(TransitionCollection), typeof(Panel), new FrameworkPropertyMetadata(null, OnChildrenTransitionsChanged));
 
 		private static void OnChildrenTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PaddingProperty, value); }
 		}
 
-		public static readonly DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get ; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(BorderThicknessProperty, value); }
 		}
 
-		public static readonly DependencyProperty BorderThicknessProperty =
+		public static DependencyProperty BorderThicknessProperty { get ; } =
 			DependencyProperty.Register(
 				"BorderThickness",
 				typeof(Thickness),
@@ -184,7 +184,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static readonly DependencyProperty BorderBrushProperty =
+		public static DependencyProperty BorderBrushProperty { get ; } =
 			DependencyProperty.Register(
 				"BorderBrush",
 				typeof(Brush),
@@ -206,12 +206,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for CornerRadius.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CornerRadiusProperty =
+		public static DependencyProperty CornerRadiusProperty { get ; } =
 			DependencyProperty.Register(
 				"CornerRadius",
 				typeof(CornerRadius),
 				typeof(Panel),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					CornerRadius.None,
 					(s, e) => ((Panel)s)?.OnCornerRadiusChanged((CornerRadius)e.OldValue, (CornerRadius)e.NewValue)
 				)
@@ -220,8 +220,8 @@ namespace Windows.UI.Xaml.Controls
 #endregion
 
 #region IsItemsHost DependencyProperty
-		public static readonly DependencyProperty IsItemsHostProperty = DependencyProperty.Register(
-			"IsItemsHost", typeof(bool), typeof(Panel), new PropertyMetadata(default(bool)));
+		public static DependencyProperty IsItemsHostProperty { get ; } = DependencyProperty.Register(
+			"IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(default(bool)));
 
 		public bool IsItemsHost
 		{
@@ -272,5 +272,7 @@ namespace Windows.UI.Xaml.Controls
 			OnBorderBrushChangedPartial(oldValue, newValue);
 		}
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue);
+
+		private protected override Thickness GetBorderThickness() => BorderThickness;
 	}
 }

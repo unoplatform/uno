@@ -20,21 +20,16 @@ namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class FrameworkElementAutomationPeer : AutomationPeer
 	{
-		public IFrameworkElement Owner { get; } // TODO: UIElement
+		public UIElement Owner { get; } 
 
 		public FrameworkElementAutomationPeer() { }
 
 		public FrameworkElementAutomationPeer(object element)
 		{
-			Owner = element as IFrameworkElement; // TODO: UIElement
+			Owner = element as UIElement;
 		}
 
-		public FrameworkElementAutomationPeer(IFrameworkElement element)
-		{
-			Owner = element;
-		}
-
-		public FrameworkElementAutomationPeer(FrameworkElement owner) : base()
+		public FrameworkElementAutomationPeer(FrameworkElement owner)
 		{
 			Owner = owner;
 		}
@@ -60,7 +55,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return null;
 		}
 
-		public static AutomationPeer CreatePeerForIFrameworkElement(IFrameworkElement element)
+		private static AutomationPeer CreatePeerForIFrameworkElement(IFrameworkElement element)
 		{
 			if (element == null)
 			{
@@ -70,7 +65,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return element.GetAutomationPeer();
 		}
 
-		public static AutomationPeer FromIFrameworkElement(IFrameworkElement element)
+		private static AutomationPeer FromIFrameworkElement(IFrameworkElement element)
 		{
 			if (element == null)
 			{
@@ -117,7 +112,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 				return simpleAccessibilityName;
 			}
 
-			if (Owner.GetAccessibilityInnerText() is string innerText && !string.IsNullOrEmpty(innerText))
+			if ((Owner as FrameworkElement)?.GetAccessibilityInnerText() is string innerText && !string.IsNullOrEmpty(innerText))
 			{
 				return innerText;
 			}

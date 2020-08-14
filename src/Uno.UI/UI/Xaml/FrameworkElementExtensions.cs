@@ -21,7 +21,7 @@ using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml
 {
-	public static class FrameworkElementExtensions
+	internal static class FrameworkElementExtensions
 	{
 		public static T Style<T>(this T element, Style style) where T : IFrameworkElement
 		{
@@ -343,6 +343,39 @@ namespace Windows.UI.Xaml
 					return true;
 			}
 
+			return false;
+		}
+
+		internal static bool TryGetCornerRadius(this IFrameworkElement frameworkElement, out CornerRadius cornerRadius)
+		{
+			switch (frameworkElement)
+			{
+				case Grid g:
+					cornerRadius = g.CornerRadius;
+					return true;
+
+				case StackPanel sp:
+					cornerRadius = sp.CornerRadius;
+					return true;
+
+				case Control c:
+					cornerRadius = c.CornerRadius;
+					return true;
+
+				case ContentPresenter cp:
+					cornerRadius = cp.CornerRadius;
+					return true;
+
+				case Border b:
+					cornerRadius = b.CornerRadius;
+					return true;
+
+				case Panel p:
+					cornerRadius = p.CornerRadius;
+					return true;
+			}
+
+			cornerRadius = default;
 			return false;
 		}
 	}

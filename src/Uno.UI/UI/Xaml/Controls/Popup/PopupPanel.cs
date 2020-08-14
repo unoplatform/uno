@@ -11,14 +11,8 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 #if XAMARIN_IOS
 using UIKit;
-using View = UIKit.UIView;
 #elif __MACOS__
 using AppKit;
-using View = AppKit.NSView;
-#elif __ANDROID__
-using View = Android.Views.View;
-#elif NET461 || __WASM__
-using View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml.Controls

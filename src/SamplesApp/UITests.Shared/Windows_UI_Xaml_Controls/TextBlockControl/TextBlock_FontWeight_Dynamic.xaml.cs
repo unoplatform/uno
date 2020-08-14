@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using FluentAssertions.Types;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;

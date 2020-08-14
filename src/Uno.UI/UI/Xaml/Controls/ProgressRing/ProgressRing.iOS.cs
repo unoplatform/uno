@@ -16,59 +16,42 @@ namespace Windows.UI.Xaml.Controls
 	/// Represents a control that indicates that an operation is ongoing. The typical visual appearance is a ring-shaped "spinner" that cycles an animation as progress continues.
 	/// See https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.progressring
 	/// </summary>
-	public partial class ProgressRing : BindableUIActivityIndicatorView, DependencyObject
+	public partial class ProgressRing
 	{
-		public ProgressRing()
+
+		private void ApplyForeground()
 		{
-
-		}
-
-		private static void OnForegroundChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var progressRing = dependencyObject as ProgressRing;
-			var foregroundColorBrush = progressRing.SelectOrDefault(r => r.Foreground as SolidColorBrush);
-
-			if (progressRing != null && Brush.TryGetColorWithOpacity(foregroundColorBrush, out var foreground))
+			if (_native != null && Foreground is SolidColorBrush foregroundColorBrush)
 			{
-				progressRing.Color = foreground;
+				_native.Color = foregroundColorBrush.ColorWithOpacity;
 			}
 		}
 
-		partial void OnUnloadedPartial()
+		partial void OnLoadedPartial() => TrySetNativeAnimating();
+
+		partial void OnUnloadedPartial() => TrySetNativeAnimating();
+
+		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
 		{
-			if(IsAnimating)
-			{
-				StopAnimating();
-			}
+			base.OnIsEnabledChanged(oldValue, newValue);
+
+			TrySetNativeAnimating();
 		}
 
-		partial void OnIsEnabledChangedPartial()
-		{
-			if(!IsEnabled && IsActive)
-			{
-				IsActive = false;
-			}
-		}
+		partial void OnIsActiveChangedPartial(bool _) => TrySetNativeAnimating();
 
-		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
+		private void TrySetNativeAnimating()
 		{
-			SetIsActive(newValue == Visibility.Visible && IsActive);
-		}
-
-		private static void OnIsActiveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			(dependencyObject as ProgressRing)?.SetIsActive((bool)args.NewValue);
-		}
-
-		private void SetIsActive(bool isActive)
-		{
-			if (isActive)
+			if (_native != null)
 			{
-				StartAnimating();
-			}
-			else
-			{
-				StopAnimating();
+				if (IsActive && IsEnabled && IsLoaded)
+				{
+					_native.StartAnimating();
+				}
+				else
+				{
+					_native.StopAnimating();
+				}
 			}
 		}
 	}

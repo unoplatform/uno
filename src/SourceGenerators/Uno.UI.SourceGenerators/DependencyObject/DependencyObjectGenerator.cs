@@ -85,8 +85,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void ProcessType(INamedTypeSymbol typeSymbol)
 			{
-				var isDependencyObject = typeSymbol.Interfaces.Any(t => t == _dependencyObjectSymbol)
-					&& (typeSymbol.BaseType?.GetAllInterfaces().None(t => t == _dependencyObjectSymbol) ?? true);
+				var isDependencyObject = typeSymbol.Interfaces.Any(t => Equals(t, _dependencyObjectSymbol))
+					&& (typeSymbol.BaseType?.GetAllInterfaces().None(t => Equals(t, _dependencyObjectSymbol)) ?? true);
 
 				if (isDependencyObject && typeSymbol.TypeKind == TypeKind.Class)
 				{
@@ -268,7 +268,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var isAndroidActivity = typeSymbol.Is(_androidActivitySymbol);
 				var isAndroidFragment = typeSymbol.Is(_androidFragmentSymbol);
 				var isUnoViewGroup = typeSymbol.Is(_unoViewgroupSymbol);
-				var implementsIFrameworkElement = typeSymbol.Interfaces.Any(t => t == _iFrameworkElementSymbol);
+				var implementsIFrameworkElement = typeSymbol.Interfaces.Any(t => Equals(t, _iFrameworkElementSymbol));
 				var hasOverridesAttachedToWindowAndroid = isAndroidView &&
 					typeSymbol
 					.GetMethods()
@@ -657,7 +657,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					}}
 
 					// Using a DependencyProperty as the backing store for DataContext.  This enables animation, styling, binding, etc...
-					public static readonly DependencyProperty DataContextProperty =
+					public static DependencyProperty DataContextProperty {{ get ; }} =
 						DependencyProperty.Register(
 							name: nameof(DataContext),
 							propertyType: typeof(object),
@@ -686,7 +686,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					}}
 
 					// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
-					public static readonly DependencyProperty TemplatedParentProperty =
+					public static DependencyProperty TemplatedParentProperty {{ get ; }} =
 						DependencyProperty.Register(
 							name: nameof(TemplatedParent),
 							propertyType: typeof(DependencyObject),

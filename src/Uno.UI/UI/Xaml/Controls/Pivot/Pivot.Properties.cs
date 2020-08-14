@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"HeaderTemplate", typeof(DataTemplate),
 			typeof(Pivot),
-			new FrameworkPropertyMetadata(default(DataTemplate)));
+			new FrameworkPropertyMetadata(default(DataTemplate), options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty IsLockedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"TitleTemplate", typeof(DataTemplate),
 			typeof(Pivot),
-			new FrameworkPropertyMetadata(default(DataTemplate)));
+			new FrameworkPropertyMetadata(default(DataTemplate), options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty LeftHeaderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LeftHeaderTemplate", typeof(DataTemplate),
 			typeof(Pivot),
-			new FrameworkPropertyMetadata(default(DataTemplate)));
+			new FrameworkPropertyMetadata(default(DataTemplate), options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty RightHeaderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"RightHeaderTemplate", typeof(DataTemplate),
 			typeof(Pivot),
-			new FrameworkPropertyMetadata(default(DataTemplate)));
+			new FrameworkPropertyMetadata(default(DataTemplate), options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 #pragma warning disable 67
 		public event TypedEventHandler<Pivot, PivotItemEventArgs> PivotItemLoaded;

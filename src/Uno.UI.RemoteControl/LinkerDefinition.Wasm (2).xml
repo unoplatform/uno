@@ -1,0 +1,4 @@
+<linker>
+  <assembly fullname="Uno.Wasm.WebSockets" />
+  <assembly fullname="Uno.UI.RemoteControl" />
+</linker>

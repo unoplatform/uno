@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MidiMessageReceivedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Midi.IMidiMessage Message
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IMidiMessage MidiMessageReceivedEventArgs.Message is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Message
 		// Forced skipping of method Windows.Devices.Midi.MidiMessageReceivedEventArgs.Message.get
 	}
 }

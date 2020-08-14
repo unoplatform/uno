@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
+using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -22,6 +25,227 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			UnitTestsApp.App.EnsureApplication();
 		}
+
+		[TestCleanup]
+		public async Task Cleanup()
+		{
+			if (Window.Current?.Content is FrameworkElement root)
+			{
+				root.RequestedTheme = ElementTheme.Default;
+			}
+
+			if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+			{
+				await SwapSystemTheme();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Theme_Changed_ApplicationPageBackground()
+		{
+
+			var page = new ThemeResource_Themed_Color_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			Assert.AreEqual(Colors.White, (page.Background as SolidColorBrush).Color);
+
+			await SwapSystemTheme();
+
+			Assert.AreEqual(Colors.Black, (page.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public async Task When_Theme_Changed_Default_Style_Overridden()
+		{
+			var page = new ThemeResource_Themed_Color_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			var button = page.TestButton;
+
+			Assert.AreEqual(Colors.Peru, (button.Foreground as SolidColorBrush).Color);
+
+			await SwapSystemTheme();
+
+			Assert.AreEqual(Colors.Peru, (button.Foreground as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public async Task When_Themed_Color_Theme_Changed()
+		{
+			var page = new ThemeResource_Themed_Color_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+
+			await SwapSystemTheme();
+
+			Assert.AreEqual(Colors.DarkBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public void When_Element_Theme_Changed()
+		{
+			var page = new ThemeResource_Themed_Color_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+
+			var root = Window.Current.Content as FrameworkElement;
+
+			Assert.IsNotNull(root);
+
+			root.RequestedTheme = ElementTheme.Dark;
+			Assert.AreEqual(Colors.DarkBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+
+			root.RequestedTheme = ElementTheme.Light;
+			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+
+			root.RequestedTheme = ElementTheme.Dark;
+			Assert.AreEqual(Colors.DarkBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+
+			root.RequestedTheme = ElementTheme.Default;
+			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		[Ignore]
+		public async Task When_Visual_States_Keyframe_Theme_Changed_Reapplied()
+		{
+			var page = new ThemeResource_In_Visual_States_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			await WaitForIdle();
+
+			var control = page.VisualStatesTestControl;
+
+			await GoTo("ActiveMidground");
+
+			Assert.AreEqual(Colors.DarkGreen, (control.InnerMyControl.Midground as SolidColorBrush).Color);
+
+			await GoTo("NormalMidground");
+
+			await SwapSystemTheme();
+
+			await GoTo("ActiveMidground");
+
+			Assert.AreEqual(Colors.LightGreen, (control.InnerMyControl.Midground as SolidColorBrush).Color);
+
+			async Task GoTo(string stateName)
+			{
+				var goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
+				Assert.IsTrue(goToResult);
+				await WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		[Ignore("DoubleAnimation not supported by Uno.NET461")]
+		public async Task When_Visual_States_DoubleAnimation_Theme_Changed_Reapplied()
+		{
+			var page = new ThemeResource_In_Visual_States_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			await WaitForIdle();
+
+			var control = page.VisualStatesTestControl;
+
+			await GoTo("HighArduousness");
+
+			Assert.AreEqual(29, control.InnerMyControl.Arduousness);
+
+			await GoTo("NormalArduousness");
+
+			await SwapSystemTheme();
+
+			await GoTo("HighArduousness");
+
+			Assert.AreEqual(47, control.InnerMyControl.Arduousness);
+
+			async Task GoTo(string stateName)
+			{
+				var goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
+				Assert.IsTrue(goToResult);
+				await WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		[Ignore("To support changing an already-set value when system theme changes, we need to resolve the DP pointed to by the BindingPath in Setter.ApplyValue(). (Which can be done, but hasn't.)")]
+		public async Task When_ThemeResource_In_Visual_States_Setter_Theme_Changed()
+		{
+			var page = new ThemeResource_In_Visual_States_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			await WaitForIdle();
+
+			var control = page.VisualStatesTestControl;
+
+			if (page.Parent == null)
+			{
+				app.HostView.Children.Add(page); // On UWP the control may have been removed by another test after the async pause
+			}
+
+			GoTo("HighPilleability");
+			await WaitForIdle();
+			var lightPilleability = control.InnerMyControl.Pilleability;
+			Assert.AreEqual(29, lightPilleability);
+			await SwapSystemTheme();
+			var darkPilleability = control.InnerMyControl.Pilleability;
+			Assert.AreEqual(47, darkPilleability);
+
+			void GoTo(string stateName)
+			{
+				var goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
+				Assert.IsTrue(goToResult);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ThemeResource_In_Visual_States_Setter_Theme_Changed_Reapplied()
+		{
+			var page = new ThemeResource_In_Visual_States_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			await WaitForIdle();
+
+			var control = page.VisualStatesTestControl;
+
+			if (page.Parent == null)
+			{
+				app.HostView.Children.Add(page); // On UWP the control may have been removed by another test after the async pause
+			}
+
+			await GoTo("HighPilleability");
+			var lightPilleability = control.InnerMyControl.Pilleability;
+			Assert.AreEqual(29, lightPilleability);
+			await GoTo("NormalPilleability");
+			Assert.AreEqual(0, control.InnerMyControl.Pilleability);
+			await SwapSystemTheme();
+			await GoTo("HighPilleability");
+			var darkPilleability = control.InnerMyControl.Pilleability;
+			Assert.AreEqual(47, darkPilleability);
+
+			async Task GoTo(string stateName)
+			{
+				var goToResult = VisualStateManager.GoToState(control, stateName, useTransitions: false);
+				Assert.IsTrue(goToResult);
+				await WaitForIdle();
+			}
+		}
+
+#if NETFX_CORE
+		private static async Task WaitForIdle() => await Task.Delay(100);
+#else
+		private static Task WaitForIdle() => Task.CompletedTask;
+#endif
 
 		[TestMethod]
 		public void When_System_ThemeResource_Light()
@@ -85,6 +309,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			control.InlineTemplateControl.ApplyTemplate();
 			control.TemplateFromResourceControl.ApplyTemplate();
 
+			control.ApplyTemplate();
+
 			var text2InlineBefore = control.InlineTemplateControl.TextBlock2.Text;
 			Assert.AreEqual("LocalVisualTree", text2InlineBefore);
 			var text2ResourceTemplateBefore = control.TemplateFromResourceControl.TextBlock2.Text;
@@ -145,6 +371,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			{
 				if (await SwapSystemTheme())
 				{
+					if (control.Parent == null)
+					{
+						app.HostView.Children.Add(control); // On UWP the control may have been removed by another test after the async swap
+					}
 					var textDarkThemeMarkup = control.TemplateFromResourceControl.TextBlock6.Text;
 					Assert.AreEqual("LocalVisualTreeDark", textDarkThemeMarkup); //ThemeResource markup change lookup uses the visual tree (rather than original XAML namescope)
 				}
@@ -272,6 +502,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			}
 		}
 
+#if NETFX_CORE
+		private static Task _swapTask;
+
+		private static async Task GetSwapTask()
+		{
+			await Task.Delay(800);
+			var content = new StackPanel();
+			content.Children.Add(new TextBlock { Text = "Set default app mode as 'dark' in settings" });
+			content.Children.Add(new HyperlinkButton { Content = "Go to settings", NavigateUri = new Uri("ms-settings:personalization-colors") });
+			var dialog = new ContentDialog { Content = content, CloseButtonText = "Done" };
+			await dialog.ShowAsync();
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_Direct_Assignment_Incompatible()
+		{
+			var page = new ThemeResource_Direct_Assignment_Incompatible_Page();
+			var transform = page.Resources["MyTransform"] as TranslateTransform;
+
+			Assert.AreEqual(115, transform.Y); //Standard double resource
+			Assert.AreEqual(490, transform.X); // Resource is actually a Thickness!
+		}
+
 		private static async Task<bool> SwapSystemTheme()
 		{
 			var currentTheme = Application.Current.RequestedTheme;
@@ -279,15 +533,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				ApplicationTheme.Dark :
 				ApplicationTheme.Light;
 #if NETFX_CORE
-			if (!UnitTestsApp.App.EnableInteractiveTests)
+			if (!UnitTestsApp.App.EnableInteractiveTests || targetTheme == ApplicationTheme.Light)
 			{
 				return false;
 			}
 
-			var dialog = new ContentDialog { Content = "Set default app mode as 'dark' in settings", CloseButtonText = "Done" };
-			await dialog.ShowAsync();
+			_swapTask = _swapTask ?? GetSwapTask();
+
+			await _swapTask;
 #else
-			Application.Current.SetRequestedTheme(targetTheme); 
+			Application.Current.SetExplicitRequestedTheme(targetTheme);
 #endif
 			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
 			return true;

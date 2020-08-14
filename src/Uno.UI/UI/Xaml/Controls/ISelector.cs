@@ -2,7 +2,7 @@
 
 namespace Windows.UI.Xaml.Controls
 {
-	public interface ISelector : IItemsControl
+	internal interface ISelector : IItemsControl
 	{
 		object SelectedItem { 
 			get;

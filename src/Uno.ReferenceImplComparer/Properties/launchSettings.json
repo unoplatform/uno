@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Uno.ReferenceImplComparer": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\Temp\\nuget-local\\Uno.UI.3.0.0-dev.wasm-separation.682.nupkg\""
+    }
+  }
+}

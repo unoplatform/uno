@@ -27,7 +27,7 @@ namespace Uno.UI.Samples.Helper
 			obj.SetValue(IsAttachedProperty, value);
 		}
 
-		public static readonly DependencyProperty IsAttachedProperty =
+		public static DependencyProperty IsAttachedProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"IsAttached",
 				typeof(bool),
@@ -44,7 +44,7 @@ namespace Uno.UI.Samples.Helper
 			obj.SetValue(CanNavigateBackProperty, value);
 		}
 
-		public static readonly DependencyProperty CanNavigateBackProperty =
+		public static DependencyProperty CanNavigateBackProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"CanNavigateBack",
 				typeof(bool),

@@ -85,6 +85,19 @@ The following languages have been verified to work on all platforms:
 \Assets\Images\logo.language-es.png
 ```
 
+### Dark theme support
+
+> Supported on Android only
+
+A theme qualifier can be specified for the image loader to use an asset based on the current app theme.
+
+#### Examples
+
+```
+/Assets/theme-light/ThemeTestImage.png
+/Assets/theme-dark/ThemeTestImage.png
+```
+
 ### Custom (platform)
 
 Sometimes, you might want to use a different asset depending on the platform. Because there is no `platform` qualifier on UWP, we had to use the `custom` qualifier.

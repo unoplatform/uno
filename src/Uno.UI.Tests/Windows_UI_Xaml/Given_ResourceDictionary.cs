@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
+#if !NETFX_CORE
 using Uno.UI.Xaml;
+#endif
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -115,29 +117,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(Colors.ForestGreen, ((SolidColorBrush)retrieved).Color);
 		}
 
-
-
-		[TestMethod]
-		public void When_Duplicates_Merged_And_Last_Is_Null()
-		{
-			var rd1 = new ResourceDictionary();
-			rd1["Grin"] = new SolidColorBrush(Colors.DarkOliveGreen);
-
-			var rd2 = new ResourceDictionary();
-			rd2["Grin"] = null;
-
-			var rd = new ResourceDictionary();
-			rd.MergedDictionaries.Add(rd1);
-			rd.MergedDictionaries.Add(rd2);
-
-			var retrieved = rd["Grin"];
-
-			//https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/resourcedictionary-and-xaml-resource-references#merged-resource-dictionaries
-			Assert.IsNull(retrieved);
-
-			Assert.IsTrue(rd.ContainsKey("Grin"));
-		}
-
 		[TestMethod]
 		public void When_Has_Themes()
 		{
@@ -242,13 +221,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 #if !NETFX_CORE //Not legal on UWP to change theme after app has launched
 			try
 			{
-				Application.Current.SetRequestedTheme(ApplicationTheme.Dark);
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
 				var retrieved2 = rd["Blu"];
 				Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved2).Color);
 			}
 			finally
 			{
-				Application.Current.SetRequestedTheme(ApplicationTheme.Light);
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
 			}
 #endif
 		}
@@ -644,6 +623,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(Colors.White, systemColor);
 		}
 
+#if !NETFX_CORE
 		[TestMethod]
 		public void When_Relative_Path_With_Leading_Slash_From_Root()
 		{
@@ -651,6 +631,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var withoutSlash = XamlFilePathHelper.ResolveAbsoluteSource("App.xaml", "App/Xaml/Test_Dictionary.xaml");
 
 			Assert.AreEqual(withoutSlash, withSlash);
+		}
+#endif
+
+		[TestMethod]
+		public void When_XamlControlsResources()
+		{
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			Assert.IsTrue(xcr.ContainsKey(typeof(Button)));
+			Assert.IsInstanceOfType(xcr[typeof(Button)], typeof(Style));
 		}
 	}
 }

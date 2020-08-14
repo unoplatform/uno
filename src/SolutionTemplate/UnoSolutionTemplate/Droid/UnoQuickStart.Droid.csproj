@@ -14,8 +14,7 @@
 		<FileAlignment>512</FileAlignment>
 		<AndroidApplication>true</AndroidApplication>
 		<AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
-		<!-- AndroidUseAapt2 is disabled until https://github.com/unoplatform/uno/issues/1382 is resolved -->
-		<AndroidUseAapt2>false</AndroidUseAapt2>
+		<AndroidUseAapt2>true</AndroidUseAapt2>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
 		<TargetFrameworkVersion>v10.0</TargetFrameworkVersion>
@@ -73,7 +72,7 @@
 		<Compile Include="Main.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<AndroidAsset Include="Assets\Fonts\winjs-symbols.ttf" />
+		<AndroidAsset Include="Assets\Fonts\uno-fluentui-assets.ttf" />
 		<None Include="Resources\AboutResources.txt" />
 		<None Include="Assets\AboutAssets.txt" />
 	</ItemGroup>

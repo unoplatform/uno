@@ -54,7 +54,7 @@ namespace Windows.Storage
 			public string[] Paths;
 		}
 
-		internal void DispatchStorageInitialized()
+		internal static void DispatchStorageInitialized()
 		{
 			if (typeof(StorageFolder).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{

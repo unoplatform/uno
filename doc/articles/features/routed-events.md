@@ -264,3 +264,14 @@ Note that `Tapped` and `DoubleTapped` are not linked in any way to a native equi
 In order to match the WinUI behavior, on WASM the default "Context menu" of the browser is disabled (except for the `TextBox`), 
 no matter if you use / handle the `RightTapped` event or not.
 Be aware that on some browser (Firefox), user can still request to get the "Context menu" on right click.
+
+### iPadOS mouse support
+
+To differentiate between mouse and touch device type for pointer events, include the following in your app's `Info.plist`:
+
+```
+<key>UIApplicationSupportsIndirectInputEvents</key>
+<true/>
+```
+
+Without this key the current version of iPadOS reports mouse interaction as normal touch.

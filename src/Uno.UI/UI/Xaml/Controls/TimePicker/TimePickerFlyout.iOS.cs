@@ -23,6 +23,26 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
+		#region TimePickerFlyoutPresenterStyle DependencyProperty
+
+		public Style TimePickerFlyoutPresenterStyle
+		{
+			get { return (Style)this.GetValue(TimePickerFlyoutPresenterStyleProperty); }
+			set { this.SetValue(TimePickerFlyoutPresenterStyleProperty, value); }
+		}
+
+		public static DependencyProperty TimePickerFlyoutPresenterStyleProperty { get; } =
+			DependencyProperty.Register(
+				"TimePickerFlyoutPresenterStyle",
+				typeof(Style),
+				typeof(TimePickerFlyout),
+				new FrameworkPropertyMetadata(
+					default(Style),
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext
+					));
+
+		#endregion
+
 		protected override void InitializePopupPanel()
 		{
 			_popup.PopupPanel = new PickerFlyoutPopupPanel(this)
@@ -58,7 +78,8 @@ namespace Windows.UI.Xaml.Controls
 				BorderThickness = Thickness.Empty,
 				HorizontalAlignment = HorizontalAlignment.Stretch,
 				HorizontalContentAlignment = HorizontalAlignment.Stretch,
-				Time = Time
+				Time = Time,
+				ClockIdentifier = ClockIdentifier,
 			};
 
 			Content = _timeSelector;
@@ -69,19 +90,19 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Content DependencyProperty
-		internal IUIElement Content
+		internal IFrameworkElement Content
 		{
 
-			get { return (IUIElement)this.GetValue(ContentProperty); }
+			get { return (IFrameworkElement)this.GetValue(ContentProperty); }
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		internal static readonly DependencyProperty ContentProperty =
+		internal static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
-				typeof(IUIElement),
+				typeof(IFrameworkElement),
 				typeof(TimePickerFlyout),
-				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
+				new FrameworkPropertyMetadata(default(IFrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
 		private TimePickerFlyoutPresenter _timePickerPresenter;
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -102,7 +123,11 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Control CreatePresenter()
 		{
-			_timePickerPresenter = new TimePickerFlyoutPresenter() { Content = Content };
+			_timePickerPresenter = new TimePickerFlyoutPresenter()
+			{
+				Content = Content,
+				Style = TimePickerFlyoutPresenterStyle
+			};
 
 			void onLoad(object sender, RoutedEventArgs e)
 			{

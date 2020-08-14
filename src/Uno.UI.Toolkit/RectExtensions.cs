@@ -10,7 +10,7 @@ namespace Uno.UI.Toolkit.Extensions
 {
     internal static class RectExtensions
 	{
-#if !XAMARIN && !__WASM__
+#if !XAMARIN && !NETSTANDARD2_0
 		/// <summary>
 		/// Returns the orientation of the rectangle.
 		/// </summary>

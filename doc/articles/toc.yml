@@ -34,8 +34,10 @@
       href: feature-flags.md
     - name: Uno.UI.Toolkit
       href: Uno.UI.Toolkit.md
-    - name: Uno Community Toolkit
-      href: uno-community-toolkit.md
+    - name: Migrating existing UWP app to Uno
+      href: migrating-apps.md
+    - name: Migrating from Previous Releases
+      href: migrating-from-previous-releases.md
     - name: Uno app solution structure
       href: uno-app-solution-structure.md
     - name: Performance tips
@@ -48,40 +50,60 @@
       href: howto-migrate-existing-code.md
     - name: Migrating existing UWP app to Uno
       href: migrating-apps.md
+    - name: Adding native views
+      href: native-views.md
 - name: Using Uno - features and controls
   items:
   - name: Accessibility
     href: features/working-with-accessibility.md
-  - name: XAML Hot Reload
-    href: features\working-with-xaml-hot-reload.md
-  - name: Assets
-    href: features/working-with-assets.md
   - name: Animations
     href: features/working-with-animations.md
+  - name: Assets
+    href: features/working-with-assets.md
   - name: Lottie animations
     href: features/Lottie.md
   - name: SignalR
     href: signalr.md
+  - name: ComboBox
+    href: controls\ComboBox.md
+  - name: CommandBar
+    href: controls\commandbar.md
   - name: Custom fonts
     href: features/custom-fonts.md
-  - name: Themes
-    href: features/working-with-themes.md
-  - name: Routed Events
-    href: features/routed-events.md
-  - name: x:Bind
-    href: features\windows-ui-xaml-xbind.md
-  - name: Shapes & Brushes
-    href: features/shapes-and-brushes.md
-  - name: Speech Recognition
-    href: features/SpeechRecognition.md
+  - name: ElevatedView
+    href: features\ElevatedView.md
+  - name: ListView and GridView
+    href: controls\ListViewBase.md
+  - name: MapControl
+    href: controls\map-control-support.md
+  - name: MediaPlayerElement
+    href: controls\MediaPlayerElement.md
+  - name: MenuFlyout
+    href: controls\MenuFlyout.md
+  - name: PasswordVault
+    href: features\PasswordVault.md
+  - name: Pivot
+    href: controls\Pivot.md
   - name: PowerManager
     href: features/windows-system-power.md
   - name: ProgressRing
     href: features/progressring.md
-  - name: PasswordVault
-    href: features\PasswordVault.md
+  - name: Shapes & Brushes
+    href: features/shapes-and-brushes.md
+  - name: Speech Recognition
+    href: features/SpeechRecognition.md
+  - name: Themes
+    href: features/working-with-themes.md
+  - name: ToggleSwitch
+    href: controls\ToggleSwitch.md
+  - name: Routed Events
+    href: features/routed-events.md
+  - name: x:Bind
+    href: features\windows-ui-xaml-xbind.md
   - name: URI Protocol activation
     href: features\protocol-activation.md
+  - name: VisibleBoundsPadding
+    href: features\VisibleBoundsPadding.md
   - name: Windows.ApplicationModel
     href: features\windows-applicationmodel.md
   - name: Windows.ApplicationModel.Calls
@@ -90,8 +112,12 @@
     href: features\windows-applicationmodel-chat.md
   - name: Windows.ApplicationModel.Email
     href: features\windows-applicationmodel-email.md
+  - name: Windows.Devices.Enumeration
+    href: features\windows-devices-enumeration.md
   - name: Windows.Devices.Lights
     href: features\windows-devices-lights.md
+  - name: Windows.Devices.Midi
+    href: features\windows-devices-midi.md
   - name: Windows.Devices.Sensors
     href: features\windows-devices-sensors.md
   - name: Windows.Phone.Devices.Notification
@@ -105,29 +131,13 @@
   - name: Windows.System.Display
     href: features\windows-system-display.md
   - name: Windows.System.Profile
-    href: features/windows-system-profile.md
+    href: features\windows-system-profile.md
   - name: Windows.Storage
     href: features\windows-storage.md
   - name: Windows.UI.ViewManagement
     href: features\windows-ui-viewmanagement.md
-  - name: CommandBar
-    href: controls\commandbar.md
-  - name: ListView and GridView
-    href: controls\ListViewBase.md
-  - name: ComboBox
-    href: controls\ComboBox.md
-  - name: MapControl
-    href: controls\map-control-support.md
-  - name: MediaPlayerElement
-    href: controls\MediaPlayerElement.md
-  - name: Pivot
-    href: controls\Pivot.md
-  - name: ToggleSwitch
-    href: controls\ToggleSwitch.md
-  - name: MenuFlyout
-    href: controls\MenuFlyout.md
-  - name: VisibleBoundsPadding
-    href: features\VisibleBoundsPadding.md
+  - name: XAML Hot Reload
+    href: features\working-with-xaml-hot-reload.md
 - name: Using Uno - implemented views
   href: implemented/toc.yml
   topicHref: implemented-views.md
@@ -139,11 +149,11 @@
       href: wasm-custom-events.md
     - name: Using Uno Platform Controls in Xamarin.Forms
       href: howto-use-uno-in-xamarin-forms.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 1
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 1
       href: interop/wasm-javascript-1.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 2
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 2
       href: interop/wasm-javascript-2.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 3
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 3
       href: interop/wasm-javascript-3.md
 - name: Contributing to Uno
   topicHref: uno-development\contributing-intro.md

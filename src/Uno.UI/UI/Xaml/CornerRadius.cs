@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Globalization;
 
 namespace Windows.UI.Xaml
 {
@@ -69,7 +70,9 @@ namespace Windows.UI.Xaml
 		public override string ToString()
 		{
 			return "TopLeft: {0}, TopRight: {1}, BottomRight: {2}, BottomLeft: {3}".InvariantCultureFormat(TopLeft, TopRight, BottomRight, BottomLeft);
-		}		
+		}
+
+		internal string ToStringCompact() => string.Format(CultureInfo.InvariantCulture, "[CornerRadius: {0}-{1}-{2}-{3}]", TopLeft, TopRight, BottomRight, BottomLeft);
 
 		/// <summary>
 		/// Provides a Zero-valued corner radius.

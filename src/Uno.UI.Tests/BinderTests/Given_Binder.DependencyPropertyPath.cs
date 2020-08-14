@@ -99,7 +99,7 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 			}
 
 			public static readonly DependencyProperty OtherControlProperty =
-				DependencyProperty.Register("OtherControl", typeof(object), typeof(Control1), new PropertyMetadata(null));
+				DependencyProperty.Register("OtherControl", typeof(object), typeof(Control1), new FrameworkPropertyMetadata(null));
 		}
 
 		public class Control2 : BaseTarget
@@ -114,7 +114,7 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 				"MyValue",
 				typeof(int),
 				typeof(Attachable),
-				new PropertyMetadata(0)
+				new FrameworkPropertyMetadata(0)
 			);
 
 		public static int GetMyValue(object view)

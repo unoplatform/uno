@@ -139,7 +139,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 			TakeScreenshot("Initial");
 
-			_app.FastTap(_app.Marked("fileMenu"));
+			var fileMenu = _app.Marked("fileMenu");
+			_app.FastTap(fileMenu);
 
 			TakeScreenshot("fileMenu");
 
@@ -152,6 +153,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			_app.WaitForElement("disabledItem");
 
 			TakeScreenshot("AfterSuccess");
+
+			_app.Tap(fileMenu);
 		}
 
 		[Test]
@@ -160,16 +163,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
 
+			var fileMenu = _app.Marked("fileMenu");
 			_app.WaitForElement(_app.Marked("fileMenu"));
 			var result = _app.Marked("result");
 
 			TakeScreenshot("Initial");
 
-			_app.FastTap(_app.Marked("fileMenu"));
+			_app.Tap(fileMenu);
 
 			TakeScreenshot("fileMenu");
 
-			var exitItemResult = _app.Query(_app.Marked("exitMenu")).First();
+			var exitMenu = _app.Marked("exitMenu");
+			_app.WaitForElement(exitMenu);
+
+			var exitItemResult = _app.Query(exitMenu).First();
 
 			_app.TapCoordinates(0, exitItemResult.Rect.Bottom + 20);
 

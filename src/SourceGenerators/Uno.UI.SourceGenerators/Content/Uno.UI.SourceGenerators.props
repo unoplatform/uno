@@ -11,8 +11,9 @@
 		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or $(TargetFramework.ToLower().StartsWith('xamarinios'))">ios</XamarinProjectType>
 		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or $(TargetFramework.ToLower().StartsWith('monoandroid'))">android</XamarinProjectType>
 		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFramework)'=='xamarinmac20'">macos</XamarinProjectType>
-      <XamarinProjectType Condition="'$(TargetFramework)'=='netstandard2.0'">wasm</XamarinProjectType>
-      <XamarinProjectType Condition="'$(TargetFramework)'=='net461'">net461</XamarinProjectType>
+		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</XamarinProjectType>
+		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='Skia'">skia</XamarinProjectType>
+		<XamarinProjectType Condition="'$(TargetFramework)'=='net461'">net461</XamarinProjectType>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -30,6 +31,8 @@
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_android" />
 		<!--WASM-->
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_wasm" />
+		<!--Skia-->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_skia" />
 
 		<!-- 
 			Those namespaces are to be *included* from the code generation,
@@ -43,27 +46,44 @@
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_android" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_wasm" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_netstdref" />
 		<!-- macOS -->
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="macos" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_android" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_wasm" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_netstdref" />
 		<!-- Android -->
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="android" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_ios" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_wasm" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_netstdref" />
 		<!-- WASM -->
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="netstdref" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_ios" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_android" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_macos" />
-      <!-- NET461 -->
-      <IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="net461" />
-      <IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_ios" />
-      <IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_android" />
-      <IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_wasm" />
-      <IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_skia" />
+		<!-- Skia -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="netstdref" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_wasm" />
+		<!-- NET461 -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="net461" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_netstdref" />
 
 		<!--
 				A list of analyzer suppressions to include in every generated class.

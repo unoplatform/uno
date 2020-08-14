@@ -1,7 +1,7 @@
 ﻿<linker>
   <assembly fullname="SamplesApp.Wasm" />
-  <assembly fullname="Uno.UI.Wasm" />
   <assembly fullname="Uno.UI" />
+  <assembly fullname="Uno.UI.Wasm.Tests" />
   <assembly fullname="Microsoft.Graph" />
 
   <assembly fullname="System.Core">

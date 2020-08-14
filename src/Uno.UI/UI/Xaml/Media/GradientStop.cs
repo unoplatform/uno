@@ -34,12 +34,12 @@ namespace Windows.UI.Xaml.Media
 			get { return (Windows.UI.Color)this.GetValue(ColorProperty); }
 			set { this.SetValue(ColorProperty, value); }
 		}
-		public static readonly DependencyProperty ColorProperty =
+		public static DependencyProperty ColorProperty { get ; } =
 			DependencyProperty.Register(
 				"Color",
 				typeof(Windows.UI.Color),
 				typeof(GradientStop),
-				new PropertyMetadata(Colors.Transparent)
+				new FrameworkPropertyMetadata(Colors.Transparent)
 			);
 
 		public double Offset
@@ -47,12 +47,12 @@ namespace Windows.UI.Xaml.Media
 			get { return (double)this.GetValue(OffsetProperty); }
 			set { this.SetValue(OffsetProperty, value); }
 		}
-		public static readonly DependencyProperty OffsetProperty =
+		public static DependencyProperty OffsetProperty { get ; } =
 			DependencyProperty.Register(
 				"Offset",
 				typeof(double),
 				typeof(GradientStop),
-				new PropertyMetadata(default(double))
+				new FrameworkPropertyMetadata(default(double))
 			);
 	}
 }

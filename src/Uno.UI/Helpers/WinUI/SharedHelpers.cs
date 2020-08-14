@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 //
@@ -22,6 +22,12 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+
+#if HAS_UNO_WINUI
+using ITextSelection = Microsoft.UI.Text.ITextSelection;
+#else
+using ITextSelection = Windows.UI.Text.ITextSelection;
+#endif
 
 namespace Uno.UI.Helpers.WinUI
 {

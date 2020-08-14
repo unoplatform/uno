@@ -14,7 +14,9 @@ using Uno.Extensions;
 using Uno.Logging;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-
+using Selector = ObjCRuntime.Selector;
+using Windows.System.Profile;
+using Uno.Helpers;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -26,6 +28,9 @@ namespace Windows.UI.Xaml
 	[Register("UnoAppDelegate")]
 	public partial class Application : NSApplicationDelegate
 	{
+		private readonly NSString _themeChangedNotification = new NSString("AppleInterfaceThemeChangedNotification");
+		private readonly Selector _modeSelector = new Selector("themeChanged:");
+
 		private NSUrl[] _launchUrls = null;
 
 		public Application()
@@ -39,6 +44,10 @@ namespace Windows.UI.Xaml
 		{
 
 		}
+
+		public override bool ApplicationShouldTerminateAfterLastWindowClosed(NSApplication sender) => true;
+
+		internal bool Suspended { get; private set; }
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
 		{
@@ -71,6 +80,19 @@ namespace Windows.UI.Xaml
 			{
 				OnLaunched(new LaunchActivatedEventArgs());
 			}
+		}
+
+		partial void OnSuspendingPartial()
+		{
+			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(30), () =>
+			{
+				Suspended = true;
+				NSApplication.SharedApplication.KeyWindow.PerformClose(null);
+			});
+
+			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
+
+			operation.EventRaiseCompleted();
 		}
 
 		/// <summary>
@@ -110,31 +132,21 @@ namespace Windows.UI.Xaml
 		/// <returns>System theme</returns>
 		private ApplicationTheme GetDefaultSystemTheme()
 		{
-			const string AutoSwitchKey = "AppleInterfaceStyleSwitchesAutomatically";
-			var autoChange = NSUserDefaults.StandardUserDefaults[AutoSwitchKey];
-			if (autoChange != null)
+			var version = DeviceHelper.OperatingSystemVersion;
+			if (version >= new Version(10, 14))
 			{
-				var autoChangeEnabled = NSUserDefaults.StandardUserDefaults.BoolForKey(AutoSwitchKey);
-				if (autoChangeEnabled)
+				var app = NSAppearance.CurrentAppearance?.FindBestMatch(new string[]
 				{
-					if (NSUserDefaults.StandardUserDefaults["AppleInterfaceStyle"] == null)
-					{
-						return ApplicationTheme.Dark;
-					}
-					else
-					{
-						return ApplicationTheme.Light;
-					}
+					NSAppearance.NameAqua,
+					NSAppearance.NameDarkAqua
+				});
+
+				if (app == NSAppearance.NameDarkAqua)
+				{
+					return ApplicationTheme.Dark;
 				}
 			}
-			if (NSUserDefaults.StandardUserDefaults["AppleInterfaceStyle"] == null)
-			{
-				return ApplicationTheme.Light;
-			}
-			else
-			{
-				return ApplicationTheme.Dark;
-			}
+			return ApplicationTheme.Light;
 		}
 
 		private void SetCurrentLanguage()
@@ -154,11 +166,20 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void ObserveSystemThemeChanges()
-		{			
-			NSUserDefaults.StandardUserDefaults.AddObserver(
-				"AppleInterfaceStyle",
-				NSKeyValueObservingOptions.New,
-				_ => Application.Current.OnSystemThemeChanged());
+		{
+			NSDistributedNotificationCenter.GetDefaultCenter().AddObserver(
+				this,
+				_modeSelector,
+				_themeChangedNotification,
+				null);
+		}
+
+		[Export("themeChanged:")]
+		public void ThemeChanged(NSObject change) => OnSystemThemeChanged();
+		
+		public void Exit()
+		{
+			NSApplication.SharedApplication.Terminate(null);
 		}
 	}
 }

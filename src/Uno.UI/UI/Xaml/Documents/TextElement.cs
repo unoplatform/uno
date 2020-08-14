@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Documents
 			set { this.SetValue(FontFamilyProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontFamilyProperty =
+		public static DependencyProperty FontFamilyProperty { get ; } =
 			DependencyProperty.Register(
 				"FontFamily",
 				typeof(FontFamily),
@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Documents
 			set { this.SetValue(FontStyleProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontStyleProperty =
+		public static DependencyProperty FontStyleProperty { get ; } =
 			DependencyProperty.Register(
 				"FontStyle",
 				typeof(FontStyle),
@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Documents
 			set { this.SetValue(FontSizeProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontSizeProperty =
+		public static DependencyProperty FontSizeProperty { get ; } =
 			DependencyProperty.Register(
 				"FontSize",
 				typeof(double),
@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Documents
 			set { this.SetValue(FontWeightProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontWeightProperty =
+		public static DependencyProperty FontWeightProperty { get ; } =
 			DependencyProperty.Register(
 				"FontWeight",
 				typeof(FontWeight),

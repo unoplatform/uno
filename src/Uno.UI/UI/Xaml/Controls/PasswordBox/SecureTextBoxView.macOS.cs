@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public NSString[] ValidAttributesForMarkedText => null;
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),

@@ -1,12 +1,16 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
+#nullable enable
+
+using System;
+
 namespace Windows.UI.Composition
 {
 	public partial class ContainerVisual : global::Windows.UI.Composition.Visual
 	{
-		internal ContainerVisual()
+		internal ContainerVisual() : base(null!) => throw new NotSupportedException("Use the ctor with Compositor");
+
+		internal ContainerVisual(Compositor compositor) : base(compositor)
 		{
-			Children = new VisualCollection(this);
+			Children = new VisualCollection(compositor, this);
 		}
 
 		public VisualCollection Children { get; }

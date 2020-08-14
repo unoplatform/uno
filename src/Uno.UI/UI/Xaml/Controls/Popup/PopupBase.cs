@@ -10,15 +10,9 @@ using Windows.UI.Xaml.Media;
 #if XAMARIN_IOS
 using CoreGraphics;
 using UIKit;
-using View = UIKit.UIView;
 #elif __MACOS__
 using CoreGraphics;
 using AppKit;
-using View = AppKit.NSView;
-#elif XAMARIN_ANDROID
-using View = Android.Views.View;
-#elif NET461 || __WASM__
-using View = Windows.UI.Xaml.FrameworkElement;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -36,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal IDynamicPopupLayouter CustomLayouter { get; set; }
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			IsOpen = false;
 			base.OnUnloaded();
@@ -74,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnChildChangedPartial(View oldChild, View newChild)
+		partial void OnChildChangedPartial(UIElement oldChild, UIElement newChild)
 		{
 			if (oldChild is IDependencyObjectStoreProvider provider && !_childHasOwnDataContext)
 			{

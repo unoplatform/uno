@@ -27,7 +27,7 @@ using _NativeType = Uno.UI.Views.Controls.BindableUIButton;
 #else
 using _NativeType = Windows.UI.Xaml.Controls.Grid; // We use a 'fake' native style on WASM
 #endif
-#if __WASM__
+#if NETSTANDARD
 using Uno.UI;
 #elif __MACOS__
 using AppKit;

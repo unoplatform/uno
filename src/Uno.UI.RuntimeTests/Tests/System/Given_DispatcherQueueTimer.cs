@@ -74,6 +74,36 @@ namespace Uno.UI.RuntimeTests.Tests.System
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ScheduleNonRepeatingWorkItem()
+		{
+			var tcs = new TaskCompletionSource<bool>();
+			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+
+			try
+			{
+				timer.IsRepeating = false;
+				timer.Interval = TimeSpan.FromMilliseconds(10);
+				timer.Tick += (snd, e) => tcs.TrySetResult(snd.IsRunning);
+
+				timer.Start();
+
+				Assert.IsTrue(timer.IsRunning);
+				Assert.IsFalse(timer.IsRepeating);
+
+				await Task.WhenAny(tcs.Task, Task.Delay(30000));
+
+				Assert.IsTrue(tcs.Task.IsCompleted);
+				Assert.IsFalse(tcs.Task.Result);
+				Assert.IsFalse(timer.IsRunning);
+			}
+			finally
+			{
+				timer.Stop();
+			}
+		}
+
 #if !WINDOWS_UWP && !__WASM__ // CoreDispatcher.Main.HasThreadAccess is always false on WASM ...
 		[TestMethod]
 		[RunsOnUIThread]

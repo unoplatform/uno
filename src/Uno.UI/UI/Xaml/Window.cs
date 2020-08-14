@@ -39,7 +39,20 @@ namespace Windows.UI.Xaml
 		public UIElement Content
 		{
 			get { return InternalGetContent(); }
-			set { InternalSetContent(value); }
+			set
+			{
+				var oldContent = Content;
+				if (oldContent != null)
+				{
+					oldContent.IsWindowRoot = false;
+				}
+				if (value != null)
+				{
+					value.IsWindowRoot = true;
+				}
+
+				InternalSetContent(value);
+			}
 		}
 
 		public Rect Bounds { get; private set; }
@@ -68,18 +81,20 @@ namespace Windows.UI.Xaml
 		/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
 		/// </summary>
 		/// <returns>A disposable instance that will cancel the registration.</returns>
-		internal IDisposable RegisterSizeChangedEvent(WindowSizeChangedEventHandler handler)
+		internal IDisposable RegisterSizeChangedEvent(Windows.UI.Xaml.WindowSizeChangedEventHandler handler)
 		{
 			return WeakEventHelper.RegisterEvent(
 				_sizeChangedHandlers,
 				handler,
-				(h, s, e) => (h as WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
+				(h, s, e) =>
+					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (Windows.UI.Core.WindowSizeChangedEventArgs)e)
 			);
 		}
 
-		private void RaiseSizeChanged(WindowSizeChangedEventArgs windowSizeChangedEventArgs)
+		private void RaiseSizeChanged(Windows.UI.Core.WindowSizeChangedEventArgs windowSizeChangedEventArgs)
 		{
 			SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+			CoreWindow.GetForCurrentThread()?.OnSizeChanged(windowSizeChangedEventArgs);
 
 			foreach (var action in _sizeChangedHandlers)
 			{

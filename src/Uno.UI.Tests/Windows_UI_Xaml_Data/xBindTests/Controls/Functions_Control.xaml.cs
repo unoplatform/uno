@@ -49,7 +49,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		public MyxBindClass MyxBindClassInstance { get; } = new MyxBindClass();
 
 		public static readonly DependencyProperty InstanceDPProperty =
-			DependencyProperty.Register("InstanceDP", typeof(int), typeof(Functions_Control), new PropertyMetadata(-1));
+			DependencyProperty.Register("InstanceDP", typeof(int), typeof(Functions_Control), new FrameworkPropertyMetadata(-1));
 
 		private string Offset(int value)
 		{

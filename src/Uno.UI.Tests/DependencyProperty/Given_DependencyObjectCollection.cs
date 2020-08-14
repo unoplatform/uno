@@ -170,7 +170,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 			public static readonly DependencyProperty MyPropertyProperty =
-				DependencyProperty.Register("MyProperty", typeof(int), typeof(MyDependencyObject), new PropertyMetadata(0));
+				DependencyProperty.Register("MyProperty", typeof(int), typeof(MyDependencyObject), new FrameworkPropertyMetadata(0));
 		}
 
 		private class MyDependencyObjectCollection : DependencyObjectCollection

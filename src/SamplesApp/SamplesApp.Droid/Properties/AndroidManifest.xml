@@ -2,6 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="uno.platform.unosampleapp" android:versionCode="1" android:versionName="1.0" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="29" />
 	<!-- NOTE: Add permissions in AssemblyInfo.cs -->
-	<application android:label="SamplesApp"></application>
+	<application android:label="SamplesApp" android:usesCleartextTraffic="true"></application>
 	<meta-data android:name="com.google.android.geo.API_KEY" android:value="YOUR API KEY" />
 </manifest>

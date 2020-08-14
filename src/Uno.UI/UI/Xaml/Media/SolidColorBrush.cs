@@ -89,12 +89,12 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ColorProperty =
+		public static DependencyProperty ColorProperty { get ; } =
 			DependencyProperty.Register(
 				"Color",
 				typeof(Windows.UI.Color),
 				typeof(SolidColorBrush),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					Colors.Transparent,
 					(s, e) => ((SolidColorBrush)s).OnColorChanged((Windows.UI.Color)e.OldValue, (Windows.UI.Color)e.NewValue)
 				)

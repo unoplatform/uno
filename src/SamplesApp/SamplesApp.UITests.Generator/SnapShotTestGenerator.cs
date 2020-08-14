@@ -157,7 +157,8 @@ namespace Uno.Samples.UITest.Generator
 							}
 
 							builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.AutoRetry]");
-							builder.AppendLineInvariant("[global::NUnit.Framework.Timeout(15000)]");
+							// Set to 60 seconds to cover possible restart of the device
+							builder.AppendLineInvariant("[global::NUnit.Framework.Timeout(60000)]");
 							var testName = $"{Sanitize(test.categories.First())}_{Sanitize(test.name)}";
 							using (builder.BlockInvariant($"public void {testName}()"))
 							{

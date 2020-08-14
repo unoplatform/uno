@@ -19,8 +19,8 @@ namespace Windows.UI.Xaml.Media
 		public event ExceptionRoutedEventHandler ImageFailed;
 
 		#region AlignmentX DP
-		public static readonly DependencyProperty AlignmentXProperty =
-			DependencyProperty.Register("AlignmentX", typeof(AlignmentX), typeof(ImageBrush), new PropertyMetadata(AlignmentX.Center));
+		public static DependencyProperty AlignmentXProperty { get ; } =
+			DependencyProperty.Register("AlignmentX", typeof(AlignmentX), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentX.Center));
 
 #if __WASM__
 		[NotImplemented]
@@ -33,8 +33,8 @@ namespace Windows.UI.Xaml.Media
 		#endregion
 
 		#region AlignmentY DP
-		public static readonly DependencyProperty AlignmentYProperty =
-			DependencyProperty.Register("AlignmentY", typeof(AlignmentY), typeof(ImageBrush), new PropertyMetadata(AlignmentY.Center));
+		public static DependencyProperty AlignmentYProperty { get ; } =
+			DependencyProperty.Register("AlignmentY", typeof(AlignmentY), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentY.Center));
 
 #if __WASM__
 		[NotImplemented]
@@ -47,8 +47,8 @@ namespace Windows.UI.Xaml.Media
 		#endregion
 
 		#region Stretch DP
-		public static readonly DependencyProperty StretchProperty =
-		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new PropertyMetadata(defaultValue: Stretch.Fill, propertyChangedCallback: null));
+		public static DependencyProperty StretchProperty { get ; } =
+		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new FrameworkPropertyMetadata(defaultValue: Stretch.Fill, propertyChangedCallback: null));
 
 #if __WASM__
 		[NotImplemented]
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Media
 
 		#region ImageSource DP
 		public static DependencyProperty ImageSourceProperty { get; } =
-			DependencyProperty.Register("ImageSource", typeof(ImageSource), typeof(ImageBrush), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) =>
+			DependencyProperty.Register("ImageSource", typeof(ImageSource), typeof(ImageBrush), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) =>
 			((ImageBrush)s).OnSourceChangedPartial((ImageSource)e.NewValue, (ImageSource)e.OldValue)));
 
 		public ImageSource ImageSource

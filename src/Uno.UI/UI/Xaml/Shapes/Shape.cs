@@ -1,4 +1,4 @@
-﻿#if !__IOS__ && !__MACOS__
+﻿#if !__IOS__ && !__MACOS__ && !__SKIA__
 #define LEGACY_SHAPE_MEASURE
 #endif
 
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			//Path does not need to define a stroke, in that case StrokeThickness should just return 0
 			//Other shapes like Ellipse and Polygon will not draw if Stroke is null so returning 0 will have no effect
-			get => Stroke == null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
+			get => Stroke == null ? DefaultStrokeThicknessWhenNoStrokeDefined : LayoutRound(StrokeThickness);
 		}
 
 		#region Fill Dependency Property

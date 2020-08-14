@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ManipulationDeltaRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
@@ -14,8 +14,8 @@ namespace Windows.UI.Xaml.Input
 		// Skipping already declared property IsInertial
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Input.ManipulationVelocities Velocities
 		{
 			get

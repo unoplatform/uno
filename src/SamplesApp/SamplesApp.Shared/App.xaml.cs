@@ -26,7 +26,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Logging;
 using Windows.Graphics.Display;
 using System.Globalization;
-
+using Windows.UI.ViewManagement;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -46,6 +46,10 @@ namespace SamplesApp
 		/// </summary>
 		public App()
 		{
+			// Fix language for UI tests
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+			
 			ConfigureFilters(LogExtensionPoint.AmbientLoggerFactory);
 			ConfigureFeatureFlags();
 
@@ -62,6 +66,7 @@ namespace SamplesApp
 		/// <seealso cref="https://github.com/unoplatform/uno/issues/1741"/>
 		public void AssertIssue1790()
 		{
+#if !__SKIA__ // SKIA TODO
 			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
 			{
 				const string issue1790 = nameof(issue1790);
@@ -74,6 +79,7 @@ namespace SamplesApp
 
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
+#endif
 		}
 
 		/// <summary>
@@ -90,9 +96,8 @@ namespace SamplesApp
 #if __IOS__
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
-#endif
-#if NETFX_CORE
-			Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
+
+			LaunchiOSWatchDog();
 #endif
 
 			var sw = Stopwatch.StartNew();
@@ -101,6 +106,8 @@ namespace SamplesApp
 				{
 					Console.WriteLine("Done loading " + sw.Elapsed);
 				});
+
+			ProcessEventArgs(e);
 
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
@@ -111,8 +118,80 @@ namespace SamplesApp
 			InitializeFrame(e.Arguments);
 			Windows.UI.Xaml.Window.Current.Activate();
 
+			ApplicationView.GetForCurrentView().Title = "Uno Samples";
+
 			DisplayLaunchArguments(e);
 		}
+
+		private static void ProcessEventArgs(LaunchActivatedEventArgs e)
+		{
+#if __SKIA__
+			var runAutoScreenshotsParam =
+			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
+
+			var screenshotsPath = runAutoScreenshotsParam?.Split('=').LastOrDefault();
+#endif
+
+			var sw = Stopwatch.StartNew();
+			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+				_ =>
+				{
+#if __SKIA__
+					if (!string.IsNullOrEmpty(screenshotsPath))
+					{
+						var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+							CoreDispatcherPriority.Normal,
+							async () =>
+							{
+								await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
+							}
+						);
+					}
+#endif
+				});
+		}
+
+#if __IOS__
+		/// <summary>
+		/// Launches a watchdog that will terminate the app if the dispatcher does not process
+		/// messages within a specific time.
+		///
+		/// Restarting the app is required in some cases where either the test engine, or Xamarin.UITest stall
+		/// while processing the events of the app.
+		///
+		/// See https://github.com/unoplatform/uno/issues/3363 for details
+		/// </summary>
+		private void LaunchiOSWatchDog()
+		{
+			if (!Debugger.IsAttached)
+			{
+				Console.WriteLine("Starting dispatcher WatchDog...");
+
+				var dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+
+				Task.Run(async () =>
+				{
+
+					while (true)
+					{
+						var delayTask = Task.Delay(TimeSpan.FromSeconds(60));
+						var messageTask = dispatcher.RunAsync(CoreDispatcherPriority.High, () => { }).AsTask();
+
+						if (await Task.WhenAny(delayTask, messageTask) == delayTask)
+						{
+							ThreadPool.QueueUserWorkItem(
+								_ => {
+								Console.WriteLine("WatchDog detecting a stall in the dispatcher, terminating the app");
+								throw new Exception($"Watchdog failed");
+							});
+						}
+
+						await Task.Delay(TimeSpan.FromSeconds(5));
+					}
+				});
+			}
+		}
+#endif
 
 		protected
 #if HAS_UNO

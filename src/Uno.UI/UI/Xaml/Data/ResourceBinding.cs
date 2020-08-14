@@ -21,11 +21,14 @@ namespace Windows.UI.Xaml.Data
 
 		public object ParseContext { get; }
 
-		public ResourceBinding(object resourceKey, bool isThemeResourceExtension, object parseContext)
+		public DependencyPropertyValuePrecedences Precedence { get; }
+
+		public ResourceBinding(object resourceKey, bool isThemeResourceExtension, object parseContext, DependencyPropertyValuePrecedences precedence)
 		{
 			ResourceKey = resourceKey;
 			IsThemeResourceExtension = isThemeResourceExtension;
 			ParseContext = parseContext;
+			Precedence = precedence;
 		}
 	}
 }

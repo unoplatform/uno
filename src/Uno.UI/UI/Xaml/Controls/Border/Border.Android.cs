@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		partial void OnChildChangedPartial(View previousValue, View newValue)
+		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
 		{
 			if (previousValue != null)
 			{

@@ -71,8 +71,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		partial void PartialInitializeProperties();
 
 		#region Command (DP)
-		public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
-			"Command", typeof(ICommand), typeof(ButtonBase), new PropertyMetadata(default(ICommand), OnCommandChanged));
+		public static DependencyProperty CommandProperty { get ; } = DependencyProperty.Register(
+			"Command", typeof(ICommand), typeof(ButtonBase), new FrameworkPropertyMetadata(default(ICommand), OnCommandChanged));
 
 		public ICommand Command
 		{

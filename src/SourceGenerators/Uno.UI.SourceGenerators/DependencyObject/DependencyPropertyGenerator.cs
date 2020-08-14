@@ -441,7 +441,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				builder.AppendLineInvariant($"\ttypeMetadata: new global::Windows.UI.Xaml.FrameworkPropertyMetadata(");
 
 				var defaultValueMethodName = $"Get{propertyName}DefaultValue()";
-				if (!string.IsNullOrEmpty(defaultValue.Value.Key))
+				if (defaultValue.HasValue && !string.IsNullOrEmpty(defaultValue.Value.Key))
 				{
 					if (ownerType.GetMethods().Any(m => m.Name == defaultValueMethodName))
 					{

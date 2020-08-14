@@ -1,4 +1,4 @@
-﻿#if !__WASM__
+﻿#if !NETSTANDARD
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(TimeProperty, value); }
 		}
 
-		public static readonly DependencyProperty TimeProperty =
+		public static DependencyProperty TimeProperty { get ; } =
 			DependencyProperty.Register(
 				"Time",
 				typeof(TimeSpan),
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(MinuteIncrementProperty, value); }
 		}
 
-		public static readonly DependencyProperty MinuteIncrementProperty =
+		public static DependencyProperty MinuteIncrementProperty { get ; } =
 			DependencyProperty.Register(
 				"MinuteIncrement",
 				typeof(int),
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FlyoutPlacementProperty, value); }
 		}
 
-		public static readonly DependencyProperty FlyoutPlacementProperty =
+		public static DependencyProperty FlyoutPlacementProperty { get ; } =
 			DependencyProperty.Register(
 				"FlyoutPlacement",
 				typeof(FlyoutPlacementMode),
@@ -115,6 +115,24 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		#region FlyoutPresenterStyle DependencyProperty
+		// FlyoutPresenterStyle is an Uno-only property to allow the styling of the TimePicker's FlyoutPresenter.
+		public Style FlyoutPresenterStyle
+		{
+			get { return (Style)this.GetValue(FlyoutPresenterStyleProperty); }
+			set { this.SetValue(FlyoutPresenterStyleProperty, value); }
+		}
+
+		public static DependencyProperty FlyoutPresenterStyleProperty { get; } =
+			DependencyProperty.Register(
+				"FlyoutPresenterStyle",
+				typeof(Style),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(
+					default(Style),
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+		#endregion
 
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -142,8 +160,8 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
-			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(TimePicker), new PropertyMetadata(null));
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(TimePicker), new FrameworkPropertyMetadata(null));
 
 		protected override void OnApplyTemplate()
 		{
@@ -171,7 +189,7 @@ namespace Windows.UI.Xaml.Controls
 			SetupFlyoutButton();
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -196,6 +214,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 #if __IOS__
 					Placement = FlyoutPlacement,
+					TimePickerFlyoutPresenterStyle = this.FlyoutPresenterStyle,
 #endif
 					Time = this.Time,
 					MinuteIncrement = this.MinuteIncrement,

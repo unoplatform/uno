@@ -20,18 +20,8 @@ namespace Windows.UI.Core
 
 		public CoreWindow(NSWindow window) : this()
         {
-            _window = window;
-			_window.DidBecomeMain += WindowDidBecomeMain;
+            _window = window;			
         }
-
-		private async void WindowDidBecomeMain(object sender, EventArgs e)
-		{
-			// Ensure custom cursor is reset after window activation.
-			// Artificial delay is necessary due to the fact that setting cursor
-			// immediately after window becoming main does not have any effect.
-			await Task.Delay(100);
-			CoreWindow.GetForCurrentThread().RefreshCursor();
-		}
 
 		public CoreCursor PointerCursor
 		{

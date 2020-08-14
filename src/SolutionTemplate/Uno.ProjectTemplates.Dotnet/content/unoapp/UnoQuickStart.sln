@@ -30,6 +30,19 @@ EndProject
 Project("{FCC8D2E7-3137-4432-B623-163BC51B21E7}") = "UnoQuickStart.macOS", "UnoQuickStart.macOS\UnoQuickStart.macOS.csproj", "{$guid3$}"
 EndProject
 #//#endif
+
+#//#if (skia-gtk)
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoQuickStart.Skia.Gtk", "UnoQuickStart.Skia.Gtk\UnoQuickStart.Skia.Gtk.csproj", "{A5B8155A-118F-4794-B551-C6F3CF7E5411}"
+EndProject
+#//#endif
+
+#//#if (skia-wpf)
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoQuickStart.Skia.WPF", "UnoQuickStart.Skia.WPF\UnoQuickStart.Skia.WPF.csproj", "{$guid5$}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoQuickStart.Wpf.Host", "UnoQuickStart.Skia.WPF.Host\UnoQuickStart.Wpf.Host.csproj", "{6CF284A4-22B1-4F05-97F4-F095C07A598E}"
+EndProject
+#//#endif
+
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		UnoQuickStart.Shared\UnoQuickStart.Shared.projitems*{$guid2$}*SharedItemsImports = 4

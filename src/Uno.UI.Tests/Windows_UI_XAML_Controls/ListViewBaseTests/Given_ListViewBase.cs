@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NETFX_CORE
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,6 @@ namespace Uno.UI.Tests.ListViewBaseTests
 	[TestClass]
 	public class Given_ListViewBase
 	{
-#if !NETFX_CORE
 		// Make sure to have a valid custom theme set, so it won't try to read it from the Application.Current(<<== null).RequestedTheme
 		[TestInitialize] public void Init() => global::Uno.UI.ApplicationHelper.RequestedCustomTheme = "HighContrast";
 
@@ -38,6 +38,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 					new Border { Name = "b2" }
 				}
 			};
+
+			SUT.ApplyTemplate();
 
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
@@ -87,6 +89,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				}
 			);
 
+			SUT.ApplyTemplate();
+
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
 			Assert.IsNotNull(panel.FindName("b1"));
@@ -127,11 +131,11 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			};
 
 			SUT.ItemsSource = new int[] { 1, 2, 3 };
+
 			SUT.OnItemClicked(0);
 
 			SUT.ItemsSource = null;
 		}
-#endif
 
 		[TestMethod]
 		public void When_SelectionChanged_Changes_Selection()
@@ -258,11 +262,15 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.IsNull(SUT.SelectedItem);
 			Assert.AreEqual(-1, SUT.SelectedIndex);
 
+			SUT.ForceLoaded();
+
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 			SUT.SelectionChanged += (s, e) => selectionChanged.Add(e);
+
 			SUT.SelectedItem = source[1];
 
 			Assert.AreEqual(1, SUT.SelectedIndex);
+			Assert.AreEqual(1, selectionChanged.Count);
 
 			if (SUT.ContainerFromIndex(1) is ListViewItem s1)
 			{
@@ -654,3 +662,4 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		}
 	}
 }
+#endif

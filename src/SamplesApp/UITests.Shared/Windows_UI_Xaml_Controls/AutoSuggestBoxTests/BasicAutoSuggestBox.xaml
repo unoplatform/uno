@@ -12,12 +12,19 @@
 		<StackPanel>
 			<AutoSuggestBox x:Name="box1"
 							HorizontalAlignment="Left"
+							TextMemberPath="SuggestionText"
 							TextChanged="AutoSuggestBox_TextChanged"
 							SuggestionChosen="AutoSuggestBox_SuggestionChosen"
 							QuerySubmitted="AutoSuggestBox_QuerySubmitted"
 							Width="300"
 							
-							AutomationProperties.Name="Basic AutoSuggestBox" />
+							AutomationProperties.Name="Basic AutoSuggestBox">
+				<AutoSuggestBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding SuggestionText}" />
+					</DataTemplate>
+				</AutoSuggestBox.ItemTemplate>
+			</AutoSuggestBox>
 			<TextBlock x:Name="IWantToSeeStuffUnderTheSuggestions" xml:space="preserve">
 				
 				

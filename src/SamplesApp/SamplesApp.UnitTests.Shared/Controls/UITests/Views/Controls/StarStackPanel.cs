@@ -6,23 +6,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Uno.UI.Samples.Helper;
 
-#if !NETFX_CORE && !__ANDROID__ && !__IOS__ && !__WASM__ && !__MACOS__
+#if !NETFX_CORE && !__ANDROID__ && !__IOS__ && !NETSTANDARD && !__MACOS__
 using System.Windows;
 using System.Windows.Controls;
 #else
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-#endif
-#if __ANDROID__ || __IOS__ || __WASM__ || __MACOS__
-using DependencyObject = System.Object;
-#endif
-#if __ANDROID__
-using UIElement = Android.Views.View;
-#elif __IOS__
-using UIElement = UIKit.UIView;
-#elif __MACOS__
-using UIElement = AppKit.NSView;
 #endif
 
 namespace Uno.UI.Samples.Controls
@@ -472,7 +462,7 @@ namespace Uno.UI.Samples.Controls
 			set { SetValue(OrientationProperty, value); }
 		}
 
-		public static readonly DependencyProperty OrientationProperty = DependencyProperty.Register
+		public static DependencyProperty OrientationProperty { get ; } = DependencyProperty.Register
 		(
 			"Orientation",
 			typeof(Orientation),
@@ -492,7 +482,7 @@ namespace Uno.UI.Samples.Controls
 			obj.SetValue(PriorityProperty, value);
 		}
 
-		public static readonly DependencyProperty PriorityProperty = DependencyProperty.RegisterAttached
+		public static DependencyProperty PriorityProperty { get ; } = DependencyProperty.RegisterAttached
 		(
 			"Priority",
 			typeof(int),
@@ -502,7 +492,7 @@ namespace Uno.UI.Samples.Controls
 		#endregion
 
 		#region Sizes DependencyProperty
-		public static readonly DependencyProperty SizesProperty = DependencyProperty.Register(
+		public static DependencyProperty SizesProperty { get ; } = DependencyProperty.Register(
 			"Sizes", typeof(string), typeof(StarStackPanel), new PropertyMetadata(null, HandleSizesChanged));
 
 		public string Sizes
@@ -606,7 +596,7 @@ namespace Uno.UI.Samples.Controls
 
 		#region InterElementSpacing DependencyProperty
 
-		public static readonly DependencyProperty InterElementSpacingProperty = DependencyProperty.Register(
+		public static DependencyProperty InterElementSpacingProperty { get ; } = DependencyProperty.Register(
 			"InterElementSpacing", typeof(double), typeof(StarStackPanel), new PropertyMetadata((double)0.0, InvalidateLayoutOnChanged));
 
 		public double InterElementSpacing
@@ -627,7 +617,7 @@ namespace Uno.UI.Samples.Controls
 			obj.SetValue(SizeProperty, value);
 		}
 
-		public static readonly DependencyProperty SizeProperty = DependencyProperty.RegisterAttached
+		public static DependencyProperty SizeProperty { get ; } = DependencyProperty.RegisterAttached
 		(
 			"Size",
 			typeof(GridLength),
@@ -644,7 +634,7 @@ namespace Uno.UI.Samples.Controls
 		}
 		#endregion
 
-#if !__ANDROID__ && !__IOS__ && !__WASM__ //In Uno, Padding is (incorrectly) defined on Panel
+#if !__ANDROID__ && !__IOS__ && !NETSTANDARD //In Uno, Padding is (incorrectly) defined on Panel
 		#region Padding DependencyProperty
 
 		public Thickness Padding
@@ -654,7 +644,7 @@ namespace Uno.UI.Samples.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Padding.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get ; } =
 			DependencyProperty.Register("Padding", typeof(Thickness), typeof(StarStackPanel), new PropertyMetadata(default(Thickness), InvalidateLayoutOnChanged));
 
 		#endregion

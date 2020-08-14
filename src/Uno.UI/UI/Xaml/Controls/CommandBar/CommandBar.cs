@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml.Controls
 				"CommandBarOverflowPresenterStyle",
 				typeof(Style),
 				typeof(CommandBar),
-				new FrameworkPropertyMetadata(default(Style))
+				new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext)
 			);
 
 		#endregion

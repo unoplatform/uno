@@ -26,23 +26,26 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var drawSize = default(Windows.Foundation.Size);
 
+			var suggestedWidth = canvas.Width;
+			var suggestedHeight = canvas.Height;
+
 			switch (Stretch)
 			{
 				case Stretch.Fill:
-					drawSize.Width = canvas.Width;
-					drawSize.Height = canvas.Height;
+					drawSize.Width = suggestedWidth;
+					drawSize.Height = suggestedHeight;
 					break;
 				case Stretch.None:
-					drawSize.Width = double.IsNaN(Width) || Width == 0 ? 0 : canvas.Width;
-					drawSize.Height = double.IsNaN(Height) || Height == 0 ? 0 : canvas.Height;
+					drawSize.Width = double.IsNaN(Width) || Width == 0 ? 0 : suggestedWidth;
+					drawSize.Height = double.IsNaN(Height) || Height == 0 ? 0 : suggestedHeight;
 					break;
 				case Stretch.Uniform:
-					drawSize.Width = Math.Min(canvas.Width, canvas.Height);
-					drawSize.Height = Math.Min(canvas.Width, canvas.Height);
+					drawSize.Width = Math.Min(suggestedWidth, suggestedHeight);
+					drawSize.Height = Math.Min(suggestedWidth, suggestedHeight);
 					break;
 				case Stretch.UniformToFill:
-					drawSize.Width = Math.Max(canvas.Width, canvas.Height);
-					drawSize.Height = Math.Max(canvas.Width, canvas.Height);
+					drawSize.Width = Math.Max(suggestedWidth, suggestedHeight);
+					drawSize.Height = Math.Max(suggestedWidth, suggestedHeight);
 					break;
 			}
 

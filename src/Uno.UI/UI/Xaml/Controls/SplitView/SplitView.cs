@@ -8,13 +8,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
 using Uno.UI.DataBinding;
-#if XAMARIN_IOS
-using View = UIKit.UIView;
-#elif XAMARIN_ANDROID
-using View = Android.Views.View;
-#else
-using View = Windows.UI.Xaml.UIElement;
-#endif
+using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -28,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private CompositeDisposable _subscriptions;
 		private readonly SerialDisposable _runningSubscription = new SerialDisposable();
-		private Button _lightDismissLayer;
+		private FrameworkElement _lightDismissLayer;
 		private bool _isViewReady;
 
 		public SplitView()
@@ -53,11 +47,11 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(CompactPaneLengthProperty, value); }
 		}
 
-		public static readonly DependencyProperty CompactPaneLengthProperty =
+		public static DependencyProperty CompactPaneLengthProperty { get ; } =
 			DependencyProperty.Register(
 				"CompactPaneLength",
 				typeof(double), typeof(SplitView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)48,
 					(s, e) => ((SplitView)s)?.OnCompactPaneLengthChanged(e)
 				)
@@ -72,18 +66,18 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Content DependencyProperty
 
-		public View Content
+		public UIElement Content
 		{
-			get { return (View)this.GetValue(ContentProperty); }
+			get { return (UIElement)this.GetValue(ContentProperty); }
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentProperty =
+		public static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
-				typeof(View),
+				typeof(UIElement),
 				typeof(SplitView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((SplitView)s)?.OnContentChanged(e)
 				)
@@ -98,18 +92,18 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Pane DependencyProperty
 
-		public View Pane
+		public UIElement Pane
 		{
-			get { return (View)this.GetValue(PaneProperty); }
+			get { return (UIElement)this.GetValue(PaneProperty); }
 			set { this.SetValue(PaneProperty, value); }
 		}
 
-		public static readonly DependencyProperty PaneProperty =
+		public static DependencyProperty PaneProperty { get ; } =
 			DependencyProperty.Register(
 				"Pane",
-				typeof(View),
+				typeof(UIElement),
 				typeof(SplitView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((SplitView)s)?.OnPaneChanged(e)
 				)
@@ -129,12 +123,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(DisplayModeProperty, value); }
 		}
 
-		public static readonly DependencyProperty DisplayModeProperty =
+		public static DependencyProperty DisplayModeProperty { get ; } =
 			DependencyProperty.Register(
 				"DisplayMode",
 				typeof(SplitViewDisplayMode),
 				typeof(SplitView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					SplitViewDisplayMode.Overlay,
 					(s, e) => ((SplitView)s)?.OnDisplayModeChanged(e)
 				)
@@ -156,12 +150,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		//There is an error in the MSDN docs saying that the default value for IsPaneOpen is true, it is actually false
-		public static readonly DependencyProperty IsPaneOpenProperty =
+		public static DependencyProperty IsPaneOpenProperty { get ; } =
 			DependencyProperty.Register(
 				"IsPaneOpen",
 				typeof(bool),
 				typeof(SplitView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					(s, e) => ((SplitView)s)?.OnIsPaneOpenChanged(e)
 				)
@@ -182,12 +176,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(OpenPaneLengthProperty, value); }
 		}
 
-		public static readonly DependencyProperty OpenPaneLengthProperty =
+		public static DependencyProperty OpenPaneLengthProperty { get ; } =
 			DependencyProperty.Register(
 				"OpenPaneLength",
 				typeof(double),
 				typeof(SplitView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)320,
 					(s, e) => ((SplitView)s)?.OnOpenPaneLengthChanged(e)
 				)
@@ -208,12 +202,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PaneBackgroundProperty, value); }
 		}
 
-		public static readonly DependencyProperty PaneBackgroundProperty =
+		public static DependencyProperty PaneBackgroundProperty { get ; } =
 			DependencyProperty.Register(
 				"PaneBackground",
 				typeof(Brush),
 				typeof(SplitView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					SolidColorBrushHelper.Transparent,
 					(s, e) => ((SplitView)s)?.OnPaneBackgroundChanged(e)
 				)
@@ -233,12 +227,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PanePlacementProperty, value); }
 		}
 
-		public static readonly DependencyProperty PanePlacementProperty =
+		public static DependencyProperty PanePlacementProperty { get ; } =
 			DependencyProperty.Register(
 				"PanePlacement",
 				typeof(SplitViewPanePlacement),
 				typeof(SplitView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					SplitViewPanePlacement.Left,
 					(s, e) => ((SplitView)s)?.OnPanePlacementChanged(e)
 				)
@@ -259,12 +253,12 @@ namespace Windows.UI.Xaml.Controls
 			private set { this.SetValue(TemplateSettingsProperty, value); }
 		}
 
-		public static readonly DependencyProperty TemplateSettingsProperty =
+		public static DependencyProperty TemplateSettingsProperty { get ; } =
 			DependencyProperty.Register(
 				"TemplateSettings",
 				typeof(SplitViewTemplateSettings),
 				typeof(SplitView),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					new SplitViewTemplateSettings(null),
 					(s, e) => ((SplitView)s)?.OnTemplateSettingsPropertyChanged(e)
 				)
@@ -282,7 +276,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateTemplateSettings();
 
-			_lightDismissLayer = FindName("LightDismissLayer") as Button;
+			_lightDismissLayer = FindName("LightDismissLayer") as FrameworkElement;
 
 			_isViewReady = true;
 
@@ -300,7 +294,7 @@ namespace Windows.UI.Xaml.Controls
 			SynchronizeContentTemplatedParent();
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -313,7 +307,7 @@ namespace Windows.UI.Xaml.Controls
 			SynchronizeContentTemplatedParent();
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
@@ -346,11 +340,19 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_lightDismissLayer != null)
 			{
-				RoutedEventHandler handler = (s, e) => IsPaneOpen = false;
-
-				_lightDismissLayer.Click += handler;
-
-				_subscriptions.Add(() => _lightDismissLayer.Click -= handler);
+				if (_lightDismissLayer is ButtonBase button)
+				{
+					// PointerReleased isn't raised for buttons
+					RoutedEventHandler handler = (s, e) => IsPaneOpen = false;
+					button.Click += handler;
+					_subscriptions.Add(() => button.Click -= handler);
+				}
+				else
+				{
+					PointerEventHandler handler = (s, e) => IsPaneOpen = false;
+					_lightDismissLayer.PointerReleased += handler;
+					_subscriptions.Add(() => _lightDismissLayer.PointerReleased -= handler);
+				}
 			}
 		}
 

@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnChildChanged(FrameworkElement oldChild, FrameworkElement newChild)
+		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
 		{
 			base.OnChildChanged(oldChild, newChild);
 

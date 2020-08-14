@@ -1,0 +1,144 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Microsoft.UI.Xaml.Controls">
+
+    <Style TargetType="local:PersonPicture" BasedOn="{StaticResource DefaultPersonPictureStyle}" />
+
+    <Style x:Key="DefaultPersonPictureStyle" TargetType="local:PersonPicture">
+        <Setter Property="Foreground" Value="{ThemeResource PersonPictureForegroundThemeBrush}" />
+        <Setter Property="Width" Value="100" />
+        <Setter Property="Height" Value="100" />
+        <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+        <Setter Property="FontWeight" Value="SemiLight" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="AutomationProperties.AccessibilityView" Value="Raw" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:PersonPicture">
+                    <Grid x:Name="RootGrid">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <!-- Visual State when a Photo is available for display -->
+                                <VisualState x:Name="Photo">
+                                    <VisualState.Setters>
+                                        <Setter Target="PersonPictureEllipse.Fill" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush}"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <!-- Visual State when no Photo is available (but there are initials).-->
+                                <VisualState x:Name="Initials" />
+                                <VisualState x:Name="NoPhotoOrInitials">
+                                    <VisualState.Setters>
+                                        <Setter Target="InitialsTextBlock.FontFamily" Value="Segoe MDL2 Assets"/>
+                                        <!-- Placeholder symbol for 'Contact' (https://docs.microsoft.com/en-us/windows/uwp/design/style/segoe-ui-symbol-font) -->
+                                        <Setter Target="InitialsTextBlock.Text" Value="&#xE77B;"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <!-- Visual State when in Group mode -->
+                                <VisualState x:Name="Group">
+                                    <VisualState.Setters>
+                                        <Setter Target="InitialsTextBlock.FontFamily" Value="Segoe MDL2 Assets"/>
+                                        <!-- Placeholder symbol for 'People' (https://docs.microsoft.com/en-us/windows/uwp/design/style/segoe-ui-symbol-font) -->
+                                        <Setter Target="InitialsTextBlock.Text" Value="&#xE716;"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="BadgeStates">
+                                <VisualState x:Name="NoBadge" />
+                                <VisualState x:Name="BadgeWithoutImageSource" >
+                                    <VisualState.Setters>
+                                        <Setter Target="BadgeGrid.Visibility" Value="Visible" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="BadgeWithImageSource">
+                                    <VisualState.Setters>
+                                        <Setter Target="BadgeGrid.Visibility" Value="Visible" />
+                                        <Setter Target="BadgingEllipse.Opacity" Value="{ThemeResource PersonPictureEllipseBadgeImageSourceStrokeOpacity}" />
+                                        <Setter Target="BadgingEllipse.Fill">
+                                            <Setter.Value>
+                                                <ImageBrush x:Name="BadgeImageBrush" Stretch="UniformToFill" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <Ellipse
+                            Fill="{ThemeResource PersonPictureEllipseFillThemeBrush}"
+                            Stroke="{ThemeResource SystemColorButtonTextColor}"
+                            StrokeThickness="{ThemeResource PersonPictureEllipseStrokeThickness}"
+                            Width="{TemplateBinding Width}"
+                            Height="{TemplateBinding Height}" />
+
+                        <TextBlock
+                            x:Name="InitialsTextBlock"
+                            AutomationProperties.AccessibilityView="Raw"
+                            FontSize="36"
+                            FontFamily="{TemplateBinding FontFamily}"
+                            Foreground="{TemplateBinding Foreground}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            TextLineBounds="Tight"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            IsTextScaleFactorEnabled="False"
+                            Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualInitials}" />
+
+                        <Ellipse
+                            x:Name="PersonPictureEllipse"
+                            x:DeferLoadStrategy="Lazy"
+                            Width="{TemplateBinding Width}"
+                            Height="{TemplateBinding Height}"
+                            FlowDirection="LeftToRight">
+                        </Ellipse>
+
+                        <Grid
+                            x:Name="BadgeGrid"
+                            Visibility="Collapsed"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Right">
+
+                            <Ellipse
+                                x:Name="BadgingBackgroundEllipse"
+                                x:DeferLoadStrategy="Lazy"
+                                Opacity="{ThemeResource PersonPictureEllipseBadgeStrokeOpacity}"
+                                Fill="{ThemeResource PersonPictureEllipseBadgeFillThemeBrush}"
+                                Stroke="{ThemeResource PersonPictureEllipseBadgeStrokeThemeBrush}"
+                                StrokeThickness="{ThemeResource PersonPictureEllipseBadgeStrokeThickness}"/>
+
+                            <Ellipse
+                                x:Name="BadgingEllipse"
+                                x:DeferLoadStrategy="Lazy"
+                                Opacity="0"
+                                FlowDirection="LeftToRight"/>
+
+                            <TextBlock
+                                x:Name="BadgeNumberTextBlock"
+                                x:DeferLoadStrategy="Lazy"
+                                AutomationProperties.AccessibilityView="Raw"
+                                Foreground="{ThemeResource PersonPictureEllipseBadgeForegroundThemeBrush}"
+                                FontFamily="{TemplateBinding FontFamily}"
+                                FontWeight="{TemplateBinding FontWeight}"
+                                TextLineBounds="Tight"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                IsTextScaleFactorEnabled="False" />
+
+                            <!-- Default font family to "Segoe MDL2 Assets" -->
+                            <FontIcon
+                                x:Name="BadgeGlyphIcon"
+                                x:DeferLoadStrategy="Lazy"
+                                AutomationProperties.AccessibilityView="Raw"
+                                Foreground="{ThemeResource PersonPictureEllipseBadgeForegroundThemeBrush}"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                FontWeight="{TemplateBinding FontWeight}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

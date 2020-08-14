@@ -36,6 +36,11 @@ namespace Windows.UI.Xaml
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private string _uid;
 
+		/// <summary>
+		/// Is this view set to Window.Current.Content?
+		/// </summary>
+		internal bool IsWindowRoot { get; set; }
+
 		private void Initialize()
 		{
 			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(0), DependencyPropertyValuePrecedences.DefaultValue);
@@ -63,12 +68,12 @@ namespace Windows.UI.Xaml
 			set { this.SetValue(ClipProperty, value); }
 		}
 
-		public static readonly DependencyProperty ClipProperty =
+		public static DependencyProperty ClipProperty { get ; } =
 			DependencyProperty.Register(
 				"Clip",
 				typeof(RectangleGeometry),
 				typeof(UIElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((UIElement)s)?.OnClipChanged(e)
 				)
@@ -104,8 +109,8 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Backing dependency property for <see cref="RenderTransform"/>
 		/// </summary>
-		public static readonly DependencyProperty RenderTransformProperty =
-			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(UIElement), new PropertyMetadata(null, (s, e) => OnRenderTransformChanged(s, e)));
+		public static DependencyProperty RenderTransformProperty { get ; } =
+			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(UIElement), new FrameworkPropertyMetadata(null, (s, e) => OnRenderTransformChanged(s, e)));
 
 		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -142,8 +147,8 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for RenderTransformOrigin.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty RenderTransformOriginProperty =
-			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(UIElement), new PropertyMetadata(default(Point), (s, e) => OnRenderTransformOriginChanged(s, e)));
+		public static DependencyProperty RenderTransformOriginProperty { get ; } =
+			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(UIElement), new FrameworkPropertyMetadata(default(Point), (s, e) => OnRenderTransformOriginChanged(s, e)));
 
 		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -306,18 +311,16 @@ namespace Windows.UI.Xaml
 			{
 				rect = Clip.Rect;
 
-				// Currently only TranslateTransform is supported on a clipping mask
-				// (because the calculated mask is a Rect right now...)
-				if (Clip?.Transform is TranslateTransform translateTransform)
+				//// Apply transform to clipping mask, if any
+				if (Clip.Transform != null)
 				{
-					rect.X += translateTransform.X;
-					rect.Y += translateTransform.Y;
+					rect = Clip.Transform.TransformBounds(rect);
 				}
 			}
 
 			if (NeedsClipToSlot)
 			{
-#if __WASM__
+#if NETSTANDARD
 				var boundsClipping = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
 #else
 				var boundsClipping = ClippedFrame ?? Rect.Empty;
@@ -395,7 +398,7 @@ namespace Windows.UI.Xaml
 
 		internal bool NeedsClipToSlot { get; set; }
 
-#if !__WASM__
+#if !NETSTANDARD
 		/// <summary>
 		/// Backing property for <see cref="Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize(UIElement)"/>
 		/// </summary>
@@ -422,7 +425,7 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-#if !__WASM__
+#if !NETSTANDARD
 		/// <summary>
 		/// This is the Frame that should be used as "available Size" for the Arrange phase.
 		/// </summary>
@@ -483,6 +486,111 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsViewHit() => true;
 
+		internal double LayoutRound(double value)
+		{
+#if __SKIA__
+			double scaleFactor = GetScaleFactorForLayoutRounding();
+
+			return LayoutRound(value, scaleFactor);
+#else
+			return value;
+#endif
+		}
+
+		internal Rect LayoutRound(Rect value)
+		{
+#if __SKIA__
+			double scaleFactor = GetScaleFactorForLayoutRounding();
+
+			return new Rect(
+				x: LayoutRound(value.X, scaleFactor),
+				y: LayoutRound(value.Y, scaleFactor),
+				width: LayoutRound(value.Width, scaleFactor),
+				height: LayoutRound(value.Height, scaleFactor)
+			);
+#else
+			return value;
+#endif
+		}
+
+		internal Thickness LayoutRound(Thickness value)
+		{
+#if __SKIA__
+			double scaleFactor = GetScaleFactorForLayoutRounding();
+
+			return new Thickness(
+				top: LayoutRound(value.Top, scaleFactor),
+				bottom: LayoutRound(value.Bottom, scaleFactor),
+				left: LayoutRound(value.Left, scaleFactor),
+				right: LayoutRound(value.Right, scaleFactor)
+			);
+#else
+			return value;
+#endif
+		}
+
+		internal Vector2 LayoutRound(Vector2 value)
+		{
+#if __SKIA__
+			double scaleFactor = GetScaleFactorForLayoutRounding();
+
+			return new Vector2(
+				x: (float)LayoutRound(value.X, scaleFactor),
+				y: (float)LayoutRound(value.Y, scaleFactor)
+			);
+#else
+			return value;
+#endif
+		}
+
+		internal Size LayoutRound(Size value)
+		{
+#if __SKIA__
+			double scaleFactor = GetScaleFactorForLayoutRounding();
+
+			return new Size(
+				width: LayoutRound(value.Width, scaleFactor),
+				height: LayoutRound(value.Height, scaleFactor)
+			);
+#else
+			return value;
+#endif
+		}
+
+		private double LayoutRound(double value, double scaleFactor)
+		{
+			double returnValue = value;
+
+			// Plateau scale is applied as a scale transform on the root element. All values computed by layout
+			// will be multiplied by this scale. Layout assumes a plateau of 1, and values rounded to
+			// integers at layout plateau of 1 will not be integer values when scaled by plateau transform, causing
+			// sub-pixel rendering at plateau != 1. To correctly put element edges at device pixel boundaries, layout rounding
+			// needs to take plateau into account and produce values that will be rounded after plateau scaling is applied,
+			// i.e. multiples of 1/Plateau.
+			if (scaleFactor != 1.0)
+			{
+				returnValue = XcpRound(returnValue * scaleFactor) / scaleFactor;
+			}
+			else
+			{
+				// Avoid unnecessary multiply/divide at scale factor 1.
+				returnValue = XcpRound(returnValue);
+			}
+
+			return returnValue;
+		}
+
+		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
+		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
+		private double GetScaleFactorForLayoutRounding()
+		{
+			// TODO use actual scaling based on current transforms.
+			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / 96.0f; // 100%
+		}
+
+		int XcpRound(double x)
+			=> (int)Math.Floor(x + 0.5);
+
 #if HAS_UNO_WINUI
 		#region FocusState DependencyProperty
 
@@ -492,12 +600,12 @@ namespace Windows.UI.Xaml
 			internal set { SetValue(FocusStateProperty, value); }
 		}
 
-		public static DependencyProperty FocusStateProperty =
+		public static DependencyProperty FocusStateProperty { get; } =
 			DependencyProperty.Register(
 				"FocusState",
 				typeof(FocusState),
 				typeof(UIElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(FocusState)FocusState.Unfocused
 				)
 			);
@@ -512,12 +620,12 @@ namespace Windows.UI.Xaml
 			set { SetValue(IsTabStopProperty, value); }
 		}
 
-		public static DependencyProperty IsTabStopProperty =
+		public static DependencyProperty IsTabStopProperty { get; } =
 			DependencyProperty.Register(
 				"IsTabStop",
 				typeof(bool),
 				typeof(UIElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(bool)true,
 					(s, e) => ((Control)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
 				)

@@ -31,7 +31,7 @@ namespace XamlGenerationTests.Shared.Controls
 
 		// Using a DependencyProperty as the backing store for MyTemplate.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyTemplateProperty =
-			DependencyProperty.Register("MyTemplate", typeof(DataTemplate), typeof(ControlWithContent), new PropertyMetadata(0));
+			DependencyProperty.Register("MyTemplate", typeof(DataTemplate), typeof(ControlWithContent), new FrameworkPropertyMetadata(0));
 
 		#endregion
 
@@ -43,6 +43,6 @@ namespace XamlGenerationTests.Shared.Controls
 
         // Using a DependencyProperty as the backing store for Content.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ContentProperty =
-            DependencyProperty.Register("Content", typeof(object), typeof(ControlWithContent), new PropertyMetadata(0));
+            DependencyProperty.Register("Content", typeof(object), typeof(ControlWithContent), new FrameworkPropertyMetadata(0));
     }
 }

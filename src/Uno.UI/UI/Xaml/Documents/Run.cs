@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Documents
 			set { this.SetValue(TextProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextProperty =
+		public static DependencyProperty TextProperty { get ; } =
 			DependencyProperty.Register(
 				"Text",
 				typeof(string),

@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		#region Row Property
 		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
-		public static readonly DependencyProperty RowProperty = CreateRowProperty();
+		public static DependencyProperty RowProperty { get ; } = CreateRowProperty();
 
 		public static int GetRow(View view) => GetRowValue(view);
 
@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Column Property
 		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
-		public static readonly DependencyProperty ColumnProperty = CreateColumnProperty();
+		public static DependencyProperty ColumnProperty { get ; } = CreateColumnProperty();
 
 		public static int GetColumn(View view) => GetColumnValue(view);
 
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region RowSpan Property
 		[GeneratedDependencyProperty(DefaultValue = 1, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
-		public static readonly DependencyProperty RowSpanProperty = CreateRowSpanProperty();
+		public static DependencyProperty RowSpanProperty { get ; } = CreateRowSpanProperty();
 
 		public static int GetRowSpan(View view) => GetRowSpanValue(view);
 
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region ColumnSpan Property
 		[GeneratedDependencyProperty(DefaultValue = 1, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
-		public static readonly DependencyProperty ColumnSpanProperty = CreateColumnSpanProperty();
+		public static DependencyProperty ColumnSpanProperty { get ; } = CreateColumnSpanProperty();
 
 		public static int GetColumnSpan(View view) => GetColumnSpanValue(view);
 

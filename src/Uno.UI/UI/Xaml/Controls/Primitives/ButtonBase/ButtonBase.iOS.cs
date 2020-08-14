@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		private readonly SerialDisposable _clickSubscription = new SerialDisposable();
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			OnCanExecuteChanged();
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 

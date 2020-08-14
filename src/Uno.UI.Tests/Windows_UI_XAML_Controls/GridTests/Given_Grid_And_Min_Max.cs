@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 {
 	[TestClass]
-#if !NET461
+#if !NET461 && !NETFX_CORE
 	[RuntimeTests.RunsOnUIThread]
 #endif
 	public class Given_Grid_And_Min_Max

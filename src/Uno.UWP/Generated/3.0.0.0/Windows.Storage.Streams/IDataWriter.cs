@@ -2,100 +2,43 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IDataWriter 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		global::Windows.Storage.Streams.ByteOrder ByteOrder
-		{
-			get;
-			set;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		global::Windows.Storage.Streams.UnicodeEncoding UnicodeEncoding
-		{
-			get;
-			set;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		uint UnstoredBufferLength
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property ByteOrder
+		// Skipping already declared property UnicodeEncoding
+		// Skipping already declared property UnstoredBufferLength
 		// Forced skipping of method Windows.Storage.Streams.IDataWriter.UnstoredBufferLength.get
 		// Forced skipping of method Windows.Storage.Streams.IDataWriter.UnicodeEncoding.get
 		// Forced skipping of method Windows.Storage.Streams.IDataWriter.UnicodeEncoding.set
 		// Forced skipping of method Windows.Storage.Streams.IDataWriter.ByteOrder.get
 		// Forced skipping of method Windows.Storage.Streams.IDataWriter.ByteOrder.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteByte( byte value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteBytes( byte[] value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteBuffer( global::Windows.Storage.Streams.IBuffer buffer);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteBuffer( global::Windows.Storage.Streams.IBuffer buffer,  uint start,  uint count);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteBoolean( bool value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteGuid( global::System.Guid value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteInt16( short value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteInt32( int value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteInt64( long value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteUInt16( ushort value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteUInt32( uint value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteUInt64( ulong value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteSingle( float value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteDouble( double value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteDateTime( global::System.DateTimeOffset value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		void WriteTimeSpan( global::System.TimeSpan value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		uint WriteString( string value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		uint MeasureString( string value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteByte(byte)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteBytes(byte[])
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteBuffer(Windows.Storage.Streams.IBuffer)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteBuffer(Windows.Storage.Streams.IBuffer, uint, uint)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteBoolean(bool)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteGuid(System.Guid)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteInt16(short)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteInt32(int)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteInt64(long)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteUInt16(ushort)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteUInt32(uint)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteUInt64(ulong)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteSingle(float)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteDouble(double)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteDateTime(System.DateTimeOffset)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteTimeSpan(System.TimeSpan)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteString(string)
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.MeasureString(string)
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.DataWriterStoreOperation StoreAsync();
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		global::Windows.Foundation.IAsyncOperation<bool> FlushAsync();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		global::Windows.Storage.Streams.IBuffer DetachBuffer();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.FlushAsync()
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.DetachBuffer()
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.IOutputStream DetachStream();
 		#endif
 	}

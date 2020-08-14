@@ -37,7 +37,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty MyIntPropertyProperty =
-			DependencyProperty.Register("MyIntProperty", typeof(int), typeof(Binding_TwoWay_Simple), new PropertyMetadata(0));
+			DependencyProperty.Register("MyIntProperty", typeof(int), typeof(Binding_TwoWay_Simple), new FrameworkPropertyMetadata(0));
 	}
 
 	public class Simple_TwoWayTestObject : Border
@@ -49,7 +49,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.Register("MyProperty", typeof(int), typeof(Simple_TwoWayTestObject), new PropertyMetadata(0));
+			DependencyProperty.Register("MyProperty", typeof(int), typeof(Simple_TwoWayTestObject), new FrameworkPropertyMetadata(0));
 	}
 
 	public class Simple_TwoWayModel : System.ComponentModel.INotifyPropertyChanged

@@ -1,0 +1,128 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Default">
+      <Color x:Key="SystemChromeMediumHighColor">#FF323232</Color>
+      <Color x:Key="SystemChromeAltMediumHighColor">#CC1F1F1F</Color>
+      <Color x:Key="SystemChromeAltHighColor">#FF1C1C1C</Color>
+      <media:AcrylicBrush x:Key="SystemControlAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentAcrylicWindowAccentMediumHighBrush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemAccentColor}" TintOpacity="0.7" FallbackColor="{ThemeResource SystemAccentColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentAcrylicElementAccentMediumHighBrush" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemAccentColor}" TintOpacity="0.7" FallbackColor="{ThemeResource SystemAccentColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentDark1AcrylicWindowAccentDark1Brush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemAccentColorDark1}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark1}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentDark1AcrylicElementAccentDark1Brush" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemAccentColorDark1}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark1}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentDark2AcrylicWindowAccentDark2MediumHighBrush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemAccentColorDark2}" TintOpacity="0.7" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentDark2AcrylicElementAccentDark2MediumHighBrush" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemAccentColorDark2}" TintOpacity="0.7" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
+      <media:AcrylicBrush x:Key="SystemControlAcrylicWindowMediumHighBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.7" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAcrylicElementMediumHighBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.7" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicWindowMediumHighBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.7" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicElementMediumHighBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.7" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeLowAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeLowAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeMediumAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeMediumAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeHighAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeHighAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseLowAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemBaseLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseLowAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemBaseLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltLowAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltLowAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemAltMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemAltMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltHighAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltHighAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltHighColor}" />
+      <SolidColorBrush x:Key="SystemControlTransientBorderBrush" Color="#000000" Opacity="0.36" />
+      <media:AcrylicBrush x:Key="SystemControlTransientBackgroundBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
+    </ResourceDictionary>
+    <ResourceDictionary x:Key="Light">
+      <Color x:Key="SystemChromeMediumHighColor">#FFE6E6E6</Color>
+      <Color x:Key="SystemChromeAltMediumHighColor">#CCFFFFFF</Color>
+      <Color x:Key="SystemChromeAltHighColor">#FFFFFFFF</Color>
+      <media:AcrylicBrush x:Key="SystemControlAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentAcrylicWindowAccentMediumHighBrush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemAccentColor}" TintOpacity="0.7" FallbackColor="{ThemeResource SystemAccentColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentAcrylicElementAccentMediumHighBrush" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemAccentColor}" TintOpacity="0.7" FallbackColor="{ThemeResource SystemAccentColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentDark1AcrylicWindowAccentDark1Brush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemAccentColorDark1}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark1}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentDark1AcrylicElementAccentDark1Brush" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemAccentColorDark1}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark1}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentDark2AcrylicWindowAccentDark2MediumHighBrush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemAccentColorDark2}" TintOpacity="0.7" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
+      <media:AcrylicBrush x:Key="SystemControlAccentDark2AcrylicElementAccentDark2MediumHighBrush" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemAccentColorDark2}" TintOpacity="0.7" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
+      <media:AcrylicBrush x:Key="SystemControlAcrylicWindowMediumHighBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.7" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAcrylicElementMediumHighBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.7" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicWindowMediumHighBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.7" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicElementMediumHighBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.7" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseHighAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemBaseHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeLowAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeLowAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeMediumAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeMediumAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeHighAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlChromeHighAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseLowAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemBaseLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseLowAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemBaseLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlBaseMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltLowAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltLowAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemAltMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemAltMediumLowColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltHighAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltHighColor}" />
+      <media:AcrylicBrush x:Key="SystemControlAltHighAcrylicElementBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltHighColor}" />
+      <SolidColorBrush x:Key="SystemControlTransientBorderBrush" Color="#000000" Opacity="0.14" />
+      <media:AcrylicBrush x:Key="SystemControlTransientBackgroundBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
+    </ResourceDictionary>
+    <ResourceDictionary x:Key="HighContrast">
+      <Color x:Key="SystemChromeMediumHighColor">#FF323232</Color>
+      <Color x:Key="SystemChromeAltMediumHighColor">#CC1F1F1F</Color>
+      <Color x:Key="SystemChromeAltHighColor">#FF1F1F1F</Color>
+      <SolidColorBrush x:Key="SystemControlAcrylicWindowBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAccentAcrylicWindowAccentMediumHighBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAccentAcrylicElementAccentMediumHighBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAccentDark1AcrylicWindowAccentDark1Brush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAccentDark1AcrylicElementAccentDark1Brush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAccentDark2AcrylicWindowAccentDark2MediumHighBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAccentDark2AcrylicElementAccentDark2MediumHighBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAcrylicWindowMediumHighBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAcrylicElementMediumHighBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlBaseHighAcrylicWindowBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlBaseHighAcrylicElementBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlBaseHighAcrylicWindowMediumHighBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlBaseHighAcrylicElementMediumHighBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlBaseHighAcrylicWindowMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlBaseHighAcrylicElementMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlChromeLowAcrylicWindowBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlChromeLowAcrylicElementBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlChromeMediumAcrylicWindowMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlChromeMediumAcrylicElementMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlChromeHighAcrylicWindowMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlChromeHighAcrylicElementMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlBaseLowAcrylicWindowBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlBaseLowAcrylicElementBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlBaseMediumLowAcrylicWindowMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlBaseMediumLowAcrylicElementMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAltLowAcrylicWindowBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAltLowAcrylicElementBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAltMediumLowAcrylicWindowMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAltMediumLowAcrylicElementMediumBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAltHighAcrylicWindowBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SystemControlAltHighAcrylicElementBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <StaticResource x:Key="SystemControlTransientBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
+      <StaticResource x:Key="SystemControlTransientBackgroundBrush" ResourceKey="SystemChromeMediumLowColor" />
+    </ResourceDictionary>
+  </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

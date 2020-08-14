@@ -41,12 +41,12 @@ namespace Windows.UI.Xaml
 			Loading?.Invoke(this, null);
 		}
 
-		protected virtual void OnLoaded()
+		private protected virtual void OnLoaded()
 		{
 			Loaded?.Invoke(this, new RoutedEventArgs(this));
 		}
 
-		protected virtual void OnUnloaded()
+		private protected virtual void OnUnloaded()
 		{
 			Unloaded?.Invoke(this, new RoutedEventArgs(this));
 		}
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml
 
 		public TransitionCollection Transitions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-		public IFrameworkElement FindName(string name)
+		public object FindName(string name)
 			=> IFrameworkElementHelper.FindName(this, GetChildren(), name);
 
 
@@ -80,12 +80,12 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for Enabled.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IsEnabledProperty =
+		public static DependencyProperty IsEnabledProperty { get ; } =
 			DependencyProperty.Register(
 				"IsEnabled",
 				typeof(bool),
 				typeof(FrameworkElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: true,
 					propertyChangedCallback: (s, e) => ((FrameworkElement)s)?.OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue),
 					coerceValueCallback: (s, v) => (s as FrameworkElement)?.CoerceIsEnabled(v)
@@ -115,8 +115,8 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for Background.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BackgroundProperty =
-			DependencyProperty.Register("Background", typeof(Brush), typeof(FrameworkElement), new PropertyMetadata(null, (s, e) => ((FrameworkElement)s)?.OnBackgroundChanged(e)));
+		public static DependencyProperty BackgroundProperty { get ; } =
+			DependencyProperty.Register("Background", typeof(Brush), typeof(FrameworkElement), new FrameworkPropertyMetadata(null, (s, e) => ((FrameworkElement)s)?.OnBackgroundChanged(e)));
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml
 		#region HorizontalAlignment Dependency Property
 
 		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty HorizontalAlignmentProperty = CreateHorizontalAlignmentProperty();
+		public static DependencyProperty HorizontalAlignmentProperty { get ; } = CreateHorizontalAlignmentProperty();
 		public HorizontalAlignment HorizontalAlignment
 		{
 			get => GetHorizontalAlignmentValue();
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml
 		#region VerticalAlignment Dependency Property
 
 		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty VerticalAlignmentProperty = CreateVerticalAlignmentProperty();
+		public static DependencyProperty VerticalAlignmentProperty { get ; } = CreateVerticalAlignmentProperty();
 
 		public VerticalAlignment VerticalAlignment
 		{
@@ -150,7 +150,7 @@ namespace Windows.UI.Xaml
 
 		#region Width Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = double.NaN, Options = FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty WidthProperty = CreateWidthProperty();
+		public static DependencyProperty WidthProperty { get ; } = CreateWidthProperty();
 
 		public double Width
 		{
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml
 
 		#region Height Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = double.NaN, Options = FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty HeightProperty = CreateHeightProperty();
+		public static DependencyProperty HeightProperty { get ; } = CreateHeightProperty();
 
 
 		public double Height
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml
 
 		#region MinWidth Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = 0.0, Options = FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty MinWidthProperty = CreateMinWidthProperty();
+		public static DependencyProperty MinWidthProperty { get ; } = CreateMinWidthProperty();
 
 		public double MinWidth
 		{
@@ -184,7 +184,7 @@ namespace Windows.UI.Xaml
 
 		#region MinHeight Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = 0.0, Options = FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty MinHeightProperty = CreateMinHeightProperty();
+		public static DependencyProperty MinHeightProperty { get ; } = CreateMinHeightProperty();
 
 		public double MinHeight
 		{
@@ -195,7 +195,7 @@ namespace Windows.UI.Xaml
 
 		#region MaxWidth Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options = FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty MaxWidthProperty = CreateMaxWidthProperty();
+		public static DependencyProperty MaxWidthProperty { get ; } = CreateMaxWidthProperty();
 
 		public double MaxWidth
 		{
@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml
 
 		#region MaxHeight Dependency Property
 		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options = FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
-		public static readonly DependencyProperty MaxHeightProperty = CreateMaxHeightProperty();
+		public static DependencyProperty MaxHeightProperty { get ; } = CreateMaxHeightProperty();
 
 		public double MaxHeight
 		{

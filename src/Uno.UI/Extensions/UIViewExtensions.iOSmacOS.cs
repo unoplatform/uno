@@ -639,10 +639,13 @@ namespace AppKit
 						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
 						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+						.Append(fe != null && (!double.IsNaN(fe.Width) || !double.IsNaN(fe.Height)) ? $"FE.Width={fe.Width},FE.Height={fe.Height}" : "")
 						.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
 						.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 						.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
-						.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}" : "")
+						.Append(fe != null && fe.TryGetCornerRadius(out var cr) && cr != default ? $" CornerRadius={cr.ToStringCompact()}" : "")
+						.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
+						.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}, AvailableSize={uiElement.LastAvailableSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
 						.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
 						.AppendLine();

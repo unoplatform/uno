@@ -16,11 +16,21 @@ namespace Windows.UI.Core
 
 		private Point? _pointerPosition;
 		private IPointerEventArgs _lastPointerEventArgs;
+		private static Action _invalidateRender;
 
 		internal CoreWindow()
 		{
 			_current = this;
+			InitializePartial();
 		}
+
+		internal static void SetInvalidateRender(Action invalidateRender) => _invalidateRender = invalidateRender;
+
+		internal static void QueueInvalidateRender() => _invalidateRender?.Invoke();
+
+		partial void InitializePartial();
+    
+		public event TypedEventHandler<CoreWindow, WindowSizeChangedEventArgs> SizeChanged;
 
 		public CoreDispatcher Dispatcher
 			=> CoreDispatcher.Main;
@@ -50,6 +60,11 @@ namespace Windows.UI.Core
 		internal interface IPointerEventArgs
 		{
 			Point GetLocation();
+		}
+
+		internal void OnSizeChanged(WindowSizeChangedEventArgs windowSizeChangedEventArgs)
+		{
+			SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
 		}
 	}
 }

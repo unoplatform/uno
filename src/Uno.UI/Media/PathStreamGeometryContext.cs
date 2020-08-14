@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using System.Numerics;
 using System.Linq;
 using static System.Math;
+using Uno.Extensions;
 
 #if __IOS__
 using UIKit;
@@ -17,6 +18,8 @@ using CoreGraphics;
 using Android.Graphics.Drawables.Shapes;
 using Path = Android.Graphics.Path;
 using Uno.UI;
+#elif __SKIA__
+using Path = Windows.UI.Composition.SkiaGeometrySource2D;
 #else
 using Path = System.Object;
 #endif
@@ -41,6 +44,8 @@ namespace Uno.Media
 #elif __ANDROID__
 			var physicalStartPoint = LogicalToPhysicalNoRounding(startPoint);
 			bezierPath.MoveTo((float)physicalStartPoint.X, (float)physicalStartPoint.Y);
+#elif __SKIA__
+			bezierPath.Geometry.MoveTo(new SkiaSharp.SKPoint((float)startPoint.X, (float)startPoint.Y));
 #endif
 
 			_points.Add(startPoint);
@@ -55,6 +60,8 @@ namespace Uno.Media
 #elif __ANDROID__
 			var physicalPoint = LogicalToPhysicalNoRounding(point);
 			bezierPath.LineTo((float)physicalPoint.X, (float)physicalPoint.Y);
+#elif __SKIA__
+			bezierPath.Geometry.LineTo((float)point.X, (float)point.Y);
 #endif
 
 			_points.Add(point);
@@ -71,6 +78,8 @@ namespace Uno.Media
 			var physicalPoint2 = LogicalToPhysicalNoRounding(point2);
 			var physicalPoint3 = LogicalToPhysicalNoRounding(point3);
 			bezierPath.CubicTo((float)physicalPoint1.X, (float)physicalPoint1.Y, (float)physicalPoint2.X, (float)physicalPoint2.Y, (float)physicalPoint3.X, (float)physicalPoint3.Y);
+#elif __SKIA__
+			bezierPath.Geometry.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
 #endif
 			_points.Add(point3);
 		}
@@ -92,6 +101,8 @@ namespace Uno.Media
 			var physicalPoint1 = LogicalToPhysicalNoRounding(point1);
 			var physicalPoint2 = LogicalToPhysicalNoRounding(point2);
 			bezierPath.QuadTo((float)physicalPoint1.X, (float)physicalPoint1.Y, (float)physicalPoint2.X, (float)physicalPoint2.Y);
+#elif __SKIA__
+			bezierPath.Geometry.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
 #endif
 
 			_points.Add(point2);
@@ -123,11 +134,20 @@ namespace Uno.Media
 			);
 
 #elif __MACOS__
-			bezierPath.AppendPathWithArc(center,
+//Ugly workaround. check if all vars are defined
+			if (!double.IsNaN(radius) && !double.IsNaN(startAngle) && !double.IsNaN(endAngle)) {
+
+				//Convert to degrees in a 0 =< x =< 360 deg range
+				startAngle = MathEx.ToDegreeNormalized(startAngle);
+				endAngle = MathEx.ToDegreeNormalized(endAngle);
+				bezierPath.AppendPathWithArc(center,
 										 (nfloat)radius,
 										 (nfloat)startAngle,
-										 (nfloat)endAngle,
-										 sweepDirection == SweepDirection.Clockwise);
+										 (nfloat)endAngle);
+
+				//Move to startPoint. To prevent segment being drawn to the startPoint from the end of the arc
+				bezierPath.MoveTo(startPoint);
+			}
 #elif __ANDROID__
 			var sweepAngle = endAngle - startAngle;
 
@@ -149,6 +169,29 @@ namespace Uno.Media
 				circle.LogicalToPhysicalPixels().ToRectF(),
 				(float)startAngle,
 				(float)sweepAngle
+			);
+#elif __SKIA__
+			var sweepAngle = endAngle - startAngle;
+
+			// Convert to degrees
+			startAngle = startAngle * (180 / PI);
+			sweepAngle = sweepAngle * (180 / PI);
+
+			// Invert y-axis
+			startAngle = (startAngle + 360) % 360;
+			sweepAngle = (sweepAngle + 360) % 360;
+
+			// Apply direction
+			if (sweepDirection == SweepDirection.Counterclockwise)
+			{
+				sweepAngle -= 360;
+			}
+
+			bezierPath.Geometry.ArcTo(
+				new SkiaSharp.SKRect((float)circle.Left, (float)circle.Top, (float)circle.Right, (float)circle.Bottom),
+				(float)startAngle,
+				(float)sweepAngle,
+				false
 			);
 #endif
 

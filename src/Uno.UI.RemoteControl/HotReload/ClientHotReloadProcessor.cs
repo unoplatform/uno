@@ -149,11 +149,6 @@ namespace Uno.UI.RemoteControl.HotReload
 						case ContentPresenter presenter:
 							yield return EnumerateInstances(presenter.Content, baseUri);
 							break;
-#if __IOS__ || __ANDROID__
-						case ScrollContentPresenter scrollPresenter:
-							yield return EnumerateInstances(scrollPresenter.Content, baseUri);
-							break;
-#endif
 					}
 				}
 

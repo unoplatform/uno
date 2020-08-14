@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Tests.App.Views
 {
@@ -42,5 +44,37 @@ namespace Uno.UI.Tests.App.Views
 			DependencyProperty.Register("MyInterval", typeof(TimeSpan), typeof(MyControl), new PropertyMetadata(default(TimeSpan)));
 
 
+		public double Pilleability
+		{
+			get { return (double)GetValue(PilleabilityProperty); }
+			set { SetValue(PilleabilityProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for Pilleability.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty PilleabilityProperty =
+			DependencyProperty.Register("Pilleability", typeof(double), typeof(MyControl), new PropertyMetadata(0d));
+
+
+
+		public double Arduousness
+		{
+			get { return (double)GetValue(ArduousnessProperty); }
+			set { SetValue(ArduousnessProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for Arduousness.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty ArduousnessProperty =
+			DependencyProperty.Register("Arduousness", typeof(double), typeof(MyControl), new PropertyMetadata(0d));
+
+
+		public Brush Midground
+		{
+			get { return (Brush)GetValue(MidgroundProperty); }
+			set { SetValue(MidgroundProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for Midground.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MidgroundProperty =
+			DependencyProperty.Register("Midground", typeof(Brush), typeof(MyControl), new PropertyMetadata(new SolidColorBrush(Colors.Transparent)));
 	}
 }

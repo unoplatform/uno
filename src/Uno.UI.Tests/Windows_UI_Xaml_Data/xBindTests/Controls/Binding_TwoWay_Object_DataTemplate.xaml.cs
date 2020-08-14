@@ -38,7 +38,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.Register("MyProperty", typeof(object), typeof(Binding_TwoWay_Object_DataTemplate_TestObject), new PropertyMetadata(0));
+			DependencyProperty.Register("MyProperty", typeof(object), typeof(Binding_TwoWay_Object_DataTemplate_TestObject), new FrameworkPropertyMetadata(0));
 	}
 
 	public partial class Binding_TwoWay_Object_DataTemplate_Base : DependencyObject
@@ -53,7 +53,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 
 		public static readonly DependencyProperty MyIntPropertyProperty =
-			DependencyProperty.Register("MyIntProperty", typeof(int), typeof(Binding_TwoWay_Object_DataTemplate_Base), new PropertyMetadata(0));
+			DependencyProperty.Register("MyIntProperty", typeof(int), typeof(Binding_TwoWay_Object_DataTemplate_Base), new FrameworkPropertyMetadata(0));
 
 	}
 

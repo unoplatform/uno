@@ -872,8 +872,10 @@ namespace Windows.UI.Xaml.Controls
 			return $"Parent ItemsControl={ItemsControl} ItemsSource={ItemsControl?.ItemsSource} NoOfItems={ItemsControl?.NumberOfItems} FirstMaterialized={GetFirstMaterializedIndexPath()} LastMaterialized={GetLastMaterializedIndexPath()} ExtendedViewportStart={ExtendedViewportStart} ExtendedViewportEnd={ExtendedViewportEnd} GetItemsStart()={GetItemsStart()} GetItemsEnd()={GetItemsEnd()}";
 		}
 
-#if __WASM__
+#if __WASM__ || __SKIA__
 		private static Point GetRelativePosition(FrameworkElement child) => child.RelativePosition;
+#elif __NETSTD_REFERENCE__
+		private static Point GetRelativePosition(FrameworkElement child) => throw new NotSupportedException();
 #elif __MACOS__ || __IOS__
 		private static Point GetRelativePosition(FrameworkElement child) => child.Frame.Location;
 #elif __ANDROID__

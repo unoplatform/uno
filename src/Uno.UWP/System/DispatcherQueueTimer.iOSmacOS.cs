@@ -12,7 +12,7 @@ namespace Windows.System
 
 		private void StartNative(TimeSpan interval)
 		{
-			Start(NSTimer.CreateScheduledTimer(interval.TotalSeconds, repeats: true, block: OnRecurentTick));
+			Start(NSTimer.CreateScheduledTimer(interval.TotalSeconds, repeats: IsRepeating, block: OnRecurentTick));
 		}
 
 		private void StartNative(TimeSpan dueTime, TimeSpan interval)

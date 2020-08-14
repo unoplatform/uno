@@ -1,9 +1,0 @@
-﻿<linker>
-  <assembly fullname="Uno.Foundation">
-	<type fullname="Uno.Foundation.WebAssemblyRuntime">
-		<method name="DispatchAsyncResult" />
-		<method name="DispatchAsyncError" />
-	</type>
-  </assembly>
-</linker>
-

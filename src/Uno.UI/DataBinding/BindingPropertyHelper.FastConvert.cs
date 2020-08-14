@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI;
+using Uno.UI.Extensions;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -58,8 +59,10 @@ namespace Uno.UI.DataBinding
 			{
 				Enum _ => FastEnumConvert(outputType, input, ref output),
 				bool boolInput => FastBooleanConvert(outputType, boolInput, ref output),
+				Windows.UI.Color color => FastColorConvert(outputType, color, ref output),
 				SolidColorBrush solidColorBrush => FastSolidColorBrushConvert(outputType, solidColorBrush, ref output),
 				ColorOffset colorOffsetInput => FastColorOffsetConvert(outputType, colorOffsetInput, ref output),
+				Thickness thicknessInput => FastThicknessConvert(outputType, thicknessInput, ref output),
 				_ => false
 			};
 		}
@@ -97,6 +100,17 @@ namespace Uno.UI.DataBinding
 			return false;
 		}
 
+		private static bool FastColorConvert(Type outputType, Windows.UI.Color color, ref object output)
+		{
+			if (outputType == typeof(SolidColorBrush))
+			{
+				output = new SolidColorBrush(color);
+				return true;
+			}
+
+			return false;
+		}
+
 		private static bool FastSolidColorBrushConvert(Type outputType, SolidColorBrush solidColorBrush,
 			ref object output)
 		{
@@ -108,6 +122,23 @@ namespace Uno.UI.DataBinding
 
 			return false;
 		}
+
+		private static bool FastThicknessConvert(Type outputType, Thickness thickness, ref object output)
+		{
+			if (outputType == typeof(double))
+			{
+				if (thickness.IsUniform())
+				{
+					output = thickness.Left;
+					return true;
+				}
+
+				// TODO: test what Windows does in non-uniform case
+			}
+
+			return false;
+		}
+
 		private static bool FastNumberConvert(Type outputType, object input, ref object output)
 		{
 			if (input is double doubleInput)

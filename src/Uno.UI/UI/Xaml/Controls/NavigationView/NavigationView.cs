@@ -2795,7 +2795,18 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
+
 			SetPaneToggleButtonAutomationName();
+
+			// ***************************** Uno only - begin
+			// When the OnSplitViewClosedCompactChanged callback is invoked (registered on SplitView.IsPaneOpen),
+			// the two-way binding between SplitView.IsOpen and NavView.IsPaneOpen has not been updated yet,
+			// the the local NavView.IsPaneOpen is still == true. (cf. https://github.com/unoplatform/uno/issues/3774)
+			// (Yeah ... there is 2 code path to track the IsPaneOpen of the SplitView: callback and 2-way binding :/)
+			// So we make sure to request an update of the back button visibility also when the local IsPaneOpen is being updated.
+			UpdateBackButtonVisibility();
+			// ***************************** Uno only - end
+
 			UpdatePaneTabFocusNavigation();
 			UpdateSettingsItemToolTip();
 		}
@@ -3017,7 +3028,7 @@ namespace Windows.UI.Xaml.Controls
 				var splitView = m_rootSplitView;
 				if (splitView != null)
 				{
-					var width = ResourceResolver.ResolveTopLevelResource<double>(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
+					var width = ResourceResolver.ResolveTopLevelResourceDouble(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
 					double togglePaneButtonWidth = width;
 
 					if (ShouldShowBackButton() && splitView.DisplayMode == SplitViewDisplayMode.Overlay)
@@ -3116,7 +3127,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				double width = 0;
 
-				var buttonSize = ResourceResolver.ResolveTopLevelResource<double>(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
+				var buttonSize = ResourceResolver.ResolveTopLevelResourceDouble(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
 
 				width += buttonSize;
 

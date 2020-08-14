@@ -282,4 +282,24 @@
 		</Setter>
 	</wasm:Style>
 
+	<android:Style TargetType="ProgressRing">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ProgressRing">
+					<NativeProgressRing />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</android:Style>
+
+	<ios:Style TargetType="ProgressRing">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ProgressRing">
+					<NativeProgressRing />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
+
 </ResourceDictionary>

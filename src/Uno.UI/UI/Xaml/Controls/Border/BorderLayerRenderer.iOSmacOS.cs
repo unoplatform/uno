@@ -6,6 +6,9 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
 using Windows.UI;
+using CoreImage;
+using Foundation;
+using Uno.Extensions;
 
 #if __IOS__
 using UIKit;
@@ -27,7 +30,6 @@ namespace Windows.UI.Xaml.Shapes
 
 		private SerialDisposable _layerDisposable = new SerialDisposable();
 
-
 		/// <summary>
 		/// Updates or creates a sublayer to render a border-like shape.
 		/// </summary>
@@ -44,8 +46,7 @@ namespace Windows.UI.Xaml.Shapes
 			Thickness borderThickness,
 			Brush borderBrush,
 			CornerRadius cornerRadius,
-			_Image backgroundImage
-		)
+			_Image backgroundImage)		
 		{
 			// Bounds is captured to avoid calling twice calls below.
 			var bounds = owner.Bounds;
@@ -80,7 +81,6 @@ namespace Windows.UI.Xaml.Shapes
 
 		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, LayoutState state)
 		{
-
 			var area = state.Area;
 			var background = state.Background;
 			var borderThickness = state.BorderThickness;
@@ -112,8 +112,8 @@ namespace Windows.UI.Xaml.Shapes
 
 				Brush.AssignAndObserveBrush(borderBrush, color => layer.StrokeColor = color)
 					.DisposeWith(disposables);
-				var path = GetRoundedPath(cornerRadius, adjustedArea);
 
+				var path = GetRoundedPath(cornerRadius, adjustedArea);
 				var outerPath = GetRoundedPath(cornerRadius, area);
 
 				var insertionIndex = 0;
@@ -154,6 +154,21 @@ namespace Windows.UI.Xaml.Shapes
 
 						CreateImageBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask);
 					}
+				}
+				else if (background is AcrylicBrush acrylicBrush)
+				{
+					var fillMask = new CAShapeLayer()
+					{
+						Path = path,
+						Frame = area,
+						// We only use the fill color to create the mask area
+						FillColor = _Color.White.CGColor,
+					};
+					// We reduce the adjustedArea again so that the acrylic is inside the border (like in Windows)
+					adjustedArea = adjustedArea.Shrink((nfloat)adjustedLineWidthOffset);
+
+					acrylicBrush.Subscribe(owner, area, adjustedArea, parent, sublayers, ref insertionIndex, fillMask)
+						.DisposeWith(disposables);
 				}
 				else
 				{
@@ -221,6 +236,19 @@ namespace Windows.UI.Xaml.Shapes
 
 						CreateImageBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask: null);
 					}
+				}
+				else if (background is AcrylicBrush acrylicBrush)
+				{
+					var fullArea = new CGRect(
+							area.X + borderThickness.Left,
+							area.Y + borderThickness.Top,
+							area.Width - borderThickness.Left - borderThickness.Right,
+							area.Height - borderThickness.Top - borderThickness.Bottom);
+
+					var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
+					var insertionIndex = 0;
+
+					acrylicBrush.Subscribe(owner, fullArea, insideArea, parent, sublayers, ref insertionIndex, fillMask: null);
 				}
 				else
 				{
