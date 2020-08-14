@@ -457,11 +457,14 @@
                                     Margin="4,0,0,0"
                                     Grid.Column="2"
                                     Grid.RowSpan="3" />
+
+								<!-- UNO TODO MinHeight="{ThemeResource SliderVerticalThumbHeight}" -->
                                 <Thumb x:Name="VerticalThumb"
                                     Style="{StaticResource SliderThumbStyle}"
                                     DataContext="{TemplateBinding Value}"
                                     Width="{ThemeResource SliderVerticalThumbWidth}"
                                     Height="{ThemeResource SliderVerticalThumbHeight}"
+									MinHeight="{ThemeResource SliderVerticalThumbHeight}"
                                     Grid.Row="1"
                                     Grid.Column="0"
                                     Grid.ColumnSpan="3"

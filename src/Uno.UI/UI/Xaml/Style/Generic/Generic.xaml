@@ -3988,12 +3988,15 @@
 										 Margin="4,0,0,0"
 										 Grid.Column="2"
 										 Grid.RowSpan="3" />
+
+								<!-- UNO TODO MinHeight="8" --> 
 								<Thumb x:Name="VerticalThumb"
 									   Background="{ThemeResource SystemControlForegroundAccentBrush}"
 									   Style="{StaticResource SliderThumbStyle}"
 									   DataContext="{TemplateBinding Value}"
 									   Width="24"
 									   Height="8"
+									   MinHeight="8"
 									   Grid.Row="1"
 									   Grid.Column="0"
 									   Grid.ColumnSpan="3"
