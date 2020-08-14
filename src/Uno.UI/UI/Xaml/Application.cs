@@ -43,6 +43,12 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme? _requestedTheme;
 		private bool _themeSetExplicitly = false;
 
+		static Application()
+		{
+			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
+		}
+
 		[Preserve]
 		public static class TraceProvider
 		{
