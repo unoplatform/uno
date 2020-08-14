@@ -5156,7 +5156,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TryAnnotateWithGeneratorSource(ref string str, [CallerMemberName] string callerName = null, [CallerLineNumber] int lineNumber = 0)
 		{
-			if (_shouldAnnotateGeneratedXaml)
+			if (_shouldAnnotateGeneratedXaml && str != null)
 			{
 				str = GetGeneratorSourceAnnotation(callerName, lineNumber) + str;
 			}
