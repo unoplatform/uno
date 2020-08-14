@@ -3066,5 +3066,11 @@
 			<!-- End Skia Import -->
 		</Fields>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="3.0.5">
+		<Methods>
+			<Member fullName="System.Void Windows.System.UserProfile.UserProfilePersonalizationSettings..ctor()"
+                	reason="Parameter-less ctor does not exist in UWP"/>
+		</Methods>
+	</IgnoreSet>
   </IgnoreSets>
 </DiffIgnore>
