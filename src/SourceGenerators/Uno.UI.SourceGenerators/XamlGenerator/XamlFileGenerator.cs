@@ -77,6 +77,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool _isTopLevelDictionary;
 		private readonly bool _isUnoAssembly;
+		/// <summary>
+		/// True if the generator is currently creating child subclasses (for templates, etc)
+		/// </summary>
+		private bool _inChildSubclass = false;
 
 		/// <summary>
 		/// The current DefaultBindMode for x:Bind bindings, as set by app code for the current Xaml subtree.
@@ -125,6 +129,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_defaultNamespace,
 				XamlCodeGeneration.ParseContextPropertyName
 			);
+		/// <summary>
+		/// Name to use for inner singleton containing top-level ResourceDictionary properties
+		/// </summary>
+		private string SingletonClassName => $"ResourceDictionarySingleton__{_fileDefinition.ShortId}";
 
 		static XamlFileGenerator()
 		{
@@ -662,6 +670,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildChildSubclasses(IIndentedStringBuilder writer, bool isTopLevel = false)
 		{
+			_inChildSubclass = true;
 			TryAnnotateWithGeneratorSource(writer);
 			var disposable = isTopLevel ? writer.BlockInvariant("namespace {0}.__Resources", _defaultNamespace) : null;
 
@@ -878,6 +887,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 					using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 					{
+						var hasDefaultStyles = false;
+						writer.AppendLineInvariant("// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.");
+						using (writer.BlockInvariant("internal sealed class {0}", SingletonClassName))
+						{
+							// Build singleton
+							writer.AppendLineInvariant("private static {0} _instance;", SingletonClassName);
+							using (writer.BlockInvariant("internal static {0} Instance", SingletonClassName))
+							{
+								using (writer.BlockInvariant("get"))
+								{
+									using (writer.BlockInvariant("if (_instance == null)"))
+									{
+										writer.AppendLineInvariant("_instance = new {0}();", SingletonClassName);
+									}
+									writer.AppendLine();
+									writer.AppendLineInvariant("return _instance;");
+								}
+							}
+							writer.AppendLine();
+							writer.AppendLineInvariant("private {0}() {{ }}", SingletonClassName);
+							writer.AppendLine();
 						BuildResourceDictionaryGlobalProperties(writer, topLevelControl);
 
 						var themeDictionaryMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
@@ -887,9 +917,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							BuildResourceDictionaryGlobalProperties(writer, dict);
 						}
 
-						writer.AppendLineInvariant("private static global::Windows.UI.Xaml.ResourceDictionary _{0}_ResourceDictionary;", _fileUniqueId);
+							TryAnnotateWithGeneratorSource(writer);
+							writer.AppendLineInvariant("private global::Windows.UI.Xaml.ResourceDictionary _{0}_ResourceDictionary;", _fileUniqueId);
 						writer.AppendLine();
-						using (writer.BlockInvariant("internal static global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary", _fileUniqueId))
+							using (writer.BlockInvariant("internal global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary", _fileUniqueId))
 						{
 							using (writer.BlockInvariant("get"))
 							{
@@ -907,7 +938,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 						}
 
-						BuildDefaultStylesRegistration(writer, FindImplicitContentMember(topLevelControl));
+							hasDefaultStyles = BuildDefaultStylesRegistration(writer, FindImplicitContentMember(topLevelControl));
+						}
+						writer.AppendLine();
+						writer.AppendLineInvariant("internal static global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary => {1}.Instance.{0}_ResourceDictionary;", _fileUniqueId, SingletonClassName);
+						if (hasDefaultStyles)
+						{
+							writer.AppendLineInvariant("static partial void RegisterDefaultStyles_{0}() => {1}.Instance.RegisterDefaultStyles_{0}();", _fileUniqueId, SingletonClassName);
+						}
 					}
 				}
 
@@ -1082,18 +1120,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Note: if we're currently building an app, these registrations will never actually be called (the styles will be treated as implicit styles
 		/// instead).
 		/// </summary>
-		private void BuildDefaultStylesRegistration(IIndentedStringBuilder writer, XamlMemberDefinition resourcesRoot)
+		private bool BuildDefaultStylesRegistration(IIndentedStringBuilder writer, XamlMemberDefinition resourcesRoot)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var stylesCandidates = resourcesRoot?.Objects.Where(o => o.Type.Name == "Style" && GetExplicitDictionaryResourceKey(o, out var _) == null);
 			if (stylesCandidates?.None() ?? true)
 			{
-				return;
+				return false;
 			}
 
 			writer.AppendLine();
 
-			using (writer.BlockInvariant("static partial void RegisterDefaultStyles_{0}()", _fileUniqueId))
+			using (writer.BlockInvariant("public void RegisterDefaultStyles_{0}()", _fileUniqueId))
 			{
 				foreach (var style in stylesCandidates)
 				{
@@ -1120,6 +1158,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -1195,7 +1235,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="propertyName">The name of the property.</param>
 		/// <param name="propertyBodyBuilder">Function that builds the initialization logic for the property.</param>
 		/// <param name="isStatic"></param>
-		private void BuildSingleTimeInitializer(IIndentedStringBuilder writer, string propertyType, string propertyName, Action propertyBodyBuilder, bool isStatic = true)
+		private void BuildSingleTimeInitializer(IIndentedStringBuilder writer, string propertyType, string propertyName, Action propertyBodyBuilder, bool isStatic = false)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			// The property type may be partially qualified, try resolving it through FindType
@@ -3686,15 +3726,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Get the name of global static property associated with the given resource key, if one exists, otherwise null.
+		/// Get the name of top-level ResourceDictionary property associated with the given resource key, if one exists, otherwise null.
 		/// </summary>
-		private string GetResourceDictionaryPropertyName(string keyStr) => GetResourceDictionaryPropertyDetails(keyStr).PropertyName;
+		private string GetResourceDictionaryPropertyName(string keyStr)
+		{
+			var propertyName = GetResourceDictionaryPropertyDetails(keyStr).PropertyName;
+			TryAnnotateWithGeneratorSource(ref propertyName);
+			return propertyName;
+		}
 
 		private (string PropertyName, INamedTypeSymbol PropertyType) GetResourceDictionaryPropertyDetails(string keyStr)
 		{
 			if (_topLevelDictionaryProperties.TryGetValue((_themeDictionaryCurrentlyBuilding, keyStr), out var propertyDetails))
 			{
-				return ("global::{0}.GlobalStaticResources.{1} /*{2}*/".InvariantCultureFormat(_defaultNamespace, propertyDetails.PropertyName, keyStr), propertyDetails.PropertyType);
+				var propertyAccess = _inChildSubclass ?
+					"global::{0}.GlobalStaticResources.{1}.Instance.{2} /*{3}*/".InvariantCultureFormat(_defaultNamespace, SingletonClassName, propertyDetails.PropertyName, keyStr)
+					: "this.{0} /*{1}*/".InvariantCultureFormat(propertyDetails.PropertyName, keyStr);
+				return (propertyAccess, propertyDetails.PropertyType);
 			}
 
 			return (null, null);
