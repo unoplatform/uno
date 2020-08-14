@@ -878,7 +878,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 					using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 					{
-						BuildPartials(writer, isStatic: true);
 						BuildResourceDictionaryGlobalProperties(writer, topLevelControl);
 
 						var themeDictionaryMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
