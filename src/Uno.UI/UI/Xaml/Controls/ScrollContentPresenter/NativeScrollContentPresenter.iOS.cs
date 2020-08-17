@@ -122,10 +122,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ScrollMode HorizontalScrollMode { get; set; }
-
-		public ScrollMode VerticalScrollMode { get; set; }
-
 		public override void SetNeedsLayout()
 		{
 			base.SetNeedsLayout();
@@ -172,8 +168,8 @@ namespace Windows.UI.Xaml.Controls
 			if (TouchesManager.Listeners == 0)
 			{
 				// This prevents unnecessary touch delays (which affects the pressed visual states of buttons) when user can't scroll.
-				var canScrollVertically = VerticalScrollMode != ScrollMode.Disabled && ContentSize.Height > Frame.Height;
-				var canScrollHorizontally = HorizontalScrollMode != ScrollMode.Disabled && ContentSize.Width > Frame.Width;
+				var canScrollVertically = VerticalScrollBarVisibility != ScrollBarVisibility.Disabled && ContentSize.Height > Frame.Height;
+				var canScrollHorizontally = HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled && ContentSize.Width > Frame.Width;
 				DelaysContentTouches = canScrollHorizontally || canScrollVertically;
 			}
 			else

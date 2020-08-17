@@ -14,7 +14,9 @@
 		
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
-
+	
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -52,21 +54,4 @@
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) or '$(TargetFramework)'=='netstandard2.0'" />
 
 	<Import Project="..\Common.targets" />
-	
-	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
-
-		<PropertyGroup>
-			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\uno-runtime\$(_OverrideTargetFramework)</_TargetNugetFolder>
-		</PropertyGroup>
-		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)**" />
-		</ItemGroup>
-		<MakeDir Directories="$(_TargetNugetFolder)" />
-
-		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
-
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
-	</Target>
 </Project>

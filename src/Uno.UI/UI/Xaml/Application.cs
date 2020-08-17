@@ -43,6 +43,12 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme? _requestedTheme;
 		private bool _themeSetExplicitly = false;
 
+		static Application()
+		{
+			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
+		}
+
 		[Preserve]
 		public static class TraceProvider
 		{
@@ -80,6 +86,13 @@ namespace Windows.UI.Xaml
 				SetExplicitRequestedTheme(value);
 			}
 		}
+
+		internal ElementTheme ActualElementTheme => (_themeSetExplicitly, RequestedTheme) switch
+		{
+			(true, ApplicationTheme.Light) => ElementTheme.Light,
+			(true, ApplicationTheme.Dark) => ElementTheme.Dark,
+			_ => ElementTheme.Default
+		};
 
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
@@ -192,18 +205,19 @@ namespace Windows.UI.Xaml
 
 		private void OnRequestedThemeChanged()
 		{
-			if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
-			{
-				PropagateThemeChanged(root);
-			}
-
-			void PropagateThemeChanged(object instance)
+			if (GetTreeRoot() is FrameworkElement root)
 			{
 				// Update theme bindings in application resources
 				Resources?.UpdateThemeBindings();
 
 				// Update theme bindings in system resources
 				ResourceResolver.UpdateSystemThemeBindings();
+
+				PropagateThemeChanged(root);
+			}
+
+			void PropagateThemeChanged(object instance)
+			{
 
 				// Update ThemeResource references that have changed
 				if (instance is FrameworkElement fe)
@@ -226,6 +240,19 @@ namespace Windows.UI.Xaml
 						PropagateThemeChanged(o);
 					}
 				}
+			}
+
+			// On some platforms, the user-set root is not the topmost FrameworkElement
+			FrameworkElement GetTreeRoot()
+			{
+				var current = Windows.UI.Xaml.Window.Current.Content as FrameworkElement;
+				var parent = current?.GetVisualTreeParent();
+				while (parent is FrameworkElement feParent)
+				{
+					current = feParent;
+					parent = current?.GetVisualTreeParent();
+				}
+				return current;
 			}
 		}
 	}

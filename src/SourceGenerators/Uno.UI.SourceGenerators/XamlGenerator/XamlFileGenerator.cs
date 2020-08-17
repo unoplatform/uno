@@ -402,6 +402,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						writer.AppendLineInvariant($"public delegate void XamlApplyHandler{typeInfo.Index}({GetGlobalizedTypeName(typeInfo.type.ToString())} instance);");
 
+						writer.AppendLineInvariant($"[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]");
 						using (writer.BlockInvariant(
 							$"public static {GetGlobalizedTypeName(typeInfo.type.ToString())} {_fileUniqueId}_XamlApply(this {GetGlobalizedTypeName(typeInfo.type.ToString())} instance, XamlApplyHandler{typeInfo.Index} handler)"
 						))
@@ -519,7 +520,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri")))
 				{
-					writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{asm.FullName}\"));");
+					if (asm.FullName == "Uno.UI")
+					{
+						// Avoid the use of assembly lookup as we already know the assembly
+						writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(typeof(global::Windows.UI.Xaml.FrameworkElement).Assembly);");
+					}
+					else
+					{
+						writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(\"{asm.FullName}\");");
+					}
 				}
 			}
 		}
@@ -3443,6 +3452,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private int _staticResourceResolverOutputIndex = 0;
+
 		/// <summary>
 		/// Returns code for simple initialization-time retrieval for StaticResource/ThemeResource markup.
 		/// </summary>
@@ -3456,8 +3467,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			targetPropertyType = targetPropertyType ?? _objectSymbol;
-			var staticRetrieval = "global::Uno.UI.ResourceResolver.ResolveResourceStatic<{0}>(\"{1}\", context: {2})"
-				.InvariantCultureFormat(targetPropertyType.ToDisplayString(), keyStr, ParseContextPropertyAccess);
+
+			var targetPropertyFQT = targetPropertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+			var propertyOutputVar = $"staticResourceResolverOutputIndex{_staticResourceResolverOutputIndex++}";
+
+			var conversion = targetPropertyType.IsValueType
+				? $"(({targetPropertyFQT}){propertyOutputVar})"
+				: $"(({propertyOutputVar} as {targetPropertyFQT}) ?? default({targetPropertyFQT}))";
+
+
+			var staticRetrieval = $"(" +
+				$"global::Uno.UI.ResourceResolver.ResolveResourceStatic(" +
+				$"\"{keyStr}\", " +
+				$"out var {propertyOutputVar}, " +
+				$"context: {ParseContextPropertyAccess}) " +
+				$"? {conversion}" +
+				$" : default({targetPropertyFQT})" +
+				$")";
 			TryAnnotateWithGeneratorSource(ref staticRetrieval);
 			return staticRetrieval;
 		}

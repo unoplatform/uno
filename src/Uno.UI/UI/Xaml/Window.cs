@@ -39,7 +39,20 @@ namespace Windows.UI.Xaml
 		public UIElement Content
 		{
 			get { return InternalGetContent(); }
-			set { InternalSetContent(value); }
+			set
+			{
+				var oldContent = Content;
+				if (oldContent != null)
+				{
+					oldContent.IsWindowRoot = false;
+				}
+				if (value != null)
+				{
+					value.IsWindowRoot = true;
+				}
+
+				InternalSetContent(value);
+			}
 		}
 
 		public Rect Bounds { get; private set; }

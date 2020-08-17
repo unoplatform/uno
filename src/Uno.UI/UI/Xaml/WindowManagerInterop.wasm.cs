@@ -422,6 +422,24 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region IsCssFeatureSupported
+
+		internal static bool IsCssFeatureSupported(string propertyName, string value)
+		{
+			var command = $"Uno.UI.WindowManager.current.isCssPropertySupported(\"{propertyName}\", \"{WebAssemblyRuntime.EscapeJs(value)}\")";
+			var result = WebAssemblyRuntime.InvokeJS(command);
+			return bool.Parse(result);
+		}
+
+		internal static bool IsCssFeatureSupported(string supportCondition)
+		{
+			var command = $"Uno.UI.WindowManager.current.isCssConditionSupported(\"{WebAssemblyRuntime.EscapeJs(supportCondition)}\")";
+			var result = WebAssemblyRuntime.InvokeJS(command);
+			return bool.Parse(result);
+		}
+
+		#endregion
+
 		private static void SetArrangeProperties(IntPtr htmlId, bool requiresClipping)
 		{
 			if (!UseJavascriptEval)

@@ -16,24 +16,24 @@ namespace UITests.Windows_UI_Xaml_Controls.ThumbTests
 
 		private void OnThumbDragStarted(object sender, DragStartedEventArgs e)
 		{
-			DragStartedOutput.Text = $"@x={e.HorizontalOffset:F2},@y={e.VerticalOffset:F2}";
+			DragStartedOutput.Text = FormattableString.Invariant($"@x={e.HorizontalOffset:F2},@y={e.VerticalOffset:F2}");
 		}
 
 		private void OnThumbDragDelta(object sender, DragDeltaEventArgs e)
 		{
 #if XAMARIN || __WASM__ // Total properties are uno only
-			DragDeltaOutput.Text = $"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx={e.TotalHorizontalChange:F2},Σy={e.TotalVerticalChange:F2}";
+			DragDeltaOutput.Text = FormattableString.Invariant($"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx={e.TotalHorizontalChange:F2},Σy={e.TotalVerticalChange:F2}");
 #else
-			DragDeltaOutput.Text = $"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx=0.0,Σy=0.0";
+			DragDeltaOutput.Text = FormattableString.Invariant($"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx=0.0,Σy=0.0");
 #endif
 		}
 
 		private void OnThumbDragCompleted(object sender, DragCompletedEventArgs e)
 		{
 #if XAMARIN || __WASM__ // Total properties are uno only
-			DragCompletedOutput.Text = $"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx={e.TotalHorizontalChange:F2},Σy={e.TotalVerticalChange:F2}";
+			DragCompletedOutput.Text = FormattableString.Invariant($"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx={e.TotalHorizontalChange:F2},Σy={e.TotalVerticalChange:F2}");
 #else
-			DragCompletedOutput.Text = $"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx=0.0,Σy=0.0";
+			DragCompletedOutput.Text = FormattableString.Invariant($"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx=0.0,Σy=0.0");
 #endif
 		}
 	}

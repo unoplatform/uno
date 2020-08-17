@@ -24,11 +24,11 @@ namespace Windows.UI.Xaml.Media
 	[TypeConverter(typeof(ImageSourceConverter))]
 	public partial class ImageSource : DependencyObject, IDisposable
 	{
-		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
+		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
 		public static class TraceProvider
 		{
-			public readonly static Guid Id = Guid.Parse("{FC4E2720-2DCF-418C-B360-93314AB3B813}");
+			public static readonly Guid Id = Guid.Parse("{FC4E2720-2DCF-418C-B360-93314AB3B813}");
 
 			public const int ImageSource_SetImageDecodeStart = 1;
 			public const int ImageSource_SetImageDecodeStop = 2;
@@ -63,14 +63,12 @@ namespace Windows.UI.Xaml.Media
 
 		protected ImageSource(string url) : this()
 		{
-			Uri uri;
-
 			if (url.StartsWith("/"))
 			{
 				url = MsAppXScheme + "://" + url;
 			}
 
-			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out uri))
+			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
 			{
 				InitFromUri(uri);
 			}

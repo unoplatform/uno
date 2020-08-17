@@ -78,7 +78,8 @@ namespace Windows.UI.Xaml.Controls
 				BorderThickness = Thickness.Empty,
 				HorizontalAlignment = HorizontalAlignment.Stretch,
 				HorizontalContentAlignment = HorizontalAlignment.Stretch,
-				Time = Time
+				Time = Time,
+				ClockIdentifier = ClockIdentifier,
 			};
 
 			Content = _timeSelector;

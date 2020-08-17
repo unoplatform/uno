@@ -41,5 +41,7 @@ namespace Windows.UI
 		public static bool operator ==(Color color1, Color color2) => color1.Equals(color2);
 
 		public static bool operator !=(Color color1, Color color2) => !color1.Equals(color2);
+
+		internal Color WithOpacity(double opacity) => new Color((byte)(A * opacity), R, G, B);
 	}
 }

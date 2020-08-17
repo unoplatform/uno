@@ -149,6 +149,10 @@
       <Project>{58332380-4302-4259-8F36-AF572C53827F}</Project>
       <Name>Uno.UI.BindingHelper.Android</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj">
+      <Project>{535339e2-6c01-4478-9889-f6e76b1c00f4}</Project>
+      <Name>Uno.UI.FluentTheme</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <ItemGroup>
@@ -157,7 +161,7 @@
     <Compile Include="Main.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Fonts\winjs-symbols.ttf" />
+    <AndroidAsset Include="Assets\Fonts\uno-fluentui-assets.ttf" />
     <AndroidEnvironment Include="environment.conf" />
     <AndroidAsset Include="Assets\Lottie\4770-lady-and-dove.json" />
     <AndroidAsset Include="Assets\Lottie\4930-checkbox-animation.json" />
@@ -186,7 +190,7 @@
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(UnoSampleAppDisableAPKGeneration)'==''" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
      Other similar extension points exist, see Microsoft.Common.targets.
 		<Target Name="BeforeBuild">
 		</Target>

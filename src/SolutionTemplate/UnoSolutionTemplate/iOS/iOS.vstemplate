@@ -20,7 +20,7 @@
 	<Project TargetFileName="$ext_safeprojectname$.iOS.csproj" File="UnoQuickStart.iOS.csproj" ReplaceParameters="true">
 	  <ProjectItem ReplaceParameters="true" TargetFileName="Entitlements.plist">Entitlements.plist</ProjectItem>
 	  <ProjectItem ReplaceParameters="true" TargetFileName="Info.plist">Info.plist</ProjectItem>
-	  <ProjectItem ReplaceParameters="true" TargetFileName="Main.cs">Main.cs</ProjectItem> 
+	  <ProjectItem ReplaceParameters="true" TargetFileName="Main.cs">Main.cs</ProjectItem>
 	  <ProjectItem ReplaceParameters="true" TargetFileName="LaunchScreen.storyboard">LaunchScreen.storyboard</ProjectItem>
 	  <Folder Name="Properties" TargetFolderName="Properties">
 		<ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
@@ -45,7 +45,7 @@
 		<ProjectItem ReplaceParameters="false" TargetFileName="SplashScreen@2x.png">SplashScreen@2x.png</ProjectItem>
 		<ProjectItem ReplaceParameters="false" TargetFileName="SplashScreen@3x.png">SplashScreen@3x.png</ProjectItem>
 		<Folder Name="Fonts" TargetFolderName="Fonts">
-		  <ProjectItem ReplaceParameters="false" TargetFileName="winjs-symbols.ttf">winjs-symbols.ttf</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" TargetFileName="uno-fluentui-assets.ttf">uno-fluentui-assets.ttf</ProjectItem>
 		</Folder>
 	  </Folder>
 	</Project>

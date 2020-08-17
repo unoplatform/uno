@@ -68,23 +68,10 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(TextReadingOrderProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.PasswordRevealMode PasswordRevealMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.PasswordRevealMode)this.GetValue(PasswordRevealModeProperty);
-			}
-			set
-			{
-				this.SetValue(PasswordRevealModeProperty, value);
-			}
-		}
-		#endif
+#endif
+		// Skipping already declared property PasswordRevealMode
 		// Skipping already declared property InputScope
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
 		{
@@ -151,17 +138,10 @@ namespace Windows.UI.Xaml.Controls
 			nameof(SelectionHighlightColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
-		#endif
+#endif
 		// Skipping already declared property InputScopeProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PasswordRevealModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PasswordRevealMode), typeof(global::Windows.UI.Xaml.Controls.PasswordRevealMode), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.PasswordRevealMode)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		// Skipping already declared property PasswordRevealModeProperty
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

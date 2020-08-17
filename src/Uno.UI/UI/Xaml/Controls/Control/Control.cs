@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeControl()
 		{
-			SetDefaultForeground();
+			SetDefaultForeground(ForegroundProperty);
 			SubscribeToOverridenRoutedEvents();
 			OnIsFocusableChanged();
 
@@ -55,20 +55,12 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override bool IsSimpleLayout => true;
 
-		private void SetDefaultForeground()
-		{
-			//override the default value from dependency property based on application theme
-			this.SetValue(ForegroundProperty,
-				Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
-					? SolidColorBrushHelper.Black
-					: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
-		}
-
 		internal override void UpdateThemeBindings()
 		{
 			base.UpdateThemeBindings();
 
-			SetDefaultForeground();
+			//override the default value from dependency property based on application theme
+			SetDefaultForeground(ForegroundProperty);
 		}
 
 		private protected override Type GetDefaultStyleKey() => DefaultStyleKey as Type;

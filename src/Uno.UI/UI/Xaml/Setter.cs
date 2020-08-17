@@ -108,8 +108,14 @@ namespace Windows.UI.Xaml
 				if (!ThemeResourceName.IsNullOrEmpty())
 				{
 					// TODO: We should be trying to resolve the leaf DP pointed to by path, and set a theme binding on it
-					var value = ResourceResolver.ResolveResourceStatic<object>(ThemeResourceName, context: ThemeResourceContext);
-					path.Value = value ?? Value;
+					if (ResourceResolver.ResolveResourceStatic(ThemeResourceName, out var value, context: ThemeResourceContext))
+					{
+						path.Value = value ?? Value;
+					}
+					else
+					{
+						path.Value = Value;
+					}
 				}
 				else
 				{

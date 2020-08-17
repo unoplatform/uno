@@ -34,8 +34,10 @@
       href: feature-flags.md
     - name: Uno.UI.Toolkit
       href: Uno.UI.Toolkit.md
-    - name: Uno Community Toolkit
-      href: uno-community-toolkit.md
+    - name: Migrating existing UWP app to Uno
+      href: migrating-apps.md
+    - name: Migrating from Previous Releases
+      href: migrating-from-previous-releases.md
     - name: Uno app solution structure
       href: uno-app-solution-structure.md
     - name: Performance tips
@@ -145,11 +147,11 @@
       href: wasm-custom-events.md
     - name: Using Uno Platform Controls in Xamarin.Forms
       href: howto-use-uno-in-xamarin-forms.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 1
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 1
       href: interop/wasm-javascript-1.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 2
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 2
       href: interop/wasm-javascript-2.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 3
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 3
       href: interop/wasm-javascript-3.md
 - name: Contributing to Uno
   topicHref: uno-development\contributing-intro.md

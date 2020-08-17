@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using System.Collections.Specialized;
+using Uno.UI.DataBinding;
 
 #if __IOS__
 using UIKit;
@@ -20,15 +21,16 @@ using AppKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class AutoSuggestBox : ItemsControl
+	public  partial class AutoSuggestBox : ItemsControl, IValueChangedListener
 	{
 		private TextBox _textBox;
 		private Popup _popup;
 		private Grid _layoutRoot;
 		private ListView _suggestionsList;
 		private Button _queryButton;
-		private AutoSuggestionBoxTextChangeReason textChangeReason;
+		private AutoSuggestionBoxTextChangeReason _textChangeReason;
 		private string userInput;
+		private BindingPath _textBoxBinding;
 
 		public AutoSuggestBox() : base()
 		{
@@ -56,16 +58,7 @@ namespace Windows.UI.Xaml.Controls
 				_queryButton.Content = new SymbolIcon(Symbol.Find);
 			}
 
-			_textBox?.SetBinding(
-				TextBox.TextProperty,
-				new Binding()
-				{
-					Path = "Text",
-					RelativeSource = RelativeSource.TemplatedParent,
-					UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-					Mode = BindingMode.TwoWay
-				}
-			);
+			_textBoxBinding = new BindingPath("Text", null) {DataContext = _textBox, ValueChangedListener = this};
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
@@ -73,6 +66,15 @@ namespace Windows.UI.Xaml.Controls
 			if (IsLoaded)
 			{
 				RegisterEvents();
+			}
+		}
+
+		void IValueChangedListener.OnValueChanged(object value)
+		{
+			if (value is string str)
+			{
+				// If TextBox's Text value is null, we ignore it.
+				Text = str;
 			}
 		}
 
@@ -133,8 +135,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateTextFromSuggestion(Object o)
 		{
-			textChangeReason = AutoSuggestionBoxTextChangeReason.SuggestionChosen;
-			Text = GetObjectText(o);
+			_textChangeReason = AutoSuggestionBoxTextChangeReason.SuggestionChosen;
+			Text = GetObjectText(o) ?? "";
 		}
 
 		private void UpdateUserInput(Object o)
@@ -322,7 +324,7 @@ namespace Windows.UI.Xaml.Controls
 				IsSuggestionListOpen = false;
 			} else
 			{
-				textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
+				_textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
 			}
 		}
 
@@ -373,36 +375,46 @@ namespace Windows.UI.Xaml.Controls
 		private void RevertTextToUserInput()
 		{
 			_suggestionsList.SelectedIndex = -1;
-			textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
-			Text = userInput;
+			_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
+
+			Text = userInput ?? "";
 		}
 
 		private string GetObjectText(Object o)
 		{
-			string text = "";
+			if (o is string s)
+			{
+				return s;
+			}
+
+			var value = o;
+
 			if (TextMemberPath != null)
 			{
-				text = (string)o.GetValue(TextMemberPathProperty);
+				using var bindingPath = new BindingPath(TextMemberPath, "", null, allowPrivateMembers: true) {DataContext = o};
+				value = bindingPath.Value;
 			}
-			else
-			{
-				text = o.ToString();
-			}
-			return text;
+
+			return value?.ToString() ?? "";
 		}
 
 		private static void OnTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
+			var newValue = args.NewValue as string ?? string.Empty;
+
 			if(dependencyObject is AutoSuggestBox tb)
 			{
-				if (tb.textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
+				if (tb._textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
 				{
-					tb.UpdateUserInput(args.NewValue);
+					tb.UpdateUserInput(newValue);
 				}
 
-				tb.TextChanged?.Invoke(tb, new AutoSuggestBoxTextChangedEventArgs() { Reason = tb.textChangeReason });
+				tb.TextChanged?.Invoke(tb, new AutoSuggestBoxTextChangedEventArgs()
+				{
+					Reason = tb._textChangeReason,
+					Owner = tb
+				});
 			}
 		}
-
 	}
 }

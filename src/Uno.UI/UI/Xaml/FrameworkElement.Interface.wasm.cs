@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml
 		#region Transitions Dependency Property
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static DependencyProperty TransitionsProperty { get ; } = CreateTransitionsProperty();
+		public static DependencyProperty TransitionsProperty { get; } = CreateTransitionsProperty();
 
 		public TransitionCollection Transitions
 		{
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml
 		#region Background DependencyProperty
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static DependencyProperty BackgroundProperty { get ; } = CreateBackgroundProperty();
+		public static DependencyProperty BackgroundProperty { get; } = CreateBackgroundProperty();
 
 		public Brush Background
 		{
@@ -136,18 +136,26 @@ namespace Windows.UI.Xaml
 					{
 						case ImageDataKind.Empty:
 						case ImageDataKind.Error:
-							ResetStyle("background-color");
-							ResetStyle("background-image");
+							ResetStyle("background-color", "background-image", "background-size");
 							break;
 
 						case ImageDataKind.Base64:
 						case ImageDataKind.Url:
 						default:
-							ResetStyle("background-color");
-							SetStyle("background-image", "url(" + img.Value + ")");
+							SetStyle(
+								("background-color", ""),
+								("background-origin", "content-box"),
+								("background-position", imgBrush.ToCssPosition()),
+								("background-size", imgBrush.ToCssBackgroundSize()),
+								("background-image", "url(" + img.Value + ")")
+							);
 							break;
 					}
 				});
+			}
+			else if (brush is AcrylicBrush acrylicBrush)
+			{
+				_backgroundSubscription.Disposable = acrylicBrush.Subscribe(this);
 			}
 			else
 			{
@@ -169,10 +177,9 @@ namespace Windows.UI.Xaml
 					ResetStyle("background-color");
 					SetStyle("background-image", gradientBrush.ToCssString(RenderSize));
 					RecalculateBrushOnSizeChanged(true);
-					break;
+					break;				
 				default:
-					ResetStyle("background-color");
-					ResetStyle("background-image");
+					ResetStyle("background-color", "background-image", "background-size");
 					RecalculateBrushOnSizeChanged(false);
 					break;
 			}
@@ -212,7 +219,7 @@ namespace Windows.UI.Xaml
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
 		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty IsEnabledProperty { get ; } = CreateIsEnabledProperty();
+		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
 
 		public bool IsEnabled
 		{

@@ -284,6 +284,15 @@ namespace Windows.UI.Xaml.Controls
 					(s, _) => OnBorderBrushChangedPartial()
 				);
 			}
+			else if (newValue is AcrylicBrush ab)
+			{
+				_borderBrushColorChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.FallbackColorProperty,
+					(s, colorArg) => OnBorderBrushChangedPartial());
+				_borderBrushOpacityChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.OpacityProperty,
+					(s, arg) => OnBorderBrushChangedPartial());
+			}
 			else
 			{
 				_borderBrushColorChanged.Disposable = null;

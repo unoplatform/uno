@@ -43,6 +43,8 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    using Windows.UI.Xaml.Controls;
    using Windows.UI.Xaml.Markup;
    using Uno.Foundation;
+   using Uno.UI.Runtime.WebAssembly;
+   
    namespace PrismJsDemo.Shared
    {
        [ContentProperty(Name = "Code")]

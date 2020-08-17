@@ -23,7 +23,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Content Update="..\SamplesApp.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
-		<Content Update="Fonts\winjs-symbols.woff2" />
+		<Content Update="Fonts\uno-fluentui-assets.woff2" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
@@ -80,6 +80,7 @@
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />

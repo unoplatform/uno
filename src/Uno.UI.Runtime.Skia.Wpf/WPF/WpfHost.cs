@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using Uno.Foundation.Extensibility;
 using Windows.Graphics.Display;
 using WinUI = Windows.UI.Xaml;
+using WpfApplication = System.Windows.Application;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -16,7 +17,7 @@ namespace Uno.UI.Skia.Platform
 	{
 		private readonly bool designMode;
 		private WriteableBitmap bitmap;
-		private bool ignorePixelScaling;
+		private bool ignorePixelScaling;		
 
 		static WpfHost()
 		{
@@ -35,7 +36,7 @@ namespace Uno.UI.Skia.Platform
 		/// <remarks>
 		/// If args are omitted, those from Environment.GetCommandLineArgs() will be used.
 		/// </remarks>
-		public WpfHost(Func<WinUI.Application> appBuilder, string[] args = null)
+		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null)
 		{
 			_current = this;
 
@@ -51,6 +52,9 @@ namespace Uno.UI.Skia.Platform
 				var app = appBuilder();
 				app.Host = this;
 			}
+
+			Windows.UI.Core.CoreDispatcher.DispatchOverride
+				= d => dispatcher.BeginInvoke(d);
 
 			WinUI.Application.Start(CreateApp, args);
 
@@ -107,9 +111,11 @@ namespace Uno.UI.Skia.Platform
 				return;
 			}
 
+			
 			int width, height;
-			double dpiScaleX = 1.0;
-			double dpiScaleY = 1.0;
+			var dpi = VisualTreeHelper.GetDpi(WpfApplication.Current.MainWindow);
+			double dpiScaleX = dpi.DpiScaleX;
+			double dpiScaleY = dpi.DpiScaleY;
 			if (IgnorePixelScaling)
 			{
 				width = (int)ActualWidth;
@@ -137,6 +143,7 @@ namespace Uno.UI.Skia.Platform
 			using (var surface = SKSurface.Create(info, bitmap.BackBuffer, bitmap.BackBufferStride))
 			{
 				surface.Canvas.Clear(SKColors.White);
+				surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 				WinUI.Window.Current.Compositor.Render(surface, info);
 			}
 

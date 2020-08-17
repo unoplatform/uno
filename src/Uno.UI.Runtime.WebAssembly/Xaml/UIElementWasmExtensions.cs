@@ -24,10 +24,22 @@ namespace Windows.UI.Xaml
 		/// The style is using the CSS syntax format, not the DOM syntax.
 		/// Ex: for font size, use "font-size", not "fontSize".
 		/// </remarks>
-		public static void SetCssStyle(this UIElement element, params (string name, string value)[] styles)
+		public static void SetCssStyle(this UIElement element, string name, string value)
 		{
-			WindowManagerInterop.SetStyles(element.HtmlId, styles);
+			WindowManagerInterop.SetStyles(element.HtmlId, new[] {(name, value)});
 		}
+
+        /// <summary>
+        /// Set one or many CSS styles on a HTML element.
+        /// </summary>
+        /// <remarks>
+        /// The style is using the CSS syntax format, not the DOM syntax.
+        /// Ex: for font size, use "font-size", not "fontSize".
+        /// </remarks>
+        public static void SetCssStyle(this UIElement element, params (string name, string value)[] styles)
+        {
+            WindowManagerInterop.SetStyles(element.HtmlId, styles);
+        }
 
 		/// <summary>
 		/// Clear one or many CSS styles from a HTML element.

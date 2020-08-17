@@ -46,13 +46,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			private static async Task<HashSet<string>> GetAssets()
 			{
-				var host = WebAssemblyRuntime.InvokeJS("window.location.host");
-				var scheme = WebAssemblyRuntime.InvokeJS("window.location.protocol");
-				var path = !string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE) ? $"{UNO_BOOTSTRAP_APP_BASE}/uno-assets.txt" : "uno-assets.txt";
+				var assetsUri = !string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE) ? $"{UNO_BOOTSTRAP_APP_BASE}/uno-assets.txt" : "uno-assets.txt";
 
-				var httpClient = new HttpClient();
-
-				var assets = await httpClient.GetStringAsync($"{scheme}//{host}/{path}");
+				var assets = await WebAssemblyRuntime.InvokeAsync($"fetch('{assetsUri}').then(r => r.text())");
 
 				return new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"));
 			}

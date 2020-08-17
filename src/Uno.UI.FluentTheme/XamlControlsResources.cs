@@ -13,6 +13,15 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		public XamlControlsResources()
 		{
+#if !__NETSTD_REFERENCE__
+
+			// Perform manually what the SourceGenerator is doing during app.xaml.cs InitializeComponent.
+			// Using explicit registration allows for the styles to be linked out when not used
+			Uno.UI.FluentTheme.GlobalStaticResources.Initialize();
+			Uno.UI.FluentTheme.GlobalStaticResources.RegisterDefaultStyles();
+			Uno.UI.FluentTheme.GlobalStaticResources.RegisterResourceDictionariesBySource();
+#endif
+
 			UpdateSource();
 		}
 

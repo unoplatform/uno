@@ -293,6 +293,8 @@ declare namespace Uno.UI {
             */
         resetStyleNative(pParams: number): boolean;
         private resetStyleInternal;
+        isCssPropertySupported(propertyName: string, value: string): boolean;
+        isCssConditionSupported(supportCondition: string): boolean;
         /**
          * Set + Unset CSS classes on an element
          */
@@ -354,6 +356,7 @@ declare namespace Uno.UI {
         registerEventOnViewNative(pParams: number): boolean;
         registerPointerEventsOnView(pParams: number): void;
         static onPointerEventReceived(evt: PointerEvent): void;
+        static dispatchPointerEvent(element: HTMLElement | SVGElement, evt: PointerEvent): void;
         static onPointerEnterReceived(evt: PointerEvent): void;
         static onPointerLeaveReceived(evt: PointerEvent): void;
         private processPendingLeaveEvent;
@@ -893,6 +896,28 @@ declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
 declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
 declare const UnoAppManifest: Uno.UI.IAppManifest;
 declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;
+interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+}
+declare namespace Windows.Media {
+    class SpeechRecognizer {
+        private static dispatchResult;
+        private static dispatchHypothesis;
+        private static dispatchStatus;
+        private static dispatchError;
+        private static instanceMap;
+        private managedId;
+        private recognition;
+        private constructor();
+        static initialize(managedId: string, culture: string): void;
+        static recognize(managedId: string): boolean;
+        static removeInstance(managedId: string): void;
+        private onResult;
+        private onSpeechStart;
+        private onError;
+    }
+}
 declare namespace Windows.Storage {
     class ApplicationDataContainer {
         private static buildStorageKey;

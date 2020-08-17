@@ -991,6 +991,12 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
+		internal override void UpdateThemeBindings()
+		{
+			base.UpdateThemeBindings();
+			SetDefaultForeground(ForegroundProperty);
+		}
+
 #if XAMARIN_ANDROID
 		// Support for the C# collection initializer style.
 		public void Add(View view)

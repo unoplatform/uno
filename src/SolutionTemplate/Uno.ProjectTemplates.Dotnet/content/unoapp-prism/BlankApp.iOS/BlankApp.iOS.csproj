@@ -112,7 +112,7 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Fonts\winjs-symbols.ttf" />
+    <BundleResource Include="Resources\Fonts\uno-fluentui-assets.ttf" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Uno.UI" Version="2.2.0" />
@@ -120,13 +120,13 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 
-		<!--#if (Container == "Unity") -->
-		<PackageReference Include="Prism.Unity.Uno" Version="8.0.0.1717-ci" />
-		<!--#endif -->
-		<!--#if (Container == "DryIoc") -->
-		<PackageReference Include="Prism.DryIoc.Uno" Version="8.0.0.1717-ci" />
-		<!--#endif -->
-	</ItemGroup>
+    <!--#if (Container == "Unity") -->
+    <PackageReference Include="Prism.Unity.Uno" Version="8.0.0.1740-pre" />
+    <!--#endif -->
+    <!--#if (Container == "DryIoc") -->
+    <PackageReference Include="Prism.DryIoc.Uno" Version="8.0.0.1740-pre" />
+    <!--#endif -->
+  </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Media.xcassets\AppIcons.appiconset\Contents.json">
       <Visible>false</Visible>

@@ -121,4 +121,26 @@
 		  DestinationFiles="@(_OutputRefFiles->'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
+
+  <Target Name="CommonOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!='' and '$(UseCommonOverridePackage)'!=''">
+	<PropertyGroup>
+	  <_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+      <_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+	  <CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
+	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+	</PropertyGroup>
+	
+	<ItemGroup>
+	  <_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
+	</ItemGroup>
+	
+	<MakeDir Directories="$(_TargetNugetFolder)" />
+
+	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+	<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<Copy SourceFiles="@(_DebugSymbolsIntermediatePath)" DestinationFiles="@(_DebugSymbolsIntermediatePath->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
 </Project>

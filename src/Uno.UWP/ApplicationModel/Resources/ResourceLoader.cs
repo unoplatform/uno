@@ -145,6 +145,30 @@ namespace Windows.ApplicationModel.Resources
 		}
 
 		/// <summary>
+		/// Registers an assembly for resources lookup using its fullname
+		/// </summary>
+		/// <param name="assembly">The assembly containing upri resources</param>
+		public static void AddLookupAssembly(string assemblyName)
+		{
+#if __WASM__
+			// For wasm, Assembly.Load is not well supported when using AOT, because of stack crawling.
+			// If the feature gets restored, remove this conditional.
+
+			if(AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == assemblyName) is Assembly assembly)
+			{
+				AddLookupAssembly(assembly);
+			}
+			else
+			{
+				throw new InvalidOperationException($"Unable to find {assemblyName} in the loaded assemblies");
+			}
+#else
+			AddLookupAssembly(Assembly.Load(assemblyName));
+#endif
+
+		}
+
+		/// <summary>
 		/// Registers an assembly for resources lookup
 		/// </summary>
 		/// <param name="assembly">The assembly containing upri resources</param>

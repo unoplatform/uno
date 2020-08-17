@@ -19,6 +19,7 @@
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "T4Generator\\T4Generator.csproj",
+      "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Skia.csproj",
       "Uno.Foundation\\Uno.Foundation.Skia.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Skia.csproj",
       "Uno.UI.Runtime.Skia.Gtk\\Uno.UI.Runtime.Skia.Gtk.csproj",

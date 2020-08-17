@@ -950,7 +950,7 @@ namespace Windows.UI.Xaml
 					// graph is built in reverse (such as with the
 					// XamlReader)
 					|| _properties.HasBindings
-					|| _resourceBindings?.Count > 0
+					// || _resourceBindings?.Count > 0 // Commented out for performance, will be adjusted
 					|| _childrenStores.Count != 0
 				)
 			)
@@ -1123,22 +1123,32 @@ namespace Windows.UI.Xaml
 
 			foreach (var kvp in bindings)
 			{
-				var wasSet = false;
-				foreach (var dict in dictionariesInScope)
+				try
 				{
-					if (dict.TryGetValue(kvp.Value.ResourceKey, out var value, shouldCheckSystem: false))
+					var wasSet = false;
+					foreach (var dict in dictionariesInScope)
 					{
-						wasSet = true;
-						SetValue(kvp.Key, value);
-						break;
+						if (dict.TryGetValue(kvp.Value.ResourceKey, out var value, shouldCheckSystem: false))
+						{
+							wasSet = true;
+							SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value), kvp.Value.Precedence);
+							break;
+						}
+					}
+
+					if (!wasSet && isThemeChangedUpdate && kvp.Value.IsThemeResourceExtension)
+					{
+						if (ResourceResolver.TryTopLevelRetrieval(kvp.Value.ResourceKey, kvp.Value.ParseContext, out var value))
+						{
+							SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value), kvp.Value.Precedence);
+						}
 					}
 				}
-
-				if (!wasSet && isThemeChangedUpdate && kvp.Value.IsThemeResourceExtension)
+				catch (Exception e)
 				{
-					if (ResourceResolver.TryTopLevelRetrieval(kvp.Value.ResourceKey, kvp.Value.ParseContext, out var value))
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
 					{
-						SetValue(kvp.Key, value);
+						this.Log().Warn($"Failed to update binding, target may have been disposed", e);
 					}
 				}
 			}
@@ -1388,7 +1398,7 @@ namespace Windows.UI.Xaml
 			var wr = WeakReferencePool.RentWeakReference(null, callback);
 
 			PropertyChangedCallback weakDelegate =
-				(s, e) => (wr.Target as PropertyChangedCallback)?.Invoke(s, e);
+				(s, e) => (!wr.IsDisposed ? wr.Target as PropertyChangedCallback : null)?.Invoke(s, e);
 
 			return (weakDelegate, Disposable.Create(() => WeakReferencePool.ReturnWeakReference(null, wr)));
 		}

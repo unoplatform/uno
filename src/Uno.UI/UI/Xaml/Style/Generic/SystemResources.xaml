@@ -63,8 +63,8 @@
 			<ios:FontFamily x:Key="SymbolThemeFontFamily">Symbols</ios:FontFamily>
 			<macos:FontFamily x:Key="SymbolThemeFontFamily">Symbols</macos:FontFamily>
 			<wasm:FontFamily x:Key="SymbolThemeFontFamily">Symbols</wasm:FontFamily>
-			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</skia:FontFamily>
-			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</android:FontFamily>
+			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</skia:FontFamily>
+			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</android:FontFamily>
 			<x:Double x:Key="CheckBoxBorderThemeThickness">2</x:Double>
 			<x:Double x:Key="CheckBoxCheckedStrokeThickness">0</x:Double>
 			<x:Double x:Key="ComboBoxArrowThemeFontSize">21</x:Double>
@@ -1358,8 +1358,8 @@
 			<ios:FontFamily x:Key="SymbolThemeFontFamily">Symbols</ios:FontFamily>
 			<macos:FontFamily x:Key="SymbolThemeFontFamily">Symbols</macos:FontFamily>
 			<wasm:FontFamily x:Key="SymbolThemeFontFamily">Symbols</wasm:FontFamily>
-			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</skia:FontFamily>
-			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</android:FontFamily>
+			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</skia:FontFamily>
+			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</android:FontFamily>
 			<x:Double x:Key="CheckBoxBorderThemeThickness">2</x:Double>
 			<x:Double x:Key="CheckBoxCheckedStrokeThickness">0</x:Double>
 			<x:Double x:Key="ComboBoxArrowThemeFontSize">21</x:Double>
@@ -1709,6 +1709,7 @@
 			<SolidColorBrush x:Key="SystemControlHighlightListAccentMediumBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.6" />
 			<SolidColorBrush x:Key="SystemControlHighlightListMediumBrush" Color="{StaticResource SystemListMediumColor}"/>
 			<SolidColorBrush x:Key="SystemControlHighlightListLowBrush" Color="{StaticResource SystemListLowColor}"/>
+			<SolidColorBrush x:Key="SystemControlHighlightChromeWhiteBrush" Color="{StaticResource SystemChromeHighlightColor}" />
 			<SolidColorBrush x:Key="SystemControlHighlightTransparentBrush" Color="Transparent"/>
 			<SolidColorBrush x:Key="SystemControlHyperlinkTextBrush" Color="{ThemeResource SystemAccentColor}"/>
 			<SolidColorBrush x:Key="SystemControlHyperlinkBaseHighBrush" Color="{StaticResource SystemBaseHighColor}" />
@@ -2651,8 +2652,8 @@
 			<ios:FontFamily x:Key="SymbolThemeFontFamily">Symbols</ios:FontFamily>
 			<macos:FontFamily x:Key="SymbolThemeFontFamily">Symbols</macos:FontFamily>
 			<wasm:FontFamily x:Key="SymbolThemeFontFamily">Symbols</wasm:FontFamily>
-			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</skia:FontFamily>
-			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</android:FontFamily>
+			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</skia:FontFamily>
+			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</android:FontFamily>
 			<x:Double x:Key="CheckBoxBorderThemeThickness">2</x:Double>
 			<x:Double x:Key="CheckBoxCheckedStrokeThickness">0</x:Double>
 			<x:Double x:Key="ComboBoxArrowThemeFontSize">21</x:Double>
@@ -3002,6 +3003,7 @@
 			<SolidColorBrush x:Key="SystemControlHighlightListAccentMediumBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.6" />
 			<SolidColorBrush x:Key="SystemControlHighlightListMediumBrush" Color="{StaticResource SystemListMediumColor}"/>
 			<SolidColorBrush x:Key="SystemControlHighlightListLowBrush" Color="{StaticResource SystemListLowColor}"/>
+			<SolidColorBrush x:Key="SystemControlHighlightChromeWhiteBrush" Color="{StaticResource SystemChromeWhiteColor}" />
 			<SolidColorBrush x:Key="SystemControlHighlightTransparentBrush" Color="Transparent"/>
 			<SolidColorBrush x:Key="SystemControlHyperlinkTextBrush" Color="{ThemeResource SystemAccentColor}"/>
 			<SolidColorBrush x:Key="SystemControlHyperlinkBaseHighBrush" Color="{StaticResource SystemBaseHighColor}" />

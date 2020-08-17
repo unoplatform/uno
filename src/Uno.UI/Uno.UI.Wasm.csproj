@@ -14,6 +14,8 @@
 		<AssemblyName>Uno.UI</AssemblyName>
  
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
+		
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
@@ -22,6 +24,11 @@
 	<ItemGroup>
 		<TSBindingAssemblySource Include="Uno" />
 		<TSBindingAssemblySource Include="Uno.UI" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;" Visible="False" />
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
 
 	<ItemGroup> 
@@ -137,5 +144,22 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
+
+	<Target Name="_UnoWasmOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\$(PackageId)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_DebugSymbolsIntermediatePath)" DestinationFiles="@(_DebugSymbolsIntermediatePath->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	</Target>
 
 </Project>

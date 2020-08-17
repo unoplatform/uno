@@ -746,6 +746,12 @@ var Uno;
                     element.style.setProperty(name, "");
                 }
             }
+            isCssPropertySupported(propertyName, value) {
+                return CSS.supports(propertyName, value);
+            }
+            isCssConditionSupported(supportCondition) {
+                return CSS.supports(supportCondition);
+            }
             /**
              * Set + Unset CSS classes on an element
              */
@@ -911,7 +917,9 @@ var Uno;
                 element.addEventListener("pointercancel", WindowManager.onPointerEventReceived);
             }
             static onPointerEventReceived(evt) {
-                const element = evt.currentTarget;
+                WindowManager.dispatchPointerEvent(evt.currentTarget, evt);
+            }
+            static dispatchPointerEvent(element, evt) {
                 const payload = WindowManager.pointerEventExtractor(evt);
                 const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
                 if (handled) {
@@ -919,7 +927,7 @@ var Uno;
                 }
             }
             static onPointerEnterReceived(evt) {
-                const element = evt.target;
+                const element = evt.currentTarget;
                 const e = evt;
                 if (e.explicitOriginalTarget) { // FF only
                     // It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
@@ -957,10 +965,10 @@ var Uno;
                 }
             }
             static onPointerLeaveReceived(evt) {
-                const element = evt.target;
+                const element = evt.currentTarget;
                 const e = evt;
                 if (e.explicitOriginalTarget // FF only
-                    && e.explicitOriginalTarget !== event.currentTarget
+                    && e.explicitOriginalTarget !== element
                     && event.isOver(element)) {
                     // If the event was re-targeted, it's suspicious as the leave event should not bubble
                     // This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
@@ -973,7 +981,10 @@ var Uno;
                     WindowManager.current.processPendingLeaveEvent = (move) => {
                         if (!move.isOverDeep(element)) {
                             // Raising deferred pointerleave on element " + element.id);
-                            WindowManager.onPointerEventReceived(evt);
+                            // Note The 'evt.currentTarget' is available only while in the event handler.
+                            //		So we manually keep a reference ('element') and explicit dispatch event to it.
+                            //		https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
+                            WindowManager.dispatchPointerEvent(element, evt);
                             WindowManager.current.processPendingLeaveEvent = null;
                         }
                         else if (--attempt <= 0) {
@@ -2860,6 +2871,79 @@ var Uno;
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
 // ReSharper disable InconsistentNaming
+var Windows;
+(function (Windows) {
+    var Media;
+    (function (Media) {
+        class SpeechRecognizer {
+            constructor(managedId, culture) {
+                this.onResult = (event) => {
+                    if (event.results[0].isFinal) {
+                        if (!SpeechRecognizer.dispatchResult) {
+                            SpeechRecognizer.dispatchResult = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchResult");
+                        }
+                        SpeechRecognizer.dispatchResult(this.managedId, event.results[0][0].transcript, event.results[0][0].confidence);
+                    }
+                    else {
+                        if (!SpeechRecognizer.dispatchHypothesis) {
+                            SpeechRecognizer.dispatchHypothesis = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchHypothesis");
+                        }
+                        SpeechRecognizer.dispatchHypothesis(this.managedId, event.results[0][0].transcript);
+                    }
+                };
+                this.onSpeechStart = () => {
+                    if (!SpeechRecognizer.dispatchStatus) {
+                        SpeechRecognizer.dispatchStatus = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchStatus");
+                    }
+                    SpeechRecognizer.dispatchStatus(this.managedId, "SpeechDetected");
+                };
+                this.onError = (event) => {
+                    if (!SpeechRecognizer.dispatchError) {
+                        SpeechRecognizer.dispatchError = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchError");
+                    }
+                    SpeechRecognizer.dispatchError(this.managedId, event.error);
+                };
+                this.managedId = managedId;
+                if (window.SpeechRecognition) {
+                    this.recognition = new window.SpeechRecognition(culture);
+                }
+                else if (window.webkitSpeechRecognition) {
+                    this.recognition = new window.webkitSpeechRecognition(culture);
+                }
+                if (this.recognition) {
+                    this.recognition.addEventListener("result", this.onResult);
+                    this.recognition.addEventListener("speechstart", this.onSpeechStart);
+                    this.recognition.addEventListener("error", this.onError);
+                }
+            }
+            static initialize(managedId, culture) {
+                const recognizer = new SpeechRecognizer(managedId, culture);
+                SpeechRecognizer.instanceMap[managedId] = recognizer;
+            }
+            static recognize(managedId) {
+                const recognizer = SpeechRecognizer.instanceMap[managedId];
+                if (recognizer.recognition) {
+                    recognizer.recognition.continuous = false;
+                    recognizer.recognition.interimResults = true;
+                    recognizer.recognition.start();
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            static removeInstance(managedId) {
+                const recognizer = SpeechRecognizer.instanceMap[managedId];
+                recognizer.recognition.removeEventListener("result", recognizer.onResult);
+                recognizer.recognition.removeEventListener("speechstart", recognizer.onSpeechStart);
+                recognizer.recognition.removeEventListener("error", recognizer.onError);
+                delete SpeechRecognizer.instanceMap[managedId];
+            }
+        }
+        SpeechRecognizer.instanceMap = {};
+        Media.SpeechRecognizer = SpeechRecognizer;
+    })(Media = Windows.Media || (Windows.Media = {}));
+})(Windows || (Windows = {}));
 // eslint-disable-next-line @typescript-eslint/no-namespace
 var Windows;
 (function (Windows) {

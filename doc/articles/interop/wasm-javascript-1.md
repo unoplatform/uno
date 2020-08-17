@@ -79,7 +79,6 @@ public partial sealed class MyInputControl : FrameworkElement
     {
     }
 }
-
 ```
 
 Once created, it is possible to interact directly with this element by calling helper methods available in Uno. Note that those methods are only available when targeting the _Wasm_ platform. It is possible to use [conditional code](https://platform.uno/docs/articles/platform-specific-csharp.html) to use these methods in a multi-platform project.
@@ -95,8 +94,6 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   // Setting many CSS styles at once using C# tuples
   this.SetCssStyle(("text-shadow", "2px 2px blue"), ("color", "var(--app-fg-color1)"));
   ```
-
-  
 
 * The `element.ClearCssStyle()` extension method can be used to set CSS styles to their default values. Example:
 
@@ -114,7 +111,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   // Set the "href" attribute of an <a> element
   this.SetHtmlAttribute("href", "#section2");
   
-  // Set many attributes at once
+  // Set many attributes at once (less interop)
   this.SetHtmlAttribute(("target", "_blank"), ("referrerpolicy", "no-referrer"));
   
   // Remove attribute from DOM element
@@ -129,6 +126,9 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   ``` csharp
   // Add the class to element
   this.SetCssClass("warning");
+  
+  // Add many classes at once (less interop)
+  this.SetCssClass("warning", "level2");
   
   // Remove class from element
   this.UnsetCssClass("paused");
@@ -227,10 +227,10 @@ There's 2 ways to _callback_ to managed C# code from JavaScript:
 
    More details [on this page](https://platform.uno/docs/articles/wasm-custom-events.html).
    
-   > Note: current there's no easy way to asynchronously call managed (dotnet) code from JavaScript.
+   > Note: current there's no easy way to asynchronously call managed (dotnet) code from JavaScript in the current version of Uno.
 
 ## 🔬 Going further
 
-* [Continue with Part 2](wasm-javascript-2.md) - an integration of a syntax highliter component.
+* [Continue with Part 2](wasm-javascript-2.md) - an integration of a syntax highlighter component.
 * [Continue with Part 3](wasm-javascript-3.md) - an integration of a more complex library with callbacks to application.
 * Read the [Uno Wasm Bootstrapper](https://github.com/unoplatform/Uno.Wasm.Bootstrap) documentation.

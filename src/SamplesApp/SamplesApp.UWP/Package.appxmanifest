@@ -54,6 +54,7 @@
   <Capabilities>
     <Capability Name="internetClient" />
     <rescap:Capability Name="confirmAppClose" />
-    <DeviceCapability Name="location"/>    
+    <DeviceCapability Name="location"/>
+    <DeviceCapability Name="microphone"/>    
   </Capabilities>
 </Package>
