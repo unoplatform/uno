@@ -175,7 +175,7 @@ Building for WebAssembly takes a few more steps than iOS and Android:
 ## JetBrains Rider
 
 ### Prerequisites
-* [**Rider Version 2020.2 Early Access**](https://www.jetbrains.com/rider/nextversion/)
+* [**Rider Version "2020.2+"**](https://www.jetbrains.com/rider/)
 * [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/)
 
 ### Creating a new Uno project
