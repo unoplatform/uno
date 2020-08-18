@@ -4,10 +4,10 @@ This guide will walk you through the set-up process for building cross-platform 
 
 ## Choose your IDE
 Use Uno with your favorite tools.
-* [Visual Studio](#Visual-Studio)
-* [VS Code](#VS-Code)
-* [Visual Studio for Mac](#Visual-Studio-For-Mac)
-* [JetBrains Rider](#JetBrains-Rider)
+* [Visual Studio](#visual-studio)
+* [VS Code](#vs-code)
+* [Visual Studio for Mac](#visual-studio-for-mac)
+* [JetBrains Rider](#jetbrains-rider)
 
 ## Visual Studio 
 ### Prerequisites
