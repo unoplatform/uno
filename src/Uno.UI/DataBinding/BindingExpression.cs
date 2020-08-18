@@ -155,11 +155,21 @@ namespace Windows.UI.Xaml.Data
 		/// <summary>
 		/// Sends the current binding target value to the binding source property in TwoWay bindings.
 		/// </summary>
+		/// <remarks>
+		/// This method is not part of UWP contract
+		/// </remarks>
 		/// <param name="value">The expected current value of the target</param>
 		public void UpdateSource(object value)
 		{
 			if (_IsCurrentlyPushing || _IsCurrentlyPushingTwoWay)
 			{
+				return;
+			}
+
+			if (ParentBinding.Mode != BindingMode.TwoWay)
+			{
+				// Calling this method does nothing if the Mode value of the binding is not TwoWay.
+				// [Microsoft documentation https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.data.bindingexpression.updatesource#remarks]
 				return;
 			}
 
