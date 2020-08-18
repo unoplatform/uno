@@ -520,14 +520,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri")))
 				{
-					if (asm.FullName == "Uno.UI")
+					if (asm.Name.Name == "Uno.UI")
 					{
 						// Avoid the use of assembly lookup as we already know the assembly
 						writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(typeof(global::Windows.UI.Xaml.FrameworkElement).Assembly);");
 					}
 					else
 					{
-						writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(\"{asm.FullName}\");");
+						if (_isWasm)
+						{
+							var anchorType = asm.MainModule.Types.FirstOrDefault(t => t.Name == "GlobalStaticResources" && t.IsPublic)
+								?? asm.MainModule.Types.FirstOrDefault(t => t.IsPublic && t.CustomAttributes.None(c => c.AttributeType.Name == "Obsolete"));
+
+							if (anchorType != null)
+							{
+								// Use a public type to get the assembly to work around a WASM assembly loading issue
+								writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(typeof(global::{anchorType.FullName}).Assembly); /* {asm.FullName} */");
+							}
+						}
+						else
+						{
+							writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{asm.FullName}\"));");
+						}
 					}
 				}
 			}
