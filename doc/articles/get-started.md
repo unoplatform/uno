@@ -90,7 +90,7 @@ This will create a solution that only contains the WebAssembly platform support.
 1. Install the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) and the [JavaScript Debugger (Nightly)](https://marketplace.visualstudio.com/items?itemName=ms-vscode.js-debug-nightly) extension with the `debug.javascript.usePreview` setting set to true (**File** / **Preference** / **Settings**, search for `Use preview`).
 2. Open Code using
     ```bash
-    code ./MyApp`
+    code ./MyApp
     ```
 3. Visual Studio Code will ask to restore the NuGet packages.
 
