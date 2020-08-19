@@ -338,6 +338,7 @@
 								Background="{TemplateBinding Background}"
 								Margin="{TemplateBinding BorderThickness}"
 								Opacity="{ThemeResource TextControlBackgroundRestOpacity}"
+								CornerRadius="{TemplateBinding CornerRadius}"
 								Grid.ColumnSpan="2"
 								Grid.RowSpan="1" />
 						<Border x:Name="BorderElement"
