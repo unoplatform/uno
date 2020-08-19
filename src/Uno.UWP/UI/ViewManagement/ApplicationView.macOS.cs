@@ -12,7 +12,9 @@ using CoreGraphics;
 namespace Windows.UI.ViewManagement
 {
     partial class ApplicationView
-	{
+    {
+	    private string _title = string.Empty;
+
 		internal void SetCoreBounds(NSWindow keyWindow, Foundation.Rect windowBounds)
 		{
             VisibleBounds = windowBounds;
@@ -27,15 +29,15 @@ namespace Windows.UI.ViewManagement
 
 		public string Title
 		{
-			get
-			{
-				VerifyKeyWindowInitialized();
-				return NSApplication.SharedApplication.KeyWindow.Title;
-			}
+			get => IsKeyWindowInitialized() ? NSApplication.SharedApplication.KeyWindow.Title : _title;
 			set
 			{
-				VerifyKeyWindowInitialized();
-				NSApplication.SharedApplication.KeyWindow.Title = value;
+				if (IsKeyWindowInitialized())
+				{
+					NSApplication.SharedApplication.KeyWindow.Title = value;
+				}
+
+				_title = value;
 			}
 		}
 
@@ -86,13 +88,23 @@ namespace Windows.UI.ViewManagement
 			window.MinSize = new CGSize(minSize.Width, minSize.Height);
 		}
 
+		internal void SyncTitleWithWindow(NSWindow window)
+		{
+			if (!string.IsNullOrWhiteSpace(_title))
+			{
+				window.Title = _title;
+			}
+		}
+
 		private void VerifyKeyWindowInitialized([CallerMemberName]string propertyName = null)
 		{
-			if (NSApplication.SharedApplication.KeyWindow == null)
+			if (!IsKeyWindowInitialized())
 			{
 				throw new InvalidOperationException($"{propertyName} API must be used after KeyWindow is set");
 			}
 		}
-	}
+
+		private bool IsKeyWindowInitialized() => NSApplication.SharedApplication.KeyWindow != null;
+    }
 }
 #endif
