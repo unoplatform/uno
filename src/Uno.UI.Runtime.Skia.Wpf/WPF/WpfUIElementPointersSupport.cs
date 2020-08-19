@@ -279,7 +279,7 @@ namespace Uno.UI.Skia.Platform
 						IsHorizontalMouseWheel = msg == WM_MOUSEHWHEEL,
 						IsPrimary = true,
 						IsInRange = true,
-						MouseWheelDelta = -((int)wparam >> 16) / 10
+						MouseWheelDelta = -((int)wparam >> 16) / 20
 					};
 					var modifiers = VirtualKeyModifiers.None;
 					if (keys.HasFlag(MouseModifierKeys.MK_SHIFT))
