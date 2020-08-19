@@ -41,7 +41,7 @@ namespace Uno.UI.Controls
 		public Window(CGRect contentRect, NSWindowStyle aStyle, NSBackingStore bufferingType, bool deferCreation)
 			: base(contentRect, aStyle, bufferingType, deferCreation)
 		{
-			Delegate = new WindowDelegate();
+			Delegate = new WindowDelegate(this);
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Window = this;
 		}
@@ -68,7 +68,7 @@ namespace Uno.UI.Controls
 				|| view is NSTextField
 				|| GetNeedsKeyboard(view);
 		}
-		
+
 		public BringIntoViewMode? FocusedViewBringIntoViewOnKeyboardOpensMode { get; set; }
 
 
@@ -105,7 +105,7 @@ namespace Uno.UI.Controls
 			}
 
 			var viewRectInScrollView = CGRect.Empty;
-			
+
 			if (!(view is TextBox))
 			{
 				// We want to scroll to the textbox and not the inner textview.
@@ -119,8 +119,16 @@ namespace Uno.UI.Controls
 
 		private class WindowDelegate : NSWindowDelegate
 		{
+			private readonly NSWindow _window;
+
+			public WindowDelegate(NSWindow window)
+			{
+				_window = window;
+			}
+
 			public override async void DidBecomeMain(NSNotification notification)
 			{
+				ApplicationView.GetForCurrentView().SyncTitleWithWindow(_window);
 				// Ensure custom cursor is reset after window activation.
 				// Artificial delay is necessary due to the fact that setting cursor
 				// immediately after window becoming main does not have any effect.
