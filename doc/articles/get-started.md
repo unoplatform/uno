@@ -65,6 +65,8 @@ If XAML Intellisense isn't working on a freshly-created project, try the followi
 3. Close and reopen Visual Studio.
 4. Reopen XAML documents.
 
+<iframe width="300" height="200" src="https://www.youtube.com/embed/hQcKsoxaAHo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## VS Code
 
 This guide will walk you through the set-up process for building WebAssembly apps with Uno, under Windows, Linux or macOS.
@@ -137,6 +139,8 @@ Here's how to do this:
 
 You should now be in the same configuration as the generated template files.
 
+<iframe width="500" height="300" src="https://www.youtube.com/embed/O9qgw1Q445M" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## Visual Studio For Mac
 
 While it is easier to create apps using Uno on Windows, you can also create all but UWP apps on your Mac.
@@ -171,6 +175,9 @@ Building for WebAssembly takes a few more steps than iOS and Android:
 2. Build the project
 3. In the terminal, navigate to your build output. This will typically be: `yourProject.Wasm > bin > Debug > netstandard2.0 > dist > server.py` Run the `server.py` program.
 4. In your browser, open localhost:8000. 
+
+<iframe width="500" height="300" src="https://www.youtube.com/embed/ESGJr6kHQg0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>  
+
 
 ## JetBrains Rider
 
@@ -222,6 +229,8 @@ Alternatively, you can use a tool like VNC to run the simulator on a mac.
 #### UWP
 You will be able to build the UWP project, however, Rider currenly does not support debugging or deploying for UWP.   
 ![run-uwp-rider](Assets/quick-start/run-uwp-rider.JPG)  
+
+<iframe width="500" height="300" src="https://www.youtube.com/embed/HgwL0al5bfo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 <div class="NOTE alert alert-info">
 <h5>Next:</h5>
