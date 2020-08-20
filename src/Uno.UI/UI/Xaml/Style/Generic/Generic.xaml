@@ -3512,8 +3512,7 @@
                                 Width="20" />
 							<FontIcon x:Name="CheckGlyph"
                                 FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                win:Glyph="&#xE001;"
-                                xamarin:Glyph="&#xE10B;"
+                                Glyph="&#xE001;"
                                 FontSize="20"
                                 Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}"
                                 Opacity="0" />
