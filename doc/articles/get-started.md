@@ -66,7 +66,7 @@ If XAML Intellisense isn't working on a freshly-created project, try the followi
 4. Reopen XAML documents.
 
 #### Video Tutorial
-[![](http://img.youtube.com/vi/hQcKsoxaAHo/0.jpg)](http://www.youtube.com/watch?v=hQcKsoxaAHo "")
+[![Getting Started Visual Studio Video](Assets/vs-cover.JPG)](http://www.youtube.com/watch?v=hQcKsoxaAHo "")
 
 ## VS Code
 
@@ -141,7 +141,7 @@ Here's how to do this:
 You should now be in the same configuration as the generated template files.
 
 #### Video Tutorial
-[![](http://img.youtube.com/vi/O9qgw1Q445M/0.jpg)](http://www.youtube.com/watch?v=O9qgw1Q445M "")
+[![Getting Started Visual Studio Code Video](Assets/vscode-cover.JPG)](http://www.youtube.com/watch?v=O9qgw1Q445M "")
 
 ## Visual Studio For Mac
 
@@ -179,7 +179,7 @@ Building for WebAssembly takes a few more steps than iOS and Android:
 4. In your browser, open localhost:8000. 
 
 #### Video Tutorial
-[![](http://img.youtube.com/vi/ESGJr6kHQg0/0.jpg)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
+[![Getting Started Visual Studio Mac Video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
 
 ## JetBrains Rider
 
@@ -233,7 +233,7 @@ You will be able to build the UWP project, however, Rider currenly does not supp
 ![run-uwp-rider](Assets/quick-start/run-uwp-rider.JPG)  
 
 #### Video Tutorial
-[![](http://img.youtube.com/vi/HgwL0al5bfo/0.jpg)](http://www.youtube.com/watch?v=HgwL0al5bfo "")
+[![Getting Started Rider Video](Assets/rider-cover.JPG)](http://www.youtube.com/watch?v=HgwL0al5bfo "")
 
 <div class="NOTE alert alert-info">
 <h5>Next:</h5>
