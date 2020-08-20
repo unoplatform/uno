@@ -259,7 +259,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnSelectedItemPropertyChanged(object oldValue, object newValue)
 		{
 			var removedItems = oldValue == null ? new object[0] : new [] { oldValue };
-			var addedItems = new [] { newValue };
+			var addedItems = newValue == null ? new object[0] : new [] { newValue };
 
 			OnSelectedItemChangedPartial(oldValue, newValue);
 
