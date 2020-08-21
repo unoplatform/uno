@@ -150,7 +150,11 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"SelectedItem", typeof(object),
 			typeof(Pivot),
-			new FrameworkPropertyMetadata(default(object)));
+			new FrameworkPropertyMetadata(
+				defaultValue:default(object),
+				propertyChangedCallback: (s, e) => (s as Pivot)?.OnSelectedItemPropertyChanged(e.OldValue, e.NewValue)
+				)
+			);
 
 		public static DependencyProperty TitleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(

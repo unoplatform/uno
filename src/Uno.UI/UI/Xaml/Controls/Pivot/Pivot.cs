@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -254,6 +254,23 @@ namespace Windows.UI.Xaml.Controls
 					pivot.UpdateProperties();
 				}
 			}
+		}
+
+		private void OnSelectedItemPropertyChanged(object oldValue, object newValue)
+		{
+			var removedItems = oldValue == null ? new object[0] : new [] { oldValue };
+			var addedItems = newValue == null ? new object[0] : new [] { newValue };
+
+			OnSelectedItemChangedPartial(oldValue, newValue);
+
+			InvokeSelectionChanged(removedItems, addedItems);			
+		}
+
+		partial void OnSelectedItemChangedPartial(object oldSelectedItem, object selectedItem);
+
+		protected void InvokeSelectionChanged(object[] removedItems, object[] addedItems)
+		{
+			SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, removedItems, addedItems));
 		}
 	}
 }

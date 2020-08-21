@@ -309,7 +309,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				return Items;
 			}
-			return null;
+			return Enumerable.Empty<object>();
 		}
 
 		#region ItemContainerStyle DependencyProperty
