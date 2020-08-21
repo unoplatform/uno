@@ -22,12 +22,13 @@ body {
   outline: none;
   pointer-events: auto;
   /*
-    Those are required for measure/arrange to behave well:
+    Padding & margin are required for measure/arrange to behave well:
     margin & padding are calculated through Xaml elements.
   */
   margin: 0 !important;
   padding: 0;
-  line-height: normal !important;
+
+  line-height: normal;
   -webkit-box-sizing: border-box !important;
   -moz-box-sizing: border-box !important;
   box-sizing: border-box !important;
