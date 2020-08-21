@@ -54,6 +54,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
+		/// Indicates if the content should inherit templated parent from the presenter, or its templated parent.
+		/// </summary>
+		/// <remarks>Clear this flag to let the control nested directly under this ContentPresenter to inherit the correct templated parent</remarks>
+		internal bool SynchronizeContentWithOuterTemplatedParent { get; set; } = true;
+
+		/// <summary>
 		/// Determines if the current ContentPresenter is hosting a native control.
 		/// </summary>
 		/// <remarks>This is used to alter the propagation of the templated parent.</remarks>
@@ -695,11 +701,23 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (_contentTemplateRoot is IFrameworkElement binder)
 				{
-					var templatedParent = _contentTemplateRoot is ImplicitTextBlock
-						? this // ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
-						: (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
+					binder.TemplatedParent = FindTemplatedParent();
 
-					binder.TemplatedParent = templatedParent;
+					DependencyObject FindTemplatedParent()
+					{
+						// ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
+						if (_contentTemplateRoot is ImplicitTextBlock) return this;
+
+						// Sometimes when content is a child view defined in the xaml, the direct TemplatedParent should be used,
+						// but only if the content hasnt been overwritten yet. If the content has been overwritten,
+						// either ImplicitTextBlock or the DataTemplate (requiring the outter TemplatedParent) would has been used.
+						if (!SynchronizeContentWithOuterTemplatedParent && _dataTemplateUsedLastUpdate == null)
+						{
+							return this.TemplatedParent;
+						}
+
+						return (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
+					}
 				}
 				else if (_contentTemplateRoot is DependencyObject dependencyObject)
 				{
