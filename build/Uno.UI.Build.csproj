@@ -70,6 +70,7 @@
 			<_PackageToUpdate Include="Uno.UI" />
 			<_PackageToUpdate Include="Uno.UI.RemoteControl" />
 
+			<_legacyProject Include="..\src\SolutionTemplate\**\*.Uwp.csproj"/>
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.Droid.csproj"/>
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.iOS.csproj"/>
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.macOS.csproj"/>
