@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// MUX Reference: TabView.idl, commit 7a46d353095d65ad1c560059d92e4b3818309b06
+
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-    public class TabViewTabDragStartingEventArgs
+	public class TabViewTabDragStartingEventArgs
     {
 		internal TabViewTabDragStartingEventArgs(DataPackage data, object item, TabViewItem tab)
 		{

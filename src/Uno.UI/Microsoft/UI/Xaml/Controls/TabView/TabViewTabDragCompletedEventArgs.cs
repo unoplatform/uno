@@ -1,4 +1,6 @@
-﻿using Windows.ApplicationModel.DataTransfer;
+﻿// MUX Reference: TabView.idl, commit 7a46d353095d65ad1c560059d92e4b3818309b06
+
+using Windows.ApplicationModel.DataTransfer;
 
 namespace Microsoft.UI.Xaml.Controls
 {

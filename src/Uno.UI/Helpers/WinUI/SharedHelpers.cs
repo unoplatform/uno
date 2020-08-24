@@ -801,11 +801,46 @@ namespace Uno.UI.Helpers.WinUI
 			}
 		}
 
-		//
-		// Header file
-		//
+		winrt::IInspectable SharedHelpers::FindResource(const std::wstring_view& resource, const winrt::ResourceDictionary& resources, const winrt::IInspectable& defaultValue)
+{
+    auto boxedResource = box_value(resource);
+    return resources.HasKey(boxedResource)? resources.Lookup(boxedResource) : defaultValue;
+}
 
-		public static AncestorType GetAncestorOfType<AncestorType>(DependencyObject firstGuess) where AncestorType : class
+	object SharedHelpers::FindInApplicationResources(const std::wstring_view& resource, const winrt::IInspectable& defaultValue)
+	{
+		return SharedHelpers::FindResource(resource, winrt::Application::Current().Resources(), defaultValue);
+	}
+
+
+	// Sometimes we want to get a string representation from an arbitrary object. E.g. for constructing a UIA Name
+	// from an automation peer. There is no guarantee that an arbitrary object is convertable to a string, so
+	// this function may return an empty string.
+	public static string TryGetStringRepresentationFromObject(object obj)
+	{
+		string returnHString = "";
+
+		if (obj != null)
+		{
+			var stringable = obj as IStringable;
+			if (stringable != null)
+			{
+				returnHString = stringable.ToString();
+			}
+			if (string.IsNullOrEmpty(returnHString))
+			{
+				returnHString = obj.ToString() ?? returnHString;
+			}
+		}
+
+		return returnHString;
+	}
+
+	//
+	// Header file
+	//
+
+	public static AncestorType GetAncestorOfType<AncestorType>(DependencyObject firstGuess) where AncestorType : class
 		{
 			var obj = firstGuess;
 			AncestorType matchedAncestor = null;
