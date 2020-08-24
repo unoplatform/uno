@@ -28,3 +28,4 @@ or if you have other existing resources, then add `XamlControlsResources` at the
         </ResourceDictionary>
     </Application.Resources>
 ```
+1. The Fluent control styles require the Uno Fluent Assets icon font to display correctly. [Follow the instructions here](../uno-fluent-assets.md) to upgrade your app to use the font.
