@@ -70,6 +70,8 @@
     href: features\ElevatedView.md
   - name: Fluent styles
     href: features\fluent-styles.md
+  - name: Fluent icon font
+    href: uno-fluent-assets.md
   - name: ListView and GridView
     href: controls\ListViewBase.md
   - name: MapControl
