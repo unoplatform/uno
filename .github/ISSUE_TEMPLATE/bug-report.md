@@ -21,11 +21,15 @@ If the matter is security related, please disclose it privately via https://gith
 
 <!-- Please provide a **MINIMAL REPRO PROJECT** and the **STEPS TO REPRODUCE**-->
 
+## Workaround
+
+<!-- Please provide steps to workaround this problem if possible -->
+
 ## Environment
 
 <!-- For bug reports Check one or more of the following options with "x" -->
 
-Nuget Package:
+Nuget Package: <!-- For example Uno.UI, Uno.UI.RemoteControl, Uno.Material, ... -->
 
 Package Version(s):
 
@@ -43,11 +47,14 @@ Affected platform(s):
 - [ ] Build tasks
 - [ ] Solution Templates
 
-Visual Studio:
+IDE:
 
 - [ ] 2017 (version: )
 - [ ] 2019 (version: )
 - [ ] for Mac (version: )
+- [ ] Rider Windows (version: )
+- [ ] Rider macOS (version: )
+- [ ] Visual Studio Code (version: )
 
 Relevant plugins:
 
