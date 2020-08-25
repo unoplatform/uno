@@ -547,7 +547,11 @@ namespace SampleControl.Presentation
 		private List<SampleChooserCategory> GetSamples()
 		{
 			var categories =
+#if !__WASM__
 				from assembly in GetAllAssembies().AsParallel()
+#else
+				from assembly in GetAllAssembies()
+#endif
 				from type in FindDefinedAssemblies(assembly)
 				let sampleAttribute = FindSampleAttribute(type)
 				where sampleAttribute != null
