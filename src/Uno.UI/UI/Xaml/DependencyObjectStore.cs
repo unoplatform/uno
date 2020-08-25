@@ -1220,7 +1220,7 @@ namespace Windows.UI.Xaml
 					}
 				}
 
-				if (propertyValue is INeedsThemeBindingUpdates updateable)
+				if (propertyValue is IAdditionalChildrenProvider updateable)
 				{
 					foreach (var innerValue in updateable.GetAdditionalChildObjects())
 					{
