@@ -26,6 +26,8 @@ labels: kind/consumer-experience, kind/documentation, triage/untriaged
 - [ ] WebAssembly
 - [ ] macOS
 - [ ] Skia
+  - [ ] WPF
+  - [ ] GTK (Linux)
 - [ ] Windows
 
 ## Anything else we need to know?

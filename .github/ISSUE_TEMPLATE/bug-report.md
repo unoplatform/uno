@@ -37,6 +37,8 @@ Affected platform(s):
 - [ ] WebAssembly renderers for Xamarin.Forms
 - [ ] macOS
 - [ ] Skia
+  - [ ] WPF
+  - [ ] GTK (Linux)
 - [ ] Windows
 - [ ] Build tasks
 - [ ] Solution Templates
