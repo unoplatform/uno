@@ -22,5 +22,7 @@ namespace Windows.ApplicationModel
 		public ushort Minor;
 		public ushort Build;
 		public ushort Revision;
+
+		public override string ToString() => $"{Major}.{Minor}.{Build}.{Revision}";
 	}
 }
