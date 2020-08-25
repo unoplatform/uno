@@ -49,9 +49,9 @@ Affected platform(s):
 
 IDE:
 
-- [ ] 2017 (version: )
-- [ ] 2019 (version: )
-- [ ] for Mac (version: )
+- [ ] Visual Studio 2017 (version: )
+- [ ] Visual Studio 2019 (version: )
+- [ ] Visual Studio for Mac (version: )
 - [ ] Rider Windows (version: )
 - [ ] Rider macOS (version: )
 - [ ] Visual Studio Code (version: )
