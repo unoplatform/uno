@@ -17,6 +17,7 @@ labels: kind/contributor-experience, kind/documentation, triage/untriaged
 - [ ] WebAssembly
 - [ ] WebAssembly renderers for Xamarin.Forms
 - [ ] macOS
+- [ ] Skia
 - [ ] Windows
 
 
