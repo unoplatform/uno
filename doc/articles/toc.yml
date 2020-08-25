@@ -34,8 +34,6 @@
       href: feature-flags.md
     - name: Uno.UI.Toolkit
       href: Uno.UI.Toolkit.md
-    - name: Migrating existing UWP app to Uno
-      href: migrating-apps.md
     - name: Migrating from Previous Releases
       href: migrating-from-previous-releases.md
     - name: Uno app solution structure
@@ -70,6 +68,10 @@
     href: features/custom-fonts.md
   - name: ElevatedView
     href: features\ElevatedView.md
+  - name: Fluent styles
+    href: features\fluent-styles.md
+  - name: Fluent icon font
+    href: uno-fluent-assets.md
   - name: ListView and GridView
     href: controls\ListViewBase.md
   - name: MapControl
