@@ -352,6 +352,19 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isThemeShadowAvailable.Value;
 		}
 
+		static bool? s_IsIsLoadedAvailable;
+		static public bool IsIsLoadedAvailable()
+		{
+			if (s_IsIsLoadedAvailable == null)
+			{
+				s_IsIsLoadedAvailable =
+					IsSystemDll() ||
+					IsRS5OrHigher() ||
+					ApiInformation.IsPropertyPresent("Windows.UI.Xaml.FrameworkElement", "IsLoaded");
+			}
+			return s_IsIsLoadedAvailable.Value;
+		}
+
 		static bool isAPIContractVxAvailableInitialized = false;
 		static bool isAPIContractVxAvailable = false;
 		private static bool s_dynamicScrollbarsDirty = true;
@@ -801,46 +814,91 @@ namespace Uno.UI.Helpers.WinUI
 			}
 		}
 
-		winrt::IInspectable SharedHelpers::FindResource(const std::wstring_view& resource, const winrt::ResourceDictionary& resources, const winrt::IInspectable& defaultValue)
-{
-    auto boxedResource = box_value(resource);
-    return resources.HasKey(boxedResource)? resources.Lookup(boxedResource) : defaultValue;
-}
-
-	object SharedHelpers::FindInApplicationResources(const std::wstring_view& resource, const winrt::IInspectable& defaultValue)
-	{
-		return SharedHelpers::FindResource(resource, winrt::Application::Current().Resources(), defaultValue);
-	}
-
-
-	// Sometimes we want to get a string representation from an arbitrary object. E.g. for constructing a UIA Name
-	// from an automation peer. There is no guarantee that an arbitrary object is convertable to a string, so
-	// this function may return an empty string.
-	public static string TryGetStringRepresentationFromObject(object obj)
-	{
-		string returnHString = "";
-
-		if (obj != null)
+		public static object FindResource(string resource, ResourceDictionary resources, object defaultValue)
 		{
-			var stringable = obj as IStringable;
-			if (stringable != null)
-			{
-				returnHString = stringable.ToString();
-			}
-			if (string.IsNullOrEmpty(returnHString))
-			{
-				returnHString = obj.ToString() ?? returnHString;
-			}
+			var boxedResource = resource;
+			return resources.HasKey(boxedResource) ? resources.Lookup(boxedResource) : defaultValue;
 		}
 
-		return returnHString;
-	}
+		public static object FindInApplicationResources(string resource, object defaultValue)
+		{
+			return FindResource(resource, Application.Current.Resources, defaultValue);
+		}
 
-	//
-	// Header file
-	//
+		public static FrameworkElement FindInVisualTreeByName(FrameworkElement parent, string name)
+		{
+			return FindInVisualTree(
+				parent,
+				element => element.Name == name);
+		}
 
-	public static AncestorType GetAncestorOfType<AncestorType>(DependencyObject firstGuess) where AncestorType : class
+		public static T FindInVisualTreeByType<T>(FrameworkElement parent)
+			where T : class
+		{
+			var element = FindInVisualTree(
+				parent,
+				element => element is T);
+			return element as T;
+		}
+
+		public static FrameworkElement FindInVisualTree(FrameworkElement parent, Func<FrameworkElement, bool> isMatch)
+		{
+			int numChildren = VisualTreeHelper.GetChildrenCount(parent);
+
+			FrameworkElement foundElement = parent;
+			if (isMatch(foundElement))
+			{
+				return foundElement;
+			}
+
+			for (int i = 0; i < numChildren; i++)
+			{
+				var dp = VisualTreeHelper.GetChild(parent, i);
+				if (dp != null)
+				{
+					var fe = dp as FrameworkElement;
+					if (fe != null)
+					{
+						foundElement = FindInVisualTree(fe, isMatch);
+						if (foundElement != null)
+						{
+							return foundElement;
+						}
+					}
+				}
+			}
+
+			return null;
+		}
+
+		// Sometimes we want to get a string representation from an arbitrary object. E.g. for constructing a UIA Name
+		// from an automation peer. There is no guarantee that an arbitrary object is convertable to a string, so
+		// this function may return an empty string.
+		public static string TryGetStringRepresentationFromObject(object obj)
+		{
+			string returnHString = "";
+
+			if (obj != null)
+			{
+				var stringable = obj as IStringable;
+				if (stringable != null)
+				{
+					returnHString = stringable.ToString();
+				}
+				if (string.IsNullOrEmpty(returnHString))
+				{
+					returnHString = obj.ToString() ?? returnHString;
+				}
+			}
+
+			return returnHString;
+		}
+
+		//
+		// Header file
+		//
+
+		public static AncestorType GetAncestorOfType<AncestorType>(DependencyObject firstGuess) where AncestorType : class
 		{
 			var obj = firstGuess;
 			AncestorType matchedAncestor = null;

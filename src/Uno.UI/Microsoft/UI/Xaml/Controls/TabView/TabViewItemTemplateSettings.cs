@@ -1,7 +1,17 @@
-﻿namespace Uno.UI.Microsoft.UI.Xaml.Controls.TabView
+﻿using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+
+namespace Microsoft.UI.Xaml.Controls
 {
-	public class TabViewItemTemplateSettings
+	public partial class TabViewItemTemplateSettings : DependencyObject
     {
-        
-    }
+		public IconElement IconElement
+		{
+			get => (IconElement)GetValue(IconElementProperty);
+			set => SetValue(IconElementProperty, value);
+		}
+
+		public static DependencyProperty IconElementProperty { get; } =
+			DependencyProperty.Register(nameof(IconElement), typeof(IconElement), typeof(TabViewItemTemplateSettings), new PropertyMetadata(null));
+	}
 }

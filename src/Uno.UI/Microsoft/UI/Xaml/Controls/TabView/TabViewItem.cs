@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -20,6 +21,17 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string c_overlayCornerRadiusKey = "OverlayCornerRadius";
 		private const string SR_TabViewCloseButtonName = "TabViewCloseButtonName";
 
+		private bool m_firstTimeSettingToolTip = true;
+		private bool m_hasPointerCapture = false;
+		private bool m_isMiddlePointerButtonPressed = false;
+		private bool m_isDragging = false;
+		private bool m_isPointerOver = false;
+		private TabViewCloseButtonOverlayMode m_closeButtonOverlayMode = TabViewCloseButtonOverlayMode.Auto;
+		private TabViewWidthMode m_tabViewWidthMode = TabViewWidthMode.Equal;
+		private Button m_closeButton;
+		private ToolTip m_toolTip;
+		private object m_shadow;
+		private TabView m_parentTabView;
 
 		public TabViewItem()
 		{
@@ -34,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
-			var popupRadius = (CornerRadius)(ResourceAccessor.ResourceLookup(this, c_overlayCornerRadiusKey));
+			var popupRadius = (CornerRadius)ResourceAccessor.ResourceLookup(this, c_overlayCornerRadiusKey);
 
 			var tabView = SharedHelpers.GetAncestorOfType<TabView>(VisualTreeHelper.GetParent(this));
 			var internalTabView = tabView ?? null;
@@ -73,11 +85,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (internalTabView != null)
 					{
-						ThemeShadow shadow;
+						var shadow = new ThemeShadow();
 						shadow.Receivers.Add(internalTabView.GetShadowReceiver());
 						m_shadow = shadow;
 
-						double shadowDepth = (double)(SharedHelpers.FindInApplicationResources(c_tabViewShadowDepthName, c_tabShadowDepth);
+						double shadowDepth = (double)SharedHelpers.FindInApplicationResources(TabView.c_tabViewShadowDepthName, TabView.c_tabShadowDepth);
 
 						var currentTranslation = Translation;
 						var translation = new Vector3(currentTranslation.X, currentTranslation.Y, (float)shadowDepth);
@@ -124,11 +136,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (IsSelected && !m_isDragging)
 				{
-					Shadow((ThemeShadow)m_shadow);
+					Shadow = (ThemeShadow)m_shadow;
 				}
 				else
 				{
-					Shadow(null);
+					Shadow = null;
 				}
 			}
 		}
@@ -150,23 +162,23 @@ namespace Microsoft.UI.Xaml.Controls
 			return new TabViewItemAutomationPeer(this);
 		}
 
-		private void OnCloseButtonOverlayModeChanged(TabViewCloseButtonOverlayMode mode)
+		internal void OnCloseButtonOverlayModeChanged(TabViewCloseButtonOverlayMode mode)
 		{
 			m_closeButtonOverlayMode = mode;
 			UpdateCloseButton();
 		}
 
-		private TabView GetParentTabView()
+		internal TabView GetParentTabView()
 		{
 			return m_parentTabView;
 		}
 
-		private void SetParentTabView(TabView tabView)
+		internal void SetParentTabView(TabView tabView)
 		{
 			m_parentTabView = tabView;
 		}
 
-		private void OnTabViewWidthModeChanged(TabViewWidthMode mode)
+		internal void OnTabViewWidthModeChanged(TabViewWidthMode mode)
 		{
 			m_tabViewWidthMode = mode;
 			UpdateWidthModeVisualState();
@@ -232,7 +244,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void RaiseRequestClose(TabViewTabCloseRequestedEventArgs args)
+		internal void RaiseRequestClose(TabViewTabCloseRequestedEventArgs args)
 		{
 			// This should only be called from TabView, to ensure that both this event and the TabView TabRequestedClose event are raised
 			CloseRequested?.Invoke(this, args);
@@ -243,7 +255,7 @@ namespace Microsoft.UI.Xaml.Controls
 			RequestClose();
 		}
 
-		private void OnIsClosablePropertyChanged(DependencyPropertyChangedEventArgs&)
+		private void OnIsClosablePropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateCloseButton();
 		}
@@ -254,7 +266,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_firstTimeSettingToolTip = false;
 
-				if (!ToolTipService.GetToolTip(this))
+				if (ToolTipService.GetToolTip(this) == null)
 				{
 					// App author has not specified a tooltip; use our own
 					ToolTip CreateToolTip()
@@ -278,11 +290,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (potentialString != null && potentialString.Type == PropertyType.String)
 				{
-					toolTip.Content(headerContent);
+					toolTip.Content = headerContent;
 				}
 				else
 				{
-					toolTip.Content(null);
+					toolTip.Content = null;
 				}
 			}
 		}
