@@ -65,8 +65,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 
 		[Test]
 		[AutoRetry()]
+		[ActivePlatforms(Platform.iOS, Platform.Browser)]
 		public void NavigationView_OnLightDismiss_TogglePaneButton_IsSizedCorrectly()
 		{
+			// android: disabled because the device isnt wide enough for CompactMode that uses the flyout
 			Run("SamplesApp.Samples.NavigationViewSample.NavigationViewSample");
 
 			var descendants = _app.Marked("nvSample").Descendant();
