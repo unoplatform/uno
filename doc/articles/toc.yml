@@ -14,8 +14,14 @@
       href: faq.md
 - name: Using Uno - getting started
   items:
-    - name: Setting up the environment
-      href: get-started.md
+    - name: Getting Started on Visual Studio
+      href: get-started-vs.md
+    - name: Getting Started on Visual Studio for Mac
+      href: get-started-vsmac.md
+    - name: Getting Started on Visual Studio Code
+      href: get-started-vscode.md
+    - name: Getting Started on Rider
+      href: get-started-rider.md
     - name: Creating an app - Tutorial
       href: getting-started-tutorial-1.md
     - name: Next steps
