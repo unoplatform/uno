@@ -13,7 +13,7 @@ using Windows.UI.Core;
 namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "Children")]
-	public sealed partial class Storyboard : Timeline, ITimeline
+	public sealed partial class Storyboard : Timeline, ITimeline, IAdditionalChildrenProvider
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private EventActivity _traceActivity;
@@ -323,5 +323,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 			}
 		}
+
+		IEnumerable<DependencyObject> IAdditionalChildrenProvider.GetAdditionalChildObjects() => Children;
 	}
 }

@@ -388,6 +388,13 @@ namespace Uno.UI
 			return default(T);
 		}
 
+		/// <summary>
+		/// Supports the use of StaticResource alias with ResourceKey in Xaml markup.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static object ResolveStaticResourceAlias(string resourceKey, object parseContext)
+			=> ResourceDictionary.GetStaticResourceAliasPassthrough(resourceKey, parseContext as XamlParseContext);
+
 		internal static void UpdateSystemThemeBindings() => MasterDictionary.UpdateThemeBindings();
 	}
 }

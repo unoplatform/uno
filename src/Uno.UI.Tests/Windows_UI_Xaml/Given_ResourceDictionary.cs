@@ -450,6 +450,24 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Enumerated_With_StaticResource_Alias()
+		{
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			var light = xcr.ThemeDictionaries["Light"] as ResourceDictionary;
+			Assert.IsNotNull(light);
+			KeyValuePair<object, object> fromEnumeration = default;
+			foreach (var kvp in light)
+			{
+				if (kvp.Key.Equals("ButtonForeground"))
+				{
+					fromEnumeration = kvp;
+				}
+			}
+			Assert.IsNotNull(fromEnumeration);
+			Assert.IsInstanceOfType(fromEnumeration.Value, typeof(SolidColorBrush));
+		}
+
+		[TestMethod]
 		public void When_Implicit_Style_From_Code()
 		{
 			var control = new Test_Control();
