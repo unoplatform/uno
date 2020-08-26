@@ -65,6 +65,9 @@ If XAML Intellisense isn't working on a freshly-created project, try the followi
 3. Close and reopen Visual Studio.
 4. Reopen XAML documents.
 
+#### Video Tutorial
+[![Getting Started Visual Studio Video](Assets/vs-cover.JPG)](http://www.youtube.com/watch?v=hQcKsoxaAHo "")
+
 ## VS Code
 
 This guide will walk you through the set-up process for building WebAssembly apps with Uno, under Windows, Linux or macOS.
@@ -137,6 +140,9 @@ Here's how to do this:
 
 You should now be in the same configuration as the generated template files.
 
+#### Video Tutorial
+[![Getting Started Visual Studio Code Video](Assets/vscode-cover.JPG)](http://www.youtube.com/watch?v=O9qgw1Q445M "")
+
 ## Visual Studio For Mac
 
 While it is easier to create apps using Uno on Windows, you can also create all but UWP apps on your Mac.
@@ -171,6 +177,9 @@ Building for WebAssembly takes a few more steps than iOS and Android:
 2. Build the project
 3. In the terminal, navigate to your build output. This will typically be: `yourProject.Wasm > bin > Debug > netstandard2.0 > dist > server.py` Run the `server.py` program.
 4. In your browser, open localhost:8000. 
+
+#### Video Tutorial
+[![Getting Started Visual Studio Mac Video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
 
 ## JetBrains Rider
 
@@ -222,6 +231,9 @@ Alternatively, you can use a tool like VNC to run the simulator on a mac.
 #### UWP
 You will be able to build the UWP project, however, Rider currenly does not support debugging or deploying for UWP.   
 ![run-uwp-rider](Assets/quick-start/run-uwp-rider.JPG)  
+
+#### Video Tutorial
+[![Getting Started Rider Video](Assets/rider-cover.JPG)](http://www.youtube.com/watch?v=HgwL0al5bfo "")
 
 <div class="NOTE alert alert-info">
 <h5>Next:</h5>
