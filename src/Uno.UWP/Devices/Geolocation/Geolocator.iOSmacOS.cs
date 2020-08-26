@@ -49,6 +49,11 @@ namespace Windows.Devices.Geolocation
 		{
 			BroadcastStatus(PositionStatus.Initializing);
 			var location = _locationManager.Location;
+			if (location == null)
+			{
+				throw new InvalidOperationException("Could not obtain the location. Please make sure that NSLocationWhenInUseUsageDescription and NSLocationUsageDescription are set in info.plist.");
+			}
+
 			BroadcastStatus(PositionStatus.Ready);
 #if __IOS__
 			return ToGeoposition(location);
