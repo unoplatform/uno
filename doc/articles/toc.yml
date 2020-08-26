@@ -66,6 +66,8 @@
     href: features/working-with-assets.md
   - name: Lottie animations
     href: features/Lottie.md
+  - name: SignalR
+    href: signalr.md
   - name: ComboBox
     href: controls\ComboBox.md
   - name: CommandBar
