@@ -17,6 +17,9 @@ labels: kind/enhancement, triage/untriaged
 - [ ] WebAssembly
 - [ ] WebAssembly renderers for Xamarin.Forms
 - [ ] macOS
+- [ ] Skia
+  - [ ] WPF
+  - [ ] GTK (Linux)
 - [ ] Windows
 - [ ] Build tasks
 - [ ] Solution Templates
