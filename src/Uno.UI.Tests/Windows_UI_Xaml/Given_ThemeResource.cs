@@ -58,11 +58,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public async Task When_Theme_Changed_ResourceKey()
 		{
-			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
-			try
+			using (UseFluentResources())
 			{
 				var app = UnitTestsApp.App.EnsureApplication();
-				app.Resources.MergedDictionaries.Insert(0, xcr);
 
 				var page = new Test_Page_Other();
 
@@ -76,10 +74,43 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 				Assert.AreEqual(Colors.White, (textBlock.Foreground as SolidColorBrush).Color);
 			}
-			finally
+		}
+
+		[TestMethod]
+		public async Task When_Theme_Changed_ImplicitStyle()
+		{
+			using (UseFluentResources())
 			{
-				Application.Current.Resources.MergedDictionaries.Remove(xcr);
+				var app = UnitTestsApp.App.EnsureApplication();
+
+				var button = new Button() { Content = "Dummy" };
+
+				app.HostView.Children.Add(button);
+
+				Assert.AreEqual(Colors.Black, (button.Foreground as SolidColorBrush).Color);
+
+				await SwapSystemTheme();
+
+				Assert.AreEqual(Colors.White, (button.Foreground as SolidColorBrush).Color);
 			}
+		}
+
+		[TestMethod]
+		public async Task When_Theme_Changed_LocalValue()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var button = new Button() { Content = "Dummy" };
+
+			button.Foreground = new SolidColorBrush(Colors.Pink);
+
+			app.HostView.Children.Add(button);
+
+			Assert.AreEqual(Colors.Pink, (button.Foreground as SolidColorBrush).Color);
+
+			await SwapSystemTheme();
+
+			Assert.AreEqual(Colors.Pink, (button.Foreground as SolidColorBrush).Color);
 		}
 
 		[TestMethod]
@@ -526,6 +557,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			{
 				await SwapSystemTheme();
 			}
+		}
+
+		/// <summary>
+		/// Use Fluent styles for the duration of the test.
+		/// </summary>
+		private IDisposable UseFluentResources()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			app.Resources.MergedDictionaries.Insert(0, xcr);
+			return new DisposableAction(() => Application.Current.Resources.MergedDictionaries.Remove(xcr));
+
 		}
 
 #if NETFX_CORE

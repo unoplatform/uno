@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private readonly DependencyPropertyDetails _dataContextPropertyDetails;
 		private readonly DependencyPropertyDetails _templatedParentPropertyDetails;
-		private Dictionary<DependencyProperty, ResourceBinding>? _resourceBindings;
+		private ResourceBindingCollection? _resourceBindings;
 
 		private DependencyProperty _parentTemplatedParentProperty = UIElement.TemplatedParentProperty;
 		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
@@ -452,11 +452,6 @@ namespace Windows.UI.Xaml
 
 					ValidatePropertyOwner(property);
 
-					if (precedence == DependencyPropertyValuePrecedences.Local)
-					{
-						TryRemoveResourceBinding(property);
-					}
-
 					// Resolve the stack once for the instance, for performance.
 					propertyDetails = propertyDetails ?? _properties.GetPropertyDetails(property);
 
@@ -654,14 +649,6 @@ namespace Windows.UI.Xaml
 					);
 				}
 			}
-		}
-
-		/// <summary>
-		/// The local value of this property is being overwritten, static resource resolution should no longer be applied.
-		/// </summary>
-		private void TryRemoveResourceBinding(DependencyProperty property)
-		{
-			_resourceBindings?.Remove(property);
 		}
 
 		public long RegisterPropertyChangedCallback(DependencyProperty property, DependencyPropertyChangedCallback callback)
@@ -1111,7 +1098,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal void UpdateResourceBindings(bool isThemeChangedUpdate, ResourceDictionary? containingDictionary = null)
 		{
-			if (_resourceBindings == null || _resourceBindings.Count == 0)
+			if (_resourceBindings == null || !_resourceBindings.HasBindings)
 			{
 				UpdateChildResourceBindings(isThemeChangedUpdate);
 				return;
@@ -1119,28 +1106,28 @@ namespace Windows.UI.Xaml
 
 			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
 
-			var bindings = _resourceBindings.ToArray(); //The original dictionary may be mutated during DP assignations
+			var bindings = _resourceBindings.GetAllBindings().ToList(); //The original collection may be mutated during DP assignations
 
-			foreach (var kvp in bindings)
+			foreach (var tuple in bindings)
 			{
 				try
 				{
 					var wasSet = false;
 					foreach (var dict in dictionariesInScope)
 					{
-						if (dict.TryGetValue(kvp.Value.ResourceKey, out var value, shouldCheckSystem: false))
+						if (dict.TryGetValue(tuple.Binding.ResourceKey, out var value, shouldCheckSystem: false))
 						{
 							wasSet = true;
-							SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value), kvp.Value.Precedence);
+							SetValue(tuple.Property, BindingPropertyHelper.Convert(() => tuple.Property.Type, value), tuple.Binding.Precedence);
 							break;
 						}
 					}
 
-					if (!wasSet && isThemeChangedUpdate && kvp.Value.IsThemeResourceExtension)
+					if (!wasSet && isThemeChangedUpdate && tuple.Binding.IsThemeResourceExtension)
 					{
-						if (ResourceResolver.TryTopLevelRetrieval(kvp.Value.ResourceKey, kvp.Value.ParseContext, out var value))
+						if (ResourceResolver.TryTopLevelRetrieval(tuple.Binding.ResourceKey, tuple.Binding.ParseContext, out var value))
 						{
-							SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value), kvp.Value.Precedence);
+							SetValue(tuple.Property, BindingPropertyHelper.Convert(() => tuple.Property.Type, value), tuple.Binding.Precedence);
 						}
 					}
 				}
@@ -1151,12 +1138,6 @@ namespace Windows.UI.Xaml
 						this.Log().Warn($"Failed to update binding, target may have been disposed", e);
 					}
 				}
-			}
-
-			foreach (var kvp in bindings)
-			{
-				// TryRemoveResourceBinding() will have removed the entries - we just put them straight back again.
-				_resourceBindings[kvp.Key] = kvp.Value;
 			}
 
 			UpdateChildResourceBindings(isThemeChangedUpdate);

@@ -1,0 +1,37 @@
+﻿#nullable enable
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Uno.Buffers;
+using Uno.Extensions;
+using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Data;
+
+namespace Windows.UI.Xaml
+{
+	internal class ResourceBindingCollection
+	{
+		private readonly Dictionary<DependencyProperty, Dictionary<DependencyPropertyValuePrecedences, ResourceBinding>> _bindings = new Dictionary<DependencyProperty, Dictionary<DependencyPropertyValuePrecedences, ResourceBinding>>();
+
+		public bool HasBindings => _bindings.Count > 0 && _bindings.Any(b => b.Value.Any());
+
+		public IEnumerable<(DependencyProperty Property, ResourceBinding Binding)> GetAllBindings()
+		{
+			foreach (var kvp in _bindings)
+			{
+				foreach (var kvpInner in kvp.Value)
+				{
+					yield return (kvp.Key, kvpInner.Value);
+				}
+			}
+		}
+
+		public void Add(DependencyProperty property, ResourceBinding resourceBinding)
+		{
+			var dict = _bindings.FindOrCreate(property, () => new Dictionary<DependencyPropertyValuePrecedences, ResourceBinding>());
+			dict[resourceBinding.Precedence] = resourceBinding;
+		}
+	}
+}
