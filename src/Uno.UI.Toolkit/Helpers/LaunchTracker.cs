@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 using Windows.ApplicationModel;
 using Windows.Storage;
 
@@ -90,9 +92,12 @@ namespace Uno.UI.Toolkit.Helpers
 		/// Ensure this method is called during each launch
 		/// of your application to track the launch statistics.
 		/// </summary>
-		[Preserve]
 		public void Track()
 		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+			{
+				this.Log().LogInformation("Launch tracker initialized");
+			}
 		}
 
 		/// <summary>

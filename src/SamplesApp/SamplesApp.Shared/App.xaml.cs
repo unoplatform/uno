@@ -27,6 +27,7 @@ using Uno.Logging;
 using Windows.Graphics.Display;
 using System.Globalization;
 using Windows.UI.ViewManagement;
+using Uno.UI.Toolkit.Helpers;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -46,6 +47,8 @@ namespace SamplesApp
 		/// </summary>
 		public App()
 		{
+			LaunchTracker.Current.Track();
+
 			// Fix language for UI tests
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
