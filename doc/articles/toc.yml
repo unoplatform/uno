@@ -136,6 +136,8 @@
     href: features\windows-ui-viewmanagement.md
   - name: XAML Hot Reload
     href: features\working-with-xaml-hot-reload.md
+  - name: LaunchTracker
+    href: features\LaunchTracker.md
 - name: Using Uno - implemented views
   href: implemented/toc.yml
   topicHref: implemented-views.md
