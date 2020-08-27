@@ -433,7 +433,10 @@ namespace Windows.UI.Xaml
 		{
 			// We override the isOver for the relevancy check as we will update it right after.
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, isOver: true);
-			var handledInManaged = SetOver(args, true, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
+			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
+				? isManagedBubblingEvent
+				: args.Handled;
+			var handledInManaged = SetOver(args, true, muteEvent: isHandled || !isOverOrCaptured);
 
 			return handledInManaged;
 		}
@@ -449,9 +452,12 @@ namespace Windows.UI.Xaml
 			// it due to an invalid state. So here we make sure to not stay in an invalid state that would
 			// prevent any interaction with the application.
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, isOver: true, forceRelease: true);
-			var handledInManaged = SetPressed(args, true, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
+			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
+				? isManagedBubblingEvent
+				: args.Handled;
+			var handledInManaged = SetPressed(args, true, muteEvent: isHandled || !isOverOrCaptured);
 
-			if (!isManagedBubblingEvent && !isOverOrCaptured)
+			if (PointerRoutedEventArgs.PlatformSupportsNativeBubbling && !isManagedBubblingEvent && !isOverOrCaptured)
 			{
 				// This case is for safety only, it should not happen as we should never get a Pointer down while not
 				// on this UIElement, and no capture should prevent the dispatch as no parent should hold a capture at this point.
@@ -472,10 +478,10 @@ namespace Windows.UI.Xaml
 
 				recognizer.ProcessDownEvent(point);
 
-#if __WASM__
+#if __WASM__ || __SKIA__
 				// On iOS and Android, pointers are implicitly captured, so we will receive the "irrelevant" (i.e. !isOverOrCaptured)
-				// pointer moves and we can use them for manipulation. But on WASM we have to explicitly request to get those events
-				// (expect on FF where they are also implicitly captured ... but we still capture them).
+				// pointer moves and we can use them for manipulation. But on WASM and SKIA we have to explicitly request to get those events
+				// (expect on FF where they are also implicitly captured ... but we still capture them anyway).
 				if (recognizer.PendingManipulation?.IsActive(point.PointerDevice.PointerDeviceType, point.PointerId) ?? false)
 				{
 					Capture(args.Pointer, PointerCaptureKind.Implicit, args);
@@ -505,9 +511,6 @@ namespace Windows.UI.Xaml
 
 			if (_gestures.IsValueCreated)
 			{
-				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that they were handled by a child control,
-				// so we should not use them for gesture recognition.
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured);
 			}
 
@@ -519,10 +522,13 @@ namespace Windows.UI.Xaml
 
 		private bool OnPointerMove(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
 		{
-			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 			var handledInManaged = false;
+			var isOverOrCaptured = ValidateAndUpdateCapture(args);
+			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
+				? isManagedBubblingEvent
+				: args.Handled;
 
-			if (!isManagedBubblingEvent && isOverOrCaptured)
+			if (!isHandled && isOverOrCaptured)
 			{
 				// If this pointer was wrongly dispatched here (out of the bounds and not captured),
 				// we don't raise the 'move' event
@@ -533,10 +539,9 @@ namespace Windows.UI.Xaml
 
 			if (_gestures.IsValueCreated)
 			{
-				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that they were handled by a child control,
+				// We need to process only events that were not handled by a child control,
 				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), !isManagedBubblingEvent || isOverOrCaptured);
+				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), !isHandled || isOverOrCaptured);
 			}
 
 			return handledInManaged;
@@ -549,8 +554,11 @@ namespace Windows.UI.Xaml
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, out var isOver);
+			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
+				? isManagedBubblingEvent
+				: args.Handled;
 
-			handledInManaged |= SetPressed(args, false, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
+			handledInManaged |= SetPressed(args, false, muteEvent: isHandled || !isOverOrCaptured);
 
 			
 			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
@@ -560,7 +568,7 @@ namespace Windows.UI.Xaml
 				// We need to process only events that are bubbling natively to this control (i.e. isOverOrCaptured == true),
 				// if they are bubbling in managed it means that they where handled a child control,
 				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !isManagedBubblingEvent || isOverOrCaptured);
+				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !isHandled || isOverOrCaptured);
 			}
 
 			// We release the captures on up but only after the released event and processed the gesture
@@ -581,8 +589,11 @@ namespace Windows.UI.Xaml
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
+			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
+				? isManagedBubblingEvent
+				: args.Handled;
 
-			handledInManaged |= SetOver(args, false, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
+			handledInManaged |= SetOver(args, false, muteEvent: isHandled || !isOverOrCaptured);
 
 			// We release the captures on exit when pointer if not pressed
 			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
@@ -611,6 +622,9 @@ namespace Windows.UI.Xaml
 		private bool OnPointerCancel(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
 		{
 			var isOverOrCaptured = ValidateAndUpdateCapture(args); // Check this *before* updating the pressed / over states!
+			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
+				? isManagedBubblingEvent
+				: args.Handled;
 
 			// When a pointer is cancelled / swallowed by the system, we don't even receive "Released" nor "Exited"
 			SetPressed(args, false, muteEvent: true);
@@ -634,7 +648,7 @@ namespace Windows.UI.Xaml
 			else
 			{
 				args.Handled = false;
-				handledInManaged |= !isManagedBubblingEvent && RaisePointerEvent(PointerCanceledEvent, args);
+				handledInManaged |= !isHandled && RaisePointerEvent(PointerCanceledEvent, args);
 				handledInManaged |= SetNotCaptured(args);
 			}
 
@@ -668,9 +682,9 @@ namespace Windows.UI.Xaml
 				_pendingRaisedEvent = (null, null, null);
 			}
 		}
-		#endregion
+#endregion
 
-		#region Pointer over state (Updated by the partial API OnNative***)
+#region Pointer over state (Updated by the partial API OnNative***)
 		/// <summary>
 		/// Indicates if a pointer (no matter the pointer) is currently over the element (i.e. OverState)
 		/// WARNING: This might not be maintained for all controls, cf. remarks.
@@ -717,9 +731,9 @@ namespace Windows.UI.Xaml
 				return RaisePointerEvent(PointerExitedEvent, args);
 			}
 		}
-		#endregion
+#endregion
 
-		#region Pointer pressed state (Updated by the partial API OnNative***)
+#region Pointer pressed state (Updated by the partial API OnNative***)
 		private readonly HashSet<uint> _pressedPointers = new HashSet<uint>();
 
 		/// <summary>
@@ -791,9 +805,9 @@ namespace Windows.UI.Xaml
 		}
 
 		private void ClearPressed() => _pressedPointers.Clear();
-		#endregion
+#endregion
 
-		#region Pointer capture state (Updated by the partial API OnNative***)
+#region Pointer capture state (Updated by the partial API OnNative***)
 		/*
 		 * About pointer capture
 		 *
@@ -807,7 +821,7 @@ namespace Windows.UI.Xaml
 
 		private List<Pointer> _localExplicitCaptures;
 
-		#region Capture public (and internal) API ==> This manages only Explicit captures
+#region Capture public (and internal) API ==> This manages only Explicit captures
 		public static DependencyProperty PointerCapturesProperty { get; } = DependencyProperty.Register(
 			"PointerCaptures",
 			typeof(IReadOnlyList<Pointer>),
@@ -874,7 +888,7 @@ namespace Windows.UI.Xaml
 
 			Release(PointerCaptureKind.Explicit);
 		}
-		#endregion
+#endregion
 
 		partial void CapturePointerNative(Pointer pointer);
 		partial void ReleasePointerNative(Pointer pointer);
@@ -973,6 +987,6 @@ namespace Windows.UI.Xaml
 			relatedARgs.Handled = false;
 			return RaisePointerEvent(PointerCaptureLostEvent, relatedARgs);
 		}
-		#endregion
+#endregion
 	}
 }

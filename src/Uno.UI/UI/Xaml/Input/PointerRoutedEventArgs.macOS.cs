@@ -40,7 +40,6 @@ namespace Windows.UI.Xaml.Input
 			Pointer = new Pointer(pointerId, pointerDeviceType, isInContact, isInRange: true);
 			KeyModifiers = GetVirtualKeyModifiers(nativeEvent);
 			OriginalSource = source;
-			CanBubbleNatively = true;
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)

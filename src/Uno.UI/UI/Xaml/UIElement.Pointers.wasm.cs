@@ -110,10 +110,10 @@ namespace Windows.UI.Xaml
 		//	we just ensure that the managed code won't try to bubble it by its own.
 		//	However, if the event is Handled in managed, it will then bubble while it should not! https://github.com/unoplatform/uno/issues/3007
 		private static bool DispatchNativePointerEnter(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerEnter(ToPointerArgs(target, args, isInContact: false, canBubble: true));
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerEnter(ToPointerArgs(target, args, isInContact: false));
 
 		private static bool DispatchNativePointerLeave(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerExited(ToPointerArgs(target, args, isInContact: false, canBubble: true));
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerExited(ToPointerArgs(target, args, isInContact: false));
 
 		private static bool DispatchNativePointerDown(UIElement target, string eventPayload)
 			=> TryParse(eventPayload, out var args) && target.OnNativePointerDown(ToPointerArgs(target, args, isInContact: true));
@@ -183,8 +183,7 @@ namespace Windows.UI.Xaml
 			UIElement snd,
 			NativePointerEventArgs args,
 			bool? isInContact,
-			(bool isHorizontalWheel, double delta) wheel = default,
-			bool canBubble = true)
+			(bool isHorizontalWheel, double delta) wheel = default)
 		{
 			var pointerId = (uint)args.pointerId;
 			var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
@@ -205,8 +204,7 @@ namespace Windows.UI.Xaml
 				keyModifiers,
 				args.pressure,
 				wheel,
-				src,
-				canBubble);
+				src);
 		}
 
 		private static PointerDeviceType ConvertPointerTypeString(string typeStr)
