@@ -1,4 +1,4 @@
-# How to migrate existing UWP code to Uno
+# How to migrate existing UWP code to Uno Platform
 
 There are two separate paths for using an existing UWP codebase on top of Uno:
 - An existing UWP application
@@ -6,7 +6,7 @@ There are two separate paths for using an existing UWP codebase on top of Uno:
 
 For migrating a UWP library, see [this article](howto-migrate-existing-code.md).
 
-# How to migrate UWP app to Uno?
+# How to migrate UWP app to Uno Platform?
 # Step by step guide.
 
 This guide assumes that you have a UWP app, and want to convert this app to be multi-platform.
@@ -14,15 +14,15 @@ This guide assumes that you have a UWP app, and want to convert this app to be m
 
 
 In short:
-* convert solution to use Uno,
+* convert solution to use Uno Platform,
 * check if any APIs you use are not implemented in Uno.
 * if so, you have two options:
 	* try to find a workaround for this, or
-	* extend Uno
+	* extend Uno Platform
 * launch and test the converted app.
 
 
-## create Uno project
+## Create Uno Platform project
 You have two options:
 
 ### 1. Adding new projects to existing solution
@@ -35,7 +35,7 @@ First, open your app solution in Visual Studio. Then, using the Solution Explore
 * while reading next parts of this guide, treat `APPNAME[_Uno]` as `APPNAME`.
 
 ### tips for both options above
-* description of Uno app solution structure is [documented here](uno-app-solution-structure.md).
+* description of Uno Platform app solution structure is [documented here](uno-app-solution-structure.md).
 * you can unload your .Droid, .iOS and .WASM projects (right click in Solution Explorer) to make Visual Studio use less memory and start faster.
 
 ## Converting your code
@@ -54,12 +54,12 @@ You have to copy also Package.appxmanifest (especially, app capabilities etc.) a
 
 Now if you wish you can unload your (old) APPNAME project (right click in Solution Explorer), not only to make Visual Studio use less memory and start faster, but also to be sure you don't mistakenly change something in your old code.
 
-## Check conversion to Uno (UWP)
+## Check conversion to Uno Platform (UWP)
 Try to build your app - not the whole solution, but only the UWP project (choose Debug, and right click APPNAME\[\_Uno\].UWP, Build). If nothing unexpected happens (no errors), the first step of porting your app is done.
 Launch UWP project, check if it is working as expected.
 You can upload the new version of your app to the Microsoft Store. 
 
-## Check if everything is implemented in Uno
+## Check if everything is implemented in Uno Platform
 Now, reload APPNAME\[\_Uno\].Droid project if it is not loaded (right click on it in Solution Explorer). Give Visual Studio some time. It will rebuild the Intellisense database.
 
 Look into ErrorList window for warnings "is not implemented in Uno", e.g.
@@ -102,7 +102,7 @@ and add second event handler, myDateChangedDP - it has to be new handler, as Cal
 All prefixes list: [platform-specific-xaml](https://github.com/unoplatform/uno/blob/master/doc/articles/platform-specific-xaml.md).
 
 ### Search for third-party NuGet packages for Xamarin
-Maybe your app sends Toasts. They are not implemented in Uno, but you can use this: https://github.com/edsnider/LocalNotificationsPlugin .
+Maybe your app sends Toasts. They are not implemented in Uno Platform, but you can use this: https://github.com/edsnider/LocalNotificationsPlugin .
 Similar solution exist for using Clipboard, and probably for many more problems.
 
 ### Create an Issue (feature request)
@@ -112,7 +112,7 @@ Before submitting new Issue, check if someone else doesn't submit such issue bef
 
 If not, use this: [new feature request](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fenhancement%2C+triage%2Funtriaged&template=enhancement.md).
 
-### Contribute to Uno
+### Contribute to Uno Platform
 This is best (or: preferable) option, if using newer Uno versions / checking existing PR doesn't solve your problem. Best, but also it requires much more time from your side.
 Check the 'Contributing to Uno' documentation for guides to [building Uno](uno-development/debugging-uno-ui.md), [creating samples](uno-development/working-with-the-samples-apps.md) and other topics.
 
@@ -122,7 +122,7 @@ As last resort, you can make some app functions work only under Windows, and WAS
 
 Now it is time for compiling and test for platforms other than UWP.
 
-## special case: migrating app to Android
+## Special case: migrating app to Android
 
 ### Connect Android device
 Similar to connecting Windows device - you have to enable debugging.
@@ -140,7 +140,7 @@ Before you build/run app as Android, you should open .Droid project properties (
 * permissions - see [permission dictionary](https://developer.android.com/reference/android/Manifest.permission.html) and [features](https://developer.android.com/guide/topics/manifest/uses-feature-element) - it is not sufficient to add e.g. uses-permission for location, you have to add uses-feature location also.
 * you can also convert .UWP\Assets\SmallTile.scale-100.png to .Droid\Resources\drawable\Icon.png by resizing from 71x71 to 72x72
 
-### compile and test
+### Compile and test
 Build `Debug`, `Any CPU` configuration.
 Prepare to long delay when app starts on Android device.
 If all is ok (as it should be, with great probability), you can send app to e.g. Google Store. You can use [this tutorial](https://riptutorial.com/xamarin-android/example/29653/preparing-your-apk-in-the-visual-studio).
