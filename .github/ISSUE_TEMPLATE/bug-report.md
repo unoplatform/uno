@@ -6,7 +6,7 @@ labels: kind/bug, triage/untriaged
 
 <!-- Please use this template while reporting a bug and provide as much info as possible. Not doing so may result in your bug not being addressed in a timely manner. Thanks!
 
-If the matter is security related, please disclose it privately via https://github.com/nventive/Uno/security/
+If the matter is security related, please disclose it privately via https://github.com/unoplatform/Uno/security/
 -->
 
 ## Current behavior
@@ -29,9 +29,18 @@ If the matter is security related, please disclose it privately via https://gith
 
 <!-- For bug reports Check one or more of the following options with "x" -->
 
-Nuget Package: <!-- For example Uno.UI, Uno.UI.RemoteControl, Uno.Material, ... -->
+Nuget Package:
+<!-- Please open issues on the project's repo if any, for instance:
+       Uno.Material:       https://github.com/unoplatform/uno.material/issues
+       Uno.Wasm.Bootstrap: https://github.com/unoplatform/uno.wasm.bootstrap/issues 
+ -->
+- [ ] Uno.UI / Uno.UI.WebAssembly / Uno.UI.Skia
+- [ ] Uno.WinUI / Uno.WinUI.WebAssembly / Uno.WinUI.Skia
+- [ ] Uno.SourceGenerationTasks
+- [ ] Uno.UI.RemoteControl / Uno.WinUI.RemoteControl
+- [ ] Other: <!-- Please specify -->
 
-Package Version(s):
+Nuget Package Version(s):
 
 Affected platform(s):
 
