@@ -344,10 +344,11 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			if (s_isThemeShadowAvailable == null)
 			{
+				//TODO: Uno specific - had to change condition, as VanadiumOrHigher is available, but Theme Shadow is not implemented in Uno
 				s_isThemeShadowAvailable =
-					IsSystemDll() ||
-					IsVanadiumOrHigher() ||
-					ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow");
+					(IsSystemDll() ||
+					IsVanadiumOrHigher()) &&
+					ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow"); 
 			}
 			return s_isThemeShadowAvailable.Value;
 		}

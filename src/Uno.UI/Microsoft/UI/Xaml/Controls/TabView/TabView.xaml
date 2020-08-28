@@ -192,10 +192,10 @@
                                 Delay="50"
                                 FontFamily="Segoe MDL2 Assets"
                                 Interval="100"
-                                Style="{StaticResource RepeatButtonRevealStyle}"
                                 Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
                                 HighContrastAdjustment="None"
                                 Content="&#xE76B;"/>
+							<!-- TODO:MZ Use Style="{StaticResource RepeatButtonRevealStyle}" -->
 
                             <ScrollContentPresenter x:Name="ScrollContentPresenter"
                                 Grid.Column="1"
@@ -215,10 +215,11 @@
                                 Delay="50"
                                 FontFamily="Segoe MDL2 Assets"
                                 Interval="100"
-                                Style="{StaticResource RepeatButtonRevealStyle}"
                                 HighContrastAdjustment="None"
                                 Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
                                 Content="&#xE76C;"/>
+
+							<!-- TODO:MZ Use Style="{StaticResource RepeatButtonRevealStyle}" -->
                         </Grid>
                     </Border>
                 </ControlTemplate>
