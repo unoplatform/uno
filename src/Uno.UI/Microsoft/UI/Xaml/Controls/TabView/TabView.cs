@@ -20,11 +20,13 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	[ContentProperty(Name = nameof(TabItems))]
 	public partial class TabView : Control
 	{
 		private const double c_tabMinimumWidth = 48.0;
@@ -808,12 +810,12 @@ namespace Microsoft.UI.Xaml.Controls
 			TabDragStarting?.Invoke(this, myArgs);
 		}
 
-		private void OnListViewDragOver(object sender, DragEventArgs args)
+		private void OnListViewDragOver(object sender, Windows.UI.Xaml.DragEventArgs args)
 		{
 			TabStripDragOver?.Invoke(this, args);
 		}
 
-		void OnListViewDrop(object sender, DragEventArgs args)
+		void OnListViewDrop(object sender, Windows.UI.Xaml.DragEventArgs args)
 		{
 			TabStripDrop?.Invoke(this, args);
 		}

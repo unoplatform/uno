@@ -1,16 +1,13 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Uno.UI.Microsoft.UI.Xaml.Controls.TabView
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-	public class TabViewListView : ListView
+	public partial class TabViewListView : ListView
     {
 		public TabViewListView()
 		{
-			this.DefaultStyleKey = typeof(TabViewListView);
-
-			
+			this.DefaultStyleKey = typeof(TabViewListView);			
 		}
 
 		protected override DependencyObject GetContainerForItemOverride() => new TabViewItem();

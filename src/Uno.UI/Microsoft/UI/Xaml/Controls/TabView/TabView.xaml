@@ -8,6 +8,10 @@
     xmlns:local="using:Microsoft.UI.Xaml.Controls"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives">
 
+	<!--<ResourceDictionary.MergedDictionaries> --><!-- TODO: MZ : SEE TODO BELOW! --><!--
+		<ResourceDictionary Source="../Primitives/CornerRadius_themeresources.xaml" />
+	</ResourceDictionary.MergedDictionaries>-->
+	
     <Style TargetType="local:TabView" BasedOn="{StaticResource DefaultTabViewStyle}" />
 
     <Style x:Key="DefaultTabViewStyle" TargetType="local:TabView">
@@ -290,7 +294,8 @@
     <Style x:Name="TabViewButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="{ThemeResource TabViewButtonBackground}"/>
         <Setter Property="Foreground" Value="{ThemeResource TabViewButtonForeground}"/>
-        <Setter Property="CornerRadius" Value="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource TopCornerRadiusFilterConverter}}"/>
+		<Setter Property="CornerRadius" Value="4,4,0,0" />
+		<!--TODO: ="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource TopCornerRadiusFilterConverter}}"/>-->
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>

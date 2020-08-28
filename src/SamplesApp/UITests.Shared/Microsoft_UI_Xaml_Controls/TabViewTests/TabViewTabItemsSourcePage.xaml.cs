@@ -6,13 +6,20 @@ using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
+#if !HAS_UNO
+using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
+using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
+#else
+using IconSource = Windows.UI.Xaml.Controls.IconSource;
+using SymbolIconSource = Windows.UI.Xaml.Controls.SymbolIconSource;
+#endif
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
 	public class MyData
 	{
 		public string DataHeader { get; set; }
-		public Microsoft.UI.Xaml.Controls.IconSource DataIconSource { get; set; }
+		public IconSource DataIconSource { get; set; }
 		public object DataContent { get; set; }
 	}
 
@@ -137,7 +144,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			var newData = new MyData
 			{
 				DataHeader = $"MyData {index}",
-				DataIconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Caption + index },
+				DataIconSource = new SymbolIconSource() { Symbol = Symbol.Caption + index },
 				DataContent = textBlock
 			};
 

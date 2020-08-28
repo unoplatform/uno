@@ -16,7 +16,11 @@ using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
 using TabViewTabCloseRequestedEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs;
 using TabViewTabDragStartingEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs;
 using TabViewTabDragCompletedEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs;
+#if !HAS_UNO //TODO Uno - WinUI uses Microsoft.UI.Xaml.Controls
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
+#else
+using SymbolIconSource = Windows.UI.Xaml.Controls.SymbolIconSource;
+#endif
 using System.Collections.ObjectModel;
 using Windows.Devices.PointOfService;
 using Windows.ApplicationModel.DataTransfer;
@@ -26,7 +30,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
-	public class TabDataItem : DependencyObject
+	public partial class TabDataItem : DependencyObject
 	{
 		public String Header { get; set; }
 		public SymbolIconSource IconSource { get; set; }
@@ -58,7 +62,11 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			DataBindingTabView.TabItemsSource = itemSource;
 		}
 
-		protected async override void OnNavigatedTo(Windows.UI.Xaml.Navigation.NavigationEventArgs args)
+		protected
+#if HAS_UNO
+			internal
+#endif
+			async override void OnNavigatedTo(Windows.UI.Xaml.Navigation.NavigationEventArgs args)
 		{
 			NotCloseableTab.Visibility = Visibility.Collapsed;
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
@@ -271,7 +279,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			e.Data.RequestedOperation = DataPackageOperation.Move;
 		}
 
-		private void OnTabStripDragOver(object sender, DragEventArgs e)
+		private void OnTabStripDragOver(object sender, Windows.UI.Xaml.DragEventArgs e)
 		{
 			if (e.DataView.Properties.ContainsKey(DataIdentifier))
 			{
@@ -279,7 +287,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			}
 		}
 
-		private void OnTabStripDrop(object sender, DragEventArgs e)
+		private void OnTabStripDrop(object sender, Windows.UI.Xaml.DragEventArgs e)
 		{
 			// This event is called when we're dragging between different TabViews
 			// It is responsible for handling the drop of the item into the second TabView

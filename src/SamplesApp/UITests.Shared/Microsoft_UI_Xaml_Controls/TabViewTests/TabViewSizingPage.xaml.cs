@@ -43,7 +43,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		private void Tabview_AddTabButtonClick(TabView sender, object args)
 		{
 			TabViewItem item = new TabViewItem();
-			item.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource { Symbol = Symbol.Accept };
+			item.IconSource = new SymbolIconSource { Symbol = Symbol.Accept };
 			item.Header = "New Tab " + _newTabNumber++;
 			item.Content = item.Header;
 

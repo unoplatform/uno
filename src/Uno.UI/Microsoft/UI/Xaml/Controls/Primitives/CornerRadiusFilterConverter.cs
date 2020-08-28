@@ -17,7 +17,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set { SetValue(FilterProperty, value); }
 		}
 
-
 		private static CornerRadius Convert(CornerRadius radius, CornerRadiusFilterKind filterKind)
 		{
 			var result = radius;
