@@ -1,6 +1,6 @@
 # How to migrate existing UWP code to Uno Platform
 
-There are two separate paths for using an existing UWP codebase on top of Uno:
+There are two separate paths for using an existing UWP codebase on top of Uno Platform:
 - An existing UWP application
 - An existing UWP library
 
@@ -15,7 +15,7 @@ This guide assumes that you have a UWP app, and want to convert this app to be m
 
 In short:
 * convert solution to use Uno Platform,
-* check if any APIs you use are not implemented in Uno.
+* check if any APIs you use are not implemented in Uno Platform.
 * if so, you have two options:
 	* try to find a workaround for this, or
 	* extend Uno Platform
@@ -34,7 +34,7 @@ First, open your app solution in Visual Studio. Then, using the Solution Explore
 * Create a new solution with the Uno app template for Visual Studio, using the same name as your existing project (APPNAME). In effect, APPNAME folder will be created, and inside it, APPNAME.Shared folder, and four 'heads', one for each target platform (as APPNAME.Droid, etc.).
 * while reading next parts of this guide, treat `APPNAME[_Uno]` as `APPNAME`.
 
-### tips for both options above
+### Tips for both options above
 * description of Uno Platform app solution structure is [documented here](uno-app-solution-structure.md).
 * you can unload your .Droid, .iOS and .WASM projects (right click in Solution Explorer) to make Visual Studio use less memory and start faster.
 
@@ -85,7 +85,7 @@ Check "next version" section in previously mentioned file: [ReleaseNotes](https:
 If it seems that your problem is resolved, install latest dev version (in Manage NuGet Packages for Solution, check 'include prerelease' checkbox).
 
 ### Check open PRs (Pull Requests)
-Your next hope is that someone already make necessary changes to Uno, but these changes are not included even in dev version (yet). It means that some discussion about implementation is under way, or maybe some tests are failing. But you can expect this feature in some near time appear in at least dev version.
+Your next hope is that someone already make necessary changes to Uno Platform, but these changes are not included even in dev version (yet). It means that some discussion about implementation is under way, or maybe some tests are failing. But you can expect this feature in some near time appear in at least dev version.
 
 List of open PR can be found here: [Pull Requests](https://github.com/unoplatform/uno/pulls).
 
@@ -106,7 +106,7 @@ Maybe your app sends Toasts. They are not implemented in Uno Platform, but you c
 Similar solution exist for using Clipboard, and probably for many more problems.
 
 ### Create an Issue (feature request)
-If all this fails, you can request adding new feature to Uno.
+If all this fails, you can request adding new feature to Uno Platform.
 
 Before submitting new Issue, check if someone else doesn't submit such issue before: [Issues](https://github.com/unoplatform/uno/issues).
 
