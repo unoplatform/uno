@@ -1,4 +1,4 @@
-# Create a Single Page App with Uno
+# Create a Single Page App with Uno Platform
 
 [Download the complete sample](https://github.com/nventive/uno.GettingStartedTutorial)
 
@@ -13,7 +13,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 <div class="NOTE alert alert-info">
 <h5>Before you start the tutorial</h5>
 
-[If you haven't prepared your dev environment for Uno app development yet, the Setting up the Environment page will guide you through installing all the prerequisites.](get-started.md)
+[If you haven't prepared your dev environment for Uno Platform app development yet, the Setting up the Environment page will guide you through installing all the prerequisites.](get-started.md)
 
 </div>
 
@@ -399,7 +399,7 @@ You should see something similar to the screenshot below. You can [download the 
 In this tutorial, through creating a simple Bug Tracking app you have learned how to:
 
 - Add the Uno Project Templates to Visual Studio
-- Create a new Project with Uno
+- Create a new Project with Uno Platform
 - Use the basics of Model Binding
 
 <div class="NOTE alert alert-info">

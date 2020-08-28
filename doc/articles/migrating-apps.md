@@ -6,7 +6,7 @@ There are two separate paths for using an existing UWP codebase on top of Uno Pl
 
 For migrating a UWP library, see [this article](howto-migrate-existing-code.md).
 
-# How to migrate UWP app to Uno?
+# How to migrate UWP app to Uno Platform?
 # Step by step guide.
 
 This guide assumes that you have a UWP app, and want to convert this app to be multi-platform.
@@ -54,7 +54,7 @@ You have to copy also Package.appxmanifest (especially, app capabilities etc.) a
 
 Now if you wish you can unload your (old) APPNAME project (right click in Solution Explorer), not only to make Visual Studio use less memory and start faster, but also to be sure you don't mistakenly change something in your old code.
 
-## Check conversion to Uno (UWP)
+## Check conversion to Uno Platform (UWP)
 Try to build your app - not the whole solution, but only the UWP project (choose Debug, and right click APPNAME\[\_Uno\].UWP, Build). If nothing unexpected happens (no errors), the first step of porting your app is done.
 Launch UWP project, check if it is working as expected.
 You can upload the new version of your app to the Microsoft Store. 

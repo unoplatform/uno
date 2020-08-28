@@ -64,5 +64,9 @@
 	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>TODO NSLocationWhenInUseUsageDescription</string>
+	<key>NSLocationUsageDescription</key>
+	<string>TODO NSLocationUsageDescription</string>
 </dict>
 </plist>

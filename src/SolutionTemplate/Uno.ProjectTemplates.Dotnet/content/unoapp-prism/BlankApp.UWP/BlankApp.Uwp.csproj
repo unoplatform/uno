@@ -8,17 +8,17 @@
       you need to make sure that the version provided here matches https://github.com/onovotny/MSBuildSdkExtras/blob/master/Source/MSBuild.Sdk.Extras/DefaultItems/ImplicitPackages.targets#L11.
       This is not an issue when libraries are referenced through nuget packages. See https://github.com/unoplatform/uno/issues/446 for more details.
       -->
-      <Version>6.2.2</Version>
+      <Version>6.2.10</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
     <PackageReference Include="Uno.Core" Version="2.0.0" />
 
     <!--#if (Container == "Unity") -->
-    <PackageReference Include="Prism.Unity.Uno" Version="8.0.0.1740-pre" />
+    <PackageReference Include="Prism.Unity.Uno" Version="8.0.0.1850-pre" />
     <!--#endif -->
     <!--#if (Container == "DryIoc") -->
-    <PackageReference Include="Prism.DryIoc.Uno" Version="8.0.0.1740-pre" />
+    <PackageReference Include="Prism.DryIoc.Uno" Version="8.0.0.1850-pre" />
     <!--#endif -->
   </ItemGroup>
   <PropertyGroup>
