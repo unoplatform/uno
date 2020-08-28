@@ -2016,7 +2016,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												}
 											}
 										}
-										else if (GetKnownNewableListOrCollectionInterface(contentProperty as INamedTypeSymbol, out newableTypeName))
+										else if (GetKnownNewableListOrCollectionInterface(contentProperty.Type as INamedTypeSymbol, out newableTypeName))
 										{
 											if (string.IsNullOrWhiteSpace(newableTypeName))
 											{
