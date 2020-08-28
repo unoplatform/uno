@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml
 	/// Defines a dependency property for a <see cref="DependencyObject"/>.
 	/// </summary>
 	/// <remarks>The properties are attached to the <see cref="IDependencyObject"/> marker interface.</remarks>
-	[DebuggerDisplay("Name={Name}, Type={Type.FullName}, Owner={OwnerType.FullName}, DefaultValue={Metadata.DefaultValue}")]
+	[DebuggerDisplay("Name={Name}, Type={Type.FullName}, Owner={OwnerType.FullName}")]
 	public sealed partial class DependencyProperty
 	{
 		private static Dictionary<Type, Dictionary<string, DependencyProperty>> _registry
