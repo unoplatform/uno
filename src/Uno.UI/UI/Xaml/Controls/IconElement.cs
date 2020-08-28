@@ -79,6 +79,11 @@ namespace Windows.UI.Xaml.Controls
 			RegisterSubView(child);
         }
 
+		internal void RemoveIconElementView()
+		{
+			UnregisterSubView();
+		}
+
 		public static implicit operator IconElement(string symbol)
 		{
 			return new SymbolIcon() { Symbol = (Symbol)Enum.Parse(typeof(Symbol), symbol, true) };
