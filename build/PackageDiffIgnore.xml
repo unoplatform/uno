@@ -3066,5 +3066,12 @@
 			<!-- End Skia Import -->
 		</Fields>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="3.0.12">
+		<Methods>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+		</Methods>
+	</IgnoreSet>
   </IgnoreSets>
 </DiffIgnore>
