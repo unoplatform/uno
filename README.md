@@ -31,7 +31,7 @@ Visit [our documentation](doc/articles/intro.md) for more details.
 * [**Visual Studio 2019**](https://visualstudio.microsoft.com/) with:
     * **Universal Windows Platform component** installed.
     * **Xamarin component** installed (for Android and iOS development).
-    * **ASP.NET/web component** installed, along with .NET Core 2.2 (for WASM development).
+    * **ASP.NET/web component** installed, along with .NET Core 2.2 or later (for WASM development).
 
 To easily create a multi-platform application:
 * Install the [Uno Solution Template Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).

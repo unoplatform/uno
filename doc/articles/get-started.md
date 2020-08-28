@@ -25,10 +25,10 @@ Use Uno with your favorite tools.
 	    * A working Mac with Visual Studio for Mac, XCode 8.2 or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
 
-    * **ASP**.**NET and web** workload installed, along with .NET Core 2.2 (for WASM development)
+    * **ASP**.**NET and web** workload installed, along with .NET Core 2.2 or later (for WASM development)
 
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
-    * [.NET Core 2.2](https://dotnet.microsoft.com/download/dotnet-core/2.2)
+    * [.NET Core](https://dotnet.microsoft.com/download/dotnet-core)
 
 For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
@@ -151,7 +151,7 @@ While it is easier to create apps using Uno on Windows, you can also create all 
 * [**Visual Studio for Mac**](https://visualstudio.microsoft.com/vs/mac/)
 * [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
-* .NET Core 3.1
+* .NET Core 3.1 or higher
 
 ### Modifying Existing Uno App
 
