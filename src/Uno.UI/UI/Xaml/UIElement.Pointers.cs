@@ -156,12 +156,22 @@ namespace Windows.UI.Xaml
 			}
 		};
 
-		// This is a coalesced HitTestVisible and should be unified with it
-		// We should follow the WASM way an unify it on all platforms!
+		/// <summary>
+		/// Indicates if this element or one of its child might be target pointer pointer events.
+		/// Be aware this doesn't means that the element itself can be actually touched by user,
+		/// but only that pointer events can be raised on this element.
+		/// I.e. this element is NOT <see cref="HitTestVisibility.Collapsed"/>.
+		/// </summary>
 		private bool IsHitTestVisibleCoalesced
 		{
 			get
 			{
+#if NETSTANDARD
+				return this.GetValue(HitTestVisibilityProperty) is HitTestVisibility visibility
+					&& visibility != HitTestVisibility.Collapsed;
+#else
+				// This is a coalesced HitTestVisible and should be unified with it
+				// We should follow the WASM way an unify it on all platforms!
 				if (Visibility != Visibility.Visible || !IsHitTestVisible)
 				{
 					return false;
@@ -179,12 +189,13 @@ namespace Windows.UI.Xaml
 				{
 					return true;
 				}
+#endif
 			}
 		}
 
-		#region Gestures recognition (includes manipulation)
+#region Gestures recognition (includes manipulation)
 
-		#region Event to RoutedEvent handler adapters
+#region Event to RoutedEvent handler adapters
 		// Note: For the manipulation and gesture event args, the original source has to be the element that raise the event
 		//		 As those events are bubbling in managed only, the original source will be right one for all.
 
@@ -242,7 +253,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(that, args));
 		};
-		#endregion
+#endregion
 
 		private bool _isGestureCompleted;
 
@@ -267,7 +278,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer);
 
-		#region Manipulation events wire-up
+#region Manipulation events wire-up
 		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
@@ -312,9 +323,9 @@ namespace Windows.UI.Xaml
 
 			_gestures.Value.GestureSettings = settings;
 		}
-		#endregion
+#endregion
 
-		#region Gesture events wire-up
+#region Gesture events wire-up
 		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
@@ -351,7 +362,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.GestureSettings |= GestureSettings.Hold; // Note: We do not set GestureSettings.HoldWithMouse as WinUI never raises Holding for mouse pointers
 			}
 		}
-		#endregion
+#endregion
 
 		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
 		{
@@ -423,9 +434,9 @@ namespace Windows.UI.Xaml
 				_gestures.Value.CompleteGesture();
 			}
 		}
-		#endregion
+#endregion
 
-		#region Partial API to raise pointer events and gesture recognition (OnNative***)
+#region Partial API to raise pointer events and gesture recognition (OnNative***)
 		private bool OnNativePointerEnter(PointerRoutedEventArgs args) => OnPointerEnter(args, isManagedBubblingEvent: false);
 		private void OnManagedPointerEnter(PointerRoutedEventArgs args) => OnPointerEnter(args, isManagedBubblingEvent: true);
 
@@ -433,10 +444,10 @@ namespace Windows.UI.Xaml
 		{
 			// We override the isOver for the relevancy check as we will update it right after.
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, isOver: true);
-			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
-				? isManagedBubblingEvent
-				: args.Handled;
-			var handledInManaged = SetOver(args, true, muteEvent: isHandled || !isOverOrCaptured);
+			//var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
+			//	? isManagedBubblingEvent
+			//	: args.Handled;
+			var handledInManaged = SetOver(args, true, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
 
 			return handledInManaged;
 		}
@@ -526,7 +537,7 @@ namespace Windows.UI.Xaml
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
 				? isManagedBubblingEvent
-				: args.Handled;
+				: isManagedBubblingEvent || args.Handled;
 
 			if (!isHandled && isOverOrCaptured)
 			{
@@ -589,11 +600,11 @@ namespace Windows.UI.Xaml
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
-			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
-				? isManagedBubblingEvent
-				: args.Handled;
+			//var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
+			//	? isManagedBubblingEvent
+			//	: args.Handled;
 
-			handledInManaged |= SetOver(args, false, muteEvent: isHandled || !isOverOrCaptured);
+			handledInManaged |= SetOver(args, false, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
 
 			// We release the captures on exit when pointer if not pressed
 			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
@@ -666,6 +677,7 @@ namespace Windows.UI.Xaml
 			try
 			{
 				_pendingRaisedEvent = (this, evt, args);
+
 				return RaiseEvent(evt, args);
 			}
 			catch (Exception e)

@@ -1,5 +1,7 @@
-﻿using System;
+﻿// #define TRACE_ROUTED_EVENT_BUBBLING
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Windows.UI.Xaml.Input;
@@ -8,6 +10,7 @@ using Uno;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 
@@ -528,6 +531,10 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args)
 		{
+#if TRACE_ROUTED_EVENT_BUBBLING
+			Debug.Write(new string('\t', Depth) + $"[{routedEvent.Name.Trim().ToUpperInvariant()}] {this.GetDebugName()}\r\n");
+#endif
+
 			if (routedEvent.Flag == RoutedEventFlag.None)
 			{
 				throw new InvalidOperationException($"Flag not defined for routed event {routedEvent.Name}.");

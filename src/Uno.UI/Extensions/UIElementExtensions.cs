@@ -9,6 +9,12 @@ namespace Uno.UI.Extensions
 {
 	public static partial class UIElementExtensions
 	{
+		/// <summary>
+		/// Get a display name for the element for debug purposes
+		/// </summary>
+		internal static string GetDebugName(this UIElement? elt)
+			=> elt is null ? "--null--" : $"{(elt as FrameworkElement)?.Name ?? elt.GetType().Name}-{elt.GetHashCode():X8}";
+
 		internal static Thickness GetPadding(this UIElement uiElement)
 		{
 			if(uiElement is FrameworkElement fe && fe.TryGetPadding(out var padding))

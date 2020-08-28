@@ -21,6 +21,14 @@ namespace Windows.Foundation
 			Height = double.NegativeInfinity
 		};
 
+		internal static Rect Infinite { get; } = new Rect
+		{
+			X = double.NegativeInfinity,
+			Y = double.NegativeInfinity,
+			Width = double.PositiveInfinity,
+			Height = double.PositiveInfinity
+		};
+
 		public Rect(Point point, Size size) : this(point.X, point.Y, size.Width, size.Height) { }
 
 		public Rect(double x, double y, double width, double height)
@@ -126,6 +134,9 @@ namespace Windows.Foundation
 
 		public override string ToString() => (string)this;
 
+		internal string ToDebugString()
+			=> FormattableString.Invariant($"{Width:F2},{Height:F2}@{Location.ToDebugString()}");
+
 		/// <summary>
 		/// Provides the size of this rectangle.
 		/// </summary>
@@ -165,24 +176,24 @@ namespace Windows.Foundation
 				throw new InvalidOperationException("Can't inflate empty rectangle");
 			}
 
-			this.X -= width;
-			this.Y -= height;
-			this.Width += width;
-			this.Width += width;
-			this.Height += height;
-			this.Height += height;
+			X -= width;
+			Y -= height;
+			Width += width;
+			Width += width;
+			Height += height;
+			Height += height;
 
-			if (this.Width < 0.0 || this.Height < 0.0)
+			if (Width < 0.0 || Height < 0.0)
 			{
 				this = Rect.Empty;
 			}
 		}
 
-		public bool Contains(Point point) =>
-			point.X >= X
-			&& point.X <= X + Width
+		public bool Contains(Point point)
+			=> point.X >= X
+			&& (point.X <= X + Width || (double.IsNegativeInfinity(X) && double.IsPositiveInfinity(Width)))
 			&& point.Y >= Y
-			&& point.Y <= Y + Height;
+			&& (point.Y <= Y + Height || (double.IsNegativeInfinity(Y) && double.IsPositiveInfinity(Height)));
 
 		/// <summary>
 		/// Finds the intersection of the rectangle represented by the current Windows.Foundation.Rect

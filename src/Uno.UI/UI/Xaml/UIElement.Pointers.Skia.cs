@@ -1,4 +1,6 @@
 ﻿#nullable enable
+//#define TRACE_HIT_TESTING
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,6 +16,13 @@ using Windows.UI.Core;
 using Windows.Foundation;
 using System.Threading;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Controls;
+using Uno.Disposables;
+using Uno.Extensions.ValueType;
+using Uno.UI;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml
 {
@@ -21,6 +30,45 @@ namespace Windows.UI.Xaml
 	{
 		private class PointerManager
 		{
+#if TRACE_HIT_TESTING
+			[ThreadStatic]
+			private static IndentedStringBuilder? _trace;
+
+			[ThreadStatic]
+			private static UIElement _traceCurrentElement;
+
+			private static IDisposable BEGIN_TRACE(UIElement element)
+			{
+				if (_trace is { })
+				{
+					var previous = _traceCurrentElement;
+					_traceCurrentElement = element;
+
+					_trace.Append(new string('\t', _traceCurrentElement.Depth - 1));
+					_trace.Append($"[{element.GetDebugName()}]\r\n");
+
+					return Disposable.Create(() => _traceCurrentElement = previous);
+				}
+				else
+				{
+					return Disposable.Empty;
+				}
+			}
+#endif
+
+			[Conditional("TRACE_HIT_TESTING")]
+			private static void TRACE(FormattableString msg)
+			{
+#if TRACE_HIT_TESTING
+				if (_trace is { })
+				{
+					_trace.Append(new string('\t', _traceCurrentElement.Depth));
+					_trace.Append(msg.ToStringInvariant());
+					_trace.Append("\r\n");
+				}
+#endif
+			}
+
 			public PointerManager()
 			{
 				Window.Current.CoreWindow.PointerMoved += CoreWindow_PointerMoved;
@@ -33,17 +81,49 @@ namespace Windows.UI.Xaml
 
 			private void CoreWindow_PointerWheelChanged(CoreWindow sender, PointerEventArgs args)
 			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
+				//if (this.Log().IsEnabled(LogLevel.Trace))
+				//{
+				//	this.Log().Trace($"CoreWindow_PointerWheelChanged ({args.CurrentPoint.Position})");
+				//}
+
+				//PropagateEvent(args, e =>
+				//{
+				//	var pointerArgs = new PointerRoutedEventArgs(args, e);
+
+				//	e.OnNativePointerWheel(pointerArgs);
+				//});
+
+
+				var source = FindOriginalSource(args, _cache);
+				if (source.element is null)
 				{
-					this.Log().Trace($"CoreWindow_PointerWheelChanged ({args.CurrentPoint.Position})");
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
+					}
+
+					return;
 				}
 
-				PropagateEvent(args, e =>
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-					var pointerArgs = new PointerRoutedEventArgs(args, e);
-					e.OnNativePointerWheel(pointerArgs);
-				});
+					this.Log().Trace($"CoreWindow_PointerPressed [{source.element}/{source.element.GetHashCode():X8}");
+				}
+
+				var routedArgs = new PointerRoutedEventArgs(args, source.element);
+
+				// Second raise the event, either on the OriginalSource or on the capture owners if any
+				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+				{
+					foreach (var target in capture.Targets.ToArray())
+					{
+						target.Element.OnNativePointerWheel(routedArgs);
+					}
+				}
+				else
+				{
+					source.element.OnNativePointerWheel(routedArgs);
+				}
 			}
 
 			private void CoreWindow_PointerEntered(CoreWindow sender, PointerEventArgs args)
@@ -60,185 +140,501 @@ namespace Windows.UI.Xaml
 				{
 					this.Log().Trace($"CoreWindow_PointerExited ({args.CurrentPoint.Position})");
 				}
-
-
 			}
 
 			private void CoreWindow_PointerReleased(CoreWindow sender, PointerEventArgs args)
 			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
+				//if (FindOriginalSource(args) is { } originalSource)
+				//{
+				//	if (this.Log().IsEnabled(LogLevel.Trace))
+				//	{
+				//		this.Log().Trace($"CoreWindow_PointerReleased [{originalSource}/{originalSource.GetHashCode():X8}");
+				//	}
+
+				//	var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+
+				//	if (UIElement.PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+				//	{
+				//		foreach (var target in capture.Targets.ToArray())
+				//		{
+				//			target.Element.OnNativePointerUp(routedArgs);
+				//		}
+				//	}
+				//	else
+				//	{
+				//		originalSource.OnNativePointerUp(routedArgs);
+				//	}
+				//}
+				//else if (this.Log().IsEnabled(LogLevel.Trace))
+				//{
+				//	this.Log().Trace($"CoreWindow_PointerReleased ({args.CurrentPoint.Position}) **undispatched**");
+				//}
+
+
+				var source = FindOriginalSource(args, _cache);
+				if (source.element is null)
 				{
-					this.Log().Trace($"CoreWindow_PointerReleased ({args.CurrentPoint.Position})");
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
+					}
+
+					return;
 				}
 
-				var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-				if (UIElement.PointerCapture.TryGet(pointer, out var capture))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					foreach(var target in capture.Targets.ToArray())
+					this.Log().Trace($"CoreWindow_PointerPressed [{source.element}/{source.element.GetHashCode():X8}");
+				}
+
+				var routedArgs = new PointerRoutedEventArgs(args, source.element);
+
+				// Second raise the event, either on the OriginalSource or on the capture owners if any
+				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+				{
+					foreach (var target in capture.Targets.ToArray())
 					{
-						var pointerArgs = new PointerRoutedEventArgs(args, target.Element);
-						target.Element.OnNativePointerUp(pointerArgs);
+						target.Element.OnNativePointerUp(routedArgs);
 					}
 				}
 				else
 				{
-					PropagateEvent(args, e =>
-					{
-						if (this.Log().IsEnabled(LogLevel.Trace))
-						{
-							this.Log().Trace($"PointerManager.Released [{e}/{e.GetHashCode():X8}");
-						}
-
-						var pointerArgs = new PointerRoutedEventArgs(args, e);
-
-						TraverseAncestors(e, e => e.OnNativePointerUp(pointerArgs));
-					});
+					source.element.OnNativePointerUp(routedArgs);
 				}
 			}
 
 			private void CoreWindow_PointerPressed(CoreWindow sender, PointerEventArgs args)
 			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position})");
-				}
+				//var source = FindOriginalSource(args, _pressedCache, isStale: _isPressed);
+				//if (source.element is null)
+				//{
+				//	if (this.Log().IsEnabled(LogLevel.Trace))
+				//	{
+				//		this.Log().Trace($"CoreWindow_PointerMoved ({args.CurrentPoint.Position}) **undispatched**");
+				//	}
 
-				PropagateEvent(args, e =>
+				//	return;
+				//}
+
+				//if (FindOriginalSource(args) is { } originalSource)
+				//{
+				//	if (this.Log().IsEnabled(LogLevel.Trace))
+				//	{
+				//		this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) [{originalSource}/{originalSource.GetHashCode():X8}");
+				//	}
+
+				//	var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+
+				//	originalSource.OnNativePointerDown(routedArgs);
+				//}
+				//else if (this.Log().IsEnabled(LogLevel.Trace))
+				//{
+				//	this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
+				//}
+
+
+				var source = FindOriginalSource(args, _cache);
+				if (source.element is null)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().Trace($"PointerManager.Pressed [{e}/{e.GetHashCode():X8}]");
+						this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
 					}
 
-					var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-					var pointerArgs = new PointerRoutedEventArgs(args, e);
-
-					TraverseAncestors(e, e => e.OnNativePointerDown(pointerArgs));
-				});
-			}
-
-			private void TraverseAncestors(UIElement element, Func<UIElement, bool> action)
-			{
-				if (!action(element))
-				{
-					foreach (var parent in element.GetParents().OfType<UIElement>())
-					{
-						if (this.Log().IsEnabled(LogLevel.Trace))
-						{
-							this.Log().Trace($"TraverseAncestors for [{element}/{element.GetHashCode():X8}] = {parent}/{parent.GetHashCode():X8}");
-						}
-
-						if (action(parent))
-						{
-							return;
-						}
-					}
+					return;
 				}
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"CoreWindow_PointerPressed [{source.element}/{source.element.GetHashCode():X8}");
+				}
+
+				var routedArgs = new PointerRoutedEventArgs(args, source.element);
+
+				source.element.OnNativePointerDown(routedArgs);
 			}
 
 			private void CoreWindow_PointerMoved(CoreWindow sender, PointerEventArgs args)
 			{
+				var source = FindOriginalSource(args, _cache, isStale: _isOver);
+				if (source.element is null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerMoved ({args.CurrentPoint.Position}) **undispatched**");
+					}
+
+					return;
+				}
+
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerMoved ({args.CurrentPoint.Position})");
+					this.Log().Trace($"CoreWindow_PointerMoved [{source.element}/{source.element.GetHashCode():X8}");
 				}
 
-				var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
+				var routedArgs = new PointerRoutedEventArgs(args, source.element);
 
-				if (UIElement.PointerCapture.TryGet(pointer, out var capture))
+				// First raise the PointerExited events on the stale branch
+				if (source.staleBranch.HasValue)
 				{
-					foreach (var target in capture.Targets)
-					{
-						var pointerArgs = new PointerRoutedEventArgs(args, target.Element);
+					routedArgs.CanBubbleNatively = true; // TODO: UGLY HACK TO AVOID BUBBLING: we should be able to request to bubble only up to a the root
+					var (root, stale) = source.staleBranch.Value;
 
-						target.Element.OnNativePointerMove(pointerArgs);
+					Debug.Write($"Exiting branch from (root) {root.GetDebugName()} to (leaf) {stale.GetDebugName()}\r\n");
+
+					while (stale is { })
+					{
+						//Debug.WriteLine($"[EXITED] {GetTraceName(stale)}");
+
+						routedArgs.Handled = false;
+						stale.OnNativePointerExited(routedArgs);
+						// TODO: This differs of how we behave on iOS, macOS and Android which does have "implicit capture" while pressed.
+						//		 It should only impact the "Pressed" visual states of controls.
+						stale.SetPressed(routedArgs, isPressed: false, muteEvent: true);
+
+						if (stale == root)
+						{
+							break;
+						}
+
+						stale = stale.GetParent() as UIElement;
+					}
+					routedArgs.CanBubbleNatively = false;
+				}
+
+				// Second (try to) raise the PointerEnter on the OriginalSource
+				// Note: This won't do anything if already over
+				//Debug.WriteLine($"[ENTER] {GetTraceName(source.element)}");
+				routedArgs.Handled = false;
+				source.element.OnNativePointerEnter(routedArgs);
+
+				// Second raise the event, either on the OriginalSource or on the capture owners if any
+				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+				{
+					foreach (var target in capture.Targets.ToArray())
+					{
+						//Debug.WriteLine($"[MOVE] RE-ROUTED TO {GetTraceName(target.Element)}");
+						routedArgs.Handled = false;
+						target.Element.OnNativePointerMove(routedArgs);
 					}
 				}
 				else
 				{
-					PropagateEvent(args, e =>
-					{
-						var pointerArgs = new PointerRoutedEventArgs(args, e);
-						e.OnNativePointerMove(pointerArgs);
-					});
+					// Note: We prefer to use the "WithOverCheck" overload as we already know that the pointer is effectively over
+					//cDebug.WriteLine($"[MOVE] {GetTraceName(source.element)}");
+					routedArgs.Handled = false;
+					source.element.OnNativePointerMoveWithOverCheck(routedArgs, isOver: true);
 				}
 			}
 
-			private void PropagateEvent(PointerEventArgs args, Action<UIElement> raiseEvent)
+			// TODO: Use pointer ID for the predicates
+			private static Predicate<UIElement> _isOver = e => e.IsPointerOver;
+			//private static Predicate<UIElement> _isPressed = e => e.IsPointerPressed;
+
+			//private Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> _pressedCache = new Dictionary<uint, (Rect, ManagedWeakReference)>();
+			//private Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> _overCache = new Dictionary<uint, (Rect, ManagedWeakReference)>();
+			private Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> _cache = new Dictionary<uint, (Rect, ManagedWeakReference)>();
+			// TODO: The cache must contains the whole tree: for instance if the leaf is removed from the visual tree,
+			//		 we won't be able to walk the tree up to get the stale branch
+			// And it's here we we need to have a dedicated cache for the pressed: we must be able reset the state!
+
+			private (UIElement? element, (UIElement root, UIElement leaf)? staleBranch) FindOriginalSource(
+				PointerEventArgs args,
+				Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> cache,
+				Predicate<UIElement>? isStale = null,
+				[CallerMemberName] string? caller = null)
 			{
-				if(Window.Current.RootElement is UIElement root)
+#if TRACE_HIT_TESTING
+				try
+				{ 
+					_trace = new IndentedStringBuilder();
+					_trace.AppendLineInvariant(
+						$"[{caller!.Replace("CoreWindow_Pointer", "").ToUpperInvariant()}] "
+						+ $"@{args.CurrentPoint.Position.X:F2},{args.CurrentPoint.Position.Y:F2} (args: {args.GetHashCode():X8})");
+#endif
+
+				var pointerId = args.CurrentPoint.PointerId;
+				//if (cache.TryGetValue(pointerId, out var cached)
+				//	&& cached.validity.Contains(args.CurrentPoint.RawPosition)
+				//	&& cached.orginalSource.Target is UIElement cachedOriginalSource
+				//	&& cachedOriginalSource.IsLoaded)
+				//{
+				//	var rootToCachedElement = UIElement.GetTransform(cachedOriginalSource, null); // Note: This will walk the tree upward
+				//	var positionInCachedElementCoordinates = rootToCachedElement.Transform(args.CurrentPoint.Position);
+
+				//	var (originalSource, staleBranchRoot) = SearchUpAndDownForTopMostElementAt(
+				//		positionInCachedElementCoordinates,
+				//		cachedOriginalSource,
+				//		isStale);
+
+				//	if (originalSource is {})
+				//	{
+				//		UpdateCache(cache, pointerId, (cached.orginalSource, cachedOriginalSource), originalSource);
+				//		return (originalSource, staleBranchRoot is null ? default((UIElement, UIElement)?) : (staleBranchRoot, cachedOriginalSource));
+				//	}
+
+				//	// We walked all the tree up from the provided element, but were not able to find any target!
+				//	// Maybe the cached element has been removed from the tree (but the IsLoaded should have been false :/)
+
+				//	this.Log().Warn(
+				//		"Enable to find any acceptable original source by walking up the tree from the cached element, "
+				//		+ "which is suspicious as the element has not been flag as unloaded."
+				//		+ "Trying now by looking down from the root.");
+				//}
+
+				if (Window.Current.RootElement is UIElement root)
 				{
-					PropagageEventRecursive(args, new Point(0, 0), root, Matrix3x2.Identity, raiseEvent);
+					var (originalSource, staleBranchRoot) = SearchDownForTopMostElementAt(args.CurrentPoint.Position, root, isStale);
+					if (staleBranchRoot is null)
+					{
+						UpdateCache(cache, pointerId, default, originalSource);
+						return (originalSource, default((UIElement, UIElement)?));
+					}
+					else
+					{
+						var staleBranchLeaf = SearchDownForStaleLeaf(staleBranchRoot, isStale!);
+						return (originalSource, (staleBranchRoot, staleBranchLeaf));
+					}
 				}
+
+				this.Log().Warn("The root element not set yet, impossible to find the original source.");
+
+#if TRACE_HIT_TESTING
+				}
+				finally
+				{
+					Debug.WriteLine(_trace);
+					_trace = null;
+				}
+#endif
+
+				return default;
 			}
 
-			private bool PropagageEventRecursive(PointerEventArgs args, Point root, UIElement element, Matrix3x2 currentTransform, Action<UIElement> raiseEvent)
+			private void UpdateCache(
+				Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> cache,
+				uint pointerId,
+				(ManagedWeakReference weak, UIElement instance)? currentEntry,
+				UIElement? updated)
 			{
-				bool raised = false;
-				var elementRect = element.LayoutSlotWithMarginsAndAlignments;
-				elementRect.X += root.X;
-				elementRect.Y += root.Y;
-
-				var position = args.CurrentPoint.Position;
-				var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-				var pointerArgs = new PointerRoutedEventArgs(args, element);
-
-				if (element.RenderTransform != null)
+				if (currentEntry.HasValue)
 				{
-					currentTransform *= element.RenderTransform.MatrixCore;
-					elementRect = currentTransform.Transform(elementRect);
+					if (updated == currentEntry.Value.instance)
+					{
+						return;
+					}
+
+					WeakReferencePool.ReturnWeakReference(this, currentEntry.Value.weak);
 				}
 
-				if (elementRect.Contains(position))
+				if (updated is null)
 				{
-					foreach (var e in element.GetChildren().Reverse().ToArray())
-					{
-						if(PropagageEventRecursive(args, elementRect.Location, e, currentTransform, raiseEvent))
-						{
-							return true;
-						}
-					}
-
-					var isHitTestVisible =
-						element.GetValue(HitTestVisibilityProperty) is HitTestVisibility hitTestVisibility
-						&& hitTestVisibility == HitTestVisibility.Visible;
-
-					if (isHitTestVisible)
-					{
-						if (!element.IsOver(pointer))
-						{
-							element.OnNativePointerEnter(pointerArgs);
-						}
-
-						raiseEvent(element);
-						return true;
-					}
+					cache.Remove(pointerId);
 				}
 				else
 				{
-					bool RecursePointerExited(UIElement e)
+					cache[pointerId] = (
+						validity: new Rect(new Point(), new Size(double.PositiveInfinity, double.PositiveInfinity)), // TODO
+						orginalSource: WeakReferencePool.RentWeakReference(this, updated)
+					);
+				}
+			}
+
+			private static (UIElement? element, UIElement? staleRoot) SearchUpAndDownForTopMostElementAt(
+				Point position,
+				UIElement element,
+				Predicate<UIElement>? isStale)
+			{
+				var (foundElement, staleRoot) = SearchDownForTopMostElementAt(position, element, isStale);
+				if (foundElement is { })
+				{
+					return (foundElement, staleRoot); // Success match
+				}
+
+				double offsetX = 0, offsetY = 0;
+				while (element.TryGetParentUIElementForTransformToVisual(out var parent, ref offsetX, ref offsetY))
+				{
+					position.X += offsetX;
+					position.Y += offsetY;
+
+					if (staleRoot is null)
 					{
-						if (e.IsOver(pointer))
+						(foundElement, staleRoot) = SearchDownForTopMostElementAt(position, parent, isStale, excludedChild: element);
+					}
+					else
+					{
+						(foundElement, _) = SearchDownForTopMostElementAt(position, element);
+						if (foundElement is null && (isStale?.Invoke(element) ?? false))
 						{
-							foreach(var child in e.GetChildren().Reverse().ToArray())
+							staleRoot = element;
+						}
+					}
+
+					if (foundElement is { })
+					{
+						return (foundElement, staleRoot);
+					}
+
+					element = parent;
+				}
+
+				return default;
+			}
+
+			private static (UIElement? element, UIElement? staleRoot) SearchDownForTopMostElementAt(
+				Point posRelToParent,
+				UIElement element,
+				Predicate<UIElement>? isStale = null,
+				UIElement? excludedChild = null)
+			{
+				var staleRoot = default(UIElement?);
+				var elementHitTestVisibility = (HitTestVisibility)element.GetValue(HitTestVisibilityProperty);
+
+#if TRACE_HIT_TESTING
+				using var _ = BEGIN_TRACE(element);
+				TRACE($"- hit test visibility: {elementHitTestVisibility}");
+#endif
+
+				// If the element is not hit testable, do not even try to validate it nor its children.
+				if (elementHitTestVisibility == HitTestVisibility.Collapsed)
+				{
+					// Even if collapsed, if the element is stale, we search down for the real stale leaf
+					staleRoot = isStale?.Invoke(element) ?? false ? SearchDownForStaleLeaf(element, isStale) : default;
+
+					TRACE($"> NOT FOUND (Element is HitTestVisibility.Collapsed) | stale branch root: {staleRoot.GetDebugName()}");
+					return (default, staleRoot);
+				}
+
+				// The region where the element was arrange by its parent.
+				// This is expressed in parent coordinate space
+				var layoutSlot = element.LayoutSlotWithMarginsAndAlignments;
+
+				// The maximum region where the current element and its children might draw themselves
+				// TODO: Get the real clipping rect! For now we assume no clipping.
+				// This is expressed in element coordinate space.
+				var clippingBounds = Rect.Infinite;
+
+				// The region where the current element draws itself.
+				// Be aware that children might be out of this rendering bounds if no clipping defined. TODO: .Intersect(clippingBounds)
+				// This is expressed in element coordinate space.
+				var renderingBounds = new Rect(new Point(), layoutSlot.Size);
+
+				// First compute the 'position' in the current element coordinate space
+				var posRelToElement = posRelToParent;
+
+				posRelToElement.X -= layoutSlot.X;
+				posRelToElement.Y -= layoutSlot.Y;
+
+				var renderTransform = element.RenderTransform;
+				if (renderTransform != null)
+				{
+					Matrix3x2.Invert(renderTransform.MatrixCore, out var parentToElement);
+
+					TRACE($"- renderTransform: [{parentToElement.M11:F2},{parentToElement.M12:F2} / {parentToElement.M21:F2},{parentToElement.M22:F2} / {parentToElement.M31:F2},{parentToElement.M32:F2}]");
+
+					posRelToElement = parentToElement.Transform(posRelToElement);
+					renderingBounds = parentToElement.Transform(renderingBounds);
+				}
+
+				if (element is ScrollViewer sv) // TODO: ScrollContentPresenter ?
+				{
+					var zoom = sv.ZoomFactor;
+
+					TRACE($"- scroller: x={sv.HorizontalOffset} | y={sv.VerticalOffset} | zoom={zoom}");
+
+					posRelToElement.X /= zoom;
+					posRelToElement.Y /= zoom;
+
+					// No needs to adjust the position:
+					// On Skia the scrolling is achieved using a RenderTransform on the content of the ScrollContentPresenter,
+					// so it will already be taken in consideration by the case above.
+					//posRelToElement.X += sv.HorizontalOffset;
+					//posRelToElement.Y += sv.VerticalOffset;
+
+					renderingBounds = new Rect(renderingBounds.Location, new Size(sv.ExtentWidth, sv.ExtentHeight));
+				}
+
+				TRACE($"- layoutSlot: {layoutSlot.ToDebugString()}");
+				TRACE($"- renderBounds (relative to element): {renderingBounds.ToDebugString()}");
+				TRACE($"- clippingBounds (relative to element): {clippingBounds.ToDebugString()}");
+				TRACE($"- position relative to element: {posRelToElement.ToDebugString()} | relative to parent: {posRelToParent.ToDebugString()}");
+
+				// Validate that the pointer is in the bounds of the element
+				if (!clippingBounds.Contains(posRelToElement))
+				{
+					// Even if out of bounds, if the element is stale, we search down for the real stale leaf
+					staleRoot = isStale?.Invoke(element) ?? false ? SearchDownForStaleLeaf(element, isStale) : default;
+
+					TRACE($"> NOT FOUND (Out of the **clipped** bounds) | stale branch root: {staleRoot.GetDebugName()}");
+					return (default, staleRoot);
+				}
+
+				// Validate if any child is an acceptable target
+				var children = excludedChild is null ? element.GetChildren() : element.GetChildren().Except(excludedChild);
+				using var child = children.Reverse().GetEnumerator();
+				while (child.MoveNext())
+				{
+					var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current, isStale);
+
+					// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
+					if (staleRoot is null && childResult.staleRoot is { })
+					{
+						staleRoot = childResult.staleRoot;
+						isStale = null;
+					}
+
+					// If we found an acceptable element in the child's sub-tree, job is done!
+					if (childResult.element is { })
+					{
+						if (staleRoot is null && isStale is { })
+						{
+							// If we didn't find any stale root in previous children or in the child's sub tree,
+							// we continue to enumerate sibling children to detect a potential stale root.
+
+							while (child.MoveNext())
 							{
-								if (RecursePointerExited(child))
+								if (isStale(child.Current))
 								{
-									return true;
+									staleRoot = child.Current;
+									break;
 								}
 							}
-
-							e.OnNativePointerExited(pointerArgs);
-							return true;
 						}
 
-						return false;
+						TRACE($"> found child: {childResult.element.GetDebugName()} | stale branch root: {staleRoot.GetDebugName()}");
+						return (childResult.element, staleRoot);
 					}
-
-					RecursePointerExited(element);
 				}
 
-				return raised;
+				// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestVisibility.Invisible),
+				// and the position is in actual bounds (which might be different than the clipping bounds)
+				if (elementHitTestVisibility == HitTestVisibility.Visible && renderingBounds.Contains(posRelToElement))
+				{
+					TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch root: {staleRoot.GetDebugName()}");
+					return (element, staleRoot);
+				}
+				else
+				{
+					// If no stale element found yet, validate if the current is stale.
+					// Note: no needs to search down for stale child, we already did it!
+					staleRoot ??= isStale?.Invoke(element) ?? false ? element : default;
+
+					TRACE($"> NOT FOUND (HitTestVisibility.Invisible or out of the **render** bounds) | stale branch root: {staleRoot.GetDebugName()}");
+					return (default, staleRoot);
+				}
+			}
+
+			private static UIElement SearchDownForStaleLeaf(UIElement staleRoot, Predicate<UIElement> isStale)
+			{
+				foreach (var child in staleRoot.GetChildren().Reverse())
+				{
+					if (isStale(child))
+					{
+						return SearchDownForStaleLeaf(child, isStale);
+					}
+				}
+
+				return staleRoot;
 			}
 		}
 
@@ -259,7 +655,7 @@ namespace Windows.UI.Xaml
 		}
 
 
-		#region HitTestVisibility
+#region HitTestVisibility
 		internal void UpdateHitTest()
 		{
 			this.CoerceValue(HitTestVisibilityProperty);
@@ -276,7 +672,7 @@ namespace Windows.UI.Xaml
 			Collapsed,
 
 			/// <summary>
-			/// The element can't be targeted by hit-testing.
+			/// The element can't be targeted by hit-testing, but it's children might be.
 			/// </summary>
 			/// <remarks>
 			/// This usually occurs if an element doesn't have a Background/Fill.
@@ -303,8 +699,8 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					HitTestVisibility.Visible,
 					FrameworkPropertyMetadataOptions.Inherits,
-					coerceValueCallback: (s, e) => CoerceHitTestVisibility(s, e),
-					propertyChangedCallback: (s, e) => OnHitTestVisibilityChanged(s, e)
+					coerceValueCallback: CoerceHitTestVisibility,
+					propertyChangedCallback: OnHitTestVisibilityChanged
 				)
 			);
 
@@ -326,7 +722,7 @@ namespace Windows.UI.Xaml
 			}
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
-			if (!element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
+			if (!element.IsLoaded || !element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
 			{
 				return HitTestVisibility.Collapsed;
 			}
@@ -344,7 +740,7 @@ namespace Windows.UI.Xaml
 		private static void OnHitTestVisibilityChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 		}
-		#endregion
+#endregion
 
 	}
 }
