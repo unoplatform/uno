@@ -15,7 +15,7 @@ namespace Windows.Devices.Geolocation
 
 		public GeoshapeType GeoshapeType => GeoshapeType.Geopoint;
 
-#if __WASM__
+#if __WASM__ || __ANDROID__
 		public Geopoint(BasicGeoposition position, AltitudeReferenceSystem altitudeReferenceSystem) : this(position)
 		{
 			AltitudeReferenceSystem = altitudeReferenceSystem;
