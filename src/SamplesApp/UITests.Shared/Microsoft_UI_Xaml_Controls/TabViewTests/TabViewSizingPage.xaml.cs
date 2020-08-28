@@ -12,6 +12,12 @@ using Windows.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
+#if !HAS_UNO
+using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
+#else
+using SymbolIconSource = Windows.UI.Xaml.Controls.SymbolIconSource;
+#endif
+
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
 	[Sample("TabView", "WinUI")]
