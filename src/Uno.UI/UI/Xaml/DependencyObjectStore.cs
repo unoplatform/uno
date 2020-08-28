@@ -1169,6 +1169,12 @@ namespace Windows.UI.Xaml
 				{
 					_isUpdatingChildResourceBindings = false;
 				}
+
+				if (ActualInstance is IThemeChangeAware themeChangeAware)
+				{
+					// Call OnThemeChanged after bindings of descendants have been updated
+					themeChangeAware.OnThemeChanged();
+				}
 			}
 		}
 
@@ -1186,11 +1192,6 @@ namespace Windows.UI.Xaml
 				.Select(d => GetValue(d));
 			foreach (var propertyValue in propertyValues)
 			{
-				if (propertyValue is DependencyObject dependencyObject)
-				{
-					yield return dependencyObject;
-				}
-
 				if (propertyValue is IEnumerable<DependencyObject> dependencyObjectCollection &&
 					// Try to avoid enumerating collections that shouldn't be enumerated, since we may be encountering user-defined values. This may need to be refined to somehow only consider values coming from the framework itself.
 					(propertyValue is ICollection || propertyValue is DependencyObjectCollectionBase)
@@ -1208,6 +1209,11 @@ namespace Windows.UI.Xaml
 					{
 						yield return innerValue;
 					}
+				}
+
+				if (propertyValue is DependencyObject dependencyObject)
+				{
+					yield return dependencyObject;
 				}
 			}
 		}
