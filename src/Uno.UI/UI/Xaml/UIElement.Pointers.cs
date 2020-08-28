@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml
 					&& visibility != HitTestVisibility.Collapsed;
 #else
 				// This is a coalesced HitTestVisible and should be unified with it
-				// We should follow the WASM way an unify it on all platforms!
+				// We should follow the WASM way and unify it on all platforms!
 				if (Visibility != Visibility.Visible || !IsHitTestVisible)
 				{
 					return false;
@@ -193,9 +193,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#region Gestures recognition (includes manipulation)
+		#region Gestures recognition (includes manipulation)
 
-#region Event to RoutedEvent handler adapters
+		#region Event to RoutedEvent handler adapters
 		// Note: For the manipulation and gesture event args, the original source has to be the element that raise the event
 		//		 As those events are bubbling in managed only, the original source will be right one for all.
 
@@ -253,7 +253,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(that, args));
 		};
-#endregion
+		#endregion
 
 		private bool _isGestureCompleted;
 
@@ -278,7 +278,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer);
 
-#region Manipulation events wire-up
+		#region Manipulation events wire-up
 		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
@@ -323,9 +323,9 @@ namespace Windows.UI.Xaml
 
 			_gestures.Value.GestureSettings = settings;
 		}
-#endregion
+		#endregion
 
-#region Gesture events wire-up
+		#region Gesture events wire-up
 		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
@@ -362,7 +362,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.GestureSettings |= GestureSettings.Hold; // Note: We do not set GestureSettings.HoldWithMouse as WinUI never raises Holding for mouse pointers
 			}
 		}
-#endregion
+		#endregion
 
 		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
 		{
@@ -434,9 +434,9 @@ namespace Windows.UI.Xaml
 				_gestures.Value.CompleteGesture();
 			}
 		}
-#endregion
+		#endregion
 
-#region Partial API to raise pointer events and gesture recognition (OnNative***)
+		#region Partial API to raise pointer events and gesture recognition (OnNative***)
 		private bool OnNativePointerEnter(PointerRoutedEventArgs args) => OnPointerEnter(args, isManagedBubblingEvent: false);
 		private void OnManagedPointerEnter(PointerRoutedEventArgs args) => OnPointerEnter(args, isManagedBubblingEvent: true);
 
@@ -694,9 +694,9 @@ namespace Windows.UI.Xaml
 				_pendingRaisedEvent = (null, null, null);
 			}
 		}
-#endregion
+		#endregion
 
-#region Pointer over state (Updated by the partial API OnNative***)
+		#region Pointer over state (Updated by the partial API OnNative***)
 		/// <summary>
 		/// Indicates if a pointer (no matter the pointer) is currently over the element (i.e. OverState)
 		/// WARNING: This might not be maintained for all controls, cf. remarks.
@@ -743,9 +743,9 @@ namespace Windows.UI.Xaml
 				return RaisePointerEvent(PointerExitedEvent, args);
 			}
 		}
-#endregion
+		#endregion
 
-#region Pointer pressed state (Updated by the partial API OnNative***)
+		#region Pointer pressed state (Updated by the partial API OnNative***)
 		private readonly HashSet<uint> _pressedPointers = new HashSet<uint>();
 
 		/// <summary>
@@ -817,9 +817,9 @@ namespace Windows.UI.Xaml
 		}
 
 		private void ClearPressed() => _pressedPointers.Clear();
-#endregion
+		#endregion
 
-#region Pointer capture state (Updated by the partial API OnNative***)
+		#region Pointer capture state (Updated by the partial API OnNative***)
 		/*
 		 * About pointer capture
 		 *
@@ -833,7 +833,7 @@ namespace Windows.UI.Xaml
 
 		private List<Pointer> _localExplicitCaptures;
 
-#region Capture public (and internal) API ==> This manages only Explicit captures
+		#region Capture public (and internal) API ==> This manages only Explicit captures
 		public static DependencyProperty PointerCapturesProperty { get; } = DependencyProperty.Register(
 			"PointerCaptures",
 			typeof(IReadOnlyList<Pointer>),
@@ -900,7 +900,7 @@ namespace Windows.UI.Xaml
 
 			Release(PointerCaptureKind.Explicit);
 		}
-#endregion
+		#endregion
 
 		partial void CapturePointerNative(Pointer pointer);
 		partial void ReleasePointerNative(Pointer pointer);
@@ -999,6 +999,6 @@ namespace Windows.UI.Xaml
 			relatedARgs.Handled = false;
 			return RaisePointerEvent(PointerCaptureLostEvent, relatedARgs);
 		}
-#endregion
+		#endregion
 	}
 }

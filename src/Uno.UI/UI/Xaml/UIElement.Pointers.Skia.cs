@@ -1,5 +1,5 @@
 ﻿#nullable enable
-//#define TRACE_HIT_TESTING
+#define TRACE_HIT_TESTING
 
 using System;
 using System.Collections.Generic;
@@ -30,6 +30,28 @@ namespace Windows.UI.Xaml
 	{
 		private class PointerManager
 		{
+			private struct Branch
+			{
+				public Branch(UIElement root, UIElement leaf)
+				{
+					Root = root;
+					Leaf = leaf;
+				}
+
+				public UIElement Root;
+				public UIElement Leaf;
+
+				public void Deconstruct(out UIElement root, out UIElement leaf)
+				{
+					root = Root;
+					leaf = Leaf;
+				}
+
+				/// <inheritdoc />
+				public override string ToString()
+					=> $"Root={Root.GetDebugName()} | Leaf={Leaf.GetDebugName()}";
+			}
+
 #if TRACE_HIT_TESTING
 			[ThreadStatic]
 			private static IndentedStringBuilder? _trace;
@@ -275,10 +297,10 @@ namespace Windows.UI.Xaml
 				var routedArgs = new PointerRoutedEventArgs(args, source.element);
 
 				// First raise the PointerExited events on the stale branch
-				if (source.staleBranch.HasValue)
+				if (source.stale.HasValue)
 				{
 					routedArgs.CanBubbleNatively = true; // TODO: UGLY HACK TO AVOID BUBBLING: we should be able to request to bubble only up to a the root
-					var (root, stale) = source.staleBranch.Value;
+					var (root, stale) = source.stale.Value;
 
 					Debug.Write($"Exiting branch from (root) {root.GetDebugName()} to (leaf) {stale.GetDebugName()}\r\n");
 
@@ -338,7 +360,7 @@ namespace Windows.UI.Xaml
 			//		 we won't be able to walk the tree up to get the stale branch
 			// And it's here we we need to have a dedicated cache for the pressed: we must be able reset the state!
 
-			private (UIElement? element, (UIElement root, UIElement leaf)? staleBranch) FindOriginalSource(
+			private (UIElement? element, Branch? stale) FindOriginalSource(
 				PointerEventArgs args,
 				Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> cache,
 				Predicate<UIElement>? isStale = null,
@@ -356,21 +378,22 @@ namespace Windows.UI.Xaml
 				var pointerId = args.CurrentPoint.PointerId;
 				//if (cache.TryGetValue(pointerId, out var cached)
 				//	&& cached.validity.Contains(args.CurrentPoint.RawPosition)
-				//	&& cached.orginalSource.Target is UIElement cachedOriginalSource
-				//	&& cachedOriginalSource.IsLoaded)
+				//	&& cached.orginalSource.Target is UIElement cachedElement
+				//	&& cachedElement.IsHitTestVisibleCoalesced) 
 				//{
-				//	var rootToCachedElement = UIElement.GetTransform(cachedOriginalSource, null); // Note: This will walk the tree upward
+				//	// Note about cachedElement.IsHitTestVisibleCoalesced
+				//	// If not visible, either the auto reset on load/unload should have clean the internal pointers state,
+				//	// either the stale branch detection in SearchDownForTopMostElementAt(root) will find it and clear state.
+
+				//	Matrix3x2.Invert(GetTransform(cachedElement, null), out var rootToCachedElement);
 				//	var positionInCachedElementCoordinates = rootToCachedElement.Transform(args.CurrentPoint.Position);
 
-				//	var (originalSource, staleBranchRoot) = SearchUpAndDownForTopMostElementAt(
-				//		positionInCachedElementCoordinates,
-				//		cachedOriginalSource,
-				//		isStale);
+				//	var result = SearchUpAndDownForTopMostElementAt(positionInCachedElementCoordinates, cachedElement, isStale);
 
-				//	if (originalSource is {})
+				//	if (result.element is { })
 				//	{
-				//		UpdateCache(cache, pointerId, (cached.orginalSource, cachedOriginalSource), originalSource);
-				//		return (originalSource, staleBranchRoot is null ? default((UIElement, UIElement)?) : (staleBranchRoot, cachedOriginalSource));
+				//		UpdateCache(cache, pointerId, (cached.orginalSource, cachedElement), result.element);
+				//		return result;
 				//	}
 
 				//	// We walked all the tree up from the provided element, but were not able to find any target!
@@ -384,17 +407,9 @@ namespace Windows.UI.Xaml
 
 				if (Window.Current.RootElement is UIElement root)
 				{
-					var (originalSource, staleBranchRoot) = SearchDownForTopMostElementAt(args.CurrentPoint.Position, root, isStale);
-					if (staleBranchRoot is null)
-					{
-						UpdateCache(cache, pointerId, default, originalSource);
-						return (originalSource, default((UIElement, UIElement)?));
-					}
-					else
-					{
-						var staleBranchLeaf = SearchDownForStaleLeaf(staleBranchRoot, isStale!);
-						return (originalSource, (staleBranchRoot, staleBranchLeaf));
-					}
+					var result = SearchDownForTopMostElementAt(args.CurrentPoint.Position, root, isStale);
+					UpdateCache(cache, pointerId, default, result.element);
+					return result;
 				}
 
 				this.Log().Warn("The root element not set yet, impossible to find the original source.");
@@ -440,54 +455,66 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			private static (UIElement? element, UIElement? staleRoot) SearchUpAndDownForTopMostElementAt(
+			private static (UIElement? element, Branch? stale) SearchUpAndDownForTopMostElementAt(
 				Point position,
 				UIElement element,
 				Predicate<UIElement>? isStale)
 			{
-				var (foundElement, staleRoot) = SearchDownForTopMostElementAt(position, element, isStale);
+				var (foundElement, stale) = SearchDownForTopMostElementAt(position, element, isStale);
 				if (foundElement is { })
 				{
-					return (foundElement, staleRoot); // Success match
+					return (foundElement, stale); // Success match
 				}
 
+				// If we already have a stale root (the cached element) avoid the cost to search it again in siblings
+				//if (staleRoot is { })
+				//{
+				//	isStale = default;
+				//}
+
+				// Given element is no longer the top most element, we walk the tree upward to find the new element
+				// At this point we assume that the pointer is probably not far enough from the cached element,
+				// so it's faster to search in sibling walking the tree upward instead of starting from visual root.
 				double offsetX = 0, offsetY = 0;
 				while (element.TryGetParentUIElementForTransformToVisual(out var parent, ref offsetX, ref offsetY))
 				{
+					// Compute the position in the parent coordinate space
 					position.X += offsetX;
 					position.Y += offsetY;
 
-					if (staleRoot is null)
+					if (stale is null)
 					{
-						(foundElement, staleRoot) = SearchDownForTopMostElementAt(position, parent, isStale, excludedChild: element);
+						(foundElement, stale) = SearchDownForTopMostElementAt(position, parent, isStale, excludedChild: element);
 					}
 					else
 					{
-						(foundElement, _) = SearchDownForTopMostElementAt(position, element);
-						if (foundElement is null && (isStale?.Invoke(element) ?? false))
-						{
-							staleRoot = element;
-						}
+						// Do search for the stale branch AND DO NOT ERASE the current stale branch !
+						(foundElement, _) = SearchDownForTopMostElementAt(position, parent, excludedChild: element);
 					}
 
 					if (foundElement is { })
 					{
-						return (foundElement, staleRoot);
+						return (foundElement, stale);
+					}
+
+					if (isStale?.Invoke(parent) ?? false)
+					{
+						stale = new Branch(parent, stale?.Leaf ?? parent);
 					}
 
 					element = parent;
 				}
 
-				return default;
+				return (foundElement, stale);
 			}
 
-			private static (UIElement? element, UIElement? staleRoot) SearchDownForTopMostElementAt(
+			private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
 				Point posRelToParent,
 				UIElement element,
 				Predicate<UIElement>? isStale = null,
 				UIElement? excludedChild = null)
 			{
-				var staleRoot = default(UIElement?);
+				var stale = default(Branch?);
 				var elementHitTestVisibility = (HitTestVisibility)element.GetValue(HitTestVisibilityProperty);
 
 #if TRACE_HIT_TESTING
@@ -499,10 +526,13 @@ namespace Windows.UI.Xaml
 				if (elementHitTestVisibility == HitTestVisibility.Collapsed)
 				{
 					// Even if collapsed, if the element is stale, we search down for the real stale leaf
-					staleRoot = isStale?.Invoke(element) ?? false ? SearchDownForStaleLeaf(element, isStale) : default;
+					if (isStale?.Invoke(element) ?? false)
+					{
+						stale = SearchDownForStaleBranch(element, isStale);
+					}
 
-					TRACE($"> NOT FOUND (Element is HitTestVisibility.Collapsed) | stale branch root: {staleRoot.GetDebugName()}");
-					return (default, staleRoot);
+					TRACE($"> NOT FOUND (Element is HitTestVisibility.Collapsed) | stale branch: {stale?.ToString() ?? "-- none --"}");
+					return (default, stale);
 				}
 
 				// The region where the element was arrange by its parent.
@@ -563,46 +593,50 @@ namespace Windows.UI.Xaml
 				if (!clippingBounds.Contains(posRelToElement))
 				{
 					// Even if out of bounds, if the element is stale, we search down for the real stale leaf
-					staleRoot = isStale?.Invoke(element) ?? false ? SearchDownForStaleLeaf(element, isStale) : default;
+					if (isStale?.Invoke(element) ?? false)
+					{
+						stale = SearchDownForStaleBranch(element, isStale);
+					}
 
-					TRACE($"> NOT FOUND (Out of the **clipped** bounds) | stale branch root: {staleRoot.GetDebugName()}");
-					return (default, staleRoot);
+					TRACE($"> NOT FOUND (Out of the **clipped** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
+					return (default, stale);
 				}
 
 				// Validate if any child is an acceptable target
 				var children = excludedChild is null ? element.GetChildren() : element.GetChildren().Except(excludedChild);
 				using var child = children.Reverse().GetEnumerator();
+				var isChildStale = isStale;
 				while (child.MoveNext())
 				{
-					var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current, isStale);
+					var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current, isChildStale);
 
 					// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
-					if (staleRoot is null && childResult.staleRoot is { })
+					if (childResult.stale is { })
 					{
-						staleRoot = childResult.staleRoot;
-						isStale = null;
+						stale = childResult.stale;
+						isChildStale = null;
 					}
 
 					// If we found an acceptable element in the child's sub-tree, job is done!
 					if (childResult.element is { })
 					{
-						if (staleRoot is null && isStale is { })
+						if (isChildStale is { }) // Also indicates that stale is null
 						{
 							// If we didn't find any stale root in previous children or in the child's sub tree,
 							// we continue to enumerate sibling children to detect a potential stale root.
 
 							while (child.MoveNext())
 							{
-								if (isStale(child.Current))
+								if (isChildStale(child.Current))
 								{
-									staleRoot = child.Current;
+									stale = SearchDownForStaleBranch(child.Current, isChildStale);
 									break;
 								}
 							}
 						}
 
-						TRACE($"> found child: {childResult.element.GetDebugName()} | stale branch root: {staleRoot.GetDebugName()}");
-						return (childResult.element, staleRoot);
+						TRACE($"> found child: {childResult.element.GetDebugName()} | stale branch: {stale?.ToString() ?? "-- none --"}");
+						return (childResult.element, stale);
 					}
 				}
 
@@ -610,19 +644,25 @@ namespace Windows.UI.Xaml
 				// and the position is in actual bounds (which might be different than the clipping bounds)
 				if (elementHitTestVisibility == HitTestVisibility.Visible && renderingBounds.Contains(posRelToElement))
 				{
-					TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch root: {staleRoot.GetDebugName()}");
-					return (element, staleRoot);
+					TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
+					return (element, stale);
 				}
 				else
 				{
 					// If no stale element found yet, validate if the current is stale.
 					// Note: no needs to search down for stale child, we already did it!
-					staleRoot ??= isStale?.Invoke(element) ?? false ? element : default;
+					if (isStale?.Invoke(element) ?? false)
+					{
+						stale = new Branch(element, stale?.Leaf ?? element);
+					}
 
-					TRACE($"> NOT FOUND (HitTestVisibility.Invisible or out of the **render** bounds) | stale branch root: {staleRoot.GetDebugName()}");
-					return (default, staleRoot);
+					TRACE($"> NOT FOUND (HitTestVisibility.Invisible or out of the **render** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
+					return (default, stale);
 				}
 			}
+
+			private static Branch SearchDownForStaleBranch(UIElement staleRoot, Predicate<UIElement> isStale)
+				=> new Branch(staleRoot, SearchDownForStaleLeaf(staleRoot, isStale));
 
 			private static UIElement SearchDownForStaleLeaf(UIElement staleRoot, Predicate<UIElement> isStale)
 			{
