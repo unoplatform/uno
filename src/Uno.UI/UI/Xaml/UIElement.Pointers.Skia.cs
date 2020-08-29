@@ -5,24 +5,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Windows.Devices.Input;
-using Windows.UI.Input;
-using Windows.UI.Xaml.Input;
-using Microsoft.Extensions.Logging;
-using Uno.Extensions;
-using Uno.Logging;
-using Uno.Foundation.Extensibility;
-using Windows.UI.Core;
-using Windows.Foundation;
-using System.Threading;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Controls;
+using Microsoft.Extensions.Logging;
 using Uno.Disposables;
-using Uno.Extensions.ValueType;
-using Uno.UI;
+using Uno.Extensions;
+using Uno.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using Windows.UI.Core;
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml
 {
@@ -38,8 +32,8 @@ namespace Windows.UI.Xaml
 					Leaf = leaf;
 				}
 
-				public UIElement Root;
-				public UIElement Leaf;
+				public readonly UIElement Root;
+				public readonly UIElement Leaf;
 
 				public void Deconstruct(out UIElement root, out UIElement leaf)
 				{
@@ -47,49 +41,14 @@ namespace Windows.UI.Xaml
 					leaf = Leaf;
 				}
 
-				/// <inheritdoc />
-				public override string ToString()
-					=> $"Root={Root.GetDebugName()} | Leaf={Leaf.GetDebugName()}";
+				public override string ToString() => $"Root={Root.GetDebugName()} | Leaf={Leaf.GetDebugName()}";
 			}
 
-#if TRACE_HIT_TESTING
-			[ThreadStatic]
-			private static IndentedStringBuilder? _trace;
+			// TODO: Use pointer ID for the predicates
+			private static readonly Predicate<UIElement> _isOver = e => e.IsPointerOver;
+			//private static readonly Predicate<UIElement> _isPressed = e => e.IsPointerPressed;
 
-			[ThreadStatic]
-			private static UIElement _traceCurrentElement;
-
-			private static IDisposable BEGIN_TRACE(UIElement element)
-			{
-				if (_trace is { })
-				{
-					var previous = _traceCurrentElement;
-					_traceCurrentElement = element;
-
-					_trace.Append(new string('\t', _traceCurrentElement.Depth - 1));
-					_trace.Append($"[{element.GetDebugName()}]\r\n");
-
-					return Disposable.Create(() => _traceCurrentElement = previous);
-				}
-				else
-				{
-					return Disposable.Empty;
-				}
-			}
-#endif
-
-			[Conditional("TRACE_HIT_TESTING")]
-			private static void TRACE(FormattableString msg)
-			{
-#if TRACE_HIT_TESTING
-				if (_trace is { })
-				{
-					_trace.Append(new string('\t', _traceCurrentElement.Depth));
-					_trace.Append(msg.ToStringInvariant());
-					_trace.Append("\r\n");
-				}
-#endif
-			}
+			private readonly Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> _cache = new Dictionary<uint, (Rect, ManagedWeakReference)>();
 
 			public PointerManager()
 			{
@@ -103,20 +62,7 @@ namespace Windows.UI.Xaml
 
 			private void CoreWindow_PointerWheelChanged(CoreWindow sender, PointerEventArgs args)
 			{
-				//if (this.Log().IsEnabled(LogLevel.Trace))
-				//{
-				//	this.Log().Trace($"CoreWindow_PointerWheelChanged ({args.CurrentPoint.Position})");
-				//}
-
-				//PropagateEvent(args, e =>
-				//{
-				//	var pointerArgs = new PointerRoutedEventArgs(args, e);
-
-				//	e.OnNativePointerWheel(pointerArgs);
-				//});
-
-
-				var source = FindOriginalSource(args, _cache);
+				var source = FindOriginalSource(args);
 				if (source.element is null)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
@@ -166,34 +112,7 @@ namespace Windows.UI.Xaml
 
 			private void CoreWindow_PointerReleased(CoreWindow sender, PointerEventArgs args)
 			{
-				//if (FindOriginalSource(args) is { } originalSource)
-				//{
-				//	if (this.Log().IsEnabled(LogLevel.Trace))
-				//	{
-				//		this.Log().Trace($"CoreWindow_PointerReleased [{originalSource}/{originalSource.GetHashCode():X8}");
-				//	}
-
-				//	var routedArgs = new PointerRoutedEventArgs(args, originalSource);
-
-				//	if (UIElement.PointerCapture.TryGet(routedArgs.Pointer, out var capture))
-				//	{
-				//		foreach (var target in capture.Targets.ToArray())
-				//		{
-				//			target.Element.OnNativePointerUp(routedArgs);
-				//		}
-				//	}
-				//	else
-				//	{
-				//		originalSource.OnNativePointerUp(routedArgs);
-				//	}
-				//}
-				//else if (this.Log().IsEnabled(LogLevel.Trace))
-				//{
-				//	this.Log().Trace($"CoreWindow_PointerReleased ({args.CurrentPoint.Position}) **undispatched**");
-				//}
-
-
-				var source = FindOriginalSource(args, _cache);
+				var source = FindOriginalSource(args);
 				if (source.element is null)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
@@ -227,35 +146,7 @@ namespace Windows.UI.Xaml
 
 			private void CoreWindow_PointerPressed(CoreWindow sender, PointerEventArgs args)
 			{
-				//var source = FindOriginalSource(args, _pressedCache, isStale: _isPressed);
-				//if (source.element is null)
-				//{
-				//	if (this.Log().IsEnabled(LogLevel.Trace))
-				//	{
-				//		this.Log().Trace($"CoreWindow_PointerMoved ({args.CurrentPoint.Position}) **undispatched**");
-				//	}
-
-				//	return;
-				//}
-
-				//if (FindOriginalSource(args) is { } originalSource)
-				//{
-				//	if (this.Log().IsEnabled(LogLevel.Trace))
-				//	{
-				//		this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) [{originalSource}/{originalSource.GetHashCode():X8}");
-				//	}
-
-				//	var routedArgs = new PointerRoutedEventArgs(args, originalSource);
-
-				//	originalSource.OnNativePointerDown(routedArgs);
-				//}
-				//else if (this.Log().IsEnabled(LogLevel.Trace))
-				//{
-				//	this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
-				//}
-
-
-				var source = FindOriginalSource(args, _cache);
+				var source = FindOriginalSource(args);
 				if (source.element is null)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
@@ -278,7 +169,7 @@ namespace Windows.UI.Xaml
 
 			private void CoreWindow_PointerMoved(CoreWindow sender, PointerEventArgs args)
 			{
-				var source = FindOriginalSource(args, _cache, isStale: _isOver);
+				var source = FindOriginalSource(args, isStale: _isOver);
 				if (source.element is null)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
@@ -306,8 +197,6 @@ namespace Windows.UI.Xaml
 
 					while (stale is { })
 					{
-						//Debug.WriteLine($"[EXITED] {GetTraceName(stale)}");
-
 						routedArgs.Handled = false;
 						stale.OnNativePointerExited(routedArgs);
 						// TODO: This differs of how we behave on iOS, macOS and Android which does have "implicit capture" while pressed.
@@ -325,12 +214,11 @@ namespace Windows.UI.Xaml
 				}
 
 				// Second (try to) raise the PointerEnter on the OriginalSource
-				// Note: This won't do anything if already over
-				//Debug.WriteLine($"[ENTER] {GetTraceName(source.element)}");
+				// Note: This won't do anything if already over.
 				routedArgs.Handled = false;
 				source.element.OnNativePointerEnter(routedArgs);
 
-				// Second raise the event, either on the OriginalSource or on the capture owners if any
+				// Finally raise the event, either on the OriginalSource or on the capture owners if any
 				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 				{
 					foreach (var target in capture.Targets.ToArray())
@@ -349,20 +237,8 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			// TODO: Use pointer ID for the predicates
-			private static Predicate<UIElement> _isOver = e => e.IsPointerOver;
-			//private static Predicate<UIElement> _isPressed = e => e.IsPointerPressed;
-
-			//private Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> _pressedCache = new Dictionary<uint, (Rect, ManagedWeakReference)>();
-			//private Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> _overCache = new Dictionary<uint, (Rect, ManagedWeakReference)>();
-			private Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> _cache = new Dictionary<uint, (Rect, ManagedWeakReference)>();
-			// TODO: The cache must contains the whole tree: for instance if the leaf is removed from the visual tree,
-			//		 we won't be able to walk the tree up to get the stale branch
-			// And it's here we we need to have a dedicated cache for the pressed: we must be able reset the state!
-
 			private (UIElement? element, Branch? stale) FindOriginalSource(
 				PointerEventArgs args,
-				Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> cache,
 				Predicate<UIElement>? isStale = null,
 				[CallerMemberName] string? caller = null)
 			{
@@ -376,39 +252,39 @@ namespace Windows.UI.Xaml
 #endif
 
 				var pointerId = args.CurrentPoint.PointerId;
-				//if (cache.TryGetValue(pointerId, out var cached)
-				//	&& cached.validity.Contains(args.CurrentPoint.RawPosition)
-				//	&& cached.orginalSource.Target is UIElement cachedElement
-				//	&& cachedElement.IsHitTestVisibleCoalesced) 
-				//{
-				//	// Note about cachedElement.IsHitTestVisibleCoalesced
-				//	// If not visible, either the auto reset on load/unload should have clean the internal pointers state,
-				//	// either the stale branch detection in SearchDownForTopMostElementAt(root) will find it and clear state.
+				if (_cache.TryGetValue(pointerId, out var cached)
+					&& cached.validity.Contains(args.CurrentPoint.RawPosition)
+					&& cached.orginalSource.Target is UIElement cachedElement
+					&& cachedElement.IsHitTestVisibleCoalesced) 
+				{
+					// Note about cachedElement.IsHitTestVisibleCoalesced:
+					//		If not visible, either the auto reset on load/unload should have clean the internal pointers state,
+					//		either the stale branch detection in SearchDownForTopMostElementAt(root) will find it and clear state.
 
-				//	Matrix3x2.Invert(GetTransform(cachedElement, null), out var rootToCachedElement);
-				//	var positionInCachedElementCoordinates = rootToCachedElement.Transform(args.CurrentPoint.Position);
+					Matrix3x2.Invert(GetTransform(cachedElement, null), out var rootToCachedElement);
+					var positionInCachedElementCoordinates = rootToCachedElement.Transform(args.CurrentPoint.Position);
 
-				//	var result = SearchUpAndDownForTopMostElementAt(positionInCachedElementCoordinates, cachedElement, isStale);
+					var result = SearchUpAndDownForTopMostElementAt(positionInCachedElementCoordinates, cachedElement, isStale);
 
-				//	if (result.element is { })
-				//	{
-				//		UpdateCache(cache, pointerId, (cached.orginalSource, cachedElement), result.element);
-				//		return result;
-				//	}
+					if (result.element is { })
+					{
+						UpdateCache(pointerId, (cached.orginalSource, cachedElement), result.element);
+						return result;
+					}
 
-				//	// We walked all the tree up from the provided element, but were not able to find any target!
-				//	// Maybe the cached element has been removed from the tree (but the IsLoaded should have been false :/)
+					// We walked all the tree up from the provided element, but were not able to find any target!
+					// Maybe the cached element has been removed from the tree (but the IsLoaded should have been false :/)
 
-				//	this.Log().Warn(
-				//		"Enable to find any acceptable original source by walking up the tree from the cached element, "
-				//		+ "which is suspicious as the element has not been flag as unloaded."
-				//		+ "Trying now by looking down from the root.");
-				//}
+					this.Log().Warn(
+						"Enable to find any acceptable original source by walking up the tree from the cached element, "
+						+ "which is suspicious as the element has not been flag as unloaded."
+						+ "Trying now by looking down from the root.");
+				}
 
 				if (Window.Current.RootElement is UIElement root)
 				{
 					var result = SearchDownForTopMostElementAt(args.CurrentPoint.Position, root, isStale);
-					UpdateCache(cache, pointerId, default, result.element);
+					UpdateCache(pointerId, default, result.element);
 					return result;
 				}
 
@@ -426,11 +302,7 @@ namespace Windows.UI.Xaml
 				return default;
 			}
 
-			private void UpdateCache(
-				Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> cache,
-				uint pointerId,
-				(ManagedWeakReference weak, UIElement instance)? currentEntry,
-				UIElement? updated)
+			private void UpdateCache(uint pointerId, (ManagedWeakReference weak, UIElement instance)? currentEntry, UIElement? updated)
 			{
 				if (currentEntry.HasValue)
 				{
@@ -444,11 +316,11 @@ namespace Windows.UI.Xaml
 
 				if (updated is null)
 				{
-					cache.Remove(pointerId);
+					_cache.Remove(pointerId);
 				}
 				else
 				{
-					cache[pointerId] = (
+					_cache[pointerId] = (
 						validity: new Rect(new Point(), new Size(double.PositiveInfinity, double.PositiveInfinity)), // TODO
 						orginalSource: WeakReferencePool.RentWeakReference(this, updated)
 					);
@@ -466,21 +338,16 @@ namespace Windows.UI.Xaml
 					return (foundElement, stale); // Success match
 				}
 
-				// If we already have a stale root (the cached element) avoid the cost to search it again in siblings
-				//if (staleRoot is { })
-				//{
-				//	isStale = default;
-				//}
-
-				// Given element is no longer the top most element, we walk the tree upward to find the new element
+				// The provided element (and its sub elements) are not (no longer) the top most element,
+				// we will now walk the tree upward to find the new top most element.
 				// At this point we assume that the pointer is probably not far enough from the cached element,
 				// so it's faster to search in sibling walking the tree upward instead of starting from visual root.
+				// This might not always be the case, for instance when showing/hiding a Popup.
 				double offsetX = 0, offsetY = 0;
 				while (element.TryGetParentUIElementForTransformToVisual(out var parent, ref offsetX, ref offsetY))
 				{
 					// Compute the position in the parent coordinate space
-					position.X += offsetX;
-					position.Y += offsetY;
+					position = GetTransform(from: element, to: parent).Transform(position);
 
 					if (stale is null)
 					{
@@ -488,7 +355,7 @@ namespace Windows.UI.Xaml
 					}
 					else
 					{
-						// Do search for the stale branch AND DO NOT ERASE the current stale branch !
+						// Do not search for the stale branch AND DO NOT ERASE the current 'stale' branch !
 						(foundElement, _) = SearchDownForTopMostElementAt(position, parent, excludedChild: element);
 					}
 
@@ -676,6 +543,47 @@ namespace Windows.UI.Xaml
 
 				return staleRoot;
 			}
+
+			#region HitTest tracing
+#if TRACE_HIT_TESTING
+			[ThreadStatic]
+			private static IndentedStringBuilder? _trace;
+
+			[ThreadStatic]
+			private static UIElement _traceCurrentElement;
+
+			private static IDisposable BEGIN_TRACE(UIElement element)
+			{
+				if (_trace is { })
+				{
+					var previous = _traceCurrentElement;
+					_traceCurrentElement = element;
+
+					_trace.Append(new string('\t', _traceCurrentElement.Depth - 1));
+					_trace.Append($"[{element.GetDebugName()}]\r\n");
+
+					return Disposable.Create(() => _traceCurrentElement = previous);
+				}
+				else
+				{
+					return Disposable.Empty;
+				}
+			}
+#endif
+
+			[Conditional("TRACE_HIT_TESTING")]
+			private static void TRACE(FormattableString msg)
+			{
+#if TRACE_HIT_TESTING
+				if (_trace is { })
+				{
+					_trace.Append(new string('\t', _traceCurrentElement.Depth));
+					_trace.Append(msg.ToStringInvariant());
+					_trace.Append("\r\n");
+				}
+#endif
+			}
+			#endregion
 		}
 
 		// TODO Should be per CoreWindow
@@ -689,13 +597,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
-		{
-
-		}
-
-
-#region HitTestVisibility
+		#region HitTestVisibility
 		internal void UpdateHitTest()
 		{
 			this.CoerceValue(HitTestVisibilityProperty);
@@ -780,7 +682,6 @@ namespace Windows.UI.Xaml
 		private static void OnHitTestVisibilityChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 		}
-#endregion
-
+		#endregion
 	}
 }

@@ -196,6 +196,7 @@ namespace Windows.UI.Xaml
 					offsetY = layoutSlot.Y;
 				}
 
+#if !__SKIA__
 				if (elt is ScrollViewer sv)
 				{
 					var zoom = sv.ZoomFactor;
@@ -213,6 +214,7 @@ namespace Windows.UI.Xaml
 						offsetY -= sv.VerticalOffset;
 					}
 				}
+#endif
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
@@ -582,7 +584,7 @@ namespace Windows.UI.Xaml
 			=> (int)Math.Floor(x + 0.5);
 
 #if HAS_UNO_WINUI
-		#region FocusState DependencyProperty
+#region FocusState DependencyProperty
 
 		public FocusState FocusState
 		{
@@ -600,9 +602,9 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-		#endregion
+#endregion
 
-		#region IsTabStop DependencyProperty
+#region IsTabStop DependencyProperty
 
 		public bool IsTabStop
 		{
@@ -620,7 +622,7 @@ namespace Windows.UI.Xaml
 					(s, e) => ((Control)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
 			);
-		#endregion
+#endregion
 
 		private protected virtual void OnIsTabStopChanged(bool oldValue, bool newValue) { }
 #endif
