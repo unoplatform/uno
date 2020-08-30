@@ -145,6 +145,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RatingControlTests\RatingControlBasic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RatingControlTests\RatingControlPage.xaml">
+	  <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\NumberBox_Header.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3937,6 +3945,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressBar\WinUIProgressBarPage.xaml.cs">
       <DependentUpon>WinUIProgressBarPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RatingControlTests\RatingControlBasic.xaml.cs">
+      <DependentUpon>RatingControlBasic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RatingControlTests\RatingControlPage.xaml.cs">
+      <DependentUpon>RatingControlPage.xaml</DependentUpon>
+   	</Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressRing\WinUIProgressRing_Slider.xaml.cs">
       <DependentUpon>WinUIProgressRing_Slider.xaml</DependentUpon>
     </Compile>
