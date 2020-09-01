@@ -234,7 +234,7 @@ as a base for your cross-targeted library.
 
 # Is it possible to make http web requests using the WASM target?
 
-Yes it is possible, but you need to use the provided HttpHandler by Uno.UI like what we did in the Uno.UI Playground:
+Yes it is possible, but you need to use the provided HttpHandler by Uno.UI.WebAssembly like what we did in the Uno.UI Playground:
 
 ```csharp
 var handler = new Wasm.WasmHttpHandler();
