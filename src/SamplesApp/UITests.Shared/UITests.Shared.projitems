@@ -965,6 +965,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\TimePicker_Flyout_Automated_Reload.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToggleSwitchControl\ToggleSwitch_TemplateReuse.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
