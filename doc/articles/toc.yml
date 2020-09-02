@@ -56,6 +56,8 @@
       href: migrating-apps.md
     - name: Adding native views
       href: native-views.md
+    - name: Adding Splash Screens
+      href: splash-screen.md
 - name: Using Uno - features and controls
   items:
   - name: Accessibility
