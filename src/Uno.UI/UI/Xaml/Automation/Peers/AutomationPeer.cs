@@ -8,11 +8,11 @@ namespace Windows.UI.Xaml.Automation.Peers
 	public partial class AutomationPeer : DependencyObject
 	{
 		[Uno.NotImplemented]
-		public static bool ListenerExists(AutomationEvents eventId) => false;
+		public static bool ListenerExists(Windows.UI.Xaml.Automation.Peers.AutomationEvents eventId) => false;
 
 		#region Public
 
-		public object GetPattern(PatternInterface patternInterface) => GetPatternCore(patternInterface);
+		public object GetPattern(Windows.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => GetPatternCore(patternInterface);
 
 		public string GetAcceleratorKey() => GetAcceleratorKeyCore();
 
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		public AutomationLiveSetting GetLiveSetting() => GetLiveSettingCore();
 
-		public object Navigate(AutomationNavigationDirection direction) => NavigateCore(direction);
+		public object Navigate(Windows.UI.Xaml.Automation.Peers.AutomationNavigationDirection direction) => NavigateCore(direction);
 
 		public object GetElementFromPoint(Point pointInWindowCoordinates) => GetElementFromPointCore(pointInWindowCoordinates);
 
@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		#region Overrides
 
-		protected virtual object GetPatternCore(PatternInterface patternInterface) => null;
+		protected virtual object GetPatternCore(Windows.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => null;
 
 		protected virtual string GetAcceleratorKeyCore() => string.Empty;
 
@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 		}
 
-		protected virtual object NavigateCore(AutomationNavigationDirection direction) => null;
+		protected virtual object NavigateCore(Windows.UI.Xaml.Automation.Peers.AutomationNavigationDirection direction) => null;
 
 		protected virtual IReadOnlyList<AutomationPeer> GetControlledPeersCore() => null;
 
