@@ -15,17 +15,18 @@ using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 {
-    public sealed partial class XamlEvent_Leak_UserControl : UserControl
+    public sealed partial class XamlEvent_Leak_UserControl_xBind_Event : UserControl
     {
-        public XamlEvent_Leak_UserControl()
+        public XamlEvent_Leak_UserControl_xBind_Event()
         {
             this.InitializeComponent();
         }
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		public void MyEvent()
 		{
+
 		}
 	}
 }
