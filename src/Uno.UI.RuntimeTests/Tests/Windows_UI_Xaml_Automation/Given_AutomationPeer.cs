@@ -251,15 +251,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void When_AutomationPeer_Default_GetParent()
-		{
-			var automationPeer = new TestAutomationPeer();
-			var result = automationPeer.GetParent();
-			Assert.AreEqual(null, result);
-		}
-
-		[TestMethod]
-		[RunsOnUIThread]
 		public void When_AutomationPeer_Default_GetPeerFromPoint()
 		{
 			var automationPeer = new TestAutomationPeer();
