@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
-			AsyncOperation.FromTask(async ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()).AsAsyncOperation();
+			AsyncOperation.FromTask(async ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
 			
 
 		#region Navigation History
