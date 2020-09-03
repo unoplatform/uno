@@ -37,7 +37,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 1. Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
     - Make sure to select **nuget.org** or **NuGet official package source** as the package source
     - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.Core`, `Uno.UI`, and `Uno.Wasm.Bootstrap`.
-        - Note: **do not** update the `Microsoft.Extensions.Logging.Console`. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno.
+        - Note: **do not** update the `Microsoft.Extensions.Logging.Console`. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno Platform.
     - Click back on the Browse tab and install the following NuGet Packages to each of the projects in your solution:
         - `Refractored.MvvmHelpers`
 
@@ -332,7 +332,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
                Margin="10,0"/>
     ```
 
-    > [!IMPORTANT]
+    > [❗IMPORTANT]
     > Take note that we have added a reference to an event handler on the ComboBox. We will add this in the next step in the code behind.
 
 1. Now that our Page is complete we can go back and add the event handlers in our code behind. This will allow us to handle changes and make necessary updates. In the **Solution Explorer**, double-click **MainPage.xaml.cs** to open, then add the following code.
@@ -383,7 +383,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
         => $"{header} {dateTime:MMM dd, yyyy hh:mm tt}";
     ```
 
-You may need to add missing namespace `usings`, eg the `Windows.UI` namespace for the `Colors` class. Don't worry if `IssueTypeBox` and `IssueTypeIndicator` are marked red - these properties will be created from the Xaml when the project builds. 
+    You may need to add missing namespace `usings`, eg the `Windows.UI` namespace for the `Colors` class. Don't worry if `IssueTypeBox` and `IssueTypeIndicator` are marked red - these properties will be created from the Xaml when the project builds.
 
 1. Build and run the project on each platform. When launching the WASM head, use 'Start without debugging' (`Ctrl+F5`).
 
@@ -399,7 +399,7 @@ You should see something similar to the screenshot below. You can [download the 
 In this tutorial, through creating a simple Bug Tracking app you have learned how to:
 
 - Add the Uno Project Templates to Visual Studio
-- Create a new Project with Uno
+- Create a new Project with Uno Platform
 - Use the basics of Model Binding
 
 <div class="NOTE alert alert-info">
