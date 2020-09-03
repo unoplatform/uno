@@ -154,6 +154,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Microsoft\UI\Xaml\Controls\Common\" />
+		<Folder Include="Microsoft\UI\Xaml\Controls\ColorPicker\" />
 		<Folder Include="Mixins\Wasm\" />
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
