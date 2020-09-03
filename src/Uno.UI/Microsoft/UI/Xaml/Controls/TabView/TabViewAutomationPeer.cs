@@ -5,8 +5,9 @@ using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public class TabViewAutomationPeer : FrameworkElementAutomationPeer
+	public class TabViewAutomationPeer : FrameworkElementAutomationPeer, ISelectionProvider
 	{
+
 		public TabViewAutomationPeer(TabView owner) : base(owner)
 		{
 		}
@@ -26,23 +27,14 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			return nameof(TabView);
 		}
 
-		protected override AutomationControlType GetAutomationControlTypeCore()
-		{
-			return AutomationControlType.Tab;
-		}
+		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Tab;
 
-		private bool CanSelectMultiple()
-		{
-			return false;
-		}
+		bool ISelectionProvider.CanSelectMultiple => false;
 
-		private bool IsSelectionRequired()
-		{
-			return true;
-		}
+		bool ISelectionProvider.IsSelectionRequired => true;
 
 		//TODO:MZ: This method is weird.
-		private IRawElementProviderSimple GetSelection()
+		IRawElementProviderSimple[] ISelectionProvider.GetSelection()
 		{
 			var tabView = Owner as TabView;
 			if (tabView != null)
@@ -53,11 +45,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 					var peer = FrameworkElementAutomationPeer.CreatePeerForElement(tabViewItem);
 					if (peer != null)
 					{
-						return ProviderFromPeer(peer);
+						return new[] { ProviderFromPeer(peer) };
 					}
 				}
 			}
-			return null;
+			return Array.Empty<IRawElementProviderSimple>();
 		}
 	}
 }
