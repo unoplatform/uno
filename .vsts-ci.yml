@@ -4,6 +4,7 @@ trigger:
       - master
       - release/beta/*
       - release/stable/*
+      - feature/*
 
 pr: 
   branches:
@@ -11,6 +12,17 @@ pr:
       - master
       - release/beta/*
       - release/stable/*
+
+  paths:
+    include:
+    - '/'
+    exclude:
+    - 'doc/'
+    - .dependabot/
+    - .github/
+    - .editorconfig
+    - '*.md'
+    - .all-contributorsrc
       
 resources:
   containers:
@@ -42,13 +54,13 @@ jobs:
   parameters:
     vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-docs.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
-
 - template: build/ci/.azure-devops-skia-tests.yml
   parameters:
     vmImage: '$(windowsHostedVMImage)'
+
+- template: build/ci/.azure-devops-docs.yml	
+  parameters:	
+    vmImage: '$(windowsHostedVMImage)'	
 
 - template: build/ci/.azure-devops-wasm-uitests.yml
   parameters:
