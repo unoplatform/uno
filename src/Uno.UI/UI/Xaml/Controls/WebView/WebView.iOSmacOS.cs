@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
-			InvokeScriptAsync(CancellationToken.None, scriptName, arguments).AsAsyncOperation();
+			InvokeScriptAsync(CancellationToken.None, scriptName, arguments?.ToArray()).AsAsyncOperation();
 
 		partial void NavigateWithHttpRequestMessagePartial(HttpRequestMessage requestMessage)
 		{
