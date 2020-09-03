@@ -18,6 +18,7 @@
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
+      "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
       "T4Generator\\T4Generator.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Skia.csproj",
       "Uno.Foundation\\Uno.Foundation.Skia.csproj",
