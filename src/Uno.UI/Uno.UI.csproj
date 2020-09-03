@@ -175,6 +175,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="Helpers\WinUI\DownlevelHelper.cs" />
+	  <UpToDateCheckInput Remove="Helpers\WinUI\ResourceAccessor.ResourceKeys.cs" />
 	  <UpToDateCheckInput Remove="UI\Xaml\Controls\Border\BorderLayerRenderer.Composition.cs" />
 	</ItemGroup>
 
