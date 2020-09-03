@@ -13,7 +13,7 @@ The implementations of the ListView for iOS and Android use the native controls 
 
 ## Themes
 
-`FrameworkElement.RequestedTheme` is supported in a very limited form. Setting `FrameworkElement.RequestedTheme` on *any* element will currently apply the nominated theme to the *entire* visual tree.
+`FrameworkElement.RequestedTheme` is supported in a very limited form. It can only be set on the application-defined content root, ie `Windows.UI.Xaml.Window.Current.Content`, which will affect the entire visual tree.
 
 ### Custom Themes
 

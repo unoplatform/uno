@@ -342,8 +342,8 @@ namespace Windows.UI.Xaml
 			}
 			else if (binding is ResourceBinding resourceBinding)
 			{
-				_resourceBindings = _resourceBindings ?? new Dictionary<DependencyProperty, ResourceBinding>();
-				_resourceBindings[dependencyProperty] = resourceBinding;
+				_resourceBindings = _resourceBindings ?? new ResourceBindingCollection();
+				_resourceBindings.Add(dependencyProperty, resourceBinding);
 			}
 			else
 			{
