@@ -21,6 +21,7 @@
   },
   "shortName": "unoapp",
   "sourceName": "UnoQuickStart",
+  "defaultName": "UnoApp",
   "placeholderFilename": "template-ignore",
   "preferNameDirectory": true,
   "guids": [
