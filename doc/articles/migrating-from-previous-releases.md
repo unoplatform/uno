@@ -15,8 +15,8 @@ Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code an
     ```csharp
 	: base(() => new App(), javaReference, transfer)
     ```
-- For WebAssembly:
-    - Replace the `Uno.UI` package with `Uno.UI.WebAssembly`
+- For WebAssembly, in the `YourProject.Wasm.csproj`:
+    - Change `<PackageReference Include="Uno.UI" Version="2.4.4" />` to `<PackageReference Include="Uno.UI.WebAssembly" Version="3.0.12" />`
     - Remove `<WasmHead>true</WasmHead>`
     - You can remove `__WASM__` in `DefineConstants`
 - The symbols font has been updated, and the name needs to be updated. For more information, see [this article](uno-fluent-assets.md).
