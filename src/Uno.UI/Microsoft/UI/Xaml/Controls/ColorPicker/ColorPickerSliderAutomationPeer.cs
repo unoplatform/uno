@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Uno.UI.Helpers.WinUI;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -105,6 +106,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				}
 
 				return string.Format(
+					CultureInfo.CurrentUICulture,
 					resourceStringWithName,
 					value,
 					ColorHelper.ToDisplayName(color));
@@ -128,6 +130,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				}
 
 				return string.Format(
+					CultureInfo.CurrentUICulture,
 					resourceStringWithoutName,
 					value);
 			}

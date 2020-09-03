@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_textEntryGridOpened = false;
 
 		// Template parts
-		Controls.Primitives.ColorSpectrum m_colorSpectrum;
+		Primitives.ColorSpectrum m_colorSpectrum;
 
 		Grid m_colorPreviewRectangleGrid;
 		Rectangle m_colorPreviewRectangle;
@@ -54,10 +54,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		IAsyncAction m_createColorPreviewRectangleCheckeredBackgroundBitmapAction = null;
 
-		Controls.Primitives.ColorPickerSlider m_thirdDimensionSlider;
+		Primitives.ColorPickerSlider m_thirdDimensionSlider;
 		LinearGradientBrush m_thirdDimensionSliderGradientBrush;
 
-		private Controls.Primitives.ColorPickerSlider m_alphaSlider;
+		private Primitives.ColorPickerSlider m_alphaSlider;
 		private LinearGradientBrush m_alphaSliderGradientBrush;
 		private Rectangle m_alphaSliderBackgroundRectangle;
 		private ImageBrush m_alphaSliderCheckeredBackgroundImageBrush;
@@ -102,17 +102,17 @@ namespace Microsoft.UI.Xaml.Controls
 		// IFrameworkElementOverrides overrides
 		protected override void OnApplyTemplate()
 		{
-			m_colorSpectrum = this.GetTemplateChild<Controls.Primitives.ColorSpectrum>("ColorSpectrum");
+			m_colorSpectrum = this.GetTemplateChild<Primitives.ColorSpectrum>("ColorSpectrum");
 
 			m_colorPreviewRectangleGrid = this.GetTemplateChild<Grid>("ColorPreviewRectangleGrid");
 			m_colorPreviewRectangle = this.GetTemplateChild<Rectangle>("ColorPreviewRectangle");
 			m_previousColorRectangle = this.GetTemplateChild<Rectangle>("PreviousColorRectangle");
 			m_colorPreviewRectangleCheckeredBackgroundImageBrush = this.GetTemplateChild<ImageBrush>("ColorPreviewRectangleCheckeredBackgroundImageBrush");
 
-			m_thirdDimensionSlider = this.GetTemplateChild<Controls.Primitives.ColorPickerSlider>("ThirdDimensionSlider");
+			m_thirdDimensionSlider = this.GetTemplateChild<Primitives.ColorPickerSlider>("ThirdDimensionSlider");
 			m_thirdDimensionSliderGradientBrush = this.GetTemplateChild<LinearGradientBrush>("ThirdDimensionSliderGradientBrush");
 
-			m_alphaSlider = this.GetTemplateChild<Controls.Primitives.ColorPickerSlider>("AlphaSlider");
+			m_alphaSlider = this.GetTemplateChild<Primitives.ColorPickerSlider>("AlphaSlider");
 			m_alphaSliderGradientBrush = this.GetTemplateChild<LinearGradientBrush>("AlphaSliderGradientBrush");
 			m_alphaSliderBackgroundRectangle = this.GetTemplateChild<Rectangle>("AlphaSliderBackgroundRectangle");
 			m_alphaSliderCheckeredBackgroundImageBrush = this.GetTemplateChild<ImageBrush>("AlphaSliderCheckeredBackgroundImageBrush");

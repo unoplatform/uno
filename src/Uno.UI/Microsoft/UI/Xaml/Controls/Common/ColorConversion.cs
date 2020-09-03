@@ -217,7 +217,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// equal to the minimum plus the chroma (i.e., the max minus the min), multiplied by the percentage towards the new color.
 			// This gets us a value between the maximum and the minimum representing the partially present channel.
 			// Finally, the not-present color must be equal to the minimum value, since it is the one least participating in the overall color.
-			int sextant = (int)(hue / 60); // Uno Doc: Math.Floor() is required after conversion to C# as C++ casts to int differently
+			int sextant = (int)(hue / 60);
 			double intermediateColorPercentage = hue / 60 - sextant;
 			double max = chroma + min;
 
@@ -277,7 +277,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UInt64 hexValue = ((UInt64)rByte << 16) + ((UInt64)gByte << 8) + (UInt64)bByte;
 
 			// Uno Doc: Using C#/.net string methods instead
-			string hexString = string.Format("#{0:X6}", hexValue);
+			string hexString = string.Format(CultureInfo.InvariantCulture, "#{0:X6}", hexValue);
 
 			// We'll size this string to accommodate "#XXXXXX" - i.e., a full RGB number with a # sign.
 			//wchar_t hexString[8];
@@ -320,7 +320,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UInt64 hexValue = ((UInt64)aByte << 24) + ((UInt64)rByte << 16) + ((UInt64)gByte << 8) + ((UInt64)bByte & 0xff);
 
 			// Uno Doc: Using C#/.net string methods instead
-			string hexString = string.Format("#{0:X8}", hexValue);
+			string hexString = string.Format(CultureInfo.InvariantCulture, "#{0:X8}", hexValue);
 
 			// We'll size this string to accommodate "#XXXXXXXX" - i.e., a full ARGB number with a # sign.
 			//wchar_t hexString[10];

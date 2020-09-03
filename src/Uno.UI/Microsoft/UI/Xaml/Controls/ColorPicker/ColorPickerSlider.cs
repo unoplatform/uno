@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
@@ -8,7 +10,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -101,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					break;
 
 				default:
-					throw new Exception(); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
+					throw new Exception("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
 			}
 
 			bool shouldInvertHorizontalDirection = this.FlowDirection == FlowDirection.RightToLeft && !this.IsDirectionReversed;
@@ -143,7 +144,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					break;
 
 				default:
-					throw new Exception(); // Uno Doc: 'MUX_ASSERT(false);'
+					throw new Exception("Invalid ColorPickerHsvChannel."); // Uno Doc: 'MUX_ASSERT(false);'
 			}
 
 			args.Handled = true;
@@ -247,10 +248,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 							currentHsv.V = this.Value / 100;
 							break;
 						default:
-							throw new Exception(); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
+							throw new Exception("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
 					}
 
 					return string.Format(
+						CultureInfo.CurrentUICulture,
 						localizedString,
 						sliderValue,
 						ColorHelper.ToDisplayName(ColorConversion.ColorFromRgba(ColorConversion.HsvToRgb(currentHsv))));
@@ -270,10 +272,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 							localizedString = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ToolTipStringValueSliderWithoutColorName);
 							break;
 						default:
-							throw new Exception(); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
+							throw new Exception("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
 					}
 
 					return string.Format(
+						CultureInfo.CurrentUICulture,
 						localizedString,
 						sliderValue);
 				}

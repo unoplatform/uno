@@ -354,7 +354,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>The first template part of the specified name; otherwise, null.</returns>
 		public T GetTemplateChild<T>(string childName) where T : class, DependencyObject
 		{
-            return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as T ?? FindName(childName) as T;
+			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as T ?? FindName(childName) as T;
 		}
 
 		private static object FindNameInScope(IFrameworkElement root, string name)
