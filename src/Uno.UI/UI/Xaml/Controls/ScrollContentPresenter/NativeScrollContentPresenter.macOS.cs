@@ -26,7 +26,8 @@ namespace Windows.UI.Xaml.Controls
 			DrawsBackground = false;
 		}
 
-		public nfloat ZoomScale {
+		public nfloat ZoomScale 
+		{
 			get => Magnification;
 			set => Magnification = value;
 		}
@@ -50,7 +51,6 @@ namespace Windows.UI.Xaml.Controls
 			get => HasHorizontalScroller;
 			set => HasHorizontalScroller = value;
 		}
-
 		public override bool NeedsLayout
 		{
 			get => base.NeedsLayout; set
@@ -76,7 +76,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnContentChanged(NSView previousView, NSView newView)
 		{
+			if(previousView != null) 
+			{
+				previousView.SetParent(null);
+			}
+
 			DocumentView = newView;
+
+			newView.SetParent(TemplatedParent);
 		}
 
 		private void OnLiveScroll(object sender, NSNotificationEventArgs e)
