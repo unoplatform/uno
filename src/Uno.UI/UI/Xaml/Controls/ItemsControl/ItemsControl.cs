@@ -232,7 +232,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static DependencyProperty ItemsSourceProperty { get ; } =
+		public static DependencyProperty ItemsSourceProperty { get; } =
 			DependencyProperty.Register(
 				"ItemsSource",
 				typeof(object),
@@ -320,7 +320,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemContainerStyleProperty, value); }
 		}
 
-		public static DependencyProperty ItemContainerStyleProperty { get ; } =
+		public static DependencyProperty ItemContainerStyleProperty { get; } =
 					DependencyProperty.Register("ItemContainerStyle", typeof(Style), typeof(ItemsControl), new FrameworkPropertyMetadata(
 						default(Style),
 						FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
@@ -337,7 +337,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemContainerStyleSelectorProperty, value); }
 		}
 
-		public static DependencyProperty ItemContainerStyleSelectorProperty { get ; } =
+		public static DependencyProperty ItemContainerStyleSelectorProperty { get; } =
 			DependencyProperty.Register("ItemContainerStyleSelector", typeof(StyleSelector), typeof(ItemsControl), new FrameworkPropertyMetadata(
 				default(StyleSelector),
 				(o, e) => ((ItemsControl)o).OnItemContainerStyleSelectorChanged((StyleSelector)e.OldValue, (StyleSelector)e.NewValue))
@@ -356,13 +356,13 @@ namespace Windows.UI.Xaml.Controls
 			private set { SetValue(IsGroupingProperty, value); }
 		}
 
-		public static DependencyProperty IsGroupingProperty { get ; } =
+		public static DependencyProperty IsGroupingProperty { get; } =
 			DependencyProperty.Register("IsGrouping", typeof(bool), typeof(ItemsControl), new FrameworkPropertyMetadata(false));
 		#endregion
 
 		#region Internal Attached Properties
 
-		internal static DependencyProperty IndexForItemContainerProperty { get ; } =
+		internal static DependencyProperty IndexForItemContainerProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"IndexForItemContainer",
 				typeof(int),
@@ -370,7 +370,7 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(-1)
 			);
 
-		internal static DependencyProperty ItemsControlForItemContainerProperty { get ; } =
+		internal static DependencyProperty ItemsControlForItemContainerProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"ItemsControlForItemContainer",
 				typeof(WeakReference<ItemsControl>),
@@ -1032,6 +1032,9 @@ namespace Windows.UI.Xaml.Controls
 				{
 					containerAsContentPresenter.TrySetDataContextFromContent(item);
 				}
+
+				// TODO: not sure about ContentPresenter, don't think TrySetDataContextFromContent() should be non-private
+				// Is there a reason we don't do the same thing as for ContentControl, set DataContext and bind Content?
 			}
 			else if (element is ContentControl containerAsContentControl)
 			{
@@ -1047,6 +1050,11 @@ namespace Windows.UI.Xaml.Controls
 					// This avoids the inner content to go through a partial content being
 					// the result of the fallback value of the binding set below.
 					containerAsContentControl.DataContext = item;
+
+					if ((containerAsContentControl as IContentHost).IsGeneratedContainerNeedingItemBind && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
+					{
+						containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
+					}
 				}
 			}
 		}
@@ -1095,60 +1103,64 @@ namespace Windows.UI.Xaml.Controls
 
 		/// <summary>
 		/// Create a new container for item at <paramref name="index"/> and returns it, unless the item is its own container, in which case
-		/// returns the item itself.
+		/// returns the item itself, or the template root is a suitable container, in which case the template root is returned.
 		/// </summary>
+		/// <remarks>For virtualized controls, this method is only called if it's not possible to recycle an existing container.</remarks>
 		internal DependencyObject GetContainerForIndex(int index)
 		{
 			var item = ItemFromIndex(index);
 
-			DependencyObject elementTemplateRoot = DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item, null)?.LoadContentCached() as DependencyObject;
-
-			var isItemItsOwnContainer = IsItemItsOwnContainerOverride(item);
-			var isContainerFromTemplateRoot = !isItemItsOwnContainer
-				&& this is Primitives.Selector
-				&& IsItemItsOwnContainerOverride(elementTemplateRoot);
-
-			DependencyObject container;
-
-			if (isItemItsOwnContainer)
+			if (IsItemItsOwnContainerOverride(item))
 			{
-				container = item as DependencyObject;
+				var container = item as DependencyObject;
+				container.SetValue(ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(this));
 
-				// The item here is left untouched, it's not being applied
-				// the ItemTemplate/ItemTemplateSelector
-			}
-			else if (isContainerFromTemplateRoot)
-			{
-				container = elementTemplateRoot;
-				SetContainerContent(container, item, isGeneratedContainer: true);
+				return container;
 			}
 			else
 			{
+				var template = DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item, null);
+				return GetContainerForTemplate(template);
+			}
+		}
+
+		/// <summary>
+		/// Gets an appropriate container for a given template (either a new container, or the template's root if it is a container)
+		/// </summary>
+		/// <remarks>
+		/// This is called directly by NativeListViewBase on Android rather than <see cref="GetContainerForIndex(int)"/>, since the recycling
+		/// mechanism doesn't permit for the exact item index to be known when the container is created.
+		/// </remarks>
+		internal DependencyObject GetContainerForTemplate(DataTemplate template)
+		{
+			var elementTemplateRoot = template?.LoadContentCached() as DependencyObject;
+
+			var container = GetContainerFromTemplateRoot(elementTemplateRoot);
+
+			if (container == null)
+			{
 				container = GetContainerForItemOverride();
-				SetContainerContent(container, elementTemplateRoot ?? item);
+				if (container is IContentHost contentHost)
+				{
+					if (elementTemplateRoot != null)
+					{
+						contentHost.Content = elementTemplateRoot;
+					}
+					else
+					{
+						// The template root is null (generally because the template is null), we will bind the Content so that the
+						// implicit template mechanism is applied
+						contentHost.IsGeneratedContainerNeedingItemBind = true;
+					}
+				}
 			}
 
 			container.SetValue(ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(this));
 
 			return container;
-
-			static void SetContainerContent(DependencyObject container, object content, bool isGeneratedContainer = false)
-			{
-				if (container is ContentPresenter containerAsContentPresenter)
-				{
-					containerAsContentPresenter.Content = content;
-				}
-				else if (container is ContentControl containerAsContentControl)
-				{
-					containerAsContentControl.Content = content;
-
-					if (isGeneratedContainer)
-					{
-						containerAsContentControl.IsGeneratedContainer = isGeneratedContainer;
-					}
-				}
-			}
 		}
+
+		private protected virtual DependencyObject GetContainerFromTemplateRoot(DependencyObject templateRoot) => null;
 
 		public object ItemFromContainer(DependencyObject container)
 		{

@@ -462,5 +462,26 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal void OnItemClicked(SelectorItem selectorItem) => OnItemClicked(IndexFromContainer(selectorItem));
 
 		internal virtual void OnItemClicked(int clickedIndex) { }
+
+		private protected override DependencyObject GetContainerFromTemplateRoot(DependencyObject templateRoot)
+		{
+			if (IsItemItsOwnContainerOverride(templateRoot))
+			{
+				if (templateRoot is ContentControl contentControl)
+				{
+					// The container has been created from a template and can be recycled, so we mark it as generated
+					contentControl.IsGeneratedContainer = true;
+				}
+
+				if (templateRoot is IContentHost contentHost)
+				{
+					contentHost.IsGeneratedContainerNeedingItemBind = true;
+				}
+
+				return templateRoot;
+			}
+
+			return null;
+		}
 	}
 }

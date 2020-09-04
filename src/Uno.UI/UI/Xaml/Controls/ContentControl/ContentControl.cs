@@ -36,7 +36,7 @@ using View = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ContentControl : Control, IEnumerable
+	public partial class ContentControl : Control, IEnumerable, IContentHost
 	{
 		private View _contentTemplateRoot;
 
@@ -440,6 +440,8 @@ namespace Windows.UI.Xaml.Controls
 		/// Return false in this case, even if the Template is null.
 		/// </remarks>
 		internal bool IsContentPresenterBypassEnabled => Template == null && !HasDefaultTemplate(GetDefaultStyleKey());
+
+		bool IContentHost.IsGeneratedContainerNeedingItemBind { get; set; }
 
 		/// <summary>
 		/// Gets whether the default style for the given type sets a non-null Template.

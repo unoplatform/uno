@@ -39,7 +39,7 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement
+	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement, IContentHost
 	{
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
@@ -677,6 +677,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
+		bool IContentHost.IsGeneratedContainerNeedingItemBind { get; set; }
 
 		private void SynchronizeContentTemplatedParent()
 		{
