@@ -1,7 +1,7 @@
 About Uno platform
 
 ## What is the Uno Platform?
-The Uno Platform is a Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, and WebAssembly. It provides the full API definitions of the UWP Windows 10 2004 (19041), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
+The Uno Platform is a Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, WebAssembly and Linux. It provides the full API definitions of the UWP Windows 10 2004 (19041), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
 This allows the use of the UWP tooling from Windows in Visual Studio, such as XAML Edit and Continue and C# Edit and Continue, to build an application as much as possible on Windows, then validate that the application runs on iOS, Android and WebAssembly.
 The XAML User Interface (UI) provides the ability to display the same XAML files on Windows, iOS, Android and WebAssembly platforms. Uno also provides support for the MVVM pattern on all platforms, with binding, styling, control and data-templating features.
 As the Uno Platform provides all of the APIs of the complete UWP platform, any UWP library can be compiled on top of Uno (e.g. XamlBehaviors), with the ability to determine which APIs are implemented or not via the IDE using C# Analyzers.
