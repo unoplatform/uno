@@ -12,7 +12,7 @@
 			This is an illustration of Github bug
 			<Hyperlink NavigateUri="https://github.com/unoplatform/uno/issues/652">#652</Hyperlink>
 		</TextBlock>
-		<Grid Width="100" Height="100" BorderBrush="Red" BorderThickness="1">
+		<Grid Width="100" Height="100" BorderBrush="Red" BorderThickness="1" x:Name="Grid1">
 			<Grid.Clip>
 				<RectangleGeometry Rect="0,0,110,110" />
 			</Grid.Clip>
@@ -21,7 +21,8 @@
 				Height="100"
 				Content="Hello world"
 				VerticalAlignment="Top"
-				HorizontalAlignment="Left">
+				HorizontalAlignment="Left"
+				x:Name="Button1">
 				<ToggleButton.RenderTransform>
 					<TranslateTransform X="50" Y="50"/>
 				</ToggleButton.RenderTransform>
@@ -31,7 +32,7 @@
 			It should be identical to this:
 			<LineBreak />(the button should be 100x100, but cut at 60x60)
 		</TextBlock>
-		<Grid HorizontalAlignment="Center">
+		<Grid HorizontalAlignment="Center" x:Name="Grid2">
 			<Border Width="100" Height="100" BorderBrush="Red" BorderThickness="1" VerticalAlignment="Top" HorizontalAlignment="Left" />
 			<Border Width="60" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
 				<Border.RenderTransform>
@@ -41,7 +42,8 @@
 					Height="100"
 					Width="100"
 					VerticalAlignment="Top"
-					Content="Hello world" />
+					Content="Hello world"
+					x:Name="Button2"/>
 			</Border>
 		</Grid>
 	</StackPanel>

@@ -58,8 +58,6 @@ namespace Windows.UI.Xaml
 
 		partial void OnUidChangedPartial();
 
-		private protected bool RequiresClipping { get; set; } = true;
-
 		#region Clip DependencyProperty
 
 		public RectangleGeometry Clip

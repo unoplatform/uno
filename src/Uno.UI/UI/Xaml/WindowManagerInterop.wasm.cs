@@ -162,7 +162,7 @@ namespace Uno.UI.Xaml
 
 		#region SetElementTransform
 
-		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix, bool requiresClipping)
+		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix)
 		{
 			if (UseJavascriptEval)
 			{
@@ -173,7 +173,7 @@ namespace Uno.UI.Xaml
 					new[] { ("transform", native.ToStringInvariant()) }
 				);
 
-				SetArrangeProperties(htmlId, requiresClipping);
+				SetArrangeProperties(htmlId);
 			}
 			else
 			{
@@ -186,7 +186,6 @@ namespace Uno.UI.Xaml
 					M22 = matrix.M22,
 					M31 = matrix.M31,
 					M32 = matrix.M32,
-					ClipToBounds = requiresClipping
 				};
 
 				TSInteropMarshaller.InvokeJS<WindowManagerSetElementTransformParams, bool>("Uno:setElementTransformNative", parms);
@@ -205,8 +204,6 @@ namespace Uno.UI.Xaml
 			public double M22;
 			public double M31;
 			public double M32;
-
-			public bool ClipToBounds;
 		}
 
 		#endregion
@@ -440,14 +437,14 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
-		private static void SetArrangeProperties(IntPtr htmlId, bool requiresClipping)
+		private static void SetArrangeProperties(IntPtr htmlId)
 		{
 			if (!UseJavascriptEval)
 			{
 				throw new InvalidOperationException("This should only be called when UseJavascriptEval flag is set");
 			}
 
-			var command = "Uno.UI.WindowManager.current.setArrangeProperties(\"" + htmlId + "\", " + (requiresClipping ? "true" : "false") + "); ";
+			var command = "Uno.UI.WindowManager.current.setArrangeProperties(\"" + htmlId + "\"); ";
 
 			WebAssemblyRuntime.InvokeJS(command);
 		}
@@ -1073,7 +1070,7 @@ namespace Uno.UI.Xaml
 
 		#region ArrangeElement
 
-		internal static void ArrangeElement(IntPtr htmlId, Rect rect, bool clipToBounds, Rect? clipRect)
+		internal static void ArrangeElement(IntPtr htmlId, Rect rect, Rect? clipRect)
 		{
 			if (UseJavascriptEval)
 			{
@@ -1100,7 +1097,7 @@ namespace Uno.UI.Xaml
 					}
 				);
 
-				SetArrangeProperties(htmlId, clipToBounds);
+				SetArrangeProperties(htmlId);
 			}
 			else
 			{
@@ -1111,7 +1108,6 @@ namespace Uno.UI.Xaml
 					Left = rect.Left,
 					Width = rect.Width,
 					Height = rect.Height,
-					ClipToBounds = clipToBounds
 				};
 
 				if (clipRect != null)
@@ -1143,7 +1139,6 @@ namespace Uno.UI.Xaml
 
 			public IntPtr HtmlId;
 			public bool Clip;
-			public bool ClipToBounds;
 		}
 
 

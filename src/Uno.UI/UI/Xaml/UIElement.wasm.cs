@@ -248,9 +248,8 @@ namespace Windows.UI.Xaml
 		/// Natively arranges and clips an element.
 		/// </summary>
 		/// <param name="rect">The dimensions to apply to the element</param>
-		/// <param name="clipToBounds">Whether the element should be clipped to its bounds</param>
 		/// <param name="clipRect">The Clip rect to set, if any</param>
-		protected internal void ArrangeVisual(Rect rect, bool clipToBounds, Rect? clipRect)
+		protected internal void ArrangeVisual(Rect rect, Rect? clipRect)
 		{
 			LayoutSlotWithMarginsAndAlignments =
 				VisualTreeHelper.GetParent(this) is UIElement parent
@@ -262,7 +261,7 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(LayoutSlotWithMarginsAndAlignments), LayoutSlotWithMarginsAndAlignments);
 			}
 
-			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipToBounds, clipRect);
+			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
 
 #if DEBUG
 			var count = ++_arrangeCount;
@@ -273,7 +272,7 @@ namespace Windows.UI.Xaml
 
 		protected internal void SetNativeTransform(Matrix3x2 matrix)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, matrix, requiresClipping: RequiresClipping);
+			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, matrix);
 		}
 
 		protected internal void ResetStyle(params string[] names)
@@ -330,29 +329,6 @@ namespace Windows.UI.Xaml
 		protected internal void SetHtmlContent(string html)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetContentHtml(HtmlId, html);
-		}
-
-		partial void ApplyNativeClip(Rect rect)
-		{
-
-			if (rect.IsEmpty)
-			{
-				SetStyle("clip", "");
-				return;
-			}
-
-			var width = double.IsInfinity(rect.Width) ? 100000.0f : rect.Width;
-			var height = double.IsInfinity(rect.Height) ? 100000.0f : rect.Height;
-
-			SetStyle(
-				"clip",
-				"rect("
-				+ Math.Floor(rect.Y) + "px,"
-				+ Math.Ceiling(rect.X + width) + "px,"
-				+ Math.Ceiling(rect.Y + height) + "px,"
-				+ Math.Floor(rect.X) + "px"
-				+ ")"
-			);
 		}
 
 		internal static UIElement GetElementFromHandle(int handle)

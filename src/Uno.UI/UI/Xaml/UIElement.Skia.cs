@@ -234,7 +234,7 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-		internal void ArrangeVisual(Rect finalRect, bool clipToBounds, Rect? clippedFrame = default)
+		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments =
 				VisualTreeHelper.GetParent(this) is UIElement parent
@@ -260,27 +260,17 @@ namespace Windows.UI.Xaml
 					throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 				}
 
-				Rect? getClip()
+				Rect? clip;
+				if (this is Controls.ScrollViewer)
 				{
-					if (this is Controls.ScrollViewer)
-					{
-						return null;
-					}
-					else if (ClippingIsSetByCornerRadius)
-					{
-						// The clip geometry is set by the corner radius
-						// of Border, Grid, StackPanel, etc...
-						return null;
-					}
-					else if (Clip != null)
-					{
-						return Clip.Rect;
-					}
-
-					return new Rect(0, 0, newRect.Width, newRect.Height);
+					clip = (Rect?)null;
+				}
+				else
+				{
+					clip = clippedFrame;
 				}
 
-				OnArrangeVisual(newRect, getClip());
+				OnArrangeVisual(newRect, clip);
 			}
 			else
 			{
@@ -307,7 +297,7 @@ namespace Windows.UI.Xaml
 					rightInset: (float)roundedRectClip.Right
 				);
 			}
-			else
+			else if (!ClippingIsSetByCornerRadius)
 			{
 				Visual.Clip = null;
 			}
