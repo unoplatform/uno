@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -633,7 +634,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// The gradient image contains two dimensions of HSL information, but not the third.
 			// We should keep the third where it already was.
 			// Uno Doc: This can sometimes cause a crash -- possibly due to differences in c# rounding. Therefore, index is now clamped.
-			Hsv hsvAtPoint = m_hsvValues[Math.Clamp((y * width + x), 0, m_hsvValues.Count - 1)];
+			Hsv hsvAtPoint = m_hsvValues[MathEx.Clamp((y * width + x), 0, m_hsvValues.Count - 1)];
 
 			var components = this.Components;
 			var hsvColor = this.HsvColor;
@@ -685,9 +686,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			Vector4 hsvColor = this.HsvColor;
 
-			Hsv.SetHue(hsvColor, Math.Clamp(Hsv.GetHue(hsvColor), (float)m_minHueFromLastBitmapCreation, (float)m_maxHueFromLastBitmapCreation));
-			Hsv.SetSaturation(hsvColor, Math.Clamp(Hsv.GetSaturation(hsvColor), m_minSaturationFromLastBitmapCreation / 100.0f, m_maxSaturationFromLastBitmapCreation / 100.0f));
-			Hsv.SetValue(hsvColor, Math.Clamp(Hsv.GetValue(hsvColor), m_minValueFromLastBitmapCreation / 100.0f, m_maxValueFromLastBitmapCreation / 100.0f));
+			Hsv.SetHue(hsvColor, MathEx.Clamp(Hsv.GetHue(hsvColor), (float)m_minHueFromLastBitmapCreation, (float)m_maxHueFromLastBitmapCreation));
+			Hsv.SetSaturation(hsvColor, MathEx.Clamp(Hsv.GetSaturation(hsvColor), m_minSaturationFromLastBitmapCreation / 100.0f, m_maxSaturationFromLastBitmapCreation / 100.0f));
+			Hsv.SetValue(hsvColor, MathEx.Clamp(Hsv.GetValue(hsvColor), m_minValueFromLastBitmapCreation / 100.0f, m_maxValueFromLastBitmapCreation / 100.0f));
 
 			if (m_shapeFromLastBitmapCreation == ColorSpectrumShape.Box)
 			{
