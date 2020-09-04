@@ -17,13 +17,12 @@ pr:
     include:
     - '/'
     exclude:
-    - 'doc/'
     - .dependabot/
     - .github/
     - .editorconfig
     - '*.md'
     - .all-contributorsrc
-      
+
 resources:
   containers:
   - container: nv-bionic-wasm
