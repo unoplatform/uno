@@ -119,9 +119,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private string GetValueString(Color color, Vector4 hsvColor)
 		{
-			var hue = (UInt32)(Math.Round(Hsv.GetHue(hsvColor)));
-			var saturation = (UInt32)(Math.Round(Hsv.GetSaturation(hsvColor) * 100));
-			var value = (UInt32)(Math.Round(Hsv.GetValue(hsvColor) * 100));
+			var hue = (uint)Math.Round(Hsv.GetHue(hsvColor));
+			var saturation = (uint)Math.Round(Hsv.GetSaturation(hsvColor) * 100);
+			var value = (uint)Math.Round(Hsv.GetValue(hsvColor) * 100);
 
 			if (DownlevelHelper.ToDisplayNameExists())
 			{
