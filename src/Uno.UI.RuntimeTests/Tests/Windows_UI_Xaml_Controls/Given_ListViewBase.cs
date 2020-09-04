@@ -28,6 +28,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private DataTemplate TextBlockItemTemplate => _testsResources["TextBlockItemTemplate"] as DataTemplate;
 
+		private DataTemplate SelfHostingItemTemplate => _testsResources["SelfHostingItemTemplate"] as DataTemplate;
+
 		[TestInitialize]
 		public void Init()
 		{
@@ -208,6 +210,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("item 2", (si2.Content as TextBlock).Text);
 			Assert.IsTrue(si2.IsGeneratedContainer);
 #endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TemplateRoot_IsOwnContainer()
+		{
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				ItemTemplate = SelfHostingItemTemplate,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var source = new object[]
+			{
+				"item 1",
+				"item 2"
+			};
+
+			SUT.ItemsSource = source;
+
+			ListViewItem lvi = null;
+			await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(source[0]) as ListViewItem) != null);
+
+			Assert.IsNull(lvi.FindFirstChild<ListViewItem>(includeCurrent: false));
+			Assert.IsNull(lvi.FindFirstParent<ListViewItem>(includeCurrent: false));
+			Assert.AreEqual("SelfHostingListViewItem", lvi.Name);
+
+			var content = lvi.Content as Border;
+			Assert.IsNotNull(content);
+			Assert.AreEqual("SelfHostingBorder", content.Name);
+			Assert.AreEqual("item 1", (content.Child as TextBlock)?.Text);
 		}
 	}
 }
