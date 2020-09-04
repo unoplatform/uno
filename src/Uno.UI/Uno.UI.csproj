@@ -153,8 +153,6 @@
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Microsoft\UI\Xaml\Controls\Common\" />
-		<Folder Include="Microsoft\UI\Xaml\Controls\ColorPicker\" />
 		<Folder Include="Mixins\Wasm\" />
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
@@ -177,8 +175,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="Helpers\WinUI\DownlevelHelper.cs" />
-	  <UpToDateCheckInput Remove="Helpers\WinUI\ResourceAccessor.ResourceKeys.cs" />
 	  <UpToDateCheckInput Remove="UI\Xaml\Controls\Border\BorderLayerRenderer.Composition.cs" />
 	</ItemGroup>
 
