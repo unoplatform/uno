@@ -103,10 +103,16 @@ namespace AppKit
 		/// <typeparam name="T"></typeparam>
 		/// <param name="view"></param>
 		/// <returns>First parent of the view of specified T type.</returns>
-		public static T FindFirstParent<T>(this _View view)
+		public static T FindFirstParent<T>(this _View view) where T : class
+			=> FindFirstParent<T>(view, includeCurrent: false);
+
+		public static T FindFirstParent<T>(this _View view, bool includeCurrent)
 			where T : class
 		{
-			view = view?.Superview;
+			if (!includeCurrent)
+			{
+				view = view?.Superview;
+			}
 			while (view != null)
 			{
 				var typed = view as T;
@@ -352,7 +358,7 @@ namespace AppKit
 		/// <param name="view">View</param>
 		/// <returns>First responder view</returns>
 		public static _View FindFirstResponder(this _View view) =>
-			Uno.Extensions.UIViewExtensions.FindFirstResponder(view);		
+			Uno.Extensions.UIViewExtensions.FindFirstResponder(view);
 
 		/// <summary>
 		/// Finds the nearest view controller for this _View.
@@ -586,7 +592,7 @@ namespace AppKit
 
 			return null;
 		}
-		
+
 		/// <summary>
 		/// Returns the root of the view's local visual tree.
 		/// </summary>
@@ -682,6 +688,6 @@ namespace AppKit
 #elif __MACOS__
 			view.NeedsDisplay = true;
 #endif
-		} 
+		}
 	}
 }
