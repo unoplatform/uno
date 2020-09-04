@@ -1295,11 +1295,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			newHsvValues.Add(hsvMin);
 
-			// Uno Doc: The added Clamp(0..255) is needed for C# which may overflow converting to a byte
 			Rgb rgbMin = ColorConversion.HsvToRgb(hsvMin);
-			bgraMinPixelData.Add((byte)Math.Clamp(Math.Round(rgbMin.B * 255.0), 0, 255)); // b
-			bgraMinPixelData.Add((byte)Math.Clamp(Math.Round(rgbMin.G * 255.0), 0, 255)); // g
-			bgraMinPixelData.Add((byte)Math.Clamp(Math.Round(rgbMin.R * 255.0), 0, 255)); // r
+			bgraMinPixelData.Add((byte)Math.Round(rgbMin.B * 255.0)); // b
+			bgraMinPixelData.Add((byte)Math.Round(rgbMin.G * 255.0)); // g
+			bgraMinPixelData.Add((byte)Math.Round(rgbMin.R * 255.0)); // r
 			bgraMinPixelData.Add(255); // a - ignored
 
 			// We'll only save pixel data for the middle bitmaps if our third dimension is hue.
@@ -1307,34 +1306,34 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				components == ColorSpectrumComponents.SaturationValue)
 			{
 				Rgb rgbMiddle1 = ColorConversion.HsvToRgb(hsvMiddle1);
-				bgraMiddle1PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle1.B * 255.0), 0, 255)); // b
-				bgraMiddle1PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle1.G * 255.0), 0, 255)); // g
-				bgraMiddle1PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle1.R * 255.0), 0, 255)); // r
+				bgraMiddle1PixelData.Add((byte)Math.Round(rgbMiddle1.B * 255.0)); // b
+				bgraMiddle1PixelData.Add((byte)Math.Round(rgbMiddle1.G * 255.0)); // g
+				bgraMiddle1PixelData.Add((byte)Math.Round(rgbMiddle1.R * 255.0)); // r
 				bgraMiddle1PixelData.Add(255); // a - ignored
 
 				Rgb rgbMiddle2 = ColorConversion.HsvToRgb(hsvMiddle2);
-				bgraMiddle2PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle2.B * 255.0), 0, 255)); // b
-				bgraMiddle2PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle2.G * 255.0), 0, 255)); // g
-				bgraMiddle2PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle2.R * 255.0), 0, 255)); // r
+				bgraMiddle2PixelData.Add((byte)Math.Round(rgbMiddle2.B * 255.0)); // b
+				bgraMiddle2PixelData.Add((byte)Math.Round(rgbMiddle2.G * 255.0)); // g
+				bgraMiddle2PixelData.Add((byte)Math.Round(rgbMiddle2.R * 255.0)); // r
 				bgraMiddle2PixelData.Add(255); // a - ignored
 
 				Rgb rgbMiddle3 = ColorConversion.HsvToRgb(hsvMiddle3);
-				bgraMiddle3PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle3.B * 255.0), 0, 255)); // b
-				bgraMiddle3PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle3.G * 255.0), 0, 255)); // g
-				bgraMiddle3PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle3.R * 255.0), 0, 255)); // r
+				bgraMiddle3PixelData.Add((byte)Math.Round(rgbMiddle3.B * 255.0)); // b
+				bgraMiddle3PixelData.Add((byte)Math.Round(rgbMiddle3.G * 255.0)); // g
+				bgraMiddle3PixelData.Add((byte)Math.Round(rgbMiddle3.R * 255.0)); // r
 				bgraMiddle3PixelData.Add(255); // a - ignored
 
 				Rgb rgbMiddle4 = ColorConversion.HsvToRgb(hsvMiddle4);
-				bgraMiddle4PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle4.B * 255.0), 0, 255)); // b
-				bgraMiddle4PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle4.G * 255.0), 0, 255)); // g
-				bgraMiddle4PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle4.R * 255.0), 0, 255)); // r
+				bgraMiddle4PixelData.Add((byte)Math.Round(rgbMiddle4.B * 255.0)); // b
+				bgraMiddle4PixelData.Add((byte)Math.Round(rgbMiddle4.G * 255.0)); // g
+				bgraMiddle4PixelData.Add((byte)Math.Round(rgbMiddle4.R * 255.0)); // r
 				bgraMiddle4PixelData.Add(255); // a - ignored
 			}
 
 			Rgb rgbMax = ColorConversion.HsvToRgb(hsvMax);
-			bgraMaxPixelData.Add((byte)Math.Clamp(Math.Round(rgbMax.B * 255.0), 0, 255)); // b
-			bgraMaxPixelData.Add((byte)Math.Clamp(Math.Round(rgbMax.G * 255.0), 0, 255)); // g
-			bgraMaxPixelData.Add((byte)Math.Clamp(Math.Round(rgbMax.R * 255.0), 0, 255)); // r
+			bgraMaxPixelData.Add((byte)Math.Round(rgbMax.B * 255.0)); // b
+			bgraMaxPixelData.Add((byte)Math.Round(rgbMax.G * 255.0)); // g
+			bgraMaxPixelData.Add((byte)Math.Round(rgbMax.R * 255.0)); // r
 			bgraMaxPixelData.Add(255); // a - ignored
 		}
 
@@ -1482,11 +1481,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			newHsvValues.Add(hsvMin);
 
-			// Uno Doc: The added Clamp(0..255) is needed for C# which may overflow converting to a byte
 			Rgb rgbMin = ColorConversion.HsvToRgb(hsvMin);
-			bgraMinPixelData.Add((byte)Math.Clamp(Math.Round(rgbMin.B * 255), 0, 255)); // b
-			bgraMinPixelData.Add((byte)Math.Clamp(Math.Round(rgbMin.G * 255), 0, 255)); // g
-			bgraMinPixelData.Add((byte)Math.Clamp(Math.Round(rgbMin.R * 255), 0, 255)); // r
+			bgraMinPixelData.Add((byte)Math.Round(rgbMin.B * 255)); // b
+			bgraMinPixelData.Add((byte)Math.Round(rgbMin.G * 255)); // g
+			bgraMinPixelData.Add((byte)Math.Round(rgbMin.R * 255)); // r
 			bgraMinPixelData.Add(255); // a
 
 			// We'll only save pixel data for the middle bitmaps if our third dimension is hue.
@@ -1494,34 +1492,34 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				components == ColorSpectrumComponents.SaturationValue)
 			{
 				Rgb rgbMiddle1 = ColorConversion.HsvToRgb(hsvMiddle1);
-				bgraMiddle1PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle1.B * 255), 0, 255)); // b
-				bgraMiddle1PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle1.G * 255), 0, 255)); // g
-				bgraMiddle1PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle1.R * 255), 0, 255)); // r
+				bgraMiddle1PixelData.Add((byte)Math.Round(rgbMiddle1.B * 255)); // b
+				bgraMiddle1PixelData.Add((byte)Math.Round(rgbMiddle1.G * 255)); // g
+				bgraMiddle1PixelData.Add((byte)Math.Round(rgbMiddle1.R * 255)); // r
 				bgraMiddle1PixelData.Add(255); // a
 
 				Rgb rgbMiddle2 = ColorConversion.HsvToRgb(hsvMiddle2);
-				bgraMiddle2PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle2.B * 255), 0, 255)); // b
-				bgraMiddle2PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle2.G * 255), 0, 255)); // g
-				bgraMiddle2PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle2.R * 255), 0, 255)); // r
+				bgraMiddle2PixelData.Add((byte)Math.Round(rgbMiddle2.B * 255)); // b
+				bgraMiddle2PixelData.Add((byte)Math.Round(rgbMiddle2.G * 255)); // g
+				bgraMiddle2PixelData.Add((byte)Math.Round(rgbMiddle2.R * 255)); // r
 				bgraMiddle2PixelData.Add(255); // a
 
 				Rgb rgbMiddle3 = ColorConversion.HsvToRgb(hsvMiddle3);
-				bgraMiddle3PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle3.B * 255), 0, 255)); // b
-				bgraMiddle3PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle3.G * 255), 0, 255)); // g
-				bgraMiddle3PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle3.R * 255), 0, 255)); // r
+				bgraMiddle3PixelData.Add((byte)Math.Round(rgbMiddle3.B * 255)); // b
+				bgraMiddle3PixelData.Add((byte)Math.Round(rgbMiddle3.G * 255)); // g
+				bgraMiddle3PixelData.Add((byte)Math.Round(rgbMiddle3.R * 255)); // r
 				bgraMiddle3PixelData.Add(255); // a
 
 				Rgb rgbMiddle4 = ColorConversion.HsvToRgb(hsvMiddle4);
-				bgraMiddle4PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle4.B * 255), 0, 255)); // b
-				bgraMiddle4PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle4.G * 255), 0, 255)); // g
-				bgraMiddle4PixelData.Add((byte)Math.Clamp(Math.Round(rgbMiddle4.R * 255), 0, 255)); // r
+				bgraMiddle4PixelData.Add((byte)Math.Round(rgbMiddle4.B * 255)); // b
+				bgraMiddle4PixelData.Add((byte)Math.Round(rgbMiddle4.G * 255)); // g
+				bgraMiddle4PixelData.Add((byte)Math.Round(rgbMiddle4.R * 255)); // r
 				bgraMiddle4PixelData.Add(255); // a
 			}
 
 			Rgb rgbMax = ColorConversion.HsvToRgb(hsvMax);
-			bgraMaxPixelData.Add((byte)Math.Clamp(Math.Round(rgbMax.B * 255), 0, 255)); // b
-			bgraMaxPixelData.Add((byte)Math.Clamp(Math.Round(rgbMax.G * 255), 0, 255)); // g
-			bgraMaxPixelData.Add((byte)Math.Clamp(Math.Round(rgbMax.R * 255), 0, 255)); // r
+			bgraMaxPixelData.Add((byte)Math.Round(rgbMax.B * 255)); // b
+			bgraMaxPixelData.Add((byte)Math.Round(rgbMax.G * 255)); // g
+			bgraMaxPixelData.Add((byte)Math.Round(rgbMax.R * 255)); // r
 			bgraMaxPixelData.Add(255); // a
 		}
 
