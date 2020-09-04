@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						break;
 
 					default:
-						throw new Exception("Invalid ColorPickerHsvChannel."); // Uno Doc: 'winrt::hresult_error(E_FAIL);'
+						throw new InvalidOperationException("Invalid ColorPickerHsvChannel."); // Uno Doc: 'winrt::hresult_error(E_FAIL);'
 				}
 
 				double previousValue = valueToIncrement;
@@ -110,7 +110,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						break;
 
 					default:
-						throw new Exception("Invalid ColorPickerHsvChannel.");
+						throw new InvalidOperationException("Invalid ColorPickerHsvChannel.");
 				}
 
 				// We multiplied saturation and value by 100 previously, so now we want to put them back in the 0-1 range.
@@ -191,7 +191,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					break;
 
 				default:
-					throw new Exception("Invalid ColorPickerHsvChannel."); // Uno Doc: 'winrt::hresult_error(E_FAIL);'
+					throw new InvalidOperationException("Invalid ColorPickerHsvChannel."); // Uno Doc: 'winrt::hresult_error(E_FAIL);'
 			}
 
 			bool shouldFindMidPoint = true;
@@ -282,7 +282,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						break;
 
 					default:
-						throw new Exception("Invalid ColorPickerHsvChannel."); // Uno Doc: 'winrt::hresult_error(E_FAIL);'
+						throw new ExcInvalidOperationExceptioneption("Invalid ColorPickerHsvChannel."); // Uno Doc: 'winrt::hresult_error(E_FAIL);'
 				}
 
 				while (newColorName == currentColorName)

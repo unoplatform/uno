@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					break;
 
 				default:
-					throw new Exception("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
+					throw new InvalidOperationException("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
 			}
 
 			bool shouldInvertHorizontalDirection = this.FlowDirection == FlowDirection.RightToLeft && !this.IsDirectionReversed;
@@ -144,7 +144,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					break;
 
 				default:
-					throw new Exception("Invalid ColorPickerHsvChannel."); // Uno Doc: 'MUX_ASSERT(false);'
+					throw new InvalidOperationException("Invalid ColorPickerHsvChannel."); // Uno Doc: 'MUX_ASSERT(false);'
 			}
 
 			args.Handled = true;
@@ -248,7 +248,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 							currentHsv.V = this.Value / 100;
 							break;
 						default:
-							throw new Exception("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
+							throw new InvalidOperationException("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
 					}
 
 					return string.Format(
@@ -272,7 +272,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 							localizedString = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ToolTipStringValueSliderWithoutColorName);
 							break;
 						default:
-							throw new Exception("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
+							throw new InvalidOperationException("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
 					}
 
 					return string.Format(
