@@ -473,11 +473,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					contentControl.IsGeneratedContainer = true;
 				}
 
-				if (templateRoot is IContentHost contentHost)
-				{
-					contentHost.IsGeneratedContainerNeedingItemBind = true;
-				}
-
 				return templateRoot;
 			}
 
