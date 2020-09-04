@@ -22,9 +22,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// We want the ColorPickerSlider to pick up everything for its default style from the Slider's default style,
 			// since its purpose is just to turn off keyboarding.  So we'll give it Slider's control name as its default style key
 			// instead of ColorPickerSlider.
-			this.DefaultStyleKey = typeof(Windows.UI.Xaml.Controls.Slider);
+			DefaultStyleKey = typeof(Windows.UI.Xaml.Controls.Slider);
 
-			this.ValueChanged += OnValueChangedEvent;
+			ValueChanged += OnValueChangedEvent;
 		}
 
 		// IUIElementOverridesHelper overrides
@@ -38,11 +38,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			base.OnApplyTemplate();
 
-			m_toolTip = this.GetTemplateChild<ToolTip>("ToolTip");
+			m_toolTip = GetTemplateChild<ToolTip>("ToolTip");
 
 			if (m_toolTip is ToolTip toolTip)
 			{
-				toolTip.Content = this.GetToolTipString();
+				toolTip.Content = GetToolTipString();
 			}
 		}
 
@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			if (m_toolTip is ToolTip toolTip)
 			{
-				toolTip.Content = this.GetToolTipString();
+				toolTip.Content = GetToolTipString();
 				toolTip.IsEnabled = true;
 				toolTip.IsOpen = true;
 			}
@@ -172,7 +172,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			if (m_toolTip is ToolTip toolTip)
 			{
-				toolTip.Content = this.GetToolTipString();
+				toolTip.Content = GetToolTipString();
 
 				// ToolTip doesn't currently provide any way to re-run its placement logic if its placement target moves,
 				// so toggling IsEnabled induces it to do that without incurring any visual glitches.

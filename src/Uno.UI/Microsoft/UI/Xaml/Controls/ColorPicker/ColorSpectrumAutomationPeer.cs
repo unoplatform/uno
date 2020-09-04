@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal ColorSpectrumAutomationPeer(ColorSpectrum owner)
 		{
-			this._owner = owner;
+			_owner = owner;
 		}
 
 		// IAutomationPeerOverrides 
@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		protected override Rect GetBoundingRectangleCore()
 		{
-			Rect boundingRectangle = this._owner.GetBoundingRectangle();
+			Rect boundingRectangle = _owner.GetBoundingRectangle();
 			return boundingRectangle;
 		}
 
@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get 
 			{
-				ColorSpectrum colorSpectrumOwner = this._owner;
+				ColorSpectrum colorSpectrumOwner = _owner;
 				Color color = colorSpectrumOwner.Color;
 				Vector4 hsvColor = colorSpectrumOwner.HsvColor;
 
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public void SetValue(string value)
 		{
-			ColorSpectrum colorSpectrumOwner = this._owner;
+			ColorSpectrum colorSpectrumOwner = _owner;
 			Color color = (Color)(XamlBindingHelper.ConvertValue(typeof(Color), value));
 
 			colorSpectrumOwner.Color = color;

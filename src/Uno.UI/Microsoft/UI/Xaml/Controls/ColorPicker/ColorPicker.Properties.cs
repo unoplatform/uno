@@ -142,8 +142,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public bool IsColorSpectrumVisible
 		{
-			get => (bool)this.GetValue(IsColorSpectrumVisibleProperty);
-			set => this.SetValue(IsColorSpectrumVisibleProperty, value);
+			get => (bool)GetValue(IsColorSpectrumVisibleProperty);
+			set => SetValue(IsColorSpectrumVisibleProperty, value);
 		}
 
 		public static DependencyProperty IsColorSpectrumVisibleProperty { get ; } =

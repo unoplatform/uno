@@ -96,51 +96,51 @@ namespace Microsoft.UI.Xaml.Controls
 
 			SetDefaultStyleKey(this);
 
-			this.Unloaded += OnUnloaded;
+			Unloaded += OnUnloaded;
 		}
 
 		// IFrameworkElementOverrides overrides
 		protected override void OnApplyTemplate()
 		{
-			m_colorSpectrum = this.GetTemplateChild<Primitives.ColorSpectrum>("ColorSpectrum");
+			m_colorSpectrum = GetTemplateChild<Primitives.ColorSpectrum>("ColorSpectrum");
 
-			m_colorPreviewRectangleGrid = this.GetTemplateChild<Grid>("ColorPreviewRectangleGrid");
-			m_colorPreviewRectangle = this.GetTemplateChild<Rectangle>("ColorPreviewRectangle");
-			m_previousColorRectangle = this.GetTemplateChild<Rectangle>("PreviousColorRectangle");
-			m_colorPreviewRectangleCheckeredBackgroundImageBrush = this.GetTemplateChild<ImageBrush>("ColorPreviewRectangleCheckeredBackgroundImageBrush");
+			m_colorPreviewRectangleGrid = GetTemplateChild<Grid>("ColorPreviewRectangleGrid");
+			m_colorPreviewRectangle = GetTemplateChild<Rectangle>("ColorPreviewRectangle");
+			m_previousColorRectangle = GetTemplateChild<Rectangle>("PreviousColorRectangle");
+			m_colorPreviewRectangleCheckeredBackgroundImageBrush = GetTemplateChild<ImageBrush>("ColorPreviewRectangleCheckeredBackgroundImageBrush");
 
-			m_thirdDimensionSlider = this.GetTemplateChild<Primitives.ColorPickerSlider>("ThirdDimensionSlider");
-			m_thirdDimensionSliderGradientBrush = this.GetTemplateChild<LinearGradientBrush>("ThirdDimensionSliderGradientBrush");
+			m_thirdDimensionSlider = GetTemplateChild<Primitives.ColorPickerSlider>("ThirdDimensionSlider");
+			m_thirdDimensionSliderGradientBrush = GetTemplateChild<LinearGradientBrush>("ThirdDimensionSliderGradientBrush");
 
-			m_alphaSlider = this.GetTemplateChild<Primitives.ColorPickerSlider>("AlphaSlider");
-			m_alphaSliderGradientBrush = this.GetTemplateChild<LinearGradientBrush>("AlphaSliderGradientBrush");
-			m_alphaSliderBackgroundRectangle = this.GetTemplateChild<Rectangle>("AlphaSliderBackgroundRectangle");
-			m_alphaSliderCheckeredBackgroundImageBrush = this.GetTemplateChild<ImageBrush>("AlphaSliderCheckeredBackgroundImageBrush");
+			m_alphaSlider = GetTemplateChild<Primitives.ColorPickerSlider>("AlphaSlider");
+			m_alphaSliderGradientBrush = GetTemplateChild<LinearGradientBrush>("AlphaSliderGradientBrush");
+			m_alphaSliderBackgroundRectangle = GetTemplateChild<Rectangle>("AlphaSliderBackgroundRectangle");
+			m_alphaSliderCheckeredBackgroundImageBrush = GetTemplateChild<ImageBrush>("AlphaSliderCheckeredBackgroundImageBrush");
 
-			m_moreButton = this.GetTemplateChild<ButtonBase>("MoreButton");
+			m_moreButton = GetTemplateChild<ButtonBase>("MoreButton");
     
-			m_colorRepresentationComboBox = this.GetTemplateChild<ComboBox>("ColorRepresentationComboBox");
+			m_colorRepresentationComboBox = GetTemplateChild<ComboBox>("ColorRepresentationComboBox");
     
-			m_redTextBox = this.GetTemplateChild<TextBox>("RedTextBox");
-			m_greenTextBox = this.GetTemplateChild<TextBox>("GreenTextBox");
-			m_blueTextBox = this.GetTemplateChild<TextBox>("BlueTextBox");
-			m_hueTextBox = this.GetTemplateChild<TextBox>("HueTextBox");
-			m_saturationTextBox = this.GetTemplateChild<TextBox>("SaturationTextBox");
-			m_valueTextBox = this.GetTemplateChild<TextBox>("ValueTextBox");
-			m_alphaTextBox = this.GetTemplateChild<TextBox>("AlphaTextBox");
-			m_hexTextBox = this.GetTemplateChild<TextBox>("HexTextBox");
+			m_redTextBox = GetTemplateChild<TextBox>("RedTextBox");
+			m_greenTextBox = GetTemplateChild<TextBox>("GreenTextBox");
+			m_blueTextBox = GetTemplateChild<TextBox>("BlueTextBox");
+			m_hueTextBox = GetTemplateChild<TextBox>("HueTextBox");
+			m_saturationTextBox = GetTemplateChild<TextBox>("SaturationTextBox");
+			m_valueTextBox = GetTemplateChild<TextBox>("ValueTextBox");
+			m_alphaTextBox = GetTemplateChild<TextBox>("AlphaTextBox");
+			m_hexTextBox = GetTemplateChild<TextBox>("HexTextBox");
 
-			m_RgbComboBoxItem = this.GetTemplateChild<ComboBoxItem>("RGBComboBoxItem");
-			m_HsvComboBoxItem = this.GetTemplateChild<ComboBoxItem>("HSVComboBoxItem");
-			m_redLabel = this.GetTemplateChild<TextBlock>("RedLabel");
-			m_greenLabel = this.GetTemplateChild<TextBlock>("GreenLabel");
-			m_blueLabel = this.GetTemplateChild<TextBlock>("BlueLabel");
-			m_hueLabel = this.GetTemplateChild<TextBlock>("HueLabel");
-			m_saturationLabel = this.GetTemplateChild<TextBlock>("SaturationLabel");
-			m_valueLabel = this.GetTemplateChild<TextBlock>("ValueLabel");
-			m_alphaLabel = this.GetTemplateChild<TextBlock>("AlphaLabel");
+			m_RgbComboBoxItem = GetTemplateChild<ComboBoxItem>("RGBComboBoxItem");
+			m_HsvComboBoxItem = GetTemplateChild<ComboBoxItem>("HSVComboBoxItem");
+			m_redLabel = GetTemplateChild<TextBlock>("RedLabel");
+			m_greenLabel = GetTemplateChild<TextBlock>("GreenLabel");
+			m_blueLabel = GetTemplateChild<TextBlock>("BlueLabel");
+			m_hueLabel = GetTemplateChild<TextBlock>("HueLabel");
+			m_saturationLabel = GetTemplateChild<TextBlock>("SaturationLabel");
+			m_valueLabel = GetTemplateChild<TextBlock>("ValueLabel");
+			m_alphaLabel = GetTemplateChild<TextBlock>("AlphaLabel");
 
-			m_checkerColorBrush = this.GetTemplateChild<SolidColorBrush>("CheckerColorBrush");
+			m_checkerColorBrush = GetTemplateChild<SolidColorBrush>("CheckerColorBrush");
 
 			if (m_colorSpectrum is Primitives.ColorSpectrum colorSpectrum)
 			{
@@ -190,7 +190,7 @@ namespace Microsoft.UI.Xaml.Controls
 				AutomationProperties.SetHelpText(moreButton, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_HelpTextMoreButton));
 
 				// Uno Doc: Re-written in C# to avoid assignment in the if condition evaluation
-				TextBlock moreButtonLabel = this.GetTemplateChild<TextBlock>("MoreButtonLabel");
+				TextBlock moreButtonLabel = GetTemplateChild<TextBlock>("MoreButtonLabel");
 				if (moreButtonLabel != null)
 				{
 					m_moreButtonLabel = moreButtonLabel;
@@ -713,7 +713,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// Otherwise, we need to post this to the dispatcher to avoid that reentrancy bug.
 				// Uno Doc: Assumed normal priority is acceptable
-				_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					strongThis.m_updatingControls = true;
 					updateTextBoxes();

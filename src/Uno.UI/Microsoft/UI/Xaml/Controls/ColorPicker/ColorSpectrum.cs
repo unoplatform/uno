@@ -113,7 +113,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			m_minValueFromLastBitmapCreation = this.MinValue;
 			m_maxValueFromLastBitmapCreation = this.MaxValue;
 
-			this.Unloaded += OnUnloaded;
+			Unloaded += OnUnloaded;
 
 			// Uno Doc: Removed `if (SharedHelpers::IsRS1OrHigher())`
 			{
@@ -130,15 +130,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// IFrameworkElementOverrides overrides
 		protected override void OnApplyTemplate()
 		{
-			m_layoutRoot = this.GetTemplateChild<Grid>("LayoutRoot");
-			m_sizingGrid = this.GetTemplateChild<Grid>("SizingGrid");
-			m_spectrumRectangle = this.GetTemplateChild<Rectangle>("SpectrumRectangle");
-			m_spectrumEllipse = this.GetTemplateChild<Ellipse>("SpectrumEllipse");
-			m_spectrumOverlayRectangle = this.GetTemplateChild<Rectangle>("SpectrumOverlayRectangle");
-			m_spectrumOverlayEllipse = this.GetTemplateChild<Ellipse>("SpectrumOverlayEllipse");
-			m_inputTarget = this.GetTemplateChild<FrameworkElement>("InputTarget");
-			m_selectionEllipsePanel = this.GetTemplateChild<Panel>("SelectionEllipsePanel");
-			m_colorNameToolTip = this.GetTemplateChild<ToolTip>("ColorNameToolTip");
+			m_layoutRoot = GetTemplateChild<Grid>("LayoutRoot");
+			m_sizingGrid = GetTemplateChild<Grid>("SizingGrid");
+			m_spectrumRectangle = GetTemplateChild<Rectangle>("SpectrumRectangle");
+			m_spectrumEllipse = GetTemplateChild<Ellipse>("SpectrumEllipse");
+			m_spectrumOverlayRectangle = GetTemplateChild<Rectangle>("SpectrumOverlayRectangle");
+			m_spectrumOverlayEllipse = GetTemplateChild<Ellipse>("SpectrumOverlayEllipse");
+			m_inputTarget = GetTemplateChild<FrameworkElement>("InputTarget");
+			m_selectionEllipsePanel = GetTemplateChild<Panel>("SelectionEllipsePanel");
+			m_colorNameToolTip = GetTemplateChild<ToolTip>("ColorNameToolTip");
 
 			if (m_layoutRoot is Grid layoutRoot)
 			{
@@ -872,7 +872,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			var inputTarget = m_inputTarget;
 
-			this.Focus(FocusState.Pointer);
+			Focus(FocusState.Pointer);
 
 			m_isPointerPressed = true;
 			m_shouldShowLargeSelection =
@@ -1049,7 +1049,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 								break;
 							}
 
-							this.FillPixelForBox(
+							FillPixelForBox(
 								x, y, hsv, minDimensionInt, components, minHue, maxHue, minSaturation, maxSaturation, minValue, maxValue,
 								bgraMinPixelData, bgraMiddle1PixelData, bgraMiddle2PixelData, bgraMiddle3PixelData, bgraMiddle4PixelData, bgraMaxPixelData,
 								newHsvValues);
@@ -1067,7 +1067,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 								break;
 							}
 
-							this.FillPixelForRing(
+							FillPixelForRing(
 								x, y, minDimensionInt / 2.0, hsv, components, minHue, maxHue, minSaturation, maxSaturation, minValue, maxValue,
 								bgraMinPixelData, bgraMiddle1PixelData, bgraMiddle2PixelData, bgraMiddle3PixelData, bgraMiddle4PixelData, bgraMaxPixelData,
 								newHsvValues);

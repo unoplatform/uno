@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal ColorPickerSliderAutomationPeer(ColorPickerSlider owner)
 		{
-			this._owner = owner;
+			_owner = owner;
 		}
 
 		// IAutomationPeerOverrides
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			// If this slider is handling the alpha channel, then we don't want to do anything special for it -
 			// in that case, we'll just return the base SliderAutomationPeer.
-			if (this._owner.ColorChannel != ColorPickerHsvChannel.Alpha && patternInterface == PatternInterface.Value)
+			if (_owner.ColorChannel != ColorPickerHsvChannel.Alpha && patternInterface == PatternInterface.Value)
 			{
 				return this;
 			}
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				ColorPickerSlider owner = this._owner;
+				ColorPickerSlider owner = _owner;
 				DependencyObject currentObject = owner;
 				ColorPicker owningColorPicker = null;
 
@@ -80,7 +80,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public void RaisePropertyChangedEvent(Color oldColor, Color newColor, int oldValue, int newValue)
 		{
 			string oldValueString = GetValueString(oldColor, oldValue);
-			string newValueString = this.GetValueString(newColor, newValue);
+			string newValueString = GetValueString(newColor, newValue);
 
 			base.RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValueString, newValueString);
 		}
@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (DownlevelHelper.ToDisplayNameExists())
 			{
 				string resourceStringWithName;
-				switch (this._owner.ColorChannel)
+				switch (_owner.ColorChannel)
 				{
 					case ColorPickerHsvChannel.Hue:
 						resourceStringWithName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringHueSliderWithColorName);
@@ -114,7 +114,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			else
 			{
 				string resourceStringWithoutName;
-				switch (this._owner.ColorChannel)
+				switch (_owner.ColorChannel)
 				{
 					case ColorPickerHsvChannel.Hue:
 						resourceStringWithoutName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringHueSliderWithoutColorName);
