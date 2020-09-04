@@ -15,6 +15,14 @@ namespace CustomHost
     //-------------------------------------------------------------------------  
     class CustomCmdLineHost : ITextTemplatingEngineHost
     {
+
+		public DateTime _dateTime;
+
+		public CustomCmdLineHost(DateTime dateTime)
+		{
+			_dateTime = dateTime;
+		}
+
         //the path and file name of the text template that is being processed  
         //---------------------------------------------------------------------  
         internal string TemplateFileValue;
@@ -116,6 +124,15 @@ namespace CustomHost
             if (File.Exists(requestFileName))
             {
                 content = T4Generator.Tools.ConvertLineEndings(File.ReadAllText(requestFileName));
+
+				if(_dateTime < File.GetCreationTime(requestFileName))
+				{
+					_dateTime = File.GetCreationTime(requestFileName);
+				}
+				if (_dateTime < File.GetLastWriteTime(requestFileName))
+				{
+					_dateTime = File.GetLastWriteTime(requestFileName);
+				}
 
 				return true;
             }
@@ -342,7 +359,13 @@ namespace CustomHost
                 outputPath = args[1];
             }
 
-            CustomCmdLineHost host = new CustomCmdLineHost();
+			DateTime _dateTime = File.GetCreationTime(templateFileName);
+			if (_dateTime < File.GetLastWriteTime(templateFileName))
+			{
+				_dateTime = File.GetLastWriteTime(templateFileName);
+			}
+
+            CustomCmdLineHost host = new CustomCmdLineHost(_dateTime);
             Engine engine = new Engine();
 			host.TemplateFileValue = templateFileName;
             //Read the text template.  
@@ -355,6 +378,11 @@ namespace CustomHost
             outputFileName = Path.Combine(outputPath ?? Path.GetDirectoryName(templateFileName), outputFileName);
             outputFileName = outputFileName + host.FileExtension;
             File.WriteAllText(outputFileName, output, host.FileEncoding);
+
+			_dateTime = host._dateTime;	// newest date from all included files and main file
+
+			File.SetCreationTime(templateFileName, _dateTime);
+			File.SetLastWriteTime(templateFileName, _dateTime);
 
             foreach (CompilerError error in host.Errors)
             {
