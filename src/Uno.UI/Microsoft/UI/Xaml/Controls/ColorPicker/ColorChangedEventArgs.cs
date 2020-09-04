@@ -10,13 +10,13 @@ namespace Microsoft.UI.Xaml.Controls
 		public Color OldColor
 		{
 			get => m_oldColor;
-			set => m_oldColor = value;
+			internal set => m_oldColor = value;
 		}
 
 		public Color NewColor
 		{
 			get => m_newColor;
-			set => m_newColor = value;
+			internal set => m_newColor = value;
 		}
 	}
 }
