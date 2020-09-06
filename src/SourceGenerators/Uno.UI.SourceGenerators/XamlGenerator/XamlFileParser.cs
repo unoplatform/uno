@@ -12,6 +12,7 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Text.RegularExpressions;
 using Windows.Foundation.Metadata;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
+using System.Diagnostics;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {

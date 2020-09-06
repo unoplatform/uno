@@ -31,8 +31,6 @@ namespace Windows.UI.Xaml.Data
 		/// the binding is explicitly tied to the object containing the weak references. This means
 		/// that there's weak references will be kept alive properly.
 		/// </summary>
-
-		private WeakReference _xBindSelector, _xBindBack;
 		private ManagedWeakReference _compiledSource;
 #endif
 
@@ -184,21 +182,13 @@ namespace Windows.UI.Xaml.Data
 		/// get the resulting value.
 		/// </summary>
 		internal Func<object, object> XBindSelector
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-		{ get => (Func<object, object>)_xBindSelector?.Target; private set => _xBindSelector = new WeakReference(value); }
-#else
 		{ get; private set; }
-#endif
 
 		/// <summary>
 		/// Provides the method used to set the value back to the source.
 		/// </summary>
 		internal Action<object, object> XBindBack
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-		{ get => (Action<object, object>)_xBindBack?.Target; private set => _xBindBack = new WeakReference(value); }
-#else
 		{ get; private set; }
-#endif
 
 		/// <summary>
 		/// List of paths to observe in the context x:Bind expressions
