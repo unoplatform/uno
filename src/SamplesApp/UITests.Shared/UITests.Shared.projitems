@@ -21,6 +21,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ColorPickerTests\ColorPicker_SimpleTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ColorPickerTests\MUX_ColorPickerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3415,6 +3419,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Lottie\LottieProgressPage.xaml.cs">
       <DependentUpon>LottieProgressPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ColorPickerTests\ColorPicker_SimpleTest.xaml.cs">
+      <DependentUpon>ColorPicker_SimpleTest.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ColorPickerTests\MUX_ColorPickerPage.xaml.cs">
       <DependentUpon>MUX_ColorPickerPage.xaml</DependentUpon>
