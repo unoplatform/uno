@@ -82,7 +82,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			string oldValueString = GetValueString(oldColor, oldValue);
 			string newValueString = GetValueString(newColor, newValue);
 
-			base.RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValueString, newValueString);
+			//UNO TODO: Requires ValuePatternIdentifiers.ValueProperty to be implemented
+			//base.RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValueString, newValueString);
 		}
 
 		private string GetValueString(Color color, int value)

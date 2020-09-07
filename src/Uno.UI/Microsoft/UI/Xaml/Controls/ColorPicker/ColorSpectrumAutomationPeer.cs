@@ -114,7 +114,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			string oldValueString = GetValueString(oldColor, oldHsvColor);
 			string newValueString = GetValueString(newColor, newHsvColor);
 
-			base.RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValueString, newValueString);
+			//UNO TODO: Requires ValuePatternIdentifiers.ValueProperty to be implemented
+			//base.RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValueString, newValueString);
 		}
 
 		private string GetValueString(Color color, Vector4 hsvColor)
