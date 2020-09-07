@@ -47,8 +47,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				newHsv.S *= 100;
 				newHsv.V *= 100;
 
-				// Uno Doc: *valueToIncrement removed for C#
-				double valueToIncrement = 0.0;
+				// Uno Doc: *valueToIncrement replaced with ref local variable for C#, must be initialized
+				ref double valueToIncrement = ref newHsv.H;
 				double incrementAmount = 0.0;
 
 				// If we're adding a small increment, then we'll just add or subtract 1.
@@ -58,17 +58,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				switch (channel)
 				{
 					case ColorPickerHsvChannel.Hue:
-						valueToIncrement = newHsv.H;
+						valueToIncrement = ref newHsv.H;
 						incrementAmount = amount == IncrementAmount.Small ? 1 : 30;
 						break;
 
 					case ColorPickerHsvChannel.Saturation:
-						valueToIncrement = newHsv.S;
+						valueToIncrement = ref newHsv.S;
 						incrementAmount = amount == IncrementAmount.Small ? 1 : 10;
 						break;
 
 					case ColorPickerHsvChannel.Value:
-						valueToIncrement = newHsv.V;
+						valueToIncrement = ref newHsv.V;
 						incrementAmount = amount == IncrementAmount.Small ? 1 : 10;
 						break;
 
@@ -91,26 +91,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				if (valueToIncrement > maxBound)
 				{
 					valueToIncrement = (shouldWrap && previousValue == maxBound) ? minBound : maxBound;
-				}
-
-				// Uno Doc: WinUI/C++ modifies the newHsv channel directly using a pointer to the appropriate channel.
-				// This isn't desirable in C# so once the modification is done it has to be copied back to newHsv.
-				switch (channel)
-				{
-					case ColorPickerHsvChannel.Hue:
-						newHsv.H = valueToIncrement;
-						break;
-
-					case ColorPickerHsvChannel.Saturation:
-						newHsv.S = valueToIncrement;
-						break;
-
-					case ColorPickerHsvChannel.Value:
-						newHsv.V = valueToIncrement;
-						break;
-
-					default:
-						throw new InvalidOperationException("Invalid ColorPickerHsvChannel.");
 				}
 
 				// We multiplied saturation and value by 100 previously, so now we want to put them back in the 0-1 range.
@@ -161,32 +141,32 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// we find its bounds on the other side, and then select the color that is exactly
 			// in the middle of that color's bounds.
 			Hsv newHsv = originalHsv;
-			/*
+			
 			string originalColorName = ColorHelper.ToDisplayName(ColorConversion.ColorFromRgba(ColorConversion.HsvToRgb(originalHsv)));
 			string newColorName = originalColorName;
 
-			// Uno Doc: *newValue removed for C#
+			// Uno Doc: *newValue replaced with ref local variable for C#, must be initialized
 			double originalValue = 0.0;
-			double newValue = 0.0;
+			ref double newValue = ref newHsv.H;
 			double incrementAmount = 0.0;
 
 			switch (channel)
 			{
 				case ColorPickerHsvChannel.Hue:
-					originalValue = originalHsv.h;
-					newValue = &(newHsv.h);
+					originalValue = originalHsv.H;
+					newValue = ref newHsv.H;
 					incrementAmount = 1;
 					break;
 
 				case ColorPickerHsvChannel.Saturation:
-					originalValue = originalHsv.s;
-					newValue = &(newHsv.s);
+					originalValue = originalHsv.S;
+					newValue = ref newHsv.S;
 					incrementAmount = 0.01;
 					break;
 
 				case ColorPickerHsvChannel.Value:
-					originalValue = originalHsv.v;
-					newValue = &(newHsv.v);
+					originalValue = originalHsv.V;
+					newValue = ref newHsv.V;
 					incrementAmount = 0.01;
 					break;
 
@@ -198,39 +178,39 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			while (newColorName == originalColorName)
 			{
-				const double previousValue = *newValue;
-				*newValue += (direction == IncrementDirection.Lower ? -1 : 1) * incrementAmount;
+				double previousValue = newValue;
+				newValue += (direction == IncrementDirection.Lower ? -1 : 1) * incrementAmount;
 
 				bool justWrapped = false;
 
 				// If we've hit a boundary, then either we should wrap or we shouldn't.
 				// If we should, then we'll perform that wrapping if we were previously up against
 				// the boundary that we've now hit.  Otherwise, we'll stop at that boundary.
-				if (*newValue > maxBound)
+				if (newValue > maxBound)
 				{
 					if (shouldWrap)
 					{
-						*newValue = minBound;
+						newValue = minBound;
 						justWrapped = true;
 					}
 					else
 					{
-						*newValue = maxBound;
+						newValue = maxBound;
 						shouldFindMidPoint = false;
 						newColorName = ColorHelper.ToDisplayName(ColorConversion.ColorFromRgba(ColorConversion.HsvToRgb(newHsv)));
 						break;
 					}
 				}
-				else if (*newValue < minBound)
+				else if (newValue < minBound)
 				{
 					if (shouldWrap)
 					{
-						*newValue = maxBound;
+						newValue = maxBound;
 						justWrapped = true;
 					}
 					else
 					{
-						*newValue = minBound;
+						newValue = minBound;
 						shouldFindMidPoint = false;
 						newColorName = ColorHelper.ToDisplayName(ColorConversion.ColorFromRgba(ColorConversion.HsvToRgb(newHsv)));
 						break;
@@ -239,7 +219,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				if (!justWrapped &&
 					previousValue != originalValue &&
-					Math.Sign(*newValue - originalValue) != Math.Sign(previousValue - originalValue))
+					Math.Sign(newValue - originalValue) != Math.Sign(previousValue - originalValue))
 				{
 					// If we've wrapped all the way back to the start and have failed to find a new color name,
 					// then we'll just quit - there isn't a new color name that we're going to find.
@@ -257,95 +237,96 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				double startEndOffset = 0;
 				string currentColorName = newColorName;
 
-				double *startValue = nullptr;
-				double *currentValue = nullptr;
+				// Uno Doc: *startValue/*currentValue replaced with ref local variables for C#, must be initialized
+				ref double startValue = ref startHsv.H;
+				ref double currentValue = ref currentHsv.H;
 				double wrapIncrement = 0;
 
 				switch (channel)
 				{
 					case ColorPickerHsvChannel.Hue:
-						startValue = &(startHsv.h);
-						currentValue = &(currentHsv.h);
+						startValue = ref startHsv.H;
+						currentValue = ref currentHsv.H;
 						wrapIncrement = 360.0;
 						break;
 
 					case ColorPickerHsvChannel.Saturation:
-						startValue = &(startHsv.s);
-						currentValue = &(currentHsv.s);
+						startValue = ref startHsv.S;
+						currentValue = ref currentHsv.S;
 						wrapIncrement = 1.0;
 						break;
 
 					case ColorPickerHsvChannel.Value:
-						startValue = &(startHsv.v);
-						currentValue = &(currentHsv.v);
+						startValue = ref startHsv.V;
+						currentValue = ref currentHsv.V;
 						wrapIncrement = 1.0;
 						break;
 
 					default:
-						throw new ExcInvalidOperationExceptioneption("Invalid ColorPickerHsvChannel."); // Uno Doc: 'winrt::hresult_error(E_FAIL);'
+						throw new InvalidOperationException("Invalid ColorPickerHsvChannel."); // Uno Doc: 'winrt::hresult_error(E_FAIL);'
 				}
 
 				while (newColorName == currentColorName)
 				{
-					*currentValue += (direction == IncrementDirection.Lower ? -1 : 1) * incrementAmount;
+					currentValue += (direction == IncrementDirection.Lower ? -1 : 1) * incrementAmount;
 
 					// If we've hit a boundary, then either we should wrap or we shouldn't.
 					// If we should, then we'll perform that wrapping if we were previously up against
 					// the boundary that we've now hit.  Otherwise, we'll stop at that boundary.
-					if (*currentValue > maxBound)
+					if (currentValue > maxBound)
 					{
 						if (shouldWrap)
 						{
-							*currentValue = minBound;
+							currentValue = minBound;
 							startEndOffset = maxBound - minBound;
 						}
 						else
 						{
-							*currentValue = maxBound;
+							currentValue = maxBound;
 							break;
 						}
 					}
-					else if (*currentValue < minBound)
+					else if (currentValue < minBound)
 					{
 						if (shouldWrap)
 						{
-							*currentValue = maxBound;
+							currentValue = maxBound;
 							startEndOffset = minBound - maxBound;
 						}
 						else
 						{
-							*currentValue = minBound;
+							currentValue = minBound;
 							break;
 						}
 					}
 
-					currentColorName = winrt::ColorHelper::ToDisplayName(ColorConversion.ColorFromRgba(HsvToRgb(currentHsv)));
+					currentColorName = ColorHelper.ToDisplayName(ColorConversion.ColorFromRgba(ColorConversion.HsvToRgb(currentHsv)));
 				}
 
-				*newValue = (*startValue + *currentValue + startEndOffset) / 2;
+				newValue = (startValue + currentValue + startEndOffset) / 2;
 
 				// Dividing by 2 may have gotten us halfway through a single step, so we'll
 				// remove that half-step if it exists.
-				double leftoverValue = abs(*newValue);
+				double leftoverValue = Math.Abs(newValue);
 
 				while (leftoverValue > incrementAmount)
 				{
 					leftoverValue -= incrementAmount;
 				}
 
-				*newValue -= leftoverValue;
+				newValue -= leftoverValue;
 
-				while (*newValue < minBound)
+				while (newValue < minBound)
 				{
-					*newValue += wrapIncrement;
+					newValue += wrapIncrement;
 				}
 
-				while (*newValue > maxBound)
+				while (newValue > maxBound)
 				{
-					*newValue -= wrapIncrement;
+					newValue -= wrapIncrement;
 				}
 			}
-			*/
+
 			return newHsv;
 		}
 
@@ -486,12 +467,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			WriteableBitmap bitmap = new WriteableBitmap(pixelWidth, pixelHeight);
 
 			// Uno Doc:
-			// Since Uno uses C# the method of converting to a bitmap was changed to what is below.
+			// Since Uno uses C#, the method of converting to a bitmap was changed to what is below.
 			// WARNING: The .ToArray() copy is a performance hit. It would be better to just pass arrays to this method.
-            using (Stream stream = bitmap.PixelBuffer.AsStream())
-            {
-                _ = stream.WriteAsync(bgraPixelData.ToArray(), 0, bgraPixelData.Count);
-            }
+			using (Stream stream = bitmap.PixelBuffer.AsStream())
+			{
+				_ = stream.WriteAsync(bgraPixelData.ToArray(), 0, bgraPixelData.Count);
+			}
 
 			// Uno Doc: The following code is not supported in C# and is removed.
 			//byte *pixelBuffer = nullptr;

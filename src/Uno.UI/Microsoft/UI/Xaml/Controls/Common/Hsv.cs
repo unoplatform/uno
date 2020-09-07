@@ -5,9 +5,11 @@ namespace Microsoft.UI.Xaml.Controls
 	// Uno Doc: Originally defined in ColorConversion.h in WinUI but moved here to a separate file.
 	internal struct Hsv
 	{
-		public double H { get; set; }
-		public double S { get; set; }
-		public double V { get; set; }
+		// Uno Doc: Intentionally use fields to match C++ and allow access to the variable by ref.
+		// Ref local variables are needed in ColorHelpers.cs to match C++ pointer usage.
+		public double H;
+		public double S;
+		public double V;
 
 		public Hsv(double h, double s, double v)
 		{
