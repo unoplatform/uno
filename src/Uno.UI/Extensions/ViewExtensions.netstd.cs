@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+#if !__NETSTD_REFERENCE__
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -122,3 +123,4 @@ namespace Uno.UI
 		}
 	}
 }
+#endif
