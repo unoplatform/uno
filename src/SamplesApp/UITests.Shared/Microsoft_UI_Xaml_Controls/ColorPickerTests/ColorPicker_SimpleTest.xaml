@@ -14,10 +14,11 @@
 
 	<xamarin:Grid>
 		<ScrollViewer>
-			<StackPanel Orientation="Vertical">
-				<primitives:ColorSpectrum />
-				<controls:ColorPicker />
-			</StackPanel>
+			<controls:ColorPicker
+				IsAlphaEnabled="True"
+				IsAlphaSliderVisible="True"
+				IsAlphaTextInputVisible="True"
+				IsMoreButtonVisible="True" />
 		</ScrollViewer>
 	</xamarin:Grid>
 </UserControl>
