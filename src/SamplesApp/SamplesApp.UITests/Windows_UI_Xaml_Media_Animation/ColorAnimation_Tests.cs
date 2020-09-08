@@ -38,7 +38,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 			var indepRect = _app.GetRect("IndependentBorder");
 
-			var bmp = _app.Screenshot("Completed");
+			var bmp = TakeScreenshot("Completed");
 
 			ImageAssert.HasColorAt(bmp, targetRect.CenterX, targetRect.CenterY, Color.Red);
 
@@ -60,7 +60,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 			var targetRect = _app.GetRect("TargetRectangle");
 
-			var bmp = _app.Screenshot("Completed");
+			var bmp = TakeScreenshot("Completed");
 
 			ImageAssert.HasColorAt(bmp, targetRect.CenterX, targetRect.CenterY, Color.Brown);
 		}

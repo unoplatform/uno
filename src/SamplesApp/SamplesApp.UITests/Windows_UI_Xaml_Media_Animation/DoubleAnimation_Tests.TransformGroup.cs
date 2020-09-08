@@ -501,7 +501,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			);
 		}
 
-		private (Rectangle host, float scale, FileInfo half, FileInfo final) BeginTransformGroupTest(string elementName)
+		private (Rectangle host, float scale, ScreenshotInfo half, ScreenshotInfo final) BeginTransformGroupTest(string elementName)
 		{
 			Run(_transformGroupTestControl, skipInitialScreenshot: true);
 			TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
