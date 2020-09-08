@@ -48,14 +48,26 @@ namespace Windows.Devices.Geolocation
 
 		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
 		{
-			if(!await PermissionsHelper.CheckFineLocationPermission(CancellationToken.None))
+			var status = GeolocationAccessStatus.Allowed;
+
+			if (!await PermissionsHelper.CheckFineLocationPermission(CancellationToken.None))
 			{
-				return await PermissionsHelper.TryGetFineLocationPermission(CancellationToken.None)
+				status = await PermissionsHelper.TryGetFineLocationPermission(CancellationToken.None)
 					? GeolocationAccessStatus.Allowed
 					: GeolocationAccessStatus.Denied;
+
+				BroadcastStatus(PositionStatus.Initializing);
+				if (status == GeolocationAccessStatus.Allowed)
+				{
+					BroadcastStatus(PositionStatus.Ready);
+				}
+				else
+				{
+					BroadcastStatus(PositionStatus.Disabled);
+				}
 			}
 
-			return GeolocationAccessStatus.Allowed;
+			return status;
 		}
 
 		private LocationManager InitializeLocationProvider(double desiredAccuracy)
