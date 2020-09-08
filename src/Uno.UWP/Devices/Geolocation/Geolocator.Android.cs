@@ -1,6 +1,7 @@
 #if __ANDROID__
 #pragma warning disable 67
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -17,6 +18,9 @@ namespace Windows.Devices.Geolocation
 {
 	public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 	{
+		//using ConcurrentDictionary as concurrent HashSet (https://stackoverflow.com/questions/18922985/concurrent-hashsett-in-net-framework), byte is throwaway
+		private static ConcurrentDictionary<Geolocator, byte> _positionChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
+
 		private LocationManager _locationManager;
 		private string _locationProvider;
 
@@ -60,6 +64,13 @@ namespace Windows.Devices.Geolocation
 				if (status == GeolocationAccessStatus.Allowed)
 				{
 					BroadcastStatus(PositionStatus.Ready);
+
+					// If geolocators subscribed to PositionChanged before the location permission was granted,
+					// make sure to initialize these geolocators now so they can start broadcasting.
+					foreach(var subscriber in _positionChangedSubscriptions)
+					{
+						subscriber.Key.TryInitialize();
+					}
 				}
 				else
 				{
@@ -95,9 +106,12 @@ namespace Windows.Devices.Geolocation
 
 		partial void StartPositionChanged()
 		{
-			TryInitialize();
+			_positionChangedSubscriptions.TryAdd(this, 0);
+		}
 
-			BroadcastStatus(PositionStatus.Initializing);
+		partial void StopPositionChanged()
+		{
+			_positionChangedSubscriptions.TryRemove(this, out var _);
 		}
 
 		public void OnLocationChanged(Location location)
