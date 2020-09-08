@@ -8,9 +8,9 @@ using Uno.UI;
 namespace UITests.Windows_UI_Xaml.Clipping
 {
 	[Sample("Clipping", "GH Bugs")]
-	public sealed partial class ButtonClipping652 : Page
+	public sealed partial class Clipping652 : Page
 	{
-		public ButtonClipping652()
+		public Clipping652()
 		{
 			this.InitializeComponent();
 
