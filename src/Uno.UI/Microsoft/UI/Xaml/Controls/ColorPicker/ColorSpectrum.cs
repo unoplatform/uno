@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Windows.Devices.Input;
@@ -916,7 +917,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			UpdateEllipse();
 		}
 
-		private void CreateBitmapsAndColorMap()
+		private async void CreateBitmapsAndColorMap()
 		{
 			var layoutRoot = m_layoutRoot;
 			var sizingGrid = m_sizingGrid;
@@ -1022,8 +1023,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			newHsvValues.Capacity = pixelCount;
 
 			int minDimensionInt = (int)Math.Round(minDimension);
-			WorkItemHandler workItemHandler = 
-			(IAsyncAction workItem) =>
+			//WorkItemHandler workItemHandler = 
+			//(IAsyncAction workItem) =>
+			await Task.Run(() =>
 			{
 				// As the user perceives it, every time the third dimension not represented in the ColorSpectrum changes,
 				// the ColorSpectrum will visually change to accommodate that value.  For example, if the ColorSpectrum handles hue and luminosity,
@@ -1045,10 +1047,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					{
 						for (int y = minDimensionInt - 1; y >= 0; --y)
 						{
-							if (workItem.Status == AsyncStatus.Canceled)
-							{
-								break;
-							}
+							//if (workItem.Status == AsyncStatus.Canceled)
+							//{
+							//	break;
+							//}
 
 							FillPixelForBox(
 								x, y, hsv, minDimensionInt, components, minHue, maxHue, minSaturation, maxSaturation, minValue, maxValue,
@@ -1063,10 +1065,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					{
 						for (int x = 0; x < minDimensionInt; ++x)
 						{
-							if (workItem.Status == AsyncStatus.Canceled)
-							{
-								break;
-							}
+							//if (workItem.Status == AsyncStatus.Canceled)
+							//{
+							//	break;
+							//}
 
 							FillPixelForRing(
 								x, y, minDimensionInt / 2.0, hsv, components, minHue, maxHue, minSaturation, maxSaturation, minValue, maxValue,
@@ -1075,22 +1077,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						}
 					}
 				}
-			};
+			});
 
-			if (m_createImageBitmapAction != null)
-			{
-				m_createImageBitmapAction.Cancel();
-			}
+			//if (m_createImageBitmapAction != null)
+			//{
+			//	m_createImageBitmapAction.Cancel();
+			//}
 
-			m_createImageBitmapAction = ThreadPool.RunAsync(workItemHandler);
+			//m_createImageBitmapAction = ThreadPool.RunAsync(workItemHandler);
 			var strongThis = this;
-			m_createImageBitmapAction.Completed = new AsyncActionCompletedHandler(
-			(IAsyncAction asyncInfo, AsyncStatus asyncStatus) =>
-			{
-				if (asyncStatus != AsyncStatus.Completed)
-				{
-					return;
-				}
+			//m_createImageBitmapAction.Completed = new AsyncActionCompletedHandler(
+			//(IAsyncAction asyncInfo, AsyncStatus asyncStatus) =>
+			//{
+			//	if (asyncStatus != AsyncStatus.Completed)
+			//	{
+			//		return;
+			//	}
 
 				strongThis.m_createImageBitmapAction = null;
 
@@ -1175,7 +1177,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					strongThis.UpdateBitmapSources();
 					strongThis.UpdateEllipse();
 				});
-			});
+			//});
 		}
 
 		private void FillPixelForBox(

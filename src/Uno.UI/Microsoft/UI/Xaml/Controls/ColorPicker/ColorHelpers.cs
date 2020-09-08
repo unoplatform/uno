@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.System.Threading;
@@ -377,7 +378,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return originalAlpha / 100;
 		}
 
-		public static void CreateCheckeredBackgroundAsync(
+		public static async void CreateCheckeredBackgroundAsync(
 			int width,
 			int height,
 			Color checkerColor,
@@ -393,17 +394,18 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			bgraCheckeredPixelData.Capacity = width * height * 4;
 
-			WorkItemHandler workItemHandler =
-			(IAsyncAction workItem) =>
+			//WorkItemHandler workItemHandler =
+			//(IAsyncAction workItem) =>
+			await Task.Run(() =>
 			{
 				for (int y = 0; y < height; y++)
 				{
 					for (int x = 0; x < width; x++)
 					{
-						if (workItem.Status == AsyncStatus.Canceled)
-						{
-							break;
-						}
+						//if (workItem.Status == AsyncStatus.Canceled)
+						//{
+						//	break;
+						//}
 
 						// We want the checkered pattern to alternate both vertically and horizontally.
 						// In order to achieve that, we'll toggle visibility of the current pixel on or off
@@ -428,23 +430,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						}
 					}
 				}
-			};
+			});
 
-			if (asyncActionToAssign != null)
-			{
-				asyncActionToAssign.Cancel();
-			}
+			//if (asyncActionToAssign != null)
+			//{
+			//	asyncActionToAssign.Cancel();
+			//}
 
-			asyncActionToAssign = ThreadPool.RunAsync(workItemHandler);
-			asyncActionToAssign.Completed = new AsyncActionCompletedHandler(
-			async (IAsyncAction asyncInfo, AsyncStatus asyncStatus) =>
-			{
-				if (asyncStatus != AsyncStatus.Completed)
-				{
-					return;
-				}
+			//asyncActionToAssign = ThreadPool.RunAsync(workItemHandler);
+			//asyncActionToAssign.Completed = new AsyncActionCompletedHandler(
+			//async (IAsyncAction asyncInfo, AsyncStatus asyncStatus) =>
+			//{
+			//	if (asyncStatus != AsyncStatus.Completed)
+			//	{
+			//		return;
+			//	}
 
-				asyncActionToAssign = null;
+			//	asyncActionToAssign = null;
 
 				// Uno Doc: Assumed normal priority is acceptable
 				await dispatcherHelper.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -452,7 +454,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					WriteableBitmap checkeredBackgroundBitmap = CreateBitmapFromPixelData(width, height, bgraCheckeredPixelData);
 					completedFunction?.Invoke(checkeredBackgroundBitmap);
 				});
-			});
+			//});
 		}
 
 		public static WriteableBitmap CreateBitmapFromPixelData(
