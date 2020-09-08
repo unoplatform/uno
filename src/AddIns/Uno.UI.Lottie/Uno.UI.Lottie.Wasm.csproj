@@ -20,7 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.9.2" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.0.2" />
 	</ItemGroup>
 	
 	<ItemGroup>
