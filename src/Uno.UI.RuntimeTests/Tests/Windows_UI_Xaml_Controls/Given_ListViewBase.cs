@@ -203,11 +203,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsNotNull(si2);
 			Assert.AreNotSame(si2, source[1]);
-#if NETFX_CORE
 			Assert.AreEqual("item 2", si2.Content); 
-#else
+#if !NETFX_CORE
 			Assert.AreEqual("item 2", si2.DataContext);
-			Assert.AreEqual("item 2", (si2.Content as TextBlock).Text);
 			Assert.IsTrue(si2.IsGeneratedContainer);
 #endif
 		}

@@ -602,7 +602,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void TrySetDataContextFromContent(object value)
+		private void TrySetDataContextFromContent(object value)
 		{
 			if (value != null)
 			{

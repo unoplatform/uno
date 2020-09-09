@@ -226,11 +226,16 @@ namespace Windows.UI.Xaml
 			return instances;
 		}
 
-		private void OnParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs args)
+		/// <summary>
+		/// Manually return an unused template root to the pool.
+		/// </summary>
+		internal void ReleaseTemplateRoot(View root, FrameworkTemplate template) => OnParentChanged(root, template, args: null);
+
+		private void OnParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs? args)
 		{
 			var list = GetTemplatePool(key as FrameworkTemplate ?? throw new InvalidOperationException($"Received {key} but expecting {typeof(FrameworkElement)}"));
 
-			if (args.NewParent == null)
+			if (args?.NewParent == null)
 			{
 				if (_trace.IsEnabled)
 				{

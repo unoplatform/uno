@@ -15,7 +15,6 @@ using Uno.Extensions.Specialized;
 using Microsoft.Extensions.Logging;
 using Uno.UI.Extensions;
 using System.ComponentModel;
-using Windows.Media.Core;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -1028,19 +1027,25 @@ namespace Windows.UI.Xaml.Controls
 					containerAsContentPresenter.Style = null;
 				}
 
+				containerAsContentPresenter.ContentTemplate = ItemTemplate;
+				containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
+
 				if (!isOwnContainer)
 				{
-					containerAsContentPresenter.TrySetDataContextFromContent(item);
+					containerAsContentPresenter.Content = item;
 				}
-
-				// TODO: not sure about ContentPresenter, don't think TrySetDataContextFromContent() should be non-private
-				// Is there a reason we don't do the same thing as for ContentControl, set DataContext and bind Content?
 			}
 			else if (element is ContentControl containerAsContentControl)
 			{
 				if (styleFromItemsControl != null)
 				{
 					containerAsContentControl.Style = styleFromItemsControl;
+				}
+
+				if (!containerAsContentControl.IsContainerFromItemTemplate)
+				{
+					containerAsContentControl.ContentTemplate = ItemTemplate;
+					containerAsContentControl.ContentTemplateSelector = ItemTemplateSelector;
 				}
 
 				if (!isOwnContainer)
@@ -1051,7 +1056,7 @@ namespace Windows.UI.Xaml.Controls
 					// the result of the fallback value of the binding set below.
 					containerAsContentControl.DataContext = item;
 
-					if ((containerAsContentControl as IContentHost).IsGeneratedContainerNeedingItemBind && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
+					if (!containerAsContentControl.IsContainerFromItemTemplate && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
 					{
 						containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
 					}
@@ -1133,34 +1138,15 @@ namespace Windows.UI.Xaml.Controls
 		/// </remarks>
 		internal DependencyObject GetContainerForTemplate(DataTemplate template)
 		{
-			var elementTemplateRoot = template?.LoadContentCached() as DependencyObject;
-
-			var container = GetContainerFromTemplateRoot(elementTemplateRoot);
-
-			if (container == null)
-			{
-				container = GetContainerForItemOverride();
-				if (container is IContentHost contentHost)
-				{
-					if (elementTemplateRoot != null)
-					{
-						contentHost.Content = elementTemplateRoot;
-					}
-					else
-					{
-						// The template root is null (generally because the template is null), we will bind the Content so that the
-						// implicit template mechanism is applied
-						contentHost.IsGeneratedContainerNeedingItemBind = true;
-					}
-				}
-			}
+			var container = GetRootOfItemTemplateAsContainer(template)
+				?? GetContainerForItemOverride();
 
 			container.SetValue(ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(this));
 
 			return container;
 		}
 
-		private protected virtual DependencyObject GetContainerFromTemplateRoot(DependencyObject templateRoot) => null;
+		private protected virtual DependencyObject GetRootOfItemTemplateAsContainer(DataTemplate template) => null;
 
 		public object ItemFromContainer(DependencyObject container)
 		{

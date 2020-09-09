@@ -28,6 +28,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal virtual bool IsSingleSelection => true;
 
+		/// <summary>
+		/// Templates for which it's known that the template root doesn't qualify as a container.
+		/// </summary>
+		private readonly HashSet<DataTemplate> _itemTemplatesThatArentContainers = new HashSet<DataTemplate>();
+
 		public Selector()
 		{
 
@@ -463,17 +468,34 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal virtual void OnItemClicked(int clickedIndex) { }
 
-		private protected override DependencyObject GetContainerFromTemplateRoot(DependencyObject templateRoot)
+		// Check if the root of the resolved item template qualifies as a container, and if so return it as the container.
+		private protected override DependencyObject GetRootOfItemTemplateAsContainer(DataTemplate template)
 		{
+			if (_itemTemplatesThatArentContainers.Contains(template))
+			{
+				// We have seen this template before and it didn't qualify as a container, no need to materialize it
+				return null;
+			}
+
+			var templateRoot = template?.LoadContentCached();
+
 			if (IsItemItsOwnContainerOverride(templateRoot))
 			{
 				if (templateRoot is ContentControl contentControl)
 				{
 					// The container has been created from a template and can be recycled, so we mark it as generated
 					contentControl.IsGeneratedContainer = true;
+
+					contentControl.IsContainerFromItemTemplate = true;
 				}
 
-				return templateRoot;
+				return templateRoot as DependencyObject;
+			}
+
+			if (templateRoot != null)
+			{
+				_itemTemplatesThatArentContainers.Add(template);
+				template.ReleaseTemplateRoot(templateRoot);
 			}
 
 			return null;
