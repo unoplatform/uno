@@ -348,7 +348,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_isThemeShadowAvailable =
 					(IsSystemDll() ||
 					IsVanadiumOrHigher()) &&
-					ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow"); 
+					ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow");
 			}
 			return s_isThemeShadowAvailable.Value;
 		}
@@ -844,32 +844,34 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static FrameworkElement FindInVisualTree(FrameworkElement parent, Func<FrameworkElement, bool> isMatch)
 		{
-			int numChildren = VisualTreeHelper.GetChildrenCount(parent);
-
-			FrameworkElement foundElement = parent;
-			if (isMatch(foundElement))
+			//TODO: Uno Specific - generalized to work with DependencyObject - needed for NativeScrollContentPresenter
+			FrameworkElement FindInVisualTreeInner(DependencyObject parent, Func<FrameworkElement, bool> isMatch)
 			{
-				return foundElement;
-			}
+				int numChildren = VisualTreeHelper.GetChildrenCount(parent);
 
-			for (int i = 0; i < numChildren; i++)
-			{
-				var dp = VisualTreeHelper.GetChild(parent, i);
-				if (dp != null)
+				FrameworkElement foundElement = parent as FrameworkElement;
+				if (foundElement != null && isMatch(foundElement))
 				{
-					var fe = dp as FrameworkElement;
-					if (fe != null)
+					return foundElement;
+				}
+
+				for (int i = 0; i < numChildren; i++)
+				{
+					var dp = VisualTreeHelper.GetChild(parent, i);
+					if (dp != null)
 					{
-						foundElement = FindInVisualTree(fe, isMatch);
+						foundElement = FindInVisualTreeInner(dp, isMatch);
 						if (foundElement != null)
 						{
 							return foundElement;
 						}
 					}
 				}
+
+				return null;
 			}
 
-			return null;
+			return FindInVisualTreeInner(parent, isMatch);
 		}
 
 		// Sometimes we want to get a string representation from an arbitrary object. E.g. for constructing a UIA Name

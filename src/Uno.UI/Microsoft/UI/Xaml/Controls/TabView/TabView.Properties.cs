@@ -1,4 +1,4 @@
-﻿// MUX Reference: TabViewItem.properties.cpp, commit 7a46d353095d65ad1c560059d92e4b3818309b06
+﻿// MUX Reference: TabViewItem.properties.cpp, commit de78834
 
 using System.Collections.Generic;
 using System.Windows.Input;

@@ -1,3 +1,5 @@
+// MUX Reference: TabView.cpp, commit 542e6f9
+
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
@@ -8,6 +10,7 @@ using System.Linq;
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Extensions;
+using Uno.Extensions.Specialized;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -35,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string c_tabViewItemMinWidthName = "TabViewItemMinWidth";
 		private const string c_tabViewItemMaxWidthName = "TabViewItemMaxWidth";
 
-		// TODO: what is the right number and should this be customizable?
+		// TODO (WinUI): what is the right number and should this be customizable?
 		private const double c_scrollAmount = 50.0;
 
 		internal const double c_tabShadowDepth = 16.0;
@@ -76,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_dispatcherHelper = new DispatcherHelper(this);
 
-			var items = new ObservableVector<object>(); //TODO:MZ:Is this appropriate alternative?
+			var items = new ObservableVector<object>();
 			SetValue(TabItemsProperty, items);
 
 			SetDefaultStyleKey(this);
@@ -149,8 +152,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var listView = GetTemplateChild("TabListView") as ListView;
 				if (listView != null)
 				{
-					//TODO:MZ:Unsubscribe when appropriate
-					listView.Loaded += OnListViewLoaded;
+					listView.Loaded += OnListViewLoaded;					
 					listView.SelectionChanged += OnListViewSelectionChanged;
 
 					listView.DragItemsStarting += OnListViewDragItemsStarting;
@@ -158,10 +160,12 @@ namespace Microsoft.UI.Xaml.Controls
 					listView.DragOver += OnListViewDragOver;
 					listView.Drop += OnListViewDrop;
 
-					listView.GettingFocus += OnListViewGettingFocus;
+					listView.GettingFocus += OnListViewGettingFocus;					
 
 					m_listViewCanReorderItemsPropertyChangedRevoker = listView.RegisterPropertyChangedCallback(ListView.CanReorderItemsProperty, OnListViewDraggingPropertyChanged);
 					m_listViewAllowDropPropertyChangedRevoker = listView.RegisterPropertyChangedCallback(UIElement.AllowDropProperty, OnListViewDraggingPropertyChanged);
+
+
 				}
 				return listView;
 			}
@@ -187,7 +191,7 @@ namespace Microsoft.UI.Xaml.Controls
 						ToolTipService.SetToolTip(addButton, tooltip);
 					}
 
-					addButton.Click += OnAddButtonClick; //TODO:MZ:Unsusbscribe when appropriate
+					addButton.Click += OnAddButtonClick;
 				}
 				return addButton;
 			}
@@ -254,7 +258,7 @@ namespace Microsoft.UI.Xaml.Controls
 								FindNextElementOptions options = new FindNextElementOptions();
 								options.ExclusionRect = listViewBounds;
 								var next = FocusManager.FindNextElement(direction, options);
-								var args2 = args as GettingFocusEventArgs; //TODO:MZ: IGettingFocusEventArgs2?
+								var args2 = args;
 								if (args != null)
 								{
 									args2.TrySetNewFocusedElement(next);
@@ -494,11 +498,11 @@ namespace Microsoft.UI.Xaml.Controls
 					if (listView.ItemsSource == null)
 					{
 						// copy the list, because clearing lvItems may also clear TabItems
-						IList<object> itemList = new List<object>(); //TODO:MZ: Is IList<object> appropriate?
+						IList<object> itemList = new List<object>();
 
 						foreach (var item in TabItems)
 						{
-							itemList.Append(item);
+							itemList.Add(item);
 						}
 
 						lvItems.Clear();
@@ -508,7 +512,7 @@ namespace Microsoft.UI.Xaml.Controls
 							// App put items in our Items collection; copy them over to ListView.Items
 							if (item != null)
 							{
-								lvItems.Append(item);
+								lvItems.Add(item);
 							}
 						}
 					}
@@ -532,9 +536,9 @@ namespace Microsoft.UI.Xaml.Controls
 				ItemsPresenter GetItemsPresenter(ListView listView)
 				{
 					var itemsPresenter = SharedHelpers.FindInVisualTreeByName(listView, "TabsItemsPresenter") as ItemsPresenter;
-					if (itemsPresenter == null)
+					if (itemsPresenter != null)
 					{
-						itemsPresenter.SizeChanged += OnItemsPresenterSizeChanged; //TODO:MZ:Unsubscribe when appropriate
+						itemsPresenter.SizeChanged += OnItemsPresenterSizeChanged;
 					}
 					return itemsPresenter;
 				}
@@ -551,7 +555,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						scrollViewer.Loaded += OnScrollViewerLoaded; //TODO:MZ:Unsubscribe when appropriate
+						scrollViewer.Loaded += OnScrollViewerLoaded;
 					}
 				}
 			}
@@ -591,7 +595,7 @@ namespace Microsoft.UI.Xaml.Controls
 							ToolTipService.SetToolTip(decreaseButton, tooltip);
 						}
 
-						decreaseButton.Click += OnScrollDecreaseClick; //TODO:MZ:Unsubscribe somewhere
+						decreaseButton.Click += OnScrollDecreaseClick;
 					}
 					return decreaseButton;
 				}
@@ -686,9 +690,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnItemsChanged(object item)
+		internal void OnItemsChanged(object item)
 		{
-			var args = item as IVectorChangedEventArgs; //TODO:MZ:Is this appropriate cast?
+			var args = item as IVectorChangedEventArgs;
 			if (args != null)
 			{
 				TabItemsChanged?.Invoke(this, args);
@@ -822,7 +826,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnListViewDragItemsCompleted(object sender, DragItemsCompletedEventArgs args)
 		{
-			var item = args.Items[0]; //TODO:MZ: Needs GetAt?
+			var item = args.Items[0];
 			var tab = FindTabViewItemFromDragItem(item);
 			var myArgs = new TabViewTabDragCompletedEventArgs(args.DropResult, item, tab);
 
@@ -836,7 +840,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateTabContent()
+		internal void UpdateTabContent()
 		{
 			var tabContentPresenter = m_tabContentPresenter;
 			if (tabContentPresenter != null)
@@ -869,7 +873,7 @@ namespace Microsoft.UI.Xaml.Controls
 							tabContentPresenter.LosingFocus -= OnTabContentPresenterLosingFocus;
 						}
 
-						tabContentPresenter.LosingFocus += OnTabContentPresenterLosingFocus; //TODO:MZ:Verify lifetime of event is correct
+						tabContentPresenter.LosingFocus += OnTabContentPresenterLosingFocus;
 
 						tabContentPresenter.Content = tvi.Content;
 						tabContentPresenter.ContentTemplate = tvi.ContentTemplate;
@@ -1179,7 +1183,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var itemsSource = TabItemsSource;
 			if (itemsSource != null)
 			{
-				var iterable = itemsSource as IEnumerable<DependencyObject>; //TODO:MZ:Verify cast is correct
+				var iterable = itemsSource as IEnumerable;
 				if (iterable != null)
 				{
 					//int i = 1;

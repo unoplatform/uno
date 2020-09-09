@@ -26,7 +26,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 using Symbol = Windows.UI.Xaml.Controls.Symbol;
 
-#if HAS_UNO || __WASM__
+#if !WINDOWS_UWP
 using SymbolIconSource = Windows.UI.Xaml.Controls.SymbolIconSource;
 #else
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;

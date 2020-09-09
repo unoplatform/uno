@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿// MUX Reference: TabViewItemTemplateSettings.properties.cpp, commit 8aaf7f8
+
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls

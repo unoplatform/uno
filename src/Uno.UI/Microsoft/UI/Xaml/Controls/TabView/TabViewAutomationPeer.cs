@@ -1,4 +1,6 @@
-﻿using System;
+﻿// MUX Reference: TabViewAutomationPeer.cpp, commit 542e6f9
+
+using System;
 using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
@@ -33,7 +35,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		bool ISelectionProvider.IsSelectionRequired => true;
 
-		//TODO:MZ: This method is weird.
 		IRawElementProviderSimple[] ISelectionProvider.GetSelection()
 		{
 			var tabView = Owner as TabView;

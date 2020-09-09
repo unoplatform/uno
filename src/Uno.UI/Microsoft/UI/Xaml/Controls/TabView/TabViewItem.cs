@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+﻿// MUX Reference: TabViewItem.cpp, commit 542e6f9
+
+using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
 using Windows.Devices.Input;
@@ -71,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 						ToolTipService.SetToolTip(closeButton, tooltip);
 					}
 
-					closeButton.Click += OnCloseButtonClick; //TODO:MZ:Unsubscribe when appropriate
+					closeButton.Click += OnCloseButtonClick;
 				}
 				return closeButton;
 			}
@@ -306,7 +308,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var pointerPoint = args.GetCurrentPoint(this);
 				if (pointerPoint.Properties.IsLeftButtonPressed)
 				{
-					var isCtrlDown = (Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+					var isCtrlDown = (Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 					if (isCtrlDown)
 					{
 						// Return here so the base class will not pick it up, but let it remain unhandled so someone else could handle it.
