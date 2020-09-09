@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -92,6 +93,11 @@ namespace Windows.Foundation
 
 		public static implicit operator Rect(string text)
 		{
+			if (text == null)
+			{
+				return default;
+			}
+
 			var parts = text
 				.Split(new[] { ',' })
 				.SelectToArray(s => double.Parse(s, NumberFormatInfo.InvariantInfo));

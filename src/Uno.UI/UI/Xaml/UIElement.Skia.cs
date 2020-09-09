@@ -234,7 +234,7 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-		internal void ArrangeVisual(Rect finalRect, bool clipToBounds, Rect? clippedFrame = default)
+		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments =
 				VisualTreeHelper.GetParent(this) is UIElement parent
@@ -260,27 +260,17 @@ namespace Windows.UI.Xaml
 					throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 				}
 
-				Rect? getClip()
+				Rect? clip;
+				if (this is Controls.ScrollViewer)
 				{
-					if (this is Controls.ScrollViewer)
-					{
-						return null;
-					}
-					else if (ClippingIsSetByCornerRadius)
-					{
-						// The clip geometry is set by the corner radius
-						// of Border, Grid, StackPanel, etc...
-						return null;
-					}
-					else if (Clip != null)
-					{
-						return Clip.Rect;
-					}
-
-					return new Rect(0, 0, newRect.Width, newRect.Height);
+					clip = (Rect?)null;
+				}
+				else
+				{
+					clip = clippedFrame;
 				}
 
-				OnArrangeVisual(newRect, getClip());
+				OnArrangeVisual(newRect, clip);
 			}
 			else
 			{
@@ -296,9 +286,24 @@ namespace Windows.UI.Xaml
 			Visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
 			Visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 
-			if (clip is Rect rectClip)
+			ApplyNativeClip(clip ?? Rect.Empty);
+
+		}
+
+		partial void ApplyNativeClip(Rect clip)
+		{
+			if (ClippingIsSetByCornerRadius)
 			{
-				var roundedRectClip = LayoutRound(rectClip);
+				return; // already applied
+			}
+
+			if (clip.IsEmpty)
+			{
+				Visual.Clip = null;
+			}
+			else
+			{
+				var roundedRectClip = LayoutRound(clip);
 
 				Visual.Clip = Visual.Compositor.CreateInsetClip(
 					topInset: (float)roundedRectClip.Top,
@@ -306,10 +311,6 @@ namespace Windows.UI.Xaml
 					bottomInset: (float)roundedRectClip.Bottom,
 					rightInset: (float)roundedRectClip.Right
 				);
-			}
-			else
-			{
-				Visual.Clip = null;
 			}
 		}
 	}
