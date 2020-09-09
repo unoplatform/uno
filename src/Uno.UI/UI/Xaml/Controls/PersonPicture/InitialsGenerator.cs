@@ -1,3 +1,5 @@
+// MUX Reference InitialsGenerator.cpp, commit de78834
+
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
@@ -115,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				string displayName = contactDisplayName;
 
-				StripTrailingBrackets(displayName);
+				StripTrailingBrackets(ref displayName);
 
 				var words = Split(displayName, ' ', 100);
 
@@ -221,7 +223,7 @@ namespace Windows.UI.Xaml.Controls
 		static string[] Split(string source, char delim, int maxIterations)
 			=> source.Split(new[] { delim }, maxIterations);
 
-		static void StripTrailingBrackets(string source)
+		static void StripTrailingBrackets(ref string source)
 		{
 			// Guidance from the world readiness team is that text within a final set of brackets
 			// can be removed for the purposes of calculating initials. ex. John Smith (OSG)
@@ -245,7 +247,7 @@ namespace Windows.UI.Xaml.Controls
 					continue;
 				}
 
-				source.Substring(start);
+				source = source.Substring(start);
 				return;
 			}
 		}
@@ -258,7 +260,7 @@ namespace Windows.UI.Xaml.Controls
 			// by truncating to one or two.
 			CharacterType result = CharacterType.Other;
 
-			for (int i = 0; i < Math.Min(str.Length, 3); i++)
+			for (int i = 0; i < Math.Min(str?.Length ?? 0, 3); i++)
 			{
 				// Break on null character. 0xFEFF is a terminating character which appears as null.
 				if ((str[i] == '\0') || (str[i] == 0xFEFF))
