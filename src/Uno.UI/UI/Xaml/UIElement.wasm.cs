@@ -344,12 +344,13 @@ namespace Windows.UI.Xaml
 
 			SetStyle(
 				"clip",
-				"rect("
-				+ Math.Floor(rect.Y) + "px,"
-				+ Math.Ceiling(rect.X + width) + "px,"
-				+ Math.Ceiling(rect.Y + height) + "px,"
-				+ Math.Floor(rect.X) + "px"
-				+ ")"
+				string.Concat(
+					"rect(",
+					Math.Floor(rect.Y).ToStringInvariant(), "px,",
+					Math.Ceiling(rect.X + width).ToStringInvariant(), "px,",
+					Math.Ceiling(rect.Y + height).ToStringInvariant(), "px,",
+					Math.Floor(rect.X).ToStringInvariant(), "px)"
+				)
 			);
 		}
 
