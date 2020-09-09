@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Windows.Devices.Input;
@@ -93,6 +94,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private Color m_oldColor = Color.FromArgb(255, 255, 255, 255);
 		private Vector4 m_oldHsvColor = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
+		// Uno Doc: Added to dispose event handlers
+		SerialDisposable _eventSubscriptions = new SerialDisposable();
+
 		public ColorSpectrum()
 		{
 			SetDefaultStyleKey(this);
@@ -116,7 +120,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			Unloaded += OnUnloaded;
 
-			// Uno Doc: Removed `if (SharedHelpers::IsRS1OrHigher())`
+			if (SharedHelpers.IsRS1OrHigher())
 			{
 				IsFocusEngagementEnabled = true;
 			}
@@ -131,6 +135,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// IFrameworkElementOverrides overrides
 		protected override void OnApplyTemplate()
 		{
+			// Uno Doc: Added to dispose event handlers
+			_eventSubscriptions.Disposable = null;
+			var registrations = new CompositeDisposable();
+
 			m_layoutRoot = GetTemplateChild<Grid>("LayoutRoot");
 			m_sizingGrid = GetTemplateChild<Grid>("SizingGrid");
 			m_spectrumRectangle = GetTemplateChild<Rectangle>("SpectrumRectangle");
@@ -144,16 +152,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (m_layoutRoot is Grid layoutRoot)
 			{
 				layoutRoot.SizeChanged += OnLayoutRootSizeChanged;
+				registrations.Add(() => layoutRoot.SizeChanged -= OnLayoutRootSizeChanged);
 			}
 
 			if (m_inputTarget is FrameworkElement inputTarget)
 			{
-				// UNO TODO: registrations.Add((), CompositeDisposable?
 				inputTarget.PointerEntered += OnInputTargetPointerEntered;
 				inputTarget.PointerExited += OnInputTargetPointerExited;
 				inputTarget.PointerPressed += OnInputTargetPointerPressed;
 				inputTarget.PointerMoved += OnInputTargetPointerMoved;
 				inputTarget.PointerReleased += OnInputTargetPointerReleased;
+
+				registrations.Add(() => inputTarget.PointerEntered -= OnInputTargetPointerEntered);
+				registrations.Add(() => inputTarget.PointerExited -= OnInputTargetPointerExited);
+				registrations.Add(() => inputTarget.PointerPressed -= OnInputTargetPointerPressed);
+				registrations.Add(() => inputTarget.PointerMoved -= OnInputTargetPointerMoved);
+				registrations.Add(() => inputTarget.PointerReleased -= OnInputTargetPointerReleased);
 			}
 
 			if (DownlevelHelper.ToDisplayNameExists())
@@ -177,6 +191,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			UpdateEllipse();
 			UpdateVisualState(useTransitions: false);
+
+			// Uno Doc: Added to dispose event handlers
+			_eventSubscriptions.Disposable = registrations;
 		}
 
 		// IControlOverrides overrides
@@ -516,6 +533,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// we'll want to synchronously cancel it so we don't have any asynchronous actions
 			// lingering beyond our lifetime.
 			ColorHelpers.CancelAsyncAction(m_createImageBitmapAction);
+
+			// Uno Doc: Added to dispose event handlers
+			_eventSubscriptions.Disposable = null;
 		}
 
 		public Rect GetBoundingRectangle()
