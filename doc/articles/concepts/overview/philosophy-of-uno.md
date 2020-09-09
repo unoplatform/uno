@@ -14,7 +14,7 @@ The promise of the Uno Platform is to enable building your app with those tools 
 
 ## Create pixel-perfect, rich and responsive UIs
 
-Developers shouldn't sacrifice appliaction looks for personal productivity. You can have both. Strong support for animations, templating, and custom visual effects is a must. When phones come in all sizes and manufacturers are [gouging holes out of the screen area](https://www.cnet.com/pictures/phones-with-notches/), your application's layout better be responsive and pixel-perfect or today's users, be it in corporate or private setting will not use it. 
+Developers shouldn't sacrifice application looks for personal productivity. You can have both. Strong support for animations, templating, and custom visual effects is a must. When phones come in all sizes and manufacturers are [gouging holes out of the screen area](https://www.cnet.com/pictures/phones-with-notches/), your application's layout better be responsive and pixel-perfect or today's users, be it in corporate or private setting will not use it. 
 
 ## Let views do views
 
@@ -26,4 +26,4 @@ Separation of model, view and presentation keeps your code loosely coupled and e
 
 ## Performance is a feature
 
-The slow antelope gets eaten, and the slow app gets 1-star ratings. We've done a lot of optimisation on the basis of profiling in real-world use cases, and we'll continue to do so. 
+The slow antelope gets eaten, and the slow app gets 1-star ratings. We've done a lot of optimization on the basis of profiling in real-world use cases, and we'll continue to do so. 
