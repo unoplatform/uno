@@ -27,7 +27,7 @@ namespace Uno.UI
 			Uno.UI.GlobalStaticResources.MasterDictionary;
 #endif
 
-		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>();
+		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.InvariantCultureIgnoreCase);
 		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new Dictionary<string, ResourceDictionary>();
 
 		private static int _assemblyRef = -1;
