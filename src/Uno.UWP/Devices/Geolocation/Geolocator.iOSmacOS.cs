@@ -21,10 +21,6 @@ namespace Windows.Devices.Geolocation
 				DesiredAccuracy = DesiredAccuracy == PositionAccuracy.Default ? 10 : 1,
 			};
 
-#if __IOS__ //required only for iOS
-			_locationManager.RequestWhenInUseAuthorization();
-#endif
-
 			_locationManager.LocationsUpdated += _locationManager_LocationsUpdated;
 
 			_locationManager.StartUpdatingLocation();
