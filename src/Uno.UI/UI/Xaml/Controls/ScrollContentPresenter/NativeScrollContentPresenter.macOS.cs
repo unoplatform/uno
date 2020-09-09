@@ -83,6 +83,8 @@ namespace Windows.UI.Xaml.Controls
 
 			DocumentView = newView;
 
+			// This is not needed on iOS/Android because the native ScrollViewer
+			// relies on the Children property, not on a `DocumentView` property.
 			newView.SetParent(TemplatedParent);
 		}
 
