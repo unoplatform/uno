@@ -382,7 +382,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			int width,
 			int height,
 			Color checkerColor,
-			List<byte> bgraCheckeredPixelData,
+			ArrayList<byte> bgraCheckeredPixelData,
 			IAsyncAction asyncActionToAssign,
 			CoreDispatcher dispatcherHelper,
 			Action<WriteableBitmap> completedFunction)
@@ -460,7 +460,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public static WriteableBitmap CreateBitmapFromPixelData(
 			int pixelWidth,
 			int pixelHeight,
-			List<byte> bgraPixelData)
+			ArrayList<byte> bgraPixelData)
 		{
 			// IBufferByteAccess isn't included in any WinMD file, because its sole method - Buffer() -
 			// allows direct pointer access, which isn't applicable to C#.  In C#, there's a separate ToStream()
@@ -470,10 +470,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			// Uno Doc:
 			// Since Uno uses C#, the method of converting to a bitmap was changed to what is below.
-			// WARNING: The .ToArray() copy is a performance hit. It would be better to just pass arrays to this method.
+			// A new 'ArrayList' class is used to avoid an extra copy using List<T>.ToArray() here.
 			using (Stream stream = bitmap.PixelBuffer.AsStream())
 			{
-				_ = stream.WriteAsync(bgraPixelData.ToArray(), 0, bgraPixelData.Count);
+				_ = stream.WriteAsync(bgraPixelData.Array, 0, bgraPixelData.Count);
 			}
 
 			// Uno Doc: The following code is not supported in C# and is removed.

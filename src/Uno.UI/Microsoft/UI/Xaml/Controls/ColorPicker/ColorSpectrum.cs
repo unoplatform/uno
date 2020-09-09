@@ -1016,12 +1016,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			// The middle 4 are only needed and used in the case of hue as the third dimension.
 			// Saturation and luminosity need only a min and max.
-			List<byte> bgraMinPixelData = new List<byte>();
-			List<byte> bgraMiddle1PixelData = new List<byte>();
-			List<byte> bgraMiddle2PixelData = new List<byte>();
-			List<byte> bgraMiddle3PixelData = new List<byte>();
-			List<byte> bgraMiddle4PixelData = new List<byte>();
-			List<byte> bgraMaxPixelData = new List<byte>();
+
+			byte[] test = Array.Empty<byte>();
+
+			ArrayList<byte> bgraMinPixelData = new ArrayList<byte>();
+			ArrayList<byte> bgraMiddle1PixelData = new ArrayList<byte>();
+			ArrayList<byte> bgraMiddle2PixelData = new ArrayList<byte>();
+			ArrayList<byte> bgraMiddle3PixelData = new ArrayList<byte>();
+			ArrayList<byte> bgraMiddle4PixelData = new ArrayList<byte>();
+			ArrayList<byte> bgraMaxPixelData = new ArrayList<byte>();
 			List<Hsv> newHsvValues = new List<Hsv>();
 
 			// Uno Docs: size_t not available in C# so types were changed
@@ -1212,12 +1215,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			double maxSaturation,
 			double minValue,
 			double maxValue,
-			List<byte> bgraMinPixelData,
-			List<byte> bgraMiddle1PixelData,
-			List<byte> bgraMiddle2PixelData,
-			List<byte> bgraMiddle3PixelData,
-			List<byte> bgraMiddle4PixelData,
-			List<byte> bgraMaxPixelData,
+			ArrayList<byte> bgraMinPixelData,
+			ArrayList<byte> bgraMiddle1PixelData,
+			ArrayList<byte> bgraMiddle2PixelData,
+			ArrayList<byte> bgraMiddle3PixelData,
+			ArrayList<byte> bgraMiddle4PixelData,
+			ArrayList<byte> bgraMaxPixelData,
 			List<Hsv> newHsvValues)
 		{
 			double hMin = minHue;
@@ -1372,12 +1375,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			double maxSaturation,
 			double minValue,
 			double maxValue,
-			List<byte> bgraMinPixelData,
-			List<byte> bgraMiddle1PixelData,
-			List<byte> bgraMiddle2PixelData,
-			List<byte> bgraMiddle3PixelData,
-			List<byte> bgraMiddle4PixelData,
-			List<byte> bgraMaxPixelData,
+			ArrayList<byte> bgraMinPixelData,
+			ArrayList<byte> bgraMiddle1PixelData,
+			ArrayList<byte> bgraMiddle2PixelData,
+			ArrayList<byte> bgraMiddle3PixelData,
+			ArrayList<byte> bgraMiddle4PixelData,
+			ArrayList<byte> bgraMaxPixelData,
 			List<Hsv> newHsvValues)
 		{
 			double hMin = minHue;

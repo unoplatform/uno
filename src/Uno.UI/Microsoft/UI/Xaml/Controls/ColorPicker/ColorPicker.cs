@@ -1352,7 +1352,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					int width = (int)Math.Round(colorPreviewRectangleGrid.ActualWidth);
 					int height = (int)Math.Round(colorPreviewRectangleGrid.ActualHeight);
-					List<byte> bgraCheckeredPixelData = new List<byte>();
+					ArrayList<byte> bgraCheckeredPixelData = new ArrayList<byte>();
 					var strongThis = this;
 
 					ColorHelpers.CreateCheckeredBackgroundAsync(
@@ -1380,7 +1380,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					int width = (int)Math.Round(alphaSliderBackgroundRectangle.ActualWidth);
 					int height = (int)Math.Round(alphaSliderBackgroundRectangle.ActualHeight);
-					List<byte> bgraCheckeredPixelData = new List<byte>();
+					ArrayList<byte> bgraCheckeredPixelData = new ArrayList<byte>();
 					var strongThis = this;
 
 					ColorHelpers.CreateCheckeredBackgroundAsync(
