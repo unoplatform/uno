@@ -304,6 +304,15 @@ namespace Windows.UI.Xaml
 			if (Clip == null)
 			{
 				rect = Rect.Empty;
+
+				if (NeedsClipToSlot)
+				{
+#if NETSTANDARD
+					rect = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
+#else
+					rect = ClippedFrame ?? Rect.Empty;
+#endif
+				}
 			}
 			else
 			{
@@ -313,23 +322,6 @@ namespace Windows.UI.Xaml
 				if (Clip.Transform != null)
 				{
 					rect = Clip.Transform.TransformBounds(rect);
-				}
-			}
-
-			if (NeedsClipToSlot)
-			{
-#if NETSTANDARD
-				var boundsClipping = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
-#else
-				var boundsClipping = ClippedFrame ?? Rect.Empty;
-#endif
-				if (rect.IsEmpty)
-				{
-					rect = boundsClipping;
-				}
-				else
-				{
-					rect.Intersect(boundsClipping);
 				}
 			}
 

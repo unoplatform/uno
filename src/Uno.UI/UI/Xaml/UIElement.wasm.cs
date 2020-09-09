@@ -331,6 +331,28 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetContentHtml(HtmlId, html);
 		}
 
+		partial void ApplyNativeClip(Rect rect)
+		{
+			if (rect.IsEmpty)
+			{
+				ResetStyle("clip");
+				return;
+			}
+
+			var width = double.IsInfinity(rect.Width) ? 100000.0f : rect.Width;
+			var height = double.IsInfinity(rect.Height) ? 100000.0f : rect.Height;
+
+			SetStyle(
+				"clip",
+				"rect("
+				+ Math.Floor(rect.Y) + "px,"
+				+ Math.Ceiling(rect.X + width) + "px,"
+				+ Math.Ceiling(rect.Y + height) + "px,"
+				+ Math.Floor(rect.X) + "px"
+				+ ")"
+			);
+		}
+
 		internal static UIElement GetElementFromHandle(int handle)
 		{
 			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
@@ -634,7 +656,7 @@ namespace Windows.UI.Xaml
 		internal virtual void ManagedOnLoading()
 		{
 			IsLoading = true;
-			
+
 			for (var i = 0; i < _children.Count; i++)
 			{
 				var child = _children[i];

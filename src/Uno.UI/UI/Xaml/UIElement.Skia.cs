@@ -286,9 +286,24 @@ namespace Windows.UI.Xaml
 			Visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
 			Visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 
-			if (clip is Rect rectClip)
+			ApplyNativeClip(clip ?? Rect.Empty);
+
+		}
+
+		partial void ApplyNativeClip(Rect clip)
+		{
+			if (ClippingIsSetByCornerRadius)
 			{
-				var roundedRectClip = LayoutRound(rectClip);
+				return; // already applied
+			}
+
+			if (clip.IsEmpty)
+			{
+				Visual.Clip = null;
+			}
+			else
+			{
+				var roundedRectClip = LayoutRound(clip);
 
 				Visual.Clip = Visual.Compositor.CreateInsetClip(
 					topInset: (float)roundedRectClip.Top,
@@ -296,10 +311,6 @@ namespace Windows.UI.Xaml
 					bottomInset: (float)roundedRectClip.Bottom,
 					rightInset: (float)roundedRectClip.Right
 				);
-			}
-			else if (!ClippingIsSetByCornerRadius)
-			{
-				Visual.Clip = null;
 			}
 		}
 	}
