@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml
 
 				// Under iOS and Android, we need to force the collection for the GC
 				// to pick up the orphan instances that we've just released.
-				
+
 				GC.Collect();
 			}
 		}
@@ -248,16 +248,16 @@ namespace Windows.UI.Xaml
 
 				if (item != null)
 				{
-					list.Add(new TemplateEntry(_watch.Elapsed, item)); 
+					list.Add(new TemplateEntry(_watch.Elapsed, item));
+#if USE_HARD_REFERENCES
+					_activeInstances.Remove(item);
+#endif
 				}
 				else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
 				{
 					this.Log().Warn($"Enqueued template root was not a view");
 				}
 
-#if USE_HARD_REFERENCES
-				_activeInstances.Remove(item);
-#endif
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
