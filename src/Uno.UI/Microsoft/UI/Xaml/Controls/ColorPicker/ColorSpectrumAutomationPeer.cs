@@ -2,6 +2,7 @@
 using System.Numerics;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -111,11 +112,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public void RaisePropertyChangedEvent(Color oldColor, Color newColor, Vector4 oldHsvColor, Vector4 newHsvColor)
 		{
-			string oldValueString = GetValueString(oldColor, oldHsvColor);
-			string newValueString = GetValueString(newColor, newHsvColor);
+			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Automation.ValuePatternIdentifiers", nameof(ValuePatternIdentifiers.ValueProperty)))
+			{
+				string oldValueString = GetValueString(oldColor, oldHsvColor);
+				string newValueString = GetValueString(newColor, newHsvColor);
 
-			//UNO TODO: Requires ValuePatternIdentifiers.ValueProperty to be implemented
-			//base.RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValueString, newValueString);
+				base.RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValueString, newValueString);
+			}
 		}
 
 		private string GetValueString(Color color, Vector4 hsvColor)
