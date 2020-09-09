@@ -641,6 +641,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(Colors.White, systemColor);
 		}
 
+		[TestMethod]
+		public void When_External_Source_Miscased()
+		{
+			var page = new Test_Page_Other();
+
+			var foreground = page.CaseInsensitiveSourceTextBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(foreground);
+			Assert.AreEqual(Colors.SlateGray, foreground.Color);
+		}
+
 #if !NETFX_CORE
 		[TestMethod]
 		public void When_Relative_Path_With_Leading_Slash_From_Root()
