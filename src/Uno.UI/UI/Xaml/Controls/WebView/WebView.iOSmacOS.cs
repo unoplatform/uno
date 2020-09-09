@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
-			AsyncOperation.FromTask(async ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
+			AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
 
 		partial void NavigateWithHttpRequestMessagePartial(HttpRequestMessage requestMessage)
 		{
