@@ -4,7 +4,7 @@
 
 - Uno Platform's UWP Xaml
     - **Windows-first development**
-    - **Faster compilation** for most of the development cycle, including UI code. iOS and Android can be tested for platform-specific features.
+    - **Faster compilation** for most of the development cycle, including UI code. iOS, Android, WebAssembly, macOS and Linux can be tested for platform-specific features.
     - Ability to develop responsive layout in Windowed mode using Windows 10.
     - Allows for **edit and continue** support from VS2017+
     - Allows for **UI and Non-UI code edit and continue** support
