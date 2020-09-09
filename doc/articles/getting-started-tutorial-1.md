@@ -60,7 +60,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
     </Grid>
     ```
 
-8. Select `UWP` as the Startup Project and `Run`  
+8. Select `UWP` as the Startup Project, select the `x86` platform, then `Run`  
 
     ![build-uwp](Assets/build-uwp.JPG)
 
