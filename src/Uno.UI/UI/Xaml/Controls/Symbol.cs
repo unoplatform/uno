@@ -1,7 +1,4 @@
-﻿using Windows.Foundation;
-using Windows.Foundation.Metadata;
-
-namespace Windows.UI.Xaml.Controls
+﻿namespace Windows.UI.Xaml.Controls
 {
 	public enum Symbol
 	{
@@ -197,6 +194,10 @@ namespace Windows.UI.Xaml.Controls
 		ThreeBars = 57832,
 		FourBars = 57833,
 		Scan = 58004,
-		Preview = 58005
+		Preview = 58005,
+		GlobalNavigationButton = 59136,
+		Share = 59181,
+		Print = 59209,
+		XboxOneConsole = 59792
 	}
 }
