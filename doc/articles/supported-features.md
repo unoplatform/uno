@@ -1,8 +1,8 @@
-# Uno features
+# Uno Platform Features
 
-## Development flow
+## Development Flow
 
-- Uno's UWP Xaml
+- Uno Platform's UWP Xaml
     - **Windows-first development**
     - **Faster compilation** for most of the development cycle, including UI code. iOS and Android can be tested for platform-specific features.
     - Ability to develop responsive layout in Windowed mode using Windows 10.
@@ -16,7 +16,7 @@
     - **XamlBehaviors library** support
 - MacOS Compilation
 
-## Features list
+## Features List
 
 ### Animations
 
@@ -45,7 +45,7 @@
 - Attached Properties binding
 - RelativeSource.Self
 
-### Design fidelity
+### Design Fidelity
 - Text Inlines Binding
 - Text Independent trimming and wrapping
 - Text Character Spacing
@@ -56,7 +56,7 @@
 - `FontIcon` support
 - Merged Dictionary support
 
-### Responsive design
+### Responsive Design
 
 - Layout constraints [Min/Max][Width/Height]
 - Binding SourceTriggers (TextBox immediate vs. focus lost interactions)
@@ -159,7 +159,7 @@
 - [NumberBox](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
 - [TwoPaneView](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3)
 
-### Non-UI features
+### Non-UI Features
 
 - Windows.UI.Storage (StorageFile, StorageFolder, Settings)
 - Windows.UI.Application
