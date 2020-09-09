@@ -11,10 +11,10 @@
 	<Grid>
 		<ListView ItemsSource="{x:Bind Symbols}">
 			<ListView.ItemTemplate>
-				<DataTemplate>
+				<DataTemplate x:DataType="local:SymbolListItem">
 					<StackPanel Orientation="Horizontal" Spacing="8">
-						<SymbolIcon Symbol="{Binding Symbol}" />
-						<TextBlock Text="{Binding Name}" />
+						<SymbolIcon Symbol="{x:Bind Symbol}" />
+						<TextBlock Text="{x:Bind Name}" />
 					</StackPanel>
 				</DataTemplate>
 			</ListView.ItemTemplate>

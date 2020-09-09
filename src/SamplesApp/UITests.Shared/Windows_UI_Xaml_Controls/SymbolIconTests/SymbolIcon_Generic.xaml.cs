@@ -15,23 +15,23 @@ namespace UITests.Windows_UI_Xaml_Controls.SymbolIconTests
             this.InitializeComponent();
         }
 
-		public List<SymbolItem> Symbols { get; } =
+		public List<SymbolListItem> Symbols { get; } =
 			Enum.GetValues(typeof(Symbol))
 				.Cast<Symbol>()
-				.Select(symbol => new SymbolItem(symbol))
-				.ToList();
-
-		public class SymbolItem
-		{
-			public SymbolItem(Symbol symbol)
-			{
-				Symbol = symbol;
-				Name = Enum.GetName(typeof(Symbol), symbol);
-			}
-
-			public Symbol Symbol { get; }
-
-			public string Name { get; }
-		}
+				.Select(symbol => new SymbolListItem(symbol))
+				.ToList();		
     }
+
+	public class SymbolListItem
+	{
+		public SymbolListItem(Symbol symbol)
+		{
+			Symbol = symbol;
+			Name = Enum.GetName(typeof(Symbol), symbol);
+		}
+
+		public Symbol Symbol { get; }
+
+		public string Name { get; }
+	}
 }
