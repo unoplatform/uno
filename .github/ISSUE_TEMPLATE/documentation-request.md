@@ -28,6 +28,7 @@ labels: kind/consumer-experience, kind/documentation, triage/untriaged
 - [ ] Skia
   - [ ] WPF
   - [ ] GTK (Linux)
+  - [ ] Tizen
 - [ ] Windows
 
 ## Anything else we need to know?

@@ -20,6 +20,7 @@ labels: kind/enhancement, triage/untriaged
 - [ ] Skia
   - [ ] WPF
   - [ ] GTK (Linux)
+  - [ ] Tizen
 - [ ] Windows
 - [ ] Build tasks
 - [ ] Solution Templates
