@@ -20,6 +20,11 @@
 
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+	<!-- Add 0105 - WinUI build step tends to introduce duplicate usings where there were none in authored code -->
+	<NoWarn>$(NoWarn),1998,0105,4014,VSX1000,NU1701</NoWarn>
+  </PropertyGroup>
+
   <!---->
 
   <Target Name="SetNoWarn"
