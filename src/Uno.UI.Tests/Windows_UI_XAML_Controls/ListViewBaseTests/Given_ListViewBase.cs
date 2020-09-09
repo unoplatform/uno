@@ -648,7 +648,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var si = SUT.ContainerFromItem(source[0]) as SelectorItem;
 			Assert.IsNotNull(si);
 
-			var tb = si.ContentTemplateRoot as TextBlock;
+			var tb = si.FindFirstChild<TextBlock>();
 			Assert.AreEqual("item 0", tb?.Text);
 		}
 
@@ -704,8 +704,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var si = SUT.ContainerFromItem(source[0]) as ListViewItem;
 			Assert.IsNotNull(si);
 			Assert.AreEqual("Item 1", si.Content);
-			Assert.IsInstanceOfType(si.ContentTemplateRoot, typeof(ImplicitTextBlock));
-			Assert.AreEqual("Item 1", (si.ContentTemplateRoot as TextBlock).Text);
+			var cp = si.FindFirstChild<ContentPresenter>();
+			Assert.IsInstanceOfType(cp.ContentTemplateRoot, typeof(ImplicitTextBlock));
+			Assert.AreEqual("Item 1", (cp.ContentTemplateRoot as TextBlock).Text);
 		}
 
 		[TestMethod]
@@ -745,7 +746,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.IsNotNull(si2);
 			Assert.AreNotSame(si, source[1]);
 			Assert.AreEqual("item 2", si2.DataContext);
-			Assert.AreEqual("item 2", (si2.Content as TextBlock).Text);
+			Assert.AreEqual("item 2", si2.Content);
 			Assert.IsTrue(si2.IsGeneratedContainer);
 		}
 

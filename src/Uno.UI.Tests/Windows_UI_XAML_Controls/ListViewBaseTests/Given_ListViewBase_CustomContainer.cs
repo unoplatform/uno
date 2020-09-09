@@ -46,7 +46,7 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 			Assert.IsNotNull(container);
 			Assert.IsTrue(container.IsGeneratedContainer);
 			Assert.IsFalse(container.ContentTemplateRoot is MyCustomItemContainer);
-			Assert.AreEqual(42, container.Content);
+			Assert.AreEqual(42, container.DataContext);
 		}
 
 		[TestMethod]
@@ -82,7 +82,7 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 			Assert.IsTrue(container is MyCustomItemContainer);
 			Assert.IsTrue(container.IsGeneratedContainer);
 			Assert.IsFalse(container.ContentTemplateRoot is MyCustomItemContainer);
-			Assert.AreEqual(42, container.Content);
+			Assert.AreEqual(42, container.DataContext);
 		}
 	}
 
