@@ -45,7 +45,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnoSolutionTemplate</RootNamespace>
     <AssemblyName>UnoSolutionTemplate.VSIX</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
@@ -186,8 +186,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Text.Data" version="15.6.27740" />
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop" version="7.10.6071" />
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.8.0" version="8.0.50728" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading" version="15.8.209" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" version="15.8.209" />
     <PackageReference Include="Microsoft.VisualStudio.Utilities" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Validation" version="15.5.31" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.3" />
