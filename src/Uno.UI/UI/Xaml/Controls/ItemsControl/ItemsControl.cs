@@ -193,6 +193,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
 		{
+			Refresh();
 			SetNeedsUpdateItems();
 		}
 
@@ -219,6 +220,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnItemTemplateSelectorChanged(DataTemplateSelector oldItemTemplateSelector, DataTemplateSelector newItemTemplateSelector)
 		{
+			Refresh();
 			SetNeedsUpdateItems();
 		}
 
@@ -326,7 +328,7 @@ namespace Windows.UI.Xaml.Controls
 						(o, e) => ((ItemsControl)o).OnItemContainerStyleChanged((Style)e.OldValue, (Style)e.NewValue))
 					);
 
-		protected virtual void OnItemContainerStyleChanged(Style oldItemContainerStyle, Style newItemContainerStyle) { }
+		protected virtual void OnItemContainerStyleChanged(Style oldItemContainerStyle, Style newItemContainerStyle) => Refresh();
 		#endregion
 
 		#region ItemContainerStyleSelector DependencyProperty
@@ -342,7 +344,7 @@ namespace Windows.UI.Xaml.Controls
 				(o, e) => ((ItemsControl)o).OnItemContainerStyleSelectorChanged((StyleSelector)e.OldValue, (StyleSelector)e.NewValue))
 			);
 
-		protected virtual void OnItemContainerStyleSelectorChanged(StyleSelector oldItemContainerStyleSelector, StyleSelector newItemContainerStyleSelector) { }
+		protected virtual void OnItemContainerStyleSelectorChanged(StyleSelector oldItemContainerStyleSelector, StyleSelector newItemContainerStyleSelector) => Refresh();
 
 		#endregion
 
@@ -1312,5 +1314,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal protected virtual void CleanUpInternalItemsPanel(View panel) { }
+
+		/// <summary>
+		/// Resets internal cached state of the collection.
+		/// </summary>
+		private protected virtual void Refresh() { }
 	}
 }

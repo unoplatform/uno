@@ -13,11 +13,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private protected override bool ShouldItemsControlManageChildren => true;
 
-		private void Refresh()
-		{
-			
-		}
-
 		private void AddItems(int firstItem, int count, int section)
 		{
 			Refresh();

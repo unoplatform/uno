@@ -119,8 +119,10 @@ namespace Windows.UI.Xaml.Controls
 			NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 		}
 
-		private void Refresh()
+		private protected override void Refresh()
 		{
+			base.Refresh();
+
 			NativePanel?.Refresh();
 		}
 

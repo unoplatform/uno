@@ -300,6 +300,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.OnItemsSourceChanged(e);
 			TrySubscribeToCurrentChanged();
+			Refresh();
 		}
 
 		private void TrySubscribeToCurrentChanged()
@@ -499,6 +500,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			return null;
+		}
+
+		private protected override void Refresh()
+		{
+			base.Refresh();
+			_itemTemplatesThatArentContainers.Clear();
 		}
 	}
 }
