@@ -200,6 +200,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.Runtime.Skia.Tizen", "Uno.UI.Runtime.Skia.Tizen\Uno.UI.Runtime.Skia.Tizen.csproj", "{A7F8ED8A-673C-4D7A-909E-452C1AA28EC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.Skia.Tizen", "SamplesApp\SamplesApp.Skia.Tizen\SamplesApp.Skia.Tizen.csproj", "{68C6B05B-F82B-4B6D-AE18-86AFF411E65A}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.FluentTheme.Wasm", "Uno.UI.FluentTheme\Uno.UI.FluentTheme.Wasm.csproj", "{10807E33-4A73-4AA9-A8F2-B395CC555BD1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.FluentTheme", "Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj", "{535339E2-6C01-4478-9889-F6E76B1C00F4}"
