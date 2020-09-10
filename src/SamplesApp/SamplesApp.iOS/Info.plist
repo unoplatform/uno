@@ -49,8 +49,12 @@
 		<key>NSExceptionMinimumTLSVersion</key>
 		<string>TLSv1.2</string>
 	</dict>
-    <key>NSMotionUsageDescription</key>
-    <string>This is a step counter, and we&apos;d like to track motion. </string>
+	<key>NSMotionUsageDescription</key>
+	<string>This is a step counter, and we&apos;d like to track motion. </string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>TODO NSLocationWhenInUseUsageDescription</string>
+	<key>NSLocationUsageDescription</key>
+	<string>TODO NSLocationUsageDescription</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 	  <dict>
@@ -64,9 +68,5 @@
 	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>TODO NSLocationWhenInUseUsageDescription</string>
-	<key>NSLocationUsageDescription</key>
-	<string>TODO NSLocationUsageDescription</string>
 </dict>
 </plist>
