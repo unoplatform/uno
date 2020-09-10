@@ -19,7 +19,7 @@ namespace Windows.UI.ViewManagement
 		{
 			if (!ApiExtensibility.CreateInstance(this, out _applicationViewExtension))
 			{
-				throw new InvalidOperationException($"Unable to find ICoreWindowExtension extension");
+				throw new InvalidOperationException($"Unable to find IApplicationViewExtension extension");
 			}
 		}
 
