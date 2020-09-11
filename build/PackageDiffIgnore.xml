@@ -3066,7 +3066,7 @@
 			<!-- End Skia Import -->
 		</Fields>
 	</IgnoreSet>
-	<IgnoreSet baseVersion="3.0.12">
+	<IgnoreSet baseVersion="3.0.17">
 		<Methods>
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs..ctor()"

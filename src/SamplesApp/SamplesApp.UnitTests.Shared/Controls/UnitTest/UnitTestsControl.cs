@@ -217,7 +217,7 @@ namespace Uno.UI.Samples.Tests
 						.Where(t => filter == null || t.DeclaringType.Name.Contains(filter, StrComp) || t.Name.Contains(filter, StrComp))
 						.ToArray();
 
-					if(tests.Length == 0)
+					if (tests.Length == 0)
 					{
 						continue;
 					}
@@ -265,18 +265,18 @@ namespace Uno.UI.Samples.Tests
 
 							try
 							{
-								type.init?.Invoke(instance, new object[0]);
-
 								object returnValue = null;
 								if (runsOnUIThread)
 								{
 									await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 									{
+										type.init?.Invoke(instance, new object[0]);
 										returnValue = testMethod.Invoke(instance, parameters);
 									});
 								}
 								else
 								{
+									type.init?.Invoke(instance, new object[0]);
 									returnValue = testMethod.Invoke(instance, parameters);
 								}
 
