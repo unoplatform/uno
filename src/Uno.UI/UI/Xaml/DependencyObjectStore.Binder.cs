@@ -148,17 +148,8 @@ namespace Windows.UI.Xaml
 		public void ApplyCompiledBindings()
 		{
 			_properties.ApplyCompiledBindings();
-			InvokeCompiledBindingsCallbacks();
 			UpdateResourceBindings(isThemeChangedUpdate: false);
 		}
-
-		private IDisposable? RegisterCompiledBindingsUpdates()
-			// Compiled bindings propagation is performed through all non-FrameworkElement providers
-			// to avoid executing this code twice because all FrameworkElement instances call 
-			// ApplyCompiledBindings when FrameworkElement.Loading is raised.
-			=> ActualInstance is IFrameworkElement 
-				? null 
-				: DependencyObjectExtensions.RegisterCompiledBindingsUpdateCallback(Parent, ApplyCompiledBindings);
 
 		private string GetOwnerDebugString()
 			=> ActualInstance?.GetType().ToString() ?? "[collected]";

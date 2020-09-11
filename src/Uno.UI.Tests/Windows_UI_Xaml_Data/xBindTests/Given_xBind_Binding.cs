@@ -15,12 +15,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		private const int V = 42;
 
 		[TestMethod]
-		[Ignore]
 		public void When_Initial_Value()
 		{
 			var SUT = new Binding_Control();
 
-			Assert.IsNull(SUT._StringField.Text);
+			Assert.AreEqual("", SUT._StringField.Text);
 
 			SUT.ForceLoaded();
 
@@ -39,11 +38,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var SUT = new Binding_StateTrigger();
 
 			Assert.AreEqual(string.Empty, SUT._StringField.Text);
+			Assert.IsFalse(SUT.myTrigger.IsActive);
 
 			SUT.ForceLoaded();
 
 			SUT.MyState = MyState.Full;
 
+			Assert.IsTrue(SUT.myTrigger.IsActive);
 			Assert.AreEqual("Updated!", SUT._StringField.Text);
 		}
 

@@ -45,7 +45,6 @@ namespace Windows.UI.Xaml
 			base.IsLoading = true;
 
 			OnLoadingPartial();
-			ApplyCompiledBindings();
 
 			try
 			{
@@ -69,7 +68,6 @@ namespace Windows.UI.Xaml
 		private void NativeOnLoading(object sender, RoutedEventArgs args)
 		{
 			OnLoadingPartial();
-			ApplyCompiledBindings();
 
 			// Explicit propagation of the loading even must be performed
 			// after the compiled bindings are applied, as there may be altered

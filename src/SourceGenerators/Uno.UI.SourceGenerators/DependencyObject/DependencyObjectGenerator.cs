@@ -555,7 +555,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 					public void ApplyCompiledBindings()
 					{{
-						__Store.ApplyCompiledBindings();
 					}}
 
 					private global::Uno.UI.DataBinding.ManagedWeakReference _selfWeakReference;

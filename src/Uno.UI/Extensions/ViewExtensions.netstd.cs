@@ -20,7 +20,7 @@ namespace Uno.UI
 		/// <param name="childLevelLimit">Defines the max depth, null if not limit (Should never be used)</param>
 		/// <param name="includeCurrent">Indicates if the current view should also be tested or not.</param>
 		/// <returns></returns>
-		public static T FindFirstChild<T>(this UIElement view, int? childLevelLimit = null, bool includeCurrent = true)
+		public static T? FindFirstChild<T>(this UIElement view, int? childLevelLimit = null, bool includeCurrent = true)
 			where T : UIElement
 		{
 			return view.FindFirstChild<T>(null, childLevelLimit, includeCurrent);
@@ -35,7 +35,7 @@ namespace Uno.UI
 		/// <param name="childLevelLimit">Defines the max depth, null if not limit (Should never be used)</param>
 		/// <param name="includeCurrent">Indicates if the current view should also be tested or not.</param>
 		/// <returns></returns>
-		public static T FindFirstChild<T>(this UIElement view, Func<T, bool> selector, int? childLevelLimit = null, bool includeCurrent = true)
+		public static T? FindFirstChild<T>(this UIElement view, Func<T, bool>? selector, int? childLevelLimit = null, bool includeCurrent = true)
 			where T : UIElement
 		{
 			Func<UIElement, bool> childSelector;
@@ -58,7 +58,7 @@ namespace Uno.UI
 			return (T)view.EnumerateAllChildren(childSelector, maxDepth).FirstOrDefault();
 		}
 
-		public static string ShowDescendants(this UIElement view, StringBuilder sb = null, string spacing = "", UIElement viewOfInterest = null)
+		public static string ShowDescendants(this UIElement view, StringBuilder? sb = null, string spacing = "", UIElement? viewOfInterest = null)
 		{
 			sb = sb ?? new StringBuilder();
 			AppendView(view);
