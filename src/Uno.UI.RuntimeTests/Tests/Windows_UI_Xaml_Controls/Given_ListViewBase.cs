@@ -9,6 +9,8 @@ using Private.Infrastructure;
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
+#elif __MACOS__
+using AppKit;
 #else
 using Uno.UI;
 #endif
