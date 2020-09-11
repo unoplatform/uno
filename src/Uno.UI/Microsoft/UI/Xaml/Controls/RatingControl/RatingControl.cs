@@ -8,12 +8,14 @@ using Windows.System;
 using Windows.UI.Composition;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Automation.Peers;
+using System.Numerics;
+using Windows.Devices.Input;
+using RatingControlAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -34,6 +36,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private const int c_noValueSetSentinel = -1;
 
+		private static UISettings _uiSettings = null;
+
 		private DispatcherHelper m_dispatcherHelper;
 
 		// Private members
@@ -48,6 +52,12 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_isPointerDown = false;
 		private double m_mousePercentage = 0.0;
 
+		private RatingInfoType m_infoType = RatingInfoType.Font;
+		private double m_preEngagementValue = 0.0;
+		private bool m_disengagedWithA = false;
+		private bool m_shouldDiscardValue = true;
+		private long m_fontFamilyChangedToken;
+
 		public RatingControl()
 		{
 			m_dispatcherHelper = new DispatcherHelper(this);
@@ -61,6 +71,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// We only need to use safe_get in the deruction loop
 			RecycleEvents(true /* useSafeGet */);
 		}
+
+		public event TypedEventHandler<RatingControl, object> ValueChanged;
 
 		private float RenderingRatingFontSize()
 		{
@@ -153,8 +165,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			//TODO:MZ:Unsubscribe when appropriate
 			IsEnabledChanged += OnIsEnabledChanged;
-			m_fontFamilyChangedToken.value = RegisterPropertyChangedCallback(
-				Control.FontFamilyProperty, { this, &RatingControl.OnFontFamilyChanged });
+			m_fontFamilyChangedToken = RegisterPropertyChangedCallback(Control.FontFamilyProperty, OnFontFamilyChanged);
 
 			Visual visual = ElementCompositionPreview.GetElementVisual(this);
 			Compositor comp = visual.Compositor;
@@ -165,7 +176,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_sharedPointerPropertySet.InsertScalar("pointerScalar", c_mouseOverScale);
 
 			StampOutRatingItems();
-			m_textScaleChangedRevoker = GetUISettings().TextScaleFactorChanged(auto_revoke, { this, &RatingControl.OnTextScaleFactorChanged });
+			GetUISettings().TextScaleFactorChanged += OnTextScaleFactorChanged;
 		}
 
 		private double CoerceValueBetweenMinAndMax(double value)
@@ -197,7 +208,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO: call me when font size changes, and stuff like that, glyph, etc
 		private void StampOutRatingItems()
 		{
-			if (!m_backgroundStackPanel || !m_foregroundStackPanel)
+			if (m_backgroundStackPanel == null || m_foregroundStackPanel == null)
 			{
 				// OnApplyTemplate() hasn't executed yet, this is being called 
 				// from a property value changed handler for markup set values.
@@ -350,7 +361,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Star size = 16. 0.5 and 0.8 are just arbitrary center point chosen in design spec
 			// 32 = star size * 2 because of the rendering at double size we do
-			uiElementVisual.CenterPoint(float3(c_defaultRatingFontSizeForRendering * c_horizontalScaleAnimationCenterPoint, c_defaultRatingFontSizeForRendering * c_verticalScaleAnimationCenterPoint, 0.0f));
+			uiElementVisual.CenterPoint = new Vector3(c_defaultRatingFontSizeForRendering * c_horizontalScaleAnimationCenterPoint, c_defaultRatingFontSizeForRendering * c_verticalScaleAnimationCenterPoint, 0.0f);
 		}
 
 		private void PopulateStackPanelWithItems(string templateName, StackPanel stackPanel, RatingControlStates state)
@@ -477,7 +488,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private ImageSource GetNextImageIfNull(ImageSource image, RatingControlStates fallbackType)
 		{
-			if (!image)
+			if (image == null)
 			{
 				if (fallbackType == RatingControlStates.Null)
 				{
@@ -492,7 +503,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			double newWidth = CalculateTotalRatingControlWidth();
 			Control thisAsControl = this;
-			thisAsControl.Width(newWidth);
+			thisAsControl.Width = newWidth;
 		}
 
 		private void ChangeRatingBy(double change, bool originatedFromMouse)
@@ -500,19 +511,19 @@ namespace Microsoft.UI.Xaml.Controls
 			if (change != 0.0)
 			{
 				double ratingValue = 0.0;
-				double oldRatingValue = Value();
+				double oldRatingValue = Value;
 				if (oldRatingValue != c_noValueSetSentinel)
 				{
 					// If the Value was programmatically set to a fraction, drop that fraction before we modify it
-					if ((int)Value() != Value())
+					if ((int)Value != Value)
 					{
 						if (change == -1)
 						{
-							ratingValue = (int)Value();
+							ratingValue = (int)Value;
 						}
 						else
 						{
-							ratingValue = (int)Value() + change;
+							ratingValue = (int)Value + change;
 						}
 					}
 					else
@@ -523,7 +534,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					ratingValue = InitialSetValue();
+					ratingValue = InitialSetValue;
 				}
 
 				SetRatingTo(ratingValue, originatedFromMouse);
@@ -533,63 +544,63 @@ namespace Microsoft.UI.Xaml.Controls
 		private void SetRatingTo(double newRating, bool originatedFromMouse)
 		{
 			double ratingValue = 0.0;
-			double oldRatingValue = Value();
+			double oldRatingValue = Value;
 
-			ratingValue = std.min(newRating, (double)(MaxRating));
-			ratingValue = std.max(ratingValue, 0.0);
+			ratingValue = Math.Min(newRating, (double)(MaxRating));
+			ratingValue = Math.Max(ratingValue, 0.0);
 
 			// The base case, and the you have no rating, and you pressed left case [wherein nothing should happen]
 			if (oldRatingValue > c_noValueSetSentinel || ratingValue != 0.0)
 			{
-				if (!IsClearEnabled() && ratingValue <= 0.0)
+				if (!IsClearEnabled && ratingValue <= 0.0)
 				{
-					Value(1.0);
+					Value = 1.0;
 				}
-				else if (ratingValue == oldRatingValue && IsClearEnabled() && (ratingValue != MaxRating || originatedFromMouse))
+				else if (ratingValue == oldRatingValue && IsClearEnabled && (ratingValue != MaxRating || originatedFromMouse))
 				{
 					// If you increase the Rating via the keyboard/gamepad when it's maxed, the value should stay stable.
 					// But if you click a star that represents the current Rating value, it should clear the rating.
 
-					Value(c_noValueSetSentinel);
+					Value = c_noValueSetSentinel;
 				}
 				else if (ratingValue > 0.0)
 				{
-					Value(ratingValue);
+					Value = ratingValue;
 				}
 				else
 				{
-					Value(c_noValueSetSentinel);
+					Value = c_noValueSetSentinel;
 				}
 
-				if (SharedHelpers.IsRS1OrHigher() && IsFocusEngaged() && SharedHelpers.IsAnimationsEnabled())
+				if (SharedHelpers.IsRS1OrHigher() && IsFocusEngaged && SharedHelpers.IsAnimationsEnabled())
 				{
 					double focalPoint = CalculateStarCenter((int)(ratingValue - 1.0));
 					m_sharedPointerPropertySet.InsertScalar("starsScaleFocalPoint", (float)(focalPoint));
 				}
 
 				// Notify that the Value has changed
-				m_valueChangedEventSource(this, null);
+				ValueChanged?.Invoke(this, null);
 			}
 		}
 
 		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			var property = args.Property();
+			var property = args.Property;
 			// Do coercion first.
-			if (property == s_MaxRatingProperty)
+			if (property == MaxRatingProperty)
 			{
 				// Enforce minimum MaxRating
-				var value = (int)args.NewValue();
-				var coercedValue = std.max(1, value);
+				var value = (int)args.NewValue;
+				var coercedValue = Math.Max(1, value);
 
-				if (Value() > coercedValue)
+				if (Value > coercedValue)
 				{
-					Value(coercedValue);
+					Value = coercedValue;
 				}
 
-				if (PlaceholderValue() > coercedValue)
+				if (PlaceholderValue > coercedValue)
 				{
-					PlaceholderValue(coercedValue);
+					PlaceholderValue = coercedValue;
 				}
 
 				if (coercedValue != value)
@@ -598,9 +609,9 @@ namespace Microsoft.UI.Xaml.Controls
 					return;
 				}
 			}
-			else if (property == s_PlaceholderValueProperty || property == s_ValueProperty)
+			else if (property == PlaceholderValueProperty || property == ValueProperty)
 			{
-				var value = (double)args.NewValue();
+				var value = (double)args.NewValue;
 				var coercedValue = CoerceValueBetweenMinAndMax(value);
 				if (value != coercedValue)
 				{
@@ -611,35 +622,35 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Property value changed handling.
-			if (property == s_CaptionProperty)
+			if (property == CaptionProperty)
 			{
 				OnCaptionChanged(args);
 			}
-			else if (property == s_InitialSetValueProperty)
+			else if (property == InitialSetValueProperty)
 			{
 				OnInitialSetValueChanged(args);
 			}
-			else if (property == s_IsClearEnabledProperty)
+			else if (property == IsClearEnabledProperty)
 			{
 				OnIsClearEnabledChanged(args);
 			}
-			else if (property == s_IsReadOnlyProperty)
+			else if (property == IsReadOnlyProperty)
 			{
 				OnIsReadOnlyChanged(args);
 			}
-			else if (property == s_ItemInfoProperty)
+			else if (property == ItemInfoProperty)
 			{
 				OnItemInfoChanged(args);
 			}
-			else if (property == s_MaxRatingProperty)
+			else if (property == MaxRatingProperty)
 			{
 				OnMaxRatingChanged(args);
 			}
-			else if (property == s_PlaceholderValueProperty)
+			else if (property == PlaceholderValueProperty)
 			{
 				OnPlaceholderValueChanged(args);
 			}
-			else if (property == s_ValueProperty)
+			else if (property == ValueProperty)
 			{
 				OnValueChanged(args);
 			}
@@ -652,19 +663,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnFontFamilyChanged(DependencyObject sender, DependencyProperty args)
 		{
-			if (m_backgroundStackPanel) // We don't want to do this for the initial property set
+			if (m_backgroundStackPanel != null) // We don't want to do this for the initial property set
 			{
 				for (int i = 0; i < MaxRating; i++)
 				{
 					// FUTURE: handle image rating items
-					if (var backgroundTB = m_backgroundStackPanel.Children.GetAt(i) as TextBlock)
-            {
-					CustomizeRatingItem(backgroundTB, RatingControlStates.Unset);
-				}
+					var backgroundTB = m_backgroundStackPanel.Children[i] as TextBlock;
+					if (backgroundTB != null)
+					{
+						CustomizeRatingItem(backgroundTB, RatingControlStates.Unset);
+					}
 
-				if (var foregroundTB = m_foregroundStackPanel.Children.GetAt(i) as TextBlock)
-            {
-					CustomizeRatingItem(foregroundTB, RatingControlStates.Set);
+					var foregroundTB = m_foregroundStackPanel.Children[i] as TextBlock;
+					if (foregroundTB != null)
+					{
+						CustomizeRatingItem(foregroundTB, RatingControlStates.Set);
+					}
 				}
 			}
 
@@ -686,17 +700,17 @@ namespace Microsoft.UI.Xaml.Controls
 			// TODO: Colour changes - see spec
 		}
 
-		void OnItemInfoChanged(DependencyPropertyChangedEventArgs args)
+		private void OnItemInfoChanged(DependencyPropertyChangedEventArgs args)
 		{
 			bool changedType = false;
 
-			if (!ItemInfo)
+			if (ItemInfo == null)
 			{
 				m_infoType = RatingInfoType.None;
 			}
 			else if (ItemInfo is RatingItemFontInfo ratingItemFontInfo)
 			{
-				if (m_infoType != RatingInfoType.Font && m_backgroundStackPanel /* prevent calling StampOutRatingItems() twice at initialisation */)
+				if (m_infoType != RatingInfoType.Font && m_backgroundStackPanel != null /* prevent calling StampOutRatingItems() twice at initialisation */)
 				{
 					m_infoType = RatingInfoType.Font;
 					StampOutRatingItems();
@@ -715,7 +729,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// We don't want to do this for the initial property set
 			// Or if we just stamped them out
-			if (m_backgroundStackPanel && !changedType)
+			if (m_backgroundStackPanel != null && !changedType)
 			{
 				for (int i = 0; i < MaxRating; i++)
 				{
@@ -727,17 +741,17 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateRatingItemsAppearance();
 		}
 
-		void OnMaxRatingChanged(DependencyPropertyChangedEventArgs args)
+		private void OnMaxRatingChanged(DependencyPropertyChangedEventArgs args)
 		{
 			StampOutRatingItems();
 		}
 
-		void OnPlaceholderValueChanged(DependencyPropertyChangedEventArgs args)
+		private void OnPlaceholderValueChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateRatingItemsAppearance();
 		}
 
-		void OnValueChanged(DependencyPropertyChangedEventArgs args)
+		private void OnValueChanged(DependencyPropertyChangedEventArgs args)
 		{
 			// Fire property change for UIA
 			AutomationPeer peer = FrameworkElementAutomationPeer.FromElement(this);
@@ -750,23 +764,23 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateRatingItemsAppearance();
 		}
 
-		void OnIsEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs args)
 		{
 			// MSFT 11521414 TODO: change states (add a state)
 			UpdateRatingItemsAppearance();
 		}
 
-		void OnCaptionSizeChanged(DependencyObject sender, SizeChangedEventArgs args)
+		private void OnCaptionSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			ResetControlWidth();
 		}
 
-		void OnPointerCancelledBackgroundStackPanel(DependencyObject sender, PointerRoutedEventArgs args)
+		private void OnPointerCancelledBackgroundStackPanel(object sender, PointerRoutedEventArgs args)
 		{
 			PointerExitedImpl(args);
 		}
 
-		void OnPointerCaptureLostBackgroundStackPanel(DependencyObject sender, PointerRoutedEventArgs args)
+		private void OnPointerCaptureLostBackgroundStackPanel(object sender, PointerRoutedEventArgs args)
 		{
 			// We capture the pointer because we want to support the drag off the
 			// left side to clear the rating scenario. However, this means that
@@ -775,16 +789,16 @@ namespace Microsoft.UI.Xaml.Controls
 			PointerExitedImpl(args, false /* resetScaleAnimation */);
 		}
 
-		void OnPointerMovedOverBackgroundStackPanel(DependencyObject sender, PointerRoutedEventArgs args)
+		private void OnPointerMovedOverBackgroundStackPanel(object sender, PointerRoutedEventArgs args)
 		{
 			if (!IsReadOnly)
 			{
 				var point = args.GetCurrentPoint(m_backgroundStackPanel);
-				float xPosition = point.Position.X;
+				float xPosition = (float)point.Position.X;
 				if (SharedHelpers.IsAnimationsEnabled())
 				{
 					m_sharedPointerPropertySet.InsertScalar("starsScaleFocalPoint", xPosition);
-					var deviceType = args.Pointer.PointerDeviceType();
+					var deviceType = args.Pointer.PointerDeviceType;
 
 					switch (deviceType)
 					{
@@ -800,25 +814,25 @@ namespace Microsoft.UI.Xaml.Controls
 				m_mousePercentage = (double)(xPosition) / CalculateActualRatingWidth();
 
 				UpdateRatingItemsAppearance();
-				args.Handled = true);
+				args.Handled = true;
 			}
 		}
 
-		void OnPointerEnteredBackgroundStackPanel(DependencyObject sender, PointerRoutedEventArgs args)
+		private void OnPointerEnteredBackgroundStackPanel(object sender, PointerRoutedEventArgs args)
 		{
 			if (!IsReadOnly)
 			{
 				m_isPointerOver = true;
-				args.Handled = true);
+				args.Handled = true;
 			}
 		}
 
-		void OnPointerExitedBackgroundStackPanel(DependencyObject sender, PointerRoutedEventArgs args)
+		private void OnPointerExitedBackgroundStackPanel(object sender, PointerRoutedEventArgs args)
 		{
 			PointerExitedImpl(args);
 		}
 
-		void PointerExitedImpl(PointerRoutedEventArgs args, bool resetScaleAnimation)
+		private void PointerExitedImpl(PointerRoutedEventArgs args, bool resetScaleAnimation = true)
 		{
 			var point = args.GetCurrentPoint(m_backgroundStackPanel);
 
@@ -836,10 +850,10 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateRatingItemsAppearance();
 			}
 
-			args.Handled = true);
+			args.Handled = true;
 		}
 
-		void OnPointerPressedBackgroundStackPanel(DependencyObject sender, PointerRoutedEventArgs args)
+		private void OnPointerPressedBackgroundStackPanel(object sender, PointerRoutedEventArgs args)
 		{
 			if (!IsReadOnly)
 			{
@@ -851,7 +865,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnPointerReleasedBackgroundStackPanel(DependencyObject sender, PointerRoutedEventArgs args)
+		private void OnPointerReleasedBackgroundStackPanel(object sender, PointerRoutedEventArgs args)
 		{
 			if (!IsReadOnly)
 			{
@@ -859,7 +873,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var xPosition = point.Position.X;
 
 				double mousePercentage = xPosition / CalculateActualRatingWidth();
-				SetRatingTo(ceil(mousePercentage * MaxRating), true);
+				SetRatingTo(Math.Ceiling(mousePercentage * MaxRating), true);
 
 				if (SharedHelpers.IsRS1OrHigher())
 				{
@@ -874,22 +888,22 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		double CalculateTotalRatingControlWidth()
+		private double CalculateTotalRatingControlWidth()
 		{
 			double ratingStarsWidth = CalculateActualRatingWidth();
-			var captionAsWinRT = (hstring)GetValue(s_CaptionProperty);
+			var captionAsWinRT = (string)GetValue(CaptionProperty);
 			double textSpacing = 0.0;
 
-			if (captionAsWinRT.size() > 0)
+			if (captionAsWinRT?.Length > 0)
 			{
-				textSpacing = ItemSpacing;
+				textSpacing = ItemSpacing();
 			}
 
 			double captionWidth = 0.0;
 
-			if (m_captionTextBlock)
+			if (m_captionTextBlock != null)
 			{
-				captionWidth = m_captionTextBlock.ActualWidth();
+				captionWidth = m_captionTextBlock.ActualWidth;
 			}
 
 			return ratingStarsWidth + textSpacing + captionWidth;
@@ -912,9 +926,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// IControlOverrides
-		private void OnKeyDown(KeyRoutedEventArgs eventArgs)
+		protected override void OnKeyDown(KeyRoutedEventArgs eventArgs)
 		{
-			if (eventArgs.Handled())
+			if (eventArgs.Handled)
 			{
 				return;
 			}
@@ -922,16 +936,16 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!IsReadOnly)
 			{
 				bool handled = false;
-				VirtualKey key = eventArgs as KeyRoutedEventArgs.Key;
+				VirtualKey key = eventArgs.Key;
 
 				double flowDirectionReverser = 1.0;
 
-				if (FlowDirection() == FlowDirection.RightToLeft)
+				if (FlowDirection == FlowDirection.RightToLeft)
 				{
 					flowDirectionReverser *= -1.0;
 				}
 
-				var originalKey = eventArgs as KeyRoutedEventArgs.OriginalKey;
+				var originalKey = eventArgs.OriginalKey;
 
 				// Up down are right/left in keyboard only
 				if (originalKey == VirtualKey.Up)
@@ -976,7 +990,7 @@ namespace Microsoft.UI.Xaml.Controls
 						break;
 				}
 
-				eventArgs.Handled(handled);
+				eventArgs.Handled = handled;
 			}
 
 			base.OnKeyDown(eventArgs);
@@ -997,61 +1011,61 @@ namespace Microsoft.UI.Xaml.Controls
 		// PreviewKey subscribed events
 		// [regular key events]
 
-		private void OnPreviewKeyDown(KeyRoutedEventArgs eventArgs)
+		protected override void OnPreviewKeyDown(KeyRoutedEventArgs eventArgs)
 		{
-			if (eventArgs.Handled())
+			if (eventArgs.Handled)
 			{
 				return;
 			}
 
-			if (!IsReadOnly && IsFocusEngaged() && IsFocusEngagementEnabled())
+			if (!IsReadOnly && IsFocusEngaged && IsFocusEngagementEnabled)
 			{
-				var originalKey = eventArgs as KeyRoutedEventArgs.OriginalKey;
+				var originalKey = eventArgs.OriginalKey;
 				if (originalKey == VirtualKey.GamepadA)
 				{
 					m_shouldDiscardValue = false;
 					m_preEngagementValue = -1.0;
 					RemoveFocusEngagement();
 					m_disengagedWithA = true;
-					eventArgs.Handled(true);
+					eventArgs.Handled = true;
 				}
 				else if (originalKey == VirtualKey.GamepadB)
 				{
 					bool valueChanged = false;
 					m_shouldDiscardValue = false;
 
-					if (Value() != m_preEngagementValue)
+					if (Value != m_preEngagementValue)
 					{
 						valueChanged = true;
 					}
 
-					Value(m_preEngagementValue);
+					Value = m_preEngagementValue;
 
 					if (valueChanged)
 					{
-						m_valueChangedEventSource(this, null);
+						ValueChanged?.Invoke(this, null);
 					}
 
 					m_preEngagementValue = -1.0;
 					RemoveFocusEngagement();
-					eventArgs.Handled(true);
+					eventArgs.Handled = true;
 				}
 			}
 		}
 
-		private void OnPreviewKeyUp(KeyRoutedEventArgs eventArgs)
+		protected override void OnPreviewKeyUp(KeyRoutedEventArgs eventArgs)
 		{
-			var originalKey = eventArgs as KeyRoutedEventArgs.OriginalKey;
+			var originalKey = eventArgs.OriginalKey;
 
-			if (IsFocusEngagementEnabled() && originalKey == VirtualKey.GamepadA && m_disengagedWithA)
+			if (IsFocusEngagementEnabled && originalKey == VirtualKey.GamepadA && m_disengagedWithA)
 			{
 				// Block the re-engagement
 				m_disengagedWithA = false; // We want to do this regardless of handled
-				eventArgs.Handled(true);
+				eventArgs.Handled = true;
 			}
 		}
 
-		private void OnFocusEngaged(Control& sender, FocusEngagedEventArgs args)
+		private void OnFocusEngaged(Control sender, FocusEngagedEventArgs args)
 		{
 			if (!IsReadOnly)
 			{
@@ -1059,7 +1073,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnFocusDisengaged(Control& sender, FocusDisengagedEventArgs args)
+		private void OnFocusDisengaged(Control sender, FocusDisengagedEventArgs args)
 		{
 			// Revert value:
 			// for catching programmatic disengagements, gamepad ones are handled in OnPreviewKeyDown
@@ -1067,17 +1081,17 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				bool valueChanged = false;
 
-				if (Value() != m_preEngagementValue)
+				if (Value != m_preEngagementValue)
 				{
 					valueChanged = true;
 				}
 
-				Value(m_preEngagementValue);
+				Value = m_preEngagementValue;
 				m_preEngagementValue = -1.0f;
 
 				if (valueChanged)
 				{
-					m_valueChangedEventSource(this, null);
+					ValueChanged?.Invoke(this, null);
 				}
 			}
 
@@ -1086,20 +1100,20 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void EnterGamepadEngagementMode()
 		{
-			double currentValue = Value();
+			double currentValue = Value;
 			m_shouldDiscardValue = true;
 
 			if (currentValue == c_noValueSetSentinel)
 			{
-				Value(InitialSetValue());
+				Value = InitialSetValue;
 				// Notify that the Value has changed
-				m_valueChangedEventSource(this, null);
-				currentValue = InitialSetValue();
+				ValueChanged?.Invoke(this, null);
+				currentValue = InitialSetValue;
 				m_preEngagementValue = -1;
 			}
 			else
 			{
-				currentValue = Value();
+				currentValue = Value;
 				m_preEngagementValue = currentValue;
 			}
 
@@ -1126,81 +1140,56 @@ namespace Microsoft.UI.Xaml.Controls
 			m_disengagedWithA = false;
 		}
 
-		private void RecycleEvents(bool useSafeGet)
+		private void RecycleEvents(bool useSafeGet = false)
 		{
-			if (var backgroundStackPanel = m_backgroundStackPanel.safe_get(useSafeGet))
-    {
-				if (m_pointerCancelledToken.value)
-				{
-					backgroundStackPanel.PointerCanceled(m_pointerCancelledToken);
-					m_pointerCancelledToken.value = 0;
-				}
-
-				if (m_pointerCaptureLostToken.value)
-				{
-					backgroundStackPanel.PointerCaptureLost(m_pointerCaptureLostToken);
-					m_pointerCaptureLostToken.value = 0;
-				}
-
-				if (m_pointerMovedToken.value)
-				{
-					backgroundStackPanel.PointerMoved(m_pointerMovedToken);
-					m_pointerMovedToken.value = 0;
-				}
-
-				if (m_pointerEnteredToken.value)
-				{
-					backgroundStackPanel.PointerEntered(m_pointerEnteredToken);
-					m_pointerEnteredToken.value = 0;
-				}
-
-				if (m_pointerExitedToken.value)
-				{
-					backgroundStackPanel.PointerExited(m_pointerExitedToken);
-					m_pointerExitedToken.value = 0;
-				}
-
-				if (m_pointerPressedToken.value)
-				{
-					backgroundStackPanel.PointerPressed(m_pointerPressedToken);
-					m_pointerPressedToken.value = 0;
-				}
-
-				if (m_pointerReleasedToken.value)
-				{
-					backgroundStackPanel.PointerReleased(m_pointerReleasedToken);
-					m_pointerReleasedToken.value = 0;
-				}
+			if (m_backgroundStackPanel != null)
+			{
+				m_backgroundStackPanel.PointerCanceled -= OnPointerCancelledBackgroundStackPanel;
+				m_backgroundStackPanel.PointerCaptureLost -= OnPointerCaptureLostBackgroundStackPanel;
+				m_backgroundStackPanel.PointerMoved -= OnPointerMovedOverBackgroundStackPanel;
+				m_backgroundStackPanel.PointerEntered -= OnPointerEnteredBackgroundStackPanel;
+				m_backgroundStackPanel.PointerExited -= OnPointerExitedBackgroundStackPanel;
+				m_backgroundStackPanel.PointerPressed -= OnPointerPressedBackgroundStackPanel;
+				m_backgroundStackPanel.PointerReleased -= OnPointerReleasedBackgroundStackPanel;
 			}
 
-			if (var captionTextBlock = m_captionTextBlock.safe_get(useSafeGet))
-    {
-				if (m_captionSizeChangedToken.value)
-				{
-					captionTextBlock.SizeChanged(m_captionSizeChangedToken);
-					m_captionSizeChangedToken.value = 0;
-				}
+			if (m_captionTextBlock != null)
+			{
+				m_captionTextBlock.SizeChanged -= OnCaptionSizeChanged;
 			}
+
+			UnregisterPropertyChangedCallback(Control.FontFamilyProperty, m_fontFamilyChangedToken);
 		}
 
-		private void OnTextScaleFactorChanged(UISettings setting, DependencyObject args)
+		private void OnTextScaleFactorChanged(UISettings setting, object args)
 		{
 			// OnTextScaleFactorChanged happens in non-UI thread, use dispatcher to call StampOutRatingItems in UI thread.
 			var strongThis = this;
 
 			m_dispatcherHelper.RunAsync(() =>
+			{
 				strongThis.StampOutRatingItems();
-			strongThis.UpdateCaptionMargins();
-		});
+				strongThis.UpdateCaptionMargins();
+			});
+		}
 
+
+		private UISettings GetUISettings()
+		{
+			_uiSettings = _uiSettings ?? new UISettings();
+			return _uiSettings;
+		}
+
+		// Header file
+
+		private bool IsItemInfoPresentAndFontInfo()
+		{
+			return m_infoType == RatingInfoType.Font;
+		}
+
+		private bool IsItemInfoPresentAndImageInfo()
+		{
+			return m_infoType == RatingInfoType.Image;
+		}
 	}
-
-	private static UISettings _uiSettings = null;
-
-	private UISettings GetUISettings()
-	{
-		_uiSettings = _uiSettings ?? new UISettings();
-		return _uiSettings;
-	}
-}	
 }

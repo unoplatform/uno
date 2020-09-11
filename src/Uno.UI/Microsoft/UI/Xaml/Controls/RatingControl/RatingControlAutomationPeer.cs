@@ -2,13 +2,17 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Uno.UI.Helpers.WinUI;
+using Windows.Foundation;
 using Windows.Globalization.NumberFormatting;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
 using RatingControl = Microsoft.UI.Xaml.Controls.RatingControl;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public class RatingControlAutomationPeer : FrameworkElementAutomationPeer
+	public class RatingControlAutomationPeer : FrameworkElementAutomationPeer, IRangeValueProvider, IValueProvider
 	{
 		public RatingControlAutomationPeer(RatingControl owner) : base(owner)
 		{
@@ -16,128 +20,120 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		protected override string GetLocalizedControlTypeCore()
 		{
-			return ResourceAccessor.GetLocalizedStringResource(SR_RatingLocalizedControlType);
+			return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_RatingLocalizedControlType);
 		}
 
 		// Properties.
-		private bool IsReadOnly()
+		bool IValueProvider.IsReadOnly => GetRatingControl().IsReadOnly;
+
+		string IValueProvider.Value
 		{
-			return GetRatingControl().IsReadOnly;
-		}
-
-		string RatingControlAutomationPeer.IValueProvider_Value()
-		{
-			double ratingValue = GetRatingControl().Value();
-			string valueString;
-
-			string ratingString;
-
-			if (ratingValue == -1)
+			get
 			{
-				double placeholderValue = GetRatingControl().PlaceholderValue();
-				if (placeholderValue == -1)
+				double ratingValue = GetRatingControl().Value;
+				string valueString;
+
+				string ratingString;
+
+				if (ratingValue == -1)
 				{
-					valueString = ResourceAccessor.GetLocalizedStringResource(SR_RatingUnset);
+					double placeholderValue = GetRatingControl().PlaceholderValue;
+					if (placeholderValue == -1)
+					{
+						valueString = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_RatingUnset);
+					}
+					else
+					{
+						valueString = GenerateValue_ValueString(ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_CommunityRatingString), placeholderValue);
+					}
 				}
 				else
 				{
-					valueString = GenerateValue_ValueString(ResourceAccessor.GetLocalizedStringResource(SR_CommunityRatingString), placeholderValue);
+					valueString = GenerateValue_ValueString(ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BasicRatingString), ratingValue);
 				}
-			}
-			else
-			{
-				valueString = GenerateValue_ValueString(ResourceAccessor.GetLocalizedStringResource(SR_BasicRatingString), ratingValue);
-			}
 
-			return valueString;
+				return valueString;
+			}
 		}
 
-		void SetValue(string & value)
+		void IValueProvider.SetValue(string value)
 		{
-			DecimalFormatter formatter;
+			DecimalFormatter formatter = new DecimalFormatter();
 			var potentialRating = formatter.ParseDouble(value);
-			if (potentialRating)
+			if (potentialRating != null)
 			{
-				GetRatingControl().Value(potentialRating.Value());
+				GetRatingControl().Value = potentialRating.Value;
 			}
 		}
-
 
 		// IRangeValueProvider overrides
-		double SmallChange()
-		{
-			return 1.0;
-		}
+		double IRangeValueProvider.SmallChange => 1.0;
 
-		double LargeChange()
-		{
-			return 1.0;
-		}
+		double IRangeValueProvider.LargeChange => 1.0;
 
-		double Maximum()
-		{
-			return GetRatingControl().MaxRating();
-		}
+		double IRangeValueProvider.Maximum => GetRatingControl().MaxRating;
 
-		double Minimum()
-		{
-			return 0;
-		}
+		double IRangeValueProvider.Minimum => 0;
 
-		double Value()
+		double IRangeValueProvider.Value
 		{
-			// Change this to provide a placeholder value too.
-			double value = GetRatingControl().Value();
-			if (value == -1)
+			get
 			{
-				return 0;
-			}
-			else
-			{
-				return value;
+				// Change this to provide a placeholder value too.
+				double value = GetRatingControl().Value;
+				if (value == -1)
+				{
+					return 0;
+				}
+				else
+				{
+					return value;
+				}
 			}
 		}
 
-		void SetValue(double value)
+		void IRangeValueProvider.SetValue(double value)
 		{
-			GetRatingControl().Value(value);
+			GetRatingControl().Value = value;
 		}
+
+		bool IRangeValueProvider.IsReadOnly => GetRatingControl().IsReadOnly;
 
 		//IAutomationPeerOverrides
 
-		DependencyObject GetPatternCore(PatternInterface & patternInterface)
+		protected override object GetPatternCore(PatternInterface patternInterface)
 		{
 			if (patternInterface == PatternInterface.Value || patternInterface == PatternInterface.RangeValue)
 			{
 				return this;
 			}
 
-			return __super.GetPatternCore(patternInterface);
+			return base.GetPatternCore(patternInterface);
 		}
 
-		AutomationControlType GetAutomationControlTypeCore()
+		protected override AutomationControlType GetAutomationControlTypeCore()
 		{
 			return AutomationControlType.Slider;
 		}
 
 		// Protected methods
-		void RaisePropertyChangedEvent(double newValue)
+		internal void RaisePropertyChangedEvent(double newValue)
 		{
 			// UIA doesn't tolerate a null doubles, so we convert them to zeroes.
-			double oldValue = GetRatingControl().Value();
+			double oldValue = GetRatingControl().Value;
 			var oldValueProp = PropertyValue.CreateDouble(oldValue);
 
 			if (newValue == -1)
 			{
 				var newValueProp = PropertyValue.CreateDouble(0.0);
-				__super.RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty(), oldValueProp, newValueProp);
-				__super.RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty(), oldValueProp, newValueProp);
+				base.RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValueProp, newValueProp);
+				base.RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty, oldValueProp, newValueProp);
 			}
 			else
 			{
 				var newValueProp = PropertyValue.CreateDouble(newValue);
-				__super.RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty(), oldValueProp, newValueProp); // make these strings
-				__super.RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty(), oldValueProp, newValueProp);
+				base.RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValueProp, newValueProp); // make these strings
+				base.RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty, oldValueProp, newValueProp);
 			}
 		}
 
@@ -145,8 +141,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		private RatingControl GetRatingControl()
 		{
-			UIElement owner = Owner();
-			return owner.as< RatingControl > ();
+			UIElement owner = Owner;
+			return owner as RatingControl;
 		}
 
 		private int DetermineFractionDigits(double value)
@@ -193,7 +189,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
 			formatter.NumberRounder = rounder;
 
-			string maxRatingString = GetRatingControl().MaxRating;
+			string maxRatingString = GetRatingControl().MaxRating.ToString();
 
 			int fractionDigits = DetermineFractionDigits(ratingValue);
 			int sigDigits = DetermineSignificantDigits(ratingValue, fractionDigits);
