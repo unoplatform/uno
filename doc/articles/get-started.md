@@ -4,10 +4,10 @@ This guide will walk you through the set-up process for building cross-platform 
 
 ## Choose your IDE
 Use Uno with your favorite tools.
-* [Visual Studio](#Visual-Studio)
-* [VS Code](#VS-Code)
-* [Visual Studio for Mac](#Visual-Studio-For-Mac)
-* [JetBrains Rider](#JetBrains-Rider)
+* [Visual Studio](#visual-studio)
+* [VS Code](#vs-code)
+* [Visual Studio for Mac](#visual-studio-for-mac)
+* [JetBrains Rider](#jetbrains-rider)
 
 ## Visual Studio 
 ### Prerequisites
@@ -25,10 +25,10 @@ Use Uno with your favorite tools.
 	    * A working Mac with Visual Studio for Mac, XCode 8.2 or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
 
-    * **ASP**.**NET and web** workload installed, along with .NET Core 2.2 (for WASM development)
+    * **ASP**.**NET and web** workload installed, along with .NET Core 2.2 or later (for WASM development)
 
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
-    * [.NET Core 2.2](https://dotnet.microsoft.com/download/dotnet-core/2.2)
+    * [.NET Core](https://dotnet.microsoft.com/download/dotnet-core)
 
 For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
@@ -64,6 +64,9 @@ If XAML Intellisense isn't working on a freshly-created project, try the followi
 2. Close all XAML documents.
 3. Close and reopen Visual Studio.
 4. Reopen XAML documents.
+
+#### Video Tutorial
+[![Getting Started Visual Studio Video](Assets/vs-cover.JPG)](http://www.youtube.com/watch?v=hQcKsoxaAHo "")
 
 ## VS Code
 
@@ -137,6 +140,9 @@ Here's how to do this:
 
 You should now be in the same configuration as the generated template files.
 
+#### Video Tutorial
+[![Getting Started Visual Studio Code Video](Assets/vscode-cover.JPG)](http://www.youtube.com/watch?v=O9qgw1Q445M "")
+
 ## Visual Studio For Mac
 
 While it is easier to create apps using Uno on Windows, you can also create all but UWP apps on your Mac.
@@ -145,7 +151,7 @@ While it is easier to create apps using Uno on Windows, you can also create all 
 * [**Visual Studio for Mac**](https://visualstudio.microsoft.com/vs/mac/)
 * [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
-* .NET Core 3.1
+* .NET Core 3.1 or higher
 
 ### Modifying Existing Uno App
 
@@ -172,10 +178,13 @@ Building for WebAssembly takes a few more steps than iOS and Android:
 3. In the terminal, navigate to your build output. This will typically be: `yourProject.Wasm > bin > Debug > netstandard2.0 > dist > server.py` Run the `server.py` program.
 4. In your browser, open localhost:8000. 
 
+#### Video Tutorial
+[![Getting Started Visual Studio Mac Video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
+
 ## JetBrains Rider
 
 ### Prerequisites
-* [**Rider Version 2020.2 Early Access**](https://www.jetbrains.com/rider/nextversion/)
+* [**Rider Version "2020.2+"**](https://www.jetbrains.com/rider/)
 * [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/)
 
 ### Creating a new Uno project
@@ -222,6 +231,9 @@ Alternatively, you can use a tool like VNC to run the simulator on a mac.
 #### UWP
 You will be able to build the UWP project, however, Rider currenly does not support debugging or deploying for UWP.   
 ![run-uwp-rider](Assets/quick-start/run-uwp-rider.JPG)  
+
+#### Video Tutorial
+[![Getting Started Rider Video](Assets/rider-cover.JPG)](http://www.youtube.com/watch?v=HgwL0al5bfo "")
 
 <div class="NOTE alert alert-info">
 <h5>Next:</h5>

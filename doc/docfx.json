@@ -42,7 +42,8 @@
         "files": [
           "images/**",
           "articles/**.png",
-          "articles/**.jpg"
+          "articles/**.jpg",
+          "articles/**.gif"
         ]
       }
     ],

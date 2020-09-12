@@ -61,6 +61,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal bool IsGeneratedContainer { get; set; }
 
+		/// <summary>
+		/// Marks this as a container defined in the root of an ItemTemplate, so that it can be handled appropriately when recycled.
+		/// </summary>
+		internal bool IsContainerFromItemTemplate { get; set; }
+
 		public ContentControl()
 		{
 			DefaultStyleKey = typeof(ContentControl);

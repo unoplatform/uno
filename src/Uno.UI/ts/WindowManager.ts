@@ -28,7 +28,6 @@ namespace Uno.UI {
 
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
-		private static readonly unoClippedToBoundsClassName = "uno-clippedToBounds";
 
 		private static _cctor = (() => {
 			WindowManager.initMethods();
@@ -550,11 +549,10 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public setArrangeProperties(elementId: number, clipToBounds: boolean): string {
+		public setArrangeProperties(elementId: number): string {
 			const element = this.getView(elementId);
 
 			this.setAsArranged(element);
-			this.setClipToBounds(element, clipToBounds);
 
 			return "ok";
 		}
@@ -662,7 +660,6 @@ namespace Uno.UI {
 			}
 
 			this.setAsArranged(element);
-			this.setClipToBounds(element, params.ClipToBounds);
 
 			return true;
 		}
@@ -674,14 +671,6 @@ namespace Uno.UI {
 
 		private setAsUnarranged(element: HTMLElement | SVGElement) {
 			element.classList.add(WindowManager.unoUnarrangedClassName);
-		}
-
-		private setClipToBounds(element: HTMLElement | SVGElement, clipToBounds: boolean) {
-			if (clipToBounds) {
-				element.classList.add(WindowManager.unoClippedToBoundsClassName);
-			} else {
-				element.classList.remove(WindowManager.unoClippedToBoundsClassName);
-			}
 		}
 
 		/**
@@ -699,7 +688,6 @@ namespace Uno.UI {
 			style.transform = matrix;
 
 			this.setAsArranged(element);
-			this.setClipToBounds(element, params.ClipToBounds);
 
 			return true;
 		}

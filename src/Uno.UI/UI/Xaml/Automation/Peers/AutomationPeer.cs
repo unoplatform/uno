@@ -1,137 +1,207 @@
 using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Automation.Provider;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class AutomationPeer : DependencyObject
 	{
-		[global::Uno.NotImplemented]
-		public static bool ListenerExists(global::Windows.UI.Xaml.Automation.Peers.AutomationEvents eventId)
-		{
-			return false;
-		}
+		[Uno.NotImplemented]
+		public static bool ListenerExists(Windows.UI.Xaml.Automation.Peers.AutomationEvents eventId) => false;
 
 		#region Public
 
-		public bool IsContentElement()
-		{
-			return IsContentElementCore();
-		}
+		public object GetPattern(Windows.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => GetPatternCore(patternInterface);
 
-		public bool IsControlElement()
-		{
-			return IsControlElementCore();
-		}
+		public string GetAcceleratorKey() => GetAcceleratorKeyCore();
 
-		public bool IsEnabled()
-		{
-			return IsEnabledCore();
-		}
-		
-		public bool IsPassword()
-		{
-			return IsPasswordCore();
-		}
-		
-		public void SetFocus()
-		{
-			SetFocusCore();
-		}
-				
-		public string GetClassName()
-		{
-			return GetClassNameCore();
-		}
+		public string GetAccessKey() => GetAcceleratorKeyCore();
 
-		public AutomationControlType GetAutomationControlType()
-		{
-			return GetAutomationControlTypeCore();
-		}
+		public string GetAutomationId() => GetAutomationIdCore();
 
-		public string GetLocalizedControlType()
-		{
-			return GetLocalizedControlTypeCore();
-		}
+		public Rect GetBoundingRectangle() => GetBoundingRectangleCore();
 
-		public string GetName()
-		{
-			return GetNameCore();
-		}
-		
-		public AutomationPeer GetLabeledBy()
-		{
-			return GetLabeledByCore();
-		}
-		
+		public IList<AutomationPeer> GetChildren() => GetChildrenCore();
+
+		public Point GetClickablePoint() => GetClickablePointCore();
+
+		public string GetHelpText() => GetHelpTextCore();
+
+		public string GetItemStatus() => GetItemStatusCore();
+
+		public string GetItemType() => GetItemTypeCore();
+
+		public AutomationOrientation GetOrientation() => GetOrientationCore();
+
+		public bool HasKeyboardFocus() => HasKeyboardFocusCore();
+
+		public bool IsKeyboardFocusable() => IsKeyboardFocusableCore();
+
+		public bool IsOffscreen() => IsOffscreenCore();
+
+		public bool IsRequiredForForm() => IsRequiredForFormCore();
+
+		public AutomationPeer GetPeerFromPoint(Point point) => GetPeerFromPointCore(point);
+
+		public AutomationLiveSetting GetLiveSetting() => GetLiveSettingCore();
+
+		public object Navigate(Windows.UI.Xaml.Automation.Peers.AutomationNavigationDirection direction) => NavigateCore(direction);
+
+		public object GetElementFromPoint(Point pointInWindowCoordinates) => GetElementFromPointCore(pointInWindowCoordinates);
+
+		public object GetFocusedElement() => GetFocusedElementCore();
+
+		public void ShowContextMenu() => ShowContextMenuCore();
+
+		public IReadOnlyList<AutomationPeer> GetControlledPeers() => GetControlledPeersCore();
+
+		public IList<AutomationPeerAnnotation> GetAnnotations() => GetAnnotationsCore();
+
+		public int GetPositionInSet() => GetPositionInSetCore();
+
+		public int GetSizeOfSet() => GetSizeOfSetCore();
+
+		public int GetLevel() => GetLevelCore();
+
+		public AutomationLandmarkType GetLandmarkType() => GetLandmarkTypeCore();
+
+		public string GetLocalizedLandmarkType() => GetLocalizedLandmarkTypeCore();
+
+		public bool IsPeripheral() => IsPeripheralCore();
+
+		public bool IsDataValidForForm() => IsDataValidForFormCore();
+
+		public string GetFullDescription() => GetFullDescriptionCore();
+
+		public AutomationHeadingLevel GetHeadingLevel() => GetHeadingLevelCore();
+
+		public bool IsDialog() => IsDialogCore();
+
+		public bool IsContentElement() => IsContentElementCore();
+
+		public bool IsControlElement() => IsControlElementCore();
+
+		public bool IsEnabled() => IsEnabledCore();
+
+		public bool IsPassword() => IsPasswordCore();
+
+		public void SetFocus() => SetFocusCore();
+
+		public string GetClassName() => GetClassNameCore();
+
+		public AutomationControlType GetAutomationControlType() => GetAutomationControlTypeCore();
+
+		public string GetLocalizedControlType() => GetLocalizedControlTypeCore();
+
+		public string GetName() => GetNameCore();
+
+		public AutomationPeer GetLabeledBy() => GetLabeledByCore();
+
 		#endregion
 
 		#region Overrides
 
-		protected virtual bool IsContentElementCore()
+		protected virtual object GetPatternCore(Windows.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => null;
+
+		protected virtual string GetAcceleratorKeyCore() => string.Empty;
+
+		protected virtual string GetAccessKeyCore() => string.Empty;
+
+		protected virtual string GetAutomationIdCore() => string.Empty;
+
+		protected virtual Rect GetBoundingRectangleCore() => default;
+
+		protected virtual IList<AutomationPeer> GetChildrenCore() => null;
+
+		protected virtual Point GetClickablePointCore() => default;
+
+		protected virtual string GetHelpTextCore() => string.Empty;
+
+		protected virtual string GetItemStatusCore() => string.Empty;
+
+		protected virtual string GetItemTypeCore() => string.Empty;
+
+		protected virtual AutomationOrientation GetOrientationCore() => AutomationOrientation.None;
+
+		protected virtual bool HasKeyboardFocusCore() => false;
+
+		protected virtual bool IsKeyboardFocusableCore() => false;
+
+		protected virtual bool IsOffscreenCore() => false;
+
+		protected virtual bool IsRequiredForFormCore() => false;
+
+		protected virtual AutomationPeer GetPeerFromPointCore(Point point) => this;
+
+		protected virtual AutomationLiveSetting GetLiveSettingCore() => AutomationLiveSetting.Off;
+
+		protected virtual void ShowContextMenuCore()
 		{
-			return false;
 		}
 
-		protected virtual bool IsControlElementCore()
-		{
-			return false;
-		}
+		protected virtual object NavigateCore(Windows.UI.Xaml.Automation.Peers.AutomationNavigationDirection direction) => null;
 
-		protected virtual bool IsEnabledCore()
-		{
-			return true;
-		}
+		protected virtual IReadOnlyList<AutomationPeer> GetControlledPeersCore() => null;
 
-		protected virtual string GetClassNameCore()
-		{
-			return "";
-		}
+		protected virtual object GetElementFromPointCore(Point pointInWindowCoordinates) => this;
 
-		protected virtual string GetNameCore()
-		{
-			return "";
-		}
+		protected virtual object GetFocusedElementCore() => this;
 
-		protected virtual string GetLocalizedControlTypeCore()
-		{
-			return LocalizeControlType(GetAutomationControlType());
-		}
+		protected virtual IList<AutomationPeerAnnotation> GetAnnotationsCore() => null;
 
-		protected virtual AutomationControlType GetAutomationControlTypeCore()
-		{
-			return AutomationControlType.Custom;
-		}
-		
-		protected virtual bool IsPasswordCore()
-		{
-			return false;
-		}
-		
+		protected virtual int GetPositionInSetCore() => -1;
+
+		protected virtual int GetSizeOfSetCore() => -1;
+
+		protected virtual int GetLevelCore() => -1;
+
+		protected virtual AutomationLandmarkType GetLandmarkTypeCore() => AutomationLandmarkType.None;
+
+		protected virtual string GetLocalizedLandmarkTypeCore() => string.Empty;
+
+		protected virtual bool IsPeripheralCore() => false;
+
+		protected virtual bool IsDataValidForFormCore() => true;
+
+		protected virtual string GetFullDescriptionCore() => string.Empty;
+
+		protected virtual AutomationHeadingLevel GetHeadingLevelCore() => AutomationHeadingLevel.None;
+
+		protected virtual bool IsDialogCore() => false;
+
+		protected virtual bool IsContentElementCore() => false;
+
+		protected virtual bool IsControlElementCore() => false;
+
+		protected virtual bool IsEnabledCore() => true;
+
+		protected virtual string GetClassNameCore() => "";
+
+		protected virtual string GetNameCore() => "";
+
+		protected virtual string GetLocalizedControlTypeCore() => LocalizeControlType(GetAutomationControlType());
+
+		protected virtual AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Custom;
+
+		protected virtual bool IsPasswordCore() => false;
+
 		protected virtual void SetFocusCore()
 		{
 		}
 
-		protected virtual AutomationPeer GetLabeledByCore()
-		{
-			return null;
-		}
-		
-		protected virtual IEnumerable<AutomationPeer> GetDescribedByCore()
-		{
-			return null;
-		}
+		protected virtual AutomationPeer GetLabeledByCore() => null;
+
+		protected virtual IEnumerable<AutomationPeer> GetDescribedByCore() => null;
 
 		#endregion
 
 		#region Private
 
-		private static string LocalizeControlType(AutomationControlType controlType)
-		{
+		private static string LocalizeControlType(AutomationControlType controlType) =>
 			// TODO: Humanize ("AppBarButton" -> "app bar button")
 			// TODO: Localize
-			return Enum.GetName(typeof(AutomationControlType), controlType);
-		}
+			Enum.GetName(typeof(AutomationControlType), controlType).ToLowerInvariant();
 
 		internal bool InvokeAutomationPeer()
 		{
@@ -150,10 +220,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return false;
 		}
 
-		internal static void RaiseEventIfListener(DependencyObject target, AutomationEvents eventId)
-		{
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
-		}
+		internal static void RaiseEventIfListener(DependencyObject target, AutomationEvents eventId) => Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
 
 		#endregion
 

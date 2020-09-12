@@ -42,8 +42,6 @@ namespace Windows.UI.Xaml
 
 			_mainController = ViewControllerGenerator?.Invoke() ?? new RootViewController();
 
-			_window.TitleVisibility = NSWindowTitleVisibility.Hidden;
-
 			ObserveOrientationAndSize();
 
 			Dispatcher = CoreDispatcher.Main;

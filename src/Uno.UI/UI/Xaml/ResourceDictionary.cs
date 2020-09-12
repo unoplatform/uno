@@ -4,6 +4,7 @@ using System.Threading;
 using Uno.UI;
 using Uno.Extensions;
 using System.ComponentModel;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -101,6 +102,7 @@ namespace Windows.UI.Xaml
 			if (_values.TryGetValue(key, out value))
 			{
 				TryMaterializeLazy(key, ref value);
+				TryResolveAlias(ref value);
 				return true;
 			}
 
@@ -172,6 +174,22 @@ namespace Windows.UI.Xaml
 					ResourceResolver.PopScope();
 				}
 			}
+		}
+
+		/// <summary>
+		/// If <paramref name="value"/> is a <see cref="StaticResourceAliasRedirect"/>, replace it with the target of ResourceKey, or null if no matching resource is found.
+		/// </summary>
+		/// <returns>True if <paramref name="value"/> is a <see cref="StaticResourceAliasRedirect"/>, false otherwise</returns>
+		private bool TryResolveAlias(ref object value)
+		{
+			if (value is StaticResourceAliasRedirect alias)
+			{
+				ResourceResolver.ResolveResourceStatic(alias.ResourceKey, out var resourceKeyTarget, alias.ParseContext);
+				value = resourceKeyTarget;
+				return true;
+			}
+
+			return false;
 		}
 
 		private bool GetFromMerged(object key, out object value)
@@ -281,6 +299,7 @@ namespace Windows.UI.Xaml
 
 		public global::System.Collections.Generic.ICollection<object> Keys => _values.Keys;
 
+			// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
 
 		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => Add(item.Key, item.Value);
@@ -321,17 +340,25 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<object, object>> GetEnumerator()
+		public IEnumerator<KeyValuePair<object, object>> GetEnumerator()
 		{
 			TryMaterializeAll();
-			return _values.GetEnumerator();
+
+			foreach (var kvp in _values)
+			{
+				var aliased = kvp.Value;
+				if (TryResolveAlias(ref aliased))
+				{
+					yield return new KeyValuePair<object, object>(kvp.Key, aliased);
+				}
+				else
+				{
+					yield return kvp;
+				}
+			}
 		}
 
-		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			TryMaterializeAll();
-			return _values.GetEnumerator();
-		}
+		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
 		/// <summary>
 		/// Ensure all lazily-set values are materialized, prior to enumeration.
@@ -409,6 +436,24 @@ namespace Windows.UI.Xaml
 				Initializer = initializer;
 			}
 		}
+
+		/// <summary>
+		/// Allows resources set by a StaticResource alias to be resolved with the correct theme at time of resolution (eg in response to the
+		/// app theme changing).
+		/// </summary>
+		private class StaticResourceAliasRedirect
+		{
+			public StaticResourceAliasRedirect(string resourceKey, XamlParseContext parseContext)
+			{
+				ResourceKey = resourceKey;
+				ParseContext = parseContext;
+			}
+
+			public string ResourceKey { get; }
+			public XamlParseContext ParseContext { get; }
+		}
+
+		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
 
 		private static class Themes
 		{

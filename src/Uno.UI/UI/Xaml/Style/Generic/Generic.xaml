@@ -297,11 +297,6 @@
 																	Value="{ThemeResource SystemControlPageTextChromeBlackMediumLowBrush}" />
 										</ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
-																	   Storyboard.TargetProperty="Background">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlBackgroundChromeWhiteBrush}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
 																	   Storyboard.TargetProperty="Opacity">
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="{ThemeResource TextControlBackgroundFocusedOpacity}" />
@@ -310,16 +305,6 @@
 																	   Storyboard.TargetProperty="BorderBrush">
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="{ThemeResource SystemControlHighlightAccentBrush}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement"
-																	   Storyboard.TargetProperty="Foreground">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlForegroundChromeBlackHighBrush}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement"
-																	   Storyboard.TargetProperty="RequestedTheme">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="Light" />
 										</ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -353,6 +338,7 @@
 								Background="{TemplateBinding Background}"
 								Margin="{TemplateBinding BorderThickness}"
 								Opacity="{ThemeResource TextControlBackgroundRestOpacity}"
+								CornerRadius="{TemplateBinding CornerRadius}"
 								Grid.ColumnSpan="2"
 								Grid.RowSpan="1" />
 						<Border x:Name="BorderElement"
@@ -3526,8 +3512,7 @@
                                 Width="20" />
 							<FontIcon x:Name="CheckGlyph"
                                 FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                win:Glyph="&#xE001;"
-                                xamarin:Glyph="&#xE10B;"
+                                Glyph="&#xE001;"
                                 FontSize="20"
                                 Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}"
                                 Opacity="0" />
@@ -4365,11 +4350,6 @@
 																	Value="{ThemeResource SystemControlPageTextChromeBlackMediumLowBrush}" />
 										</ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
-																	   Storyboard.TargetProperty="Background">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlBackgroundChromeWhiteBrush}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
 																	   Storyboard.TargetProperty="Opacity">
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="{ThemeResource TextControlBackgroundFocusedOpacity}" />
@@ -4378,11 +4358,6 @@
 																	   Storyboard.TargetProperty="BorderBrush">
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="{ThemeResource SystemControlHighlightAccentBrush}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement"
-																	   Storyboard.TargetProperty="Foreground">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlForegroundChromeBlackHighBrush}" />
 										</ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>

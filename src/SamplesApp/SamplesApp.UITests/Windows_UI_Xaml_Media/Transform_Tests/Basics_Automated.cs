@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 	public partial class Basics_Automated : SampleControlUITestBase
 	{
 		private IAppRect _sut;
-		private FileInfo _result;
+		private ScreenshotInfo _result;
 
 		[Test]
 		[AutoRetry]

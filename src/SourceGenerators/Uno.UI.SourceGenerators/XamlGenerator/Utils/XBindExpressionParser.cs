@@ -61,9 +61,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			{
 				var e = base.VisitInvocationExpression(node);
 
-				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
+				var isParentMemberStatic = node.Expression switch
+				{
+					MemberAccessExpressionSyntax ma => _isStaticMember(ma.Expression.ToFullString()),
+					IdentifierNameSyntax ins => _isStaticMember(ins.ToFullString()),
+					_ => false
+				};
 
-				if (isValidParent && !_isStaticMember(node.Expression.ToFullString()))
+				var isValidParent = !Helpers.IsInsideMethod(node).result
+					&& !Helpers.IsInsideMemberAccessExpression(node).result
+					&& !Helpers.IsInsideMemberAccessExpression(node.Expression).result;
+
+				if (isValidParent && !_isStaticMember(node.Expression.ToFullString()) && !isParentMemberStatic)
 				{
 					if (e is InvocationExpressionSyntax newSyntax)
 					{
@@ -92,8 +101,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			{
 				var e = base.VisitMemberAccessExpression(node);
 				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
+				var isParentMemberStatic = node.Expression is MemberAccessExpressionSyntax m && _isStaticMember(m.ToFullString());
 
-				if (isValidParent)
+				if (isValidParent && !_isStaticMember(node.Expression.ToFullString()) && !isParentMemberStatic)
 				{
 					var expression = e.ToFullString();
 					var contextBuilder = _isStaticMember(expression) ? "" : ContextBuilder;
@@ -112,7 +122,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			{
 				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
 
-				if (isValidParent)
+				if (isValidParent && !_isStaticMember(node.ToFullString()))
 				{
 					var newIdentifier = node.ToFullString();
 

@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -37,6 +38,44 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var recth = _app.Marked("recth").FirstResult().Rect;
 
 			sut.X.Should().Be(recth.X, "Invalid X position");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_UpdatedBinding_On_OneWay_Mode()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Bindings");
+
+			var textboxTwoWay = _app.Marked("textboxTwoWay");
+			var textboxOneWay = _app.Marked("textboxOneWay");
+			var textboxDefault = _app.Marked("textboxDefault");
+
+			var textblock = _app.Marked("textblock");
+
+			// Initial situation
+			textblock.GetDependencyPropertyValue("Text").Should().Be("", "Initial should be empty");
+
+			// Enter text in two-way text
+			textboxTwoWay.EnterText("TwoWay Content");
+			textboxOneWay.FastTap();
+
+			_app.WaitForText(textblock, "TwoWay Content");
+
+			// Enter text in one-way text
+			textboxOneWay.EnterText("OneWay Content");
+			textboxDefault.FastTap();
+
+			// Ensure bound valud didn't change
+			Thread.Sleep(120);
+			_app.WaitForText(textblock, "TwoWay Content");
+
+			// Enter text in one-way text
+			textboxDefault.EnterText("Default Content");
+			textboxTwoWay.FastTap();
+
+			// Ensure bound valud didn't change
+			Thread.Sleep(120);
+			_app.WaitForText(textblock, "TwoWay Content");
 		}
 
 		[Test]

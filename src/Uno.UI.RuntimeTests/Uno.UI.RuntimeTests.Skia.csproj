@@ -50,9 +50,11 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	</PropertyGroup>
 	
@@ -65,7 +67,7 @@
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
-
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
@@ -75,5 +77,9 @@
 
 		<UpToDateCheckInput Include="$(PlatformItemsBasePath)**\*.xaml" Exclude="$(PlatformItemsBasePath)bin\**\*.xaml;$(PlatformItemsBasePath)obj\**\*.xaml" />
   </ItemGroup>
+
+	<ItemGroup>
+	  <PRIResource Include="Resources\**\*.resw" />
+	</ItemGroup>
 
 </Project>

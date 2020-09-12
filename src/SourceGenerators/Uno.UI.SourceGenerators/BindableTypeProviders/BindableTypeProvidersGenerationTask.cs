@@ -31,7 +31,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 		private INamedTypeSymbol _javaObjectSymbol;
 		private INamedTypeSymbol _nsObjectSymbol;
 		private INamedTypeSymbol _nonBindableSymbol;
-
+		private INamedTypeSymbol _resourceDictionarySymbol;
 		private IModuleSymbol _currentModule;
 
 		public string[] AnalyzerSuppressions { get; set; }
@@ -58,7 +58,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_nsObjectSymbol = context.Compilation.GetTypeByMetadataName("Foundation.NSObject");
 						_stringSymbol = context.Compilation.GetTypeByMetadataName("System.String");
 						_nonBindableSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.Data.NonBindableAttribute");
-
+						_resourceDictionarySymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.ResourceDictionary");
 						_currentModule = context.Compilation.SourceModule;
 
 						AnalyzerSuppressions = new string[0];
@@ -142,7 +142,12 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			return writer.ToString();
 		}
 
-		private bool IsValidProvider(INamedTypeSymbol type) => type.IsLocallyPublic(_currentModule);
+		private bool IsValidProvider(INamedTypeSymbol type)
+			=> type.IsLocallyPublic(_currentModule)
+
+			// Exclude resource dictionaries for linking constraints (XamlControlsResources in particular)
+			// Those are not databound, so there's no need to generate providers for them.
+			&& !type.Is(_resourceDictionarySymbol);
 
 		private void GenerateProviderTable(IEnumerable<INamedTypeSymbol> q, IndentedStringBuilder writer)
 		{

@@ -45,14 +45,14 @@
 	<PackageReference Update="SkiaSharp.Views" Version="2.80.0" />
 	<PackageReference Update="SkiaSharp" Version="2.80.0" />
 	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.0" />
-	<PackageReference Update="GtkSharp" Version="3.22.25.125" />
+	<PackageReference Update="GtkSharp" Version="3.22.25.128" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
 	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0" />
 	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.1.0" />
 	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0" />
-	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0" />
+	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.2" />
 	<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.1.0" />
   </ItemGroup>
 
@@ -60,7 +60,7 @@
 	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0" />
 	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.1.0" />
 	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0" />
-	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0" />
+	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.2" />
   </ItemGroup>
 
 </Project>

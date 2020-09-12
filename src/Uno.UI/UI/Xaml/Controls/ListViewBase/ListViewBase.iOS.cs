@@ -213,8 +213,10 @@ namespace Windows.UI.Xaml.Controls
 				.ToArray();
 		}
 
-		private void Refresh()
+		private protected override void Refresh()
 		{
+			base.Refresh();
+
 			NativePanel?.Refresh();
 
 			if (ManagedVirtualizingPanel != null)

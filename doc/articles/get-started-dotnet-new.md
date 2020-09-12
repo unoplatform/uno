@@ -4,7 +4,7 @@ The Uno Platform provides a set of command line templates to create cross platfo
 
 To install the templates, type the following:
 ```
-dotnet new -i Uno.ProjectTemplates.Dotnet::2.4
+dotnet new -i Uno.ProjectTemplates.Dotnet
 ```
 
 If you need to determine the parameters available for a template use `dotnet new [templatename] -h`.
@@ -31,6 +31,15 @@ This template can be used to create a blank cross-platform application for iOS, 
 A basic example:
 ```
 dotnet new unoapp-winui -o MyApp
+```
+
+## Uno Platform Blank library
+
+This template can be used to create a blank library. With this type of library, Skia and WebAssembly do not need to built separately, but cannot be differentiated.
+
+A basic example:
+```
+dotnet new unolib -o MyUnoLib
 ```
 
 ## Uno Platform Blank Cross-Runtime library

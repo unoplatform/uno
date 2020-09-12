@@ -127,7 +127,7 @@ namespace SamplesApp.UITests
 			}
 		}
 
-		public FileInfo TakeScreenshot(string stepName, bool? ignoreInSnapshotCompare = null)
+		public ScreenshotInfo TakeScreenshot(string stepName, bool? ignoreInSnapshotCompare = null)
 			=> TakeScreenshot(
 				stepName,
 				ignoreInSnapshotCompare != null
@@ -135,7 +135,7 @@ namespace SamplesApp.UITests
 					: null
 			);
 
-		public FileInfo TakeScreenshot(string stepName, ScreenshotOptions options)
+		public ScreenshotInfo TakeScreenshot(string stepName, ScreenshotOptions? options)
 		{
 			if(_app == null)
 			{
@@ -177,7 +177,7 @@ namespace SamplesApp.UITests
 				SetOptions(fileInfo, options);
 			}
 
-			return fileInfo;
+			return new ScreenshotInfo(fileInfo, stepName) ;
 		}
 
 		public void SetOptions(FileInfo screenshot, ScreenshotOptions options)
@@ -282,10 +282,10 @@ namespace SamplesApp.UITests
 
 		internal double GetDisplayScreenScaling()
 		{
-			var scalingRaw = _app.InvokeGeneric("browser:SampleRunner|GetDisplayScreenScaling", "0");
-
 			if (_scaling == null)
 			{
+				var scalingRaw = _app.InvokeGeneric("browser:SampleRunner|GetDisplayScreenScaling", "0");
+
 				if (double.TryParse(scalingRaw?.ToString(), out var scaling))
 				{
 					Console.WriteLine($"Display Scaling: {scaling}");

@@ -1,4 +1,6 @@
-﻿#if NETSTANDARD
+﻿#nullable enable
+
+#if NETSTANDARD
 #define USE_HARD_REFERENCES
 #endif
 
@@ -152,7 +154,7 @@ namespace Windows.UI.Xaml
 
 				// Under iOS and Android, we need to force the collection for the GC
 				// to pick up the orphan instances that we've just released.
-				
+
 				GC.Collect();
 			}
 		}
@@ -170,7 +172,7 @@ namespace Windows.UI.Xaml
 
 			View instance;
 
-			if (list?.Count == 0)
+			if (list.Count == 0)
 			{
 				if (_trace.IsEnabled)
 				{
@@ -224,17 +226,17 @@ namespace Windows.UI.Xaml
 			return instances;
 		}
 
-		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		/// <summary>
+		/// Manually return an unused template root to the pool.
+		/// </summary>
+		internal void ReleaseTemplateRoot(View root, FrameworkTemplate template) => OnParentChanged(root, template, args: null);
+
+		private void OnParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs? args)
 		{
-			var list = GetTemplatePool(key as FrameworkTemplate);
+			var list = GetTemplatePool(key as FrameworkTemplate ?? throw new InvalidOperationException($"Received {key} but expecting {typeof(FrameworkElement)}"));
 
-			if (args.NewParent == null)
+			if (args?.NewParent == null)
 			{
-				if (list == null)
-				{
-					list = GetTemplatePool(key as FrameworkTemplate);
-				}
-
 				if (_trace.IsEnabled)
 				{
 					_trace.WriteEventActivity(TraceProvider.RecycleTemplate, EventOpcode.Send, new[] { instance.GetType().ToString() });
@@ -244,11 +246,18 @@ namespace Windows.UI.Xaml
 
 				var item = instance as View;
 
-				list.Add(new TemplateEntry(_watch.Elapsed, item));
-
+				if (item != null)
+				{
+					list.Add(new TemplateEntry(_watch.Elapsed, item));
 #if USE_HARD_REFERENCES
-				_activeInstances.Remove(item);
+					_activeInstances.Remove(item);
 #endif
+				}
+				else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn($"Enqueued template root was not a view");
+				}
+
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
@@ -269,7 +278,7 @@ namespace Windows.UI.Xaml
 		internal static void PropagateOnTemplateReused(object instance)
 		{
 			// If DataContext is not null, it means it has been explicitly set (not inherited). Resetting the view could push an invalid value through 2-way binding in this case.
-			if (instance is IFrameworkTemplatePoolAware templateAwareElement && (instance as IFrameworkElement).DataContext == null)
+			if (instance is IFrameworkTemplatePoolAware templateAwareElement && (instance as IFrameworkElement)!.DataContext == null)
 			{
 				templateAwareElement.OnTemplateRecycled();
 			}
@@ -291,7 +300,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private string GetTemplateDebugId(FrameworkTemplate template)
+		private string GetTemplateDebugId(FrameworkTemplate? template)
 		{
 			//Grossly inefficient, should only be used for debug logging
 			int i = -1;

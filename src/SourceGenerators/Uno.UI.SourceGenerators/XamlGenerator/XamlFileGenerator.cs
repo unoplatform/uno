@@ -520,7 +520,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri")))
 				{
-					writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{asm.FullName}\"));");
+					if (asm.Name.Name == "Uno.UI")
+					{
+						// Avoid the use of assembly lookup as we already know the assembly
+						writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(typeof(global::Windows.UI.Xaml.FrameworkElement).Assembly);");
+					}
+					else
+					{
+						if (_isWasm)
+						{
+							var anchorType = asm.MainModule.Types.FirstOrDefault(t => t.Name == "GlobalStaticResources" && t.IsPublic)
+								?? asm.MainModule.Types.FirstOrDefault(t => t.IsPublic && t.CustomAttributes.None(c => c.AttributeType.Name == "Obsolete"));
+
+							if (anchorType != null)
+							{
+								// Use a public type to get the assembly to work around a WASM assembly loading issue
+								writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(typeof(global::{anchorType.FullName}).Assembly); /* {asm.FullName} */");
+							}
+						}
+						else
+						{
+							writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{asm.FullName}\"));");
+						}
+					}
 				}
 			}
 		}
@@ -709,17 +731,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariant($"[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]");
 				using (writer.BlockInvariant($"private class {bindingsClassName} : {bindingsInterfaceName}"))
 				{
-					writer.AppendLineInvariant($"private readonly {className} _owner;");
+					writer.AppendLineInvariant("#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING");
+					writer.AppendLineInvariant("{0}", $"private global::System.WeakReference _ownerReference;");
+					writer.AppendLineInvariant("{0}", $"private {className} Owner {{ get => ({className})_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }}");
+					writer.AppendLineInvariant("#else");
+					writer.AppendLineInvariant("{0}", $"private {className} Owner {{ get; set; }}");
+					writer.AppendLineInvariant("#endif");
+
 
 					using (writer.BlockInvariant($"public {bindingsClassName}({className} owner)"))
 					{
-						writer.AppendLineInvariant($"_owner = owner;");
+						writer.AppendLineInvariant($"Owner = owner;");
 					}
 
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.Initialize()")) { }
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.Update()"))
 					{
-						writer.AppendLineInvariant($"_owner.ApplyCompiledBindings();");
+						writer.AppendLineInvariant($"Owner.ApplyCompiledBindings();");
 					}
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.StopTracking()")) { }
 				}
@@ -833,7 +861,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					throw new InvalidOperationException($"Dictionary Item {resource?.Type?.Name} has duplicate key `{key}` { (theme != null ? $" in theme {theme}" : "")}.");
 				}
-				_topLevelDictionaryProperties[(theme, key)] = (propertyName, FindType(resource.Type));
+				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
+				if (!isStaticResourceAlias
+					// TODO: this case should be eventually removed, and the same behaviour applied within Uno.UI, to support the scenario where app code
+					// overrides the aliased value. Perf impact needs to be evaluated.
+					|| _isUnoAssembly)
+				{
+					_topLevelDictionaryProperties[(theme, key)] = (propertyName, FindType(resource.Type)); 
+				}
 			}
 
 			//Create static properties
@@ -849,25 +884,35 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				_dictionaryPropertyIndex++;
-				var propertyName = GetPropertyNameForResourceKey(_dictionaryPropertyIndex);
-				if (_topLevelDictionaryProperties[(theme, key)].PropertyName != propertyName)
-				{
-					throw new InvalidOperationException($"Property was not created correctly for {key} (theme={theme}).");
-				}
-				writer.AppendLineInvariant("// Property for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
-				void BuildPropertyBody()
+				if (isStaticResourceAlias
+					// TODO: this case should be eventually removed, and the same behaviour applied within Uno.UI, to support the scenario where app code
+					// overrides the aliased value. Perf impact needs to be evaluated.
+					&& !_isUnoAssembly)
 				{
-					if (isStaticResourceAlias)
-					{
-						BuildStaticResourceResourceKeyReference(writer, resource);
-					}
-					else
-					{
-						BuildChild(writer, resourcesRoot, resource);
-					}
+					writer.AppendLineInvariant("// Skipping static property {0} for {1} {2} - StaticResource ResourceKey aliases are added directly to dictionary",_dictionaryPropertyIndex, key, theme);
 				}
-				BuildSingleTimeInitializer(writer, isStaticResourceAlias ? "global::System.Object" : resource.Type.Name, propertyName, BuildPropertyBody);
+				else
+				{
+					var propertyName = GetPropertyNameForResourceKey(_dictionaryPropertyIndex);
+					if (_topLevelDictionaryProperties[(theme, key)].PropertyName != propertyName)
+					{
+						throw new InvalidOperationException($"Property was not created correctly for {key} (theme={theme}).");
+					}
+					writer.AppendLineInvariant("// Property for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
+					void BuildPropertyBody()
+					{
+						if (isStaticResourceAlias)
+						{
+							BuildStaticResourceResourceKeyReference(writer, resource);
+						}
+						else
+						{
+							BuildChild(writer, resourcesRoot, resource);
+						}
+					}
+					BuildSingleTimeInitializer(writer, isStaticResourceAlias ? "global::System.Object" : resource.Type.Name, propertyName, BuildPropertyBody);
+				}
 			}
 			_themeDictionaryCurrentlyBuilding = former;
 		}
@@ -880,7 +925,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			var targetKey = resourceDefinition.Members.FirstOrDefault(m => m.Member.Name == "ResourceKey")?.Value as string;
 
-			writer.AppendLineInvariant(GetSimpleStaticResourceRetrieval(null, targetKey));
+			var directProperty = GetResourceDictionaryPropertyName(targetKey);
+			if (directProperty != null)
+			{
+				// TODO: this case should be eventually removed, even when a match is present in the same dictionary, it should insert the passthrough to allow for
+				// the scenario where app code overrides the aliased value. Perf impact needs to be evaluated.
+				writer.AppendLineInvariant(directProperty);
+			}
+			else if (_isUnoAssembly)
+			{
+				writer.AppendLineInvariant(GetSimpleStaticResourceRetrieval(null, targetKey));
+			}
+			else
+			{
+				writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ResolveStaticResourceAlias(\"{0}\", {1})", targetKey, ParseContextPropertyAccess);
+			}
 		}
 
 		/// <summary>
@@ -2014,13 +2073,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var directproperty = GetResourceDictionaryPropertyName(key);
 					using (ShouldLazyInitializeResource(resource) ? BuildLazyResourceInitializer(writer) : null)
 					{
-						if (directproperty != null)
-						{
-							writer.AppendLineInvariant(directproperty);
-						}
-						else if (resource.Type.Name == "StaticResource")
+						if (resource.Type.Name == "StaticResource") // Direct properties aren't built for StaticResource aliases
 						{
 							BuildStaticResourceResourceKeyReference(writer, resource);
+						}
+						else if (directproperty != null)
+						{
+							writer.AppendLineInvariant(directproperty);
 						}
 						else
 						{
@@ -3143,7 +3202,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				rawFunction = string.IsNullOrEmpty(rawFunction) ? "___ctx" : rawFunction;
+				rawFunction = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMember);
 
 				string buildBindBack()
 				{
@@ -3165,7 +3224,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (propertyPaths.properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0]);
-								return $"(___tctx, __value) => {rawFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value)";
+								return $"(___ctx, __value) => {{ " +
+									$"if(___ctx is global::{_className.ns + "." + _className.className} ___tctx) " +
+									$"{rawFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
+									$" }}";
 							}
 							else
 							{
@@ -3179,7 +3241,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return $".Apply(___b =>  /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, this, ___ctx => {rawFunction}, {buildBindBack()} {pathsArray}))";
+				var bindFunction = $"___ctx is global::{_className.ns + "." + _className.className} ___tctx ? (object)({rawFunction}) : null";
+				return $".Apply(___b =>  /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, this, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
 			}
 		}
 
@@ -3223,17 +3286,41 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return currentType;
 		}
 
-		bool IsStaticMember(string fullMemberName)
+		private bool IsStaticMember(string fullMemberName)
 		{
 			fullMemberName = fullMemberName.TrimStart("global::");
 
 			var lastDotIndex = fullMemberName.LastIndexOf(".");
 
-			var className = lastDotIndex != -1 ? fullMemberName.Substring(0, lastDotIndex) : fullMemberName;
-			var memberName = lastDotIndex != -1 ? fullMemberName.Substring(lastDotIndex + 1) : fullMemberName;
+			if (lastDotIndex != -1)
+			{
+				var className = lastDotIndex != -1 ? fullMemberName.Substring(0, lastDotIndex) : fullMemberName;
+				var memberName = lastDotIndex != -1 ? fullMemberName.Substring(lastDotIndex + 1) : fullMemberName;
 
-			return _metadataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol
-				&& (typeSymbol.GetMethods().Any(m => m.IsStatic && m.Name == memberName) || typeSymbol.GetProperties().Any(m => m.IsStatic && m.Name == memberName));
+				if (_metadataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol)
+				{
+					var hasStaticMethod = typeSymbol.GetMethods().Any(m => m.IsStatic && m.Name == memberName);
+					var hasStaticProperty = typeSymbol.GetProperties().Any(m => m.Name == memberName && m.IsStatic);
+					var isEnum = typeSymbol.TypeKind == TypeKind.Enum;
+
+					return hasStaticMethod || hasStaticProperty || isEnum;
+				}
+
+				return false;
+			}
+			else
+			{
+				if (_metadataHelper.FindTypeByFullName(_className.ns + "." + _className.className) is INamedTypeSymbol typeSymbol)
+				{
+					var hasStaticMethod = typeSymbol.GetMethods().Any(m => m.IsStatic && m.Name == fullMemberName);
+					var isStaticProperty = typeSymbol.GetProperties().Any(m => m.Name == fullMemberName && m.IsStatic);
+					var isStaticField = typeSymbol.GetFields().Any(m => m.Name == fullMemberName && m.IsStatic);
+
+					return isStaticProperty || isStaticField || hasStaticMethod;
+				}
+
+				return false;
+			}
 		}
 
 		private string RewriteNamespaces(string xamlString)

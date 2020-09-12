@@ -14,8 +14,6 @@ namespace UnoQuickStart.Skia.Gtk
 				expArgs.ExitApplication = true;
 			};
 
-			Windows.ApplicationModel.Resources.ResourceLoader.GetStringInternal = s => null;
-
 			var host = new GtkHost(() => new App(), args);
 
 			host.Run();

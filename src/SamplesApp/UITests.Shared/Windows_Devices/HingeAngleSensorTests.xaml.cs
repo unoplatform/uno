@@ -60,6 +60,7 @@ namespace UITests.Shared.Windows_Devices
 				{
 					SensorStatus = "HingeAngleSensor not available on this device";
 				}
+				RaisePropertyChanged(nameof(HingeAngleSensorAvailable));
 				Disposables.Add(Disposable.Create(() =>
 				{
 					if (_hinge != null)

@@ -89,6 +89,12 @@ dotnet new unoapp -n MyApp.Android (Get-TemplateConfiguration -android 1)
 & $msbuild $debug MyApp.Android\MyApp.Android.sln
 Assert-ExitCodeIsZero
 
+# Uno Library
+dotnet new unolib -n MyUnoLib
+& $msbuild $debug /t:Pack MyUnoLib\MyUnoLib.csproj
+Assert-ExitCodeIsZero
+
+# Uno Cross-Runtime Library
 dotnet new unolib-crossruntime -n MyCrossRuntimeLib
 & $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln
 Assert-ExitCodeIsZero
@@ -97,3 +103,13 @@ Assert-ExitCodeIsZero
 dotnet new unoapp-winui -n UnoAppWinUI
 & $msbuild $debug UnoAppWinUI\UnoAppWinUI.sln
 Assert-ExitCodeIsZero
+
+# XF - Default
+7z x build\assets\xfapp-uwp-4.5.0.356.zip -oXFApp
+
+cd XFApp
+dotnet new wasmxfhead
+& $msbuild /ds /r /p:Configuration=Debug XFApp.Wasm\XFApp.Wasm.csproj
+Assert-ExitCodeIsZero
+
+cd ..

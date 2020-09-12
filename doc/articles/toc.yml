@@ -14,10 +14,20 @@
       href: faq.md
 - name: Using Uno - getting started
   items:
-    - name: Setting up the environment
-      href: get-started.md
+    - name: Getting Started on Visual Studio
+      href: get-started-vs.md
+    - name: Getting Started on Visual Studio for Mac
+      href: get-started-vsmac.md
+    - name: Getting Started on Visual Studio Code
+      href: get-started-vscode.md
+    - name: Getting Started on Rider
+      href: get-started-rider.md
     - name: Creating an app - Tutorial
-      href: getting-started-tutorial-1.md
+      items:
+        - name: Getting Started Tutorial 1
+          href: getting-started-tutorial-1.md
+        - name: Getting Started Tutorial 2
+          href: getting-started-tutorial-2.md
     - name: Next steps
       href: get-started-next-steps.md
     - name: Getting Started with VS Code and WebAssembly
@@ -34,8 +44,6 @@
       href: feature-flags.md
     - name: Uno.UI.Toolkit
       href: Uno.UI.Toolkit.md
-    - name: Migrating existing UWP app to Uno
-      href: migrating-apps.md
     - name: Migrating from Previous Releases
       href: migrating-from-previous-releases.md
     - name: Uno app solution structure
@@ -52,6 +60,8 @@
       href: migrating-apps.md
     - name: Adding native views
       href: native-views.md
+    - name: Adding Splash Screens
+      href: splash-screen.md
 - name: Using Uno - features and controls
   items:
   - name: Accessibility
@@ -62,6 +72,8 @@
     href: features/working-with-assets.md
   - name: Lottie animations
     href: features/Lottie.md
+  - name: SignalR
+    href: signalr.md
   - name: ComboBox
     href: controls\ComboBox.md
   - name: CommandBar
@@ -70,6 +82,10 @@
     href: features/custom-fonts.md
   - name: ElevatedView
     href: features\ElevatedView.md
+  - name: Fluent styles
+    href: features\fluent-styles.md
+  - name: Fluent icon font
+    href: uno-fluent-assets.md
   - name: ListView and GridView
     href: controls\ListViewBase.md
   - name: MapControl

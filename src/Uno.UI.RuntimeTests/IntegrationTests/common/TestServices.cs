@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml.Controls;
@@ -40,6 +41,30 @@ namespace Private.Infrastructure
 
 				await tcs.Task;
 #endif
+			}
+
+			/// <summary>
+			/// Wait until a specified <paramref name="condition"/> is met. 
+			/// </summary>
+			/// <param name="timeoutMS">The maximum time to wait before failing the test, in milliseconds.</param>
+			internal static async Task WaitFor(Func<bool> condition, int timeoutMS = 1000, string message = "")
+			{
+				if (condition())
+				{
+					return;
+				}
+
+				var stopwatch = Stopwatch.StartNew();
+				while (stopwatch.ElapsedMilliseconds < timeoutMS)
+				{
+					await WaitForIdle();
+					if (condition())
+					{
+						return;
+					}
+				}
+
+				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
 			}
 
 			internal static void ShutdownXaml() { }

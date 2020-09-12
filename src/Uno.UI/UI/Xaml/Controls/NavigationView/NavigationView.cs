@@ -3045,12 +3045,15 @@ namespace Windows.UI.Xaml.Controls
 
 					if (!m_isClosedCompact && PaneTitle?.Length > 0)
 					{
-						if (splitView.DisplayMode == SplitViewDisplayMode.Overlay && IsPaneOpen)
+						// if splitView.IsPaneOpen changed directly by SplitView,
+						// the two-way binding haven't sync'd up IsPaneOpen yet.
+						var isPaneOpen = m_isOpenPaneForInteraction ? IsPaneOpen : splitView.IsPaneOpen;
+						if (splitView.DisplayMode == SplitViewDisplayMode.Overlay && isPaneOpen)
 						{
 							width = OpenPaneLength;
 							togglePaneButtonWidth = OpenPaneLength - (ShouldShowBackButton() ? c_backButtonWidth : 0);
 						}
-						else if (!(splitView.DisplayMode == SplitViewDisplayMode.Overlay && !IsPaneOpen))
+						else if (!(splitView.DisplayMode == SplitViewDisplayMode.Overlay && !isPaneOpen))
 						{
 							width = OpenPaneLength;
 							togglePaneButtonWidth = OpenPaneLength;

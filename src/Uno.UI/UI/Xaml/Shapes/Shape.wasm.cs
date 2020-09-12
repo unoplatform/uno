@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			else
 			{
-				var str = string.Join(",", StrokeDashArray.Select(d => $"{d}px"));
+				var str = string.Join(",", StrokeDashArray.Select(d => $"{d.ToStringInvariant()}px"));
 				svgElement.SetStyle("stroke-dasharray", str);
 			}
 		}

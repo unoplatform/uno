@@ -57,7 +57,6 @@ namespace SamplesApp
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
-
 		}
 
 		/// <summary>
@@ -238,13 +237,14 @@ namespace SamplesApp
 				// When the navigation stack isn't restored navigate to the first page,
 				// configuring the new page by passing required information as a navigation
 				// parameter
+				var startingPageType = typeof(MainPage);
 				if (arguments != null)
 				{
-					rootFrame.Navigate(typeof(MainPage), arguments);
+					rootFrame.Navigate(startingPageType, arguments);
 				}
 				else
 				{
-					rootFrame.Navigate(typeof(MainPage));
+					rootFrame.Navigate(startingPageType);
 				}
 			}
 		}

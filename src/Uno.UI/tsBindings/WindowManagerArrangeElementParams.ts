@@ -12,7 +12,6 @@ class WindowManagerArrangeElementParams
 	public ClipRight : number;
 	public HtmlId : number;
 	public Clip : boolean;
-	public ClipToBounds : boolean;
 	public static unmarshal(pData:number) : WindowManagerArrangeElementParams
 	{
 		const ret = new WindowManagerArrangeElementParams();
@@ -55,10 +54,6 @@ class WindowManagerArrangeElementParams
 		
 		{
 			ret.Clip = Boolean(Module.getValue(pData + 68, "i32"));
-		}
-		
-		{
-			ret.ClipToBounds = Boolean(Module.getValue(pData + 72, "i32"));
 		}
 		return ret;
 	}

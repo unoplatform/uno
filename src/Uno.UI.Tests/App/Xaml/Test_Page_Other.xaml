@@ -34,5 +34,16 @@
 			</Grid.Resources>
 		</Grid>
 		<TextBlock x:Name="customResourceTextBlock" x:FieldModifier="public" Text="{CustomResource TapestryHereOnMySkin}" />
+		<TextBlock x:Name="ResourceKeyThemedTextBlock"
+				   x:FieldModifier="public"
+				   Foreground="{ThemeResource ButtonForeground}" />
+		<Grid>
+			<Grid.Resources>
+				<ResourceDictionary Source="ms-appx:///UnO.uI.TESTs.ViEWLiBrAry/THEmeS/moRE/TEsT_dIcTionaRy_AbS.xAml" />
+			</Grid.Resources>
+			<TextBlock x:Name="CaseInsensitiveSourceTextBlock"
+					   x:FieldModifier="public"
+					   Foreground="{StaticResource BituminousColorBrush}" />
+		</Grid>
 	</Grid>
 </Page>
