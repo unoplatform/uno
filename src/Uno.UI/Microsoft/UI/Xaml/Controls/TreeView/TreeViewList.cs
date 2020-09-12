@@ -435,7 +435,7 @@ namespace Microsoft.UI.Xaml.Controls
 				dragItemPeer = FrameworkElementAutomationPeer.FromElement(dragItem);
 				if (dragItemPeer != null)
 				{
-					dragItemString = dragItemPeer.GetName(); //dragItemPeer.GetNameCore();
+					dragItemString = dragItemPeer.GetName();
 				}
 
 				if (string.IsNullOrEmpty(dragItemString))
@@ -461,7 +461,7 @@ namespace Microsoft.UI.Xaml.Controls
 						AutomationPeer draggedOverItemPeer = FrameworkElementAutomationPeer.FromElement(m_draggedOverItem);
 						if (draggedOverItemPeer != null)
 						{
-							draggedOverString = draggedOverItemPeer.GetName(); //draggedOverItemPeer.GetNameCore();
+							draggedOverString = draggedOverItemPeer.GetName();
 						}
 					}
 					else
@@ -610,7 +610,7 @@ namespace Microsoft.UI.Xaml.Controls
 				AutomationPeer itemPeer = FrameworkElementAutomationPeer.FromElement(item);
 				if (itemPeer != null)
 				{
-					automationName = itemPeer.GetName(); //itemPeer.GetNameCore();
+					automationName = itemPeer.GetName();
 				}
 			}
 

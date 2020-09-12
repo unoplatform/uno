@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 	internal partial class TreeViewViewModel : ObservableVector<object>
 	{
 		private bool m_isContentMode;
-		private SelectedTreeNodeVector m_selectedNodes;
+		private readonly SelectedTreeNodeVector m_selectedNodes;
 		private SelectedItemsVector m_selectedItems;
 		private Dictionary<object, TreeViewNode> m_itemToNodeMap;
 
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private TreeView m_TreeView;
 
 		private int m_selectionTrackingCounter = 0;
-		private List<WeakReference<object>> m_addedSelectedItems = new List<WeakReference<object>>();
+		private readonly List<WeakReference<object>> m_addedSelectedItems = new List<WeakReference<object>>();
 		private List<object> m_removedSelectedItems = new List<object>();
 
 		public TreeViewViewModel()
@@ -563,7 +563,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateSelectionStateOfDescendants(TreeViewNode targetNode, TreeNodeSelectionState selectionState)
 		{
-			if (selectionState == TreeNodeSelectionState.PartialSelected) return;
+			if (selectionState == TreeNodeSelectionState.PartialSelected) { return; }
 
 			foreach (var childNode in targetNode.Children)
 			{

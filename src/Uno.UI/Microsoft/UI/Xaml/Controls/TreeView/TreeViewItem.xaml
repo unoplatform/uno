@@ -1,5 +1,5 @@
-﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX reference a53a650 -->
+﻿<!-- MUX Reference TreeViewItem.xaml, commit 2766115 -->
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,7 +9,7 @@
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)">
 
 	<Style TargetType="local:TreeViewItem"
-           BasedOn="{StaticResource ListViewItemExpanded}"
+           BasedOn="{StaticResource ListViewItemRevealStyle}"
            x:Key="MUX_TreeViewItemStyle">
 		<Setter Property="Padding" Value="0"/>
 		<Setter Property="Background" Value="{ThemeResource TreeViewItemBackground}"/>
@@ -30,7 +30,7 @@
 								<VisualState x:Name="Normal"/>
 								<VisualState x:Name="PointerOver">
 									<VisualState.Setters>
-										<!--<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="PointerOver" />--> <!-- TODO: RevealBrush -->
+										<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="PointerOver" />
 										<Setter Target="ContentPresenterGrid.Background" Value="{ThemeResource TreeViewItemBackgroundPointerOver}" />
 										<Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TreeViewItemForegroundPointerOver}" />
 										<Setter Target="ContentPresenterGrid.BorderBrush" Value="{ThemeResource TreeViewItemBorderBrushPointerOver}" />
@@ -38,7 +38,7 @@
 								</VisualState>
 								<VisualState x:Name="Pressed">
 									<VisualState.Setters>
-										<!--<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="Pressed" />--> <!-- TODO: RevealBrush -->
+										<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="Pressed" />
 										<Setter Target="ContentPresenterGrid.Background" Value="{ThemeResource TreeViewItemBackgroundPressed}" />
 										<Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TreeViewItemForegroundPressed}" />
 										<Setter Target="ContentPresenterGrid.BorderBrush" Value="{ThemeResource TreeViewItemBorderBrushPressed}" />
@@ -60,7 +60,7 @@
 								</VisualState>
 								<VisualState x:Name="PointerOverSelected">
 									<VisualState.Setters>
-										<!--<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="PointerOver" />--> <!-- TODO: RevealBrush -->
+										<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="PointerOver" />
 										<Setter Target="ContentPresenterGrid.Background" Value="{ThemeResource TreeViewItemBackgroundSelectedPointerOver}" />
 										<Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TreeViewItemForegroundSelectedPointerOver}" />
 										<Setter Target="ContentPresenterGrid.BorderBrush" Value="{ThemeResource TreeViewItemBorderBrushSelectedPointerOver}" />
@@ -68,7 +68,7 @@
 								</VisualState>
 								<VisualState x:Name="PressedSelected">
 									<VisualState.Setters>
-										<!--<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="Pressed" />--> <!-- TODO: RevealBrush -->
+										<Setter Target="ContentPresenterGrid.(media:RevealBrush.State)" Value="Pressed" />
 										<Setter Target="ContentPresenterGrid.Background" Value="{ThemeResource TreeViewItemBackgroundSelectedPressed}" />
 										<Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TreeViewItemForegroundSelectedPressed}" />
 										<Setter Target="ContentPresenterGrid.BorderBrush" Value="{ThemeResource TreeViewItemBorderBrushSelectedPressed}" />
@@ -153,28 +153,30 @@
 							</Grid>
 
 							<Grid x:Name="ExpandCollapseChevron"
-                                    Grid.Column="1"
-                                    Padding="12,0,12,0"
-                                    Width="Auto"
-                                    Opacity="{TemplateBinding GlyphOpacity}"
-                                    Background="Transparent">
+                                Grid.Column="1"
+                                Padding="12,0,12,0"
+                                Width="Auto"
+                                Opacity="{TemplateBinding GlyphOpacity}"
+                                Background="Transparent">
 								<TextBlock Foreground="{TemplateBinding GlyphBrush}"
-                                            Width="12" Height="12"
-                                            Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TreeViewItemTemplateSettings.CollapsedGlyphVisibility}" 
-                                            FontSize="{TemplateBinding GlyphSize}" Text="{TemplateBinding CollapsedGlyph}"
-                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                            VerticalAlignment="Center"
-                                            AutomationProperties.AccessibilityView="Raw"
-                                            IsTextScaleFactorEnabled="False" />
+                                    Width="12" Height="12"
+                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TreeViewItemTemplateSettings.CollapsedGlyphVisibility}"
+                                    FontSize="{TemplateBinding GlyphSize}" Text="{TemplateBinding CollapsedGlyph}"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.AccessibilityView="Raw"
+                                    IsTextScaleFactorEnabled="False"
+                                    IsHitTestVisible="False"/>
 								<TextBlock Foreground="{TemplateBinding GlyphBrush}"
-                                            Width="12" Height="12"
-                                            Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TreeViewItemTemplateSettings.ExpandedGlyphVisibility}" 
-                                            FontSize="{TemplateBinding GlyphSize}"
-                                            Text="{TemplateBinding ExpandedGlyph}"
-                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                            VerticalAlignment="Center"
-                                            AutomationProperties.AccessibilityView="Raw"
-                                            IsTextScaleFactorEnabled="False"/>
+                                    Width="12" Height="12"
+                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TreeViewItemTemplateSettings.ExpandedGlyphVisibility}" 
+                                    FontSize="{TemplateBinding GlyphSize}"
+                                    Text="{TemplateBinding ExpandedGlyph}"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.AccessibilityView="Raw"
+                                    IsTextScaleFactorEnabled="False"
+                                    IsHitTestVisible="False"/>
 							</Grid>
 
 							<ContentPresenter x:Name="ContentPresenter"

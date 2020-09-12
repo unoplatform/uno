@@ -1,14 +1,15 @@
-﻿#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-using Windows.UI.Xaml.Controls.Primitives;
+﻿using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	[global::Uno.NotImplemented]
-#endif
+	/// <summary>
+	/// Provides data for the ContainerContentChanging event.
+	/// </summary>
 	public partial class ContainerContentChangingEventArgs
 	{
+		/// <summary>
+		/// Initializes a new instance of the ContainerContentChangingEventArgs class.
+		/// </summary>
 		public ContainerContentChangingEventArgs()
 		{
 		}
@@ -20,14 +21,26 @@ namespace Windows.UI.Xaml.Controls
 			ItemIndex = itemIndex;
 		}
 
+		/// <summary>
+		/// Gets or sets a value that marks the routed event as handled.
+		/// A true value for Handled prevents most handlers along the event
+		/// route from handling the same event again.
+		/// </summary>
 		public bool Handled { get; set; }
 
-		public bool InRecycleQueue { get; }
-
+		/// <summary>
+		/// Gets the data item associated with this container.
+		/// </summary>
 		public object Item { get; }
 
+		/// <summary>
+		/// Gets the UI container used to display the current data item.
+		/// </summary>
 		public SelectorItem ItemContainer { get; }
 
+		/// <summary>
+		/// Gets the index in the ItemsSource of the data item associated with this container.
+		/// </summary>
 		public int ItemIndex { get; }
 	}
 }

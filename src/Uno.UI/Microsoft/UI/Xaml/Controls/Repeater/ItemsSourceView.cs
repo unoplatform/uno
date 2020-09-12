@@ -1,27 +1,27 @@
-﻿using System;
+﻿// MUX Reference InspectingDataSource.cpp, commit 37ade09
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Interop;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
-	/// This implementation combines ItemsSourceView with InspectingDataSource to match behavior
+	/// Represents a standardized view of the supported interactions between a given ItemsSource object and an ItemsRepeater control.
 	/// </summary>
+	/// <remarks>
+	/// This implementation combines ItemsSourceView with InspectingDataSource to match behavior.	
+	/// </remarks>
 	public class ItemsSourceView : INotifyCollectionChanged
 	{
 		private int m_cachedSize = -1;
 
-		private IList m_vector;
+		private readonly IList m_vector;
 
-		private IKeyIndexMapping m_uniqueIdMaping;
+		private readonly IKeyIndexMapping m_uniqueIdMaping;
 		private INotifyCollectionChanged m_notifyCollectionChanged;
 		private IBindableObservableVector m_bindableObservableVector;
 		private IObservableVector<object> m_observableVector;
@@ -256,21 +256,21 @@ namespace Microsoft.UI.Xaml.Controls
 				case CollectionChange.ItemInserted:
 					action = NotifyCollectionChangedAction.Add;
 					newStartingIndex = (int)e.Index;
-					newItems.Append(null);
+					newItems.Add(null);
 					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(action, newItems, newStartingIndex));
 					break;
 				case CollectionChange.ItemRemoved:
 					action = NotifyCollectionChangedAction.Remove;
 					oldStartingIndex = (int)e.Index;
-					oldItems.Append(null);
+					oldItems.Add(null);
 					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(action, oldItems, oldStartingIndex));
 					break;
 				case CollectionChange.ItemChanged:
 					action = NotifyCollectionChangedAction.Replace;
 					oldStartingIndex = (int)e.Index;
 					newStartingIndex = oldStartingIndex;
-					newItems.Append(null);
-					oldItems.Append(null);
+					newItems.Add(null);
+					oldItems.Add(null);
 					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(action, newItems, oldItems, newStartingIndex));
 					break;
 				case CollectionChange.Reset:
@@ -281,7 +281,9 @@ namespace Microsoft.UI.Xaml.Controls
 					throw new InvalidOperationException("Unsupported collection change");
 			}
 
-			//WinUI uses NotifyCollectionChangedEventArgs with 5 args
+			// Uno specific: WinUI uses an internal overload of NotifyCollectionChangedEventArgs constructor with 5 args,
+			// we use a specific overload for each case instead
+
 			//OnItemsSourceChanged(
 			//	new NotifyCollectionChangedEventArgs(
 			//		action,

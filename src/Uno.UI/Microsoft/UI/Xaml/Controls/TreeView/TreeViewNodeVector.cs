@@ -1,4 +1,6 @@
-﻿using System;
+﻿// MUX Reference TreeViewNode.cpp, commit de78834
+
+using System;
 using System.Collections;
 using Windows.Foundation.Collections;
 
@@ -45,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			if (index > base.Count)
 			{
-				throw new IndexOutOfRangeException("Index out of range for Insert");
+				throw new ArgumentOutOfRangeException(nameof(index), "Index out of range for Insert");
 			}
 
 			item.Parent = m_parent;
