@@ -3068,6 +3068,8 @@
 	</IgnoreSet>
 	<IgnoreSet baseVersion="3.0.17">
 		<Methods>
+      <Member fullName="System.Void Windows.System.UserProfile.UserProfilePersonalizationSettings..ctor()"
+            reason="Parameter-less ctor does not exist in UWP"/>
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
