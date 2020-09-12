@@ -13,6 +13,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.WebView
 			this.InitializeComponent();
 		}
 
+#if HAS_UNO
 		string longString = "";
 
 		private void generateLong_Click(object sender, object e)
@@ -55,6 +56,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.WebView
 		{
 			WebView_NavigateToStringResult.Text = "success";
 		}
-
+#endif
 	}
 }

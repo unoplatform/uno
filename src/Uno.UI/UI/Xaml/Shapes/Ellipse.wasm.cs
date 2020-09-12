@@ -2,6 +2,7 @@
 using Windows.UI.Xaml.Wasm;
 using Uno.Extensions;
 using Uno.UI;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -14,7 +15,11 @@ namespace Windows.UI.Xaml.Shapes
 			SvgChildren.Add(_ellipse);
 
 			InitCommonShapeProperties();
+
+			RegisterPropertyChangedCallback(StrokeProperty, OnStrokeChanged);
 		}
+
+		private void OnStrokeChanged(DependencyObject sender, DependencyProperty dp) => InvalidateArrange();
 
 		protected override SvgElement GetMainSvgElement()
 		{
@@ -23,22 +28,18 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var minMax = this.GetMinMax();
+			var size = this.ApplySizeConstraints(finalSize);
 
-			var arrangeSize = finalSize
-				.AtLeast(minMax.min)
-				.AtMost(minMax.max);
+			var cx = size.Width / 2;
+			var cy = size.Height / 2;
 
-			var cx = arrangeSize.Width / 2;
-			var cy = arrangeSize.Height / 2;
-
-			var strokeThickness = ActualStrokeThickness;
+			var halfStrokeThickness = ActualStrokeThickness / 2;
 
 			_ellipse.SetAttribute(
 				("cx", cx.ToStringInvariant()),
 				("cy", cy.ToStringInvariant()),
-				("rx", (cx - strokeThickness).ToStringInvariant()),
-				("ry", (cy - strokeThickness).ToStringInvariant()));
+				("rx", (cx - halfStrokeThickness).ToStringInvariant()),
+				("ry", (cy - halfStrokeThickness).ToStringInvariant()));
 
 			return base.ArrangeOverride(finalSize);
 		}

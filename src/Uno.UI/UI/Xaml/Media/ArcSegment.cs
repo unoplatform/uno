@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Windows.UI.Xaml.Shapes;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -33,19 +34,19 @@ namespace Windows.UI.Xaml.Media
 
 		#region Size
 
-		public Foundation.Size Size
+		public Size Size
 		{
-			get => (Foundation.Size)this.GetValue(SizeProperty);
+			get => (Size)this.GetValue(SizeProperty);
 			set => this.SetValue(SizeProperty, value);
 		}
 
 		public static DependencyProperty SizeProperty { get; } =
 			DependencyProperty.Register(
 				"Size",
-				typeof(Foundation.Size),
+				typeof(Size),
 				typeof(ArcSegment),
 				new FrameworkPropertyMetadata(
-					defaultValue: new Foundation.Size(),
+					defaultValue: new Size(),
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
@@ -75,19 +76,19 @@ namespace Windows.UI.Xaml.Media
 
 		#region Point
 
-		public Foundation.Point Point
+		public Point Point
 		{
-			get => (Foundation.Point)this.GetValue(PointProperty);
+			get => (Point)this.GetValue(PointProperty);
 			set => this.SetValue(PointProperty, value);
 		}
 
 		public static DependencyProperty PointProperty { get; } =
 			DependencyProperty.Register(
 				"Point",
-				typeof(Foundation.Point),
+				typeof(Point),
 				typeof(ArcSegment),
 				new FrameworkPropertyMetadata(
-					defaultValue: new Foundation.Point(),
+					defaultValue: new Point(),
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);

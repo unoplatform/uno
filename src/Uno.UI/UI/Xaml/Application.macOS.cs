@@ -9,32 +9,90 @@ using Windows.ApplicationModel;
 using ObjCRuntime;
 using Windows.Graphics.Display;
 using Uno.UI.Services;
+using System.Globalization;
+using Uno.Extensions;
+using Uno.Logging;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+using Selector = ObjCRuntime.Selector;
+using Windows.System.Profile;
+using Uno.Helpers;
+#if HAS_UNO_WINUI
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+#else
+using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
 
 namespace Windows.UI.Xaml
 {
 	[Register("UnoAppDelegate")]
 	public partial class Application : NSApplicationDelegate
 	{
+		private readonly NSString _themeChangedNotification = new NSString("AppleInterfaceThemeChangedNotification");
+		private readonly Selector _modeSelector = new Selector("themeChanged:");
+
+		private NSUrl[] _launchUrls = null;
+
 		public Application()
 		{
 			Current = this;
-			Windows.UI.Xaml.GenericStyles.Initialize();
+			SetCurrentLanguage();
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 		}
 
 		public Application(IntPtr handle) : base(handle)
 		{
+
 		}
+
+		public override bool ApplicationShouldTerminateAfterLastWindowClosed(NSApplication sender) => true;
+
+		internal bool Suspended { get; private set; }
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
 		{
 			callback(new ApplicationInitializationCallbackParams());
 		}
 
+		public override void OpenUrls(NSApplication application, NSUrl[] urls)
+		{
+			if (!_initializationComplete)
+			{
+				_launchUrls = urls;
+			}
+			else
+			{
+				// application is already running, we just try to activate it
+				// if passed-in URIs are valid
+				TryHandleUrlActivation(urls, ApplicationExecutionState.Running);
+			}
+		}
+
 		public override void DidFinishLaunching(NSNotification notification)
 		{
-            InitializationCompleted();
-            OnLaunched(new LaunchActivatedEventArgs());
+			InitializationCompleted();
+			var handled = false;
+			if (_launchUrls != null)
+			{
+				handled = TryHandleUrlActivation(_launchUrls, ApplicationExecutionState.NotRunning);
+			}
+			if (!handled)
+			{
+				OnLaunched(new LaunchActivatedEventArgs());
+			}
+		}
+
+		partial void OnSuspendingPartial()
+		{
+			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(30), () =>
+			{
+				Suspended = true;
+				NSApplication.SharedApplication.KeyWindow.PerformClose(null);
+			});
+
+			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
+
+			operation.EventRaiseCompleted();
 		}
 
 		/// <summary>
@@ -46,37 +104,82 @@ namespace Windows.UI.Xaml
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
 
+		private bool TryHandleUrlActivation(NSUrl[] urls, ApplicationExecutionState previousState)
+		{
+			var handled = false;
+			foreach (var url in urls)
+			{
+				if (Uri.TryCreate(url.ToString(), UriKind.Absolute, out var uri))
+				{
+					OnActivated(new ProtocolActivatedEventArgs(uri, previousState));
+					// now the app is certainly running
+					previousState = ApplicationExecutionState.Running;
+					handled = true;
+				}
+				else
+				{
+					this.Log().LogError($"Activation URI {url} could not be parsed");
+				}
+			}
+
+			// at least one URI must be valid for activation to be handled
+			return handled;
+		}
+
 		/// <summary>
 		/// Based on <see cref="https://forums.developer.apple.com/thread/118974" />
 		/// </summary>
 		/// <returns>System theme</returns>
 		private ApplicationTheme GetDefaultSystemTheme()
 		{
-			const string AutoSwitchKey = "AppleInterfaceStyleSwitchesAutomatically";			
-			var autoChange = NSUserDefaults.StandardUserDefaults[AutoSwitchKey];
-			if ( autoChange != null )
+			var version = DeviceHelper.OperatingSystemVersion;
+			if (version >= new Version(10, 14))
 			{
-				var autoChangeEnabled = NSUserDefaults.StandardUserDefaults.BoolForKey(AutoSwitchKey);
-				if (autoChangeEnabled)
+				var app = NSAppearance.CurrentAppearance?.FindBestMatch(new string[]
 				{
-					if (NSUserDefaults.StandardUserDefaults["AppleInterfaceStyle"] == null)
-					{
-						return ApplicationTheme.Dark;
-					}
-					else
-					{
-						return ApplicationTheme.Light;
-					}
+					NSAppearance.NameAqua,
+					NSAppearance.NameDarkAqua
+				});
+
+				if (app == NSAppearance.NameDarkAqua)
+				{
+					return ApplicationTheme.Dark;
 				}
 			}
-			if (NSUserDefaults.StandardUserDefaults["AppleInterfaceStyle"] == null)
+			return ApplicationTheme.Light;
+		}
+
+		private void SetCurrentLanguage()
+		{
+			var language = NSLocale.PreferredLanguages.ElementAtOrDefault(0);
+
+			try
 			{
-				return ApplicationTheme.Light;
+				var cultureInfo = CultureInfo.CreateSpecificCulture(language);
+				CultureInfo.CurrentUICulture = cultureInfo;
+				CultureInfo.CurrentCulture = cultureInfo;
 			}
-			else
+			catch (Exception ex)
 			{
-				return ApplicationTheme.Dark;
-			}			
+				this.Log().Error($"Failed to set culture for language: {language}", ex);
+			}
+		}
+
+		partial void ObserveSystemThemeChanges()
+		{
+			NSDistributedNotificationCenter.GetDefaultCenter().AddObserver(
+				this,
+				_modeSelector,
+				_themeChangedNotification,
+				null);
+		}
+
+		[Export("themeChanged:")]
+		public void ThemeChanged(NSObject change) => OnSystemThemeChanged();
+		
+		public void Exit()
+		{
+			NSApplication.SharedApplication.Terminate(null);
 		}
 	}
 }

@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Identifies the NameScope attached property.
 		/// </summary>
-		public static readonly DependencyProperty NameScopeProperty =
+		public static DependencyProperty NameScopeProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"NameScope",
 				typeof(INameScope),

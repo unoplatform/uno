@@ -14,6 +14,7 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Logging;
 using Uno.UI;
+using Windows.UI.Composition;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
@@ -21,7 +22,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		private AnimatedVisualPlayer _player;
 
-		public static readonly DependencyProperty UriSourceProperty = DependencyProperty.Register(
+		public static DependencyProperty UriSourceProperty { get ; } = DependencyProperty.Register(
 			"UriSource",
 			typeof(Uri),
 			typeof(LottieVisualSource),
@@ -36,8 +37,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			set => SetValue(UriSourceProperty, value);
 		}
 
-		public static readonly DependencyProperty OptionsProperty = DependencyProperty.Register(
-			"Options", typeof(LottieVisualOptions), typeof(LottieVisualSource), new PropertyMetadata(LottieVisualOptions.None));
+		public static DependencyProperty OptionsProperty { get ; } = DependencyProperty.Register(
+			"Options", typeof(LottieVisualOptions), typeof(LottieVisualSource), new FrameworkPropertyMetadata(LottieVisualOptions.None));
 
 		[NotImplemented]
 		public LottieVisualOptions Options
@@ -52,6 +53,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			throw new NotImplementedException();
 		}
 
+#if HAS_UNO_WINUI
+		[NotImplemented]
+		public IAnimatedVisual TryCreateAnimatedVisual(Compositor compositor, out object diagnostics)
+		{
+			throw new NotImplementedException();
+		}
+#endif
 
 		private static void OnUriSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -115,6 +123,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private readonly Size CompositionSize = default;
 #endif
+
 		public void Update(AnimatedVisualPlayer player)
 		{
 			_player = player;

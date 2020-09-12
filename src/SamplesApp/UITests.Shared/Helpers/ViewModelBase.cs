@@ -10,6 +10,9 @@ using System.Windows.Input;
 using Uno.Disposables;
 using Windows.UI.Core;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace Uno.UI.Samples.UITests.Helpers
 {
 	[Windows.UI.Xaml.Data.Bindable]
@@ -110,7 +113,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 				set
 				{
 					_manualCanExecute = value;
-					CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+					CanExecuteChanged?.Invoke(this, null);
 				}
 			}
 
@@ -151,7 +154,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 				try
 				{
 					_isExecuting = isExecutingParameter;
-					CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+					CanExecuteChanged?.Invoke(this, null);
 					if (_action != null)
 					{
 						_action(parameter);
@@ -164,7 +167,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 				finally
 				{
 					_isExecuting = null;
-					CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+					CanExecuteChanged?.Invoke(this, null);
 				}
 			}
 

@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Uno.UI;
 using Uno.Logging;
 using Uno.Disposables;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -152,6 +153,10 @@ namespace Windows.UI.Xaml.Controls
 			return await tcs.Task;
 		}
 
+		public IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
+			AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
+			
+
 		#region Navigation History
 
 		// On Windows, the WebView ignores "about:blank" entries from its navigation history.
@@ -252,11 +257,15 @@ namespace Windows.UI.Xaml.Controls
 			public InternalClient(WebView webView)
 			{
 				_webView = webView;
-				//SetLayerType disables hardware acceleration for a single view.
-				//This is required to remove glitching issues particularly when having a keyboard pop-up with a webview present.
-				//http://developer.android.com/guide/topics/graphics/hardware-accel.html
-				//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
-				_webView.SetLayerType(LayerType.Software, null);
+
+				if (FeatureConfiguration.WebView.ForceSoftwareRendering)
+				{
+					//SetLayerType disables hardware acceleration for a single view.
+					//This is required to remove glitching issues particularly when having a keyboard pop-up with a webview present.
+					//http://developer.android.com/guide/topics/graphics/hardware-accel.html
+					//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
+					_webView.SetLayerType(LayerType.Software, null);
+				}
 			}
 
 #pragma warning disable CS0672 // Member overrides obsolete member

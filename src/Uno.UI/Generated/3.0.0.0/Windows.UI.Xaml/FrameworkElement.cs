@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FrameworkElement 
 	{
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public  double Width
 		{
 			get
@@ -20,9 +20,9 @@ namespace Windows.UI.Xaml
 				this.SetValue(WidthProperty, value);
 			}
 		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.VerticalAlignment VerticalAlignment
 		{
 			get
@@ -34,26 +34,13 @@ namespace Windows.UI.Xaml
 				this.SetValue(VerticalAlignmentProperty, value);
 			}
 		}
-#endif
-#if false || false || NET461 || __WASM__ || false
-		[global::Uno.NotImplemented]
-		public  object Tag
-		{
-			get
-			{
-				return (object)this.GetValue(TagProperty);
-			}
-			set
-			{
-				this.SetValue(TagProperty, value);
-			}
-		}
-#endif
+		#endif
+		// Skipping already declared property Tag
 		// Skipping already declared property Style
 		// Skipping already declared property Resources
 		// Skipping already declared property Name
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public  double MinWidth
 		{
 			get
@@ -65,9 +52,9 @@ namespace Windows.UI.Xaml
 				this.SetValue(MinWidthProperty, value);
 			}
 		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public  double MinHeight
 		{
 			get
@@ -79,9 +66,9 @@ namespace Windows.UI.Xaml
 				this.SetValue(MinHeightProperty, value);
 			}
 		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public  double MaxWidth
 		{
 			get
@@ -93,9 +80,9 @@ namespace Windows.UI.Xaml
 				this.SetValue(MaxWidthProperty, value);
 			}
 		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public  double MaxHeight
 		{
 			get
@@ -107,9 +94,9 @@ namespace Windows.UI.Xaml
 				this.SetValue(MaxHeightProperty, value);
 			}
 		}
-#endif
-#if false || false || NET461 || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.Thickness Margin
 		{
 			get
@@ -122,8 +109,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Language
 		{
 			get
@@ -135,9 +122,9 @@ namespace Windows.UI.Xaml
 				this.SetValue(LanguageProperty, value);
 			}
 		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.HorizontalAlignment HorizontalAlignment
 		{
 			get
@@ -149,9 +136,9 @@ namespace Windows.UI.Xaml
 				this.SetValue(HorizontalAlignmentProperty, value);
 			}
 		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public  double Height
 		{
 			get
@@ -163,9 +150,9 @@ namespace Windows.UI.Xaml
 				this.SetValue(HeightProperty, value);
 			}
 		}
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.FlowDirection FlowDirection
 		{
 			get
@@ -178,39 +165,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double ActualHeight
-		{
-			get
-			{
-				return (double)this.GetValue(ActualHeightProperty);
-			}
-		}
-		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double ActualWidth
-		{
-			get
-			{
-				return (double)this.GetValue(ActualWidthProperty);
-			}
-		}
-		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.Uri BaseUri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri FrameworkElement.BaseUri is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property ActualHeight
+		// Skipping already declared property ActualWidth
+		// Skipping already declared property BaseUri
 		// Skipping already declared property Parent
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.TriggerCollection Triggers
 		{
 			get
@@ -219,7 +179,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.ElementTheme RequestedTheme
 		{
@@ -233,8 +193,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Thickness FocusVisualSecondaryThickness
 		{
 			get
@@ -247,8 +207,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Media.Brush FocusVisualSecondaryBrush
 		{
 			get
@@ -261,8 +221,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Thickness FocusVisualPrimaryThickness
 		{
 			get
@@ -275,8 +235,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Media.Brush FocusVisualPrimaryBrush
 		{
 			get
@@ -289,8 +249,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Thickness FocusVisualMargin
 		{
 			get
@@ -303,8 +263,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool AllowFocusWhenDisabled
 		{
 			get
@@ -317,8 +277,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool AllowFocusOnInteraction
 		{
 			get
@@ -331,8 +291,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.ElementTheme ActualTheme
 		{
 			get
@@ -342,196 +302,188 @@ namespace Windows.UI.Xaml
 		}
 		#endif
 		// Skipping already declared property IsLoaded
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ActualHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ActualHeight", typeof(double), 
+			nameof(ActualHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ActualWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ActualWidth", typeof(double), 
+			nameof(ActualWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty FlowDirectionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FlowDirection", typeof(global::Windows.UI.Xaml.FlowDirection), 
+			nameof(FlowDirection), typeof(global::Windows.UI.Xaml.FlowDirection), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FlowDirection)));
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty HeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Height", typeof(double), 
+			nameof(Height), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HorizontalAlignment", typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
+			nameof(HorizontalAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty LanguageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Language", typeof(string), 
+			nameof(Language), typeof(string), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if false || false || NET461 || false || false
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MarginProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Margin", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(Margin), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxHeight", typeof(double), 
+			nameof(MaxHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxWidth", typeof(double), 
+			nameof(MaxWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MinHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinHeight", typeof(double), 
+			nameof(MinHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MinWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinWidth", typeof(double), 
+			nameof(MinWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || false || NET461 || __WASM__ || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty NameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Name", typeof(string), 
+			nameof(Name), typeof(string), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
 		// Skipping already declared property StyleProperty
-		#if false || false || NET461 || __WASM__ || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TagProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Tag", typeof(object), 
-			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(object)));
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		// Skipping already declared property TagProperty
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"VerticalAlignment", typeof(global::Windows.UI.Xaml.VerticalAlignment), 
+			nameof(VerticalAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
+		#endif
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty WidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Width", typeof(double), 
+			nameof(Width), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#endif
+		#if false
 		public static global::Windows.UI.Xaml.DependencyProperty RequestedThemeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"RequestedTheme", typeof(global::Windows.UI.Xaml.ElementTheme), 
+			nameof(RequestedTheme), typeof(global::Windows.UI.Xaml.ElementTheme), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementTheme)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusOnInteractionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowFocusOnInteraction", typeof(bool), 
+			nameof(AllowFocusOnInteraction), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusWhenDisabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowFocusWhenDisabled", typeof(bool), 
+			nameof(AllowFocusWhenDisabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusVisualMarginProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusVisualMargin", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(FocusVisualMargin), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusVisualPrimaryBrushProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusVisualPrimaryBrush", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(FocusVisualPrimaryBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusVisualPrimaryThicknessProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusVisualPrimaryThickness", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(FocusVisualPrimaryThickness), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusVisualSecondaryBrushProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusVisualSecondaryBrush", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(FocusVisualSecondaryBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusVisualSecondaryThicknessProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusVisualSecondaryThickness", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(FocusVisualSecondaryThickness), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ActualThemeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ActualTheme", typeof(global::Windows.UI.Xaml.ElementTheme), 
+			nameof(ActualTheme), typeof(global::Windows.UI.Xaml.ElementTheme), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementTheme)));
 		#endif
@@ -583,12 +535,12 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.LayoutUpdated.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.LayoutUpdated.remove
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.FindName(string)
-		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.SetBinding(Windows.UI.Xaml.DependencyProperty, Windows.UI.Xaml.Data.BindingBase)
+		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.SetBinding(Windows.UI.Xaml.DependencyProperty, Windows.UI.Xaml.Data.BindingBase)
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.RequestedTheme.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.RequestedTheme.set
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.DataContextChanged.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.DataContextChanged.remove
-		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.GetBindingExpression(Windows.UI.Xaml.DependencyProperty)
+		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.GetBindingExpression(Windows.UI.Xaml.DependencyProperty)
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.Loading.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.Loading.remove
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.AllowFocusOnInteraction.get
@@ -611,8 +563,8 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.IsLoaded.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.EffectiveViewportChanged.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.EffectiveViewportChanged.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected  void InvalidateViewport()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "void FrameworkElement.InvalidateViewport()");
@@ -621,9 +573,10 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.MeasureOverride(Windows.Foundation.Size)
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.ArrangeOverride(Windows.Foundation.Size)
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.OnApplyTemplate()
+		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.GoToElementStateCore(string, bool)
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.ActualThemeProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void DeferTree( global::Windows.UI.Xaml.DependencyObject element)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "void FrameworkElement.DeferTree(DependencyObject element)");
@@ -654,113 +607,52 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.DataContextProperty.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.StyleProperty.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.FlowDirectionProperty.get
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::System.EventHandler<object> LayoutUpdated
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event EventHandler<object> FrameworkElement.LayoutUpdated");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event EventHandler<object> FrameworkElement.LayoutUpdated");
-			}
-		}
-		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.RoutedEventHandler Loaded
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event RoutedEventHandler FrameworkElement.Loaded");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event RoutedEventHandler FrameworkElement.Loaded");
-			}
-		}
-		#endif
-		#if false || false || NET461 || false || false
-		[global::Uno.NotImplemented]
+		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.LayoutUpdated
+		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.Loaded
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  event global::Windows.UI.Xaml.SizeChangedEventHandler SizeChanged
 		{
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event SizeChangedEventHandler FrameworkElement.SizeChanged");
 			}
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event SizeChangedEventHandler FrameworkElement.SizeChanged");
 			}
 		}
 		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.RoutedEventHandler Unloaded
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event RoutedEventHandler FrameworkElement.Unloaded");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event RoutedEventHandler FrameworkElement.Unloaded");
-			}
-		}
-		#endif
-		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.DataContextChanged
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, object> Loading
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, object> FrameworkElement.Loading");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, object> FrameworkElement.Loading");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.Unloaded
+		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.Loading
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, object> ActualThemeChanged
 		{
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, object> FrameworkElement.ActualThemeChanged");
 			}
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, object> FrameworkElement.ActualThemeChanged");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, global::Windows.UI.Xaml.EffectiveViewportChangedEventArgs> EffectiveViewportChanged
 		{
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, EffectiveViewportChangedEventArgs> FrameworkElement.EffectiveViewportChanged");
 			}
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, EffectiveViewportChangedEventArgs> FrameworkElement.EffectiveViewportChanged");

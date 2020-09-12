@@ -33,7 +33,7 @@
 		</ResourceDictionary>
 	</Page.Resources>
 
-	<StackPanel Spacing="10">
+	<StackPanel Spacing="10" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<TextBlock>
 			ApplicationTheme=<Run Text="{x:Bind ApplicationTheme}" />
 			<LineBreak />
@@ -119,6 +119,7 @@
 				</Border>
 			</StackPanel>
 		</Grid>
+		<Image Source="ms-appx:///Assets/ThemeTestImage.png" Width="200" Stretch="UniformToFill"/>
 		<TextBlock>Blue=dark, Yellow=Light, Red=High Contrast</TextBlock>
 		<StackPanel Orientation="Horizontal">
 			<Button Click="LocalDefault">Local Default</Button>

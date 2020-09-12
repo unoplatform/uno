@@ -34,7 +34,7 @@ namespace Uno.Helpers
 		/// <returns>Resource's id</returns>
 		public static int? FindResourceId(string imageName)
 		{
-			var key = System.IO.Path.GetFileNameWithoutExtension(imageName);
+			var key = AndroidResourceNameEncoder.Encode(System.IO.Path.GetFileNameWithoutExtension(imageName));
 			if (_drawablesLookup == null)
 			{
 				throw new Exception("Drawable resources were not initialized.");

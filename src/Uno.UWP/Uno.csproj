@@ -25,6 +25,8 @@
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
+		
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
 
 		<!--
 		Use to avoid namespace conflicts with the default namespace of this
@@ -38,6 +40,10 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Composition\ICompositionSurface.cs" />
+	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
@@ -47,14 +53,14 @@
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
-		<PackageReference Include="Xamarin.AndroidX.AppCompat"/>
-		<PackageReference Include="Xamarin.AndroidX.Fragment"/>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.Fragment" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
-		<PackageReference Include="Xamarin.AndroidX.AppCompat"/>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='xamarinmac20'">

@@ -21,7 +21,11 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollBar
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("ScrollBar")]
+	[SampleControlInfo("ScrollBar"
+#if __WASM__
+		, ignoreInSnapshotTests: true
+#endif
+		)]
 	public sealed partial class ScrollBar_Simple : Page
 	{
 		public ScrollBar_Simple()
@@ -31,12 +35,12 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollBar
 
 		public void OnVerticalScroll(object sender, ScrollEventArgs args)
 		{
-			scrollValue.Text = $"Vertical Scroll: {args.ScrollEventType}, {args.NewValue}";
+			scrollValue.Text = FormattableString.Invariant($"Vertical Scroll: {args.ScrollEventType}, {args.NewValue}");
 		}
 
 		public void OnHorizontalScroll(object sender, ScrollEventArgs args)
 		{
-			scrollValue.Text = $"Horizontal Scroll: {args.ScrollEventType}, {args.NewValue}";
+			scrollValue.Text = FormattableString.Invariant($"Horizontal Scroll: {args.ScrollEventType}, {args.NewValue}");
 		}
 	}
 }

@@ -48,7 +48,8 @@ namespace Windows.UI.Xaml.Media
 
 		public bool HasSource()
 		{
-			return Stream != null
+			return IsSourceReady
+				|| Stream != null
 				|| WebUri != null
 				|| FilePath.HasValueTrimmed()
 				|| ImageData != null
@@ -103,6 +104,48 @@ namespace Windows.UI.Xaml.Media
 			return null;
 		}
 
+		/// <summary>
+		/// Indicates that this ImageSource has enough information to be opened
+		/// </summary>
+		private protected virtual bool IsSourceReady => false;
+
+		private protected virtual bool TryOpenSourceSync(out NSImage image)
+		{
+			image = default;
+			return false;
+		}
+
+		private protected virtual bool TryOpenSourceAsync(out Task<NSImage> asyncImage)
+		{
+			asyncImage = default;
+			return false;
+		}
+
+		/// <summary>
+		/// Retrieves the already loaded image, or for supported source (eg. WriteableBitmap, cf remarks),
+		/// create a native image from the data in memory.
+		/// </summary>
+		/// <remarks>
+		/// This is only intended to convert **uncompressed data already in memory**,
+		/// and should not be used to decompress a JPEG for instance, even if the already in memory.
+		/// </remarks>
+		internal bool TryOpenSync(out NSImage image)
+		{
+			if (ImageData != null)
+			{
+				image = ImageData;
+				return true;
+			}
+
+			if (IsSourceReady && TryOpenSourceSync(out image))
+			{
+				return true;
+			}
+
+			image = default;
+			return false;
+		}
+
 		internal async Task<NSImage> Open(CancellationToken ct)
 		{
 			using (
@@ -116,6 +159,16 @@ namespace Windows.UI.Xaml.Media
 				if (ct.IsCancellationRequested)
 				{
 					return null;
+				}
+
+				if (IsSourceReady && TryOpenSourceSync(out var img))
+				{
+					return ImageData = img;
+				}
+
+				if (IsSourceReady && TryOpenSourceAsync(out var asyncImg))
+				{
+					return ImageData = await asyncImg;
 				}
 
 				if (Stream != null)

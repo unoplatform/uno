@@ -30,7 +30,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.BorderTests
 		{
 			var currentRadius = SubjectBorder.CornerRadius;
 			var newRadius = currentRadius.TopLeft == 0 ?
-				new CornerRadius(5) :
+				CornerRadiusHelper.FromUniformRadius(5) :
 				default(CornerRadius);
 			SubjectBorder.CornerRadius = newRadius;
 			ToggleCornerRadiusButton.Content = $"Toggle CornerRadius (current={newRadius.TopLeft})";

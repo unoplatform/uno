@@ -575,7 +575,7 @@ namespace Uno.UI.Controls
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Usage",
             "CA2215:DisposeMethodsShouldCallBaseClassDispose",
-            Justification = "Wanted behavior­. base.Dispose must be called after the private fields otherwise we can't dispose them")]
+            Justification = "Wanted behavior. base.Dispose must be called after the private fields otherwise we can't dispose them")]
         protected override void Dispose(bool disposing)
         {
             try

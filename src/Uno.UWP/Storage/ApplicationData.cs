@@ -43,24 +43,6 @@ namespace Windows.Storage
 		public uint Version => 0;
 
 		[Uno.NotImplemented]
-		public Foundation.IAsyncAction SetVersionAsync( uint desiredVersion,  ApplicationDataSetVersionHandler handler)
-		{
-			throw new NotImplementedException("The member IAsyncAction ApplicationData.SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler) is not implemented in Uno.");
-		}
-
-		[Uno.NotImplemented]
-		public Foundation.IAsyncAction ClearAsync()
-		{
-			throw new NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync() is not implemented in Uno.");
-		}
-
-		[Uno.NotImplemented]
-		public Foundation.IAsyncAction ClearAsync( ApplicationDataLocality locality)
-		{
-			throw new NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync(ApplicationDataLocality locality) is not implemented in Uno.");
-		}
-
-		[Uno.NotImplemented]
 		public void SignalDataChanged()
 		{
 			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "void ApplicationData.SignalDataChanged()");

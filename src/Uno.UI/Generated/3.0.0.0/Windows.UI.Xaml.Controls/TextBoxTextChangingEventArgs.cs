@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TextBoxTextChangingEventArgs 
 	{
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool IsContentChanging
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool TextBoxTextChangingEventArgs.IsContentChanging is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property IsContentChanging
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs.IsContentChanging.get
 	}
 }

@@ -1,0 +1,80 @@
+parameters:
+  vmImage: ''
+  xCodeRoot: ''
+  XamarinSDKVersion: ''
+  JobName: ''
+  JobTimeoutInMinutes: ''
+  JobDisplayName: ''
+  UITEST_SNAPSHOTS_ONLY: ''
+  UITEST_SNAPSHOTS_GROUP: ''
+  nugetPackages: ''
+
+jobs:
+- job: ${{ parameters.JobName }}
+  timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
+  dependsOn: iOS_Build
+  displayName: ${{ parameters.JobDisplayName }}
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: ios-uitest-build
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: templates/ios-build-select-version.yml
+    parameters:
+      xCodeRoot: ${{ parameters.xCodeRoot }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+
+  - bash: |
+      $(build.sourcesdirectory)/build/ios-uitest-run.sh
+
+    displayName: Run iOS Simulator Tests
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      UITEST_SNAPSHOTS_ONLY: "${{ parameters.UITEST_SNAPSHOTS_ONLY }}"
+      UITEST_SNAPSHOTS_GROUP: "${{ parameters.UITEST_SNAPSHOTS_GROUP }}"
+      UITEST_AUTOMATED_GROUP: "${{ parameters.UITEST_AUTOMATED_GROUP }}"
+      UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'iOS Test Run ($(Agent.JobName))'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
+      failTaskOnFailedTests: false
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'iOS Test Run Retry Failed ($(Agent.JobName))'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-failed-rerun.xml'
+      failTaskOnFailedTests: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container

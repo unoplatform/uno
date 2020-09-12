@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AcrylicBrush : global::Windows.UI.Xaml.Media.XamlCompositionBrushBase
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.TimeSpan TintTransitionDuration
 		{
 			get
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  double TintOpacity
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Color TintColor
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.AcrylicBackgroundSource BackgroundSource
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool AlwaysUseFallback
 		{
@@ -77,47 +77,69 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
+		[global::Uno.NotImplemented]
+		public  double? TintLuminosityOpacity
+		{
+			get
+			{
+				return (double?)this.GetValue(TintLuminosityOpacityProperty);
+			}
+			set
+			{
+				this.SetValue(TintLuminosityOpacityProperty, value);
+			}
+		}
+		#endif
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AlwaysUseFallbackProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AlwaysUseFallback", typeof(bool), 
+			nameof(AlwaysUseFallback), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.AcrylicBrush), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"BackgroundSource", typeof(global::Windows.UI.Xaml.Media.AcrylicBackgroundSource), 
+			nameof(BackgroundSource), typeof(global::Windows.UI.Xaml.Media.AcrylicBackgroundSource), 
 			typeof(global::Windows.UI.Xaml.Media.AcrylicBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.AcrylicBackgroundSource)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TintColorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TintColor", typeof(global::Windows.UI.Color), 
+			nameof(TintColor), typeof(global::Windows.UI.Color), 
 			typeof(global::Windows.UI.Xaml.Media.AcrylicBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TintOpacityProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TintOpacity", typeof(double), 
+			nameof(TintOpacity), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.AcrylicBrush), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty TintTransitionDurationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TintTransitionDuration", typeof(global::System.TimeSpan), 
+			nameof(TintTransitionDuration), typeof(global::System.TimeSpan), 
 			typeof(global::Windows.UI.Xaml.Media.AcrylicBrush), 
 			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty TintLuminosityOpacityProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TintLuminosityOpacity), typeof(double?), 
+			typeof(global::Windows.UI.Xaml.Media.AcrylicBrush), 
+			new FrameworkPropertyMetadata(default(double?)));
+		#endif
+		#if false
 		[global::Uno.NotImplemented]
 		public AcrylicBrush() : base()
 		{
@@ -135,6 +157,9 @@ namespace Windows.UI.Xaml.Media
 		// Forced skipping of method Windows.UI.Xaml.Media.AcrylicBrush.TintTransitionDuration.set
 		// Forced skipping of method Windows.UI.Xaml.Media.AcrylicBrush.AlwaysUseFallback.get
 		// Forced skipping of method Windows.UI.Xaml.Media.AcrylicBrush.AlwaysUseFallback.set
+		// Forced skipping of method Windows.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacity.get
+		// Forced skipping of method Windows.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacity.set
+		// Forced skipping of method Windows.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacityProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.AcrylicBrush.BackgroundSourceProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.AcrylicBrush.TintColorProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.AcrylicBrush.TintOpacityProperty.get

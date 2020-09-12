@@ -6,8 +6,8 @@ using Uno.UI.Common;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public interface IListView : IItemsControl, IFrameworkElement
-    {
+	internal interface IListView : IItemsControl, IFrameworkElement
+	{
 		bool IsItemClickEnabled { get; set; }
 #if XAMARIN && !__MACOS__
 		ICommand ItemClickCommand { get; set; }

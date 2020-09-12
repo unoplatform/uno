@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +17,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 	class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
 		private FileSystemWatcher[] _watchers;
+		private CompositeDisposable _watcherEventsDisposable;
 		private IRemoteControlServer _remoteControlServer;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer)
@@ -60,7 +63,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				.Select(p => new FileSystemWatcher
 				{
 					Path = p,
-					Filter = "*.xaml",
+					Filter = "*.*",
 					NotifyFilter = NotifyFilters.LastWrite |
 						NotifyFilters.Attributes |
 						NotifyFilters.Size |
@@ -71,30 +74,65 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				})
 				.ToArray();
 
+			_watcherEventsDisposable = new CompositeDisposable();
+
 			foreach (var watcher in _watchers)
 			{
-				watcher.Changed += OnXamlFileChanged;
+				// Create an observable instead of using the FromEventPattern which
+				// does not register to events properly.
+				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
+				// Visual Studio uses to save files.
+
+				var changes = Observable.Create<string>(o => {
+
+					void changed(object s, FileSystemEventArgs args) => o.OnNext(args.FullPath);
+					void renamed(object s, RenamedEventArgs args) => o.OnNext(args.FullPath);
+
+					watcher.Changed += changed;
+					watcher.Created += changed;
+					watcher.Renamed += renamed;
+
+					return Disposable.Create(() => {
+						watcher.Changed -= changed;
+						watcher.Created -= changed;
+						watcher.Renamed -= renamed;
+					});
+				});
+
+				var disposable = changes
+					.Buffer(TimeSpan.FromMilliseconds(250))
+					.Subscribe(filePaths =>
+					{
+						foreach (var file in filePaths.Distinct().Where(f => Path.GetExtension(f).Equals(".xaml", StringComparison.OrdinalIgnoreCase)))
+						{
+							OnXamlFileChanged(file);
+						}
+					}, e => Console.WriteLine($"Error {e}"));
+
+				_watcherEventsDisposable.Add(disposable);
 			}
 		}
 
-		private void OnXamlFileChanged(object sender, FileSystemEventArgs e)
+		private void OnXamlFileChanged(string fullPath)
 			=> Task.Run(async () =>
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug($"File {e.FullPath} changed");
+					this.Log().LogDebug($"File {fullPath} changed");
 				}
 
 				await _remoteControlServer.SendFrame(
 					new FileReload()
 					{
-						Content = File.ReadAllText(e.FullPath),
-						FilePath = e.FullPath
+						Content = File.ReadAllText(fullPath),
+						FilePath = fullPath
 					});
 			});
 
 		public void Dispose()
 		{
+			_watcherEventsDisposable?.Dispose();
+
 			if (_watchers != null)
 			{
 				foreach (var watcher in _watchers)

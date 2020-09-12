@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Automation
 				"Name",
 				typeof(string),
 				typeof(AutomationProperties),
-				new PropertyMetadata(string.Empty, OnNamePropertyChanged)
+				new FrameworkPropertyMetadata(string.Empty, OnNamePropertyChanged)
 			);
 
 
@@ -59,21 +59,21 @@ namespace Windows.UI.Xaml.Automation
 
 		#region LabeledBy
 		
-		public static IUIElement GetLabeledBy(DependencyObject element)
+		public static UIElement GetLabeledBy(DependencyObject element)
 		{
-			return (IUIElement)element.GetValue(LabeledByProperty);
+			return (UIElement)element.GetValue(LabeledByProperty);
 		}
 
-		public static void SetLabeledBy(DependencyObject element, IUIElement value)
+		public static void SetLabeledBy(DependencyObject element, UIElement value)
 		{
 			element.SetValue(LabeledByProperty, value);
 		}
 
 		public static DependencyProperty LabeledByProperty { get; } =
 			DependencyProperty.RegisterAttached(
-				"LabeledBy", typeof(IUIElement),
+				"LabeledBy", typeof(UIElement),
 				typeof(AutomationProperties),
-				new FrameworkPropertyMetadata(default(IUIElement))
+				new FrameworkPropertyMetadata(default(UIElement))
 			);
 
 		#endregion

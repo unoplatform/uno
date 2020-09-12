@@ -30,9 +30,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 	}
 
-	public class MyDataTemplateClass : INotifyPropertyChanged
+	public class MyDataTemplateClass : System.ComponentModel.INotifyPropertyChanged
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 		private string _myproperty = "Initial";
 		private int _myIntProperty = -3;
@@ -52,7 +52,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			set
 			{
 				_myproperty = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MyProperty)));
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(MyProperty)));
 			}
 		}
 
@@ -62,7 +62,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			set
 			{
 				_myIntProperty = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MyIntProperty)));
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(MyIntProperty)));
 			}
 		}
 	}

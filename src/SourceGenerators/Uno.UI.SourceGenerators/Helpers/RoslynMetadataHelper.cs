@@ -28,6 +28,7 @@ namespace Uno.Roslyn
 
 		public Compilation Compilation { get; }
 
+		public string AssemblyName => _project.AssemblyName;
 
 		public RoslynMetadataHelper(string configuration, Compilation sourceCompilation, ProjectInstance projectInstance, Project roslynProject, string[] additionalTypes = null, Dictionary<string, string> legacyTypes = null)
 		{
@@ -141,7 +142,7 @@ namespace Uno.Roslyn
 					.OfType<INamedTypeSymbol>()
 					.Where(r => r.Kind != SymbolKind.ErrorType && r.TypeArguments.Length == 0)
 					// Apply legacy
-					.Where(r => legacyType == null || r.OriginalDefinition.Name != name || r.OriginalDefinition == legacyType)
+					.Where(r => legacyType == null || r.OriginalDefinition.Name != name || Equals(r.OriginalDefinition, legacyType))
 					.ToArray();
 			}
 

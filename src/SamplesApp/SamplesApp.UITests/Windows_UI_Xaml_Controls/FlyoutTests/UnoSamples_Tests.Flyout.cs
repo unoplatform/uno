@@ -190,5 +190,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				return (rect2.CenterX, (rect1.Bottom + rect2.Y) / 2);
 			}
 		}
+
+		[Test]
+		[AutoRetry]
+		public void Flyout_TemplatedParent()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.Flyout.Flyout_TemplatedParent");
+
+			var button01 = _app.Marked("button01");
+			var innerTextBlock = _app.Marked("innerTextBlock");
+
+			_app.FastTap(button01);
+			_app.WaitForElement(innerTextBlock);
+
+			_app.WaitForDependencyPropertyValue(innerTextBlock, "Text", "Hello !");
+
+			_app.TapCoordinates(10, 100);
+		}
 	}
 }

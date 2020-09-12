@@ -12,27 +12,37 @@ using Uno.Extensions;
 using Microsoft.Build.Execution;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.Telemetry;
+using Uno.UI.Xaml;
+using Microsoft.Build.Utilities;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlCodeGeneration
 	{
-		private string[] _xamlSourceFiles;
-		private string _targetPath;
+		internal const string ParseContextPropertyName = "__ParseContext_";
+
+		private readonly string[] _xamlSourceFiles;
+		private readonly string[] _xamlSourceLinks;
+		private readonly string _targetPath;
 		private readonly string _defaultLanguage;
-		private bool _isWasm;
-		private string _defaultNamespace;
-		private string[] _assemblySearchPaths;
-		private RoslynMetadataHelper _medataHelper;
-		private string[] _excludeXamlNamespaces;
-		private string[] _includeXamlNamespaces;
-		private string[] _analyzerSuppressions;
-		private string[] _resourceFiles;
-		private Dictionary<string, string[]> _uiAutomationMappings;
+		private readonly bool _isWasm;
+		private readonly string _defaultNamespace;
+		private readonly string[] _assemblySearchPaths;
+		private readonly RoslynMetadataHelper _metadataHelper;
+		private readonly string[] _excludeXamlNamespaces;
+		private readonly string[] _includeXamlNamespaces;
+		private readonly string[] _analyzerSuppressions;
+		private readonly string[] _resourceFiles;
+		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly ProjectInstance _projectInstance;
 		private readonly string _configuration;
 		private readonly bool _isDebug;
 		private readonly bool _outputSourceComments = true;
+
+		/// <summary>
+		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
+		/// </summary>
+		private readonly bool _shouldAnnotateGeneratedXaml = false;
 
 		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.CodeBase).LocalPath);
 		private INamedTypeSymbol[] _ambientGlobalResources;
@@ -41,7 +51,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		// Determines if the source generator will skip the inclusion of UseControls in the
 		// visual tree. See https://github.com/unoplatform/uno/issues/61
-		private bool _skipUserControlsInVisualTree = true;
+		private bool _skipUserControlsInVisualTree = false;
+
+		private bool IsUnoAssembly => _defaultNamespace == "Uno.UI";
+		private bool IsUnoFluentAssembly => _defaultNamespace == "Uno.UI.FluentTheme";
+
+		/// <summary>
+		/// Resource files that should be initialized first, in given order, because other resource declarations depend on them.
+		/// </summary>
+		private static readonly string[] _baseResourceDependencies = new[]
+		{
+			"SystemResources.xaml",
+			"Generic.xaml",
+			"Generic.Native.xaml",
+		};
+		private const string WinUIThemeResourcePathSuffix = "/themeresources.xaml";
+		private const string WinUICompactPathSuffix = "/DensityStyles/Compact.xaml";
+
+		/// <summary>
+		/// ResourceDictionaries that aren't counted as default system resources (eg WinUI Fluent resources)
+		/// </summary>
+		private static readonly string[] _nonSystemResources = new[]
+		{
+			WinUIThemeResourcePathSuffix,
+			WinUICompactPathSuffix,
+			"DensityStyles/CompactDatePickerTimePickerFlyout.xaml",
+		};
 
 #pragma warning disable 649 // Unused member
 		private readonly bool _forceGeneration;
@@ -66,7 +101,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToList()
 				.ToDictionary(fullyQualifiedName => fullyQualifiedName.Split('.').Last());
 
-			_medataHelper = new RoslynMetadataHelper("Debug", sourceCompilation, msbProject, roslynProject, null, _legacyTypes);
+			_metadataHelper = new RoslynMetadataHelper("Debug", sourceCompilation, msbProject, roslynProject, null, _legacyTypes);
 			_assemblySearchPaths = new string[0];
 			_projectInstance = msbProject;
 
@@ -75,12 +110,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_isDebug = string.Equals(_configuration, "Debug", StringComparison.OrdinalIgnoreCase);
 
-			var xamlPages = msbProject.GetItems("Page")
-				.Select(d => d.EvaluatedInclude);
+			var xamlItems = msbProject.GetItems("Page")
+				.Concat(msbProject.GetItems("ApplicationDefinition"));
 
-			_xamlSourceFiles = msbProject.GetItems("ApplicationDefinition")
-				.Select(d => d.EvaluatedInclude)
-				.Concat(xamlPages)
+			_xamlSourceFiles = xamlItems.Select(d => d.EvaluatedInclude)
+				.ToArray();
+
+			_xamlSourceLinks = xamlItems.Select(GetSourceLink)
 				.ToArray();
 
 			_excludeXamlNamespaces = msbProject
@@ -123,6 +159,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_isUiAutomationMappingEnabled = false;
 			}
 
+			if (bool.TryParse(msbProject.GetProperty("ShouldAnnotateGeneratedXaml")?.EvaluatedValue, out var shouldAnnotateGeneratedXaml))
+			{
+				_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
+			}
+
 			_targetPath = Path.Combine(
 				Path.GetDirectoryName(msbProject.FullPath),
 				msbProject.GetProperty("IntermediateOutputPath").EvaluatedValue
@@ -155,6 +196,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isWasm = msbProject.GetProperty("DefineConstants").EvaluatedValue?.Contains("__WASM__") ?? false;
 		}
 
+		/// <summary>
+		/// Get the file location as seen in the IDE, used for ResourceDictionary.Source resolution.
+		/// </summary>
+		private string GetSourceLink(ProjectItemInstance projectItemInstance)
+		{
+			if (projectItemInstance.HasMetadata("Link"))
+			{
+				return projectItemInstance.GetMetadataValue("Link");
+			}
+
+			return projectItemInstance.EvaluatedInclude;
+		}
 
 		public KeyValuePair<string, string>[] Generate()
 		{
@@ -167,50 +220,67 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
 
 				var resourceKeys = GetResourceKeys();
-				var files = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces).ParseFiles(_xamlSourceFiles);
+				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces).ParseFiles(_xamlSourceFiles);
+				var files = filesFull
+					.Trim()
+					.OrderBy(f => f.UniqueID)
+					.ToArray();
+
+				for (int i = 0; i < files.Length; i++)
+				{
+					files[i].ShortId = i;
+				}
 
 				TrackStartGeneration(files);
 
-				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files);
+
+				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files, filesFull, _xamlSourceLinks);
 
 				var filesQuery = files
 					.ToArray();
 
-				var outputFiles = filesQuery
-#if !DEBUG
-				.AsParallel()
-#endif
-				.Select(file => new KeyValuePair<string, string>(
-						file.UniqueID,
-						new XamlFileGenerator(
-							file: file,
-							targetPath: _targetPath,
-							defaultNamespace: _defaultNamespace,
-							medataHelper: _medataHelper,
-							fileUniqueId: file.UniqueID,
-							lastReferenceUpdateTime: lastBinaryUpdateTime,
-							analyzerSuppressions: _analyzerSuppressions,
-							globalStaticResourcesMap: globalStaticResourcesMap,
-							outputSourceComments: _outputSourceComments,
-							resourceKeys: resourceKeys,
-							isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
-							uiAutomationMappings: _uiAutomationMappings,
-							defaultLanguage: _defaultLanguage,
-							isWasm: _isWasm,
-							isDebug: _isDebug,
-							skipUserControlsInVisualTree: _skipUserControlsInVisualTree
+				IEnumerable<XamlFileDefinition> filesToProcess = filesQuery;
+
+				if (!Debugger.IsAttached)
+				{
+					filesToProcess = filesToProcess.AsParallel();
+				}
+
+				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, string>(
+
+							file.UniqueID,
+							new XamlFileGenerator(
+									file: file,
+									targetPath: _targetPath,
+									defaultNamespace: _defaultNamespace,
+									metadataHelper: _metadataHelper,
+									fileUniqueId: file.UniqueID,
+									lastReferenceUpdateTime: lastBinaryUpdateTime,
+									analyzerSuppressions: _analyzerSuppressions,
+									globalStaticResourcesMap: globalStaticResourcesMap,
+									outputSourceComments: _outputSourceComments,
+									resourceKeys: resourceKeys,
+									isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
+									uiAutomationMappings: _uiAutomationMappings,
+									defaultLanguage: _defaultLanguage,
+									isWasm: _isWasm,
+									isDebug: _isDebug,
+									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
+									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
+									isUnoAssembly: IsUnoAssembly
+								)
+								.GenerateFile()
 						)
-						.GenerateFile()
-					)
 					)
 					.ToList();
 
 
-				outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files)));
+				outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
 
 				TrackGenerationDone(stopwatch.Elapsed);
 
 				return outputFiles.ToArray();
+
 			}
 			catch (Exception e)
 			{
@@ -224,12 +294,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files)
+		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files, XamlFileDefinition[] filesFull, string[] links)
 		{
 			var map = new XamlGlobalStaticResourcesMap();
 
 			BuildLocalProjectResources(files, map);
 			BuildAmbientResources(files, map);
+			map.BuildResourceDictionaryMap(filesFull, links);
 
 			return map;
 		}
@@ -239,8 +310,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Lookup for GlobalStaticResources classes in external assembly
 			// references only, and in Uno.UI itself for generic.xaml-like resources.
 
-			var query = from ext in _medataHelper.Compilation.ExternalReferences
-						let sym = _medataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
+			var query = from ext in _metadataHelper.Compilation.ExternalReferences
+						let sym = _metadataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
 						where sym != null
 						from module in sym.Modules
 						from reference in module.ReferencedAssemblies
@@ -387,7 +458,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Max();
 		}
 
-		private string GenerateGlobalResources(IEnumerable<XamlFileDefinition> files)
+		private string GenerateGlobalResources(IEnumerable<XamlFileDefinition> files, XamlGlobalStaticResourcesMap map)
 		{
 			var outputFile = Path.Combine(_targetPath, "GlobalStaticResources.g.cs");
 
@@ -424,6 +495,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 				{
 					writer.AppendLineInvariant("static bool _initialized;");
+					writer.AppendLineInvariant("private static bool _stylesRegistered;");
+					writer.AppendLineInvariant("private static bool _dictionariesRegistered;");
+
+					using (writer.BlockInvariant("internal static global::Uno.UI.Xaml.XamlParseContext {0} {{get; }} = new global::Uno.UI.Xaml.XamlParseContext()", ParseContextPropertyName))
+					{
+						writer.AppendLineInvariant("AssemblyName = \"{0}\",", _projectInstance.GetPropertyValue("AssemblyName"));
+					}
+
+					writer.AppendLineInvariant(";");
+					writer.AppendLine();
 
 					using (writer.BlockInvariant("static GlobalStaticResources()"))
 					{
@@ -432,66 +513,149 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (writer.BlockInvariant("public static void Initialize()"))
 					{
-						using (writer.BlockInvariant("if(!_initialized)"))
+						using (writer.BlockInvariant("if (!_initialized)"))
 						{
-							writer.AppendLineInvariant("_initialized = true;");
-
-							foreach (var ambientResource in _ambientGlobalResources)
+							using (IsUnoAssembly ? writer.BlockInvariant("using (ResourceResolver.WriteInitiateGlobalStaticResourcesEventActivity())") : null)
 							{
-								if (ambientResource.GetMethods().Any(m => m.Name == "Initialize"))
+								writer.AppendLineInvariant("_initialized = true;");
+
+								foreach (var ambientResource in _ambientGlobalResources)
 								{
-									writer.AppendLineInvariant("global::{0}.Initialize();", ambientResource.GetFullName());
+									if (ambientResource.GetMethods().Any(m => m.Name == "Initialize"))
+									{
+										writer.AppendLineInvariant("global::{0}.Initialize();", ambientResource.GetFullName());
+									}
 								}
 
-								writer.AppendLineInvariant("AddResolver(global::{0}.FindResource);", ambientResource.GetFullName());
-							}
+								foreach (var ambientResource in _ambientGlobalResources)
+								{
+									// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
+									if (ambientResource.GetMethods().Any(m => m.Name == "RegisterDefaultStyles"))
+									{
+										writer.AppendLineInvariant("global::{0}.RegisterDefaultStyles();", ambientResource.GetFullName());
+									}
+								}
 
-							foreach (var file in files)
-							{
-								writer.AppendLineInvariant("RegisterResources_{0}();", file.UniqueID);
-								writer.AppendLineInvariant("RegisterImplicitStylesResources_{0}();", file.UniqueID);
+								foreach (var ambientResource in _ambientGlobalResources)
+								{
+									if (ambientResource.GetMethods().Any(m => m.Name == "RegisterResourceDictionariesBySource"))
+									{
+										writer.AppendLineInvariant("global::{0}.RegisterResourceDictionariesBySource();", ambientResource.GetFullName());
+									}
+								}
+
+								if (IsUnoAssembly && _xamlSourceFiles.Any())
+								{
+									// Build master dictionary
+									foreach (var dictProperty in map.GetAllDictionaryProperties(_baseResourceDependencies, _nonSystemResources))
+									{
+										writer.AppendLineInvariant("MasterDictionary.MergedDictionaries.Add({0});", dictProperty);
+									}
+								}
 							}
 						}
+					}
+
+					using (writer.BlockInvariant("public static void RegisterDefaultStyles()"))
+					{
+						using (writer.BlockInvariant("if(!_stylesRegistered)"))
+						{
+							writer.AppendLineInvariant("_stylesRegistered = true;");
+							foreach (var file in files.Where(f => IsIncludedResource(f, map)).Select(f => f.UniqueID).Distinct())
+							{
+								writer.AppendLineInvariant("RegisterDefaultStyles_{0}();", file);
+							}
+						}
+					}
+
+					writer.AppendLineInvariant("// Register ResourceDictionaries using ms-appx:/// syntax, this is called for external resources");
+					using (writer.BlockInvariant("public static void RegisterResourceDictionariesBySource()"))
+					{
+						using (writer.BlockInvariant("if(!_dictionariesRegistered)"))
+						{
+							writer.AppendLineInvariant("_dictionariesRegistered = true;");
+
+							if(!IsUnoAssembly && !IsUnoFluentAssembly)
+							{
+								// For third-party libraries, expose all files using standard uri
+								foreach (var file in files.Where(IsResourceDictionary))
+								{
+									var url = "{0}/{1}".InvariantCultureFormat(_metadataHelper.AssemblyName, map.GetSourceLink(file));
+									RegisterForFile(file, url);
+								}
+							}
+							else if (files.Any()) // The NETSTD reference assembly contains no Xaml files
+							{
+								// For Uno assembly, we expose WinUI resources using same uri as on Windows
+								RegisterForFile(files.FirstOrDefault(f => map.GetSourceLink(f).EndsWith(WinUIThemeResourcePathSuffix)), XamlFilePathHelper.WinUIThemeResourceURL);
+								RegisterForFile(files.FirstOrDefault(f => map.GetSourceLink(f).EndsWith(WinUICompactPathSuffix)), XamlFilePathHelper.WinUICompactURL);
+							}
+
+							void RegisterForFile(XamlFileDefinition file, string url)
+							{
+								if (file != null)
+								{
+									writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"ms-appx:///{0}\", context: {1}, dictionary: () => {2}_ResourceDictionary);",
+										url,
+										ParseContextPropertyName,
+										file.UniqueID
+										);
+								}
+							}
+						}
+					}
+
+					writer.AppendLineInvariant("// Register ResourceDictionaries using ms-resource:/// syntax, this is called for local resources");
+					using (writer.BlockInvariant("internal static void RegisterResourceDictionariesBySourceLocal()"))
+					{
+						foreach (var file in files.Where(IsResourceDictionary))
+						{
+							// We leave context null because local resources should be found through Application.Resources
+							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, dictionary: () => {2}_ResourceDictionary);",
+								XamlFilePathHelper.LocalResourcePrefix,
+								map.GetSourceLink(file),
+								file.UniqueID
+							);
+							// Local resources can also be found through the ms-appx:/// prefix
+							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, dictionary: () => {2}_ResourceDictionary);",
+								XamlFilePathHelper.AppXIdentifier,
+								map.GetSourceLink(file),
+								file.UniqueID
+							);
+						}
+					}
+
+					if (IsUnoAssembly)
+					{
+						// Declare master dictionary
+						writer.AppendLine();
+						writer.AppendLineInvariant("internal static ResourceDictionary MasterDictionary {{get; }} = new ResourceDictionary();");
 					}
 
 					// Generate all the partial methods, even if they don't exist. That avoids
 					// having to sync the generation of the files with this global table.
-					foreach (var file in files)
+					foreach (var file in files.Select(f=>f.UniqueID).Distinct())
 					{
-						writer.AppendLineInvariant("static partial void RegisterResources_{0}();", file.UniqueID);
-						writer.AppendLineInvariant("static partial void RegisterImplicitStylesResources_{0}();", file.UniqueID);
+						writer.AppendLineInvariant("static partial void RegisterDefaultStyles_{0}();", file);
 					}
+
+					writer.AppendLineInvariant("[global::System.Obsolete(\"This method is provided for binary backward compatibility. It will always return null.\")]");
+					writer.AppendLineInvariant("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+					writer.AppendLineInvariant("public static object FindResource(string name) => null;");
 
 					writer.AppendLineInvariant("");
-
-					writer.AppendLineInvariant("/// <summary>");
-					writer.AppendLineInvariant("/// Finds a resource instance in the Global Static Resources");
-					writer.AppendLineInvariant("/// </summary>");
-					writer.AppendLineInvariant("/// <param name=\"name\">The name of the resource</param>");
-					writer.AppendLineInvariant("/// <returns>The instance of the resources, otherwise null.</returns>");
-					using (writer.BlockInvariant("public static object FindResource(string name)"))
-					{
-						using (writer.BlockInvariant("for (int i = _resolvers.Count - 1; i>=0; i--)"))
-						{
-							writer.AppendLineInvariant("var resolver = _resolvers[i];");
-							writer.AppendLineInvariant("var resource = resolver(name);");
-							writer.AppendLineInvariant("if(resource != null){{ return resource; }}");
-						}
-						writer.AppendLineInvariant("return null;");
-					}
-
-					writer.AppendLineInvariant("");
-
-					writer.AppendLineInvariant("private static List<Func<string, object>> _resolvers = new List<Func<string, object>>();");
-
-					using (writer.BlockInvariant("private static void AddResolver(Func<string, object> resolver)"))
-					{
-						writer.AppendLineInvariant("_resolvers.Add(resolver);");
-					}
 				}
 			}
 
 			return writer.ToString();
 		}
+
+		private bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";
+
+		/// <summary>
+		/// Should this Xaml be included when defining default styles? Outside of Uno this is always true. In Uno, this excludes WinUI Fluent resources (which consumer code accesses via XamlControlsResources)
+		/// </summary>
+		private bool IsIncludedResource(XamlFileDefinition xamlFileDefinition, XamlGlobalStaticResourcesMap map) => !IsUnoAssembly
+			|| _nonSystemResources.None(s => map.GetSourceLink(xamlFileDefinition).EndsWith(s));
 	}
 }

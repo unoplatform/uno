@@ -50,15 +50,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					RowSpacing = rowSpacing,
 					ColumnDefinitions =
 					{
-						new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
-						new ColumnDefinition {Width = new GridLength(1, GridUnitType.Auto)},
-						new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
+						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
+						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Auto)},
+						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
 					},
 					RowDefinitions =
 					{
-						new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)},
-						new RowDefinition {Height = new GridLength(1, GridUnitType.Star)},
-						new RowDefinition {Height =    new GridLength(1, GridUnitType.Star)},
+						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Auto)},
+						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
+						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
 					},
 					Children =
 					{

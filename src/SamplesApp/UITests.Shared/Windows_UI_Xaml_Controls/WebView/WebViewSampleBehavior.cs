@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if HAS_UNO
+using System;
 using Windows.UI.Xaml;
 using WebViewUno = Windows.UI.Xaml.Controls.WebView;
 
@@ -16,7 +17,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 			obj.SetValue(SourceUriProperty, value);
 		}
 		
-		public static readonly DependencyProperty SourceUriProperty =
+		public static DependencyProperty SourceUriProperty { get ; } =
 			DependencyProperty.RegisterAttached("SourceUri", typeof(string), typeof(WebViewSampleBehavior), new PropertyMetadata("", OnSourceUriChanged));
 
 		private static void OnSourceUriChanged(object d, DependencyPropertyChangedEventArgs e)
@@ -29,3 +30,4 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		}
 	}
 }
+#endif

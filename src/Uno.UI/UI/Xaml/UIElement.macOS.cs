@@ -1,41 +1,18 @@
-using CoreAnimation;
-using CoreGraphics;
-using Foundation;
-using Uno.Extensions;
 using Uno.UI.Controls;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Windows.System;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Uno.Logging;
-using Uno;
-using Windows.Devices.Input;
-using Microsoft.Extensions.Logging;
-using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
-using Uno.UI;
 using AppKit;
+using CoreAnimation;
+using CoreGraphics;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableNSView
 	{
-		internal bool IsPointerCaptured { get; set; }
-
-		#region Logs
-		private static readonly ILogger _log = typeof(UIElement).Log();
-		private static readonly Action LogRegisterPointerCanceledNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to RegisterPointerCanceled on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogUnregisterPointerCanceledNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to UnregisterPointerCanceled on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogRegisterPointerExitedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to RegisterPointerExited on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogUnRegisterPointerExitedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to UnregisterPointerExited on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogRegisterPointerPressedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to RegisterPointerPressed on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogUnRegisterPointerPressedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to UnRegisterPointerPressed on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogRegisterPointerReleasedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to RegisterPointerReleased on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogUnRegisterPointerReleasedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to UnregisterPointerReleased on UIElement for iOS. Not Implemented."));
-		#endregion
-
 		public UIElement()
 		{
 			Initialize();
@@ -44,9 +21,7 @@ namespace Windows.UI.Xaml
 		
 		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
 
-
-
-        partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
+		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			// Don't update the internal value if the value is being animated.
 			// The value is being animated by the platform itself.
@@ -77,10 +52,7 @@ namespace Windows.UI.Xaml
 
 		public override bool Hidden
 		{
-			get
-			{
-				return base.Hidden;
-			}
+			get => base.Hidden;
 			set
 			{
 				// Only set the Visility property, the Hidden property is updated 
@@ -121,125 +93,65 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		private CGRect ToCGRect(Rect rect)
-		{
-			return new CGRect
-			(
-				(nfloat)(rect.X),
-				(nfloat)(rect.Y),
-				(nfloat)(rect.Width),
-				(nfloat)(rect.Height)
-			);
-		}
-
-		/// <summary>
-		/// Gets the origin point of the <paramref name="view"/> in the clippingParent's 
-		/// coordinate system.
-		/// </summary>
-		/// <param name="view">The view to get the point from</param>
-		/// <param name="parentView">The view for which to get the adjusted coordinates from</param>
-		/// <returns></returns>
-		private static CGPoint ConvertOriginPointToView(NSView view, NSView parentView)
-		{
-			var value = CGPoint.Empty;
-			var current = view;
-
-			do
-			{
-				if (current is FrameworkElement fr)
-				{
-					value.X += (nfloat)fr.AppliedFrame.X;
-					value.Y += (nfloat)fr.AppliedFrame.Y;
-				}
-				else
-				{
-					value.X += current.Frame.X;
-					value.Y += current.Frame.Y;
-				}
-
-				current = current.Superview;
-
-			} while (current != null && current != parentView);
-
-			return value;
-		}
-
-#region DoubleTapped event
-		private void RegisterDoubleTapped(DoubleTappedEventHandler handler)
-		{
-			LogRegisterPointerCanceledNotImplemented();
-		}
-
-		private void UnregisterDoubleTapped(DoubleTappedEventHandler handler)
-		{
-			LogRegisterPointerCanceledNotImplemented();
-		}
-#endregion
-
-#region PointerCanceled event
-		private void RegisterPointerCanceled(PointerEventHandler handler)
-		{
-			LogRegisterPointerCanceledNotImplemented();
-		}
-
-		private void UnregisterPointerCanceled(PointerEventHandler handler)
-		{
-			LogUnregisterPointerCanceledNotImplemented();
-		}
-#endregion
-
-#region PointerExited event
-		private void RegisterPointerExited(PointerEventHandler handler)
-		{
-			LogRegisterPointerExitedNotImplemented();
-		}
-
-		private void UnregisterPointerExited(PointerEventHandler handler)
-		{
-			LogUnRegisterPointerExitedNotImplemented();
-		}
-#endregion
-
-#region PointerPressed event
-		private void RegisterPointerPressed(PointerEventHandler handler)
-		{
-			LogRegisterPointerPressedNotImplemented();
-		}
-
-		private void UnregisterPointerPressed(PointerEventHandler handler)
-		{
-			LogUnRegisterPointerPressedNotImplemented();
-		}
-#endregion
-
-#region PointerReleased event
-		private void RegisterPointerReleased(PointerEventHandler handler)
-		{
-			LogRegisterPointerReleasedNotImplemented();
-		}
-
-		private void UnregisterPointerReleased(PointerEventHandler handler)
-		{
-			LogUnRegisterPointerReleasedNotImplemented();
-		}
-#endregion
-
-#region Tapped event
-		private void RegisterTapped(TappedEventHandler handler)
-		{
-			LogRegisterPointerReleasedNotImplemented();
-		}
-
-		private void UnregisterTapped(TappedEventHandler handler)
-		{
-			LogUnRegisterPointerReleasedNotImplemented();
-		}
-#endregion
-
-		internal void RaiseTapped(TappedRoutedEventArgs args) => LogUnRegisterPointerReleasedNotImplemented();
-
 #if DEBUG
 		public string ShowLocalVisualTree(int fromHeight) => AppKit.UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
 #endif
+
+		/// <inheritdoc />
+		public override bool AcceptsFirstResponder() 
+			=> true; // This is required to receive the KeyDown / KeyUp. Note: Key events are then bubble in managed.
+
+		private protected override void OnNativeKeyDown(NSEvent evt)
+		{
+			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode))
+			{
+				CanBubbleNatively = false // Only the first responder gets the event
+			};
+
+			RaiseEvent(KeyDownEvent, args);
+
+			base.OnNativeKeyDown(evt);
+		}
+
+		private protected override void OnNativeKeyUp(NSEvent evt)
+		{
+			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode))
+			{
+				CanBubbleNatively = false // Only the first responder gets the event
+			};
+
+			RaiseEvent(KeyUpEvent, args);
+
+			base.OnNativeKeyUp(evt);
+		}
+
+		partial void ApplyNativeClip(Rect rect)
+		{
+			if (rect.IsEmpty
+				|| double.IsPositiveInfinity(rect.X)
+				|| double.IsPositiveInfinity(rect.Y)
+				|| double.IsPositiveInfinity(rect.Width)
+				|| double.IsPositiveInfinity(rect.Height)
+			)
+			{
+				if (!ClippingIsSetByCornerRadius)
+				{
+					if (Layer != null)
+					{
+						this.Layer.Mask = null;
+					}
+				}
+				return;
+			}
+
+			WantsLayer = true;
+			if (Layer != null)
+			{ 
+				this.Layer.Mask = new CAShapeLayer
+				{
+					Path = CGPath.FromRect(rect.ToCGRect())
+				};
+			}
+		}
 	}
 }

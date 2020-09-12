@@ -73,7 +73,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 
 		private async Task<string> GetAndCreateFilePath(CancellationToken ct)
 		{
-#if HAS_UNO && !__WASM__ && !__MACOS__
+#if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
 			var bitmap = await CreateBitmap();
 
 			this.Log().Warn(bitmap.ToString());

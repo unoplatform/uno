@@ -1,34 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using CoreGraphics;
 using Uno.Media;
 using Windows.Foundation;
 
-
 namespace Windows.UI.Xaml.Shapes
 {
-	public partial class Polyline
+	public partial class Polyline : Shape
 	{
-		protected override CGPath GetPath(Size availableSize)
+		/// <inheritdoc />
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureAbsoluteShape(availableSize, GetPath());
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeAbsoluteShape(finalSize, GetPath());
+
+		private CGPath GetPath()
 		{
-			var coords = Points;
-
-			if (coords != null)
+			var points = Points;
+			if (points == null || points.Count <= 1)
 			{
-				var streamGeometry = GeometryHelper.Build(c =>
-				{
-					c.BeginFigure(new Point(coords[0].X, coords[0].Y), true, false);
-					for (int i = 1; i < coords.Count; i++)
-					{
-						c.LineTo(new Point(coords[i].X, coords[i].Y), true, false);
-					}
-				});
-
-				return streamGeometry.ToCGPath();
+				return null;
 			}
 
-			return null;
+			var streamGeometry = GeometryHelper.Build(c =>
+			{
+				c.BeginFigure(points[0], true, false);
+				for (var i = 1; i < points.Count; i++)
+				{
+					c.LineTo(points[i], true, false);
+				}
+			});
+
+			return streamGeometry.ToCGPath();
 		}
 	}
 }

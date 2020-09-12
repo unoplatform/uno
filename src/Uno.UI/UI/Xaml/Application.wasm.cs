@@ -1,4 +1,6 @@
-﻿#if __WASM__
+﻿#nullable enable
+
+#if __WASM__
 using System;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -13,6 +15,17 @@ using Uno.Logging;
 using System.Threading;
 using Uno.UI;
 using Uno.UI.Xaml;
+using Uno;
+using System.Web;
+using System.Collections.Specialized;
+using Uno.Helpers;
+using Microsoft.Extensions.Logging;
+
+#if HAS_UNO_WINUI
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+#else
+using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -27,7 +40,17 @@ namespace Windows.UI.Xaml
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
 
+			Current = this;
+			Package.SetEntryAssembly(this.GetType().Assembly);
+
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+		}
+
+		[Preserve]
+		public static int DispatchSystemThemeChange()
+		{
+			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
+			return 0;
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
@@ -46,17 +69,18 @@ namespace Windows.UI.Xaml
 			callback(new ApplicationInitializationCallbackParams());
 		}
 
+		partial void ObserveSystemThemeChanges()
+		{
+			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeSystemTheme()");
+		}
+
 
 		private void Initialize()
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-				Current = this;
-
 				// Force init
 				Window.Current.ToString();
-
-				Windows.UI.Xaml.GenericStyles.Initialize();
 
 				var arguments = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
 
@@ -65,6 +89,16 @@ namespace Windows.UI.Xaml
 					this.Log().Debug("Launch arguments: " + arguments);
 				}
 				InitializationCompleted();
+
+				if (!string.IsNullOrEmpty(arguments))
+				{
+					if (ProtocolActivation.TryParseActivationUri(arguments, out var activationUri))
+					{
+						OnActivated(new ProtocolActivatedEventArgs(activationUri, ApplicationExecutionState.NotRunning));
+						return;
+					}
+				}
+
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, arguments));
 			}
 		}
@@ -72,7 +106,7 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme GetDefaultSystemTheme()
 		{
 			var serializedTheme = WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.getDefaultSystemTheme()");
-			
+
 			if (serializedTheme != null)
 			{
 				if (Enum.TryParse(serializedTheme, out ApplicationTheme theme))
@@ -94,6 +128,28 @@ namespace Windows.UI.Xaml
 				this.Log().Info("No preferred theme, using Light instead");
 			}
 			return ApplicationTheme.Light;
+		}
+
+		/// <summary>
+		/// Dispatch method from Javascript
+		/// </summary>
+		internal static void DispatchSuspending()
+		{
+			Current?.OnSuspending();
+		}
+
+		partial void OnSuspendingPartial()
+		{
+			var completed = false;
+			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(0), () => completed = true);
+
+			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
+			operation.EventRaiseCompleted();
+
+			if (!completed && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"This platform does not support asynchronous Suspending deferral. Code executed after the of the method called by Suspending may not get executed.");
+			}
 		}
 	}
 }

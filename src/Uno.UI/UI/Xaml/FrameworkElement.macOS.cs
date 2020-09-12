@@ -14,25 +14,11 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
-		private bool _inLayoutSubviews;
-		private CGSize? _lastAvailableSize;
-		private CGSize _lastMeasure;
-
-		partial void Initialize();
-
-		internal bool RequiresArrange { get; private set; }
-
-		internal bool RequiresMeasure { get; private set; }
-
 		/// <summary>
-		/// Determines if InvalidateMeasure has been called
+		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
+		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
 		/// </summary>
-		internal bool IsMeasureDirty => RequiresMeasure;
-
-		/// <summary>
-		/// Determines if InvalidateArrange has been called
-		/// </summary>
-		internal bool IsArrangeDirty => RequiresArrange;
+		internal bool ShouldInterceptInvalidate { get; set; }
 
 		public override bool NeedsLayout
 		{
@@ -78,17 +64,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		/// <summary>
-		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
-		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
-		/// </summary>
-		internal bool ShouldInterceptInvalidate { get; set; }
-
-		public FrameworkElement()
-		{
-			Initialize();
-		}
-
 		public override void Layout()
 		{
 			try
@@ -120,51 +95,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		/// <summary>
-		/// Called before Arrange is called, this method will be deprecated
-		/// once OnMeasure/OnArrange will be implemented completely
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		protected virtual void OnBeforeArrange()
-		{
-
-		}
-
-		/// <summary>
-		/// Called after Arrange is called, this method will be deprecated
-		/// once OnMeasure/OnArrange will be implemented completely
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		protected virtual void OnAfterArrange()
-		{
-
-		}
-
-		internal CGSize? XamlMeasure(CGSize availableSize)
-		{
-			// If set layout has not been called, we can 
-			// return a previously cached result for the same available size.
-			if (
-				!RequiresMeasure
-				&& _lastAvailableSize.HasValue
-				&& availableSize == _lastAvailableSize
-			)
-			{
-				return _lastMeasure;
-			}
-
-			_lastAvailableSize = availableSize;
-			RequiresMeasure = false;
-
-			var result = _layouter.Measure(SizeFromUISize(availableSize));
-
-			result = IFrameworkElementHelper
-				.SizeThatFits(this, result)
-				.ToFoundationSize();
-
-			return result.LogicalToPhysicalPixels();
-		}
-
 		public CGSize SizeThatFits(CGSize size)
 		{
 			try
@@ -186,28 +116,6 @@ namespace Windows.UI.Xaml
 			{
 				_inLayoutSubviews = false;
 			}
-		}
-
-		protected Size SizeFromUISize(CGSize size)
-		{
-			var width = nfloat.IsNaN(size.Width) ? float.PositiveInfinity : size.Width;
-			var height = nfloat.IsNaN(size.Height) ? float.PositiveInfinity : size.Height;
-
-			return new Size(width, height).PhysicalToLogicalPixels();
-		}
-
-		private bool IsTopLevelXamlView()
-		{
-			NSView parent = this;
-			while (parent != null)
-			{
-				parent = parent.Superview;
-				if (parent is IFrameworkElement)
-				{
-					return false;
-				}
-			}
-			return true;
 		}
 	}
 }

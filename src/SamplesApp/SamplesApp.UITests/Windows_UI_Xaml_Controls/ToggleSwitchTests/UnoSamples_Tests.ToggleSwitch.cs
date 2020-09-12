@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 			var unloadButton = _app.Marked("unload");
 			var reloadButton = _app.Marked("reload");
 
-			// Assert initial state 
+			// Assert initial state
 			Assert.AreEqual("False", toggleSwitchGroup.GetDependencyPropertyValue("IsOn")?.ToString());
 			Assert.AreEqual("True", separatedToggleSwitch.GetDependencyPropertyValue("IsOn")?.ToString());
 
@@ -36,6 +36,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 			//Assert final state
 			Assert.AreEqual("False", toggleSwitchGroup.GetDependencyPropertyValue("IsOn")?.ToString());
 			Assert.AreEqual("True", separatedToggleSwitch.GetDependencyPropertyValue("IsOn")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ToggleSwitch_HeaderTest()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_Header");
+
+			var toggleSwitchWithHeader = _app.Marked("toggleSwitchWithHeader");
+			_app.WaitForElement(toggleSwitchWithHeader);
+
+			var toggleSwitchHeaderContentTextBlock = _app.Marked("toggleSwitchHeaderContent");
+			_app.WaitForElement(toggleSwitchHeaderContentTextBlock);
+
+			Assert.AreEqual("Test ToggleSwitch Header", toggleSwitchHeaderContentTextBlock.GetDependencyPropertyValue("Text").ToString());
 		}
 	}
 }

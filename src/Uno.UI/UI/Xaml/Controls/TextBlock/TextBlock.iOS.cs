@@ -10,6 +10,7 @@ using UIKit;
 using CoreGraphics;
 using Windows.UI.Text;
 using Uno.UI;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {

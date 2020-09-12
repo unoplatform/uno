@@ -13,6 +13,9 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.Samples.Controls;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace Uno.UI.Samples.Content.UITests
 {
 	[SampleControlInfo("Animations", "DoubleAnimationTestsControl")]
@@ -242,7 +245,7 @@ namespace Uno.UI.Samples.Content.UITests
 
 			animation.From = 0;
 			animation.To = 100;
-			animation.Duration = new Duration(TimeSpan.FromSeconds(3));
+			animation.Duration = DurationHelper.FromTimeSpan(TimeSpan.FromSeconds(3));
 			animation.EnableDependentAnimation = true;
 
 			Storyboard.SetTarget(animation, target);
@@ -334,7 +337,7 @@ namespace Uno.UI.Samples.Content.UITests
 			var story = GetNewStoryBoard();
 
 			var animation = (DoubleAnimation)story.Children.First();
-			animation.Duration = Duration.Automatic;
+			animation.Duration = DurationHelper.Automatic;
 
 			story.Begin();
 		}
@@ -344,7 +347,7 @@ namespace Uno.UI.Samples.Content.UITests
 			var story = GetNewStoryBoard();
 
 			var animation = (DoubleAnimation)story.Children.First();
-			animation.Duration = Duration.Forever; //Known issue - Android: This test will cause all other tests to keep height=0
+			animation.Duration = DurationHelper.Forever; //Known issue - Android: This test will cause all other tests to keep height=0
 
 			story.Begin();
 		}
@@ -375,7 +378,7 @@ namespace Uno.UI.Samples.Content.UITests
 			var story = GetNewStoryBoard();
 
 			var animation = (DoubleAnimation)story.Children.First();
-			animation.RepeatBehavior = new RepeatBehavior(3);
+			animation.RepeatBehavior = RepeatBehaviorHelper.FromCount(3);
 
 			story.Begin();
 		}
@@ -388,7 +391,7 @@ namespace Uno.UI.Samples.Content.UITests
 
 			var stopTime = animation.Duration.TimeSpan.TotalMilliseconds * 1.5;
 
-			animation.RepeatBehavior = new RepeatBehavior(TimeSpan.FromMilliseconds(stopTime));
+			animation.RepeatBehavior = RepeatBehaviorHelper.FromDuration(TimeSpan.FromMilliseconds(stopTime));
 
 			story.Begin();
 		}
@@ -398,7 +401,7 @@ namespace Uno.UI.Samples.Content.UITests
 			var story = GetNewStoryBoard();
 
 			var animation = (DoubleAnimation)story.Children.First();
-			animation.RepeatBehavior = RepeatBehavior.Forever;
+			animation.RepeatBehavior = RepeatBehaviorHelper.Forever;
 
 			story.Begin();
 		}
@@ -490,7 +493,7 @@ namespace Uno.UI.Samples.Content.UITests
 
 			animation.From = 0;
 			animation.To = 360;
-			animation.Duration = new Duration(TimeSpan.FromSeconds(3));
+			animation.Duration = DurationHelper.FromTimeSpan(TimeSpan.FromSeconds(3));
 			animation.EnableDependentAnimation = true;
 
 			Storyboard.SetTarget(animation, transform);
@@ -511,13 +514,13 @@ namespace Uno.UI.Samples.Content.UITests
 
 			animationCenter.From = 0;
 			animationCenter.To = 100;
-			animationCenter.Duration = new Duration(TimeSpan.FromSeconds(3));
+			animationCenter.Duration = DurationHelper.FromTimeSpan(TimeSpan.FromSeconds(3));
 
 			var animationScale = new DoubleAnimation();
 
 			animationScale.From = 0;
 			animationScale.To = 3;
-			animationScale.Duration = new Duration(TimeSpan.FromSeconds(3));
+			animationScale.Duration = DurationHelper.FromTimeSpan(TimeSpan.FromSeconds(3));
 			animationScale.EnableDependentAnimation = true;
 
 			Storyboard.SetTarget(animationScale, transform);
@@ -529,7 +532,7 @@ namespace Uno.UI.Samples.Content.UITests
 
 			animationRotate.From = 0;
 			animationRotate.To = 360;
-			animationRotate.Duration = new Duration(TimeSpan.FromSeconds(3));
+			animationRotate.Duration = DurationHelper.FromTimeSpan(TimeSpan.FromSeconds(3));
 			animationRotate.EnableDependentAnimation = true;
 
 			Storyboard.SetTarget(animationRotate, transform);

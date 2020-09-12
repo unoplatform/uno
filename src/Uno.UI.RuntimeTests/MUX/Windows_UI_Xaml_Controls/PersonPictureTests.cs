@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			await RunOnUIThread.Execute(() =>
 			{
-				Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider provider = new Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider();
+				Windows.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider provider = new Windows.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider();
 				var picturePersonType = provider.GetXamlType(typeof(PersonPicture).FullName);
 				var contactMember = picturePersonType.GetMember("Contact");
 				var memberType = contactMember.Type;
@@ -152,10 +152,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			await RunOnUIThread.Execute(() =>
 			{
 				personPicture = new PersonPicture();
-				Private.Infrastructure.TestServices.WindowHelper.WindowContent = personPicture;
+				global::Private.Infrastructure.TestServices.WindowHelper.WindowContent = personPicture;
 			});
 
-			await Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
+			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
 			var sizeChangedEvent = new TaskCompletionSource<bool>();
 
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			});
 
 			await sizeChangedEvent.Task;
-			await Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
+			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 		}
 
 		[TestMethod]
@@ -179,10 +179,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			await RunOnUIThread.Execute(() =>
 			{
 				personPicture = new PersonPicture();
-				Private.Infrastructure.TestServices.WindowHelper.WindowContent = personPicture;
+				global::Private.Infrastructure.TestServices.WindowHelper.WindowContent = personPicture;
 			});
 
-			await Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
+			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.Execute(() =>
 			{
@@ -190,7 +190,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				personPicture.IsGroup = true;
 			});
 
-			await Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
+			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.Execute(() =>
 			{
@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				personPicture.Initials = "JS";
 			});
 
-			await Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
+			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.Execute(() =>
 			{
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				personPicture.Initials = "";
 			});
 
-			await Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
+			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.Execute(() =>
 			{
@@ -226,7 +226,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				personPicture.Initials = "👍";
 			});
 
-			await Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
+			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.Execute(() =>
 			{
@@ -236,7 +236,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				personPicture.IsGroup = true;
 			});
 
-			await Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
+			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.Execute(() =>
 			{

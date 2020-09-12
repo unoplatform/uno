@@ -1,4 +1,4 @@
-#if NET461
+#if NET461 || __NETSTD_REFERENCE__
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -13,21 +13,35 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private static Window _current;
+		private bool _isActive;
+		private UIElement _content;
 
 		public Window()
 		{
 			InitializeCommon();
 		}
 
+		partial void InternalActivate()
+		{
+			_isActive = true;
+			TryLoadContent();
+		}
+
 		private void InternalSetContent(UIElement value)
 		{
-
+			_content = value;
+			TryLoadContent();
 		}
 
-		private UIElement InternalGetContent()
+		private void TryLoadContent()
 		{
-			throw new NotImplementedException();
+			if (_isActive)
+			{
+				(_content as FrameworkElement)?.ForceLoaded();
+			}
 		}
+
+		private UIElement InternalGetContent() => _content;
 
 		private static Window InternalGetCurrentWindow()
 		{
@@ -45,7 +59,7 @@ namespace Windows.UI.Xaml
 			{
 				Bounds = new Rect(0, 0, size.Width, size.Height);
 
-				RaiseSizeChanged(new WindowSizeChangedEventArgs(size));
+				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 			}
 		}
 	}

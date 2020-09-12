@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			return _easingFunction;
         }
 
-		private static IEasingFunction _easingFunction = new DiscreteDoubleKeyFrameEasingFunction();
+		private static readonly IEasingFunction _easingFunction = new DiscreteDoubleKeyFrameEasingFunction();
 
 		/// <summary>
 		/// This is a fake easing function that has no equivalent on GPU.

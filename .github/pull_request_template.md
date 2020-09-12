@@ -37,7 +37,7 @@ Please check if your PR fulfills the following requirements:
 - [ ] Validated PR `Screenshots Compare Test Run` results.
 - [ ] Contains **NO** breaking changes
 - [ ] Associated with an issue (GitHub or internal) and uses the [automatic close keywords](https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue).
-- Commits must be following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) specification.
+- [ ] Commits must be following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) specification.
 
 <!-- If this PR contains a breaking change, please describe the impact and migration path for existing applications below.
      Please note that breaking changes are likely to be rejected -->

@@ -16,7 +16,7 @@
   "symbols": {
   },
   "primaryOutputs": [
-    { "path": "UnoQuickStart.Wasm" }
+    { "path": "UnoXFQuickStart.Wasm" }
     // Cannot add the shared project because of path replace issues: https://github.com/dotnet/templating/issues/2068
   ],
   "postActions": [

@@ -37,9 +37,9 @@ namespace Windows.UI.Xaml.Shapes
 		protected void InitCommonShapeProperties() // Should be called from base class constructor
 		{
 			// Initialize
-			OnFillUpdatedPartial();
-			OnStrokeUpdatedPartial();
-			OnStrokeThicknessUpdatedPartial();
+			OnFillUpdatedPartial(); // Required to properly update the HitTest
+			// Don't OnStrokeUpdatedPartial(); => Stroke is still at its default value in the ctor, and it will always results to ResetStyle("stroke")
+			// Don't OnStrokeThicknessUpdatedPartial(); => The default value is set in Uno.UI.css
 		}
 
 		protected abstract SvgElement GetMainSvgElement();
@@ -95,6 +95,10 @@ namespace Windows.UI.Xaml.Shapes
 						() => GetDefs().Remove(gradient)
 					);
 					break;
+				case AcrylicBrush ab:
+					svgElement.SetStyle("fill", ab.FallbackColorWithOpacity.ToHexString());
+					_fillBrushSubscription.Disposable = null;
+					break;
 				case null:
 					// The default is black if the style is not set in Web's' SVG. So if the Fill property is not set,
 					// we explicitly set the style to transparent in order to match the UWP behavior.
@@ -127,6 +131,10 @@ namespace Windows.UI.Xaml.Shapes
 						() => GetDefs().Remove(gradient)
 					);
 					break;
+				case AcrylicBrush ab:
+					svgElement.SetStyle("stroke", ab.FallbackColorWithOpacity.ToHexString());
+					_strokeBrushSubscription.Disposable = null;
+					break;
 				default:
 					svgElement.ResetStyle("stroke");
 					_strokeBrushSubscription.Disposable = null;
@@ -140,13 +148,14 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var svgElement = GetMainSvgElement();
 
-			if (StrokeThickness == default)
+			var strokeThickness = StrokeThickness;
+			if (strokeThickness == default)
 			{
 				svgElement.ResetStyle("stroke-width");
 			}
 			else
 			{
-				svgElement.SetStyle("stroke-width", $"{StrokeThickness}px");
+				svgElement.SetStyle("stroke-width", $"{strokeThickness}px");
 			}
 		}
 
@@ -160,7 +169,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			else
 			{
-				var str = string.Join(",", StrokeDashArray.Select(d => $"{d}px"));
+				var str = string.Join(",", StrokeDashArray.Select(d => $"{d.ToStringInvariant()}px"));
 				svgElement.SetStyle("stroke-dasharray", str);
 			}
 		}

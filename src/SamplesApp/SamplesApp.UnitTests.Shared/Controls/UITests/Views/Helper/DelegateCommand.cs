@@ -2,6 +2,9 @@
 using System;
 using System.Windows.Input;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace Uno.UI.Common
 {
 	public class DelegateCommand : ICommand

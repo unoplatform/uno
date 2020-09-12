@@ -271,6 +271,13 @@
 			Orientation="Horizontal">
 			<TextBlock Text="Last pressed: " />
 			<TextBlock x:Name="LastPressed" Text="__none__" />
+			<TextBlock Text=" (src: " />
+			<TextBlock x:Name="LastPressedSrc" Text="__none__" />
+			<TextBlock Text=") - Last hovered: " />
+			<TextBlock x:Name="LastHovered" Text="__none__" />
+			<TextBlock Text=" (src: " />
+			<TextBlock x:Name="LastHoveredSrc" Text="__none__" />
+			<TextBlock Text=")" />
 		</StackPanel>
 	</Grid>
 </Page>

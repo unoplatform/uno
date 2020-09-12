@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,16 +13,27 @@ namespace Windows.Foundation.Metadata
 		private static HashSet<string> _notImplementedOnce = new HashSet<string>();
 		private static readonly object _gate = new object();
 		private static Dictionary<string, bool> _isTypePresent = new Dictionary<string, bool>();
-		private static Dictionary<(string typeName, string methodName, uint inputParameterCount), bool> _isMethodPresent 
+		private static Dictionary<(string typeName, string methodName, uint inputParameterCount), bool> _isMethodPresent
 			= new Dictionary<(string typeName, string methodName, uint inputParameterCount), bool>();
 
-		private readonly static string[] _assemblies = new string[] {
-			"Uno.UI",
-			"Uno.Foundation",
-			"Uno"
+		private readonly static Dictionary<string, Type> _typeCache = new Dictionary<string, Type>();
+		private readonly static List<Assembly> _assemblies = new List<Assembly>(3 /* All three uno assemblies */) {
+			typeof(ApiInformation).Assembly
 		};
 
-		private static bool IsImplementedByUno(MemberInfo member) => (member?.GetCustomAttributes(typeof(Uno.NotImplementedAttribute), false)?.Length ?? -1) == 0;
+		/// <summary>
+		/// Registers an assembly as part of the Is*Present methods
+		/// </summary>
+		/// <param name="assembly"></param>
+		internal static void RegisterAssembly(Assembly assembly)
+		{
+			lock (_assemblies)
+			{
+				_assemblies.Add(assembly);
+			}
+		}
+
+		private static bool IsImplementedByUno(MemberInfo? member) => (member?.GetCustomAttributes(typeof(Uno.NotImplementedAttribute), false)?.Length ?? -1) == 0;
 
 		public static bool IsTypePresent(string typeName)
 		{
@@ -35,10 +48,10 @@ namespace Windows.Foundation.Metadata
 			}
 		}
 
-		public static bool IsMethodPresent(string typeName, string methodName) 
+		public static bool IsMethodPresent(string typeName, string methodName)
 			=> GetValidType(typeName)?.GetMethod(methodName) != null;
 
-		public static bool IsMethodPresent(string typeName, string methodName, uint inputParameterCount) 
+		public static bool IsMethodPresent(string typeName, string methodName, uint inputParameterCount)
 			=> GetValidType(typeName)
 				?.GetMethods()
 				?.Where(m => m.Name == methodName && m.GetParameters().Length == inputParameterCount)
@@ -49,7 +62,7 @@ namespace Windows.Foundation.Metadata
 				GetValidType(typeName)
 				?.GetEvent(eventName));
 
-		public static bool IsPropertyPresent(string typeName, string propertyName) 
+		public static bool IsPropertyPresent(string typeName, string propertyName)
 			=> IsImplementedByUno(
 				GetValidType(typeName)
 				?.GetProperty(propertyName));
@@ -59,9 +72,9 @@ namespace Windows.Foundation.Metadata
 			var property = GetValidType(typeName)
 				?.GetProperty(propertyName);
 
-			if(IsImplementedByUno(property))
+			if (IsImplementedByUno(property))
 			{
-				return property.GetMethod != null && property.SetMethod == null;
+				return property?.GetMethod != null && property.SetMethod == null;
 			}
 
 			return false;
@@ -74,30 +87,14 @@ namespace Windows.Foundation.Metadata
 
 			if (IsImplementedByUno(property))
 			{
-				return property.GetMethod != null && property.SetMethod != null;
+				return property?.GetMethod != null && property.SetMethod != null;
 			}
 
 			return false;
 		}
 
-		public static bool IsEnumNamedValuePresent(string enumTypeName, string valueName) 
+		public static bool IsEnumNamedValuePresent(string enumTypeName, string valueName)
 			=> GetValidType(enumTypeName)?.GetField(valueName) != null;
-
-		public static bool IsApiContractPresent(string contractName, ushort majorVersion)
-			=> IsApiContractPresent(contractName, majorVersion, 0);
-
-		public static bool IsApiContractPresent(string contractName, ushort majorVersion, ushort minorVersion)
-		{
-			switch (contractName)
-			{
-				case "Windows.Foundation.UniversalApiContract":
-					// See https://docs.microsoft.com/en-us/uwp/extension-sdks/windows-universal-sdk
-					return majorVersion <= 6; // SDK 10.0.17134.1
-
-				default:
-					return false;
-			}
-		}
 
 		/// <summary>
 		/// Determines if runtime use of not implemented members raises an exception, or logs an error message.
@@ -109,15 +106,23 @@ namespace Windows.Foundation.Metadata
 		/// </summary>
 		public static bool AlwaysLogNotImplementedMessages { get; set; }
 
-		private static Type GetValidType(string typeName)
+		private static Type? GetValidType(string typeName)
 		{
-			foreach (var assembly in _assemblies)
+			lock (_assemblies)
 			{
-				var type = Type.GetType(typeName + ", " + assembly);
-
-				if (type != null)
+				if (!_typeCache.TryGetValue(typeName, out var type))
 				{
-					return type;
+					foreach (var assembly in _assemblies)
+					{
+						type = assembly.GetType(typeName);
+
+						if (type != null)
+						{
+							_typeCache[typeName] = type;
+
+							return type;
+						}
+					}
 				}
 			}
 
@@ -134,13 +139,13 @@ namespace Windows.Foundation.Metadata
 			}
 			else
 			{
-				lock(_notImplementedOnce)
+				lock (_notImplementedOnce)
 				{
-					if(!_notImplementedOnce.Contains(memberName) || AlwaysLogNotImplementedMessages)
+					if (!_notImplementedOnce.Contains(memberName) || AlwaysLogNotImplementedMessages)
 					{
 						_notImplementedOnce.Add(memberName);
 
-                        Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory.CreateLogger(type).Error(message);
+						Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory.CreateLogger(type).Error(message);
 					}
 				}
 			}

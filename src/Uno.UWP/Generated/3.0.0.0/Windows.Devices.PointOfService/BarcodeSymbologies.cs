@@ -2,123 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.PointOfService
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BarcodeSymbologies 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint ExtendedBase
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ExtendedBase is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint AusPost
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.AusPost is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Aztec
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Aztec is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint CanPost
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CanPost is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ccab
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ccab is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ccc
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ccc is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint ChinaPost
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ChinaPost is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Codabar
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Codabar is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Codablock128
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Codablock128 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint CodablockA
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CodablockA is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint CodablockF
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CodablockF is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static uint Code11
 		{
 			get
@@ -127,108 +17,108 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Code128
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint AusPost
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code128 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.AusPost is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Code16k
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Aztec
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code16k is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Aztec is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Code32
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint CanPost
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code32 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CanPost is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Code39
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ccab
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code39 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ccab is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Code39Ex
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ccc
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code39Ex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ccc is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Code49
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint ChinaPost
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code49 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ChinaPost is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Code93
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Codabar
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code93 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Codabar is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Code93Ex
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Codablock128
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code93Ex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Codablock128 is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint DataCode
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint CodablockA
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DataCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CodablockA is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint DataMatrix
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint CodablockF
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DataMatrix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CodablockF is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static uint DutchKix
 		{
 			get
@@ -237,698 +127,108 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ean13
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Code128
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code128 is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ean13Add2
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Code16k
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13Add2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code16k is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ean13Add5
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Code32
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13Add5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code32 is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ean8
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Code39
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code39 is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ean8Add2
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Code39Ex
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8Add2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code39Ex is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ean8Add5
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Code49
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8Add5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code49 is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ean99
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Code93
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code93 is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ean99Add2
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Code93Ex
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99Add2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code93Ex is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ean99Add5
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint DataCode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99Add5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DataCode is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Eanv
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint DataMatrix
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Eanv is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DataMatrix is not implemented in Uno.");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint EanvAdd2
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.EanvAdd2 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint EanvAdd5
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.EanvAdd5 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Telepen
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Telepen is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Gs1128
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1128 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Gs1128Coupon
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1128Coupon is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Gs1DatabarType1
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType1 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Gs1DatabarType2
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType2 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Gs1DatabarType3
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType3 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint HanXin
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.HanXin is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint InfoMail
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.InfoMail is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Isbn
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Isbn is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint IsbnAdd5
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsbnAdd5 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Isbt
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Isbt is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Ismn
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ismn is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint IsmnAdd2
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsmnAdd2 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint IsmnAdd5
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsmnAdd5 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Issn
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Issn is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint IssnAdd2
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IssnAdd2 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint IssnAdd5
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IssnAdd5 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint ItalianPost25
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ItalianPost25 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint ItalianPost39
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ItalianPost39 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint JapanPost
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.JapanPost is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint KoreanPost
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.KoreanPost is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Maxicode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Maxicode is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Micr
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Micr is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint MicroPdf417
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MicroPdf417 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint MicroQr
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MicroQr is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint MsTag
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MsTag is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Msi
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Msi is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint OcrA
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.OcrA is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint OcrB
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.OcrB is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Pdf417
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Pdf417 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Plessey
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Plessey is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Pzn
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Pzn is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Qr
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Qr is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Sisac
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Sisac is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint SwedenPost
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.SwedenPost is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint TfDis
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfDis is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint TfIata
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfIata is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint TfInd
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfInd is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint TfInt
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfInt is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint TfMat
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfMat is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint TfStd
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfStd is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Tlc39
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Tlc39 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Trioptic39
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Trioptic39 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint UccEan128
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UccEan128 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint UkPost
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UkPost is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Unknown
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Unknown is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint UpcCoupon
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcCoupon is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Upca
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Upca is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint UpcaAdd2
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcaAdd2 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint UpcaAdd5
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcaAdd5 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Upce
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Upce is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint UpceAdd2
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpceAdd2 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint UpceAdd5
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpceAdd5 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint Us4StateFics
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Us4StateFics is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint UsIntelligent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsIntelligent is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint UsIntelligentPkg
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsIntelligentPkg is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint UsPlanet
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsPlanet is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static uint UsPostNet
 		{
 			get
@@ -937,8 +237,708 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ean13
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ean13Add2
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13Add2 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ean13Add5
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13Add5 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ean8
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ean8Add2
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8Add2 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ean8Add5
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8Add5 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ean99
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ean99Add2
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99Add2 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ean99Add5
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99Add5 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Eanv
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Eanv is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint EanvAdd2
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.EanvAdd2 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint EanvAdd5
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.EanvAdd5 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint ExtendedBase
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ExtendedBase is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Gs1128
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1128 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Gs1128Coupon
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1128Coupon is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Gs1DatabarType1
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType1 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Gs1DatabarType2
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType2 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Gs1DatabarType3
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType3 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint HanXin
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.HanXin is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint InfoMail
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.InfoMail is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Isbn
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Isbn is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint IsbnAdd5
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsbnAdd5 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Isbt
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Isbt is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Ismn
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ismn is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint IsmnAdd2
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsmnAdd2 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint IsmnAdd5
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsmnAdd5 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Issn
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Issn is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint IssnAdd2
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IssnAdd2 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint IssnAdd5
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IssnAdd5 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint ItalianPost25
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ItalianPost25 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint ItalianPost39
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ItalianPost39 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint JapanPost
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.JapanPost is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint KoreanPost
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.KoreanPost is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Maxicode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Maxicode is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Micr
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Micr is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint MicroPdf417
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MicroPdf417 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint MicroQr
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MicroQr is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint MsTag
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MsTag is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Msi
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Msi is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint OcrA
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.OcrA is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint OcrB
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.OcrB is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Pdf417
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Pdf417 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Plessey
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Plessey is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Pzn
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Pzn is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Qr
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Qr is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Sisac
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Sisac is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint SwedenPost
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.SwedenPost is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Telepen
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Telepen is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint TfDis
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfDis is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint TfIata
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfIata is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint TfInd
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfInd is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint TfInt
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfInt is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint TfMat
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfMat is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint TfStd
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfStd is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Tlc39
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Tlc39 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Trioptic39
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Trioptic39 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint UccEan128
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UccEan128 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint UkPost
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UkPost is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Unknown
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Unknown is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint UpcCoupon
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcCoupon is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Upca
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Upca is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint UpcaAdd2
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcaAdd2 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint UpcaAdd5
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcaAdd5 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Upce
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Upce is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint UpceAdd2
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpceAdd2 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint UpceAdd5
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpceAdd5 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint Us4StateFics
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Us4StateFics is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint UsIntelligent
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsIntelligent is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint UsIntelligentPkg
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsIntelligentPkg is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static uint UsPlanet
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsPlanet is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static uint Gs1DWCode
 		{
 			get
@@ -1041,8 +1041,8 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.OcrB.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.Micr.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.ExtendedBase.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetName( uint scanDataType)
 		{
 			throw new global::System.NotImplementedException("The member string BarcodeSymbologies.GetName(uint scanDataType) is not implemented in Uno.");

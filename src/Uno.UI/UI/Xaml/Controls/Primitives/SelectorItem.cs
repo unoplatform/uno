@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return state;
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 #if __ANDROID__

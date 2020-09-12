@@ -16,6 +16,7 @@ namespace SamplesApp.UITests
 	{
 		protected IApp _app;
 		private static int _totalTestFixtureCount;
+		private double? _scaling;
 
 		public SampleControlUITestBase()
 		{
@@ -126,7 +127,7 @@ namespace SamplesApp.UITests
 			}
 		}
 
-		public FileInfo TakeScreenshot(string stepName, bool? ignoreInSnapshotCompare = null)
+		public ScreenshotInfo TakeScreenshot(string stepName, bool? ignoreInSnapshotCompare = null)
 			=> TakeScreenshot(
 				stepName,
 				ignoreInSnapshotCompare != null
@@ -134,8 +135,14 @@ namespace SamplesApp.UITests
 					: null
 			);
 
-		public FileInfo TakeScreenshot(string stepName, ScreenshotOptions options)
+		public ScreenshotInfo TakeScreenshot(string stepName, ScreenshotOptions? options)
 		{
+			if(_app == null)
+			{
+				Console.WriteLine($"Skipping TakeScreenshot _app is not available");
+				return null;
+			}
+
 			var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"
 				.Replace(" ", "_")
 				.Replace(".", "_");
@@ -167,14 +174,19 @@ namespace SamplesApp.UITests
 
 			if(options != null)
 			{
-				var fileName = Path
-					.Combine(fileInfo.DirectoryName, Path.GetFileNameWithoutExtension(fileInfo.FullName) + ".metadata")
-					.GetNormalizedLongPath();
-
-				File.WriteAllText(fileName, $"IgnoreInSnapshotCompare={options.IgnoreInSnapshotCompare}");
+				SetOptions(fileInfo, options);
 			}
 
-			return fileInfo;
+			return new ScreenshotInfo(fileInfo, stepName) ;
+		}
+
+		public void SetOptions(FileInfo screenshot, ScreenshotOptions options)
+		{
+			var fileName = Path
+				.Combine(screenshot.DirectoryName, Path.GetFileNameWithoutExtension(screenshot.FullName) + ".metadata")
+				.GetNormalizedLongPath();
+
+			File.WriteAllText(fileName, $"IgnoreInSnapshotCompare={options.IgnoreInSnapshotCompare}");
 		}
 
 		private static void ValidateAutoRetry()
@@ -233,7 +245,11 @@ namespace SamplesApp.UITests
 		{
 			if (waitForSampleControl)
 			{
-				_app.WaitForElement("sampleControl", timeout: TimeSpan.FromSeconds(sampleLoadTimeout));
+				var sampleControlQuery = AppInitializer.GetLocalPlatform() == Platform.Browser
+					? new QueryEx(q => q.Marked("sampleControl"))
+					: new QueryEx(q => q.All().Marked("sampleControl"));
+
+				_app.WaitForElement(sampleControlQuery, timeout: TimeSpan.FromSeconds(sampleLoadTimeout));
 			}
 
 			var testRunId = _app.InvokeGeneric("browser:SampleRunner|RunTest", metadataName);
@@ -262,6 +278,26 @@ namespace SamplesApp.UITests
 			{
 				return _app.GetScreenDimensions();
 			}
+		}
+
+		internal double GetDisplayScreenScaling()
+		{
+			if (_scaling == null)
+			{
+				var scalingRaw = _app.InvokeGeneric("browser:SampleRunner|GetDisplayScreenScaling", "0");
+
+				if (double.TryParse(scalingRaw?.ToString(), out var scaling))
+				{
+					Console.WriteLine($"Display Scaling: {scaling}");
+					_scaling = scaling / 100;
+				}
+				else
+				{
+					_scaling = 1;
+				}
+			}
+
+			return _scaling.Value;
 		}
 	}
 }

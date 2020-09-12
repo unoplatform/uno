@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class NumberBoxValueChangedEventArgs
+	public partial class NumberBoxValueChangedEventArgs
 	{
 		internal NumberBoxValueChangedEventArgs(double oldValue, double newValue)
 		{

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-    public partial class SineEase : EasingFunctionBase
+	public partial class SineEase : EasingFunctionBase
 	{
 		public override double Ease(double currentTime, double startValue, double finalValue, double duration)
 		{

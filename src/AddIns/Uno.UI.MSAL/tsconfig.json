@@ -1,0 +1,15 @@
+﻿{
+  "compilerOptions": {
+    "module": "none",
+    "declaration": true,
+    "diagnostics": true,
+    "noImplicitAny": true,
+    "outFile": "WasmScripts/uno-ui-msal.js",
+    "locale": "en-US",
+    "target": "es6"
+  },
+  "include": [
+    "ts/**/*"
+  ]
+}
+

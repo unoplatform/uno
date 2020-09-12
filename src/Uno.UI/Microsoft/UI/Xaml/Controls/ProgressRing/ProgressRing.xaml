@@ -41,7 +41,7 @@
 								</VisualState>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
-						 AnimatedVisualPlayer for Lottie 
+						 <!--AnimatedVisualPlayer for Lottie--> 
 						<AnimatedVisualPlayer x:Name="IndeterminateAnimatedVisualPlayer" AutoPlay="false" Stretch="fill"/>
 					</Grid>
 				</ControlTemplate>

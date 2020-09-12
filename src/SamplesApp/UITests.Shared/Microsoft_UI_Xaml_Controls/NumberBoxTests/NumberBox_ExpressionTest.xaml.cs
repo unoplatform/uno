@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Media;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	[SampleControlInfo(category: "NumberBox")]
+	[Sample("NumberBox", "WinUI")]
 	public sealed partial class NumberBox_ExpressionTest : Page
 	{
 		const double resetValue = double.NaN;
@@ -144,7 +144,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			{
 				Text = prefix + msg,
 				Foreground = color,
-				Margin = new Thickness(8, 0, 0, 0),
+				Margin = ThicknessHelper.FromLengths(8, 0, 0, 0),
 				FontFamily = new FontFamily("Courier New"),
 				FontSize = 11,
 				TextWrapping = TextWrapping.Wrap

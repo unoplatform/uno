@@ -20,42 +20,129 @@ namespace Windows.Graphics.Display
 			}
 		}
 
-		partial void Initialize() => UpdateProperties();
+		public DisplayOrientations CurrentOrientation => GetCurrentOrientation();
 
-		private void UpdateProperties()
+		
+		/// <summary>
+		//// Gets the native orientation of the display monitor, 
+		///  which is typically the orientation where the buttons
+		///  on the device match the orientation of the monitor.
+		/// </summary>
+		public DisplayOrientations NativeOrientation => GetNativeOrientation();
+
+
+		public uint ScreenHeightInRawPixels
 		{
-			using (var realDisplayMetrics = new DisplayMetrics())
-			using (var windowManager = ContextHelper.Current.GetSystemService(Context.WindowService).JavaCast<IWindowManager>())
+			get
 			{
-				windowManager.DefaultDisplay.GetRealMetrics(realDisplayMetrics);
-
-				UpdateLogicalProperties(realDisplayMetrics);
-				UpdateRawProperties(realDisplayMetrics);
-				UpdateNativeOrientation(windowManager);
-				UpdateCurrentOrientation(windowManager);
+				using (var realDisplayMetrics = CreateRealDisplayMetrics())
+				{
+					return (uint)realDisplayMetrics.HeightPixels;
+				}
 			}
 		}
 
-		private void UpdateLogicalProperties(DisplayMetrics realDisplayMetrics)
+		public uint ScreenWidthInRawPixels
 		{
-			// DisplayMetrics of 1.0 matches 100%, or UWP's default 96.0 DPI.
-			// https://stuff.mit.edu/afs/sipb/project/android/docs/reference/android/util/DisplayMetrics.html#density
-			LogicalDpi = realDisplayMetrics.Density * 96.0f;
-			ResolutionScale = (ResolutionScale)(int)(realDisplayMetrics.Density * 100.0);
+			get
+			{
+				using (var realDisplayMetrics = CreateRealDisplayMetrics())
+				{
+					return (uint)realDisplayMetrics.WidthPixels;
+				}
+			}
+		}
+		
+		public double RawPixelsPerViewPixel
+		{
+			get
+			{
+				using (var realDisplayMetrics = CreateRealDisplayMetrics())
+				{
+					return 1.0f * (int)realDisplayMetrics.DensityDpi / (int)DisplayMetricsDensity.Default;
+				}
+			}
 		}
 
-		private void UpdateRawProperties(DisplayMetrics realDisplayMetrics)
+		public float LogicalDpi
 		{
-			RawDpiX = realDisplayMetrics.Xdpi;
-			RawDpiY = realDisplayMetrics.Ydpi;
-			ScreenWidthInRawPixels = (uint)realDisplayMetrics.WidthPixels;
-			ScreenHeightInRawPixels = (uint)realDisplayMetrics.HeightPixels;
-			RawPixelsPerViewPixel = 1.0f * (int)realDisplayMetrics.DensityDpi / (int)DisplayMetricsDensity.Default;
+			get
+			{
+				using (var realDisplayMetrics = CreateRealDisplayMetrics())
+				{
+					// DisplayMetrics of 1.0 matches 100%, or UWP's default 96.0 DPI.
+					// https://stuff.mit.edu/afs/sipb/project/android/docs/reference/android/util/DisplayMetrics.html#density
+					return realDisplayMetrics.Density * BaseDpi;
+				}
+			}
+		}
 
-			var x = Math.Pow(ScreenWidthInRawPixels / realDisplayMetrics.Xdpi, 2);
-			var y = Math.Pow(ScreenHeightInRawPixels / realDisplayMetrics.Ydpi, 2);
-			var screenInches = Math.Sqrt(x + y);
-			DiagonalSizeInInches = screenInches;
+		public ResolutionScale ResolutionScale
+		{
+			get
+			{
+				using (var realDisplayMetrics = CreateRealDisplayMetrics())
+				{
+					return (ResolutionScale)(int)(realDisplayMetrics.Density * 100);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the raw dots per inch (DPI) along the x axis of the display monitor.
+		/// </summary>
+		/// <remarks>
+		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.rawdpix#remarks">Docs</see> 
+		/// defaults to 0 if not set
+		/// </remarks>
+		public float RawDpiX
+		{
+			get
+			{
+				using (var realDisplayMetrics = CreateRealDisplayMetrics())
+				{
+					return realDisplayMetrics.Xdpi;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the raw dots per inch (DPI) along the y axis of the display monitor.
+		/// </summary>
+		/// <remarks>
+		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.rawdpiy#remarks">Docs</see> 
+		/// defaults to 0 if not set
+		/// </remarks>
+		public float RawDpiY
+		{
+			get
+			{
+				using (var realDisplayMetrics = CreateRealDisplayMetrics())
+				{
+					return realDisplayMetrics.Ydpi;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Diagonal size of the display in inches.
+		/// </summary>
+		/// <remarks>
+		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.diagonalsizeininches#property-value">Docs</see> 
+		/// defaults to null if not set
+		/// </remarks>
+		public double? DiagonalSizeInInches
+		{
+			get
+			{
+				using (var realDisplayMetrics = CreateRealDisplayMetrics())
+				{
+					var x = Math.Pow((uint)realDisplayMetrics.WidthPixels / realDisplayMetrics.Xdpi, 2);
+					var y = Math.Pow((uint)realDisplayMetrics.HeightPixels / realDisplayMetrics.Ydpi, 2);
+					var screenInches = Math.Sqrt(x + y);
+					return screenInches;
+				}
+			}
 		}
 
 		/// <summary>
@@ -66,28 +153,30 @@ namespace Windows.Graphics.Display
 		/// Based on responses in
 		/// <see cref="https://stackoverflow.com/questions/4553650/how-to-check-device-natural-default-orientation-on-android-i-e-get-landscape">this SO question</see>
 		/// </remarks>
-		private void UpdateNativeOrientation(IWindowManager windowManager)
+		private DisplayOrientations GetNativeOrientation()
 		{
-			var orientation = ContextHelper.Current.Resources.Configuration.Orientation;
-			if (orientation == Android.Content.Res.Orientation.Undefined)
+			using (var windowManager = CreateWindowManager())
 			{
-				NativeOrientation = DisplayOrientations.None;
-				return;
-			}
+				var orientation = ContextHelper.Current.Resources.Configuration.Orientation;
+				if (orientation == Android.Content.Res.Orientation.Undefined)
+				{
+					return DisplayOrientations.None;
+				}
 
-			var rotation = windowManager.DefaultDisplay.Rotation;
-			bool isLandscape;
-			switch (rotation)
-			{
-				case SurfaceOrientation.Rotation0:
-				case SurfaceOrientation.Rotation180:
-					isLandscape = orientation == Android.Content.Res.Orientation.Landscape;
-					break;
-				default:
-					isLandscape = orientation == Android.Content.Res.Orientation.Portrait;
-					break;
+				var rotation = windowManager.DefaultDisplay.Rotation;
+				bool isLandscape;
+				switch (rotation)
+				{
+					case SurfaceOrientation.Rotation0:
+					case SurfaceOrientation.Rotation180:
+						isLandscape = orientation == Android.Content.Res.Orientation.Landscape;
+						break;
+					default:
+						isLandscape = orientation == Android.Content.Res.Orientation.Portrait;
+						break;
+				}
+				return isLandscape ? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
 			}
-			NativeOrientation = isLandscape ? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
 		}
 
 		/// <summary>
@@ -98,85 +187,96 @@ namespace Windows.Graphics.Display
 		/// Again quite complicated to do on Android, based on accepted solution at
 		/// <see cref="https://stackoverflow.com/questions/10380989/how-do-i-get-the-current-orientation-activityinfo-screen-orientation-of-an-a">this SO question</see>
 		/// </remarks>
-		private void UpdateCurrentOrientation(IWindowManager windowManager)
+		private DisplayOrientations GetCurrentOrientation()
 		{
-			var rotation = windowManager.DefaultDisplay.Rotation;
-			using (var displayMetrics = new DisplayMetrics())
+			using (var windowManager = CreateWindowManager())
 			{
-				windowManager.DefaultDisplay.GetMetrics(displayMetrics);
-
-				int width = displayMetrics.WidthPixels;
-				int height = displayMetrics.HeightPixels;
-
-				if (width == height)
+				var rotation = windowManager.DefaultDisplay.Rotation;
+				using (var displayMetrics = new DisplayMetrics())
 				{
-					//square device, can't tell orientation
-					CurrentOrientation = DisplayOrientations.None;
-					return;
-				}
+					windowManager.DefaultDisplay.GetMetrics(displayMetrics);
 
-				if (NativeOrientation == DisplayOrientations.Portrait)
-				{
-					switch (rotation)
+					int width = displayMetrics.WidthPixels;
+					int height = displayMetrics.HeightPixels;
+
+					if (width == height)
 					{
-						case SurfaceOrientation.Rotation0:
-							CurrentOrientation = DisplayOrientations.Portrait;
-							break;
-						case SurfaceOrientation.Rotation90:
-							CurrentOrientation = DisplayOrientations.Landscape;
-							break;
-						case SurfaceOrientation.Rotation180:
-							CurrentOrientation = DisplayOrientations.PortraitFlipped;
-							break;
-						case SurfaceOrientation.Rotation270:
-							CurrentOrientation = DisplayOrientations.LandscapeFlipped;
-							break;
-						default:
-							//invalid rotation
-							CurrentOrientation = DisplayOrientations.None;
-							break;
+						//square device, can't tell orientation
+						return DisplayOrientations.None;
 					}
-				}
-				else if (NativeOrientation == DisplayOrientations.Landscape)
-				{
-					//device is landscape or square
-					switch (rotation)
+
+					if (NativeOrientation == DisplayOrientations.Portrait)
 					{
-						case SurfaceOrientation.Rotation0:
-							CurrentOrientation = DisplayOrientations.Landscape;
-							break;
-						case SurfaceOrientation.Rotation90:
-							CurrentOrientation = DisplayOrientations.Portrait;
-							break;
-						case SurfaceOrientation.Rotation180:
-							CurrentOrientation = DisplayOrientations.LandscapeFlipped;
-							break;
-						case SurfaceOrientation.Rotation270:
-							CurrentOrientation = DisplayOrientations.PortraitFlipped;
-							break;
-						default:
-							//invalid rotation
-							CurrentOrientation = DisplayOrientations.None;
-							break;
+						switch (rotation)
+						{
+							case SurfaceOrientation.Rotation0:
+								return DisplayOrientations.Portrait;
+							case SurfaceOrientation.Rotation90:
+								return DisplayOrientations.Landscape;
+							case SurfaceOrientation.Rotation180:
+								return DisplayOrientations.PortraitFlipped;
+							case SurfaceOrientation.Rotation270:
+								return DisplayOrientations.LandscapeFlipped;
+							default:
+								//invalid rotation
+								return DisplayOrientations.None;
+						}
 					}
-				}
-				else
-				{
-					//fallback
-					CurrentOrientation = DisplayOrientations.None;
+					else if (NativeOrientation == DisplayOrientations.Landscape)
+					{
+						//device is landscape or square
+						switch (rotation)
+						{
+							case SurfaceOrientation.Rotation0:
+								return DisplayOrientations.Landscape;
+							case SurfaceOrientation.Rotation90:
+								return DisplayOrientations.Portrait;
+							case SurfaceOrientation.Rotation180:
+								return DisplayOrientations.LandscapeFlipped;
+							case SurfaceOrientation.Rotation270:
+								return DisplayOrientations.PortraitFlipped;
+							default:
+								//invalid rotation
+								return DisplayOrientations.None;
+						}
+					}
+					else
+					{
+						//fallback
+						return DisplayOrientations.None;
+					}
 				}
 			}
 		}
 
+		private IWindowManager CreateWindowManager()
+		{
+			return ContextHelper.Current.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
+		}
+
+		private DisplayMetrics CreateRealDisplayMetrics()
+		{
+			var displayMetrics = new DisplayMetrics();
+			using (var windowManager = CreateWindowManager())
+			{
+				windowManager.DefaultDisplay.GetRealMetrics(displayMetrics);
+			}
+			return displayMetrics;
+		}
+
+		partial void StartOrientationChanged()
+		{
+			_lastKnownOrientation = CurrentOrientation;
+		}
+
+		partial void StartDpiChanged()
+		{
+			_lastKnownDpi = LogicalDpi;
+		}
 
 		internal void HandleConfigurationChange()
 		{
-			var previousOrientation = CurrentOrientation;
-			Initialize();
-			if (previousOrientation != CurrentOrientation)
-			{
-				OrientationChanged?.Invoke(this, CurrentOrientation);
-			}
+			OnDisplayMetricsChanged();
 		}
 	}
 }

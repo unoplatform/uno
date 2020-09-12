@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class LinearGradientBrush 
@@ -11,6 +11,7 @@ namespace Windows.UI.Xaml.Media
 		// Skipping already declared property EndPoint
 		// Skipping already declared property EndPointProperty
 		// Skipping already declared property StartPointProperty
+		// Skipping already declared method Windows.UI.Xaml.Media.LinearGradientBrush.LinearGradientBrush(Windows.UI.Xaml.Media.GradientStopCollection, double)
 		// Forced skipping of method Windows.UI.Xaml.Media.LinearGradientBrush.LinearGradientBrush(Windows.UI.Xaml.Media.GradientStopCollection, double)
 		// Skipping already declared method Windows.UI.Xaml.Media.LinearGradientBrush.LinearGradientBrush()
 		// Forced skipping of method Windows.UI.Xaml.Media.LinearGradientBrush.LinearGradientBrush()

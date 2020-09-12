@@ -15,12 +15,14 @@
 	<Icon>__TemplateIcon.png</Icon>
 	<PreviewImage>__PreviewImage.png</PreviewImage>
 	<LanguageTag>csharp</LanguageTag>
-	<PlatformTag>ios</PlatformTag>
+	<PlatformTag>iOS</PlatformTag>
 	<PlatformTag>android</PlatformTag>
 	<PlatformTag>Windows</PlatformTag>
+	<PlatformTag>macOS</PlatformTag>
+	<PlatformTag>web</PlatformTag>
 	<ProjectTypeTag>mobile</ProjectTypeTag>
 	<ProjectTypeTag>UWP</ProjectTypeTag>
-	<ProjectTypeTag>Wasm</ProjectTypeTag>
+	<ProjectTypeTag>WebAssembly</ProjectTypeTag>
 	<ProjectTypeTag>Uno Platform</ProjectTypeTag>
   </TemplateData>
   <TemplateContent>

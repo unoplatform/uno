@@ -199,6 +199,69 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			Assert.AreEqual(42, SUT.DataContext);
 
 		}
+
+		[TestMethod]
+		public void When_DataContext_Inherited_And_Child_Removed()
+		{
+			var SUT = new MyControl();
+
+			var independentChild = new MyControl();
+			var parent = new Grid
+			{
+				Children = { independentChild, SUT },
+				DataContext = 42
+			};
+
+			// Here we use the "FrameworkProperty" which is expected to inherit the DataContext by default
+			SUT.InnerFramework = independentChild;
+
+			int parentCtxChanged = 0, childCtxChanged = 0, SUTCtxChanged = 0;
+			parent.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => parentCtxChanged++);
+			independentChild.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => childCtxChanged++);
+			SUT.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => SUTCtxChanged++);
+
+			Assert.AreEqual(42, SUT.DataContext);
+
+			// And here the issue: when we remove the SUT from the parent,
+			// it will propagate to the independentChild the DataContext change ...
+			// which is acceptable (but not really expected neither) as the DP is a FrameworkProperty on which we want to propagate the DataContext
+			parent.Children.Remove(SUT);
+
+			Assert.AreEqual(null, SUT.DataContext);
+			Assert.AreEqual(0, parentCtxChanged);
+			Assert.AreEqual(1, SUTCtxChanged);
+			Assert.AreEqual(1, childCtxChanged);
+		}
+
+		[TestMethod]
+		public void When_DataContext_NotInherited_And_Child_Removed()
+		{
+			var SUT = new MyControl();
+
+			var independentChild = new MyControl();
+			var parent = new Grid
+			{
+				Children = { independentChild, SUT },
+				DataContext = 42
+			};
+
+			// Here we use the standard (a.k.a. Application) DP which is NOT expected to propagate the DataContext
+			SUT.InnerStandard = independentChild;
+
+			int parentCtxChanged = 0, childCtxChanged = 0, SUTCtxChanged = 0;
+			parent.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => parentCtxChanged++);
+			independentChild.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => childCtxChanged++);
+			SUT.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => SUTCtxChanged++);
+
+			Assert.AreEqual(42, SUT.DataContext);
+
+			parent.Children.Remove(SUT);
+
+			Assert.AreEqual(null, SUT.DataContext);
+			Assert.AreEqual(0, parentCtxChanged);
+			Assert.AreEqual(1, SUTCtxChanged);
+			Assert.AreEqual(0, childCtxChanged);
+		}
 	}
 
 	public partial class MyBasicListType : DependencyObject
@@ -264,6 +327,27 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 		}
 
 		#endregion
+	}
 
+	public partial class MyControl : Control
+	{
+		// Just a standard DP defined by a project / third party component
+		public static readonly DependencyProperty InnerStandardProperty = DependencyProperty.Register(
+			"InnerStandard", typeof(MyControl), typeof(MyControl), new PropertyMetadata(default(MyControl)));
+
+		public MyControl InnerStandard
+		{
+			get { return (MyControl)GetValue(InnerStandardProperty); }
+			set { SetValue(InnerStandardProperty, value); }
+		}
+
+		public static readonly DependencyProperty InnerFrameworkProperty = DependencyProperty.Register(
+			"InnerFramework", typeof(MyControl), typeof(MyControl), new FrameworkPropertyMetadata(default(MyControl)));
+
+		public MyControl InnerFramework
+		{
+			get { return (MyControl)GetValue(InnerFrameworkProperty); }
+			set { SetValue(InnerFrameworkProperty, value); }
+		}
 	}
 }

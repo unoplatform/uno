@@ -45,7 +45,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnoSolutionTemplate</RootNamespace>
     <AssemblyName>UnoSolutionTemplate.VSIX</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
@@ -83,7 +83,7 @@
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="winjs-symbols.ttf">
+    <None Include="uno-fluentui-assets.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -143,7 +143,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
@@ -186,14 +186,12 @@
     <PackageReference Include="Microsoft.VisualStudio.Text.Data" version="15.6.27740" />
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop" version="7.10.6071" />
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.8.0" version="8.0.50728" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading" version="15.8.209" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" version="15.8.209" />
     <PackageReference Include="Microsoft.VisualStudio.Utilities" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Validation" version="15.5.31" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.3" />
     <PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
     <PackageReference Include="stdole" version="7.0.3303" />
-    <PackageReference Include="StreamJsonRpc" version="2.4.48" />
+    <PackageReference Include="StreamJsonRpc" version="2.5.46" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

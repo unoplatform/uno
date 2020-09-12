@@ -21,7 +21,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	public sealed partial class Binding_StateTrigger : Page, INotifyPropertyChanged
+	public sealed partial class Binding_StateTrigger : Page, System.ComponentModel.INotifyPropertyChanged
 	{
 		public Binding_StateTrigger()
 		{
@@ -30,7 +30,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 
 		private MyState _myState;
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 		public MyState MyState
 		{
@@ -38,7 +38,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			set
 			{
 				_myState = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MyState)));
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(MyState)));
 			}
 		}
 	}

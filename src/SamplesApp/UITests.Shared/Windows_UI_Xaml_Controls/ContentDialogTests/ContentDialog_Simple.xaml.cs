@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using ICommand = System.Windows.Input.ICommand;
+
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
 	[SampleControlInfo("ContentDialog", "ContentDialog_Simple")]

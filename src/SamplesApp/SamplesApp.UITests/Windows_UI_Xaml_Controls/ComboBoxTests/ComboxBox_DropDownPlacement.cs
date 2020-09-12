@@ -50,6 +50,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			// Open the combo
 			_app.TapCoordinates(sut.Rect.Right - 10, sut.Rect.CenterY);
 
+			// Wait for popup to open
+			_app.WaitForElement("PopupBorder");
+
 			var opened = TakeScreenshot("opened", ignoreInSnapshotCompare: true);
 
 			// Make sure to close the combo

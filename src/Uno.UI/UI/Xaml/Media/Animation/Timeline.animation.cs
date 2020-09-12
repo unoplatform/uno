@@ -15,14 +15,14 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		private protected partial class AnimationImplementation<T> : IDisposable where T : struct
 		{
-			private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
+			private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 			private Timeline _owner;
 			private IAnimation<T> AnimationOwner => _owner as IAnimation<T>;
 			private EventActivity _traceActivity;
 
 			public static class TraceProvider
 			{
-				public readonly static Guid Id = Guid.Parse("{CC14F7B2-D92B-429D-81A4-E1E7A1B13D3D}");
+				public static readonly Guid Id = Guid.Parse("{CC14F7B2-D92B-429D-81A4-E1E7A1B13D3D}");
 
 				public const int Start = 1;
 				public const int Stop = 2;
@@ -432,22 +432,18 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				if (To.HasValue)
 				{
-					return (T)To.Value;
+					return To.Value;
 				}
 
-				if (By.HasValue)
+				if (!By.HasValue)
 				{
-					if (From.HasValue)
-					{
-						return AnimationOwner.Add(From.Value, By.Value);
-					}
-					else
-					{
-						return AnimationOwner.Add(GetDefaultTargetValue() ?? default(T), By.Value);
-					}
+					return GetDefaultTargetValue() ?? default;
 				}
 
-				return GetDefaultTargetValue() ?? default(T);
+				return From.HasValue
+					? AnimationOwner.Add(From.Value, By.Value)
+					: AnimationOwner.Add(GetDefaultTargetValue() ?? default, By.Value);
+
 			}
 
 			/// <summary>

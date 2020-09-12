@@ -61,6 +61,10 @@
 								Click="MenuFlyoutItem_Click" />
 				<MenuFlyoutItem Text="Paste"
 								Click="MenuFlyoutItem_Click" />
+				<ToggleMenuFlyoutItem x:Name="RepeatToggleMenuFlyoutItem" Text="Repeat" IsChecked="True"
+								Click="MenuFlyoutItem_Click"  />
+				<ToggleMenuFlyoutItem x:Name="ShuffleToggleMenuFlyoutItem" Text="Shuffle" IsChecked="False"
+								Click="MenuFlyoutItem_Click"  />
 			</MenuBarItem>
 
 			<MenuBarItem x:Name="helpMenu" Title="Help">

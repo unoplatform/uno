@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Power
 {
-	#if false || false || NET461 || __WASM__ || __MACOS__
+	#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PowerManager 
 	{
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.Power.BatteryStatus BatteryStatus
 		{
 			get
@@ -17,8 +17,8 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.Power.EnergySaverStatus EnergySaverStatus
 		{
 			get
@@ -27,8 +27,8 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.Power.PowerSupplyStatus PowerSupplyStatus
 		{
 			get
@@ -37,8 +37,8 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static int RemainingChargePercent
 		{
 			get
@@ -47,8 +47,8 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.TimeSpan RemainingDischargeTime
 		{
 			get
@@ -72,80 +72,80 @@ namespace Windows.System.Power
 		// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTime.get
 		// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTimeChanged.add
 		// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTimeChanged.remove
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<object> BatteryStatusChanged
 		{
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.BatteryStatusChanged");
 			}
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.BatteryStatusChanged");
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<object> EnergySaverStatusChanged
 		{
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.EnergySaverStatusChanged");
 			}
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.EnergySaverStatusChanged");
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<object> PowerSupplyStatusChanged
 		{
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.PowerSupplyStatusChanged");
 			}
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.PowerSupplyStatusChanged");
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<object> RemainingChargePercentChanged
 		{
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.RemainingChargePercentChanged");
 			}
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.RemainingChargePercentChanged");
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<object> RemainingDischargeTimeChanged
 		{
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.RemainingDischargeTimeChanged");
 			}
-			[global::Uno.NotImplemented]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.RemainingDischargeTimeChanged");

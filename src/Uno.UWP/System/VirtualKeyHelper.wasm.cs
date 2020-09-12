@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Windows.System
 {
-    internal static class VirtualKeyHelper
+    internal static partial class VirtualKeyHelper
     {
 		public static VirtualKey FromKey(string key)
 		{

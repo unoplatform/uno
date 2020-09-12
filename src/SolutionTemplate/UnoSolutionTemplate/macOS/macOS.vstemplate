@@ -20,13 +20,13 @@
 	<Project TargetFileName="$ext_safeprojectname$.macOS.csproj" File="UnoQuickStart.macOS.csproj" ReplaceParameters="true">
 	  <ProjectItem ReplaceParameters="true" TargetFileName="Entitlements.plist">Entitlements.plist</ProjectItem>
 	  <ProjectItem ReplaceParameters="true" TargetFileName="Info.plist">Info.plist</ProjectItem>
-	  <ProjectItem ReplaceParameters="true" TargetFileName="Main.cs">Main.cs</ProjectItem> 
+	  <ProjectItem ReplaceParameters="true" TargetFileName="Main.cs">Main.cs</ProjectItem>
 	  <Folder Name="Properties" TargetFolderName="Properties">
 		<ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
 	  </Folder>
-	  <Folder Name="Assets.xcassets" TargetFolderName="Media.xcassets">
+	  <Folder Name="Assets.xcassets" TargetFolderName="Assets.xcassets">
 		<ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
-		<Folder Name="AppIcons.appiconset" TargetFolderName="AppIcons.appiconset">
+		<Folder Name="AppIcon.appiconset" TargetFolderName="AppIcon.appiconset">
 		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
 		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-128.png">AppIcon-128.png</ProjectItem>
 		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-128@2x.png">AppIcon-128@2x.png</ProjectItem>
@@ -46,7 +46,7 @@
 	  </Folder>
 	  <Folder Name="Resources" TargetFolderName="Resources">
 		<Folder Name="Fonts" TargetFolderName="Fonts">
-		  <ProjectItem ReplaceParameters="false" TargetFileName="winjs-symbols.ttf">winjs-symbols.ttf</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" TargetFileName="uno-fluentui-assets.ttf">uno-fluentui-assets.ttf</ProjectItem>
 		</Folder>
 	  </Folder>
 	</Project>

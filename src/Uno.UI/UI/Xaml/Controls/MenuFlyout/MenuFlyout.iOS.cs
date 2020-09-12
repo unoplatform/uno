@@ -11,11 +11,13 @@ using Uno.UI.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using UIKit;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class MenuFlyout
 	{
+		private static DependencyProperty CancelTextIosOverrideProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.MenuFlyoutExtensions", "CancelTextIosOverride");
 
 #pragma warning disable CS0618 // Type or member is obsolete
 		private string LocalizedCancelString => NSBundle.FromIdentifier("com.apple.UIKit").LocalizedString("Cancel", null);

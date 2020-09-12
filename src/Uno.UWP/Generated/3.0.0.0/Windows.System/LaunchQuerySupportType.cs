@@ -2,18 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
 {
-	#if false || false || NET461 || __WASM__ || __MACOS__
-	#if false || false || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum LaunchQuerySupportType 
 	{
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		Uri,
-		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		UriForResults,
-		#endif
+		// Skipping already declared field Windows.System.LaunchQuerySupportType.Uri
+		// Skipping already declared field Windows.System.LaunchQuerySupportType.UriForResults
 	}
 	#endif
 }

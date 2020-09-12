@@ -12,12 +12,13 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ProgressRing : Control
 	{
-		private AnimatedVisualPlayer.ILottieVisualSourceProvider _lottieProvider;
+		private readonly ILottieVisualSourceProvider _lottieProvider;
 
-		public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register(
-			"IsActive", typeof(bool), typeof(ProgressRing), new PropertyMetadata(true, OnIsActivePropertyChanged));
+		public static DependencyProperty IsActiveProperty { get ; } = DependencyProperty.Register(
+			"IsActive", typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(true, OnIsActivePropertyChanged));
 
-		private Windows.UI.Xaml.Controls.AnimatedVisualPlayer _player;
+		private AnimatedVisualPlayer _player;
+		private Panel _layoutRoot;
 
 		public bool IsActive
 		{
@@ -27,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public ProgressRing()
 		{
-			DefaultStyleKey = this;
+			DefaultStyleKey = typeof(ProgressRing);
 
 			ApiExtensibility.CreateInstance(this, out _lottieProvider);
 
@@ -45,6 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			_player = GetTemplateChild("IndeterminateAnimatedVisualPlayer") as Windows.UI.Xaml.Controls.AnimatedVisualPlayer;
+			_layoutRoot = GetTemplateChild("LayoutRoot") as Panel;
 
 			SetAnimatedVisualPlayerSource();
 
@@ -79,6 +81,20 @@ namespace Microsoft.UI.Xaml.Controls
 				var animatedVisualSource = _lottieProvider.CreateFromLottieAsset(FeatureConfiguration.ProgressRing.ProgressRingAsset);
 				_player.Source = animatedVisualSource;
 				ChangeVisualState();
+			}
+			else if (_player != null && _layoutRoot != null)
+			{
+				// If we have a _player, it means we're having a ControlTemplate relying
+				// on it.  In this case, the Uno.UI.Lottie reference is required for the
+				// rendering of the ProgressRing.
+
+				var txt = new TextBlock
+				{
+					Text = "⚠️ Uno.UI.Lottie missing ⚠️",
+					Foreground = SolidColorBrushHelper.Red
+				};
+
+				_layoutRoot.Children.Add(txt);
 			}
 		}
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 using Uno.Extensions;
 using Uno.Disposables;
@@ -7,9 +8,8 @@ namespace Windows.UI.Xaml.Media
 {
 	public abstract partial class Brush
 	{
-		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Color> colorSetter)
+		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Windows.UI.Color> colorSetter, Action imageBrushCallback = null)
 		{
-
 			if (b is SolidColorBrush colorBrush)
 			{
 				var disposables = new CompositeDisposable(2);
@@ -50,12 +50,24 @@ namespace Windows.UI.Xaml.Media
 
 				return disposables;
 			}
-			// ImageBrush not supported yet on Wasm
-			else
+
+			if (b is AcrylicBrush ab)
 			{
-				colorSetter(SolidColorBrushHelper.Transparent.Color);
+				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException(
+					"AcrylicBrush is ** not ** supported by the AssignAndObserveBrush. "
+					+ "(Instead you have to use the AcrylicBrush.Subscribe().)"));
+				return Disposable.Empty;
 			}
 
+			if (b is ImageBrush)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException(
+					"ImageBrush is ** not ** supported by the AssignAndObserveBrush. "
+					+ "(Instead you have to use the ImageBrush.Subscribe().)"));
+				return Disposable.Empty;
+			}
+
+			colorSetter(SolidColorBrushHelper.Transparent.Color);
 			return Disposable.Empty;
 		}
 	}

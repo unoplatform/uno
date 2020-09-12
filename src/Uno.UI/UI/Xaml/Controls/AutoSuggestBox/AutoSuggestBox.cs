@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using System.Collections.Specialized;
+using Uno.UI.DataBinding;
 
 #if __IOS__
 using UIKit;
@@ -20,17 +21,22 @@ using AppKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class AutoSuggestBox : ItemsControl
+	public  partial class AutoSuggestBox : ItemsControl, IValueChangedListener
 	{
 		private TextBox _textBox;
 		private Popup _popup;
 		private Grid _layoutRoot;
 		private ListView _suggestionsList;
 		private Button _queryButton;
+		private AutoSuggestionBoxTextChangeReason _textChangeReason;
+		private string userInput;
+		private BindingPath _textBoxBinding;
 
 		public AutoSuggestBox() : base()
 		{
 			Items.VectorChanged += OnItemsChanged;
+
+			DefaultStyleKey = typeof(AutoSuggestBox);
 		}
 
 		protected override void OnApplyTemplate()
@@ -52,16 +58,7 @@ namespace Windows.UI.Xaml.Controls
 				_queryButton.Content = new SymbolIcon(Symbol.Find);
 			}
 
-			_textBox?.SetBinding(
-				TextBox.TextProperty,
-				new Binding()
-				{
-					Path = "Text",
-					RelativeSource = RelativeSource.TemplatedParent,
-					UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-					Mode = BindingMode.TwoWay
-				}
-			);
+			_textBoxBinding = new BindingPath("Text", null) {DataContext = _textBox, ValueChangedListener = this};
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
@@ -69,6 +66,15 @@ namespace Windows.UI.Xaml.Controls
 			if (IsLoaded)
 			{
 				RegisterEvents();
+			}
+		}
+
+		void IValueChangedListener.OnValueChanged(object value)
+		{
+			if (value is string str)
+			{
+				// If TextBox's Text value is null, we ignore it.
+				Text = str;
 			}
 		}
 
@@ -125,6 +131,17 @@ namespace Windows.UI.Xaml.Controls
 					LayoutPopup();
 				}
 			}
+		}
+
+		private void UpdateTextFromSuggestion(Object o)
+		{
+			_textChangeReason = AutoSuggestionBoxTextChangeReason.SuggestionChosen;
+			Text = GetObjectText(o) ?? "";
+		}
+
+		private void UpdateUserInput(Object o)
+		{
+			userInput = GetObjectText(o);
 		}
 
 		private void LayoutPopup()
@@ -266,8 +283,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug($"Suggestion item clicked {e.ClickedItem}");
 			}
 
-			SuggestionChosen?.Invoke(this, new AutoSuggestBoxSuggestionChosenEventArgs(e.ClickedItem));
-			IsSuggestionListOpen = false;
+			ChoseItem(e.ClickedItem);
+			SubmitSearch();
 		}
 
 		private void OnQueryButtonClick(object sender, RoutedEventArgs e)
@@ -288,7 +305,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
 		{
-			if(e.Key == System.VirtualKey.Enter)
+			if (e.Key == Windows.System.VirtualKey.Enter)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
@@ -297,15 +314,107 @@ namespace Windows.UI.Xaml.Controls
 
 				SubmitSearch();
 			}
+			else if ((e.Key == Windows.System.VirtualKey.Up || e.Key == Windows.System.VirtualKey.Down) && IsSuggestionListOpen)
+			{
+				HandleUpDownKeys(e);
+			}
+			else if (e.Key == Windows.System.VirtualKey.Escape && IsSuggestionListOpen)
+			{
+				RevertTextToUserInput();
+				IsSuggestionListOpen = false;
+			} else
+			{
+				_textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
+			}
+		}
+
+		private void HandleUpDownKeys(KeyRoutedEventArgs e)
+		{
+			int currentIndex = _suggestionsList.SelectedIndex;
+			int numSuggestions = _suggestionsList.NumberOfItems;
+			int nextIndex = -1;
+
+			if (e.Key == Windows.System.VirtualKey.Up)
+			{
+				// C# modulo isn't actually a modulo it's a remainder, so need to account for negative index
+				nextIndex = ((currentIndex % numSuggestions) + numSuggestions) % numSuggestions - ((currentIndex == -1) ? 0 : 1);
+			}
+			else if (e.Key == Windows.System.VirtualKey.Down)
+			{
+				int indexPlusOne = currentIndex + 1;
+				// The next step after the last index should be -1, not 0.
+				nextIndex = ((indexPlusOne % numSuggestions) + numSuggestions) % numSuggestions - ((indexPlusOne == numSuggestions) ? 1 : 0);
+			}
+
+			_suggestionsList.SelectedIndex = nextIndex;
+
+			if (nextIndex == -1)
+			{
+				RevertTextToUserInput();
+			} else
+			{
+				ChoseSuggestion();
+			}
+		}
+
+		private void ChoseSuggestion()
+		{
+			ChoseItem(_suggestionsList.SelectedItem);
+		}
+
+		private void ChoseItem(Object o)
+		{
+			if (UpdateTextOnSelect)
+			{
+				UpdateTextFromSuggestion(o);
+			}
+
+			SuggestionChosen?.Invoke(this, new AutoSuggestBoxSuggestionChosenEventArgs(o));
+		}
+
+		private void RevertTextToUserInput()
+		{
+			_suggestionsList.SelectedIndex = -1;
+			_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
+
+			Text = userInput ?? "";
+		}
+
+		private string GetObjectText(Object o)
+		{
+			if (o is string s)
+			{
+				return s;
+			}
+
+			var value = o;
+
+			if (TextMemberPath != null)
+			{
+				using var bindingPath = new BindingPath(TextMemberPath, "", null, allowPrivateMembers: true) {DataContext = o};
+				value = bindingPath.Value;
+			}
+
+			return value?.ToString() ?? "";
 		}
 
 		private static void OnTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
+			var newValue = args.NewValue as string ?? string.Empty;
+
 			if(dependencyObject is AutoSuggestBox tb)
 			{
-				tb.TextChanged?.Invoke(tb, new AutoSuggestBoxTextChangedEventArgs() { Reason = AutoSuggestionBoxTextChangeReason.UserInput });
+				if (tb._textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
+				{
+					tb.UpdateUserInput(newValue);
+				}
+
+				tb.TextChanged?.Invoke(tb, new AutoSuggestBoxTextChangedEventArgs()
+				{
+					Reason = tb._textChangeReason,
+					Owner = tb
+				});
 			}
 		}
-
 	}
 }

@@ -13,6 +13,7 @@ using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -91,18 +92,18 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Content DependencyProperty
-		internal IUIElement Content
+		internal IFrameworkElement Content
 		{
-			get { return (IUIElement)this.GetValue(ContentProperty); }
+			get { return (IFrameworkElement)this.GetValue(ContentProperty); }
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		internal static readonly DependencyProperty ContentProperty =
+		internal static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
-				typeof(IUIElement),
+				typeof(IFrameworkElement),
 				typeof(DatePickerFlyout),
-				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.ValueInheritsDataContext, OnContentChanged));
+				new FrameworkPropertyMetadata(default(IFrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.ValueInheritsDataContext, OnContentChanged));
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -160,7 +161,10 @@ namespace Windows.UI.Xaml.Controls
 			_selector.SaveValue();
 			Hide(false);
 
-			DatePicked?.Invoke(this, new DatePickedEventArgs(_selector.Date, Date));
+			var oldDate = Date;
+			Date = _selector.Date;
+
+			DatePicked?.Invoke(this, new DatePickedEventArgs(Date, oldDate));
 		}
 
 		private void Dismiss()
@@ -189,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// This is a workaround for the datepicker crashing on iOS 9 with this error:
 				// NSInternalInconsistencyException Reason: UITableView dataSource is not set.
-				this.Dispatcher.RunAsync(Core.CoreDispatcherPriority.Normal, async () =>
+				this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
 				{
 					await Task.Delay(100);
 					_selector.Date = validDate;

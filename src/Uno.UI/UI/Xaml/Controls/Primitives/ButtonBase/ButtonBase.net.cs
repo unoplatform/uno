@@ -20,12 +20,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private readonly SerialDisposable _touchSubscription = new SerialDisposable();
 		private readonly SerialDisposable _isEnabledSubscription = new SerialDisposable();
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 			_isEnabledSubscription.Disposable = null;

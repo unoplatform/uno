@@ -1,7 +1,10 @@
-﻿#if !SILVERLIGHT
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.UI;
+
+// Do not remove or change for the WinUI conversion tool (space is required).
+using Color = global::Windows .UI.Color;
 
 namespace Windows.UI
 {
@@ -114,7 +117,7 @@ namespace Windows.UI
 				g = 0x0;
 				b = 0x0;
 			}
-			return Windows.UI.Color.FromArgb(a, r, g, b);
+			return Color.FromArgb(a, r, g, b);
 		}
 
 		public static readonly Color Transparent = FromInteger(0x00FFFFFF);
@@ -260,4 +263,3 @@ namespace Windows.UI
 		public static readonly Color YellowGreen = FromInteger(unchecked((int)0xFF9ACD32));
 	}
 }
-#endif

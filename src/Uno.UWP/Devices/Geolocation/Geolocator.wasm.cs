@@ -52,32 +52,35 @@ namespace Windows.Devices.Geolocation
 			InvokeJS(command);
 		}
 
-		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
+		public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync()
 		{
-			var accessRequest = new TaskCompletionSource<GeolocationAccessStatus>();
-			lock (_pendingAccessRequests)
+			return AsyncOperation.FromTask(async ct =>
 			{
-				//enqueue request
-				_pendingAccessRequests.Add(accessRequest);
-
-				if (_pendingAccessRequests.Count == 1)
+				var accessRequest = new TaskCompletionSource<GeolocationAccessStatus>();
+				lock (_pendingAccessRequests)
 				{
-					//there are no access requests currently waiting for resolution, we need to invoke the check in JS
-					var command = $"{JsType}.requestAccess()";
-					InvokeJS(command);
+					//enqueue request
+					_pendingAccessRequests.Add(accessRequest);
+
+					if (_pendingAccessRequests.Count == 1)
+					{
+						//there are no access requests currently waiting for resolution, we need to invoke the check in JS
+						var command = $"{JsType}.requestAccess()";
+						InvokeJS(command);
+					}
 				}
-			}
 
-			//await access status asynchronously, will come back through DispatchAccessRequest call
-			var result = await accessRequest.Task;
+				//await access status asynchronously, will come back through DispatchAccessRequest call
+				var result = await accessRequest.Task;
 
-			//if geolocation is not well accessible, default geoposition should be recommended
-			if (result != GeolocationAccessStatus.Allowed)
-			{
-				IsDefaultGeopositionRecommended = true;
-			}
+				//if geolocation is not well accessible, default geoposition should be recommended
+				if (result != GeolocationAccessStatus.Allowed)
+				{
+					IsDefaultGeopositionRecommended = true;
+				}
 
-			return result;
+				return result;
+			});
 		}
 
 		/// <summary>
@@ -87,7 +90,7 @@ namespace Windows.Devices.Geolocation
 		/// 5 seconds for high accuracy requests
 		/// </summary>
 		/// <returns>Geoposition</returns>
-		public Task<Geoposition> GetGeopositionAsync() =>
+		public IAsyncOperation<Geoposition> GetGeopositionAsync() =>
 			GetGeopositionAsync(
 				ActualDesiredAccuracyInMeters < 50 ? TimeSpan.FromSeconds(3) : TimeSpan.FromSeconds(30),
 				TimeSpan.FromSeconds(10));
@@ -98,15 +101,19 @@ namespace Windows.Devices.Geolocation
 		/// <param name="maximumAge">Maximum age of the geoposition</param>
 		/// <param name="timeout">Timeout for geoposition retrieval</param>
 		/// <returns></returns>
-		public async Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+		public IAsyncOperation<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
 		{
-			BroadcastStatus(PositionStatus.Initializing); //GPS is initializing
-			var completionRequest = new TaskCompletionSource<Geoposition>();
-			var requestId = Guid.NewGuid().ToString();
-			_pendingGeopositionRequests.TryAdd(requestId, completionRequest);
-			var command = FormattableString.Invariant($"{JsType}.getGeoposition({ActualDesiredAccuracyInMeters},{maximumAge.TotalMilliseconds},{timeout.TotalMilliseconds},\"{requestId}\")");
-			InvokeJS(command);
-			return await completionRequest.Task;
+			return AsyncOperation.FromTask(async ct =>
+			{
+
+				BroadcastStatus(PositionStatus.Initializing); //GPS is initializing
+				var completionRequest = new TaskCompletionSource<Geoposition>();
+				var requestId = Guid.NewGuid().ToString();
+				_pendingGeopositionRequests.TryAdd(requestId, completionRequest);
+				var command = FormattableString.Invariant($"{JsType}.getGeoposition({ActualDesiredAccuracyInMeters},{maximumAge.TotalMilliseconds},{timeout.TotalMilliseconds},\"{requestId}\")");
+				InvokeJS(command);
+				return await completionRequest.Task;
+			});
 		}
 
 		[Preserve]

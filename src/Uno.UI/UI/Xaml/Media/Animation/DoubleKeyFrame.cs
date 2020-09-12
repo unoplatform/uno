@@ -32,8 +32,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			get { return (double)this.GetValue(ValueProperty); }
 			set { this.SetValue(ValueProperty, value); }
 		}
-		public static readonly DependencyProperty ValueProperty =
-			DependencyProperty.Register("Value", typeof(double), typeof(DoubleKeyFrame), new PropertyMetadata(0d));
+		public static DependencyProperty ValueProperty { get ; } =
+			DependencyProperty.Register("Value", typeof(double), typeof(DoubleKeyFrame), new FrameworkPropertyMetadata(0d));
 
 		/// <summary>
 		/// The time at which the key frame's current value should be equal to its Value property.
@@ -44,8 +44,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			get { return (KeyTime)this.GetValue(KeyTimeProperty); }
 			set { this.SetValue(KeyTimeProperty, value); }
 		}
-		public static readonly DependencyProperty KeyTimeProperty =
-			DependencyProperty.Register("KeyTime", typeof(KeyTime), typeof(DoubleKeyFrame), new PropertyMetadata(default(KeyTime)));
+		public static DependencyProperty KeyTimeProperty { get ; } =
+			DependencyProperty.Register("KeyTime", typeof(KeyTime), typeof(DoubleKeyFrame), new FrameworkPropertyMetadata(default(KeyTime)));
 
 
 		internal abstract IEasingFunction GetEasingFunction();

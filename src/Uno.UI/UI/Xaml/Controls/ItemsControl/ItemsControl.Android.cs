@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get flattened item index, if the source is grouped, to supply to <see cref="GetElementFromDisplayPosition(int)"/>.
 		/// </summary>
-		internal virtual int GetDisplayIndexFromIndexPath(IndexPath indexPath)
+		internal virtual int GetDisplayIndexFromIndexPath(Uno.UI.IndexPath indexPath)
 		{
 			return GetIndexFromIndexPath(indexPath);
 		}

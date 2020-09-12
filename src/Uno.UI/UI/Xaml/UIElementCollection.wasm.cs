@@ -7,64 +7,66 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class UIElementCollection : BatchCollection<UIElement>
+	public partial class UIElementCollection
 	{
-		private readonly UIElement _view;
+		private readonly UIElement _owner;
 
-		public UIElementCollection(UIElement view) : base(view)
+		internal UIElementCollection(UIElement view)
 		{
-			_view = view;
+			_owner = view;
 		}
 
-		protected override void AddCore(View item)
+		private void AddCore(View item)
 		{
-			_view.AddChild(item);
+			_owner.AddChild(item);
 		}
 
-		protected override IEnumerable<View> ClearCore()
+		private IEnumerable<View> ClearCore()
 		{
-			var deleted = _view._children.ToArray();
-			_view.ClearChildren();
+			var deleted = _owner._children.ToArray();
+			_owner.ClearChildren();
 
 			return deleted;
 		}
 
-		protected override bool ContainsCore(View item)
+		private bool ContainsCore(View item)
 		{
-			return _view._children.Contains(item);
+			return _owner._children.Contains(item);
 		}
 
-		protected override void CopyToCore(View[] array, int arrayIndex)
-			=> _view._children.ToArray().CopyTo(array, arrayIndex);
+		private void CopyToCore(View[] array, int arrayIndex)
+			=> _owner._children.ToArray().CopyTo(array, arrayIndex);
 
 
-		protected override int CountCore() => _view._children.Count;
+		private int CountCore() => _owner._children.Count;
 
-		protected override View GetAtIndexCore(int index) => _view._children[index];
+		private View GetAtIndexCore(int index) => _owner._children[index];
 
-		protected override List<View>.Enumerator GetEnumeratorCore() => (List<View>.Enumerator)_view._children.GetEnumerator();
+		public List<View>.Enumerator GetEnumerator() => (List<View>.Enumerator)_owner._children.GetEnumerator();
 
-		protected override int IndexOfCore(View item) => _view._children.IndexOf(item);
+		IEnumerator<UIElement> IEnumerable<UIElement>.GetEnumerator() => GetEnumerator();
 
-		protected override void InsertCore(int index, View item)
+		private int IndexOfCore(View item) => _owner._children.IndexOf(item);
+
+		private void InsertCore(int index, View item)
 		{
-			_view.AddChild(item, index);
+			_owner.AddChild(item, index);
 		}
 
-		protected override void MoveCore(uint oldIndex, uint newIndex)
+		private void MoveCore(uint oldIndex, uint newIndex)
 		{
-			_view.MoveChildTo((int)oldIndex, (int)newIndex);
+			_owner.MoveChildTo((int)oldIndex, (int)newIndex);
 		}
 
-		protected override View RemoveAtCore(int index)
+		private View RemoveAtCore(int index)
 		{
-			var item = _view._children.ElementAtOrDefault(index);
-			_view.RemoveChild(item);
+			var item = _owner._children.ElementAtOrDefault(index);
+			_owner.RemoveChild(item);
 			return item;
 		}
 
-		protected override bool RemoveCore(View item) => _view.RemoveChild(item);
+		private bool RemoveCore(View item) => _owner.RemoveChild(item);
 
-		protected override View SetAtIndexCore(int index, View value) => throw new NotImplementedException();
+		private View SetAtIndexCore(int index, View value) => throw new NotImplementedException();
 	}
 }

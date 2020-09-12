@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
+using Windows.UI.Core;
 #if __ANDROID__
 using Android.Views;
 using _View = Android.Views.View;
@@ -42,9 +43,12 @@ namespace Windows.UI.Xaml.Controls
 		public event EventHandler<object> DropDownClosed;
 		public event EventHandler<object> DropDownOpened;
 
+		private bool _areItemTemplatesForwarded = false;
+
 		private IPopup _popup;
 		private Border _popupBorder;
 		private ContentPresenter _contentPresenter;
+		private TextBlock _placeholderTextBlock;
 		private ContentPresenter _headerContentPresenter;
 
 		/// <summary>
@@ -54,12 +58,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public ComboBox()
 		{
-			LightDismissOverlayBackground = Resources["ComboBoxLightDismissOverlayBackground"] as Brush ??
-				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
-				// Resources/Styles are overhauled (and the above will no longer be valid)
-				Uno.UI.GlobalStaticResources.ComboBoxLightDismissOverlayBackground as Brush;
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true);
 
 			IsItemClickEnabled = true;
+			DefaultStyleKey = typeof(ComboBox);
 		}
 
 		public global::Windows.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings TemplateSettings { get; } = new Primitives.ComboBoxTemplateSettings();
@@ -80,6 +82,7 @@ namespace Windows.UI.Xaml.Controls
 			_popup = this.GetTemplateChild("Popup") as IPopup;
 			_popupBorder = this.GetTemplateChild("PopupBorder") as Border;
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
+			_placeholderTextBlock = this.GetTemplateChild("PlaceholderTextBlock") as TextBlock;
 
 			if (_popup is PopupBase popup)
 			{
@@ -94,18 +97,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_contentPresenter != null)
 			{
-				_contentPresenter.SetBinding(
-					ContentPresenter.ContentTemplateProperty,
-					new Binding(new PropertyPath("ItemTemplate"), null)
-					{
-						RelativeSource = RelativeSource.TemplatedParent
-					});
-				_contentPresenter.SetBinding(
-					ContentPresenter.ContentTemplateSelectorProperty,
-					new Binding(new PropertyPath("ItemTemplateSelector"), null)
-					{
-						RelativeSource = RelativeSource.TemplatedParent
-					});
+				_contentPresenter.SynchronizeContentWithOuterTemplatedParent = false;
 
 				_contentPresenter.DataContextChanged += (snd, evt) =>
 				{
@@ -124,6 +116,8 @@ namespace Windows.UI.Xaml.Controls
 						_contentPresenter.DataContext = null; // Remove problematic inherited DataContext
 					}
 				};
+
+				UpdateCommonStates();
 			}
 		}
 
@@ -137,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -152,7 +146,7 @@ namespace Windows.UI.Xaml.Controls
 			Xaml.Window.Current.SizeChanged += OnWindowSizeChanged;
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
@@ -165,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 			Xaml.Window.Current.SizeChanged -= OnWindowSizeChanged;
 		}
 
-		private void OnWindowSizeChanged(object sender, Core.WindowSizeChangedEventArgs e)
+		private void OnWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
 		{
 			IsDropDownOpen = false;
 		}
@@ -247,10 +241,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateContentPresenter()
 		{
-			if (_contentPresenter != null)
+			if (_contentPresenter == null) return;
+
+			if (SelectedItem != null)
 			{
 				var item = GetSelectionContent();
-
 				var itemView = item as _View;
 
 				if (itemView != null)
@@ -272,12 +267,34 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				_contentPresenter.Content = item;
-
 				if (itemView != null && itemView.GetVisualTreeParent() != _contentPresenter)
 				{
 					// Item may have been put back in list, reattach it to _contentPresenter
 					_contentPresenter.AddChild(itemView);
 				}
+				if (!_areItemTemplatesForwarded)
+				{
+					SetContentPresenterBinding(ContentPresenter.ContentTemplateProperty, nameof(ItemTemplate));
+					SetContentPresenterBinding(ContentPresenter.ContentTemplateSelectorProperty, nameof(ItemTemplateSelector));
+
+					_areItemTemplatesForwarded = true;
+				}
+			}
+			else
+			{
+				_contentPresenter.Content = _placeholderTextBlock;
+				if (_areItemTemplatesForwarded)
+				{
+					_contentPresenter.ClearValue(ContentPresenter.ContentTemplateProperty);
+					_contentPresenter.ClearValue(ContentPresenter.ContentTemplateSelectorProperty);
+
+					_areItemTemplatesForwarded = false;
+				}
+			}
+
+			void SetContentPresenterBinding(DependencyProperty targetProperty, string sourcePropertyPath)
+			{
+				_contentPresenter.SetBinding(targetProperty, new Binding(sourcePropertyPath) { RelativeSource = RelativeSource.TemplatedParent });
 			}
 		}
 
@@ -418,8 +435,8 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
-			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new PropertyMetadata(null));
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new FrameworkPropertyMetadata(null));
 
 		private class DropDownLayouter : PopupBase.IDynamicPopupLayouter
 		{
@@ -586,7 +603,7 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().Debug($"Layout the combo's dropdown at {frame} (desired: {desiredSize} / available: {finalSize} / visible: {visibleBounds} / selected: {selectedIndex} of {itemsCount})");
 				}
 
-				if(upperLeftLocation is Point offset)
+				if (upperLeftLocation is Point offset)
 				{
 					// Compensate for origin location is some popup providers (Android
 					// is one, particularly when the status bar is translucent)

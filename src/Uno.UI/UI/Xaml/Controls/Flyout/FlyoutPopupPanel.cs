@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// Required for the dismiss handling
 			// This should however be customized depending of the Popup.DismissMode
-			Background = new SolidColorBrush(Colors.Transparent);
+			Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
 		}
 
 		protected override FlyoutPlacementMode PopupPlacement => _flyout.Placement;

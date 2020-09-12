@@ -3,6 +3,7 @@
     "path": "Uno.UI.sln",
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
+      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
@@ -21,6 +22,7 @@
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
+      "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Wasm.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
       "Uno.UI.Wasm.Tests\\Uno.UI.Wasm.Tests.csproj",

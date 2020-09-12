@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public ComboBoxItem()
 		{
-
+			DefaultStyleKey = typeof(ComboBoxItem);
 		}
 	}
 }

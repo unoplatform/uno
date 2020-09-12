@@ -14,7 +14,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser)]
 		public void LineSegment()
 		{
 			// Navigate to this x:Class control name
@@ -28,6 +27,26 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 
 			// Take an initial screenshot
 			TakeScreenshot("Initial State");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void PointMovement()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Media.Geometry.LineSegmentPage");
+
+			var path = _app.Marked("Path");
+			var button = _app.Marked("MovePointButton");
+
+			_app.WaitForElement(path);
+
+			var before = TakeScreenshot("Before point movement");
+
+			button.Tap();
+
+			var after = TakeScreenshot("After point movement");
+
+			ImageAssert.AreNotEqual(before, after);
 		}
 	}
 

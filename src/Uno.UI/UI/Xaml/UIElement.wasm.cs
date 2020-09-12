@@ -14,14 +14,24 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.System;
+using System.Reflection;
+using Uno.Core.Comparison;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
+		internal const string DefaultHtmlTag = "div";
+
 		// Even if this a concept of FrameworkElement, the loaded state is handled by the UIElement in order to avoid
 		// to cast to FrameworkElement each time a child is added or removed.
 		internal bool IsLoaded;
+
+		/// <summary>
+		/// This flag is transiently set while element is 'loading' but not yet 'loaded'.
+		/// </summary>
+		internal bool IsLoading;
 
 		private readonly GCHandle _gcHandle;
 		private readonly bool _isFrameworkElement;
@@ -74,20 +84,24 @@ namespace Windows.UI.Xaml
 			return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
 		}
 
-		public UIElement(string htmlTag = "div", bool isSvg = false)
+		public UIElement() : this(null, false) { }
+
+		public UIElement(string htmlTag = DefaultHtmlTag) : this(htmlTag, false) { }
+
+		public UIElement(string htmlTag, bool isSvg)
 		{
 			Initialize();
 
 			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
 			_isFrameworkElement = this is FrameworkElement;
-			HtmlTag = htmlTag;
+
+			HtmlTag = GetHtmlTag(htmlTag);
 			HtmlTagIsSvg = isSvg;
 
 			var type = GetType();
 
 			Handle = GCHandle.ToIntPtr(_gcHandle);
 			HtmlId = Handle;
-
 
 			Uno.UI.Xaml.WindowManagerInterop.CreateContent(
 				htmlId: HtmlId,
@@ -100,6 +114,43 @@ namespace Windows.UI.Xaml
 
 			InitializePointers();
 			UpdateHitTest();
+		}
+
+		private static Dictionary<Type, string> _htmlTagCache = new Dictionary<Type, string>(FastTypeComparer.Default);
+		private static Type _htmlElementAttribute;
+		private static PropertyInfo _htmlTagAttributeTagGetter;
+		private static readonly Assembly _unoUIAssembly = typeof(UIElement).Assembly;
+
+		private string GetHtmlTag(string htmlTag)
+		{
+			var currentType = GetType();
+
+			if (currentType.Assembly != _unoUIAssembly)
+			{
+				if (_htmlElementAttribute == null)
+				{
+					_htmlElementAttribute = Assembly.Load("Uno.UI.Runtime.WebAssembly").GetType("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute", true);
+					_htmlTagAttributeTagGetter = _htmlElementAttribute.GetProperty("Tag");
+				}
+
+				if (!_htmlTagCache.TryGetValue(currentType, out var htmlTagOverride))
+				{
+					htmlTagOverride = DefaultHtmlTag;
+
+					if (currentType.GetCustomAttribute(_htmlElementAttribute) is Attribute attr)
+					{
+						_htmlTagCache[currentType] = htmlTagOverride = _htmlTagAttributeTagGetter.GetValue(attr, Array.Empty<object>()) as string;
+					}
+
+					_htmlTagCache[currentType] = htmlTagOverride;
+				}
+
+				return htmlTagOverride;
+			}
+			else
+			{
+				return htmlTag;
+			}
 		}
 
 		~UIElement()
@@ -145,6 +196,40 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
+		/// Add/Set CSS classes to the HTML element.
+		/// </summary>
+		/// <remarks>
+		/// No effect for classes already present on the element.
+		/// </remarks>
+		protected internal void SetCssClasses(params string[] classesToSet)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetUnsetCssClasses(HtmlId, classesToSet, null);
+		}
+
+		/// <summary>
+		/// Remove/Unset CSS classes to the HTML element.
+		/// </summary>
+		/// <remarks>
+		/// No effect for classes already absent from the element.
+		/// </remarks>
+		protected internal void UnsetCssClasses(params string[] classesToUnset)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetUnsetCssClasses(HtmlId, null, classesToUnset);
+
+		}
+
+		/// <summary>
+		/// Set and Unset css classes on a HTML element in a single operation.
+		/// </summary>
+		/// <remarks>
+		/// Identical to calling <see cref="SetCssClasses"/> followed by <see cref="UnsetCssClasses"/>.
+		/// </remarks>
+		protected internal void SetUnsetCssClasses(string[] classesToSet, string[] classesToUnset)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetUnsetCssClasses(HtmlId, classesToSet, classesToUnset);
+		}
+
+		/// <summary>
 		/// Set a specified CSS class to an element from a set of possible values.
 		/// All other possible values will be removed from the element.
 		/// </summary>
@@ -163,9 +248,8 @@ namespace Windows.UI.Xaml
 		/// Natively arranges and clips an element.
 		/// </summary>
 		/// <param name="rect">The dimensions to apply to the element</param>
-		/// <param name="clipToBounds">Whether the element should be clipped to its bounds</param>
 		/// <param name="clipRect">The Clip rect to set, if any</param>
-		protected internal void ArrangeElementNative(Rect rect, bool clipToBounds, Rect? clipRect)
+		protected internal void ArrangeVisual(Rect rect, Rect? clipRect)
 		{
 			LayoutSlotWithMarginsAndAlignments =
 				VisualTreeHelper.GetParent(this) is UIElement parent
@@ -177,7 +261,7 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(LayoutSlotWithMarginsAndAlignments), LayoutSlotWithMarginsAndAlignments);
 			}
 
-			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipToBounds, clipRect);
+			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
 
 #if DEBUG
 			var count = ++_arrangeCount;
@@ -188,16 +272,11 @@ namespace Windows.UI.Xaml
 
 		protected internal void SetNativeTransform(Matrix3x2 matrix)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, matrix, requiresClipping: RequiresClipping);
+			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, matrix);
 		}
 
 		protected internal void ResetStyle(params string[] names)
 		{
-			if (names == null || names.Length == 0)
-			{
-				// nothing to do
-			}
-
 			Uno.UI.Xaml.WindowManagerInterop.ResetStyle(HtmlId, names);
 
 		}
@@ -254,10 +333,9 @@ namespace Windows.UI.Xaml
 
 		partial void ApplyNativeClip(Rect rect)
 		{
-
 			if (rect.IsEmpty)
 			{
-				SetStyle("clip", "");
+				ResetStyle("clip");
 				return;
 			}
 
@@ -266,12 +344,13 @@ namespace Windows.UI.Xaml
 
 			SetStyle(
 				"clip",
-				"rect("
-				+ Math.Floor(rect.Y) + "px,"
-				+ Math.Ceiling(rect.X + width) + "px,"
-				+ Math.Ceiling(rect.Y + height) + "px,"
-				+ Math.Floor(rect.X) + "px"
-				+ ")"
+				string.Concat(
+					"rect(",
+					Math.Floor(rect.Y).ToStringInvariant(), "px,",
+					Math.Ceiling(rect.X + width).ToStringInvariant(), "px,",
+					Math.Ceiling(rect.Y + height).ToStringInvariant(), "px,",
+					Math.Floor(rect.X).ToStringInvariant(), "px)"
+				)
 			);
 		}
 
@@ -523,7 +602,7 @@ namespace Windows.UI.Xaml
 		private void OnAddingChild(UIElement child)
 		{
 			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-				&& IsLoaded
+				&& (IsLoaded || IsLoading)
 				&& child._isFrameworkElement)
 			{
 				if (child.IsLoaded)
@@ -577,6 +656,8 @@ namespace Windows.UI.Xaml
 
 		internal virtual void ManagedOnLoading()
 		{
+			IsLoading = true;
+
 			for (var i = 0; i < _children.Count; i++)
 			{
 				var child = _children[i];
@@ -586,6 +667,7 @@ namespace Windows.UI.Xaml
 
 		internal virtual void ManagedOnLoaded(int depth)
 		{
+			IsLoading = false;
 			IsLoaded = true;
 			Depth = depth;
 
@@ -598,6 +680,7 @@ namespace Windows.UI.Xaml
 
 		internal virtual void ManagedOnUnloaded()
 		{
+			IsLoading = false;
 			IsLoaded = false;
 			Depth = null;
 
@@ -670,7 +753,7 @@ namespace Windows.UI.Xaml
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			return new KeyRoutedEventArgs(src, System.VirtualKeyHelper.FromKey(payload)) {CanBubbleNatively = true};
+			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload)) {CanBubbleNatively = true};
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)

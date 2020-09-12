@@ -1,4 +1,5 @@
 using System;
+using Uno.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -13,6 +14,7 @@ namespace Windows.UI.Xaml.Controls
 
 			Result = result;
 		}
+
 		internal bool IsDeferred => _deferralManager != null;
 
 		public bool Cancel { get; set; }
@@ -21,7 +23,11 @@ namespace Windows.UI.Xaml.Controls
 		
 		public ContentDialogClosingDeferral GetDeferral()
 		{
-			_deferralManager = _deferralManager ?? new DeferralManager<ContentDialogClosingDeferral>(() => _complete(this));
+			if (_deferralManager == null)
+			{
+				_deferralManager = new DeferralManager<ContentDialogClosingDeferral>(h => new ContentDialogClosingDeferral(h));
+				_deferralManager.Completed += (s, e) => _complete(this);
+			}
 
 			return _deferralManager.GetDeferral();
 		}

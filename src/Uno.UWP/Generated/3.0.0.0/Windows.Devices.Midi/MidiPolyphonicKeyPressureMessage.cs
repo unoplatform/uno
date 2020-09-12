@@ -2,78 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MidiPolyphonicKeyPressureMessage : global::Windows.Devices.Midi.IMidiMessage
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Storage.Streams.IBuffer RawData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer MidiPolyphonicKeyPressureMessage.RawData is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.TimeSpan Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MidiPolyphonicKeyPressureMessage.Timestamp is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Midi.MidiMessageType Type
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MidiMessageType MidiPolyphonicKeyPressureMessage.Type is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  byte Channel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte MidiPolyphonicKeyPressureMessage.Channel is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  byte Note
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte MidiPolyphonicKeyPressureMessage.Note is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  byte Pressure
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte MidiPolyphonicKeyPressureMessage.Pressure is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public MidiPolyphonicKeyPressureMessage( byte channel,  byte note,  byte pressure) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage", "MidiPolyphonicKeyPressureMessage.MidiPolyphonicKeyPressureMessage(byte channel, byte note, byte pressure)");
-		}
-		#endif
+		// Skipping already declared property RawData
+		// Skipping already declared property Timestamp
+		// Skipping already declared property Type
+		// Skipping already declared property Channel
+		// Skipping already declared property Note
+		// Skipping already declared property Pressure
+		// Skipping already declared method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.MidiPolyphonicKeyPressureMessage(byte, byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.MidiPolyphonicKeyPressureMessage(byte, byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.Channel.get
 		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.Note.get

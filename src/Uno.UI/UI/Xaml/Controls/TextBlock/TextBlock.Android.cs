@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 		private Java.Lang.ICharSequence _textFormatted;
 		private TextPaint _paint;
 		private TextUtils.TruncateAt _ellipsize;
-		private Layout.Alignment _layoutAlignment;
+		private Android.Text.Layout.Alignment _layoutAlignment;
 
 		private void InitializePartial()
 		{
@@ -432,7 +432,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			private readonly Java.Lang.ICharSequence _textFormatted;
 			private readonly TextUtils.TruncateAt _ellipsize;
-			private readonly Layout.Alignment _layoutAlignment;
+			private readonly Android.Text.Layout.Alignment _layoutAlignment;
 			private readonly TextWrapping _textWrapping;
 			private readonly int _maxLines;
 			private readonly bool _exactWidth;
@@ -453,7 +453,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// The layout to be drawn
 			/// </summary>
-			public Layout Layout { get; private set; }
+			public Android.Text.Layout Layout { get; private set; }
 
 			/// <summary>
 			/// Builds a new layout with the specified parameters.
@@ -462,7 +462,7 @@ namespace Windows.UI.Xaml.Controls
 				Java.Lang.ICharSequence textFormatted,
 				TextPaint paint,
 				TextUtils.TruncateAt ellipsize,
-				Layout.Alignment layoutAlignment,
+				Android.Text.Layout.Alignment layoutAlignment,
 				TextWrapping textWrapping,
 				int maxLines,
 				Size availableSize,

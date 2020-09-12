@@ -6,6 +6,11 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class GridView : ListViewBase
 	{
+		public GridView()
+		{
+			DefaultStyleKey = typeof(GridView);
+		}
+
 		protected override bool IsItemItsOwnContainerOverride(object item)
 		{
 			return item is GridViewItem;

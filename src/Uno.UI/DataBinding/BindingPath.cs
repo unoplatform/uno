@@ -342,7 +342,7 @@ namespace Uno.UI.DataBinding
 		private static IDisposable SubscribeToNotifyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, Action newValueAction)
 		{
 			// Attach to the Notify property changed events
-			var notify = dataContextReference.Target as INotifyPropertyChanged;
+			var notify = dataContextReference.Target as System.ComponentModel.INotifyPropertyChanged;
 
 			if (notify != null)
 			{
@@ -353,13 +353,13 @@ namespace Uno.UI.DataBinding
 
 				var newValueActionWeak = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(null, newValueAction);
 
-				PropertyChangedEventHandler handler = (s, args) =>
+				System.ComponentModel.PropertyChangedEventHandler handler = (s, args) =>
 				{
-					if (args.PropertyName == propertyName)
+					if (args.PropertyName == propertyName || args.PropertyName == string.Empty)
 					{
 						if (typeof(BindingPath).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 						{
-							typeof(BindingPath).Log().Debug("Property changed for {0} on [{1}]".InvariantCultureFormat(propertyName, dataContextReference.Target?.GetType()));
+							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{dataContextReference.Target?.GetType()}]");
 						}
 
 						if (!newValueActionWeak.IsDisposed)
@@ -376,7 +376,7 @@ namespace Uno.UI.DataBinding
 					// This weak reference ensure that the closure will not link
 					// the caller and the callee, in the same way "newValueActionWeak"
 					// does not link the callee to the caller.
-					var that = dataContextReference.Target as INotifyPropertyChanged;
+					var that = dataContextReference.Target as System.ComponentModel.INotifyPropertyChanged;
 
 					if (that != null)
 					{
@@ -430,8 +430,18 @@ namespace Uno.UI.DataBinding
 				get => _dataContextWeakStorage?.Target;
 				set
 				{
-					if (!_disposed && DependencyObjectStore.AreDifferent(DataContext, value))
+					if (!_disposed)
 					{
+						// Historically, Uno was processing property changes using INPC. Since the inclusion of DependencyObject
+						// values changes are now filtered by DependencyProperty updates, making equality updates at this location
+						// detrimental to the use of INPC events processing.
+						// In case of an INPC, the bindings engine must reevaluate the path completely from the raising point, regardless
+						// of the reference being changed.
+						if(FeatureConfiguration.Binding.IgnoreINPCSameReferences && !DependencyObjectStore.AreDifferent(DataContext, value))
+						{
+							return;
+						}
+
 						var weakDataContext = WeakReferencePool.RentWeakReference(this, value);
 						SetWeakDataContext(weakDataContext);
 					}

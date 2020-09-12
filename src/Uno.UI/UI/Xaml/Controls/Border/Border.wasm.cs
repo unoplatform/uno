@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 			SetBorder(BorderThickness, BorderBrush, CornerRadius);
 		}
 			
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			UpdateBorder();

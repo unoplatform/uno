@@ -55,7 +55,7 @@ This scenario is designed for contributors to the Uno platform, to test changes 
 
 ## Debugging the Visual Studio extension
 
-1. Select a version of Uno.UI that is installed in your nuget cache, and set that version in the `crosstargeting_override.props` file. See [this document](../uno-developement/debugging-uno-ui.md) for more information.
+1. Select a version of Uno.UI that is installed in your nuget cache, and set that version in the `crosstargeting_override.props` file. See [this document](../uno-development/debugging-uno-ui.md) for more information.
 1. Open the Visual Studio solution using one of the hot-reload solution filters, we'll use the `Uno.UI-Wasm-hotreload.slnf` for this example.
 1. Build the `SamplesApp.Wasm` project
 1. Set the `UnoSolutiontemplate.VSIX` project as startup

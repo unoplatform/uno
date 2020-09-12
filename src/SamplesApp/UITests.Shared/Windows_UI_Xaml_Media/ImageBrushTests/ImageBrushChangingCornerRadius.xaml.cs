@@ -28,7 +28,7 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
 			n++;
-			MyBorder.CornerRadius = new CornerRadius(n * 5);
+			MyBorder.CornerRadius = CornerRadiusHelper.FromUniformRadius(n * 5);
 		}
 	}
 }

@@ -1,7 +1,13 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:xamarin="http://uno.ui/xamarin"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					mc:Ignorable="d xamarin">
 
-    <ResourceDictionary.ThemeDictionaries>
+	<ResourceDictionary.ThemeDictionaries>
 
         <ResourceDictionary x:Key="Default">
             <Thickness x:Key="MenuFlyoutPresenterThemePadding">1</Thickness>
@@ -269,7 +275,10 @@
         </Setter>
     </Style>
 
-    <Style TargetType="ToggleMenuFlyoutItem" x:Key="ToggleMenuFlyoutItemRevealStyle">
+	<Style TargetType="ToggleMenuFlyoutItem"
+		   BasedOn="{StaticResource ToggleMenuFlyoutItemRevealStyle}" />
+
+	<Style TargetType="ToggleMenuFlyoutItem" x:Key="ToggleMenuFlyoutItemRevealStyle">
         <Setter Property="Background" Value="{ThemeResource ToggleMenuFlyoutItemRevealBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource ToggleMenuFlyoutItemRevealBorderBrush}" />
         <Setter Property="BorderThickness" Value="{ThemeResource ToggleMenuFlyoutItemRevealBorderThickness}" />
@@ -389,7 +398,8 @@
                             </Grid.ColumnDefinitions>
                             <FontIcon x:Name="CheckGlyph"
                                 FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                Glyph="&#xE001;"
+                                win:Glyph="&#xE001;"
+                                xamarin:Glyph="&#xE10B;"
                                 FontSize="16"
                                 Foreground="{ThemeResource ToggleMenuFlyoutItemCheckGlyphForeground}"
                                 Opacity="0"

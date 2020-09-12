@@ -52,7 +52,9 @@ namespace UnoSolutionTemplate
 		private Action<Exception> _errorAction;
 		private DTE2 _dte;
 		private _dispSolutionEvents_OpenedEventHandler _openedHandler;
+		private _dispSolutionEvents_BeforeClosingEventHandler _beforeClosingHandler;
 		private IDisposable _remoteControl;
+		private CancellationTokenSource _currentCts;
 
 		/// <summary>
 		/// UnoPlatformPackage GUID string.
@@ -96,16 +98,23 @@ namespace UnoSolutionTemplate
 
 			_dte = await GetServiceAsync(typeof(DTE)) as DTE2;
 
-			_openedHandler = () => InvokeOnMainThread(() => OnOpened());
+			_openedHandler = () => InvokeOnMainThread(() => OnOpenedAsync(CancellationToken.None));
+			_beforeClosingHandler = () => InvokeOnMainThread(() => OnBeforeClosingAsync());
 
 			_dte.Events.SolutionEvents.Opened += _openedHandler;
+			_dte.Events.SolutionEvents.BeforeClosing += _beforeClosingHandler;
 
 			SetupOutputWindow();
 
 			if (_dte.Solution.IsOpen)
 			{
-				await OnOpened();
+				_ = OnOpenedAsync(cancellationToken);
 			}
+		}
+
+		private async Task OnBeforeClosingAsync()
+		{
+			_currentCts?.Cancel();
 		}
 
 		void InvokeOnMainThread(Func<Task> func)
@@ -148,15 +157,29 @@ namespace UnoSolutionTemplate
 			_infoAction = s => pane().OutputString("[INFO] " + s + "\r\n");
 			_verboseAction = s => pane().OutputString("[VERBOSE] " + s + "\r\n");
 			_warningAction = s => pane().OutputString("[WARNING] " + s + "\r\n");
-			_errorAction = e => pane().OutputString("[ERROR] " + e.ToString() + "\r\n");
+			_errorAction = e =>
+			{
+				if (System.Diagnostics.Debugger.IsAttached)
+				{
+					pane().OutputString("[ERROR] " + e.ToString() + "\r\n");
+				}
+				else
+				{
+					pane().OutputString("[ERROR] " + e.Message + "\r\n");
+				}
+			};
 		}
 		
 
 		#endregion
 
-		private async Task OnOpened()
+		private async Task OnOpenedAsync(CancellationToken ct)
 		{
 			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "OnOpened: {0}", this.ToString()));
+
+			_currentCts?.Cancel();
+			_currentCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			var sw = Stopwatch.StartNew();
 
 			do
 			{
@@ -166,8 +189,13 @@ namespace UnoSolutionTemplate
 					IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
 					var installedPackages = installerServices.GetInstalledPackages();
 
+					var remoteControlPackages = new[] {
+						"Uno.UI.RemoteControl",
+						"Uno.WinUI.RemoteControl",
+					};
+
 					var unoNuGetPackage = installedPackages
-						.Where(p => p.Id.Equals("Uno.UI.RemoteControl", StringComparison.OrdinalIgnoreCase))
+						.Where(p => remoteControlPackages.Any(rcp => p.Id.Equals(rcp, StringComparison.OrdinalIgnoreCase)))
 						.OrderByDescending(p => p.VersionString)
 						.LastOrDefault();
 
@@ -175,7 +203,7 @@ namespace UnoSolutionTemplate
 					{
 						if (string.IsNullOrWhiteSpace(unoNuGetPackage.InstallPath.Trim()))
 						{
-							_infoAction("The Uno.UI.RemoteControl package has not been restored yet, retrying...");
+							_infoAction("The Uno.WinUI.RemoteControl or Uno.UI.RemoteControl package has not been restored yet, retrying...");
 						}
 						else
 						{
@@ -200,7 +228,7 @@ namespace UnoSolutionTemplate
 									this,
 									(Action<Func<Task<Dictionary<string, string>>>>)SetGlobalVariablesProvider) as IDisposable;
 
-								_infoAction($"Loaded the Uno.UI Remote Control service ({unoNuGetPackage.VersionString}).");
+								_infoAction($"Loaded the {unoNuGetPackage.Id} Remote Control service ({unoNuGetPackage.VersionString}).");
 							}
 							else
 							{
@@ -213,15 +241,25 @@ namespace UnoSolutionTemplate
 					{
 						return;
 					}
+
+					if(sw.Elapsed > TimeSpan.FromMinutes(5))
+					{
+						// If we spent more than 5 minutes trying to enumerate loaded packages and could not
+						// bail out. In some cases, the Nuget package manager may never return the full list
+						// of packages if there's a faulty project in the solution.
+						_errorAction(new InvalidOperationException(
+							"Failed to retreive the solution's loaded nuget packages. " +
+							"Make sure a full nuget restore has completed properly and reload the solution."));
+					}
 				}
 				catch (Exception e)
 				{
 					_errorAction(e);
 				}
 
-				await System.Threading.Tasks.Task.Delay(5000);
+				await System.Threading.Tasks.Task.Delay(5000, _currentCts.Token);
 			}
-			while (true);
+			while (!_currentCts.IsCancellationRequested);
 		}
 
 		private void SetGlobalVariablesProvider(Func<Task<Dictionary<string, string>>> globalFunctionProvider)

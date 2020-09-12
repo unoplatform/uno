@@ -26,11 +26,10 @@ namespace Windows.ApplicationModel.Activation
 			get;
 		}
 
-		[NotImplemented]
-		public ApplicationExecutionState PreviousExecutionState
-		{
-			get;
-		}
+		/// <summary>
+		/// Defaults to NotRunning, may not be accurate in all cases for all platforms.
+		/// </summary>
+		public ApplicationExecutionState PreviousExecutionState { get; }
 
 		[NotImplemented]
 		public SplashScreen SplashScreen
@@ -55,10 +54,6 @@ namespace Windows.ApplicationModel.Activation
 			get;
 		}
 
-		[NotImplemented]
-		public bool PrelaunchActivated
-		{
-			get;
-		}
+		public bool PrelaunchActivated => false; // No platform other than UWP supports prelaunch yet.
 	}
 }

@@ -44,7 +44,7 @@
 		<Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\ResourceQualifier.cs">
 			<Link>Resources\ResourceQualifier.cs</Link>
 		</Compile>
-		<Compile Include="..\..\Uno.UI\Services\AndroidResourceNameEncoder.cs">
+		<Compile Include="..\..\Uno.UWP\Helpers\AndroidResourceNameEncoder.cs">
 			<Link>Resources\AndroidResourceNameEncoder.cs</Link>
 		</Compile>
 	</ItemGroup>

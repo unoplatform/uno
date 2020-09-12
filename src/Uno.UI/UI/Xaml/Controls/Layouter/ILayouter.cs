@@ -21,7 +21,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public interface ILayouter
+	internal interface ILayouter
 	{
 		/// <summary>
 		/// Measures the current layout

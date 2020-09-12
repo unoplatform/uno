@@ -244,7 +244,7 @@ namespace Windows.UI.Xaml.Controls
 				using (EnableOrDisableAnimations())
 				{
 					NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
-									IndexPath.FromRowSection(0, (int)sections.FirstIndex),
+									Uno.UI.IndexPath.FromRowSection(0, (int)sections.FirstIndex),
 									(int)sections.Count,
 									NotifyCollectionChangedAction.Add,
 									CollectionChangedOperation.Element.Group
@@ -292,7 +292,7 @@ namespace Windows.UI.Xaml.Controls
 				using (EnableOrDisableAnimations())
 				{
 					NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
-									IndexPath.FromRowSection(0, (int)sections.FirstIndex),
+									Uno.UI.IndexPath.FromRowSection(0, (int)sections.FirstIndex),
 									(int)sections.Count,
 									NotifyCollectionChangedAction.Remove,
 									CollectionChangedOperation.Element.Group
@@ -333,7 +333,7 @@ namespace Windows.UI.Xaml.Controls
 				using (EnableOrDisableAnimations())
 				{
 					NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
-						IndexPath.FromRowSection(0, (int)sections.FirstIndex),
+						Uno.UI.IndexPath.FromRowSection(0, (int)sections.FirstIndex),
 						(int)sections.Count,
 						NotifyCollectionChangedAction.Replace,
 						CollectionChangedOperation.Element.Group
@@ -462,7 +462,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var expectedItem = XamlParent?.
 					ItemFromIndex(XamlParent.
-						GetIndexFromIndexPath(IndexPath.FromNSIndexPath(tuple.Path)
+						GetIndexFromIndexPath(Uno.UI.IndexPath.FromNSIndexPath(tuple.Path)
 					)
 				);
 				var actualItem = unoCell.Content?.DataContext;
@@ -482,7 +482,7 @@ namespace Windows.UI.Xaml.Controls
 						// This is a failsafe for in-place collection changes which leave the list in an inconsistent state, for exact reasons known only to UICollectionView.
 						if (this.Log().IsEnabled(LogLevel.Warning))
 						{
-							(this).Log().Warn($"Cell had context {actualItem} instead of {expectedItem}, scheduling a refresh to ensure correct display of list. (IndexPath={tuple.Path}");
+							(this).Log().Warn($"Cell had context {actualItem} instead of {expectedItem}, scheduling a refresh to ensure correct display of list. (Uno.UI.IndexPath={tuple.Path}");
 						}
 						DispatchReloadData();
 					}

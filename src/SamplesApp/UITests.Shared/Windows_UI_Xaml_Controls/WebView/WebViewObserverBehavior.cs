@@ -1,4 +1,5 @@
-﻿using Uno.Extensions;
+﻿#if HAS_UNO
+using Uno.Extensions;
 using Windows.UI.Xaml;
 using Uno.Logging;
 
@@ -18,7 +19,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 			obj.SetValue(IsAttachedProperty, value);
 		}
 
-		public static readonly DependencyProperty IsAttachedProperty =
+		public static DependencyProperty IsAttachedProperty { get ; } =
 			DependencyProperty.RegisterAttached("IsAttached", typeof(bool), typeof(WebViewObserverBehavior), new PropertyMetadata(false, OnIsAttachedChanged));
 
 		private static void OnIsAttachedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -50,7 +51,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 			obj.SetValue(MessageProperty, value);
 		}
 
-		public static readonly DependencyProperty MessageProperty =
+		public static DependencyProperty MessageProperty { get ; } =
 			DependencyProperty.RegisterAttached("Message", typeof(string), typeof(WebViewObserverBehavior), new PropertyMetadata(null));
 
 		#endregion
@@ -95,3 +96,4 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		}
 	}
 }
+#endif

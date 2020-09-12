@@ -19,7 +19,7 @@ namespace Uno.UI.Tests.DatePickerTests
 			var app = UnitTestsApp.App.EnsureApplication();
 			Assert.IsNotNull(app.Resources["DatePickerLightDismissOverlayBackground"]);
 			var dp = new DatePicker();
-			Assert.AreEqual(Colors.Orchid, (dp.LightDismissOverlayBackground as SolidColorBrush)?.Color);
+			Assert.AreEqual(Windows.UI.Colors.Orchid, (dp.LightDismissOverlayBackground as SolidColorBrush)?.Color);
 		}
 	}
 }

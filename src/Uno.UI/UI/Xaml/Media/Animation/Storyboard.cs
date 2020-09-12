@@ -13,7 +13,7 @@ using Windows.UI.Core;
 namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "Children")]
-	public sealed partial class Storyboard : Timeline, ITimeline
+	public sealed partial class Storyboard : Timeline, ITimeline, IAdditionalChildrenProvider, IThemeChangeAware
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private EventActivity _traceActivity;
@@ -46,8 +46,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static void SetTargetName(Timeline timeline, string value) => timeline.SetValue(TargetNameProperty, value);
 
 		// Using a DependencyProperty as the backing store for TargetName.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TargetNameProperty =
-			DependencyProperty.RegisterAttached("TargetName", typeof(string), typeof(Storyboard), new PropertyMetadata(null));
+		public static DependencyProperty TargetNameProperty { get ; } =
+			DependencyProperty.RegisterAttached("TargetName", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(null));
 		#endregion
 
 		#region TargetProperty Attached Property
@@ -56,8 +56,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static void SetTargetProperty(Timeline timeline, string value) => timeline.SetValue(TargetPropertyProperty, value);
 
 		// Using a DependencyProperty as the backing store for TargetProperty.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TargetPropertyProperty =
-			DependencyProperty.RegisterAttached("TargetProperty", typeof(string), typeof(Storyboard), new PropertyMetadata(null));
+		public static DependencyProperty TargetPropertyProperty { get ; } =
+			DependencyProperty.RegisterAttached("TargetProperty", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(null));
 		#endregion
 
 		public static void SetTarget(Timeline timeline, DependencyObject target) => timeline.Target = target;
@@ -260,6 +260,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					((ITimeline)child).Stop();
 				}
 			}
+			State = TimelineState.Stopped;
 		}
 
 		public ClockState GetCurrentState()
@@ -320,6 +321,17 @@ namespace Windows.UI.Xaml.Media.Animation
 				{
 					child.Dispose();
 				}
+			}
+		}
+
+		IEnumerable<DependencyObject> IAdditionalChildrenProvider.GetAdditionalChildObjects() => Children;
+
+		void IThemeChangeAware.OnThemeChanged()
+		{
+			if (State == TimelineState.Filling)
+			{
+				// If we're filling, reapply the fill to reapply values that may have changed with the app theme
+				SkipToFill();
 			}
 		}
 	}

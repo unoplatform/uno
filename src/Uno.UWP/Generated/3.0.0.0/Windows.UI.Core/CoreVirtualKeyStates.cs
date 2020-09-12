@@ -2,21 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if false
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum CoreVirtualKeyStates 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Down,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Locked,
-		#endif
+		// Skipping already declared field Windows.UI.Core.CoreVirtualKeyStates.None
+		// Skipping already declared field Windows.UI.Core.CoreVirtualKeyStates.Down
+		// Skipping already declared field Windows.UI.Core.CoreVirtualKeyStates.Locked
 	}
 	#endif
 }

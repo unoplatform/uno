@@ -1035,8 +1035,7 @@ namespace Uno.UI.DataBinding
 
 				if (!value.GetType().Is(t))
 				{
-					object fastConvertResult = null;
-					if (FastConvert(t, value, ref fastConvertResult))
+					if (FastConvert(t, value, out var fastConvertResult))
 					{
 						return fastConvertResult;
 					}

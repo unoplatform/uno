@@ -2,6 +2,9 @@ using System.Windows.Input;
 using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace Uno.UI.Samples.Content.UITests.MenuFlyout
 {
 	public class MenuFlyoutViewModel : ViewModelBase

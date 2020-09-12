@@ -1,6 +1,9 @@
 ﻿#if NETFX_CORE
 using System;
-using System.Windows.Input;
+using Windows.UI.Xaml.Input;
+
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
 
 namespace Uno.UI.Common
 {

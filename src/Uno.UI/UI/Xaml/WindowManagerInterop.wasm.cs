@@ -162,7 +162,7 @@ namespace Uno.UI.Xaml
 
 		#region SetElementTransform
 
-		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix, bool requiresClipping)
+		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix)
 		{
 			if (UseJavascriptEval)
 			{
@@ -173,7 +173,7 @@ namespace Uno.UI.Xaml
 					new[] { ("transform", native.ToStringInvariant()) }
 				);
 
-				SetArrangeProperties(htmlId, requiresClipping);
+				SetArrangeProperties(htmlId);
 			}
 			else
 			{
@@ -196,14 +196,14 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		private struct WindowManagerSetElementTransformParams
 		{
+			public IntPtr HtmlId;
+
 			public double M11;
 			public double M12;
 			public double M21;
 			public double M22;
 			public double M31;
 			public double M32;
-
-			public IntPtr HtmlId;
 		}
 
 		#endregion
@@ -419,17 +419,92 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
-		private static void SetArrangeProperties(IntPtr htmlId, bool requiresClipping)
+		#region IsCssFeatureSupported
+
+		internal static bool IsCssFeatureSupported(string propertyName, string value)
+		{
+			var command = $"Uno.UI.WindowManager.current.isCssPropertySupported(\"{propertyName}\", \"{WebAssemblyRuntime.EscapeJs(value)}\")";
+			var result = WebAssemblyRuntime.InvokeJS(command);
+			return bool.Parse(result);
+		}
+
+		internal static bool IsCssFeatureSupported(string supportCondition)
+		{
+			var command = $"Uno.UI.WindowManager.current.isCssConditionSupported(\"{WebAssemblyRuntime.EscapeJs(supportCondition)}\")";
+			var result = WebAssemblyRuntime.InvokeJS(command);
+			return bool.Parse(result);
+		}
+
+		#endregion
+
+		private static void SetArrangeProperties(IntPtr htmlId)
 		{
 			if (!UseJavascriptEval)
 			{
 				throw new InvalidOperationException("This should only be called when UseJavascriptEval flag is set");
 			}
 
-			var command = "Uno.UI.WindowManager.current.setArrangeProperties(\"" + htmlId + "\", " + (requiresClipping ? "true" : "false") + "); ";
+			var command = "Uno.UI.WindowManager.current.setArrangeProperties(\"" + htmlId + "\"); ";
 
 			WebAssemblyRuntime.InvokeJS(command);
 		}
+
+		#region SetUnsetCssClasses
+		internal static void SetUnsetCssClasses(IntPtr htmlId, string[] cssClassesToSet, string[] cssClassesToUnset)
+		{
+			if (UseJavascriptEval)
+			{
+				var setClasses =
+					cssClassesToSet == null
+						? "null"
+						: "[" +
+						  string.Join(", ", cssClassesToSet
+							  .Select(WebAssemblyRuntime.EscapeJs)
+							  .Select(s => "\"" + s + "\""))
+						  + "]";
+				var unsetClasses =
+					cssClassesToUnset == null
+						? "null"
+						: "[" +
+						  string.Join(", ", cssClassesToUnset
+							  .Select(WebAssemblyRuntime.EscapeJs)
+							  .Select(s => "\"" + s + "\""))
+						  + "]";
+				var command = "Uno.UI.WindowManager.current.setUnsetClasses(" + htmlId + ", " + setClasses + ", " + unsetClasses + ");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetUnsetClassesParams
+				{
+					HtmlId = htmlId,
+					CssClassesToSet = cssClassesToSet,
+					CssClassesToSet_Length = cssClassesToSet?.Length ?? 0,
+					CssClassesToUnset = cssClassesToUnset,
+					CssClassesToUnset_Length = cssClassesToUnset?.Length ?? 0
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetUnsetClassesParams>("Uno:setUnsetClassesNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetUnsetClassesParams
+		{
+			public IntPtr HtmlId;
+
+			public int CssClassesToSet_Length;
+
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
+			public string[] CssClassesToSet;
+
+			public int CssClassesToUnset_Length;
+
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
+			public string[] CssClassesToUnset;
+		}
+		#endregion
 
 		#region SetClasses
 
@@ -596,6 +671,15 @@ namespace Uno.UI.Xaml
 			public string Value;
 		}
 
+		#endregion
+
+		#region GetAttribute
+		internal static string GetAttribute(IntPtr htmlId, string name)
+		{
+			var command = "Uno.UI.WindowManager.current.getAttribute(\"" + htmlId + "\", \"" + name + "\");";
+
+			return WebAssemblyRuntime.InvokeJS(command);
+		}
 		#endregion
 
 		#region ClearAttribute
@@ -801,6 +885,12 @@ namespace Uno.UI.Xaml
 		#region ResetStyle
 		internal static void ResetStyle(IntPtr htmlId, string[] names)
 		{
+			if (names == null || names.Length == 0)
+			{
+				// nothing to do
+				return;
+			}
+
 			if (UseJavascriptEval)
 			{
 				if (names.Length == 1)
@@ -878,6 +968,25 @@ namespace Uno.UI.Xaml
 			public bool OnCapturePhase;
 
 			public int EventExtractorId;
+		}
+		#endregion
+
+		#region registerPointerEventsOnView
+		internal static void RegisterPointerEventsOnView(IntPtr htmlId)
+		{
+			var parms = new WindowManagerRegisterPointerEventsOnViewParams()
+			{
+				HtmlId = htmlId,
+			};
+
+			TSInteropMarshaller.InvokeJS<WindowManagerRegisterPointerEventsOnViewParams>("Uno:registerPointerEventsOnView", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerRegisterPointerEventsOnViewParams
+		{
+			public IntPtr HtmlId;
 		}
 		#endregion
 
@@ -961,7 +1070,7 @@ namespace Uno.UI.Xaml
 
 		#region ArrangeElement
 
-		internal static void ArrangeElement(IntPtr htmlId, Rect rect, bool clipToBounds, Rect? clipRect)
+		internal static void ArrangeElement(IntPtr htmlId, Rect rect, Rect? clipRect)
 		{
 			if (UseJavascriptEval)
 			{
@@ -988,7 +1097,7 @@ namespace Uno.UI.Xaml
 					}
 				);
 
-				SetArrangeProperties(htmlId, clipToBounds);
+				SetArrangeProperties(htmlId);
 			}
 			else
 			{
@@ -999,7 +1108,6 @@ namespace Uno.UI.Xaml
 					Left = rect.Left,
 					Width = rect.Width,
 					Height = rect.Height,
-					ClipToBounds = clipToBounds
 				};
 
 				if (clipRect != null)
@@ -1031,7 +1139,6 @@ namespace Uno.UI.Xaml
 
 			public IntPtr HtmlId;
 			public bool Clip;
-			public bool ClipToBounds;
 		}
 
 

@@ -11,36 +11,22 @@ using System.Text;
 using System.Threading.Tasks;
 using View = Windows.UI.Xaml.FrameworkElement;
 using Windows.UI.Xaml.Media;
-using Windows.UI;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 using FluentAssertions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
 	[TestClass]
 	public class Given_XamlReader : Context
 	{
-		/// <summary>
-		/// The DefaultResolver associated with the active app, temporarily removed while these tests are run.
-		/// </summary>
-		Func<string, object> _appResolver;
-
-		[TestCleanup]
-		public void Cleanup()
-		{
-			ResourceDictionary.DefaultResolver = _appResolver;
-		}
-
 		[TestInitialize]
 		public void Initialize()
 		{
 			UnitTestsApp.App.EnsureApplication();
-
-			_appResolver = ResourceDictionary.DefaultResolver;
-			ResourceDictionary.DefaultResolver = null;
 		}
 
 		[TestMethod]
@@ -95,8 +81,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var border1 = grid.Children.ElementAt(0) as Border;
 			var border2 = grid.Children.ElementAt(1) as Border;
 
-			Assert.AreEqual((border1.Background as SolidColorBrush).Color, Colors.Red);
-			Assert.AreEqual((border2.Background as SolidColorBrush).Color, Colors.Blue);
+			Assert.AreEqual((border1.Background as SolidColorBrush).Color, Windows.UI.Colors.Red);
+			Assert.AreEqual((border2.Background as SolidColorBrush).Color, Windows.UI.Colors.Blue);
 		}
 
         [TestMethod]
@@ -133,8 +119,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.IsNotNull(border01);
 			var stops = (border01.Background as LinearGradientBrush).GradientStops;
 			Assert.AreEqual(2, stops.Count);
-			Assert.AreEqual(Colors.Transparent, stops[0].Color);
-			Assert.AreEqual(ColorHelper.FromARGB(0x33, 0, 0, 0), stops[1].Color);
+			Assert.AreEqual(Windows.UI.Colors.Transparent, stops[0].Color);
+			Assert.AreEqual(Windows.UI.ColorHelper.FromARGB(0x33, 0, 0, 0), stops[1].Color);
 			Assert.AreEqual(0.0, stops[0].Offset);
 			Assert.AreEqual(1.0, stops[1].Offset);
 
@@ -232,19 +218,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_StaticResource()
 		{
-			ResourceDictionary.DefaultResolver = resourceName => {
-				switch (resourceName)
-				{
-					case "StaticRow":
-						return 42;
-					case "StaticWidth":
-						return 42.0;
-					case "StaticHeight":
-						return 44.0;
-					default:
-						throw new NotSupportedException($"{resourceName} is unknown");
-				}
-			};
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.Resources["StaticRow"] = 42;
+			app.Resources["StaticWidth"] = 42.0;
+			app.Resources["StaticHeight"] = 44.0;
 
 			var s = GetContent(nameof(When_StaticResource));
 			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
@@ -257,6 +234,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(42, Grid.GetRow(panel));
 			Assert.AreEqual(42.0, panel.Width);
 			Assert.AreEqual(44.0, panel.Height);
+
+			app.Resources.Remove("StaticRow");
+			app.Resources.Remove("StaticWidth");
+			app.Resources.Remove("StaticHeight");
 		}
 
 		[TestMethod]

@@ -37,7 +37,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      
+
   - task: CopyFiles@2
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.iOS/bin/iPhoneSimulator/Release/SamplesApp.app
@@ -54,74 +54,87 @@ jobs:
       ArtifactName: ios-uitest-build
       ArtifactType: Container
 
-- job: iOS_Tests
-  timeoutInMinutes: 90
-  dependsOn: iOS_Build
-
-  pool:
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Automated_Tests_Group_01'
+    JobDisplayName: 'iOS Automated Tests Group 01'
+    JobTimeoutInMinutes: 40
     vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: false
+    UITEST_AUTOMATED_GROUP: 1
+    xCodeRoot: ${{ parameters.xCodeRoot }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
-  strategy:
-    matrix:
-      Automated:
-        UITEST_SNAPSHOTS_ONLY: false
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Automated_Tests_Group_02'
+    JobDisplayName: 'iOS Automated Tests Group 02'
+    JobTimeoutInMinutes: 40
+    vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: false
+    UITEST_AUTOMATED_GROUP: 2
+    xCodeRoot: ${{ parameters.xCodeRoot }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
-      Snapshots_Group00:
-        UITEST_SNAPSHOTS_ONLY: true
-        UITEST_SNAPSHOTS_GROUP: 00
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Automated_Tests_Group_03'
+    JobDisplayName: 'iOS Automated Tests Group 03'
+    JobTimeoutInMinutes: 40
+    vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: false
+    UITEST_AUTOMATED_GROUP: 3
+    xCodeRoot: ${{ parameters.xCodeRoot }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
-      Snapshots_Group01:
-        UITEST_SNAPSHOTS_ONLY: true
-        UITEST_SNAPSHOTS_GROUP: 01
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Snaphot_Tests_Group_01'
+    JobDisplayName: 'iOS Snaphot Tests Group 01'
+    JobTimeoutInMinutes: 45
+    vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: true
+    UITEST_SNAPSHOTS_GROUP: 00
+    xCodeRoot: ${{ parameters.xCodeRoot }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
-  variables:
-    CI_Build: true
-    SourceLinkEnabled: falses
-    NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Snaphot_Tests_Group_02'
+    JobDisplayName: 'iOS Snaphot Tests Group 02'
+    JobTimeoutInMinutes: 45
+    vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: true
+    UITEST_SNAPSHOTS_GROUP: 01
+    xCodeRoot: ${{ parameters.xCodeRoot }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
-  steps:
-  - checkout: self
-    clean: true
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Snaphot_Tests_Group_03'
+    JobDisplayName: 'iOS Snaphot Tests Group 03'
+    JobTimeoutInMinutes: 45
+    vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: true
+    UITEST_SNAPSHOTS_GROUP: 02
+    xCodeRoot: ${{ parameters.xCodeRoot }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
-  - task: DownloadBuildArtifacts@0
-    inputs:
-        artifactName: ios-uitest-build
-        downloadPath: '$(build.sourcesdirectory)/build'
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Snaphot_Tests_Group_04'
+    JobDisplayName: 'iOS Snaphot Tests Group 04'
+    JobTimeoutInMinutes: 45
+    vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: true
+    UITEST_SNAPSHOTS_GROUP: 03
+    xCodeRoot: ${{ parameters.xCodeRoot }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
-  - template: templates/optimize-roslyn-mono.yml
-
-  - template: templates/nuget-cache.yml
-    parameters:
-      nugetPackages: $(NUGET_PACKAGES)
-
-  - template: templates/ios-build-select-version.yml
-    parameters:
-      xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
-
-  - bash: |
-      $(build.sourcesdirectory)/build/ios-uitest-run.sh
-
-    displayName: Run iOS Simulator Tests
-
-    env:
-      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      UITEST_SNAPSHOTS_ONLY: "$(UITEST_SNAPSHOTS_ONLY)"
-      UITEST_SNAPSHOTS_GROUP: "$(UITEST_SNAPSHOTS_GROUP)"
-      UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
-
-  - task: PublishTestResults@2
-    condition: always()
-    inputs:
-      testRunTitle: 'iOS Test Run ($(Agent.JobName))'
-      testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
-      failTaskOnFailedTests: true
-
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-results
-      ArtifactType: Container

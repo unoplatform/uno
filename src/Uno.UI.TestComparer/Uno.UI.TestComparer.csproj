@@ -13,12 +13,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.AppCenter" Version="3.2.1" />
+		<PackageReference Include="Microsoft.AppCenter" Version="3.2.2" />
 		<PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.153.0" />
 		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
 		<PackageReference Include="NUnit" Version="3.12.0" />
 		<PackageReference Include="NUnit.Engine" Version="3.11.1" />
-		<PackageReference Include="Refit" Version="5.1.67" />
+		<PackageReference Include="Refit" Version="5.2.1" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
 		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
 	</ItemGroup>

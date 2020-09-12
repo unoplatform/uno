@@ -1,0 +1,14 @@
+{
+  "solution": {
+    "path": "Uno.UI.sln",
+    "projects": [
+      "ResourceConverter\\ResourceConverter.csproj",
+      "T4Generator\\T4Generator.csproj",
+      "UWPUsageStatsGenerator\\UWPUsageStatsGenerator.csproj",
+      "Uno.UI.AssemblyComparer\\Uno.UI.AssemblyComparer.csproj",
+      "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
+      "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
+      "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj"
+    ]
+  }
+}

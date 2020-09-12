@@ -7,6 +7,7 @@ using Foundation;
 using System.Collections;
 using System.Linq;
 using AppKit;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -110,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public NSString[] ValidAttributesForMarkedText => null;
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),

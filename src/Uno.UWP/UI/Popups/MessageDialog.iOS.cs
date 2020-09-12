@@ -16,10 +16,8 @@ namespace Windows.UI.Popups
 	{
 		private static readonly SemaphoreSlim _viewControllerAccess = new SemaphoreSlim(1, 1);
 
-		public IAsyncOperation<IUICommand> ShowAsync()
+		private async void ShowInner(CancellationToken ct, TaskCompletionSource<IUICommand> invokedCommand)
 		{
-			var invokedCommand = new TaskCompletionSource<IUICommand>();
-
 			var alertActions = Commands
 				.Where(command => !(command is UICommandSeparator)) // Not supported on iOS
 				.DefaultIfEmpty(new UICommand("OK")) // TODO: Localize (PBI 28711)
@@ -51,36 +49,31 @@ namespace Windows.UI.Popups
 				alertController.PreferredAction = alertActions.ElementAtOrDefault((int)DefaultCommandIndex);
 			}
 
-			return new AsyncOperation<IUICommand>(async ct =>
-			{
-				using (ct.Register(() =>
-					{
-						// If the cancellation token itself gets cancelled, we cancel as well.
-						invokedCommand.TrySetCanceled();
-						UIApplication.SharedApplication.KeyWindow?.RootViewController?.DismissViewController(false, () => { });
-					}))
+			using (ct.Register(() =>
 				{
-					await _viewControllerAccess.WaitAsync(ct);
+					// If the cancellation token itself gets cancelled, we cancel as well.
+					invokedCommand.TrySetCanceled();
+					UIApplication.SharedApplication.KeyWindow?.RootViewController?.DismissViewController(false, () => { });
+				}))
+			{
+				await _viewControllerAccess.WaitAsync(ct);
 
+				try
+				{
 					try
 					{
-						try
-						{
-							await UIApplication.SharedApplication.KeyWindow?.RootViewController?.PresentViewControllerAsync(alertController, animated: true);
-						}
-						catch (Exception error)
-						{
-							invokedCommand.TrySetException(error);
-						}
-
-						return await invokedCommand.Task;
+						await UIApplication.SharedApplication.KeyWindow?.RootViewController?.PresentViewControllerAsync(alertController, animated: true);
 					}
-					finally
+					catch (Exception error)
 					{
-						_viewControllerAccess.Release();
+						invokedCommand.TrySetException(error);
 					}
 				}
-			});
+				finally
+				{
+					_viewControllerAccess.Release();
+				}
+			}
 		}
 
 		partial void ValidateCommands()

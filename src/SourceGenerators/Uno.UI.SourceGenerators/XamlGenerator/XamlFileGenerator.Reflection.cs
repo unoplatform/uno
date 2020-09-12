@@ -19,6 +19,7 @@ using System.Threading;
 using Uno;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
+using System.Diagnostics;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -36,6 +37,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string[] _clrNamespaces;
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
+		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
 
 		private void InitCaches()
 		{
@@ -162,7 +164,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsImplementingInterface(INamedTypeSymbol symbol, INamedTypeSymbol interfaceName)
 		{
 			bool isSameType(INamedTypeSymbol source, INamedTypeSymbol iface) =>
-				source == iface || source.OriginalDefinition == iface;
+				Equals(source, iface) || Equals(source.OriginalDefinition, iface);
 
 			if (symbol != null)
 			{
@@ -220,7 +222,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsFrameworkElement(XamlType xamlType)
 		{
-			return IsImplementingInterface(FindType(xamlType), _iFrameworkElementSymbol);
+			return IsType(xamlType, XamlConstants.Types.FrameworkElement);
 		}
 
 		private bool IsAndroidView(XamlType xamlType)
@@ -232,6 +234,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			return IsType(xamlType, "UIKit.UIView");
 		}
+
+		private bool IsMacOSNSView(XamlType xamlType)
+		{
+			return IsType(xamlType, "AppKit.NSView");
+		}
+
+		/// <summary>
+		/// Is the type derived from the native view type on a Xamarin platform?
+		/// </summary>
+		private bool IsNativeView(XamlType xamlType) => IsAndroidView(xamlType) || IsIOSUIView(xamlType) || IsMacOSNSView(xamlType);
+
+		/// <summary>
+		/// Is the type one of the base view types in WinUI? (UIElement is most commonly used to mean 'any WinUI view type,' but
+		/// FrameworkElement is valid too)
+		/// </summary>
+		private bool IsManagedViewBaseType(INamedTypeSymbol targetType) => Equals(targetType, _uiElementSymbol) || Equals(targetType, _frameworkElementSymbol);
 
 		private bool IsTransform(XamlType xamlType)
 		{
@@ -259,6 +277,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return false;
 			}
+		}
+
+		private bool HasIsParsing(XamlType xamlType)
+		{
+			return IsImplementingInterface(FindType(xamlType), _dependencyObjectParseSymbol);
 		}
 
 		private Accessibility FindObjectFieldAccessibility(XamlObjectDefinition objectDefinition)
@@ -513,6 +536,36 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
+		/// Get the type of the attached property.
+		/// </summary>
+		private INamedTypeSymbol GetAttachedPropertyType(XamlMemberDefinition member)
+		{
+			var type = GetType(member.Member.DeclaringType);
+			return _getAttachedPropertyType(type, member.Member.Name);
+		}
+
+		private static INamedTypeSymbol SourceGetAttachedPropertyType(INamedTypeSymbol type, string name)
+		{
+			do
+			{
+				var setMethod = type.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+
+				if (setMethod != null && setMethod.IsStatic && setMethod.Parameters.Length == 2)
+				{
+					return setMethod.Parameters[1].Type as INamedTypeSymbol;
+				}
+
+				type = type.BaseType;
+
+				if (type == null || type.Name == "Object")
+				{
+					throw new InvalidOperationException($"No valid setter found for attached property {name}");
+				}
+
+			} while (true);
+		}
+
+		/// <summary>
 		/// Determines if the provided member is an C# initializable list (where the collection already exists, and no set property is present)
 		/// </summary>
 		/// <param name="xamlMember"></param>
@@ -583,10 +636,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool IsExactlyCollectionOrListType(INamedTypeSymbol type)
 		{
-			return type == _iCollectionSymbol
-				|| type.OriginalDefinition == _iCollectionOfTSymbol
-				|| type == _iListSymbol
-				|| type.OriginalDefinition == _iListOfTSymbol;
+			return Equals(type, _iCollectionSymbol)
+				|| Equals(type.OriginalDefinition, _iCollectionOfTSymbol)
+				|| Equals(type, _iListSymbol)
+				|| Equals(type.OriginalDefinition, _iListOfTSymbol);
 		}
 
 		/// <summary>
@@ -680,7 +733,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (type != null)
 			{
-				var ns = _fileDefinition.Namespaces.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
+				var ns = _fileDefinition
+					.Namespaces
+					// Ensure that prefixless declaration (generally xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation") is considered first, otherwise PreferredXamlNamespace matching can go awry
+					.OrderByDescending(n => n.Prefix.IsNullOrEmpty())
+					.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
 				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
 
 				if (
@@ -756,7 +813,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Search first using the default namespace
 				foreach (var clrNamespace in _clrNamespaces)
 				{
-					var type = _medataHelper.FindTypeByFullName(clrNamespace + "." + name) as INamedTypeSymbol;
+					var type = _metadataHelper.FindTypeByFullName(clrNamespace + "." + name) as INamedTypeSymbol;
 
 					if (type != null)
 					{
@@ -768,16 +825,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var resolvers = new Func<INamedTypeSymbol>[] {
 
 				// The sanitized name
-				() => _medataHelper.FindTypeByName(name) as INamedTypeSymbol,
+				() => _metadataHelper.FindTypeByName(name) as INamedTypeSymbol,
 
 				// As a full name
-				() => _medataHelper.FindTypeByFullName(name) as INamedTypeSymbol,
+				() => _metadataHelper.FindTypeByFullName(name) as INamedTypeSymbol,
 
 				// As a partial name using the original type
-				() => _medataHelper.FindTypeByName(originalName) as INamedTypeSymbol,
+				() => _metadataHelper.FindTypeByName(originalName) as INamedTypeSymbol,
 
 				// As a partial name using the non-qualified name
-				() => _medataHelper.FindTypeByName(originalName.Split(':').ElementAtOrDefault(1)) as INamedTypeSymbol,
+				() => _metadataHelper.FindTypeByName(originalName.Split(':').ElementAtOrDefault(1)) as INamedTypeSymbol,
 			};
 
 			return resolvers
@@ -810,7 +867,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					p.DeclaredAccessibility == Accessibility.Public &&
 					IsLocalizablePropertyType(p.Type as INamedTypeSymbol)
 				)
-				.Select(p=>p.Name)
+				.Select(p => p.Name)
 				.ToArray();
 		}
 	}

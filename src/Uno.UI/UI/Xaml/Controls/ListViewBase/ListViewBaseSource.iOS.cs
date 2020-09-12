@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Controls
 				// does not eagerly get all the items of the ItemsSource.
 				UpdateLastMaterializedItem(indexPath);
 
-				var index = Owner?.XamlParent?.GetIndexFromIndexPath(IndexPath.FromNSIndexPath(indexPath)) ?? -1;
+				var index = Owner?.XamlParent?.GetIndexFromIndexPath(Uno.UI.IndexPath.FromNSIndexPath(indexPath)) ?? -1;
 
 				var identifier = GetReusableCellIdentifier(indexPath);
 
@@ -279,7 +279,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public override void WillDisplayCell(UICollectionView collectionView, UICollectionViewCell cell, NSIndexPath indexPath)
 		{
-			var index = Owner?.XamlParent?.GetIndexFromIndexPath(IndexPath.FromNSIndexPath(indexPath)) ?? -1;
+			var index = Owner?.XamlParent?.GetIndexFromIndexPath(Uno.UI.IndexPath.FromNSIndexPath(indexPath)) ?? -1;
 			var container = cell as ListViewBaseInternalContainer;
 			var selectorItem = container?.Content as SelectorItem;
 			//Update IsSelected and multi-select state immediately before display, in case either was modified after cell was prefetched but before it became visible
@@ -693,7 +693,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				GC.ReRegisterForFinalize(this);
 
-				Core.CoreDispatcher.Main.RunIdleAsync(_ => Dispose());
+				CoreDispatcher.Main.RunIdleAsync(_ => Dispose());
 			}
 			else
 			{

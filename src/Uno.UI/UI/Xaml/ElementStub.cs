@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 

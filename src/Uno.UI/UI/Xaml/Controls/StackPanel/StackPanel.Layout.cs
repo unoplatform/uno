@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 			var borderAndPaddingSize = BorderAndPaddingSize;
 			arrangeSize = arrangeSize.Subtract(borderAndPaddingSize);
 
-			var childRectangle = new Foundation.Rect(BorderThickness.Left + Padding.Left, BorderThickness.Top + Padding.Top, arrangeSize.Width, arrangeSize.Height);
+			var childRectangle = new Windows.Foundation.Rect(BorderThickness.Left + Padding.Left, BorderThickness.Top + Padding.Top, arrangeSize.Width, arrangeSize.Height);
 
 			var isHorizontal = Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal;
 			var previousChildSize = 0.0;

@@ -6,30 +6,21 @@ using Uno;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.Diagnostics.Eventing;
-using Uno.UI.DataBinding;
-using Uno.UI.Controls;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Windows.Foundation;
 using Uno.Disposables;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using Android.Runtime;
 using System.Threading;
 using Uno.UI;
-using Windows.UI.Core;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Image : ImageView, IImage
+	public partial class Image
 	{
-		private bool _skipLayoutRequest;
 		private bool _isInLayout;
 		private double _sourceImageScale = 1;
 		private Windows.Foundation.Size _sourceImageSize;
@@ -43,7 +34,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="size">size of the image source (in physical pixels)</param>
 		/// <param name="isLogicalPixels">indicates that the size of the image source is in logical pixels (this is the case when the source is an URI)</param>
-		private void UpdateSourceImageSize(Windows.Foundation.Size size, bool isLogicalPixels = false)
+		internal void UpdateSourceImageSize(Windows.Foundation.Size size, bool isLogicalPixels = false)
 		{
 			if (_sourceImageSize == size)
 			{
@@ -69,85 +60,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private Windows.Foundation.Size _lastLayoutSize;
 
-		/// <summary>
-		/// Internal use.
-		/// </summary>
-		/// <remarks>This constructor is *REQUIRED* for the Mono/Java 
-		/// binding layer to function properly, in case java objects need to call methods 
-		/// on a collected .NET instance.
-		/// </remarks>
-		internal Image(IntPtr ptr, Android.Runtime.JniHandleOwnership ownership)
-			: base(ptr, ownership)
-		{
-		}
-
-		public Image()
-			: base(IntPtr.Zero, JniHandleOwnership.DoNotTransfer)
-		{
-			NativeInstanceHelper.CreateNativeInstance(base.GetType(), this, ContextHelper.Current, base.SetHandle);
-
-			Initialize();
-		}
-
-		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
-		{
-			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
-
-			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
-
-			var measuredSize = _layouter.Measure(availableSize);
-
-			if (
-				!double.IsInfinity(availableSize.Width)
-				&& !double.IsInfinity(availableSize.Height)
-				)
-			{
-				measuredSize = this.AdjustSize(availableSize, measuredSize);
-			}
-
-			var physicalMeasuredSize = measuredSize
-				.LogicalToPhysicalPixels();
-
-			// Report our final dimensions.
-			var width = (int)physicalMeasuredSize.Width;
-			var height = (int)physicalMeasuredSize.Height;
-
-			SetMeasuredDimension(width, height);
-
-			IFrameworkElementHelper
-				.SizeThatFits(this, new Size(width, height).PhysicalToLogicalPixels());
-		}
-
-		partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom)
-		{
-			try
-			{
-				_isInLayout = true;
-				var newSize = new Windows.Foundation.Size(right - left, bottom - top).PhysicalToLogicalPixels();
-
-				if (
-					// If the layout has changed, but the final size has not, this is just a translation.
-					// So unless there was a layout requested, we can skip arranging the children.
-					(changed && _lastLayoutSize != newSize)
-
-					// Even if nothing changed, but a layout was requested, arrange the children.
-					|| IsLayoutRequested
-				)
-				{
-					_lastLayoutSize = newSize;
-
-					_layouter.Arrange(new Windows.Foundation.Rect(0, 0, newSize.Width, newSize.Height));
-				}
-
-				// Try opening the image in the case where UseTargetSize has been set, as now
-				// we have both _targetWidth and _targetWidth that have been set.
-				TryOpenImage();
-			}
-			finally
-			{
-				_isInLayout = false;
-			}
-		}
 
 		private int? _targetWidth;
 		private int? _targetHeight;
@@ -207,100 +119,6 @@ namespace Windows.UI.Xaml.Controls
 			_previousArrangeSize = arrangeSize;
 		}
 
-		public override void SetImageDrawable(Drawable drawable)
-		{
-			if (drawable != null)
-			{
-				UpdateSourceImageSize(new Windows.Foundation.Size(drawable.IntrinsicWidth, drawable.IntrinsicHeight));
-			}
-
-			try
-			{
-				_skipLayoutRequest = true;
-				base.SetImageDrawable(drawable);
-			}
-			finally
-			{
-				_skipLayoutRequest = false;
-			}
-		}
-
-		public override void SetImageResource(int resId)
-		{
-			try
-			{
-				_skipLayoutRequest = true;
-
-				base.SetImageResource(resId);
-			}
-			finally
-			{
-				_skipLayoutRequest = false;
-			}
-
-			if (Drawable != null)
-			{
-				UpdateSourceImageSize(new Windows.Foundation.Size(Drawable.IntrinsicWidth, Drawable.IntrinsicHeight));
-			}
-		}
-
-		public override void SetImageBitmap(Bitmap bm)
-		{
-			if (bm != null)
-			{
-				// A bitmap usually is not density aware (unlike resources in drawable-*dpi directories), and preserves it's original size in pixels.
-				// To match Windows, we render an image that measures 200px by 200px to 200dp by 200dp.
-				// Hence, we consider the physical size of the bitmap to be the logical size of the image.
-				UpdateSourceImageSize(new Windows.Foundation.Size(bm.Width, bm.Height), isLogicalPixels: true);
-			}
-
-			try
-			{
-				_skipLayoutRequest = true;
-
-				base.SetImageBitmap(bm);
-			}
-			finally
-			{
-				_skipLayoutRequest = false;
-			}
-		}
-
-		public override void RequestLayout()
-		{
-			if (_skipLayoutRequest)
-			{
-				// This is an optimization of the layout system to avoid having the image
-				// request a layout of its parent after the image has been set, only based on the condition
-				// that the size of the new drawable is different from the previous one.
-				// See: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.4.4_r1/android/widget/ImageView.java#413
-
-				// When the size of the image does not affect its parent size, we can skip 
-				// the layout request and convert it to a ForceLayout, which does not invalidate the parent's layout.
-				// This optimization is particularly important in ListView templates, where a layout phase
-				// is very expensive.
-
-				if (ShouldDowngradeLayoutRequest())
-				{
-					base.ForceLayout();
-					return;
-				}
-			}
-
-			if (_trace.IsEnabled && !IsLayoutRequested)
-			{
-				_trace.WriteEvent(
-					FrameworkElement.TraceProvider.FrameworkElement_InvalidateMeasure,
-					EventOpcode.Send,
-					new[] {
-						GetType().ToString(),
-						this.GetDependencyObjectId().ToString()
-					}
-				);
-			}
-
-			base.RequestLayout();
-		}
 
 		private void TryOpenImage()
 		{
@@ -347,18 +165,18 @@ namespace Windows.UI.Xaml.Controls
 			{
 				try
 				{
-					if (imageSource is WriteableBitmap wb)
+					if (!imageSource?.HasSource() ?? true)
 					{
-						SetFromWriteableBitmap(wb);
-					}
-					// We want to reset the image when there is no source provided.
-					else if (!imageSource?.HasSource() ?? true)
-					{
+						// We want to reset the image when there is no source provided.
 						ResetSource();
+						return;
 					}
-					else if (imageSource.ImageData != null)
+
+					TryCreateNative();
+
+					if (imageSource.TryOpenSync(out var bitmap))
 					{
-						SetSourceBitmap(imageSource);
+						SetSourceBitmap((imageSource, bitmap));
 					}
 					else if (imageSource.BitmapDrawable != null)
 					{
@@ -407,6 +225,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private void TryCreateNative()
+		{
+			if (_native == null)
+			{
+				_native = new NativeImage();
+
+				AddView(_native);
+
+				UpdateMatrix(_lastLayoutSize);
+			}
+		}
+
 		private bool MustOpenImageToMeasure()
 		{
 			// If an image doesn't have fixed sizes and is Uniform or None, we must use its aspect ratio to measure it.
@@ -426,7 +256,7 @@ namespace Windows.UI.Xaml.Controls
 
 				_imageFetchDisposable.Disposable = disposable;
 
-				var bitmap = await newImageSource.Open(disposable.Token, this, _targetWidth, _targetHeight);
+				var bitmap = await newImageSource.Open(disposable.Token, _native, _targetWidth, _targetHeight);
 
 				if (newImageSource.IsImageLoadedToUiDirectly)
 				{
@@ -436,7 +266,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					SetImageBitmap(bitmap);
+					_native.SetImageBitmap(bitmap);
 
 					if (bitmap != null)
 					{
@@ -471,13 +301,14 @@ namespace Windows.UI.Xaml.Controls
 
 			BitmapFactory.Options o = new BitmapFactory.Options();
 			o.InJustDecodeBounds = true;
-			Bitmap bmp = BitmapFactory.DecodeResource(Resources, newImageSource.ResourceId.Value, o);
+			// We just call this to get the image dimensions. InJustDecodeBounds=true ensures that we don't actually allocate a new bitmap.
+			BitmapFactory.DecodeResource((this as View).Resources, newImageSource.ResourceId.Value, o);
 			int imageWidth = o.OutWidth;
 			int imageHeight = o.OutHeight;
 
 			Func<CancellationToken, Task> setResource = async (ct) =>
 			{
-				SetImageResource(newImageSource.ResourceId.Value);
+				_native.SetImageResource(newImageSource.ResourceId.Value);
 				OnImageOpened(newImageSource);
 			};
 
@@ -508,52 +339,26 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private async Task SetSourceDrawableAsync(CancellationToken ct, ImageSource newImageSource)
 		{
-			SetImageDrawable(newImageSource.BitmapDrawable);
+			_native.SetImageDrawable(newImageSource.BitmapDrawable);
 			OnImageOpened(newImageSource);
 		}
 
-		private void SetSourceBitmap(ImageSource newImageSource)
+		private void SetSourceBitmap((ImageSource src, Bitmap data) image)
 		{
 			if (MustDispatchSetSource())
 			{
-				Dispatch(ct => SetSourceBitmapAsync(ct, newImageSource));
+				Dispatch(ct => SetSourceBitmapAsync(ct, image));
 			}
 			else
 			{
-				var unused = SetSourceBitmapAsync(CancellationToken.None, newImageSource);
+				var unused = SetSourceBitmapAsync(CancellationToken.None, image);
 			}
 		}
 
-		private void SetFromWriteableBitmap(WriteableBitmap bitmap)
+		private async Task SetSourceBitmapAsync(CancellationToken ct, (ImageSource src, Bitmap data) image)
 		{
-			var drawableBuffer = new int[bitmap.PixelWidth * bitmap.PixelHeight];
-			var sourceBuffer = (bitmap.PixelBuffer as InMemoryBuffer).Data;
-
-			// WriteableBitmap PixelBuffer is using BGRA format, Android's bitmap input buffer
-			// requires Argb8888, so we swap bytes to conform to this format.
-
-			for (int i = 0; i < drawableBuffer.Length; i++)
-			{
-				var a = sourceBuffer[i * 4 + 3];
-				var r = sourceBuffer[i * 4 + 2];
-				var g = sourceBuffer[i * 4 + 1];
-				var b = sourceBuffer[i * 4 + 0];
-
-				drawableBuffer[i] = (a << 24) | (r << 16) | (g << 8) | b;
-			}
-
-			var bm = Bitmap.CreateBitmap(drawableBuffer, bitmap.PixelWidth, bitmap.PixelHeight, Bitmap.Config.Argb8888);
-			var drawable = new BitmapDrawable(Context.Resources, bm);
-
-			SetImageDrawable(drawable);
-			UpdateSourceImageSize(new Windows.Foundation.Size(bm.Width, bm.Height), isLogicalPixels: true);
-			OnImageOpened(bitmap);
-		}
-
-		private async Task SetSourceBitmapAsync(CancellationToken ct, ImageSource newImageSource)
-		{
-			SetImageBitmap(newImageSource.ImageData);
-			OnImageOpened(newImageSource);
+			_native.SetImageBitmap(image.data);
+			OnImageOpened(image.src);
 		}
 
 		/// <summary>
@@ -572,7 +377,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Internally, SetImageBitmap calls SetImageDrawable but creates a new BitmapDrawable. 
 			// So it's better to use SetImageDrawable.
-			SetImageDrawable(null);
+			_native?.SetImageDrawable(null);
 		}
 
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue)
@@ -580,21 +385,18 @@ namespace Windows.UI.Xaml.Controls
 			UpdateMatrix(_lastLayoutSize);
 		}
 
-		protected override bool SetFrame(int l, int t, int r, int b)
-		{
-			var frameSize = new Windows.Foundation.Size(r - l, b - t).PhysicalToLogicalPixels();
-			UpdateMatrix(frameSize);
-
-			return base.SetFrame(l, t, r, b);
-		}
-
 		/// <summary>
 		/// Sets the value of ImageView.ImageMatrix based on Stretch.
 		/// </summary>
 		/// <param name="frameSize">In logical pixels</param>
-		private void UpdateMatrix(Windows.Foundation.Size frameSize)
+		internal void UpdateMatrix(Windows.Foundation.Size frameSize)
 		{
-			SetScaleType(ScaleType.Matrix);
+			if (_native == null)
+			{
+				return;
+			}
+
+			_native.SetScaleType(ImageView.ScaleType.Matrix);
 
 			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || frameSize.Width == 0 || frameSize.Height == 0)
 			{
@@ -615,20 +417,7 @@ namespace Windows.UI.Xaml.Controls
 			var matrix = new Android.Graphics.Matrix();
 			matrix.PostScale((float)scaleX, (float)scaleY);
 			matrix.PostTranslate(translateX, translateY);
-			ImageMatrix = matrix;
-		}
-
-		partial void HitCheckOverridePartial(ref bool hitCheck)
-		{
-			hitCheck = Source?.HasSource() ?? false;
-		}
-
-		private partial class ImageLayouter
-		{
-			protected override void MeasureChild(View view, int widthSpec, int heightSpec)
-			{
-				// No children
-			}
+			_native.ImageMatrix = matrix;
 		}
 	}
 }

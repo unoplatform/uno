@@ -1399,22 +1399,22 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private IndexPath GetFirstVisibleIndexPath()
+		private Uno.UI.IndexPath GetFirstVisibleIndexPath()
 		{
 			return CollectionView.IndexPathsForVisibleItems
 				.OrderBy(p => p.ToIndexPath())
 				.FirstOrDefault()?
 				.ToIndexPath()
-					?? IndexPath.FromRowSection(-1, 0);
+					?? Uno.UI.IndexPath.FromRowSection(-1, 0);
 		}
 
-		private IndexPath GetLastVisibleIndexPath()
+		private Uno.UI.IndexPath GetLastVisibleIndexPath()
 		{
 			return CollectionView.IndexPathsForVisibleItems
 				.OrderByDescending(p => p.ToIndexPath())
 				.FirstOrDefault()?
 				.ToIndexPath()
-					?? IndexPath.FromRowSection(-1, 0);
+					?? Uno.UI.IndexPath.FromRowSection(-1, 0);
 		}
 
 		protected CGRect AdjustExtentOffset(CGRect frame, nfloat adjustment)

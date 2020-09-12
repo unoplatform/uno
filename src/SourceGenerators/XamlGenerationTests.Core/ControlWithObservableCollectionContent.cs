@@ -20,7 +20,7 @@ namespace XamlGenerationTests.Shared.Controls
 
 		// Using a DependencyProperty as the backing store for Items.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ItemsProperty =
-			DependencyProperty.Register("Items", typeof(ObservableCollection<object>), typeof(ControlWithObservableCollectionContent), new PropertyMetadata(new ObservableCollection<object>()));
+			DependencyProperty.Register("Items", typeof(ObservableCollection<object>), typeof(ControlWithObservableCollectionContent), new FrameworkPropertyMetadata(new ObservableCollection<object>()));
 
 
 	}

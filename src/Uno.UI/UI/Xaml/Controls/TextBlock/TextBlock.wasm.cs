@@ -39,15 +39,12 @@ namespace Windows.UI.Xaml.Controls
 			OnFontWeightChangedPartial();
 			OnTextChangedPartial();
 			OnFontFamilyChangedPartial();
+			OnFontSizeChangedPartial();
 			OnCharacterSpacingChangedPartial();
 			OnLineHeightChangedPartial();
 			OnTextAlignmentChangedPartial();
 			OnTextWrappingChangedPartial();
-		}
-
-		partial void InvalidateTextBlockPartial()
-		{
-
+			OnIsTextSelectionEnabledChangedPartial();
 		}
 
 		private void ConditionalUpdate(ref bool condition, Action action)
@@ -124,6 +121,18 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnFontWeightChangedPartial() => _fontWeightChanged = true;
 
+		partial void OnIsTextSelectionEnabledChangedPartial()
+		{
+			if (IsTextSelectionEnabled)
+			{
+				SetCssClasses("selectionEnabled");
+			}
+			else
+			{
+				UnsetCssClasses("selectionEnabled");
+			}
+		}
+
 		partial void OnTextChangedPartial()
 		{
 			_textChanged = true;
@@ -154,7 +163,5 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextWrappingChangedPartial() => _textWrappingChanged = true;
 
 		partial void OnPaddingChangedPartial() => _paddingChangedChanged = true;
-
-		internal override bool IsViewHit() => Text != null || base.IsViewHit();
 	}
 }

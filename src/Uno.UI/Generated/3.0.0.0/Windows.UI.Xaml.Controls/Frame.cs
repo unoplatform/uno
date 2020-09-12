@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Frame : global::Windows.UI.Xaml.Controls.ContentControl,global::Windows.UI.Xaml.Controls.INavigate
@@ -14,7 +14,6 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property CanGoForward
 		// Skipping already declared property CurrentSourcePageType
 		// Skipping already declared property BackStack
-		// Skipping already declared property ForwardStack
 		// Skipping already declared property ForwardStack
 		// Skipping already declared property IsNavigationStackEnabled
 		// Skipping already declared property BackStackDepthProperty
@@ -53,8 +52,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Frame.ForwardStack.get
 		// Skipping already declared method Windows.UI.Xaml.Controls.Frame.Navigate(System.Type, object, Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Frame.GoBack(Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void SetNavigationState( string navigationState,  bool suppressNavigate)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Frame", "void Frame.SetNavigationState(string navigationState, bool suppressNavigate)");
@@ -62,8 +61,8 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Frame.IsNavigationStackEnabled.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Frame.IsNavigationStackEnabled.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool NavigateToType( global::System.Type sourcePageType,  object parameter,  global::Windows.UI.Xaml.Navigation.FrameNavigationOptions navigationOptions)
 		{
 			throw new global::System.NotImplementedException("The member bool Frame.NavigateToType(Type sourcePageType, object parameter, FrameNavigationOptions navigationOptions) is not implemented in Uno.");

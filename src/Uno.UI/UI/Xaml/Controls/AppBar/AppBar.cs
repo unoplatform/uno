@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI;
+using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
+#if __IOS__ || __MACOS__
+		, ICustomClippingElement
+#endif
 	{
 		private double _compactHeight;
 		private double _minimalHeight;
@@ -120,15 +125,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			if (Resources["AppBarThemeCompactHeight"] is double compactHeight)
-			{
-				_compactHeight = compactHeight;
-			}
-
-			if (Resources["AppBarThemeMinimalHeight"] is double minimalHeight)
-			{
-				_minimalHeight = minimalHeight;
-			}
+			_compactHeight = ResourceResolver.ResolveTopLevelResourceDouble("AppBarThemeCompactHeight");
+			_minimalHeight = ResourceResolver.ResolveTopLevelResourceDouble("AppBarThemeMinimalHeight");
 
 			UpdateTemplateSettings();
 
@@ -137,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateTemplateSettings()
 		{
 			var contentHeight = (ContentTemplateRoot as FrameworkElement)?.ActualHeight ?? ActualHeight;
-			TemplateSettings.ClipRect = new Foundation.Rect(0, 0, ActualWidth, contentHeight);
+			TemplateSettings.ClipRect = new Windows.Foundation.Rect(0, 0, ActualWidth, contentHeight);
 
 			var compactVerticalDelta = _compactHeight - contentHeight;
 			TemplateSettings.CompactVerticalDelta = compactVerticalDelta;
@@ -150,5 +148,28 @@ namespace Windows.UI.Xaml.Controls
 			TemplateSettings.HiddenVerticalDelta = -contentHeight;
 			TemplateSettings.NegativeHiddenVerticalDelta = contentHeight;
 		}
+
+#if __IOS__ || __MACOS__
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			// On WinUI the CommandBar does not constraints its children (it only clips them)
+			// (It's the responsibility of each child to constraint itself)
+			// Note: This override is used only for the XAML command bar, not the native!
+			var infinity = new Size(double.PositiveInfinity, double.PositiveInfinity);
+			var result = base.MeasureOverride(infinity);
+
+			var height = ClosedDisplayMode switch
+			{
+				AppBarClosedDisplayMode.Compact => _compactHeight,
+				AppBarClosedDisplayMode.Minimal => _minimalHeight,
+				_ => 0
+			};
+
+			return new Size(result.Width, height);
+		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+#endif
 	}
 }

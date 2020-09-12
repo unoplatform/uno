@@ -1,81 +1,82 @@
 ﻿<Application
-	x:Class="SamplesApp.App"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	RequestedTheme="Light">
+    x:Class="SamplesApp.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    RequestedTheme="Light">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="HighContrast">
+                    <SolidColorBrush x:Key="GlobalThemeResource_Test01" Color="Red" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Default">
+                    <SolidColorBrush x:Key="GlobalThemeResource_Test01" Color="Gray" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="GlobalThemeResource_Test01" Color="Blue" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="GlobalThemeResource_Test01" Color="Yellow" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
 
-  <Application.Resources>
-	<ResourceDictionary>
-	  <ResourceDictionary.ThemeDictionaries>
-		<ResourceDictionary x:Key="HighContrast">
-		  <SolidColorBrush x:Key="GlobalThemeResource_Test01"
-						   Color="Red" />
-		</ResourceDictionary>
-		<ResourceDictionary x:Key="Default">
-		  <SolidColorBrush x:Key="GlobalThemeResource_Test01"
-						   Color="Gray" />
-		</ResourceDictionary>
-		<ResourceDictionary x:Key="Dark">
-		  <SolidColorBrush x:Key="GlobalThemeResource_Test01"
-						   Color="Blue" />
-		</ResourceDictionary>
-		<ResourceDictionary x:Key="Light">
-		  <SolidColorBrush x:Key="GlobalThemeResource_Test01"
-						   Color="Yellow" />
-		</ResourceDictionary>
-	  </ResourceDictionary.ThemeDictionaries>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Windows_UI_Xaml_Controls\ListView\MeasureDetectorControl\MeasureDetectorControl.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-	  <SolidColorBrush x:Key="GlobalStaticResource_Test01"
-						Color="Purple" />
+            <SolidColorBrush x:Key="GlobalStaticResource_Test01" Color="Purple" />
 
-	  <!-- ReSharper disable once InconsistentNaming -->
-	  <SolidColorBrush x:Key="Pink_From_App_Xaml_Resources" Color="#FF54BA" />
+            <!--  ReSharper disable once InconsistentNaming  -->
+            <SolidColorBrush x:Key="Pink_From_App_Xaml_Resources" Color="#FF54BA" />
 
-	  <Style x:Key="Style_Bold_From_App_Xaml_Resources" TargetType="TextBlock">
-		<Setter Property="FontWeight" Value="ExtraBold" />
-	  </Style>
+            <Style x:Key="Style_Bold_From_App_Xaml_Resources" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="ExtraBold" />
+            </Style>
 
-	  <Style x:Key="Style_Pink_From_App_Xaml_Resources" TargetType="TextBlock" BasedOn="{StaticResource Style_Bold_From_App_Xaml_Resources}">
-		<Setter Property="Foreground" Value="{StaticResource Pink_From_App_Xaml_Resources}" />
-	  </Style>
+            <Style
+                x:Key="Style_Pink_From_App_Xaml_Resources"
+                BasedOn="{StaticResource Style_Bold_From_App_Xaml_Resources}"
+                TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource Pink_From_App_Xaml_Resources}" />
+            </Style>
 
-	  <Style x:Key="CustomTextBox" TargetType="TextBox" >
-		<Setter Property="Template">
-		  <Setter.Value>
-			<ControlTemplate TargetType="TextBox">
-			  <Grid>
-				<Grid.Resources>
-				  <Style x:Key="TestStyle" TargetType="Button">
-					<Setter Property="Template">
-					  <Setter.Value>
-						<ControlTemplate TargetType="Button">
-						  <Grid>
-							<TextBlock Text="Sample" />
-						  </Grid>
-						</ControlTemplate>
-					  </Setter.Value>
-					</Setter>
-				  </Style>
-				</Grid.Resources>
-			  </Grid>
-			</ControlTemplate>
-		  </Setter.Value>
-		</Setter>
-	  </Style>
+            <Style x:Key="CustomTextBox" TargetType="TextBox">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TextBox">
+                            <Grid>
+                                <Grid.Resources>
+                                    <Style x:Key="TestStyle" TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Grid>
+                                                        <TextBlock Text="Sample" />
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Grid.Resources>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-		<!-- WinUI Styles -->
-		<Style x:Key="StandardGroupHeader" TargetType="TextBlock">
-			<Setter Property="FontSize" Value="22"/>
-			<Setter Property="Margin" Value="0,0,0,8"/>
-			<Setter Property="AutomationProperties.HeadingLevel" Value="Level2"/>
-		</Style>
+            <!--  WinUI Styles  -->
+            <Style x:Key="StandardGroupHeader" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="22" />
+                <Setter Property="Margin" Value="0,0,0,8" />
+                <Setter Property="AutomationProperties.HeadingLevel" Value="Level2" />
+            </Style>
 
-		<Style x:Key="StandardGroupingStackPanel" TargetType="StackPanel">
-			<Setter Property="BorderBrush" Value="{ThemeResource SystemChromeGrayColor}"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="Padding" Value="8"/>
-		</Style>
-	</ResourceDictionary>
-	  
-  </Application.Resources>
+            <Style x:Key="StandardGroupingStackPanel" TargetType="StackPanel">
+                <Setter Property="BorderBrush" Value="{ThemeResource SystemChromeGrayColor}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="8" />
+            </Style>
+        </ResourceDictionary>
+
+    </Application.Resources>
 </Application>

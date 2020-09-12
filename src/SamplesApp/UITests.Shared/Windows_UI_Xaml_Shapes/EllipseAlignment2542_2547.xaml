@@ -35,7 +35,8 @@
 					 Stroke="Red"
 					 StrokeThickness="5"
 					 Fill="Transparent"
-					 Margin="5" />
+					Opacity=".5"
+					  />
 
 				<Rectangle VerticalAlignment="Stretch" Fill="DarkGreen" Width="3" Opacity="0.25" />
 				<Rectangle HorizontalAlignment="Stretch" Fill="DarkGreen" Height="3" Opacity="0.25" />

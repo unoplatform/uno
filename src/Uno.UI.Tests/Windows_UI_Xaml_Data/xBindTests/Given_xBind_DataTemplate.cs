@@ -146,5 +146,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.IsFalse(data.HasPropertyChangedListeners);
 		}
+
+		[TestMethod]
+		public void When_DataTemplate_StaticProperty()
+		{
+			var SUT = new DataTemplate_StaticProperty_Control();
+			var data = new DataTemplate_StaticProperty_Control_Data();
+			SUT.root.Content = data;
+
+			SUT.ForceLoaded();
+
+			var _MyProperty = SUT.FindName("_MyProperty") as TextBlock;
+			Assert.AreEqual("Hello", _MyProperty.Text);
+		}
 	}
 }

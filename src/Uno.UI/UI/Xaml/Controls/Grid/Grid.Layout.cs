@@ -269,10 +269,25 @@ namespace Windows.UI.Xaml.Controls
 			var rowSpacing = RowSpacing;
 			var columnSpacing = ColumnSpacing;
 
+			bool resetCalculatedPixelSpans = false;
+			Span<double> calculatedPixelColumnsMinValue = stackalloc double[calculatedPixelColumns.Length];
+			Span<double> calculatedPixelRowsMinValue = stackalloc double[calculatedPixelRows.Length];
+
 			// Layout the children
 			var offset = GetChildrenOffset();
 			foreach (var child in Children)
 			{
+				if (resetCalculatedPixelSpans)
+				{
+					// Reset the allocated pixel values
+					calculatedPixelColumnsMinValue.Fill(default);
+					calculatedPixelRowsMinValue.Fill(default);
+				}
+				else
+				{
+					resetCalculatedPixelSpans = true;
+				}
+
 				var gridPosition = childrenToPositionsMap[child];
 				var x = offset.X + calculatedPixelColumns.SliceClamped(0, gridPosition.Column).Sum(cs => cs.MinValue);
 				var y = offset.Y + calculatedPixelRows.SliceClamped(0, gridPosition.Row).Sum(cs => cs.MinValue);
@@ -280,10 +295,7 @@ namespace Windows.UI.Xaml.Controls
 				x += columnSpacing * gridPosition.Column;
 				y += rowSpacing * gridPosition.Row;
 
-				Span<double> calculatedPixelColumnsMinValue = stackalloc double[calculatedPixelColumns.Length];
 				calculatedPixelColumns.SelectToSpan(calculatedPixelColumnsMinValue, cs => cs.MinValue);
-
-				Span<double> calculatedPixelRowsMinValue = stackalloc double[calculatedPixelRows.Length];
 				calculatedPixelRows.SelectToSpan(calculatedPixelRowsMinValue, cs => cs.MinValue);
 
 				var width = GetSpanSum(gridPosition.Column, gridPosition.ColumnSpan, calculatedPixelColumnsMinValue);
@@ -377,10 +389,22 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			bool resetColumnSizes = false;
+			Span<GridSizeEntry> columnSizes = stackalloc GridSizeEntry[columns.Length];
+
 			// Auto size: This type of measure is always required. 
 			// It's the type of size that depends directly on the size of its content.
 			foreach (var autoChild in autoSizeChildrenX)
 			{
+				if (resetColumnSizes)
+				{
+					columnSizes.Fill(default);
+				}
+				else
+				{
+					resetColumnSizes = true;
+				}
+
 				var gridPosition = autoChild.Value;
 
 				var childAvailableWidth = availableWidth - GetAvailableSizeForPosition(calculatedPixelColumns, gridPosition);
@@ -395,7 +419,6 @@ namespace Windows.UI.Xaml.Controls
 					GetElementDesiredSize(autoChild.Key);
 				maxHeightMeasured = Math.Max(maxHeightMeasured, childSize.Height);
 
-				Span<GridSizeEntry> columnSizes = stackalloc GridSizeEntry[columns.Length];
 				GetSizes(autoChild.Value.Column, autoChild.Value.ColumnSpan, columns, columnSizes);
 
 				var autoColumns = columnSizes.WhereToMemory(pair => pair.Value.IsAuto);
@@ -698,8 +721,24 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			bool resetSpans = false;
+			Span<GridSizeEntry> rowSizes = stackalloc GridSizeEntry[rows.Length];
+			Span<GridSizeEntry> autoRowsTemp = stackalloc GridSizeEntry[rowSizes.Length];
+			Span<GridSizeEntry> pixelRowsTemp = stackalloc GridSizeEntry[rowSizes.Length];
+
 			foreach (var autoChild in autoSizeChildrenY)
 			{
+				if (resetSpans)
+				{
+					rowSizes.Fill(default);
+					autoRowsTemp.Fill(default);
+					pixelRowsTemp.Fill(default);
+				}
+				else
+				{
+					resetSpans = true;
+				}
+
 				var gridPosition = autoChild.Value;
 				var width = GetSpanSum(gridPosition.Column, gridPosition.ColumnSpan, calculatedColumns.SelectToMemory(cs => cs.MaxValue).Span);
 
@@ -715,13 +754,10 @@ namespace Windows.UI.Xaml.Controls
 					GetElementDesiredSize(autoChild.Key);
 				maxMeasuredWidth = Math.Max(maxMeasuredWidth, childSize.Width);
 
-				Span<GridSizeEntry> rowSizes = stackalloc GridSizeEntry[rows.Length];
 				GetSizes(autoChild.Value.Row, autoChild.Value.RowSpan, rows, rowSizes);
 
-				Span<GridSizeEntry> autoRowsTemp = stackalloc GridSizeEntry[rowSizes.Length];
 				var autoRows = rowSizes.WhereToSpan(autoRowsTemp, pair => pair.Value.IsAuto);
 
-				Span<GridSizeEntry> pixelRowsTemp = stackalloc GridSizeEntry[rowSizes.Length];
 				var pixelRows = rowSizes.WhereToSpan(pixelRowsTemp, pair => pair.Value.IsPixelSize);
 
 				var pixelSize = pixelRows.Sum(pair => pair.Value.PixelSize.GetValueOrDefault());
@@ -949,13 +985,28 @@ namespace Windows.UI.Xaml.Controls
 			var res = new Memory<ViewPosition>(new ViewPosition[positions.Length]);
 			int count = 0;
 
+			// Use local function to avoid the use of Enumerable.Any. foreach on List<T> uses allocation less
+			bool hasStarChildren(View key)
+			{
+				foreach (var child in autoSizeChildren)
+				{
+					if (child.Key == key)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+
+
 			for (int i = 0; i < positions.Length; i++)
 			{
 				var item = positions[i];
 
 				if (
 					!pixelSizeChildren.Span.Any(c => c.Key == item.Key)
-					&& !autoSizeChildren.Any(c => c.Key == item.Key)
+					&& !hasStarChildren(item.Key)
 				)
 				{
 					res.Span[count++] = item;

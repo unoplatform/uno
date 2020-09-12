@@ -1,4 +1,6 @@
-﻿using CoreAnimation;
+﻿#nullable enable
+
+using CoreAnimation;
 using Foundation;
 using Uno.Extensions;
 using Uno.Logging;
@@ -32,8 +34,8 @@ namespace Windows.UI.Composition
 		private readonly Func<float, NSValue> _nsValueConversion;
 		private readonly bool _isDiscrete; // No interpolation
 		private readonly Action _onCompleted;
-		private readonly Action _prepare;
-		private readonly Action _cleanup;
+		private readonly Action? _prepare;
+		private readonly Action? _cleanup;
 
 		private (CAAnimation animation, float from, float to) _current;
 		private (StopReason reason, long? time, float? value) _stop;
@@ -56,8 +58,8 @@ namespace Windows.UI.Composition
 			Func<float, NSValue> nsValueConversion,
 			Action onCompleted,
 			bool isDiscrete,
-			Action prepare = null,
-			Action cleanup = null)
+			Action? prepare = null,
+			Action? cleanup = null)
 		{
 			_layer = new WeakReference<CALayer>(layer);
 			_property = property;
@@ -192,7 +194,7 @@ namespace Windows.UI.Composition
 
 		private EventHandler OnAnimationStarted(CAAnimation animation)
 		{
-			EventHandler handler = default;
+			EventHandler? handler = default;
 			handler= Handler;
 
 			return handler;
@@ -227,7 +229,7 @@ namespace Windows.UI.Composition
 		{
 			// This callback will be invoked when the animation is stopped, no matter the reason (completed, paused or canceled)
 
-			EventHandler<CAAnimationStateEventArgs> handler = default;
+			EventHandler<CAAnimationStateEventArgs>? handler = default;
 			handler = Handler;
 
 			return handler;

@@ -33,7 +33,7 @@ Updating these dependencies will require consumers to upgrade their dependencies
 
 ## additional care required
 
-These dependancies require care and human testing:
+These dependencies require care and human testing:
 
 - [Com.Airbnb.Android.Lottie](https://github.com/unoplatform/uno/pull/1201#issuecomment-511499023). This dependency reduces the number of supported SDKs (monoandroid80 is not supported). This dependency will be updated once monoandroid80 support is dropped from Uno.
 - [CommonServiceLocator](https://github.com/unoplatform/uno/pull/1174#issuecomment-507659717). This specific dependency needs to be removed from Uno.

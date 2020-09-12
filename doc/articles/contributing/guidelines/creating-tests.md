@@ -43,7 +43,7 @@ Although only a subset of the samples in the SamplesApp are covered by automated
 
 ### .NET Framework unit tests (`Uno.UI.Tests`)
 
-These are 'classic' unit tests which are built against a mocked version of the `Uno.UI` assembly targetting .NET Framework.
+These are 'classic' unit tests which are built against a mocked version of the `Uno.UI` assembly targeting .NET Framework.
 
 These tests are ideal for testing platform-agnostic parts of the code, such as the dependency property system, or panel measurement logic. They [have access to](https://github.com/unoplatform/uno/blob/af5365331d87a80ed4dd83b9e4839cc0d4a0ee5b/src/Uno.UI/AssemblyInfo.cs#L3) internal Uno.UI members, and the mocking layer allows values to be read or written which can't be accessed via the 'real' API.
 

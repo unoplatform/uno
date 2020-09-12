@@ -12,8 +12,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set { this.SetValue(AmplitudeProperty, value); }
 		}
 		
-		public static readonly DependencyProperty AmplitudeProperty =
-			DependencyProperty.Register("Amplitude", typeof(double), typeof(BackEase), new PropertyMetadata(1d));
+		public static DependencyProperty AmplitudeProperty { get ; } =
+			DependencyProperty.Register("Amplitude", typeof(double), typeof(BackEase), new FrameworkPropertyMetadata(1d));
 
 		public override double Ease(double currentTime, double startValue, double finalValue, double duration)
 		{

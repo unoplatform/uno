@@ -1,6 +1,9 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -64,8 +67,9 @@ namespace Uno.Analyzers
 
 				if (namedSymbol != null && IsUnoSymbol(symbol))
 				{
+					var directives = GetDirectives(contextAnalysis);
 
-					if (HasNotImplementedAttribute(notImplementedSymbol, namedSymbol))
+					if (HasNotImplementedAttribute(notImplementedSymbol, namedSymbol, directives))
 					{
 						var diagnostic = Diagnostic.Create(
 							SupportedDiagnostics.First(),
@@ -78,9 +82,67 @@ namespace Uno.Analyzers
 			}
 		}
 
-		private static bool HasNotImplementedAttribute(INamedTypeSymbol notImplementedSymbol, ISymbol namedSymbol)
+		private string[] GetDirectives(SyntaxNodeAnalysisContext contextAnalysis)
 		{
-			return namedSymbol.GetAttributes().Any(a => a.AttributeClass == notImplementedSymbol);
+			var directives = contextAnalysis.Node.GetLocation()?.SourceTree.Options.PreprocessorSymbolNames.ToArray() ?? new string[0];
+
+			if (directives.Length == 0)
+			{
+				// This case is only used during tests where explicit #define statements are
+				// present at the top of the file. In common cases, PreprocessorSymbolNames is
+				// not empty.
+
+				var directive = contextAnalysis
+					.Node
+					.GetLocation()
+					?.SourceTree
+					.GetRoot()
+					.GetFirstDirective() as DefineDirectiveTriviaSyntax;
+
+				if (directive != null)
+				{
+					directives = new[] { directive.Name.Text };
+				}
+			}
+
+			return directives;
+		}
+
+		private static bool HasNotImplementedAttribute(INamedTypeSymbol notImplementedSymbol, ISymbol namedSymbol, string[] directives)
+		{
+			if(namedSymbol.GetAttributes().FirstOrDefault(a => Equals(a.AttributeClass, notImplementedSymbol)) is AttributeData data)
+			{
+				if (
+					data.ConstructorArguments.FirstOrDefault() is TypedConstant constant
+					&& constant.Kind != TypedConstantKind.Error)
+				{
+					Debug.Assert(constant.Kind == TypedConstantKind.Array);
+
+					var notImplementedPlatforms = constant.Values.Select(v => v.Value?.ToString()).ToArray();
+
+					if (directives.Contains("UNO_REFERENCE_API")
+						&& !directives.Contains("__SKIA__")
+						&& !directives.Contains("__WASM__"))
+					{
+						// Uno reference API is a special case where if a member or symbol
+						// is implementer for either __SKIA__ or __WASM__, the member is considered
+						// implemented. The code may be running in either environments, and we cannot
+						// statically determine if a member will be available.
+						return notImplementedPlatforms.Any(p => p  ==  "__SKIA__")
+							&& notImplementedPlatforms.Any(p => p == "__WASM__");
+					}
+					else
+					{
+						return notImplementedPlatforms.Any(d => directives.Contains(d));
+					}
+				}
+				else
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		private void OnMemberAccessExpression(SyntaxNodeAnalysisContext contextAnalysis, INamedTypeSymbol notImplementedSymbol)
@@ -96,7 +158,12 @@ namespace Uno.Analyzers
 
 			if (member.Symbol != null && IsUnoSymbol(member))
 			{
-				if (HasNotImplementedAttribute(notImplementedSymbol, member.Symbol) || HasNotImplementedAttribute(notImplementedSymbol, member.Symbol.ContainingSymbol))
+				var directives = GetDirectives(contextAnalysis);
+
+				var isMemberNotImplemented = HasNotImplementedAttribute(notImplementedSymbol, member.Symbol, directives);
+				var isMemberOwnerNotImplemented = HasNotImplementedAttribute(notImplementedSymbol, member.Symbol.ContainingSymbol, directives);
+
+				if (isMemberNotImplemented || isMemberOwnerNotImplemented)
 				{
 					var diagnostic = Diagnostic.Create(
 						SupportedDiagnostics.First(),
@@ -116,8 +183,6 @@ namespace Uno.Analyzers
 		}
 
 		private static bool IsBindableMetadata(SyntaxNodeAnalysisContext contextAnalysis)
-		{
-			return Path.GetFileName(contextAnalysis.Node?.GetLocation()?.SourceTree?.FilePath) == "BindableMetadata.g.cs";
-		}
+			=> Path.GetFileName(contextAnalysis.Node?.GetLocation()?.SourceTree?.FilePath) == "BindableMetadata.g.cs";
 	}
 }

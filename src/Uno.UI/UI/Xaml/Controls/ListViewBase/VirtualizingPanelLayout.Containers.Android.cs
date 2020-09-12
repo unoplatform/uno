@@ -24,9 +24,9 @@ namespace Windows.UI.Xaml.Controls
 			/// </summary>
 			public int Breadth { get; set; }
 
-			public IndexPath FirstItem { get; set; }
+			public Uno.UI.IndexPath FirstItem { get; set; }
 
-			public IndexPath LastItem { get; set; }
+			public Uno.UI.IndexPath LastItem { get; set; }
 		}
 
 		/// <summary>
@@ -136,14 +136,14 @@ namespace Windows.UI.Xaml.Controls
 					Start;
 			}
 
-			public IndexPath GetLeadingMaterializedItem(GeneratorDirection fillDirection)
+			public Uno.UI.IndexPath GetLeadingMaterializedItem(GeneratorDirection fillDirection)
 			{
 				return fillDirection == GeneratorDirection.Forward ?
 					GetLastLine().LastItem :
 					GetFirstLine().FirstItem;
 			}
 
-			public IndexPath GetTrailingMaterializedItem(GeneratorDirection fillDirection)
+			public Uno.UI.IndexPath GetTrailingMaterializedItem(GeneratorDirection fillDirection)
 			{
 				return fillDirection == GeneratorDirection.Forward ?
 					GetFirstLine().FirstItem :

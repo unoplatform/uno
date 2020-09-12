@@ -26,8 +26,15 @@ namespace Windows.UI.Xaml
 	[ContentProperty(Name = "States")]
 	public sealed partial class VisualStateGroup : DependencyObject
 	{
+		/// <summary>
+		/// The xaml scope in force at the time the VisualStateGroup was created.
+		/// </summary>
+		private readonly XamlScope _xamlScope;
+
 		public VisualStateGroup()
 		{
+			_xamlScope = ResourceResolver.CurrentScope;
+
 			IsAutoPropertyInheritanceEnabled = false;
 			InitializeBinder();
 
@@ -36,7 +43,7 @@ namespace Windows.UI.Xaml
 
 		public string Name { get; set; }
 
-#region States Dependency Property
+		#region States Dependency Property
 
 		public IList<VisualState> States
 		{
@@ -61,7 +68,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for States.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty StatesProperty =
+		public static DependencyProperty StatesProperty { get; } =
 			DependencyProperty.Register(
 				"States",
 				typeof(IList<VisualState>),
@@ -73,9 +80,9 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-#endregion
+		#endregion
 
-#region Transitions DependencyProperty
+		#region Transitions DependencyProperty
 
 		public IList<VisualTransition> Transitions
 		{
@@ -95,7 +102,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TransitionsProperty =
+		public static DependencyProperty TransitionsProperty { get; } =
 			DependencyProperty.Register(
 				"Transitions",
 				typeof(IList<VisualTransition>),
@@ -106,7 +113,7 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-#endregion
+		#endregion
 
 		//Adds Event Handlers when collections changed
 		private void OnStatesChanged(DependencyPropertyChangedEventArgs e)
@@ -210,7 +217,7 @@ namespace Windows.UI.Xaml
 				{
 					onComplete(this, null);
 				}
-				else if(state != null)
+				else if (state != null)
 				{
 					state.Storyboard.Completed += onComplete;
 					state.Storyboard.Begin();
@@ -255,23 +262,36 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			this.CurrentState = state;
-			if (this.CurrentState != null && element != null)
+#if !HAS_EXPENSIVE_TRYFINALLY
+			try
+#endif
 			{
-				foreach (var setter in this.CurrentState.Setters.OfType<Setter>())
+				ResourceResolver.PushNewScope(_xamlScope);
+
+				this.CurrentState = state;
+				if (this.CurrentState != null && element != null)
 				{
-					setter.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
+					foreach (var setter in this.CurrentState.Setters.OfType<Setter>())
+					{
+						setter.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
+					}
+				}
+
+				if (transition?.Storyboard == null || !useTransitions)
+				{
+					onTransitionComplete(this, null);
+				}
+				else
+				{
+					transition.Storyboard.Completed += onTransitionComplete;
+					transition.Storyboard.Begin();
 				}
 			}
-
-			if (transition?.Storyboard == null || !useTransitions)
+#if !HAS_EXPENSIVE_TRYFINALLY
+			finally
+#endif
 			{
-				onTransitionComplete(this, null);
-			}
-			else
-			{
-				transition.Storyboard.Completed += onTransitionComplete;
-				transition.Storyboard.Begin();
+				ResourceResolver.PopScope();
 			}
 		}
 

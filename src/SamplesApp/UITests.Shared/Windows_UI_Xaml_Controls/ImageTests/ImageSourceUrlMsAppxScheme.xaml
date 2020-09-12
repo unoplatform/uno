@@ -20,6 +20,12 @@
 						   HorizontalAlignment="Left"
 						   VerticalAlignment="Center"
 						   Stretch="Uniform" />
+					<Image Width="100"
+						   Height="100"
+						   Source="ms-appx:///Assets/0_leading_number_asset.png" />
+					<Image Width="100"
+						   Height="100"
+						   Source="ms-appx:///Assets/asset-with-dashes.png" />
 				</StackPanel>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>

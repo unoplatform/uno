@@ -23,7 +23,7 @@ using AndroidX.Core.Graphics;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextBoxView : EditText, DependencyObject
+	internal partial class TextBoxView : EditText, DependencyObject
 	{
 		private bool _isRunningTextChanged;
 		private bool _isInitialized = false;
@@ -241,7 +241,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ForegroundProperty, value); }
 		}
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),

@@ -2,12 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PickerConfirmedEventArgs : global::Windows.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared method Windows.UI.Xaml.Controls.PickerConfirmedEventArgs.PickerConfirmedEventArgs()
+		#if __ANDROID__ || __IOS__ || NET461 || false || false || false || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__MACOS__")]
+		public PickerConfirmedEventArgs() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PickerConfirmedEventArgs", "PickerConfirmedEventArgs.PickerConfirmedEventArgs()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.PickerConfirmedEventArgs.PickerConfirmedEventArgs()
 	}
 }

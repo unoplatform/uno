@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Uno.Buffers;
 
@@ -18,13 +19,27 @@ namespace Windows.UI.Xaml
         private readonly static ArrayPool<PropertyChangedCallback> _pool = ArrayPool<PropertyChangedCallback>.Create(100, 100);
         private PropertyChangedCallback[] _callbacksShadow;
         private int _id;
+		private bool _disposed;
 
         public DependencyPropertyCallbackManager()
         {
         }
 
 		public void Dispose()
-			=> ReturnShadowToPool();
+		{
+			if (_disposed)
+			{
+#if DEBUG
+				// Dispose here may not be invoked multiple times. If this is the case,
+				// this means that the Dispose method from DependencyObjectStore is invoked
+				// multiple times from different threads and is not synchronized properly.
+				Debug.Fail("Dispose may not be invoked multiple times.");
+#endif
+				return;
+			}
+			_disposed = true;
+			ReturnShadowToPool();
+		}
 
 		/// <summary>
 		/// Registers a callback to be called by <see cref="RaisePropertyChanged(DependencyObject, DependencyPropertyChangedEventArgs)"/>

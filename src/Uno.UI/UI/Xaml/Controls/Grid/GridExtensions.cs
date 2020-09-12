@@ -24,8 +24,8 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public static class GridExtensions
-    {
+	public static class GridExtensions
+	{
 		public static Grid ColumnDefinitions(this Grid grid, params string[] definitions)
 		{
 			foreach (var def in definitions)
@@ -112,6 +112,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return view;
 		}
-    }
+	}
 }
 #endif

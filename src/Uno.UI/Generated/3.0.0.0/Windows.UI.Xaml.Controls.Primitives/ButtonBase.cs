@@ -2,11 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ButtonBase : global::Windows.UI.Xaml.Controls.ContentControl
 	{
+		// Skipping already declared property CommandParameter
+		// Skipping already declared property Command
+		// Skipping already declared property ClickMode
+		// Skipping already declared property IsPointerOver
+		// Skipping already declared property IsPressed
+		// Skipping already declared property ClickModeProperty
+		// Skipping already declared property CommandParameterProperty
+		// Skipping already declared property CommandProperty
+		// Skipping already declared property IsPointerOverProperty
+		// Skipping already declared property IsPressedProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.ButtonBase.ButtonBase()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.ButtonBase.ButtonBase()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.ButtonBase.ClickMode.get

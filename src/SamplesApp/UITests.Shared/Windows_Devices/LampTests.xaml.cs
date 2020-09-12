@@ -6,6 +6,9 @@ using Windows.Devices.Lights;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace UITests.Shared.Windows_Devices
 {
 	[SampleControlInfo(

@@ -20,6 +20,13 @@ namespace Windows.UI.Xaml
 	internal delegate object CoerceValueCallback(DependencyObject dependencyObject, object baseValue);
 
 	/// <summary>
+	/// Provides a delegate for a method used to update backing fields of a dependency property
+	/// </summary>
+	/// <param name="dependencyObject">The object that the property exists on.</param>
+	/// <param name="args">The new value of the property</param>
+	internal delegate void BackingFieldUpdateCallback(DependencyObject dependencyObject, object newValue);
+
+	/// <summary>
 	/// Defines the metadata to use for a dependency property/
 	/// </summary>
 	public partial class PropertyMetadata
@@ -39,9 +46,18 @@ namespace Windows.UI.Xaml
 
 		public PropertyMetadata(
 			object defaultValue
-		)			
+		)
 		{
 			DefaultValue = defaultValue;
+		}
+
+		internal PropertyMetadata(
+			object defaultValue,
+			BackingFieldUpdateCallback backingFieldUpdateCallback
+		)
+		{
+			DefaultValue = defaultValue;
+			BackingFieldUpdateCallback = backingFieldUpdateCallback;
 		}
 
 		public PropertyMetadata(
@@ -51,6 +67,17 @@ namespace Windows.UI.Xaml
 		{
 			DefaultValue = defaultValue;
 			PropertyChangedCallback = propertyChangedCallback;
+		}
+
+		internal PropertyMetadata(
+			object defaultValue,
+			PropertyChangedCallback propertyChangedCallback,
+			BackingFieldUpdateCallback backingFieldUpdateCallback
+		)
+		{
+			DefaultValue = defaultValue;
+			PropertyChangedCallback = propertyChangedCallback;
+			BackingFieldUpdateCallback = backingFieldUpdateCallback;
 		}
 
 		public PropertyMetadata(
@@ -78,6 +105,19 @@ namespace Windows.UI.Xaml
 			DefaultValue = defaultValue;
 			PropertyChangedCallback = propertyChangedCallback;
 			CoerceValueCallback = coerceValueCallback;
+		}
+
+		internal PropertyMetadata(
+			object defaultValue,
+			PropertyChangedCallback propertyChangedCallback,
+			CoerceValueCallback coerceValueCallback,
+			BackingFieldUpdateCallback backingFieldUpdateCallback
+		)
+		{
+			DefaultValue = defaultValue;
+			PropertyChangedCallback = propertyChangedCallback;
+			CoerceValueCallback = coerceValueCallback;
+			BackingFieldUpdateCallback = backingFieldUpdateCallback;
 		}
 
 		public object DefaultValue
@@ -101,6 +141,8 @@ namespace Windows.UI.Xaml
 				_isCoerceValueCallbackSet = true;
 			}
 		}
+
+		internal BackingFieldUpdateCallback BackingFieldUpdateCallback { get; set; }
 
 		internal protected virtual void Merge(PropertyMetadata baseMetadata, DependencyProperty dp)
 		{
@@ -131,6 +173,7 @@ namespace Windows.UI.Xaml
 			
 			// Merge PropertyChangedCallback delegates
 			PropertyChangedCallback = baseMetadata.PropertyChangedCallback + PropertyChangedCallback;
+			BackingFieldUpdateCallback = baseMetadata.BackingFieldUpdateCallback + BackingFieldUpdateCallback;
 		}
 
 		internal void MergePropertyChangedCallback(PropertyChangedCallback callback)
@@ -142,6 +185,11 @@ namespace Windows.UI.Xaml
 		internal void RaisePropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
 		{
 			PropertyChangedCallback?.Invoke(source, e);
+		}
+
+		internal void RaiseBackingFieldUpdate(DependencyObject source, object newValue)
+		{
+			BackingFieldUpdateCallback?.Invoke(source, newValue);
 		}
 	}
 }

@@ -12,6 +12,8 @@ using Windows.UI.Xaml.Controls.Primitives;
 using static System.Math;
 using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
 using Uno.UI.Extensions;
+using System.Collections.Specialized;
+using Uno.UI.Xaml.Controls;
 #if __MACOS__
 using AppKit;
 #elif __IOS__
@@ -48,13 +50,28 @@ namespace Windows.UI.Xaml.Controls
 		private double _lastScrollOffset;
 
 		/// <summary>
+		/// The current average line height based on materialized lines. Used to estimate scroll extent of unmaterialized items.
+		/// </summary>
+		private double _averageLineHeight;
+
+		/// <summary>
 		/// The previous item to the old first visible item, used when a lightweight layout rebuild is called.
 		/// </summary>
-		private IndexPath? _dynamicSeedIndex;
+		private Uno.UI.IndexPath? _dynamicSeedIndex;
 		/// <summary>
 		/// Start position of the old first group, used when a lightweight layout rebuild is called.
 		/// </summary>
 		private double? _dynamicSeedStart;
+
+		/// <summary>
+		/// Pending collection changes to be processed when the list is re-measured.
+		/// </summary>
+		private readonly Queue<CollectionChangedOperation> _pendingCollectionChanges = new Queue<CollectionChangedOperation>();
+
+		/// <summary>
+		/// Pending scroll adjustment, if an item has been added/removed backward of the current visible viewport by a collection change.
+		/// </summary>
+		private double? _scrollAdjustmentForCollectionChanges;
 
 		private double AvailableBreadth => ScrollOrientation == Orientation.Vertical ?
 			_availableSize.Width :
@@ -206,8 +223,15 @@ namespace Windows.UI.Xaml.Controls
 
 			while (unappliedDelta > 0)
 			{
-				// Apply scroll in bite-sized increments. This is crucial for good performance, since the delta may be in the 100s or 1000s of pixels, and we want to recycle unseen views at the same rate that we dequeue newly-visible views.
-				var scrollIncrement = GetScrollConsumptionIncrement(fillDirection);
+				var scrollIncrement =
+					_scrollAdjustmentForCollectionChanges.HasValue ?
+					// If we're adjusting for collection changes, apply scroll in 'one big hit' because we should exactly reuse scrapped items this way (since items in visible viewport should not have changed)
+					Abs(_scrollAdjustmentForCollectionChanges.Value) :
+					// Apply scroll in bite-sized increments. This is crucial for good performance, since the delta may be in the 100s or 1000s of pixels, and we want to recycle unseen views at the same rate that we dequeue newly-visible views.
+					GetScrollConsumptionIncrement(fillDirection);
+
+				_scrollAdjustmentForCollectionChanges = null;
+
 				if (scrollIncrement == 0)
 				{
 					break;
@@ -233,7 +257,7 @@ namespace Windows.UI.Xaml.Controls
 			if (incrementView == null)
 			{
 				//TODO: work properly when header/footer/group header are available, and may be larger than extended viewport
-				return 0;
+				return _averageLineHeight;
 			}
 
 			return GetExtent(incrementView);
@@ -258,8 +282,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_availableSize = availableSize;
+			UpdateAverageLineHeight(); // Must be called before ScrapLayout(), or there won't be items to measure
 			ScrapLayout();
-			UpdateLayout();
+			ApplyCollectionChanges();
+			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges);
 
 			return _lastMeasuredSize = EstimatePanelSize(isMeasure: true);
 		}
@@ -283,7 +309,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_availableSize = finalSize;
-			UpdateLayout();
+			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges);
 
 			return EstimatePanelSize(isMeasure: false);
 		}
@@ -292,7 +318,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Update the item container layout by removing no-longer-visible views and adding visible views.
 		/// </summary>
 		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
-		private void UpdateLayout(double? extentAdjustment = null)
+		private void UpdateLayout(double? extentAdjustment)
 		{
 			OwnerPanel.ShouldInterceptInvalidate = true;
 
@@ -426,6 +452,82 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
+		/// If there are pending collection changes, update values and prepare the layouter accordingly.
+		/// </summary>
+		private void ApplyCollectionChanges()
+		{
+			if (_pendingCollectionChanges.Count == 0)
+			{
+				return;
+			}
+
+			// Call before applying scroll, because scroll is applied synchronously on some platforms
+			Generator.UpdateForCollectionChanges(_pendingCollectionChanges);
+
+			if (_dynamicSeedIndex is Uno.UI.IndexPath dynamicSeedIndex)
+			{
+				var updated = CollectionChangedOperation.Offset(dynamicSeedIndex, _pendingCollectionChanges);
+				if (updated is Uno.UI.IndexPath updatedValue)
+				{
+					_dynamicSeedIndex = updated;
+
+					var itemOffset = updatedValue.Row - dynamicSeedIndex.Row; // TODO: This will need to change when grouping is supported
+					var scrollAdjustment = itemOffset * _averageLineHeight; // TODO: not appropriate for ItemsWrapGrid
+					ApplyScrollAdjustment(scrollAdjustment);
+				}
+				// TODO: handle the case where seed was removed
+			}
+
+			_pendingCollectionChanges.Clear();
+		}
+
+		private void ApplyScrollAdjustment(double scrollAdjustment)
+		{
+			if (scrollAdjustment == 0)
+			{
+				return;
+			}
+
+			_dynamicSeedStart += scrollAdjustment;
+
+			if ((scrollAdjustment < 0 && IsScrolledToStart()) ||
+				(scrollAdjustment > 0 && IsScrolledToEnd())
+			)
+			{
+				// Don't call ChangeView() if there's no room to scroll, because if we set _scrollAdjustmentForCollectionChanges then we expect it to be
+				// handled in OnScrollChanged
+				// TODO: Handle this better, because it leads to an unwanted jump in the position of visible elements.
+				return;
+			}
+
+			// Set adjustment before calling ChangeView(), because OnScrollChanged() will be called synchronously on some platforms
+			_scrollAdjustmentForCollectionChanges = scrollAdjustment;
+
+			if (ScrollOrientation == Orientation.Vertical)
+			{
+				ScrollViewer.ChangeView(null, ScrollViewer.VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+			}
+			else
+			{
+				ScrollViewer.ChangeView(ScrollViewer.HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+			}
+		}
+
+		/// <summary>
+		/// True if the scroll position is right at the start of the list.
+		/// </summary>
+		private bool IsScrolledToStart() => ScrollOrientation == Orientation.Vertical ?
+			ScrollViewer.VerticalOffset <= 0 :
+			ScrollViewer.HorizontalOffset <= 0;
+
+		/// <summary>
+		/// True if the scroll position is all the way to the end of the list.
+		/// </summary>
+		private bool IsScrolledToEnd() => ScrollOrientation == Orientation.Vertical ?
+			ScrollViewer.VerticalOffset >= ScrollViewer.ScrollableHeight :
+			ScrollViewer.HorizontalOffset >= ScrollViewer.ScrollableWidth;
+
+		/// <summary>
 		/// Estimate the 'correct' size of the panel.
 		/// </summary>
 		/// <param name="isMeasure">True if this is called from measure, false if after arrange.</param>
@@ -470,20 +572,25 @@ namespace Windows.UI.Xaml.Controls
 			var lastItem = GetFlatItemIndex(lastIndexPath.Value);
 
 			var remainingItems = ItemsControl.NumberOfItems - lastItem - 1;
-
-			var averageLineHeight = _materializedLines.Select(l => GetExtent(l.FirstView)).Average();
+			UpdateAverageLineHeight();
 
 			int itemsPerLine = GetItemsPerLine();
 			var remainingLines = remainingItems / itemsPerLine + remainingItems % itemsPerLine;
 
-			double estimatedExtent = GetContentEnd() + remainingLines * averageLineHeight;
+			double estimatedExtent = GetContentEnd() + remainingLines * _averageLineHeight;
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"{GetMethodTag()}=>{estimatedExtent}, GetContentEnd()={GetContentEnd()}, remainingLines={remainingLines}, averageLineHeight={averageLineHeight}");
+				this.Log().LogDebug($"{GetMethodTag()}=>{estimatedExtent}, GetContentEnd()={GetContentEnd()}, remainingLines={remainingLines}, averageLineHeight={_averageLineHeight}");
 			}
 
 			return estimatedExtent;
+		}
+
+		private void UpdateAverageLineHeight()
+		{
+			_averageLineHeight = _materializedLines.Count > 0 ? _materializedLines.Select(l => GetExtent(l.FirstView)).Average()
+				: 0;
 		}
 
 		private double CalculatePanelMeasureBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
@@ -496,6 +603,35 @@ namespace Windows.UI.Xaml.Controls
 		private double CalculatePanelArrangeBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
 					_materializedLines.Select(l => GetActualBreadth(l.FirstView)).MaxOrDefault();
 
+		internal void AddItems(int firstItem, int count, int section)
+		{
+			_pendingCollectionChanges.Enqueue(new CollectionChangedOperation(
+				startingIndex: Uno.UI.IndexPath.FromRowSection(firstItem, section),
+				range: count,
+				action: NotifyCollectionChangedAction.Add,
+				elementType: CollectionChangedOperation.Element.Item
+				));
+
+			LightRefresh();
+		}
+
+		internal void RemoveItems(int firstItem, int count, int section)
+		{
+			_pendingCollectionChanges.Enqueue(new CollectionChangedOperation(
+				startingIndex: Uno.UI.IndexPath.FromRowSection(firstItem, section),
+				range: count,
+				action: NotifyCollectionChangedAction.Remove,
+				elementType: CollectionChangedOperation.Element.Item
+				));
+
+			LightRefresh();
+		}
+
+		/// <summary>
+		/// Update the display of the panel without clearing caches.
+		/// </summary>
+		private void LightRefresh() => OwnerPanel?.InvalidateMeasure();
+
 		internal void Refresh()
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -507,6 +643,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateCompleted();
 			Generator.ClearIdCache();
+			_pendingCollectionChanges.Clear();
 			OwnerPanel?.InvalidateMeasure();
 		}
 
@@ -549,9 +686,8 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get 'seed' index for recreating the visual state of the list after <see cref="ScrapLayout()"/>;
 		/// </summary>
-		protected virtual IndexPath? GetDynamicSeedIndex(IndexPath? firstVisibleItem)
+		protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem)
 		{
-
 			var lastItem = XamlParent.GetLastItem();
 			if (lastItem == null ||
 				(firstVisibleItem != null && firstVisibleItem.Value > lastItem.Value)
@@ -568,12 +704,12 @@ namespace Windows.UI.Xaml.Controls
 			Refresh();
 		}
 
-		private IndexPath GetFirstVisibleIndexPath()
+		private Uno.UI.IndexPath GetFirstVisibleIndexPath()
 		{
 			throw new NotImplementedException(); //TODO: FirstVisibleIndex
 		}
 
-		private IndexPath GetLastVisibleIndexPath()
+		private Uno.UI.IndexPath GetLastVisibleIndexPath()
 		{
 			throw new NotImplementedException(); //TODO: LastVisibleIndex
 		}
@@ -585,7 +721,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private float AdjustOffsetForSnapPointsAlignment(float offset) => throw new NotImplementedException();
 
-		private void AddLine(GeneratorDirection fillDirection, IndexPath nextVisibleItem)
+		private void AddLine(GeneratorDirection fillDirection, Uno.UI.IndexPath nextVisibleItem)
 		{
 			var extentOffset = fillDirection == Backward ? GetContentStart() : GetContentEnd();
 
@@ -604,11 +740,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Create a new line.
 		/// </summary>
-		protected abstract Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, IndexPath nextVisibleItem);
+		protected abstract Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, Uno.UI.IndexPath nextVisibleItem);
 
 		protected abstract int GetItemsPerLine();
 
-		protected int GetFlatItemIndex(IndexPath indexPath) => ItemsControl.GetIndexFromIndexPath(indexPath);
+		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath) => ItemsControl.GetIndexFromIndexPath(indexPath);
 
 		protected void AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
 		{
@@ -658,9 +794,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private Line GetLastMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[_materializedLines.Count - 1] : null;
 
-		private IndexPath? GetFirstMaterializedIndexPath() => GetFirstMaterializedLine()?.FirstItem;
+		private Uno.UI.IndexPath? GetFirstMaterializedIndexPath() => GetFirstMaterializedLine()?.FirstItem;
 
-		private IndexPath? GetLastMaterializedIndexPath() => GetLastMaterializedLine()?.LastItem;
+		private Uno.UI.IndexPath? GetLastMaterializedIndexPath() => GetLastMaterializedLine()?.LastItem;
 
 		private double? GetItemsStart()
 		{
@@ -736,8 +872,10 @@ namespace Windows.UI.Xaml.Controls
 			return $"Parent ItemsControl={ItemsControl} ItemsSource={ItemsControl?.ItemsSource} NoOfItems={ItemsControl?.NumberOfItems} FirstMaterialized={GetFirstMaterializedIndexPath()} LastMaterialized={GetLastMaterializedIndexPath()} ExtendedViewportStart={ExtendedViewportStart} ExtendedViewportEnd={ExtendedViewportEnd} GetItemsStart()={GetItemsStart()} GetItemsEnd()={GetItemsEnd()}";
 		}
 
-#if __WASM__
+#if __WASM__ || __SKIA__
 		private static Point GetRelativePosition(FrameworkElement child) => child.RelativePosition;
+#elif __NETSTD_REFERENCE__
+		private static Point GetRelativePosition(FrameworkElement child) => throw new NotSupportedException();
 #elif __MACOS__ || __IOS__
 		private static Point GetRelativePosition(FrameworkElement child) => child.Frame.Location;
 #elif __ANDROID__
@@ -750,14 +888,14 @@ namespace Windows.UI.Xaml.Controls
 		protected class Line
 		{
 			public FrameworkElement[] ContainerViews { get; }
-			public IndexPath FirstItem { get; }
-			public IndexPath LastItem { get; }
+			public Uno.UI.IndexPath FirstItem { get; }
+			public Uno.UI.IndexPath LastItem { get; }
 			public int FirstItemFlat { get; }
 
 			public FrameworkElement FirstView => ContainerViews[0];
 			public FrameworkElement LastView => ContainerViews[ContainerViews.Length - 1];
 
-			public Line(FrameworkElement[] containerViews, IndexPath firstItem, IndexPath lastItem, int firstItemFlat)
+			public Line(FrameworkElement[] containerViews, Uno.UI.IndexPath firstItem, Uno.UI.IndexPath lastItem, int firstItemFlat)
 			{
 				if (containerViews.Length == 0)
 				{

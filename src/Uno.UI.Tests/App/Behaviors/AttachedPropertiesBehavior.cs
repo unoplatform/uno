@@ -19,7 +19,7 @@ namespace Uno.UI.Tests.App.Behaviors
 				"CustomText",
 				typeof(string),
 				typeof(AttachedPropertiesBehavior),
-				new PropertyMetadata(string.Empty, OnCustomTextChanged));
+				new FrameworkPropertyMetadata(string.Empty, OnCustomTextChanged));
 
 		private static void OnCustomTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

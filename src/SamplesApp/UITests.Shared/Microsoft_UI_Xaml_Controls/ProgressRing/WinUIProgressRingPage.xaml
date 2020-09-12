@@ -16,5 +16,7 @@
 		<TextBlock FontSize="15">Interactive ProgressRing:</TextBlock>
 		<winui:ProgressRing IsActive="{Binding IsChecked, ElementName=isActive}" Width="64" />
 		<ToggleButton x:Name="isActive">IsActive</ToggleButton>
+		<ToggleButton Click="LoadUnload">LOAD/UNLOAD</ToggleButton>
+		<Border x:Name="container"></Border>
 	</StackPanel>
 </Page>

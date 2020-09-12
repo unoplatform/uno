@@ -5,7 +5,7 @@
 		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 		<ProductVersion>8.0.30703</ProductVersion>
 		<SchemaVersion>2.0</SchemaVersion>
-		<ProjectGuid>$guid1$</ProjectGuid>
+		<ProjectGuid>$guid2$</ProjectGuid>
 		<ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
 		<OutputType>Library</OutputType>
 		<AppDesignerFolder>Properties</AppDesignerFolder>
@@ -14,11 +14,10 @@
 		<FileAlignment>512</FileAlignment>
 		<AndroidApplication>true</AndroidApplication>
 		<AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
-		<!-- AndroidUseAapt2 is disabled until https://github.com/unoplatform/uno/issues/1382 is resolved -->
-		<AndroidUseAapt2>false</AndroidUseAapt2>
+		<AndroidUseAapt2>true</AndroidUseAapt2>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-		<TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
+		<TargetFrameworkVersion>v10.0</TargetFrameworkVersion>
 		<AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<ResourcesDirectory>..\$ext_safeprojectname$.Shared\Strings</ResourcesDirectory>
@@ -61,8 +60,8 @@
 		<Reference Include="System.Xml" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="2.0.512-dev.4178" />
-		<PackageReference Include="Uno.UI.RemoteControl" Version="2.0.512-dev.4178" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI" Version="2.2.0" />
+		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.32" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
@@ -73,7 +72,7 @@
 		<Compile Include="Main.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<AndroidAsset Include="Assets\Fonts\winjs-symbols.ttf" />
+		<AndroidAsset Include="Assets\Fonts\uno-fluentui-assets.ttf" />
 		<None Include="Resources\AboutResources.txt" />
 		<None Include="Assets\AboutAssets.txt" />
 	</ItemGroup>
@@ -94,4 +93,14 @@
 
 	<!-- This will force the generation of the APK when not building inside visual studio -->
 	<Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />
+	
+	<Target Name="Issue3897Workaround" 
+		Condition=" '$(ManagedDesignTimeBuild)' == 'True' "
+		AfterTargets="_RemoveLegacyDesigner">
+		<!-- See https://github.com/unoplatform/uno/issues/3897 and https://github.com/xamarin/xamarin-android/issues/5069 for more details -->
+		<ItemGroup>
+			<Compile Remove="$(_AndroidResourceDesignerFile)"/>
+		</ItemGroup>
+	</Target>
+
 </Project>

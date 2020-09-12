@@ -13,6 +13,7 @@ using Android.Views;
 using Android.Widget;
 using Windows.UI.Core;
 using Windows.Foundation;
+using System.Threading;
 
 namespace Windows.UI.Popups
 {
@@ -20,10 +21,8 @@ namespace Windows.UI.Popups
 	{
 		const int MaximumCommands = 3;
 
-		public IAsyncOperation<IUICommand> ShowAsync()
+		private void ShowInner(CancellationToken ct, TaskCompletionSource<IUICommand> invokedCommand)
 		{
-			var invokedCommand = new TaskCompletionSource<IUICommand>();
-
 			// Android recommends placing buttons in this order:
 			//  1) positive (default accept)
 			//  2) negative (default cancel)
@@ -35,7 +34,7 @@ namespace Windows.UI.Popups
 				.Where(command => !(command is UICommandSeparator)) // Not supported on Android
 				.DefaultIfEmpty(new UICommand("Close")) // TODO: Localize (PBI 28711)
 				.Reverse()
-				.Select((command, index) => 
+				.Select((command, index) =>
 					new
 					{
 						Command = command,
@@ -62,20 +61,15 @@ namespace Windows.UI.Popups
 					}
 				);
 
-			return new AsyncOperation<IUICommand>(async ct =>
+			using (ct.Register(() =>
 			{
-				using (ct.Register(() =>
-					{
-						// If the cancellation token itself gets cancelled, we cancel as well.
-						invokedCommand.TrySetCanceled();
-						dialog.Dismiss();
-					}))
-				{
-					dialog.Show();
-
-					return await invokedCommand.Task;
-				}
-			});
+				// If the cancellation token itself gets cancelled, we cancel as well.
+				invokedCommand.TrySetCanceled();
+				dialog.Dismiss();
+			}))
+			{
+				dialog.Show();
+			}
 		}
 
 		partial void ValidateCommands()

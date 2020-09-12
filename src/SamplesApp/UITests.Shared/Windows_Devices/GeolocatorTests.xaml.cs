@@ -9,7 +9,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
 
 namespace UITests.Shared.Windows_Devices
 {

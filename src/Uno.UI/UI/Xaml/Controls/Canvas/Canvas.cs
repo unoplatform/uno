@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using Uno.UI;
+using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Media.Animation;
@@ -22,26 +23,14 @@ namespace Windows.UI.Xaml.Controls
 		#region Left
 
 		public static double GetLeft(DependencyObject obj)
-		{
-			return (double)obj.GetValue(LeftProperty);
-		}
+			=> GetLeftValue(obj);
 
 		public static void SetLeft(DependencyObject obj, double value)
-		{
-			obj.SetValue(LeftProperty, value);
-		}
+			=> SetLeftValue(obj, value);
 
-		public static readonly DependencyProperty LeftProperty =
-			DependencyProperty.RegisterAttached(
-				"Left",
-				typeof(double), 
-				typeof(Canvas),
-				new FrameworkPropertyMetadata(
-					defaultValue: 0d,
-					propertyChangedCallback: OnLeftChanged,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+
+		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert)]
+		public static DependencyProperty LeftProperty { get ; } = CreateLeftProperty();
 
 		private static void OnLeftChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -60,26 +49,13 @@ namespace Windows.UI.Xaml.Controls
 		#region Top
 
 		public static double GetTop(DependencyObject obj)
-		{
-			return (double)obj.GetValue(TopProperty);
-		}
+			=> GetTopValue(obj);
 
 		public static void SetTop(DependencyObject obj, double value)
-		{
-			obj.SetValue(TopProperty, value);
-		}
+			=> SetTopValue(obj, value);
 
-		public static readonly DependencyProperty TopProperty =
-			DependencyProperty.RegisterAttached(
-				"Top", 
-				typeof(double), 
-				typeof(Canvas), 
-				new FrameworkPropertyMetadata(
-					defaultValue: 0d,
-					propertyChangedCallback: OnTopChanged,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert)]
+		public static DependencyProperty TopProperty { get ; } = CreateTopProperty();
 
 		private static void OnTopChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -98,26 +74,13 @@ namespace Windows.UI.Xaml.Controls
 		#region ZIndex
 
 		public static double GetZIndex(DependencyObject obj)
-		{
-			return (double)obj.GetValue(ZIndexProperty);
-		}
+			=> GetZIndexValue(obj);
 
 		public static void SetZIndex(DependencyObject obj, double value)
-		{
-			obj.SetValue(ZIndexProperty, value);
-		}
+			=> SetZIndexValue(obj, value);
 
-		public static readonly DependencyProperty ZIndexProperty =
-			DependencyProperty.RegisterAttached(
-				"ZIndex",
-				typeof(double), 
-				typeof(Canvas), 
-				new FrameworkPropertyMetadata(
-					defaultValue: 0d,
-					propertyChangedCallback: OnZIndexChanged,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert)]
+		public static DependencyProperty ZIndexProperty { get ; } = CreateZIndexProperty();
 
 		private static void OnZIndexChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

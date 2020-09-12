@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd src/SamplesApp/SamplesApp.Wasm
+pushd $GITPOD_REPO_ROOT/src/SamplesApp/SamplesApp.Wasm
 
 export NUGET_PACKAGES=/workspace/.nuget
 

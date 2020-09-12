@@ -172,5 +172,109 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			TakeScreenshot("Closed");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void ComboBoxTests_Disabled()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Disabled");
+
+			_app.WaitForElement(_app.Marked("DisabledComboBox"));
+			var disabledComboBox = _app.Marked("DisabledComboBox");
+
+			Assert.IsFalse(disabledComboBox.GetDependencyPropertyValue<bool>("IsEnabled"));
+
+			_app.WaitForElement(_app.Marked("HeaderContentPresenter"));
+			var headerContentPresenter = _app.Marked("HeaderContentPresenter");
+
+			Assert.AreEqual("Test Disabled ComboBox", headerContentPresenter.GetDependencyPropertyValue("Content"));
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ComboBoxTests_ToggleDisabled()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_ToggleDisabled");
+
+			_app.WaitForElement(_app.Marked("DisablingComboBox"));
+			var disablingComboBox = _app.Marked("DisablingComboBox");
+
+			TakeScreenshot("ComboBox Enabled");
+
+			_app.FastTap("ToggleDisabledButton");
+
+			_app.WaitForText("IsEnabledComboBox", "False");
+
+			Assert.IsFalse(disablingComboBox.GetDependencyPropertyValue<bool>("IsEnabled"));
+
+			_app.WaitForElement(_app.Marked("HeaderContentPresenter"));
+			var headerContentPresenter = _app.Marked("HeaderContentPresenter");
+
+			Assert.AreEqual("Test Toggle Disabled ComboBox", headerContentPresenter.GetDependencyPropertyValue("Content"));
+
+			TakeScreenshot("ComboBox Disabled");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void ComboBoxTests_PlaceholderText() => ComboBoxTests_PlaceholderText_Impl("TestBox", 4, combo =>
+		{
+			var implicitTextBlock = combo.Descendant().Marked("ContentPresenter").Child;
+			var text = implicitTextBlock.GetDependencyPropertyValue<string>("Text");
+
+			Assert.AreEqual("5", text, "item #4 (text: 5) should be now selected");
+		});
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void ComboBoxTests_PlaceholderText_With_ItemTemplate() => ComboBoxTests_PlaceholderText_Impl("TestBox2", 4, combo =>
+		{
+			var descendants = combo.Descendant().Marked("ContentPresenter").Descendant();
+			//<StackPanel Orientation="Horizontal"><!-- templateRoot -->
+			//	<Rectangle ... />
+			//	<TextBlock Text="Item:" />
+			//	<TextBlock Text="{Binding}" />
+			//</StackPanel>
+			var offset = 2; // skipping the ContentPresenter#0 and the StackPanel#1
+			var text1 = descendants.AtIndex(offset + 1).GetDependencyPropertyValue<string>("Text");
+			var text2 = descendants.AtIndex(offset + 2).GetDependencyPropertyValue<string>("Text");
+
+			Assert.AreEqual("Item:", text1, "item #4 should be now selected with ItemTemplate");
+			Assert.AreEqual("5", text2, "item #4 (value: 5) should be now selected with ItemTemplate");
+		});
+
+		public void ComboBoxTests_PlaceholderText_Impl(string targetName, int selectionIndex, Action<QueryEx> selectionValidation)
+		{
+			Run("SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_PlaceholderText");
+			_app.WaitForElement("sampleControl");
+
+			var testComboBox = _app.Marked(targetName);
+			var resetButton = _app.Marked("ResetButton");
+
+			// check initial value
+			var placeholderTextBlock = testComboBox.Descendant().Marked("PlaceholderTextBlock");
+			var expectedPlaceholderText = testComboBox.GetDependencyPropertyValue<string>("PlaceholderText");
+			var actualPlaceholderText = placeholderTextBlock.GetDependencyPropertyValue<string>("Text");
+			Assert.AreEqual(expectedPlaceholderText, actualPlaceholderText, "PlaceholderText should be shown prior to selection");
+
+			// open combobox flyout
+			testComboBox.FastTap();
+			var popupBorder = _app.Marked("PopupBorder");
+			_app.WaitForElement(popupBorder);
+
+			// select item at {selectionIndex}
+			var item5 = popupBorder.Descendant().WithClass("ComboBoxItem").AtIndex(selectionIndex);
+			item5.FastTap();
+			_app.WaitForDependencyPropertyValue<int>(testComboBox, "SelectedIndex", selectionIndex);
+			selectionValidation(testComboBox);
+
+			// clear selection
+			resetButton.FastTap();
+			_app.WaitForDependencyPropertyValue<int>(testComboBox, "SelectedIndex", -1);
+			actualPlaceholderText = placeholderTextBlock.GetDependencyPropertyValue<string>("Text");
+			Assert.AreEqual(expectedPlaceholderText, actualPlaceholderText, "PlaceholderText should be shown again when the selection is cleared");
+		}
 	}
 }

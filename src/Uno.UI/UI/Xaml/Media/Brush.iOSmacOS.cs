@@ -19,9 +19,8 @@ namespace Windows.UI.Xaml.Media
 	// iOS partial for SolidColorBrush
 	public partial class Brush
 	{
-		internal static IDisposable AssignAndObserveBrush(Brush b, Action<CGColor> colorSetter)
+		internal static IDisposable AssignAndObserveBrush(Brush b, Action<CGColor> colorSetter, Action imageBrushCallback = null)
 		{
-
 			if (b is SolidColorBrush colorBrush)
 			{
 				var disposables = new CompositeDisposable(2);
@@ -66,6 +65,23 @@ namespace Windows.UI.Xaml.Media
 				imageBrush.ImageChanged += ImageChanged;
 
 				return Disposable.Create(() => imageBrush.ImageChanged -= ImageChanged);
+			}
+			else if (b is AcrylicBrush acrylicBrush)
+			{
+				var disposables = new CompositeDisposable(2);
+				colorSetter(acrylicBrush.FallbackColorWithOpacity);
+
+				acrylicBrush.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.FallbackColorProperty,
+					(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
+					.DisposeWith(disposables);
+
+				acrylicBrush.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.OpacityProperty,
+					(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
+					.DisposeWith(disposables);
+
+				return disposables;
 			}
 			else
 			{

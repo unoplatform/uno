@@ -10,6 +10,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public FlyoutPresenter()
 		{
+			DefaultStyleKey = typeof(FlyoutPresenter);
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)

@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Loaded += (s, e) => InitializeTemplate();
 			Unloaded += (s, e) => DisposeRegistrations();
 
-			DefaultStyleKey = this;
+			SetDefaultStyleKey(this);
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer()

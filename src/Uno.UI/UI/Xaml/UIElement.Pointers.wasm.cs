@@ -20,32 +20,13 @@ namespace Windows.UI.Xaml
 		// https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
 		// https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent
 
-		private static readonly Dictionary<RoutedEvent, (string domEventName, RawEventHandler handler)> _pointerHandlers
-			= new Dictionary<RoutedEvent, (string, RawEventHandler)>
-			{
-				// Note: we use 'pointerenter' and 'pointerleave' which are not bubbling natively
-				//		 as on UWP, even if the event are RoutedEvents, PointerEntered and PointerExited
-				//		 are routed only in some particular cases (entering at once on multiple controls),
-				//		 it's easier to handle this in managed code.
-				{PointerEnteredEvent, ("pointerenter", DispatchNativePointerEnter)},
-				{PointerExitedEvent, ("pointerleave", DispatchNativePointerLeave)},
-				{PointerPressedEvent, ("pointerdown", DispatchNativePointerDown)},
-				{PointerReleasedEvent, ("pointerup", DispatchNativePointerUp)},
-				{PointerMovedEvent, ("pointermove", DispatchNativePointerMove)},
-				{PointerCanceledEvent, ("pointercancel", DispatchNativePointerCancel)}, //https://www.w3.org/TR/pointerevents/#the-pointercancel-event
-				{PointerWheelChangedEvent, ("wheel", DispatchNativePointerWheel)}
-			};
-
 		#region Native event registration handling
 		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer)
 		{
 			// When a gesture recognizer is initialized, we subscribe to pointer events in order to feed it.
-			// Note: We subscribe to * all * pointer events in order to maintain a logical internal state of pointers over / press / capture
-
-			foreach (var pointerEvent in _pointerHandlers.Keys)
-			{
-				AddPointerHandlerCore(pointerEvent);
-			}
+			// Note: We register to Move, so it will also register Enter, Exited, Pressed, Released and Cancel.
+			//		 Gesture recognizer does not needs CaptureLost nor Wheel events.
+			AddPointerHandler(PointerMovedEvent, 1, default, default);
 		}
 
 		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
@@ -59,43 +40,65 @@ namespace Windows.UI.Xaml
 			// before subscribing to other pointer events.
 			if (!_registeredRoutedEvents.HasFlag(RoutedEventFlag.PointerEntered))
 			{
-				AddPointerHandlerCore(PointerEnteredEvent);
-				AddPointerHandlerCore(PointerExitedEvent);
-				AddPointerHandlerCore(PointerPressedEvent);
-				AddPointerHandlerCore(PointerReleasedEvent);
+				WindowManagerInterop.RegisterPointerEventsOnView(HtmlId);
+
+				_registeredRoutedEvents |=
+					  RoutedEventFlag.PointerEntered
+					| RoutedEventFlag.PointerExited
+					| RoutedEventFlag.PointerPressed
+					| RoutedEventFlag.PointerReleased
+					| RoutedEventFlag.PointerCanceled;
+
+				// Note: we use 'pointerenter' and 'pointerleave' which are not bubbling natively
+				//		 as on UWP, even if the event are RoutedEvents, PointerEntered and PointerExited
+				//		 are routed only in some particular cases (entering at once on multiple controls),
+				//		 it's easier to handle this in managed code.
+				RegisterEventHandler("pointerenter", (RawEventHandler)DispatchNativePointerEnter);
+				RegisterEventHandler("pointerleave", (RawEventHandler)DispatchNativePointerLeave);
+				RegisterEventHandler("pointerdown", (RawEventHandler)DispatchNativePointerDown);
+				RegisterEventHandler("pointerup", (RawEventHandler)DispatchNativePointerUp);
+				RegisterEventHandler("pointercancel", (RawEventHandler)DispatchNativePointerCancel); //https://www.w3.org/TR/pointerevents/#the-pointercancel-event
 			}
 
-			AddPointerHandlerCore(routedEvent);
-		}
-
-		private void AddPointerHandlerCore(RoutedEvent routedEvent)
-		{
-			if (_registeredRoutedEvents.HasFlag(routedEvent.Flag))
+			switch (routedEvent.Flag)
 			{
-				return;
+				case RoutedEventFlag.PointerEntered:
+				case RoutedEventFlag.PointerExited:
+				case RoutedEventFlag.PointerPressed:
+				case RoutedEventFlag.PointerReleased:
+				case RoutedEventFlag.PointerCanceled:
+					// All event above are automatically subscribed
+					break;
+
+				case RoutedEventFlag.PointerMoved:
+					_registeredRoutedEvents |= RoutedEventFlag.PointerMoved;
+					RegisterEventHandler(
+						"pointermove",
+						handler: (RawEventHandler)DispatchNativePointerMove,
+						onCapturePhase: false,
+						eventExtractor: HtmlEventExtractor.PointerEventExtractor
+					);
+					break;
+
+				case RoutedEventFlag.PointerCaptureLost:
+					// No native registration: Captures are handled in managed code only
+					_registeredRoutedEvents |= routedEvent.Flag;
+					break;
+
+				case RoutedEventFlag.PointerWheelChanged:
+					_registeredRoutedEvents |= RoutedEventFlag.PointerMoved;
+					RegisterEventHandler(
+						"wheel",
+						handler: (RawEventHandler)DispatchNativePointerWheel,
+						onCapturePhase: false,
+						eventExtractor: HtmlEventExtractor.PointerEventExtractor
+					);
+					break;
+
+				default:
+					Application.Current.RaiseRecoverableUnhandledException(new NotImplementedException($"Pointer event {routedEvent.Name} is not supported on this platform"));
+					break;
 			}
-
-			if (routedEvent == PointerCaptureLostEvent)
-			{
-				// Captures are handled in managed code only
-				_registeredRoutedEvents |= routedEvent.Flag;
-				return;
-			}
-
-			if (!_pointerHandlers.TryGetValue(routedEvent, out var evt))
-			{
-				Application.Current.RaiseRecoverableUnhandledException(new NotImplementedException($"Pointer event {routedEvent.Name} is not supported on this platform"));
-				return;
-			}
-
-			_registeredRoutedEvents |= routedEvent.Flag;
-
-			RegisterEventHandler(
-				evt.domEventName,
-				handler: evt.handler,
-				onCapturePhase: false,
-				eventExtractor: HtmlEventExtractor.PointerEventExtractor
-			);
 		}
 		#endregion
 
@@ -159,7 +162,7 @@ namespace Windows.UI.Xaml
 			}
 
 			args = new NativePointerEventArgs { 
-				pointerId = uint.Parse(parts[0], CultureInfo.InvariantCulture),
+				pointerId = double.Parse(parts[0], CultureInfo.InvariantCulture), // On Safari for iOS, the ID might be negative!
 				x = double.Parse(parts[1], CultureInfo.InvariantCulture),
 				y = double.Parse(parts[2], CultureInfo.InvariantCulture),
 				ctrl = parts[3] == "1",
@@ -183,6 +186,7 @@ namespace Windows.UI.Xaml
 			(bool isHorizontalWheel, double delta) wheel = default,
 			bool canBubble = true)
 		{
+			var pointerId = (uint)args.pointerId;
 			var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
 			var position = new Point(args.x, args.y);
 			var pointerType = ConvertPointerTypeString(args.typeStr);
@@ -192,10 +196,10 @@ namespace Windows.UI.Xaml
 
 			return new PointerRoutedEventArgs(
 				args.timestamp,
-				args.pointerId,
+				pointerId,
 				pointerType,
 				position,
-				isInContact ?? ((UIElement)snd).IsPressed(args.pointerId),
+				isInContact ?? ((UIElement)snd).IsPressed(pointerId),
 				(WindowManagerInterop.HtmlPointerButtonsState)args.buttons,
 				(WindowManagerInterop.HtmlPointerButtonUpdate)args.buttonUpdate,
 				keyModifiers,
@@ -291,7 +295,7 @@ namespace Windows.UI.Xaml
 		/// <remarks>
 		/// This property should never be directly set, and its value should always be calculated through coercion (see <see cref="CoerceHitTestVisibility(DependencyObject, object, bool)"/>.
 		/// </remarks>
-		private static readonly DependencyProperty HitTestVisibilityProperty =
+		private static DependencyProperty HitTestVisibilityProperty { get ; } =
 			DependencyProperty.Register(
 				"HitTestVisibility",
 				typeof(HitTestVisibility),
@@ -374,7 +378,7 @@ namespace Windows.UI.Xaml
 		// TODO: This should be marshaled instead of being parsed! https://github.com/unoplatform/uno/issues/2116
 		private struct NativePointerEventArgs
 		{
-			public uint pointerId;
+			public double pointerId; // Warning: This is a Number in JS, and it might be negative on safari for iOS
 			public double x;
 			public double y;
 			public bool ctrl;

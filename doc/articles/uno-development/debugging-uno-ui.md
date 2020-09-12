@@ -8,11 +8,11 @@ Prerequisites:
     - `Visual Studio extensions development` (for the VSIX projects)
     - `ASP.NET and Web Development`
     - `.NET Core cross-platform development`
-    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.14393 (or above or equal to `TargetPlatformVersion` line [in this file](/src/Uno.CrossTargetting.props))
+    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.14393 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
 - Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
 
 ### Building Uno.UI for all available targets
-* Open the [Uno.UI.sln](/src/Uno.UI.sln)
+* Open the [Uno.UI.sln](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.sln)
 * Select the `Uno.UI` project
 * Build
 
@@ -23,7 +23,7 @@ To enable faster development, it's possible to use the [Visual Studio Solution F
 
 For instance, if you want to debug an iOS feature:
 - Make sure the `Uno.UI.sln` solution is not opened in Visual Studio.
-- Make a copy of the [src/crosstargeting_override.props.sample](/src/crosstargeting_override.props.sample) file to `src/crosstargeting_override.props`
+- Make a copy of the [src/crosstargeting_override.props.sample](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file to `src/crosstargeting_override.props`
 - In this new file, uncomment the `UnoTargetFrameworkOverride` line and set its value to `xamarinios10`
 - Open the `Uno.UI-iOS-only.slnf` solution filter (either via the VS folder view, or the Windows explorer)
 - Build
@@ -40,16 +40,16 @@ Make sure **Enable source link support** check box is checked in **Tools** / **O
 / **Debugging** / **General** properties page.
 
 ## Updating the Nuget packages used by the Uno.UI solution
-The versions used are centralized in the [Directory.Build.targets](/src/Directory.Build.targets) file, and all the
+The versions used are centralized in the [Directory.Build.targets](https://github.com/unoplatform/uno/blob/master/src/Directory.Build.targets) file, and all the
 locations where `<PackageReference />` are used.
 
-When updating the versions of nuget packages, make sure to update the [Uno.UI.nuspec](/build/Uno.UI.nuspec) file.
+When updating the versions of nuget packages, make sure to update all the .nuspec files in the [Build folder](https://github.com/unoplatform/uno/tree/master/build).
 
 ## Debugging Uno.UI
 
 To debug Uno.UI inside of an existing project, the simplest way (until Microsoft provides a better way to avoid overriding the global cache) is to :
 * Install a published `Uno.UI` package in a project you want to debug, taking note of the version number.
-* Rename [crosstargeting_override.props.sample](/src/crosstargeting_override.props.sample) to `crosstargeting_override.props`
+* Rename [crosstargeting_override.props.sample](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) to `crosstargeting_override.props`
 * Uncomment the `UnoNugetOverrideVersion` node
 * Change the version number to the package you installed at the first step
 * Build your solution.
@@ -198,3 +198,22 @@ grid.Children.Add(myItem);
 ```
 
 For Xamarin.iOS specifically, see [this article about performance tuning](https://docs.microsoft.com/en-us/xamarin/ios/deploy-test/performance).
+
+## Converting the source tree to WinUI
+
+The current Uno source tree is based on UWP, and the CI uses a specific step to generate the WinUI 3.0 compatible API set, and the associated packages.
+
+The conversion process is done as follows, from a clean repository:
+- The `Uno.WinUIRevert` is removing and moving folders from the UWP structure to adjust to the WinUI structure
+- The `Uno.UWPSyncGenerator` is run to regenerate the whole WinRT/WinUI 3.0 API set
+- A set of nuspec conversions are performed in `build\Uno.UI.Build.csproj` in the `BuildNuGetPackage` target
+
+To ease the adjustments when conversion issues arise:
+- The `UNO_UWP_BUILD` msbuild variable is set to `true` when the tree is "UWP" mode, and undefined when the tree is in WinUI mode.
+- The `HAS_UNO_WINUI` C# constant is defined when the tree is built in WinUI mode.
+
+The conversion process can be run locally as follows:
+- cd `uno-repo\build`
+- `convert-sourcetree-to-winui.cmd`
+
+You'll need to ensure that the `crosstargeting_override.props` file is not defining `UnoTargetFrameworkOverride` otherwise the UWPSyncGenerator will generate an invalid API set.

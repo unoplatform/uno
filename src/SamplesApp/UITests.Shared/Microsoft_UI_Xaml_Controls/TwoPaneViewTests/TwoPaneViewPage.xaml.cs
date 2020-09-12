@@ -21,7 +21,7 @@ using DisplayRegionHelperTestApi = Microsoft.UI.Xaml.Controls.DisplayRegionHelpe
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 {
-	[SampleControlInfo("TwoPaneView", "MUX_Test")]
+	[Sample("TwoPaneView", "WinUI", Name="MUX_Test")]
 	public sealed partial class TwoPaneViewPage : Page
     {
         // Need to be the same as c_defaultMinWideModeWidth/c_defaultMinTallModeHeight in TwoPaneViewFactory.cpp
@@ -34,7 +34,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
         private const double c_simulatedMiddle = 12.0;
 
         // Need to be the same as c_controlMargin in TwoPaneViewTests.cs
-        private Thickness c_controlMargin = new Thickness(40, 10, 30, 20);
+        private Thickness c_controlMargin = ThicknessHelper.FromLengths(40, 10, 30, 20);
 
         public TwoPaneViewPage()
         {

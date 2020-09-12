@@ -67,5 +67,12 @@ namespace Windows.UI.Xaml
 		public static bool HasWeakStorage(this FrameworkPropertyMetadataOptions options)
 			=> (options & FrameworkPropertyMetadataOptions.WeakStorage) != 0;
 
+		/// <summary>
+		/// Defines the default flags for a FrameworkPropertyMetadata if not explicitly opt-out (cf. <see cref="FrameworkPropertyMetadataOptions.Default"/>).
+		/// </summary>
+		internal static FrameworkPropertyMetadataOptions WithDefault(this FrameworkPropertyMetadataOptions options)
+			=> (options & (FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.ValueInheritsDataContext)) == default
+				? options | FrameworkPropertyMetadataOptions.ValueInheritsDataContext // == FrameworkPropertyMetadataOptions.Default
+				: options;
 	}
 }

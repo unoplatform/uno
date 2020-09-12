@@ -8,12 +8,12 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter
 	{
-		internal void OnMinZoomFactorChanged(float newValue)
+		public void OnMinZoomFactorChanged(float newValue)
 		{
 			throw new NotImplementedException();
 		}
 
-		internal void OnMaxZoomFactorChanged(float newValue)
+		public void OnMaxZoomFactorChanged(float newValue)
 		{
 			throw new NotImplementedException();
 		}

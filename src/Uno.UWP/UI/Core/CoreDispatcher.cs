@@ -1,4 +1,6 @@
-﻿using Uno.Diagnostics.Eventing;
+﻿#nullable enable
+
+using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -7,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Uno.Logging;
-using Windows.UI.Composition;
 
 namespace Windows.UI.Core
 {
@@ -81,9 +82,9 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Backs the CompositionTarget.Rendering event for WebAssembly.
 		/// </summary>
-		internal event EventHandler<object> Rendering;
+		internal event EventHandler<object>? Rendering;
 		internal int RenderEventThrottle;
-		internal Func<TimeSpan, object> RenderingEventArgsGenerator { get; set; }
+		internal Func<TimeSpan, object>? RenderingEventArgsGenerator { get; set; }
 
 		private readonly DateTimeOffset _startTime;
 
@@ -145,7 +146,8 @@ namespace Windows.UI.Core
 		/// <returns>An async operation for the scheduled handler.</returns>
 		public UIAsyncOperation RunAsync(CoreDispatcherPriority priority, DispatchedHandler handler)
 		{
-			return EnqueueOperation(priority, handler);
+			EnqueueOperation(priority, handler, out var operation);
+			return operation;
 		}
 
 		/// <summary>
@@ -159,11 +161,26 @@ namespace Windows.UI.Core
 		{
 			CoreDispatcher.CheckThreadAccess();
 
-			UIAsyncOperation operation = null;
+			UIAsyncOperation? operation = null;
 
-			DispatchedHandler nonCancellableHandler = () => handler(operation.Token);
+			void nonCancellableHandler()
+			{
+				if (operation != null)
+				{
+					handler(operation.Token);
+				}
+				else
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Error("Invalid operation");
+					}
+				}
+			}
 
-			return operation = EnqueueOperation(priority, nonCancellableHandler);
+			EnqueueOperation(priority, nonCancellableHandler, out operation);
+
+			return operation;
 		}
 
 		/// <summary>
@@ -173,15 +190,18 @@ namespace Windows.UI.Core
 		/// <returns>An async operation for the scheduled handler.</returns>
 		public UIAsyncOperation RunIdleAsync(IdleDispatchedHandler handler)
 		{
-			return EnqueueOperation(
+			EnqueueOperation(
 				CoreDispatcherPriority.Idle,
-				() => handler(_idleDispatchedHandlerArgs)
+				() => handler(_idleDispatchedHandlerArgs),
+				out var operation
 			);
+
+			return operation;
 		}
 
-		private UIAsyncOperation EnqueueOperation(CoreDispatcherPriority priority, DispatchedHandler handler)
+		private void EnqueueOperation(CoreDispatcherPriority priority, DispatchedHandler handler, out UIAsyncOperation operation)
 		{
-			EventActivity scheduleActivity = null;
+			EventActivity? scheduleActivity = null;
 			if (_trace.IsEnabled)
 			{
 				scheduleActivity = _trace.WriteEventActivity(
@@ -194,7 +214,7 @@ namespace Windows.UI.Core
 				);
 			}
 
-			var operation = new UIAsyncOperation(handler, scheduleActivity);
+			operation = new UIAsyncOperation(handler, scheduleActivity);
 
 			if (priority < CoreDispatcherPriority.Idle || priority > CoreDispatcherPriority.High)
 			{
@@ -215,8 +235,6 @@ namespace Windows.UI.Core
 			{
 				EnqueueNative();
 			}
-
-			return operation;
 		}
 
 		private Queue<UIAsyncOperation> GetQueue(CoreDispatcherPriority priority)
@@ -241,9 +259,12 @@ namespace Windows.UI.Core
 
 		private void DispatchItems()
 		{
-			UIAsyncOperation operation = null;
+			UIAsyncOperation? operation = null;
 
-			Rendering?.Invoke(null, RenderingEventArgsGenerator(DateTimeOffset.UtcNow - _startTime));
+			if (Rendering != null && RenderingEventArgsGenerator != null)
+			{
+				Rendering.Invoke(null, RenderingEventArgsGenerator.Invoke(DateTimeOffset.UtcNow - _startTime));
+			}
 
 			var didEnqueue = false;
 			for (var i = 3; i >= 0; i--)
@@ -271,7 +292,7 @@ namespace Windows.UI.Core
 			{
 				if (!operation.IsCancelled)
 				{
-					IDisposable runActivity = null;
+					IDisposable? runActivity = null;
 
 					try
 					{

@@ -4,6 +4,9 @@ using Windows.UI.Xaml.Data;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace UITests.Shared.Windows_UI_Xaml_Input.Models
 {
 	[Bindable]

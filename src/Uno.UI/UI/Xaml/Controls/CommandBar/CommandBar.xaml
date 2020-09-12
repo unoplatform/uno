@@ -1473,7 +1473,10 @@
 
 	<!-- Backward compatibility naming -->
 	<Style x:Key="XamlCommandBar"
-				   TargetType="AppBarButton"
-				   BasedOn="{StaticResource XamlDefaultCommandBar}" />
+				   TargetType="CommandBar"
+		   BasedOn="{StaticResource XamlDefaultCommandBar}" />
+
+	<Style TargetType="CommandBar"
+		   BasedOn="{StaticResource XamlDefaultCommandBar}" />
 
 </ResourceDictionary>

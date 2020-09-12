@@ -17,7 +17,7 @@ using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public abstract partial class Layouter
+	abstract partial class Layouter
 	{
 		public IEnumerable<View> GetChildren()
 		{

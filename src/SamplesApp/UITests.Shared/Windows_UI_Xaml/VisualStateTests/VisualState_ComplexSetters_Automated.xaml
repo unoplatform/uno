@@ -11,30 +11,30 @@
 		<SolidColorBrush x:Key="myStaticResource" Color="Purple" />
 	</UserControl.Resources>
 
-	<VisualStateManager.VisualStateGroups>
-		<VisualStateGroup x:Name="CommonStates">
-			<VisualState x:Name="DefaultState"/>
-
-			<VisualState x:Name="State01">
-				<VisualState.Setters>
-					<!-- Element name binding -->
-					<Setter Target="border01_bound.Background" Value="{Binding Background, ElementName=border01}"/>
-					
-					<!-- Static resource -->
-					<Setter Target="border02.Background" Value="{StaticResource myStaticResource}"/>
-
-					<Setter Target="border03.Background">
-						<Setter.Value>
-							<SolidColorBrush Color="Orange" />
-						</Setter.Value>
-					</Setter>
-					
-				</VisualState.Setters>
-			</VisualState>
-		</VisualStateGroup>
-	</VisualStateManager.VisualStateGroups>
-
 	<Grid>
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup x:Name="CommonStates">
+				<VisualState x:Name="DefaultState"/>
+
+				<VisualState x:Name="State01">
+					<VisualState.Setters>
+						<!-- Element name binding -->
+						<Setter Target="border01_bound.Background" Value="{Binding Background, ElementName=border01}"/>
+					
+						<!-- Static resource -->
+						<Setter Target="border02.Background" Value="{StaticResource myStaticResource}"/>
+
+						<Setter Target="border03.Background">
+							<Setter.Value>
+								<SolidColorBrush Color="Orange" />
+							</Setter.Value>
+						</Setter>
+					
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
+		
 		<StackPanel>
 			<Button x:Name="changeState" Content="Change State" Click="OnClick" />
 			<Border x:Name="border01" Background="Red" />

@@ -8,25 +8,25 @@
 	
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestAdapter">
-			<Version>2.1.0</Version>
+			<Version>2.1.2</Version>
 		</PackageReference>
 		<PackageReference Include="MSTest.TestFramework">
 			<Version>2.1.1</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis">
-			<Version>1.2.0.0</Version>
+			<Version>3.3.1</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.Common">
-			<Version>1.2.0.0</Version>
+			<Version>3.3.1</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-			<Version>1.2.0.0</Version>
+			<Version>3.3.1</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-			<Version>1.2.0.0</Version>
+			<Version>3.3.1</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-			<Version>1.2.0.0</Version>
+			<Version>3.3.1</Version>
 		</PackageReference>
 		<PackageReference Include="RoslynTester">
 			<Version>1.6.3</Version>

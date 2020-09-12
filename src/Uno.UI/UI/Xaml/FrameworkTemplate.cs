@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Uno.Extensions;
+using Uno.UI;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -21,6 +22,10 @@ namespace Windows.UI.Xaml
 
 		private readonly Func<View> _viewFactory;
 		private readonly int _hashCode;
+		/// <summary>
+		/// The scope at the time of the template's creation, which will be used when its contents are materialized.
+		/// </summary>
+		private readonly XamlScope _xamlScope;
 
 		protected FrameworkTemplate() { }
 
@@ -33,6 +38,8 @@ namespace Windows.UI.Xaml
 			// Compute the hash for this template once, it will be used a lot
 			// in the ControlPool's internal dictionary.
 			_hashCode = (factory.Target?.GetHashCode() ?? 0) ^ factory.Method.GetHashCode();
+
+			_xamlScope = ResourceResolver.CurrentScope;
 		}
 
 		public static implicit operator Func<View>(FrameworkTemplate obj)
@@ -49,10 +56,15 @@ namespace Windows.UI.Xaml
 		/// instance that has been detached from its parent may be reused at any time.
 		/// If a control needs to be the owner of a created instance, it needs to use <see cref="LoadContent"/>.
 		/// </remarks>
-		internal View LoadContentCached()
-		{
-			return FrameworkTemplatePool.Instance.DequeueTemplate(this);
-		}
+		internal View LoadContentCached() => FrameworkTemplatePool.Instance.DequeueTemplate(this);
+
+		/// <summary>
+		/// Manually return an unused template root created by <see cref="LoadContentCached"/> to the pool.
+		/// </summary>
+		/// <remarks>
+		/// This is only used in specialized contexts. Normally the template reuse will be automatically handled by the pool.
+		/// </remarks>
+		internal void ReleaseTemplateRoot(View templateRoot) => FrameworkTemplatePool.Instance.ReleaseTemplateRoot(templateRoot, this);
 
 		/// <summary>
 		/// Creates a new instance of the current template.
@@ -60,7 +72,22 @@ namespace Windows.UI.Xaml
 		/// <returns>A new instance of the template</returns>
 		public View LoadContent()
 		{
-			return _viewFactory();
+			View view = null;
+#if !HAS_EXPENSIVE_TRYFINALLY
+			try
+#endif
+			{
+				ResourceResolver.PushNewScope(_xamlScope);
+				view = _viewFactory();
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY
+			finally
+#endif
+			{
+				ResourceResolver.PopScope();
+			}
+			return view;
+
 		}
 
 		public override bool Equals(object obj)

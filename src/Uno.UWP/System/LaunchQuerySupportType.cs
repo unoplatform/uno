@@ -1,5 +1,4 @@
-﻿#if __ANDROID__ || __IOS__
-namespace Windows.System
+﻿namespace Windows.System
 {
 	public enum LaunchQuerySupportType
 	{
@@ -7,4 +6,3 @@ namespace Windows.System
 		UriForResults,
 	}
 }
-#endif

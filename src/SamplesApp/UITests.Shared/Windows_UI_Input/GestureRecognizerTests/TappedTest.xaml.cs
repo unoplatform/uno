@@ -21,7 +21,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 			var target = (FrameworkElement)sender;
 			var position = e.GetPosition(target).LogicalToPhysicalPixels();
 
-			LastTapped.Text = $"{target.Name}@{position.X:F2},{position.Y:F2}";
+			LastTapped.Text = FormattableString.Invariant($"{target.Name}@{position.X:F2},{position.Y:F2}");
 		}
 
 		private void ItemTapped(object sender, TappedRoutedEventArgs e)
@@ -29,7 +29,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 			var target = (FrameworkElement)sender;
 			var position = e.GetPosition(target).LogicalToPhysicalPixels();
 
-			LastTapped.Text = $"Item_{target.DataContext}@{position.X:F2},{position.Y:F2}";
+			LastTapped.Text = FormattableString.Invariant($"Item_{target.DataContext}@{position.X:F2},{position.Y:F2}");
 		}
 	}
 }

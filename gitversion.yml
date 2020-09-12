@@ -1,6 +1,6 @@
 assembly-versioning-scheme: MajorMinorPatch
 mode: Mainline
-next-version: 2.0.512
+next-version: 3.0
 
 branches:
   master:

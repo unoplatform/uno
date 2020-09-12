@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NETFX_CORE
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,6 @@ namespace Uno.UI.Tests.ListViewBaseTests
 	[TestClass]
 	public class Given_ListViewBase
 	{
-#if !NETFX_CORE
 		// Make sure to have a valid custom theme set, so it won't try to read it from the Application.Current(<<== null).RequestedTheme
 		[TestInitialize] public void Init() => global::Uno.UI.ApplicationHelper.RequestedCustomTheme = "HighContrast";
 
@@ -38,6 +38,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 					new Border { Name = "b2" }
 				}
 			};
+
+			SUT.ApplyTemplate();
 
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
@@ -87,6 +89,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				}
 			);
 
+			SUT.ApplyTemplate();
+
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
 			Assert.IsNotNull(panel.FindName("b1"));
@@ -127,11 +131,11 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			};
 
 			SUT.ItemsSource = new int[] { 1, 2, 3 };
+
 			SUT.OnItemClicked(0);
 
 			SUT.ItemsSource = null;
 		}
-#endif
 
 		[TestMethod]
 		public void When_SelectionChanged_Changes_Selection()
@@ -206,6 +210,42 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		}
 
 		[TestMethod]
+		public void When_SelectionChanged_Changes_Order()
+		{
+			var list = new ListView()
+			{
+				Style = null,
+				ItemContainerStyle = BuildBasicContainerStyle(),
+			};
+			list.ItemsSource = Enumerable.Range(0, 20);
+			var callbackCount = 0;
+
+			list.SelectionChanged += OnSelectionChanged;
+			list.SelectedItem = 7;
+
+			using (new AssertionScope())
+			{
+				list.SelectedItem.Should().Be(7);
+				list.SelectedIndex.Should().Be(7);
+				list.SelectedValue.Should().Be(7);
+				callbackCount.Should().Be(1); //Unlike eg TextBox.TextChanged there is no guard on reentrant modification
+			}
+
+			void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+			{
+				callbackCount++;
+
+				using (new AssertionScope())
+				{
+					list.SelectedItem.Should().Be(7);
+					list.SelectedIndex.Should().Be(7);
+					list.SelectedValue.Should().Be(7);
+					callbackCount.Should().Be(1);
+				}
+			}
+		}
+
+		[TestMethod]
 		public void When_ViewModelSource_SelectionChanged_Changes_Selection()
 		{
 			var SUT = new ListView()
@@ -222,11 +262,15 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.IsNull(SUT.SelectedItem);
 			Assert.AreEqual(-1, SUT.SelectedIndex);
 
+			SUT.ForceLoaded();
+
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 			SUT.SelectionChanged += (s, e) => selectionChanged.Add(e);
+
 			SUT.SelectedItem = source[1];
 
 			Assert.AreEqual(1, SUT.SelectedIndex);
+			Assert.AreEqual(1, selectionChanged.Count);
 
 			if (SUT.ContainerFromIndex(1) is ListViewItem s1)
 			{
@@ -575,26 +619,157 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.AreEqual(0, selectionChanged[0].RemovedItems.Count);
 		}
 
-		private Style BuildBasicContainerStyle() =>
-			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
+		[TestMethod]
+		public void When_ContainerSet_Then_ContentShouldBeSet()
+		{
+			var SUT = new ListView()
 			{
-				Setters =  {
-					new Setter<ListViewItem>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new Grid
-							{
-								Children = {
-									new ContentPresenter()
-										.Apply(p => {
-											p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
-											p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
-										})
-								}
-							}
-						)
-					)
-				}
+				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					return tb;
+				}),
+				Template = new ControlTemplate(() => new ItemsPresenter()),
 			};
+
+			SUT.ForceLoaded();
+
+			var source = new[] {
+				"item 0",
+			};
+
+			SUT.ItemsSource = source;
+
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			var si = SUT.ContainerFromItem(source[0]) as SelectorItem;
+			Assert.IsNotNull(si);
+
+			var tb = si.FindFirstChild<TextBlock>();
+			Assert.AreEqual("item 0", tb?.Text);
+		}
+
+		[TestMethod]
+		public void When_IsItsOwnItemContainer_FromSource()
+		{
+			var SUT = new ListView()
+			{
+				Style = null,
+				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				Template = new ControlTemplate(() => new ItemsPresenter()),
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			SUT.ForceLoaded();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+				new ListViewItem(){ Content = "item 2" },
+				new ListViewItem(){ Content = "item 3" },
+				new ListViewItem(){ Content = "item 4" },
+			};
+
+			SUT.ItemsSource = source;
+
+			var si = SUT.ContainerFromItem(source[0]) as ListViewItem;
+			Assert.IsNotNull(si);
+			Assert.AreEqual("item 1", si.Content);
+		}
+
+		[TestMethod]
+		public void When_NoItemTemplate()
+		{
+			var SUT = new ListView()
+			{
+				Style = null,
+				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				ItemTemplate = null,
+				ItemTemplateSelector = null,
+				Template = new ControlTemplate(() => new ItemsPresenter()),
+			};
+
+			SUT.ForceLoaded();
+
+			var source = new[] {
+				"Item 1"
+			};
+
+			SUT.ItemsSource = source;
+
+			var si = SUT.ContainerFromItem(source[0]) as ListViewItem;
+			Assert.IsNotNull(si);
+			Assert.AreEqual("Item 1", si.Content);
+			var cp = si.FindFirstChild<ContentPresenter>();
+			Assert.IsInstanceOfType(cp.ContentTemplateRoot, typeof(ImplicitTextBlock));
+			Assert.AreEqual("Item 1", (cp.ContentTemplateRoot as TextBlock).Text);
+		}
+
+		[TestMethod]
+		public void When_IsItsOwnItemContainer_FromSource_With_DataTemplate()
+		{
+			var SUT = new ListView()
+			{
+				Style = null,
+				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					return tb;
+				}),
+				Template = new ControlTemplate(() => new ItemsPresenter()),
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			SUT.ForceLoaded();
+
+			var source = new object[] {
+				new ListViewItem(){ Content = "item 1" },
+				"item 2"
+			};
+
+			SUT.ItemsSource = source;
+
+			var si = SUT.ContainerFromItem(source[0]) as ListViewItem;
+			Assert.IsNotNull(si);
+			Assert.AreEqual("item 1", si.Content);
+			Assert.AreSame(si, source[0]);
+			Assert.IsFalse(si.IsGeneratedContainer);
+
+			var si2 = SUT.ContainerFromItem(source[1]) as ListViewItem;
+			Assert.IsNotNull(si2);
+			Assert.AreNotSame(si, source[1]);
+			Assert.AreEqual("item 2", si2.DataContext);
+			Assert.AreEqual("item 2", si2.Content);
+			Assert.IsTrue(si2.IsGeneratedContainer);
+		}
+
+		private Style BuildBasicContainerStyle() =>
+		new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
+		{
+			Setters =  {
+				new Setter<ListViewItem>("Template", t =>
+					t.Template = Funcs.Create(() =>
+						new Grid
+						{
+							Children = {
+								new ContentPresenter()
+									.Apply(p => {
+										p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
+										p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
+									})
+							}
+						}
+					)
+				)
+			}
+		};
 	}
 
 	public class MyModel
@@ -618,3 +793,4 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		}
 	}
 }
+#endif

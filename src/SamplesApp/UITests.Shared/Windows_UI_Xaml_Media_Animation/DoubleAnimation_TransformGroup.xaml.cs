@@ -94,7 +94,7 @@ namespace UITests.Windows_UI_Xaml_Media_Animation
 				{
 					From = property.from,
 					To = property.to,
-					Duration = _duration,
+					Duration = DurationHelper.FromTimeSpan(_duration),
 				};
 
 				Storyboard.SetTarget(animation, target);

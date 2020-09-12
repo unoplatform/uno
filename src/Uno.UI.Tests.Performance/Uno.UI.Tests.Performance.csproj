@@ -12,21 +12,21 @@
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>full</DebugType>
 		<Optimize>false</Optimize>
-		<DefineConstants>TRACE;DEBUG;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION;NET46</DefineConstants>
+		<DefineConstants>$(DefineConstants);TRACE;DEBUG;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION;NET46</DefineConstants>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>full</DebugType>
 		<Optimize>false</Optimize>
-		<DefineConstants>TRACE;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION</DefineConstants>
+		<DefineConstants>$(DefineConstants);TRACE;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="MSTest.TestAdapter">
-      <Version>2.1.0</Version>
+      <Version>2.1.2</Version>
     </PackageReference>
     <PackageReference Include="MSTest.TestFramework">
       <Version>2.1.1</Version>
@@ -35,7 +35,7 @@
       <Version>5.10.3</Version>
     </PackageReference>
     <PackageReference Include="Moq">
-      <Version>4.14.1</Version>
+      <Version>4.14.5</Version>
     </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
       <Version>1.7.0</Version>

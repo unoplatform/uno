@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml
 				Bounds = newBounds;
 
 				DispatchInvalidateMeasure();
-				RaiseSizeChanged(new WindowSizeChangedEventArgs(size));
+				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 
 				// Note that UWP raises the ApplicationView.VisibleBoundsChanged event
 				// *after* Window.SizeChanged.

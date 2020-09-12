@@ -19,7 +19,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
 
 namespace UITests.Shared.Windows_ApplicationModel.Email
 {

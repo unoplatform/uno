@@ -13,6 +13,8 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using System.Security.Cryptography;
 
+using ICommand = System.Windows.Input.ICommand;
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class MenuFlyoutItem : MenuFlyoutItemBase
@@ -149,6 +151,8 @@ namespace Windows.UI.Xaml.Controls
 			m_bIsNavigationAcceptOrGamepadAKeyDown = false;
 			m_shouldPerformActions = false;
 
+			DefaultStyleKey = typeof(MenuFlyoutItem);
+
 			Initialize();
 		}
 
@@ -257,7 +261,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Performs appropriate actions upon a mouse/keyboard invocation of a 
-		internal void Invoke()
+		internal virtual void Invoke()
 		{
 			RoutedEventArgs spArgs;
 			MenuFlyoutPresenter spParentMenuFlyoutPresenter;
@@ -498,7 +502,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -523,7 +527,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 

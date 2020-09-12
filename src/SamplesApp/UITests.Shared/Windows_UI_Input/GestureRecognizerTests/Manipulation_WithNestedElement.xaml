@@ -45,6 +45,7 @@
 				TextWrapping="Wrap"/>
 			<TextBlock
 				x:Name="_result"
+				MaxHeight="600"
 				TextWrapping="Wrap"/>
 		</StackPanel>
 	</Grid>

@@ -22,19 +22,19 @@ namespace UITests.Windows_UI_Xaml_Controls.UIElementCollectionTests
 				When_Insert_First.Children.Insert(0, new Border
 				{
 					Background = new SolidColorBrush(Color.FromArgb(0xff, 0xff, 0x00, 0x00)),
-					Margin = new Thickness(0),
+					Margin = ThicknessHelper.FromUniformLength(0),
 				});
 
 				When_Insert_Middle.Children.Insert(3, new Border
 				{
 					Background = new SolidColorBrush(Color.FromArgb(0xff, 0x00, 0x80, 0x00)),
-					Margin = new Thickness(30, 0, 30, 0),
+					Margin = ThicknessHelper.FromLengths(30, 0, 30, 0),
 				});
 
 				When_Insert_Last.Children.Add(new Border
 				{
 					Background = new SolidColorBrush(Color.FromArgb(0xff, 0xa0, 0x00, 0xc0)),
-					Margin = new Thickness(50, 0, 50, 0),
+					Margin = ThicknessHelper.FromLengths(50, 0, 50, 0),
 				});
 			};
 		}

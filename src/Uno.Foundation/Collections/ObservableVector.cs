@@ -70,8 +70,6 @@ namespace Windows.Foundation.Collections
 			{
 				RemoveAt(index);
 
-				RaiseVectorChanged(CollectionChange.ItemRemoved, index);
-
 				return true;
 			}
 			else

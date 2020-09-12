@@ -7,7 +7,6 @@ using Android.Util;
 using Android.Views;
 using Android.Graphics;
 using Android.Widget;
-using UIElement = Android.Views.View;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Uno.UI;
@@ -103,7 +102,7 @@ namespace Uno.UI.Controls
 				"IsEnabled",
 				typeof(bool),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(bool)true,
 					(s, e) => ((BindableDrawerLayout)s)?.OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
@@ -133,12 +132,12 @@ namespace Uno.UI.Controls
 			set { this.SetValue(IsLeftPaneEnabledProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsLeftPaneEnabledProperty =
+		public static DependencyProperty IsLeftPaneEnabledProperty { get ; } =
 			DependencyProperty.Register(
 				"IsLeftPaneEnabled",
 				typeof(bool),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(bool)true,
 					(s, e) => ((BindableDrawerLayout)s)?.OnLeftPaneIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue)
 				));
@@ -161,12 +160,12 @@ namespace Uno.UI.Controls
 			set { this.SetValue(IsRightPaneEnabledProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsRightPaneEnabledProperty =
+		public static DependencyProperty IsRightPaneEnabledProperty { get ; } =
 			DependencyProperty.Register(
 				"IsRightPaneEnabled",
 				typeof(bool),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(bool)true,
 					(s, e) => ((BindableDrawerLayout)s)?.OnRightPaneIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue)
 				));
@@ -195,7 +194,7 @@ namespace Uno.UI.Controls
 				"Content",
 				typeof(UIElement),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(UIElement)null,
 					(s, e) => ((BindableDrawerLayout)s)?.OnContentChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
 				)
@@ -233,7 +232,7 @@ namespace Uno.UI.Controls
 				"RightPane",
 				typeof(UIElement),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(UIElement)null,
 					(s, e) => ((BindableDrawerLayout)s)?.OnRightPaneChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
 				)
@@ -268,7 +267,7 @@ namespace Uno.UI.Controls
 				"RightPaneOpenLength",
 				typeof(double),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)0,
 					(s, e) => ((BindableDrawerLayout)s)?.OnRightPaneOpenLengthChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -294,7 +293,7 @@ namespace Uno.UI.Controls
 				"IsRightPaneOpen",
 				typeof(bool),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(bool)false,
 					(s, e) => ((BindableDrawerLayout)s)?.OnIsRightPaneOpenChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
@@ -327,7 +326,7 @@ namespace Uno.UI.Controls
 				"RightPaneBackground",
 				typeof(Brush),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(Brush)null,
 					(s, e) => ((BindableDrawerLayout)s)?.OnRightPaneBackgroundChanged((Brush)e.OldValue, (Brush)e.NewValue)
 				)
@@ -356,7 +355,7 @@ namespace Uno.UI.Controls
 				"LeftPane",
 				typeof(UIElement),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(UIElement)null,
 					(s, e) => ((BindableDrawerLayout)s)?.OnLeftPaneChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
 				)
@@ -391,7 +390,7 @@ namespace Uno.UI.Controls
 				"LeftPaneOpenLength",
 				typeof(double),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(double)0,
 					(s, e) => ((BindableDrawerLayout)s)?.OnLeftPaneOpenLengthChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -417,7 +416,7 @@ namespace Uno.UI.Controls
 				"IsLeftPaneOpen",
 				typeof(bool),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(bool)false,
 					(s, e) => ((BindableDrawerLayout)s)?.OnIsLeftPaneOpenChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
@@ -450,7 +449,7 @@ namespace Uno.UI.Controls
 				"LeftPaneBackground",
 				typeof(Brush),
 				typeof(BindableDrawerLayout),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(Brush)null,
 					(s, e) => ((BindableDrawerLayout)s)?.OnLeftPaneBackgroundChanged((Brush)e.OldValue, (Brush)e.NewValue)
 				)

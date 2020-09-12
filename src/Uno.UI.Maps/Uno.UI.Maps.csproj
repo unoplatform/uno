@@ -12,6 +12,8 @@
     <RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
     <Description>This package provides the ability for Uno Platform based apps to use the MapControl</Description>
     <Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+		
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Maps</PackageId>
   </PropertyGroup>
 	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -85,6 +87,12 @@
 	  <Page Update="themes\Generic.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+		<!-- Maps are not yet supported by WinUI 3.0 -->
+		<Page Remove="**\*.xaml" />
+		<Compile Remove="**\*.cs" />
 	</ItemGroup>
 
 </Project>

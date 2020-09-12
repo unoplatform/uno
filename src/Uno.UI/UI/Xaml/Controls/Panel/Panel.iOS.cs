@@ -69,10 +69,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				imgBrush.ImageChanged += OnBackgroundImageBrushChanged;
 			}
-			else
-			{
-				UpdateBackground();
-			}
+
+			UpdateBackground();
 		}
 
 		private void OnBackgroundImageBrushChanged(UIImage backgroundImage)
@@ -90,7 +88,10 @@ namespace Windows.UI.Xaml.Controls
 			// Checking for Window avoids re-creating the layer until it is actually used.
 			if (IsLoaded)
 			{
-				backgroundImage = backgroundImage ?? (Background as ImageBrush)?.ImageSource?.ImageData;
+				if (backgroundImage == null)
+				{
+					(Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImage);
+				}
 
 				_borderRenderer.UpdateLayer(
 					this,

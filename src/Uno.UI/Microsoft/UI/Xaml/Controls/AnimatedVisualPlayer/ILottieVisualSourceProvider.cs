@@ -1,7 +1,9 @@
 ﻿using System;
+
+// Keep this using in place until UWP support is dropped.
 using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer
+namespace Microsoft.UI.Xaml.Controls
 {
 	public interface ILottieVisualSourceProvider
 	{

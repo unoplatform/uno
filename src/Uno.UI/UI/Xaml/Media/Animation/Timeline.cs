@@ -54,8 +54,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(BeginTimeProperty, value);
 		}
 
-		public static readonly DependencyProperty BeginTimeProperty =
-			DependencyProperty.Register("BeginTime", typeof(TimeSpan?), typeof(Timeline), new PropertyMetadata(TimeSpan.Zero));
+		public static DependencyProperty BeginTimeProperty { get ; } =
+			DependencyProperty.Register("BeginTime", typeof(TimeSpan?), typeof(Timeline), new FrameworkPropertyMetadata(TimeSpan.Zero));
 
 		public Duration Duration
 		{
@@ -63,8 +63,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(DurationProperty, value);
 		}
 
-		public static readonly DependencyProperty DurationProperty =
-			DependencyProperty.Register("Duration", typeof(Duration), typeof(Timeline), new PropertyMetadata(new Duration()));
+		public static DependencyProperty DurationProperty { get ; } =
+			DependencyProperty.Register("Duration", typeof(Duration), typeof(Timeline), new FrameworkPropertyMetadata(Duration.Automatic));
 
 		public FillBehavior FillBehavior
 		{
@@ -72,8 +72,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(FillBehaviorProperty, value);
 		}
 
-		public static readonly DependencyProperty FillBehaviorProperty =
-			DependencyProperty.Register("FillBehavior", typeof(FillBehavior), typeof(Timeline), new PropertyMetadata(FillBehavior.HoldEnd));
+		public static DependencyProperty FillBehaviorProperty { get ; } =
+			DependencyProperty.Register("FillBehavior", typeof(FillBehavior), typeof(Timeline), new FrameworkPropertyMetadata(FillBehavior.HoldEnd));
 
 		public RepeatBehavior RepeatBehavior
 		{
@@ -81,15 +81,26 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(RepeatBehaviorProperty, value);
 		}
 
-		public static readonly DependencyProperty RepeatBehaviorProperty =
-			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new PropertyMetadata(new RepeatBehavior()));
+		public static DependencyProperty RepeatBehaviorProperty { get ; } =
+			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior()));
 
 
 		public event EventHandler<object> Completed;
 
-		protected void OnCompleted()
+		protected void OnCompleted() => Completed?.Invoke(this, null);
+
+		/// <summary>
+		/// Compute duration of the Timeline. Sometimes it's define by components.
+		/// </summary>
+		internal virtual TimeSpan GetCalculatedDuration()
 		{
-			Completed?.Invoke(this, null);
+			return Duration.Type switch
+			{
+				DurationType.Forever => TimeSpan.MaxValue,
+				DurationType.TimeSpan => Duration.TimeSpan,
+				DurationType.Automatic => TimeSpan.Zero, // this is overriden in xxxUsingKeyFrames implementations
+				_ => TimeSpan.Zero
+			};
 		}
 
 		/// <summary>
@@ -136,6 +147,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			subject.ElementInstanceChanged += handler;
 		}
 
+		private protected virtual void InitTarget() {}
+
 		/// <summary>
 		/// Path to the target property being animated.
 		/// </summary>
@@ -145,6 +158,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				if (_propertyInfo == null)
 				{
+					InitTarget();
 					var target = Target ?? GetTargetFromName();
 
 					_propertyInfo = new BindingPath(
@@ -168,7 +182,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (GetVisualParent() is FrameworkElement fe)
 			{
-				return fe.FindName(Storyboard.GetTargetName(this));
+				return fe.FindName(Storyboard.GetTargetName(this)) as DependencyObject;
 			}
 			else
 			{
@@ -248,49 +262,49 @@ namespace Windows.UI.Xaml.Media.Animation
 		void ITimeline.Begin()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Begin()");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Begin()");
 		}
 
 		void ITimeline.Stop()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Stop()");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Stop()");
 		}
 
 		void ITimeline.Resume()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Resume()");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Resume()");
 		}
 
 		void ITimeline.Pause()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Pause()");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Pause()");
 		}
 
 		void ITimeline.Seek(TimeSpan offset)
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Seek(TimeSpan offset)");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Seek(TimeSpan offset)");
 		}
 
 		void ITimeline.SeekAlignedToLastTick(TimeSpan offset)
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SeekAlignedToLastTick(TimeSpan offset)");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SeekAlignedToLastTick(TimeSpan offset)");
 		}
 
 		void ITimeline.SkipToFill()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SkipToFill()");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SkipToFill()");
 		}
 
 		void ITimeline.Deactivate()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Deactivate()");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Deactivate()");
 		}
 
 		private protected IValueAnimator InitializeAnimator() => throw new NotSupportedException(); // Should be implemented by classes which use AnimationImplementation
@@ -328,10 +342,10 @@ namespace Windows.UI.Xaml.Media.Animation
 
 					if (boundProperty.PropertyName.EndsWith("Opacity")
 						|| (boundProperty.DataContext is SolidColorBrush && boundProperty.PropertyName.EndsWith("Color"))
-						|| (boundProperty.DataContext is Transform)
+						|| (boundProperty.DataContext is Transform transform && transform.View != null)
 					)
 					{
-						//is not dependent if the target is opacity, the color property of a brush, or a Transform property
+						//is not dependent if the target is opacity, the color property of a brush, or a Transform property targeting a view as RenderTransform
 						return false;
 					}
 				}

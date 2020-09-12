@@ -12,7 +12,7 @@ using System.Drawing;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter
+	public partial class ScrollContentPresenter : ContentPresenter, IScrollContentPresenter
 	{
 		public ScrollMode HorizontalScrollMode { get; set; }
 

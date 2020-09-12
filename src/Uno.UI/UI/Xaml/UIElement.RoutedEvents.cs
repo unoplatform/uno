@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml
 
 		#region EventsBubblingInManagedCode DependencyProperty
 
-		public static readonly DependencyProperty EventsBubblingInManagedCodeProperty = DependencyProperty.Register(
+		public static DependencyProperty EventsBubblingInManagedCodeProperty { get ; } = DependencyProperty.Register(
 			"EventsBubblingInManagedCode",
 			typeof(RoutedEventFlag),
 			typeof(UIElement),
@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml
 
 		#region SubscribedToHandledEventsToo DependencyProperty
 
-		private static readonly DependencyProperty SubscribedToHandledEventsTooProperty =
+		private static DependencyProperty SubscribedToHandledEventsTooProperty { get ; } =
 			DependencyProperty.Register(
 				"SubscribedToHandledEventsToo",
 				typeof(RoutedEventFlag),
@@ -264,7 +264,7 @@ namespace Windows.UI.Xaml
 			remove => RemoveHandler(PointerReleasedEvent, value);
 		}
 
-#if !__WASM__
+#if !__WASM__ && !__SKIA__
 		[global::Uno.NotImplemented]
 #endif
 		public event PointerEventHandler PointerWheelChanged

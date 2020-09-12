@@ -30,7 +30,7 @@ namespace Uno.UI.Controls
 			_layout.Initialize(this);
 		}
 
-		private ManagedVirtualizingPanelLayout GetLayouter()
+		internal ManagedVirtualizingPanelLayout GetLayouter()
 		{
 			CreateLayoutIfNeeded();
 			return _layout;
@@ -58,7 +58,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(OrientationProperty, value); }
 		}
 
-		public static readonly DependencyProperty OrientationProperty =
+		public static DependencyProperty OrientationProperty { get ; } =
 			DependencyProperty.Register(
 				"Orientation",
 				typeof(Orientation),
@@ -89,7 +89,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(CacheLengthProperty, value); }
 		}
 
-		public static readonly DependencyProperty CacheLengthProperty =
+		public static DependencyProperty CacheLengthProperty { get ; } =
 			DependencyProperty.Register(
 				"CacheLength",
 				typeof(double),

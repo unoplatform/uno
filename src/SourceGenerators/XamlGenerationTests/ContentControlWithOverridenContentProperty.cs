@@ -22,6 +22,6 @@ namespace XamlGenerationTests.Shared
 
 		// Using a DependencyProperty as the backing store for Content.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ContentOverrideProperty =
-			DependencyProperty.Register("ContentOverride", typeof(object), typeof(LocalControlWithContent), new PropertyMetadata(0));
+			DependencyProperty.Register("ContentOverride", typeof(object), typeof(LocalControlWithContent), new FrameworkPropertyMetadata(0));
 	}
 }

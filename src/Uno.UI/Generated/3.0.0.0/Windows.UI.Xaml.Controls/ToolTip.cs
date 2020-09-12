@@ -2,10 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
+	#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
+	#endif
 	public  partial class ToolTip : global::Windows.UI.Xaml.Controls.ContentControl
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double VerticalOffset
 		{
 			get
@@ -18,8 +21,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.UIElement PlacementTarget
 		{
 			get
@@ -32,8 +35,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		// Skipping already declared property Placement
+		// Skipping already declared property IsOpen
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double HorizontalOffset
 		{
 			get
@@ -46,8 +51,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.Primitives.ToolTipTemplateSettings TemplateSettings
 		{
 			get
@@ -56,8 +61,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect? PlacementRect
 		{
 			get
@@ -70,38 +75,41 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty HorizontalOffsetProperty { get; } =
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty HorizontalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HorizontalOffset", typeof(double),
-			typeof(global::Windows.UI.Xaml.Controls.ToolTip),
+			nameof(HorizontalOffset), typeof(double), 
+			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PlacementTargetProperty { get; } =
+		// Skipping already declared property IsOpenProperty
+		// Skipping already declared property PlacementProperty
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty PlacementTargetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlacementTarget", typeof(global::Windows.UI.Xaml.UIElement),
-			typeof(global::Windows.UI.Xaml.Controls.ToolTip),
+			nameof(PlacementTarget), typeof(global::Windows.UI.Xaml.UIElement), 
+			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } =
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"VerticalOffset", typeof(double),
-			typeof(global::Windows.UI.Xaml.Controls.ToolTip),
+			nameof(VerticalOffset), typeof(double), 
+			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PlacementRectProperty { get; } =
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty PlacementRectProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlacementRect", typeof(global::Windows.Foundation.Rect?),
-			typeof(global::Windows.UI.Xaml.Controls.ToolTip),
+			nameof(PlacementRect), typeof(global::Windows.Foundation.Rect?), 
+			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Rect?)));
 		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.ToolTip.ToolTip()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.ToolTip()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.HorizontalOffset.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.HorizontalOffset.set
@@ -126,5 +134,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.PlacementProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.PlacementTargetProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.VerticalOffsetProperty.get
+		// Skipping already declared event Windows.UI.Xaml.Controls.ToolTip.Closed
+		// Skipping already declared event Windows.UI.Xaml.Controls.ToolTip.Opened
 	}
 }

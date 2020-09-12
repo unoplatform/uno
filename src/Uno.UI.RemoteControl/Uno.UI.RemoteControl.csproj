@@ -22,6 +22,8 @@
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
@@ -30,16 +32,14 @@
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
-			<LogicalName>$(AssemblyName).xml</LogicalName>
-		</EmbeddedResource>
-	</ItemGroup>
-
 	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
 		<EmbeddedResource Include="LinkerDefinition.Xamarin.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="buildTransitive\Uno.UI.RemoteControl.targets" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -59,6 +59,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="buildTransitive\Uno.UI.RemoteControl.targets">
+	    <PackagePath>build</PackagePath>
+	    <Pack>true</Pack>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="Uno.MonoAnalyzers" />
 	</ItemGroup>
@@ -75,7 +82,7 @@
 	</ItemGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<PackageReference Include="Uno.Wasm.WebSockets" Version="1.0.0-dev.28" />
+		<PackageReference Include="Uno.Wasm.WebSockets" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(DocsGeneration)'==''">

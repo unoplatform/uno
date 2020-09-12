@@ -1,0 +1,31 @@
+trigger:
+  branches:
+    include:
+      - master
+      - release/beta/*
+      - release/stable/*
+
+pr:
+  branches:
+    include:
+      - master
+      - release/beta/*
+      - release/stable/*
+
+  paths:
+    include:
+    - '/'
+    exclude:
+    - .dependabot/
+    - .github/
+    - .editorconfig
+    - '*.md'
+    - .all-contributorsrc
+      
+variables:
+  windowsHostedVMImage: 'windows-2019'
+
+jobs:
+- template: build/ci/.azure-devops-docs.yml
+  parameters:
+    vmImage: '$(windowsHostedVMImage)'

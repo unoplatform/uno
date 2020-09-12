@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get the index of the next item that has not yet been materialized in the nominated fill direction. Returns null if there are no more available items in the source.
 		/// </summary>
-		protected IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection, IndexPath? currentMaterializedItem)
+		protected Uno.UI.IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection, Uno.UI.IndexPath? currentMaterializedItem)
 		{
 			return XamlParent?.GetNextItemIndex(currentMaterializedItem, fillDirection == GeneratorDirection.Forward ? 1 : -1);
 		}
@@ -65,8 +65,8 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(OrientationProperty, value); }
 		}
 
-		public static readonly DependencyProperty OrientationProperty =
-			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(ManagedVirtualizingPanelLayout), new PropertyMetadata(Orientation.Vertical, (o, e) => ((ManagedVirtualizingPanelLayout)o).OnOrientationChanged((Orientation)e.NewValue)));
+		public static DependencyProperty OrientationProperty { get ; } =
+			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(ManagedVirtualizingPanelLayout), new FrameworkPropertyMetadata(Orientation.Vertical, (o, e) => ((ManagedVirtualizingPanelLayout)o).OnOrientationChanged((Orientation)e.NewValue)));
 
 		#region CacheLength DependencyProperty
 
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(CacheLengthProperty, value); }
 		}
 
-		public static readonly DependencyProperty CacheLengthProperty =
+		public static DependencyProperty CacheLengthProperty { get ; } =
 			DependencyProperty.Register(
 				"CacheLength",
 				typeof(double),

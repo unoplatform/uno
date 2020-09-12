@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Samples.Helper;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests;
 using Windows.Foundation;
@@ -123,7 +124,7 @@ namespace Uno.UI.Samples.Tests
 				{
 					TextWrapping = TextWrapping.Wrap,
 					FontFamily = new FontFamily("Courier New"),
-					Margin = new Thickness(8, 0, 0, 0),
+					Margin = ThicknessHelper2.FromLengths(8, 0, 0, 0),
 					Foreground = new SolidColorBrush(Colors.LightGray)
 				};
 
@@ -216,7 +217,7 @@ namespace Uno.UI.Samples.Tests
 						.Where(t => filter == null || t.DeclaringType.Name.Contains(filter, StrComp) || t.Name.Contains(filter, StrComp))
 						.ToArray();
 
-					if(tests.Length == 0)
+					if (tests.Length == 0)
 					{
 						continue;
 					}
@@ -264,18 +265,18 @@ namespace Uno.UI.Samples.Tests
 
 							try
 							{
-								type.init?.Invoke(instance, new object[0]);
-
 								object returnValue = null;
 								if (runsOnUIThread)
 								{
 									await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 									{
+										type.init?.Invoke(instance, new object[0]);
 										returnValue = testMethod.Invoke(instance, parameters);
 									});
 								}
 								else
 								{
+									type.init?.Invoke(instance, new object[0]);
 									returnValue = testMethod.Invoke(instance, parameters);
 								}
 

@@ -1,6 +1,6 @@
 ﻿namespace Windows.UI.Xaml.Controls
 {
-	internal interface IMenu
+	public partial interface IMenu
 	{
 		void Close();
 

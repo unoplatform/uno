@@ -1,7 +1,7 @@
 About Uno platform
 
 ## What is the Uno Platform?
-The Uno Platform is a Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, and WebAssembly. It provides the full API definitions of the UWP Windows 10 October 2018 Update (17763), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
+The Uno Platform is a Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, and WebAssembly. It provides the full API definitions of the UWP Windows 10 2004 (19041), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
 This allows the use of the UWP tooling from Windows in Visual Studio, such as XAML Edit and Continue and C# Edit and Continue, to build an application as much as possible on Windows, then validate that the application runs on iOS, Android and WebAssembly.
 The XAML User Interface (UI) provides the ability to display the same XAML files on Windows, iOS, Android and WebAssembly platforms. Uno also provides support for the MVVM pattern on all platforms, with binding, styling, control and data-templating features.
 As the Uno Platform provides all of the APIs of the complete UWP platform, any UWP library can be compiled on top of Uno (e.g. XamlBehaviors), with the ability to determine which APIs are implemented or not via the IDE using C# Analyzers.
@@ -41,7 +41,7 @@ You can try the Uno Platform using the [Uno Platform Playground](https://playgro
 The [Uno Platform Playground](https://playground.platform.uno) is a convenient way to experiment with the Uno platform, using only a WebAssembly compatible web browser.
 
 ## Where can I get support?
-Support is available through our [Gitter](https://gitter.im/uno-platform/Lobby), [Twitter account](https://twitter.com/unoplatform), and email [info@platform.uno](mailto:info@platform.uno).
+Support is available through [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform), [Twitter account](https://twitter.com/unoplatform), and email [info@platform.uno](mailto:info@platform.uno).
 
 ## How can I get involved?
 There are lots of ways to contribute to the Uno Platform and we appreciate the help from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions.
@@ -99,7 +99,7 @@ Yes, those are called Templated Controls in the UWP dialect because they inherit
 
 ## Is the iPhone X supported by Uno.UI ?
 
-Yes, use the [VisibleBoundsPadding](articles/features/VisibleBoundsPadding.md)
+Yes, use the [VisibleBoundsPadding](features/VisibleBoundsPadding.md)
 behavior to manage the _notch_ correctly.
 
 ## What features will Uno Platform support?
@@ -234,7 +234,7 @@ as a base for your cross-targeted library.
 
 # Is it possible to make http web requests using the WASM target?
 
-Yes it is possible, but you need to use the provided HttpHandler by Uno.UI like what we did in the Uno.UI Playground:
+Yes it is possible, but you need to use the provided HttpHandler by Uno.UI.WebAssembly like what we did in the Uno.UI Playground:
 
 ```csharp
 var handler = new Wasm.WasmHttpHandler();

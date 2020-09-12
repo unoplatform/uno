@@ -15,7 +15,7 @@ using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public abstract partial class Layouter
+	abstract partial class Layouter
 	{
 		public static void SetMeasuredDimensions(View view, int width, int height)
 		{
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 
-	public static partial class LayouterExtensions
+	internal static partial class LayouterExtensions
 	{
 		public static IEnumerable<View> GetChildren(this Layouter layouter)
 		{

@@ -25,6 +25,10 @@ labels: kind/consumer-experience, kind/documentation, triage/untriaged
 - [ ] Android
 - [ ] WebAssembly
 - [ ] macOS
+- [ ] Skia
+  - [ ] WPF
+  - [ ] GTK (Linux)
+  - [ ] Tizen
 - [ ] Windows
 
 ## Anything else we need to know?

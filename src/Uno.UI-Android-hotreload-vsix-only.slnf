@@ -3,6 +3,7 @@
     "path": "Uno.UI.sln",
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
+      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.csproj",
       "SamplesApp\\SamplesApp.Droid\\SamplesApp.Droid.csproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
@@ -15,6 +16,7 @@
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
+      "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",
       "T4Generator\\T4Generator.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",

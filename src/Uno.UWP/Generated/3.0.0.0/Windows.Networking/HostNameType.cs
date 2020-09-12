@@ -2,24 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum HostNameType 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		DomainName,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Ipv4,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Ipv6,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Bluetooth,
-		#endif
+		// Skipping already declared field Windows.Networking.HostNameType.DomainName
+		// Skipping already declared field Windows.Networking.HostNameType.Ipv4
+		// Skipping already declared field Windows.Networking.HostNameType.Ipv6
+		// Skipping already declared field Windows.Networking.HostNameType.Bluetooth
 	}
 	#endif
 }

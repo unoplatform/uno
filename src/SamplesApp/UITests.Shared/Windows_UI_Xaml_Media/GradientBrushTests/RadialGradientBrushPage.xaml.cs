@@ -144,7 +144,7 @@ namespace MUXControlsTestApp
 			if (ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionRadialGradientBrush"))
 			{
 				// If CompositionRadialGradientBrush is available then should be rendering a gradient.
-				if (centerColor == Colors.Orange && outerColor == Colors.Green)
+				if (centerColor == Windows.UI.Colors.Orange && outerColor == Windows.UI.Colors.Green)
 				{
 					ColorMatchTestResult.Text = "Passed";
 				}
@@ -155,7 +155,7 @@ namespace MUXControlsTestApp
 			}
 			else
 			{
-				if (centerColor == Colors.Red && outerColor == Colors.Red)
+				if (centerColor == Windows.UI.Colors.Red && outerColor == Windows.UI.Colors.Red)
 				{
 					ColorMatchTestResult.Text = "Passed";
 				}

@@ -12,6 +12,7 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Markup;
 using System.ComponentModel;
 using System.Reflection;
+using Windows.UI.Core;
 using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -30,7 +31,7 @@ using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using AppKit;
-#elif __WASM__ || NET461
+#elif NETSTANDARD2_0 || NET461
 using View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -43,27 +44,26 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeControl()
 		{
-			SetDefaultForeground();
+			SetDefaultForeground(ForegroundProperty);
 			SubscribeToOverridenRoutedEvents();
 			OnIsFocusableChanged();
-		}
 
-		/// <summary>
-		/// This property is not used in Uno.UI, and is always set to the current top-level type.
-		/// </summary>
+			DefaultStyleKey = typeof(Control);
+		}
+		
 		protected object DefaultStyleKey { get; set; }
 
 		protected override bool IsSimpleLayout => true;
 
-		private void SetDefaultForeground()
+		internal override void UpdateThemeBindings()
 		{
+			base.UpdateThemeBindings();
+
 			//override the default value from dependency property based on application theme
-			//in the future, this will need to respond to the inherited RequestedTheme and its changes
-			this.SetValue(ForegroundProperty,
-				Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
-					? SolidColorBrushHelper.Black
-					: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
+			SetDefaultForeground(ForegroundProperty);
 		}
+
+		private protected override Type GetDefaultStyleKey() => DefaultStyleKey as Type;
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -101,8 +101,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Template.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TemplateProperty =
-			DependencyProperty.Register("Template", typeof(ControlTemplate), typeof(Control), new PropertyMetadata(null, (s, e) => ((Control)s)?.OnTemplateChanged(e)));
+		public static DependencyProperty TemplateProperty { get; } =
+			DependencyProperty.Register("Template", typeof(ControlTemplate), typeof(Control), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => ((Control)s)?.OnTemplateChanged(e)));
 
 		private void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -157,9 +157,35 @@ namespace Windows.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-						OnApplyTemplate();
+						if (FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
+						{
+							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
+							_applyTemplateShouldBeInvoked = true;
+						}
+						else
+						{
+							OnApplyTemplate();
+						}
 					}
 				}
+			}
+		}
+
+		private bool _applyTemplateShouldBeInvoked = false;
+
+		private protected override void OnPostLoading()
+		{
+			base.OnPostLoading();
+
+			TryCallOnApplyTemplate();
+		}
+
+		private void TryCallOnApplyTemplate()
+		{
+			if (_applyTemplateShouldBeInvoked)
+			{
+				_applyTemplateShouldBeInvoked = false;
+				OnApplyTemplate();
 			}
 		}
 
@@ -277,7 +303,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			SetUpdateControlTemplate();
 
@@ -294,7 +320,19 @@ namespace Windows.UI.Xaml.Controls
 			var currentTemplateRoot = _templatedRoot;
 			SetUpdateControlTemplate(forceUpdate: true);
 
+			// When .ApplyTemplate is called manually, we should not defer the call to OnApplyTemplate
+			TryCallOnApplyTemplate();
+
 			return currentTemplateRoot != _templatedRoot;
+		}
+
+		/// <summary>
+		/// Applies default Style and implicit/explicit Style if not applied already, and materializes template.
+		/// </summary>
+		internal void EnsureTemplate()
+		{
+			ApplyStyles();
+			ApplyTemplate();
 		}
 
 		/// <summary>
@@ -305,7 +343,7 @@ namespace Windows.UI.Xaml.Controls
 		public DependencyObject GetTemplateChild(string childName)
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as DependencyObject
-				?? FindName(childName);
+				?? FindName(childName) as DependencyObject;
 		}
 
 		private static object FindNameInScope(IFrameworkElement root, string name)
@@ -367,37 +405,21 @@ namespace Windows.UI.Xaml.Controls
 				_controlTemplateUsedLastUpdate = null;
 			}
 
-			if (
-				!FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase &&
-				FeatureConfiguration.FrameworkElement.ClearPreviousOnStyleChange
-			)
+			if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
 			{
-				if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
+				_controlTemplateUsedLastUpdate = Template;
+
+				if (Template != null)
 				{
-					_controlTemplateUsedLastUpdate = Template;
-
-					if (Template != null)
-					{
-						TemplatedRoot = Template.LoadContentCached();
-					}
-					else
-					{
-						TemplatedRoot = null;
-					}
-
-					_updateTemplate = false;
-				}
-			}
-			else
-			{
-				if (Template != null && _updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
-				{
-					_controlTemplateUsedLastUpdate = Template;
-
-					_updateTemplate = false;
-
 					TemplatedRoot = Template.LoadContentCached();
 				}
+				else
+				{
+					TemplatedRoot = null;
+				}
+
+				_updateTemplate = false;
+
 			}
 		}
 
@@ -420,7 +442,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ForegroundProperty, value); }
 		}
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -442,7 +464,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontWeightProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontWeightProperty =
+		public static DependencyProperty FontWeightProperty { get ; } =
 			DependencyProperty.Register(
 				"FontWeight",
 				typeof(FontWeight),
@@ -464,13 +486,13 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontSizeProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontSizeProperty =
+		public static DependencyProperty FontSizeProperty { get ; } =
 			DependencyProperty.Register(
 				"FontSize",
 				typeof(double),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					11.0,
+					15.0,
 					FrameworkPropertyMetadataOptions.Inherits,
 					(s, e) => ((Control)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -486,7 +508,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontFamilyProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontFamilyProperty =
+		public static DependencyProperty FontFamilyProperty { get ; } =
 			DependencyProperty.Register(
 				"FontFamily",
 				typeof(FontFamily),
@@ -507,7 +529,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontStyleProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontStyleProperty =
+		public static DependencyProperty FontStyleProperty { get ; } =
 			DependencyProperty.Register(
 				"FontStyle",
 				typeof(FontStyle),
@@ -529,7 +551,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Padding.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get ; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -552,7 +574,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BorderThickness.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BorderThicknessProperty =
+		public static DependencyProperty BorderThicknessProperty { get ; } =
 			DependencyProperty.Register(
 				"BorderThickness",
 				typeof(Thickness),
@@ -587,7 +609,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BorderBrush.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BorderBrushProperty =
+		public static DependencyProperty BorderBrushProperty { get ; } =
 			DependencyProperty.Register(
 				"BorderBrush",
 				typeof(Brush),
@@ -601,6 +623,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+#if !HAS_UNO_WINUI
 		#region FocusState DependencyProperty
 
 		public FocusState FocusState
@@ -614,7 +637,7 @@ namespace Windows.UI.Xaml.Controls
 				"FocusState",
 				typeof(FocusState),
 				typeof(Control),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(FocusState)FocusState.Unfocused
 				)
 			);
@@ -634,12 +657,18 @@ namespace Windows.UI.Xaml.Controls
 				"IsTabStop",
 				typeof(bool),
 				typeof(Control),
-				new PropertyMetadata(
-					(bool)true,
-					(s, e) => ((Control)s)?.OnIsFocusableChanged()
+				new FrameworkPropertyMetadata(
+					defaultValue: (bool)true,
+					propertyChangedCallback: (s, e) => ((Control)s)?.OnIsFocusableChanged()
 				)
 			);
 		#endregion
+#else
+		private protected override void OnIsTabStopChanged(bool oldValue, bool newValue)
+		{
+			OnIsFocusableChanged();
+		}
+#endif
 
 		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -993,5 +1022,26 @@ namespace Windows.UI.Xaml.Controls
 				&& method.IsVirtual
 				&& method.DeclaringType != typeof(Control);
 		}
+
+		/// <summary>
+		/// Duplicates the SetDefaultStyleKey() helper method from WinUI code.
+		/// </summary>
+		/// <remarks>
+		/// Note: Although this is usually called as 'SetDefaultStyleKey(this)' (per WinUI C++ code), we actually only use the compile-time
+		///  TDerived type and ignore the runtime derivedControl parameter, preserving the expected behaviour that DefaultStyleKey is 'fixed' 
+		/// under inheritance unless explicitly changed by an inheriting type.
+		/// </remarks>
+		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control
+			=> DefaultStyleKey = typeof(TDerived);
+
+#if DEBUG
+#if !__IOS__
+		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
+#endif
+
+		public string[] VisualStateGroupNames => VisualStateGroups.Select(vsg => vsg.Name).ToArray();
+
+		public string[] CurrentVisualStates => VisualStateGroups.Select(vsg => vsg.CurrentState?.Name).ToArray();
+#endif
 	}
 }

@@ -20,6 +20,13 @@ namespace UITests.Windows_UI_Input.PointersTests
 				{
 					e.Handled = true;
 					LastPressed.Text = elt.Name;
+					LastPressedSrc.Text = (e.OriginalSource as FrameworkElement)?.Name ?? "-unknown-";
+				};
+				elt.PointerMoved += (snd, e) =>
+				{
+					e.Handled = true;
+					LastHovered.Text = elt.Name;
+					LastHoveredSrc.Text = (e.OriginalSource as FrameworkElement)?.Name ?? "-unknown-";
 				};
 			}
 		}

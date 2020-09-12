@@ -16,7 +16,7 @@ using System.Collections;
 
 namespace Uno.UI.Controls
 {
-	public partial class BindableNSView : NSView, INotifyPropertyChanged, DependencyObject, IShadowChildrenProvider, IEnumerable
+	public partial class BindableNSView : NSView, DependencyObject, IShadowChildrenProvider, IEnumerable
 	{
 		private MaterializableList<NSView> _shadowChildren = new MaterializableList<NSView>(0);
 
@@ -48,8 +48,6 @@ namespace Uno.UI.Controls
 				_shadowChildren.RemoveAt(position);
 			}
 		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
 
 		public BindableNSView()
 		{
@@ -103,14 +101,13 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			if (PropertyChanged != null)
-			{
-				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-
 		public IEnumerator GetEnumerator() => Subviews.GetEnumerator();
+
+		// We change the name of the key event methods so it won't conflict with the actual KeyDown / KeyUp events
+		public sealed override void KeyDown(NSEvent evt) => OnNativeKeyDown(evt);
+		private protected virtual void OnNativeKeyDown(NSEvent evt) { }
+
+		public sealed override void KeyUp(NSEvent evt) => OnNativeKeyUp(evt);
+		private protected virtual void OnNativeKeyUp(NSEvent evt) { }
 	}
 }

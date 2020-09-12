@@ -13,12 +13,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	public partial class LottieVisualSource
 	{
+		private static readonly string UNO_BOOTSTRAP_APP_BASE = global::System.Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
+
 		private AnimatedVisualPlayer _initializedPlayer;
 		private bool _isPlaying;
 		private Size _compositionSize = new Size(0, 0);
 		private Uri _loadedEmbeddedUri;
 
 		private (double fromProgress, double toProgress, bool looped)? _playState;
+		private bool _isUpdating;
 
 		partial void InnerUpdate()
 		{
@@ -57,7 +60,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					",stretch:\"",
 					player.Stretch.ToString(),
 					"\",rate:",
-					player.PlaybackRate.ToString(),
+					player.PlaybackRate.ToStringInvariant(),
 					"},",
 					jsonString,
 					");"
@@ -65,22 +68,33 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 			else
 			{
+				var documentPath = string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE)
+					? UriSource?.PathAndQuery
+					: UNO_BOOTSTRAP_APP_BASE + UriSource?.PathAndQuery;
 
 				js = new[]
 				{
-					"Uno.UI.Lottie.setAnimationProperties({", "elementId:",
+					"Uno.UI.Lottie.setAnimationProperties({",
+					"elementId:",
 					player.HtmlId.ToString(),
 					",jsonPath:\"",
-					UriSource?.PathAndQuery ?? "", "\",autoplay:",
-					player.AutoPlay ? "true" : "false", ",stretch:\"",
+					documentPath ?? "",
+					"\",autoplay:",
+					player.AutoPlay ? "true" : "false",
+					",stretch:\"",
 					player.Stretch.ToString(),
 					"\",rate:",
-					player.PlaybackRate.ToString(), "});"
+					player.PlaybackRate.ToStringInvariant(),
+					"});"
 				};
 			}
 
+			_isUpdating = true;
+
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 			_isPlaying = player.AutoPlay;
+
+			_isUpdating = false;
 
 			ApplyPlayState();
 		}
@@ -94,10 +108,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 		}
 
-		private void OnStateChanged(object sender, HtmlCustomEventArgs e)
-		{
-			ParseStateString(e.Detail);
-		}
+		private void OnStateChanged(object sender, HtmlCustomEventArgs e) => ParseStateString(e.Detail);
 
 		private void ParseStateString(string stateString)
 		{
@@ -107,7 +118,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			var loaded = parts[2].Equals("true", StringComparison.Ordinal);
 			var paused = parts[3].Equals("true", StringComparison.Ordinal);
 
-			if (paused)
+			if (paused && !_isUpdating)
 			{
 				_playState = null;
 			}
@@ -211,7 +222,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				"Uno.UI.Lottie.setProgress(",
 				_player.HtmlId.ToString(),
 				",",
-				progress.ToString(CultureInfo.InvariantCulture),
+				progress.ToStringInvariant(),
 				");"
 			};
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));

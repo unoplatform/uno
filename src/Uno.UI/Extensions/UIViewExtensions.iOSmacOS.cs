@@ -103,10 +103,16 @@ namespace AppKit
 		/// <typeparam name="T"></typeparam>
 		/// <param name="view"></param>
 		/// <returns>First parent of the view of specified T type.</returns>
-		public static T FindFirstParent<T>(this _View view)
+		public static T FindFirstParent<T>(this _View view) where T : class
+			=> FindFirstParent<T>(view, includeCurrent: false);
+
+		public static T FindFirstParent<T>(this _View view, bool includeCurrent)
 			where T : class
 		{
-			view = view?.Superview;
+			if (!includeCurrent)
+			{
+				view = view?.Superview;
+			}
 			while (view != null)
 			{
 				var typed = view as T;
@@ -352,7 +358,7 @@ namespace AppKit
 		/// <param name="view">View</param>
 		/// <returns>First responder view</returns>
 		public static _View FindFirstResponder(this _View view) =>
-			Uno.Extensions.UIViewExtensions.FindFirstResponder(view);		
+			Uno.Extensions.UIViewExtensions.FindFirstResponder(view);
 
 		/// <summary>
 		/// Finds the nearest view controller for this _View.
@@ -586,7 +592,7 @@ namespace AppKit
 
 			return null;
 		}
-		
+
 		/// <summary>
 		/// Returns the root of the view's local visual tree.
 		/// </summary>
@@ -639,10 +645,13 @@ namespace AppKit
 						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
 						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+						.Append(fe != null && (!double.IsNaN(fe.Width) || !double.IsNaN(fe.Height)) ? $"FE.Width={fe.Width},FE.Height={fe.Height}" : "")
 						.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
 						.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 						.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
-						.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}" : "")
+						.Append(fe != null && fe.TryGetCornerRadius(out var cr) && cr != default ? $" CornerRadius={cr.ToStringCompact()}" : "")
+						.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
+						.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}, AvailableSize={uiElement.LastAvailableSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
 						.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
 						.AppendLine();
@@ -679,6 +688,6 @@ namespace AppKit
 #elif __MACOS__
 			view.NeedsDisplay = true;
 #endif
-		} 
+		}
 	}
 }

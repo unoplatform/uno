@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Uno.ReferenceImplComparer": {
+      "commandName": "Project",
+      "commandLineArgs": "list-failed \"C:\\Users\\jerome.laban\\Downloads\\TestResult-failed.xml\" output.txt"
+    }
+  }
+}

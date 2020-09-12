@@ -62,7 +62,7 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for Value1.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty Value1Property =
+		public static DependencyProperty Value1Property { get ; } =
 			DependencyProperty.Register("Value1", typeof(int), typeof(Grid_DataBound_ColumnRow_Definitions_Context), new PropertyMetadata(0));
 
 		#endregion
@@ -74,7 +74,7 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for Value2.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty Value2Property =
+		public static DependencyProperty Value2Property { get ; } =
 			DependencyProperty.Register("Value2", typeof(int), typeof(Grid_DataBound_ColumnRow_Definitions_Context), new PropertyMetadata(0));
 
 	}

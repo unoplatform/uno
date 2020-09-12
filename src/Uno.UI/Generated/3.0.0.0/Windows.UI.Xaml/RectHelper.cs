@@ -2,112 +2,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-#endif
-	public partial class RectHelper
+	#endif
+	public  partial class RectHelper 
 	{
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.Rect Empty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Rect RectHelper.Empty is not implemented in Uno.");
-			}
-		}
-#endif
+		// Skipping already declared property Empty
 		// Forced skipping of method Windows.UI.Xaml.RectHelper.Empty.get
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.Rect FromCoordinatesAndDimensions( float x,  float y,  float width,  float height)
-		{
-			throw new global::System.NotImplementedException("The member Rect RectHelper.FromCoordinatesAndDimensions(float x, float y, float width, float height) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.Rect FromPoints( global::Windows.Foundation.Point point1,  global::Windows.Foundation.Point point2)
-		{
-			throw new global::System.NotImplementedException("The member Rect RectHelper.FromPoints(Point point1, Point point2) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.Rect FromLocationAndSize( global::Windows.Foundation.Point location,  global::Windows.Foundation.Size size)
-		{
-			throw new global::System.NotImplementedException("The member Rect RectHelper.FromLocationAndSize(Point location, Size size) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static bool GetIsEmpty( global::Windows.Foundation.Rect target)
-		{
-			throw new global::System.NotImplementedException("The member bool RectHelper.GetIsEmpty(Rect target) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static float GetBottom( global::Windows.Foundation.Rect target)
-		{
-			throw new global::System.NotImplementedException("The member float RectHelper.GetBottom(Rect target) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static float GetLeft( global::Windows.Foundation.Rect target)
-		{
-			throw new global::System.NotImplementedException("The member float RectHelper.GetLeft(Rect target) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static float GetRight( global::Windows.Foundation.Rect target)
-		{
-			throw new global::System.NotImplementedException("The member float RectHelper.GetRight(Rect target) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static float GetTop( global::Windows.Foundation.Rect target)
-		{
-			throw new global::System.NotImplementedException("The member float RectHelper.GetTop(Rect target) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static bool Contains( global::Windows.Foundation.Rect target,  global::Windows.Foundation.Point point)
-		{
-			throw new global::System.NotImplementedException("The member bool RectHelper.Contains(Rect target, Point point) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static bool Equals( global::Windows.Foundation.Rect target,  global::Windows.Foundation.Rect value)
-		{
-			throw new global::System.NotImplementedException("The member bool RectHelper.Equals(Rect target, Rect value) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.Rect Intersect( global::Windows.Foundation.Rect target,  global::Windows.Foundation.Rect rect)
-		{
-			throw new global::System.NotImplementedException("The member Rect RectHelper.Intersect(Rect target, Rect rect) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.Rect Union( global::Windows.Foundation.Rect target,  global::Windows.Foundation.Point point)
-		{
-			throw new global::System.NotImplementedException("The member Rect RectHelper.Union(Rect target, Point point) is not implemented in Uno.");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.Rect Union( global::Windows.Foundation.Rect target,  global::Windows.Foundation.Rect rect)
-		{
-			throw new global::System.NotImplementedException("The member Rect RectHelper.Union(Rect target, Rect rect) is not implemented in Uno.");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.FromCoordinatesAndDimensions(float, float, float, float)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.FromPoints(Windows.Foundation.Point, Windows.Foundation.Point)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.FromLocationAndSize(Windows.Foundation.Point, Windows.Foundation.Size)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.GetIsEmpty(Windows.Foundation.Rect)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.GetBottom(Windows.Foundation.Rect)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.GetLeft(Windows.Foundation.Rect)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.GetRight(Windows.Foundation.Rect)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.GetTop(Windows.Foundation.Rect)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.Contains(Windows.Foundation.Rect, Windows.Foundation.Point)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.Equals(Windows.Foundation.Rect, Windows.Foundation.Rect)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.Intersect(Windows.Foundation.Rect, Windows.Foundation.Rect)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.Union(Windows.Foundation.Rect, Windows.Foundation.Point)
+		// Skipping already declared method Windows.UI.Xaml.RectHelper.Union(Windows.Foundation.Rect, Windows.Foundation.Rect)
 	}
 }
