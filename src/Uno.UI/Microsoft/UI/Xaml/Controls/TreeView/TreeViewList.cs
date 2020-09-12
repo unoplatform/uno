@@ -1,7 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// MUX Reference TreeViewList.cpp, commit de78834
 
-// MUX reference de78834
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Collections.Generic;
 using Uno.UI.Helpers.WinUI;
@@ -12,9 +12,14 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using TreeViewListAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer;
 using DragEventArgs = Windows.UI.Xaml.DragEventArgs;
+using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Represents a flattened list of tree view items so that operations such
+	/// as keyboard navigation and drag-and-drop can be inherited from ListView.
+	/// </summary>
 	public partial class TreeViewList : ListView
 	{
 		private bool m_isMultiselectEnabled = false;
@@ -24,6 +29,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private int m_emptySlotIndex;
 		private TreeViewNode m_draggedTreeViewNode;
 
+		/// <summary>
+		/// Initializes a new instance of the TreeViewList control.
+		/// </summary>
 		public TreeViewList()
 		{
 			ListViewModel = new TreeViewViewModel();
@@ -225,7 +233,7 @@ namespace Microsoft.UI.Xaml.Controls
 							if (item != null)
 							{
 								var treeViewItem = (TreeViewItem)item;
-								var pointInsideItem = args.GetPosition((UIElement)treeViewItem);
+								var pointInsideItem = args.GetPosition(treeViewItem);
 
 								// if the point is in the top half of the item
 								// we need to insert before that item
@@ -351,13 +359,6 @@ namespace Microsoft.UI.Xaml.Controls
 			templateSettings.ExpandedGlyphVisibility = itemNode.IsExpanded ? Visibility.Visible : Visibility.Collapsed;
 			templateSettings.CollapsedGlyphVisibility = !itemNode.IsExpanded ? Visibility.Visible : Visibility.Collapsed;
 
-			// Uno Workaround - waiting for #1453, remove this when fixed
-			var treeViewItem = itemContainer;
-			var targetNode = NodeFromContainer(treeViewItem);
-			treeViewItem.UpdateIndentation(targetNode.Depth);
-			treeViewItem.UpdateSelectionVisual(targetNode.SelectionState);
-			// workaround end
-
 			base.PrepareContainerForItemOverride(element, item);
 
 			if (selectionState != itemNode.SelectionState)
@@ -371,8 +372,6 @@ namespace Microsoft.UI.Xaml.Controls
 			var targetItem = new TreeViewItem() { IsGeneratedContainer = true }; // Uno specific IsGeneratedContainer
 			return targetItem;
 		}
-
-		protected override bool IsItemItsOwnContainerOverride(object item) => item is TreeViewItem;
 
 		// IFrameworkElementOverrides
 		protected override void OnApplyTemplate()
@@ -710,5 +709,36 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal bool IsContentMode => ListViewModel?.IsContentMode ?? false;
+
+
+		// Uno Specific
+
+		private TreeView m_ancestorTreeView;
+
+		private T GetAncestorView<T>()
+			where T : class
+		{
+			DependencyObject treeViewItemAncestor = this;
+			T ancestorview = null;
+			while (treeViewItemAncestor != null && ancestorview == null)
+			{
+				treeViewItemAncestor = VisualTreeHelper.GetParent(treeViewItemAncestor);
+				ancestorview = treeViewItemAncestor as T;
+			}
+			return ancestorview;
+		}
+
+		internal TreeView AncestorTreeView
+		{
+			get
+			{
+				if (m_ancestorTreeView == null)
+				{
+					m_ancestorTreeView = GetAncestorView<TreeView>();
+				}
+
+				return m_ancestorTreeView;
+			}
+		}
 	}
 }

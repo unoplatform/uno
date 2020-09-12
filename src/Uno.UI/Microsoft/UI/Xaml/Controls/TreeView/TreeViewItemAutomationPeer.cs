@@ -1,7 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// MUX Reference TreeViewItemAutomationPeer.cpp, commit 46f9da3
 
-// MUX reference 46f9da3
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml;
@@ -17,13 +17,24 @@ using TreeViewSelectionMode = Microsoft.UI.Xaml.Controls.TreeViewSelectionMode;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
+	/// <summary>
+	/// Exposes TreeViewItem types to Microsoft UI Automation.
+	/// </summary>
 	public partial class TreeViewItemAutomationPeer : ListViewItemAutomationPeer, IExpandCollapseProvider
 	{
+		/// <summary>
+		/// Initializes a new instance of the TreeViewItemAutomationPeer class.
+		/// </summary>
+		/// <param name="owner">The TreeViewItem control instance to create the peer for.</param>
 		public TreeViewItemAutomationPeer(TreeViewItem owner) : base(owner)
 		{
 		}
 
-		// IExpandCollapseProvider 
+		// IExpandCollapseProvider
+
+		/// <summary>
+		/// Gets a value indicating the expanded or collapsed state of the associated TreeViewItem.
+		/// </summary>
 		public ExpandCollapseState ExpandCollapseState
 		{
 			get
@@ -41,6 +52,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			}
 		}
 
+		/// <summary>
+		/// Collapses the associated TreeViewItem.
+		/// </summary>
 		public void Collapse()
 		{
 			var ancestorTreeView = GetParentTreeView();
@@ -55,6 +69,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			}
 		}
 
+		/// <summary>
+		/// Expands the associated TreeViewItem.
+		/// </summary>
 		public void Expand()
 		{
 			var ancestorTreeView = GetParentTreeView();

@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Uno.Extensions;
-using Uno.UI;
 using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Controls

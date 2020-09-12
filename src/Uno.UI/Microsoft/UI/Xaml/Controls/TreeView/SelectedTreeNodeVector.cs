@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.UI.Xaml.Controls;
+﻿// MUX Reference ViewModel.cpp, commit de78834
+
+using System.Collections.Generic;
 using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Controls

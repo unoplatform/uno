@@ -1,12 +1,21 @@
-﻿using System;
+﻿// MUX Reference TreeViewListAutomationPeer.cpp, commit 46f9da3
+
+using System;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
 using TreeViewList = Microsoft.UI.Xaml.Controls.TreeViewList;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
+	/// <summary>
+	/// Exposes TreeViewList types to Microsoft UI Automation.
+	/// </summary>
 	public partial class TreeViewListAutomationPeer : ListViewAutomationPeer, ISelectionProvider, IDropTargetProvider
 	{
+		/// <summary>
+		/// Initializes a new instance of the TreeViewListAutomationPeer class.
+		/// </summary>
+		/// <param name="owner">The TreeViewList control instance to create the peer for.</param>
 		public TreeViewListAutomationPeer(TreeViewList owner) : base(owner)
 		{
 		}

@@ -1,7 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// MUX Reference TreeViewItemDataAutomationPeer.cpp, commit 46f9da3
 
-// MUX reference 46f9da3
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using Windows.UI.Xaml;
@@ -12,14 +12,28 @@ using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
+	/// <summary>
+	/// Exposes TreeViewItem data types to Microsoft UI Automation.
+	/// </summary>
 	public class TreeViewItemDataAutomationPeer : ItemAutomationPeer, IExpandCollapseProvider
 	{
+		private const string UIA_E_ELEMENTNOTENABLED = "Element not enabled";
+
+		/// <summary>
+		/// Initializes a new instance of the TreeViewItemDataAutomationPeer class.
+		/// </summary>
+		/// <param name="item">The TreeViewItem.</param>
+		/// <param name="parent">The TreeViewList parent control instance for which to create the peer.</param>
 		public TreeViewItemDataAutomationPeer(object item, ItemsControlAutomationPeer parent)
 			: base(item, parent)
 		{
 		}
 
-		// IExpandCollapseProvider 
+		// IExpandCollapseProvider
+
+		/// <summary>
+		/// Gets a value indicating the expanded or collapsed state of the associated TreeViewItemDataAutomationPeer.
+		/// </summary>
 		public ExpandCollapseState ExpandCollapseState
 		{
 			get
@@ -29,10 +43,13 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				{
 					return peer.ExpandCollapseState;
 				}
-				throw new InvalidOperationException("Element not enabled");
+				throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
 			}
 		}
 
+		/// <summary>
+		/// Collapses the associated Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.
+		/// </summary>
 		public void Collapse()
 		{
 			var peer = GetTreeViewItemAutomationPeer();
@@ -41,9 +58,12 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				peer.Collapse();
 				return;
 			}
-			throw new InvalidOperationException("Element not enabled");
+			throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
 		}
 
+		/// <summary>
+		/// Expands the associated Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.
+		/// </summary>
 		public void Expand()
 		{
 			var peer = GetTreeViewItemAutomationPeer();
@@ -52,7 +72,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				peer.Expand();
 				return;
 			}
-			throw new InvalidOperationException("Element not enabled");
+			throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
 		}
 
 		// IAutomationPeerOverrides
@@ -87,7 +107,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 					}
 				}
 			}
-			throw new InvalidOperationException("Element not enabled");
+			throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
 		}
 	}
 }

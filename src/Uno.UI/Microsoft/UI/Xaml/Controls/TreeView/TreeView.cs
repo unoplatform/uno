@@ -1,15 +1,17 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// MUX Reference TreeView.cpp, commit 986d48a
+
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX reference de78834
-
 using System.Collections.Generic;
-using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Represents a hierarchical list with expanding and collapsing nodes that contain nested items.
+	/// </summary>
 	public partial class TreeView : Control
 	{
 		private const string c_listControlName = "ListControl";
@@ -18,6 +20,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private TreeViewNode m_rootNode;
 		private IList<TreeViewNode> m_pendingSelectedNodes;
 
+		/// <summary>
+		/// Initializes a new instance of the TreeView control.
+		/// </summary>
 		public TreeView()
 		{
 			DefaultStyleKey = typeof(TreeView);
@@ -26,24 +31,52 @@ namespace Microsoft.UI.Xaml.Controls
 			m_pendingSelectedNodes = new List<TreeViewNode>();
 		}
 
+		/// <summary>
+		/// Gets or sets the collection of root nodes of the tree.
+		/// </summary>
 		public IList<TreeViewNode> RootNodes => m_rootNode.Children;
 
 		internal TreeViewList ListControl => m_listControl;
 
 		internal TreeViewList MutableListControl => m_listControl;
 
+		/// <summary>
+		/// Returns the item that corresponds to the specified, generated container.
+		/// </summary>
+		/// <param name="container">The DependencyObject that corresponds to the item to be returned.</param>
+		/// <returns>The contained item, or the container if it does not contain an item.</returns>
 		public object ItemFromContainer(DependencyObject container) =>
 			ListControl?.ItemFromContainer(container);
 
+		/// <summary>
+		/// Returns the container corresponding to the specified item.
+		/// </summary>
+		/// <param name="item">The item to retrieve the container for.</param>
+		/// <returns>A container that corresponds to the specified item, if the item
+		/// has a container and exists in the collection; otherwise, null.</returns>
 		public DependencyObject ContainerFromItem(object item) =>
 			ListControl?.ContainerFromItem(item);
 
+		/// <summary>
+		/// Returns the TreeViewNode corresponding to the specified container.
+		/// </summary>
+		/// <param name="container">he container to retrieve the TreeViewNode for.</param>
+		/// <returns>The node that corresponds to the specified container.</returns>
 		public TreeViewNode NodeFromContainer(DependencyObject container) =>
 			ListControl?.NodeFromContainer(container);
 
+		/// <summary>
+		/// Returns the container corresponding to the specified node.
+		/// </summary>
+		/// <param name="node">The node to retrieve the container for.</param>
+		/// <returns>A container that corresponds to the specified node, if the node
+		/// has a container and exists in the collection; otherwise, null.</returns>
 		public DependencyObject ContainerFromNode(TreeViewNode node) =>
 			ListControl?.ContainerFromNode(node);
 
+		/// <summary>
+		/// Gets or sets the node that is selected in the tree.
+		/// </summary>
 		public TreeViewNode SelectedNode
 		{
 			get
@@ -63,6 +96,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the collection of nodes that are selected in the tree.
+		/// </summary>
 		public IList<TreeViewNode> SelectedNodes
 		{
 			get
@@ -74,6 +110,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// Gets the currently selected items.
+		/// </summary>
 		public IList<object> SelectedItems => ListControl?.ListViewModel?.SelectedItems;
 
 		internal void UpdateSelection(TreeViewNode node, bool isSelected)
@@ -88,18 +127,29 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// Expands a given node.
+		/// </summary>
+		/// <param name="node">Node.</param>
 		public void Expand(TreeViewNode node)
 		{
 			var vm = ListControl.ListViewModel;
 			vm.ExpandNode(node);
 		}
 
+		/// <summary>
+		/// Collapses a given node.
+		/// </summary>
+		/// <param name="node">Node.</param>
 		public void Collapse(TreeViewNode node)
 		{
 			var vm = ListControl.ListViewModel;
 			vm.CollapseNode(node);
 		}
 
+		/// <summary>
+		/// Selects all nodes in the tree.
+		/// </summary>
 		public void SelectAll()
 		{
 			var vm = ListControl.ListViewModel;
@@ -208,7 +258,7 @@ namespace Microsoft.UI.Xaml.Controls
 			else if (property == SelectedItemProperty)
 			{
 				var items = SelectedItems;
-				var selected = items.Count > 0 ? items[0] : null;
+				var selected = items?.Count > 0 ? items[0] : null;
 				if (args.NewValue != selected)
 				{
 					ListControl?.ListViewModel?.SelectSingleItem(args.NewValue);
@@ -327,10 +377,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{			
-			m_listControl = (TreeViewList)GetTemplateChild(c_listControlName);
-			if (ListControl != null)
+			m_listControl = GetTemplateChild(c_listControlName) as TreeViewList;
+			var listControl = m_listControl;
+			if (listControl != null)
 			{
-				var listPtr = ListControl;
+				var listPtr = listControl;
 				var viewModel = listPtr.ListViewModel;
 				if (m_rootNode == null)
 				{
@@ -342,29 +393,29 @@ namespace Microsoft.UI.Xaml.Controls
 					viewModel.IsContentMode = true;
 				}
 				viewModel.PrepareView(m_rootNode);
-				viewModel.SetOwners(ListControl, this);
+				viewModel.SetOwners(listControl, this);
 				viewModel.NodeExpanding += OnNodeExpanding;
 				viewModel.NodeCollapsed += OnNodeCollapsed;
 
 				var selectionMode = SelectionMode;
 				if (selectionMode == TreeViewSelectionMode.Single)
 				{
-					ListControl.SelectionMode = ListViewSelectionMode.Single;
+					listControl.SelectionMode = ListViewSelectionMode.Single;
 				}
 				else
 				{
-					ListControl.SelectionMode = ListViewSelectionMode.None;
+					listControl.SelectionMode = ListViewSelectionMode.None;
 					if (selectionMode == TreeViewSelectionMode.Multiple)
 					{
 						UpdateItemsSelectionMode(true);
 					}
 				}
 
-				ListControl.ItemClick += OnItemClick;
-				ListControl.ContainerContentChanging += OnContainerContentChanging;
-				ListControl.DragItemsStarting += OnListControlDragItemsStarting;
-				ListControl.DragItemsCompleted += OnListControlDragItemsCompleted;
-				ListControl.SelectionChanged += OnListControlSelectionChanged;
+				listControl.ItemClick += OnItemClick;
+				listControl.ContainerContentChanging += OnContainerContentChanging;
+				listControl.DragItemsStarting += OnListControlDragItemsStarting;
+				listControl.DragItemsCompleted += OnListControlDragItemsCompleted;
+				listControl.SelectionChanged += OnListControlSelectionChanged;
 
 				if (m_pendingSelectedNodes != null && m_pendingSelectedNodes.Count > 0)
 				{

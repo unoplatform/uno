@@ -1,7 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// MUX Reference TreeViewItem.cpp, commit de78834
 
-// MUX reference de78834
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using Windows.ApplicationModel.DataTransfer;
@@ -18,6 +18,9 @@ using TreeViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewIt
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Represents the container for an item in a TreeView control.
+	/// </summary>
 	public partial class TreeViewItem : ListViewItem
 	{
 		private const long c_dragOverInterval = 1000 * 10000;
@@ -30,6 +33,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private TreeView m_ancestorTreeView;
 		private UIElement m_expandCollapseChevron;
 
+		/// <summary>
+		/// Initializes a new instance of the TreeViewItem control.
+		/// </summary>
 		public TreeViewItem()
 		{
 			DefaultStyleKey = typeof(TreeViewItem);
@@ -316,13 +322,27 @@ namespace Microsoft.UI.Xaml.Controls
 			return ancestorview;
 		}
 
-		public TreeView AncestorTreeView
+		internal TreeView AncestorTreeView
 		{
 			get
 			{
 				if (m_ancestorTreeView == null)
 				{
 					m_ancestorTreeView = GetAncestorView<TreeView>();
+				}
+				// TODO: Uno Specific - in case the container was generated, it is not yet part of the visual tree and we need to use
+				// the ItemsControlForItemContainerProperty to get the parent TreeViewList, and from there the TreeView
+				if (m_ancestorTreeView == null)
+				{
+					var weakReference = this.GetValue(ItemsControl.ItemsControlForItemContainerProperty) as WeakReference<ItemsControl>;
+					if (weakReference != null)
+					{
+						if (weakReference.TryGetTarget(out var target))
+						{
+							var list = target as TreeViewList;
+							m_ancestorTreeView = list.AncestorTreeView;
+						}
+					}
 				}
 				return m_ancestorTreeView;
 			}

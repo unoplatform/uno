@@ -1,48 +1,75 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// MUX Reference TreeViewItemTemplateSettings.properties.cpp, commit de78834
 
-// MUX reference d883cf3
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Provides calculated values that can be referenced as TemplatedParent sources when defining templates for a TreeViewItem control. Not intended for general use.
+	/// </summary>
 	public partial class TreeViewItemTemplateSettings : DependencyObject
 	{
+		/// <summary>
+		/// Gets the visibilty of a collapsed glyph.
+		/// </summary>
 		public Visibility CollapsedGlyphVisibility
 		{
-			get { return (Visibility)GetValue(CollapsedGlyphVisibilityProperty); }
-			set { SetValue(CollapsedGlyphVisibilityProperty, value); }
+			get => (Visibility)GetValue(CollapsedGlyphVisibilityProperty);
+			internal set => SetValue(CollapsedGlyphVisibilityProperty, value);
 		}
 
+		/// <summary>
+		/// Gets the number of items being dragged.
+		/// </summary>
 		public int DragItemsCount
 		{
-			get { return (int)GetValue(DragItemsCountProperty); }
-			set { SetValue(DragItemsCountProperty, value); }
+			get => (int)GetValue(DragItemsCountProperty);
+			internal set => SetValue(DragItemsCountProperty, value);
 		}
 
+		/// <summary>
+		/// Gets the visibilty of an expanded glyph.
+		/// </summary>
 		public Visibility ExpandedGlyphVisibility
 		{
-			get { return (Visibility)GetValue(ExpandedGlyphVisibilityProperty); }
-			set { SetValue(ExpandedGlyphVisibilityProperty, value); }
+			get => (Visibility)GetValue(ExpandedGlyphVisibilityProperty);
+			internal set => SetValue(ExpandedGlyphVisibilityProperty, value);
 		}
 
+		/// <summary>
+		/// Gets the amount that the item is indented.
+		/// </summary>
 		public Thickness Indentation
 		{
-			get { return (Thickness)GetValue(IndentationProperty); }
-			set { SetValue(IndentationProperty, value); }
+			get => (Thickness)GetValue(IndentationProperty);
+			internal set => SetValue(IndentationProperty, value);
 		}
 
-		public static readonly DependencyProperty CollapsedGlyphVisibilityProperty =
+		/// <summary>
+		/// Identifies the CollapsedGlyphVisibility dependency property.
+		/// </summary>
+		public static DependencyProperty CollapsedGlyphVisibilityProperty { get; } =
 			DependencyProperty.Register(nameof(CollapsedGlyphVisibility), typeof(Visibility), typeof(TreeViewItemTemplateSettings), new PropertyMetadata(Visibility.Collapsed));
 
-		public static readonly DependencyProperty DragItemsCountProperty =
+		/// <summary>
+		/// Identifies the DragItemsCount dependency property.
+		/// </summary>
+		public static DependencyProperty DragItemsCountProperty { get; } =
 			DependencyProperty.Register(nameof(DragItemsCount), typeof(int), typeof(TreeViewItemTemplateSettings), new PropertyMetadata(0));
 
-		public static readonly DependencyProperty ExpandedGlyphVisibilityProperty =
+		/// <summary>
+		/// Identifies the ExpandedGlyphVisibility dependency property.
+		/// </summary>
+		public static DependencyProperty ExpandedGlyphVisibilityProperty { get; } =
 			DependencyProperty.Register(nameof(ExpandedGlyphVisibility), typeof(Visibility), typeof(TreeViewItemTemplateSettings), new PropertyMetadata(Visibility.Collapsed));
 
-		public static readonly DependencyProperty IndentationProperty =
+		/// <summary>
+		/// Identifies the Indentation dependency property.
+		/// </summary>
+		public static DependencyProperty IndentationProperty { get; } =
 			DependencyProperty.Register(nameof(Indentation), typeof(Thickness), typeof(TreeViewItemTemplateSettings), new PropertyMetadata(default(Thickness)));
 	}
 }

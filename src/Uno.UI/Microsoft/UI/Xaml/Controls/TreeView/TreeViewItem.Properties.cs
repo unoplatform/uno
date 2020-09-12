@@ -1,7 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// MUX Reference TreeViewItem.properties.cpp, commit de78834
 
-// MUX reference de78834
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
@@ -10,85 +10,139 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TreeViewItem
 	{
+		/// <summary>
+		/// Gets or sets the glyph to show for a collapsed tree node.
+		/// </summary>
 		public string CollapsedGlyph
 		{
-			get { return (string)GetValue(CollapsedGlyphProperty); }
-			set { SetValue(CollapsedGlyphProperty, value); }
+			get => (string)GetValue(CollapsedGlyphProperty);
+			set => SetValue(CollapsedGlyphProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets the glyph to show for an expanded tree node.
+		/// </summary>
 		public string ExpandedGlyph
 		{
-			get { return (string)GetValue(ExpandedGlyphProperty); }
-			set { SetValue(ExpandedGlyphProperty, value); }
+			get => (string)GetValue(ExpandedGlyphProperty);
+			set => SetValue(ExpandedGlyphProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets the Brush used to paint node glyphs on a TreeView.
+		/// </summary>
 		public Brush GlyphBrush
 		{
-			get { return (Brush)GetValue(GlyphBrushProperty); }
-			set { SetValue(GlyphBrushProperty, value); }
+			get => (Brush)GetValue(GlyphBrushProperty);
+			set => SetValue(GlyphBrushProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets the opacity of node glyphs on a TreeView.
+		/// </summary>
 		public double GlyphOpacity
 		{
-			get { return (double)GetValue(GlyphOpacityProperty); }
-			set { SetValue(GlyphOpacityProperty, value); }
+			get => (double)GetValue(GlyphOpacityProperty);
+			set => SetValue(GlyphOpacityProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets the size of node glyphs on a TreeView.
+		/// </summary>
 		public double GlyphSize
 		{
-			get { return (double)GetValue(GlyphSizeProperty); }
-			set { SetValue(GlyphSizeProperty, value); }
+			get => (double)GetValue(GlyphSizeProperty);
+			set => SetValue(GlyphSizeProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether the current item has child items that haven't been shown.
+		/// </summary>
 		public bool HasUnrealizedChildren
 		{
-			get { return (bool)GetValue(HasUnrealizedChildrenProperty); }
-			set { SetValue(HasUnrealizedChildrenProperty, value); }
+			get => (bool)GetValue(HasUnrealizedChildrenProperty);
+			set => SetValue(HasUnrealizedChildrenProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether a tree node is expanded.
+		/// </summary>
 		public bool IsExpanded
 		{
-			get { return (bool)GetValue(IsExpandedProperty); }
-			set { SetValue(IsExpandedProperty, value); }
+			get => (bool)GetValue(IsExpandedProperty);
+			set => SetValue(IsExpandedProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets an object source used to generate the content of the TreeView.
+		/// </summary>
 		public object ItemsSource
 		{
-			get { return (object)GetValue(ItemsSourceProperty); }
-			set { SetValue(ItemsSourceProperty, value); }
+			get => (object)GetValue(ItemsSourceProperty);
+			set => SetValue(ItemsSourceProperty, value);
 		}
 
+		/// <summary>
+		/// Gets an object that provides calculated values that can be referenced as {TemplateBinding} markup extension sources when defining templates for a TreeViewItem control.
+		/// </summary>
 		public TreeViewItemTemplateSettings TreeViewItemTemplateSettings
 		{
-			get { return (TreeViewItemTemplateSettings)GetValue(TreeViewItemTemplateSettingsProperty); }
-			set { SetValue(TreeViewItemTemplateSettingsProperty, value); }
+			get => (TreeViewItemTemplateSettings)GetValue(TreeViewItemTemplateSettingsProperty);
+			set => SetValue(TreeViewItemTemplateSettingsProperty, value);
 		}
 
-		public static readonly DependencyProperty CollapsedGlyphProperty =
-			DependencyProperty.Register(nameof(CollapsedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE0E3")); // TODO: UWP uses uE76C, align when "Segoe" symbol font is introduced
+		/// <summary>
+		/// Identifies the CollapsedGlyph dependency property.
+		/// </summary>
+		public static DependencyProperty CollapsedGlyphProperty { get; } =
+			DependencyProperty.Register(nameof(CollapsedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE76C"));
 
-		public static readonly DependencyProperty ExpandedGlyphProperty =
-			DependencyProperty.Register(nameof(ExpandedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE0E5")); // TODO: UWP uses uE70D, align when "Segoe" symbol font is introduced
+		/// <summary>
+		/// Identifies the ExpandedGlyph dependency property.
+		/// </summary>
+		public static DependencyProperty ExpandedGlyphProperty { get; } =
+			DependencyProperty.Register(nameof(ExpandedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE70D"));
 
-		public static readonly DependencyProperty GlyphBrushProperty =
+		/// <summary>
+		/// Identifies the GlyphBrush dependency property.
+		/// </summary>
+		public static DependencyProperty GlyphBrushProperty { get; } =
 			DependencyProperty.Register(nameof(GlyphBrush), typeof(Brush), typeof(TreeViewItem), new PropertyMetadata(null));
 
-		public static readonly DependencyProperty GlyphOpacityProperty =
+		/// <summary>
+		/// Identifies the GlyphOpacity dependency property.
+		/// </summary>
+		public static DependencyProperty GlyphOpacityProperty { get; } =
 			DependencyProperty.Register(nameof(GlyphOpacity), typeof(double), typeof(TreeViewItem), new PropertyMetadata(1.0));
 
-		public static readonly DependencyProperty GlyphSizeProperty =
+		/// <summary>
+		/// Identifies the GlyphSize dependency property.
+		/// </summary>
+		public static DependencyProperty GlyphSizeProperty { get; } =
 			DependencyProperty.Register(nameof(GlyphSize), typeof(double), typeof(TreeViewItem), new PropertyMetadata(12.0));
 
-		public static readonly DependencyProperty HasUnrealizedChildrenProperty =
+		/// <summary>
+		/// Identifies the HasUnrealizedChildren dependency property.
+		/// </summary>
+		public static DependencyProperty HasUnrealizedChildrenProperty { get; } =
 			DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new PropertyMetadata(false, OnHasUnrealizedChildrenPropertyChanged));
 
-		public static readonly DependencyProperty IsExpandedProperty =
+		/// <summary>
+		/// Identifies the IsExpanded dependency property.
+		/// </summary>
+		public static DependencyProperty IsExpandedProperty { get; } =
 			DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewItem), new PropertyMetadata(false, OnIsExpandedPropertyChanged));
 
-		public static readonly DependencyProperty ItemsSourceProperty =
+		/// <summary>
+		/// Identifies the ItemsSource dependency property.
+		/// </summary>
+		public static DependencyProperty ItemsSourceProperty { get; } =
 			DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(TreeViewItem), new PropertyMetadata(null, OnItemsSourcePropertyChanged));
 
-		public static readonly DependencyProperty TreeViewItemTemplateSettingsProperty =
+		/// <summary>
+		/// Identifies the TreeViewItemTemplateSettings dependency property.
+		/// </summary>
+		public static DependencyProperty TreeViewItemTemplateSettingsProperty { get; } =
 			DependencyProperty.Register(nameof(TreeViewItemTemplateSettings), typeof(TreeViewItemTemplateSettings), typeof(TreeViewItem), new PropertyMetadata(null));
 
 		private static void OnHasUnrealizedChildrenPropertyChanged(

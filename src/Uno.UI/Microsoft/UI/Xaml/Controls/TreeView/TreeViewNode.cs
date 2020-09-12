@@ -1,7 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// MUX Reference TreeViewNode.cpp, commit de78834
 
-// MUX reference de78834
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -33,8 +33,11 @@ namespace Microsoft.UI.Xaml.Controls
 			get
 			{
 				TreeViewNode parentNode = null;
-				m_parentNode?.TryGetTarget(out parentNode);
-				return parentNode;				
+				if (m_parentNode?.TryGetTarget(out parentNode) == true)
+				{
+					return parentNode;
+				}
+				return null;				
 			}
 
 			internal set
@@ -193,7 +196,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void SyncChildrenNodesWithItemsSource()
+		private void SyncChildrenNodesWithItemsSource()
 		{
 			if (!AreChildrenNodesEqualToItemsSource())
 			{
