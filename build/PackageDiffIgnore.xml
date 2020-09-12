@@ -3071,6 +3071,9 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member
+				fullName="System.Void Windows.UI.Notifications.BadgeUpdateManager..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
 		</Methods>
 	</IgnoreSet>
   </IgnoreSets>
