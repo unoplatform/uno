@@ -652,7 +652,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 			var buttonAboveTreeView = _app.Marked(buttonName).FirstResult();
 			Assert.IsNotNull(buttonAboveTreeView, "Verifying that we found a UIElement called" + buttonName);
 
-			_app.TapCoordinates((float)(buttonAboveTreeView.Rect.X + x), (float)(buttonAboveTreeView.Rect.Y + y));			
+			_app.TapCoordinates((float)(buttonAboveTreeView.Rect.X + x), (float)(buttonAboveTreeView.Rect.Bottom + y));			
 			//Wait.ForIdle();
 		}
 

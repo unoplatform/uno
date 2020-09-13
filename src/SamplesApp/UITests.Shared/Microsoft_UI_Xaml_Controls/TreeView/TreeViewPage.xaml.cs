@@ -792,7 +792,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private void ItemTemplateSelectorTestPage_Click(object sender, RoutedEventArgs e)
 		{
-			this.Frame.Navigate(typeof(TreeViewItemTemplateSelectorTestPage));
+			GetFrame().Navigate(typeof(TreeViewItemTemplateSelectorTestPage));
 		}
 
 		private void AddNodeWithEmpyUnrealizedChildren_Click(object sender, RoutedEventArgs e)
@@ -980,7 +980,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private void TreeViewLateDataInitTestPage_Click(object sender, RoutedEventArgs e)
 		{
-			Frame.Navigate(typeof(TreeViewLateDataInitTest));
+			GetFrame().Navigate(typeof(TreeViewLateDataInitTest));
 		}
 
 		private void ToggleRoot0Selection_Click(object sender, RoutedEventArgs e)
@@ -991,12 +991,12 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private void TreeViewNodeInMarkupTestPage_Click(object sender, RoutedEventArgs e)
 		{
-			Frame.Navigate(typeof(TreeViewNodeInMarkupTestPage));
+			GetFrame().Navigate(typeof(TreeViewNodeInMarkupTestPage));
 		}
 
 		private void TreeViewUnrealizedChildrenTestPage_Click(object sender, RoutedEventArgs e)
 		{
-			Frame.Navigate(typeof(TreeViewUnrealizedChildrenTestPage));
+			GetFrame().Navigate(typeof(TreeViewUnrealizedChildrenTestPage));
 		}
 
 		private void ClearException_Click(object sender, RoutedEventArgs e)
@@ -1006,8 +1006,9 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private async void ResetItemsSourceAsync_Click(object sender, RoutedEventArgs e)
 		{
-			TestTreeViewItemsSource = await PrepareItemsSourceAsync();
-			this.Bindings.Update();
+			// TODO: Uno Specific - Bindings.Update does not work correctly, setting the value directly instead.
+			ContentModeTestTreeView.ItemsSource = await PrepareItemsSourceAsync();
+			//this.Bindings.Update();
 		}
 
 		private void ResetItemsSource_Click(object sender, RoutedEventArgs e)
@@ -1055,6 +1056,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 #else
 			return listControl.Items.Count;
 #endif
+		}
+
+		private Frame GetFrame()
+		{
+			return Windows.UI.Xaml.Window.Current.Content as Frame;
 		}
 #endregion
 	}

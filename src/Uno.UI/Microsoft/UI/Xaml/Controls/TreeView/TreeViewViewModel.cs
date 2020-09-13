@@ -707,7 +707,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						if (IsContentMode)
 						{
-							m_itemToNodeMap.Add(targetNode.Content, targetNode);
+							m_itemToNodeMap[targetNode.Content] = targetNode;
 						}
 
 						var parentNode = targetNode.Parent;

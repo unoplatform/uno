@@ -120,7 +120,7 @@
                         HorizontalAlignment="Left"
                         Width="400" Height="400"
                         ItemInvoked="TestTreeViewContentMode_ItemInvoked"
-                        ItemsSource="{x:Bind TestTreeViewItemsSource}">
+                        ItemsSource="{x:Bind TestTreeViewItemsSource, Mode=OneWay}">
 						<muxcontrols:TreeView.ItemTemplate>
 							<DataTemplate x:DataType="local:TreeViewItemSource">
 								<muxcontrols:TreeViewItem 
