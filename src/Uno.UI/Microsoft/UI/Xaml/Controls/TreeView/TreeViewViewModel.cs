@@ -319,7 +319,6 @@ namespace Microsoft.UI.Xaml.Controls
 					RemoveNodeAndDescendantsFromView(removeNode);
 				}
 
-				//TODO:
 				existingOriginNode.ChildrenChanged -= TreeViewNodeVectorChanged;
 			}
 
@@ -656,7 +655,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal TreeViewNode GetAssociatedNode(object item)
 		{
-			return m_itemToNodeMap[item]; //TODO: Throw or null?
+			return m_itemToNodeMap[item];
 		}
 
 		internal bool IndexOfNode(TreeViewNode targetNode, out int index)
@@ -763,7 +762,7 @@ namespace Microsoft.UI.Xaml.Controls
 						if (changingNodeParent.IsExpanded)
 						{
 							var removedNode = GetRemovedChildTreeViewNodeByIndex(changingNodeParent, index);
-							//TODO: gsl:suppress?
+							
 							if (!IndexOfNode(removedNode, out var removedNodeIndex))
 							{
 								throw new InvalidOperationException("Node does not exist");
