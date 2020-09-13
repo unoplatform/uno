@@ -17,6 +17,7 @@
 		<Setter Property="BorderThickness" Value="{ThemeResource TreeViewItemBorderThemeThickness}"/>
 		<Setter Property="GlyphBrush" Value="{ThemeResource TreeViewItemForeground}"/>
 		<Setter Property="MinHeight" Value="{ThemeResource TreeViewItemMinHeight}"/>
+		<Setter Property="HorizontalContentAlignment" Value="Left" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="local:TreeViewItem">

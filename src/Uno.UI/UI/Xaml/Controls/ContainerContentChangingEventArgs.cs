@@ -29,6 +29,13 @@ namespace Windows.UI.Xaml.Controls
 		public bool Handled { get; set; }
 
 		/// <summary>
+		/// Gets a value that indicates whether this container is in the recycle queue
+		/// of the ListViewBase and is not being used to visualize a data item.
+		/// </summary>
+		/// <remarks>Currently always false in Uno.</remarks>
+		public bool InRecycleQueue { get; }
+
+		/// <summary>
 		/// Gets the data item associated with this container.
 		/// </summary>
 		public object Item { get; }
