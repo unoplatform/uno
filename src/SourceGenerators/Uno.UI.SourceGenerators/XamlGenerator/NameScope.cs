@@ -20,5 +20,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public HashSet<string> ReferencedElementNames { get; } = new HashSet<string>();
 
 		public Dictionary<string, Subclass> Subclasses { get; } = new Dictionary<string, Subclass>();
+
+		public List<XamlObjectDefinition> Components { get; } = new List<XamlObjectDefinition>();
+
+		public List<XamlObjectDefinition> XBindExpressions { get; } = new List<XamlObjectDefinition>();
+
+		public int ComponentCount => Components.Count;
 	}
 }

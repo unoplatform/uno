@@ -64,7 +64,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private int _applyIndex = 0;
 		private int _collectionIndex = 0;
 		private int _subclassIndex = 0;
-		private int _xBindCount = 0;
 		private int _dictionaryPropertyIndex = 0;
 		private string _themeDictionaryCurrentlyBuilding;
 		private readonly XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
@@ -265,6 +264,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant("using System.Diagnostics;");
 			writer.AppendLineInvariant("using System.Linq;");
 			writer.AppendLineInvariant("using Uno.UI;");
+			writer.AppendLineInvariant("using Uno.UI.Xaml;");
 
 			//TODO Determine the list of namespaces to use
 			foreach (var ns in XamlConstants.Namespaces.All)
@@ -362,6 +362,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							BuildBackingFields(writer);
 
 							BuildChildSubclasses(writer);
+
+							BuildComponentFields(writer);
 
 							BuildCompiledBindings(writer, _className.className);
 						}
@@ -686,14 +688,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								BuildChild(writer, contentOwner, contentOwner.Objects.First());
 
 								writer.AppendLineInvariant(";");
+
+								BuildCompiledBindingsInitializerForTemplate(writer);
+
 								writer.AppendLineInvariant("if (__rootInstance is DependencyObject d) Windows.UI.Xaml.NameScope.SetNameScope(d, nameScope);");
 
 								writer.AppendLineInvariant("return __rootInstance;");
 							}
 
+							for (var i = 0; i < CurrentScope.Components.Count; i++)
+							{
+								var current = CurrentScope.Components[i];
+								writer.AppendLineInvariant($"private {GetType(current.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} _component_{i};");
+							}
+
 							BuildBackingFields(writer);
 
 							BuildChildSubclasses(writer);
+
 						}
 					}
 				}
@@ -705,15 +717,74 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildCompiledBindingsInitializer(IndentedStringBuilder writer, string className)
 		{
-			if (_xBindCount != 0)
+			var hasXBindExpressions = CurrentScope.XBindExpressions.Count != 0;
+			var hasResourceExtensions = CurrentScope.Components.Any(HasResourceMarkupExtension);
+
+			if (hasXBindExpressions)
 			{
 				writer.AppendLineInvariant($"Bindings = new {GetBindingsTypeNames(className).bindingsClassName}(this);");
+			}
+
+			if(hasXBindExpressions || hasResourceExtensions)
+			{
+				using (writer.BlockInvariant($"Loading += delegate"))
+				{
+					if (hasXBindExpressions)
+					{
+						writer.AppendLineInvariant("Bindings.Update();");
+					}
+
+					for (var i = 0; i < CurrentScope.Components.Count; i++)
+					{
+						var component = CurrentScope.Components[i];
+
+						if(HasResourceMarkupExtension(component) && IsDependencyObject(component))
+						{
+							writer.AppendLineInvariant($"_component_{i}.UpdateResourceBindings();");
+						}
+					}
+				}
+				writer.AppendLineInvariant(";");
+			}
+		}
+
+		private void BuildCompiledBindingsInitializerForTemplate(IIndentedStringBuilder writer)
+		{
+			var hasResourceExtensions = CurrentScope.Components.Any(HasResourceMarkupExtension);
+
+			if (hasResourceExtensions)
+			{
+				using (writer.BlockInvariant($"if (__rootInstance is FrameworkElement __fe) "))
+				{
+					using (writer.BlockInvariant($"__fe.Loading += delegate"))
+					{
+						for (var i = 0; i < CurrentScope.Components.Count; i++)
+						{
+							var component = CurrentScope.Components[i];
+
+							if (HasResourceMarkupExtension(component) && IsDependencyObject(component))
+							{
+								writer.AppendLineInvariant($"_component_{i}.UpdateResourceBindings();");
+							}
+						}
+					}
+					writer.AppendLineInvariant(";");
+				}
+			}
+		}
+
+		private void BuildComponentFields(IndentedStringBuilder writer)
+		{
+			for (var i = 0; i < CurrentScope.Components.Count; i++)
+			{
+				var current = CurrentScope.Components[i];
+				writer.AppendLineInvariant($"private {GetType(current.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} _component_{i};");
 			}
 		}
 
 		private void BuildCompiledBindings(IndentedStringBuilder writer, string className)
 		{
-			if (_xBindCount != 0)
+			if (CurrentScope.XBindExpressions.Count != 0)
 			{
 				var (bindingsInterfaceName, bindingsClassName) = GetBindingsTypeNames(className);
 
@@ -738,7 +809,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineInvariant("{0}", $"private {className} Owner {{ get; set; }}");
 					writer.AppendLineInvariant("#endif");
 
-
 					using (writer.BlockInvariant($"public {bindingsClassName}({className} owner)"))
 					{
 						writer.AppendLineInvariant($"Owner = owner;");
@@ -747,12 +817,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.Initialize()")) { }
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.Update()"))
 					{
-						writer.AppendLineInvariant($"Owner.ApplyCompiledBindings();");
+						writer.AppendLineInvariant($"var owner = Owner;");
+
+						for (var i = 0; i < CurrentScope.Components.Count; i++)
+						{
+							var component = CurrentScope.Components[i];
+
+							var isDependencyObject = IsDependencyObject(component);
+
+							var wrapInstance = isDependencyObject ? "" : ".GetDependencyObjectForXBind()";
+
+							writer.AppendLineInvariant($"owner._component_{i}{wrapInstance}.ApplyXBind();");
+						}
 					}
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.StopTracking()")) { }
 				}
 			}
 		}
+
+		private bool IsDependencyObject(XamlObjectDefinition component)
+			=> GetType(component.Type).GetAllInterfaces().Any(i => Equals(i, _dependencyObjectSymbol));
 
 		private string BuildControlInitializerDeclaration(string className, XamlObjectDefinition topLevelControl)
 		{
@@ -1183,7 +1267,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariant(0, ";", namedResource.Value.Type);
 			}
 
-			bool IsGenerateCompiledBindings(KeyValuePair<string, XamlObjectDefinition> nr)
+			bool IsGenerateUpdateResourceBindings(KeyValuePair<string, XamlObjectDefinition> nr)
 			{
 				var type = GetType(nr.Value.Type);
 
@@ -1203,19 +1287,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return false;
 			}
 
-			var resourcesTogenerateApplyCompiledBindings = namedResources
-				.Where(IsGenerateCompiledBindings)
+			var resourcesTogenerateUpdateBindings = namedResources
+				.Where(IsGenerateUpdateResourceBindings)
 				.ToArray();
 
-			if (resourcesTogenerateApplyCompiledBindings.Any())
+			if (resourcesTogenerateUpdateBindings.Any())
 			{
 				using (writer.BlockInvariant("Loading += (s, e) =>"))
 				{
-					foreach (var namedResource in resourcesTogenerateApplyCompiledBindings)
+					foreach (var namedResource in resourcesTogenerateUpdateBindings)
 					{
 						var type = GetType(namedResource.Value.Type);
 
-						writer.AppendLineInvariant($"{namedResource.Key}.ApplyCompiledBindings();");
+						writer.AppendLineInvariant($"{namedResource.Key}.UpdateResourceBindings();");
 					}
 				}
 				writer.AppendLineInvariant(0, ";");
@@ -1447,6 +1531,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					|| o.Type.Name == "TemplateBinding"
 				);
 		}
+
+		private bool HasXBindMarkupExtension(XamlObjectDefinition objectDefinition)
+			=> objectDefinition
+				.Members
+				.Any(o => o.Objects.Any(o => o.Type.Name == "Bind"));
+
+		private bool HasResourceMarkupExtension(XamlObjectDefinition objectDefinition)
+			=> objectDefinition
+				.Members
+				.Any(o => o.Objects.Any(o => o.Type.Name == "Bind" || o.Type.Name == "StaticResource" || o.Type.Name == "ThemeResource"));
 
 		private bool IsCustomMarkupExtensionType(XamlType xamlType)
 		{
@@ -2446,9 +2540,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									// on it.
 									var localCollectionName = $"{closureName}_collection_{_collectionIndex++}";
 
-									writer.AppendLineInvariant(
-										$"var {localCollectionName} = {ownerType.ToDisplayString()}.Get{member.Member.Name}({closureName});"
-									);
+									var getterMethod = $"Get{member.Member.Name}";
+
+									if (ownerType.GetMethods().Any(m => m.Name == getterMethod))
+									{
+										// Attached property
+										writer.AppendLineInvariant(
+											$"var {localCollectionName} = {ownerType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{getterMethod}({closureName});"
+										);
+									}
+									else
+									{
+										// Plain object
+										writer.AppendLineInvariant(
+											$"var {localCollectionName} = {closureName}.{member.Member.Name};"
+										);
+									}
 
 									foreach (var inner in member.Objects)
 									{
@@ -2636,6 +2743,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
+					if (!IsMemberInsideResourceDictionary(objectDefinition)
+						&& (HasXBindMarkupExtension(objectDefinition) || HasResourceMarkupExtension(objectDefinition)))
+					{
+						writer.AppendLineInvariant($"this._component_{CurrentScope.ComponentCount} = {closureName};");
+						CurrentScope.Components.Add(objectDefinition);
+					}
+
 					if (_isDebug && IsFrameworkElement(objectDefinition.Type))
 					{
 						writer.AppendLineInvariant($"global::Uno.UI.FrameworkElementHelper.SetBaseUri({closureName}, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
@@ -2706,6 +2820,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (member.Objects.FirstOrDefault() is XamlObjectDefinition bind && bind.Type.Name == "Bind")
 					{
+						CurrentScope.XBindExpressions.Add(bind);
+
 						var eventTarget = XBindExpressionParser.RestoreSinglePath(bind.Members.First().Value?.ToString());
 
 						(string target, string weakReference, INamedTypeSymbol sourceType) buildTargetContext()
@@ -2995,6 +3111,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					TryAnnotateWithGeneratorSource(writer);
 					var isAttachedProperty = IsDependencyProperty(member.Member);
 					var isBindingType = Equals(FindPropertyType(member.Member), _dataBindingSymbol);
+					var isOwnerDependencyObject = member.Owner != null ? GetType(member.Owner.Type).GetAllInterfaces().Any(i => Equals(i, _dependencyObjectSymbol)) : false;
 
 					var bindEvalFunction = bindNode != null ? BuildXBindEvalFunction(member, bindNode) : "";
 
@@ -3010,7 +3127,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						writer.AppendLine(formatLine($"SetBinding(\"{member.Member.Name}\", new {XamlConstants.Types.Binding}{{ {bindingOptions} }}{bindEvalFunction})"));
+						var pocoBuilder = isOwnerDependencyObject ? "" : $"GetDependencyObjectForXBind().";
+
+						writer.AppendLine(formatLine($"{pocoBuilder}SetBinding(\"{member.Member.Name}\", new {XamlConstants.Types.Binding}{{ {bindingOptions} }}{bindEvalFunction})"));
 					}
 				}
 
@@ -3111,7 +3230,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildXBindEvalFunction(XamlMemberDefinition member, XamlObjectDefinition bindNode)
 		{
-			_xBindCount++;
+			CurrentScope.XBindExpressions.Add(bindNode);
 
 			// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
 			// the DataContext, not the control's instance.

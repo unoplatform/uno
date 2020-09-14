@@ -67,7 +67,6 @@ namespace Windows.UI.Xaml
 		{
 			base.OnElementLoaded();
 			OnLoadingPartial();
-			ApplyCompiledBindings();
 			_loading?.Invoke(this, new RoutedEventArgs());
 
 			OnPostLoading();
