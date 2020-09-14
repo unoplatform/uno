@@ -90,8 +90,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			InitializePartial();
 
-			OnDisplayMemberPathChangedPartial(string.Empty, this.DisplayMemberPath);
-
 			_items.VectorChanged += (s, e) =>
 			{
 				OnItemsChanged(e);
@@ -605,6 +603,17 @@ namespace Windows.UI.Xaml.Controls
 			return remainder == 0 ? itemsPerLine : remainder;
 		}
 
+		partial void OnDisplayMemberPathChangedPartial(string oldDisplayMemberPath, string newDisplayMemberPath)
+		{
+			if (string.Equals(oldDisplayMemberPath, newDisplayMemberPath, StringComparison.Ordinal) ||
+			    (string.IsNullOrEmpty(oldDisplayMemberPath) && string.IsNullOrEmpty(newDisplayMemberPath)))
+			{
+				return; // nothing 
+			}
+
+			Refresh();
+		}
+
 		protected virtual void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -829,11 +838,6 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-		partial void OnDisplayMemberPathChangedPartial(string oldDisplayMemberPath, string newDisplayMemberPath)
-		{
-			this.UpdateItemTemplateSelectorForDisplayMemberPath(newDisplayMemberPath);
-		}
-
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
@@ -1056,7 +1060,19 @@ namespace Windows.UI.Xaml.Controls
 					// Set the datacontext first, then the binding.
 					// This avoids the inner content to go through a partial content being
 					// the result of the fallback value of the binding set below.
-					containerAsContentControl.DataContext = item;
+
+					var displayMemberPath = DisplayMemberPath;
+					if (string.IsNullOrEmpty(displayMemberPath))
+					{
+						containerAsContentControl.DataContext = item;
+					}
+					else
+					{
+						// TODO: Cache the BindingPath
+						var b = new BindingPath(displayMemberPath, item) {DataContext = item};
+						var displayContent = b.Value;
+						containerAsContentControl.DataContext = displayContent;
+					}
 
 					if (!containerAsContentControl.IsContainerFromItemTemplate && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
 					{
