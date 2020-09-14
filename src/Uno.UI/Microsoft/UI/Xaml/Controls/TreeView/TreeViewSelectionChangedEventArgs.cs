@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class TreeViewSelectionChangedEventArgs
+	public partial class TreeViewSelectionChangedEventArgs
 	{
 		internal TreeViewSelectionChangedEventArgs(IList<object> addedItems, IList<object> removedItems)
 		{

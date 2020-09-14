@@ -301,6 +301,8 @@ namespace Microsoft.UI.Xaml.Controls
 				node.HasUnrealizedChildren = HasUnrealizedChildren;
 			}
 
+			// Uno specific - in case the OnApplyTemplate was not yet called
+			// the multiselect checkbox is not yet set - we must cache the selection and call this again
 			if (node != null)
 			{
 				UpdateSelectionVisual(node.SelectionState);
@@ -502,7 +504,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var listControl = treeView.ListControl;
 				if (listControl.IsMultiselect)
-				{
+				{					
 					UpdateMultipleSelection(state);
 				}
 				else
@@ -528,6 +530,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateMultipleSelection(TreeNodeSelectionState state)
 		{
+			// Uno specific - in case the OnApplyTemplate was not yet called
+			// the multiselect checkbox is not yet set - we must cache the selection and call this again
+			if (m_selectionBox == null)
+			{
+				return;
+			}
+
 			switch (state)
 			{
 				case TreeNodeSelectionState.Selected:

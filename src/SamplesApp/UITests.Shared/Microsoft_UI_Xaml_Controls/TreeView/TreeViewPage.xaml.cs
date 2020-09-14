@@ -1060,7 +1060,8 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private Frame GetFrame()
 		{
-			return Windows.UI.Xaml.Window.Current.Content as Frame;
+			NavFrameGrid.Visibility = Visibility.Visible;
+			return NavFrame;
 		}
 #endregion
 	}

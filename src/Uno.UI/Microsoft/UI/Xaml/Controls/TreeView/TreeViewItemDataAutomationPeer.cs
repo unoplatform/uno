@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	/// <summary>
 	/// Exposes TreeViewItem data types to Microsoft UI Automation.
 	/// </summary>
-	public class TreeViewItemDataAutomationPeer : ItemAutomationPeer, IExpandCollapseProvider
+	public partial class TreeViewItemDataAutomationPeer : ItemAutomationPeer, IExpandCollapseProvider
 	{
 		private const string UIA_E_ELEMENTNOTENABLED = "Element not enabled";
 

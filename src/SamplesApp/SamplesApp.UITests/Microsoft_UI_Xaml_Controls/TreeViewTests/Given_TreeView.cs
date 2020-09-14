@@ -302,7 +302,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				ClickButton("LabelItems");
 				var root1 = _app.Marked("Root.1");
 				Assert.IsNotNull(root1, "Verifying root.1 is found");
-				root1.Tap();
+				TapAt(root1, 36, 12); // offset by approximate chevron position
 				//Wait.ForIdle();
 
 				Assert.AreEqual("Expanding Raised", ReadResult());
@@ -329,6 +329,8 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		{
 			// TODO: Go to ItemTemplateSelectorTestPage
 			{
+				ClickButton("ItemTemplateSelectorTestPage");
+
 				Console.WriteLine("ItemTemplateSelector test page is ready");
 				var node1 = _app.Marked("Template1").FirstResult();
 				Assert.IsNotNull(node1, "Verifying template 1 is set");
@@ -357,6 +359,10 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				var root1 = _app.Marked("Root.1");
 				Assert.IsNotNull(root1, "Verifying Root.1 is found");
 				root0.Tap();
+
+				// Uno specifc: Ensure the items are labeled properly after expanding
+				ClickButton("LabelItems");
+
 				root1.Tap();
 				ClickButton("GetItemCount");
 				Assert.AreEqual("8", ReadResult());
@@ -510,6 +516,8 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		public void TreeViewDataLateInitTest()
 		{
 			{
+				ClickButton("TreeViewLateDataInitTestPage");
+
 				ClickButton("InitializeItemsSource");
 				//Wait.ForIdle();
 				var node1 = _app.Marked("Root");
@@ -602,6 +610,8 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		public void SingleSelectWithUnrealizedChildrenDoesNotMoveSelection()
 		{
 			{
+				ClickButton("TreeViewUnrealizedChildrenTestPage");
+
 				TapOnTreeViewAt(50, 12, "GetSelectedItemName");
 
 				Console.WriteLine("Selecting item");
@@ -650,7 +660,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 			// Note: Unable to get the treeview UIObject. Using the button above and accounting
 			// for its height as a workaround.
 			var buttonAboveTreeView = _app.Marked(buttonName).FirstResult();
-			Assert.IsNotNull(buttonAboveTreeView, "Verifying that we found a UIElement called" + buttonName);
+			Assert.IsNotNull(buttonAboveTreeView, "Verifying that we found a UIElement called " + buttonName);
 
 			_app.TapCoordinates((float)(buttonAboveTreeView.Rect.X + x), (float)(buttonAboveTreeView.Rect.Bottom + y));			
 			//Wait.ForIdle();
@@ -676,6 +686,15 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		{
 			var firstItem = item.FirstResult();
 			_app.TapCoordinates((float)(firstItem.Rect.X + firstItem.Rect.Width * 0.05 * level), (float)(firstItem.Rect.Y + firstItem.Rect.Height * .5));
+		}
+
+		// Uno specific
+
+		private void TapAt(QueryEx query, double x, double y)
+		{
+			var firstResult = query.FirstResult();
+			
+			_app.TapCoordinates((float)(firstResult.Rect.X + x), (float)(firstResult.Rect.Y + y));
 		}
 	}
 }

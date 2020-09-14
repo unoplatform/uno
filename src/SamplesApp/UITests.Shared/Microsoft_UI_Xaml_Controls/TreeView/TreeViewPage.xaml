@@ -168,5 +168,9 @@
 			<TextBox x:Name="ExceptionMessage" IsReadOnly="True" Grid.Column="1" Margin="1"/>
 			<Button x:Name="ClearException" Content="Clear" Click="ClearException_Click" Grid.Column="2" Margin="1"/>
 		</Grid>
+		<!-- Uno specific: navigation grid for subpage tests-->
+		<Grid Background="White" x:Name="NavFrameGrid" Visibility="Collapsed">
+		  <Frame x:Name="NavFrame" Grid.RowSpan="2" />
+		</Grid>
 	</Grid>
 </utilities:MUXTestPage>
