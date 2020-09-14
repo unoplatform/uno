@@ -13,11 +13,11 @@ namespace Microsoft.UI.Xaml.Controls
 	/// <typeparam name="T">The type of elements in the list.</typeparam>
 	internal class ArrayList<T>
 	{
-		private T[] _list;
+		private T[] _Array;
 
 		public ArrayList()
 		{
-			_list = System.Array.Empty<T>();
+			_Array = System.Array.Empty<T>();
 		}
 
 		public ArrayList(int capacity)
@@ -26,19 +26,19 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				throw new ArgumentOutOfRangeException("Capacity cannot be less than zero.");
 			}
-            else if (capacity == 0)
+			else if (capacity == 0)
 			{
-				_list = System.Array.Empty<T>();
+				_Array = System.Array.Empty<T>();
 			}
 			else
 			{
-				_list = new T[capacity];
+				_Array = new T[capacity];
 			}
-        }
+		}
 
 		internal T[] Array
 		{
-			get => _list;
+			get => _Array;
 		}
 
 		public int Capacity
@@ -54,18 +54,18 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (value > 0)
 					{
-						T[] newList = new T[value];
+						var newList = new T[value];
 
 						if (Count > 0)
 						{
-							System.Array.Copy(_list, 0, newList, 0, Count);
+							System.Array.Copy(_Array, 0, newList, 0, Count);
 						}
 
-						_list = newList;
+						_Array = newList;
 					}
 					else
 					{
-						_list = System.Array.Empty<T>();
+						_Array = System.Array.Empty<T>();
 					}
 				}
 			}
@@ -75,12 +75,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void Add(T item)
 		{
-			if (Count == _list.Length)
+			if (Count == _Array.Length)
 			{
-				System.Array.Resize(ref _list, _list.Length * 2);;
+				if (_Array.Length == 0)
+				{
+					System.Array.Resize(ref _Array, 4);
+				}
+				else
+				{
+					System.Array.Resize(ref _Array, _Array.Length * 2);
+				}
 			}
 
-			_list[Count] = item;
+			_Array[Count] = item;
 			Count++;
 		}
 	}
