@@ -10,10 +10,13 @@ using System.Threading.Tasks;
 using Android.Locations;
 using Android.OS;
 using Android.Runtime;
+using Uno.Extensions;
 using Windows.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
+using Windows.UI.Core;
+
 namespace Windows.Devices.Geolocation
 {
 	public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
@@ -39,12 +42,22 @@ namespace Windows.Devices.Geolocation
 
 		public Task<Geoposition> GetGeopositionAsync()
 		{
-			TryInitialize();
+			if (CoreDispatcher.Main.HasThreadAccess)
+			{
+				TryInitialize();
 
-			BroadcastStatus(PositionStatus.Initializing);
-			var location = _locationManager.GetLastKnownLocation(_locationProvider);
-			BroadcastStatus(PositionStatus.Ready);
-			return Task.FromResult(location.ToGeoPosition());
+				BroadcastStatus(PositionStatus.Initializing);
+				var location = _locationManager.GetLastKnownLocation(_locationProvider);
+				BroadcastStatus(PositionStatus.Ready);
+				return Task.FromResult(location.ToGeoPosition());
+			}
+			else
+			{
+				return CoreDispatcher.Main.RunWithResultAsync(
+					priority: CoreDispatcherPriority.Normal,
+					task: () => GetGeopositionAsync()
+				);
+			}
 		}
 
 		public Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
