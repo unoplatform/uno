@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ColorPickerSlider : Slider
 	{
-		ToolTip m_toolTip;
+		private ToolTip m_toolTip;
 
 		public ColorPickerSlider()
 		{

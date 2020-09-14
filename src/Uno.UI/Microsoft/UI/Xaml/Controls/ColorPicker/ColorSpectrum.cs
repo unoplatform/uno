@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private Vector4 m_oldHsvColor = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
 		// Uno Doc: Added to dispose event handlers
-		SerialDisposable _eventSubscriptions = new SerialDisposable();
+		private SerialDisposable _eventSubscriptions = new SerialDisposable();
 
 		public ColorSpectrum()
 		{

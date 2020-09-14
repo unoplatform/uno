@@ -46,27 +46,27 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_textEntryGridOpened = false;
 
 		// Template parts
-		Primitives.ColorSpectrum m_colorSpectrum;
+		private Primitives.ColorSpectrum m_colorSpectrum;
 
-		Grid m_colorPreviewRectangleGrid;
-		Rectangle m_colorPreviewRectangle;
-		Rectangle m_previousColorRectangle;
-		ImageBrush m_colorPreviewRectangleCheckeredBackgroundImageBrush;
+		private Grid m_colorPreviewRectangleGrid;
+		private Rectangle m_colorPreviewRectangle;
+		private Rectangle m_previousColorRectangle;
+		private ImageBrush m_colorPreviewRectangleCheckeredBackgroundImageBrush;
 
-		IAsyncAction m_createColorPreviewRectangleCheckeredBackgroundBitmapAction = null;
+		private IAsyncAction m_createColorPreviewRectangleCheckeredBackgroundBitmapAction = null;
 
-		Primitives.ColorPickerSlider m_thirdDimensionSlider;
-		LinearGradientBrush m_thirdDimensionSliderGradientBrush;
+		private Primitives.ColorPickerSlider m_thirdDimensionSlider;
+		private LinearGradientBrush m_thirdDimensionSliderGradientBrush;
 
 		private Primitives.ColorPickerSlider m_alphaSlider;
 		private LinearGradientBrush m_alphaSliderGradientBrush;
 		private Rectangle m_alphaSliderBackgroundRectangle;
 		private ImageBrush m_alphaSliderCheckeredBackgroundImageBrush;
 
-		IAsyncAction m_alphaSliderCheckeredBackgroundBitmapAction = null;
+		private IAsyncAction m_alphaSliderCheckeredBackgroundBitmapAction = null;
 
-		ButtonBase m_moreButton;
-		TextBlock m_moreButtonLabel;
+		private ButtonBase m_moreButton;
+		private TextBlock m_moreButtonLabel;
     
 		private ComboBox m_colorRepresentationComboBox;
 		private TextBox m_redTextBox;
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private SolidColorBrush m_checkerColorBrush;
 
 		// Uno Doc: Added to dispose event handlers
-		SerialDisposable _eventSubscriptions = new SerialDisposable();
+		private SerialDisposable _eventSubscriptions = new SerialDisposable();
 
 		public ColorPicker()
 		{
