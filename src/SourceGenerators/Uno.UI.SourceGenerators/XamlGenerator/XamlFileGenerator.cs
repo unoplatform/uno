@@ -718,7 +718,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildCompiledBindingsInitializer(IndentedStringBuilder writer, string className)
 		{
 			var hasXBindExpressions = CurrentScope.XBindExpressions.Count != 0;
-			var hasResourceExtensions = CurrentScope.Components.Any(HasResourceMarkupExtension);
+			var hasResourceExtensions = CurrentScope.Components.Any(HasMarkupExtensionNeedingComponent);
 
 			if (hasXBindExpressions)
 			{
@@ -738,7 +738,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var component = CurrentScope.Components[i];
 
-						if(HasResourceMarkupExtension(component) && IsDependencyObject(component))
+						if(HasMarkupExtensionNeedingComponent(component) && IsDependencyObject(component))
 						{
 							writer.AppendLineInvariant($"_component_{i}.UpdateResourceBindings();");
 						}
@@ -750,7 +750,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildCompiledBindingsInitializerForTemplate(IIndentedStringBuilder writer)
 		{
-			var hasResourceExtensions = CurrentScope.Components.Any(HasResourceMarkupExtension);
+			var hasResourceExtensions = CurrentScope.Components.Any(HasMarkupExtensionNeedingComponent);
 
 			if (hasResourceExtensions)
 			{
@@ -762,7 +762,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							var component = CurrentScope.Components[i];
 
-							if (HasResourceMarkupExtension(component) && IsDependencyObject(component))
+							if (HasMarkupExtensionNeedingComponent(component) && IsDependencyObject(component))
 							{
 								writer.AppendLineInvariant($"_component_{i}.UpdateResourceBindings();");
 							}
@@ -1537,7 +1537,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Members
 				.Any(o => o.Objects.Any(o => o.Type.Name == "Bind"));
 
-		private bool HasResourceMarkupExtension(XamlObjectDefinition objectDefinition)
+		private bool HasMarkupExtensionNeedingComponent(XamlObjectDefinition objectDefinition)
 			=> objectDefinition
 				.Members
 				.Any(o => o.Objects.Any(o => o.Type.Name == "Bind" || o.Type.Name == "StaticResource" || o.Type.Name == "ThemeResource"));
@@ -2744,7 +2744,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 
 					if (!IsMemberInsideResourceDictionary(objectDefinition)
-						&& (HasXBindMarkupExtension(objectDefinition) || HasResourceMarkupExtension(objectDefinition)))
+						&& (HasXBindMarkupExtension(objectDefinition) || HasMarkupExtensionNeedingComponent(objectDefinition)))
 					{
 						writer.AppendLineInvariant($"this._component_{CurrentScope.ComponentCount} = {closureName};");
 						CurrentScope.Components.Add(objectDefinition);
