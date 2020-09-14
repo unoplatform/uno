@@ -1016,9 +1016,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			// The middle 4 are only needed and used in the case of hue as the third dimension.
 			// Saturation and luminosity need only a min and max.
-
-			byte[] test = Array.Empty<byte>();
-
 			ArrayList<byte> bgraMinPixelData = new ArrayList<byte>();
 			ArrayList<byte> bgraMiddle1PixelData = new ArrayList<byte>();
 			ArrayList<byte> bgraMiddle2PixelData = new ArrayList<byte>();
