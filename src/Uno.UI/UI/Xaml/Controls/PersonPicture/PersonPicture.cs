@@ -66,19 +66,6 @@ namespace Windows.UI.Xaml.Controls
 		/// The ImageSource from the Contact property.
 		/// </summary>
 		ImageSource m_contactImageSource;
-		private readonly string SR_GroupName = "GroupName";
-		private readonly string SR_PersonName = "PersonName";
-		private readonly string SR_BadgeItemTextOverride = "BadgeItemTextOverride";
-		private readonly string SR_BadgeIconTextOverride = "BadgeIconTextOverride";
-		private readonly string SR_BadgeIcon = "BadgeIcon";
-		private readonly string SR_BadgeItemSingular = "BadgeItemSingular";
-		private readonly string SR_BadgeItemPlural7 = "BadgeItemPlural7";
-		private readonly string SR_BadgeItemPlural2 = "BadgeItemPlural2";
-		private readonly string SR_BadgeItemPlural5 = "BadgeItemPlural5";
-		private readonly string SR_BadgeItemPlural6 = "BadgeItemPlural6";
-		private readonly string SR_BadgeItemPlural1 = "BadgeItemPlural1";
-		private readonly string SR_BadgeItemPlural3 = "BadgeItemPlural3";
-		private readonly string SR_BadgeItemPlural4 = "BadgeItemPlural4";
 
 		public PersonPicture()
 		{
@@ -370,7 +357,7 @@ namespace Windows.UI.Xaml.Controls
 			// if none exist, it defaults to "Person"
 			if (IsGroup)
 			{
-				contactName = ResourceAccessor.GetLocalizedStringResource(SR_GroupName);
+				contactName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_GroupName);
 			}
 			else if (contact != null && !string.IsNullOrEmpty(contact.DisplayName))
 			{
@@ -386,7 +373,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				contactName = ResourceAccessor.GetLocalizedStringResource(SR_PersonName);
+				contactName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PersonName);
 			}
 
 			// BadgeInformation portion of the AutomationName is set to 'n items' if there is a BadgeNumber,
@@ -397,7 +384,7 @@ namespace Windows.UI.Xaml.Controls
 				if (!string.IsNullOrEmpty(BadgeText))
 				{
 					automationName = StringUtil.FormatString(
-						ResourceAccessor.GetLocalizedStringResource(SR_BadgeItemTextOverride),
+						ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemTextOverride),
 						contactName,
 						BadgeNumber,
 						BadgeText);
@@ -415,14 +402,14 @@ namespace Windows.UI.Xaml.Controls
 				if (!string.IsNullOrEmpty(BadgeText))
 				{
 					automationName = StringUtil.FormatString(
-						ResourceAccessor.GetLocalizedStringResource(SR_BadgeIconTextOverride),
+						ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeIconTextOverride),
 						contactName,
 						BadgeText);
 				}
 				else
 				{
 					automationName = StringUtil.FormatString(
-						ResourceAccessor.GetLocalizedStringResource(SR_BadgeIcon),
+						ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeIcon),
 						contactName);
 				}
 			}
@@ -441,35 +428,35 @@ namespace Windows.UI.Xaml.Controls
 
 			if (numericValue == 1)  // Singular
 			{
-				value = ResourceAccessor.GetLocalizedStringResource(SR_BadgeItemSingular);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemSingular);
 			}
 			else if (numericValue == 2) // 2
 			{
-				value = ResourceAccessor.GetLocalizedStringResource(SR_BadgeItemPlural7);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural7);
 			}
 			else if (numericValue == 3 || numericValue == 4) // 3,4
 			{
-				value = ResourceAccessor.GetLocalizedStringResource(SR_BadgeItemPlural2);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural2);
 			}
 			else if (numericValue >= 5 && numericValue <= 10) // 5-10
 			{
-				value = ResourceAccessor.GetLocalizedStringResource(SR_BadgeItemPlural5);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural5);
 			}
 			else if (numericValue >= 11 && numericValue <= 19) // 11-19
 			{
-				value = ResourceAccessor.GetLocalizedStringResource(SR_BadgeItemPlural6);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural6);
 			}
 			else if (valueMod10 == 1) // 21, 31, 41, etc.
 			{
-				value = ResourceAccessor.GetLocalizedStringResource(SR_BadgeItemPlural1);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural1);
 			}
 			else if (valueMod10 >= 2 && valueMod10 <= 4) // 22-24, 32-34, 42-44, etc.
 			{
-				value = ResourceAccessor.GetLocalizedStringResource(SR_BadgeItemPlural3);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural3);
 			}
 			else // Everything else... 0, 20, 25-30, 35-40, etc.
 			{
-				value = ResourceAccessor.GetLocalizedStringResource(SR_BadgeItemPlural4);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural4);
 			}
 
 			return value;

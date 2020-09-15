@@ -90,8 +90,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var registrations = new CompositeDisposable();
 
-			var spinDownName = ResourceAccessor.GetLocalizedStringResource("NumberBoxDownSpinButtonName");
-			var spinUpName = ResourceAccessor.GetLocalizedStringResource("NumberBoxUpSpinButtonName");
+			var spinDownName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NumberBoxDownSpinButtonName);
+			var spinUpName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NumberBoxUpSpinButtonName);
 
 			if (this.GetTemplateChild(c_numberBoxDownButtonName) is RepeatButton spinDown)
 			{
