@@ -103,7 +103,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnContainerContentChanging(object sender, ContainerContentChangingEventArgs args)
 		{
-			//	// Only need to update unrecycled on screen items.
+			// Only need to update unrecycled on screen items.
 			if (!args.InRecycleQueue)
 			{
 				var targetItem = (TreeViewItem)args.ItemContainer;

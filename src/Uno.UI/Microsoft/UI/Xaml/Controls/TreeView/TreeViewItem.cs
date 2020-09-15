@@ -39,9 +39,9 @@ namespace Microsoft.UI.Xaml.Controls
 		public TreeViewItem()
 		{
 			DefaultStyleKey = typeof(TreeViewItem);
-			SetValue(TreeViewItemTemplateSettingsProperty, new TreeViewItemTemplateSettings());
+			SetValue(TreeViewItemTemplateSettingsProperty, new TreeViewItemTemplateSettings());			
 		}
-
+		
 		// IControlOverrides
 		protected override void OnKeyDown(KeyRoutedEventArgs e)
 		{
@@ -818,6 +818,21 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// We only need to use safe_get in the deconstruction loop
 			RecycleEvents(/* useSafeGet */);
+		}
+
+		// Uno specifc: Ensure the indentation and selection visual are set properly
+		// when the tree view item returns from recycling queue.
+		// Removing this would break the TreeViewPartialSelectionTest-based UI tests.
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			if (TreeNode != null)
+			{
+				UpdateIndentation(TreeNode.Depth);
+				UpdateSelectionVisual(TreeNode.SelectionState);
+			}
 		}
 	}
 }
