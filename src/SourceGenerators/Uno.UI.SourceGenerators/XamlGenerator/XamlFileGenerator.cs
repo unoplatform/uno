@@ -2743,7 +2743,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
-					if (!IsMemberInsideResourceDictionary(objectDefinition)
+					if (!IsMemberInsideResourceDictionary(objectDefinition, maxDepth: null)
 						&& (HasXBindMarkupExtension(objectDefinition) || HasMarkupExtensionNeedingComponent(objectDefinition)))
 					{
 						writer.AppendLineInvariant($"this._component_{CurrentScope.ComponentCount} = {closureName};");
@@ -3561,8 +3561,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Select(n => IsMemberInside(xamlObject, n))
 				.FirstOrDefault(n => n.isInside);
 
-		private bool IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject)
-			=> IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: 1).isInside;
+		private bool IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject, int? maxDepth = 1)
+			=> IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: maxDepth).isInside;
 
 		private static (bool isInside, XamlObjectDefinition xamlObject) IsMemberInside(XamlObjectDefinition xamlObject, string typeName, int? maxDepth = null)
 		{
