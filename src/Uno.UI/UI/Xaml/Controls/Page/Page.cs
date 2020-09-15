@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public Page()
 		{
-
+			InitializeBorder();
 		}
 
 		protected internal virtual void OnNavigatedFrom(NavigationEventArgs e) { }
@@ -86,5 +86,10 @@ namespace Windows.UI.Xaml.Controls
 #endregion
 
 		public NavigationCacheMode NavigationCacheMode { get; set; }
+
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			UpdateBorder();
+		}
 	}
 }
