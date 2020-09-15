@@ -609,6 +609,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Nested_StaticResource()
+		{
+			var dict = new Subclassed_Dictionary();
+
+			var converter = dict["InnerResourceConverter"] as MyConverter;
+			var brush = dict["PerilousColorBrush"];
+			var text = dict["ProblemFreePhilosophy"];
+
+			Assert.IsNotNull(converter);
+			Assert.IsNotNull(brush);
+			Assert.AreEqual(brush, converter.Values[0].Value);
+			Assert.AreEqual(text, converter.Value);
+		}
+
+		[TestMethod]
 		public void When_By_Type_With_Template()
 		{
 			var dict = new Subclassed_Dictionary();
