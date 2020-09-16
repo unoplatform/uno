@@ -759,7 +759,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariant($"Bindings = new {GetBindingsTypeNames(className).bindingsClassName}(this);");
 			}
 
-			if(hasXBindExpressions || hasResourceExtensions)
+			if (hasXBindExpressions || hasResourceExtensions)
 			{
 				using (writer.BlockInvariant($"Loading += delegate"))
 				{
@@ -772,7 +772,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var component = CurrentScope.Components[i];
 
-						if(HasMarkupExtensionNeedingComponent(component) && IsDependencyObject(component))
+						if (HasMarkupExtensionNeedingComponent(component) && IsDependencyObject(component))
 						{
 							writer.AppendLineInvariant($"_component_{i}.UpdateResourceBindings();");
 						}
@@ -1030,10 +1030,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new InvalidOperationException($"Dictionary Item {resource?.Type?.Name} has duplicate key `{key}` { (theme != null ? $" in theme {theme}" : "")}.");
 				}
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
-				if (!isStaticResourceAlias
-					// TODO: this case should be eventually removed, and the same behaviour applied within Uno.UI, to support the scenario where app code
-					// overrides the aliased value. Perf impact needs to be evaluated.
-					|| _isUnoAssembly)
+				if (!isStaticResourceAlias)
 				{
 					_topLevelDictionaryProperties[(theme, key)] = (propertyName, FindType(resource.Type));
 				}
@@ -1053,10 +1050,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				_dictionaryPropertyIndex++;
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
-				if (isStaticResourceAlias
-					// TODO: this case should be eventually removed, and the same behaviour applied within Uno.UI, to support the scenario where app code
-					// overrides the aliased value. Perf impact needs to be evaluated.
-					&& !_isUnoAssembly)
+				if (isStaticResourceAlias)
 				{
 					writer.AppendLineInvariant("// Skipping static property {0} for {1} {2} - StaticResource ResourceKey aliases are added directly to dictionary", _dictionaryPropertyIndex, key, theme);
 				}
@@ -1093,21 +1087,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			var targetKey = resourceDefinition.Members.FirstOrDefault(m => m.Member.Name == "ResourceKey")?.Value as string;
 
-			var directProperty = GetResourceDictionaryPropertyName(targetKey);
-			if (directProperty != null)
-			{
-				// TODO: this case should be eventually removed, even when a match is present in the same dictionary, it should insert the passthrough to allow for
-				// the scenario where app code overrides the aliased value. Perf impact needs to be evaluated.
-				writer.AppendLineInvariant(directProperty);
-			}
-			else if (_isUnoAssembly)
-			{
-				writer.AppendLineInvariant(GetSimpleStaticResourceRetrieval(null, targetKey));
-			}
-			else
-			{
-				writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ResolveStaticResourceAlias(\"{0}\", {1})", targetKey, ParseContextPropertyAccess);
-			}
+			writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ResolveStaticResourceAlias(\"{0}\", {1})", targetKey, ParseContextPropertyAccess);
 		}
 
 		/// <summary>
