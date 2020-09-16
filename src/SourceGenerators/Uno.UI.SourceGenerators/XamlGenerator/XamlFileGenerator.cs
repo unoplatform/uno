@@ -3238,12 +3238,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else if (IsDependencyProperty(member.Member))
 					{
-						// To be fully compatible with UWP here, we should check the nearest dictionary in the 'XAML scope' then outwards. For
-						// StaticResource extension that would be it, for ThemeResource we'd do additional resolution at load-time.
-						//
-						// Instead, Uno immediately sets any Application-level value, if it exists. Then we do load-time resolution by tree-walking
-						// for StaticResource *and* ThemeResource. (Note that initialize-time XAML scope resolution should be possible to implement,
-						// should it turn out to be necessary.)
 						var propertyOwner = GetType(member.Member.DeclaringType);
 						writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ApplyResource({0}, {1}.{2}Property, \"{3}\", isThemeResourceExtension: {4}, context: {5});", closureName, GetGlobalizedTypeName(propertyOwner.ToDisplayString()), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false", ParseContextPropertyAccess);
 					}
