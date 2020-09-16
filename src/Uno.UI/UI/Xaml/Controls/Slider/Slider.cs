@@ -169,17 +169,20 @@ namespace Windows.UI.Xaml.Controls
 
 				if (Orientation == Orientation.Horizontal)
 				{
-					var maxWidth = ActualWidth - _horizontalThumb.ActualWidth;
+					var maxWidth = CalculateMaxWidth(ActualWidth, GetHorizontalThumbWidth());
 
 					_horizontalDecreaseRect.Width = Math.Min(Math.Max(0, _horizontalInitial + (float)e.TotalHorizontalChange), maxWidth);
 
 					ApplySlideToValue(_horizontalDecreaseRect.Width / maxWidth);
 				}
-				else
+				else 
 				{
-					var maxHeight = ActualHeight - _horizontalThumb.ActualHeight;
+					var thumbHeight = GetVerticalThumbHeight();
+					var sliderHeight = GetSliderHeight();
+					var maxHeight = CalculateMaxHeight(sliderHeight, thumbHeight);
+					var delta = -e.TotalVerticalChange;
 
-					_verticalDecreaseRect.Height = Math.Min(Math.Max(0, _verticalInitial - (float)e.TotalVerticalChange), (float)maxHeight);
+					_verticalDecreaseRect.Height = Math.Min(Math.Max(0, _verticalInitial + delta), maxHeight);
 
 					ApplySlideToValue(_verticalDecreaseRect.Height / maxHeight);
 				}
@@ -188,6 +191,41 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_isInDragDelta = false;
 			}
+		}
+
+		/// <summary>
+		/// Gets the slider height
+		/// </summary>
+		private double GetSliderHeight()
+		{
+			var result = ActualHeight;
+
+			// On android and ios the issue raised here: https://github.com/unoplatform/uno/issues/3812
+			// is not fully resolved. The ActualSize is not consistent. The error would need
+			// a rework of Grid. When this work is done, the following workaround should not be
+			// needed anymore.
+#if __ANDROID__ || __IOS__
+			var maxHeightWithThumb = result;
+
+			if (!double.IsInfinity(Height) && !double.IsNaN(Height))
+			{
+				result = Height;
+			}
+			if (!double.IsInfinity(MinHeight) && !double.IsNaN(MinHeight) && MinHeight > result)
+			{
+				result = MinHeight;
+			}
+			else if (!double.IsInfinity(MaxHeight) && !double.IsNaN(MaxHeight) && MaxHeight < result)
+			{
+				result = MaxHeight;
+			}
+
+			if (result > maxHeightWithThumb)
+			{
+				result = maxHeightWithThumb;
+			}
+#endif
+			return result;
 		}
 
 		private void OnDragStarted(object sender, DragStartedEventArgs args)
@@ -278,16 +316,19 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (_horizontalThumb != null && _horizontalDecreaseRect != null)
 				{
-					var maxWidth = ActualWidth - GetHorizontalThumbWidth();
-					_horizontalDecreaseRect.Width = (float)((Value - Minimum) / (Maximum - Minimum)) * maxWidth;
+					var maxWidth = CalculateMaxWidth(ActualWidth, GetHorizontalThumbWidth());
+					_horizontalDecreaseRect.Width = (Value - Minimum) / (Maximum - Minimum) * maxWidth;
 				}
 			}
 			else
 			{
 				if (_verticalThumb != null && _verticalDecreaseRect != null)
 				{
-					var maxHeight = ActualHeight - GetVerticalThumbHeight();
-					_verticalDecreaseRect.Height = (float)((Value - Minimum) / (Maximum - Minimum)) * maxHeight;
+					var thumbHeight = GetVerticalThumbHeight();
+					var sliderHeight = GetSliderHeight();
+					var maxHeight = CalculateMaxHeight(sliderHeight, thumbHeight);
+
+					_verticalDecreaseRect.Height = (Value - Minimum) / (Maximum - Minimum) * maxHeight;
 				}
 			}
 		}
@@ -314,6 +355,59 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return _verticalThumb.ActualHeight;
+		}
+
+		/// <summary>
+		/// Calculate the max width
+		/// </summary>
+		/// <remarks>
+		/// If the thumb is as big as the control,
+		/// the thumb should be able to move but only a little bit to mimic UWP behavior.
+		/// </remarks>
+		/// <param name="sliderWidth">The slider height. Needed to determine if the thumb should move or not.</param>
+		/// <param name="thumbWidth">The thumb height. Needed to determine if the thumb should move or not.</param>
+		private double CalculateMaxWidth(double sliderWidth, double thumbWidth)
+		{
+			var result = sliderWidth - thumbWidth;
+			var maxWidthShouldBeFixed = (result <= 0);
+			if (maxWidthShouldBeFixed)
+			{
+				result = 0.1;
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Calculate the controls max height
+		/// </summary>
+		/// <remarks>
+		/// If the thumb is as big as the control,
+		/// the thumb should be able to move but only a little bit to mimic UWP behavior.
+		/// </remarks>
+		/// <param name="sliderHeight">The slider height. Needed to determine if the thumb should move or not.</param>
+		/// <param name="thumbHeight">The thumb height. Needed to determine if the thumb should move or not.</param>
+		private double CalculateMaxHeight(double sliderHeight, double thumbHeight)
+		{
+			var result = sliderHeight - thumbHeight;
+			var acceptableHeightDifference = 0;
+
+			// On android and ios, when the thumb is the same size as the control or bigger
+			// it causes the control to stretch verticaly. The actual height of the thumb
+			// is not reliable and it often changes. The value of "5" for the acceptable difference
+			// was obtain from multiple test but might not work for every cases. This is obviously
+			// a work around has the issue is in either in the grid that makes up the slider or
+			// in the measure or arrange phase.
+#if __ANDROID__ || __IOS__
+			acceptableHeightDifference = 5;
+#endif
+			var maxHeightShouldBeFixed = (result <= acceptableHeightDifference);
+			if (maxHeightShouldBeFixed)
+			{
+				result = 0.1;
+			}
+
+			return result;
 		}
 
 		/// <summary>
