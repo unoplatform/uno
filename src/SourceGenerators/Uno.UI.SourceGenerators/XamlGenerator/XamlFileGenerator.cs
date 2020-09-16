@@ -964,7 +964,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								BuildResourceDictionaryGlobalProperties(writer, dict);
 							}
 
-							TryAnnotateWithGeneratorSource(writer);
+							TryAnnotateWithGeneratorSource(writer, suffix: "DictionaryProperty");
 							writer.AppendLineInvariant("private global::Windows.UI.Xaml.ResourceDictionary _{0}_ResourceDictionary;", _fileUniqueId);
 							writer.AppendLine();
 							using (writer.BlockInvariant("internal global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary", _fileUniqueId))
@@ -2212,6 +2212,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var resource in (resourcesRoot?.Objects).Safe())
 			{
+				TryAnnotateWithGeneratorSource(writer, suffix: "PerKey");
 				var key = GetDictionaryResourceKey(resource, out var name);
 
 				if (key != null)
@@ -3171,7 +3172,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (bindingOptions != null)
 				{
-					TryAnnotateWithGeneratorSource(writer);
+					TryAnnotateWithGeneratorSource(writer, suffix: "HasBindingOptions");
 					var isAttachedProperty = IsDependencyProperty(member.Member);
 					var isBindingType = Equals(FindPropertyType(member.Member), _dataBindingSymbol);
 					var isOwnerDependencyObject = member.Owner != null ? GetType(member.Owner.Type).GetAllInterfaces().Any(i => Equals(i, _dependencyObjectSymbol)) : false;
@@ -3200,7 +3201,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (resourceKey != null)
 				{
-					TryAnnotateWithGeneratorSource(writer);
+					TryAnnotateWithGeneratorSource(writer, suffix: "HasResourceKey");
 
 					if (IsDependencyProperty(member.Member))
 					{
@@ -5174,25 +5175,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// If flag is set, decorate the generated code with a marker of the current method. Useful for pinpointing the source of a bug or other undesired behavior.
 		/// </summary>
-		private void TryAnnotateWithGeneratorSource(IIndentedStringBuilder writer, [CallerMemberName] string callerName = null, [CallerLineNumber] int lineNumber = 0)
+		private void TryAnnotateWithGeneratorSource(IIndentedStringBuilder writer, string suffix = null, [CallerMemberName] string callerName = null, [CallerLineNumber] int lineNumber = 0)
 		{
 			if (_shouldAnnotateGeneratedXaml)
 			{
-				writer.Append(GetGeneratorSourceAnnotation(callerName, lineNumber));
+				writer.Append(GetGeneratorSourceAnnotation(callerName, lineNumber, suffix));
 			}
 		}
 
-		private void TryAnnotateWithGeneratorSource(ref string str, [CallerMemberName] string callerName = null, [CallerLineNumber] int lineNumber = 0)
+		private void TryAnnotateWithGeneratorSource(ref string str, string suffix = null, [CallerMemberName] string callerName = null, [CallerLineNumber] int lineNumber = 0)
 		{
 			if (_shouldAnnotateGeneratedXaml && str != null)
 			{
-				str = GetGeneratorSourceAnnotation(callerName, lineNumber) + str;
+				str = GetGeneratorSourceAnnotation(callerName, lineNumber, suffix) + str;
 			}
 		}
 
-		private static string GetGeneratorSourceAnnotation(string callerName, int lineNumber)
+		private static string GetGeneratorSourceAnnotation(string callerName, int lineNumber, string suffix)
 		{
-			return "/*{0} L:{1}*/".InvariantCultureFormat(callerName, lineNumber);
+			if (suffix != null)
+			{
+				suffix = "-" + suffix;
+			}
+			return "/*{0} L:{1}{2}*/".InvariantCultureFormat(callerName, lineNumber, suffix);
 		}
 	}
 }
