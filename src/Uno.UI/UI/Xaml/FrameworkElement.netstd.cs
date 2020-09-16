@@ -24,10 +24,8 @@ namespace Windows.UI.Xaml
 	{
 		public new bool IsLoaded => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible
 
-		private protected override sealed void OnElementLoading(int depth)
+		private protected sealed override void OnFwEltLoading()
 		{
-			base.IsLoading = true;
-
 			OnLoadingPartial();
 			ApplyCompiledBindings();
 
@@ -44,50 +42,34 @@ namespace Windows.UI.Xaml
 			}
 
 			OnPostLoading();
-
-			// Explicit propagation of the loading even must be performed
-			// after the compiled bindings are applied (cf. OnLoading), as there may be altered
-			// properties that affect the visual tree.
-			base.OnElementLoading(depth);
 		}
 
 		partial void OnLoadingPartial();
 		private protected virtual void OnLoading() { }
 		private protected virtual void OnPostLoading() { }
 
-		private protected override sealed void OnElementLoaded()
+		private protected sealed override void OnFwEltLoaded()
 		{
-			if (!base.IsLoaded)
+			OnLoadedPartial();
+
+			try
 			{
-				// Make sure to set the flag before raising the loaded event (duplicated with the base.OnLoaded)
-				base.IsLoaded = true;
-				base.IsLoading = false;
-
-				OnLoadedPartial();
-
-				try
-				{
-					// Raise event before invoking base in order to raise them top to bottom
-					OnLoaded();
-					_loaded?.Invoke(this, new RoutedEventArgs(this));
-				}
-				catch (Exception error)
-				{
-					_log.Error("OnElementLoaded failed in FrameworkElement", error);
-					Application.Current.RaiseRecoverableUnhandledException(error);
-				}
+				// Raise event before invoking base in order to raise them top to bottom
+				OnLoaded();
+				_loaded?.Invoke(this, new RoutedEventArgs(this));
 			}
-
-			base.OnElementLoaded();
+			catch (Exception error)
+			{
+				_log.Error("OnElementLoaded failed in FrameworkElement", error);
+				Application.Current.RaiseRecoverableUnhandledException(error);
+			}
 		}
 
 		partial void OnLoadedPartial();
 		private protected virtual void OnLoaded() { }
 
-		private protected override sealed void OnElementUnloaded()
+		private protected sealed override void OnFwEltUnloaded()
 		{
-			base.OnElementUnloaded(); // Will set flag IsLoaded to false
-
 			try
 			{
 				// Raise event after invoking base in order to raise them bottom to top
