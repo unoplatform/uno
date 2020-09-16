@@ -2230,22 +2230,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						writer.AppendLineInvariant("{0}[{1}] = ", dictIdentifier, wrappedKey);
 					}
-					var directproperty = GetResourceDictionaryPropertyName(key);
-					using (ShouldLazyInitializeResource(resource) ? BuildLazyResourceInitializer(writer) : null)
+
+					if (resource.Type.Name == "StaticResource")
 					{
-						if (resource.Type.Name == "StaticResource") // Direct properties aren't built for StaticResource aliases
-						{
-							BuildStaticResourceResourceKeyReference(writer, resource);
-						}
-						else if (directproperty != null)
-						{
-							writer.AppendLineInvariant(directproperty);
-						}
-						else
+						BuildStaticResourceResourceKeyReference(writer, resource);
+					}
+					else
+					{
+						using (BuildLazyResourceInitializer(writer))
 						{
 							BuildChild(writer, null, resource);
 						}
 					}
+
 					writer.AppendLineInvariant(closingPunctuation);
 				}
 
@@ -3204,39 +3201,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (resourceKey != null)
 				{
 					TryAnnotateWithGeneratorSource(writer);
-					(var directProperty, var directPropertyType) = GetResourceDictionaryPropertyDetails(resourceKey);
 
-					if (directProperty != null)
-					{
-						// Prefer direct property reference (when we are in top-level ResourceDictionary and referencing resource in same dictionary)
-						var type = FindPropertyType(member.Member);
-						string rightSide;
-						if (type?.Name == "TimeSpan")
-						{
-							// explicit support for TimeSpan because we can't override the parsing.
-							rightSide = "global::System.TimeSpan.Parse({0})".InvariantCultureFormat(directProperty);
-						}
-						else
-						{
-							var rightSideInner = directProperty;
-							if (isThemeResourceExtension && type != null && !type.Equals(directPropertyType))
-							{
-								// ThemeResource assignations are 'binding-like' in that they permit assignations that couldn't be directly made - perform the conversion if necessary
-								rightSideInner = $"global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({type}), {directProperty})";
-							}
-							rightSide = "{0}{1}".InvariantCultureFormat(GetCastString(type, null), rightSideInner);
-						}
-						if (generateAssignation)
-						{
-							writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, rightSide);
-						}
-						else
-						{
-							writer.AppendLineInvariant(rightSide);
-						}
-
-					}
-					else if (IsDependencyProperty(member.Member))
+					if (IsDependencyProperty(member.Member))
 					{
 						var propertyOwner = GetType(member.Member.DeclaringType);
 						writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ApplyResource({0}, {1}.{2}Property, \"{3}\", isThemeResourceExtension: {4}, context: {5});", closureName, GetGlobalizedTypeName(propertyOwner.ToDisplayString()), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false", ParseContextPropertyAccess);
@@ -3717,13 +3683,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private string GetSimpleStaticResourceRetrieval(INamedTypeSymbol targetPropertyType, string keyStr)
 		{
-			var directProperty = GetResourceDictionaryPropertyName(keyStr);
-			if (directProperty != null)
-			{
-				TryAnnotateWithGeneratorSource(ref directProperty);
-				return directProperty;
-			}
-
 			targetPropertyType = targetPropertyType ?? _objectSymbol;
 
 			var targetPropertyFQT = targetPropertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
