@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml
 
 		private void OnAddingChild(UIElement child)
 		{
-			if (IsLoaded)
+			if (IsLoading || IsLoaded)
 			{
 				child.OnElementLoading(Depth + 1);
 			}
