@@ -391,12 +391,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = hostPanel;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var loadCount = 0;
-			sut.Loaded += (snd, e) => loadCount++;
+			int loadingCount = 0, loadedCount = 0;
+			sut.Loading += (snd, e) => loadingCount++;
+			sut.Loaded += (snd, e) => loadedCount++;
 
 			hostPanel.Children.Add(sut);
 
-			Assert.AreEqual(1, loadCount);
+			Assert.AreEqual(1, loadingCount, "loading");
+			Assert.AreEqual(1, loadedCount, "loaded");
 		}
 
 		[TestMethod]
@@ -418,6 +420,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if NETSTANDARD2_0
 			Assert.IsFalse(hostPanel._children.Contains(sut));
 #endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_While_Parent_Loading_Then_Load_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid();
+
+			int loadingCount = 0, loadedCount = 0;
+			var success = false;
+			sut.Loading += (snd, e) => loadingCount++;
+			sut.Loaded += (snd, e) => loadedCount++;
+
+			hostPanel.Loading += (snd, e) =>
+			{
+				hostPanel.Children.Add(sut);
+				Assert.AreEqual(1, loadingCount, "loading");
+				Assert.AreEqual(0, loadedCount, "loaded");
+				success = true;
+			};
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(success);
+			Assert.AreEqual(1, loadingCount, "loading");
+			Assert.AreEqual(1, loadedCount, "loaded");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_While_Parent_Loaded_Then_Load_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid();
+
+			int loadingCount = 0, loadedCount = 0;
+			var success = false;
+			sut.Loading += (snd, e) => loadingCount++;
+			sut.Loaded += (snd, e) => loadedCount++;
+
+			hostPanel.Loaded += (snd, e) =>
+			{
+				hostPanel.Children.Add(sut);
+				Assert.AreEqual(1, loadingCount, "loading");
+				Assert.AreEqual(1, loadedCount, "loaded");
+				success = true;
+			};
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(success);
+			Assert.AreEqual(1, loadingCount, "loading");
+			Assert.AreEqual(1, loadedCount, "loaded");
 		}
 	}
 
