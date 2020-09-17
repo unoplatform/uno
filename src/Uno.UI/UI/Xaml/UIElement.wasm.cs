@@ -16,6 +16,7 @@ using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Uno.Core.Comparison;
 
 namespace Windows.UI.Xaml
@@ -24,19 +25,7 @@ namespace Windows.UI.Xaml
 	{
 		internal const string DefaultHtmlTag = "div";
 
-		// Even if this a concept of FrameworkElement, the loaded state is handled by the UIElement in order to avoid
-		// to cast to FrameworkElement each time a child is added or removed.
-		internal bool IsLoaded;
-
-		/// <summary>
-		/// This flag is transiently set while element is 'loading' but not yet 'loaded'.
-		/// </summary>
-		internal bool IsLoading;
-
 		private readonly GCHandle _gcHandle;
-		private readonly bool _isFrameworkElement;
-
-		private protected int? Depth { get; private set; }
 
 		private static class UIElementNativeRegistrar
 		{
@@ -90,6 +79,9 @@ namespace Windows.UI.Xaml
 
 		public UIElement(string htmlTag, bool isSvg)
 		{
+			_log = this.Log();
+			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
+
 			Initialize();
 
 			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
@@ -368,7 +360,6 @@ namespace Windows.UI.Xaml
 
 		private Rect _arranged;
 		private string _name;
-		internal readonly IList<UIElement> _children = new MaterializableList<UIElement>();
 
 		public string Name
 		{
@@ -409,9 +400,6 @@ namespace Windows.UI.Xaml
 		}
 
 		public Func<Size, Size> DesiredSizeSelector { get; set; }
-
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
-			=> TransformToVisual(relativeTo).TransformPoint(position);
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
@@ -597,98 +585,6 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId, newIndex);
 
 			InvalidateMeasure();
-		}
-
-		private void OnAddingChild(UIElement child)
-		{
-			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-				&& (IsLoaded || IsLoading)
-				&& child._isFrameworkElement)
-			{
-				if (child.IsLoaded)
-				{
-					this.Log().Error($"{this}: Inconsistent state: child {child} is already loaded (OnAddingChild)");
-				}
-				else
-				{
-					child.ManagedOnLoading();
-				}
-			}
-		}
-
-		private void OnChildAdded(UIElement child)
-		{
-			if (!FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-				|| !IsLoaded
-				|| !child._isFrameworkElement)
-			{
-				return;
-			}
-
-			if (child.IsLoaded)
-			{
-				this.Log().Error($"{this}: Inconsistent state: child {child} is already loaded (OnChildAdded)");
-			}
-			else
-			{
-				child.ManagedOnLoaded((Depth ?? int.MinValue) + 1);
-			}
-		}
-
-		private void OnChildRemoved(UIElement child)
-		{
-			if (!FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-				|| !IsLoaded
-				|| !child._isFrameworkElement)
-			{
-				return;
-			}
-
-			if (child.IsLoaded)
-			{
-				child.ManagedOnUnloaded();
-			}
-			else
-			{
-				this.Log().Error($"{this}: Inconsistent state: child {child} is not loaded (OnChildRemoved)");
-			}
-		}
-
-		internal virtual void ManagedOnLoading()
-		{
-			IsLoading = true;
-
-			for (var i = 0; i < _children.Count; i++)
-			{
-				var child = _children[i];
-				child.ManagedOnLoading();
-			}
-		}
-
-		internal virtual void ManagedOnLoaded(int depth)
-		{
-			IsLoading = false;
-			IsLoaded = true;
-			Depth = depth;
-
-			for (var i = 0; i < _children.Count; i++)
-			{
-				var child = _children[i];
-				child.ManagedOnLoaded(depth + 1);
-			}
-		}
-
-		internal virtual void ManagedOnUnloaded()
-		{
-			IsLoading = false;
-			IsLoaded = false;
-			Depth = null;
-
-			for (var i = 0; i < _children.Count; i++)
-			{
-				var child = _children[i];
-				child.ManagedOnUnloaded();
-			}
 		}
 
 		// We keep track of registered routed events to avoid registering the same one twice (mainly because RemoveHandler is not implemented)

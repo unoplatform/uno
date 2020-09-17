@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public UIElementCollection Children => _children;
 
-#region ChildrenTransitions Dependency Property
+		#region ChildrenTransitions Dependency Property
 
 		public TransitionCollection ChildrenTransitions
 		{
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 
 #endregion
 
-#region BorderThickness DependencyProperty
+		#region BorderThickness DependencyProperty
 
 		public Thickness BorderThickness
 		{
@@ -163,9 +163,9 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-#endregion
+		#endregion
 
-#region BorderBrush Dependency Property
+		#region BorderBrush Dependency Property
 
 #if XAMARIN_ANDROID
 		private Brush _borderBrushStrongReference;
@@ -195,9 +195,9 @@ namespace Windows.UI.Xaml.Controls
 					propertyChangedCallback: (s, e) => ((Panel)s).OnBorderBrushChanged((Brush)e.OldValue, (Brush)e.NewValue)
 				)
 			);
-#endregion
+		#endregion
 
-#region CornerRadius DependencyProperty
+		#region CornerRadius DependencyProperty
 
 		public CornerRadius CornerRadius
 		{
@@ -217,9 +217,9 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-#endregion
+		#endregion
 
-#region IsItemsHost DependencyProperty
+		#region IsItemsHost DependencyProperty
 		public static DependencyProperty IsItemsHostProperty { get ; } = DependencyProperty.Register(
 			"IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(default(bool)));
 

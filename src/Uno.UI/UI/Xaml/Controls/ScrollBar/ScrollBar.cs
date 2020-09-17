@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.Foundation;
 using Uno.Disposables;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Automation;
@@ -98,7 +99,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			DefaultStyleKey = typeof(ScrollBar);
 
 			SizeChanged += OnSizeChanged;
-			LayoutUpdated += (s, e) => UpdateTrackLayout();
+			LayoutUpdated += OnLayoutUpdated;
+			Loaded += ReAttachEvents;
+			Unloaded += DetachEvents;
 		}
 
 		// Update the visual states when the Visibility property is changed.
@@ -141,50 +144,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Thumb spElementHorizontalThumb;
 
 			// Cleanup any existing template parts
-			if (m_tpElementHorizontalThumb != null)
-			{
-				m_ElementHorizontalThumbDragStartedToken.Disposable = null;
-				m_ElementHorizontalThumbDragDeltaToken.Disposable = null;
-				m_ElementHorizontalThumbDragCompletedToken.Disposable = null;
-			}
-			if (m_tpElementHorizontalLargeDecrease != null)
-			{
-				m_ElementHorizontalLargeDecreaseClickToken.Disposable = null;
-			}
-			if (m_tpElementHorizontalLargeIncrease != null)
-			{
-				m_ElementHorizontalLargeIncreaseClickToken.Disposable = null;
-			}
-			if (m_tpElementHorizontalSmallDecrease != null)
-			{
-				m_ElementHorizontalSmallDecreaseClickToken.Disposable = null;
-			}
-			if (m_tpElementHorizontalSmallIncrease != null)
-			{
-				m_ElementHorizontalSmallIncreaseClickToken.Disposable = null;
-			}
-			if (m_tpElementVerticalThumb != null)
-			{
-				m_ElementVerticalThumbDragStartedToken.Disposable = null;
-				m_ElementVerticalThumbDragDeltaToken.Disposable = null;
-				m_ElementVerticalThumbDragCompletedToken.Disposable = null;
-			}
-			if (m_tpElementVerticalLargeDecrease != null)
-			{
-				m_ElementVerticalLargeDecreaseClickToken.Disposable = null;
-			}
-			if (m_tpElementVerticalLargeIncrease != null)
-			{
-				m_ElementVerticalLargeIncreaseClickToken.Disposable = null;
-			}
-			if (m_tpElementVerticalSmallDecrease != null)
-			{
-				m_ElementVerticalSmallDecreaseClickToken.Disposable = null;
-			}
-			if (m_tpElementVerticalSmallIncrease != null)
-			{
-				m_ElementVerticalSmallIncreaseClickToken.Disposable = null;
-			}
+			DetachEvents();
 
 			// Apply the template to the base class
 			base.OnApplyTemplate();
@@ -202,7 +162,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALLARGEINCREASE, strAutomationName));
 					AutomationProperties.SetName(m_tpElementHorizontalLargeIncrease as RepeatButton, strAutomationName);
-
 				}
 			}
 			spElementHorizontalSmallIncrease =GetTemplateChildHelper<RepeatButton>("HorizontalSmallIncrease");
@@ -338,6 +297,87 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			m_tpElementVerticalPanningThumb = spElementVerticalPanningThumb;
 
 			// Attach the event handlers
+			AttachEvents();
+
+			// Updating states for parts where properties might have been updated
+			// through XAML before the template was loaded.
+			UpdateScrollBarVisibility();
+
+			m_suspendVisualStateUpdates = false;
+			ChangeVisualState(false);
+		}
+
+		private static void DetachEvents(object snd, RoutedEventArgs args) // OnUnloaded
+			=> (snd as ScrollBar)?.DetachEvents();
+
+		private void DetachEvents()
+		{
+			if (m_tpElementHorizontalThumb != null)
+			{
+				m_ElementHorizontalThumbDragStartedToken.Disposable = null;
+				m_ElementHorizontalThumbDragDeltaToken.Disposable = null;
+				m_ElementHorizontalThumbDragCompletedToken.Disposable = null;
+			}
+
+			if (m_tpElementHorizontalLargeDecrease != null)
+			{
+				m_ElementHorizontalLargeDecreaseClickToken.Disposable = null;
+			}
+
+			if (m_tpElementHorizontalLargeIncrease != null)
+			{
+				m_ElementHorizontalLargeIncreaseClickToken.Disposable = null;
+			}
+
+			if (m_tpElementHorizontalSmallDecrease != null)
+			{
+				m_ElementHorizontalSmallDecreaseClickToken.Disposable = null;
+			}
+
+			if (m_tpElementHorizontalSmallIncrease != null)
+			{
+				m_ElementHorizontalSmallIncreaseClickToken.Disposable = null;
+			}
+
+			if (m_tpElementVerticalThumb != null)
+			{
+				m_ElementVerticalThumbDragStartedToken.Disposable = null;
+				m_ElementVerticalThumbDragDeltaToken.Disposable = null;
+				m_ElementVerticalThumbDragCompletedToken.Disposable = null;
+			}
+
+			if (m_tpElementVerticalLargeDecrease != null)
+			{
+				m_ElementVerticalLargeDecreaseClickToken.Disposable = null;
+			}
+
+			if (m_tpElementVerticalLargeIncrease != null)
+			{
+				m_ElementVerticalLargeIncreaseClickToken.Disposable = null;
+			}
+
+			if (m_tpElementVerticalSmallDecrease != null)
+			{
+				m_ElementVerticalSmallDecreaseClickToken.Disposable = null;
+			}
+
+			if (m_tpElementVerticalSmallIncrease != null)
+			{
+				m_ElementVerticalSmallIncreaseClickToken.Disposable = null;
+			}
+		}
+
+		private static void ReAttachEvents(object snd, RoutedEventArgs args) // OnLoaded
+		{
+			if (snd is ScrollBar sb)
+			{
+				sb.DetachEvents(); // Do not double listen events!
+				sb.AttachEvents();
+			}
+		}
+
+		private void AttachEvents()
+		{
 			if (m_tpElementHorizontalThumb != null || m_tpElementVerticalThumb != null)
 			{
 				if (m_tpElementHorizontalThumb != null)
@@ -347,7 +387,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					m_tpElementHorizontalThumb.DragDelta += OnThumbDragDelta;
 					m_ElementHorizontalThumbDragDeltaToken.Disposable = Disposable.Create(() => m_tpElementHorizontalThumb.DragDelta -= OnThumbDragDelta);
 					m_tpElementHorizontalThumb.DragCompleted += OnThumbDragCompleted;
-					m_ElementHorizontalThumbDragCompletedToken.Disposable = Disposable.Create(() => m_tpElementHorizontalThumb.DragStarted -= OnThumbDragStarted);
+					m_ElementHorizontalThumbDragCompletedToken.Disposable = Disposable.Create(() => m_tpElementHorizontalThumb.DragCompleted -= OnThumbDragCompleted);
 					m_tpElementHorizontalThumb.IgnoreTouchInput = true;
 				}
 
@@ -384,7 +424,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				if (m_tpElementHorizontalLargeIncrease != null)
 				{
-					m_tpElementHorizontalLargeIncrease.Click += LargeIncrement; 
+					m_tpElementHorizontalLargeIncrease.Click += LargeIncrement;
 					m_ElementHorizontalLargeIncreaseClickToken.Disposable = Disposable.Create(() => m_tpElementHorizontalLargeIncrease.Click -= LargeIncrement);
 					m_tpElementHorizontalLargeIncrease.IgnoreTouchInput = true;
 				}
@@ -413,6 +453,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					m_tpElementVerticalSmallDecrease.IgnoreTouchInput = true;
 				}
 			}
+
 			if (m_tpElementHorizontalSmallIncrease != null || m_tpElementVerticalSmallIncrease != null)
 			{
 				if (m_tpElementHorizontalSmallIncrease != null)
@@ -429,13 +470,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					m_tpElementVerticalSmallIncrease.IgnoreTouchInput = true;
 				}
 			}
-
-			// Updating states for parts where properties might have been updated
-			// through XAML before the template was loaded.
-			UpdateScrollBarVisibility();
-
-			m_suspendVisualStateUpdates = false;
-			ChangeVisualState(false);
 		}
 
 		// Retrieves a reference to a child template object given its name
@@ -827,11 +861,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		// Handle the SizeChanged event.
-		private void OnSizeChanged(
+		private static void OnSizeChanged(
 			object pSender,
 			SizeChangedEventArgs pArgs)
 		{
-			UpdateTrackLayout();
+			(pSender as ScrollBar)?.UpdateTrackLayout();
+		}
+
+		private static void OnLayoutUpdated(
+			object pSender,
+			object pArgs)
+		{
+			(pSender as ScrollBar)?.UpdateTrackLayout();
 		}
 
 		// Called whenever the SmallDecrement button is clicked.

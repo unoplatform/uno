@@ -24,28 +24,14 @@ namespace Windows.UI.Xaml
 
 		public FrameworkElement()
 		{
-			_log = this.Log();
-			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 			Initialize();
-		}
-
-		public new bool IsLoaded
-		{
-			get => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible
-			set => base.IsLoaded = value;
 		}
 
 		bool IFrameworkElementInternal.HasLayouter => true;
 
 		partial void Initialize();
 
-		protected internal readonly ILogger _log;
-		private protected readonly ILogger _logDebug;
 
-		partial void OnLoadingPartial();
-		private protected virtual void OnPostLoading()
-		{
-		}
 		public bool HasParent()
 		{
 			return Parent != null;
@@ -61,24 +47,6 @@ namespace Windows.UI.Xaml
 
 		partial void OnMeasurePartial(Size slotSize)
 		{
-		}
-
-		internal override void OnElementLoaded()
-		{
-			base.OnElementLoaded();
-			OnLoadingPartial();
-			_loading?.Invoke(this, new RoutedEventArgs());
-
-			OnPostLoading();
-
-			OnLoaded();
-			_loaded?.Invoke(this, new RoutedEventArgs());
-		}
-
-		internal void OnElementUnloaded()
-		{
-			OnUnloaded();
-			_unloaded?.Invoke(this, new RoutedEventArgs());
 		}
 
 		public int InvalidateMeasureCallCount { get; private set; }
