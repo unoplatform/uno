@@ -150,29 +150,71 @@ namespace Windows.Devices.Geolocation
 	{
 		private const uint Wgs84SpatialReferenceId = 4326;
 
-		public static Geoposition ToGeoPosition(this Location location)
-			=> new Geoposition(
-				new Geocoordinate(
+		public static Windows.Devices.Geolocation.Geoposition ToGeoPosition(this Location location)
+		{
+			double? geoheading = null;
+			if (location.HasBearing)
+			{
+				geoheading = location.Bearing;
+			}
+
+			Windows.Devices.Geolocation.PositionSource posSource;
+			switch (location.Provider)
+			{
+				case Android.Locations.LocationManager.NetworkProvider:
+					posSource = Windows.Devices.Geolocation.PositionSource.Cellular;    // cell, wifi
+					break;
+				case Android.Locations.LocationManager.PassiveProvider:
+					posSource = Windows.Devices.Geolocation.PositionSource.Unknown;  // other apps
+					break;
+				case Android.Locations.LocationManager.GpsProvider:
+					posSource = Windows.Devices.Geolocation.PositionSource.Satellite;
+					break;
+				default:
+					// ex.: "fused" - all merged, also e.g. Google Play
+					posSource = Windows.Devices.Geolocation.PositionSource.Unknown;
+					break;
+			}
+
+			Windows.Devices.Geolocation.BasicGeoposition basicGeoposition;
+			basicGeoposition.Altitude = location.Altitude;
+			basicGeoposition.Latitude = location.Latitude;
+			basicGeoposition.Longitude = location.Longitude;
+
+			Windows.Devices.Geolocation.Geopoint geopoint = new Windows.Devices.Geolocation.Geopoint(basicGeoposition,
+						Windows.Devices.Geolocation.AltitudeReferenceSystem.Ellipsoid,
+						Wgs84SpatialReferenceId
+					);
+
+			double? locVertAccuracy = null;
+			// VerticalAccuracy is since API 26
+			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+			{
+				if (location.HasVerticalAccuracy)
+				{
+					locVertAccuracy = location.VerticalAccuracyMeters;
+				}
+			}
+
+
+			Windows.Devices.Geolocation.Geoposition geopos = new Windows.Devices.Geolocation.Geoposition(
+				new Windows.Devices.Geolocation.Geocoordinate(
 					latitude: location.Latitude,
 					longitude: location.Longitude,
 					altitude: location.Altitude,
-					timestamp: FromUnixTime(location.Time),
+					timestamp: DateTimeOffset.FromUnixTimeMilliseconds(location.Time),
 					speed: location.HasSpeed ? location.Speed : 0,
-					point: new Geopoint(
-						new BasicGeoposition
-						{
-							Latitude = location.Latitude,
-							Longitude = location.Longitude,
-							Altitude = location.Altitude,
-						},
-						AltitudeReferenceSystem.Ellipsoid,
-						Wgs84SpatialReferenceId
-					),
-					accuracy: 0,
-					altitudeAccuracy: 0,
-					heading: null
+					point: geopoint,
+					accuracy: location.HasAccuracy ? location.Accuracy : 0,
+					altitudeAccuracy: locVertAccuracy,
+					heading: geoheading,
+					positionSource: posSource
 				)
 			);
+
+			return geopos;
+		}
+
 
 		private static DateTimeOffset FromUnixTime(long time)
 		{
