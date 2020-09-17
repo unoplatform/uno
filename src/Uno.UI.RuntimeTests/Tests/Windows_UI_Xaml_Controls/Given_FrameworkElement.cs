@@ -422,6 +422,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+#if NETSTANDARD2_0
+		// Those tests only validate the current behavior which should be reviewed by https://github.com/unoplatform/uno/issues/2895
+		// (cf. notes in the tests)
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Add_Element_While_Parent_Loading_Then_Load_Raised()
@@ -437,6 +441,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			hostPanel.Loading += (snd, e) =>
 			{
 				hostPanel.Children.Add(sut);
+
+				// Note: This is NOT the case on UWP. Loading and Loaded event are raised on the child (aka. 'sut'')
+				//		 only after the completion of the current handler.
 				Assert.AreEqual(1, loadingCount, "loading");
 				Assert.AreEqual(0, loadedCount, "loaded");
 				success = true;
@@ -465,8 +472,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			hostPanel.Loaded += (snd, e) =>
 			{
 				hostPanel.Children.Add(sut);
+
+				// Note: This is NOT the case on UWP. Loading and Loaded event are raised on the child (aka. 'sut'')
+				//		 only after the completion of the current handler.
+				// Note 2: On UWP, when adding a child to the parent while in the parent's loading event handler (i.e. this case)
+				//		   the child will receive the Loaded ** BEFORE ** the Loading event.
 				Assert.AreEqual(1, loadingCount, "loading");
 				Assert.AreEqual(1, loadedCount, "loaded");
+
 				success = true;
 			};
 
@@ -477,6 +490,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, loadingCount, "loading");
 			Assert.AreEqual(1, loadedCount, "loaded");
 		}
+#endif
 	}
 
 	public partial class MyControl01 : FrameworkElement
