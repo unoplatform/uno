@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -41,9 +43,9 @@ namespace Windows.UI.Xaml
 			TargetType = targetType;
 		}
 
-		public Type TargetType { get; set; }
+		public Type? TargetType { get; set; }
 
-		public Style BasedOn { get; set; }
+		public Style? BasedOn { get; set; }
 
 		public SetterBaseCollection Setters { get; } = new SetterBaseCollection();
 
@@ -69,7 +71,7 @@ namespace Windows.UI.Xaml
 					}
 
 					// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
-					(o as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: false);
+					(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(isThemeChangedUpdate: false);
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY
 				finally
@@ -129,6 +131,10 @@ namespace Windows.UI.Xaml
 				{
 					if (setter is Setter s)
 					{
+						if (s.Property == null)
+						{
+							throw new InvalidOperationException("Property must be set on Setter used in Style"); // TODO: We should also support Setter.Target inside Style https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.setter#remarks
+						}
 						map[s.Property] = setter.ApplyTo;
 					}
 					else if (setter is ICSharpPropertySetter propertySetter)
@@ -191,9 +197,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns the default Style for given type. 
 		/// </summary>
-		internal static Style GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, ShouldUseUWPDefaultStyle(type));
+		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, ShouldUseUWPDefaultStyle(type));
 
-		private static Style GetDefaultStyleForType(Type type, bool useUWPDefaultStyles)
+		private static Style? GetDefaultStyleForType(Type type, bool useUWPDefaultStyles)
 		{
 			if (type == null)
 			{
@@ -205,7 +211,7 @@ namespace Windows.UI.Xaml
 			var lookup = useUWPDefaultStyles ? _lookup
 				: _nativeLookup;
 
-			if (!styleCache.TryGetValue(type, out var style))
+			if (!styleCache.TryGetValue(type, out Style? style))
 			{
 				if (lookup.TryGetValue(type, out var styleProvider))
 				{
