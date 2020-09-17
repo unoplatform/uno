@@ -147,8 +147,10 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="type">The type to which the style applies</param>
 		/// <param name="styleProvider">Function which generates the style. This will be called once when first used, then cached.</param>
-		/// <param name="isNative">True if is is the native default style, false if it is the UWP default style.</param>
-		/// <remarks>This method should normally only be called from Xaml-generated code. </remarks>
+		/// <param name="isNative">True if it is the native default style, false if it is the UWP default style.</param>
+		/// <remarks>
+		/// This is public for backward compatibility, but isn't called from Xaml-generated code any longer. 
+		/// </remarks>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider, bool isNative)
 		{
@@ -159,6 +161,30 @@ namespace Windows.UI.Xaml
 			else
 			{
 				_lookup[type] = styleProvider;
+			}
+		}
+
+		/// <summary>
+		///  Register lazy default style provider for the nominated type.
+		/// </summary>
+		/// <param name="type">The type to which the style applies</param>
+		/// <param name="dictionaryProvider">Provides the dictionary in which the style is defined.</param>
+		/// <param name="isNative">True if it is the native default style, false if it is the UWP default style.</param>
+		/// <remarks>This is an Uno-specific method, normally only called from Xaml-generated code.</remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider, bool isNative)
+		{
+			RegisterDefaultStyleForType(type, ProvideStyle, isNative);
+
+			Style ProvideStyle()
+			{
+				var styleSource = dictionaryProvider.GetResourceDictionary();
+				if (styleSource.TryGetValue(type, out var style, shouldCheckSystem: false))
+				{
+					return (Style)style;
+				}
+
+				throw new InvalidOperationException($"{styleSource} was registered as style provider for {type} but doesn't contain matching style.");
 			}
 		}
 
@@ -186,6 +212,8 @@ namespace Windows.UI.Xaml
 					style = styleProvider();
 
 					styleCache[type] = style;
+
+					lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
 				}
 			}
 

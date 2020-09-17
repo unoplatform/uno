@@ -144,20 +144,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					XamlCodeGeneration.ParseContextPropertyName
 				)
 			 };
-		/*
-		_isInSingletonInstance ?
-		"this.{0}".InvariantCultureFormat(XamlCodeGeneration.ParseContextPropertyName)
-		: "{0}{1}.GlobalStaticResources.{2}.Instance.{3}".InvariantCultureFormat(
-			GlobalPrefix,
-			_defaultNamespace,
-			SingletonClassName,
-			XamlCodeGeneration.ParseContextPropertyName
-		);
-		*/
+
+		private string SingletonInstanceAccess => _isInSingletonInstance ?
+			"this" :
+			"{0}{1}.GlobalStaticResources.{2}.Instance".InvariantCultureFormat(
+					GlobalPrefix,
+					_defaultNamespace,
+					SingletonClassName
+				);
+
 		/// <summary>
 		/// Name to use for inner singleton containing top-level ResourceDictionary properties
 		/// </summary>
 		private string SingletonClassName => $"ResourceDictionarySingleton__{_fileDefinition.ShortId}";
+
+		private const string DictionaryProviderInterfaceName = "global::Uno.UI.IXamlResourceDictionaryProvider";
 
 		static XamlFileGenerator()
 		{
@@ -916,7 +917,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						IDisposable WrapSingleton()
 						{
 							writer.AppendLineInvariant("// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.");
-							var block = writer.BlockInvariant("internal sealed class {0}", SingletonClassName);
+							var block = writer.BlockInvariant("internal sealed class {0} : {1}", SingletonClassName, DictionaryProviderInterfaceName);
 							_isInSingletonInstance = true;
 							return new DisposableAction(() =>
 							{
@@ -986,6 +987,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 
 							hasDefaultStyles = BuildDefaultStylesRegistration(writer, FindImplicitContentMember(topLevelControl));
+
+							writer.AppendLine();
+							writer.AppendLineInvariant("ResourceDictionary {0}.GetResourceDictionary() => {1}_ResourceDictionary;", DictionaryProviderInterfaceName, _fileUniqueId);
 						}
 						writer.AppendLine();
 						writer.AppendLineInvariant("internal static global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary => {1}.Instance.{0}_ResourceDictionary;", _fileUniqueId, SingletonClassName);
@@ -1007,6 +1011,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="dictionaryObject">The <see cref="XamlObjectDefinition"/> associated with the dictionary.</param>
 		private void BuildResourceDictionaryGlobalProperties(IIndentedStringBuilder writer, XamlObjectDefinition dictionaryObject)
 		{
+			return; // This will be refactored forthwith
 			TryAnnotateWithGeneratorSource(writer);
 			var resourcesRoot = FindImplicitContentMember(dictionaryObject);
 			var theme = GetDictionaryResourceKey(dictionaryObject);
@@ -1173,9 +1178,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
 					{
 						var isNativeStyle = style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string == "True";
-						writer.AppendLineInvariant("global::Windows.UI.Xaml.Style.RegisterDefaultStyleForType({0}, () => {1}, /*isNativeStyle:*/{2});",
+						writer.AppendLineInvariant("global::Windows.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1}, /*isNativeStyle:*/{2});",
 										implicitKey,
-										GetResourceDictionaryPropertyName(implicitKey),
+										SingletonInstanceAccess,
 										isNativeStyle.ToString().ToLowerInvariant()
 									);
 					}
@@ -3704,29 +3709,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				$")";
 			TryAnnotateWithGeneratorSource(ref staticRetrieval);
 			return staticRetrieval;
-		}
-
-		/// <summary>
-		/// Get the name of top-level ResourceDictionary property associated with the given resource key, if one exists, otherwise null.
-		/// </summary>
-		private string GetResourceDictionaryPropertyName(string keyStr)
-		{
-			var propertyName = GetResourceDictionaryPropertyDetails(keyStr).PropertyName;
-			TryAnnotateWithGeneratorSource(ref propertyName);
-			return propertyName;
-		}
-
-		private (string PropertyName, INamedTypeSymbol PropertyType) GetResourceDictionaryPropertyDetails(string keyStr)
-		{
-			if (_topLevelDictionaryProperties.TryGetValue((_themeDictionaryCurrentlyBuilding, keyStr), out var propertyDetails))
-			{
-				var propertyAccess = _isInChildSubclass ?
-					"global::{0}.GlobalStaticResources.{1}.Instance.{2} /*{3}*/".InvariantCultureFormat(_defaultNamespace, SingletonClassName, propertyDetails.PropertyName, keyStr)
-					: "this.{0} /*{1}*/".InvariantCultureFormat(propertyDetails.PropertyName, keyStr);
-				return (propertyAccess, propertyDetails.PropertyType);
-			}
-
-			return (null, null);
 		}
 
 		private INamedTypeSymbol FindUnderlyingType(INamedTypeSymbol propertyType)
