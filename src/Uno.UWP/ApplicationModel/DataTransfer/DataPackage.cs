@@ -15,34 +15,13 @@ namespace Windows.ApplicationModel.DataTransfer
 		public DataPackageOperation RequestedOperation { get; set; }
 
 		public void SetText(string value)
-		{
-			if (value == null)
-			{
-				throw new ArgumentNullException("Text can't be null");
-			}
-
-			Text = value;
-		}
+			=> Text = value ?? throw new ArgumentNullException("Text can't be null");
 
 		public void SetUri(Uri value)
-		{
-			if (value == null)
-			{
-				throw new ArgumentNullException("Cannot set DataPackage.Uri to null");
-			}
-
-			Uri = value;
-		}
+			=> Uri = value ?? throw new ArgumentNullException("Cannot set DataPackage.Uri to null");
 
 		public void SetHtmlFormat(string value)
-		{
-			if (value == null)
-			{
-				throw new ArgumentNullException("Cannot set DataPackage.Html to null");
-			}
-
-			Html = value;
-		}
+			=> Html = value ?? throw new ArgumentNullException("Cannot set DataPackage.Html to null");
 
 		public void SetWebLink(Uri value) => SetUri(value);
 
