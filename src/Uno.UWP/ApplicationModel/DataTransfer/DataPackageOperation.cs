@@ -12,6 +12,5 @@ namespace Windows.ApplicationModel.DataTransfer
 		Move,
 		[global::Uno.NotImplemented]
 		Link,
-		
 	}
 }
