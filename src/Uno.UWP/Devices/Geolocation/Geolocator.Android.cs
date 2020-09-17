@@ -11,6 +11,7 @@ using Android.Locations;
 using Android.OS;
 using Android.Runtime;
 using Uno.Extensions;
+using Windows.ApplicationModel.Core;
 using Windows.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -37,6 +38,7 @@ namespace Windows.Devices.Geolocation
 			{
 				_locationManager = InitializeLocationProvider(1);
 				_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
+				CoreApplication.Resuming -= CoreApplication_Resuming;
 			}
 		}
 
@@ -88,10 +90,31 @@ namespace Windows.Devices.Geolocation
 				else
 				{
 					BroadcastStatus(PositionStatus.Disabled);
+
+					foreach (var subscriber in _positionChangedSubscriptions)
+					{
+						subscriber.Key.WaitForPermissionFromBackground();
+					}
 				}
 			}
 
 			return status;
+		}
+
+		public void WaitForPermissionFromBackground()
+		{
+			CoreApplication.Resuming -= CoreApplication_Resuming;
+			CoreApplication.Resuming += CoreApplication_Resuming;
+		}
+
+		private async void CoreApplication_Resuming(object sender, object e)
+		{
+			// If the user has granted the location permission while the app was in background, Initialize
+			if (await PermissionsHelper.CheckFineLocationPermission(CancellationToken.None))
+			{
+				TryInitialize();
+				CoreApplication.Resuming -= CoreApplication_Resuming;
+			}
 		}
 
 		private LocationManager InitializeLocationProvider(double desiredAccuracy)
