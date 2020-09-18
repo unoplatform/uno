@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public interface IKeyIndexMapping
+	public partial interface IKeyIndexMapping
 	{
 		String KeyFromIndex(Int32 index);
 

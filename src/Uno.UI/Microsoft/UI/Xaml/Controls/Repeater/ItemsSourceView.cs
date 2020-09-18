@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Interop;
+using INotifyCollectionChanged = System.Collections.Specialized.INotifyCollectionChanged;
+using NotifyCollectionChangedEventHandler = System.Collections.Specialized.NotifyCollectionChangedEventHandler;
+using NotifyCollectionChangedEventArgs = System.Collections.Specialized.NotifyCollectionChangedEventArgs;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -15,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// <remarks>
 	/// This implementation combines ItemsSourceView with InspectingDataSource to match behavior.	
 	/// </remarks>
-	public class ItemsSourceView : INotifyCollectionChanged
+	public partial class ItemsSourceView : INotifyCollectionChanged
 	{
 		private int m_cachedSize = -1;
 
