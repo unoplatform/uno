@@ -214,5 +214,18 @@ namespace Windows.Storage
 		{
 			return new BasicProperties(this);
 		}
+
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileFromApplicationUriAsync( global::System.Uri uri)
+		{
+			return AsyncOperation.FromTask(ct => GetFileFromApplicationUriAsyncTask(ct, uri));
+		}
+
+#if __ANDROID__ || __IOS__ || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		private static Task<StorageFile> GetFileFromApplicationUriAsyncTask(CancellationToken ct, Uri uri)
+		{
+			throw new NotImplementedException();
+		}
+#endif
 	}
 }
