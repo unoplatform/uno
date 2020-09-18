@@ -28,5 +28,14 @@ namespace Uno.UI
 		public static ResourceResolverSingleton Instance => _instance ??= new ResourceResolverSingleton();
 
 		public object ResolveLazyInitializer(string qualifiedResourceKey, IXamlLazyResourceInitializer initializer) => ResourceDictionary.GetLazyInitializer(qualifiedResourceKey, initializer);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public bool ResolveResourceStatic(object key, out object value, object context) => ResourceResolver.ResolveResourceStatic(key, out value, context);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context) => ResourceResolver.ApplyResource(owner, property, resourceKey, isThemeResourceExtension, context);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public object ResolveStaticResourceAlias(string resourceKey, object parseContext) => ResourceResolver.ResolveStaticResourceAlias(resourceKey, parseContext);
 	}
 }

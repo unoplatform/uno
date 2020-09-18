@@ -1096,7 +1096,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			var targetKey = resourceDefinition.Members.FirstOrDefault(m => m.Member.Name == "ResourceKey")?.Value as string;
 
-			writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ResolveStaticResourceAlias(\"{0}\", {1})", targetKey, ParseContextPropertyAccess);
+			writer.AppendLineInvariant("global::Uno.UI.ResourceResolverSingleton.Instance.ResolveStaticResourceAlias(\"{0}\", {1})", targetKey, ParseContextPropertyAccess);
 		}
 
 		/// <summary>
@@ -3194,7 +3194,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (IsDependencyProperty(member.Member))
 					{
 						var propertyOwner = GetType(member.Member.DeclaringType);
-						writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ApplyResource({0}, {1}.{2}Property, \"{3}\", isThemeResourceExtension: {4}, context: {5});", closureName, GetGlobalizedTypeName(propertyOwner.ToDisplayString()), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false", ParseContextPropertyAccess);
+						writer.AppendLineInvariant("global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource({0}, {1}.{2}Property, \"{3}\", isThemeResourceExtension: {4}, context: {5});", closureName, GetGlobalizedTypeName(propertyOwner.ToDisplayString()), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false", ParseContextPropertyAccess);
 					}
 					else if (IsAttachedProperty(member))
 					{
@@ -3683,7 +3683,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 
 			var staticRetrieval = $"(" +
-				$"global::Uno.UI.ResourceResolver.ResolveResourceStatic(" +
+				$"global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic(" +
 				$"\"{keyStr}\", " +
 				$"out var {propertyOutputVar}, " +
 				$"context: {ParseContextPropertyAccess}) " +
