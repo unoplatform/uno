@@ -490,7 +490,15 @@ namespace Windows.UI.Xaml
 
 			OnAddingChild(child);
 
-			_children.Add(child);
+			if (index is { } i)
+			{
+				_children.Insert(i, child);
+			}
+			else
+			{
+				_children.Add(child);
+			}
+
 			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId, index);
 
 			OnChildAdded(child);
