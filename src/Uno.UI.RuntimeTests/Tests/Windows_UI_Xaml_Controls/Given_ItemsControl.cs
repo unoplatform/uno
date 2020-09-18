@@ -9,6 +9,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
+using FluentAssertions;
+using FluentAssertions.Execution;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -66,6 +68,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("item 0", tb.Text);
 		}
 
+		public class ItemForDisplayMemberPath
+		{
+			public string DisplayName { get; set; }
+			public override string ToString() => "This is .ToString() result - should not be used";
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SpecifyingDisplayMemberPath_Then_ContentShouldBeSet()
+		{
+			var resources = new TestsResources();
+
+			var SUT = new ItemsControl
+			{
+				ItemTemplate = TextBlockItemTemplate,
+				DisplayMemberPath = "DisplayName"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			var source = new[]
+			{
+				new ItemForDisplayMemberPath {DisplayName = "item 0"},
+				new ItemForDisplayMemberPath {DisplayName = "item 1"},
+				new ItemForDisplayMemberPath {DisplayName = "item 2"}
+			};
+
+			SUT.ItemsSource = source;
+
+
+			async Task Assert(int index, string s)
+			{
+				ContentPresenter cp = null;
+				await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[index]) as ContentPresenter) != null);
+				cp.Content.Should().Be(s, $"ContainerFromItem() at index {index}");
+
+				var tb = cp.FindFirstChild<TextBlock>();
+				tb.Should().NotBeNull($"Item at index {index}");
+				tb.Text.Should().Be(s, $"TextBlock.Text at index {index}");
+			}
+
+			using var _ = new AssertionScope();
+
+			await Assert(0, "item 0");
+			await Assert(1, "item 1");
+			await Assert(2, "item 2");
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]

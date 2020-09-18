@@ -605,8 +605,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnDisplayMemberPathChangedPartial(string oldDisplayMemberPath, string newDisplayMemberPath)
 		{
-			if (string.Equals(oldDisplayMemberPath, newDisplayMemberPath, StringComparison.Ordinal) ||
-			    (string.IsNullOrEmpty(oldDisplayMemberPath) && string.IsNullOrEmpty(newDisplayMemberPath)))
+			if (string.IsNullOrEmpty(oldDisplayMemberPath) && string.IsNullOrEmpty(newDisplayMemberPath))
 			{
 				return; // nothing 
 			}
@@ -1021,6 +1020,21 @@ namespace Windows.UI.Xaml.Controls
 
 			var styleFromItemsControl = ItemContainerStyle ?? ItemContainerStyleSelector?.SelectStyle(item, element);
 
+			object GetContent()
+			{
+				var displayMemberPath = DisplayMemberPath;
+				if (string.IsNullOrEmpty(displayMemberPath))
+				{
+					return item;
+				}
+				else
+				{
+					// TODO: Cache the BindingPath
+					var b = new BindingPath(displayMemberPath, item) { DataContext = item };
+					return b.Value;
+				}
+			}
+
 			//Prepare ContentPresenter
 			if (element is ContentPresenter containerAsContentPresenter)
 			{
@@ -1038,7 +1052,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!isOwnContainer)
 				{
-					containerAsContentPresenter.Content = item;
+					containerAsContentPresenter.Content = GetContent();
 				}
 			}
 			else if (element is ContentControl containerAsContentControl)
@@ -1057,22 +1071,11 @@ namespace Windows.UI.Xaml.Controls
 				if (!isOwnContainer)
 				{
 					TryRepairContentConnection(containerAsContentControl, item);
+
 					// Set the datacontext first, then the binding.
 					// This avoids the inner content to go through a partial content being
 					// the result of the fallback value of the binding set below.
-
-					var displayMemberPath = DisplayMemberPath;
-					if (string.IsNullOrEmpty(displayMemberPath))
-					{
-						containerAsContentControl.DataContext = item;
-					}
-					else
-					{
-						// TODO: Cache the BindingPath
-						var b = new BindingPath(displayMemberPath, item) {DataContext = item};
-						var displayContent = b.Value;
-						containerAsContentControl.DataContext = displayContent;
-					}
+					containerAsContentControl.DataContext = GetContent();
 
 					if (!containerAsContentControl.IsContainerFromItemTemplate && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
 					{
