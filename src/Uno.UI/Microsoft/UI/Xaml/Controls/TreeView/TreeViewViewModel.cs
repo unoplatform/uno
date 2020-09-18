@@ -239,7 +239,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get => GetAt(index);
 			set => SetAt(index, value);
 		}
-		
+
 		internal void InsertAt(int index, object value)
 		{
 			base.Insert(index, value);
@@ -632,6 +632,14 @@ namespace Microsoft.UI.Xaml.Controls
 					var targetItem = (TreeViewItem)container;
 					targetItem.UpdateSelectionVisual(selectionState);
 				}
+				else
+				{
+					// Uno specific: Workaround for TreeViewSelectRegressionTest (seems to be broken in WinUI too).
+					if (!m_TreeViewList.IsMultiselect)
+					{
+						m_TreeViewList.SelectedItem = IsContentMode ? targetNode?.Content : targetNode;
+					}
+				}
 			}
 		}
 
@@ -764,7 +772,7 @@ namespace Microsoft.UI.Xaml.Controls
 						if (changingNodeParent.IsExpanded)
 						{
 							var removedNode = GetRemovedChildTreeViewNodeByIndex(changingNodeParent, index);
-							
+
 							if (!IndexOfNode(removedNode, out var removedNodeIndex))
 							{
 								throw new InvalidOperationException("Node does not exist");
