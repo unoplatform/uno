@@ -1,5 +1,5 @@
 ﻿<Page
-	x:Class="UITests.Windows_UI_Xaml.Clipping.ButtonClipping652"
+	x:Class="UITests.Windows_UI_Xaml.Clipping.Clipping652"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -12,36 +12,37 @@
 			This is an illustration of Github bug
 			<Hyperlink NavigateUri="https://github.com/unoplatform/uno/issues/652">#652</Hyperlink>
 		</TextBlock>
-		<Grid Width="100" Height="100" BorderBrush="Red" BorderThickness="1">
+		<Grid Width="100" Height="100" BorderBrush="Red" BorderThickness="4" x:Name="ClippingGrid1">
 			<Grid.Clip>
 				<RectangleGeometry Rect="0,0,110,110" />
 			</Grid.Clip>
-			<ToggleButton
+			<Rectangle
 				Width="100"
 				Height="100"
-				Content="Hello world"
+				Fill="Blue"
 				VerticalAlignment="Top"
 				HorizontalAlignment="Left">
-				<ToggleButton.RenderTransform>
+				<Rectangle.RenderTransform>
 					<TranslateTransform X="50" Y="50"/>
-				</ToggleButton.RenderTransform>
-			</ToggleButton>
+				</Rectangle.RenderTransform>
+			</Rectangle>
 		</Grid>
 		<TextBlock FontSize="15">
 			It should be identical to this:
 			<LineBreak />(the button should be 100x100, but cut at 60x60)
 		</TextBlock>
-		<Grid HorizontalAlignment="Center">
-			<Border Width="100" Height="100" BorderBrush="Red" BorderThickness="1" VerticalAlignment="Top" HorizontalAlignment="Left" />
+		<Grid HorizontalAlignment="Center" x:Name="ClippingGrid2">
+			<Border Width="100" Height="100" BorderBrush="Red" BorderThickness="4" VerticalAlignment="Top" HorizontalAlignment="Left" />
 			<Border Width="60" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
 				<Border.RenderTransform>
 					<TranslateTransform X="50" Y="50"/>
 				</Border.RenderTransform>
-				<ToggleButton
+				<Rectangle
 					Height="100"
 					Width="100"
 					VerticalAlignment="Top"
-					Content="Hello world" />
+					Fill="Blue"
+					x:Name="Button2"/>
 			</Border>
 		</Grid>
 	</StackPanel>

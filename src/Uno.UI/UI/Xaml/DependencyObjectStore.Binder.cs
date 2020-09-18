@@ -148,17 +148,8 @@ namespace Windows.UI.Xaml
 		public void ApplyCompiledBindings()
 		{
 			_properties.ApplyCompiledBindings();
-			InvokeCompiledBindingsCallbacks();
 			UpdateResourceBindings(isThemeChangedUpdate: false);
 		}
-
-		private IDisposable? RegisterCompiledBindingsUpdates()
-			// Compiled bindings propagation is performed through all non-FrameworkElement providers
-			// to avoid executing this code twice because all FrameworkElement instances call 
-			// ApplyCompiledBindings when FrameworkElement.Loading is raised.
-			=> ActualInstance is IFrameworkElement 
-				? null 
-				: DependencyObjectExtensions.RegisterCompiledBindingsUpdateCallback(Parent, ApplyCompiledBindings);
 
 		private string GetOwnerDebugString()
 			=> ActualInstance?.GetType().ToString() ?? "[collected]";
@@ -342,8 +333,8 @@ namespace Windows.UI.Xaml
 			}
 			else if (binding is ResourceBinding resourceBinding)
 			{
-				_resourceBindings = _resourceBindings ?? new Dictionary<DependencyProperty, ResourceBinding>();
-				_resourceBindings[dependencyProperty] = resourceBinding;
+				_resourceBindings = _resourceBindings ?? new ResourceBindingCollection();
+				_resourceBindings.Add(dependencyProperty, resourceBinding);
 			}
 			else
 			{

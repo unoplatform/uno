@@ -719,10 +719,9 @@ var Uno;
                 element.style.setProperty(params.Name, this.handleToString(params.Value));
                 return true;
             }
-            setArrangeProperties(elementId, clipToBounds) {
+            setArrangeProperties(elementId) {
                 const element = this.getView(elementId);
                 this.setAsArranged(element);
-                this.setClipToBounds(element, clipToBounds);
                 return "ok";
             }
             /**
@@ -813,7 +812,6 @@ var Uno;
                     style.clip = "";
                 }
                 this.setAsArranged(element);
-                this.setClipToBounds(element, params.ClipToBounds);
                 return true;
             }
             setAsArranged(element) {
@@ -821,14 +819,6 @@ var Uno;
             }
             setAsUnarranged(element) {
                 element.classList.add(WindowManager.unoUnarrangedClassName);
-            }
-            setClipToBounds(element, clipToBounds) {
-                if (clipToBounds) {
-                    element.classList.add(WindowManager.unoClippedToBoundsClassName);
-                }
-                else {
-                    element.classList.remove(WindowManager.unoClippedToBoundsClassName);
-                }
             }
             /**
             * Sets the transform matrix of an element
@@ -841,7 +831,6 @@ var Uno;
                 const matrix = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
                 style.transform = matrix;
                 this.setAsArranged(element);
-                this.setClipToBounds(element, params.ClipToBounds);
                 return true;
             }
             setPointerEvents(htmlId, enabled) {
@@ -1776,7 +1765,6 @@ var Uno;
         WindowManager._isLoadEventsEnabled = false;
         WindowManager.unoRootClassName = "uno-root-element";
         WindowManager.unoUnarrangedClassName = "uno-unarranged";
-        WindowManager.unoClippedToBoundsClassName = "uno-clippedToBounds";
         WindowManager._cctor = (() => {
             WindowManager.initMethods();
             UI.HtmlDom.initPolyfills();
@@ -2114,9 +2102,6 @@ class WindowManagerArrangeElementParams {
         }
         {
             ret.Clip = Boolean(Module.getValue(pData + 68, "i32"));
-        }
-        {
-            ret.ClipToBounds = Boolean(Module.getValue(pData + 72, "i32"));
         }
         return ret;
     }
@@ -2541,9 +2526,6 @@ class WindowManagerSetElementTransformParams {
         }
         {
             ret.M32 = Number(Module.getValue(pData + 48, "double"));
-        }
-        {
-            ret.ClipToBounds = Boolean(Module.getValue(pData + 56, "i32"));
         }
         return ret;
     }

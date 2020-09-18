@@ -27,7 +27,7 @@ namespace Uno.UI
 			Uno.UI.GlobalStaticResources.MasterDictionary;
 #endif
 
-		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>();
+		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.InvariantCultureIgnoreCase);
 		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new Dictionary<string, ResourceDictionary>();
 
 		private static int _assemblyRef = -1;
@@ -155,6 +155,7 @@ namespace Uno.UI
 		/// <param name="owner">Owner of the property</param>
 		/// <param name="property">The property to assign</param>
 		/// <param name="resourceKey">Key to the resource</param>
+		/// <param name="isThemeResourceExtension">True for {ThemeResource Foo}, false for {StaticResource Foo}</param>
 		/// <param name="context">Optional parameter that provides parse-time context</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)

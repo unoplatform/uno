@@ -43,7 +43,11 @@ namespace SampleControl.Presentation
 
 	public partial class SampleChooserViewModel
 	{
+#if DEBUG
 		private const int _numberOfRecentSamplesVisible = 10;
+#else
+		private const int _numberOfRecentSamplesVisible = 0;
+#endif
 		private List<SampleChooserCategory> _categories;
 
 		private readonly Uno.Threading.AsyncLock _fileLock = new Uno.Threading.AsyncLock();
@@ -543,7 +547,11 @@ namespace SampleControl.Presentation
 		private List<SampleChooserCategory> GetSamples()
 		{
 			var categories =
+#if !__WASM__
+				from assembly in GetAllAssembies().AsParallel()
+#else
 				from assembly in GetAllAssembies()
+#endif
 				from type in FindDefinedAssemblies(assembly)
 				let sampleAttribute = FindSampleAttribute(type)
 				where sampleAttribute != null
@@ -553,7 +561,7 @@ namespace SampleControl.Presentation
 				orderby contentByCategory.Key.ToLower(CultureInfo.CurrentUICulture)
 				select new SampleChooserCategory(contentByCategory);
 
-			return categories.AsParallel().ToList();
+			return categories.ToList();
 
 			SampleChooserContent GetContent(TypeInfo type, SampleAttribute attribute)
 				=> new SampleChooserContent

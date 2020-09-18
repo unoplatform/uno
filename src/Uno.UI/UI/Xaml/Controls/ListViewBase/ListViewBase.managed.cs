@@ -16,8 +16,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private protected override bool ShouldItemsControlManageChildren => !(ItemsPanelRoot is IVirtualizingPanel);
 
-		private void Refresh()
+		private protected override void Refresh()
 		{
+			base.Refresh();
+
 			if (VirtualizingPanel != null)
 			{
 				VirtualizingPanel.GetLayouter().Refresh();

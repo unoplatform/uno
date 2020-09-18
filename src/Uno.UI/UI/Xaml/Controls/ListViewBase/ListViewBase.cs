@@ -259,37 +259,6 @@ namespace Windows.UI.Xaml.Controls
 			//SetSelectedState(newSelectedIndex, true);
 		}
 
-		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnItemsSourceChanged(e);
-
-			Refresh();
-		}
-
-		protected override void OnItemContainerStyleChanged(Style oldItemContainerStyle, Style newItemContainerStyle)
-		{
-			base.OnItemContainerStyleChanged(oldItemContainerStyle, newItemContainerStyle);
-			Refresh();
-		}
-
-		protected override void OnItemContainerStyleSelectorChanged(StyleSelector oldItemContainerStyleSelector, StyleSelector newItemContainerStyleSelector)
-		{
-			base.OnItemContainerStyleSelectorChanged(oldItemContainerStyleSelector, newItemContainerStyleSelector);
-			Refresh();
-		}
-
-		protected override void OnItemTemplateSelectorChanged(DataTemplateSelector oldItemTemplateSelector, DataTemplateSelector newItemTemplateSelector)
-		{
-			base.OnItemTemplateSelectorChanged(oldItemTemplateSelector, newItemTemplateSelector);
-			Refresh();
-		}
-
-		protected override void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
-		{
-			base.OnItemTemplateChanged(oldItemTemplate, newItemTemplate);
-			Refresh();
-		}
-
 		public event ItemClickEventHandler ItemClick;
 
 		private void Initialize()

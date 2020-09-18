@@ -20,6 +20,7 @@ labels: kind/contributor-experience, kind/documentation, triage/untriaged
 - [ ] Skia
   - [ ] WPF
   - [ ] GTK (Linux)
+  - [ ] Tizen
 - [ ] Windows
 
 

@@ -380,6 +380,117 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0d, Math.Round(SUT.DesiredSize.Height));
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_Then_Load_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid();
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			int loadingCount = 0, loadedCount = 0;
+			sut.Loading += (snd, e) => loadingCount++;
+			sut.Loaded += (snd, e) => loadedCount++;
+
+			hostPanel.Children.Add(sut);
+
+			Assert.AreEqual(1, loadingCount, "loading");
+			Assert.AreEqual(1, loadedCount, "loaded");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_Then_Unload_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid {Children = {sut}};
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var unloadCount = 0;
+			sut.Unloaded += (snd, e) => unloadCount++;
+
+			hostPanel.Children.Remove(sut);
+
+			Assert.AreEqual(1, unloadCount);
+#if NETSTANDARD2_0
+			Assert.IsFalse(hostPanel._children.Contains(sut));
+#endif
+		}
+
+#if NETSTANDARD2_0
+		// Those tests only validate the current behavior which should be reviewed by https://github.com/unoplatform/uno/issues/2895
+		// (cf. notes in the tests)
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_While_Parent_Loading_Then_Load_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid();
+
+			int loadingCount = 0, loadedCount = 0;
+			var success = false;
+			sut.Loading += (snd, e) => loadingCount++;
+			sut.Loaded += (snd, e) => loadedCount++;
+
+			hostPanel.Loading += (snd, e) =>
+			{
+				hostPanel.Children.Add(sut);
+
+				// Note: This is NOT the case on UWP. Loading and Loaded event are raised on the child (aka. 'sut'')
+				//		 only after the completion of the current handler.
+				Assert.AreEqual(1, loadingCount, "loading");
+				Assert.AreEqual(0, loadedCount, "loaded");
+				success = true;
+			};
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(success);
+			Assert.AreEqual(1, loadingCount, "loading");
+			Assert.AreEqual(1, loadedCount, "loaded");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_While_Parent_Loaded_Then_Load_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid();
+
+			int loadingCount = 0, loadedCount = 0;
+			var success = false;
+			sut.Loading += (snd, e) => loadingCount++;
+			sut.Loaded += (snd, e) => loadedCount++;
+
+			hostPanel.Loaded += (snd, e) =>
+			{
+				hostPanel.Children.Add(sut);
+
+				// Note: This is NOT the case on UWP. Loading and Loaded event are raised on the child (aka. 'sut'')
+				//		 only after the completion of the current handler.
+				// Note 2: On UWP, when adding a child to the parent while in the parent's loading event handler (i.e. this case)
+				//		   the child will receive the Loaded ** BEFORE ** the Loading event.
+				Assert.AreEqual(1, loadingCount, "loading");
+				Assert.AreEqual(1, loadedCount, "loaded");
+
+				success = true;
+			};
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(success);
+			Assert.AreEqual(1, loadingCount, "loading");
+			Assert.AreEqual(1, loadedCount, "loaded");
+		}
+#endif
 	}
 
 	public partial class MyControl01 : FrameworkElement

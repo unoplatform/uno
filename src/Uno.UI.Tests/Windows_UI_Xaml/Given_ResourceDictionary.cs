@@ -609,6 +609,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Nested_StaticResource()
+		{
+			var dict = new Subclassed_Dictionary();
+
+			var converter = dict["InnerResourceConverter"] as MyConverter;
+			var brush = dict["PerilousColorBrush"];
+			var text = dict["ProblemFreePhilosophy"];
+
+			Assert.IsNotNull(converter);
+			Assert.IsNotNull(brush);
+			Assert.AreEqual(brush, converter.Values[0].Value);
+			Assert.AreEqual(text, converter.Value);
+		}
+
+		[TestMethod]
 		public void When_By_Type_With_Template()
 		{
 			var dict = new Subclassed_Dictionary();
@@ -639,6 +654,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsTrue(rd.ContainsKey("SystemAltHighColor"));
 			var systemColor = (Color)rd["SystemAltHighColor"];
 			Assert.AreEqual(Colors.White, systemColor);
+		}
+
+		[TestMethod]
+		public void When_External_Source_Miscased()
+		{
+			var page = new Test_Page_Other();
+
+			var foreground = page.CaseInsensitiveSourceTextBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(foreground);
+			Assert.AreEqual(Colors.SlateGray, foreground.Color);
 		}
 
 #if !NETFX_CORE

@@ -5,9 +5,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CoreLocation;
+using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
+using Windows.UI.Core;
+
 namespace Windows.Devices.Geolocation
 {
 	public sealed partial class Geolocator
@@ -20,10 +23,6 @@ namespace Windows.Devices.Geolocation
 			{
 				DesiredAccuracy = DesiredAccuracy == PositionAccuracy.Default ? 10 : 1,
 			};
-
-#if __IOS__ //required only for iOS
-			_locationManager.RequestWhenInUseAuthorization();
-#endif
 
 			_locationManager.LocationsUpdated += _locationManager_LocationsUpdated;
 
@@ -42,24 +41,34 @@ namespace Windows.Devices.Geolocation
 		}
 
 #if __IOS__
-		public async Task<Geoposition> GetGeopositionAsync() //will be removed with #2240
+		public Task<Geoposition> GetGeopositionAsync() => GetGeopositionInternalAsync(); //will be removed with #2240
 #else
-		public IAsyncOperation<Geoposition> GetGeopositionAsync()
+		public IAsyncOperation<Geoposition> GetGeopositionAsync() => GetGeopositionInternalAsync().AsAsyncOperation();
 #endif
-		{
-			BroadcastStatus(PositionStatus.Initializing);
-			var location = _locationManager.Location;
-			if (location == null)
-			{
-				throw new InvalidOperationException("Could not obtain the location. Please make sure that NSLocationWhenInUseUsageDescription and NSLocationUsageDescription are set in info.plist.");
-			}
 
-			BroadcastStatus(PositionStatus.Ready);
-#if __IOS__
-			return ToGeoposition(location);
-#else
-			return Task.FromResult(ToGeoposition(location)).AsAsyncOperation();
-#endif
+		public Task<Geoposition> GetGeopositionInternalAsync()
+
+		{
+			if (CoreDispatcher.Main.HasThreadAccess)
+			{
+				BroadcastStatus(PositionStatus.Initializing);
+				var location = _locationManager.Location;
+				if (location == null)
+				{
+					throw new InvalidOperationException("Could not obtain the location. Please make sure that NSLocationWhenInUseUsageDescription and NSLocationUsageDescription are set in info.plist.");
+				}
+
+				BroadcastStatus(PositionStatus.Ready);
+
+				return Task.FromResult(ToGeoposition(location));
+			}
+			else
+			{
+				return CoreDispatcher.Main.RunWithResultAsync<Geoposition>(
+					priority: CoreDispatcherPriority.Normal,
+					task: () => GetGeopositionInternalAsync()
+				);
+			}
 		}
 
 		private static Geoposition ToGeoposition(CLLocation location)
@@ -95,62 +104,71 @@ namespace Windows.Devices.Geolocation
 		private static List<CLLocationManager> _requestManagers = new List<CLLocationManager>();
 
 #if __IOS__
-		public static async Task<GeolocationAccessStatus> RequestAccessAsync() //will be removed with #2240
+		public static Task<GeolocationAccessStatus> RequestAccessAsync() => RequestAccessInternalAsync(); //will be removed with #2240
 #else
-		public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync() =>
-			RequestAccessInternalAsync().AsAsyncOperation();
-
+		public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync() => RequestAccessInternalAsync().AsAsyncOperation();
+#endif
 		private static async Task<GeolocationAccessStatus> RequestAccessInternalAsync()
-#endif
+
 		{
-			var mgr = new CLLocationManager();
-
-			lock (_requestManagers)
+			if (CoreDispatcher.Main.HasThreadAccess)
 			{
-				_requestManagers.Add(mgr);
-			}
+				var mgr = new CLLocationManager();
 
-			try
-			{
-				GeolocationAccessStatus accessStatus;
-				var cts = new TaskCompletionSource<CLAuthorizationStatus>();
-
-				mgr.AuthorizationChanged += (s, e) =>
-				{
-
-					if (e.Status != CLAuthorizationStatus.NotDetermined)
-					{
-						cts.TrySetResult(e.Status);
-					}
-				};
-
-#if __IOS__ //required only for iOS
-				mgr.RequestWhenInUseAuthorization();
-#endif
-
-				if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined)
-				{
-					accessStatus = TranslateStatus(CLLocationManager.Status);
-				}
-
-				var cLAuthorizationStatus = await cts.Task;
-
-				accessStatus = TranslateStatus(cLAuthorizationStatus);
-				
-				//if geolocation is not well accessible, default geoposition should be recommended
-				if (accessStatus != GeolocationAccessStatus.Allowed)
-				{
-					IsDefaultGeopositionRecommended = true;
-				}
-
-				return accessStatus;
-			}
-			finally
-			{
 				lock (_requestManagers)
 				{
-					_requestManagers.Remove(mgr);
+					_requestManagers.Add(mgr);
 				}
+
+				try
+				{
+					GeolocationAccessStatus accessStatus;
+					var cts = new TaskCompletionSource<CLAuthorizationStatus>();
+
+					mgr.AuthorizationChanged += (s, e) =>
+					{
+
+						if (e.Status != CLAuthorizationStatus.NotDetermined)
+						{
+							cts.TrySetResult(e.Status);
+						}
+					};
+
+#if __IOS__ //required only for iOS
+					mgr.RequestWhenInUseAuthorization();
+#endif
+
+					if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined)
+					{
+						accessStatus = TranslateStatus(CLLocationManager.Status);
+					}
+
+					var cLAuthorizationStatus = await cts.Task;
+
+					accessStatus = TranslateStatus(cLAuthorizationStatus);
+
+					//if geolocation is not well accessible, default geoposition should be recommended
+					if (accessStatus != GeolocationAccessStatus.Allowed)
+					{
+						IsDefaultGeopositionRecommended = true;
+					}
+
+					return accessStatus;
+				}
+				finally
+				{
+					lock (_requestManagers)
+					{
+						_requestManagers.Remove(mgr);
+					}
+				}
+			}
+			else
+			{
+				return await CoreDispatcher.Main.RunWithResultAsync<GeolocationAccessStatus>(
+					priority: CoreDispatcherPriority.Normal,
+					task: () => RequestAccessInternalAsync()
+				);
 			}
 		}
 

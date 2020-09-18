@@ -7,6 +7,7 @@ using Uno.UI.Tests.App.Views;
 using Uno.UI.Tests.ViewLibrary;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Networking.Sockets;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -29,5 +30,19 @@ namespace Uno.UI.Tests.App.Xaml
 		{
 			this.InitializeComponent();
 		}
+	}
+
+	public class MyConverter : IValueConverter
+	{
+		public List<MyConverterItem> Values { get; } = new List<MyConverterItem>();
+		public object Value { get; set; }
+
+		public object Convert(object value, Type targetType, object parameter, string language) => Values[0].Value;
+		public object ConvertBack(object value, Type targetType, object parameter, string language) => Values[0].Value;
+	}
+
+	public class MyConverterItem
+	{
+		public object Value { get; set; }
 	}
 }

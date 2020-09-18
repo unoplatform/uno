@@ -52,6 +52,7 @@ Affected platform(s):
 - [ ] Skia
   - [ ] WPF
   - [ ] GTK (Linux)
+  - [ ] Tizen
 - [ ] Windows
 - [ ] Build tasks
 - [ ] Solution Templates

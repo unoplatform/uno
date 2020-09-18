@@ -18,75 +18,75 @@ namespace SamplesApp.UITests.TestFramework
 		public static Rectangle FirstQuadrant { get; } = new Rectangle(0, 0, int.MaxValue, int.MaxValue);
 
 		#region Are[Almost]Equal
-		public static void AreEqual(FileInfo expected, FileInfo actual, IAppRect rect, [CallerLineNumber] int line = 0)
+		public static void AreEqual(ScreenshotInfo expected, ScreenshotInfo actual, IAppRect rect, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, rect.ToRectangle(), actual, rect.ToRectangle(), 1, PixelTolerance.None, line);
 
-		public static void AreEqual(FileInfo expected, FileInfo actual, Rectangle? rect = null, [CallerLineNumber] int line = 0)
+		public static void AreEqual(ScreenshotInfo expected, ScreenshotInfo actual, Rectangle? rect = null, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, rect ?? FirstQuadrant, actual, rect ?? FirstQuadrant, 1, PixelTolerance.None, line);
 
-		public static void AreEqual(FileInfo expected, IAppRect expectedRect, FileInfo actual, IAppRect actualRect, [CallerLineNumber] int line = 0)
+		public static void AreEqual(ScreenshotInfo expected, IAppRect expectedRect, ScreenshotInfo actual, IAppRect actualRect, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect.ToRectangle(), actual, actualRect.ToRectangle(), 1, PixelTolerance.None, line);
 
-		public static void AreEqual(FileInfo expected, Rectangle expectedRect, FileInfo actual, Rectangle actualRect, [CallerLineNumber] int line = 0)
+		public static void AreEqual(ScreenshotInfo expected, Rectangle expectedRect, ScreenshotInfo actual, Rectangle actualRect, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect, actual, actualRect, 1, PixelTolerance.None, line);
 
 		/// <summary>
 		/// Asserts that two screenshots are equal to each other inside the area of the nominated rect to within the given pixel error
 		/// (ie, the A, R, G, or B values cumulatively differ by more than the permitted error for any pixel).
 		/// </summary>
-		public static void AreAlmostEqual(FileInfo expected, FileInfo actual, IAppRect rect, int permittedPixelError, [CallerLineNumber] int line = 0)
+		public static void AreAlmostEqual(ScreenshotInfo expected, ScreenshotInfo actual, IAppRect rect, int permittedPixelError, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, rect.ToRectangle(), actual, rect.ToRectangle(), 1, PixelTolerance.Cummulative(permittedPixelError), line);
 
 		/// <summary>
 		/// Asserts that two screenshots are equal to each other inside the area of the nominated rect to within the given pixel error
 		/// (ie, the A, R, G, or B values cumulatively differ by more than the permitted error for any pixel).
 		/// </summary>
-		public static void AreAlmostEqual(FileInfo expected, FileInfo actual, Rectangle? rect = null, int permittedPixelError = 5, [CallerLineNumber] int line = 0)
+		public static void AreAlmostEqual(ScreenshotInfo expected, ScreenshotInfo actual, Rectangle? rect = null, int permittedPixelError = 5, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, rect ?? FirstQuadrant, actual, rect ?? FirstQuadrant, 1, PixelTolerance.Cummulative(permittedPixelError), line);
 
 		/// <summary>
 		/// Asserts that two screenshots are equal to each other inside the area of the nominated rect to within the given pixel error
 		/// (ie, the A, R, G, or B values cumulatively differ by more than the permitted error for any pixel).
 		/// </summary>
-		public static void AreAlmostEqual(FileInfo expected, IAppRect expectedRect, FileInfo actual, IAppRect actualRect, int permittedPixelError, [CallerLineNumber] int line = 0)
+		public static void AreAlmostEqual(ScreenshotInfo expected, IAppRect expectedRect, ScreenshotInfo actual, IAppRect actualRect, int permittedPixelError, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect.ToRectangle(), actual, actualRect.ToRectangle(), 1, PixelTolerance.Cummulative(permittedPixelError), line);
 
 		/// <summary>
 		/// Asserts that two screenshots are equal to each other inside the area of the nominated rect to within the given pixel error
 		/// (ie, the A, R, G, or B values cumulatively differ by more than the permitted error for any pixel).
 		/// </summary>
-		public static void AreAlmostEqual(FileInfo expected, Rectangle expectedRect, FileInfo actual, Rectangle actualRect, int permittedPixelError, [CallerLineNumber] int line = 0)
+		public static void AreAlmostEqual(ScreenshotInfo expected, Rectangle expectedRect, ScreenshotInfo actual, Rectangle actualRect, int permittedPixelError, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect, actual, actualRect, 1, PixelTolerance.Cummulative(permittedPixelError), line);
 
 		/// <summary>
 		/// Asserts that two screenshots are equal to each other inside the area of the nominated rect to within the given pixel error
 		/// (ie, the A, R, G, or B values cumulatively differ by more than the permitted error for any pixel).
 		/// </summary>
-		public static void AreAlmostEqual(FileInfo expected, Rectangle expectedRect, FileInfo actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
+		public static void AreAlmostEqual(ScreenshotInfo expected, Rectangle expectedRect, ScreenshotInfo actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect, actual, actualRect, expectedToActualScale, tolerance, line);
 
-		public static void AreAlmostEqual(FileInfo expected, Rectangle expectedRect, Bitmap actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
+		public static void AreAlmostEqual(ScreenshotInfo expected, Rectangle expectedRect, Bitmap actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect, null, actual, actualRect, expectedToActualScale, tolerance, line);
 
 		private static void AreEqualImpl(
-			FileInfo expected,
+			ScreenshotInfo expected,
 			Rectangle expectedRect,
-			FileInfo actual,
+			ScreenshotInfo actual,
 			Rectangle actualRect,
 			double expectedToActualScale,
 			PixelTolerance tolerance,
 			int line)
 		{
-			using (var actualBitmap = new Bitmap(actual.FullName))
+			using (var actualBitmap = new Bitmap(actual.File.FullName))
 			{
 				AreEqualImpl(expected, expectedRect, actual, actualBitmap, actualRect, expectedToActualScale, tolerance, line);
 			}
 		}
 
 		private static void AreEqualImpl(
-			FileInfo expected,
+			ScreenshotInfo expected,
 			Rectangle expectedRect,
-			FileInfo actual,
+			ScreenshotInfo actual,
 			Bitmap actualBitmap,
 			Rectangle actualRect,
 			double expectedToActualScale,
@@ -98,7 +98,7 @@ namespace SamplesApp.UITests.TestFramework
 				Assert.AreEqual(expectedRect.Size, actualRect.Size, WithContext("Compare rects don't have the same size"));
 			}
 
-			using (var expectedBitmap = new Bitmap(expected.FullName))
+			using (var expectedBitmap = new Bitmap(expected.File.FullName))
 			{
 				if (expectedRect == FirstQuadrant && actualRect == FirstQuadrant)
 				{
@@ -114,7 +114,7 @@ namespace SamplesApp.UITests.TestFramework
 				var expectedPixels = ExpectedPixels
 					.At(actualRect.Location)
 					.Pixels(expectedBitmap, expectedRect)
-					.Named(expected.Name)
+					.Named(expected.StepName)
 					.WithTolerance(tolerance);
 
 				var report = GetContext();
@@ -132,8 +132,8 @@ namespace SamplesApp.UITests.TestFramework
 				=> new StringBuilder()
 					.AppendLine($"ImageAssert.AreEqual @ line {line}")
 					.AppendLine("pixelTolerance: " + tolerance)
-					.AppendLine("expected: " + expected?.Name + (expectedRect == FirstQuadrant ? null : $" in {expectedRect}"))
-					.AppendLine("actual  : " + (actual?.Name ?? "--unknown--") + (actualRect == FirstQuadrant ? null : $" in {actualRect}"))
+					.AppendLine($"expected: {expected?.StepName} ({expected?.File.Name}){(expectedRect == FirstQuadrant ? null : $" in {expectedRect}")}")
+					.AppendLine($"actual  : {actual?.StepName ?? "--unknown--"} ({actual?.File.Name}){(actualRect == FirstQuadrant ? null : $" in {actualRect}")}")
 					.AppendLine("====================");
 
 			string WithContext(string message)
@@ -144,24 +144,24 @@ namespace SamplesApp.UITests.TestFramework
 		#endregion
 
 		#region AreNotEqual
-		public static void AreNotEqual(FileInfo expected, FileInfo actual, IAppRect rect, [CallerLineNumber] int line = 0)
+		public static void AreNotEqual(ScreenshotInfo expected, ScreenshotInfo actual, IAppRect rect, [CallerLineNumber] int line = 0)
 			=> AreNotEqualImpl(expected, rect.ToRectangle(), actual, rect.ToRectangle(), line);
 
-		public static void AreNotEqual(FileInfo expected, FileInfo actual, Rectangle? rect = null, [CallerLineNumber] int line = 0)
+		public static void AreNotEqual(ScreenshotInfo expected, ScreenshotInfo actual, Rectangle? rect = null, [CallerLineNumber] int line = 0)
 			=> AreNotEqualImpl(expected, rect ?? FirstQuadrant, actual, rect ?? FirstQuadrant, line);
 
-		public static void AreNotEqual(FileInfo expected, IAppRect expectedRect, FileInfo actual, IAppRect actualRect, [CallerLineNumber] int line = 0)
+		public static void AreNotEqual(ScreenshotInfo expected, IAppRect expectedRect, ScreenshotInfo actual, IAppRect actualRect, [CallerLineNumber] int line = 0)
 			=> AreNotEqualImpl(expected, expectedRect.ToRectangle(), actual, actualRect.ToRectangle(), line);
 
-		public static void AreNotEqual(FileInfo expected, Rectangle expectedRect, FileInfo actual, Rectangle actualRect, [CallerLineNumber] int line = 0)
+		public static void AreNotEqual(ScreenshotInfo expected, Rectangle expectedRect, ScreenshotInfo actual, Rectangle actualRect, [CallerLineNumber] int line = 0)
 			=> AreNotEqualImpl(expected, expectedRect, actual, actualRect, line);
 
-		private static void AreNotEqualImpl(FileInfo expected, Rectangle expectedRect, FileInfo actual, Rectangle actualRect, int line)
+		private static void AreNotEqualImpl(ScreenshotInfo expected, Rectangle expectedRect, ScreenshotInfo actual, Rectangle actualRect, int line)
 		{
 			Assert.AreEqual(expectedRect.Size, actualRect.Size, WithContext("Compare rects don't have the same size"));
 
-			using (var expectedBitmap = new Bitmap(expected.FullName))
-			using (var actualBitmap = new Bitmap(actual.FullName))
+			using (var expectedBitmap = new Bitmap(expected.File.FullName))
+			using (var actualBitmap = new Bitmap(actual.File.FullName))
 			{
 				Assert.AreEqual(expectedBitmap.Size, actualBitmap.Size, WithContext("Screenshots don't have the same size"));
 
@@ -193,8 +193,8 @@ namespace SamplesApp.UITests.TestFramework
 			{
 				return new StringBuilder()
 					.AppendLine($"ImageAssert.AreNotEqual @ line {line}")
-					.AppendLine("expected: " + expected?.Name + (expectedRect == FirstQuadrant ? null : $"in {expectedRect}"))
-					.AppendLine("actual  : " + actual?.Name + (actualRect == FirstQuadrant ? null : $"in {actualRect}"))
+					.AppendLine($"expected: {expected?.StepName} ({expected?.File.Name}){(expectedRect == FirstQuadrant ? null : $" in {expectedRect}")}")
+					.AppendLine($"actual  : {actual?.StepName ?? "--unknown--"} ({actual?.File.Name}){(actualRect == FirstQuadrant ? null : $" in {actualRect}")}")
 					.AppendLine("====================")
 					.ApplyIf(message != null, x => x.AppendLine(message))
 					.ApplyIf(builder != null, builder)
@@ -204,15 +204,22 @@ namespace SamplesApp.UITests.TestFramework
 		#endregion
 
 		#region HasColorAt
-		public static void HasColorAt(FileInfo screenshot, float x, float y, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
+		public static void HasColorAt(ScreenshotInfo screenshot, float x, float y, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
 			=> HasColorAtImpl(screenshot, (int)x, (int)y, ColorCodeParser.Parse(expectedColorCode), tolerance, line);
 
-		public static void HasColorAt(FileInfo screenshot, float x, float y, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+		public static void HasColorAt(ScreenshotInfo screenshot, float x, float y, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 			=> HasColorAtImpl(screenshot, (int)x, (int)y, expectedColor, tolerance, line);
 
-		private static void HasColorAtImpl(FileInfo screenshot, int x, int y, Color expectedColor, byte tolerance, int line)
+		private static void HasColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color expectedColor, byte tolerance, int line)
 		{
-			using (var bitmap = new Bitmap(screenshot.FullName))
+			var file = screenshot?.File;
+			if (file == null)
+			{
+				Assert.Fail("No file");
+				return;
+			}
+
+			using (var bitmap = new Bitmap(file.FullName))
 			{
 				if (bitmap.Width <= x || bitmap.Height <= y)
 				{
@@ -236,7 +243,7 @@ namespace SamplesApp.UITests.TestFramework
 			{
 				return new StringBuilder()
 					.AppendLine($"ImageAssert.HasColorAt @ line {line}")
-					.AppendLine("screenshot: " + screenshot?.Name)
+					.AppendLine($"screenshot: {screenshot.StepName} ({file.Name})")
 					.AppendLine("====================")
 					.ApplyIf(message != null, sb => sb.AppendLine(message))
 					.ApplyIf(builder != null, builder)
@@ -246,15 +253,16 @@ namespace SamplesApp.UITests.TestFramework
 		#endregion
 
 		#region DoesNotHaveColorAt
-		public static void DoesNotHaveColorAt(FileInfo screenshot, float x, float y, string excludedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
+		public static void DoesNotHaveColorAt(ScreenshotInfo screenshot, float x, float y, string excludedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
 			=> DoesNotHaveColorAtImpl(screenshot, (int)x, (int)y, ColorCodeParser.Parse(excludedColorCode), tolerance, line);
 
-		public static void DoesNotHaveColorAt(FileInfo screenshot, float x, float y, Color excludedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+		public static void DoesNotHaveColorAt(ScreenshotInfo screenshot, float x, float y, Color excludedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 			=> DoesNotHaveColorAtImpl(screenshot, (int)x, (int)y, excludedColor, tolerance, line);
 
-		private static void DoesNotHaveColorAtImpl(FileInfo screenshot, int x, int y, Color excludedColor, byte tolerance, int line)
+		private static void DoesNotHaveColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color excludedColor, byte tolerance, int line)
 		{
-			using (var bitmap = new Bitmap(screenshot.FullName))
+			var file = screenshot.File;
+			using (var bitmap = new Bitmap(file.FullName))
 			{
 				if (bitmap.Width <= x || bitmap.Height <= y)
 				{
@@ -277,7 +285,7 @@ namespace SamplesApp.UITests.TestFramework
 			{
 				return new StringBuilder()
 					.AppendLine($"ImageAssert.DoesNotHaveColorAt @ line {line}")
-					.AppendLine("screenshot: " + screenshot?.Name)
+					.AppendLine($"screenshot: {screenshot.StepName} ({file.Name})")
 					.AppendLine("====================")
 					.ApplyIf(message != null, sb => sb.AppendLine(message))
 					.ApplyIf(builder != null, builder)
@@ -287,12 +295,12 @@ namespace SamplesApp.UITests.TestFramework
 		#endregion
 
 		#region HasPixels
-		public static void HasPixels(FileInfo actual, params ExpectedPixels[] expectations)
+		public static void HasPixels(ScreenshotInfo actual, params ExpectedPixels[] expectations)
 		{
 			var isSuccess = true;
 			var result = new StringBuilder();
 
-			using (var bitmap = new Bitmap(actual.FullName))
+			using (var bitmap = new Bitmap(actual.File.FullName))
 			{
 				foreach (var expectation in expectations)
 				{

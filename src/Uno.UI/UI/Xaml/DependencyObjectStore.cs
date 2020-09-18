@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private readonly DependencyPropertyDetails _dataContextPropertyDetails;
 		private readonly DependencyPropertyDetails _templatedParentPropertyDetails;
-		private Dictionary<DependencyProperty, ResourceBinding>? _resourceBindings;
+		private ResourceBindingCollection? _resourceBindings;
 
 		private DependencyProperty _parentTemplatedParentProperty = UIElement.TemplatedParentProperty;
 		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
@@ -79,7 +79,6 @@ namespace Windows.UI.Xaml
 		private ImmutableList<ExplicitPropertyChangedCallback> _genericCallbacks = ImmutableList<ExplicitPropertyChangedCallback>.Empty;
 		private ImmutableList<DependencyObjectStore> _childrenStores = ImmutableList<DependencyObjectStore>.Empty;
 		private ImmutableList<ParentChangedCallback> _parentChangedCallbacks = ImmutableList<ParentChangedCallback>.Empty;
-		private ImmutableList<Action> _compiledBindingsCallbacks = ImmutableList<Action>.Empty;
 
 		private readonly ManagedWeakReference _originalObjectRef;
 
@@ -92,7 +91,6 @@ namespace Windows.UI.Xaml
 
 		private readonly Type _originalObjectType;
 		private SerialDisposable _inheritedProperties = new SerialDisposable();
-		private SerialDisposable _compiledBindings = new SerialDisposable();
 		private ManagedWeakReference? _parentRef;
 		private Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
 		private DependencyPropertyValuePrecedences? _precedenceOverride;
@@ -139,12 +137,10 @@ namespace Windows.UI.Xaml
 					}
 
 					_inheritedProperties.Disposable = null;
-					_compiledBindings.Disposable = null;
 
 					if (value is IDependencyObjectStoreProvider parentProvider)
 					{
 						TryRegisterInheritedProperties(parentProvider);
-						_compiledBindings.Disposable = RegisterCompiledBindingsUpdates();
 					}
 
 					OnParentChanged(previousParent, value);
@@ -452,11 +448,6 @@ namespace Windows.UI.Xaml
 
 					ValidatePropertyOwner(property);
 
-					if (precedence == DependencyPropertyValuePrecedences.Local)
-					{
-						TryRemoveResourceBinding(property);
-					}
-
 					// Resolve the stack once for the instance, for performance.
 					propertyDetails = propertyDetails ?? _properties.GetPropertyDetails(property);
 
@@ -656,14 +647,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		/// <summary>
-		/// The local value of this property is being overwritten, static resource resolution should no longer be applied.
-		/// </summary>
-		private void TryRemoveResourceBinding(DependencyProperty property)
-		{
-			_resourceBindings?.Remove(property);
-		}
-
 		public long RegisterPropertyChangedCallback(DependencyProperty property, DependencyPropertyChangedCallback callback)
 		{
 			_propertyChangedToken = Interlocked.Increment(ref _propertyChangedToken);
@@ -799,45 +782,6 @@ namespace Windows.UI.Xaml
 				// Delegates integrate a null check when removing new delegates.
 				that._childrenStores = that._childrenStores.Remove(childStore);
 			}
-		}
-
-		/// <summary>
-		/// Register for changes all dependency properties changes notifications for the specified instance.
-		/// </summary>
-		/// <param name="instance">The instance for which to observe properties changes</param>
-		/// <param name="callback">The callback</param>
-		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		internal IDisposable RegisterCompiledBindingsUpdateCallback(Action handler)
-		{
-			var weakDelegate = CreateWeakDelegate(handler);
-
-			_compiledBindingsCallbacks = _compiledBindingsCallbacks.Add(weakDelegate.callback);
-
-			// This weak reference ensure that the closure will not link
-			// the caller and the callee, in the same way "newValueActionWeak"
-			// does not link the callee to the caller.
-			var instanceRef = ThisWeakReference;
-
-			return new DispatcherConditionalDisposable(
-				handler.Target,
-				instanceRef.CloneWeakReference(),
-				() =>
-				{
-					var that = instanceRef.Target as DependencyObjectStore;
-
-					if (that != null)
-					{
-						// Delegates integrate a null check when removing new delegates.
-						that._compiledBindingsCallbacks = that._compiledBindingsCallbacks.Remove(weakDelegate.callback);
-					}
-
-					weakDelegate.release.Dispose();
-
-					// Force a closure on the callback, to make its lifetime as long
-					// as the subscription being held by the callee.
-					handler = null!;
-				}
-			);
 		}
 
 		/// <summary>
@@ -1097,21 +1041,12 @@ namespace Windows.UI.Xaml
 			return (null, null);
 		}
 
-		private void InvokeCompiledBindingsCallbacks()
-		{
-			for (var compiledBindingsCBIndex = 0; compiledBindingsCBIndex < _compiledBindingsCallbacks.Data.Length; compiledBindingsCBIndex++)
-			{
-				var callback = _compiledBindingsCallbacks.Data[compiledBindingsCBIndex];
-				callback.Invoke();
-			}
-		}
-
 		/// <summary>
 		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
 		/// </summary>
 		internal void UpdateResourceBindings(bool isThemeChangedUpdate, ResourceDictionary? containingDictionary = null)
 		{
-			if (_resourceBindings == null || _resourceBindings.Count == 0)
+			if (_resourceBindings == null || !_resourceBindings.HasBindings)
 			{
 				UpdateChildResourceBindings(isThemeChangedUpdate);
 				return;
@@ -1119,28 +1054,28 @@ namespace Windows.UI.Xaml
 
 			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
 
-			var bindings = _resourceBindings.ToArray(); //The original dictionary may be mutated during DP assignations
+			var bindings = _resourceBindings.GetAllBindings().ToList(); //The original collection may be mutated during DP assignations
 
-			foreach (var kvp in bindings)
+			foreach (var tuple in bindings)
 			{
 				try
 				{
 					var wasSet = false;
 					foreach (var dict in dictionariesInScope)
 					{
-						if (dict.TryGetValue(kvp.Value.ResourceKey, out var value, shouldCheckSystem: false))
+						if (dict.TryGetValue(tuple.Binding.ResourceKey, out var value, shouldCheckSystem: false))
 						{
 							wasSet = true;
-							SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value), kvp.Value.Precedence);
+							SetValue(tuple.Property, BindingPropertyHelper.Convert(() => tuple.Property.Type, value), tuple.Binding.Precedence);
 							break;
 						}
 					}
 
-					if (!wasSet && isThemeChangedUpdate && kvp.Value.IsThemeResourceExtension)
+					if (!wasSet && isThemeChangedUpdate && tuple.Binding.IsThemeResourceExtension)
 					{
-						if (ResourceResolver.TryTopLevelRetrieval(kvp.Value.ResourceKey, kvp.Value.ParseContext, out var value))
+						if (ResourceResolver.TryTopLevelRetrieval(tuple.Binding.ResourceKey, tuple.Binding.ParseContext, out var value))
 						{
-							SetValue(kvp.Key, BindingPropertyHelper.Convert(() => kvp.Key.Type, value), kvp.Value.Precedence);
+							SetValue(tuple.Property, BindingPropertyHelper.Convert(() => tuple.Property.Type, value), tuple.Binding.Precedence);
 						}
 					}
 				}
@@ -1151,12 +1086,6 @@ namespace Windows.UI.Xaml
 						this.Log().Warn($"Failed to update binding, target may have been disposed", e);
 					}
 				}
-			}
-
-			foreach (var kvp in bindings)
-			{
-				// TryRemoveResourceBinding() will have removed the entries - we just put them straight back again.
-				_resourceBindings[kvp.Key] = kvp.Value;
 			}
 
 			UpdateChildResourceBindings(isThemeChangedUpdate);
@@ -1188,6 +1117,12 @@ namespace Windows.UI.Xaml
 				{
 					_isUpdatingChildResourceBindings = false;
 				}
+
+				if (ActualInstance is IThemeChangeAware themeChangeAware)
+				{
+					// Call OnThemeChanged after bindings of descendants have been updated
+					themeChangeAware.OnThemeChanged();
+				}
 			}
 		}
 
@@ -1205,11 +1140,6 @@ namespace Windows.UI.Xaml
 				.Select(d => GetValue(d));
 			foreach (var propertyValue in propertyValues)
 			{
-				if (propertyValue is DependencyObject dependencyObject)
-				{
-					yield return dependencyObject;
-				}
-
 				if (propertyValue is IEnumerable<DependencyObject> dependencyObjectCollection &&
 					// Try to avoid enumerating collections that shouldn't be enumerated, since we may be encountering user-defined values. This may need to be refined to somehow only consider values coming from the framework itself.
 					(propertyValue is ICollection || propertyValue is DependencyObjectCollectionBase)
@@ -1227,6 +1157,11 @@ namespace Windows.UI.Xaml
 					{
 						yield return innerValue;
 					}
+				}
+
+				if (propertyValue is DependencyObject dependencyObject)
+				{
+					yield return dependencyObject;
 				}
 			}
 		}

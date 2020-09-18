@@ -29,7 +29,7 @@
 	<PackageReference Update="MSTest.TestAdapter" Version="2.1.2" />
 	<PackageReference Update="MSTest.TestFramework" Version="2.1.1" />
 	<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
-	<PackageReference Update="System.Memory" Version="4.5.3" />
+	<PackageReference Update="System.Memory" Version="4.5.4" />
 	<PackageReference Update="Uno.Wasm.WebSockets" Version="1.0.0-dev.28" />
 	<PackageReference Update="Microsoft.TypeScript.Compiler" Version="3.1.5" />
 	<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="3.1.5" />
@@ -52,7 +52,7 @@
 	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0" />
 	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.1.0" />
 	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0" />
-	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0" />
+	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.2" />
 	<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.1.0" />
   </ItemGroup>
 
@@ -60,7 +60,7 @@
 	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0" />
 	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.1.0" />
 	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0" />
-	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0" />
+	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.2" />
   </ItemGroup>
 
 </Project>

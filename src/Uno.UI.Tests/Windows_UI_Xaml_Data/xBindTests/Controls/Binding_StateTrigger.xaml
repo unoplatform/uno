@@ -11,7 +11,9 @@
 		<VisualStateGroup x:Name="PaneStates">
 			<VisualState x:Name="Full">
 				<VisualState.StateTriggers>
-					<StateTrigger IsActive="{x:Bind MyState.Equals(local:MyState.Full), Mode=OneWay}" />
+					<StateTrigger x:Name="myTrigger" 
+								  x:FieldModifier="public"
+								  IsActive="{x:Bind MyState.Equals(local:MyState.Full), Mode=OneWay}" />
 				</VisualState.StateTriggers>
 				<VisualState.Setters>
 					<Setter Target="_StringField.Text"
