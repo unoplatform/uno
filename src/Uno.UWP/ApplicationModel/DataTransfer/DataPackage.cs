@@ -1,52 +1,69 @@
-﻿#if !NET461
+﻿#nullable enable
+
+#if !NET461
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using Windows.Foundation;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class DataPackage
 	{
-		internal string Text { get; private set; }
+		public event TypedEventHandler<DataPackage, OperationCompletedEventArgs>? OperationCompleted;
 
-		internal string Html { get; private set; }
-
-		internal Uri Uri { get; private set; }
+		private ImmutableDictionary<string, object> _data = ImmutableDictionary<string, object>.Empty;
 
 		public DataPackageOperation RequestedOperation { get; set; }
 
+		public IDictionary<string, RandomAccessStreamReference> ResourceMap { get; } = new Dictionary<string, RandomAccessStreamReference>();
+
+		public void SetData(string formatId, object value)
+		{
+			ImmutableInterlocked.Update(ref _data, SetDataCore, (formatId, value));
+
+			ImmutableDictionary<string, object> SetDataCore(ImmutableDictionary<string, object> current, (string id, object v) arg)
+				=> current.SetItem(arg.id, arg.v);
+		}
+
+		public void SetDataProvider(string formatId, DataProviderHandler delayRenderer)
+			=> SetData(formatId, delayRenderer);
+
+		public void SetWebLink(Uri value)
+			=> SetData(StandardDataFormats.WebLink, value ?? throw new ArgumentNullException("Cannot set DataPackage.WebLink to null"));
+
+		public void SetApplicationLink(global::System.Uri value)
+			=> SetData(StandardDataFormats.ApplicationLink, value ?? throw new ArgumentNullException("Cannot set DataPackage.ApplicationLink to null"));
+
 		public void SetText(string value)
-			=> Text = value ?? throw new ArgumentNullException("Text can't be null");
+			=> SetData(StandardDataFormats.Text, value ?? throw new ArgumentNullException("Text can't be null"));
 
 		public void SetUri(Uri value)
-			=> Uri = value ?? throw new ArgumentNullException("Cannot set DataPackage.Uri to null");
+			=> SetData(StandardDataFormats.Uri, value ?? throw new ArgumentNullException("Cannot set DataPackage.Uri to null"));
 
 		public void SetHtmlFormat(string value)
-			=> Html = value ?? throw new ArgumentNullException("Cannot set DataPackage.Html to null");
+			=> SetData(StandardDataFormats.Html, value ?? throw new ArgumentNullException("Cannot set DataPackage.Html to null"));
 
-		public void SetWebLink(Uri value) => SetUri(value);
+		public void SetRtf(string value)
+			=> SetData(StandardDataFormats.Rtf, value ?? throw new ArgumentNullException("Cannot set DataPackage.Rtf to null"));
+
+		public void SetBitmap(RandomAccessStreamReference value)
+			=> SetData(StandardDataFormats.Bitmap, value ?? throw new ArgumentNullException("Cannot set DataPackage.Bitmap to null"));
+
+		public void SetStorageItems(IEnumerable<IStorageItem> value)
+			=> SetData(StandardDataFormats.StorageItems, value ?? throw new ArgumentNullException("Cannot set DataPackage.StorageItems to null"));
+
+		public void SetStorageItems(IEnumerable<IStorageItem> value, bool readOnly)
+			=> SetData(StandardDataFormats.StorageItems, value ?? throw new ArgumentNullException("Cannot set DataPackage.StorageItems to null"));
 
 		public DataPackageView GetView()
-		{
-			var clipView = new DataPackageView();
-
-			if (Text != null)
-			{
-				clipView.SetFormatTask(StandardDataFormats.Text, Task.FromResult(Text));
-			}
-
-			if (Html != null)
-			{
-				clipView.SetFormatTask(StandardDataFormats.Html, Task.FromResult(Html));
-			}
-
-			if (Uri != null)
-			{
-				clipView.SetFormatTask(StandardDataFormats.Uri, Task.FromResult(Uri));
-				clipView.SetFormatTask(StandardDataFormats.WebLink, Task.FromResult(Uri));
-			}
-
-			return clipView;
-		}
+			=> new DataPackageView(
+				RequestedOperation,
+				_data,
+				ResourceMap.ToImmutableDictionary(),
+				(id, op) => OperationCompleted?.Invoke(this, new OperationCompletedEventArgs(id, op)));
 	}
 }
 #endif
