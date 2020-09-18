@@ -48,9 +48,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Dictionary<string, XamlObjectDefinition> _namedResources = new Dictionary<string, XamlObjectDefinition>();
 		private readonly List<string> _partials = new List<string>();
 		/// <summary>
-		/// Names of generated properties associated with resource definitions. These are created for top-level ResourceDictionary declarations only.
+		/// Names of disambiguated keys associated with resource definitions. These are created for top-level ResourceDictionary declarations only.
 		/// </summary>
-		private readonly Dictionary<(string Theme, string ResourceKey), (string PropertyName, INamedTypeSymbol PropertyType)> _topLevelDictionaryProperties = new Dictionary<(string, string), (string, INamedTypeSymbol)>();
+		private readonly Dictionary<(string Theme, string ResourceKey), string> _topLevelQualifiedKeys = new Dictionary<(string, string), string>();
 		private readonly Stack<NameScope> _scopeStack = new Stack<NameScope>();
 		private readonly XamlFileDefinition _fileDefinition;
 		private readonly string _targetPath;
@@ -159,6 +159,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string SingletonClassName => $"ResourceDictionarySingleton__{_fileDefinition.ShortId}";
 
 		private const string DictionaryProviderInterfaceName = "global::Uno.UI.IXamlResourceDictionaryProvider";
+		private const string LazyInitializerInterfaceName = "global::Uno.UI.IXamlLazyResourceInitializer";
 
 		static XamlFileGenerator()
 		{
@@ -917,7 +918,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						IDisposable WrapSingleton()
 						{
 							writer.AppendLineInvariant("// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.");
-							var block = writer.BlockInvariant("internal sealed class {0} : {1}", SingletonClassName, DictionaryProviderInterfaceName);
+							var block = writer.BlockInvariant("internal sealed class {0} : {1}, {2}", SingletonClassName, DictionaryProviderInterfaceName, LazyInitializerInterfaceName);
 							_isInSingletonInstance = true;
 							return new DisposableAction(() =>
 							{
@@ -956,13 +957,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineInvariant("{0} = {1};", XamlCodeGeneration.ParseContextPropertyName, outerProperty);
 							}
 							writer.AppendLine();
-							BuildResourceDictionaryGlobalProperties(writer, topLevelControl);
 
-							var themeDictionaryMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
-
-							foreach (var dict in (themeDictionaryMember?.Objects).Safe())
+							// Build giant switch case block for resource retrieval - the advantage here is reduced IR generation with associated reduced AOT footprint
+							using (writer.BlockInvariant("object {0}.GetInitializedValue(string resourceKey)", LazyInitializerInterfaceName))
 							{
-								BuildResourceDictionaryGlobalProperties(writer, dict);
+								using (writer.BlockInvariant("switch (resourceKey)"))
+								{
+									BuildTopLevelResourceDictionaryCases(writer, topLevelControl);
+
+									var themeDictionaryMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
+
+									foreach (var dict in (themeDictionaryMember?.Objects).Safe())
+									{
+										BuildTopLevelResourceDictionaryCases(writer, dict);
+									}
+
+									writer.AppendLineInvariant("default:");
+									using (writer.Indent())
+									{
+										writer.AppendLineInvariant("throw new global::System.ArgumentException(\"Entry '\" + resourceKey + \"' was not found\");");
+									}
+								}
+
 							}
 
 							TryAnnotateWithGeneratorSource(writer, suffix: "DictionaryProperty");
@@ -1005,19 +1021,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		///Builds global static properties for each resource in a ResourceDictionary, for intra-dictionary static lookup.
+		///Build entries in the giant switch case method for the current ResourceDictionary.
 		/// </summary>
 		/// <param name="writer">The writer to use</param>
 		/// <param name="dictionaryObject">The <see cref="XamlObjectDefinition"/> associated with the dictionary.</param>
-		private void BuildResourceDictionaryGlobalProperties(IIndentedStringBuilder writer, XamlObjectDefinition dictionaryObject)
+		private void BuildTopLevelResourceDictionaryCases(IIndentedStringBuilder writer, XamlObjectDefinition dictionaryObject)
 		{
-			return; // This will be refactored forthwith
 			TryAnnotateWithGeneratorSource(writer);
 			var resourcesRoot = FindImplicitContentMember(dictionaryObject);
 			var theme = GetDictionaryResourceKey(dictionaryObject);
 			var resources = (resourcesRoot?.Objects).Safe();
 
-			// Pre-populate property names (in case of forward lexical references)
+			// Pre-populate case names (though this is probably no longer necessary...?)
 			var index = _dictionaryPropertyIndex;
 			foreach (var resource in resources)
 			{
@@ -1029,15 +1044,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				index++;
-				var propertyName = GetPropertyNameForResourceKey(index);
-				if (_topLevelDictionaryProperties.ContainsKey((theme, key)))
+				var propertyName = GetCaseNameForResourceKey(key, index);
+				if (_topLevelQualifiedKeys.ContainsKey((theme, key)))
 				{
 					throw new InvalidOperationException($"Dictionary Item {resource?.Type?.Name} has duplicate key `{key}` { (theme != null ? $" in theme {theme}" : "")}.");
 				}
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
 				if (!isStaticResourceAlias)
 				{
-					_topLevelDictionaryProperties[(theme, key)] = (propertyName, FindType(resource.Type));
+					_topLevelQualifiedKeys[(theme, key)] = propertyName;
 				}
 			}
 
@@ -1057,28 +1072,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
 				if (isStaticResourceAlias)
 				{
-					writer.AppendLineInvariant("// Skipping static property {0} for {1} {2} - StaticResource ResourceKey aliases are added directly to dictionary", _dictionaryPropertyIndex, key, theme);
+					writer.AppendLineInvariant("// Skipping case {0} for {1} {2} - StaticResource ResourceKey aliases are added directly to dictionary", _dictionaryPropertyIndex, key, theme);
 				}
 				else
 				{
-					var propertyName = GetPropertyNameForResourceKey(_dictionaryPropertyIndex);
-					if (_topLevelDictionaryProperties[(theme, key)].PropertyName != propertyName)
+					var caseName = GetCaseNameForResourceKey(key, _dictionaryPropertyIndex);
+					if (_topLevelQualifiedKeys[(theme, key)] != caseName)
 					{
-						throw new InvalidOperationException($"Property was not created correctly for {key} (theme={theme}).");
+						throw new InvalidOperationException($"Case name was not created correctly for {key} (theme={theme}).");
 					}
-					writer.AppendLineInvariant("// Property for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
-					void BuildPropertyBody()
-					{
-						if (isStaticResourceAlias)
-						{
-							BuildStaticResourceResourceKeyReference(writer, resource);
-						}
-						else
-						{
-							BuildChild(writer, resourcesRoot, resource);
-						}
-					}
-					BuildSingleTimeInitializer(writer, isStaticResourceAlias ? "global::System.Object" : resource.Type.Name, propertyName, BuildPropertyBody);
+					writer.AppendLineInvariant("// Case for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
+					BuildSingleTimeInitializer(writer, caseName, () => BuildChild(writer, resourcesRoot, resource));
 				}
 			}
 			_themeDictionaryCurrentlyBuilding = former;
@@ -1096,12 +1100,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Get name to use for global static property associated with a resource.
+		/// Get name to use for case associated with a resource.
 		/// </summary>
+		/// <param name="key">The resource key</param>
 		/// <param name="index">An index associated with the property.</param>
-		private string GetPropertyNameForResourceKey(int index)
+		/// <remarks>
+		/// We append the qualifier to the resource key because there may be multiple dictionary definitions (merged dictionaries, themed
+		/// dictionaries) in the same switch block, and it's possible (probable actually, in the case of theme dictionaries) to have
+		/// duplicate resource keys.
+		/// </remarks>
+		private string GetCaseNameForResourceKey(string key, int index)
 		{
-			return "Entry{0}_{1}".InvariantCultureFormat(_fileDefinition.ShortId, index);
+			return "{0}_{1}_{2}".InvariantCultureFormat(key, _fileDefinition.ShortId, index);
 		}
 
 		/// <summary>
@@ -1260,53 +1270,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Helper for building a lazily-initialized static property.
+		/// Build single case within the giant switch case block for resource retrieval
 		/// </summary>
-		/// <param name="writer">The writer to use</param>
-		/// <param name="propertyType">The type of the property.</param>
-		/// <param name="propertyName">The name of the property.</param>
-		/// <param name="propertyBodyBuilder">Function that builds the initialization logic for the property.</param>
-		/// <param name="isStatic"></param>
-		private void BuildSingleTimeInitializer(IIndentedStringBuilder writer, string propertyType, string propertyName, Action propertyBodyBuilder, bool isStatic = false)
+		private void BuildSingleTimeInitializer(IIndentedStringBuilder writer, string caseName, Action propertyBodyBuilder)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			// The property type may be partially qualified, try resolving it through FindType
-			var propertySymbol = FindType(propertyType);
-			propertyType = propertySymbol?.GetFullName() ?? propertyType;
-
-			var sanitizedPropertyName = SanitizeResourceName(propertyName);
-
-			var propertyInitializedVariable = "_{0}Initialized".InvariantCultureFormat(sanitizedPropertyName);
-			var backingFieldVariable = "__{0}BackingField".InvariantCultureFormat(sanitizedPropertyName);
-			var staticModifier = isStatic ? "static" : "";
-			var publicPropertyType = FindType(propertyType)?.DeclaredAccessibility == Accessibility.Public
-				? propertyType
-				: "System.Object";
-
-			writer.AppendLineInvariant($"private {staticModifier} bool {propertyInitializedVariable} = false;");
-			writer.AppendLineInvariant($"private {staticModifier} {GetGlobalizedTypeName(propertyType)} {backingFieldVariable};");
-
-			writer.AppendLine();
-
-			using (writer.BlockInvariant($"internal {staticModifier} {GetGlobalizedTypeName(publicPropertyType)} {sanitizedPropertyName}"))
+			writer.AppendLineInvariant("case \"{0}\":", caseName);
+			using (writer.Indent())
 			{
-				using (writer.BlockInvariant("get"))
-				{
-					using (writer.BlockInvariant($"if(!{propertyInitializedVariable})"))
-					{
-						writer.AppendLineInvariant($"{backingFieldVariable} = ");
-						using (writer.Indent())
-						{
-							propertyBodyBuilder();
-						}
-						writer.AppendLineInvariant(";");
-						writer.AppendLineInvariant($"{propertyInitializedVariable} = true;");
-					}
-
-					writer.AppendLineInvariant($"return {backingFieldVariable};");
-				}
+				writer.AppendLineInvariant("return");
+				propertyBodyBuilder();
+				writer.AppendLineInvariant(";");
 			}
-
 			writer.AppendLine();
 		}
 
@@ -2240,6 +2215,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (resource.Type.Name == "StaticResource")
 					{
 						BuildStaticResourceResourceKeyReference(writer, resource);
+					}
+					else if (_isTopLevelDictionary
+						// Note: It's possible to be in a top-level ResourceDictionary file but for caseName to be null, eg for
+						// a FrameworkElement.Resources declaration inside of a template
+						&& GetResourceDictionaryCaseName(key) is string caseName) 
+					{
+						//
+						writer.AppendLineInvariant("global::Uno.UI.ResourceResolverSingleton.Instance.ResolveLazyInitializer(\"{0}\", {1})", caseName, SingletonInstanceAccess);
 					}
 					else
 					{
@@ -3709,6 +3692,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				$")";
 			TryAnnotateWithGeneratorSource(ref staticRetrieval);
 			return staticRetrieval;
+		}
+
+		/// <summary>
+		/// Get the retrieval key associated with the given resource key, if one exists, otherwise null.
+		/// </summary>
+		private string GetResourceDictionaryCaseName(string keyStr)
+		{
+			if (_topLevelQualifiedKeys.TryGetValue((_themeDictionaryCurrentlyBuilding, keyStr), out var qualifiedKey))
+			{
+				return qualifiedKey;
+			}
+
+			return null;
 		}
 
 		private INamedTypeSymbol FindUnderlyingType(INamedTypeSymbol propertyType)

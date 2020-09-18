@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml
 		/// and can be removed as breaking change later.</remarks>
 		public bool Insert(object key, object value)
 		{
-			Set(key, value);
+			Set(key, value, throwIfPresent: false);
 			return true;
 		}
 
@@ -79,18 +79,7 @@ namespace Windows.UI.Xaml
 
 		public void Clear() => _values.Clear();
 
-		public void Add(object key, object value)
-		{
-			if (value is ResourceInitializer resourceInitializer)
-			{
-				_hasUnmaterializedItems = true;
-				_values.Add(key, new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer));
-			}
-			else
-			{
-				_values.Add(key, value);
-			}
-		}
+		public void Add(object key, object value) => Set(key, value, throwIfPresent: true);
 
 		public bool ContainsKey(object key) => ContainsKey(key, shouldCheckSystem: true);
 		public bool ContainsKey(object key, bool shouldCheckSystem) => _values.ContainsKey(key) || ContainsKeyMerged(key) || ContainsKeyTheme(key)
@@ -133,15 +122,24 @@ namespace Windows.UI.Xaml
 
 				return value;
 			}
-			set => Set(key, value);
+			set => Set(key, value, throwIfPresent: false);
 		}
 
-		private void Set(object key, object value)
+		private void Set(object key, object value, bool throwIfPresent)
 		{
-			if (value is ResourceInitializer resourceInitializer)
+			if (throwIfPresent && _values.ContainsKey(key))
+			{
+				throw new ArgumentException("An entry with the same key already exists.");
+			}
+
+			if (value is ResourceInitializer || value is ProviderLazyInitializer)
 			{
 				_hasUnmaterializedItems = true;
-				_values[key] = new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer);
+			}
+
+			if (value is ResourceInitializer resourceInitializer)
+			{
+				_values[key] = new DelegateLazyInitializer(ResourceResolver.CurrentScope, resourceInitializer);
 			}
 			else
 			{
@@ -163,7 +161,7 @@ namespace Windows.UI.Xaml
 				{
 					_values.Remove(key); // Temporarily remove the key to make this method safely reentrant, if it's a framework- or application-level theme dictionary
 					ResourceResolver.PushNewScope(lazyInitializer.CurrentScope);
-					newValue = lazyInitializer.Initializer();
+					newValue = lazyInitializer.GetInitializedValue();
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY
 				finally
@@ -299,7 +297,7 @@ namespace Windows.UI.Xaml
 
 		public global::System.Collections.Generic.ICollection<object> Keys => _values.Keys;
 
-			// TODO: this doesn't handle lazy initializers or aliases
+		// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
 
 		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => Add(item.Key, item.Value);
@@ -374,7 +372,7 @@ namespace Windows.UI.Xaml
 
 			foreach (var kvp in _values)
 			{
-				if (kvp.Value is LazyInitializer lazyInitializer)
+				if (kvp.Value is LazyInitializer)
 				{
 					unmaterialized.Add(kvp);
 				}
@@ -420,21 +418,49 @@ namespace Windows.UI.Xaml
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		// This is present for backward compatibility, but it's no longer used in Xaml-generated code with newer versions of Uno.
 		public delegate object ResourceInitializer();
+
+		private abstract class LazyInitializer
+		{
+			public XamlScope CurrentScope { get; }
+
+			protected LazyInitializer(XamlScope currentScope)
+			{
+				CurrentScope = currentScope;
+			}
+
+			public abstract object GetInitializedValue();
+		}
 
 		/// <summary>
 		/// Allows resources to be initialized on-demand using correct scope.
 		/// </summary>
-		private struct LazyInitializer
+		/// <remarks>This is present for backward compatibility, but it's no longer used in Xaml-generated code with newer versions of Uno.</remarks>
+		private class DelegateLazyInitializer : LazyInitializer
 		{
-			public XamlScope CurrentScope { get; }
-			public ResourceInitializer Initializer { get; }
+			private ResourceInitializer Initializer { get; }
 
-			public LazyInitializer(XamlScope currentScope, ResourceInitializer initializer)
+			public DelegateLazyInitializer(XamlScope currentScope, ResourceInitializer initializer) : base(currentScope)
 			{
-				CurrentScope = currentScope;
 				Initializer = initializer;
 			}
+
+			public override object GetInitializedValue() => Initializer();
+		}
+
+		private class ProviderLazyInitializer : LazyInitializer
+		{
+			private readonly string _qualifiedResourceKey;
+			private readonly IXamlLazyResourceInitializer _initializer;
+
+			public ProviderLazyInitializer(XamlScope currentScope, string qualifiedResourceKey, IXamlLazyResourceInitializer initializer) : base(currentScope)
+			{
+				_qualifiedResourceKey = qualifiedResourceKey;
+				_initializer = initializer;
+			}
+
+			public override object GetInitializedValue() => _initializer.GetInitializedValue(_qualifiedResourceKey);
 		}
 
 		/// <summary>
@@ -454,6 +480,8 @@ namespace Windows.UI.Xaml
 		}
 
 		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
+
+		internal static object GetLazyInitializer(string qualifiedResourceKey, IXamlLazyResourceInitializer initializer) => new ProviderLazyInitializer(ResourceResolver.CurrentScope, qualifiedResourceKey, initializer);
 
 		private static class Themes
 		{
