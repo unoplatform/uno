@@ -19,8 +19,8 @@ namespace Windows.UI.Xaml
 
 		public bool Handled { get; set; }
 
-		public DataPackageOperation AcceptedOperation { get; }
 		public DataPackageOperation AllowedOperations { get; }
+		public DataPackageOperation AcceptedOperation { get; set; }
 
 		public DataPackage Data { get; set; }
 		public DataPackageView DataView { get; }
