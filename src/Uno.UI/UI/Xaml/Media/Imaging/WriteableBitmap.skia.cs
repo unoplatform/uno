@@ -14,8 +14,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-			var handle = GCHandle.Alloc(_buffer.Data, GCHandleType.Pinned);
-
 			_surface ??= new SkiaCompositionSurface();
 
 			_surface.SetPixels(PixelWidth, PixelHeight, _buffer.Data);
