@@ -2,9 +2,6 @@
 {
 	internal partial class ResourceAccessor
 	{
-<<<<<<< HEAD
-		// ColorPicker, ColorPickerSlider, ColorSpectrum
-=======
 		public const string SR_BasicRatingString = "BasicRatingString";
 		public const string SR_CommunityRatingString = "CommunityRatingString";
 		public const string SR_RatingsControlName = "RatingsControlName";
@@ -21,7 +18,6 @@
 		public const string SR_NavigationOverflowButtonToolTip = "NavigationOverflowButtonToolTip";
 		public const string SR_SettingsButtonName = "SettingsButtonName";
 		public const string SR_NavigationViewSearchButtonName = "NavigationViewSearchButtonName";
->>>>>>> master
 		public const string SR_TextAlphaLabel = "TextAlphaLabel";
 		public const string SR_AutomationNameAlphaSlider = "AutomationNameAlphaSlider";
 		public const string SR_AutomationNameAlphaTextBox = "AutomationNameAlphaTextBox";
@@ -67,8 +63,6 @@
 		public const string SR_HelpTextMoreButton = "HelpTextMoreButton";
 		public const string SR_TextMoreButtonLabelCollapsed = "TextMoreButtonLabelCollapsed";
 		public const string SR_TextMoreButtonLabelExpanded = "TextMoreButtonLabelExpanded";
-<<<<<<< HEAD
-=======
 		public const string SR_BadgeItemPlural1 = "BadgeItemPlural1";
 		public const string SR_BadgeItemPlural2 = "BadgeItemPlural2";
 		public const string SR_BadgeItemPlural3 = "BadgeItemPlural3";
@@ -140,6 +134,5 @@
 		public const string SR_NumberBoxDownSpinButtonName = "NumberBoxDownSpinButtonName";
 
 		public const string IR_NoiseAsset_256X256_PNG = "NoiseAsset_256X256_PNG";
->>>>>>> master
 	}
 }
