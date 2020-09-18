@@ -1,31 +1,36 @@
 # Fluent-styled controls
 
-Uno 3.0 and above supports control styles conforming to the [Fluent design system](https://www.microsoft.com/design/fluent). This article explains how to use them in your app.
+Uno Platform 3.0 and above supports control styles conforming to the [Fluent design system](https://www.microsoft.com/design/fluent). This article explains how to use them in your app.
 
 ## Upgrading existing Uno apps to use Fluent styles
 
-To modify an existing Uno app to use the Fluent control styles, follow these steps:
+Overall, the Uno Platform uses the same mechanism as WinUI 2 to enable Fluent styles. After installing the `Uno.UI` Nuget version 3.0 or above Fluent styles are enabled by specifying the `XamlControlsResources` within the application's resources (inside `App.xaml`).
 
-1. Update `Uno.UI` NuGet packages to 3.0 or above.
-1. In the `UWP` head project of your solution, install the [WinUI 2 NuGet package](https://www.nuget.org/packages/Microsoft.UI.Xaml).
-1. Add the `XamlControlsResources` resource dictionary to your application resources in `App.xaml`:
+For all platform heads except UWP Fluent design styles will then be used by default within your app. However, for the UWP head, an additional WinUI 2 Nuget package reference must be added. This is following the same process as UWP because, for the UWP head, the Uno Platform is not used.
+
+The step-by-step process to enable Fluent design styles within an existing Uno Platform solution is as follows:
+
+1. In all platform head projects except UWP update the `Uno.UI` NuGet packages to 3.0 or above.
+1. In the `UWP` head project of your solution (and only the UWP head), install the [WinUI 2 NuGet package](https://www.nuget.org/packages/Microsoft.UI.Xaml). This step is the same as required for WinUI 2 UWP apps.
+1. Within the shared project used by all platform heads, add the `XamlControlsResources` resource dictionary to your application resources inside `App.xaml`. This step is the same as required for WinUI 2 UWP apps.
     ```xaml
-        <Application>
-            <Application.Resources>
-                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-            </Application.Resources>
-        </Application>
+    	<Application>
+    		<Application.Resources>
+    			<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+    		</Application.Resources>
+    	</Application>
     ```
-    or if you have other existing resources, then add `XamlControlsResources` at the top as a merged dictionary:
+    Or, if you have other existing application-scope resources, add `XamlControlsResources` at the top (before other resources) as a merged dictionary:
+
     ```xaml
-        <Application.Resources>
-            <ResourceDictionary>
-                <ResourceDictionary.MergedDictionaries>
-                    <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-                    <!-- Other merged dictionaries here -->
-                </ResourceDictionary.MergedDictionaries>
-                <!-- Other app resources here -->
-            </ResourceDictionary>
-        </Application.Resources>
+    	<Application.Resources>
+    		<ResourceDictionary>
+    			<ResourceDictionary.MergedDictionaries>
+    				<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+    				<!-- Other merged dictionaries here -->
+    			</ResourceDictionary.MergedDictionaries>
+    			<!-- Other app resources here -->
+    		</ResourceDictionary>
+    	</Application.Resources>
     ```
-1. The Fluent control styles require the Uno Fluent Assets icon font to display correctly. [Follow the instructions here](../uno-fluent-assets.md) to upgrade your app to use the font.
+1. In all platform head projects except UWP the Fluent control styles require the Uno Fluent Assets icon font to display correctly. [Follow the instructions here](../uno-fluent-assets.md) to upgrade your app to use this font. This step is required because the Uno Platform uses a cross-platform ready default font within its styles different from UWP's *Segoe MDL2 Assets*.
