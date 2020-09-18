@@ -5,6 +5,7 @@
 		<TargetFramework>net472</TargetFramework>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -12,6 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="System.Memory" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.3.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Telemetry" Version="16.3.2" />
 		<PackageReference Include="microsoft.visualstudio.texttemplating.15.0">

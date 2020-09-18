@@ -61,53 +61,75 @@ namespace Uno.UI.Tasks.Assets
 					return true;
 			}
 
-			Assets = ContentItems.Where(content => IsAsset(content.ItemSpec)).ToArray();
+			Assets = ContentItems.ToArray();
 			RetargetedAssets = Assets
-				.Select(asset =>
-				{
-					if (
-						!asset.MetadataNames.Contains("Link")
-						&& !asset.MetadataNames.Contains("DefiningProjectDirectory")
-					)
-					{
-						this.Log().Info($"Skipping '{asset.ItemSpec}' because 'Link' or 'DefiningProjectDirectory' metadata is not set.");
-						return null;
-					}
-
-					var fullPath = asset.GetMetadata("FullPath");
-					var relativePath = asset.GetMetadata("Link");
-
-					if (string.IsNullOrEmpty(relativePath))
-					{
-						relativePath = fullPath.Replace(asset.GetMetadata("DefiningProjectDirectory"), "");
-					}
-
-					var resourceCandidate = ResourceCandidate.Parse(fullPath, relativePath);
-
-					if (!UseHighDPIResources && int.TryParse(resourceCandidate.GetQualifierValue("scale"), out var scale) && scale > HighDPIThresholdScale)
-					{
-						this.Log().Info($"Skipping '{asset.ItemSpec}' of scale {scale} because {nameof(UseHighDPIResources)} is false.");
-						return null;
-					}
-
-					var targetPath = resourceToTargetPath(resourceCandidate);
-
-					if (targetPath == null)
-					{
-						this.Log().Info($"Skipping '{asset.ItemSpec}' as it's not supported on {TargetPlatform}.");
-						return null;
-					}
-					
-					this.Log().Info($"Retargeting '{asset.ItemSpec}' to '{targetPath}'.");
-					return new TaskItem(asset.ItemSpec, new Dictionary<string, string>() { { "LogicalName", targetPath } });
-				})
+				.Select((Func<ITaskItem, TaskItem>)(asset => ProcessContentItem(asset, resourceToTargetPath)))
 				.Trim()
 				.ToArray();
 
 			return true;
 		}
 
-		private static bool IsAsset(string path)
+		private TaskItem ProcessContentItem(ITaskItem asset, Func<ResourceCandidate, string> resourceToTargetPath)
+		{
+			if (
+				!asset.MetadataNames.Contains("Link")
+				&& !asset.MetadataNames.Contains("DefiningProjectDirectory")
+			)
+			{
+				this.Log().Info($"Skipping '{asset.ItemSpec}' because 'Link' or 'DefiningProjectDirectory' metadata is not set.");
+				return null;
+			}
+
+			var fullPath = asset.GetMetadata("FullPath");
+			var relativePath = asset.GetMetadata("Link");
+
+			if (string.IsNullOrEmpty(relativePath))
+			{
+				relativePath = fullPath.Replace(asset.GetMetadata("DefiningProjectDirectory"), "");
+			}
+
+			if (IsImageAsset(asset.ItemSpec))
+			{
+				var resourceCandidate = ResourceCandidate.Parse(fullPath, relativePath);
+
+				if (!UseHighDPIResources && int.TryParse(resourceCandidate.GetQualifierValue("scale"), out var scale) && scale > HighDPIThresholdScale)
+				{
+					this.Log().Info($"Skipping '{asset.ItemSpec}' of scale {scale} because {nameof(UseHighDPIResources)} is false.");
+					return null;
+				}
+
+				var targetPath = resourceToTargetPath(resourceCandidate);
+
+				if (targetPath == null)
+				{
+					this.Log().Info($"Skipping '{asset.ItemSpec}' as it's not supported on {TargetPlatform}.");
+					return null;
+				}
+
+				this.Log().Info($"Retargeting image '{asset.ItemSpec}' to '{targetPath}'.");
+				return new TaskItem(
+					asset.ItemSpec,
+					new Dictionary<string, string>() {
+						{ "LogicalName", targetPath },
+						{ "AssetType", "image" }
+					});
+			}
+			else
+			{
+				var encodedRelativePath = AndroidResourceNameEncoder.EncodeFileSystemPath(relativePath);
+
+				this.Log().Info($"Retargeting generic '{asset.ItemSpec}' to '{encodedRelativePath}'.");
+				return new TaskItem(
+					asset.ItemSpec,
+					new Dictionary<string, string>() {
+						{ "LogicalName", encodedRelativePath },
+						{ "AssetType", "generic" }
+					});
+			}
+		}
+
+		private static bool IsImageAsset(string path)
 		{
 			var extension = Path.GetExtension(path).ToLowerInvariant();
 			return extension == ".png"
