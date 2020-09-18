@@ -1,6 +1,7 @@
 # Create a Single Page App with Uno Platform
 
-[Download the complete sample](https://github.com/nventive/uno.GettingStartedTutorial)
+[Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-2)
+-- Estimated time to complete: 30 minutes --
 
 In this tutorial you will learn how to:
 
@@ -36,7 +37,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
 1. Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
     - Make sure to select **nuget.org** or **NuGet official package source** as the package source
-    - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.Core`, `Uno.UI`, and `Uno.Wasm.Bootstrap`.
+    - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.Core`, `Uno.UI`, `Uno.UI.WebAssembly` `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer`.
         - Note: **do not** update the `Microsoft.Extensions.Logging.Console`. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno Platform.
     - Click back on the Browse tab and install the following NuGet Packages to each of the projects in your solution:
         - `Refractored.MvvmHelpers`
