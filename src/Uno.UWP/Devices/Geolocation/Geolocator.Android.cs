@@ -107,7 +107,15 @@ namespace Windows.Devices.Geolocation
 			CoreApplication.Resuming += CoreApplication_Resuming;
 		}
 
-		private async void CoreApplication_Resuming(object sender, object e)
+		private void CoreApplication_Resuming(object sender, object e)
+		{
+			CoreDispatcher.Main.RunAsync(
+				priority: CoreDispatcherPriority.Normal,
+				handler: InitializeIfPermissionIsGranted
+			);
+		}
+
+		private async void InitializeIfPermissionIsGranted()
 		{
 			// If the user has granted the location permission while the app was in background, Initialize
 			if (await PermissionsHelper.CheckFineLocationPermission(CancellationToken.None))
