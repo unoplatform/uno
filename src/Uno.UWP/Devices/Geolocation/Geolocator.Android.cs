@@ -176,15 +176,17 @@ namespace Windows.Devices.Geolocation
 					break;
 			}
 
-			Windows.Devices.Geolocation.BasicGeoposition basicGeoposition;
-			basicGeoposition.Altitude = location.Altitude;
-			basicGeoposition.Latitude = location.Latitude;
-			basicGeoposition.Longitude = location.Longitude;
 
-			Windows.Devices.Geolocation.Geopoint geopoint = new Windows.Devices.Geolocation.Geopoint(basicGeoposition,
-						Windows.Devices.Geolocation.AltitudeReferenceSystem.Ellipsoid,
-						Wgs84SpatialReferenceId
-					);
+			Windows.Devices.Geolocation.Geopoint geopoint = new Windows.Devices.Geolocation.Geopoint(
+				new Windows.Devices.Geolocation.BasicGeoposition
+				{
+					Latitude = location.Latitude;
+					Longitude = location.Longitude;
+					Altitude = location.Altitude;
+				},
+				Windows.Devices.Geolocation.AltitudeReferenceSystem.Ellipsoid,
+				Wgs84SpatialReferenceId
+			);
 
 			double? locVertAccuracy = null;
 			// VerticalAccuracy is since API 26
