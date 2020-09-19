@@ -177,17 +177,6 @@ namespace Windows.Devices.Geolocation
 			}
 
 
-			Windows.Devices.Geolocation.Geopoint geopoint = new Windows.Devices.Geolocation.Geopoint(
-				new Windows.Devices.Geolocation.BasicGeoposition
-				{
-					Latitude = location.Latitude;
-					Longitude = location.Longitude;
-					Altitude = location.Altitude;
-				},
-				Windows.Devices.Geolocation.AltitudeReferenceSystem.Ellipsoid,
-				Wgs84SpatialReferenceId
-			);
-
 			double? locVertAccuracy = null;
 			// VerticalAccuracy is since API 26
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
@@ -199,14 +188,24 @@ namespace Windows.Devices.Geolocation
 			}
 
 
-			Windows.Devices.Geolocation.Geoposition geopos = new Windows.Devices.Geolocation.Geoposition(
-				new Windows.Devices.Geolocation.Geocoordinate(
+			return new Windows.Devices.Geolocation.Geoposition(
+				new Geocoordinate(
 					latitude: location.Latitude,
 					longitude: location.Longitude,
 					altitude: location.Altitude,
 					timestamp: DateTimeOffset.FromUnixTimeMilliseconds(location.Time),
 					speed: location.HasSpeed ? location.Speed : 0,
-					point: geopoint,
+					point: new Geopoint(
+							new BasicGeoposition
+							{
+								Latitude = location.Latitude,
+								Longitude = location.Longitude,
+								Altitude = location.Altitude
+							},
+							AltitudeReferenceSystem.Ellipsoid,
+							Wgs84SpatialReferenceId
+						),
+
 					accuracy: location.HasAccuracy ? location.Accuracy : 0,
 					altitudeAccuracy: locVertAccuracy,
 					heading: geoheading,
@@ -214,7 +213,6 @@ namespace Windows.Devices.Geolocation
 				)
 			);
 
-			return geopos;
 		}
 
 
