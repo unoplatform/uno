@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Input;
@@ -40,6 +41,9 @@ namespace Windows.UI.Xaml
 	 *	This file implements the following from the "RoutedEvents"
 	 *		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 	 * 		partial void RemoveGestureHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+	 *		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
+	 *		partial void PrepareManagedManipulationEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
+	 *		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
 	 *	and is using:
 	 *		internal bool SafeRaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args);
 	 */
@@ -83,6 +87,42 @@ namespace Windows.UI.Xaml
 		{
 			get => (ManipulationModes)this.GetValue(ManipulationModeProperty);
 			set => this.SetValue(ManipulationModeProperty, value);
+		}
+		#endregion
+
+		#region CanDrag (DP)
+		public static DependencyProperty CanDragProperty { get; } = DependencyProperty.Register(
+			nameof(CanDrag),
+			typeof(bool),
+			typeof(UIElement),
+			new FrameworkPropertyMetadata(default(bool), OnCanDragChanged));
+
+		private static void OnCanDragChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
+		{
+			if (snd is UIElement elt && args.NewValue is bool canDrag)
+			{
+				elt.UpdateDragAndDrop(canDrag);
+			}
+		}
+
+		public bool CanDrag
+		{
+			get => (bool)GetValue(AllowDropProperty);
+			set => SetValue(AllowDropProperty, value);
+		}
+		#endregion
+
+		#region AllowDrop (DP)
+		public static DependencyProperty AllowDropProperty { get; } = DependencyProperty.Register(
+			nameof(AllowDrop),
+			typeof(bool),
+			typeof(UIElement),
+			new FrameworkPropertyMetadata(default(bool)));
+
+		public bool AllowDrop
+		{
+			get => (bool)GetValue(CanDragProperty);
+			set => SetValue(CanDragProperty, value);
 		}
 		#endregion
 
@@ -193,7 +233,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#region Gestures recognition (includes manipulation)
+		#region GestureRecognizer wire-up
 
 		#region Event to RoutedEvent handler adapters
 		// Note: For the manipulation and gesture event args, the original source has to be the element that raise the event
@@ -253,9 +293,13 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(that, args));
 		};
-		#endregion
 
-		private bool _isGestureCompleted;
+		private static readonly TypedEventHandler<GestureRecognizer, DraggingEventArgs> OnRecognizerDragging = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.OnDraggingStarting(args);
+		};
+		#endregion
 
 		private GestureRecognizer CreateGestureRecognizer()
 		{
@@ -269,6 +313,7 @@ namespace Windows.UI.Xaml
 			recognizer.Tapped += OnRecognizerTapped;
 			recognizer.RightTapped += OnRecognizerRightTapped;
 			recognizer.Holding += OnRecognizerHolding;
+			recognizer.Dragging += OnRecognizerDragging;
 
 			// Allow partial parts to subscribe to pointer events (WASM)
 			OnGestureRecognizerInitialized(recognizer);
@@ -277,8 +322,9 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer);
+		#endregion
 
-		#region Manipulation events wire-up
+		#region Manipulations (recognizer settings / custom bubbling)
 		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
@@ -323,9 +369,21 @@ namespace Windows.UI.Xaml
 
 			_gestures.Value.GestureSettings = settings;
 		}
+
+		partial void PrepareManagedManipulationEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
+		{
+			// When we bubble a manipulation event from a child, we make sure to abort any pending gesture/manipulation on the current element
+			if (routedEvent != ManipulationStartingEvent && _gestures.IsValueCreated)
+			{
+				_gestures.Value.CompleteGesture();
+			}
+			// Note: We do not need to alter the location of the events, on UWP they are always relative to the OriginalSource.
+		}
 		#endregion
 
-		#region Gesture events wire-up
+		#region Gestures (recognizer settings / custom bubbling / early completion)
+		private bool _isGestureCompleted;
+
 		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
@@ -362,9 +420,100 @@ namespace Windows.UI.Xaml
 				_gestures.Value.GestureSettings |= GestureSettings.Hold; // Note: We do not set GestureSettings.HoldWithMouse as WinUI never raises Holding for mouse pointers
 			}
 		}
+
+		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
+		{
+			// When we bubble a gesture event from a child, we make sure to abort any pending gesture/manipulation on the current element
+			if (routedEvent == HoldingEvent)
+			{
+				if (_gestures.IsValueCreated)
+				{
+					_gestures.Value.PreventHolding(((HoldingRoutedEventArgs)args).PointerId);
+				}
+			}
+			else
+			{
+				// Note: Here we should prevent only the same gesture ... but actually currently supported gestures
+				// are mutually exclusive, so if a child element detected a gesture, it's safe to prevent all of them.
+				CompleteGesture(); // Make sure to set the flag _isGestureCompleted, so won't try to recognize double tap
+			}
+		}
+
+		/// <summary>
+		/// Prevents the gesture recognizer to generate a manipulation. It's designed to be invoked in Pointers events handlers.
+		/// </summary>
+		private protected void CompleteGesture()
+		{
+			// This flags allow us to complete the gesture on pressed (i.e. even before the gesture started)
+			_isGestureCompleted = true;
+
+			if (_gestures.IsValueCreated)
+			{
+				_gestures.Value.CompleteGesture();
+			}
+		}
 		#endregion
 
-		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
+		#region Drag And Drop (recognizer settings / custom bubbling / drag starting event)
+		private void UpdateDragAndDrop(bool isEnabled)
+		{
+			// Note: The drag and drop recognizer setting is only driven by the CanDrag,
+			//		 no matter which events are subscribed nor the AllowDrop.
+
+			var settings = _gestures.Value.GestureSettings;
+			settings &= ~GestureSettingsHelper.DragAndDrop; // Remove all configured drag and drop flags
+			if (isEnabled)
+			{
+				settings |= GestureSettings.Drag;
+			}
+
+			_gestures.Value.GestureSettings = settings;
+		}
+
+		partial void PrepareManagedDragAndDropEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
+		{
+			switch (routedEvent.Flag)
+			{
+				case RoutedEventFlag.DragStarting:
+				case RoutedEventFlag.DropCompleted:
+					// Those are actually not routed events :O
+					bubblingMode = BubblingMode.StopBubbling;
+					break;
+
+				case RoutedEventFlag.DragEnter when !CanDrag:
+				case RoutedEventFlag.DragOver when !CanDrag:
+				case RoutedEventFlag.DragLeave when !CanDrag:
+				case RoutedEventFlag.Drop when !AllowDrop:
+					// The Drag and Drop "routed" events are raised only on controls that opted-in
+					bubblingMode = BubblingMode.IgnoreElement;
+					break;
+			}
+		}
+
+		private void OnDraggingStarting(DraggingEventArgs args)
+		{
+			if (args.DraggingState != DraggingState.Started // This UIElement is actually interested only by the starting
+				|| !CanDrag) // Sanity ... should never happen!
+			{
+				return;
+			}
+
+			var routedArgs = new DragStartingEventArgs();
+			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
+
+			if (routedArgs.Cancel)
+			{
+				return;
+			}
+
+			var dragInfo = new CoreDragInfo(); // TODO routedArgs.Data, routedArgs.AllowedOperations, KeyModifiers, Position
+			var dragUI = routedArgs.DragUI;
+
+			CoreDragDropManager.GetForCurrentView().DragStarted(dragInfo, dragUI);
+		}
+		#endregion
+
+		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
 		{
 			var ptArgs = (PointerRoutedEventArgs)args;
 			switch (routedEvent.Flag)
@@ -392,49 +541,6 @@ namespace Windows.UI.Xaml
 				//	- PointerWheelChanged:
 			}
 		}
-
-		partial void PrepareManagedManipulationEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
-		{
-			// When we bubble a manipulation event from a child, we make sure to abort any pending gesture/manipulation on the current element
-			if (routedEvent != ManipulationStartingEvent && _gestures.IsValueCreated)
-			{
-				_gestures.Value.CompleteGesture();
-			}
-			// Note: We do not need to alter the location of the events, on UWP they are always relative to the OriginalSource.
-		}
-
-		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
-		{
-			// When we bubble a gesture event from a child, we make sure to abort any pending gesture/manipulation on the current element
-			if (routedEvent == HoldingEvent)
-			{
-				if (_gestures.IsValueCreated)
-				{
-					_gestures.Value.PreventHolding(((HoldingRoutedEventArgs) args).PointerId);
-				}
-			}
-			else
-			{
-				// Note: Here we should prevent only the same gesture ... but actually currently supported gestures
-				// are mutually exclusive, so if a child element detected a gesture, it's safe to prevent all of them.
-				CompleteGesture(); // Make sure to set the flag _isGestureCompleted, so won't try to recognize double tap
-			}
-		}
-
-		/// <summary>
-		/// Prevents the gesture recognizer to generate a manipulation. It's designed to be invoked in Pointers events handlers.
-		/// </summary>
-		private protected void CompleteGesture()
-		{
-			// This flags allow us to complete the gesture on pressed (i.e. even before the gesture started)
-			_isGestureCompleted = true;
-
-			if (_gestures.IsValueCreated)
-			{
-				_gestures.Value.CompleteGesture();
-			}
-		}
-		#endregion
 
 		#region Partial API to raise pointer events and gesture recognition (OnNative***)
 		private bool OnNativePointerEnter(PointerRoutedEventArgs args) => OnPointerEnter(args, isManagedBubblingEvent: false);
