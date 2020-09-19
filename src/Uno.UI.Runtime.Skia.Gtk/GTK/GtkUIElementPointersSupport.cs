@@ -10,6 +10,7 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Logging;
 using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime.Skia.GTK.Extensions;
 using Windows.ApplicationModel;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -25,6 +26,12 @@ namespace Uno.UI.Runtime.Skia
 		private readonly CoreWindow _owner;
 		private ICoreWindowEvents _ownerEvents;
 		private static int _currentFrameId;
+
+		public CoreCursor PointerCursor
+		{
+			get => GtkHost.Window.Window.Cursor.ToCoreCursor();
+			set => GtkHost.Window.Window.Cursor = value.ToCursor();
+		}
 
 		public GtkUIElementPointersSupport(object owner)
 		{

@@ -41,8 +41,8 @@ namespace Windows.UI.Core
 			set => _pointerPosition = value;
 		}
 
-#if !__WASM__ && !__MACOS__
-		[Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if !__WASM__ && !__MACOS__ && !__SKIA__
+		[Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__")]
 		public CoreCursor PointerCursor { get; set; } = new CoreCursor(CoreCursorType.Arrow, 0);
 #endif
 
