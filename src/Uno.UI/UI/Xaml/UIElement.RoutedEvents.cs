@@ -589,6 +589,9 @@ namespace Windows.UI.Xaml
 		/// Return true if event is handled in managed code (shouldn't bubble natively)
 		/// </remarks>
 		internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args)
+			=> RaiseEvent(routedEvent, args, BubblingMode.Bubble);
+
+		private bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args, BubblingMode mode)
 		{
 #if TRACE_ROUTED_EVENT_BUBBLING
 			Debug.Write(new string('\t', Depth) + $"[{routedEvent.Name.Trim().ToUpperInvariant()}] {this.GetDebugName()}\r\n");
@@ -600,20 +603,23 @@ namespace Windows.UI.Xaml
 			}
 
 			// [3] Any local handlers?
-			var anyLocalHandlers = _eventHandlerStore.TryGetValue(routedEvent, out var handlers) && handlers.Any();
-			if (anyLocalHandlers)
+			var isHandled = IsHandled(args);
+			if (!mode.HasFlag(BubblingMode.IgnoreElement)
+				&& _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
+				&& handlers.Any())
 			{
 				// [4] Invoke local handlers
 				foreach (var handler in handlers.ToArray())
 				{
-					if (!IsHandled(args) || handler.HandledEventsToo)
+					if (!isHandled || handler.HandledEventsToo)
 					{
 						InvokeHandler(handler.Handler, args);
+						isHandled = IsHandled(args);
 					}
 				}
 
 				// [5] Event handled by local handlers?
-				if (IsHandled(args))
+				if (isHandled)
 				{
 					// [9] Any parent interested ?
 					var anyParentInterested = AnyParentInterested(routedEvent);
@@ -630,6 +636,11 @@ namespace Windows.UI.Xaml
 						args.CanBubbleNatively = false;
 					}
 				}
+			}
+
+			if (mode.HasFlag(BubblingMode.IgnoreParents))
+			{
+				return isHandled;
 			}
 
 			// [6] & [7] Will the event bubbling natively or in managed code?
@@ -665,47 +676,75 @@ namespace Windows.UI.Xaml
 		// This method is a workaround for https://github.com/mono/mono/issues/12981
 		// It can be inlined in RaiseEvent when fixed.
 		private static bool RaiseOnParent(RoutedEvent routedEvent, RoutedEventArgs args, UIElement parent)
-			=> parent.PrepareManagedEventBubbling(routedEvent, args, out args)
-				&& parent.RaiseEvent(routedEvent, args);
-
-		private bool PrepareManagedEventBubbling(RoutedEvent routedEvent, RoutedEventArgs args, out RoutedEventArgs alteredArgs)
 		{
-			var isBubblingAllowed = true;
+			var mode = parent.PrepareManagedEventBubbling(routedEvent, args, out args);
+			var handledByAnyParent = parent.RaiseEvent(routedEvent, args, mode);
+
+			return handledByAnyParent;
+		}
+
+		private BubblingMode PrepareManagedEventBubbling(RoutedEvent routedEvent, RoutedEventArgs args, out RoutedEventArgs alteredArgs)
+		{
+			var bubblingMode = BubblingMode.Bubble;
 			alteredArgs = args;
 			if (routedEvent.IsPointerEvent)
 			{
-				PrepareManagedPointerEventBubbling(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+				PrepareManagedPointerEventBubbling(routedEvent, ref alteredArgs, ref bubblingMode);
 			}
 			else if (routedEvent.IsKeyEvent)
 			{
-				PrepareManagedKeyEventBubbling(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+				PrepareManagedKeyEventBubbling(routedEvent, ref alteredArgs, ref bubblingMode);
 			}
 			else if (routedEvent.IsFocusEvent)
 			{
-				PrepareManagedFocusEventBubbling(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+				PrepareManagedFocusEventBubbling(routedEvent, ref alteredArgs, ref bubblingMode);
 			}
 			else if (routedEvent.IsManipulationEvent)
 			{
-				PrepareManagedManipulationEventBubbling(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+				PrepareManagedManipulationEventBubbling(routedEvent, ref alteredArgs, ref bubblingMode);
 			}
 			else if (routedEvent.IsGestureEvent)
 			{
-				PrepareManagedGestureEventBubbling(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+				PrepareManagedGestureEventBubbling(routedEvent, ref alteredArgs, ref bubblingMode);
 			}
 			else if (routedEvent.IsDragAndDropEvent)
 			{
-				PrepareManagedDragAndDropEventBubbling(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+				PrepareManagedDragAndDropEventBubbling(routedEvent, ref alteredArgs, ref bubblingMode);
 			}
 
-			return isBubblingAllowed;
+			return bubblingMode;
 		}
 
-		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
-		partial void PrepareManagedKeyEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
-		partial void PrepareManagedFocusEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
-		partial void PrepareManagedManipulationEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
-		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
-		partial void PrepareManagedDragAndDropEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
+		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
+		partial void PrepareManagedKeyEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
+		partial void PrepareManagedFocusEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
+		partial void PrepareManagedManipulationEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
+		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
+		partial void PrepareManagedDragAndDropEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
+
+		[Flags]
+		private enum BubblingMode
+		{
+			/// <summary>
+			/// The event should bubble normally in this element and its parent
+			/// </summary>
+			Bubble = 0,
+
+			/// <summary>
+			/// The event should not be raised on current element
+			/// </summary>
+			IgnoreElement = 1,
+
+			/// <summary>
+			/// The event should be bubble to parent elements
+			/// </summary>
+			IgnoreParents = 2,
+
+			/// <summary>
+			/// The bubbling should stop here (the event won't be raised on the element)
+			/// </summary>
+			StopBubbling = IgnoreElement | IgnoreParents,
+		}
 
 		private static bool IsHandled(RoutedEventArgs args)
 		{
