@@ -10,6 +10,8 @@ namespace Windows.ApplicationModel.Core
 		{
 		}
 
+		public CoreWindow CoreWindow => CoreWindow.Main;
+
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
 		public CoreApplicationViewTitleBar TitleBar
