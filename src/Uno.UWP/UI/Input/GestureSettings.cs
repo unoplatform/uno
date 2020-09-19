@@ -23,7 +23,6 @@ namespace Windows.UI.Input
 		/// <summary>Enable support for a right-tap interaction. The RightTapped event is raised when the contact is lifted or the mouse button released.</summary>
 		RightTap = 16U,
 		/// <summary>Enable support for the slide or swipe gesture with a mouse or pen/stylus (single contact). The Dragging event is raised when either gesture is detected.This gesture can be used for text selection, selecting or rearranging objects, or scrolling and panning.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		Drag = 32U,
 		/// <summary>Enable support for the slide gesture through pointer input, on the horizontal axis. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.This gesture can be used for rearranging objects.</summary>
 		ManipulationTranslateX = 64U,
