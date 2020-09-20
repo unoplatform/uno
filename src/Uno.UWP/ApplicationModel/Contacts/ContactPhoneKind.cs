@@ -1,4 +1,3 @@
-
 namespace Windows.ApplicationModel.Contacts
 {
 	public enum ContactPhoneKind
@@ -14,5 +13,4 @@ namespace Windows.ApplicationModel.Contacts
 		Assistant,
 		Radio,
 	}
-
 }

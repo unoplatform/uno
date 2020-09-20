@@ -3,12 +3,12 @@ using System;
 namespace Windows.ApplicationModel.Contacts
 {
 	[Flags]
-	public enum ContactQuerySearchFields
+	public enum ContactQuerySearchFields : uint
 	{
-		None = 0,   // no search - all entries
+		None = 0,
 		Name = 1,
 		Email = 2,
 		Phone = 4,
-		All = -1 // 4294967295 == 0b_1111_1111_1111_1111_1111_1111_1111_1111 == ?FFFFFFFF?
+		All = 4294967295
 	}
 }

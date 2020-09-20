@@ -1,9 +1,7 @@
-
 using System;
 
 namespace Windows.ApplicationModel.Contacts
 {
-
 	[Flags]
 	public enum ContactQueryDesiredFields
 	{

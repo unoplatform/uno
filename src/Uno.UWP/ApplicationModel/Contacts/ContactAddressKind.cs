@@ -1,4 +1,3 @@
-
 namespace Windows.ApplicationModel.Contacts
 {
 	public enum ContactAddressKind
