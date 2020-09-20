@@ -540,7 +540,6 @@ namespace <#= mixin.NamespaceName #>
 			OnLoadingPartial();
 			Loading?.Invoke(this, null);
 			OnPostLoading();
-			ApplyCompiledBindings();
 		}
 
 		partial void OnLoadingPartial();

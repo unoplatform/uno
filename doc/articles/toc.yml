@@ -138,6 +138,8 @@
     href: features\windows-phone-devices-notification-vibrationdevice.md
   - name: Windows.UI.StartScreen
     href: features\windows-ui-startscreen.md
+  - name: Windows.UI.Notifications
+    href: features\windows-ui-notifications.md
   - name: Windows.Devices.Geolocation
     href: features\windows-devices-geolocation.md
   - name: Windows.System
@@ -146,6 +148,8 @@
     href: features\windows-system-display.md
   - name: Windows.System.Profile
     href: features\windows-system-profile.md
+  - name: Windows.System.UserProfile
+    href: features\windows-system-userprofile.md
   - name: Windows.Storage
     href: features\windows-storage.md
   - name: Windows.UI.ViewManagement

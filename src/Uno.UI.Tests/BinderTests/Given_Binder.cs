@@ -22,6 +22,7 @@ using Uno.Conversion;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls;
 using System.Threading;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -609,7 +610,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			);
 
-			SUT.ApplyCompiledBindings();
+			SUT.ApplyXBind();
 
 			Assert.AreEqual(42, SUT.Tag);
 		}
@@ -648,7 +649,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			);
 
-			SUT.ApplyCompiledBindings();
+			SUT.ApplyXBind();
 
 			Assert.AreEqual(42, SUT.Tag);
 		}
@@ -668,7 +669,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			);
 
-			SUT.ApplyCompiledBindings();
+			SUT.ApplyXBind();
 
 			Assert.AreEqual(42, SUT.Tag);
 		}

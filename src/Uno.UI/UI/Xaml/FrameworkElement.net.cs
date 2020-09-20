@@ -108,7 +108,6 @@ namespace Windows.UI.Xaml
 		{
 			if (IsLoaded)
 			{
-				ApplyCompiledBindings();
 				OnLoading();
 				OnPostLoading();
 				OnLoaded();

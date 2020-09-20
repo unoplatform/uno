@@ -267,8 +267,8 @@ namespace Windows.UI.Xaml.Controls
 			if (GetTemplateChild(c_topNavOverflowButton) is Button topNavOverflowButton)
 			{
 				m_topNavOverflowButton = topNavOverflowButton;
-				AutomationProperties.SetName(topNavOverflowButton, ResourceAccessor.GetLocalizedStringResource("NavigationOverflowButtonText"));
-				topNavOverflowButton.Content = ResourceAccessor.GetLocalizedStringResource("NavigationOverflowButtonText");
+				AutomationProperties.SetName(topNavOverflowButton, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationOverflowButtonText));
+				topNavOverflowButton.Content = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationOverflowButtonText);
 				var visual = ElementCompositionPreview.GetElementVisual(topNavOverflowButton);
 				CreateAndAttachHeaderAnimation(visual);
 			}
@@ -302,7 +302,7 @@ namespace Windows.UI.Xaml.Controls
 				m_paneSearchButton = button;
 				button.Click += OnPaneSearchButtonClick;
 
-				var searchButtonName = ResourceAccessor.GetLocalizedStringResource("NavigationViewSearchButtonName");
+				var searchButtonName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationViewSearchButtonName);
 				AutomationProperties.SetName(button, searchButtonName);
 
 #if !IS_UNO // UNO TODO Missing Tooltop
@@ -317,13 +317,13 @@ namespace Windows.UI.Xaml.Controls
 				m_backButton = backButton;
 				backButton.Click += OnBackButtonClicked;
         
-				string navigationName = ResourceAccessor.GetLocalizedStringResource("NavigationBackButtonName");
+				string navigationName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationBackButtonName);
 				AutomationProperties.SetName(backButton, navigationName);
 			}
 
 			if (GetTemplateChild(c_navViewBackButtonToolTip) is ToolTip backButtonToolTip)
 			{
-				string navigationBackButtonToolTip = ResourceAccessor.GetLocalizedStringResource("NavigationBackButtonToolTip");
+				string navigationBackButtonToolTip = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationBackButtonToolTip);
 				backButtonToolTip.Content =  navigationBackButtonToolTip;
 			}
 
@@ -406,7 +406,7 @@ namespace Windows.UI.Xaml.Controls
 				d.Add(() => settingsItem.KeyUp -= OnSettingsKeyUp);
 
 				// Do localization for settings item label and Automation Name
-				var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource("SettingsButtonName");
+				var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
 				AutomationProperties.SetName(settingsItem, localizedSettingsName);
 				UpdateSettingsItemToolTip();
 
@@ -844,11 +844,11 @@ namespace Windows.UI.Xaml.Controls
 			string navigationName;
 			if (IsPaneOpen)
 			{
-				navigationName = ResourceAccessor.GetLocalizedStringResource("NavigationButtonOpenName");
+				navigationName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationButtonOpenName);
 			}
 			else
 			{
-				navigationName = ResourceAccessor.GetLocalizedStringResource("NavigationButtonClosedName");
+				navigationName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationButtonClosedName);
 			}
 
 			var paneToggleButton = m_paneToggleButton;
@@ -876,7 +876,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 
 #if !IS_UNO
-					var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource("SettingsButtonName");
+					var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
 					var toolTip = ToolTip;
 					toolTip.Content = localizedSettingsName;
 					ToolTipService.SetToolTip(settingsItem, toolTip);

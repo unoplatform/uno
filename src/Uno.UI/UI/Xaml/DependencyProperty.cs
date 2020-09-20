@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml
 		{
 			_name = name;
 			_propertyType = propertyType;
-			_ownerType = attached || IsTypeDependencyObject(ownerType) ? ownerType : typeof(_View);
+			_ownerType = ownerType;
 			_isAttached = attached;
 			_isDependencyObjectCollection = typeof(DependencyObjectCollection).IsAssignableFrom(propertyType);
 			_isTypeNullable = propertyType.IsNullableCached();
@@ -177,6 +177,7 @@ namespace Windows.UI.Xaml
 					// UIElement as its elements. See #103492
 					&& !forType.Is<_View>()
 #endif
+					&& OwnerType != typeof(AttachedDependencyObject)
 				)
 				{
 					throw new ArgumentException($"'{forType}' type must derive from DependencyObject.", nameof(forType));

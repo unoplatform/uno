@@ -79,7 +79,6 @@ namespace Windows.UI.Xaml
 		private ImmutableList<ExplicitPropertyChangedCallback> _genericCallbacks = ImmutableList<ExplicitPropertyChangedCallback>.Empty;
 		private ImmutableList<DependencyObjectStore> _childrenStores = ImmutableList<DependencyObjectStore>.Empty;
 		private ImmutableList<ParentChangedCallback> _parentChangedCallbacks = ImmutableList<ParentChangedCallback>.Empty;
-		private ImmutableList<Action> _compiledBindingsCallbacks = ImmutableList<Action>.Empty;
 
 		private readonly ManagedWeakReference _originalObjectRef;
 
@@ -92,7 +91,6 @@ namespace Windows.UI.Xaml
 
 		private readonly Type _originalObjectType;
 		private SerialDisposable _inheritedProperties = new SerialDisposable();
-		private SerialDisposable _compiledBindings = new SerialDisposable();
 		private ManagedWeakReference? _parentRef;
 		private Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
 		private DependencyPropertyValuePrecedences? _precedenceOverride;
@@ -139,12 +137,10 @@ namespace Windows.UI.Xaml
 					}
 
 					_inheritedProperties.Disposable = null;
-					_compiledBindings.Disposable = null;
 
 					if (value is IDependencyObjectStoreProvider parentProvider)
 					{
 						TryRegisterInheritedProperties(parentProvider);
-						_compiledBindings.Disposable = RegisterCompiledBindingsUpdates();
 					}
 
 					OnParentChanged(previousParent, value);
@@ -789,45 +785,6 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Register for changes all dependency properties changes notifications for the specified instance.
-		/// </summary>
-		/// <param name="instance">The instance for which to observe properties changes</param>
-		/// <param name="callback">The callback</param>
-		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		internal IDisposable RegisterCompiledBindingsUpdateCallback(Action handler)
-		{
-			var weakDelegate = CreateWeakDelegate(handler);
-
-			_compiledBindingsCallbacks = _compiledBindingsCallbacks.Add(weakDelegate.callback);
-
-			// This weak reference ensure that the closure will not link
-			// the caller and the callee, in the same way "newValueActionWeak"
-			// does not link the callee to the caller.
-			var instanceRef = ThisWeakReference;
-
-			return new DispatcherConditionalDisposable(
-				handler.Target,
-				instanceRef.CloneWeakReference(),
-				() =>
-				{
-					var that = instanceRef.Target as DependencyObjectStore;
-
-					if (that != null)
-					{
-						// Delegates integrate a null check when removing new delegates.
-						that._compiledBindingsCallbacks = that._compiledBindingsCallbacks.Remove(weakDelegate.callback);
-					}
-
-					weakDelegate.release.Dispose();
-
-					// Force a closure on the callback, to make its lifetime as long
-					// as the subscription being held by the callee.
-					handler = null!;
-				}
-			);
-		}
-
-		/// <summary>
 		/// Registers a parent changed callback for itself
 		/// </summary>
 		/// <param name="callback">A callback used to notified that the parent changed</param>
@@ -1082,15 +1039,6 @@ namespace Windows.UI.Xaml
 			}
 
 			return (null, null);
-		}
-
-		private void InvokeCompiledBindingsCallbacks()
-		{
-			for (var compiledBindingsCBIndex = 0; compiledBindingsCBIndex < _compiledBindingsCallbacks.Data.Length; compiledBindingsCBIndex++)
-			{
-				var callback = _compiledBindingsCallbacks.Data[compiledBindingsCBIndex];
-				callback.Invoke();
-			}
 		}
 
 		/// <summary>

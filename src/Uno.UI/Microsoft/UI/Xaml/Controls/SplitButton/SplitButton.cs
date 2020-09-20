@@ -18,8 +18,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SplitButton : ContentControl
 	{
-		private const string SR_SplitButtonSecondaryButtonName = "SplitButtonSecondaryButtonName";
-
 		private bool m_isKeyDown = false;
 		private bool m_isFlyoutOpen = false;
 		private PointerDeviceType m_lastPointerDeviceType = PointerDeviceType.Mouse;
@@ -76,7 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (secondaryButton != null)
 			{
 				// Do localization for the secondary button
-				var secondaryName = ResourceAccessor.GetLocalizedStringResource(SR_SplitButtonSecondaryButtonName);
+				var secondaryName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SplitButtonSecondaryButtonName);
 				AutomationProperties.SetName(secondaryButton, secondaryName);
 
 				secondaryButton.Click += OnClickSecondary;

@@ -10,10 +10,14 @@ using System.Threading.Tasks;
 using Android.Locations;
 using Android.OS;
 using Android.Runtime;
+using Uno.Extensions;
+using Windows.ApplicationModel.Core;
 using Windows.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
+using Windows.UI.Core;
+
 namespace Windows.Devices.Geolocation
 {
 	public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
@@ -34,17 +38,28 @@ namespace Windows.Devices.Geolocation
 			{
 				_locationManager = InitializeLocationProvider(1);
 				_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
+				CoreApplication.Resuming -= CoreApplication_Resuming;
 			}
 		}
 
 		public Task<Geoposition> GetGeopositionAsync()
 		{
-			TryInitialize();
+			if (CoreDispatcher.Main.HasThreadAccess)
+			{
+				TryInitialize();
 
-			BroadcastStatus(PositionStatus.Initializing);
-			var location = _locationManager.GetLastKnownLocation(_locationProvider);
-			BroadcastStatus(PositionStatus.Ready);
-			return Task.FromResult(location.ToGeoPosition());
+				BroadcastStatus(PositionStatus.Initializing);
+				var location = _locationManager.GetLastKnownLocation(_locationProvider);
+				BroadcastStatus(PositionStatus.Ready);
+				return Task.FromResult(location.ToGeoPosition());
+			}
+			else
+			{
+				return CoreDispatcher.Main.RunWithResultAsync(
+					priority: CoreDispatcherPriority.Normal,
+					task: () => GetGeopositionAsync()
+				);
+			}
 		}
 
 		public Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
@@ -75,10 +90,39 @@ namespace Windows.Devices.Geolocation
 				else
 				{
 					BroadcastStatus(PositionStatus.Disabled);
+
+					foreach (var subscriber in _positionChangedSubscriptions)
+					{
+						subscriber.Key.WaitForPermissionFromBackground();
+					}
 				}
 			}
 
 			return status;
+		}
+
+		public void WaitForPermissionFromBackground()
+		{
+			CoreApplication.Resuming -= CoreApplication_Resuming;
+			CoreApplication.Resuming += CoreApplication_Resuming;
+		}
+
+		private void CoreApplication_Resuming(object sender, object e)
+		{
+			CoreDispatcher.Main.RunAsync(
+				priority: CoreDispatcherPriority.Normal,
+				handler: InitializeIfPermissionIsGranted
+			);
+		}
+
+		private async void InitializeIfPermissionIsGranted()
+		{
+			// If the user has granted the location permission while the app was in background, Initialize
+			if (await PermissionsHelper.CheckFineLocationPermission(CancellationToken.None))
+			{
+				TryInitialize();
+				CoreApplication.Resuming -= CoreApplication_Resuming;
+			}
 		}
 
 		private LocationManager InitializeLocationProvider(double desiredAccuracy)

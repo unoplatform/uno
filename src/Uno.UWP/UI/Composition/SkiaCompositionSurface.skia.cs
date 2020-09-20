@@ -5,6 +5,7 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.Extensions;
 using Uno.Logging;
@@ -54,6 +55,16 @@ namespace Windows.UI.Composition
 				{
 					return (true, e.Message);
 				}
+			}
+		}
+
+		internal unsafe void SetPixels(int pixelWidth, int pixelHeight, byte[] data)
+		{
+			var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Rgba8888, SKAlphaType.Premul);
+
+			fixed (byte* pData = data)
+			{
+				_image = SKImage.FromPixels(info, (IntPtr)pData, pixelWidth * 4);
 			}
 		}
 	}
