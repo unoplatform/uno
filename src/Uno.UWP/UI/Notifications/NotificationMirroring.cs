@@ -1,4 +1,3 @@
-
 namespace Windows.UI.Notifications
 {
 	public enum NotificationMirroring
