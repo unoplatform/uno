@@ -22,14 +22,6 @@ namespace Uno.UI.Helpers.WinUI
 		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft.UI.Xaml.3.0";
 		private const string c_resourceLoc = "Microsoft.UI.Xaml/Resources";
 
-		public const string SR_DefaultItemString = "DefaultItemString";
-		public const string SR_CancelDraggingString = "CancelDraggingString";
-		public const string SR_DropIntoNodeString = "DropIntoNodeString";
-		public const string SR_PlaceBetweenString = "PlaceBetweenString";
-		public const string SR_PlaceAfterString = "PlaceAfterString";
-		public const string SR_PlaceBeforeString = "PlaceBeforeString";
-		public const string SR_FallBackPlaceString = "FallBackPlaceString";
-
 #if !IS_UNO
 		private static ResourceMap s_resourceMap = GetPackageResourceMap();
 		private static ResourceContext s_resourceContext = ResourceContext.GetForViewIndependentUse();
