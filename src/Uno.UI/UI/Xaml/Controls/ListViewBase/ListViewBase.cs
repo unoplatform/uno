@@ -110,6 +110,11 @@ namespace Windows.UI.Xaml.Controls
 					SelectedItem = items.ElementAt(itemIndex.Value);
 					SelectedIndex = itemIndex.Value;
 				}
+				else
+				{
+					SelectedItem = null;
+					SelectedIndex = -1;
+				}
 
 				TryUpdateSelectorItemIsSelected(validRemovals, false);
 				TryUpdateSelectorItemIsSelected(validAdditions, true);
