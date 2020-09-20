@@ -9,6 +9,6 @@ namespace Windows.ApplicationModel.Contacts
 		Name = 1,
 		Email = 2,
 		Phone = 4,
-		All = 4294967295
+		All = uint.MaxValue
 	}
 }
