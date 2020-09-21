@@ -8,6 +8,7 @@ using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 using Query = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppQuery>;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
@@ -703,7 +704,11 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private QueryEx QueryAll(string name)
 		{
-			Query allQuery = q => q.All().Marked(name);
+			IAppQuery AllQuery(IAppQuery query)
+				// TODO: .All() is not yet supported for wasm.
+				=> AppInitializer.GetLocalPlatform() == Platform.Browser ? query : query.All();
+
+			Query allQuery = q => AllQuery(q).Marked(name);
 			return new QueryEx(allQuery);
 		}
 	}
