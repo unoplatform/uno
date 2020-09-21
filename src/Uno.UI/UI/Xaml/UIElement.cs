@@ -18,6 +18,7 @@ using Uno;
 using Uno.UI.Controls;
 using Uno.UI.Media;
 using System;
+using System.Collections;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI.Xaml.Markup;
@@ -161,11 +162,25 @@ namespace Windows.UI.Xaml
 			=> new MatrixTransform { Matrix = new Matrix(GetTransform(from: this, to: visual)) };
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
+			=> GetTransform(from, to, null);
+
+		private static Matrix3x2 GetTransform(UIElement from, UIElement to, IntermediateAggregator? intermediates)
 		{
 			if (from == to)
 			{
 				return Matrix3x2.Identity;
 			}
+
+#if NETSTANDARD // Depth is defined properly only on WASM and Skia
+			// If possible we try to navigate the tree upward so we have a greater chance
+			// to find an element in the parent hierarchy of the other element.
+			if (to is { } && from.Depth < to.Depth)
+			{
+				var toToFrom = GetTransform(to, from);
+				Matrix3x2.Invert(toToFrom, out var fromToTo);
+				return fromToTo;
+			}
+#endif
 
 			var matrix = Matrix3x2.Identity;
 			double offsetX = 0.0, offsetY = 0.0;
@@ -174,7 +189,7 @@ namespace Windows.UI.Xaml
 			{
 				var layoutSlot = elt.LayoutSlotWithMarginsAndAlignments;
 				var transform = elt.RenderTransform;
-				if (transform == null)
+				if (transform is null)
 				{
 					// As this is the common case, avoid Matrix computation when a basic addition is sufficient
 					offsetX += layoutSlot.X;
@@ -196,7 +211,7 @@ namespace Windows.UI.Xaml
 					offsetY = layoutSlot.Y;
 				}
 
-#if !__SKIA__
+#if !__SKIA__ // On Skia, the ScrollViewer is actually using RenderTransform on its child, so they it's already included.
 				if (elt is ScrollViewer sv)
 				{
 					var zoom = sv.ZoomFactor;
@@ -215,6 +230,12 @@ namespace Windows.UI.Xaml
 					}
 				}
 #endif
+
+				if (intermediates?.ShouldBeAdded(elt) ?? false)
+				{
+					intermediates.Value.Add(elt, matrix * Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY));
+				}
+
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
@@ -223,6 +244,7 @@ namespace Windows.UI.Xaml
 			{
 				// Unfortunately we didn't find the 'to' in the parent hierarchy,
 				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
+				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
 				var toToRoot = GetTransform(to, null);
 				Matrix3x2.Invert(toToRoot, out var rootToTo);
 
@@ -259,6 +281,24 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
+		private struct IntermediateAggregator : IEnumerable<(UIElement element, Matrix3x2 transform)>
+		{
+			private readonly Predicate<UIElement> _predicate;
+			private readonly List<(UIElement element, Matrix3x2 transform)> _intermediates;
+
+			public IntermediateAggregator(Predicate<UIElement> predicate)
+			{
+				_predicate = predicate ?? (_ => true);
+				_intermediates = new List<(UIElement element, Matrix3x2 transform)>();
+			}
+
+			public bool ShouldBeAdded(UIElement elt) => _predicate.Invoke(elt);
+
+			public void Add(UIElement elt, Matrix3x2 fromToElt) => _intermediates.Add((elt, fromToElt));
+
+			IEnumerator IEnumerable.GetEnumerator() => _intermediates.GetEnumerator();
+			public IEnumerator<(UIElement element, Matrix3x2 transform)> GetEnumerator() => _intermediates.GetEnumerator();
+		}
 
 
 
