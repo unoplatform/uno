@@ -162,9 +162,6 @@ namespace Windows.UI.Xaml
 			=> new MatrixTransform { Matrix = new Matrix(GetTransform(from: this, to: visual)) };
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
-			=> GetTransform(from, to, null);
-
-		private static Matrix3x2 GetTransform(UIElement from, UIElement to, IntermediateAggregator? intermediates)
 		{
 			if (from == to)
 			{
@@ -231,11 +228,6 @@ namespace Windows.UI.Xaml
 				}
 #endif
 
-				if (intermediates?.ShouldBeAdded(elt) ?? false)
-				{
-					intermediates.Value.Add(elt, matrix * Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY));
-				}
-
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
@@ -280,27 +272,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 #endif
-
-		private struct IntermediateAggregator : IEnumerable<(UIElement element, Matrix3x2 transform)>
-		{
-			private readonly Predicate<UIElement> _predicate;
-			private readonly List<(UIElement element, Matrix3x2 transform)> _intermediates;
-
-			public IntermediateAggregator(Predicate<UIElement> predicate)
-			{
-				_predicate = predicate ?? (_ => true);
-				_intermediates = new List<(UIElement element, Matrix3x2 transform)>();
-			}
-
-			public bool ShouldBeAdded(UIElement elt) => _predicate.Invoke(elt);
-
-			public void Add(UIElement elt, Matrix3x2 fromToElt) => _intermediates.Add((elt, fromToElt));
-
-			IEnumerator IEnumerable.GetEnumerator() => _intermediates.GetEnumerator();
-			public IEnumerator<(UIElement element, Matrix3x2 transform)> GetEnumerator() => _intermediates.GetEnumerator();
-		}
-
-
 
 		protected virtual void OnIsHitTestVisibleChanged(bool oldValue, bool newValue)
 		{

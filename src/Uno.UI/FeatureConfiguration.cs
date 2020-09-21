@@ -398,19 +398,6 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool AlwaysClipNativeChildren { get; set; } = true;
 #endif
-#if __SKIA__
-			/// <summary>
-			/// When enabled, instead of navigating the visual tree from top to bottom to determine the `OriginalSource`
-			/// and the element to which the pointer args should be dispatched,
-			/// the hit-testing engine will start from the last known target element (except if the visual tree has been updated).
-			///
-			/// This could have a great performance impact on low end devices.
-			///
-			/// BUT if an element have been moved over the current element using an independent animation (i.e. Animating a RenderTransform)
-			/// this new element won't be detected and will not be used as original source.
-			/// </summary>
-			public static bool AllowHitTestCaching { get; set; } = true;
-#endif
 		}
 
 		public static class WebView

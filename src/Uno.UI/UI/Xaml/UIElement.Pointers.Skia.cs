@@ -49,8 +49,6 @@ namespace Windows.UI.Xaml
 			// TODO: Use pointer ID for the predicates
 			private static readonly Predicate<UIElement> _isOver = e => e.IsPointerOver;
 
-			private readonly Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> _cache = new Dictionary<uint, (Rect, ManagedWeakReference)>();
-
 			public PointerManager()
 			{
 				Window.Current.CoreWindow.PointerMoved += CoreWindow_PointerMoved;
@@ -249,165 +247,14 @@ namespace Windows.UI.Xaml
 #else
 			) {
 #endif
-
-				var pointerId = args.CurrentPoint.PointerId;
-				if (FeatureConfiguration.UIElement.AllowHitTestCaching
-					&& _cache.TryGetValue(pointerId, out var cached)
-					&& cached.validity.Contains(args.CurrentPoint.RawPosition)
-					&& cached.orginalSource.Target is UIElement cachedElement
-					&& cachedElement.IsHitTestVisibleCoalesced)
-				{
-					// Note about cachedElement.IsHitTestVisibleCoalesced:
-					//		If not visible, either the auto reset on load/unload should have clean the internal pointers state,
-					//		either the stale branch detection in SearchDownForTopMostElementAt(root) will find it and clear state.
-
-					var result = SearchUpAndDownForTopMostElementAt(args.CurrentPoint.Position, cachedElement, isStale);
-
-					if (result.element is { })
-					{
-						UpdateCache(pointerId, (cached.orginalSource, cachedElement), result.element);
-						return result;
-					}
-
-					// We walked all the tree up from the provided element, but were not able to find any target!
-					// Maybe the cached element has been removed from the tree (but the IsLoaded should have been false :/)
-
-					this.Log().Warn(
-						"Enable to find any acceptable original source by walking up the tree from the cached element, "
-						+ "which is suspicious as the element has not been flag as unloaded."
-						+ "Trying now by looking down from the root.");
-				}
-
 				if (Window.Current.RootElement is UIElement root)
 				{
-					var result = SearchDownForTopMostElementAt(args.CurrentPoint.Position, root, isStale);
-					UpdateCache(pointerId, default, result.element);
-					return result;
+					return SearchDownForTopMostElementAt(args.CurrentPoint.Position, root, isStale);
 				}
 
 				this.Log().Warn("The root element not set yet, impossible to find the original source.");
 
 				return default;
-			}
-
-			private void UpdateCache(uint pointerId, (ManagedWeakReference weak, UIElement instance)? currentEntry, UIElement? updated)
-			{
-				EnsureCacheScavenging();
-
-				if (currentEntry.HasValue)
-				{
-					if (updated == currentEntry.Value.instance)
-					{
-						return;
-					}
-
-					WeakReferencePool.ReturnWeakReference(this, currentEntry.Value.weak);
-				}
-
-				if (updated is null)
-				{
-					_cache.Remove(pointerId);
-				}
-				else
-				{
-					_cache[pointerId] = (
-						validity: new Rect(new Point(), new Size(double.PositiveInfinity, double.PositiveInfinity)), // TODO
-						orginalSource: WeakReferencePool.RentWeakReference(this, updated)
-					);
-				}
-			}
-
-			private bool _isCacheScavengingEnabled;
-
-			private void EnsureCacheScavenging()
-			{
-				if (_isCacheScavengingEnabled)
-				{
-					return;
-				}
-
-				// Note: We use the "RootElement" as it will not change when the set the content,
-				//		 and it also includes the Popups!
-				Window.Current.RootElement.LayoutUpdated += ClearCache;
-				_isCacheScavengingEnabled = true;
-			}
-
-			// We have to clear the cache on each layout updates as another element might have been added/moved over the current element
-			private void ClearCache(object sender, object o)
-				=> _cache.Clear();
-
-			private static (UIElement? element, Branch? stale) SearchUpAndDownForTopMostElementAt(
-				Point rawPosition,
-				UIElement element,
-				Predicate<UIElement>? isStale)
-			{
-				var parents = new IntermediateAggregator(default);
-
-				Matrix3x2.Invert(GetTransform(element, null, parents), out var rootToCachedElement);
-				var positionInCachedElementCoordinates = rootToCachedElement.Transform(rawPosition);
-
-				var (foundElement, stale) = SearchDownForTopMostElementAt(positionInCachedElementCoordinates, element, isStale);
-
-				// The provided element (and its sub elements) are not (no longer) the top most element,
-				// we will now walk the tree upward to find the new top most element.
-				// At this point we assume that the pointer is probably not far enough from the cached element,
-				// so it's faster to search in sibling walking the tree upward instead of starting from visual root.
-				// This might not always be the case, for instance when showing/hiding a Popup.
-				//double offsetX = 0, offsetY = 0;
-
-				Func<IEnumerable<UIElement>, IEnumerable<UIElement>> parentChildrenFilter;
-				Predicate<UIElement>? siblingIsStale = isStale;
-
-				foreach (var parent in parents)
-				{
-					if (foundElement is null)
-					{
-						// We didn't find any acceptable element, we are navigating the tree up search for the head of an acceptable branch
-						// So here we only exclude the child we already validated.
-						parentChildrenFilter = Except(element);
-					}
-					else if (parent.element._children.Count < 2)
-					{
-						// We are only looking for sibling elements that are over the found one, so we can ignore parents that have only one child.
-						element = parent.element;
-						continue;
-					}
-					else
-					{
-						// We found an acceptable branch, we continue to walk the tree upward to search for sibling that might be above the selected element.
-						// So here we exclude all children that are before (i.e. under) the selected branch
-						parentChildrenFilter = SkipUntil(element);
-
-						// Since an element of the branch has been accepted, we no longer have to search for stale element.
-						siblingIsStale = null;
-						isStale = null;
-					}
-
-					if (stale is {})
-					{
-						// If we have already found a stale leaf, we don't search for stale element in siblings branches
-						siblingIsStale = null;
-					}
-
-					var parentPosition = parent.transform.Transform(positionInCachedElementCoordinates);
-					var (parentFoundElement, parentStale) = SearchDownForTopMostElementAt(parentPosition, parent.element, siblingIsStale, parentChildrenFilter);
-
-					if (parentFoundElement is { })
-					{
-						foundElement = parentFoundElement; // Either we didn't found any element yet, either a branch is over the selected one
-						parentStale = null; // sanity, we should not have an element that is at the same time acceptable and stale
-					}
-					else if (foundElement is null && (isStale?.Invoke(parent.element) ?? false))
-					{
-						stale = new Branch(parent.element, stale?.Leaf ?? parent.element);
-					}
-
-					stale ??= parentStale; // if stale is null, the parentStale includes the parent.element (if stale!)
-
-					element = parent.element;
-				}
-
-				return (foundElement, stale);
 			}
 
 			private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
