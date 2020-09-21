@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Windows.UI.Xaml;
@@ -22,7 +24,7 @@ namespace Uno.UI.Extensions
 				return padding;
 			}
 
-			var property = uiElement.GetDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
+			var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
 			return property != null && uiElement.GetValue(property) is Thickness t ? t : default;
 		}
 
@@ -33,7 +35,7 @@ namespace Uno.UI.Extensions
 				return borderThickness;
 			}
 
-			var property = uiElement.GetDependencyPropertyUsingReflection<Thickness>("BorderThicknessProperty");
+			var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("BorderThicknessProperty");
 			return property != null && uiElement.GetValue(property) is Thickness t ? t : default;
 		}
 
@@ -44,7 +46,7 @@ namespace Uno.UI.Extensions
 				return true;
 			}
 
-			var property = uiElement.GetDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
+			var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
 			if(property != null)
 			{
 				uiElement.SetValue(property, padding);
@@ -61,7 +63,7 @@ namespace Uno.UI.Extensions
 				return true;
 			}
 
-			var property = uiElement.GetDependencyPropertyUsingReflection<Thickness>("BorderThicknessProperty");
+			var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("BorderThicknessProperty");
 			if (property != null)
 			{
 				uiElement.SetValue(property, borderThickness);
@@ -71,17 +73,15 @@ namespace Uno.UI.Extensions
 			return false;
 		}
 
-		private static Dictionary<(Type type, string property), DependencyProperty> _dependencyPropertyReflectionCache;
+		private static Dictionary<(Type type, string property), DependencyProperty?>? _dependencyPropertyReflectionCache;
 
-		internal static DependencyProperty GetDependencyPropertyUsingReflection<TProperty>(this UIElement uiElement, string propertyName)
+		internal static DependencyProperty? FindDependencyPropertyUsingReflection<TProperty>(this UIElement uiElement, string propertyName)
 		{
 			var type = uiElement.GetType();
 			var propertyType = typeof(TProperty);
 			var key = (ownerType: type, propertyName);
 
-			_dependencyPropertyReflectionCache =
-				_dependencyPropertyReflectionCache
-				?? new Dictionary<(Type, string), DependencyProperty>(2);
+			_dependencyPropertyReflectionCache ??= new Dictionary<(Type, string), DependencyProperty?>(2);
 
 			if (_dependencyPropertyReflectionCache.TryGetValue(key, out var property))
 			{
