@@ -221,7 +221,7 @@ namespace Windows.Storage
 			return AsyncOperation.FromTask(ct => GetFileFromApplicationUriAsyncTask(ct, uri));
 		}
 
-#if __IOS__ || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if NET461 || __SKIA__ || __NETSTD_REFERENCE__
 		private static Task<StorageFile> GetFileFromApplicationUriAsyncTask(CancellationToken ct, Uri uri)
 		{
 			throw new NotImplementedException();

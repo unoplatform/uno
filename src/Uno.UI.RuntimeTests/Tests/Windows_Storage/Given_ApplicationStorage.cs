@@ -19,5 +19,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 
 			Assert.AreEqual("<SomeContent/>", content);
 		}
+
+		[TestMethod]
+		public async Task When_GetFileFromApplicationUriAsync_Nested()
+		{
+			var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Asset_GetFileFromApplicationUriAsync_Nested.xml"));
+
+			var content = await FileIO.ReadTextAsync(file);
+
+			Assert.AreEqual("<SomeContent/>", content);
+		}
 	}
 }

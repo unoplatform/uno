@@ -6035,6 +6035,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\AcrylicBrush.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Animations.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AppIcon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Asset_GetFileFromApplicationUriAsync_Nested.xml" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AutoSave.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AutoSuggestBox.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Button.png" />
