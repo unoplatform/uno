@@ -19,7 +19,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				?.EvaluatedValue ?? "";
 
 			var isUAP = evaluatedValue.Equals("UAP", StringComparison.OrdinalIgnoreCase);
-			var isNetCoreWPF = !string.IsNullOrEmpty(projectInstance.GetProperty("UseWPF")?.EvaluatedValue);
+			var isNetCoreWPF = (projectInstance.GetProperty("UseWPF")?.EvaluatedValue ?? "").Equals("True", StringComparison.OrdinalIgnoreCase);
 			var isNetCoreDesktop = projectInstance
 				.GetProperty("ProjectTypeGuids")
 				?.EvaluatedValue == "{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
