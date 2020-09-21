@@ -266,7 +266,17 @@ namespace Windows.UI.Xaml.Controls
 					_selectionParentInDropdown = null;
 				}
 
-				_contentPresenter.Content = item;
+				var displayMemberPath = DisplayMemberPath;
+				if (string.IsNullOrEmpty(displayMemberPath))
+				{
+					_contentPresenter.Content = item;
+				}
+				else
+				{
+					var b = new BindingPath(displayMemberPath, item) {DataContext = item};
+					_contentPresenter.Content = b.Value;
+				}
+
 				if (itemView != null && itemView.GetVisualTreeParent() != _contentPresenter)
 				{
 					// Item may have been put back in list, reattach it to _contentPresenter
