@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -17,6 +18,7 @@ using Windows.UI.Core;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
@@ -46,7 +48,6 @@ namespace Windows.UI.Xaml
 
 			// TODO: Use pointer ID for the predicates
 			private static readonly Predicate<UIElement> _isOver = e => e.IsPointerOver;
-			//private static readonly Predicate<UIElement> _isPressed = e => e.IsPointerPressed;
 
 			private readonly Dictionary<uint, (Rect validity, ManagedWeakReference orginalSource)> _cache = new Dictionary<uint, (Rect, ManagedWeakReference)>();
 
@@ -75,7 +76,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerPressed [{source.element}/{source.element.GetHashCode():X8}");
+					this.Log().Trace($"CoreWindow_PointerPressed [{source.element.GetDebugName()}");
 				}
 
 				var routedArgs = new PointerRoutedEventArgs(args, source.element);
@@ -125,7 +126,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerPressed [{source.element}/{source.element.GetHashCode():X8}");
+					this.Log().Trace($"CoreWindow_PointerPressed [{source.element.GetDebugName()}");
 				}
 
 				var routedArgs = new PointerRoutedEventArgs(args, source.element);
@@ -159,7 +160,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerPressed [{source.element}/{source.element.GetHashCode():X8}");
+					this.Log().Trace($"CoreWindow_PointerPressed [{source.element.GetDebugName()}");
 				}
 
 				var routedArgs = new PointerRoutedEventArgs(args, source.element);
@@ -182,7 +183,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerMoved [{source.element}/{source.element.GetHashCode():X8}");
+					this.Log().Trace($"CoreWindow_PointerMoved [{source.element.GetDebugName()}");
 				}
 
 				var routedArgs = new PointerRoutedEventArgs(args, source.element);
@@ -239,32 +240,28 @@ namespace Windows.UI.Xaml
 
 			private (UIElement? element, Branch? stale) FindOriginalSource(
 				PointerEventArgs args,
-				Predicate<UIElement>? isStale = null,
-				[CallerMemberName] string? caller = null)
-			{
+				Predicate<UIElement>? isStale = null
 #if TRACE_HIT_TESTING
-				try
-				{ 
-					_trace = new IndentedStringBuilder();
-					_trace.AppendLineInvariant(
-						$"[{caller!.Replace("CoreWindow_Pointer", "").ToUpperInvariant()}] "
-						+ $"@{args.CurrentPoint.Position.X:F2},{args.CurrentPoint.Position.Y:F2} (args: {args.GetHashCode():X8})");
+				, [CallerMemberName] string? caller = null)
+			{
+				using var _ = BEGIN_TRACE();
+				TRACE($"[{caller!.Replace("CoreWindow_Pointer", "").ToUpperInvariant()}] @{args.CurrentPoint.Position.ToDebugString()} (args: {args.GetHashCode():X8})");
+#else
+			) {
 #endif
 
 				var pointerId = args.CurrentPoint.PointerId;
-				if (_cache.TryGetValue(pointerId, out var cached)
+				if (FeatureConfiguration.UIElement.AllowHitTestCaching
+					&& _cache.TryGetValue(pointerId, out var cached)
 					&& cached.validity.Contains(args.CurrentPoint.RawPosition)
 					&& cached.orginalSource.Target is UIElement cachedElement
-					&& cachedElement.IsHitTestVisibleCoalesced) 
+					&& cachedElement.IsHitTestVisibleCoalesced)
 				{
 					// Note about cachedElement.IsHitTestVisibleCoalesced:
 					//		If not visible, either the auto reset on load/unload should have clean the internal pointers state,
 					//		either the stale branch detection in SearchDownForTopMostElementAt(root) will find it and clear state.
 
-					Matrix3x2.Invert(GetTransform(cachedElement, null), out var rootToCachedElement);
-					var positionInCachedElementCoordinates = rootToCachedElement.Transform(args.CurrentPoint.Position);
-
-					var result = SearchUpAndDownForTopMostElementAt(positionInCachedElementCoordinates, cachedElement, isStale);
+					var result = SearchUpAndDownForTopMostElementAt(args.CurrentPoint.Position, cachedElement, isStale);
 
 					if (result.element is { })
 					{
@@ -290,20 +287,13 @@ namespace Windows.UI.Xaml
 
 				this.Log().Warn("The root element not set yet, impossible to find the original source.");
 
-#if TRACE_HIT_TESTING
-				}
-				finally
-				{
-					Debug.WriteLine(_trace);
-					_trace = null;
-				}
-#endif
-
 				return default;
 			}
 
 			private void UpdateCache(uint pointerId, (ManagedWeakReference weak, UIElement instance)? currentEntry, UIElement? updated)
 			{
+				EnsureCacheScavenging();
+
 				if (currentEntry.HasValue)
 				{
 					if (updated == currentEntry.Value.instance)
@@ -327,49 +317,128 @@ namespace Windows.UI.Xaml
 				}
 			}
 
+			private bool _isCacheScavengingEnabled;
+
+			private void EnsureCacheScavenging()
+			{
+				if (_isCacheScavengingEnabled)
+				{
+					return;
+				}
+
+				// Note: We use the "RootElement" as it will not change when the set the content,
+				//		 and it also includes the Popups!
+				Window.Current.RootElement.LayoutUpdated += ClearCache;
+				_isCacheScavengingEnabled = true;
+			}
+
+			// We have to clear the cache on each layout updates as another element might have been added/moved over the current element
+			private void ClearCache(object sender, object o)
+				=> _cache.Clear();
+
 			private static (UIElement? element, Branch? stale) SearchUpAndDownForTopMostElementAt(
-				Point position,
+				Point rawPosition,
 				UIElement element,
 				Predicate<UIElement>? isStale)
 			{
-				var (foundElement, stale) = SearchDownForTopMostElementAt(position, element, isStale);
-				if (foundElement is { })
-				{
-					return (foundElement, stale); // Success match
-				}
+				var parents = new IntermediateAggregator(default);
+
+				Matrix3x2.Invert(GetTransform(element, null, parents), out var rootToCachedElement);
+				var positionInCachedElementCoordinates = rootToCachedElement.Transform(rawPosition);
+
+				var (foundElement, stale) = SearchDownForTopMostElementAt(positionInCachedElementCoordinates, element, isStale);
+				//if (foundElement is { })
+				//{
+				//	foreach (var parent in parents.Reverse())
+				//	{
+				//		if (parent.element._children.Count > 1)
+				//		{
+
+				//		}
+				//	}
+
+				//	return (foundElement, stale); // Success match
+				//}
+
+				// As soon as we have found a target element, we only validate that there is no other children that might be above the found one.
+				//Predicate<UIElement> parentFilter;
+				////Func<UIElement, Func<IEnumerable<UIElement>, IEnumerable<UIElement>>> childrenFilter;
+				//if (foundElement is null)
+				//{
+				//	parentFilter = Any; // We still have to validate each parent if it can be the target
+				//	childrenFilter = Except;
+				//}
+				//else
+				//{
+				//	parentFilter = HasMultipleChildren; 
+				//	childrenFilter = SkipUntil;
+				//	isStale = null; // Since an element of the branch has been accepted, we no longer have to search for stale element.
+				//}
+
+				//if (stale is {})
+				//{
+				//	isStale = null;
+				//}
 
 				// The provided element (and its sub elements) are not (no longer) the top most element,
 				// we will now walk the tree upward to find the new top most element.
 				// At this point we assume that the pointer is probably not far enough from the cached element,
 				// so it's faster to search in sibling walking the tree upward instead of starting from visual root.
 				// This might not always be the case, for instance when showing/hiding a Popup.
-				double offsetX = 0, offsetY = 0;
-				while (element.TryGetParentUIElementForTransformToVisual(out var parent, ref offsetX, ref offsetY))
-				{
-					// Compute the position in the parent coordinate space
-					position = GetTransform(from: element, to: parent).Transform(position);
+				//double offsetX = 0, offsetY = 0;
 
-					if (stale is null)
+				Func<IEnumerable<UIElement>, IEnumerable<UIElement>> parentChildrenFilter;
+				Predicate<UIElement>? parentChildIsStale = isStale;
+
+				foreach (var parent in parents)
+				{
+					if (foundElement is null)
 					{
-						(foundElement, stale) = SearchDownForTopMostElementAt(position, parent, isStale, excludedChild: element);
+						// We didn't find any acceptable element, we are navigating the tree up search for the head of an acceptable branch
+						// So here we only exclude the child we already validated.
+						parentChildrenFilter = Except(element);
+					}
+					else if (parent.element._children.Count < 2)
+					{
+						// We are only looking for sibling elements that are over the found one, so we can ignore parents that have only one child.
+						continue;
 					}
 					else
 					{
-						// Do not search for the stale branch AND DO NOT ERASE the current 'stale' branch !
-						(foundElement, _) = SearchDownForTopMostElementAt(position, parent, excludedChild: element);
+						// We found an acceptable branch, we we continue to walk the tree upward to search for sibling that might be above the selected element.
+						// So here we exclude all children that are before (i.e. under) the selected branch
+						parentChildrenFilter = SkipUntil(element);
+
+						// Since an element of the branch has been accepted, we no longer have to search for stale element.
+						parentChildIsStale = null;
+						isStale = null;
 					}
 
-					if (foundElement is { })
+					if (stale is {})
 					{
-						return (foundElement, stale);
+						// If we have already found a stale leaf, we don't search for stale element in siblings branches
+						parentChildIsStale = null;
 					}
 
-					if (isStale?.Invoke(parent) ?? false)
+					var parentPosition = parent.transform.Transform(positionInCachedElementCoordinates);
+					var (parentFoundElement, parentStale) = SearchDownForTopMostElementAt(parentPosition, parent.element, parentChildIsStale, parentChildrenFilter);
+
+					if (foundElement is null)
 					{
-						stale = new Branch(parent, stale?.Leaf ?? parent);
+						if (parentFoundElement is { })
+						{
+							foundElement = parentFoundElement;
+							parentStale = null; // sanity, we should not have an element that is at the same time acceptable and stale
+						}
+						else if (isStale?.Invoke(parent.element) ?? false)
+						{
+							stale = new Branch(parent.element, stale?.Leaf ?? parent.element);
+						}
 					}
 
-					element = parent;
+					stale ??= parentStale; // if stale is null, the parentStale includes the parent.element (if stale!)
+
+					element = parent.element;
 				}
 
 				return (foundElement, stale);
@@ -379,13 +448,13 @@ namespace Windows.UI.Xaml
 				Point posRelToParent,
 				UIElement element,
 				Predicate<UIElement>? isStale = null,
-				UIElement? excludedChild = null)
+				Func<IEnumerable<UIElement>, IEnumerable<UIElement>>? childrenFilter = null)
 			{
 				var stale = default(Branch?);
 				var elementHitTestVisibility = (HitTestVisibility)element.GetValue(HitTestVisibilityProperty);
 
 #if TRACE_HIT_TESTING
-				using var _ = BEGIN_TRACE(element);
+				using var _ = SET_TRACE_SUBJECT(element);
 				TRACE($"- hit test visibility: {elementHitTestVisibility}");
 #endif
 
@@ -470,7 +539,7 @@ namespace Windows.UI.Xaml
 				}
 
 				// Validate if any child is an acceptable target
-				var children = excludedChild is null ? element.GetChildren() : element.GetChildren().Except(excludedChild);
+				var children = childrenFilter is null ? element.GetChildren() : childrenFilter(element.GetChildren());
 				using var child = children.Reverse().GetEnumerator();
 				var isChildStale = isStale;
 				while (child.MoveNext())
@@ -544,25 +613,68 @@ namespace Windows.UI.Xaml
 				return staleRoot;
 			}
 
+			#region Helpers
+			private static bool Any(UIElement _)
+				=> true;
+
+			private static bool HasMultipleChildren(UIElement element)
+				=> element._children.Count > 1;
+
+			private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> Except(UIElement element)
+				=> children => children.Except(element);
+
+			private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> SkipUntil(UIElement element)
+				=> children => SkipUntilCore(element, children);
+
+			private static IEnumerable<UIElement> SkipUntilCore(UIElement element, IEnumerable<UIElement> children)
+			{
+				using var enumerator = children.GetEnumerator();
+				while (enumerator.MoveNext() && enumerator.Current != element)
+				{
+				}
+
+				if (!enumerator.MoveNext())
+				{
+					yield break;
+				}
+
+				while (enumerator.MoveNext())
+				{
+					yield return enumerator.Current;
+				}
+			}
+			#endregion
+
 			#region HitTest tracing
 #if TRACE_HIT_TESTING
 			[ThreadStatic]
-			private static IndentedStringBuilder? _trace;
+			private static StringBuilder? _trace;
 
 			[ThreadStatic]
-			private static UIElement _traceCurrentElement;
+			private static UIElement? _traceSubject;
 
-			private static IDisposable BEGIN_TRACE(UIElement element)
+			private static IDisposable BEGIN_TRACE()
+			{
+				_trace = new StringBuilder();
+
+				return Disposable.Create(() =>
+				{
+					Debug.WriteLine(_trace.ToString());
+					_trace = null;
+				});
+			}
+
+			private static IDisposable SET_TRACE_SUBJECT(UIElement element)
 			{
 				if (_trace is { })
 				{
-					var previous = _traceCurrentElement;
-					_traceCurrentElement = element;
+					var previous = _traceSubject;
+					_traceSubject = element;
 
-					_trace.Append(new string('\t', _traceCurrentElement.Depth - 1));
+					_trace.Append(new string('\t', _traceSubject.Depth - 1));
 					_trace.Append($"[{element.GetDebugName()}]\r\n");
 
-					return Disposable.Create(() => _traceCurrentElement = previous);
+					return Disposable.Create(() => _traceSubject = previous);
 				}
 				else
 				{
@@ -577,7 +689,7 @@ namespace Windows.UI.Xaml
 #if TRACE_HIT_TESTING
 				if (_trace is { })
 				{
-					_trace.Append(new string('\t', _traceCurrentElement.Depth));
+					_trace.Append(new string('\t', _traceSubject?.Depth ?? 0));
 					_trace.Append(msg.ToStringInvariant());
 					_trace.Append("\r\n");
 				}
