@@ -53,20 +53,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // Canvas.ZIndex isn't implemented for WASM yet
 		public void Verify_Canvas_ZIndex()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Canvas.Canvas_ZIndex");
 
 			var screenshot = TakeScreenshot("Rendered");
 
-			var redBorderRect = _app.GetRect("CanvasBorderRed");
+			var redBorderRect1 = _app.GetRect("CanvasBorderRed1");
+			ImageAssert.HasColorAt(screenshot, redBorderRect1.CenterX, redBorderRect1.CenterY, Color.Green /*psych*/);
+			var redBorderRect2 = _app.GetRect("CanvasBorderRed2");
+			ImageAssert.HasColorAt(screenshot, redBorderRect2.CenterX, redBorderRect2.CenterY, Color.Green /*psych*/);
+			var redBorderRect3 = _app.GetRect("CanvasBorderRed3");
+			ImageAssert.HasColorAt(screenshot, redBorderRect3.CenterX, redBorderRect3.CenterY, Color.Green /*psych*/);
 
-			ImageAssert.HasColorAt(screenshot, redBorderRect.CenterX, redBorderRect.CenterY, Color.Green /*psych*/);
-
-			var greenBorderRect = _app.GetRect("CanvasBorderGreen");
-
-			ImageAssert.HasColorAt(screenshot, greenBorderRect.CenterX, greenBorderRect.CenterY, Color.Blue);
+			var greenBorderRect1 = _app.GetRect("CanvasBorderGreen1");
+			ImageAssert.HasColorAt(screenshot, greenBorderRect1.CenterX, greenBorderRect1.CenterY, Color.Brown);
+			ImageAssert.HasColorAt(screenshot, greenBorderRect1.Right - 1, greenBorderRect1.CenterY, Color.Blue);
+			var greenBorderRect2 = _app.GetRect("CanvasBorderGreen2");
+			ImageAssert.HasColorAt(screenshot, greenBorderRect2.CenterX, greenBorderRect2.CenterY, Color.Brown);
+			ImageAssert.HasColorAt(screenshot, greenBorderRect2.Right-1, greenBorderRect2.CenterY, Color.Blue);
+			var CanvasBorderGreen3 = _app.GetRect("CanvasBorderGreen3");
+			ImageAssert.HasColorAt(screenshot, CanvasBorderGreen3.CenterX, CanvasBorderGreen3.CenterY, Color.Brown);
+			ImageAssert.HasColorAt(screenshot, CanvasBorderGreen3.Right-1, CanvasBorderGreen3.CenterY, Color.Blue);
 		}
 	}
 }
