@@ -42,7 +42,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				ClickButton("AddSecondLevelOfNodes");
 				ClickButton("LabelItems");
 
-				var root0 = QueryEx.Any.Marked("Root.0");
+				var root0 = QueryAll("Root.0");
 				root0.Tap();
 				ClickButton("GetItemCount");
 				Assert.AreEqual("5", ReadResult());
@@ -61,7 +61,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				ClickButton("LabelItems");
 
 
-				var root1 = QueryEx.Any.Marked("Root.1");
+				var root1 = QueryAll("Root.1");
 				root1.Tap();
 				ClickButton("GetItemCount");
 				Assert.AreEqual("8", ReadResult());
@@ -210,7 +210,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				Assert.AreEqual("4", ReadResult());
 
 				// tap button to hide flyout treeview
-				var flyoutButton = QueryEx.Any.Marked("TreeViewInFlyout");
+				var flyoutButton = QueryAll("TreeViewInFlyout");
 				Assert.IsNotNull(flyoutButton, "Verifying that we found the button");
 				flyoutButton.Tap();
 				//Wait.ForIdle();
@@ -247,7 +247,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				Assert.AreEqual("Selected: Root, Root.0, Root.1, Root.2", ReadResult());
 
 				Console.WriteLine("Retrieve first item as generic UIElement");
-				var Item0 = QueryEx.Any.Marked("Root.0").FirstResult();
+				var Item0 = QueryAll("Root.0").FirstResult();
 				Assert.IsNotNull(ItemRoot, "Verifying that we found a UIElement called Root.0");
 
 				_app.TapCoordinates((float)(Item0.Rect.X + Item0.Rect.Width * .1), (float)(Item0.Rect.Y + Item0.Rect.Height * .5));
@@ -301,7 +301,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				ClickButton("SetRoot1HasUnrealizedChildren");
 
 				ClickButton("LabelItems");
-				var root1 = QueryEx.Any.Marked("Root.1");
+				var root1 = QueryAll("Root.1");
 				Assert.IsNotNull(root1, "Verifying root.1 is found");
 				TapAt(root1, 36, 12); // offset by approximate chevron position
 				//Wait.ForIdle();
@@ -334,9 +334,9 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				ClickButton("ItemTemplateSelectorTestPage");
 
 				Console.WriteLine("ItemTemplateSelector test page is ready");
-				var node1 = QueryEx.Any.Marked("Template1").FirstResult();
+				var node1 = QueryAll("Template1").FirstResult();
 				Assert.IsNotNull(node1, "Verifying template 1 is set");
-				var node2 = QueryEx.Any.Marked("Template2").FirstResult();
+				var node2 = QueryAll("Template2").FirstResult();
 				Assert.IsNotNull(node2, "Verifying template 2 is set");
 
 				// Verify item container styles are set correctly by checking heights
@@ -356,9 +356,9 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				ClickButton("AddSecondLevelOfNodes");
 				// expand all nodes
 				ClickButton("LabelItems");
-				var root0 = QueryEx.Any.Marked("Root.0");
+				var root0 = QueryAll("Root.0");
 				Assert.IsNotNull(root0, "Verifying Root.0 is found");
-				var root1 = QueryEx.Any.Marked("Root.1");
+				var root1 = QueryAll("Root.1");
 				Assert.IsNotNull(root1, "Verifying Root.1 is found");
 				root0.Tap();
 
@@ -376,13 +376,13 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				ClickButton("GetMultiSelectCheckBoxStates");
 				Assert.AreEqual("u|u|u|u|u|u|u|u|", ReadResult());
 
-				var root00 = QueryEx.Any.Marked("Root.0.0");
+				var root00 = QueryAll("Root.0.0");
 				Assert.IsNotNull(root00, "Verifying Root.0.0 is found");
 				ToggleTreeViewItemCheckBox(root00, 3);
 				ClickButton("GetMultiSelectCheckBoxStates");
 				Assert.AreEqual("p|s|s|u|u|u|u|u|", ReadResult());
 
-				var root10 = QueryEx.Any.Marked("Root.1.0");
+				var root10 = QueryAll("Root.1.0");
 				Assert.IsNotNull(root10, "Verifying Root.1.0 is found");
 				ToggleTreeViewItemCheckBox(root10, 3);
 				ClickButton("GetMultiSelectCheckBoxStates");
@@ -396,7 +396,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				ClickButton("GetMultiSelectCheckBoxStates");
 				Assert.AreEqual("p|s|s|s|s|s|s|u|", ReadResult());
 
-				var root2 = QueryEx.Any.Marked("Root.2");
+				var root2 = QueryAll("Root.2");
 				Assert.IsNotNull(root2, "Verifying Root.2 is found");
 				ToggleTreeViewItemCheckBox(root2, 2);
 				ClickButton("GetMultiSelectCheckBoxStates");
@@ -430,7 +430,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				//Wait.ForIdle();
 
 				ClickButton("LabelItems");
-				var root0 = QueryEx.Any.Marked("Root.0");
+				var root0 = QueryAll("Root.0");
 				Assert.IsNotNull(root0, "Verifying Root.0 is found");
 
 				root0.Tap();
@@ -458,7 +458,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				//Wait.ForIdle();
 
 				ClickButton("LabelItems");
-				var root0 = QueryEx.Any.Marked("Root.0");
+				var root0 = QueryAll("Root.0");
 				Assert.IsNotNull(root0, "Verifying Root.0 is found");
 
 				root0.Tap();
@@ -489,7 +489,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 					ClickButton("GetSelected");
 					Assert.AreEqual("Selected: Node 50", ReadResult());
 
-					var node1 = QueryEx.Any.Marked("Node 1");
+					var node1 = QueryAll("Node 1");
 					Assert.IsNotNull(node1, "Verifying Node 1 is found");
 					node1.Tap();
 
@@ -510,7 +510,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 				ClickButton("AddInheritedTreeViewNode");
 				ClickButton("LabelItems");
-				var node = QueryEx.Any.Marked("Inherited from TreeViewNode");
+				var node = QueryAll("Inherited from TreeViewNode");
 				Assert.IsNotNull(node, "Verify TreeViewNode content is correct");
 			}
 		}
@@ -524,7 +524,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 				ClickButton("InitializeItemsSource");
 				//Wait.ForIdle();
-				var node1 = QueryEx.Any.Marked("Root");
+				var node1 = QueryAll("Root");
 				Assert.IsNotNull(node1, "Verify data binding");
 			}
 		}
@@ -534,7 +534,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		public void TreeViewNodeInMarkupTest()
 		{
 			{
-				var root = QueryEx.Any.Marked("Root");
+				var root = QueryAll("Root");
 				Assert.IsNotNull(root, "Verify root node content");
 			}
 		}
@@ -590,9 +590,9 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		public void SelectedItemBindingsWork()
 		{
 			{
-				var setContentButton = QueryEx.Any.Marked("TwoWayBoundButton");
-				var setSelectedItemButton = QueryEx.Any.Marked("SelectRoot2Item");
-				var readResultButton = QueryEx.Any.Marked("ReadBindingResult");
+				var setContentButton = QueryAll("TwoWayBoundButton");
+				var setSelectedItemButton = QueryAll("SelectRoot2Item");
+				var readResultButton = QueryAll("ReadBindingResult");
 
 				setContentButton.Tap();
 				//Wait.ForIdle();
@@ -623,7 +623,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				//Wait.ForIdle();
 
 				Console.WriteLine("Verifying current selection");
-				var textBlock = QueryEx.Any.Marked("SelectedItemName");
+				var textBlock = QueryAll("SelectedItemName");
 				Assert.AreEqual("Item: 0; layer: 3", textBlock.GetText());
 
 				Console.WriteLine("Expanding selected item");
@@ -633,7 +633,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				Console.WriteLine("Verifying selection again");
 				ClickButton("GetSelectedItemName");
 				//Wait.ForIdle();
-				textBlock = QueryEx.Any.Marked("SelectedItemName");
+				textBlock = QueryAll("SelectedItemName");
 				Assert.AreEqual("Item: 0; layer: 3", textBlock.GetText());
 			}
 		}
@@ -648,14 +648,14 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private void ClickButton(string buttonName)
 		{
-			var button = QueryEx.Any.Marked(buttonName);
+			var button = QueryAll(buttonName);
 			button.Tap();
 			// Wait.ForIdle();
 		}
 
 		private string ReadResult()
 		{
-			var textBlock = QueryEx.Any.Marked("Results");
+			var textBlock = QueryAll("Results");
 			return textBlock.GetText();
 		}
 
@@ -663,7 +663,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		{
 			// Note: Unable to get the treeview UIObject. Using the button above and accounting
 			// for its height as a workaround.
-			var buttonAboveTreeView = QueryEx.Any.Marked(buttonName).FirstResult();
+			var buttonAboveTreeView = QueryAll(buttonName).FirstResult();
 			Assert.IsNotNull(buttonAboveTreeView, "Verifying that we found a UIElement called " + buttonName);
 
 			_app.TapCoordinates((float)(buttonAboveTreeView.Rect.X + x), (float)(buttonAboveTreeView.Rect.Bottom + y));			
@@ -681,7 +681,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		{
 			ClickButton("LabelItems");
 			Console.WriteLine("Retrieve first item as generic UIElement");
-			var ItemRoot = QueryEx.Any.Marked("Root");
+			var ItemRoot = QueryAll("Root");
 			Assert.IsNotNull(ItemRoot, "Verifying that we found a UIElement called Root");
 			return ItemRoot;
 		}
@@ -699,6 +699,15 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 			var firstResult = query.FirstResult();
 			
 			_app.TapCoordinates((float)(firstResult.Rect.X + x), (float)(firstResult.Rect.Y + y));
+		}
+
+		private QueryEx QueryAll(string name)
+		{
+#if !__WASM__
+			return QueryEx.Any.Marked(name);
+#else
+			return _app.Marked(name);
+#endif
 		}
 	}
 }

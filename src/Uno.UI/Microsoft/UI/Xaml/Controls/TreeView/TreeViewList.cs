@@ -527,7 +527,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private bool IsSelected(TreeViewNode node)
+		internal bool IsSelected(TreeViewNode node)
 		{
 			bool isSelected = false;
 			var selectedItems = ListViewModel.SelectedNodes;

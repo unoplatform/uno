@@ -8,7 +8,6 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
-	[SampleControlInfo("TreeView", "MUX_Test_TreeViewNodeInMarkup")]
 	public sealed partial class TreeViewNodeInMarkupTestPage : MUXTestPage
     {
         public TreeViewNodeInMarkupTestPage()

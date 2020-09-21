@@ -10,7 +10,6 @@ using MUXControlsTestApp;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
-	[SampleControlInfo("TreeView", "MUX_Test_TreeViewLateDataInit")]
 	public sealed partial class TreeViewLateDataInitTest : MUXTestPage, INotifyPropertyChanged
     {
 		public event PropertyChangedEventHandler PropertyChanged;

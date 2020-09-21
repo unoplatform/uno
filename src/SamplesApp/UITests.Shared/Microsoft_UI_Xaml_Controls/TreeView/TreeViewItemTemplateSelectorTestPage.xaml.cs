@@ -11,7 +11,6 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
-	[SampleControlInfo("TreeView", "MUX_Test_TreeViewItemTemplateSelector")]
 	public sealed partial class TreeViewItemTemplateSelectorTestPage : MUXTestPage
 	{
 		public TreeViewItemTemplateSelectorTestPage()
