@@ -222,7 +222,6 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var target in capture.Targets.ToArray())
 					{
-						//Debug.WriteLine($"[MOVE] RE-ROUTED TO {GetTraceName(target.Element)}");
 						routedArgs.Handled = false;
 						target.Element.OnNativePointerMove(routedArgs);
 					}
@@ -230,7 +229,6 @@ namespace Windows.UI.Xaml
 				else
 				{
 					// Note: We prefer to use the "WithOverCheck" overload as we already know that the pointer is effectively over
-					//cDebug.WriteLine($"[MOVE] {GetTraceName(source.element)}");
 					routedArgs.Handled = false;
 					source.element.OnNativePointerMoveWithOverCheck(routedArgs, isOver: true);
 				}

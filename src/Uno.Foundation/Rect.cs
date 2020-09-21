@@ -190,10 +190,14 @@ namespace Windows.Foundation
 		}
 
 		public bool Contains(Point point)
+			// We include points on the edge as "contained".
+			// We do "point.X - Width <= X" instead of "point.X <= X + Width"
+			// so that this check works when Width is PositiveInfinity
+			// and X is NegativeInfinity.
 			=> point.X >= X
-			&& (point.X <= X + Width || (double.IsNegativeInfinity(X) && double.IsPositiveInfinity(Width)))
-			&& point.Y >= Y
-			&& (point.Y <= Y + Height || (double.IsNegativeInfinity(Y) && double.IsPositiveInfinity(Height)));
+				&& point.X - Width <= X
+				&& point.Y >= Y
+				&& point.Y - Height <= Y;
 
 		/// <summary>
 		/// Finds the intersection of the rectangle represented by the current Windows.Foundation.Rect

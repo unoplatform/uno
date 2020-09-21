@@ -595,7 +595,7 @@ namespace Windows.UI.Xaml
 			=> (int)Math.Floor(x + 0.5);
 
 #if HAS_UNO_WINUI
-#region FocusState DependencyProperty
+		#region FocusState DependencyProperty
 
 		public FocusState FocusState
 		{
@@ -613,9 +613,9 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-#endregion
+		#endregion
 
-#region IsTabStop DependencyProperty
+		#region IsTabStop DependencyProperty
 
 		public bool IsTabStop
 		{
@@ -633,7 +633,7 @@ namespace Windows.UI.Xaml
 					(s, e) => ((Control)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
 			);
-#endregion
+		#endregion
 
 		private protected virtual void OnIsTabStopChanged(bool oldValue, bool newValue) { }
 #endif

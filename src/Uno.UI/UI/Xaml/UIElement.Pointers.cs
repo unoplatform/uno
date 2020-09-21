@@ -444,9 +444,6 @@ namespace Windows.UI.Xaml
 		{
 			// We override the isOver for the relevancy check as we will update it right after.
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, isOver: true);
-			//var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
-			//	? isManagedBubblingEvent
-			//	: args.Handled;
 			var handledInManaged = SetOver(args, true, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
 
 			return handledInManaged;
@@ -463,10 +460,7 @@ namespace Windows.UI.Xaml
 			// it due to an invalid state. So here we make sure to not stay in an invalid state that would
 			// prevent any interaction with the application.
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, isOver: true, forceRelease: true);
-			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
-				? isManagedBubblingEvent
-				: args.Handled;
-			var handledInManaged = SetPressed(args, true, muteEvent: isHandled || !isOverOrCaptured);
+			var handledInManaged = SetPressed(args, true, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
 
 			if (PointerRoutedEventArgs.PlatformSupportsNativeBubbling && !isManagedBubblingEvent && !isOverOrCaptured)
 			{
@@ -535,11 +529,8 @@ namespace Windows.UI.Xaml
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
-			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
-				? isManagedBubblingEvent
-				: isManagedBubblingEvent || args.Handled;
 
-			if (!isHandled && isOverOrCaptured)
+			if (!isManagedBubblingEvent && isOverOrCaptured)
 			{
 				// If this pointer was wrongly dispatched here (out of the bounds and not captured),
 				// we don't raise the 'move' event
@@ -552,7 +543,7 @@ namespace Windows.UI.Xaml
 			{
 				// We need to process only events that were not handled by a child control,
 				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), !isHandled || isOverOrCaptured);
+				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), !isManagedBubblingEvent || isOverOrCaptured);
 			}
 
 			return handledInManaged;
@@ -565,11 +556,8 @@ namespace Windows.UI.Xaml
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, out var isOver);
-			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
-				? isManagedBubblingEvent
-				: args.Handled;
 
-			handledInManaged |= SetPressed(args, false, muteEvent: isHandled || !isOverOrCaptured);
+			handledInManaged |= SetPressed(args, false, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
 
 			
 			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
@@ -579,7 +567,7 @@ namespace Windows.UI.Xaml
 				// We need to process only events that are bubbling natively to this control (i.e. isOverOrCaptured == true),
 				// if they are bubbling in managed it means that they where handled a child control,
 				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !isHandled || isOverOrCaptured);
+				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !isManagedBubblingEvent || isOverOrCaptured);
 			}
 
 			// We release the captures on up but only after the released event and processed the gesture
@@ -600,9 +588,6 @@ namespace Windows.UI.Xaml
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
-			//var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
-			//	? isManagedBubblingEvent
-			//	: args.Handled;
 
 			handledInManaged |= SetOver(args, false, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
 
@@ -633,9 +618,6 @@ namespace Windows.UI.Xaml
 		private bool OnPointerCancel(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
 		{
 			var isOverOrCaptured = ValidateAndUpdateCapture(args); // Check this *before* updating the pressed / over states!
-			var isHandled = PointerRoutedEventArgs.PlatformSupportsNativeBubbling
-				? isManagedBubblingEvent
-				: args.Handled;
 
 			// When a pointer is cancelled / swallowed by the system, we don't even receive "Released" nor "Exited"
 			SetPressed(args, false, muteEvent: true);
@@ -659,7 +641,7 @@ namespace Windows.UI.Xaml
 			else
 			{
 				args.Handled = false;
-				handledInManaged |= !isHandled && RaisePointerEvent(PointerCanceledEvent, args);
+				handledInManaged |= !isManagedBubblingEvent && RaisePointerEvent(PointerCanceledEvent, args);
 				handledInManaged |= SetNotCaptured(args);
 			}
 
