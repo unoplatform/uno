@@ -7,7 +7,7 @@ In this tutorial you will learn how to:
 
 - Add the Uno Platform Project Templates to Visual Studio
 - Create a new Project with Uno Platform
-- Learn basics on Model Binding
+- Use the ElementName property for element-to-element binding
 
 The tutorial walks you through creating a small multi-platform application with Uno Platform – a small app containing only a simple horizontal slider control.  
 Also, you will learn how to run your applications on all platforms supported by Uno Platform.
@@ -77,11 +77,11 @@ Also, you will learn how to run your applications on all platforms supported by 
     Result!  
     ![wasm-slider-demo](Assets/wasm-slider-demo.gif)
 
-Congratulations, you’ve just built your first multi-platform application with Uno Platform! Feel free to set select some other platform heads as your Startup Project and run them – just make sure you have all prerequisites installed to run on all other platforms.
+Congratulations, you’ve just built your first multi-platform application with Uno Platform! Feel free to select some other platform heads as your Startup Project and run them – just make sure you have all prerequisites installed to run on all other platforms.  
 
 <div class="NOTE alert alert-info">
 <h5>Next:</h5>
 
-[Got questions? Want to learn more? Looking for production-ready examples? Check out the Next Steps page. We will walk you through a `BugTracker` sample and build out a full Uno Platform app.](get-started-next-steps.md)
+[Got questions? Want to learn more? Looking for production-ready examples? Check out the next tutorial page. We will walk you through a `BugTracker` sample and build out a full Uno Platform app.](getting-started-tutorial-2.md)
 
 </div>
