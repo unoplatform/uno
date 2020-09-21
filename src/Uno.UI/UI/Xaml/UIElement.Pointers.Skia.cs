@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#define TRACE_HIT_TESTING
+//#define TRACE_HIT_TESTING
 
 using System;
 using System.Collections.Generic;
@@ -347,38 +347,6 @@ namespace Windows.UI.Xaml
 				var positionInCachedElementCoordinates = rootToCachedElement.Transform(rawPosition);
 
 				var (foundElement, stale) = SearchDownForTopMostElementAt(positionInCachedElementCoordinates, element, isStale);
-				//if (foundElement is { })
-				//{
-				//	foreach (var parent in parents.Reverse())
-				//	{
-				//		if (parent.element._children.Count > 1)
-				//		{
-
-				//		}
-				//	}
-
-				//	return (foundElement, stale); // Success match
-				//}
-
-				// As soon as we have found a target element, we only validate that there is no other children that might be above the found one.
-				//Predicate<UIElement> parentFilter;
-				////Func<UIElement, Func<IEnumerable<UIElement>, IEnumerable<UIElement>>> childrenFilter;
-				//if (foundElement is null)
-				//{
-				//	parentFilter = Any; // We still have to validate each parent if it can be the target
-				//	childrenFilter = Except;
-				//}
-				//else
-				//{
-				//	parentFilter = HasMultipleChildren; 
-				//	childrenFilter = SkipUntil;
-				//	isStale = null; // Since an element of the branch has been accepted, we no longer have to search for stale element.
-				//}
-
-				//if (stale is {})
-				//{
-				//	isStale = null;
-				//}
 
 				// The provided element (and its sub elements) are not (no longer) the top most element,
 				// we will now walk the tree upward to find the new top most element.
@@ -388,7 +356,7 @@ namespace Windows.UI.Xaml
 				//double offsetX = 0, offsetY = 0;
 
 				Func<IEnumerable<UIElement>, IEnumerable<UIElement>> parentChildrenFilter;
-				Predicate<UIElement>? parentChildIsStale = isStale;
+				Predicate<UIElement>? siblingIsStale = isStale;
 
 				foreach (var parent in parents)
 				{
@@ -401,39 +369,37 @@ namespace Windows.UI.Xaml
 					else if (parent.element._children.Count < 2)
 					{
 						// We are only looking for sibling elements that are over the found one, so we can ignore parents that have only one child.
+						element = parent.element;
 						continue;
 					}
 					else
 					{
-						// We found an acceptable branch, we we continue to walk the tree upward to search for sibling that might be above the selected element.
+						// We found an acceptable branch, we continue to walk the tree upward to search for sibling that might be above the selected element.
 						// So here we exclude all children that are before (i.e. under) the selected branch
 						parentChildrenFilter = SkipUntil(element);
 
 						// Since an element of the branch has been accepted, we no longer have to search for stale element.
-						parentChildIsStale = null;
+						siblingIsStale = null;
 						isStale = null;
 					}
 
 					if (stale is {})
 					{
 						// If we have already found a stale leaf, we don't search for stale element in siblings branches
-						parentChildIsStale = null;
+						siblingIsStale = null;
 					}
 
 					var parentPosition = parent.transform.Transform(positionInCachedElementCoordinates);
-					var (parentFoundElement, parentStale) = SearchDownForTopMostElementAt(parentPosition, parent.element, parentChildIsStale, parentChildrenFilter);
+					var (parentFoundElement, parentStale) = SearchDownForTopMostElementAt(parentPosition, parent.element, siblingIsStale, parentChildrenFilter);
 
-					if (foundElement is null)
+					if (parentFoundElement is { })
 					{
-						if (parentFoundElement is { })
-						{
-							foundElement = parentFoundElement;
-							parentStale = null; // sanity, we should not have an element that is at the same time acceptable and stale
-						}
-						else if (isStale?.Invoke(parent.element) ?? false)
-						{
-							stale = new Branch(parent.element, stale?.Leaf ?? parent.element);
-						}
+						foundElement = parentFoundElement; // Either we didn't found any element yet, either a branch is over the selected one
+						parentStale = null; // sanity, we should not have an element that is at the same time acceptable and stale
+					}
+					else if (foundElement is null && (isStale?.Invoke(parent.element) ?? false))
+					{
+						stale = new Branch(parent.element, stale?.Leaf ?? parent.element);
 					}
 
 					stale ??= parentStale; // if stale is null, the parentStale includes the parent.element (if stale!)
@@ -502,7 +468,7 @@ namespace Windows.UI.Xaml
 					renderingBounds = parentToElement.Transform(renderingBounds);
 				}
 
-				if (element is ScrollViewer sv) // TODO: ScrollContentPresenter ?
+				if (element is ScrollViewer sv)
 				{
 					var zoom = sv.ZoomFactor;
 
@@ -614,12 +580,6 @@ namespace Windows.UI.Xaml
 			}
 
 			#region Helpers
-			private static bool Any(UIElement _)
-				=> true;
-
-			private static bool HasMultipleChildren(UIElement element)
-				=> element._children.Count > 1;
-
 			private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> Except(UIElement element)
 				=> children => children.Except(element);
 
