@@ -19,7 +19,7 @@
   to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
   -->
   <Target Name="UnoResourcesGeneration"
-				  BeforeTargets="_GetLibraryImports"
+				  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent"
                   DependsOnTargets="ResolveProjectReferences"
 				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
 
@@ -49,7 +49,7 @@
   </Target>
 
   <Target Name="UnoAssetsGeneration"
-				  BeforeTargets="_GetLibraryImports"
+				  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent"
                   DependsOnTargets="ResolveProjectReferences"
 				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
     <!-- Assets -->
