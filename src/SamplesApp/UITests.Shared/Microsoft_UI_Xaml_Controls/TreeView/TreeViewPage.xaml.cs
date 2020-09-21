@@ -594,7 +594,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			{
 				foreach (TreeViewItemSource item in e.Items)
 				{
-					if (items.Length > 0) items.AppendLine();
+					if (items.Length > 0)
+					{
+						items.AppendLine();
+					}
+
 					items.Append(item.Content);
 				}
 			}
@@ -602,7 +606,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			{
 				foreach (TreeViewNode node in e.Items)
 				{
-					if (items.Length > 0) items.AppendLine();
+					if (items.Length > 0)
+					{
+						items.AppendLine();
+					}
+
 					items.Append(node.Content.ToString());
 				}
 			}
@@ -774,7 +782,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			{
 				foreach (TreeViewItemSource item in items)
 				{
-					if (names.Length > 0) names.Append("|");
+					if (names.Length > 0)
+					{
+						names.Append("|");
+					}
+
 					names.Append(item.Content);
 				}
 			}
@@ -782,7 +794,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			{
 				foreach (TreeViewNode node in items)
 				{
-					if (names.Length > 0) names.Append("|");
+					if (names.Length > 0)
+					{
+						names.Append("|");
+					}
+
 					names.Append(node.Content.ToString());
 				}
 			}

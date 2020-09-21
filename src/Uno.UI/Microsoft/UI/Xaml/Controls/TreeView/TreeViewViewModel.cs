@@ -14,14 +14,15 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class TreeViewViewModel : ObservableVector<object>
 	{
-		private bool m_isContentMode;
 		private readonly SelectedTreeNodeVector m_selectedNodes;
-		private SelectedItemsVector m_selectedItems;
-		private Dictionary<object, TreeViewNode> m_itemToNodeMap;
+		private readonly SelectedItemsVector m_selectedItems;
+		private readonly Dictionary<object, TreeViewNode> m_itemToNodeMap;
 
 		private TreeViewNode m_originNode;
 		private TreeViewList m_TreeViewList;
 		private TreeView m_TreeView;
+
+		private bool m_isContentMode;
 
 		private int m_selectionTrackingCounter = 0;
 		private readonly List<WeakReference<object>> m_addedSelectedItems = new List<WeakReference<object>>();
@@ -983,7 +984,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private class TreeViewViewModelEnumerator : IEnumerator<object>
 		{
-			private TreeViewViewModel _treeViewViewModel;
+			private readonly TreeViewViewModel _treeViewViewModel;
 			private int _currentIndex = -1;
 
 			public TreeViewViewModelEnumerator(TreeViewViewModel treeViewViewModel)

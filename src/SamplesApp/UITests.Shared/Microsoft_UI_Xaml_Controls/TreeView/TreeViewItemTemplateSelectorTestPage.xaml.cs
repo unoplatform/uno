@@ -44,7 +44,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		{
 			var node = (TreeViewNode)item;
 			int content = (int)node.Content;
-			if (content % 2 == 0) return Style2;
+			if (content % 2 == 0) { return Style2; }
 			return Style1;
 		}
 	}

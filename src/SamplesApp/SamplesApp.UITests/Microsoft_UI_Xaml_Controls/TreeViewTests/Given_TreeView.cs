@@ -703,11 +703,8 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private QueryEx QueryAll(string name)
 		{
-#if !__WASM__
-			return QueryEx.Any.Marked(name);
-#else
-			return _app.Marked(name);
-#endif
+			Query allQuery = q => q.All().Marked(name);
+			return new QueryEx(allQuery);
 		}
 	}
 }
