@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-#if NETSTANDARD
+#if __WASM__ || __SKIA__
 				return this.GetValue(HitTestVisibilityProperty) is HitTestVisibility visibility
 					&& visibility != HitTestVisibility.Collapsed;
 #else
