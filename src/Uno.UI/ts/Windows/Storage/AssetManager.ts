@@ -4,7 +4,7 @@ namespace Windows.Storage {
 
 	export class AssetManager {
 		public static async DownloadAssetsManifest(path: string): Promise<string> {
-			var response = await fetch(path);
+			const response = await fetch(path);
 			return response.text();
 		}
 
