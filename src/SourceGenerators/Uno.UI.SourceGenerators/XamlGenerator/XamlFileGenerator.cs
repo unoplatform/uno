@@ -918,7 +918,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						IDisposable WrapSingleton()
 						{
 							writer.AppendLineInvariant("// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.");
-							var block = writer.BlockInvariant("internal sealed class {0} : {1}, {2}", SingletonClassName, DictionaryProviderInterfaceName, LazyInitializerInterfaceName);
+							var block = writer.BlockInvariant("internal sealed class {0} : {1}", SingletonClassName, DictionaryProviderInterfaceName);
 							_isInSingletonInstance = true;
 							return new DisposableAction(() =>
 							{
@@ -958,27 +958,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							writer.AppendLine();
 
-							// Build giant switch case block for resource retrieval - the advantage here is reduced IR generation with associated reduced AOT footprint
-							using (writer.BlockInvariant("object {0}.GetInitializedValue(string resourceKey)", LazyInitializerInterfaceName))
+							// Build initializer methods for resource retrieval
+							BuildTopLevelResourceDictionaryInitializers(writer, topLevelControl);
+
+							var themeDictionaryMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
+
+							foreach (var dict in (themeDictionaryMember?.Objects).Safe())
 							{
-								using (writer.BlockInvariant("switch (resourceKey)"))
-								{
-									BuildTopLevelResourceDictionaryCases(writer, topLevelControl);
-
-									var themeDictionaryMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
-
-									foreach (var dict in (themeDictionaryMember?.Objects).Safe())
-									{
-										BuildTopLevelResourceDictionaryCases(writer, dict);
-									}
-
-									writer.AppendLineInvariant("default:");
-									using (writer.Indent())
-									{
-										writer.AppendLineInvariant("throw new global::System.ArgumentException(\"Entry '\" + resourceKey + \"' was not found\");");
-									}
-								}
-
+								BuildTopLevelResourceDictionaryInitializers(writer, dict);
 							}
 
 							TryAnnotateWithGeneratorSource(writer, suffix: "DictionaryProperty");
@@ -1021,18 +1008,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		///Build entries in the giant switch case method for the current ResourceDictionary.
+		///Build initializers for the current ResourceDictionary.
 		/// </summary>
 		/// <param name="writer">The writer to use</param>
 		/// <param name="dictionaryObject">The <see cref="XamlObjectDefinition"/> associated with the dictionary.</param>
-		private void BuildTopLevelResourceDictionaryCases(IIndentedStringBuilder writer, XamlObjectDefinition dictionaryObject)
+		private void BuildTopLevelResourceDictionaryInitializers(IIndentedStringBuilder writer, XamlObjectDefinition dictionaryObject)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var resourcesRoot = FindImplicitContentMember(dictionaryObject);
 			var theme = GetDictionaryResourceKey(dictionaryObject);
 			var resources = (resourcesRoot?.Objects).Safe();
 
-			// Pre-populate case names (though this is probably no longer necessary...?)
+			// Pre-populate initializer names (though this is probably no longer necessary...?)
 			var index = _dictionaryPropertyIndex;
 			foreach (var resource in resources)
 			{
@@ -1044,7 +1031,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				index++;
-				var propertyName = GetCaseNameForResourceKey(key, index);
+				var propertyName = GetInitializerNameForResourceKey(key, index);
 				if (_topLevelQualifiedKeys.ContainsKey((theme, key)))
 				{
 					throw new InvalidOperationException($"Dictionary Item {resource?.Type?.Name} has duplicate key `{key}` { (theme != null ? $" in theme {theme}" : "")}.");
@@ -1056,7 +1043,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			//Create static properties
 			var former = _themeDictionaryCurrentlyBuilding; //Will 99% of the time be null. (Mainly this is half-heartedly trying to support funky usage of recursive merged dictionaries.)
 			_themeDictionaryCurrentlyBuilding = theme;
 			foreach (var resource in resources)
@@ -1072,17 +1058,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
 				if (isStaticResourceAlias)
 				{
-					writer.AppendLineInvariant("// Skipping case {0} for {1} {2} - StaticResource ResourceKey aliases are added directly to dictionary", _dictionaryPropertyIndex, key, theme);
+					writer.AppendLineInvariant("// Skipping initializer {0} for {1} {2} - StaticResource ResourceKey aliases are added directly to dictionary", _dictionaryPropertyIndex, key, theme);
 				}
 				else
 				{
-					var caseName = GetCaseNameForResourceKey(key, _dictionaryPropertyIndex);
-					if (_topLevelQualifiedKeys[(theme, key)] != caseName)
+					var initializerName = GetInitializerNameForResourceKey(key, _dictionaryPropertyIndex);
+					if (_topLevelQualifiedKeys[(theme, key)] != initializerName)
 					{
-						throw new InvalidOperationException($"Case name was not created correctly for {key} (theme={theme}).");
+						throw new InvalidOperationException($"Method name was not created correctly for {key} (theme={theme}).");
 					}
-					writer.AppendLineInvariant("// Case for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
-					BuildSingleTimeInitializer(writer, caseName, () => BuildChild(writer, resourcesRoot, resource));
+					writer.AppendLineInvariant("// Method for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
+					BuildSingleTimeInitializer(writer, initializerName, () => BuildChild(writer, resourcesRoot, resource));
 				}
 			}
 			_themeDictionaryCurrentlyBuilding = former;
@@ -1100,18 +1086,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Get name to use for case associated with a resource.
+		/// Get name to use for initializer associated with a resource.
 		/// </summary>
 		/// <param name="key">The resource key</param>
 		/// <param name="index">An index associated with the property.</param>
 		/// <remarks>
-		/// We append the qualifier to the resource key because there may be multiple dictionary definitions (merged dictionaries, themed
+		/// We don't use the unqualified resource key because there may be multiple dictionary definitions (merged dictionaries, themed
 		/// dictionaries) in the same switch block, and it's possible (probable actually, in the case of theme dictionaries) to have
 		/// duplicate resource keys.
 		/// </remarks>
-		private string GetCaseNameForResourceKey(string key, int index)
+		private string GetInitializerNameForResourceKey(string key, int index)
 		{
-			return "{0}_{1}_{2}".InvariantCultureFormat(key, _fileDefinition.ShortId, index);
+			return "Get_{0}_{1}".InvariantCultureFormat(_fileDefinition.ShortId, index);
 		}
 
 		/// <summary>
@@ -1270,15 +1256,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Build single case within the giant switch case block for resource retrieval
+		/// Build single initializer for resource retrieval
 		/// </summary>
-		private void BuildSingleTimeInitializer(IIndentedStringBuilder writer, string caseName, Action propertyBodyBuilder)
+		private void BuildSingleTimeInitializer(IIndentedStringBuilder writer, string initializerName, Action propertyBodyBuilder)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			writer.AppendLineInvariant("case \"{0}\":", caseName);
+			writer.AppendLineInvariant("private object {0}() =>", initializerName);
 			using (writer.Indent())
 			{
-				writer.AppendLineInvariant("return");
 				propertyBodyBuilder();
 				writer.AppendLineInvariant(";");
 			}
@@ -2217,12 +2202,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						BuildStaticResourceResourceKeyReference(writer, resource);
 					}
 					else if (_isTopLevelDictionary
-						// Note: It's possible to be in a top-level ResourceDictionary file but for caseName to be null, eg for
+						// Note: It's possible to be in a top-level ResourceDictionary file but for initializerName to be null, eg for
 						// a FrameworkElement.Resources declaration inside of a template
-						&& GetResourceDictionaryCaseName(key) is string caseName) 
+						//
+						// Actually in this case if it's non-null it's worse still, eg if the main dictionary sets an implicit style for
+						// Button, and a FrameworkElement.Resources declaration in a template *also* sets an implicit Button style, we
+						// don't want to use the former as a backing for the latter
+						&& !_isInChildSubclass
+						&& GetResourceDictionaryInitializerName(key) is string initializerName)
 					{
 						//
-						writer.AppendLineInvariant("global::Uno.UI.ResourceResolverSingleton.Instance.ResolveLazyInitializer(\"{0}\", {1})", caseName, SingletonInstanceAccess);
+						writer.AppendLineInvariant("(global::Windows.UI.Xaml.ResourceDictionary.ResourceInitializer){0}", initializerName);
 					}
 					else
 					{
@@ -3697,7 +3687,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Get the retrieval key associated with the given resource key, if one exists, otherwise null.
 		/// </summary>
-		private string GetResourceDictionaryCaseName(string keyStr)
+		private string GetResourceDictionaryInitializerName(string keyStr)
 		{
 			if (_topLevelQualifiedKeys.TryGetValue((_themeDictionaryCurrentlyBuilding, keyStr), out var qualifiedKey))
 			{

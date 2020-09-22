@@ -27,8 +27,6 @@ namespace Uno.UI
 		private static ResourceResolverSingleton _instance;
 		public static ResourceResolverSingleton Instance => _instance ??= new ResourceResolverSingleton();
 
-		public object ResolveLazyInitializer(string qualifiedResourceKey, IXamlLazyResourceInitializer initializer) => ResourceDictionary.GetLazyInitializer(qualifiedResourceKey, initializer);
-
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public bool ResolveResourceStatic(object key, out object value, object context) => ResourceResolver.ResolveResourceStatic(key, out value, context);
 
