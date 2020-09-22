@@ -48,13 +48,17 @@ namespace Uno.UI.Tasks.Assets
 			this.Log().Info($"Retargeting UWP assets to {TargetPlatform}.");
 
 			Func<ResourceCandidate, string> resourceToTargetPath;
+			Func<string, string> pathEncoder;
+			
 			switch (TargetPlatform)
 			{
 				case "ios":
 					resourceToTargetPath = resource => iOSResourceConverter.Convert(resource, DefaultLanguage);
+					pathEncoder = p => p;
 					break;
 				case "android":
 					resourceToTargetPath = resource => AndroidResourceConverter.Convert(resource, DefaultLanguage);
+					pathEncoder = AndroidResourceNameEncoder.EncodeFileSystemPath;
 					break;
 				default:
 					this.Log().Info($"Skipping unknown platform {TargetPlatform}");
@@ -63,14 +67,14 @@ namespace Uno.UI.Tasks.Assets
 
 			Assets = ContentItems.ToArray();
 			RetargetedAssets = Assets
-				.Select((Func<ITaskItem, TaskItem>)(asset => ProcessContentItem(asset, resourceToTargetPath)))
+				.Select((Func<ITaskItem, TaskItem>)(asset => ProcessContentItem(asset, resourceToTargetPath, pathEncoder)))
 				.Trim()
 				.ToArray();
 
 			return true;
 		}
 
-		private TaskItem ProcessContentItem(ITaskItem asset, Func<ResourceCandidate, string> resourceToTargetPath)
+		private TaskItem ProcessContentItem(ITaskItem asset, Func<ResourceCandidate, string> resourceToTargetPath, Func<string, string> pathEncoder)
 		{
 			if (
 				!asset.MetadataNames.Contains("Link")
@@ -117,7 +121,7 @@ namespace Uno.UI.Tasks.Assets
 			}
 			else
 			{
-				var encodedRelativePath = AndroidResourceNameEncoder.EncodeFileSystemPath(relativePath);
+				var encodedRelativePath = pathEncoder(relativePath);
 
 				this.Log().Info($"Retargeting generic '{asset.ItemSpec}' to '{encodedRelativePath}'.");
 				return new TaskItem(

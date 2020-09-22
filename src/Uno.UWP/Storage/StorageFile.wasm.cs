@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
+using Windows.Storage.Helpers;
 
 namespace Windows.Storage
 {

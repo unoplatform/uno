@@ -20,14 +20,14 @@ using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Windows.UI.WebUI;
 
-namespace Windows.Storage
+namespace Windows.Storage.Helpers
 {
 	internal partial class AssetsManager
 	{
 		private static readonly string UNO_BOOTSTRAP_APP_BASE = Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
 
 		private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(() => GetAssets(CancellationToken.None));
-		private static readonly Dictionary<string, DownloadEntry> _assetsGate = new Dictionary<string, DownloadEntry>();
+		private static readonly ConcurrentEntryManager _assetsGate = new ConcurrentEntryManager();
 
 		private static async Task<HashSet<string>> GetAssets(CancellationToken ct)
 		{
@@ -47,7 +47,7 @@ namespace Windows.Storage
 			{
 				var localPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, ".assetsCache", UNO_BOOTSTRAP_APP_BASE, updatedPath);
 
-				using var assetLock = await LockForAsset(ct, updatedPath);
+				using var assetLock = await _assetsGate.LockForAsset(ct, updatedPath);
 
 				if (!File.Exists(localPath))
 				{
@@ -85,49 +85,6 @@ namespace Windows.Storage
 			{
 				throw new FileNotFoundException($"The file [{assetPath}] cannot be found");
 			}
-		}
-
-		private static async Task<IDisposable> LockForAsset(CancellationToken ct, string updatedPath)
-		{
-			DownloadEntry GetEntry()
-			{
-				lock (_assetsGate)
-				{
-					if (!_assetsGate.TryGetValue(updatedPath, out var entry))
-					{
-						_assetsGate[updatedPath] = entry = new DownloadEntry();
-					}
-
-					entry.ReferenceCount++;
-
-					return entry;
-				}
-			}
-
-			var entry = GetEntry();
-
-			var disposable = await entry.Gate.LockAsync(ct);
-
-			void ReleaseEntry()
-			{
-				lock (_assetsGate)
-				{
-					disposable.Dispose();
-
-					if(--entry.ReferenceCount == 0)
-					{
-						_assetsGate.Remove(updatedPath);
-					}
-				}
-			}
-
-			return Disposable.Create(ReleaseEntry);
-		}
-
-		private class DownloadEntry
-		{
-			public int ReferenceCount;
-			public AsyncLock Gate { get; } = new AsyncLock();
 		}
 	}
 }
