@@ -101,6 +101,7 @@ namespace Windows.UI.Xaml
 			IsLoaded = true;
 
 			OnFwEltLoaded();
+			UpdateHitTest();
 
 			foreach (var child in _children)
 			{
@@ -124,6 +125,7 @@ namespace Windows.UI.Xaml
 			}
 
 			OnFwEltUnloaded();
+			UpdateHitTest();
 		}
 
 		private void OnAddingChild(UIElement child)

@@ -62,7 +62,6 @@ namespace Windows.UI.Xaml.Input
 			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange: true);
 			KeyModifiers = keys;
 			OriginalSource = originalSource;
-			CanBubbleNatively = true;
 
 			_properties = GetProperties(nativePointerType, nativePointerAction, nativePointerButtons); // Last: we need the Pointer property to be set!
 		}

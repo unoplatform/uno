@@ -30,6 +30,9 @@ namespace Windows.Foundation
 			return "[{0}, {1}]".InvariantCultureFormat(X, Y);
 		}
 
+		internal string ToDebugString()
+			=> FormattableString.Invariant($"{X:F2},{Y:F2}");
+
 		public static bool operator ==(Point left, Point right)
 		{
 			return left.Equals(right);
