@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class ColorChangedEventArgs : IColorChangedEventArgs
+	public partial class ColorChangedEventArgs : IColorChangedEventArgs
 	{
 		private Color m_oldColor;
 		private Color m_newColor;
