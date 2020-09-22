@@ -1453,6 +1453,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						);
 					}
 				}
+				else if (isDependencyProperty && HasResourceMarkupExtension(valueNode))
+				{
+					TryAnnotateWithGeneratorSource(writer, suffix: "IsResourceMarkupValueDP");
+					var valueObject = valueNode.Objects.First();
+					var key = valueObject.Members.FirstOrDefault()?.Value.ToString();
+					if (key == null)
+					{
+						GenerateError(writer, "Resource markup did not define a key.");
+					}
+					// Call helper to avoid unnecessary AOT binary footprint of creating a lambda, etc
+					writer.AppendLineInvariant("global::Uno.UI.Helpers.Xaml.SetterHelper.GetPropertySetterWithResourceValue({0}.{1}Property, \"{2}\", {3}, default({4}))",
+						GetGlobalizedTypeName(fullTargetType),
+						property,
+						key,
+						ParseContextPropertyAccess,
+						propertyType
+					);
+
+					if (valueObject.Type.Name == "ThemeResource")
+					{
+						writer.AppendLineInvariant(".ApplyThemeResourceUpdateValues(\"{0}\", {1})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess);
+					}
+
+					writer.AppendLineInvariant(lineEnding);
+				}
 				else
 				{
 					if (isDependencyProperty)
@@ -1477,7 +1502,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var valueObject = valueNode.Objects.First();
 					if (HasMarkupExtension(valueNode))
 					{
-						TryAnnotateWithGeneratorSource(writer, suffix: isDependencyProperty ? "MarkupValueDP" : "MarkupValuePOCO");
+						TryAnnotateWithGeneratorSource(writer, suffix: isDependencyProperty ? "NonResourceMarkupValueDP" : "MarkupValuePOCO");
 						writer.AppendLineInvariant(BuildBindingOption(valueNode, propertyType, prependCastToType: true));
 					}
 					else
@@ -1531,6 +1556,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant("// WARNING " + message, options);
 		}
 
+		/// <summary>
+		/// Is <paramref name="valueNode"/> the kind of thing that involves squiggly brackets?
+		/// </summary>
 		private bool HasMarkupExtension(XamlMemberDefinition valueNode)
 		{
 			// Return false if the Owner is a custom markup extension
@@ -1548,6 +1576,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					|| o.Type.Name == "Bind"
 					|| o.Type.Name == "TemplateBinding"
 					|| o.Type.Name == "CustomResource"
+				);
+		}
+
+		/// <summary>
+		/// Is <paramref name="valueNode"/> a {StaticResource ...} or {ThemeResource ...} reference?
+		/// </summary>
+		private bool HasResourceMarkupExtension(XamlMemberDefinition valueNode)
+		{
+			// Return false if the Owner is a custom markup extension
+			if (IsCustomMarkupExtensionType(valueNode.Owner?.Type))
+			{
+				return false;
+			}
+
+			return valueNode
+				.Objects
+				.Any(o =>
+					o.Type.Name == "StaticResource"
+					|| o.Type.Name == "ThemeResource"
 				);
 		}
 
