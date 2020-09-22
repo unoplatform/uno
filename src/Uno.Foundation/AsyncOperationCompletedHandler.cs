@@ -3,5 +3,5 @@
 
 namespace Windows.Foundation
 {
-	public delegate void AsyncOperationCompletedHandler<TResult>(IAsyncOperation<TResult> asyncInfo, AsyncStatus asyncStatus);
+	public delegate void AsyncOperationCompletedHandler<TResult>(global::Windows.Foundation.IAsyncOperation<TResult> @asyncInfo, global::Windows.Foundation.AsyncStatus @asyncStatus);
 }

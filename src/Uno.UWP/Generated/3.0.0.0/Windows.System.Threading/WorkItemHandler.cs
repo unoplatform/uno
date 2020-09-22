@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Threading
 {
-	#if false || false || false || false || false || false || false
+	#if false
 	public delegate void WorkItemHandler(global::Windows.Foundation.IAsyncAction @operation);
 	#endif
 }
