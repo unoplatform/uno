@@ -246,5 +246,163 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("SelfHostingBorder", content.Name);
 			Assert.AreEqual("item 1", (content.Child as TextBlock)?.Text);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task SingleItemSelected()
+		{
+			var child1 = new ListViewItem
+			{
+				IsSelected = true,
+				Content = "child 1"
+			};
+
+			var child2 = new ListViewItem
+			{
+				Content = "child 2"
+			};
+
+			var child3 = new ListViewItem
+			{
+				Content = "child 3"
+			};
+
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single
+			};
+			list.Items.Add(child1);
+			list.Items.Add(child2);
+			list.Items.Add(child3);
+
+			var sut = new Grid
+			{
+				Children = { list }
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+
+			Assert.AreEqual(list.SelectedIndex, 0);
+			Assert.AreEqual(list.SelectedItem, child1);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task MultipleItemsSelected()
+		{
+			var child1 = new ListViewItem
+			{
+				IsSelected = true,
+				Content = "child 1"
+			};
+
+			var child2 = new ListViewItem
+			{
+				Content = "child 2"
+			};
+
+			var child3 = new ListViewItem
+			{
+				IsSelected = true,
+				Content = "child 3"
+			};
+
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple
+			};
+			list.Items.Add(child1);
+			list.Items.Add(child2);
+			list.Items.Add(child3);
+
+			var sut = new Grid
+			{
+				Children = { list }
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+
+			Assert.AreEqual(list.SelectedItems[0], child1);
+			Assert.AreEqual(list.SelectedItems[1], child3);
+		}
+
+		public async Task NoItemSelectedMultiple()
+		{
+			var child1 = new ListViewItem
+			{
+				Content = "child 1"
+			};
+
+			var child2 = new ListViewItem
+			{
+				Content = "child 2"
+			};
+
+			var child3 = new ListViewItem
+			{
+				Content = "child 3"
+			};
+
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple
+			};
+			list.Items.Add(child1);
+			list.Items.Add(child2);
+			list.Items.Add(child3);
+
+			var sut = new Grid
+			{
+				Children = { list }
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+
+			Assert.AreEqual(list.SelectedItems.Count, 0);
+		}
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task NoItemSelectedSingle()
+		{
+			var child1 = new ListViewItem
+			{
+				Content = "child 1"
+			};
+
+			var child2 = new ListViewItem
+			{
+				Content = "child 2"
+			};
+
+			var child3 = new ListViewItem
+			{
+				Content = "child 3"
+			};
+
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single
+			};
+			list.Items.Add(child1);
+			list.Items.Add(child2);
+			list.Items.Add(child3);
+
+			var sut = new Grid
+			{
+				Children = { list }
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+
+			Assert.AreEqual(list.SelectedIndex, -1);
+		}
 	}
 }
