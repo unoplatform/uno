@@ -1395,6 +1395,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		/// <summary>
+		/// Build Setter inside of a Style declaration.
+		/// </summary>
 		private void BuildPropertySetter(IIndentedStringBuilder writer, string fullTargetType, string lineEnding, string property, XamlMemberDefinition valueNode, string targetInstance = null)
 		{
 			TryAnnotateWithGeneratorSource(writer);
@@ -1429,6 +1432,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					if (isDependencyProperty)
 					{
+						TryAnnotateWithGeneratorSource(writer, suffix: "InlineValueDP");
 						writer.AppendLineInvariant(
 							"new global::Windows.UI.Xaml.Setter({0}.{1}Property, ({2}){3})" + lineEnding,
 							GetGlobalizedTypeName(fullTargetType),
@@ -1439,6 +1443,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
+						TryAnnotateWithGeneratorSource(writer, suffix: "InlineValuePOCO");
 						writer.AppendLineInvariant(
 							"new global::Windows.UI.Xaml.Setter<{0}>(\"{1}\", o => {3}.{1} = {2})" + lineEnding,
 							GetGlobalizedTypeName(fullTargetType),
@@ -1472,10 +1477,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var valueObject = valueNode.Objects.First();
 					if (HasMarkupExtension(valueNode))
 					{
+						TryAnnotateWithGeneratorSource(writer, suffix: isDependencyProperty ? "MarkupValueDP" : "MarkupValuePOCO");
 						writer.AppendLineInvariant(BuildBindingOption(valueNode, propertyType, prependCastToType: true));
 					}
 					else
 					{
+						TryAnnotateWithGeneratorSource(writer, suffix: isDependencyProperty ? "ChildValueDP" : "ChildValuePOCO");
 						BuildChild(writer, valueNode, valueObject);
 					}
 
@@ -3982,42 +3989,50 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildLiteralValue(XamlMemberDefinition member, INamedTypeSymbol propertyType = null, XamlMemberDefinition owner = null, string objectUid = "")
 		{
-			if (member.Objects.None())
+			var literal = Inner();
+			TryAnnotateWithGeneratorSource(ref literal);
+
+			return literal;
+
+			string Inner()
 			{
-				var memberValue = member.Value?.ToString();
-
-				var originalType = propertyType;
-
-				propertyType = propertyType ?? FindPropertyType(member.Member);
-
-				if (propertyType != null)
+				if (member.Objects.None())
 				{
-					var s = BuildLiteralValue(propertyType, memberValue, owner, member.Member.Name, objectUid);
+					var memberValue = member.Value?.ToString();
 
-					s += $"/* {propertyType}/{originalType}, {memberValue}, {member?.Member?.DeclaringType?.Name}/{member?.Member?.Name} */";
+					var originalType = propertyType;
 
-					return s;
+					propertyType = propertyType ?? FindPropertyType(member.Member);
+
+					if (propertyType != null)
+					{
+						var s = BuildLiteralValue(propertyType, memberValue, owner, member.Member.Name, objectUid);
+
+						s += $"/* {propertyType}/{originalType}, {memberValue}, {member?.Member?.DeclaringType?.Name}/{member?.Member?.Name} */";
+
+						return s;
+					}
+					else
+					{
+						throw new Exception($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown".InvariantCultureFormat(member.Member?.Name));
+					}
 				}
 				else
 				{
-					throw new Exception($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown".InvariantCultureFormat(member.Member?.Name));
-				}
-			}
-			else
-			{
-				var expression = member.Objects.First();
+					var expression = member.Objects.First();
 
-				if (expression.Type.Name == "StaticResource" || expression.Type.Name == "ThemeResource")
-				{
-					return GetSimpleStaticResourceRetrieval(propertyType, expression.Members.First().Value?.ToString());
-				}
-				else if (expression.Type.Name == "NullExtension")
-				{
-					return "null";
-				}
-				else
-				{
-					throw new NotSupportedException("MarkupExtension {0} is not supported.".InvariantCultureFormat(expression.Type.Name));
+					if (expression.Type.Name == "StaticResource" || expression.Type.Name == "ThemeResource")
+					{
+						return GetSimpleStaticResourceRetrieval(propertyType, expression.Members.First().Value?.ToString());
+					}
+					else if (expression.Type.Name == "NullExtension")
+					{
+						return "null";
+					}
+					else
+					{
+						throw new NotSupportedException("MarkupExtension {0} is not supported.".InvariantCultureFormat(expression.Type.Name));
+					}
 				}
 			}
 		}
