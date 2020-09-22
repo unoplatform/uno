@@ -291,7 +291,7 @@ namespace Windows.UI.Xaml
 
 		public string ShowDescendants() => UIViewExtensions.ShowDescendants(this);
 
-		public string ShowLocalVisualTree(int fromHeight) => UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
+		public string ShowLocalVisualTree(int fromHeight = 0) => UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
 
 		public IList<VisualStateGroup> VisualStateGroups => VisualStateManager.GetVisualStateGroups((this as Controls.Control).GetTemplateRoot());
 #endif

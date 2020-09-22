@@ -308,8 +308,6 @@ namespace Uno.UI.Controls.Legacy
 		{
 			BackgroundColor = UIColor.Clear;
 			IFrameworkElementHelper.Initialize(this);
-
-			OnDisplayMemberPathChangedPartial(string.Empty, this.DisplayMemberPath);
 		}
 
 		#region Overrides
@@ -574,11 +572,6 @@ namespace Uno.UI.Controls.Legacy
 		private void ResetSelection()
 		{
 			SelectedItem = null;
-		}
-
-		partial void OnDisplayMemberPathChangedPartial(string oldDisplayMemberPath, string newDisplayMemberPath)
-		{
-			this.UpdateItemTemplateSelectorForDisplayMemberPath(newDisplayMemberPath);
 		}
 
 		private void OnHeaderChanged(DependencyPropertyChangedEventArgs args)
