@@ -16,8 +16,8 @@ using ColorSpectrumShape = Microsoft.UI.Xaml.Controls.ColorSpectrumShape;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests
 {
-	[Sample("ColorPicker", "WinUI", Name="MUX_ColorPickerPage")]
-    public sealed partial class MUX_ColorPickerPage : UserControl
+	[Sample("ColorPicker", "WinUI", Name="WinUIColorPickerPage")]
+    public sealed partial class WinUIColorPickerPage : UserControl
     {
         ToolTip colorNameToolTip;
         Rectangle spectrumRectangle;
@@ -27,7 +27,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests
         Ellipse selectionEllipse;
         ButtonBase moreButton;
 
-        public MUX_ColorPickerPage()
+        public WinUIColorPickerPage()
         {
             this.InitializeComponent();
 #if HAS_UNO

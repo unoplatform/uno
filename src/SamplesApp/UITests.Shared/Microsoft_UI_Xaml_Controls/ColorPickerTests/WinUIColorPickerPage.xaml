@@ -1,5 +1,5 @@
 ﻿<UserControl
-	x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests.MUX_ColorPickerPage"
+	x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests.WinUIColorPickerPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MUXControlsTestApp"
