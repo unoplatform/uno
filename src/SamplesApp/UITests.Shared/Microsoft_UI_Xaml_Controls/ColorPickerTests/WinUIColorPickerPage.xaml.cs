@@ -107,7 +107,8 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests
 
                 if (colorNameToolTip != null)
                 {
-                    colorNameToolTip.RegisterPropertyChangedCallback(ToolTip.ContentProperty, new DependencyPropertyChangedCallback(ColorNameToolTipContentChanged));
+                    // Uno Doc: ToolTip must be fully qualified for iOS/macOS where NSView.ToolTip also exists
+                    colorNameToolTip.RegisterPropertyChangedCallback(Windows.UI.Xaml.Controls.ToolTip.ContentProperty, new DependencyPropertyChangedCallback(ColorNameToolTipContentChanged));
                     UpdateSelectedColorName();
                 }
             }
