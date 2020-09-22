@@ -48,9 +48,13 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				ClickButton("GetItemCount");
 				Assert.AreEqual("5", ReadResult());
 
+				ClickButton("LabelItems");
+
 				itemRoot.Tap();
 				ClickButton("GetItemCount");
 				Assert.AreEqual("1", ReadResult());
+
+				ClickButton("LabelItems");
 
 				itemRoot.Tap();
 				ClickButton("GetItemCount");
