@@ -13,10 +13,18 @@ namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs, CoreWindow.IPointerEventArgs
 	{
+#if __IOS__ || __MACOS__ || __ANDROID__ || __WASM__
+		internal const bool PlatformSupportsNativeBubbling = true;
+#else
+		internal const bool PlatformSupportsNativeBubbling = false;
+#endif
+
 		public PointerRoutedEventArgs()
 		{
 			// This is acceptable as all ctors of this class are internal
 			CoreWindow.GetForCurrentThread().SetLastPointerEvent(this);
+
+			CanBubbleNatively = PlatformSupportsNativeBubbling;
 		}
 
 		/// <inheritdoc />

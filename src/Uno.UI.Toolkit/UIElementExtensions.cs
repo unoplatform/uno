@@ -208,7 +208,7 @@ namespace Uno.UI.Toolkit
 				return padding;
 			}
 
-			var property = uiElement.GetDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
+			var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
 			return property != null && uiElement.GetValue(property) is Thickness t ? t : default;
 		}
 
@@ -219,7 +219,7 @@ namespace Uno.UI.Toolkit
 				return true;
 			}
 
-			var property = uiElement.GetDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
+			var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
 			if (property != null)
 			{
 				uiElement.SetValue(property, padding);
@@ -288,15 +288,13 @@ namespace Uno.UI.Toolkit
 
 		private static Dictionary<(Type type, string property), DependencyProperty> _dependencyPropertyReflectionCache;
 
-		internal static DependencyProperty GetDependencyPropertyUsingReflection<TProperty>(this UIElement uiElement, string propertyName)
+		internal static DependencyProperty FindDependencyPropertyUsingReflection<TProperty>(this UIElement uiElement, string propertyName)
 		{
 			var type = uiElement.GetType();
 			var propertyType = typeof(TProperty);
 			var key = (ownerType: type, propertyName);
 
-			_dependencyPropertyReflectionCache =
-				_dependencyPropertyReflectionCache
-				?? new Dictionary<(Type, string), DependencyProperty>(2);
+			_dependencyPropertyReflectionCache ??= new Dictionary<(Type, string), DependencyProperty>(2);
 
 			if (_dependencyPropertyReflectionCache.TryGetValue(key, out var property))
 			{

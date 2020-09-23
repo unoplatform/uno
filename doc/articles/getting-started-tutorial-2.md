@@ -1,6 +1,6 @@
 # Create a Single Page App with Uno Platform
 
-[Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-2)
+[Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-2)  
 -- Estimated time to complete: 30 minutes --
 
 In this tutorial you will learn how to:
@@ -333,7 +333,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
                Margin="10,0"/>
     ```
 
-    > [❗IMPORTANT]
+    > [!IMPORTANT]
     > Take note that we have added a reference to an event handler on the ComboBox. We will add this in the next step in the code behind.
 
 1. Now that our Page is complete we can go back and add the event handlers in our code behind. This will allow us to handle changes and make necessary updates. In the **Solution Explorer**, double-click **MainPage.xaml.cs** to open, then add the following code.
@@ -392,7 +392,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
 ## The final result
 
-You should see something similar to the screenshot below. You can [download the completed tutorial code here](https://github.com/nventive/uno.GettingStartedTutorial).
+You should see something similar to the screenshot below. You can [download the completed tutorial code here](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-2).
 
 ![tutorial-screenshot](Assets/quick-start/tutorial-screenshot.png)
 

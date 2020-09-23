@@ -84,10 +84,19 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnZIndexChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
+#if !__WASM__
 			(dependencyObject as IFrameworkElement)?.InvalidateArrange();
+#endif
+			if (dependencyObject is UIElement element)
+			{
+				var zindex = args.NewValue is double d ? (double?)d : null;
+				OnZIndexChangedPartial(element, zindex);
+			}
 		}
 
-		#endregion
+		static partial void OnZIndexChangedPartial(UIElement element, double? zindex);
+
+#endregion
 
 		public Canvas()
 		{
