@@ -5,25 +5,26 @@ namespace Windows.UI.Input
 {
 	public  partial class DraggingEventArgs 
 	{
-		internal DraggingEventArgs(DraggingState state, PointerDeviceType type, Point position)
+		internal DraggingEventArgs(PointerPoint point, DraggingState state)
 		{
+			Pointer = point;
 			DraggingState = state;
-			PointerDeviceType = type;
-			Position = position;
 		}
+
+		internal PointerPoint Pointer { get; }
 
 		public DraggingState DraggingState { get; }
 
-		public PointerDeviceType PointerDeviceType { get; }
+		public PointerDeviceType PointerDeviceType => Pointer.PointerDevice.PointerDeviceType;
 
-		public Point Position { get; }
+		public Point Position => Pointer.Position;
 
 		[global::Uno.NotImplemented]
 		public uint ContactCount
 		{
 			get
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RightTappedEventArgs", "uint RightTappedEventArgs.ContactCount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.DraggingEventArgs", "uint DraggingEventArgs.ContactCount");
 				return 0;
 			}
 		}

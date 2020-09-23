@@ -153,7 +153,7 @@ namespace Windows.UI.Input
 
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
-							new DraggingEventArgs(DraggingState.Completed, _deviceType, _currents.Pointer1.Position));
+							new DraggingEventArgs(_currents.Pointer1, DraggingState.Completed));
 						break;
 
 					case ManipulationState.Started:
@@ -208,7 +208,7 @@ namespace Windows.UI.Input
 
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
-							new DraggingEventArgs(DraggingState.Started, _deviceType, _currents.Pointer1.Position));
+							new DraggingEventArgs(_currents.Pointer1, DraggingState.Started));
 						break;
 					
 					case ManipulationState.Starting when pointerAdded: 
@@ -244,7 +244,7 @@ namespace Windows.UI.Input
 					case ManipulationState.Started when _isDragManipulation:
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
-							new DraggingEventArgs(DraggingState.Continuing, _deviceType, _currents.Pointer1.Position));
+							new DraggingEventArgs(_currents.Pointer1, DraggingState.Continuing));
 						break;
 
 					case ManipulationState.Started:
