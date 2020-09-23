@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using Windows.Foundation;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
@@ -15,7 +16,9 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		public event TypedEventHandler<CoreDragDropManager, CoreDropOperationTargetRequestedEventArgs>? TargetRequested;
 
-		public bool AreConcurrentOperationsEnabled { get; set; }
+		private List<DropOperation> _operations = new List<DropOperation>(1);
+
+		public bool AreConcurrentOperationsEnabled { get; set; } = false;
 
 		private CoreDragDropManager()
 		{
@@ -27,7 +30,53 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			// * Here we will maintain a list of pending drag and drop elements
 			// * We should also add a callback for the DropCompleted event / native drop result
 
-			TargetRequested?.ToString(); // event not used!
+			ICoreDropOperationTarget? target;
+			if (TargetRequested is null)
+			{
+				target = new UIDropTarget();
+			}
+			else
+			{
+				var args = new CoreDropOperationTargetRequestedEventArgs();
+				TargetRequested(this, args);
+
+				target = args.Target;
+
+				if (target is null) // This is the UWP behavior!
+				{
+					info.Complete(DataPackageOperation.None);
+					return;
+				}
+			}
+
+			_operations.Add(new DropOperation(info, target));
+		}
+
+		private class DropOperation
+		{
+			public DropOperation(CoreDragInfo info, ICoreDropOperationTarget target)
+			{
+				
+			}
+		}
+
+		private class UIDropTarget : ICoreDropOperationTarget
+		{
+			/// <inheritdoc />
+			public IAsyncOperation<DataPackageOperation> EnterAsync(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)
+				=> throw new NotImplementedException();
+
+			/// <inheritdoc />
+			public IAsyncOperation<DataPackageOperation> OverAsync(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)
+				=> throw new NotImplementedException();
+
+			/// <inheritdoc />
+			public IAsyncAction LeaveAsync(CoreDragInfo dragInfo)
+				=> throw new NotImplementedException();
+
+			/// <inheritdoc />
+			public IAsyncOperation<DataPackageOperation> DropAsync(CoreDragInfo dragInfo)
+				=> throw new NotImplementedException();
 		}
 	}
 }
