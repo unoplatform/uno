@@ -1060,6 +1060,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					writer.AppendLineInvariant("// Skipping initializer {0} for {1} {2} - StaticResource ResourceKey aliases are added directly to dictionary", _dictionaryPropertyIndex, key, theme);
 				}
+				else if (!ShouldLazyInitializeResource(resource))
+				{
+					writer.AppendLineInvariant("// Skipping initializer {0} for {1} {2} - Literal declaration, will be eagerly materialized and added to the dictionary", _dictionaryPropertyIndex, key, theme);
+				}
 				else
 				{
 					var initializerName = GetInitializerNameForResourceKey(key, _dictionaryPropertyIndex);
@@ -2255,6 +2259,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						BuildStaticResourceResourceKeyReference(writer, resource);
 					}
+					else if (!ShouldLazyInitializeResource(resource))
+					{
+						BuildChild(writer, null, resource);
+					}
 					else if (_isTopLevelDictionary
 						// Note: It's possible to be in a top-level ResourceDictionary file but for initializerName to be null, eg for
 						// a FrameworkElement.Resources declaration inside of a template
@@ -2297,13 +2305,44 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var typeName = resource.Type.Name;
 
-			return
-				// Styles are lazily initialized for perf considerations
-				typeName == "Style"
-				// All resources not in a top-level dictionary (ie FrameworkElement.Resources and Application.Resources declarations) are lazily
-				// initialized, this is to be able to handle lexically-forward references correctly. (In top-level dictionaries, this is already
-				// handled by creating lazy static properties for each resource.)
-				|| !_isTopLevelDictionary;
+			if (typeName == "Style" || typeName == "ControlTemplate" || typeName == "DataTemplate")
+			{
+				// Always lazily initialize styles and templates, since they may be large
+				return true;
+			}
+
+			// If value declaration contains no markup, we can safely create it eagerly. Otherwise, we will wrap it in a lazy initializer
+			// to be able to handle lexically-forward resource references correctly.
+			return HasDescendantsWithMarkupExtension(resource);
+
+			bool HasDescendantsWithMarkupExtension(XamlObjectDefinition xamlObjectDefinition)
+			{
+				foreach (var member in xamlObjectDefinition.Members)
+				{
+					if (HasMarkupExtension(member))
+					{
+						return true;
+					}
+
+					foreach (var obj in member.Objects)
+					{
+						if (HasDescendantsWithMarkupExtension(obj))
+						{
+							return true;
+						}
+					}
+				}
+
+				foreach (var obj in xamlObjectDefinition.Objects)
+				{
+					if (HasDescendantsWithMarkupExtension(obj))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
 		}
 
 		/// <summary>
