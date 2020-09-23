@@ -22,9 +22,9 @@ namespace Windows.UI.Xaml
 
 				if (currentPosition != -1)
 				{
-					parentElement.RemoveChild(this);
-
 					var newContent = ContentBuilder() as UIElement;
+
+					parentElement.RemoveChild(this);
 
 					parentElement.AddChild(newContent, currentPosition);
 				}
