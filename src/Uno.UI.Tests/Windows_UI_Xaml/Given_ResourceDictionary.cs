@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
+using Uno.UI.Tests.ViewLibrary;
 #if !NETFX_CORE
 using Uno.UI.Xaml;
 #endif
@@ -683,6 +684,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
 			Assert.IsTrue(xcr.ContainsKey(typeof(Button)));
 			Assert.IsInstanceOfType(xcr[typeof(Button)], typeof(Style));
+		}
+
+		[TestMethod]
+		public void When_Needs_Eager_Materialization()
+		{
+			Assert.IsFalse(TestInitializer.IsInitialized);
+			var control = new Test_Control_With_Initializer();
+			Assert.IsTrue(TestInitializer.IsInitialized);
 		}
 	}
 }
