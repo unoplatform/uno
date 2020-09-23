@@ -693,5 +693,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var control = new Test_Control_With_Initializer();
 			Assert.IsTrue(TestInitializer.IsInitialized);
 		}
+
+		[TestMethod]
+		public void When_Space_In_Key()
+		{
+			var page = new Test_Page_Other();
+			var border = page.SpaceInKeyBorder;
+			Assert.AreEqual(Colors.SlateBlue, (border.Background as SolidColorBrush).Color);
+		}
 	}
 }
