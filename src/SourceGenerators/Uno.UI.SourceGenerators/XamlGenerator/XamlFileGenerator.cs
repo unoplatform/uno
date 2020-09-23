@@ -1629,6 +1629,38 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Members
 				.Any(o => o.Objects.Any(o => o.Type.Name == "Bind" || o.Type.Name == "StaticResource" || o.Type.Name == "ThemeResource"));
 
+		/// <summary>
+		/// Does this node or any nested nodes have markup extensions?
+		/// </summary>
+		private bool HasDescendantsWithMarkupExtension(XamlObjectDefinition xamlObjectDefinition)
+		{
+			foreach (var member in xamlObjectDefinition.Members)
+			{
+				if (HasMarkupExtension(member))
+				{
+					return true;
+				}
+
+				foreach (var obj in member.Objects)
+				{
+					if (HasDescendantsWithMarkupExtension(obj))
+					{
+						return true;
+					}
+				}
+			}
+
+			foreach (var obj in xamlObjectDefinition.Objects)
+			{
+				if (HasDescendantsWithMarkupExtension(obj))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		private bool IsCustomMarkupExtensionType(XamlType xamlType)
 		{
 			if (xamlType == null)
@@ -2311,36 +2343,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// If value declaration contains no markup, we can safely create it eagerly. Otherwise, we will wrap it in a lazy initializer
 			// to be able to handle lexically-forward resource references correctly.
-			return HasDescendantsWithMarkupExtension(resource);
-
-			bool HasDescendantsWithMarkupExtension(XamlObjectDefinition xamlObjectDefinition)
-			{
-				foreach (var member in xamlObjectDefinition.Members)
-				{
-					if (HasMarkupExtension(member))
-					{
-						return true;
-					}
-
-					foreach (var obj in member.Objects)
-					{
-						if (HasDescendantsWithMarkupExtension(obj))
-						{
-							return true;
-						}
-					}
-				}
-
-				foreach (var obj in xamlObjectDefinition.Objects)
-				{
-					if (HasDescendantsWithMarkupExtension(obj))
-					{
-						return true;
-					}
-				}
-
-				return false;
-			}
+			return HasDescendantsWithMarkupExtension(resource);			
 		}
 
 		/// <summary>
