@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CoreDragInfo 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.DataTransfer.DataPackageView Data
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers Modifiers
 		{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point Position
 		{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.DataTransfer.DataPackageOperation AllowedOperations
 		{
