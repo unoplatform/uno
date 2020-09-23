@@ -73,6 +73,10 @@
 
 	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
+		<None Include="Mixins\Wasm\VisualStatesMixins.g.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		</None>
 		<None Include="Resources\AboutResources.txt" />
 		<None Include="Resources\Values\Attrs.xml" />
 		<None Include="Resources\Values\Styles.xml" />
@@ -153,7 +157,6 @@
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Mixins\Wasm\" />
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
@@ -179,7 +182,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
+	  <Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
+	  <Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
+	  <Compile Include="Mixins\Android\VisualStatesMixins.g.cs" />
 	  <Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
+	  <Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
+	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+	  </None>
 	</ItemGroup>
 
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />

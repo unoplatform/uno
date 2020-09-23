@@ -288,14 +288,6 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.GetFileFromPathForUserAsync(User user, string path) is not implemented in Uno.");
 		}
 		#endif
-		// Skipping already declared method Windows.Storage.StorageFile.GetFileFromPathAsync(string)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileFromApplicationUriAsync( global::System.Uri uri)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.GetFileFromApplicationUriAsync(Uri uri) is not implemented in Uno.");
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateStreamedFileAsync( string displayNameWithExtension,  global::Windows.Storage.StreamedFileDataRequestedHandler dataRequested,  global::Windows.Storage.Streams.IRandomAccessStreamReference thumbnail)
