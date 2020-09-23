@@ -23,62 +23,81 @@
 				<ColumnDefinition Width="1*"/>
 			</Grid.ColumnDefinitions>
 			<ScrollViewer>
-				<StackPanel>
-					<TextBlock x:Name="Results" AutomationProperties.Name="Results"/>
-					<TextBlock x:Name="Mode" AutomationProperties.Name="Mode"/>
-					<Button x:Name="SetContentMode" AutomationProperties.Name="SetContentMode" Content="SetContentMode" HorizontalAlignment="Stretch" Margin="1" Click="SetContentMode_Click"/>
-					<Button x:Name="ResetContentMode" AutomationProperties.Name="ResetContentMode" Content="ResetContentMode" HorizontalAlignment="Stretch" Margin="1" Click="ResetContentMode_Click"/>
-					<Button x:Name="GetSelected" AutomationProperties.Name="GetSelected" Content="GetSelected" HorizontalAlignment="Stretch" Margin="1" Click="GetSelected_Click"/>
-					<Button x:Name="DisableClickToExpand" AutomationProperties.Name="DisableClickToExpand" Content="DisableClickToExpand" HorizontalAlignment="Stretch" Margin="1" Click="DisableClickToExpand_Click"/>
-					<Button x:Name="ChangeFlowDirection" AutomationProperties.Name="ChangeFlowDirection" Content="ChangeFlowDirection" HorizontalAlignment="Stretch" Margin="1" Click="ChangeFlowDirection_Click"/>
-					<Button x:Name="MoveNodesToNewTreeView" AutomationProperties.Name="MoveNodesToNewTreeView" Content="MoveNodesToNewTreeView" HorizontalAlignment="Stretch" Margin="1" Click="MoveNodesToNewTreeView_Click"/>
-					<Button x:Name="SetUpExpandingNodeEvent" AutomationProperties.Name="SetUpExpandingNodeEvent" Content="SetUpExpandingNodeEvent" HorizontalAlignment="Stretch" Margin="1" Click="SetupExpandingNodeEvent_Click"/>
-					<Button x:Name="LabelItems" AutomationProperties.Name="LabelItems" Content="LabelItems" HorizontalAlignment="Stretch" Margin="1" Click="LabelItems_Click"/>
-					<Button x:Name="GetChildrenOrder" AutomationProperties.Name="GetChildrenOrder" Content="GetChildrenOrder" HorizontalAlignment="Stretch" Margin="1" Click="GetChildrenOrder_Click"/>
-					<Button x:Name="ToggleSelectionMode" AutomationProperties.Name="ToggleSelectionMode" Content="ToggleSelectionMode" HorizontalAlignment="Stretch" Margin="1" Click="ToggleSelectionMode_Click"/>
-					<Button x:Name="TreeViewInFlyout"  AutomationProperties.Name="TreeViewInFlyout" Content="TreeViewInFlyout"  HorizontalAlignment="Stretch" Margin="1" Click="TreeViewInFlyout_Click">
-						<FlyoutBase.AttachedFlyout>
-							<Flyout>
-								<StackPanel>
-									<Button x:Name="GetFlyoutItemCount" AutomationProperties.Name="GetFlyoutItemCount" Content="GetFlyoutItemCount" Click="GetFlyoutTreeViewItemCount_Click"/>
-									<muxcontrols:TreeView x:Name="FlyoutTreeView" Width="345" MaxHeight="500"/>
-								</StackPanel>
-							</Flyout>
-						</FlyoutBase.AttachedFlyout>
-					</Button>
-					<Button x:Name="ChangeSelectionAfterFlyout" AutomationProperties.Name="ChangeSelectionAfterFlyout" Content="ChangeSelectionAfterFlyout" HorizontalAlignment="Stretch" Margin="1" Click="ChangeSelectionAfterFlyout_Click"/>
-					<Button x:Name="GetItemCount" AutomationProperties.Name="GetItemCount" Content="GetItemCount" HorizontalAlignment="Stretch" Margin="1" Click="GetItemCount_Click"/>
-					<Button x:Name="GetTree2ItemCount" AutomationProperties.Name="GetTree2ItemCount" Content="GetTree2ItemCount" HorizontalAlignment="Stretch" Margin="1" Click="GetTree2ItemCount_Click"/>
-					<Button x:Name="GetItemCommonStates" AutomationProperties.Name="GetItemCommonStates" Content="GetItemCommonStates" HorizontalAlignment="Stretch" Margin="1" Click="GetItemCommonStates_Click" />
-					<Button x:Name="SetupNoReorderNodes" AutomationProperties.Name="SetupNoReorderNodes" Content="SetupNoReorderNodes" HorizontalAlignment="Stretch" Margin="1" Click="SetupNoReorderNodes_Click"/>
-					<Button x:Name="SizeTreeViewsForDrags" AutomationProperties.Name="SizeTreeViewsForDrags" Content="SizeTreeViewsForDrags" HorizontalAlignment="Stretch" Margin="1" Click="SizeTreeViewsForDrags_Click"/>
-					<Button x:Name="AddSecondLevelOfNodes" AutomationProperties.Name="AddSecondLevelOfNodes" Content="AddSecondLevelOfNodes" HorizontalAlignment="Stretch" Margin="1" Click="AddSecondLevelOfNodes_Click"/>
-					<Button x:Name="ModifySecondLevelOfNode" AutomationProperties.Name="ModifySecondLevelOfNode" Content="ModifySecondLevelOfNode" HorizontalAlignment="Stretch" Margin="1" Click="ModifySecondLevelOfNode_Click"/>
-					<Button x:Name="RemoveSecondLevelOfNode" AutomationProperties.Name="RemoveSecondLevelOfNode" Content="RemoveSecondLevelOfNode" HorizontalAlignment="Stretch" Margin="1" Click="RemoveSecondLevelOfNode_Click"/>
-					<Button x:Name="SetRoot1HasUnrealizedChildren" AutomationProperties.Name="SetRoot1HasUnrealizedChildren" Content="SetRoot1HasUnrealizedChildren" HorizontalAlignment="Stretch" Margin="1" Click="SetRoot1HasUnrealizedChildren_Click"/>
-					<Button x:Name="SetupDragToDropTarget" AutomationProperties.Name="SetupDragToDropTarget" Content="SetupDragToDropTarget" HorizontalAlignment="Stretch" Margin="1" Click="SetupDragToDropTarget_Click"/>
-					<Button x:Name="SetupCustomDragUIOverride" AutomationProperties.Name="SetupCustomDragUIOverride" Content="SetupCustomDragUIOverride" HorizontalAlignment="Stretch" Margin="1"/>
-					<Button x:Name="SetupDragDropHandlersForApiTest" AutomationProperties.Name="SetupDragDropHandlersForApiTest" Content="SetupDragDropHandlersForApiTest" HorizontalAlignment="Stretch" Margin="1" Click="SetupDragDropHandlersForApiTest_Click"/>
-					<Button x:Name="DisableItemDrag" AutomationProperties.Name="DisableItemDrag" Content="DisableItemDrag" HorizontalAlignment="Stretch" Margin="1" Click="DisableItemDrag_Click"/>
-					<Button x:Name="DisableItemReorder" AutomationProperties.Name="DisableItemReorder" Content="DisableItemReorder" HorizontalAlignment="Stretch" Margin="1" Click="DisableItemReorder_Click"/>
-					<Button x:Name="ItemTemplateSelectorTestPage" AutomationProperties.Name="ItemTemplateSelectorTestPage" Content="ItemTemplateSelectorTestPage" HorizontalAlignment="Stretch" Margin="1" Click="ItemTemplateSelectorTestPage_Click"/>
-					<Button x:Name="AddNodeWithEmpyUnrealizedChildren" AutomationProperties.Name="AddNodeWithEmpyUnrealizedChildren" Content="AddNodeWithEmpyUnrealizedChildren" HorizontalAlignment="Stretch" Margin="1" Click="AddNodeWithEmpyUnrealizedChildren_Click"/>
-					<Button x:Name="GetMultiSelectCheckBoxStates" AutomationProperties.Name="GetMultiSelectCheckBoxStates" Content="GetMultiSelectCheckBoxStates" HorizontalAlignment="Stretch" Margin="1" Click="GetMultiSelectCheckBoxStates_Click"/>
-					<Button x:Name="ToggleRoot0Selection" AutomationProperties.Name="ToggleRoot0Selection" Content="ToggleRoot0Selection" HorizontalAlignment="Stretch" Margin="1" Click="ToggleRoot0Selection_Click"/>
-					<Button x:Name="ToggleSelectedNodes" AutomationProperties.Name="ToggleSelectedNodes" Content="ToggleSelectedNodes" HorizontalAlignment="Stretch" Margin="1" Click="ToggleSelectedNodes_Click"/>
-					<Button x:Name="AddInheritedTreeViewNode" AutomationProperties.Name="AddInheritedTreeViewNode" Content="AddInheritedTreeViewNode" HorizontalAlignment="Stretch" Margin="1" Click="AddInheritedTreeViewNode_Click"/>
-					<Button x:Name="ClearNodes" AutomationProperties.Name="ClearNodes" Content="ClearNodes" HorizontalAlignment="Stretch" Margin="1" Click="ClearNodes_Click"/>
-					<Button x:Name="AddRootNode" AutomationProperties.Name="AddRootNode" Content="AddRootNode" HorizontalAlignment="Stretch" Margin="1" Click="AddRootNode_Click"/>
-					<Button x:Name="AddExtraNodes" AutomationProperties.Name="AddExtraNodes" Content="AddExtraNodes" HorizontalAlignment="Stretch" Margin="1" Click="AddExtraNodes_Click"/>
-					<Button x:Name="SelectLastRootNode" AutomationProperties.Name="SelectLastRootNode" Content="SelectLastRootNode" HorizontalAlignment="Stretch" Margin="1" Click="SelectLastRootNode_Click"/>
-					<Button x:Name="TreeViewLateDataInitTestPage" AutomationProperties.Name="TreeViewLateDataInitTestPage" Content="TreeViewLateDataInitTestPage" HorizontalAlignment="Stretch" Margin="1" Click="TreeViewLateDataInitTestPage_Click"/>
-					<Button x:Name="TreeViewNodeInMarkupTestPage" AutomationProperties.Name="TreeViewNodeInMarkupTestPage" Content="TreeViewNodeInMarkupTestPage" HorizontalAlignment="Stretch" Margin="1" Click="TreeViewNodeInMarkupTestPage_Click"/>
-					<Button x:Name="TreeViewUnrealizedChildrenTestPage" AutomationProperties.Name="TreeViewUnrealizedChildrenTestPage" Content="TreeViewUnrealizedChildrenTestPage" HorizontalAlignment="Stretch" Margin="1" Click="TreeViewUnrealizedChildrenTestPage_Click"/>
-					<Button x:Name="ResetItemsSource" AutomationProperties.Name="ResetItemsSource" Content="ResetItemsSource" HorizontalAlignment="Stretch" Margin="1" Click="ResetItemsSource_Click"/>
-					<Button x:Name="ResetItemsSourceAsync" AutomationProperties.Name="ResetItemsSourceAsync" Content="ResetItemsSourceAsync" HorizontalAlignment="Stretch" Margin="1" Click="ResetItemsSourceAsync_Click"/>
-					<Button x:Name="ExpandRootNode" AutomationProperties.Name="ExpandRootNode" Content="ExpandRootNode" HorizontalAlignment="Stretch" Margin="1" Click="ExpandRootNode_Click"/>
-					<Button x:Name="SwapItemsSource" AutomationProperties.Name="SwapItemsSource" Content="SwapItemsSource" HorizontalAlignment="Stretch" Margin="1" Click="SwapItemsSource_Click"/>
-				</StackPanel>
+				<Grid>
+					<Grid.Resources>
+						<Style TargetType="Button">
+							<Setter Property="Height" Value="20" />
+							<Setter Property="Padding" Value="0" />
+							<Setter Property="FontSize" Value="8" />
+						</Style>
+					</Grid.Resources>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<TextBlock x:Name="Results" AutomationProperties.Name="Results" FontSize="8" Grid.ColumnSpan="2"/>
+					<StackPanel Grid.Row="1">												
+						<TextBlock x:Name="Mode" AutomationProperties.Name="Mode"/>
+						<Button x:Name="SetContentMode" AutomationProperties.Name="SetContentMode" Content="SetContentMode" HorizontalAlignment="Stretch" Margin="1" Click="SetContentMode_Click"/>
+						<Button x:Name="ResetContentMode" AutomationProperties.Name="ResetContentMode" Content="ResetContentMode" HorizontalAlignment="Stretch" Margin="1" Click="ResetContentMode_Click"/>
+						<Button x:Name="GetSelected" AutomationProperties.Name="GetSelected" Content="GetSelected" HorizontalAlignment="Stretch" Margin="1" Click="GetSelected_Click"/>
+						<Button x:Name="DisableClickToExpand" AutomationProperties.Name="DisableClickToExpand" Content="DisableClickToExpand" HorizontalAlignment="Stretch" Margin="1" Click="DisableClickToExpand_Click"/>
+						<Button x:Name="ChangeFlowDirection" AutomationProperties.Name="ChangeFlowDirection" Content="ChangeFlowDirection" HorizontalAlignment="Stretch" Margin="1" Click="ChangeFlowDirection_Click"/>
+						<Button x:Name="MoveNodesToNewTreeView" AutomationProperties.Name="MoveNodesToNewTreeView" Content="MoveNodesToNewTreeView" HorizontalAlignment="Stretch" Margin="1" Click="MoveNodesToNewTreeView_Click"/>
+						<Button x:Name="SetUpExpandingNodeEvent" AutomationProperties.Name="SetUpExpandingNodeEvent" Content="SetUpExpandingNodeEvent" HorizontalAlignment="Stretch" Margin="1" Click="SetupExpandingNodeEvent_Click"/>
+						<Button x:Name="LabelItems" AutomationProperties.Name="LabelItems" Content="LabelItems" HorizontalAlignment="Stretch" Margin="1" Click="LabelItems_Click"/>
+						<Button x:Name="GetChildrenOrder" AutomationProperties.Name="GetChildrenOrder" Content="GetChildrenOrder" HorizontalAlignment="Stretch" Margin="1" Click="GetChildrenOrder_Click"/>
+						<Button x:Name="ToggleSelectionMode" AutomationProperties.Name="ToggleSelectionMode" Content="ToggleSelectionMode" HorizontalAlignment="Stretch" Margin="1" Click="ToggleSelectionMode_Click"/>
+						<Button x:Name="TreeViewInFlyout"  AutomationProperties.Name="TreeViewInFlyout" Content="TreeViewInFlyout"  HorizontalAlignment="Stretch" Margin="1" Click="TreeViewInFlyout_Click">
+							<FlyoutBase.AttachedFlyout>
+								<Flyout>
+									<StackPanel>
+										<Button x:Name="GetFlyoutItemCount" AutomationProperties.Name="GetFlyoutItemCount" Content="GetFlyoutItemCount" Click="GetFlyoutTreeViewItemCount_Click"/>
+										<muxcontrols:TreeView x:Name="FlyoutTreeView" Width="345" MaxHeight="500"/>
+									</StackPanel>
+								</Flyout>
+							</FlyoutBase.AttachedFlyout>
+						</Button>
+						<Button x:Name="ChangeSelectionAfterFlyout" AutomationProperties.Name="ChangeSelectionAfterFlyout" Content="ChangeSelectionAfterFlyout" HorizontalAlignment="Stretch" Margin="1" Click="ChangeSelectionAfterFlyout_Click"/>
+						<Button x:Name="GetItemCount" AutomationProperties.Name="GetItemCount" Content="GetItemCount" HorizontalAlignment="Stretch" Margin="1" Click="GetItemCount_Click"/>
+						<Button x:Name="GetTree2ItemCount" AutomationProperties.Name="GetTree2ItemCount" Content="GetTree2ItemCount" HorizontalAlignment="Stretch" Margin="1" Click="GetTree2ItemCount_Click"/>
+						<Button x:Name="GetItemCommonStates" AutomationProperties.Name="GetItemCommonStates" Content="GetItemCommonStates" HorizontalAlignment="Stretch" Margin="1" Click="GetItemCommonStates_Click" />
+						<Button x:Name="SetupNoReorderNodes" AutomationProperties.Name="SetupNoReorderNodes" Content="SetupNoReorderNodes" HorizontalAlignment="Stretch" Margin="1" Click="SetupNoReorderNodes_Click"/>
+						<Button x:Name="SizeTreeViewsForDrags" AutomationProperties.Name="SizeTreeViewsForDrags" Content="SizeTreeViewsForDrags" HorizontalAlignment="Stretch" Margin="1" Click="SizeTreeViewsForDrags_Click"/>
+						<Button x:Name="AddSecondLevelOfNodes" AutomationProperties.Name="AddSecondLevelOfNodes" Content="AddSecondLevelOfNodes" HorizontalAlignment="Stretch" Margin="1" Click="AddSecondLevelOfNodes_Click"/>
+						<Button x:Name="ModifySecondLevelOfNode" AutomationProperties.Name="ModifySecondLevelOfNode" Content="ModifySecondLevelOfNode" HorizontalAlignment="Stretch" Margin="1" Click="ModifySecondLevelOfNode_Click"/>
+						<Button x:Name="RemoveSecondLevelOfNode" AutomationProperties.Name="RemoveSecondLevelOfNode" Content="RemoveSecondLevelOfNode" HorizontalAlignment="Stretch" Margin="1" Click="RemoveSecondLevelOfNode_Click"/>
+						<Button x:Name="SetRoot1HasUnrealizedChildren" AutomationProperties.Name="SetRoot1HasUnrealizedChildren" Content="SetRoot1HasUnrealizedChildren" HorizontalAlignment="Stretch" Margin="1" Click="SetRoot1HasUnrealizedChildren_Click"/>
+					</StackPanel>
+					<StackPanel Grid.Row="1"  Grid.Column="1">
+						<Button x:Name="SetupDragToDropTarget" AutomationProperties.Name="SetupDragToDropTarget" Content="SetupDragToDropTarget" HorizontalAlignment="Stretch" Margin="1" Click="SetupDragToDropTarget_Click"/>
+						<Button x:Name="SetupCustomDragUIOverride" AutomationProperties.Name="SetupCustomDragUIOverride" Content="SetupCustomDragUIOverride" HorizontalAlignment="Stretch" Margin="1"/>
+						<Button x:Name="SetupDragDropHandlersForApiTest" AutomationProperties.Name="SetupDragDropHandlersForApiTest" Content="SetupDragDropHandlersForApiTest" HorizontalAlignment="Stretch" Margin="1" Click="SetupDragDropHandlersForApiTest_Click"/>
+						<Button x:Name="DisableItemDrag" AutomationProperties.Name="DisableItemDrag" Content="DisableItemDrag" HorizontalAlignment="Stretch" Margin="1" Click="DisableItemDrag_Click"/>
+						<Button x:Name="DisableItemReorder" AutomationProperties.Name="DisableItemReorder" Content="DisableItemReorder" HorizontalAlignment="Stretch" Margin="1" Click="DisableItemReorder_Click"/>
+						<Button x:Name="ItemTemplateSelectorTestPage" AutomationProperties.Name="ItemTemplateSelectorTestPage" Content="ItemTemplateSelectorTestPage" HorizontalAlignment="Stretch" Margin="1" Click="ItemTemplateSelectorTestPage_Click"/>
+						<Button x:Name="AddNodeWithEmpyUnrealizedChildren" AutomationProperties.Name="AddNodeWithEmpyUnrealizedChildren" Content="AddNodeWithEmpyUnrealizedChildren" HorizontalAlignment="Stretch" Margin="1" Click="AddNodeWithEmpyUnrealizedChildren_Click"/>
+						<Button x:Name="GetMultiSelectCheckBoxStates" AutomationProperties.Name="GetMultiSelectCheckBoxStates" Content="GetMultiSelectCheckBoxStates" HorizontalAlignment="Stretch" Margin="1" Click="GetMultiSelectCheckBoxStates_Click"/>
+						<Button x:Name="ToggleRoot0Selection" AutomationProperties.Name="ToggleRoot0Selection" Content="ToggleRoot0Selection" HorizontalAlignment="Stretch" Margin="1" Click="ToggleRoot0Selection_Click"/>
+						<Button x:Name="ToggleSelectedNodes" AutomationProperties.Name="ToggleSelectedNodes" Content="ToggleSelectedNodes" HorizontalAlignment="Stretch" Margin="1" Click="ToggleSelectedNodes_Click"/>
+						<Button x:Name="AddInheritedTreeViewNode" AutomationProperties.Name="AddInheritedTreeViewNode" Content="AddInheritedTreeViewNode" HorizontalAlignment="Stretch" Margin="1" Click="AddInheritedTreeViewNode_Click"/>
+						<Button x:Name="ClearNodes" AutomationProperties.Name="ClearNodes" Content="ClearNodes" HorizontalAlignment="Stretch" Margin="1" Click="ClearNodes_Click"/>
+						<Button x:Name="AddRootNode" AutomationProperties.Name="AddRootNode" Content="AddRootNode" HorizontalAlignment="Stretch" Margin="1" Click="AddRootNode_Click"/>
+						<Button x:Name="AddExtraNodes" AutomationProperties.Name="AddExtraNodes" Content="AddExtraNodes" HorizontalAlignment="Stretch" Margin="1" Click="AddExtraNodes_Click"/>
+						<Button x:Name="SelectLastRootNode" AutomationProperties.Name="SelectLastRootNode" Content="SelectLastRootNode" HorizontalAlignment="Stretch" Margin="1" Click="SelectLastRootNode_Click"/>
+						<Button x:Name="TreeViewLateDataInitTestPage" AutomationProperties.Name="TreeViewLateDataInitTestPage" Content="TreeViewLateDataInitTestPage" HorizontalAlignment="Stretch" Margin="1" Click="TreeViewLateDataInitTestPage_Click"/>
+						<Button x:Name="TreeViewNodeInMarkupTestPage" AutomationProperties.Name="TreeViewNodeInMarkupTestPage" Content="TreeViewNodeInMarkupTestPage" HorizontalAlignment="Stretch" Margin="1" Click="TreeViewNodeInMarkupTestPage_Click"/>
+						<Button x:Name="TreeViewUnrealizedChildrenTestPage" AutomationProperties.Name="TreeViewUnrealizedChildrenTestPage" Content="TreeViewUnrealizedChildrenTestPage" HorizontalAlignment="Stretch" Margin="1" Click="TreeViewUnrealizedChildrenTestPage_Click"/>
+						<Button x:Name="ResetItemsSource" AutomationProperties.Name="ResetItemsSource" Content="ResetItemsSource" HorizontalAlignment="Stretch" Margin="1" Click="ResetItemsSource_Click"/>
+						<Button x:Name="ResetItemsSourceAsync" AutomationProperties.Name="ResetItemsSourceAsync" Content="ResetItemsSourceAsync" HorizontalAlignment="Stretch" Margin="1" Click="ResetItemsSourceAsync_Click"/>
+						<Button x:Name="ExpandRootNode" AutomationProperties.Name="ExpandRootNode" Content="ExpandRootNode" HorizontalAlignment="Stretch" Margin="1" Click="ExpandRootNode_Click"/>
+						<Button x:Name="SwapItemsSource" AutomationProperties.Name="SwapItemsSource" Content="SwapItemsSource" HorizontalAlignment="Stretch" Margin="1" Click="SwapItemsSource_Click"/>
+					</StackPanel>
+				</Grid>
 			</ScrollViewer>
 			<ScrollViewer Grid.Column="1">
 				<StackPanel x:Name="TestStackPanel">
@@ -170,7 +189,7 @@
 		</Grid>
 		<!-- Uno specific: navigation grid for subpage tests-->
 		<Grid Background="White" x:Name="NavFrameGrid" Visibility="Collapsed">
-		  <Frame x:Name="NavFrame" Grid.RowSpan="2" />
+			<Frame x:Name="NavFrame" Grid.RowSpan="2" />
 		</Grid>
 	</Grid>
 </utilities:MUXTestPage>
