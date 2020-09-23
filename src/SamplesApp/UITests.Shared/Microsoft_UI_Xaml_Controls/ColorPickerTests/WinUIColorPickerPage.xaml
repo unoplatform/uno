@@ -10,7 +10,7 @@
     mc:Ignorable="d"
     GotFocus="TestPage_GotFocus">
 
-	<xamarin:Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
@@ -236,5 +236,5 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-	</xamarin:Grid>
+	</Grid>
 </UserControl>
