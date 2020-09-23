@@ -3,9 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
@@ -297,7 +302,7 @@ namespace Windows.UI.Xaml
 		private static readonly TypedEventHandler<GestureRecognizer, DraggingEventArgs> OnRecognizerDragging = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.OnDraggingStarting(args);
+			that.OnDragging(args);
 		};
 		#endregion
 
@@ -490,26 +495,77 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void OnDraggingStarting(DraggingEventArgs args)
+		private void OnDragging(DraggingEventArgs args)
 		{
 			if (args.DraggingState != DraggingState.Started // This UIElement is actually interested only by the starting
-				|| !CanDrag) // Sanity ... should never happen!
+				|| !CanDrag // Sanity ... should never happen!
+				|| !args.Pointer.Properties.IsLeftButtonPressed) 
 			{
 				return;
 			}
 
-			var routedArgs = new DragStartingEventArgs();
+			// Note: We do not provide the _pendingRaisedEvent.args since it has probably not been updated yet,
+			//		 but as we are in the handler of an event from the gesture recognizer,
+			//		 the LastPointerEvent from the CoreWindow will be up to date.
+			StartDragAsyncCore(args.Pointer);
+		}
+
+		public IAsyncOperation<DataPackageOperation> StartDragAsync(PointerPoint pointerPoint)
+			=> StartDragAsyncCore(pointerPoint, _pendingRaisedEvent.args).AsAsyncOperation();
+
+		private Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs args = null)
+		{
+			args ??= CoreWindow.GetForCurrentThread().LastPointerEvent as PointerRoutedEventArgs;
+			if (args is null)
+			{
+				// Fairly impossible case ...
+				return Task.FromResult(DataPackageOperation.None);
+			}
+
+			// Note: originalSource = this => DragStarting is not actually a routed event, the original source is always the sender
+			var routedArgs = new DragStartingEventArgs(this, args);
+			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
 
 			if (routedArgs.Cancel)
 			{
-				return;
+				return Task.FromCanceled<DataPackageOperation>(CancellationToken.None);
 			}
 
-			var dragInfo = new CoreDragInfo(); // TODO routedArgs.Data, routedArgs.AllowedOperations, KeyModifiers, Position
+			var result = new TaskCompletionSource<DataPackageOperation>();
+			result.Task.ContinueWith(OnDragCompleted, this, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.RunContinuationsAsynchronously);
+
+			var dragInfo = new CoreDragInfo(
+				CoreWindow.GetForCurrentThread(),
+				routedArgs.Data.GetView(),
+				routedArgs.AllowedOperations,
+				result.SetResult);
 			var dragUI = routedArgs.DragUI;
 
 			CoreDragDropManager.GetForCurrentView().DragStarted(dragInfo, dragUI);
+
+			return result.Task;
+		}
+
+		private static void OnDragCompleted(Task<DataPackageOperation> resultTask, object snd)
+		{
+			var that = (UIElement)snd;
+			var result = resultTask.IsFaulted
+				? DataPackageOperation.None
+				: resultTask.Result;
+			// Note: originalSource = this => DropCompleted is not actually a routed event, the original source is always the sender
+			var args = new DropCompletedEventArgs(that, result); 
+
+			that.SafeRaiseEvent(DropCompletedEvent, args);
+		}
+
+		/// <summary>
+		/// Provides ability to a control to fulfill the data that is going to be shared, by drag-and-drop for instance.
+		/// </summary>
+		/// <remarks>This is expected to be overriden by controls like Image or TextBlock to self fulfill data.</remarks>
+		/// <param name="data">The <see cref="DataPackage"/> to fulfill.</param>
+		private protected virtual void PrepareShare(DataPackage data)
+		{
 		}
 		#endregion
 
