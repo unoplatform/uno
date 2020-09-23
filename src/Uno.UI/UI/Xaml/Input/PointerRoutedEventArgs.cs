@@ -22,14 +22,14 @@ namespace Windows.UI.Xaml.Input
 		public PointerRoutedEventArgs()
 		{
 			// This is acceptable as all ctors of this class are internal
-			CoreWindow.GetForCurrentThread().SetLastPointerEvent(this);
+			CoreWindow.GetForCurrentThread().LastPointerEvent = this;
 
 			CanBubbleNatively = PlatformSupportsNativeBubbling;
 		}
 
 		/// <inheritdoc />
-		Point CoreWindow.IPointerEventArgs.GetLocation()
-			=> GetCurrentPoint(null).Position;
+		PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
+			=> GetCurrentPoint(relativeTo as UIElement);
 
 		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
 			=> new List<PointerPoint>(1) {GetCurrentPoint(relativeTo)};
