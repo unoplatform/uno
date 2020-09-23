@@ -12,6 +12,7 @@ using Uno.UI;
 using Uno.Disposables;
 using Windows.UI.Xaml.Data;
 using Uno.UI.DataBinding;
+using Windows.Foundation.Collections;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -38,7 +39,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		}
 
-		public static DependencyProperty SelectedItemProperty { get ; } =
+		public static DependencyProperty SelectedItemProperty { get; } =
 		DependencyProperty.Register(
 			"SelectedItem",
 			typeof(object),
@@ -55,10 +56,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedItemProperty, value);
 		}
 
-		internal virtual void OnSelectorItemIsSelectedChanged(SelectorItem container, bool oldIsSelected, bool newIsSelected)
+		internal void OnSelectorItemIsSelectedChanged(SelectorItem container, bool oldIsSelected, bool newIsSelected)
 		{
 			var item = ItemFromContainer(container);
 
+			ChangeSelectedItem(item, oldIsSelected, newIsSelected);
+		}
+
+		internal virtual void ChangeSelectedItem(object item, bool oldIsSelected, bool newIsSelected) {
 			if (ReferenceEquals(SelectedItem, item) && !newIsSelected)
 			{
 				SelectedItem = null;
@@ -468,6 +473,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal void OnItemClicked(SelectorItem selectorItem) => OnItemClicked(IndexFromContainer(selectorItem));
 
 		internal virtual void OnItemClicked(int clickedIndex) { }
+		
+		protected override void OnItemsChanged(object e)
+		{
+			if (e is IVectorChangedEventArgs iVCE)
+			{
+				if (iVCE.CollectionChange == CollectionChange.ItemChanged || iVCE.CollectionChange == CollectionChange.ItemInserted)
+				{
+					var item = Items[(int)iVCE.Index];
+
+					if (item is SelectorItem selectorItem && selectorItem.IsSelected)
+					{
+						ChangeSelectedItem(selectorItem, false, true);
+					}
+				}
+			}
+		}
 
 		// Check if the root of the resolved item template qualifies as a container, and if so return it as the container.
 		private protected override DependencyObject GetRootOfItemTemplateAsContainer(DataTemplate template)

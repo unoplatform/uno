@@ -142,28 +142,43 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal override void OnSelectorItemIsSelectedChanged(SelectorItem container, bool oldIsSelected, bool newIsSelected)
+		internal override void ChangeSelectedItem(object item, bool oldIsSelected, bool newIsSelected)
 		{
 			if (!_modifyingSelectionInternally)
 			{
-				var item = ItemFromContainer(container);
 
-				if (!newIsSelected)
+				//Handle selection
+				switch (SelectionMode)
 				{
-					SelectedItems.Remove(item);
-				}
-				else
-				{
-					if (!SelectedItems.Contains(item))
-					{
-						if (!IsSelectionMultiple
-							&& SelectedItems.FirstOrDefault() is object selectedItem)
+					case ListViewSelectionMode.None:
+						break;
+					case ListViewSelectionMode.Single:
+						var index = IndexFromItem(item);
+						if (!newIsSelected)
 						{
-							SelectedItems.Remove(selectedItem);
+							if (SelectedIndex == index)
+							{
+								SelectedIndex = -1;
+							}
+						} else
+						{
+							SelectedIndex = index;
 						}
-
-						SelectedItems.Add(item);
-					}
+						break;
+					case ListViewSelectionMode.Multiple:
+					case ListViewSelectionMode.Extended:
+						if (!newIsSelected)
+						{
+							SelectedItems.Remove(item);
+						}
+						else
+						{
+							if (!SelectedItems.Contains(item))
+							{
+								SelectedItems.Add(item);
+							}
+						}
+						break;
 				}
 			}
 		}
