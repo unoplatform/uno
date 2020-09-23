@@ -25,7 +25,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlFileGenerator
 	{
-		private const string ImplicitStyleMarker = "__ImplicitStyle_";
 		private const string GlobalPrefix = "global::";
 		private const string QualifiedNamespaceMarker = ".";
 
@@ -159,7 +158,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string SingletonClassName => $"ResourceDictionarySingleton__{_fileDefinition.ShortId}";
 
 		private const string DictionaryProviderInterfaceName = "global::Uno.UI.IXamlResourceDictionaryProvider";
-		private const string LazyInitializerInterfaceName = "global::Uno.UI.IXamlLazyResourceInitializer";
 
 		static XamlFileGenerator()
 		{
