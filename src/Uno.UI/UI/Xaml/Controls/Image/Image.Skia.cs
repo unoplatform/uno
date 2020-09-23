@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using Windows.UI;
 using Windows.UI.Composition;
 using System.Numerics;
+using SkiaSharp;
+using System.IO;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -39,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_sourceDisposable.Disposable = source.Subscribe(img =>
 				{
-					_currentSurface = img.Value;
+					_currentSurface = TryRecolorSurface(img.Value, MonochromeColor);
 					_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
 					_imageSprite.Brush = _surfaceBrush;
 					InvalidateMeasure();
@@ -123,6 +125,35 @@ namespace Windows.UI.Xaml.Controls
 				_imageSprite.Size = default;
 				return default;
 			}
+		}
+
+		private SkiaCompositionSurface TryRecolorSurface(SkiaCompositionSurface surface, Color? color)
+		{
+			if (color != null)
+			{
+				var image = surface.Image;
+				var bitmap = SKBitmap.FromImage(image);
+
+				if (bitmap != null)
+				{
+					var pixels = bitmap.Pixels;
+					var test = new SKColor[pixels.Length];
+					for (var i = 0; i < pixels.Length; i++)
+					{
+						var oldPixel = pixels[i];
+						var newPixel = new SKColor(color.Value.R, color.Value.G, color.Value.B, oldPixel.Alpha);
+						test[i] = newPixel;
+					}
+
+
+					var newBitmap = new SKBitmap(image.Width, image.Height);
+					newBitmap.Pixels = test;
+
+					surface.SetPixels(image.Width, image.Height, newBitmap.Bytes);
+				}
+			}
+
+			return surface;
 		}
 
 	}
