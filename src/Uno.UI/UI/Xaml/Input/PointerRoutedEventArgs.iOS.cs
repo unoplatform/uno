@@ -41,7 +41,6 @@ namespace Windows.UI.Xaml.Input
 			Pointer = new Pointer(pointerId, deviceType, isInContact, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
 			OriginalSource = FindOriginalSource(_nativeTouch) ?? receiver;
-			CanBubbleNatively = true; // Required for native gesture recognition (i.e. ScrollViewer), and integration of native components in the visual tree
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)

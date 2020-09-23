@@ -26,12 +26,12 @@ pr:
 resources:
   containers:
   - container: nv-bionic-wasm
-    image: unoplatform/wasm-build:2.1.1
+    image: unoplatform/wasm-build:3.0
 
 variables:
   windowsHostedVMImage: 'windows-2019'
   windowsScaledPool: 'Windows2019-20200608'
-  linuxVMImage: 'ubuntu-16.04'
+  linuxVMImage: 'ubuntu-latest'
   macOSVMImage: 'macOS-10.15'
   xCodeRoot: '/Applications/Xcode_11.5.app'
   XamarinSDKVersion: 6_10_0

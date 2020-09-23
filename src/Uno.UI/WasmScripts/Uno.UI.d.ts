@@ -952,6 +952,12 @@ declare namespace Windows.Storage {
         private static getValueByIndex;
     }
 }
+declare namespace Windows.Storage {
+    class AssetManager {
+        static DownloadAssetsManifest(path: string): Promise<string>;
+        static DownloadAsset(path: string): Promise<string>;
+    }
+}
 declare namespace Windows.Storage.Pickers {
     class FileSavePicker {
         static SaveAs(fileName: string, dataPtr: any, size: number): void;

@@ -64,8 +64,6 @@ namespace Uno.UI.Controls.Legacy
 			SetClipToPadding(false);
 			ScrollBarStyle = ScrollbarStyles.OutsideOverlay; // prevents padding from affecting scrollbar position
 
-			OnDisplayMemberPathChangedPartial(string.Empty, this.DisplayMemberPath);
-
 			_secondaryPool = new AbsListViewSecondaryPool(TryGetItemViewTypeFromItem, _customViewTypeCount);
 			SetRecyclerListener(_secondaryPool);
 		}
@@ -503,11 +501,6 @@ namespace Uno.UI.Controls.Legacy
 			{
 				RequestLayout();
 			}
-		}
-
-		partial void OnDisplayMemberPathChangedPartial(string oldDisplayMemberPath, string newDisplayMemberPath)
-		{
-			this.UpdateItemTemplateSelectorForDisplayMemberPath(newDisplayMemberPath);
 		}
 
 		private static void OnSelectionModeChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)

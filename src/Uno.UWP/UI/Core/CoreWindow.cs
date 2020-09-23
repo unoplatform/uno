@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
@@ -21,8 +22,12 @@ namespace Windows.UI.Core
 		internal CoreWindow()
 		{
 			_current = this;
+			Main ??= this;
+
 			InitializePartial();
 		}
+
+		internal static CoreWindow Main { get; private set; }
 
 		internal static void SetInvalidateRender(Action invalidateRender) => _invalidateRender = invalidateRender;
 

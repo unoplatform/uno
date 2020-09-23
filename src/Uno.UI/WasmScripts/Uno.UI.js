@@ -3073,6 +3073,33 @@ var Windows;
         Storage.ApplicationDataContainer = ApplicationDataContainer;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
+// eslint-disable-next-line @typescript-eslint/no-namespace
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class AssetManager {
+            static DownloadAssetsManifest(path) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    var response = yield fetch(path);
+                    return response.text();
+                });
+            }
+            static DownloadAsset(path) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    const response = yield fetch(path);
+                    const arrayBuffer = yield response.blob().then(b => b.arrayBuffer());
+                    const size = arrayBuffer.byteLength;
+                    const responseArray = new Uint8ClampedArray(arrayBuffer);
+                    const pData = Module._malloc(size);
+                    Module.HEAPU8.set(responseArray, pData);
+                    return `${pData};${size}`;
+                });
+            }
+        }
+        Storage.AssetManager = AssetManager;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
     var Storage;

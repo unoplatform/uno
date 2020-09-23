@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +44,34 @@ namespace Uno
 			}
 
 			return key;
+		}
+
+		public static string EncodeFileSystemPath(string path)
+			// Android assets need to placed in the Assets folder
+			=> global::System.IO.Path.Combine("Assets", EncodePath(path, global::System.IO.Path.DirectorySeparatorChar));
+
+		public static string EncodeResourcePath(string path)
+			=> EncodePath(path, '/');
+
+		private static string EncodePath(string path, char separator)
+		{
+			var localSeparation = global::System.IO.Path.DirectorySeparatorChar;
+
+			var alignedPath = path.Replace(separator, localSeparation);
+
+			var directoryName = global::System.IO.Path.GetDirectoryName(alignedPath);
+			var fileName = global::System.IO.Path.GetFileNameWithoutExtension(alignedPath);
+			var extension = global::System.IO.Path.GetExtension(alignedPath);
+
+			var encodedDirectoryParts = directoryName
+				.Split(new[] { localSeparation }, StringSplitOptions.RemoveEmptyEntries)
+				.Select(Encode)
+				.ToArray();
+
+			var encodedDirectory = global::System.IO.Path.Combine(encodedDirectoryParts);
+			var encodedFileName = Encode(fileName);
+
+			return global::System.IO.Path.Combine(encodedDirectory, encodedFileName + extension).Replace(localSeparation, separator);
 		}
 	}
 }

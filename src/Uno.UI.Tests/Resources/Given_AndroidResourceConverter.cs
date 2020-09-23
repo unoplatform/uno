@@ -48,4 +48,43 @@ namespace Uno.UI.Tests.Resources
 			Assert.AreEqual(expectedPath, actualPath);
 		}
     }
+
+	[TestClass]
+	public class Given_AndroidResourceNameEncoder
+	{
+		[TestMethod]
+		[DataRow(@"logo", @"logo")]
+		public void When_Encode(string input, string expected)
+		{
+			Assert.AreEqual(expected, AndroidResourceNameEncoder.Encode(input));
+		}
+
+		[TestMethod]
+
+		[DataRow(@"logo.png", @"logo.png")]
+		[DataRow(@"test/logo.png", @"test/logo.png")]
+		[DataRow(@"test/logo-1.png", @"test/logo_1.png")]
+		[DataRow(@"test/logo-1.png", @"test/logo_1.png")]
+		[DataRow(@"test/test2/logo-1.png", @"test/test2/logo_1.png")]
+		[DataRow(@"test/test2/test-3/logo-1.png", @"test/test2/test_3/logo_1.png")]
+		[DataRow(@"1test/logo-1.png", @"__1test/logo_1.png")]
+		public void When_EncodeResourcePath(string input, string expected)
+		{
+			Assert.AreEqual(expected, AndroidResourceNameEncoder.EncodeResourcePath(input));
+		}
+
+		[TestMethod]
+
+		[DataRow(@"logo.png", @"Assets\logo.png")]
+		[DataRow(@"test\logo.png", @"Assets\test\logo.png")]
+		[DataRow(@"test\logo-1.png", @"Assets\test\logo_1.png")]
+		[DataRow(@"test\logo-1.png", @"Assets\test\logo_1.png")]
+		[DataRow(@"test\test2\logo-1.png", @"Assets\test\test2\logo_1.png")]
+		[DataRow(@"test\test2\test-3\logo-1.png", @"Assets\test\test2\test_3\logo_1.png")]
+		[DataRow(@"1test\logo-1.png", @"Assets\__1test\logo_1.png")]
+		public void When_EncodeFileSystemPath(string input, string expected)
+		{
+			Assert.AreEqual(expected, AndroidResourceNameEncoder.EncodeFileSystemPath(input));
+		}
+	}
 }

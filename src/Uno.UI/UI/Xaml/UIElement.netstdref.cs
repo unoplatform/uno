@@ -40,6 +40,7 @@ namespace Windows.UI.Xaml
 		internal void MoveChildTo(int oldIndex, int newIndex) => throw new NotSupportedException("Reference assembly");
 		internal bool RemoveChild(UIElement child) => throw new NotSupportedException("Reference assembly");
 		internal void ClearChildren() => throw new NotSupportedException("Reference assembly");
+		internal void UpdateHitTest() => throw new NotSupportedException("Reference assembly");
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{

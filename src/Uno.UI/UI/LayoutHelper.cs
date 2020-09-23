@@ -223,6 +223,12 @@ namespace Uno.UI
 		}
 
 		[Pure]
+		internal static Size Divide(this Size left, double right)
+		{
+			return new Size(left.Width / right, left.Height / right);
+		}
+
+		[Pure]
 		internal static Rect InflateBy(this Rect left, Thickness right)
 		{
 			var newWidth = right.Left + left.Width + right.Right;

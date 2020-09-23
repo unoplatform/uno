@@ -156,12 +156,22 @@ namespace Windows.UI.Xaml
 			}
 		};
 
-		// This is a coalesced HitTestVisible and should be unified with it
-		// We should follow the WASM way an unify it on all platforms!
+		/// <summary>
+		/// Indicates if this element or one of its child might be target pointer pointer events.
+		/// Be aware this doesn't means that the element itself can be actually touched by user,
+		/// but only that pointer events can be raised on this element.
+		/// I.e. this element is NOT <see cref="HitTestVisibility.Collapsed"/>.
+		/// </summary>
 		private bool IsHitTestVisibleCoalesced
 		{
 			get
 			{
+#if __WASM__ || __SKIA__
+				return this.GetValue(HitTestVisibilityProperty) is HitTestVisibility visibility
+					&& visibility != HitTestVisibility.Collapsed;
+#else
+				// This is a coalesced HitTestVisible and should be unified with it
+				// We should follow the WASM way and unify it on all platforms!
 				if (Visibility != Visibility.Visible || !IsHitTestVisible)
 				{
 					return false;
@@ -179,6 +189,7 @@ namespace Windows.UI.Xaml
 				{
 					return true;
 				}
+#endif
 			}
 		}
 
@@ -451,7 +462,7 @@ namespace Windows.UI.Xaml
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, isOver: true, forceRelease: true);
 			var handledInManaged = SetPressed(args, true, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
 
-			if (!isManagedBubblingEvent && !isOverOrCaptured)
+			if (PointerRoutedEventArgs.PlatformSupportsNativeBubbling && !isManagedBubblingEvent && !isOverOrCaptured)
 			{
 				// This case is for safety only, it should not happen as we should never get a Pointer down while not
 				// on this UIElement, and no capture should prevent the dispatch as no parent should hold a capture at this point.
@@ -472,10 +483,10 @@ namespace Windows.UI.Xaml
 
 				recognizer.ProcessDownEvent(point);
 
-#if __WASM__
+#if __WASM__ || __SKIA__
 				// On iOS and Android, pointers are implicitly captured, so we will receive the "irrelevant" (i.e. !isOverOrCaptured)
-				// pointer moves and we can use them for manipulation. But on WASM we have to explicitly request to get those events
-				// (expect on FF where they are also implicitly captured ... but we still capture them).
+				// pointer moves and we can use them for manipulation. But on WASM and SKIA we have to explicitly request to get those events
+				// (expect on FF where they are also implicitly captured ... but we still capture them anyway).
 				if (recognizer.PendingManipulation?.IsActive(point.PointerDevice.PointerDeviceType, point.PointerId) ?? false)
 				{
 					Capture(args.Pointer, PointerCaptureKind.Implicit, args);
@@ -505,9 +516,6 @@ namespace Windows.UI.Xaml
 
 			if (_gestures.IsValueCreated)
 			{
-				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that they were handled by a child control,
-				// so we should not use them for gesture recognition.
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured);
 			}
 
@@ -519,8 +527,8 @@ namespace Windows.UI.Xaml
 
 		private bool OnPointerMove(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
 		{
-			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 			var handledInManaged = false;
+			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 
 			if (!isManagedBubblingEvent && isOverOrCaptured)
 			{
@@ -533,8 +541,7 @@ namespace Windows.UI.Xaml
 
 			if (_gestures.IsValueCreated)
 			{
-				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that they were handled by a child control,
+				// We need to process only events that were not handled by a child control,
 				// so we should not use them for gesture recognition.
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), !isManagedBubblingEvent || isOverOrCaptured);
 			}
@@ -652,6 +659,7 @@ namespace Windows.UI.Xaml
 			try
 			{
 				_pendingRaisedEvent = (this, evt, args);
+
 				return RaiseEvent(evt, args);
 			}
 			catch (Exception e)
