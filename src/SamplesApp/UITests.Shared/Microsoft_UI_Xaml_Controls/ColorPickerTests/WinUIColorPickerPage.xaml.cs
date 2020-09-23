@@ -30,7 +30,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests
         public WinUIColorPickerPage()
         {
             this.InitializeComponent();
-#if HAS_UNO
+
             // Initialize the ColorPicker to a known default color so we have a known starting point.
             this.ColorPicker.Color = Colors.Red;
 
@@ -47,10 +47,9 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests
             this.AlphaTextBlock.Text = this.ColorPicker.Color.A.ToString();
 
             var verifySubclass = new MyColorSpectrum();
-#endif
+
         }
 
-#if HAS_UNO
         private void ColorPicker_Loaded(object sender, RoutedEventArgs e)
         {
             FindAndGiveAutomationIdToVisualChild("ColorSpectrum");
@@ -417,7 +416,6 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests
 
             return null;
         }
-#endif
     }
 
     public partial class MyColorSpectrum : ColorSpectrum
