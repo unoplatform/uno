@@ -1,4 +1,6 @@
-﻿using Windows.ApplicationModel.DataTransfer;
+﻿#nullable enable
+
+using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -24,7 +26,7 @@ namespace Windows.UI.Xaml
 
 		public DataPackage Data { get; set; }
 		public DataPackageView DataView { get; }
-		// public DragUIOverride DragUIOverride { get; } // TODO, is this required for the initial D&D support?
+		public DragUIOverride DragUIOverride { get; } // TODO, is this required for the initial D&D support?
 
 		public DragDropModifiers Modifiers { get; }
 
