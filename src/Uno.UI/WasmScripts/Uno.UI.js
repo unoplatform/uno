@@ -3081,7 +3081,7 @@ var Windows;
         class AssetManager {
             static DownloadAssetsManifest(path) {
                 return __awaiter(this, void 0, void 0, function* () {
-                    var response = yield fetch(path);
+                    const response = yield fetch(path);
                     return response.text();
                 });
             }
