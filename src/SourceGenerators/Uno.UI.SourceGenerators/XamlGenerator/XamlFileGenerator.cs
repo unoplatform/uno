@@ -4925,7 +4925,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var dataContextMember = FindMember(definition, "DataContext");
 				var nameMember = FindMember(definition, "Name");
 
-				if (!targetType.Is(_elementStubSymbol.BaseType))
+				if (!(targetType?.Is(_elementStubSymbol.BaseType) ?? false))
 				{
 					writer.AppendLineInvariant($"/* Lazy DeferLoadStrategy was ignored because the target type is not based on {_elementStubSymbol.BaseType} */");
 					return null;
@@ -4949,6 +4949,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							string closureName;
 							using (var innerWriter = CreateApplyBlock(writer, GetType(XamlConstants.Types.ElementStub), out closureName))
 							{
+								var elementStubType = new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext());
+
 								if (hasDataContextMarkup)
 								{
 									// We need to generate the datacontext binding, since the Visibility
@@ -4956,7 +4958,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									var def = new XamlMemberDefinition(
 										new XamlMember("DataContext",
-											new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext()),
+											elementStubType,
 											false
 										), 0, 0
 									);
@@ -4970,7 +4972,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									var def = new XamlMemberDefinition(
 										new XamlMember("Visibility",
-											new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext()),
+											elementStubType,
 											false
 										), 0, 0
 									);
@@ -4978,6 +4980,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									def.Objects.AddRange(visibilityMember.Objects);
 
 									BuildComplexPropertyValue(innerWriter, def, closureName + ".", closureName);
+
+									if (!IsMemberInsideResourceDictionary(definition, maxDepth: null)
+										&& (HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition)))
+									{
+										var componentName = $"_component_{ CurrentScope.ComponentCount}";
+										writer.AppendLineInvariant($"this.{componentName} = {closureName};");
+
+										using (writer.BlockInvariant($"void {componentName}_update(object sender, RoutedEventArgs e)"))
+										{
+											// Refresh the bindings when the ElementStub is unloaded. This assumes that
+											// ElementStub will be unloaded **after** the stubbed control has been created
+											// in order for the _component_XXX to be filled, and Bindings.Update() to do its work.
+											writer.AppendLineInvariant($"this.Bindings.Update();");
+										}
+
+										writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_update;");
+
+										CurrentScope.Components.Add(new XamlObjectDefinition(elementStubType, 0, 0, definition) { Members = { def } });
+									}
 								}
 								else
 								{

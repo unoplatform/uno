@@ -49,6 +49,11 @@ namespace Windows.UI.Xaml
 			_children.Remove(child);
 			child.SetParent(null);
 
+			if (child is FrameworkElement fe)
+			{
+				fe.OnUnloaded();
+			}
+
 			return child;
 		}
 
