@@ -321,6 +321,8 @@ namespace SampleControl.Presentation
 
 						try
 						{
+							Console.WriteLine($"Creating control for {fileName}");
+
 							LogMemoryStatistics();
 
 							if (this.Log().IsEnabled(LogLevel.Debug))
@@ -337,6 +339,8 @@ namespace SampleControl.Presentation
 							ContentPhone = content;
 
 							await Task.Delay(500, ct);
+
+							Console.WriteLine($"Generating screenshot for {fileName}");
 
 							await GenerateBitmap(ct, folderName, fileName, content);
 						}
