@@ -1,76 +1,93 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Threading;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Core;
-using Windows.UI.Input;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
 	public partial class CoreDragInfo 
 	{
-		private readonly CoreWindow _window;
-		private readonly Action<DataPackageOperation> _complete;
+		private ImmutableList<Action<DataPackageOperation>>? _completions = ImmutableList<Action<DataPackageOperation>>.Empty;
+		private int _result = -1;
 
 		internal CoreDragInfo(
-			CoreWindow window,
 			DataPackageView data,
 			DataPackageOperation allowedOperations,
-			Action<DataPackageOperation> complete)
+			object? dragUI = null,
+			object? pointer = null)
 		{
-			_window = window;
-			_complete = complete;
 			Data = data;
 			AllowedOperations = allowedOperations;
+			DragUI = dragUI;
+			Pointer = pointer;
 		}
 
 		public DataPackageView Data { get; }
 
 		public DataPackageOperation AllowedOperations { get; }
 
-		public DragDropModifiers Modifiers
+		public DragDropModifiers Modifiers { get; internal set; }
+
+		public Point Position { get; internal set; }
+
+		/// <summary>
+		/// If this drag operation has been initiated by the current application,
+		/// this is expected to be the Windows.UI.Xaml.DragUI built in the DragStarting event.
+		/// </summary>
+		internal object? DragUI { get; }
+
+		/// <summary>
+		/// If this drag operation has been initiated by the current application,
+		/// this is expected to be the Windows.UI.Xaml.Input.Pointer used to initiate this operation.
+		/// </summary>
+		internal object? Pointer { get; }
+
+		/// <summary>
+		/// This will contains the current Windows.UI.Xaml.Input.PointerRoutedEventArgs which is triggering an update
+		/// on <see cref="ICoreDropOperationTarget"/>.
+		/// This is going to be updated before the invocation of any method of the ICoreDropOperationTarget.
+		/// </summary>
+		/// <remarks>
+		/// This is a hack for the UIDropTarget which needs to known the location of the pointer for the Windows.UI.Xaml.DragEventArgs.
+		/// </remarks>
+		internal object? PointerRoutedEventArgs { get; set; }
+
+		internal void RegisterCompletedCallback(Action<DataPackageOperation> onCompleted)
 		{
-			get
+			if (_result > 0
+				// If the Update return false, it means that the _completions is null, which means that the _result is now ready!
+				|| !ImmutableInterlocked.Update(ref _completions, AddCompletion, onCompleted))
 			{
-				var mods = DragDropModifiers.None;
-				if (_window.LastPointerEvent is {} args)
-				{
-					var props = args.GetLocation(null).Properties;
-					if (props.IsLeftButtonPressed)
-					{
-						mods |= DragDropModifiers.LeftButton;
-					}
-					if (props.IsMiddleButtonPressed)
-					{
-						mods |= DragDropModifiers.MiddleButton;
-					}
-					if (props.IsRightButtonPressed)
-					{
-						mods |= DragDropModifiers.RightButton;
-					}
-				}
+				Debug.Assert(_result >= 0);
 
-				if (_window.GetAsyncKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
-				{
-					mods |= DragDropModifiers.Shift;
-				}
-				if (_window.GetAsyncKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
-				{
-					mods |= DragDropModifiers.Control;
-				}
-				if (_window.GetAsyncKeyState(VirtualKey.Menu) == CoreVirtualKeyStates.Down)
-				{
-					mods |= DragDropModifiers.Alt;
-				}
-
-				return mods;
+				onCompleted((DataPackageOperation)_result);
 			}
+
+			ImmutableList<Action<DataPackageOperation>>? AddCompletion(ImmutableList<Action<DataPackageOperation>>? completions, Action<DataPackageOperation> callback)
+				=> completions?.Add(callback);
 		}
 
-		public Point Position => _window.PointerPosition;
-
 		internal void Complete(DataPackageOperation result)
-			=> _complete(result);
+		{
+			if (Interlocked.CompareExchange(ref _result, (int)result, -1) != -1)
+			{
+				this.Log().Error("This drag operation has already been completed");
+				return;
+			}
+
+			var completions = Interlocked.Exchange(ref _completions, null);
+			foreach (var callback in completions!)
+			{
+				callback(result);
+			}
+		}
 	}
 }
