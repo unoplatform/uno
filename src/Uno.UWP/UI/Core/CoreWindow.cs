@@ -38,7 +38,7 @@ namespace Windows.UI.Core
 			InitializePartial();
 		}
 
-		internal static CoreWindow Main { get; private set; }
+		internal static CoreWindow? Main { get; private set; }
 
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
