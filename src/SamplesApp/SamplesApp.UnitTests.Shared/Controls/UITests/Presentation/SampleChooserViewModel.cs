@@ -355,21 +355,21 @@ namespace SampleControl.Presentation
 					Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
 					Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
 #endif
-
-					// Done action is needed as awaiting the task is not enough to deterine the end of this method.
-					doneAction?.Invoke();
 				});
 			}
 			catch (Exception e)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("Exception", e);
+					this.Log().Error("RecordAllTests exception", e);
 				}
 			}
 			finally
 			{
 				IsSplitVisible = true;
+
+				// Done action is needed as awaiting the task is not enough to deterine the end of this method.
+				doneAction?.Invoke();
 			}
 
 		}
