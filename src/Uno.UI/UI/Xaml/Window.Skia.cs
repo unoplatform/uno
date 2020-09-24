@@ -1,4 +1,5 @@
 #nullable enable
+
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -11,6 +12,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Composition;
@@ -44,6 +46,9 @@ namespace Windows.UI.Xaml
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow();
 			CoreWindow.SetInvalidateRender(QueueInvalidateRender);
+
+			_dragDropManager = new DragDropManager(this);
+			CoreDragDropManager.SetForCurrentView(_dragDropManager);
 		}
 
 		internal static Action InvalidateRender = () => { };
@@ -103,8 +108,6 @@ namespace Windows.UI.Xaml
 						}
 					});
 				}
-
-				
 			}
 		}
 
@@ -146,7 +149,13 @@ namespace Windows.UI.Xaml
 
 				_window = new Grid
 				{
-					Children = {_rootBorder, _popupRoot}
+					Children =
+					{
+						_rootBorder,
+						_popupRoot
+						// Message Dialog => Those are currently using Popup, but they be upper
+						// Drag and drop => Those are added only when needed (they are actually not part of the WinUI visual tree and would have a negative perf impact)
+					}
 				};
 
 				UIElement.LoadingRootElement(_window);
@@ -202,6 +211,38 @@ namespace Windows.UI.Xaml
 			}
 
 			return new CompositeDisposable();
+		}
+
+		private DragUIRoot? _dragRoot;
+		private DragDropManager _dragDropManager;
+
+		internal IDisposable OpenDragAndDrop(DragView dragView)
+		{
+			if (_window is null)
+			{
+				return Disposable.Empty;
+			}
+
+			if (_dragRoot is null)
+			{
+				_dragRoot = new DragUIRoot(_dragDropManager);
+				_window.Children.Add(_dragRoot);
+			}
+
+			_dragRoot.Show(dragView);
+
+			return Disposable.Create(Remove);
+
+			void Remove()
+			{
+				_dragRoot.Hide(dragView);
+
+				if (_dragRoot.PendingDragCount == 0)
+				{
+					_window.Children.Remove(_dragRoot);
+					_dragRoot = null;
+				}
+			}
 		}
 	}
 }

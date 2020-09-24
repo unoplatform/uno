@@ -4,8 +4,7 @@ using System;
 
 namespace Windows.ApplicationModel.DataTransfer
 {
-
-  // only one operation is supported - copy; 'none' is default value in DataPackage
+	// only one operation is supported - copy; 'none' is default value in DataPackage
 	[Flags]
 	public enum DataPackageOperation : uint
 	{
