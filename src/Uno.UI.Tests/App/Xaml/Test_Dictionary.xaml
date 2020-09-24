@@ -55,4 +55,6 @@
 			<TextBlock Foreground="{ThemeResource ResourceKeyLocalReference}" />
 		</Grid>
 	</ControlTemplate>
+	<SolidColorBrush x:Key="Resource With Space In Key"
+					 Color="SlateBlue" />
 </ResourceDictionary>

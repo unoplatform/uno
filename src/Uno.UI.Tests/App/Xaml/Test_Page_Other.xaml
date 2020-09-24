@@ -45,5 +45,8 @@
 					   x:FieldModifier="public"
 					   Foreground="{StaticResource BituminousColorBrush}" />
 		</Grid>
+		<Border x:Name="SpaceInKeyBorder"
+				x:FieldModifier="public"
+				Background="{StaticResource Resource With Space In Key}" />
 	</Grid>
 </Page>

@@ -96,20 +96,8 @@
 		<Page Include="Windows_UI_Xaml\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Data\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Controls\**\*.xaml" />
-		<Page Include="App\App.xaml" />
-		<Page Include="App\Xaml\Test_CreateFromString.xaml" />
-		<Page Include="App\Xaml\Test_Dictionary.xaml" />
-		<Page Include="App\Xaml\Test_Dictionary_Inner.xaml" />
-		<Page Include="App\Xaml\Test_Dictionary_Theme.xaml" />
-		<Page Include="App\Xaml\Test_Dictionary_Isolated.xaml" />
-		<Page Include="App\Xaml\Test_Dictionary_Isolated_2.xaml" />
-		<Page Include="App\Xaml\Subclassed_Dictionary.xaml" />
+		<Page Include="App\**\*.xaml" />
 		<Page Include="..\SamplesApp\UITests.Shared\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
-		<Page Include="App\Xaml\Test_Control.xaml" />
-		<Page Include="App\Xaml\Test_MarkupExtension.xaml" />
-		<Page Include="App\Xaml\Test_Styles.xaml" />
-		<Page Include="App\Xaml\Test_Page.xaml" />
-		<Page Include="App\Xaml\Test_Page_Other.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
