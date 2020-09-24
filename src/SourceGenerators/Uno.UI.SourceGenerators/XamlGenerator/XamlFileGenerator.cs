@@ -2227,7 +2227,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineInvariant("new {0}()", GetGlobalizedTypeName(type.ToDisplayString()));
 					writer.AppendLineInvariant(isInInitializer ? "," : ";");
 				}
-				else if (resourcesRoot != null || mergedDictionaries != null)
+				else if (resourcesRoot != null || mergedDictionaries != null || themeDictionaries != null)
 				{
 					if (isInInitializer)
 					{
