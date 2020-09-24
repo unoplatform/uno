@@ -701,5 +701,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var border = page.SpaceInKeyBorder;
 			Assert.AreEqual(Colors.SlateBlue, (border.Background as SolidColorBrush).Color);
 		}
+
+		[TestMethod]
+		public void When_Only_Theme_Dictionaries()
+		{
+			var page = new Test_Page_Other();
+			var tb = page.ThemeDictionaryOnlyTextBlock;
+			Assert.AreEqual(Colors.MediumPurple, (tb.Foreground as SolidColorBrush).Color);
+		}
 	}
 }
