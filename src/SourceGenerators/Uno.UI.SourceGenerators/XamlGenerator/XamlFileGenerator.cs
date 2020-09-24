@@ -857,11 +857,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							var component = CurrentScope.Components[i];
 
-							var isDependencyObject = IsDependencyObject(component);
+							if (HasXBindMarkupExtension(component))
+							{
+								var isDependencyObject = IsDependencyObject(component);
 
-							var wrapInstance = isDependencyObject ? "" : ".GetDependencyObjectForXBind()";
+								var wrapInstance = isDependencyObject ? "" : ".GetDependencyObjectForXBind()";
 
-							writer.AppendLineInvariant($"owner._component_{i}{wrapInstance}.ApplyXBind();");
+								writer.AppendLineInvariant($"owner._component_{i}{wrapInstance}.ApplyXBind();");
+							}
 						}
 					}
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.StopTracking()")) { }
@@ -1627,7 +1630,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool HasMarkupExtensionNeedingComponent(XamlObjectDefinition objectDefinition)
 			=> objectDefinition
 				.Members
-				.Any(o => o.Objects.Any(o => o.Type.Name == "Bind" || o.Type.Name == "StaticResource" || o.Type.Name == "ThemeResource"));
+				.Any(o =>
+					o.Objects.Any(o =>
+						o.Type.Name == "Bind"
+						|| o.Type.Name == "StaticResource"
+						|| o.Type.Name == "ThemeResource"
+
+						// Bindings with ElementName properties needs to be resolved during Loading.
+						|| (o.Type.Name == "Binding" && o.Members.Any(m => m.Member.Name == "ElementName"))
+					)
+				);
 
 		/// <summary>
 		/// Does this node or any nested nodes have markup extensions?
