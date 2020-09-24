@@ -192,7 +192,10 @@ namespace Windows.UI.Xaml
 					routedArgs.CanBubbleNatively = true; // TODO: UGLY HACK TO AVOID BUBBLING: we should be able to request to bubble only up to a the root
 					var (root, stale) = source.stale.Value;
 
-					Debug.Write($"Exiting branch from (root) {root.GetDebugName()} to (leaf) {stale.GetDebugName()}\r\n");
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+							this.Log().Trace($"Exiting branch from (root) {root.GetDebugName()} to (leaf) {stale.GetDebugName()}\r\n");
+					}
 
 					while (stale is { })
 					{
