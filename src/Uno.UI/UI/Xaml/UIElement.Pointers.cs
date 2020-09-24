@@ -532,17 +532,27 @@ namespace Windows.UI.Xaml
 				return Task.FromCanceled<DataPackageOperation>(CancellationToken.None);
 			}
 
+			if (!pointer.Properties.HasPressedButton)
+			{
+				// This is the UWP behavior: if no button is pressed, then the drag is completed
+				var noneResult = Task.FromResult(DataPackageOperation.None);
+				OnDragCompleted(noneResult, this);
+				return noneResult;
+			}
+
+			// TODO: Add support for the starting deferral!
+
 			var result = new TaskCompletionSource<DataPackageOperation>();
 			result.Task.ContinueWith(OnDragCompleted, this, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.RunContinuationsAsynchronously);
 
 			var dragInfo = new CoreDragInfo(
-				CoreWindow.GetForCurrentThread(),
 				routedArgs.Data.GetView(),
 				routedArgs.AllowedOperations,
-				result.SetResult);
-			var dragUI = routedArgs.DragUI;
+				dragUI: routedArgs.DragUI,
+				pointer: pointer.PointerDevice);
+			dragInfo.RegisterCompletedCallback(result.SetResult);
 
-			CoreDragDropManager.GetForCurrentView().DragStarted(dragInfo, dragUI);
+			CoreDragDropManager.GetForCurrentView().DragStarted(dragInfo);
 
 			return result.Task;
 		}
