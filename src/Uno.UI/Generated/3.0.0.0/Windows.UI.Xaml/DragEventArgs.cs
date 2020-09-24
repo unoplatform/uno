@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.DragEventArgs.Modifiers.get
 		// Forced skipping of method Windows.UI.Xaml.DragEventArgs.AcceptedOperation.get
 		// Forced skipping of method Windows.UI.Xaml.DragEventArgs.AcceptedOperation.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.DragOperationDeferral GetDeferral()
 		{

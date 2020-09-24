@@ -10,6 +10,8 @@ namespace Windows.UI.Xaml
 			: base(originalSource)
 		{
 			DropResult = result;
+
+			CanBubbleNatively = false;
 		}
 
 		public DataPackageOperation DropResult { get; }

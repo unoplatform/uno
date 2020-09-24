@@ -1,19 +1,43 @@
 #nullable enable
 
+using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml
 {
-	public  partial class DragUIOverride 
+	public partial class DragUIOverride 
 	{
-		public bool IsGlyphVisible { get; set; }
+		private readonly CoreDragUIOverride _core;
 
-		public bool IsContentVisible { get; set; }
+		internal DragUIOverride(CoreDragUIOverride core)
+		{
+			_core = core;
+		}
 
-		public bool IsCaptionVisible { get; set; }
+		public bool IsGlyphVisible
+		{
+			get => _core.IsGlyphVisible;
+			set => _core.IsGlyphVisible = value;
+		}
 
-		public string Caption { get; set; }
+		public bool IsContentVisible
+		{
+			get => _core.IsContentVisible;
+			set => _core.IsContentVisible = value;
+		}
+
+		public bool IsCaptionVisible
+		{
+			get => _core.IsCaptionVisible;
+			set => _core.IsCaptionVisible = value;
+		}
+
+		public string Caption
+		{
+			get => _core.Caption;
+			set => _core.Caption = value;
+		}
 
 		public void SetContentFromBitmapImage(BitmapImage bitmapImage)
 		{
@@ -26,7 +50,6 @@ namespace Windows.UI.Xaml
 		}
 
 		public void Clear()
-		{
-		}
+			=> _core.Clear();
 	}
 }
