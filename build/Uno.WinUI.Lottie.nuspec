@@ -33,7 +33,7 @@
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
 	  </group>
-	  <group targetFramework="MonoAndroid90">
+	  <group targetFramework="MonoAndroid11.0">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
 	  </group>
@@ -55,7 +55,7 @@
 	  <group targetFramework="xamarinmac20">
 		<reference file="Uno.UI.Lottie.dll" />
 	  </group>
-	  <group targetFramework="MonoAndroid90">
+	  <group targetFramework="MonoAndroid11.0">
 		<reference file="Uno.UI.Lottie.dll" />
 	  </group>
 	  <group targetFramework="MonoAndroid10.0">
@@ -68,7 +68,7 @@
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\netstandard2.0\Uno.UI.Lottie.dll" target="lib\netstandard2.0" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinios10\Uno.UI.Lottie.dll" target="lib\xamarinios10" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinmac20\Uno.UI.Lottie.dll" target="lib\xamarinmac20" />
-	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid90\Uno.UI.Lottie.dll" target="lib\MonoAndroid90" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid11.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid11.0" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid10.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid10.0" />
 
 	<!-- Build targets -->

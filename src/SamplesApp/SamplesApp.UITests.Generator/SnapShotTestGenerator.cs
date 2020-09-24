@@ -227,7 +227,7 @@ namespace Uno.Samples.UITest.Generator
 		{
 			switch (Path.GetFileName(path).ToLowerInvariant())
 			{
-				case "monoandroid90":
+				case "MonoAndroid11.0":
 					yield return $@"{devEnvDir}\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v9.0";
 					yield return $@"{devEnvDir}\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v1.0";
 					yield break;
