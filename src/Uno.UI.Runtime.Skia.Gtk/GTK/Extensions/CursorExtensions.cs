@@ -22,7 +22,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions
 					CursorType.QuestionArrow => CoreCursorType.Help,
 					CursorType.Sizing => CoreCursorType.SizeAll,
 					CursorType.Watch => CoreCursorType.Wait,
-					_ => throw new NotImplementedException(),
+					_ => CoreCursorType.Arrow,
 				};
 			
 			return new CoreCursor(GetCoreCursorType(cursor?.CursorType), 0);
