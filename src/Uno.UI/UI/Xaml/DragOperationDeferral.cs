@@ -1,19 +1,25 @@
+using System.Threading;
+using System.Threading.Tasks;
+
 #nullable enable
 
 namespace Windows.UI.Xaml
 {
 	public partial class DragOperationDeferral 
 	{
-		internal DragOperationDeferral(DragEventArgs owner)
+		private readonly TaskCompletionSource<object> _completion = new TaskCompletionSource<object>();
+
+		internal DragOperationDeferral()
 		{
 		}
 
-		internal DragOperationDeferral(DragStartingEventArgs owner)
-		{
-		}
+		public void Complete()
+			=> _completion.TrySetResult(default);
 
-		public  void Complete()
+		internal async Task Completed(CancellationToken ct)
 		{
+			using var _ = ct.Register(() => _completion.TrySetCanceled(ct));
+			await _completion.Task;
 		}
 	}
 }

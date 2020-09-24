@@ -10,12 +10,13 @@ namespace Windows.UI.Xaml
 	public partial class DragStartingEventArgs : RoutedEventArgs
 	{
 		private readonly PointerRoutedEventArgs _pointer;
-		private DragOperationDeferral? _deferral;
 
 		internal DragStartingEventArgs(UIElement originalSource, PointerRoutedEventArgs pointer)
 			: base(originalSource)
 		{
 			_pointer = pointer;
+
+			CanBubbleNatively = false;
 		}
 
 		public bool Cancel { get; set; }
@@ -26,10 +27,12 @@ namespace Windows.UI.Xaml
 
 		public DataPackageOperation AllowedOperations { get; set; } = DataPackageOperation.Copy | DataPackageOperation.Move | DataPackageOperation.Link;
 
+		internal DragOperationDeferral? Deferral { get; private set; }
+
 		public Point GetPosition(UIElement relativeTo)
 			=> _pointer.GetCurrentPoint(relativeTo).Position;
 
 		public DragOperationDeferral GetDeferral()
-			=> _deferral ??= new DragOperationDeferral(this);
+			=> Deferral ??= new DragOperationDeferral();
 	}
 }
