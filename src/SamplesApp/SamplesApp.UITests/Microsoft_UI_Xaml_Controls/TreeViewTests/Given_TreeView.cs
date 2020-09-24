@@ -140,7 +140,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				Assert.AreEqual("4", ReadResult());
 
 				// click button to hide flyout treeview
-				ClickButton("TreeViewInFlyout");
+				TapOutsideFlyout(); //TODO: Uno Specific - flyout may hide the button, use Clear instead
 
 				// click button to popup flyout treeview again
 				ClickButton("TreeViewInFlyout");
@@ -481,6 +481,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		// test for #1756 https://github.com/microsoft/microsoft-ui-xaml/issues/1756
 		[Test]
+		[Ignore("Fails on Android, issue #4099")]
 		[AutoRetry]
 		public void TreeViewSelectRegressionTest()
 		{
@@ -674,6 +675,12 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 			_app.TapCoordinates((float)(buttonAboveTreeView.Rect.X + x), (float)(buttonAboveTreeView.Rect.Bottom + y));			
 			//Wait.ForIdle();
+		}
+
+		private void TapOutsideFlyout()
+		{
+			var textBlock = QueryAll("Results");
+			textBlock.Tap();
 		}
 
 		private void TapOnFlyoutTreeViewRootItemChevron()

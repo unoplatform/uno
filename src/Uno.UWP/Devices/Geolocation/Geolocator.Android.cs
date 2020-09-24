@@ -181,35 +181,71 @@ namespace Windows.Devices.Geolocation
 	{
 		private const uint Wgs84SpatialReferenceId = 4326;
 
-		public static Geoposition ToGeoPosition(this Location location)
-			=> new Geoposition(
+		public static Windows.Devices.Geolocation.Geoposition ToGeoPosition(this Location location)
+		{
+			double? geoheading = null;
+			if (location.HasBearing)
+			{
+				geoheading = location.Bearing;
+			}
+
+			Windows.Devices.Geolocation.PositionSource posSource;
+			switch (location.Provider)
+			{
+				case Android.Locations.LocationManager.NetworkProvider:
+					posSource = Windows.Devices.Geolocation.PositionSource.Cellular;    // cell, wifi
+					break;
+				case Android.Locations.LocationManager.PassiveProvider:
+					posSource = Windows.Devices.Geolocation.PositionSource.Unknown;  // other apps
+					break;
+				case Android.Locations.LocationManager.GpsProvider:
+					posSource = Windows.Devices.Geolocation.PositionSource.Satellite;
+					break;
+				default:
+					// ex.: "fused" - all merged, also e.g. Google Play
+					posSource = Windows.Devices.Geolocation.PositionSource.Unknown;
+					break;
+			}
+
+
+			double? locVertAccuracy = null;
+			// VerticalAccuracy is since API 26
+			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+			{
+				if (location.HasVerticalAccuracy)
+				{
+					locVertAccuracy = location.VerticalAccuracyMeters;
+				}
+			}
+
+
+			return new Windows.Devices.Geolocation.Geoposition(
 				new Geocoordinate(
 					latitude: location.Latitude,
 					longitude: location.Longitude,
 					altitude: location.Altitude,
-					timestamp: FromUnixTime(location.Time),
+					timestamp: DateTimeOffset.FromUnixTimeMilliseconds(location.Time),
 					speed: location.HasSpeed ? location.Speed : 0,
 					point: new Geopoint(
-						new BasicGeoposition
-						{
-							Latitude = location.Latitude,
-							Longitude = location.Longitude,
-							Altitude = location.Altitude,
-						},
-						AltitudeReferenceSystem.Ellipsoid,
-						Wgs84SpatialReferenceId
-					),
-					accuracy: 0,
-					altitudeAccuracy: 0,
-					heading: null
+							new BasicGeoposition
+							{
+								Latitude = location.Latitude,
+								Longitude = location.Longitude,
+								Altitude = location.Altitude
+							},
+							AltitudeReferenceSystem.Ellipsoid,
+							Wgs84SpatialReferenceId
+						),
+
+					accuracy: location.HasAccuracy ? location.Accuracy : 0,
+					altitudeAccuracy: locVertAccuracy,
+					heading: geoheading,
+					positionSource: posSource
 				)
 			);
 
-		private static DateTimeOffset FromUnixTime(long time)
-		{
-			var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-			return epoch.AddMilliseconds(time);
 		}
+
 	}
 }
 #endif
