@@ -2,81 +2,58 @@
 
 using System;
 using System.Collections.Generic;
+using Windows.Devices.Input;
 using Windows.Foundation;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
 	public partial class CoreDragDropManager
 	{
-		[ThreadStatic]
-		private static CoreDragDropManager? _current;
+		[ThreadStatic] private static CoreDragDropManager? _current;
 
-		public static CoreDragDropManager GetForCurrentView()
-			=> _current ??= new CoreDragDropManager();
+		public static CoreDragDropManager? GetForCurrentView()
+			=> _current;
+
+		internal static void SetForCurrentView(IDragDropManager manager)
+			=> _current = new CoreDragDropManager(manager);
 
 		public event TypedEventHandler<CoreDragDropManager, CoreDropOperationTargetRequestedEventArgs>? TargetRequested;
 
-		private List<DropOperation> _operations = new List<DropOperation>(1);
+		private readonly IDragDropManager _manager;
 
 		public bool AreConcurrentOperationsEnabled { get; set; } = false;
 
-		private CoreDragDropManager()
+		private CoreDragDropManager(IDragDropManager manager)
 		{
+			_manager = manager;
 		}
 
-		internal void DragStarted(CoreDragInfo info, object? dragUI = null)
+		internal void DragStarted(CoreDragInfo info)
 		{
-			// TODO
-			// * Here we will maintain a list of pending drag and drop elements
-			// * We should also add a callback for the DropCompleted event / native drop result
-
-			ICoreDropOperationTarget? target;
-			if (TargetRequested is null)
-			{
-				target = new UIDropTarget();
-			}
-			else
+			if (TargetRequested is {} handler)
 			{
 				var args = new CoreDropOperationTargetRequestedEventArgs();
-				TargetRequested(this, args);
+				handler(this, args);
 
-				target = args.Target;
-
-				if (target is null) // This is the UWP behavior!
+				if (args.Target is null) // This is the UWP behavior!
 				{
 					info.Complete(DataPackageOperation.None);
 					return;
 				}
+
+				_manager.BeginDragAndDrop(info, args.Target);
 			}
-
-			_operations.Add(new DropOperation(info, target));
-		}
-
-		private class DropOperation
-		{
-			public DropOperation(CoreDragInfo info, ICoreDropOperationTarget target)
+			else
 			{
-				
+				_manager.BeginDragAndDrop(info);
 			}
 		}
 
-		private class UIDropTarget : ICoreDropOperationTarget
+		internal interface IDragDropManager
 		{
-			/// <inheritdoc />
-			public IAsyncOperation<DataPackageOperation> EnterAsync(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)
-				=> throw new NotImplementedException();
-
-			/// <inheritdoc />
-			public IAsyncOperation<DataPackageOperation> OverAsync(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)
-				=> throw new NotImplementedException();
-
-			/// <inheritdoc />
-			public IAsyncAction LeaveAsync(CoreDragInfo dragInfo)
-				=> throw new NotImplementedException();
-
-			/// <inheritdoc />
-			public IAsyncOperation<DataPackageOperation> DropAsync(CoreDragInfo dragInfo)
-				=> throw new NotImplementedException();
+			void BeginDragAndDrop(CoreDragInfo info, ICoreDropOperationTarget? target = null);
 		}
 	}
 }
