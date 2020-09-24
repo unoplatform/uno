@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml
 		/// and can be removed as breaking change later.</remarks>
 		public bool Insert(object key, object value)
 		{
-			Set(key, value);
+			Set(key, value, throwIfPresent: false);
 			return true;
 		}
 
@@ -79,18 +79,7 @@ namespace Windows.UI.Xaml
 
 		public void Clear() => _values.Clear();
 
-		public void Add(object key, object value)
-		{
-			if (value is ResourceInitializer resourceInitializer)
-			{
-				_hasUnmaterializedItems = true;
-				_values.Add(key, new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer));
-			}
-			else
-			{
-				_values.Add(key, value);
-			}
-		}
+		public void Add(object key, object value) => Set(key, value, throwIfPresent: true);
 
 		public bool ContainsKey(object key) => ContainsKey(key, shouldCheckSystem: true);
 		public bool ContainsKey(object key, bool shouldCheckSystem) => _values.ContainsKey(key) || ContainsKeyMerged(key) || ContainsKeyTheme(key)
@@ -133,11 +122,16 @@ namespace Windows.UI.Xaml
 
 				return value;
 			}
-			set => Set(key, value);
+			set => Set(key, value, throwIfPresent: false);
 		}
 
-		private void Set(object key, object value)
+		private void Set(object key, object value, bool throwIfPresent)
 		{
+			if (throwIfPresent && _values.ContainsKey(key))
+			{
+				throw new ArgumentException("An entry with the same key already exists.");
+			}
+
 			if (value is ResourceInitializer resourceInitializer)
 			{
 				_hasUnmaterializedItems = true;
@@ -299,7 +293,7 @@ namespace Windows.UI.Xaml
 
 		public global::System.Collections.Generic.ICollection<object> Keys => _values.Keys;
 
-			// TODO: this doesn't handle lazy initializers or aliases
+		// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
 
 		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => Add(item.Key, item.Value);

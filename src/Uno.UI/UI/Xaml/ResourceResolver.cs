@@ -60,7 +60,6 @@ namespace Uno.UI
 		/// <summary>
 		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
 		/// </summary>
-		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static T ResolveResourceStatic<T>(object key, object context = null)
 		{
@@ -73,9 +72,8 @@ namespace Uno.UI
 		}
 
 		/// <summary>
-		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
+		/// Performs a one-time resolution of a named resource, using Application.Resources.
 		/// </summary>
-		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static bool ResolveResourceStatic(object key, out object value, object context = null)
@@ -398,4 +396,7 @@ namespace Uno.UI
 
 		internal static void UpdateSystemThemeBindings() => MasterDictionary.UpdateThemeBindings();
 	}
+
+
+
 }

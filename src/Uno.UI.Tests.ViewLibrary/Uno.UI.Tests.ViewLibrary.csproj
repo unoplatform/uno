@@ -64,10 +64,7 @@
 	<Import Project="..\Common.targets" />
 
 	<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
-		<Page Include="Themes\Generic.xaml" />
-		<Page Include="Themes\MyExtControl.xaml" />
-		<Page Include="Themes\More\Test_Dictionary_Abs.xaml" />
-		<Page Include="Themes\More\Test_Dictionary_Merged.xaml" />
+		<Page Include="Themes\**\*.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>

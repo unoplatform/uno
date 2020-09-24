@@ -45,5 +45,24 @@
 					   x:FieldModifier="public"
 					   Foreground="{StaticResource BituminousColorBrush}" />
 		</Grid>
+		<Border x:Name="SpaceInKeyBorder"
+				x:FieldModifier="public"
+				Background="{StaticResource Resource With Space In Key}" />
+		<Border>
+			<Border.Resources>
+				<ResourceDictionary>
+					<ResourceDictionary.ThemeDictionaries>
+						<ResourceDictionary x:Key="Default">
+							<SolidColorBrush x:Key="KeyInDictionaryWithOnlyThemeDictionaries"
+											 Color="MediumPurple" />
+						</ResourceDictionary>
+					</ResourceDictionary.ThemeDictionaries>
+				</ResourceDictionary>
+			</Border.Resources>
+			<TextBlock x:Name="ThemeDictionaryOnlyTextBlock"
+					   x:FieldModifier="public"
+					   Text="Warfarin' terrapin"
+					   Foreground="{StaticResource KeyInDictionaryWithOnlyThemeDictionaries}" />
+		</Border>
 	</Grid>
 </Page>
