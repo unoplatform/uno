@@ -108,6 +108,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							("IsWasm", _isWasm.ToString()),
 							("IsDebug", _isDebug.ToString()),
 							("TargetFramework", _projectInstance.GetProperty("TargetFramework")?.EvaluatedValue.ToString()),
+							("UnoRuntime", BuildUnoRuntimeValue()),
 							("IsBuildingUnoSolution", isBuildingUno.ToString()),
 							("IsUiAutomationMappingEnabled", _isUiAutomationMappingEnabled.ToString()),
 							("DefaultLanguage", _defaultLanguage ?? "Unknown"),
@@ -124,6 +125,33 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 			}
+		}
+
+		private string BuildUnoRuntimeValue()
+		{
+			var constants = _projectInstance.GetProperty("DefineConstants").EvaluatedValue;
+
+			if (constants != null)
+			{
+				if (constants.Contains("__WASM__"))
+				{
+					return "WebAssembly";
+				}
+				if (constants.Contains("__SKIA__"))
+				{
+					return "Skia";
+				}
+				if (constants.Contains("__TIZEN__"))
+				{
+					return "Tizen";
+				}
+				if (constants.Contains("UNO_REFERENCE_API"))
+				{
+					return "Reference";
+				}
+			}
+
+			return "Unknown";
 		}
 	}
 }
