@@ -146,9 +146,13 @@ namespace Windows.UI.Xaml.Automation
 				view.ContentDescription = (string)args.NewValue;
 			}
 #elif __WASM__
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIElement uiElement)
+			if (dependencyObject is UIElement uiElement)
 			{
-				uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
+				if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+				{
+					uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
+				}
+
 				uiElement.SetAttribute("aria-label", (string)args.NewValue);
 
 				var role = FindHtmlRole(uiElement);
