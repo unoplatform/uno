@@ -3958,13 +3958,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.GetMethods()
 					.Any(m =>
 						m.Name == "op_Implicit"
-						&& m.Parameters.FirstOrDefault().SelectOrDefault(p => p.Type.ToDisplayString() == "string")
+						&& m.Parameters.FirstOrDefault().SelectOrDefault(p => Equals(p.Type, _stringSymbol))
 					);
 
 				if (hasImplictToString
 
 					// Can be an object (e.g. in case of Binding.ConverterParameter).
-					|| propertyType.ToDisplayString() == "object"
+					|| Equals(propertyType, _objectSymbol)
 				)
 				{
 					return "@\"" + memberValue.ToString() + "\"";
