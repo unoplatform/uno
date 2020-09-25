@@ -11,11 +11,15 @@ It is possible to develop :
 Using VS 2019 16.6 or later:
 - Install the [VS WSL Extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.Dot-Net-Core-Debugging-With-Wsl2)
 - Install [WSL Ubuntu 18.04 or later](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
-- Install the [vcXsrv](https://sourceforge.net/projects/vcxsrv/), an X11 server for Windows
+- Install the prerequisites for Linux mentioned in the next section, in your installed distribution using the Ubuntu shell
+- Install [vcXsrv](https://sourceforge.net/projects/vcxsrv/), an X11 server for Windows
 - Install the [GTK3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases).
-- In your user environment variables:
-    - Add a variable named `Display`, with the value `:0`
-    - Add a variable named `WSLENV`, with the value `DISPLAY/u` (See [this page](https://devblogs.microsoft.com/commandline/share-environment-vars-between-wsl-and-windows/) for nore details)
+- Using the WSL 1 mode is generally best for performance and ease of use for the X11 server
+    - You can switch between versions of a distribution using `wsl --set-version "Ubuntu-20.04" 1`
+    - You can list your active distributions with `wslconfig /l` and change the default with `wslconfig /s "Ubuntu-20.04"`
+    - You can change the used distribution with the `"distributionName": "Ubuntu-20.04"` launch profile parameter of the VS WSL 2 Extension.
+    - If you have a insider preview of Windows 10, you may [use the wayland server](https://devblogs.microsoft.com/commandline/the-windows-subsystem-for-linux-build-2020-summary/#wsl-gui).
+    - If you still want to use WSL 2 anyways, you can try [following those steps](https://skeptric.com/wsl2-xserver).
 - Install the `dotnet new` templates:
     ```
     dotnet new -i Uno.ProjectTemplates.Dotnet::3.1-dev*
@@ -28,6 +32,12 @@ Using VS 2019 16.6 or later:
 Now let's run the application:
 - Open the solution using Visual Studio
 - In the debugger menu, next to the green arrow, select **WSL 2**
+- In the launch profile file, set:
+```json
+"environmentVariables": {
+    "DISPLAY": ":0",
+},
+```
 - Start the debugger session
 - Visual Studio may ask you to install **.NET Core 3.1**, press OK and let the installation finish, then restart the debugging session.
 
