@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -18,6 +19,14 @@ namespace Windows.Foundation
 			Y = double.PositiveInfinity,
 			Width = double.NegativeInfinity,
 			Height = double.NegativeInfinity
+		};
+
+		internal static Rect Infinite { get; } = new Rect
+		{
+			X = double.NegativeInfinity,
+			Y = double.NegativeInfinity,
+			Width = double.PositiveInfinity,
+			Height = double.PositiveInfinity
 		};
 
 		public Rect(Point point, Size size) : this(point.X, point.Y, size.Width, size.Height) { }
@@ -92,6 +101,11 @@ namespace Windows.Foundation
 
 		public static implicit operator Rect(string text)
 		{
+			if (text == null)
+			{
+				return default;
+			}
+
 			var parts = text
 				.Split(new[] { ',' })
 				.SelectToArray(s => double.Parse(s, NumberFormatInfo.InvariantInfo));
@@ -119,6 +133,9 @@ namespace Windows.Foundation
 		}
 
 		public override string ToString() => (string)this;
+
+		internal string ToDebugString()
+			=> FormattableString.Invariant($"{Width:F2},{Height:F2}@{Location.ToDebugString()}");
 
 		/// <summary>
 		/// Provides the size of this rectangle.
@@ -159,24 +176,28 @@ namespace Windows.Foundation
 				throw new InvalidOperationException("Can't inflate empty rectangle");
 			}
 
-			this.X -= width;
-			this.Y -= height;
-			this.Width += width;
-			this.Width += width;
-			this.Height += height;
-			this.Height += height;
+			X -= width;
+			Y -= height;
+			Width += width;
+			Width += width;
+			Height += height;
+			Height += height;
 
-			if (this.Width < 0.0 || this.Height < 0.0)
+			if (Width < 0.0 || Height < 0.0)
 			{
 				this = Rect.Empty;
 			}
 		}
 
-		public bool Contains(Point point) =>
-			point.X >= X
-			&& point.X <= X + Width
-			&& point.Y >= Y
-			&& point.Y <= Y + Height;
+		public bool Contains(Point point)
+			// We include points on the edge as "contained".
+			// We do "point.X - Width <= X" instead of "point.X <= X + Width"
+			// so that this check works when Width is PositiveInfinity
+			// and X is NegativeInfinity.
+			=> point.X >= X
+				&& point.X - Width <= X
+				&& point.Y >= Y
+				&& point.Y - Height <= Y;
 
 		/// <summary>
 		/// Finds the intersection of the rectangle represented by the current Windows.Foundation.Rect

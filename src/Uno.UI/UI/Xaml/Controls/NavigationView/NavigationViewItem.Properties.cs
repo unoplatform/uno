@@ -31,20 +31,20 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectsOnInvokedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectsOnInvoked", typeof(bool),
+			nameof(SelectsOnInvoked), typeof(bool),
 			typeof(global::Windows.UI.Xaml.Controls.NavigationViewItem),
 			new FrameworkPropertyMetadata(true));
 
 		public static global::Windows.UI.Xaml.DependencyProperty CompactPaneLengthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CompactPaneLength", typeof(double),
+			nameof(CompactPaneLength), typeof(double),
 			typeof(NavigationViewItem),
 			new FrameworkPropertyMetadata(defaultValue: 48.0)
 		);
 
 		public static global::Windows.UI.Xaml.DependencyProperty IconProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			name: "Icon",
+			name: nameof(Icon),
 			propertyType: typeof(IconElement),
 			ownerType: typeof(NavigationViewItem),
 			typeMetadata: new FrameworkPropertyMetadata(defaultValue: null)

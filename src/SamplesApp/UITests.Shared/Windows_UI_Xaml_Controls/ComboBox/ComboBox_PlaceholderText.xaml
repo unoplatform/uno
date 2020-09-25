@@ -10,14 +10,29 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="ComboBox with PlaceholderText">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
+	<StackPanel>
+		<ComboBox x:Name="TestBox"
+				  PlaceholderText="PlaceholderText"
+				  ItemsSource="{Binding [SampleItems]}" />
+		<ComboBox x:Name="TestBox2"
+				  PlaceholderText="PlaceholderText + ItemTemplate"
+				  ItemsSource="{Binding [SampleItems]}">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="12"
+								   Width="12"
+								   Fill="Pink" />
+						<TextBlock Text="Item:" />
+						<TextBlock Text="{Binding}" />
+					</StackPanel>
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
 
-				<ComboBox PlaceholderText="PlaceholderText"
-						  ItemsSource="{Binding [SampleItems]}" />
+		<Button x:Name="ResetButton"
+				Content="Reset Selection"
+				Click="ResetSelection" />
+	</StackPanel>
 
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
 </UserControl>

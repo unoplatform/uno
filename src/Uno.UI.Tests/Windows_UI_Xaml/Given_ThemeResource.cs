@@ -56,6 +56,64 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public async Task When_Theme_Changed_ResourceKey()
+		{
+			using (UseFluentResources())
+			{
+				var app = UnitTestsApp.App.EnsureApplication();
+
+				var page = new Test_Page_Other();
+
+				app.HostView.Children.Add(page);
+
+				var textBlock = page.ResourceKeyThemedTextBlock;
+
+				Assert.AreEqual(Colors.Black, (textBlock.Foreground as SolidColorBrush).Color);
+
+				await SwapSystemTheme();
+
+				Assert.AreEqual(Colors.White, (textBlock.Foreground as SolidColorBrush).Color);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Theme_Changed_ImplicitStyle()
+		{
+			using (UseFluentResources())
+			{
+				var app = UnitTestsApp.App.EnsureApplication();
+
+				var button = new Button() { Content = "Dummy" };
+
+				app.HostView.Children.Add(button);
+
+				Assert.AreEqual(Colors.Black, (button.Foreground as SolidColorBrush).Color);
+
+				await SwapSystemTheme();
+
+				Assert.AreEqual(Colors.White, (button.Foreground as SolidColorBrush).Color);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Theme_Changed_LocalValue()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var button = new Button() { Content = "Dummy" };
+
+			button.Foreground = new SolidColorBrush(Colors.Pink);
+
+			app.HostView.Children.Add(button);
+
+			Assert.AreEqual(Colors.Pink, (button.Foreground as SolidColorBrush).Color);
+
+			await SwapSystemTheme();
+
+			Assert.AreEqual(Colors.Pink, (button.Foreground as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
 		public async Task When_Theme_Changed_Default_Style_Overridden()
 		{
 			var page = new ThemeResource_Themed_Color_Page();
@@ -112,7 +170,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[Ignore]
 		public async Task When_Visual_States_Keyframe_Theme_Changed_Reapplied()
 		{
 			var page = new ThemeResource_In_Visual_States_Page();
@@ -500,6 +557,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			{
 				await SwapSystemTheme();
 			}
+		}
+
+		/// <summary>
+		/// Use Fluent styles for the duration of the test.
+		/// </summary>
+		private IDisposable UseFluentResources()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			app.Resources.MergedDictionaries.Insert(0, xcr);
+			return new DisposableAction(() => Application.Current.Resources.MergedDictionaries.Remove(xcr));
+
 		}
 
 #if NETFX_CORE

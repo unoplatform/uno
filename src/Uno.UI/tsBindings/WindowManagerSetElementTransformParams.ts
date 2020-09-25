@@ -9,7 +9,6 @@ class WindowManagerSetElementTransformParams
 	public M22 : number;
 	public M31 : number;
 	public M32 : number;
-	public ClipToBounds : boolean;
 	public static unmarshal(pData:number) : WindowManagerSetElementTransformParams
 	{
 		const ret = new WindowManagerSetElementTransformParams();
@@ -40,10 +39,6 @@ class WindowManagerSetElementTransformParams
 		
 		{
 			ret.M32 = Number(Module.getValue(pData + 48, "double"));
-		}
-		
-		{
-			ret.ClipToBounds = Boolean(Module.getValue(pData + 56, "i32"));
 		}
 		return ret;
 	}

@@ -10,104 +10,58 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
-		bool IFrameworkElementInternal.HasLayouter => true;
+		bool IFrameworkElementInternal.HasLayouter => throw new NotSupportedException("Reference assembly");
 
-		internal List<View> _children = new List<View>();
+		internal T AddChild<T>(T child) where T : View => throw new NotSupportedException("Reference assembly");
 
-		partial void OnLoadingPartial();
+		internal T AddChild<T>(T child, int index) where T : View => throw new NotSupportedException("Reference assembly");
 
-		private protected virtual void OnPostLoading()
-		{
-		}
+		private void OnAddChild(View child) => throw new NotSupportedException("Reference assembly");
 
-		internal T AddChild<T>(T child) where T : View
-		{
-			_children.Add(child);
-			OnAddChild(child);
+		internal T RemoveChild<T>(T child) where T : View => throw new NotSupportedException("Reference assembly");
 
-			return child;
-		}
+		internal View FindFirstChild() => throw new NotSupportedException("Reference assembly");
 
-		internal T AddChild<T>(T child, int index) where T : View
-		{
-			_children.Insert(index, child);
-			OnAddChild(child);
+		internal virtual IEnumerable<View> GetChildren() => throw new NotSupportedException("Reference assembly");
 
-			return child;
-		}
+		internal bool HasParent() => throw new NotSupportedException("Reference assembly");
 
-		private void OnAddChild(View child)
-		{
-		}
+		partial void OnMeasurePartial(Size slotSize) => throw new NotSupportedException("Reference assembly");
 
-		internal T RemoveChild<T>(T child) where T : View
-		{
-			return child;
-		}
-
-		internal View FindFirstChild()
-		{
-			return _children.FirstOrDefault();
-		}
-
-		internal virtual IEnumerable<View> GetChildren()
-		{
-			return _children;
-		}
-
-		internal bool HasParent()
-		{
-			return Parent != null;
-		}
-
-		partial void OnMeasurePartial(Size slotSize)
-		{
-			
-		}
-
-		internal void InternalArrange(Rect frame)
-		{
-		}
+		internal void InternalArrange(Rect frame) => throw new NotSupportedException("Reference assembly");
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
-		public bool IsLoaded { get; private set; }
+		internal void ForceLoaded() => throw new NotSupportedException("Reference assembly");
 
-		internal void ForceLoaded()
-		{
-			IsLoaded = true;
-			EnterTree();
-		}
+		private void EnterTree() => throw new NotSupportedException("Reference assembly");
 
-		private void EnterTree()
-		{
-		}
+		internal int InvalidateMeasureCallCount => throw new NotSupportedException("Reference assembly");
 
-		internal int InvalidateMeasureCallCount { get; private set; }
+		private bool IsTopLevelXamlView() => throw new NotSupportedException("Reference assembly");
 
-		private bool IsTopLevelXamlView() => false;
-
-		internal void SuspendRendering() => throw new NotSupportedException();
+		internal void SuspendRendering() => throw new NotSupportedException("Reference assembly");
 
 		internal void ResumeRendering() => throw new NotSupportedException();
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
-		public double ActualWidth => 0;
+		public double ActualWidth => throw new NotSupportedException("Reference assembly");
 
-		public double ActualHeight => 0;
+		public double ActualHeight => throw new NotSupportedException("Reference assembly");
 
-		internal Size UnclippedDesiredSize => new Size();
+		internal Size UnclippedDesiredSize => throw new NotSupportedException("Reference assembly");
 
 		public global::System.Uri BaseUri { get; internal set; }
 
-		private protected virtual double GetActualWidth() => ActualWidth;
-		private protected virtual double GetActualHeight() => ActualHeight;
+		private protected virtual double GetActualWidth() => throw new NotSupportedException("Reference assembly");
+		private protected virtual double GetActualHeight() => throw new NotSupportedException("Reference assembly");
 
 #pragma warning disable 67
+		private event RoutedEventHandler _loading;
+		private event RoutedEventHandler _loaded;
+		private event RoutedEventHandler _unloaded;
 		public event RoutedEventHandler Loading;
-
 		public event RoutedEventHandler Loaded;
-
 		public event RoutedEventHandler Unloaded;
 #pragma warning restore 67
 	}

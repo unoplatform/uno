@@ -8,11 +8,11 @@ Prerequisites:
     - `Visual Studio extensions development` (for the VSIX projects)
     - `ASP.NET and Web Development`
     - `.NET Core cross-platform development`
-    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.14393 (or above or equal to `TargetPlatformVersion` line [in this file](/src/Uno.CrossTargetting.props))
+    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.14393 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
 - Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
 
 ### Building Uno.UI for all available targets
-* Open the [Uno.UI.sln](/src/Uno.UI.sln)
+* Open the [Uno.UI.sln](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.sln)
 * Select the `Uno.UI` project
 * Build
 
@@ -23,7 +23,7 @@ To enable faster development, it's possible to use the [Visual Studio Solution F
 
 For instance, if you want to debug an iOS feature:
 - Make sure the `Uno.UI.sln` solution is not opened in Visual Studio.
-- Make a copy of the [src/crosstargeting_override.props.sample](/src/crosstargeting_override.props.sample) file to `src/crosstargeting_override.props`
+- Make a copy of the [src/crosstargeting_override.props.sample](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file to `src/crosstargeting_override.props`
 - In this new file, uncomment the `UnoTargetFrameworkOverride` line and set its value to `xamarinios10`
 - Open the `Uno.UI-iOS-only.slnf` solution filter (either via the VS folder view, or the Windows explorer)
 - Build
@@ -40,16 +40,16 @@ Make sure **Enable source link support** check box is checked in **Tools** / **O
 / **Debugging** / **General** properties page.
 
 ## Updating the Nuget packages used by the Uno.UI solution
-The versions used are centralized in the [Directory.Build.targets](/src/Directory.Build.targets) file, and all the
+The versions used are centralized in the [Directory.Build.targets](https://github.com/unoplatform/uno/blob/master/src/Directory.Build.targets) file, and all the
 locations where `<PackageReference />` are used.
 
-When updating the versions of nuget packages, make sure to update the [Uno.UI.nuspec](/build/Uno.UI.nuspec) file.
+When updating the versions of nuget packages, make sure to update all the .nuspec files in the [Build folder](https://github.com/unoplatform/uno/tree/master/build).
 
 ## Debugging Uno.UI
 
 To debug Uno.UI inside of an existing project, the simplest way (until Microsoft provides a better way to avoid overriding the global cache) is to :
 * Install a published `Uno.UI` package in a project you want to debug, taking note of the version number.
-* Rename [crosstargeting_override.props.sample](/src/crosstargeting_override.props.sample) to `crosstargeting_override.props`
+* Rename [crosstargeting_override.props.sample](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) to `crosstargeting_override.props`
 * Uncomment the `UnoNugetOverrideVersion` node
 * Change the version number to the package you installed at the first step
 * Build your solution.

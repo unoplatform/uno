@@ -144,15 +144,16 @@ namespace Windows.UI.Xaml
 				_rootBorder = new Border();
 				_popupRoot = new PopupRoot();
 
-				_window = new Grid {
-					IsLoaded = true,
-					Children = {
-						_rootBorder
-						, _popupRoot
-					}
+				_window = new Grid
+				{
+					Children = {_rootBorder, _popupRoot}
 				};
 
+				UIElement.LoadingRootElement(_window);
+
 				Compositor.RootVisual = _window.Visual;
+
+				UIElement.RootElementLoaded(_window);
 			}
 
 			if (_rootBorder != null)

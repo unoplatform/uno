@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
+using Uno.UI.Tests.ViewLibrary;
 #if !NETFX_CORE
 using Uno.UI.Xaml;
 #endif
@@ -450,6 +451,24 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Enumerated_With_StaticResource_Alias()
+		{
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			var light = xcr.ThemeDictionaries["Light"] as ResourceDictionary;
+			Assert.IsNotNull(light);
+			KeyValuePair<object, object> fromEnumeration = default;
+			foreach (var kvp in light)
+			{
+				if (kvp.Key.Equals("ButtonForeground"))
+				{
+					fromEnumeration = kvp;
+				}
+			}
+			Assert.IsNotNull(fromEnumeration);
+			Assert.IsInstanceOfType(fromEnumeration.Value, typeof(SolidColorBrush));
+		}
+
+		[TestMethod]
 		public void When_Implicit_Style_From_Code()
 		{
 			var control = new Test_Control();
@@ -591,6 +610,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Nested_StaticResource()
+		{
+			var dict = new Subclassed_Dictionary();
+
+			var converter = dict["InnerResourceConverter"] as MyConverter;
+			var brush = dict["PerilousColorBrush"];
+			var text = dict["ProblemFreePhilosophy"];
+
+			Assert.IsNotNull(converter);
+			Assert.IsNotNull(brush);
+			Assert.AreEqual(brush, converter.Values[0].Value);
+			Assert.AreEqual(text, converter.Value);
+		}
+
+		[TestMethod]
 		public void When_By_Type_With_Template()
 		{
 			var dict = new Subclassed_Dictionary();
@@ -623,6 +657,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(Colors.White, systemColor);
 		}
 
+		[TestMethod]
+		public void When_External_Source_Miscased()
+		{
+			var page = new Test_Page_Other();
+
+			var foreground = page.CaseInsensitiveSourceTextBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(foreground);
+			Assert.AreEqual(Colors.SlateGray, foreground.Color);
+		}
+
 #if !NETFX_CORE
 		[TestMethod]
 		public void When_Relative_Path_With_Leading_Slash_From_Root()
@@ -640,6 +684,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
 			Assert.IsTrue(xcr.ContainsKey(typeof(Button)));
 			Assert.IsInstanceOfType(xcr[typeof(Button)], typeof(Style));
+		}
+
+		[TestMethod]
+		public void When_Needs_Eager_Materialization()
+		{
+			Assert.IsFalse(TestInitializer.IsInitialized);
+			var control = new Test_Control_With_Initializer();
+			Assert.IsTrue(TestInitializer.IsInitialized);
+		}
+
+		[TestMethod]
+		public void When_Space_In_Key()
+		{
+			var page = new Test_Page_Other();
+			var border = page.SpaceInKeyBorder;
+			Assert.AreEqual(Colors.SlateBlue, (border.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public void When_Only_Theme_Dictionaries()
+		{
+			var page = new Test_Page_Other();
+			var tb = page.ThemeDictionaryOnlyTextBlock;
+			Assert.AreEqual(Colors.MediumPurple, (tb.Foreground as SolidColorBrush).Color);
 		}
 	}
 }

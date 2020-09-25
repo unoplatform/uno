@@ -43,9 +43,12 @@ namespace Windows.UI.Xaml.Controls
 		public event EventHandler<object> DropDownClosed;
 		public event EventHandler<object> DropDownOpened;
 
+		private bool _areItemTemplatesForwarded = false;
+
 		private IPopup _popup;
 		private Border _popupBorder;
 		private ContentPresenter _contentPresenter;
+		private TextBlock _placeholderTextBlock;
 		private ContentPresenter _headerContentPresenter;
 
 		/// <summary>
@@ -79,6 +82,7 @@ namespace Windows.UI.Xaml.Controls
 			_popup = this.GetTemplateChild("Popup") as IPopup;
 			_popupBorder = this.GetTemplateChild("PopupBorder") as Border;
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
+			_placeholderTextBlock = this.GetTemplateChild("PlaceholderTextBlock") as TextBlock;
 
 			if (_popup is PopupBase popup)
 			{
@@ -93,18 +97,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_contentPresenter != null)
 			{
-				_contentPresenter.SetBinding(
-					ContentPresenter.ContentTemplateProperty,
-					new Binding(new PropertyPath("ItemTemplate"), null)
-					{
-						RelativeSource = RelativeSource.TemplatedParent
-					});
-				_contentPresenter.SetBinding(
-					ContentPresenter.ContentTemplateSelectorProperty,
-					new Binding(new PropertyPath("ItemTemplateSelector"), null)
-					{
-						RelativeSource = RelativeSource.TemplatedParent
-					});
+				_contentPresenter.SynchronizeContentWithOuterTemplatedParent = false;
 
 				_contentPresenter.DataContextChanged += (snd, evt) =>
 				{
@@ -248,10 +241,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateContentPresenter()
 		{
-			if (_contentPresenter != null)
+			if (_contentPresenter == null) return;
+
+			if (SelectedItem != null)
 			{
 				var item = GetSelectionContent();
-
 				var itemView = item as _View;
 
 				if (itemView != null)
@@ -272,13 +266,45 @@ namespace Windows.UI.Xaml.Controls
 					_selectionParentInDropdown = null;
 				}
 
-				_contentPresenter.Content = item;
+				var displayMemberPath = DisplayMemberPath;
+				if (string.IsNullOrEmpty(displayMemberPath))
+				{
+					_contentPresenter.Content = item;
+				}
+				else
+				{
+					var b = new BindingPath(displayMemberPath, item) {DataContext = item};
+					_contentPresenter.Content = b.Value;
+				}
 
 				if (itemView != null && itemView.GetVisualTreeParent() != _contentPresenter)
 				{
 					// Item may have been put back in list, reattach it to _contentPresenter
 					_contentPresenter.AddChild(itemView);
 				}
+				if (!_areItemTemplatesForwarded)
+				{
+					SetContentPresenterBinding(ContentPresenter.ContentTemplateProperty, nameof(ItemTemplate));
+					SetContentPresenterBinding(ContentPresenter.ContentTemplateSelectorProperty, nameof(ItemTemplateSelector));
+
+					_areItemTemplatesForwarded = true;
+				}
+			}
+			else
+			{
+				_contentPresenter.Content = _placeholderTextBlock;
+				if (_areItemTemplatesForwarded)
+				{
+					_contentPresenter.ClearValue(ContentPresenter.ContentTemplateProperty);
+					_contentPresenter.ClearValue(ContentPresenter.ContentTemplateSelectorProperty);
+
+					_areItemTemplatesForwarded = false;
+				}
+			}
+
+			void SetContentPresenterBinding(DependencyProperty targetProperty, string sourcePropertyPath)
+			{
+				_contentPresenter.SetBinding(targetProperty, new Binding(sourcePropertyPath) { RelativeSource = RelativeSource.TemplatedParent });
 			}
 		}
 

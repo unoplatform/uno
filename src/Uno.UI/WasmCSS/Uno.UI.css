@@ -50,15 +50,6 @@ svg.uno-uielement {
   stroke-width: 1px; /* default value of Shape.StrokeThickness */
 }
 
-.uno-frameworkelement.uno-clippedToBounds {
-  /*
-    This CSS class is applied when a control is a _clipping mode_:
-    it's happening during the "arrange" phase when the availableSize is less than desiredSize.
-    All FrameworkElements are following this behavior, except <Canvas>.
-  */
-  overflow: hidden;
-}
-
 .uno-frameworkelement.uno-unarranged {
   -ms-opacity: 0;
   opacity: 0;
@@ -185,8 +176,9 @@ embed.uno-frameworkelement.uno-unarranged {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 620px;
-  height: 300px;
+  max-width: 620px;
+  width: calc(100vw - 10px);
+  height: auto;
   background-repeat: no-repeat;
   background-position: center;
   background-size: 620px 300px;
@@ -198,8 +190,9 @@ embed.uno-frameworkelement.uno-unarranged {
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
-  width: 620px !important;
-  height: 300px !important;
+  max-width: 620px !important;
+  width: calc(100vw - 10px) !important;
+  height: auto !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
   background-size: 620px 300px !important;

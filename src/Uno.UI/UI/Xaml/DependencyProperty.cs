@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml
 	/// Defines a dependency property for a <see cref="DependencyObject"/>.
 	/// </summary>
 	/// <remarks>The properties are attached to the <see cref="IDependencyObject"/> marker interface.</remarks>
-	[DebuggerDisplay("Name={Name}, Type={Type.FullName}, Owner={OwnerType.FullName}, DefaultValue={Metadata.DefaultValue}")]
+	[DebuggerDisplay("Name={Name}, Type={Type.FullName}, Owner={OwnerType.FullName}")]
 	public sealed partial class DependencyProperty
 	{
 		private static Dictionary<Type, Dictionary<string, DependencyProperty>> _registry
@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml
 		{
 			_name = name;
 			_propertyType = propertyType;
-			_ownerType = attached || IsTypeDependencyObject(ownerType) ? ownerType : typeof(_View);
+			_ownerType = ownerType;
 			_isAttached = attached;
 			_isDependencyObjectCollection = typeof(DependencyObjectCollection).IsAssignableFrom(propertyType);
 			_isTypeNullable = propertyType.IsNullableCached();
@@ -177,6 +177,7 @@ namespace Windows.UI.Xaml
 					// UIElement as its elements. See #103492
 					&& !forType.Is<_View>()
 #endif
+					&& OwnerType != typeof(AttachedDependencyObject)
 				)
 				{
 					throw new ArgumentException($"'{forType}' type must derive from DependencyObject.", nameof(forType));

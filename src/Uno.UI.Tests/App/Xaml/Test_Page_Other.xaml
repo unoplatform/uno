@@ -34,5 +34,35 @@
 			</Grid.Resources>
 		</Grid>
 		<TextBlock x:Name="customResourceTextBlock" x:FieldModifier="public" Text="{CustomResource TapestryHereOnMySkin}" />
+		<TextBlock x:Name="ResourceKeyThemedTextBlock"
+				   x:FieldModifier="public"
+				   Foreground="{ThemeResource ButtonForeground}" />
+		<Grid>
+			<Grid.Resources>
+				<ResourceDictionary Source="ms-appx:///UnO.uI.TESTs.ViEWLiBrAry/THEmeS/moRE/TEsT_dIcTionaRy_AbS.xAml" />
+			</Grid.Resources>
+			<TextBlock x:Name="CaseInsensitiveSourceTextBlock"
+					   x:FieldModifier="public"
+					   Foreground="{StaticResource BituminousColorBrush}" />
+		</Grid>
+		<Border x:Name="SpaceInKeyBorder"
+				x:FieldModifier="public"
+				Background="{StaticResource Resource With Space In Key}" />
+		<Border>
+			<Border.Resources>
+				<ResourceDictionary>
+					<ResourceDictionary.ThemeDictionaries>
+						<ResourceDictionary x:Key="Default">
+							<SolidColorBrush x:Key="KeyInDictionaryWithOnlyThemeDictionaries"
+											 Color="MediumPurple" />
+						</ResourceDictionary>
+					</ResourceDictionary.ThemeDictionaries>
+				</ResourceDictionary>
+			</Border.Resources>
+			<TextBlock x:Name="ThemeDictionaryOnlyTextBlock"
+					   x:FieldModifier="public"
+					   Text="Warfarin' terrapin"
+					   Foreground="{StaticResource KeyInDictionaryWithOnlyThemeDictionaries}" />
+		</Border>
 	</Grid>
 </Page>

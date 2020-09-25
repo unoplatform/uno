@@ -13,9 +13,11 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
-		public T FindFirstParent<T>() where T : class
+		public T FindFirstParent<T>() where T : class => FindFirstParent<T>(includeCurrent: false);
+
+		public T FindFirstParent<T>(bool includeCurrent) where T : class
 		{
-			var view = this.Parent;
+			var view = includeCurrent ? (DependencyObject)this : this.Parent;
 			while (view != null)
 			{
 				var typed = view as T;
@@ -33,19 +35,6 @@ namespace Windows.UI.Xaml
 		public FrameworkElement()
 		{
 			Initialize();
-		}
-
-		private protected virtual void OnLoading()
-		{
-			OnLoadingPartial();
-		}
-
-		private protected virtual void OnLoaded()
-		{
-		}
-
-		private protected virtual void OnUnloaded()
-		{
 		}
 
 		#region Transitions Dependency Property

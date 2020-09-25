@@ -135,7 +135,6 @@ declare namespace Uno.UI {
         static readonly isLoadEventsEnabled: boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
-        private static readonly unoClippedToBoundsClassName;
         private static _cctor;
         /**
             * Initialize the WindowManager
@@ -283,7 +282,7 @@ declare namespace Uno.UI {
         *
         */
         setStyleDoubleNative(pParams: number): boolean;
-        setArrangeProperties(elementId: number, clipToBounds: boolean): string;
+        setArrangeProperties(elementId: number): string;
         /**
             * Remove the CSS style of a html element.
             */
@@ -312,7 +311,6 @@ declare namespace Uno.UI {
         arrangeElementNative(pParams: number): boolean;
         private setAsArranged;
         private setAsUnarranged;
-        private setClipToBounds;
         /**
         * Sets the transform matrix of an element
         *
@@ -632,7 +630,6 @@ declare class WindowManagerArrangeElementParams {
     ClipRight: number;
     HtmlId: number;
     Clip: boolean;
-    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerArrangeElementParams;
 }
 declare class WindowManagerCreateContentParams {
@@ -765,7 +762,6 @@ declare class WindowManagerSetElementTransformParams {
     M22: number;
     M31: number;
     M32: number;
-    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerSetElementTransformParams;
 }
 declare class WindowManagerSetNameParams {
@@ -954,6 +950,12 @@ declare namespace Windows.Storage {
          * Gets a key by index in localStorage
          * */
         private static getValueByIndex;
+    }
+}
+declare namespace Windows.Storage {
+    class AssetManager {
+        static DownloadAssetsManifest(path: string): Promise<string>;
+        static DownloadAsset(path: string): Promise<string>;
     }
 }
 declare namespace Windows.Storage.Pickers {

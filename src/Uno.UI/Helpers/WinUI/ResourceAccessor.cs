@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Helpers.WinUI
 {
-	internal class ResourceAccessor
+	internal partial class ResourceAccessor
 	{
 		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft.UI.Xaml.3.0";
 		private const string c_resourceLoc = "Microsoft.UI.Xaml/Resources";

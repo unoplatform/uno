@@ -1,4 +1,5 @@
 #if !__NETSTD_REFERENCE__
+#nullable enable
 using System;
 using System.Globalization;
 using System.Linq;
@@ -165,12 +166,12 @@ namespace Windows.UI.Xaml
 			{
 				if (IsLessThanAndNotCloseTo(arrangeSize.Width, _unclippedDesiredSize.Width))
 				{
-					_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
+					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
 				}
 				else if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
 				{
-					_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
+					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
 				}
 			}
@@ -196,13 +197,13 @@ namespace Windows.UI.Xaml
 			{
 				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
 				{
-					_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
+					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
 					arrangeSize.Width = effectiveMaxSize.Width;
 				}
 				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
 				{
-					_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
+					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
 					arrangeSize.Height = effectiveMaxSize.Height;
 				}
@@ -240,12 +241,12 @@ namespace Windows.UI.Xaml
 			_logDebug?.Debug(
 				$"{DepthIndentation}[{FormatDebugName()}] ArrangeChild(offset={offset}, margin={margin}) [oldRenderSize={oldRenderSize}] [RenderSize={RenderSize}] [clippedInkSize={clippedInkSize}] [RequiresClipping={needsClipToSlot}]");
 
-			RequiresClipping = needsClipToSlot;
+			NeedsClipToSlot = needsClipToSlot;
 
 #if __WASM__
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
-				UpdateDOMXamlProperty(nameof(RequiresClipping), RequiresClipping);
+				UpdateDOMXamlProperty(nameof(NeedsClipToSlot), NeedsClipToSlot);
 			}
 #endif
 
@@ -266,11 +267,11 @@ namespace Windows.UI.Xaml
 					clippedFrameWithParentOrigin.Width,
 					clippedFrameWithParentOrigin.Height);
 
-				ArrangeNative(offset, clippedFrame);
+				ArrangeNative(offset, true, clippedFrame);
 			}
 			else
 			{
-				ArrangeNative(offset);
+				ArrangeNative(offset, false);
 			}
 
 			OnLayoutUpdated();
@@ -280,8 +281,9 @@ namespace Windows.UI.Xaml
 		/// Calculates and applies native arrange properties.
 		/// </summary>
 		/// <param name="offset">Offset of the view from its parent</param>
+		/// <param name="needsClipToSlot">If the control should be clip to its bounds</param>
 		/// <param name="clippedFrame">Zone to clip, if clipping is required</param>
-		private void ArrangeNative(Point offset, Rect clippedFrame = default)
+		private void ArrangeNative(Point offset, bool needsClipToSlot, Rect clippedFrame = default)
 		{
 			_visualOffset = offset;
 
@@ -301,25 +303,21 @@ namespace Windows.UI.Xaml
 
 			Rect? getClip()
 			{
-				// Clip transform not supported yet on Wasm
+				// Clip transform not supported yet on Wasm/Skia
 
-				if (RequiresClipping) // if control should be clipped by layout constrains
+				var clip = Clip;
+				if (clip == null)
 				{
-					if (Clip != null)
-					{
-						return clippedFrame.IntersectWith(Clip.Rect);
-					}
-					return clippedFrame;
+					return !needsClipToSlot ? (Rect?) null : clippedFrame;
 				}
-
-				return Clip?.Rect;
+				return clip.Rect;
 			}
 
 			var clipRect = getClip();
 
-			_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}.ArrangeElementNative({newRect}, clip={clipRect} (RequiresClipping={RequiresClipping})");
+			_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}.ArrangeElementNative({newRect}, clip={clipRect} (NeedsClipToSlot={NeedsClipToSlot})");
 
-			ArrangeVisual(newRect, RequiresClipping, clipRect);
+			ArrangeVisual(newRect, clipRect);
 		}
 	}
 }

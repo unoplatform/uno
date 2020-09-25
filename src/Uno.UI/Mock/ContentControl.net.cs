@@ -4,7 +4,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public  partial class ContentControl
 	{
-		private void SetUpdateControlTemplate() { }
 		private bool HasParent() => true;
 
 		partial void RegisterContentTemplateRoot()

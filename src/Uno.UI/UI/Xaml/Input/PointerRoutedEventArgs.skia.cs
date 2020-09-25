@@ -27,9 +27,6 @@ namespace Windows.UI.Xaml.Input
 			Pointer = GetPointer(pointerEventArgs);
 			KeyModifiers = pointerEventArgs.KeyModifiers;
 			OriginalSource = source;
-
-			// All events bubble in managed mode.
-			CanBubbleNatively = false;
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)

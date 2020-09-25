@@ -50,6 +50,7 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>

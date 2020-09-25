@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Uno.UI;
 using Uno.Logging;
 using Uno.Disposables;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -151,6 +152,10 @@ namespace Windows.UI.Xaml.Controls
 
 			return await tcs.Task;
 		}
+
+		public IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
+			AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
+			
 
 		#region Navigation History
 

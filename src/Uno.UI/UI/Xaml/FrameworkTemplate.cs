@@ -56,10 +56,15 @@ namespace Windows.UI.Xaml
 		/// instance that has been detached from its parent may be reused at any time.
 		/// If a control needs to be the owner of a created instance, it needs to use <see cref="LoadContent"/>.
 		/// </remarks>
-		internal View LoadContentCached()
-		{
-			return FrameworkTemplatePool.Instance.DequeueTemplate(this);
-		}
+		internal View LoadContentCached() => FrameworkTemplatePool.Instance.DequeueTemplate(this);
+
+		/// <summary>
+		/// Manually return an unused template root created by <see cref="LoadContentCached"/> to the pool.
+		/// </summary>
+		/// <remarks>
+		/// This is only used in specialized contexts. Normally the template reuse will be automatically handled by the pool.
+		/// </remarks>
+		internal void ReleaseTemplateRoot(View templateRoot) => FrameworkTemplatePool.Instance.ReleaseTemplateRoot(templateRoot, this);
 
 		/// <summary>
 		/// Creates a new instance of the current template.

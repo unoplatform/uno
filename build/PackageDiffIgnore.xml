@@ -3066,5 +3066,23 @@
 			<!-- End Skia Import -->
 		</Fields>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="3.0.17">
+		<Methods>
+      		<Member 
+			  	fullName="System.Void Windows.System.UserProfile.UserProfilePersonalizationSettings..ctor()"
+           		reason="Parameter-less ctor does not exist in UWP"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member
+				fullName="System.Void Windows.UI.Notifications.BadgeUpdateManager..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+		</Methods>
+		<Fields>
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Contacts.ContactQuerySearchFields::value__"
+				reason="The enum is backed by uint" />
+		</Fields>
+	</IgnoreSet>
   </IgnoreSets>
 </DiffIgnore>

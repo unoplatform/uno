@@ -1,4 +1,4 @@
-<UserControl
+<Page
 	x:Class="SamplesApp.Windows_UI_Xaml.Clipping.ButtonClippingTestsControl" 
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -133,4 +133,4 @@
 			</StackPanel>
 		</StackPanel>
 	</ScrollViewer>
-</UserControl>
+</Page>

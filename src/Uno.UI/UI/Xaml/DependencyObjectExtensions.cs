@@ -14,8 +14,8 @@ namespace Windows.UI.Xaml
 {
 	public static class DependencyObjectExtensions
 	{
-		private static ConditionalWeakTable<object, DependencyObject> _objectData
-			= new ConditionalWeakTable<object, DependencyObject>();
+		private static ConditionalWeakTable<object, AttachedDependencyObject> _objectData
+			= new ConditionalWeakTable<object, AttachedDependencyObject>();
 
 		private static DependencyObjectStore GetStore(object instance)
 		{
@@ -33,8 +33,16 @@ namespace Windows.UI.Xaml
 		/// <returns>A new DependencyObject if none exists, otherwise the existing one.</returns>
 		internal static DependencyObjectStore GetAttachedStore(object instance)
 		{
-			return ((IDependencyObjectStoreProvider)_objectData.GetValue(instance, i => new AttachedDependencyObject(i))).Store;
+			return ((IDependencyObjectStoreProvider)GetAttachedDependencyObject(instance)).Store;
 		}
+
+		/// <summary>
+		/// Provides a DependencyObject proxy for a non-dependency object for DataBinding and x:Bind purposes
+		/// </summary>
+		/// <param name="instance"></param>
+		/// <returns></returns>
+		internal static AttachedDependencyObject GetAttachedDependencyObject(object instance)
+			=> _objectData.GetValue(instance, i => new AttachedDependencyObject(i));
 
 		/// <summary>
 		/// Gets the Unique ID of the specified dependency object.
@@ -298,15 +306,6 @@ namespace Windows.UI.Xaml
 		{
 			return GetStore(instance).RegisterInheritedPropertyChangedCallback(handler);
 		}
-
-		/// <summary>
-		/// Register for compiled bindings updates propagation
-		/// </summary>
-		/// <param name="instance">The instance for which to observe compiled bindings updates</param>
-		/// <param name="handler">The callback</param>
-		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		internal static IDisposable RegisterCompiledBindingsUpdateCallback(this object instance, Action handler) 
-			=> GetStore(instance).RegisterCompiledBindingsUpdateCallback(handler);
 
 		/// <summary>
 		/// Registers to parent changes.

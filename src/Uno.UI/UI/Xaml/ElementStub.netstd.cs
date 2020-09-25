@@ -22,11 +22,16 @@ namespace Windows.UI.Xaml
 
                 if (currentPosition != -1)
                 {
+					// Create the instance first so that x:Bind constructs can be picked up by the
+					// Unload event of ElementStub. Not doing so does not fills up the generated variables
+					// too late and Binding.Update() does not refresh the available x:Bind instances.
+					var newContent = ContentBuilder() as UIElement;
+
                     parentElement.RemoveChild(this);
 
-                    var newContent = ContentBuilder() as UIElement;
-
                     parentElement.AddChild(newContent, currentPosition);
+
+					return newContent as FrameworkElement;
                 }
             }
 

@@ -18,6 +18,7 @@ using Uno;
 using Uno.UI.Controls;
 using Uno.UI.Media;
 using System;
+using System.Collections;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI.Xaml.Markup;
@@ -57,8 +58,6 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void OnUidChangedPartial();
-
-		private protected bool RequiresClipping { get; set; } = true;
 
 		#region Clip DependencyProperty
 
@@ -169,6 +168,17 @@ namespace Windows.UI.Xaml
 				return Matrix3x2.Identity;
 			}
 
+#if NETSTANDARD // Depth is defined properly only on WASM and Skia
+			// If possible we try to navigate the tree upward so we have a greater chance
+			// to find an element in the parent hierarchy of the other element.
+			if (to is { } && from.Depth < to.Depth)
+			{
+				var toToFrom = GetTransform(to, from);
+				Matrix3x2.Invert(toToFrom, out var fromToTo);
+				return fromToTo;
+			}
+#endif
+
 			var matrix = Matrix3x2.Identity;
 			double offsetX = 0.0, offsetY = 0.0;
 			var elt = from;
@@ -176,7 +186,7 @@ namespace Windows.UI.Xaml
 			{
 				var layoutSlot = elt.LayoutSlotWithMarginsAndAlignments;
 				var transform = elt.RenderTransform;
-				if (transform == null)
+				if (transform is null)
 				{
 					// As this is the common case, avoid Matrix computation when a basic addition is sufficient
 					offsetX += layoutSlot.X;
@@ -198,6 +208,7 @@ namespace Windows.UI.Xaml
 					offsetY = layoutSlot.Y;
 				}
 
+#if !__SKIA__ // On Skia, the ScrollViewer is actually using RenderTransform on its child, so they it's already included.
 				if (elt is ScrollViewer sv)
 				{
 					var zoom = sv.ZoomFactor;
@@ -215,6 +226,8 @@ namespace Windows.UI.Xaml
 						offsetY -= sv.VerticalOffset;
 					}
 				}
+#endif
+
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
@@ -223,6 +236,7 @@ namespace Windows.UI.Xaml
 			{
 				// Unfortunately we didn't find the 'to' in the parent hierarchy,
 				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
+				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
 				var toToRoot = GetTransform(to, null);
 				Matrix3x2.Invert(toToRoot, out var rootToTo);
 
@@ -258,9 +272,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 #endif
-
-
-
 
 		protected virtual void OnIsHitTestVisibleChanged(bool oldValue, bool newValue)
 		{
@@ -306,6 +317,15 @@ namespace Windows.UI.Xaml
 			if (Clip == null)
 			{
 				rect = Rect.Empty;
+
+				if (NeedsClipToSlot)
+				{
+#if NETSTANDARD
+					rect = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
+#else
+					rect = ClippedFrame ?? Rect.Empty;
+#endif
+				}
 			}
 			else
 			{
@@ -315,23 +335,6 @@ namespace Windows.UI.Xaml
 				if (Clip.Transform != null)
 				{
 					rect = Clip.Transform.TransformBounds(rect);
-				}
-			}
-
-			if (NeedsClipToSlot)
-			{
-#if NETSTANDARD
-				var boundsClipping = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
-#else
-				var boundsClipping = ClippedFrame ?? Rect.Empty;
-#endif
-				if (rect.IsEmpty)
-				{
-					rect = boundsClipping;
-				}
-				else
-				{
-					rect.Intersect(boundsClipping);
 				}
 			}
 

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 		<IsPackable>false</IsPackable>
+		<RootNamespace>UnoCrossRuntimeLib</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

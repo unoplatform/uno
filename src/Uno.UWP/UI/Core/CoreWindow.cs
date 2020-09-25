@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
@@ -21,8 +22,12 @@ namespace Windows.UI.Core
 		internal CoreWindow()
 		{
 			_current = this;
+			Main ??= this;
+
 			InitializePartial();
 		}
+
+		internal static CoreWindow Main { get; private set; }
 
 		internal static void SetInvalidateRender(Action invalidateRender) => _invalidateRender = invalidateRender;
 
@@ -42,7 +47,7 @@ namespace Windows.UI.Core
 		}
 
 #if !__WASM__ && !__MACOS__
-		[Uno.NotImplemented]
+		[Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CoreCursor PointerCursor { get; set; } = new CoreCursor(CoreCursorType.Arrow, 0);
 #endif
 

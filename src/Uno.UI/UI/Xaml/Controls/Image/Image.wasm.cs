@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml.Controls
 			// Calculate the position of the image to follow stretch and alignment requirements
 			var finalPosition = this.ArrangeSource(finalSize, containerSize);
 
-			_htmlImage.ArrangeVisual(finalPosition, false, clipRect: null);
+			_htmlImage.ArrangeVisual(finalPosition, clipRect: null);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{

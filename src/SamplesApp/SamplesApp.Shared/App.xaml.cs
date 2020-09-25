@@ -57,7 +57,6 @@ namespace SamplesApp
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
-
 		}
 
 		/// <summary>

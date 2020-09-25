@@ -19,9 +19,11 @@ namespace Windows.UI.Xaml
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
 		private readonly SerialDisposable _backgroundSubscription = new SerialDisposable();
-		public T FindFirstParent<T>() where T : class
+		public T FindFirstParent<T>() where T : class => FindFirstParent<T>(includeCurrent: false);
+
+		public T FindFirstParent<T>(bool includeCurrent) where T : class
 		{
-			var view = this.Parent;
+			var view = includeCurrent ? (DependencyObject)this : this.Parent;
 			while (view != null)
 			{
 				var typed = view as T;
@@ -63,21 +65,7 @@ namespace Windows.UI.Xaml
 		private protected readonly ILogger _logDebug;
 
 		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
-		public global::System.Uri BaseUri
-		{
-			get;
-			internal set;
-		} = DefaultBaseUri;
-
-		private protected virtual void OnLoaded()
-		{
-
-		}
-
-		private protected virtual void OnUnloaded()
-		{
-
-		}
+		public global::System.Uri BaseUri { get; internal set; } = DefaultBaseUri;
 
 		#region Transitions Dependency Property
 
@@ -177,7 +165,7 @@ namespace Windows.UI.Xaml
 					ResetStyle("background-color");
 					SetStyle("background-image", gradientBrush.ToCssString(RenderSize));
 					RecalculateBrushOnSizeChanged(true);
-					break;				
+					break;
 				default:
 					ResetStyle("background-color", "background-image", "background-size");
 					RecalculateBrushOnSizeChanged(false);

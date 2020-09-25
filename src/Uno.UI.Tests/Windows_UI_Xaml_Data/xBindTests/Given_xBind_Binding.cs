@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
@@ -15,12 +16,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		private const int V = 42;
 
 		[TestMethod]
-		[Ignore]
 		public void When_Initial_Value()
 		{
 			var SUT = new Binding_Control();
 
-			Assert.IsNull(SUT._StringField.Text);
+			Assert.AreEqual("", SUT._StringField.Text);
 
 			SUT.ForceLoaded();
 
@@ -39,11 +39,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var SUT = new Binding_StateTrigger();
 
 			Assert.AreEqual(string.Empty, SUT._StringField.Text);
+			Assert.IsFalse(SUT.myTrigger.IsActive);
 
 			SUT.ForceLoaded();
 
 			SUT.MyState = MyState.Full;
 
+			Assert.IsTrue(SUT.myTrigger.IsActive);
 			Assert.AreEqual("Updated!", SUT._StringField.Text);
 		}
 
@@ -664,29 +666,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
-		public void When_Event_DataTemplate()
+		public void When_xLoad()
 		{
-			var SUT = new Binding_Event_DataTemplate();
-
-			var rootData = new Binding_Event_DataTemplate_Model();
-			SUT.root.Content = rootData;
+			var SUT = new Binding_xLoad();
 
 			SUT.ForceLoaded();
 
-			var checkBox = SUT.root.FindName("myCheckBox") as CheckBox;
+			Assert.IsNull(SUT.topLevelContent);
+			Assert.IsNull(SUT.innerTextBlock);
 
-			Assert.AreEqual(0, rootData.CheckedRaised);
-			Assert.AreEqual(0, rootData.UncheckedRaised);
+			SUT.TopLevelVisiblity = true;
 
-			checkBox.IsChecked = true;
+			Assert.IsNotNull(SUT.topLevelContent);
+			Assert.IsNotNull(SUT.innerTextBlock);
+			Assert.AreEqual("My inner text", SUT.innerTextBlock.Text);
 
-			Assert.AreEqual(1, rootData.CheckedRaised);
-			Assert.AreEqual(0, rootData.UncheckedRaised);
+			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
+			Assert.AreEqual(Visibility.Visible, topLevelContent.Visibility);
 
-			checkBox.IsChecked = false;
+			SUT.InnerText = "Updated !";
 
-			Assert.AreEqual(1, rootData.CheckedRaised);
-			Assert.AreEqual(1, rootData.UncheckedRaised);
+			Assert.AreEqual("Updated !", SUT.innerTextBlock.Text);
+
+			SUT.TopLevelVisiblity = false;
+			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
 		}
 	}
 }

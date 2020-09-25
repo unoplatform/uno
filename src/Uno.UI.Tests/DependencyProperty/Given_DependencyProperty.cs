@@ -7,6 +7,7 @@ using Windows.UI.Xaml;
 using System.Threading;
 using Windows.UI.Xaml.Controls;
 using FluentAssertions;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -1342,7 +1343,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			);
 
-			o2.ApplyCompiledBindings();
+			o2.ApplyXBind();
 
 			Assert.AreEqual(42, o2.Tag);
 		}

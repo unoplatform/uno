@@ -4,14 +4,13 @@
   <PropertyGroup>
   </PropertyGroup>
 
-  <Target Name="AfterBuild">
-
-    <!-- Copy Content files to the output folder like APPX packaging does. -->
-	<Copy
-        SourceFiles = "@(ContentWithTargetPath)"
-        DestinationFiles = "@(ContentWithTargetPath->'$(TargetDir)%(TargetPath)')"
-		Condition="'%(ContentWithTargetPath.CopyToOutputDirectory)'=='Never'"/>
+  <Target Name="_UnoBeforeCopyLocal" BeforeTargets="CopyFilesToOutputDirectory;_CopyFilesMarkedCopyLocal">
+	<ItemGroup>
+	  <ContentWithTargetPath
+		Update="@(ContentWithTargetPath)"
+		CopyToOutputDirectory="Always"
+		Condition="'%(ContentWithTargetPath.CopyToOutputDirectory)'==''" />
+	</ItemGroup>
   </Target>
-
 
 </Project>

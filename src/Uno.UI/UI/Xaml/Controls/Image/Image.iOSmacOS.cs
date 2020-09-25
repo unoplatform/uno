@@ -140,12 +140,10 @@ namespace Windows.UI.Xaml.Controls
 				)
 			)
 			{
-#if __IOS__ // MacOS TODO
 				if (MonochromeColor != null)
 				{
 					image = image.AsMonochrome(MonochromeColor.Value);
 				}
-#endif
 
 				TryCreateNative();
 

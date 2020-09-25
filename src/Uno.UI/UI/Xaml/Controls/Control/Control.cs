@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-						if (FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
+						if (!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
 						{
 							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
 							_applyTemplateShouldBeInvoked = true;
@@ -1026,6 +1026,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Duplicates the SetDefaultStyleKey() helper method from WinUI code.
 		/// </summary>
+		/// <remarks>
+		/// Note: Although this is usually called as 'SetDefaultStyleKey(this)' (per WinUI C++ code), we actually only use the compile-time
+		///  TDerived type and ignore the runtime derivedControl parameter, preserving the expected behaviour that DefaultStyleKey is 'fixed' 
+		/// under inheritance unless explicitly changed by an inheriting type.
+		/// </remarks>
 		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control
 			=> DefaultStyleKey = typeof(TDerived);
 
