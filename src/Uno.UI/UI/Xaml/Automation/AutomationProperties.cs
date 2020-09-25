@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Automation
 {
@@ -148,6 +149,13 @@ namespace Windows.UI.Xaml.Automation
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIElement uiElement)
 			{
 				uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
+				uiElement.SetAttribute("aria-label", (string)args.NewValue);
+
+				var role = GetHtmlRole(uiElement);
+				if (!string.IsNullOrWhiteSpace(role))
+				{
+					uiElement.SetAttribute("role", role);
+				}
 			}
 #endif
 		}
@@ -158,5 +166,20 @@ namespace Windows.UI.Xaml.Automation
 		public static void SetAutomationId(DependencyObject element, string value)
 			=> element.SetValue(AutomationIdProperty, value);
 		#endregion
+
+#if __WASM__
+		private static string GetHtmlRole(UIElement uIElement) =>
+			uIElement switch
+			{
+				Button _ => "button",
+				RadioButton _ => "radio",
+				CheckBox _ => "checkbox",
+				TextBlock _ => "label",
+				TextBox _ => "textbox",
+				Slider _ => "slider",
+				_ => string.Empty
+			};
+#endif
+
 	}
 }
