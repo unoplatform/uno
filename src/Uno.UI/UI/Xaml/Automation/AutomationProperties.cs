@@ -151,8 +151,8 @@ namespace Windows.UI.Xaml.Automation
 				uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
 				uiElement.SetAttribute("aria-label", (string)args.NewValue);
 
-				var role = GetHtmlRole(uiElement);
-				if (!string.IsNullOrWhiteSpace(role))
+				var role = FindHtmlRole(uiElement);
+				if (role != null)
 				{
 					uiElement.SetAttribute("role", role);
 				}
@@ -168,7 +168,7 @@ namespace Windows.UI.Xaml.Automation
 		#endregion
 
 #if __WASM__
-		private static string GetHtmlRole(UIElement uIElement) =>
+		private static string FindHtmlRole(UIElement uIElement) =>
 			uIElement switch
 			{
 				Button _ => "button",
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Automation
 				TextBlock _ => "label",
 				TextBox _ => "textbox",
 				Slider _ => "slider",
-				_ => string.Empty
+				_ => null
 			};
 #endif
 
