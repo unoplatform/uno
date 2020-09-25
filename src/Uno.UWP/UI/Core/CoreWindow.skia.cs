@@ -7,7 +7,7 @@ namespace Windows.UI.Core
 {
 	public interface ICoreWindowExtension
 	{
-
+		public CoreCursor PointerCursor { get; set; }
 	}
 
 	public partial class CoreWindow : ICoreWindowEvents
@@ -21,9 +21,15 @@ namespace Windows.UI.Core
 		public event TypedEventHandler<CoreWindow, PointerEventArgs> PointerReleased;
 		public event TypedEventHandler<CoreWindow, PointerEventArgs> PointerWheelChanged;
 
+		public CoreCursor PointerCursor
+		{
+			get => _coreWindowExtension.PointerCursor ?? new CoreCursor(CoreCursorType.Arrow, 0);
+			set => _coreWindowExtension.PointerCursor = value;
+		}
+
 		partial void InitializePartial()
 		{
-			if(!ApiExtensibility.CreateInstance(this, out _coreWindowExtension))
+			if (!ApiExtensibility.CreateInstance(this, out _coreWindowExtension))
 			{
 				throw new InvalidOperationException($"Unable to find ICoreWindowExtension extension");
 			}

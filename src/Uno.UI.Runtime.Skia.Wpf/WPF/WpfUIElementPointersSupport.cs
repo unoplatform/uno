@@ -15,6 +15,7 @@ using Windows.UI.Input;
 using MouseDevice = System.Windows.Input.MouseDevice;
 using System.Reflection;
 using Windows.System;
+using Uno.UI.Skia.Platform.Extensions;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -30,6 +31,12 @@ namespace Uno.UI.Skia.Platform
 		private const int WM_MOUSEWHEEL = 0x020A;
 		private const int WM_MOUSEHWHEEL = 0x020E;
 		private const int WM_DPICHANGED = 0x02E0;
+
+		public CoreCursor PointerCursor
+		{
+			get => Mouse.OverrideCursor.ToCoreCursor();
+			set => Mouse.OverrideCursor = value.ToCursor();
+		}
 
 		[Flags]
 		private enum MouseModifierKeys : int
