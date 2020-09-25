@@ -153,12 +153,12 @@ namespace Windows.UI.Xaml.Automation
 					uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
 				}
 
-				uiElement.SetAttribute("aria-label", (string)args.NewValue);
-
 				var role = FindHtmlRole(uiElement);
 				if (role != null)
 				{
-					uiElement.SetAttribute("role", role);
+					uiElement.SetAttribute(
+						("aria-label", (string)args.NewValue),
+						("role", role));
 				}
 			}
 #endif
