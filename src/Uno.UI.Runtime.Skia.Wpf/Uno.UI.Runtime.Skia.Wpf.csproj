@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>net47</TargetFrameworks>
+    <TargetFrameworks>net47;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
 	<PropertyGroup>
@@ -17,6 +17,7 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Wpf</PackageId>
 	
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<UseWPF Condition="'$(TargetFramework)'=='netcoreapp3.1'">true</UseWPF>
 	</PropertyGroup>
 	
 	<ItemGroup>
