@@ -13,6 +13,7 @@ Using VS 2019 16.6 or later:
 - Install [WSL Ubuntu 18.04 or later](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 - Install the prerequisites for Linux mentioned in the next section, in your installed distribution using the Ubuntu shell
 - Install [vcXsrv](https://sourceforge.net/projects/vcxsrv/), an X11 server for Windows
+    - You'll need to start the server in "Multiple windows" mode, starting with "no client" mode.
 - Install the [GTK3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases).
 - Using the WSL 1 mode is generally best for performance and ease of use for the X11 server
     - You can switch between versions of a distribution using `wsl --set-version "Ubuntu-20.04" 1`
