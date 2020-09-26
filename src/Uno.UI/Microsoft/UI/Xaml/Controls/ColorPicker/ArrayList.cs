@@ -1,4 +1,4 @@
-﻿using System;
+﻿using global::System;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -13,11 +13,13 @@ namespace Microsoft.UI.Xaml.Controls
 	/// <typeparam name="T">The type of elements in the list.</typeparam>
 	internal class ArrayList<T>
 	{
+		private int _Capacity;
 		private T[] _Array;
 
 		public ArrayList()
 		{
-			_Array = System.Array.Empty<T>();
+			_Capacity = 0;
+			_Array = global::System.Array.Empty<T>();
 		}
 
 		public ArrayList(int capacity)
@@ -28,12 +30,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (capacity == 0)
 			{
-				_Array = System.Array.Empty<T>();
+				_Array = global::System.Array.Empty<T>();
 			}
 			else
 			{
 				_Array = new T[capacity];
 			}
+
+			_Capacity = capacity;
 		}
 
 		internal T[] Array
@@ -43,29 +47,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public int Capacity
 		{
+			get => _Capacity;
 			set
 			{
 				if (value < Count)
 				{
-					throw new IndexOutOfRangeException("Cannot resize the list smaller than it was.");
+					throw new IndexOutOfRangeException("Cannot resize the list smaller than its current length.");
 				}
 
-				if (value != Count)
+				if (value != _Capacity)
 				{
+					_Capacity = value;
+
 					if (value > 0)
 					{
 						var newList = new T[value];
 
 						if (Count > 0)
 						{
-							System.Array.Copy(_Array, 0, newList, 0, Count);
+							global::System.Array.Copy(_Array, 0, newList, 0, Count);
 						}
 
 						_Array = newList;
 					}
 					else
 					{
-						_Array = System.Array.Empty<T>();
+						_Array = global::System.Array.Empty<T>();
 					}
 				}
 			}
@@ -79,12 +86,14 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (_Array.Length == 0)
 				{
-					System.Array.Resize(ref _Array, 4);
+					_Capacity = 4;
 				}
 				else
 				{
-					System.Array.Resize(ref _Array, _Array.Length * 2);
+					_Capacity = _Array.Length * 2;
 				}
+
+				global::System.Array.Resize(ref _Array, _Capacity);
 			}
 
 			_Array[Count] = item;
