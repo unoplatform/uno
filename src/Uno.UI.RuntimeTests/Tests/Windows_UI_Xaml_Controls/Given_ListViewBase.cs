@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,6 +62,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.SelectedItem = 17;
 			Assert.AreEqual(list.SelectedItem, 3);
 		}
+
+#if HAS_UNO
+		// Requires access to MaterializedContainers
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task ContainerIndicesAreUpdated()
+		{
+			var source = new ObservableCollection<string>();
+			var SUT = new ListView { ItemsSource = source };
+			WindowHelper.WindowContent = SUT;
+
+			source.Add("test");
+
+			await WindowHelper.WaitForIdle();
+
+			source.Insert(0, "different");
+
+			await WindowHelper.WaitForIdle();
+
+			var containerIndices = SUT.MaterializedContainers
+				.Select(container => container.GetValue(ItemsControl.IndexForItemContainerProperty))
+				.OfType<int>()
+				.OrderBy(index => index)
+				.ToArray();
+
+			CollectionAssert.AreEqual(new int[] { 0, 1 }, containerIndices);
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
