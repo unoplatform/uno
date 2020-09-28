@@ -352,7 +352,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <typeparam name="T">The type of the template part.</typeparam>
 		/// <param name="childName">The name of the template part.</param>
 		/// <returns>The first template part of the specified name; otherwise, null.</returns>
-		public T GetTemplateChild<T>(string childName) where T : class, DependencyObject
+		internal T GetTemplateChild<T>(string childName) where T : class, DependencyObject
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as T ?? FindName(childName) as T;
 		}
