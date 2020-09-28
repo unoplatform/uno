@@ -43,10 +43,11 @@ namespace Windows.UI.Input
 			private readonly Thresholds _deltaThresholds;
 
 			private ManipulationState _state = ManipulationState.Starting;
-			private bool _isDragManipulation;
 			private Points _origins;
 			private Points _currents;
 			private ManipulationDelta _sumOfPublishedDelta = ManipulationDelta.Empty; // Note: not maintained for dragging manipulation
+
+			public bool IsDragManipulation { get; private set; }
 
 			public Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
 			{
@@ -148,7 +149,7 @@ namespace Windows.UI.Input
 				// If the manipulation was not started, we just abort the manipulation without any event
 				switch (_state)
 				{
-					case ManipulationState.Started when _isDragManipulation:
+					case ManipulationState.Started when IsDragManipulation:
 						_state = ManipulationState.Completed;
 
 						_recognizer.Dragging?.Invoke(
@@ -204,7 +205,7 @@ namespace Windows.UI.Input
 						// On Uno, as allowing both Manipulations and drop on the same element is really a stretch case (and is bugish on UWP),
 						// we accept as a known limitation that once dragging started no manipulation event would be fired.
 						_state = ManipulationState.Started;
-						_isDragManipulation = true;
+						IsDragManipulation = true;
 
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
@@ -241,7 +242,7 @@ namespace Windows.UI.Input
 
 						break;
 
-					case ManipulationState.Started when _isDragManipulation:
+					case ManipulationState.Started when IsDragManipulation:
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
 							new DraggingEventArgs(_currents.Pointer1, DraggingState.Continuing));
