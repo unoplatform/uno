@@ -23,7 +23,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private readonly IDragDropManager _manager;
 
-		public bool AreConcurrentOperationsEnabled { get; set; } = false;
+		public bool AreConcurrentOperationsEnabled
+		{
+			get => _manager.AreConcurrentOperationsEnabled;
+			set => _manager.AreConcurrentOperationsEnabled = value;
+		}
 
 		private CoreDragDropManager(IDragDropManager manager)
 		{
@@ -53,6 +57,8 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		internal interface IDragDropManager
 		{
+			bool AreConcurrentOperationsEnabled { get; set; }
+
 			void BeginDragAndDrop(CoreDragInfo info, ICoreDropOperationTarget? target = null);
 		}
 	}
