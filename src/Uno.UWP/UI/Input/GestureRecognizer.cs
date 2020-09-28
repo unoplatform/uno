@@ -43,6 +43,8 @@ namespace Windows.UI.Input
 
 		public bool IsActive => _gestures.Count > 0 || _manipulation != null;
 
+		internal bool IsDragging => _manipulation?.IsDragManipulation ?? false;
+
 		/// <summary>
 		/// This is the owner provided in the ctor. It might be `null` if none provided.
 		/// It's purpose it to allow usage of static event handlers.

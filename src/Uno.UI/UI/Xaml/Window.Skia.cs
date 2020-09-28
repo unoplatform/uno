@@ -47,8 +47,8 @@ namespace Windows.UI.Xaml
 			CoreWindow = new CoreWindow();
 			CoreWindow.SetInvalidateRender(QueueInvalidateRender);
 
-			_dragDropManager = new DragDropManager(this);
-			CoreDragDropManager.SetForCurrentView(_dragDropManager);
+			DragDrop = new DragDropManager(this);
+			CoreDragDropManager.SetForCurrentView(DragDrop);
 		}
 
 		internal static Action InvalidateRender = () => { };
@@ -213,8 +213,9 @@ namespace Windows.UI.Xaml
 			return new CompositeDisposable();
 		}
 
-		private DragUIRoot? _dragRoot;
-		private DragDropManager _dragDropManager;
+		private DragRoot? _dragRoot;
+
+		internal DragDropManager DragDrop { get; private set; }
 
 		internal IDisposable OpenDragAndDrop(DragView dragView)
 		{
@@ -225,7 +226,7 @@ namespace Windows.UI.Xaml
 
 			if (_dragRoot is null)
 			{
-				_dragRoot = new DragUIRoot(_dragDropManager);
+				_dragRoot = new DragRoot(DragDrop);
 				_window.Children.Add(_dragRoot);
 			}
 
