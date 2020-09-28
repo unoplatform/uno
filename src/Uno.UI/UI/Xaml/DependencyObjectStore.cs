@@ -689,9 +689,8 @@ namespace Windows.UI.Xaml
 					// This weak reference ensure that the closure will not link
 					// the caller and the callee, in the same way "newValueActionWeak"
 					// does not link the callee to the caller.
-					var that = instanceRef.Target as DependencyObjectStore;
 
-					if (that != null)
+					if (instanceRef.Target is { })
 					{
 						cookie.Dispose();
 						weakDelegate.release.Dispose();
