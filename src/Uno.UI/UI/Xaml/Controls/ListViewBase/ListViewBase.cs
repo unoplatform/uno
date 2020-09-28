@@ -49,6 +49,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isIncrementalLoadingInFlight;
 
+		private readonly Dictionary<DependencyObject, object> _containersForIndexRepair = new Dictionary<DependencyObject, object>();
+
 		protected internal ListViewBase()
 		{
 			Initialize();
@@ -160,7 +162,8 @@ namespace Windows.UI.Xaml.Controls
 							{
 								SelectedIndex = -1;
 							}
-						} else
+						}
+						else
 						{
 							SelectedIndex = index;
 						}
@@ -448,7 +451,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						this.Log().Debug($"Inserting {args.NewItems.Count} items starting at {args.NewStartingIndex}");
 					}
+
+					SaveContainersForIndexRepair(args.NewStartingIndex, args.NewItems.Count);
 					AddItems(args.NewStartingIndex, args.NewItems.Count, section);
+					RepairIndices();
+
 					break;
 				case NotifyCollectionChangedAction.Remove:
 					if (AreEmptyGroupsHidden && (sender as IEnumerable).None())
@@ -462,14 +469,20 @@ namespace Windows.UI.Xaml.Controls
 					{
 						this.Log().Debug($"Deleting {args.OldItems.Count} items starting at {args.OldStartingIndex}");
 					}
+
+					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
+					RepairIndices();
+
 					break;
 				case NotifyCollectionChangedAction.Replace:
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Replacing {args.NewItems.Count} items starting at {args.NewStartingIndex}");
 					}
+
 					ReplaceItems(args.NewStartingIndex, args.NewItems.Count, section);
+
 					break;
 				case NotifyCollectionChangedAction.Move:
 					// TODO PBI #19974: Fully implement NotifyCollectionChangedActions and map them to the appropriate calls
@@ -490,6 +503,28 @@ namespace Windows.UI.Xaml.Controls
 				ObserveCollectionChanged();
 				base.OnItemsSourceSingleCollectionChanged(sender, args, section);
 			}
+		}
+
+		private void SaveContainersForIndexRepair(int startingIndex, int indexChange)
+		{
+			_containersForIndexRepair.Clear();
+			foreach (var container in MaterializedContainers)
+			{
+				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+				if (currentIndex >= startingIndex)
+				{
+					_containersForIndexRepair.Add(container, currentIndex + indexChange);
+				}
+			}
+		}
+
+		private void RepairIndices()
+		{
+			foreach(var containerPair in _containersForIndexRepair)
+			{
+				containerPair.Key.SetValue(ItemsControl.IndexForItemContainerProperty, containerPair.Value);
+			}
+			_containersForIndexRepair.Clear();
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -583,6 +618,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
 		{
+			// Index will be repaired by virtue of ItemsControl.
+			_containersForIndexRepair.Remove(element);
+
 			base.PrepareContainerForItemOverride(element, item);
 
 			if (element is SelectorItem selectorItem)
