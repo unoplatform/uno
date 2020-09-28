@@ -55,6 +55,30 @@ namespace Windows.UI.Xaml
 
 	partial class UIElement
 	{
+		internal enum HitTestVisibility
+		{
+			/// <summary>
+			/// The element and its children can't be targeted by hit-testing.
+			/// </summary>
+			/// <remarks>
+			/// This occurs when IsHitTestVisible="False", IsEnabled="False", or Visibility="Collapsed".
+			/// </remarks>
+			Collapsed,
+
+			/// <summary>
+			/// The element can't be targeted by hit-testing, but it's children might be.
+			/// </summary>
+			/// <remarks>
+			/// This usually occurs if an element doesn't have a Background/Fill.
+			/// </remarks>
+			Invisible,
+
+			/// <summary>
+			/// The element can be targeted by hit-testing.
+			/// </summary>
+			Visible,
+		}
+
 		static UIElement()
 		{
 			var uiElement = typeof(UIElement);
@@ -183,7 +207,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (sender is UIElement elt && !elt.IsHitTestVisibleCoalesced)
+			if (sender is UIElement elt && elt.GetHitTestVisibility() == HitTestVisibility.Collapsed)
 			{
 				elt.Release(PointerCaptureKind.Any);
 				elt.ClearPressed();
@@ -207,35 +231,36 @@ namespace Windows.UI.Xaml
 		/// but only that pointer events can be raised on this element.
 		/// I.e. this element is NOT <see cref="HitTestVisibility.Collapsed"/>.
 		/// </summary>
-		private bool IsHitTestVisibleCoalesced
+		internal HitTestVisibility GetHitTestVisibility()
 		{
-			get
-			{
 #if __WASM__ || __SKIA__
-				return this.GetValue(HitTestVisibilityProperty) is HitTestVisibility visibility
-					&& visibility != HitTestVisibility.Collapsed;
+			return (HitTestVisibility)this.GetValue(HitTestVisibilityProperty);
 #else
-				// This is a coalesced HitTestVisible and should be unified with it
-				// We should follow the WASM way and unify it on all platforms!
-				if (Visibility != Visibility.Visible || !IsHitTestVisible)
-				{
-					return false;
-				}
-
-				if (this is Windows.UI.Xaml.Controls.Control ctrl)
-				{
-					return ctrl.IsLoaded && ctrl.IsEnabled;
-				}
-				else if (this is Windows.UI.Xaml.FrameworkElement fwElt)
-				{
-					return fwElt.IsLoaded;
-				}
-				else
-				{
-					return true;
-				}
-#endif
+			// This is a coalesced HitTestVisible and should be unified with it
+			// We should follow the WASM way and unify it on all platforms!
+			// Note: This is currently only a port of the old behavior and reports only Collapsed and Visible.
+			if (Visibility != Visibility.Visible || !IsHitTestVisible)
+			{
+				return HitTestVisibility.Collapsed;
 			}
+
+			if (this is Windows.UI.Xaml.Controls.Control ctrl)
+			{
+				return ctrl.IsLoaded && ctrl.IsEnabled
+					? HitTestVisibility.Visible
+					: HitTestVisibility.Collapsed;
+			}
+			else if (this is Windows.UI.Xaml.FrameworkElement fwElt)
+			{
+				return fwElt.IsLoaded
+					? HitTestVisibility.Visible
+					: HitTestVisibility.Collapsed;
+			}
+			else
+			{
+				return HitTestVisibility.Visible;
+			}
+#endif
 		}
 
 		#region GestureRecognizer wire-up

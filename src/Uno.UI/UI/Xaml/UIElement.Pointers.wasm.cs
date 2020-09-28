@@ -263,30 +263,6 @@ namespace Windows.UI.Xaml
 			this.CoerceValue(HitTestVisibilityProperty);
 		}
 
-		private protected enum HitTestVisibility
-		{
-			/// <summary>
-			/// The element and its children can't be targeted by hit-testing.
-			/// </summary>
-			/// <remarks>
-			/// This occurs when IsHitTestVisible="False", IsEnabled="False", or Visibility="Collapsed".
-			/// </remarks>
-			Collapsed,
-
-			/// <summary>
-			/// The element can't be targeted by hit-testing.
-			/// </summary>
-			/// <remarks>
-			/// This usually occurs if an element doesn't have a Background/Fill.
-			/// </remarks>
-			Invisible,
-
-			/// <summary>
-			/// The element can be targeted by hit-testing.
-			/// </summary>
-			Visible,
-		}
-
 		/// <summary>
 		/// Represents the final calculated hit-test visibility of the element.
 		/// </summary>
