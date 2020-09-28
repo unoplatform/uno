@@ -10,6 +10,7 @@ using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml
@@ -21,19 +22,29 @@ namespace Windows.UI.Xaml
 		private readonly ICoreDropOperationTarget _target;
 		private readonly DragView _view;
 		private readonly IDisposable _viewHandle;
+		private readonly CoreDragUIOverride _viewOverride;
 		private readonly LinkedList<TargetAsyncTask> _queue = new LinkedList<TargetAsyncTask>();
 
 		private bool _isRunning;
-		private bool _isCompleted;
+		private State _state = State.None;
+
+		private enum State
+		{
+			None,
+			Over,
+			Completing,
+			Completed
+		}
 
 		public DragOperation(Window window, CoreDragInfo info, ICoreDropOperationTarget? target = null)
 		{
 			Info = info;
 			Pointer = info.Pointer as Pointer;
 
-			_target = target ?? new DropUITarget(); // This must be re-created for each drag info! (Caching of the drag ui-override)
+			_target = target ?? new DropUITarget(window); // The DropUITarget must be re-created for each drag operation! (Caching of the drag ui-override)
 			_view = new DragView(info.DragUI as DragUI);
 			_viewHandle = window.OpenDragAndDrop(_view);
+			_viewOverride = new CoreDragUIOverride(); // UWP does re-use the same instance for each update on _target
 		}
 
 		public CoreDragInfo Info { get; }
@@ -41,43 +52,90 @@ namespace Windows.UI.Xaml
 		public Pointer? Pointer { get; private set; }
 
 		internal void Entered(PointerRoutedEventArgs args)
-		{
-			UpdateState(args);
-			Enqueue(EnteredCore, isIgnorable: true);
-
-			Task EnteredCore(CancellationToken ct)
-				=> _target.EnterAsync(Info, new CoreDragUIOverride()).AsTask(ct);
-		}
+			=> EnteredOrMoved(args);
 
 		internal void Moved(PointerRoutedEventArgs args)
-		{
-			UpdateState(args); // It's required to do that as soon as possible in order to update the view's location
-			Enqueue(MovedCore, isIgnorable: true);
+			=> EnteredOrMoved(args);
 
-			Task MovedCore(CancellationToken ct)
-				=> _target.OverAsync(Info, new CoreDragUIOverride()).AsTask(ct);
+		private void EnteredOrMoved(PointerRoutedEventArgs args)
+		{
+			if (_state >= State.Completing)
+			{
+				return;
+			}
+
+			Update(args); // It's required to do that as soon as possible in order to update the view's location
+			Enqueue(Over, isIgnorable: _state == State.Over); // This is ignorable only if we already over
+
+			async Task Over(CancellationToken ct)
+			{
+				if (_state >= State.Completing)
+				{
+					return;
+				}
+
+				var isOver = _state == State.Over;
+				_state = State.Over;
+
+				var acceptedOperation = isOver
+					? await _target.OverAsync(Info, _viewOverride).AsTask(ct)
+					: await _target.EnterAsync(Info, _viewOverride).AsTask(ct);
+				acceptedOperation &= Info.AllowedOperations;
+
+				_view.Update(acceptedOperation, _viewOverride);
+			}
 		}
 
 		internal void Exited(PointerRoutedEventArgs args)
 		{
-			UpdateState(args);
-			Enqueue(ExitedCore);
+			if (_state >= State.Completing)
+			{
+				return;
+			}
 
-			Task ExitedCore(CancellationToken ct)
-				=> _target.LeaveAsync(Info).AsTask(ct);
+			Update(args);
+			Enqueue(Leave);
+
+			async Task Leave(CancellationToken ct)
+			{
+				if (_state != State.Over)
+				{
+					return;
+				}
+
+				_state = State.None;
+				await _target.LeaveAsync(Info).AsTask(ct);
+
+				// When the pointer goes out of the window, we hide our internal control and,
+				// if supported by the OS, we request a Drag and Drop operation with the native UI.
+				// TODO: Request native D&D
+				_view.Hide();
+			}
 		}
 
 		internal void Dropped(PointerRoutedEventArgs args)
 		{
-			UpdateState(args);
-			Enqueue(DroppedCore);
+			if (_state >= State.Completing)
+			{
+				return;
+			}
 
-			async Task DroppedCore(CancellationToken ct)
+			Update(args);
+			Enqueue(Drop);
+
+			async Task Drop(CancellationToken ct)
 			{
 				var result = DataPackageOperation.None;
 				try
 				{
+					if (_state != State.Over)
+					{
+						return;
+					}
+
+					_state = State.Completing;
 					result = await _target.DropAsync(Info).AsTask(ct);
+					result &= Info.AllowedOperations;
 				}
 				finally
 				{
@@ -88,13 +146,24 @@ namespace Windows.UI.Xaml
 
 		internal void Aborted(PointerRoutedEventArgs args)
 		{
-			UpdateState(args);
-			Enqueue(AbortedCore);
+			if (_state >= State.Completing)
+			{
+				return;
+			}
 
-			async Task AbortedCore(CancellationToken ct)
+			Update(args);
+			Enqueue(Abort);
+
+			async Task Abort(CancellationToken ct)
 			{
 				try
 				{
+					if (_state != State.Over)
+					{
+						return;
+					}
+
+					_state = State.Completing;
 					await _target.LeaveAsync(Info).AsTask(ct);
 				}
 				finally
@@ -104,7 +173,41 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void UpdateState(PointerRoutedEventArgs args)
+		/// <summary>
+		/// This is used by the manager to abort a pending D&D for any consideration without an event args for the given pointer
+		/// It ** MUST ** be invoked on the UI thread.
+		/// </summary>
+		internal void Abort()
+		{
+			if (Pointer == null || _state == State.None)
+			{
+				// The D&D didn't had time to be started (or has already left), we can just complete
+				Complete(DataPackageOperation.None);
+				return;
+			}
+
+			Enqueue(Abort);
+
+			async Task Abort(CancellationToken ct)
+			{
+				if (_state != State.Over)
+				{
+					return;
+				}
+
+				try
+				{
+					await _target.LeaveAsync(Info).AsTask(ct);
+				}
+				finally
+				{
+					_state = State.Completing;
+					Complete(DataPackageOperation.None);
+				}
+			}
+		}
+
+		private void Update(PointerRoutedEventArgs args)
 		{
 			var point = args.GetCurrentPoint(null);
 			var mods = DragDropModifiers.None;
@@ -152,6 +255,8 @@ namespace Windows.UI.Xaml
 
 		private void Enqueue(Func<CancellationToken, Task> action, bool isIgnorable = false)
 		{
+			// If possible we debounce multiple "over" update.
+			// This might happen when the app uses the DragEventsArgs.GetDeferral (or customized the _target).
 			if (_queue.Last?.Value.IsIgnorable ?? false)
 			{
 				_queue.RemoveLast();
@@ -166,7 +271,7 @@ namespace Windows.UI.Xaml
 		{
 			// This ** MUST ** be run on the UI thread
 
-			if (_isRunning || _isCompleted)
+			if (_isRunning || _state == State.Completed)
 			{
 				return;
 			}
@@ -174,7 +279,7 @@ namespace Windows.UI.Xaml
 			try
 			{
 				_isRunning = true;
-				while (!_isCompleted && _queue.First is { } first)
+				while (_state != State.Completed && _queue.First is { } first)
 				{
 					_queue.RemoveFirst();
 
@@ -206,7 +311,11 @@ namespace Windows.UI.Xaml
 
 		private void Complete(DataPackageOperation result)
 		{
-			_isCompleted = true;
+			if (_state == State.Completed)
+			{
+				return;
+			}
+			_state = State.Completed;
 
 			_viewHandle.Dispose();
 			Info.Complete(result);
