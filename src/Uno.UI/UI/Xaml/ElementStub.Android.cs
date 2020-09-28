@@ -22,11 +22,14 @@ namespace Windows.UI.Xaml
 
 			if (currentPosition != null && currentPosition.Value != -1)
 			{
+				// Create the instance first so that x:Bind constructs can be picked up by the
+				// Unload event of ElementStub. Not doing so does not fills up the generated variables
+				// too late and Binding.Update() does not refresh the available x:Bind instances.
+				var newContent = ContentBuilder();
+
 				parentViewGroup.RemoveViewAt(currentPosition.Value);
 
 				var UnoViewGroup = parentViewGroup as UnoViewGroup;
-
-				var newContent = ContentBuilder();
 
 				if (UnoViewGroup != null)
 				{

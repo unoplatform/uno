@@ -20,6 +20,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	internal partial class XamlCodeGeneration
 	{
 		internal const string ParseContextPropertyName = "__ParseContext_";
+		internal const string ParseContextPropertyType = "global::Uno.UI.Xaml.XamlParseContext";
 
 		private readonly string[] _xamlSourceFiles;
 		private readonly string[] _xamlSourceLinks;
@@ -498,7 +499,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineInvariant("private static bool _stylesRegistered;");
 					writer.AppendLineInvariant("private static bool _dictionariesRegistered;");
 
-					using (writer.BlockInvariant("internal static global::Uno.UI.Xaml.XamlParseContext {0} {{get; }} = new global::Uno.UI.Xaml.XamlParseContext()", ParseContextPropertyName))
+					using (writer.BlockInvariant("internal static {0} {1} {{get; }} = new {0}()", ParseContextPropertyType, ParseContextPropertyName))
 					{
 						writer.AppendLineInvariant("AssemblyName = \"{0}\",", _projectInstance.GetPropertyValue("AssemblyName"));
 					}

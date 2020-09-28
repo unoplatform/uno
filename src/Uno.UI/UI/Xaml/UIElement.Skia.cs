@@ -149,12 +149,7 @@ namespace Windows.UI.Xaml
 		{
 			if (_children.Remove(child))
 			{
-				child.SetParent(null);
-
-				Visual?.Children.Remove(child.Visual);
-
-				OnChildRemoved(child);
-
+				InnerRemoveChild(child);
 				return true;
 			}
 			else
@@ -167,12 +162,18 @@ namespace Windows.UI.Xaml
 		{
 			foreach (var child in _children.ToArray())
 			{
-				child.SetParent(null);
-				OnChildRemoved(child);
+				InnerRemoveChild(child);
 			}
 
 			_children.Clear();
 			InvalidateMeasure();
+		}
+
+		private void InnerRemoveChild(UIElement child)
+		{
+			child.SetParent(null);
+			Visual?.Children.Remove(child.Visual);
+			OnChildRemoved(child);
 		}
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();

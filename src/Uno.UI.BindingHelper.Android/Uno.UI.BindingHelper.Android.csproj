@@ -9,7 +9,7 @@
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-
+		
 		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid90' or '$(TargetFramework)' == 'MonoAndroid10.0'">true</IsBindingProject>
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 	</PropertyGroup>
@@ -28,15 +28,15 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
-		<PackageReference Include="Xamarin.AndroidX.AppCompat"/>
-		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
-		<PackageReference Include="Xamarin.AndroidX.AppCompat"/>
-		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -53,9 +53,7 @@
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
-	<Target Name="_CompileUnoJavaCreateOutputs"
-					BeforeTargets="Build"
-					AfterTargets="Restore">
+	<Target Name="_CompileUnoJavaCreateOutputs" BeforeTargets="Build" AfterTargets="Restore">
 		<!--
 		Create the EmbeddedJar itemgroup here so the Xamarin tooling picks it up,
 		but in the obj folder so we don't have rebuild and git ignore issues.
@@ -75,7 +73,7 @@
 	</Target>
 
 	<!-- Workaround for https://github.com/unoplatform/uno/issues/986 -->
-	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml">
+	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml" Condition="'$(MSBuildVersion)' &lt; '16.8'">
 
 		<!--
 		This is required to ensure the first pass of the BindingsGenerator task is
@@ -88,12 +86,12 @@
 	</Target>
 
 	<ItemGroup>
-		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml"/>
-		<_CompileUnoJavaBeforeTargets Include="GenerateBindings"/>
-		<_CompileUnoJavaBeforeTargets Include="_GetLibraryImports"/>
-		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml"/>
+		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml" />
+		<_CompileUnoJavaBeforeTargets Include="GenerateBindings" />
+		<_CompileUnoJavaBeforeTargets Include="_GetLibraryImports" />
+		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml" />
 
-		<_CompileUnoJavaAfterTargets Include="_ExtractLibraryProjectImports"/> <!-- This target generates the \lp\**\classes.jar -->
+		<_CompileUnoJavaAfterTargets Include="_ExtractLibraryProjectImports" /> <!-- This target generates the \lp\**\classes.jar -->
 	</ItemGroup>
 
 	<Target Name="_CompileUnoJava" Condition="'$(DesignTimeBuild)' != 'true'" BeforeTargets="@(_CompileUnoJavaBeforeTargets)" AfterTargets="@(_CompileUnoJavaAfterTargets)" Inputs="@(_JavaFile)" Outputs="@(EmbeddedJar)" DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources)">

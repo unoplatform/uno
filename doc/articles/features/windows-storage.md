@@ -26,3 +26,26 @@ File.WriteAllText(Path.Combine(folder.Path, "MyFile.txt"), DateTime.Now.ToLongDa
 Note that for WebAssembly in particular, the `await localFolder.CreateFolderAsync` is important to ensure that the file system has properly been initialized from the IDBFS persistence. Any asynchronous operation from StorageFolder awaits for the filesystem's initialization before continuing.
 
 Note that you can view the content of the **IndexedDB** in the Application tab of your browser, in the **Storage / IndexedDB** section.
+
+## Support for StorageFile.GetFileFromApplicationUriAsync
+
+Uno supports the ability to get package files using the [`StorageFile.GetFileFromApplicationUriAsync`](https://docs.microsoft.com/en-us/uwp/api/windows.storage.storagefile.getfilefromapplicationuriasync).
+
+Support per platform may vary:
+- On Android, iOS/macOS, the file is available immediately as it is part of the installed package.
+- On WebAssembly, the requested file is part of the remote package and is downloaded on demand to avoid increasing the initial application payload size. The file is then stored in the IndexedDB of the browser.
+
+Here's how to use it:
+
+```csharp
+var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///MyPackageFile.xml"));
+var content = await FileIO.ReadTextAsync(file);
+```
+Given than in the project there's the following declaration:
+```xml
+<ItemGroup>
+    <Content Include="MyPackageFile.xml" />
+</ItemGroup>
+```
+
+

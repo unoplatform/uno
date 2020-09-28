@@ -15,6 +15,7 @@ using Windows.UI.Input;
 using MouseDevice = System.Windows.Input.MouseDevice;
 using System.Reflection;
 using Windows.System;
+using Uno.UI.Skia.Platform.Extensions;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -30,6 +31,12 @@ namespace Uno.UI.Skia.Platform
 		private const int WM_MOUSEWHEEL = 0x020A;
 		private const int WM_MOUSEHWHEEL = 0x020E;
 		private const int WM_DPICHANGED = 0x02E0;
+
+		public CoreCursor PointerCursor
+		{
+			get => Mouse.OverrideCursor.ToCoreCursor();
+			set => Mouse.OverrideCursor = value.ToCursor();
+		}
 
 		[Flags]
 		private enum MouseModifierKeys : int
@@ -247,8 +254,11 @@ namespace Uno.UI.Skia.Platform
 			}
 		}
 
-		private IntPtr OnWmMessage(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam, ref bool handled)
+		private IntPtr OnWmMessage(IntPtr hwnd, int msg, IntPtr wparamOriginal, IntPtr lparamOriginal, ref bool handled)
 		{
+			var wparam = (int)(((long)wparamOriginal) & 0xFFFFFFFF);
+			var lparam = (int)(((long)lparamOriginal) & 0xFFFFFFFF);
+
 			static short GetLoWord(int i) => (short)(i & 0xFFFF);
 			static short GetHiWord(int i) => (short)(i >> 16);
 
@@ -259,7 +269,7 @@ namespace Uno.UI.Skia.Platform
 				case WM_MOUSEHWHEEL:
 				case WM_MOUSEWHEEL:
 				{
-					var keys = (MouseModifierKeys)wparam;
+					var keys = (MouseModifierKeys)GetLoWord(wparam);
 
 					// Vertical: https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mousewheel
 					// Horizontal: https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mousehwheel

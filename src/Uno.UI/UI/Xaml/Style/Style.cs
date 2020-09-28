@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -41,9 +43,9 @@ namespace Windows.UI.Xaml
 			TargetType = targetType;
 		}
 
-		public Type TargetType { get; set; }
+		public Type? TargetType { get; set; }
 
-		public Style BasedOn { get; set; }
+		public Style? BasedOn { get; set; }
 
 		public SetterBaseCollection Setters { get; } = new SetterBaseCollection();
 
@@ -69,7 +71,7 @@ namespace Windows.UI.Xaml
 					}
 
 					// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
-					(o as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: false);
+					(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(isThemeChangedUpdate: false);
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY
 				finally
@@ -129,6 +131,10 @@ namespace Windows.UI.Xaml
 				{
 					if (setter is Setter s)
 					{
+						if (s.Property == null)
+						{
+							throw new InvalidOperationException("Property must be set on Setter used in Style"); // TODO: We should also support Setter.Target inside Style https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.setter#remarks
+						}
 						map[s.Property] = setter.ApplyTo;
 					}
 					else if (setter is ICSharpPropertySetter propertySetter)
@@ -147,8 +153,10 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="type">The type to which the style applies</param>
 		/// <param name="styleProvider">Function which generates the style. This will be called once when first used, then cached.</param>
-		/// <param name="isNative">True if is is the native default style, false if it is the UWP default style.</param>
-		/// <remarks>This method should normally only be called from Xaml-generated code. </remarks>
+		/// <param name="isNative">True if it is the native default style, false if it is the UWP default style.</param>
+		/// <remarks>
+		/// This is public for backward compatibility, but isn't called from Xaml-generated code any longer. 
+		/// </remarks>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider, bool isNative)
 		{
@@ -163,11 +171,35 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
+		///  Register lazy default style provider for the nominated type.
+		/// </summary>
+		/// <param name="type">The type to which the style applies</param>
+		/// <param name="dictionaryProvider">Provides the dictionary in which the style is defined.</param>
+		/// <param name="isNative">True if it is the native default style, false if it is the UWP default style.</param>
+		/// <remarks>This is an Uno-specific method, normally only called from Xaml-generated code.</remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider, bool isNative)
+		{
+			RegisterDefaultStyleForType(type, ProvideStyle, isNative);
+
+			Style ProvideStyle()
+			{
+				var styleSource = dictionaryProvider.GetResourceDictionary();
+				if (styleSource.TryGetValue(type, out var style, shouldCheckSystem: false))
+				{
+					return (Style)style;
+				}
+
+				throw new InvalidOperationException($"{styleSource} was registered as style provider for {type} but doesn't contain matching style.");
+			}
+		}
+
+		/// <summary>
 		/// Returns the default Style for given type. 
 		/// </summary>
-		internal static Style GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, ShouldUseUWPDefaultStyle(type));
+		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, ShouldUseUWPDefaultStyle(type));
 
-		private static Style GetDefaultStyleForType(Type type, bool useUWPDefaultStyles)
+		private static Style? GetDefaultStyleForType(Type type, bool useUWPDefaultStyles)
 		{
 			if (type == null)
 			{
@@ -179,13 +211,15 @@ namespace Windows.UI.Xaml
 			var lookup = useUWPDefaultStyles ? _lookup
 				: _nativeLookup;
 
-			if (!styleCache.TryGetValue(type, out var style))
+			if (!styleCache.TryGetValue(type, out Style? style))
 			{
 				if (lookup.TryGetValue(type, out var styleProvider))
 				{
 					style = styleProvider();
 
 					styleCache[type] = style;
+
+					lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
 				}
 			}
 
