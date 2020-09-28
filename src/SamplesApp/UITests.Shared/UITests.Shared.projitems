@@ -401,6 +401,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_Basics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\FocusManagerTest.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3677,6 +3681,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DeferLoadStrategy\SimpleDeferLoadStrategy.xaml.cs">
       <DependentUpon>SimpleDeferLoadStrategy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_Basics.xaml.cs">
+      <DependentUpon>DragDrop_Basics.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\FocusManagerTest.xaml.cs">
       <DependentUpon>FocusManagerTest.xaml</DependentUpon>
