@@ -50,7 +50,7 @@
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
 						CornerRadius="{TemplateBinding CornerRadius}">
-						<skia:VisualStateManager.VisualStateGroups>
+						<netstdref:VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="ScrollingIndicatorStates">
 								<VisualStateGroup.Transitions>
 									<VisualTransition From="MouseIndicator" To="NoIndicator">
@@ -245,25 +245,25 @@
 									</Storyboard>
 								</VisualState>
 							</VisualStateGroup>
-						</skia:VisualStateManager.VisualStateGroups>
+						</netstdref:VisualStateManager.VisualStateGroups>
 
 						<Grid Background="{TemplateBinding Background}" x:Name="Root">
-							<skia:Grid.ColumnDefinitions>
+							<netstdref:Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="Auto" />
-							</skia:Grid.ColumnDefinitions>
-							<skia:Grid.RowDefinitions>
+							</netstdref:Grid.ColumnDefinitions>
+							<netstdref:Grid.RowDefinitions>
 								<RowDefinition Height="*" />
 								<RowDefinition Height="Auto" />
-							</skia:Grid.RowDefinitions>
+							</netstdref:Grid.RowDefinitions>
 							<!-- ContentTemplate not yet supported for ScrollContentPresenter-->
 							<ScrollContentPresenter
 								x:Name="ScrollContentPresenter"
-								skia:Grid.RowSpan="2"
-								skia:Grid.ColumnSpan="2"
+								netstdref:Grid.RowSpan="2"
+								netstdref:Grid.ColumnSpan="2"
 								Margin="{TemplateBinding Padding}" />
 
-							<skia:ScrollBar
+							<netstdref:ScrollBar
 								x:Name="VerticalScrollBar"
 								Grid.Column="1"
 								IsTabStop="False"
@@ -275,7 +275,7 @@
 								HorizontalAlignment="Right"
 								skia:Width="16"/>
 
-							<skia:ScrollBar
+							<netstdref:ScrollBar
 								x:Name="HorizontalScrollBar"
 								IsTabStop="False"
 								Maximum="{TemplateBinding ScrollableWidth}"
@@ -286,7 +286,7 @@
 								ViewportSize="{TemplateBinding ViewportWidth}"
 								skia:Height="16"/>
 
-							<skia:Border
+							<netstdref:Border
 								x:Name="ScrollBarSeparator"
 								Grid.Row="1"
 								Grid.Column="1"
