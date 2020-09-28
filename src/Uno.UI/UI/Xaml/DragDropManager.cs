@@ -20,6 +20,9 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <inheritdoc />
+		public bool AreConcurrentOperationsEnabled { get; set; } = false;
+
+		/// <inheritdoc />
 		public void BeginDragAndDrop(CoreDragInfo info, ICoreDropOperationTarget? target = null)
 		{
 			if (!_window.Dispatcher.HasThreadAccess)
@@ -27,6 +30,16 @@ namespace Windows.UI.Xaml
 				_window.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => BeginDragAndDrop(info, target));
 				return;
 			}
+
+			if (!AreConcurrentOperationsEnabled)
+			{
+				foreach (var pending in _dragOperations.ToArray())
+				{
+					pending.Abort();
+				}
+			}
+
+			RegisterHandlers();
 
 			var op = new DragOperation(_window, info, target);
 
@@ -43,13 +56,46 @@ namespace Windows.UI.Xaml
 			return op;
 		}
 
-		public void ProcessPointerEnter(PointerRoutedEventArgs args)
+		private bool _registered = false;
+		private void RegisterHandlers()
+		{
+			if (_registered)
+			{
+				return;
+			}
+
+			var root = _window.RootElement;
+			root.AddHandler(UIElement.PointerEnteredEvent, new PointerEventHandler(OnPointerEntered), handledEventsToo: true);
+			root.AddHandler(UIElement.PointerExitedEvent, new PointerEventHandler(OnPointerExited), handledEventsToo: true);
+			root.AddHandler(UIElement.PointerMovedEvent, new PointerEventHandler(OnPointerMoved), handledEventsToo: true);
+			root.AddHandler(UIElement.PointerReleasedEvent, new PointerEventHandler(OnPointerReleased), handledEventsToo: true);
+			root.AddHandler(UIElement.PointerCanceledEvent, new PointerEventHandler(OnPointerCanceled), handledEventsToo: true);
+
+			_registered = true;
+		}
+
+		private static void OnPointerEntered(object snd, PointerRoutedEventArgs e)
+			=> Window.Current.DragDrop.ProcessPointerEnteredWindow(e);
+
+		private static void OnPointerExited(object snd, PointerRoutedEventArgs e)
+			=> Window.Current.DragDrop.ProcessPointerExitedWindow(e);
+
+		private static void OnPointerMoved(object snd, PointerRoutedEventArgs e)
+			=> Window.Current.DragDrop.ProcessPointerMovedOverWindow(e);
+
+		private static void OnPointerReleased(object snd, PointerRoutedEventArgs e)
+			=> Window.Current.DragDrop.ProcessPointerReleased(e);
+
+		private static void OnPointerCanceled(object snd, PointerRoutedEventArgs e)
+			=> Window.Current.DragDrop.ProcessPointerCanceled(e);
+
+		public void ProcessPointerEnteredWindow(PointerRoutedEventArgs args)
 			=> FindOperation(args)?.Entered(args);
 
-		public void ProcessPointerExited(PointerRoutedEventArgs args)
+		public void ProcessPointerExitedWindow(PointerRoutedEventArgs args)
 			=> FindOperation(args)?.Exited(args);
 
-		public void ProcessPointerMoved(PointerRoutedEventArgs args)
+		public void ProcessPointerMovedOverWindow(PointerRoutedEventArgs args)
 			=> FindOperation(args)?.Moved(args);
 
 		public void ProcessPointerReleased(PointerRoutedEventArgs args)

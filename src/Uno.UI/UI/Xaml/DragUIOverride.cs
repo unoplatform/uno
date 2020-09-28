@@ -2,6 +2,7 @@
 
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml
@@ -15,41 +16,31 @@ namespace Windows.UI.Xaml
 			_core = core;
 		}
 
-		public bool IsGlyphVisible
-		{
-			get => _core.IsGlyphVisible;
-			set => _core.IsGlyphVisible = value;
-		}
+		public bool IsGlyphVisible { get; set; }
+		public bool IsContentVisible { get; set; }
+		public bool IsCaptionVisible { get; set; }
+		public string Caption { get; set; } = string.Empty;
 
-		public bool IsContentVisible
-		{
-			get => _core.IsContentVisible;
-			set => _core.IsContentVisible = value;
-		}
-
-		public bool IsCaptionVisible
-		{
-			get => _core.IsCaptionVisible;
-			set => _core.IsCaptionVisible = value;
-		}
-
-		public string Caption
-		{
-			get => _core.Caption;
-			set => _core.Caption = value;
-		}
+		internal ImageSource? Content { get; set; }
+		internal Point ContentAnchor { get; set; }
 
 		public void SetContentFromBitmapImage(BitmapImage bitmapImage)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.DragUIOverride", "void DragUIOverride.SetContentFromBitmapImage(BitmapImage bitmapImage)");
+			Content = bitmapImage;
 		}
 
 		public void SetContentFromBitmapImage(BitmapImage bitmapImage, Point anchorPoint)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.DragUIOverride", "void DragUIOverride.SetContentFromBitmapImage(BitmapImage bitmapImage, Point anchorPoint)");
+			Content = bitmapImage;
+			ContentAnchor = anchorPoint;
 		}
 
 		public void Clear()
-			=> _core.Clear();
+		{
+			IsGlyphVisible = _core.IsGlyphVisible;
+			IsContentVisible = _core.IsContentVisible;
+			IsCaptionVisible = _core.IsCaptionVisible;
+			Caption = _core.Caption;
+		}
 	}
 }
