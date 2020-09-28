@@ -2837,6 +2837,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\GradientBrushTests\LinearGradientBrush_Change_Stops.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\ImageBrush_WriteableBitmap.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4945,6 +4949,9 @@
       <DependentUpon>ClosedFigurePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\GradientBrushTests\GradientsPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\GradientBrushTests\LinearGradientBrush_Change_Stops.xaml.cs">
+      <DependentUpon>LinearGradientBrush_Change_Stops.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\ImageBrush_WriteableBitmap.xaml.cs">
       <DependentUpon>ImageBrush_WriteableBitmap.xaml</DependentUpon>
     </Compile>

@@ -24,7 +24,10 @@ namespace Windows.UI.Xaml.Media
 			"GradientStops",
 			typeof(GradientStopCollection),
 			typeof(GradientBrush),
-			new FrameworkPropertyMetadata(null)
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsArrange
+				)
 		);
 
 		public GradientStopCollection GradientStops
