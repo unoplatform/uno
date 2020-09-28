@@ -7,6 +7,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
+using Windows.UI.Xaml.Shapes;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -37,6 +38,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(thumb.ActualWidth > 0);
 			Assert.IsTrue(thumb.ActualHeight > 0);
+		}
+
+		[TestMethod]
+		public async Task When_Slider_Constrained_Horizontal()
+		{
+			var slider = new MySlider { Minimum = 0, Maximum = 100, Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+			var container = new Grid { Width = 0, Height = 80 };
+			container.Children.Add(slider);
+			WindowHelper.WindowContent = container;
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, slider.ActualWidth);
+			Assert.AreEqual(0, slider.HorizontalDecreaseRect.Width);
+			Assert.AreEqual(0, slider.HorizontalDecreaseRect.ActualWidth);
+		}
+
+		[TestMethod]
+		public async Task When_Slider_Constrained_Vertical()
+		{
+			var slider = new MySlider { Minimum = 0, Maximum = 100, Orientation = Orientation.Vertical, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+			var container = new Grid { Width = 80, Height = 0 };
+			container.Children.Add(slider);
+			WindowHelper.WindowContent = container;
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, slider.ActualHeight);
+			Assert.AreEqual(0, slider.VerticalDecreaseRect.Height);
+			Assert.AreEqual(0, slider.VerticalDecreaseRect.ActualHeight);
+		}
+	}
+
+	public partial class MySlider : Slider
+	{
+		public Rectangle HorizontalDecreaseRect { get; private set; }
+		public Rectangle VerticalDecreaseRect { get; private set; }
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+			HorizontalDecreaseRect = GetTemplateChild("HorizontalDecreaseRect") as Rectangle;
+			VerticalDecreaseRect = GetTemplateChild("VerticalDecreaseRect") as Rectangle;
 		}
 	}
 }
