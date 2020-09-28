@@ -112,8 +112,8 @@ namespace Windows.UI.Xaml
 
 		public bool CanDrag
 		{
-			get => (bool)GetValue(AllowDropProperty);
-			set => SetValue(AllowDropProperty, value);
+			get => (bool)GetValue(CanDragProperty);
+			set => SetValue(CanDragProperty, value);
 		}
 		#endregion
 
@@ -126,8 +126,8 @@ namespace Windows.UI.Xaml
 
 		public bool AllowDrop
 		{
-			get => (bool)GetValue(CanDragProperty);
-			set => SetValue(CanDragProperty, value);
+			get => (bool)GetValue(AllowDropProperty);
+			set => SetValue(AllowDropProperty, value);
 		}
 		#endregion
 
@@ -499,8 +499,15 @@ namespace Windows.UI.Xaml
 		{
 			if (args.DraggingState != DraggingState.Started // This UIElement is actually interested only by the starting
 				|| !CanDrag // Sanity ... should never happen!
-				|| !args.Pointer.Properties.IsLeftButtonPressed) 
+				|| !args.Pointer.Properties.IsLeftButtonPressed)
 			{
+				//if (CoreWindow.GetForCurrentThread()!.LastPointerEvent is PointerRoutedEventArgs ptArgs
+				//	&& ptArgs.Pointer.PointerDeviceType == args.PointerDeviceType)
+				//{
+				//	if (args.DraggingState == )
+				//	Window.Current._dragDropManager.ProcessPointerMoved();
+				//}
+
 				return;
 			}
 
@@ -515,8 +522,8 @@ namespace Windows.UI.Xaml
 
 		private Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs args = null)
 		{
-			args ??= CoreWindow.GetForCurrentThread().LastPointerEvent as PointerRoutedEventArgs;
-			if (args is null)
+			args ??= CoreWindow.GetForCurrentThread()!.LastPointerEvent as PointerRoutedEventArgs;
+			if (args is null || args.Pointer.PointerDeviceType != pointer.PointerDevice.PointerDeviceType)
 			{
 				// Fairly impossible case ...
 				return Task.FromResult(DataPackageOperation.None);
@@ -527,20 +534,21 @@ namespace Windows.UI.Xaml
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
 
+			// TODO: Add support for the starting deferral!
+
 			if (routedArgs.Cancel)
 			{
+				// The completed event is not raised if the starting has been cancelled
 				return Task.FromCanceled<DataPackageOperation>(CancellationToken.None);
 			}
 
 			if (!pointer.Properties.HasPressedButton)
 			{
-				// This is the UWP behavior: if no button is pressed, then the drag is completed
+				// This is the UWP behavior: if no button is pressed, then the drag is completed immediately
 				var noneResult = Task.FromResult(DataPackageOperation.None);
 				OnDragCompleted(noneResult, this);
 				return noneResult;
 			}
-
-			// TODO: Add support for the starting deferral!
 
 			var result = new TaskCompletionSource<DataPackageOperation>();
 			result.Task.ContinueWith(OnDragCompleted, this, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.RunContinuationsAsynchronously);
@@ -552,7 +560,7 @@ namespace Windows.UI.Xaml
 				pointer: pointer.PointerDevice);
 			dragInfo.RegisterCompletedCallback(result.SetResult);
 
-			CoreDragDropManager.GetForCurrentView().DragStarted(dragInfo);
+			CoreDragDropManager.GetForCurrentView()!.DragStarted(dragInfo);
 
 			return result.Task;
 		}
@@ -689,6 +697,10 @@ namespace Windows.UI.Xaml
 			if (_gestures.IsValueCreated)
 			{
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured);
+				//if (_gestures.Value.IsDragging)
+				//{
+				//	Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+				//}
 			}
 
 			return handledInManaged;
@@ -716,6 +728,10 @@ namespace Windows.UI.Xaml
 				// We need to process only events that were not handled by a child control,
 				// so we should not use them for gesture recognition.
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), !isManagedBubblingEvent || isOverOrCaptured);
+				//if (_gestures.Value.IsDragging)
+				//{
+				//	Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+				//}
 			}
 
 			return handledInManaged;
@@ -739,7 +755,12 @@ namespace Windows.UI.Xaml
 				// We need to process only events that are bubbling natively to this control (i.e. isOverOrCaptured == true),
 				// if they are bubbling in managed it means that they where handled a child control,
 				// so we should not use them for gesture recognition.
+				var isDragging = _gestures.Value.IsDragging;
 				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !isManagedBubblingEvent || isOverOrCaptured);
+				//if (isDragging)
+				//{
+				//	Window.Current.DragDrop.ProcessPointerReleased(args);
+				//}
 			}
 
 			// We release the captures on up but only after the released event and processed the gesture
@@ -762,6 +783,11 @@ namespace Windows.UI.Xaml
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 
 			handledInManaged |= SetOver(args, false, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
+
+			//if (_gestures.IsValueCreated && _gestures.Value.IsDragging)
+			//{
+			//	Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+			//}
 
 			// We release the captures on exit when pointer if not pressed
 			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
@@ -803,6 +829,10 @@ namespace Windows.UI.Xaml
 			if (_gestures.IsValueCreated)
 			{
 				_gestures.Value.CompleteGesture();
+				//if (_gestures.Value.IsDragging)
+				//{
+				//	Window.Current.DragDrop.ProcessPointerCanceled(args);
+				//}
 			}
 
 			var handledInManaged = false;

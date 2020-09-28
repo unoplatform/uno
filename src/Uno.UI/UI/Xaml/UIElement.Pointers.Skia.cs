@@ -194,7 +194,7 @@ namespace Windows.UI.Xaml
 
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-							this.Log().Trace($"Exiting branch from (root) {root.GetDebugName()} to (leaf) {stale.GetDebugName()}\r\n");
+						this.Log().Trace($"Exiting branch from (root) {root.GetDebugName()} to (leaf) {stale.GetDebugName()}\r\n");
 					}
 
 					while (stale is { })

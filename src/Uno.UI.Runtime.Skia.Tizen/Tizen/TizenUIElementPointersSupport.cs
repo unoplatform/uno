@@ -170,6 +170,8 @@ namespace Uno.UI.Runtime.Skia
 			{
 				IsLeftButtonPressed = left,
 				IsRightButtonPressed = right,
+				IsPrimary = true,
+				IsInRange = true,
 			};
 	}
 }
