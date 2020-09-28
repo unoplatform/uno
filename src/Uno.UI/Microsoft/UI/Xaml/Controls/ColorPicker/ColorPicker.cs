@@ -1063,11 +1063,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// where it was before.
 				int cursorPosition = alphaTextBox.SelectionStart + alphaTextBox.SelectionLength;
 
-				char s = alphaTextBox.Text[alphaTextBox.Text.Length - 1];
-
-				if (s != '%')
+				var text = alphaTextBox.Text;
+				if (string.IsNullOrEmpty(text) || text[text.Length - 1] != '%')
 				{
-					alphaTextBox.Text = alphaTextBox.Text + "%";
+					alphaTextBox.Text = text + "%";
 					alphaTextBox.SelectionStart = cursorPosition;
 				}
 
@@ -1101,9 +1100,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// If the user hasn't entered a #, we'll do that for them, keeping the cursor
 			// where it was before.
-			if (hexTextBox.Text[0] != '#')
+			var text = hexTextBox.Text;
+			if (string.IsNullOrEmpty(text) || text[0] != '#')
 			{
-				hexTextBox.Text = "#" + hexTextBox.Text;
+				hexTextBox.Text = "#" + text;
 				hexTextBox.SelectionStart = hexTextBox.Text.Length;
 			}
 
