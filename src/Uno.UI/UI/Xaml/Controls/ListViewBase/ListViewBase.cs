@@ -452,6 +452,8 @@ namespace Windows.UI.Xaml.Controls
 						this.Log().Debug($"Inserting {args.NewItems.Count} items starting at {args.NewStartingIndex}");
 					}
 
+					// Because new items are added, the containers for existing items with higher indices
+					// will be moved, and we must make sure to increase their indices
 					SaveContainersForIndexRepair(args.NewStartingIndex, args.NewItems.Count);
 					AddItems(args.NewStartingIndex, args.NewItems.Count, section);
 					RepairIndices();
@@ -469,7 +471,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						this.Log().Debug($"Deleting {args.OldItems.Count} items starting at {args.OldStartingIndex}");
 					}
-
+										
 					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
 					RepairIndices();
@@ -505,6 +507,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// Stores materialized containers starting a given index, so that their
+		/// ItemsControl.IndexForContainerProperty can be updated after the collection changes.		
+		/// </summary>
+		/// <param name="startingIndex">The minimum index of containers we care about.</param>
+		/// <param name="indexChange">How does the index change.</param>
 		private void SaveContainersForIndexRepair(int startingIndex, int indexChange)
 		{
 			_containersForIndexRepair.Clear();
@@ -513,11 +521,16 @@ namespace Windows.UI.Xaml.Controls
 				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
 				if (currentIndex >= startingIndex)
 				{
+					// we store the index, that should be set after the collection change
 					_containersForIndexRepair.Add(container, currentIndex + indexChange);
 				}
 			}
 		}
 
+		/// <summary>
+		/// Sets the indices of stored materialized containers to the appropriate index after
+		/// collection change.
+		/// </summary>
 		private void RepairIndices()
 		{
 			foreach(var containerPair in _containersForIndexRepair)
@@ -618,7 +631,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
 		{
-			// Index will be repaired by virtue of ItemsControl.
+			// Index will be repaired by virtue of ItemsControl
 			_containersForIndexRepair.Remove(element);
 
 			base.PrepareContainerForItemOverride(element, item);
