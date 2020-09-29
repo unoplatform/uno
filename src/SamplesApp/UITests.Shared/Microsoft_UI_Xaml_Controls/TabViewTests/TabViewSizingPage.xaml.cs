@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -19,8 +18,7 @@ using SymbolIconSource = Windows.UI.Xaml.Controls.SymbolIconSource;
 #endif
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
-{
-	[Sample("TabView", "WinUI")]
+{	
 	public sealed partial class TabViewSizingPage : Page
 	{
 		public TabViewSizingPage()

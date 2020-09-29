@@ -400,17 +400,17 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 		private void TabViewSizingPageButton_Click(object sender, RoutedEventArgs e)
 		{
-			this.Frame.Navigate(typeof(TabViewSizingPage));
+			this.GetFrame().Navigate(typeof(TabViewSizingPage));
 		}
 
 		private void TabViewTabClosingBehaviorButton_Click(object sender, RoutedEventArgs e)
 		{
-			this.Frame.Navigate(typeof(TabViewTabClosingBehaviorPage));
+			this.GetFrame().Navigate(typeof(TabViewTabClosingBehaviorPage));
 		}
 
 		private void TabViewTabItemsSourcePageButton_Click(object sender, RoutedEventArgs e)
 		{
-			this.Frame.Navigate(typeof(TabViewTabItemsSourcePage));
+			this.GetFrame().Navigate(typeof(TabViewTabItemsSourcePage));
 		}
 
 		private void ShortLongTextButton_Click(object sender, RoutedEventArgs e)
@@ -470,6 +470,13 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			}
 
 			return null;
+		}
+
+		// Uno Specific sample subpage navigation
+		private Frame GetFrame()
+		{
+			NavFrameGrid.Visibility = Visibility.Visible;
+			return NavFrame;
 		}
 	}
 }

@@ -23,7 +23,6 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		public object DataContent { get; set; }
 	}
 
-	[Sample("TabView", "WinUI")]
 	public sealed partial class TabViewTabItemsSourcePage : Page
 	{
 		const int initialTabsCount = 3;
