@@ -100,7 +100,8 @@
 		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
 
 		<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
-		<Page Remove="@(Page)" />
+		<PageToRemove Remove="@(Page)" />
+		<Page Remove="@(PageToRemove)" />
 	</ItemGroup>
 
 	<!-- Override existing target, this project cannot be published -->
