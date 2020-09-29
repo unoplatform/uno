@@ -97,6 +97,7 @@ namespace Windows.UI.Xaml.Controls
 			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, TextAlignmentProperty.GetMetadata(GetType()).DefaultValue, TextAlignment));
 			OnTextWrappingChanged(CreateInitialValueChangerEventArgs(TextWrappingProperty, TextWrappingProperty.GetMetadata(GetType()).DefaultValue, TextWrapping));
 			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
+			OnVerticalContentAlignmentChanged(VerticalAlignment.Center, VerticalContentAlignment);
 
 			var buttonRef = _deleteButton?.GetTarget();
 
@@ -712,5 +713,20 @@ namespace Windows.UI.Xaml.Controls
 		protected override AutomationPeer OnCreateAutomationPeer() => new TextBoxAutomationPeer(this);
 
 		public override string GetAccessibilityInnerText() => Text;
+
+		protected override void OnVerticalContentAlignmentChanged(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment)
+		{
+			base.OnVerticalContentAlignmentChanged(oldVerticalContentAlignment, newVerticalContentAlignment);
+
+			if (_contentElement != null)
+			{
+				_contentElement.VerticalAlignment = newVerticalContentAlignment;
+			}
+
+			if (_placeHolder != null)
+			{
+				_placeHolder.VerticalAlignment = newVerticalContentAlignment;
+			}			
+		}
 	}
 }
