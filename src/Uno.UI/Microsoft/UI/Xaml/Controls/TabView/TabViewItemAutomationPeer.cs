@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public class TabViewItemAutomationPeer : ListViewItemAutomationPeer
+	public partial class TabViewItemAutomationPeer : ListViewItemAutomationPeer
 	{
 		public TabViewItemAutomationPeer(TabViewItem owner) : base(owner)
 		{

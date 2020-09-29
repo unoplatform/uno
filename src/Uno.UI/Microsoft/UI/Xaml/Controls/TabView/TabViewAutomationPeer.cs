@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public class TabViewAutomationPeer : FrameworkElementAutomationPeer, ISelectionProvider
+	public partial class TabViewAutomationPeer : FrameworkElementAutomationPeer, ISelectionProvider
 	{
 
 		public TabViewAutomationPeer(TabView owner) : base(owner)

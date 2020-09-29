@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public sealed class TabViewTabCloseRequestedEventArgs
+	public sealed partial class TabViewTabCloseRequestedEventArgs
     {
 		internal TabViewTabCloseRequestedEventArgs(object item, TabViewItem tab)
 		{

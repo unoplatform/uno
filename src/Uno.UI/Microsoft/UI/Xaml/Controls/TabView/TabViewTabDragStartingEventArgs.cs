@@ -4,7 +4,7 @@ using Windows.ApplicationModel.DataTransfer;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class TabViewTabDragStartingEventArgs
+	public sealed partial class TabViewTabDragStartingEventArgs
     {
 		internal TabViewTabDragStartingEventArgs(DataPackage data, object item, TabViewItem tab)
 		{

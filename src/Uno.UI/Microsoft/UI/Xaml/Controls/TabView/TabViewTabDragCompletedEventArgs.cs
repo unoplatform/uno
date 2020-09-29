@@ -4,7 +4,7 @@ using Windows.ApplicationModel.DataTransfer;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class TabViewTabDragCompletedEventArgs
+	public sealed partial class TabViewTabDragCompletedEventArgs
     {
 		internal TabViewTabDragCompletedEventArgs(DataPackageOperation dropResult, object item, TabViewItem tab)
 		{

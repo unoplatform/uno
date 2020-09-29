@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class TabViewTabDroppedOutsideEventArgs
+	public sealed partial class TabViewTabDroppedOutsideEventArgs
     {
 		internal TabViewTabDroppedOutsideEventArgs(object item, TabViewItem tab)
 		{
