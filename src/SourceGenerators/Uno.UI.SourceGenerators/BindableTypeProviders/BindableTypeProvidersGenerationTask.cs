@@ -227,7 +227,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					{
 						using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
 						{
-							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) || !type.IsGenericType)"))
+							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType)"))
 							{
 								writer.AppendLineInvariant(@"_knownMissingTypes.Add(type);");
 								writer.AppendLineInvariant(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
@@ -474,15 +474,9 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 						if (getMethod != null)
 						{
-							var getter = $"{XamlConstants.Types.DependencyObjectExtensions}.GetValue(instance, {ownerTypeName}.{propertyName}Property, precedence)";
-							var setter = $"{XamlConstants.Types.DependencyObjectExtensions}.SetValue(instance, {ownerTypeName}.{propertyName}Property, value, precedence)";
-
 							var propertyType = GetGlobalQualifier(getMethod.ReturnType) + SanitizeTypeName(getMethod.ReturnType.ToString());
 
-							writer.AppendLineInvariant($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyType}),  Get{propertyName}, Set{propertyName});");
-
-							postWriter.AppendLineInvariant($@"private static object Get{propertyName}(object instance,  Windows.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => {getter};");
-							postWriter.AppendLineInvariant($@"private static void Set{propertyName}(object instance, object value, Windows.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => {setter};");
+							writer.AppendLineInvariant($@"bindableType.AddProperty({ownerType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{dependencyProperty});");
 						}
 					}
 
