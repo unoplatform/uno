@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.Extensions.Logging;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -101,7 +102,8 @@ namespace Windows.UI.Xaml.Controls
 
 			if (buttonRef != null)
 			{
-				buttonRef.Command = new DelegateCommand(DeleteText);
+				var thisRef = (this as IWeakReferenceProvider).WeakReference;
+				buttonRef.Command = new DelegateCommand(() => (thisRef.Target as TextBox)?.DeleteText());
 			}
 
 			InitializePropertiesPartial();
