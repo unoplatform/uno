@@ -1,5 +1,6 @@
 using Windows.UI.Text;
 using Windows.UI.Xaml.Media;
+using FontStyle = Windows.UI.Text.FontStyle;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -52,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FontStyleProperty { get; } =
-			DependencyProperty.Register(nameof(FontStyle), typeof(FontStyle), typeof(FontIconSource), new PropertyMetadata(Text.FontStyle.Normal));
+			DependencyProperty.Register(nameof(FontStyle), typeof(FontStyle), typeof(FontIconSource), new PropertyMetadata(FontStyle.Normal));
 
 		public double FontSize
 		{
