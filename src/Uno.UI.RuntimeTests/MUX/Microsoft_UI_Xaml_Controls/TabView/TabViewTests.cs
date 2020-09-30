@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Provider;
 using Private.Infrastructure;
+using Microsoft.UI.Xaml.Controls;
 
 #if USING_TAEF
 using WEX.TestExecution;
