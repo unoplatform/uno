@@ -9,8 +9,12 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
 		<TextBlock x:Name="LastClickedButtonTextBlock" Text="" />
-		<ListView>
+		<ListView Grid.Row="1">
 			<ListViewItem>
 				<Button x:Name="EnabledButton" Click="Button_Click">This item is enabled</Button>
 			</ListViewItem>
