@@ -55,6 +55,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override bool IsSimpleLayout => true;
 
+		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
+
 		internal override void UpdateThemeBindings()
 		{
 			base.UpdateThemeBindings();

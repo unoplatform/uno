@@ -610,8 +610,11 @@ namespace Windows.UI.Xaml
 				{
 					if (!isHandled || handler.HandledEventsToo)
 					{
-						InvokeHandler(handler.Handler, args);
-						isHandled = IsHandled(args);
+						if (IsEnabledOverride())
+						{
+							InvokeHandler(handler.Handler, args);
+							isHandled = IsHandled(args);
+						}
 					}
 				}
 

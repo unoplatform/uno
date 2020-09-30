@@ -187,8 +187,6 @@ namespace Windows.UI.Xaml
 
 		internal bool IsPointerCaptured { get; set; }
 
-		internal virtual bool IsEnabledOverride() => true;
-
 		public virtual IEnumerable<UIElement> GetChildren() => _children;
 
 		public IntPtr Handle { get; set; }
