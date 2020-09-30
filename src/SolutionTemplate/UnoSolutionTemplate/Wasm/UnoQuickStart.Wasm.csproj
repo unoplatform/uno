@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFramework>net5.0</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
 	</PropertyGroup>
 
@@ -11,12 +11,18 @@
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
+
+		<!--
+		IL Linking is disabled in Debug configuration.
+		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
+		-->
+		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Content Include="Assets\SplashScreen.png" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<UpToDateCheckInput Include="..\$ext_safeprojectname$.Shared\**\*.xaml" />
 	</ItemGroup>
@@ -32,24 +38,25 @@
 
 	<ItemGroup>
 		<!--
-    This item group is required by the project template because of the
-    new SDK-Style project, otherwise some files are not added automatically.
+		This item group is required by the project template because of the
+		new SDK-Style project, otherwise some files are not added automatically.
 
-    You can safely remove this ItemGroup completely.
-    -->
+		You can safely remove this ItemGroup completely.
+		-->
 		<None Include="Program.cs" />
 		<None Include="LinkerConfig.xml" />
 		<None Include="wwwroot\web.config" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- Note that for WebAssembly version 1.1.1 of the console logger required -->
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.3.0" />
 		<PackageReference Include="Uno.UI.WebAssembly" Version="2.2.0" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.3.4" />
-		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="1.3.4" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="3.3.1" />
+		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="3.3.1" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />

@@ -3,8 +3,8 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlockControl", "Simple_Contrained_Horizontal_Center_Wrap")]
-	public sealed partial class Simple_Contrained_Horizontal_Center_Wrap : UserControl
+	[Sample]
+	public sealed partial class Simple_Contrained_Horizontal_Center_Wrap : Page
 	{
 		public Simple_Contrained_Horizontal_Center_Wrap()
 		{

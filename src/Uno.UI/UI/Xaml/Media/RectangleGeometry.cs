@@ -8,7 +8,12 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class RectangleGeometry : Geometry
 	{
-		public RectangleGeometry() { }
+		public RectangleGeometry()
+		{
+			InitPartials();
+		}
+
+		partial void InitPartials();
 
 		#region Rect DependencyProperty
 
@@ -18,19 +23,13 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(RectProperty, value);
 		}
 
-		public static DependencyProperty RectProperty { get ; } =
+		public static DependencyProperty RectProperty { get; } =
 			DependencyProperty.Register(
 				"Rect",
 				typeof(Rect), typeof(RectangleGeometry),
 				new FrameworkPropertyMetadata(
 					null,
-					(s, e) => ((RectangleGeometry)s)?.OnRectChanged(e)
-				)
-			);
-
-		private void OnRectChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -66,5 +65,17 @@ namespace Windows.UI.Xaml.Media
 #endif
 
 		#endregion
+
+		private protected override Rect ComputeBounds()
+		{
+			if(Transform is { } transform)
+			{
+				return transform.TransformBounds(Rect);
+			}
+			else
+			{
+				return Rect;
+			}
+		}
 	}
 }

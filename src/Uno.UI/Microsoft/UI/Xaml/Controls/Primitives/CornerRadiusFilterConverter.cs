@@ -9,14 +9,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class CornerRadiusFilterConverter : DependencyObject, IValueConverter
 	{
 		public static DependencyProperty FilterProperty { get ; } = DependencyProperty.Register(
-			"Filter", typeof(CornerRadiusFilterKind), typeof(CornerRadiusFilterConverter), new FrameworkPropertyMetadata(CornerRadiusFilterKind.None));
+			nameof(Filter), typeof(CornerRadiusFilterKind), typeof(CornerRadiusFilterConverter), new FrameworkPropertyMetadata(CornerRadiusFilterKind.None));
 
 		public CornerRadiusFilterKind Filter
 		{
-			get { return (CornerRadiusFilterKind)GetValue(FilterProperty); }
-			set { SetValue(FilterProperty, value); }
+			get => (CornerRadiusFilterKind)GetValue(FilterProperty);
+			set => SetValue(FilterProperty, value);
 		}
-
 
 		private static CornerRadius Convert(CornerRadius radius, CornerRadiusFilterKind filterKind)
 		{
@@ -70,9 +69,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return null;
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
-		{
+		public object ConvertBack(object value, Type targetType, object parameter, string language) =>
 			throw new NotSupportedException();
-		}
 	}
 }

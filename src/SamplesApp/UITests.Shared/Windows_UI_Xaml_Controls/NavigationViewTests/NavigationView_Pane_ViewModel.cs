@@ -6,7 +6,7 @@ using Windows.UI.Core;
 
 namespace SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests
 {
-	public class NavigationViewItemsViewModel : ViewModelBase
+	internal class NavigationViewItemsViewModel : ViewModelBase
 	{
 		public NavigationViewItemsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

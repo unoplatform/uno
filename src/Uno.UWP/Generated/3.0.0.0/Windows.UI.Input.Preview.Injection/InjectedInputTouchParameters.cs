@@ -2,24 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Preview.Injection
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum InjectedInputTouchParameters 
+	#if false || false || false || false || false || false || false
+	[global::System.FlagsAttribute]
+	public   enum InjectedInputTouchParameters : uint
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Contact,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Orientation,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Pressure,
-		#endif
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputTouchParameters.None
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputTouchParameters.Contact
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputTouchParameters.Orientation
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputTouchParameters.Pressure
 	}
 	#endif
 }

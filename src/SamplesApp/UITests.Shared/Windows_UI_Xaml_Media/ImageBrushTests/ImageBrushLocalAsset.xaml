@@ -24,7 +24,7 @@
 						BorderBrush="Sienna"
 						BorderThickness="3">
 					<Border.Background>
-						<ImageBrush ImageSource="/Assets/Diagnostics/avatar.png"/>
+						<ImageBrush ImageSource="/Assets/Formats/uno-overalls.png"/>
 					</Border.Background>
 				</Border>
 			</DataTemplate>

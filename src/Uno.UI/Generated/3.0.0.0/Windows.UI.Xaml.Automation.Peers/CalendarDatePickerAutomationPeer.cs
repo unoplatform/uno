@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CalendarDatePickerAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IInvokeProvider,global::Windows.UI.Xaml.Automation.Provider.IValueProvider
@@ -27,21 +27,9 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CalendarDatePickerAutomationPeer( global::Windows.UI.Xaml.Controls.CalendarDatePicker owner) : base(owner)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer", "CalendarDatePickerAutomationPeer.CalendarDatePickerAutomationPeer(CalendarDatePicker owner)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.CalendarDatePickerAutomationPeer(Windows.UI.Xaml.Controls.CalendarDatePicker)
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.CalendarDatePickerAutomationPeer(Windows.UI.Xaml.Controls.CalendarDatePicker)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Invoke()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer", "void CalendarDatePickerAutomationPeer.Invoke()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.Invoke()
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.IsReadOnly.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.Value.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

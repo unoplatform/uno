@@ -20,7 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="WasmCSS\*.css" />
+		<!-- CSS files are automatically added as EmbeddedResource by Xamarin.Forms -->
 		<EmbeddedResource Include="WasmScripts\*.js" />
 	</ItemGroup>
 
@@ -37,6 +37,7 @@
 			<DependentUpon>%(FileName)</DependentUpon>
 		</Compile>
 		<Page Include="../UnoXFQuickStart.UWP/*.xaml" />
+		<UpToDateCheckInput Include="../UnoXFQuickStart.UWP/*.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -46,6 +47,6 @@
 		<PackageReference Include="Uno.UI.WebAssembly" Version="3.0.5" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.3.0" />
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="1.3.0" />
-		<PackageReference Include="Uno.Xamarin.Forms.Platform" Version="4.5.0-uno.571" />
+		<PackageReference Include="Uno.Xamarin.Forms.Platform" Version="4.8.0-uno.1322" />
 	</ItemGroup>
 </Project>

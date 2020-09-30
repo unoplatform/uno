@@ -2,225 +2,80 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum BluetoothMinorClass 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Uncategorized,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComputerDesktop,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComputerServer,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComputerLaptop,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComputerHandheld,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComputerPalmSize,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComputerWearable,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComputerTablet,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PhoneCellular,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PhoneCordless,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PhoneSmartPhone,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PhoneWired,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PhoneIsdn,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkFullyAvailable,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkUsed01To17Percent,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkUsed17To33Percent,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkUsed33To50Percent,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkUsed50To67Percent,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkUsed67To83Percent,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkUsed83To99Percent,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkNoServiceAvailable,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoWearableHeadset,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoHandsFree,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoMicrophone,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoLoudspeaker,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoHeadphones,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoPortableAudio,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoCarAudio,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoSetTopBox,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoHifiAudioDevice,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoVcr,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoVideoCamera,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoCamcorder,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoVideoMonitor,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoVideoDisplayAndLoudspeaker,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoVideoConferencing,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideoGamingOrToy,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PeripheralJoystick,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PeripheralGamepad,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PeripheralRemoteControl,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PeripheralSensing,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PeripheralDigitizerTablet,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PeripheralCardReader,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PeripheralDigitalPen,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PeripheralHandheldScanner,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PeripheralHandheldGesture,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		WearableWristwatch,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		WearablePager,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		WearableJacket,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		WearableHelmet,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		WearableGlasses,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ToyRobot,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ToyVehicle,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ToyDoll,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ToyController,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ToyGame,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthBloodPressureMonitor,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthThermometer,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthWeighingScale,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthGlucoseMeter,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthPulseOximeter,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthHeartRateMonitor,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthHealthDataDisplay,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthStepCounter,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthBodyCompositionAnalyzer,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthPeakFlowMonitor,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthMedicationMonitor,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthKneeProsthesis,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthAnkleProsthesis,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthGenericHealthManager,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HealthPersonalMobilityDevice,
-		#endif
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.Uncategorized
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ComputerDesktop
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ComputerServer
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ComputerLaptop
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ComputerHandheld
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ComputerPalmSize
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ComputerWearable
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ComputerTablet
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PhoneCellular
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PhoneCordless
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PhoneSmartPhone
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PhoneWired
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PhoneIsdn
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.NetworkFullyAvailable
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.NetworkUsed01To17Percent
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.NetworkUsed17To33Percent
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.NetworkUsed33To50Percent
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.NetworkUsed50To67Percent
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.NetworkUsed67To83Percent
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.NetworkUsed83To99Percent
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.NetworkNoServiceAvailable
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoWearableHeadset
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoHandsFree
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoMicrophone
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoLoudspeaker
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoHeadphones
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoPortableAudio
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoCarAudio
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoSetTopBox
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoHifiAudioDevice
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoVcr
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoVideoCamera
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoCamcorder
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoVideoMonitor
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoVideoDisplayAndLoudspeaker
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoVideoConferencing
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.AudioVideoGamingOrToy
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PeripheralJoystick
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PeripheralGamepad
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PeripheralRemoteControl
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PeripheralSensing
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PeripheralDigitizerTablet
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PeripheralCardReader
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PeripheralDigitalPen
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PeripheralHandheldScanner
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.PeripheralHandheldGesture
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.WearableWristwatch
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.WearablePager
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.WearableJacket
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.WearableHelmet
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.WearableGlasses
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ToyRobot
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ToyVehicle
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ToyDoll
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ToyController
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ToyGame
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthBloodPressureMonitor
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthThermometer
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthWeighingScale
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthGlucoseMeter
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthPulseOximeter
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthHeartRateMonitor
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthHealthDataDisplay
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthStepCounter
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthBodyCompositionAnalyzer
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthPeakFlowMonitor
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthMedicationMonitor
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthKneeProsthesis
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthAnkleProsthesis
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthGenericHealthManager
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthPersonalMobilityDevice
 	}
 	#endif
 }

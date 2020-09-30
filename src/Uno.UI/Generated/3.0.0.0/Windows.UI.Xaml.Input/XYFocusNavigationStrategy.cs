@@ -2,24 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum XYFocusNavigationStrategy 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Auto,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Projection,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NavigationDirectionDistance,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		RectilinearDistance,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.Auto
+		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.Projection
+		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.NavigationDirectionDistance
+		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.RectilinearDistance
 	}
 	#endif
 }

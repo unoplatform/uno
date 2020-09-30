@@ -20,5 +20,9 @@ namespace Windows.UI.Core
 
 		public IList<PointerPoint> GetIntermediatePoints()
 			=> new List<PointerPoint> {CurrentPoint};
+
+		/// <inheritdoc />
+		public override string ToString()
+			=> $"{CurrentPoint} | modifiers: {KeyModifiers}";
 	}
 }

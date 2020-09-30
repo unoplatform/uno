@@ -37,13 +37,13 @@ namespace Microsoft.UI.Xaml.Media
 				return null;
 			}
 
-			var colors = GradientStops.SelectToArray(s => ((Android.Graphics.Color)s.Color).ToArgb());
+			var colors = GradientStops.SelectToArray(s => ((Android.Graphics.Color)GetColorWithOpacity(s.Color)).ToArgb());
 			var locations = GradientStops.SelectToArray(s => (float)s.Offset);
 
 			var width = destinationRect.Width;
 			var height = destinationRect.Height;
 
-			var transform = RelativeTransform?.ToNative(size: new Windows.Foundation.Size(width, height), isBrush: true);
+			var transform = RelativeTransform?.ToNativeMatrix(size: new Windows.Foundation.Size(width, height));
 
 			var shader = new RadialGradient(
 				(float)center.X,

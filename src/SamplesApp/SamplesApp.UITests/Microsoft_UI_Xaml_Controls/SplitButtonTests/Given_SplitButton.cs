@@ -6,7 +6,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 {
-	public class Given_SplitButton : SampleControlUITestBase
+	public partial class Given_SplitButton : SampleControlUITestBase
 	{
 		// TODO: Additional tests can be ported when #3165 is fixed
 
@@ -16,10 +16,10 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 		{
 			Run("UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests.SplitButtonPage");
 
-			var splitButton = _app.Marked("CommandSplitButton");
+			var splitButton = new QueryEx(q => q.All().Marked("CommandSplitButton"));
 
-			var canExecuteCheckBox = _app.Marked("CanExecuteCheckBox");
-			var executeCountTextBlock = _app.Marked("ExecuteCountTextBlock");
+			var canExecuteCheckBox = new QueryEx(q => q.All().Marked("CanExecuteCheckBox"));
+			var executeCountTextBlock = new QueryEx(q => q.All().Marked("ExecuteCountTextBlock"));
 
 			Console.WriteLine("Assert that the control starts out enabled");			
 			Assert.IsTrue("true".Equals(canExecuteCheckBox.GetDependencyPropertyValue("IsChecked").ToString(), StringComparison.InvariantCultureIgnoreCase));
@@ -31,7 +31,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 			Assert.AreEqual("1", executeCountTextBlock.GetText());
 
 			Console.WriteLine("Assert that setting CanExecute to false disables the primary button");
-			canExecuteCheckBox.Tap();
+			canExecuteCheckBox.FastTap();
 
 			//Wait.ForIdle();
 
@@ -44,8 +44,8 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 			// This method taps the descendants and differs from MUX!
 			Console.WriteLine("Tap primary button area");
 
-			splitButton.Descendant().Marked("PrimaryButton").Tap();
+			splitButton.Descendant().Marked("PrimaryButton").FastTap();
 			//Wait.ForIdle();
-		}
+		}	
 	}
 }

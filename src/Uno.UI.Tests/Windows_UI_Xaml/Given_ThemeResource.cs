@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -68,11 +69,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 				var textBlock = page.ResourceKeyThemedTextBlock;
 
-				Assert.AreEqual(Colors.Black, (textBlock.Foreground as SolidColorBrush).Color);
+				// Dark text
+				Assert.IsTrue(((SolidColorBrush)textBlock.Foreground).Color.R < 100);
 
 				await SwapSystemTheme();
 
-				Assert.AreEqual(Colors.White, (textBlock.Foreground as SolidColorBrush).Color);
+				// Light text
+				Assert.IsTrue(((SolidColorBrush)textBlock.Foreground).Color.R > 200);
 			}
 		}
 
@@ -87,11 +90,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 				app.HostView.Children.Add(button);
 
-				Assert.AreEqual(Colors.Black, (button.Foreground as SolidColorBrush).Color);
+				// Dark text
+				Assert.IsTrue(((SolidColorBrush)button.Foreground).Color.R < 100);
 
 				await SwapSystemTheme();
 
-				Assert.AreEqual(Colors.White, (button.Foreground as SolidColorBrush).Color);
+				// Light text
+				Assert.IsTrue(((SolidColorBrush)button.Foreground).Color.R > 200);
 			}
 		}
 
@@ -233,7 +238,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[Ignore("To support changing an already-set value when system theme changes, we need to resolve the DP pointed to by the BindingPath in Setter.ApplyValue(). (Which can be done, but hasn't.)")]
 		public async Task When_ThemeResource_In_Visual_States_Setter_Theme_Changed()
 		{
 			var page = new ThemeResource_In_Visual_States_Page();
@@ -595,26 +599,88 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(490, transform.X); // Resource is actually a Thickness!
 		}
 
-		private static async Task<bool> SwapSystemTheme()
+		[TestMethod]
+		public async Task When_Theme_Bound_Overwritten_By_Local()
 		{
-			var currentTheme = Application.Current.RequestedTheme;
-			var targetTheme = currentTheme == ApplicationTheme.Light ?
-				ApplicationTheme.Dark :
-				ApplicationTheme.Light;
-#if NETFX_CORE
-			if (!UnitTestsApp.App.EnableInteractiveTests || targetTheme == ApplicationTheme.Light)
-			{
-				return false;
-			}
+			var page = new ThemeResource_When_Theme_Bound_Overwritten_By_Local_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
 
-			_swapTask = _swapTask ?? GetSwapTask();
+			TextBlock tb = page.SubjectTextBlock;
 
-			await _swapTask;
-#else
-			Application.Current.SetExplicitRequestedTheme(targetTheme);
-#endif
-			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
-			return true;
+			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(tb.Foreground, Colors.White);
+
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
+
+			tb.Foreground = new SolidColorBrush(Colors.PeachPuff);
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(tb.Foreground, Colors.PeachPuff);
+
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(tb.Foreground, Colors.PeachPuff);
 		}
+
+		[TestMethod]
+		public async Task When_VisualState_Setter_Value()
+		{
+			var page = new ThemeResource_When_VisualState_Setter_Value_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			var tb = ViewExtensions.FindFirstChild<TextBlock>(page.SubjectToggleButton);
+			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(tb.Foreground, Colors.White);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
+
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(tb.Foreground, Colors.White);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
+
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
+		}
+
+		[TestMethod]
+		public async Task When_VisualState_Setter_Value_Complex_Path()
+		{
+			var page = new ThemeResource_When_VisualState_Setter_Value_Complex_Path_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			var ellipse = ViewExtensions.FindFirstChild<Ellipse>(page.SubjectToggleButton);
+
+			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(ellipse.Stroke, Colors.LightGreen);
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(ellipse.Stroke, Colors.LightGreen);
+
+			await SwapSystemTheme();
+			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
+		}
+
+		internal static Task<bool> SwapSystemTheme() => ThemeHelper.SwapSystemTheme();
 	}
 }

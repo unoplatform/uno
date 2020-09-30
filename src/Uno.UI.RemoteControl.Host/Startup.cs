@@ -22,7 +22,7 @@ namespace Uno.UI.RemoteControl.Host
 
 		public IConfiguration Configuration { get; }
 
-		public void Configure(IApplicationBuilder app, IOptionsMonitor<RemoteControlOptions> optionsAccessor, IHostingEnvironment env)
+		public void Configure(IApplicationBuilder app, IOptionsMonitor<RemoteControlOptions> optionsAccessor)
 		{
 			var provider = new ServiceLocatorAdapter(app.ApplicationServices);
 			ServiceLocator.SetLocatorProvider(() => provider);

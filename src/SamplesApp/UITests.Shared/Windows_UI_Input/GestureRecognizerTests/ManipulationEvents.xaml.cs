@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Linq;
 using Windows.UI;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
+
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 {
-	[SampleControlInfo("Gesture recognizer", "Manipulation Events")]
+	[Sample("Gesture recognizer", "Manipulation Events", IgnoreInSnapshotTests = true)]
 	public sealed partial class ManipulationEvents : Page
 	{
 		public ManipulationEvents()
@@ -38,28 +44,17 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 
 		private void Move(ManipulationDelta delta, ManipulationDelta cumulative)
 		{
-			var deltaTransform = GetOrCreateTransform(_thumb);
+			var deltaTransform = _thumbTranslate;
 			deltaTransform.X -= delta.Translation.X;
 			deltaTransform.Y -= delta.Translation.Y;
 
-			var cumulativeTransform = GetOrCreateTransform(_thumbShadow);
+			var cumulativeTransform = _thumbShadowTranslate;
 			cumulativeTransform.X = -cumulative.Translation.X;
 			cumulativeTransform.Y = -cumulative.Translation.Y;
 
 			System.Diagnostics.Debug.WriteLine(
 				$"X: {cumulative.Translation.X:' '000.00;'-'000.00} (Δ: {delta.Translation.X:' '00.00;'-'00.00} Σ: {deltaTransform.X:' '000.00;'-'000.00}) " +
 				$"Y: {cumulative.Translation.Y:' '000.00;'-'000.00} (Δ: {delta.Translation.Y:' '00.00;'-'00.00} Σ: {deltaTransform.Y:' '000.00;'-'000.00}) ");
-		}
-
-		private static TranslateTransform GetOrCreateTransform(Border target)
-		{
-			var transform = target.RenderTransform as TranslateTransform;
-			if (transform == null)
-			{
-				target.RenderTransform = transform = new TranslateTransform();
-			}
-
-			return transform;
 		}
 	}
 }

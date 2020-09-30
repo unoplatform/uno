@@ -2,18 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation.Geofencing
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum GeofenceRemovalReason 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Used,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Expired,
-		#endif
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceRemovalReason.Used
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceRemovalReason.Expired
 	}
 	#endif
 }

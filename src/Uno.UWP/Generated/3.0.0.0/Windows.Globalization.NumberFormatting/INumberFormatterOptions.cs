@@ -2,70 +2,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.NumberFormatting
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface INumberFormatterOptions 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		int FractionDigits
-		{
-			get;
-			set;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		string GeographicRegion
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		int IntegerDigits
-		{
-			get;
-			set;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsDecimalPointAlwaysDisplayed
-		{
-			get;
-			set;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsGrouped
-		{
-			get;
-			set;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::System.Collections.Generic.IReadOnlyList<string> Languages
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		string NumeralSystem
-		{
-			get;
-			set;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		string ResolvedGeographicRegion
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		string ResolvedLanguage
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property FractionDigits
+		// Skipping already declared property GeographicRegion
+		// Skipping already declared property IntegerDigits
+		// Skipping already declared property IsDecimalPointAlwaysDisplayed
+		// Skipping already declared property IsGrouped
+		// Skipping already declared property Languages
+		// Skipping already declared property NumeralSystem
+		// Skipping already declared property ResolvedGeographicRegion
+		// Skipping already declared property ResolvedLanguage
 		// Forced skipping of method Windows.Globalization.NumberFormatting.INumberFormatterOptions.Languages.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.INumberFormatterOptions.GeographicRegion.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.INumberFormatterOptions.IntegerDigits.get

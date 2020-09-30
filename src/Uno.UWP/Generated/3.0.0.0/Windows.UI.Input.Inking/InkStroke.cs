@@ -107,6 +107,16 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  uint PointerId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint InkStroke.PointerId is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.DrawingAttributes.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.DrawingAttributes.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.BoundingRect.get
@@ -141,5 +151,6 @@ namespace Windows.UI.Input.Inking
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.StrokeStartedTime.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.StrokeDuration.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.StrokeDuration.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.PointerId.get
 	}
 }

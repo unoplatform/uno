@@ -7,9 +7,9 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;
 using Windows.UI.Xaml.Controls;
 
-namespace Uno.UI.Samples.Content.UITests.FocusManager
+namespace Uno.UI.Samples.Content.UITests.FocusTests
 {
-	[SampleControlInfo("FocusManager", "FocusManagerTest")]
+	[SampleControlInfo("Focus", "FocusManagerTest")]
 	public sealed partial class FocusManagerTest : UserControl
     {
 		public FocusManagerTest()

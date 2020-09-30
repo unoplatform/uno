@@ -238,8 +238,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem>();
 #endif
 			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.AutoSuggestBox>();
+#if !HAS_UNO_WINUI
 			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.MediaPlayerElement>();
 			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.MediaTransportControls>();
+#endif
 			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.Button>();
 			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.CheckBox>();
 			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.ToggleSwitch>();

@@ -1,9 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -142,7 +145,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(2, rootData.Model.MyIntProperty);
 		}
-		
+
 		[TestMethod]
 		public void When_Object_TwoWay()
 		{
@@ -345,6 +348,31 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_Converter_TwoWay()
+		{
+			var SUT = new Binding_Converter_TwoWay();
+
+			SUT.ForceLoaded();
+
+			ListView list = SUT.ViewToggleListView;
+
+			CheckBox cb = SUT.BoundCheckBox;
+
+			Assert.AreEqual(0, list.SelectedIndex);
+			Assert.IsTrue(cb.IsChecked.Value);
+
+			list.SelectedItem = list.Items[1];
+
+			Assert.AreEqual(1, list.SelectedIndex);
+			 Assert.IsFalse(cb.IsChecked.Value);
+
+			list.SelectedItem = list.Items[0];
+
+			Assert.AreEqual(0, list.SelectedIndex);
+			Assert.IsTrue(cb.IsChecked.Value);
+		}
+
+		[TestMethod]
 		public void When_ConverterParameter()
 		{
 			var SUT = new Binding_Converter_Parameter();
@@ -531,6 +559,49 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_DefaultBindingMode_DataTemplate_Undefined()
+		{
+			var SUT = new Binding_DefaultBindMode_DataTemplate();
+			var model = new Binding_DefaultBindMode_DataTemplate_Model();
+
+			var default_undefined = (TextBlock)SUT.FindName("Default_undefined");
+			var default_undefined_OneWay = (TextBlock)SUT.FindName("Default_undefined_OneWay");
+			var default_undefined_TwoWay = (TextBlock)SUT.FindName("Default_undefined_TwoWay");
+
+			Assert.IsNull(model.Default_undefined_Property);
+			Assert.IsNull(model.Default_undefined_OneWay_Property);
+			Assert.IsNull(model.Default_undefined_TwoWay_Property);
+
+			model.Default_undefined_Property = "undefined updated 1";
+			model.Default_undefined_OneWay_Property = "undefined updated 2";
+			model.Default_undefined_TwoWay_Property = "undefined updated 3";
+
+			SUT.DataContext = model;
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("undefined updated 1", default_undefined.Text);
+			Assert.AreEqual("undefined updated 2", default_undefined_OneWay.Text);
+			Assert.AreEqual("undefined updated 3", default_undefined_TwoWay.Text);
+
+			model.Default_undefined_Property = "undefined updated 4";
+			model.Default_undefined_OneWay_Property = "undefined updated 5";
+			model.Default_undefined_TwoWay_Property = "undefined updated 6";
+
+			Assert.AreEqual("undefined updated 4", default_undefined.Text);
+			Assert.AreEqual("undefined updated 5", default_undefined_OneWay.Text);
+			Assert.AreEqual("undefined updated 6", default_undefined_TwoWay.Text);
+
+			default_undefined.Text = "undefined updated 7";
+			default_undefined_OneWay.Text = "undefined updated 8";
+			default_undefined_TwoWay.Text = "undefined updated 9";
+
+			Assert.AreEqual("undefined updated 4", model.Default_undefined_Property);
+			Assert.AreEqual("undefined updated 5", model.Default_undefined_OneWay_Property);
+			Assert.AreEqual("undefined updated 9", model.Default_undefined_TwoWay_Property);
+		}
+
+		[TestMethod]
 		public void When_TwoWay_NamedElement()
 		{
 			var SUT = new Binding_TwoWay_NamedElement();
@@ -666,6 +737,149 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_Static_Event()
+		{
+			var SUT = new Binding_Static_Event();
+
+			SUT.ForceLoaded();
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, Binding_Static_Event_Class.CheckedRaised);
+			Assert.AreEqual(0, Binding_Static_Event_Class.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, Binding_Static_Event_Class.CheckedRaised);
+			Assert.AreEqual(0, Binding_Static_Event_Class.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, Binding_Static_Event_Class.CheckedRaised);
+			Assert.AreEqual(1, Binding_Static_Event_Class.UncheckedRaised);
+		}
+
+		[TestMethod]
+		public void When_Event_Nested()
+		{
+			var SUT = new Binding_Event_Nested();
+
+			SUT.ForceLoaded();
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, SUT.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, SUT.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, SUT.ViewModel.UncheckedRaised);
+		}
+
+		[TestMethod]
+		public void When_Event_DataTemplate()
+		{
+			var SUT = new Binding_Event_DataTemplate();
+
+			SUT.ForceLoaded();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			var dc = new Binding_Event_DataTemplate_Model();
+			root.DataContext = dc;
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, dc.CheckedRaised);
+			Assert.AreEqual(0, dc.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, dc.CheckedRaised);
+			Assert.AreEqual(0, dc.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, dc.CheckedRaised);
+			Assert.AreEqual(1, dc.UncheckedRaised);
+		}
+
+
+		[TestMethod]
+		public void When_Static_Event_DataTemplate()
+		{
+			var SUT = new Binding_Static_Event_DataTemplate();
+
+			SUT.ForceLoaded();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			root.DataContext = new object();
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, Binding_Static_Event_DataTemplate_Model_Class.CheckedRaised);
+			Assert.AreEqual(0, Binding_Static_Event_DataTemplate_Model_Class.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, Binding_Static_Event_DataTemplate_Model_Class.CheckedRaised);
+			Assert.AreEqual(0, Binding_Static_Event_DataTemplate_Model_Class.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, Binding_Static_Event_DataTemplate_Model_Class.CheckedRaised);
+			Assert.AreEqual(1, Binding_Static_Event_DataTemplate_Model_Class.UncheckedRaised);
+		}
+
+		[TestMethod]
+		public void When_Event_Nested_DataTemplate()
+		{
+			var SUT = new Binding_Event_Nested_DataTemplate();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			var dc = new Binding_Event_Nested_DataTemplate_Model();
+			root.DataContext = dc;
+
+			SUT.ForceLoaded();
+			root.ForceLoaded();
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, dc.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, dc.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, dc.ViewModel.UncheckedRaised);
+
+			var checkBox2 = SUT.FindName("myCheckBox2") as CheckBox;
+
+			Assert.AreEqual(1, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, dc.ViewModel.UncheckedRaised);
+
+			checkBox2.IsChecked = true;
+
+			Assert.AreEqual(2, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, dc.ViewModel.UncheckedRaised);
+
+			checkBox2.IsChecked = false;
+
+			Assert.AreEqual(2, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(2, dc.ViewModel.UncheckedRaised);
+		}
+
+		[TestMethod]
 		public void When_xLoad()
 		{
 			var SUT = new Binding_xLoad();
@@ -690,6 +904,417 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.TopLevelVisiblity = false;
 			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
+		}
+
+		[TestMethod]
+		public void When_xLoad_DataTemplate()
+		{
+			var SUT = new Binding_xLoad_DataTemplate();
+
+			SUT.ForceLoaded();
+
+			var data = new Binding_xLoad_DataTemplate_Data()
+			{
+				InnerText = "Salsepareille"
+			};
+
+			SUT.root.Content = data;
+
+			var innerRoot = SUT.FindName("innerRoot") as Grid;
+			Assert.IsNotNull(innerRoot);
+
+			Assert.AreEqual(1, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+
+			data.TopLevelVisiblity = true;
+
+			Assert.AreEqual(0, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+
+			var innerTextBlock = SUT.FindName("innerTextBlock") as TextBlock;
+			Assert.IsNotNull(innerTextBlock);
+			Assert.AreEqual(data.InnerText, innerTextBlock.Text);
+
+			data.TopLevelVisiblity = false;
+
+			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
+			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
+		}
+		 
+		[TestMethod]
+		public void When_xLoad_Event()
+		{
+			var SUT = new Binding_xLoad_Event();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.myCheckBox);
+			Assert.IsNull(SUT.rootGrid);
+
+			SUT.TopLevelVisiblity = true;
+
+			Assert.IsNotNull(SUT.myCheckBox);
+			Assert.IsNotNull(SUT.rootGrid);
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, SUT.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, SUT.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, SUT.ViewModel.UncheckedRaised);
+
+			SUT.TopLevelVisiblity = false;
+
+			// After reload
+			SUT.TopLevelVisiblity = true;
+
+			Assert.IsNotNull(SUT.myCheckBox);
+			Assert.IsNotNull(SUT.rootGrid);
+
+			var checkBox2 = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreNotEqual(checkBox, checkBox2);
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, SUT.ViewModel.UncheckedRaised);
+
+			checkBox2.IsChecked = true;
+
+			Assert.AreEqual(2, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, SUT.ViewModel.UncheckedRaised);
+
+			checkBox2.IsChecked = false;
+
+			Assert.AreEqual(2, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(2, SUT.ViewModel.UncheckedRaised);
+		}
+
+		[TestMethod]
+		public void When_xLoad_FallbackValue()
+		{
+			var SUT = new Binding_xLoad_FallbackValue();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(Visibility.Collapsed, SUT.topLevelContent.Visibility);
+
+			SUT.Model = new Binding_xLoad_FallbackValue_Model();
+
+			Assert.AreEqual(Visibility.Collapsed, SUT.topLevelContent.Visibility);
+
+			SUT.Model.Visible = true;
+
+			Assert.AreEqual(Visibility.Visible, SUT.topLevelContent.Visibility);
+		}
+
+		[TestMethod]
+		public void When_xLoad_FallbackValue_Converter()
+		{
+			var SUT = new Binding_xLoad_FallbackValue_Converter();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.topLevelContent);
+			Assert.IsNull(SUT.innerTextBlock);
+
+			SUT.Model = new Binding_xLoad_FallbackValue_Model();
+
+			Assert.IsNotNull(SUT.topLevelContent);
+			Assert.IsNotNull(SUT.innerTextBlock);
+
+			SUT.Model = null;
+
+			AssertIsNullAsync(() => SUT.topLevelContent);
+			AssertIsNullAsync(() => SUT.innerTextBlock);
+		}
+
+		[TestMethod]
+		public void When_PropertyChanged_Empty()
+		{
+			var SUT = new Binding_PropertyChangedAll();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(SUT.Model.Value.ToString(), SUT.ValueView.Text);
+			Assert.AreEqual(SUT.Model.Text, SUT.TextView.Text);
+
+			SUT.Model.Value = 42;
+			SUT.Model.Text = "World";
+
+			SUT.Model.RaisePropertyChanged(string.Empty);
+
+			Assert.AreEqual(SUT.Model.Value.ToString(), SUT.ValueView.Text);
+			Assert.AreEqual(SUT.Model.Text, SUT.TextView.Text);
+		}
+
+		[TestMethod]
+		public void When_PropertyChanged_Null()
+		{
+			var SUT = new Binding_PropertyChangedAll();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(SUT.Model.Value.ToString(), SUT.ValueView.Text);
+			Assert.AreEqual(SUT.Model.Text, SUT.TextView.Text);
+
+			SUT.Model.Value = 42;
+			SUT.Model.Text = "World";
+
+			SUT.Model.RaisePropertyChanged(null);
+
+			Assert.AreEqual(SUT.Model.Value.ToString(), SUT.ValueView.Text);
+			Assert.AreEqual(SUT.Model.Text, SUT.TextView.Text);
+		}
+
+		[TestMethod]
+		public async Task When_xLoad_StaticResource()
+		{
+			var SUT = new Binding_xLoad_StaticResources();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.TestGrid);
+			SUT.IsTestGridLoaded = true;
+
+			Assert.IsNotNull(SUT.TestGrid);
+			Assert.IsNotNull(SUT.contentControl);
+			Assert.IsNotNull(SUT.contentControl.ContentTemplate);
+
+			SUT.IsTestGridLoaded = false;
+
+			AssertIsNullAsync(() => SUT.TestGrid);
+			AssertIsNullAsync(() => SUT.contentControl);
+
+			SUT.IsTestGridLoaded = true;
+
+			Assert.IsNotNull(SUT.TestGrid);
+			Assert.IsNotNull(SUT.contentControl);
+			Assert.IsNotNull(SUT.contentControl.ContentTemplate);
+		}
+
+		[TestMethod]
+		public async Task When_xLoad_Setter()
+		{
+			var SUT = new Binding_xLoad_Setter();
+
+			SUT.ForceLoaded();
+			
+			Assert.IsNull(SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+
+			SUT.IsEllipseLoaded = false;
+
+			AssertIsNullAsync(() => SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+		}
+
+		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/5836")]
+		public async Task When_xLoad_Setter_Order()
+		{
+			var SUT = new Binding_xLoad_Setter_Order();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+
+			SUT.IsEllipseLoaded = false;
+
+			AssertIsNullAsync(() => SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+		}
+
+		[TestMethod]
+		public async Task When_xLoad_xBind_xLoad_Initial()
+		{
+			var grid = new Grid();
+			grid.ForceLoaded();
+
+			var SUT = new When_xLoad_xBind_xLoad_Initial();
+			grid.Children.Add(SUT);
+
+			Assert.IsNotNull(SUT.tb01);
+			Assert.AreEqual(1, SUT.tb01.Tag);
+
+			SUT.Model.MyValue = 42;
+
+			Assert.AreEqual(42, SUT.tb01.Tag);
+		}
+
+		[TestMethod]
+		public async Task When_Binding_xLoad_Twice()
+		{
+			var SUT = new Binding_xLoad_Twice();
+			Assert.IsNull(SUT.tb01);
+			Assert.IsNull(SUT.tb02);
+
+			Assert.AreEqual(0, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(0, SUT.TopLevelVisiblitySetCount);
+
+			var grid = new Grid();
+			grid.ForceLoaded();
+			grid.Children.Add(SUT);
+
+			Assert.IsNull(SUT.tb01);
+			Assert.IsNull(SUT.tb02);
+
+			Assert.AreEqual(2, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(0, SUT.TopLevelVisiblitySetCount);
+
+			MakeVisible();
+
+			Assert.AreEqual(4, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(1, SUT.TopLevelVisiblitySetCount);
+
+			await MakeInvisible();
+
+			Assert.AreEqual(6, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(2, SUT.TopLevelVisiblitySetCount);
+
+			MakeVisible();
+
+			Assert.AreEqual(8, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(3, SUT.TopLevelVisiblitySetCount);
+
+			await MakeInvisible();
+
+			Assert.AreEqual(10, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(4, SUT.TopLevelVisiblitySetCount);
+
+			void MakeVisible()
+			{
+				SUT.TopLevelVisiblity = true;
+
+				Assert.IsNotNull(SUT.tb01);
+				Assert.IsNotNull(SUT.tb02);
+			}
+
+			async Task MakeInvisible()
+			{
+				SUT.TopLevelVisiblity = false;
+
+				AssertIsNullAsync(() => SUT.tb01);
+				AssertIsNullAsync(() => SUT.tb02);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Binding_xNull()
+		{
+			var SUT = new Binding_xNull();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNotNull(SUT.tb01);
+			Assert.AreEqual("Jan 1", SUT.tb01.Text);
+
+			Assert.IsNotNull(SUT.tb02);
+			Assert.AreEqual("MMM d <null>", SUT.tb02.Text);
+
+			Assert.IsNotNull(SUT.tb03);
+			Assert.AreEqual("MMM d <null>", SUT.tb03.Text);
+		}
+
+		[TestMethod]
+		public async Task When_NullableRecordStruct()
+		{
+			var SUT = new xBind_NullableRecordStruct();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("", SUT.tb1.Text);
+
+			SUT.MyProperty = new xBind_NullableRecordStruct.MyRecord("42");
+
+			Assert.AreEqual("42", SUT.tb1.Text);
+		}
+
+		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T:class
+		{
+			timeout ??= TimeSpan.FromSeconds(1);
+
+			var sw = Stopwatch.StartNew();
+
+			while (sw.Elapsed < timeout)
+			{
+				{
+					var value = getter();
+
+					if (value == null)
+					{
+						return;
+					}
+
+					value = null;
+				}
+
+				await Task.Yield();
+
+				// Wait for the ElementNameSubject and ComponentHolder
+				// instances to release their references.
+				GC.Collect(2);
+				//GC.WaitForPendingFinalizers();
+			}
+
+			{
+				var value2 = getter();
+				Assert.IsNull(value2);
+				value2 = null;
+			}
+		}
+
+		private async Task AssertIsNoNullAsync<T>(Func<T> getter, TimeSpan? timeout)
+		{
+			timeout ??= TimeSpan.FromSeconds(1);
+
+			var sw = Stopwatch.StartNew();
+
+			while (sw.Elapsed < timeout && getter() == null)
+			{
+				await Task.Delay(100);
+
+				// Wait for the ElementNameSubject and ComponentHolder
+				// instances to release their references.
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
+
+			Assert.IsNotNull(getter());
 		}
 	}
 }

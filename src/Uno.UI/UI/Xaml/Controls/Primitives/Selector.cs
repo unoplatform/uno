@@ -13,16 +13,32 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
+using Uno.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class Selector : ItemsControl
 	{
+		private protected ScrollViewer m_tpScrollViewer;
+
+		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
+
+		private protected int m_iFocusedIndex;
+
+		private protected bool m_skipScrollIntoView;
+
 		public event SelectionChangedEventHandler SelectionChanged;
 
 		private readonly SerialDisposable _collectionViewSubscription = new SerialDisposable();
-		private BindingPath _path;
+		/// <summary>
+		/// The path defined by <see cref="SelectedValuePath"/>, if it is set, otherwise null. This may be reused multiple times for
+		/// checking <see cref="SelectedValue"/> candidates.
+		/// </summary>
+		private BindingPath _selectedValueBindingPath;
 		private bool _disableRaiseSelectionChanged;
+		//private int m_lastFocusedIndex;
+		private bool m_inCollectionChange = false;
 
 		/// <summary>
 		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
@@ -39,15 +55,32 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		}
 
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+
+			if (args.Property == SelectedItemProperty)
+			{
+				OnSelectedItemChanged(args.OldValue, args.NewValue, updateItemSelectedState: true);
+			}
+			else if (args.Property == SelectedIndexProperty)
+			{
+				OnSelectedIndexChanged((int)args.OldValue, (int)args.NewValue);
+			}
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+			m_tpScrollViewer = GetTemplateChild<ScrollViewer>("ScrollViewer");
+		}
+
 		public static DependencyProperty SelectedItemProperty { get; } =
 		DependencyProperty.Register(
 			"SelectedItem",
 			typeof(object),
 			typeof(Selector),
-			new FrameworkPropertyMetadata(
-				defaultValue: null,
-				propertyChangedCallback: (s, e) => (s as Selector).OnSelectedItemChanged(e.OldValue, e.NewValue, updateItemSelectedState: true)
-			)
+			new FrameworkPropertyMetadata(defaultValue: null)
 		);
 
 		public object SelectedItem
@@ -63,7 +96,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ChangeSelectedItem(item, oldIsSelected, newIsSelected);
 		}
 
-		internal virtual void ChangeSelectedItem(object item, bool oldIsSelected, bool newIsSelected) {
+		internal virtual void ChangeSelectedItem(object item, bool oldIsSelected, bool newIsSelected)
+		{
 			if (ReferenceEquals(SelectedItem, item) && !newIsSelected)
 			{
 				SelectedItem = null;
@@ -160,21 +194,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (SelectedValuePath.HasValue())
 			{
-				if (_path?.Path != SelectedValuePath)
+				if (_selectedValueBindingPath?.Path != SelectedValuePath)
 				{
-					_path = new Uno.UI.DataBinding.BindingPath(SelectedValuePath, null);
+					_selectedValueBindingPath = new Uno.UI.DataBinding.BindingPath(SelectedValuePath, null);
 				}
 			}
 			else
 			{
-				_path = null;
+				_selectedValueBindingPath = null;
 			}
 
 
-			if (_path != null)
+			if (_selectedValueBindingPath != null)
 			{
-				_path.DataContext = SelectedItem;
-				SelectedValue = _path.Value;
+				_selectedValueBindingPath.DataContext = SelectedItem;
+				SelectedValue = _selectedValueBindingPath.Value;
 			}
 			else
 			{
@@ -200,11 +234,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		// Using a DependencyProperty as the backing store for SelectedIndex.  This enables animation, styling, binding, etc...
-		public static DependencyProperty SelectedIndexProperty { get ; } =
-			DependencyProperty.Register("SelectedIndex", typeof(int), typeof(Selector), new FrameworkPropertyMetadata(-1,
-				(s, e) => (s as Selector).OnSelectedIndexChanged((int)e.OldValue, (int)e.NewValue)
-			)
-		);
+		public static DependencyProperty SelectedIndexProperty { get; } =
+			DependencyProperty.Register("SelectedIndex", typeof(int), typeof(Selector), new FrameworkPropertyMetadata(-1));
 
 		internal virtual void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
@@ -248,23 +279,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			name: nameof(SelectedValue),
 			propertyType: typeof(object),
 			ownerType: typeof(Selector),
-			typeMetadata: new FrameworkPropertyMetadata(null, SelectedValueChanged, SelectedValueCoerce)
+			typeMetadata: new FrameworkPropertyMetadata(null, (s, e) => (s as Selector).OnSelectedValueChanged(e.OldValue, e.NewValue), SelectedValueCoerce)
 		);
 
-		private static void SelectedValueChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
+		private void OnSelectedValueChanged(object oldValue, object newValue)
 		{
-			var selector = (Selector)snd;
-			if (selector?._path != null)
-			{
-				return; // Setting the SelectedValue won't update the index when a _path is used.
-			}
-			selector.SelectedIndex = selector.GetItems()?.IndexOf(args.NewValue) ?? -1;
+
+			var (indexOfItemWithValue, itemWithValue) = FindIndexOfItemWithValue(newValue);
+			SelectedIndex = indexOfItemWithValue;
 		}
 
 		private static object SelectedValueCoerce(DependencyObject snd, object baseValue)
 		{
 			var selector = (Selector)snd;
-			if (selector?._path != null)
+			if (selector?._selectedValueBindingPath != null)
 			{
 				return baseValue; // Setting the SelectedValue won't update the index when a _path is used.
 			}
@@ -397,14 +425,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						}
 					}
 					break;
+				case NotifyCollectionChangedAction.Move:
 				case NotifyCollectionChangedAction.Reset:
 					if (SelectedIndexPath?.Section == section)
 					{
-						SelectedIndex = -1;
+						var item = ItemFromIndex(SelectedIndex);
+						if (item == null || !item.Equals(SelectedItem))
+						{
+							// If selected item and index no longer coincide, unselect the selection
+							SelectedIndex = -1;
+						}
 					}
 					break;
 			}
-			//TODO: handle other cases (PBI #27502)
+
+			OnItemsChanged(c);
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs c)
@@ -472,19 +507,45 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void OnItemClicked(SelectorItem selectorItem) => OnItemClicked(IndexFromContainer(selectorItem));
 
-		internal virtual void OnItemClicked(int clickedIndex) { }
-		
-		protected override void OnItemsChanged(object e)
+		internal virtual void OnItemClicked(int clickedIndex)
 		{
-			if (e is IVectorChangedEventArgs iVCE)
+			if (ItemsSource is ICollectionView collectionView)
 			{
-				if (iVCE.CollectionChange == CollectionChange.ItemChanged || iVCE.CollectionChange == CollectionChange.ItemInserted)
+				//NOTE: Windows seems to call MoveCurrentTo(item); we set position instead to have expected behavior when you have duplicate items in the list.
+				collectionView.MoveCurrentToPosition(clickedIndex);
+
+				// The CollectionView may have intercepted the change
+				clickedIndex = collectionView.CurrentPosition;
+			}
+
+			SelectedIndex = clickedIndex;
+		}
+
+		private void OnItemsChanged(NotifyCollectionChangedEventArgs e)
+		{
+			if (
+				// When ItemsSource is set, we get collection changes from it directly (and it's not possible to directly modify Items)
+				ItemsSource == null
+			)
+			{
+				var iVCE = e.ToVectorChangedEventArgs();
+
+				if (iVCE.CollectionChange == CollectionChange.ItemChanged
+					|| (iVCE.CollectionChange == CollectionChange.ItemInserted && iVCE.Index < Items.Count))
 				{
 					var item = Items[(int)iVCE.Index];
 
 					if (item is SelectorItem selectorItem && selectorItem.IsSelected)
 					{
 						ChangeSelectedItem(selectorItem, false, true);
+					}
+				}
+				else if (iVCE.CollectionChange == CollectionChange.ItemRemoved)
+				{
+					// If the removed item is the currently selected one, Set SelectedIndex to -1
+					if ((int)iVCE.Index == SelectedIndex)
+					{
+						SelectedIndex = -1;
 					}
 				}
 			}
@@ -508,7 +569,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					// The container has been created from a template and can be recycled, so we mark it as generated
 					contentControl.IsGeneratedContainer = true;
 
-					contentControl.IsContainerFromItemTemplate = true;
+					contentControl.IsContainerFromTemplateRoot = true;
 				}
 
 				return templateRoot as DependencyObject;
@@ -523,10 +584,218 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return null;
 		}
 
+		/// Finds the index of the first item with a given property path value.
+		(int Index, object ItemWithValue) FindIndexOfItemWithValue(object value)
+		{
+			var nCount = NumberOfItems;
+
+			for (int cnt = 0; cnt < nCount; cnt++)
+			{
+				var item = GetItemFromIndex(cnt);
+				var itemValue = GetSelectedValue(item);
+				if (Equals(value, itemValue))
+				{
+					return (cnt, itemValue);
+				}
+			}
+
+			return (-1, null);
+		}
+
+		/// Returns the selected value of an item using a path.
+		object GetSelectedValue(object pItem)
+		{
+			if (_selectedValueBindingPath == null || pItem == null)
+			{
+				return pItem;
+			}
+
+			_selectedValueBindingPath.DataContext = pItem;
+			return _selectedValueBindingPath.Value;
+		}
+
 		private protected override void Refresh()
 		{
 			base.Refresh();
 			_itemTemplatesThatArentContainers.Clear();
+			RefreshPartial();
 		}
+
+
+
+		public bool IsSelectionActive { get; set; }
+
+		protected virtual (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations()
+		{
+			return (Orientation.Horizontal, Orientation.Horizontal);
+		}
+
+		protected void SetFocusedItem(int index,
+									  bool shouldScrollIntoView,
+									  bool forceFocus,
+									  FocusState focusState,
+									  bool animateIfBringIntoView)
+		{
+
+		}
+
+		protected void SetFocusedItem(int index,
+									  bool shouldScrollIntoView,
+									  bool forceFocus,
+									  FocusState focusState,
+									  bool animateIfBringIntoView,
+									  FocusNavigationDirection focusNavigationDirection)
+		{
+
+			//bool bFocused = false;
+			//bool shouldFocus = false;
+
+			//var spItems = Items;
+			//var nCount = spItems?.Size;
+
+			//if (index < 0 || nCount <= index)
+			//{
+			//	index = -1;
+			//}
+
+			//if (index >= 0)
+			//{
+			//	m_lastFocusedIndex = index;
+			//}
+
+			//if (!forceFocus)
+			//{
+			//	//shouldFocus = HasFocus();
+			//}
+			//else
+			//{
+			//	shouldFocus = true;
+			//}
+
+			//if (shouldFocus)
+			//{
+			//	m_iFocusedIndex = index;
+			//}
+
+			//if (m_iFocusedIndex == -1)
+			//{
+			//	if (shouldFocus)
+			//	{
+			//		// Since none of our child items have the focus, put the focus back on the main list box.
+			//		//
+			//		// This will happen e.g. when the focused item is being removed but is still in the visual tree at the time of this call.
+			//		// Note that this call may fail e.g. if IsTabStop is false, which is OK; it will just set focus
+			//		// to the next focusable element (or clear focus if none is found).
+			//		bFocused = Focus(focusState);
+			//	}
+
+			//	return;
+			//}
+
+			//if (shouldScrollIntoView)
+			//{
+			//	shouldScrollIntoView = CanScrollIntoView();
+			//}
+
+			//if (shouldScrollIntoView)
+			//{
+			//	ScrollIntoView(
+			//		index,
+			//		isGroupItemIndex: false,
+			//		isHeader: false,
+			//		isFooter: false,
+			//		isFromPublicAPI: false,
+			//		ensureContainerRealized: true,
+			//		animateIfBringIntoView,
+			//		ScrollIntoViewAlignment.Default);
+			//}
+
+			//if (shouldFocus)
+			//{
+			//	var spContainer = ContainerFromIndex(index);
+
+			//	if (spContainer is SelectorItem spSelectorItem)
+			//	{
+			//		//spSelectorItem.FocusSelfOrChild(focusState, animateIfBringIntoView, &bFocused, focusNavigationDirection);
+			//	}
+			//}
+		}
+
+		private void ScrollIntoView(int index, bool isGroupItemIndex, bool isHeader, bool isFooter, bool isFromPublicAPI, bool ensureContainerRealized, bool animateIfBringIntoView, ScrollIntoViewAlignment @default)
+		{
+
+		}
+
+		protected void SetFocusedItem(int index,
+									  bool shouldScrollIntoView,
+									  bool animateIfBringIntoView,
+									  FocusNavigationDirection focusNavigationDirection)
+		{
+
+			//bool hasFocus = false;
+			FocusState focusState = FocusState.Programmatic;
+
+			//hasFocus = HasFocus();
+
+			//if (hasFocus)
+			//{
+			//	DependencyObject spFocused;
+
+			//	//spFocused = GetFocusedElement();
+
+			//	if (spFocused is UIElement spFocusedAsElement)
+			//	{
+			//		focusState = spFocusedAsElement.FocusState;
+			//	}
+			//}
+
+			SetFocusedItem(index,
+							shouldScrollIntoView,
+							forceFocus: false,
+							focusState,
+							animateIfBringIntoView,
+							focusNavigationDirection);
+		}
+
+		protected void SetFocusedItem(int index,
+									  bool shouldScrollIntoView)
+		{
+
+		}
+
+		bool CanScrollIntoView()
+		{
+			Panel spPanel;
+			bool isItemsHostInvalid = false;
+			bool isInLiveTree = false;
+
+			spPanel = ItemsPanelRoot;
+
+			if (spPanel != null)
+			{
+				//isItemsHostInvalid = IsItemsHostInvalid;
+
+				if (!isItemsHostInvalid)
+				{
+					//isInLiveTree = IsInLiveTree();
+					isInLiveTree = true;
+				}
+			}
+
+			return !isItemsHostInvalid && isInLiveTree && !m_skipScrollIntoView && !m_inCollectionChange;
+		}
+
+		partial void RefreshPartial();
+
+
+		/// <summary>
+		/// Is the managed implementation for virtualized lists (ItemsStackPanel, ItemsWrapGrid, CarouselPanel etc) used on this platform?
+		/// </summary>
+		internal const bool UsesManagedLayouting =
+#if __IOS__ || __ANDROID__
+			false;
+#else
+			true;
+#endif
 	}
 }

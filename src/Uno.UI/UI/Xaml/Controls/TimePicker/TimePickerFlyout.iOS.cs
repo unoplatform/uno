@@ -1,7 +1,5 @@
 ﻿#nullable enable
 
-#if XAMARIN_IOS
-
 using CoreGraphics;
 using UIKit;
 using Uno.Disposables;
@@ -225,4 +223,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

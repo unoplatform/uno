@@ -144,5 +144,25 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var tb = page.TestTextBlock;
 			Assert.AreEqual(38.0, tb.FontSize);
 		}
+
+		[TestMethod]
+		public void When_Style_BasedOn_Is_Null()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var button1 = new Button { Style = app.Resources["StylesTestNullBasedOn"] as Style };
+
+			app.HostView.Children.Add(button1);
+			button1.Measure(new Size(1000, 1000));
+
+			Assert.IsNull(button1.Style.BasedOn);
+
+			var button2 = new Button { Style = app.Resources["StylesTestBasedOn"] as Style };
+
+			app.HostView.Children.Add(button2);
+			button2.Measure(new Size(1000, 1000));
+
+			Assert.IsNotNull(button2.Style.BasedOn);
+		}
 	}
 }

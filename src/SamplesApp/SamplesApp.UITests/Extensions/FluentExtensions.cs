@@ -1,8 +1,10 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions.Execution;
 
 namespace SamplesApp.UITests
 {
@@ -15,7 +17,7 @@ namespace SamplesApp.UITests
 			return target;
 		}
 
-		public static T ApplyIf<T>(this T target, bool condition, Action<T> action)
+		public static T ApplyIf<T>(this T target, bool condition, Action<T>? action)
 		{
 			if (condition)
 			{
@@ -23,6 +25,13 @@ namespace SamplesApp.UITests
 			}
 
 			return target;
+		}
+
+		public static void FailWithText(this AssertionScope scope, string text)
+		{
+			var t = text.Replace("{", "{{").Replace("}", "}}");
+
+			scope.FailWith(t);
 		}
 	}
 }

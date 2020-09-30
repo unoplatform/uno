@@ -27,6 +27,11 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "MyNameSpace.Static2.MyFunction(MyProperty)", "MyNameSpace.Static2.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "MyFunction(MyProperty)", "ctx.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "", "ctx")]
+		[DataRow("ctx", "(FontFamily)a.Value", "(FontFamily)ctx.a.Value")]
+		[DataRow("ctx", "(global::System.Int32)a.Value", "(global::System.Int32)ctx.a.Value")]
+
+		// Not supported https://github.com/unoplatform/uno/issues/5061
+		// [DataRow("ctx", "MyFunction((global::System.Int32)MyProperty)", "ctx.MyFunction((global::System.Int32)ctx.MyProperty)")]
 
 		// Main class (without context)
 		[DataRow("", "MyProperty.A", "MyProperty.A")]
@@ -38,6 +43,8 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("", "Static.MyFunction(MyProperty)", "Static.MyFunction(MyProperty)")]
 		[DataRow("", "MyNameSpace.Static2.MyFunction(MyProperty)", "MyNameSpace.Static2.MyFunction(MyProperty)")]
 		[DataRow("", "MyFunction(MyProperty)", "MyFunction(MyProperty)")]
+		[DataRow("", "(FontFamily)MyProperty", "(FontFamily)MyProperty")]
+		[DataRow("", "(FontFamily)MyProperty.A", "(FontFamily)MyProperty.A")]
 		public void When_PathRewrite(string contextName, string inputExpression, string expectedOutput)
 		{
 			bool IsStaticMethod(string name)

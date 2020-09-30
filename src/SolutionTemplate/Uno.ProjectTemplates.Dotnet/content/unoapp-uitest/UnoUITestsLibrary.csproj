@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net47</TargetFramework>
+		<LangVersion>8.0</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+		<PackageReference Include="NUnit" Version="3.13.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="4.0.0-beta.1" />
+		<PackageReference Include="Uno.UITest.Helpers" Version="1.1.0-dev.11" />
+		<PackageReference Include="Xamarin.UITest" Version="3.0.13" />
+	</ItemGroup>
+
+</Project>

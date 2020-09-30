@@ -8,7 +8,7 @@ namespace Uno.UI
 {
 	public static class UWPViewHelper
 	{
-#if !XAMARIN && !NETSTANDARD
+#if !XAMARIN && !UNO_REFERENCE_API
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Size PhysicalToLogicalPixels(this Size size)
 			=> size;

@@ -3,9 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using Windows.UI.Xaml;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Extensions
 {
@@ -14,8 +15,110 @@ namespace Uno.UI.Extensions
 		/// <summary>
 		/// Get a display name for the element for debug purposes
 		/// </summary>
-		internal static string GetDebugName(this UIElement? elt)
-			=> elt is null ? "--null--" : $"{(elt as FrameworkElement)?.Name ?? elt.GetType().Name}-{elt.GetHashCode():X8}";
+		internal static string GetDebugName(this object? elt)
+			=> elt switch
+			{
+				null => "--null--",
+#if __WASM__
+				FrameworkElement fwElt when fwElt.Name.HasValue() => $"{fwElt.Name}-{fwElt.HtmlId}",
+				UIElement uiElt => $"{elt.GetType().Name}-{uiElt.HtmlId}",
+#else
+				FrameworkElement fwElt when fwElt.Name.HasValue() => $"{fwElt.Name}-{elt.GetHashCode():X8}",
+#endif
+				_ => $"{elt.GetType().Name}-{elt.GetHashCode():X8}",
+			};
+
+		internal enum IndentationFormat
+		{
+			Tabs,
+			Columns,
+			Numbered,
+			NumberedColumns,
+			NumberedSpaces,
+		}
+
+		private static readonly IndentationFormat _defaultIndentationFormat = IndentationFormat.NumberedSpaces;
+
+		internal static string GetDebugIdentifier(this object? elt)
+		{
+			var depth = elt.GetDebugDepth();
+			var indentation = _defaultIndentationFormat switch
+			{
+				IndentationFormat.Numbered when depth < 0 => "-?>",
+				IndentationFormat.NumberedColumns when depth < 0 => "?>",
+				_ when depth < 0 => "",
+
+				IndentationFormat.Columns => GetColumnsIndentation(depth),
+				IndentationFormat.Numbered => GetNumberedIndentation(depth),
+				IndentationFormat.NumberedColumns => GetNumberedColumnIndentation(depth),
+				IndentationFormat.NumberedSpaces => $"{new string(' ', depth * 2)} {depth:D2}>",
+				IndentationFormat.Tabs => $"{new string('\t', depth)}",
+				_ => $"{new string(' ', depth * 2)} {depth:D2}>", // default to NumberedSpaces
+			};
+
+			return indentation + $"[{elt.GetDebugName()}]";
+
+			static string GetColumnsIndentation(int depth)
+			{
+				var sb = new StringBuilder(depth * 2);
+				for (var i = 0; i < depth; i++)
+				{
+					sb.Append('|');
+					sb.Append(' ');
+				}
+
+				return sb.ToString();
+			}
+
+			static string GetNumberedIndentation(int depth)
+			{
+				var sb = new StringBuilder(depth * 4);
+				for (var i = 0; i < depth; i++)
+				{
+					sb.Append('-');
+					sb.Append(i);
+					sb.Append('>');
+				}
+
+				return sb.ToString();
+			}
+
+			static string GetNumberedColumnIndentation(int depth)
+			{
+				var sb = new StringBuilder(depth * 4);
+				for (var i = 0; i < depth - 1; i++)
+				{
+					sb.Append(' ', i.ToString().Length);
+					sb.Append('|');
+				}
+
+				sb.Append(depth);
+				sb.Append('>');
+
+				return sb.ToString();
+			}
+		}
+
+		internal static int GetDebugDepth(this object? elt) =>
+			elt switch
+			{
+				null => 0,
+#if NETSTANDARD
+				UIElement fwElt => fwElt.Depth,
+#endif
+				_ => elt.GetParent()?.GetDebugDepth() + 1?? 0,
+			};
+
+		internal static CornerRadius GetCornerRadius(this UIElement uiElement)
+		{
+			if (uiElement is FrameworkElement fe && fe.TryGetCornerRadius(out var cornerRadius))
+			{
+				return cornerRadius;
+			}
+
+			var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("CornerRadius");
+			return property != null && uiElement.GetValue(property) is CornerRadius t ? t : default;
+		}
 
 		internal static Thickness GetPadding(this UIElement uiElement)
 		{

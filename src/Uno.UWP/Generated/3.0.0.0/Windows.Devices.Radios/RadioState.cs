@@ -2,24 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Radios
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum RadioState 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Unknown,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		On,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Off,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Disabled,
-		#endif
+		// Skipping already declared field Windows.Devices.Radios.RadioState.Unknown
+		// Skipping already declared field Windows.Devices.Radios.RadioState.On
+		// Skipping already declared field Windows.Devices.Radios.RadioState.Off
+		// Skipping already declared field Windows.Devices.Radios.RadioState.Disabled
 	}
 	#endif
 }

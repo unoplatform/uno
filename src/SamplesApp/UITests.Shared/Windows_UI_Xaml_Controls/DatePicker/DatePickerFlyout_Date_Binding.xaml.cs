@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;
-using Uno.Extensions;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 {
-	[SampleControlInfo]
+	[Sample("Date Picking", IgnoreInSnapshotTests = true)]
 	public sealed partial class DatePickerFlyout_Date_Binding : UserControl
 	{
 		public DatePickerFlyout_Date_Binding()

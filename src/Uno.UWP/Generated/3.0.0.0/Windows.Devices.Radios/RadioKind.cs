@@ -2,27 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Radios
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum RadioKind 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Other,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		WiFi,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		MobileBroadband,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Bluetooth,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		FM,
-		#endif
+		// Skipping already declared field Windows.Devices.Radios.RadioKind.Other
+		// Skipping already declared field Windows.Devices.Radios.RadioKind.WiFi
+		// Skipping already declared field Windows.Devices.Radios.RadioKind.MobileBroadband
+		// Skipping already declared field Windows.Devices.Radios.RadioKind.Bluetooth
+		// Skipping already declared field Windows.Devices.Radios.RadioKind.FM
 	}
 	#endif
 }

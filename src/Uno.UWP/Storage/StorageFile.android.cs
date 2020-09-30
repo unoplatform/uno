@@ -10,34 +10,33 @@ using System.Threading.Tasks;
 using Android.Content.Res;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
-using Windows.UI.Composition.Interactions;
 using Windows.Storage.Helpers;
 
 namespace Windows.Storage
 {
-	public partial class StorageFile : StorageItem, IStorageFile
+	partial class StorageFile
 	{
 		private static ConcurrentEntryManager _assetGate = new ConcurrentEntryManager();
 
-		private static async Task<StorageFile> GetFileFromApplicationUriAsyncTask(CancellationToken ct, Uri uri)
+		private static async Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)
 		{
 			if(uri.Scheme != "ms-appx")
 			{
 				throw new InvalidOperationException("Uri is not using the ms-appx scheme");
 			}
 
-			var path = AndroidResourceNameEncoder.EncodeResourcePath(uri.PathAndQuery.TrimStart(new char[] { '/' }));
+			var path = AndroidResourceNameEncoder.EncodeResourcePath(Uri.UnescapeDataString(uri.PathAndQuery).TrimStart(new char[] { '/' }));
 
 			// Read the contents of our asset
 			var assets = global::Android.App.Application.Context.Assets;
 			var outputCachePath = global::System.IO.Path.Combine(Android.App.Application.Context.CacheDir.AbsolutePath, path);
 
-			if (typeof(StorageFile).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (typeof(StorageFile).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				typeof(StorageFile).Log().Debug($"GetFileFromApplicationUriAsyncTask path:{path} outputCachePath:{outputCachePath}");
 			}

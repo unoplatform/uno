@@ -12,7 +12,7 @@ Wasm in the browser runs in the same security sandbox as JavaScript does, and ha
 
 ## UIElements map to DOM elements
 
-There is for the most part a 1:1 mapping between managed Xaml elements and DOM elements. The element tag associated with a Xaml type is set by a `UIElement` constructor overload which takes the tag as a string, with "div" as the default.
+There is for the most part a 1:1 mapping between managed XAML elements and DOM elements. The element tag associated with a XAML type is set by a `UIElement` constructor overload which takes the tag as a string, with "div" as the default.
 
 ## Typescript layer
 

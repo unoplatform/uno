@@ -2,41 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Web
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebAuthenticationResult 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ResponseData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebAuthenticationResult.ResponseData is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint ResponseErrorDetail
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint WebAuthenticationResult.ResponseErrorDetail is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Authentication.Web.WebAuthenticationStatus ResponseStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WebAuthenticationStatus WebAuthenticationResult.ResponseStatus is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property ResponseData
+		// Skipping already declared property ResponseErrorDetail
+		// Skipping already declared property ResponseStatus
 		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.ResponseData.get
 		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.ResponseStatus.get
 		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.ResponseErrorDetail.get

@@ -247,6 +247,12 @@ if ($InstallWindowsSDK)
         # Workaround for missing SDK
         $uri = "https://software-download.microsoft.com/download/pr/19041.1.191206-1406.vb_release_WindowsSDK.iso";
     }
+    
+    if($buildNumber -eq 18362)
+    {
+        # Workaround for removed SDK
+        $uri = "https://software-static.download.prss.microsoft.com/pr/download/18362.1.190318-1202.19h1_release_WindowsSDK.iso";
+    }
 
     if ($env:TEMP -eq $null)
     {

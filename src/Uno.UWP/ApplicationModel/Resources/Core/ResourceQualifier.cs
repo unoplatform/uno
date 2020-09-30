@@ -57,8 +57,14 @@ namespace Windows.ApplicationModel.Resources.Core
 				{
 					var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
 					var ietfLanguageTags = cultures.Select(c => c.IetfLanguageTag);
+					var ietfLanguageParentTags = cultures.Select(c => c.Parent.IetfLanguageTag);
 					var twoLetterLanguageTags = cultures.Select(c => c.TwoLetterISOLanguageName);
-					_languageTags = new HashSet<string>(Enumerable.Concat(ietfLanguageTags, twoLetterLanguageTags).Distinct());
+
+					var allCulture = Enumerable.Concat(
+						ietfLanguageTags,
+						twoLetterLanguageTags.Concat(ietfLanguageParentTags));
+
+					_languageTags = new HashSet<string>(allCulture.Distinct());
 				}
 
 				return _languageTags;

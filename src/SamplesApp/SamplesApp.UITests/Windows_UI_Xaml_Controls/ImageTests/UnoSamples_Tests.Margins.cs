@@ -22,12 +22,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			_app.WaitForElement("rect4");
 
 			var imageRects = new[] { "img0", "img1", "img2", "img3", "img4" }
-				.Select(x => _app.GetRect(x))
+				.Select(x => _app.GetPhysicalRect(x))
 				.ToArray();
 
 			var rects = new[] { "rect0", "rect1", "rect2", "rect3", "rect4" }
-				.Select(x => _app.GetRect(x))
+				.Select(x => _app.GetPhysicalRect(x))
 				.ToArray();
+
+			var logicalRect4 = _app.GetLogicalRect("rect4");
 
 			using (new AssertionScope())
 			{

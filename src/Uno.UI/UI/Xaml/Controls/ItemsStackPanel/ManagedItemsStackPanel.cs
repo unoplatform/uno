@@ -17,7 +17,9 @@ namespace Uno.UI.Controls
 	{
 		ManagedVirtualizingPanelLayout _layout;
 
+#if !__IOS__
 		internal bool ShouldInterceptInvalidate { get; set; }
+#endif
 
 		public ManagedItemsStackPanel()
 		{
@@ -138,6 +140,6 @@ namespace Uno.UI.Controls
 #endif
 	}
 #else
-	public partial class ManagedItemsStackPanel : ItemsStackPanel { } // Make available on other platforms for Xaml compatibility
+		public partial class ManagedItemsStackPanel : ItemsStackPanel { } // Make available on other platforms for Xaml compatibility
 #endif
 }

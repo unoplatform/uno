@@ -5,10 +5,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Samples.Content.UITests.ViewBoxTests
 {
-	/// <summary>
-	/// An empty page that can be used on its own or navigated to within a Frame.
-	/// </summary>
-	[SampleControlInfo("ViewBox", nameof(ViewBox_Dynamic))]
+	[Sample("Viewbox")]
 	public sealed partial class ViewBox_Dynamic : UserControl
 	{
         public ViewBox_Dynamic()

@@ -31,6 +31,7 @@ namespace Windows.UI.Xaml.Controls
 						&& x._textTrimming == y._textTrimming
 						&& x._textAlignment == y._textAlignment
 						&& Math.Abs(x._lineHeight - y._lineHeight) < 0.1e-8
+						&& x._padding == y._padding
 						&& x._lineStackingStrategy == y._lineStackingStrategy
 						&& x._textDecorations == y._textDecorations
 						&& x._characterSpacing == y._characterSpacing;
@@ -58,6 +59,7 @@ namespace Windows.UI.Xaml.Controls
 				_textTrimming = source.TextTrimming;
 				_textAlignment = source.TextAlignment;
 				_lineHeight = source.LineHeight;
+				_padding = source.Padding;
 				_lineStackingStrategy = source.LineStackingStrategy;
 				_characterSpacing = source.CharacterSpacing;
 				_textDecorations = source.TextDecorations;
@@ -82,6 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			private readonly TextTrimming _textTrimming;
 			private readonly TextAlignment _textAlignment;
 			private readonly double _lineHeight;
+			private readonly Thickness _padding;
 			private readonly LineStackingStrategy _lineStackingStrategy;
 			private readonly int _characterSpacing;
 			private readonly TextDecorations _textDecorations;

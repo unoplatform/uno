@@ -7,6 +7,7 @@ using Android.Graphics.Drawables;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using AndroidX.Core.View;
 using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Graphics.Display;
@@ -18,15 +19,17 @@ namespace Uno.UI
 {
 	internal class LayoutProvider
 	{
-		public delegate void LayoutChangedListener(Rect statusBar, Rect keyboard, Rect navigationBar);
+		public delegate void KeyboardChangedListener(Rect keyboard);
 		public delegate void InsetsChangedListener(Thickness insets);
 
-		public event LayoutChangedListener LayoutChanged;
+		public event KeyboardChangedListener KeyboardChanged;
 		public event InsetsChangedListener InsetsChanged;
 
 		public Thickness Insets { get; internal set; } = new Thickness(0, 0, 0, 0);
-		public Rect StatusBarRect { get; private set; } = new Rect(0, 0, 0, 0);
-		public Rect KeyboardRect { get; private set; } = new Rect(0, 0, 0, 0);
+
+		/// <summary>
+		/// // Used by legacy visual bounds calculation on devices below API 30. Will always be default value on devices running API 30 and above.
+		/// </summary>
 		public Rect NavigationBarRect { get; private set; } = new Rect(0, 0, 0, 0);
 
 		private readonly Activity _activity;
@@ -53,8 +56,11 @@ namespace Uno.UI
 		{
 			if (view?.WindowToken != null)
 			{
-				_adjustNothingLayoutProvider.Start(view);
+				// making sure to stop before starting new ones.
+				Stop();
+
 				_adjustResizeLayoutProvider.Start(view);
+				_adjustNothingLayoutProvider.Start(view);
 			}
 		}
 
@@ -66,58 +72,76 @@ namespace Uno.UI
 
 		private void MeasureLayout(PopupWindow sender)
 		{
-			// We can obtain the size of keyboard by comparing the layout of two popup windows
-			// where one (AdjustResize) resizes to keyboard and one(AdjustNothing) that doesn't:
-			// [size] realMetrics			: screen 
-			// [size] metrics				: screen - dead zones
-			// [rect] displayRect			: screen - (bottom: nav_bar)
-			// [rect] adjustNothingFrame	: screen - (top: status_bar) - (bottom: nav_bar)
-			// [rect] adjustResizeFrame		: screen - (top: status_bar) - (bottom: keyboard + nav_bar)
-			var realMetrics = Get<DisplayMetrics>(_activity.WindowManager.DefaultDisplay.GetRealMetrics);
-			var metrics = Get<DisplayMetrics>(_activity.WindowManager.DefaultDisplay.GetMetrics);
-			var displayRect = Get<Rect>(_activity.WindowManager.DefaultDisplay.GetRectSize);
-			var adjustNothingFrame = Get<Rect>(_adjustNothingLayoutProvider.ContentView.GetWindowVisibleDisplayFrame);
-			var adjustResizeFrame = Get<Rect>(_adjustResizeLayoutProvider.ContentView.GetWindowVisibleDisplayFrame);
-
-			var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
-
-			StatusBarRect = new Rect(0, 0, realMetrics.WidthPixels, adjustNothingFrame.Top);
-			KeyboardRect = new Rect(0, adjustResizeFrame.Bottom, realMetrics.WidthPixels, adjustNothingFrame.Bottom);
-
-			switch (orientation)
+			var osVersion = Android.OS.Build.VERSION.SdkInt;
+			if (osVersion >= Android.OS.BuildVersionCodes.R)
 			{
-				case DisplayOrientations.Landscape:
-					NavigationBarRect = new Rect(0, 0, metrics.WidthPixels - displayRect.Width(), metrics.HeightPixels);
-					break;
-				case DisplayOrientations.LandscapeFlipped:
-					NavigationBarRect = new Rect(adjustNothingFrame.Width(), 0, metrics.WidthPixels - displayRect.Width(), metrics.HeightPixels);
-					break;
-				// Miss portrait flipped
-				case DisplayOrientations.Portrait:
-				default:
-					NavigationBarRect = new Rect(0, adjustNothingFrame.Bottom, realMetrics.WidthPixels, realMetrics.HeightPixels);
-					break;
+				// Use newer API on 30 and above
+				var windowMetrics = _activity.WindowManager.CurrentWindowMetrics;
+				var imeInsets = windowMetrics.WindowInsets.GetInsets(WindowInsets.Type.Ime());
+				var windowBottom = windowMetrics.Bounds.Bottom;
+				var keyboardHeight = windowBottom - imeInsets.Bottom;
+				var keyboardRect = keyboardHeight > 0 ? new Rect(0, keyboardHeight, windowMetrics.Bounds.Right, windowBottom) : new Rect();
+
+				KeyboardChanged?.Invoke(keyboardRect);
 			}
-
-			LayoutChanged?.Invoke(StatusBarRect, KeyboardRect, NavigationBarRect);
-
-			T Get<T>(Action<T> getter) where T : new()
+			else
 			{
-				var result = new T();
-				getter(result);
+#pragma warning disable 618
+				// We can obtain the size of keyboard by comparing the layout of two popup windows
+				// where one (AdjustResize) resizes to keyboard and one(AdjustNothing) that doesn't:
+				// [size] realMetrics			: screen 
+				// [size] metrics				: screen - dead zones
+				// [rect] displayRect			: screen - (bottom: nav_bar)
+				// [rect] adjustNothingFrame	: screen - (top: status_bar) - (bottom: nav_bar)
+				// [rect] adjustResizeFrame		: screen - (top: status_bar) - (bottom: keyboard + nav_bar)
+				var realMetrics = Get<DisplayMetrics>(_activity.WindowManager.DefaultDisplay.GetRealMetrics);
+				var metrics = Get<DisplayMetrics>(_activity.WindowManager.DefaultDisplay.GetMetrics);
+				var displayRect = Get<Rect>(_activity.WindowManager.DefaultDisplay.GetRectSize);
+				var adjustNothingFrame = Get<Rect>(_adjustNothingLayoutProvider.ContentView.GetWindowVisibleDisplayFrame);
+				var adjustResizeFrame = Get<Rect>(_adjustResizeLayoutProvider.ContentView.GetWindowVisibleDisplayFrame);
+#pragma warning restore 618
 
-				return result;
+				var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
+
+				var keyboardRect = new Rect(0, adjustResizeFrame.Bottom, realMetrics.WidthPixels, adjustNothingFrame.Bottom);
+
+				switch (orientation)
+				{
+					case DisplayOrientations.Landscape:
+						NavigationBarRect = new Rect(0, 0, metrics.WidthPixels - displayRect.Width(), metrics.HeightPixels);
+						break;
+					case DisplayOrientations.LandscapeFlipped:
+						NavigationBarRect = new Rect(adjustNothingFrame.Width(), 0, metrics.WidthPixels - displayRect.Width(), metrics.HeightPixels);
+						break;
+					// Miss portrait flipped
+					case DisplayOrientations.Portrait:
+					default:
+						NavigationBarRect = new Rect(0, adjustNothingFrame.Bottom, realMetrics.WidthPixels, realMetrics.HeightPixels);
+						break;
+				}
+
+				KeyboardChanged?.Invoke(keyboardRect);
+
+				T Get<T>(Action<T> getter) where T : new()
+				{
+					var result = new T();
+					getter(result);
+
+					return result;
+				}
 			}
 		}
 
 		private void MeasureInsets(PopupWindow sender, WindowInsets insets)
 		{
+#pragma warning disable 618
 			Insets = new Thickness(
 				ViewHelper.PhysicalToLogicalPixels(insets.SystemWindowInsetLeft),
 				ViewHelper.PhysicalToLogicalPixels(insets.SystemWindowInsetTop),
 				ViewHelper.PhysicalToLogicalPixels(insets.SystemWindowInsetRight),
 				ViewHelper.PhysicalToLogicalPixels(insets.SystemWindowInsetBottom)
 			);
+#pragma warning restore 618
 
 			InsetsChanged?.Invoke(Insets);
 		}
@@ -178,7 +202,9 @@ namespace Uno.UI
 			{
 				_insetsListener?.Invoke(this, insets);
 				// We need to consume insets here since we will handle them in the Window.Android.cs
+#pragma warning disable 618
 				return insets.ConsumeSystemWindowInsets();
+#pragma warning restore 618
 			}
 		}
 	}

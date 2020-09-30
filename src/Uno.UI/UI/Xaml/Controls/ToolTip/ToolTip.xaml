@@ -33,6 +33,7 @@
 						ContentTransitions="{TemplateBinding ContentTransitions}"
 						ContentTemplate="{TemplateBinding ContentTemplate}"
 						Padding="{TemplateBinding Padding}"
+						CornerRadius="{TemplateBinding CornerRadius}"
 						TextWrapping="Wrap">
 
 						<!--<VisualStateManager.VisualStateGroups>

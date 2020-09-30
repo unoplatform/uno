@@ -11,7 +11,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 {
 	[TestFixture]
-	public class ColorAnimation_Tests : SampleControlUITestBase
+	public partial class ColorAnimation_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
@@ -38,7 +38,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 			var indepRect = _app.GetRect("IndependentBorder");
 
-			var bmp = TakeScreenshot("Completed");
+			using var bmp = TakeScreenshot("Completed");
 
 			ImageAssert.HasColorAt(bmp, targetRect.CenterX, targetRect.CenterY, Color.Red);
 
@@ -60,7 +60,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 			var targetRect = _app.GetRect("TargetRectangle");
 
-			var bmp = TakeScreenshot("Completed");
+			using var bmp = TakeScreenshot("Completed");
 
 			ImageAssert.HasColorAt(bmp, targetRect.CenterX, targetRect.CenterY, Color.Brown);
 		}

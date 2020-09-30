@@ -12,6 +12,10 @@
 		HorizontalAlignment="Stretch"
 		VerticalAlignment="Stretch">
 
+		<!-- RenderTransform is not queryable in UITest even if marked by x:Name -->
+		<TextBlock x:Name="DebugThumbTranslateX" Text="{Binding ElementName=_thumbTranslate, Path=X}" Foreground="Transparent" />
+		<TextBlock x:Name="DebugThumbTranslateY" Text="{Binding ElementName=_thumbTranslate, Path=Y}" Foreground="Transparent" />
+
 		<TextBlock
 			VerticalAlignment="Bottom"
 			Text="This test validates the implicit capture and the sum of delta of the manipulation events. Once clicked over, the small red square should move at the opposite of your pointer."
@@ -23,7 +27,11 @@
 			VerticalAlignment="Center"
 			Width="24"
 			Height="24"
-			Background="Orange" />
+			Background="Orange">
+			<Border.RenderTransform>
+				<TranslateTransform x:Name="_thumbShadowTranslate" />
+			</Border.RenderTransform>
+		</Border>
 
 		<Border
 			x:Name="_thumb"
@@ -31,6 +39,10 @@
 			VerticalAlignment="Center"
 			Width="20"
 			Height="20"
-			Background="Red" />
+			Background="Red">
+			<Border.RenderTransform>
+				<TranslateTransform x:Name="_thumbTranslate" />
+			</Border.RenderTransform>
+		</Border>
 	</Grid>
 </Page>

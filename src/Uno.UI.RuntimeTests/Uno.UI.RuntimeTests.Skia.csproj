@@ -1,15 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="MSBuild.Sdk.Extras">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+	
+	<Import Project="../netcore-build.props" />
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.RuntimeTests</AssemblyName>
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
 		
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 	</PropertyGroup>
 
 	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions. 
@@ -19,27 +23,24 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" Version="5.10.3" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
+		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'!='uap10.0.17763'">
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_Xaml\FrameworkElementTests\*.cs">
-			<Link>UnitTests\Windows_UI_Xaml\FrameworkElementTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\TestFramework\ActivePlatformsAttribute.cs">
+			<Link>UITests\_Engine\UnoUITests\ActivePlatformsAttribute.cs</Link>
 		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\GridTests\Given_Grid_And_Min_Max.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\GridTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\GridTests\Context.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\GridTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\BorderTests\*.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\BorderTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Extensions\*.cs">
+			<Link>UITests\_Engine\SamplesAppUITests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+	<Import Project="UnitTestsImport.props" />
+	<Import Project="UITestsImport.props" />
+
+	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Skia.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
@@ -55,7 +56,6 @@
 
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	</PropertyGroup>
 	
 	<ItemGroup Condition="'$(DocsGeneration)'==''">

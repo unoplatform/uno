@@ -2,42 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum BluetoothMajorClass 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Miscellaneous,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Computer,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Phone,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkAccessPoint,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioVideo,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Peripheral,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Imaging,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Wearable,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Toy,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Health,
-		#endif
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.Miscellaneous
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.Computer
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.Phone
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.NetworkAccessPoint
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.AudioVideo
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.Peripheral
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.Imaging
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.Wearable
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.Toy
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.Health
 	}
 	#endif
 }

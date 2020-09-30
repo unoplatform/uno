@@ -52,6 +52,11 @@ namespace Uno.UI.Controls
 		public BindableNSView()
 		{
 			Initialize();
+			WantsLayer = true;
+			if (Layer != null)
+			{
+				Layer.MasksToBounds = false;
+			}
 		}
 
 		public BindableNSView(IntPtr handle)
@@ -106,6 +111,9 @@ namespace Uno.UI.Controls
 		// We change the name of the key event methods so it won't conflict with the actual KeyDown / KeyUp events
 		public sealed override void KeyDown(NSEvent evt) => OnNativeKeyDown(evt);
 		private protected virtual void OnNativeKeyDown(NSEvent evt) { }
+
+		public sealed override void FlagsChanged(NSEvent evt) => OnNativeFlagsChanged(evt);
+		private protected virtual void OnNativeFlagsChanged(NSEvent evt) { }
 
 		public sealed override void KeyUp(NSEvent evt) => OnNativeKeyUp(evt);
 		private protected virtual void OnNativeKeyUp(NSEvent evt) { }

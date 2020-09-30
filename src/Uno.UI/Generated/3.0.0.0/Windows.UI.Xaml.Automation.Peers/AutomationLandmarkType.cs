@@ -2,30 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum AutomationLandmarkType 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Custom,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Form,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Main,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Navigation,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Search,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.None
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Custom
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Form
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Main
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Navigation
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Search
 	}
 	#endif
 }

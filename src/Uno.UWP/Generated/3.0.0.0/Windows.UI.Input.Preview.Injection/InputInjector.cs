@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Preview.Injection
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class InputInjector 
@@ -14,34 +14,10 @@ namespace Windows.UI.Input.Preview.Injection
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InputInjector", "void InputInjector.InjectKeyboardInput(IEnumerable<InjectedInputKeyboardInfo> input)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void InjectMouseInput( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo> input)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InputInjector", "void InputInjector.InjectMouseInput(IEnumerable<InjectedInputMouseInfo> input)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void InitializeTouchInjection( global::Windows.UI.Input.Preview.Injection.InjectedInputVisualizationMode visualMode)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InputInjector", "void InputInjector.InitializeTouchInjection(InjectedInputVisualizationMode visualMode)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void InjectTouchInput( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo> input)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InputInjector", "void InputInjector.InjectTouchInput(IEnumerable<InjectedInputTouchInfo> input)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void UninitializeTouchInjection()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InputInjector", "void InputInjector.UninitializeTouchInjection()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.InjectMouseInput(System.Collections.Generic.IEnumerable<Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo>)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.InitializeTouchInjection(Windows.UI.Input.Preview.Injection.InjectedInputVisualizationMode)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.InjectTouchInput(System.Collections.Generic.IEnumerable<Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo>)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.UninitializeTouchInjection()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void InitializePenInjection( global::Windows.UI.Input.Preview.Injection.InjectedInputVisualizationMode visualMode)
@@ -98,12 +74,6 @@ namespace Windows.UI.Input.Preview.Injection
 			throw new global::System.NotImplementedException("The member InputInjector InputInjector.TryCreateForAppBroadcastOnly() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Input.Preview.Injection.InputInjector TryCreate()
-		{
-			throw new global::System.NotImplementedException("The member InputInjector InputInjector.TryCreate() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.TryCreate()
 	}
 }

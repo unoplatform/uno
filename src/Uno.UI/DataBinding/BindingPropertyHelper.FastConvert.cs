@@ -5,13 +5,14 @@ using Uno.Extensions;
 using System.Globalization;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Text;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI;
 using Uno.UI.Extensions;
+using System.Text.RegularExpressions;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -21,6 +22,16 @@ using Android.Graphics;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
+#endif
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Text;
+using FontWeights = Windows.UI.Text.FontWeights;
+using FontWeight = Windows.UI.Text.FontWeight;
+#else
+using Windows.UI.Text;
+using FontWeights = Windows.UI.Text.FontWeights;
+using FontWeight = Windows.UI.Text.FontWeight;
 #endif
 
 namespace Uno.UI.DataBinding
@@ -199,22 +210,17 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
-			if (FastStringToSingleConvert(outputType, input, ref output))
-			{
-				return true;
-			}
-
-			if (FastStringToColorConvert(outputType, input, ref output))
-			{
-				return true;
-			}
-
 			if (FastStringToBrushConvert(outputType, input, ref output))
 			{
 				return true;
 			}
 
 			if (FastStringToDoubleConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToSingleConvert(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -230,6 +236,11 @@ namespace Uno.UI.DataBinding
 			}
 
 			if (FastStringToOrientationConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToColorConvert(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -250,6 +261,11 @@ namespace Uno.UI.DataBinding
 			}
 
 			if (FastStringToFontFamilyConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToIntegerConvert(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -481,10 +497,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(Windows.UI.Xaml.Media.Matrix))
 			{
-				var fields = input
-					.Split(new[] { ',' })
-					?.Select(v => double.Parse(v, CultureInfo.InvariantCulture))
-					?.ToArray();
+				var fields = GetDoubleValues(input);
 
 				output = new Windows.UI.Xaml.Media.Matrix(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5]);
 				return true;
@@ -497,18 +510,15 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(System.Drawing.PointF))
 			{
-				var fields = input
-					.Split(new[] { ',' })
-					?.Select(v => float.Parse(v, CultureInfo.InvariantCulture))
-					?.ToArray();
+				var fields = GetFloatValues(input);
 
-				if (fields?.Length == 2)
+				if (fields.Count == 2)
 				{
 					output = new System.Drawing.PointF(fields[0], fields[1]);
 					return true;
 				}
 
-				if (fields?.Length == 1)
+				if (fields.Count == 1)
 				{
 					output = new System.Drawing.PointF(fields[0], fields[0]);
 					return true;
@@ -522,18 +532,15 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(Windows.Foundation.Point))
 			{
-				var fields = input
-					.Split(new[] { ',' })
-					?.Select(v => double.Parse(v, CultureInfo.InvariantCulture))
-					?.ToArray();
+				var fields = GetDoubleValues(input);
 
-				if (fields?.Length == 2)
+				if (fields.Count == 2)
 				{
 					output = new Windows.Foundation.Point(fields[0], fields[1]);
 					return true;
 				}
 
-				if (fields?.Length == 1)
+				if (fields.Count == 1)
 				{
 					output = new Windows.Foundation.Point(fields[0], fields[0]);
 					return true;
@@ -590,8 +597,16 @@ namespace Uno.UI.DataBinding
 						output = TextAlignment.Left;
 						return true;
 
+					case "start":
+						output = TextAlignment.Start;
+						return true;
+
 					case "right":
 						output = TextAlignment.Right;
+						return true;
+
+					case "end":
+						output = TextAlignment.End;
 						return true;
 
 					case "justify":
@@ -628,12 +643,59 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToDoubleConvert(Type outputType, string input, ref object output)
 		{
+			const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+
 			if (outputType == typeof(double))
 			{
-				double result;
-				if (double.TryParse((string)input, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+				if (input == "") // empty string is NaN when bound in XAML
 				{
-					output = result;
+					output = double.NaN;
+					return true;
+				}
+
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-double.
+					// Often use in VisualStateManager to set double values (like opacity) to zero or one...
+					var c = input[0];
+					if (c >= '0' && c <= '9')
+					{
+						output = (double)(c - '0');
+						return true;
+					}
+				}
+
+				var trimmed = IgnoreStartingFromFirstSpaceIgnoreLeading(input);
+
+				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0d;
+					return true;
+				}
+
+				trimmed = trimmed.ToLowerInvariant();
+
+				if (trimmed == "nan" || trimmed == "auto")
+				{
+					output = double.NaN;
+					return true;
+				}
+
+				if (trimmed == "-infinity")
+				{
+					output = double.NegativeInfinity;
+					return true;
+				}
+
+				if (trimmed == "infinity")
+				{
+					output = double.PositiveInfinity;
+					return true;
+				}
+
+				if (double.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var d))
+				{
+					output = d;
 					return true;
 				}
 			}
@@ -643,12 +705,93 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToSingleConvert(Type outputType, string input, ref object output)
 		{
+			const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+
 			if (outputType == typeof(float))
 			{
-				float floatResult;
-				if (float.TryParse((string)input, NumberStyles.Any, CultureInfo.InvariantCulture, out floatResult))
+				if (input == "") // empty string is NaN when bound in XAML
 				{
-					output = floatResult;
+					output = float.NaN;
+					return true;
+				}
+
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-float
+					var c = input[0];
+					if (c >= '0' && c <= '9')
+					{
+						output = (float)(c - '0');
+						return true;
+					}
+				}
+
+				var trimmed = input.Trim();
+
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0f;
+					return true;
+				}
+
+				trimmed = trimmed.ToLowerInvariant();
+
+				if (trimmed == "nan") // "Auto" is for sizes, which are only of type double
+				{
+					output = float.NaN;
+					return true;
+				}
+
+				if (trimmed == "-infinity")
+				{
+					output = float.NegativeInfinity;
+					return true;
+				}
+
+				if (trimmed == "infinity")
+				{
+					output = float.PositiveInfinity;
+					return true;
+				}
+
+				if (float.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var f))
+				{
+					output = f;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static bool FastStringToIntegerConvert(Type outputType, string input, ref object output)
+		{
+			const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+
+			if (outputType == typeof(int))
+			{
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-float
+					var c = input[0];
+					if (c >= '0' && c <= '9')
+					{
+						output = (int)(c - '0');
+						return true;
+					}
+				}
+
+				var trimmed = IgnoreStartingFromFirstSpaceIgnoreLeading(input);
+
+				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0;
+					return true;
+				}
+
+				if (int.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var i))
+				{
+					output = i;
 					return true;
 				}
 			}
@@ -863,6 +1006,108 @@ namespace Uno.UI.DataBinding
 			{
 				return false;
 			}
+		}
+
+		private static List<double> GetDoubleValues(string input)
+		{
+			var list = new List<double>();
+			var s = input.AsSpan().Trim();
+			while (!s.IsEmpty)
+			{
+				var length = NextDoubleLength(s);
+				list.Add(double.Parse(s.Slice(0, length).ToString(), NumberStyles.Float));
+				s = s.Slice(length);
+				s = EatSeparator(s);
+			}
+
+			return list;
+		}
+
+		private static List<float> GetFloatValues(string input)
+		{
+			var list = new List<float>();
+			var s = input.AsSpan().Trim();
+			while (!s.IsEmpty)
+			{
+				var length = NextDoubleLength(s);
+				list.Add(float.Parse(s.Slice(0, length).ToString(), NumberStyles.Float));
+				s = s.Slice(length);
+				s = EatSeparator(s);
+			}
+
+			return list;
+		}
+
+		private static ReadOnlySpan<char> EatSeparator(ReadOnlySpan<char> s)
+		{
+			if (s.IsEmpty)
+			{
+				return s;
+			}
+
+			var seenWhitespace = false;
+			var seenComma = false;
+			int i = 0;
+			for (; i < s.Length; i++)
+			{
+				if (char.IsWhiteSpace(s[i]))
+				{
+					seenWhitespace = true;
+				}
+				else if (s[i] == ',')
+				{
+					if (seenComma)
+					{
+						throw new ArgumentException("Comma shouldn't appear twice between two double values.");
+					}
+
+					seenComma = true;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			Debug.Assert(seenWhitespace || seenComma);
+
+			return s.Slice(i);
+		}
+
+		/// <summary>
+		/// Returns the number of characters containing the next double.
+		/// </summary>
+		private static int NextDoubleLength(ReadOnlySpan<char> s)
+		{
+			int i = 0;
+			for (; i < s.Length; i++)
+			{
+				if (char.IsWhiteSpace(s[i]) || s[i] == ',')
+				{
+					break;
+				}
+			}
+
+			return i;
+		}
+
+		private static string IgnoreStartingFromFirstSpaceIgnoreLeading(string value)
+		{
+			var span = value.AsSpan().TrimStart();
+
+			var firstWhitespace = -1;
+			for (int i = 0; i < span.Length; i++)
+			{
+				if (char.IsWhiteSpace(span[i]))
+				{
+					firstWhitespace = i;
+					break;
+				}
+			}
+
+			return firstWhitespace == -1
+				? value
+				: span.Slice(0, firstWhitespace).ToString();
 		}
 	}
 }

@@ -9,8 +9,9 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.StartScreen;
 using Android.Content;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+
 using System.ComponentModel;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -47,39 +48,69 @@ namespace Windows.UI.Xaml
 		{
 			if (activity is ApplicationActivity)
 			{
-				_app.InitializationCompleted();
-
-				var handled = false;
-				if (_lastHandledIntent != activity.Intent)
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					_lastHandledIntent = activity.Intent;
-					if (activity.Intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
-					{
-						_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, activity.Intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
-						handled = true;
-					}
-					else if (activity.Intent.Data != null)
-					{
-						if (Uri.TryCreate(activity.Intent.Data.ToString(), UriKind.Absolute, out var uri))
-						{
-							_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
-							handled = true;
-						}
-						else
-						{
-							// log error and fall back to normal launch
-							this.Log().LogError($"Activation URI {activity.Intent.Data} could not be parsed");
-						}
-					}
+					this.Log().LogDebug($"Application activity started with intent {activity.Intent}");
 				}
 
+				_app.InitializationCompleted();
+
+				var handled = TryHandleIntent(activity.Intent);
+
 				// default to normal launch
-				if (!handled)
+				if (!handled && !_isRunning)
 				{
 					_app.OnLaunched(new LaunchActivatedEventArgs());
 				}
 				_isRunning = true;
 			}
+		}
+
+		internal bool TryHandleIntent(Intent intent)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Trying to handle intent with data: {intent?.Data?.ToString() ?? "(null)"}");
+			}
+
+			var handled = false;
+			if (_lastHandledIntent != intent)
+			{
+				_lastHandledIntent = intent;
+				if (intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
+					}
+
+					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
+					handled = true;
+				}
+				else if (intent.Data != null)
+				{
+					if (Uri.TryCreate(intent.Data.ToString(), UriKind.Absolute, out var uri))
+					{
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().LogDebug("Intent data parsed successfully as Uri, calling OnActivated.");
+						}
+
+						_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
+						handled = true;
+					}
+					else
+					{
+						// log warning and continue with normal launch
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().LogWarning("URI cannot be parsed from Intent.Data, continuing unhandled");
+						}
+					}
+				}
+			}
+
+			return handled;
 		}
 
 		/// <summary>
@@ -88,7 +119,9 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
+#if !NET6_0_OR_GREATER
 		[Android.Runtime.Preserve]
+#endif
 		[Export]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;

@@ -9,8 +9,9 @@ using Android.Content.PM;
 using Android.Provider;
 using Android.Runtime;
 using AndroidX.Fragment.App;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Extensions;
 using Windows.Foundation;
@@ -45,7 +46,7 @@ namespace Windows.Media.Capture
 			{
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{
-					this.Log().LogInformation($"Picture not taken. Result: {result.ResultCode}");
+					this.Log().Info($"Picture not taken. Result: {result.ResultCode}");
 				}
 
 				// No picture return null

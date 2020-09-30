@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Windows.Foundation;
@@ -46,8 +49,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			outerGrid.Measure(new Size(1000, 1000));
 			var desiredContainer = innerGrid.DesiredSize;
 
-			Assert.AreEqual(30, Math.Round(desiredContainer.Width));
-			Assert.AreEqual(30, Math.Round(desiredContainer.Height));
+			// Workaround for image.Loaded being raised too early on WebAssembly
+			var sw = Stopwatch.StartNew();
+			do
+			{
+				await TestServices.WindowHelper.WaitForIdle();
+
+				if(Math.Round(desiredContainer.Width) != 0 && Math.Round(desiredContainer.Height) != 0)
+				{
+					break;
+				}
+
+				desiredContainer = innerGrid.DesiredSize;
+			}
+			while (sw.Elapsed < TimeSpan.FromSeconds(5));
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			using var _ = new AssertionScope();
+
+			Math.Round(desiredContainer.Width).Should().Be(30, "desiredContainer.Width");
+			Math.Round(desiredContainer.Height).Should().Be(30, "desiredContainer.Width");
 
 			TestServices.WindowHelper.WindowContent = null;
 		}
@@ -59,6 +81,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var scales = new List<ResolutionScale>()
 			{
+				(ResolutionScale)80,
 				ResolutionScale.Scale100Percent,
 				ResolutionScale.Scale150Percent,
 				ResolutionScale.Scale200Percent,
@@ -95,5 +118,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task TargetNullValue_Is_Correctly_Applied()
+		{
+			var SUT = new ImageSource_TargetNullValue();
+
+			var nameIsAppliedSource = SUT.NameIsApplied.Source as BitmapImage;
+#if __WASM__ // Wasm doesn't align with UWP currently.
+			Assert.AreEqual("mypanel", nameIsAppliedSource.UriSource.ToString());
+#else
+			Assert.AreEqual("ms-appx:///mypanel", nameIsAppliedSource.UriSource.ToString());
+#endif
+
+			var targetNullValueSource = SUT.TargetNullValueIsApplied.Source as BitmapImage;
+#if __WASM__ // Wasm doesn't align with UWP currently.
+			Assert.AreEqual("Assets/StoreLogo.png", targetNullValueSource.UriSource.ToString());
+#else
+			Assert.AreEqual("ms-appx:///Assets/StoreLogo.png", targetNullValueSource.UriSource.ToString());
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Image_Is_Loaded_From_URL()
+		{
+			string decoded_url = "https://nv-assets.azurewebsites.net/tests/images/image with spaces.jpg";
+			var img = new Image();
+			var SUT = new BitmapImage(new Uri(decoded_url));
+			img.Source = SUT;
+
+			TestServices.WindowHelper.WindowContent = img;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
+
+			Assert.IsTrue(img.ActualHeight > 0);			
+		}
 	}
 }

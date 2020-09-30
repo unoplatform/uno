@@ -4,10 +4,17 @@ using Windows.UI.Xaml.Input;
 using Windows.System;
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Extensions;
 using AppKit;
 using CoreAnimation;
 using CoreGraphics;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -17,8 +24,22 @@ namespace Windows.UI.Xaml
 		{
 			Initialize();
 			InitializePointers();
-		}		
-		
+
+			UpdateHitTest();
+		}
+
+		internal bool IsMeasureDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => false; // Not implemented on macOS yet
+		}
+
+		internal bool IsArrangeDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => false; // Not implemented on macOS yet
+		}
+
 		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
@@ -31,23 +52,34 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
+		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
 		{
-			var newVisibility = (Visibility)newValue;
+			UpdateHitTest();
+		}
 
-			if (base.Hidden != newVisibility.IsHidden())
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
+		{
+			UpdateHitTest();
+
+			var isNewVisibilityHidden = newValue.IsHidden();
+
+			if (base.Hidden == isNewVisibilityHidden)
 			{
-				base.Hidden = newVisibility.IsHidden();
-				base.NeedsLayout = true;			
-
-				if (newVisibility == Visibility.Visible)
-				{
-					// This recursively invalidates the layout of all subviews
-					// to ensure LayoutSubviews is called and views get updated.
-					// Failing to do this can cause some views to remain collapsed.
-					SetSubviewsNeedLayout();
-				}
+				return;
 			}
+
+			base.Hidden = isNewVisibilityHidden;
+			InvalidateMeasure();
+
+			if (isNewVisibilityHidden)
+			{
+				return;
+			}
+
+			// This recursively invalidates the layout of all subviews
+			// to ensure LayoutSubviews is called and views get updated.
+			// Failing to do this can cause some views to remain collapsed.
+			SetSubviewsNeedLayout();
 		}
 
 		public override bool Hidden
@@ -55,8 +87,8 @@ namespace Windows.UI.Xaml
 			get => base.Hidden;
 			set
 			{
-				// Only set the Visility property, the Hidden property is updated 
-				// in the property changed handler as there are actions associated with 
+				// Only set the Visility property, the Hidden property is updated
+				// in the property changed handler as there are actions associated with
 				// the change.
 				Visibility = value ? Visibility.Collapsed : Visibility.Visible;
 			}
@@ -93,13 +125,15 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-#if DEBUG
-		public string ShowLocalVisualTree(int fromHeight) => AppKit.UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
-#endif
-
 		/// <inheritdoc />
-		public override bool AcceptsFirstResponder() 
+		public override bool AcceptsFirstResponder()
 			=> true; // This is required to receive the KeyDown / KeyUp. Note: Key events are then bubble in managed.
+
+
+		internal static void LoadingRootElement(UIElement visualTreeRoot) { }
+
+		internal static void RootElementLoaded(UIElement visualTreeRoot) =>
+			visualTreeRoot.SetHitTestVisibilityForRoot();
 
 		private protected override void OnNativeKeyDown(NSEvent evt)
 		{
@@ -111,6 +145,98 @@ namespace Windows.UI.Xaml
 			RaiseEvent(KeyDownEvent, args);
 
 			base.OnNativeKeyDown(evt);
+		}
+
+		private NSEventModifierMask _lastFlags = (NSEventModifierMask)0;
+
+		private protected override void OnNativeFlagsChanged(NSEvent evt)
+		{
+			var newFlags = evt.ModifierFlags;
+
+			var flags = Enum.GetValues(typeof(NSEventModifierMask)).OfType<NSEventModifierMask>();
+			foreach (var flag in flags)
+			{
+				var key = VirtualKeyHelper.FromFlags(flag);
+				if (key == null)
+				{
+					continue;
+				}
+
+				var raiseKeyDown = CheckFlagKeyDown(flag, newFlags);
+				var raiseKeyUp = CheckFlagKeyUp(flag, newFlags);
+
+				if (raiseKeyDown || raiseKeyUp)
+				{
+					var args = new KeyRoutedEventArgs(this, key.Value)
+					{
+						CanBubbleNatively = false // Only the first responder gets the event
+					};
+
+					if (raiseKeyDown)
+					{
+						RaiseEvent(KeyDownEvent, args);
+					}
+
+					if (raiseKeyUp)
+					{
+						RaiseEvent(KeyUpEvent, args);
+					}
+				}
+			}
+
+			_lastFlags = newFlags;
+		}
+
+		private bool CheckFlagKeyUp(NSEventModifierMask flag, NSEventModifierMask newMask) => _lastFlags.HasFlag(flag) && !newMask.HasFlag(flag);
+
+		private bool CheckFlagKeyDown(NSEventModifierMask flag, NSEventModifierMask newMask) => !_lastFlags.HasFlag(flag) && newMask.HasFlag(flag);
+
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		{
+			var parent = this.GetVisualTreeParent();
+			switch (parent)
+			{
+				// First we try the direct parent, if it's from the known type we won't even have to adjust offsets
+
+				case UIElement elt:
+					parentElement = elt;
+					return true;
+
+				case null:
+					parentElement = null;
+					return false;
+
+				case NSView view:
+					do
+					{
+						parent = parent?.GetVisualTreeParent();
+
+						switch (parent)
+						{
+							case UIElement eltParent:
+								// We found a UIElement in the parent hierarchy, we compute the X/Y offset between the
+								// first parent 'view' and this 'elt', and return it.
+
+								var offset = view?.ConvertPointToView(default, eltParent) ?? default;
+
+								parentElement = eltParent;
+								offsetX += offset.X;
+								offsetY += offset.Y;
+								return true;
+
+							case null:
+								// We reached the top of the window without any UIElement in the hierarchy,
+								// so we adjust offsets using the X/Y position of the original 'view' in the window.
+
+								offset = view.ConvertRectToView(default, null).Location;
+
+								parentElement = null;
+								offsetX += offset.X;
+								offsetY += offset.Y;
+								return false;
+						}
+					} while (true);
+			}
 		}
 
 		private protected override void OnNativeKeyUp(NSEvent evt)
@@ -146,7 +272,7 @@ namespace Windows.UI.Xaml
 
 			WantsLayer = true;
 			if (Layer != null)
-			{ 
+			{
 				this.Layer.Mask = new CAShapeLayer
 				{
 					Path = CGPath.FromRect(rect.ToCGRect())

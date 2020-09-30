@@ -34,7 +34,7 @@ namespace Windows.System.Threading
 
 			_timer.Change(
 				period: period ?? global::System.Threading.Timeout.InfiniteTimeSpan,
-				dueTime: delay ?? global::System.Threading.Timeout.InfiniteTimeSpan
+				dueTime: delay ?? TimeSpan.Zero
 			);
 		}
 

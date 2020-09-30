@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿#nullable enable
+
+using Microsoft.CodeAnalysis;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -18,7 +20,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public override int GetHashCode() => (Type ?? "").GetHashCode() ^ (Name ?? "").GetHashCode() ^ Accessibility.GetHashCode();
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			return obj is BackingFieldDefinition other
 				&& Type == other.Type

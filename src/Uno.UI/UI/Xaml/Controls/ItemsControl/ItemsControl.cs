@@ -6,15 +6,16 @@ using Uno.Extensions;
 using Uno.UI;
 using System.Collections.Specialized;
 using Uno.Disposables;
-using Uno.UI.Controls;
 using Windows.UI.Xaml.Markup;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using Windows.Foundation.Collections;
 using Uno.Extensions.Specialized;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI.Extensions;
 using System.ComponentModel;
+using Windows.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -32,7 +33,6 @@ using AppKit;
 using View = AppKit.NSView;
 using Color = Windows.UI.Color;
 #else
-using Color = System.Drawing.Color;
 using View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -41,6 +41,8 @@ namespace Windows.UI.Xaml.Controls
 	[ContentProperty(Name = "Items")]
 	public partial class ItemsControl : Control, IItemsControl
 	{
+		protected IVectorChangedEventArgs _inProgressVectorChange;
+
 		private ItemsPresenter _itemsPresenter;
 
 		private readonly SerialDisposable _notifyCollectionChanged = new SerialDisposable();
@@ -48,7 +50,6 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _cvsViewChanged = new SerialDisposable();
 
 		private bool _isReady; // Template applied
-		private bool _needsUpdateItems;
 		private ItemCollection _items = new ItemCollection();
 
 		// This gets prepended to MaterializedContainers to ensure it's being considered 
@@ -56,6 +57,8 @@ namespace Windows.UI.Xaml.Controls
 		private DependencyObject _containerBeingPrepared;
 
 		private int[] _groupCounts;
+
+		internal ScrollViewer ScrollViewer { get; private set; }
 
 		/// <summary>
 		/// This template is stored here in order to allow for 
@@ -90,11 +93,26 @@ namespace Windows.UI.Xaml.Controls
 		{
 			InitializePartial();
 
-			_items.VectorChanged += (s, e) =>
+			_items.VectorChanged += OnItemsVectorChanged;
+		}
+
+		private void OnItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs e)
+		{
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			try
+#endif
 			{
+				_inProgressVectorChange = e;
 				OnItemsChanged(e);
-				SetNeedsUpdateItems();
-			};
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			finally
+#endif
+			{
+				_inProgressVectorChange = null;
+			}
+
+			OnItemsSourceSingleCollectionChanged(this, e.ToNotifyCollectionChangedEventArgs(), 0);
 		}
 
 		partial void InitializePartial();
@@ -147,7 +165,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemsPanelProperty, value); }
 		}
 
-		public static DependencyProperty ItemsPanelProperty =
+		public static DependencyProperty ItemsPanelProperty { get; } =
 			DependencyProperty.Register(
 				"ItemsPanel",
 				typeof(ItemsPanelTemplate),
@@ -177,7 +195,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemTemplateProperty, value); }
 		}
 
-		public static DependencyProperty ItemTemplateProperty =
+		public static DependencyProperty ItemTemplateProperty { get; } =
 			DependencyProperty.Register(
 				"ItemTemplate",
 				typeof(DataTemplate),
@@ -192,7 +210,7 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
 		{
 			Refresh();
-			SetNeedsUpdateItems();
+			UpdateItems(null);
 		}
 
 		#endregion
@@ -205,7 +223,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemTemplateSelectorProperty, value); }
 		}
 
-		public static DependencyProperty ItemTemplateSelectorProperty =
+		public static DependencyProperty ItemTemplateSelectorProperty { get; } =
 			DependencyProperty.Register(
 				"ItemTemplateSelector",
 				typeof(DataTemplateSelector),
@@ -219,7 +237,7 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnItemTemplateSelectorChanged(DataTemplateSelector oldItemTemplateSelector, DataTemplateSelector newItemTemplateSelector)
 		{
 			Refresh();
-			SetNeedsUpdateItems();
+			UpdateItems(null);
 		}
 
 		#endregion
@@ -620,12 +638,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"Calling OnItemsSourceChanged(), Old source={e.OldValue}, new source={e.NewValue}, NoOfItems={NumberOfItems}");
 			}
 
-			// Following line is commented out, since updating Items will trigger a call to SetNeedsUpdateItems() and causes unexpected results
-			// There is no effect to comment out this line, as 1) there is no sync up between Items and ItemsSource and 2) GetItems() will give precedence to ItemsSource
-			// Items?.Clear();
-
 			IsGrouping = (e.NewValue as ICollectionView)?.CollectionGroups != null;
-			SetNeedsUpdateItems();
+			Items.SetItemsSource(UnwrapItemsSource() as IEnumerable);
 			ObserveCollectionChanged();
 			TryObserveCollectionViewSource(e.NewValue);
 		}
@@ -640,7 +654,7 @@ namespace Windows.UI.Xaml.Controls
 					(s, e) =>
 					{
 						ObserveCollectionChanged();
-						SetNeedsUpdateItems();
+						UpdateItems(null);
 					}
 				);
 			}
@@ -650,6 +664,12 @@ namespace Windows.UI.Xaml.Controls
 
 		internal int GetDisplayGroupCount(int displaySection) => IsGrouping ? GetGroupAtDisplaySection(displaySection).GroupItems.Count : 0;
 
+		// Supports the common usage (prescribed in the official doc) of ItemsSource="{Binding Source = {StaticResource SomeCollectionViewSource}}"
+		//
+		// Note: this is not correct, in that it's not actually possible on UWP to set ItemsControl.ItemsSource to a CollectionViewSource.
+		// What actually happens on UWP in the above case is that the *BindingExpression* 'unwraps' the CollectionViewSource and passes the
+		// CollectionViewSource.View to whatever is being bound to (ie the ItemsSource). This should be fixed at some point because it
+		// has observable consequences in some usages.
 		internal object UnwrapItemsSource()
 			=> ItemsSource is CollectionViewSource cvs ? (object)cvs.View : ItemsSource;
 
@@ -657,57 +677,19 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var unwrappedSource = UnwrapItemsSource();
 
-			//Subscribe to changes on grouped source that is an observable collection
-			if (unwrappedSource is CollectionView collectionView && collectionView.CollectionGroups != null && collectionView.InnerCollection is INotifyCollectionChanged observableGroupedSource)
+			if (unwrappedSource is null)
 			{
-				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
-				// remove the handler.
-				NotifyCollectionChangedEventHandler handler = OnItemsSourceGroupsChanged;
-				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
-					observableGroupedSource.CollectionChanged -= handler
-				);
-				observableGroupedSource.CollectionChanged += handler;
+				_notifyCollectionChanged.Disposable = null;
+			}
+			//Subscribe to changes on grouped source that is an observable collection
+			else if (unwrappedSource is CollectionView collectionView && collectionView.CollectionGroups != null && collectionView.InnerCollection is INotifyCollectionChanged observableGroupedSource)
+			{
+				ObserveCollectionChanged(observableGroupedSource);
 			}
 			//Subscribe to changes on ICollectionView that is grouped
 			else if (unwrappedSource is ICollectionView iCollectionView && iCollectionView.CollectionGroups != null)
 			{
-				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
-				// remove the handler.
-				VectorChangedEventHandler<object> handler = OnItemsSourceGroupsVectorChanged;
-				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
-					iCollectionView.CollectionGroups.VectorChanged -= handler
-				);
-				iCollectionView.CollectionGroups.VectorChanged += handler;
-
-			}
-			//Subscribe to changes on observable collection
-			else if (unwrappedSource is INotifyCollectionChanged existingObservable)
-			{
-				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
-				// remove the handler.
-				NotifyCollectionChangedEventHandler handler = OnItemsSourceCollectionChanged;
-				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
-					existingObservable.CollectionChanged -= handler
-				);
-				existingObservable.CollectionChanged += handler;
-			}
-			else if (unwrappedSource is IObservableVector<object> observableVector)
-			{
-				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
-				// remove the handler.
-				VectorChangedEventHandler<object> handler = OnItemsSourceVectorChanged;
-				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
-					observableVector.VectorChanged -= handler
-				);
-				observableVector.VectorChanged += handler;
-			}
-			else if (unwrappedSource is IObservableVector genericObservableVector)
-			{
-				VectorChangedEventHandler handler = OnItemsSourceVectorChanged;
-				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
-					genericObservableVector.UntypedVectorChanged -= handler
-				);
-				genericObservableVector.UntypedVectorChanged += handler;
+				ObserveCollectionChanged(iCollectionView);
 			}
 			else
 			{
@@ -719,61 +701,162 @@ namespace Windows.UI.Xaml.Controls
 			//Subscribe to group changes if they are observable collections
 			if (unwrappedSource is ICollectionView collectionViewGrouped && collectionViewGrouped.CollectionGroups != null)
 			{
-				var disposables = new CompositeDisposable();
-				int i = -1;
-				foreach (ICollectionViewGroup group in collectionViewGrouped.CollectionGroups)
+				ObserveCollectionChangedGrouped(collectionViewGrouped);
+			}
+		}
+
+		private void ObserveCollectionChanged(INotifyCollectionChanged observableGroupedSource)
+		{
+			var thatRef = (this as IWeakReferenceProvider)?.WeakReference;
+
+			// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
+			// remove the handler.
+			void handler(object s, NotifyCollectionChangedEventArgs e)
+			{
+				// Wrap the registered delegate to avoid creating a strong
+				// reference to this ItemsControl. The ItemsControl is holding
+				// a reference to the items source, so it won`t be collected
+				// unless unset. Note that this block is not extracted to a separate
+				// helper to avoid the cost of creating additional delegates.
+				if (thatRef.Target is ItemsControl that)
 				{
-					//Hidden empty groups shouldn't be counted because they won't appear to UICollectionView
-					if (!AreEmptyGroupsHidden || group.GroupItems.Count > 0)
-					{
-						i++;
-					}
-					var insideLoop = i;
+					that.OnItemsSourceGroupsChanged(s, e);
+				}
+				else
+				{
+					observableGroupedSource.CollectionChanged -= handler;
+				}
+			}
 
-					// TODO: At present we listen to changes on ICollectionViewGroup.Group, which supports 'observable of observable groups'
-					// using CollectionViewSource. The correct way to do this would be for CollectionViewGroup.GroupItems to instead implement 
-					// INotifyCollectionChanged.
-					INotifyCollectionChanged observableGroup = group.GroupItems as INotifyCollectionChanged ?? group.Group as INotifyCollectionChanged;
-					// Prefer INotifyCollectionChanged for, eg, batched item changes
-					if (observableGroup != null)
-					{
-						NotifyCollectionChangedEventHandler onCollectionChanged = (o, e) => OnItemsSourceSingleCollectionChanged(o, e, insideLoop);
-						Disposable.Create(() => observableGroup.CollectionChanged -= onCollectionChanged)
-							.DisposeWith(disposables);
-						observableGroup.CollectionChanged += onCollectionChanged;
-					}
-					else
-					{
-						VectorChangedEventHandler<object> onVectorChanged = (o, e) => OnItemsSourceSingleCollectionChanged(o, e.ToNotifyCollectionChangedEventArgs(), insideLoop);
-						Disposable.Create(() =>
-							group.GroupItems.VectorChanged -= onVectorChanged
-						)
-							.DisposeWith(disposables);
-						group.GroupItems.VectorChanged += onVectorChanged;
-					}
+			_notifyCollectionChanged.Disposable = Disposable.Create(() =>
+				observableGroupedSource.CollectionChanged -= handler
+			);
+			observableGroupedSource.CollectionChanged += handler;
+		}
 
-					if (group is global::System.ComponentModel.INotifyPropertyChanged bindableGroup)
-					{
-						Disposable.Create(() =>
-							bindableGroup.PropertyChanged -= onPropertyChanged
-						)
-							.DisposeWith(disposables);
-						bindableGroup.PropertyChanged += onPropertyChanged;
-						OnGroupPropertyChanged(group, insideLoop);
+		private void ObserveCollectionChanged(ICollectionView iCollectionView)
+		{
+			var thatRef = (this as IWeakReferenceProvider)?.WeakReference;
 
-						void onPropertyChanged(object sender, global::System.ComponentModel.PropertyChangedEventArgs e)
+			// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
+			// remove the handler.
+			void handler(IObservableVector<object> s, IVectorChangedEventArgs e)
+			{
+				// Wrap the registered delegate to avoid creating a strong
+				// reference to this ItemsControl.The ItemsControl is holding
+				// a reference to the items source, so it won`t be collected
+				// unless unset.Note that this block is not extracted to a separate
+				// helper to avoid the cost of creating additional delegates.
+				if (thatRef.Target is ItemsControl that)
+				{
+					that.OnItemsSourceGroupsVectorChanged(s, e);
+				}
+				else
+				{
+					iCollectionView.CollectionGroups.VectorChanged -= handler;
+				}
+			}
+
+			_notifyCollectionChanged.Disposable = Disposable.Create(() =>
+				iCollectionView.CollectionGroups.VectorChanged -= handler
+			);
+			iCollectionView.CollectionGroups.VectorChanged += handler;
+		}
+
+		private void ObserveCollectionChangedGrouped(ICollectionView collectionViewGrouped)
+		{
+			var thatRef = (this as IWeakReferenceProvider)?.WeakReference;
+
+			var disposables = new CompositeDisposable();
+			int i = -1;
+			foreach (ICollectionViewGroup group in collectionViewGrouped.CollectionGroups)
+			{
+				//Hidden empty groups shouldn't be counted because they won't appear to UICollectionView
+				if (!AreEmptyGroupsHidden || group.GroupItems.Count > 0)
+				{
+					i++;
+				}
+				var insideLoop = i;
+
+				// TODO: At present we listen to changes on ICollectionViewGroup.Group, which supports 'observable of observable groups'
+				// using CollectionViewSource. The correct way to do this would be for CollectionViewGroup.GroupItems to instead implement 
+				// INotifyCollectionChanged.
+				INotifyCollectionChanged observableGroup = group.GroupItems as INotifyCollectionChanged ?? group.Group as INotifyCollectionChanged;
+				// Prefer INotifyCollectionChanged for, eg, batched item changes
+				if (observableGroup != null)
+				{
+					void onCollectionChanged(object o, NotifyCollectionChangedEventArgs e)
+					{
+						// Wrap the registered delegate to avoid creating a strong
+						// reference to this ItemsControl.The ItemsControl is holding
+						// a reference to the items source, so it won`t be collected
+						// unless unset.Note that this block is not extracted to a separate
+						// helper to avoid the cost of creating additional delegates.
+						if (thatRef.Target is ItemsControl that)
 						{
-							if (e.PropertyName == "Group")
+							that.OnItemsSourceSingleCollectionChanged(o, e, insideLoop);
+						}
+						else
+						{
+							observableGroup.CollectionChanged -= onCollectionChanged;
+						}
+					}
+
+					Disposable.Create(() => observableGroup.CollectionChanged -= onCollectionChanged)
+						.DisposeWith(disposables);
+					observableGroup.CollectionChanged += onCollectionChanged;
+				}
+				else
+				{
+					void onVectorChanged(IObservableVector<object> o, IVectorChangedEventArgs e)
+					{
+						// Wrap the registered delegate to avoid creating a strong
+						// reference to this ItemsControl.The ItemsControl is holding
+						// a reference to the items source, so it won`t be collected
+						// unless unset.
+						if (thatRef.Target is ItemsControl that)
+						{
+							that.OnItemsSourceSingleCollectionChanged(o, e.ToNotifyCollectionChangedEventArgs(), insideLoop);
+						}
+						else
+						{
+							group.GroupItems.VectorChanged -= onVectorChanged;
+						}
+					}
+
+					Disposable.Create(() =>
+						group.GroupItems.VectorChanged -= onVectorChanged
+					)
+						.DisposeWith(disposables);
+					group.GroupItems.VectorChanged += onVectorChanged;
+				}
+
+				if (group is global::System.ComponentModel.INotifyPropertyChanged bindableGroup)
+				{
+					Disposable.Create(() =>
+						bindableGroup.PropertyChanged -= onPropertyChanged
+					)
+						.DisposeWith(disposables);
+					bindableGroup.PropertyChanged += onPropertyChanged;
+					OnGroupPropertyChanged(group, insideLoop);
+
+					void onPropertyChanged(object sender, global::System.ComponentModel.PropertyChangedEventArgs e)
+					{
+						if (e.PropertyName == "Group")
+						{
+							// Wrap the registered delegate to avoid creating a strong
+							// reference to this ItemsControl.
+							if (thatRef.Target is ItemsControl that)
 							{
-								OnGroupPropertyChanged(group, insideLoop);
+								that.OnGroupPropertyChanged(group, insideLoop);
 							}
 						}
 					}
 				}
-				_notifyCollectionGroupsChanged.Disposable = disposables;
-
-				UpdateGroupCounts();
 			}
+			_notifyCollectionGroupsChanged.Disposable = disposables;
+
+			UpdateGroupCounts();
 		}
 
 		private void UpdateGroupCounts()
@@ -797,16 +880,17 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// During an update, this will represent the group state immediately prior to the update. 
 		/// </summary>
-		internal int GetCachedGroupCount(int groupIndex) => _groupCounts[groupIndex];
+		internal int GetCachedGroupCount(int groupIndex)
+			=> _groupCounts[groupIndex];
 
 		private void OnItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
-		{
-			OnItemsSourceSingleCollectionChanged(sender, args, section: 0);
-		}
+			=> OnItemsSourceSingleCollectionChanged(sender, args, section: 0);
 
-		private void OnItemsSourceGroupsVectorChanged(object sender, IVectorChangedEventArgs args) => OnItemsSourceGroupsChanged(sender, args.ToNotifyCollectionChangedEventArgs());
+		private void OnItemsSourceGroupsVectorChanged(object sender, IVectorChangedEventArgs args)
+			=> OnItemsSourceGroupsChanged(sender, args.ToNotifyCollectionChangedEventArgs());
 
-		private void OnItemsSourceVectorChanged(object sender, IVectorChangedEventArgs args) => OnItemsSourceCollectionChanged(sender, args.ToNotifyCollectionChangedEventArgs());
+		private void OnItemsSourceVectorChanged(object sender, IVectorChangedEventArgs args)
+			=> OnItemsSourceCollectionChanged(sender, args.ToNotifyCollectionChangedEventArgs());
 
 		/// <summary>
 		/// Called when a collection change occurs within a single group, or within the entire source if it is ungrouped.
@@ -817,7 +901,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceSingleCollectionChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}");
 			}
-			UpdateItems();
+			UpdateItems(args);
 		}
 
 		/// <summary>
@@ -829,7 +913,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceGroupsChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}, NoOfGroups={NumberOfGroups}");
 			}
-			UpdateItems();
+			UpdateItems(args);
 		}
 
 		internal virtual void OnGroupPropertyChanged(ICollectionViewGroup group, int groupIndex)
@@ -840,6 +924,8 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
+
+			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
 
 			_isReady = true;
 
@@ -871,7 +957,7 @@ namespace Windows.UI.Xaml.Controls
 			ItemsPanelRoot?.SetItemsOwner(this);
 			_itemsPresenter?.SetItemsPanel(InternalItemsPanelRoot);
 
-			SetNeedsUpdateItems();
+			UpdateItems(null);
 		}
 
 		/// <summary>
@@ -890,61 +976,131 @@ namespace Windows.UI.Xaml.Controls
 			SyncDataContext();
 		}
 
-		protected virtual void SyncDataContext()
+		private protected virtual void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
-		}
+			if (ItemsPanelRoot == null || !ShouldItemsControlManageChildren)
+			{
+				return;
+			}
 
-		public void SetNeedsUpdateItems()
-		{
-			_needsUpdateItems = true;
-			UpdateItemsIfNeeded();
+			object LocalCreateContainer(int index)
+			{
+				var container = GetContainerForIndex(index);
+				PrepareContainerForIndex(container, index);
+				return container;
+			}
+
+			void LocalCleanupContainer(object container)
+			{
+				if (container is DependencyObject doContainer)
+				{
+					CleanUpContainer(doContainer);
+					doContainer.ClearValue(IndexForItemContainerProperty);
+				}
+			}
+
+			void ReassignIndexes(int startingIndex)
+			{
+				var children = ItemsPanelRoot.Children;
+				var count = children.Count;
+				for (var i = startingIndex; i<count; i++)
+				{
+					var container = children[i];
+					container.SetValue(IndexForItemContainerProperty, i);
+				}
+			}
+
+			if (args != null)
+			{
+				if (args.Action == NotifyCollectionChangedAction.Reset)
+				{
+					for (int i = 0; i < ItemsPanelRoot.Children.Count; i++)
+					{
+						CleanUpContainer(ItemsPanelRoot.Children[i]);
+					}
+
+					ItemsPanelRoot.Children.Clear();
+
+					// Fall-through and materialize the call collection.
+				}
+				else if (args.Action == NotifyCollectionChangedAction.Remove
+					&& args.OldItems.Count == 1)
+				{
+					var index = args.OldStartingIndex;
+					var container = ItemsPanelRoot.Children[index];
+
+					ItemsPanelRoot.Children.RemoveAt(index);
+
+					LocalCleanupContainer(container);
+					ReassignIndexes(index);
+					RequestLayoutPartial();
+					return;
+				}
+				else if (args.Action == NotifyCollectionChangedAction.Add
+					&& args.NewItems.Count == 1)
+				{
+					var index = args.NewStartingIndex;
+					ItemsPanelRoot.Children.Insert(index, (UIElement)LocalCreateContainer(index));
+					ReassignIndexes(index+1);
+					RequestLayoutPartial();
+					return;
+				}
+				else if (args.Action == NotifyCollectionChangedAction.Replace
+					&& args.NewItems.Count == 1)
+				{
+					var index = args.NewStartingIndex;
+					var container = ItemsPanelRoot.Children[index];
+					LocalCleanupContainer(container);
+
+					ItemsPanelRoot.Children[index] = (UIElement)LocalCreateContainer(index);
+					RequestLayoutPartial();
+					return;
+				}
+			}
+
+			// Generic implementation when fast paths cannot be used (e.g. when the ItemsSource is assigned)
+
+			var containers =
+				(GetItems() ?? Enumerable.Empty<object>())
+					.Cast<object>()
+					.Select((_, index) => LocalCreateContainer(index));
+
+			var results = ItemsPanelRoot.Children.UpdateWithResults(containers.OfType<UIElement>(), comparer: new ViewComparer());
+
+			// This block is a manual enumeration to avoid the foreach pattern
+			// See https://github.com/dotnet/runtime/issues/56309 for details
+			var removedEnumerator = results.Removed.GetEnumerator();
+			while (removedEnumerator.MoveNext())
+			{
+				var removed = removedEnumerator.Current;
+
+				LocalCleanupContainer(removed);
+			}
+
 			RequestLayoutPartial();
 		}
 
-		public bool UpdateItemsIfNeeded()
+		protected virtual void ClearContainerForItemOverride(DependencyObject element, object item)
 		{
-			if (_needsUpdateItems)
+			if (element is UIElement containerAsUIE)
 			{
-				_needsUpdateItems = false;
-				return UpdateItems();
-			}
-
-			return false;
-		}
-
-		protected virtual bool UpdateItems()
-		{
-			if (ItemsPanelRoot != null && ShouldItemsControlManageChildren)
-			{
-				_needsUpdateItems = false;
-
-				var items = GetItems() ?? Enumerable.Empty<object>();
-				var containers = items
-					.Cast<object>()
-					.Select((_, index) =>
-					{
-						var container = GetContainerForIndex(index);
-						PrepareContainerForIndex(container, index);
-						return container;
-					});
-
-				var results = ItemsPanelRoot.Children.UpdateWithResults(containers.OfType<UIElement>(), comparer: new ViewComparer());
-
-				foreach (var removed in results.Removed)
+				// For perf, only clear the style if we didn't generate the container.
+				// Since we own the container if we generated it, we can get away with this.
+				if (!containerAsUIE.IsGeneratedContainer)
 				{
-					if (removed is DependencyObject removedObject)
+					if (element is FrameworkElement containerAsFE)
 					{
-						CleanUpContainer(removedObject);
+						if (containerAsFE.IsStyleSetFromItemsControl)
+						{
+							containerAsFE.ClearValue(FrameworkElement.StyleProperty);
+							containerAsFE.IsStyleSetFromItemsControl = false;
+						}
 					}
 				}
-
-				return results.HasChanged();
 			}
-
-			return false;
 		}
 
-		protected virtual void ClearContainerForItemOverride(DependencyObject element, object item) { }
+		internal virtual void ContainerClearedForItem(object item, SelectorItem itemContainer) { }
 
 		/// <summary>
 		/// Unset content of container. This should be called when the container is no longer going to be used.
@@ -966,6 +1122,7 @@ namespace Windows.UI.Xaml.Controls
 
 			}
 			ClearContainerForItemOverride(element, item);
+			ContainerClearedForItem(item, element as SelectorItem);
 
 			if (element is ContentPresenter presenter
 				&& (
@@ -1018,51 +1175,37 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var isOwnContainer = ReferenceEquals(element, item);
 
-			var styleFromItemsControl = ItemContainerStyle ?? ItemContainerStyleSelector?.SelectStyle(item, element);
-
-			object GetContent()
+			void SetContent(UIElement container, DependencyProperty contentProperty)
 			{
 				var displayMemberPath = DisplayMemberPath;
 				if (string.IsNullOrEmpty(displayMemberPath))
 				{
-					return item;
+					container.SetValue(contentProperty, item);
 				}
 				else
 				{
-					// TODO: Cache the BindingPath
-					var b = new BindingPath(displayMemberPath, item) { DataContext = item };
-					return b.Value;
+					container.SetBinding(contentProperty, new Binding
+					{
+						Path = displayMemberPath,
+						Source = item
+					});
 				}
 			}
 
 			//Prepare ContentPresenter
 			if (element is ContentPresenter containerAsContentPresenter)
 			{
-				if (styleFromItemsControl != null)
-				{
-					containerAsContentPresenter.Style = styleFromItemsControl;
-				}
-				else
-				{
-					containerAsContentPresenter.Style = null;
-				}
-
 				containerAsContentPresenter.ContentTemplate = ItemTemplate;
 				containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
 
 				if (!isOwnContainer)
 				{
-					containerAsContentPresenter.Content = GetContent();
+					SetContent(containerAsContentPresenter, ContentPresenter.ContentProperty);
 				}
 			}
 			else if (element is ContentControl containerAsContentControl)
 			{
-				if (styleFromItemsControl != null)
-				{
-					containerAsContentControl.Style = styleFromItemsControl;
-				}
-
-				if (!containerAsContentControl.IsContainerFromItemTemplate)
+				if (!containerAsContentControl.IsContainerFromTemplateRoot)
 				{
 					containerAsContentControl.ContentTemplate = ItemTemplate;
 					containerAsContentControl.ContentTemplateSelector = ItemTemplateSelector;
@@ -1075,14 +1218,16 @@ namespace Windows.UI.Xaml.Controls
 					// Set the datacontext first, then the binding.
 					// This avoids the inner content to go through a partial content being
 					// the result of the fallback value of the binding set below.
-					containerAsContentControl.DataContext = GetContent();
+					SetContent(containerAsContentControl, ContentControl.DataContextProperty);
 
-					if (!containerAsContentControl.IsContainerFromItemTemplate && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
+					if (!containerAsContentControl.IsContainerFromTemplateRoot && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
 					{
 						containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
 					}
 				}
 			}
+
+			ApplyItemContainerStyle(element, item);
 		}
 
 		/// <summary>
@@ -1123,8 +1268,13 @@ namespace Windows.UI.Xaml.Controls
 
 			var item = ItemFromIndex(index);
 			PrepareContainerForItemOverride(container, item);
+			ContainerPreparedForItem(item, container as SelectorItem, index);
 
 			_containerBeingPrepared = null;
+		}
+
+		internal virtual void ContainerPreparedForItem(object item, SelectorItem itemContainer, int itemIndex)
+		{
 		}
 
 		/// <summary>
@@ -1139,7 +1289,7 @@ namespace Windows.UI.Xaml.Controls
 			if (IsItemItsOwnContainerOverride(item))
 			{
 				var container = item as DependencyObject;
-				container.SetValue(ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(this));
+				EnsureContainerItemsControlProperty(container);
 
 				return container;
 			}
@@ -1162,7 +1312,7 @@ namespace Windows.UI.Xaml.Controls
 			var container = GetRootOfItemTemplateAsContainer(template)
 				?? GetContainerForItemOverride();
 
-			container.SetValue(ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(this));
+			EnsureContainerItemsControlProperty(container);
 
 			return container;
 		}
@@ -1172,20 +1322,93 @@ namespace Windows.UI.Xaml.Controls
 		public object ItemFromContainer(DependencyObject container)
 		{
 			var index = IndexFromContainer(container);
-			var item = ItemFromIndex(index);
 
-			return item;
+			if (index > -1)
+			{
+				var item = ItemFromIndex(index);
+				return item;
+			}
+			else
+			{
+				// If the container is actually an item, we can return itself
+				if (Items.Contains(container))
+				{
+					return container;
+				}
+			}
+
+			return null;
 		}
 
 		public DependencyObject ContainerFromItem(object item)
 		{
+			if (IsItemItsOwnContainer(item))
+			{
+				// Verify whether the item is actually present.
+				var itemIndex = Items.IndexOf(item);
+				if (itemIndex < 0)
+				{
+					return null;
+				}
+
+				var container = item as DependencyObject;
+				EnsureContainerItemsControlProperty(container);
+				return container;
+			}
+
 			var index = IndexFromItem(item);
-			return index == -1 ? null : MaterializedContainers.FirstOrDefault(container => Equals(IndexFromContainer(container), index));
+			var containerFromIndex = index == -1 ? null : MaterializedContainers.FirstOrDefault(materializedContainer => Equals(IndexFromContainer(materializedContainer), index));
+			EnsureContainerItemsControlProperty(containerFromIndex);
+			return containerFromIndex;
 		}
 
 		public int IndexFromContainer(DependencyObject container)
 		{
-			return IndexFromContainerInner(container);
+			var index = IndexFromContainerInner(container);
+			if (index < 0)
+			{
+				// If the container is actually an item, we can return its index
+				return Items.IndexOf(container);
+			}
+
+			if (_inProgressVectorChange != null)
+			{
+				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
+				{
+					if (index == _inProgressVectorChange.Index)
+					{
+						// Removed item no longer exists.
+						return -1;
+					}
+					else if (index > _inProgressVectorChange.Index)
+					{
+						// All items after the removed item have a lower new index.
+						return index - 1;
+					}
+				}
+				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemInserted)
+				{
+					if (index >= _inProgressVectorChange.Index)
+					{
+						// All items after the added item have a higher new index.
+						return index + 1;
+					}
+				}
+				else if (
+					(_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged && _inProgressVectorChange.Index == index) ||
+					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
+				{
+					// In these cases, we return the index only if the item is its own container
+					// and the container is in fact the new item, not the old one					
+					var item = ItemFromIndex(index);
+					if (IsItemItsOwnContainer(item) && Equals(item, container))
+					{
+						return index;
+					}
+					return -1;
+				}
+			}
+			return index;
 		}
 
 		internal virtual int IndexFromContainerInner(DependencyObject container)
@@ -1195,12 +1418,80 @@ namespace Windows.UI.Xaml.Controls
 
 		public DependencyObject ContainerFromIndex(int index)
 		{
-			return ContainerFromIndexInner(index);
+			var item = ItemFromIndex(index);
+			if (IsItemItsOwnContainer(item))
+			{
+				var itemContainer = item as DependencyObject;
+				EnsureContainerItemsControlProperty(itemContainer);
+				return itemContainer;
+			}
+
+			int adjustedIndex = GetInProgressAdjustedIndex(index);
+
+			if (adjustedIndex < 0)
+			{
+				return null;
+			}
+
+			var containerFromIndex = ContainerFromIndexInner(adjustedIndex);
+			EnsureContainerItemsControlProperty(containerFromIndex);
+			return containerFromIndex;
+		}
+
+		/// <summary>
+		/// Ensures the given container has valid reference to its ItemsControl owner.
+		/// </summary>
+		/// <param name="container">Container.</param>
+		private void EnsureContainerItemsControlProperty(DependencyObject container)
+		{
+			if (container != null)
+			{
+				container.SetValue(ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(this));
+			}
 		}
 
 		internal virtual DependencyObject ContainerFromIndexInner(int index)
 		{
-			return MaterializedContainers.FirstOrDefault(container => Equals(container.GetValue(IndexForItemContainerProperty), index));
+			return MaterializedContainers.FirstOrDefault(materializedContainer => Equals(materializedContainer.GetValue(IndexForItemContainerProperty), index));
+		}
+
+		protected int GetInProgressAdjustedIndex(int index)
+		{
+			int adjustedIndex = index;
+
+			if (_inProgressVectorChange != null)
+			{
+				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
+				{
+					if (index >= _inProgressVectorChange.Index)
+					{
+						// All items after the removed item have still a higher index.
+						adjustedIndex = index + 1;
+					}
+				}
+				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemInserted)
+				{
+					if (index == _inProgressVectorChange.Index)
+					{
+						return -1;
+					}
+					else if (index > _inProgressVectorChange.Index)
+					{
+						// All items after the added item have still a lower index.
+						adjustedIndex = index - 1;
+					}
+				}
+				else if (
+					(_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged && _inProgressVectorChange.Index == index) ||
+					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
+				{
+					// In case the item is not its own container, the new one is not assigned
+					// yet and we return null.						
+					adjustedIndex = -1;
+				}
+			}
+
+			return adjustedIndex;
 		}
 
 		/// <summary>
@@ -1338,5 +1629,66 @@ namespace Windows.UI.Xaml.Controls
 		/// Resets internal cached state of the collection.
 		/// </summary>
 		private protected virtual void Refresh() { }
+
+		private protected void ChangeSelectorItemsVisualState(bool useTransitions)
+		{
+			foreach (var child in GetItemsPanelChildren())
+			{
+				if (child is SelectorItem selectorItem)
+				{
+					selectorItem.UpdateVisualState(useTransitions);
+				}
+			}
+		}
+
+		private void ApplyItemContainerStyle(DependencyObject element, object item)
+		{
+			if (element is FrameworkElement containerAsFE)
+			{
+				var localStyleValue = element.ReadLocalValue(FrameworkElement.StyleProperty);
+				var isStyleSetFromItemsControl = containerAsFE.IsStyleSetFromItemsControl;
+
+				if (localStyleValue == DependencyProperty.UnsetValue || isStyleSetFromItemsControl)
+				{
+					var styleFromItemsControl = ItemContainerStyle ?? ItemContainerStyleSelector?.SelectStyle(item, element);
+					if (styleFromItemsControl != null)
+					{
+						containerAsFE.Style = styleFromItemsControl;
+						containerAsFE.IsStyleSetFromItemsControl = true;
+					}
+					else
+					{
+						// if Style was formerly set from ItemContainerStyle, clear it
+						containerAsFE.ClearValue(FrameworkElement.StyleProperty);
+						containerAsFE.IsStyleSetFromItemsControl = false;
+					}
+				}
+			}
+		}
+
+#if !HAS_UNO_4_0_OR_LATER
+		// Methods to remove or make internal when moving to Uno 4.0
+		// https://github.com/unoplatform/uno/issues/2240
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		protected virtual void SyncDataContext()
+		{
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void SetNeedsUpdateItems()
+			=> UpdateItems();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public bool UpdateItemsIfNeeded()
+			=> UpdateItems();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		protected virtual bool UpdateItems()
+		{
+			UpdateItems(null);
+			return true;
+		}
+#endif
 	}
 }

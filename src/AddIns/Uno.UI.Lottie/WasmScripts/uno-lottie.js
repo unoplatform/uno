@@ -30,7 +30,9 @@ var Uno;
                     a.loop = looped;
                     const fromFrame = fromProgress * Lottie._numberOfFrames;
                     const toFrame = toProgress * Lottie._numberOfFrames;
-                    a.playSegments([fromFrame, toFrame], false);
+                    //Set forceFlag to true in order to force animation to start right away
+                    //Ensures calling play multiple times in quick succession plays the animation properly
+                    a.playSegments([fromFrame, toFrame], true);
                     Lottie.raiseState(a);
                 });
                 return "ok";
@@ -61,8 +63,13 @@ var Uno;
             static setProgress(elementId, progress) {
                 Lottie.withPlayer(p => {
                     const animation = Lottie._runningAnimations[elementId].animation;
-                    const frames = animation.getDuration(true);
-                    const frame = frames * progress;
+                    var frame = Lottie._numberOfFrames * progress;
+                    if (frame < animation.firstFrame) {
+                        frame = frame - animation.firstFrame;
+                    }
+                    else {
+                        frame = animation.getDuration(true) * progress;
+                    }
                     animation.goToAndStop(frame, true);
                     Lottie.raiseState(animation);
                 });
@@ -74,6 +81,9 @@ var Uno;
                 return state;
             }
             static needNewPlayerAnimation(current, newProperties) {
+                if (current.cacheKey !== newProperties.cacheKey) {
+                    return true;
+                }
                 if (current.jsonPath !== newProperties.jsonPath) {
                     return true;
                 }
@@ -119,6 +129,12 @@ var Uno;
                 animation.addEventListener("data_ready", (e) => {
                     Lottie._numberOfFrames = animation.totalFrames;
                     Lottie.raiseState(animation);
+                    Lottie.raiseDataLoaded(animation);
+                });
+                animation.addEventListener("DOMLoaded", (e) => {
+                    Lottie._numberOfFrames = animation.totalFrames;
+                    Lottie.raiseState(animation);
+                    Lottie.raiseDataLoaded(animation);
                 });
                 Lottie.raiseState(animation);
                 return runningAnimation;
@@ -133,6 +149,10 @@ var Uno;
                 const element = animation.wrapper;
                 const state = Lottie.getStateString(animation);
                 element.dispatchEvent(new CustomEvent("lottie_state", { detail: state }));
+            }
+            static raiseDataLoaded(animation) {
+                const element = animation.wrapper;
+                element.dispatchEvent(new CustomEvent("animation_dom_loaded"));
             }
             static getPlayerConfig(properties, animationData) {
                 let scaleMode = "none";

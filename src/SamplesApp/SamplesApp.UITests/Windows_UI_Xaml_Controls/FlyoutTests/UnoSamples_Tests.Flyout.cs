@@ -32,13 +32,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			//_app.WaitForElement(_app.Marked("BottomFlyout"));
 			//var flyoutRect = _app.Marked("BottomFlyout").FirstResult().Rect;
 
-			//// Assert initial state 
+			//// Assert initial state
 			//Assert.AreEqual("0", flyoutRect.X.ToString());
 		}
 
 		[Test]
 		[AutoRetry]
-        public void FlyoutTest_DataBoundButton_CommandExecutes()
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
+		public void FlyoutTest_DataBoundButton_CommandExecutes()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_ButtonInContent");
 
@@ -54,7 +55,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			_app.FastTap(dataBoundButton);
 			Assert.AreEqual("Button was clicked", dataBoundText.GetText());
-			
+
 			_app.TapCoordinates(10, 100);
 		}
 
@@ -70,14 +71,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			var target2 = _app.Marked("target2");
 			var flyoutFull = _app.Marked("flyoutFull");
 
-			_app.WaitForElement(result);
+			_app.WaitForElement(result, timeoutMessage: $"Timed out waiting for element {nameof(result)}");
 
 			{
-				var target1Result = _app.WaitForElement(target1).First();
+				var target1Result = _app.WaitForElement(target1, timeoutMessage: $"Timed out waiting for element {nameof(target1)}").First();
 
 				_app.FastTap(target1);
 
-				var innerContentResult = _app.WaitForElement(innerContent).First();
+				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping target1").First();
 
 				Assert.IsTrue(target1Result.Rect.X <= innerContentResult.Rect.X);
 				Assert.IsTrue(target1Result.Rect.Width > innerContentResult.Rect.Width);
@@ -86,11 +87,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			}
 
 			{
-				var target2Result = _app.WaitForElement(target2).First();
+				var target2Result = _app.WaitForElement(target2, timeoutMessage: $"Timed out waiting for element {nameof(target2)}").First();
 
 				_app.FastTap(target2);
 
-				var innerContentResult = _app.WaitForElement(innerContent).First();
+				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping target2").First();
 
 				Assert.IsTrue(target2Result.Rect.X <= innerContentResult.Rect.X);
 				Assert.IsTrue(target2Result.Rect.Width > innerContentResult.Rect.Width);
@@ -101,7 +102,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			{
 				_app.FastTap(flyoutFull);
 
-				var innerContentResult = _app.WaitForElement(innerContent).First();
+				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping flyoutFull").First();
 
 				var rect = base.GetScreenDimensions();
 
@@ -137,6 +138,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
 		public void FlyoutTest_Simple_FlyoutsCanBeDismissed()
 		{
 			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Simple");
@@ -149,6 +151,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				"BottomFlyoutButton",
 				"TopFlyoutButton",
 				//"FullFlyoutButton", // unclosable without native back button/gesture
+				//"FullFlyoutButtonNoConstraint", // unclosable without native back button/gesture
 				"CenteredFullFlyoutButton",
 				//"FullOverlayFlyoutButton", // unclosable without native back button/gesture
 				"WithOffsetFlyoutButton",
@@ -156,18 +159,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			// initial state
 			_app.WaitForElement(testableFlyoutButtons.First().Value);
-			var initialScreenshot = TakeScreenshot($"{majorStepIndex++} Initial State", ignoreInSnapshotCompare: true);
+			using var initialScreenshot = TakeScreenshot($"{majorStepIndex++} Initial State", ignoreInSnapshotCompare: true);
 
 			var dismissArea = GetDismissAreaCenter();
 			foreach (var button in testableFlyoutButtons)
 			{
 				// show flyout
-				button.Value.Tap();
-				var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
+				button.Value.FastTap();
+				using var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
 
 				// dismiss flyout
 				_app.TapCoordinates(dismissArea.X, dismissArea.Y);
-				var flyoutDismissedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 1 Dismissed", ignoreInSnapshotCompare: true);
+				_app.Wait(1);
+				using var flyoutDismissedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 1 Dismissed", ignoreInSnapshotCompare: true);
 
 				// compare
 				ImageAssert.AreNotEqual(flyoutOpenedScreenshot, initialScreenshot);
@@ -184,21 +188,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				 * [FullOverlayFlyoutButton]
 				 *         (dismiss area)
 				 *       [WithOffsetFlyoutButton margin=100] */
-				var rect1 = _app.GetRect("FullOverlayFlyoutButton");
-				var rect2 = _app.GetRect("WithOffsetFlyoutButton");
+				var rect1 = _app.GetPhysicalRect("FullOverlayFlyoutButton");
+				var rect2 = _app.GetPhysicalRect("WithOffsetFlyoutButton");
 
-				return (rect2.CenterX, (rect1.Bottom + rect2.Y) / 2);
+				return (rect2.CenterX + rect2.Width, (rect1.Bottom + rect2.Y) / 2);
 			}
 		}
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
 		public void Flyout_TemplatedParent()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.Flyout.Flyout_TemplatedParent");
 
 			var button01 = _app.Marked("button01");
-			var innerTextBlock = _app.Marked("innerTextBlock");
+			var innerTextBlock = new QueryEx(q => q.All().Marked("innerTextBlock"));
 
 			_app.FastTap(button01);
 			_app.WaitForElement(innerTextBlock);
@@ -206,6 +211,42 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			_app.WaitForDependencyPropertyValue(innerTextBlock, "Text", "Hello !");
 
 			_app.TapCoordinates(10, 100);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
+		public void Flyout_Namescope()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.FlyoutTests.Flyout_Namescope");
+
+			var button01 = _app.Marked("Control1");
+			var result1 = _app.Marked("result1");
+			var result2 = _app.Marked("result2");
+			var closeButton = _app.Marked("closeButton");
+
+			_app.FastTap(button01);
+			_app.WaitForElement(closeButton);
+
+			_app.WaitForDependencyPropertyValue(result1, "Text", "Top");
+			_app.WaitForDependencyPropertyValue(result2, "Text", "Control1_Tag");
+
+			_app.FastTap(closeButton);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Flyout_ShowAt_Window_Content()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.FlyoutTests.Flyout_ShowAt_Window_Content");
+
+			var windowButton = _app.Marked("WindowButton");
+
+			_app.WaitForElement(windowButton);
+			_app.FastTap(windowButton);
+
+			using var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+			ImageAssert.HasColorAt(result, result.Width / 2, 150, Color.Red);
 		}
 	}
 }

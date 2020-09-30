@@ -2,24 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation.Geofencing
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum MonitoredGeofenceStates 
+	#if false || false || false || false || false || false || false
+	[global::System.FlagsAttribute]
+	public   enum MonitoredGeofenceStates : uint
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Entered,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Exited,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Removed,
-		#endif
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates.None
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates.Entered
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates.Exited
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates.Removed
 	}
 	#endif
 }

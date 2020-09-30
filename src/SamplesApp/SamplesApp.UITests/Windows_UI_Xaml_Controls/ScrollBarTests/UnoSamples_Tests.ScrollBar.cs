@@ -15,10 +15,11 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 {
 	[TestFixture]
-	public class UnoSamplesTests_ScrollBar : SampleControlUITestBase
+	public partial class UnoSamplesTests_ScrollBar : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // This test cannot run on Android/iOS, because the ScrollBar buttons do not react to touch (which is valid MUX behavior).
 		public void ScrollBar_Vertical()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollBar.ScrollBar_Simple");
@@ -65,6 +66,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // This test cannot run on Android/iOS, because the ScrollBar buttons do not react to touch (which is valid MUX behavior).
 		public void ScrollBar_Horizontal()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollBar.ScrollBar_Simple");
@@ -140,7 +142,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 			_app.DragCoordinates(thumbResult.Rect.CenterX, thumbResult.Rect.CenterY, thumbResult.Rect.CenterX + 10, thumbResult.Rect.CenterY);
 
 			_app.WaitForText(horizontalValue, "126.56666666666668");
-			_app.WaitForText(scrollValue, "Horizontal Scroll: EndScroll, 126.566666666667");
+			_app.WaitFor(() => scrollValue.GetDependencyPropertyValue<string>("Text")?.StartsWith("Horizontal Scroll: EndScroll, 126.56666") ?? false);
 		}
 
 		[Test]
@@ -174,7 +176,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 			_app.DragCoordinates(thumbResult.Rect.CenterX, thumbResult.Rect.CenterY, thumbResult.Rect.CenterX, thumbResult.Rect.CenterY + 10);
 
 			_app.WaitForText(verticalValue, "126.56666666666668");
-			_app.WaitForText(scrollValue, "Vertical Scroll: EndScroll, 126.566666666667");
+			_app.WaitFor(() => scrollValue.GetDependencyPropertyValue<string>("Text")?.StartsWith("Vertical Scroll: EndScroll, 126.56666") ?? false);
 		}
 	}
 }

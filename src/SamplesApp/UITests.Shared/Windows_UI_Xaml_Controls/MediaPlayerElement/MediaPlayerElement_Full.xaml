@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement.MediaPlayerElement_Full"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ 			 xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid>
 		<Grid.RowDefinitions>
@@ -8,7 +9,7 @@
 			<RowDefinition Height="2*" />
 		</Grid.RowDefinitions>
 
-		<MediaPlayerElement x:Name="Mpe"
+		<not_mux:MediaPlayerElement x:Name="Mpe"
 							Source="https://bitmovin-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
 							PosterSource="https://bitmovin-a.akamaihd.net/content/sintel/poster.png"
 							AreTransportControlsEnabled="{Binding IsChecked, ElementName=AreTransportControlsEnabled}"
@@ -41,7 +42,7 @@
 										IsZoomButtonVisible="{Binding IsChecked, ElementName=IsZoomButtonVisible}"
 										IsZoomEnabled="{Binding IsChecked, ElementName=IsZoomEnabled}" />
 			</MediaPlayerElement.TransportControls>
-		</MediaPlayerElement>
+		</not_mux:MediaPlayerElement>
 
 		<ScrollViewer Grid.Row="1"
 					  Margin="10,20">

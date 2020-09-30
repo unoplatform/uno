@@ -2,39 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Enumeration
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum DeviceInformationKind 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Unknown,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DeviceInterface,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DeviceContainer,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Device,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DeviceInterfaceClass,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AssociationEndpoint,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AssociationEndpointContainer,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AssociationEndpointService,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DevicePanel,
-		#endif
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.Unknown
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.DeviceInterface
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.DeviceContainer
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.Device
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.DeviceInterfaceClass
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.AssociationEndpoint
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.AssociationEndpointContainer
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.AssociationEndpointService
+		// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.DevicePanel
 	}
 	#endif
 }

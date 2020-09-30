@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Disposables;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Input;
 
 #if XAMARIN_IOS_UNIFIED
@@ -17,19 +17,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		private readonly SerialDisposable _clickSubscription = new SerialDisposable();
 
-		private protected override void OnLoaded()
+		partial void OnLoadedPartial()
 		{
-			base.OnLoaded();
-
-			RegisterEvents();
-
 			OnCanExecuteChanged();
 		}
 
-		private protected override void OnUnloaded()
+		partial void OnUnloadedPartial()
 		{
-			base.OnUnloaded();
-
 			_clickSubscription.Disposable = null;
 		}
 
@@ -49,14 +43,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug("ControlTemplateRoot is a UIControl, hooking on to AllTouchEvents and TouchUpInside");
 			}
 
 			void clickHandler(object e, EventArgs s)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("TouchUpInside, executing command");
 				}

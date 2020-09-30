@@ -3,7 +3,10 @@ parameters:
 
 jobs:
 - job: Wasm_UITests_Build
+  displayName: 'WebAssembly UI Tests (Build)'
   container: nv-bionic-wasm
+
+  dependsOn: Pipeline_Validations
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -15,6 +18,9 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: templates/gitversion.yml
+  - template: templates/dotnet-install.yml
+
   - task: CacheBeta@0
     condition: eq(variables['enable_package_cache'], 'true')
     inputs:
@@ -23,44 +29,30 @@ jobs:
     displayName: Cache NuGet packages
     
   - template: templates/optimize-roslyn-mono.yml
+  - template: templates/dotnet-install.yml
 
   - bash: |
       sudo cert-sync /etc/ssl/certs/ca-certificates.crt
 
     displayName: 'Update the SSL trusted certificates'
-    
-  - bash: |
-      source /emsdk/emsdk_env.sh
-      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
-
-    displayName: 'Build sample app'
 
   - bash: |
-      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
+      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net5-$(GitVersion.FullSemVer).binlog
 
-    displayName: 'Build Tests'
+    displayName: 'Build sample app (net5.0)'
 
   - task: CopyFiles@2
-    displayName: 'Publish Wasm Site'
+    displayName: 'Publish Wasm Site (net5.0)'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/netstandard2.0/dist
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net5.0/dist
       Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/site
+      TargetFolder: $(build.artifactstagingdirectory)/site-net5.0
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
 
-  - task: CopyFiles@2
-    displayName: 'Publish Wasm UITest binaries'
-    inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.UITests/bin/Release/net47
-      Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/test-bin
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: false
-      
   - task: PublishBuildArtifacts@1
+    condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: wasm-uitest-binaries
@@ -68,31 +60,49 @@ jobs:
 
 
 - job: Wasm_UITests_Snap
-  dependsOn: Wasm_UITests_Build
+  displayName: 'WebAssembly UI Tests (Snapshots Run)'
+  dependsOn:
+  - Wasm_UITests_Build
+  - SamplesApp_UITests_Build
+
   container: nv-bionic-wasm
 
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-20.04'
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+    SITE_SUFFIX: 'net5.0'
 
   steps:
   - checkout: self
     clean: true
+
+  - template: templates/dotnet-install.yml
 
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
   - bash: |
       set -euo pipefail
+      set -x
       IFS=$'\n\t'
-      cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site
-      python server.py &
+      dotnet tool uninstall dotnet-serve -g || true
+      dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
+      dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
+      export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
+      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net5.0" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
       node app
@@ -100,6 +110,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      SITE_SUFFIX: "$(SITE_SUFFIX)"
 
     displayName: 'Running UI Tests'
 
@@ -121,11 +132,31 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  dependsOn: Wasm_UITests_Build
+  displayName: 'WebAssembly UI Tests (Automated Run)'
+  dependsOn:
+  - Wasm_UITests_Build
+  - SamplesApp_UITests_Build
   container: nv-bionic-wasm
 
+  strategy:
+    matrix:
+      net5_default:
+        SITE_SUFFIX: 'net5.0'
+        UITEST_AUTOMATED_GROUP: 'Default'
+        UITEST_TEST_TIMEOUT: '120000'
+
+      net5_runtimetests:
+        SITE_SUFFIX: 'net5.0'
+        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        UITEST_TEST_TIMEOUT: '1800000'
+
+      net5_benchmarks:
+        SITE_SUFFIX: 'net5.0'
+        UITEST_AUTOMATED_GROUP: 'Benchmarks'
+        UITEST_TEST_TIMEOUT: '120000'
+
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: ${{ parameters.vmImage }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -134,6 +165,7 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml
@@ -145,28 +177,81 @@ jobs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+        artifactName: uitests-failure-results
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+   ## First ui tests run
   - bash: |
-      chmod +x $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
-      $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
+      chmod +x $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
+      $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      UITEST_TEST_TIMEOUT: "$(UITEST_TEST_TIMEOUT)"
+      SITE_SUFFIX: "$(SITE_SUFFIX)"
 
     displayName: 'Running UI Tests'
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testResultsFiles: '$(build.sourcesdirectory)/build/wasm-uitest-binaries/TestResult.xml'
-      testRunTitle: 'WebAssembly Test Run'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
+      testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: false
+      searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
+
+   ## Second ui tests run
+  - bash: |
+      chmod +x $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
+      $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      SITE_SUFFIX: "$(SITE_SUFFIX)"
+
+    displayName: 'Running UI Tests'
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
+      testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
+      testRunTitle: 'WebAssembly Runtime Tests Run $(SITE_SUFFIX)'
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
       ArtifactType: Container

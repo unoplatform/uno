@@ -25,4 +25,7 @@
 		</CreateProperty>
 
 	</Target>
+  
+  <!-- Import the override as the nuget tooling in VS is skipping ItemGroup conditions for legacy projects -->
+  <Import Project="roslyn-override.targets" Condition="'$(MicrosoftNetCompilerVersionOverride)'!=''"/>
 </Project>

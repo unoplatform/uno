@@ -10,7 +10,7 @@ using SamplesApp.UITests.TestFramework;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 {
 	[TestFixture]
-	public class ImageBrush_WriteableBitmap : SampleControlUITestBase
+	public partial class ImageBrush_WriteableBitmap : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
@@ -19,7 +19,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 			Run("UITests.Windows_UI_Xaml_Media.ImageBrushTests.ImageBrush_WriteableBitmap");
 
 			var sut = _app.WaitForElement("SUT").Single().Rect;
-			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: false);
+			using var result = TakeScreenshot("Result", ignoreInSnapshotCompare: false);
 
 			ImageAssert.HasColorAt(result, sut.CenterX, sut.CenterY, Color.BlueViolet);
 		}

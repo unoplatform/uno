@@ -40,7 +40,14 @@ namespace Uno.Foundation.Interop
 			_managedGcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
 			_managedHandle = GCHandle.ToIntPtr(_managedGcHandle);
 			_jsHandle = _metadata.CreateNativeInstance(_managedHandle);
+
+			IsAlive = true;
 		}
+
+		/// <summary>
+		/// Indicates if the JS object that is referenced by this handled is still alive or not
+		/// </summary>
+		public bool IsAlive { get; private set; }
 
 		/// <summary>
 		/// Metadata about the marshaled object
@@ -56,7 +63,13 @@ namespace Uno.Foundation.Interop
 		/// <inheritdoc />
 		public void Dispose()
 		{
+			if (!IsAlive)
+			{
+				return;
+			}
+
 			_metadata.DestroyNativeInstance(_managedHandle, _jsHandle);
+			IsAlive = false;
 
 			GC.SuppressFinalize(this);
 		}

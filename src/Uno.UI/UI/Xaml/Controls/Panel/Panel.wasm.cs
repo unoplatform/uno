@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using System;
 using System.Linq;
@@ -20,8 +20,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private SerialDisposable _brushChanged = new SerialDisposable();
-		//private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly SerialDisposable _borderBrushChanged = new SerialDisposable();
 
 		public Panel()
 		{
@@ -30,9 +29,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void Initialize();
 
-		public void UpdateBorder()
+		partial void UpdateBorder()
 		{
-			SetBorder(BorderThickness, BorderBrush, CornerRadius);
+			SetBorder(BorderThicknessInternal, BorderBrushInternal);
 		}
 
 		protected virtual void OnChildrenChanged()
@@ -47,6 +46,12 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
+			_borderBrushChanged.Disposable = null;
+			if (newValue?.SupportsAssignAndObserveBrush ?? false)
+			{
+				_borderBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => UpdateBorder());
+			}
+
 			UpdateBorder();
 		}
 
@@ -57,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue)
 		{
-			UpdateBorder();
+			SetCornerRadius(newValue);
 		}
 
 		/// <summary>        
@@ -86,6 +91,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }

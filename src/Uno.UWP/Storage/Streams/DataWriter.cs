@@ -73,14 +73,8 @@ namespace Windows.Storage.Streams
 				throw new ArgumentNullException(nameof(buffer));
 			}
 
-			switch (buffer)
-			{
-				case Buffer mb:
-					WriteBytes(mb.Data);
-					break;
-				default:
-					throw new NotSupportedException("This buffer is not supported");
-			}
+			var data = Buffer.Cast(buffer).GetSegment();
+			_memoryStream.Write(data.Array!, data.Offset, data.Count);
 		}
 
 		/// <summary>
@@ -101,14 +95,13 @@ namespace Windows.Storage.Streams
 				throw new ArgumentOutOfRangeException(nameof(start));
 			}
 
-			switch (buffer)
+			var data = Buffer.Cast(buffer).GetSegment();
+			if (count > data.Count)
 			{
-				case Buffer mb:
-					_memoryStream.Write(mb.Data, (int)start, (int)count);
-					break;
-				default:
-					throw new NotSupportedException("This buffer is not supported");
+				throw new ArgumentOutOfRangeException(nameof(count));
 			}
+
+			_memoryStream.Write(data.Array!, data.Offset + (int)start, (int)count);
 		}
 
 		/// <summary>

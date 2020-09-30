@@ -1,17 +1,18 @@
 ﻿#if XAMARIN_IOS
 using Foundation;
 using System;
+using System.Linq;
 using UIKit;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
 using ObjCRuntime;
 using Windows.Graphics.Display;
 using Uno.UI.Services;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+using Windows.UI.Core;
+using Uno.Foundation.Logging;
+using System.Globalization;
+using System.Threading;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -32,7 +33,10 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
+			SetCurrentLanguage();
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
+
+			SubscribeBackgroundNotifications();
 		}
 
 		public Application(IntPtr handle) : base(handle)
@@ -61,7 +65,7 @@ namespace Windows.UI.Xaml
 				{
 					_preventSecondaryActivationHandling = true;
 					var url = (NSUrl)urlObject;
-					if (TryParseActivationUri(url, out var uri))
+					if (TryParseUri(url, out var uri))
 					{
 						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
 						handled = true;
@@ -74,6 +78,17 @@ namespace Windows.UI.Xaml
 					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
 					handled = true;
 				}
+				else if (
+					TryGetUserActivityFromLaunchOptions(launchOptions, out var userActivity) &&
+					userActivity.ActivityType == NSUserActivityType.BrowsingWeb)
+				{
+					_preventSecondaryActivationHandling = true;
+					if (TryParseUri(userActivity.WebPageUrl, out var uri))
+					{
+						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
+						handled = true;
+					}
+				}
 			}
 
 			// default to normal launch
@@ -84,12 +99,18 @@ namespace Windows.UI.Xaml
 			return true;
 		}
 
+		public override bool ContinueUserActivity(UIApplication application, NSUserActivity userActivity, UIApplicationRestorationHandler completionHandler) =>
+			TryHandleUniversalLinkFromUserActivity(userActivity);		
+
+		public override void UserActivityUpdated(UIApplication application, NSUserActivity userActivity) =>
+			TryHandleUniversalLinkFromUserActivity(userActivity);
+
 		public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
 		{
 			// If the application was not running, URL was already handled by FinishedLaunching
 			if (!_preventSecondaryActivationHandling)
 			{
-				if (TryParseActivationUri(url, out var uri))
+				if (TryParseUri(url, out var uri))
 				{
 					OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
 				}
@@ -110,20 +131,8 @@ namespace Windows.UI.Xaml
 			_preventSecondaryActivationHandling = false;
 		}
 
-		public override void DidEnterBackground(UIApplication application)
-			=> OnSuspending();
-
-		partial void OnSuspendingPartial()
-		{
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(10));
-
-			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
-
-			_suspended = true;
-		}
-
-		public override void WillEnterForeground(UIApplication application)
-			=> OnResuming();
+		private SuspendingOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(10), () => _suspended = true);
 
 		partial void OnResumingPartial()
 		{
@@ -149,7 +158,28 @@ namespace Windows.UI.Xaml
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
 
-		private bool TryParseActivationUri(NSUrl url, out Uri uri)
+		private bool TryHandleUniversalLinkFromUserActivity(NSUserActivity userActivity)
+		{
+			// If the application was not running, universal link was already handled by FinishedLaunching
+			if (_preventSecondaryActivationHandling)
+			{
+				_preventSecondaryActivationHandling = false;
+				return true;
+			}
+
+			if (userActivity.ActivityType == NSUserActivityType.BrowsingWeb)
+			{
+				if (TryParseUri(userActivity.WebPageUrl, out var uri))
+				{
+					OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private bool TryParseUri(NSUrl url, out Uri uri)
 		{
 			if (Uri.TryCreate(url.ToString(), UriKind.Absolute, out uri))
 			{
@@ -162,17 +192,80 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private ApplicationTheme GetDefaultSystemTheme()
+		private bool TryGetUserActivityFromLaunchOptions(NSDictionary launchOptions, out NSUserActivity userActivity)
 		{
-			//Ensure the current device is running 12.0 or higher, because `TraitCollection.UserInterfaceStyle` was introduced in iOS 12.0
-			if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
+			userActivity = null;
+
+			if (launchOptions.TryGetValue(UIApplication.LaunchOptionsUserActivityDictionaryKey, out var userActivityObject) &&
+				userActivityObject is NSDictionary userActivityDictionary)
 			{
-				if (UIScreen.MainScreen.TraitCollection.UserInterfaceStyle == UIUserInterfaceStyle.Dark)
-				{
-					return ApplicationTheme.Dark;
-				}
+				userActivity = userActivityDictionary.Values.OfType<NSUserActivity>().FirstOrDefault();
 			}
-			return ApplicationTheme.Light;
+
+			return userActivity != null;
+		}
+
+		private void SubscribeBackgroundNotifications()
+		{
+			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+			{
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
+			}
+			else
+			{
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, OnEnteredBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, OnLeavingBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, OnActivated);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillResignActiveNotification, OnDeactivated);
+			}
+		}
+
+		private void OnEnteredBackground(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+
+			RaiseEnteredBackground(() => RaiseSuspending());
+		}
+
+		private void OnLeavingBackground(NSNotification notification)
+		{
+			RaiseResuming();
+			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true));
+		}
+
+		private void OnActivated(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+		}
+
+		private void OnDeactivated(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+		}
+
+		private void SetCurrentLanguage()
+		{
+#if NET6_0_OR_GREATER
+			// net6.0-iOS does not automatically set the thread and culture info
+			// https://github.com/xamarin/xamarin-macios/issues/14740
+			var language = NSLocale.PreferredLanguages.ElementAtOrDefault(0);
+
+			try
+			{
+				var cultureInfo = CultureInfo.CreateSpecificCulture(language);
+				CultureInfo.CurrentUICulture = cultureInfo;
+				CultureInfo.CurrentCulture = cultureInfo;
+				Thread.CurrentThread.CurrentCulture = cultureInfo;
+				Thread.CurrentThread.CurrentUICulture = cultureInfo;
+			}
+			catch (Exception ex)
+			{
+				this.Log().Error($"Failed to set current culture for language: {language}", ex);
+			}
+#endif
 		}
 	}
 }

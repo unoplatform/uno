@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				// The native control will ignore a value of null and retain an empty string. We coalesce the null to prevent a spurious empty string getting bounced back via two-way binding.
-				value = value ?? string.Empty;
+				value ??= string.Empty;
 				if (base.StringValue != value)
 				{
 					base.StringValue = value;
@@ -51,6 +51,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private FrameworkElement _firstManagedParent;
+
 		private void OnTextChanged()
 		{
 			var textBox = _textBox?.GetTarget();
@@ -58,6 +60,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var text = textBox.ProcessTextInput(Text);
 				SetTextNative(text);
+
+				// Launch the invalidation of the measure + layout on the first _managed_ element
+				// Native elements will be relayouted correctly at the same time.
+				_firstManagedParent ??= this.FindFirstParent<FrameworkElement>();
+				_firstManagedParent?.InvalidateMeasure();
 			}
 		}
 
@@ -72,6 +79,7 @@ namespace Windows.UI.Xaml.Controls
 
 			DrawsBackground = false;
 			Bezeled = false;
+			FocusRingType = NSFocusRingType.None;
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
@@ -104,14 +112,13 @@ namespace Windows.UI.Xaml.Controls
 		public bool HasMarkedText => throw new NotImplementedException();
 
 		public nint ConversationIdentifier => throw new NotImplementedException();
-
 		public NSRange MarkedRange => throw new NotImplementedException();
 
 		public NSRange SelectedRange => throw new NotImplementedException();
 
 		public NSString[] ValidAttributesForMarkedText => null;
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -126,30 +133,44 @@ namespace Windows.UI.Xaml.Controls
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
 			var textBox = _textBox.GetTarget();
-			if (textBox != null)
+
+			if (textBox != null && Brush.TryGetColorWithOpacity(newValue, out var color))
 			{
-				var scb = newValue as SolidColorBrush;
-
-				if (scb != null)
-				{
-					this.TextColor = scb.Color;
-				}
+				this.TextColor = color;
+				UpdateCaretColor(color);
 			}
-
-			UpdateCaretColor();
+			else
+			{
+				UpdateCaretColor();
+			}
 		}
 
-		private void UpdateCaretColor()
+		private void UpdateCaretColor(Color? color = null)
 		{
-			if (CurrentEditor is NSTextView textField && Foreground is SolidColorBrush scb)
+			if (CurrentEditor is NSTextView textField)
 			{
-				textField.InsertionPointColor = scb.Color;
+				if (color != null)
+				{
+					textField.InsertionPointColor = color;
+				}
+				else if (Brush.TryGetColorWithOpacity(Foreground, out var foregroundColor))
+				{
+					textField.InsertionPointColor = foregroundColor;
+				}
 			}
 		}
 
 		public void RefreshFont()
 		{
 			UpdateFont();
+		}
+
+		public void Select(int start, int length)
+		{
+			if (CurrentEditor != null)
+			{
+				CurrentEditor.SelectedRange = new NSRange(start: start, len: length);
+			}
 		}
 
 		public override bool BecomeFirstResponder()

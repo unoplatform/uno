@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 {
@@ -72,7 +78,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 			var position = pt.Position;
 			var raw = pt.RawPosition;
 
-			Output.Text += $"{args.Pointer.PointerId}@[{position.X:000.00},{position.Y:000.00}][{raw.X:000.00},{raw.Y:000.00}] ";
+			MoveOutput.Text += $"{args.Pointer.PointerId}@[{position.X:000.00},{position.Y:000.00}][{raw.X:000.00},{raw.Y:000.00}] ";
 		}
 
 		private void OnManipStarting(object sender, ManipulationStartingRoutedEventArgs e)
@@ -83,6 +89,9 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 
 		private void OnManipDelta(object sender, ManipulationDeltaRoutedEventArgs e)
 			=> Write($"[Delta] {F(e.Position, e.Delta, e.Cumulative)}");
+
+		private void OnManipInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
+			=> Write($"[Inertia] {F(new Point(-1, -1), e.Delta, e.Cumulative)}");
 
 		private void OnManipCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
 			=> Write($"[Completed] {F(e.Position, new ManipulationDelta { Scale = 1f }, e.Cumulative)}");

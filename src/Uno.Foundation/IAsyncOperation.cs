@@ -1,12 +1,8 @@
 namespace Windows.Foundation
 {
-	public  partial interface IAsyncOperation<TResult> : global::Windows.Foundation.IAsyncInfo
+	public partial interface IAsyncOperation<TResult> : IAsyncInfo
 	{
-		AsyncOperationCompletedHandler<TResult> Completed
-		{
-			get;
-			set;
-		}
+		AsyncOperationCompletedHandler<TResult> Completed { get; set; }
 
 		TResult GetResults();
 	}

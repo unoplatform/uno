@@ -8,6 +8,7 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
+using ObjCRuntime;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -70,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 				SetBreadthStart(ref frame, groupBreadthStart);
 			}
 
-			return itemBreadth * Math.Min(itemsPerLine, itemsInGroup);
+			return (nfloat)(itemBreadth * Math.Min(itemsPerLine, itemsInGroup));
 		}
 
 		private CGSize ResolveItemSize(int currentGroup, nfloat availableBreadth)

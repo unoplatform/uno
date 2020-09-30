@@ -4,6 +4,8 @@ using System.Text;
 using Uno.UI;
 using System.Linq;
 using Windows.UI.Xaml.Controls.Primitives;
+using System.Diagnostics;
+using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -12,6 +14,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// A row or column.
 		/// </summary>
+		[DebuggerDisplay("{DebugDisplay,nq}")]
 		protected class Line
 		{
 			public int NumberOfViews { get; set; }
@@ -27,6 +30,39 @@ namespace Windows.UI.Xaml.Controls
 			public Uno.UI.IndexPath FirstItem { get; set; }
 
 			public Uno.UI.IndexPath LastItem { get; set; }
+
+			public bool Contains(Uno.UI.IndexPath index) => index >= FirstItem && index <= LastItem;
+
+			public IEnumerable<Uno.UI.IndexPath> Indices
+			{
+				get
+				{
+					if (FirstItem.Section != LastItem.Section)
+					{
+						throw new InvalidOperationException("All items in a line must be in the same section.");
+					}
+					var current = FirstItem;
+					while (current <= LastItem)
+					{
+						yield return current;
+						current = Uno.UI.IndexPath.FromRowSection(current.Row + 1, current.Section);
+					}
+				}
+			}
+
+			public override string ToString()
+			{
+				if (FirstItem == LastItem)
+				{
+					return $"Line:{FirstItem}";
+				}
+				else
+				{
+					return $"Line:{FirstItem}-{LastItem}";
+				}
+			}
+
+			private string DebugDisplay => ToString();
 		}
 
 		/// <summary>
@@ -87,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 			public int ItemsExtentOffset => RelativeHeaderPlacement == RelativeHeaderPlacement.Inline ? HeaderExtent : 0;
 
 			public int ItemsBreadthOffset => RelativeHeaderPlacement == RelativeHeaderPlacement.Adjacent ? HeaderBreadth : 0;
-			
+
 			public Line GetTrailingLine(GeneratorDirection fillDirection)
 			{
 				return fillDirection == GeneratorDirection.Forward ?
@@ -102,8 +138,16 @@ namespace Windows.UI.Xaml.Controls
 					GetFirstLine();
 			}
 
+			public Line GetLeadingLine(GeneratorDirection fillDirection, Func<Uno.UI.IndexPath, bool> condition)
+			{
+				return fillDirection == GeneratorDirection.Forward ?
+					GetLastLine(condition) :
+					GetFirstLine(condition);
+			}
+
 			public void AddLine(Line newLine, GeneratorDirection fillDirection)
 			{
+				Debug.Assert(_lines.None(l => l.FirstItem == newLine.FirstItem), "Duplicate line detected");
 				if (fillDirection == GeneratorDirection.Forward)
 				{
 					_lines.AddToBack(newLine);
@@ -143,6 +187,13 @@ namespace Windows.UI.Xaml.Controls
 					GetFirstLine().FirstItem;
 			}
 
+			public Uno.UI.IndexPath GetLeadingMaterializedItem(GeneratorDirection fillDirection, Func<Uno.UI.IndexPath, bool> condition)
+			{
+				return fillDirection == GeneratorDirection.Forward ?
+					GetLastLine(condition).LastItem :
+					GetFirstLine(condition).FirstItem;
+			}
+
 			public Uno.UI.IndexPath GetTrailingMaterializedItem(GeneratorDirection fillDirection)
 			{
 				return fillDirection == GeneratorDirection.Forward ?
@@ -166,6 +217,34 @@ namespace Windows.UI.Xaml.Controls
 					return null;
 				}
 				return _lines[_lines.Count - 1];
+			}
+
+			private Line GetFirstLine(Func<Uno.UI.IndexPath, bool> condition)
+			{
+				for (int i = 0; i < _lines.Count; i++)
+				{
+					var line = _lines[i];
+					if (condition(line.FirstItem))
+					{
+						return line;
+					}
+				}
+
+				return null;
+			}
+
+			private Line GetLastLine(Func<Uno.UI.IndexPath, bool> condition)
+			{
+				for (int i = _lines.Count - 1; i >= 0; i--)
+				{
+					var line = _lines[i];
+					if (condition(line.FirstItem))
+					{
+						return line;
+					}
+				}
+
+				return null;
 			}
 		}
 	}

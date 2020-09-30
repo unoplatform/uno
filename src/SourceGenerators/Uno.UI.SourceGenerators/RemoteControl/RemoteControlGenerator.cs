@@ -1,4 +1,5 @@
-using Microsoft.Build.Execution;
+#nullable enable
+
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
@@ -7,22 +8,31 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using Uno.Extensions;
-using Uno.SourceGeneration;
+using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
+
+#if NETFRAMEWORK
+using Uno.SourceGeneration;
+#endif
 
 namespace Uno.UI.SourceGenerators.RemoteControl
 {
-	public class RemoteControlGenerator : SourceGenerator
+	[Generator]
+	public class RemoteControlGenerator : ISourceGenerator
 	{
-		public override void Execute(SourceGeneratorContext context)
+		public void Initialize(GeneratorInitializationContext context)
+		{
+			DependenciesInitializer.Init();
+		}
+
+		public void Execute(GeneratorExecutionContext context)
 		{
 			if (
-				context.GetProjectInstance().GetPropertyValue("Configuration") == "Debug"
+				!DesignTimeHelper.IsDesignTime(context)
+				&& context.GetMSBuildPropertyValue("Configuration") == "Debug"
 				&& IsRemoteControlClientInstalled(context)
-				&& IsApplication(context.GetProjectInstance()))
+				&& IsApplication(context))
 			{
 				var sb = new IndentedStringBuilder();
 
@@ -39,21 +49,28 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 				BuildEndPointAttribute(context, sb);
 				BuildSearchPaths(context, sb);
+				BuildServerProcessorsPaths(context, sb);
 
-				context.AddCompilationUnit("RemoteControl", sb.ToString());
+				context.AddSource("RemoteControl", sb.ToString());
 			}
 		}
 
-		private static bool IsRemoteControlClientInstalled(SourceGeneratorContext context)
+		private void BuildServerProcessorsPaths(GeneratorExecutionContext context, IndentedStringBuilder sb)
+		{
+			sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerProcessorsConfigurationAttribute(" +
+				$"@\"{context.GetMSBuildPropertyValue("UnoRemoteControlProcessorsPath")}\"" +
+				$")]");
+		}
+
+		private static bool IsRemoteControlClientInstalled(GeneratorExecutionContext context)
 			=> context.Compilation.GetTypeByMetadataName("Uno.UI.RemoteControl.RemoteControlClient") != null;
 
-		private static void BuildSearchPaths(SourceGeneratorContext context, IndentedStringBuilder sb)
+		private static void BuildSearchPaths(GeneratorExecutionContext context, IndentedStringBuilder sb)
 		{
-			var projectInstance = context.GetProjectInstance();
-
 			sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ProjectConfigurationAttribute(");
-			sb.AppendLineInvariant($"@\"{projectInstance.FullPath}\",\n");
+			sb.AppendLineInvariant($"@\"{context.GetMSBuildPropertyValue("MSBuildProjectFullPath")}\",\n");
 
+			var msBuildProjectDirectory = context.GetMSBuildPropertyValue("MSBuildProjectDirectory");
 			var sources = new[] {
 					"Page",
 					"ApplicationDefinition",
@@ -61,42 +78,54 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 				};
 
 			IEnumerable<string> BuildSearchPath(string s)
-				=> projectInstance
-					.GetItems(s)
-					.Select(v => v.EvaluatedInclude)
-					.Select(v => Path.IsPathRooted(v) ? v : Path.Combine(projectInstance.Directory, v));
+				=> context
+					.GetMSBuildItems(s)
+					.Select(v => Path.IsPathRooted(v.Identity) ? v.Identity : Path.Combine(msBuildProjectDirectory, v.Identity));
 
 			var xamlPaths = from item in sources.SelectMany(BuildSearchPath)
 							select Path.GetDirectoryName(item);
 
 			var distictPaths = string.Join(",\n", xamlPaths.Distinct().Select(p => $"@\"{p}\""));
 
-			sb.AppendLineInvariant("{0}", $"new[]{{{distictPaths}}}");
+			sb.AppendLineInvariant("{0}", $"new string[]{{{distictPaths}}}");
 
-			sb.AppendLineInvariant($")]");
+			sb.AppendLineInvariant(")]");
 		}
 
 
-		private static void BuildEndPointAttribute(SourceGeneratorContext context, IndentedStringBuilder sb)
+		private static void BuildEndPointAttribute(GeneratorExecutionContext context, IndentedStringBuilder sb)
 		{
-			var unoRemoteControlPort = context.GetProjectInstance().GetPropertyValue("UnoRemoteControlPort");
+			var unoRemoteControlPort = context.GetMSBuildPropertyValue("UnoRemoteControlPort");
 
 			if (string.IsNullOrEmpty(unoRemoteControlPort))
 			{
 				unoRemoteControlPort = "0";
 			}
 
-			var unoRemoteControlHost = context.GetProjectInstance().GetPropertyValue("UnoRemoteControlHost");
+			var unoRemoteControlHost = context.GetMSBuildPropertyValue("UnoRemoteControlHost");
 
 			if (string.IsNullOrEmpty(unoRemoteControlHost))
 			{
 				var addresses = NetworkInterface.GetAllNetworkInterfaces()
 					.SelectMany(x => x.GetIPProperties().UnicastAddresses)
 					.Where(x => !IPAddress.IsLoopback(x.Address));
+					//This is not supported on linux yet: .Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
 
 				foreach (var addressInfo in addresses)
 				{
-					sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressInfo.Address}\", {unoRemoteControlPort})]");
+					var address = addressInfo.Address;
+
+					string addressStr;
+					if(address.AddressFamily == AddressFamily.InterNetworkV6)
+					{
+						address.ScopeId = 0; // remove annoying "%xx" on IPv6 addresses
+						addressStr = $"[{address}]";
+					}
+					else
+					{
+						addressStr = address.ToString();
+					}
+					sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressStr}\", {unoRemoteControlPort})]");
 				}
 			}
 			else
@@ -105,13 +134,13 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			}
 		}
 
-		private bool IsApplication(ProjectInstance projectInstance)
+		private bool IsApplication(GeneratorExecutionContext context)
 		{
-			var isAndroidApp = projectInstance.GetPropertyValue("AndroidApplication")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
-			var isiOSApp = projectInstance.GetPropertyValue("ProjectTypeGuids")?.Equals("{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
-			var ismacOSApp = projectInstance.GetPropertyValue("ProjectTypeGuids")?.Equals("{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
-			var isExe = projectInstance.GetPropertyValue("OutputType")?.Equals("Exe", StringComparison.OrdinalIgnoreCase) ?? false;
-			var isUnoHead = projectInstance.GetPropertyValue("IsUnoHead")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+			var isAndroidApp = context.GetMSBuildPropertyValue("AndroidApplication")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+			var isiOSApp = context.GetMSBuildPropertyValue("ProjectTypeGuidsProperty")?.Equals("{FEACFBD2-3405-455C-9665-78FE426C6842},{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
+			var ismacOSApp = context.GetMSBuildPropertyValue("ProjectTypeGuidsProperty")?.Equals("{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1},{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
+			var isExe = context.GetMSBuildPropertyValue("OutputType")?.Equals("Exe", StringComparison.OrdinalIgnoreCase) ?? false;
+			var isUnoHead = context.GetMSBuildPropertyValue("IsUnoHead")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
 
 			return isAndroidApp
 				|| (isiOSApp && isExe)

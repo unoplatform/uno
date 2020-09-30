@@ -6,6 +6,10 @@ using System.Drawing;
 using System.Linq;
 using Uno.Disposables;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
@@ -48,8 +52,11 @@ namespace Windows.UI.Xaml.Controls
 				var indexPath = GetNSIndexPathFromRowSection(row, group);
 				frame.Size = oldItemSizes?.UnoGetValueOrDefault(indexPath) ?? GetItemSizeForIndexPath(indexPath, availableBreadth);
 
-				//Give the maximum breadth available, since for now we don't adjust the measured width of the list based on the databound item
-				SetBreadth(ref frame, availableBreadth);
+				if (ShouldApplyChildStretch)
+				{
+					//Give the maximum breadth available, since for now we don't adjust the measured width of the list based on the databound item
+					SetBreadth(ref frame, availableBreadth);
+				}
 
 				if (createLayoutInfo)
 				{
@@ -59,21 +66,9 @@ namespace Windows.UI.Xaml.Controls
 				_sectionEnd[group] = GetExtentEnd(frame);
 
 				IncrementExtent(ref frame);
-				measuredBreadth = NMath.Max(measuredBreadth, GetBreadth(frame.Size));
+				measuredBreadth = NMath.Max(measuredBreadth, GetBreadthEnd(frame));
 			}
 			return measuredBreadth;
-		}
-
-		private void SetExtentStart(ref CGRect frame, nfloat extentStart)
-		{
-			if (ScrollOrientation == Orientation.Vertical)
-			{
-				frame.Y = extentStart;
-			}
-			else
-			{
-				frame.X = extentStart;
-			}
 		}
 
 		private protected override void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes updatingItem, bool shouldRecurse)

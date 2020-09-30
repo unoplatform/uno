@@ -1,25 +1,31 @@
-﻿#if XAMARIN_ANDROID
 using System;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Views;
-using Windows.Graphics.Display;
 using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
+using Android.Views;
 using Android.Views.InputMethods;
+
+using Uno.AuthenticationBroker;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
+using Windows.Devices.Sensors;
+using Windows.Graphics.Display;
+using Windows.Storage.Pickers;
+using Windows.System;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
-using Windows.Devices.Sensors;
 
 namespace Windows.UI.Xaml
 {
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
-	public class ApplicationActivity : Controls.NativePage
+	public class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
 	{
 
+		/// <summary>
 		/// The windows model implies only one managed activity.
 		/// </summary>
 		internal static ApplicationActivity Instance { get; private set; }
@@ -27,6 +33,8 @@ namespace Windows.UI.Xaml
 		internal LayoutProvider LayoutProvider { get; private set; }
 
 		private InputPane _inputPane;
+		private View _content;
+		private Android.Views.Window _window;
 
 		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -46,6 +54,9 @@ namespace Windows.UI.Xaml
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
 		}
+
+		View Uno.UI.Composition.ICompositionRoot.Content => _content;
+		Android.Views.Window Uno.UI.Composition.ICompositionRoot.Window => _window ??= base.Window;
 
 		public override void OnAttachedToWindow()
 		{
@@ -93,6 +104,54 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		public override bool DispatchKeyEvent(KeyEvent e)
+		{
+			var handled = false;
+			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus)
+			{
+				var focusHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual.AssociatedVisualTree.UnoFocusInputHandler;
+				if (focusHandler != null && e.Action == KeyEventActions.Down)
+				{
+					if (e.KeyCode == Keycode.Tab)
+					{
+						var shift = e.Modifiers.HasFlag(MetaKeyStates.ShiftLeftOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftRightOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftOn);
+						handled = focusHandler.TryHandleTabFocus(shift);
+					}
+					else if (
+						e.KeyCode == Keycode.DpadUp ||
+						e.KeyCode == Keycode.SystemNavigationUp)
+					{
+						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Up);
+					}
+					else if (
+						e.KeyCode == Keycode.DpadDown ||
+						e.KeyCode == Keycode.SystemNavigationDown)
+					{
+						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Down);
+					}
+					else if (
+						e.KeyCode == Keycode.DpadRight ||
+						e.KeyCode == Keycode.SystemNavigationRight)
+					{
+						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Right);
+					}
+					else if (
+						e.KeyCode == Keycode.DpadLeft ||
+						e.KeyCode == Keycode.SystemNavigationLeft)
+					{
+						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Left);
+					}
+				}
+			}
+
+			if (!handled)
+			{
+				return base.DispatchKeyEvent(e);
+			}
+
+			return true;
+		}
+
 		public void SetOrientation(ScreenOrientation orientation)
 		{
 			RequestedOrientation = orientation;
@@ -100,12 +159,15 @@ namespace Windows.UI.Xaml
 
 		public void ExitFullscreen()
 		{
+#pragma warning disable 618
 			Window.DecorView.SystemUiVisibility = StatusBarVisibility.Visible;
+#pragma warning restore 618
+
 			Window.AddFlags(WindowManagerFlags.ForceNotFullscreen);
 			Window.ClearFlags(WindowManagerFlags.Fullscreen);
 		}
 
-		private void OnLayoutChanged(Rect statusBar, Rect keyboard, Rect navigationBar)
+		private void OnKeyboardChanged(Rect keyboard)
 		{
 			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
@@ -113,10 +175,15 @@ namespace Windows.UI.Xaml
 
 		protected override void OnCreate(Bundle bundle)
 		{
+			if (Uno.CompositionConfiguration.UseCompositorThread)
+			{
+				Uno.UI.Composition.CompositorThread.Start(this);
+			}
+
 			base.OnCreate(bundle);
-			
+
 			LayoutProvider = new LayoutProvider(this);
-			LayoutProvider.LayoutChanged += OnLayoutChanged;
+			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
 
 			RaiseConfigurationChanges();
@@ -134,6 +201,8 @@ namespace Windows.UI.Xaml
 
 		public override void SetContentView(View view)
 		{
+			_content = view;
+
 			if (view != null)
 			{
 				if (view.IsAttachedToWindow)
@@ -160,6 +229,8 @@ namespace Windows.UI.Xaml
 			base.OnResume();
 
 			RaiseConfigurationChanges();
+
+			WebAuthenticationBrokerProvider.OnMainActivityResumed();
 		}
 
 		protected override void OnPause()
@@ -204,8 +275,51 @@ namespace Windows.UI.Xaml
 
 		protected override void OnNewIntent(Intent intent)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"New application activity intent received, data: {intent?.Data?.ToString() ?? "(null)"}");
+			}
 			base.OnNewIntent(intent);
-			this.Intent = intent;
+			if (intent != null)
+			{
+				this.Intent = intent;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Application activity intent updated. Attempting to handle intent.");
+				}
+
+				// In case this activity is in SingleTask mode, we try to handle
+				// the intent (for protocol activation scenarios).
+				var handled = (Application as NativeApplication)?.TryHandleIntent(intent) ?? false;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					if (handled)
+					{
+						this.Log().LogDebug($"Native application handled the intent.");
+					}
+					else
+					{
+						this.Log().LogDebug($"Native application did not handle the intent.");
+					}
+				}
+			}
+		}
+
+		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+		{
+			base.OnActivityResult(requestCode, resultCode, data);
+
+			switch (requestCode)
+			{
+				case FolderPicker.RequestCode:
+					FolderPicker.TryHandleIntent(data, resultCode);
+					break;
+				case FileOpenPicker.RequestCode:
+					FileOpenPicker.TryHandleIntent(data, resultCode);
+					break;
+			}
 		}
 
 		/// <summary>
@@ -214,10 +328,11 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
+#if !NET6_0_OR_GREATER
 		[Android.Runtime.Preserve]
+#endif
 		[Java.Interop.Export]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;
 	}
 }
-#endif

@@ -1,11 +1,16 @@
-using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.UI.Input;
 using Uno.UI.Xaml.Input;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
-	public  partial class RightTappedRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
+	public  partial class RightTappedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		private readonly UIElement _originalSource;
 		private readonly Point _position;

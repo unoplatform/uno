@@ -4,16 +4,18 @@ using System.Linq;
 using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+
+using Uno.Foundation.Logging;
 
 #if __ANDROID__
 using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;
+using ObjCRuntime;
 #elif __MACOS__
 using _View = AppKit.NSView;
-#elif NETSTANDARD2_0 || NET461
+using ObjCRuntime;
+#elif UNO_REFERENCE_API || NET461
 using _View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -24,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			MeasureOverridePartial();
-			// A canvas does not have dimensions and will always return zero even with a chidren collection.
+			// A canvas does not have dimensions and will always return zero even with a children collection.
 			foreach (var child in Children)
 			{
 				if (child is _View)

@@ -1,7 +1,8 @@
-﻿using Android.Views;
+﻿#nullable enable
+using Android.Views;
 using Android.Widget;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;
@@ -11,8 +12,10 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Drawing;
+using System.Threading.Tasks;
+using Windows.UI.Core;
 using Uno.UI;
-using Microsoft.Extensions.Logging;
+
 using static Uno.Extensions.MathEx;
 
 namespace Windows.UI.Xaml.Controls
@@ -34,9 +37,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private (double? horizontal, double? vertical)? _pendingScrollTo;
 
-		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
+			_pendingScrollTo = default;
+
 			var physicalHorizontalOffset = ViewHelper.LogicalToPhysicalPixels(horizontalOffset ?? HorizontalOffset);
 			var physicalVerticalOffset = ViewHelper.LogicalToPhysicalPixels(verticalOffset ?? VerticalOffset);
 
@@ -44,20 +50,48 @@ namespace Windows.UI.Xaml.Controls
 			const int minScroll = -maxScroll;
 
 			// Clamp values (again) to avoid overflow in UnoTwoDScrollView.java
-			physicalHorizontalOffset = Clamp(physicalHorizontalOffset, minScroll, maxScroll);
-			physicalVerticalOffset = Clamp(physicalVerticalOffset, minScroll, maxScroll);
+			var adjustedPhysicalHorizontalOffset = Clamp(physicalHorizontalOffset, minScroll, maxScroll);
+			var adjustedPhysicalVerticalOffset = Clamp(physicalVerticalOffset, minScroll, maxScroll);
 
 			if (disableAnimation)
 			{
-				_presenter.ScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
+				_presenter?.ScrollTo(adjustedPhysicalHorizontalOffset, adjustedPhysicalVerticalOffset);
+				if (verticalOffset is { } v && Math.Abs(VerticalOffset - v) > ViewHelper.Scale
+					|| horizontalOffset is { } h && Math.Abs(HorizontalOffset - h) > ViewHelper.Scale)
+				{
+					// The offsets has not been applied as expected.
+					// This is usually because the native view is not ready to scroll to the desired offset.
+					// We have to defer this ScrollTo to the next 
+					_pendingScrollTo = (horizontalOffset, verticalOffset);
+				}
 			}
 			else
 			{
-				_presenter.SmoothScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
+				_presenter?.SmoothScrollTo(adjustedPhysicalHorizontalOffset, adjustedPhysicalVerticalOffset);
+			}
+
+			if (zoomFactor is { } zoom)
+			{
+				ChangeViewZoom(zoom, disableAnimation);
+			}
+
+			// Return true if successfully scrolled to asked offsets
+			return (horizontalOffset == null || physicalHorizontalOffset == adjustedPhysicalHorizontalOffset) &&
+			       (verticalOffset == null || physicalVerticalOffset == adjustedPhysicalVerticalOffset);
+		}
+
+		internal void TryApplyPendingScrollTo()
+		{
+			if (_pendingScrollTo is { } pending)
+			{
+				ChangeViewNative(pending.horizontal, pending.vertical, null, disableAnimation: true);
+
+				// For safety we clear the state to avoid infinite attempt to scroll on an invalid offset
+				_pendingScrollTo = default;
 			}
 		}
 
-		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation)
+		private void ChangeViewZoom(float zoomFactor, bool disableAnimation)
 		{
 			if (!disableAnimation && this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -76,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 				float pivotX, pivotY;
 
 				var scaledWidth = ZoomFactor * view.Width;
-				var viewPortWidth = (this as View).Width;
+				var viewPortWidth = (this as View)?.Width ?? 0f;
 
 				if (viewPortWidth <= scaledWidth)
 				{
@@ -102,7 +136,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var scaledHeight = ZoomFactor * view.Height;
-				var viewportHeight = (this as View).Height;
+				var viewportHeight = (this as View)?.Height ?? 0f;
 
 				if (viewportHeight < scaledHeight)
 				{

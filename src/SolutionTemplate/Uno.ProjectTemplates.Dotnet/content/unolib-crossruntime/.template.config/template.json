@@ -2,18 +2,21 @@
   "$schema": "http://json.schemastore.org/template",
   "author": "Uno Platform",
   "classifications": [
-    "Web",
+    "Cross-platform",
     "Uno Platform",
-    "WebAssembly",
+    "Library",
     "Android",
     "iOS",
     "Windows",
-    "macOS"
+    "macOS",
+    "Linux",
+    "WebAssembly",
+    "dotnet-new"
   ],
-  "name": "Cross-Runtime Library (Uno Platform)",
+  "name": "Cross-Runtime Library",
   "identity": "Uno.Platform.UnoCrossRuntimeLib",
   "groupIdentity": "Uno.Platform.BlankCrossRuntimeLib",
-  "description": "Solution template for creating a cross-runtime Uno Platform library that targets UWP, Android, iOS, macOS, and WebAssembly.",
+  "description": "Solution template for creating a cross-runtime Uno Platform library that targets UWP, Android, iOS, macOS, Linux and WebAssembly.",
   "precedence": "6001",
   "tags": {
     "language": "C#",
@@ -40,9 +43,13 @@
       "path": "UnoCrossRuntimeLib\\UnoCrossRuntimeLib.csproj"
     },
     {
-      "condition": "Android",
+      "condition": "WebAssembly",
       "path": "UnoCrossRuntimeLib\\UnoCrossRuntimeLib.Wasm.csproj"
     },
+    {
+      "condition": "Skia",
+      "path": "UnoCrossRuntimeLib\\UnoCrossRuntimeLib.Skia.csproj"
+    }
   ],
   "sources": [
     {

@@ -11,13 +11,13 @@ namespace Windows.Storage.Streams
 	public sealed partial class DataReader : IDataReader, IDisposable
 	{
 		private readonly static ArrayPool<byte> _pool = ArrayPool<byte>.Create();
-		private readonly IBuffer _buffer;
+		private readonly Buffer _buffer;
 
 		private int _bufferPosition = 0;
 
 		private DataReader(IBuffer buffer)
 		{
-			_buffer = buffer ?? throw new ArgumentNullException(nameof(buffer));
+			_buffer = Buffer.Cast(buffer ?? throw new ArgumentNullException(nameof(buffer)));
 		}
 
 		/// <summary>
@@ -247,22 +247,19 @@ namespace Windows.Storage.Streams
 			int length = (int)codeUnitCount;
 			VerifyRead(length);
 
-			if (!(_buffer is Buffer buffer))
-			{
-				throw new NotSupportedException("This type of buffer is not supported.");
-			}
+			var data = _buffer.GetSegment();
 
 			string result;
 			switch (UnicodeEncoding)
 			{
 				case UnicodeEncoding.Utf8:
-					result = Encoding.UTF8.GetString(buffer.Data, _bufferPosition, length);
+					result = Encoding.UTF8.GetString(data.Array!, data.Offset + _bufferPosition, length);
 					break;
 				case UnicodeEncoding.Utf16LE:
-					result = Encoding.Unicode.GetString(buffer.Data, _bufferPosition, length * 2);
+					result = Encoding.Unicode.GetString(data.Array!, data.Offset + _bufferPosition, length * 2);
 					break;
 				case UnicodeEncoding.Utf16BE:
-					result = Encoding.BigEndianUnicode.GetString(buffer.Data, _bufferPosition, length * 2);
+					result = Encoding.BigEndianUnicode.GetString(data.Array!, data.Offset + _bufferPosition, length * 2);
 					break;
 				default:
 					throw new InvalidOperationException("Unsupported UnicodeEncoding value.");
@@ -301,29 +298,12 @@ namespace Windows.Storage.Streams
 
 		private byte ReadByteFromBuffer()
 		{
-			byte nextByte;
-			switch (_buffer)
-			{
-				case Buffer buffer:
-					nextByte = buffer.Data[_bufferPosition];
-					break;
-				default:
-					throw new NotSupportedException("This buffer is not supported");
-			}
-			_bufferPosition++;
-			return nextByte;
+			return _buffer.GetByte((uint)(_bufferPosition++));
 		}
 
 		private void ReadBytesFromBuffer(byte[] data, int length)
 		{
-			switch (_buffer)
-			{
-				case Buffer buffer:
-					Array.Copy(buffer.Data, _bufferPosition, data, 0, length);
-					break;
-				default:
-					throw new NotSupportedException("This buffer is not supported");
-			}
+			_buffer.CopyTo((uint)_bufferPosition, data, 0, length);
 			_bufferPosition += length;
 		}
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
@@ -130,9 +132,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			TakeScreenshot("after layout");
 
 			var heightStr = _app.GetText("HeightTextBlock");
-			var height = int.Parse(heightStr);
+			var height = float.Parse(heightStr, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
 
-			Assert.AreEqual(224, height);
+			height.Should().BeApproximately(224f, 0.5f);
 		}
 
 		[Test]
@@ -146,7 +148,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			TakeScreenshot("1 item");
 
 			var heightStrBefore = _app.GetText("HeightTextBlock");
-			var heightBefore = int.Parse(heightStrBefore);
+			var heightBefore = float.Parse(heightStrBefore, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
 
 			_app.FastTap("AddItemsButton");
 
@@ -155,7 +157,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			TakeScreenshot("3 items");
 
 			var heightStrAfter = _app.GetText("HeightTextBlock");
-			var heightAfter = int.Parse(heightStrAfter);
+			var heightAfter = float.Parse(heightStrAfter, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
 
 			Assert.Greater(heightBefore, 0);
 
@@ -164,7 +166,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2615
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		// WASM: ClickCheckBoxAt() fails because AtIndex() isn't supported https://github.com/unoplatform/Uno.UITest/issues/47
 		public void ListView_ExpandableItem_ExpandSingleItem()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item");
@@ -173,22 +176,23 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBox);
 
 			// Save initial state(not expanded)
-			var screenshot1 = TakeScreenshot("Initial State");
+			using var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand and compare
 			ClickCheckBoxAt(0);
-			var screenshot2 = TakeScreenshot("Expanded State");
+			using var screenshot2 = TakeScreenshot("Expanded State");
 			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse and compare
 			ClickCheckBoxAt(0);
-			var screenshot3 = TakeScreenshot("Collapsed State");
+			using var screenshot3 = TakeScreenshot("Collapsed State");
 			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2615
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		// WASM: ClickCheckBoxAt() fails because AtIndex() isn't supported https://github.com/unoplatform/Uno.UITest/issues/47
 		public void ListView_ExpandableItem_ExpandMultipleItems()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item");
@@ -197,20 +201,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBox);
 
 			// Save initial state(not expanded)
-			var screenshot1 = TakeScreenshot("Initial State");
+			using var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand multiple items and compare
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot2 = TakeScreenshot("Expanded State");
+			using var screenshot2 = TakeScreenshot("Expanded State");
 			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse all and compare 
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot3 = TakeScreenshot("Collapsed State");
+			using var screenshot3 = TakeScreenshot("Collapsed State");
 			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
@@ -226,15 +230,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			// Assert click on 1st item
 			Assert.AreEqual("", itemClickedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
-			numberListTextBlock.AtIndex(0).Tap();
+			numberListTextBlock.AtIndex(0).FastTap();
 			Assert.AreEqual("1", itemClickedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 
 			// Assert click on 4th item
-			numberListTextBlock.AtIndex(3).Tap();
+			numberListTextBlock.AtIndex(3).FastTap();
 			Assert.AreEqual("4", itemClickedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 
 			// Assert click on 8th item
-			numberListTextBlock.AtIndex(7).Tap();
+			numberListTextBlock.AtIndex(7).FastTap();
 			Assert.AreEqual("8", itemClickedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 		}
 
@@ -250,12 +254,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			// Assert text change of 1st item
 			Assert.AreEqual("False", toggleTextBlock.AtIndex(0).GetDependencyPropertyValue("Text")?.ToString());
-			checkBox.AtIndex(0).Tap();
+			checkBox.AtIndex(0).FastTap();
 			Assert.AreEqual("True", toggleTextBlock.AtIndex(0).GetDependencyPropertyValue("Text")?.ToString());
 
 			// Assert text change of 6th item
 			Assert.AreEqual("False", toggleTextBlock.AtIndex(5).GetDependencyPropertyValue("Text")?.ToString());
-			checkBox.AtIndex(5).Tap();
+			checkBox.AtIndex(5).FastTap();
 			Assert.AreEqual("True", toggleTextBlock.AtIndex(5).GetDependencyPropertyValue("Text")?.ToString());
 		}
 
@@ -270,7 +274,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			// Change height and assert
 			string heightBefore = fixedHeightContainer.GetDependencyPropertyValue("Height")?.ToString();
-			heightChangeButton.Tap();
+			heightChangeButton.FastTap();
 			string heightAfter = fixedHeightContainer.GetDependencyPropertyValue("Height")?.ToString();
 			Assert.AreNotEqual(heightBefore, heightAfter);
 		}
@@ -302,7 +306,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2615
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM: ListView.Header not implemented https://github.com/unoplatform/uno/issues/1979
 		public void ListView_ExpandableItemLarge_ExpandHeader_Validation()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
@@ -311,22 +315,23 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBoxHeader);
 
 			// Save initial state(not expanded)
-			var screenshot1 = TakeScreenshot("Initial State");
+			using var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand and compare
-			checkBoxHeader.Tap();
-			var screenshot2 = TakeScreenshot("Expanded State");
+			checkBoxHeader.FastTap();
+			using var screenshot2 = TakeScreenshot("Expanded State");
 			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse and compare 
-			checkBoxHeader.Tap();
-			var screenshot3 = TakeScreenshot("Collapsed State");
+			checkBoxHeader.FastTap();
+			using var screenshot3 = TakeScreenshot("Collapsed State");
 			ImageAssert.AreAlmostEqual(screenshot1, screenshot3);
 		}
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2615
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		// WASM: ListView.Header not implemented https://github.com/unoplatform/uno/issues/1979
 		public void ListView_ExpandableItemLarge_ExpandHeaderWithMultipleItems_Validation()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
@@ -335,28 +340,29 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBoxHeader);
 
 			// Save initial state(not expanded)
-			var screenshot1 = TakeScreenshot("Initial State");
+			using var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand and compare
-			checkBoxHeader.Tap();
+			checkBoxHeader.FastTap();
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot2 = TakeScreenshot("Expanded State");
+			using var screenshot2 = TakeScreenshot("Expanded State");
 			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse and compare
-			checkBoxHeader.Tap();
+			checkBoxHeader.FastTap();
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot3 = TakeScreenshot("Collapsed State");
+			using var screenshot3 = TakeScreenshot("Collapsed State");
 			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2615
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		// WASM: ListView.Header not implemented https://github.com/unoplatform/uno/issues/1979
 		public void ListView_ExpandableItemLarge_ExpandHeaderWithSingleItem_Validation()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
@@ -365,18 +371,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBoxHeader);
 
 			// Save initial state(not expanded)
-			var screenshot1 = TakeScreenshot("Initial State");
+			using var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand multiple items, header and compare
-			checkBoxHeader.Tap();
+			checkBoxHeader.FastTap();
 			ClickCheckBoxAt(0);
-			var screenshot2 = TakeScreenshot("Expanded State");
+			using var screenshot2 = TakeScreenshot("Expanded State");
 			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse all and compare 
-			checkBoxHeader.Tap();
+			checkBoxHeader.FastTap();
 			ClickCheckBoxAt(0);
-			var screenshot3 = TakeScreenshot("Collapsed State");
+			using var screenshot3 = TakeScreenshot("Collapsed State");
 			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
@@ -471,9 +477,93 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			}
 		}
 
+		[Test]
+		[AutoRetry]
+		public void ListView_Selection_Events_Ordering()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ListView.ListView_Selection_Events");
+			_app.WaitForElement("EventLogs");
+
+			var eventLogs = _app.Marked("EventLogs");
+			var setSelectIndexTo0Button = _app.Marked("SetSelectIndexTo0Button");
+			var clearLogsButton = _app.Marked("ClearLogsButton");
+
+			// selecting item 1 manually
+			clearLogsButton.FastTap(); // clear events proc from setting initial data-context
+			_app.Tap("Item_1");
+			var logs = eventLogs.GetDependencyPropertyValue<string>("Text");
+			Assert.AreEqual(logs, GenerateItemSelectionLogs(1, "Item_1"));
+			
+			// selecting item 0 programmatically
+			clearLogsButton.FastTap(); // clear events from the step above
+			setSelectIndexTo0Button.FastTap();
+			logs = eventLogs.GetDependencyPropertyValue<string>("Text");
+			Assert.AreEqual(logs, GenerateItemSelectionLogs(0, "Item_0"));
+
+			string OnPropertyChanged(string name, object value) => $"VM.PropertyChanged: [{name}]->{value}";
+			string OnSelectionChanged((string, string, int) lv, (string, string, int) vm) => string.Join("\n",
+				"LV.SelectionChanged: (Item|Value|Index): ",
+				$"\t- lv:({lv.Item1}|{lv.Item2}|{lv.Item3}), ",
+				$"\t- vm:({vm.Item1}|{vm.Item2}|{vm.Item3})"
+			);
+			string GenerateItemSelectionLogs(int index, string value) => string.Join("\n",
+				OnPropertyChanged("SelectedIndex", index),
+				OnPropertyChanged("SelectedItem", value),
+				OnPropertyChanged("SelectedValue", value),
+				OnSelectionChanged(lv: (value, value, index), vm: (value, value, index))
+			);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // iOS: https://github.com/unoplatform/uno/issues/6454
+		public void ListView_ListView_Shrinking()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Resizing");
+
+			var addButton = _app.Marked("addButton");
+			_app.WaitForElement(addButton);
+			var removeButton = _app.Marked("removeButton");
+			var heightStack = _app.Marked("heightStack");
+
+			addButton.FastTap();
+			addButton.FastTap();
+			addButton.FastTap();
+
+			float listHeight = _app.GetPhysicalRect(heightStack).GetBottom();
+
+			removeButton.FastTap();
+			removeButton.FastTap();
+			removeButton.FastTap();
+
+			float newListHeight = _app.GetPhysicalRect(heightStack).GetBottom();
+
+			Assert.AreNotEqual(listHeight, newListHeight);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // iOS: https://github.com/unoplatform/uno/issues/7754
+		public void ListView_ListView_Growing()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Resizing");
+
+			var addButton = _app.Marked("addButton");
+			_app.WaitForElement(addButton);
+			var heightStack = _app.Marked("heightStack");
+
+			float listHeight = _app.GetPhysicalRect(heightStack).GetBottom();
+
+			addButton.FastTap();
+			
+			float newListHeight = _app.GetPhysicalRect(heightStack).GetBottom();
+
+			Assert.AreNotEqual(listHeight, newListHeight);
+		}
+
 		private void ClickCheckBoxAt(int i)
 		{
-			_app.Marked("CheckBox").AtIndex(i).Tap();
+			_app.Marked("CheckBox").AtIndex(i).FastTap();
 		}
 	}
 }

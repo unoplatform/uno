@@ -29,6 +29,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private protected override bool ShouldItemsControlManageChildren => ItemsPanelRoot == InternalItemsPanelRoot && ManagedVirtualizingPanel == null;
 
+		// TODO: This is a temporary workaround for TabView items stretching vertically
+		// Can be removed when #1133 is fixed.
+		internal bool ShouldApplyChildStretch { get; set; } = true;
+
 		/// <summary>
 		/// The number of currently visible items, ie a 'page' from the point of view of incremental data loading.
 		/// </summary>
@@ -87,6 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			if (virtualizingPanel != null)
 			{
 				var layouter = virtualizingPanel.GetLayouter();
+				layouter.ShouldApplyChildStretch = ShouldApplyChildStretch;
 				PrepareNativeLayout(layouter);
 
 				var panel = new NativeListViewBase();

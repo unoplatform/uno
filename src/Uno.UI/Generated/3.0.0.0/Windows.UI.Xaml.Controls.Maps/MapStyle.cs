@@ -2,36 +2,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum MapStyle 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Road,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Aerial,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AerialWithRoads,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Terrain,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Aerial3D,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Aerial3DWithRoads,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Custom,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.None
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Road
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Aerial
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.AerialWithRoads
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Terrain
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Aerial3D
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Aerial3DWithRoads
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Custom
 	}
 	#endif
 }

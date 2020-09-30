@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using Windows.UI.Xaml.Controls;
 using Windows.UI;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -24,21 +25,12 @@ namespace Windows.UI.Xaml.Media
 
 		public double Opacity
 		{
-			get => (double)GetValue(OpacityProperty);
-			set => SetValue(OpacityProperty, value);
+			get => GetOpacityValue();
+			set => SetOpacityValue(value);
 		}
 
-		// Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...
-		public static DependencyProperty OpacityProperty { get ; } =
-			DependencyProperty.Register(
-				"Opacity", 
-				typeof(double), 
-				typeof(Brush),
-				new FrameworkPropertyMetadata(
-					defaultValue: 1d,
-					propertyChangedCallback: (s, e) => ((Brush)s).OnOpacityChanged((double)e.OldValue, (double)e.NewValue)
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = 1d, ChangedCallback = true)]
+		public static DependencyProperty OpacityProperty { get ; } = CreateOpacityProperty();
 
 		protected virtual void OnOpacityChanged(double oldValue, double newValue)
 		{
@@ -46,22 +38,25 @@ namespace Windows.UI.Xaml.Media
 
 		#endregion
 
-		public Transform RelativeTransform
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[GeneratedDependencyProperty(DefaultValue = null)]
+		public static DependencyProperty TransformProperty { get; } = CreateTransformProperty();
+
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public Windows.UI.Xaml.Media.Transform Transform
 		{
-			get => (Transform)GetValue(RelativeTransformProperty);
-			set => SetValue(RelativeTransformProperty, value);
+			get => GetTransformValue();
+			set => SetTransformValue(value);
 		}
 
-		public static DependencyProperty RelativeTransformProperty { get ; } =
-			DependencyProperty.Register(
-				"RelativeTransform",
-				typeof(Transform),
-				typeof(Brush),
-				new FrameworkPropertyMetadata(
-					null,
+		public Transform RelativeTransform
+		{
+			get => GetRelativeTransformValue();
+			set => SetRelativeTransformValue(value);
+		}
 
-					propertyChangedCallback: (s, e) =>
-						((Brush)s).OnRelativeTransformChanged((Transform)e.OldValue, (Transform)e.NewValue)));
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		public static DependencyProperty RelativeTransformProperty { get ; } = CreateRelativeTransformProperty();
 
 		protected virtual void OnRelativeTransformChanged(Transform oldValue, Transform newValue)
 		{
@@ -97,5 +92,10 @@ namespace Windows.UI.Xaml.Media
 					return false;
 			}
 		}
+
+#if !__WASM__
+		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
+		internal bool SupportsAssignAndObserveBrush => true;
+#endif
 	}
 }

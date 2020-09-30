@@ -3,9 +3,6 @@
 namespace Windows.UI.Xaml.Input
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum InputScopeNameValue 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.Default
@@ -45,6 +42,9 @@ namespace Windows.UI.Xaml.Input
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.Chat
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.NameOrPhoneNumber
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.EmailNameOrAddress
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		Private = 61,
+		#endif
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.Maps
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.NumericPassword
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.NumericPin

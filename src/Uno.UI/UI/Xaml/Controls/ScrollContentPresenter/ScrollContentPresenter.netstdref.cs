@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;
@@ -14,12 +14,18 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter
 	{
-		public float MinimumZoomScale { get; set; }
+		public bool CanHorizontallyScroll { get; set; }
 
-		public float MaximumZoomScale { get; set; }
+		public bool CanVerticallyScroll { get; set; }
 
-		public ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
+		public double ExtentHeight { get; internal set; }
 
-		public ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
+		public double ExtentWidth { get; internal set; }
+
+		internal ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
+
+		internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
+
+		private object RealContent { get; set; }
 	}
 }

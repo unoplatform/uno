@@ -9,7 +9,8 @@ using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
-
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -21,9 +22,9 @@ using View = MonoTouch.UIKit.UIView;
 namespace Windows.UI.Xaml.Controls
 {
 	[Markup.ContentProperty(Name = "Children")]
-	public partial class Panel : FrameworkElement, ICustomClippingElement
+	public partial class Panel : FrameworkElement, ICustomClippingElement, IPanel
 	{
-#if NET461 || NETSTANDARD2_0
+#if NET461 || UNO_REFERENCE_API
 		private new UIElementCollection _children;
 #else
 		private UIElementCollection _children;
@@ -34,8 +35,6 @@ namespace Windows.UI.Xaml.Controls
 		partial void Initialize()
 		{
 			_children = new UIElementCollection(this);
-
-			IFrameworkElementHelper.Initialize(this);
 		}
 
 		private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -109,115 +108,13 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		#region Padding DependencyProperty
+		internal Thickness PaddingInternal { get; set; }
 
-		internal Size BorderAndPaddingSize
-		{
-			get
-			{
-				var border = BorderThickness;
-				var padding = Padding;
-				var width = border.Left + border.Right + padding.Left + padding.Right;
-				var height = border.Top + border.Bottom + padding.Top + padding.Bottom;
-				return new Size(width, height);
-			}
-		}
+		internal Thickness BorderThicknessInternal { get; set; }
 
-		public Thickness Padding
-		{
-			get { return (Thickness)this.GetValue(PaddingProperty); }
-			set { this.SetValue(PaddingProperty, value); }
-		}
+		internal Brush BorderBrushInternal { get; set; }
 
-		public static DependencyProperty PaddingProperty { get ; } =
-			DependencyProperty.Register(
-				"Padding",
-				typeof(Thickness),
-				typeof(Panel),
-				new FrameworkPropertyMetadata(
-					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.None,
-					(s, e) => ((Panel)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
-				)
-			);
-
-#endregion
-
-		#region BorderThickness DependencyProperty
-
-		public Thickness BorderThickness
-		{
-			get { return (Thickness)this.GetValue(BorderThicknessProperty); }
-			set { this.SetValue(BorderThicknessProperty, value); }
-		}
-
-		public static DependencyProperty BorderThicknessProperty { get ; } =
-			DependencyProperty.Register(
-				"BorderThickness",
-				typeof(Thickness),
-				typeof(Panel),
-				new FrameworkPropertyMetadata(
-					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.None,
-					(s, e) => ((Panel)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
-				)
-			);
-
-		#endregion
-
-		#region BorderBrush Dependency Property
-
-#if XAMARIN_ANDROID
-		private Brush _borderBrushStrongReference;
-#endif
-
-		public Brush BorderBrush
-		{
-			get { return (Brush)this.GetValue(BorderBrushProperty); }
-			set
-			{
-				this.SetValue(BorderBrushProperty, value);
-
-#if XAMARIN_ANDROID
-				_borderBrushStrongReference = value;
-#endif
-			}
-		}
-
-		public static DependencyProperty BorderBrushProperty { get ; } =
-			DependencyProperty.Register(
-				"BorderBrush",
-				typeof(Brush),
-				typeof(Panel),
-				new FrameworkPropertyMetadata(
-					SolidColorBrushHelper.Transparent,
-					FrameworkPropertyMetadataOptions.ValueInheritsDataContext,
-					propertyChangedCallback: (s, e) => ((Panel)s).OnBorderBrushChanged((Brush)e.OldValue, (Brush)e.NewValue)
-				)
-			);
-		#endregion
-
-		#region CornerRadius DependencyProperty
-
-		public CornerRadius CornerRadius
-		{
-			get { return (CornerRadius)this.GetValue(CornerRadiusProperty); }
-			set { this.SetValue(CornerRadiusProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for CornerRadius.  This enables animation, styling, binding, etc...
-		public static DependencyProperty CornerRadiusProperty { get ; } =
-			DependencyProperty.Register(
-				"CornerRadius",
-				typeof(CornerRadius),
-				typeof(Panel),
-				new FrameworkPropertyMetadata(
-					CornerRadius.None,
-					(s, e) => ((Panel)s)?.OnCornerRadiusChanged((CornerRadius)e.OldValue, (CornerRadius)e.NewValue)
-				)
-			);
-
-		#endregion
+		internal CornerRadius CornerRadiusInternal { get; set; }
 
 		#region IsItemsHost DependencyProperty
 		public static DependencyProperty IsItemsHostProperty { get ; } = DependencyProperty.Register(
@@ -273,6 +170,20 @@ namespace Windows.UI.Xaml.Controls
 		}
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue);
 
-		private protected override Thickness GetBorderThickness() => BorderThickness;
+		private protected override Thickness GetBorderThickness() => BorderThicknessInternal;
+
+		internal override bool CanHaveChildren() => true;
+
+
+		private protected void OnBackgroundSizingChangedInnerPanel(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnBackgroundSizingChangedInner(e);
+
+			UpdateBorder();
+		}
+
+		partial void UpdateBorder();
+
+		internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 	}
 }

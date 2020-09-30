@@ -3,7 +3,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using FluentAssertions;
-
+using FluentAssertions.Execution;
 using View = Windows.UI.Xaml.FrameworkElement;
 
 
@@ -81,6 +81,8 @@ namespace Uno.UI.Tests.GridTests
 		[TestMethod]
 		public void When_One_Child_With_Margin_1234_Size8()
 		{
+			using var _ = new AssertionScope();
+
 			var SUT = new Grid
 			{
 				Name = "test",
@@ -99,7 +101,7 @@ namespace Uno.UI.Tests.GridTests
 			SUT.Measure(new Size(8, 8));
 
 			SUT.DesiredSize.Should().Be(new Size(8, 8));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(8, 8));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(8, 10));
 			c1.DesiredSize.Should().Be(new Size(4, 6));
 			c1.UnclippedDesiredSize.Should().Be(new Size(0, 0)); // UnclippedDesiredSize excludes margins
 
@@ -116,8 +118,9 @@ namespace Uno.UI.Tests.GridTests
 		[TestMethod]
 		public void When_One_Child_With_Margin_Center_And_Center()
 		{
-			var SUT = new Grid() { Name = "test" };
+			using var _ = new AssertionScope();
 
+			var SUT = new Grid() { Name = "test" };
 
 			var c1 = new View
 				{
@@ -143,7 +146,7 @@ namespace Uno.UI.Tests.GridTests
 			// - result desized size will be 10x0 + 0x30, resulting to 10x30
 
 			SUT.DesiredSize.Should().Be(new Size(10, 20));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 20));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30));
 			c1.DesiredSize.Should().Be(new Size(10, 30));
 			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 
@@ -158,8 +161,9 @@ namespace Uno.UI.Tests.GridTests
 		[TestMethod]
 		public void When_One_Child_With_Margin_Center_And_Bottom()
 		{
-			var SUT = new Grid() { Name = "test" };
+			using var _ = new AssertionScope();
 
+			var SUT = new Grid() { Name = "test" };
 
 			var c1 = new View
 				{
@@ -185,7 +189,7 @@ namespace Uno.UI.Tests.GridTests
 			// - result desized size will be 10x0 + 0x30, resulting to 10x30
 
 			SUT.DesiredSize.Should().Be(new Size(10, 20));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 20));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30));
 			c1.DesiredSize.Should().Be(new Size(10, 30));
 			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 
@@ -202,8 +206,9 @@ namespace Uno.UI.Tests.GridTests
 		[TestMethod]
 		public void When_One_Child_With_Margin_Center_And_Top()
 		{
-			var SUT = new Grid() { Name = "test" };
+			using var _ = new AssertionScope();
 
+			var SUT = new Grid() { Name = "test" };
 
 			var c1 = new View
 				{
@@ -229,7 +234,7 @@ namespace Uno.UI.Tests.GridTests
 			// - result desized size will be 10x0 + 0x30, resulting to 10x30
 
 			SUT.DesiredSize.Should().Be(new Size(10, 20));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 20));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30));
 			c1.DesiredSize.Should().Be(new Size(10, 30));
 			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 

@@ -1,9 +1,11 @@
 #if __IOS__ || __MACOS__
 
 using Uno.Networking.Connectivity.Internal;
-#if __IOS__
+#if __IOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13931
 using CoreTelephony;
 #endif
+
+#pragma warning disable BI1234 // 'CTCellularDataRestrictedState' is obsolete: 'Starting with ios14.0 Use the 'CallKit' API instead.'
 
 namespace Windows.Networking.Connectivity
 {
@@ -30,7 +32,7 @@ namespace Windows.Networking.Connectivity
 		private NetworkConnectivityLevel GetNetworkConnectivityLevelImpl()
 		{
 			var mobileDataRestricted = false;
-#if __IOS__
+#if __IOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13931
 			mobileDataRestricted = NetworkInformation.CellularData.RestrictedState == CTCellularDataRestrictedState.Restricted;
 #endif
 			var internetStatus = Reachability.InternetConnectionStatus();

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 {

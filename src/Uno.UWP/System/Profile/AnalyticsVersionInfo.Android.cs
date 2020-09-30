@@ -1,19 +1,24 @@
-#if __ANDROID__
+using System;
 using Android.OS;
+using Windows.System.Profile.Internal;
 
-namespace Windows.System.Profile
+namespace Windows.System.Profile;
+
+public partial class AnalyticsVersionInfo
 {
-	public partial class AnalyticsVersionInfo
+	private const string OsName = "Android";
+
+	partial void Initialize()
 	{
-		private const string OsName = "Android";
-
-		internal AnalyticsVersionInfo()
+		DeviceFamily = $"{OsName}.{AnalyticsInfo.DeviceForm}";
+		var versionString = Build.VERSION.Release;
+		if (int.TryParse(versionString, out var intVersion))
 		{
+			versionString = $"{intVersion}.0.0.0";
 		}
-
-		public string DeviceFamily => OsName + '.' + AnalyticsInfo.DeviceForm;
-
-		public string DeviceFamilyVersion => Build.VERSION.Release;
+		if (Version.TryParse(versionString, out var version))
+		{
+			DeviceFamilyVersion = VersionHelpers.ToLong(version).ToString();
+		}
 	}
 }
-#endif

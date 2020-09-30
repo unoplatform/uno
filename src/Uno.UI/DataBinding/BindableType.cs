@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,9 +17,9 @@ namespace Uno.UI.DataBinding
 	public class BindableType : IBindableType
 	{
 		private readonly Hashtable _properties;
-		private StringIndexerGetterDelegate _stringIndexerGetter;
-		private StringIndexerSetterDelegate _stringIndexerSetter;
-		private ActivatorDelegate _activator;
+		private StringIndexerGetterDelegate? _stringIndexerGetter;
+		private StringIndexerSetterDelegate? _stringIndexerSetter;
+		private ActivatorDelegate? _activator;
 
 		/// <summary>
 		/// Builds a new BindableType.
@@ -32,12 +34,12 @@ namespace Uno.UI.DataBinding
 
 		public Type Type { get; }
 
-		public ActivatorDelegate CreateInstance()
+		public ActivatorDelegate? CreateInstance()
 		{
 			return _activator;
 		}
 
-		public IBindableProperty GetProperty(string name)
+		public IBindableProperty? GetProperty(string name)
 		{
 			var property = _properties[name] as IBindableProperty;
 
@@ -47,7 +49,7 @@ namespace Uno.UI.DataBinding
 
 				if (prop != null && prop.OwnerType.IsAssignableFrom(Type))
 				{
-					property = GetProperty(prop?.Name);
+					property = GetProperty(prop.Name);
 				}
 			}
 
@@ -59,12 +61,17 @@ namespace Uno.UI.DataBinding
 			_activator = activator;
 		}
 
-		public void AddProperty<T>(string name, PropertyGetterHandler getter, PropertySetterHandler setter = null)
+		public void AddProperty<T>(string name, PropertyGetterHandler getter, PropertySetterHandler? setter = null)
 		{
 			_properties[name] = new BindableProperty(typeof(T), getter, setter);
 		}
 
-		public void AddProperty(string name, Type propertyType, PropertyGetterHandler getter, PropertySetterHandler setter = null)
+		public void AddProperty(DependencyProperty property)
+		{
+			_properties[property.Name] = new BindableProperty(property);
+		}
+
+		public void AddProperty(string name, Type propertyType, PropertyGetterHandler getter, PropertySetterHandler? setter = null)
 		{
 			_properties[name] = new BindableProperty(propertyType, getter, setter);
 		}
@@ -75,12 +82,12 @@ namespace Uno.UI.DataBinding
 			_stringIndexerSetter = setter;
 		}
 
-		public StringIndexerGetterDelegate GetIndexerGetter()
+		public StringIndexerGetterDelegate? GetIndexerGetter()
 		{
 			return _stringIndexerGetter;
 		}
 
-		public StringIndexerSetterDelegate GetIndexerSetter()
+		public StringIndexerSetterDelegate? GetIndexerSetter()
 		{
 			return _stringIndexerSetter;
 		}

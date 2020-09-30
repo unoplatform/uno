@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -25,12 +27,26 @@ namespace Windows.UI.Xaml
 	{
 		public event VectorChangedEventHandler<T> VectorChanged;
 
-		private List<T> _list = new List<T>();
+		private readonly List<T> _list = new List<T>();
+
+		private int _isLocked;
+
+		internal void Lock() => _isLocked++;
+
+		internal void Unlock() => _isLocked--;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void EnsureNotLocked()
+		{
+			if(_isLocked > 0)
+			{
+				throw new InvalidOperationException("Collection is locked.");
+			}
+		}
 
 		public DependencyObjectCollection()
 		{
 			Initialize();
-			UpdateParent(this.GetParent());
 		}
 
 		internal DependencyObjectCollection(DependencyObject parent, bool isAutoPropertyInheritanceEnabled = true)
@@ -39,7 +55,6 @@ namespace Windows.UI.Xaml
 
 			Initialize();
 			this.SetParent(parent);
-			UpdateParent(parent);
 		}
 
 		private void Initialize()
@@ -56,35 +71,42 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal List<T> Items => _list;
 
-		private void UpdateParent(object parent)
+		internal void UpdateParent(object parent)
 		{
-			foreach (var item in _list)
+			var actualParent = parent ?? this;
+
+			for (var i = 0; i < _list.Count; i++)
 			{
+				var item = _list[i];
+
 				// Because parent propagation doesn't currently support all cases, 
 				// we can't assume that the DependencyObjectCollection will have a parent.
 				// To preserve DataContext propagation, we fallback to self if no parent is set.
-				item.SetParent(parent ?? this);
+				item.SetParent(actualParent);
 			}
 		}
 
-		public uint Size
-			=> (uint)_list.Count;
+		public uint Size => (uint)_list.Count;
 
-		public int Count
-			=> _list.Count;
+		public int Count => _list.Count;
 
-		public bool IsReadOnly 
-			=> ((ICollection<T>)_list).IsReadOnly;
+		public bool IsReadOnly => ((ICollection<T>)_list).IsReadOnly;
+
+		private protected virtual void ValidateItem(T item) { }
 
 		public T this[int index]
 		{
 			get => _list[index];
 			set
 			{
+				ValidateItem(value);
+
 				var originalValue = _list[index];
 
 				if (!ReferenceEquals(originalValue, value))
 				{
+					EnsureNotLocked();
+
 					OnRemoved(originalValue);
 
 					_list[index] = value;
@@ -100,6 +122,10 @@ namespace Windows.UI.Xaml
 
 		public void Insert(int index, T item)
 		{
+			ValidateItem(item);
+
+			EnsureNotLocked();
+
 			_list.Insert(index, item);
 
 			OnAdded(item);
@@ -109,6 +135,8 @@ namespace Windows.UI.Xaml
 
 		public void RemoveAt(int index)
 		{
+			EnsureNotLocked();
+
 			OnRemoved(_list[index]);
 
 			_list.RemoveAt(index);
@@ -118,6 +146,10 @@ namespace Windows.UI.Xaml
 
 		public void Add(T item)
 		{
+			EnsureNotLocked();
+
+			ValidateItem(item);
+
 			_list.Add(item);
 
 			OnAdded(item);
@@ -127,6 +159,8 @@ namespace Windows.UI.Xaml
 
 		public void Clear()
 		{
+			EnsureNotLocked();
+
 			for (int index = 0; index < _list.Count; index++)
 			{
 				OnRemoved(_list[index]);
@@ -145,6 +179,8 @@ namespace Windows.UI.Xaml
 
 		public bool Remove(T item)
 		{
+			EnsureNotLocked();
+
 			var index = _list.IndexOf(item);
 
 			if (index != -1)

@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extensions;
-using Windows.Foundation;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.FrameTests
@@ -168,6 +160,138 @@ namespace Uno.UI.Tests.FrameTests
 			Assert.AreEqual(myPage3, SUT.Content);
 			Assert.IsNull(myPage2.Frame);
 		}
+
+		[TestMethod]
+		public void When_Tracking_SourcePageType()
+		{
+			var SUT = new Frame();
+
+			void OnPageNavigatedFrom(object sender, EventArgs args)
+			{
+				// Should match the other page type
+				Assert.AreNotEqual(sender.GetType(), SUT.SourcePageType);
+				Assert.AreNotEqual(sender.GetType(), SUT.CurrentSourcePageType);
+			}
+
+			void OnPageNavigatingFrom(object sender, EventArgs args)
+			{
+				// Should match sender
+				Assert.AreEqual(sender.GetType(), SUT.SourcePageType);
+				Assert.AreEqual(sender.GetType(), SUT.CurrentSourcePageType);
+			}
+
+			void OnPageNavigatedTo(object sender, EventArgs args)
+			{
+				// Should match sender
+				Assert.AreEqual(sender.GetType(), SUT.SourcePageType);
+				Assert.AreEqual(sender.GetType(), SUT.CurrentSourcePageType);
+			}
+
+			try
+			{
+				SourceTypePage.PageNavigatedFrom += OnPageNavigatedFrom;
+				SourceTypePage.PageNavigatingFrom += OnPageNavigatingFrom;
+				SourceTypePage.PageNavigatedTo += OnPageNavigatedTo;
+
+				Type navigatingSourcePageType = null;
+				Type navigatingCurrentSourcePageType = null;
+
+				SUT.Navigating += (s, e) =>
+				{
+					Assert.AreEqual(navigatingSourcePageType, SUT.SourcePageType);
+					Assert.AreEqual(navigatingCurrentSourcePageType, SUT.CurrentSourcePageType);
+				};
+
+				Type navigatedSourcePageType = null;
+				Type navigatedCurrentSourcePageType = null;
+
+				SUT.Navigated += (s, e) =>
+				{
+					Assert.AreEqual(navigatedSourcePageType, SUT.SourcePageType);
+					Assert.AreEqual(navigatedCurrentSourcePageType, SUT.SourcePageType);
+				};
+
+				Assert.AreEqual(null, SUT.SourcePageType);
+				Assert.AreEqual(null, SUT.CurrentSourcePageType);
+
+				// Navigate from null to SourceTypePage1
+
+				navigatingSourcePageType = null;
+				navigatingCurrentSourcePageType = null;
+
+				navigatedSourcePageType = typeof(SourceTypePage1);
+				navigatedCurrentSourcePageType = typeof(SourceTypePage1);
+
+				SUT.Navigate(typeof(SourceTypePage1));
+
+				Assert.AreEqual(typeof(SourceTypePage1), SUT.SourcePageType);
+				Assert.AreEqual(typeof(SourceTypePage1), SUT.CurrentSourcePageType);
+
+				// Navigate from SourceTypePage1 to 2
+
+				navigatingSourcePageType = typeof(SourceTypePage1);
+				navigatingCurrentSourcePageType = typeof(SourceTypePage1);
+
+				navigatedSourcePageType = typeof(SourceTypePage2);
+				navigatedCurrentSourcePageType = typeof(SourceTypePage2);
+
+				SUT.Navigate(typeof(SourceTypePage2));
+
+				Assert.AreEqual(typeof(SourceTypePage2), SUT.SourcePageType);
+				Assert.AreEqual(typeof(SourceTypePage2), SUT.CurrentSourcePageType);
+
+				// Navigate back
+
+				navigatingSourcePageType = typeof(SourceTypePage2);
+				navigatingCurrentSourcePageType = typeof(SourceTypePage2);
+
+				navigatedSourcePageType = typeof(SourceTypePage1);
+				navigatedCurrentSourcePageType = typeof(SourceTypePage1);
+
+				SUT.Navigate(typeof(SourceTypePage1));
+
+				Assert.AreEqual(typeof(SourceTypePage1), SUT.SourcePageType);
+				Assert.AreEqual(typeof(SourceTypePage1), SUT.CurrentSourcePageType);
+			}
+			finally
+			{
+				SourceTypePage.PageNavigatedFrom -= OnPageNavigatedFrom;
+				SourceTypePage.PageNavigatingFrom -= OnPageNavigatingFrom;
+				SourceTypePage.PageNavigatedTo -= OnPageNavigatedTo;
+			}
+		}
+
+		[TestMethod]
+		public void When_SourcePageType_Set()
+		{
+			var SUT = new Frame();
+			SUT.SourcePageType = typeof(MyPage);
+			Assert.IsInstanceOfType(SUT.Content, typeof(MyPage));
+		}
+
+		[TestMethod]
+		public void When_SourcePageType_Set_Null()
+		{
+			var SUT = new Frame();
+			SUT.Navigate(typeof(MyPage));
+			Assert.ThrowsException<InvalidOperationException>(
+				() => SUT.SourcePageType = null);
+		}
+
+		[TestMethod]
+		public void When_Content_Changes_Page()
+		{
+			var SUT = new Frame();
+			SUT.Navigate(typeof(MyPage));
+
+			Assert.AreEqual(typeof(MyPage), SUT.SourcePageType);
+			Assert.AreEqual(typeof(MyPage), SUT.CurrentSourcePageType);
+
+			SUT.Content = new FirstPage();
+
+			Assert.AreEqual(typeof(MyPage), SUT.SourcePageType);
+			Assert.AreEqual(typeof(MyPage), SUT.CurrentSourcePageType);
+		}
 	}
 
 	class MyPage : Page
@@ -195,4 +319,33 @@ namespace Uno.UI.Tests.FrameTests
 			NavigatingFromCalled = true;
 		}
 	}
+
+	abstract class SourceTypePage : Page
+	{
+		protected internal override void OnNavigatedFrom(NavigationEventArgs e)
+		{
+			base.OnNavigatedFrom(e);
+			PageNavigatedFrom?.Invoke(this, null);
+		}
+
+		protected internal override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			base.OnNavigatedTo(e);
+			PageNavigatedTo?.Invoke(this, null);
+		}
+
+		protected internal override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+		{
+			base.OnNavigatingFrom(e);
+			PageNavigatingFrom?.Invoke(this, null);
+		}
+
+		public static event EventHandler PageNavigatedFrom;
+		public static event EventHandler PageNavigatedTo;
+		public static event EventHandler PageNavigatingFrom;
+	}
+
+	class SourceTypePage1 : SourceTypePage { }
+
+	class SourceTypePage2 : SourceTypePage { }
 }

@@ -1,19 +1,20 @@
 ﻿<UserControl
-	x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_Selection"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	xmlns:controls="using:Uno.UI.Samples.Controls"
-	d:DesignHeight="300"
-	d:DesignWidth="400">
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Selection"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.TextBox"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
 
-	<StackPanel >
-		<TextBox SelectionStart="{Binding [SelectionStart]}" SelectionLength="{Binding [SelectionLength]}"/>
-		<TextBox PlaceholderText="SelectionStart" />
-		<TextBox PlaceholderText="SelectionLength" />
-		<Button Content="Update" Command="{Binding [Update]}" />
+	<StackPanel>
+		<controls:NumberBox x:Name="startNumber" PlaceholderText="Start" />
+		<controls:NumberBox x:Name="lengthNumber" PlaceholderText="Length" />
+		<TextBox x:Name="myTextBox" />
+		<Button Click="Select_OnClick" Content="Select"></Button>
+		<Button Click="SelectAll_OnClick" Content="Select all"></Button>
 	</StackPanel>
-
 </UserControl>

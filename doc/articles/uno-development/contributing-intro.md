@@ -14,7 +14,7 @@ Get an [in-depth introduction to how Uno works](uno-internals-overview.md), or j
 
 ## Building and debugging Uno
 
-For the prerequisites you'll need, as well as useful tips like using [solution filters](https://docs.microsoft.com/en-us/visualstudio/ide/filtered-solutions) and cross-targeting overrides to quickly load and build Uno for a single platform, start with the guide to [Building and Debugging Uno.UI](debugging-uno-ui.md).
+For the prerequisites you'll need, as well as useful tips like using [solution filters](https://docs.microsoft.com/en-us/visualstudio/ide/filtered-solutions) and cross-targeting overrides to quickly load and build Uno for a single platform, start with the guide to [Building Uno.UI](building-uno-ui.md). The guide to [Debugging Uno.UI](debugging-uno-ui.md) will show you how to debug Uno.UI code either in the included UI samples or in an application outside the Uno.UI solution.
 
 If you're doing development for Uno's macOS support, you'll need to build and run Uno using Visual Studio for Mac. [There's a separate guide for that here](building-uno-macos.md).
 
@@ -25,6 +25,10 @@ Whether you're fixing a bug or working on a new feature, [inspecting the visual 
 ## Writing code in Uno
 
 See [Uno's code conventions and common patterns here](../contributing/guidelines/code-style.md).
+
+## Implementing a new feature
+
+See how to implement a new [feature here](../contributing/guidelines/implementing-a-new winui-winrt-feature.md).
 
 ## Adding tests
 

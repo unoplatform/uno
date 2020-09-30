@@ -30,6 +30,7 @@
 									 Color="CadetBlue" />
 				</ResourceDictionary>
 				<local:Subclassed_Dictionary />
+				<local:Subclassed_Dictionary_With_Property Test="Test123"/>
 			</ResourceDictionary.MergedDictionaries>
 			<ResourceDictionary.ThemeDictionaries>
 				<ResourceDictionary x:Key="Light">

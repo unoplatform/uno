@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderProperty { get ; } =
-			DependencyProperty.Register(nameof(Header), typeof(object), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(Header), typeof(object), typeof(NumberBox), new FrameworkPropertyMetadata(null, (s, e) => (s as NumberBox)?.OnHeaderPropertyChanged(e)));
 
 		public DataTemplate HeaderTemplate
 		{
@@ -99,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(NumberBox), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(NumberBox), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => (s as NumberBox)?.OnHeaderTemplatePropertyChanged(e)));
 
 		public string PlaceholderText
 		{
@@ -149,7 +149,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public new object Description
 		{
-			get => (object)GetValue(DescriptionProperty);
+			get => GetValue(DescriptionProperty);
 			set => SetValue(DescriptionProperty, value);
 		}
 

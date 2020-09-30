@@ -1,10 +1,10 @@
-﻿#if !NET461 && !NETSTANDARD2_0 && !__MACOS__
+﻿#if !NET461 && !UNO_REFERENCE_API && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+
+using Uno.Foundation.Logging;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
@@ -26,15 +26,16 @@ namespace Windows.UI.Xaml.Controls
 	/// An Uno-only class which allows the <see cref="ScrollViewer"/> within a <see cref="ListViewBase"/> template
 	/// to host a native collection view. 
 	/// </summary>
-	public sealed partial class ListViewBaseScrollContentPresenter : ContentPresenter, IScrollContentPresenter
+	public sealed partial class ListViewBaseScrollContentPresenter : ScrollContentPresenter, INativeScrollContentPresenter
 	{
-		public ScrollBarVisibility HorizontalScrollBarVisibility
+		public ListViewBaseScrollContentPresenter()
 		{
-			get
-			{
-				return NativePanel?.HorizontalScrollBarVisibility ?? ScrollBarVisibility.Auto;
-			}
+			Native = this;
+		}
 
+		ScrollBarVisibility INativeScrollContentPresenter.HorizontalScrollBarVisibility
+		{
+			get => NativePanel?.HorizontalScrollBarVisibility ?? ScrollBarVisibility.Auto;
 			set
 			{
 				if (NativePanel != null)
@@ -44,13 +45,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ScrollBarVisibility VerticalScrollBarVisibility
+		ScrollBarVisibility INativeScrollContentPresenter.VerticalScrollBarVisibility
 		{
-			get
-			{
-				return NativePanel?.VerticalScrollBarVisibility ?? ScrollBarVisibility.Auto;
-			}
-
+			get => NativePanel?.VerticalScrollBarVisibility ?? ScrollBarVisibility.Auto;
 			set
 			{
 				if (NativePanel != null)
@@ -60,10 +57,30 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		View IScrollContentPresenter.Content
+		bool INativeScrollContentPresenter.CanHorizontallyScroll
 		{
-			get { return Content as View; }
-			set { Content = value; }
+			get => NativePanel?.HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
+		}
+
+		bool INativeScrollContentPresenter.CanVerticallyScroll
+		{
+			get => NativePanel?.VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
+		}
+
+		private double _extentWidth;
+		double INativeScrollContentPresenter.ExtentWidth
+		{
+			get => _extentWidth;
+			set => _extentWidth = value;
+		}
+
+		private double _extentHeight;
+		double INativeScrollContentPresenter.ExtentHeight
+		{
+			get => _extentHeight;
+			set => _extentHeight = value;
 		}
 
 		internal NativeListViewBase NativePanel => (Content as ItemsPresenter)?.Panel as NativeListViewBase;

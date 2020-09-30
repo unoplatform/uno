@@ -1,4 +1,4 @@
-# Ways to contribute to Uno
+# Ways to contribute to Uno Platform
 
 There are lots of ways to contribute to the Uno Platform, and all of them are appreciated. You can provide feedback, report bugs, give suggestions, contribute code, and share your Uno expertise with others.
 
@@ -6,28 +6,36 @@ There are lots of ways to contribute to the Uno Platform, and all of them are ap
 
 The Uno Platform is an ongoing effort. Bug reports and feature requests are important for prioritizing where that effort goes, and identifying the most pressing user needs. Your feedback is important to us - we want to hear about your experience, scenarios, and requirements.
 
-### Report a bug
+### Report a bug by opening an issue
 
-If you think you've found a bug, the first thing to do is [search the existing issues](https://github.com/unoplatform/Uno/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fbug) to check if it's already been reported.
+If you think you've found a bug, the first thing to do is [search the existing issues](https://github.com/unoplatform/Uno/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fbug) to check if it's already been reported. If it has been opened, provide additional commentary so we know more users are being affected. 
 
-If not, please [log a new bug report](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fbug%2C+triage%2Funtriaged&template=bug-report.md).
 
 The best way to get your bug fixed is to be as detailed as you can be about the problem.
-Providing a minimal project with steps to reproduce the problem is ideal.
-Here are questions you can answer before you file a bug to make sure you're not missing any important information.
+**Providing a minimal project, stripped off as much code as possible, with steps to reproduce the problem (typed or screen-capture) is ideal.**
 
+Here are questions you can consider before you file a bug to make sure you're not missing any important information. The bug submission template will also ask for this information. 
+
+Pre-Submission check: 
 1. Did you read the [documentation](https://platform.uno/docs/articles/intro.html)?
-2. Did you include the snippet of the broken code in the issue?
-3. What are the *EXACT* steps to reproduce this problem?
-4. What specific version or build are you using?
-5. What operating system are you using?
-6. What platform(s) are you targeting?
+2. Did you check the the latest [pre-release](https://www.nuget.org/packages/Uno.UI/absoluteLatest) of Uno Platform to see if the issue has been fixed? 
+3. Does the issue exist on the UWP / WinUI project (in which case it is not an Uno Platform issue) 
+
+Issue Filing [via logging a new bug report](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fbug%2C+triage%2Funtriaged&template=bug-report.md).: 
+1. Did you include the snippet of the broken code in the issue?
+2. What are the *EXACT* steps to reproduce this problem?
+3. What specific Uno Platform version or build are you using?
+4. What operating system are you using?
+5. What platform(s) are you targeting that are experiencing the issue? Is it working on some platform(s) and not on others. 
+6. What IDE and version are you using?
+
+[Log a new bug report](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fbug%2C+triage%2Funtriaged&template=bug-report.md)
 
 GitHub supports [Markdown](https://help.github.com/articles/github-flavored-markdown/), so when filing issues, be sure to check the formatting in the 'Preview' tab before hitting submit.
 
 ### Request a feature
 
-If you need a [UWP feature](https://docs.microsoft.com/en-us/uwp/api/) or [WinUI feature](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls) that Uno doesn't support yet, you should [submit a feature request](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fenhancement%2C+triage%2Funtriaged&template=enhancement.md). Check [existing issues first](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fenhancement) in case the same feature request already exists (in which case you can upvote the existing issue).
+If you need a [UWP feature](https://docs.microsoft.com/en-us/uwp/api/) or [WinUI feature](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls) that Uno Platform doesn't support yet, you should [submit a feature request](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fenhancement%2C+triage%2Funtriaged&template=enhancement.md). Check [existing issues first](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fenhancement) in case the same feature request already exists (in which case you can upvote the existing issue).
 
 To help us understand and prioritize your request, please provide as much detail as possible about your scenario and why the feature or enhancement would be useful.
 
@@ -37,7 +45,7 @@ Wherever we can, we prefer to implement UWP/WinUI APIs for maximum cross-platfor
 
 If you have a question, be sure first to check out our [documentation](https://platform.uno/docs/articles/intro.html). But if you are still stuck, you'll have a better chance of getting help on [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) and we'll do our best to answer it. Questions asked there should be tagged with `uno-platform.`
 
-Of course if you've already done some Uno development, maybe there's a [StackOverflow question](https://stackoverflow.com/questions/tagged/uno-platform) you can answer!
+Of course if you've already done some Uno Platform development, maybe there's a [StackOverflow question](https://stackoverflow.com/questions/tagged/uno-platform) you can answer!
 
 For a more direct conversation, [visit our Discord Channel #uno-platform](https://discord.gg/eBHZSKG).
 
@@ -55,7 +63,7 @@ Whatever you do, let us know [through Twitter](https://twitter.com/unoplatform) 
 
 ## Contributing code
 
-The UWP framework is pretty big, but many hands make light work. We welcome code and content contributions from the community, and the core team is more than happy to help new contributors ramp up and familiarize themselves with Uno's codebase.
+The UWP framework and WinUI are pretty big, but many hands make light work. We welcome code and content contributions from the community, and the core team is more than happy to help new contributors ramp up and familiarize themselves with Uno's codebase.
 
 ### Diving into the code
 

@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.MSBuild;
 using Uno.RoslynHelpers;
 using Uno.SourceGeneration;
 
@@ -25,8 +24,10 @@ namespace Uno.Samples.UITest.Generator
 #if DEBUG
 			// Debugger.Launch();
 #endif
-
-			GenerateTests(context, "Uno.UI.Samples");
+			if (context.Compilation.Assembly.Name == "SamplesApp.UITests")
+			{
+				GenerateTests(context, "Uno.UI.Samples");
+			}
 		}
 
 		private void GenerateTests(SourceGeneratorContext context, string assembly)
@@ -42,21 +43,22 @@ namespace Uno.Samples.UITest.Generator
 						where info != null
 						let sampleInfo = GetSampleInfo(typeSymbol, info)
 						orderby sampleInfo.categories.First()
-						select (typeSymbol, sampleInfo.categories, sampleInfo.name, sampleInfo.ignoreInSnapshotTests);
+						select (typeSymbol, sampleInfo.categories, sampleInfo.name, sampleInfo.ignoreInSnapshotTests, sampleInfo.isManual);
 
 			query = query.Distinct();
 
 			GenerateTests(assembly, context, query);
 		}
 
-		private (string[] categories, string name, bool ignoreInSnapshotTests) GetSampleInfo(INamedTypeSymbol symbol, AttributeData attr)
+		private (string[] categories, string name, bool ignoreInSnapshotTests, bool isManual) GetSampleInfo(INamedTypeSymbol symbol, AttributeData attr)
 		{
 			if (attr.AttributeClass == _sampleControlInfoSymbol)
 			{
 				return (
 					categories: new[] { GetConstructorParameterValue(attr, "category")?.ToString() ?? "Default" },
 					name: AlignName(GetConstructorParameterValue(attr, "controlName")?.ToString() ?? symbol.ToDisplayString()),
-					ignoreInSnapshotTests: GetConstructorParameterValue(attr, "ignoreInSnapshotTests") is bool b && b
+					ignoreInSnapshotTests: GetConstructorParameterValue(attr, "ignoreInSnapshotTests") is bool b && b,
+					isManual: GetConstructorParameterValue(attr, "isManualTest") is bool m && m
 				);
 			}
 			else
@@ -79,8 +81,9 @@ namespace Uno.Samples.UITest.Generator
 				return (
 					categories: (categories?.Any() ?? false) ? categories : new[] { "Default" },
 					name: AlignName(GetAttributePropertyValue(attr, "Name")?.ToString() ?? symbol.ToDisplayString()),
-					ignoreInSnapshotTests: GetAttributePropertyValue(attr, "IgnoreInSnapshotTests") is bool b && b
-				);
+					ignoreInSnapshotTests: GetAttributePropertyValue(attr, "IgnoreInSnapshotTests") is bool b && b,
+					isManual: GetAttributePropertyValue(attr, "IsManualTest") is bool m && m
+					);
 
 				string[] GetCategories(ImmutableArray<TypedConstant> args) => args
 					.Select(v =>
@@ -118,7 +121,7 @@ namespace Uno.Samples.UITest.Generator
 		private void GenerateTests(
 			string assembly,
 			SourceGeneratorContext context,
-			IEnumerable<(INamedTypeSymbol symbol, string[] categories, string name, bool ignoreInSnapshotTests)> symbols)
+			IEnumerable<(INamedTypeSymbol symbol, string[] categories, string name, bool ignoreInSnapshotTests, bool isManual)> symbols)
 		{
 			var groups = 
 				from symbol in symbols.Select((v, i) => (index:i, value:v))
@@ -151,9 +154,16 @@ namespace Uno.Samples.UITest.Generator
 							builder.AppendLineInvariant("[global::NUnit.Framework.Test]");
 							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % GroupCount:00}, automated:{test.symbol.ToDisplayString()}\")]");
 
-							if (test.ignoreInSnapshotTests)
+							var (ignored, ignoreReason) = (test.ignoreInSnapshotTests, test.isManual) switch
 							{
-								builder.AppendLineInvariant("[global::NUnit.Framework.Ignore(\"ignoreInSnapshotTests is set for attribute\")]");
+								(true, true) => (true, "ignoreInSnapshotTests and isManual are set for attribute"),
+								(true, false) => (true, "ignoreInSnapshotTests is are set for attribute"),
+								(false, true) => (true, "isManualTest is set for attribute"),
+								_ => (false, default),
+							};
+							if (ignored)
+							{
+								builder.AppendLineInvariant($"[global::NUnit.Framework.Ignore(\"{ignoreReason}\")]");
 							}
 
 							builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.AutoRetry]");
@@ -227,7 +237,7 @@ namespace Uno.Samples.UITest.Generator
 		{
 			switch (Path.GetFileName(path).ToLowerInvariant())
 			{
-				case "monoandroid90":
+				case "MonoAndroid11.0":
 					yield return $@"{devEnvDir}\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v9.0";
 					yield return $@"{devEnvDir}\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v1.0";
 					yield break;

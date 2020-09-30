@@ -3,17 +3,26 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Linq;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Data;
+using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-	public partial class Timeline : DependencyObject, ITimeline
+	public partial class Timeline : DependencyObject, ITimeline, IThemeChangeAware
 	{
 		private WeakReference<DependencyObject> _targetElement;
 		private BindingPath _propertyInfo;
+		private List<ITimelineListener> _timelineListeners = new();
+		private List<EventHandler<object>> _completedHandlers;
+
+		public event EventHandler<object> Completed
+		{
+			add => (_completedHandlers ??= new()).Add(value);
+			remove => _completedHandlers?.Remove(value);
+		}
 
 		public Timeline()
 		{
@@ -24,7 +33,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			State = TimelineState.Stopped;
 		}
 
-		protected enum TimelineState
+		internal enum TimelineState
 		{
 			Active,
 			Filling,
@@ -46,7 +55,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// An internally-used property which is essentially equivalent to <see cref="Storyboard.GetCurrentState"/>, except that it 
 		/// distinguishes <see cref="TimelineState.Active"/> from <see cref="TimelineState.Paused"/>.
 		/// </summary>
-		protected TimelineState State { get; set; }
+		internal TimelineState State { get; private protected set; }
 
 		public TimeSpan? BeginTime
 		{
@@ -85,9 +94,35 @@ namespace Windows.UI.Xaml.Media.Animation
 			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior()));
 
 
-		public event EventHandler<object> Completed;
+		void ITimeline.RegisterListener(ITimelineListener listener)
+			=> _timelineListeners.Add(listener);
 
-		protected void OnCompleted() => Completed?.Invoke(this, null);
+		void ITimeline.UnregisterListener(ITimelineListener listener)
+			=> _timelineListeners.Remove(listener);
+
+		protected void OnCompleted()
+		{
+			if (_completedHandlers != null)
+			{
+				for (int i = 0; i < _completedHandlers.Count; i++)
+				{
+					_completedHandlers[i].Invoke(this, null);
+				}
+			}
+
+			for (var i = 0; i < _timelineListeners.Count; i++)
+			{
+				_timelineListeners[i].ChildCompleted(this);
+			}
+		}
+
+		protected void OnFailed()
+		{
+			for (var i = 0; i < _timelineListeners.Count; i++)
+			{
+				_timelineListeners[i].ChildFailed(this);
+			}
+		}
 
 		/// <summary>
 		/// Compute duration of the Timeline. Sometimes it's define by components.
@@ -97,7 +132,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			return Duration.Type switch
 			{
 				DurationType.Forever => TimeSpan.MaxValue,
-				DurationType.TimeSpan => Duration.TimeSpan,
+				DurationType.TimeSpan when Duration.TimeSpan > TimeSpan.Zero => Duration.TimeSpan,
 				DurationType.Automatic => TimeSpan.Zero, // this is overriden in xxxUsingKeyFrames implementations
 				_ => TimeSpan.Zero
 			};
@@ -156,18 +191,33 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				if (_propertyInfo == null)
+				// Don't use the cached _propertyInfo if TargetProperty or Target has the changed.
+				var targetPropertyPath = Storyboard.GetTargetProperty(this);
+				InitTarget();
+				var target = Target ?? GetTargetFromName();
+
+				if (_propertyInfo == null || _propertyInfo.Path != targetPropertyPath)
 				{
-					InitTarget();
-					var target = Target ?? GetTargetFromName();
+					if (_propertyInfo != null)
+					{
+						_propertyInfo.DataContext = null;
+						_propertyInfo.Dispose();
+					}
 
 					_propertyInfo = new BindingPath(
-						path: Storyboard.GetTargetProperty(this),
+						path: targetPropertyPath,
 						fallbackValue: null,
 						precedence: DependencyPropertyValuePrecedences.Animations,
 						allowPrivateMembers: false
-					);
+					)
+					{
+						DataContext = target,
+					};
+					return _propertyInfo;
+				}
 
+				if (_propertyInfo.DataContext != target)
+				{
 					_propertyInfo.DataContext = target;
 				}
 
@@ -186,7 +236,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 			else
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Failed to find target {Storyboard.GetTargetName(this)} on {this.GetParent()?.GetType()}");
 				}
@@ -231,7 +281,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		protected void SetValue(object value)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat(
 					"Setting [{0}] to [{1} / {2}] current {3:X8}/{4}={5}",
@@ -251,7 +301,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		protected void ClearValue()
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Clearing [{0} / {1}]", Storyboard.GetTargetName(this), Storyboard.GetTargetProperty(this));
 			}
@@ -314,9 +364,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// Checks if the Timeline will repeat.
 		/// </summary>
 		/// <returns><c>true</c>, Repeat needed, <c>false</c> otherwise.</returns>
-		protected bool NeedsRepeat(DateTimeOffset lastBeginTime, int replayCount)
+		private protected bool NeedsRepeat(Stopwatch duration, int replayCount)
 		{
-			var totalTime = DateTimeOffset.Now - lastBeginTime;
+			var totalTime = duration.Elapsed;
 
 			//3 types of repeat behavors,             
 			return ((RepeatBehavior.Type == RepeatBehaviorType.Forever) // Forever: Will always repeat the Timeline
@@ -364,9 +414,13 @@ namespace Windows.UI.Xaml.Media.Animation
 			GC.SuppressFinalize(this);
 		}
 
+		void IThemeChangeAware.OnThemeChanged() => OnThemeChanged();
+
+		private protected virtual void OnThemeChanged() { }
+
 		~Timeline()
 		{
-			Dispose(true);
+			Dispose(false);
 		}
 	}
 }

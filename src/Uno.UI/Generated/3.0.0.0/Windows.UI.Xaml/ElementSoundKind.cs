@@ -2,33 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum ElementSoundKind 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Focus,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Invoke,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Show,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Hide,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		MovePrevious,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		MoveNext,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		GoBack,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.Focus
+		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.Invoke
+		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.Show
+		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.Hide
+		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.MovePrevious
+		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.MoveNext
+		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.GoBack
 	}
 	#endif
 }

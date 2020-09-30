@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Windows.Devices.Input;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
 using Uno.UITest.Helpers;
@@ -12,21 +16,22 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests
 {
-	public class SampleControlUITestBase
+	public partial class SampleControlUITestBase
 	{
 		protected IApp _app;
 		private static int _totalTestFixtureCount;
-		private double? _scaling;
+		private static bool _firstRun = true;
+		private DateTime _startTime;
+		private readonly string _screenShotPath = Environment.GetEnvironmentVariable("UNO_UITEST_SCREENSHOT_PATH");
 
-		public SampleControlUITestBase()
-		{
-		}
 
 		[OneTimeSetUp]
 		public void SingleSetup()
 		{
 			ValidateAppMode();
 		}
+
+		protected IApp App => _app;
 
 		static SampleControlUITestBase()
 		{
@@ -38,6 +43,7 @@ namespace SamplesApp.UITests
 			AppInitializer.TestEnvironment.CurrentPlatform = Constants.CurrentPlatform;
 
 #if DEBUG
+			Console.WriteLine("*** WARNING Running Chrome with a head, this will fail when running in CI ***");
 			AppInitializer.TestEnvironment.WebAssemblyHeadless = false;
 #endif
 
@@ -45,6 +51,19 @@ namespace SamplesApp.UITests
 			// and gain some time for the tests.
 			AppInitializer.ColdStartApp();
 		}
+
+		/// <summary>
+		/// Gets the default pointer type for the current platform
+		/// </summary>
+		public PointerDeviceType DefaultPointerType => AppInitializer.GetLocalPlatform() switch
+		{
+			Platform.Browser => PointerDeviceType.Mouse,
+			Platform.iOS => PointerDeviceType.Touch,
+			Platform.Android => PointerDeviceType.Touch,
+			_ => throw new InvalidOperationException($"Unknown platform '{AppInitializer.GetLocalPlatform()}'.")
+		};
+
+		public PointerDeviceType CurrentPointerType => DefaultPointerType; // We cannot change pointer type on this platform
 
 		public void ValidateAppMode()
 		{
@@ -69,11 +88,13 @@ namespace SamplesApp.UITests
 		[AutoRetry]
 		public void BeforeEachTest()
 		{
+			_startTime = DateTime.Now;
+
 			ValidateAutoRetry();
 
 			// Check if the test needs to be ignore or not
 			// If nothing specified, it is considered as a global test
-			var platforms = GetActivePlatforms();
+			var platforms = GetActivePlatforms().Distinct().ToArray();
 			if (platforms.Length != 0)
 			{
 				// Otherwise, we need to define on which platform the test is running and compare it with targeted platform
@@ -125,6 +146,26 @@ namespace SamplesApp.UITests
 			{
 				TakeScreenshot($"{TestContext.CurrentContext.Test.Name} - Tear down on error", ignoreInSnapshotCompare: true);
 			}
+
+			WriteSystemLogs(GetCurrentStepTitle("log"));
+		}
+
+		private void WriteSystemLogs(string fileName)
+		{
+			if (_app != null && AppInitializer.GetLocalPlatform() == Platform.Browser)
+			{
+				var outputPath = string.IsNullOrEmpty(_screenShotPath)
+					? Environment.CurrentDirectory
+					: _screenShotPath;
+
+				using (var logOutput = new StreamWriter(Path.Combine(outputPath, $"{fileName}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss.fff}.txt")))
+				{
+					foreach (var log in _app.GetSystemLogs(_startTime.ToUniversalTime()))
+					{
+						logOutput.WriteLine($"{log.Timestamp}/{log.Level}: {log.Message}");
+					}
+				}
+			}
 		}
 
 		public ScreenshotInfo TakeScreenshot(string stepName, bool? ignoreInSnapshotCompare = null)
@@ -135,17 +176,15 @@ namespace SamplesApp.UITests
 					: null
 			);
 
-		public ScreenshotInfo TakeScreenshot(string stepName, ScreenshotOptions? options)
+		public ScreenshotInfo TakeScreenshot(string stepName, ScreenshotOptions options)
 		{
-			if(_app == null)
+			if (_app == null)
 			{
 				Console.WriteLine($"Skipping TakeScreenshot _app is not available");
 				return null;
 			}
 
-			var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"
-				.Replace(" ", "_")
-				.Replace(".", "_");
+			var title = GetCurrentStepTitle(stepName);
 
 			var fileInfo = _app.Screenshot(title);
 
@@ -172,13 +211,23 @@ namespace SamplesApp.UITests
 				TestContext.AddTestAttachment(fileInfo.FullName, stepName);
 			}
 
-			if(options != null)
+			if (options != null)
 			{
 				SetOptions(fileInfo, options);
 			}
 
-			return new ScreenshotInfo(fileInfo, stepName) ;
+			return new ScreenshotInfo(fileInfo, stepName);
 		}
+
+		private static string GetCurrentStepTitle(string stepName) =>
+					$"{TestContext.CurrentContext.Test.Name}_{stepName}"
+						.Replace(" ", "_")
+						.Replace(".", "_")
+						.Replace("(", "")
+						.Replace(")", "")
+						.Replace("\"", "")
+						.Replace(",", "_")
+						.Replace("__", "_");
 
 		public void SetOptions(FileInfo screenshot, ScreenshotOptions options)
 		{
@@ -210,36 +259,60 @@ namespace SamplesApp.UITests
 			return methodInfo?.GetCustomAttributes(typeof(T), true) is T[] array ? array : new T[0];
 		}
 
-		private Platform[] GetActivePlatforms()
+		private IEnumerable<Platform> GetActivePlatforms()
 		{
-			if (TestContext.CurrentContext.Test.Properties["ActivePlatforms"].FirstOrDefault() is Platform[] platforms)
+			var currentTest = TestContext.CurrentContext.Test;
+			if (currentTest.ClassName == null)
 			{
-				if (platforms.Length != 0)
-				{
-					return platforms;
-				}
+				yield break;
 			}
-			else
+			if (Type.GetType(currentTest.ClassName) is { } classType)
 			{
-				if (Type.GetType(TestContext.CurrentContext.Test.ClassName) is Type classType)
+				if (classType.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is
+					ActivePlatformsAttribute[] classAttributes)
 				{
-					if (classType.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is ActivePlatformsAttribute[] attributes)
+					foreach (var attr in classAttributes)
 					{
-						if (
-							attributes.Length != 0
-							&& attributes[0]
-								.Properties["ActivePlatforms"]
-								.OfType<object>()
-								.FirstOrDefault() is Platform[] platforms2)
+						if (attr.Platforms == null)
 						{
-							return platforms2;
+							continue;
+						}
+
+						foreach (var platform in attr.Platforms)
+						{
+							yield return platform;
 						}
 					}
 				}
-			}
 
-			return Array.Empty<Platform>();
+				if (currentTest.MethodName is { })
+				{
+					var testMethodInfo = classType.GetMethod(currentTest.MethodName);
+
+					if (testMethodInfo is { } mi &&
+					    mi.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is
+						    ActivePlatformsAttribute[] methodAttributes)
+					{
+						foreach (var attr in methodAttributes)
+						{
+							if (attr.Platforms == null)
+							{
+								continue;
+							}
+
+							foreach (var platform in attr.Platforms)
+							{
+								yield return platform;
+							}
+						}
+					}
+				}
+
+			}
 		}
+
+		protected async Task RunAsync(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
+			=> Run(metadataName, waitForSampleControl, skipInitialScreenshot, sampleLoadTimeout);
 
 		protected void Run(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
 		{
@@ -250,6 +323,12 @@ namespace SamplesApp.UITests
 					: new QueryEx(q => q.All().Marked("sampleControl"));
 
 				_app.WaitForElement(sampleControlQuery, timeout: TimeSpan.FromSeconds(sampleLoadTimeout));
+
+				if (_firstRun)
+				{
+					_firstRun = false;
+					WriteSystemLogs("AppStartup");
+				}
 			}
 
 			var testRunId = _app.InvokeGeneric("browser:SampleRunner|RunTest", metadataName);
@@ -280,24 +359,69 @@ namespace SamplesApp.UITests
 			}
 		}
 
-		internal double GetDisplayScreenScaling()
+		private class PhysicalRect : IAppRect
 		{
-			if (_scaling == null)
+			public PhysicalRect(IAppRect logicalRect, double scaling)
 			{
-				var scalingRaw = _app.InvokeGeneric("browser:SampleRunner|GetDisplayScreenScaling", "0");
-
-				if (double.TryParse(scalingRaw?.ToString(), out var scaling))
-				{
-					Console.WriteLine($"Display Scaling: {scaling}");
-					_scaling = scaling / 100;
-				}
-				else
-				{
-					_scaling = 1;
-				}
+				var s = (float)scaling;
+				Bottom = logicalRect.Bottom * s;
+				Right = logicalRect.Right * s;
+				CenterY = logicalRect.CenterY * s;
+				CenterX = logicalRect.CenterX * s;
+				Y = logicalRect.Y * s;
+				X = logicalRect.X * s;
+				Height = logicalRect.Height * s;
+				Width = logicalRect.Width * s;
 			}
 
-			return _scaling.Value;
+			public float Width { get; }
+			public float Height { get; }
+			public float X { get; }
+			public float Y { get; }
+			public float CenterX { get; }
+			public float CenterY { get; }
+			public float Right { get; }
+			public float Bottom { get; }
+		}
+
+		public IAppRect ToPhysicalRect(IAppRect logicalRect)
+		{
+			if (logicalRect is PhysicalRect p)
+			{
+				return p;
+			}
+			return new PhysicalRect(logicalRect, GetDisplayScreenScaling());
+		}
+
+		internal float GetDisplayScreenScaling() => _app.GetDisplayScreenScaling();
+
+		internal float LogicalToPhysical(float logical) => logical * GetDisplayScreenScaling();
+
+		internal float PhysicalToLogical(float physical) => physical / GetDisplayScreenScaling();
+
+		protected bool GetIsCurrentRotationLandscape(string elementName)
+		{
+			if (!GetSupportsRotation())
+			{
+				return true;
+			}
+
+			var sampleRect = _app.GetRect(elementName);
+			var b = sampleRect.Width > sampleRect.Height;
+			return b;
+		}
+
+		protected static bool GetSupportsRotation()
+		{
+			var currentPlatform = AppInitializer.GetLocalPlatform();
+			var supportsRotation = currentPlatform == Platform.Android || currentPlatform == Platform.iOS;
+			return supportsRotation;
+		}
+
+		protected static bool GetIsTouchInteraction()
+		{
+			var currentPlatform = AppInitializer.GetLocalPlatform();
+			return currentPlatform == Platform.Android || currentPlatform == Platform.iOS;
 		}
 	}
 }

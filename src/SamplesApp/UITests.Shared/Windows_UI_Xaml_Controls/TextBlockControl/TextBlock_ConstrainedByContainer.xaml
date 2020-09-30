@@ -13,13 +13,35 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-	<StackPanel>
+	<StackPanel Spacing="4" x:Name="sampleRootPanel">
 
-		<TextBlock Text="All the constrained TextBlocks have the same text :" />
+		<TextBlock FontSize="16" FontWeight="Bold">All the constrained TextBlocks have the same text</TextBlock>
 
-		<TextBlock Text=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur."
-				   TextWrapping="WrapWholeWords"
-				   FontSize="15" />
+		<TextBlock TextWrapping="WrapWholeWords"
+				   FontSize="15">
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+		</TextBlock>
+
+		<Rectangle Height="1"
+				   Margin="0,5"
+				   Width="200" 
+				   Fill="Black" />
+
+		<TextBlock TextWrapping="WrapWholeWords">
+			The following TextBlock is inside a 200x20 Border. There is enough space for one line of text and TextWrapping is NoWrap (single line of text).
+		</TextBlock>
+
+		<Border Height="20"
+				Width="200"
+				Background="Tomato"
+				x:Name="border1"
+				Margin="0,10">
+			<TextBlock TextWrapping="NoWrap"
+					   x:Name="text1"
+					   FontSize="15">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+			</TextBlock>
+		</Border>
 
 		<Rectangle Height="1"
 				   Margin="0,5"
@@ -32,10 +54,33 @@
 		<Border Height="20"
 				Width="200"
 				Background="Tomato"
+				x:Name="border2"
 				Margin="0,10">
-			<TextBlock Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur."
-			           TextWrapping="WrapWholeWords"
-					   FontSize="15" />
+			<TextBlock TextWrapping="WrapWholeWords"
+					   x:Name="text2"
+					   FontSize="15">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+			</TextBlock>
+		</Border>
+
+		<Rectangle Height="1"
+				   Margin="0,5"
+				   Width="200" 
+				   Fill="Black" />
+
+		<TextBlock Text="The following TextBlock is inside a 200x20 Border. There is enough space for one line of text so it should trim"
+		           TextWrapping="WrapWholeWords"/>
+
+		<Border Height="20"
+				Width="200"
+				Background="Tomato"
+				x:Name="border3"
+				Margin="0,10">
+			<TextBlock TextWrapping="WrapWholeWords"
+					   x:Name="text3"
+					   FontSize="15">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+			</TextBlock>
 		</Border>
 		
 		<Rectangle Height="1"
@@ -49,10 +94,13 @@
 		<Border Height="40"
 				Width="200"
 				Background="Tomato"
+				x:Name="border4"
 				Margin="0,10">
-			<TextBlock Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur."
-			           TextWrapping="WrapWholeWords"
-					   FontSize="15" />
+			<TextBlock TextWrapping="WrapWholeWords"
+					   x:Name="text4"
+					   FontSize="15">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+			</TextBlock>
 		</Border>
 		
 		<Rectangle Height="1"
@@ -66,11 +114,14 @@
 		<Border Height="80"
 				Width="200"
 				Background="Tomato"
+				x:Name="border5"
 				Margin="0,10">
-			<TextBlock Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur." 
+			<TextBlock TextWrapping="WrapWholeWords"
 					   MaxLines="3"
-					   TextWrapping="WrapWholeWords"
-					   FontSize="15" />
+					   x:Name="text5"
+					   FontSize="15">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+			</TextBlock>
 		</Border>
 		
 	</StackPanel>

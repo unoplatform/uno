@@ -1,9 +1,14 @@
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+
+using Uno.Foundation.Logging;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
 using Windows.UI.Input;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -29,13 +34,10 @@ namespace Windows.UI.Xaml.Input
 		/// <summary>Permit manipulation actions that scale the target.</summary>
 		Scale = 32U,
 		/// <summary>Apply inertia to translate actions.</summary>
-		[global::Uno.NotImplemented]
 		TranslateInertia = 64U,
 		/// <summary>Apply inertia to rotate actions.</summary>
-		[global::Uno.NotImplemented]
 		RotateInertia = 128U,
 		/// <summary>Apply inertia to scale actions.</summary>
-		[global::Uno.NotImplemented]
 		ScaleInertia = 256U,
 		/// <summary>Enable all manipulation interaction modes except those supported through Direct Manipulation</summary>
 		All = 65535U,
@@ -56,7 +58,7 @@ namespace Windows.UI.Xaml.Input
 			=> mode == ManipulationModes.All
 			|| (mode & _unsupported) == 0;
 
-		public static void LogIfNotSupported(this ManipulationModes mode, ILogger log)
+		public static void LogIfNotSupported(this ManipulationModes mode, Logger log)
 		{
 			if (!mode.IsSupported() && log.IsEnabled(LogLevel.Information))
 			{

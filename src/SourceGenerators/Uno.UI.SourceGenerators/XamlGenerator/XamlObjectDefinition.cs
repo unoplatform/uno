@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,7 +17,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private XamlType _type;
 
-		public XamlObjectDefinition(XamlType type, int lineNumber, int linePosition, XamlObjectDefinition owner)
+		public XamlObjectDefinition(XamlType type, int lineNumber, int linePosition, XamlObjectDefinition? owner)
 		{
 			LineNumber = lineNumber;
 			LinePosition = linePosition;
@@ -31,13 +33,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public List<XamlObjectDefinition> Objects { get; private set; }
 
-		public object Value { get; set; }
+		public object? Value { get; set; }
 
 		public int LineNumber { get; private set; }
 
 		public int LinePosition { get; set; }
 
-		public XamlObjectDefinition Owner { get; private set; }
+		public XamlObjectDefinition? Owner { get; private set; }
 	}
 
 }

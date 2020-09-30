@@ -19,26 +19,41 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
-			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<Slider Minimum="10" Maximum="1600" Value="350" x:Name="slider"/>
 
-		<Border Width="{Binding Value, ElementName=slider}" Background="Cyan" Grid.Row="1" x:Name="border1">
-			<TextBlock
-				Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
-				FontSize="20"
-				MaxLines="1"  />
-		</Border>
+		<Slider Minimum="10" Maximum="1600" Value="350" x:Name="slider" Header="Width"/>
 
-		<Border Width="{Binding Value, ElementName=slider}" Background="Yellow" Grid.Row="2" x:Name="border2">
-			<TextBlock
-				Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
-				FontSize="20"
-				TextTrimming="CharacterEllipsis"
-				MaxLines="1"  />
-		</Border>
-		<wasm:TextBlock Grid.Row="3">
+		<StackPanel Grid.Row="1" Spacing="5">
+
+			<TextBlock>MaxLines=1</TextBlock>
+
+			<Border Width="{Binding Value, ElementName=slider}" Background="Cyan" x:Name="border1">
+				<TextBlock
+					Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
+					FontSize="20"
+					MaxLines="1"  />
+			</Border>
+
+			<TextBlock>MaxLines=1, TextTrimming=CharacterEllipsis</TextBlock>
+			<Border Width="{Binding Value, ElementName=slider}" Background="Yellow" x:Name="border2">
+				<TextBlock
+					Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
+					FontSize="20"
+					TextTrimming="CharacterEllipsis"
+					MaxLines="1"  />
+			</Border>
+			
+			<TextBlock>TextTrimming=CharacterEllipsis</TextBlock>
+			<Border Width="{Binding Value, ElementName=slider}" Background="Cyan" x:Name="border3">
+				<TextBlock
+					Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
+					FontSize="20"
+					TextTrimming="CharacterEllipsis"  />
+			</Border>
+
+		</StackPanel>
+		<wasm:TextBlock Grid.Row="2">
 			(WASM ONLY) Cache: Hits=<Run x:Name="hits">0</Run>, Misses=<Run x:Name="misses">0</Run>.
 		</wasm:TextBlock>
 	</Grid>

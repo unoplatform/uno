@@ -5,46 +5,48 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 {
-	public class Basics_Shapes_Tests : SampleControlUITestBase
+	public partial class Basics_Shapes_Tests : SampleControlUITestBase
 	{
 		private const int TestTimeout = 7 * 60 * 1000;
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Rectangle()
 			=> ValidateShape("Rectangle");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Ellipse()
 			=> ValidateShape("Ellipse");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Line()
 			=> ValidateShape("Line");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Polyline()
 			=> ValidateShape("Polyline");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Polygon()
 		{
@@ -153,8 +155,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 						}
 
 						using (var actual = (Bitmap)testResult)
-						{
-							var scale = 2.0;
+						{ 
+							var scale = _app.GetDisplayScreenScaling();
 							ImageAssert.AreAlmostEqual(expected, ImageAssert.FirstQuadrant, actual, ImageAssert.FirstQuadrant, scale, tolerance.Value);
 						}
 					}
@@ -753,5 +755,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			"Rectangle_Uniform_MinWidthSmall",
 			"Rectangle_Uniform_Unconstrained",
 		};
+
+		[Test]
+		[AutoRetry]
+		public void Validate_Offscreen_Shapes()
+		{
+			Run("UITests.Windows_UI_Xaml_Shapes.Offscreen_Shapes");
+
+			_app.WaitForElement("deferredShape6");
+
+			using var screensnot = TakeScreenshot("offscreen_shapes", ignoreInSnapshotCompare: true);
+
+			var xamlShape6 = _app.GetPhysicalRect("xamlShape6");
+			var deferredShape6 = _app.GetPhysicalRect("deferredShape6");
+
+			ImageAssert.HasColorAt(screensnot, xamlShape6.CenterX, xamlShape6.CenterY, Color.Yellow, tolerance: 5);
+			ImageAssert.HasColorAt(screensnot, deferredShape6.CenterX, xamlShape6.CenterY, Color.Yellow, tolerance: 5);
+		}
 	}
 }

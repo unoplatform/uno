@@ -1,8 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+		<RollForward>Major</RollForward>
+	</PropertyGroup>
 
-  <PropertyGroup>
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'=='netstandard2.0'">
+		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!='' and '$(UnoTargetFrameworkOverride)'!='netstandard2.0'">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -13,7 +25,7 @@
 		<PackageReference Include="Jellyfin.SkiaSharp.NativeAssets.LinuxArm" Version="1.68.0" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
-		<PackageReference Include="GtkSharp" Version="3.22.25.128" />
+		<PackageReference Include="GtkSharp" Version="3.24.24.4" />
 	</ItemGroup>
 	
 	<ItemGroup>

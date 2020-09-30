@@ -1,4 +1,5 @@
-﻿using Windows.Foundation;
+﻿using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -14,6 +15,6 @@ namespace Windows.UI.Xaml.Controls
 
 		void SetProgress(double progress);
 
-		Size Measure(Size availableSize);
+		Size Measure(Size availableSize);		
 	}
 }

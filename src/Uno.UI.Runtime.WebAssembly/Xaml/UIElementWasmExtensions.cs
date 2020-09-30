@@ -2,6 +2,7 @@
 using Windows.UI.Xaml;
 using Uno.UI.Xaml;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Uno.Extensions;
 using Uno.Foundation;
 
@@ -29,17 +30,17 @@ namespace Windows.UI.Xaml
 			WindowManagerInterop.SetStyles(element.HtmlId, new[] {(name, value)});
 		}
 
-        /// <summary>
-        /// Set one or many CSS styles on a HTML element.
-        /// </summary>
-        /// <remarks>
-        /// The style is using the CSS syntax format, not the DOM syntax.
-        /// Ex: for font size, use "font-size", not "fontSize".
-        /// </remarks>
-        public static void SetCssStyle(this UIElement element, params (string name, string value)[] styles)
-        {
-            WindowManagerInterop.SetStyles(element.HtmlId, styles);
-        }
+		/// <summary>
+		/// Set one or many CSS styles on a HTML element.
+		/// </summary>
+		/// <remarks>
+		/// The style is using the CSS syntax format, not the DOM syntax.
+		/// Ex: for font size, use "font-size", not "fontSize".
+		/// </remarks>
+		public static void SetCssStyle(this UIElement element, params (string name, string value)[] styles)
+		{
+			WindowManagerInterop.SetStyles(element.HtmlId, styles);
+		}
 
 		/// <summary>
 		/// Clear one or many CSS styles from a HTML element.
@@ -160,7 +161,7 @@ return __f(element);
 		/// </summary>
 		public static void RegisterHtmlEventHandler(this UIElement element, string eventName, EventHandler handler)
 		{
-			element.RegisterEventHandler(eventName, handler);
+			element.RegisterEventHandler(eventName, handler, UIElement.GenericEventHandlers.RaiseEventHandler);
 		}
 
 		/// <summary>
@@ -168,7 +169,7 @@ return __f(element);
 		/// </summary>
 		public static void UnregisterHtmlEventHandler(this UIElement element, string eventName, EventHandler handler)
 		{
-			element.UnregisterEventHandler(eventName, handler);
+			element.UnregisterEventHandler(eventName, handler, UIElement.GenericEventHandlers.RaiseEventHandler);
 		}
 
 		/// <summary>
@@ -189,6 +190,7 @@ return __f(element);
 			element.RegisterEventHandler(
 				eventName,
 				handler,
+				RaiseHtmlCustomEventHandler,
 				eventExtractor: extractor,
 				payloadConverter: (_, s) => new HtmlCustomEventArgs(s));
 		}
@@ -198,7 +200,41 @@ return __f(element);
 		/// </summary>
 		public static void UnregisterHtmlCustomEventHandler(this UIElement element, string eventName, EventHandler<HtmlCustomEventArgs> handler)
 		{
-			element.UnregisterEventHandler(eventName, handler);
+			element.UnregisterEventHandler(eventName, handler, RaiseHtmlCustomEventHandler);
 		}
+
+		private static object RaiseHtmlCustomEventHandler(Delegate d, object sender, object args)
+		{
+			if (d is EventHandler<HtmlCustomEventArgs> handler && args is HtmlCustomEventArgs eventArgs)
+			{
+				handler(sender, eventArgs);
+				return default;
+			}
+
+			throw new InvalidOperationException($"The parameters {args ?? "<null>"} for invoking GenericEventHandlers.RaiseEventHandler with {d} from {sender ?? "<null>"} are incorrect");
+		}
+
+		/// <summary>
+		/// Delegate the measure phase to HTML.
+		/// </summary>
+		/// <remarks>
+		/// Useful to implement .MeasureOverride() when the content size needs to be considered.
+		/// </remarks>
+		public static Size MeasureHtmlView(this UIElement element, Size availableSize, bool measureContent = true)
+		{
+			return element.MeasureView(availableSize, measureContent);
+		}
+
+		/// <summary>
+		/// Calculate the BBox (BoundingBox) of a SVG element
+		/// </summary>
+		/// <remarks>
+		/// Will throw an exception if the element is not a Svg element
+		/// </remarks>
+		public static Rect GetSvgBBox(this UIElement svgElement)
+		{
+			return svgElement.GetBBox();
+		}
+
 	}
 }

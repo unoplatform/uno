@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -27,7 +28,7 @@ namespace Uno.UI.Helpers.WinUI
 			// the output string, as the C++ index is staring at 1.
 			list.Insert(0, null);
 
-			return string.Format(dotnetFormat, list.ToArray());
+			return string.Format(CultureInfo.CurrentUICulture, dotnetFormat, list.ToArray());
 		}
 	}
 }

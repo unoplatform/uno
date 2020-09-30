@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,11 +9,13 @@ using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Markup;
 using System.Threading;
 using Windows.UI.Core;
+using Uno.Disposables;
+using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "Children")]
-	public sealed partial class Storyboard : Timeline, ITimeline, IAdditionalChildrenProvider, IThemeChangeAware
+	public sealed partial class Storyboard : Timeline, ITimeline, IAdditionalChildrenProvider, ITimelineListener
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private EventActivity _traceActivity;
@@ -28,7 +30,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			public const int StoryBoard_Resume = 4;
 		}
 
-		private DateTimeOffset _lastBeginTime;
+		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private int _replayCount = 1;
 		private int _runningChildren = 0;
 		private bool _hasFillingChildren = false;
@@ -69,6 +71,15 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static void SetTarget(Timeline timeline, ElementNameSubject target) => timeline.SetElementNameTarget(target);
 
 		/// <summary>
+		/// Disposes event subscriptions for an <see cref="ITimeline"/>
+		/// </summary>
+		/// <param name="child"></param>
+		private void DisposeChildRegistrations(ITimeline child)
+		{
+			child.UnregisterListener(this);
+		}
+
+		/// <summary>
 		/// Replay this animation.
 		/// </summary>
 		private void Replay()
@@ -95,7 +106,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			State = TimelineState.Active;
 			_hasFillingChildren = false;
 			_replayCount = 1;
-			_lastBeginTime = DateTimeOffset.Now;
+			_activeDuration.Restart();
 
 			Play();
 		}
@@ -104,10 +115,15 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Children != null && Children.Count > 0)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
+					DisposeChildRegistrations(child);
+
 					_runningChildren++;
-					child.Completed += Child_Completed;
+					child.RegisterListener(this);
+
 					child.Begin();
 				}
 			}
@@ -139,10 +155,12 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.Stop();
-					child.Completed -= Child_Completed;
+					DisposeChildRegistrations(child);
 				}
 			}
 			_runningChildren = 0;
@@ -164,8 +182,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				State = TimelineState.Active;
 
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.Resume();
 				}
 			}
@@ -187,8 +207,10 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.Pause();
 				}
 			}
@@ -198,8 +220,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.Seek(offset);
 				}
 			}
@@ -209,8 +233,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.SeekAlignedToLastTick(offset);
 				}
 			}
@@ -219,8 +245,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.SkipToFill();
 				}
 			}
@@ -233,10 +261,12 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.Deactivate();
-					child.Completed -= Child_Completed;
+					DisposeChildRegistrations(child);
 				}
 
 				_runningChildren = 0;
@@ -247,8 +277,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			var affectedProperties = storyboard.Children.TargetedProperties;
 
-			foreach (var child in Children)
+			for (int i = 0; i < Children.Count; i++)
 			{
+				var child = Children[i];
+
 				var id = child.GetTimelineTargetFullName();
 
 				if (affectedProperties.Contains(id))
@@ -260,6 +292,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					((ITimeline)child).Stop();
 				}
 			}
+
 			State = TimelineState.Stopped;
 		}
 
@@ -283,21 +316,26 @@ namespace Windows.UI.Xaml.Media.Animation
 			throw new NotImplementedException();
 		}
 
-		private void Child_Completed(object sender, object e)
+		void ITimelineListener.ChildFailed(Timeline child)
 		{
-			if (!(sender is Timeline child))
-			{
-				return;
-			}
+			DisposeChildRegistrations(child);
 
-			child.Completed -= Child_Completed;
+			Interlocked.Decrement(ref _runningChildren);
+
+			// OnFailed is not called here because it relates to an individual
+			// child, where completed relates to all children being completed.
+		}
+
+		void ITimelineListener.ChildCompleted(Timeline child)
+		{
+			DisposeChildRegistrations(child);
 
 			Interlocked.Decrement(ref _runningChildren);
 			_hasFillingChildren |= (child.FillBehavior != FillBehavior.Stop);
 
 			if (_runningChildren == 0)
 			{
-				if (NeedsRepeat(_lastBeginTime, _replayCount))
+				if (NeedsRepeat(_activeDuration, _replayCount))
 				{
 					Replay(); // replay the animation
 					return;
@@ -317,16 +355,16 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (Children != null)
 			{
-				foreach (var child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
-					child.Dispose();
+					Children[i].Dispose();
 				}
 			}
 		}
 
 		IEnumerable<DependencyObject> IAdditionalChildrenProvider.GetAdditionalChildObjects() => Children;
 
-		void IThemeChangeAware.OnThemeChanged()
+		private protected override void OnThemeChanged()
 		{
 			if (State == TimelineState.Filling)
 			{

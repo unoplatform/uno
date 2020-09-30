@@ -39,10 +39,19 @@
 											Duration="0" />
 									</Storyboard>
 								</VisualState>
+								<VisualState x:Name="DeterminateActive">
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="LayoutRoot"
+											Storyboard.TargetProperty="Opacity"
+											To="1"
+											Duration="0:0:0.15" />
+									</Storyboard>
+								</VisualState>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 						 <!--AnimatedVisualPlayer for Lottie--> 
-						<AnimatedVisualPlayer x:Name="IndeterminateAnimatedVisualPlayer" AutoPlay="false" Stretch="fill"/>
+						<AnimatedVisualPlayer x:Name="LottiePlayer" AutoPlay="false" Stretch="fill"/>
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -70,6 +70,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		public event EventHandler AnimationPause;
 
 		public event EventHandler AnimationCancel;
+
+		public event EventHandler AnimationFailed;
 
 		public event EventHandler Update;
 

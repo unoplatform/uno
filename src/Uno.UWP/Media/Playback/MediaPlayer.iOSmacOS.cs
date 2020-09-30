@@ -8,7 +8,7 @@ using CoreFoundation;
 using CoreMedia;
 using Foundation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Media.Playback;
 using Windows.Media.Core;
 using Uno.Helpers;
@@ -176,7 +176,7 @@ namespace Windows.Media.Playback
 			avSession.SetActive(true, out activationError);
 			if (activationError != null)
 			{
-				this.Log().WarnIfEnabled(() => $"Could not activate audio session: {activationError.LocalizedDescription}");
+				this.Log().Warn($"Could not activate audio session: {activationError.LocalizedDescription}");
 			}
 #endif
 			_videoLayer.AddObserver(_observer, new NSString("videoRect"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _videoLayer.Handle);
@@ -223,21 +223,19 @@ namespace Windows.Media.Playback
 				_player.CurrentItem?.RemoveObserver(_observer, new NSString("status"), _player.Handle);
 				_player.CurrentItem?.RemoveObserver(_observer, new NSString("loadedTimeRanges"), _player.Handle);
 
-				if (Source is MediaPlaybackList)
+				switch (Source)
 				{
-					var items = ((MediaPlaybackList)Source).Items;
-					foreach (var item in items)
-					{
-						var asset = AVAsset.FromUrl(DecodeUri(item.Source.Uri));
-						_player.InsertItem(new AVPlayerItem(asset), null);
-					}
-				}
-				else
-				{
-					var nsAsset = AVAsset.FromUrl(DecodeUri(((MediaSource)Source).Uri));
-					var streamingItem = AVPlayerItem.FromAsset(nsAsset);
-
-					_player.ReplaceCurrentItemWithPlayerItem(streamingItem);
+					case MediaPlaybackList playlist:
+						Play(playlist);
+						break;
+					case MediaPlaybackItem item:
+						Play(item.Source.Uri);
+						break;
+					case MediaSource source:
+						Play(source.Uri);
+						break;
+					default:
+						throw new InvalidOperationException("Unsupported media source type");
 				}
 
 				_player.CurrentItem.AddObserver(_observer, new NSString("duration"), NSKeyValueObservingOptions.Initial, _player.Handle);
@@ -256,6 +254,23 @@ namespace Windows.Media.Playback
 			{
 				OnMediaFailed(ex);
 			}
+		}
+
+		private void Play(MediaPlaybackList playlist)
+		{
+			foreach (var item in playlist.Items)
+			{
+				var asset = AVAsset.FromUrl(DecodeUri(item.Source.Uri));
+				_player.InsertItem(new AVPlayerItem(asset), null);
+			}
+		}
+
+		private void Play(Uri uri)
+		{
+			var nsAsset = AVAsset.FromUrl(DecodeUri(uri));
+			var streamingItem = AVPlayerItem.FromAsset(nsAsset);
+
+			_player.ReplaceCurrentItemWithPlayerItem(streamingItem);
 		}
 
 		private static NSUrl DecodeUri(Uri uri)

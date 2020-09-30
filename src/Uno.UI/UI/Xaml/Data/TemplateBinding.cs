@@ -5,7 +5,6 @@ using System.Text;
 
 #if XAMARIN
 using IValueConverter = Windows.UI.Xaml.Data.IValueConverter;
-using System.Json;
 #else
 #endif
 

@@ -1,7 +1,7 @@
 ﻿using Uno;
 using Uno.Client;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Input;
 using System;
@@ -24,34 +24,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// We need to ensure the "Tapped" event is registered
 			// for the "Click" event to work properly
 			Tapped += (snd, evt) => { };
-		}
-
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-
-			RegisterEvents();
-
-			KeyDown += OnKeyDown;
-		}
-
-		private protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-
-			KeyDown -= OnKeyDown;
-		}
-
-		private void OnKeyDown(object sender, KeyRoutedEventArgs keyRoutedEventArgs)
-		{
-			switch (keyRoutedEventArgs?.Key)
-			{
-				case VirtualKey.Enter:
-				case VirtualKey.Execute:
-				case VirtualKey.Space:
-					OnClick();
-					break;
-			}
 		}
 
 		/// <summary>

@@ -23,6 +23,8 @@
 			<LineBreak />DatePicker.Date=<Run Text="{Binding Date, ElementName=theDatePicker}" />
 			<LineBreak />DatePicker.MinYear=<Run Text="{Binding MinYear, ElementName=theDatePicker}" />
 			<LineBreak />DatePicker.MaxYear=<Run Text="{Binding MaxYear, ElementName=theDatePicker}" />
+			<LineBreak />DatePicker.UseNativeStyle=<Run Text="{Binding UseNativeStyle, ElementName=theDatePicker}" /> (if supported by platform)
 		</TextBlock>
+		<Button x:Name="btn" />
 	</StackPanel>
 </UserControl>

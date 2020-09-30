@@ -8,6 +8,7 @@ using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -19,8 +20,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 	[TestClass]
 	public class Given_ListViewBase
 	{
-		// Make sure to have a valid custom theme set, so it won't try to read it from the Application.Current(<<== null).RequestedTheme
-		[TestInitialize] public void Init() => global::Uno.UI.ApplicationHelper.RequestedCustomTheme = "HighContrast";
+		[TestInitialize] public void Init() => UnitTestsApp.App.EnsureApplication();
 
 		[TestMethod]
 		public void When_MultiSelectedItem()
@@ -100,11 +100,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			SUT.SelectionChanged += (s, e) =>
 			{
 				selectionChanged++;
-				Assert.AreEqual(item, SUT.SelectedItem);
 
-				// In windows, when programmatically changed, the bindings are updated *after*
-				// the event is raised, but *before* when the SelectedItem is changed from the UI.
-				Assert.IsNull(model.SelectedItem);
+				Assert.AreEqual(item, SUT.SelectedItem);
+				Assert.AreEqual(item, model.SelectedItem);
 			};
 
 			SUT.SelectedIndex = 0;
@@ -748,6 +746,76 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.AreEqual("item 2", si2.DataContext);
 			Assert.AreEqual("item 2", si2.Content);
 			Assert.IsTrue(si2.IsGeneratedContainer);
+		}
+
+		[TestMethod]
+		public void When_ObservableVectorStringChanged()
+		{
+			var count = 0;
+			var containerCount = 0;
+			var panel = new StackPanel();
+			panel.ForceLoaded();
+
+			var source = new ObservableVector<string>() { "1", "2", "3" };
+
+			Style BuildContainerStyle() =>
+			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
+			{
+				Setters =  {
+					new Setter<ContentControl>("Template", t =>
+						t.Template = Funcs.Create(() => {
+							containerCount++;
+							return new Grid
+							{
+								Children = {
+									new ContentPresenter()
+										.Apply(p => {
+											p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
+											p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
+										})
+								}
+							};
+						})
+					)
+				}
+			};
+
+			var SUT = new ListView()
+			{
+				ItemsPanelRoot = panel,
+				InternalItemsPanelRoot = panel,
+				ItemContainerStyle = BuildContainerStyle(),
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				})
+			};
+
+			Assert.AreEqual(0, count);
+			Assert.AreEqual(0, containerCount);
+			Assert.AreEqual(0, containerCount);
+
+			SUT.ItemsSource = source;
+			Assert.AreEqual(3, count);
+			Assert.AreEqual(3, containerCount);
+			Assert.AreEqual(3, containerCount);
+
+			source.Add("4");
+			Assert.AreEqual(4, count);
+			Assert.AreEqual(4, containerCount);
+			Assert.AreEqual(4, containerCount);
+
+			source.Remove("1");
+			Assert.AreEqual(4, count);
+			Assert.AreEqual(4, containerCount);
+			Assert.AreEqual(4, containerCount);
+
+			source[0] = "5";
+			// Data template is not recreated because of pooling
+			Assert.AreEqual(4, count);
+			// The item container style is reapplied (not cached)
+			Assert.AreEqual(5, containerCount);
 		}
 
 		private Style BuildBasicContainerStyle() =>

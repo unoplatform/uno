@@ -14,18 +14,5 @@
 		/// </summary>
 		Collapsed,
 	}
-
-	public static class VisiblityExtensions
-	{
-		/// <summary>
-		/// Determines if the specified visibility is hidden as per UIKit conventions
-		/// </summary>
-		/// <param name="visibility"></param>
-		/// <returns></returns>
-		public static bool IsHidden(this Visibility visibility)
-		{
-			return visibility == Visibility.Collapsed;
-		}
-	}
 }
 

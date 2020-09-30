@@ -16,6 +16,14 @@ namespace Windows.UI.Xaml.Media
 	//Android partial for Brush
 	public partial class Brush
 	{
+		internal delegate void ColorSetterHandler(Android.Graphics.Color color);
+
+		private static Paint.Style _strokeCache;
+		private static Paint.Style _fillCache;
+
+		private static Paint.Style SystemStroke => _strokeCache ??= Paint.Style.Stroke;
+		private static Paint.Style SystemFill => _fillCache ??= Paint.Style.Fill;
+
 		/// <summary>
 		/// Return a paint with Fill style
 		/// </summary>
@@ -24,7 +32,7 @@ namespace Windows.UI.Xaml.Media
 		internal Paint GetFillPaint(Windows.Foundation.Rect destinationRect)
 		{
 			var paint = GetPaintInner(destinationRect);
-			paint.SetStyle(Paint.Style.Fill);
+			paint?.SetStyle(SystemFill);
 			return paint;
 		}
 
@@ -36,13 +44,13 @@ namespace Windows.UI.Xaml.Media
 		internal Paint GetStrokePaint(Windows.Foundation.Rect destinationRect)
 		{
 			var paint = GetPaintInner(destinationRect);
-			paint.SetStyle(Paint.Style.Stroke);
+			paint?.SetStyle(SystemStroke);
 			return paint;
 		}
 
 		protected virtual Paint GetPaintInner(Rect destinationRect) => throw new InvalidOperationException();
 
-		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Android.Graphics.Color> colorSetter, Action imageBrushCallback = null)
+		internal static IDisposable AssignAndObserveBrush(Brush b, ColorSetterHandler colorSetter, Action imageBrushCallback = null)
 		{
 			if (b is SolidColorBrush colorBrush)
 			{
@@ -81,7 +89,9 @@ namespace Windows.UI.Xaml.Media
 			}
 			else if (b is ImageBrush imageBrush && imageBrushCallback != null)
 			{
-				var disposables = new CompositeDisposable(3);
+				var disposables = new CompositeDisposable(5);
+				imageBrushCallback();
+
 				imageBrush.RegisterDisposablePropertyChangedCallback(
 					ImageBrush.ImageSourceProperty,
 					(_, __) => imageBrushCallback()
@@ -89,6 +99,16 @@ namespace Windows.UI.Xaml.Media
 
 				imageBrush.RegisterDisposablePropertyChangedCallback(
 					ImageBrush.StretchProperty,
+					(_, __) => imageBrushCallback()
+				).DisposeWith(disposables);
+
+				imageBrush.RegisterDisposablePropertyChangedCallback(
+					ImageBrush.AlignmentXProperty,
+					(_, __) => imageBrushCallback()
+				).DisposeWith(disposables);
+
+				imageBrush.RegisterDisposablePropertyChangedCallback(
+					ImageBrush.AlignmentYProperty,
 					(_, __) => imageBrushCallback()
 				).DisposeWith(disposables);
 
@@ -117,6 +137,24 @@ namespace Windows.UI.Xaml.Media
 
 				return disposables;
 			}
+			else if (b is XamlCompositionBrushBase unsupportedCompositionBrush)
+			{
+				var disposables = new CompositeDisposable(2);
+
+				colorSetter(unsupportedCompositionBrush.FallbackColorWithOpacity);
+
+				unsupportedCompositionBrush.RegisterDisposablePropertyChangedCallback(
+					XamlCompositionBrushBase.FallbackColorProperty,
+					(s, args) => colorSetter((s as XamlCompositionBrushBase).FallbackColorWithOpacity))
+					.DisposeWith(disposables);
+
+				unsupportedCompositionBrush.RegisterDisposablePropertyChangedCallback(
+					OpacityProperty,
+					(s, args) => colorSetter((s as XamlCompositionBrushBase).FallbackColorWithOpacity))
+					.DisposeWith(disposables);
+
+				return disposables;
+			}
 			else
 			{
 				colorSetter(SolidColorBrushHelper.Transparent.Color);
@@ -125,7 +163,7 @@ namespace Windows.UI.Xaml.Media
 			return Disposable.Empty;
 		}
 
-		internal static Drawable GetBackgroundDrawable(Brush background, Windows.Foundation.Rect drawArea, Paint fillPaint, Path maskingPath = null)
+		internal static Drawable GetBackgroundDrawable(Brush background, Windows.Foundation.Rect drawArea, Paint fillPaint, Path maskingPath = null, bool antiAlias = true)
 		{
 			if (background is ImageBrush)
 			{
@@ -134,13 +172,9 @@ namespace Windows.UI.Xaml.Media
 
 			if (maskingPath == null)
 			{
-				if (background is SolidColorBrush solidBrush)
+				if (Brush.GetColorWithOpacity(background) is { } color)
 				{
-					return new ColorDrawable(solidBrush.ColorWithOpacity);
-				}
-				else if (background is AcrylicBrush acrylicBrush)
-				{
-					return new ColorDrawable(acrylicBrush.FallbackColorWithOpacity);
+					return new ColorDrawable(color);
 				}
 
 				if (fillPaint != null)
@@ -161,6 +195,7 @@ namespace Windows.UI.Xaml.Media
 			var paint = drawable.Paint;
 			paint.Color = fillPaint.Color;
 			paint.SetShader(fillPaint.Shader);
+			paint.AntiAlias = antiAlias;
 			return drawable;
 		}
 	}

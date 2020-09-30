@@ -1,8 +1,9 @@
-﻿#if NETSTANDARD || __MACOS__
+﻿#if UNO_REFERENCE_API || __MACOS__
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 using System;
 using System.Collections.Generic;
+using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 
@@ -10,21 +11,24 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
-		IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
-
-		private int PageSize => throw new NotImplementedException();
-
-		private protected override bool ShouldItemsControlManageChildren => !(ItemsPanelRoot is IVirtualizingPanel);
-
-		private protected override void Refresh()
+		private int PageSize
 		{
-			base.Refresh();
-
-			if (VirtualizingPanel != null)
+			get
 			{
-				VirtualizingPanel.GetLayouter().Refresh();
+				if (VirtualizingPanel is null)
+				{
+					return 0;
+				}
 
-				InvalidateMeasure();
+				var layouter = VirtualizingPanel.GetLayouter();
+				var firstVisibleIndex = layouter.FirstVisibleIndex;
+				var lastVisibleIndex = layouter.LastVisibleIndex;
+				if (lastVisibleIndex == -1)
+				{
+					return 0;
+				}
+
+				return lastVisibleIndex - firstVisibleIndex + 1;
 			}
 		}
 
@@ -71,7 +75,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void TryLoadMoreItems()
 		{
-			//TODO: ISupportIncrementalLoading
+			if (VirtualizingPanel.GetLayouter() is { } layouter)
+			{
+				TryLoadMoreItems(layouter.LastVisibleIndex);
+			}
 		}
 	}
 }

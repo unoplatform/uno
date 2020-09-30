@@ -105,7 +105,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		public void When_LocalizedResource()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
-			var languages = new[] {"fr-CA", "fr", "en-US", "en", "sr-Cyrl-BA"};
+			var languages = new[] {"fr-CA", "fr", "en-US", "en", "sr"};
 
 			foreach (var language in languages)
 			{
@@ -121,6 +121,15 @@ namespace Uno.UI.RuntimeTests.Tests
 
 			CultureInfo.CurrentUICulture = new CultureInfo("fr-FR");
 			Assert.AreEqual(@"Text in 'fr'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
+		}
+
+		[TestMethod]
+		public void When_MissingLocalizedResource_FallbackOnRegional()
+		{
+			var SUT = ResourceLoader.GetForViewIndependentUse();
+
+			CultureInfo.CurrentUICulture = new CultureInfo("es");
+			Assert.AreEqual(@"Text in 'es-MX'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 		}
 
 		[TestMethod]

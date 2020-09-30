@@ -2,10 +2,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Web
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class WebAuthenticationBroker 
+	public static partial class WebAuthenticationBroker 
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -42,26 +42,8 @@ namespace Windows.Security.Authentication.Web
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateSilentlyAsync(Uri requestUri, WebAuthenticationOptions options) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.WebAuthenticationResult> AuthenticateAsync( global::Windows.Security.Authentication.Web.WebAuthenticationOptions options,  global::System.Uri requestUri,  global::System.Uri callbackUri)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions options, Uri requestUri, Uri callbackUri) is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.WebAuthenticationResult> AuthenticateAsync( global::Windows.Security.Authentication.Web.WebAuthenticationOptions options,  global::System.Uri requestUri)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions options, Uri requestUri) is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::System.Uri GetCurrentApplicationCallbackUri()
-		{
-			throw new global::System.NotImplementedException("The member Uri WebAuthenticationBroker.GetCurrentApplicationCallbackUri() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Security.Authentication.Web.WebAuthenticationBroker.AuthenticateAsync(Windows.Security.Authentication.Web.WebAuthenticationOptions, System.Uri, System.Uri)
+		// Skipping already declared method Windows.Security.Authentication.Web.WebAuthenticationBroker.AuthenticateAsync(Windows.Security.Authentication.Web.WebAuthenticationOptions, System.Uri)
+		// Skipping already declared method Windows.Security.Authentication.Web.WebAuthenticationBroker.GetCurrentApplicationCallbackUri()
 	}
 }

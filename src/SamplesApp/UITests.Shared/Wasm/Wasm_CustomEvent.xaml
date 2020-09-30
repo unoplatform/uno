@@ -6,8 +6,8 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBlock>This test is for the WASM target only. Don't do anything on other platforms.</TextBlock>
+	<StackPanel Spacing="8" Margin="10">
+		<TextBlock TextWrapping="Wrap">This test is for the WASM target only. Don't do anything on other platforms.</TextBlock>
 		<Border Height="100" Background="BurlyWood" x:Name="genericEvent">
 			<TextBlock>Tap here to generate a generic html event</TextBlock>
 		</Border>
@@ -17,6 +17,7 @@
 		<Border Height="100" Background="BurlyWood" x:Name="customEventJson">
 			<TextBlock>Tap here to generate a custom html event with json payload</TextBlock>
 		</Border>
+		<TextBlock x:Name="tapResult" FontSize="25" FontWeight="Bold" />
 		<TextBlock x:Name="result">Result here...</TextBlock>
 
 	</StackPanel>

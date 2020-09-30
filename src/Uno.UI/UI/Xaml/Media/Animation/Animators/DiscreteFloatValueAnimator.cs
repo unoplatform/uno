@@ -29,6 +29,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		public event EventHandler AnimationCancel;
 		public event EventHandler AnimationEnd;
 		public event EventHandler AnimationPause;
+#pragma warning disable 67
+		public event EventHandler AnimationFailed;
+#pragma warning restore 67
 		public event EventHandler Update;
 
 		public DiscreteFloatValueAnimator(float from, float to)
@@ -78,8 +81,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private void ScheduleCompleted(long elapsed)
 		{
-			_scheduledFrame.Disposable = CoreDispatcher.Main.RunAsync(
-				CoreDispatcherPriority.Normal,
+			_scheduledFrame.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+				Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
 				async () =>
 				{
 					await Task.Delay(TimeSpan.FromMilliseconds(Duration - elapsed));

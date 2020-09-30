@@ -11,7 +11,7 @@ In javascript (or Typescript), you can send a custom event
 using the following code:
 
 ``` javascript
-    // Generate a custom generic event from Javascript/Typescript
+    // Generate a custom generic event from JavaScript/Typescript
     htmlElement.dispatchEvent(new Event("simpleEvent"));
 
     // Generate a custom event with a string payload

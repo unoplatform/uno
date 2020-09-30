@@ -1,16 +1,6 @@
-﻿using Android.Graphics.Drawables;
-using Android.Views;
-using Uno.UI.Controls;
-using Uno.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.UI.Xaml.Media;
-using Uno.Logging;
-using System.Drawing;
+﻿using Android.Views;
 using System.Linq;
 using Uno.UI;
-using Android.Graphics;
 
 namespace Windows.UI.Xaml.Controls
 {

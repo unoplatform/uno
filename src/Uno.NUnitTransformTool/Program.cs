@@ -38,6 +38,12 @@ namespace Uno.ReferenceImplComparer
 			{
 				builder.AppendLine(failedNode.GetAttribute("fullname"));
 			}
+				
+			// Add a dummy line to be used to rerun the test running in case 
+			// tests get canceled. This condition happens when running nunit-console
+			// and the retry attribute which markes runners as cancelled and fails any
+			// subsequent test.
+			builder.AppendLine("invalid-test-for-retry");
 
 			File.WriteAllText(outputFile, builder.ToString());
 

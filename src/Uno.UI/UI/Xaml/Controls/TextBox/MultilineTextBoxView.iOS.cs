@@ -13,6 +13,11 @@ using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
+using Uno.Disposables;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -21,8 +26,33 @@ namespace Windows.UI.Xaml.Controls
 		private MultilineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 		private WeakReference<Uno.UI.Controls.Window> _window;
+		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 		CGPoint IUIScrollView.UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
+
+		void IUIScrollView.ApplyZoomScale(nfloat scale, bool animated)
+		{
+			if (animated)
+			{
+				SetZoomScale(scale, animated);
+			}
+			else
+			{
+				ZoomScale = scale;
+			}
+		}
+
+		void IUIScrollView.ApplyContentOffset(CGPoint contentOffset, bool animated)
+		{
+			if (animated)
+			{
+				SetContentOffset(contentOffset, animated);
+			}
+			else
+			{
+				ContentOffset = contentOffset;
+			}
+		}
 
 		public MultilineTextBoxView(TextBox textBox)
 		{
@@ -37,6 +67,9 @@ namespace Windows.UI.Xaml.Controls
 			Delegate = _delegate = new MultilineTextBoxDelegate(_textBox);
 			BackgroundColor = UIColor.Clear;
 			TextContainer.LineFragmentPadding = 0;
+
+			// Reset the default margin of 8px at the top
+			TextContainerInset = new UIEdgeInsets();
 		}
 
 		public override string Text
@@ -162,7 +195,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ForegroundProperty, value); }
 		}
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -176,6 +209,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
+			_foregroundChanged.Disposable = null;
 			var textBox = _textBox.GetTarget();
 
 			if (textBox != null)
@@ -184,8 +218,14 @@ namespace Windows.UI.Xaml.Controls
 
 				if (scb != null)
 				{
-					this.TextColor = scb.Color;
-					this.TintColor = scb.Color;
+					_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => ApplyColor());
+					ApplyColor();
+
+					void ApplyColor()
+					{
+						this.TextColor = scb.Color;
+						this.TintColor = scb.Color;
+					}
 				}
 			}
 		}
@@ -220,5 +260,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateFont();
 		}
+
+		public void Select(int start, int length)
+			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length);
 	}
 }

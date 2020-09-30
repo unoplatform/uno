@@ -28,10 +28,22 @@
 						}
 					})
 					.catch(err => {
-						AsyncInteropHelper.dispatchErrorMethod(handle, err);
+						if (typeof err == "string") {
+							AsyncInteropHelper.dispatchErrorMethod(handle, err);
+						} else if (err.message && err.stack) {
+							AsyncInteropHelper.dispatchErrorMethod(handle, err.message + "\n" + err.stack);
+						} else {
+							AsyncInteropHelper.dispatchErrorMethod(handle, "" + err);
+						}
 					});
 			} catch (err) {
-				AsyncInteropHelper.dispatchErrorMethod(handle, err);
+				if (typeof err == "string") {
+					AsyncInteropHelper.dispatchErrorMethod(handle, err);
+				} else if (err.message && err.stack) {
+					AsyncInteropHelper.dispatchErrorMethod(handle, err.message + "\n" + err.stack);
+				} else {
+					AsyncInteropHelper.dispatchErrorMethod(handle, "" + err);
+				}
 			}
 		}
 	}

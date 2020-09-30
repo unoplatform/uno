@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Uno.UI
@@ -7,6 +8,7 @@ namespace Uno.UI
 	/// <summary>
 	/// An index to an entry in a grouped items source.
 	/// </summary>
+	[DebuggerDisplay("{DebugDisplay,nq}")]
 	public partial struct IndexPath : IComparable<IndexPath>
 	{
 		public int Row { get; }
@@ -29,6 +31,8 @@ namespace Uno.UI
 		}
 
 		public static IndexPath Zero { get; } = new IndexPath();
+
+		public static IndexPath NotFound { get; } = new IndexPath(-1, 0);
 
 		public static bool operator <(IndexPath indexPath1, IndexPath indexPath2)
 		{
@@ -88,6 +92,8 @@ namespace Uno.UI
 		{
 			return $"({Section},{Row})";
 		}
+
+		private string DebugDisplay => ToString();
 
 		public override bool Equals(object obj)
 		{

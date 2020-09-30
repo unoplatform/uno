@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml
 {
 	/// <summary>Defines the radius of a rectangle's corners. </summary>
 	[TypeConverter(typeof(CornerRadiusConverter))]
-	public partial struct CornerRadius
+	public partial struct CornerRadius : IEquatable<CornerRadius>
 	{
 		/// <summary>Gets or sets the radius of the top-left corner.</summary>
 		/// <returns>The radius of the top-left corner. The default is 0.</returns>
@@ -43,36 +43,33 @@ namespace Windows.UI.Xaml
 			BottomRight = bottomRight;
 		}
 
-		/// <summary>
-		/// Determines if two CornerRadius instances are equal.
-		/// </summary>
+		private static bool Equals(CornerRadius left, CornerRadius right)
+			=> left.TopLeft == right.TopLeft
+				&& left.TopRight == right.TopRight
+				&& left.BottomLeft == right.BottomLeft
+				&& left.BottomRight == right.BottomRight;
+
+		/// <inheritdoc />
+		public bool Equals(CornerRadius other)
+			=> Equals(this, other);
+
+		/// <inheritdoc />
 		public override bool Equals(object obj)
-		{
-			if(obj is CornerRadius other)
-			{
-				return other.TopLeft == TopLeft
-					&& other.TopRight == TopRight
-					&& other.BottomLeft == BottomLeft
-					&& other.BottomRight == BottomRight;
-			}
+			=> obj is CornerRadius other && Equals(this, other);
 
-			return false;
-		}
-
+		/// <inheritdoc />
 		public override int GetHashCode()
-		{
-			return TopLeft.GetHashCode()
+			=> TopLeft.GetHashCode()
 				^ TopRight.GetHashCode()
 				^ BottomLeft.GetHashCode()
 				^ BottomRight.GetHashCode();
-		}
 
+		/// <inheritdoc />
 		public override string ToString()
-		{
-			return "TopLeft: {0}, TopRight: {1}, BottomRight: {2}, BottomLeft: {3}".InvariantCultureFormat(TopLeft, TopRight, BottomRight, BottomLeft);
-		}
+			=> "TopLeft: {0}, TopRight: {1}, BottomRight: {2}, BottomLeft: {3}".InvariantCultureFormat(TopLeft, TopRight, BottomRight, BottomLeft);
 
-		internal string ToStringCompact() => string.Format(CultureInfo.InvariantCulture, "[CornerRadius: {0}-{1}-{2}-{3}]", TopLeft, TopRight, BottomRight, BottomLeft);
+		internal string ToStringCompact()
+			=> string.Format(CultureInfo.InvariantCulture, "[CornerRadius: {0}-{1}-{2}-{3}]", TopLeft, TopRight, BottomRight, BottomLeft);
 
 		/// <summary>
 		/// Provides a Zero-valued corner radius.

@@ -37,10 +37,15 @@ namespace Windows.UI.Xaml.Controls
 			RemoveChild(ContentTemplateRoot);
 		}
 
+		private void UpdateCornerRadius(CornerRadius radius)
+		{
+			SetCornerRadius(radius);
+		}
+
 		private void UpdateBorder()
 		{
-			SetBorder(BorderThickness, BorderBrush, CornerRadius);
-			SetBackgroundBrush(Background);
+			SetBorder(BorderThickness, BorderBrush);
+			SetAndObserveBackgroundBrush(Background);
 		}
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)

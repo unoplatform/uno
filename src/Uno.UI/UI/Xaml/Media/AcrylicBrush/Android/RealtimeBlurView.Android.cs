@@ -307,13 +307,13 @@ namespace Uno.UI.Xaml.Media
 		protected View GetActivityDecorView()
 		{
 			Context ctx = Context;
-			for (int i = 0; i < 4 && ctx != null && !(ctx is Activity) && ctx is ContextWrapper; i++)
+			for (int i = 0; i < 4 && ctx != null && !(ctx is Android.App.Activity) && ctx is ContextWrapper; i++)
 			{
 				ctx = ((ContextWrapper)ctx).BaseContext;
 			}
-			if (ctx is Activity)
+			if (ctx is Android.App.Activity)
 			{
-				return ((Activity)ctx).Window.DecorView;
+				return ((Android.App.Activity)ctx).Window.DecorView;
 			}
 			else
 			{

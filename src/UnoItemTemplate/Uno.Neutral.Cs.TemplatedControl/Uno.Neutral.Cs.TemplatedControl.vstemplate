@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <DefaultName>CustomControl.cs</DefaultName>
+    <Name>Custom Control (Uno Platform UWP)</Name>
+    <Description>A custom control for apps based on the UWP Library.</Description>
+    <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4007" />
+    <ProjectType>CSharp</ProjectType>
+    <TemplateID>Uno.Neutral.UWP.TemplatedControl</TemplateID>
+    <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>
+    <NumberOfParentCategoriesToRollUp>2</NumberOfParentCategoriesToRollUp>
+    <ShowByDefault>true</ShowByDefault>
+    <TargetPlatformName>Windows</TargetPlatformName>
+    <AppIdFilter>blend</AppIdFilter>
+    <LanguageTag>csharp</LanguageTag>
+    <PlatformTag>windows</PlatformTag>
+    <ProjectTypeTag>uwp</ProjectTypeTag>
+    <ProjectTypeTag>desktop</ProjectTypeTag>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem ReplaceParameters="true" TargetFileName="$fileinputname$.cs">CustomControl.cs</ProjectItem>
+  </TemplateContent>
+</VSTemplate>
+

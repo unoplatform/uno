@@ -103,7 +103,7 @@
             delete Geolocator.positionWatches[requestId];
         }
 
-        private static handleGeoposition(position: Position, requestId: string) {
+		private static handleGeoposition(position: GeolocationPosition, requestId: string) {
             var serializedGeoposition = position.coords.latitude + ":" +
                 position.coords.longitude + ":" +
                 position.coords.altitude + ":" +
@@ -115,7 +115,7 @@
             Geolocator.dispatchGeoposition(serializedGeoposition, requestId);
         }
 
-        private static handleError(error: PositionError, requestId: string) {
+		private static handleError(error: GeolocationPositionError, requestId: string) {
             if (error.code == error.TIMEOUT) {
                 Geolocator.dispatchError(PositionStatus.NoData, requestId);
             } else if (error.code == error.PERMISSION_DENIED) {
@@ -132,12 +132,12 @@
             geolocationError: PositionErrorCallback,
             desiredAccuracy: Number,
             options: PositionOptions) {
-            var lastCheckedPosition: Position;
+            var lastCheckedPosition: GeolocationPosition;
             var locationEventCount = 0;
             var watchId: number;
             var timerId: number;
 
-            var checkLocation = function (position: Position) {
+			var checkLocation = function (position: GeolocationPosition) {
                 lastCheckedPosition = position;
                 locationEventCount = locationEventCount + 1;
 
@@ -154,13 +154,13 @@
                 foundPosition(lastCheckedPosition);
             };
 
-            var onError = function (error: PositionError) {
+			var onError = function (error: GeolocationPositionError) {
                 clearTimeout(timerId);
                 navigator.geolocation.clearWatch(watchId);
                 geolocationError(error);
             };
 
-            var foundPosition = function (position: Position) {
+			var foundPosition = function (position: GeolocationPosition) {
                 geolocationSuccess(position);
             };
 

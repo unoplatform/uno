@@ -1,0 +1,10 @@
+{
+	"profiles": {
+		"UnoWinUIQuickStart.Windows (Package)": {
+			"commandName": "MsixPackage"
+		},
+		"UnoWinUIQuickStart.Windows (Unpackaged)": {
+			"commandName": "Project"
+		}
+	}
+}

@@ -7,13 +7,11 @@ using System.Drawing;
 
 namespace Windows.UI.Xaml.Media
 {
-	//Android partial for Brush
 	public abstract partial class Brush
 	{
 		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Color> colorSetter, Action imageBrushCallback = null)
 		{
 			return null;
 		}
-
 	}
 }

@@ -11,11 +11,13 @@ using Windows.Graphics.Display;
 using Uno.UI.Services;
 using System.Globalization;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+
 using Selector = ObjCRuntime.Selector;
 using Windows.System.Profile;
+using Windows.UI.Core;
+using Uno.Foundation.Extensibility;
 using Uno.Helpers;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -33,11 +35,18 @@ namespace Windows.UI.Xaml
 
 		private NSUrl[] _launchUrls = null;
 
+		static partial void InitializePartialStatic()
+		{
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension());
+		}
+
 		public Application()
 		{
 			Current = this;
 			SetCurrentLanguage();
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
+
+			SubscribeBackgroundNotifications();
 		}
 
 		public Application(IntPtr handle) : base(handle)
@@ -78,22 +87,17 @@ namespace Windows.UI.Xaml
 			}
 			if (!handled)
 			{
-				OnLaunched(new LaunchActivatedEventArgs());
+				var argumentsString = GetCommandLineArgsWithoutExecutable();
+
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, argumentsString));
 			}
 		}
 
-		partial void OnSuspendingPartial()
-		{
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(30), () =>
+		private SuspendingOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), () =>
 			{
 				Suspended = true;
-				NSApplication.SharedApplication.KeyWindow.PerformClose(null);
 			});
-
-			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
-
-			operation.EventRaiseCompleted();
-		}
 
 		/// <summary>
 		/// This method enables UI Tests to get the output path
@@ -126,29 +130,6 @@ namespace Windows.UI.Xaml
 			return handled;
 		}
 
-		/// <summary>
-		/// Based on <see cref="https://forums.developer.apple.com/thread/118974" />
-		/// </summary>
-		/// <returns>System theme</returns>
-		private ApplicationTheme GetDefaultSystemTheme()
-		{
-			var version = DeviceHelper.OperatingSystemVersion;
-			if (version >= new Version(10, 14))
-			{
-				var app = NSAppearance.CurrentAppearance?.FindBestMatch(new string[]
-				{
-					NSAppearance.NameAqua,
-					NSAppearance.NameDarkAqua
-				});
-
-				if (app == NSAppearance.NameDarkAqua)
-				{
-					return ApplicationTheme.Dark;
-				}
-			}
-			return ApplicationTheme.Light;
-		}
-
 		private void SetCurrentLanguage()
 		{
 			var language = NSLocale.PreferredLanguages.ElementAtOrDefault(0);
@@ -167,7 +148,13 @@ namespace Windows.UI.Xaml
 
 		partial void ObserveSystemThemeChanges()
 		{
-			NSDistributedNotificationCenter.GetDefaultCenter().AddObserver(
+			NSDistributedNotificationCenter
+#if NET6_0_OR_GREATER
+				.DefaultCenter
+#else
+				.GetDefaultCenter()
+#endif
+				.AddObserver(
 				this,
 				_modeSelector,
 				_themeChangedNotification,
@@ -176,10 +163,41 @@ namespace Windows.UI.Xaml
 
 		[Export("themeChanged:")]
 		public void ThemeChanged(NSObject change) => OnSystemThemeChanged();
-		
+
 		public void Exit()
 		{
 			NSApplication.SharedApplication.Terminate(null);
+		}
+
+		private void SubscribeBackgroundNotifications()
+		{
+			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationHiddenNotification, OnEnteredBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationShownNotification, OnLeavingBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationActivatedNotification, OnActivated);
+			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationDeactivatedNotification, OnDeactivated);			
+		}
+
+		private void OnEnteredBackground(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+
+			RaiseEnteredBackground(null);
+		}
+
+		private void OnLeavingBackground(NSNotification notification)
+		{
+			RaiseResuming();
+			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true));
+		}
+
+		private void OnActivated(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+		}
+
+		private void OnDeactivated(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
 		}
 	}
 }

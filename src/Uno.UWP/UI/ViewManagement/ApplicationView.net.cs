@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Text;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement
 {
     partial class ApplicationView
 	{
-		internal IDisposable SetVisibleBounds(Rect newVisibleBounds)
+		internal IDisposable SetTemporaryVisibleBounds(Rect newVisibleBounds)
 		{
 			var old = VisibleBounds;
 			VisibleBounds = newVisibleBounds;

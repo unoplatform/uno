@@ -5,7 +5,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
@@ -15,16 +18,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 	[TestFixture]
 	public partial class DatePickerTests_Tests : SampleControlUITestBase
 	{
-		[Test]
+		// [Test] -- Broken Test
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
-		public void DatePickerFlyout_HasDataContextTest()
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void DatePickerFlyout_Native_HasDataContextTest()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", skipInitialScreenshot: true);
 
-			_app.WaitForElement(_app.Marked("theDatePicker"));
 
 			var theDatePicker = _app.Marked("theDatePicker");
+			_app.WaitForElement(theDatePicker);
+			theDatePicker.SetDependencyPropertyValue("UseNativeStyle", "True");
+
 			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerSelector"));
 
 			Console.WriteLine($"1: {theDatePicker.GetDependencyPropertyValue<string>("DataContext")}");
@@ -32,7 +37,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.WaitForDependencyPropertyValue(theDatePicker, "DataContext", "UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models.DatePickerViewModel");
 
 			// Open flyout
-			theDatePicker.Tap();
+			theDatePicker.FastTap();
 
 			_app.WaitForElement(datePickerFlyout);
 
@@ -43,27 +48,78 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.Browser)] // Test broken on iOS & Android
 		public void DatePickerFlyout_HasContentTest()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", skipInitialScreenshot: true);
 
-			_app.WaitForElement(_app.Marked("theDatePicker"));
-
 			var theDatePicker = _app.Marked("theDatePicker");
+			_app.WaitForElement(theDatePicker);
+
 			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerFlyoutPresenter"));
 
+			_app.WaitForNoElement(datePickerFlyout);
+
 			// Open flyout
-			theDatePicker.Tap();
+			theDatePicker.FastTap();
 
-			_app.WaitForDependencyPropertyValue(datePickerFlyout, "Content", "Windows.UI.Xaml.Controls.DatePickerSelector");
+			_app.WaitForElement(datePickerFlyout);
 
-			_app.TapCoordinates(20, 20);
+			//_app.TapCoordinates(10, 10);
+			_app.Marked("DismissButton").FastTap();
+
+			_app.WaitForNoElement(datePickerFlyout);
+		}
+
+		// [Test] -- Broken Test
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void DatePickerFlyout_Native_HasContentTest()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", skipInitialScreenshot: true);
+
+			var theDatePicker = _app.Marked("theDatePicker");
+			_app.WaitForElement(theDatePicker);
+			theDatePicker.SetDependencyPropertyValue("UseNativeStyle", "True");
+
+			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerFlyoutPresenter"));
+
+			theDatePicker.GetDependencyPropertyValue("Date");
+			theDatePicker.GetDependencyPropertyValue("Date");
+
+			using var screenshotNotOpened = TakeScreenshot("NotOpenedPicker", ignoreInSnapshotCompare: true);
+
+			// Open flyout
+			theDatePicker.FastTap();
+
+			if (Helpers.Platform == Platform.Android)
+			{
+				// On Android, the presenter is not part of the visual tree
+				theDatePicker.GetDependencyPropertyValue("Date");
+				theDatePicker.GetDependencyPropertyValue("Date");
+			}
+			else
+			{
+
+				_app.WaitForElement(datePickerFlyout);
+
+				_app.WaitForDependencyPropertyValue(datePickerFlyout, "Content",
+					"Windows.UI.Xaml.Controls.DatePickerSelector");
+			}
+
+			using var screenshotOpened = TakeScreenshot("OpenedPicker");
+
+			ImageAssert.AreNotEqual(screenshotNotOpened, screenshotOpened);
+
+			_app.Marked("btn").FastTap();
+
+			using var screenshotClosed = TakeScreenshot("ClosedPicker", ignoreInSnapshotCompare: true);
+
+			ImageAssert.AreEqual(screenshotNotOpened, screenshotClosed);
 		}
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void DatePicker_Flyout()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_Automated", skipInitialScreenshot: true);
@@ -83,14 +139,27 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
-		public void DatePickerFlyout_MinYearProperlySets()
+		public void DatePicker_Header()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.DatePicker.DatePicker_Header", skipInitialScreenshot: true);
+
+			var headerContentTextBlock = _app.Marked("DatePickerHeaderContent");
+			_app.WaitForElement(headerContentTextBlock);
+
+			Assert.AreEqual("This is a DatePicker Header", headerContentTextBlock.GetDependencyPropertyValue("Text").ToString());
+		}
+
+		// [Test] -- Broken Test
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void DatePickerFlyout_Native_MinYearProperlySets()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", skipInitialScreenshot: true);
 
-			_app.WaitForElement(_app.Marked("theDatePicker"));
-
 			var theDatePicker = _app.Marked("theDatePicker");
+			_app.WaitForElement(theDatePicker);
+			theDatePicker.SetDependencyPropertyValue("UseNativeStyle", "True");
+
 			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerSelector"));
 
 			_app.WaitFor(
@@ -108,16 +177,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.TapCoordinates(20, 20);
 		}
 
-		[Test]
+		// [Test] -- Broken Test
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
-		public void DatePickerFlyout_MaxYearProperlySets()
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void DatePickerFlyout_Native_MaxYearProperlySets()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", skipInitialScreenshot: true);
 
-			_app.WaitForElement(_app.Marked("theDatePicker"));
-
 			var theDatePicker = _app.Marked("theDatePicker");
+			_app.WaitForElement(theDatePicker);
+			theDatePicker.SetDependencyPropertyValue("UseNativeStyle", "True");
+
 			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerSelector"));
 
 			_app.WaitFor(
@@ -136,14 +206,36 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.TapCoordinates(20, 20);
 		}
 
-		[Test]
+		// [Test] -- Broken Test
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
 		public void DatePickerFlyout_Unloaded()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_Unloaded", skipInitialScreenshot: true);
 
 			var TestDatePickerFlyoutButton = _app.Marked("TestDatePickerFlyoutButton");
+			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("DatePickerFlyoutPresenter"));
+
+			_app.WaitForElement(TestDatePickerFlyoutButton);
+
+			TestDatePickerFlyoutButton.FastTap();
+
+			_app.WaitForElement(datePickerFlyout);
+
+			// Load another sample to dismiss the popup
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", waitForSampleControl: false);
+
+			_app.WaitForNoElement(datePickerFlyout);
+		}
+
+		// [Test] -- Broken Test
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void DatePickerFlyout_Native_Unloaded()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_Unloaded", skipInitialScreenshot: true);
+
+			var TestDatePickerFlyoutButton = _app.Marked("TestNativeDatePickerFlyoutButton");
 			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerSelector"));
 
 			_app.WaitForElement(TestDatePickerFlyoutButton);
@@ -158,7 +250,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.WaitForNoElement(datePickerFlyout);
 		}
 
-		[Test]
+		// [Test] -- Broken Test
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)] // iOS Specific selection
 		public void DatePickerFlyout_Date_Binding()
@@ -186,6 +278,66 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", waitForSampleControl: false);
 
 			_app.WaitForNoElement(datePickerFlyout);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // This test not working on iOS
+		[TestCase("topLeft", true, false, true)]
+		[TestCase("topRight", true, false, true)]
+		[TestCase("bottomLeft", true, false, true)]
+		[TestCase("bottomRight", true, false, true)]
+		[TestCase("centerLeftOutside", false, true, true)]
+		[TestCase("rightLeftOutside", false, true, true)]
+		[TestCase("narrow", true, true, true)]
+
+		// Following cases are deactivated because of https://github.com/microsoft/microsoft-ui-xaml/issues/4968
+		//[TestCase("topCenterRotated", false, false, true)]
+		//[TestCase("center", true, true, true)]
+		//[TestCase("scaled", true, true, true)]
+		//[TestCase("viewBox", true, true, true)]
+		public void DatePicker_PickerFlyout_Placements(string name, bool checkHorizontal, bool checkVertical, bool checkWidth)
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.DatePicker.DatePicker_Placement");
+			using var _ = new AssertionScope();
+
+			// Ensure picker not opened
+			_app.WaitForNoElement("HighlightRect");
+
+			var datePicker = _app.Marked(name);
+			datePicker.FastTap();
+
+			_app.WaitForElement("HighlightRect");
+
+			var controlRect = _app.GetLogicalRect(datePicker);
+			var highlightRect = _app.GetLogicalRect("HighlightRect");
+
+			if (checkHorizontal)
+			{
+				controlRect.CenterX.Should().BeApproximately(highlightRect.CenterX, 2f, "horizontal center");
+			}
+
+			if (checkVertical)
+			{
+				controlRect.CenterY.Should().BeApproximately(highlightRect.CenterY, 2f, "vertical center");
+			}
+
+			if (checkWidth)
+			{
+				controlRect.Width.Should().BeApproximately(highlightRect.Width, 2f, "width");
+			}
+
+			_app.FastTap("DismissButton");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void CalendarDatePicker_With_Description()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CalendarView.CalendarDatePicker_Description", skipInitialScreenshot: true);
+			var autoSuggestBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionCalendarDatePicker")[0].Rect);
+			using var screenshot = TakeScreenshot("CalendarDatePicker Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
+			ImageAssert.HasColorAt(screenshot, autoSuggestBoxRect.X + autoSuggestBoxRect.Width / 2, autoSuggestBoxRect.Y + autoSuggestBoxRect.Height - 150, Color.Red);
 		}
 	}
 }

@@ -1,37 +1,35 @@
-# Uno.UI and UWP API or Behavior differences
+# Differences between Uno.UI and UWP/WinUI
 
-For legacy, platform support or performance reasons, Uno has some notable API differences.
+Uno Platform strives to closely replicate the UWP/WinUI API on all platforms and ensure that existing WinUI code is 100% compatible with Uno. This article covers areas where Uno.UI's implementation differs, typically to better integrate with the native platform, or where the capabilities of .NET differ due to inherent limitations of the native platform.
 
-## DependencyObject is an interface.
-`DependencyObject` is an interface to allow for XAML controls to inherit directly from their native counterpart. The implementation of the methods is done through the `DependencyObjectGenerator` source generator, automatically.
+This article doesn't cover parts of the API which haven't been implemented yet. You can consult a [complete list of implemented and unimplemented controls here](implemented-views.md).
 
-This has some implications in generic constraints which require a class, but can be worked around using the `IS_UNO` define.
+For a practical guide to addressing differences between Uno Platform and WinUI, [read this article](migrating-guidance.md).
 
-## ListView implementations
+## API differences
 
-The implementations of the ListView for iOS and Android use the native controls for performance reasons, see the [ListViewBase implementation documentation](controls/ListViewBase.md#internal-implementation).
+### `FrameworkElement` inherits from native base view types (Android, iOS, macOS)
 
-## Themes
+As for WinUI, all visual elements in Uno.UI inherit from `FrameworkElement`, which inherits from `UIElement`. (At least, those that are publicly available.) On Windows, `UIElement` inherits from the `DependencyObject` class, which inherits from `System.Object`.
 
-`FrameworkElement.RequestedTheme` is supported in a very limited form. It can only be set on the application-defined content root, ie `Windows.UI.Xaml.Window.Current.Content`, which will affect the entire visual tree.
+On Android, iOS, and macOS, `UIElement` instead inherits from the native base view type for each platform, as exposed to .NET by Xamarin Native. So, `ViewGroup` for Android, `UIView` for iOS, and `NSView` for macOS.
 
-### Custom Themes
+This allows native views (not defined by Uno.UI or inheriting from `FrameworkElement`) to be directly integrated into the visual tree, [in XAML markup or C# code](native-views.md). 
 
-On Windows, there are some _themes_ that can target, but there is no way to trigger them. The most
-known is the `HighContrast` theme.
+### `DependencyObject` type is an interface (all non-Windows platforms)
 
-You can do something similar - and even create totally custom themes - by using the following helper:
+This API difference follows directly from the previous one. In order to support native view inheritance, Uno.UI defines `DependencyObject` as an interface, rather than a class.
 
-``` csharp
-  // Set current theme to High contrast
-  Uno.UI.RequestedCustomTheme = "HighContrast";
-```
+This is as transparent as possible to the application developer. For example, if a developer defines a class that inherits directly from `DependencyObject`, Uno.UI will automatically generate code that implements the `DependencyObject` interface methods. The only developer action required is to add the `partial` keyword to the class definition.
 
-* Beware, all themes are **CASE SENSITIVE**.
-* Themed dictionaries will fall back to `Application.Current.RequestedTheme` when they are not
-  defining a resource for the custom theme.
-* You can put any string and create totally custom themes, but they won't be supported by UWP.
+## Runtime differences
 
-Themes [are implemented](https://calculator.platform.uno?Theme=Pink) in the Uno port of the Windows 10 calculator. See [App.xaml.cs](https://github.com/unoplatform/calculator/blob/7772a593b541edd9809bc8946ee29d6a5b29e0ff/src/Calculator.Shared/App.xaml.cs#L79) and  [Styles.xaml](https://github.com/unoplatform/calculator/blob/7772a593b541edd9809bc8946ee29d6a5b29e0ff/src/Calculator.Shared/Styles.xaml).
+### iOS is AOT-only
 
+.NET code [must be Ahead-Of-Time (AOT) compiled to run on iOS](https://docs.microsoft.com/en-us/xamarin/ios/internals/limitations), as a fundamental platform limitation. As a result, a few APIs that require runtime code generation (eg `System.Reflection.Emit`) do not work. This includes code that uses the `dynamic` keyword.
 
+### WebAssembly is single-threaded
+
+Currently, WebAssembly code in the browser executes on a single thread. This limitation is expected to be lifted in the future, but for now, code that expects additional threads to be available may not function as expected.
+
+[This GitHub issue](https://github.com/unoplatform/uno/issues/2302) tracks support for multi-threading on WebAssembly in Uno Platform.

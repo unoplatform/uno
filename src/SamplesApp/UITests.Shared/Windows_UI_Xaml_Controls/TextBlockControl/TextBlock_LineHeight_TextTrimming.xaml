@@ -8,10 +8,16 @@
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
-	<Grid>
+	<StackPanel Spacing="20">
+
+		<TextBlock FontSize="20">
+			1) You should see 2 lines of text (not a 3rd truncated line).
+			<LineBreak />2) An elipsis should appears at the end of the second line.
+		</TextBlock>
 
 		<Border Height="50"
-				Background="Tomato">
+				Background="Tomato"
+				Width="500">
 		  <TextBlock LineHeight="15"
 					 FontSize="15"
 					 TextTrimming="CharacterEllipsis"
@@ -19,5 +25,5 @@
 					 Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
 		</Border>
 
-	</Grid>
+	</StackPanel>
 </UserControl>

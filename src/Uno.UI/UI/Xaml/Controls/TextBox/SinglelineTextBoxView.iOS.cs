@@ -6,9 +6,12 @@ using System.Collections.Generic;
 using System.Text;
 using UIKit;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
+using Uno.Disposables;
+using Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -16,6 +19,9 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private SinglelineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
+		private readonly SerialDisposable _foregroundChanged = new();
+
+		private string _restoreOnNextKeyStroke;
 
 		public SinglelineTextBoxView(TextBox textBox)
 		{
@@ -25,27 +31,62 @@ namespace Windows.UI.Xaml.Controls
 			Initialize();
 		}
 
-		private void OnEditingChanged(object sender, EventArgs e)
+		/// <inheritdoc />
+		public override bool SecureTextEntry
 		{
-			OnTextChanged();
+			get => base.SecureTextEntry;
+			set
+			{
+				if (base.SecureTextEntry != value)
+				{
+					if (value)
+					{
+						// Disable auto-fill for now, does not work properly. The auto-filled value never becomes available on base.Text and blocks input on the soft keyboard.
+						if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
+						{
+							base.TextContentType = UITextContentType.OneTimeCode;
+						}
+						else if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+						{
+							base.TextContentType = NSString.Empty;
+						}
+
+						// When we enable the "secure" mode, iOS will auto-magically clear the value on next key stroke
+						// (Without invoking the "ShouldClear" nor any callback except "DidChangeSelection" multiple times).
+						// The only way is to keep ref of the current text and restore it on next text change (expected to be an empty string).
+						_restoreOnNextKeyStroke = base.Text;
+					}
+
+					base.SecureTextEntry = value;
+				}
+			}
 		}
 
 		public override string Text
 		{
-			get
-			{
-				return base.Text;
-			}
-
+			get => base.Text;
 			set
 			{
 				// The native control will ignore a value of null and retain an empty string. We coalesce the null to prevent a spurious empty string getting bounced back via two-way binding.
-				value = value ?? string.Empty;
+				value ??= string.Empty;
 				if (base.Text != value)
 				{
 					base.Text = value;
 					OnTextChanged();
 				}
+			}
+		}
+
+		private void OnEditingChanged(object sender, EventArgs e)
+		{
+			if (_restoreOnNextKeyStroke is { Length: > 0 } text)
+			{
+				base.Text = text + base.Text;
+				_restoreOnNextKeyStroke = default;
+			}
+			else
+			{
+				OnTextChanged();
 			}
 		}
 
@@ -161,6 +202,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
+			_foregroundChanged.Disposable = null;
 			var textBox = _textBox.GetTarget();
 
 			if (textBox != null)
@@ -169,8 +211,14 @@ namespace Windows.UI.Xaml.Controls
 
 				if (scb != null)
 				{
-					this.TextColor = scb.Color;
-					this.TintColor = scb.Color;
+					_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => ApplyColor());
+					ApplyColor();
+
+					void ApplyColor()
+					{
+						TextColor = scb.Color;
+						TintColor = scb.Color;
+					}
 				}
 			}
 		}
@@ -189,6 +237,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateFont();
 		}
+
+		public void Select(int start, int length)
+			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length);
 
 		public override UITextRange SelectedTextRange
 		{

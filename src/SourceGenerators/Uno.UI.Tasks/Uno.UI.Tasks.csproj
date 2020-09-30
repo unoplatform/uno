@@ -12,7 +12,6 @@
 	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Microsoft.Build">
 			<Version>15.4.8</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
@@ -29,6 +28,7 @@
 			<Version>15.4.8</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
+		<PackageReference Include="Mono.Cecil" Version="0.11.3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -47,6 +47,11 @@
 		<Compile Include="..\..\Uno.UWP\Helpers\AndroidResourceNameEncoder.cs">
 			<Link>Resources\AndroidResourceNameEncoder.cs</Link>
 		</Compile>
+		<Compile Include="..\Uno.UI.SourceGenerators\BindableTypeProviders\LinkerHintsHelpers.cs" Link="Helpers\LinkerHintsHelpers.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="external\linker\" />
 	</ItemGroup>
 	
 	<Target Name="_copyUnoTasksBuildTime" AfterTargets="Build">
@@ -66,7 +71,7 @@
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
       <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\build\Uno.UI.Tasks</_TargetNugetFolder>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\buildTransitive\Uno.UI.Tasks</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

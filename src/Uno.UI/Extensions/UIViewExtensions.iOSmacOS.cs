@@ -1,30 +1,27 @@
-﻿using Uno.Disposables;
-using Uno;
+﻿using Uno;
 using Uno.Extensions;
 using Uno.UI;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml;
-using System.Diagnostics.CodeAnalysis;
-using Uno.Logging;
-using Windows.UI.Core;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
-using Windows.UI.Xaml.Controls;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 #if XAMARIN_IOS_UNIFIED
-using Foundation;
-using UIKit;
 using CoreGraphics;
 using _View = UIKit.UIView;
 using _Controller = UIKit.UIViewController;
 using _Responder = UIKit.UIResponder;
 using _Color = UIKit.UIColor;
 using _Event = UIKit.UIEvent;
+using System.Security.Principal;
 #elif __MACOS__
 using Foundation;
 using AppKit;
@@ -139,7 +136,7 @@ namespace AppKit
 				{
 					var t = v as T;
 					return t != null && selector(t);
-				};
+				}; 
 			}
 
 			if (includeCurrent
@@ -290,7 +287,21 @@ namespace AppKit
 		/// <summary>
 		/// Get the parent view in the visual tree. This may differ from the logical <see cref="FrameworkElement.Parent"/>.
 		/// </summary>
-		public static _View GetVisualTreeParent(this _View child) => child?.Superview;
+		public static _View GetVisualTreeParent(this _View child)
+		{
+			var visualParent = child?.Superview;
+
+			// In edge cases, the native Superview is null,
+			// for example for list items. For those situations
+			// we use our managed visual parent instead.
+			if (visualParent is null &&
+				child is FrameworkElement fw)
+			{
+				visualParent = fw.VisualParent;
+			}
+
+			return visualParent;
+		}
 
 		public static IEnumerable<T> FindSubviewsOfType<T>(this _View view, int maxDepth = 20) where T : class
 		{
@@ -533,22 +544,6 @@ namespace AppKit
 		}
 
 		/// <summary>
-		/// Gets an identifier that can be used for logging
-		/// </summary>
-		public static string GetDebugIdentifier(this _View element)
-		{
-			if (element == null)
-			{
-				return "--NULL--";
-			}
-
-			var name = (element as IFrameworkElement)?.Name;
-			return name.HasValue()
-				? element.GetType().Name + "_" + name + "_" + element.GetHashCode()
-				: element.GetType().Name + "_" + element.GetHashCode();
-		}
-
-		/// <summary>
 		/// Enumerates the children for the specified instance, either using _View.Subviews or using IShadowChildrenProvider.
 		/// </summary>
 		/// <param name="view"></param>
@@ -640,7 +635,7 @@ namespace AppKit
 						.Append(innerView == viewOfInterest ? "*>" : ">")
 						.Append(innerView.ToString() + namePart)
 						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
-						.Append($" d:{desiredSize}")
+						.Append($" ds:{desiredSize}")
 #if __IOS__
 						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
@@ -650,10 +645,13 @@ namespace AppKit
 						.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 						.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
 						.Append(fe != null && fe.TryGetCornerRadius(out var cr) && cr != default ? $" CornerRadius={cr.ToStringCompact()}" : "")
+						.Append(fe != null && fe.Opacity < 1 ? $" Opacity={fe.Opacity}" : "")
 						.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
-						.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}, AvailableSize={uiElement.LastAvailableSize}" : "")
+						.Append(uiElement != null ? $" AvailableSize={uiElement.LastAvailableSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
-						.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
+						.Append(uiElement?.GetElementSpecificDetails())
+						.Append(uiElement?.GetElementGridOrCanvasDetails())
+						.Append(uiElement?.RenderTransform.GetTransformDetails())
 						.AppendLine();
 			}
 		}

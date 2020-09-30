@@ -2,23 +2,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing.Text;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.SourceGeneration;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
+#if NETFRAMEWORK
+using Uno.SourceGeneration;
+#endif
+
 namespace Uno.UI.SourceGenerators.DependencyObject
 {
-	public class DependencyPropertyGenerator : SourceGenerator
+	[Generator]
+	public class DependencyPropertyGenerator : ISourceGenerator
 	{
-		public override void Execute(SourceGeneratorContext context)
+		public void Initialize(GeneratorInitializationContext context)
+		{
+			DependenciesInitializer.Init();
+		}
+
+		public void Execute(GeneratorExecutionContext context)
 		{
 			if (PlatformHelper.IsValidPlatform(context))
 			{
@@ -29,24 +34,29 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private class SerializationMethodsGenerator : SymbolVisitor
 		{
-			private readonly SourceGeneratorContext _context;
+			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol _generatedDependencyPropertyAttributeSymbol;
 			private readonly INamedTypeSymbol _dependencyPropertyChangedEventArgsSymbol;
 			private readonly INamedTypeSymbol _dependencyObjectSymbol;
 
-			public SerializationMethodsGenerator(SourceGeneratorContext context)
+			public SerializationMethodsGenerator(GeneratorExecutionContext context)
 			{
 				_context = context;
 
 				var comp = context.Compilation;
 
-				_dependencyObjectSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
-				_generatedDependencyPropertyAttributeSymbol = comp.GetTypeByMetadataName("Uno.UI.Xaml.GeneratedDependencyPropertyAttribute");
-				_dependencyPropertyChangedEventArgsSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.DependencyPropertyChangedEventArgs");
+				_dependencyObjectSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.DependencyObject)
+					?? throw new Exception("Unable to find " + XamlConstants.Types.DependencyObject);
+				_generatedDependencyPropertyAttributeSymbol = comp.GetTypeByMetadataName("Uno.UI.Xaml.GeneratedDependencyPropertyAttribute")
+					?? throw new Exception("Unable to find Uno.UI.Xaml.GeneratedDependencyPropertyAttribute");
+				_dependencyPropertyChangedEventArgsSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.DependencyPropertyChangedEventArgs")
+					?? throw new Exception("Unable to find Windows.UI.Xaml.DependencyPropertyChangedEventArgs");
 			}
 
 			public override void VisitNamedType(INamedTypeSymbol type)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				foreach (var t in type.GetTypeMembers())
 				{
 					VisitNamedType(t);
@@ -57,11 +67,15 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			public override void VisitModule(IModuleSymbol symbol)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				VisitNamespace(symbol.GlobalNamespace);
 			}
 
 			public override void VisitNamespace(INamespaceSymbol symbol)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				foreach (var n in symbol.GetNamespaceMembers())
 				{
 					VisitNamespace(n);
@@ -75,7 +89,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void ProcessType(INamedTypeSymbol typeSymbol)
 			{
-				var isDependencyObject = typeSymbol.GetAllInterfaces().Any(t => Equals(t, _dependencyObjectSymbol));
+				var isDependencyObject = typeSymbol.GetAllInterfaces().Any(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol));
 
 				if ((isDependencyObject || typeSymbol.IsStatic) && typeSymbol.TypeKind == TypeKind.Class)
 				{
@@ -100,11 +114,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						builder.AppendLineInvariant($"using System.Diagnostics.CodeAnalysis;");
 						builder.AppendLineInvariant($"using Uno.Disposables;");
 						builder.AppendLineInvariant($"using System.Runtime.CompilerServices;");
-						builder.AppendLineInvariant($"using Uno.Extensions;");
-						builder.AppendLineInvariant($"using Uno.Logging;");
 						builder.AppendLineInvariant($"using Uno.UI;");
 						builder.AppendLineInvariant($"using Uno.UI.DataBinding;");
 						builder.AppendLineInvariant($"using Windows.UI.Xaml;");
+						builder.AppendLineInvariant($"using Windows.UI.Xaml.Controls;");
 						builder.AppendLineInvariant($"using Windows.UI.Xaml.Data;");
 						builder.AppendLineInvariant($"using Uno.Diagnostics.Eventing;");
 
@@ -114,7 +127,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						{
 							using (GenerateNestingContainers(builder, typeSymbol))
 							{
-								using (builder.BlockInvariant($"{typeSymbol.GetAccessibilityAsCodeString()} partial class {typeSymbol.Name}"))
+								using (builder.BlockInvariant($"partial class {typeSymbol.Name}"))
 								{
 									foreach (var memberSymbol in typeSymbol.GetMembers())
 									{
@@ -153,7 +166,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 							}
 						}
 
-						_context.AddCompilationUnit(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
+						_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
 					}
 				}
 			}
@@ -168,6 +181,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				if (getMethodSymbol == null)
 				{
 					builder.AppendLineInvariant($"#error unable to find getter method for {propertyName} on {ownerType}");
+					return;
+				}
+
+				if (setMethodSymbol == null)
+				{
+					builder.AppendLineInvariant($"#error unable to find setter method for {propertyName} on {ownerType}");
 					return;
 				}
 
@@ -269,25 +288,37 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 
 				changedCallbackName ??= $"On{propertyName}Changed";
-				var propertyChangedMethod = propertyOwnerType.GetMethods().FirstOrDefault(m => m.Name == changedCallbackName);
-				if (changedCallback || propertyChangedMethod != null)
+				var propertyChangedMethods = propertyOwnerType.GetMethods().Where(m => m.Name == changedCallbackName).ToArray();
+				if (changedCallback || (propertyChangedMethods?.Any() ?? false))
 				{
-					var isDPChangedEventArgsParam = Equals(propertyChangedMethod?.Parameters.ElementAtOrDefault(1)?.Type, _dependencyPropertyChangedEventArgsSymbol);
-					if (isDPChangedEventArgsParam)
+					if (propertyChangedMethods.FirstOrDefault(IsCallbackWithDPChangedArgs) is { } callbackWithEventArgs)
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(instance, args)");
 					}
+					else if (propertyChangedMethods.FirstOrDefault(IsCallbackWithDPChangedArgsOnly) is { } callbackWithEventArgsOnly)
+					{
+						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(args)");
+					}
+					else if (propertyChangedMethods?.FirstOrDefault(m => m?.Parameters.Length == 2) is { } callbackWithOldAndNew)
+					{
+						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
+					}
 					else
 					{
-						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(instance, ({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
+						builder.AppendLineInvariant($"#error Valid {changedCallbackName} not found.  Must be {changedCallbackName}(DependencyPropertyChangedEventArgs), {changedCallbackName}(Instance, DependencyPropertyChangedEventArgs) or {changedCallbackName}(oldValue, newValue)");
 					}
 				}
-
 
 				builder.AppendLineInvariant($"));");
 
 				builder.AppendLineInvariant($"#endregion");
 			}
+
+			private bool IsCallbackWithDPChangedArgsOnly(IMethodSymbol m)
+				=> SymbolEqualityComparer.Default.Equals(m?.Parameters.FirstOrDefault()?.Type, _dependencyPropertyChangedEventArgsSymbol);
+
+			private bool IsCallbackWithDPChangedArgs(IMethodSymbol m)
+				=> m?.Parameters.Length == 2 && SymbolEqualityComparer.Default.Equals(m?.Parameters[1].Type, _dependencyPropertyChangedEventArgsSymbol);
 
 			static KeyValuePair<string, TypedConstant>? GetAttributeValue(AttributeData attribute, string parameterName)
 				=> attribute?.NamedArguments.FirstOrDefault(kvp => kvp.Key == parameterName);
@@ -369,22 +400,28 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				if (coerceCallback || propertySymbol.ContainingType.GetMethods().Any(m => m.Name == "Coerce" + propertyName))
 				{
-					builder.AppendLineInvariant($"\t\t, coerceValueCallback: (instance, baseValue) => (({containingTypeName})instance).Coerce{propertyName}(({propertyTypeName})baseValue)");
+					builder.AppendLineInvariant($"\t\t, coerceValueCallback: (instance, baseValue) => (({containingTypeName})instance).Coerce{propertyName}(baseValue)");
 				}
 
 				changedCallbackName ??= $"On{propertyName}Changed";
-
-				var propertyChangedMethod = propertySymbol.ContainingType.GetMethods().FirstOrDefault(m => m.Name == changedCallbackName);
-				if (changedCallback || propertyChangedMethod != null)
+				var propertyChangedMethods = propertySymbol.ContainingType.GetMethods().Where(m => m.Name == changedCallbackName).ToArray();
+				if (changedCallback || propertyChangedMethods.Any())
 				{
-					var isDPChangedEventArgsParam = Equals(propertyChangedMethod?.Parameters.FirstOrDefault()?.Type, _dependencyPropertyChangedEventArgsSymbol);
-					if (isDPChangedEventArgsParam)
+					if (propertyChangedMethods.FirstOrDefault(IsCallbackWithDPChangedArgs) is { } callbackWithEventArgs)
+					{
+						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(instance, args)");
+					}
+					else if (propertyChangedMethods.FirstOrDefault(IsCallbackWithDPChangedArgsOnly) is { } callbackWithEventArgsOnly)
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(args)");
 					}
-					else
+					else if (propertyChangedMethods?.FirstOrDefault(m => m?.Parameters.Length == 2) is { } callbackWithOldAndNew)
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
+					}
+					else
+					{
+						builder.AppendLineInvariant($"#error Valid {changedCallbackName} not found.  Must be {changedCallbackName}(DependencyPropertyChangedEventArgs), {changedCallbackName}(Instance, DependencyPropertyChangedEventArgs) or {changedCallbackName}(oldValue, newValue)");
 					}
 				}
 
@@ -407,13 +444,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				if (propertySymbol.Locations.FirstOrDefault() is Location location)
 				{
-					var node = location.SourceTree.GetRoot().FindNode(location.SourceSpan);
-					var syntaxNodeContent = node.ToString();
-
-					if (!invocations.All(l => syntaxNodeContent.Contains(l, StringComparison.Ordinal)))
+					if (location.SourceTree != null)
 					{
-						var invocationsMessage = string.Join(", ", invocations);
-						builder.AppendLineInvariant("{0}", $"#error unable to find some of the following statements {invocationsMessage} in {propertySymbol}");
+						var node = location.SourceTree.GetRoot().FindNode(location.SourceSpan);
+						var syntaxNodeContent = node.ToString();
+
+						if (!invocations.All(l => syntaxNodeContent.Contains(l, StringComparison.Ordinal)))
+						{
+							var invocationsMessage = string.Join(", ", invocations);
+							builder.AppendLineInvariant("{0}", $"#error unable to find some of the following statements {invocationsMessage} in {propertySymbol}");
+						}
 					}
 				}
 			}
@@ -476,7 +516,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol typeSymbol)
+			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
 			{
 				var disposables = new List<IDisposable>();
 

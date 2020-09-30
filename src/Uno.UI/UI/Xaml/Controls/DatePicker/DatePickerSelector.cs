@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -13,7 +14,11 @@ namespace Windows.UI.Xaml.Controls
 		public DatePickerSelector()
 		{
 			DefaultStyleKey = typeof(DatePickerSelector);
+
+			InitPartial();
 		}
 		//Properties defined in DependencyPropertyMixins
+
+		partial void InitPartial();
 	}
 }

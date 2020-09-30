@@ -1,6 +1,9 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Data
 {
@@ -12,23 +15,30 @@ namespace Windows.UI.Xaml.Data
 		/// <summary>
 		/// The resource key.
 		/// </summary>
-		public object ResourceKey { get; }
-		/// <summary>
-		/// True if the original assignation used the ThemeResource extension, false if it used StaticResource. (This determines whether it
-		/// should be updated when the active theme changes.)
-		/// </summary>
+		public SpecializedResourceDictionary.ResourceKey ResourceKey { get; }
+
+		public ResourceUpdateReason UpdateReason { get; }
+
 		public bool IsThemeResourceExtension { get; }
 
-		public object ParseContext { get; }
+		public bool IsPersistent => UpdateReason != ResourceUpdateReason.StaticResourceLoading;
+
+		public object? ParseContext { get; }
 
 		public DependencyPropertyValuePrecedences Precedence { get; }
 
-		public ResourceBinding(object resourceKey, bool isThemeResourceExtension, object parseContext, DependencyPropertyValuePrecedences precedence)
+		/// <summary>
+		/// The binding path that this resource binding is targeting, if it was created by a VisualState <see cref="Setter"/>.
+		/// </summary>
+		public BindingPath? SetterBindingPath { get; }
+
+		public ResourceBinding(SpecializedResourceDictionary.ResourceKey resourceKey, ResourceUpdateReason updateReason, object? parseContext, DependencyPropertyValuePrecedences precedence, BindingPath? setterBindingPath)
 		{
 			ResourceKey = resourceKey;
-			IsThemeResourceExtension = isThemeResourceExtension;
+			UpdateReason = updateReason;
 			ParseContext = parseContext;
 			Precedence = precedence;
+			SetterBindingPath = setterBindingPath;
 		}
 	}
 }

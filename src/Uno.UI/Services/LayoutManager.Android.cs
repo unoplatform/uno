@@ -1,10 +1,11 @@
 ﻿using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 
@@ -26,7 +27,7 @@ namespace Uno.UI.Services
 			if (!_IsArrangeRequested)
 			{
 				_IsArrangeRequested = true;
-				CoreDispatcher.Main.RunAnimation(Arrange);
+				Uno.UI.Dispatching.CoreDispatcher.Main.RunAnimation(Arrange);
 			}
 
 			_arrangeQueue.Add(view);
@@ -49,7 +50,7 @@ namespace Uno.UI.Services
 				{
 					typeof(LayoutManager).Log().LogDebug($"Measuring {view} with {GetAncestorCount(view)} ancestors in visual tree.");
 				}
-				IFrameworkElementHelper.Measure(view, view.InternalActualSize.Add(view.Margin));
+				IFrameworkElementHelper.Measure(view, view.AssignedActualSize.Add(view.Margin));
 			}
 			foreach (var view in queue)
 			{

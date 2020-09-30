@@ -2,7 +2,7 @@
 using Android.Views;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Input;
 using Android.Runtime;
@@ -19,29 +19,25 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			// need the Tapped event to be registered for "Click" to work properly
 			Tapped += (snd, evt) => { };
+			Clickable = true;
 		}
 
-		private protected override void OnLoaded()
+		partial void OnLoadedPartial()
 		{
-			base.OnLoaded();
-
 			Focusable = true;
 			FocusableInTouchMode = true;
-
-			RegisterEvents();
 
 			OnCanExecuteChanged();
 		}
 
-		private protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
+		partial void OnUnloadedPartial()
+		{			
 			_isEnabledSubscription.Disposable = null;
 		}
 
-		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue)
+		partial void OnIsEnabledChangedPartial(IsEnabledChangedEventArgs e)
 		{
-			Clickable = newValue;
+			Clickable = e.NewValue;
 		}
 
 		partial void RegisterEvents()
@@ -67,9 +63,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
-					this.Log().WarnFormat("ControlTemplateRoot is not available, {0} will not be clickable", this.GetType());
+					this.Log().Warn($"ControlTemplateRoot is not available, {this.GetType()} will not be clickable");
 				}
 			}
 		}

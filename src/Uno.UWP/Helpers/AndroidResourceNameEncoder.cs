@@ -59,7 +59,7 @@ namespace Uno
 
 			var alignedPath = path.Replace(separator, localSeparation);
 
-			var directoryName = global::System.IO.Path.GetDirectoryName(alignedPath);
+			var directoryName = global::System.IO.Path.GetDirectoryName(alignedPath) ?? "";
 			var fileName = global::System.IO.Path.GetFileNameWithoutExtension(alignedPath);
 			var extension = global::System.IO.Path.GetExtension(alignedPath);
 

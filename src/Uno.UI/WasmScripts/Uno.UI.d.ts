@@ -37,6 +37,12 @@ declare namespace Windows.UI.Core {
         private static initMethods;
     }
 }
+declare namespace Uno.Utils {
+    class Guid {
+        private static newGuidMethod;
+        static NewGuid(): string;
+    }
+}
 declare namespace Uno.UI {
     class HtmlDom {
         /**
@@ -44,6 +50,14 @@ declare namespace Uno.UI {
          */
         static initPolyfills(): void;
         private static isConnectedPolyfill;
+    }
+}
+declare module Uno.UI {
+    enum HtmlEventDispatchResult {
+        Ok = 0,
+        StopPropagation = 1,
+        PreventDefault = 2,
+        NotDispatched = 128
     }
 }
 declare namespace Uno.Http {
@@ -127,14 +141,15 @@ declare namespace Uno.UI {
          * initialization of WebAssembly, use this mode in conjunction with the Uno.UI.WpfHost
          * to improve debuggability.
          */
-        static readonly isHosted: boolean;
+        static get isHosted(): boolean;
         /**
          * Defines if the WindowManager is responsible to raise the loading, loaded and unloaded events,
          * or if they are raised directly by the managed code to reduce interop.
          */
-        static readonly isLoadEventsEnabled: boolean;
+        static get isLoadEventsEnabled(): boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
+        private static readonly unoCollapsedClassName;
         private static _cctor;
         /**
             * Initialize the WindowManager
@@ -221,6 +236,12 @@ declare namespace Uno.UI {
             */
         setXUidNative(pParam: number): boolean;
         private setXUidInternal;
+        /**
+            * Sets the visibility of the specified element
+            */
+        setVisibility(elementId: number, visible: boolean): string;
+        setVisibilityNative(pParam: number): boolean;
+        private setVisibilityInternal;
         /**
             * Set an attribute for an element.
             */
@@ -312,6 +333,30 @@ declare namespace Uno.UI {
         private setAsArranged;
         private setAsUnarranged;
         /**
+        * Sets the color property of the specified element
+        */
+        setElementColor(elementId: number, color: number): string;
+        setElementColorNative(pParam: number): boolean;
+        private setElementColorInternal;
+        /**
+        * Sets the fill property of the specified element
+        */
+        setElementFill(elementId: number, color: number): string;
+        setElementFillNative(pParam: number): boolean;
+        private setElementFillInternal;
+        /**
+        * Sets the background color property of the specified element
+        */
+        setElementBackgroundColor(pParam: number): boolean;
+        /**
+        * Sets the background image property of the specified element
+        */
+        setElementBackgroundGradient(pParam: number): boolean;
+        /**
+        * Clears the background property of the specified element
+        */
+        resetElementBackground(pParam: number): boolean;
+        /**
         * Sets the transform matrix of an element
         *
         */
@@ -352,17 +397,6 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         registerEventOnViewNative(pParams: number): boolean;
-        registerPointerEventsOnView(pParams: number): void;
-        static onPointerEventReceived(evt: PointerEvent): void;
-        static dispatchPointerEvent(element: HTMLElement | SVGElement, evt: PointerEvent): void;
-        static onPointerEnterReceived(evt: PointerEvent): void;
-        static onPointerLeaveReceived(evt: PointerEvent): void;
-        private processPendingLeaveEvent;
-        private _isPendingLeaveProcessingEnabled;
-        /**
-         * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
-         */
-        private ensurePendingLeaveEventProcessing;
         /**
             * Add an event handler to a html element.
             *
@@ -370,13 +404,6 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         private registerEventOnViewInternal;
-        /**
-         * pointer event extractor to be used with registerEventOnView
-         * @param evt
-         */
-        private static pointerEventExtractor;
-        private static _wheelLineSize;
-        private static readonly wheelLineSize;
         /**
          * keyboard event extractor to be used with registerEventOnView
          * @param evt
@@ -458,8 +485,9 @@ declare namespace Uno.UI {
             *
             * @param maxWidth string containing width in pixels. Empty string means infinite.
             * @param maxHeight string containing height in pixels. Empty string means infinite.
+            * @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
             */
-        measureView(viewId: string, maxWidth: string, maxHeight: string): string;
+        measureView(viewId: string, maxWidth: string, maxHeight: string, measureContent?: boolean): string;
         /**
             * Use the Html engine to measure the element using specified constraints.
             *
@@ -471,6 +499,7 @@ declare namespace Uno.UI {
         private static MAX_HEIGHT;
         private measureElement;
         private measureViewInternal;
+        private createUnconstrainedStyle;
         scrollTo(pParams: number): boolean;
         rawPixelsToBase64EncodeImage(dataPtr: number, width: number, height: number): string;
         /**
@@ -540,282 +569,19 @@ declare namespace Uno.UI {
         private dispatchEvent;
         private getIsConnectedToRootElement;
         private handleToString;
+        private numberToCssColor;
         setCursor(cssCursor: string): string;
+        getNaturalImageSize(imageUrl: string): Promise<string>;
+        selectInputRange(elementId: number, start: number, length: number): void;
     }
-}
-declare class ApplicationDataContainer_ClearParams {
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_ClearParams;
-}
-declare class ApplicationDataContainer_ContainsKeyParams {
-    Key: string;
-    Value: string;
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_ContainsKeyParams;
-}
-declare class ApplicationDataContainer_ContainsKeyReturn {
-    ContainsKey: boolean;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_GetCountParams {
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_GetCountParams;
-}
-declare class ApplicationDataContainer_GetCountReturn {
-    Count: number;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_GetKeyByIndexParams {
-    Locality: string;
-    Index: number;
-    static unmarshal(pData: number): ApplicationDataContainer_GetKeyByIndexParams;
-}
-declare class ApplicationDataContainer_GetKeyByIndexReturn {
-    Value: string;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_GetValueByIndexParams {
-    Locality: string;
-    Index: number;
-    static unmarshal(pData: number): ApplicationDataContainer_GetValueByIndexParams;
-}
-declare class ApplicationDataContainer_GetValueByIndexReturn {
-    Value: string;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_RemoveParams {
-    Locality: string;
-    Key: string;
-    static unmarshal(pData: number): ApplicationDataContainer_RemoveParams;
-}
-declare class ApplicationDataContainer_RemoveReturn {
-    Removed: boolean;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_SetValueParams {
-    Key: string;
-    Value: string;
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_SetValueParams;
-}
-declare class ApplicationDataContainer_TryGetValueParams {
-    Key: string;
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_TryGetValueParams;
-}
-declare class ApplicationDataContainer_TryGetValueReturn {
-    Value: string;
-    HasValue: boolean;
-    marshal(pData: number): void;
-}
-declare class StorageFolderMakePersistentParams {
-    Paths_Length: number;
-    Paths: Array<string>;
-    static unmarshal(pData: number): StorageFolderMakePersistentParams;
-}
-declare class WindowManagerAddViewParams {
-    HtmlId: number;
-    ChildView: number;
-    Index: number;
-    static unmarshal(pData: number): WindowManagerAddViewParams;
-}
-declare class WindowManagerArrangeElementParams {
-    Top: number;
-    Left: number;
-    Width: number;
-    Height: number;
-    ClipTop: number;
-    ClipLeft: number;
-    ClipBottom: number;
-    ClipRight: number;
-    HtmlId: number;
-    Clip: boolean;
-    static unmarshal(pData: number): WindowManagerArrangeElementParams;
-}
-declare class WindowManagerCreateContentParams {
-    HtmlId: number;
-    TagName: string;
-    Handle: number;
-    UIElementRegistrationId: number;
-    IsSvg: boolean;
-    IsFocusable: boolean;
-    static unmarshal(pData: number): WindowManagerCreateContentParams;
-}
-declare class WindowManagerDestroyViewParams {
-    HtmlId: number;
-    static unmarshal(pData: number): WindowManagerDestroyViewParams;
-}
-declare class WindowManagerGetBBoxParams {
-    HtmlId: number;
-    static unmarshal(pData: number): WindowManagerGetBBoxParams;
-}
-declare class WindowManagerGetBBoxReturn {
-    X: number;
-    Y: number;
-    Width: number;
-    Height: number;
-    marshal(pData: number): void;
-}
-declare class WindowManagerGetClientViewSizeParams {
-    HtmlId: number;
-    static unmarshal(pData: number): WindowManagerGetClientViewSizeParams;
-}
-declare class WindowManagerGetClientViewSizeReturn {
-    OffsetWidth: number;
-    OffsetHeight: number;
-    ClientWidth: number;
-    ClientHeight: number;
-    marshal(pData: number): void;
-}
-declare class WindowManagerInitParams {
-    IsHostedMode: boolean;
-    IsLoadEventsEnabled: boolean;
-    static unmarshal(pData: number): WindowManagerInitParams;
-}
-declare class WindowManagerMeasureViewParams {
-    HtmlId: number;
-    AvailableWidth: number;
-    AvailableHeight: number;
-    static unmarshal(pData: number): WindowManagerMeasureViewParams;
-}
-declare class WindowManagerMeasureViewReturn {
-    DesiredWidth: number;
-    DesiredHeight: number;
-    marshal(pData: number): void;
-}
-declare class WindowManagerRegisterEventOnViewParams {
-    HtmlId: number;
-    EventName: string;
-    OnCapturePhase: boolean;
-    EventExtractorId: number;
-    static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
-}
-declare class WindowManagerRegisterPointerEventsOnViewParams {
-    HtmlId: number;
-    static unmarshal(pData: number): WindowManagerRegisterPointerEventsOnViewParams;
-}
-declare class WindowManagerRegisterUIElementParams {
-    TypeName: string;
-    IsFrameworkElement: boolean;
-    Classes_Length: number;
-    Classes: Array<string>;
-    static unmarshal(pData: number): WindowManagerRegisterUIElementParams;
-}
-declare class WindowManagerRegisterUIElementReturn {
-    RegistrationId: number;
-    marshal(pData: number): void;
-}
-declare class WindowManagerRemoveAttributeParams {
-    HtmlId: number;
-    Name: string;
-    static unmarshal(pData: number): WindowManagerRemoveAttributeParams;
-}
-declare class WindowManagerRemoveViewParams {
-    HtmlId: number;
-    ChildView: number;
-    static unmarshal(pData: number): WindowManagerRemoveViewParams;
-}
-declare class WindowManagerResetStyleParams {
-    HtmlId: number;
-    Styles_Length: number;
-    Styles: Array<string>;
-    static unmarshal(pData: number): WindowManagerResetStyleParams;
-}
-declare class WindowManagerScrollToOptionsParams {
-    Left: number;
-    Top: number;
-    HasLeft: boolean;
-    HasTop: boolean;
-    DisableAnimation: boolean;
-    HtmlId: number;
-    static unmarshal(pData: number): WindowManagerScrollToOptionsParams;
-}
-declare class WindowManagerSetAttributeParams {
-    HtmlId: number;
-    Name: string;
-    Value: string;
-    static unmarshal(pData: number): WindowManagerSetAttributeParams;
-}
-declare class WindowManagerSetAttributesParams {
-    HtmlId: number;
-    Pairs_Length: number;
-    Pairs: Array<string>;
-    static unmarshal(pData: number): WindowManagerSetAttributesParams;
-}
-declare class WindowManagerSetClassesParams {
-    HtmlId: number;
-    CssClasses_Length: number;
-    CssClasses: Array<string>;
-    Index: number;
-    static unmarshal(pData: number): WindowManagerSetClassesParams;
-}
-declare class WindowManagerSetContentHtmlParams {
-    HtmlId: number;
-    Html: string;
-    static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
-}
-declare class WindowManagerSetElementTransformParams {
-    HtmlId: number;
-    M11: number;
-    M12: number;
-    M21: number;
-    M22: number;
-    M31: number;
-    M32: number;
-    static unmarshal(pData: number): WindowManagerSetElementTransformParams;
-}
-declare class WindowManagerSetNameParams {
-    HtmlId: number;
-    Name: string;
-    static unmarshal(pData: number): WindowManagerSetNameParams;
-}
-declare class WindowManagerSetPointerEventsParams {
-    HtmlId: number;
-    Enabled: boolean;
-    static unmarshal(pData: number): WindowManagerSetPointerEventsParams;
-}
-declare class WindowManagerSetPropertyParams {
-    HtmlId: number;
-    Pairs_Length: number;
-    Pairs: Array<string>;
-    static unmarshal(pData: number): WindowManagerSetPropertyParams;
-}
-declare class WindowManagerSetStyleDoubleParams {
-    HtmlId: number;
-    Name: string;
-    Value: number;
-    static unmarshal(pData: number): WindowManagerSetStyleDoubleParams;
-}
-declare class WindowManagerSetStylesParams {
-    HtmlId: number;
-    Pairs_Length: number;
-    Pairs: Array<string>;
-    static unmarshal(pData: number): WindowManagerSetStylesParams;
-}
-declare class WindowManagerSetSvgElementRectParams {
-    X: number;
-    Y: number;
-    Width: number;
-    Height: number;
-    HtmlId: number;
-    static unmarshal(pData: number): WindowManagerSetSvgElementRectParams;
-}
-declare class WindowManagerSetUnsetClassesParams {
-    HtmlId: number;
-    CssClassesToSet_Length: number;
-    CssClassesToSet: Array<string>;
-    CssClassesToUnset_Length: number;
-    CssClassesToUnset: Array<string>;
-    static unmarshal(pData: number): WindowManagerSetUnsetClassesParams;
-}
-declare class WindowManagerSetXUidParams {
-    HtmlId: number;
-    Uid: string;
-    static unmarshal(pData: number): WindowManagerSetXUidParams;
 }
 interface PointerEvent {
     isOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
     isOverDeep(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
+    /**
+     * Indicates if the pointer is over the given 'element' and there no other element above it (i.e. given 'element' is top most).
+     */
+    isDirectlyOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
 }
 declare namespace Uno.UI.Interop {
     class AsyncInteropHelper {
@@ -892,6 +658,205 @@ declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
 declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
 declare const UnoAppManifest: Uno.UI.IAppManifest;
 declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;
+declare enum ContactProperty {
+    Address = "address",
+    Email = "email",
+    Icon = "icon",
+    Name = "name",
+    Tel = "tel"
+}
+declare class ContactInfo {
+    address: PaymentAddress[];
+    email: string[];
+    name: string;
+    tel: string;
+}
+declare class ContactsManager {
+    select(props: ContactProperty[], options: any): Promise<ContactInfo[]>;
+}
+interface Navigator {
+    contacts: ContactsManager;
+}
+declare namespace Windows.ApplicationModel.Contacts {
+    class ContactPicker {
+        static isSupported(): boolean;
+        static pickContacts(pickMultiple: boolean): Promise<string>;
+    }
+}
+interface NavigatorDataTransferManager {
+    share(data: any): Promise<void>;
+}
+interface Navigator extends NavigatorDataTransferManager {
+}
+declare namespace Windows.ApplicationModel.DataTransfer {
+    class DataTransferManager {
+        static isSupported(): boolean;
+        static showShareUI(title: string, text: string, url: string): Promise<string>;
+    }
+}
+declare namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core {
+    class DragDropExtension {
+        private static _dispatchDropEventMethod;
+        private static _dispatchDragDropArgs;
+        private static _current;
+        private static _nextDropId;
+        private _dropHandler;
+        private _pendingDropId;
+        private _pendingDropData;
+        static enable(pArgs: number): void;
+        static disable(pArgs: number): void;
+        constructor();
+        dispose(): void;
+        private dispatchDropEvent;
+        static retrieveText(itemId: number): Promise<string>;
+        static retrieveFiles(itemIds: number | number[]): Promise<string>;
+        private static getAsFile;
+    }
+}
+declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
+    class MidiDeviceClassProvider {
+        static findDevices(findInputDevices: boolean): string;
+    }
+}
+declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
+    class MidiDeviceConnectionWatcher {
+        private static dispatchStateChanged;
+        static startStateChanged(): void;
+        static stopStateChanged(): void;
+        static onStateChanged(event: WebMidi.MIDIConnectionEvent): void;
+    }
+}
+declare namespace Windows.Devices.Geolocation {
+    class Geolocator {
+        private static dispatchAccessRequest;
+        private static dispatchGeoposition;
+        private static dispatchError;
+        private static positionWatches;
+        static initialize(): void;
+        static requestAccess(): void;
+        static getGeoposition(desiredAccuracyInMeters: number, maximumAge: number, timeout: number, requestId: string): void;
+        static startPositionWatch(desiredAccuracyInMeters: number, requestId: string): boolean;
+        static stopPositionWatch(desiredAccuracyInMeters: number, requestId: string): void;
+        private static handleGeoposition;
+        private static handleError;
+        private static getAccurateCurrentPosition;
+    }
+}
+declare module Windows.Devices.Input {
+    enum PointerDeviceType {
+        Touch = 0,
+        Pen = 1,
+        Mouse = 2
+    }
+}
+declare namespace Windows.Devices.Midi {
+    class MidiInPort {
+        private static dispatchMessage;
+        private static instanceMap;
+        private managedId;
+        private inputPort;
+        private constructor();
+        static createPort(managedId: string, encodedDeviceId: string): void;
+        static removePort(managedId: string): void;
+        static startMessageListener(managedId: string): void;
+        static stopMessageListener(managedId: string): void;
+        private messageReceived;
+    }
+}
+declare namespace Windows.Devices.Midi {
+    class MidiOutPort {
+        static sendBuffer(encodedDeviceId: string, timestamp: number, ...args: number[]): void;
+    }
+}
+declare namespace Uno.Devices.Midi.Internal {
+    class WasmMidiAccess {
+        private static midiAccess;
+        static request(systemExclusive: boolean): Promise<string>;
+        static getMidi(): WebMidi.MIDIAccess;
+    }
+}
+interface Window {
+    DeviceMotionEvent(): void;
+}
+declare namespace Windows.Devices.Sensors {
+    class Accelerometer {
+        private static dispatchReading;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
+declare class Gyroscope {
+    constructor(config: any);
+    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+}
+interface Window {
+    Gyroscope: Gyroscope;
+}
+declare namespace Windows.Devices.Sensors {
+    class Gyrometer {
+        private static dispatchReading;
+        private static gyroscope;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
+declare class AmbientLightSensor {
+    constructor(config: any);
+    addEventListener(type: "reading", listener: (this: this, ev: Event) => any): void;
+    removeEventListener(type: "reading", listener: (this: this, ev: Event) => any): void;
+    start(): void;
+    stop(): void;
+    illuminance: number;
+}
+interface Window {
+    AmbientLightSensor: AmbientLightSensor;
+}
+declare namespace Windows.Devices.Sensors {
+    class LightSensor {
+        private static dispatchReading;
+        private static ambientLightSensor;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
+declare class Magnetometer {
+    constructor(config: any);
+    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+}
+interface Window {
+    Magnetometer: Magnetometer;
+}
+declare namespace Windows.Devices.Sensors {
+    class Magnetometer {
+        private static dispatchReading;
+        private static magnetometer;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
+declare namespace Windows.Graphics.Display {
+    class DisplayInformation {
+        private static readonly DpiCheckInterval;
+        private static lastDpi;
+        private static dpiWatcher;
+        private static dispatchOrientationChanged;
+        private static dispatchDpiChanged;
+        static startOrientationChanged(): void;
+        static stopOrientationChanged(): void;
+        static startDpiChanged(): void;
+        static stopDpiChanged(): void;
+        private static updateDpi;
+        private static onOrientationChange;
+    }
+}
 interface Window {
     SpeechRecognition: any;
     webkitSpeechRecognition: any;
@@ -912,6 +877,38 @@ declare namespace Windows.Media {
         private onResult;
         private onSpeechStart;
         private onError;
+    }
+}
+declare namespace Windows.Networking.Connectivity {
+    class ConnectionProfile {
+        static hasInternetAccess(): boolean;
+    }
+}
+declare namespace Windows.Networking.Connectivity {
+    class NetworkInformation {
+        private static dispatchStatusChanged;
+        static startStatusChanged(): void;
+        static stopStatusChanged(): void;
+        static networkStatusChanged(): void;
+    }
+}
+interface Navigator {
+    webkitVibrate(pattern: number | number[]): boolean;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+}
+declare namespace Windows.Phone.Devices.Notification {
+    class VibrationDevice {
+        static initialize(): boolean;
+        static vibrate(duration: number): boolean;
+    }
+}
+declare namespace Windows.Security.Authentication.Web {
+    class WebAuthenticationBroker {
+        static getReturnUrl(): string;
+        static authenticateUsingIframe(iframeId: string, urlNavigate: string, urlRedirect: string, timeout: number): Promise<string>;
+        static authenticateUsingWindow(urlNavigate: string, urlRedirect: string, title: string, popUpWidth: number, popUpHeight: number, timeout: number): Promise<string>;
+        private static startMonitoringRedirect;
     }
 }
 declare namespace Windows.Storage {
@@ -958,14 +955,74 @@ declare namespace Windows.Storage {
         static DownloadAsset(path: string): Promise<string>;
     }
 }
-declare namespace Windows.Storage.Pickers {
-    class FileSavePicker {
-        static SaveAs(fileName: string, dataPtr: any, size: number): void;
+declare namespace Uno.Storage {
+    class NativeStorageFile {
+        static getBasicPropertiesAsync(guid: string): Promise<string>;
+    }
+}
+declare namespace Uno.Storage {
+    class NativeStorageFolder {
+        /**
+         * Creates a new folder inside another folder.
+         * @param parentGuid The GUID of the folder to create in.
+         * @param folderName The name of the new folder.
+         */
+        static createFolderAsync(parentGuid: string, folderName: string): Promise<string>;
+        /**
+         * Creates a new file inside another folder.
+         * @param parentGuid The GUID of the folder to create in.
+         * @param folderName The name of the new file.
+         */
+        static createFileAsync(parentGuid: string, fileName: string): Promise<string>;
+        /**
+         * Tries to get a folder in the given parent folder by name.
+         * @param parentGuid The GUID of the parent folder to get.
+         * @param folderName The name of the folder to look for.
+         * @returns A GUID of the folder if found, otherwise null.
+         */
+        static tryGetFolderAsync(parentGuid: string, folderName: string): Promise<string>;
+        /**
+        * Tries to get a file in the given parent folder by name.
+        * @param parentGuid The GUID of the parent folder to get.
+        * @param folderName The name of the folder to look for.
+        * @returns A GUID of the folder if found, otherwise null.
+        */
+        static tryGetFileAsync(parentGuid: string, fileName: string): Promise<string>;
+        static deleteItemAsync(parentGuid: string, itemName: string): Promise<string>;
+        static getItemsAsync(folderGuid: string): Promise<string>;
+        static getFoldersAsync(folderGuid: string): Promise<string>;
+        static getFilesAsync(folderGuid: string): Promise<string>;
+        static getPrivateRootAsync(): Promise<string>;
+        private static getEntriesAsync;
+    }
+}
+declare namespace Uno.Storage {
+    class NativeStorageItem {
+        private static generateGuidBinding;
+        private static _guidToItemMap;
+        private static _itemToGuidMap;
+        static addItem(guid: string, item: FileSystemHandle | File): void;
+        static removeItem(guid: string): void;
+        static getItem(guid: string): FileSystemHandle | File;
+        static getFile(guid: string): Promise<File>;
+        static getGuid(item: FileSystemHandle | File): string;
+        static getInfos(...items: Array<FileSystemHandle | File>): NativeStorageItemInfo[];
+        private static storeItems;
+        private static generateGuids;
+    }
+}
+declare namespace Uno.Storage {
+    class NativeStorageItemInfo {
+        id: string;
+        name: string;
+        path: string;
+        isFile: boolean;
     }
 }
 declare namespace Windows.Storage {
     class StorageFolder {
-        private static _isInit;
+        private static _isInitialized;
+        private static _isSynchronizing;
         private static dispatchStorageInitialized;
         /**
          * Determine if IndexDB is available, some browsers and modes disable it.
@@ -981,118 +1038,71 @@ declare namespace Windows.Storage {
         static setupStorage(path: string): void;
         private static onStorageInitialized;
         /**
-         * Synchronize the IDBFS memory cache back to IndexDB
+         * Synchronize the IDBFS memory cache back to IndexedDB
+         * populate: requests the filesystem to be popuplated from the IndexedDB
+         * onSynchronized: function invoked when the synchronization finished
          * */
         private static synchronizeFileSystem;
     }
 }
-declare namespace Windows.Devices.Geolocation {
-    class Geolocator {
-        private static dispatchAccessRequest;
-        private static dispatchGeoposition;
-        private static dispatchError;
-        private static positionWatches;
-        static initialize(): void;
-        static requestAccess(): void;
-        static getGeoposition(desiredAccuracyInMeters: number, maximumAge: number, timeout: number, requestId: string): void;
-        static startPositionWatch(desiredAccuracyInMeters: number, requestId: string): boolean;
-        static stopPositionWatch(desiredAccuracyInMeters: number, requestId: string): void;
-        private static handleGeoposition;
-        private static handleError;
-        private static getAccurateCurrentPosition;
+declare namespace Windows.Storage.Pickers {
+    class FileOpenPicker {
+        static isNativeSupported(): boolean;
+        static nativePickFilesAsync(multiple: boolean, showAllEntry: boolean, fileTypesJson: string, id: string, startIn: StartInDirectory): Promise<string>;
+        static uploadPickFilesAsync(multiple: boolean, targetPath: string, accept: string): Promise<string>;
     }
 }
-declare namespace Windows.Devices.Midi {
-    class MidiInPort {
-        private static dispatchMessage;
-        private static instanceMap;
-        private managedId;
-        private inputPort;
+declare namespace Windows.Storage.Pickers {
+    class FileSavePicker {
+        static isNativeSupported(): boolean;
+        static nativePickSaveFileAsync(showAllEntry: boolean, fileTypesJson: string, suggestedFileName: string, id: string, startIn: StartInDirectory): Promise<string>;
+        static SaveAs(fileName: string, dataPtr: any, size: number): void;
+    }
+}
+declare namespace Windows.Storage.Pickers {
+    class FolderPicker {
+        static isNativeSupported(): boolean;
+        static pickSingleFolderAsync(id: string, startIn: StartInDirectory): Promise<string>;
+    }
+}
+declare namespace Uno.Storage.Pickers {
+    class NativeFilePickerAcceptType {
+        description: string;
+        accept: NativeFilePickerAcceptTypeItem[];
+    }
+}
+declare namespace Uno.Storage.Pickers {
+    class NativeFilePickerAcceptTypeItem {
+        mimeType: string;
+        extensions: string[];
+    }
+}
+declare namespace Uno.Storage.Streams {
+    class NativeFileReadStream {
+        private static _streamMap;
+        private _file;
         private constructor();
-        static createPort(managedId: string, encodedDeviceId: string): void;
-        static removePort(managedId: string): void;
-        static startMessageListener(managedId: string): void;
-        static stopMessageListener(managedId: string): void;
-        private messageReceived;
+        static openAsync(streamId: string, fileId: string): Promise<string>;
+        static readAsync(streamId: string, targetArrayPointer: number, offset: number, count: number, position: number): Promise<string>;
+        static close(streamId: string): void;
     }
 }
-declare namespace Windows.Devices.Midi {
-    class MidiOutPort {
-        static sendBuffer(encodedDeviceId: string, timestamp: number, ...args: number[]): void;
+declare namespace Uno.Storage.Streams {
+    class NativeFileWriteStream {
+        private static _streamMap;
+        private _stream;
+        private _buffer;
+        private constructor();
+        static openAsync(streamId: string, fileId: string): Promise<string>;
+        private static verifyPermissionAsync;
+        static writeAsync(streamId: string, dataArrayPointer: number, offset: number, count: number, position: number): Promise<string>;
+        static closeAsync(streamId: string): Promise<string>;
+        static truncateAsync(streamId: string, length: number): Promise<string>;
     }
 }
-interface Window {
-    DeviceMotionEvent(): void;
-}
-declare namespace Windows.Devices.Sensors {
-    class Accelerometer {
-        private static dispatchReading;
-        static initialize(): boolean;
-        static startReading(): void;
-        static stopReading(): void;
-        private static readingChangedHandler;
-    }
-}
-declare class Gyroscope {
-    constructor(config: any);
-    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
-}
-interface Window {
-    Gyroscope: Gyroscope;
-}
-declare namespace Windows.Devices.Sensors {
-    class Gyrometer {
-        private static dispatchReading;
-        private static gyroscope;
-        static initialize(): boolean;
-        static startReading(): void;
-        static stopReading(): void;
-        private static readingChangedHandler;
-    }
-}
-declare class Magnetometer {
-    constructor(config: any);
-    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
-}
-interface Window {
-    Magnetometer: Magnetometer;
-}
-declare namespace Windows.Devices.Sensors {
-    class Magnetometer {
-        private static dispatchReading;
-        private static magnetometer;
-        static initialize(): boolean;
-        static startReading(): void;
-        static stopReading(): void;
-        private static readingChangedHandler;
-    }
-}
-declare namespace Windows.Graphics.Display {
-    class DisplayInformation {
-        private static readonly DpiCheckInterval;
-        private static lastDpi;
-        private static dpiWatcher;
-        private static dispatchOrientationChanged;
-        private static dispatchDpiChanged;
-        static startOrientationChanged(): void;
-        static stopOrientationChanged(): void;
-        static startDpiChanged(): void;
-        static stopDpiChanged(): void;
-        private static updateDpi;
-        private static onOrientationChange;
-    }
-}
-declare namespace Windows.Networking.Connectivity {
-    class ConnectionProfile {
-        static hasInternetAccess(): boolean;
-    }
-}
-declare namespace Windows.Networking.Connectivity {
-    class NetworkInformation {
-        private static dispatchStatusChanged;
-        static startStatusChanged(): void;
-        static stopStatusChanged(): void;
-        static networkStatusChanged(): void;
+declare namespace Windows.System {
+    class MemoryManager {
+        static getAppMemoryUsage(): any;
     }
 }
 interface Navigator {
@@ -1112,6 +1122,11 @@ declare namespace Windows.System.Display {
         private static activeScreenLockPromise;
         static activateScreenLock(): void;
         static deactivateScreenLock(): void;
+    }
+}
+declare namespace Windows.System.Profile {
+    class AnalyticsInfo {
+        static getDeviceType(): string;
     }
 }
 interface Window {
@@ -1138,12 +1153,22 @@ declare namespace Windows.System.Profile {
 declare namespace Windows.UI.Core {
     class SystemNavigationManager {
         private static _current;
-        static readonly current: SystemNavigationManager;
+        static get current(): SystemNavigationManager;
         private _isEnabled;
         constructor();
         enable(): void;
         disable(): void;
         private clearStack;
+    }
+}
+interface Navigator {
+    setAppBadge(value: number): void;
+    clearAppBadge(): void;
+}
+declare namespace Windows.UI.Notifications {
+    class BadgeUpdater {
+        static setNumber(value: number): void;
+        static clear(): void;
     }
 }
 declare namespace Windows.UI.ViewManagement {
@@ -1159,8 +1184,10 @@ declare namespace Windows.UI.ViewManagement {
 declare namespace Windows.UI.Xaml {
     class Application {
         private static dispatchThemeChange;
+        private static dispatchVisibilityChange;
         static getDefaultSystemTheme(): string;
         static observeSystemTheme(): void;
+        static observeVisibility(): void;
     }
 }
 declare namespace Windows.UI.Xaml {
@@ -1169,30 +1196,44 @@ declare namespace Windows.UI.Xaml {
         Dark = "Dark"
     }
 }
-declare namespace Uno.Devices.Midi.Internal {
-    class WasmMidiAccess {
-        private static midiAccess;
-        static request(systemExclusive: boolean): Promise<string>;
-        static getMidi(): WebMidi.MIDIAccess;
+declare namespace Windows.UI.Xaml {
+    enum NativePointerEvent {
+        pointerover = 1,
+        pointerout = 2,
+        pointerdown = 4,
+        pointerup = 8,
+        pointercancel = 16,
+        pointermove = 32,
+        wheel = 64
+    }
+    class UIElement_Pointers {
+        private static _dispatchPointerEventMethod;
+        private static _dispatchPointerEventArgs;
+        private static _dispatchPointerEventResult;
+        static setPointerEventArgs(pArgs: number): void;
+        static setPointerEventResult(pArgs: number): void;
+        static subscribePointerEvents(pParams: number): void;
+        static unSubscribePointerEvents(pParams: number): void;
+        private static onPointerEventReceived;
+        private static onPointerOutReceived;
+        private static dispatchPointerEvent;
+        private static _wheelLineSize;
+        private static get wheelLineSize();
+        private static toNativePointerEventArgs;
+        private static toNativeEvent;
+        private static toPointerDeviceType;
     }
 }
-interface Navigator {
-    webkitVibrate(pattern: number | number[]): boolean;
-    mozVibrate(pattern: number | number[]): boolean;
-    msVibrate(pattern: number | number[]): boolean;
-}
-declare namespace Windows.Phone.Devices.Notification {
-    class VibrationDevice {
-        static initialize(): boolean;
-        static vibrate(duration: number): boolean;
+declare namespace Windows.UI.Xaml {
+    class UIElement extends Windows.UI.Xaml.UIElement_Pointers {
     }
 }
 declare namespace Windows.UI.Xaml.Media.Animation {
-    class RenderingLoopFloatAnimator {
+    class RenderingLoopAnimator {
         private managedHandle;
         private static activeInstances;
         static createInstance(managedHandle: string, jsHandle: number): void;
-        static getInstance(jsHandle: number): RenderingLoopFloatAnimator;
+        static getInstance(jsHandle: number): RenderingLoopAnimator;
         static destroyInstance(jsHandle: number): void;
         private constructor();
         SetStartFrameDelay(delay: number): void;
@@ -1208,16 +1249,385 @@ declare namespace Windows.UI.Xaml.Media.Animation {
         private _isEnabled;
     }
 }
-declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
-    class MidiDeviceClassProvider {
-        static findDevices(findInputDevices: boolean): string;
+declare class WindowManagerAddViewParams {
+    HtmlId: number;
+    ChildView: number;
+    Index: number;
+    static unmarshal(pData: number): WindowManagerAddViewParams;
+}
+declare class WindowManagerArrangeElementParams {
+    Top: number;
+    Left: number;
+    Width: number;
+    Height: number;
+    ClipTop: number;
+    ClipLeft: number;
+    ClipBottom: number;
+    ClipRight: number;
+    HtmlId: number;
+    Clip: boolean;
+    static unmarshal(pData: number): WindowManagerArrangeElementParams;
+}
+declare class WindowManagerCreateContentParams {
+    HtmlId: number;
+    TagName: string;
+    Handle: number;
+    UIElementRegistrationId: number;
+    IsSvg: boolean;
+    IsFocusable: boolean;
+    static unmarshal(pData: number): WindowManagerCreateContentParams;
+}
+declare class WindowManagerDestroyViewParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerDestroyViewParams;
+}
+declare class WindowManagerGetBBoxParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerGetBBoxParams;
+}
+declare class WindowManagerGetBBoxReturn {
+    X: number;
+    Y: number;
+    Width: number;
+    Height: number;
+    marshal(pData: number): void;
+}
+declare class WindowManagerGetClientViewSizeParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerGetClientViewSizeParams;
+}
+declare class WindowManagerGetClientViewSizeReturn {
+    OffsetWidth: number;
+    OffsetHeight: number;
+    ClientWidth: number;
+    ClientHeight: number;
+    marshal(pData: number): void;
+}
+declare class WindowManagerInitParams {
+    IsHostedMode: boolean;
+    IsLoadEventsEnabled: boolean;
+    static unmarshal(pData: number): WindowManagerInitParams;
+}
+declare class WindowManagerMeasureViewParams {
+    HtmlId: number;
+    AvailableWidth: number;
+    AvailableHeight: number;
+    MeasureContent: boolean;
+    static unmarshal(pData: number): WindowManagerMeasureViewParams;
+}
+declare class WindowManagerMeasureViewReturn {
+    DesiredWidth: number;
+    DesiredHeight: number;
+    marshal(pData: number): void;
+}
+declare class WindowManagerRegisterEventOnViewParams {
+    HtmlId: number;
+    EventName: string;
+    OnCapturePhase: boolean;
+    EventExtractorId: number;
+    static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
+}
+declare class WindowManagerRegisterPointerEventsOnViewParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerRegisterPointerEventsOnViewParams;
+}
+declare class WindowManagerRegisterUIElementParams {
+    TypeName: string;
+    IsFrameworkElement: boolean;
+    Classes_Length: number;
+    Classes: Array<string>;
+    static unmarshal(pData: number): WindowManagerRegisterUIElementParams;
+}
+declare class WindowManagerRegisterUIElementReturn {
+    RegistrationId: number;
+    marshal(pData: number): void;
+}
+declare class WindowManagerRemoveAttributeParams {
+    HtmlId: number;
+    Name: string;
+    static unmarshal(pData: number): WindowManagerRemoveAttributeParams;
+}
+declare class WindowManagerRemoveViewParams {
+    HtmlId: number;
+    ChildView: number;
+    static unmarshal(pData: number): WindowManagerRemoveViewParams;
+}
+declare class WindowManagerResetElementBackgroundParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerResetElementBackgroundParams;
+}
+declare class WindowManagerResetStyleParams {
+    HtmlId: number;
+    Styles_Length: number;
+    Styles: Array<string>;
+    static unmarshal(pData: number): WindowManagerResetStyleParams;
+}
+declare class WindowManagerScrollToOptionsParams {
+    Left: number;
+    Top: number;
+    HasLeft: boolean;
+    HasTop: boolean;
+    DisableAnimation: boolean;
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerScrollToOptionsParams;
+}
+declare class WindowManagerSetAttributeParams {
+    HtmlId: number;
+    Name: string;
+    Value: string;
+    static unmarshal(pData: number): WindowManagerSetAttributeParams;
+}
+declare class WindowManagerSetAttributesParams {
+    HtmlId: number;
+    Pairs_Length: number;
+    Pairs: Array<string>;
+    static unmarshal(pData: number): WindowManagerSetAttributesParams;
+}
+declare class WindowManagerSetClassesParams {
+    HtmlId: number;
+    CssClasses_Length: number;
+    CssClasses: Array<string>;
+    Index: number;
+    static unmarshal(pData: number): WindowManagerSetClassesParams;
+}
+declare class WindowManagerSetContentHtmlParams {
+    HtmlId: number;
+    Html: string;
+    static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
+}
+declare class WindowManagerSetElementBackgroundColorParams {
+    HtmlId: number;
+    Color: number;
+    static unmarshal(pData: number): WindowManagerSetElementBackgroundColorParams;
+}
+declare class WindowManagerSetElementBackgroundGradientParams {
+    HtmlId: number;
+    CssGradient: string;
+    static unmarshal(pData: number): WindowManagerSetElementBackgroundGradientParams;
+}
+declare class WindowManagerSetElementColorParams {
+    HtmlId: number;
+    Color: number;
+    static unmarshal(pData: number): WindowManagerSetElementColorParams;
+}
+declare class WindowManagerSetElementFillParams {
+    HtmlId: number;
+    Color: number;
+    static unmarshal(pData: number): WindowManagerSetElementFillParams;
+}
+declare class WindowManagerSetElementTransformParams {
+    HtmlId: number;
+    M11: number;
+    M12: number;
+    M21: number;
+    M22: number;
+    M31: number;
+    M32: number;
+    static unmarshal(pData: number): WindowManagerSetElementTransformParams;
+}
+declare class WindowManagerSetNameParams {
+    HtmlId: number;
+    Name: string;
+    static unmarshal(pData: number): WindowManagerSetNameParams;
+}
+declare class WindowManagerSetPointerEventsParams {
+    HtmlId: number;
+    Enabled: boolean;
+    static unmarshal(pData: number): WindowManagerSetPointerEventsParams;
+}
+declare class WindowManagerSetPropertyParams {
+    HtmlId: number;
+    Pairs_Length: number;
+    Pairs: Array<string>;
+    static unmarshal(pData: number): WindowManagerSetPropertyParams;
+}
+declare class WindowManagerSetStyleDoubleParams {
+    HtmlId: number;
+    Name: string;
+    Value: number;
+    static unmarshal(pData: number): WindowManagerSetStyleDoubleParams;
+}
+declare class WindowManagerSetStylesParams {
+    HtmlId: number;
+    Pairs_Length: number;
+    Pairs: Array<string>;
+    static unmarshal(pData: number): WindowManagerSetStylesParams;
+}
+declare class WindowManagerSetSvgElementRectParams {
+    X: number;
+    Y: number;
+    Width: number;
+    Height: number;
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerSetSvgElementRectParams;
+}
+declare class WindowManagerSetUnsetClassesParams {
+    HtmlId: number;
+    CssClassesToSet_Length: number;
+    CssClassesToSet: Array<string>;
+    CssClassesToUnset_Length: number;
+    CssClassesToUnset: Array<string>;
+    static unmarshal(pData: number): WindowManagerSetUnsetClassesParams;
+}
+declare class WindowManagerSetVisibilityParams {
+    HtmlId: number;
+    Visible: boolean;
+    static unmarshal(pData: number): WindowManagerSetVisibilityParams;
+}
+declare class WindowManagerSetXUidParams {
+    HtmlId: number;
+    Uid: string;
+    static unmarshal(pData: number): WindowManagerSetXUidParams;
+}
+declare namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core {
+    class DragDropExtensionEventArgs {
+        eventName: string;
+        allowedOperations: string;
+        acceptedOperation: string;
+        dataItems: string;
+        timestamp: number;
+        x: number;
+        y: number;
+        id: number;
+        buttons: number;
+        shift: boolean;
+        ctrl: boolean;
+        alt: boolean;
+        static unmarshal(pData: number): DragDropExtensionEventArgs;
+        marshal(pData: number): void;
     }
 }
-declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
-    class MidiDeviceConnectionWatcher {
-        private static dispatchStateChanged;
-        static startStateChanged(): void;
-        static stopStateChanged(): void;
-        static onStateChanged(event: WebMidi.MIDIConnectionEvent): void;
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_ClearParams {
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_ClearParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_ContainsKeyParams {
+        Key: string;
+        Value: string;
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_ContainsKeyParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_ContainsKeyReturn {
+        ContainsKey: boolean;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetCountParams {
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_GetCountParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetCountReturn {
+        Count: number;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetKeyByIndexParams {
+        Locality: string;
+        Index: number;
+        static unmarshal(pData: number): ApplicationDataContainer_GetKeyByIndexParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetKeyByIndexReturn {
+        Value: string;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetValueByIndexParams {
+        Locality: string;
+        Index: number;
+        static unmarshal(pData: number): ApplicationDataContainer_GetValueByIndexParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetValueByIndexReturn {
+        Value: string;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_RemoveParams {
+        Locality: string;
+        Key: string;
+        static unmarshal(pData: number): ApplicationDataContainer_RemoveParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_RemoveReturn {
+        Removed: boolean;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_SetValueParams {
+        Key: string;
+        Value: string;
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_SetValueParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_TryGetValueParams {
+        Key: string;
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_TryGetValueParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_TryGetValueReturn {
+        Value: string;
+        HasValue: boolean;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class StorageFolderMakePersistentParams {
+        Paths_Length: number;
+        Paths: Array<string>;
+        static unmarshal(pData: number): StorageFolderMakePersistentParams;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class NativePointerEventArgs {
+        HtmlId: number;
+        Event: number;
+        pointerId: number;
+        x: number;
+        y: number;
+        ctrl: boolean;
+        shift: boolean;
+        buttons: number;
+        buttonUpdate: number;
+        deviceType: number;
+        srcHandle: number;
+        timestamp: number;
+        pressure: number;
+        wheelDeltaX: number;
+        wheelDeltaY: number;
+        hasRelatedTarget: boolean;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class NativePointerEventResult {
+        Result: number;
+        static unmarshal(pData: number): NativePointerEventResult;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class NativePointerSubscriptionParams {
+        HtmlId: number;
+        Events: number;
+        static unmarshal(pData: number): NativePointerSubscriptionParams;
     }
 }

@@ -59,6 +59,26 @@ namespace Windows.ApplicationModel
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.ApplicationModel.AppExecutionContext ExecutionContext
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AppExecutionContext AppInfo.ExecutionContext is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  string[] SupportedFileExtensions
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string[] AppInfo.SupportedFileExtensions is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.AppInfo Current
 		{
 			get
@@ -72,6 +92,8 @@ namespace Windows.ApplicationModel
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.DisplayInfo.get
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.PackageFamilyName.get
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.Package.get
+		// Forced skipping of method Windows.ApplicationModel.AppInfo.ExecutionContext.get
+		// Forced skipping of method Windows.ApplicationModel.AppInfo.SupportedFileExtensions.get
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.Current.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

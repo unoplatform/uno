@@ -1,25 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Represents a button control that functions as a hyperlink.
+	/// </summary>
 	public partial class HyperlinkButton : ButtonBase
 	{
+		/// <summary>
+		/// Initializes a new instance of the HyperlinkButton class.
+		/// </summary>
 		public HyperlinkButton()
 		{
-			InitializeVisualStates();
-
-			Click += (s, e) => TryNavigate();
-
 			DefaultStyleKey = typeof(HyperlinkButton);
 		}
-		
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
@@ -31,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Forces ContentPresenter to materialize its template.
 				contentPresenter.Measure(new Size(0, 0));
-				if (VisualTreeHelper.GetChildrenCount(contentPresenter) == 1 && VisualTreeHelper.GetChild(contentPresenter, 0) is TextBlock textBlock)
+				if (VisualTreeHelper.GetChildrenCount(contentPresenter) == 1 && VisualTreeHelper.GetChild(contentPresenter, 0) is ImplicitTextBlock textBlock)
 				{
 					textBlock.TextDecorations = Windows.UI.Text.TextDecorations.Underline;
 				}
@@ -42,31 +40,20 @@ namespace Windows.UI.Xaml.Controls
 
 		public Uri NavigateUri
 		{
-			get { return (Uri)GetValue(NavigateUriProperty); }
-			set { SetValue(NavigateUriProperty, value); }
+			get => (Uri)GetValue(NavigateUriProperty);
+			set => SetValue(NavigateUriProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty NavigateUriProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
-				"NavigateUri", typeof(global::System.Uri),
-				typeof(global::Windows.UI.Xaml.Controls.HyperlinkButton),
-				new FrameworkPropertyMetadata(default(global::System.Uri)));
+		/// <summary>
+		/// Identifies the NavigateUri dependency property.
+		/// </summary>
+		public static DependencyProperty NavigateUriProperty { get; } =
+			DependencyProperty.Register(
+				nameof(NavigateUri),
+				typeof(Uri),
+				typeof(HyperlinkButton),
+				new FrameworkPropertyMetadata(default(Uri)));
 
-#endregion
-
-		private void TryNavigate()
-		{
-			if (NavigateUri != null)
-			{
-				Launcher.LaunchUriAsync(NavigateUri);
-			}
-		}
-
-		partial void NavigatePartial();
-
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return new HyperlinkButtonAutomationPeer(this);
-		}
+		#endregion
 	}
 }

@@ -12,6 +12,7 @@ namespace Windows.Foundation
 	public partial struct Rect
 	{
 		private const string _negativeErrorMessage = "Non-negative number required.";
+		private const float Epsilon = 0.00001f;
 
 		public static Rect Empty { get; } = new Rect
 		{
@@ -99,6 +100,26 @@ namespace Windows.Foundation
 
 		public bool IsEmpty => Empty.Equals(this);
 
+		/// <summary>
+		/// This indicates that this rect is equals to the <see cref="Infinite"/>.
+		/// Unlike the <see cref="IsFinite"/>, this **DOES NOT** indicates that the rect is infinite on at least one of its axis.
+		/// </summary>
+		internal bool IsInfinite => Infinite.Equals(this);
+
+		/// <summary>
+		/// This make sure that this rect does not have any infinite value on any of its axis.
+		/// </summary>
+		/// <remarks>This is **NOT** the opposite of <see cref="IsInfinite"/>.</remarks>
+		internal bool IsFinite => !double.IsInfinity(X) && !double.IsInfinity(Y) && !double.IsInfinity(Width) && !double.IsInfinity(Height);
+
+		/// <summary>
+		/// Indicates that this rect does not have any infinite or NaN on any on its axis.
+		/// (I.e. it's a valid rect for standard layouting logic)
+		/// </summary>
+		internal bool IsValid => IsFinite && !double.IsNaN(X) && !double.IsNaN(Y) && !double.IsNaN(Width) && !double.IsNaN(Height);
+
+		internal bool IsUniform => Math.Abs(Left - Top) < Epsilon && Math.Abs(Left - Right) < Epsilon && Math.Abs(Left - Bottom) < Epsilon;
+
 		public static implicit operator Rect(string text)
 		{
 			if (text == null)
@@ -107,8 +128,14 @@ namespace Windows.Foundation
 			}
 
 			var parts = text
-				.Split(new[] { ',' })
+				.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
 				.SelectToArray(s => double.Parse(s, NumberFormatInfo.InvariantInfo));
+
+			if(parts.Length != 4)
+			{
+				throw new ArgumentException(
+					"Cannot create a Rect from " + text + ": needs 4 parts separated by a comma or a space.");
+			}
 
 			return new Rect
 			(
@@ -135,7 +162,9 @@ namespace Windows.Foundation
 		public override string ToString() => (string)this;
 
 		internal string ToDebugString()
-			=> FormattableString.Invariant($"{Width:F2},{Height:F2}@{Location.ToDebugString()}");
+			=> IsEmpty ? "--empty--"
+				: IsInfinite ? "--infinite--"
+				: FormattableString.Invariant($"{Width:F2}x{Height:F2}@{Location.ToDebugString()}");
 
 		/// <summary>
 		/// Provides the size of this rectangle.
@@ -233,9 +262,9 @@ namespace Windows.Foundation
 		public void Union(Rect rect)
 		{
 			var left = Math.Min(Left, rect.Left);
-			var right = Math.Max(left + Width, rect.Right);
+			var right = Math.Max(Left + Width, rect.Right);
 			var top = Math.Min(Top, rect.Top);
-			var bottom = Math.Max(top + Height, rect.Bottom);
+			var bottom = Math.Max(Top + Height, rect.Bottom);
 			this = new Rect(left, top, right - left, bottom - top);
 		}
 
@@ -247,7 +276,7 @@ namespace Windows.Foundation
 				&& value.Width == Width
 				&& value.Height == Height;
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 			=> obj is Rect r ? r.Equals(this) : base.Equals(obj);
 
 		public static bool operator ==(Rect left, Rect right) => left.Equals(right);

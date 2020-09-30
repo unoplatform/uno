@@ -2,29 +2,44 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+using Uno.UI.DataBinding;
+using Uno.Foundation.Logging;
+using Windows.UI.Xaml.Input;
+
 #if XAMARIN_IOS
 using UIKit;
 #elif __MACOS__
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	internal partial class PopupPanel : Panel
 	{
-		public Popup Popup { get; }
+		private ManagedWeakReference _popup;
+
+		public Popup Popup
+		{
+			get => _popup?.Target as Popup;
+			set
+			{
+				WeakReferencePool.ReturnWeakReference(this, _popup);
+				_popup = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
 
 		public PopupPanel(Popup popup)
 		{
 			Popup = popup ?? throw new ArgumentNullException(nameof(popup));
 			Visibility = Visibility.Collapsed;
+			PointerPressed += OnPointerPressed;
 		}
 
 		protected Size _lastMeasuredSize;
@@ -61,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Measured PopupPanel #={GetHashCode()} ({(Popup.CustomLayouter == null?"":"**using custom layouter**")}) DC={Popup.DataContext} child={child} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} availableSize={availableSize} measured={_lastMeasuredSize}");
+				this.Log().LogDebug($"Measured PopupPanel #={GetHashCode()} ({(Popup.CustomLayouter == null ? "" : "**using custom layouter**")}) DC={Popup.DataContext} child={child} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} availableSize={availableSize} measured={_lastMeasuredSize}");
 			}
 
 			// Note that we return the availableSize and not the _lastMeasuredSize. This is because this
@@ -106,6 +121,23 @@ namespace Windows.UI.Xaml.Controls
 				//		 (And actually it also lets the view appear out of the window ...)
 				var anchor = Popup.Anchor ?? Popup;
 				var anchorLocation = anchor.TransformToVisual(this).TransformPoint(new Point());
+
+#if __ANDROID__
+				// for android, the above line returns the absolute coordinates of anchor on the screen
+				// because the parent view of this PopupPanel is a PopupWindow and GetLocationInWindow will be (0,0)
+				// therefore, we need to make the relative adjustment
+				if (this.NativeVisualParent is Android.Views.View view)
+				{
+					var windowLocation = Point.From(view.GetLocationInWindow);
+					var screenLocation = Point.From(view.GetLocationOnScreen);
+
+					if (windowLocation == default)
+					{
+						anchorLocation -= ViewHelper.PhysicalToLogicalPixels(screenLocation);
+					}
+				}
+#endif
+
 				var finalFrame = new Rect(
 					anchorLocation.X + (float)Popup.HorizontalOffset,
 					anchorLocation.Y + (float)Popup.VerticalOffset,
@@ -144,5 +176,50 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalSize;
 		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			// Set Parent to the Popup, to obtain the same behavior as UWP that the Popup (and therefore the rest of the main visual tree)
+			// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
+			this.SetLogicalParent(Popup);
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			this.SetLogicalParent(null);
+		}
+
+		// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we
+		// need to support native popups on Android that don't use PopupRoot.
+		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
+		{
+			// Make sure we are the original source.  We do not want to handle PointerPressed on the Popup itself.
+			if (args.OriginalSource == this && Popup is { } popup
+			)
+			{
+				// The check is here because ContentDialogPopupPanel returns true for IsViewHit() even though light-dismiss is always
+				// disabled for ContentDialogs
+				if (popup.IsLightDismissEnabled)
+				{
+					ClosePopup(popup);
+				}
+				args.Handled = true;
+			}
+		}
+
+		private static void ClosePopup(Popup popup)
+		{
+			// Give the popup an opportunity to cancel closing.
+			var cancel = false;
+			popup.OnClosing(ref cancel);
+			if (!cancel)
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		internal override bool IsViewHit() => Popup?.IsLightDismissEnabled ?? false;
 	}
 }

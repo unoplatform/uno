@@ -1,4 +1,4 @@
-# Assets
+# Assets and image display
 
 In a standard Xamarin project, you must duplicate, rename, and manually add your assets to each target project (UWP, iOS, Android). 
 
@@ -6,15 +6,26 @@ In a standard Xamarin project, you must duplicate, rename, and manually add your
 
 We still recommend using the above technique for platform-specific icons and splash screens in Uno.UI projects.
 
-For most other assets, Uno.UI uses custom build tasks to lets you include assets once in shared projects and automatically use them on all platforms. The rest of this document will cover this particular features.
+For most other assets, Uno.UI uses custom build tasks to lets you include assets once in shared projects and automatically use them on all platforms. The rest of this document will cover those particular features.
 
 ## Supported asset types
 
 At the moment, only the following image file types are supported:
 
-- `.png`
-- `.jpg` or `.jpeg`
-- `.gif`
+|             | .bmp (Win BMP) | .gif‡ | .heic (Apple) | .jpg & .jpeg (JFIF) | .png | .webp | .pdf | .svg |
+| ----------- | :------------: | :---: | :-----------: | :-----------------: | :--: | :---: | :--: | :--: |
+| Windows UWP |       ✔️        |   ✔️   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
+| Android 10  |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ✔️   |  ✔️   |  ✔️   |
+| iOS 13      |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ❌   |  ❌   |
+| macOS       |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ✔️   |  ❌   |
+| Wasm†       |       ✔️        |  ✔️‡   |      ❌†       |          ✔️          |  ✔️   |  ❌†   |  ❌†  |  ✔️   |
+| Skia WPF    |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ❌   |
+
+* † Actual **Wasm image format support** is browser dependent. For example, `.webp` is not working on Safari on macOS, but works on Chromium-based browsers. Checkmarks (✔️) indicates a format that can safely expected to work on all browsers able to run Wasm applications.
+* ‡ **Gif animation support**:
+  * Play/Pause not implemented in Uno yet
+  * Always animated on Wasm
+  * Not animated on other Uno platforms
 
 ## Adding an asset to your project
 
@@ -57,7 +68,7 @@ We recommend including assets for each of these scales: `100`, `150`, `200`, `30
 
 \Assets\Images\scale-100\logo.png
 \Assets\Images\scale-200\logo.png
-\Assets\Images\scale\400\logo.png
+\Assets\Images\scale-400\logo.png
 ```
 
 ### Language
@@ -110,7 +121,7 @@ Sometimes, you might want to use a different asset depending on the platform. Be
 
 Because the `custom` qualifier doesn't have any special meaning on UWP, we have to interpret its value manually.
 
-On iOS and Android, Uno.UI's `RetargetAssets` task automatically interprets these values and exclude unsupported platforms.
+On iOS and Android, Uno.UI's `RetargetAssets` task automatically interprets these values and excludes unsupported platforms.
 
 On UWP, you must add the following code to your `App.xaml.cs` constructor:
 
@@ -131,3 +142,28 @@ On UWP, you must add the following code to your `App.xaml.cs` constructor:
 \Assets\Images\logo.custom-ios.png
 \Assets\Images\logo.custom-android.png
 ```
+
+## Android: setting a custom image handler
+
+On Android, to handle the loading of images from a remote url, the Image control has to be provided a 
+ImageSource.DefaultImageLoader such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
+
+This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin). If not using the solution template, you can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code from your application's App constructor:
+
+```csharp
+private void ConfigureUniversalImageLoader()
+{
+	// Create global configuration and initialize ImageLoader with this config
+	ImageLoaderConfiguration config = new ImageLoaderConfiguration
+		.Builder(Context)
+		.Build();
+
+	ImageLoader.Instance.Init(config);
+
+	ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
+}
+```
+
+## iOS: referencing bundle images
+
+On iOS, bundle images can be selected using "bundle://" (e.g. bundle:///SplashScreen). When selecting the bundle resource, do not include the zoom factor, nor the file extension.

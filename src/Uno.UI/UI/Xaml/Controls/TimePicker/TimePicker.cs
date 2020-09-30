@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD
+﻿#if !UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -23,59 +23,58 @@ namespace Windows.UI.Xaml.Controls
 		public const string ThirdTextBlockColumnPartName = "ThirdTextBlockColumn"; //AM/PM column
 		public const string FlyoutButtonContentGridPartName = "FlyoutButtonContentGrid";
 
+		private const string HeaderContentPresenterPartName = "HeaderContentPresenter";
+
 		private Button _flyoutButton;
 		private TextBlock _hourTextBlock;
 		private TextBlock _minuteTextBlock;
 		private TextBlock _periodTextBlock;
 		private Grid _flyoutButtonContentGrid;
 		private ColumnDefinition _thirdTextBlockColumn;
+		private ContentPresenter _headerContentPresenter;
 		private bool _isLoaded;
 		private bool _isViewReady;
 
 		public TimePicker()
 		{
-			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true);
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "TimePickerLightDismissOverlayBackground", isThemeResourceExtension: true);
 
 			DefaultStyleKey = typeof(TimePicker);
 		}
 
-		#region Time DependencyProperty
+#region Time DependencyProperty
 
 		public TimeSpan Time
 		{
-			get { return (TimeSpan)this.GetValue(TimeProperty); }
-			set { this.SetValue(TimeProperty, value); }
+			get => (TimeSpan)this.GetValue(TimeProperty);
+			set => this.SetValue(TimeProperty, value);
 		}
 
 		public static DependencyProperty TimeProperty { get ; } =
 			DependencyProperty.Register(
-				"Time",
+				nameof(Time),
 				typeof(TimeSpan),
 				typeof(TimePicker),
 				new FrameworkPropertyMetadata(
 					defaultValue: DateTime.Now.TimeOfDay,
 					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnTimeChangedPartial((TimeSpan)e.OldValue, (TimeSpan)e.NewValue),
-					coerceValueCallback: (s, e) =>
-					{
-						var ts = (TimeSpan)e;
-						return new TimeSpan(ts.Days, ts.Hours, ts.Minutes, 0);
-					})
+					coerceValueCallback: (s, e) => e is TimeSpan ts ? new TimeSpan(ts.Days, ts.Hours, ts.Minutes, 0) : TimeSpan.Zero)
 				);
 
-		#endregion
+#endregion
 
-		#region MinuteIncrement DependencyProperty
+#region MinuteIncrement DependencyProperty
 
 		public int MinuteIncrement
 		{
-			get { return (int)this.GetValue(MinuteIncrementProperty); }
-			set { this.SetValue(MinuteIncrementProperty, value); }
+			get => (int)this.GetValue(MinuteIncrementProperty);
+			set => this.SetValue(MinuteIncrementProperty, value);
 		}
 
 		public static DependencyProperty MinuteIncrementProperty { get ; } =
 			DependencyProperty.Register(
-				"MinuteIncrement",
+				nameof(MinuteIncrement),
 				typeof(int),
 				typeof(TimePicker),
 				new FrameworkPropertyMetadata(
@@ -96,72 +95,102 @@ namespace Windows.UI.Xaml.Controls
 					})
 				);
 
-		#endregion
+#endregion
 
-		#region FlyoutPlacement DependencyProperty
+#region FlyoutPlacement DependencyProperty
 
 		public FlyoutPlacementMode FlyoutPlacement
 		{
-			get { return (FlyoutPlacementMode)this.GetValue(FlyoutPlacementProperty); }
-			set { this.SetValue(FlyoutPlacementProperty, value); }
+			get => (FlyoutPlacementMode)this.GetValue(FlyoutPlacementProperty);
+			set => this.SetValue(FlyoutPlacementProperty, value);
 		}
 
 		public static DependencyProperty FlyoutPlacementProperty { get ; } =
 			DependencyProperty.Register(
-				"FlyoutPlacement",
+				nameof(FlyoutPlacement),
 				typeof(FlyoutPlacementMode),
 				typeof(TimePicker),
 				new FrameworkPropertyMetadata(FlyoutPlacementMode.Full));
 
-		#endregion
+#endregion
 
-		#region FlyoutPresenterStyle DependencyProperty
+#region FlyoutPresenterStyle DependencyProperty
 		// FlyoutPresenterStyle is an Uno-only property to allow the styling of the TimePicker's FlyoutPresenter.
 		public Style FlyoutPresenterStyle
 		{
-			get { return (Style)this.GetValue(FlyoutPresenterStyleProperty); }
-			set { this.SetValue(FlyoutPresenterStyleProperty, value); }
+			get => (Style)this.GetValue(FlyoutPresenterStyleProperty);
+			set => this.SetValue(FlyoutPresenterStyleProperty, value);
 		}
 
 		public static DependencyProperty FlyoutPresenterStyleProperty { get; } =
 			DependencyProperty.Register(
-				"FlyoutPresenterStyle",
+				nameof(FlyoutPresenterStyle),
 				typeof(Style),
 				typeof(TimePicker),
 				new FrameworkPropertyMetadata(
 					default(Style),
 					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
-		#endregion
+#endregion
+
+#region HeaderTemplate DependencyProperty
+
+		public DataTemplate HeaderTemplate
+		{
+			get => (DataTemplate)GetValue(HeaderTemplateProperty);
+			set => SetValue(HeaderTemplateProperty, value);
+		}
+
+		public static DependencyProperty HeaderTemplateProperty { get; } =
+			DependencyProperty.Register(
+				nameof(HeaderTemplate), typeof(DataTemplate),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+#endregion
+
+#region Header DependencyProperty
+
+		public object Header
+		{
+			get => GetValue(HeaderProperty);
+			set => SetValue(HeaderProperty, value);
+		}
+
+		public static DependencyProperty HeaderProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Header), typeof(object),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(null, (s, e) => ((TimePicker)s)?.OnHeaderChanged(e)));
+
+		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e) =>
+			UpdateHeaderVisibility();
+
+#endregion
 
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
-			get
-			{
-				return (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
-			}
-			set
-			{
-				this.SetValue(LightDismissOverlayModeProperty, value);
-			}
+			get => (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
+			set => this.SetValue(LightDismissOverlayModeProperty, value);
 		}
+
 		public static DependencyProperty LightDismissOverlayModeProperty { get; } =
-		DependencyProperty.Register(
-			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
-			typeof(TimePicker),
-			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
+			DependencyProperty.Register(
+				nameof(LightDismissOverlayMode), typeof(LightDismissOverlayMode),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
 
 		/// <summary>
 		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.
 		/// </summary>
 		internal Brush LightDismissOverlayBackground
 		{
-			get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
-			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
+			get => (Brush)GetValue(LightDismissOverlayBackgroundProperty);
+			set => SetValue(LightDismissOverlayBackgroundProperty, value);
 		}
 
 		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
-			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(TimePicker), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(LightDismissOverlayBackground), typeof(Brush), typeof(TimePicker), new FrameworkPropertyMetadata(null));
 
 		protected override void OnApplyTemplate()
 		{
@@ -176,12 +205,18 @@ namespace Windows.UI.Xaml.Controls
 			_periodTextBlock = flyoutContent?.GetTemplateChild(PeriodTextBlockPartName) as TextBlock;
 			_flyoutButtonContentGrid = flyoutContent?.GetTemplateChild(FlyoutButtonContentGridPartName) as Grid;
 
-			var columns = _flyoutButtonContentGrid?.ColumnDefinitions;
+			_headerContentPresenter = GetTemplateChild(HeaderContentPresenterPartName) as ContentPresenter;
+			if (_headerContentPresenter != null)
+			{
+				UpdateHeaderVisibility();
+			}
+
+			var columns = _flyoutButtonContentGrid?.ColumnDefinitions as DefinitionCollectionBase;
 			const int periodColumnPosition = 4;
 			if ((columns?.Count ?? 0) > periodColumnPosition)
 			{
 				// This is a workaround for the lack of support for GetTemplateChild on non-IFrameworkElement types. (Bug #26303)
-				_thirdTextBlockColumn = columns.ElementAt(periodColumnPosition);
+				_thirdTextBlockColumn = columns?.GetItem(periodColumnPosition) as ColumnDefinition;
 			}
 
 			_isViewReady = true;
@@ -275,6 +310,15 @@ namespace Windows.UI.Xaml.Controls
 				timePickerFlyout.Time = Time;
 			}
 #endif
+		}
+
+		private void UpdateHeaderVisibility()
+		{
+			if (_headerContentPresenter != null)
+			{
+				_headerContentPresenter.Visibility =
+					Header != null ? Visibility.Visible : Visibility.Collapsed;
+			}
 		}
 
 		/// <summary>

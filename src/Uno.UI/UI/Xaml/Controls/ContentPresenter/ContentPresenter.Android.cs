@@ -1,6 +1,6 @@
 ﻿using Android.Views;
 using Android.Widget;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
@@ -61,10 +61,17 @@ namespace Windows.UI.Xaml.Controls
 			this.RemoveViewAndDispose(ContentTemplateRoot);
 		}
 
+		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			UpdateBorder();
+		}
+
 		protected override void OnDraw(Android.Graphics.Canvas canvas)
 		{
 			AdjustCornerRadius(canvas, CornerRadius);
 		}
+
+		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder(false);
 
 		private void UpdateBorder()
 		{
@@ -75,9 +82,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (IsLoaded)
 			{
-				_borderRenderer.UpdateLayers(
+				_borderRenderer.UpdateLayer(
 					this,
 					Background,
+					BackgroundSizing,
 					BorderThickness,
 					BorderBrush,
 					CornerRadius,

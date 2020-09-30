@@ -2,7 +2,7 @@ using System;
 using Uno.UI.Views.Controls;
 using Windows.UI.Xaml;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Controls;
@@ -96,12 +96,18 @@ namespace Windows.UI.Xaml.Controls
 				_borderRenderer.UpdateLayer(
 					this,
 					Background,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
+					InternalBackgroundSizing,
+					BorderThicknessInternal,
+					BorderBrushInternal,
+					CornerRadiusInternal,
 					backgroundImage
 				);
 			}
+		}
+
+		partial void UpdateBorder()
+		{
+			UpdateBackground();
 		}
 
 		protected virtual void OnChildrenChanged()
@@ -153,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 			return HitTestOutsideFrame ? this.HitTestOutsideFrame(point, uievent) : base.HitTest(point, uievent);
 		}
 
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadiusInternal == CornerRadius.None;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }

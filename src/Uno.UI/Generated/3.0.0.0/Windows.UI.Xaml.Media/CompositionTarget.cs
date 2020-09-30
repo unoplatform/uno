@@ -2,8 +2,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
+	#if false || false || NET461 || false || false || false || __MACOS__
+	[global::Uno.NotImplemented("NET461", "__MACOS__")]
 	#endif
 	public  partial class CompositionTarget 
 	{
@@ -29,16 +29,16 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || false || false || false || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__MACOS__")]
 		public static event global::System.EventHandler<object> Rendering
 		{
-			[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("NET461", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.CompositionTarget", "event EventHandler<object> CompositionTarget.Rendering");
 			}
-			[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("NET461", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.CompositionTarget", "event EventHandler<object> CompositionTarget.Rendering");

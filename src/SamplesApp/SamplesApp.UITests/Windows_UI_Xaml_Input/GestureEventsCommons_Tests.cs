@@ -11,7 +11,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
-	public class GestureEventsCommons_Tests : SampleControlUITestBase
+	public partial class GestureEventsCommons_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

@@ -44,7 +44,7 @@ When encountering an `x:Bind` markup, the Uno generator parses the expression to
 
 For a typical OneTime `x:Bind` implementation:
 
-```xaml
+```xml
 <TextBlock Text="{x:Bind TypeProperty.Value, FallbackValue=42}" />
 ```
 

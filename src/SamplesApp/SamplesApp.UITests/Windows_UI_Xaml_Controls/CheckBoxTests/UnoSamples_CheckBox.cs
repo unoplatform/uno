@@ -8,7 +8,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 {
-	public class UnoSamples_CheckBox : SampleControlUITestBase
+	public partial class UnoSamples_CheckBox : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

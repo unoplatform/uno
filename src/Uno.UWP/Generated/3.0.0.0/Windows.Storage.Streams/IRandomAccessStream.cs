@@ -2,51 +2,22 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IRandomAccessStream : global::System.IDisposable,global::Windows.Storage.Streams.IInputStream,global::Windows.Storage.Streams.IOutputStream
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool CanRead
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool CanWrite
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ulong Position
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ulong Size
-		{
-			get;
-			set;
-		}
-		#endif
+		// Skipping already declared property CanRead
+		// Skipping already declared property CanWrite
+		// Skipping already declared property Position
+		// Skipping already declared property Size
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Size.get
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Size.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Storage.Streams.IInputStream GetInputStreamAt( ulong position);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Storage.Streams.IOutputStream GetOutputStreamAt( ulong position);
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.GetInputStreamAt(ulong)
+		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.GetOutputStreamAt(ulong)
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Position.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Seek( ulong position);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Storage.Streams.IRandomAccessStream CloneStream();
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.Seek(ulong)
+		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.CloneStream()
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.CanRead.get
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.CanWrite.get
 	}

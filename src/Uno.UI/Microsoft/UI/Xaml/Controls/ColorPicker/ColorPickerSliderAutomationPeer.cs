@@ -109,8 +109,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						return string.Empty;
 				}
 
-				return string.Format(
-					CultureInfo.CurrentUICulture,
+				return StringUtil.FormatString(
 					resourceStringWithName,
 					value,
 					ColorHelper.ToDisplayName(color));
@@ -133,8 +132,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						return string.Empty;
 				}
 
-				return string.Format(
-					CultureInfo.CurrentUICulture,
+				return StringUtil.FormatString(
 					resourceStringWithoutName,
 					value);
 			}

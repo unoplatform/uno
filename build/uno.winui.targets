@@ -8,6 +8,12 @@
 		<_IsUnoPlatform>true</_IsUnoPlatform>
 	</PropertyGroup>
 
+	<Target Name="ValidateUnoUIAndUnoWinUIExclusion" BeforeTargets="BeforeBuild">
+		<Error Code="UNOB0001"
+		Text="Cannot build with both Uno.WinUI and Uno.UI nuget packages referenced."
+		Condition="'$(PkgUno_UI)'!='' and '$(PkgUno_WinUI)'!=''" />
+	</Target>
+
 	<Import Project="$(SourceGeneratorBasePath)Uno.UI.SourceGenerators.props" />
 	<Import Project="$(UnoUIMSBuildTasksTargetPath)Uno.UI.Tasks.targets" />
 	<Target Name="_UnoFeatureDefines"
@@ -55,60 +61,13 @@
 		<!-- Properties that will be automatically forwarded to the source generators -->
 		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
 		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
+		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlProcessorsPath" />
 	</ItemGroup>
 
 	<!-- List of packages that provide an uno-runtime folder -->
 	<ItemGroup>
 		<UnoRuntimeEnabledPackage Include="Uno.UI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="'$(MSBuildThisFile)'=='uno.ui.targets'" />
 		<UnoRuntimeEnabledPackage Include="Uno.WinUI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="'$(MSBuildThisFile)'=='uno.winui.targets'" />
-	</ItemGroup>
-	
-	<!-- Target used to override the runtime for netstandard2.0 based targets -->
-	<Target Name="ReplaceUnoRuntime"
-				Condition="'$(UnoRuntimeIdentifier)'!=''"
-				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile">
-		<ItemGroup>
-
-			<!-- Create a list of all copy local items that are part of the UnoRuntimeEnabledPackage items -->
-			<_RuntimeCopyLocalItemsToRemove Include="@(RuntimeCopyLocalItems)" EnabledIdentity="%(UnoRuntimeEnabledPackage.Identity)" />
-			<_RuntimeCopyLocalItemsToRemove Remove="@(_RuntimeCopyLocalItemsToRemove)" Condition="'%(_RuntimeCopyLocalItemsToRemove.NuGetPackageId)' != '%(_RuntimeCopyLocalItemsToRemove.EnabledIdentity)'" />
-
-			<!-- Remove them from the files to be copied to the output -->
-			<RuntimeCopyLocalItems Remove="@(_RuntimeCopyLocalItemsToRemove)" />
-
-			<_UnoRuntimeEnabledPackage_EmptyPackageBasePath
-				Include="@(UnoRuntimeEnabledPackage)"
-				Condition="'%(UnoRuntimeEnabledPackage.PackageBasePath)'==''" />
-
-			<!-- Add the files for the current selected runtime identifier -->
-			<RuntimeCopyLocalItemsMerged
-				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
-				NuGetPackageId="%(Identity)" />
-
-			<!-- Add metadata so the .deps.json file is generated properly (.NET Core/5) -->
-			<RuntimeCopyLocalItemsToUpdate
-				Include="@(RuntimeCopyLocalItemsMerged)"
-				AssetType="runtime"
-				CopyLocal="true"
-				DestinationSubPath="%(FileName)%(Extension)"
-				CopyToPublishDirectory="true"
-				PathInPackage="uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
-
-			<RuntimeCopyLocalItems
-				Include="@(RuntimeCopyLocalItemsToUpdate)"/>
-
-	  		<!-- Publish pdb files -->
-			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
-		</ItemGroup>
-
-		<Error
-			Text="The package(s) [@(_UnoRuntimeEnabledPackage_EmptyPackageBasePath)] do not define the UnoRuntimeEnabledPackage.PackageBasePath metadata. Make sure to add one to specify the current location of the targets file."
-			Condition="'@(_UnoRuntimeEnabledPackage_EmptyPackageBasePath)'!=''" />
-	</Target>
-
-	<!-- Force a rebuild on runtime files changes -->
-	<ItemGroup Condition="'$(UnoRuntimeIdentifier)'!=''">
-		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../../uno-runtime/*" />
 	</ItemGroup>
 
 	<!-- Backward compatibility validation -->
@@ -224,6 +183,24 @@
              ContinueOnError="true" />
 	</Target>
 
+	<Target Name="ValidateUnoUIAndroid" BeforeTargets="BeforeBuild" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!=''">
+
+		<PropertyGroup Condition="'$(NETCoreAppMaximumVersion)'!='' and '$(NETCoreAppMaximumVersion)'&gt;='6.0'">
+			<UnoUIMinAndroidSDKVersion>30</UnoUIMinAndroidSDKVersion>
+			<_CurrentTrimmedAndroidSDLVersion>$(_AndroidApiLevel)</_CurrentTrimmedAndroidSDLVersion>
+		</PropertyGroup>
+
+		<PropertyGroup Condition="$(TargetFramework.ToLowerInvariant().StartsWith('monoandroid')) or '$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'">
+			<UnoUIMinAndroidSDKVersion>11.0</UnoUIMinAndroidSDKVersion>
+			<_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
+		</PropertyGroup>
+
+		<Error Text="This version of the Android SDK ($(_CurrentTrimmedAndroidSDLVersion)) is not supported by Uno Platform. You must change the &quot;Compile using Android version:&quot; field in the android project property with at least version $(UnoUIMinAndroidSDKVersion)."
+					 Condition="'$(_CurrentTrimmedAndroidSDLVersion)' &lt; '$(UnoUIMinAndroidSDKVersion)'" />
+	</Target>
+
 	<Import Project="uno.winui.cross-runtime.targets" />
+	<Import Project="uno.winui.single-project.targets" />
+	<Import Project="uno.winui.runtime-replace.targets" />
 
 </Project>

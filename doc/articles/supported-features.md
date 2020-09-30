@@ -2,7 +2,7 @@
 
 ## Development Flow
 
-- Uno Platform's UWP Xaml
+- Uno Platform's UWP XAML
     - **Windows-first development**
     - **Faster compilation** for most of the development cycle, including UI code. iOS, Android, WebAssembly, macOS and Linux can be tested for platform-specific features.
     - Ability to develop responsive layout in Windowed mode using Windows 10.
@@ -14,7 +14,7 @@
 - Full UWP availability at compile time
   - Allows for the **compilation of open-source libraries** that depend only on UWP and multi-targeted nuget packages
     - **XamlBehaviors library** support
-- MacOS Compilation
+- macOS Compilation
 
 ## Features List
 
@@ -65,7 +65,7 @@
 ### Runtime Performance
 
 - CoreDispatcher Priority support (Large UIs performance)
-- `x:DeferLoadStrategy="Lazy"` and `x:Load="false"` support (responsive design performance)
+- `x:DeferLoadStrategy="Lazy"`, `x:Load="false"` and `x:Load="{x:Bind ...}" support (responsive design performance)
 - Image explicit size support (performance)
 - Event tracing (sub-millisecond [ETL performance profiling](Assets/diagnostics.PNG))
 - Internal logging

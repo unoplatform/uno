@@ -5,9 +5,10 @@
 // This file is a C# translation of the NavigationViewItem.cpp file from WinUI controls.
 //
 
-using System;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Shapes;
+#if HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -28,22 +29,22 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(SelectsOnInvokedProperty, value);
 		}
 
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectsOnInvokedProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		[Uno.NotImplemented]
+		public static DependencyProperty SelectsOnInvokedProperty { get; } =
+		DependencyProperty.Register(
 			nameof(SelectsOnInvoked), typeof(bool),
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewItem),
+			typeof(NavigationViewItem),
 			new FrameworkPropertyMetadata(true));
 
-		public static global::Windows.UI.Xaml.DependencyProperty CompactPaneLengthProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		public static DependencyProperty CompactPaneLengthProperty { get; } =
+		DependencyProperty.Register(
 			nameof(CompactPaneLength), typeof(double),
 			typeof(NavigationViewItem),
 			new FrameworkPropertyMetadata(defaultValue: 48.0)
 		);
 
-		public static global::Windows.UI.Xaml.DependencyProperty IconProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		public static DependencyProperty IconProperty { get; } =
+		DependencyProperty.Register(
 			name: nameof(Icon),
 			propertyType: typeof(IconElement),
 			ownerType: typeof(NavigationViewItem),

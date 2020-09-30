@@ -1,0 +1,165 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All Rights Reserved. -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <Thickness x:Key="RepeatButtonBorderThemeThickness">1</Thickness>
+            <StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <SolidColorBrush x:Key="RepeatButtonBackgroundPointerOver" Color="{StaticResource SystemBaseHighColor}" Opacity="0.1" />
+            <StaticResource x:Key="RepeatButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
+            <StaticResource x:Key="RepeatButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <StaticResource x:Key="RepeatButtonForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+            <StaticResource x:Key="RepeatButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
+            <StaticResource x:Key="RepeatButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
+            <StaticResource x:Key="RepeatButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrushPointerOver" ResourceKey="SystemControlForegroundTransparentBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
+            <SolidColorBrush x:Key="RepeatButtonBorderThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="RepeatButtonDisabledBackgroundThemeBrush" Color="Transparent" />
+            <SolidColorBrush x:Key="RepeatButtonDisabledBorderThemeBrush" Color="#66FFFFFF" />
+            <SolidColorBrush x:Key="RepeatButtonDisabledForegroundThemeBrush" Color="#66FFFFFF" />
+            <SolidColorBrush x:Key="RepeatButtonForegroundThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="RepeatButtonPointerOverBackgroundThemeBrush" Color="#21FFFFFF" />
+            <SolidColorBrush x:Key="RepeatButtonPointerOverForegroundThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="RepeatButtonPressedBackgroundThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="RepeatButtonPressedForegroundThemeBrush" Color="#FF000000" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <StaticResource x:Key="RepeatButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <StaticResource x:Key="RepeatButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
+            <StaticResource x:Key="RepeatButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <StaticResource x:Key="RepeatButtonForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+            <StaticResource x:Key="RepeatButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
+            <StaticResource x:Key="RepeatButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
+            <StaticResource x:Key="RepeatButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
+            <Thickness x:Key="RepeatButtonBorderThemeThickness">1</Thickness>
+            <SolidColorBrush x:Key="RepeatButtonBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="RepeatButtonDisabledBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="RepeatButtonDisabledBorderThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="RepeatButtonDisabledForegroundThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="RepeatButtonForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="RepeatButtonPointerOverBackgroundThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="RepeatButtonPointerOverForegroundThemeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="RepeatButtonPressedBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="RepeatButtonPressedForegroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <Thickness x:Key="RepeatButtonBorderThemeThickness">1</Thickness>
+            <StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <SolidColorBrush x:Key="RepeatButtonBackgroundPointerOver" Color="{StaticResource SystemBaseHighColor}" Opacity="0.1" />
+            <StaticResource x:Key="RepeatButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
+            <StaticResource x:Key="RepeatButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <StaticResource x:Key="RepeatButtonForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+            <StaticResource x:Key="RepeatButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
+            <StaticResource x:Key="RepeatButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
+            <StaticResource x:Key="RepeatButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrushPointerOver" ResourceKey="SystemControlForegroundTransparentBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
+            <StaticResource x:Key="RepeatButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
+            <SolidColorBrush x:Key="RepeatButtonBorderThemeBrush" Color="#33000000" />
+            <SolidColorBrush x:Key="RepeatButtonDisabledBackgroundThemeBrush" Color="#66CACACA" />
+            <SolidColorBrush x:Key="RepeatButtonDisabledBorderThemeBrush" Color="#1A000000" />
+            <SolidColorBrush x:Key="RepeatButtonDisabledForegroundThemeBrush" Color="#66000000" />
+            <SolidColorBrush x:Key="RepeatButtonForegroundThemeBrush" Color="#FF000000" />
+            <SolidColorBrush x:Key="RepeatButtonPointerOverBackgroundThemeBrush" Color="#D1CDCDCD" />
+            <SolidColorBrush x:Key="RepeatButtonPointerOverForegroundThemeBrush" Color="#FF000000" />
+            <SolidColorBrush x:Key="RepeatButtonPressedBackgroundThemeBrush" Color="#FF000000" />
+            <SolidColorBrush x:Key="RepeatButtonPressedForegroundThemeBrush" Color="#FFFFFFFF" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <Style TargetType="RepeatButton" BasedOn="{StaticResource DefaultRepeatButtonStyle}" />
+
+    <Style x:Key="DefaultRepeatButtonStyle" TargetType="RepeatButton">
+        <Setter Property="Background" Value="{ThemeResource RepeatButtonBackground}" />
+        <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
+        <Setter Property="Foreground" Value="{ThemeResource RepeatButtonForeground}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource RepeatButtonBorderBrush}" />
+        <Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}" />
+        <Setter Property="Padding" Value="{StaticResource ButtonPadding}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+        <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+        <Setter Property="FocusVisualMargin" Value="-3" />
+        <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+					<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
+                    <ContentPresenter x:Name="ContentPresenter"
+                                      Background="{TemplateBinding Background}"
+                                      BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                      ContentTransitions="{TemplateBinding ContentTransitions}"
+                                      CornerRadius="{TemplateBinding CornerRadius}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      AutomationProperties.AccessibilityView="Raw">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerOver">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </ContentPresenter>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

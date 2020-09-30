@@ -8,5 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public interface ILottieVisualSourceProvider
 	{
 		IAnimatedVisualSource CreateFromLottieAsset(Uri sourceFile);
+		IThemableAnimatedVisualSource CreateTheamableFromLottieAsset(Uri sourceFile);
+		public bool TryCreateThemableFromAnimatedVisualSource(IAnimatedVisualSource animatedVisualSource, out IThemableAnimatedVisualSource themableAnimatedVisualSource);
 	}
 }

@@ -15,6 +15,19 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private PopupMenu _menu;
 
+		internal override View NativeTarget
+		{
+			get
+			{
+				if (GetActualTarget() is { } actualTarget && actualTarget != Target)
+				{
+					return actualTarget;
+				}
+
+				return null;
+			}
+		}
+
 		internal protected override void Open()
 		{
 			if (UseNativePopup)

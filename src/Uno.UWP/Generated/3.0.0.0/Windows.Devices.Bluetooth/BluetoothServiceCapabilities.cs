@@ -2,42 +2,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum BluetoothServiceCapabilities 
+	#if false || false || false || false || false || false || false
+	[global::System.FlagsAttribute]
+	public   enum BluetoothServiceCapabilities : uint
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LimitedDiscoverableMode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PositioningService,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkingService,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		RenderingService,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CapturingService,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ObjectTransferService,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AudioService,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		TelephoneService,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		InformationService,
-		#endif
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.None
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.LimitedDiscoverableMode
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.PositioningService
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.NetworkingService
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.RenderingService
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.CapturingService
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.ObjectTransferService
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.AudioService
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.TelephoneService
+		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.InformationService
 	}
 	#endif
 }

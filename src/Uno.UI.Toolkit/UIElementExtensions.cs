@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
@@ -9,23 +9,40 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+
+#if HAS_UNO
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
+#endif
+
+#if NETCOREAPP
+using Microsoft.UI;
+#endif
 
 #if __IOS__ || __MACOS__
 using CoreGraphics;
 #endif
 
+#if NET6_0_OR_GREATER && (__IOS__ || __MACOS__)
+using ObjCRuntime;
+#endif
+
+#if __SKIA__
+using Uno.UI.Composition.Composition;
+#endif
+
 namespace Uno.UI.Toolkit
 {
+#if !NET6_0_OR_GREATER // Moved to the linker definition file
 #if __IOS__
 	[global::Foundation.PreserveAttribute(AllMembers = true)]
 #elif __ANDROID__
 	[Android.Runtime.PreserveAttribute(AllMembers = true)]
 #endif
+#endif
 	public static class UIElementExtensions
 	{
-		#region Elevation
+#region Elevation
 
 		public static void SetElevation(this UIElement element, double elevation)
 		{
@@ -58,7 +75,7 @@ namespace Uno.UI.Toolkit
 
 #if __IOS__ || __MACOS__
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
-#elif NETFX_CORE
+#elif NETFX_CORE || NETCOREAPP
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, DependencyObject host = null, CornerRadius cornerRadius = default(CornerRadius))
 #else
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor)
@@ -79,7 +96,7 @@ namespace Uno.UI.Toolkit
 			if (element is AppKit.NSView view)
 #else
 			if (element is UIKit.UIView view)
-	#endif
+#endif
 			{
 				if (elevation > 0)
 				{
@@ -88,17 +105,17 @@ namespace Uno.UI.Toolkit
 					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
 					const float blur = 0.5f;
 
-	#if __MACOS__
+#if __MACOS__
 					view.WantsLayer = true;
 					view.Shadow ??= new AppKit.NSShadow();
-	#endif
+#endif
 					view.Layer.MasksToBounds = false;
 					view.Layer.ShadowOpacity = shadowColor.A / 255f;
-	#if __MACOS__
+#if __MACOS__
 					view.Layer.ShadowColor = AppKit.NSColor.FromRgb(shadowColor.R, shadowColor.G, shadowColor.B).CGColor;
-	#else
+#else
 					view.Layer.ShadowColor = UIKit.UIColor.FromRGB(shadowColor.R, shadowColor.G, shadowColor.B).CGColor;
-	#endif
+#endif
 					view.Layer.ShadowRadius = (nfloat)(blur * elevation);
 					view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * elevation, y * elevation);
 					view.Layer.ShadowPath = path;
@@ -117,16 +134,36 @@ namespace Uno.UI.Toolkit
 					const double x = 0.25d;
 					const double y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
 					const double blur = 0.5f;
+					var color = Color.FromArgb((byte)(shadowColor.A * .35), shadowColor.R, shadowColor.G, shadowColor.B);
 
-					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {shadowColor.ToCssString()}";
+					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {color.ToCssString()}";
 					uiElement.SetStyle("box-shadow", str);
+					uiElement.SetCssClasses("noclip");
 				}
 				else
 				{
 					uiElement.ResetStyle("box-shadow");
+					uiElement.UnsetCssClasses("noclip");
 				}
 			}
-#elif NETFX_CORE
+#elif __SKIA__
+			if (element is UIElement uiElement)
+			{
+				var visual = uiElement.Visual;
+
+				const float SHADOW_SIGMA_X_MODIFIER = 1f / 3.5f;
+				const float SHADOW_SIGMA_Y_MODIFIER = 1f / 3.5f;
+				float x = 0.3f;
+				float y = 0.92f * 0.5f;
+
+				var dx = (float)elevation * x;
+				var dy = (float)elevation * y;
+				var sigmaX = (float)elevation * SHADOW_SIGMA_X_MODIFIER;
+				var sigmaY = (float)elevation * SHADOW_SIGMA_Y_MODIFIER;
+				var shadow = new ShadowState(dx, dy, sigmaX, sigmaY, shadowColor);
+				visual.ShadowState = shadow;
+			}
+#elif NETFX_CORE || NETCOREAPP
 			if (element is UIElement uiElement)
 			{
 				var compositor = ElementCompositionPreview.GetElementVisual(uiElement).Compositor;
@@ -197,7 +234,7 @@ namespace Uno.UI.Toolkit
 				ElementCompositionPreview.SetElementChildVisual(uiHost, spriteVisual);
 			}
 #endif
-				}
+		}
 
 #endregion
 
@@ -313,9 +350,11 @@ namespace Uno.UI.Toolkit
 
 			if (property == null)
 			{
+#if HAS_UNO
 				uiElement.Log().Warn($"The {propertyName} dependency property does not exist on {type}");
+#endif
 			}
-#if !NETFX_CORE
+#if !NETFX_CORE && !NETCOREAPP
 			else if (property.Type != propertyType)
 			{
 				uiElement.Log().Warn($"The {propertyName} dependency property {type} is not of the {propertyType} Type.");

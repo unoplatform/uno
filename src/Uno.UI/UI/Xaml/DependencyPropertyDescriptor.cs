@@ -1,17 +1,24 @@
 ﻿using System;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml
 {
 	internal class DependencyPropertyDescriptor
 	{
-
+		private static readonly bool CanUseTypeGetType =
+#if __WASM__
+			// Workaround for https://github.com/dotnet/runtime/issues/45078
+			Uno.Foundation.Runtime.WebAssembly.Interop.PlatformHelper.IsNetCore
+			&& Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_MODE") == "Interpreter";
+#else
+			true;
+#endif
 		public DependencyPropertyDescriptor(Type ownerType, string name)
 		{
 			OwnerType = ownerType;
 			Name = name;
-        }
+		}
 
 		public string Name { get; }
 
@@ -51,7 +58,7 @@ namespace Windows.UI.Xaml
 						if(type == null)
 						{
 							// If not available, search through Reflection
-							type = Type.GetType(qualifiedTypeName);
+							type = CanUseTypeGetType ? Type.GetType(qualifiedTypeName) : null;
 
 							if(type == null)
 							{
@@ -73,7 +80,7 @@ namespace Windows.UI.Xaml
 					}
 					else
 					{
-						if (typeof(DependencyPropertyDescriptor).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						if (typeof(DependencyPropertyDescriptor).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
 							typeof(DependencyPropertyDescriptor).Log().DebugFormat($"The property path [{propertyPath}] is not formatted properly (must only access one property)");
 						}
@@ -81,7 +88,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					if (typeof(DependencyPropertyDescriptor).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (typeof(DependencyPropertyDescriptor).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						typeof(DependencyPropertyDescriptor).Log().DebugFormat($"The property path [{propertyPath}] is not formatted properly (must have exactly one ':')");
 					}

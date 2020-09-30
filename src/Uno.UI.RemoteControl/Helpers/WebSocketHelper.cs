@@ -1,50 +1,61 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Buffers;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.IO;
 using Uno.UI.RemoteControl.HotReload.Messages;
 
 namespace Uno.UI.RemoteControl.Helpers
 {
 	public static class WebSocketHelper
 	{
+		const int BufferSize = 1 << 16;
+		private static readonly RecyclableMemoryStreamManager manager = new RecyclableMemoryStreamManager();
+
 		public static async Task<Frame> ReadFrame(WebSocket socket, CancellationToken token)
 		{
-			byte[] buff = new byte[1 << 16];
-			var mem = new MemoryStream();
+			var pool = ArrayPool<byte>.Shared;
+			var buff = pool.Rent(BufferSize);
+			var segment = new ArraySegment<byte>(buff);
+			using var mem = manager.GetStream();
 
-			while (true)
+			try
 			{
-				var result = await socket.ReceiveAsync(new ArraySegment<byte>(buff), token);
-				if (result.MessageType == WebSocketMessageType.Close)
+				while (true)
 				{
-					return null;
-				}
+					var result = await socket.ReceiveAsync(segment, token);
+					if (result.MessageType == WebSocketMessageType.Close)
+					{
+						return null;
+					}
 
-				if (result.EndOfMessage)
-				{
-					if (result.Count != 0)
+					if (result.EndOfMessage)
+					{
+						if (result.Count != 0)
+						{
+							mem.Write(buff, 0, result.Count);
+						}
+
+						mem.Position = 0;
+
+						return Frame.Read(mem);
+					}
+					else
 					{
 						mem.Write(buff, 0, result.Count);
 					}
-
-					mem.Position = 0;
-
-					return HotReload.Messages.Frame.Read(mem);
 				}
-				else
-				{
-					mem.Write(buff, 0, result.Count);
-				}
+			}
+			finally
+			{
+				pool.Return(buff);
 			}
 		}
 
 		internal static async Task SendFrame(WebSocket webSocket, Frame frame, CancellationToken ct)
 		{
-			var stream = new MemoryStream();
+			using var stream = manager.GetStream();
 			frame.WriteTo(stream);
 
 			await webSocket.SendAsync(new ArraySegment<byte>(stream.GetBuffer(), 0, (int)stream.Length), WebSocketMessageType.Binary, true, ct);

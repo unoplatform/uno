@@ -10,7 +10,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml.ContentControlTests
 {
-	public class ContentControlBehaviorTests : SampleControlUITestBase
+	public partial class ContentControlBehaviorTests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

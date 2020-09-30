@@ -1,8 +1,9 @@
-﻿#if !__IOS__ && !__MACOS__ && !__SKIA__
+﻿#if !__IOS__ && !__MACOS__ && !__SKIA__ && !__ANDROID__
 #define LEGACY_SHAPE_MEASURE
 #endif
 
 #if LEGACY_SHAPE_MEASURE
+#nullable enable
 using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
@@ -14,15 +15,15 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public abstract partial class ArbitraryShapeBase : Shape
 	{
-		private SerialDisposable _layer = new SerialDisposable();
-		private object[] _layerState;
+		private readonly SerialDisposable _layer = new SerialDisposable();
+		private object?[]? _layerState;
 
 		protected static double LimitWithUserSize(double availableSize, double userSize, double naNFallbackValue)
 		{
 			var hasUserSize = userSize != 0 && !double.IsNaN(userSize) && !double.IsInfinity(userSize);
 			var hasAvailableSize = !double.IsNaN(availableSize);
 
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 			// The measuring algorithms for shapes in Wasm and iOS/Android/macOS are not using the
 			// infinity the same way.
 			// Those implementation will need to be merged.
@@ -43,7 +44,7 @@ namespace Windows.UI.Xaml.Shapes
 			return naNFallbackValue;
 		}
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		protected internal override void OnInvalidateMeasure()
 		{
 			base.OnInvalidateMeasure();
@@ -57,18 +58,20 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="forceRefresh">Forces a refresh by ignoring the shape parameters.</param>
 		protected override void RefreshShape(bool forceRefresh = false)
 		{
-			if (IsLoaded)
+			if (!IsLoaded)
 			{
-				var newLayerState = GetShapeParameters().ToArray();
+				return;
+			}
 
-				if (forceRefresh || !(_layerState?.SequenceEqual(newLayerState) ?? false))
-				{
-					// Remove the previous layer
-					_layer.Disposable = null;
+			var newLayerState = GetShapeParameters().ToArray();
 
-					_layerState = newLayerState;
-					_layer.Disposable = BuildDrawableLayer();
-				}
+			if (forceRefresh || !(_layerState?.SequenceEqual(newLayerState) ?? false))
+			{
+				// Remove the previous layer
+				_layer.Disposable = null;
+
+				_layerState = newLayerState;
+				_layer.Disposable = BuildDrawableLayer();
 			}
 		}
 
@@ -116,7 +119,7 @@ namespace Windows.UI.Xaml.Shapes
 		/// Provides a enumeration of values that are used to determine if the shape
 		/// should be rebuilt. Inheritors should append the base's enumeration.
 		/// </summary>
-		protected internal virtual IEnumerable<object> GetShapeParameters()
+		protected internal virtual IEnumerable<object?> GetShapeParameters()
 		{
 			yield return GetActualSize();
 			yield return Fill;

@@ -1,4 +1,7 @@
-﻿using System;
+﻿extern alias __uno;
+#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,11 +12,19 @@ using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Microsoft.Build.Execution;
-using Uno.Logging;
 using Uno.UI.SourceGenerators.Telemetry;
 using Uno.UI.Xaml;
-using Microsoft.Build.Utilities;
+using System.Drawing;
+using __uno::Uno.Xaml;
+using Microsoft.CodeAnalysis.Text;
+using System.Threading.Tasks;
+using System.Threading;
+
+#if NETFRAMEWORK
+using Microsoft.Build.Execution;
+using Uno.SourceGeneration;
+using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
+#endif
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -27,201 +38,234 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _targetPath;
 		private readonly string _defaultLanguage;
 		private readonly bool _isWasm;
+		private readonly bool _isDesignTimeBuild;
 		private readonly string _defaultNamespace;
 		private readonly string[] _assemblySearchPaths;
-		private readonly RoslynMetadataHelper _metadataHelper;
 		private readonly string[] _excludeXamlNamespaces;
 		private readonly string[] _includeXamlNamespaces;
 		private readonly string[] _analyzerSuppressions;
 		private readonly string[] _resourceFiles;
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
-		private readonly ProjectInstance _projectInstance;
 		private readonly string _configuration;
 		private readonly bool _isDebug;
+		/// <summary>
+		/// Should hot reload-related calls be generated? By default this is true iff building in debug, but it can be forced to always true or false using the "UnoForceHotReloadCodeGen" project flag.
+		/// </summary>
+		private readonly bool _isHotReloadEnabled;
+		private readonly string _projectDirectory;
+		private readonly string _projectFullPath;
 		private readonly bool _outputSourceComments = true;
+		private readonly bool _xamlResourcesTrimming;
+		private readonly RoslynMetadataHelper _metadataHelper;
 
 		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
 		/// </summary>
 		private readonly bool _shouldAnnotateGeneratedXaml = false;
 
-		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.CodeBase).LocalPath);
-		private INamedTypeSymbol[] _ambientGlobalResources;
+		/// <summary>
+		/// When set, Visual State Manager children will be initialized lazily for performance
+		/// </summary>
+		private readonly bool _isLazyVisualStateManagerEnabled = true;
+
+		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.Location).LocalPath);
+		private INamedTypeSymbol[]? _ambientGlobalResources;
 		private readonly bool _isUiAutomationMappingEnabled;
 		private Dictionary<string, string> _legacyTypes;
 
 		// Determines if the source generator will skip the inclusion of UseControls in the
 		// visual tree. See https://github.com/unoplatform/uno/issues/61
 		private bool _skipUserControlsInVisualTree = false;
+		private readonly GeneratorExecutionContext _generatorContext;
 
-		private bool IsUnoAssembly => _defaultNamespace == "Uno.UI";
-		private bool IsUnoFluentAssembly => _defaultNamespace == "Uno.UI.FluentTheme";
+		private bool IsUnoAssembly
+			=> _defaultNamespace == "Uno.UI";
 
-		/// <summary>
-		/// Resource files that should be initialized first, in given order, because other resource declarations depend on them.
-		/// </summary>
-		private static readonly string[] _baseResourceDependencies = new[]
-		{
-			"SystemResources.xaml",
-			"Generic.xaml",
-			"Generic.Native.xaml",
-		};
-		private const string WinUIThemeResourcePathSuffix = "/themeresources.xaml";
-		private const string WinUICompactPathSuffix = "/DensityStyles/Compact.xaml";
+		private bool IsUnoFluentAssembly
+			=> _defaultNamespace == "Uno.UI.FluentTheme" || _defaultNamespace.StartsWith("Uno.UI.FluentTheme.v");
 
-		/// <summary>
-		/// ResourceDictionaries that aren't counted as default system resources (eg WinUI Fluent resources)
-		/// </summary>
-		private static readonly string[] _nonSystemResources = new[]
-		{
-			WinUIThemeResourcePathSuffix,
-			WinUICompactPathSuffix,
-			"DensityStyles/CompactDatePickerTimePickerFlyout.xaml",
-		};
+		private const string WinUIThemeResourcePathSuffixFormatString = "themeresources_v{0}.xaml";
+		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
 
 #pragma warning disable 649 // Unused member
 		private readonly bool _forceGeneration;
 #pragma warning restore 649 // Unused member
 
-		public XamlCodeGeneration(Compilation sourceCompilation, ProjectInstance msbProject, Project roslynProject)
+		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
 			// To easily debug XAML code generation:
-			// 1. Uncomment the line below
-			// 2. Build Uno.UI.SourceGenerators and override local files (following instructions here: doc/articles/uno-development/debugging-uno-ui.md#debugging-unoui)
-			// 3. Build project containing your XAML. When prompted to attach a Visual Studio instance:
-			//		- if it's in an external solution, attach the VS instance running Uno.UI
-			//		- if you're debugging XAML generation inside the Uno solution, opt to create a new VS instance
-			//
-			//Debugger.Launch();
+			// Add <UnoUISourceGeneratorDebuggerBreak>True</UnoUISourceGeneratorDebuggerBreak> to your project
 
-			InitTelemetry(msbProject);
+			if (!Helpers.DesignTimeHelper.IsDesignTime(context)
+				&& (context.GetMSBuildPropertyValue("UnoUISourceGeneratorDebuggerBreak")?.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false))
+			{
+				Debugger.Launch();
+			}
 
-			_legacyTypes = msbProject
-				.GetItems("LegacyTypes")
-				.Select(i => i.EvaluatedInclude)
+			_generatorContext = context;
+			InitTelemetry(context);
+
+			_legacyTypes = context
+				.GetMSBuildPropertyValue("LegacyTypesProperty")
+				.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
 				.ToList()
-				.ToDictionary(fullyQualifiedName => fullyQualifiedName.Split('.').Last());
+				.ToDictionary(k => k, fullyQualifiedName => fullyQualifiedName.Split('.').Last());
 
-			_metadataHelper = new RoslynMetadataHelper("Debug", sourceCompilation, msbProject, roslynProject, null, _legacyTypes);
-			_assemblySearchPaths = new string[0];
-			_projectInstance = msbProject;
+			_metadataHelper = new RoslynMetadataHelper("Debug", context, _legacyTypes);
+			_assemblySearchPaths = Array.Empty<string>();
 
-			_configuration = msbProject.GetProperty("Configuration")?.EvaluatedValue
+			_configuration = context.GetMSBuildPropertyValue("Configuration")
 				?? throw new InvalidOperationException("The configuration property must be provided");
 
 			_isDebug = string.Equals(_configuration, "Debug", StringComparison.OrdinalIgnoreCase);
 
-			var xamlItems = msbProject.GetItems("Page")
-				.Concat(msbProject.GetItems("ApplicationDefinition"));
+			_projectFullPath = context.GetMSBuildPropertyValue("MSBuildProjectFullPath");
+			_projectDirectory = Path.GetDirectoryName(_projectFullPath)
+				?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
 
-			_xamlSourceFiles = xamlItems.Select(d => d.EvaluatedInclude)
-				.ToArray();
+			var xamlItems = context.GetMSBuildItems("Page")
+				.Concat(context.GetMSBuildItems("ApplicationDefinition"));
+
+			_xamlSourceFiles = xamlItems.Select(i => i.Identity).ToArray();
 
 			_xamlSourceLinks = xamlItems.Select(GetSourceLink)
 				.ToArray();
 
-			_excludeXamlNamespaces = msbProject
-				.GetItems("ExcludeXamlNamespaces")
-				.Select(i => i.EvaluatedInclude)
-				.ToArray();
+			_excludeXamlNamespaces = context.GetMSBuildPropertyValue("ExcludeXamlNamespacesProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-			_includeXamlNamespaces = msbProject
-				.GetItems("IncludeXamlNamespaces")
-				.Select(i => i.EvaluatedInclude)
-				.ToArray();
+			_includeXamlNamespaces = context.GetMSBuildPropertyValue("IncludeXamlNamespacesProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-			_analyzerSuppressions = msbProject
-				.GetItems("XamlGeneratorAnalyzerSuppressions")
-				.Select(i => i.EvaluatedInclude)
-				.ToArray();
+			_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-			_resourceFiles = msbProject
-				.GetItems("PRIResource")
-				.Select(i => i.EvaluatedInclude)
-				.ToArray();
+			_resourceFiles = context.GetMSBuildItems("PRIResource").Select(i => i.Identity).ToArray();
 
-			if (bool.TryParse(msbProject.GetProperty("UseUnoXamlParser")?.EvaluatedValue, out var useUnoXamlParser) && useUnoXamlParser)
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UseUnoXamlParser"), out var useUnoXamlParser) && useUnoXamlParser)
 			{
 				XamlRedirection.XamlConfig.IsUnoXaml = useUnoXamlParser || XamlRedirection.XamlConfig.IsMono;
 			}
 
-			if (bool.TryParse(msbProject.GetProperty("UnoSkipUserControlsInVisualTree")?.EvaluatedValue, out var skipUserControlsInVisualTree))
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoSkipUserControlsInVisualTree"), out var skipUserControlsInVisualTree))
 			{
 				_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			}
 
-			if (bool.TryParse(msbProject.GetProperty("ShouldWriteErrorOnInvalidXaml")?.EvaluatedValue, out var shouldWriteErrorOnInvalidXaml))
+			if (bool.TryParse(context.GetMSBuildPropertyValue("ShouldWriteErrorOnInvalidXaml"), out var shouldWriteErrorOnInvalidXaml))
 			{
 				XamlFileGenerator.ShouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
 			}
 
-			if (!bool.TryParse(msbProject.GetProperty("IsUiAutomationMappingEnabled")?.EvaluatedValue ?? "", out _isUiAutomationMappingEnabled))
+			if (!bool.TryParse(context.GetMSBuildPropertyValue("IsUiAutomationMappingEnabled") ?? "", out _isUiAutomationMappingEnabled))
 			{
 				_isUiAutomationMappingEnabled = false;
 			}
 
-			if (bool.TryParse(msbProject.GetProperty("ShouldAnnotateGeneratedXaml")?.EvaluatedValue, out var shouldAnnotateGeneratedXaml))
+			if (bool.TryParse(context.GetMSBuildPropertyValue("ShouldAnnotateGeneratedXaml"), out var shouldAnnotateGeneratedXaml))
 			{
 				_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
 			}
 
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlLazyVisualStateManagerEnabled"), out var isLazyVisualStateManagerEnabled))
+			{
+				_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
+			}
+
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlResourcesTrimming"), out var xamlResourcesTrimming))
+			{
+				_xamlResourcesTrimming = xamlResourcesTrimming;
+			}
+
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoForceHotReloadCodeGen"), out var isHotReloadEnabled))
+			{
+				_isHotReloadEnabled = isHotReloadEnabled;
+			}
+			else
+			{
+				_isHotReloadEnabled = _isDebug;
+			}
+
 			_targetPath = Path.Combine(
-				Path.GetDirectoryName(msbProject.FullPath),
-				msbProject.GetProperty("IntermediateOutputPath").EvaluatedValue
+				_projectDirectory,
+				context.GetMSBuildPropertyValue("IntermediateOutputPath")
 			);
 
-			_defaultLanguage = msbProject.GetProperty("DefaultLanguage")?.EvaluatedValue;
+			_defaultLanguage = context.GetMSBuildPropertyValue("DefaultLanguage");
 
-			_analyzerSuppressions = msbProject
-				.GetItems("XamlGeneratorAnalyzerSuppressions")
-				.Select(i => i.EvaluatedInclude)
-				.ToArray();
-
-			_uiAutomationMappings = msbProject
-				.GetItems("CustomUiAutomationMemberMapping")
+			_uiAutomationMappings = context.GetMSBuildItems("CustomUiAutomationMemberMappingAdjusted")
 				.Select(i => new
 				{
-					Key = i.EvaluatedInclude,
-					Value = i.MetadataNames
-						.Select(i.GetMetadataValue)
-						.FirstOrDefault()
-						?.Split()
+					Key = i.Identity,
+					Value = i.GetMetadataValue("Mappings")
+						?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
 						.Select(m => m.Trim())
 						.Where(m => m.HasValueTrimmed())
 				})
 				.GroupBy(p => p.Key)
 				.ToDictionary(p => p.Key, p => p.SelectMany(x => x.Value.Safe()).ToArray());
 
-			_defaultNamespace = msbProject.GetPropertyValue("RootNamespace");
+			_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
 
-			_isWasm = msbProject.GetProperty("DefineConstants").EvaluatedValue?.Contains("__WASM__") ?? false;
+			_isWasm = context.GetMSBuildPropertyValue("DefineConstantsProperty")?.Contains("__WASM__") ?? false;
+			_isDesignTimeBuild = Helpers.DesignTimeHelper.IsDesignTime(context);
 		}
 
 		/// <summary>
 		/// Get the file location as seen in the IDE, used for ResourceDictionary.Source resolution.
 		/// </summary>
-		private string GetSourceLink(ProjectItemInstance projectItemInstance)
+		private string GetSourceLink(MSBuildItem projectItemInstance)
 		{
-			if (projectItemInstance.HasMetadata("Link"))
+			var link = projectItemInstance.GetMetadataValue("Link");
+			var definingProjectFullPath = projectItemInstance.GetMetadataValue("DefiningProjectFullPath");
+			var fullPath = projectItemInstance.GetMetadataValue("FullPath");
+
+			// Reproduce the logic from https://github.com/dotnet/msbuild/blob/e70a3159d64f9ed6ec3b60253ef863fa883a99b1/src/Tasks/AssignLinkMetadata.cs
+			if (link.IsNullOrEmpty())
 			{
-				return projectItemInstance.GetMetadataValue("Link");
+				if (definingProjectFullPath.IsNullOrEmpty())
+				{
+					// Both Uno.SourceGeneration uses relative paths and Roslyn Generators provide
+					// full paths. Dependents need specific portions so adjust the paths here for now.
+					// For the case of Roslyn generators, DefiningProjectFullPath is not populated on purpose
+					// so that we can adjust paths properly.
+					if (link.IsNullOrEmpty())
+					{
+						return Path.IsPathRooted(projectItemInstance.Identity)
+							? projectItemInstance.Identity.TrimStart(_projectDirectory).TrimStart(Path.DirectorySeparatorChar)
+							: projectItemInstance.Identity;
+					}
+				}
+				else
+				{
+					var definingProjectDirectory = Path.GetDirectoryName(definingProjectFullPath) + Path.DirectorySeparatorChar;
+
+					if (fullPath.StartsWith(definingProjectDirectory, StringComparison.OrdinalIgnoreCase))
+					{
+						link = fullPath.Substring(definingProjectDirectory.Length);
+					}
+					else
+					{
+						link = projectItemInstance.GetMetadataValue("Identity");
+					}
+				}
 			}
 
-			return projectItemInstance.EvaluatedInclude;
+			return link;
 		}
 
-		public KeyValuePair<string, string>[] Generate()
+		public KeyValuePair<string, string>[] Generate(GenerationRunInfo generationRunInfo)
 		{
 			var stopwatch = Stopwatch.StartNew();
 
 			try
 			{
-				this.Log().InfoFormat("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
+#if DEBUG
+				Console.Write("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
+#endif
 
 				var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
 
-				var resourceKeys = GetResourceKeys();
-				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces).ParseFiles(_xamlSourceFiles);
+				var resourceKeys = GetResourceKeys(_generatorContext.CancellationToken);
+				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
+					.ParseFiles(_xamlSourceFiles, _generatorContext.CancellationToken);
 				var files = filesFull
 					.Trim()
 					.OrderBy(f => f.UniqueID)
@@ -234,17 +278,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				TrackStartGeneration(files);
 
-
-				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files, filesFull, _xamlSourceLinks);
+				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files, filesFull, _xamlSourceLinks, _generatorContext.CancellationToken);
 
 				var filesQuery = files
 					.ToArray();
 
-				IEnumerable<XamlFileDefinition> filesToProcess = filesQuery;
+				var filesToProcess = filesQuery.AsParallel();
 
-				if (!Debugger.IsAttached)
+				filesToProcess = filesToProcess
+					.WithCancellation(_generatorContext.CancellationToken);
+
+				if (Debugger.IsAttached)
 				{
-					filesToProcess = filesToProcess.AsParallel();
+					filesToProcess = filesToProcess
+						.WithDegreeOfParallelism(1);
 				}
 
 				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, string>(
@@ -266,9 +313,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									defaultLanguage: _defaultLanguage,
 									isWasm: _isWasm,
 									isDebug: _isDebug,
+									isHotReloadEnabled: _isHotReloadEnabled,
+									isDesignTimeBuild: _isDesignTimeBuild,
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
-									isUnoAssembly: IsUnoAssembly
+									isUnoAssembly: IsUnoAssembly,
+									isUnoFluentAssembly: IsUnoFluentAssembly,
+									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
+									generatorContext: _generatorContext,
+									xamlResourcesTrimming: _xamlResourcesTrimming,
+									generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID)
 								)
 								.GenerateFile()
 						)
@@ -283,40 +337,126 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return outputFiles.ToArray();
 
 			}
+			catch (OperationCanceledException)
+			{
+				throw;
+			}
 			catch (Exception e)
 			{
 				TrackGenerationFailed(e, stopwatch.Elapsed);
 
+#if NETFRAMEWORK
 				throw;
+#else
+				return ProcessParsingException(e);
+#endif
 			}
 			finally
 			{
 				_telemetry.Flush();
+				_telemetry.Dispose();
 			}
 		}
 
-		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files, XamlFileDefinition[] filesFull, string[] links)
+		private KeyValuePair<string, string>[] ProcessParsingException(Exception e)
+		{
+			IEnumerable<Exception> Flatten(Exception ex)
+			{
+				if (ex is AggregateException agg)
+				{
+					foreach (var inner in agg.InnerExceptions)
+					{
+						foreach (var inner2 in Flatten(inner))
+						{
+							yield return inner2;
+						}
+					}
+				}
+				else
+				{
+					if (ex.InnerException != null)
+					{
+						foreach (var inner2 in Flatten(ex.InnerException))
+						{
+							yield return inner2;
+						}
+					}
+
+					yield return ex;
+				}
+			}
+
+			foreach (var exception in Flatten(e))
+			{
+				var diagnostic = Diagnostic.Create(
+					XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+					GetExceptionFileLocation(exception),
+					exception.Message);
+
+				_generatorContext.ReportDiagnostic(diagnostic);
+			}
+
+			return new KeyValuePair<string, string>[0];
+		}
+
+		private Location? GetExceptionFileLocation(Exception exception)
+		{
+			if (exception is XamlParsingException xamlParsingException)
+			{
+				var xamlFile = _generatorContext.AdditionalFiles.FirstOrDefault(f => f.Path == xamlParsingException.FilePath);
+
+				if (xamlFile != null
+					&& xamlFile.GetText() is { } xamlText
+					&& xamlParsingException.LineNumber.HasValue
+					&& xamlParsingException.LinePosition.HasValue)
+				{
+					var linePosition = new LinePosition(
+						Math.Max(0, xamlParsingException.LineNumber.Value - 1),
+						Math.Max(0, xamlParsingException.LinePosition.Value - 1)
+					);
+
+					return Location.Create(
+						xamlFile.Path,
+						xamlText.Lines.ElementAtOrDefault(xamlParsingException.LineNumber.Value - 1).Span,
+						new LinePositionSpan(linePosition, linePosition)
+					);
+				}
+			}
+
+			return null;
+		}
+
+		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files, XamlFileDefinition[] filesFull, string[] links, CancellationToken ct)
 		{
 			var map = new XamlGlobalStaticResourcesMap();
 
-			BuildLocalProjectResources(files, map);
-			BuildAmbientResources(files, map);
+			BuildLocalProjectResources(files, map, ct);
+			BuildAmbientResources(files, map, ct);
 			map.BuildResourceDictionaryMap(filesFull, links);
 
 			return map;
 		}
 
-		private void BuildAmbientResources(XamlFileDefinition[] files, XamlGlobalStaticResourcesMap map)
+		private void BuildAmbientResources(XamlFileDefinition[] files, XamlGlobalStaticResourcesMap map, CancellationToken ct)
 		{
 			// Lookup for GlobalStaticResources classes in external assembly
 			// references only, and in Uno.UI itself for generic.xaml-like resources.
 
-			var query = from ext in _metadataHelper.Compilation.ExternalReferences
-						let sym = _metadataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
-						where sym != null
+			var assembliesQuery =
+				from ext in _metadataHelper.Compilation.ExternalReferences
+				let sym = _metadataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
+				where sym != null
+				select sym;
+
+			var query = from sym in assembliesQuery
 						from module in sym.Modules
-						from reference in module.ReferencedAssemblies
-						where reference.Name == "Uno.UI" || sym.Name == "Uno.UI"
+
+						// Only consider assemblies that reference Uno.UI
+						where module.ReferencedAssemblies.Any(r => r.Name == "Uno.UI") || sym.Name == "Uno.UI"
+
+						// Don't consider Uno.UI.FluentTheme assemblies, as they manage their own initialization
+						where sym.Name != "Uno.UI.FluentTheme" && !sym.Name.StartsWith("Uno.UI.FluentTheme.v", StringComparison.InvariantCulture)
+
 						from typeName in sym.GlobalNamespace.GetNamespaceTypes()
 						where typeName.Name.EndsWith("GlobalStaticResources")
 						select typeName;
@@ -325,10 +465,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var ambientResources in _ambientGlobalResources)
 			{
+				ct.ThrowIfCancellationRequested();
+
 				var publicProperties = from member in ambientResources.GetAllProperties()
 									   where member.DeclaredAccessibility == Microsoft.CodeAnalysis.Accessibility.Public
 									   select member;
-
 
 				foreach (var member in publicProperties)
 				{
@@ -337,10 +478,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildLocalProjectResources(XamlFileDefinition[] files, XamlGlobalStaticResourcesMap map)
+		private void BuildLocalProjectResources(XamlFileDefinition[] files, XamlGlobalStaticResourcesMap map, CancellationToken ct)
 		{
 			foreach (var file in files)
 			{
+				ct.ThrowIfCancellationRequested();
+
 				var topLevelControl = file.Objects.FirstOrDefault();
 
 				if (topLevelControl?.Type.Name == "ResourceDictionary")
@@ -405,46 +548,49 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (
 						key != null
+						&& key.Value?.ToString() is { } value
 						&& resource.Type.Name != "StaticResource"
 					)
 					{
-						map.Add(key.Value.ToString(), _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
+						map.Add(value, _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
 					}
 				}
 			}
 		}
 
 		//get keys of localized strings
-		private string[] GetResourceKeys()
+		private string[] GetResourceKeys(CancellationToken ct)
 		{
-			string[] resourceKeys = new string[0];
+			string[] resourceKeys = Array.Empty<string>();
 
 			if (_resourceFiles != null)
 			{
-				foreach (var file in _resourceFiles)
-				{
-					this.Log().Info("Parse resource file : " + file);
+				resourceKeys = _resourceFiles
+					.AsParallel()
+					.WithCancellation(ct)
+					.SelectMany(file => {
+#if DEBUG
+						Console.Write("Parse resource file : " + file);
+#endif
 
-					//load document
-					XmlDocument doc = new XmlDocument();
-					doc.Load(file);
-					XmlNode root = doc.DocumentElement;
+						//load document
+						var doc = new XmlDocument();
+						doc.Load(file);
 
-					//extract all localization keys from Win10 resource file
-					resourceKeys = resourceKeys
-						.Concat(doc
-							.SelectNodes("//data")
-							.Cast<XmlElement>()
+						//extract all localization keys from Win10 resource file
+						return doc.SelectNodes("//data")
+							?.Cast<XmlElement>()
 							.Select(node => node.GetAttribute("name"))
-							.ToArray()
-						)
-						.Distinct()
-						.Select(k => k.Replace(".", "/"))
-						.ToArray();
-				}
+							.ToArray() ?? Array.Empty<string>();
+					})
+					.Distinct()
+					.Select(k => k.Replace(".", "/"))
+					.ToArray();
 			}
 
-			this.Log().Info(resourceKeys.Count() + " localization keys found");
+#if DEBUG
+			Console.Write(resourceKeys.Count() + " localization keys found");
+#endif
 			return resourceKeys;
 		}
 
@@ -486,6 +632,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant("using {0};", _defaultNamespace);
 			writer.AppendLineInvariant("");
 
+			// If a failure happens here, this means that the _isWasm was not properly set as the DefineConstants msbuild property
+			// was not populated. This can happen when the property is set through a target with the "CreateProperty" task, and the
+			// Uno.SourceGeneration tasks do not execute this task properly.
+			writer.AppendLineInvariant("#if __WASM__");
+			writer.AppendLineInvariant(_isWasm ? "" : "#error invalid internal source generator state. The __WASM__ DefineConstant was not propagated properly.");
+			writer.AppendLineInvariant("#endif");
+
 			using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 			{
 				writer.AppendLineInvariant("/// <summary>");
@@ -501,7 +654,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (writer.BlockInvariant("internal static {0} {1} {{get; }} = new {0}()", ParseContextPropertyType, ParseContextPropertyName))
 					{
-						writer.AppendLineInvariant("AssemblyName = \"{0}\",", _projectInstance.GetPropertyValue("AssemblyName"));
+						writer.AppendLineInvariant("AssemblyName = \"{0}\",", _metadataHelper.AssemblyName);
 					}
 
 					writer.AppendLineInvariant(";");
@@ -520,35 +673,38 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								writer.AppendLineInvariant("_initialized = true;");
 
-								foreach (var ambientResource in _ambientGlobalResources)
+								if (_ambientGlobalResources != null)
 								{
-									if (ambientResource.GetMethods().Any(m => m.Name == "Initialize"))
+									foreach (var ambientResource in _ambientGlobalResources)
 									{
-										writer.AppendLineInvariant("global::{0}.Initialize();", ambientResource.GetFullName());
+										if (ambientResource.GetMethods().Any(m => m.Name == "Initialize"))
+										{
+											writer.AppendLineInvariant("global::{0}.Initialize();", ambientResource.GetFullName());
+										}
 									}
-								}
 
-								foreach (var ambientResource in _ambientGlobalResources)
-								{
-									// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
-									if (ambientResource.GetMethods().Any(m => m.Name == "RegisterDefaultStyles"))
+									foreach (var ambientResource in _ambientGlobalResources)
 									{
-										writer.AppendLineInvariant("global::{0}.RegisterDefaultStyles();", ambientResource.GetFullName());
+										// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
+										if (ambientResource.GetMethods().Any(m => m.Name == "RegisterDefaultStyles"))
+										{
+											writer.AppendLineInvariant("global::{0}.RegisterDefaultStyles();", ambientResource.GetFullName());
+										}
 									}
-								}
 
-								foreach (var ambientResource in _ambientGlobalResources)
-								{
-									if (ambientResource.GetMethods().Any(m => m.Name == "RegisterResourceDictionariesBySource"))
+									foreach (var ambientResource in _ambientGlobalResources)
 									{
-										writer.AppendLineInvariant("global::{0}.RegisterResourceDictionariesBySource();", ambientResource.GetFullName());
+										if (ambientResource.GetMethods().Any(m => m.Name == "RegisterResourceDictionariesBySource"))
+										{
+											writer.AppendLineInvariant("global::{0}.RegisterResourceDictionariesBySource();", ambientResource.GetFullName());
+										}
 									}
 								}
 
 								if (IsUnoAssembly && _xamlSourceFiles.Any())
 								{
 									// Build master dictionary
-									foreach (var dictProperty in map.GetAllDictionaryProperties(_baseResourceDependencies, _nonSystemResources))
+									foreach (var dictProperty in map.GetAllDictionaryProperties())
 									{
 										writer.AppendLineInvariant("MasterDictionary.MergedDictionaries.Add({0});", dictProperty);
 									}
@@ -562,7 +718,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						using (writer.BlockInvariant("if(!_stylesRegistered)"))
 						{
 							writer.AppendLineInvariant("_stylesRegistered = true;");
-							foreach (var file in files.Where(f => IsIncludedResource(f, map)).Select(f => f.UniqueID).Distinct())
+							foreach (var file in files.Select(f => f.UniqueID).Distinct())
 							{
 								writer.AppendLineInvariant("RegisterDefaultStyles_{0}();", file);
 							}
@@ -576,23 +732,37 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							writer.AppendLineInvariant("_dictionariesRegistered = true;");
 
-							if(!IsUnoAssembly && !IsUnoFluentAssembly)
+							if (!IsUnoAssembly && !IsUnoFluentAssembly)
 							{
 								// For third-party libraries, expose all files using standard uri
 								foreach (var file in files.Where(IsResourceDictionary))
 								{
 									var url = "{0}/{1}".InvariantCultureFormat(_metadataHelper.AssemblyName, map.GetSourceLink(file));
-									RegisterForFile(file, url);
+									RegisterForXamlFile(file, url);
 								}
 							}
-							else if (files.Any()) // The NETSTD reference assembly contains no Xaml files
+							else if (files.Any() && IsUnoFluentAssembly)
 							{
 								// For Uno assembly, we expose WinUI resources using same uri as on Windows
-								RegisterForFile(files.FirstOrDefault(f => map.GetSourceLink(f).EndsWith(WinUIThemeResourcePathSuffix)), XamlFilePathHelper.WinUIThemeResourceURL);
-								RegisterForFile(files.FirstOrDefault(f => map.GetSourceLink(f).EndsWith(WinUICompactPathSuffix)), XamlFilePathHelper.WinUICompactURL);
+								for (int fluentVersion = 1; fluentVersion <= XamlConstants.MaxFluentResourcesVersion; fluentVersion++)
+								{
+									RegisterForFile(string.Format(WinUIThemeResourcePathSuffixFormatString, fluentVersion), XamlFilePathHelper.GetWinUIThemeResourceUrl(fluentVersion));
+								}
+								RegisterForFile(WinUICompactPathSuffix, XamlFilePathHelper.WinUICompactURL);
 							}
 
-							void RegisterForFile(XamlFileDefinition file, string url)
+							void RegisterForFile(string baseFilePath, string url)
+							{
+								var file = files.FirstOrDefault(f =>
+									f.FilePath.Substring(_projectDirectory.Length + 1).Equals(baseFilePath, StringComparison.OrdinalIgnoreCase));
+
+								if (file != null)
+								{
+									RegisterForXamlFile(file, url);
+								}
+							}
+
+							void RegisterForXamlFile(XamlFileDefinition file, string url)
 							{
 								if (file != null)
 								{
@@ -612,10 +782,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						foreach (var file in files.Where(IsResourceDictionary))
 						{
 							// We leave context null because local resources should be found through Application.Resources
-							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, dictionary: () => {2}_ResourceDictionary);",
+							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, dictionary: () => {2}_ResourceDictionary, {3});",
 								XamlFilePathHelper.LocalResourcePrefix,
 								map.GetSourceLink(file),
-								file.UniqueID
+								file.UniqueID,
+								// Make ResourceDictionary retrievable by Hot Reload
+								_isDebug ? $"\"{file.FilePath.Replace("\\", "/")}\"" : "null"
 							);
 							// Local resources can also be found through the ms-appx:/// prefix
 							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, dictionary: () => {2}_ResourceDictionary);",
@@ -635,7 +807,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					// Generate all the partial methods, even if they don't exist. That avoids
 					// having to sync the generation of the files with this global table.
-					foreach (var file in files.Select(f=>f.UniqueID).Distinct())
+					foreach (var file in files.Select(f => f.UniqueID).Distinct())
 					{
 						writer.AppendLineInvariant("static partial void RegisterDefaultStyles_{0}();", file);
 					}
@@ -652,11 +824,5 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";
-
-		/// <summary>
-		/// Should this Xaml be included when defining default styles? Outside of Uno this is always true. In Uno, this excludes WinUI Fluent resources (which consumer code accesses via XamlControlsResources)
-		/// </summary>
-		private bool IsIncludedResource(XamlFileDefinition xamlFileDefinition, XamlGlobalStaticResourcesMap map) => !IsUnoAssembly
-			|| _nonSystemResources.None(s => map.GetSourceLink(xamlFileDefinition).EndsWith(s));
 	}
 }

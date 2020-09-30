@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(TemplateSettings),
 				typeof(PersonPictureTemplateSettings),
 				typeof(PersonPicture),
-				new PropertyMetadata(default(PersonPictureTemplateSettings), OnPropertyChanged));
+				new FrameworkPropertyMetadata(default(PersonPictureTemplateSettings), OnPropertyChanged));
 
 		private static void OnPropertyChanged(
 			DependencyObject sender,

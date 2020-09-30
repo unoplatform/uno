@@ -2,27 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.DateTimeFormatting
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum MonthFormat 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Default,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Abbreviated,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Full,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Numeric,
-		#endif
+		// Skipping already declared field Windows.Globalization.DateTimeFormatting.MonthFormat.None
+		// Skipping already declared field Windows.Globalization.DateTimeFormatting.MonthFormat.Default
+		// Skipping already declared field Windows.Globalization.DateTimeFormatting.MonthFormat.Abbreviated
+		// Skipping already declared field Windows.Globalization.DateTimeFormatting.MonthFormat.Full
+		// Skipping already declared field Windows.Globalization.DateTimeFormatting.MonthFormat.Numeric
 	}
 	#endif
 }

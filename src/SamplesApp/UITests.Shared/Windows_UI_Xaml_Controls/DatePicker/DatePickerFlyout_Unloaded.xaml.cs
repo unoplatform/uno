@@ -7,7 +7,7 @@ using Uno.Extensions;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 {
-	[SampleControlInfo]
+	[Sample("Date Picking", IgnoreInSnapshotTests = true)]
 	public sealed partial class DatePickerFlyout_Unloaded : UserControl
 	{
 		public DatePickerFlyout_Unloaded()
@@ -27,6 +27,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 			}
 
 			root.Children.Remove(TestDatePickerFlyoutButton);
+			root.Children.Remove(TestNativeDatePickerFlyoutButton);
 			root.Children.Remove(theDatePicker);
 
 			unloadBtn.Content = "unloaded!";

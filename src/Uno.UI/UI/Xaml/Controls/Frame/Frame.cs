@@ -11,11 +11,16 @@ using Windows.UI.Xaml.Media.Animation;
 using Uno;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class Frame : ContentControl
 	{
+		private bool _isNavigating = false;
+
 		private string _navigationState;
 
 		private static readonly PagePool _pool = new PagePool();
@@ -150,15 +155,10 @@ namespace Windows.UI.Xaml.Controls
 
 		#region CurrentSourcePageType DependencyProperty
 
-		public Type CurrentSourcePageType
-		{
-			get { return (Type)GetValue(CurrentSourcePageTypeProperty); }
-			private set { SetValue(CurrentSourcePageTypeProperty, value); }
-		}
+		public Type CurrentSourcePageType => (Type)GetValue(CurrentSourcePageTypeProperty);
 
-		// Using a DependencyProperty as the backing store for CurrentSourcePageType.  This enables animation, styling, binding, etc...
 		public static DependencyProperty CurrentSourcePageTypeProperty { get ; } =
-			DependencyProperty.Register("CurrentSourcePageType", typeof(Type), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnCurrentSourcePageTypeChanged(e)));
+			DependencyProperty.Register(nameof(CurrentSourcePageType), typeof(Type), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnCurrentSourcePageTypeChanged(e)));
 
 
 		private void OnCurrentSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
@@ -191,16 +191,24 @@ namespace Windows.UI.Xaml.Controls
 
 		public Type SourcePageType
 		{
-			get { return (Type)GetValue(SourcePageTypeProperty); }
-			private set { SetValue(SourcePageTypeProperty, value); }
+			get => (Type)GetValue(SourcePageTypeProperty);
+			set => SetValue(SourcePageTypeProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for SourcePageType.  This enables animation, styling, binding, etc...
 		public static DependencyProperty SourcePageTypeProperty { get ; } =
-			DependencyProperty.Register("SourcePageType", typeof(Type), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnSourcePageTypeChanged(e)));
+			DependencyProperty.Register(nameof(SourcePageType), typeof(Type), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnSourcePageTypeChanged(e)));
 
 		private void OnSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
 		{
+			if (!_isNavigating)
+			{
+				if (e.NewValue == null)
+				{
+					throw new InvalidOperationException(
+						"SourcePageType cannot be set to null. Set Content to null instead.");
+				}
+				Navigate((Type)e.NewValue);
+			}
 		}
 
 		#endregion
@@ -272,97 +280,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
-				// Navigating
-				var navigatingFromArgs = new NavigatingCancelEventArgs(
-					mode,
-					entry.NavigationTransitionInfo,
-					entry.Parameter,
-					entry.SourcePageType
-				);
-
-				Navigating?.Invoke(this, navigatingFromArgs);
-
-				if (navigatingFromArgs.Cancel)
-				{
-					// Frame canceled
-					OnNavigationStopped(entry, mode);
-					return false;
-				}
-
-				CurrentEntry?.Instance.OnNavigatingFrom(navigatingFromArgs);
-
-				if (navigatingFromArgs.Cancel)
-				{
-					// Page canceled
-					OnNavigationStopped(entry, mode);
-					return false;
-				}
-
-				// Navigate
-				var previousEntry = CurrentEntry;
-				CurrentEntry = entry;
-
-				if (mode == NavigationMode.New)
-				{
-					// Doing this first allows CurrentEntry to reuse existing page if pooling is enabled
-					ReleasePages(ForwardStack);
-				}
-
-				if (CurrentEntry.Instance == null)
-				{
-					var page = CreatePageInstanceCached(entry.SourcePageType);
-					if (page == null)
-					{
-						return false;
-					}
-
-					page.Frame = this;
-					CurrentEntry.Instance = page;
-				}
-
-				Content = CurrentEntry.Instance;
-
-				if (IsNavigationStackEnabled)
-				{
-					switch (mode)
-					{
-						case NavigationMode.New:
-							ForwardStack.Clear();
-							if (previousEntry != null)
-							{
-								BackStack.Add(previousEntry);
-							}
-							break;
-						case NavigationMode.Back:
-							ForwardStack.Add(previousEntry);
-							BackStack.Remove(CurrentEntry);
-							break;
-						case NavigationMode.Forward:
-							BackStack.Add(previousEntry);
-							ForwardStack.Remove(CurrentEntry);
-							break;
-						case NavigationMode.Refresh:
-							break;
-					}
-				}
-
-				// Navigated
-				var navigationEvent = new NavigationEventArgs(
-					CurrentEntry.Instance,
-					mode,
-					entry.NavigationTransitionInfo,
-					entry.Parameter,
-					entry.SourcePageType,
-					null
-				);
-
-				previousEntry?.Instance.OnNavigatedFrom(navigationEvent);
-				CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
-				Navigated?.Invoke(this, navigationEvent);
-
-				VisualTreeHelper.CloseAllPopups();
-
-				return true;
+				return InnerNavigateUnsafe(entry, mode);
 			}
 			catch (Exception exception)
 			{
@@ -375,6 +293,117 @@ namespace Windows.UI.Xaml.Controls
 
 				return false;
 			}
+			finally
+			{
+				_isNavigating = false;
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private bool InnerNavigateUnsafe(PageStackEntry entry, NavigationMode mode)
+		{
+			_isNavigating = true;
+
+			// Navigating
+			var navigatingFromArgs = new NavigatingCancelEventArgs(
+				mode,
+				entry.NavigationTransitionInfo,
+				entry.Parameter,
+				entry.SourcePageType
+			);
+
+			Navigating?.Invoke(this, navigatingFromArgs);
+
+			if (navigatingFromArgs.Cancel)
+			{
+				// Frame canceled
+				OnNavigationStopped(entry, mode);
+				return false;
+			}
+
+			CurrentEntry?.Instance?.OnNavigatingFrom(navigatingFromArgs);
+
+			if (navigatingFromArgs.Cancel)
+			{
+				// Page canceled
+				OnNavigationStopped(entry, mode);
+				return false;
+			}
+
+			// Navigate
+			var previousEntry = CurrentEntry;
+			CurrentEntry = entry;
+
+			if (mode == NavigationMode.New)
+			{
+				// Doing this first allows CurrentEntry to reuse existing page if pooling is enabled
+				ReleasePages(ForwardStack);
+			}
+
+			if (CurrentEntry.Instance == null)
+			{
+				var page = CreatePageInstanceCached(entry.SourcePageType);
+				if (page == null)
+				{
+					return false;
+				}
+
+				page.Frame = this;
+				CurrentEntry.Instance = page;
+			}
+
+			MoveFocusFromCurrentContent();
+
+			Content = CurrentEntry.Instance;
+
+			if (IsNavigationStackEnabled)
+			{
+				switch (mode)
+				{
+					case NavigationMode.New:
+						ForwardStack.Clear();
+						if (previousEntry != null)
+						{
+							BackStack.Add(previousEntry);
+						}
+						break;
+					case NavigationMode.Back:
+						ForwardStack.Add(previousEntry);
+						BackStack.Remove(CurrentEntry);
+						break;
+					case NavigationMode.Forward:
+						BackStack.Add(previousEntry);
+						ForwardStack.Remove(CurrentEntry);
+						break;
+					case NavigationMode.Refresh:
+						break;
+				}
+			}
+
+			// Navigated
+			var navigationEvent = new NavigationEventArgs(
+				CurrentEntry.Instance,
+				mode,
+				entry.NavigationTransitionInfo,
+				entry.Parameter,
+				entry.SourcePageType,
+				null
+			);
+
+			SetValue(SourcePageTypeProperty, entry.SourcePageType);
+			SetValue(CurrentSourcePageTypeProperty, entry.SourcePageType);
+
+			previousEntry?.Instance.OnNavigatedFrom(navigationEvent);
+			CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
+
+			Navigated?.Invoke(this, navigationEvent);
+
+			return true;
 		}
 
 		/// <summary>
@@ -430,6 +459,57 @@ namespace Windows.UI.Xaml.Controls
 						entry.SourcePageType,
 						null
 					));
+		}
+
+		/// <summary>
+		/// In case the current page contains a focused element,
+		/// we need to move the focus out of the page.
+		/// </summary>
+		/// <remarks>
+		/// In UWP this is done automatically as the elements are unloaded,
+		/// but due to the control lifecycle differences in Uno the focus move multiple times
+		/// as controls are unloaded in "layers" and it could also not move outside this Frame,
+		/// as the Parent would already be unassigned during the OnUnloaded execution.
+		/// </remarks>
+		private void MoveFocusFromCurrentContent()
+		{
+			if (Content is not UIElement uiElement)
+			{
+				return;
+			}
+			uiElement.IsLeavingFrame = true;
+#if !HAS_EXPENSIVE_TRYFINALLY
+			try
+#endif
+			{
+				var focusManager = VisualTree.GetFocusManagerForElement(this);
+				if (focusManager?.FocusedElement is not { } focusedElement)
+				{
+					return;
+				}
+
+				var parent = VisualTreeHelper.GetParent(focusedElement);
+				while (parent is not null && parent != this)
+				{
+					parent = VisualTreeHelper.GetParent(parent);
+				}
+
+				var inCurrentPage = parent == this;
+
+				if (inCurrentPage)
+				{
+					// Set the focus on the next focusable element.
+					focusManager.SetFocusOnNextFocusableElement(FocusState.Programmatic, true);
+
+					(focusedElement as Control)?.UpdateFocusState(FocusState.Unfocused);
+				}
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY
+			finally
+#endif
+			{
+				uiElement.IsLeavingFrame = false;
+			}
 		}
 	}
 }

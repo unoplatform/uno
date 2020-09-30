@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using AVFoundation;
 using CoreGraphics;
 using Foundation;
-using Microsoft.Extensions.Logging;
+
 using Photos;
 using UIKit;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage;
@@ -48,7 +48,7 @@ namespace Windows.Media.Capture
 				// Probably running in the simulator
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().WarnFormat("'{0}' not available - picking from albums", UIImagePickerControllerSourceType.Camera);
+					this.Log().Warn($"'{UIImagePickerControllerSourceType.Camera}' not available - picking from albums");
 				}
 
 				picker = new LockedOrientationUIImagePickerController(DisplayInformation.AutoRotationPreferences.ToUIInterfaceOrientationMask())
@@ -115,7 +115,7 @@ namespace Windows.Media.Capture
 				throw new InvalidOperationException("Info.plist must define NSCameraUsageDescription");
 			}
 
-			var isAllowed = await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVMediaType.Video);
+			var isAllowed = await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVMediaTypes.Video.GetConstant());
 			if (!isAllowed)
 			{
 				throw new UnauthorizedAccessException();

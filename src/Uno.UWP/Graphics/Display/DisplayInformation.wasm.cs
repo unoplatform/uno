@@ -1,11 +1,17 @@
 ﻿#if __WASM__
 using Uno;
 using Uno.Foundation;
+using System;
+using System.Globalization;
 
 namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
+		private static readonly Lazy<DisplayInformation> _lazyInstance = new Lazy<DisplayInformation>(() => new DisplayInformation());
+
+		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
+
 		private const string JsType = "Windows.Graphics.Display.DisplayInformation";
 
 		[Preserve]
@@ -129,7 +135,7 @@ namespace Windows.Graphics.Display
 		}
 
 		private static bool TryReadJsFloat(string property, out float value) =>
-			float.TryParse(WebAssemblyRuntime.InvokeJS(property), out value);
+			float.TryParse(WebAssemblyRuntime.InvokeJS(property), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
 
 		private static string ReadJsString(string property) => WebAssemblyRuntime.InvokeJS(property);
 

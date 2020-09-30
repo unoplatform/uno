@@ -5,7 +5,7 @@ More info about its usage can be found here https://docs.microsoft.com/en-us/uwp
 
 ## Supported platforms
 
-|                      | Android | iOS     | MacOS   | Wasm    |
+|                      | Android | iOS     | macOS   | Wasm    |
 | -------------------- | ------- | ------- | ------- | ------- |
 | `PasswordVault`      | Yes     | Yes     | No      | No      |
 | `PasswordCredential` | Partial | Partial | Partial | Partial |
@@ -29,7 +29,7 @@ It's backed by hardware components which ensure that the data is almost impossib
 
 More info: https://developer.apple.com/documentation/security/certificate_key_and_trust_services/keys/storing_keys_in_the_keychain
 
-### MacOS
+### macOS
 This platform was not evaluated.
 
 ### Wasm

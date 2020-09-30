@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Windows.UI.Xaml;
 
@@ -120,7 +121,7 @@ namespace Uno.UI.Helpers.WinUI
 		public int Size() { return m_indexesInOriginalVector.Count; }
 
 		TVectorId m_vectorID;
-		IList<T> m_vector = new	List<T>();
+		IList<T> m_vector = new	ObservableCollection<T>();
 		List<int> m_indexesInOriginalVector = new List<int>();
 		Func<T, int> m_indexFunctionFromDataSource;
 	}

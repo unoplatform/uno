@@ -1,8 +1,10 @@
 # Animations
 
+Uno Platform supports [storyboarded animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/storyboarded-animations). A number of animation types are supported, including `DoubleAnimation`, `ColorAnimation`, and key frame-based animations.
+
 ## General guidelines
 As of 1.43.1: 
-1. It is only possible to run GPU bound animations that are animating:
+1. GPU-bound animations are supported for the following properties:
 	* `Opacity`
 	* `RenderTransform` of type `TranslateTransform`, `RotateTransform`, `ScaleTransform`, or `CompositeTransform`. Transforms cannot be part of a TransformGroup.
 1. When animating a `Transform`, you can animate only one property at a time (i.e. `CompositeTransform.TranslateX` *or* `CompositeTransform.TranslateY`),

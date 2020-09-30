@@ -4,15 +4,30 @@ using System.Runtime.CompilerServices;
 using Android.App;
 using Android.Views;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Uno.UI.ViewManagement;
 
 namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
+		public ApplicationView()
+		{
+			Initialize();
+
+			if (ContextHelper.Current is IBaseActivityEvents activityEvents)
+			{
+				BaseActivityEvents = activityEvents;
+			}
+
+			TryInitializeSpanningRectsExtension();
+		}
+
+		internal IBaseActivityEvents BaseActivityEvents { get; private set; }
+
 		public bool IsScreenCaptureEnabled
 		{
 			get
@@ -48,20 +63,9 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		internal void SetVisibleBounds(Rect newVisibleBounds)
-		{
-			if (newVisibleBounds != VisibleBounds)
-			{
-				VisibleBounds = newVisibleBounds;
+		private Rect _trueVisibleBounds;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
-				}
-
-				VisibleBoundsChanged?.Invoke(this, null);
-			}
-		}
+		internal void SetTrueVisibleBounds(Rect trueVisibleBounds) => _trueVisibleBounds = trueVisibleBounds;
 
 		public bool TryEnterFullScreenMode()
 		{
@@ -78,6 +82,7 @@ namespace Windows.UI.ViewManagement
 
 		private void UpdateFullScreenMode(bool isFullscreen)
 		{
+#pragma warning disable 618
 			var activity = ContextHelper.Current as Activity;
 			var uiOptions = (int)activity.Window.DecorView.SystemUiVisibility;
 
@@ -97,6 +102,7 @@ namespace Windows.UI.ViewManagement
 			}
 
 			activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+#pragma warning restore 618
 		}
 
 

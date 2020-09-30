@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using AppKit;
 
 namespace Windows.System
 {
@@ -143,5 +144,30 @@ namespace Windows.System
 
 				_	=> VirtualKey.None,
 			};
+
+		public static VirtualKey? FromFlags(NSEventModifierMask flags)
+		{
+			switch (flags)
+			{
+				case NSEventModifierMask.AlphaShiftKeyMask:
+					return VirtualKey.CapitalLock;
+				case NSEventModifierMask.ShiftKeyMask:
+					return VirtualKey.Shift;
+				case NSEventModifierMask.ControlKeyMask:
+					return VirtualKey.Control;
+				case NSEventModifierMask.AlternateKeyMask:
+					return VirtualKey.Menu;
+				case NSEventModifierMask.CommandKeyMask:
+					return VirtualKey.LeftWindows;
+				case NSEventModifierMask.NumericPadKeyMask:
+					return VirtualKey.NumberKeyLock;
+				case NSEventModifierMask.HelpKeyMask:
+					return VirtualKey.Help;
+				case NSEventModifierMask.FunctionKeyMask:
+					return VirtualKey.F;
+				default:
+					return null;
+			}
+		}
 	}
 }

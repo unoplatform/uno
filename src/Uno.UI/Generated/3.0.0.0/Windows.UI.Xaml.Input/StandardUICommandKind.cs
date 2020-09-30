@@ -2,63 +2,26 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum StandardUICommandKind 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Cut,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Copy,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Paste,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		SelectAll,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Delete,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Share,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Save,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Open,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Close,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Pause,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Play,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Stop,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Forward,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Backward,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Undo,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Redo,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.None
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Cut
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Copy
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Paste
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.SelectAll
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Delete
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Share
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Save
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Open
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Close
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Pause
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Play
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Stop
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Forward
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Backward
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Undo
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Redo
 	}
 	#endif
 }

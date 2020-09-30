@@ -141,6 +141,51 @@ namespace Windows.ApplicationModel.Activation
 		//
 		// Summary:
 		//     This app was activated as a result of pairing a device.
-		DevicePairing = 1013
+		DevicePairing = 1013,
+
+		//
+		// Summary:
+		//     The app was launched to handle the user interface for account management. Introduced in Windows 10, version 1607 (10.0.14393).
+		UserDataAccountsProvider = 1014,
+
+		//
+		// Summary:
+		//     Reserved for system use. Introduced in Windows 10, version 1607 (10.0.14393).
+		FilePickerExperience = 1015,
+
+		//
+		// Summary:
+		//     Reserved for system use. Introduced in Windows 10, version 1703 (10.0.15063).
+		LockScreenComponent = 1016,
+
+		//
+		// Summary:
+		//     The app was launched from the My People UI. Note: introduced in Windows 10, version 1703 (10.0.15063), but not used. Now used starting with Windows 10, version 1709 (10.0.16299).
+		ContactPanel = 1017,
+
+		//
+		// Summary:
+		//     The app was activated because the user is printing to a printer that has a Print Workflow Application associated with it which has requested user input.
+		PrintWorkflowForegroundTask = 1018,
+
+		//
+		// Summary:
+		//    The app was activated because it was launched by the OS due to a game's request for Xbox-specific UI. Introduced in Windows 10, version 1703 (10.0.15063).
+		GameUIProvider = 1019,
+
+		//
+		// Summary:
+		//    The app was activated because the app is specified to launch at system startup or user log-in. Introduced in Windows 10, version 1703 (10.0.15063).
+		StartupTask = 1020,
+
+		//
+		// Summary:
+		//    The app was launched from the command line. Introduced in Windows 10, version 1709 (10.0.16299) 
+		CommandLineLaunch = 1021,
+
+		//
+		// Summary:
+		//     The app was activated as a barcode scanner provider.
+		BarcodeScannerProvider = 1022	
 	}
 }

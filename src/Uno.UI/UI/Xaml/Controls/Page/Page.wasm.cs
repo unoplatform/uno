@@ -16,8 +16,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateBorder()
 		{
-			SetBorder(Thickness.Empty, null, CornerRadius.None);
-			SetBackgroundBrush(Background);
+			SetBorder(Thickness.Empty, null);
+			SetAndObserveBackgroundBrush(Background);
 		}
 	}
 }

@@ -10,7 +10,7 @@ using AppKit;
 #endif
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.Storage.Streams;
@@ -45,12 +45,12 @@ namespace Windows.UI.Xaml.Controls
 
 		public Image() { }
 
-		private void TryOpenImage()
+		private void TryOpenImage(bool forceReload = false)
 		{
 			//Skip opening the image source source is already loaded or if the view isn't loaded
-			if (_openedImage == Source)
+			if (!forceReload && _openedImage == Source)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because Source has not changed");
 				}
@@ -59,14 +59,14 @@ namespace Windows.UI.Xaml.Controls
 
 			if (Window == null)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view is not loaded");
 				}
 				return;
 			}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(this.ToString() + " TryOpenImage - proceeding");
 			}

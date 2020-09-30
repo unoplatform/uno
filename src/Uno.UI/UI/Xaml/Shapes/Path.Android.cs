@@ -1,19 +1,21 @@
-﻿using Windows.Foundation;
+﻿#nullable enable
+using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	public partial class Path : ArbitraryShapeBase
+	public partial class Path : Shape
 	{
-		protected override Android.Graphics.Path GetPath(Size availableSize)
-		{
-			var streamGeometry = Data.ToStreamGeometry();
-			return streamGeometry?.ToPath();
-		}
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureAbsoluteShape(availableSize, GetPath());
 
-		partial void OnDataChanged()
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeAbsoluteShape(finalSize, GetPath());
+
+		private Android.Graphics.Path? GetPath()
 		{
-			RequestLayout();
+			return Data?.ToStreamGeometry()?.ToPath();
 		}
 	}
 }

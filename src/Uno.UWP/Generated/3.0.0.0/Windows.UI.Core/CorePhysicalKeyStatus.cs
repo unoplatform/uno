@@ -2,29 +2,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial struct CorePhysicalKeyStatus 
 	{
 		// Forced skipping of method Windows.UI.Core.CorePhysicalKeyStatus.CorePhysicalKeyStatus()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint RepeatCount;
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint ScanCode;
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  bool IsExtendedKey;
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  bool IsMenuKeyDown;
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  bool WasKeyDown;
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  bool IsKeyReleased;
-		#endif
+		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.RepeatCount
+		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.ScanCode
+		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.IsExtendedKey
+		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.IsMenuKeyDown
+		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.WasKeyDown
+		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.IsKeyReleased
 	}
 }

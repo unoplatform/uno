@@ -13,7 +13,7 @@ namespace Uno.UWPSyncGenerator
 
 		public int GetHashCode(INamedTypeSymbol obj)
 		{
-			return obj.GetHashCode();
+			return obj.ToString().GetHashCode();
 		}
 	}
 }

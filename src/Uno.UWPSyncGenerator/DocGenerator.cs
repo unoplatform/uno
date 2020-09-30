@@ -32,14 +32,25 @@ namespace Uno.UWPSyncGenerator
 			_sb.AppendLine();
 
 			_views = new List<PlatformSymbols<INamedTypeSymbol>>();
-			base.Build(basePath, baseName, sourceAssembly);
+
+			try
+			{
+				base.Build(basePath, baseName, sourceAssembly);
+			}
+			catch (Exception e)
+			{
+				_sb.AppendComment($"Generation error: {e.Message}");
+#if !DEBUG
+				throw; 
+#endif
+			}
 
 			_viewsGrouped = GroupByNamespace(_views);
 			_kosherFrameworkViews = new HashSet<(string name, string namespaceString)>(_views.Select(ps => (ps.UAPSymbol.Name, ps.UAPSymbol.ContainingNamespace.ToDisplayString())));
 
 			using (_sb.Section("List of views implemented in Uno"))
 			{
-				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the UWP API (as of the Windows 10 October 2018 Update (17763)). Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
+				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the UWP API (as of the May 2019 Update (18362)). Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
 
 				_sb.AppendParagraph("This page lists controls that are currently implemented in Uno. Navigate to individual control entries to see which properties, methods, and events are implemented for a given control.");
 
@@ -203,6 +214,15 @@ namespace Uno.UWPSyncGenerator
 						tocSB.AppendLineInvariant($"  href: ../{GetImplementedMembersFilename(view.UAPSymbol)}");
 					}
 				}
+
+#if DEBUG
+				if (_views.None())
+				{
+					// Dummy TOC entry so that docfx doesn't fail
+					tocSB.AppendLineInvariant($"- name: Implemented views failed");
+					tocSB.AppendLineInvariant($"  href: doesntexist.md");
+				}
+#endif
 
 				using (var fileWriter = new StreamWriter(Path.Combine(DocPath, ImplementedPath, "toc.yml")))
 				{

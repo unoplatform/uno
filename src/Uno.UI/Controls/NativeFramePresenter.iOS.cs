@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using UIKit;
 using Uno.Extensions;
 using Uno.UI.Helpers;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -122,8 +122,21 @@ namespace Uno.UI.Controls
 
 			if (_frame.Content is Page startPage)
 			{
-				var viewController = new PageViewController(startPage);
-				NavigationController.PushViewController(viewController, false);
+				// When the frame already has content, we add a NavigationRequest in the PageViewController's AssociatedRequests.
+				// Not doing this results in log errors from WillShowViewController and DidShowViewController (the ones about AssociatedRequests being empty).
+				// Then, we push the PageViewController without animations (because the page is already present in the Frame). 
+
+				var pageViewController = new PageViewController(startPage);
+				var navigationEventArgs = new NavigationEventArgs(
+					_frame.CurrentEntry.Instance,
+					NavigationMode.New,
+					_frame.CurrentEntry.NavigationTransitionInfo,
+					_frame.CurrentEntry.Parameter,
+					_frame.CurrentEntry.SourcePageType,
+					null
+				);
+				pageViewController.AssociatedRequests.Add(new NavigationRequest(_frame, navigationEventArgs));
+				NavigationController.PushViewController(pageViewController, false);
 			}
 
 			_controllerDelegate = new ControllerDelegate(this);
@@ -363,7 +376,18 @@ namespace Uno.UI.Controls
 					this.Log().Debug("Resetting all ViewControllers based on Frame's state.");
 				}
 
-				NavigationController.SetViewControllers(viewControllers, animated: true);
+				// TODO: iOS 14 introduced a bug where calling this method is getting unpleasant results (https://developer.apple.com/forums/thread/656524). (https://developer.apple.com/forums/thread/656524)
+				// A workaround for this is removing the animation as this seems to be related to the root cause.
+				// Note: This change should not affect consumer navigation since this is only used when resetting the stack.
+				if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0)) 
+				{
+					NavigationController.SetViewControllers(viewControllers, animated: false);
+				}
+				else
+				{
+					NavigationController.SetViewControllers(viewControllers, animated: true);
+				}
+				
 			}
 		}
 
@@ -697,6 +721,19 @@ namespace Uno.UI.Controls
 					base.ViewWillAppear(animated);
 
 					CommandBarHelper.PageWillAppear(this);
+				}
+				catch (Exception e)
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
+			}
+
+			public override void ViewWillDisappear(bool animated)
+			{
+				try
+				{
+					base.ViewWillDisappear(animated);
+					CommandBarHelper.PageWillDisappear(this);
 				}
 				catch (Exception e)
 				{

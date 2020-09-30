@@ -5,9 +5,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Uno.Extensions;
-using Uno.Logging;
-using Uno.UI.Tasks.Helpers;
 using Windows.ApplicationModel.Resources.Core;
 
 namespace Uno.UI.Tasks.ResourcesGenerator
@@ -44,9 +41,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 		public override bool Execute()
 		{
-			LogExtensionPoint.AmbientLoggerFactory.AddProvider(new TaskLoggerProvider(Log));
-
-			this.Log().Info("Generating resources for platform : {0}".InvariantCultureFormat(TargetPlatform));
+			Log.LogMessage($"Generating resources for platform : {TargetPlatform}");
 
 			try
 			{
@@ -55,14 +50,14 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 					.Where(resource => resource.ItemSpec?.EndsWith("resw") ?? false)
 					// TODO: Merge duplicates (based on file name and qualifiers)
 					.SelectMany(GetResourcesForItem)
-					.Trim()
+					.Where(r => r != null)
 					.ToArray();
 
 				return true;
 			}
 			catch (Exception ex)
 			{
-				this.Log().Error($"Failed to generate resources. Details: {ex.Message}");
+				Log.LogError($"Failed to generate resources. Details: {ex.Message}");
 			}
 
 			return false;
@@ -70,7 +65,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 		private IEnumerable<ITaskItem> GetResourcesForItem(ITaskItem resource)
 		{
-			this.Log().Info("Resources file found : {0}".InvariantCultureFormat(resource.ItemSpec));
+			Log.LogMessage($"Resources file found : {resource.ItemSpec}");
 
 			var resourceCandidate = ResourceCandidate.Parse(resource.ItemSpec, resource.ItemSpec);
 
@@ -78,18 +73,18 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			if (language == null)
 			{
 				// TODO: Add support for resources without a language qualifier
-				this.Log().Info("No language found, resources ignored");
+				Log.LogMessage("No language found, resources ignored");
 				yield break;
 			}
 
-			this.Log().Info("Language found : {0}".InvariantCultureFormat(language));
+			Log.LogMessage($"Language found : {language}");
 
 			var resourceFile = resource.ItemSpec;
 			var sourceLastWriteTime = new FileInfo(resourceFile).LastWriteTimeUtc;
 			var resources = WindowsResourcesReader.Read(resourceFile);
-			var comment = CommentPattern.InvariantCultureFormat(this.GetType().Name, resourceFile);
+			var comment = string.Format(CultureInfo.InvariantCulture, CommentPattern, this.GetType().Name, resourceFile);
 
-			this.Log().Info("{0} resources found".InvariantCultureFormat(resources.Count));
+			Log.LogMessage($"{resources.Count} resources found");
 
 			if (Path.GetFileNameWithoutExtension(resource.ItemSpec).Equals("Resources", StringComparison.OrdinalIgnoreCase))
 			{
@@ -143,13 +138,13 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 			if (sourceLastWriteTime > targetLastWriteTime)
 			{
-				this.Log().Info("Writing resources to {0}".InvariantCultureFormat(actualTargetPath));
+				Log.LogMessage($"Writing resources to {actualTargetPath}");
 
 				UnoPRIResourcesWriter.Write(resourceMapName, language, resources, actualTargetPath, comment);
 			}
 			else
 			{
-				this.Log().Info($"Skipping unmodified file {actualTargetPath}");
+				Log.LogMessage($"Skipping unmodified file {actualTargetPath}");
 			}
 
 			return new TaskItem
@@ -172,13 +167,13 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 			if (sourceLastWriteTime > targetLastWriteTime)
 			{
-				this.Log().Info("Writing resources to {0}".InvariantCultureFormat(actualTargetPath));
+				Log.LogMessage($"Writing resources to {actualTargetPath}");
 
 				iOSResourcesWriter.Write(resources, actualTargetPath, comment);
 			}
 			else
 			{
-				this.Log().Info($"Skipping unmodified file {actualTargetPath}");
+				Log.LogMessage($"Skipping unmodified file {actualTargetPath}");
 			}
 
 			return new TaskItem
@@ -225,13 +220,13 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 			if (sourceLastWriteTime > targetLastWriteTime)
 			{
-				this.Log().Info("Writing resources to {0}".InvariantCultureFormat(actualTargetPath));
+				Log.LogMessage($"Writing resources to {actualTargetPath}");
 
 				AndroidResourcesWriter.Write(resources, actualTargetPath, comment);
 			}
 			else
 			{
-				this.Log().Info($"Skipping unmodified file {actualTargetPath}");
+				Log.LogMessage($"Skipping unmodified file {actualTargetPath}");
 			}
 
 			return new TaskItem

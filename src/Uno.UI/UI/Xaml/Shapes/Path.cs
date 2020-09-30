@@ -1,7 +1,8 @@
-﻿#if !__IOS__ && !__MACOS__ && !__SKIA__
+﻿#if !__IOS__ && !__MACOS__ && !__SKIA__ && !__ANDROID__
 #define LEGACY_SHAPE_MEASURE
 #endif
 
+#nullable enable
 using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		#region Data
 
-		public Geometry Data
+		public Geometry? Data
 		{
 			get => (Geometry)this.GetValue(DataProperty);
 			set => this.SetValue(DataProperty, value);
@@ -40,9 +41,12 @@ namespace Windows.UI.Xaml.Shapes
 		#endregion
 
 #if LEGACY_SHAPE_MEASURE
-		protected internal override IEnumerable<object> GetShapeParameters()
+		protected internal override IEnumerable<object?> GetShapeParameters()
 		{
-			yield return Data;
+			if (Data is { } data)
+			{
+				yield return data;
+			}
 
 			foreach (var p in base.GetShapeParameters())
 			{

@@ -12,7 +12,7 @@ using System.Windows.Input;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
@@ -31,7 +31,7 @@ using View = AppKit.NSView;
 #elif XAMARIN_ANDROID
 using Color = Android.Resource.Color;
 using View = Android.Views.View;
-#elif NET461 || NETSTANDARD2_0
+#elif NET461 || UNO_REFERENCE_API
 using Color = System.Object;
 using View = Windows.UI.Xaml.FrameworkElement;
 #endif  

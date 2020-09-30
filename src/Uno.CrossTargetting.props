@@ -35,11 +35,11 @@
 		This target is the equivalent to this property group, until this
 		is fixed: https://github.com/NuGet/Home/issues/6662
 		<PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
-			<NoWarn>$(NoWarn);67</NoWarn>
+			<NoWarn>$(NoWarn);67;0649</NoWarn>
 		</PropertyGroup>
 		-->
 
-	<CreateProperty Value="$(NoWarn);67">
+	<CreateProperty Value="$(NoWarn);67;0649">
 	  <Output
 			  TaskParameter="Value"
 			  PropertyName="NoWarn" />
@@ -57,18 +57,27 @@
 										UIElements. On iOS, this means additional weak references
 										backed fields to handle opaque native reference pinning and avoid
 										memory leaks.
+  - UNO_HAS_ENHANCED_HIT_TEST_PROPERTY: Used to mark if the ENUM hit test property is present or not
+  - UNO_HAS_MANAGED_SCROLL_PRESENTER: Determines if the platforms supports managed scroll presenter which
+									  uses render transforms instead of native scroll feature (if any)
+  - UNO_HAS_MANAGED_POINTERS: Determines if the pointer events are dispatched by uno instead of the system (if any).
+
   - Constants for Xamarin backends and SDK versions: https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/platform-divergence-abstraction-divergent-implementation#conditional-compilation
   -->
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
-	<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY</DefineConstants>
+  <PropertyGroup Condition="$(_IsNetStd)">
+	  <DefineConstants>$(DefineConstants);__NETSTD__</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Skia'">
-	<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API</DefineConstants>
+  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
+	<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
+  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'">
+	<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Reference'">
 	<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
   </PropertyGroup>
 
@@ -76,26 +85,30 @@
 	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)'=='net6.0-maccatalyst'">
+	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
+
+	<!-- Remove Warnings about -->
+	<NoWarn>$(NoWarn);NU1703</NoWarn>
+  </PropertyGroup>
+
   <PropertyGroup Condition="$(IsXamarinMac)">
-	<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
+	<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsMonoAndroid)">
 	<DefineConstants>$(DefineConstants);XAMARIN;XAMARIN_ANDROID</DefineConstants>
 	<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 	<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
-	<OutputPath>bin\$(Configuration)\$(TargetFramework)\</OutputPath>
-	<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\</IntermediateOutputPath>
-	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.17763' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.18362' and '$(TargetFramework)'!='net5.0-windows10.0.18362.0' ">
 	<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.17763' ">
-	<TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
-	<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.18362' ">
+	<TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
+	<TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
 	<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
 
 	<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
@@ -106,7 +119,7 @@
 	<PackageReference Include="xamarin.build.download" />
   </ItemGroup>
 
-  <ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) ">
+  <ItemGroup Condition=" ($(IsMonoAndroid) or $(IsXamarinIOS)) and '$(ExtrasIsReferenceAssembly)'!='' ">
 	<!-- remove files included by msbuild extras -->
 	<Page Remove="@(Page)" />
 	<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
@@ -158,11 +171,11 @@
 	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 	  <_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
 	</ItemGroup>
-	
+
 	<MakeDir Directories="$(_TargetNugetFolder)" />
 
 	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />

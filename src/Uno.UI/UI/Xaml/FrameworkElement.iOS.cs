@@ -7,57 +7,89 @@ using System.Text;
 using UIKit;
 using System.ComponentModel;
 using Windows.Foundation;
-using Uno.Logging;
+using Windows.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.UI.Xaml.Controls.Layouter;
 
 namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
+		/// <summary>
+		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
+		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
+		/// </summary>
+		internal bool ShouldInterceptInvalidate { get; set; }
+
 		public override void SetNeedsLayout()
 		{
+			if (ShouldInterceptInvalidate)
+			{
+				return;
+			}
+
 			if (!_inLayoutSubviews)
 			{
 				base.SetNeedsLayout();
 			}
 
-			RequiresMeasure = true;
-			RequiresArrange = true;
+			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
 
 			SetSuperviewNeedsLayout();
 		}
 
 		public override void LayoutSubviews()
 		{
-			if (Visibility == Visibility.Collapsed)
-			{
-				// //Don't layout collapsed views
-				return;
-			}
-
 			try
 			{
 				try
 				{
 					_inLayoutSubviews = true;
 
-					if (RequiresMeasure)
+					if (IsMeasureDirty)
 					{
 						// Add back the Margin (which is normally 'outside' the view's bounds) - the layouter will subtract it again
-						XamlMeasure(Bounds.Size.Add(Margin));
+						var availableSizeWithMargins = Bounds.Size.Add(Margin);
+						XamlMeasure(availableSizeWithMargins);
 					}
 
-					OnBeforeArrange();
+					//if (IsArrangeDirty) // commented until the MEASURE_DIRTY_PATH is properly implemented for iOS
+					{
+						ClearLayoutFlags(LayoutFlag.ArrangeDirty);
 
-					var size = SizeFromUISize(Bounds.Size);
-					_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
+						OnBeforeArrange();
 
-					OnAfterArrange();
+						Rect finalRect;
+						var parent = Superview;
+						if (parent is UIElement
+						    || parent is ISetLayoutSlots
+						    // In the case of ListViewItem inside native list, its parent's parent is ListViewBaseInternalContainer
+						    || parent?.Superview is ISetLayoutSlots
+						   )
+						{
+							finalRect = LayoutSlotWithMarginsAndAlignments;
+						}
+						else
+						{
+							// Here the "arrange" is coming from a native element,
+							// so we convert those measurements to logical ones.
+							finalRect = RectFromUIRect(Frame);
+
+							// We also need to set the LayoutSlot as it was not by the parent.
+							// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
+							LayoutInformation.SetLayoutSlot(this, finalRect);
+							LayoutSlotWithMarginsAndAlignments = finalRect;
+						}
+
+						_layouter.Arrange(finalRect);
+
+						OnAfterArrange();
+					}
 				}
 				finally
 				{
 					_inLayoutSubviews = false;
-					RequiresArrange = false;
 				}
 			}
 			catch (Exception e)

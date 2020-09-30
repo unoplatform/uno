@@ -24,14 +24,12 @@ namespace Windows.Storage.Helpers
 {
 	internal partial class AssetsManager
 	{
-		private static readonly string UNO_BOOTSTRAP_APP_BASE = Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
-
 		private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(() => GetAssets(CancellationToken.None));
 		private static readonly ConcurrentEntryManager _assetsGate = new ConcurrentEntryManager();
 
 		private static async Task<HashSet<string>> GetAssets(CancellationToken ct)
 		{
-			var assetsUri = !string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE) ? $"{UNO_BOOTSTRAP_APP_BASE}/uno-assets.txt" : "uno-assets.txt";
+			var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
 
 			var assets = await WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAssetsManifest(\'{assetsUri}\')");
 
@@ -45,13 +43,13 @@ namespace Windows.Storage.Helpers
 
 			if (assetSet.Contains(updatedPath))
 			{
-				var localPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, ".assetsCache", UNO_BOOTSTRAP_APP_BASE, updatedPath);
+				var localPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, ".assetsCache", AssetsPathBuilder.UNO_BOOTSTRAP_APP_BASE, updatedPath);
 
 				using var assetLock = await _assetsGate.LockForAsset(ct, updatedPath);
 
 				if (!File.Exists(localPath))
 				{
-					var assetUri = !string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE) ? $"{UNO_BOOTSTRAP_APP_BASE}/{updatedPath}" : updatedPath;
+					var assetUri = AssetsPathBuilder.BuildAssetUri(updatedPath);
 					var assetInfo = await WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAsset(\'{assetUri}\')");
 
 					var parts = assetInfo.Split(';');
@@ -65,7 +63,11 @@ namespace Windows.Storage.Helpers
 							var buffer = new byte[length];
 							Marshal.Copy(ptr, buffer, 0, length);
 
-							Directory.CreateDirectory(Path.GetDirectoryName(localPath));
+							if (Path.GetDirectoryName(localPath) is { } path)
+							{
+								Directory.CreateDirectory(path);
+							}
+
 							File.WriteAllBytes(localPath, buffer);
 						}
 						finally

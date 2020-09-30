@@ -8,16 +8,7 @@ namespace Windows.UI.Xaml
 	public  partial class SetterBaseCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.SetterBase>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.SetterBase>
 	{
 		// Skipping already declared property Size
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSealed
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SetterBaseCollection.IsSealed is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property IsSealed
 		// Skipping already declared method Windows.UI.Xaml.SetterBaseCollection.SetterBaseCollection()
 		// Forced skipping of method Windows.UI.Xaml.SetterBaseCollection.SetterBaseCollection()
 		// Forced skipping of method Windows.UI.Xaml.SetterBaseCollection.IsSealed.get

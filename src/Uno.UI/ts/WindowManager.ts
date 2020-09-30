@@ -28,6 +28,7 @@ namespace Uno.UI {
 
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
+		private static readonly unoCollapsedClassName = "uno-visibility-collapsed";
 
 		private static _cctor = (() => {
 			WindowManager.initMethods();
@@ -83,7 +84,7 @@ namespace Uno.UI {
 							//
 							// If the image fails to load, setup the splashScreen anyways with the
 							// proper sample.
-							let canvas = document.createElement('canvas');
+							let canvas = document.createElement("canvas");
 							canvas.width = img.width;
 							canvas.height = img.height;
 							let ctx = canvas.getContext("2d");
@@ -106,7 +107,18 @@ namespace Uno.UI {
 				// created later on 
 				img.onload = loadingDone;
 				img.onerror = loadingDone;
-				img.src = String(UnoAppManifest.splashScreenImage);
+
+				const UNO_BOOTSTRAP_APP_BASE = config.environmentVariables["UNO_BOOTSTRAP_APP_BASE"] || "";
+				const UNO_BOOTSTRAP_WEBAPP_BASE_PATH = config.environmentVariables["UNO_BOOTSTRAP_WEBAPP_BASE_PATH"] || "";
+
+				let fullImagePath = String(UnoAppManifest.splashScreenImage);
+
+				// If the splashScreenImage image already points to the app base path, use it, otherwise we build it.
+				if (UNO_BOOTSTRAP_APP_BASE !== "" && fullImagePath.indexOf(UNO_BOOTSTRAP_APP_BASE) == -1) {
+					fullImagePath = `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`;
+				}
+
+				img.src = fullImagePath;
 
 				// If there's no response, skip the loading
 				setTimeout(loadingDone, 2000);
@@ -196,7 +208,7 @@ namespace Uno.UI {
 				return new URLSearchParams(window.location.search).toString();
 			}
 			else {
-				const queryIndex = document.location.search.indexOf('?');
+				const queryIndex = document.location.search.indexOf("?");
 
 				if (queryIndex !== -1) {
 					return document.location.search.substring(queryIndex + 1);
@@ -258,7 +270,7 @@ namespace Uno.UI {
 			element.setAttribute("XamlType", uiElementRegistration.typeName);
 			element.setAttribute("XamlHandle", this.handleToString(contentDefinition.handle));
 			if (uiElementRegistration.isFrameworkElement) {
-				this.setAsUnarranged(element);
+				this.setAsUnarranged(element, true);
 			}
 			if (element.hasOwnProperty("tabindex")) {
 				(element as any)["tabindex"] = contentDefinition.isFocusable ? 0 : -1;
@@ -365,6 +377,31 @@ namespace Uno.UI {
 		}
 
 		/**
+			* Sets the visibility of the specified element
+			*/
+		public setVisibility(elementId: number, visible: boolean): string {
+			this.setVisibilityInternal(elementId, visible);
+			return "ok";
+		}
+
+		public setVisibilityNative(pParam: number): boolean {
+			const params = WindowManagerSetVisibilityParams.unmarshal(pParam);
+			this.setVisibilityInternal(params.HtmlId, params.Visible);
+			return true;
+		}
+
+		private setVisibilityInternal(elementId: number, visible: boolean): void {
+			const element = this.getView(elementId);
+
+			if (visible) {
+				element.classList.remove(WindowManager.unoCollapsedClassName);
+			}
+			else {
+				element.classList.add(WindowManager.unoCollapsedClassName);
+			}
+		}
+
+		/**
 			* Set an attribute for an element.
 			*/
 		public setAttributes(elementId: number, attributes: { [name: string]: string }): string {
@@ -444,7 +481,7 @@ namespace Uno.UI {
 
 			for (const name in properties) {
 				if (properties.hasOwnProperty(name)) {
-					var setVal = properties[name];
+					const setVal = properties[name];
 					if (setVal === "true") {
 						(element as any)[name] = true;
 					}
@@ -469,7 +506,7 @@ namespace Uno.UI {
 			const element = this.getView(params.HtmlId);
 
 			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				var setVal = params.Pairs[i + 1];
+				const setVal = params.Pairs[i + 1];
 				if (setVal === "true") {
 					(element as any)[params.Pairs[i]] = true;
 				}
@@ -666,11 +703,103 @@ namespace Uno.UI {
 
 		private setAsArranged(element: HTMLElement | SVGElement) {
 
-			element.classList.remove(WindowManager.unoUnarrangedClassName);
+			if (!(<any>element)._unoIsArranged) {
+				(<any>element)._unoIsArranged = true;
+				element.classList.remove(WindowManager.unoUnarrangedClassName);
+			}
 		}
 
-		private setAsUnarranged(element: HTMLElement | SVGElement) {
-			element.classList.add(WindowManager.unoUnarrangedClassName);
+		private setAsUnarranged(element: HTMLElement | SVGElement, force: boolean = false) {
+			if ((<any>element)._unoIsArranged || force) {
+				(<any>element)._unoIsArranged = false;
+				element.classList.add(WindowManager.unoUnarrangedClassName);
+			}
+		}
+
+		/**
+		* Sets the color property of the specified element
+		*/
+		public setElementColor(elementId: number, color: number): string {
+			this.setElementColorInternal(elementId, color);
+			return "ok";
+		}
+
+		public setElementColorNative(pParam: number): boolean {
+			const params = WindowManagerSetElementColorParams.unmarshal(pParam);
+			this.setElementColorInternal(params.HtmlId, params.Color);
+			return true;
+		}
+
+		private setElementColorInternal(elementId: number, color: number): void {
+			const element = this.getView(elementId);
+
+			element.style.setProperty("color", this.numberToCssColor(color));
+		}
+
+		/**
+		* Sets the fill property of the specified element
+		*/
+		public setElementFill(elementId: number, color: number): string {
+			this.setElementColorInternal(elementId, color);
+			return "ok";
+		}
+
+		public setElementFillNative(pParam: number): boolean {
+			const params = WindowManagerSetElementFillParams.unmarshal(pParam);
+			this.setElementFillInternal(params.HtmlId, params.Color);
+			return true;
+		}
+
+		private setElementFillInternal(elementId: number, color: number): void {
+			const element = this.getView(elementId);
+
+			element.style.setProperty("fill", this.numberToCssColor(color));
+		}
+
+		/**
+		* Sets the background color property of the specified element
+		*/
+		public setElementBackgroundColor(pParam: number): boolean {
+			const params = WindowManagerSetElementBackgroundColorParams.unmarshal(pParam);
+
+			const element = this.getView(params.HtmlId);
+			const style = element.style;
+
+			style.setProperty("background-color", this.numberToCssColor(params.Color));
+			style.removeProperty("background-image");
+
+			return true;
+		}
+
+		/**
+		* Sets the background image property of the specified element
+		*/
+		public setElementBackgroundGradient(pParam: number): boolean {
+			const params = WindowManagerSetElementBackgroundGradientParams.unmarshal(pParam);
+
+			const element = this.getView(params.HtmlId);
+			const style = element.style;
+
+			style.removeProperty("background-color");
+			style.setProperty("background-image", params.CssGradient);
+
+			return true;
+		}
+
+		/**
+		* Clears the background property of the specified element
+		*/
+		public resetElementBackground(pParam: number): boolean {
+			const params = WindowManagerResetElementBackgroundParams.unmarshal(pParam);
+
+			const element = this.getView(params.HtmlId);
+			const style = element.style;
+
+			style.removeProperty("background-color");
+			style.removeProperty("background-image");
+			style.removeProperty("background-size");
+
+			return true;
 		}
 
 		/**
@@ -682,7 +811,7 @@ namespace Uno.UI {
 			const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
 			const element = this.getView(params.HtmlId);
 
-			var style = element.style;
+			const style = element.style;
 
 			const matrix = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
 			style.transform = matrix;
@@ -777,137 +906,6 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public registerPointerEventsOnView(pParams: number): void {
-			const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
-
-			element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
-			element.addEventListener("pointerleave", WindowManager.onPointerLeaveReceived);
-			element.addEventListener("pointerdown", WindowManager.onPointerEventReceived);
-			element.addEventListener("pointerup", WindowManager.onPointerEventReceived);
-			element.addEventListener("pointercancel", WindowManager.onPointerEventReceived);
-		}
-
-		public static onPointerEventReceived(evt: PointerEvent): void {
-			WindowManager.dispatchPointerEvent(evt.currentTarget as HTMLElement | SVGElement, evt);
-		}
-
-		public static dispatchPointerEvent(element: HTMLElement | SVGElement, evt: PointerEvent): void {
-			const payload = WindowManager.pointerEventExtractor(evt);
-			const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
-			if (handled) {
-				evt.stopPropagation();
-			}
-		}
-
-		public static onPointerEnterReceived(evt: PointerEvent): void {
-			const element = evt.currentTarget as HTMLElement | SVGElement;
-			const e = evt as any;
-
-			if (e.explicitOriginalTarget) { // FF only
-
-				// It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
-				// we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
-				// which is unexpected as the "pointerenter" should not bubble.
-				// So we have to validate that this event is effectively due to the pointer entering the control.
-				// We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
-
-				for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
-					if (elt == element) {
-						// We found our target element, we can raise the event and stop the loop
-						WindowManager.onPointerEventReceived(evt);
-						return;
-					}
-
-					let htmlElt = elt as HTMLElement;
-					if (htmlElt.style.pointerEvents != "none") {
-						// This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
-						// However, if this 'htmlElt' is one of our child it means that the event was legitimate
-						// and we have to raise it for the 'element'.
-						while (htmlElt.parentElement) {
-							htmlElt = htmlElt.parentElement;
-							if (htmlElt == element) {
-								WindowManager.onPointerEventReceived(evt);
-								return;
-							}
-						}
-
-						// We found an element this is capable to handle the pointers but which is not one of our child
-						// (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
-						// not have bubble to the element, and we can mute it.
-						return;
-					}
-				}
-			} else {
-				WindowManager.onPointerEventReceived(evt);
-			}
-		}
-
-		public static onPointerLeaveReceived(evt: PointerEvent): void {
-			const element = evt.currentTarget as HTMLElement | SVGElement;
-			const e = evt as any;
-
-			if (e.explicitOriginalTarget // FF only
-				&& e.explicitOriginalTarget !== element
-				&& (event as PointerEvent).isOver(element)) {
-
-				// If the event was re-targeted, it's suspicious as the leave event should not bubble
-				// This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
-				// So we have to validate that this event is effectively due to the pointer leaving the element.
-				// We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
-
-				// It's common to get a move right after the leave with the same pointer's location,
-				// so we wait up to 3 pointer move before dropping the leave event.
-				var attempt = 3;
-
-				WindowManager.current.ensurePendingLeaveEventProcessing();
-				WindowManager.current.processPendingLeaveEvent = (move: PointerEvent) => {
-					if (!move.isOverDeep(element)) {
-						// Raising deferred pointerleave on element " + element.id);
-						// Note The 'evt.currentTarget' is available only while in the event handler.
-						//		So we manually keep a reference ('element') and explicit dispatch event to it.
-						//		https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
-						WindowManager.dispatchPointerEvent(element, evt);
-
-						WindowManager.current.processPendingLeaveEvent = null;
-					} else if (--attempt <= 0) {
-						// Drop deferred pointerleave on element " + element.id);
-
-						WindowManager.current.processPendingLeaveEvent = null;
-					} else {
-						// Requeue deferred pointerleave on element " + element.id);
-					}
-				};
-
-			} else {
-				WindowManager.onPointerEventReceived(evt);
-			}
-		}
-
-		private processPendingLeaveEvent: (evt: PointerEvent) => void;
-
-		private _isPendingLeaveProcessingEnabled: boolean;
-
-		/**
-		 * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
-		 */
-		private ensurePendingLeaveEventProcessing() {
-			if (this._isPendingLeaveProcessingEnabled) {
-				return;
-			}
-
-			// Register an event listener on move in order to process any pending event (leave).
-			document.addEventListener(
-				"pointermove",
-				evt => {
-					if (this.processPendingLeaveEvent) {
-						this.processPendingLeaveEvent(evt as PointerEvent);
-					}
-				},
-				true); // in the capture phase to get it as soon as possible, and to make sure to respect the events ordering
-			this._isPendingLeaveProcessingEnabled = true;
-		}
-
 		/**
 			* Add an event handler to a html element.
 			*
@@ -927,103 +925,16 @@ namespace Uno.UI {
 					? `${eventExtractor(event)}`
 					: "";
 
-				var handled = this.dispatchEvent(element, eventName, eventPayload);
-				if (handled) {
+				const result = this.dispatchEvent(element, eventName, eventPayload);
+				if (result & HtmlEventDispatchResult.StopPropagation) {
 					event.stopPropagation();
+				}
+				if (result & HtmlEventDispatchResult.PreventDefault) {
+					event.preventDefault();
 				}
 			};
 
 			element.addEventListener(eventName, eventHandler, onCapturePhase);
-		}
-
-		/**
-		 * pointer event extractor to be used with registerEventOnView
-		 * @param evt
-		 */
-		private static pointerEventExtractor(evt: PointerEvent|WheelEvent): string {
-			if (!evt) {
-				return "";
-			}
-
-			let src = evt.target as HTMLElement | SVGElement;
-			if (src instanceof SVGElement) {
-				// The XAML SvgElement are UIElement in Uno (so they have a XamlHandle),
-				// but as on WinUI they are not part of the visual tree, they should not be used as OriginalElement.
-				// Instead we should use the actual parent <svg /> which is the XAML Shape.
-				const shape = (src as any).ownerSVGElement;
-				if (shape) {
-					src = shape;
-				}
-			} else if (src instanceof HTMLImageElement) {
-				// Same as above for images (<img /> == HtmlImage, we use the parent <div /> which is the XAML Image).
-				src = src.parentElement;
-			}
-
-			let srcHandle = "0";
-			while (src) {
-				let handle = src.getAttribute("XamlHandle");
-				if (handle) {
-					srcHandle = handle;
-					break;
-				}
-
-				src = src.parentElement;
-			}
-
-			let pointerId: number, pointerType: string, pressure: number;
-			let wheelDeltaX: number, wheelDeltaY: number;
-			if (evt instanceof WheelEvent) {
-				pointerId = (evt as any).mozInputSource ? 0 : 1; // Try to match the mouse pointer ID 0 for FF, 1 for others
-				pointerType = "mouse";
-				pressure = 0.5; // like WinUI
-				wheelDeltaX = evt.deltaX;
-				wheelDeltaY = evt.deltaY;
-
-				switch (evt.deltaMode) {
-					case WheelEvent.DOM_DELTA_LINE: // Actually this is supported only by FF
-						const lineSize = WindowManager.wheelLineSize;
-						wheelDeltaX *= lineSize;
-						wheelDeltaY *= lineSize;
-						break;
-					case WheelEvent.DOM_DELTA_PAGE:
-						wheelDeltaX *= document.documentElement.clientWidth;
-						wheelDeltaY *= document.documentElement.clientHeight;
-						break;
-				}
-			} else {
-				pointerId = evt.pointerId;
-				pointerType = evt.pointerType;
-				pressure = evt.pressure;
-				wheelDeltaX = 0;
-				wheelDeltaY = 0;
-			}
-
-			return `${pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${pointerType};${srcHandle};${evt.timeStamp};${pressure};${wheelDeltaX};${wheelDeltaY}`;
-		}
-
-		private static _wheelLineSize : number = undefined;
-		private static get wheelLineSize(): number {
-			// In web browsers, scroll might happen by pixels, line or page.
-			// But WinUI works only with pixels, so we have to convert it before send the value to the managed code.
-			// The issue is that there is no easy way get the "size of a line", instead we have to determine the CSS "line-height"
-			// defined in the browser settings. 
-			// https://stackoverflow.com/questions/20110224/what-is-the-height-of-a-line-in-a-wheel-event-deltamode-dom-delta-line
-			if (this._wheelLineSize == undefined) {
-				const el = document.createElement('div');
-				el.style.fontSize = 'initial';
-				el.style.display = 'none';
-				document.body.appendChild(el);
-				const fontSize = window.getComputedStyle(el).fontSize;
-				document.body.removeChild(el);
-
-				this._wheelLineSize = fontSize ? parseInt(fontSize) : 16; /* 16 = The current common default font size */
-
-				// Based on observations, even if the event reports 3 lines (the settings of windows),
-				// the browser will actually scroll of about 6 lines of text.
-				this._wheelLineSize *= 2.0;
-			}
-
-			return this._wheelLineSize;
 		}
 
 		/**
@@ -1092,8 +1003,6 @@ namespace Uno.UI {
 				//
 
 				switch (eventExtractorId) {
-					case 1:
-						return WindowManager.pointerEventExtractor;
 					case 3:
 						return this.keyboardEventExtractor;
 
@@ -1320,7 +1229,38 @@ namespace Uno.UI {
 		}
 
 		private getBBoxInternal(elementId: number): any {
-			return (<any>this.getView(elementId)).getBBox();
+
+			const element = this.getView(elementId) as SVGGraphicsElement;
+			let unconnectedRoot: HTMLElement | SVGGraphicsElement = null;
+
+			const cleanupUnconnectedRoot = (owner: HTMLDivElement) => {
+				if (unconnectedRoot !== null) {
+					owner.removeChild(unconnectedRoot);
+				}
+			}
+
+			try {
+
+				// On FireFox, the element needs to be connected to the DOM
+				// or the getBBox() will crash.
+				if (!element.isConnected) {
+
+					unconnectedRoot = element;
+					while (unconnectedRoot.parentElement) {
+						// Need to find the top most "unconnected" parent
+						// of this element
+						unconnectedRoot = unconnectedRoot.parentElement as HTMLElement;
+					}
+
+					this.containerElement.appendChild(unconnectedRoot);
+				}
+
+				return element.getBBox();
+			}
+			finally {
+				cleanupUnconnectedRoot(this.containerElement);
+			}
+
 		}
 
 		public setSvgElementRect(pParams: number): boolean {
@@ -1341,10 +1281,11 @@ namespace Uno.UI {
 			*
 			* @param maxWidth string containing width in pixels. Empty string means infinite.
 			* @param maxHeight string containing height in pixels. Empty string means infinite.
+		    * @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
 			*/
-		public measureView(viewId: string, maxWidth: string, maxHeight: string): string {
+		public measureView(viewId: string, maxWidth: string, maxHeight: string, measureContent: boolean = true): string {
 
-			const ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
+			const ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN, measureContent);
 
 			return `${ret[0]};${ret[1]}`;
 		}
@@ -1359,7 +1300,7 @@ namespace Uno.UI {
 
 			const params = WindowManagerMeasureViewParams.unmarshal(pParams);
 
-			const ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight);
+			const ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight, params.MeasureContent);
 
 			const ret2 = new WindowManagerMeasureViewReturn();
 			ret2.DesiredWidth = ret[0];
@@ -1385,16 +1326,19 @@ namespace Uno.UI {
 			return [resultWidth + 1, resultHeight];
 		}
 
-		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number): [number, number] {
+		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number, measureContent: boolean): [number, number] {
 			const element = this.getView(viewId) as HTMLElement;
 
 			const elementStyle = element.style;
+			const elementClasses = element.className;
 			const originalStyleCssText = elementStyle.cssText;
+			const unconstrainedStyleCssText = this.createUnconstrainedStyle(elementStyle, maxWidth, maxHeight);
+
 			let parentElement: HTMLElement = null;
 			let parentElementWidthHeight: { width: string, height: string } = null;
 			let unconnectedRoot: HTMLElement = null;
 
-			let cleanupUnconnectedRoot = function (owner: HTMLDivElement) {
+			const cleanupUnconnectedRoot = (owner: HTMLDivElement) => {
 				if (unconnectedRoot !== null) {
 					owner.removeChild(unconnectedRoot);
 				}
@@ -1415,78 +1359,73 @@ namespace Uno.UI {
 					this.containerElement.appendChild(unconnectedRoot);
 				}
 
-				// As per W3C css-transform spec:
-				// https://www.w3.org/TR/css-transforms-1/#propdef-transform
-				//
-				// > For elements whose layout is governed by the CSS box model, any value other than none
-				// > for the transform property also causes the element to establish a containing block for
-				// > all descendants.Its padding box will be used to layout for all of its
-				// > absolute - position descendants, fixed - position descendants, and descendant fixed
-				// > background attachments.
-				//
-				// We use this feature to allow an measure of text without being influenced by the bounds
-				// of the viewport. We just need to temporary set both the parent width & height to a very big value.
-
-				parentElement = element.parentElement;
-				parentElementWidthHeight = { width: parentElement.style.width, height: parentElement.style.height };
-				parentElement.style.width = WindowManager.MAX_WIDTH;
-				parentElement.style.height = WindowManager.MAX_HEIGHT;
-
-				const updatedStyles = <any>{};
-
-				for (let i = 0; i < elementStyle.length; i++) {
-					const key = elementStyle[i];
-					updatedStyles[key] = elementStyle.getPropertyValue(key);
-				}
-
-				if (updatedStyles.hasOwnProperty("width")) {
-					delete updatedStyles.width;
-				}
-				if (updatedStyles.hasOwnProperty("height")) {
-					delete updatedStyles.height;
-				}
-
-				// This is required for an unconstrained measure (otherwise the parents size is taken into account)
-				updatedStyles.position = "fixed";
-				updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "none";
-				updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "none";
-
-				let updatedStyleString = "";
-
-				for (let key in updatedStyles) {
-					if (updatedStyles.hasOwnProperty(key)) {
-						updatedStyleString += key + ": " + updatedStyles[key] + "; ";
-					}
-				}
-
-				// We use a string to prevent the browser to update the element between
-				// each style assignation. This way, the browser will update the element only once.
-				elementStyle.cssText = updatedStyleString;
-
-				if (element instanceof HTMLImageElement) {
+				if (measureContent && element instanceof HTMLImageElement) {
+					elementStyle.cssText = unconstrainedStyleCssText;
 					const imgElement = element as HTMLImageElement;
 					return [imgElement.naturalWidth, imgElement.naturalHeight];
-				}
-				else if (element instanceof HTMLInputElement) {
+				} else if (measureContent && element instanceof HTMLInputElement) {
+					elementStyle.cssText = unconstrainedStyleCssText;
 					const inputElement = element as HTMLInputElement;
 
 					cleanupUnconnectedRoot(this.containerElement);
 
 					// Create a temporary element that will contain the input's content
-					var textOnlyElement = document.createElement("p") as HTMLParagraphElement;
-					textOnlyElement.style.cssText = updatedStyleString;
+					const textOnlyElement = document.createElement("p") as HTMLParagraphElement;
+					textOnlyElement.style.cssText = unconstrainedStyleCssText;
 					textOnlyElement.innerText = inputElement.value;
+					textOnlyElement.className = elementClasses;
 
 					unconnectedRoot = textOnlyElement;
 					this.containerElement.appendChild(unconnectedRoot);
 
-					var textSize = this.measureElement(textOnlyElement);
-					var inputSize = this.measureElement(element);
+					const textSize = this.measureElement(textOnlyElement);
+					const inputSize = this.measureElement(element);
 
 					// Take the width of the inner text, but keep the height of the input element.
 					return [textSize[0], inputSize[1]];
-				}
-				else {
+				} else if (measureContent && element instanceof HTMLTextAreaElement) {
+					const inputElement = element;
+
+					cleanupUnconnectedRoot(this.containerElement);
+
+					// Create a temporary element that will contain the input's content
+					const textOnlyElement = document.createElement("p") as HTMLParagraphElement;
+					textOnlyElement.style.cssText = unconstrainedStyleCssText;
+
+					// If the input is null or empty, add a no-width character to force the paragraph to take up one line height
+					// The trailing new lines are going to be ignored for measure, so we also append no-width char at the end.
+					textOnlyElement.innerText = inputElement.value ? (inputElement.value + "\u200B") : "\u200B";
+					textOnlyElement.className = elementClasses; // Note: Here we will have the uno-textBoxView class name
+
+					unconnectedRoot = textOnlyElement;
+					this.containerElement.appendChild(unconnectedRoot);
+
+					const textSize = this.measureElement(textOnlyElement);
+
+					// For TextAreas, take the width and height of the inner text
+					const width = Math.min(textSize[0], maxWidth);
+					const height = Math.min(textSize[1], maxHeight);
+					return [width, height];
+				} else {
+					elementStyle.cssText = unconstrainedStyleCssText;
+
+					// As per W3C css-transform spec:
+					// https://www.w3.org/TR/css-transforms-1/#propdef-transform
+					//
+					// > For elements whose layout is governed by the CSS box model, any value other than none
+					// > for the transform property also causes the element to establish a containing block for
+					// > all descendants.Its padding box will be used to layout for all of its
+					// > absolute - position descendants, fixed - position descendants, and descendant fixed
+					// > background attachments.
+					//
+					// We use this feature to allow an measure of text without being influenced by the bounds
+					// of the viewport. We just need to temporary set both the parent width & height to a very big value.
+
+					parentElement = element.parentElement;
+					parentElementWidthHeight = { width: parentElement.style.width, height: parentElement.style.height };
+					parentElement.style.width = WindowManager.MAX_WIDTH;
+					parentElement.style.height = WindowManager.MAX_HEIGHT;
+
 					return this.measureElement(element);
 				}
 			}
@@ -1502,6 +1441,39 @@ namespace Uno.UI {
 			}
 		}
 
+		private createUnconstrainedStyle(elementStyle: CSSStyleDeclaration, maxWidth: number, maxHeight: number): string {
+			const updatedStyles = <any>{};
+
+			for (let i = 0; i < elementStyle.length; i++) {
+				const key = elementStyle[i];
+				updatedStyles[key] = elementStyle.getPropertyValue(key);
+			}
+
+			if (updatedStyles.hasOwnProperty("width")) {
+				delete updatedStyles.width;
+			}
+			if (updatedStyles.hasOwnProperty("height")) {
+				delete updatedStyles.height;
+			}
+
+			// This is required for an unconstrained measure (otherwise the parents size is taken into account)
+			updatedStyles.position = "fixed";
+			updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "none";
+			updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "none";
+
+			let updatedStyleString = "";
+
+			for (let key in updatedStyles) {
+				if (updatedStyles.hasOwnProperty(key)) {
+					updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+				}
+			}
+
+			// We use a string to prevent the browser to update the element between
+			// each style assignation. This way, the browser will update the element only once.
+			return updatedStyleString;
+		}
+
 		public scrollTo(pParams: number): boolean {
 
 			const params = WindowManagerScrollToOptionsParams.unmarshal(pParams);
@@ -1509,7 +1481,7 @@ namespace Uno.UI {
 			const opts = <ScrollToOptions>({
 				left: params.HasLeft ? params.Left : undefined,
 				top: params.HasTop ? params.Top : undefined,
-				behavior: <ScrollBehavior>(params.DisableAnimation ? "auto" : "smooth")
+				behavior: <ScrollBehavior>(params.DisableAnimation ? "instant" : "smooth")
 			});
 
 			elt.scrollTo(opts);
@@ -1551,24 +1523,24 @@ namespace Uno.UI {
 			if (element.tagName.toUpperCase() === "IMG") {
 
 				const imgElement = element as HTMLImageElement;
-				var img = new Image();
+				const img = new Image();
 				img.onload = buildMonochromeImage;
 				img.src = url;
 
 				function buildMonochromeImage() {
 
 					// create a colored version of img
-					const c = document.createElement('canvas');
-					const ctx = c.getContext('2d');
+					const c = document.createElement("canvas");
+					const ctx = c.getContext("2d");
 
 					c.width = img.width;
 					c.height = img.height;
 
 					ctx.drawImage(img, 0, 0);
-					ctx.globalCompositeOperation = 'source-atop';
+					ctx.globalCompositeOperation = "source-atop";
 					ctx.fillStyle = color;
 					ctx.fillRect(0, 0, img.width, img.height);
-					ctx.globalCompositeOperation = 'source-over';
+					ctx.globalCompositeOperation = "source-over";
 
 					imgElement.src = c.toDataURL();
 				}
@@ -1810,7 +1782,7 @@ namespace Uno.UI {
 			}
 		}
 
-		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null): boolean {
+		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null): HtmlEventDispatchResult {
 			const htmlId = Number(element.getAttribute("XamlHandle"));
 
 			// console.debug(`${element.getAttribute("id")}: Raising event ${eventName}.`);
@@ -1824,7 +1796,7 @@ namespace Uno.UI {
 				// this way always succeed because synchronous calls are not possible
 				// between the host and the browser, unlike wasm.
 				UnoDispatch.dispatch(this.handleToString(htmlId), eventName, eventPayload);
-				return true;
+				return HtmlEventDispatchResult.Ok;
 			}
 			else {
 				return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "");
@@ -1844,6 +1816,10 @@ namespace Uno.UI {
 
 			// Fastest conversion as of 2020-03-25 (when compared to String(handle) or handle.toString())
 			return handle + "";
+		}
+
+		private numberToCssColor(color: number): string {
+			return "#" + color.toString(16).padStart(8, "0");
 		}
 
 		public setCursor(cssCursor: string): string {
@@ -1871,11 +1847,40 @@ namespace Uno.UI {
 			}
 			return "ok";
 		}
+
+		public getNaturalImageSize(imageUrl: string): Promise<string> {
+			return new Promise<string>((resolve, reject) => {
+				const img = new Image();
+
+				let loadingDone = () => {
+					this.containerElement.removeChild(img);
+					resolve(`${img.width};${img.height}`);
+				};
+				let loadingError = (e: Event) => {
+					this.containerElement.removeChild(img);
+					reject(e);
+				}
+
+				img.style.pointerEvents = "none";
+				img.style.opacity = "0";
+				img.onload = loadingDone;
+				img.onerror = loadingError;
+				img.src = imageUrl;
+
+				this.containerElement.appendChild(img);
+
+			});
+		}
+
+		public selectInputRange(elementId: number, start: number, length: number) {
+			(this.getView(elementId) as HTMLInputElement).setSelectionRange(start, start + length);
+		}
+
 	}
 
 	if (typeof define === "function") {
 		define(
-			[`${config.uno_app_base}/AppManifest`],
+			[`./AppManifest.js`],
 			() => {
 			}
 		);

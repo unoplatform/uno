@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
-using Uno.Client;
-using System.Collections;
-using Uno.UI.Controls;
-using Uno.Extensions;
+﻿#nullable enable
+
+using System;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Uno.UI;
-using System.Linq;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Data;
-using Microsoft.Extensions.Logging;
-
+using Windows.System;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
-using Windows.UI.Core;
+
 #if __ANDROID__
 using Android.Views;
 using _View = Android.Views.View;
@@ -35,32 +26,36 @@ using _View = AppKit.NSView;
 using _View = Windows.UI.Xaml.FrameworkElement;
 #endif
 
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
-	// Temporarily inheriting from ListViewBase instead of Selector to leverage existing selection and virtualization code
-	public partial class ComboBox : ListViewBase // TODO: Selector
+	public partial class ComboBox : Selector
 	{
-		public event EventHandler<object> DropDownClosed;
-		public event EventHandler<object> DropDownOpened;
+		public event EventHandler<object>? DropDownClosed;
+		public event EventHandler<object>? DropDownOpened;
 
 		private bool _areItemTemplatesForwarded = false;
 
-		private IPopup _popup;
-		private Border _popupBorder;
-		private ContentPresenter _contentPresenter;
-		private TextBlock _placeholderTextBlock;
-		private ContentPresenter _headerContentPresenter;
+		private IPopup? _popup;
+		private Border? _popupBorder;
+		private ContentPresenter? _contentPresenter;
+		private TextBlock? _placeholderTextBlock;
+		private ContentPresenter? _headerContentPresenter;
 
 		/// <summary>
 		/// The 'inline' parent view of the selected item within the dropdown list. This is only set if SelectedItem is a view type.
 		/// </summary>
-		private ManagedWeakReference _selectionParentInDropdown;
+		private ManagedWeakReference? _selectionParentInDropdown;
 
 		public ComboBox()
 		{
-			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true);
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
-			IsItemClickEnabled = true;
 			DefaultStyleKey = typeof(ComboBox);
 		}
 
@@ -74,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			if (_popup is PopupBase oldPopup)
+			if (_popup is Popup oldPopup)
 			{
 				oldPopup.CustomLayouter = null;
 			}
@@ -84,9 +79,19 @@ namespace Windows.UI.Xaml.Controls
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
 			_placeholderTextBlock = this.GetTemplateChild("PlaceholderTextBlock") as TextBlock;
 
-			if (_popup is PopupBase popup)
+			if (_popup is Popup popup)
 			{
+				//TODO Uno specific: Ensures popup does not take focus when opened.
+				//This can be removed when the actual ComboBox code is fully ported
+				//from WinUI.
+				if (_popupBorder is { } border)
+				{
+					border.AllowFocusOnInteraction = false;
+				}
+
 				popup.CustomLayouter = new DropDownLayouter(this, popup);
+
+				popup.IsLightDismissEnabled = true;
 
 				popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
 				popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
@@ -94,42 +99,37 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateHeaderVisibility();
 			UpdateContentPresenter();
+			UpdateDescriptionVisibility(true);
 
 			if (_contentPresenter != null)
 			{
 				_contentPresenter.SynchronizeContentWithOuterTemplatedParent = false;
 
+				var thisRef = (this as IWeakReferenceProvider).WeakReference;
 				_contentPresenter.DataContextChanged += (snd, evt) =>
 				{
-					// The ContentPresenter will automatically clear its local DataContext
-					// on first load.
-					//
-					// When there's no selection, this will cause this ContentPresenter to
-					// received the same DataContext as the ComboBox itself, which could
-					// lead to strange result or errors.
-					//
-					// See comments in ContentPresenter.ResetDataContextOnFirstLoad() method.
-					// Fixed in this PR: https://github.com/unoplatform/uno/pull/1465
-
-					if (evt.NewValue != null && SelectedItem == null)
+					if (thisRef.Target is ComboBox that)
 					{
-						_contentPresenter.DataContext = null; // Remove problematic inherited DataContext
+						// The ContentPresenter will automatically clear its local DataContext
+						// on first load.
+						//
+						// When there's no selection, this will cause this ContentPresenter to
+						// received the same DataContext as the ComboBox itself, which could
+						// lead to strange result or errors.
+						//
+						// See comments in ContentPresenter.ResetDataContextOnFirstLoad() method.
+						// Fixed in this PR: https://github.com/unoplatform/uno/pull/1465
+
+						if (evt.NewValue != null && that.SelectedItem == null && that._contentPresenter != null)
+						{
+							that._contentPresenter.DataContext = null; // Remove problematic inherited DataContext
+						}
 					}
 				};
 
 				UpdateCommonStates();
 			}
 		}
-
-#if __ANDROID__
-		protected override void OnPointerPressed(PointerRoutedEventArgs args)
-		{
-			base.OnPointerPressed(args);
-
-			// For some reasons, PointerReleased is not raised unless PointerPressed is Handled.
-			args.Handled = true;
-		}
-#endif
 
 		private protected override void OnLoaded()
 		{
@@ -159,30 +159,76 @@ namespace Windows.UI.Xaml.Controls
 			Xaml.Window.Current.SizeChanged -= OnWindowSizeChanged;
 		}
 
-		private void OnWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
+		protected virtual void OnDropDownClosed(object e)
+		{
+			DropDownClosed?.Invoke(this, null!);
+		}
+
+		protected virtual void OnDropDownOpened(object e)
+		{
+			DropDownOpened?.Invoke(this, null!);
+		}
+
+		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
 		{
 			IsDropDownOpen = false;
 		}
 
-		private void OnPopupOpened(object sender, object e)
+		private void OnPopupOpened(object? sender, object e)
 		{
 			IsDropDownOpen = true;
 		}
 
-		private void OnPopupClosed(object sender, object e)
+		private void OnPopupClosed(object? sender, object e)
 		{
 			IsDropDownOpen = false;
 		}
 
-		protected override void OnHeaderChanged(object oldHeader, object newHeader)
+
+		public object Header
 		{
-			base.OnHeaderChanged(oldHeader, newHeader);
+			get { return (object)this.GetValue(HeaderProperty); }
+			set { this.SetValue(HeaderProperty, value); }
+		}
+
+		public static DependencyProperty HeaderProperty { get; } =
+			DependencyProperty.Register(
+				"Header",
+				typeof(object),
+				typeof(ComboBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.None,
+					propertyChangedCallback: (s, e) => ((ComboBox)s)?.OnHeaderChanged((object)e.OldValue, (object)e.NewValue)
+				)
+			);
+
+		private void OnHeaderChanged(object oldHeader, object newHeader)
+		{
 			UpdateHeaderVisibility();
 		}
 
-		protected override void OnHeaderTemplateChanged(DataTemplate oldHeaderTemplate, DataTemplate newHeaderTemplate)
+
+		public DataTemplate HeaderTemplate
 		{
-			base.OnHeaderTemplateChanged(oldHeaderTemplate, newHeaderTemplate);
+			get { return (DataTemplate)this.GetValue(HeaderTemplateProperty); }
+			set { this.SetValue(HeaderTemplateProperty, value); }
+		}
+
+		public static DependencyProperty HeaderTemplateProperty { get; } =
+			DependencyProperty.Register(
+				"HeaderTemplate",
+				typeof(DataTemplate),
+				typeof(ComboBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: (DataTemplate?)null,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					propertyChangedCallback: (s, e) => ((ComboBox)s)?.OnHeaderTemplateChanged((DataTemplate)e.OldValue, (DataTemplate)e.NewValue)
+				)
+			);
+
+		private void OnHeaderTemplateChanged(DataTemplate oldHeaderTemplate, DataTemplate newHeaderTemplate)
+		{
 			UpdateHeaderVisibility();
 		}
 
@@ -214,6 +260,37 @@ namespace Windows.UI.Xaml.Controls
 			if (_headerContentPresenter != null)
 			{
 				_headerContentPresenter.Visibility = headerVisibility;
+			}
+		}
+
+		public
+#if __IOS__ || __MACOS__
+		new
+#endif
+			object Description
+		{
+			get => this.GetValue(DescriptionProperty);
+			set => this.SetValue(DescriptionProperty, value);
+		}
+
+		public static DependencyProperty DescriptionProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Description), typeof(object),
+				typeof(ComboBox),
+				new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as ComboBox)?.UpdateDescriptionVisibility(false)));
+
+		private void UpdateDescriptionVisibility(bool initialization)
+		{
+			if (initialization && Description == null)
+			{
+				// Avoid loading DescriptionPresenter element in template if not needed.
+				return;
+			}
+
+			var descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
+			if (descriptionPresenter != null)
+			{
+				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
 
@@ -273,7 +350,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					var b = new BindingPath(displayMemberPath, item) {DataContext = item};
+					var b = new BindingPath(displayMemberPath, item) { DataContext = item };
 					_contentPresenter.Content = b.Value;
 				}
 
@@ -304,11 +381,11 @@ namespace Windows.UI.Xaml.Controls
 
 			void SetContentPresenterBinding(DependencyProperty targetProperty, string sourcePropertyPath)
 			{
-				_contentPresenter.SetBinding(targetProperty, new Binding(sourcePropertyPath) { RelativeSource = RelativeSource.TemplatedParent });
+				_contentPresenter?.SetBinding(targetProperty, new Binding(sourcePropertyPath) { RelativeSource = RelativeSource.TemplatedParent });
 			}
 		}
 
-		private object GetSelectionContent()
+		private object? GetSelectionContent()
 		{
 			return SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
 		}
@@ -335,61 +412,180 @@ namespace Windows.UI.Xaml.Controls
 #endif
 
 			// Sanity check, ensure parent is still valid (ComboBoxItem may have been recycled)
-			if (comboBoxItem?.Content == selectionView && selectionView.GetVisualTreeParent() != dropdownParent)
+			if (dropdownParent != null
+				&& comboBoxItem?.Content == selectionView
+				&& selectionView.GetVisualTreeParent() != dropdownParent)
 			{
 				dropdownParent.AddChild(selectionView);
 			}
 		}
 
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			base.OnIsEnabledChanged(oldValue, newValue);
+			base.OnIsEnabledChanged(e);
 
 			UpdateCommonStates();
-
-			OnIsEnabledChangedPartial(oldValue, newValue);
 		}
-
-		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue);
 
 		partial void OnIsDropDownOpenChangedPartial(bool oldIsDropDownOpen, bool newIsDropDownOpen)
 		{
-			// This method will load the itempresenter children
-#if __ANDROID__
-			SetItemsPresenter((_popup.Child as ViewGroup).FindFirstChild<ItemsPresenter>());
-#elif __IOS__ || __MACOS__
-			SetItemsPresenter(_popup.Child.FindFirstChild<ItemsPresenter>());
-#endif
-
 			if (_popup != null)
 			{
+				// This method will load the itempresenter children
+#if __ANDROID__
+				SetItemsPresenter((_popup.Child as ViewGroup).FindFirstChild<ItemsPresenter>());
+#elif __IOS__ || __MACOS__
+				SetItemsPresenter(_popup.Child.FindFirstChild<ItemsPresenter>());
+#endif
+
 				_popup.IsOpen = newIsDropDownOpen;
 			}
 
+			var args = new RoutedEventArgs() { OriginalSource = this };
 			if (newIsDropDownOpen)
 			{
-				DropDownOpened?.Invoke(this, newIsDropDownOpen);
+				// Force a refresh of the popup's ItemPresenter
+				Refresh();
+
+				OnDropDownOpened(args);
 
 				RestoreSelectedItem();
-
-				if (SelectedItem != null)
-				{
-					ScrollIntoView(SelectedItem);
-				}
 			}
 			else
 			{
-				DropDownClosed?.Invoke(this, newIsDropDownOpen);
+				OnDropDownClosed(args);
 				UpdateContentPresenter();
+
+				// Focus moves to ComboBox after item is selected.
+				Focus(FocusState.Programmatic);
 			}
 
 			UpdateDropDownState();
 		}
 
-		protected override void OnPointerReleased(PointerRoutedEventArgs e)
+		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
-			IsDropDownOpen = true;
+			base.OnPointerPressed(args);
+
+			// On UWP ComboBox does handle the pressed event ... but does not capture it!
+			args.Handled = true;
 		}
+
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			base.OnPointerReleased(args);
+
+			Focus(FocusState.Programmatic);
+			IsDropDownOpen = true;
+
+			// On UWP ComboBox does handle the released event.
+			args.Handled = true;
+		}
+
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			base.OnKeyDown(args);
+
+			if (!args.Handled)
+			{
+				args.Handled = TryHandleKeyDown(args, null);
+			}
+		}
+
+		internal bool TryHandleKeyDown(KeyRoutedEventArgs args, ComboBoxItem? focusedContainer)
+		{
+			if (!IsEnabled)
+			{
+				return false;
+			}
+
+			if (args.Key == VirtualKey.Enter ||
+				args.Key == VirtualKey.Space)
+			{
+				if (IsDropDownOpen)
+				{
+					if (SelectedIndex > -1)
+					{
+						IsDropDownOpen = false;
+						return true;
+					}
+				}
+				else
+				{
+					IsDropDownOpen = true;
+					return true;
+				}
+			}
+			else if (args.Key == VirtualKey.Escape)
+			{
+				if (IsDropDownOpen)
+				{
+					IsDropDownOpen = false;
+					return true;
+				}
+			}
+			else if (args.Key == VirtualKey.Down)
+			{
+				if (IsDropDownOpen)
+				{
+					return TryMoveKeyboardFocus(+1, focusedContainer);
+				}
+				else
+				{
+					if (IsIndexValid(SelectedIndex + 1))
+					{
+						SelectedIndex = SelectedIndex + 1;
+						return true;
+					}
+				}
+			}
+			else if (args.Key == VirtualKey.Up)
+			{
+				if (IsDropDownOpen)
+				{
+					return TryMoveKeyboardFocus(-1, focusedContainer);
+				}
+				else
+				{
+					if (IsIndexValid(SelectedIndex - 1))
+					{
+						SelectedIndex = SelectedIndex - 1;
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		private bool TryMoveKeyboardFocus(int offset, ComboBoxItem? focusedContainer)
+		{
+			var focusedIndex = SelectedIndex;
+			if (focusedContainer != null)
+			{
+				focusedIndex = IndexFromContainer(focusedContainer);
+			}
+
+			var index = focusedIndex + offset;
+			if (!IsIndexValid(index))
+			{
+				return false;
+			}
+
+			var container = ContainerFromIndex(index);
+			if (container is not ComboBoxItem item)
+			{
+				return false;
+			}
+
+			item.StartBringIntoView(new BringIntoViewOptions()
+			{
+				AnimationDesired = false
+			});
+			item.Focus(FocusState.Keyboard);
+			return true;
+		}
+
+		private bool IsIndexValid(int index) => index >= 0 && index < NumberOfItems;
 
 		/// <summary>
 		/// Stretches the opened Popup horizontally, and uses the VerticalAlignment
@@ -416,6 +612,29 @@ namespace Windows.UI.Xaml.Controls
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new ComboBoxAutomationPeer(this);
+		}
+
+		protected override void OnGotFocus(RoutedEventArgs e) => UpdateVisualState();
+
+		protected override void OnLostFocus(RoutedEventArgs e) => UpdateVisualState();
+
+		private protected override void ChangeVisualState(bool useTransitions)
+		{
+			if (FocusState != FocusState.Unfocused && IsEnabled)
+			{
+				if (FocusState == FocusState.Pointer)
+				{
+					GoToState(useTransitions, "PointerFocused");
+				}
+				else
+				{
+					GoToState(useTransitions, "Focused");
+				}
+			}
+			else
+			{
+				GoToState(useTransitions, "Unfocused");
+			}
 		}
 
 		public LightDismissOverlayMode LightDismissOverlayMode
@@ -445,24 +664,30 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new FrameworkPropertyMetadata(null));
 
-		private class DropDownLayouter : PopupBase.IDynamicPopupLayouter
+		private class DropDownLayouter : Popup.IDynamicPopupLayouter
 		{
-			private readonly ComboBox _combo;
-			private readonly PopupBase _popup;
+			private ManagedWeakReference _combo;
+			private ManagedWeakReference _popup;
 
-			public DropDownLayouter(ComboBox combo, PopupBase popup)
+			private ComboBox? Combo => _combo.Target as ComboBox;
+			private Popup? Popup => _popup.Target as Popup;
+
+			public DropDownLayouter(ComboBox combo, Popup popup)
 			{
-				_combo = combo;
-				_popup = popup;
+				_combo = (combo as IWeakReferenceProvider).WeakReference;
+				_popup = (popup as IWeakReferenceProvider).WeakReference;
 			}
 
 			/// <inheritdoc />
 			public Size Measure(Size available, Size visibleSize)
 			{
-				if (!(_popup.Child is FrameworkElement child))
+				var popup = Popup;
+				var combo = Combo;
+
+				if (!(popup?.Child is FrameworkElement child) || combo == null)
 				{
 					return new Size();
 				}
@@ -476,7 +701,7 @@ namespace Windows.UI.Xaml.Controls
 				//			MaxWidth
 				//			MaxHeight
 
-				if (_combo.IsPopupFullscreen)
+				if (combo.IsPopupFullscreen)
 				{
 					// Size : Note we set both Min and Max to match the UWP behavior which alter only those
 					//        properties. The MinHeight is not set to allow the the root child control to specificy
@@ -489,12 +714,23 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// Set the popup child as max 9 x the height of the combo
 					// (UWP seams to actually limiting to 9 visible items ... which is not necessarily the 9 x the combo height)
-					var maxHeight = Math.Min(visibleSize.Height, Math.Min(_combo.MaxDropDownHeight, _combo.ActualHeight * _itemsToShow));
+					var maxHeight = Math.Min(visibleSize.Height, Math.Min(combo.MaxDropDownHeight, combo.ActualHeight * _itemsToShow));
 
-					child.MinHeight = _combo.ActualHeight;
-					child.MinWidth = _combo.ActualWidth;
+					child.MinHeight = combo.ActualHeight;
+					child.MinWidth = combo.ActualWidth;
 					child.MaxHeight = maxHeight;
 					child.MaxWidth = visibleSize.Width;
+
+					if (UsesManagedLayouting)
+					// This is a breaking change for Android/iOS in some specialized cases (see ComboBox_VisibleBounds sample), and
+					// since the layouting on those platforms is not yet as aligned with UWP as on WASM/Skia, and in particular
+					// virtualizing panels aren't used in the ComboBox yet (#556 and #1133), we skip it for now
+					{
+#pragma warning disable CS0162 // Unreachable code detected
+						child.HorizontalAlignment = HorizontalAlignment.Left;
+						child.VerticalAlignment = VerticalAlignment.Top;
+#pragma warning restore CS0162 // Unreachable code detected
+					}
 				}
 
 				child.Measure(visibleSize);
@@ -507,12 +743,15 @@ namespace Windows.UI.Xaml.Controls
 			/// <inheritdoc />
 			public void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize, Point? upperLeftLocation)
 			{
-				if (!(_popup.Child is FrameworkElement child))
+				var popup = Popup;
+				var combo = Combo;
+
+				if (!(popup?.Child is FrameworkElement child) || combo == null)
 				{
 					return;
 				}
 
-				if (_combo.IsPopupFullscreen)
+				if (combo.IsPopupFullscreen)
 				{
 					Point getChildLocation()
 					{
@@ -539,7 +778,7 @@ namespace Windows.UI.Xaml.Controls
 					return;
 				}
 
-				var comboRect = _combo.GetAbsoluteBoundsRect();
+				var comboRect = combo.GetAbsoluteBoundsRect();
 				var frame = new Rect(comboRect.Location, desiredSize.AtMost(visibleBounds.Size));
 
 				// On windows, the popup is Y-aligned accordingly to the selected item in order to keep
@@ -551,14 +790,14 @@ namespace Windows.UI.Xaml.Controls
 				// which might not be ready at this point (we could try a 2-pass arrange), and to scroll into view to make it visible.
 				// So for now we only rely on the SelectedIndex and make a highly improvable vertical alignment based on it.
 
-				var itemsCount = _combo.NumberOfItems;
-				var selectedIndex = _combo.SelectedIndex;
+				var itemsCount = combo.NumberOfItems;
+				var selectedIndex = combo.SelectedIndex;
 				if (selectedIndex < 0 && itemsCount > 0)
 				{
 					selectedIndex = itemsCount / 2;
 				}
 
-				var placement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(_combo);
+				var placement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(combo);
 				var stickyThreshold = Math.Max(1, Math.Min(4, (itemsCount / 2) - 1));
 				switch (placement)
 				{
@@ -573,7 +812,7 @@ namespace Windows.UI.Xaml.Controls
 							// As we don't scroll into view to the selected item, this case seems awkward if the selected item
 							// is not directly visible (i.e. without scrolling) when the drop-down appears.
 							// So if we detect that we should had to scroll to make it visible, we don't try to appear above!
-							&& (itemsCount <= _itemsToShow && frame.Height < (_combo.ActualHeight * _itemsToShow) - 3):
+							&& (itemsCount <= _itemsToShow && frame.Height < (combo.ActualHeight * _itemsToShow) - 3):
 
 						frame.Y = comboRect.Bottom - frame.Height;
 						break;

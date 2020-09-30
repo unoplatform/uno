@@ -8,7 +8,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 {
-	public class UnoSamples_Test_NativeButtons : SampleControlUITestBase
+	public partial class UnoSamples_Test_NativeButtons : SampleControlUITestBase
 	{
 		[Test]
 		[ActivePlatforms(Platform.Android)] // Disabled on iOS: https://github.com/unoplatform/uno/issues/1955

@@ -9,7 +9,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Uno.Disposables;
 
@@ -239,17 +239,19 @@ namespace Windows.UI.Xaml.Media
 
 		private void DownloadUsingPlatformDownloader()
 		{
-			using (var url = new NSUrl(WebUri.OriginalString))
+			using (var url = new NSUrl(WebUri.AbsoluteUri))
 			{
 				NSError error;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Loading image from [{WebUri.OriginalString}]");
 				}
 
+#pragma warning disable CS0618
 				// fallback on the platform's loader
-				using (var data = NSData.FromUrl(url, NSDataReadingOptions.Coordinated, out error))
+				using (var data = NSData.FromUrl(url, NSDataReadingOptions.Mapped, out error))
+#pragma warning restore CS0618
 				{
 					if (error != null)
 					{

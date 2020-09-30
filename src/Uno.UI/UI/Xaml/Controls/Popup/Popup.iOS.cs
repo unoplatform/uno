@@ -1,17 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using CoreGraphics;
-using Uno.Extensions;
 using UIKit;
-using System.Linq;
-using System.Drawing;
-using Windows.UI.Xaml.Input;
-using Uno.Disposables;
-using Windows.UI.Xaml.Media;
-using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class Popup
 	{
@@ -50,12 +39,13 @@ namespace Windows.UI.Xaml.Controls
 						newPanel.TemplatedParent = TemplatedParent;
 					}
 
-					newPanel.AddSubview(Child);
+					RegisterPopupPanelChild();
 				}
 
 				newPanel.Background = GetPanelBackground();
 
 				RegisterPopupPanel();
+				RegisterPopupPanelChild();
 			}
 		}
 
@@ -64,6 +54,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnLoaded();
 
 			RegisterPopupPanel();
+			RegisterPopupPanelChild();
 		}
 
 		private void RegisterPopupPanel()
@@ -75,48 +66,69 @@ namespace Windows.UI.Xaml.Controls
 
 			if (PopupPanel.Superview == null)
 			{
+				PopupPanel.IsVisualTreeRoot = true;
 				MainWindow.AddSubview(PopupPanel);
 			}
 		}
 
-		private protected override void OnUnloaded()
+		private void RegisterPopupPanelChild(bool force = false)
 		{
-			base.OnUnloaded();
-
-			PopupPanel?.RemoveFromSuperview();
-		}
-
-		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
-		{
-			base.OnChildChanged(oldChild, newChild);
-
-			if (PopupPanel != null)
+			if ((IsLoaded || force) && Child != null)
 			{
-				if (oldChild != null)
-				{
-					PopupPanel.RemoveChild(oldChild);
-				}
+				RegisterPopupPanel();
 
-				if (newChild != null)
+				if (!PopupPanel.Children.Contains(Child))
 				{
-					PopupPanel.AddSubview(newChild);
+					PopupPanel.Children.Add(Child);
 				}
 			}
 		}
 
-		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
+		private void UnregisterPopupPanelChild(UIElement child = null)
 		{
-			base.OnIsOpenChanged(oldIsOpen, newIsOpen);
+			// If the popup is closed immediately after opening,
+			// it might not have time to load and the PopupPanel
+			// could be null.
+			PopupPanel?.Children.Remove(child ?? Child);
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			PopupPanel?.RemoveFromSuperview();
+			UnregisterPopupPanelChild();
+		}
+
+		partial void OnChildChangedPartialNative(UIElement oldChild, UIElement newChild)
+		{
+			if (PopupPanel != null)
+			{
+				if (oldChild != null)
+				{
+					UnregisterPopupPanelChild(oldChild);
+				}
+
+				RegisterPopupPanelChild();
+			}
+		}
+
+		partial void OnIsOpenChangedPartialNative(bool oldIsOpen, bool newIsOpen)
+		{
+			if (newIsOpen)
+			{
+				RegisterPopupPanelChild(force: true);
+			}
+			else
+			{
+				UnregisterPopupPanelChild();
+			}
 
 			UpdateLightDismissLayer(newIsOpen);
 
 			EnsureForward();
 		}
 
-		protected override void OnIsLightDismissEnabledChanged(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
+		partial void OnIsLightDismissEnabledChangedPartialNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
 		{
-			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
-
 			if (PopupPanel != null)
 			{
 				PopupPanel.Background = GetPanelBackground();

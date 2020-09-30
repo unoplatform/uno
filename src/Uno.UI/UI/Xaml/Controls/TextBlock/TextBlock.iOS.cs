@@ -12,6 +12,10 @@ using Windows.UI.Text;
 using Uno.UI;
 using Windows.UI;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement, IFontScalable
@@ -132,7 +136,10 @@ namespace Windows.UI.Xaml.Controls
 					// This measures the height correctly, even if the Text is null or empty
 					// This matches Windows where empty TextBlocks still have a height (especially useful when measuring ListView items with no DataContext)
 					var font = UIFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
+
+#pragma warning disable BI1234 // error BI1234: 'UIStringDrawing.StringSize(string, UIFont, CGSize)' is obsolete: 'Starting with ios7.0 use NSString.GetBoundingRect (CGSize, NSStringDrawingOptions, UIStringAttributes, NSStringDrawingContext) instead.'
 					result = (Text ?? NSString.Empty).StringSize(font, size);
+#pragma warning restore BI1234
 				}
 
 				result = result.Add(padding);
@@ -314,7 +321,14 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				_textContainer.Size = size;
-				return _layoutManager.GetUsedRectForTextContainer(_textContainer).Size;
+
+#if NET6_0_OR_GREATER
+				return _layoutManager.GetUsedRect
+#else
+				return _layoutManager.GetUsedRectForTextContainer
+#endif
+
+				(_textContainer).Size;
 			}
 			else
 			{
@@ -337,9 +351,17 @@ namespace Windows.UI.Xaml.Controls
 			// Find the tapped character's index
 			var partialFraction = (nfloat)0;
 			var pointInTextContainer = new CGPoint(point.X - _drawRect.X, point.Y - _drawRect.Y);
+
+#if NET6_0_OR_GREATER
+			var characterIndex = (int)_layoutManager.GetCharacterIndex
+			(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), out partialFraction);
+#else
 #pragma warning disable CS0618 // Type or member is obsolete (For VS2017 compatibility)
-			var characterIndex = (int)_layoutManager.CharacterIndexForPoint(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), ref partialFraction);
+			var characterIndex = (int)_layoutManager.CharacterIndexForPoint
+			(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), ref partialFraction);
 #pragma warning restore CS0618 // Type or member is obsolete
+#endif
+
 
 			return characterIndex;
 		}

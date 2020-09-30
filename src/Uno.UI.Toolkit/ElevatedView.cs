@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -20,25 +20,25 @@ namespace Uno.UI.Toolkit
 	[TemplatePart(Name = "PART_Border", Type = typeof(Border))]
 	[TemplatePart(Name = "PART_ShadowHost", Type = typeof(Grid))]
 	public sealed partial class ElevatedView : Control
-#if !NETFX_CORE
+#if !NETFX_CORE && !NETCOREAPP
 		, ICustomClippingElement
 #endif
 	{
 		/*
-		 *  +-ElevatedView------------+
-		 *  |                         |
-		 *  |  +-Grid--------------+  |
-		 *  |  |                   |  |
-		 *  |  +-------------------+  |
-		 *  |  +-Border------------+  |
-		 *  |  |                   |  |
-		 *  |  |  +-Content-----+  |  |
-		 *  |  |  | (...)       |  |  |
-		 *  |  |  +-------------+  |  |
-		 *  |  |                   |  |
-		 *  |  +-------------------+  |
-		 *  |                         |
-		 *  +-------------------------+
+		 *  +-ElevatedView---------------------+
+		 *  |                                  |
+		 *  |  +-Canvas (PART_ShadowHost)---+  |
+		 *  |  |                            |  |
+		 *  |  +----------------------------+  |
+		 *  |  +-Border (PART_Border)-------+  |
+		 *  |  |                            |  |
+		 *  |  |  +-Content--------------+  |  |
+		 *  |  |  | (...)                |  |  |
+		 *  |  |  +----------------------+  |  |
+		 *  |  |                            |  |
+		 *  |  +----------------------------+  |
+		 *  |                                  |
+		 *  +----------------------------------+
 		 *
 		 * UWP - Grid is responsible for the shadow
 		 * Other Platforms - Elevated is responsible for the shadow
@@ -53,14 +53,13 @@ namespace Uno.UI.Toolkit
 #endif
 
 		private Border _border;
-		private Canvas _shadowHost;
+		private Panel _shadowHost;
 
 		public ElevatedView()
 		{
 			DefaultStyleKey = typeof(ElevatedView);
-			Background = new SolidColorBrush(Colors.Transparent);
 
-#if !NETFX_CORE
+#if !NETFX_CORE && !NETCOREAPP
 			Loaded += (snd, evt) => SynchronizeContentTemplatedParent();
 
 			// Patch to deactivate the clipping by ContentControl
@@ -72,7 +71,14 @@ namespace Uno.UI.Toolkit
 		protected override void OnApplyTemplate()
 		{
 			_border = GetTemplateChild("PART_Border") as Border;
-			_shadowHost = GetTemplateChild("PART_ShadowHost") as Canvas;
+			_shadowHost = GetTemplateChild("PART_ShadowHost") as Panel;
+
+#if __IOS__ || __MACOS__
+			if (_border != null)
+			{
+				_border.BoundsPathUpdated += (s, e) => UpdateElevation();
+			}
+#endif
 
 			UpdateElevation();
 		}
@@ -108,9 +114,17 @@ namespace Uno.UI.Toolkit
 			set => SetValue(ElevatedContentProperty, value);
 		}
 
-#if !NETFX_CORE
+#if !NETFX_CORE && !NETCOREAPP
 		public new static DependencyProperty BackgroundProperty { get ; } = DependencyProperty.Register(
-			"Background", typeof(Brush), typeof(ElevatedView), new FrameworkPropertyMetadata(default(Brush), OnChanged));
+			"Background",
+			typeof(Brush),
+			typeof(ElevatedView),
+#if __IOS__ || __MACOS__
+			new FrameworkPropertyMetadata(default(Brush))
+#else
+			new FrameworkPropertyMetadata(default(Brush), OnChanged)
+#endif
+		);
 
 		public new Brush Background
 		{
@@ -119,7 +133,15 @@ namespace Uno.UI.Toolkit
 		}
 
 		public static DependencyProperty CornerRadiusProperty { get ; } = DependencyProperty.Register(
-			"CornerRadius", typeof(CornerRadius), typeof(ElevatedView), new FrameworkPropertyMetadata(default(CornerRadius), OnChanged));
+			"CornerRadius",
+			typeof(CornerRadius),
+			typeof(ElevatedView),
+#if __IOS__ || __MACOS__
+			new FrameworkPropertyMetadata(default(CornerRadius))
+#else
+			new FrameworkPropertyMetadata(default(CornerRadius), OnChanged)
+#endif
+		);
 
 		public CornerRadius CornerRadius
 		{
@@ -156,7 +178,7 @@ namespace Uno.UI.Toolkit
 				return; // not initialized yet
 			}
 
-#if !NETFX_CORE
+#if !NETFX_CORE && !NETCOREAPP
 			SynchronizeContentTemplatedParent();
 #endif
 
@@ -172,14 +194,18 @@ namespace Uno.UI.Toolkit
 #elif __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
+				// The elevation must be applied on the border, since
+				// it will get the right shape (with rounded corners)
 				_border.SetElevationInternal(Elevation, ShadowColor);
-#elif NETFX_CORE
-				(ElevatedContent as DependencyObject).SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
+#elif __SKIA__
+				this.SetElevationInternal(Elevation, ShadowColor);
+#elif NETFX_CORE || NETCOREAPP
+				_border.SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
 #endif
 			}
 		}
 
-#if !NETFX_CORE
+#if !NETFX_CORE && !NETCOREAPP
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false; // Never clip, since it will remove the shadow
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;

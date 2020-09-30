@@ -14,7 +14,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public WriteableBitmap(int pixelWidth, int pixelHeight) : base()
 		{
-			_buffer = new UwpBuffer((uint)(pixelWidth * pixelHeight * 4));
+			var pixelsBufferSize = (uint)(pixelWidth * pixelHeight * 4);
+			_buffer = new UwpBuffer(pixelsBufferSize)
+			{
+				Length = pixelsBufferSize
+			};
 
 			PixelWidth = pixelWidth;
 			PixelHeight = pixelHeight;
@@ -22,7 +26,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public void Invalidate()
 		{
-#if __WASM__
+#if __WASM__ || __SKIA__
 			InvalidateSource();
 #endif
 			Invalidated?.Invoke(this, EventArgs.Empty);

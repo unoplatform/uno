@@ -50,7 +50,7 @@
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
 						CornerRadius="{TemplateBinding CornerRadius}">
-						<skia:VisualStateManager.VisualStateGroups>
+						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="ScrollingIndicatorStates">
 								<VisualStateGroup.Transitions>
 									<VisualTransition From="MouseIndicator" To="NoIndicator">
@@ -245,26 +245,28 @@
 									</Storyboard>
 								</VisualState>
 							</VisualStateGroup>
-						</skia:VisualStateManager.VisualStateGroups>
+						</VisualStateManager.VisualStateGroups>
 
 						<Grid Background="{TemplateBinding Background}" x:Name="Root">
-							<skia:Grid.ColumnDefinitions>
+							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="Auto" />
-							</skia:Grid.ColumnDefinitions>
-							<skia:Grid.RowDefinitions>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
 								<RowDefinition Height="*" />
 								<RowDefinition Height="Auto" />
-							</skia:Grid.RowDefinitions>
+							</Grid.RowDefinitions>
+
 							<!-- ContentTemplate not yet supported for ScrollContentPresenter-->
 							<ScrollContentPresenter
 								x:Name="ScrollContentPresenter"
-								skia:Grid.RowSpan="2"
-								skia:Grid.ColumnSpan="2"
+								Grid.RowSpan="2"
+								Grid.ColumnSpan="2"
 								Margin="{TemplateBinding Padding}" />
 
-							<skia:ScrollBar
+							<ScrollBar
 								x:Name="VerticalScrollBar"
+								x:Load="False"
 								Grid.Column="1"
 								IsTabStop="False"
 								Maximum="{TemplateBinding ScrollableHeight}"
@@ -273,10 +275,12 @@
 								Value="{TemplateBinding VerticalOffset}"
 								ViewportSize="{TemplateBinding ViewportHeight}"
 								HorizontalAlignment="Right"
-								skia:Width="16"/>
+								skia:Width="16"
+								macos:Width="16"/>
 
-							<skia:ScrollBar
+							<ScrollBar
 								x:Name="HorizontalScrollBar"
+								x:Load="False"
 								IsTabStop="False"
 								Maximum="{TemplateBinding ScrollableWidth}"
 								Orientation="Horizontal"
@@ -284,9 +288,10 @@
 								Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
 								Value="{TemplateBinding HorizontalOffset}"
 								ViewportSize="{TemplateBinding ViewportWidth}"
-								skia:Height="16"/>
+								skia:Height="16"
+								macos:Height="16"/>
 
-							<skia:Border
+							<Border
 								x:Name="ScrollBarSeparator"
 								Grid.Row="1"
 								Grid.Column="1"
@@ -321,8 +326,9 @@
 		</Setter>
 	</Style>
 
-	<Style
-		TargetType="ScrollViewer"
-		BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+	<macos:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+	<netstdref:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+	<ios:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
+	<android:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
 
 </ResourceDictionary>

@@ -5,9 +5,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Uno.Extensions;
-using Uno.Extensions.Specialized;
-using Uno.Logging;
 using Uno.UI.Tasks.Helpers;
 using Windows.ApplicationModel.Resources.Core;
 
@@ -43,9 +40,7 @@ namespace Uno.UI.Tasks.Assets
 
 		public override bool Execute()
 		{
-			LogExtensionPoint.AmbientLoggerFactory.AddProvider(new TaskLoggerProvider(Log));
-
-			this.Log().Info($"Retargeting UWP assets to {TargetPlatform}.");
+			Log.LogMessage($"Retargeting UWP assets to {TargetPlatform}.");
 
 			Func<ResourceCandidate, string> resourceToTargetPath;
 			Func<string, string> pathEncoder;
@@ -61,14 +56,14 @@ namespace Uno.UI.Tasks.Assets
 					pathEncoder = AndroidResourceNameEncoder.EncodeFileSystemPath;
 					break;
 				default:
-					this.Log().Info($"Skipping unknown platform {TargetPlatform}");
+					Log.LogMessage($"Skipping unknown platform {TargetPlatform}");
 					return true;
 			}
 
 			Assets = ContentItems.ToArray();
 			RetargetedAssets = Assets
 				.Select((Func<ITaskItem, TaskItem>)(asset => ProcessContentItem(asset, resourceToTargetPath, pathEncoder)))
-				.Trim()
+				.Where(a => a != null)
 				.ToArray();
 
 			return true;
@@ -77,11 +72,11 @@ namespace Uno.UI.Tasks.Assets
 		private TaskItem ProcessContentItem(ITaskItem asset, Func<ResourceCandidate, string> resourceToTargetPath, Func<string, string> pathEncoder)
 		{
 			if (
-				!asset.MetadataNames.Contains("Link")
-				&& !asset.MetadataNames.Contains("DefiningProjectDirectory")
+				!asset.MetadataNames.OfType<string>().Contains("Link")
+				&& !asset.MetadataNames.OfType<string>().Contains("DefiningProjectDirectory")
 			)
 			{
-				this.Log().Info($"Skipping '{asset.ItemSpec}' because 'Link' or 'DefiningProjectDirectory' metadata is not set.");
+				Log.LogMessage($"Skipping '{asset.ItemSpec}' because 'Link' or 'DefiningProjectDirectory' metadata is not set.");
 				return null;
 			}
 
@@ -99,7 +94,7 @@ namespace Uno.UI.Tasks.Assets
 
 				if (!UseHighDPIResources && int.TryParse(resourceCandidate.GetQualifierValue("scale"), out var scale) && scale > HighDPIThresholdScale)
 				{
-					this.Log().Info($"Skipping '{asset.ItemSpec}' of scale {scale} because {nameof(UseHighDPIResources)} is false.");
+					Log.LogMessage($"Skipping '{asset.ItemSpec}' of scale {scale} because {nameof(UseHighDPIResources)} is false.");
 					return null;
 				}
 
@@ -107,11 +102,11 @@ namespace Uno.UI.Tasks.Assets
 
 				if (targetPath == null)
 				{
-					this.Log().Info($"Skipping '{asset.ItemSpec}' as it's not supported on {TargetPlatform}.");
+					Log.LogMessage($"Skipping '{asset.ItemSpec}' as it's not supported on {TargetPlatform}.");
 					return null;
 				}
 
-				this.Log().Info($"Retargeting image '{asset.ItemSpec}' to '{targetPath}'.");
+				Log.LogMessage($"Retargeting image '{asset.ItemSpec}' to '{targetPath}'.");
 				return new TaskItem(
 					asset.ItemSpec,
 					new Dictionary<string, string>() {
@@ -123,7 +118,7 @@ namespace Uno.UI.Tasks.Assets
 			{
 				var encodedRelativePath = pathEncoder(relativePath);
 
-				this.Log().Info($"Retargeting generic '{asset.ItemSpec}' to '{encodedRelativePath}'.");
+				Log.LogMessage($"Retargeting generic '{asset.ItemSpec}' to '{encodedRelativePath}'.");
 				return new TaskItem(
 					asset.ItemSpec,
 					new Dictionary<string, string>() {

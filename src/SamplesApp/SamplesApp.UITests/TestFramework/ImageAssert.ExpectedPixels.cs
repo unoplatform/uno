@@ -1,28 +1,65 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using SamplesApp.UITests._Utils;
+using Uno.UITest;
 
 namespace SamplesApp.UITests.TestFramework
 {
-	public struct ExpectedPixels
+	public record struct ExpectedPixels
 	{
 		#region Fluent declaration
 		public static ExpectedPixels At(string name, float x, float y)
-			=> new ExpectedPixels(name, new Point((int) x, (int)y), default, new Color[0, 0]);
+			=> new() { Name = name, Location = new Point((int)x, (int)y) };
 
 		public static ExpectedPixels At(float x, float y, [CallerLineNumber] int line = -1)
-			=> new ExpectedPixels($"at line: {line}", new Point((int)x, (int)y), default, new Color[0, 0]);
+			=> new() { Name = $"at line: {line}", Location = new Point((int)x, (int)y) };
 
 		public static ExpectedPixels At(Point location, [CallerLineNumber] int line = -1)
-			=> new ExpectedPixels($"at line: {line}", location, default, new Color[0, 0]);
+			=> new() { Name = $"at line: {line}", Location = location };
 
 		public static ExpectedPixels At(string name, Point location)
-			=> new ExpectedPixels(name, location, default, new Color[0, 0]);
+			=> new() { Name = name, Location = location };
+
+		public static ExpectedPixels UniformRect(
+			IAppRect rect,
+			string color,
+			[CallerMemberName] string name = null,
+			[CallerLineNumber] int line = -1)
+		{
+			var c = GetColorFromString(color);
+			var colors = new Color[(int)rect.Height, (int)rect.Width];
+
+			for (var py = (int)rect.Height; py < (int)rect.Height; py++)
+			for (var px = (int)rect.Width; px < (int)rect.Width; px++)
+			{
+				colors[py, px] = c;
+			}
+
+			var location = new Point((int)rect.X, (int)rect.Y);
+
+			return new ExpectedPixels
+			{
+				Name = name,
+				Location = location,
+				SourceLocation = location,
+				Values = colors
+			};
+		}
 
 		public ExpectedPixels Named(string name)
-			=> new ExpectedPixels(name, Location, SourceLocation, Values, Tolerance);
+			=> this with { Name = name };
+
+		public ExpectedPixels Pixel(Color color)
+			=> this with { Values = new[,] { { color } } };
+
+		public ExpectedPixels Pixel(string color)
+			=> this with { Values = new[,] { { GetColorFromString(color) } } };
 
 		public ExpectedPixels Pixels(string[,] pixels)
 		{
@@ -31,24 +68,29 @@ namespace SamplesApp.UITests.TestFramework
 			for (var px = 0; px < pixels.GetLength(1); px++)
 			{
 				var colorCode = pixels[py, px];
-				colors[py, px] = string.IsNullOrWhiteSpace(colorCode)
-					? Color.Empty
-					: ColorCodeParser.Parse(colorCode);
+				colors[py, px] = GetColorFromString(colorCode);
 			}
 
-			return new ExpectedPixels(Name, Location, SourceLocation, colors, Tolerance);
+			return this with { Values = colors };
 		}
 
 		public ExpectedPixels Pixels(Bitmap source, Rectangle rect)
 		{
-			var colors = new Color[rect.Height, rect.Width];
-			for (var py = 0; py < rect.Height; py++)
-			for (var px = 0; px < rect.Width; px++)
+			try
 			{
-				colors[py, px] = source.GetPixel(rect.X + px, rect.Y + py);
+				var colors = new Color[rect.Height, rect.Width];
+				for (var py = 0; py < rect.Height; py++)
+				for (var px = 0; px < rect.Width; px++)
+				{
+					colors[py, px] = source.GetPixel(rect.X + px, rect.Y + py);
+				}
+
+				return this with { SourceLocation = rect.Location, Values = colors };
 			}
-			
-			return new ExpectedPixels(Name, Location, rect.Location, colors, Tolerance);
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException($"Unable to create a pixel array of {rect.Width}x{rect.Height} (bitmap is {source.Width}x{source.Height}).", ex);
+			}
 		}
 
 		public ExpectedPixels Pixels(Bitmap source)
@@ -60,67 +102,110 @@ namespace SamplesApp.UITests.TestFramework
 				colors[py, px] = source.GetPixel(px, py);
 			}
 
-			return new ExpectedPixels(Name, Location, new Point(0, 0), colors, Tolerance);
+			return this with { SourceLocation = new Point(0,0), Values = colors};
 		}
 
-		public ExpectedPixels WithTolerance(PixelTolerance tolerance) => new ExpectedPixels(Name, Location, SourceLocation, Values, tolerance);
+		public ExpectedPixels WithTolerance(PixelTolerance tolerance)
+			=> this with { Tolerance = tolerance };
 
-		public ExpectedPixels WithColorTolerance(byte tolerance) => new ExpectedPixels(Name, Location, SourceLocation, Values, Tolerance.WithColor(tolerance));
+		public ExpectedPixels WithColorTolerance(byte tolerance)
+			=> this with { Tolerance = Tolerance.WithColor(tolerance) };
 
-		public ExpectedPixels WithPixelTolerance(int x = 0, int y = 0) => new ExpectedPixels(Name, Location, SourceLocation, Values, Tolerance.WithOffset(x, y));
+		public ExpectedPixels WithPixelTolerance(int x = 0, int y = 0)
+			=> this with { Tolerance = Tolerance.WithOffset(x, y) };
+
+		public ExpectedPixels Or(ExpectedPixels alternative)
+			=> this with
+			{
+				Alternatives = Alternatives is null
+					? alternative.GetAllPossibilities().ToArray()
+					: Alternatives.Concat(alternative.GetAllPossibilities()).ToArray()
+			};
+
+		public ExpectedPixels OrPixel(Color alternativeColor)
+			=> Or(this with { Values = new[,] { { alternativeColor } }, Alternatives = null });
+
+		public ExpectedPixels OrPixel(string alternativeColor)
+			=> Or(this with { Values = new[,] { { GetColorFromString(alternativeColor) } }, Alternatives = null });
 		#endregion
 
-		private ExpectedPixels(string name, Point location, Point? sourceLocation, Color[,] pixels, PixelTolerance tolerance = default)
+		private ExpectedPixels(
+			string name,
+			Point location,
+			Point? sourceLocation,
+			Color[,] pixels,
+			PixelTolerance tolerance,
+			ExpectedPixels[] alternatives)
 		{
 			Name = name;
 			Location = location;
 			SourceLocation = sourceLocation;
-			Values = pixels;
+			Values = pixels ?? new Color[0, 0];
 			Tolerance = tolerance;
+			Alternatives = alternatives ?? Array.Empty<ExpectedPixels>();
 		}
 
-		public string Name { get; set; }
+		public string Name { get; init; }
 
 		/// <summary>
-		/// This is the location where the pixel are expected to be in the "actual" coordinate space
+		/// This is the location where the pixels are expected to be in the "actual" coordinate space
 		/// </summary>
-		public Point Location { get; }
+		public Point Location { get; init; }
 
 		/// <summary>
 		/// This is the location from where the pixels were loaded.
 		/// This is informational only and is not expected to be used anywhere else than for logging / debugging purposes.
 		/// </summary>
-		public Point? SourceLocation { get; }
-		
-		public Color[,] Values { get; }
+		public Point? SourceLocation { get; init; }
 
-		public PixelTolerance Tolerance { get; }
+		public Color[,] Values { get; init; } = new Color[0, 0];
+
+		public PixelTolerance Tolerance { get; init; } = PixelTolerance.None;
+
+		public ExpectedPixels[]? Alternatives { get; init; } = Array.Empty<ExpectedPixels>();
+
+		public IEnumerable<ExpectedPixels> GetAllPossibilities()
+		{
+			yield return this;
+			if (Alternatives is not null)
+			{
+				foreach (var alternative in Alternatives)
+				{
+					yield return alternative;
+				}
+			}
+		}
+
+		private static Color GetColorFromString(string colorCode) =>
+			string.IsNullOrWhiteSpace(colorCode)
+				? Color.Empty
+				: ColorCodeParser.Parse(colorCode);
 	}
 
 	public struct PixelTolerance
 	{
 		#region Fluent declaration
-		public static PixelTolerance None { get; } = new PixelTolerance();
+		public static PixelTolerance None { get; } = new();
 
 		public static PixelTolerance Cummulative(int color)
-			=> new PixelTolerance((byte)color, ColorToleranceKind.Cumulative, default, default, default);
+			=> new((byte)color, ColorToleranceKind.Cumulative, default, default, default);
 		public static PixelTolerance Exclusive(byte color)
-			=> new PixelTolerance(color, ColorToleranceKind.Exclusive, default, default, default);
+			=> new(color, ColorToleranceKind.Exclusive, default, default, default);
 
 		public PixelTolerance WithColor(byte color)
-			=> new PixelTolerance(color, ColorKind, Offset, OffsetKind, DiscreteValidation);
+			=> new(color, ColorKind, Offset, OffsetKind, DiscreteValidation);
 		public PixelTolerance WithColor(int color, ColorToleranceKind colorKind)
-			=> new PixelTolerance((byte)color, colorKind, Offset, OffsetKind, DiscreteValidation);
+			=> new((byte)color, colorKind, Offset, OffsetKind, DiscreteValidation);
 		public PixelTolerance WithKind(ColorToleranceKind colorKind)
-			=> new PixelTolerance(Color, colorKind, Offset, OffsetKind, DiscreteValidation);
+			=> new(Color, colorKind, Offset, OffsetKind, DiscreteValidation);
 		public PixelTolerance WithOffset(int x = 0, int y = 0)
-			=> new PixelTolerance(Color, ColorKind, (x, y), OffsetKind, DiscreteValidation);
+			=> new(Color, ColorKind, (x, y), OffsetKind, DiscreteValidation);
 		public PixelTolerance WithOffset(int x, int y, LocationToleranceKind offsetKind)
-			=> new PixelTolerance(Color, ColorKind, (x, y), offsetKind, DiscreteValidation);
+			=> new(Color, ColorKind, (x, y), offsetKind, DiscreteValidation);
 		public PixelTolerance WithKind(LocationToleranceKind offsetKind)
-			=> new PixelTolerance(Color, ColorKind, Offset, offsetKind, DiscreteValidation);
+			=> new(Color, ColorKind, Offset, offsetKind, DiscreteValidation);
 		public PixelTolerance Discrete(uint discreteValidation = 20)
-			=> new PixelTolerance(Color, ColorKind, Offset, OffsetKind, (discreteValidation, discreteValidation));
+			=> new(Color, ColorKind, Offset, OffsetKind, (discreteValidation, discreteValidation));
 		#endregion
 
 		public PixelTolerance(byte color, ColorToleranceKind colorKind, (int x, int y) offset, LocationToleranceKind offsetKind, (uint x, uint y) discreteValidation)
@@ -145,8 +230,10 @@ namespace SamplesApp.UITests.TestFramework
 		public (uint x, uint y) DiscreteValidation { get; }
 
 		/// <inheritdoc />
-		public override string ToString()
-			=> $"Color {ColorKind} tolerance of {Color} | Location {OffsetKind} tolerance of {Offset.x},{Offset.y} pixels.";
+		public override string ToString() =>
+			Color > 0
+				? $"Color {ColorKind} tolerance of {Color} | Location {OffsetKind} tolerance of {Offset.x},{Offset.y} pixels."
+				: "No color tolerance";
 	}
 
 	public enum ColorToleranceKind

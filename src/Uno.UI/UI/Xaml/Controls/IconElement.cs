@@ -35,7 +35,7 @@ using View = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class IconElement : FrameworkElement
-    {
+	{
 		partial void UnregisterSubView();
 		partial void RegisterSubView(View child);
 
@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -77,11 +77,13 @@ namespace Windows.UI.Xaml.Controls
 		internal void AddIconElementView(View child)
 		{
 			RegisterSubView(child);
-        }
+		}
 
 		public static implicit operator IconElement(string symbol)
 		{
 			return new SymbolIcon() { Symbol = (Symbol)Enum.Parse(typeof(Symbol), symbol, true) };
 		}
+
+		internal override bool CanHaveChildren() => true;
 	}
 }

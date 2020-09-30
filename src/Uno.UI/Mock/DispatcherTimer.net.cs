@@ -10,17 +10,17 @@ namespace Windows.UI.Xaml
 	{
 		private void StartNative(TimeSpan interval)
 		{
-			throw new NotSupportedException();
+			; // Not supported in unit tests
 		}
 
 		private void StartNative(TimeSpan dueTime, TimeSpan interval)
 		{
-			throw new NotSupportedException();
+			; // Not supported in unit tests
 		}
 
 		private void StopNative()
 		{
-			throw new NotSupportedException();
+			; // Not supported in unit tests
 		}
 	}
 }

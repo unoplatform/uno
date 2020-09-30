@@ -9,14 +9,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Windows.Devices.Input;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Documents;
 using Uno.Extensions;
 using Uno.Extensions.ValueType;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 {
@@ -47,6 +52,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 		private readonly ManipulationStartingEventHandler _logManipulationStarting;
 		private readonly ManipulationStartedEventHandler _logManipulationStarted;
 		private readonly ManipulationDeltaEventHandler _logManipulationDelta;
+		private readonly ManipulationInertiaStartingEventHandler _logManipulationInertia;
 		private readonly ManipulationCompletedEventHandler _logManipulationCompleted;
 		private readonly TappedEventHandler _logTapped;
 		private readonly DoubleTappedEventHandler _logDoubleTapped;
@@ -77,6 +83,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			_logManipulationStarting = new ManipulationStartingEventHandler(CreateHandler(ManipulationStartingEvent, "Manip starting", _manipStartingHandle));
 			_logManipulationStarted = new ManipulationStartedEventHandler(CreateHandler(ManipulationStartedEvent, "Manip started", _manipStartedHandle));
 			_logManipulationDelta = new ManipulationDeltaEventHandler(CreateHandler(ManipulationDeltaEvent, "Manip delta", _manipDeltaHandle));
+			_logManipulationInertia = new ManipulationInertiaStartingEventHandler(CreateHandler(ManipulationInertiaStartingEvent, "Manip inertia", _manipInertiaHandle));
 			_logManipulationCompleted = new ManipulationCompletedEventHandler(CreateHandler(ManipulationCompletedEvent, "Manip completed", _manipCompletedHandle));
 			_logTapped = new TappedEventHandler(CreateHandler(TappedEvent, "Tapped", _gestureTappedHandle));
 			_logDoubleTapped = new DoubleTappedEventHandler(CreateHandler(DoubleTappedEvent, "DoubleTapped", _gestureDoubleTappedHandle));
@@ -164,6 +171,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			target.RemoveHandler(ManipulationStartingEvent, _logManipulationStarting);
 			target.RemoveHandler(ManipulationStartedEvent, _logManipulationStarted);
 			target.RemoveHandler(ManipulationDeltaEvent, _logManipulationDelta);
+			target.RemoveHandler(ManipulationInertiaStartingEvent, _logManipulationInertia);
 			target.RemoveHandler(ManipulationCompletedEvent, _logManipulationCompleted);
 			target.RemoveHandler(TappedEvent, _logTapped);
 			target.RemoveHandler(DoubleTappedEvent, _logDoubleTapped);
@@ -192,6 +200,8 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				target.AddHandler(ManipulationStartedEvent, _logManipulationStarted, handledToo);
 			if (allEvents || _manipDelta.IsOn)
 				target.AddHandler(ManipulationDeltaEvent, _logManipulationDelta, handledToo);
+			if (allEvents || _manipInertia.IsOn)
+				target.AddHandler(ManipulationInertiaStartingEvent, _logManipulationInertia, handledToo);
 			if (allEvents || _manipCompleted.IsOn)
 				target.AddHandler(ManipulationCompletedEvent, _logManipulationCompleted, handledToo);
 
@@ -210,7 +220,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			if (args is PointerRoutedEventArgs pointer)
 			{
 				var expectedPointerType = (PointerDeviceType)Enum.Parse(typeof(PointerDeviceType), _pointerType.SelectedValue as string);
-				if (expectedPointerType != pointer.Pointer.PointerDeviceType)
+				if (expectedPointerType != (PointerDeviceType)pointer.Pointer.PointerDeviceType)
 				{
 					error += "pt_type ";
 					validity = EventValidity.Invalid;

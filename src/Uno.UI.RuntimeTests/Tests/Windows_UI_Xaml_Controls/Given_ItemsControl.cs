@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Windows.UI.Xaml.Markup;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -31,10 +32,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private DataTemplate TextBlockItemTemplate => _testsResources["TextBlockItemTemplate"] as DataTemplate;
 
+		private Style CounterItemsControlContainerStyle => _testsResources["CounterItemsControlContainerStyle"] as Style;
+
+		private DataTemplate CounterItemTemplate => _testsResources["CounterItemTemplate"] as DataTemplate;
+
 		[TestInitialize]
 		public void Init()
 		{
 			_testsResources = new TestsResources();
+
+			CounterGrid.Reset();
+			CounterGrid2.Reset();
 		}
 
 
@@ -82,7 +90,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var SUT = new ItemsControl
 			{
-				ItemTemplate = TextBlockItemTemplate,
 				DisplayMemberPath = "DisplayName"
 			};
 
@@ -99,12 +106,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.ItemsSource = source;
 
-
 			async Task Assert(int index, string s)
 			{
 				ContentPresenter cp = null;
 				await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[index]) as ContentPresenter) != null);
+#if !NETFX_CORE // This is an Uno implementation detail
 				cp.Content.Should().Be(s, $"ContainerFromItem() at index {index}");
+#endif
 
 				var tb = cp.FindFirstChild<TextBlock>();
 				tb.Should().NotBeNull($"Item at index {index}");
@@ -179,5 +187,181 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(tb);
 			Assert.AreEqual("Item 1", tb.Text);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_Creation_Count_ItemsSource_Before_Load()
+		{
+			var source = new[] { "Zero", "One", "Two", "Three" };
+
+			var SUT = new ContentControlItemsControl
+			{
+				ItemContainerStyle = CounterItemsControlContainerStyle,
+				ItemTemplate = CounterItemTemplate,
+				ItemsSource = source
+			};
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, CounterGrid.CreationCount);
+			Assert.AreEqual(0, CounterGrid2.CreationCount);
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(4, CounterGrid.CreationCount);
+			Assert.AreEqual(4, CounterGrid2.CreationCount);
+			Assert.AreEqual(4, CounterGrid.BindCount);
+			Assert.AreEqual(4, CounterGrid2.BindCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_Creation_Count_ItemsSource_After_Load()
+		{
+			var SUT = new ContentControlItemsControl
+			{
+				ItemContainerStyle = CounterItemsControlContainerStyle,
+				ItemTemplate = CounterItemTemplate
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, CounterGrid.CreationCount);
+			Assert.AreEqual(0, CounterGrid2.CreationCount);
+
+			var source = new[] { "Zero", "One", "Two", "Three" };
+
+			SUT.ItemsSource = source;
+
+			ContentControl cc = null;
+			await WindowHelper.WaitFor(() => (cc = SUT.ContainerFromItem(source[0]) as ContentControl) != null);
+
+			Assert.AreEqual(4, CounterGrid.CreationCount);
+			Assert.AreEqual(4, CounterGrid2.CreationCount);
+			Assert.AreEqual(4, CounterGrid.BindCount);
+			Assert.AreEqual(4, CounterGrid2.BindCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_ItemContainerStyle_TextBlock()
+		{
+			var containerStyle = (Style)XamlReader.Load(
+			   @"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='TextBlock'> 
+		                        <Setter Property='Foreground' Value='Green'/>
+		                    </Style>");
+			var itemStyle = (Style)XamlReader.Load(
+			   @"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='TextBlock'> 
+		                        <Setter Property='Foreground' Value='Red'/>
+		                    </Style>");
+
+
+
+			var source = new[]
+			{
+				new TextBlock { Text = "First" },
+				new TextBlock { Text = "Second", Style = itemStyle },
+				new TextBlock { Text = "Third" },
+			};
+
+			var SUT = new ItemsControl()
+			{
+				ItemContainerStyle = containerStyle,
+				ItemsSource = source,
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			TextBlock firstTb = null;
+			await WindowHelper.WaitFor(() => (firstTb = SUT.ContainerFromItem(source[0]) as TextBlock) != null);
+
+			TextBlock secondTb = null;
+			await WindowHelper.WaitFor(() => (secondTb = SUT.ContainerFromItem(source[1]) as TextBlock) != null);
+
+			TextBlock thirdTb = null;
+			await WindowHelper.WaitFor(() => (thirdTb = SUT.ContainerFromItem(source[2]) as TextBlock) != null);
+
+			Assert.AreEqual(firstTb.Style, containerStyle);
+			Assert.AreEqual(secondTb.Style, itemStyle);
+			Assert.AreEqual(thirdTb.Style, containerStyle);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_ItemContainerStyle_ContentControl()
+		{
+			var containerStyle = (Style)XamlReader.Load(
+			   @"<Style xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+		   TargetType=""ContentControl"">
+           <Setter Property=""Foreground"" Value=""Red""/>
+		<Setter Property=""Template"">
+			<Setter.Value>
+				<ControlTemplate TargetType=""ContentControl"">
+						<ContentPresenter Content=""{TemplateBinding Content}""
+                                          Foreground=""{TemplateBinding Foreground}""
+										  ContentTemplate=""{TemplateBinding ContentTemplate}"" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>");
+			var itemStyle = (Style)XamlReader.Load(
+			   @"<Style xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+		   TargetType=""ContentControl"">
+           <Setter Property=""Foreground"" Value=""Green""/>
+		<Setter Property=""Template"">
+			<Setter.Value>
+				<ControlTemplate TargetType=""ContentControl"">
+						<ContentPresenter Content=""{TemplateBinding Content}""
+                                          Foreground=""{TemplateBinding Foreground}""
+										  ContentTemplate=""{TemplateBinding ContentTemplate}"" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>");
+
+
+
+			var source = new[]
+			{
+				new ContentControl { Content = "First"},
+				new ContentControl { Content = "Second", Style = itemStyle},
+				new ContentControl { Content = "Third"},
+			};
+
+			var SUT = new ItemsControl()
+			{
+				ItemContainerStyle = containerStyle,
+				ItemsSource = source,
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			ContentControl first = null;
+			await WindowHelper.WaitFor(() => (first = SUT.ContainerFromItem(source[0]) as ContentControl) != null);
+
+			ContentControl second = null;
+			await WindowHelper.WaitFor(() => (second = SUT.ContainerFromItem(source[1]) as ContentControl) != null);
+
+			ContentControl third = null;
+			await WindowHelper.WaitFor(() => (third = SUT.ContainerFromItem(source[2]) as ContentControl) != null);
+
+			Assert.AreEqual(first.Style, containerStyle);
+			Assert.AreEqual(second.Style, itemStyle);
+			Assert.AreEqual(third.Style, containerStyle);
+		}
+
+
+	}
+	internal partial class ContentControlItemsControl : ItemsControl
+	{
+		protected override DependencyObject GetContainerForItemOverride() => new ContentControl();
 	}
 }

@@ -2,30 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum FocusInputDeviceKind 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Mouse,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Touch,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Pen,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Keyboard,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		GameController,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.None
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.Mouse
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.Touch
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.Pen
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.Keyboard
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.GameController
 	}
 	#endif
 }

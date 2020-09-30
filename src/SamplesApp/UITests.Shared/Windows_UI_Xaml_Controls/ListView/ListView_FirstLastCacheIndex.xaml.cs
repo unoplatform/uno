@@ -20,7 +20,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-#if !XAMARIN_IOS && !NETSTANDARD2_0
+#if !XAMARIN_IOS && !UNO_REFERENCE_API
 			var sv = MyListView.FindFirstChild<ScrollViewer>();
 			sv.ViewChanged += (o, e2) =>
 			{

@@ -46,6 +46,7 @@ namespace Uno.UWPSyncGenerator
 
 		private ISymbol _voidSymbol;
 		private ISymbol _dependencyPropertySymbol;
+		protected ISymbol FlagsAttributeSymbol { get; private set; }
 		protected ISymbol UIElementSymbol { get; private set; }
 		private static string MSBuildBasePath;
 
@@ -63,7 +64,7 @@ namespace Uno.UWPSyncGenerator
 
 			_referenceCompilation = LoadProject(@"..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
 			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinios10");
-			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid10.0");
+			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid12.0");
 			_net461Compilation = LoadProject($@"{basePath}\{baseName}.csproj", "net461");
 			_macCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinmac20");
 
@@ -77,17 +78,27 @@ namespace Uno.UWPSyncGenerator
 
 			_voidSymbol = _referenceCompilation.GetTypeByMetadataName("System.Void");
 			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
+			FlagsAttributeSymbol = _referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 			var a = _referenceCompilation.GetTypeByMetadataName("Microsoft.UI.ViewManagement.StatusBar");
 
 
 			var origins = from externalRedfs in _referenceCompilation.ExternalReferences
 						  where Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Foundation")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.WinUI")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.System")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Text")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Foundation")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Composition")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Dispatching")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Input")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Windowing")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.ApplicationModel.Resources")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Graphics")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Networking.Connectivity.WwanContract")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Web.WebView2.Core")
 						  let asm = _referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
 						  where asm != null
 						  select asm;
@@ -96,20 +107,56 @@ namespace Uno.UWPSyncGenerator
 
 			var unoUINamespaces = new[] {
 				"Windows.UI.Xaml",
+				"Windows.UI.Composition",
+				"Windows.UI.Dispatching",
 #if HAS_UNO_WINUI
+				"Microsoft.Foundation",
 				"Microsoft.UI.Xaml",
 				"Microsoft.UI.Composition",
+				"Microsoft.UI.Dispatching",
 				"Microsoft.UI.Text",
-				"Microsoft.System"
+				"Microsoft.UI.Windowing",
+				"Microsoft.UI.Input",
+				"Microsoft.System",
+				"Microsoft.Graphics",
+				"Microsoft.ApplicationModel.Resources",
+				"Microsoft.Web",
 #endif
 			};
+
+			List<string> excludeNamespaces = new List<string>();
+			List<string> includeNamespaces = new List<string>();
+
+#if !HAS_UNO_WINUI
+			// For UWP compilation we need to ignore these namespaces when not explicitly generating
+			// for related projects.
+			if (baseName == "Uno.UI.Dispatching")
+			{
+				includeNamespaces.Add("Windows.UI.Dispatching");
+			}
+			else if (baseName == "Uno.UI.Composition")
+			{
+				includeNamespaces.Add("Windows.UI.Composition");
+			}
+			else
+			{
+				excludeNamespaces.Add("Windows.UI.Dispatching");
+				excludeNamespaces.Add("Windows.UI.Composition");
+			}
+#endif
 
 			var q = from asm in origins
 					where asm.Name == sourceAssembly
 					from targetType in GetNamespaceTypes(asm.Modules.First().GlobalNamespace)
+					where !SkipNamespace(targetType)
 					where targetType.DeclaredAccessibility == Accessibility.Public
 					where ((baseName == "Uno" || baseName == "Uno.Foundation") && !targetType.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml") && !targetType.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml"))
-					|| (baseName == "Uno.UI" && unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n)))
+					|| (
+						(baseName == "Uno.UI" || baseName == "Uno.UI.Dispatching" || baseName == "Uno.UI.Composition")
+						&& unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
+					)
+					where !excludeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
+					where (includeNamespaces.Count == 0) || includeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
 					group targetType by targetType.ContainingNamespace into namespaces
 					orderby namespaces.Key.MetadataName
 					select new
@@ -128,23 +175,39 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
+		private bool SkipNamespace(INamedTypeSymbol namedTypeSymbol)
+		{
+			if (namedTypeSymbol.ContainingNamespace.ToDisplayString().StartsWith("Microsoft.UI.Input.Experimental"))
+			{
+				// Skip Microsoft.UI.Input.Experimental as it is not part of WinAppSDK desktop APIs
+				return true;
+			}
+
+			return false;
+		}
+
 		protected abstract void ProcessType(INamedTypeSymbol type, INamespaceSymbol ns);
 
 		private static void InitializeRoslyn()
 		{
-			var pi = new System.Diagnostics.ProcessStartInfo(
-				"cmd.exe",
-				@"/c ""C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"" -property installationPath"
-			)
-			{
-				RedirectStandardOutput = true,
-				UseShellExecute = false,
-				CreateNoWindow = true
-			};
+			var installPath = Environment.GetEnvironmentVariable("VSINSTALLDIR");
 
-			var process = System.Diagnostics.Process.Start(pi);
-			process.WaitForExit();
-			var installPath = process.StandardOutput.ReadToEnd().Split('\r').First();
+			if (string.IsNullOrEmpty(installPath))
+			{
+				var pi = new System.Diagnostics.ProcessStartInfo(
+					"cmd.exe",
+					@"/c ""C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"" -property installationPath -prerelease"
+				)
+				{
+					RedirectStandardOutput = true,
+					UseShellExecute = false,
+					CreateNoWindow = true
+				};
+
+				var process = System.Diagnostics.Process.Start(pi);
+				process.WaitForExit();
+				installPath = process.StandardOutput.ReadToEnd().Split('\r').First();
+			}
 
 			SetupMSBuildLookupPath(installPath);
 		}
@@ -173,21 +236,46 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
-			else if (!(
+#if !HAS_UNO_WINUI
+			else if (type.ContainingNamespace.ToString().StartsWith("Windows.UI.Composition")
+			)
+			{
+				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
+			}
+#else
+			else if (
+				type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Graphics")
+			)
+			{
+				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
+			}
+			else if (type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Dispatching")
+			)
+			{
+				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
+			}
+#endif
+			else if (
 				type.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml")
 #if HAS_UNO_WINUI
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.System")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Dispatching")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Text")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Input")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Graphics")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.ApplicationModel.Resources")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Web")
 #endif
-			))
+			)
 			{
-				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
+				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
 			else
 			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
+				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
 			}
 		}
 
@@ -295,6 +383,16 @@ namespace Uno.UWPSyncGenerator
 
 				return defines.Where(d => !string.IsNullOrEmpty(d)).Select(d => $"\"{d}\"").JoinBy(", ");
 			}
+
+			public bool IsNotImplementedInAllPlatforms()
+				=> IsNotDefinedByUno(AndroidSymbol) &&
+					IsNotDefinedByUno(IOSSymbol) &&
+					IsNotDefinedByUno(net461ymbol) &&
+					IsNotDefinedByUno(WasmSymbol) &&
+					IsNotDefinedByUno(SkiaSymbol) &&
+					IsNotDefinedByUno(NetStdReferenceSymbol) &&
+					MacOSSymbol == null;
+
 
 			private static bool IsNotDefinedByUno(ISymbol symbol)
 			{
@@ -431,6 +529,22 @@ namespace Uno.UWPSyncGenerator
 				case "Microsoft.UI.Xaml.Controls.XamlControlsResources":
 					// Skipped because the type is placed in the Uno.UI.FluentTheme assembly
 					return true;
+
+				case "Microsoft.UI.Xaml.Data.INotifyPropertyChanged":
+				case "Microsoft.UI.Xaml.Data.PropertyChangedEventArgs":
+				case "Microsoft.UI.Xaml.Data.PropertyChangedEventHandler":
+					// Skipped because the types are hidden from the projections in WinAppSDK
+					return true;
+
+#if HAS_UNO_WINUI
+				case "Windows.UI.Text.FontWeights":
+					// Skipped because the type not present WinAppSDK projection
+					return true;
+
+				case "Windows.UI.Colors":
+					// Skipped because the type not present WinAppSDK projection
+					return true;
+#endif
 			}
 
 
@@ -506,14 +620,14 @@ namespace Uno.UWPSyncGenerator
 				var isDefinedInClass = ownerType.GetMembers().OfType<IMethodSymbol>().Any(m =>
 						m.Name == method.Name
 						&& m.DeclaredAccessibility == Accessibility.Public
-						&& m.Parameters.Select(p => p.Type.ToDisplayString()).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString()))
-						&& m.ReturnType.ToString() == method.ReturnType.ToString()
+						&& m.Parameters.Select(p => p.Type.ToDisplayString(NullableFlowState.None)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(NullableFlowState.None)))
+						&& m.ReturnType.ToDisplayString(NullableFlowState.None) == method.ReturnType.ToDisplayString(NullableFlowState.None)
 					);
 
 				var isAlreadyGenerated = writtenSymbols.OfType<IMethodSymbol>().Any(m => m.Name == method.Name
 						&& m.DeclaredAccessibility == Accessibility.Public
-						&& m.Parameters.Select(p => p.Type.ToDisplayString()).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString()))
-						&& m.ReturnType.ToDisplayString() == method.ReturnType.ToDisplayString()
+						&& m.Parameters.Select(p => p.Type.ToDisplayString(NullableFlowState.None)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(NullableFlowState.None)))
+						&& m.ReturnType.ToDisplayString(NullableFlowState.None) == method.ReturnType.ToDisplayString(NullableFlowState.None)
 					);
 
 				if (
@@ -531,7 +645,7 @@ namespace Uno.UWPSyncGenerator
 				if (allMethods.HasUndefined)
 				{
 					allMethods.AppendIf(b);
-					var parms = string.Join(", ", method.Parameters.Select(p => $"{RefKindFormat(p)} {TransformType(ifaceSymbol, genericParameters, p.Type)} {p.Name}"));
+					var parms = string.Join(", ", method.Parameters.Select(p => $"{RefKindFormat(p)} {TransformType(ifaceSymbol, genericParameters, p.Type)} {SanitizeParameter(p.Name)}"));
 					var returnTypeName = TransformType(ifaceSymbol, genericParameters, method.ReturnType);
 					var typeAccessibility = GetMethodAccessibility(method);
 					var explicitImplementation = typeAccessibility == "" ? $"global::{ifaceSymbol.ToString()}." : "";
@@ -551,7 +665,7 @@ namespace Uno.UWPSyncGenerator
 			foreach (var property in ifaceSymbol.GetMembers().OfType<IPropertySymbol>())
 			{
 				var propertyTypeName = TransformType(ifaceSymbol, genericParameters, property.Type);
-				var parms = string.Join(", ", property.GetMethod?.Parameters.Select(p => $"{TransformType(ifaceSymbol, genericParameters, p.Type)} {p.Name}") ?? new string[0]);
+				var parms = string.Join(", ", property.GetMethod?.Parameters.Select(p => $"{TransformType(ifaceSymbol, genericParameters, p.Type)} {SanitizeParameter(p.Name)}") ?? new string[0]);
 
 				var allProperties = GetAllMatchingPropertyMember(types, property);
 
@@ -580,7 +694,7 @@ namespace Uno.UWPSyncGenerator
 								b.AppendLineInvariant($"throw new global::System.NotSupportedException();");
 							}
 						}
-						if (property.GetMethod != null)
+						if (property.SetMethod != null)
 						{
 							using (b.BlockInvariant($"set"))
 							{
@@ -701,6 +815,7 @@ namespace Uno.UWPSyncGenerator
 				BaseXamlNamespace + ".FrameworkElement",
 				BaseXamlNamespace + ".UIElement",
 				BaseXamlNamespace + ".Controls.Image",
+				BaseXamlNamespace + ".Controls.CalendarViewDayItem",
 				BaseXamlNamespace + ".Controls.ComboBox",
 				BaseXamlNamespace + ".Controls.CheckBox",
 				BaseXamlNamespace + ".Controls.TextBlock",
@@ -752,6 +867,12 @@ namespace Uno.UWPSyncGenerator
 				BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
 				BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
 				BaseXamlNamespace + ".Controls.NavigationViewItemBase",
+
+#if HAS_UNO_WINUI
+				// Mismatching public inheritance hierarchy because RadioMenuFlyoutItem has double inheritance in WinUI.
+				// Remove this and update RadioMenuFlyoutItem if WinUI 3 removed the double inheritance.
+				BaseXamlNamespace + ".Controls.RadioMenuFlyoutItem"
+#endif
 			};
 
 			var isSkipped = skippedTypes.Contains(type.BaseType?.ToString());
@@ -773,8 +894,8 @@ namespace Uno.UWPSyncGenerator
 			{
 				types.AppendIf(b);
 
-				var IMethodSymbol = type.GetMembers().OfType<IMethodSymbol>().First(m => m.Name == "Invoke");
-				var members = string.Join(", ", IMethodSymbol.Parameters.Select(p => $"{SanitizeType(p.Type)} @{p.Name}"));
+				var IMethodSymbol = type.GetMembers("Invoke").OfType<IMethodSymbol>().First();
+				var members = string.Join(", ", IMethodSymbol.Parameters.Select(p => $"{SanitizeType(p.Type)} {SanitizeParameter(p.Name)}"));
 
 				b.AppendLineInvariant($"public delegate {SanitizeType(IMethodSymbol.ReturnType)} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}({members});");
 
@@ -800,10 +921,9 @@ namespace Uno.UWPSyncGenerator
 
 					if (type.TypeKind == TypeKind.Enum)
 					{
-						// if (!field.IsSpecialName)
-						{
-							b.AppendLineInvariant($"{field.Name},");
-						}
+						var constantValue = field.ConstantValue != null ? $" = {field.ConstantValue}" : string.Empty;
+
+						b.AppendLineInvariant($"{field.Name}{constantValue},");
 					}
 					else
 					{
@@ -835,7 +955,7 @@ namespace Uno.UWPSyncGenerator
 					allMembers.AppendIf(b);
 
 					var staticQualifier = eventMember.AddMethod.IsStatic ? "static" : "";
-					var declaration = $"{staticQualifier} event {SanitizeType(eventMember.Type)} {eventMember.Name}";
+					var declaration = $"{staticQualifier} event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventMember.Name}";
 
 					if (type.TypeKind == TypeKind.Interface)
 					{
@@ -912,6 +1032,7 @@ namespace Uno.UWPSyncGenerator
 				if (
 					method.MethodKind == MethodKind.Constructor
 					&& type.TypeKind != TypeKind.Interface
+					&& !SkipMethod(type, method)
 					&& type.Name != "DependencyObject"
 					&& (
 						!type.IsValueType
@@ -994,7 +1115,7 @@ namespace Uno.UWPSyncGenerator
 
 								if (isAttachedPropertyMethod)
 								{
-									var instanceParamName = method.Parameters.First().Name;
+									var instanceParamName = SanitizeParameter(method.Parameters.First().Name);
 
 									if (method.Name.StartsWith("Get"))
 									{
@@ -1003,7 +1124,7 @@ namespace Uno.UWPSyncGenerator
 									}
 									else if (method.Name.StartsWith("Set"))
 									{
-										var valueParamName = method.Parameters.ElementAt(1).Name;
+										var valueParamName = SanitizeParameter(method.Parameters.ElementAt(1).Name);
 										b.AppendLineInvariant($"{instanceParamName}.SetValue({filteredName}Property, {valueParamName});");
 									}
 								}
@@ -1064,6 +1185,87 @@ namespace Uno.UWPSyncGenerator
 					case "SetBinding":
 						return true;
 				}
+			}
+
+#if HAS_UNO_WINUI
+			if (method.ContainingType.Name == "SwapChainPanel")
+			{
+				switch (method.Name)
+				{
+					// This member uses the experimental input layer from UWP
+					case "CreateCoreIndependentInputSource":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "SwapChainPanel")
+			{
+				switch (method.Name)
+				{
+					// This member uses the experimental input layer from UWP
+					case "CreateCoreIndependentInputSource":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "VisualInteractionSource")
+			{
+				switch (method.Name)
+				{
+					// This member uses the experimental input layer from UWP
+					case "TryRedirectForManipulation":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "UIElement")
+			{
+				switch (method.Name)
+				{
+					// This member uses the experimental input layer from UWP
+					case "StartDragAsync":
+						return true;
+				}
+			}
+#endif
+
+			if (method.ContainingType.Name == "GraphicsCaptureItem")
+			{
+				switch (method.Name)
+				{
+					// Will not be implemented in the UWP API set
+					case "CreateFromVisual":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "MediaPlayer")
+			{
+				switch (method.Name)
+				{
+					// Will not be implemented in the UWP API set
+					case "GetSurface":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "PalmRejectionDelayZonePreview")
+			{
+				switch (method.Name)
+				{
+					// Will not be implemented in the UWP API set
+					case "CreateForVisual":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "ScrollControllerInteractionRequestedEventArgs"
+				&& method.MethodKind == MethodKind.Constructor
+				&& method.Parameters.Length == 1
+				&& method.Parameters[0].Type.ToDisplayString() == "Microsoft.UI.Input.Experimental.ExpPointerPoint")
+			{
+				// This member uses the experimental input layer from UWP
+				return true;
 			}
 
 			return false;
@@ -1227,6 +1429,8 @@ namespace Uno.UWPSyncGenerator
 					return "Windows.Foundation.TimeSpan";
 				case "System.Collections.Generic.KeyValuePair":
 					return "Windows.Foundation.Collections.IKeyValuePair";
+				case "System.Collections.Specialized.INotifyCollectionChanged":
+					return "Windows.UI.Xaml.Interop.INotifyCollectionChanged";
 				case "System.Type":
 					return BaseXamlNamespace + ".Interop.TypeName";
 				case "System.Uri":
@@ -1373,18 +1577,11 @@ namespace Uno.UWPSyncGenerator
 
 		private bool SkipProperty(IPropertySymbol property)
 		{
-			if (property.ContainingType.Name == "WebView")
+			if (property.ContainingType.Name == "WebView2")
 			{
 				switch (property.Name)
 				{
-					case "XYFocusRight":
-					case "XYFocusLeft":
-					case "XYFocusDown":
-					case "XYFocusUp":
-					case "XYFocusRightProperty":
-					case "XYFocusLeftProperty":
-					case "XYFocusDownProperty":
-					case "XYFocusUpProperty":
+					case "CoreWebView2":
 						return true;
 				}
 			}
@@ -1429,6 +1626,67 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 
+			if (property.ContainingType.Name == "ExpCompositionContent")
+			{
+				switch (property.Name)
+				{
+					case "InputSite":
+						// Member uses the experimental Input layer from UAP
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "ExpCompositionContent")
+			{
+				switch (property.Name)
+				{
+					case "InputSite":
+						// Member uses the experimental Input layer from UAP
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "ScrollControllerInteractionRequestedEventArgs")
+			{
+				switch (property.Name)
+				{
+					case "PointerPoint":
+						// Member uses the experimental Input layer from UAP
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "CoreInkPresenterHost")
+			{
+				switch (property.Name)
+				{
+					case "RootVisual":
+						// Member uses the experimental Input layer from UAP
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "AppWindowFrame")
+			{
+				switch (property.Name)
+				{
+					case "DragRegionVisuals":
+						// Member uses the experimental Input layer from UAP
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "MediaPlayerSurface")
+			{
+				switch (property.Name)
+				{
+					// Will not be implemented in the UWP API set
+					case "CompositionSurface":
+					case "Compositor":
+						return true;
+				}
+			}
+
 			return false;
 		}
 
@@ -1468,6 +1726,9 @@ namespace Uno.UWPSyncGenerator
 				//"global::Windows.Foundation.ICloseable" => "global::System.IDisposable",
 				"global::Windows.UI.Xaml.Input.ICommand" => "global::System.Windows.Input.ICommand",
 				"global::Microsoft.UI.Xaml.Input.ICommand" => "global::System.Windows.Input.ICommand",
+				"global::Microsoft.UI.Xaml.Interop.INotifyCollectionChanged" => "global::System.Collections.Specialized.INotifyCollectionChanged",
+				"global::Microsoft.UI.Xaml.Data.INotifyPropertyChanged" => "global::System.ComponentModel.INotifyPropertyChanged",
+				"global::Microsoft.UI.Xaml.Data.PropertyChangedEventHandler" => "global::System.ComponentModel.PropertyChangedEventHandler",
 				_ => typeName,
 			};
 		}
@@ -1512,10 +1773,10 @@ namespace Uno.UWPSyncGenerator
 					{
 						var sourceParams = sourceMethod
 							.Parameters
-							.Select(p => p.Type.ToDisplayString());
+							.Select(p => p.Type.ToDisplayString(NullableFlowState.None));
 						var targetParams = m
 								.Parameters
-								.Select(p => p.Type.ToDisplayString());
+								.Select(p => p.Type.ToDisplayString(NullableFlowState.None));
 						return sourceParams.SequenceEqual(targetParams);
 					}
 					);

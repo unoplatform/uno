@@ -1,7 +1,7 @@
 ﻿using System;
 using Uno.Extensions;
 using Uno.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using System.Globalization;
 
@@ -10,21 +10,6 @@ namespace Windows.UI.ViewManagement
 	partial class ApplicationView
 	{
 		private const string ApplicationViewTsType = "Windows.UI.ViewManagement.ApplicationView";
-
-		internal void SetVisibleBounds(Rect newVisibleBounds)
-		{
-			if (newVisibleBounds != VisibleBounds)
-			{
-				VisibleBounds = newVisibleBounds;
-
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
-				}
-
-				VisibleBoundsChanged?.Invoke(this, null);
-			}
-		}
 
 		public string Title
 		{

@@ -14,17 +14,24 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
+using Uno;
 
 namespace Windows.UI.Xaml.Controls
 {
+#if __WASM__ || __SKIA__
+	[NotImplemented]
+#endif
 	public partial class WebView : Control
 	{
 		private const string BlankUrl = "about:blank";
 		private static readonly Uri BlankUri = new Uri(BlankUrl);
 
 		private object _internalSource;
-		private bool _isLoaded;
 		private string _invokeScriptResponse = string.Empty;
+
+#pragma warning disable CS0414 // not used in skia
+		private bool _isLoaded;
+#pragma warning restore CS0414
 
 		public WebView()
 		{
@@ -39,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 			private set { SetValue(CanGoBackProperty, value); }
 		}
 
-		public static DependencyProperty CanGoBackProperty { get ; } =
+		public static DependencyProperty CanGoBackProperty { get; } =
 			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
 		#endregion
@@ -52,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 			private set { SetValue(CanGoForwardProperty, value); }
 		}
 
-		public static DependencyProperty CanGoForwardProperty { get ; } =
+		public static DependencyProperty CanGoForwardProperty { get; } =
 			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
 		#endregion
@@ -65,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(SourceProperty, value); }
 		}
 
-		public static DependencyProperty SourceProperty { get ; } =
+		public static DependencyProperty SourceProperty { get; } =
 			DependencyProperty.Register("Source", typeof(Uri), typeof(WebView), new FrameworkPropertyMetadata(null,
 				(s, e) => ((WebView)s)?.Navigate((Uri)e.NewValue)));
 
@@ -91,7 +98,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(IsScrollEnabledProperty, value); }
 		}
 
-		public static DependencyProperty IsScrollEnabledProperty { get ; } =
+		public static DependencyProperty IsScrollEnabledProperty { get; } =
 			DependencyProperty.Register("IsScrollEnabled", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(true,
 				(s, e) => ((WebView)s)?.OnScrollEnabledChangedPartial((bool)e.NewValue)));
 

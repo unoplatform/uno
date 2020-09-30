@@ -4,9 +4,11 @@
 //
 // This file is a C# translation of the NavigationViewHelper.cpp file from WinUI controls.
 //
-using System;
-using System.Collections.Generic;
-using System.Text;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -45,6 +47,7 @@ namespace Windows.UI.Xaml.Controls
 	public class NavigationViewItemHelper<T> where T : Control
 	{
 		static string c_selectionIndicatorName = "SelectionIndicator";
+
 		public NavigationViewItemHelper()
 		{
 		}

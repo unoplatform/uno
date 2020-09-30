@@ -18,9 +18,12 @@ namespace SamplesApp.UITests.CommandBar
 		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void CommandBar_LongTitle_Validation()
 		{
+			Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_LongTitle");
+
+			var isLandscape = GetIsCurrentRotationLandscape("ThePage");
+
 			try
 			{
-				Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_LongTitle");
 
 				_app.WaitForElement(_app.Marked("TextBlockWidthTest"));
 
@@ -41,7 +44,15 @@ namespace SamplesApp.UITests.CommandBar
 			}
 			finally
 			{
-				_app.SetOrientationLandscape();
+				// Reset orientation to original value
+				if (isLandscape)
+				{
+					_app.SetOrientationLandscape();
+				}
+				else
+				{
+					_app.SetOrientationPortrait();
+				}
 			}
 		}
 	}

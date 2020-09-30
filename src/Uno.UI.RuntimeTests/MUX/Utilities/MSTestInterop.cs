@@ -91,27 +91,47 @@ namespace Common
             Assert.AreNotSame(notExpected, actual, message);
         }
 
-        public static void IsLessThan(IComparable expectedLess, IComparable expectedGreater, string message = null)
+        public static void IsLessThan(double expectedLess, double expectedGreater, string message = null)
         {
-            Assert.IsTrue(expectedLess.CompareTo(expectedGreater) < 0, message);
+            Assert.IsTrue(expectedLess < expectedGreater, message);
         }
 
-        public static void IsLessThanOrEqual(IComparable expectedLess, IComparable expectedGreater, string message = null)
+		public static void IsLessThan(int expectedLess, int expectedGreater, string message = null)
+		{
+			Assert.IsTrue(expectedLess < expectedGreater, message);
+		}
+
+		public static void IsLessThanOrEqual(int expectedLess, int expectedGreater, string message = null)
+		{
+			Assert.IsTrue(expectedLess <= expectedGreater, message);
+		}
+
+		public static void IsLessThanOrEqual(double expectedLess, double expectedGreater, string message = null)
         {
-            Assert.IsTrue(expectedLess.CompareTo(expectedGreater) <= 0, message);
+            Assert.IsTrue(expectedLess <= expectedGreater, message);
         }
 
-        public static void IsGreaterThan(IComparable expectedGreater, IComparable expectedLess, string message = null)
+		public static void IsGreaterThan(int expectedGreater, int expectedLess, string message = null)
+		{
+			Assert.IsTrue(expectedGreater > expectedLess, message);
+		}
+
+		public static void IsGreaterThan(double expectedGreater, double expectedLess, string message = null)
+		{
+			Assert.IsTrue(expectedGreater > expectedLess, message);
+		}
+
+		public static void IsGreaterThanOrEqual(double expectedGreater, double expectedLess, string message = null)
         {
-            Assert.IsTrue(expectedGreater.CompareTo(expectedLess) > 0, message);
+            Assert.IsTrue(expectedGreater >= expectedLess, message);
         }
 
-        public static void IsGreaterThanOrEqual(IComparable expectedGreater, IComparable expectedLess, string message = null)
-        {
-            Assert.IsTrue(expectedGreater.CompareTo(expectedLess) >= 0, message);
-        }
+		public static void IsGreaterThanOrEqual(int expectedGreater, int expectedLess, string message = null)
+		{
+			Assert.IsTrue(expectedGreater >= expectedLess, message);
+		}
 
-        public static void IsNull(object value, string message = null)
+		public static void IsNull(object value, string message = null)
         {
             Assert.IsNull(value, message);
         }

@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-			var handle = GCHandle.Alloc(_buffer.Data, GCHandleType.Pinned);
+			var handle = GCHandle.Alloc(_buffer.ToArray(), GCHandleType.Pinned);
 			var pinnedData = handle.AddrOfPinnedObject();
 
 			try
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				image = new ImageData
 				{
-					Kind = ImageDataKind.Base64,
+					Kind = ImageDataKind.DataUri,
 					Value = value
 				};
 				return true;

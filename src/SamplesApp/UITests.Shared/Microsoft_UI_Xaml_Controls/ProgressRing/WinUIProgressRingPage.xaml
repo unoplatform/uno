@@ -18,5 +18,35 @@
 		<ToggleButton x:Name="isActive">IsActive</ToggleButton>
 		<ToggleButton Click="LoadUnload">LOAD/UNLOAD</ToggleButton>
 		<Border x:Name="container"></Border>
+		<TextBlock FontSize="15">Custom Colors:</TextBlock>
+		<StackPanel Orientation="Horizontal" Spacing="8">
+			<winui:ProgressRing
+				Width="40"
+				Foreground="{Binding SelectedValue.Content, ElementName=foreground}"
+				Background="{Binding SelectedValue.Content, ElementName=background}"/>
+			<ComboBox x:Name="foreground" Header="Fg:">
+				<ComboBox.Items>
+					<ComboBoxItem>Blue</ComboBoxItem>
+					<ComboBoxItem>Red</ComboBoxItem>
+					<ComboBoxItem>Green</ComboBoxItem>
+					<ComboBoxItem IsSelected="True">Yellow</ComboBoxItem>
+					<ComboBoxItem>Pink</ComboBoxItem>
+					<ComboBoxItem>Violet</ComboBoxItem>
+				</ComboBox.Items>
+			</ComboBox>
+			<ComboBox x:Name="background" Header="Bg:">
+				<ComboBox.Items>
+					<ComboBoxItem>Blue</ComboBoxItem>
+					<ComboBoxItem IsSelected="True">Red</ComboBoxItem>
+					<ComboBoxItem>Green</ComboBoxItem>
+					<ComboBoxItem>Yellow</ComboBoxItem>
+					<ComboBoxItem>Pink</ComboBoxItem>
+					<ComboBoxItem>Violet</ComboBoxItem>
+				</ComboBox.Items>
+			</ComboBox>
+
+		</StackPanel>
+		
+		
 	</StackPanel>
 </Page>

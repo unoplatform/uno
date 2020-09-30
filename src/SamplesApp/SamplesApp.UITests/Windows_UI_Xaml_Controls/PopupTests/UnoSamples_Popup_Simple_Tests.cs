@@ -12,7 +12,8 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 {
-	public class UnoSamples_Popup_Simple_Tests : SampleControlUITestBase
+	[TestFixture]
+	public partial class UnoSamples_Popup_Simple_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry()]
@@ -109,15 +110,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Popup.Popup_Overlay_On");
 
-			var before = TakeScreenshot("Before");
-			var rect = _app.GetRect("LocatorRectangle");
+			using var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
+			var rect = _app.GetPhysicalRect("LocatorRectangle");
 			ImageAssert.HasColorAt(before, rect.CenterX, rect.CenterY, Color.Blue);
 
 			_app.FastTap("PopupCheckBox");
 
 			_app.WaitForElement("PopupChild");
 
-			var during = TakeScreenshot("During", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Status bar appears with clock*/);
+			using var during = TakeScreenshot("During", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Status bar appears with clock*/);
 
 			ImageAssert.DoesNotHaveColorAt(during, rect.CenterX, rect.CenterY, Color.Blue);
 
@@ -127,7 +128,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			_app.WaitForNoElement("PopupChild");
 
-			var after = TakeScreenshot("After");
+			using var after = TakeScreenshot("After");
 
 			ImageAssert.HasColorAt(after, rect.CenterX, rect.CenterY, Color.Blue);
 		}

@@ -33,8 +33,8 @@ namespace Windows.Devices.Sensors
 					if (_readingChanged != null)
 					{
 						//restart reading to apply interval
-						StartReading();
 						StopReading();
+						StartReading();
 					}
 				}
 			}

@@ -1,3 +1,5 @@
+#nullable enable
+
 #if !NETFX_CORE
 using System;
 using System.Collections.Generic;
@@ -5,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Reflection;
 using Uno.UI.DataBinding;
@@ -13,31 +15,32 @@ using Uno;
 using Windows.UI.Xaml;
 using System.Collections;
 using Uno.Conversion;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Xaml.Data;
 using System.Dynamic;
+using System.Runtime.CompilerServices;
 
 namespace Uno.UI.DataBinding
 {
-	internal delegate void ValueSetterHandler(object instance, object value);
+	internal delegate void ValueSetterHandler(object instance, object? value);
     internal delegate void ValueUnsetterHandler(object instance);
-    internal delegate object ValueGetterHandler(object instance);
+    internal delegate object? ValueGetterHandler(object instance);
 
     public static class BindableMetadata
     {
         /// <summary>
         /// Sets the metadata provider for the whole app domain.
         /// </summary>
-        public static IBindableMetadataProvider Provider
-        {
-            get { return BindingPropertyHelper.BindableMetadataProvider; }
-            set { BindingPropertyHelper.BindableMetadataProvider = value; }
-        }
-    }
+        public static IBindableMetadataProvider? Provider
+		{
+			get => BindingPropertyHelper.BindableMetadataProvider;
+			set => BindingPropertyHelper.BindableMetadataProvider = value;
+		}
+	}
 
     internal static partial class BindingPropertyHelper
 	{
-		private static readonly ILogger _log = typeof(BindingPropertyHelper).Log();
+		private static readonly Logger _log = typeof(BindingPropertyHelper).Log();
 
 		//
 		// Warning: These dictionaries are here in place of memoized Funcs for performance
@@ -51,7 +54,7 @@ namespace Uno.UI.DataBinding
 		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler> _getSubstituteValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
 		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler> _getValueUnsetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
 		private static Dictionary<CachedTuple<Type, string>, bool> _isEvent = new Dictionary<CachedTuple<Type, string>, bool>(CachedTuple<Type, string>.Comparer);
-		private static Dictionary<CachedTuple<Type, string>, Type> _getPropertyType = new Dictionary<CachedTuple<Type, string>, Type>(CachedTuple<Type, string>.Comparer);
+		private static Dictionary<CachedTuple<Type, string, bool>, Type?> _getPropertyType = new Dictionary<CachedTuple<Type, string, bool>, Type?>(CachedTuple<Type, string, bool>.Comparer);
 
 		static BindingPropertyHelper()
 		{
@@ -59,12 +62,23 @@ namespace Uno.UI.DataBinding
 			Conversion = new DefaultConversionExtensions();
 		}
 
-		private static Func<object, object[], object> DefaultInvokerBuilder(MethodInfo method)
+		internal static void ClearCaches()
+		{
+			_getValueGetter.Clear();
+			_getValueSetter.Clear();
+			_getPrecedenceSpecificValueGetter.Clear();
+			_getSubstituteValueGetter.Clear();
+			_getValueUnsetter.Clear();
+			_isEvent.Clear();
+			_getPropertyType.Clear();
+		}
+
+		private static Func<object, object?[], object?> DefaultInvokerBuilder(MethodInfo method)
 		{
 			return (instance, args) => method.Invoke(instance, args);
 		}
 
-		public static Func<MethodInfo, Func<object, object[], object>> MethodInvokerBuilder
+		public static Func<MethodInfo, Func<object, object?[], object?>> MethodInvokerBuilder
 		{
 			get;
 			set;
@@ -73,7 +87,7 @@ namespace Uno.UI.DataBinding
 		/// <summary>
 		/// Sets an external metadata provider.
 		/// </summary>
-		public static IBindableMetadataProvider BindableMetadataProvider { get; set; }
+		public static IBindableMetadataProvider? BindableMetadataProvider { get; set; }
 
 		public static DefaultConversionExtensions Conversion { get; private set; }
 
@@ -94,17 +108,17 @@ namespace Uno.UI.DataBinding
 			return result;
 		}
 
-		public static Type GetPropertyType(Type type, string property)
+		public static Type? GetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
-			var key = CachedTuple.Create(type, property);
+			var key = CachedTuple.Create(type, property, allowPrivateMembers);
 
-			Type result;
+			Type? result;
 
 			lock (_getPropertyType)
 			{
 				if (!_getPropertyType.TryGetValue(key, out result))
 				{
-					_getPropertyType.Add(key, result = InternalGetPropertyType(type, property));
+					_getPropertyType.Add(key, result = InternalGetPropertyType(type, property, allowPrivateMembers));
 				}
 			}
 
@@ -125,7 +139,7 @@ namespace Uno.UI.DataBinding
 		{
 			var key = CachedTuple.Create(type, property, precedence, allowPrivateMembers);
 
-			ValueGetterHandler result;
+			ValueGetterHandler? result;
 
 			lock (_getValueGetter)
 			{
@@ -147,7 +161,7 @@ namespace Uno.UI.DataBinding
 		{
 			var key = CachedTuple.Create(type, property, convert, precedence);
 
-			ValueSetterHandler result;
+			ValueSetterHandler? result;
 
 			lock (_getValueSetter)
 			{
@@ -164,7 +178,7 @@ namespace Uno.UI.DataBinding
 		{
 			var key = CachedTuple.Create(type, property, precedence);
 
-			ValueGetterHandler result;
+			ValueGetterHandler? result;
 
 			lock (_getPrecedenceSpecificValueGetter)
 			{
@@ -181,7 +195,7 @@ namespace Uno.UI.DataBinding
 		{
 			var key = CachedTuple.Create(type, property, precedence);
 
-			ValueGetterHandler result;
+			ValueGetterHandler? result;
 
 			lock (_getSubstituteValueGetter)
 			{
@@ -203,7 +217,7 @@ namespace Uno.UI.DataBinding
 		{
 			var key = CachedTuple.Create(type, property, precedence);
 
-			ValueUnsetterHandler result;
+			ValueUnsetterHandler? result;
 
 			lock (_getValueUnsetter)
 			{
@@ -225,7 +239,7 @@ namespace Uno.UI.DataBinding
 #endif
 		}
 
-		private static Type InternalGetPropertyType(Type type, string property)
+		private static Type? InternalGetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
 			if(type == typeof(UnsetValue))
 			{
@@ -238,9 +252,7 @@ namespace Uno.UI.DataBinding
 			using (Performance.Measure("InternalGetPropertyType"))
 #endif
 			{
-				IBindableType bindableType = null;
-
-				if (BindableMetadataProvider != null)
+				if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
 				{
 					var bindablePropertyDescriptor = BindablePropertyDescriptor.GetPropertByBindableMetadataProvider(type, property);
 
@@ -248,7 +260,7 @@ namespace Uno.UI.DataBinding
 					{
 						if (IsIndexerFormat(property))
 						{
-							if (bindableType.GetIndexerGetter() != null)
+							if (bindablePropertyDescriptor.OwnerType.GetIndexerGetter() != null)
 							{
 								// In the case of bindable properties, the return
 								// type of an indexer is always an object.
@@ -274,7 +286,7 @@ namespace Uno.UI.DataBinding
 				using (Performance.Measure("InternalGetPropertyType.Reflection"))
 #endif
 				{
-					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						_log.Debug($"GetPropertyType({type}, {property}) [Reflection]");
 					}
@@ -303,6 +315,16 @@ namespace Uno.UI.DataBinding
 						return propertyInfo.PropertyType;
 					}
 
+					// Look for a field (permitted for x:Bind only)
+					if (allowPrivateMembers)
+					{
+						var fieldInfo = GetFieldInfo(type, property, true);
+						if (fieldInfo != null)
+						{
+							return fieldInfo.FieldType;
+						}
+					}
+
 					// Look for an attached property
 					var attachedPropertyGetter = GetAttachedPropertyGetter(type, property);
 
@@ -311,7 +333,7 @@ namespace Uno.UI.DataBinding
 						return attachedPropertyGetter.ReturnType;
 					}
 
-					if(type.IsPrimitive && property == "Value")
+					if (type.IsValueType && property == "Value")
 					{
 						// This case is trying assuming that Value for a primitive is used for the case
 						// of a Nullable primitive.
@@ -341,7 +363,7 @@ namespace Uno.UI.DataBinding
 		/// The private members lookup is present to enable the binding to
 		/// x:Name elements in x:Bind operations.
 		/// </remarks>
-		private static PropertyInfo GetPropertyInfo(Type type, string name, bool allowPrivateMembers)
+		private static PropertyInfo? GetPropertyInfo(Type type, string name, bool allowPrivateMembers)
 		{
 			do
 			{
@@ -359,14 +381,14 @@ namespace Uno.UI.DataBinding
 					return info;
 				}
 
-				type = type.BaseType;
+				type = type.BaseType!;
 			}
 			while (type != null);
 
 			return null;
 		}
 
-		private static FieldInfo GetFieldInfo(Type type, string name, bool allowPrivateMembers)
+		private static FieldInfo? GetFieldInfo(Type type, string name, bool allowPrivateMembers)
 		{
 			do
 			{
@@ -384,7 +406,7 @@ namespace Uno.UI.DataBinding
 					return info;
 				}
 
-				type = type.BaseType;
+				type = type.BaseType!;
 			}
 			while (type != null);
 
@@ -499,7 +521,7 @@ namespace Uno.UI.DataBinding
 				}
 
 				// Start by using the provider, to avoid reflection
-				if (BindableMetadataProvider != null)
+				if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
 				{
 #if PROFILE
 					using (Performance.Measure("GetValueGetter.BindableMetadataProvider"))
@@ -523,7 +545,7 @@ namespace Uno.UI.DataBinding
 				using (Performance.Measure("InternalGetValueGetter.Reflection"))
 #endif
 				{
-					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						_log.Debug($"GetValueGetter({type}, {property}) [Reflection]");
 					}
@@ -550,7 +572,7 @@ namespace Uno.UI.DataBinding
 
 						return instance => handler(
                             instance, 
-                            new object[] {
+                            new object?[] {
                                 Convert(() => indexerInfo.GetIndexParameters()[0].ParameterType, indexerString)
                             }
                         );
@@ -569,7 +591,7 @@ namespace Uno.UI.DataBinding
 			}
 
 			// Start by using the provider, to avoid reflection
-			if (BindableMetadataProvider != null)
+			if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
 			{
 #if PROFILE
 				using (Performance.Measure("GetValueGetter.BindableMetadataProvider"))
@@ -579,11 +601,17 @@ namespace Uno.UI.DataBinding
 
 					if (bindableProperty.OwnerType != null)
 					{
-						if (bindableProperty != null && bindableProperty.Property.Getter != null)
+						if (bindableProperty?.Property?.Getter != null)
 						{
-							var getter = bindableProperty.Property.Getter;
-
-							return instance => getter(instance, precedence);
+							if (bindableProperty.Property.DependencyProperty is { } dependencyProperty)
+							{
+								return instance => instance.GetValue(dependencyProperty, precedence);
+							}
+							else
+							{
+								var getter = bindableProperty.Property.Getter;
+								return instance => getter(instance, precedence);
+							}
 						}
 					}
 				}
@@ -593,7 +621,7 @@ namespace Uno.UI.DataBinding
 			using (Performance.Measure("InternalGetValueGetter.Reflection2"))
 #endif
 			{
-				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					_log.Debug($"GetValueGetter({type}, {property}) [Reflection]");
 				}
@@ -696,7 +724,7 @@ namespace Uno.UI.DataBinding
 				}
 
 				if (
-					type.IsPrimitive
+					type.IsValueType
 					&& property == "Value"
 				)
 				{
@@ -728,8 +756,8 @@ namespace Uno.UI.DataBinding
 
 			property = SanitizePropertyName(type, property);
 
-			Func<Func<Type>, object, object> convertSelector =
-				convert ? Convert : (Func<Func<Type>, object, object>)((p, v) => v);
+			Func<Func<Type?>?, object?, object?> convertSelector =
+				convert ? Convert : (Func<Func<Type?>?, object?, object?>)((p, v) => v);
 
 			if (IsIndexerFormat(property))
 			{
@@ -740,11 +768,11 @@ namespace Uno.UI.DataBinding
 				// the property info, unless there is an actual conversion to perform.
 				// So we just close over the property.
 				var indexerInfo = Uno.Funcs.CreateMemoized(() => GetPropertyInfo(type, "Item", allowPrivateMembers: false));
-				var indexerType = Uno.Funcs.CreateMemoized(() => indexerInfo().SelectOrDefault(p => p.PropertyType));
+				var indexerType = Uno.Funcs.CreateMemoized(() => indexerInfo()?.PropertyType);
 
 
 				// Start by using the provider, to avoid reflection
-				if (BindableMetadataProvider != null)
+				if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
 				{
 #if PROFILE
 					using (Performance.Measure("GetValueSetter.BindableMetadataProvider"))
@@ -776,20 +804,21 @@ namespace Uno.UI.DataBinding
 				using (Performance.Measure("InternalGetValueSetter.Reflection"))
 #endif
 				{
-					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						_log.Debug($"GetValueSetter({type}, {property}) [Reflection]");
 					}
 
-					if (indexerInfo() != null)
+					var indexerInfoValue = indexerInfo();
+					if (indexerInfoValue != null)
 					{
-						var method = indexerInfo().GetSetMethod();
+						var method = indexerInfoValue.GetSetMethod();
 
 						if (method != null)
 						{
 							var handler = MethodInvokerBuilder(method);
 
-							return (instance, value) => handler(instance, new object[] { indexerName, convertSelector(indexerType, value) });
+							return (instance, value) => handler(instance, new object?[] { indexerName, convertSelector(indexerType, value) });
 						}
 						else
 						{
@@ -812,7 +841,7 @@ namespace Uno.UI.DataBinding
 			}
 
 			// Start by using the provider, to avoid reflection
-			if (BindableMetadataProvider != null)
+			if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
 			{
 #if PROFILE
 				using (Performance.Measure("GetValueSetter.BindableMetadataProvider"))
@@ -822,11 +851,19 @@ namespace Uno.UI.DataBinding
 
 					if (bindableProperty.OwnerType != null)
 					{
-						if (bindableProperty != null && bindableProperty.Property.Setter != null)
+						if (bindableProperty != null)
 						{
-							var setter = bindableProperty.Property.Setter;
+							if(bindableProperty.Property?.DependencyProperty is { } dependencyProperty)
+							{
+								return (instance, value) => instance.SetValue(dependencyProperty, convertSelector(() => bindableProperty.Property.PropertyType, value), precedence);
+							}
 
-							return (instance, value) => setter(instance, convertSelector(() => bindableProperty.Property.PropertyType, value), precedence);
+							if (bindableProperty.Property?.Setter != null)
+							{
+								var setter = bindableProperty.Property.Setter;
+
+								return (instance, value) => setter(instance, convertSelector(() => bindableProperty.Property.PropertyType, value), precedence);
+							}
 						}
 
 						var once = Actions.CreateOnce(
@@ -842,7 +879,7 @@ namespace Uno.UI.DataBinding
 			using (Performance.Measure("InternalGetValueSetter.Reflection"))
 #endif
 			{
-				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					_log.Debug($"GetValueSetter({type}, {property}) [Reflection]");
 				}
@@ -864,7 +901,7 @@ namespace Uno.UI.DataBinding
 						var propertyType = Uno.Funcs.CreateMemoized(() => GetPropertyOrDependencyPropertyType(type, property));
 						var handler = MethodInvokerBuilder(setMethod);
 
-						return (instance, value) => handler(instance, new object[] { convertSelector(propertyType, value) });
+						return (instance, value) => handler(instance, new object?[] { convertSelector(propertyType, value) });
 					}
 				}
 
@@ -872,7 +909,7 @@ namespace Uno.UI.DataBinding
 				{
 					return (instance, value) =>
 					{
-						if (instance is IDictionary<string, object> source)
+						if (instance is IDictionary<string, object?> source)
 						{
 							source[property] = value;
 						}
@@ -981,7 +1018,7 @@ namespace Uno.UI.DataBinding
 		private static DependencyProperty FindDependencyProperty(Type ownerType, string property) 
 			=> DependencyProperty.GetProperty(ownerType, property);
 
-		private static DependencyProperty FindAttachedProperty(Type type, string property)
+		private static DependencyProperty? FindAttachedProperty(Type type, string property)
 		{
 			var propertyInfo = DependencyPropertyDescriptor.Parse(property);
 			if (propertyInfo != null)
@@ -993,7 +1030,7 @@ namespace Uno.UI.DataBinding
 			return type?.GetField(property + "Property")?.GetValue(null) as DependencyProperty;
 		}
 
-		private static Type GetPropertyOrDependencyPropertyType(Type type, string property)
+		private static Type? GetPropertyOrDependencyPropertyType(Type type, string property)
 		{
 			var propertyType = GetPropertyInfo(type, property, allowPrivateMembers: false);
 			if (propertyType != null)
@@ -1011,7 +1048,7 @@ namespace Uno.UI.DataBinding
 			return null;
 		}
 
-		private static MethodInfo GetAttachedPropertyGetter(Type type, string property)
+		private static MethodInfo? GetAttachedPropertyGetter(Type type, string property)
 		{
 			var propertyInfo = DependencyPropertyDescriptor.Parse(property);
 
@@ -1027,9 +1064,9 @@ namespace Uno.UI.DataBinding
 				.FirstOrDefault();
 		}
 
-		internal static object Convert(Func<Type> propertyType, object value)
+		internal static object? Convert(Func<Type?>? propertyType, object? value)
 		{
-			if (value != null)
+			if (value != null && propertyType != null)
 			{
 				var t = propertyType();
 
@@ -1041,28 +1078,48 @@ namespace Uno.UI.DataBinding
 					}
 					else if (t != typeof(object))
 					{
-						try
-						{
-							value = Conversion.To(value, t, CultureInfo.CurrentCulture);
-						}
-						catch (Exception)
-						{
-							// This is a temporary fallback solution.
-							// The problem is that we don't actually know which culture we must use in advance.
-							// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
-							// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
-							value = Conversion.To(value, t, CultureInfo.InvariantCulture);
-						}
+						value = ConvertWithConvertionExtension(value, t);
 					}
 				}
 			}
 			return value;
 		}
 
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static object ConvertWithConvertionExtension(object? value, Type? t)
+		{
+			try
+			{
+				value = Conversion.To(value, t, CultureInfo.CurrentCulture);
+			}
+			catch (Exception)
+			{
+				// This is a temporary fallback solution.
+				// The problem is that we don't actually know which culture we must use in advance.
+				// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
+				// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
+				value = Conversion.To(value, t, CultureInfo.InvariantCulture);
+			}
+
+			return value;
+		}
+
 		private static object UnsetValueGetter(object unused)
 			=> DependencyProperty.UnsetValue;
 
-		private static void UnsetValueSetter(object unused, object unused2) { }
+		private static void UnsetValueSetter(object unused, object? unused2) { }
+
+		/// <summary>
+		/// Determines if the type can be provided by the MetadataProvider
+		/// </summary>
+		/// <remarks>This method needs to be aligned with the symbols query in BindableTypeProvidersSourceGenerator.</remarks>
+		private static bool IsValidMetadataProviderType(Type type)
+			=> type.IsPublic && type.IsClass;
 	}
 }
 #endif

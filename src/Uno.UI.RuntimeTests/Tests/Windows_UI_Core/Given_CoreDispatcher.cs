@@ -15,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 	public class Given_CoreDispatcher
 	{
 		[TestMethod]
-		public async void When_RunAsync()
+		public async Task When_RunAsync()
 		{
 			const string Success = "success";
 			string result = string.Empty;

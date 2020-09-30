@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
 using Uno.UI.Tests.ViewLibrary;
+using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 #if !NETFX_CORE
 using Uno.UI.Xaml;
 #endif
@@ -43,6 +44,35 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			rd.TryGetValue("Grin", out var retrieved2);
 			Assert.AreEqual(Colors.DarkOliveGreen, ((SolidColorBrush)retrieved2).Color);
+		}
+
+		[TestMethod]
+		public void When_Simple_Add_And_Retrieve_Type_Key()
+		{
+			var rd = new ResourceDictionary();
+
+			// NOTE: Intentionally using a type outside of Uno.UI to prevent regressions if someone thought to use Type.GetType.
+			// See: https://stackoverflow.com/a/1825156/5108631
+			// Type.GetType(...) only works when the type is found in either mscorlib.dll or the currently executing assembly.
+			rd[typeof(Given_ResourceDictionary)] = nameof(When_Simple_Add_And_Retrieve_Type_Key);
+
+			var retrieved = rd[typeof(Given_ResourceDictionary)];
+
+			Assert.IsTrue(rd.ContainsKey(typeof(Given_ResourceDictionary)));
+			Assert.IsFalse(rd.ContainsKey("Uno.UI.Tests.Windows_UI_Xaml.Given_ResourceDictionary"));
+
+			Assert.AreEqual(nameof(When_Simple_Add_And_Retrieve_Type_Key), retrieved);
+
+			rd.TryGetValue(typeof(Given_ResourceDictionary), out var retrieved2);
+			Assert.AreEqual(nameof(When_Simple_Add_And_Retrieve_Type_Key), retrieved2);
+
+			var key = rd.Keys.Single();
+			Assert.AreEqual(typeof(Given_ResourceDictionary), key);
+
+			foreach (var kvp in rd)
+			{
+				Assert.AreEqual(typeof(Given_ResourceDictionary), kvp.Key);
+			}
 		}
 
 		[TestMethod]
@@ -201,7 +231,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_Has_Multiple_Themes()
 		{
 #if !NETFX_CORE
-			UnitTestsApp.App.EnsureApplication();			
+			UnitTestsApp.App.EnsureApplication();
 #endif
 
 			var rd = new ResourceDictionary();
@@ -413,6 +443,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_xName_In_Dictionary_Reference_Equality()
+		{
+			var page = new When_xName_In_Dictionary_Reference_Equality();
+			Assert.IsTrue(page.Resources.ContainsKey("MutableBrush"));
+			Assert.AreEqual(page.MutableBrush, page.Resources["MutableBrush"]);
+			Assert.AreEqual(page.MutableBrush, page.TestBorder.Background);
+			Assert.AreEqual(Colors.Green, (page.TestBorder.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
 		public void When_Resource_Referencing_Resource()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -557,6 +597,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Created_From_Local_Source_In_Codebehind_Ensure_Lazy()
+		{
+			var rd = new ResourceDictionary { Source = new Uri("ms-resource:///Files/App/Xaml/Test_Dictionary_Lazy.xaml") };
+			AssertEx.AssertContainsColorBrushResource(rd, "LiteralColorBrush", Colors.Fuchsia);
+			AssertEx.AssertContainsColorBrushResource(rd, "ThemedLiteralColorBrush", Colors.DarkOrchid);
+
+			Assert.ThrowsException<InvalidOperationException>(() =>
+			{
+				var _ = rd["LazyResource"];
+			});
+
+			Assert.ThrowsException<InvalidOperationException>(() =>
+			{
+				var _ = rd["ThemedLazyResource"];
+			});
+
+			Assert.IsTrue(rd.ThemeDictionaries.ContainsKey("Nope"));
+			Assert.ThrowsException<InvalidOperationException>(() =>
+			{
+				var _ = rd.ThemeDictionaries["Nope"];
+			});
+		}
+
+		[TestMethod]
 		public void When_External_Source()
 		{
 			var page = new Test_Page();
@@ -676,6 +740,31 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(withoutSlash, withSlash);
 		}
+
+		[TestMethod]
+		public void When_Relative_Path_With_Leading_Slash_From_Non_Root()
+		{
+			var withSlash = XamlFilePathHelper.ResolveAbsoluteSource("Dictionaries/App.xaml", "/App/Xaml/Test_Dictionary.xaml");
+			var withoutSlash = XamlFilePathHelper.ResolveAbsoluteSource("Dictionaries/App.xaml", "App/Xaml/Test_Dictionary.xaml");
+
+			Assert.AreEqual("App/Xaml/Test_Dictionary.xaml", withSlash);
+			Assert.AreEqual("Dictionaries/App/Xaml/Test_Dictionary.xaml", withoutSlash);
+		}
+
+		[TestMethod]
+		public void When_SharedHelpers_FindResource()
+		{
+			var rdInner = new ResourceDictionary();
+			rdInner["Grin"] = new SolidColorBrush(Colors.DarkOliveGreen);
+
+			var rd = new ResourceDictionary();
+			rd.MergedDictionaries.Add(rdInner);
+
+			var brush = UI.Helpers.WinUI.SharedHelpers.FindResource("Grin", rd, null);
+
+			Assert.IsNotNull(brush);
+			Assert.AreEqual(Colors.DarkOliveGreen, (brush as SolidColorBrush).Color);
+		}
 #endif
 
 		[TestMethod]
@@ -708,6 +797,153 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var page = new Test_Page_Other();
 			var tb = page.ThemeDictionaryOnlyTextBlock;
 			Assert.AreEqual(Colors.MediumPurple, (tb.Foreground as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public void When_Source_And_Globbing_From_Included_File()
+		{
+			var ctrl = new When_Source_And_Globbing_From_Included_File();
+			var resources = ctrl.Resources;
+			Assert.IsTrue(resources.ContainsKey("GlobPropsMarginButtonStyle"));
+
+			var style = resources["GlobPropsMarginButtonStyle"] as Style;
+			var button = new Button();
+			button.Style = style;
+			Assert.AreEqual(new Thickness(99, 33, 7, 7), button.Margin);
+		}
+
+		[TestMethod]
+		public void When_Custom_Resource_Dictionary_With_Custom_Property()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var rd = app.Resources.MergedDictionaries.FirstOrDefault(x => x is Subclassed_Dictionary_With_Property);
+
+			Assert.IsNotNull(rd);
+			Assert.IsTrue(rd.ContainsKey("TestKey"));
+			Assert.AreEqual(rd["TestKey"], "Test123");
+		}
+
+		[TestMethod]
+		public void When_Custom_Resource_Dictionary_With_Custom_Property_in_Custom_Control()
+		{
+			var ctrl = new Test_Control_With_Subclassed_ResourceDictionary_With_Custom_Property();
+			var resources = ctrl.Resources;
+
+			Assert.IsNotNull(resources);
+			Assert.IsTrue(resources.ContainsKey("TestKey"));
+			Assert.AreEqual(resources["TestKey"], "Test123");
+		}
+
+		[TestMethod]
+		public void When_Theme_Dictionary_Is_Cached_Then_Add_And_Clear_Theme()
+		{
+			var dictionary = new ResourceDictionary();
+			dictionary.TryGetValue("TestKey", out _); // This causes _activeThemeDictionary to be cached.
+
+			var lightTheme = new ResourceDictionary();
+			lightTheme.Add("TestKey", "TestValue");
+			dictionary.ThemeDictionaries.Add("Light", lightTheme); // Cached value is no longer valid due to adding theme.
+
+			// Make sure the cache is updated.
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual("TestValue", testValue);
+
+			dictionary.ThemeDictionaries.Clear(); // Cached value is no longer valid due to clearing themes.
+
+			Assert.IsFalse(dictionary.TryGetValue("TestKey", out _));
+		}
+
+		[TestMethod]
+		public void When_Theme_Dictionary_Is_Cached_Then_Add_And_Remove_Theme()
+		{
+			var dictionary = new ResourceDictionary();
+			dictionary.TryGetValue("TestKey", out _); // This causes _activeThemeDictionary to be cached.
+
+			var lightTheme = new ResourceDictionary();
+			lightTheme.Add("TestKey", "TestValue");
+			dictionary.ThemeDictionaries.Add("Light", lightTheme); // Cached value is no longer valid due to adding theme.
+
+			// Make sure the cache is updated.
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual("TestValue", testValue);
+
+			Assert.IsTrue(dictionary.ThemeDictionaries.Remove("Light")); // Cached value is no longer valid due to removing theme.
+
+			Assert.IsFalse(dictionary.TryGetValue("TestKey", out _));
+		}
+
+
+		[TestMethod]
+		public void When_Default_Theme_Dictionary_Is_Cached()
+		{
+			var defaultDictionary = new ResourceDictionary();
+			defaultDictionary.Add("TestKey", "TestValueFromDefaultDictionary");
+
+			var dictionary = new ResourceDictionary();
+			dictionary.ThemeDictionaries.Add("Default", defaultDictionary);
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual("TestValueFromDefaultDictionary", testValue);
+
+			var lightDictionary = new ResourceDictionary();
+			lightDictionary.Add("TestKey", "TestValueFromLightDictionary");
+			dictionary.ThemeDictionaries.Add("Light", lightDictionary);
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out testValue));
+			Assert.AreEqual("TestValueFromLightDictionary", testValue);
+		}
+
+		[TestMethod]
+		public void When_Default_Theme_Dictionary_Should_Be_Used_After_Removing_Active_Theme()
+		{
+			var lightDictionary = new ResourceDictionary();
+			lightDictionary.Add("TestKey", "TestValueFromLightDictionary");
+
+			var dictionary = new ResourceDictionary();
+			dictionary.ThemeDictionaries.Add("Light", lightDictionary);
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual("TestValueFromLightDictionary", testValue);
+
+			var defaultDictionary = new ResourceDictionary();
+			defaultDictionary.Add("TestKey", "TestValueFromDefaultDictionary");
+			dictionary.ThemeDictionaries.Add("Default", defaultDictionary);
+			dictionary.ThemeDictionaries.Remove("Light");
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out testValue));
+			Assert.AreEqual("TestValueFromDefaultDictionary", testValue);
+
+			dictionary.ThemeDictionaries.Remove("Default");
+			Assert.IsFalse(dictionary.TryGetValue("TestKey", out _));
+		}
+
+		[TestMethod]
+		public void When_Lazy()
+		{
+			var dictionary = new ResourceDictionary();
+			var brush = new SolidColorBrush { Color = Colors.Red };
+			dictionary.TryGetValue("TestKey", out _);
+
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			dictionary.ThemeDictionaries.Add("Light", new WeakResourceInitializer(app, o =>
+				new ResourceDictionary
+				{
+					["TestKey"] = new WeakResourceInitializer(o, _ => brush)
+				}));
+
+
+			// Make sure the cache is updated.
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual(brush, testValue);
+
+		}
+
+		[TestMethod]
+		public void When_Resource_NotImplemented()
+		{
+			var initialCreationCount = SomeNotImplType.CreationAttempts;
+			var page = new When_Resource_NotImplemented_Page();
+			var resources = page.Resources;
+			AssertEx.AssertContainsColorBrushResource(resources, "LarcenousColorBrush", Colors.PaleVioletRed);
+			Assert.AreEqual(initialCreationCount, SomeNotImplType.CreationAttempts);
 		}
 	}
 }

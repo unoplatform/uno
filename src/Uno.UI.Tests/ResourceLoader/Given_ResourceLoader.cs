@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Tests.ResourceLoader.Controls;
 using _ResourceLoader = Windows.ApplicationModel.Resources.ResourceLoader;
 
 namespace Uno.UI.Tests.ResourceLoaderTests
@@ -71,6 +72,14 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 
 			CultureInfo.CurrentUICulture = new CultureInfo("de-DE");
 			Assert.AreEqual(@"Text in 'en'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
+		}
+
+		[TestMethod]
+		public void When_Collection_And_InlineProperty()
+		{
+			var SUT = new When_Collection_And_InlineProperty();
+
+			Assert.AreEqual(@"Header in 'en'", SUT.rb.Header);
 		}
 	}
 }

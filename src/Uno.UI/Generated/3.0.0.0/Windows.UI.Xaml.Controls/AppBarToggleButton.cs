@@ -10,20 +10,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Label
 		// Skipping already declared property Icon
 		// Skipping already declared property LabelPosition
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string KeyboardAcceleratorTextOverride
-		{
-			get
-			{
-				return (string)this.GetValue(KeyboardAcceleratorTextOverrideProperty);
-			}
-			set
-			{
-				this.SetValue(KeyboardAcceleratorTextOverrideProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property KeyboardAcceleratorTextOverride
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared property IsCompact
 		// Skipping already declared property DynamicOverflowOrder
@@ -34,14 +21,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property DynamicOverflowOrderProperty
 		// Skipping already declared property IsInOverflowProperty
 		// Skipping already declared property LabelPositionProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorTextOverrideProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyboardAcceleratorTextOverride), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.AppBarToggleButton), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
+		// Skipping already declared property KeyboardAcceleratorTextOverrideProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.AppBarToggleButton.AppBarToggleButton()
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.AppBarToggleButton()
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.Label.get

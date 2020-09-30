@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
@@ -10,7 +11,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 {
-	public class NavigationView_Tests : SampleControlUITestBase
+	public partial class NavigationView_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry()]
@@ -65,32 +66,34 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 
 		[Test]
 		[AutoRetry()]
-		[ActivePlatforms(Platform.iOS, Platform.Browser)]
 		public void NavigationView_OnLightDismiss_TogglePaneButton_IsSizedCorrectly()
 		{
-			// android: disabled because the device isnt wide enough for CompactMode that uses the flyout
 			Run("SamplesApp.Samples.NavigationViewSample.NavigationViewSample");
 
 			var descendants = _app.Marked("nvSample").Descendant();
 
-			var lightDismissLayer = descendants.Marked("LightDismissLayer").FirstResult();
-			var paneRoot = descendants.Marked("PaneRoot").FirstResult();
-			var togglePaneButton = descendants.Marked("TogglePaneButton").FirstResult();
+			var lightDismissLayer = descendants.Marked("LightDismissLayer");
+			var dismissRect = _app.GetLogicalRect(lightDismissLayer);
 
-			Assert.AreEqual(paneRoot.Rect.Width, togglePaneButton.Rect.Width, "when NavigationView is opened, PaneRoot and TogglePaneButton should shared the same width");
+			var paneRoot = descendants.Marked("PaneRoot");
+			var paneRootRect = _app.GetLogicalRect(paneRoot);
+			var togglePaneButton = descendants.Marked("TogglePaneButton");
+
+			var togglePaneRect = _app.GetLogicalRect(togglePaneButton);
+			paneRootRect.Width.Should().Be(togglePaneRect.Width, "when NavigationView is opened, PaneRoot and TogglePaneButton should shared the same width");
 
 			// to light-dismiss the flyout, we need to tap the right side of LightDismissLayer that isnt occupied by PaneRoot
 			var dismissibleArea = new
 			{
-				CenterX = (paneRoot.Rect.GetRight() + lightDismissLayer.Rect.GetRight()) / 2,
-				CenterY = lightDismissLayer.Rect.CenterY,
+				CenterX = (paneRootRect.GetRight() + dismissRect.GetRight()) / 2,
+				CenterY = dismissRect.CenterY,
 			};
 			_app.TapCoordinates(dismissibleArea.CenterX, dismissibleArea.CenterY);
 
 			// refresh because FirstResult snapshots values
-			togglePaneButton = descendants.Marked("TogglePaneButton").FirstResult();
+			togglePaneRect = _app.GetLogicalRect(togglePaneButton);
 
-			Assert.Less(togglePaneButton.Rect.Width, paneRoot.Rect.Width, "when NavigationView is closed, TogglePaneButton should not take the width of PaneRoot");
+			togglePaneRect.Width.Should().BeLessThan(paneRootRect.Width, "when NavigationView is closed, TogglePaneButton should not take the width of PaneRoot");
 		}
 	}
 }

@@ -1,51 +1,22 @@
 ﻿{
   "$schema": "http://json.schemastore.org/vs-2017.3.host",
   "name": {
-    "text": "Uno WebAssembly App",
-    "id": "1060"
+    "text": "Cross-Platform Library"
   },
   "description": {
-    "text": "A project template for creating rich Cross Platform app",
-    "package": "{0CD94836-1526-4E85-87D3-FB5274C5AFC9}",
-    "id": "1051"
+    "text": "Template for creating a cross-platform library with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly and Skia."
   },
-  "order": 610,
+  "order": 613,
   "icon": "uno-logo.png",
   "learnMoreLink": "https://github.com/unoplatform/uno",
   "uiFilters": [
     "oneaspnet"
   ],
-  "additionalWizardParameters": {
-    "$isMultiProjectTemplate$": "true"
-  },
-  "symbolInfo": [
+  "unsupportedHosts": [
     {
-      "id": "UWP",
-      "name": {
-        "text": "Add support for UWP"
-      },
-      "isVisible": "true"
-    },
-    {
-      "id": "iOS",
-      "name": {
-        "text": "Add support for iOS"
-      },
-      "isVisible": "true"
-    },
-    {
-      "id": "Android",
-      "name": {
-        "text": "Add support for Android"
-      },
-      "isVisible": "true"
-    },
-    {
-      "id": "macOS",
-      "name": {
-        "text": "Add support for macOS"
-      },
-      "isVisible": "true"
+      "id": "vs"
     }
+  ],
+  "symbolInfo": [
   ]
 }

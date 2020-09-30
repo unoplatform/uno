@@ -13,7 +13,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 {
 	[TestFixture]
 	[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled for iOS: https://github.com/unoplatform/uno/issues/1955
-	public class ComboxBox_DropDownPlacement : SampleControlUITestBase
+	public partial class ComboxBox_DropDownPlacement : SampleControlUITestBase
 	{
 		[Test] [AutoRetry] public void NoSelectionPreferAbove() => TestAbove();
 		[Test] [AutoRetry] public void NoSelectionPreferCentered() => TestCentered();
@@ -43,26 +43,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_DropDownPlacement", skipInitialScreenshot: true);
 
-			var sut = _app.WaitForElement(test).Single();
+			_app.WaitForElement(test);
 
-			var notOpened = TakeScreenshot("not_opened", ignoreInSnapshotCompare: true);
+			var rect = _app.GetPhysicalRect(test);
+
+			using var notOpened = TakeScreenshot("not_opened", ignoreInSnapshotCompare: true);
 
 			// Open the combo
-			_app.TapCoordinates(sut.Rect.Right - 10, sut.Rect.CenterY);
+			_app.TapCoordinates(rect.Right - 10, rect.CenterY);
 
 			// Wait for popup to open
 			_app.WaitForElement("PopupBorder");
 
-			var opened = TakeScreenshot("opened", ignoreInSnapshotCompare: true);
+			using var opened = TakeScreenshot("opened", ignoreInSnapshotCompare: true);
 
 			// Make sure to close the combo
-			_app.TapCoordinates(sut.Rect.X - 10, sut.Rect.Y - 10);
+			_app.TapCoordinates(rect.X - 10, rect.Y - 10);
 
 			// Assertions
 			const int testHeight = 50;
 			const int tolerance = 10; // Margins, etc
-			var above = new Rectangle((int)sut.Rect.X, (int)sut.Rect.Y - testHeight - tolerance, (int)sut.Rect.Width, testHeight);
-			var below = new Rectangle((int)sut.Rect.X, (int)sut.Rect.Bottom + tolerance, (int)sut.Rect.Width, testHeight);
+			var above = new Rectangle((int)rect.X, (int)rect.Y - testHeight - tolerance, (int)rect.Width, testHeight);
+			var below = new Rectangle((int)rect.X, (int)rect.Bottom + tolerance, (int)rect.Width, testHeight);
 
 			if (aboveEquals)
 			{

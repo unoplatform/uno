@@ -21,20 +21,28 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void MeasureOverridePartial()
 		{
-			if (_drawOrders?.Length != Children.Count)
+			// Sorting is only needed when Children count is above 1
+			if (Children.Count > 1)
 			{
-				_drawOrders = new int[Children.Count];
+				if (_drawOrders?.Length != Children.Count)
+				{
+					_drawOrders = new int[Children.Count];
+				}
+
+				var sorted = Children
+					.Select((view, childrenIndex) => (view, childrenIndex))
+					.OrderBy(tpl => tpl.view is DependencyObject obj ? Canvas.GetZIndex(obj) : 0); // Note: this has to be a stable sort
+
+				var drawOrder = 0;
+				foreach (var tpl in sorted)
+				{
+					_drawOrders[tpl.childrenIndex] = drawOrder;
+					drawOrder++;
+				}
 			}
-
-			var sorted = Children
-				.Select((view, childrenIndex) => (view, childrenIndex))
-				.OrderBy(tpl => tpl.view is DependencyObject obj ? Canvas.GetZIndex(obj) : 0); // Note: this has to be a stable sort
-
-			var drawOrder = 0;
-			foreach (var tpl in sorted)
+			else
 			{
-				_drawOrders[tpl.childrenIndex] = drawOrder;
-				drawOrder++;
+				_drawOrders = null;
 			}
 		}
 

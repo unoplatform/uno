@@ -2,7 +2,7 @@
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class CalendarDatePickerDateChangedEventArgs
+	public sealed partial class CalendarDatePickerDateChangedEventArgs
 	{
 		internal CalendarDatePickerDateChangedEventArgs(DateTimeOffset? newDate, DateTimeOffset? oldDate)
 		{

@@ -1,119 +1,181 @@
-﻿using Microsoft.Extensions.Logging;
+﻿#nullable enable
+// #define TRACE_MEMORY_LAYOUT
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Foundation.Logging;
 
 namespace Uno.Foundation.Interop
 {
-	public static class TSInteropMarshaller 
+	internal static partial class TSInteropMarshaller
 	{
-		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(TSInteropMarshaller).Log());
+		private static readonly Logger _logger = typeof(TSInteropMarshaller).Log();
 
 		public const UnmanagedType LPUTF8Str = (UnmanagedType)48;
 
-		/// <summary>
-		/// Prints the actual offsets of the structures present in <see cref="WindowManagerInterop"/> for debugging purposes.
-		/// </summary>
-		internal static void GenerateTSMarshallingLayouts()
-		{
-			// Uncomment this to troubshoot this field offsets.
-			//
-			// Console.WriteLine("Generating layouts");
-			// foreach (var p in typeof(WindowManagerInterop).GetNestedTypes(System.Reflection.BindingFlags.NonPublic).Where(t => t.IsValueType))
-			// {
-			// 		var sb = new StringBuilder();
-			   
-			// 		Console.WriteLine($"class {p.Name}:");
-			   
-			// 		foreach (var field in p.GetFields())
-			// 		{
-			// 			var fieldOffset = Marshal.OffsetOf(p, field.Name);
-			// 			Console.WriteLine($"\t{field.Name} : {fieldOffset}");
-			// 		}
-			// }
-		}
-
-		public static void InvokeJS<TParam>(
+		public static void InvokeJS(
 			string methodName,
-			TParam paramStruct,
-			[System.Runtime.CompilerServices.CallerMemberName] string memberName = null
+			object paramStruct,
+			[System.Runtime.CompilerServices.CallerMemberName] string? memberName = null
 		)
 		{
-			if (_logger.Value.IsEnabled(LogLevel.Debug))
+			var paramStructType = paramStruct.GetType();
+			var paramSize = Marshal.SizeOf(paramStruct);
+
+			if (_logger.IsEnabled(LogLevel.Trace))
 			{
-				_logger.Value.LogDebug($"InvokeJS for {memberName}/{typeof(TParam)}");
+				_logger.Trace($"InvokeJS for {memberName}/{paramStructType} (Alloc: {paramSize})");
 			}
 
-			var pParms = Marshal.AllocHGlobal(MarshalSizeOf<TParam>.Size);
+			var pParms = Marshal.AllocHGlobal(paramSize);
+
+			DumpStructureLayout(paramStructType);
 
 			Marshal.StructureToPtr(paramStruct, pParms, false);
 
 			WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms, out var exception);
 
-			Marshal.DestroyStructure(pParms, typeof(TParam));
+			Marshal.DestroyStructure(pParms, paramStructType);
 			Marshal.FreeHGlobal(pParms);
 
 			if (exception != null)
 			{
-				if (_logger.Value.IsEnabled(LogLevel.Error))
+				if (_logger.IsEnabled(LogLevel.Error))
 				{
-					_logger.Value.LogError($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {exception}");
+					_logger.Error($"Failed InvokeJS for {memberName}/{paramStructType}: {exception}");
 				}
 
 				throw exception;
 			}
 		}
 
-		public static TRet InvokeJS<TParam, TRet>(
+		public static object InvokeJS(
 			string methodName,
-			TParam paramStruct,
-			[System.Runtime.CompilerServices.CallerMemberName] string memberName = null
+			object paramStruct,
+			Type retStructType,
+			[System.Runtime.CompilerServices.CallerMemberName] string? memberName = null
 		)
 		{
-			if (_logger.Value.IsEnabled(LogLevel.Debug))
+			var paramStructType = paramStruct.GetType();
+
+			var returnSize = Marshal.SizeOf(retStructType);
+			var paramSize = Marshal.SizeOf(paramStructType);
+
+			if (_logger.IsEnabled(LogLevel.Trace))
 			{
-				_logger.Value.LogDebug($"InvokeJS for {memberName}/{typeof(TParam)}/{typeof(TRet)}");
+				_logger.Trace($"InvokeJS for {memberName}/{paramStructType}/{retStructType} (paramSize: {paramSize}, returnSize: {returnSize}");
 			}
 
-			var pParms = Marshal.AllocHGlobal(MarshalSizeOf<TParam>.Size);
-			var pReturnValue = Marshal.AllocHGlobal(MarshalSizeOf<TRet>.Size);
+			DumpStructureLayout(paramStructType);
+			DumpStructureLayout(retStructType);
 
-			TRet returnValue = default;
+			var pParms = Marshal.AllocHGlobal(paramSize);
+			var pReturnValue = Marshal.AllocHGlobal(returnSize);
 
 			try
 			{
 				Marshal.StructureToPtr(paramStruct, pParms, false);
-				Marshal.StructureToPtr(returnValue, pReturnValue, false);
 
 				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms, pReturnValue);
 
-				returnValue = (TRet)Marshal.PtrToStructure(pReturnValue, typeof(TRet));
-				return returnValue;
+				var returnValue = Marshal.PtrToStructure(pReturnValue, retStructType);
+				return returnValue!;
 			}
 			catch (Exception e)
 			{
-				if (_logger.Value.IsEnabled(LogLevel.Error))
+				if (_logger.IsEnabled(LogLevel.Error))
 				{
-					_logger.Value.LogDebug($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {e}");
+					_logger.Debug($"Failed InvokeJS for {memberName}/{paramStructType}: {e}");
 				}
 				throw;
 			}
 			finally
 			{
-				Marshal.DestroyStructure(pParms, typeof(TParam));
+				Marshal.DestroyStructure(pParms, paramStructType);
 				Marshal.FreeHGlobal(pParms);
 
-				Marshal.DestroyStructure(pReturnValue, typeof(TRet));
+				Marshal.DestroyStructure(pReturnValue, retStructType);
 				Marshal.FreeHGlobal(pReturnValue);
 			}
 		}
 
-		private class MarshalSizeOf<T>
+		/// <summary>
+		/// Allocates a shared instance of <typeparamref name="T"/> between JavaScript and managed code.
+		/// </summary>
+		/// <typeparam name="T">Type of the shared instance.</typeparam>
+		/// <param name="propertySetterName">
+		/// Javascript method name to invoke to "set" the pointer to the marshaled instance.
+		/// The method must accepts a single number argument which is the pointer.
+		/// </param>
+		/// <param name="propertyResetName">
+		/// Javascript method name to invoke to "unset" the pointer to the marshaled instance.
+		/// This will be invoked when the resulting <see cref="HandleRef{T}"/> is being disposed.
+		/// The method must accepts a single number argument which is the pointer.
+		/// </param>
+		/// <remarks>
+		/// <paramref name="propertySetterName"/> and <paramref name="propertyResetName"/> methods must use the <see cref="InvokeJS(string,object,string?)"/> syntax.
+		/// (I.e. no direct javascript code!)
+		/// </remarks>
+		/// <returns>A reference to the shared instance.</returns>
+		public static HandleRef<T> Allocate<T>(string propertySetterName, string? propertyResetName = null)
+			where T : struct
 		{
-			internal static readonly int Size = Marshal.SizeOf(typeof(T));
+			var value = new HandleRef<T>(propertyResetName);
+			try
+			{
+				WebAssemblyRuntime.InvokeJSUnmarshalled(propertySetterName, value.Handle);
+			}
+			catch (Exception e)
+			{
+				try
+				{
+					value.Dispose();
+				}
+				// If the allocation failed, the dispose will most likely also fail,
+				// but we want to propagate the real exception of the allocation!
+				catch (Exception) { }
+
+				if (_logger.IsEnabled(LogLevel.Error))
+				{
+					_logger.Debug($"Failed Allocate {propertySetterName}/{value.Type}: {e}");
+				}
+
+				throw;
+			}
+
+			return value;
+		}
+
+#if TRACE_MEMORY_LAYOUT
+		private static HashSet<Type> _structureDump = new HashSet<Type>();
+#endif
+
+		[Conditional("DEBUG")]
+		private static void DumpStructureLayout(Type structType)
+		{
+#if TRACE_MEMORY_LAYOUT
+			if (structType == typeof(bool))
+			{
+				return;
+			}
+
+			if (!_structureDump.Contains(structType))
+			{
+				_structureDump.Add(structType);
+
+				Console.WriteLine($"Dumping offsets for {structType} (Size: {Marshal.SizeOf(structType)})");
+
+				foreach (var field in structType.GetFields())
+				{
+					var offset = Marshal.OffsetOf(structType, field.Name);
+					Console.WriteLine($"  - {field.Name}: {offset}");
+				}
+			}
+#endif
 		}
 	}
 }

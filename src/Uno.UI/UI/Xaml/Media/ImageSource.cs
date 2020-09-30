@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,25 +37,27 @@ namespace Windows.UI.Xaml.Media
 		const string MsAppXScheme = "ms-appx";
 		const string MsAppDataScheme = "ms-appdata";
 
-        /// <summary>
-        /// The default downloader instance used by all the new instances of <see cref="ImageSource"/>.
-        /// </summary>
-        public static IImageSourceDownloader DefaultDownloader;
+		/// <summary>
+		/// The default downloader instance used by all the new instances of <see cref="ImageSource"/>.
+		/// </summary>
+		public static IImageSourceDownloader DefaultDownloader;
 
-        /// <summary>
-        /// The image downloader for the current instance.
-        /// </summary>
-        public IImageSourceDownloader Downloader;
+		/// <summary>
+		/// The image downloader for the current instance.
+		/// </summary>
+		public IImageSourceDownloader Downloader;
 
-        /// <summary>
-        /// Initializes the Uno image downloader.
-        /// </summary>
-        private void InitializeDownloader()
-        {
-            Downloader = DefaultDownloader;
-        }
+		/// <summary>
+		/// Initializes the Uno image downloader.
+		/// </summary>
+		private void InitializeDownloader()
+		{
+			Downloader = DefaultDownloader;
+		}
 
-        internal Stream Stream { get; set; }
+#if !(__NETSTD__)
+		internal Stream Stream { get; set; }
+#endif
 
 		internal string FilePath { get; private set; }
 
@@ -63,18 +65,15 @@ namespace Windows.UI.Xaml.Media
 
 		protected ImageSource(string url) : this()
 		{
-			if (url.StartsWith("/"))
-			{
-				url = MsAppXScheme + "://" + url;
-			}
+			var uri = TryCreateUriFromString(url);
 
-			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
+			if (uri != null)
 			{
 				InitFromUri(uri);
 			}
 			else
 			{
-				if(this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("The uri [{0}] is not valid, skipping.", url);
 				}
@@ -86,9 +85,24 @@ namespace Windows.UI.Xaml.Media
 			InitFromUri(uri);
 		}
 
-		public ImageSource(Stream stream) : this()
+		internal static Uri TryCreateUriFromString(string url)
 		{
-			throw new NotSupportedException("ImageSource does not support direct Stream assignment");
+			if (url.StartsWith("/"))
+			{
+				url = MsAppXScheme + "://" + url;
+			}
+
+			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
+			{
+				if (!uri.IsAbsoluteUri || uri.Scheme.Length == 0)
+				{
+					uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
+				}
+
+				return uri;
+			}
+
+			return null;
 		}
 
 		internal void InitFromUri(Uri uri)
@@ -125,51 +139,42 @@ namespace Windows.UI.Xaml.Media
 
 		partial void InitFromResource(Uri uri);
 
-		static public implicit operator ImageSource(string url)
+		public static implicit operator ImageSource(string url)
 		{
 			//This check is done in order to force a null to return if a empty string is passed.
-			if (url.IsNullOrWhiteSpace())
-			{
-				return null;
-			}
-			return new BitmapImage(url);
+			return url.IsNullOrWhiteSpace() ? null : new BitmapImage(url);
 		}
 
-		static public implicit operator ImageSource(Uri uri)
+		public static implicit operator ImageSource(Uri uri) => new BitmapImage(uri);
+
+		public static implicit operator ImageSource(Stream stream)
 		{
-			return new BitmapImage(uri);
-		}
-        
-		static public implicit operator ImageSource(Stream stream)
-		{
-            throw new NotSupportedException("Implicit conversion from Stream to ImageSource is not supported");
+			throw new NotSupportedException("Implicit conversion from Stream to ImageSource is not supported");
 		}
 
 		partial void DisposePartial();
-		public void Dispose()
-		{
-			DisposePartial();
-		}
 
-        /// <summary>
-        /// Downloads an image from the provided Uri.
-        /// </summary>
-        /// <returns>n Uri containing a local path for the downloaded image.</returns>
+		public void Dispose() => DisposePartial();
+
+		/// <summary>
+		/// Downloads an image from the provided Uri.
+		/// </summary>
+		/// <returns>n Uri containing a local path for the downloaded image.</returns>
 		private async Task<Uri> Download(CancellationToken ct, Uri uri)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Initiated download from {0}", uri);
 			}
 
-            if(Downloader != null)
-            {
-                return await Downloader.Download(ct, uri);
-            }
-            else
-            {
-                throw new InvalidOperationException("No Downloader has been specified for this ImageSource. An IImageSourceDownloader may be provided to enable image downloads.");
-            }
+			if (Downloader != null)
+			{
+				return await Downloader.Download(ct, uri);
+			}
+			else
+			{
+				throw new InvalidOperationException("No Downloader has been specified for this ImageSource. An IImageSourceDownloader may be provided to enable image downloads.");
+			}
 		}
 
 		private Uri _webUri;

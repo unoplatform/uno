@@ -32,6 +32,7 @@ namespace UITests.Shared.Lottie
 				"ms-appx:///Lottie/4770-lady-and-dove.json",
 				"ms-appx:///Lottie/4930-checkbox-animation.json",
 				"ms-appx:///Lottie/this-file-does-not-exists.json",
+				"embedded://./(assembly).Lottie.loading.json"
 			};
 
 			file.SelectedIndex = 0;

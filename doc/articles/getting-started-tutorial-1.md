@@ -25,7 +25,7 @@ Also, you will learn how to run your applications on all platforms supported by 
 
     ![](Assets/tutorial01/newproject1.PNG)
 
-2. Search for the `Uno` templates, select the `Cross-Platform App (Uno Platform)` then click `Next`.  
+2. Search for the `Uno` templates, select the `Multi-Platform App (Uno Platform|Xamarin)` then click `Next`.  
 
     ![](Assets/tutorial01/newproject2.PNG)
 
@@ -34,8 +34,8 @@ Also, you will learn how to run your applications on all platforms supported by 
 4. In your `Shared` project, open up `MainPage.xaml`
 
 5. Add a `StackPanel` around your `TextBlock`
-    ``` xaml
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    ```xml
+    <Grid>
         <StackPanel>
             <TextBlock Text="Hello World" Margin="20" FontSize="30" />
         </StackPanel>
@@ -43,8 +43,8 @@ Also, you will learn how to run your applications on all platforms supported by 
     ```
 
 6. Add a `Slider`
-    ``` xaml
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    ```xml
+    <Grid>
         <StackPanel>
             <TextBlock Text="Hello World" Margin="20" FontSize="30" />
             <Slider x:Name="slider"/>
@@ -53,8 +53,8 @@ Also, you will learn how to run your applications on all platforms supported by 
     ```
 
 7. Bind the `Text` value of your `TextBlock` to the value of the `Slider`
-    ``` xaml
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    ```xml
+    <Grid>
         <StackPanel>
             <TextBlock Text="{Binding Value, ElementName=slider}" Margin="20" FontSize="30" />
             <Slider x:Name="slider"/>

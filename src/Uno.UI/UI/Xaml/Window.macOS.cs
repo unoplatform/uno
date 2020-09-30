@@ -1,16 +1,17 @@
-using CoreGraphics;
-using Foundation;
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using AppKit;
+using CoreGraphics;
+using Foundation;
+using Uno.UI;
+using Uno.UI.Controls;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
-using Uno.UI.Controls;
-using System.Drawing;
 using Windows.UI.ViewManagement;
-using Uno.UI;
 using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
@@ -22,9 +23,8 @@ namespace Windows.UI.Xaml
 		private static Window _current;
 		private RootViewController _mainController;
 		private UIElement _content;
-		private Grid _main;
+		private RootVisual _rootVisual;
 		private Border _rootBorder;
-		private Border _fullWindow;
 		private object _windowResizeNotificationObject;
 
 		/// <summary>
@@ -36,9 +36,19 @@ namespace Windows.UI.Xaml
 
 		public Window()
 		{
-			var style = NSWindowStyle.Closable | NSWindowStyle.Resizable | NSWindowStyle.Titled;
-			var rect = new CoreGraphics.CGRect(100, 100, 1024, 768);
-			_window = new Uno.UI.Controls.Window(rect, style, NSBackingStore.Buffered, false);
+			var style = NSWindowStyle.Closable | NSWindowStyle.Resizable | NSWindowStyle.Titled | NSWindowStyle.Miniaturizable;
+
+			var preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
+			if (preferredWindowSize != Windows.Foundation.Size.Empty)
+			{
+				var rect = new CoreGraphics.CGRect(100, 100, (int)preferredWindowSize.Width, (int)preferredWindowSize.Height);
+				_window = new Uno.UI.Controls.Window(rect, style, NSBackingStore.Buffered, false);
+			}
+			else
+			{
+				var rect = new CoreGraphics.CGRect(100, 100, 1024, 768);
+				_window = new Uno.UI.Controls.Window(rect, style, NSBackingStore.Buffered, false);
+			}
 
 			_mainController = ViewControllerGenerator?.Invoke() ?? new RootViewController();
 
@@ -47,8 +57,12 @@ namespace Windows.UI.Xaml
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow(_window);
 
+			_window.CoreWindowEvents = CoreWindow;
+
 			InitializeCommon();
 		}
+
+		internal NSWindow NativeWindow => _window;
 
 		private void ObserveOrientationAndSize()
 		{
@@ -73,35 +87,44 @@ namespace Windows.UI.Xaml
 
 		private void InternalSetContent(UIElement value)
 		{
-			if (_main == null)
+			if (_rootVisual == null)
 			{
 				_rootBorder = new Border();
-				_fullWindow = new Border()
-				{
-					VerticalAlignment = VerticalAlignment.Stretch,
-					HorizontalAlignment = HorizontalAlignment.Stretch,
-					Visibility = Visibility.Collapsed
-				};
+				var coreServices = Uno.UI.Xaml.Core.CoreServices.Instance;
+				coreServices.PutVisualRoot(_rootBorder);
+				_rootVisual = coreServices.MainRootVisual;
 
-				_main = new Grid()
+				if (_rootVisual == null)
 				{
-					Children =
-					{
-						_rootBorder,
-						_fullWindow
-					}
-				};
+					throw new InvalidOperationException("The root visual could not be created.");
+				}
 
-				_mainController.View = _main;
-				_main.Frame = _window.Frame;
-				_main.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
+				UIElement.LoadingRootElement(_rootVisual);
+
+				_mainController.View = _rootVisual;
+				_rootVisual.Frame = _window.Frame;
+				_rootVisual.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
+
+				UIElement.RootElementLoaded(_rootVisual);
 			}
 
 			_rootBorder.Child?.RemoveFromSuperview();
 			_rootBorder.Child = _content = value;
+
+			// This is required to get the mouse move while not pressed!
+			var options = NSTrackingAreaOptions.MouseEnteredAndExited
+				| NSTrackingAreaOptions.MouseMoved
+				| NSTrackingAreaOptions.ActiveInKeyWindow
+				| NSTrackingAreaOptions.EnabledDuringMouseDrag // We want enter/leave events even if the button is pressed
+				| NSTrackingAreaOptions.InVisibleRect; // Automagicaly syncs the bounds rect
+			var trackingArea = new NSTrackingArea(Bounds, options, _rootVisual, null);
+
+			_rootVisual.AddTrackingArea(trackingArea);
 		}
 
 		private UIElement InternalGetContent() => _content;
+
+		private UIElement InternalGetRootElement() => _rootVisual;
 
 		private static Window InternalGetCurrentWindow()
 		{
@@ -139,15 +162,15 @@ namespace Windows.UI.Xaml
 		{
 			if (element == null)
 			{
-				_fullWindow.Child = null;
+				FullWindowMediaRoot.Child = null;
 				_rootBorder.Visibility = Visibility.Visible;
-				_fullWindow.Visibility = Visibility.Collapsed;
+				FullWindowMediaRoot.Visibility = Visibility.Collapsed;
 			}
 			else
 			{
-				_fullWindow.Visibility = Visibility.Visible;
+				FullWindowMediaRoot.Visibility = Visibility.Visible;
 				_rootBorder.Visibility = Visibility.Collapsed;
-				_fullWindow.Child = element;
+				FullWindowMediaRoot.Child = element;
 			}
 		}
 

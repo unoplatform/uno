@@ -1,243 +1,84 @@
-# Setting up your development environment
+# Get Started - Select your development environment
 
-This guide will walk you through the set-up process for building cross-platform apps with Uno.
+Welcome to Uno Platform! You'll be creating cross-platform applications with XAML and C# in no time.
 
-## Choose your IDE
-Use Uno with your favorite tools.
-* [Visual Studio](#visual-studio)
-* [VS Code](#vs-code)
-* [Visual Studio for Mac](#visual-studio-for-mac)
-* [JetBrains Rider](#jetbrains-rider)
+To set up your development environment, first select the operating system you're developing on.
 
-## Visual Studio 
-### Prerequisites
-* [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with:
-    * **Universal Windows Platform** workload installed.
+**I am developing on...**
 
-    ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
+ - [Windows](#developing-on-windows)
+ - [macOS](#developing-on-macos)
+ - [Linux](#developing-on-linux)
 
-	* **Mobile development with .NET (Xamarin)** workload installed.
+ ## Developing on Windows
 
-    ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
+If you're developing on Windows, we recommend you use **Visual Studio**, for the richest XAML development experience and broadest platform coverage. 
 
-    *
-        * the iOS Remote Simulator installed (for iOS development)
-	    * A working Mac with Visual Studio for Mac, XCode 8.2 or later installed (for iOS development)
-	    * Google's Android x86 emulators or a physical Android device (for Android development)
+If you already use and love **JetBrains Rider** or **Visual Studio Code**, you can also use them to develop Uno Platform applications. Check the support matrix below to see which target platforms they support.
 
-    * **ASP**.**NET and web** workload installed, along with .NET Core 2.2 or later (for WASM development)
+**Choose the IDE you want to use:**
 
-    ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
-    * [.NET Core](https://dotnet.microsoft.com/download/dotnet-core)
+ - [Get started with Visual Studio 2019 for Windows](get-started-vs.md)
+ - [Get started with Visual Studio 2022 for Windows](get-started-vs-2022.md)
+ - [Get started with VS Code, Codespaces and GitPod](get-started-vscode.md)
+ - [Get started with Rider](get-started-rider.md)
 
-For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
+ #### Target platform coverage by IDE on Windows
 
-### Installing the Uno Platform Solution Templates with Visual Studio
+|                                                  | Windows 10/11 (UWP/WinUI)  | Android | iOS | Web (WebAssembly) | macOS (Xamarin) | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
+|--------------------------------------------------|----------------------------|---------|-----|-------------------|---------------- |------------------|------------------|-----------------------|
+| [**Visual Studio**](get-started-vs.md)           | ✔️                         | ✔️     | ✔️† | ✔️               | ❌             | ✔️               | ✔️              | ✔️                   |
+| [**VS Code**](get-started-vscode.md)             | ❌                         | ❌     | ❌  | ✔️               | ❌             | ✔️               | ✔️              | ✔️                   |
+| [**Codespaces / Gitpod**](get-started-vscode.md) | ❌                         | ❌     | ❌  | ✔️               | ❌             | ✔️               | ✔️              | ✔️                   |
+| [**JetBrains Rider**](get-started-rider.md)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌             | ✔️             | ✔️              | ✔️                   |
 
-1. Launch Visual Studio, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.
 
-    ![](Assets/tutorial01/manage-extensions.png)
+ † You'll need to be connected to a Mac to run and debug iOS apps from Windows.
 
-2. In the Extension Manager expand the **Online** node and search for `Uno Platform Templates`, install the <code>Uno Platform Solution Templates</code> extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) extension, then restart Visual Studio.
+ ***
+ <br>
 
-    ![](Assets/tutorial01/uno-extensions.PNG)
+ ## Developing on macOS
 
-### Create an application from the solution template
+You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio Code** to build Uno Platform applications on macOS. See the support matrix below for supported target platforms.
 
-To easily create a multi-platform application:
-* Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**:
+**Choose the IDE you want to use:**
 
-![new project](Assets/quick-start/vsix-new-project.png)
-* Update to the latest NuGet package named `Uno.UI`. To get the very latest features, check the `pre-release` box.
-* To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
-* To debug the Android head, select the `Debug|AnyCPU` configuration
-* To debug the UWP head, select the `Debug|x86` configuration
-* To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5** or choose 'Start without debugging' from the menu. Note that **F5** will *not* work because Visual Studio debugging isn't supported. See [here](debugging-wasm.md) for debugging instructions through Chrome.
+ - [Get started with Visual Studio for Mac](get-started-vsmac.md)
+ - [Get started with VS Code, Codespaces and GitPod](get-started-vscode.md)
+ - [Get started with Rider](get-started-rider.md)
 
-#### Make sure XAML Intellisense is enabled
+ #### Target platform coverage by IDE on macOS
 
-[Intellisense](https://docs.microsoft.com/en-us/visualstudio/ide/using-intellisense) is supported in XAML when the UWP head is active:
-![xaml-intellisense](Assets/quick-start/xaml-intellisense.png)
+|                                                   | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | macOS (Xamarin) | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
+|---------------------------------------------------|-------------------------|---------|-----|-------------------|-------|--------|-------------------|-----------------------|
+| [**Visual Studio for Mac**](get-started-vsmac.md) | ❌                      | ✔️     | ✔️ | ❌                | ✔️    | ✔️    | ✔️               | ❌                   |
+| [**VS Code**](get-started-vscode.md)              | ❌                      | ❌     | ❌ | ✔️                | ❌    | ✔️    | ✔️               | ❌                   |
+| [**Codespaces / Gitpod**](get-started-vscode.md)  | ❌                      | ❌     | ❌ | ✔️                | ❌    | ✔️    | ✔️               | ✔️                   |
+| [**JetBrains Rider**](get-started-rider.md)       | ❌                      | ✔️     | ✔️ | ✔️                | ✔️    | ✔️    | ✔️               | ❌                   |
 
-If XAML Intellisense isn't working on a freshly-created project, try the following steps:
-1. Build the UWP head.
-2. Close all XAML documents.
-3. Close and reopen Visual Studio.
-4. Reopen XAML documents.
+***
+ <br>
 
-#### Video Tutorial
-[![Getting Started Visual Studio Video](Assets/vs-cover.JPG)](http://www.youtube.com/watch?v=hQcKsoxaAHo "")
+ ## Developing on Linux
 
-## VS Code
+ You can use either **JetBrains Rider** or **Visual Studio Code** to build Uno Platform applications on Linux. See the support matrix below for supported target platforms.
+ 
+**Choose the IDE you want to use:**
 
-This guide will walk you through the set-up process for building WebAssembly apps with Uno, under Windows, Linux or macOS.
+ - [Get started with Visual Studio Code, Codespaces and GitPod](get-started-vscode.md)
+  - [Get started with Rider](get-started-rider.md)
 
-### Prerequisites
-* [**Visual Studio Code**](https://code.visualstudio.com/)
+ There's [additional information here](get-started-with-linux.md) about developing from, and for, Linux with Uno Platform.
 
-### Create an Uno Platform project
+ #### Target platform coverage by IDE on Linux
 
-1. Launch Code, then in the terminal type the following to install the Uno Platform templates:
-```bash
-dotnet new -i Uno.ProjectTemplates.Dotnet
-```
-2. In the terminal type the following to create a new project:
-```bash
-dotnet new unoapp -o MyApp -ios=false -android=false -macos=false -uwp=false --vscodeWasm
-```
+|                                                   | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | macOS (Xamarin) | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
+|---------------------------------------------------|------------------------|---------|-----|--------------------|-------|-------|------------------|-----------------------|
+| [**VS Code**](get-started-vscode.md)              | ❌                    | ❌      | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ❌                    |
+| [**Codespaces / Gitpod**](get-started-vscode.md)  | ❌                    | ❌      | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ✔️                    |
+| [**JetBrains Rider**](get-started-rider.md)       | ❌                    | ❌†      | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ❌                    |
 
-This will create a solution that only contains the WebAssembly platform support.
+† Notes:
 
-### Prepare the WebAssembly application for debugging
-
-1. Install the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) and the [JavaScript Debugger (Nightly)](https://marketplace.visualstudio.com/items?itemName=ms-vscode.js-debug-nightly) extension with the `debug.javascript.usePreview` setting set to true (**File** / **Preference** / **Settings**, search for `Use preview`).
-2. Open Code using
-    ```bash
-    code ./MyApp`
-    ```
-3. Visual Studio Code will ask to restore the NuGet packages.
-
-### Modify the template
-1. In `MainPage.xaml`, replace the Grid's content with the following:
-    ```xaml
-    <StackPanel> 
-        <TextBlock x:Name="txt" 
-                    Text="Hello, world!" 
-                    Margin="20" 
-                    FontSize="30" /> 
-        <Button Content="click" 
-                Click="OnClick" /> 
-    </StackPanel>
-    ```
-2. In your `MainPage.xaml.cs`, add the following method:
-    ```csharp
-    public void OnClick(object sender, object args) 
-    { 
-        var dt = DateTime.Now.ToString(); 
-        txt.Text = dt; 
-    }
-    ```
-
-### Run and Debug the application
-
-1. Starting the app with the WebAssembly debugger is a two-step process:
-    1. Start the app first using the **“.NET Core Launch (Uno Platform App)”** launch configuration
-    2. Then start the browser using the **“.NET Core Debug Uno Platform WebAssembly in Chrome”** launch configuration (requires Chrome). To use the latest stable release of Edge instead of Chrome, change the type of the launch configuration in `.vscode/launch.json` from `pwa-chrome` to `pwa-msedge`
-2. Place a breakpoint in the OnClick method
-3. Click the button in the app, and the breakpoint will hit
-
-### Updating an existing application to work with VS Code
-
-If you already have an Uno application, you can add some some missing support files for VS Code to recognize your project.
-
-Here's how to do this:
-1. Use the same command line above to create a project with the same name as your current project, in a different location.
-2. Once created, copy the generated `.vscode` folder next to your `.sln` file
-3. Update the `Uno.UI` package version to the latest stable version
-4. Update the `Uno.Wasm.Bootstrap` package to 1.2.0 or later version
-5. Add a reference to `Uno.Wasm.Bootstrap.DevServer` version 1.2 or later.
-6. In your Wasm project file, if you had a `<DotNetCliToolReference />` line, remove it
-
-You should now be in the same configuration as the generated template files.
-
-#### Video Tutorial
-[![Getting Started Visual Studio Code Video](Assets/vscode-cover.JPG)](http://www.youtube.com/watch?v=O9qgw1Q445M "")
-
-## Visual Studio For Mac
-
-While it is easier to create apps using Uno on Windows, you can also create all but UWP apps on your Mac.
-
-### Prerequisites
-* [**Visual Studio for Mac**](https://visualstudio.microsoft.com/vs/mac/)
-* [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
-* An [**Apple ID**](https://support.apple.com/en-us/HT204316)
-* .NET Core 3.1 or higher
-
-### Modifying Existing Uno App
-
-1. Open project in Visual Studio for Mac
- ![new-project](Assets/quick-start/vs-mac-open-project.png)
-Once open, you should see your folder structure set up like this:
-![folder-structure](Assets/quick-start/vs-mac-folder-structure.png)\
-If you have a warning symbol on your iOS project, make sure you have the minimum version of XCode.
-![update-xcode](Assets/quick-start/xcode-version-warning.jpg)\
-To update, go to `Visual Studio > Preferences > Projects > SDK Locations > Apple` and select XCode 10.0 or higher.
-Restart Visual Studio.
-
-2. You can now run on iOS, Android, and WebAssembly by setting your startup project and running.
-![startup-projects](Assets/quick-start/vs-mac-build.png)
-   
-Note: You will not be able to build the UWP project on a Mac. All changes to this project must be made on Windows.
-
-#### Build for WASM
-
-Building for WebAssembly takes a few more steps than iOS and Android:
-
-1. Set yourProject.Wasm to startup project
-2. Build the project
-3. In the terminal, navigate to your build output. This will typically be: `yourProject.Wasm > bin > Debug > netstandard2.0 > dist > server.py` Run the `server.py` program.
-4. In your browser, open localhost:8000. 
-
-#### Video Tutorial
-[![Getting Started Visual Studio Mac Video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
-
-## JetBrains Rider
-
-### Prerequisites
-* [**Rider Version "2020.2+"**](https://www.jetbrains.com/rider/)
-* [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/)
-
-### Creating a new Uno project
-At this time, there isn't a template for the Rider IDE like there is for Visual Studio, so you can create a new project
-by following these steps:
-
-1. In your terminal, navigate to the folder that contains your Rider solutions.
-
-2. Run these commands:
-
-Installs Uno template:  
-```bash
-dotnet new -i Uno.ProjectTemplates.Dotnet
-```
-Creates a new project:  
-```bash
-dotnet new unoapp -o MyApp
-```
-
-You should now have a folder structure that looks like this:  
-![rider-folder-structure](Assets/quick-start/rider-folder-structure.JPG)
-
-#### Android
-1. Remove the following line from the `.csproj` file:  
-`<Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />`
-2. Set Android as your startup project. Run.  
-![run-android-rider](Assets/quick-start/run-android-rider.JPG)
-  
-Note: Whether you're using a physical device or the emulator, the app will install but will not automatically open.
-You will have to manually open.
-
-#### Wasm
-1. Select Wasm as your startup project. Run.  
-![run-wasm-rider](Assets/quick-start/run-wasm-rider.JPG)  
-A new browser window will automatically run your application.  
-
-Note: There is no debugging for Wasm within Rider, but you debug using the built in Chrome tools. 
-
-#### iOS and MacOS
-You will be able to build the iOS project, however, there is currently no support for a simulator to begin debugging.  
-![run-ios-rider](Assets/quick-start/run-ios-rider.JPG)  
-Alternatively, you can use a tool like VNC to run the simulator on a mac.  
-
-#### UWP
-You will be able to build the UWP project, however, Rider currenly does not support debugging or deploying for UWP.   
-![run-uwp-rider](Assets/quick-start/run-uwp-rider.JPG)  
-
-#### Video Tutorial
-[![Getting Started Rider Video](Assets/rider-cover.JPG)](http://www.youtube.com/watch?v=HgwL0al5bfo "")
-
-<div class="NOTE alert alert-info">
-<h5>Next:</h5>
-
-[In the Creating an App tutorial you'll create your first working app with Uno.](getting-started-tutorial-1.md) 
-
-</div>
+* **Android** on Linux: Xamarin.Android does not natively support linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021) [Xamarin Android builds on linux fail](https://github.com/xamarin/xamarin-android).

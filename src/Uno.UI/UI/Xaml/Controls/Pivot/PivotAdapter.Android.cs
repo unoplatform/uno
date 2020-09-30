@@ -7,7 +7,9 @@ using System.Linq;
 
 namespace Windows.UI.Xaml.Controls
 {
+#pragma warning disable CS0618 // Type or member is obsolete
 	public class PivotAdapter : FragmentPagerAdapter
+#pragma warning restore CS0618 // Type or member is obsolete
 	{
 		private readonly NativePivotPresenter _pivot;
 		private List<PivotItemFragment> _fragments;

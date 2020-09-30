@@ -6,12 +6,16 @@ using Java.Interop;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.Identity.Client;
+using Uno.UI.ViewManagement;
 
 namespace SamplesApp.Droid
 {
 	[Activity(
+#if DEBUG	// Disabled because of https://github.com/xamarin/xamarin-android/issues/6463
+			Exported = true,
+#endif
 			MainLauncher = true,
-			ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode,
+			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
 	[IntentFilter(
@@ -25,6 +29,28 @@ namespace SamplesApp.Droid
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
 	{
+		private bool _onCreateEventInvoked = false;
+		
+		public MainActivity()
+		{
+			ApplicationViewHelper.GetBaseActivityEvents().Create += OnCreateEvent;
+		}
+
+		private void OnCreateEvent(Android.OS.Bundle savedInstanceState)
+		{
+			_onCreateEventInvoked = true;
+		}
+
+		protected override void OnStart()
+		{
+			if(!_onCreateEventInvoked)
+			{
+				throw new InvalidOperationException($"Invalid startup sequence to initialize BaseActivityEvents");
+			}
+
+			base.OnStart();
+		}
+
 		[Export("RunTest")]
 		public string RunTest(string metadataName) => App.RunTest(metadataName);
 
@@ -57,7 +83,7 @@ namespace SamplesApp.Droid
 	}
 
 
-	[Activity]
+	[Activity(Exported = true)]
 	[IntentFilter(
 		new[] {
 			Android.Content.Intent.ActionView

@@ -1,15 +1,22 @@
-using Windows.Devices.Input;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
 using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
-	public  partial class HoldingRoutedEventArgs : RoutedEventArgs
+	public partial class HoldingRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		private readonly UIElement _originalSource;
 		private readonly Point _position;
 
 		public HoldingRoutedEventArgs() { }
+
 		internal HoldingRoutedEventArgs(UIElement originalSource, HoldingEventArgs args)
 			: base(originalSource)
 		{
@@ -26,6 +33,12 @@ namespace Windows.UI.Xaml.Input
 		internal uint PointerId { get; }
 
 		public bool Handled { get; set; }
+
+		bool IHandleableRoutedEventArgs.Handled
+		{
+			get => Handled;
+			set => Handled = value;
+		}
 
 		public PointerDeviceType PointerDeviceType { get; }
 

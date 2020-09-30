@@ -2,24 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Chat
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum ChatMessageOperatorKind 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Unspecified,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Sms,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Mms,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Rcs,
-		#endif
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Unspecified
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Sms
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Mms
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Rcs
 	}
 	#endif
 }

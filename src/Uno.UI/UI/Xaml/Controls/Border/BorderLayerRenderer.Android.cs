@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Uno.UI;
 using AndroidX.AppCompat.View;
 using System.Diagnostics;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -33,69 +34,68 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="view">The view to which we should add the layers</param>
 		/// <param name="background">The background brush of the border</param>
+		/// <param name="backgroundSizing">The background sizing (if drawn under border or not)</param>
 		/// <param name="borderThickness">The border thickness</param>
 		/// <param name="borderBrush">The border brush</param>
 		/// <param name="cornerRadius">The corner radius</param>
 		/// <param name="padding">The padding to apply on the content</param>
-		public void UpdateLayers(
+		public void UpdateLayer(
 			FrameworkElement view,
 			Brush background,
+			BackgroundSizing backgroundSizing,
 			Thickness borderThickness,
 			Brush borderBrush,
 			CornerRadius cornerRadius,
 			Thickness padding,
-			bool willUpdateMeasures = false
-			)
+			bool willUpdateMeasures = false)
 		{
-			// This is required because android Height and Width are hidden by Control.
-			var baseView = view as View;
-
-			var drawArea = view.LayoutSlot.LogicalToPhysicalPixels();
+			var drawArea = new Rect(default, view.LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels());
 			var newState = new LayoutState(drawArea, background, borderThickness, borderBrush, cornerRadius, padding);
 			var previousLayoutState = _currentState;
 
-			if (!newState.Equals(previousLayoutState))
+			if (newState.Equals(previousLayoutState))
 			{
-				bool imageHasChanged = newState.BackgroundImageSource != previousLayoutState?.BackgroundImageSource;
-				bool shouldDisposeEagerly = imageHasChanged || newState.BackgroundImageSource == null;
-				if (shouldDisposeEagerly)
-				{
-
-					// Clear previous value anyway in order to make sure the previous values are unset before the new ones.
-					// This prevents the case where a second update would set a new background and then set the background to null when disposing the previous.
-					_layerDisposable.Disposable = null;
-				}
-
-				Action onImageSet = null;
-				var disposable = InnerCreateLayers(view, drawArea, background, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
-
-				// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
-				// and the backing image hasn't changed, we dispose the previous layer at the moment the new background is applied,
-				// to prevent a visible flicker.
-				if (shouldDisposeEagerly)
-				{
-					_layerDisposable.Disposable = disposable;
-				}
-				else
-				{
-					onImageSet = () => _layerDisposable.Disposable = disposable;
-				}
-
-				if (willUpdateMeasures)
-				{
-					view.RequestLayout();
-				}
-				else
-				{
-					view.Invalidate();
-				}
-
-				_currentState = newState;
+				return;
 			}
+
+			var imageHasChanged = newState.BackgroundImageSource != previousLayoutState?.BackgroundImageSource;
+			var shouldDisposeEagerly = imageHasChanged || newState.BackgroundImageSource == null;
+			if (shouldDisposeEagerly)
+			{
+				// Clear previous value anyway in order to make sure the previous values are unset before the new ones.
+				// This prevents the case where a second update would set a new background and then set the background to null when disposing the previous.
+				_layerDisposable.Disposable = null;
+			}
+
+			Action onImageSet = null;
+			var disposable = InnerCreateLayers(view, drawArea, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
+
+			// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
+			// and the backing image hasn't changed, we dispose the previous layer at the moment the new background is applied,
+			// to prevent a visible flicker.
+			if (shouldDisposeEagerly)
+			{
+				_layerDisposable.Disposable = disposable;
+			}
+			else
+			{
+				onImageSet = () => _layerDisposable.Disposable = disposable;
+			}
+
+			if (willUpdateMeasures)
+			{
+				view.RequestLayout();
+			}
+			else
+			{
+				view.Invalidate();
+			}
+
+			_currentState = newState;
 		}
 
 		/// <summary>
-		/// Removes the added layers during a call to <see cref="UpdateLayers" />.
+		/// Removes the added layers during a call to <see cref="UpdateLayer" />.
 		/// </summary>
 		internal void Clear()
 		{
@@ -103,56 +103,72 @@ namespace Windows.UI.Xaml.Controls
 			_currentState = null;
 		}
 
-		private static IDisposable InnerCreateLayers(BindableView view,
-			Windows.Foundation.Rect drawArea,
+		private static IDisposable InnerCreateLayers(
+			BindableView view,
+			Rect drawArea,
 			Brush background,
+			BackgroundSizing backgroundSizing,
 			Thickness borderThickness,
 			Brush borderBrush,
 			CornerRadius cornerRadius,
-			Action onImageSet
-		)
+			Action onImageSet)
 		{
 			var disposables = new CompositeDisposable();
 
 			var physicalBorderThickness = borderThickness.LogicalToPhysicalPixels();
+			var isInnerBorderSizing = backgroundSizing == BackgroundSizing.InnerBorderEdge;
+			var adjustedArea = isInnerBorderSizing
+				? drawArea.DeflateBy(physicalBorderThickness)
+				: drawArea;
 
 			if (cornerRadius != 0)
 			{
-				var adjustedLineWidth = physicalBorderThickness.Top; // TODO: handle non-uniform BorderThickness correctly
-				var adjustedArea = drawArea;
-				adjustedArea.Inflate(-adjustedLineWidth / 2, -adjustedLineWidth / 2);
-				using (var path = cornerRadius.GetOutlinePath(adjustedArea.ToRectF()))
+				if ((view as UIElement)?.FrameRoundingAdjustment is { } fra)
 				{
-					path.SetFillType(Path.FillType.EvenOdd);
+					drawArea.Height += fra.Height;
+					drawArea.Width += fra.Width;
+				}
 
+				using (var backgroundPath = cornerRadius.GetInnerOutlinePath(adjustedArea.ToRectF(), borderThickness))
+				{
 					//We only need to set a background if the drawArea is non-zero
 					if (!drawArea.HasZeroArea())
 					{
 						if (background is ImageBrush imageBrushBackground)
 						{
 							//Copy the path because it will be disposed when we exit the using block
-							var pathCopy = new Path(path);
+							var pathCopy = new Path(backgroundPath);
 							var setBackground = DispatchSetImageBrushAsBackground(view, imageBrushBackground, drawArea, onImageSet, pathCopy);
 							disposables.Add(setBackground);
 						}
 						else if (background is AcrylicBrush acrylicBrush)
 						{
-							var apply = acrylicBrush.Subscribe(view, drawArea, path);
+							var apply = acrylicBrush.Subscribe(view, drawArea, backgroundPath);
 							disposables.Add(apply);
 						}
 						else
 						{
 							var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
-							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, path)));
+							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath)));
 						}
 						disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 					}
 
 					if (borderThickness != Thickness.Empty && borderBrush != null && !(borderBrush is ImageBrush))
 					{
+						//TODO: Handle case when BorderBrush is an ImageBrush
+						// Related Issue: https://github.com/unoplatform/uno/issues/6893
 						using (var strokePaint = new Paint(borderBrush.GetStrokePaint(drawArea)))
 						{
-							var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new global::System.Drawing.Size((int)drawArea.Width, (int)drawArea.Height), path);
+							//Create the path for the outer and inner rectangles that will become our border shape
+							var borderPath = cornerRadius.GetOutlinePath(drawArea.ToRectF());
+							borderPath.AddRoundRect(adjustedArea.ToRectF(), cornerRadius.GetInnerRadii(borderThickness), Path.Direction.Cw);
+
+							var overlay = GetOverlayDrawable(
+								strokePaint,
+								physicalBorderThickness,
+								new global::System.Drawing.Size((int)drawArea.Width, (int)drawArea.Height),
+								borderPath);
 
 							if (overlay != null)
 							{
@@ -165,9 +181,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else // No corner radius
 			{
-				//We only need to set a background if the drawArea is non-zero
+				//We only need to set a background if the drawArea is non-zero and Thickness is empty
+				//We need to set a background and adjust the draw area if the drawArea is non-zero and Thickness isn't empty
 				if (!drawArea.HasZeroArea())
 				{
+					var finalDrawArea = borderThickness != Thickness.Empty ? adjustedArea : drawArea;
+
+					var backgroundPath = finalDrawArea.ToPath();
+
 					if (background is ImageBrush imageBrushBackground)
 					{
 						var setBackground = DispatchSetImageBrushAsBackground(view, imageBrushBackground, drawArea, onImageSet);
@@ -175,21 +196,22 @@ namespace Windows.UI.Xaml.Controls
 					}
 					else if (background is AcrylicBrush acrylicBrush)
 					{
-						var apply = acrylicBrush.Subscribe(view, drawArea, maskingPath: null);
+						var apply = acrylicBrush.Subscribe(view, drawArea, backgroundPath);
 						disposables.Add(apply);
 					}
 					else
 					{
 						var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
-						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint)));
+						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath, antiAlias: false)));
 					}
 					disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 				}
 
-				if (borderBrush != null && !(borderBrush is ImageBrush))
+				if (borderThickness != Thickness.Empty && !(borderBrush is ImageBrush))
 				{
-					//TODO: Handle case that BorderBrush is an ImageBrush
-					using (var strokePaint = borderBrush.GetStrokePaint(drawArea))
+					//TODO: Handle case when BorderBrush is an ImageBrush
+					// Related Issue: https://github.com/unoplatform/uno/issues/6893
+					using (var strokePaint = borderBrush?.GetStrokePaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent })
 					{
 						var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new global::System.Drawing.Size(view.Width, view.Height));
 
@@ -303,27 +325,30 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static Drawable GetOverlayDrawable(Paint strokePaint, Thickness physicalBorderThickness, global::System.Drawing.Size viewSize, Path path = null)
+		private static Drawable GetOverlayDrawable(
+			Paint strokePaint,
+			Thickness physicalBorderThickness,
+			global::System.Drawing.Size viewSize,
+			Path borderPath = null)
 		{
 			if (strokePaint != null)
 			{
-				// Alias the stroke to reduce interop
-				var paintStyleStroke = Paint.Style.Stroke;
-
-				if (path != null)
+				if (borderPath != null)
 				{
+					borderPath.SetFillType(Path.FillType.EvenOdd);
 					var drawable = new PaintDrawable();
-					drawable.Shape = new PathShape(path, viewSize.Width, viewSize.Height);
+					drawable.Shape = new PathShape(borderPath, viewSize.Width, viewSize.Height);
 					var paint = drawable.Paint;
 					paint.Color = strokePaint.Color;
 					paint.SetShader(strokePaint.Shader);
-					paint.StrokeWidth = (float)physicalBorderThickness.Top;
-					paint.SetStyle(paintStyleStroke);
+					paint.SetStyle(Paint.Style.FillAndStroke);
 					paint.Alpha = strokePaint.Alpha;
 					return drawable;
 				}
-				else if (viewSize != null && !viewSize.IsEmpty)
+				else if (!viewSize.IsEmpty)
 				{
+					// Alias the stroke to reduce interop
+					var paintStyleStroke = Paint.Style.Stroke;
 					var drawables = new List<Drawable>();
 
 					if (physicalBorderThickness.Top != 0)
@@ -339,6 +364,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Top;
@@ -361,6 +387,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Right;
@@ -383,6 +410,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Bottom;
@@ -405,6 +433,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Left;
@@ -444,9 +473,11 @@ namespace Windows.UI.Xaml.Controls
 			public readonly ImageSource BackgroundImageSource;
 			public readonly Color? BackgroundColor;
 			public readonly Brush BorderBrush;
+			public readonly Color? BorderBrushColor;
 			public readonly Thickness BorderThickness;
 			public readonly CornerRadius CornerRadius;
 			public readonly Thickness Padding;
+			public readonly Color? BackgroundFallbackColor;
 
 			public LayoutState(Windows.Foundation.Rect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, Thickness padding)
 			{
@@ -461,6 +492,9 @@ namespace Windows.UI.Xaml.Controls
 				BackgroundImageSource = imageBrushBackground?.ImageSource;
 
 				BackgroundColor = (Background as SolidColorBrush)?.Color;
+				BorderBrushColor = (BorderBrush as SolidColorBrush)?.Color;
+
+				BackgroundFallbackColor = (Background as XamlCompositionBrushBase)?.FallbackColor;
 			}
 
 			public bool Equals(LayoutState other)
@@ -471,9 +505,11 @@ namespace Windows.UI.Xaml.Controls
 					&& other.BackgroundImageSource == BackgroundImageSource
 					&& other.BackgroundColor == BackgroundColor
 					&& other.BorderBrush == BorderBrush
+					&& other.BorderBrushColor == BorderBrushColor
 					&& other.BorderThickness == BorderThickness
 					&& other.CornerRadius == CornerRadius
-					&& other.Padding == Padding;
+					&& other.Padding == Padding
+					&& other.BackgroundFallbackColor == BackgroundFallbackColor;
 			}
 		}
 	}

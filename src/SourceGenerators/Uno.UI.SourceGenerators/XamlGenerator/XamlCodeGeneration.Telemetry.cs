@@ -9,9 +9,13 @@ using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Microsoft.Build.Execution;
-using Uno.Logging;
 using Uno.UI.SourceGenerators.Telemetry;
+
+#if NETFRAMEWORK
+using Uno.SourceGeneration;
+using ISourceGenerator = Uno.SourceGeneration.SourceGenerator;
+using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
+#endif
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -25,27 +29,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			|| Environment.GetEnvironmentVariable("JENKINS_URL").HasValue() // https://wiki.jenkins.io/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-belowJenkinsSetEnvironmentVariables
 			|| Environment.GetEnvironmentVariable("APPVEYOR").HasValue(); // https://www.appveyor.com/docs/environment-variables/
 
-		private void InitTelemetry(ProjectInstance msbProject)
+		private void InitTelemetry(GeneratorExecutionContext context)
 		{
-			var telemetryOptOut = msbProject.GetProperty("UnoPlatformTelemetryOptOut")?.EvaluatedValue ?? "";
+			var telemetryOptOut = context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut");
 
 			bool? isTelemetryOptout()
 				=> telemetryOptOut.Equals("true", StringComparison.OrdinalIgnoreCase)
-				|| telemetryOptOut.Equals("1", StringComparison.OrdinalIgnoreCase);
+				|| telemetryOptOut.Equals("1", StringComparison.OrdinalIgnoreCase)
+				|| _isDesignTimeBuild;
 
 			_telemetry = new Telemetry.Telemetry(isTelemetryOptout);
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
-			{
-				this.Log().InfoFormat($"Telemetry enabled: {_telemetry.Enabled}");
-			}
+#if DEBUG
+			Console.WriteLine($"Telemetry enabled: {_telemetry.Enabled}");
+#endif
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
 
 		private void TrackGenerationDone(TimeSpan elapsed)
 		{
-			if (IsTelemetryEnabled)
+			if (IsTelemetryEnabled
+				&& !_isDesignTimeBuild)
 			{
 				try
 				{
@@ -57,19 +62,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
 				}
+#pragma warning disable CS0168 // unused parameter
 				catch (Exception e)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Telemetry failure: {e}");
-					}
+#if DEBUG
+					Console.WriteLine($"Telemetry failure: {e}");
+#endif
 				}
+#pragma warning restore CS0168 // unused parameter
 			}
 		}
 
 		private void TrackGenerationFailed(Exception exception, TimeSpan elapsed)
 		{
-			if (IsTelemetryEnabled)
+			if (IsTelemetryEnabled
+				&& !_isDesignTimeBuild)
 			{
 				try
 				{
@@ -82,24 +89,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
 				}
+#pragma warning disable CS0168 // unused parameter
 				catch (Exception telemetryException)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Telemetry failure: {telemetryException}");
-					}
+#if DEBUG
+					Console.WriteLine($"Telemetry failure: {telemetryException}");
+#endif
 				}
+#pragma warning restore CS0168 // unused parameter
 			}
 		}
 
 		private void TrackStartGeneration(XamlFileDefinition[] files)
 		{
-			if (IsTelemetryEnabled)
+			if (IsTelemetryEnabled
+				&& !_isDesignTimeBuild)
 			{
 				try
 				{
 					// Determine if the Uno.UI solution is built
-					var isBuildingUno = _projectInstance.GetProperty("MSBuildProjectName")?.EvaluatedValue == "Uno.UI";
+					var isBuildingUno = _generatorContext.GetMSBuildPropertyValue("MSBuildProjectName") == "Uno.UI";
 
 					_telemetry.TrackEvent(
 						"generate-xaml",
@@ -107,7 +116,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							("UnoXaml", XamlRedirection.XamlConfig.IsUnoXaml.ToString()),
 							("IsWasm", _isWasm.ToString()),
 							("IsDebug", _isDebug.ToString()),
-							("TargetFramework", _projectInstance.GetProperty("TargetFramework")?.EvaluatedValue.ToString()),
+							("TargetFramework",  _generatorContext.GetMSBuildPropertyValue("TargetFramework")?.ToString()),
 							("UnoRuntime", BuildUnoRuntimeValue()),
 							("IsBuildingUnoSolution", isBuildingUno.ToString()),
 							("IsUiAutomationMappingEnabled", _isUiAutomationMappingEnabled.ToString()),
@@ -117,19 +126,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						new[] { ("FileCount", (double)files.Length) }
 					);
 				}
+#pragma warning disable CS0168 // unused parameter
 				catch (Exception telemetryException)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Telemetry failure: {telemetryException}");
-					}
+#if DEBUG
+					Console.Write($"Telemetry failure: {telemetryException}");
+#endif
 				}
+#pragma warning restore CS0168 // unused parameter
 			}
 		}
 
 		private string BuildUnoRuntimeValue()
 		{
-			var constants = _projectInstance.GetProperty("DefineConstants").EvaluatedValue;
+			var constants = _generatorContext.GetMSBuildPropertyValue("DefineConstantsProperty");
 
 			if (constants != null)
 			{

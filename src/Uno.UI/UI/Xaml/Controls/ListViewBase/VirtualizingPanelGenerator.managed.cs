@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 #if __ANDROID__ || __IOS__
 using _VirtualizingPanelLayout = Windows.UI.Xaml.Controls.ManagedVirtualizingPanelLayout;
 #else
@@ -19,9 +20,24 @@ namespace Windows.UI.Xaml.Controls
 	/// </summary>
 	internal class VirtualizingPanelGenerator
 	{
-		private const int CacheLimit = 10;
+		/// <summary>
+		/// Maxmimum number of cached items per DataTemplate group.
+		/// </summary>
+		private const int MaxCacheLimit = 1024;
+
+		/// <summary>
+		/// Minimum number of cached items per DataTemplate group.
+		/// </summary>
+		private const int MinCacheLimit = 10;
+
 		private const int NoTemplateItemId = -1;
+		private const int IsOwnContainerItemId = -2;
 		private readonly _VirtualizingPanelLayout _owner;
+
+		/// <summary>
+		/// Current cache limit, to be adjusted based on the extent size
+		/// </summary>
+		private int _cacheLimit = 10;
 		/// <summary>
 		/// Recycled item containers that can be reused as needed. This is actually multiple caches indexed by template id.
 		/// </summary>
@@ -46,6 +62,31 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
+		/// Sets the items cache limit per DataTemplate group
+		/// </summary>
+		internal int CacheLimit
+		{
+			get => _cacheLimit;
+			set
+			{
+				_cacheLimit = Math.Max(Math.Min(value, MaxCacheLimit), MinCacheLimit);
+
+				PurgeCache();
+			}
+		}
+
+		private void PurgeCache()
+		{
+			foreach (var cache in _itemContainerCache)
+			{
+				while (cache.Value.Count > _cacheLimit)
+				{
+					DiscardContainer(cache.Value.Pop());
+				}
+			}
+		}
+
+		/// <summary>
 		/// Returns a container view bound to the item at <paramref name="index"/>, recycling an available view if possible, or creating a new container if not.
 		/// </summary>
 		public FrameworkElement DequeueViewForItem(int index)
@@ -54,6 +95,10 @@ namespace Windows.UI.Xaml.Controls
 			var scrapped = TryGetScrappedContainer(index);
 			if (scrapped != null)
 			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"DequeueViewForItem: Using scrapped for index:{index}");
+				}
 				return scrapped;
 			}
 
@@ -66,7 +111,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (container == null)
 			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"DequeueViewForItem: Creating for index:{index}");
+				}
 				container = ItemsControl.GetContainerForIndex(index) as FrameworkElement;
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"DequeueViewForItem: Using cached for index:{index}");
+				}
 			}
 
 			ItemsControl.PrepareContainerForIndex(container, index);
@@ -79,6 +135,12 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private FrameworkElement TryDequeueCachedContainer(int id)
 		{
+			if (id == IsOwnContainerItemId)
+			{
+				// If item is its own container, we shouldn't try to recycle another container
+				return null;
+			}
+
 			if (_itemContainerCache.TryGetValue(id, out var cache))
 			{
 				if (cache.Count > 0)
@@ -116,7 +178,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var id = GetItemId(index);
 
-			if (!(_owner.XamlParent?.IsIndexItsOwnContainer(index) ?? false))
+			if (id != IsOwnContainerItemId) //If container was the item, it shouldn't be reycled
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
@@ -154,8 +216,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private static void DiscardContainer(FrameworkElement container)
 		{
-			var parent = (container.Parent) as Panel;
-			if (parent != null)
+			if (container.Parent is Panel parent)
 			{
 				parent.Children.Remove(container);
 			}
@@ -245,7 +306,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 			var item = ItemsControl?.GetItemFromIndex(index);
 			var template = ItemsControl?.ResolveItemTemplate(item);
-			var id = template?.GetHashCode() ?? NoTemplateItemId;
+			var isOwnContainer = ItemsControl?.IsItemItsOwnContainer(item) ?? false;
+			var id = isOwnContainer ? IsOwnContainerItemId
+				: template?.GetHashCode() ?? NoTemplateItemId;
 			_idCache.Add(index, id);
 
 			return id;

@@ -57,7 +57,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var control = new Test_Control();
 			app.HostView.Children.Add(control);
 
-			var rowDef = control.TestGrid.RowDefinitions.First();
+			var rowDef = control.TestGrid.RowDefinitions.First<RowDefinition>();
 			Assert.AreEqual(256, rowDef.Height.Value);
 		}
 
@@ -468,6 +468,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var tx = page.myExtTextBox;
 			AssertEx.AssertHasColor(tx.Foreground, (Color)Colors.Honeydew);
 			AssertEx.AssertHasColor(tx.Background, (Color)Colors.AntiqueWhite);
+		}
+
+		[TestMethod]
+		public void When_Explicit_And_TargetProperty()
+		{
+			var page = new Test_SetterTarget();
+			Assert.AreEqual(page.myButton.Width, 42.0);
+			Assert.AreEqual(page.myButton.Height, 42.0);
 		}
 	}
 }

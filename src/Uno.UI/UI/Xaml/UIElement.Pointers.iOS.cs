@@ -1,42 +1,56 @@
-﻿using System;
+﻿// #define TRACE_NATIVE_POINTER_EVENTS
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
-using Windows.UI.Input;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Foundation;
 using UIKit;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-using WebKit;
+using Uno.UI.Xaml.Core;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{
-		private class NativePointerId
+		private class TransientNativePointer
 		{
-			private static readonly Dictionary<IntPtr, NativePointerId> _instances = new Dictionary<IntPtr, NativePointerId>();
+			private static readonly Dictionary<IntPtr, TransientNativePointer> _instances = new Dictionary<IntPtr, TransientNativePointer>();
 			private static uint _nextAvailablePointerId;
 
 			private readonly IntPtr _nativeId;
 			private readonly HashSet<UIElement> _leases = new HashSet<UIElement>();
 
-			public uint Value { get; }
+			public uint Id { get; }
 
-			private NativePointerId(IntPtr nativeId)
+			public uint LastManagedOnlyFrameId { get; set; }
+
+			public PointerRoutedEventArgs DownArgs { get; set; }
+
+			public bool HadMove { get; set; }
+
+			private TransientNativePointer(IntPtr nativeId)
 			{
 				_nativeId = nativeId;
-				Value = _nextAvailablePointerId++;
+				Id = _nextAvailablePointerId++;
 			}
 
-			public static NativePointerId Get(UIElement element, UITouch touch)
+			public static TransientNativePointer Get(UIElement element, UITouch touch)
 			{
 				if (!_instances.TryGetValue(touch.Handle, out var id))
 				{
-					_instances[touch.Handle] = id = new NativePointerId(touch.Handle);
+					_instances[touch.Handle] = id = new TransientNativePointer(touch.Handle);
 				}
 
 				id._leases.Add(element);
@@ -64,68 +78,82 @@ namespace Windows.UI.Xaml
 		partial void InitializePointersPartial()
 		{
 			MultipleTouchEnabled = true;
-			RegisterLoadActions(PrepareParentTouchesManagers, ReleaseParentTouchesManager);
+			RegisterLoadActions(OnLoadedForPointers, OnUnloadedForPointers);
+
+			ArePointersEnabled = true;
 		}
 
 		#region Native touch handling (i.e. source of the pointer / gesture events)
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
+			=> TouchesBegan(touches, evt, canBubbleNatively: true);
+
+		/// <summary>
+		/// WARNING: canBubbleNatively=false on TouchesBegan has MAJOR impact regarding future events, use precautiously!
+		/// (cf. remarks in the method)
+		/// </summary>
+		internal void TouchesBegan(NSSet touches, UIEvent evt, bool canBubbleNatively)
 		{
-			if (IsPointersSuspended)
+#if TRACE_NATIVE_POINTER_EVENTS
+			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_BEGAN] enabled:{ArePointersEnabled}");
+#endif
+
+			if (!ArePointersEnabled)
 			{
 				return; // Will also prevent subsequents events
 			}
 
-			/* Note: Here we have a mismatching behavior with UWP, if the events bubble natively we're going to get
-					 (with Ctrl_02 is a child of Ctrl_01):
-							Ctrl_02: Entered
-									 Pressed
-							Ctrl_01: Entered
-									 Pressed
-
-					While on UWP we will get:
-							Ctrl_02: Entered
-							Ctrl_01: Entered
-							Ctrl_02: Pressed
-							Ctrl_01: Pressed
-
-					However, to fix this is would mean that we handle all events in managed code, but this would
-					break lots of control (ScrollViewer) and ability to easily integrate an external component.
-			*/
-
 			try
 			{
-				NotifyParentTouchesManagersManipulationStarted();
+				if (ManipulationMode == ManipulationModes.None)
+				{
+					// If manipulation mode is None, we make sure to disable scrollers directly on pointer pressed
+					NotifyParentTouchesManagersManipulationStarted();
+				}
 
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var id = NativePointerId.Get(this, touch);
-					var args = new PointerRoutedEventArgs(id.Value, touch, evt, this);
+					var pt = TransientNativePointer.Get(this, touch);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
 
-					isHandledOrBubblingInManaged |= OnNativePointerEnter(args);
-					isHandledOrBubblingInManaged |= OnNativePointerDown(args);
+					// We set the DownArgs only for the top most element (a.k.a. OriginalSource)
+					pt.DownArgs ??= args;
+
+					if (pt.LastManagedOnlyFrameId >= args.FrameId)
+					{
+						continue;
+					}
+
+					// We don't have any enter on iOS for touches, so we explicitly generate one on down.
+					// That event args is requested to bubble in managed code only (args.CanBubbleNatively = false),
+					// so we follow the same sequence as UWP (the whole tree gets entered before the pressed),
+					// and we make sure that the event will bubble through the whole tree, no matter if the Pressed event is handle or not.
+					// Note: Parents will also try to raise the "Enter" but they will be silent since the pointer is already considered as pressed.
+					args.CanBubbleNatively = false;
+					OnNativePointerEnter(args);
+
+					isHandledOrBubblingInManaged |= OnNativePointerDown(args.Reset());
+
+					if (isHandledOrBubblingInManaged)
+					{
+						pt.LastManagedOnlyFrameId = args.FrameId;
+					}
 				}
 
 				/*
-				 * **** WARNING ****
-				 *
-				 * If we do not propagate the "TouchesBegan" to the parents, they won't receive the
-				 * "TouchesMoved" nor the "TouchesEnded". 
+				 * If we do not propagate the "TouchesBegan" to the parents (if isHandledOrBubblingInManaged),
+				 * they won't receive the "TouchesMoved" nor the "TouchesEnded". 
 				 *
 				 * It means that if a control (like the Button) handles the "Pressed" (or the "Entered")
-				 * parent won't receive any touch event. As it doesn't seems to be have any impact in application,
-				 * it's accepted as a known limitation.
+				 * parent won't receive any touch event.
 				 *
-				 * There is 2 ways to fix this:
-				 *  - Still propagate the native "TouchesBegan" and then in parents control filter out events
-				 *	  that was already raised in managed
-				 *  - Keep a track in local element that the "TouchesBegan" was handled in managed, and then raise
-				 *    all subsequent "Move", "Released" and "Exited" in managed only.
+				 * To avoid that, we never prevent the base.TouchesBegan, but instead we keep track of the FrameId,
+				 * and then in parents control filter out events that was already raised in managed.
 				 */
 
-				if (!isHandledOrBubblingInManaged)
+				// Continue native bubbling up of the event
+				if (canBubbleNatively)
 				{
-					// Continue native bubbling up of the event
 					base.TouchesBegan(touches, evt);
 				}
 			}
@@ -136,22 +164,33 @@ namespace Windows.UI.Xaml
 		}
 
 		public override void TouchesMoved(NSSet touches, UIEvent evt)
+			=> TouchesMoved(touches, evt, canBubbleNatively: true);
+
+		internal void TouchesMoved(NSSet touches, UIEvent evt, bool canBubbleNatively)
 		{
+#if TRACE_NATIVE_POINTER_EVENTS
+			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_MOVED]");
+#endif
+
 			try
 			{
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var id = NativePointerId.Get(this, touch);
-					var args = new PointerRoutedEventArgs(id.Value, touch, evt, this);
+					var pt = TransientNativePointer.Get(this, touch);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
 					var isPointerOver = touch.IsTouchInView(this);
+
+					// This is acceptable to keep that flag in a kind-of static way, since iOS do "implicit captures",
+					// a potential move will be dispatched to all elements "registered" on this "TransientNativePointer".
+					pt.HadMove = true;
 
 					// As we don't have enter/exit equivalents on iOS, we have to update the IsOver on each move
 					// Note: Entered / Exited are raised *before* the Move (Checked using the args timestamp)
 					isHandledOrBubblingInManaged |= OnNativePointerMoveWithOverCheck(args, isPointerOver);
 				}
 
-				if (!isHandledOrBubblingInManaged)
+				if (canBubbleNatively && !isHandledOrBubblingInManaged)
 				{
 					// Continue native bubbling up of the event
 					base.TouchesMoved(touches, evt);
@@ -164,22 +203,71 @@ namespace Windows.UI.Xaml
 		}
 
 		public override void TouchesEnded(NSSet touches, UIEvent evt)
+			=> TouchesEnded(touches, evt, canBubbleNatively: true);
+
+		internal void TouchesEnded(NSSet touches, UIEvent evt, bool canBubbleNatively)
 		{
+#if TRACE_NATIVE_POINTER_EVENTS
+			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_ENDED]");
+#endif
+
+			/* Note: Here we have a mismatching behavior with UWP, if the events bubble natively we're going to get
+					 (with Ctrl_02 is a child of Ctrl_01):
+							Ctrl_02: Released
+									 Exited
+							Ctrl_01: Released
+									 Exited
+
+					While on UWP we will get:
+							Ctrl_02: Released
+							Ctrl_01: Released
+							Ctrl_02: Exited
+							Ctrl_01: Exited
+
+					However, to fix this is would mean that we handle all events in managed code, but this would
+					break lots of control (ScrollViewer) and ability to easily integrate an external component.
+			*/
+
 			try
 			{
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var id = NativePointerId.Get(this, touch);
-					var args = new PointerRoutedEventArgs(id.Value, touch, evt, this);
+					var pt = TransientNativePointer.Get(this, touch);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
+
+					if (!pt.HadMove)
+					{
+						// The event will bubble in managed, so as this flag is "pseudo static", make sure to raise it only once.
+						pt.HadMove = true;
+
+						// On iOS if the gesture is really fast (like a flick), we can get only 'down' and 'up'.
+						// But on UWP it seems that we always have a least one move (for fingers and pen!), and even internally,
+						// the manipulation events are requiring at least one move to kick-in.
+						// Here we are just making sure to raise that event with the final location.
+						// Note: In case of multi-touch we might raise it unnecessarily, but it won't have any negative impact.
+						// Note: We do not consider the result of that move for the 'isHandledOrBubblingInManaged'
+						//		 as it's kind of un-related to the 'up' itself.
+						var mixedArgs = new PointerRoutedEventArgs(previous: pt.DownArgs, current: args) { CanBubbleNatively = canBubbleNatively };
+						OnNativePointerMove(mixedArgs);
+					}
 
 					isHandledOrBubblingInManaged |= OnNativePointerUp(args);
-					isHandledOrBubblingInManaged |= OnNativePointerExited(args);
 
-					id.Release(this);
+					if (isHandledOrBubblingInManaged)
+					{
+						// Like for the Down, we need to manually generate an Exited.
+						// This is expected to be done by the RootVisual, except if the "up" has been handled
+						// (in order to ensure the "up" has been fully processed, including gesture recognition).
+						// In that case we need to sent it by our-own directly from teh element that has handled the event.
+
+						RootVisual.ProcessPointerUp(args, isAfterHandledUp: true);
+					}
+
+					pt.Release(this);
 				}
 
-				if (!isHandledOrBubblingInManaged)
+				if (canBubbleNatively && !isHandledOrBubblingInManaged)
 				{
 					// Continue native bubbling up of the event
 					base.TouchesEnded(touches, evt);
@@ -194,14 +282,21 @@ namespace Windows.UI.Xaml
 		}
 
 		public override void TouchesCancelled(NSSet touches, UIEvent evt)
+			=> TouchesCancelled(touches, evt, canBubbleNatively: true);
+
+		internal void TouchesCancelled(NSSet touches, UIEvent evt, bool canBubbleNatively)
 		{
+#if TRACE_NATIVE_POINTER_EVENTS
+			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_CANCELLED]");
+#endif
+
 			try
 			{
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var id = NativePointerId.Get(this, touch);
-					var args = new PointerRoutedEventArgs(id.Value, touch, evt, this);
+					var pt = TransientNativePointer.Get(this, touch);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
 
 					// Note: We should have raise either PointerCaptureLost or PointerCancelled here depending of the reason which
 					//		 drives the system to bubble a lost. However we don't have this kind of information on iOS, and it's
@@ -210,10 +305,10 @@ namespace Windows.UI.Xaml
 
 					isHandledOrBubblingInManaged |= OnNativePointerCancel(args, isSwallowedBySystem: true);
 
-					id.Release(this);
+					pt.Release(this);
 				}
 
-				if (!isHandledOrBubblingInManaged)
+				if (canBubbleNatively && !isHandledOrBubblingInManaged)
 				{
 					// Continue native bubbling up of the event
 					base.TouchesCancelled(touches, evt);
@@ -226,22 +321,36 @@ namespace Windows.UI.Xaml
 				Application.Current.RaiseRecoverableUnhandledException(e);
 			}
 		}
+
+		/// <summary>
+		/// Used by the VisualRoot to redispatch a pointer exit on pointer up
+		/// </summary>
+		/// <param name="args"></param>
+		internal void RedispatchPointerExited(PointerRoutedEventArgs args)
+			=> OnNativePointerExited(args.Reset(canBubbleNatively: false));
 		#endregion
 
 		#region TouchesManager (Alter the parents native scroll view to make sure to receive all touches)
-		partial void OnManipulationModeChanged(ManipulationModes _, ManipulationModes newMode)
+		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
 			// As we have to walk the tree and this method may be invoked too early, we don't try to track the state between the old and the new mode
-			=> PrepareParentTouchesManagers(newMode);
+			=> PrepareParentTouchesManagers(newMode, CanDrag);
 
-		// Loaded
-		private void PrepareParentTouchesManagers() => PrepareParentTouchesManagers(ManipulationMode);
-		private void PrepareParentTouchesManagers(ManipulationModes mode)
+		partial void OnCanDragChanged(bool oldValue, bool newValue)
+			=> PrepareParentTouchesManagers(ManipulationMode, newValue);
+
+		private void OnLoadedForPointers()
+			=> PrepareParentTouchesManagers(ManipulationMode, CanDrag);
+
+		private void OnUnloadedForPointers()
+			=> ReleaseParentTouchesManager();
+
+		private void PrepareParentTouchesManagers(ManipulationModes mode, bool canDrag)
 		{
 			// 1. Make sure to end any pending manipulation
 			ReleaseParentTouchesManager();
 
 			// 2. If this control can  Walk the tree to detect all ScrollView and register our self as a manipulation listener
-			if (mode == ManipulationModes.None)
+			if (mode != ManipulationModes.System || canDrag)
 			{
 				_parentsTouchesManager = TouchesManager.GetAllParents(this).ToList();
 
@@ -252,7 +361,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		// Unloaded
 		private void ReleaseParentTouchesManager()
 		{
 			// 1. Make sure to end any pending manipulation
@@ -267,6 +375,43 @@ namespace Windows.UI.Xaml
 				}
 
 				_parentsTouchesManager = null; // prevent leak and disable manipulation started/ended reports
+			}
+		}
+
+		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer)
+		{
+			recognizer.ManipulationConfigured += (snd, manip) => NotifyParentTouchesManagersManipulationStarting(manip);
+			recognizer.ManipulationStarted += (snd, args) => NotifyParentTouchesManagersManipulationStarted();
+
+			// The manipulation can be aborted by the user before the pointer up, so the auto release on pointer up is not enough
+			recognizer.ManipulationCompleted += (snd, args) => NotifyParentTouchesManagersManipulationEnded();
+			recognizer.ManipulationAborted += (snd, args) => NotifyParentTouchesManagersManipulationEnded();
+
+			// This event means that the touch was long enough and any move will actually start the manipulation,
+			// so we use "Started" instead of "Starting"
+			recognizer.DragReady += (snd, manip) => NotifyParentTouchesManagersManipulationStarted();
+			recognizer.Dragging += (snd, args) =>
+			{
+				switch (args.DraggingState)
+				{
+					case DraggingState.Started:
+						NotifyParentTouchesManagersManipulationStarted(); // Still usefull for mouse and pen
+						break;
+					case DraggingState.Completed:
+						NotifyParentTouchesManagersManipulationEnded();
+						break;
+				}
+			};
+		}
+
+		private void NotifyParentTouchesManagersManipulationStarting(GestureRecognizer.Manipulation manip)
+		{
+			if (!_isManipulating && (_parentsTouchesManager?.Any() ?? false))
+			{
+				foreach (var manager in _parentsTouchesManager)
+				{
+					_isManipulating |= manager.ManipulationStarting(manip);
+				}
 			}
 		}
 
@@ -292,183 +437,6 @@ namespace Windows.UI.Xaml
 					manager.ManipulationEnded();
 				}
 			}
-		}
-
-		/// <summary>
-		/// By default the UIScrollView will delay the touches to the content until it detects
-		/// if the manipulation is a drag.And even there, if it detects that the manipulation
-		///	* is a Drag, it will cancel the touches on content and handle them internally
-		/// (i.e.Touches[Began|Moved|Ended] will no longer be invoked on SubViews).
-		/// cf.https://developer.apple.com/documentation/uikit/uiscrollview
-		///
-		/// The "TouchesManager" give the ability to any child UIElement to alter this behavior
-		///	if it needs to handle the gestures itself (e.g.the Thumb of a Slider / ToggleSwitch).
-		/// 
-		/// On the UIElement this is defined by the ManipulationMode
-		/// </summary>
-		internal abstract class TouchesManager
-		{
-			private static readonly ConditionalWeakTable<UIView, ScrollViewTouchesManager> _scrollViews = new ConditionalWeakTable<UIView, ScrollViewTouchesManager>();
-
-			/// <summary>
-			/// Gets the current <see cref="TouchesManager"/> for the given view, or create one if possible,
-			/// or throw an exception if this type of view does not support touches manager.
-			/// </summary>
-			public static TouchesManager GetOrCreate(UIView view)
-				=> TryGet(view, out var result)
-					? result
-					: throw new NotSupportedException($"View {view} does not supports enhanced touches management (this is supported only by scrollable content).");
-
-			/// <summary>
-			/// Tries to get the current <see cref="TouchesManager"/> for the given view
-			/// </summary>
-			public static bool TryGet(UIView view, out TouchesManager manager)
-			{
-				switch (view)
-				{
-					case NativeScrollContentPresenter presenter:
-						manager = presenter.TouchesManager;
-						return true;
-
-					case UIScrollView scrollView:
-						manager = _scrollViews.GetValue(scrollView, sv => new ScrollViewTouchesManager((UIScrollView)sv));
-						return true;
-
-					case ListViewBase listView:
-						manager = listView.NativePanel.TouchesManager;
-						return true;
-
-					case UIWebView uiWebView:
-						manager = _scrollViews.GetValue(uiWebView.ScrollView, sv => new ScrollViewTouchesManager((UIScrollView)sv));
-						return true;
-
-					case WKWebView wkWebView:
-						manager = _scrollViews.GetValue(wkWebView.ScrollView, sv => new ScrollViewTouchesManager((UIScrollView)sv));
-						return true;
-
-					default:
-						manager = default;
-						return false;
-				}
-			}
-
-			/// <summary>
-			/// Gets all the <see cref="TouchesManager"/> of the parents hierarchy
-			/// </summary>
-			public static IEnumerable<TouchesManager> GetAllParents(UIElement element)
-			{
-				foreach (var parent in GetAllParentViews(element))
-				{
-					if (TryGet(parent, out var manager))
-					{
-						yield return manager;
-					}
-				}
-			}
-
-			private static IEnumerable<UIView> GetAllParentViews(UIView current)
-			{
-				while (current != null)
-				{
-					// Navigate upward using the managed shadowed visual tree
-					using (var parents = current.GetParents().GetEnumerator())
-					{
-						while (parents.MoveNext())
-						{
-							if (parents.Current is UIView view)
-							{
-								yield return current = view;
-							}
-						}
-					}
-
-					// When reaching a UIView, fallback to the native visual tree until the next DependencyObject
-					do
-					{
-						yield return current = current.Superview;
-					} while (current != null && !(current is DependencyObject));
-				}
-			}
-
-			/// <summary>
-			/// The number of children that are listening to touches events for manipulations
-			/// </summary>
-			public int Listeners { get; private set; }
-
-			/// <summary>
-			/// The number of children that are currently handling a manipulation
-			/// </summary>
-			public int ActiveListeners { get; private set; }
-
-			/// <summary>
-			/// Notify the owner of this touches manager that a child is listening to touches events for manipulations
-			/// (so the owner should disable any delay for touches propagation)
-			/// </summary>
-			/// <remarks>The caller MUST also call <see cref="UnRegisterChildListener"/> once completed.</remarks>
-			public void RegisterChildListener()
-			{
-				if (Listeners++ == 0)
-				{
-					SetCanDelay(false);
-				}
-			}
-
-			/// <summary>
-			/// Un-register a child listener
-			/// </summary>
-			public void UnRegisterChildListener()
-			{
-				if (--Listeners == 0)
-				{
-					SetCanDelay(true);
-				}
-			}
-
-			/// <summary>
-			/// Indicates that a child listener has started to track a manipulation
-			/// (so the owner should not cancel the touches propagation)
-			/// </summary>
-			/// <remarks>The caller MUST also call <see cref="ManipulationEnded"/> once completed (or cancelled).</remarks>
-			public void ManipulationStarted()
-			{
-				if (ActiveListeners++ == 0)
-				{
-					SetCanCancel(false);
-				}
-			}
-
-			/// <summary>
-			/// Indicates the end (success or failure) of a manipulation tracking
-			/// </summary>
-			public void ManipulationEnded()
-			{
-				if (--ActiveListeners == 0)
-				{
-					SetCanCancel(true);
-				}
-			}
-
-			protected abstract void SetCanDelay(bool canDelay);
-
-			protected abstract void SetCanCancel(bool canCancel);
-		}
-
-		private class ScrollViewTouchesManager : TouchesManager
-		{
-			private readonly UIScrollView _scrollView;
-
-			public ScrollViewTouchesManager(UIScrollView scrollView)
-			{
-				_scrollView = scrollView;
-			}
-
-			/// <inheritdoc />
-			protected override void SetCanDelay(bool canDelay)
-				=> _scrollView.DelaysContentTouches = canDelay;
-
-			/// <inheritdoc />
-			protected override void SetCanCancel(bool canCancel)
-				=> _scrollView.CanCancelContentTouches = canCancel;
 		}
 		#endregion
 

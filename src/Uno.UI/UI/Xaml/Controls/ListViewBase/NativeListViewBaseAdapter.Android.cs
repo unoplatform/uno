@@ -10,7 +10,7 @@ using Uno.UI.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Controls.Primitives;
 using System.Linq;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Java.Lang;
 using System.Threading.Tasks;
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			var container = holder.ItemView as ContentControl;
 
 			var viewType = GetItemViewType(position);
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Binding view with view type {viewType} at position {position}.");
 			}
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 				pool.SetMaxRecycledViews(viewType, MaxRecycledViewsPerViewType);
 			}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Creating view with view type {viewType}.");
 			}

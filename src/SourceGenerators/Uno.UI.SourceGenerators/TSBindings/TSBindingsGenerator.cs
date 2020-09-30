@@ -1,113 +1,132 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
+using Uno.Foundation.Interop;
+using Uno.UI.SourceGenerators.Helpers;
+using Uno.Roslyn;
+
+#if NETFRAMEWORK
 using Uno.SourceGeneration;
+#endif
 
 namespace Uno.UI.SourceGenerators.TSBindings
 {
-	class TSBindingsGenerator : SourceGenerator
+	[Generator]
+	class TSBindingsGenerator : ISourceGenerator
 	{
 		private string _bindingsPaths;
 		private string[] _sourceAssemblies;
 
-		private static INamedTypeSymbol _stringSymbol;
-		private static INamedTypeSymbol _intSymbol;
-		private static INamedTypeSymbol _floatSymbol;
-		private static INamedTypeSymbol _doubleSymbol;
-		private static INamedTypeSymbol _byteSymbol;
-		private static INamedTypeSymbol _shortSymbol;
 		private static INamedTypeSymbol _intPtrSymbol;
-		private static INamedTypeSymbol _boolSymbol;
-		private static INamedTypeSymbol _longSymbol;
 		private static INamedTypeSymbol _structLayoutSymbol;
 		private static INamedTypeSymbol _interopMessageSymbol;
 
-		public override void Execute(SourceGeneratorContext context)
+		public void Initialize(GeneratorInitializationContext context)
 		{
-			var project = context.GetProjectInstance();
-			_bindingsPaths = project.GetPropertyValue("TSBindingsPath")?.ToString();
-			_sourceAssemblies = project.GetItems("TSBindingAssemblySource").Select(s => s.EvaluatedInclude).ToArray();
+			DependenciesInitializer.Init();
+		}
 
-			if(!string.IsNullOrEmpty(_bindingsPaths))
+		public void Execute(GeneratorExecutionContext context)
+		{
+			if (!DesignTimeHelper.IsDesignTime(context))
 			{
-				_stringSymbol = context.Compilation.GetTypeByMetadataName("System.String");
-				_intSymbol = context.Compilation.GetTypeByMetadataName("System.Int32");
-				_floatSymbol = context.Compilation.GetTypeByMetadataName("System.Single");
-				_doubleSymbol = context.Compilation.GetTypeByMetadataName("System.Double");
-				_byteSymbol = context.Compilation.GetTypeByMetadataName("System.Byte");
-				_shortSymbol = context.Compilation.GetTypeByMetadataName("System.Int16");
-				_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
-				_boolSymbol = context.Compilation.GetTypeByMetadataName("System.Boolean");
-				_longSymbol = context.Compilation.GetTypeByMetadataName("System.Int64");
-				_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(System.Runtime.InteropServices.StructLayoutAttribute).FullName);
-				_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
+				_bindingsPaths = context.GetMSBuildPropertyValue("TSBindingsPath")?.ToString();
+				_sourceAssemblies = context.GetMSBuildItems("TSBindingAssemblySource").Select(i => i.Identity).ToArray();
 
-				var modules = from ext in context.Compilation.ExternalReferences
-							  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
-							  where _sourceAssemblies.Contains(sym.Name)
-							  from module in sym.Modules
-							  select module;
+				if (!string.IsNullOrEmpty(_bindingsPaths))
+				{
+					Directory.CreateDirectory(_bindingsPaths);
 
-				modules = modules.Concat(context.Compilation.SourceModule);
+					_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
+					_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(StructLayoutAttribute).FullName);
+					_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
 
-				GenerateTSMarshallingLayouts(modules);
+					var modules = from ext in context.Compilation.ExternalReferences
+								  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
+								  where _sourceAssemblies.Contains(sym.Name)
+								  from module in sym.Modules
+								  select module;
+
+					modules = modules.Concat(context.Compilation.SourceModule);
+
+					GenerateTSMarshallingLayouts(modules);
+				}
 			}
 		}
 
 		internal void GenerateTSMarshallingLayouts(IEnumerable<IModuleSymbol> modules)
 		{
-			var messageTypes = from module in modules
-							   from type in GetNamespaceTypes(module)
-							   where (
-								   type.FindAttributeFlattened(_interopMessageSymbol) != null
-								   && type.TypeKind == TypeKind.Struct
-							   )
-							   select type;
+			var messages = from module in modules
+				from type in GetNamespaceTypes(module)
+				let attr = type.FindAttributeFlattened(_interopMessageSymbol)
+				where attr is not null && type.TypeKind is TypeKind.Struct
+				select (type, attr);
 
-			messageTypes = messageTypes.ToArray();
+			messages = messages.ToArray();
 
-			foreach (var messageType in messageTypes)
+			foreach (var message in messages)
 			{
-				var packValue = GetStructPack(messageType);
+				var packValue = GetStructPack(message.type);
 
 				var sb = new IndentedStringBuilder();
 
 				sb.AppendLineInvariant($"/* {nameof(TSBindingsGenerator)} Generated code -- this code is regenerated on each build */");
 
-				using (sb.BlockInvariant($"class {messageType.Name}"))
+				var ns = message.type.ContainingNamespace.ToDisplayString();
+				if (message.type.ContainingType?.Name?.Contains("WindowManagerInterop", StringComparison.OrdinalIgnoreCase) ?? false)
 				{
-					sb.AppendLineInvariant($"/* Pack={packValue} */");
+					// For backward compatibility, we include the namespace only for types that are not part of the WindowsManagerInterop.
+					// We should include the namespace for all messages, but it would require to update all usages.
+					ns = null;
+				}
 
-					foreach (var field in messageType.GetFields())
+				using (ns is null ? null : sb.BlockInvariant($"namespace {ns}"))
+				{
+					using (sb.BlockInvariant($"{(ns is null ? "": "export ")}class {message.type.Name}"))
 					{
-						sb.AppendLineInvariant($"public {field.Name} : {GetTSFieldType(field.Type)};");
-					}
+						sb.AppendLineInvariant($"/* Pack={packValue} */");
 
-					if (messageType.Name.EndsWith("Params"))
-					{
-						GenerateUmarshaler(messageType, sb, packValue);
-					}
+						foreach (var field in message.type.GetFields())
+						{
+							sb.AppendLineInvariant($"public {field.Name} : {GetTSFieldType(field.Type)};");
+						}
 
-					if (messageType.Name.EndsWith("Return"))
-					{
-						GenerateMarshaler(messageType, sb, packValue);
+						var needsUnMarshaller = message.attr.GetNamedValue<CodeGeneration>(nameof(TSInteropMessageAttribute.UnMarshaller)) switch
+						{
+							CodeGeneration.Enabled => true,
+							CodeGeneration.Disabled => false,
+							_ => message.type.Name.EndsWith("Params") || message.type.Name.EndsWith("EventArgs"),
+						};
+						if (needsUnMarshaller)
+						{
+							GenerateUnmarshaler(message.type, sb, packValue);
+						}
+
+						var needsMarshaller = message.attr.GetNamedValue<CodeGeneration>(nameof(TSInteropMessageAttribute.Marshaller)) switch
+						{
+							CodeGeneration.Enabled => true,
+							CodeGeneration.Disabled => false,
+							_ => message.type.Name.EndsWith("Return") || message.type.Name.EndsWith("EventArgs"),
+						};
+						if (needsMarshaller)
+						{
+							GenerateMarshaler(message.type, sb, packValue);
+						}
 					}
 				}
 
-				var outputPath = Path.Combine(_bindingsPaths, $"{messageType.Name}.ts");
+				var outputPath = Path.Combine(_bindingsPaths, $"{(ns is null ? "" : ns.Replace('.', '_') + "_")}{message.type.Name}.ts");
 
 				var fileExists = File.Exists(outputPath);
 				var output = sb.ToString();
 
-				if (
-					(fileExists && File.ReadAllText(outputPath) != output)
-					|| !fileExists)
+				if (!fileExists || File.ReadAllText(outputPath) != output)
 				{
 					File.WriteAllText(outputPath, output);
 				}
@@ -116,24 +135,26 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 		private static IEnumerable<INamedTypeSymbol> GetNamespaceTypes(IModuleSymbol module)
 		{
-			foreach(var type in module.GlobalNamespace.GetNamespaceTypes())
+			foreach (var type in module.GlobalNamespace.GetNamespaceTypes())
 			{
 				yield return type;
 
-				foreach(var inner in type.GetTypeMembers())
+				foreach (var inner in type.GetTypeMembers())
 				{
 					yield return inner;
 				}
 			}
 		}
 
-		private int GetStructPack(INamedTypeSymbol parametersType)
+		private int GetStructPack(ISymbol parametersType)
 		{
 			// https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/Portable/Symbols/TypeLayout.cs is not available.
 
-			if (parametersType.GetType().GetProperty("Layout", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is PropertyInfo info)
+			var actualSymbol = GetActualSymbol(parametersType);
+
+			if (actualSymbol.GetType().GetProperty("Layout", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is PropertyInfo info)
 			{
-				if (info.GetValue(parametersType) is object typeLayout)
+				if (info.GetValue(actualSymbol) is { } typeLayout)
 				{
 					if (typeLayout.GetType().GetProperty("Kind", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic) is PropertyInfo layoutKingProperty)
 					{
@@ -159,18 +180,38 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		{
 			// https://github.com/dotnet/roslyn/blob/0610c79807fa59d0815f2b89e5283cf6d630b71e/src/Compilers/CSharp/Portable/Symbols/Metadata/PE/PEFieldSymbol.cs#L133 is not available.
 
-			if (fieldSymbol.GetType().GetProperty(
+			var actualSymbol = GetActualSymbol(fieldSymbol);
+
+			if (actualSymbol.GetType().GetProperty(
 				"IsMarshalledExplicitly",
-				System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is PropertyInfo info
+				BindingFlags.Instance | BindingFlags.NonPublic) is PropertyInfo info
 			)
 			{
-				if (info.GetValue(fieldSymbol) is bool isMarshalledExplicitly)
+				if (info.GetValue(actualSymbol) is bool isMarshalledExplicitly)
 				{
 					return isMarshalledExplicitly;
 				}
 			}
 
 			throw new InvalidOperationException($"Failed to IsMarshalledExplicitly, unknown roslyn internal structure");
+		}
+
+		/// <summary>
+		/// Reads the actual symbol as Roslyn 3.6+ wraps symbols and we need access to the original type properties.
+		/// </summary>
+		/// <param name="symbol"></param>
+		/// <returns></returns>
+		private object GetActualSymbol(ISymbol symbol)
+		{
+			if (symbol.GetType().GetProperty("UnderlyingSymbol", BindingFlags.Instance | BindingFlags.NonPublic) is PropertyInfo info)
+			{
+				if (info.GetValue(symbol) is { } underlyingSymbol)
+				{
+					return underlyingSymbol;
+				}
+			}
+
+			return symbol;
 		}
 
 		private void GenerateMarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
@@ -182,7 +223,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				foreach (var field in parametersType.GetFields())
 				{
 					var fieldSize = GetNativeFieldSize(field);
-					bool isStringField = Equals(field.Type, _stringSymbol);
+					bool isStringField = field.Type.SpecialType == SpecialType.System_String;
 
 					if (field.Type is IArrayTypeSymbol arraySymbol)
 					{
@@ -224,7 +265,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private void GenerateUmarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
+		private void GenerateUnmarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
 		{
 			using (sb.BlockInvariant($"public static unmarshal(pData:number) : {parametersType.Name}"))
 			{
@@ -245,7 +286,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 						var elementType = arraySymbol.ElementType;
 						var elementTSType = GetTSType(elementType);
-						var isElementString = Equals(elementType, _stringSymbol);
+						var isElementString = elementType.SpecialType == SpecialType.System_String;
 						var elementSize = isElementString ? 4 : fieldSize;
 
 						using (sb.BlockInvariant(""))
@@ -289,7 +330,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 					{
 						using (sb.BlockInvariant(""))
 						{
-							if(Equals(field.Type, _stringSymbol))
+							if (field.Type.SpecialType == SpecialType.System_String)
 							{
 								sb.AppendLineInvariant($"const ptr = Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\");");
 
@@ -305,7 +346,14 @@ namespace Uno.UI.SourceGenerators.TSBindings
 							}
 							else
 							{
-								sb.AppendLineInvariant($"ret.{field.Name} = {GetTSType(field.Type)}(Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\"));");
+								if (CanUseEMHeapProperty(field.Type))
+								{
+									sb.AppendLineInvariant($"ret.{field.Name} = Module.{GetEMHeapProperty(field.Type)}[(pData + {fieldOffset}) >> {GetEMTypeShift(field)}];");
+								}
+								else
+								{
+									sb.AppendLineInvariant($"ret.{field.Name} = {GetTSType(field.Type)}(Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\"));");
+								}
 							}
 						}
 					}
@@ -323,20 +371,25 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
+		private bool CanUseEMHeapProperty(ITypeSymbol type)
+			=> type.SpecialType == SpecialType.System_UInt32;
+
 		private int GetNativeFieldSize(IFieldSymbol field)
 		{
-			if(
-				Equals(field.Type, _stringSymbol)
-				|| Equals(field.Type, _intSymbol)
-				|| Equals(field.Type, _intPtrSymbol)
-				|| Equals(field.Type, _floatSymbol)
-				|| Equals(field.Type, _boolSymbol)
-				|| field.Type is IArrayTypeSymbol
+			if (
+				field.Type.SpecialType is SpecialType.System_String ||
+				field.Type.SpecialType is SpecialType.System_Int32 ||
+				field.Type.SpecialType is SpecialType.System_UInt32 ||
+				SymbolEqualityComparer.Default.Equals(field.Type, _intPtrSymbol) ||
+				field.Type.SpecialType is SpecialType.System_Single ||
+				field.Type.SpecialType is SpecialType.System_Boolean ||
+				field.Type.SpecialType is SpecialType.System_Byte ||
+				field.Type is IArrayTypeSymbol
 			)
 			{
 				return 4;
 			}
-			else if(Equals(field.Type, _doubleSymbol))
+			else if (field.Type.SpecialType == SpecialType.System_Double)
 			{
 				return 8;
 			}
@@ -346,42 +399,132 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
+		private int GetEMTypeShift(IFieldSymbol field)
+		{
+			var fieldType = field.Type;
+
+			if (
+				fieldType.SpecialType == SpecialType.System_String
+				|| SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol)
+				|| fieldType is IArrayTypeSymbol
+			)
+			{
+				return 2;
+			}
+			else if (
+				fieldType.SpecialType == SpecialType.System_Int32 ||
+				fieldType.SpecialType == SpecialType.System_UInt32 ||
+				fieldType.SpecialType == SpecialType.System_Boolean
+			)
+			{
+				return 2;
+			}
+			else if (fieldType.SpecialType == SpecialType.System_Int64)
+			{
+				return 3;
+			}
+			else if (fieldType.SpecialType == SpecialType.System_Int16)
+			{
+				return 1;
+			}
+			else if (fieldType.SpecialType == SpecialType.System_Byte)
+			{
+				return 0;
+			}
+			else if (fieldType.SpecialType == SpecialType.System_Single)
+			{
+				return 2;
+			}
+			else if (fieldType.SpecialType == SpecialType.System_Double)
+			{
+				return 3;
+			}
+			else
+			{
+				throw new NotSupportedException($"Unsupported EM type conversion [{fieldType}]");
+			}
+		}
+
 		private static string GetEMField(ITypeSymbol fieldType)
 		{
 			if (
-				Equals(fieldType, _stringSymbol)
-				|| Equals(fieldType, _intPtrSymbol)
-				|| fieldType is IArrayTypeSymbol
+				fieldType.SpecialType == SpecialType.System_String ||
+				SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol) ||
+				fieldType is IArrayTypeSymbol
 			)
 			{
 				return "*";
 			}
 			else if (
-				Equals(fieldType, _intSymbol)
-				|| Equals(fieldType, _boolSymbol)
+				fieldType.SpecialType == SpecialType.System_Int32 ||
+				fieldType.SpecialType == SpecialType.System_UInt32 ||
+				fieldType.SpecialType == SpecialType.System_Boolean
 			)
 			{
 				return "i32";
 			}
-			else if (Equals(fieldType, _longSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Int64)
 			{
 				return "i64";
 			}
-			else if (Equals(fieldType, _shortSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Int16)
 			{
 				return "i16";
 			}
-			else if (Equals(fieldType, _byteSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Byte)
 			{
 				return "i8";
 			}
-			else if (Equals(fieldType, _floatSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Single)
 			{
 				return "float";
 			}
-			else if (Equals(fieldType, _doubleSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Double)
 			{
 				return "double";
+			}
+			else
+			{
+				throw new NotSupportedException($"Unsupported EM type conversion [{fieldType}]");
+			}
+		}
+
+		private object GetEMHeapProperty(ITypeSymbol fieldType)
+		{
+			if (
+				fieldType.SpecialType == SpecialType.System_String ||
+				SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol) ||
+				fieldType is IArrayTypeSymbol ||
+				fieldType.SpecialType == SpecialType.System_Int32 ||
+				fieldType.SpecialType == SpecialType.System_Boolean
+			)
+			{
+				return "HEAP32";
+			}
+			else if (fieldType.SpecialType == SpecialType.System_UInt32)
+			{
+				return "HEAPU32";
+			}
+			else if (fieldType.SpecialType == SpecialType.System_Int64)
+			{
+				// Might overflow
+				return "HEAP32";
+			}
+			else if (fieldType.SpecialType == SpecialType.System_Int16)
+			{
+				return "HEAP16";
+			}
+			else if (fieldType.SpecialType == SpecialType.System_Byte)
+			{
+				return "HEAP8";
+			}
+			else if (fieldType.SpecialType == SpecialType.System_Single)
+			{
+				return "HEAPF32";
+			}
+			else if (fieldType.SpecialType == SpecialType.System_Double)
+			{
+				return "HEAPF64";
 			}
 			else
 			{
@@ -400,22 +543,23 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			{
 				return $"Array<{GetTSType(array.ElementType)}>";
 			}
-			else if (Equals(type, _stringSymbol))
+			else if (type.SpecialType == SpecialType.System_String)
 			{
 				return "String";
 			}
 			else if (
-				Equals(type, _intSymbol)
-				|| Equals(type, _floatSymbol)
-				|| Equals(type, _doubleSymbol)
-				|| Equals(type, _byteSymbol)
-				|| Equals(type, _shortSymbol)
-				|| Equals(type, _intPtrSymbol)
+				type.SpecialType == SpecialType.System_Int32 ||
+				type.SpecialType == SpecialType.System_UInt32 ||
+				type.SpecialType == SpecialType.System_Single ||
+				type.SpecialType == SpecialType.System_Double ||
+				type.SpecialType == SpecialType.System_Byte ||
+				type.SpecialType == SpecialType.System_Int16 ||
+				SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
 			)
 			{
 				return "Number";
 			}
-			else if (Equals(type, _boolSymbol))
+			else if (type.SpecialType == SpecialType.System_Boolean)
 			{
 				return "Boolean";
 			}
@@ -436,22 +580,23 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			{
 				return $"Array<{GetTSFieldType(array.ElementType)}>";
 			}
-			else if (Equals(type, _stringSymbol))
+			else if (type.SpecialType == SpecialType.System_String)
 			{
 				return "string";
 			}
 			else if (
-				Equals(type, _intSymbol)
-				|| Equals(type, _floatSymbol)
-				|| Equals(type, _doubleSymbol)
-				|| Equals(type, _byteSymbol)
-				|| Equals(type, _shortSymbol)
-				|| Equals(type, _intPtrSymbol)
+				type.SpecialType == SpecialType.System_Int32 ||
+				type.SpecialType == SpecialType.System_UInt32 ||
+				type.SpecialType == SpecialType.System_Single ||
+				type.SpecialType == SpecialType.System_Double ||
+				type.SpecialType == SpecialType.System_Byte ||
+				type.SpecialType == SpecialType.System_Int16 ||
+				SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
 			)
 			{
 				return "number";
 			}
-			else if (Equals(type, _boolSymbol))
+			else if (type.SpecialType == SpecialType.System_Boolean)
 			{
 				return "boolean";
 			}

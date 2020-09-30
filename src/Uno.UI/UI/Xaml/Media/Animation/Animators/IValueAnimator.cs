@@ -30,6 +30,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		event EventHandler AnimationCancel;
 
 		/// <summary>
+		/// Occurs when the animation failed.
+		/// </summary>
+		event EventHandler AnimationFailed;
+
+		/// <summary>
 		/// Gets or sets the animated value. The setter is public because the Java version is public 
 		/// </summary>
 		/// <value>The animated value.</value>

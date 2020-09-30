@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno;
 using Uno.UI;
 
@@ -21,7 +21,7 @@ using Font = UIKit.UIFont;
 
 namespace Windows.UI.Xaml.Controls
 {
-    partial class StackPanel
+	partial class StackPanel
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			if (isHorizontal)
 			{
 				slotSize.Width = float.PositiveInfinity;
-            }
+			}
 			else
 			{
 				slotSize.Height = float.PositiveInfinity;
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 			var isHorizontal = Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal;
 			var previousChildSize = 0.0;
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"StackPanel/{Name}: Arranging {Children.Count} children.");
 			}
@@ -95,6 +95,25 @@ namespace Windows.UI.Xaml.Controls
 			// Shadow variables for evaluation performance
 			var spacing = Spacing;
 			var count = Children.Count;
+
+			var snapPoints = (_snapPoints ??= new List<float>(count)) as List<float>;
+
+			var snapPointsChanged = snapPoints.Count != count;
+
+			if(snapPoints.Capacity < count)
+			{
+				snapPoints.Capacity = count;
+			}
+
+			while(snapPoints.Count < count)
+			{
+				snapPoints.Add(default);
+			}
+
+			while(snapPoints.Count > count)
+			{
+				snapPoints.RemoveAt(count);
+			}
 
 			for (var i = 0; i < count; i++)
 			{
@@ -114,6 +133,10 @@ namespace Windows.UI.Xaml.Controls
 					previousChildSize = desiredChildSize.Width;
 					childRectangle.Width = desiredChildSize.Width;
 					childRectangle.Height = Math.Max(arrangeSize.Height, desiredChildSize.Height);
+
+					var snapPoint = (float)childRectangle.Right;
+					snapPointsChanged |= snapPoints[i] == snapPoint;
+					snapPoints[i] = snapPoint;
 				}
 				else
 				{
@@ -127,6 +150,10 @@ namespace Windows.UI.Xaml.Controls
 					previousChildSize = desiredChildSize.Height;
 					childRectangle.Height = desiredChildSize.Height;
 					childRectangle.Width = Math.Max(arrangeSize.Width, desiredChildSize.Width);
+
+					var snapPoint = (float)childRectangle.Bottom;
+					snapPointsChanged |= snapPoints[i] == snapPoint;
+					snapPoints[i] = snapPoint;
 				}
 
 				var adjustedRectangle = childRectangle;
@@ -135,6 +162,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var finalSizeWithBorderAndPadding = arrangeSize.Add(borderAndPaddingSize);
+
+			if(snapPointsChanged)
+			{
+				if(isHorizontal)
+				{
+					HorizontalSnapPointsChanged?.Invoke(this, this);
+				}
+				else
+				{
+					VerticalSnapPointsChanged?.Invoke(this, this);
+				}
+			}
 
 			return finalSizeWithBorderAndPadding;
 		}

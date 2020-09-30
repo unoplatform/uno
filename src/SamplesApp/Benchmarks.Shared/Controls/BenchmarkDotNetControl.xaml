@@ -5,6 +5,7 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 mc:Ignorable="d"
+			 x:Name="benchmarkControl"
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
@@ -22,17 +23,36 @@
 				<Button x:Name="runButton"
 						Content="Run Benchmarks"
 						Click="OnRunTests" />
+				<TextBlock x:Name="runCount"
+						   Text="" />
 				<TextBlock x:Name="runStatus"
 						   Text="Not initialized" />
+				<CheckBox x:Name="debugLog"
+						  IsChecked="False"
+						  Content="Debug Logging" />
+				<Button x:Name="downloadResults"
+						Content="Download Results"
+						IsEnabled="false"
+						Click="{x:Bind OnDownloadResults}" />
 			</StackPanel>
-			<ScrollViewer Grid.Row="1"
-						  Background="Black"
-						  Padding="12">
+			<Grid Grid.Row="1">
+			  <Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			  </Grid.ColumnDefinitions>
+			  <ScrollViewer Grid.Column="0"
+							Background="Black"
+							HorizontalScrollMode="Enabled"
+							HorizontalScrollBarVisibility="Visible"
+							Padding="12">
 				<TextBlock x:Name="runLogs"
+						   Grid.Column="1"
 						   FontFamily="Courier New"
 						   FontSize="12"
 						   IsTextSelectionEnabled="True" />
-			</ScrollViewer>
+			  </ScrollViewer>
+			  <ContentControl x:Name="testHost" />
+			</Grid>
 		</Grid>
 	</Grid>
 </UserControl>

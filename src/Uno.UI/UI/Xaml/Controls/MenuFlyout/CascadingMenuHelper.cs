@@ -1,17 +1,23 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Uno.Disposables;
-using Windows.Devices.Input;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
 using Windows.System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls.Primitives;
-using System.Linq;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -51,6 +57,9 @@ namespace Windows.UI.Xaml.Controls
 
 		// This fallback is used if we fail to retrieve a value from the MenuShowDelay RegKey
 		const int DefaultMenuShowDelay = 400; // in milliseconds
+
+		// Uno-specific workaround (see comment below)
+		private Point? _lastTargetPoint;
 
 		public CascadingMenuHelper()
 		{
@@ -343,7 +352,7 @@ namespace Windows.UI.Xaml.Controls
 				OpenSubMenu();
 			}
 
-		   args.Handled = true;
+			args.Handled = true;
 		}
 
 		internal void OnGotFocus(RoutedEventArgs args)
@@ -490,7 +499,7 @@ namespace Windows.UI.Xaml.Controls
 			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: SetSubMenuPresenter.", this));
 #endif // CMH_DEBUG
 
-			m_wpSubMenuPresenter =new WeakReference(subMenuPresenter);
+			m_wpSubMenuPresenter = new WeakReference(subMenuPresenter);
 
 			ISubMenuOwner ownerAsSubMenuOwner = m_wpOwner?.Target as ISubMenuOwner;
 
@@ -532,7 +541,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!isSubMenuOpen)
 				{
-					Control ownerAsControl  = m_wpOwner?.Target as Control;
+					Control ownerAsControl = m_wpOwner?.Target as Control;
 
 					if (ownerAsControl != null)
 					{
@@ -566,8 +575,15 @@ namespace Windows.UI.Xaml.Controls
 						}
 
 						ownerAsSubMenuOwner.OpenSubMenu(targetPoint);
+						if (_lastTargetPoint is { } lastTargetPoint)
+						{
+							// Uno-specific workaround: reapply the location calculated in OnPresenterSizeChanged(), since that one properly
+							// adjusts to keep submenu within screen bounds. (WinUI seemingly relies upon presenter.SizeChanged being raised
+							// every time submenu opens? On Uno it isn't.)
+							ownerAsSubMenuOwner.PositionSubMenu(lastTargetPoint);
+						}
 						ownerAsSubMenuOwner.RaiseAutomationPeerExpandCollapse(true /* isOpen */);
-						ElementSoundPlayerService.RequestInteractionSoundForElementStatic(ElementSoundKind.Invoke, ownerAsControl);
+						ElementSoundPlayer.RequestInteractionSoundForElement(ElementSoundKind.Invoke, ownerAsControl);
 					}
 				}
 			}
@@ -581,7 +597,7 @@ namespace Windows.UI.Xaml.Controls
 
 			CloseChildSubMenus();
 
-			ISubMenuOwner owner  = m_wpOwner?.Target as ISubMenuOwner;
+			ISubMenuOwner owner = m_wpOwner?.Target as ISubMenuOwner;
 
 #if CMH_DEBUG
 			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: CloseSubMenu - owner=0x%p.", this, owner));
@@ -596,7 +612,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (ownerAsDO != null)
 				{
-					ElementSoundPlayerService.RequestInteractionSoundForElementStatic(ElementSoundKind.Hide, ownerAsDO as DependencyObject);
+					ElementSoundPlayer.RequestInteractionSoundForElement(ElementSoundKind.Hide, ownerAsDO as DependencyObject);
 				}
 			}
 		}
@@ -643,7 +659,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void CancelCloseSubMenu()
 		{
-			if (m_delayCloseMenuTimer != null) 
+			if (m_delayCloseMenuTimer != null)
 			{
 #if CMH_DEBUG
 				(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: CancelCloseSubMenu - Stopping m_delayCloseMenuTimer.", this));
@@ -710,7 +726,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnPresenterSizeChanged(
 			object pSender,
 			SizeChangedEventArgs args,
-			Controls.Popup popup)
+			Popup popup)
 		{
 			Control ownerAsControl = m_wpOwner?.Target as Control;
 
@@ -931,6 +947,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
+				_lastTargetPoint = targetPoint;
 				ownerAsSubMenuOwner.PositionSubMenu(targetPoint);
 			}
 		}
@@ -947,18 +964,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				ownerAsControl.UpdateVisualState(true /* useTransitions */);
 			}
-		}
-	}
-
-	internal class ElementSoundPlayerService
-	{
-		internal static ElementSoundMode GetEffectiveSoundMode(DependencyObject dependencyObject)
-		{
-			return ElementSoundMode.Off;
-		}
-
-		internal static void RequestInteractionSoundForElementStatic(ElementSoundKind invoke, DependencyObject ownerAsControl)
-		{
 		}
 	}
 }

@@ -3,7 +3,6 @@ using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Media
 {
-	// Android partial for SolidColorBrush
 	public partial class RevealBrush : XamlCompositionBrushBase
 	{
 		protected override Paint GetPaintInner(Rect destinationRect)

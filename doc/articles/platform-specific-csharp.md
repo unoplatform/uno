@@ -1,6 +1,6 @@
 # Platform-specific C# code in Uno
 
-Uno allows you to reuse views and business logic across platforms. Sometimes though you may want to write different code per platform, either because you need to access platform-specific native APIs and 3rd-party libraries, or because you want your app to look and behave differently depending on the platform. 
+Uno allows you to reuse views and business logic across platforms. Sometimes though you may want to write different code per platform. You may need to access platform-specific native APIs and 3rd-party libraries, or want your app to look and behave differently depending on the platform. 
 
 This guide covers multiple approaches to managing per-platform code in C#. See [this guide for managing per-platform XAML](platform-specific-xaml.md).
 
@@ -32,8 +32,9 @@ The structure of an Uno app created with the default [Visual Studio template](ht
  | UWP         | `NETFX_CORE`  |
  | Android     | `__ANDROID__` |
  | iOS         | `__IOS__`     |
- | WebAssembly | `__WASM__`    |
- | MacOS       | `__MACOS__`   |
+ | WebAssembly | `HAS_UNO_WASM`|
+ | macOS       | `__MACOS__`   |
+ | Skia        | `HAS_UNO_SKIA`|
  
 Note that you can combine conditionals with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. 
 

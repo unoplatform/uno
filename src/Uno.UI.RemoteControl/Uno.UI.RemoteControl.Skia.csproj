@@ -1,8 +1,12 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
-  
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -21,7 +25,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>..\Uno.UI.RemoteControl\</PlatformItemsBasePath>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
@@ -32,6 +36,15 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" />
+	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.Xaml.cs" />
+	  <UpToDateCheckInput Remove="HotReload\Messages\AssemblyDeltaReload.cs" />
+	  <UpToDateCheckInput Remove="Messages\ProcessorsDiscovery.cs" />
+	  <UpToDateCheckInput Remove="ServerEndpointAttribute.cs" />
+	  <UpToDateCheckInput Remove="ServerProcessorsConfigurationAttribute.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
@@ -41,7 +54,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>

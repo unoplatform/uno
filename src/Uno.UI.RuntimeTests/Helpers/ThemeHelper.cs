@@ -1,0 +1,29 @@
+﻿#nullable enable
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.UI.Xaml;
+
+namespace Uno.UI.RuntimeTests.Helpers
+{
+	public static class ThemeHelper
+	{
+		/// <summary>
+		/// Ensure dark theme is applied for the course of a single test.
+		/// </summary>
+		public static IDisposable UseDarkTheme()
+		{
+			var root = Window.Current.Content as FrameworkElement;
+			Assert.IsNotNull(root);
+			var currentTheme = Application.Current.RequestedTheme;
+			root.RequestedTheme = ElementTheme.Dark;
+
+			return new DisposableAction(() =>
+			{
+				root.RequestedTheme = currentTheme == ApplicationTheme.Light ? ElementTheme.Light : ElementTheme.Dark;
+			});
+		}
+	}
+}

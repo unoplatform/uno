@@ -1,6 +1,7 @@
 using CoreGraphics;
 using System;
 using Uno.Extensions;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Foundation;
@@ -9,6 +10,7 @@ using System.Linq;
 using AppKit;
 using _TextField = AppKit.NSTextField;
 using Windows.UI;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -16,6 +18,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private TextBoxViewDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
+
+		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 		public TextBoxView(TextBox textBox)
 		{
@@ -25,16 +29,47 @@ namespace Windows.UI.Xaml.Controls
 			Initialize();
 		}
 
-
-		private void OnEditingChanged(object sender, EventArgs e)
+		public override bool PerformKeyEquivalent(NSEvent theEvent)
 		{
-			OnTextChanged();
-		}
+			if (theEvent.Type == NSEventType.KeyDown)
+			{
+				if ((theEvent.ModifierFlags & NSEventModifierMask.DeviceIndependentModifierFlagsMask) == NSEventModifierMask.CommandKeyMask)
+				{
+					var selectorName = theEvent.CharactersIgnoringModifiers.ToLowerInvariant() switch
+					{
+						"x" => "cut:",
+						"c" => "copy:",
+						"v" => "paste:",
+						"z" => "undo:",
+						"a" => "selectAll:",
+						_ => string.Empty,
+					};
 
-		internal void OnChanged()
-		{
-			OnTextChanged();
+					if (!string.IsNullOrWhiteSpace(selectorName))
+					{
+						if (NSApplication.SharedApplication.SendAction(new ObjCRuntime.Selector(selectorName), null, this))
+						{
+							return true;
+						}
+					}
+				}
+				else if ((theEvent.ModifierFlags & NSEventModifierMask.DeviceIndependentModifierFlagsMask) == (NSEventModifierMask.CommandKeyMask | NSEventModifierMask.ShiftKeyMask))
+				{
+					if (theEvent.CharactersIgnoringModifiers.ToLowerInvariant() == "z")
+					{
+						if (NSApplication.SharedApplication.SendAction(new ObjCRuntime.Selector("redo:"), null, this))
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return base.PerformKeyEquivalent(theEvent);
 		}
+		private void OnEditingChanged(object sender, EventArgs e) => OnTextChanged();
+
+		internal void OnChanged() => OnTextChanged();
 
 		public string Text
 		{
@@ -43,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				// The native control will ignore a value of null and retain an empty string. We coalesce the null to prevent a spurious empty string getting bounced back via two-way binding.
-				value = value ?? string.Empty;
+				value ??= string.Empty;
 				if (base.StringValue != value)
 				{
 					base.StringValue = value;
@@ -52,6 +87,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private FrameworkElement _firstManagedParent;
+
 		private void OnTextChanged()
 		{
 			var textBox = _textBox?.GetTarget();
@@ -59,6 +96,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var text = textBox.ProcessTextInput(Text);
 				SetTextNative(text);
+
+				// Launch the invalidation of the measure + layout on the first _managed_ element
+				// Native elements will be relayouted correctly at the same time.
+				_firstManagedParent ??= this.FindFirstParent<FrameworkElement>();
+				_firstManagedParent?.InvalidateMeasure();
 			}
 		}
 
@@ -73,12 +115,10 @@ namespace Windows.UI.Xaml.Controls
 
 			DrawsBackground = false;
 			Bezeled = false;
+			FocusRingType = NSFocusRingType.None;
 		}
 
-		public override CGSize SizeThatFits(CGSize size)
-		{
-			return IFrameworkElementHelper.SizeThatFits(this, base.SizeThatFits(size));
-		}
+		public override CGSize SizeThatFits(CGSize size) => IFrameworkElementHelper.SizeThatFits(this, base.SizeThatFits(size));
 
 		public void UpdateFont()
 		{
@@ -98,8 +138,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public Brush Foreground
 		{
-			get { return (Brush)GetValue(ForegroundProperty); }
-			set { SetValue(ForegroundProperty, value); }
+			get => (Brush)GetValue(ForegroundProperty);
+			set => SetValue(ForegroundProperty, value);
 		}
 
 		public bool HasMarkedText => throw new NotImplementedException();
@@ -108,11 +148,21 @@ namespace Windows.UI.Xaml.Controls
 
 		public NSRange MarkedRange => throw new NotImplementedException();
 
-		public NSRange SelectedRange => throw new NotImplementedException();
+		public NSRange SelectedRange
+		{
+			get => CurrentEditor?.SelectedRange ?? new NSRange(start: 0, len: 0);
+			set
+			{
+				if (CurrentEditor != null)
+				{
+					CurrentEditor.SelectedRange = value;
+				}
+			}
+		}
 
 		public NSString[] ValidAttributesForMarkedText => null;
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -126,68 +176,74 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
-			var textBox = _textBox.GetTarget();
+			_foregroundChanged.Disposable = null;
 
-			if (textBox != null)
+			_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => ApplyColor());
+			ApplyColor();
+
+			void ApplyColor()
 			{
-				var scb = newValue as SolidColorBrush;
+				var textBox = _textBox.GetTarget();
 
-				if (scb != null)
+				if (textBox != null && Brush.TryGetColorWithOpacity(newValue, out var color))
 				{
-					this.TextColor = scb.Color;
+					this.TextColor = color;
+					UpdateCaretColor(color);
+				}
+				else
+				{
+					UpdateCaretColor();
 				}
 			}
-
-			UpdateCaretColor();
 		}
 
-		private void UpdateCaretColor()
+		private void UpdateCaretColor(Color? color = null)
 		{
-			if (CurrentEditor is NSTextView textField && Foreground is SolidColorBrush scb)
+			if (CurrentEditor is NSTextView textField)
 			{
-				textField.InsertionPointColor = scb.Color;
+				if (color != null)
+				{
+					textField.InsertionPointColor = color;
+				}
+				else if (Brush.TryGetColorWithOpacity(Foreground, out var foregroundColor))
+				{
+					textField.InsertionPointColor = foregroundColor;
+				}
 			}
 		}
 
-		public void RefreshFont()
-		{
-			UpdateFont();
-		}
+		public void RefreshFont() => UpdateFont();
 
 		public override bool BecomeFirstResponder()
 		{
 			UpdateCaretColor();
+
+			if (_textBox.GetTarget() is TextBox textBox && textBox.FocusState == FocusState.Unfocused)
+			{
+				textBox.Focus(FocusState.Pointer);
+			}
+
 			return base.BecomeFirstResponder();
 		}
 
-		public void InsertText(NSObject insertString)
+		public void Select(int start, int length)
 		{
-			throw new NotImplementedException();
+			if (CurrentEditor != null)
+			{
+				CurrentEditor.SelectedRange = new NSRange(start: start, len: length);
+			}
 		}
 
-		public void SetMarkedText(NSObject @string, NSRange selRange)
-		{
-			throw new NotImplementedException();
-		}
+		public void InsertText(NSObject insertString) => throw new NotImplementedException();
 
-		public void UnmarkText()
-		{
-			throw new NotImplementedException();
-		}
+		public void SetMarkedText(NSObject @string, NSRange selRange) => throw new NotImplementedException();
 
-		public NSAttributedString GetAttributedSubstring(NSRange range)
-		{
-			throw new NotImplementedException();
-		}
+		public void UnmarkText() => throw new NotImplementedException();
 
-		public CGRect GetFirstRectForCharacterRange(NSRange range)
-		{
-			throw new NotImplementedException();
-		}
+		public NSAttributedString GetAttributedSubstring(NSRange range) => throw new NotImplementedException();
 
-		public nuint GetCharacterIndex(CGPoint point)
-		{
-			throw new NotImplementedException();
-		}
+		public CGRect GetFirstRectForCharacterRange(NSRange range) => throw new NotImplementedException();
+
+		public nuint GetCharacterIndex(CGPoint point) => throw new NotImplementedException();
 	}
 }

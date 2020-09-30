@@ -2,114 +2,43 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum PatternInterface 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Invoke,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Selection,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Value,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		RangeValue,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Scroll,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ScrollItem,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ExpandCollapse,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Grid,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		GridItem,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		MultipleView,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Window,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		SelectionItem,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Dock,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Table,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		TableItem,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Toggle,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Transform,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Text,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ItemContainer,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		VirtualizedItem,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Text2,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		TextChild,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		TextRange,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Annotation,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Drag,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DropTarget,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ObjectModel,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Spreadsheet,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		SpreadsheetItem,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Styles,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Transform2,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		SynchronizedInput,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		TextEdit,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CustomNavigation,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Invoke
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Selection
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Value
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.RangeValue
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Scroll
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.ScrollItem
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.ExpandCollapse
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Grid
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.GridItem
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.MultipleView
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Window
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.SelectionItem
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Dock
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Table
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.TableItem
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Toggle
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Transform
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Text
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.ItemContainer
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.VirtualizedItem
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Text2
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.TextChild
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.TextRange
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Annotation
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Drag
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.DropTarget
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.ObjectModel
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Spreadsheet
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.SpreadsheetItem
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Styles
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Transform2
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.SynchronizedInput
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.TextEdit
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.CustomNavigation
 	}
 	#endif
 }

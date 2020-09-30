@@ -7,6 +7,7 @@ using Uno;
 
 namespace Microsoft.UI.Xaml.Media
 {
+	[ContentProperty(Name = nameof(GradientStops))]
 	public sealed partial class RadialGradientBrush : GradientBrush
 	{
 		public static DependencyProperty CenterProperty { get ; } = DependencyProperty.Register(

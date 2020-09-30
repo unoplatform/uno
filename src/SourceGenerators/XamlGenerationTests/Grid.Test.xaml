@@ -22,6 +22,19 @@
 			<ColumnDefinition Width="auto" />
 			<ColumnDefinition Width="1*" />
 			<ColumnDefinition Width="1.5*" />
+			<ColumnDefinition Width="300px" />
+			<ColumnDefinition Width="300 px" />
+			<ColumnDefinition Width="300 px " />
+			<ColumnDefinition Width="300 PX " />
+			<ColumnDefinition Width="300in" />
+			<ColumnDefinition Width="300 IN" />
+			<ColumnDefinition Width="300 iN " />
+			<ColumnDefinition Width="300cM" />
+			<ColumnDefinition Width="300 cm" />
+			<ColumnDefinition Width="300 CM " />
+			<ColumnDefinition Width="300pT" />
+			<ColumnDefinition Width="300 PT" />
+			<ColumnDefinition Width="300 pt " />
 		</Grid.ColumnDefinitions>
 
 		<TextBlock Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Grid.ColumnSpan="1" />

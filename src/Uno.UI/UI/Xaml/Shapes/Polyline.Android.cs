@@ -3,9 +3,17 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	public partial class Polyline
+	public partial class Polyline : Shape
 	{
-		protected override Android.Graphics.Path GetPath(Size availableSize)
+		/// <inheritdoc />
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureAbsoluteShape(availableSize, GetPath());
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeAbsoluteShape(finalSize, GetPath());
+
+		private Android.Graphics.Path GetPath()
 		{
 			var coords = Points;
 
@@ -13,18 +21,16 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				return null;
 			}
+			var output = new Android.Graphics.Path();
 
-			var streamGeometry = GeometryHelper.Build(c =>
+			output.MoveTo((float)coords[0].X, (float)coords[0].Y);
+			for (var i = 1; i < coords.Count; i++)
 			{
-				c.BeginFigure(new Point(coords[0].X, coords[0].Y), true, false);
-				for (var i = 1; i < coords.Count; i++)
-				{
-					c.LineTo(new Point(coords[i].X, coords[i].Y), true, false);
-				}
-			});
+				output.LineTo((float)coords[i].X, (float)coords[i].Y);
+			}
 
-			return streamGeometry.ToPath();
 
+			return output;
 		}
 	}
 }

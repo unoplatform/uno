@@ -18,9 +18,14 @@ using Uno.Extensions.Specialized;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-using Microsoft.Extensions.Logging;
+
+using Uno.UI.UI.Xaml.Controls.Layouter;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -126,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 				count = GetUngroupedItemsCount(section);
 			}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Count requested for section {section}, returning {count}");
 			}
@@ -222,7 +227,7 @@ namespace Windows.UI.Xaml.Controls
 						cell.Owner = Owner;
 						selectorItem = Owner?.XamlParent?.GetContainerForIndex(index) as SelectorItem;
 						cell.Content = selectorItem;
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
 							this.Log().Debug($"Creating new view at indexPath={indexPath}.");
 						}
@@ -231,9 +236,9 @@ namespace Windows.UI.Xaml.Controls
 
 						// Ensure the item has a parent, since it's added to the native collection view
 						// which does not automatically sets the parent DependencyObject.
-						selectorItem.SetParent(Owner?.XamlParent?.InternalItemsPanelRoot);
+						selectorItem.SetParentOverride(Owner?.XamlParent?.InternalItemsPanelRoot);
 					}
-					else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					else if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Reusing view at indexPath={indexPath}, previously bound to {selectorItem.DataContext}.");
 					}
@@ -391,6 +396,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void SetIsAnimatedScrolling() => _isInAnimatedScroll = true;
 
+#if !MACCATALYST  // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		public override void Scrolled(UIScrollView scrollView)
 		{
 			InvokeOnScroll();
@@ -428,8 +434,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Note: untested, more may be needed to support zooming. On ScrollContentPresenter we set ViewForZoomingInScrollView (not 
 			// obvious what it would be in the case of a list).
-			Owner.XamlParent?.ScrollViewer?.OnZoomInternal((float)Owner.ZoomScale);
+			Owner.XamlParent?.ScrollViewer?.Presenter?.OnNativeZoom((float)Owner.ZoomScale);
 		}
+#endif
 
 		private void OnAnimatedScrollEnded()
 		{
@@ -444,9 +451,10 @@ namespace Windows.UI.Xaml.Controls
 			var clampedOffset = shouldReportNegativeOffsets ?
 				Owner.ContentOffset :
 				Owner.ContentOffset.Clamp(CGPoint.Empty, Owner.UpperScrollLimit);
-			Owner.XamlParent?.ScrollViewer?.OnScrollInternal(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
+			Owner.XamlParent?.ScrollViewer?.Presenter?.OnNativeScroll(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
 		}
 
+#if !MACCATALYST // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		public override void WillEndDragging(UIScrollView scrollView, CGPoint velocity, ref CGPoint targetContentOffset)
 		{
 			// If snap points are enabled, override the target offset with the calculated snap point.
@@ -456,6 +464,7 @@ namespace Windows.UI.Xaml.Controls
 				targetContentOffset = snapTo.Value;
 			}
 		}
+#endif
 
 		#endregion
 
@@ -589,8 +598,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					container.Style = style;
 				}
-
-				container.ContentTemplate = dataTemplate;
+				
+				if (!container.IsContainerFromTemplateRoot)
+				{
+					container.ContentTemplate = dataTemplate;
+				}
 				try
 				{
 					// Attach templated container to visual tree while measuring. This works around the bug that default Style is not 
@@ -635,7 +647,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!_templateCells.TryGetValue(template ?? _nullDataTemplateKey, out identifier))
 			{
-				identifier = new NSString(_templateCache.Count.ToString(CultureInfo.InvariantCulture));
+				identifier = new NSString(_templateCells.Count.ToString(CultureInfo.InvariantCulture));
 				_templateCells[template ?? _nullDataTemplateKey] = identifier;
 
 				Owner.RegisterClassForCell(typeof(ListViewBaseInternalContainer), identifier);
@@ -648,7 +660,7 @@ namespace Windows.UI.Xaml.Controls
 	/// <summary>
 	/// A hidden root item that allows the reuse of ContentControl features.
 	/// </summary>
-	internal class ListViewBaseInternalContainer : UICollectionViewCell
+	internal class ListViewBaseInternalContainer : UICollectionViewCell, ISetLayoutSlots
 	{
 		/// <summary>
 		/// Native constructor, do not use explicitly.
@@ -738,12 +750,30 @@ namespace Windows.UI.Xaml.Controls
 
 		public override CGRect Frame
 		{
-			get => base.Frame;
+			get
+			{
+				try
+				{
+					return base.Frame;
+				}
+				catch
+				{
+					Console.WriteLine("ListViewBaseInternalContainer get failed");
+					return CGRect.Empty;
+				}
+			}
+
 			set
 			{
-				base.Frame = value;
-				UpdateContentViewFrame();
-				UpdateContentLayoutSlots(value);
+				try
+				{
+					base.Frame = value;
+					UpdateContentViewFrame();
+				}
+				catch
+				{
+					Console.WriteLine("ListViewBaseInternalContainer set failed");
+				}
 			}
 		}
 
@@ -760,7 +790,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 				base.Bounds = value;
 				UpdateContentViewFrame();
-				UpdateContentLayoutSlots(Frame);
 			}
 		}
 
@@ -785,8 +814,19 @@ namespace Windows.UI.Xaml.Controls
 			var content = Content;
 			if (content != null)
 			{
-				content.LayoutSlot = frame;
-				content.LayoutSlotWithMarginsAndAlignments = frame;
+				var layoutSlot = LayoutInformation.GetLayoutSlot(content);
+				var layoutSlotWithMarginsAndAlignments = content.LayoutSlotWithMarginsAndAlignments;
+
+				//The LayoutInformation within ArrangeChild does not take into account the offset relative to the native ListView, so we apply that offset here.
+				//This is needed for TransformToVisual to work
+				layoutSlot.X = frame.X;
+				layoutSlot.Y = frame.Y;
+
+				layoutSlotWithMarginsAndAlignments.X += frame.X;
+				layoutSlotWithMarginsAndAlignments.Y += frame.Y;
+
+				LayoutInformation.SetLayoutSlot(content, layoutSlot);
+				content.LayoutSlotWithMarginsAndAlignments = layoutSlotWithMarginsAndAlignments;
 			}
 		}
 
@@ -857,7 +897,7 @@ namespace Windows.UI.Xaml.Controls
 						var sizesAreDifferent = frame.Size != layoutAttributes.Frame.Size;
 						if (sizesAreDifferent)
 						{
-							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+							if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 							{
 								this.Log().Debug($"Adjusting layout attributes for item at {layoutAttributes.IndexPath}({layoutAttributes.RepresentedElementKind}), Content={Content?.Content}. Previous frame={layoutAttributes.Frame}, new frame={frame}.");
 							}
@@ -889,7 +929,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Error($"Adjusting layout attributes for {layoutAttributes?.IndexPath?.ToString() ?? "[null]"} failed", e);
 			}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Returning layout attributes for item at {layoutAttributes.IndexPath}({layoutAttributes.RepresentedElementKind}), Content={Content?.Content}, with frame {layoutAttributes.Frame}");
 			}

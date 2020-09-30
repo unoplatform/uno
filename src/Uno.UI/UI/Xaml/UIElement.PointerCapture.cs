@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.Devices.Input;
 using Windows.UI.Xaml.Input;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
+using System.Runtime.CompilerServices;
 
 namespace Windows.UI.Xaml
 {
@@ -20,7 +23,7 @@ namespace Windows.UI.Xaml
 		 */
 
 		[Flags]
-		private enum PointerCaptureKind : byte
+		internal enum PointerCaptureKind : byte
 		{
 			None = 0,
 
@@ -30,23 +33,45 @@ namespace Windows.UI.Xaml
 			Any = Explicit | Implicit,
 		}
 
-		private class PointerCapture
+		internal enum PointerCaptureResult
 		{
-			private static readonly IDictionary<Pointer, PointerCapture> _actives = new Dictionary<Pointer, PointerCapture>(EqualityComparer<Pointer>.Default);
+			/// <summary>
+			/// The capture has been added for the given element.
+			/// </summary>
+			Added,
+
+			/// <summary>
+			/// The pointer has already been captured with the same kind by the given element.
+			/// </summary>
+			AlreadyCaptured,
+
+			/// <summary>
+			/// The pointer has already been captured by another element,
+			/// or it cannot be captured at this time (pointer not pressed).
+			/// </summary>
+			Failed,
+		}
+
+		private protected class PointerCapture
+		{
+			private static readonly IDictionary<PointerIdentifier, PointerCapture> _actives = new Dictionary<PointerIdentifier, PointerCapture>(EqualityComparer<PointerIdentifier>.Default);
 
 			/// <summary>
 			/// Current currently active pointer capture for the given pointer, or creates a new one.
 			/// </summary>
 			/// <param name="pointer">The pointer to capture</param>
 			public static PointerCapture GetOrCreate(Pointer pointer)
-				=> _actives.TryGetValue(pointer, out var capture)
+				=> _actives.TryGetValue(pointer.UniqueId, out var capture)
 					? capture
 					: new PointerCapture(pointer); // The capture will be added to the _actives only when a target is added to it.
 
-			public static bool TryGet(Pointer pointer, out PointerCapture capture)
+			public static bool TryGet(PointerIdentifier pointer, out PointerCapture capture)
 				=> _actives.TryGetValue(pointer, out capture);
 
-			public static bool Any(out IEnumerable<PointerCapture> cloneOfAllCaptures)
+			public static bool TryGet(Pointer pointer, out PointerCapture capture)
+				=> _actives.TryGetValue(pointer.UniqueId, out capture);
+
+			public static bool Any(out List<PointerCapture> cloneOfAllCaptures)
 			{
 				if (_actives.Any())
 				{
@@ -90,7 +115,12 @@ namespace Windows.UI.Xaml
 				=> _targets.TryGetValue(element, out var target)
 					&& (target.Kind & kinds) != PointerCaptureKind.None;
 
-			public bool TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs = null)
+			public IEnumerable<PointerCaptureTarget> GetTargets(PointerCaptureKind kinds)
+				=> _targets
+					.Values
+					.Where(target => (target.Kind & kinds) != PointerCaptureKind.None);
+
+			public PointerCaptureResult TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs = null)
 			{
 				global::System.Diagnostics.Debug.Assert(
 					kind == PointerCaptureKind.Explicit || kind == PointerCaptureKind.Implicit,
@@ -106,7 +136,7 @@ namespace Windows.UI.Xaml
 					// Validate if the requested kind is not already handled
 					if (target.Kind.HasFlag(kind))
 					{
-						return false;
+						return PointerCaptureResult.AlreadyCaptured;
 					}
 					else
 					{
@@ -145,7 +175,7 @@ namespace Windows.UI.Xaml
 				// Make sure that this capture is effective
 				EnsureEffectiveCaptureState();
 
-				return true;
+				return PointerCaptureResult.Added;
 			}
 
 			/// <summary>
@@ -154,16 +184,8 @@ namespace Windows.UI.Xaml
 			/// </summary>
 			public PointerCaptureKind RemoveTarget(UIElement element, PointerCaptureKind kinds, out PointerRoutedEventArgs lastDispatched)
 			{
-				if (_targets.TryGetValue(element, out var target))
-				{
-					// Validate if any of the requested kinds is handled
-					if ((target.Kind & kinds) == 0)
-					{
-						lastDispatched = default;
-						return PointerCaptureKind.None;
-					}
-				}
-				else
+				if (!_targets.TryGetValue(element, out var target)
+					|| (target.Kind & kinds) == 0) // Validate if any of the requested kinds is handled
 				{
 					lastDispatched = default;
 					return PointerCaptureKind.None;
@@ -193,7 +215,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{
-					this.Log().Info($"{target.Element}: Releasing ({kinds}) capture of pointer {Pointer}");
+					this.Log().Info($"{target.Element.GetDebugName()}: Releasing ({kinds}) capture of pointer {Pointer}");
 				}
 
 				// If we remove an explicit capture, we update the _localExplicitCaptures of the target element
@@ -227,15 +249,15 @@ namespace Windows.UI.Xaml
 			public bool ValidateAndUpdate(UIElement element, PointerRoutedEventArgs args, bool autoRelease)
 			{
 				if ((autoRelease && MostRecentDispatchedEventFrameId < args.FrameId)
-					|| !_nativeCaptureElement.IsHitTestVisibleCoalesced)
+					|| _nativeCaptureElement.GetHitTestVisibility() == HitTestability.Collapsed)
 				{
 					// If 'autoRelease' we want to release any previous capture that was not release properly no matter the reason.
-					// BUT we don't want to release a capture that was made by a child control (so LastDispatchedEventFrameId should already be equals to current FrameId).
+					// BUT we don't want to release a capture that was made by a child control (so MostRecentDispatchedEventFrameId should already be equals to current FrameId).
 					// We also do not allow a control that is not loaded to keep a capture (they should all have been release on unload).
 					// ** This is an IMPORTANT safety catch to prevent the application to become unresponsive **
 					Clear();
 
-					return false;
+					return true;
 				}
 				else if (_targets.TryGetValue(element, out var target))
 				{
@@ -277,7 +299,7 @@ namespace Windows.UI.Xaml
 				{
 					// We have some target, self enable us
 
-					if (_actives.TryGetValue(Pointer, out var capture))
+					if (_actives.TryGetValue(Pointer.UniqueId, out var capture))
 					{
 						if (capture != this)
 						{
@@ -287,21 +309,14 @@ namespace Windows.UI.Xaml
 					else
 					{
 						// This is what makes this capture active
-						_actives.Add(Pointer, this);
+						_actives.Add(Pointer.UniqueId, this);
 					}
 
 					if (_nativeCaptureElement == null)
 					{
 						_nativeCaptureElement = _targets.Single().Value.NativeCaptureElement;
 
-						try
-						{
-							_nativeCaptureElement.CapturePointerNative(Pointer);
-						}
-						catch (Exception e)
-						{
-							this.Log().Error($"Failed to capture natively pointer {Pointer}.", e);
-						}
+						CapturePointerNative();
 					}
 				}
 				else
@@ -310,28 +325,57 @@ namespace Windows.UI.Xaml
 
 					if (_nativeCaptureElement != null)
 					{
-						try
-						{
-							_nativeCaptureElement.ReleasePointerNative(Pointer);
-						}
-						catch (Exception e)
-						{
-							this.Log().Error($"Failed to release native capture of {Pointer}", e);
-						}
+						ReleasePointerNative();
 
 						_nativeCaptureElement = null;
 					}
 
-					if (_actives.TryGetValue(Pointer, out var capture) && capture == this)
+					if (_actives.TryGetValue(Pointer.UniqueId, out var capture) && capture == this)
 					{
 						// This is what makes this capture inactive
-						_actives.Remove(Pointer);
+						_actives.Remove(Pointer.UniqueId);
 					}
+				}
+			}
+
+			/// <remarks>
+			/// This method contains or is called by a try/catch containing method and can
+			/// be significantly slower than other methods as a result on WebAssembly.
+			/// See https://github.com/dotnet/runtime/issues/56309
+			/// </remarks>
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			private void ReleasePointerNative()
+			{
+				try
+				{
+					_nativeCaptureElement.ReleasePointerNative(Pointer);
+				}
+				catch (Exception e)
+				{
+					this.Log().Error($"Failed to release native capture of {Pointer}", e);
+				}
+			}
+
+			/// <remarks>
+			/// This method contains or is called by a try/catch containing method and
+			/// can be significantly slower than other methods as a result on WebAssembly.
+			/// See https://github.com/dotnet/runtime/issues/56309
+			/// </remarks>
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			private void CapturePointerNative()
+			{
+				try
+				{
+					_nativeCaptureElement.CapturePointerNative(Pointer);
+				}
+				catch (Exception e)
+				{
+					this.Log().Error($"Failed to capture natively pointer {Pointer}.", e);
 				}
 			}
 		}
 
-		private class PointerCaptureTarget
+		private protected class PointerCaptureTarget
 		{
 			public PointerCaptureTarget(UIElement element, PointerCaptureKind kind)
 			{

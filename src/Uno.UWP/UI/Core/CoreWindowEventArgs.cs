@@ -1,14 +1,13 @@
-using System;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
 namespace Windows.UI.Core
 {
-	public sealed partial class CoreWindowEventArgs
+	/// <summary>
+	/// Contains the set of arguments returned to an app after a window input or behavior event.
+	/// </summary>
+	public sealed partial class CoreWindowEventArgs : ICoreWindowEventArgs
 	{
-		public bool Handled
-		{
-			get;
-			set;
-		}
+		/// <summary>
+		/// Specifies the property that gets or sets whether the event was handled.
+		/// </summary>
+		public bool Handled { get; set; }
 	}
 }

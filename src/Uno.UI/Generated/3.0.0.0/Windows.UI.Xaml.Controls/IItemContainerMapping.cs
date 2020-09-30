@@ -2,22 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IItemContainerMapping 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		object ItemFromContainer( global::Windows.UI.Xaml.DependencyObject container);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.DependencyObject ContainerFromItem( object item);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		int IndexFromContainer( global::Windows.UI.Xaml.DependencyObject container);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.DependencyObject ContainerFromIndex( int index);
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.IItemContainerMapping.ItemFromContainer(Windows.UI.Xaml.DependencyObject)
+		// Skipping already declared method Windows.UI.Xaml.Controls.IItemContainerMapping.ContainerFromItem(object)
+		// Skipping already declared method Windows.UI.Xaml.Controls.IItemContainerMapping.IndexFromContainer(Windows.UI.Xaml.DependencyObject)
+		// Skipping already declared method Windows.UI.Xaml.Controls.IItemContainerMapping.ContainerFromIndex(int)
 	}
 }

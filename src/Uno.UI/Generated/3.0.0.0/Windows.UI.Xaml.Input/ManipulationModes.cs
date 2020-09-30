@@ -3,10 +3,8 @@
 namespace Windows.UI.Xaml.Input
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum ManipulationModes 
+	[global::System.FlagsAttribute]
+	public   enum ManipulationModes : uint
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.None
 		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.TranslateX

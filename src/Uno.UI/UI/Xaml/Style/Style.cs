@@ -4,29 +4,32 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml
 {
 	[Markup.ContentProperty(Name = "Setters")]
 	public partial class Style
 	{
-		private delegate void ApplyToHandler(DependencyObject instance);
+		private static Logger _logger = typeof(Style).Log();
 
 		public delegate Style StyleProviderHandler();
 
-		private readonly static Dictionary<Type, StyleProviderHandler> _lookup = new Dictionary<Type, StyleProviderHandler>(Uno.Core.Comparison.FastTypeComparer.Default);
-		private readonly static Dictionary<Type, Style> _defaultStyleCache = new Dictionary<Type, Style>(Uno.Core.Comparison.FastTypeComparer.Default);
-		private readonly static Dictionary<Type, StyleProviderHandler> _nativeLookup = new Dictionary<Type, StyleProviderHandler>(Uno.Core.Comparison.FastTypeComparer.Default);
-		private readonly static Dictionary<Type, Style> _nativeDefaultStyleCache = new Dictionary<Type, Style>(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly static Dictionary<Type, StyleProviderHandler> _lookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly static Dictionary<Type, Style> _defaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly static Dictionary<Type, StyleProviderHandler> _nativeLookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly static Dictionary<Type, Style> _nativeDefaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
 
 		/// <summary>
 		/// The xaml scope in force at the time the Style was created.
 		/// </summary>
 		private readonly XamlScope _xamlScope;
+		private Dictionary<object, SetterBase>? _settersMap;
+		private SetterBase[]? _flattenedSetters;
 
 		public Style()
 		{
@@ -49,6 +52,19 @@ namespace Windows.UI.Xaml
 
 		public SetterBaseCollection Setters { get; } = new SetterBaseCollection();
 
+		public bool IsSealed
+		{
+			get; private set;
+		}
+
+		public void Seal()
+		{
+			IsSealed = true;
+			Setters.Seal();
+
+			BasedOn?.Seal();
+		}
+
 		internal void ApplyTo(DependencyObject o, DependencyPropertyValuePrecedences precedence)
 		{
 			if (o == null)
@@ -57,28 +73,33 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			using (DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence))
-			{
-				var flattenedSetters = CreateSetterMap();
-#if !HAS_EXPENSIVE_TRYFINALLY
-				try
-#endif
-				{
-					ResourceResolver.PushNewScope(_xamlScope);
-					foreach (var pair in flattenedSetters)
-					{
-						pair.Value(o);
-					}
+			var localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
 
-					// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
-					(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(isThemeChangedUpdate: false);
-				}
+			EnsureSetterMap();
+
 #if !HAS_EXPENSIVE_TRYFINALLY
-				finally
+			try
 #endif
+			{
+				ResourceResolver.PushNewScope(_xamlScope);
+
+				if (_flattenedSetters != null)
 				{
-					ResourceResolver.PopScope();
+					for (var i = 0; i < _flattenedSetters.Length; i++)
+					{
+						_flattenedSetters[i].ApplyTo(o);
+					}
 				}
+
+				// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
+				(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading);
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY
+			finally
+#endif
+			{
+				ResourceResolver.PopScope();
+				localPrecedenceDisposable?.Dispose();
 			}
 		}
 
@@ -88,8 +109,8 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal void ClearInvalidProperties(DependencyObject dependencyObject, Style incomingStyle, DependencyPropertyValuePrecedences precedence)
 		{
-			var oldSetters = CreateSetterMap();
-			var newSetters = incomingStyle?.CreateSetterMap();
+			var oldSetters = EnsureSetterMap();
+			var newSetters = incomingStyle?.EnsureSetterMap();
 			foreach (var kvp in oldSetters)
 			{
 				if (kvp.Key is DependencyProperty dp)
@@ -106,20 +127,27 @@ namespace Windows.UI.Xaml
 		/// Creates a flattened list of setter methods for the whole hierarchy of
 		/// styles.
 		/// </summary>
-		private IDictionary<object, ApplyToHandler> CreateSetterMap()
+		private IDictionary<object, SetterBase> EnsureSetterMap()
 		{
-			var map = new Dictionary<object, ApplyToHandler>();
+			if (_settersMap == null)
+			{
+				_settersMap = new Dictionary<object, SetterBase>();
 
-			EnumerateSetters(this, map);
+				EnumerateSetters(this, _settersMap);
 
-			return map;
+				_flattenedSetters = _settersMap.Values.ToArray();
+			}
+
+			return _settersMap;
 		}
 
 		/// <summary>
 		/// Enumerates all the styles for the complete hierarchy.
 		/// </summary>
-		private void EnumerateSetters(Style style, Dictionary<object, ApplyToHandler> map)
+		private static void EnumerateSetters(Style style, Dictionary<object, SetterBase> map)
 		{
+			style.Seal();
+
 			if (style.BasedOn != null)
 			{
 				EnumerateSetters(style.BasedOn, map);
@@ -127,19 +155,21 @@ namespace Windows.UI.Xaml
 
 			if (style.Setters != null)
 			{
-				foreach (var setter in style.Setters)
+				for (var i = 0; i < style.Setters.Count; i++)
 				{
+					var setter = style.Setters[i];
+
 					if (setter is Setter s)
 					{
 						if (s.Property == null)
 						{
 							throw new InvalidOperationException("Property must be set on Setter used in Style"); // TODO: We should also support Setter.Target inside Style https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.setter#remarks
 						}
-						map[s.Property] = setter.ApplyTo;
+						map[s.Property] = setter;
 					}
 					else if (setter is ICSharpPropertySetter propertySetter)
 					{
-						map[propertySetter.Property] = setter.ApplyTo;
+						map[propertySetter.Property] = setter;
 					}
 				}
 			}
@@ -226,31 +256,31 @@ namespace Windows.UI.Xaml
 			if (style == null && !useUWPDefaultStyles)
 			{
 
-				if (typeof(Style).Log().IsEnabled(LogLevel.Debug))
+				if (_logger.IsEnabled(LogLevel.Debug))
 				{
-					typeof(Style).Log().LogDebug($"No native style found for type {type}, falling back on UWP style");
+					_logger.LogDebug($"No native style found for type {type}, falling back on UWP style");
 				}
 
 				// If no native style found, fall back on UWP style
 				style = GetDefaultStyleForType(type, useUWPDefaultStyles: true);
 			}
 
-			if (typeof(Style).Log().IsEnabled(LogLevel.Debug))
+			if (_logger.IsEnabled(LogLevel.Debug))
 			{
 				if (style != null)
 				{
-					typeof(Style).Log().LogDebug($"Returning {(useUWPDefaultStyles ? "UWP" : "native")} style {style} for type {type}");
+					_logger.LogDebug($"Returning {(useUWPDefaultStyles ? "UWP" : "native")} style {style} for type {type}");
 				}
 				else
 				{
-					typeof(Style).Log().LogDebug($"No {(useUWPDefaultStyles ? "UWP" : "native")} style found for type {type}");
+					_logger.LogDebug($"No {(useUWPDefaultStyles ? "UWP" : "native")} style found for type {type}");
 				}
 			}
 
 			return style;
 		}
 
-		private static bool ShouldUseUWPDefaultStyle(Type type)
+		internal static bool ShouldUseUWPDefaultStyle(Type type)
 		{
 			if (type != null && FeatureConfiguration.Style.UseUWPDefaultStylesOverride.TryGetValue(type, out var value))
 			{

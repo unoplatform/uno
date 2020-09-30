@@ -10,10 +10,16 @@ using Uno.Extensions;
 #if __IOS__
 using UIKit;
 using Path = UIKit.UIBezierPath;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 #elif __MACOS__
 using AppKit;
 using Path = AppKit.NSBezierPath;
 using CoreGraphics;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 #elif __ANDROID__
 using Android.Graphics.Drawables.Shapes;
 using Path = Android.Graphics.Path;
@@ -37,13 +43,12 @@ namespace Uno.Media
 			_owner = owner;
 		}
 
-		public override void BeginFigure(Point startPoint, bool isFilled, bool isClosed)
+		public override void BeginFigure(Point startPoint, bool isFilled)
 		{
 #if __IOS__ || __MACOS__
 			bezierPath.MoveTo(startPoint);
 #elif __ANDROID__
-			var physicalStartPoint = LogicalToPhysicalNoRounding(startPoint);
-			bezierPath.MoveTo((float)physicalStartPoint.X, (float)physicalStartPoint.Y);
+			bezierPath.MoveTo((float)startPoint.X, (float)startPoint.Y);
 #elif __SKIA__
 			bezierPath.Geometry.MoveTo(new SkiaSharp.SKPoint((float)startPoint.X, (float)startPoint.Y));
 #endif
@@ -58,8 +63,7 @@ namespace Uno.Media
 #elif __MACOS__
 			bezierPath.LineTo(point);
 #elif __ANDROID__
-			var physicalPoint = LogicalToPhysicalNoRounding(point);
-			bezierPath.LineTo((float)physicalPoint.X, (float)physicalPoint.Y);
+			bezierPath.LineTo((float)point.X, (float)point.Y);
 #elif __SKIA__
 			bezierPath.Geometry.LineTo((float)point.X, (float)point.Y);
 #endif
@@ -74,10 +78,7 @@ namespace Uno.Media
 #elif __MACOS__
 			bezierPath.CurveTo(point3, point1, point2);
 #elif __ANDROID__
-			var physicalPoint1 = LogicalToPhysicalNoRounding(point1);
-			var physicalPoint2 = LogicalToPhysicalNoRounding(point2);
-			var physicalPoint3 = LogicalToPhysicalNoRounding(point3);
-			bezierPath.CubicTo((float)physicalPoint1.X, (float)physicalPoint1.Y, (float)physicalPoint2.X, (float)physicalPoint2.Y, (float)physicalPoint3.X, (float)physicalPoint3.Y);
+			bezierPath.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
 #elif __SKIA__
 			bezierPath.Geometry.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
 #endif
@@ -98,9 +99,7 @@ namespace Uno.Media
 			var controlPoint2 = new CGPoint(endPoint.X + ((point2.X - endPoint.X) * 2.0 / 3.0), endPoint.Y + (point2.Y - endPoint.Y) * 2.0 / 3.0);
 			bezierPath.CurveTo(point1, controlPoint1, controlPoint2);
 #elif __ANDROID__
-			var physicalPoint1 = LogicalToPhysicalNoRounding(point1);
-			var physicalPoint2 = LogicalToPhysicalNoRounding(point2);
-			bezierPath.QuadTo((float)physicalPoint1.X, (float)physicalPoint1.Y, (float)physicalPoint2.X, (float)physicalPoint2.Y);
+			bezierPath.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
 #elif __SKIA__
 			bezierPath.Geometry.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
 #endif
@@ -166,7 +165,7 @@ namespace Uno.Media
 			}
 
 			bezierPath.ArcTo(
-				circle.LogicalToPhysicalPixels().ToRectF(),
+				circle.ToRectF(),
 				(float)startAngle,
 				(float)sweepAngle
 			);
@@ -256,13 +255,6 @@ namespace Uno.Media
 				}
 			}
 		}
-
-#if __ANDROID__
-		private static Point LogicalToPhysicalNoRounding(Point point)
-		{
-			return new Point(point.X * ViewHelper.Scale, point.Y * ViewHelper.Scale);
-		}
-#endif
 
 		public override void Dispose()
 		{

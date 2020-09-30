@@ -15,7 +15,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 	[TestClass]
 	public class Given_TextBlock
 	{
-		private const double DefaultFontSize = 15.0; //TODO: This should change to 14.0 when Uno is aligned to a newer version of the UWP SDK
+		private const double DefaultFontSize = 14.0;
 
 		[TestMethod]
 		public void When_Default_FontSize()

@@ -12,7 +12,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Windows.Input;
 using Windows.UI.Xaml.Controls;
 using System.Diagnostics;

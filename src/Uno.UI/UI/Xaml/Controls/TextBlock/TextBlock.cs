@@ -20,6 +20,8 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
 using Uno;
+using Uno.Foundation.Logging;
+
 
 #if XAMARIN_IOS
 using UIKit;
@@ -35,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		public TextBlock()
 		{
 			IFrameworkElementHelper.Initialize(this);
@@ -108,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontStyleProperty, value);
 		}
 
-		public static DependencyProperty FontStyleProperty { get ; } =
+		public static DependencyProperty FontStyleProperty { get; } =
 			DependencyProperty.Register(
 				"FontStyle",
 				typeof(FontStyle),
@@ -138,7 +140,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextWrappingProperty, value);
 		}
 
-		public static DependencyProperty TextWrappingProperty { get ; } =
+		public static DependencyProperty TextWrappingProperty { get; } =
 			DependencyProperty.Register(
 				"TextWrapping",
 				typeof(TextWrapping),
@@ -167,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontWeightProperty, value);
 		}
 
-		public static DependencyProperty FontWeightProperty { get ; } =
+		public static DependencyProperty FontWeightProperty { get; } =
 			DependencyProperty.Register(
 				"FontWeight",
 				typeof(FontWeight),
@@ -201,7 +203,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(TextProperty, value); }
 		}
 
-		public static DependencyProperty TextProperty { get ; } =
+		public static DependencyProperty TextProperty { get; } =
 			DependencyProperty.Register(
 				"Text",
 				typeof(string),
@@ -244,7 +246,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontFamilyProperty, value);
 		}
 
-		public static DependencyProperty FontFamilyProperty { get ; } =
+		public static DependencyProperty FontFamilyProperty { get; } =
 			DependencyProperty.Register(
 				"FontFamily",
 				typeof(FontFamily),
@@ -274,13 +276,13 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontSizeProperty, value);
 		}
 
-		public static DependencyProperty FontSizeProperty { get ; } =
+		public static DependencyProperty FontSizeProperty { get; } =
 			DependencyProperty.Register(
 				"FontSize",
 				typeof(double),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: 15.0,
+					defaultValue: 14.0,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontSizeChanged()
 				)
@@ -304,7 +306,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MaxLinesProperty, value);
 		}
 
-		public static DependencyProperty MaxLinesProperty { get ; } =
+		public static DependencyProperty MaxLinesProperty { get; } =
 			DependencyProperty.Register(
 				"MaxLines",
 				typeof(int),
@@ -333,7 +335,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextTrimmingProperty, value);
 		}
 
-		public static DependencyProperty TextTrimmingProperty { get ; } =
+		public static DependencyProperty TextTrimmingProperty { get; } =
 			DependencyProperty.Register(
 				"TextTrimming",
 				typeof(TextTrimming),
@@ -380,7 +382,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -396,12 +398,37 @@ namespace Windows.UI.Xaml.Controls
 		{
 			void refreshForeground()
 			{
-				OnForegroundChangedPartial();
-				InvalidateTextBlock();
+				// The try-catch here is primarily for the benefit of Android. This callback is raised when (say) the brush color changes,
+				// which may happen when the system theme changes from light to dark. For app-level resources, a large number of views may
+				// be subscribed to changes on the brush, including potentially some that have been removed from the visual tree, collected
+				// on the native side, but not yet collected on the managed side (for Xamarin targets).
+
+				// On Android, in practice this could result in ObjectDisposedExceptions when calling RequestLayout(). The try/catch is to
+				// ensure that callbacks are correctly raised for remaining views referencing the brush which *are* still live in the visual tree.
+#if !HAS_EXPENSIVE_TRYFINALLY
+				try
+#endif
+				{
+					OnForegroundChangedPartial();
+					InvalidateTextBlock();
+				}
+#if !HAS_EXPENSIVE_TRYFINALLY
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Failed to invalidate for brush changed: {e}");
+					}
+				}
+#endif
 			}
 
-			_foregroundChanged.Disposable =
-				Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+			_foregroundChanged.Disposable = null;
+			if (Foreground?.SupportsAssignAndObserveBrush ?? false)
+			{
+				_foregroundChanged.Disposable =
+					Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+			}
 
 			refreshForeground();
 		}
@@ -447,7 +474,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextAlignmentProperty, value);
 		}
 
-		public static DependencyProperty TextAlignmentProperty { get ; } =
+		public static DependencyProperty TextAlignmentProperty { get; } =
 			DependencyProperty.Register(
 				"TextAlignment",
 				typeof(TextAlignment),
@@ -503,7 +530,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(LineHeightProperty, value);
 		}
 
-		public static DependencyProperty LineHeightProperty { get ; } =
+		public static DependencyProperty LineHeightProperty { get; } =
 			DependencyProperty.Register("LineHeight", typeof(double), typeof(TextBlock), new FrameworkPropertyMetadata(0d,
 				propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged())
 			);
@@ -550,7 +577,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(PaddingProperty, value);
 		}
 
-		public static DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -577,7 +604,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(CharacterSpacingProperty, value);
 		}
 
-		public static DependencyProperty CharacterSpacingProperty =
+		public static DependencyProperty CharacterSpacingProperty { get; } =
 			DependencyProperty.Register(
 				"CharacterSpacing",
 				typeof(int),
@@ -607,10 +634,10 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextDecorationsProperty, value);
 		}
 
-		public static DependencyProperty TextDecorationsProperty =
+		public static DependencyProperty TextDecorationsProperty { get; } =
 			DependencyProperty.Register(
 				"TextDecorations",
-				typeof(int),
+				typeof(uint),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,
@@ -634,6 +661,11 @@ namespace Windows.UI.Xaml.Controls
 		/// have not been initialized and don't need to be synchronized.
 		/// </summary>
 		private bool UseInlinesFastPath => _inlines == null;
+
+		/// <summary>
+		/// Returns if the TextBlock is constrained by a maximum number of lines.
+		/// </summary>
+		private bool IsLayoutConstrainedByMaxLines => MaxLines > 0;
 
 		/// <summary>
 		/// Gets the inlines which affect the typography of the TextBlock.
@@ -703,6 +735,12 @@ namespace Windows.UI.Xaml.Controls
 				e.Handled = true;
 				// hyperlink.CompleteGesture(); No needs to complete the gesture as the TextBlock won't even receive the Pressed.
 			}
+			else if (sender is TextBlock textBlock && textBlock.IsTextSelectionEnabled)
+			{
+				// Selectable TextBlock should also handle pointer pressed to ensure
+				// RootVisual does not steal its focus.
+				e.Handled = true;
+			}
 		};
 
 		internal static readonly PointerEventHandler OnPointerReleased = (object sender, PointerRoutedEventArgs e) =>
@@ -767,7 +805,7 @@ namespace Windows.UI.Xaml.Controls
 				that.CompleteGesture();
 
 				// On UWP we don't get any CaptureLost, so make sure to manually release the capture silently
-				that.ReleasePointerCapture(e.Pointer, muteEvent: true);
+				that.ReleasePointerCapture(e.Pointer.UniqueId, muteEvent: true);
 
 				// KNOWN ISSUE:
 				// On UWP the 'click' event is raised **after** the PointerReleased ... but deferring the event on the Dispatcher
@@ -901,11 +939,21 @@ namespace Windows.UI.Xaml.Controls
 		private protected override double GetActualWidth() => DesiredSize.Width;
 		private protected override double GetActualHeight() => DesiredSize.Height;
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			SetDefaultForeground(ForegroundProperty);
 		}
+
+		internal override bool CanHaveChildren() => true;
+
+		public new bool Focus(FocusState value) => base.Focus(value);
+
+		internal override bool IsFocusable =>
+			/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.
+			IsVisible() &&
+			/*IsEnabled() &&*/ (IsTextSelectionEnabled || IsTabStop) &&
+			AreAllAncestorsVisible();
 	}
 }

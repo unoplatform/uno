@@ -18,7 +18,11 @@ using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.Build;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Uno.UI.RemoteControl.VS.Helpers;
 using Task = System.Threading.Tasks.Task;
+
+#pragma warning disable VSTHRD010
+#pragma warning disable VSTHRD109
 
 namespace Uno.UI.RemoteControl.VS
 {
@@ -39,6 +43,7 @@ namespace Uno.UI.RemoteControl.VS
 		private System.Diagnostics.Process _process;
 
 		private int RemoteControlServerPort;
+		private bool _closing = false;
 
 		public EntryPoint(DTE2 dte2, string toolsPath, AsyncPackage asyncPackage, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider)
 		{
@@ -62,7 +67,7 @@ namespace Uno.UI.RemoteControl.VS
 			// and don't recreate it unless out-of-process msbuild.exe instances are terminated.
 			//
 			// This will can possibly be removed when all projects are migrated to the sdk project system.
-			UpdateProjectsAsync();
+			_ = UpdateProjectsAsync();
 		}
 
 		private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
@@ -96,12 +101,36 @@ namespace Uno.UI.RemoteControl.VS
 				.Add(UnoPlatformOutputPane);
 			}
 
-			_debugAction = s => owPane.OutputString("[DEBUG] " + s + "\r\n");
-			_infoAction = s => owPane.OutputString("[INFO] " + s + "\r\n");
-			_infoAction = s => owPane.OutputString("[INFO] " + s + "\r\n");
-			_verboseAction = s => owPane.OutputString("[VERBOSE] " + s + "\r\n");
-			_warningAction = s => owPane.OutputString("[WARNING] " + s + "\r\n");
-			_errorAction = e => owPane.OutputString("[ERROR] " + e + "\r\n");
+			_debugAction = s => {
+				if (!_closing)
+				{
+					owPane.OutputString("[DEBUG] " + s + "\r\n");
+				}
+			};
+			_infoAction = s => {
+				if (!_closing)
+				{
+					owPane.OutputString("[INFO] " + s + "\r\n");
+				}
+			};
+			_verboseAction = s => {
+				if (!_closing)
+				{
+					owPane.OutputString("[VERBOSE] " + s + "\r\n");
+				}
+			};
+			_warningAction = s => {
+				if (!_closing)
+				{
+					owPane.OutputString("[WARNING] " + s + "\r\n");
+				}
+			};
+			_errorAction = e => {
+				if (!_closing)
+				{
+					owPane.OutputString("[ERROR] " + e + "\r\n");
+				}
+			};
 
 			_infoAction($"Uno Remote Control initialized ({GetAssemblyVersion()})");
 		}
@@ -134,13 +163,24 @@ namespace Uno.UI.RemoteControl.VS
 			try
 			{
 				await StartServerAsync();
-
+				var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
 				foreach (var p in await GetProjectsAsync())
 				{
-					if (GetMsbuildProject(p.FileName) is Microsoft.Build.Evaluation.Project msbProject && IsApplication(msbProject))
+					var filename = string.Empty;
+					try
 					{
-						var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
-						SetGlobalProperty(p.FileName, RemoteControlServerPortProperty, portString);
+						filename = p.FileName;
+					}
+					catch (Exception ex)
+					{
+						_debugAction($"Exception on retrieving {p.UniqueName} details. Err: {ex}.");
+						_warningAction($"Cannot read {p.UniqueName} project details (It may be unloaded).");
+					}
+					if (string.IsNullOrWhiteSpace(filename) == false
+						&& GetMsbuildProject(filename) is Microsoft.Build.Evaluation.Project msbProject
+						&& IsApplication(msbProject))
+					{
+						SetGlobalProperty(filename, RemoteControlServerPortProperty, portString);
 					}
 				}
 			}
@@ -171,9 +211,30 @@ namespace Uno.UI.RemoteControl.VS
 				}
 				finally
 				{
+					_closing = true;
 					_process = null;
 				}
 			}
+		}
+
+		private int GetDotnetMajorVersion()
+		{
+			var result = ProcessHelpers.RunProcess("dotnet", "--version", Path.GetDirectoryName(_dte.Solution.FileName));
+
+			if (result.exitCode != 0)
+			{
+				throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" exited with code {result.exitCode})");
+			}
+
+			if (result.output.Contains("."))
+			{
+				if(int.TryParse(result.output.Substring(0, result.output.IndexOf('.')), out int majorVersion))
+				{
+					return majorVersion;
+				}
+			}
+
+			throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" returned \"{result.output}\")");
 		}
 
 		private async Task StartServerAsync()
@@ -182,9 +243,11 @@ namespace Uno.UI.RemoteControl.VS
 			{
 				RemoteControlServerPort = GetTcpPort();
 
+				var runtimeVersionPath = GetDotnetMajorVersion() > 5 ? "netcoreapp3.1" : "net6.0";
+
 				var sb = new StringBuilder();
 
-				var hostBinPath = Path.Combine(_toolsPath, "host", "Uno.UI.RemoteControl.Host.dll");
+				var hostBinPath = Path.Combine(_toolsPath, "host", runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
 				string arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort}";
 				var pi = new ProcessStartInfo("dotnet", arguments)
 				{

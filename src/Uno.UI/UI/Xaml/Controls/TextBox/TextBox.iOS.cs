@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Uno.UI;
 using Windows.UI.Xaml.Data;
@@ -9,9 +10,8 @@ using Uno.UI.Extensions;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
-using Uno.Client;
 using Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -27,6 +27,7 @@ namespace Windows.UI.Xaml.Controls
 			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, null, TextAlignment));
 			OnReturnKeyTypeChanged(ReturnKeyType);
 			OnKeyboardAppearanceChanged(KeyboardAppearance);
+			UpdateKeyboardThemePartial();
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState)
@@ -70,6 +71,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_textBoxView?.UpdateTextAlignment();
 		}
+
+		partial void SelectPartial(int start, int length)
+		{
+			if (_textBoxView != null)
+			{
+				_textBoxView.Select(start, length);
+			}
+		}
+
+		partial void SelectAllPartial() => Select(0, Text.Length);
 
 		internal MultilineTextBoxView MultilineTextBox
 		{
@@ -115,7 +126,7 @@ namespace Windows.UI.Xaml.Controls
 		internal bool OnKey(char key)
 		{
 			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey())
-			{ 
+			{
 				CanBubbleNatively = true
 			};
 
@@ -267,7 +278,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ReturnKeyTypeProperty, value); }
 		}
 
-		public static DependencyProperty ReturnKeyTypeProperty { get ; } =
+		public static DependencyProperty ReturnKeyTypeProperty { get; } =
 			DependencyProperty.Register(
 				"ReturnKeyType",
 				typeof(UIReturnKeyType),
@@ -304,7 +315,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(KeyboardAppearanceProperty, value); }
 		}
 
-		public static DependencyProperty KeyboardAppearanceProperty { get ; } =
+		public static DependencyProperty KeyboardAppearanceProperty { get; } =
 			DependencyProperty.Register(
 				"KeyboardAppearance",
 				typeof(UIKeyboardAppearance),
@@ -324,5 +335,35 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		partial void UpdateKeyboardThemePartial()
+		{
+			if (_textBoxView == null) return;
+
+			// if KeyboardAppearance has been explicitly set, we leave it as is.
+			if (KeyboardAppearance != UIKeyboardAppearance.Default) return;
+
+			ElementTheme? GetExplicitlySetAppTheme() => Application.Current.IsThemeSetExplicitly
+				? Application.Current.ActualElementTheme as ElementTheme?
+				: null;
+
+			// the appearance will be determined by the first parent/self that has a non-default RequestedTheme,
+			// or the explicitly requested application theme.
+			// note: the literal "Default" value is lost on the ActualTheme property, which is why we are not using it here.
+			var theme = VisualTreeHelper.EnumerateAncestors(this).OfType<FrameworkElement>()
+				.Prepend(this)
+				.Select(x => x.RequestedTheme as ElementTheme?)
+				.Append(GetExplicitlySetAppTheme())
+				.FirstOrDefault(x => x != ElementTheme.Default);
+			var appearance = theme switch
+			{
+				ElementTheme.Light => UIKeyboardAppearance.Light,
+				ElementTheme.Dark => UIKeyboardAppearance.Dark,
+
+				_ => UIKeyboardAppearance.Default
+			};
+
+			_textBoxView.KeyboardAppearance = appearance;
+		}
 	}
 }

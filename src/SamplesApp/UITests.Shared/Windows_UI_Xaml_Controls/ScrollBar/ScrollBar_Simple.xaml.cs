@@ -35,12 +35,12 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollBar
 
 		public void OnVerticalScroll(object sender, ScrollEventArgs args)
 		{
-			scrollValue.Text = FormattableString.Invariant($"Vertical Scroll: {args.ScrollEventType}, {args.NewValue}");
+			scrollValue.Text = $"Vertical Scroll: {args.ScrollEventType}, {args.NewValue}";
 		}
 
 		public void OnHorizontalScroll(object sender, ScrollEventArgs args)
 		{
-			scrollValue.Text = FormattableString.Invariant($"Horizontal Scroll: {args.ScrollEventType}, {args.NewValue}");
+			scrollValue.Text = $"Horizontal Scroll: {args.ScrollEventType}, {args.NewValue}";
 		}
 	}
 }

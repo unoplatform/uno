@@ -11,8 +11,9 @@ using Windows.UI.Xaml.Data;
 using Uno.Extensions;
 using System.Collections.Specialized;
 using Uno.Disposables;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -146,6 +147,7 @@ namespace Windows.UI.Xaml.Controls
 			if (NativePanel != null)
 			{
 				return NativePanel.IndexPathsForVisibleItems
+						.OrderBy(p => p.ToIndexPath())
 						.Select(NativePanel.CellForItem)
 						.OfType<ListViewBaseInternalContainer>()
 						.Select(cell => cell.Content)
@@ -169,6 +171,11 @@ namespace Windows.UI.Xaml.Controls
 			NativePanel?.DeleteItems(GetIndexPathsFromStartAndCount(firstItem, count, section));
 
 			ManagedVirtualizingPanel?.GetLayouter().RemoveItems(firstItem, count, section);
+		}
+
+		partial void NativeReplaceItems(int firstItem, int count, int section)
+		{
+			NativePanel?.ReloadItems(GetIndexPathsFromStartAndCount(firstItem, count, section));
 		}
 
 		/// <summary>

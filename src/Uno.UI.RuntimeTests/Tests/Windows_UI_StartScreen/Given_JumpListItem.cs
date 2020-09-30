@@ -111,6 +111,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_StartScreen
 			item.Logo = new Uri("ms-appx:///Test.png");
 			Assert.AreEqual("ms-appx:///Test.png", item.Logo.AbsoluteUri);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Description_Is_Empty_No_Exception()
+		{
+			try
+			{
+				var item = JumpListItem.CreateWithArguments("Hello", "Test");
+				item.Description = string.Empty;
+				var jumpList = await JumpList.LoadCurrentAsync();
+				jumpList.Items.Clear();
+				jumpList.Items.Add(item);
+				await jumpList.SaveAsync();
+				// reload from native
+				var newJumpList = await JumpList.LoadCurrentAsync();
+				Assert.AreEqual(string.Empty, newJumpList.Items.First().Description);
+			}
+			finally
+			{
+				var jumpList = await JumpList.LoadCurrentAsync();
+				jumpList.Items.Clear();
+				await jumpList.SaveAsync();
+			}
+		}
 	}
 }
 #endif

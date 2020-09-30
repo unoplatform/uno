@@ -470,6 +470,27 @@ namespace Uno.UI.RuntimeTests.Tests
 			}
 		}
 
+		[TestMethod]
+		public async Task When_Large_WriteBytesAsync()
+		{
+			IStorageFile targetFile = null;
+			try
+			{
+				var contents = new string('a', 200000) + new string('b', 200000);
+				var bytes = Encoding.UTF8.GetBytes(contents);
+				var fileName = GenerateRandomFileName();
+				targetFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName);
+				await FileIO.WriteBytesAsync(targetFile, bytes);
+
+				var realContents = File.ReadAllBytes(targetFile.Path);
+				CollectionAssert.AreEqual(bytes, realContents);
+			}
+			finally
+			{
+				DeleteFile(targetFile);
+			}
+		}
+
 		private string GenerateRandomFileName() => $"{Guid.NewGuid()}.txt";
 
 		private void DeleteFile(IStorageFile file)

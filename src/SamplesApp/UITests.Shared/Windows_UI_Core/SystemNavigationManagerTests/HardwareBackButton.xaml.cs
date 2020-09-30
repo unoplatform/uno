@@ -15,9 +15,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Uno.UI.Samples.Controls;
 
-namespace UITests.Shared.Windows_UI_Core.SystemNavigationManagerTests
+namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 {
-	[SampleControlInfo("SystemNavigationManager", "HardwareBackButton")]
+	[SampleControlInfo("Windows.UI.Core", "HardwareBackButton")]
 	public sealed partial class HardwareBackButton : Page
 	{
 		public HardwareBackButton()
@@ -30,20 +30,22 @@ namespace UITests.Shared.Windows_UI_Core.SystemNavigationManagerTests
 
 		private void Enable(object sender, TappedRoutedEventArgs e)
 		{
-			_output.Text += "Enable\r\n";
+			OutputTextBlock.Text += "Enable\r\n";
 			Windows.UI.Core.SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
 		}
 
 		private void Disable(object sender, TappedRoutedEventArgs e)
 		{
-			_output.Text += "Collapse\r\n";
+			OutputTextBlock.Text += "Collapse\r\n";
 			Windows.UI.Core.SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 		}
 
 		private void OnBackRequested(object sender, BackRequestedEventArgs args)
 		{
-			_output.Text += "Back requested\r\n";
-			args.Handled = _handle.IsChecked.GetValueOrDefault();
+			OutputTextBlock.Text += "Back requested\r\n";
+			var handled = HandleCheckBox.IsChecked.GetValueOrDefault();
+			HandleCheckBox.IsChecked = false;
+			args.Handled = handled;
 		}
 	}
 }

@@ -1,25 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-		
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsbindings</TSBindingsPath>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
   <ItemGroup>
     <None Remove="tsconfig.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="tsconfig.json" />
-  </ItemGroup>
+ 		<ConfigFiles Include="tsconfig.json" />
+ </ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.Compiler" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
-		<PackageReference Include="Uno.SourceGenerationTasks"/>
+		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -35,10 +36,6 @@
 
 	<PropertyGroup>
 		<CompileTypeScriptDependsOn>_UnoSourceGenerator; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

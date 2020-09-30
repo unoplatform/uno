@@ -2,19 +2,21 @@
   "$schema": "http://json.schemastore.org/template",
   "author": "Uno Platform",
   "classifications": [
-    "Web",
+    "Multi-platform",
     "Uno Platform",
-    "WebAssembly",
     "Android",
     "iOS",
     "Windows",
     "macOS",
-    "WinUI"
+    "Linux",
+    "WebAssembly",
+    "WinUI",
+    "dotnet-new"
   ],
-  "name": "Cross-Platform App (WinUI, Uno Platform)",
+  "name": "Multi-Platform App (WinUI)",
   "identity": "Uno.Platform.UnoApp.WinUI",
   "groupIdentity": "Uno.Platform.Blank.WinUI",
-  "description": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets WinUI 3 for UWP, Android, iOS, macOS, and WebAssembly.",
+  "description": "Template for creating a multi-platform C# & XAML application targeting WinUI 3, Android, iOS, macOS, WebAssembly, Skia/Tizen, Skia/WPF and Skia/GTK for Linux.",
   "precedence": "6001",
   "tags": {
     "language": "C#",
@@ -22,6 +24,7 @@
   },
   "shortName": "unoapp-winui",
   "sourceName": "UnoWinUIQuickStart",
+  "defaultName": "UnoApp",
   "placeholderFilename": "template-ignore",
   "preferNameDirectory": true,
   "guids": [
@@ -32,7 +35,7 @@
     "B445DF73-AC9E-4276-9FBA-7CB5AD5D2518",
     "3EA9E612-E717-4E55-9034-DE653429FEFD", // WPF
     "3EA9E612-E717-4E55-9034-C415CD62AF9A", // UWP
-    "2B1FDFB6-C93C-4CA1-A6AB-528C4B3654B9", // UWP
+    "2B1FDFB6-C93C-4CA1-A6AB-528C4B3654B9" // UWP
   ],
   "symbols": {
     "guid1": {
@@ -51,6 +54,46 @@
         "format": "N"
       }
     },
+    "guid3": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid3$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "guid4": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid4$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "guid5": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid5$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "guid6": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid6$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "guid7": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid7$",
+      "parameters": {
+        "format": "N"
+      }
+    },
     "windowsPublisherName": {
       "type": "parameter",
       "datatype": "text",
@@ -63,12 +106,6 @@
       "dataType": "bool",
       "defaultValue": "true",
       "description": "Enables the WebAssembly platform support project"
-    },
-    "UWP": {
-      "type": "parameter",
-      "dataType": "bool",
-      "defaultValue": "true",
-      "description": "Enables the Windows platform support project"
     },
     "iOS": {
       "type": "parameter",
@@ -88,11 +125,35 @@
       "defaultValue": "true",
       "description": "Enables the macOS platform support project"
     },
-    "vscodeWasm": {
+    "skia-wpf": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Skia/WPF platform support project"
+    },
+    "skia-gtk": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Skia/GTK platform support project"
+    },
+    "winui-desktop": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the WinUI desktop platform support project"
+    },
+    "vscode": {
       "type": "parameter",
       "dataType": "bool",
       "defaultValue": "false",
       "description": "Adds the Visual Studio Code Debugging support files for WebAssembly"
+    },
+    "skipRestore": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "If specified, skips the automatic restore of the project on create.",
+      "defaultValue": "false"
     }
   },
   "primaryOutputs": [
@@ -108,8 +169,15 @@
       "path": "UnoWinUIQuickStart.iOS\\UnoWinUIQuickStart.iOS.csproj"
     },
     {
-      "condition": "UWP",
       "path": "UnoWinUIQuickStart.UWP\\UnoWinUIQuickStart.Uwp.csproj"
+    },
+    {
+      "condition": "winui-desktop",
+      "path": "UnoWinUIQuickStart.Windows.Desktop\\UnoWinUIQuickStart.Windows.Desktop.csproj"
+    },
+    {
+      "condition": "winui-desktop",
+      "path": "UnoWinUIQuickStart.Windows.Package\\UnoWinUIQuickStart.Windows.Package.csproj"
     },
     {
       "condition": "Wasm",
@@ -118,11 +186,32 @@
     {
       "condition": "macOS",
       "path": "UnoWinUIQuickStart.macOS\\UnoWinUIQuickStart.macOS.csproj"
+    },
+    {
+      "condition": "skia-gtk",
+      "path": "UnoWinUIQuickStart.macOS\\UnoWinUIQuickStart.Skia.Gtk.csproj"
+    },
+    {
+      "condition": "skia-wpf",
+      "path": "UnoWinUIQuickStart.macOS\\UnoWinUIQuickStart.Skia.WPF.csproj"
+    },
+    {
+      "condition": "skia-wpf",
+      "path": "UnoWinUIQuickStart.macOS\\UnoWinUIQuickStart.Skia.WPF.Host.csproj"
     }
   ],
   "sources": [
     {
       "modifiers": [
+        {
+          "copyOnly": [
+            "**/*.png",
+            "**/*.jpg",
+            "**/*.gif",
+            "**/*.woff",
+            "**/*.ttf"
+          ]
+        },
         {
           "condition": "(!iOS)",
           "exclude": [
@@ -148,18 +237,38 @@
           ]
         },
         {
-          "condition": "(!UWP)",
+          "condition": "(!skia-gtk)",
           "exclude": [
-            "UnoWinUIQuickStart.UWP/**/*"
+            "UnoWinUIQuickStart.Skia.Gtk/**/*"
           ]
         },
         {
-          "condition": "(!vscodeWasm)",
+          "condition": "(!skia-wpf)",
+          "exclude": [
+            "UnoWinUIQuickStart.Skia.WPF/**/*",
+            "UnoWinUIQuickStart.Skia.WPF.Host/**/*"
+          ]
+        },
+        {
+          "condition": "(!vscode)",
           "exclude": [
             ".vscode/**/*"
           ]
         }
       ]
+    }
+  ],
+  "postActions": [
+    {
+      "condition": "(!skipRestore)",
+      "description": "Restore NuGet packages required by this project",
+      "manualInstructions": [
+        {
+          "text": "Run 'dotnet restore'"
+        }
+      ],
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "continueOnError": true
     }
   ]
 }

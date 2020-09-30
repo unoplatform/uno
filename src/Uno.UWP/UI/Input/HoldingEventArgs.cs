@@ -1,7 +1,12 @@
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Uno;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
 	public partial class HoldingEventArgs 
 	{
@@ -20,5 +25,11 @@ namespace Windows.UI.Input
 		public Point Position { get; }
 
 		public HoldingState HoldingState { get; }
+
+		[NotImplemented]
+		public uint ContactCount { get; } = 1;
+
+		[NotImplemented]
+		public uint CurrentContactCount => HoldingState == HoldingState.Started ? 1u : 0u;
 	}
 }

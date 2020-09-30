@@ -1,16 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
@@ -18,6 +12,18 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Pivot : ItemsControl
 	{
+		private static class PivotHeaderItemSelectionStates
+		{
+			public const string Disabled = "Disabled";
+			public const string Unselected = "Unselected";
+			public const string UnselectedLocked = "UnselectedLocked"; // TODO: This is not currently in use.
+			public const string Selected = "Selected";
+			public const string UnselectedPointerOver = "UnselectedPointerOver";
+			public const string SelectedPointerOver = "SelectedPointerOver";
+			public const string UnselectedPressed = "UnselectedPressed";
+			public const string SelectedPressed = "SelectedPressed";
+		}
+
 		private ContentControl _titleContentControl;
 		private PivotHeaderPanel _staticHeader;
 		private PivotHeaderPanel _header;
@@ -57,6 +63,13 @@ namespace Windows.UI.Xaml.Controls
 			_isTemplateApplied = true;
 
 			UpdateProperties();
+
+#if __WASM__ || __SKIA__
+			//TODO: Workaround for https://github.com/unoplatform/uno/issues/5144
+			//OnApplyTemplate() is comming too late when using bindings
+			UpdateItems(null);
+#endif
+
 			SynchronizeItems();
 		}
 
@@ -69,6 +82,9 @@ namespace Windows.UI.Xaml.Controls
 					if (item is PivotHeaderItem pivotHeaderItem)
 					{
 						pivotHeaderItem.PointerPressed -= OnItemPointerPressed;
+						pivotHeaderItem.PointerEntered -= OnItemPointerEntered;
+						pivotHeaderItem.PointerExited -= OnItemPointerExited;
+						pivotHeaderItem.IsEnabledChanged -= OnItemIsEnabledChanged;
 					}
 				}
 			}
@@ -85,6 +101,9 @@ namespace Windows.UI.Xaml.Controls
 					if (item is PivotHeaderItem pivotHeaderItem)
 					{
 						pivotHeaderItem.PointerPressed += OnItemPointerPressed;
+						pivotHeaderItem.PointerEntered += OnItemPointerEntered;
+						pivotHeaderItem.PointerExited += OnItemPointerExited;
+						pivotHeaderItem.IsEnabledChanged += OnItemIsEnabledChanged;
 					}
 				}
 			}
@@ -97,7 +116,7 @@ namespace Windows.UI.Xaml.Controls
 				&& _isTemplateApplied
 			)
 			{
-				if(_headerClipper != null)
+				if (_headerClipper != null)
 				{
 					// Disable clipping until it gets properly supported.
 					_headerClipper.Clip = null;
@@ -146,6 +165,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (item is PivotItem pivotItem)
 					{
+						pivotItem.PivotHeaderItem = headerItem;
 						headerItem.Content = pivotItem.Header;
 					}
 					else
@@ -181,7 +201,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				if(TemplatedRoot is NativePivotPresenter presenter)
+				if (TemplatedRoot is NativePivotPresenter presenter)
 				{
 					presenter.Items.Clear();
 					presenter.Items.AddRange(Items);
@@ -191,13 +211,62 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnItemPointerPressed(object sender, PointerRoutedEventArgs e)
 		{
-			if (_isUWPTemplate)
+			if (_isUWPTemplate && sender is PivotHeaderItem selectedHeaderItem)
 			{
-				if (sender is PivotHeaderItem selectedHeaderItem)
-				{
-					SelectedIndex = _staticHeader.Children.IndexOf(selectedHeaderItem);
-				}
+				UpdateVisualStates(selectedHeaderItem);
+				SelectedIndex = _staticHeader.Children.IndexOf(selectedHeaderItem);
 			}
+		}
+
+		private void OnItemPointerEntered(object sender, PointerRoutedEventArgs e)
+		{
+			if (_isUWPTemplate && sender is PivotHeaderItem headerItem)
+			{
+				UpdateVisualStates(headerItem);
+			}
+		}
+
+		private void OnItemPointerExited(object sender, PointerRoutedEventArgs e)
+		{
+			if (_isUWPTemplate && sender is PivotHeaderItem headerItem)
+			{
+				UpdateVisualStates(headerItem);
+			}
+		}
+
+		private void OnItemIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if (_isUWPTemplate && sender is PivotHeaderItem headerItem)
+			{
+				UpdateVisualStates(headerItem);
+			}
+		}
+
+		private void UpdateVisualStates(PivotHeaderItem headerItem)
+		{
+			if (!_isUWPTemplate)
+			{
+				return;
+			}
+
+			if (!headerItem.IsEnabled)
+			{
+				VisualStateManager.GoToState(headerItem, PivotHeaderItemSelectionStates.Disabled, true);
+				return;
+			}
+
+			var isSelected = SelectedIndex == _staticHeader.Children.IndexOf(headerItem);
+			var state = (isSelected, headerItem.IsPointerOver, headerItem.IsPointerPressed) switch
+			{
+				(true, true, _) => PivotHeaderItemSelectionStates.SelectedPointerOver,
+				(true, _, true) => PivotHeaderItemSelectionStates.SelectedPressed,
+				(true, _, _) => PivotHeaderItemSelectionStates.Selected,
+				(false, true, _) => PivotHeaderItemSelectionStates.UnselectedPointerOver,
+				(false, _, true) => PivotHeaderItemSelectionStates.UnselectedPressed,
+				(false, _, _) => PivotHeaderItemSelectionStates.Unselected,
+			};
+
+			VisualStateManager.GoToState(headerItem, state, true);
 		}
 
 		private void OnSelectedIndexChanged(int oldValue, int newValue)
@@ -213,7 +282,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnItemsSourceChanged(e);
 
 			SynchronizeItems();
-		}		
+		}
 
 		private void SynchronizeSelectedItem()
 		{
@@ -226,7 +295,7 @@ namespace Windows.UI.Xaml.Controls
 				var selectedPivotitem = items.ElementAt(selectedIndex);
 
 				SelectedItem = selectedPivotitem;
-				
+
 				for (int i = 0; i < NumberOfItems; i++)
 				{
 					if (ContainerFromIndex(i) is ContentControl itemContainer)
@@ -268,12 +337,21 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSelectedItemPropertyChanged(object oldValue, object newValue)
 		{
-			var removedItems = oldValue == null ? new object[0] : new [] { oldValue };
-			var addedItems = newValue == null ? new object[0] : new [] { newValue };
+			var removedItems = oldValue == null ? Array.Empty<object>() : new[] { oldValue };
+			var addedItems = newValue == null ? Array.Empty<object>() : new[] { newValue };
+
+			if (newValue is PivotItem newItem && newItem.PivotHeaderItem is PivotHeaderItem headerItem)
+			{
+				var newIndex = _staticHeader.Children.IndexOf(headerItem);
+				if (newIndex > -1)
+				{
+					SelectedIndex = newIndex;
+				}
+			}
 
 			OnSelectedItemChangedPartial(oldValue, newValue);
 
-			InvokeSelectionChanged(removedItems, addedItems);			
+			InvokeSelectionChanged(removedItems, addedItems);
 		}
 
 		partial void OnSelectedItemChangedPartial(object oldSelectedItem, object selectedItem);

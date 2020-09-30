@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using View = Windows.UI.Xaml.UIElement;
@@ -17,6 +17,7 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Windows.UI;
 using System.Dynamic;
+using Windows.UI.Xaml.Shapes;
 
 namespace Windows.UI.Xaml
 {
@@ -34,7 +35,7 @@ namespace Windows.UI.Xaml
 				The propagation of this loaded state is also made by the UIElement.
 		 */
 
-		private void NativeOnLoading(object sender, RoutedEventArgs args)
+		private void NativeOnLoading(FrameworkElement sender, object args)
 		{
 			OnLoadingPartial();
 
@@ -43,7 +44,7 @@ namespace Windows.UI.Xaml
 			// properties that affect the visual tree.
 			foreach (var child in _children)
 			{
-				(child as FrameworkElement)?.InternalDispatchEvent("loading", args);
+				(child as FrameworkElement)?.InternalDispatchEvent("loading", args as EventArgs);
 			}
 		}
 
@@ -57,6 +58,17 @@ namespace Windows.UI.Xaml
 				(child as FrameworkElement)?.InternalDispatchEvent("loaded", args);
 			}
 
+			RaiseOnLoadedSafe();
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void RaiseOnLoadedSafe()
+		{
 			try
 			{
 				OnLoaded();
@@ -68,7 +80,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-
 		private void NativeOnUnloaded(object sender, RoutedEventArgs args)
 		{
 			base.IsLoaded = false;
@@ -78,6 +89,16 @@ namespace Windows.UI.Xaml
 				(child as FrameworkElement)?.InternalDispatchEvent("unloaded", args);
 			}
 
+			RaiseOnUnloadedSafe();
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void RaiseOnUnloadedSafe()
+		{
 			try
 			{
 				OnUnloaded();
@@ -90,11 +111,8 @@ namespace Windows.UI.Xaml
 		}
 
 		public bool HasParent()
-		{
-			return Parent != null;
-		}
+			=> Parent != null;
 
-		private Size _actualSize;
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 
@@ -106,15 +124,13 @@ namespace Windows.UI.Xaml
 			_renderTransform?.UpdateSize(args.NewSize);
 		}
 
-		internal void SetActualSize(Size size) => _actualSize = size;
-
-		private protected virtual double GetActualWidth() => _actualSize.Width;
-		private protected virtual double GetActualHeight() => _actualSize.Height;
+		internal void SetActualSize(Size size)
+			=> AssignedActualSize = size;
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
-		private event RoutedEventHandler _loading;
-		public event RoutedEventHandler Loading
+		private event TypedEventHandler<FrameworkElement, object> _loading;
+		public event TypedEventHandler<FrameworkElement, object> Loading
 		{
 			add
 			{
@@ -124,7 +140,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("loading", value);
+					RegisterEventHandler("loading", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -135,7 +151,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("loading", value);
+					UnregisterEventHandler("loading", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
@@ -151,7 +167,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("loaded", value);
+					RegisterEventHandler("loaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -162,7 +178,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("loaded", value);
+					UnregisterEventHandler("loaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
@@ -178,7 +194,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("unloaded", value);
+					RegisterEventHandler("unloaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -189,7 +205,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("unloaded", value);
+					UnregisterEventHandler("unloaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
@@ -203,64 +219,16 @@ namespace Windows.UI.Xaml
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
 		protected void SetCornerRadius(CornerRadius cornerRadius)
+			=> BorderLayerRenderer.SetCornerRadius(this, cornerRadius);
+
+		protected void SetBorder(Thickness thickness, Brush brush)
+			=> BorderLayerRenderer.SetBorder(this, thickness, brush);
+
+		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
 		{
-			var borderRadius = cornerRadius == CornerRadius.None
-				? ""
-				: $"{cornerRadius.TopLeft}px {cornerRadius.TopRight}px {cornerRadius.BottomRight}px {cornerRadius.BottomLeft}px";
-
-			SetStyle("border-radius", borderRadius);
-		}
-
-		protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
-		{
-			var borderRadius = cornerRadius == CornerRadius.None
-				? ""
-				: $"{cornerRadius.TopLeft}px {cornerRadius.TopRight}px {cornerRadius.BottomRight}px {cornerRadius.BottomLeft}px";
-
-			if (thickness == Thickness.Empty)
+			if (dependencyPropertyChangedEventArgs.NewValue is BackgroundSizing sizing)
 			{
-				SetStyle(
-					("border-style", "none"),
-					("border-color", ""),
-					("border-width", ""),
-					("border-radius", borderRadius));
-			}
-			else
-			{
-				var borderWidth = $"{thickness.Top.ToStringInvariant()}px {thickness.Right.ToStringInvariant()}px {thickness.Bottom.ToStringInvariant()}px {thickness.Left.ToStringInvariant()}px";
-				switch (brush)
-				{
-					case SolidColorBrush solidColorBrush:
-						var borderColor = solidColorBrush.ColorWithOpacity;
-						SetStyle(
-							("border", ""),
-							("border-style", "solid"),
-							("border-color", borderColor.ToHexString()),
-							("border-width", borderWidth),
-							("border-radius", borderRadius));
-						break;
-					case GradientBrush gradientBrush:
-						var border = gradientBrush.ToCssString(RenderSize); // TODO: Reevaluate when size is changing
-						SetStyle(
-							("border-style", "solid"),
-							("border-color", ""),
-							("border-image", border),
-							("border-width", borderWidth),
-							("border-radius", borderRadius));
-						break;
-					case AcrylicBrush acrylicBrush:
-						var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
-						SetStyle(
-							("border", ""),
-							("border-style", "solid"),
-							("border-color", acrylicFallbackColor.ToHexString()),
-							("border-width", borderWidth),
-							("border-radius", borderRadius));
-						break;
-					default:
-						ResetStyle("border-style", "border-color", "border-image", "border-width", "border-radius");
-						break;
-				}
+				SetStyle("background-clip", sizing == BackgroundSizing.InnerBorderEdge ? "padding-box" : "border-box");
 			}
 		}
 
@@ -450,6 +418,11 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(MaxWidth), MaxWidth);
 				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
 				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
+
+				if (this.TryGetPadding(out var padding))
+				{
+					UpdateDOMXamlProperty("Padding", padding);
+				}
 
 				base.UpdateDOMProperties();
 			}

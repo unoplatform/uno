@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 {
@@ -15,7 +16,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 #if !NET461
 	[RuntimeTests.RunsOnUIThread]
 #endif
-	public class Given_FrameworkElement
+	public partial class Given_FrameworkElement
 	{
 		[TestMethod]
 		public void When_LayoutUpdated()
@@ -93,13 +94,20 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			grid.Children.Add(SUT);
 
-			grid.Measure(new Size(1000, 1000));
+			for(var i=0; i == 0 || (SUT.IsMeasureDirtyOrMeasureDirtyPath && i < 10); i++)
+			{
+				grid.Measure(new Size(1000, 1000));
+			}
+
+			grid.DesiredSize.Should().Be(new Size(32, 47), because: "Desired Size before Arrange");
+
 			grid.Arrange(new Rect(default(Point), grid.DesiredSize));
 
 			using (new AssertionScope())
 			{
-				grid.ActualWidth.Should().Be(32d, "width");
-				grid.ActualHeight.Should().Be(47d, "height");
+				grid.DesiredSize.Should().Be(new Size(32, 47), because: "Desired Size");
+				grid.ActualWidth.Should().Be(32d, "ActualWidth");
+				grid.ActualHeight.Should().Be(47d, "ActualHeight");
 			}
 		}
 
@@ -121,6 +129,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			SUT.PublicSuppressIsEnabled(false);
 			Assert.IsTrue(SUT.IsEnabled);
+		}
+
+		[TestMethod]
+		public void When_DP_IsEnabled_Null()
+		{
+			var grid = new UserControl();
+
+			grid.SetValue(FrameworkElement.IsEnabledProperty, null);
 		}
 	}
 

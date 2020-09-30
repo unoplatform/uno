@@ -4,7 +4,12 @@ using Windows.Foundation.Metadata;
 
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
 	[ContractVersion(typeof(UniversalApiContract), 65536U)]
 	[Flags]
@@ -23,7 +28,6 @@ namespace Windows.UI.Input
 		/// <summary>Enable support for a right-tap interaction. The RightTapped event is raised when the contact is lifted or the mouse button released.</summary>
 		RightTap = 16U,
 		/// <summary>Enable support for the slide or swipe gesture with a mouse or pen/stylus (single contact). The Dragging event is raised when either gesture is detected.This gesture can be used for text selection, selecting or rearranging objects, or scrolling and panning.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		Drag = 32U,
 		/// <summary>Enable support for the slide gesture through pointer input, on the horizontal axis. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.This gesture can be used for rearranging objects.</summary>
 		ManipulationTranslateX = 64U,
@@ -40,13 +44,10 @@ namespace Windows.UI.Input
 		/// <summary>Enable support for the pinch or stretch gesture through pointer input.These gestures can be used for optical or semantic zoom and resizing an object. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.</summary>
 		ManipulationScale = 2048U,
 		/// <summary>Enable support for translation inertia after the slide gesture (through pointer input) is complete. The ManipulationInertiaStarting event is raised if inertia is enabled.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		ManipulationTranslateInertia = 4096U,
 		/// <summary>Enable support for rotation inertia after the rotate gesture (through pointer input) is complete. The ManipulationInertiaStarting event is raised if inertia is enabled.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		ManipulationRotateInertia = 8192U,
 		/// <summary>Enable support for scaling inertia after the pinch or stretch gesture (through pointer input) is complete. The ManipulationInertiaStarting event is raised if inertia is enabled.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		ManipulationScaleInertia = 16384U,
 		/// <summary>Enable support for the CrossSliding interaction when using the slide or swipe gesture through a single touch contact.This gesture can be used for selecting or rearranging objects.</summary>
 		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
@@ -89,7 +90,7 @@ namespace Windows.UI.Input
 		/// A combination of all "gesture" flags that can be raised by the GestureRecognizer
 		/// </summary>
 		public const GestureSettings SupportedGestures =
-			GestureSettings.Tap
+			  GestureSettings.Tap
 			| GestureSettings.DoubleTap
 			| GestureSettings.Hold
 			| GestureSettings.HoldWithMouse
@@ -99,5 +100,13 @@ namespace Windows.UI.Input
 		/// A combination of all "drag and drop" flags
 		/// </summary>
 		public const GestureSettings DragAndDrop = GestureSettings.Drag;
+
+		/// <summary>
+		/// A combination of all "inertia" flags
+		/// </summary>
+		public const GestureSettings Inertia =
+			  GestureSettings.ManipulationTranslateInertia
+			| GestureSettings.ManipulationScaleInertia
+			| GestureSettings.ManipulationRotateInertia;
 	}
 }

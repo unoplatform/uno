@@ -2,42 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-#endif
-	public enum PickerLocationId
+	#if false || false || false || false || false || false || false
+	public   enum PickerLocationId 
 	{
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DocumentsLibrary,
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComputerFolder,
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Desktop,
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Downloads,
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HomeGroup,
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		MusicLibrary,
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PicturesLibrary,
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		VideosLibrary,
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Objects3D,
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Unspecified,
-#endif
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.ComputerFolder
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.Desktop
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.Downloads
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.HomeGroup
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.MusicLibrary
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.PicturesLibrary
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.VideosLibrary
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.Objects3D
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.Unspecified
 	}
-#endif
+	#endif
 }

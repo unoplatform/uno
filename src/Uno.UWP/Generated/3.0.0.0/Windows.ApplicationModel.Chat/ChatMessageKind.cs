@@ -2,33 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Chat
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum ChatMessageKind 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Standard,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		FileTransferRequest,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		TransportCustom,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		JoinedConversation,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LeftConversation,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		OtherParticipantJoinedConversation,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		OtherParticipantLeftConversation,
-		#endif
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.Standard
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.FileTransferRequest
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.TransportCustom
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.JoinedConversation
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.LeftConversation
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.OtherParticipantJoinedConversation
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.OtherParticipantLeftConversation
 	}
 	#endif
 }

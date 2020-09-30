@@ -2,9 +2,8 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Microsoft.UI.Xaml.Controls"
-    xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
-    xmlns:media="using:Microsoft.UI.Xaml.Media">
+    xmlns:navViewLocal="using:Windows.UI.Xaml.Controls"
+    xmlns:wuxPrimitives="using:Windows.UI.Xaml.Controls.Primitives">
 
     <!--
 	Uno TODO Theme dictionaries
@@ -191,7 +190,7 @@
     </ResourceDictionary.ThemeDictionaries>
 	-->
 
-	<StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SystemChromeMediumHighColor" />
+	<!--<StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SystemChromeMediumHighColor" />
 	<StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="SystemChromeMediumHighColor" />
 	<StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="SystemChromeMediumHighColor" />
 
@@ -247,7 +246,7 @@
 
 	<StaticResource x:Key="TopNavigationViewItemRevealBackgroundFocused" ResourceKey="SystemControlHighlightAccentBrush" />
 	<StaticResource x:Key="TopNavigationViewItemRevealIconForegroundFocused" ResourceKey="SystemControlHighlightAltChromeWhiteBrush" />
-	<StaticResource x:Key="TopNavigationViewItemRevealContentForegroundFocused" ResourceKey="SystemControlHighlightAltChromeWhiteBrush" />
+	<StaticResource x:Key="TopNavigationViewItemRevealContentForegroundFocused" ResourceKey="SystemControlHighlightAltChromeWhiteBrush" />-->
 
 
 	<!--
@@ -262,9 +261,9 @@
     <Thickness x:Key="NavigationViewItemInnerHeaderMargin">16,0,0,0</Thickness>
     <Thickness x:Key="NavigationViewAutoSuggestBoxMargin">16,0,16,0</Thickness>
 	-->
-    <Thickness x:Key="NavigationViewToggleBorderThickness">1</Thickness>
+    <!--<Thickness x:Key="NavigationViewToggleBorderThickness">1</Thickness>-->
 
-    <Style x:Key="PaneToggleButtonStyle" TargetType="Button">
+    <Style x:Key="LegacyPaneToggleButtonStyle" TargetType="Button">
         <Setter Property="FontSize" Value="16" />
         <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}" />
         <Setter Property="MinHeight" Value="{StaticResource PaneToggleButtonHeight}" />
@@ -363,12 +362,12 @@
         </Setter>
     </Style>
 
-    <Style x:Key="NavigationViewPaneSearchButtonStyle" BasedOn="{StaticResource PaneToggleButtonStyle}" TargetType="Button">
+    <Style x:Key="LegacyNavigationViewPaneSearchButtonStyle" BasedOn="{StaticResource PaneToggleButtonStyle}" TargetType="Button">
         <Setter Property="MinHeight" Value="40"/>
         <Setter Property="Content" Value="&#xE11A;"/>
     </Style>
 
-    <Style x:Key="NavigationViewOverflowButtonStyleWhenPaneOnTop" TargetType="Button">
+	<Style x:Key="LegacyNavigationViewOverflowButtonStyleWhenPaneOnTop" TargetType="Button">
         <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource TopNavigationViewItemForeground}" />
         <Setter Property="Padding" Value="12,0" />
@@ -438,7 +437,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="NavigationViewOverflowButtonNoLabelStyleWhenPaneOnTop" TargetType="Button">
+	<Style x:Key="LegacyNavigationViewOverflowButtonNoLabelStyleWhenPaneOnTop" TargetType="Button">
         <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource TopNavigationViewItemForeground}" />
         <Setter Property="Height" Value="{StaticResource PaneToggleButtonHeight}" />
@@ -501,7 +500,7 @@
 
     <!--
 	UNO TODO Overridden style
-	<Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnLeftPane">
+	<Style TargetType="wuxPrimitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnLeftPane">
         <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
         <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource NavigationViewItemBorderBrush}" />
@@ -510,7 +509,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
+                <ControlTemplate TargetType="wuxPrimitives:NavigationViewItemPresenter">
                     <Grid
                         x:Name="LayoutRoot"
                         Height="40"
@@ -617,7 +616,7 @@
     </Style>
 	-->
 
-    <Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnLeftPaneWithRevealFocus">
+    <Style TargetType="wuxPrimitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnLeftPaneWithRevealFocus">
         <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
         <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource NavigationViewItemBorderBrush}" />
@@ -626,7 +625,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
+                <ControlTemplate TargetType="wuxPrimitives:NavigationViewItemPresenter">
                     <Grid
                         x:Name="LayoutRoot"
                         Height="40"
@@ -715,7 +714,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="local:NavigationViewItem" x:Key="NavigationViewSettingsItemStyleWhenOnTopPane">
+    <Style TargetType="navViewLocal:NavigationViewItem" x:Key="NavigationViewSettingsItemStyleWhenOnTopPane">
         <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
         <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource NavigationViewItemBorderBrush}" />
@@ -727,7 +726,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:NavigationViewItem">
+                <ControlTemplate TargetType="navViewLocal:NavigationViewItem">
                     <Grid 
                         x:Name="LayoutRoot" 
                         Background="{TemplateBinding Background}"
@@ -813,10 +812,10 @@
         </Setter>
     </Style>
     
-    <Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPane">
+    <Style TargetType="wuxPrimitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPane">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
+                <ControlTemplate TargetType="wuxPrimitives:NavigationViewItemPresenter">
                     <Grid 
                         x:Name="LayoutRoot" 
                         Background="{TemplateBinding Background}"
@@ -944,10 +943,10 @@
         </Setter>
     </Style>
 
-    <Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPaneWithRevealFocus">
+    <Style TargetType="wuxPrimitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPaneWithRevealFocus">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
+                <ControlTemplate TargetType="wuxPrimitives:NavigationViewItemPresenter">
                     <Grid 
                         x:Name="LayoutRoot"
                         Background="{TemplateBinding Background}"
@@ -1041,10 +1040,10 @@
         </Setter>
     </Style>
 
-    <Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPaneOverflow">
+    <Style TargetType="wuxPrimitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPaneOverflow">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
+                <ControlTemplate TargetType="wuxPrimitives:NavigationViewItemPresenter">
                     <Grid
                         x:Name="LayoutRoot"
                         Height="40" 

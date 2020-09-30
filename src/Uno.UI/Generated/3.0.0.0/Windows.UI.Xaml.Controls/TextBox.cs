@@ -10,48 +10,9 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property TextWrapping
 		// Skipping already declared property TextAlignment
 		// Skipping already declared property Text
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  int SelectionStart
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int TextBox.SelectionStart is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "int TextBox.SelectionStart");
-			}
-		}
-		#endif
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  int SelectionLength
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int TextBox.SelectionLength is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "int TextBox.SelectionLength");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string SelectedText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string TextBox.SelectedText is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "string TextBox.SelectedText");
-			}
-		}
-		#endif
+		// Skipping already declared property SelectionStart
+		// Skipping already declared property SelectionLength
+		// Skipping already declared property SelectedText
 		// Skipping already declared property MaxLength
 		// Skipping already declared property IsTextPredictionEnabled
 		// Skipping already declared property IsSpellCheckEnabled
@@ -173,20 +134,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.CharacterCasing CharacterCasing
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.CharacterCasing)this.GetValue(CharacterCasingProperty);
-			}
-			set
-			{
-				this.SetValue(CharacterCasingProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property CharacterCasing
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsHandwritingViewEnabled
@@ -229,20 +177,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object Description
-		{
-			get
-			{
-				return (object)this.GetValue(DescriptionProperty);
-			}
-			set
-			{
-				this.SetValue(DescriptionProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property Description
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool CanPasteClipboardContent
@@ -359,14 +294,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextAlignment)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CharacterCasingProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CharacterCasing), typeof(global::Windows.UI.Xaml.Controls.CharacterCasing), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CharacterCasing)));
-		#endif
+		// Skipping already declared property CharacterCasingProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsHandwritingViewEnabledProperty { get; } = 
@@ -399,14 +327,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Description), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
-			new FrameworkPropertyMetadata(default(object)));
-		#endif
+		// Skipping already declared property DescriptionProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty CanUndoProperty { get; } = 
@@ -463,20 +384,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.SelectionChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.ContextMenuOpening.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.ContextMenuOpening.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Select( int start,  int length)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "void TextBox.Select(int start, int length)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SelectAll()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "void TextBox.SelectAll()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.TextBox.Select(int, int)
+		// Skipping already declared method Windows.UI.Xaml.Controls.TextBox.SelectAll()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect GetRectFromCharacterIndex( int charIndex,  bool trailingEdge)

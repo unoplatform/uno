@@ -1,11 +1,10 @@
-﻿#if __MACOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.CompilerServices;
 using AppKit;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using CoreGraphics;
 
@@ -14,12 +13,13 @@ namespace Windows.UI.ViewManagement
     partial class ApplicationView
     {
 	    private string _title = string.Empty;
+		private Size _preferredMinSize = Size.Empty;
 
 		internal void SetCoreBounds(NSWindow keyWindow, Foundation.Rect windowBounds)
 		{
             VisibleBounds = windowBounds;
 
-			if(this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if(this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Updated visible bounds {VisibleBounds}");
 			}
@@ -41,7 +41,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		public bool IsFullScreen
+        public bool IsFullScreen
 		{
 			get
 			{
@@ -73,6 +73,10 @@ namespace Windows.UI.ViewManagement
 		{
 			VerifyKeyWindowInitialized();
 
+			if (value.Width < _preferredMinSize.Width || value.Height < _preferredMinSize.Height)
+			{
+				return false;
+			}
 			var window = NSApplication.SharedApplication.KeyWindow;
 			var frame = window.Frame;
 			frame.Size = value;
@@ -86,6 +90,7 @@ namespace Windows.UI.ViewManagement
 
 			var window = NSApplication.SharedApplication.KeyWindow;
 			window.MinSize = new CGSize(minSize.Width, minSize.Height);
+			_preferredMinSize = minSize;
 		}
 
 		internal void SyncTitleWithWindow(NSWindow window)
@@ -107,4 +112,3 @@ namespace Windows.UI.ViewManagement
 		private bool IsKeyWindowInitialized() => NSApplication.SharedApplication.KeyWindow != null;
     }
 }
-#endif

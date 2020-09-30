@@ -1,11 +1,22 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "author": "Uno Platform",
-  "classifications": [ "Prism", "Xamarin", "Uno Platform", "WebAssembly", "iOS", "Android", "WinUI", "UWP" ],
-  "name": "Prism Cross-Platform App (Uno Platform)",
+  "classifications": [
+    "Cross-platform",
+    "Uno Platform",
+    "Prism",
+    "Android",
+    "iOS",
+    "Windows",
+    "macOS",
+    "WebAssembly",
+    "dotnet-new"
+  ],
+  "name": "Cross-Platform App (Prism)",
   "identity": "Uno.Platform.Prism.CSharp", // Unique name for this template
   "groupIdentity": "Uno.Platform.Prism",
   "shortName": "unoapp-prism", // Short name that can be used on the cli
+  "description": "Solution template for creating a Prism Library enabled Cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS and WebAssembly.",
   "tags": {
     "language": "C#",
     "type": "project"
@@ -51,12 +62,6 @@
       "dataType": "bool",
       "defaultValue": "true",
       "description": "Enables the WebAssembly platform support project"
-    },
-    "UWP": {
-      "type": "parameter",
-      "dataType": "bool",
-      "defaultValue": "true",
-      "description": "Enables the Windows platform support project"
     },
     "iOS": {
       "type": "parameter",
@@ -120,11 +125,10 @@
       "path": "BlankApp.iOS\\BlankApp.iOS.csproj"
     },
     {
-      "condition": "UWP",
       "path": "BlankApp.UWP\\BlankApp.Uwp.csproj"
     },
     {
-      "condition": "Wasm",
+      "condition": "WebAssembly",
       "path": "BlankApp.Wasm\\BlankApp.Wasm.csproj"
     },
     {
@@ -136,6 +140,15 @@
     {
       "modifiers": [
         {
+          "copyOnly": [
+            "**/*.png",
+            "**/*.jpg",
+            "**/*.gif",
+            "**/*.woff",
+            "**/*.ttf"
+          ]
+        },
+        {
           "condition": "(!Android)",
           "exclude": [ "BlankApp/BlankApp.Android/**/*" ]
         },
@@ -144,11 +157,7 @@
           "exclude": [ "BlankApp/BlankApp.iOS/**/*" ]
         },
         {
-          "condition": "(!UWP)",
-          "exclude": [ "BlankApp/BlankApp.UWP/**/*" ]
-        },
-        {
-          "condition": "(!WebAsembly)",
+          "condition": "(!WebAssembly)",
           "exclude": [ "BlankApp/BlankApp.Wasm/**/*" ]
         },
         {

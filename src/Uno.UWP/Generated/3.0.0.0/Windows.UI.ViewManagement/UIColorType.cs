@@ -2,42 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.ViewManagement
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum UIColorType 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Background,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Foreground,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AccentDark3,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AccentDark2,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AccentDark1,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Accent,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AccentLight1,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AccentLight2,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AccentLight3,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Complement,
-		#endif
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Background
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Foreground
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentDark3
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentDark2
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentDark1
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Accent
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentLight1
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentLight2
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentLight3
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Complement
 	}
 	#endif
 }

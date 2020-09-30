@@ -70,8 +70,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var items = ClearCore();
 
-			foreach (var item in items)
+			// This block is a manual enumeration to avoid the foreach pattern
+			// See https://github.com/dotnet/runtime/issues/56309 for details
+			var itemsEnumerator = items.GetEnumerator();
+			while (itemsEnumerator.MoveNext())
 			{
+				var item = itemsEnumerator.Current;
+
 				if (item is IDependencyObjectStoreProvider provider)
 				{
 					item.SetParent(null);

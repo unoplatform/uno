@@ -62,6 +62,17 @@
 
 			<!-- Make sure custom objects can be returned from a markup extension without a return type specified -->
 			<TextBlock DataContext="{ext:NoReturnTypeMarkupExt UseValue=UseValue1, Value1={StaticResource TestObject}}" />
+
+			<!--XAML markup extension without Suffix Extension-->
+			<TextBlock Text="{ext:TestMarkupSuffix}"/>
+
+			<!--XAML markup extension without Suffix Extension work on binding-->
+			<TextBlock Text="{Binding IsRightTapEnabled,  Converter={ext:TestMarkupSuffix}}"/>
+
+			<!-- XAML markup extension without Suffix Extension work on bindin an attached property using a binding and converter -->
+			<TextBlock ext:MarkupExtensionTestBehavior.CustomText="{Binding IsRightTapEnabled, ElementName=RootGrid, Converter={ext:TestMarkupSuffix}}" />
+
+
 		</StackPanel>
 	</Grid>
 </UserControl>

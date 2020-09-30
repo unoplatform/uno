@@ -7,7 +7,7 @@ using Path = System.IO.Path;
 namespace Uno.Helpers
 {
 	/// <summary>
-	/// Logic is based on <see cref="https://docs.microsoft.com/en-us/windows/uwp/app-resources/uri-schemes#ms-appdata" />.
+	/// Logic is based on https://docs.microsoft.com/en-us/windows/uwp/app-resources/uri-schemes#ms-appdata.
 	/// </summary>
 	internal static class AppDataUriEvaluator
 	{

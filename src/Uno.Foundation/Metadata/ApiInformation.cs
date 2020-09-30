@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.Foundation.Metadata
 {
@@ -49,13 +49,15 @@ namespace Windows.Foundation.Metadata
 		}
 
 		public static bool IsMethodPresent(string typeName, string methodName)
-			=> GetValidType(typeName)?.GetMethod(methodName) != null;
+			=> IsImplementedByUno(
+				GetValidType(typeName)
+				?.GetMethod(methodName));
 
 		public static bool IsMethodPresent(string typeName, string methodName, uint inputParameterCount)
-			=> GetValidType(typeName)
+			=> IsImplementedByUno(
+				GetValidType(typeName)
 				?.GetMethods()
-				?.Where(m => m.Name == methodName && m.GetParameters().Length == inputParameterCount)
-				.Any() ?? false;
+				?.FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == inputParameterCount));
 
 		public static bool IsEventPresent(string typeName, string eventName)
 			=> IsImplementedByUno(
@@ -106,27 +108,34 @@ namespace Windows.Foundation.Metadata
 		/// </summary>
 		public static bool AlwaysLogNotImplementedMessages { get; set; }
 
+		/// <summary>
+		/// The message log level used when a not implemented member is used at runtime, if <see cref="IsFailWhenNotImplemented"/> is false.
+		/// </summary>
+		public static LogLevel NotImplementedLogLevel { get; set; } = LogLevel.Error;
+
 		private static Type? GetValidType(string typeName)
 		{
 			lock (_assemblies)
 			{
-				if (!_typeCache.TryGetValue(typeName, out var type))
+				if (_typeCache.TryGetValue(typeName, out var type))
 				{
-					foreach (var assembly in _assemblies)
+					return type;
+				}
+
+				foreach (var assembly in _assemblies)
+				{
+					type = assembly.GetType(typeName);
+
+					if (type != null)
 					{
-						type = assembly.GetType(typeName);
+						_typeCache[typeName] = type;
 
-						if (type != null)
-						{
-							_typeCache[typeName] = type;
-
-							return type;
-						}
+						return type;
 					}
 				}
-			}
 
-			return null;
+				return null;
+			}
 		}
 
 		internal static void TryRaiseNotImplemented(string type, string memberName)
@@ -145,7 +154,7 @@ namespace Windows.Foundation.Metadata
 					{
 						_notImplementedOnce.Add(memberName);
 
-						Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory.CreateLogger(type).Error(message);
+						LogExtensionPoint.Factory.CreateLogger(type).Log(NotImplementedLogLevel, message);
 					}
 				}
 			}

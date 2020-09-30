@@ -71,7 +71,7 @@ If you don't know what a pull request is read this article: https://help.github.
 
 Pull requests should all be made to the **master** branch.
 
-All commits **must** be in the [Conventional Commits format](doc\articles\uno-development\git-conventional-commits.md). We use this to automatically generate release notes for new releases.
+All commits **must** be in the [Conventional Commits format](doc/articles/uno-development/git-conventional-commits.md). We use this to automatically generate release notes for new releases.
 
 **Commit/Pull Request Format**
 

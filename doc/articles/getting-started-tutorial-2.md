@@ -24,7 +24,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
     ![](Assets/tutorial01/newproject1.PNG)
 
-1. Search for the `Uno` templates, select the `Cross-Platform App (Uno Platform)` then click `Next`.
+1. Search for the `Uno` templates, select the `Multi-Platform App (Uno Platform|Xamarin)` then click `Next`.
 
     ![](Assets/tutorial01/newproject2.PNG)
 
@@ -38,7 +38,6 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 1. Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
     - Make sure to select **nuget.org** or **NuGet official package source** as the package source
     - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.Core`, `Uno.UI`, `Uno.UI.WebAssembly` `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer`.
-        - Note: **do not** update the `Microsoft.Extensions.Logging.Console`. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno Platform.
     - Click back on the Browse tab and install the following NuGet Packages to each of the projects in your solution:
         - `Refractored.MvvmHelpers`
 
@@ -257,7 +256,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 1. Now we will update the Grid so that we define 6 rows with a small spacing between the rows to add a little padding between the row elements.
 
     ```xml
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RowSpacing="8">
+    <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
@@ -321,7 +320,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
                   Padding="20">
         <TextBlock Text="Status" FontWeight="Bold" FontSize="16" Margin="10,0" />
         <ComboBox ItemsSource="{x:Bind StatusList}"
-                  SelectedItem="{x:Bind Item.Status}"
+                  SelectedItem="{x:Bind Item.Status, Mode=TwoWay}"
                   HorizontalAlignment="Stretch"
                   SelectionChanged="StatusPicker_SelectionChanged" />
         <TextBlock Text="{x:Bind FormatDate('Started:', Item.StartedAt), Mode=OneWay}" />
@@ -384,7 +383,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
         => $"{header} {dateTime:MMM dd, yyyy hh:mm tt}";
     ```
 
-    You may need to add missing namespace `usings`, eg the `Windows.UI` namespace for the `Colors` class. Don't worry if `IssueTypeBox` and `IssueTypeIndicator` are marked red - these properties will be created from the Xaml when the project builds.
+    You may need to add missing namespace `usings`, eg the `Windows.UI` namespace for the `Colors` class. Don't worry if `IssueTypeBox` and `IssueTypeIndicator` are marked red - these properties will be created from the XAML when the project builds.
 
 1. Build and run the project on each platform. When launching the WASM head, use 'Start without debugging' (`Ctrl+F5`).
 

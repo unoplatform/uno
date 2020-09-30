@@ -16,7 +16,7 @@ Let's create an application illustrating how to use this feature.
 
 📝 This part is very short because it is similar to the previous article ([part 2](wasm-javascript-2.md)):
 
-1. Create a `Cross-Platform App (Uno Platform)` project and name it `FlatpickrDemo`.
+1. Create a `Multi-Platform App (Uno Platform|Xamarin)` project and name it `FlatpickrDemo`.
 2. Right-click on the `.Wasm` project in the _Solution Explorer_ and pick `Set as Startup Project`.
 3. Update to latest _stable_ version of `Uno.*` dependencies.
 4. Compile & Run to make sure everything works.
@@ -27,7 +27,7 @@ Let's create an application illustrating how to use this feature.
 
 An easy way to achieve this is to add JavaScript code to load the CSS file directly from the CDN. The JavaScript portion of Flatpickr will be lazy-loaded with the control later.
 
-1. Create a new _JavaScript_ file `flatpickrloader.js` in the `WasmScripts` folder of the `.Shared` project:
+1. Create a new _JavaScript_ file `flatpickrloader.js` in the `WasmScripts` folder of the `.Wasm` project:
 
    ``` javascript
    (function () {
@@ -102,11 +102,6 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    
            public FlatpickrView()
            {
-               // XAML behavior: a non-null background is required on an element to be "visible to pointers".
-               // Uno reproduces this behavior, so we must set it here even if we're not using the background.
-               // Not doing this will lead to a `pointer-events: none` CSS style on the control.
-               Background = new SolidColorBrush(Colors.Transparent);
-   
                // Load Flatpickr using JavaScript
                LoadJavaScript();
            }
@@ -144,7 +139,8 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
        xmlns:local="using:FlatpickrDemo"
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-       mc:Ignorable="d">
+       mc:Ignorable="d"
+       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
    
        <StackPanel Spacing="10" Padding="20">
          <TextBlock FontSize="15">
@@ -229,6 +225,26 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 4. Compile & Run. Here's the result:
 
    ![Final result](assets/flatpickr-final.gif)
+
+## Troubleshooting
+If your JavaScript integration is not behaving properly, you can troubleshoot with hints below.
+
+### My JavaScript control does not accept pointer input
+In the constructor of your wrapper control, add the following:
+```
+// XAML behavior: a non-null background is required on an element to be "visible to pointers".
+// Uno reproduces this behavior, so we must set it here even if we're not using the background.
+// Not doing this will lead to a `pointer-events: none` CSS style on the control.
+Background = new SolidColorBrush(Colors.Transparent);
+```
+
+### `TextBlock` content is not visible in browsers with the dark theme
+`TextBlock` defaults the text color as White correctly but `Page` background needs to be set correctly.
+```
+<Page 
+    ...
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+```
 
 ## 🔬 Going further
 

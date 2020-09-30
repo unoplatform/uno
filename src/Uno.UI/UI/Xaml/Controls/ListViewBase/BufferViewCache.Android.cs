@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using AndroidX.RecyclerView.Widget;
 using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 
@@ -38,6 +38,8 @@ namespace Windows.UI.Xaml.Controls
 		private int CacheHalfLength => Layout.CacheHalfLengthInViews;
 
 		private Dictionary<UnoViewHolder, List<Action>> _onRecycled = new Dictionary<UnoViewHolder, List<Action>>(); //Used by Phase binding
+
+		private int? _reorderingItem;
 
 		//Inclusive
 		private int TrailingBufferTargetStart => Math.Max(ConvertIndexToDisplayPosition(0), TrailingBufferTargetEnd - CacheHalfLength);
@@ -118,7 +120,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (record?.IsEmpty ?? false)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 				{
 					this.Log().Info($"Found empty record for request for position {position}.");
 				}
@@ -126,6 +128,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// Else get from intermediate cache if possible
 			var view = GetViewFromIntermediateCache(recycler, position);
+
 			if (view != null)
 			{
 				Layout.TryAttachView(view);
@@ -157,6 +160,10 @@ namespace Windows.UI.Xaml.Controls
 			Layout.TryDetachView(view);
 			SendToIntermediateCache(recycler, record);
 		}
+
+		public void SetReorderingItem(int itemIndex) => _reorderingItem = itemIndex;
+
+		public void RemoveReorderingItem() => _reorderingItem = null;
 
 		/// <summary>
 		/// Remove all views not in the target range from the buffer.
@@ -291,7 +298,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 			PrefetchTrailing();
 			PrefetchLeading();
-			if (!_isInitiallyPopulated)
+			if (!_isInitiallyPopulated
+				// The leading buffer may be empty if the previous prefetch ended early, eg because it found an unrecyclable item
+				&& LeadingBufferEnd > -1)
 			{
 				PrefetchExtra();
 				_isInitiallyPopulated = true;
@@ -309,22 +318,43 @@ namespace Windows.UI.Xaml.Controls
 				// Seed buffer; otherwise succeeding logic fails
 				if (_trailingBuffer.Count == 0)
 				{
-					var record = PrefetchView(recycler, state, TrailingBufferTargetStart);
-					_trailingBuffer.AddToBack(record);
+					if (PrefetchView(recycler, state, TrailingBufferTargetStart) is { } record)
+					{
+						_trailingBuffer.AddToBack(record);
+					}
+					else
+					{
+						// List is animating, etc, so forgo populating the buffer at this time
+						return;
+					}
 					CheckValidState();
 				}
 
 				while (TrailingBufferStart > TrailingBufferTargetStart)
 				{
-					var record = PrefetchView(recycler, state, TrailingBufferStart - 1);
-					_trailingBuffer.AddToFront(record);
+					if (PrefetchView(recycler, state, TrailingBufferStart - 1) is { } record)
+					{
+						_trailingBuffer.AddToFront(record);
+					}
+					else
+					{
+						// List is animating, etc, so forgo populating the buffer at this time
+						return;
+					}
 					CheckValidState();
 				}
 
 				while (TrailingBufferEnd < TrailingBufferTargetEnd)
 				{
-					var record = PrefetchView(recycler, state, TrailingBufferEnd);
-					_trailingBuffer.AddToBack(record);
+					if (PrefetchView(recycler, state, TrailingBufferEnd) is { } record)
+					{
+						_trailingBuffer.AddToBack(record);
+					}
+					else
+					{
+						// List is animating, etc, so forgo populating the buffer at this time
+						return;
+					}
 					CheckValidState();
 				}
 			}
@@ -339,22 +369,43 @@ namespace Windows.UI.Xaml.Controls
 				// Seed buffer
 				if (_leadingBuffer.Count == 0)
 				{
-					var record = PrefetchView(recycler, state, LeadingBufferTargetStart);
-					_leadingBuffer.AddToBack(record);
+					if (PrefetchView(recycler, state, LeadingBufferTargetStart) is { } record)
+					{
+						_leadingBuffer.AddToBack(record);
+					}
+					else
+					{
+						// List is animating, etc, so forgo populating the buffer at this time
+						return;
+					}
 					CheckValidState();
 				}
 
 				while (LeadingBufferStart > LeadingBufferTargetStart)
 				{
-					var record = PrefetchView(recycler, state, LeadingBufferStart - 1);
-					_leadingBuffer.AddToFront(record);
+					if (PrefetchView(recycler, state, LeadingBufferStart - 1) is { } record)
+					{
+						_leadingBuffer.AddToFront(record);
+					}
+					else
+					{
+						// List is animating, etc, so forgo populating the buffer at this time
+						return;
+					}
 					CheckValidState();
 				}
 
 				while (LeadingBufferEnd < LeadingBufferTargetEnd)
 				{
-					var record = PrefetchView(recycler, state, LeadingBufferEnd);
-					_leadingBuffer.AddToBack(record);
+					if (PrefetchView(recycler, state, LeadingBufferEnd) is { } record)
+					{
+						_leadingBuffer.AddToBack(record);
+					}
+					else
+					{
+						// List is animating, etc, so forgo populating the buffer at this time
+						return;
+					}
 					CheckValidState();
 				}
 			}
@@ -380,8 +431,15 @@ namespace Windows.UI.Xaml.Controls
 					_shouldBlockIntermediateCache = true;
 					for (int i = LeadingBufferEnd; i < targetEnd; i++)
 					{
-						var record = PrefetchView(recycler, state, i);
-						SendToIntermediateCache(recycler, record);
+						if (PrefetchView(recycler, state, i) is { } record)
+						{
+							SendToIntermediateCache(recycler, record);
+						}
+						else
+						{
+							// List is animating, etc, so forgo populating the buffer at this time
+							return;
+						}
 					}
 				}
 				finally
@@ -394,22 +452,38 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Prefetch a view for given <paramref name="displayPosition"/>.
 		/// </summary>
-		private ElementViewRecord PrefetchView(RecyclerView.Recycler recycler, RecyclerView.State state, int displayPosition)
+		/// <returns>
+		/// A record of the position and associated view holder, or null if the item returned by the recycler is not in a recyclable state.
+		/// </returns>
+		private ElementViewRecord? PrefetchView(RecyclerView.Recycler recycler, RecyclerView.State state, int displayPosition)
 		{
 			if (displayPosition < 0)
 			{
 				throw new ArgumentException($"{nameof(displayPosition)} must be greater than 0.");
 			}
 			var view = GetViewFromIntermediateCache(recycler, displayPosition);
+			var viewHolder = default(UnoViewHolder);
 			if (view == null)
 			{
 				view = recycler.GetViewForPosition(displayPosition, state);
+
+				viewHolder = _owner.GetChildViewHolder(view);
+
+				if (!viewHolder.IsRecyclable)
+				{
+					// This typically means that the item is being animated. In this case we shouldn't stash it away for future use.
+
+					// Return the view to the recycler, otherwise it may subsequently cause an error
+					recycler.RecycleView(view);
+
+					return null;
+				}
 
 				// Add->Detach allows view to be efficiently re-displayed
 				Layout.AddView(view);
 				Layout.TryDetachView(view);
 			}
-			var viewHolder = _owner.GetChildViewHolder(view) as UnoViewHolder;
+			viewHolder ??= _owner.GetChildViewHolder(view);
 
 			if (!(view is SelectorItem))
 			{
@@ -457,7 +531,7 @@ namespace Windows.UI.Xaml.Controls
 				for (int i = views.Count - 1; i >= 0; i--)
 				{
 					var view = views[i];
-					if (!IsInTargetRange(view.LayoutPosition))
+					if (!IsImmediatelyReusable(view.LayoutPosition))
 					{
 						result = view;
 						views.RemoveAt(i);
@@ -469,7 +543,7 @@ namespace Windows.UI.Xaml.Controls
 			if (result != null)
 			{
 				recycler.BindViewToPosition(result.ItemView, displayPosition);
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Returning cached view for position={displayPosition} and view type={type}. {views.Count} cached views remaining.");
 				}
@@ -495,7 +569,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (viewRecord.IsEmpty)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("Discarding empty record.");
 				}
@@ -718,8 +792,15 @@ namespace Windows.UI.Xaml.Controls
 			actions.Add(action);
 		}
 
-		private bool IsInTargetRange(int position)
+		private bool IsImmediatelyReusable(int position)
 		{
+			if (position == _reorderingItem)
+			{
+				// View being reordered shouldn't be reused for other items
+				return true;
+			}
+
+			// View is in the buffer target range, may be reusable
 			return (TrailingBufferTargetStart <= position && TrailingBufferTargetEnd > position) ||
 				(LeadingBufferTargetStart <= position && LeadingBufferTargetEnd > position);
 		}

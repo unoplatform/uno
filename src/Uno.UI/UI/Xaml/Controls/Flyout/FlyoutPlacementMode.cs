@@ -27,23 +27,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// The preferred location of the flyout is centered on the screen.
 		/// </summary>
 		Full,
-		[NotImplemented]
 		TopEdgeAlignedLeft,
-		[NotImplemented]
 		TopEdgeAlignedRight,
-		[NotImplemented]
 		BottomEdgeAlignedLeft,
-		[NotImplemented]
 		BottomEdgeAlignedRight,
-		[NotImplemented]
 		LeftEdgeAlignedTop,
-		[NotImplemented]
 		LeftEdgeAlignedBottom,
-		[NotImplemented]
 		RightEdgeAlignedTop,
-		[NotImplemented]
 		RightEdgeAlignedBottom,
-		[NotImplemented]
 		Auto
 	}
 }

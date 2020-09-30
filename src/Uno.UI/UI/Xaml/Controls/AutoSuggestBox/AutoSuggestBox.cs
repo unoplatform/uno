@@ -1,17 +1,17 @@
 
 using System;
+using System.Collections.Specialized;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using System.Collections.Specialized;
-using Uno.UI.DataBinding;
 
 #if __IOS__
 using UIKit;
@@ -21,7 +21,7 @@ using AppKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class AutoSuggestBox : ItemsControl, IValueChangedListener
+	public partial class AutoSuggestBox : ItemsControl, IValueChangedListener
 	{
 		private TextBox _textBox;
 		private Popup _popup;
@@ -49,16 +49,22 @@ namespace Windows.UI.Xaml.Controls
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
 			_queryButton = GetTemplateChild("QueryButton") as Button;
 
+			// Uno specific: If the user enabled the legacy behavior for popup light dismiss default
+			// we force it to false explicitly to make sure the AutoSuggestBox works correctly.
+			if(FeatureConfiguration.Popup.EnableLightDismissByDefault)
+			{
+				_popup.IsLightDismissEnabled = false;
+			}
+
 #if __ANDROID__
 			_popup.DisableFocus();
 #endif
 
-			if (_queryButton != null)
-			{
-				_queryButton.Content = new SymbolIcon(Symbol.Find);
-			}
+			UpdateQueryButton();
+			UpdateTextBox();
+			UpdateDescriptionVisibility(true);
 
-			_textBoxBinding = new BindingPath("Text", null) {DataContext = _textBox, ValueChangedListener = this};
+			_textBoxBinding = new BindingPath("Text", null) { DataContext = _textBox, ValueChangedListener = this };
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
@@ -112,7 +118,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_suggestionsList != null)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("ItemsChanged, refreshing suggestion list");
 				}
@@ -123,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					IsSuggestionListOpen = false;
 				}
-				else
+				else if (_textBox?.IsFocused ?? false)
 				{
 					IsSuggestionListOpen = true;
 					_suggestionsList.ItemsSource = GetItems();
@@ -276,9 +282,30 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private void UpdateQueryButton()
+		{
+			if (_queryButton == null)
+			{
+				return;
+			}
+
+			_queryButton.Content = QueryIcon;
+			_queryButton.Visibility = QueryIcon == null ? Visibility.Collapsed : Visibility.Visible;
+		}
+
+		private void UpdateTextBox()
+		{
+			if (_textBox == null)
+			{
+				return;
+			}
+
+			_textBox.Text = Text;
+		}
+
 		private void OnSuggestionListItemClick(object sender, ItemClickEventArgs e)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Suggestion item clicked {e.ClickedItem}");
 			}
@@ -289,7 +316,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnQueryButtonClick(object sender, RoutedEventArgs e)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Query button clicked");
 			}
@@ -307,7 +334,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (e.Key == Windows.System.VirtualKey.Enter)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Enter key pressed");
 				}
@@ -322,7 +349,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				RevertTextToUserInput();
 				IsSuggestionListOpen = false;
-			} else
+			}
+			else
 			{
 				_textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
 			}
@@ -351,7 +379,8 @@ namespace Windows.UI.Xaml.Controls
 			if (nextIndex == -1)
 			{
 				RevertTextToUserInput();
-			} else
+			}
+			else
 			{
 				ChoseSuggestion();
 			}
@@ -391,7 +420,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (TextMemberPath != null)
 			{
-				using var bindingPath = new BindingPath(TextMemberPath, "", null, allowPrivateMembers: true) {DataContext = o};
+				using var bindingPath = new BindingPath(TextMemberPath, "", null, allowPrivateMembers: true) { DataContext = o };
 				value = bindingPath.Value;
 			}
 
@@ -402,8 +431,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var newValue = args.NewValue as string ?? string.Empty;
 
-			if(dependencyObject is AutoSuggestBox tb)
+			if (dependencyObject is AutoSuggestBox tb)
 			{
+				tb.UpdateTextBox();
+				tb.UpdateSuggestionList();
+
 				if (tb._textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
 				{
 					tb.UpdateUserInput(newValue);
@@ -414,6 +446,21 @@ namespace Windows.UI.Xaml.Controls
 					Reason = tb._textChangeReason,
 					Owner = tb
 				});
+			}
+		}
+
+		private void UpdateDescriptionVisibility(bool initialization)
+		{
+			if (initialization && Description == null)
+			{
+				// Avoid loading DescriptionPresenter element in template if not needed.
+				return;
+			}
+
+			var descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
+			if (descriptionPresenter != null)
+			{
+				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
 	}

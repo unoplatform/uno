@@ -2,22 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface ICoreDropOperationTarget 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackageOperation> EnterAsync( global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo dragInfo,  global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride dragUIOverride);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackageOperation> OverAsync( global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo dragInfo,  global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride dragUIOverride);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncAction LeaveAsync( global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo dragInfo);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackageOperation> DropAsync( global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo dragInfo);
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.ICoreDropOperationTarget.EnterAsync(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride)
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.ICoreDropOperationTarget.OverAsync(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride)
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.ICoreDropOperationTarget.LeaveAsync(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo)
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.ICoreDropOperationTarget.DropAsync(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo)
 	}
 }

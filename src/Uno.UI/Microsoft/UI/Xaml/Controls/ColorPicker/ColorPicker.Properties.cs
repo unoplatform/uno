@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(Color),
 				typeof(Color),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					Color.FromArgb(255, 255, 255, 255),
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(ColorSpectrumComponents),
 				typeof(ColorSpectrumComponents),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					ColorSpectrumComponents.HueSaturation,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(ColorSpectrumShape),
 				typeof(ColorSpectrumShape),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					ColorSpectrumShape.Box,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsAlphaEnabled),
 				typeof(bool),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsAlphaSliderVisible),
 				typeof(bool),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					true,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsAlphaTextInputVisible),
 				typeof(bool),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					true,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -106,7 +106,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsColorChannelTextInputVisible),
 				typeof(bool),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					true,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsColorPreviewVisible),
 				typeof(bool),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					true,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -136,7 +136,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsColorSliderVisible),
 				typeof(bool),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					true,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -151,7 +151,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsColorSpectrumVisible),
 				typeof(bool),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					true,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -166,7 +166,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsHexInputVisible),
 				typeof(bool),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					true,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -181,7 +181,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsMoreButtonVisible),
 				typeof(bool),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -196,7 +196,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(MaxHue),
 				typeof(int),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					359,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -211,7 +211,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(MaxSaturation),
 				typeof(int),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					100,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -226,7 +226,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(MaxValue),
 				typeof(int),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					100,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -241,7 +241,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(MinHue),
 				typeof(int),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					0,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -256,7 +256,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(MinSaturation),
 				typeof(int),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					0,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -271,7 +271,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(MinValue),
 				typeof(int),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					0,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
@@ -286,7 +286,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(PreviousColor),
 				typeof(Color?),
 				typeof(ColorPicker),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 

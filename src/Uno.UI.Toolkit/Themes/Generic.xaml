@@ -3,6 +3,7 @@
 					xmlns:toolkit="using:Uno.UI.Toolkit">
 
 	<Style TargetType="toolkit:ElevatedView">
+		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="toolkit:ElevatedView">

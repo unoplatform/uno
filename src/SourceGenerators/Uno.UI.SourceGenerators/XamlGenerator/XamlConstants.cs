@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#nullable enable
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,6 +18,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public const string RootMUINamespace = "Windows.UI";
 		public const string BaseXamlNamespace = "Windows.UI.Xaml";
 		public const string UnoXamlNamespace = "Windows.UI.Xaml";
+
+		public const int MaxFluentResourcesVersion = 2;
 
 		public static class Namespaces
 		{
@@ -78,10 +82,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Attributes
 			public const string ContentPropertyAttribute = Markup + ".ContentPropertyAttribute";
 			public const string CreateFromStringAttribute = Metadata + ".CreateFromStringAttribute";
+			public const string NotImplementedAttribute = "Uno.NotImplementedAttribute";
 
 			// Text
 			public const string FontWeight = Namespaces.Text + ".FontWeight";
-			public const string FontWeights = Namespaces.Text + ".FontWeights";
+			public const string FontWeights = RootMUINamespace + ".Text.FontWeights";
 
 			// Misc
 			public const string Setter = BaseXamlNamespace + ".Setter";
@@ -115,6 +120,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string Panel = Namespaces.Controls + ".Panel";
 			public const string Button = Namespaces.Controls + ".Button";
 			public const string TextBox = Namespaces.Controls + ".TextBox";
+			public const string ColumnDefinition = Namespaces.Controls + ".ColumnDefinition";
+			public const string RowDefinition = Namespaces.Controls + ".RowDefinition";
 
 			// Documents
 			public const string Run = Namespaces.Documents + ".Run";
@@ -123,7 +130,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// MarkupExtension
 			public const string MarkupExtension = Markup + ".MarkupExtension";
 			public const string IMarkupExtensionOverrides = Markup + ".IMarkupExtensionOverrides";
-			public const string MarkupExtensionReturnTypeAttribute = Markup + ".MarkupExtensionReturnTypeAttribute";
 		}
 	}
 }

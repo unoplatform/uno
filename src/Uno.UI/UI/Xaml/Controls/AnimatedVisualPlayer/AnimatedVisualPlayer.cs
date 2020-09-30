@@ -84,11 +84,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void UpdateSourceOnChanged(DependencyObject source, DependencyPropertyChangedEventArgs args)
 		{
-			if (source is AnimatedVisualPlayer player)
+			if (source is AnimatedVisualPlayer {IsLoaded: true} player)
 			{
-				if (player.IsLoaded)
+				if (player.Source != null)
 				{
-					player?.Source?.Update(player);
+					player.Source.Update(player);
+					player.InvalidateMeasure();
 				}
 			}
 		}
@@ -118,7 +119,16 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 		}
 
-		protected override Size MeasureOverride(Size availableSize) =>
-			Source?.Measure(availableSize) ?? base.MeasureOverride(availableSize);
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			if (Source?.Measure(availableSize) != null)
+			{
+				return Source.Measure(availableSize);
+			}
+			else
+			{
+				return base.MeasureOverride(availableSize);
+			}
+		}
 	}
 }

@@ -1,7 +1,6 @@
 ﻿using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Uno.Logging;
 using Uno.Extensions;
 using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
@@ -675,6 +674,34 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		public void When_Private_Field_And_xBind_Not_OneTime()
+		{
+			var source = new PrivateField(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			var binding = new Binding()
+			{
+				Path = "MyField",
+				Mode = BindingMode.OneWay,
+				CompiledSource = source
+			};
+			binding.SetBindingXBindProvider(
+					source,
+					(a) => "Test",
+					null,
+					new[] { "MyField" });
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				binding
+			);
+
+			SUT.ApplyXBind();
+
+			Assert.AreEqual("Test", SUT.Tag);
+		}
+
+		[TestMethod]
 		public void When_Public_Field_And_Binding()
 		{
 			var source = new PublicField(42);
@@ -761,6 +788,23 @@ namespace Uno.UI.Tests.BinderTests
 			);
 
 			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Source_String()
+		{
+			var source = "Test";
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Source = source
+				}
+			);
+
+			Assert.AreEqual(source, SUT.Tag);
 		}
 
 		[TestMethod]
@@ -873,7 +917,6 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(42, SUT.Property2);
 		}
 
-
 		[TestMethod]
 		public void When_Parent_Collected()
 		{
@@ -905,6 +948,103 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.SetParent(null);
 
 			Assert.AreEqual(2, parentChanged);
+		}
+
+		[TestMethod]
+		public void When_NonUI_DependencyObject_NonUISub_Content()
+		{
+			var SUT = new NonUIDependencyObject();
+			SUT.SetBinding(NonUIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
+			var SUT2 = new NonUIDependencyObject();
+			SUT2.SetBinding(NonUIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
+			var model = new NonUIDependencyObject_Model();
+
+			Assert.AreEqual(-1, SUT2.MyValue);
+			Assert.AreEqual(-1, SUT.MyValue);
+
+			SUT.SubProperty = SUT2;
+
+			Assert.AreEqual(-1, SUT2.MyValue);
+			Assert.AreEqual(-1, SUT.MyValue);
+
+			SUT.DataContext = model;
+
+			Assert.AreEqual(0, SUT2.MyValue);
+			Assert.AreEqual(0, SUT.MyValue);
+		}
+
+		[TestMethod]
+		public void When_UI_DependencyObject_NonUISub_Content()
+		{
+			var SUT = new UIDependencyObject();
+			SUT.SetBinding(UIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
+			var SUT2 = new NonUIDependencyObject();
+			SUT2.SetBinding(NonUIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
+			var model = new NonUIDependencyObject_Model();
+
+			Assert.AreEqual(-1, SUT2.MyValue);
+			Assert.AreEqual(-1, SUT.MyValue);
+
+			SUT.SubProperty = SUT2;
+
+			Assert.AreEqual(-1, SUT2.MyValue);
+			Assert.AreEqual(-1, SUT.MyValue);
+
+			SUT.DataContext = model;
+
+			Assert.AreEqual(0, SUT2.MyValue);
+			Assert.AreEqual(0, SUT.MyValue);
+		}
+
+		[TestMethod]
+		public void When_Binding_OneWay_Overwritten_By_Binding()
+		{
+			var previousDC = new MyBindingSource { IntValue = 45 };
+			var replacementDC = new MyBindingSource { IntValue = 22 };
+			var slider = new Slider();
+			slider.SetBinding(Slider.ValueProperty, new Binding { Path = new PropertyPath(nameof(MyBindingSource.IntValue)), Mode = BindingMode.OneWay, Source = previousDC });
+
+			Assert.AreEqual(45, slider.Value);
+
+			slider.SetBinding(Slider.ValueProperty, new Binding { Path = new PropertyPath(nameof(MyBindingSource.IntValue)), Mode = BindingMode.OneWay, Source = replacementDC });
+
+			Assert.AreEqual(22, slider.Value);
+
+			previousDC.IntValue = 14;
+
+			Assert.AreEqual(22, slider.Value);
+		}
+
+		[TestMethod]
+		[Ignore("Activate this test when bindings are correctly cleared by setting local value")]
+		public void When_Binding_OneWay_Overwritten_By_Local()
+		{
+			var dc = new MyBindingSource { IntValue = 45 };
+			var slider = new Slider() { DataContext = dc };
+			slider.SetBinding(Slider.ValueProperty, new Binding { Path = new PropertyPath(nameof(MyBindingSource.IntValue)), Mode = BindingMode.OneWay });
+
+			Assert.AreEqual(45, slider.Value);
+
+			slider.Value = 22; // Setting local value should clear one-way binding
+			dc.IntValue = 14;
+
+			Assert.AreEqual(22, slider.Value);
+		}
+
+		[TestMethod]
+		[Ignore("Activate this test when bindings are correctly cleared by setting local value")]
+		public void When_Binding_OneWay_Overwritten_By_Local_Explicit_Source()
+		{
+			var dc = new MyBindingSource { IntValue = 45 };
+			var slider = new Slider();
+			slider.SetBinding(Slider.ValueProperty, new Binding { Path = new PropertyPath(nameof(MyBindingSource.IntValue)), Mode = BindingMode.OneWay, Source = dc });
+
+			Assert.AreEqual(45, slider.Value);
+
+			slider.Value = 22; // Setting local value should clear one-way binding
+			dc.IntValue = 14;
+
+			Assert.AreEqual(22, slider.Value);
 		}
 
 		public partial class BaseTarget : DependencyObject
@@ -1309,6 +1449,68 @@ namespace Uno.UI.Tests.BinderTests
 		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			throw new NotImplementedException();
+		}
+	}
+
+	public partial class UIDependencyObject : FrameworkElement
+	{
+		public DependencyObject SubProperty
+		{
+			get { return (DependencyObject)GetValue(SubPropertyProperty); }
+			set { SetValue(SubPropertyProperty, value); }
+		}
+
+		public static readonly DependencyProperty SubPropertyProperty =
+			DependencyProperty.Register("SubProperty", typeof(DependencyObject), typeof(UIDependencyObject), new PropertyMetadata(null));
+
+		public int MyValue
+		{
+			get { return (int)GetValue(MyValueProperty); }
+			set { SetValue(MyValueProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for MyValue.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MyValueProperty =
+			DependencyProperty.Register("MyValue", typeof(int), typeof(UIDependencyObject), new PropertyMetadata(-1));
+
+	}
+
+	public partial class NonUIDependencyObject : DependencyObject
+	{
+		public DependencyObject SubProperty
+		{
+			get { return (DependencyObject)GetValue(SubPropertyProperty); }
+			set { SetValue(SubPropertyProperty, value); }
+		}
+
+		public static readonly DependencyProperty SubPropertyProperty =
+			DependencyProperty.Register("SubProperty", typeof(DependencyObject), typeof(NonUIDependencyObject), new PropertyMetadata(null));
+
+		public int MyValue
+		{
+			get { return (int)GetValue(MyValueProperty); }
+			set { SetValue(MyValueProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for MyValue.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MyValueProperty =
+			DependencyProperty.Register("MyValue", typeof(int), typeof(NonUIDependencyObject), new PropertyMetadata(-1));
+
+	}
+
+	public class NonUIDependencyObject_Model : System.ComponentModel.INotifyPropertyChanged
+	{
+		private int myModelValue;
+
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+		public int MyModelValue
+		{
+			get => myModelValue; set
+			{
+				myModelValue = value;
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(MyModelValue)));
+			}
 		}
 	}
 }

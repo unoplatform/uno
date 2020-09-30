@@ -11,7 +11,6 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 {
-	[ActivePlatforms(Platform.iOS, Platform.Browser)]   // Ignore focus tests for android, focus is getting stolen incorrectly 
 	[TestFixture]
 	public partial class FocusManagerTests_Tests : SampleControlUITestBase
 	{
@@ -19,7 +18,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_Border_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -43,7 +42,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_Button_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -67,7 +66,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_Button_LostFocus_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -94,7 +93,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_CheckBox_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -118,7 +117,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_CheckBox_LostFocus_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -145,7 +144,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_Grid_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -169,7 +168,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_HyperlinkButton_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -196,7 +195,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_HyperlinkButton_LostFocus_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -223,7 +222,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_Image_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -247,7 +246,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_Rectangle_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -271,7 +270,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_TextBlock_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -295,7 +294,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_TextBoxMultiLine_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -320,7 +319,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_TextBoxMultiLine_LostFocus_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -347,7 +346,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_TextBoxSingleLine_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -371,7 +370,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_TextBoxSingleLine_LostFocus_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -398,7 +397,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_ToggleButton_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -422,7 +421,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_ToggleButton_LostFocus_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -449,7 +448,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_ComboBox_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -476,7 +475,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_ComboBox_LostFocus_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -505,7 +504,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_ComboBoxItem_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -525,7 +524,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
-			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBoxItem_1");
+			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
 			TakeScreenshot("FocusManager - GetFocusedElement - ComboBoxItem - 2 - After Selection");
 		}
 
@@ -533,7 +532,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_ComboBoxItem_LostFocus_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -551,7 +550,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
 
 			item1.FastTap();
-			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBoxItem_1");
+			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
 
 			_app.TapCoordinates(20, 100);
 
@@ -564,7 +563,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_ScrollViewer_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -589,7 +588,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_ListViewItem_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 
@@ -614,7 +613,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 		[AutoRetry]
 		public void FocusManager_GetFocusedElement_ListViewItem_LostFocus_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_GetFocus_Automated");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");
 
 			_app.WaitForElement(_app.Marked("TxtCurrentFocused"));
 

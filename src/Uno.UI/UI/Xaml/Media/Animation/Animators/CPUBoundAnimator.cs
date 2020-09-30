@@ -36,6 +36,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <inheritdoc />
 		public event EventHandler AnimationCancel;
 
+#pragma warning disable 67
+		/// <inheritdoc />
+		public event EventHandler AnimationFailed;
+#pragma warning restore 67
+
 
 		/// <inheritdoc />
 		public object AnimatedValue => _currentValue;
@@ -74,7 +79,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <inheritdoc />
 		public void Pause()
 		{
-			CheckDisposed();
+			if (_isDisposed)
+			{
+				return;
+			}
 
 			IsRunning = false;
 			_elapsed.Stop();
@@ -98,7 +106,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <inheritdoc />
 		public void Cancel()
 		{
-			CheckDisposed();
+			if (_isDisposed)
+			{
+				return;
+			}
 
 			IsRunning = false;
 			_elapsed.Stop();
@@ -147,7 +158,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				CurrentPlayTime = 0;
 				_currentValue = _from;
 			}
-			else if (elapsed >= Duration)
+			else if (elapsed >= StartDelay + Duration)
 			{
 				IsRunning = false;
 				DisableFrameReporting();
@@ -206,8 +217,13 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		/// <inheritdoc />
-		public void Dispose()
+		public virtual void Dispose()
 		{
+			if (_isDisposed)
+			{
+				return; // Avoid to invoke native stuff if animator has already been disposed
+			}
+
 			_isDisposed = true;
 
 			IsRunning = false;

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-    <Name Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="1113" />
-    <Description Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="1114" />
+    <Name>Page (Uno Platform UWP)</Name>
+    <Description>A Page control</Description>
     <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4007" />
     <TemplateID>Uno.CS.BlankPage</TemplateID>
     <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>

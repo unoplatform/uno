@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-#if __IOS__
+#if __IOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13931
 using CoreTelephony;
 #endif
 using CoreFoundation;
 using SystemConfiguration;
 using Windows.Networking.Connectivity;
+
+#pragma warning disable BI1234 // 'CTCellularDataRestrictedState' is obsolete: 'Starting with ios14.0 Use the 'CallKit' API instead.'
 
 namespace Uno.Networking.Connectivity.Internal
 {
@@ -153,7 +155,7 @@ namespace Uno.Networking.Connectivity.Internal
             remoteHostReachability.SetNotification(OnChange);
             remoteHostReachability.Schedule(CFRunLoop.Main, CFRunLoop.ModeDefault);
 
-#if __IOS__
+#if __IOS__ && !__MACCATALYST__
             NetworkInformation.CellularData.RestrictionDidUpdateNotifier = new Action<CTCellularDataRestrictedState>(OnRestrictedStateChanged);
 #endif
         }
@@ -169,12 +171,12 @@ namespace Uno.Networking.Connectivity.Internal
             remoteHostReachability?.Dispose();
             remoteHostReachability = null;
 
-#if __IOS__
-			NetworkInformation.CellularData.RestrictionDidUpdateNotifier = null;
+#if __IOS__ && !__MACCATALYST__
+            NetworkInformation.CellularData.RestrictionDidUpdateNotifier = null;
 #endif
         }
 
-#if __IOS__
+#if __IOS__ && !__MACCATALYST__
         void OnRestrictedStateChanged(CTCellularDataRestrictedState state)
         {
             ReachabilityChanged?.Invoke();

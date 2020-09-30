@@ -9,7 +9,7 @@ using SamplesApp.UITests.TestFramework;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests
 {
 	[TestFixture]
-	public class Control_Tests : SampleControlUITestBase
+	public partial class Control_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

@@ -2,21 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CreateFromStringAttribute : global::System.Attribute
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CreateFromStringAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.CreateFromStringAttribute", "CreateFromStringAttribute.CreateFromStringAttribute()");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.CreateFromStringAttribute.CreateFromStringAttribute()
 		// Forced skipping of method Windows.Foundation.Metadata.CreateFromStringAttribute.CreateFromStringAttribute()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  string MethodName;
-		#endif
+		// Skipping already declared field Windows.Foundation.Metadata.CreateFromStringAttribute.MethodName
 	}
 }

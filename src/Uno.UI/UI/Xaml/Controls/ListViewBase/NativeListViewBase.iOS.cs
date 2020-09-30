@@ -13,8 +13,8 @@ using Uno.UI.Controls;
 using System.ComponentModel;
 using Uno.Extensions.Specialized;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Uno.UI;
 using Windows.UI.Xaml.Data;
 using Uno.UI.Extensions;
@@ -24,6 +24,13 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 using CoreAnimation;
+#endif
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -81,34 +88,21 @@ namespace Windows.UI.Xaml.Controls
 		#region Properties
 		new internal ListViewBaseSource Source
 		{
-			get { return base.Source as ListViewBaseSource; }
-			set
-			{
-				base.Source = value;
-			}
+			get => base.Source as ListViewBaseSource;
+			set => base.Source = value;
 		}
 
 		public Style ItemContainerStyle => XamlParent?.ItemContainerStyle;
 
-		public DataTemplate HeaderTemplate
-		{
-			get { return XamlParent?.HeaderTemplate; }
-		}
+		public DataTemplate HeaderTemplate => XamlParent?.HeaderTemplate;
 
-
-		public DataTemplate FooterTemplate
-		{
-			get { return XamlParent?.FooterTemplate; }
-		}
-
+		public DataTemplate FooterTemplate => XamlParent?.FooterTemplate;
 
 		public DataTemplateSelector ItemTemplateSelector => XamlParent?.ItemTemplateSelector;
 
 		internal bool NeedsReloadData => _needsReloadData;
 
 		internal CGPoint UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
-
-		internal UIElement.TouchesManager TouchesManager { get; /* readonly in int */ private set; }
 		#endregion
 
 		public GroupStyle GroupStyle => XamlParent?.GroupStyle.FirstOrDefault();
@@ -118,15 +112,10 @@ namespace Windows.UI.Xaml.Controls
 		internal IList<object> SelectedItems => XamlParent?.SelectedItems;
 
 		public ListViewSelectionMode SelectionMode => XamlParent?.SelectionMode ?? ListViewSelectionMode.None;
-		public object Header
-		{
-			get { return XamlParent?.ResolveHeaderContext(); }
-		}
 
-		public object Footer
-		{
-			get { return XamlParent?.ResolveFooterContext(); }
-		}
+		public object Header => XamlParent?.ResolveHeaderContext();
+
+		public object Footer => XamlParent?.ResolveFooterContext();
 
 		/// <summary>
 		/// Get all currently visible supplementary views.
@@ -178,9 +167,8 @@ namespace Windows.UI.Xaml.Controls
 			RegisterClassForSupplementaryView(internalContainerType, ListViewFooterElementKindNS, ListViewFooterReuseIdentifier);
 			RegisterClassForSupplementaryView(internalContainerType, ListViewSectionHeaderElementKindNS, ListViewSectionHeaderReuseIdentifier);
 
-			DelaysContentTouches = true;
-			TouchesManager = UIElement.TouchesManager.GetOrCreate(this);
-			
+			DelaysContentTouches = true; // cf. TouchesManager which can alter this!
+
 			ShowsHorizontalScrollIndicator = true;
 			ShowsVerticalScrollIndicator = true;
 
@@ -229,7 +217,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.InsertItems(indexPaths);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -253,7 +245,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.InsertSections(sections);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -277,7 +273,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.DeleteItems(indexPaths);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -301,7 +301,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.DeleteSections(sections);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -467,17 +471,16 @@ namespace Windows.UI.Xaml.Controls
 				);
 				var actualItem = unoCell.Content?.DataContext;
 
-				if (!XamlParent.IsItemItsOwnContainer(expectedItem))
+				if (!XamlParent.IsItemItsOwnContainer(expectedItem)
+					// This check is present for the support of explicit ListViewItem 
+					// through the Items property. The DataContext may be set to some
+					// user defined object.
+					&& XamlParent.ItemsSource != null
+					// The view's DataContext generally will differ from the source item when DisplayMemberPath is set
+					&& XamlParent.DisplayMemberPath.IsNullOrEmpty())
 				{
 					var areMatching = Object.Equals(expectedItem, actualItem);
-					if (
-						// This check is present for the support of explicit ListViewItem 
-						// through the Items property. The DataContext may be set to some
-						// user defined object.
-						XamlParent.ItemsSource != null
-
-						&& !areMatching
-					)
+					if (!areMatching)
 					{
 						// This is a failsafe for in-place collection changes which leave the list in an inconsistent state, for exact reasons known only to UICollectionView.
 						if (this.Log().IsEnabled(LogLevel.Warning))
@@ -498,6 +501,8 @@ namespace Windows.UI.Xaml.Controls
 				return IndexPathsForVisibleItems.Select(selector);
 			}
 		}
+
+		internal Orientation ScrollOrientation => (CollectionViewLayout as VirtualizingPanelLayout)?.ScrollOrientation ?? Orientation.Vertical;
 
 		public ScrollBarVisibility HorizontalScrollBarVisibility
 		{
@@ -576,6 +581,7 @@ namespace Windows.UI.Xaml.Controls
 					var cd = new CancellationDisposable();
 					_scrollIntoViewSubscription.Disposable = cd;
 					//Item is present but no items are visible, probably being called on first load. Dispatch so that it actually does something.
+
 					Dispatcher.RunAsync(CoreDispatcherPriority.Normal, DispatchedScrollInner).AsTask(cd.Token);
 				}
 				else
@@ -621,7 +627,7 @@ namespace Windows.UI.Xaml.Controls
 				return UICollectionViewScrollPosition.None;
 			}
 
-			var scrollDirection = (CollectionViewLayout as VirtualizingPanelLayout)?.ScrollOrientation ?? Orientation.Vertical;
+			var scrollDirection = ScrollOrientation;
 			var snapPointsAlignment = (CollectionViewLayout as VirtualizingPanelLayout)?.SnapPointsAlignment;
 
 			switch (scrollDirection)
@@ -667,7 +673,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Warn("ScrollIntoViewAlignment.Default is not implemented");
 			}
 
-			var scrollDirection = (CollectionViewLayout as VirtualizingPanelLayout)?.ScrollOrientation ?? Orientation.Vertical;
+			var scrollDirection = ScrollOrientation;
 			switch (scrollDirection)
 			{
 				case Orientation.Horizontal:
@@ -770,5 +776,38 @@ namespace Windows.UI.Xaml.Controls
 			get { return NativeLayout.Padding; }
 			set { NativeLayout.Padding = value; }
 		}
+
+#region Touches
+		private TouchesManager _touchesManager;
+
+		internal TouchesManager TouchesManager => _touchesManager ??= new NativeListViewBaseTouchesManager(this);
+
+		private class NativeListViewBaseTouchesManager : TouchesManager
+		{
+			private readonly NativeListViewBase _listView;
+
+			public NativeListViewBaseTouchesManager(NativeListViewBase listView)
+			{
+				_listView = listView;
+			}
+
+			/// <inheritdoc />
+			protected override bool CanConflict(GestureRecognizer.Manipulation manipulation)
+				=> manipulation.IsDragManipulation || _listView.ScrollOrientation switch
+				{
+					Orientation.Horizontal => manipulation.IsTranslateXEnabled,
+					Orientation.Vertical => manipulation.IsTranslateYEnabled,
+					_ => manipulation.IsTranslateXEnabled || manipulation.IsTranslateYEnabled
+				};
+
+			/// <inheritdoc />
+			protected override void SetCanDelay(bool canDelay)
+				=> _listView.DelaysContentTouches = canDelay;
+
+			/// <inheritdoc />
+			protected override void SetCanCancel(bool canCancel)
+				=> _listView.CanCancelContentTouches = canCancel;
+		}
+#endregion
 	}
 }

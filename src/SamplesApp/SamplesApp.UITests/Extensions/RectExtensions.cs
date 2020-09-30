@@ -19,5 +19,13 @@ namespace SamplesApp.UITests
 		{
 			return new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
 		}
+
+		/// <summary>
+		/// Get point within <paramref name="rect"/> from normalized relative coordinates.
+		/// </summary>
+		/// <param name="pointNormalizedRelative">The point of interest, relative to the <paramref name="rect"/>'s origin and normalized (0 - 1).</param>
+		/// <returns>The point of interest in (unscaled) screen coordinates.</returns>
+		public static PointF GetPointInRect(this IAppRect rect, PointF pointNormalizedRelative)
+			=> new PointF(rect.X + pointNormalizedRelative.X * rect.Width, rect.Y + pointNormalizedRelative.Y * rect.Height);
 	}
 }

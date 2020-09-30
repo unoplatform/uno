@@ -1,0 +1,208 @@
+﻿{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Uno Platform",
+  "classifications": [
+    "Cross-platform",
+    "Uno Platform",
+    "UITest",
+    "Android",
+    "iOS",
+    "WebAssembly",
+    "dotnet-new"
+  ],
+  "name": "Cross-Platform UI Tests Library",
+  "identity": "Uno.Platform.UITestLibrary",
+  "groupIdentity": "Uno.Platform.BlankUITestLibrary",
+  "description": "Project template for creating multi-platform UI Tests with the Uno Platform.",
+  "precedence": "6001",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "shortName": "unoapp-uitest",
+  "sourceName": "UnoUITestsLibrary",
+  "defaultName": "UnoApp.UITests",
+  "placeholderFilename": "template-ignore",
+  "preferNameDirectory": false,
+  "guids": [
+    "99E19497-29A6-4B77-B773-BEC55F9B55DC" // .NET Standard Library
+  ],
+  "symbols": {
+    "guid1": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid1$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "guid2": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid2$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "guid3": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid3$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "guid4": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid4$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "guid5": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid5$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "windowsPublisherName": {
+      "type": "parameter",
+      "datatype": "text",
+      "replaces": "$XmlEscapedPublisherDistinguishedName$",
+      "description": "Provides the value to use for the Windows head publisher",
+      "defaultValue": "O=MyCompany"
+    },
+    "WebAssembly": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the WebAssembly platform support project"
+    },
+    "UWP": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Windows platform support project"
+    },
+    "iOS": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the iOS platform support project"
+    },
+    "Android": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Android platform support project"
+    },
+    "macOS": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the macOS platform support project"
+    },
+    "skia-wpf": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Skia/WPF platform support project"
+    },
+    "skia-gtk": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Skia/GTK platform support project"
+    },
+    "skia-tizen": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Skia/Tizen platform support project"
+    },
+    "vscodeWasm": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "false",
+      "description": "Adds the Visual Studio Code Debugging support files for WebAssembly"
+    }
+  },
+  "primaryOutputs": [
+    {
+      "path": "UnoUITestsLibrary.csproj"
+    }
+  ],
+  "postActions": [
+    {
+      "description": "Add projects to the existing solution",
+      "manualInstructions": [],
+      "primaryOutputIndexes": "0",
+      "actionId": "D396686C-DE0E-4DE6-906D-291CD29FC5DE",
+      "continueOnError": true
+    }
+  ],
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "condition": "(!iOS)",
+          "exclude": [
+            "UnoQuickStart.iOS/**/*"
+          ]
+        },
+        {
+          "condition": "(!Android)",
+          "exclude": [
+            "UnoQuickStart.Droid/**/*"
+          ]
+        },
+        {
+          "condition": "(!WebAssembly)",
+          "exclude": [
+            "UnoQuickStart.Gtk/**/*"
+          ]
+        },
+        {
+          "condition": "(!macOS)",
+          "exclude": [
+            "UnoQuickStart.macOS/**/*"
+          ]
+        },
+        {
+          "condition": "(!UWP)",
+          "exclude": [
+            "UnoQuickStart.UWP/**/*"
+          ]
+        },
+        {
+          "condition": "(!skia-gtk)",
+          "exclude": [
+            "UnoQuickStart.Skia.Gtk/**/*"
+          ]
+        },
+        {
+          "condition": "(!skia-wpf)",
+          "exclude": [
+            "UnoQuickStart.Skia.WPF/**/*",
+            "UnoQuickStart.Skia.WPF.Host/**/*"
+          ]
+        },
+        {
+          "condition": "(!skia-tizen)",
+          "exclude": [
+            "UnoQuickStart.Skia.Tizen/**/*"
+          ]
+        },
+        {
+          "condition": "(!vscodeWasm)",
+          "exclude": [
+            ".vscode/**/*"
+          ]
+        }
+      ]
+    }
+  ]
+}

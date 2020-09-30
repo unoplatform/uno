@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -36,13 +38,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			double child6LeftExpected, double child6TopExpected, double child6WidthExpected, double child6HeightExpected
 			)
 		{
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				TestServices.WindowHelper.WindowContent = null;
 			});
 
 			Grid SUT = null;
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				SUT = new Grid
 				{
@@ -50,15 +52,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					RowSpacing = rowSpacing,
 					ColumnDefinitions =
 					{
-						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
-						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Auto)},
-						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
+						new ColumnDefinition {Width = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
+						new ColumnDefinition {Width = GridLengthHelper2.FromValueAndType(1, GridUnitType.Auto)},
+						new ColumnDefinition {Width = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
 					},
 					RowDefinitions =
 					{
-						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Auto)},
-						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
-						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
+						new RowDefinition {Height = GridLengthHelper2.FromValueAndType(1, GridUnitType.Auto)},
+						new RowDefinition {Height = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
+						new RowDefinition {Height = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
 					},
 					Children =
 					{
@@ -116,7 +118,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WaitForMeasure(SUT);
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var desiredSize = SUT.DesiredSize;
 				var data = $"({columnSpacing}, {rowSpacing}, {desiredSize.Width}, {desiredSize.Height}";
@@ -164,13 +166,113 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ColumnDefinition_Width_Changed()
+		{
+			var outerShell = new Grid { Width = 290, Height = 220 };
+
+			var colDef0 = new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) };
+			var colDef1 = new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) };
+			var SUT = new Grid
+			{
+				ColumnDefinitions =
+				{
+					colDef0,
+					colDef1,
+				}
+			};
+			outerShell.Children.Add(SUT);
+			AddChild(SUT, new Border { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }, 0, 0);
+			AddChild(SUT, new Border { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }, 0, 1);
+
+			TestServices.WindowHelper.WindowContent = outerShell;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			const double expectedColWidth = 290 / 2;
+			Assert.AreEqual(expectedColWidth, colDef0.ActualWidth);
+			Assert.AreEqual(expectedColWidth, colDef1.ActualWidth);
+
+			colDef0.Width = new GridLength(80, GridUnitType.Pixel);
+			Assert.AreEqual(expectedColWidth, colDef0.ActualWidth);
+			Assert.AreEqual(expectedColWidth, colDef1.ActualWidth);
+
+			await TestServices.WindowHelper.WaitForRelayouted(SUT);
+
+			Assert.AreEqual(80, colDef0.ActualWidth);
+			Assert.AreEqual(210, colDef1.ActualWidth);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Definitions_Cleared_And_Empty()
+		{
+			var SUT = new Grid();
+			var tb = new TextBlock { Text = "Text" };
+			AddChild(SUT, new Border { Width = 50, Height = 20 }, 0, 0);
+			AddChild(SUT, tb, 0, 0);
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			SUT.ColumnDefinitions.Clear();
+
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			await TestServices.WindowHelper.WaitForLoaded(tb); // Needed for iOS where measurement is async
+
+			NumberAssert.Greater(tb.ActualWidth, 0);
+			NumberAssert.Greater(tb.ActualHeight, 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Child_Added_Measure_And_Visible_Arrange()
+		{
+			// This test emulates the layout sequence associated with DataGridColumnHeadersPresenter in the WCT
+			var gridAdder = new GridAdder() { MinWidth = 5, MinHeight = 5 };
+			TestServices.WindowHelper.WindowContent = gridAdder;
+			await TestServices.WindowHelper.WaitForLoaded(gridAdder);
+
+			await TestServices.WindowHelper.WaitFor(() => gridAdder.WasArranged); // Needed for iOS where measurement is async
+
+			if (gridAdder.Exception != null)
+			{
+				throw new AssertFailedException("Exception occurred", gridAdder.Exception);
+			}
+
+			var SUT = gridAdder.AddedGrid;
+			Assert.IsNotNull(SUT);
+			Assert.AreEqual(Visibility.Visible, SUT.Visibility);
+
+#if !__ANDROID__ && !__IOS__ // The Grid contents doesn't seem to actually display properly when added this way, but at least it should not throw an exception.
+			Assert.AreEqual(27, SUT.ActualHeight);
+			NumberAssert.Greater(SUT.ActualWidth, 0); 
+#endif
+		}
+
+		private static void AddChild(Grid parent, FrameworkElement child, int row, int col, int? rowSpan = null, int? colSpan = null)
+		{
+			Grid.SetRow(child, row);
+			Grid.SetColumn(child, col);
+
+			if (rowSpan is { } rs)
+			{
+				Grid.SetRowSpan(child, rs);
+			}
+			if (colSpan is { } cs)
+			{
+				Grid.SetColumnSpan(child, cs);
+			}
+
+			parent.Children.Add(child);
+		}
+
 		private async Task WaitForMeasure(FrameworkElement view, int timeOutMs = 1000)
 		{
 			var isMeasured = false;
 			var stopwatch = Stopwatch.StartNew();
 			while (stopwatch.ElapsedMilliseconds < timeOutMs)
 			{
-				await RunOnUIThread.Execute(() =>
+				await RunOnUIThread.ExecuteAsync(() =>
 				{
 					isMeasured = view.DesiredSize != default(Size);
 				});

@@ -1,9 +1,9 @@
 using System;
 using System.Numerics;
 using Windows.Foundation;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Media
 {

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -119,5 +119,29 @@
   </resheader>
   <data name="NavigationView_Settings_Content" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="StorageProviderAndroidSafDisplayName" xml:space="preserve">
+    <value>Android Storage Access Framework</value>
+  </data>
+  <data name="StorageProviderIosSecurityScopedDisplayName" xml:space="preserve">
+    <value>iOS Security Scoped</value>
+  </data>
+  <data name="StorageProviderLocalDisplayName" xml:space="preserve">
+    <value>This PC</value>
+  </data>
+  <data name="StorageProviderWasmNativeDisplayName" xml:space="preserve">
+    <value>JS File Access API</value>
+  </data>
+  <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
+    <value>select a date</value>
+  </data>
+  <data name="UIA_FLIPVIEW_PREVIOUS" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="UIA_FLIPVIEW_NEXT" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="StorageProviderWasmDownloadPickerName" xml:space="preserve">
+    <value>WASM Download picker</value>
   </data>
 </root>

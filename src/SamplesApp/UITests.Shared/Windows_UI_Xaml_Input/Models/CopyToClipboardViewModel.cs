@@ -10,7 +10,7 @@ using EventHandler = System.EventHandler;
 namespace UITests.Shared.Windows_UI_Xaml_Input.Models
 {
 	[Bindable]
-	public class CopyToClipboardViewModel : ViewModelBase
+	internal class CopyToClipboardViewModel : ViewModelBase
 	{
 		public CopyToClipboardViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

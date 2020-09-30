@@ -48,12 +48,12 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the channel from 0-15 that this message applies to.
 		/// </summary>
-		public byte Channel => MidiHelpers.GetChannel(_buffer.Data[0]);
+		public byte Channel => MidiHelpers.GetChannel(_buffer.GetByte(0));
 
 		/// <summary>
 		/// Gets the pitch bend value which is specified as a 14-bit value from 0-16383.
 		/// </summary>
-		public ushort Bend => MidiHelpers.GetBend(_buffer.Data[1], _buffer.Data[2]);
+		public ushort Bend => MidiHelpers.GetBend(_buffer.GetByte(1), _buffer.GetByte(2));
 
 		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.

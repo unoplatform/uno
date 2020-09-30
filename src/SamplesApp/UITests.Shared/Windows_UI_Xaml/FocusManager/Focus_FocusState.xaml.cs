@@ -14,11 +14,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-
-namespace UITests.Windows_UI_Xaml.FocusManager
+namespace UITests.Windows_UI_Xaml.FocusTests
 {
-	[Sample]
+	[Sample("Focus")]
 	public sealed partial class Focus_FocusState : UserControl
 	{
 		public Focus_FocusState()

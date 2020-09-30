@@ -25,13 +25,6 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			// We make sure to invoke native methods while not in the visual tree
-			// (For instance getBBox will fail on FF)
-			if (Parent == null)
-			{
-				return new Size();
-			}
-
 			InvalidateShape();
 
 			var measurements = GetMeasurements(availableSize);
@@ -174,12 +167,14 @@ namespace Windows.UI.Xaml.Shapes
 		private Rect GetBBoxWithStrokeThickness(UIElement element)
 		{
 			var bbox = element.GetBBox();
-			if (Stroke == null || StrokeThickness < double.Epsilon)
+			var strokeThickness = ActualStrokeThickness;
+
+			if (Stroke == null || strokeThickness < double.Epsilon)
 			{
 				return bbox;
 			}
 
-			var halfStrokeThickness = StrokeThickness / 2;
+			var halfStrokeThickness = strokeThickness / 2;
 
 			var x = Math.Min(bbox.X, bbox.Left - halfStrokeThickness);
 			var y = Math.Min(bbox.Y, bbox.Top - halfStrokeThickness);

@@ -1,4 +1,5 @@
-﻿using CoreGraphics;
+﻿#nullable enable
+using CoreGraphics;
 using System;
 using System.Linq;
 using Windows.Foundation;
@@ -11,15 +12,16 @@ namespace Windows.UI.Xaml.Shapes
 
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
-			=> MeasureAbsoluteShape(availableSize, GetPath());
+			=> MeasureAbsoluteShape(availableSize, GetPathAndFillRule(out _));
 
 		/// <inheritdoc />
 		protected override Size ArrangeOverride(Size finalSize)
-			=> ArrangeAbsoluteShape(finalSize, GetPath());
+			=> ArrangeAbsoluteShape(finalSize, GetPathAndFillRule(out var fillRule), fillRule);
 
-		private CGPath GetPath()
+		private CGPath? GetPathAndFillRule(out FillRule fillRule)
 		{
 			var streamGeometry = Data?.ToStreamGeometry();
+			fillRule = streamGeometry?.FillRule ?? FillRule.EvenOdd;
 			return streamGeometry?.ToCGPath();
 		}
 	}

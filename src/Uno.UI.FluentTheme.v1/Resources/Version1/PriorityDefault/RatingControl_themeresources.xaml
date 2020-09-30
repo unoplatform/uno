@@ -1,0 +1,72 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Microsoft.UI.Xaml.Controls">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <StaticResource x:Key="RatingControlUnselectedForeground" ResourceKey="SystemControlBackgroundBaseLowBrush"/>
+            <StaticResource x:Key="RatingControlSelectedForeground" ResourceKey="SystemControlForegroundAccentBrush"/>
+            <StaticResource x:Key="RatingControlPlaceholderForeground" ResourceKey="SystemControlForegroundBaseHighBrush"/>
+            <StaticResource x:Key="RatingControlPointerOverPlaceholderForeground" ResourceKey="SystemControlForegroundBaseMediumBrush"/>
+            <StaticResource x:Key="RatingControlPointerOverUnselectedForeground" ResourceKey="SystemControlForegroundBaseMediumBrush"/>
+            <StaticResource x:Key="RatingControlPointerOverSelectedForeground" ResourceKey="SystemControlForegroundAccentBrush"/>
+            <StaticResource x:Key="RatingControlDisabledSelectedForeground" ResourceKey="SystemBaseMediumLowColor"/>
+            <!-- If this Foreground property is removed/renamed, please update ThemeResourcesTests::VerifyOverrides: -->
+            <StaticResource x:Key="RatingControlCaptionForeground" ResourceKey="SystemControlForegroundBaseMediumBrush"/>
+            <local:RatingItemFontInfo x:Key="MUX_RatingControlDefaultFontInfo" Glyph="&#xE735;"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <StaticResource x:Key="RatingControlUnselectedForeground" ResourceKey="SystemControlBackgroundBaseLowBrush"/>
+            <StaticResource x:Key="RatingControlSelectedForeground" ResourceKey="SystemControlForegroundAccentBrush"/>
+            <StaticResource x:Key="RatingControlPlaceholderForeground" ResourceKey="SystemControlForegroundBaseHighBrush"/>
+            <StaticResource x:Key="RatingControlPointerOverPlaceholderForeground" ResourceKey="SystemControlForegroundBaseMediumBrush"/>
+            <StaticResource x:Key="RatingControlPointerOverUnselectedForeground" ResourceKey="SystemControlForegroundBaseMediumBrush"/>
+            <StaticResource x:Key="RatingControlPointerOverSelectedForeground" ResourceKey="SystemControlForegroundAccentBrush"/>
+            <StaticResource x:Key="RatingControlDisabledSelectedForeground" ResourceKey="SystemBaseMediumLowColor"/>
+            <StaticResource x:Key="RatingControlCaptionForeground" ResourceKey="SystemControlForegroundBaseMediumBrush"/>
+            <local:RatingItemFontInfo x:Key="MUX_RatingControlDefaultFontInfo" Glyph="&#xE735;"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <StaticResource x:Key="RatingControlUnselectedForeground" ResourceKey="SystemControlForegroundBaseLowBrush"/>
+            <StaticResource x:Key="RatingControlSelectedForeground" ResourceKey="SystemControlHighlightAccentBrush"/>
+            <StaticResource x:Key="RatingControlPlaceholderForeground" ResourceKey="SystemControlForegroundBaseHighBrush"/>
+            <StaticResource x:Key="RatingControlPointerOverPlaceholderForeground" ResourceKey="SystemControlForegroundBaseMediumBrush"/>
+            <StaticResource x:Key="RatingControlPointerOverUnselectedForeground" ResourceKey="SystemControlForegroundBaseMediumBrush"/>
+            <StaticResource x:Key="RatingControlPointerOverSelectedForeground" ResourceKey="SystemControlHighlightAccentBrush"/>
+            <StaticResource x:Key="RatingControlDisabledSelectedForeground" ResourceKey="SystemColorGrayTextColor"/>
+            <StaticResource x:Key="RatingControlCaptionForeground" ResourceKey="SystemControlForegroundBaseMediumBrush"/>
+            <local:RatingItemFontInfo x:Key="MUX_RatingControlDefaultFontInfo" Glyph="&#xE735;" UnsetGlyph="&#xE734;"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <DataTemplate x:Key="BackgroundGlyphDefaultTemplate">
+        <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
+        <TextBlock 
+            Foreground="{ThemeResource RatingControlUnselectedForeground}"
+            Margin="-8,-8,0,0"
+            FontSize="32"
+            Text="&#xE734;"
+            AutomationProperties.AccessibilityView="Raw"
+            FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ForegroundGlyphDefaultTemplate">
+        <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
+        <TextBlock Margin="-8,-8,0,0"
+            FontSize="32"
+            Text="&#xE735;"
+            AutomationProperties.AccessibilityView="Raw"
+            FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="BackgroundImageDefaultTemplate">
+        <Image Margin="-8,-8,0,0" AutomationProperties.AccessibilityView="Raw"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ForegroundImageDefaultTemplate">
+        <Image Margin="-8,-8,0,0" AutomationProperties.AccessibilityView="Raw"/>
+    </DataTemplate>
+
+</ResourceDictionary>

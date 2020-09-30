@@ -5,12 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml
 {
 	[ContentProperty(Name = "Storyboard")]
 	public partial class VisualTransition : DependencyObject
 	{
+		internal Action LazyBuilder { get; set; }
+
 		public VisualTransition()
 		{
 			IsAutoPropertyInheritanceEnabled = false;
@@ -26,8 +29,29 @@ namespace Windows.UI.Xaml
 
 		public Storyboard Storyboard
 		{
-			get { return (Storyboard)this.GetValue(StoryboardProperty); }
+			get
+			{
+				EnsureMaterialized();
+				return (Storyboard)this.GetValue(StoryboardProperty);
+			}
 			set { this.SetValue(StoryboardProperty, value); }
+		}
+
+		private void EnsureMaterialized()
+		{
+			if (LazyBuilder != null)
+			{
+				var builder = LazyBuilder;
+				LazyBuilder = null;
+				builder.Invoke();
+
+				if (Storyboard is IDependencyObjectStoreProvider storyboardProvider)
+				{
+					// Set the theme changed flag on so the update processes
+					// the children.
+					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
+				}
+			}
 		}
 
 		public static DependencyProperty StoryboardProperty { get ; } =
@@ -42,5 +66,5 @@ namespace Windows.UI.Xaml
 			);
 
 		#endregion
-    }
+	}
 }

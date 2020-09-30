@@ -1,4 +1,6 @@
-﻿using Uno.Diagnostics.Eventing;
+﻿#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
+
+using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
@@ -10,13 +12,20 @@ using Uno.UI.Controls;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Uno;
+using Uno.Disposables;
 using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Data;
+using Uno.UI.Xaml.Core;
+
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -34,9 +43,11 @@ using View = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints, IDependencyObjectParse
+#if !UNO_REFERENCE_API
+		, ILayouterElement
+#endif
 	{
-		public
-			static class TraceProvider
+		public static class TraceProvider
 		{
 			public readonly static Guid Id = Guid.Parse("{DDDCCA61-5CB7-4585-95D7-58C5528AABE6}");
 
@@ -47,21 +58,33 @@ namespace Windows.UI.Xaml
 			public const int FrameworkElement_InvalidateMeasure = 5;
 		}
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		private FrameworkElementLayouter _layouter;
+
+		ILayouter ILayouterElement.Layouter => _layouter;
+		Size ILayouterElement.LastAvailableSize => LastAvailableSize;
+		bool ILayouterElement.IsMeasureDirty => IsMeasureDirty;
+		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => IsFirstMeasureDone;
+		bool ILayouterElement.IsMeasureDirtyPathDisabled => IsMeasureDirtyPathDisabled;
 #else
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
-		
+
 		private bool _constraintsChanged;
 		private bool _suppressIsEnabled;
 
 		private bool _defaultStyleApplied = false;
 		private protected bool IsDefaultStyleApplied => _defaultStyleApplied;
+
 		/// <summary>
 		/// The current user-determined 'active Style'. This will either be the explicitly-set Style, if there is one, or otherwise the resolved implicit Style (either in the view hierarchy or in Application.Resources).
 		/// </summary>
 		private Style _activeStyle = null;
+
+		/// <summary>
+		/// Cache for the current type key for faster implicit style lookup
+		/// </summary>
+		private SpecializedResourceDictionary.ResourceKey _thisTypeResourceKey;
 
 		/// <summary>
 		/// Sets whether constraint-based optimizations are used to limit redrawing of the entire visual tree on Android. This can be
@@ -81,6 +104,12 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		protected virtual bool IsSimpleLayout => false;
 
+		/// <summary>
+		/// Flag for whether this FrameworkElement has a Style set by an ItemsControl. This typically happens when the user provides an explicit container
+		/// in XAML, but does not set a local style for the container.
+		/// </summary>
+		internal bool IsStyleSetFromItemsControl { get; set; }
+
 		#region Tag Dependency Property
 
 #if __IOS__ || __MACOS__ || __ANDROID__
@@ -96,11 +125,30 @@ namespace Windows.UI.Xaml
 		[GeneratedDependencyProperty(DefaultValue = null)]
 		public static DependencyProperty TagProperty { get; } = CreateTagProperty();
 
-#endregion
+		#endregion
+
+
+		#region BackgroundSizing Dependency Property (handlers)
+
+		// Actual BackgroundSizing property is define in some elements implementing it:
+		// Border, ContentPresenter, Grid, RelativePanel & StackPanel
+
+		internal BackgroundSizing InternalBackgroundSizing { get; set; }
+
+		private protected virtual void OnBackgroundSizingChangedInner(DependencyPropertyChangedEventArgs e)
+		{
+			InternalBackgroundSizing = (BackgroundSizing)e.NewValue;
+			OnBackgroundSizingChangedPartial(e);
+		}
+
+		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs);
+
+		#endregion
+
 
 		partial void Initialize()
 		{
-#if !NETSTANDARD2_0
+#if !UNO_REFERENCE_API
 			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
 #endif
 			Resources = new Windows.UI.Xaml.ResourceDictionary();
@@ -124,7 +172,26 @@ namespace Windows.UI.Xaml
 #if __ANDROID__
 		new
 #endif
-		DependencyObject Parent => ((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
+		DependencyObject Parent =>
+#if UNO_HAS_MANAGED_POINTERS || __WASM__
+			LogicalParentOverride ??
+#endif
+			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
+
+
+#if UNO_HAS_MANAGED_POINTERS || __WASM__
+		/// <summary>
+		/// Allows to override the publicly-visible <see cref="Parent"/> without modifying DP propagation.
+		/// </summary>
+		internal DependencyObject LogicalParentOverride { get; set; }
+#endif
+
+		/// <summary>
+		/// Provides the managed visual parent of the element. This property can be overriden for specific
+		/// scenarios, for example in case of SelectorItem, where actual parent is null, but visual parent
+		/// is the list.
+		/// </summary>
+		internal virtual UIElement VisualParent => ((IDependencyObjectStoreProvider)this).Store.Parent as UIElement;
 
 		private bool _isParsing;
 		/// <summary>
@@ -157,10 +224,6 @@ namespace Windows.UI.Xaml
 		/// <returns>The size that this object determines it needs during layout, based on its calculations of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
 		protected virtual Size MeasureOverride(Size availableSize)
 		{
-#if !NETSTANDARD2_0
-			LastAvailableSize = availableSize;
-#endif
-
 			var child = this.FindFirstChild();
 			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
 		}
@@ -176,7 +239,7 @@ namespace Windows.UI.Xaml
 
 			if (child != null)
 			{
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 				child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
 #else
 				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
@@ -189,7 +252,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		/// <summary>
 		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
 		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
@@ -241,7 +304,7 @@ namespace Windows.UI.Xaml
 		/// <returns>The measured size - INCLUDES THE MARGIN</returns>
 		protected Size MeasureElement(View view, Size availableSize)
 		{
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 			view.Measure(availableSize);
 			return view.DesiredSize;
 #else
@@ -264,7 +327,7 @@ namespace Windows.UI.Xaml
 			var rect = new Rect(finalRect.X - adjust.Left, finalRect.Y - adjust.Top, finalRect.Width, finalRect.Height);
 
 			view.Arrange(rect);
-#elif NETSTANDARD
+#elif UNO_REFERENCE_API
 			view.Arrange(finalRect);
 #else
 			_layouter.ArrangeElement(view, finalRect);
@@ -276,7 +339,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		protected Size GetElementDesiredSize(View view)
 		{
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 			return view.DesiredSize;
 #else
 			return (_layouter as ILayouter).GetDesiredSize(view);
@@ -285,8 +348,15 @@ namespace Windows.UI.Xaml
 
 		partial void OnLoadingPartial()
 		{
+			this.StoreTryEnableHardReferences();
+
 			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
 			ApplyStyles();
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			this.StoreDisableHardReferences();
 		}
 
 		private protected void ApplyStyles()
@@ -321,7 +391,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#region Style DependencyProperty
+		#region Style DependencyProperty
 
 		public Style Style
 		{
@@ -329,7 +399,7 @@ namespace Windows.UI.Xaml
 			set => SetValue(StyleProperty, value);
 		}
 
-		public static DependencyProperty StyleProperty { get ; } =
+		public static DependencyProperty StyleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(Style),
 				typeof(Style),
@@ -341,7 +411,7 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-#endregion
+		#endregion
 
 		private void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
@@ -376,9 +446,27 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private Style ResolveImplicitStyle() => (this as IDependencyObjectStoreProvider).Store.GetImplicitStyle();
+		private SpecializedResourceDictionary.ResourceKey ThisTypeResourceKey
+		{
+			get
+			{
+				if (_thisTypeResourceKey.IsEmpty)
+				{
+					_thisTypeResourceKey = this.GetType();
+				}
+
+				return _thisTypeResourceKey;
+			}
+		}
+
+		private Style ResolveImplicitStyle() => this.StoreGetImplicitStyle(ThisTypeResourceKey);
 
 		#region Requested theme dependency property
+
+		// TODO Uno: ActualTheme should always be initialized with Application.Current.RequestedTheme,
+		// and should trigger ActualThemeChanged, when the element enters the visual tree, where some
+		// higher-level element has explicitly changed its RequestedTheme. This may could start working
+		// automatically when the RequestedTheme property supports inheritance.
 
 		public ElementTheme RequestedTheme
 		{
@@ -391,7 +479,7 @@ namespace Windows.UI.Xaml
 				nameof(RequestedTheme),
 				typeof(ElementTheme),
 				typeof(FrameworkElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					ElementTheme.Default,
 					(o, e) => ((FrameworkElement)o).OnRequestedThemeChanged((ElementTheme)e.OldValue, (ElementTheme)e.NewValue)));
 
@@ -401,16 +489,159 @@ namespace Windows.UI.Xaml
 			{
 				// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
 				// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
+				// This will also explicitly change the Application.Current.RequestedTheme, which does not happen in case of UWP.
 				Application.Current.SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(newValue));
+			}
+
+			if (ActualThemeChanged != null)
+			{
+				var actualThemeChanged =
+					// 1. Previously was default, and new explicit value differs from application theme
+					(oldValue == ElementTheme.Default && Application.Current?.ActualElementTheme != newValue) ||
+					// 2. Previously was explicit, and new ActualTheme is different
+					(oldValue != ElementTheme.Default && oldValue != ActualTheme);
+
+				if (actualThemeChanged)
+				{
+					ActualThemeChanged?.Invoke(this, null);
+				}
 			}
 		}
 
 
 		#endregion
 
-		public ElementTheme ActualTheme => IsWindowRoot ?
-			Application.Current?.ActualElementTheme ?? ElementTheme.Default
-			: ElementTheme.Default;
+		/// <summary>
+		/// Gets or sets a value that determines the light-dark
+		/// preference for the overall theme of an app.
+		/// </summary>
+		/// <remarks>
+		/// This is always either Dark or Light. By default the color matches Application.Current.RequestedTheme.
+		/// When the FrameworkElement.RequestedTheme has non-default value, it has precedence.
+		/// When the value changes ActualThemeChanged event is triggered.
+		/// </remarks>
+		public ElementTheme ActualTheme => RequestedTheme == ElementTheme.Default ?
+			(Application.Current?.ActualElementTheme ?? ElementTheme.Light) :
+			RequestedTheme;
+
+		/// <summary>
+		/// Occurs when the ActualTheme property value has changed.
+		/// </summary>
+		public event TypedEventHandler<FrameworkElement, object> ActualThemeChanged;
+
+		[GeneratedDependencyProperty]
+		public static DependencyProperty FocusVisualSecondaryThicknessProperty { get; } = CreateFocusVisualSecondaryThicknessProperty();
+
+		public Thickness FocusVisualSecondaryThickness
+		{
+			get => GetFocusVisualSecondaryThicknessValue();
+			set => SetFocusVisualSecondaryThicknessValue(value);
+		}
+
+		private static Thickness GetFocusVisualSecondaryThicknessDefaultValue() => new Thickness(1);
+
+		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
+		public static DependencyProperty FocusVisualSecondaryBrushProperty { get; } = CreateFocusVisualSecondaryBrushProperty();
+
+		public Brush FocusVisualSecondaryBrush
+		{
+			get
+			{
+				EnsureFocusVisualBrushDefaults();
+				return GetFocusVisualSecondaryBrushValue();
+			}
+			set => SetFocusVisualSecondaryBrushValue(value);
+		}
+
+		[GeneratedDependencyProperty]
+		public static DependencyProperty FocusVisualPrimaryThicknessProperty { get; } = CreateFocusVisualPrimaryThicknessProperty();
+
+		public Thickness FocusVisualPrimaryThickness
+		{
+			get => GetFocusVisualPrimaryThicknessValue();
+			set => SetFocusVisualPrimaryThicknessValue(value);
+		}
+
+		private static Thickness GetFocusVisualPrimaryThicknessDefaultValue() => new Thickness(2);
+
+		public Brush FocusVisualPrimaryBrush
+		{
+			get
+			{
+				EnsureFocusVisualBrushDefaults();
+				return GetFocusVisualPrimaryBrushValue();
+			}
+			set => SetFocusVisualPrimaryBrushValue(value);
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
+		public static DependencyProperty FocusVisualPrimaryBrushProperty { get; } = CreateFocusVisualPrimaryBrushProperty();
+
+		public Thickness FocusVisualMargin
+		{
+			get => GetFocusVisualMarginValue();
+			set => SetFocusVisualMarginValue(value);
+		}
+
+		private static Thickness GetFocusVisualMarginDefaultValue() => Thickness.Empty;
+
+		[GeneratedDependencyProperty]
+		public static DependencyProperty FocusVisualMarginProperty { get; } = CreateFocusVisualMarginProperty();
+
+		private bool _focusVisualBrushesInitialized = false;
+
+		internal void EnsureFocusVisualBrushDefaults()
+		{
+			if (_focusVisualBrushesInitialized)
+			{
+				return;
+			}
+
+			ResourceResolver.ApplyResource(this, FocusVisualPrimaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualPrimaryBrush"), ResourceUpdateReason.ThemeResource, null, DependencyPropertyValuePrecedences.DefaultValue);
+			ResourceResolver.ApplyResource(this, FocusVisualSecondaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualSecondaryBrush"), ResourceUpdateReason.ThemeResource, null, DependencyPropertyValuePrecedences.DefaultValue);
+
+			_focusVisualBrushesInitialized = true;
+		}
+
+		/// <summary>
+		/// Gets or sets whether a disabled control can receive focus.
+		/// </summary>
+		public bool AllowFocusWhenDisabled
+		{
+			get => GetAllowFocusWhenDisabledValue();
+			set => SetAllowFocusWhenDisabledValue(value);
+		}
+
+		/// <summary>
+		/// Identifies the AllowFocusWhenDisabled  dependency property.
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = false, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty AllowFocusWhenDisabledProperty { get; } = CreateAllowFocusWhenDisabledProperty();
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether the element automatically gets focus when the user interacts with it.
+		/// </summary>
+		public bool AllowFocusOnInteraction
+		{
+			get => GetAllowFocusOnInteractionValue();
+			set => SetAllowFocusOnInteractionValue(value);
+		}
+
+		/// <summary>
+		/// Identifies for the AllowFocusOnInteraction dependency property.
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
+
+		internal
+#if __ANDROID__
+			new
+#endif 
+			bool HasFocus()
+		{
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			return focusManager?.FocusedElement == this;
+		}
 
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
@@ -432,6 +663,11 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Apply the default style for this element, if one is defined.
 		/// </summary>
+		/// <remarks>
+		/// The default app-wide style is always applied (using the lower priority ImplicitStyle) so that setters that are not
+		/// set by a tree-provided style are still applied. (e.g. a tree-provided implicit style may only change the Foreground of a Button,
+		/// and the Template property still needs to be applied for the template to work).
+		/// </remarks>
 		private protected void ApplyDefaultStyle()
 		{
 			if (_defaultStyleApplied)
@@ -439,12 +675,16 @@ namespace Windows.UI.Xaml
 				return;
 			}
 			_defaultStyleApplied = true;
+			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 
 			var style = Style.GetDefaultStyleForType(GetDefaultStyleKey());
 
 			// Although this is the default style, we use the ImplicitStyle enum value (which is otherwise unused) to ensure that it takes precedence
 			//over inherited property values. UWP's precedence system is simpler than WPF's, from which the enum is derived.
 			OnStyleChanged(null, style, DependencyPropertyValuePrecedences.ImplicitStyle);
+#if DEBUG
+			AppliedDefaultStyle = style;
+#endif
 		}
 
 		/// <summary>
@@ -461,14 +701,64 @@ namespace Windows.UI.Xaml
 			_constraintsChanged = true;
 		}
 
+		#region IsEnabled DependencyProperty
+
+#if !(__ANDROID__ || __IOS__ || __MACOS__) // On those platforms, this code is generated through mixins
+		// Note: we keep the event args as a private field for perf consideration: This avoids to create a new instance each time.
+		//		 As it's used only internally it's safe to do so.
+		[ThreadStatic]
+		private static IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
+
+		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
+
+		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
+
+		public bool IsEnabled
+		{
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
+		}
+
+		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
+		{
+			UpdateHitTest();
+
+			_isEnabledChangedEventArgs ??= new IsEnabledChangedEventArgs();
+			_isEnabledChangedEventArgs.SourceEvent = args;
+
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
+			IsEnabledChanged?.Invoke(this, args);
+
+			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
+
+#if __WASM__
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
+			}
+#endif
+		}
+#endif
+
+		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
+		{
+		}
+		#endregion
+
+		internal bool IsEnabledSuppressed => _suppressIsEnabled;
+
 		/// <summary>
 		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
 		/// </summary>
 		/// <param name="suppress">If true, <see cref="IsEnabled"/> will always be false</param>
 		private protected void SuppressIsEnabled(bool suppress)
 		{
-			_suppressIsEnabled = suppress;
-			this.CoerceValue(IsEnabledProperty);
+			if (_suppressIsEnabled != suppress)
+			{
+				_suppressIsEnabled = suppress;
+				this.CoerceValue(IsEnabledProperty);
+			}
 		}
 
 		private object CoerceIsEnabled(object baseValue)
@@ -544,7 +834,14 @@ namespace Windows.UI.Xaml
 		}
 
 		internal override bool IsViewHit()
-			=> Background != null;
+		{
+			if (FeatureConfiguration.FrameworkElement.UseLegacyHitTest)
+			{
+				return Background != null;
+			}
+
+			return false;
+		}
 
 		/// <summary>
 		/// The list of available children render phases, if this
@@ -616,7 +913,7 @@ namespace Windows.UI.Xaml
 				// Schedule all the phases at once
 				for (int i = startPhaseIndex; i < presenterRoot.DataTemplateRenderPhases.Length; i++)
 				{
-					UIAsyncOperation action = null;
+					Uno.UI.Dispatching.UIAsyncOperation action = null;
 					var phaseCapture = i;
 
 					async void ApplyPhase()
@@ -635,9 +932,9 @@ namespace Windows.UI.Xaml
 
 #if __ANDROID__
 					// Schedule on the animation dispatcher so the callback appears faster.
-					action = presenterRoot.Dispatcher.RunAnimation(ApplyPhase);
+					action = (Uno.UI.Dispatching.UIAsyncOperation)presenterRoot.Dispatcher.RunAnimation(ApplyPhase);
 #elif __IOS__ || __MACOS__
-					action = presenterRoot.Dispatcher.RunAsync(CoreDispatcherPriority.High, ApplyPhase);
+					action = (Uno.UI.Dispatching.UIAsyncOperation)presenterRoot.Dispatcher.RunAsync(CoreDispatcherPriority.High, ApplyPhase);
 #endif
 
 					registerForRecycled(
@@ -659,10 +956,22 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Update ThemeResource references. 
 		/// </summary>
-		internal virtual void UpdateThemeBindings()
+		internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
-			Resources?.UpdateThemeBindings();
-			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
+			Resources?.UpdateThemeBindings(updateReason);
+			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
+
+			// After theme change, the focus visual brushes may not reflect the correct settings
+			_focusVisualBrushesInitialized = false;
+
+			if (updateReason == ResourceUpdateReason.ThemeResource)
+			{
+				// Trigger ActualThemeChanged if relevant
+				if (ActualThemeChanged != null && RequestedTheme == ElementTheme.Default)
+				{
+					ActualThemeChanged?.Invoke(this, null);
+				}
+			}
 		}
 
 		/// <summary>
@@ -677,7 +986,7 @@ namespace Windows.UI.Xaml
 								: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
-#region AutomationPeer
+		#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
@@ -728,9 +1037,9 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-#endregion
+		#endregion
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		private class FrameworkElementLayouter : Layouter
 		{
 			private readonly MeasureOverrideHandler _measureOverrideHandler;

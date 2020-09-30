@@ -11,7 +11,7 @@ using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Foundation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Threading;
 using Uno.UI;
 using Uno.UI.Xaml;
@@ -19,7 +19,7 @@ using Uno;
 using System.Web;
 using System.Collections.Specialized;
 using Uno.Helpers;
-using Microsoft.Extensions.Logging;
+
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -43,13 +43,42 @@ namespace Windows.UI.Xaml
 			Current = this;
 			Package.SetEntryAssembly(this.GetType().Assembly);
 
+			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
+				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),
+				o => global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.GetForCurrentView());
+
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+
+			ObserveApplicationVisibility();
 		}
 
 		[Preserve]
 		public static int DispatchSystemThemeChange()
 		{
 			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
+			return 0;
+		}
+
+		[Preserve]
+		public static int DispatchVisibilityChange(bool isVisible)
+		{
+			var application = Windows.UI.Xaml.Application.Current;
+			var window = Windows.UI.Xaml.Window.Current;
+			if (isVisible)
+			{
+				application?.RaiseLeavingBackground(()=>
+				{
+					window?.OnVisibilityChanged(true);
+					window?.OnActivated(CoreWindowActivationState.CodeActivated);
+				});
+			}
+			else
+			{
+				window?.OnActivated(CoreWindowActivationState.Deactivated);
+				window?.OnVisibilityChanged(false);
+				application?.RaiseEnteredBackground(null);
+			}
+
 			return 0;
 		}
 
@@ -74,7 +103,6 @@ namespace Windows.UI.Xaml
 			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeSystemTheme()");
 		}
 
-
 		private void Initialize()
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
@@ -84,7 +112,7 @@ namespace Windows.UI.Xaml
 
 				var arguments = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("Launch arguments: " + arguments);
 				}
@@ -103,53 +131,17 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private ApplicationTheme GetDefaultSystemTheme()
-		{
-			var serializedTheme = WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.getDefaultSystemTheme()");
-
-			if (serializedTheme != null)
-			{
-				if (Enum.TryParse(serializedTheme, out ApplicationTheme theme))
-				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
-					{
-						this.Log().Info("Setting OS preferred theme: " + theme);
-					}
-					return theme;
-				}
-				else
-				{
-					throw new InvalidOperationException($"{serializedTheme} theme is not a supported OS theme");
-				}
-			}
-			//OS has no preference or API not implemented, use light as default
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
-			{
-				this.Log().Info("No preferred theme, using Light instead");
-			}
-			return ApplicationTheme.Light;
-		}
-
 		/// <summary>
 		/// Dispatch method from Javascript
 		/// </summary>
 		internal static void DispatchSuspending()
 		{
-			Current?.OnSuspending();
+			Current?.RaiseSuspending();
 		}
 
-		partial void OnSuspendingPartial()
+		private void ObserveApplicationVisibility()
 		{
-			var completed = false;
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(0), () => completed = true);
-
-			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
-			operation.EventRaiseCompleted();
-
-			if (!completed && this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning($"This platform does not support asynchronous Suspending deferral. Code executed after the of the method called by Suspending may not get executed.");
-			}
+			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeVisibility()");
 		}
 	}
 }

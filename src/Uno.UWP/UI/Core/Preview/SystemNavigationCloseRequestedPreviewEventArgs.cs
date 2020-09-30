@@ -1,36 +1,22 @@
-﻿#if __MACOS__
+﻿#if __MACOS__ || __SKIA__
 using System;
 using Uno.Helpers;
 using Windows.Foundation;
 
-namespace Windows.UI.Core.Preview
+namespace Windows.UI.Core.Preview;
+
+public partial class SystemNavigationCloseRequestedPreviewEventArgs
 {
-	public partial class SystemNavigationCloseRequestedPreviewEventArgs
+	internal SystemNavigationCloseRequestedPreviewEventArgs(Action<SystemNavigationCloseRequestedPreviewEventArgs> complete)
 	{
-		private DeferralManager<Deferral> _deferralManager;
-		private readonly Action<SystemNavigationCloseRequestedPreviewEventArgs> _complete;
-
-		public SystemNavigationCloseRequestedPreviewEventArgs(Action<SystemNavigationCloseRequestedPreviewEventArgs> complete)
-		{
-			_complete = complete;
-		}
-
-		public bool Handled { get; set; }
-
-		internal bool IsDeferred => _deferralManager != null;
-
-		internal void EventRaiseCompleted() => _deferralManager?.EventRaiseCompleted();
-
-		public Deferral GetDeferral()
-		{
-			if (_deferralManager == null)
-			{
-				_deferralManager = new DeferralManager<Deferral>(h => new Deferral(h));
-				_deferralManager.Completed += (s, e) => _complete(this);
-			}
-
-			return _deferralManager.GetDeferral();
-		}		
+		DeferralManager = new(h => new Deferral(h));
+		DeferralManager.Completed += (s, e) => complete?.Invoke(this);
 	}
+
+	public bool Handled { get; set; }
+
+	internal DeferralManager<Deferral> DeferralManager { get; }
+
+	public Deferral GetDeferral() => DeferralManager.GetDeferral();
 }
 #endif

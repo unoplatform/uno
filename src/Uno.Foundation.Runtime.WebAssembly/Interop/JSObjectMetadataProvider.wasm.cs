@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Uno.Disposables;
-using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.Foundation.Runtime.WebAssembly.Helpers;
 
 namespace Uno.Foundation.Interop
 {
@@ -88,8 +88,36 @@ namespace Uno.Foundation.Interop
 				var namespaces = _type.Namespace.Split('.');
 				var methods = _type
 					.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-					.Where(method => method.GetParameters().None(p => p.ParameterType != typeof(string))) // we support only string parameters for now
-					.ToArray();
+					.Where(method => !method.GetParameters().Any(p => p.ParameterType != typeof(string))) // we support only string parameters for now
+					.ToList();
+
+				// When multiple methods have the same name, we cannot determine which is the right one to call.
+				// This happens for example for classes derived from Control, where the Focus-related properties use
+				// new keyword to hide their UIElement version, and therefore their generated get_* methods show up twice.
+				var duplicateMethods = methods.GroupBy(m => m.Name).Where(g => g.Count() > 1).SelectMany(g => g).ToList();
+				if (duplicateMethods.Count > 0)
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						// We log only methods, which are not declared by Uno/WinUI directly.
+						var reportMethods = duplicateMethods
+							.Where(m =>
+								!m.DeclaringType.FullName.StartsWith("Windows.UI.Xaml") &&
+								!m.DeclaringType.FullName.StartsWith("Microsoft.UI.Xaml") &&
+								!m.DeclaringType.FullName.StartsWith("Uno"))
+							.Select(m => m.Name)
+							.Distinct();
+
+						this.Log().Warn(
+							$"The following methods have multiple overloads, " +
+							$"so they cannot be called directly: {string.Join(",", reportMethods)}");
+					}
+				}
+
+				foreach (var methodToRemove in duplicateMethods)
+				{
+					methods.Remove(methodToRemove);
+				}
 
 				// Cache the methods for the InvokeManaged method
 				_methods = methods.ToDictionary(m => m.Name, m => m);
@@ -142,7 +170,7 @@ namespace Uno.Foundation.Interop
 
 					var indent = builder.Indent();
 
-					return Disposable.Create(() =>
+					return new DisposableAction(() =>
 					{
 						indent.Dispose();
 						if (index == 0)

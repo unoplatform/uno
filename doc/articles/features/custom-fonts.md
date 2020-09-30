@@ -9,14 +9,14 @@ The format is the same as Windows, as follows:
 <Setter Property="FontFamily" Value="/Assets/Fonts/Roboto-Regular.ttf#Roboto" />
 ```
    or
-   
+
 ```xml
 <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/Roboto-Regular.ttf#Roboto" />
 ```
 
 ## Custom Fonts on iOS
 
-Fonts must be placed in the `Resources` folder of the head project, be marked as
+Fonts must be placed in the `Resources/Fonts` folder of the head project, be marked as
 `BundleResource` for the build type.
 
 Each custom font **must** then be specified in the `info.plist` file as follows:
@@ -24,9 +24,9 @@ Each custom font **must** then be specified in the `info.plist` file as follows:
 ```xml
 <key>UIAppFonts</key>
 <array>
-    <string>yourfont01.ttf</string>
-    <string>yourfonr02.ttf</string>
-    <string>yourfonr03.ttf</string>
+    <string>Fonts/yourfont01.ttf</string>
+    <string>Fonts/yourfont02.ttf</string>
+    <string>Fonts/yourfont03.ttf</string>
 </array>
 ```
 
@@ -85,6 +85,32 @@ Will match:
   font-family: "yourfont01";
   ...
 }
+```
+## Custom Fonts on macOS
+
+Fonts must be placed in the `Resources/Fonts` folder of the head project, be marked as
+`BundleResource` for the build type.
+
+The fonts location path   **must** then be specified in the `info.plist` file as follows:
+
+```xml
+<key>ATSApplicationFontsPath</key>
+<string>Fonts</string>
+```
+
+> [!IMPORTANT]
+> Please note that unlike iOS, for macOS only the path is specified. There is no need to list each font independently.
+
+The format is the same as Windows, as follows:
+
+```xml
+<Setter Property="FontFamily" Value="/Assets/Fonts/yourfont01.ttf#Roboto" />
+```
+
+    or
+
+```xml
+<Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/yourfont01.ttf#Roboto" />
 ```
 
 ## Custom Fonts Notes

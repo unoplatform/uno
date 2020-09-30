@@ -1,4 +1,4 @@
-#if NET461 || NETSTANDARD2_0
+#if NET461 || UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using Uno.Disposables;
 using System.Text;
 
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Uno.UI.Extensions;
 using System.Drawing;

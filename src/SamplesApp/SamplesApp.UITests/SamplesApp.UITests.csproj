@@ -1,25 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net47</TargetFramework>
-		<LangVersion>8.0</LangVersion>
+		<TargetFramework>net48</TargetFramework>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup> 
-		<PackageReference Include="FluentAssertions" Version="5.10.3" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" /> 
-		<PackageReference Include="Xamarin.UITest" Version="3.0.7" />
+		<PackageReference Include="Xamarin.UITest" />
 		<PackageReference Include="Uno.UITest" />
 		<PackageReference Include="Uno.UITest.Selenium" />
 		<PackageReference Include="Uno.UITest.Xamarin" />
 		<PackageReference Include="Uno.UITest.Helpers" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup> 
 	  
 	<ItemGroup>
-		<SourceGenerator Include="..\SamplesApp.UITests.Generator\Bin\$(Configuration)\net47\Uno.Samples.UITest.Generator.dll" />
+		<SourceGenerator Include="..\SamplesApp.UITests.Generator\bin\$(Configuration)\Uno.Samples.UITest.Generator.dll" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
@@ -31,6 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="MessageDialogTests\" />
 	  <Folder Include="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\" />
 	</ItemGroup>
 
@@ -38,6 +40,15 @@
 	  <None Update="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\*.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.RuntimeTests\Helpers\InjectedPointerAttribute.cs">
+			<Link>TestFramework\InjectedPointerAttribute.cs</Link>
+		</Compile>
+		<Compile Include="$(MSBuildThisFileDirectory)..\..\Uno.UWP\Devices\Input\PointerDeviceType.cs">
+			<Link>TestFramework\PointerDeviceType.cs</Link>
+		</Compile>
 	</ItemGroup>
 
 </Project>

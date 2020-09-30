@@ -9,40 +9,52 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<Grid>
-		<Border Margin="3"
-				Width="150"
-				Height="100"
-				CornerRadius="40"
-				BorderThickness="4"
-				BorderBrush="Black">
-			<Border.Background>
-				<LinearGradientBrush StartPoint="0,0"
-									 EndPoint="1,1">
-					<GradientStop Color="Yellow"
-								  Offset="0.0" />
-					<GradientStop Color="Red"
-								  Offset="0.1" />
-					<GradientStop Color="Blue"
-								  Offset="0.2" />
-					<GradientStop Color="LimeGreen"
-								  Offset="0.3" />
-					<GradientStop Color="Blue"
-								  Offset="0.4" />
-					<GradientStop Color="Red"
-								  Offset="0.5" />
-					<GradientStop Color="Yellow"
-								  Offset="0.6" />
-					<GradientStop Color="Red"
-								  Offset="0.7" />
-					<GradientStop Color="Blue"
-								  Offset="0.8" />
-					<GradientStop Color="LimeGreen"
-								  Offset="0.9" />
-					<GradientStop Color="Blue"
-								  Offset="1.0" />
+	<StackPanel>
+	    <TextBox x:Name="MyTextBox">
+	        <TextBox.BorderBrush>
+				<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+					<LinearGradientBrush.GradientStops>
+						<GradientStop Offset="0.33" Color="Red"/>
+						<GradientStop Offset="1.0" Color="Blue"/>
+					</LinearGradientBrush.GradientStops>
 				</LinearGradientBrush>
-			</Border.Background>
-		</Border>
-	</Grid>
+			</TextBox.BorderBrush>
+		</TextBox>
+		<Grid>
+			<Border Margin="3"
+					Width="150"
+					Height="100"
+					CornerRadius="40"
+					BorderThickness="4"
+					BorderBrush="Black">
+				<Border.Background>
+					<LinearGradientBrush StartPoint="0,0"
+										 EndPoint="1,1">
+						<GradientStop Color="Yellow"
+									  Offset="0.0" />
+						<GradientStop Color="Red"
+									  Offset="0.1" />
+						<GradientStop Color="Blue"
+									  Offset="0.2" />
+						<GradientStop Color="LimeGreen"
+									  Offset="0.3" />
+						<GradientStop Color="Blue"
+									  Offset="0.4" />
+						<GradientStop Color="Red"
+									  Offset="0.5" />
+						<GradientStop Color="Yellow"
+									  Offset="0.6" />
+						<GradientStop Color="Red"
+									  Offset="0.7" />
+						<GradientStop Color="Blue"
+									  Offset="0.8" />
+						<GradientStop Color="LimeGreen"
+									  Offset="0.9" />
+						<GradientStop Color="Blue"
+									  Offset="1.0" />
+					</LinearGradientBrush>
+				</Border.Background>
+			</Border>
+		</Grid>
+	</StackPanel>
 </UserControl>

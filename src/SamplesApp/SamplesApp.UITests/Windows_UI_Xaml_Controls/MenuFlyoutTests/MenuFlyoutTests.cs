@@ -41,6 +41,43 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 		[Test]
 		[AutoRetry]
+		public void MenuFlyoutItem_Hierarchy()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests.MenuFlyoutItem_Hierarchy");
+
+			_app.WaitForElement(_app.Marked("Help"));
+
+			TakeScreenshot("Initial");
+
+			_app.FastTap(_app.Marked("Help"));
+			TakeScreenshot("menuShown");
+
+			_app.FastTap(_app.Marked("MenuViewHelp"));
+			_app.WaitForText(_app.Marked("results"), "View Help");
+
+			_app.FastTap(_app.Marked("Help"));
+			_app.WaitForElement(_app.Marked("MenuFeedback"));
+			_app.FastTap(_app.Marked("MenuFeedback"));
+			_app.WaitForElement(_app.Marked("MenuReportProblem"));
+			_app.FastTap(_app.Marked("MenuReportProblem"));
+			_app.WaitForText(_app.Marked("results"), "Report Problem");
+
+
+			_app.FastTap(_app.Marked("Help"));
+			_app.WaitForElement(_app.Marked("MenuFeedback"));
+			_app.FastTap(_app.Marked("MenuFeedback"));
+			_app.WaitForElement(_app.Marked("MenuSettings"));
+			_app.FastTap(_app.Marked("MenuSettings"));
+			_app.WaitForElement(_app.Marked("MenuAutoSave"));
+			_app.FastTap(_app.Marked("MenuAutoSave"));
+			_app.WaitForText(_app.Marked("results"), "Auto Save");
+
+			TakeScreenshot("AfterSuccess");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // https://github.com/unoplatform/uno/issues/4795
 		public void Simple_MenuFlyout()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
@@ -70,6 +107,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)]  // https://github.com/unoplatform/uno/issues/4795
 		public void Simple_MenuFlyout_Toggle()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
@@ -103,6 +141,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // https://github.com/unoplatform/uno/issues/4795
 		public void Simple_SubMenuFlyout()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
@@ -129,7 +168,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser, Platform.iOS)]
+		[ActivePlatforms(Platform.Browser)] // https://github.com/unoplatform/uno/issues/4795
 		public void Disabled_MenuFlyoutItem()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
@@ -159,6 +198,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // https://github.com/unoplatform/uno/issues/4795
 		public void Dismiss_MenuFlyout()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
@@ -207,6 +247,40 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 			_app.FastTap(_app.Marked("testItem2"));
 			Assert.AreEqual("click: test2", result.GetText());
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_MenuFlyout_Nested_Clamped_To_Window()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests.MenuFlyout_Nested_5639");
+
+			_app.WaitForElementWithMessage("ButtonWithMenuFlyout");
+
+			var hostGridRect = _app.GetLogicalRect("HostGrid");
+
+			var runNo = 0;
+			TestPositioning();
+			TestPositioning(); // Should work second time
+
+			void TestPositioning()
+			{
+				runNo++;
+				TakeScreenshot($"Initial - opening {runNo}");
+				_app.FastTap("ButtonWithMenuFlyout");
+				_app.WaitForElementWithMessage("NestedMenuItem", $"opening {runNo}");
+				TakeScreenshot($"Outer flyout - opening {runNo}");
+				_app.FastTap("NestedMenuItem");
+
+				_app.WaitForElementWithMessage("LastSubitem", $"opening {runNo}");
+				TakeScreenshot($"Nested flyout - opening {runNo}");
+				var lastItemRect = _app.GetLogicalRect("LastSubitem");
+
+				// Item should be adjusted to within window
+				Assert.Less(lastItemRect.Bottom, hostGridRect.Bottom);
+
+				_app.FastTap("LastSubitem"); // Dismiss flyout
+			}
 		}
 	}
 }

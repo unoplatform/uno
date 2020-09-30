@@ -1,10 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Uno.Extensions;
-using Uno;
 using Uno.UI;
-using Uno.UI.DataBinding;
 using System.Linq;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -12,8 +8,11 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Markup;
 using System.ComponentModel;
 using System.Reflection;
-using Windows.UI.Core;
 using Uno.UI.Xaml;
+using Windows.Foundation;
+using Uno;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
@@ -31,7 +30,7 @@ using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using AppKit;
-#elif NETSTANDARD2_0 || NET461
+#elif UNO_REFERENCE_API || NET461
 using View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -39,6 +38,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Control : FrameworkElement
 	{
+		private bool _suspendStateChanges;
 		private View _templatedRoot;
 		private bool _updateTemplate;
 
@@ -50,14 +50,19 @@ namespace Windows.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(Control);
 		}
-		
+
+		// TODO: Should use DefaultStyleKeyProperty DP
 		protected object DefaultStyleKey { get; set; }
+
+		private protected override bool IsTabStopDefaultValue => true;
 
 		protected override bool IsSimpleLayout => true;
 
-		internal override void UpdateThemeBindings()
+		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
+
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			//override the default value from dependency property based on application theme
 			SetDefaultForeground(ForegroundProperty);
@@ -74,9 +79,12 @@ namespace Windows.UI.Xaml.Controls
 			// base.OnBackgroundChanged(e);
 		}
 
-		internal void UpdateVisualState(bool useTransitions = true)
+		internal virtual void UpdateVisualState(bool useTransitions = true)
 		{
-			ChangeVisualState(useTransitions);
+			if (!_suspendStateChanges)
+			{
+				ChangeVisualState(useTransitions);
+			}
 		}
 
 		private protected virtual void ChangeVisualState(bool useTransitions)
@@ -138,6 +146,11 @@ namespace Windows.UI.Xaml.Controls
 			get { return _templatedRoot; }
 			set
 			{
+				if (_templatedRoot == value)
+				{
+					return;
+				}
+
 				CleanupView(_templatedRoot);
 
 				UnregisterSubView();
@@ -157,9 +170,25 @@ namespace Windows.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-						if (!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
+						if (
+#if NETSTANDARD
+							!IsLoading &&
+#endif
+							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
 						{
 							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
+
+							// Note: we however still allow if already 'IsLoading':
+							//
+							// If this child is added to its parent while this parent is 'IsLoading' itself (eg. loading its template),
+							// the parent will invoke the Loading on this child element (and the PostLoading which will "dequeue" the _applyTemplateShouldBeInvoked),
+							// which will set the 'IsLoading' flag.
+							//
+							// The parent will then apply its own style, which might set/change the template of this element (if data-bound or set using VisualState),
+							// which would end here and set this _applyTemplateShouldBeInvoked flag (if IsLoaded were not allowed!).
+							//
+							// The parent will then invoke the Loading on all its children, but as this child has already been flagged as 'IsLoading',
+							// it will be ignored and the 'PostLoading' won't be invokes a second time, driving the control to never "dequeue" the _applyTemplateShouldBeInvoked.
 							_applyTemplateShouldBeInvoked = true;
 						}
 						else
@@ -195,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 			// registered first in event handlers.
 			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
 
-			var implementedEvents = GetImplementedRoutedEvents(GetType());
+			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
 
 			if (implementedEvents.HasFlag(RoutedEventFlag.PointerPressed))
 			{
@@ -275,6 +304,26 @@ namespace Windows.UI.Xaml.Controls
 			if (implementedEvents.HasFlag(RoutedEventFlag.RightTapped))
 			{
 				RightTapped += OnRightTappedHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.DragEnter))
+			{
+				DragEnter += OnDragEnterHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.DragOver))
+			{
+				DragOver += OnDragOverHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.DragLeave))
+			{
+				DragLeave += OnDragLeaveHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.Drop))
+			{
+				Drop += OnDropHandler;
 			}
 
 			if (implementedEvents.HasFlag(RoutedEventFlag.Holding))
@@ -400,10 +449,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				SetUpdateControlTemplate();
 			}
-			else if (oldValue == Visibility.Visible && newValue == Visibility.Collapsed)
-			{
-				Unfocus();
-			}
 
 			OnIsFocusableChanged();
 		}
@@ -453,7 +498,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ForegroundProperty, value); }
 		}
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -475,7 +520,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontWeightProperty, value); }
 		}
 
-		public static DependencyProperty FontWeightProperty { get ; } =
+		public static DependencyProperty FontWeightProperty { get; } =
 			DependencyProperty.Register(
 				"FontWeight",
 				typeof(FontWeight),
@@ -497,13 +542,13 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontSizeProperty, value); }
 		}
 
-		public static DependencyProperty FontSizeProperty { get ; } =
+		public static DependencyProperty FontSizeProperty { get; } =
 			DependencyProperty.Register(
 				"FontSize",
 				typeof(double),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					15.0,
+					14.0,
 					FrameworkPropertyMetadataOptions.Inherits,
 					(s, e) => ((Control)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -519,7 +564,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontFamilyProperty, value); }
 		}
 
-		public static DependencyProperty FontFamilyProperty { get ; } =
+		public static DependencyProperty FontFamilyProperty { get; } =
 			DependencyProperty.Register(
 				"FontFamily",
 				typeof(FontFamily),
@@ -540,7 +585,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontStyleProperty, value); }
 		}
 
-		public static DependencyProperty FontStyleProperty { get ; } =
+		public static DependencyProperty FontStyleProperty { get; } =
 			DependencyProperty.Register(
 				"FontStyle",
 				typeof(FontStyle),
@@ -562,7 +607,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Padding.  This enables animation, styling, binding, etc...
-		public static DependencyProperty PaddingProperty { get ; } =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -585,7 +630,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BorderThickness.  This enables animation, styling, binding, etc...
-		public static DependencyProperty BorderThicknessProperty { get ; } =
+		public static DependencyProperty BorderThicknessProperty { get; } =
 			DependencyProperty.Register(
 				"BorderThickness",
 				typeof(Thickness),
@@ -620,7 +665,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BorderBrush.  This enables animation, styling, binding, etc...
-		public static DependencyProperty BorderBrushProperty { get ; } =
+		public static DependencyProperty BorderBrushProperty { get; } =
 			DependencyProperty.Register(
 				"BorderBrush",
 				typeof(Brush),
@@ -632,54 +677,82 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		#endregion
-
-#if !HAS_UNO_WINUI
-		#region FocusState DependencyProperty
-
-		public FocusState FocusState
+		public CornerRadius CornerRadius
 		{
-			get { return (FocusState)GetValue(FocusStateProperty); }
-			private set { SetValue(FocusStateProperty, value); }
+			get => GetCornerRadiusValue();
+			set => SetCornerRadiusValue(value);
 		}
 
-		public static DependencyProperty FocusStateProperty =
-			DependencyProperty.Register(
-				"FocusState",
-				typeof(FocusState),
-				typeof(Control),
-				new FrameworkPropertyMetadata(
-					(FocusState)FocusState.Unfocused
-				)
-			);
+		public static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
+
+		[GeneratedDependencyProperty]
+		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 		#endregion
 
-		#region IsTabStop DependencyProperty
-
-		public bool IsTabStop
-		{
-			get { return (bool)GetValue(IsTabStopProperty); }
-			set { SetValue(IsTabStopProperty, value); }
-		}
-
-		public static DependencyProperty IsTabStopProperty =
-			DependencyProperty.Register(
-				"IsTabStop",
-				typeof(bool),
-				typeof(Control),
-				new FrameworkPropertyMetadata(
-					defaultValue: (bool)true,
-					propertyChangedCallback: (s, e) => ((Control)s)?.OnIsFocusableChanged()
-				)
-			);
-		#endregion
-#else
+#if HAS_UNO_WINUI
 		private protected override void OnIsTabStopChanged(bool oldValue, bool newValue)
 		{
 			OnIsFocusableChanged();
 		}
 #endif
+
+		#region TabNavigation DependencyProperty
+
+		public KeyboardNavigationMode TabNavigation
+		{
+			get => TabFocusNavigation;
+			set => TabFocusNavigation = value;
+		}
+
+		public static DependencyProperty TabNavigationProperty => UIElement.TabFocusNavigationProperty;
+
+		#endregion
+
+		public static bool GetIsTemplateFocusTarget(FrameworkElement element) =>
+			GetIsTemplateFocusTargetValue(element);
+
+		public static void SetIsTemplateFocusTarget(FrameworkElement element, bool value) =>
+			SetIsTemplateFocusTargetValue(element, value);
+
+		[GeneratedDependencyProperty(DefaultValue = false, AttachedBackingFieldOwner = typeof(Control), Attached = true)]
+		public static DependencyProperty IsTemplateFocusTargetProperty { get; } = CreateIsTemplateFocusTargetProperty();
+
+		/// <summary>
+		/// Get or sets a value that indicates whether focus is constrained
+		/// within the control boundaries (for game pad/remote interaction).
+		/// </summary>
+		public bool IsFocusEngaged
+		{
+			get => GetIsFocusEngagedValue();
+			set => SetIsFocusEngagedValue(value);
+		}
+
+		/// <summary>
+		/// Identifies the IsFocusEngaged dependency property.
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = false, ChangedCallback = true)]
+		public static DependencyProperty IsFocusEngagedProperty { get; } = CreateIsFocusEngagedProperty();
+
+		private void OnIsFocusEngagedChanged(bool oldValue, bool newValue) => SetFocusEngagement();
+
+		/// <summary>
+		/// Get or sets a value that indicates whether focus can be constrained within
+		/// the control boundaries (for game pad/remote interaction).
+		/// </summary>
+		public bool IsFocusEngagementEnabled
+		{
+			get => GetIsFocusEngagementEnabledValue();
+			set => SetIsFocusEngagementEnabledValue(value);
+		}
+
+		/// <summary>
+		/// Identifies the IsFocusEngagementEnabled dependency property.
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = false)]
+		public static DependencyProperty IsFocusEngagementEnabledProperty { get; } = CreateIsFocusEngagementEnabledProperty();
+
+		private void OnIsFocusEngagementEnabledChanged(bool oldValue, bool newValue) => RemoveFocusEngagement();
 
 		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -692,39 +765,58 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			base.OnIsEnabledChanged(oldValue, newValue);
+			base.OnIsEnabledChanged(e);
 			OnIsFocusableChanged();
+
+			// Part of logic from MUX Control.cpp Enabled method.
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			if (focusManager == null)
+			{
+				return;
+			}
+
+			// Set focus if this control is the first focusable control in case of
+			// no having focus yet
+			if (IsFocusable)
+			{
+				if (focusManager.FocusedElement == null)
+				{
+					// No focused control here, so try to check the control is
+					// the first focusable control
+					var focusable = focusManager.GetFirstFocusableElement();
+					if (this == focusable)
+					{
+						// If we are trying to set focus in a changing focus event handler, we will end up leaving focus on the disabled control.
+						// As a result, we fail fast here. This is being tracked by Bug 9840123
+						Focus(FocusState.Programmatic, animateIfBringIntoView: false);
+					}
+				}
+			}
+
+			// TODO Uno specific: Adding check for IsEnabledSuppressed here
+			// as we need to make sure that when a Command is executing, the control
+			// should not lose focus
+			bool shouldReevaluateFocus =
+				!(IsEnabled || IsEnabledSuppressed) && //!pControl->ParserOwnsParent()
+				!AllowFocusWhenDisabled &&
+				// We just disabled this control, find if this control
+				//or one of its children had focus.
+				FocusProperties.HasFocusedElement(this);
+
+			if (shouldReevaluateFocus)
+			{
+				// Set the focus on the next focusable control.
+				focusManager.SetFocusOnNextFocusableElement(focusManager.GetRealFocusStateForFocusedElement(), true);
+			}
 		}
 
 		partial void OnIsFocusableChanged();
-		internal bool IsFocusable =>
-			Visibility == Visibility.Visible
-			&& IsEnabled
-			&& IsTabStop;
 
-		public bool Focus(FocusState value)
-		{
-			if (value == FocusState.Unfocused)
-			{
-				// You can't remove focus from a control by calling this method with FocusState.Unfocused as the parameter. This value is not allowed and causes an exception. To remove focus from a control, set focus to a different control.
-				throw new ArgumentException("Value does not fall within the expected range.", nameof(value));
-			}
+		public event TypedEventHandler<Control, FocusDisengagedEventArgs> FocusDisengaged;
 
-			return RequestFocus(value);
-		}
-
-
-		protected virtual bool RequestFocus(FocusState state)
-		{
-			return FocusManager.SetFocusedElement(this, FocusNavigationDirection.None, state);
-		}
-
-		internal void Unfocus()
-		{
-			FocusState = FocusState.Unfocused;
-		}
+		public event TypedEventHandler<Control, FocusEngagedEventArgs> FocusEngaged;
 
 		protected virtual void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
@@ -782,13 +874,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue);
 
-		internal virtual void UpdateFocusState(FocusState focusState)
-		{
-			FocusState = focusState;
-		}
-
-		partial void UpdateFocusStatePartial(FocusState focusState);
-
 		protected virtual void OnPointerPressed(PointerRoutedEventArgs e) { }
 		protected virtual void OnPointerReleased(PointerRoutedEventArgs e) { }
 		protected virtual void OnPointerEntered(PointerRoutedEventArgs e) { }
@@ -808,7 +893,13 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnTapped(TappedRoutedEventArgs e) { }
 		protected virtual void OnDoubleTapped(DoubleTappedRoutedEventArgs e) { }
 		protected virtual void OnRightTapped(RightTappedRoutedEventArgs e) { }
+		[NotImplemented] // For WinUI code compatibility, not implemented yet
+		private protected virtual void OnRightTappedUnhandled(RightTappedRoutedEventArgs e) { }
 		protected virtual void OnHolding(HoldingRoutedEventArgs e) { }
+		protected virtual void OnDragEnter(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragOver(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragLeave(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDrop(global::Windows.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnKeyDown(KeyRoutedEventArgs args) { }
 		protected virtual void OnKeyUp(KeyRoutedEventArgs args) { }
 		protected virtual void OnGotFocus(RoutedEventArgs e) { }
@@ -865,6 +956,18 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly HoldingEventHandler OnHoldingHandler =
 			(object sender, HoldingRoutedEventArgs args) => ((Control)sender).OnHolding(args);
 
+		private static readonly DragEventHandler OnDragEnterHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragEnter(args);
+
+		private static readonly DragEventHandler OnDragOverHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragOver(args);
+
+		private static readonly DragEventHandler OnDragLeaveHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragLeave(args);
+
+		private static readonly DragEventHandler OnDropHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
+
 		private static readonly KeyEventHandler OnKeyDownHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyDown(args);
 
@@ -877,14 +980,12 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly RoutedEventHandler OnLostFocusHandler =
 			(object sender, RoutedEventArgs args) => ((Control)sender).OnLostFocus(args);
 
-		private static readonly Dictionary<Type, RoutedEventFlag> ImplementedRoutedEvents
-			= new Dictionary<Type, RoutedEventFlag>();
-
 		private static readonly Type[] _pointerArgsType = new[] { typeof(PointerRoutedEventArgs) };
 		private static readonly Type[] _tappedArgsType = new[] { typeof(TappedRoutedEventArgs) };
 		private static readonly Type[] _doubleTappedArgsType = new[] { typeof(DoubleTappedRoutedEventArgs) };
 		private static readonly Type[] _rightTappedArgsType = new[] { typeof(RightTappedRoutedEventArgs) };
 		private static readonly Type[] _holdingArgsType = new[] { typeof(HoldingRoutedEventArgs) };
+		private static readonly Type[] _dragArgsType = new[] { typeof(global::Windows.UI.Xaml.DragEventArgs) };
 		private static readonly Type[] _keyArgsType = new[] { typeof(KeyRoutedEventArgs) };
 		private static readonly Type[] _routedArgsType = new[] { typeof(RoutedEventArgs) };
 		private static readonly Type[] _manipStartingArgsType = new[] { typeof(ManipulationStartingRoutedEventArgs) };
@@ -893,23 +994,12 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Type[] _manipInertiaArgsType = new[] { typeof(ManipulationInertiaStartingRoutedEventArgs) };
 		private static readonly Type[] _manipCompletedArgsType = new[] { typeof(ManipulationCompletedRoutedEventArgs) };
 
-		protected static RoutedEventFlag GetImplementedRoutedEvents(Type type)
+		// TODO: GetImplementedRoutedEvents method can be removed as a breaking change.
+		protected static RoutedEventFlag GetImplementedRoutedEvents(Type type) => GetImplementedRoutedEventsForType(type);
+
+		internal static RoutedEventFlag EvaluateImplementedControlRoutedEvents(Type type)
 		{
-			// TODO: GetImplementedRoutedEvents() should be evaluated at compile-time
-			// and the result placed in a partial file.
-
-			if (ImplementedRoutedEvents.TryGetValue(type, out var result))
-			{
-				return result;
-			}
-
-			result = RoutedEventFlag.None;
-
-			var baseClass = type.BaseType;
-			if (baseClass == null || type == typeof(Control) || type == typeof(UIElement))
-			{
-				return result;
-			}
+			var result = RoutedEventFlag.None;
 
 			if (GetIsEventOverrideImplemented(type, nameof(OnPointerPressed), _pointerArgsType))
 			{
@@ -996,6 +1086,26 @@ namespace Windows.UI.Xaml.Controls
 				result |= RoutedEventFlag.Holding;
 			}
 
+			if (GetIsEventOverrideImplemented(type, nameof(OnDragEnter), _dragArgsType))
+			{
+				result |= RoutedEventFlag.DragEnter;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnDragOver), _dragArgsType))
+			{
+				result |= RoutedEventFlag.DragOver;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnDragLeave), _dragArgsType))
+			{
+				result |= RoutedEventFlag.DragLeave;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnDrop), _dragArgsType))
+			{
+				result |= RoutedEventFlag.Drop;
+			}
+
 			if (GetIsEventOverrideImplemented(type, nameof(OnKeyDown), _keyArgsType))
 			{
 				result |= RoutedEventFlag.KeyDown;
@@ -1016,22 +1126,7 @@ namespace Windows.UI.Xaml.Controls
 				result |= RoutedEventFlag.GotFocus;
 			}
 
-			return ImplementedRoutedEvents[type] = result;
-		}
-
-		private static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
-		{
-			var method = type
-				.GetMethod(
-					name,
-					BindingFlags.NonPublic | BindingFlags.Instance,
-					null,
-					args,
-					null);
-
-			return method != null
-				&& method.IsVirtual
-				&& method.DeclaringType != typeof(Control);
+			return result;
 		}
 
 		/// <summary>
@@ -1045,6 +1140,14 @@ namespace Windows.UI.Xaml.Controls
 		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control
 			=> DefaultStyleKey = typeof(TDerived);
 
+		private protected bool GoToState(bool useTransitions, string stateName) => VisualStateManager.GoToState(this, stateName, useTransitions);
+
+		// This is a method to support code from WinUI
+		private protected void GoToState(bool useTransitions, string stateName, out bool b)
+		{
+			b = VisualStateManager.GoToState(this, stateName, useTransitions);
+		}
+
 #if DEBUG
 #if !__IOS__
 		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
@@ -1054,5 +1157,31 @@ namespace Windows.UI.Xaml.Controls
 
 		public string[] CurrentVisualStates => VisualStateGroups.Select(vsg => vsg.CurrentState?.Name).ToArray();
 #endif
+
+		// This is a method to support code from WinUI
+		internal void ConditionallyGetTemplatePartAndUpdateVisibility<T>(
+			string strName,
+			bool visible,
+			ref T element) where T : UIElement
+		{
+			if (element == null && (visible /*|| !DXamlCore::GetCurrent()->GetHandle()->GetDeferredElementIfExists(strName, GetHandle(), Jupiter::NameScoping::NameScopeType::TemplateNameScope))*/))
+			{
+				// If element should be visible or is not deferred, then fetch it.
+				element = GetTemplateChild(strName) as T;
+			}
+
+			// If element was found then set its Visibility - this is behavior consistent with pre-Threshold releases.
+			if (element != null)
+			{
+				var spElementAsUIE = element as UIElement;
+
+				if (spElementAsUIE != null)
+				{
+					spElementAsUIE.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+				}
+			}
+		}
+
+		internal override bool CanHaveChildren() => true;
 	}
 }

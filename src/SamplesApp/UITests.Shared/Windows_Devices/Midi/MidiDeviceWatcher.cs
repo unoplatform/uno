@@ -22,7 +22,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 	/// DeviceWatcher class to monitor adding/removing MIDI devices on the fly
 	/// </summary>	
 	/// <remarks>Based on
-	/// <see cref="https://github.com/microsoft/Windows-universal-samples/blob/master/Samples/MIDI/cs/MidiDeviceWatcher.cs">
+	/// <see href="https://github.com/microsoft/Windows-universal-samples/blob/master/Samples/MIDI/cs/MidiDeviceWatcher.cs">
 	/// Universal Windows Platform sample</see></remarks>
 	internal class MidiDeviceWatcher
 	{

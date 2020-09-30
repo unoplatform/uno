@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-    [ContentProperty(Name = "KeyFrames")]
-    public sealed partial class ObjectAnimationUsingKeyFrames : Timeline, ITimeline
+	[ContentProperty(Name = "KeyFrames")]
+	public sealed partial class ObjectAnimationUsingKeyFrames : Timeline, ITimeline
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private EventActivity _traceActivity;
@@ -28,13 +28,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			public const int Resume = 4;
 		}
 
-		// Initialize the field with zero capacity, as it may stay empty more often than it is being used.
-		private CompositeDisposable _scheduledFrames = new CompositeDisposable(0);
-        
-        private Stopwatch _watch = new Stopwatch();
-        private TimeSpan _elapsedTime;
-        
-        private int _replayCount;
+		private KeyFrameScheduler<object> _frameScheduler;
+		private (int count, TimeSpan time) _playStatus;
 
 		public ObjectAnimationUsingKeyFrames()
 		{
@@ -55,9 +50,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </remarks>
 		internal static DependencyProperty KeyFramesProperty { get; } =
 			DependencyProperty.Register(
-				name: "KeyFrames", 
-				propertyType: typeof(ObjectKeyFrameCollection), 
-				ownerType: typeof(ObjectAnimationUsingKeyFrames), 
+				name: "KeyFrames",
+				propertyType: typeof(ObjectKeyFrameCollection),
+				ownerType: typeof(ObjectAnimationUsingKeyFrames),
 				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: null
 				)
@@ -95,13 +90,20 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			Reset();
 
-			_watch.Start();
-            _replayCount = 1;
+			State = TimelineState.Active;
 
-            Play();
-        }
+			_playStatus = default;
+			_frameScheduler = new KeyFrameScheduler<object>(
+				BeginTime,
+				Duration.HasTimeSpan ? Duration.TimeSpan : default(TimeSpan?),
+				default,
+				KeyFrames,
+				OnFrame,
+				OnFramesEnd);
+			_frameScheduler.Start();
+		}
 
-        void ITimeline.Stop()
+		void ITimeline.Stop()
 		{
 			if (_trace.IsEnabled)
 			{
@@ -112,15 +114,19 @@ namespace Windows.UI.Xaml.Media.Animation
 				);
 			}
 
+			// We explicitly call the Stop of the _frameScheduler befire teh Reste dispose it,
+			// so the EndReason will stopped instead of Aborted
+			_frameScheduler?.Stop();
+
 			Reset();
 			ClearValue();
-        }
+		}
 
-        void ITimeline.Resume()
-        {
-            if (State != TimelineState.Paused)
-            {
-                return;
+		void ITimeline.Resume()
+		{
+			if (State != TimelineState.Paused)
+			{
+				return;
 			}
 
 			if (_trace.IsEnabled)
@@ -133,16 +139,15 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 
 			State = TimelineState.Active;
+			_frameScheduler!.Resume();
+		}
 
-            Play();
-        }
-
-        void ITimeline.Pause()
-        {
-            if (State == TimelineState.Paused)
-            {
-                return;
-            }
+		void ITimeline.Pause()
+		{
+			if (State != TimelineState.Active)
+			{
+				return;
+			}
 
 			if (_trace.IsEnabled)
 			{
@@ -153,44 +158,31 @@ namespace Windows.UI.Xaml.Media.Animation
 				);
 			}
 
-			State = TimelineState.Active;
-            _scheduledFrames.Clear();
+			State = TimelineState.Paused;
+			_frameScheduler!.Pause();
+		}
 
-            State = TimelineState.Paused;
+		void ITimeline.Seek(TimeSpan offset)
+		{
+			_frameScheduler?.Seek(offset);
+		}
 
-            _elapsedTime = _watch.Elapsed;
-			_watch.Stop();
-			_watch.Reset();
+		void ITimeline.SeekAlignedToLastTick(TimeSpan offset)
+		{
+			// Same as Seek
+			((ITimeline)this).Seek(offset);
+		}
 
-        }
-        void ITimeline.Seek(TimeSpan offset)
-        {
-            _elapsedTime = offset;
+		void ITimeline.SkipToFill()
+		{
+			// Set value to last keytime and set state to filling
+			_frameScheduler?.Dispose();
+			_frameScheduler = null;
 
-            if (State == TimelineState.Active)
-            {
-                var keyframe = KeyFrames.FirstOrDefault(f => f.KeyTime.TimeSpan >= offset);
-                this.SetValue(keyframe.Value);
-            }
-        }
+			var fillFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).Last();
 
-        void ITimeline.SeekAlignedToLastTick(TimeSpan offset)
-        {
-            // Same as Seek
-            ((ITimeline)this).Seek(offset);
-        }
-
-        void ITimeline.SkipToFill()
-        {
-            // Set value to last keytime and set state to filling
-            _scheduledFrames.Clear();
-            _elapsedTime = KeyFrames.Max(k => k.KeyTime.TimeSpan);
-
-            var fillFrame = KeyFrames.First(k => k.KeyTime.TimeSpan == _elapsedTime);
-
-            SetValue(fillFrame.Value);
-            State = TimelineState.Stopped;
-
+			SetValue(fillFrame.Value);
+			State = TimelineState.Stopped;
 		}
 
 		void ITimeline.Deactivate()
@@ -202,152 +194,95 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// Brings the Timeline to its initial state
 		/// </summary>
 		private void Reset()
-        {
-            _scheduledFrames.Clear();
-            State = TimelineState.Stopped;
-            _elapsedTime = TimeSpan.Zero;
-			_watch.Stop();
-			_watch.Reset();
+		{
+			_frameScheduler?.Dispose();
+			_frameScheduler = null;
+
+			State = TimelineState.Stopped;
+		}
+
+		private IDisposable OnFrame(object currentValue, IKeyFrame<object> frame, TimeSpan duration)
+		{
+			SetValue(frame.Value);
+			return null;
+		}
+
+		private void OnFramesEnd(KeyFrameScheduler<object>.EndReason endReason)
+		{
+			_playStatus = (_playStatus.count + 1, _playStatus.time + _frameScheduler!.Elapsed);
+
+			if (endReason != KeyFrameScheduler<object>.EndReason.EndOfFrames)
+			{
+				return;
+			}
+
+			if (RepeatBehavior.ShouldRepeat(_playStatus.time, _playStatus.count))
+			{
+				Replay();
+				return;
+			}
+
+			if (FillBehavior == FillBehavior.HoldEnd)//Two types of fill behaviors : HoldEnd - Keep displaying the last frame
+			{
+				Fill();
+			}
+			else// Stop - Put back the initial state
+			{
+				Reset();
+				ClearValue();
+			}
+
+			OnCompleted();
 		}
 
 		/// <summary>
-		/// Runs the Timeline, By Scheduling the KeyFrames
+		/// Fills the animation: the final frame is shown and left visible
 		/// </summary>
-		private void Play()
-        {
-            State = TimelineState.Active;
+		private void Fill()
+		{
+			var lastTime = KeyFrames.Max(k => k.KeyTime.TimeSpan);
+			var lastKeyFrame = KeyFrames.First(k => k.KeyTime.TimeSpan.Equals(lastTime));
 
-            var beginTime = BeginTime.GetValueOrDefault(TimeSpan.Zero);  //Delay before starting the animation
-            
-            var duration = TimeSpan.MaxValue;  //Duration, frames below this timespan ar not played    
-            if (Duration.HasTimeSpan)
-            {
-                duration = Duration.TimeSpan;
-            }
-            
-            var finalTime = KeyFrames
-                .Max(okf => okf.KeyTime.TimeSpan)
-                .Add(beginTime)
-                .Subtract(_elapsedTime);
-            //Final Time : the time of the last Keyframe
+			_frameScheduler?.Dispose();
+			_frameScheduler = null;
 
-            foreach (var keyFrame in this.KeyFrames.Where(k => k.KeyTime.TimeSpan <= duration))
-            {
-                var value = keyFrame.Value;
-                var dueTime = keyFrame.KeyTime.TimeSpan.Add(beginTime).Subtract(_elapsedTime);
+			State = TimelineState.Filling;
+			SetValue(lastKeyFrame.Value);
+		}
 
-				Action update = () =>
-				{
-					//When a frame is scheduled to run, the bool determines if it is the last frame
-					OnFrame(value, dueTime.Equals(finalTime));
-				};
+		/// <summary>
+		/// Replays the Timeline
+		/// </summary>
+		private void Replay()
+		{
+			_frameScheduler?.Dispose();
 
-				if (dueTime == TimeSpan.Zero)
-				{
-					update();
-				}
-				else
-				{
-					_scheduledFrames.Add(
-						CoreDispatcher.Main.RunAsync(
-							CoreDispatcherPriority.Normal,
-							async () =>
-							{
-								await Task.Delay(dueTime);
-								update();
-							}
-						)
-					);
-				}
-            }
-        }
-
-        /// <summary>
-        /// When a frame is scheduled to run
-        /// </summary>
-        /// <param name="value">The payload of the keyframe</param>
-        /// <param name="isLast">Is this the last frame?</param>
-        private void OnFrame(object value, bool isLast)
-        {
-            if (!isLast)
-            {
-                SetValue(value);
-                return;
-            }
-
-            if (NeedsRepeat())
-            {
-                Replay();
-                return;
-            }
-            
-            if (FillBehavior == FillBehavior.HoldEnd)//Two types of fill behaviors : HoldEnd - Keep displaying the last frame
-            {
-                Fill();
-            }
-            else// Stop - Put back the initial state
-            {
-                Reset();
-				ClearValue();
-            }
-
-            OnCompleted();
-        }
-
-        /// <summary>
-        /// Fills the animation: the final frame is shown and left visible
-        /// </summary>
-        private void Fill()
-        {
-            var lastTime = KeyFrames.Max(k => k.KeyTime.TimeSpan);
-            var lastKeyFrame = KeyFrames.First(k => k.KeyTime.TimeSpan.Equals(lastTime));
-
-            State = TimelineState.Filling;
-            _scheduledFrames.Clear();
-            _elapsedTime = _watch.Elapsed;
-            SetValue(lastKeyFrame.Value);
-        }
-
-        /// <summary>
-        /// Replays the Timeline
-        /// </summary>
-        private void Replay()
-        {
 			ClearValue();
-            _replayCount++;
-            _scheduledFrames.Clear();
-            _elapsedTime = TimeSpan.Zero;
-			_watch.Reset();
-			Play();
-        }
 
-        /// <summary>
-        /// Checks if the Timeline will repeat.
-        /// </summary>
-        /// <returns><c>true</c>, Repeat needed, <c>false</c> otherwise.</returns>
-        private bool NeedsRepeat()
-        {
-            var totalTime = _watch.Elapsed;
 
-            //3 types of repeat behavors,             
-            return (RepeatBehavior.Type == RepeatBehaviorType.Forever) // Forever: Will always repeat the TimeLine
-                || (RepeatBehavior.HasCount && RepeatBehavior.Count > _replayCount) // Count: Will repeat the TimeLine x times
-                || (RepeatBehavior.HasDuration && RepeatBehavior.Duration - totalTime > TimeSpan.Zero); // Duration: Will repeat the TimeLine for a given duration
-        }
+			_frameScheduler = new KeyFrameScheduler<object>(
+				BeginTime,
+				Duration.HasTimeSpan ? Duration.TimeSpan : default(TimeSpan?),
+				default,
+				KeyFrames,
+				OnFrame,
+				OnFramesEnd);
+			_frameScheduler.Start();
+		}
 
 		/// <summary>
 		/// Destroys the animation
 		/// </summary>
 		/// <param name="disposing"></param>
 		protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
+		{
+			base.Dispose(disposing);
 
-            if (_scheduledFrames != null)
-            {
-                _scheduledFrames.Dispose();
-                _scheduledFrames = null;
-            }
-        }
-    }
+			if (_frameScheduler != null)
+			{
+				_frameScheduler.Dispose();
+				_frameScheduler = null;
+			}
+		}
+	}
 }

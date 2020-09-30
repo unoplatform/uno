@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="5.0">
+    <id>Uno.Foundation.Logging</id>
+    <version>0.0.1</version>
+    <authors>nventive</authors>
+    <icon>uno.png</icon>
+    <projectUrl>https://github.com/unoplatform/uno</projectUrl>
+    <license type="expression">Apache-2.0</license>
+    <description>This package provides internal logging utilities for Uno.UI packages</description>
+    <copyright>nventive</copyright>
+    <repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+    <dependencies>
+    </dependencies>
+  </metadata>
+
+  <files>
+    <file src="..\src\Common\uno.png" target="/" />
+
+    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\netstandard2.0\*.*" target="lib\netstandard2.0" />
+    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\xamarinmac20\*.*" target="lib\xamarinmac20" />
+    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\xamarinios10\*.*" target="lib\xamarinios10" />
+    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\MonoAndroid12.0\*.*" target="lib\MonoAndroid12.0" />
+    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\MonoAndroid11.0\*.*" target="lib\MonoAndroid11.0" />
+    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\net461\*.*" target="lib\net461" />
+    
+    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging.net6\Release\net6.0\*.*" target="lib\net6.0" />
+
+  </files>
+
+</package>

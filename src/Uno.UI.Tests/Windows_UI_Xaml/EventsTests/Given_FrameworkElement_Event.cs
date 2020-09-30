@@ -15,6 +15,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.EventsTests
 	[TestClass]
 	public class Given_FrameworkElement_Event
 	{
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		[TestMethod]
 		public void When_DataTemplateEvent()
 		{
@@ -25,6 +31,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.EventsTests
 			SUT.DataContext = true;
 
 			Assert.AreEqual(1, SUT.CheckBox_CheckedCount);
+		}
+
+		[TestMethod]
+		public void When_DataTemplateEvent_OtherControl()
+		{
+			var SUT = new FrameworkElement_DataTemplate_Event_OtherControl();
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("Fired!", SUT.testControl.testTextBlock.Text);
 		}
 
 		[TestMethod]

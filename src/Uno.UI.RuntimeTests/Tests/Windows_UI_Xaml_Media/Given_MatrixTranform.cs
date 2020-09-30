@@ -17,7 +17,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	{
 		[TestMethod]
 		public Task When_Identity_And_TransformPoint() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MatrixTransform();
 
@@ -26,7 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[TestMethod]
 		public Task When_Identity_And_TransformBounds() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MatrixTransform();
 
@@ -35,7 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[TestMethod]
 		public Task When_Translate_And_TransformPoint() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MatrixTransform()
 				{
@@ -47,7 +47,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[TestMethod]
 		public Task When_Translate_And_TransformBounds() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MatrixTransform()
 				{
@@ -62,7 +62,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[TestMethod]
 		public Task When_Rotate_And_TransformPoint() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MatrixTransform()
 				{
@@ -74,7 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[TestMethod]
 		public Task When_Rotate_And_TransformBounds() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MatrixTransform()
 				{
@@ -89,7 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[TestMethod]
 		public Task When_RotateQuarter_And_TransformPoint() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MatrixTransform()
 				{
@@ -104,7 +104,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[TestMethod]
 		public Task When_RotateQuarter_And_TransformBounds() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MatrixTransform()
 				{

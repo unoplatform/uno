@@ -10,7 +10,11 @@ namespace Windows.UI.Xaml.Media
 		{
 			// This is done here to ensure that the Parent is set properly on the new PathFigureCollection.
 			Figures = new PathFigureCollection();
+
+			InitPartials();
 		}
+
+		partial void InitPartials();
 
 		#region FillRule
 

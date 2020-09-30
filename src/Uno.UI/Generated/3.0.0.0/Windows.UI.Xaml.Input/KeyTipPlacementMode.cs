@@ -2,33 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum KeyTipPlacementMode 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Auto,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Bottom,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Top,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Left,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Right,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Center,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Hidden,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Auto
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Bottom
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Top
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Left
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Right
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Center
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Hidden
 	}
 	#endif
 }

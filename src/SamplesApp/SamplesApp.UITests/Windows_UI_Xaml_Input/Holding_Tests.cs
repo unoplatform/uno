@@ -13,7 +13,7 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
-	public class Holding_Tests : SampleControlUITestBase
+	public partial class Holding_Tests : SampleControlUITestBase
 	{
 		private const string _xamlTestPage = "UITests.Shared.Windows_UI_Input.GestureRecognizerTests.HoldingTests";
 

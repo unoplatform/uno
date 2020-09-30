@@ -1,7 +1,11 @@
 using System;
-using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_DISPATCHING_PROJECT
+namespace Microsoft.UI.Dispatching
+#else
 namespace Windows.System
+#endif
 {
 	public partial class DispatcherQueue
 	{
@@ -32,5 +36,46 @@ namespace Windows.System
 
 			return _current;
 		}
+
+		/// <summary>
+		/// Enforce access on the UI thread.
+		/// </summary>
+		internal static void CheckThreadAccess()
+		{
+#if !__WASM__
+			// This check is disabled on WASM until threading support is enabled, since HasThreadAccess is currently user-configured (and defaults to false).
+			if (!CoreDispatcher.Main.HasThreadAccess)
+			{
+				throw new InvalidOperationException("The application called an interface that was marshalled for a different thread.");
+			}
+#endif
+		}
+
+		public bool TryEnqueue(DispatcherQueueHandler callback)
+			=> TryEnqueue(DispatcherQueuePriority.Normal, callback);
+
+		public bool TryEnqueue(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
+		{
+			var p = priority switch
+			{
+				DispatcherQueuePriority.Normal => CoreDispatcherPriority.Normal,
+				DispatcherQueuePriority.High => CoreDispatcherPriority.High,
+				DispatcherQueuePriority.Low => CoreDispatcherPriority.Low,
+				_ => CoreDispatcherPriority.Normal
+			};
+
+			CoreDispatcher.Main.RunAsync(p, () => callback());
+
+			return true;
+		}
+
+		public bool HasThreadAccess
+#if !__WASM__
+			=> CoreDispatcher.Main.HasThreadAccess;
+#else
+			// This check is disabled on WASM until threading support is enabled, since HasThreadAccess is currently user-configured (and defaults to false).
+			=> true;
+#endif
+
 	}
 }

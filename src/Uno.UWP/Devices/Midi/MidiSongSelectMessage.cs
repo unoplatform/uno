@@ -50,7 +50,7 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the song to select from 0-127.
 		/// </summary>
-		public byte Song => _buffer.Data[1];
+		public byte Song => _buffer.GetByte(1);
 
 		/// <summary>
 		/// Gets the duration from when the MidiInPort was created to the time the message was received.

@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prismMvvm="using:Prism.Mvvm"
     xmlns:prismRegions="using:Prism.Regions"
-    prismMvvm:ViewModelLocator.AutoWireViewModel="True"
+    prismMvvm:ViewModelLocator.AutowireViewModel="True"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

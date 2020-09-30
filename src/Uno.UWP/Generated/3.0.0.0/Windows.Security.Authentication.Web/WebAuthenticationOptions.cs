@@ -2,27 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Web
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum WebAuthenticationOptions 
+	#if false || false || false || false || false || false || false
+	[global::System.FlagsAttribute]
+	public   enum WebAuthenticationOptions : uint
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		SilentMode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		UseTitle,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		UseHttpPost,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		UseCorporateNetwork,
-		#endif
+		// Skipping already declared field Windows.Security.Authentication.Web.WebAuthenticationOptions.None
+		// Skipping already declared field Windows.Security.Authentication.Web.WebAuthenticationOptions.SilentMode
+		// Skipping already declared field Windows.Security.Authentication.Web.WebAuthenticationOptions.UseTitle
+		// Skipping already declared field Windows.Security.Authentication.Web.WebAuthenticationOptions.UseHttpPost
+		// Skipping already declared field Windows.Security.Authentication.Web.WebAuthenticationOptions.UseCorporateNetwork
 	}
 	#endif
 }

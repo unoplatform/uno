@@ -1,4 +1,5 @@
-﻿using Uno.UI;
+﻿using System;
+using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
@@ -13,46 +14,28 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(FlyoutPresenter);
 		}
 
-		protected override void OnPointerPressed(PointerRoutedEventArgs args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			if (this.GetTemplateRoot() is FrameworkElement root && this.Parent is FlyoutBasePopupPanel panel)
+			if (args.Property == AllowFocusOnInteractionProperty)
 			{
-				// allow flyout to be closed by clicking outside its content
-				var rootCoords = args.GetCurrentPoint(root).Position;
-
-				if (0 > rootCoords.X || rootCoords.X > root.ActualWidth ||
-					0 > rootCoords.Y || rootCoords.Y > root.ActualHeight)
-				{
-					panel.Flyout.Hide();
-				}
+				Content?.SetValue(AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
+			}
+			else if (args.Property == AllowFocusWhenDisabledProperty)
+			{
+				Content?.SetValue(AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
 			}
 
-			args.Handled = true;
+			base.OnPropertyChanged2(args);
 		}
 
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		protected override void OnContentChanged(object oldValue, object newValue)
 		{
-			// All pointer-related should be "eaten" to prevent closing
-			// the flyout when a tap is done in its content
-			args.Handled = true;
-		}
+			base.OnContentChanged(oldValue, newValue);
 
-		protected override void OnTapped(TappedRoutedEventArgs args)
-		{
-			// All pointer-related should be "eaten" to prevent closing
-			// the flyout when a tap is done in its content
-			args.Handled = true;
-		}
-
-		protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs args)
-		{
-			// All pointer-related should be "eaten" to prevent closing
-			// the flyout when a tap is done in its content
-			args.Handled = true;
+			Content?.SetValue(AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
+			Content?.SetValue(AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
 		}
 
 		protected override bool CanCreateTemplateWithoutParent { get; } = true;
-
-		internal override bool IsViewHit() => true;
 	}
 }

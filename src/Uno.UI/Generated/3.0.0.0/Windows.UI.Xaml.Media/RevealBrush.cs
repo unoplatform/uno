@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RevealBrush : global::Windows.UI.Xaml.Media.XamlCompositionBrushBase
@@ -21,20 +21,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color Color
-		{
-			get
-			{
-				return (global::Windows.UI.Color)this.GetValue(ColorProperty);
-			}
-			set
-			{
-				this.SetValue(ColorProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property Color
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool AlwaysUseFallback
@@ -57,14 +44,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.RevealBrush), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ColorProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Color), typeof(global::Windows.UI.Color), 
-			typeof(global::Windows.UI.Xaml.Media.RevealBrush), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
-		#endif
+		// Skipping already declared property ColorProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty StateProperty { get; } = 
@@ -81,6 +61,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.RevealBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ApplicationTheme)));
 		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.RevealBrush.RevealBrush()
 		// Forced skipping of method Windows.UI.Xaml.Media.RevealBrush.RevealBrush()
 		// Forced skipping of method Windows.UI.Xaml.Media.RevealBrush.Color.get
 		// Forced skipping of method Windows.UI.Xaml.Media.RevealBrush.Color.set

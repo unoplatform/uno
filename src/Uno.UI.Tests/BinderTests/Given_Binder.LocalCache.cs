@@ -1,7 +1,6 @@
 ﻿using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Uno.Logging;
 using Uno.Extensions;
 using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
@@ -153,7 +152,7 @@ namespace Uno.UI.Tests.BinderTests
 		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
 		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
 		private void OnIsEnabledChanged(bool oldValue, bool newValue) { }
-		private object CoerceIsEnabled(bool baseValue) => _suppressIsEnabled ? false : baseValue;
+		private object CoerceIsEnabled(object baseValue) => _suppressIsEnabled ? false : baseValue;
 
 		public void SuppressIsEnabled(bool suppress)
 		{

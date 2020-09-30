@@ -194,10 +194,15 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (_isAttachedToLooper)
 			{
-#if __IOS__
 				//Detach the _displayLink to the MainLoop (uiThread).
+#if __IOS__
+#if NET6_0_OR_GREATER
+				_displayLink?.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoopMode.Default);//detaches from the UI thread
+				_displayLink?.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoopMode.UITracking);
+#else
 				_displayLink?.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoop.NSDefaultRunLoopMode);//detaches from the UI thread
 				_displayLink?.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoop.UITrackingRunLoopMode);
+#endif
 				_displayLink = null;
 #endif
 				_isAttachedToLooper = false;
@@ -219,6 +224,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		public event EventHandler AnimationPause;
 
 		public event EventHandler AnimationCancel;
+
+#pragma warning disable 67
+		public event EventHandler AnimationFailed;
+#pragma warning restore 67
 
 		public event EventHandler Update;
 

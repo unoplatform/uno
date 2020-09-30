@@ -1,16 +1,17 @@
-﻿using System;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RoslynTester.DiagnosticResults;
-using RoslynTester.Helpers;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.CodeAnalysis.Testing;
+using Uno.Analyzers.Tests.Verifiers;
+using System.Threading.Tasks;
 
 namespace Uno.Analyzers.Tests
 {
+	using Verify = CSharpCodeFixVerifier<UnoNotImplementedAnalyzer, EmptyCodeFixProvider>;
+
 	[TestClass]
-	public class UnoNotImplementedTests : DiagnosticVerifier
+	public class UnoNotImplementedTests
 	{
 		private static string UnoNotImplementedAtribute = @"
+		#nullable enable
 		namespace Uno
 		{
 				[System.AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = false)]
@@ -27,22 +28,16 @@ namespace Uno.Analyzers.Tests
 				}
 		}";
 
-		protected override DiagnosticAnalyzer DiagnosticAnalyzer => new UnoNotImplementedAnalyzer();
-
-		public UnoNotImplementedTests() : base(LanguageNames.CSharp)
-		{
-		}
-
 		[TestMethod]
-		public void Nothing()
+		public async Task Nothing()
 		{
 			var test = @"";
 
-			VerifyDiagnostic(test);
+			await Verify.VerifyAnalyzerAsync(test);
 		}
 
 		[TestMethod]
-		public void When_EmptyNotImplemented()
+		public async Task When_EmptyNotImplemented()
 		{
 			var test = @"
                 using System;
@@ -64,28 +59,18 @@ namespace Uno.Analyzers.Tests
                     {
                         public TypeName()
                         {
-                           var a = new Uno.TestClass();
+                           var a = [|new Uno.TestClass()|];
                         }
                     }
                 }
 
 			" + UnoNotImplementedAtribute;
 
-			var expected = new DiagnosticResult
-			{
-				Id = UnoNotImplementedAnalyzer.Rule.Id,
-				Severity = DiagnosticSeverity.Warning,
-				Message = string.Format(UnoNotImplementedAnalyzer.MessageFormat, "Uno.TestClass"),
-				Locations = new[] {
-					new DiagnosticResultLocation("Test0.cs", 21, 36)
-				}
-			};
-
-			VerifyDiagnostic(test, expected);
+			await Verify.VerifyAnalyzerAsync(test);
 		}
 
 		[TestMethod]
-		public void When_SinglePlatform_Included()
+		public async Task When_SinglePlatform_Included()
 		{
 			var test = @"
                 #define __WASM__
@@ -104,28 +89,17 @@ namespace Uno.Analyzers.Tests
                     {
                         public TypeName()
                         {
-                           var a = new Uno.TestClass();
+                           var a = [|new Uno.TestClass()|];
                         }
                     }
                 }
 
 			" + UnoNotImplementedAtribute;
-
-			var expected = new DiagnosticResult
-			{
-				Id = UnoNotImplementedAnalyzer.Rule.Id,
-				Severity = DiagnosticSeverity.Warning,
-				Message = string.Format(UnoNotImplementedAnalyzer.MessageFormat, "Uno.TestClass"),
-				Locations = new[] {
-					new DiagnosticResultLocation("Test0.cs", 18, 36)
-				}
-			};
-
-			VerifyDiagnostic(test, expected);
+			await Verify.VerifyAnalyzerAsync(test);
 		}
 
 		[TestMethod]
-		public void When_SinglePlatform_Excluded()
+		public async Task When_SinglePlatform_Excluded()
 		{
 			var test = @"
                 #define __WASM__
@@ -151,11 +125,11 @@ namespace Uno.Analyzers.Tests
 
 			" + UnoNotImplementedAtribute;
 
-			VerifyDiagnostic(test);
+			await Verify.VerifyAnalyzerAsync(test);
 		}
 
 		[TestMethod]
-		public void When_TwoPlatforms_Excluded()
+		public async Task When_TwoPlatforms_Excluded()
 		{
 			var test = @"
                 #define __WASM__
@@ -181,11 +155,11 @@ namespace Uno.Analyzers.Tests
 
 			" + UnoNotImplementedAtribute;
 
-			VerifyDiagnostic(test);
+			await Verify.VerifyAnalyzerAsync(test);
 		}
 
 		[TestMethod]
-		public void When_Generic_Excluded()
+		public async Task When_Generic_Excluded()
 		{
 			var test = @"
                 #define UNO_REFERENCE_API
@@ -211,11 +185,11 @@ namespace Uno.Analyzers.Tests
 
 			" + UnoNotImplementedAtribute;
 
-			VerifyDiagnostic(test);
+			await Verify.VerifyAnalyzerAsync(test);
 		}
 
 		[TestMethod]
-		public void When_Generic_Partial_Excluded()
+		public async Task When_Generic_Partial_Excluded()
 		{
 			var test = @"
                 #define UNO_REFERENCE_API
@@ -241,11 +215,11 @@ namespace Uno.Analyzers.Tests
 
 			" + UnoNotImplementedAtribute;
 
-			VerifyDiagnostic(test);
+			await Verify.VerifyAnalyzerAsync(test);
 		}
 
 		[TestMethod]
-		public void When_Generic_Included()
+		public async Task When_Generic_Included()
 		{
 			var test = @"
                 #define UNO_REFERENCE_API
@@ -264,29 +238,19 @@ namespace Uno.Analyzers.Tests
                     {
                         public TypeName()
                         {
-                           var a = new Uno.TestClass();
+                           var a = [|new Uno.TestClass()|];
                         }
                     }
                 }
 
 			" + UnoNotImplementedAtribute;
 
-			var expected = new DiagnosticResult
-			{
-				Id = UnoNotImplementedAnalyzer.Rule.Id,
-				Severity = DiagnosticSeverity.Warning,
-				Message = string.Format(UnoNotImplementedAnalyzer.MessageFormat, "Uno.TestClass"),
-				Locations = new[] {
-					new DiagnosticResultLocation("Test0.cs", 18, 36)
-				}
-			};
-
-			VerifyDiagnostic(test, expected);
+			await Verify.VerifyAnalyzerAsync(test);
 		}
 
 
 		[TestMethod]
-		public void When_Generic_Member_Included()
+		public async Task When_Generic_Member_Included()
 		{
 			var test = @"
                 #define UNO_REFERENCE_API
@@ -307,28 +271,19 @@ namespace Uno.Analyzers.Tests
                     {
                         public TypeName()
                         {
-                           var a = new Uno.TestClass().Test;
+                           var a = [|new Uno.TestClass().Test|];
+                           var b = new Uno.TestClass()?[|.Test|];
                         }
                     }
                 }
 
 			" + UnoNotImplementedAtribute;
 
-			var expected = new DiagnosticResult
-			{
-				Id = UnoNotImplementedAnalyzer.Rule.Id,
-				Severity = DiagnosticSeverity.Warning,
-				Message = string.Format(UnoNotImplementedAnalyzer.MessageFormat, "Uno.TestClass.Test"),
-				Locations = new[] {
-					new DiagnosticResultLocation("Test0.cs", 20, 36)
-				}
-			};
-
-			VerifyDiagnostic(test, expected);
+			await Verify.VerifyAnalyzerAsync(test);
 		}
 
 		[TestMethod]
-		public void When_Generic_Member_Partial_Excluded()
+		public async Task When_Generic_Member_Partial_Excluded()
 		{
 			var test = @"
                 #define UNO_REFERENCE_API
@@ -356,7 +311,39 @@ namespace Uno.Analyzers.Tests
 
 			" + UnoNotImplementedAtribute;
 
-			VerifyDiagnostic(test);
+			await Verify.VerifyAnalyzerAsync(test);
+		}
+
+		[TestMethod]
+		public async Task When_Using_Object_Initializer_Syntax_Included()
+		{
+			var test = @"
+                #define UNO_REFERENCE_API
+
+				using System;
+
+				namespace Uno
+				{
+					public class TestClass {
+						[NotImplemented(""__SKIA__"", ""__IOS__"", ""__WASM__"")]
+						public int Test { get; set; }
+					}
+				}
+
+                namespace ConsoleApplication1
+                {
+                    class TypeName
+                    {
+                        public TypeName()
+                        {
+                           var x = new Uno.TestClass { [|Test|] = 0 };
+                        }
+                    }
+                }
+
+			" + UnoNotImplementedAtribute;
+
+			await Verify.VerifyAnalyzerAsync(test);
 		}
 	}
 }

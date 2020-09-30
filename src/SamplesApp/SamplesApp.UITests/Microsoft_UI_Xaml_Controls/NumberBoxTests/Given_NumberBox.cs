@@ -13,7 +13,7 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	public class NumberBoxTests : SampleControlUITestBase
+	public partial class NumberBoxTests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
@@ -65,6 +65,28 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			_app.PressEnter();
 			upButton.FastTap();
 			Assert.AreEqual(55, numBox.GetDependencyPropertyValue<double>("Value"));
+		}
+
+		[Test]
+		[AutoRetry]
+		public void DecimalFormatterTest()
+		{
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
+
+			var numBox = _app.Marked("TestNumberBox");
+			Assert.AreEqual(0, numBox.GetDependencyPropertyValue<double>("Value"));
+
+			_app.FastTap("MinCheckBox");
+			_app.FastTap("MaxCheckBox");
+			_app.Marked("CustomFormatterButton").FastTap();
+
+			numBox.ClearText();
+			numBox.EnterText("۱٫۷");
+			_app.PressEnter();
+			_app.PressEnter();
+
+			Assert.AreEqual("۱٫۷۵", numBox.GetDependencyPropertyValue<string>("Text"));
+			Assert.AreEqual(1.75, numBox.GetDependencyPropertyValue<double>("Value"));
 		}
 
 		[Test]

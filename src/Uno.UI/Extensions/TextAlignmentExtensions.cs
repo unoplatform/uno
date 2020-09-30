@@ -37,9 +37,12 @@ namespace Windows.UI.Xaml
 					return AppKit.NSTextAlignment.Right;
 				case TextAlignment.Justify:
 					return AppKit.NSTextAlignment.Justified;
-				default:
 				case TextAlignment.Left:
 					return AppKit.NSTextAlignment.Left;
+				case TextAlignment.DetectFromContent:
+					return AppKit.NSTextAlignment.Natural;
+				default:
+					throw new ArgumentException($"Unexpected value '{textAlignment}' for '{nameof(textAlignment)}'.");
 			}
 		}
 

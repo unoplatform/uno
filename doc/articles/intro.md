@@ -1,47 +1,124 @@
-## What is the Uno Platform?
+# Uno Platform documentation
 
-The Uno Platform is a Universal Windows Platform Bridge that allows UWP-based code (C# and XAML) to run on iOS, Android, and WebAssembly. It provides the full API definitions of the UWP [Windows 10 2004 (19041)](https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-19041), and the implementation of parts of the UWP API, such as **Windows.UI.Xaml**, to enable UWP applications to run on these platforms.
+<div class="row">
 
-This allows the use of UWP tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [Xaml Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), to build an application as much as possible on Windows, then validate that the application runs on iOS, Android and WebAssembly.
+<div class="col-md-6 col-xs-12 ">
+<a href="get-started.md">
+<div class="alert alert-info alert-hover">
 
-The XAML User Interface (UI) provides the ability to display the same XAML files on Windows, iOS, Android and WebAssembly platforms. Uno also provides support for the [Model-View-ViewModel](https://docs.microsoft.com/en-us/windows/uwp/data-binding/data-binding-and-mvvm) (MVVM) pattern on all platforms, with binding, styling, control and data-templating features.
+#### Get started
 
-As the Uno Platform provides all of the APIs of the complete UWP platform, any UWP library can be compiled on top of Uno (e.g. [XamlBehaviors](https://github.com/Microsoft/XamlBehaviors)), with the ability to determine which APIs are implemented or not via the IDE using C# Analyzers.
+Set up with your OS and IDE of choice.
 
-## Why Uno Platform?
+</div>
+</a>
+</div>
 
-Developing for Windows (phone, desktop, tablet, Xbox), WebAssembly, iOS (tablet and phone),  Android (tablet and phone), macOS and Linux at once can be a complex process, especially when it comes to the user interface. Each platform has its own way of defining dynamic layouts. Some are more efficient, some more verbose, some more elegant, and some more performant than others.
+<div class="col-md-6 col-xs-12 ">
+<a href="tutorials-intro.md">
+<div class="alert alert-info alert-hover">
 
-Yet, being able to master all these frameworks at once is a particularly difficult task because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
+#### How-tos and tutorials
 
-With Xamarin 'classic', C# comes to all these platforms; however, it only provides transparent translations of the UI frameworks available for iOS and Android. Most non-UI code can be shared, but when it comes to the UI, almost nothing can be shared.
+See real-world examples with working code.
 
-To avoid having to learn the UI-layout techniques and approaches for each platform, Uno.UI mimics the Windows XAML approach of defining UI and layouts. This translates into the ability to share styles, layouts, and data-bindings while retaining the ability to mix XAML-style and native layouts. For instance, a StackPanel can easily contain a RelativeLayout on Android or an MKMapView on iOS.
+</div>
+</a>
+</div>
 
-Uno.UI provides the ability for developers to reuse known layout and coding techniques on all platforms, resulting in a gain of overall productivity when creating UI-rich applications.
+<div class="col-md-6 col-xs-12 ">
+<a href="using-uno-ui.md">
+<div class="alert alert-info alert-hover">
 
-## What does Uno Platform **not** do?
+#### Developing with Uno Platform
 
-Uno is not meant to be a complete replacement of all the native UI frameworks. This would be the lowest-denominator approach and would result in end-users noticing the non-native appearance or behavior of an application on their device. Having an iOS application that behaves like an Android application may bother users.
+Learn the principles of cross-platform development with Uno.
 
-Uno provides a common set of layout and controls, designed to provide the ability to share an important part of an application's code and markup; however, it leaves developers with the ability to retain the native look and feel. At the same time, it provides a way to have a *pixel-perfect* UI and UX being identical on all platforms. Commonly, this look and feel will be found in the navigation, transitions and animations, main pages, and edges of the screen.
+</div>
+</a>
+</div>
 
-While the Uno Platform provides all the UWP APIs, a lot of those APIs are not implemented. It currently provides a small set of basic non-UI parts of the UWP, such as the `Windows.UI.Xaml.Application` class, which provides the ability to have a common application bootstrapping code. 
+<div class="col-md-6 col-xs-12 ">
+<a href="implemented-views.md">
+<div class="alert alert-info alert-hover">
 
-## How does Uno Platform work?
+#### API reference
 
-Uno provides a set of APIs that use class and property names compatible with Windows UWP, while allowing those classes to inherit from the primitive layout container of the platform, in the case of the XAML APIs.
+Browse the set of available controls and their properties.
 
-For instance, `Windows.UI.Xaml.Controls.StackPanel` directly inherits from a `ViewGroup` on Android and `UIView` on iOS. 
+</div>
+</a>
+</div>
 
-The native layout system for inner elements is then overridden with a XAML-compatible layout system, using the standard XAML Measure and Arrange passes. This means that a StackPanel will use the same layout strategies on all platforms, and will, therefore, look the same on-screen.
+</div>
 
-On Windows platforms, Uno.UI is not present and the XAML-layout files are left untouched. On Xamarin-classic-compatible platforms, the XAML files are processed at compile time to generate non-conditional code that will be executed as-is at runtime on the device. This means that there is no runtime parsing of XAML, which makes the UI-tree creation particularly efficient.
+<br/>
 
-Uno.UI also provides ways to have platform-specific markup in XAML files, which allows for a simple file tree while adjusting the UI for each platform.
+Uno Platform lets you write an application once in XAML and C#, and deploy it to any target platform. 
 
-## Want more information about Uno Platform?
+<br/>
+<br/>
 
-Check out the Uno website for more information and support documents here:
-https://platform.uno/support/
+***
 
+
+## Top questions about Uno Platform
+
+#### What platforms can I target with Uno Platform?
+
+Uno Platform applications run on Web (via WebAssembly), Windows, Linux, macOS, iOS, Android and Tizen. [Check supported platform versions.](getting-started/requirements.md)
+
+#### Are Uno Platform applications native?
+
+Yes - Uno Platform taps into the native UI frameworks on most supported platforms, so your final product is a native app. [Read more about how Uno works.](what-is-uno.md)
+
+#### Can applications look the same on all platforms?
+
+Yes. Unless you specify otherwise, your application's UI renders exactly the same on all targeted platforms, to the pixel. Uno achieves this by taking low-level control of the native visual primitives on the targeted platform. [Read more about how Uno works.](what-is-uno.md)
+
+#### How is Uno Platform different from .NET MAUI?
+
+First, Uno Platform is available in production today to build single-codebase, pixel-perfect applications for Web, Desktop and Mobile. .NET MAUI is successor to Xamarin.Forms. 
+
+Second, Uno Platform can target additional platforms like Linux and the Web. 
+
+Third, Uno Platform aligns with WinUI, which uses a flavor of XAML most Windows developers are familiar with. It also allows you to tap in WinUI's rich styling engine to create pixel-perfect applications. 
+
+Finally, by extending the reach of WinUI across all supported platforms, it also allows you to leverage the rich 1st and 3rd party ecosystem and bring rich controls everywhere like DataGrid, TreeView, TabView, NavigationView and many others.
+
+At the practical level, we suggest you try both and see which works the best for your skillset and scenario.
+
+
+#### How is Uno Platform different from Blazor?
+
+Uno Platform applications are cross-platform, running on the web as well as mobile and desktop, equally, from a single codebase. Blazor is a feature of ASP.NET for primarily building web applications.
+
+Uno Platform applications are written in C# and XAML markup, whereas Blazor applications are written in 'Razor' syntax, a hybrid of HTML/CSS and C#.
+
+Uno Platform and Blazor both make use of .NET's WebAssembly support to run natively in the browser.
+
+#### How is Uno Platform different from Flutter?
+
+Uno Platform and Flutter solve a similar problem - pixel-perfect applications on all target platforms. However, Uno Platform leverages decades of Microsoft's investment made into developer tooling .NET and C# programming language for developing applications.
+
+#### Do I need to have an existing UWP/WinUI app to use Uno?
+
+No, there's no need to have an existing UWP or WinUI application, or have that specific skillset. The [Uno Platform templates](get-started.md) make it easy to create a new project in Visual Studio or from the command line for anyone familiar with C# and XAML. 
+
+#### What 3rd parties support Uno Platform?
+
+Uno Platform is supported by a number of 3rd-party packages and libraries, including advanced controls from Microsoft Windows Community Toolkit, Syncfusion, LightningChart and Infragistics; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI and MVVMCross; local database management with SQLite; and more. [See the full list of supported 3rd-party libraries.](supported-libraries.md)
+
+#### Where do I get help if I have any questions?
+
+Free support is available via [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) and Discord www.platform.uno/discord - #uno-platform channel. Commercial paid support is available as well - email [info@platform.uno](mailto:info@platform.uno) for more information.
+
+#### How do you sustain Uno Platform?
+
+The Uno Platform is free and open source under the Apache 2.0 license. Alongside valued contributions from the Uno community, development by the core team is sustained by paid professional support contracts offered to enterprises who use Uno Platform. [Learn more about our paid professional support.](https://platform.uno/contact/) 
+
+More details about sustainability are covered here: https://platform.uno/blog/sustaining-the-open-source-uno-platform/ 
+
+<br>
+
+[_See more frequently asked questions about the Uno Platform._](faq.md)

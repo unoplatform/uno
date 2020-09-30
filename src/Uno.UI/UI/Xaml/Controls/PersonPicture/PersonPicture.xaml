@@ -3,10 +3,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:wasm="http://uno.ui/wasm"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:local="using:Microsoft.UI.Xaml.Controls"
-	mc:Ignorable="d wasm">
+    xmlns:local="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d wasm">
 
     <Style TargetType="local:PersonPicture" BasedOn="{StaticResource DefaultPersonPictureStyle}" />
 
@@ -27,17 +27,17 @@
                                 <!-- Visual State when a Photo is available for display -->
                                 <VisualState x:Name="Photo">
                                     <VisualState.Setters>
-										<Setter Target="PersonPictureEllipse.Fill" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush}"/>
+                                        <Setter Target="PersonPictureEllipse.Fill" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush}"/>
 
-										<!-- ImageBrush is not yet supported https://github.com/unoplatform/uno/issues/409 -->
-										<wasm:Setter Target="PersonPictureImage.Source" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush.ImageSource}"/>
-									</VisualState.Setters>
+                                        <!-- ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 -->
+                                        <wasm:Setter Target="PersonPictureImage.Source" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush.ImageSource}"/>
+                                    </VisualState.Setters>
                                 </VisualState>
                                 <!-- Visual State when no Photo is available (but there are initials).-->
                                 <VisualState x:Name="Initials" />
                                 <VisualState x:Name="NoPhotoOrInitials">
                                     <VisualState.Setters>
-                                        <Setter Target="InitialsTextBlock.FontFamily" Value="Segoe MDL2 Assets"/>
+										<Setter Target="InitialsTextBlock.FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
                                         <!-- Placeholder symbol for 'Contact' (https://docs.microsoft.com/en-us/windows/uwp/design/style/segoe-ui-symbol-font) -->
                                         <Setter Target="InitialsTextBlock.Text" Value="&#xE77B;"/>
                                     </VisualState.Setters>
@@ -45,7 +45,7 @@
                                 <!-- Visual State when in Group mode -->
                                 <VisualState x:Name="Group">
                                     <VisualState.Setters>
-                                        <Setter Target="InitialsTextBlock.FontFamily" Value="Segoe MDL2 Assets"/>
+										<Setter Target="InitialsTextBlock.FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
                                         <!-- Placeholder symbol for 'People' (https://docs.microsoft.com/en-us/windows/uwp/design/style/segoe-ui-symbol-font) -->
                                         <Setter Target="InitialsTextBlock.Text" Value="&#xE716;"/>
                                     </VisualState.Setters>
@@ -92,25 +92,27 @@
                             IsTextScaleFactorEnabled="False"
                             Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualInitials}" />
 
-						<Ellipse
+                        <Ellipse
                             x:Name="PersonPictureEllipse"
                             x:DeferLoadStrategy="Lazy"
                             Width="{TemplateBinding Width}"
                             Height="{TemplateBinding Height}"
                             FlowDirection="LeftToRight">
-						</Ellipse>
+                        </Ellipse>
 
-						<!-- ImageBrush is not yet supported https://github.com/unoplatform/uno/issues/409 -->
-						<wasm:Border
-                            x:DeferLoadStrategy="Lazy"
+                        <!-- ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 -->
+                        <wasm:Border
                             Width="{TemplateBinding Width}"
                             Height="{TemplateBinding Height}"
-							CornerRadius="{TemplateBinding Width}"
+                            CornerRadius="{TemplateBinding Width}"
                             FlowDirection="LeftToRight">
-							<Image x:Name="PersonPictureImage" />
-						</wasm:Border>
+                            <Image x:Name="PersonPictureImage"
+                                   Stretch="UniformToFill"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                        </wasm:Border>
 
-						<Grid
+                        <Grid
                             x:Name="BadgeGrid"
                             Visibility="Collapsed"
                             VerticalAlignment="Bottom"

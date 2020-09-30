@@ -37,8 +37,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			var result =
 				Regex.Replace(
 					markup,
-					 "\"{x:Bind (.*?)}\"",
-					e => $"\"{{x:Bind {RewriteParameters(e.Groups[1].Value)}}}\""
+					 "\"{x:Bind\\s(.*?)}\"",
+					e => $"\"{{x:Bind {RewriteParameters(e.Groups[1].Value.Trim())}}}\"",
+					RegexOptions.Singleline
 				);
 
 			return result;
@@ -47,11 +48,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		/// <summary>
 		/// Restores an x:Bind path encoded with <see cref="RewriteDocumentPaths"/>.
 		/// </summary>
-		internal static string RestoreSinglePath(string path)
+		internal static string? RestoreSinglePath(string? path)
 		{
 			if (!string.IsNullOrEmpty(path))
 			{
-				var bytes = Convert.FromBase64String(path.Replace("_", "="));
+				var bytes = Convert.FromBase64String(path!.Replace("_", "="));
 				var rawPath = Encoding.Unicode.GetString(bytes);
 
 				return rawPath

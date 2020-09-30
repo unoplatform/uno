@@ -18,6 +18,7 @@ namespace SamplesApp.UITests
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled on iOS (xamarin.uitest 3.2 or iOS 15) https://github.com/unoplatform/uno/issues/8012
 		public void Keyboard_Textbox_InsideScrollViewer_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_InsideScrollerViewer_Automated");
@@ -419,32 +420,28 @@ namespace SamplesApp.UITests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Disabled on iOS: https://github.com/unoplatform/uno/issues/1955
 		public void Keyboard_DismissTesting()
 		{
 			Run(("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard"));
 			var appCommandBar = _app.Marked("AppCommandBar");
-			var buttonDisabled = _app.Marked("ButtonDisabled");
-			var buttonDone = _app.Marked("ButtonDone");
-			var textBoxMessage = _app.Marked("TextBoxMessage");
 			var singleTextBox = _app.Marked("SingleTextBox");
 
 			_app.WaitForElement(singleTextBox);
 
-			var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
+			// Inital Screenshot
+			using var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 
+			// Focus TextBox to reveal keyboard
 			singleTextBox.FastTap();
 			_app.Wait(2);
 
-			// Click on AppBar Button
-			var appCommandBarPosition = appCommandBar.FirstResult().Rect;
-			float xPosition = appCommandBarPosition.Width - 90;
-			float yPosition = appCommandBarPosition.Height / 2;
-			_app.TapCoordinates(appCommandBarPosition.X + xPosition, appCommandBarPosition.Y + yPosition);
+			// Tap on [DONE] AppBarButton
+			var doneBtn = appCommandBar.Descendant().WithExactText("Done"); // yes, normal case Done
+			doneBtn.Tap();
 			_app.Wait(3);
-			_app.Back();
 
-			var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
+			// Final Screenshot
+			using var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
 
 			// We only validate that the bottom of the screen is the same (so the keyboard is no longer visible).
 			// This is to avoid content offset if the status bar was opened by the keyboard or the message box.

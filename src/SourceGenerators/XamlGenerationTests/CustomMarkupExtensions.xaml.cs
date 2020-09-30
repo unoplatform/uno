@@ -103,6 +103,14 @@ namespace XamlGenerationTests.Shared.MarkupExtensions
 		}
 	}
 
+	public class TestMarkupSuffixExtension : MarkupExtension
+	{
+		protected override object ProvideValue()
+		{
+			return null;
+		}
+	}
+
 	public class ComplexObject
 	{
 		public string StringProp { get; set; }

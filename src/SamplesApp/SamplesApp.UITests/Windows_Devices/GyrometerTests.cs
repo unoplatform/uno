@@ -11,7 +11,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_Devices
 {
 	[TestFixture]
-	public class GyrometerTests : SampleControlUITestBase
+	public partial class GyrometerTests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

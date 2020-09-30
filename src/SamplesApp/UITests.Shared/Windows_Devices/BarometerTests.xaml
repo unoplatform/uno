@@ -5,7 +5,7 @@
     xmlns:local="using:UITests.Shared.Windows_Devices"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:valueconverters="using:UITests.Shared.ValueConverters"
+    xmlns:valueconverters="using:UITests.ValueConverters"
 	mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">

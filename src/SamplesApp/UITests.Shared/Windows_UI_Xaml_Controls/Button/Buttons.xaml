@@ -84,14 +84,14 @@
 						 Command="{Binding Command}"
 						 CommandParameter="Windows.UI.Xaml.Controls.RadioButton" />
 		</StackPanel>
-		<StackPanel Grid.Column="1">
+		<StackPanel Grid.Column="1" x:Name="myStackPanel">
 			<CheckBox Content="IsEnabled"
 					  IsChecked="{Binding IsEnabled, Mode=TwoWay}" />
 			<CheckBox Content="IsChecked"
 					  IsChecked="{Binding IsChecked, Mode=TwoWay}" />
 			<Button Content="Clear"
 					Command="{Binding ClearCommand}" />
-			<ItemsControl ItemsSource="{Binding Output}" />
+			<ItemsControl ItemsSource="{Binding Output}" x:Name="myItemsControl" />
 		</StackPanel>
 	</Grid>
 </UserControl>

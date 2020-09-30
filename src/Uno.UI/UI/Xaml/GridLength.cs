@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -7,6 +8,7 @@ using Uno.Extensions;
 
 namespace Windows.UI.Xaml
 {
+	[DebuggerDisplay("{DebugDisplay,nq}")]
 	public partial struct GridLength : IEquatable<GridLength>
 	{
 		public static GridLength Auto => GridLengthHelper.Auto;
@@ -72,6 +74,14 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
+				if (trimmed.EndsWith("px", StringComparison.OrdinalIgnoreCase) ||
+					trimmed.EndsWith("cm", StringComparison.OrdinalIgnoreCase) ||
+					trimmed.EndsWith("in", StringComparison.OrdinalIgnoreCase) ||
+					trimmed.EndsWith("pt", StringComparison.OrdinalIgnoreCase))
+				{
+					trimmed = trimmed.Substring(0, trimmed.Length - 2);
+				}
+
 				if (double.TryParse(trimmed, NumberStyles.Any & ~NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var value))
 				{
 					return new GridLength(value, GridUnitType.Pixel);
@@ -128,5 +138,19 @@ namespace Windows.UI.Xaml
 
 		public static bool operator ==(GridLength gl1, GridLength gl2) => gl1.Equals(gl2);
 		public static bool operator !=(GridLength gl1, GridLength gl2) => !gl1.Equals(gl2);
+
+		private string DebugDisplay => ToDisplayString();
+
+		internal readonly string ToDisplayString() => $"GridLength({this})";
+
+		public override string ToString() =>
+			GridUnitType switch
+			{
+				GridUnitType.Auto => "Auto",
+				GridUnitType.Pixel => $"{Value:f1}px",
+				GridUnitType.Star when Value == 1.0 => "*",
+				GridUnitType.Star => $"{Value:f1}*",
+				_ => "invalid"
+			};
 	}
 }

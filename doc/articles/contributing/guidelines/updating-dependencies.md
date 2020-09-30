@@ -44,7 +44,7 @@ These dependencies require care and human testing:
 - [Microsoft.Extensions.Logging.*](https://github.com/unoplatform/uno/pull/1108/files#r300432589) child packages needs to be aligned with the other `Microsoft.Extensions.Logging` packages. Currently can't be upgraded because most recent versions are using thread, which are not supported on Wasm.
 - [Microsoft.UI.Xaml](https://github.com/unoplatform/uno/pull/1503): This dependency is needs to be aligned with the currently supported API set found in Uno.
 
-These dependencies require care and human testing to confirm compatibility with webassembly:
+These dependencies require care and human testing to confirm compatibility with WebAssembly:
 
 - [Microsoft.Extensions.Logging.Console](https://github.com/unoplatform/Uno/pull/894#issuecomment-495046929)
 

@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Core
 	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class CoreApplication 
+	public static partial class CoreApplication 
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -173,38 +173,8 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static event global::System.EventHandler<global::Windows.ApplicationModel.EnteredBackgroundEventArgs> EnteredBackground
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplication", "event EventHandler<EnteredBackgroundEventArgs> CoreApplication.EnteredBackground");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplication", "event EventHandler<EnteredBackgroundEventArgs> CoreApplication.EnteredBackground");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static event global::System.EventHandler<global::Windows.ApplicationModel.LeavingBackgroundEventArgs> LeavingBackground
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplication", "event EventHandler<LeavingBackgroundEventArgs> CoreApplication.LeavingBackground");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplication", "event EventHandler<LeavingBackgroundEventArgs> CoreApplication.LeavingBackground");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.ApplicationModel.Core.CoreApplication.EnteredBackground
+		// Skipping already declared event Windows.ApplicationModel.Core.CoreApplication.LeavingBackground
 		// Skipping already declared event Windows.ApplicationModel.Core.CoreApplication.Resuming
 		// Skipping already declared event Windows.ApplicationModel.Core.CoreApplication.Suspending
 	}

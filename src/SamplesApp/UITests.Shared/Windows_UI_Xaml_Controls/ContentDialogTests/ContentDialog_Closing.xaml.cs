@@ -58,14 +58,14 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 			var defer1Button = new _Button { Name = "Complete1Button", Content = "Complete 1" };
 			defer1Button.Click += (o, e) =>
 			{
-				deferral1.Complete();
 				ResultTextBlock.Text = "First complete called";
+				deferral1.Complete();
 			};
 			var defer2Button = new _Button { Name = "Complete2Button", Content = "Complete 2" };
 			defer2Button.Click += (o, e) =>
 			{
-				deferral2.Complete();
 				ResultTextBlock.Text = "Second complete called";
+				deferral2.Complete();
 			};
 			var panel = new StackPanel
 			{

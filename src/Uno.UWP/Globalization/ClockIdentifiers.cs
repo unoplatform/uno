@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Windows.Globalization
+﻿namespace Windows.Globalization
 {
 	public static partial class ClockIdentifiers
 	{

@@ -85,7 +85,7 @@ namespace Uno.UI.DataBinding
 		/// The returned <see cref="ManagedWeakReference"/> may not be owner by the <paramref name="owner"/>, 
 		/// in which case, the <paramref name="managedWeakReference"/> will not be returned to the pool. If the reference
 		/// if an <see cref="IWeakReferenceProvider"/> it is not returned as well.
-		/// A <see cref="null"/> <paramref name="managedWeakReference"/> is ignored.
+		/// A null <paramref name="managedWeakReference"/> is ignored.
 		/// </remarks>
 		public static void ReturnWeakReference(object owner, ManagedWeakReference managedWeakReference)
 		{
@@ -147,13 +147,6 @@ namespace Uno.UI.DataBinding
 				{
 					var handle = _weakReferencePool.Pop();
 					handle.Target = target;
-
-					if(handle.Target != target)
-					{
-						handle.Target = target;
-
-						throw new InvalidOperationException();
-					}
 
 					return handle;
 				}

@@ -29,9 +29,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				uiElementCollection.Add(uiElement);
 			}
-
-			var wrapper = VisualTreeHelper.AdaptNative(view);
-			uiElementCollection.Add(wrapper);
+			else
+			{
+				var wrapper = VisualTreeHelper.AdaptNative(view);
+				uiElementCollection.Add(wrapper);
+			}
 		}
 	}
 }

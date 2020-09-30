@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -19,7 +21,8 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 		{
 			this.InitializeComponent();
 
-			DataContext = _viewModel = new ButtonsViewModel();
+			Loading += (s, e) => DataContext = _viewModel = new ButtonsViewModel();
+			Unloaded += (s, e) => DataContext = _viewModel = null;
 		}
 
 		private void OnClick(object sender, RoutedEventArgs e) => _viewModel.Log($"{sender}.Click");
@@ -38,6 +41,17 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 		protected override void OnPointerReleased(PointerRoutedEventArgs e)
 		{
 			_viewModel.Log($"[page].PointerReleased, source={e.OriginalSource}");
+		}
+	}
+
+	public class MyCollection : List<string>, INotifyCollectionChanged
+	{
+		NotifyCollectionChangedEventHandler _collectionChanged;
+
+		public event NotifyCollectionChangedEventHandler CollectionChanged
+		{
+			add => _collectionChanged += value;
+			remove => _collectionChanged -= value;
 		}
 	}
 
@@ -75,7 +89,7 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 
 		public System.Windows.Input.ICommand Command { get; private set; }
 		public System.Windows.Input.ICommand ClearCommand { get; private set; }
-		public ObservableCollection<string> Output { get; } = new ObservableCollection<string>();
+		public MyCollection Output { get; } = new MyCollection();
 
 		private void OnCommand(object sender) => Log($"{sender}.Command");
 

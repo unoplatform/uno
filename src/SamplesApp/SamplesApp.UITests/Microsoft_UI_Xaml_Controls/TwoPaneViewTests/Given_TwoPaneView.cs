@@ -12,7 +12,7 @@ using Query = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppQuery>;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	public class Given_TwoPaneView : SampleControlUITestBase
+	public partial class Given_TwoPaneView : SampleControlUITestBase
 	{
 		// Need to be the same as c_defaultMinWideModeWidth/c_defaultMinTallModeHeight in TwoPaneViewFactory.cpp
 		private const double c_defaultMinWideModeWidth = 641.0;

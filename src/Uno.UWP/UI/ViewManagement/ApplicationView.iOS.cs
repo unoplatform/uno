@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using System.Text;
 using UIKit;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace Windows.UI.ViewManagement
 {
@@ -35,17 +39,7 @@ namespace Windows.UI.ViewManagement
 				height: windowBounds.Height - inset.Top - inset.Bottom
 			);
 
-			if (VisibleBounds != newVisibleBounds)
-			{
-				VisibleBounds = newVisibleBounds;
-
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"Updated visible bounds {VisibleBounds}, SafeAreaInsets: {inset}");
-				}
-
-				VisibleBoundsChanged?.Invoke(this, null);
-			}
+			SetVisibleBounds(newVisibleBounds);
 		}
 
 		public bool TryEnterFullScreenMode()

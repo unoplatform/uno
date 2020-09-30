@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation.Collections;
 
 namespace Windows.Storage
@@ -202,7 +202,7 @@ namespace Windows.Storage
 				=> throw new NotSupportedException();
 
 			public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
-				=> throw new NotSupportedException();
+				=> _values.Select(v => new KeyValuePair<string, object>(v.Key, v.Value)).GetEnumerator();
 
 			public bool Remove(string key)
 			{
@@ -227,7 +227,7 @@ namespace Windows.Storage
 				return false;
 			}
 
-			IEnumerator IEnumerable.GetEnumerator() => throw new NotSupportedException();
+			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 	}
 }

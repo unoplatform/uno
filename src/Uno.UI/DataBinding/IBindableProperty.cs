@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿#nullable enable
+
+using Windows.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,7 @@ namespace Uno.UI.DataBinding
 	/// <summary>
 	/// A delegate that sets the value of a dependency property, given the provided precedence.
 	/// </summary>
-	public delegate void PropertySetterHandler(object instance, object value, DependencyPropertyValuePrecedences? precedence);
+	public delegate void PropertySetterHandler(object instance, object? value, DependencyPropertyValuePrecedences? precedence);
 
 	/// <summary>
 	/// Defines a bindable property
@@ -27,13 +29,18 @@ namespace Uno.UI.DataBinding
 		Type PropertyType { get; }
 
 		/// <summary>
+		/// Gets the type of the property
+		/// </summary>
+		DependencyProperty? DependencyProperty { get; }
+
+		/// <summary>
 		/// Provides the getter method for this property
 		/// </summary>
-		PropertyGetterHandler Getter { get; }
+		PropertyGetterHandler? Getter { get; }
 
 		/// <summary>
 		/// Provides the setter method for this property
 		/// </summary>
-		PropertySetterHandler Setter { get; }
+		PropertySetterHandler? Setter { get; }
 	}
 }

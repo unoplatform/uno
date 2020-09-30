@@ -6,13 +6,18 @@ using Window = Windows.UI.Xaml.Window;
 
 namespace Uno.UI
 {
-	public class OnSystemUiVisibilityChangeListener : Java.Lang.Object, View.IOnSystemUiVisibilityChangeListener
+	public class OnSystemUiVisibilityChangeListener
+#pragma warning disable 618
+		: Java.Lang.Object, View.IOnSystemUiVisibilityChangeListener
+#pragma warning restore 618
 	{
 		public void OnSystemUiVisibilityChange([GeneratedEnum] StatusBarVisibility visibility)
 		{
 			var activity = ContextHelper.Current as Activity;
 			var decorView = activity.Window.DecorView;
+#pragma warning disable 618
 			var newUiOptions = (int)decorView.SystemUiVisibility;
+#pragma warning restore 618
 
 			if (((int)visibility & (int)SystemUiFlags.HideNavigation) == 0)
 			{

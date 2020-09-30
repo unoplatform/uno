@@ -1,0 +1,4 @@
+{
+    // required until .NET 6.0.300 is published
+    "sdk": { "allowPrerelease": true }
+}

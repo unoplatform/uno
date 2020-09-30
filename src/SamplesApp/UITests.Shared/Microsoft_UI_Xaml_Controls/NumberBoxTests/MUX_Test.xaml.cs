@@ -25,12 +25,9 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		public MUX_Test()
 		{
 			this.InitializeComponent();
-#if HAS_UNO
 			TestNumberBox.RegisterPropertyChangedCallback(NumberBox.TextProperty, new DependencyPropertyChangedCallback(TextPropertyChanged));
-#endif
 		}
 
-#if HAS_UNO
 		private void SpinMode_Changed(object sender, RoutedEventArgs e)
 		{
 			if (TestNumberBox != null)
@@ -104,10 +101,12 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 		private void CustomFormatterButton_Click(object sender, RoutedEventArgs e)
 		{
-			List<string> languages = new List<string>() { "fr-FR" };
-			DecimalFormatter formatter = new DecimalFormatter(languages, "FR");
+			DecimalFormatter formatter = new DecimalFormatter();
 			formatter.IntegerDigits = 1;
 			formatter.FractionDigits = 2;
+			formatter.NumeralSystem = "ArabExt";
+			formatter.NumberRounder = new IncrementNumberRounder { Increment = 0.25 };
+
 			TestNumberBox.NumberFormatter = formatter;
 		}
 
@@ -130,6 +129,5 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			TextTextBox.Text = TestNumberBox.Text;
 		}
-#endif
 	}
 }

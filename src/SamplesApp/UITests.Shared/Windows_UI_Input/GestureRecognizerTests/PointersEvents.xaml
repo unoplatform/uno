@@ -319,6 +319,17 @@
 					Margin="20, 0"
 					Visibility="{Binding ElementName=_manipDelta, Path=IsOn}"/>
 				<ToggleSwitch
+					x:Name="_manipInertia"
+					Header="Manipulation inertia"
+					OnContent="Subscribed to manip inertia started"
+					OffContent="Manip delta muted"
+					Toggled="OnConfigChanged" />
+				<CheckBox
+					x:Name="_manipInertiaHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_manipDelta, Path=IsOn}"/>
+				<ToggleSwitch
 					x:Name="_manipCompleted" 
 					Header="Manipulation completed"
 					OnContent="Subscribed to manip completed"

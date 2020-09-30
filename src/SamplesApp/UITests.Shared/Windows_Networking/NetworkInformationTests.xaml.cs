@@ -34,10 +34,10 @@ namespace UITests.Windows_Networking
 			Model = (NetworkInformationViewModel)args.NewValue;
 		}
 
-		public NetworkInformationViewModel Model { get; private set; }
+		internal NetworkInformationViewModel Model { get; private set; }
 	}
 
-	public class NetworkInformationViewModel : ViewModelBase
+	internal class NetworkInformationViewModel : ViewModelBase
 	{
 		private NetworkConnectivityLevel _networkConnectivityLevel = NetworkConnectivityLevel.None;
 		private bool _isObserving = false;

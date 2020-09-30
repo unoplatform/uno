@@ -38,7 +38,7 @@ namespace MUXControlsTestApp.Utilities
             return null;
         }
 
-        public static DependencyObject FindVisualChildByName(FrameworkElement parent, string name)
+        public static DependencyObject FindVisualChildByName(this FrameworkElement parent, string name)
         {
             if (parent.Name == name)
             {
@@ -64,5 +64,22 @@ namespace MUXControlsTestApp.Utilities
 
             return null;
         }
-    }
+
+		public static T FindVisualParentByType<T>(this DependencyObject element)
+			where T :
+#if HAS_UNO
+			class,
+#endif
+			DependencyObject
+		{
+			if (element is null)
+			{
+				return null;
+			}
+
+			return element is T elementAsT
+				? elementAsT
+				: VisualTreeHelper.GetParent(element).FindVisualParentByType<T>();
+		}
+	}
 }

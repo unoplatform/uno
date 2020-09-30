@@ -7,17 +7,30 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Uno.Devices.Sensors;
 using Uno.Foundation.Extensibility;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using System.Threading.Tasks;
+
+using Windows.Storage;
 
 namespace Windows.UI.ViewManagement
 {
 	public partial class ApplicationView
 		: IApplicationViewSpanningRects
 	{
+		private const string PreferredLaunchViewWidthKey = "__Uno.PreferredLaunchViewSizeKey.Width";
+		private const string PreferredLaunchViewHeightKey = "__Uno.PreferredLaunchViewSizeKey.Height";
+
 		private static ApplicationView _instance = new ApplicationView();
 
 		private ApplicationViewTitleBar _titleBar = new ApplicationViewTitleBar();
 		private IReadOnlyList<Rect> _defaultSpanningRects;
 		private IApplicationViewSpanningRects _applicationViewSpanningRects;
+
+		private void Initialize()
+		{
+			_instance = this;
+		}
 
 		[global::Uno.NotImplemented]
 		public int Id => 1;
@@ -46,7 +59,32 @@ namespace Windows.UI.ViewManagement
 			return true;
 		}
 
-		public Foundation.Rect VisibleBounds { get; internal set; }
+		private Rect _visibleBounds;
+		public Foundation.Rect VisibleBounds { get => VisibleBoundsOverride ?? _visibleBounds; private set => _visibleBounds = value; }
+
+		/// <summary>
+		/// All other platforms: equivalent to <see cref="VisibleBounds"/>.
+		///
+		/// Android: returns the visible bounds taking the status bar into account. The status bar is not removed from <see cref="VisibleBounds"/>
+		/// on Android when it's opaque, on the grounds that the root managed view is already arranged below the status bar in y-direction by
+		/// default (unlike iOS), but in some cases the correct total height is needed, hence this property.
+		/// </summary>
+		internal Rect TrueVisibleBounds =>
+#if __ANDROID__
+			VisibleBoundsOverride ?? _trueVisibleBounds;
+#else
+			VisibleBounds;
+#endif
+
+		/// <summary>
+		/// If set, overrides the 'real' visible bounds. Used for testing visible bounds-related behavior on devices that have no native
+		/// 'unsafe area'.
+		/// </summary>
+		internal Rect? VisibleBoundsOverride
+		{
+			get;
+			set;
+		}
 
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> VisibleBoundsChanged;
 
@@ -72,6 +110,67 @@ namespace Windows.UI.ViewManagement
 					: ApplicationViewMode.Default;
 			}
 		}
+
+		public static Size PreferredLaunchViewSize
+		{
+			get
+			{
+				if (ApplicationData.Current.LocalSettings.Values.TryGetValue(PreferredLaunchViewWidthKey, out var widthObject) &&
+					ApplicationData.Current.LocalSettings.Values.TryGetValue(PreferredLaunchViewHeightKey, out var heightObject) &&
+					widthObject is double width &&
+					heightObject is double height)
+				{
+					return new Size(width, height);
+				}
+				return Size.Empty;
+			}
+
+			set
+			{
+				double width = value.Width;
+				double height = value.Height;
+
+				ApplicationData.Current.LocalSettings.Values[PreferredLaunchViewWidthKey] = width;
+				ApplicationData.Current.LocalSettings.Values[PreferredLaunchViewHeightKey] = height;
+			}
+		}
+
+		public bool IsViewModeSupported(ApplicationViewMode viewMode)
+		{
+			if (viewMode == ApplicationViewMode.Default)
+			{
+				return true;
+			}
+			else if (viewMode == ApplicationViewMode.Spanning)
+			{
+				return (_applicationViewSpanningRects as INativeDualScreenProvider)?.IsDualScreen == true;
+			}
+
+			return false;
+		}
+
+		public IAsyncOperation<bool> TryEnterViewModeAsync(global::Windows.UI.ViewManagement.ApplicationViewMode viewMode) =>
+			AsyncOperation.FromTask(cancellation =>
+			{
+				if (ViewMode == viewMode)
+				{
+					// If we are already in the requested mode, we can return true.
+					return Task.FromResult(true);
+				}
+
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+				{
+					this.Log().LogWarning(
+						$"Cannot not enter view mode {viewMode}, " +
+						$"as this transition is not yet supported.");
+				}
+
+				return Task.FromResult(false);
+			});
+
+		public IAsyncOperation<bool> TryEnterViewModeAsync(global::Windows.UI.ViewManagement.ApplicationViewMode viewMode, global::Windows.UI.ViewManagement.ViewModePreferences viewModePreferences) =>
+				TryEnterViewModeAsync(viewMode);
+
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{
 			TryInitializeSpanningRectsExtension();
@@ -87,6 +186,21 @@ namespace Windows.UI.ViewManagement
 				{
 					_defaultSpanningRects = new List<Rect>(0);
 				}
+			}
+		}
+
+		internal void SetVisibleBounds(Rect newVisibleBounds)
+		{
+			if (newVisibleBounds != VisibleBounds)
+			{
+				VisibleBounds = newVisibleBounds;
+
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
+				}
+
+				VisibleBoundsChanged?.Invoke(this, null);
 			}
 		}
 	}

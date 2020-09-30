@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using System;
 using System.Linq;
@@ -20,7 +20,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private SerialDisposable _brushChanged = new SerialDisposable();
+		private readonly SerialDisposable _backgroundBrushChanged = new SerialDisposable();
+		private readonly SerialDisposable _borderBrushChanged = new SerialDisposable();
 		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
 		public Panel()
@@ -33,17 +34,17 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnChildViewAdded(View child)
 		{
-			var element = child as IFrameworkElement;
-
-			if (element != null)
+			if (child is IFrameworkElement element)
 			{
 				OnChildAdded(element);
 			}
+
+			base.OnChildViewAdded(child);
 		}
 
 		partial void Initialize();
 
-		private void UpdateBorder()
+		partial void UpdateBorder()
 		{
 			UpdateBorder(false);
 		}
@@ -52,13 +53,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (IsLoaded)
 			{
-				_borderRenderer.UpdateLayers(
+				_borderRenderer.UpdateLayer(
 					this,
 					Background,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					Padding,
+					InternalBackgroundSizing,
+					BorderThicknessInternal,
+					BorderBrushInternal,
+					CornerRadiusInternal,
+					PaddingInternal,
 					willUpdateMeasures
 				);
 			}
@@ -73,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnDraw(Android.Graphics.Canvas canvas)
 		{
-			AdjustCornerRadius(canvas, CornerRadius);
+			AdjustCornerRadius(canvas, CornerRadiusInternal);
 		}
 
 		protected virtual void OnChildrenChanged()
@@ -88,6 +90,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
+			_borderBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => UpdateBorder(), UpdateBorder);
 			UpdateBorder();
 		}
 
@@ -104,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Don't call base, just update the filling color.
-			_brushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, _ => UpdateBorder(), UpdateBorder);
+			_backgroundBrushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, _ => UpdateBorder(), UpdateBorder);
 			UpdateBorder();
 		}
 
@@ -144,6 +147,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }

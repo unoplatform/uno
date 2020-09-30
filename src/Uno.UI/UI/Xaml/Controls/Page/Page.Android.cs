@@ -1,6 +1,6 @@
 ﻿using Android.Views;
 using Android.Widget;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
@@ -38,9 +38,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (IsLoaded)
 			{
-				_borderRenderer.UpdateLayers(
+				_borderRenderer.UpdateLayer(
 					this,
 					Background,
+					BackgroundSizing.InnerBorderEdge,
 					Thickness.Empty,
 					null,
 					CornerRadius.None,

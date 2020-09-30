@@ -1,19 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Windows.UI.Popups
+namespace Windows.UI.Popups;
+
+/// <summary>
+/// Specifies less frequently used options for a MessageDialog.
+/// </summary>
+[Flags]
+public enum MessageDialogOptions : uint
 {
-	public enum MessageDialogOptions
-	{
-		/// <summary> 
-		/// No options are specified and default behavior is used.
-		/// </summary>
-		None = 0,
+	/// <summary> 
+	/// No options are specified and default behavior is used.
+	/// </summary>
+	None = 0U,
 
-		/// <summary>
-		/// Ignore user input for a short period. This enables browsers to defend against clickjacking.
-		/// </summary>
-		AcceptUserInputAfterDelay = 1,
-    }
+	/// <summary>
+	/// Ignore user input for a short period. This enables browsers to defend against clickjacking.
+	/// </summary>
+	AcceptUserInputAfterDelay = 1U
 }

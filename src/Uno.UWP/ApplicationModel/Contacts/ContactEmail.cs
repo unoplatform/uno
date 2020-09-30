@@ -1,29 +1,25 @@
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
-using Uno.Extensions;
+#nullable enable
 
 namespace Windows.ApplicationModel.Contacts
 {
+	/// <summary>
+	/// Represents an email address of a contact.
+	/// </summary>
 	public partial class ContactEmail
 	{
-		private string _address;
+		/// <summary>
+		/// Gets and sets the kind of email address of a contact.
+		/// </summary>
+		public ContactEmailKind Kind { get; set; } = ContactEmailKind.Personal;
 
-		public ContactEmailKind Kind { get; set; }
+		/// <summary>
+		/// Gets and sets the email address of a contact.
+		/// </summary>
+		public string Address { get; set; } = string.Empty;
 
-		public string Address
-		{
-			get => _address;
-			set
-			{
-				_address = value;
-				if (_address.Length > 321)
-				{
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().LogWarning("Windows.ApplicationModel.Contacts.ContactEmail.Address is set to string longer than UWP limit (321 chars)");
-					}
-				}
-			}
-		}
+		/// <summary>
+		/// Gets and sets the description of an email address of a contact.
+		/// </summary>
+		public string Description { get; set; } = string.Empty;
 	}
 }

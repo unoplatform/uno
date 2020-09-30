@@ -3,7 +3,7 @@
 namespace Windows.Media.SpeechRecognition
 {
 	#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	#endif
 	public  partial class SpeechRecognizer : global::System.IDisposable
 	{
@@ -190,12 +190,12 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognizerStateChangedEventArgs> StateChanged
 		{
-			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event TypedEventHandler<SpeechRecognizer, SpeechRecognizerStateChangedEventArgs> SpeechRecognizer.StateChanged");
 			}
-			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event TypedEventHandler<SpeechRecognizer, SpeechRecognizerStateChangedEventArgs> SpeechRecognizer.StateChanged");
@@ -206,12 +206,12 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognitionHypothesisGeneratedEventArgs> HypothesisGenerated
 		{
-			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event TypedEventHandler<SpeechRecognizer, SpeechRecognitionHypothesisGeneratedEventArgs> SpeechRecognizer.HypothesisGenerated");
 			}
-			[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event TypedEventHandler<SpeechRecognizer, SpeechRecognitionHypothesisGeneratedEventArgs> SpeechRecognizer.HypothesisGenerated");

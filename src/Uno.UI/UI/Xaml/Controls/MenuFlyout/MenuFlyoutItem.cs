@@ -1,19 +1,19 @@
 using System;
-using System.Windows.Input;
 using Uno.Client;
-using Windows.Foundation;
-using Windows.UI.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.Security.EnterpriseData;
-using Windows.System;
 using Uno.Disposables;
+using Windows.Foundation;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
-using System.Security.Cryptography;
-
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 using ICommand = System.Windows.Input.ICommand;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -240,7 +240,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		 void OnRightTappedUnhandled(RightTappedRoutedEventArgs pArgs)
+		private protected override void OnRightTappedUnhandled(RightTappedRoutedEventArgs pArgs)
 		{
 			var handled = pArgs.Handled;
 			if (!handled)
@@ -300,7 +300,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			ElementSoundPlayerService.RequestInteractionSoundForElementStatic(ElementSoundKind.Invoke, this);
+			ElementSoundPlayer.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
 		}
 
 		// void AddProofingItemHandlerStatic(DependencyObject pMenuFlyoutItem,  INTERNAL_EVENT_HANDLER eventHandler)
@@ -343,7 +343,7 @@ namespace Windows.UI.Xaml.Controls
 		//}
 
 		// Executes Command if CanExecute() returns true.
-		 void ExecuteCommand()
+		void ExecuteCommand()
 		{
 			ICommand spCommand = Command;
 
@@ -417,11 +417,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Called when the IsEnabled property changes.
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			bool bIsEnabled = IsEnabled;
-
-			if (!bIsEnabled)
+			if (!e.NewValue)
 			{
 				ClearStateFlags();
 			}
@@ -429,6 +427,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				UpdateVisualState();
 			}
+
+			base.OnIsEnabledChanged(e);
 		}
 
 		// Called when the control got focus.
@@ -475,18 +475,18 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Handle the custom property changed event and call the OnPropertyChanged2 methods.
-		 void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			if(args.Property == UIElement.VisibilityProperty)
+			if (args.Property == UIElement.VisibilityProperty)
 			{
 				OnVisibilityChanged();
 			}
-			else if(args.Property == MenuFlyoutItem.CommandProperty)
+			else if (args.Property == MenuFlyoutItem.CommandProperty)
 			{
 				OnCommandChanged(args.OldValue, args.NewValue);
 			}
 			else if (args.Property == MenuFlyoutItem.CommandParameterProperty)
-			{ 
+			{
 				UpdateCanExecute();
 			}
 		}
@@ -596,7 +596,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Coerces the MenuFlyoutItem's enabled state with the CanExecute state of the Command.
-		 void UpdateCanExecute()
+		void UpdateCanExecute()
 		{
 			ICommand spCommand;
 			object spCommandParameter;
@@ -614,8 +614,8 @@ namespace Windows.UI.Xaml.Controls
 
 		// Change to the correct visual state for the 
 		private protected override void ChangeVisualState(
-			// true to use transitions when updating the visual state, false
-			// to snap directly to the new visual state.
+			 // true to use transitions when updating the visual state, false
+			 // to snap directly to the new visual state.
 			 bool bUseTransitions)
 		{
 			bool hasToggleMenuItem = false;
@@ -722,7 +722,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Clear flags relating to the visual state.  Called when IsEnabled is set to false
 		// or when Visibility is set to Hidden or Collapsed.
-		 void ClearStateFlags()
+		void ClearStateFlags()
 		{
 			m_bIsPressed = false;
 			m_bIsPointerLeftButtonDown = false;
@@ -799,7 +799,7 @@ namespace Windows.UI.Xaml.Controls
 			return desiredSize;
 		}
 
-		internal void UpdateTemplateSettings( double maxKeyboardAcceleratorTextWidth)
+		internal void UpdateTemplateSettings(double maxKeyboardAcceleratorTextWidth)
 		{
 			if (m_maxKeyboardAcceleratorTextWidth != maxKeyboardAcceleratorTextWidth)
 			{

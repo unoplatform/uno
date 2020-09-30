@@ -38,7 +38,7 @@ namespace UITests.Shared.Windows_Devices
         }
     }
 
-	public class PedometerTestsViewModel : ViewModelBase
+	internal class PedometerTestsViewModel : ViewModelBase
 	{
 		private Pedometer _pedometer = null;
 		private string _pedometerStatus;

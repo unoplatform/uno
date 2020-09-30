@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using Uno.UI.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 
 using Foundation;
 using CoreGraphics;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 #if __IOS__
 using UIKit;
@@ -50,7 +54,7 @@ namespace Uno.UI
 
 		static ViewHelper()
 		{
-			if(typeof(ViewHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if(typeof(ViewHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				typeof(ViewHelper).Log().DebugFormat("Display scale is {0}", MainScreenScale);
 			}

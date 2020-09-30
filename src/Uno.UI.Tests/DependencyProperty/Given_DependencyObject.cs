@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Tests
 {
@@ -93,6 +95,48 @@ namespace Uno.UI.Tests
 			Assert.AreEqual(null, store.Parent);
 		}
 
+		[TestMethod]
+		public void When_Control_Loaded_Then_HardReferences()
+		{
+			var root = new Grid();
+			var SUT = new Grid();
+			root.Children.Add(SUT);
+
+			Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+			Assert.IsNotNull(SUT.GetParent());
+
+			root.ForceLoaded();
+			Assert.IsTrue((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+			Assert.IsNotNull(SUT.GetParent());
+
+			root.Children.Clear();
+			Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+			Assert.IsNull(SUT.GetParent());
+		}
+
+		[TestMethod]
+		public void Should_Have_Bindable_Attribute()
+		{
+			// For context, DependencyObjectGenerator used to put the bindable attribute on the wrong type when it's nested.
+			Assert.AreEqual(0, typeof(Given_DependencyObject).GetCustomAttributes(typeof(BindableAttribute), true).Length);
+			Assert.AreEqual(1, typeof(MyObject).GetCustomAttributes(typeof(BindableAttribute), true).Length);
+		}
+
+		[TestMethod]
+		public void When_LayoutLoop()
+		{
+			var SUT = new ContentControl();
+			var inner1 = new Grid();
+			var inner2 = new Grid();
+
+			SUT.Content = inner1;
+			inner1.Children.Add(inner2);
+			inner2.Children.Add(SUT);
+
+			// No exception should be raised for this test, until
+			// Children.Add validates for cycles.
+		}
+
 		public partial class MyObject : DependencyObject
 		{
 			public MyObject(int value)
@@ -116,7 +160,6 @@ namespace Uno.UI.Tests
 
 			public override int GetHashCode() => Value.GetHashCode();
 		}
-
 	}
 
 	public partial class MyProvider : DependencyObject

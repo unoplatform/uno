@@ -4,9 +4,9 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Data;
 namespace Windows.UI.Xaml
 {
 	public delegate object SetterValueProviderHandler();
+	public delegate object SetterValueProviderHandlerWithOwner(object? owner);
 
 	[DebuggerDisplay("{DebuggerDisplay}")]
 	public sealed partial class Setter : SetterBase
@@ -30,6 +31,8 @@ namespace Windows.UI.Xaml
 		private readonly SetterValueProviderHandler? _valueProvider;
 		private object? _value;
 		private int _targetNameResolutionFailureCount;
+		private DependencyProperty? _property;
+		private TargetPropertyPath? _target;
 
 		public object? Value
 		{
@@ -42,26 +45,53 @@ namespace Windows.UI.Xaml
 
 				return _value;
 			}
-			set => _value = value;
+			set
+			{
+				ValidateIsSealed();
+
+				_value = value;
+			}
+		}
+
+		private void ValidateIsSealed()
+		{
+			if (IsSealed)
+			{
+				throw new InvalidOperationException($"The setter is sealed and cannot be modified");
+			}
 		}
 
 		public TargetPropertyPath? Target
 		{
-			get;
-			set;
+			get => _target;
+			set
+			{
+				ValidateIsSealed();
+				_target = value;
+			}
 		}
 
 		/// <summary>
 		/// The property being set by this setter
 		/// </summary>
-		public DependencyProperty? Property { get; set; }
+		public DependencyProperty? Property
+		{
+			get => _property;
+			set
+			{
+				ValidateIsSealed();
+				_property = value;
+			}
+		}
 
 		/// <summary>
-		/// The name of the ThemeResource applied to the value, if any.
+		/// The name of the ThemeResource applied to the value, if any, as an optimized key.
 		/// </summary>
-		internal string? ThemeResourceName { get; set; }
+		internal SpecializedResourceDictionary.ResourceKey? ThemeResourceKey { get; set; }
 
 		internal XamlParseContext? ThemeResourceContext { get; set; }
+
+		internal ResourceUpdateReason ResourceBindingUpdateReason { get; set; }
 
 		public Setter(DependencyProperty targetProperty, object value)
 		{
@@ -75,6 +105,14 @@ namespace Windows.UI.Xaml
 			_valueProvider = valueProvider;
 		}
 
+		public Setter(DependencyProperty targetProperty, object? owner, SetterValueProviderHandlerWithOwner valueProvider)
+		{
+			Property = targetProperty;
+
+			var ownerRef = WeakReferencePool.RentWeakReference(this, owner);
+			_valueProvider = () => valueProvider(ownerRef?.Target);
+		}
+
 		public Setter(TargetPropertyPath targetPath, object value)
 		{
 			Target = targetPath;
@@ -85,9 +123,9 @@ namespace Windows.UI.Xaml
 		{
 			if (Property != null)
 			{
-				if (!ThemeResourceName.IsNullOrEmpty())
+				if (ThemeResourceKey.HasValue)
 				{
-					ResourceResolver.ApplyResource(o, Property, ThemeResourceName, isThemeResourceExtension: true, context: ThemeResourceContext);
+					ResourceResolver.ApplyResource(o, Property, ThemeResourceKey.Value, ResourceBindingUpdateReason, context: ThemeResourceContext, precedence: null);
 				}
 				else
 				{
@@ -107,17 +145,10 @@ namespace Windows.UI.Xaml
 
 			if (path != null)
 			{
-				if (!ThemeResourceName.IsNullOrEmpty())
+				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, precedence, ResourceBindingUpdateReason))
 				{
-					// TODO: We should be trying to resolve the leaf DP pointed to by path, and set a theme binding on it
-					if (ResourceResolver.ResolveResourceStatic(ThemeResourceName, out var value, context: ThemeResourceContext))
-					{
-						path.Value = value ?? Value;
-					}
-					else
-					{
-						path.Value = Value;
-					}
+					// Applied as theme binding, no need to do more
+					return;
 				}
 				else
 				{
@@ -170,6 +201,11 @@ namespace Windows.UI.Xaml
 				{
 					stub.Materialize();
 				}
+
+				subject.ElementInstanceChanged += (s, value) =>
+				{
+					_bindingPath.DataContext = value;
+				};
 
 				_bindingPath.DataContext = subject.ElementInstance;
 			}

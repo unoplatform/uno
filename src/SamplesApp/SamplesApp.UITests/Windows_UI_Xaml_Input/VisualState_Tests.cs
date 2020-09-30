@@ -13,7 +13,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
-	public class VisualState_Tests : SampleControlUITestBase
+	public partial class VisualState_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
@@ -103,29 +103,39 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // Failing on WASM: https://github.com/unoplatform/uno/issues/2905
 		public void TestListViewReleasedOut()
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.ListViewItem");
 
-			var initial = TakeScreenshot("Initial");
+			using var initial = TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
 			var rect = _app.WaitForElement("MyListView").Single().Rect;
 
 			// Press over and move out to release
 			_app.DragCoordinates(rect.X + 10, rect.Y + 10, rect.X - 30, rect.Y);
 
-			var final = TakeScreenshot("Final");
+			using var final = TakeScreenshot("Final");
 			ImageAssert.AreEqual(initial, final, rect);
 		}
 
 		[Test]
 		[AutoRetry]
-		public void TestTextBoxReleaseOut()
+		[ActivePlatforms(Platform.Browser)] // For mouse, focus should be set immediately
+		public void TestTextBoxReleaseOutFocused()
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
 
-			// Note: We don not validateFinalStateScreenShot as we are expecting to finish "focused" so may have the flashing cursor.
+			// Note: We do not validateFinalStateScreenShot as we are expecting to finish "focused" so may have the flashing cursor.
 			TestVisualTests("MyTextBox", ReleaseOut, validateFinalStateScreenShot: false, "CommonStates.PointerOver", "CommonStates.Focused");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(/*Platform.Android, */Platform.iOS)] // For touch, focus should be set only when released over the TextBox
+		public void TestTextBoxReleaseOutUnfocused()
+		{
+			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
+
+			TestVisualTests("MyTextBox", ReleaseOut, validateFinalStateScreenShot: true, "CommonStates.PointerOver", "CommonStates.Normal");
 		}
 
 		[Test]
@@ -153,12 +163,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		private void TestVisualTests(string targetName, Action<IAppRect> act, bool validateFinalStateScreenShot, params string[] expectedStates)
 		{
-			var initial = TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
+			using var initial = TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
 			var target = _app.WaitForElement(targetName).Single().Rect;
 
 			act(target);
 
-			var final = TakeScreenshot("Final", ignoreInSnapshotCompare: true);
+			using var final = TakeScreenshot("Final", ignoreInSnapshotCompare: true);
 			var actualStates = _app
 				.Marked("VisualStatesLog")
 				.GetDependencyPropertyValue<string>("Text")

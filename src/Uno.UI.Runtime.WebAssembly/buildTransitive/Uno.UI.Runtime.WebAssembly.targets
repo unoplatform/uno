@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <Target Name="_UnoSkiaWasmFeatureDefines"
-		  BeforeTargets="BeforeCompile">
+		  BeforeTargets="PrepareForBuild">
 
 	<PropertyGroup>
 	  <UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API;HAS_UNO_WASM;__WASM__</UnoDefineConstants>
@@ -29,6 +29,7 @@
 	-->
 	<WriteLinesToFile
 		Overwrite="true"
+		WriteOnlyWhenDifferent="true"
 		Lines="[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)] internal class __UnoUIRuntimeWasmKeepAlive : Uno.UI.Runtime.WebAssembly.CompileAnchor { }"
 		File="$(_unouiruntimewasm_keepalive)" />
 

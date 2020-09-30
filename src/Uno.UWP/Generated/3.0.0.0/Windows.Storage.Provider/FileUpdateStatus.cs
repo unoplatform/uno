@@ -2,30 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Provider
 {
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-#if __ANDROID__ || __IOS__ || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public enum FileUpdateStatus 
+	#if false || false || false || false || false || false || false
+	public   enum FileUpdateStatus 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Incomplete,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Complete,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		UserInputNeeded,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CurrentlyUnavailable,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Failed,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CompleteAndRenamed,
-		#endif
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.Incomplete
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.Complete
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.UserInputNeeded
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.CurrentlyUnavailable
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.Failed
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.CompleteAndRenamed
 	}
 	#endif
 }

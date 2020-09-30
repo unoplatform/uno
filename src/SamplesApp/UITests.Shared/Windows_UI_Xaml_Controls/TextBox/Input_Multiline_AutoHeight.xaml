@@ -27,6 +27,10 @@
 						         xamarin:EnterCommand="{Binding [MyInputEnterCommand]}"
 						         AcceptsReturn="True" />
 					</Grid>
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button x:Name="btnSingle" Click="BtnSingle_OnClick">Set Single Line</Button>
+						<Button x:Name="btnDouble" Click="BtnDouble_OnClick">Set Double Line</Button>
+					</StackPanel>
 					<TextBlock Text="Result :" />
 					<TextBlock Text="{Binding [Result]}" />
 					<TextBlock Text="Command Result :" />

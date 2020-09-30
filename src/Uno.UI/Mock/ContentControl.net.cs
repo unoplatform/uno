@@ -10,5 +10,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			AddChild((FrameworkElement)ContentTemplateRoot);
 		}
+
+		partial void UnregisterContentTemplateRoot()
+		{
+			RemoveChild((FrameworkElement)ContentTemplateRoot);
+		}
 	}
 }

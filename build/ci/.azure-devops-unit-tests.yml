@@ -3,10 +3,25 @@ parameters:
 
 jobs:
 - job: Unit_Tests
+  displayName: 'Unit Tests'
   timeoutInMinutes: 90
 
   pool:
     vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: Pipeline_Validations
+
+  strategy:
+    matrix:
+      Default_Compiler:
+        ADDITIONAL_FLAGS: ''
+
+      # Keep for future previews
+      # Preview:
+      #   ADDITIONAL_FLAGS: '/p:LangVersion=preview /p:UnoUIUseRoslynSourceGenerators=true /p:MicrosoftNetCompilerVersionOverride=3.8.0-3.final'
+
+      #CSharp9:
+      #  ADDITIONAL_FLAGS: '/p:LangVersion=9.0 /p:UnoUIUseRoslynSourceGenerators=true'
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -14,6 +29,7 @@ jobs:
 
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
 
   steps:
   - checkout: self
@@ -24,16 +40,13 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
-   
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.9.1
-      checkLatest: false
+  - template: templates/dotnet-install.yml
+  - template: templates/jdk-setup.yml
 
   - task: MSBuild@1
     inputs:
-      solution: src/**/*.Tests.csproj
-      msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+      solution: src/Uno.UI-UnitTests-only.slnf
+      msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m $(ADDITIONAL_FLAGS) # /bl:$(build.artifactstagingdirectory)\build.binlog
 
   - task: VisualStudioTestPlatformInstaller@1
 
@@ -45,8 +58,8 @@ jobs:
         !**\*Wasm.Test*.dll
         !**\*UITests.dll
         !**\*.RuntimeTests.dll
-      vstestLocationMethod: version
-      vsTestVersion: latest
+      vsTestVersion: toolsInstaller
+      testRunTitle: $(Agent.JobName)
       testSelector: testAssemblies
       batchingBasedOnAgentsOption: customBatchSize
       rerunFailedTests: 'true'

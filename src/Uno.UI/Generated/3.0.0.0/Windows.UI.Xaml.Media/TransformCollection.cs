@@ -44,10 +44,6 @@ namespace Windows.UI.Xaml.Media
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Xaml.Media.Transform>

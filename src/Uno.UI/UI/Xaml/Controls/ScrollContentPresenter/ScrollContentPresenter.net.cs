@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;
@@ -8,22 +8,30 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Drawing;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter, IScrollContentPresenter
 	{
-		public ScrollMode HorizontalScrollMode { get; set; }
+		public bool CanHorizontallyScroll { get; set; }
+		public bool CanVerticallyScroll { get; set; }
 
-		public ScrollMode VerticalScrollMode { get; set; }
+		public double ExtentHeight { get; internal set; }
+		public double ExtentWidth { get; internal set; }
 
-		public float MinimumZoomScale { get; set; }
+		private object RealContent => Content;
 
-		public float MaximumZoomScale { get; set; }
+		Size? IScrollContentPresenter.CustomContentExtent => null;
 
-		public ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
+		void IScrollContentPresenter.OnMinZoomFactorChanged(float newValue) { }
 
-		public ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
+		void IScrollContentPresenter.OnMaxZoomFactorChanged(float newValue) { }
+
+		ScrollBarVisibility IScrollContentPresenter.NativeVerticalScrollBarVisibility { set => VerticalScrollBarVisibility = value; }
+		internal ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
+
+		ScrollBarVisibility IScrollContentPresenter.NativeHorizontalScrollBarVisibility { set => HorizontalScrollBarVisibility = value; }
+		internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
 	}
 }

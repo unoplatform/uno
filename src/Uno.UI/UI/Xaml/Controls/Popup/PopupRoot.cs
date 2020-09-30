@@ -4,7 +4,7 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	internal partial class PopupRoot : Panel
 	{
@@ -16,7 +16,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnChildrenChanged();
 		}
-
 
 		protected override Size MeasureOverride(Size availableSize)
 		{

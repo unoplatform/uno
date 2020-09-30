@@ -68,10 +68,10 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(TextReadingOrderProperty, value);
 			}
 		}
-#endif
+		#endif
 		// Skipping already declared property PasswordRevealMode
 		// Skipping already declared property InputScope
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
 		{
@@ -85,20 +85,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object Description
-		{
-			get
-			{
-				return (object)this.GetValue(DescriptionProperty);
-			}
-			set
-			{
-				this.SetValue(DescriptionProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property Description
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool CanPasteClipboardContent
@@ -138,10 +125,10 @@ namespace Windows.UI.Xaml.Controls
 			nameof(SelectionHighlightColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
-#endif
+		#endif
 		// Skipping already declared property InputScopeProperty
 		// Skipping already declared property PasswordRevealModeProperty
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -157,14 +144,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Description), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
-			new FrameworkPropertyMetadata(default(object)));
-		#endif
+		// Skipping already declared property DescriptionProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } = 
@@ -187,13 +167,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.PasswordChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.ContextMenuOpening.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.ContextMenuOpening.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SelectAll()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PasswordBox", "void PasswordBox.SelectAll()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.PasswordBox.SelectAll()
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Header.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Header.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.HeaderTemplate.get

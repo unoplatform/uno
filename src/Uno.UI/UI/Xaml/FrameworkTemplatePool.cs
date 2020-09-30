@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 #define USE_HARD_REFERENCES
 #endif
 
@@ -11,11 +11,14 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Linq;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
+using Windows.UI.Xaml.Controls;
+using Uno.UI.Dispatching;
+using Windows.Foundation.Metadata;
+using Windows.System;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -28,7 +31,6 @@ using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-using Windows.UI.Xaml.Controls;
 using DependencyObject = System.Object;
 using UIKit;
 #elif __MACOS__
@@ -36,7 +38,6 @@ using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
-using Windows.UI.Xaml.Controls;
 using DependencyObject = System.Object;
 using AppKit;
 #elif METRO
@@ -86,8 +87,8 @@ namespace Windows.UI.Xaml
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
-		private readonly Stopwatch _watch = new Stopwatch();
 		private readonly Dictionary<FrameworkTemplate, List<TemplateEntry>> _pooledInstances = new Dictionary<FrameworkTemplate, List<TemplateEntry>>(FrameworkTemplate.FrameworkTemplateEqualityComparer.Default);
+		private IFrameworkTemplatePoolPlatformProvider _platformProvider = new FrameworkTemplatePoolDefaultPlatformProvider();
 
 #if USE_HARD_REFERENCES
 		/// <summary>
@@ -114,12 +115,31 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public static bool IsPoolingEnabled { get; set; } = true;
 
+		/// <summary>
+		/// Defines the ratio of memory usage at which the pools starts to stop pooling elligible views.
+		/// </summary>
+		internal static float HighMemoryThreshold { get; set; } = .8f;
+
+		/// <summary>
+		/// Registers a custom <see cref="IFrameworkTemplatePoolPlatformProvider"/>
+		/// </summary>
+		/// <param name="provider"></param>
+		internal void SetPlatformProvider(IFrameworkTemplatePoolPlatformProvider provider)
+		{
+			if (provider is not null)
+			{
+				_platformProvider = provider;
+			}
+			else
+			{
+				_platformProvider = new FrameworkTemplatePoolDefaultPlatformProvider();
+			}
+		}
+
 		private FrameworkTemplatePool()
 		{
-			_watch.Start();
-
 #if !NET461
-			CoreDispatcher.Main.RunIdleAsync(Scavenger);
+			_platformProvider.Schedule(Scavenger);
 #endif
 		}
 
@@ -127,14 +147,14 @@ namespace Windows.UI.Xaml
 		{
 			Scavenge(false);
 
-			await Task.Delay(TimeSpan.FromSeconds(30));
+			await _platformProvider.Delay(TimeSpan.FromSeconds(30));
 
-			CoreDispatcher.Main.RunIdleAsync(Scavenger);
+			_platformProvider.Schedule(Scavenger);
 		}
 
-		private void Scavenge(bool isManual)
+		internal void Scavenge(bool isManual)
 		{
-			var now = _watch.Elapsed;
+			var now = _platformProvider.Now;
 			var removedInstancesCount = 0;
 
 			foreach (var list in _pooledInstances.Values)
@@ -166,20 +186,20 @@ namespace Windows.UI.Xaml
 		/// normally you shouldn't need to call this method. It may be useful in advanced memory management scenarios.</remarks>
 		public static void Scavenge() => Instance.Scavenge(true);
 
-		internal View DequeueTemplate(FrameworkTemplate template)
+		internal View? DequeueTemplate(FrameworkTemplate template)
 		{
 			var list = GetTemplatePool(template);
 
-			View instance;
+			View? instance;
 
 			if (list.Count == 0)
 			{
 				if (_trace.IsEnabled)
 				{
-					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { ((Func<View>)template).Method.DeclaringType.ToString() });
+					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { ((Func<View>)template).Method.DeclaringType?.ToString() });
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{IsPoolingEnabled}");
 				}
@@ -202,21 +222,24 @@ namespace Windows.UI.Xaml
 					_trace.WriteEventActivity(TraceProvider.ReuseTemplate, EventOpcode.Send, new[] { instance.GetType().ToString() });
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Recycling template,    id={GetTemplateDebugId(template)}, {list.Count} items remaining in cache");
 				}
 			}
 
 #if USE_HARD_REFERENCES
-			_activeInstances.Add(instance);
+			if (IsPoolingEnabled && instance is {})
+			{
+				_activeInstances.Add(instance);
+			}
 #endif
 			return instance;
 		}
 
 		private List<TemplateEntry> GetTemplatePool(FrameworkTemplate template)
 		{
-			List<TemplateEntry> instances;
+			List<TemplateEntry>? instances;
 
 			if (!_pooledInstances.TryGetValue(template, out instances))
 			{
@@ -229,37 +252,68 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Manually return an unused template root to the pool.
 		/// </summary>
-		internal void ReleaseTemplateRoot(View root, FrameworkTemplate template) => OnParentChanged(root, template, args: null);
+		/// <remarks>
+		/// We disable cleaning the elements inside the template root because it may cause problems. It's safe to assume the template root
+		/// is still 'clean' because it was never made available to application code.
+		/// </remarks>
+		internal void ReleaseTemplateRoot(View root, FrameworkTemplate template) => TryReuseTemplateRoot(root, template, null, shouldCleanUpTemplateRoot: false);
 
 		private void OnParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs? args)
+			=> TryReuseTemplateRoot(instance, key, args?.NewParent, shouldCleanUpTemplateRoot: true);
+
+		private void TryReuseTemplateRoot(object instance, object? key, object? newParent, bool shouldCleanUpTemplateRoot)
 		{
+			if (!IsPoolingEnabled)
+			{
+				return;
+			}
+
+			if (!CanUsePool())
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					(this).Log().Debug($"Not caching template, memory threshold is reached");
+				}
+
+				return;
+			}
+
 			var list = GetTemplatePool(key as FrameworkTemplate ?? throw new InvalidOperationException($"Received {key} but expecting {typeof(FrameworkElement)}"));
 
-			if (args?.NewParent == null)
+			if (newParent == null)
 			{
 				if (_trace.IsEnabled)
 				{
 					_trace.WriteEventActivity(TraceProvider.RecycleTemplate, EventOpcode.Send, new[] { instance.GetType().ToString() });
 				}
 
-				PropagateOnTemplateReused(instance);
+				if (instance is IDependencyObjectStoreProvider provider)
+				{
+					// Make sure the TemplatedParent is disconnected
+					provider.Store.Parent = null;
+					provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
+				}
+				if (shouldCleanUpTemplateRoot)
+				{
+					PropagateOnTemplateReused(instance); 
+				}
 
 				var item = instance as View;
 
 				if (item != null)
 				{
-					list.Add(new TemplateEntry(_watch.Elapsed, item));
+					list.Add(new TemplateEntry(_platformProvider.Now, item));
 #if USE_HARD_REFERENCES
 					_activeInstances.Remove(item);
 #endif
 				}
-				else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				else if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().Warn($"Enqueued template root was not a view");
 				}
 
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					(this).Log().Debug($"Caching template,      id={GetTemplateDebugId(key as FrameworkTemplate)}, {list.Count} items now in cache");
 				}
@@ -275,6 +329,18 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		private bool CanUsePool()
+		{
+			if (_platformProvider.CanUseMemoryManager)
+			{
+				return ((float)_platformProvider.AppMemoryUsage / _platformProvider.AppMemoryUsageLimit) < HighMemoryThreshold;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
 		internal static void PropagateOnTemplateReused(object instance)
 		{
 			// If DataContext is not null, it means it has been explicitly set (not inherited). Resetting the view could push an invalid value through 2-way binding in this case.
@@ -286,16 +352,21 @@ namespace Windows.UI.Xaml
 			//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations
 			if (instance is Controls.Panel p)
 			{
-				foreach (object o in p.Children)
+				for (var i = 0; i < p.Children.Count; i++)
 				{
+					var o = (object)p.Children[i];
+
 					PropagateOnTemplateReused(o);
 				}
 			}
 			else if (instance is ViewGroup g)
 			{
-				foreach (object o in g.GetChildren())
+				// This block is a manual enumeration to avoid the foreach pattern
+				// See https://github.com/dotnet/runtime/issues/56309 for details
+				var childrenEnumerator = g.GetChildren().GetEnumerator();
+				while (childrenEnumerator.MoveNext())
 				{
-					PropagateOnTemplateReused(o);
+					PropagateOnTemplateReused(childrenEnumerator.Current);
 				}
 			}
 		}
@@ -308,10 +379,8 @@ namespace Windows.UI.Xaml
 			{
 				i++;
 				var pooledTemplate = kvp.Key;
-				if (template?.Equals(pooledTemplate) ?? false)
+				if ((template?.Equals(pooledTemplate) ?? false) && template._viewFactory is { } func)
 				{
-					var func = ((Func<View>)template);
-
 					return $"{i}({func.Method.DeclaringType}.{func.Method.Name})";
 				}
 			}

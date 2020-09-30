@@ -6,6 +6,41 @@ namespace Windows.UI.Xaml.Input
 {
 	public partial class KeyboardAccelerator : DependencyObject
 	{
+		public DependencyObject ScopeOwner
+		{
+			get => (DependencyObject)this.GetValue(ScopeOwnerProperty);
+			set => this.SetValue(ScopeOwnerProperty, value);
+		}
+
+		public VirtualKeyModifiers Modifiers
+		{
+			get => (VirtualKeyModifiers)this.GetValue(ModifiersProperty);
+			set => this.SetValue(ModifiersProperty, value);
+		}
+
+		public VirtualKey Key
+		{
+			get => (VirtualKey)this.GetValue(KeyProperty);
+			set => this.SetValue(KeyProperty, value);
+		}
+		public bool IsEnabled
+		{
+			get => (bool)this.GetValue(IsEnabledProperty);
+			set => this.SetValue(IsEnabledProperty, value);
+		}
+
+		public static DependencyProperty ScopeOwnerProperty { get; } =
+			DependencyProperty.Register(nameof(ScopeOwner), typeof(DependencyObject), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(DependencyObject), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+		public static DependencyProperty ModifiersProperty { get; } =
+			DependencyProperty.Register(nameof(Modifiers), typeof(VirtualKeyModifiers), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(VirtualKeyModifiers)));
+
+		public static DependencyProperty KeyProperty { get; } =
+			DependencyProperty.Register(nameof(Key), typeof(VirtualKey), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(VirtualKey)));
+
+		public static DependencyProperty IsEnabledProperty { get; } =
+			DependencyProperty.Register(nameof(IsEnabled), typeof(bool), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(bool)));
+
 		internal static string GetStringRepresentationForUIElement(UIElement uiElement)
 		{
 			// We don't want to bother doing anything if we've never actually set a keyboard accelerator,

@@ -1,3 +1,5 @@
+using Uno.UI;
+using Windows.Foundation;
 using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Media
@@ -8,7 +10,11 @@ namespace Windows.UI.Xaml.Media
 		public GeometryGroup()
 		{
 			Children = new GeometryCollection();
+
+			InitPartials();
 		}
+
+		partial void InitPartials();
 
 		#region FillRule
 
@@ -20,16 +26,19 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty FillRuleProperty { get; } =
 			DependencyProperty.Register(
-				nameof(FillRule), 
+				nameof(FillRule),
 				typeof(FillRule),
 				typeof(GeometryGroup),
 				new FrameworkPropertyMetadata(
 					defaultValue: FillRule.EvenOdd,
-					options: FrameworkPropertyMetadataOptions.AffectsRender
+					options: FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (o, v) => OnPropertyChanged(o, v)
 				)
 			);
 
 		#endregion
+
+		static partial void OnPropertyChanged(DependencyObject dependencyObject, object newValue);
 
 		#region Children
 
@@ -51,5 +60,34 @@ namespace Windows.UI.Xaml.Media
 			);
 
 		#endregion
+
+		private protected override Rect ComputeBounds()
+		{
+			Rect? bounds = default;
+
+			foreach(var geometry in Children)
+			{
+				if(bounds is { } b)
+				{
+					bounds = b.UnionWith(geometry.Bounds);
+				}
+				else
+				{
+					bounds = geometry.Bounds;
+				}
+			}
+
+			if(bounds is { } result)
+			{
+				if(Transform is { } t)
+				{
+					return t.TransformBounds(result);
+				}
+
+				return result;
+			}
+
+			return default;
+		}
 	}
 }

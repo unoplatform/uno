@@ -7,9 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Uno;
-using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI;
+
+#if HAS_UNO
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+#endif
 
 namespace Windows.ApplicationModel.Resources.Core
 {
@@ -31,9 +34,14 @@ namespace Windows.ApplicationModel.Resources.Core
 				
 				return Path.Combine($"drawable{language}{theme}{dpi}", fileName);
 			}
+#if HAS_UNO
 			catch (Exception ex)
 			{
 				ex.Log().Info($"Couldn't convert {resourceCandidate.ValueAsString} to an Android resource path.", ex);
+#else
+			catch (Exception)
+			{
+#endif
 				return null;
 			}
 		}
@@ -67,6 +75,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			switch (scale)
 			{
 				case null:
+					return "-nodpi";
 				case "100":
 					return "-mdpi";
 				case "150":

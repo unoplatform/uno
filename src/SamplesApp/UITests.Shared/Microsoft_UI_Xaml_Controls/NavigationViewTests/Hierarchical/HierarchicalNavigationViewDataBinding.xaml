@@ -1,0 +1,71 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<Page
+    x:Class="MUXControlsTestApp.HierarchicalNavigationViewDataBinding"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MUXControlsTestApp"
+    xmlns:muxcontrols="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <DataTemplate x:Key="NavigationViewMenuItem" x:DataType="local:Category">
+            <muxcontrols:NavigationViewItem Content="{x:Bind Content}" Name="{x:Bind Name}" MenuItemsSource="{x:Bind Children}" SelectsOnInvoked="{x:Bind SelectsOnInvoked}"/>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid>
+        <muxcontrols:NavigationView x:Name="navview" MenuItemsSource="{x:Bind categories, Mode=OneWay}" MenuItemTemplate="{StaticResource NavigationViewMenuItem}"
+                                    ItemInvoked="{x:Bind ClickedItem}" Expanding="OnItemExpanding" Collapsed="OnItemCollapsed" PaneDisplayMode="Left">
+            <StackPanel Margin="10,10,0,0">
+                <TextBlock x:Name="SelectedItemLabel" AutomationProperties.Name="SelectedItemLabel" Text="uninitialized"/>
+                <Button Content="Get Selected Item Label" x:Name="GetSelectedItemLabelButton" AutomationProperties.Name="GetSelectedItemLabelButton" Click="PrintSelectedItem"/>
+                <Button Content="Add MenuItem" Click="AddMenuItem"/>
+                <Button Content="Remove Second MenuItem" Click="RemoveSecondMenuItem" />
+                <Button Content="Select Second Item" Click="SelectSecondItem"/>
+                <Button Content="Use API to selecte MenuItem5" Click="SelectItemUsingAPI"/>
+                <!-- Components that get updated when item is expanded or collapsed -->
+                <StackPanel x:Name="ExpandCollapseRelatedComponents" Margin="0,10,0,10">
+                    <Grid x:Name="ExpandingEventStates">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Center">Last Expanding:</TextBlock>
+                        <TextBlock Grid.Column="1" Margin="0,0,10,0" x:Name="TextBlockExpandingItem"  AutomationProperties.Name="TextBlockExpandingItem" Text="N/A"/>
+                        <TextBlock Grid.Column="2" Margin="0,0,5,0" VerticalAlignment="Center">Expanding Item and Container match:</TextBlock>
+                        <TextBlock Grid.Column="3" x:Name="TextblockExpandingItemAndContainerMatch"  AutomationProperties.Name="TextblockExpandingItemAndContainerMatch" Text="N/A"/>
+                    </Grid>
+                    <Grid x:Name="CollapsedEventStates">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Center">Last Collapsed:</TextBlock>
+                        <TextBlock Grid.Column="1" Margin="0,0,10,0" x:Name="TextBlockCollapsedItem" AutomationProperties.Name="TextBlockCollapsedItem" Text="N/A"/>
+                        <TextBlock Grid.Column="2" Margin="0,0,5,0"  VerticalAlignment="Center">Collapsed Item and Container match:</TextBlock>
+                        <TextBlock Grid.Column="3" x:Name="TextblockCollapsedItemAndContainerMatch" AutomationProperties.Name="TextblockCollapsedItemAndContainerMatch" Text="N/A"/>
+                    </Grid>
+                </StackPanel>
+                <!-- Combobox used to switch pane display modes -->
+                <ComboBox x:Name="PaneDisplayModeCombobox"
+                                AutomationProperties.Name="PaneDisplayModeCombobox"
+                                Header="PaneDisplayMode"
+                                SelectionChanged="PaneDisplayModeCombobox_SelectionChanged"
+                                Margin="5">
+                    <ComboBoxItem Content="Auto" Tag="Auto"/>
+                    <ComboBoxItem Content="Left" Tag="Left"/>
+                    <ComboBoxItem Content="Top" Tag="Top"/>
+                    <ComboBoxItem Content="LeftCompact" Tag="LeftCompact"/>
+                    <ComboBoxItem Content="LeftMinimal" Tag="LeftMinimal"/>
+                </ComboBox>
+            </StackPanel>
+        </muxcontrols:NavigationView>
+    </Grid>
+</Page>
