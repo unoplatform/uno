@@ -26,7 +26,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ListView
 		}
 	}
 
-	public class CustomListViewItem : ListViewItem
+	public partial class CustomListViewItem : ListViewItem
 	{
 		protected override void OnPointerEntered(PointerRoutedEventArgs e)
 		{

@@ -17,7 +17,7 @@ namespace UITests.Windows_UI_Xaml_Input.RoutedEvents
 		}
     }
 
-	public class CustomButton : Button
+	public partial class CustomButton : Button
 	{
 		public event EventHandler<string> RoutedEventTriggered;
 
