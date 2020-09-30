@@ -87,11 +87,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.OrderBy(index => index)
 				.ToArray();			
 			CollectionAssert.AreEqual(new int[] { 0, 1 }, containerIndices);
-#else
+#endif
 			var container0 = SUT.ContainerFromIndex(0);
 			var containerItem = SUT.ContainerFromItem("different");
 			Assert.AreEqual(container0, containerItem);
-#endif
 
 		}
 
