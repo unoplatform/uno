@@ -271,6 +271,8 @@ namespace Uno.UI
 			/// <summary>
 			/// Determines if Uno.UI should be using native styles for controls that have
 			/// a native counterpart. (e.g. Button, Slider, ComboBox, ...)
+			///
+			/// By default this is true.
 			/// </summary>
 			public static bool UseUWPDefaultStyles { get; set; } = true;
 
@@ -283,6 +285,28 @@ namespace Uno.UI
 			/// appearance/comportment for a few particular controls, or vice versa.
 			/// </remarks>
 			public static IDictionary<Type, bool> UseUWPDefaultStylesOverride { get; } = new Dictionary<Type, bool>();
+
+			/// <summary>
+			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>
+			/// and <see cref="AppBarButton"/>) to use their native styles.
+			/// </summary>
+			public static void ConfigureNativeFrameNavigation()
+			{
+				SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
+				SetUWPDefaultStylesOverride<CommandBar>(useUWPDefaultStyle: false);
+				SetUWPDefaultStylesOverride<AppBarButton>(useUWPDefaultStyle: false);
+			}
+
+			/// <summary>
+			/// Override the native styles useage for control type <typeparamref name="TControl"/>.
+			/// </summary>
+			/// <typeparam name="TControl"></typeparam>
+			/// <param name="useUWPDefaultStyle">
+			/// Whether instances of <typeparamref name="TControl"/> should use the UWP default style.
+			/// If false, the native default style (if one exists) will be used.
+			/// </param>
+			public static void SetUWPDefaultStylesOverride<TControl>(bool useUWPDefaultStyle) where TControl : Windows.UI.Xaml.Controls.Control
+				=> UseUWPDefaultStylesOverride[typeof(TControl)] = useUWPDefaultStyle;
 		}
 
 		public static class TextBlock
