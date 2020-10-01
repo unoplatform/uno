@@ -4,9 +4,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Uno;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace Windows.ApplicationModel.DataTransfer
 {
@@ -26,6 +31,28 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			ImmutableDictionary<string, object> SetDataCore(ImmutableDictionary<string, object> current, (string id, object v) arg)
 				=> current.SetItem(arg.id, arg.v);
+		}
+
+		internal void SetDataProvider(string formatId, FuncAsync<object> delayRenderer)
+		{
+			SetData(formatId, new DataProviderHandler(SetDataCore));
+
+			async void SetDataCore(DataProviderRequest request)
+			{
+				var deferral = request.GetDeferral();
+				try
+				{
+					await delayRenderer(request.CancellationToken);
+				}
+				catch (Exception e)
+				{
+					this.Log().Error($"Failed to asynchronously retrieve the data for od '{formatId}'", e);
+				}
+				finally
+				{
+					deferral.Complete();
+				}
+			}
 		}
 
 		public void SetDataProvider(string formatId, DataProviderHandler delayRenderer)

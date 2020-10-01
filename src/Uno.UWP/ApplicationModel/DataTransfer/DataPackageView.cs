@@ -93,19 +93,23 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 
-		private static async Task<TResult> GetDataAsync<TResult>(string format, DataProviderHandler asyncData)
+		private async Task<TResult> GetDataAsync<TResult>(string format, DataProviderHandler asyncData)
 		{
-			var timeout = TimeSpan.FromSeconds(30); // Arbitrary value that should be validated against UWP
-			var request = new DataProviderRequest(format, DateTimeOffset.Now + timeout); // We create teh request before the ct, so we ensure that Deadline will be before the actual timeout
-
-			using var ct = new CancellationTokenSource(timeout);
-			using (ct.Token.Register(request.Abort))
+			var request = new DataProviderRequest(format);
+			try
 			{
 				asyncData(request);
 
 				var data = await request.GetData();
-
 				return (TResult)data;
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException($"Failed to asynchronously load the data of id '{format}'", e);
+			}
+			finally
+			{
+				request.Dispose();
 			}
 		}
 
