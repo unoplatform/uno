@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IconSourceProperty { get; } =
-			DependencyProperty.Register(nameof(IconSource), typeof(IconSource), typeof(IconSource), new PropertyMetadata(null, OnIconSourceChanged));
+			DependencyProperty.Register(nameof(IconSource), typeof(IconSource), typeof(IconSourceElement), new PropertyMetadata(null, OnIconSourceChanged));
 
 		private static void OnIconSourceChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
