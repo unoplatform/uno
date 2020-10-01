@@ -43,22 +43,13 @@ namespace Windows.Extensions
 		}
 
 		/// <summary>
-		/// Checks if the given Android permissions are declared in manifest file.
+		/// Checks if the given Android permissions are declared the app manifest.
 		/// </summary>
 		/// <param name="permission">Array of permissions.</param>
 		/// <returns>true if all permissions are defined</returns>
-		public static bool AreDeclaredInManifest(string[] permissions)
-		{
-			foreach(var permission in permissions)
-			{
-				if (!IsDeclaredInManifest(permission))
-				{
-					return false;
-				}
-			}
+		public static bool AreAllPermissionsDeclaredInManifest(string[] permissions)
+			=> permissions.All(IsDeclaredInManifest);
 
-			return true;
-		}
 
 		/// <summary>
 		/// Ensures that the given Android permissions are declared in manifest file.
@@ -72,14 +63,14 @@ namespace Windows.Extensions
 
 			if(requestedPermissions is null)
 			{
-				throw new UnauthorizedAccessException("no permissions in Manifest defined (no permission at all)");
+				throw new UnauthorizedAccessException("No permissions are defined in the manifest (no permission at all)");
 			}
 
 			foreach(var permission in permissions)
 			{
 				if (!IsDeclaredInManifest(permission))
 				{
-					throw new UnauthorizedAccessException("no " + permission + " permission in Manifest defined");
+					throw new UnauthorizedAccessException($"The permission {permission} is not defined in the manifest");
 				}
 			}
 
@@ -94,10 +85,10 @@ namespace Windows.Extensions
 		/// </summary>
 		/// <param name="permissionIdentifier">A permission identifier defined in Manifest.Permission.</param>
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation</returns>
-		public static Task<bool> CheckPermission(string permissionIdentifier)
+		public static Task<bool> CheckPermissionAsync(string permissionIdentifier)
 			=> _checkPermission(CancellationToken.None, permissionIdentifier);
 
-					/// <summary>
+		/// <summary>
 		/// Validate if a given permission was granted to the app and if not, request it to the user.
 		/// <remarks>
 		/// This operation is not cancellable.
