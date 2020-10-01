@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,86 +12,175 @@ using Windows.Foundation;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace Windows.UI.Xaml
 {
 	internal class DropUITarget : ICoreDropOperationTarget
 	{
-		private readonly Window _window;
+		private static readonly GetHitTestability _getDropHitTestability = elt =>
+		{
+			var visiblity = elt.GetHitTestVisibility();
+			return visiblity switch
+			{
+				HitTestability.Collapsed => HitTestability.Collapsed,
+				_ when !elt.AllowDrop => HitTestability.Invisible,
+				_ => visiblity
+			};
+		};
+			
 
-		private readonly Dictionary<UIElement, (DraggingState state, DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> _state
+		// Note: As drag events are routed (so they may be received by multiple elements), we might not have an entry for each drop targets.
+		//		 We will instead have entry only for leaf (a.k.a. OriginalSource).
+		//		 This is valid as UWP does clear the UIOverride as soon as a DragLeave is raised.
+		private readonly Dictionary<UIElement, (DraggingState state, DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> _pendingDropTargets
 			= new Dictionary<UIElement, (DraggingState state, DragUIOverride uiOverride, DataPackageOperation acceptedOperation)>();
+
+		private readonly Window _window;
+		private readonly Predicate<UIElement> _isDropOver;
 
 		public DropUITarget(Window window)
 		{
 			_window = window;
+			_isDropOver = elt => _pendingDropTargets.ContainsKey(elt);
 		}
 
 		/// <inheritdoc />
 		public IAsyncOperation<DataPackageOperation> EnterAsync(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)
-			=> Task.FromResult(DataPackageOperation.Copy).AsAsyncOperation();
+			=> EnterOrOverAsync(dragInfo, dragUIOverride);
 
 		/// <inheritdoc />
 		public IAsyncOperation<DataPackageOperation> OverAsync(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)
-			=> Task.FromResult(DataPackageOperation.Link).AsAsyncOperation();
-		//{
-		//	if (!(dragInfo.PointerRoutedEventArgs is PointerRoutedEventArgs pointer))
-		//	{
-		//		return Task.FromResult(DataPackageOperation.None).AsAsyncOperation();
-		//	}
+			=> EnterOrOverAsync(dragInfo, dragUIOverride);
 
-		//	// Find the target!
-		//	var originalSource = new Grid();
-		//	var target = new Grid();
-		//	var args = new DragEventArgs(originalSource, dragInfo, dragUIOverride, pointer);
+		private IAsyncOperation<DataPackageOperation> EnterOrOverAsync(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)
+			=> AsyncOperation.FromTask(async ct =>
+			{
+				if (!(dragInfo.PointerRoutedEventArgs is PointerRoutedEventArgs ptArgs))
+				{
+					this.Log().Error("The pointer event args was not set. Impossible to raise the drag args on the view.");
+					return DataPackageOperation.None;
+				}
 
-		//	target.RaiseEvent(UIElement.DragOverEvent, args);
+				var target = await UpdateTarget(dragInfo, dragUIOverride, ptArgs, ct);
+				if (!target.HasValue)
+				{
+					return DataPackageOperation.None;
+				}
 
-		//	if (args.Deferral is {} deferral)
-		//	{
-		//		return new AsyncOperation<DataPackageOperation>(LoadAsync);
+				var (element, args) = target.Value;
+				element.RaiseDragEnterOrOver(args);
 
-		//		async Task<DataPackageOperation> LoadAsync(CancellationToken ct)
-		//		{
-		//			await deferral.Completed();
+				if (args.Deferral is { } deferral)
+				{
+					await deferral.Completed(ct);
+				}
 
-		//			return args.AcceptedOperation;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		return Task.FromResult(args.AcceptedOperation).AsAsyncOperation();
-		//	}
-		//}
+				// TODO
+				// UpdateState()
+
+				return args.AcceptedOperation;
+			});
 
 		/// <inheritdoc />
 		public IAsyncAction LeaveAsync(CoreDragInfo dragInfo)
-			=> Task.FromResult(DataPackageOperation.Copy).AsAsyncAction();
+			=> AsyncAction.FromTask(async ct =>
+			{
+				if (!(dragInfo.PointerRoutedEventArgs is PointerRoutedEventArgs ptArgs))
+				{
+					this.Log().Error("The pointer event args was not set. Impossible to raise the drag args on the view.");
+					return;
+				}
+
+				var leaveTasks = _pendingDropTargets.ToArray().Select(RaiseLeave);
+				_pendingDropTargets.Clear();
+				Task.WhenAll(leaveTasks);
+
+				async Task RaiseLeave(KeyValuePair<UIElement, (DraggingState state, DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> target)
+				{
+					var args = new DragEventArgs(target.Key, dragInfo, target.Value.uiOverride, ptArgs);
+
+					target.Key.RaiseDragLeave(args);
+
+					if (args.Deferral is { } deferral)
+					{
+						await deferral.Completed(ct);
+					}
+				}
+			});
 
 		/// <inheritdoc />
 		public IAsyncOperation<DataPackageOperation> DropAsync(CoreDragInfo dragInfo)
-			=> Task.FromResult(DataPackageOperation.Copy).AsAsyncOperation();
+			=> AsyncOperation.FromTask(async ct =>
+			{
+				if (!(dragInfo.PointerRoutedEventArgs is PointerRoutedEventArgs ptArgs))
+				{
+					this.Log().Error("The pointer event args was not set. Impossible to raise the drag args on the view.");
+					return DataPackageOperation.None;
+				}
 
-		private async Task<DataPackageOperation> RaiseEvent(RoutedEvent evt, CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride, CancellationToken ct)
+				var target = await UpdateTarget(dragInfo, null, ptArgs, ct);
+				if (!target.HasValue)
+				{
+					return DataPackageOperation.None;
+				}
+
+				var (element, args) = target.Value;
+				element.RaiseDrop(args);
+
+				if (args.Deferral is { } deferral)
+				{
+					await deferral.Completed(ct);
+				}
+
+				return args.AcceptedOperation;
+			});
+
+		private async Task<(UIElement element, DragEventArgs args)?> UpdateTarget(
+			CoreDragInfo dragInfo,
+			CoreDragUIOverride? dragUIOverride,
+			PointerRoutedEventArgs ptArgs,
+			CancellationToken ct)
 		{
-			if (!(dragInfo.PointerRoutedEventArgs is PointerRoutedEventArgs pointer))
+			var target = VisualTreeHelper.HitTest(dragInfo.Position, getTestability: _getDropHitTestability, isStale: _isDropOver);
+
+			// First raise the drag leave event on stale branch if any.
+			if (target.stale is { } staleBranch)
 			{
-				return DataPackageOperation.None;
+				var leftElements = staleBranch
+					.EnumerateLeafToRoot()
+					.Select(elt => (isDragOver: _pendingDropTargets.TryGetValue(staleBranch.Leaf, out var dragState), elt, dragState))
+					.Where(t => t.isDragOver)
+					.ToArray();
+
+				Debug.Assert(leftElements.Length > 0);
+				// TODO: We should raise the event only from the Leaf to the Root of the branch, not the whole tree like that
+				//		 This is acceptable as a MVP as we usually have only one Drop target par app.
+				//		 Anyway if we Leave a bit too much, we will Enter again below
+				var leaf = leftElements.First();
+				var leaveArgs = new DragEventArgs(leaf.elt, dragInfo, leaf.dragState.uiOverride, ptArgs);
+
+				staleBranch.Leaf.RaiseDragLeave(leaveArgs);
+
+				if (leaveArgs.Deferral is { } deferral)
+				{
+					await deferral.Completed(ct);
+				}
 			}
 
-			// Find the target!
-			var originalSource = new Grid();
-			var target = new Grid();
-			var args = new DragEventArgs(originalSource, dragInfo, dragUIOverride, pointer);
-
-			target.RaiseEvent(UIElement.DragOverEvent, args);
-
-			if (args.Deferral is { } deferral)
+			if (target.element is null)
 			{
-				await deferral.Completed(ct);
+				return null;
 			}
 
-			return args.AcceptedOperation;
+			var uiOverride = target.element is {} && _pendingDropTargets.TryGetValue(target.element, out var state)
+				? state.uiOverride
+				: new DragUIOverride(dragUIOverride ?? new CoreDragUIOverride());
+			var args = new DragEventArgs(target.element!, dragInfo, uiOverride, ptArgs);
+
+			return (target.element!, args);
 		}
 	}
 }
