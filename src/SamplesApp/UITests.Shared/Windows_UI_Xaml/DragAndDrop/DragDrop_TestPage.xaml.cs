@@ -370,7 +370,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		}
 
 		/// <summary>
-		/// Event handler for when the clear drag & drop events button is pressed.
+		/// Event handler for when the clear drag and drop events button is pressed.
 		/// </summary>
 		private void ClearDragDropEventsButton_Click(object sender, RoutedEventArgs e)
 		{
