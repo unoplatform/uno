@@ -7,6 +7,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
+	[ActivePlatforms()]
 	public class Given_TabView : SampleControlUITestBase
 	{
 		// Missing tests
@@ -29,7 +30,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		[Test]
 		[AutoRetry]
 		public void SelectionTest()
-		{			
+		{
 			{
 				Console.WriteLine("Verify content is displayed for initially selected tab.");
 				var tabContent = _app.Marked("FirstTabContent");
@@ -77,7 +78,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		[Test]
 		[AutoRetry]
 		public void AddRemoveTest()
-		{			
+		{
 			{
 				Console.WriteLine("Adding tab.");
 				var addTabButton = _app.Marked("Add New Tab");
@@ -96,7 +97,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 				Assert.IsNull(newTab);
 			}
 		}
-		
+
 		private bool AreScrollButtonsVisible()
 		{
 			_app.Marked("GetScrollButtonsVisible").Tap();
@@ -133,7 +134,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		[Test]
 		[AutoRetry]
 		public void CloseSelectionTest()
-		{			
+		{
 			{
 				Console.WriteLine("Hiding the disabled tab");
 				var disabledTabCheckBox = _app.Marked("IsDisabledTabVisibleCheckBox");
@@ -153,7 +154,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 				Console.WriteLine("When the selected tab is closed, selection should move to the next one.");
 				// Use Tab's close button:
 				TapCloseButton("FirstTab");
-				var firstTabQuery = _app.Marked("FirstTab");				
+				var firstTabQuery = _app.Marked("FirstTab");
 				Assert.AreEqual(0, firstTabQuery.Results().Length);
 				Assert.AreEqual("0", selectedIndexTextBlock.GetText());
 
@@ -193,13 +194,13 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 				addButton = _app.Marked("Add New Tab");
 				Assert.IsNull(addButton);
 			}
-		}		
+		}
 
 		[Test]
 		[AutoRetry]
 		public void ToolTipDefaultTest()
 		{
-			
+
 			{
 				Console.WriteLine("If the app sets custom tooltip text, it should be preserved.");
 				PressButtonAndVerifyText("GetTab0ToolTipButton", "Tab0ToolTipTextBlock", "Custom Tooltip");
@@ -219,7 +220,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		[AutoRetry]
 		public void ToolTipUpdateTest()
 		{
-			
+
 			{
 				var customTooltipButton = _app.Marked("CustomTooltipButton");
 				customTooltipButton.Tap();
@@ -239,7 +240,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		[AutoRetry]
 		public async Task CloseButtonDoesNotShowWhenVisibilityIsToggled()
 		{
-			
+
 			{
 				// Wait for the test page's timer to set visibility to the close button to visible
 				await Task.Delay(2);
@@ -256,7 +257,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		[AutoRetry]
 		public async Task SizingTest()
 		{
-			
+
 			{
 				var sizingPageButton = _app.Marked("TabViewSizingPageButton");
 				sizingPageButton.Tap();
@@ -289,7 +290,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		[AutoRetry]
 		public void ScrollButtonToolTipTest()
 		{
-			
+
 			{
 				PressButtonAndVerifyText("GetScrollDecreaseButtonToolTipButton", "ScrollDecreaseButtonToolTipTextBlock", "Scroll tab list backward");
 				PressButtonAndVerifyText("GetScrollIncreaseButtonToolTipButton", "ScrollIncreaseButtonToolTipTextBlock", "Scroll tab list forward");
@@ -300,7 +301,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		[AutoRetry]
 		public void VerifyTabViewItemHeaderForegroundResource()
 		{
-			
+
 			{
 				var getSecondTabHeaderForegroundButton = _app.Marked("GetSecondTabHeaderForegroundButton");
 				getSecondTabHeaderForegroundButton.Tap();
@@ -372,7 +373,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 			//using (var setup = new TestSetupHelper(new[] { "TabView Tests", "TabViewTabClosingBehaviorButton" }))
 			_app.Marked("TabViewTabClosingBehaviorButton").Tap();
-			
+
 			{
 
 				Console.WriteLine("Verifying sizing behavior when closing a tab");
@@ -426,7 +427,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			var textBlock = _app.Marked(textBlockName);
 			Assert.AreEqual(expectedText, textBlock.GetText());
 		}
-		
+
 		private void TapCloseButton(QueryEx queryEx)
 		{
 			throw new NotImplementedException();
