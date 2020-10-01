@@ -243,6 +243,7 @@ namespace Windows.UI.Xaml
 			// As ugly as it is, it's the behavior of UWP, the CoreDragInfo is a mutable object!
 			Info.Modifiers = mods;
 			Info.Position = point.Position;
+			Info.PointerRoutedEventArgs = args;
 
 			// When the drag was initiated from an external app, the Pointer property won't be set.
 			// In that case the first pointer event received will be used for this drag operation.

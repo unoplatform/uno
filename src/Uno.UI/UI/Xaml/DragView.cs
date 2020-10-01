@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml
 			Glyph = ToGlyph(acceptedOperation);
 			GlyphVisibility = ToVisibility(viewOverride.IsGlyphVisible);
 			Caption = caption!;
-			CaptionVisibility = ToVisibility(viewOverride.IsCaptionVisible);
+			CaptionVisibility = ToVisibility(viewOverride.IsCaptionVisible && !string.IsNullOrWhiteSpace(caption));
 			Content = viewOverride.Content as ImageSource ?? _ui?.Content;
 			ContentVisibility = ToVisibility(viewOverride.IsContentVisible);
 			TooltipVisibility = ToVisibility(viewOverride.IsGlyphVisible || viewOverride.IsCaptionVisible);
