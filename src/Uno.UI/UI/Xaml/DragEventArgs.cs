@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml
 		internal DragEventArgs(
 			UIElement originalSource,
 			CoreDragInfo info,
-			CoreDragUIOverride uiOverride,
+			DragUIOverride uiOverride,
 			PointerRoutedEventArgs pointer)
 			: base(originalSource)
 		{
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml
 			_info = info;
 			_pointer = pointer;
 
-			DragUIOverride = new DragUIOverride(uiOverride);
+			DragUIOverride = uiOverride;
 		}
 
 		#region Readonly properties that gives context to the handler
@@ -42,6 +42,8 @@ namespace Windows.UI.Xaml
 		public DataPackageOperation AllowedOperations => _info.AllowedOperations;
 
 		public DragDropModifiers Modifiers => _info.Modifiers;
+
+		internal Pointer Pointer => _pointer.Pointer;
 		#endregion
 
 		#region Properties that are expected to be updated by the handler

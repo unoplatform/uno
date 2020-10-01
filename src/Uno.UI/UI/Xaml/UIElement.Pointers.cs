@@ -55,30 +55,6 @@ namespace Windows.UI.Xaml
 
 	partial class UIElement
 	{
-		internal enum HitTestVisibility
-		{
-			/// <summary>
-			/// The element and its children can't be targeted by hit-testing.
-			/// </summary>
-			/// <remarks>
-			/// This occurs when IsHitTestVisible="False", IsEnabled="False", or Visibility="Collapsed".
-			/// </remarks>
-			Collapsed,
-
-			/// <summary>
-			/// The element can't be targeted by hit-testing, but it's children might be.
-			/// </summary>
-			/// <remarks>
-			/// This usually occurs if an element doesn't have a Background/Fill.
-			/// </remarks>
-			Invisible,
-
-			/// <summary>
-			/// The element can be targeted by hit-testing.
-			/// </summary>
-			Visible,
-		}
-
 		static UIElement()
 		{
 			var uiElement = typeof(UIElement);
@@ -207,11 +183,12 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (sender is UIElement elt && elt.GetHitTestVisibility() == HitTestVisibility.Collapsed)
+			if (sender is UIElement elt && elt.GetHitTestVisibility() == HitTestability.Collapsed)
 			{
 				elt.Release(PointerCaptureKind.Any);
 				elt.ClearPressed();
 				elt.SetOver(null, false, muteEvent: true);
+				elt.ClearDragOver();
 			}
 		};
 
@@ -222,6 +199,7 @@ namespace Windows.UI.Xaml
 				elt.Release(PointerCaptureKind.Any);
 				elt.ClearPressed();
 				elt.SetOver(null, false, muteEvent: true);
+				elt.ClearDragOver();
 			}
 		};
 
@@ -229,12 +207,12 @@ namespace Windows.UI.Xaml
 		/// Indicates if this element or one of its child might be target pointer pointer events.
 		/// Be aware this doesn't means that the element itself can be actually touched by user,
 		/// but only that pointer events can be raised on this element.
-		/// I.e. this element is NOT <see cref="HitTestVisibility.Collapsed"/>.
+		/// I.e. this element is NOT <see cref="HitTestability.Collapsed"/>.
 		/// </summary>
-		internal HitTestVisibility GetHitTestVisibility()
+		internal HitTestability GetHitTestVisibility()
 		{
 #if __WASM__ || __SKIA__
-			return (HitTestVisibility)this.GetValue(HitTestVisibilityProperty);
+			return (HitTestability)this.GetValue(HitTestVisibilityProperty);
 #else
 			// This is a coalesced HitTestVisible and should be unified with it
 			// We should follow the WASM way and unify it on all platforms!
@@ -327,7 +305,7 @@ namespace Windows.UI.Xaml
 		private static readonly TypedEventHandler<GestureRecognizer, DraggingEventArgs> OnRecognizerDragging = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.OnDragging(args);
+			that.OnDragStarting(args);
 		};
 		#endregion
 
@@ -510,52 +488,83 @@ namespace Windows.UI.Xaml
 					bubblingMode = BubblingMode.StopBubbling;
 					break;
 
-				case RoutedEventFlag.DragEnter when !CanDrag:
-				case RoutedEventFlag.DragOver when !CanDrag:
-				case RoutedEventFlag.DragLeave when !CanDrag:
-				case RoutedEventFlag.Drop when !AllowDrop:
-					// The Drag and Drop "routed" events are raised only on controls that opted-in
-					bubblingMode = BubblingMode.IgnoreElement;
+				case RoutedEventFlag.DragEnter:
+				{
+					var pt = ((DragEventArgs)args).Pointer;
+					var wasDragOver = IsDragOver(pt);
+
+					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
+					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
+					SetIsDragOver(pt, true);
+
+					if (!AllowDrop // The Drag and Drop "routed" events are raised only on controls that opted-in
+						|| wasDragOver) // If we already had a DragEnter do not raise it twice
+					{
+						bubblingMode = BubblingMode.IgnoreElement;
+					}
 					break;
+				}
+
+				case RoutedEventFlag.DragOver:
+					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
+					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
+					SetIsDragOver(((DragEventArgs)args).Pointer, true);
+
+					if (!AllowDrop) // The Drag and Drop "routed" events are raised only on controls that opted-in
+					{
+						bubblingMode = BubblingMode.IgnoreElement;
+					}
+					break;
+
+				case RoutedEventFlag.DragLeave:
+				case RoutedEventFlag.Drop:
+				{
+					var pt = ((DragEventArgs)args).Pointer;
+					var wasDragOver = IsDragOver(pt);
+
+					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
+					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
+					SetIsDragOver(pt, false);
+
+					if (!AllowDrop // The Drag and Drop "routed" events are raised only on controls that opted-in
+						|| !wasDragOver) // No Leave or Drop if we was not effectively over ^^
+					{
+						bubblingMode = BubblingMode.IgnoreElement;
+					}
+					break;
+				}
 			}
 		}
 
-		private void OnDragging(DraggingEventArgs args)
+		private void OnDragStarting(DraggingEventArgs args)
 		{
 			if (args.DraggingState != DraggingState.Started // This UIElement is actually interested only by the starting
 				|| !CanDrag // Sanity ... should never happen!
 				|| !args.Pointer.Properties.IsLeftButtonPressed)
 			{
-				//if (CoreWindow.GetForCurrentThread()!.LastPointerEvent is PointerRoutedEventArgs ptArgs
-				//	&& ptArgs.Pointer.PointerDeviceType == args.PointerDeviceType)
-				//{
-				//	if (args.DraggingState == )
-				//	Window.Current._dragDropManager.ProcessPointerMoved();
-				//}
-
 				return;
 			}
 
 			// Note: We do not provide the _pendingRaisedEvent.args since it has probably not been updated yet,
 			//		 but as we are in the handler of an event from the gesture recognizer,
 			//		 the LastPointerEvent from the CoreWindow will be up to date.
-			StartDragAsyncCore(args.Pointer);
+			StartDragAsyncCore(args.Pointer, ptArgs: null, CancellationToken.None);
 		}
 
 		public IAsyncOperation<DataPackageOperation> StartDragAsync(PointerPoint pointerPoint)
-			=> StartDragAsyncCore(pointerPoint, _pendingRaisedEvent.args).AsAsyncOperation();
+			=> AsyncOperation.FromTask(ct => StartDragAsyncCore(pointerPoint, _pendingRaisedEvent.args, ct));
 
-		private Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs args = null)
+		private Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs ptArgs, CancellationToken ct)
 		{
-			args ??= CoreWindow.GetForCurrentThread()!.LastPointerEvent as PointerRoutedEventArgs;
-			if (args is null || args.Pointer.PointerDeviceType != pointer.PointerDevice.PointerDeviceType)
+			ptArgs ??= CoreWindow.GetForCurrentThread()!.LastPointerEvent as PointerRoutedEventArgs;
+			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != pointer.PointerDevice.PointerDeviceType)
 			{
 				// Fairly impossible case ...
 				return Task.FromResult(DataPackageOperation.None);
 			}
 
 			// Note: originalSource = this => DragStarting is not actually a routed event, the original source is always the sender
-			var routedArgs = new DragStartingEventArgs(this, args);
+			var routedArgs = new DragStartingEventArgs(this, ptArgs);
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
 
@@ -609,6 +618,30 @@ namespace Windows.UI.Xaml
 		/// <param name="data">The <see cref="DataPackage"/> to fulfill.</param>
 		private protected virtual void PrepareShare(DataPackage data)
 		{
+		}
+
+		internal void RaiseDragEnterOrOver(DragEventArgs args)
+		{
+			var evt = IsDragOver(args.Pointer)
+				? DragOverEvent
+				: DragEnterEvent;
+
+			(_draggingOver ??= new HashSet<Pointer>()).Add(args.Pointer);
+
+			SafeRaiseEvent(evt, args);
+		}
+
+		internal void RaiseDragLeave(DragEventArgs args)
+		{
+			if (_draggingOver?.Remove(args.Pointer) ?? false)
+			{
+				SafeRaiseEvent(DragLeaveEvent, args);
+			}
+		}
+
+		internal void RaiseDrop(DragEventArgs args)
+		{
+			SafeRaiseEvent(DropEvent, args);
 		}
 		#endregion
 
@@ -905,7 +938,7 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		#region Pointer over state (Updated by the partial API OnNative***)
+		#region Pointer over state (Updated by the partial API OnNative***, should not be updated externaly)
 		/// <summary>
 		/// Indicates if a pointer (no matter the pointer) is currently over the element (i.e. OverState)
 		/// WARNING: This might not be maintained for all controls, cf. remarks.
@@ -954,7 +987,7 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		#region Pointer pressed state (Updated by the partial API OnNative***)
+		#region Pointer pressed state (Updated by the partial API OnNative***, should not be updated externaly)
 		private readonly HashSet<uint> _pressedPointers = new HashSet<uint>();
 
 		/// <summary>
@@ -1028,7 +1061,7 @@ namespace Windows.UI.Xaml
 		private void ClearPressed() => _pressedPointers.Clear();
 		#endregion
 
-		#region Pointer capture state (Updated by the partial API OnNative***)
+		#region Pointer capture state (Updated by the partial API OnNative***, should not be updated externaly)
 		/*
 		 * About pointer capture
 		 *
@@ -1207,6 +1240,37 @@ namespace Windows.UI.Xaml
 			}
 			relatedARgs.Handled = false;
 			return RaisePointerEvent(PointerCaptureLostEvent, relatedARgs);
+		}
+		#endregion
+
+		#region Drag state (Updated by the RaiseDrag***, should not be updated externaly)
+		private HashSet<Pointer> _draggingOver;
+
+		/// <summary>
+		/// Gets a boolean which indicates if there is currently a Drag and Drop operation pending over this element.
+		/// This indicates that a **data package is currently being dragged over this element and might be dropped** on this element or one of its children,
+		/// and not that this element nor one of its children element is being drag.
+		/// As this flag reflect the state of the element **or one of its children**, it might be True event if `DropAllowed` is `false`.
+		/// </summary>
+		/// <param name="pointer">The pointer associated to the drag and drop operation</param>
+		internal bool IsDragOver(Pointer pointer)
+			=> _draggingOver?.Contains(pointer) ?? false;
+
+		private void SetIsDragOver(Pointer pointer, bool isOver)
+		{
+			if (isOver)
+			{
+				(_draggingOver ??= new HashSet<Pointer>()).Add(pointer);
+			}
+			else
+			{
+				_draggingOver?.Remove(pointer);
+			}
+		}
+
+		private void ClearDragOver()
+		{
+			_draggingOver?.Clear();
 		}
 		#endregion
 	}

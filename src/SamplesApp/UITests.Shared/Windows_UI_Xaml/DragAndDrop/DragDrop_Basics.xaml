@@ -29,7 +29,9 @@
 
 		<TextBlock Text="Target" Grid.Column="1" />
 		<Border Background="DeepSkyBlue" Width="300" Height="300" Grid.Column="1" Grid.Row="1" AllowDrop="True" x:Name="_theTarget">
-			<Border Background="DarkBlue" x:Name="_theNestedTarget" Width="100" Height="100" AllowDrop="True" />
+			<Border Background="DarkBlue" x:Name="_theNestedTarget" Width="100" Height="100" AllowDrop="True">
+				<TextBlock x:Name="_output" Foreground="White" TextWrapping="Wrap" />
+			</Border>
 		</Border>
 
 		<Image Source="https://picsum.photos/300/300" Grid.Column="0" Grid.Row="2" CanDrag="True" x:Name="_theImage" ManipulationMode="All" />
