@@ -43,6 +43,8 @@ namespace Windows.UI.Xaml
 
 		private UIElement InternalGetContent() => _content;
 
+		private UIElement InternalGetRootElement() => _content;
+
 		private static Window InternalGetCurrentWindow()
 		{
 			if(_current == null)

@@ -46,9 +46,7 @@ namespace Windows.UI.Xaml
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow();
 			CoreWindow.SetInvalidateRender(QueueInvalidateRender);
-
-			DragDrop = new DragDropManager(this);
-			CoreDragDropManager.SetForCurrentView(DragDrop);
+			InitDragAndDrop();
 		}
 
 		internal static Action InvalidateRender = () => { };
@@ -131,9 +129,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-        public Compositor Compositor { get; }
-
-		internal Grid RootElement => _window!;
+		public Compositor Compositor { get; }
 
 		partial void InternalActivate()
 		{
@@ -173,6 +169,8 @@ namespace Windows.UI.Xaml
 
 		private UIElement InternalGetContent() => _content!;
 
+		private UIElement InternalGetRootElement() => _window!;
+
 		private static Window InternalGetCurrentWindow()
 		{
 			if (_current == null)
@@ -211,39 +209,6 @@ namespace Windows.UI.Xaml
 			}
 
 			return new CompositeDisposable();
-		}
-
-		private DragRoot? _dragRoot;
-
-		internal DragDropManager DragDrop { get; private set; }
-
-		internal IDisposable OpenDragAndDrop(DragView dragView)
-		{
-			if (_window is null)
-			{
-				return Disposable.Empty;
-			}
-
-			if (_dragRoot is null)
-			{
-				_dragRoot = new DragRoot(DragDrop);
-				_window.Children.Add(_dragRoot);
-			}
-
-			_dragRoot.Show(dragView);
-
-			return Disposable.Create(Remove);
-
-			void Remove()
-			{
-				_dragRoot.Hide(dragView);
-
-				if (_dragRoot.PendingDragCount == 0)
-				{
-					_window.Children.Remove(_dragRoot);
-					_dragRoot = null;
-				}
-			}
 		}
 	}
 }
