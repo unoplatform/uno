@@ -1,17 +1,39 @@
-﻿<UserControl
-	x:Class="UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_TestPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Windows_UI_Xaml.DragAndDrop"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+﻿<UserControl x:Class="UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_TestPage"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Windows_UI_Xaml.DragAndDrop"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d"
+			 d:DesignHeight="300"
+			 d:DesignWidth="400">
 
 	<Grid>
+		<!--<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup>
+				<VisualState x:Name="SmallState">
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="0" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="DragDropEventsGrid.Visibility"
+								Value="Collapsed" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState x:Name="LargeState">
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="900" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="DragDropEventsGrid.Visibility"
+								Value="Visible" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>-->
+
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="350" />
+			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
@@ -19,70 +41,90 @@
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
+
 		<!-- Drag & Drop event details -->
-		<Grid Grid.Column="0"
-			  Grid.RowSpan="3"
-			  VerticalAlignment="Top"
-			  ColumnSpacing="5"
-			  Margin="10">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="Auto" />
-			</Grid.ColumnDefinitions>
+		<Grid x:Name="DragDropEventsGrid"
+			  Grid.Column="0"
+			  Grid.RowSpan="3">
 			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<TextBlock Grid.ColumnSpan="2"
-					   Grid.Row="0"
-					   Text="Drag Drop Details"
-					   FontWeight="Bold" />
-			<TextBlock Grid.Column="0"
-					   Grid.Row="1"
-					   Text="Active Event: "
-					   HorizontalAlignment="Right" />
-			<TextBlock x:Name="ActiveEventTextBlock"
-					   Grid.Column="1"
-					   Grid.Row="1"
-					   Text="&lt;None&gt;"
-					   HorizontalAlignment="Left" />
-			<TextBlock Grid.ColumnSpan="2"
-					   Grid.Row="2"
-					   Text="DragEventArgs.DataView"
-					   FontWeight="Bold" />
-			<!-- DragEventArgs.DataView.AvailableFormats -->
-			<TextBlock Grid.Column="0"
-					   Grid.Row="3"
-					   Text="AvailableFormats: "
-					   HorizontalAlignment="Right" />
-			<TextBlock x:Name="AvailableFormatsTextBlock"
-					   Grid.Column="1"
-					   Grid.Row="3"
-					   Text="&lt;None&gt;"
-					   HorizontalAlignment="Left" />
-			<TextBlock Grid.Column="0"
-					   Grid.Row="4"
-					   Text="Std. AvailableFormats: "
-					   HorizontalAlignment="Right" />
-			<TextBlock x:Name="AvailableStdFormatsTextBlock"
-					   Grid.Column="1"
-					   Grid.Row="4"
-					   Text="&lt;None&gt;"
-					   HorizontalAlignment="Left" />
-			<!-- DragEventArgs.DataView.RequestedOperation -->
-			<TextBlock Grid.Column="0"
-					   Grid.Row="6"
-					   Text="RequestedOperation: "
-					   HorizontalAlignment="Right" />
-			<TextBlock x:Name="RequestedOperationTextBlock"
-					   Grid.Column="1"
-					   Grid.Row="6"
-					   Text="&lt;None&gt;"
-					   HorizontalAlignment="Left" />
+			<ListView Grid.Row="0"
+					  Width="325"
+					  ItemsSource="{Binding DragDropEvents}"
+					  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+					  ScrollViewer.VerticalScrollBarVisibility="Auto">
+				<ListView.ItemTemplate>
+					<DataTemplate x:DataType="local:EventDetails">
+						<Border Background="{Binding EventBackground}"
+								BorderBrush="{ThemeResource TextBoxDisabledForegroundThemeBrush}"
+								BorderThickness="1"
+								CornerRadius="5"
+								Margin="0,0,0,3">
+							<Grid Grid.Column="0"
+								  Grid.RowSpan="3"
+								  VerticalAlignment="Top"
+								  ColumnSpacing="5"
+								  Margin="5,0,5,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<TextBlock Grid.ColumnSpan="2"
+										   Grid.Row="0"
+										   Text="{Binding EventName}"
+										   FontWeight="Bold"
+										   HorizontalAlignment="Left" />
+								<TextBlock Grid.ColumnSpan="2"
+										   Grid.Row="0"
+										   Text="{Binding Timestamp}"
+										   FontSize="10"
+										   HorizontalAlignment="Right" />
+								<!-- DragEventArgs.DataView.AvailableFormats -->
+								<TextBlock Grid.Column="0"
+										   Grid.Row="1"
+										   Text="Std. AvailableFormats: "
+										   HorizontalAlignment="Right" />
+								<TextBlock Grid.Column="1"
+										   Grid.Row="1"
+										   Text="{Binding AvailableStdFormats}"
+										   HorizontalAlignment="Left" />
+								<!-- DragEventArgs.DataView.RequestedOperation -->
+								<TextBlock Grid.Column="0"
+										   Grid.Row="2"
+										   Text="RequestedOperation: "
+										   HorizontalAlignment="Right" />
+								<TextBlock Grid.Column="1"
+										   Grid.Row="2"
+										   Text="{Binding RequestedOperation}"
+										   HorizontalAlignment="Left" />
+							</Grid>
+						</Border>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+				<ListView.ItemContainerStyle>
+					<Style TargetType="ListViewItem"
+						   BasedOn="{StaticResource ListViewItemRevealStyle}">
+						<Setter Property="HorizontalContentAlignment"
+								Value="Stretch" />
+					</Style>
+				</ListView.ItemContainerStyle>
+			</ListView>
+			<CheckBox Grid.Row="1"
+					  Content="Show duplicate events"
+					  IsChecked="{Binding ShowDuplicateEvents, Mode=TwoWay}"
+					  Margin="5" />
+			<Button Grid.Row="1"
+					Content="Clear"
+					HorizontalAlignment="Right"
+					Margin="5"
+					Click="ClearDragDropEventsButton_Click" />
 		</Grid>
 		<!-- Drag source -->
 		<Grid Grid.Column="1"
@@ -127,6 +169,7 @@
 							   Grid.Column="0"
 							   Grid.Row="1"
 							   Text="Plain text that can be dragged"
+							   TextWrapping="Wrap"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"
 							   DragStarting="DragSource_DragStarting"
@@ -150,9 +193,12 @@
 							   Grid.Row="0"
 							   HorizontalAlignment="Center" />
 					<HyperlinkButton Grid.Column="2"
-									 Grid.Row="1">
+									 Grid.Row="1"
+									 VerticalAlignment="Center"
+									 HorizontalAlignment="Center">
 						<TextBlock x:Name="DragWebLinkSourceTextBlock"
 								   Text="https://www.wikipedia.org/"
+								   TextWrapping="Wrap"
 								   DragStarting="DragSource_DragStarting"
 								   CanDrag="True" />
 					</HyperlinkButton>
