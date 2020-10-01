@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private protected void SetBackgroundBrush(Brush brush)
+		private void SetBackgroundBrush(Brush brush)
 		{
 			switch (brush)
 			{
