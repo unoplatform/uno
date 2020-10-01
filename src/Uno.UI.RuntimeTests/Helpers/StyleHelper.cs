@@ -13,12 +13,16 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseNativeFrameNavigation()
 		{
+#if NETFX_CORE
+			return null;
+#else
 			return new CompositeDisposable
 			{
 				UseNativeStyle<Frame>(),
 				UseNativeStyle<CommandBar>(),
 				UseNativeStyle<AppBarButton>(),
 			};
+#endif
 		}
 
 		/// <summary>
@@ -26,6 +30,9 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseNativeStyle<T>() where T : Control
 		{
+#if NETFX_CORE
+			return null;
+#else
 			IDisposable disposable;
 			if (FeatureConfiguration.Style.UseUWPDefaultStylesOverride.TryGetValue(typeof(T), out var currentOverride))
 			{
@@ -39,6 +46,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 			FeatureConfiguration.Style.UseUWPDefaultStylesOverride[typeof(T)] = false;
 
 			return disposable;
+#endif
 		}
 	}
 }
