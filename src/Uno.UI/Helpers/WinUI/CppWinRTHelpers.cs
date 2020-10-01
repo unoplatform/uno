@@ -39,10 +39,12 @@ namespace Uno.UI.Helpers.WinUI
 				{
 					return hyperlink.Focus(focusState);
 				}
+#if !HAS_UNO_WINUI
 				else if (obj is ContentLink contentlink)
 				{
 					return contentlink.Focus(focusState);
 				}
+#endif
 				else if (obj is WebView webview)
 				{
 					return webview.Focus(focusState);
