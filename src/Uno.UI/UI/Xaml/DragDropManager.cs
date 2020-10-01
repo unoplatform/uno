@@ -25,7 +25,11 @@ namespace Windows.UI.Xaml
 		/// <inheritdoc />
 		public void BeginDragAndDrop(CoreDragInfo info, ICoreDropOperationTarget? target = null)
 		{
-			if (!_window.Dispatcher.HasThreadAccess)
+			if (
+#if __WASM__
+				_window.Dispatcher.IsThreadingSupported &&
+#endif
+				!_window.Dispatcher.HasThreadAccess)
 			{
 				_window.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => BeginDragAndDrop(info, target));
 				return;
