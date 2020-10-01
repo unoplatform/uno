@@ -62,7 +62,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		/// <summary>
 		/// Gets or sets a value indicating whether duplicate drag drop events will be shown right after one another.
 		/// </summary>
-		public bool ShowDuplicateEvents { get; set; } = true;
+		public bool ShowDuplicateEvents { get; set; } = false;
 
 		/// <summary>
 		/// Gets the list of past drag and drop events.
