@@ -110,9 +110,11 @@ namespace Windows.UI.Xaml
 		}
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+			=> SetAndObserveBackgroundBrush(e.NewValue as Brush);
+
+		private protected void SetAndObserveBackgroundBrush(Brush brush)
 		{
 			_backgroundSubscription.Disposable = null;
-			var brush = e.NewValue as Brush;
 			SetBackgroundBrush(brush);
 
 			if (brush is ImageBrush imgBrush)

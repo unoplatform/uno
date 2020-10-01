@@ -15,7 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 	{
 		[Test]
 		[AutoRetry()]
-		public void Pivot_Non_PivotItem_Items()
+		public void When_Background_Static()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.PageTests.Page_Automated");
 
@@ -32,6 +32,27 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 			ImageAssert.HasColorAt(content, (emptyRect.X + offset) * scale, (emptyRect.Y + offset) * scale, Color.Red);
 			ImageAssert.HasColorAt(content, (transparentRect.X + offset) * scale, (transparentRect.Y + offset) * scale, Color.Red);
 			ImageAssert.HasColorAt(content, (solidRect.X + offset) * scale, (solidRect.Y + offset) * scale, Color.Blue);
+		}
+
+		[Test]
+		[AutoRetry()]
+		public void When_Background_Updated()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.PageTests.Page_Update_Background");
+
+			_app.WaitForElement("TargetPage");
+
+			var pageRect = _app.GetRect("TargetPage");
+
+			var before = TakeScreenshot("Before SolidColorBrush.Color update");
+			ImageAssert.HasColorAt(before, pageRect.CenterX, pageRect.CenterY, Color.Blue);
+			
+			_app.FastTap("AdvanceTestButton");
+
+			_app.WaitForText("StatusTextBlock", "Color changed");
+
+			var after = TakeScreenshot("After SolidColorBrush.Color update");
+			ImageAssert.HasColorAt(after, pageRect.CenterX, pageRect.CenterY, Color.Green);
 		}
 	}
 }
