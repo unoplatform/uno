@@ -1,44 +1,96 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Collections.ObjectModel;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
-using Uno.UI.Common;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml.DragAndDrop
 {
+	public class EventDetails
+	{
+		public string AvailableFormats { get; set; }
+		public string AvailableStdFormats { get; set; }
+		public Brush EventBackground { get; set; }
+		public string EventName { get; set; }
+		public string RequestedOperation { get; set; }
+		public string Timestamp { get; set; }
+
+		public bool Equals(EventDetails eventDetails)
+		{
+			// Timestamp is ignored on purpose
+			if (this.AvailableFormats != eventDetails.AvailableFormats ||
+				this.AvailableStdFormats != eventDetails.AvailableStdFormats ||
+				this.EventBackground.Equals(eventDetails.EventBackground) == false ||
+				this.EventName != eventDetails.EventName ||
+				this.RequestedOperation != eventDetails.RequestedOperation)
+			{
+				return false;
+			}
+
+			return true;
+		}
+	}
+
 	[Sample]
 	public sealed partial class DragDrop_TestPage : UserControl
 	{
-		private int messageCounter;
+		/// <summary>
+		/// Maximum number of drag and drop events to show in the list.
+		/// </summary>
+		private const int MaxDragDropEventsListCount = 100;
+
+		// Define brushes to quickly recognized drag events in the events list
+		private Brush DragStartingBrush = new SolidColorBrush(Colors.Green);
+		private Brush DragEnterBrush = new SolidColorBrush(Colors.LightGreen);
+		private Brush DragLeaveBrush = new SolidColorBrush(Colors.LightSalmon);
+		private Brush DragOverBrush = new SolidColorBrush(Colors.LightBlue);
+		private Brush DropBrush = new SolidColorBrush(Colors.LightPink);
+		private Brush DropCompletedBrush = new SolidColorBrush(Colors.Red);
 
 		public DragDrop_TestPage()
 		{
 			this.InitializeComponent();
+			this.DataContext = this;
+		}
 
-			this.messageCounter = 0;
+		/// <summary>
+		/// Gets or sets a value indicating whether duplicate drag drop events will be shown right after one another.
+		/// </summary>
+		public bool ShowDuplicateEvents { get; set; } = true;
+
+		/// <summary>
+		/// Gets the list of past drag and drop events.
+		/// </summary>
+		public ObservableCollection<EventDetails> DragDropEvents { get; } = new ObservableCollection<EventDetails>();
+
+		private void AddToDragDropEvents(EventDetails eventDetails)
+		{
+			if (this.ShowDuplicateEvents ||
+				this.DragDropEvents.Count < 1 ||
+				eventDetails.Equals(this.DragDropEvents[0]) == false)
+			{
+				this.DragDropEvents.Insert(0, eventDetails);
+				while (this.DragDropEvents.Count > MaxDragDropEventsListCount)
+				{
+					this.DragDropEvents.RemoveAt(this.DragDropEvents.Count - 1);
+				}
+			}
+
+			return;
 		}
 
 		/// <summary>
 		/// Displays the contents of the given <see cref="DragEventArgs"/> for any drag/drop event.
 		/// </summary>
-		/// <param name="activeEvent">The name of the event to display.</param>
+		/// <param name="eventName">The name of the event to display.</param>
 		/// <param name="args">The event arguments to display.</param>
-		private void ShowDragDropDetails(string activeEvent, DragEventArgs args)
+		private void ShowDragDropDetails(string eventName, DragEventArgs args)
 		{
 			// Determine the standard formats (Uri is obsolete)
 			var standardDataFormats = string.Empty;
@@ -57,31 +109,50 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 				standardDataFormats = standardDataFormats.Substring(0, standardDataFormats.Length - sep.Length);
 			}
 
-			// Show the details
-			this.ActiveEventTextBlock.Text = activeEvent ?? string.Empty;
-			this.AvailableFormatsTextBlock.Text = string.Join(Environment.NewLine, args.DataView.AvailableFormats) ?? string.Empty;
-			this.AvailableStdFormatsTextBlock.Text = standardDataFormats;
-			this.RequestedOperationTextBlock.Text = args.DataView.RequestedOperation.ToString();
+			var eventDetails = new EventDetails()
+			{
+				EventName = eventName ?? string.Empty,
+				AvailableFormats = string.Join(Environment.NewLine, args.DataView.AvailableFormats) ?? string.Empty,
+				AvailableStdFormats = standardDataFormats,
+				RequestedOperation = args.DataView.RequestedOperation.ToString(),
+				Timestamp = DateTimeOffset.Now.ToString("HH:mm:ss.fff")
+			};
 
-			// Automatically hide after a certain duration
-			var dispatcherTimer = new DispatcherTimer();
-			dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 5000);
-			dispatcherTimer.Tick += (sender, e) =>
-				{
-					this.messageCounter--;
-					dispatcherTimer.Stop();
-
-					// Multiple dispatch timers can be running simultaneously.
-					// Therefore, only clear the info after the last has elapsed.
-					if (this.messageCounter <= 0)
+			switch (eventName)
+			{
+				case nameof(UIElement.DragStarting):
 					{
-						this.ActiveEventTextBlock.Text = "<None>";
-						this.AvailableFormatsTextBlock.Text = "<None>";
-						this.AvailableStdFormatsTextBlock.Text = "<None>";
-						this.RequestedOperationTextBlock.Text = "<None>";
+						eventDetails.EventBackground = this.DragStartingBrush;
+						break;
 					}
-				};
-			dispatcherTimer.Start();
+				case nameof(UIElement.DragEnter):
+					{
+						eventDetails.EventBackground = this.DragEnterBrush;
+						break;
+					}
+				case nameof(UIElement.DragLeave):
+					{
+						eventDetails.EventBackground = this.DragLeaveBrush;
+						break;
+					}
+				case nameof(UIElement.DragOver):
+					{
+						eventDetails.EventBackground = this.DragOverBrush;
+						break;
+					}
+				case nameof(UIElement.Drop):
+					{
+						eventDetails.EventBackground = this.DropBrush;
+						break;
+					}
+				case nameof(UIElement.DropCompleted):
+					{
+						eventDetails.EventBackground = this.DropCompletedBrush;
+						break;
+					}
+			}
+
+			this.AddToDragDropEvents(eventDetails);
 
 			return;
 		}
@@ -224,29 +295,45 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		/// </summary>
 		private void DragSource_DragStarting(UIElement sender, DragStartingEventArgs args)
 		{
+			string availableStdFormats = string.Empty;
+			string requestedOperation = DataPackageOperation.Copy.ToString();
+
+			args.Data.RequestedOperation = DataPackageOperation.Copy;
 			args.AllowedOperations = DataPackageOperation.Copy | DataPackageOperation.Link | DataPackageOperation.Move;
 
 			if (object.ReferenceEquals(sender, this.DragTextSourceTextBlock))
 			{
 				var sourceText = ((TextBlock)sender).Text;
-
-				args.Data.RequestedOperation = DataPackageOperation.Copy;
 				args.Data.SetText(sourceText);
+
+				availableStdFormats = nameof(StandardDataFormats.Text);
 			}
 			else if (object.ReferenceEquals(sender, this.DragImageSourceImage))
 			{
 				var imageUri = RandomAccessStreamReference.CreateFromUri(new Uri(@"https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Rain_over_Beinn_Eich%2C_Luss_Hills%2C_Scotland.jpg/2560px-Rain_over_Beinn_Eich%2C_Luss_Hills%2C_Scotland.jpg"));
-
-				args.Data.RequestedOperation = DataPackageOperation.Copy;
 				args.Data.SetBitmap(imageUri);
+
+				availableStdFormats = nameof(StandardDataFormats.Bitmap);
 			}
 			else if (object.ReferenceEquals(sender, this.DragWebLinkSourceTextBlock))
 			{
 				var link = ((TextBlock)sender).Text;
-
-				args.Data.RequestedOperation = DataPackageOperation.Copy;
 				args.Data.SetWebLink(new Uri(link));
+
+				availableStdFormats = nameof(StandardDataFormats.WebLink);
 			}
+
+			var eventDetails = new EventDetails()
+			{
+				EventBackground = this.DragStartingBrush,
+				EventName = nameof(UIElement.DragStarting),
+				AvailableFormats = string.Empty,
+				AvailableStdFormats = availableStdFormats,
+				RequestedOperation = requestedOperation,
+				Timestamp = DateTimeOffset.Now.ToString("HH:mm:ss.fff")
+			};
+
+			this.AddToDragDropEvents(eventDetails);
 
 			return;
 		}
@@ -258,12 +345,36 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		{
 			this.ShowDragDropDetails(nameof(UIElement.Drop), e);
 			this.ShowDropDetails(e);
+
 			return;
 		}
 
+		/// <summary>
+		/// Event handler for when a drop operation is completed.
+		/// </summary>
 		private void DropBorder_DropCompleted(UIElement sender, DropCompletedEventArgs args)
 		{
-			// Currently not used
+			var eventDetails = new EventDetails()
+			{
+				EventBackground = this.DropCompletedBrush,
+				EventName = nameof(UIElement.DropCompleted),
+				AvailableFormats = string.Empty,
+				AvailableStdFormats = string.Empty,
+				RequestedOperation = string.Empty,
+				Timestamp = DateTimeOffset.Now.ToString("HH:mm:ss.fff")
+			};
+
+			this.AddToDragDropEvents(eventDetails);
+
+			return;
+		}
+
+		/// <summary>
+		/// Event handler for when the clear drag & drop events button is pressed.
+		/// </summary>
+		private void ClearDragDropEventsButton_Click(object sender, RoutedEventArgs e)
+		{
+			this.DragDropEvents.Clear();
 			return;
 		}
 	}
