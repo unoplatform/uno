@@ -156,16 +156,7 @@ namespace Windows.UI.Xaml.Controls
 			// (It's the responsibility of each child to constraint itself)
 			// Note: This override is used only for the XAML command bar, not the native!
 			var infinity = new Size(double.PositiveInfinity, double.PositiveInfinity);
-			var result = base.MeasureOverride(infinity);
-
-			var height = ClosedDisplayMode switch
-			{
-				AppBarClosedDisplayMode.Compact => _compactHeight,
-				AppBarClosedDisplayMode.Minimal => _minimalHeight,
-				_ => 0
-			};
-
-			return new Size(result.Width, height);
+			return base.MeasureOverride(infinity);
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
