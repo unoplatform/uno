@@ -1,0 +1,49 @@
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Media.GradientBrushTests.LinearGradientBrush_Change_Stops"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Media.GradientBrushTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+	<UserControl.Resources>
+		<Color x:Key="UnoBlueColor">#FF229DFC</Color>
+		<Color x:Key="UnoPurpleColor">#FF7A69F5</Color>
+		<Color x:Key="UnoGreenColor">#FF6CE5AE</Color>
+		<Color x:Key="UnoRedColor">#FFF65678</Color>
+	</UserControl.Resources>
+
+	<StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<Rectangle x:Name="GradientBrushRectangle"
+				Height="100"
+				Width="150"
+				HorizontalAlignment="Left">
+			<Rectangle.Fill>
+				<LinearGradientBrush x:Name="UnoGradientBrush"
+									 StartPoint="0,0"
+									 EndPoint="1,1">
+					<GradientStop Color="{StaticResource UnoGreenColor}"
+								  Offset="0.0" />
+					<GradientStop Color="{StaticResource UnoGreenColor}"
+								  Offset="0.1" />
+					<GradientStop Color="{StaticResource UnoBlueColor}"
+								  Offset="0.40" />
+					<GradientStop Color="{StaticResource UnoPurpleColor}"
+								  Offset="0.60" />
+					<GradientStop Color="{StaticResource UnoRedColor}"
+								  Offset="0.9" />
+					<GradientStop Color="{StaticResource UnoRedColor}"
+								  Offset="1" />
+				</LinearGradientBrush>
+			</Rectangle.Fill>
+		</Rectangle>
+		<Button x:Name="ChangeBrushButton"
+				Content="Change gradient stops"
+				Click="ChangeBrushButton_Click" />
+		<TextBlock x:Name="StatusTextBlock"
+				   Text="Not started" />
+	</StackPanel>
+</UserControl>
