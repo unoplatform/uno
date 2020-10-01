@@ -9,8 +9,7 @@
 	<ItemGroup>
 	  <ContentWithTargetPath
 		Update="@(ContentWithTargetPath)"
-		CopyToOutputDirectory="Always"
-		Condition="'%(ContentWithTargetPath.CopyToOutputDirectory)'==''" />
+		CopyToOutputDirectory="Always" />
 	</ItemGroup>
   </Target>
 

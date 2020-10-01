@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Uno.Extensions
 {
@@ -25,6 +24,28 @@ namespace Uno.Extensions
 		/// <param name="max">The maximum allowed value (inclusive).</param>
 		/// <returns>A clamped value.</returns>
 		public static double Clamp(double value, double min, double max)
+		{
+			if (value < min)
+			{
+				return min;
+			}
+
+			if (value > max)
+			{
+				return max;
+			}
+
+			return value;
+		}
+
+		/// <summary>
+		/// Clamp a value to lie within a supplied range.
+		/// </summary>
+		/// <param name="value">The value to clamp.</param>
+		/// <param name="min">The minimum allowed value (inclusive).</param>
+		/// <param name="max">The maximum allowed value (inclusive).</param>
+		/// <returns>A clamped value.</returns>
+		public static float Clamp(float value, float min, float max)
 		{
 			if (value < min)
 			{

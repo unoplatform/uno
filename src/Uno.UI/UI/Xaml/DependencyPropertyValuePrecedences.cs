@@ -34,6 +34,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Values defined by an implicitly defined style
 		/// </summary>
+		/// <remarks>On Uno, this is actually used for values set by the default style, to allow for them to correctly take precedence over inherited values.</remarks>
 		ImplicitStyle,
 
 		/// <summary>

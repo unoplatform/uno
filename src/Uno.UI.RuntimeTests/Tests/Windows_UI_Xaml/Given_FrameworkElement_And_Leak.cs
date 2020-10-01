@@ -11,6 +11,7 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -18,17 +19,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[RunsOnUIThread]
 	public class Given_FrameworkElement_And_Leak
 	{
-		private static ConditionalWeakTable<FrameworkElement, Holder> _holders
-			= new ConditionalWeakTable<FrameworkElement, Holder>();
-
 #if !__WASM__ // Deactivated until https://github.com/unoplatform/uno/pull/3728 is merged
 		[TestMethod]
 		[DataRow(typeof(XamlEvent_Leak_UserControl), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind_Event), 15)]
+		[DataRow(typeof(XamlEvent_Leak_TextBox), 15)]
+		[DataRow(typeof(TextBox), 15)]
+		[DataRow(typeof(Button), 15)]
+		[DataRow(typeof(RadioButton), 15)]
+		[DataRow(typeof(TextBlock), 15)]
+		[DataRow(typeof(CheckBox), 15)]
+		[DataRow(typeof(ListView), 15)]
+		[DataRow(typeof(ProgressRing), 15)]
+		[DataRow(typeof(Pivot), 15)]
+		[DataRow(typeof(ScrollBar), 15)]
+		[DataRow(typeof(Slider), 15)]
+		[DataRow(typeof(SymbolIcon), 15)]
+		[DataRow(typeof(Viewbox), 15)]
+		[DataRow(typeof(MenuBar), 15)]
+		[DataRow(typeof(ComboBox), 15)]
+		[DataRow(typeof(Canvas), 15)]
+		[DataRow(typeof(AutoSuggestBox), 15)]
+		[DataRow(typeof(AppBar), 15)]
+		[DataRow(typeof(Border), 15)]
+		[DataRow(typeof(ContentControl), 15)]
+		[DataRow(typeof(ContentDialog), 15)]
 #endif
 		public async Task When_Add_Remove(Type controlType, int count)
 		{
+			var _holders = new ConditionalWeakTable<FrameworkElement, Holder>();
+
 			var maxCounter = 0;
 			var activeControls = 0;
 			var maxActiveControls = 0;

@@ -28,6 +28,16 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		public IEnumerable<ResourceBinding>? GetBindingsForProperty(DependencyProperty property)
+		{
+			if (_bindings.TryGetValue(property, out var bindingsForProperty))
+			{
+				return bindingsForProperty.Values;
+			}
+
+			return null;
+		}
+
 		public void Add(DependencyProperty property, ResourceBinding resourceBinding)
 		{
 			var dict = _bindings.FindOrCreate(property, () => new Dictionary<DependencyPropertyValuePrecedences, ResourceBinding>());
