@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml
 {
-	internal class DragView : Control
+	internal partial class DragView : Control
 	{
 		#region Glyph
 		public static readonly DependencyProperty GlyphProperty = DependencyProperty.Register(
