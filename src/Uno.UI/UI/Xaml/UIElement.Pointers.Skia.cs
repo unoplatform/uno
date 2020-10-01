@@ -244,10 +244,10 @@ namespace Windows.UI.Xaml
 		private static readonly DependencyProperty HitTestVisibilityProperty =
 			DependencyProperty.Register(
 				"HitTestVisibility",
-				typeof(HitTestVisibility),
+				typeof(HitTestability),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(
-					HitTestVisibility.Visible,
+					HitTestability.Visible,
 					FrameworkPropertyMetadataOptions.Inherits,
 					coerceValueCallback: CoerceHitTestVisibility,
 					propertyChangedCallback: OnHitTestVisibilityChanged
@@ -263,28 +263,28 @@ namespace Windows.UI.Xaml
 			var element = (UIElement)dependencyObject;
 
 			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
-			var baseHitTestVisibility = (HitTestVisibility)baseValue;
+			var baseHitTestVisibility = (HitTestability)baseValue;
 
 			// If the parent is collapsed, we should be collapsed as well. This takes priority over everything else, even if we would be visible otherwise.
-			if (baseHitTestVisibility == HitTestVisibility.Collapsed)
+			if (baseHitTestVisibility == HitTestability.Collapsed)
 			{
-				return HitTestVisibility.Collapsed;
+				return HitTestability.Collapsed;
 			}
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
 			if (!element.IsLoaded || !element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
 			{
-				return HitTestVisibility.Collapsed;
+				return HitTestability.Collapsed;
 			}
 
 			// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
 			if (!element.IsViewHit())
 			{
-				return HitTestVisibility.Invisible;
+				return HitTestability.Invisible;
 			}
 
 			// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.
-			return HitTestVisibility.Visible;
+			return HitTestability.Visible;
 		}
 
 		private static void OnHitTestVisibilityChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
