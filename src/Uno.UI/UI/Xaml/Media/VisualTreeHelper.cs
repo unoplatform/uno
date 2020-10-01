@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 using Uno.Disposables;
@@ -201,9 +202,12 @@ namespace Windows.UI.Xaml.Media
 
 			return AdaptNative(view);
 		}
+		
+		private static readonly GetHitTestability _defaultGetTestability = elt => elt.GetHitTestVisibility();
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
+			GetHitTestability? getTestability = null,
 			Predicate<UIElement>? isStale = null
 #if TRACE_HIT_TESTING
 			, [CallerMemberName] string? caller = null)
@@ -216,7 +220,7 @@ namespace Windows.UI.Xaml.Media
 #endif
 			if (Window.Current.RootElement is UIElement root)
 			{
-				return SearchDownForTopMostElementAt(position, root, isStale);
+				return SearchDownForTopMostElementAt(position, root, getTestability ?? _defaultGetTestability, isStale);
 			}
 
 			return default;
@@ -225,11 +229,12 @@ namespace Windows.UI.Xaml.Media
 		private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
 			Point posRelToParent,
 			UIElement element,
+			GetHitTestability getVisibility,
 			Predicate<UIElement>? isStale = null,
 			Func<IEnumerable<UIElement>, IEnumerable<UIElement>>? childrenFilter = null)
 		{
 			var stale = default(Branch?);
-			var elementHitTestVisibility = element.GetHitTestVisibility();
+			var elementHitTestVisibility = getVisibility(element);
 
 #if TRACE_HIT_TESTING
 			using var _ = SET_TRACE_SUBJECT(element);
@@ -237,7 +242,7 @@ namespace Windows.UI.Xaml.Media
 #endif
 
 			// If the element is not hit testable, do not even try to validate it nor its children.
-			if (elementHitTestVisibility == UIElement.HitTestVisibility.Collapsed)
+			if (elementHitTestVisibility == HitTestability.Collapsed)
 			{
 				// Even if collapsed, if the element is stale, we search down for the real stale leaf
 				if (isStale?.Invoke(element) ?? false)
@@ -322,7 +327,7 @@ namespace Windows.UI.Xaml.Media
 			var isChildStale = isStale;
 			while (child.MoveNext())
 			{
-				var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current, isChildStale);
+				var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current!, getVisibility, isChildStale);
 
 				// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
 				if (childResult.stale is { })
@@ -343,7 +348,7 @@ namespace Windows.UI.Xaml.Media
 						{
 							if (isChildStale(child.Current))
 							{
-								stale = SearchDownForStaleBranch(child.Current, isChildStale);
+								stale = SearchDownForStaleBranch(child.Current!, isChildStale);
 								break;
 							}
 						}
@@ -356,7 +361,7 @@ namespace Windows.UI.Xaml.Media
 
 			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestVisibility.Invisible),
 			// and the position is in actual bounds (which might be different than the clipping bounds)
-			if (elementHitTestVisibility == UIElement.HitTestVisibility.Visible && renderingBounds.Contains(posRelToElement))
+			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(posRelToElement))
 			{
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (element, stale);
@@ -471,6 +476,9 @@ namespace Windows.UI.Xaml.Media
 
 		internal struct Branch
 		{
+			public static Branch ToWindowRoot(UIElement leaf)
+				=> new Branch(Window.Current.RootElement, leaf);
+
 			public Branch(UIElement root, UIElement leaf)
 			{
 				Root = root;
@@ -484,6 +492,29 @@ namespace Windows.UI.Xaml.Media
 			{
 				root = Root;
 				leaf = Leaf;
+			}
+
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <remarks>This method will pass through native element but will enumerate only UIElements</remarks>
+			/// <returns></returns>
+			public IEnumerable<UIElement> EnumerateLeafToRoot()
+			{
+				var current = Leaf;
+
+				yield return Leaf;
+
+				while (current != Root)
+				{
+					var parentDo = GetParent(current);
+					while ((current = parentDo as UIElement) is null)
+					{
+						parentDo = GetParent(parentDo!);
+					}
+
+					yield return current;
+				} 
 			}
 
 			public override string ToString() => $"Root={Root.GetDebugName()} | Leaf={Leaf.GetDebugName()}";
