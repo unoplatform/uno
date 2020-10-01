@@ -9,7 +9,7 @@
 			 d:DesignWidth="400">
 
 	<Grid>
-		<VisualStateManager.VisualStateGroups>
+		<!--<VisualStateManager.VisualStateGroups>
 			<VisualStateGroup>
 				<VisualState x:Name="SmallState">
 					<VisualState.StateTriggers>
@@ -30,7 +30,7 @@
 					</VisualState.Setters>
 				</VisualState>
 			</VisualStateGroup>
-		</VisualStateManager.VisualStateGroups>
+		</VisualStateManager.VisualStateGroups>-->
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
