@@ -30,17 +30,8 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForIdle()
 			{
-#if __WASM__
-				await Task.Yield();
-#else
-				await Task.Yield();
-				var tcs = new TaskCompletionSource<bool>();
-				await RootControl.Dispatcher.RunIdleAsync(_ => tcs.SetResult(true));
-				tcs = new TaskCompletionSource<bool>();
-				await RootControl.Dispatcher.RunIdleAsync(_ => tcs.SetResult(true));
-
-				await tcs.Task;
-#endif
+				await RootControl.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootControl.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 			}
 
 			/// <summary>
