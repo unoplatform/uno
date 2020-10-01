@@ -19,7 +19,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[RunsOnUIThread]
 	public class Given_FrameworkElement_And_Leak
 	{
-#if !__WASM__ // Deactivated until https://github.com/unoplatform/uno/pull/3728 is merged
 		[TestMethod]
 		[DataRow(typeof(XamlEvent_Leak_UserControl), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
@@ -45,7 +44,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Border), 15)]
 		[DataRow(typeof(ContentControl), 15)]
 		[DataRow(typeof(ContentDialog), 15)]
-#endif
 		public async Task When_Add_Remove(Type controlType, int count)
 		{
 			var _holders = new ConditionalWeakTable<FrameworkElement, Holder>();
@@ -69,7 +67,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				rootContainer.Content = null;
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
-				await Task.Yield();
+
+				// Waiting for idle is required for collection of
+				// DispatcherConditionalDisposable to be executed
+				await TestServices.WindowHelper.WaitForIdle();
 			}
 
 			void HolderUpdate(int value)
@@ -90,7 +91,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
-				await Task.Yield();
+
+				// Waiting for idle is required for collection of
+				// DispatcherConditionalDisposable to be executed
+				await TestServices.WindowHelper.WaitForIdle();
 			}
 
 			Assert.AreEqual(0, activeControls);
