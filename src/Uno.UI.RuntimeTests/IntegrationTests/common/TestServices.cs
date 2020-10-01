@@ -67,6 +67,21 @@ namespace Private.Infrastructure
 				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
 			}
 
+#if DEBUG
+			/// <summary>
+			/// This will wait. Forever. Useful when debugging a runtime test if you wish to visually inspect or interact with a view added
+			/// by the test. (To break out of the loop, just set 'shouldWait = false' via the Immediate Window.)
+			/// </summary>
+			internal static async Task WaitForever()
+			{
+				var shouldWait = true;
+				while (shouldWait)
+				{
+					await Task.Delay(1000);
+				}
+			}
+#endif
+
 			internal static void ShutdownXaml() { }
 			internal static void VerifyTestCleanup() { }
 
