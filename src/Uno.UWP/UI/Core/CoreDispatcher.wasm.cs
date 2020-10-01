@@ -11,7 +11,8 @@ namespace Windows.UI.Core
 {
 	public sealed partial class CoreDispatcher
 	{
-		private readonly bool ThreadingSupported = Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_CONFIGURATION").StartsWith("threads", StringComparison.OrdinalIgnoreCase);
+		internal bool IsThreadingSupported { get; } = Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_CONFIGURATION").StartsWith("threads", StringComparison.OrdinalIgnoreCase);
+
 		private Timer _backgroundWakeupTimer;
 
 		/// <summary>
@@ -31,7 +32,7 @@ namespace Windows.UI.Core
 
 		partial void Initialize()
 		{
-			if (ThreadingSupported)
+			if (IsThreadingSupported)
 			{
 				if(Thread.CurrentThread.ManagedThreadId != 1)
 				{
@@ -48,7 +49,7 @@ namespace Windows.UI.Core
 
 		private bool GetHasThreadAccess()
 		{
-			if (ThreadingSupported)
+			if (IsThreadingSupported)
 			{
 				return Thread.CurrentThread.ManagedThreadId == 1;
 			}
@@ -64,7 +65,7 @@ namespace Windows.UI.Core
 		{
 			if (DispatchOverride == null)
 			{
-				if (!ThreadingSupported)
+				if (!IsThreadingSupported)
 				{
 					WebAssemblyRuntime.InvokeJSUnmarshalled("CoreDispatcher:WakeUp", IntPtr.Zero);
 				}
