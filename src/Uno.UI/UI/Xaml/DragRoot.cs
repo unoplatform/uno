@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml
 {
-	internal class DragRoot : Canvas
+	internal partial class DragRoot : Canvas
 	{
 		private readonly DragDropManager _manager;
 
