@@ -758,12 +758,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (type != null)
 			{
+				// Search first using the explicit XML namespace in known namespaces
+
+				// Remove the namespace conditionals declaration
+				var trimmedNamespace = type.PreferredXamlNamespace.Split('?').First();
+				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(trimmedNamespace, new string[0]);
+
+				foreach (var clrNamespace in clrNamespaces)
+				{
+					if(_findType(clrNamespace + "." + type.Name) is { } result)
+					{
+						return result;
+					}
+				}
+
+				// Then use fuzzy lookup
 				var ns = _fileDefinition
 					.Namespaces
 					// Ensure that prefixless declaration (generally xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation") is considered first, otherwise PreferredXamlNamespace matching can go awry
 					.OrderByDescending(n => n.Prefix.IsNullOrEmpty())
 					.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
-				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
 
 				if (
 					type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
@@ -773,6 +787,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return _findType(XamlConstants.Namespaces.Data + ".Binding");
 				}
 
+				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
 				var fullName = isKnownNamespace ? ns.Prefix + ":" + type.Name : type.Name;
 
 				return _findType(fullName);

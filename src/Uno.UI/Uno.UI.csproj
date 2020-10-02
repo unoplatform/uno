@@ -86,7 +86,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" Version="2.0.0" />
 		<PackageReference Include="Uno.Core.Build" Version="2.0.0" />
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
@@ -146,7 +146,6 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 	</PropertyGroup>
 

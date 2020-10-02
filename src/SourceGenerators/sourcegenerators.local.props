@@ -4,9 +4,6 @@
   This file is meant to be used inside of Uno to reference the generators and tasks
   -->
   
-  <PropertyGroup>
-    <UnoUIGeneratorsBinPath>$(MSBuildThisFileDirectory)Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-  </PropertyGroup>
   <Import Project="$(MSBuildThisFileDirectory)\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
   <PropertyGroup>

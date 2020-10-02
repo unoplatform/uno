@@ -15,7 +15,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />
@@ -24,10 +24,6 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 	</ItemGroup>
-
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-	</PropertyGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 

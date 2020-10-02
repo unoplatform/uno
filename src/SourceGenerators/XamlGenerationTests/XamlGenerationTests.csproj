@@ -59,10 +59,6 @@
 		<PackageReference Include="xamarin.build.download" />
 	</ItemGroup>
 
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-	</PropertyGroup>
-
 	<ItemGroup Condition="$(IsMonoAndroid)">
 		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
 	</ItemGroup>

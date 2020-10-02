@@ -228,8 +228,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_dataBindingSymbol = GetType("Windows.UI.Xaml.Data.Binding");
 			_styleSymbol = GetType(XamlConstants.Types.Style);
 			_colorSymbol = GetType(XamlConstants.Types.Color);
-			_androidContentContextSymbol = GetType("Android.Content.Context");
-			_androidViewSymbol = GetType("Android.Views.View");
+			_androidContentContextSymbol = FindType("Android.Content.Context");
+			_androidViewSymbol = FindType("Android.Views.View");
 
 			_markupExtensionTypes = _metadataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
 			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith(GetType(XamlConstants.Types.CreateFromStringAttribute)).ToList();
@@ -284,7 +284,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			catch (Exception e)
 			{
-				throw new Exception("Processing failed for file {0}".InvariantCultureFormat(_fileDefinition.FilePath), e);
+				throw new Exception($"Processing failed for file {_fileDefinition.FilePath} ({e})", e);
 			}
 		}
 
@@ -555,7 +555,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new InvalidOperationException($"The reference {reference.Display} could not be found in {reference.Display}");
 				}
 
-				var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(reference.Display);
+				using var stream = File.OpenRead(reference.Display);
+				var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(stream);
 
 				if (asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri")))
 				{
