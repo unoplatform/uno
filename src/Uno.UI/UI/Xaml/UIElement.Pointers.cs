@@ -641,7 +641,10 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseDrop(global::Windows.UI.Xaml.DragEventArgs args)
 		{
-			SafeRaiseEvent(DropEvent, args);
+			if (_draggingOver?.Remove(args.Pointer) ?? false)
+			{
+				SafeRaiseEvent(DropEvent, args);
+			}
 		}
 		#endregion
 
@@ -755,10 +758,10 @@ namespace Windows.UI.Xaml
 			if (_gestures.IsValueCreated)
 			{
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured);
-				//if (_gestures.Value.IsDragging)
-				//{
-				//	Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
-				//}
+				if (_gestures.Value.IsDragging)
+				{
+					Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+				}
 			}
 
 			return handledInManaged;
@@ -786,10 +789,10 @@ namespace Windows.UI.Xaml
 				// We need to process only events that were not handled by a child control,
 				// so we should not use them for gesture recognition.
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), !isManagedBubblingEvent || isOverOrCaptured);
-				//if (_gestures.Value.IsDragging)
-				//{
-				//	Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
-				//}
+				if (_gestures.Value.IsDragging)
+				{
+					Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+				}
 			}
 
 			return handledInManaged;
@@ -815,10 +818,10 @@ namespace Windows.UI.Xaml
 				// so we should not use them for gesture recognition.
 				var isDragging = _gestures.Value.IsDragging;
 				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !isManagedBubblingEvent || isOverOrCaptured);
-				//if (isDragging)
-				//{
-				//	Window.Current.DragDrop.ProcessPointerReleased(args);
-				//}
+				if (isDragging)
+				{
+					Window.Current.DragDrop.ProcessPointerReleased(args);
+				}
 			}
 
 			// We release the captures on up but only after the released event and processed the gesture
@@ -842,10 +845,10 @@ namespace Windows.UI.Xaml
 
 			handledInManaged |= SetOver(args, false, muteEvent: isManagedBubblingEvent || !isOverOrCaptured);
 
-			//if (_gestures.IsValueCreated && _gestures.Value.IsDragging)
-			//{
-			//	Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
-			//}
+			if (_gestures.IsValueCreated && _gestures.Value.IsDragging)
+			{
+				Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+			}
 
 			// We release the captures on exit when pointer if not pressed
 			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
@@ -887,10 +890,10 @@ namespace Windows.UI.Xaml
 			if (_gestures.IsValueCreated)
 			{
 				_gestures.Value.CompleteGesture();
-				//if (_gestures.Value.IsDragging)
-				//{
-				//	Window.Current.DragDrop.ProcessPointerCanceled(args);
-				//}
+				if (_gestures.Value.IsDragging)
+				{
+					Window.Current.DragDrop.ProcessPointerCanceled(args);
+				}
 			}
 
 			var handledInManaged = false;
