@@ -818,10 +818,10 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnDoubleTapped(DoubleTappedRoutedEventArgs e) { }
 		protected virtual void OnRightTapped(RightTappedRoutedEventArgs e) { }
 		protected virtual void OnHolding(HoldingRoutedEventArgs e) { }
-		protected virtual void OnDragEnter(DragEventArgs e) { }
-		protected virtual void OnDragOver(DragEventArgs e) { }
-		protected virtual void OnDragLeave(DragEventArgs e) { }
-		protected virtual void OnDrop(DragEventArgs e) { }
+		protected virtual void OnDragEnter(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragOver(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragLeave(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDrop(global::Windows.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnKeyDown(KeyRoutedEventArgs args) { }
 		protected virtual void OnKeyUp(KeyRoutedEventArgs args) { }
 		protected virtual void OnGotFocus(RoutedEventArgs e) { }
@@ -879,16 +879,16 @@ namespace Windows.UI.Xaml.Controls
 			(object sender, HoldingRoutedEventArgs args) => ((Control)sender).OnHolding(args);
 
 		private static readonly DragEventHandler OnDragEnterHandler =
-			(object sender, DragEventArgs args) => ((Control)sender).OnDragEnter(args);
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragEnter(args);
 
 		private static readonly DragEventHandler OnDragOverHandler =
-			(object sender, DragEventArgs args) => ((Control)sender).OnDragOver(args);
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragOver(args);
 
 		private static readonly DragEventHandler OnDragLeaveHandler =
-			(object sender, DragEventArgs args) => ((Control)sender).OnDragLeave(args);
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragLeave(args);
 
 		private static readonly DragEventHandler OnDropHandler =
-			(object sender, DragEventArgs args) => ((Control)sender).OnDrop(args);
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
 
 		private static readonly KeyEventHandler OnKeyDownHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyDown(args);
@@ -910,7 +910,7 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Type[] _doubleTappedArgsType = new[] { typeof(DoubleTappedRoutedEventArgs) };
 		private static readonly Type[] _rightTappedArgsType = new[] { typeof(RightTappedRoutedEventArgs) };
 		private static readonly Type[] _holdingArgsType = new[] { typeof(HoldingRoutedEventArgs) };
-		private static readonly Type[] _dragArgsType = new[] { typeof(DragEventArgs) };
+		private static readonly Type[] _dragArgsType = new[] { typeof(global::Windows.UI.Xaml.DragEventArgs) };
 		private static readonly Type[] _keyArgsType = new[] { typeof(KeyRoutedEventArgs) };
 		private static readonly Type[] _routedArgsType = new[] { typeof(RoutedEventArgs) };
 		private static readonly Type[] _manipStartingArgsType = new[] { typeof(ManipulationStartingRoutedEventArgs) };

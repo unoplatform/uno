@@ -808,7 +808,7 @@ namespace Windows.UI.Xaml
 					holdingEventHandler(this, (HoldingRoutedEventArgs)args);
 					break;
 				case DragEventHandler dragEventHandler:
-					dragEventHandler(this, (DragEventArgs)args);
+					dragEventHandler(this, (global::Windows.UI.Xaml.DragEventArgs)args);
 					break;
 				// TODO: DragStarting / DropCompleted
 				case KeyEventHandler keyEventHandler:
