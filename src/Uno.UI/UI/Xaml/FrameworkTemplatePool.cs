@@ -209,7 +209,10 @@ namespace Windows.UI.Xaml
 			}
 
 #if USE_HARD_REFERENCES
-			_activeInstances.Add(instance);
+			if (IsPoolingEnabled)
+			{
+				_activeInstances.Add(instance);
+			}
 #endif
 			return instance;
 		}
@@ -233,6 +236,11 @@ namespace Windows.UI.Xaml
 
 		private void OnParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs? args)
 		{
+			if (!IsPoolingEnabled)
+			{
+				return;
+			}
+
 			var list = GetTemplatePool(key as FrameworkTemplate ?? throw new InvalidOperationException($"Received {key} but expecting {typeof(FrameworkElement)}"));
 
 			if (args?.NewParent == null)

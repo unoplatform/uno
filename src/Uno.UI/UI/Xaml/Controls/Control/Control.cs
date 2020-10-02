@@ -336,14 +336,25 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Finds a realized element in the control template
+		/// Finds a realized element in the control template.
 		/// </summary>
-		/// <param name="e">The framework element instance</param>
-		/// <param name="name">The name of the template part</param>
+		/// <param name="childName">The name of the template part.</param>
+		/// <returns>The first template part of the specified name; otherwise, null.</returns>
 		public DependencyObject GetTemplateChild(string childName)
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as DependencyObject
 				?? FindName(childName) as DependencyObject;
+		}
+
+		/// <summary>
+		/// Finds a realized element in the control template of the specified type.
+		/// </summary>
+		/// <typeparam name="T">The type of the template part.</typeparam>
+		/// <param name="childName">The name of the template part.</param>
+		/// <returns>The first template part of the specified name; otherwise, null.</returns>
+		internal T GetTemplateChild<T>(string childName) where T : class, DependencyObject
+		{
+			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as T ?? FindName(childName) as T;
 		}
 
 		private static object FindNameInScope(IFrameworkElement root, string name)

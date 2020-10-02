@@ -76,16 +76,13 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnContentChanged(NSView previousView, NSView newView)
 		{
-			if(previousView != null) 
-			{
-				previousView.SetParent(null);
-			}
+			previousView?.SetParent(null);
 
 			DocumentView = newView;
 
 			// This is not needed on iOS/Android because the native ScrollViewer
 			// relies on the Children property, not on a `DocumentView` property.
-			newView.SetParent(TemplatedParent);
+			newView?.SetParent(TemplatedParent);
 		}
 
 		private void OnLiveScroll(object sender, NSNotificationEventArgs e)

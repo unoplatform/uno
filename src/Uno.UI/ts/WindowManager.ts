@@ -1389,6 +1389,7 @@ namespace Uno.UI {
 			const element = this.getView(viewId) as HTMLElement;
 
 			const elementStyle = element.style;
+			const elementClasses = element.className;
 			const originalStyleCssText = elementStyle.cssText;
 			let parentElement: HTMLElement = null;
 			let parentElementWidthHeight: { width: string, height: string } = null;
@@ -1476,6 +1477,7 @@ namespace Uno.UI {
 					var textOnlyElement = document.createElement("p") as HTMLParagraphElement;
 					textOnlyElement.style.cssText = updatedStyleString;
 					textOnlyElement.innerText = inputElement.value;
+					textOnlyElement.className = elementClasses;
 
 					unconnectedRoot = textOnlyElement;
 					this.containerElement.appendChild(unconnectedRoot);
@@ -1485,6 +1487,28 @@ namespace Uno.UI {
 
 					// Take the width of the inner text, but keep the height of the input element.
 					return [textSize[0], inputSize[1]];
+				} else if (element instanceof HTMLTextAreaElement) {
+					const inputElement = element;
+
+					cleanupUnconnectedRoot(this.containerElement);
+
+					// Create a temporary element that will contain the input's content
+					var textOnlyElement = document.createElement("p") as HTMLParagraphElement;
+					textOnlyElement.style.cssText = updatedStyleString;
+
+					// If the input is null or empty, add a no-width character to force the paragraph to take up one line height
+					textOnlyElement.innerText = !inputElement.value ? "\u200B" : inputElement.value;
+					textOnlyElement.className = elementClasses;
+
+					unconnectedRoot = textOnlyElement;
+					this.containerElement.appendChild(unconnectedRoot);
+
+					var textSize = this.measureElement(textOnlyElement);
+
+					// For TextAreas, take the width and height of the inner text
+					const width = Math.min(textSize[0], maxWidth);
+					var height = Math.min(textSize[1], maxHeight);
+					return [width, height];
 				}
 				else {
 					return this.measureElement(element);

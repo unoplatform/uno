@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml
 			set { this.SetValue(ClipProperty, value); }
 		}
 
-		public static DependencyProperty ClipProperty { get ; } =
+		public static DependencyProperty ClipProperty { get; } =
 			DependencyProperty.Register(
 				"Clip",
 				typeof(RectangleGeometry),
@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Backing dependency property for <see cref="RenderTransform"/>
 		/// </summary>
-		public static DependencyProperty RenderTransformProperty { get ; } =
+		public static DependencyProperty RenderTransformProperty { get; } =
 			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(UIElement), new FrameworkPropertyMetadata(null, (s, e) => OnRenderTransformChanged(s, e)));
 
 		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -146,7 +146,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for RenderTransformOrigin.  This enables animation, styling, binding, etc...
-		public static DependencyProperty RenderTransformOriginProperty { get ; } =
+		public static DependencyProperty RenderTransformOriginProperty { get; } =
 			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(UIElement), new FrameworkPropertyMetadata(default(Point), (s, e) => OnRenderTransformOriginChanged(s, e)));
 
 		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -284,7 +284,7 @@ namespace Windows.UI.Xaml
 
 		private protected virtual void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
 		{
-			if(newValue != null)
+			if (newValue != null)
 			{
 				RightTapped += OpenContextFlyout;
 			}
@@ -636,6 +636,36 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		private protected virtual void OnIsTabStopChanged(bool oldValue, bool newValue) { }
+#endif
+
+#if DEBUG
+		/// <summary>
+		/// A helper method while debugging to get the theme resource, if any, assigned to <paramref name="propertyName"/>.
+		/// </summary>
+		internal string GetThemeSource(string propertyName)
+		{
+			if (!propertyName.EndsWith("Property"))
+			{
+				propertyName += "Property";
+			}
+			var propInfo = GetType().GetTypeInfo().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+			var dp = propInfo.GetValue(null) as DependencyProperty;
+			var bindings = (this as IDependencyObjectStoreProvider).Store.GetResourceBindingsForProperty(dp);
+			if (bindings.Any())
+			{
+				var output = "";
+				foreach (var binding in bindings)
+				{
+					output += $"{binding.ResourceKey} ({binding.Precedence}), ";
+				}
+
+				return output;
+			}
+			else
+			{
+				return "[None]";
+			}
+		}
 #endif
 	}
 }

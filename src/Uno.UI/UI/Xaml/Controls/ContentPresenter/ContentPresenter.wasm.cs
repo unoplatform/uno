@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateBorder()
 		{
 			SetBorder(BorderThickness, BorderBrush, CornerRadius);
-			SetBackgroundBrush(Background);
+			SetAndObserveBackgroundBrush(Background);
 		}
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)

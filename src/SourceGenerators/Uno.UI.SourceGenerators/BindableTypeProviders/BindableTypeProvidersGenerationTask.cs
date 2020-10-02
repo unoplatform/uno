@@ -14,6 +14,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.Build.Execution;
 using Uno.UI.SourceGenerators.XamlGenerator;
 using Microsoft.CodeAnalysis.FindSymbols;
+using Microsoft.CodeAnalysis.CSharp;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Uno.UI.SourceGenerators.BindableTypeProviders
 {
@@ -225,7 +227,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					{
 						using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
 						{
-							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) || !type.IsGenericType)"))
+							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType)"))
 							{
 								writer.AppendLineInvariant(@"_knownMissingTypes.Add(type);");
 								writer.AppendLineInvariant(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
@@ -392,7 +394,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 					foreach (var property in properties)
 					{
-						var propertyTypeName = property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+						var propertyTypeName = GetFullyQualifiedType(property.Type);
 						var propertyName = property.Name;
 
 						if (IsStringIndexer(property))
@@ -472,15 +474,9 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 						if (getMethod != null)
 						{
-							var getter = $"{XamlConstants.Types.DependencyObjectExtensions}.GetValue(instance, {ownerTypeName}.{propertyName}Property, precedence)";
-							var setter = $"{XamlConstants.Types.DependencyObjectExtensions}.SetValue(instance, {ownerTypeName}.{propertyName}Property, value, precedence)";
-
 							var propertyType = GetGlobalQualifier(getMethod.ReturnType) + SanitizeTypeName(getMethod.ReturnType.ToString());
 
-							writer.AppendLineInvariant($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyType}),  Get{propertyName}, Set{propertyName});");
-
-							postWriter.AppendLineInvariant($@"private static object Get{propertyName}(object instance,  Windows.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => {getter};");
-							postWriter.AppendLineInvariant($@"private static void Set{propertyName}(object instance, object value, Windows.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => {setter};");
+							writer.AppendLineInvariant($@"bindableType.AddProperty({ownerType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{dependencyProperty});");
 						}
 					}
 
@@ -491,6 +487,24 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			}
 
 			writer.AppendLine();
+		}
+
+		private object GetFullyQualifiedType(ITypeSymbol type)
+		{
+			if(type is INamedTypeSymbol namedTypeSymbol)
+			{
+				if (namedTypeSymbol.IsGenericType && !namedTypeSymbol.IsNullable())
+				{
+					return SymbolDisplay.ToDisplayString(type, format: new SymbolDisplayFormat(
+						globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
+						typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+						genericsOptions: SymbolDisplayGenericsOptions.None,
+						miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers))
+						+ "<" + string.Join(", ", namedTypeSymbol.TypeArguments.Select(GetFullyQualifiedType)) + ">";
+				}
+			}
+
+			return type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 		}
 
 		private static string ExpandType(INamedTypeSymbol ownerType)

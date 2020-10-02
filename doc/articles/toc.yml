@@ -195,7 +195,9 @@
           href: uno-development\uno-internals-wasm.md
         - name: macOS
           href: uno-development\uno-internals-macos.md
-    - name: Building and debugging Uno.UI
+    - name: Building Uno.UI
+      href: uno-development\building-uno-ui.md
+    - name: Debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
     - name: Building Uno.UI for macOS using Visual Studio for Mac
       href: uno-development\building-uno-macos.md
@@ -231,3 +233,9 @@
       href: uno-development\Internal-WeakEventHelper.md
     - name: Debugging Uno.UI Java code with Android studio
       href: uno-development\Uno-UI-Debugging-Android-Studio.md
+    - name: Converting the source tree to WinUI
+      href: uno-development\winui-conversion.md
+    - name: Troubleshooting Memory Issues
+      href: uno-development\troubleshooting-memory-issues.md
+    - name: Troubleshooting Source Generation
+      href: uno-development\troubleshooting-source-generation.md

@@ -1660,6 +1660,10 @@ namespace Windows.UI.Xaml
 		private ManagedWeakReference ThisWeakReference
 			=> _thisWeakRef ??= Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, this);
 
+		internal IEnumerable<ResourceBinding> GetResourceBindingsForProperty(DependencyProperty dependencyProperty)
+			=> _resourceBindings?.GetBindingsForProperty(dependencyProperty)
+				?? Enumerable.Empty<ResourceBinding>();
+
 		private class DependencyPropertyPath : IEquatable<DependencyPropertyPath?>
 		{
 			public DependencyPropertyPath(DependencyObject instance, DependencyProperty property)

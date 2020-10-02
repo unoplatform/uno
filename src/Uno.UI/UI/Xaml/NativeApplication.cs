@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml
 				}
 
 				// default to normal launch
-				if (!handled)
+				if (!handled && !_isRunning)
 				{
 					_app.OnLaunched(new LaunchActivatedEventArgs());
 				}
