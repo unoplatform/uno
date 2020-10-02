@@ -18,7 +18,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		public static void SetContent(DataPackage? content)
 		{
 			var data = content?.GetView(); // Freezes the DataPackage
-			if (data?.AvailableFormats.Contains(StandardDataFormats.Text) ?? false)
+			if (data?.Contains(StandardDataFormats.Text) ?? false)
 			{
 				CoreDispatcher.Main.RunAsync(
 					CoreDispatcherPriority.High,
