@@ -32,8 +32,6 @@
           href: getting-started-tutorial-2.md
     - name: Next steps
       href: get-started-next-steps.md
-    - name: Getting Started with VS Code and WebAssembly
-      href: get-started-vscode-wasm.md
 - name: Using Uno
   items:
     - name: Developing with Uno.UI
