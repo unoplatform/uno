@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -14,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_Border
 	{
 		[TestMethod]
-		public void Check_DataContext_Propagation()
+		public async Task Check_DataContext_Propagation()
 		{
 			var tb = new TextBlock();
 			tb.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("TestText") });
@@ -30,7 +31,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			root.Children.Add(SUT);
 
-			Assert.AreEqual("Vampire squid", tb.Text);
+			WindowHelper.WindowContent = root;
+
+			await WindowHelper.WaitFor(() => tb.Text == "Vampire squid");
 		}
 
 		private class MyContext
