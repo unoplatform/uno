@@ -1044,7 +1044,9 @@ namespace Microsoft.UI.Xaml.Controls
 							}
 							else
 							{
-								tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
+								//TODO: Uno specific workaround - ListView stretches to full available width, even when it does not require it
+								//tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
+								tabColumn.Width = GridLengthHelper.FromPixels(requiredWidth);
 								var listview = m_listView;
 								if (listview != null)
 								{
