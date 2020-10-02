@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml
 		#region Readonly properties that gives context to the handler
 		public bool Handled { get; set; }
 
-		public DataPackage Data { get; set; } // This is actually not used
+		public DataPackage Data { get; set; } = new DataPackage(); // This is actually not used
 
 		public DataPackageView DataView => _info.Data;
 

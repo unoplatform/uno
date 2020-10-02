@@ -219,24 +219,24 @@ namespace Windows.UI.Xaml
 			// Note: This is currently only a port of the old behavior and reports only Collapsed and Visible.
 			if (Visibility != Visibility.Visible || !IsHitTestVisible)
 			{
-				return HitTestVisibility.Collapsed;
+				return HitTestability.Collapsed;
 			}
 
 			if (this is Windows.UI.Xaml.Controls.Control ctrl)
 			{
 				return ctrl.IsLoaded && ctrl.IsEnabled
-					? HitTestVisibility.Visible
-					: HitTestVisibility.Collapsed;
+					? HitTestability.Visible
+					: HitTestability.Collapsed;
 			}
 			else if (this is Windows.UI.Xaml.FrameworkElement fwElt)
 			{
 				return fwElt.IsLoaded
-					? HitTestVisibility.Visible
-					: HitTestVisibility.Collapsed;
+					? HitTestability.Visible
+					: HitTestability.Collapsed;
 			}
 			else
 			{
-				return HitTestVisibility.Visible;
+				return HitTestability.Visible;
 			}
 #endif
 		}
@@ -490,7 +490,7 @@ namespace Windows.UI.Xaml
 
 				case RoutedEventFlag.DragEnter:
 				{
-					var pt = ((DragEventArgs)args).Pointer;
+					var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).Pointer;
 					var wasDragOver = IsDragOver(pt);
 
 					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
@@ -508,7 +508,7 @@ namespace Windows.UI.Xaml
 				case RoutedEventFlag.DragOver:
 					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
 					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
-					SetIsDragOver(((DragEventArgs)args).Pointer, true);
+					SetIsDragOver(((global::Windows.UI.Xaml.DragEventArgs)args).Pointer, true);
 
 					if (!AllowDrop) // The Drag and Drop "routed" events are raised only on controls that opted-in
 					{
@@ -519,7 +519,7 @@ namespace Windows.UI.Xaml
 				case RoutedEventFlag.DragLeave:
 				case RoutedEventFlag.Drop:
 				{
-					var pt = ((DragEventArgs)args).Pointer;
+					var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).Pointer;
 					var wasDragOver = IsDragOver(pt);
 
 					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
@@ -620,7 +620,7 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-		internal void RaiseDragEnterOrOver(DragEventArgs args)
+		internal void RaiseDragEnterOrOver(global::Windows.UI.Xaml.DragEventArgs args)
 		{
 			var evt = IsDragOver(args.Pointer)
 				? DragOverEvent
@@ -631,7 +631,7 @@ namespace Windows.UI.Xaml
 			SafeRaiseEvent(evt, args);
 		}
 
-		internal void RaiseDragLeave(DragEventArgs args)
+		internal void RaiseDragLeave(global::Windows.UI.Xaml.DragEventArgs args)
 		{
 			if (_draggingOver?.Remove(args.Pointer) ?? false)
 			{
@@ -639,7 +639,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void RaiseDrop(DragEventArgs args)
+		internal void RaiseDrop(global::Windows.UI.Xaml.DragEventArgs args)
 		{
 			if (_draggingOver?.Remove(args.Pointer) ?? false)
 			{

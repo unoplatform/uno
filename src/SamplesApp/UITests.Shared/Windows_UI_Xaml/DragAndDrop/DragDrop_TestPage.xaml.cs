@@ -46,12 +46,12 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		private const int MaxDragDropEventsListCount = 100;
 
 		// Define brushes to quickly recognized drag events in the events list
-		private Brush DragStartingBrush = new SolidColorBrush(Colors.Green);
+		private Brush DragStartingBrush = new SolidColorBrush(Colors.LimeGreen);
 		private Brush DragEnterBrush = new SolidColorBrush(Colors.LightGreen);
 		private Brush DragLeaveBrush = new SolidColorBrush(Colors.LightSalmon);
 		private Brush DragOverBrush = new SolidColorBrush(Colors.LightBlue);
 		private Brush DropBrush = new SolidColorBrush(Colors.LightPink);
-		private Brush DropCompletedBrush = new SolidColorBrush(Colors.Red);
+		private Brush DropCompletedBrush = new SolidColorBrush(Colors.Tomato);
 
 		public DragDrop_TestPage()
 		{
@@ -86,13 +86,13 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		}
 
 		/// <summary>
-		/// Displays the contents of the given <see cref="DragEventArgs"/> for any drag/drop event.
+		/// Displays the contents of the given <see cref="global::Windows.UI.Xaml.DragEventArgs"/> for any drag/drop event.
 		/// </summary>
 		/// <param name="eventName">The name of the event to display.</param>
 		/// <param name="args">The event arguments to display.</param>
-		private void ShowDragDropDetails(string eventName, DragEventArgs args)
+		private void ShowDragDropDetails(string eventName, global::Windows.UI.Xaml.DragEventArgs args)
 		{
-			// Determine the standard formats (Uri is obsolete)
+			// Determine the standard formats
 			var standardDataFormats = string.Empty;
 			var sep = Environment.NewLine;
 			if (args.DataView.Contains(StandardDataFormats.ApplicationLink)) { standardDataFormats += nameof(StandardDataFormats.ApplicationLink) + sep; }
@@ -102,6 +102,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			if (args.DataView.Contains(StandardDataFormats.StorageItems)) { standardDataFormats += nameof(StandardDataFormats.StorageItems) + sep; }
 			if (args.DataView.Contains(StandardDataFormats.Text)) { standardDataFormats += nameof(StandardDataFormats.Text) + sep; }
 			if (args.DataView.Contains(StandardDataFormats.UserActivityJsonArray)) { standardDataFormats += nameof(StandardDataFormats.UserActivityJsonArray) + sep; }
+			if (args.DataView.Contains(StandardDataFormats.Uri)) { standardDataFormats += nameof(StandardDataFormats.Uri) + sep; }
 			if (args.DataView.Contains(StandardDataFormats.WebLink)) { standardDataFormats += nameof(StandardDataFormats.WebLink) + sep; }
 
 			if (standardDataFormats.EndsWith(sep))
@@ -158,22 +159,27 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		}
 
 		/// <summary>
-		/// Displays the contents of the given <see cref="DragEventArgs"/> after a drop occurs.
+		/// Displays the contents of the given <see cref="global::Windows.UI.Xaml.DragEventArgs"/> after a drop occurs.
 		/// </summary>
 		/// <param name="args">The drop event arguments to display.</param>
-		private async void ShowDropDetails(DragEventArgs args)
+		private async void ShowDropDetails(global::Windows.UI.Xaml.DragEventArgs args)
 		{
 			string title = "Last Drop Details";
+			string position = string.Empty;
 			string details = string.Empty;
 
 			this.DropDetailsTextBlock.Visibility = Visibility.Visible;
 			this.DropDetailsImage.Visibility = Visibility.Collapsed;
 
+			// Only one data format can be displayed at once.
+			// Therefore, a priority is used to determine which should be displayed.
+			// This is currently only alphabetical but may need to be smarter in the future.
 			if (args.DataView.Contains(StandardDataFormats.ApplicationLink))
 			{
 				title += " (ApplicationLink)";
 
-				// TODO
+				var appLink = await args.DataView.GetApplicationLinkAsync();
+				details = appLink.ToString();
 			}
 			else if (args.DataView.Contains(StandardDataFormats.Bitmap))
 			{
@@ -239,6 +245,13 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 
 				// TODO
 			}
+			else if (args.DataView.Contains(StandardDataFormats.Uri))
+			{
+				title += " (Uri)";
+
+				var uri = await args.DataView.GetUriAsync();
+				details = uri.ToString();
+			}
 			else if (args.DataView.Contains(StandardDataFormats.WebLink))
 			{
 				title += " (WebLink)";
@@ -247,16 +260,21 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 				details = webLink.ToString();
 			}
 
+			// Determine the drop position
+			var pos = args.GetPosition(this.DropBorder);
+			position = "(" + pos.X.ToString("0.00") + ", " + pos.Y.ToString("0.00") + ")";
+
 			this.DropTitleTextBlock.Text = title ?? string.Empty;
+			this.DropPositionTextBlock.Text = position ?? string.Empty;
 			this.DropDetailsTextBlock.Text = details ?? string.Empty;
 
 			return;
 		}
 
 		/// <summary>
-		/// Event handler for when a drag operation leaves the <see cref="DropBorder"/>.
+		/// Event handler for when a drag operation enters the <see cref="DropBorder"/>.
 		/// </summary>
-		private void DropBorder_DragEnter(object sender, DragEventArgs e)
+		private void DropBorder_DragEnter(object sender, global::Windows.UI.Xaml.DragEventArgs e)
 		{
 			// Accept everything possible
 			if (e.DataView.RequestedOperation != DataPackageOperation.None)
@@ -268,32 +286,43 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 				e.AcceptedOperation = DataPackageOperation.Copy | DataPackageOperation.Link | DataPackageOperation.Move;
 			}
 
-			this.ShowDragDropDetails(nameof(UIElement.DragEnter), e);
+			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.DragEnter), e);
 			return;
 		}
 
 		/// <summary>
 		/// Event handler for when a drag operation leaves the <see cref="DropBorder"/>.
 		/// </summary>
-		private void DropBorder_DragLeave(object sender, DragEventArgs e)
+		private void DropBorder_DragLeave(object sender, global::Windows.UI.Xaml.DragEventArgs e)
 		{
-			this.ShowDragDropDetails(nameof(UIElement.DragLeave), e);
+			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.DragLeave), e);
 			return;
 		}
 
 		/// <summary>
 		/// Event handler for when a drag operation is over the <see cref="DropBorder"/>.
 		/// </summary>
-		private void DropBorder_DragOver(object sender, DragEventArgs e)
+		private void DropBorder_DragOver(object sender, global::Windows.UI.Xaml.DragEventArgs e)
 		{
-			this.ShowDragDropDetails(nameof(UIElement.DragOver), e);
+			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.DragOver), e);
+			return;
+		}
+
+		/// <summary>
+		/// Event handler for when an item is dropped on the <see cref="DropBorder"/>.
+		/// </summary>
+		private void DropBorder_Drop(object sender, global::Windows.UI.Xaml.DragEventArgs e)
+		{
+			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.Drop), e);
+			this.ShowDropDetails(e);
+
 			return;
 		}
 
 		/// <summary>
 		/// Event handler for when an internal drag starts from a known source.
 		/// </summary>
-		private void DragSource_DragStarting(UIElement sender, DragStartingEventArgs args)
+		private void DragSource_DragStarting(global::Windows.UI.Xaml.UIElement sender, DragStartingEventArgs args)
 		{
 			string availableStdFormats = string.Empty;
 			string requestedOperation = DataPackageOperation.Copy.ToString();
@@ -326,7 +355,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			var eventDetails = new EventDetails()
 			{
 				EventBackground = this.DragStartingBrush,
-				EventName = nameof(UIElement.DragStarting),
+				EventName = nameof(global::Windows.UI.Xaml.UIElement.DragStarting),
 				AvailableFormats = string.Empty,
 				AvailableStdFormats = availableStdFormats,
 				RequestedOperation = requestedOperation,
@@ -339,20 +368,9 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		}
 
 		/// <summary>
-		/// Event handler for when an item is dropped on the <see cref="DropBorder"/>.
-		/// </summary>
-		private void DropBorder_Drop(object sender, DragEventArgs e)
-		{
-			this.ShowDragDropDetails(nameof(UIElement.Drop), e);
-			this.ShowDropDetails(e);
-
-			return;
-		}
-
-		/// <summary>
 		/// Event handler for when a drop operation is completed.
 		/// </summary>
-		private void DropBorder_DropCompleted(UIElement sender, DropCompletedEventArgs args)
+		private void DragSource_DropCompleted(global::Windows.UI.Xaml.UIElement sender, DropCompletedEventArgs args)
 		{
 			var eventDetails = new EventDetails()
 			{

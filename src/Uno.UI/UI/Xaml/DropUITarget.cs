@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml
 				return args.AcceptedOperation;
 			});
 
-		private async Task<(UIElement element, DragEventArgs args)?> UpdateTarget(
+		private async Task<(UIElement element, global::Windows.UI.Xaml.DragEventArgs args)?> UpdateTarget(
 			CoreDragInfo dragInfo,
 			CoreDragUIOverride? dragUIOverride,
 			PointerRoutedEventArgs ptArgs,
