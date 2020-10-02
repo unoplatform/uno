@@ -119,7 +119,33 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						break;
 					}
 
-				} while (type.Name != "Object");
+				} while (!Equals(type, _objectSymbol));
+			}
+
+			return false;
+		}
+
+		private bool IsType(XamlType xamlType, ISymbol typeSymbol)
+		{
+			var type = FindType(xamlType);
+
+			if (type != null)
+			{
+				do
+				{
+					if (Equals(type, typeSymbol))
+					{
+						return true;
+					}
+
+					type = type.BaseType;
+
+					if (type == null)
+					{
+						break;
+					}
+
+				} while (!Equals(type, _objectSymbol));
 			}
 
 			return false;

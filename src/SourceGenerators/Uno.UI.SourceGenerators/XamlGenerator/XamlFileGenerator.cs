@@ -105,6 +105,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _dependencyObjectSymbol;
 		private readonly INamedTypeSymbol _markupExtensionSymbol;
 		private readonly INamedTypeSymbol _dependencyObjectParseSymbol;
+		private readonly INamedTypeSymbol _androidContentContextSymbol; // Android.Content.Context
+		private readonly INamedTypeSymbol _androidViewSymbol; // Android.Views.View
 
 		private readonly INamedTypeSymbol _iCollectionSymbol;
 		private readonly INamedTypeSymbol _iCollectionOfTSymbol;
@@ -226,6 +228,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_dataBindingSymbol = GetType("Windows.UI.Xaml.Data.Binding");
 			_styleSymbol = GetType(XamlConstants.Types.Style);
 			_colorSymbol = GetType(XamlConstants.Types.Color);
+			_androidContentContextSymbol = GetType("Android.Content.Context");
+			_androidViewSymbol = GetType("Android.Views.View");
 
 			_markupExtensionTypes = _metadataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
 			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith(GetType(XamlConstants.Types.CreateFromStringAttribute)).ToList();
@@ -5113,7 +5117,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string GenerateConstructorParameters(XamlType xamlType)
 		{
-			if (IsType(xamlType, "Android.Views.View"))
+			if (IsType(xamlType, _androidViewSymbol))
 			{
 				// For android, all native control must take a context as their first parameters
 				// To be able to use this control from the Xaml, we need to generate a constructor
@@ -5125,7 +5129,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var q = from m in type.Constructors
 							where m.Parameters.Count() == 1
-							where m.Parameters.First().Type.ToDisplayString() == "Android.Content.Context"
+							where Equals(m.Parameters.First().Type, _androidContentContextSymbol)
 							select m;
 
 					var hasContextConstructor = q.Any();
