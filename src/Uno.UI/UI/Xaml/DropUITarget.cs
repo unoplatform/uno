@@ -35,16 +35,14 @@ namespace Windows.UI.Xaml
 		// Note: As drag events are routed (so they may be received by multiple elements), we might not have an entry for each drop targets.
 		//		 We will instead have entry only for leaf (a.k.a. OriginalSource).
 		//		 This is valid as UWP does clear the UIOverride as soon as a DragLeave is raised.
-		private readonly Dictionary<UIElement, (DraggingState state, DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> _pendingDropTargets
-			= new Dictionary<UIElement, (DraggingState state, DragUIOverride uiOverride, DataPackageOperation acceptedOperation)>();
+		private readonly Dictionary<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> _pendingDropTargets
+			= new Dictionary<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)>();
 
 		private readonly Window _window;
-		private readonly Predicate<UIElement> _isDropOver;
 
 		public DropUITarget(Window window)
 		{
 			_window = window;
-			_isDropOver = elt => _pendingDropTargets.ContainsKey(elt);
 		}
 
 		/// <inheritdoc />
@@ -78,8 +76,7 @@ namespace Windows.UI.Xaml
 					await deferral.Completed(ct);
 				}
 
-				// TODO
-				// UpdateState()
+				UpdateState(args);
 
 				return args.AcceptedOperation;
 			});
@@ -98,7 +95,7 @@ namespace Windows.UI.Xaml
 				_pendingDropTargets.Clear();
 				Task.WhenAll(leaveTasks);
 
-				async Task RaiseLeave(KeyValuePair<UIElement, (DraggingState state, DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> target)
+				async Task RaiseLeave(KeyValuePair<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> target)
 				{
 					var args = new DragEventArgs(target.Key, dragInfo, target.Value.uiOverride, ptArgs);
 
@@ -144,7 +141,10 @@ namespace Windows.UI.Xaml
 			PointerRoutedEventArgs ptArgs,
 			CancellationToken ct)
 		{
-			var target = VisualTreeHelper.HitTest(dragInfo.Position, getTestability: _getDropHitTestability, isStale: _isDropOver);
+			var target = VisualTreeHelper.HitTest(
+				dragInfo.Position,
+				getTestability: _getDropHitTestability,
+				isStale: elt => elt.IsDragOver(ptArgs.Pointer));
 
 			// First raise the drag leave event on stale branch if any.
 			if (target.stale is { } staleBranch)
@@ -156,17 +156,21 @@ namespace Windows.UI.Xaml
 					.ToArray();
 
 				Debug.Assert(leftElements.Length > 0);
-				// TODO: We should raise the event only from the Leaf to the Root of the branch, not the whole tree like that
-				//		 This is acceptable as a MVP as we usually have only one Drop target par app.
-				//		 Anyway if we Leave a bit too much, we will Enter again below
-				var leaf = leftElements.First();
-				var leaveArgs = new DragEventArgs(leaf.elt, dragInfo, leaf.dragState.uiOverride, ptArgs);
 
-				staleBranch.Leaf.RaiseDragLeave(leaveArgs);
-
-				if (leaveArgs.Deferral is { } deferral)
+				if (leftElements.Length > 0)
 				{
-					await deferral.Completed(ct);
+					// TODO: We should raise the event only from the Leaf to the Root of the branch, not the whole tree like that
+					//		 This is acceptable as a MVP as we usually have only one Drop target par app.
+					//		 Anyway if we Leave a bit too much, we will Enter again below
+					var leaf = leftElements.First();
+					var leaveArgs = new DragEventArgs(leaf.elt, dragInfo, leaf.dragState.uiOverride, ptArgs);
+
+					staleBranch.Leaf.RaiseDragLeave(leaveArgs);
+
+					if (leaveArgs.Deferral is { } deferral)
+					{
+						await deferral.Completed(ct);
+					}
 				}
 			}
 
@@ -175,12 +179,25 @@ namespace Windows.UI.Xaml
 				return null;
 			}
 
-			var uiOverride = target.element is {} && _pendingDropTargets.TryGetValue(target.element, out var state)
-				? state.uiOverride
-				: new DragUIOverride(dragUIOverride ?? new CoreDragUIOverride());
-			var args = new DragEventArgs(target.element!, dragInfo, uiOverride, ptArgs);
+			DragEventArgs args;
+			if (target.element is {} && _pendingDropTargets.TryGetValue(target.element, out var state))
+			{
+				args = new DragEventArgs(target.element!, dragInfo, state.uiOverride, ptArgs)
+				{
+					AcceptedOperation = state.acceptedOperation
+				};
+			}
+			else
+			{
+				args = new DragEventArgs(target.element!, dragInfo, new DragUIOverride(dragUIOverride ?? new CoreDragUIOverride()), ptArgs);
+			}
 
 			return (target.element!, args);
+		}
+
+		private void UpdateState(DragEventArgs args)
+		{
+			_pendingDropTargets[(UIElement)args.OriginalSource] = (args.DragUIOverride, args.AcceptedOperation);
 		}
 	}
 }
