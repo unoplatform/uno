@@ -810,7 +810,12 @@ namespace Windows.UI.Xaml
 				case DragEventHandler dragEventHandler:
 					dragEventHandler(this, (DragEventArgs)args);
 					break;
-				// TODO: DragStarting / DropCompleted
+				case TypedEventHandler<UIElement, DragStartingEventArgs> dragStartingHandler:
+					dragStartingHandler(this, (DragStartingEventArgs)args);
+					break;
+				case TypedEventHandler<UIElement, DropCompletedEventArgs> dropCompletedHandler:
+					dropCompletedHandler(this, (DropCompletedEventArgs)args);
+					break;
 				case KeyEventHandler keyEventHandler:
 					keyEventHandler(this, (KeyRoutedEventArgs)args);
 					break;
@@ -828,6 +833,9 @@ namespace Windows.UI.Xaml
 					break;
 				case ManipulationCompletedEventHandler manipCompleted:
 					manipCompleted(this, (ManipulationCompletedRoutedEventArgs)args);
+					break;
+				default:
+					this.Log().Error($"The handler type {handler.GetType()} has not been registered for RoutedEvent");
 					break;
 			}
 		}
