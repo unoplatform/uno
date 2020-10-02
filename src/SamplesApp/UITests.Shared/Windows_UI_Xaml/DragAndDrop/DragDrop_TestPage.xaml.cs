@@ -46,12 +46,12 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		private const int MaxDragDropEventsListCount = 100;
 
 		// Define brushes to quickly recognized drag events in the events list
-		private Brush DragStartingBrush = new SolidColorBrush(Colors.Green);
+		private Brush DragStartingBrush = new SolidColorBrush(Colors.LimeGreen);
 		private Brush DragEnterBrush = new SolidColorBrush(Colors.LightGreen);
 		private Brush DragLeaveBrush = new SolidColorBrush(Colors.LightSalmon);
 		private Brush DragOverBrush = new SolidColorBrush(Colors.LightBlue);
 		private Brush DropBrush = new SolidColorBrush(Colors.LightPink);
-		private Brush DropCompletedBrush = new SolidColorBrush(Colors.Red);
+		private Brush DropCompletedBrush = new SolidColorBrush(Colors.Tomato);
 
 		public DragDrop_TestPage()
 		{
@@ -165,6 +165,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		private async void ShowDropDetails(global::Windows.UI.Xaml.DragEventArgs args)
 		{
 			string title = "Last Drop Details";
+			string position = string.Empty;
 			string details = string.Empty;
 
 			this.DropDetailsTextBlock.Visibility = Visibility.Visible;
@@ -259,7 +260,12 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 				details = webLink.ToString();
 			}
 
+			// Determine the drop position
+			var pos = args.GetPosition(this.DropBorder);
+			position = "(" + pos.X.ToString("0.00") + ", " + pos.Y.ToString("0.00") + ")";
+
 			this.DropTitleTextBlock.Text = title ?? string.Empty;
+			this.DropPositionTextBlock.Text = position ?? string.Empty;
 			this.DropDetailsTextBlock.Text = details ?? string.Empty;
 
 			return;
@@ -299,6 +305,17 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		private void DropBorder_DragOver(object sender, global::Windows.UI.Xaml.DragEventArgs e)
 		{
 			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.DragOver), e);
+			return;
+		}
+
+		/// <summary>
+		/// Event handler for when an item is dropped on the <see cref="DropBorder"/>.
+		/// </summary>
+		private void DropBorder_Drop(object sender, global::Windows.UI.Xaml.DragEventArgs e)
+		{
+			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.Drop), e);
+			this.ShowDropDetails(e);
+
 			return;
 		}
 
@@ -351,20 +368,9 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		}
 
 		/// <summary>
-		/// Event handler for when an item is dropped on the <see cref="DropBorder"/>.
-		/// </summary>
-		private void DropBorder_Drop(object sender, global::Windows.UI.Xaml.DragEventArgs e)
-		{
-			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.Drop), e);
-			this.ShowDropDetails(e);
-
-			return;
-		}
-
-		/// <summary>
 		/// Event handler for when a drop operation is completed.
 		/// </summary>
-		private void DropBorder_DropCompleted(global::Windows.UI.Xaml.UIElement sender, DropCompletedEventArgs args)
+		private void DragSource_DropCompleted(global::Windows.UI.Xaml.UIElement sender, DropCompletedEventArgs args)
 		{
 			var eventDetails = new EventDetails()
 			{
