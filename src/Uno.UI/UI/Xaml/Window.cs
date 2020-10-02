@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml
 		}
 
 		#region Drag and Drop
-		private DragRoot? _dragRoot;
+		private DragRoot _dragRoot;
 
 		internal DragDropManager DragDrop { get; private set; }
 
@@ -126,7 +126,13 @@ namespace Windows.UI.Xaml
 
 		internal IDisposable OpenDragAndDrop(DragView dragView)
 		{
-			if (_window is null)
+#if __WASM__ || __SKIA__
+			Grid rootElement = _window;
+#else
+			Grid rootElement = _main;
+#endif
+
+			if (rootElement is null)
 			{
 				return Disposable.Empty;
 			}
@@ -134,7 +140,7 @@ namespace Windows.UI.Xaml
 			if (_dragRoot is null)
 			{
 				_dragRoot = new DragRoot();
-				_window.Children.Add(_dragRoot);
+				rootElement.Children.Add(_dragRoot);
 			}
 
 			_dragRoot.Show(dragView);
@@ -147,7 +153,7 @@ namespace Windows.UI.Xaml
 
 				if (_dragRoot.PendingDragCount == 0)
 				{
-					_window.Children.Remove(_dragRoot);
+					rootElement.Children.Remove(_dragRoot);
 					_dragRoot = null;
 				}
 			}

@@ -13,6 +13,7 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private static Window _current;
+		private Grid _main;
 		private bool _isActive;
 		private UIElement _content;
 

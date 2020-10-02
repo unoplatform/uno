@@ -403,7 +403,7 @@ namespace Windows.UI.Input
 						// we also allow a long press with the left button to be more user friendly.
 						if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap
 							&& IsTapGesture(LeftButton, points)
-							&& IsLongPress(points))
+							&& IsLongPress(points.Down, points.Up!))
 						{
 							isLongPress = true;
 							return true;
