@@ -1,7 +1,7 @@
+#nullable enable
+
 using System.Threading;
 using System.Threading.Tasks;
-
-#nullable enable
 
 namespace Windows.UI.Xaml
 {
@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml
 		}
 
 		public void Complete()
-			=> _completion.TrySetResult(default);
+			=> _completion.TrySetResult(new object());
 
 		internal async Task Completed(CancellationToken ct)
 		{

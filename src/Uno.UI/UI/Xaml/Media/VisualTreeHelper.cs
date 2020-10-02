@@ -250,7 +250,7 @@ namespace Windows.UI.Xaml.Media
 					stale = SearchDownForStaleBranch(element, isStale);
 				}
 
-				TRACE($"> NOT FOUND (Element is HitTestVisibility.Collapsed) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				TRACE($"> NOT FOUND (Element is HitTestability.Collapsed) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (default, stale);
 			}
 
@@ -322,7 +322,7 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			// Validate if any child is an acceptable target
-			var children = childrenFilter is null ? element.GetChildren() : childrenFilter(element.GetChildren());
+			var children = childrenFilter is null ? element.GetChildren().OfType<UIElement>() : childrenFilter(element.GetChildren().OfType<UIElement>());
 			using var child = children.Reverse().GetEnumerator();
 			var isChildStale = isStale;
 			while (child.MoveNext())
@@ -359,7 +359,7 @@ namespace Windows.UI.Xaml.Media
 				}
 			}
 
-			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestVisibility.Invisible),
+			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestability.Invisible),
 			// and the position is in actual bounds (which might be different than the clipping bounds)
 			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(posRelToElement))
 			{
@@ -375,7 +375,7 @@ namespace Windows.UI.Xaml.Media
 					stale = new Branch(element, stale?.Leaf ?? element);
 				}
 
-				TRACE($"> NOT FOUND (HitTestVisibility.Invisible or out of the **render** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				TRACE($"> NOT FOUND (HitTestability.Invisible or out of the **render** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (default, stale);
 			}
 		}
@@ -385,7 +385,7 @@ namespace Windows.UI.Xaml.Media
 
 		private static UIElement SearchDownForStaleLeaf(UIElement staleRoot, Predicate<UIElement> isStale)
 		{
-			foreach (var child in staleRoot.GetChildren().Reverse())
+			foreach (var child in staleRoot.GetChildren().OfType<UIElement>().Reverse())
 			{
 				if (isStale(child))
 				{
