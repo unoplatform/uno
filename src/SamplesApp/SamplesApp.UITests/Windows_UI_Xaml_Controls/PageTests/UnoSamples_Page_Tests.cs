@@ -42,17 +42,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 
 			_app.WaitForElement("TargetPage");
 
-			var pageRect = _app.GetRect("TargetPage");
+			var pageRectCenter = GetRectCenterScaled("TargetPage");
 
 			var before = TakeScreenshot("Before SolidColorBrush.Color update");
-			ImageAssert.HasColorAt(before, pageRect.CenterX, pageRect.CenterY, Color.Blue);
+			ImageAssert.HasColorAt(before, pageRectCenter.X, pageRectCenter.Y, Color.Blue);
 			
 			_app.FastTap("AdvanceTestButton");
 
 			_app.WaitForText("StatusTextBlock", "Color changed");
 
 			var after = TakeScreenshot("After SolidColorBrush.Color update");
-			ImageAssert.HasColorAt(after, pageRect.CenterX, pageRect.CenterY, Color.Green);
+			ImageAssert.HasColorAt(after, pageRectCenter.X, pageRectCenter.Y, Color.Green);
 		}
 	}
 }
