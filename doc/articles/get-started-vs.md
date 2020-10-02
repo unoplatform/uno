@@ -1,5 +1,6 @@
-## Visual Studio 
-### Prerequisites
+# Getting Started on Visual Studio 
+
+## Prerequisites
 * [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with:
     * **Universal Windows Platform** workload installed.
 
@@ -21,7 +22,7 @@
 
 For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
-### Installing the Uno Platform Solution Templates with Visual Studio
+## Installing the Uno Platform Solution Templates with Visual Studio
 
 1. Launch Visual Studio, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.
 
@@ -31,7 +32,7 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
 
     ![](Assets/tutorial01/uno-extensions.PNG)
 
-### Create an application from the solution template
+## Create an application from the solution template
 
 To easily create a multi-platform application:
 * Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**:
@@ -43,7 +44,7 @@ To easily create a multi-platform application:
 * To debug the UWP head, select the `Debug|x86` configuration
 * To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5** or choose 'Start without debugging' from the menu. Note that **F5** will *not* work because Visual Studio debugging isn't supported. See [here](debugging-wasm.md) for debugging instructions through Chrome.
 
-#### Make sure XAML Intellisense is enabled
+### Make sure XAML Intellisense is enabled
 
 [Intellisense](https://docs.microsoft.com/en-us/visualstudio/ide/using-intellisense) is supported in XAML when the UWP head is active:
 ![xaml-intellisense](Assets/quick-start/xaml-intellisense.png)
@@ -54,5 +55,5 @@ If XAML Intellisense isn't working on a freshly-created project, try the followi
 3. Close and reopen Visual Studio.
 4. Reopen XAML documents.
 
-#### Video Tutorial
+### Video Tutorial
 [![Getting Started Visual Studio Video](Assets/vs-cover.JPG)](http://www.youtube.com/watch?v=hQcKsoxaAHo "")
