@@ -27,6 +27,7 @@ namespace Windows.UI.Xaml
 
 		private bool _isRunning;
 		private State _state = State.None;
+		private uint _lastFrameId;
 
 		private enum State
 		{
@@ -59,7 +60,7 @@ namespace Windows.UI.Xaml
 
 		private void EnteredOrMoved(PointerRoutedEventArgs args)
 		{
-			if (_state >= State.Completing)
+			if (_state >= State.Completing || args.FrameId <= _lastFrameId) 
 			{
 				return;
 			}
@@ -88,7 +89,7 @@ namespace Windows.UI.Xaml
 
 		internal void Exited(PointerRoutedEventArgs args)
 		{
-			if (_state >= State.Completing)
+			if (_state >= State.Completing || args.FrameId <= _lastFrameId)
 			{
 				return;
 			}
@@ -115,7 +116,8 @@ namespace Windows.UI.Xaml
 
 		internal void Dropped(PointerRoutedEventArgs args)
 		{
-			if (_state >= State.Completing)
+			// For safety, we don't validate the FrameId for the finalizing actions, we rely only on the _state
+			if (_state >= State.Completing) 
 			{
 				return;
 			}
@@ -146,6 +148,7 @@ namespace Windows.UI.Xaml
 
 		internal void Aborted(PointerRoutedEventArgs args)
 		{
+			// For safety, we don't validate the FrameId for the finalizing actions, we rely only on the _state
 			if (_state >= State.Completing)
 			{
 				return;
@@ -252,6 +255,10 @@ namespace Windows.UI.Xaml
 
 			// Updates the view location to follow the pointer
 			_view.SetLocation(point.Position);
+
+			// As we have multiple sources for the pointer events (capture of the dragged element and DragRoot),
+			// we make sure to not process the same event twice.
+			_lastFrameId = args.FrameId;
 		}
 
 		private void Enqueue(Func<CancellationToken, Task> action, bool isIgnorable = false)
