@@ -760,7 +760,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured);
 				if (_gestures.Value.IsDragging)
 				{
-					Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
 				}
 			}
 
@@ -791,7 +791,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), !isManagedBubblingEvent || isOverOrCaptured);
 				if (_gestures.Value.IsDragging)
 				{
-					Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
 				}
 			}
 
@@ -820,7 +820,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !isManagedBubblingEvent || isOverOrCaptured);
 				if (isDragging)
 				{
-					Window.Current.DragDrop.ProcessPointerReleased(args);
+					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessPointerReleased(args);
 				}
 			}
 
@@ -847,7 +847,7 @@ namespace Windows.UI.Xaml
 
 			if (_gestures.IsValueCreated && _gestures.Value.IsDragging)
 			{
-				Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+				global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
 			}
 
 			// We release the captures on exit when pointer if not pressed
@@ -892,7 +892,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.CompleteGesture();
 				if (_gestures.Value.IsDragging)
 				{
-					Window.Current.DragDrop.ProcessPointerCanceled(args);
+					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessPointerCanceled(args);
 				}
 			}
 
