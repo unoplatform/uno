@@ -64,12 +64,6 @@ namespace Windows.UI.Xaml.Controls
 			typeof(TextBox),
 			new FrameworkPropertyMetadata(false));
 
-
-		partial void InitializePropertiesPartial()
-		{
-			OnVerticalContentAlignmentChanged(VerticalAlignment.Center, VerticalContentAlignment);
-		}
-
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
@@ -96,6 +90,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void InitializePropertiesPartial()
 		{
 			OnImeOptionsChanged(ImeOptions);
+			OnVerticalContentAlignmentChanged(VerticalAlignment.Center, VerticalContentAlignment);
 		}
 
 		private void UpdateTextBoxView()
