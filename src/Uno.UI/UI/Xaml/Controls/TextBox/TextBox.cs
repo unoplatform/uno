@@ -1,4 +1,4 @@
-#if NET461 || NETSTANDARD2_0 || __MACOS__
+﻿#if NET461 || NETSTANDARD2_0 || __MACOS__
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -727,6 +727,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_placeHolder.VerticalAlignment = newVerticalContentAlignment;
 			}
+
+			OnVerticalContentAlignmentChangedPartial(oldVerticalContentAlignment, newVerticalContentAlignment);
 		}
+
+		partial void OnVerticalContentAlignmentChangedPartial(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment);
 	}
 }
