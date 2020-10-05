@@ -122,18 +122,21 @@ namespace Windows.UI.Xaml
 			if (Visibility == Visibility.Collapsed || finalRect == default)
 			{
 				LayoutSlot = finalRect;
-				Visual.IsVisible = false;
+				HideVisual();
 				return;
 			}
 
 			if (!_isArrangeValid || finalRect != LayoutSlot)
 			{
-				Visual.IsVisible = true;
+				ShowVisual(); 
 				ArrangeCore(finalRect);
 				LayoutSlot = finalRect;
 				_isArrangeValid = true;
 			}
 		}
+
+		partial void HideVisual();
+		partial void ShowVisual();
 
 		internal virtual void MeasureCore(Size availableSize)
 		{
