@@ -31,6 +31,15 @@ namespace UnoSolutionTemplate.Wizard
 
 		public void RunFinished()
 		{
+			var nugetConfigPath = Path.Combine(_targetPath, "..\\.vsconfig");
+
+			if (!File.Exists(nugetConfigPath))
+			{
+				using (var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream($"{GetType().Assembly.GetName().Name}..vsconfig")))
+				{
+					File.WriteAllText(nugetConfigPath, reader.ReadToEnd());
+				}
+			}
 		}
 
 		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
