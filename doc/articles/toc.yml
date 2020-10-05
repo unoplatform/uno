@@ -22,6 +22,8 @@
       href: get-started-vscode.md
     - name: Getting Started on Rider
       href: get-started-rider.md
+    - name: dotnet new templates for Uno Platform
+      href: get-started-dotnet-new.md
     - name: Creating an app - Tutorial
       items:
         - name: Getting Started Tutorial 1
@@ -30,8 +32,6 @@
           href: getting-started-tutorial-2.md
     - name: Next steps
       href: get-started-next-steps.md
-    - name: Getting Started with VS Code and WebAssembly
-      href: get-started-vscode-wasm.md
 - name: Using Uno
   items:
     - name: Developing with Uno.UI
@@ -124,6 +124,8 @@
     href: features\windows-applicationmodel-calls.md
   - name: Windows.ApplicationModel.Chat
     href: features\windows-applicationmodel-chat.md
+  - name: Windows.ApplicationModel.DataTransfer
+    href: features\windows-applicationmodel-datatransfer.md
   - name: Windows.ApplicationModel.Email
     href: features\windows-applicationmodel-email.md
   - name: Windows.Devices.Enumeration
@@ -134,12 +136,18 @@
     href: features\windows-devices-midi.md
   - name: Windows.Devices.Sensors
     href: features\windows-devices-sensors.md
+  - name: Windows.Networking
+    href: features\windows-networking.md
   - name: Windows.Phone.Devices.Notification
     href: features\windows-phone-devices-notification-vibrationdevice.md
+  - name: Windows.UI.Core.Preview
+    href: features\windows-ui-core-preview.md
   - name: Windows.UI.StartScreen
     href: features\windows-ui-startscreen.md
   - name: Windows.UI.Notifications
     href: features\windows-ui-notifications.md
+  - name: Windows.UI.Xaml.Application
+    href: features\windows-ui-xaml-application.md
   - name: Windows.Devices.Geolocation
     href: features\windows-devices-geolocation.md
   - name: Windows.System
@@ -154,6 +162,8 @@
     href: features\windows-storage.md
   - name: Windows.UI.ViewManagement
     href: features\windows-ui-viewmanagement.md
+  - name: Windows Community Toolkit
+    href: uno-community-toolkit.md
   - name: XAML Hot Reload
     href: features\working-with-xaml-hot-reload.md
 - name: Using Uno - implemented views
@@ -195,6 +205,10 @@
           href: uno-development\uno-internals-wasm.md
         - name: macOS
           href: uno-development\uno-internals-macos.md
+        - name: DependencyProperty backing generator
+          href: uno-development\Internal-DependencyProperty-Generator.md
+        - name: x:Bind in Uno Platform
+          href: uno-development\Uno-UI-xBind-architecture.md
     - name: Building Uno.UI
       href: uno-development\building-uno-ui.md
     - name: Debugging Uno.UI
