@@ -57,6 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include=".vsconfig" />
     <None Include="key.snk" />
   </ItemGroup>
   <ItemGroup>
