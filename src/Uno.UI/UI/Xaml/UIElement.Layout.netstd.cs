@@ -119,14 +119,16 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			if (Visibility == Visibility.Collapsed)
+			if (Visibility == Visibility.Collapsed || finalRect == default)
 			{
 				LayoutSlot = finalRect;
+				Visual.IsVisible = false;
 				return;
 			}
 
 			if (!_isArrangeValid || finalRect != LayoutSlot)
 			{
+				Visual.IsVisible = true;
 				ArrangeCore(finalRect);
 				LayoutSlot = finalRect;
 				_isArrangeValid = true;
