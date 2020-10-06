@@ -99,7 +99,7 @@ The pre-defined prefixes are listed below:
 | Prefix        | Included platforms                 | Excluded platforms                 | Namespace                                                   | Put in `mc:Ignorable`? |
 |---------------|------------------------------------|------------------------------------|-------------------------------------------------------------|------------------------|
 | `win`         | Windows                            | Android, iOS, web, macOS, Skia     | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `xamarin`     | Android, iOS, web, macOS           | Windows, Skia                      | `http:/uno.ui/xamarin`                                      | yes                    |
+| `xamarin`     | Android, iOS, web, macOS, Skia     | Windows                            | `http:/uno.ui/xamarin`                                      | yes                    |
 | `not_win`     | Android, iOS, web, macOS, Skia     | Windows                            | `http:/uno.ui/not_win`                                      | yes                    |
 | `android`     | Android                            | Windows, iOS, web, macOS, Skia     | `http:/uno.ui/android`                                      | yes                    |
 | `ios`         | iOS                                | Windows, Android, web, macOS, Skia | `http:/uno.ui/ios`                                          | yes                    |
@@ -122,7 +122,7 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 | `wasm`        | ✖ | ✖ | ✖ | ✔ | ✖ | ✖ |
 | `macos`       | ✖ | ✖ | ✖ | ✖ | ✔ | ✖ |
 | `skia`        | ✖ | ✖ | ✖ | ✖ | ✖ | ✔ |
-| `xamarin`     | ✖ | ✔ | ✔ | ✔ | ✔ | ✖ |
+| `xamarin`     | ✖ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `not_win`     | ✖ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `not_android` | ✔ | ✖ | ✔ | ✔ | ✔ | ✔ |
 | `not_ios`     | ✔ | ✔ | ✖ | ✔ | ✔ | ✔ |
