@@ -27,9 +27,24 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 				throw new ArgumentNullException(nameof(source));
 			}
 
-			var buffer = new UwpBuffer((uint)capacity);
-			Array.Copy(source, offset, buffer.Data, 0, length);
-			return buffer;
+			if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset), "offset is less than 0 (zero).");
+			if (length < 0) throw new ArgumentOutOfRangeException(nameof(length), "length is less than 0 (zero).");
+			if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity), "capacity is less than 0 (zero).");
+
+			if (length > capacity)
+			{
+				throw new ArgumentException("length is greater than capacity");
+			}
+
+			if (source.Length - offset < Math.Max(length, capacity))
+			{
+				throw new ArgumentException("The array is not large enough to serve as a backing store for the IBuffer; that is, the number of bytes in source, beginning at offset, is less than length or capacity.");
+			}
+
+			return new UwpBuffer(new Memory<byte>(source, offset, capacity))
+			{
+				Length = (uint)length
+			};
 		}
 
 		public static Stream AsStream(this IBuffer source)
@@ -39,14 +54,10 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 				throw new ArgumentNullException(nameof(source));
 			}
 
-			switch (source)
-			{
-				case UwpBuffer mb:
-					return new MemoryStream(mb.Data);
+			var data = UwpBuffer.Cast(source).GetSegment();
+			var stream = new MemoryStream(data.Array!, data.Offset, data.Count);
 
-				default:
-					throw new NotSupportedException("This buffer is not supported");
-			}
+			return stream;
 		}
 
 		[Uno.NotImplemented]
@@ -79,13 +90,7 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 				throw new ArgumentNullException(nameof(source));
 			}
 
-			switch (source)
-			{
-				case UwpBuffer b:
-					return b.Data;
-				default:
-					throw new NotSupportedException("This buffer is not supported");
-			}
+			return UwpBuffer.Cast(source).ToArray();
 		}
 
 		public static byte[] ToArray(this IBuffer source, uint sourceIndex, int count)
@@ -95,14 +100,7 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 				throw new ArgumentNullException(nameof(source));
 			}
 
-			switch (source)
-			{
-				case UwpBuffer mb:
-					return mb.Data.Skip((int)sourceIndex).Take(count).ToArray();
-
-				default:
-					throw new NotSupportedException("This buffer is not supported");
-			}
+			return UwpBuffer.Cast(source).ToArray(sourceIndex, count);
 		}
 	}
 }

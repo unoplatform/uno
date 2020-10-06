@@ -50,17 +50,17 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the channel from 0-15 that this message applies to.
 		/// </summary>
-		public byte Channel => MidiHelpers.GetChannel(_buffer.Data[0]);
+		public byte Channel => MidiHelpers.GetChannel(_buffer.GetByte(0));
 
 		/// <summary>
 		/// Gets the note to turn off which is specified as a value from 0-127.
 		/// </summary>
-		public byte Note => _buffer.Data[1];
+		public byte Note => _buffer.GetByte(1);
 
 		/// <summary>
 		/// Gets the value of the velocity from 0-127.
 		/// </summary>
-		public byte Velocity => _buffer.Data[2];
+		public byte Velocity => _buffer.GetByte(2);
 
 		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.

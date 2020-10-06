@@ -143,7 +143,7 @@ namespace Windows.Storage
 		/// <param name="buffer">The array of bytes to write.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction WriteBytesAsync(IStorageFile file, byte[] buffer) =>
-			WriteBytesTaskAsync(file, buffer).AsAsyncAction();
+			WriteBytesTaskAsync(file, buffer, 0, buffer.Length).AsAsyncAction();
 
 		/// <summary>
 		/// Reads the contents of the specified file and returns a buffer.
@@ -249,7 +249,7 @@ namespace Windows.Storage
 			await streamWriter.WriteAsync(contents);
 		}
 
-		private static async Task WriteBytesTaskAsync(IStorageFile file, byte[] buffer)
+		private static async Task WriteBytesTaskAsync(IStorageFile file, byte[] buffer, int index, int count)
 		{
 			if (file is null)
 			{
@@ -269,12 +269,8 @@ namespace Windows.Storage
 
 		private static async Task WriteBufferTaskAsync(IStorageFile file, IBuffer buffer)
 		{
-			if (!(buffer is UwpBuffer inMemoryBuffer))
-			{
-				throw new NotSupportedException("The current implementation can only write a UwpBuffer");
-			}
-
-			await WriteBytesTaskAsync(file, inMemoryBuffer.Data);
+			var data = UwpBuffer.Cast(buffer).GetSegment();
+			await WriteBytesTaskAsync(file, data.Array!, data.Offset, data.Count);
 		}
 
 		private static async Task<Encoding> GetEncodingFromFileAsync(IStorageFile file)
