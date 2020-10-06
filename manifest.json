@@ -1,0 +1,18 @@
+{
+    "background_color": "#ffffff",
+    "description": "Freakin awesome Uno web app.",
+    "display": "standalone",
+    "icons": [
+      {
+        "src": "Icon192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+
+    ],
+    "name": "Uno as a PWA",
+    "short_name": "Uno PWA",
+    "start_url": "/index.html",
+    "theme_color": "#ffffff",
+    "scope": "/"
+}
