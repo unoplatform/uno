@@ -1,21 +1,15 @@
+using System;
+using System.Threading.Tasks;
+
 namespace Windows.Foundation
 {
-	public  partial interface IAsyncInfo 
+	public partial interface IAsyncInfo 
 	{
-		global::System.Exception ErrorCode
-		{
-			get;
-		}
+		Exception ErrorCode { get; }
 
-		uint Id
-		{
-			get;
-		}
+		uint Id { get; }
 
-		global::Windows.Foundation.AsyncStatus Status
-		{
-			get;
-		}
+		AsyncStatus Status { get; }
 
 		void Cancel();
 
