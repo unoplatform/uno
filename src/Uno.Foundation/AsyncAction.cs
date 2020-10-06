@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace Windows.Foundation
 {
-	internal class AsyncAction : IAsyncAction
+	internal class AsyncAction : IAsyncAction, IAsyncActionInternal
 	{
 		private CancellationTokenSource _cts = new CancellationTokenSource();
 		private AsyncActionCompletedHandler _onCompleted;
