@@ -14,10 +14,7 @@ namespace Windows.Storage.FileProperties
 			_fileInfo = new FileInfo(file.Path);
 		}
 
-		public ulong Size
-		{
-			get { return (ulong)_fileInfo.Length; }
-		}
+		public ulong Size => (ulong)_fileInfo.Length;
 
 		public DateTimeOffset DateModified => File.GetLastWriteTime(_fileInfo.FullName);
 	}
