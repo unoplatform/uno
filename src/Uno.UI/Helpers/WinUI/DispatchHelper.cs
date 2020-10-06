@@ -49,16 +49,17 @@ namespace Uno.UI.Helpers.WinUI
 
 		public void RunAsync(Action func, bool fallbackToThisThread = false)
 		{
-			if (dispatcherQueue != null)
+			// TODO: Uno specific - dispatcher queue is not implemented yet
+			if (false)//dispatcherQueue != null)
 			{
-				var result = dispatcherQueue.TryEnqueue(() => func());
-				if (!result)
-				{
-					if (fallbackToThisThread)
-					{
-						func();
-					}
-				}
+				//var result = dispatcherQueue.TryEnqueue(() => func());
+				//if (!result)
+				//{
+				//	if (fallbackToThisThread)
+				//	{
+				//		func();
+				//	}
+				//}
 			}
 			else if (coreDispatcher != null)
 			{
