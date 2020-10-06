@@ -232,6 +232,5 @@ namespace Windows.UI.Xaml.Controls
 
 			_isSecured = isSecure;
 		}
-
 	}
 }
