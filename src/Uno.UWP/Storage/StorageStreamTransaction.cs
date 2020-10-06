@@ -1,4 +1,5 @@
-﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+﻿#nullable enable
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
 using System;
 using System.Collections.Generic;
@@ -6,18 +7,20 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.Storage.Streams;
 using Uno.Extensions;
 using Uno.Logging;
 
 namespace Windows.Storage
 {
-	public partial class StorageStreamTransaction : IDisposable
+	public sealed partial class StorageStreamTransaction : IDisposable
 	{
 		private readonly object _gate;
 		private readonly StorageFile _file;
 
-		private IDisposable _fileLock;
-		private OwnedStream _tempFile;
+		private IDisposable? _fileLock;
+		private Stream? _tempFile;
 
 		public StorageStreamTransaction(StorageFile file)
 		{
@@ -27,17 +30,24 @@ namespace Windows.Storage
 			OpenFiles();
 		}
 
-		public Stream GetStream()
-		{
-			return _tempFile;
-		}
+		/// <summary>
+		/// Gets a wrapper of this transaction which will auto commit the changes when it is being disposed.
+		/// </summary>
+		internal Stream AsAutoCommitStream()
+			=> new AutoCommitStream(this, _tempFile!);
 
-		public async Task CommitAsync(CancellationToken ct)
+		public IRandomAccessStream Stream { get; private set; } = null!;
+
+		public IAsyncAction CommitAsync() => AsyncAction.FromTask(async ct =>
+		{
+			ct.ThrowIfCancellationRequested();
+			Commit();
+		});
+
+		private void Commit()
 		{
 			lock (_gate)
 			{
-				ct.ThrowIfCancellationRequested();
-
 				CloseFiles();
 				File.Replace(_file.Path + ".tmp", _file.Path, null);
 				OpenFiles();
@@ -47,14 +57,17 @@ namespace Windows.Storage
 		private void OpenFiles()
 		{
 			_fileLock = File.Open(_file.Path, FileMode.Open, FileAccess.Read, FileShare.None);
-			_tempFile = new OwnedStream(File.Open(_file.Path + ".tmp", FileMode.Create, FileAccess.Write, FileShare.None), this);
+			_tempFile = File.Open(_file.Path + ".tmp", FileMode.Create, FileAccess.Write, FileShare.None);
+
+			Stream = new TransactionRandomStream(_tempFile);
 		}
 
 		private void CloseFiles()
 		{
-			_fileLock.Dispose();
-			_tempFile.DisposeBy(this);
-			_tempFile.Dispose();
+			_fileLock?.Dispose();
+			_fileLock = null;
+			_tempFile?.Dispose();
+			_tempFile = null;
 		}
 
 		public void Dispose()
@@ -87,6 +100,79 @@ namespace Windows.Storage
 		~StorageStreamTransaction()
 		{
 			Dispose(false);
+		}
+
+		private class TransactionRandomStream : RandomAccessStreamOverStream
+		{
+			public TransactionRandomStream(Stream stream)
+				: base(stream)
+			{
+			}
+
+			/// <inheritdoc />
+			public override void Dispose()
+			{
+				// We don not close the underlying stream as it's acts as a lock
+			}
+		}
+
+		private class AutoCommitStream : Stream
+		{
+			private readonly StorageStreamTransaction _owner;
+			private readonly Stream _temp;
+
+			public AutoCommitStream(StorageStreamTransaction owner, Stream temp)
+			{
+				_owner = owner;
+				_temp = temp;
+			}
+
+			/// <inheritdoc />
+			protected override void Dispose(bool disposing)
+			{
+				_owner.Commit();
+				base.Dispose(disposing);
+			}
+				
+
+			/// <inheritdoc />
+			public override void Flush()
+				=> _temp.Flush();
+
+			/// <inheritdoc />
+			public override int Read(byte[] buffer, int offset, int count)
+				=> _temp.Read(buffer, offset, count);
+
+			/// <inheritdoc />
+			public override long Seek(long offset, SeekOrigin origin)
+				=> _temp.Seek(offset, origin);
+
+			/// <inheritdoc />
+			public override void SetLength(long value)
+				=> _temp.SetLength(value);
+
+			/// <inheritdoc />
+			public override void Write(byte[] buffer, int offset, int count)
+				=> _temp.Write(buffer, offset, count);
+
+			/// <inheritdoc />
+			public override bool CanRead => _temp.CanRead;
+
+			/// <inheritdoc />
+			public override bool CanSeek => _temp.CanSeek;
+
+			/// <inheritdoc />
+			public override bool CanWrite => _temp.CanWrite;
+
+			/// <inheritdoc />
+			public override long Length => _temp.Length;
+
+			/// <inheritdoc />
+			public override long Position
+			{
+				get => _temp.Position;
+				set => _temp.Position = value;
+			}
 		}
 	}
 }
