@@ -49,7 +49,9 @@ namespace Windows.UI.Composition
 				try
 				{
 					_image = SKImage.FromEncodedData(stream);
-					return (true, "Success");
+					return _image is null
+						? (false, "Failed to decode image")
+						: (true, "Success");
 				}
 				catch (Exception e)
 				{
