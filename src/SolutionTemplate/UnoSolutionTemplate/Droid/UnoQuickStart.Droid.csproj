@@ -67,9 +67,9 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Include="MainActivity.cs" />
 		<Compile Include="Properties\AssemblyInfo.cs" />
 		<Compile Include="Main.cs" />
+		<Compile Include="MainActivity.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<AndroidAsset Include="Assets\Fonts\uno-fluentui-assets.ttf" />
@@ -77,24 +77,20 @@
 		<None Include="Assets\AboutAssets.txt" />
 	</ItemGroup>
 	<ItemGroup>
-		<AndroidResource Include="Resources\values\Strings.xml" />
-	</ItemGroup>
-	<ItemGroup>
 		<AndroidResource Include="Resources\drawable\Icon.png" />
+		<AndroidResource Include="Resources\values\Strings.xml" />
+		<AndroidResource Include="Resources\values\Styles.xml" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="Properties\AndroidManifest.xml" />
-	</ItemGroup>
-	<ItemGroup>
-		<AndroidResource Include="Resources\values\Styles.xml" />
 	</ItemGroup>
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
 	<Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 
 	<!-- This will force the generation of the APK when not building inside visual studio -->
 	<Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />
-	
-	<Target Name="Issue3897Workaround" 
+
+	<Target Name="Issue3897Workaround"
 		Condition=" '$(ManagedDesignTimeBuild)' == 'True' "
 		AfterTargets="_RemoveLegacyDesigner">
 		<!-- See https://github.com/unoplatform/uno/issues/3897 and https://github.com/xamarin/xamarin-android/issues/5069 for more details -->

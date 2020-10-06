@@ -12,7 +12,7 @@ using Android.Widget;
 using Com.Nostra13.Universalimageloader.Core;
 using Windows.UI.Xaml.Media;
 
-namespace $ext_safeprojectname$.Droid
+namespace $ext_safeprojectname$
 {
 	[global::Android.App.ApplicationAttribute(
 		Label = "@string/ApplicationName",
@@ -20,9 +20,9 @@ namespace $ext_safeprojectname$.Droid
 		HardwareAccelerated = true,
 		Theme = "@style/AppTheme"
 	)]
-	public class Application : Windows.UI.Xaml.NativeApplication
+	public class AndroidApplication : Windows.UI.Xaml.NativeApplication
 	{
-		public Application(IntPtr javaReference, JniHandleOwnership transfer)
+		public AndroidApplication(IntPtr javaReference, JniHandleOwnership transfer)
 			: base(() => new App(), javaReference, transfer)
 		{
 			ConfigureUniversalImageLoader();

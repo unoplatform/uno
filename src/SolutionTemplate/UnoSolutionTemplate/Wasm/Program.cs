@@ -5,11 +5,11 @@ namespace $ext_safeprojectname$.Wasm
 {
 	public class Program
 	{
-		private static App _app;
+		private static App app;
 
 		static int Main(string[] args)
 		{
-			Windows.UI.Xaml.Application.Start(_ => _app = new App());
+			Windows.UI.Xaml.Application.Start(_ => app = new App());
 
 			return 0;
 		}

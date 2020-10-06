@@ -1,29 +1,29 @@
 <Project Sdk="MSBuild.Sdk.Extras/2.0.54">
-	<!--
-	Adding project references to this project requires some manual adjustments.
-	Please see https://github.com/unoplatform/uno/issues/3909 for more details.
-	-->
+  <!--
+  Adding project references to this project requires some manual adjustments.
+  Please see https://github.com/unoplatform/uno/issues/3909 for more details.
+  -->
 
   <PropertyGroup>
     <TargetFrameworks>uap10.0.17763;netstandard2.0;xamarinios10;xamarinmac20;MonoAndroid90;monoandroid10.0</TargetFrameworks>
 
-		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
-		<GenerateLibraryLayout>true</GenerateLibraryLayout>
-	</PropertyGroup>
+    <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="2.2.0" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-		<Compile Update="**\*.xaml.cs">
-			<DependentUpon>%(Filename)</DependentUpon>
-		</Compile>
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Uno.UI" Version="2.2.0" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-	</ItemGroup>
+  <ItemGroup>
+    <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+  </ItemGroup>
 
 </Project>

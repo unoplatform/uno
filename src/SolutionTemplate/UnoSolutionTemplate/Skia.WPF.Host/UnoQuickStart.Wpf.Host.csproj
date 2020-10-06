@@ -51,9 +51,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-		<PackageReference Include="Uno.UI.Skia.Wpf" Version="3.0.0-dev.1447" />
-		<PackageReference Include="Uno.UI.RemoteControl" Version="3.0.0-dev.1447" Condition="'$(Configuration)'=='Debug'" />
-	</ItemGroup>
+    <PackageReference Include="Uno.UI.Skia.Wpf" Version="3.0.0-dev.1447" />
+    <PackageReference Include="Uno.UI.RemoteControl" Version="3.0.0-dev.1447" Condition="'$(Configuration)'=='Debug'" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\$ext_safeprojectname$.Skia.WPF\$ext_safeprojectname$.Skia.WPF.csproj" />
   </ItemGroup>
