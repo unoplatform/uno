@@ -30,7 +30,6 @@ namespace Windows.UI.Xaml.Controls
 		partial void InitializePropertiesPartial()
 		{
 			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, null, TextAlignment));
-			OnVerticalContentAlignmentChanged(VerticalAlignment.Top, VerticalContentAlignment);
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState)

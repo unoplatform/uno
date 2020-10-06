@@ -27,7 +27,6 @@ namespace Windows.UI.Xaml.Controls
 			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, null, TextAlignment));
 			OnReturnKeyTypeChanged(ReturnKeyType);
 			OnKeyboardAppearanceChanged(KeyboardAppearance);
-			OnVerticalContentAlignmentChanged(GetDefaultVerticalContentAlignment(), VerticalContentAlignment);
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState)
@@ -325,10 +324,5 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#endregion
-
-		private VerticalAlignment GetDefaultVerticalContentAlignment() =>
-			AcceptsReturn || TextWrapping != TextWrapping.NoWrap
-							? VerticalAlignment.Top
-							: VerticalAlignment.Center;
 	}
 }

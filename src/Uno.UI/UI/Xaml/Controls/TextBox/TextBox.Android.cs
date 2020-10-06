@@ -90,7 +90,6 @@ namespace Windows.UI.Xaml.Controls
 		partial void InitializePropertiesPartial()
 		{
 			OnImeOptionsChanged(ImeOptions);
-			OnVerticalContentAlignmentChanged(VerticalAlignment.Center, VerticalContentAlignment);
 		}
 
 		private void UpdateTextBoxView()
