@@ -15,7 +15,7 @@ namespace Windows.UI.Composition
 		private float _rotationAngleInDegrees;
 		private Vector3 _rotationAxis = new Vector3(0, 0, 1);
 		private Matrix4x4 transformMatrix = Matrix4x4.Identity;
-		private bool isVisible;
+		private bool isVisible = true;
 		private float opacity = 1.0f;
 
 		internal Visual(Compositor compositor) : base(compositor)

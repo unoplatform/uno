@@ -801,6 +801,29 @@ namespace Uno.UI.Helpers.WinUI
 			}
 		}
 
+		// Sometimes we want to get a string representation from an arbitrary object. E.g. for constructing a UIA Name
+		// from an automation peer. There is no guarantee that an arbitrary object is convertable to a string, so
+		// this function may return an empty string.
+		public static string TryGetStringRepresentationFromObject(object obj)
+		{
+			string returnHString = null;
+
+			if (obj != null)
+			{
+				var stringable = obj as IStringable;
+				if (stringable != null)
+				{
+					returnHString = stringable.ToString();
+				}
+				if (string.IsNullOrEmpty(returnHString))
+				{
+					returnHString = obj as string ?? returnHString;
+				}
+			}
+
+			return returnHString;
+		}
+
 		//
 		// Header file
 		//

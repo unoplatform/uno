@@ -60,8 +60,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Uno.Neutral.Cs.TemplatedControl\CustomControl.cs" />
+    <None Include="Uno.Neutral.Cs.Resw\Resources.resw">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="UserControl\UserControl.xaml.cs">
+      <DependentUpon>UserControl.xaml</DependentUpon>
+    </None>
     <None Include="BlankPage\BlankPage.xaml.cs">
       <DependentUpon>BlankPage.xaml</DependentUpon>
+    </None>
+    <None Include="ContentDialog\ContentDialog.xaml.cs">
+      <DependentUpon>ContentDialog.xaml</DependentUpon>
     </None>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -73,6 +83,32 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BlankPage\BlankPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="Uno.Neutral.Cs.Resw\Uno.Neutral.Cs.Resw.vstemplate">
+      <OutputSubPath>Uno Platform</OutputSubPath>
+    </VSTemplate>
+    <VSTemplate Include="Uno.Neutral.Cs.TemplatedControl\Uno.Neutral.Cs.TemplatedControl.vstemplate">
+      <OutputSubPath>Uno Platform</OutputSubPath>
+    </VSTemplate>
+    <VSTemplate Include="ContentDialog\ContentDialog.vstemplate">
+      <OutputSubPath>Uno Platform</OutputSubPath>
+    </VSTemplate>
+    <VSTemplate Include="UserControl\UserControl.vstemplate">
+      <OutputSubPath>Uno Platform</OutputSubPath>
+    </VSTemplate>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UserControl\UserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ContentDialog\ContentDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>

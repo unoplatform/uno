@@ -105,11 +105,10 @@ dotnet new unoapp-winui -n UnoAppWinUI
 Assert-ExitCodeIsZero
 
 # XF - Default
-7z x build\assets\xfapp-uwp-4.5.0.356.zip -oXFApp
+7z x build\assets\xfapp-uwp-4.8.0.1451.zip -oXFApp
 
-cd XFApp
+pushd XFApp
 dotnet new wasmxfhead
 & $msbuild /ds /r /p:Configuration=Debug XFApp.Wasm\XFApp.Wasm.csproj
 Assert-ExitCodeIsZero
-
-cd ..
+popd
