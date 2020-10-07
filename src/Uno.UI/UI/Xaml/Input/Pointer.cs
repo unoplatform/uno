@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Uno;
 using Windows.Devices.Input;
 
@@ -8,12 +9,18 @@ namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class Pointer : IEquatable<Pointer>
 	{
+		private static int _unknownId;
+		internal static long CreateUniqueIdForUnknownPointer()
+			=> (long)1 << 63 | (long)Interlocked.Increment(ref _unknownId);
+
 		public Pointer(uint id, PointerDeviceType type, bool isInContact, bool isInRange)
 		{
 			PointerId = id;
 			PointerDeviceType = type;
 			IsInContact = isInContact;
 			IsInRange = isInRange;
+
+			UniqueId = (long)PointerDeviceType << 32 | PointerId;
 		}
 
 
@@ -24,6 +31,11 @@ namespace Windows.UI.Xaml.Input
 			PointerDeviceType = type;
 		}
 #endif
+
+		/// <summary>
+		/// A unique identifier which contains <see cref="PointerDeviceType"/> and <see cref="PointerId"/>.
+		/// </summary>
+		internal long UniqueId { get; }
 
 		public uint PointerId { get; }
 
@@ -43,7 +55,7 @@ namespace Windows.UI.Xaml.Input
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
 
-			return PointerDeviceType == other.PointerDeviceType && PointerId == other.PointerId;
+			return UniqueId == other.UniqueId;
 		}
 
 		public override bool Equals(object obj)
@@ -52,7 +64,7 @@ namespace Windows.UI.Xaml.Input
 			if (ReferenceEquals(this, obj)) return true;
 			if (!(obj is Pointer other)) return false;
 
-			return PointerDeviceType == other.PointerDeviceType && PointerId == other.PointerId;
+			return UniqueId == other.UniqueId;
 		}
 
 		public override int GetHashCode()
