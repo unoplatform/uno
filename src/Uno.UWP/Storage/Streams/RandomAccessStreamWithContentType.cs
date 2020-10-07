@@ -1,20 +1,40 @@
 #nullable enable
 
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Windows.Foundation;
 
 namespace Windows.Storage.Streams
 {
-	internal class RandomAccessStreamWithContentType : IRandomAccessStreamWithContentType
+	internal class RandomAccessStreamWithContentType : IRandomAccessStreamWithContentType, IStreamWrapper, IRandomStreamWrapper
 	{
+		public const string DefaultContentType = "application/octet-stream";
+
 		private readonly IRandomAccessStream _stream;
 
-		public RandomAccessStreamWithContentType(IRandomAccessStream stream, string contentType = "application/octet-stream")
+		/// <summary>
+		/// -- DO NOT USE -- Prefer to use the System.IO.WindowsRuntimeStreamExtensions.TrySetContentType
+		/// The only valid use-case is when you explicitly know that the provided stream does not implement IRandomAccessStreamWithContentType
+		/// </summary>
+		public RandomAccessStreamWithContentType(IRandomAccessStream stream, string contentType = DefaultContentType)
 		{
+			Debug.Assert(!(stream is IRandomAccessStreamWithContentType));
+
 			ContentType = contentType;
 			_stream = stream;
 		}
+
+		public RandomAccessStreamWithContentType(Stream stream, string contentType = DefaultContentType)
+			: this(new RandomAccessStreamOverStream(stream), contentType)
+		{
+		}
+
+		Stream? IStreamWrapper.FindStream() => (_stream as IStreamWrapper)?.FindStream();
+		IRandomAccessStream? IRandomStreamWrapper.FindStream() => (_stream as IRandomStreamWrapper)?.FindStream() ?? _stream;
+		IInputStream? IInputStreamWrapper.FindStream() => (_stream as IInputStreamWrapper)?.FindStream() ?? _stream;
+		IOutputStream? IOutputStreamWrapper.FindStream() => (_stream as IOutputStreamWrapper)?.FindStream() ?? _stream;
 
 		/// <inheritdoc />
 		public string ContentType { get; }
