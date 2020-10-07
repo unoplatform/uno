@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -80,10 +81,10 @@ namespace Windows.ApplicationModel.DataTransfer
 			=> SetData(StandardDataFormats.Bitmap, value ?? throw new ArgumentNullException("Cannot set DataPackage.Bitmap to null"));
 
 		public void SetStorageItems(IEnumerable<IStorageItem> value)
-			=> SetData(StandardDataFormats.StorageItems, value ?? throw new ArgumentNullException("Cannot set DataPackage.StorageItems to null"));
+			=> SetData(StandardDataFormats.StorageItems, (value ?? throw new ArgumentNullException("Cannot set DataPackage.StorageItems to null")).ToList() as IReadOnlyList<IStorageItem>);
 
 		public void SetStorageItems(IEnumerable<IStorageItem> value, bool readOnly)
-			=> SetData(StandardDataFormats.StorageItems, value ?? throw new ArgumentNullException("Cannot set DataPackage.StorageItems to null"));
+			=> SetData(StandardDataFormats.StorageItems, (value ?? throw new ArgumentNullException("Cannot set DataPackage.StorageItems to null")).ToList() as IReadOnlyList<IStorageItem>);
 
 		public DataPackageView GetView()
 			=> new DataPackageView(
