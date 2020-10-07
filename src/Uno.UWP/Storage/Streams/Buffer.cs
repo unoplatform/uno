@@ -6,6 +6,11 @@ namespace Windows.Storage.Streams
 {
 	public partial class Buffer : IBuffer
 	{
+		/// <summary>
+		/// A default length to use for buffer copy when none specified
+		/// </summary>
+		internal const int DefaultCapacity = 1024 * 1024; // 1M
+
 		private readonly Memory<byte> _data;
 
 		internal static Buffer Cast(IBuffer impl)
