@@ -25,6 +25,7 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(WinUI.IApplicationExtension), o => new WpfApplicationExtension(o));
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));
+			ApiExtensibility.Register(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new WpfDragDropExtension(o));
 		}
 
 		[ThreadStatic] private static WpfHost _current;
