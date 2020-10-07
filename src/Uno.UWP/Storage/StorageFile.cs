@@ -21,6 +21,9 @@ namespace Windows.Storage
 		public static IAsyncOperation<StorageFile> GetFileFromPathAsync(string path)
 			=> AsyncOperation.FromTask(async ct => new StorageFile(new Local(path)));
 
+		internal static StorageFile GetFileFromPath(string path)
+			=> new StorageFile(new Local(path));
+
 		internal static StorageFile GetFileFromLocalPath(string path)
 			=> new StorageFile(new Local(path));
 

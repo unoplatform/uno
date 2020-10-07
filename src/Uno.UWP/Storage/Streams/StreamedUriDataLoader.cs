@@ -84,9 +84,9 @@ namespace Windows.Storage.Streams
 				using var responseStream = await response.Content.ReadAsStreamAsync();
 				using var file = File.OpenWeak(FileAccess.Write);
 
-				var buffer = new byte[8192];
+				var buffer = new byte[Buffer.DefaultCapacity];
 				int read;
-				while ((read = await responseStream.ReadAsync(buffer, 0, 8192, ct)) > 0)
+				while ((read = await responseStream.ReadAsync(buffer, 0, Buffer.DefaultCapacity, ct)) > 0)
 				{
 					await file.WriteAsync(buffer, 0, read, ct);
 

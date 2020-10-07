@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
+using Buffer = Windows.Storage.Streams.Buffer;
 
 namespace Windows.Storage
 {
@@ -71,7 +72,7 @@ namespace Windows.Storage
 				using (var src = await Owner.OpenStreamForReadAsync())
 				using (var dst = await target.OpenStreamForReadAsync())
 				{
-					await src.CopyToAsync(dst, 8192, ct);
+					await src.CopyToAsync(dst, Buffer.DefaultCapacity, ct);
 				}
 			}
 
@@ -86,7 +87,7 @@ namespace Windows.Storage
 				using (var src = await Owner.OpenStreamForReadAsync())
 				using (var dst = await target.OpenStreamForReadAsync())
 				{
-					await src.CopyToAsync(dst, 8192, ct);
+					await src.CopyToAsync(dst, Buffer.DefaultCapacity, ct);
 				}
 
 				await Delete(ct, StorageDeleteOption.PermanentDelete);
