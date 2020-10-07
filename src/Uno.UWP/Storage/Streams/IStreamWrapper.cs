@@ -8,21 +8,21 @@ namespace Windows.Storage.Streams
 {
 	internal interface IStreamWrapper
 	{
-		Stream GetStream();
+		Stream? FindStream();
 	}
 
 	interface IInputStreamWrapper
 	{
-		IInputStream GetStream();
+		IInputStream? FindStream();
 	}
 
 	interface IOutputStreamWrapper
 	{
-		IOutputStream GetStream();
+		IOutputStream? FindStream();
 	}
 
 	internal interface IRandomStreamWrapper : IInputStreamWrapper, IOutputStreamWrapper
 	{
-		new IRandomAccessStream GetStream();
+		new IRandomAccessStream? FindStream();
 	}
 }

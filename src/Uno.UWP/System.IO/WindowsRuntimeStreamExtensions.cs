@@ -16,9 +16,10 @@ namespace System.IO
 				throw new NotSupportedException("Cannot convert stream to a IInputStream because stream does not support reading");
 			}
 
-			if (stream is IInputStreamWrapper wrapper)
+			if (stream is IInputStreamWrapper wrapper
+				&& wrapper.FindStream() is {} raw)
 			{
-				return wrapper.GetStream();
+				return raw;
 			}
 
 			return new InputStreamOverStream(stream);
@@ -31,9 +32,10 @@ namespace System.IO
 				throw new NotSupportedException("Cannot convert stream to a IOutputStream because stream does not support writing");
 			}
 
-			if (stream is IOutputStreamWrapper wrapper)
+			if (stream is IOutputStreamWrapper wrapper
+				&& wrapper.FindStream() is { } raw)
 			{
-				return wrapper.GetStream();
+				return raw;
 			}
 
 			return new OutputStreamOverStream(stream);
@@ -46,54 +48,58 @@ namespace System.IO
 				throw new NotSupportedException("Cannot convert stream to a IRandomAccessStream because stream does not support seeking");
 			}
 
-			if (stream is IRandomStreamWrapper wrapper)
+			if (stream is IRandomStreamWrapper wrapper
+				&& wrapper.FindStream() is { } raw)
 			{
-				return wrapper.GetStream();
+				return raw;
 			}
 
 			return new RandomAccessStreamOverStream(stream);
 		}
 
 		public static Stream AsStream(this IRandomAccessStream windowsRuntimeStream)
-			=> AsStream(windowsRuntimeStream, 8192);
+			=> AsStream(windowsRuntimeStream, global::Windows.Storage.Streams.Buffer.DefaultCapacity);
 
 		public static Stream AsStream(this IRandomAccessStream windowsRuntimeStream, int bufferSize)
 		{
-			if (windowsRuntimeStream is IStreamWrapper wrapper)
+			if (windowsRuntimeStream is IStreamWrapper wrapper
+				&& wrapper.FindStream() is { } raw)
 			{
-				return wrapper.GetStream();
+				return raw;
 			}
 
 			return new StreamOverRandomAccessStream(windowsRuntimeStream, bufferSize);
 		}
 
 		public static Stream AsStreamForRead(this IInputStream windowsRuntimeStream)
-			=> AsStreamForRead(windowsRuntimeStream, 8192);
+			=> AsStreamForRead(windowsRuntimeStream, global::Windows.Storage.Streams.Buffer.DefaultCapacity);
 
 		public static Stream AsStreamForRead(this IInputStream windowsRuntimeStream, int bufferSize)
 		{
-			if (windowsRuntimeStream is IStreamWrapper wrapper)
+			if (windowsRuntimeStream is IStreamWrapper wrapper
+				&& wrapper.FindStream() is { } raw)
 			{
-				return wrapper.GetStream();
+				return raw;
 			}
 
 			return new StreamOverInputStream(windowsRuntimeStream, bufferSize);
 		}
 
 		public static Stream AsStreamForWrite(this IOutputStream windowsRuntimeStream)
-			=> AsStreamForWrite(windowsRuntimeStream, 8192);
+			=> AsStreamForWrite(windowsRuntimeStream, global::Windows.Storage.Streams.Buffer.DefaultCapacity);
 
 		public static Stream AsStreamForWrite(this IOutputStream windowsRuntimeStream, int bufferSize)
 		{
-			if (windowsRuntimeStream is IStreamWrapper wrapper)
+			if (windowsRuntimeStream is IStreamWrapper wrapper
+				&& wrapper.FindStream() is { } raw)
 			{
-				return wrapper.GetStream();
+				return raw;
 			}
 
 			return new StreamOverOutputStream(windowsRuntimeStream, bufferSize);
 		}
 
-		internal static IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(this Stream stream, IBuffer buffer, uint count, InputStreamOptions options)
+		internal static IAsyncOperationWithProgress<IBuffer, uint> ReadAsyncOperation(this Stream stream, IBuffer buffer, uint count, InputStreamOptions options)
 			=> AsyncOperationWithProgress.FromFuncAsync<IBuffer, uint>(async (ct, op) =>
 			{
 				await stream.ReadAsync(buffer, count, options, ct);
@@ -112,7 +118,7 @@ namespace System.IO
 			buffer.Length = (uint)await stream.ReadAsync(data.Array, data.Offset, (int)count, ct);
 		}
 
-		internal static IAsyncOperationWithProgress<uint, uint> WriteAsync(this Stream stream, IBuffer buffer)
+		internal static IAsyncOperationWithProgress<uint, uint> WriteAsyncOperation(this Stream stream, IBuffer buffer)
 			=> AsyncOperationWithProgress.FromFuncAsync<uint, uint>(async (ct, op) =>
 			{
 				await stream.WriteAsync(buffer, ct);
@@ -127,7 +133,7 @@ namespace System.IO
 			await stream.WriteAsync(data.Array, data.Offset, (int)buffer.Length, ct);
 		}
 
-		public static IAsyncOperation<bool> FlushAsyncOp(this Stream stream)
+		public static IAsyncOperation<bool> FlushAsyncOperation(this Stream stream)
 			=> AsyncOperation.FromTask(async ct =>
 			{
 				await stream.FlushAsync(ct);
@@ -154,5 +160,14 @@ namespace System.IO
 			var src = new global::Windows.Storage.Streams.Buffer(new Memory<byte>(buffer, offset, count));
 			return stream.WriteAsync(src).AsTask(cancellationToken);
 		}
+
+		/// <summary>
+		/// Wraps the stream with the provided ContentType if the provided stream does not have a ContentType defined,
+		/// returns the provided stream otherwise.
+		/// </summary>
+		internal static IRandomAccessStreamWithContentType TrySetContentType(this IRandomAccessStream stream, string contentType = RandomAccessStreamWithContentType.DefaultContentType)
+			=> stream is IRandomAccessStreamWithContentType rasWithType
+				? rasWithType
+				: new RandomAccessStreamWithContentType(stream, contentType);
 	}
 }

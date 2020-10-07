@@ -19,9 +19,9 @@ namespace Windows.Storage.Streams
 			_bufferSize = bufferSize;
 		}
 
-		IRandomAccessStream IRandomStreamWrapper.GetStream() => _raStream;
-		IInputStream IInputStreamWrapper.GetStream() => _raStream;
-		IOutputStream IOutputStreamWrapper.GetStream() => _raStream;
+		IRandomAccessStream IRandomStreamWrapper.FindStream() => _raStream;
+		IInputStream IInputStreamWrapper.FindStream() => _raStream;
+		IOutputStream IOutputStreamWrapper.FindStream() => _raStream;
 
 		/// <inheritdoc />
 		public override bool CanRead => _raStream.CanRead;

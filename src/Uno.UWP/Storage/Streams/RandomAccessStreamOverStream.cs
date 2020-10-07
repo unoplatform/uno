@@ -19,7 +19,7 @@ namespace Windows.Storage.Streams
 			_stream = stream;
 		}
 
-		Stream IStreamWrapper.GetStream() => _stream;
+		Stream IStreamWrapper.FindStream() => _stream;
 
 		/// <inheritdoc />
 		public bool CanRead => _stream.CanRead;
@@ -54,15 +54,15 @@ namespace Windows.Storage.Streams
 
 		/// <inheritdoc />
 		public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)
-			=> _stream.ReadAsync(buffer, count, options);
+			=> _stream.ReadAsyncOperation(buffer, count, options);
 
 		/// <inheritdoc />
 		public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer)
-			=> _stream.WriteAsync(buffer);
+			=> _stream.WriteAsyncOperation(buffer);
 
 		/// <inheritdoc />
 		public IAsyncOperation<bool> FlushAsync()
-			=> _stream.FlushAsyncOp();
+			=> _stream.FlushAsyncOperation();
 
 		/// <inheritdoc />
 		public IRandomAccessStream CloneStream()
