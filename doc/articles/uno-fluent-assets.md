@@ -11,7 +11,7 @@ The font is in this repository https://github.com/unoplatform/uno.fonts. The nec
 
 ### iOS & macOS 
 ---
-The `info.plist` file should be updated for both platforms, replacing the string `winjs-symbols.ttf` with `uno-fluentui-assets.ttf` in the file.
+The `info.plist` file should be updated for both platforms, replacing the string `Fonts/winjs-symbols.ttf` with `Fonts/uno-fluentui-assets.ttf` in the file.
 
 On iOS and macOS, Uno looks for a font named 'Symbols' (A font's name is not necessarily the name of the file). For this font to be available, the font file needs to be placed in the `Resources/Fonts` folder. The old `winjs-symbols.ttf` file can safely be deleted.  \  \
 \
@@ -27,7 +27,7 @@ Once Uno has been updated, it will start looking for a font file named uno-fluen
 \
 ![image](Assets/font-droid.png)
 \
-Open the `.csproj` (`YourApp.Droid.csproj`). Replace the string `winjs-symbols.ttf` with `uno-fluentui-assets.ttf`.
+Open the `.csproj` (`YourApp.Droid.csproj`). Replace the string `Fonts/winjs-symbols.ttf` with `Fonts/uno-fluentui-assets.ttf`.
 ### WebAssembly 
 ---
 WASM won't break after the update, but to access the new symbols the file Font.css should be changed. The font is passed as a base64 string: \ \
