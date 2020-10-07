@@ -4250,6 +4250,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return $"new RelativeSource(RelativeSourceMode.{resourceName})";
 				}
 
+				if (bindingType.Type.Name == "NullExtension")
+				{
+					return "null";
+				}
+
 				// If type specified in the binding was not found, log and return an error message
 				if (!string.IsNullOrEmpty(bindingType?.Type?.Name ?? string.Empty))
 				{
