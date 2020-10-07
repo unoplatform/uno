@@ -56,13 +56,7 @@ namespace Windows.UI.Xaml
 		private IAsyncOperation<DataPackageOperation> EnterOrOverAsync(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)
 			=> AsyncOperation.FromTask(async ct =>
 			{
-				if (!(dragInfo.PointerRoutedEventArgs is PointerRoutedEventArgs ptArgs))
-				{
-					this.Log().Error("The pointer event args was not set. Impossible to raise the drag args on the view.");
-					return DataPackageOperation.None;
-				}
-
-				var target = await UpdateTarget(dragInfo, dragUIOverride, ptArgs, ct);
+				var target = await UpdateTarget(dragInfo, dragUIOverride, ct);
 				if (!target.HasValue)
 				{
 					return DataPackageOperation.None;
@@ -85,19 +79,13 @@ namespace Windows.UI.Xaml
 		public IAsyncAction LeaveAsync(CoreDragInfo dragInfo)
 			=> AsyncAction.FromTask(async ct =>
 			{
-				if (!(dragInfo.PointerRoutedEventArgs is PointerRoutedEventArgs ptArgs))
-				{
-					this.Log().Error("The pointer event args was not set. Impossible to raise the drag args on the view.");
-					return;
-				}
-
 				var leaveTasks = _pendingDropTargets.ToArray().Select(RaiseLeave);
 				_pendingDropTargets.Clear();
 				Task.WhenAll(leaveTasks);
 
 				async Task RaiseLeave(KeyValuePair<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> target)
 				{
-					var args = new DragEventArgs(target.Key, dragInfo, target.Value.uiOverride, ptArgs);
+					var args = new DragEventArgs(target.Key, dragInfo, target.Value.uiOverride);
 
 					target.Key.RaiseDragLeave(args);
 
@@ -112,13 +100,7 @@ namespace Windows.UI.Xaml
 		public IAsyncOperation<DataPackageOperation> DropAsync(CoreDragInfo dragInfo)
 			=> AsyncOperation.FromTask(async ct =>
 			{
-				if (!(dragInfo.PointerRoutedEventArgs is PointerRoutedEventArgs ptArgs))
-				{
-					this.Log().Error("The pointer event args was not set. Impossible to raise the drag args on the view.");
-					return DataPackageOperation.None;
-				}
-
-				var target = await UpdateTarget(dragInfo, null, ptArgs, ct);
+				var target = await UpdateTarget(dragInfo, null, ct);
 				if (!target.HasValue)
 				{
 					return DataPackageOperation.None;
@@ -138,13 +120,12 @@ namespace Windows.UI.Xaml
 		private async Task<(UIElement element, global::Windows.UI.Xaml.DragEventArgs args)?> UpdateTarget(
 			CoreDragInfo dragInfo,
 			CoreDragUIOverride? dragUIOverride,
-			PointerRoutedEventArgs ptArgs,
 			CancellationToken ct)
 		{
 			var target = VisualTreeHelper.HitTest(
 				dragInfo.Position,
 				getTestability: _getDropHitTestability,
-				isStale: elt => elt.IsDragOver(ptArgs.Pointer));
+				isStale: elt => elt.IsDragOver(dragInfo.SourceId));
 
 			// First raise the drag leave event on stale branch if any.
 			if (target.stale is { } staleBranch)
@@ -163,7 +144,7 @@ namespace Windows.UI.Xaml
 					//		 This is acceptable as a MVP as we usually have only one Drop target par app.
 					//		 Anyway if we Leave a bit too much, we will Enter again below
 					var leaf = leftElements.First();
-					var leaveArgs = new DragEventArgs(leaf.elt, dragInfo, leaf.dragState.uiOverride, ptArgs);
+					var leaveArgs = new DragEventArgs(leaf.elt, dragInfo, leaf.dragState.uiOverride);
 
 					staleBranch.Leaf.RaiseDragLeave(leaveArgs);
 
@@ -182,14 +163,14 @@ namespace Windows.UI.Xaml
 			DragEventArgs args;
 			if (target.element is {} && _pendingDropTargets.TryGetValue(target.element, out var state))
 			{
-				args = new DragEventArgs(target.element!, dragInfo, state.uiOverride, ptArgs)
+				args = new DragEventArgs(target.element!, dragInfo, state.uiOverride)
 				{
 					AcceptedOperation = state.acceptedOperation
 				};
 			}
 			else
 			{
-				args = new DragEventArgs(target.element!, dragInfo, new DragUIOverride(dragUIOverride ?? new CoreDragUIOverride()), ptArgs);
+				args = new DragEventArgs(target.element!, dragInfo, new DragUIOverride(dragUIOverride ?? new CoreDragUIOverride()));
 			}
 
 			return (target.element!, args);
