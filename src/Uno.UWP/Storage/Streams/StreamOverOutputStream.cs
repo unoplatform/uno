@@ -19,7 +19,7 @@ namespace Windows.Storage.Streams
 			_bufferSize = bufferSize;
 		}
 
-		IOutputStream IOutputStreamWrapper.GetStream() => _raStream;
+		IOutputStream IOutputStreamWrapper.FindStream() => _raStream;
 
 		/// <inheritdoc />
 		public override bool CanRead => false;

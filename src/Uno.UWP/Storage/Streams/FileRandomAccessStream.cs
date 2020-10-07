@@ -29,12 +29,12 @@ namespace Windows.Storage.Streams
 			_source = File.Open(_path, FileMode.Open, access, share);
 		}
 
-		Stream IStreamWrapper.GetStream() => _source;
+		Stream IStreamWrapper.FindStream() => _source;
 
 		public ulong Size
 		{
 			get => (ulong)_source.Length;
-			set => throw new NotSupportedException("Setting the stream size is not supported");
+			set => _source.SetLength((long)value);
 		}
 
 		public bool CanRead => _source.CanRead;
@@ -73,12 +73,12 @@ namespace Windows.Storage.Streams
 			=> _source.Dispose();
 
 		public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)
-			=> _source.ReadAsync(buffer, count, options);
+			=> _source.ReadAsyncOperation(buffer, count, options);
 
 		public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer)
-			=> _source.WriteAsync(buffer);
+			=> _source.WriteAsyncOperation(buffer);
 
 		public IAsyncOperation<bool> FlushAsync()
-			=> _source.FlushAsyncOp();
+			=> _source.FlushAsyncOperation();
 	}
 }
