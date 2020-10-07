@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace Windows.UI.Xaml
 	{
 		private static readonly TimeSpan _deferralTimeout = TimeSpan.FromSeconds(30); // Random value!
 
+		private readonly IDragDropExtension? _extension;
 		private readonly ICoreDropOperationTarget _target;
 		private readonly DragView _view;
 		private readonly IDisposable _viewHandle;
@@ -26,8 +28,11 @@ namespace Windows.UI.Xaml
 		private readonly LinkedList<TargetAsyncTask> _queue = new LinkedList<TargetAsyncTask>();
 
 		private bool _isRunning;
+		private bool _isOverWindow; // This can probably be coalesced with the _state ...
 		private State _state = State.None;
 		private uint _lastFrameId;
+		private bool _hasRequestedNativeDrag;
+		private DataPackageOperation _acceptedOperation;
 
 		private enum State
 		{
@@ -37,10 +42,10 @@ namespace Windows.UI.Xaml
 			Completed
 		}
 
-		public DragOperation(Window window, CoreDragInfo info, ICoreDropOperationTarget? target = null)
+		public DragOperation(Window window, IDragDropExtension? extension, CoreDragInfo info, ICoreDropOperationTarget? target = null)
 		{
+			_extension = extension;
 			Info = info;
-			Pointer = info.Pointer as Pointer;
 
 			_target = target ?? new DropUITarget(window); // The DropUITarget must be re-created for each drag operation! (Caching of the drag ui-override)
 			_view = new DragView(info.DragUI as DragUI);
@@ -50,130 +55,56 @@ namespace Windows.UI.Xaml
 
 		public CoreDragInfo Info { get; }
 
-		public Pointer? Pointer { get; private set; }
-
-		internal void Entered(PointerRoutedEventArgs args)
-			=> EnteredOrMoved(args);
-
-		internal void Moved(PointerRoutedEventArgs args)
-			=> EnteredOrMoved(args);
-
-		private void EnteredOrMoved(PointerRoutedEventArgs args)
+		internal DataPackageOperation Moved(IDragEventSource src)
 		{
-			if (_state >= State.Completing || args.FrameId <= _lastFrameId) 
+			if (_state >= State.Completing || src.FrameId <= _lastFrameId) 
 			{
-				return;
+				return _acceptedOperation;
 			}
 
-			Update(args); // It's required to do that as soon as possible in order to update the view's location
-			Enqueue(Over, isIgnorable: _state == State.Over); // This is ignorable only if we already over
+			var wasOverWindow = _isOverWindow;
+			_isOverWindow = Window.Current.Bounds.Contains(src.GetPosition(null));
 
-			async Task Over(CancellationToken ct)
+			Update(src); // It's required to do that as soon as possible in order to update the view's location
+
+			if (wasOverWindow && !_isOverWindow)
 			{
-				if (_state >= State.Completing)
-				{
-					return;
-				}
-
-				var isOver = _state == State.Over;
-				_state = State.Over;
-
-				var acceptedOperation = isOver
-					? await _target.OverAsync(Info, _viewOverride).AsTask(ct)
-					: await _target.EnterAsync(Info, _viewOverride).AsTask(ct);
-				acceptedOperation &= Info.AllowedOperations;
-
-				_view.Update(acceptedOperation, _viewOverride);
+				Enqueue(RaiseRecoverableLeave);
 			}
+			else
+			{
+				Enqueue(RaiseEnterOrOver, isIgnorable: _state == State.Over); // This is ignorable only if we already over
+			}
+
+			return _acceptedOperation;
 		}
 
-		internal void Exited(PointerRoutedEventArgs args)
-		{
-			if (_state >= State.Completing || args.FrameId <= _lastFrameId)
-			{
-				return;
-			}
-
-			Update(args);
-			Enqueue(Leave);
-
-			async Task Leave(CancellationToken ct)
-			{
-				if (_state != State.Over)
-				{
-					return;
-				}
-
-				_state = State.None;
-				await _target.LeaveAsync(Info).AsTask(ct);
-
-				// When the pointer goes out of the window, we hide our internal control and,
-				// if supported by the OS, we request a Drag and Drop operation with the native UI.
-				// TODO: Request native D&D
-				_view.Hide();
-			}
-		}
-
-		internal void Dropped(PointerRoutedEventArgs args)
-		{
-			// For safety, we don't validate the FrameId for the finalizing actions, we rely only on the _state
-			if (_state >= State.Completing) 
-			{
-				return;
-			}
-
-			Update(args);
-			Enqueue(Drop);
-
-			async Task Drop(CancellationToken ct)
-			{
-				var result = DataPackageOperation.None;
-				try
-				{
-					if (_state != State.Over)
-					{
-						return;
-					}
-
-					_state = State.Completing;
-					result = await _target.DropAsync(Info).AsTask(ct);
-					result &= Info.AllowedOperations;
-				}
-				finally
-				{
-					Complete(result);
-				}
-			}
-		}
-
-		internal void Aborted(PointerRoutedEventArgs args)
+		internal DataPackageOperation Aborted(IDragEventSource src)
 		{
 			// For safety, we don't validate the FrameId for the finalizing actions, we rely only on the _state
 			if (_state >= State.Completing)
 			{
-				return;
+				return _acceptedOperation;
 			}
 
-			Update(args);
-			Enqueue(Abort);
+			Update(src);
+			Enqueue(RaiseFinalLeave);
 
-			async Task Abort(CancellationToken ct)
+			return _acceptedOperation;
+		}
+
+		internal DataPackageOperation Dropped(IDragEventSource src)
+		{
+			// For safety, we don't validate the FrameId for the finalizing actions, we rely only on the _state
+			if (_state >= State.Completing)
 			{
-				try
-				{
-					if (_state != State.Over)
-					{
-						return;
-					}
-
-					_state = State.Completing;
-					await _target.LeaveAsync(Info).AsTask(ct);
-				}
-				finally
-				{
-					Complete(DataPackageOperation.None);
-				}
+				return _acceptedOperation;
 			}
+
+			Update(src);
+			Enqueue(RaiseDrop);
+
+			return _acceptedOperation;
 		}
 
 		/// <summary>
@@ -182,83 +113,113 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal void Abort()
 		{
-			if (Pointer == null || _state == State.None)
+			if (_state == State.None)
 			{
 				// The D&D didn't had time to be started (or has already left), we can just complete
 				Complete(DataPackageOperation.None);
 				return;
 			}
 
-			Enqueue(Abort);
+			Enqueue(RaiseFinalLeave);
+		}
 
-			async Task Abort(CancellationToken ct)
+		private async Task RaiseEnterOrOver(CancellationToken ct)
+		{
+			if (_state >= State.Completing)
+			{
+				return;
+			}
+
+			var isOver = _state == State.Over;
+			_state = State.Over;
+
+			var acceptedOperation = isOver
+				? await _target.OverAsync(Info, _viewOverride).AsTask(ct)
+				: await _target.EnterAsync(Info, _viewOverride).AsTask(ct);
+			acceptedOperation &= Info.AllowedOperations;
+
+			_acceptedOperation = acceptedOperation;
+			_view.Update(acceptedOperation, _viewOverride);
+		}
+
+		/// <summary>
+		/// This is only for internally initiated drag operation for which we capture the pointer
+		/// and which **may come back over the window**.
+		/// </summary>
+		private async Task RaiseRecoverableLeave(CancellationToken ct)
+		{
+			if (_state != State.Over)
+			{
+				return;
+			}
+
+			_state = State.None;
+			_acceptedOperation = DataPackageOperation.None;
+			await _target.LeaveAsync(Info).AsTask(ct);
+
+			// When the pointer goes out of the window, we hide our internal control and,
+			// if supported by the OS, we request a Drag and Drop operation with the native UI.
+			_view.Hide();
+			if (!_hasRequestedNativeDrag)
+			{
+				_extension?.StartNativeDrag(Info);
+				_hasRequestedNativeDrag = true;
+			}
+		}
+
+		private async Task RaiseFinalLeave(CancellationToken ct)
+		{
+			try
 			{
 				if (_state != State.Over)
 				{
 					return;
 				}
 
-				try
-				{
-					await _target.LeaveAsync(Info).AsTask(ct);
-				}
-				finally
-				{
-					_state = State.Completing;
-					Complete(DataPackageOperation.None);
-				}
+				_state = State.Completing;
+				_acceptedOperation = DataPackageOperation.None;
+				await _target.LeaveAsync(Info).AsTask(ct);
+			}
+			finally
+			{
+				Complete(DataPackageOperation.None);
 			}
 		}
 
-		private void Update(PointerRoutedEventArgs args)
+		private async Task RaiseDrop(CancellationToken ct)
 		{
-			var point = args.GetCurrentPoint(null);
-			var mods = DragDropModifiers.None;
+			var result = DataPackageOperation.None;
+			try
+			{
+				if (_state != State.Over)
+				{
+					return;
+				}
 
-			var props = point.Properties;
-			if (props.IsLeftButtonPressed)
-			{
-				mods |= DragDropModifiers.LeftButton;
-			}
-			if (props.IsMiddleButtonPressed)
-			{
-				mods |= DragDropModifiers.MiddleButton;
-			}
-			if (props.IsRightButtonPressed)
-			{
-				mods |= DragDropModifiers.RightButton;
-			}
+				_state = State.Completing;
+				result = await _target.DropAsync(Info).AsTask(ct);
+				result &= Info.AllowedOperations;
 
-			var window = Window.Current.CoreWindow;
-			if (window.GetAsyncKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
-			{
-				mods |= DragDropModifiers.Shift;
+				_acceptedOperation = result;
 			}
-			if (window.GetAsyncKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
+			finally
 			{
-				mods |= DragDropModifiers.Control;
+				Complete(result);
 			}
-			if (window.GetAsyncKeyState(VirtualKey.Menu) == CoreVirtualKeyStates.Down)
-			{
-				mods |= DragDropModifiers.Alt;
-			}
+		}
 
+		private void Update(IDragEventSource src)
+		{
 			// As ugly as it is, it's the behavior of UWP, the CoreDragInfo is a mutable object!
-			Info.Modifiers = mods;
-			Info.Position = point.Position;
-			Info.PointerRoutedEventArgs = args;
-
-			// When the drag was initiated from an external app, the Pointer property won't be set.
-			// In that case the first pointer event received will be used for this drag operation.
-			// If so, we associate this selected pointer for future events.
-			Pointer ??= args.Pointer;
+			Info.UpdateSource(src);
 
 			// Updates the view location to follow the pointer
-			_view.SetLocation(point.Position);
+			// Note: This must be set AFTER the Info has been updated
+			_view.SetLocation(Info.Position);
 
 			// As we have multiple sources for the pointer events (capture of the dragged element and DragRoot),
 			// we make sure to not process the same event twice.
-			_lastFrameId = args.FrameId;
+			_lastFrameId = src.FrameId;
 		}
 
 		private void Enqueue(Func<CancellationToken, Task> action, bool isIgnorable = false)
