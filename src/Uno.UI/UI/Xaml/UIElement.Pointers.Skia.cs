@@ -41,8 +41,14 @@ namespace Windows.UI.Xaml
 
 			private void CoreWindow_PointerWheelChanged(CoreWindow sender, PointerEventArgs args)
 			{
-				var source = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
-				if (source.element is null)
+				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
+
+				// Even if impossible for the Release, we are fallbacking on the RootElement for safety
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Window.Current.Content;
+
+				if (originalSource is null)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
@@ -54,10 +60,10 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerPressed [{source.element.GetDebugName()}");
+					this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
 				}
 
-				var routedArgs = new PointerRoutedEventArgs(args, source.element);
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 				// Second raise the event, either on the OriginalSource or on the capture owners if any
 				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
@@ -69,7 +75,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					source.element.OnNativePointerWheel(routedArgs);
+					originalSource.OnNativePointerWheel(routedArgs);
 				}
 			}
 
@@ -91,8 +97,14 @@ namespace Windows.UI.Xaml
 
 			private void CoreWindow_PointerReleased(CoreWindow sender, PointerEventArgs args)
 			{
-				var source = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
-				if (source.element is null)
+				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
+
+				// Even if impossible for the Release, we are fallbacking on the RootElement for safety
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Window.Current.Content;
+
+				if (originalSource is null)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
@@ -104,10 +116,10 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerPressed [{source.element.GetDebugName()}");
+					this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
 				}
 
-				var routedArgs = new PointerRoutedEventArgs(args, source.element);
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 				// Second raise the event, either on the OriginalSource or on the capture owners if any
 				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
@@ -119,14 +131,20 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					source.element.OnNativePointerUp(routedArgs);
+					originalSource.OnNativePointerUp(routedArgs);
 				}
 			}
 
 			private void CoreWindow_PointerPressed(CoreWindow sender, PointerEventArgs args)
 			{
-				var source = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
-				if (source.element is null)
+				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
+
+				// Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Window.Current.Content;
+
+				if (originalSource is null)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
@@ -138,18 +156,23 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerPressed [{source.element.GetDebugName()}");
+					this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
 				}
 
-				var routedArgs = new PointerRoutedEventArgs(args, source.element);
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-				source.element.OnNativePointerDown(routedArgs);
+				originalSource.OnNativePointerDown(routedArgs);
 			}
 
 			private void CoreWindow_PointerMoved(CoreWindow sender, PointerEventArgs args)
 			{
-				var source = VisualTreeHelper.HitTest(args.CurrentPoint.Position, isStale: _isOver);
-				if (source.element is null)
+				var (originalSource, staleBranch) = VisualTreeHelper.HitTest(args.CurrentPoint.Position, isStale: _isOver);
+
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Window.Current.Content;
+
+				if (originalSource is null)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
@@ -161,16 +184,16 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerMoved [{source.element.GetDebugName()}");
+					this.Log().Trace($"CoreWindow_PointerMoved [{originalSource.GetDebugName()}");
 				}
 
-				var routedArgs = new PointerRoutedEventArgs(args, source.element);
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 				// First raise the PointerExited events on the stale branch
-				if (source.stale.HasValue)
+				if (staleBranch.HasValue)
 				{
 					routedArgs.CanBubbleNatively = true; // TODO: UGLY HACK TO AVOID BUBBLING: we should be able to request to bubble only up to a the root
-					var (root, stale) = source.stale.Value;
+					var (root, stale) = staleBranch.Value;
 
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
@@ -198,7 +221,7 @@ namespace Windows.UI.Xaml
 				// Second (try to) raise the PointerEnter on the OriginalSource
 				// Note: This won't do anything if already over.
 				routedArgs.Handled = false;
-				source.element.OnNativePointerEnter(routedArgs);
+				originalSource.OnNativePointerEnter(routedArgs);
 
 				// Finally raise the event, either on the OriginalSource or on the capture owners if any
 				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
@@ -213,7 +236,7 @@ namespace Windows.UI.Xaml
 				{
 					// Note: We prefer to use the "WithOverCheck" overload as we already know that the pointer is effectively over
 					routedArgs.Handled = false;
-					source.element.OnNativePointerMoveWithOverCheck(routedArgs, isOver: true);
+					originalSource.OnNativePointerMoveWithOverCheck(routedArgs, isOver: true);
 				}
 			}
 		}
@@ -291,5 +314,11 @@ namespace Windows.UI.Xaml
 		{
 		}
 		#endregion
+
+		partial void CapturePointerNative(Pointer pointer)
+			=> CoreWindow.GetForCurrentThread()!.SetPointerCapture();
+
+		partial void ReleasePointerNative(Pointer pointer)
+			=> CoreWindow.GetForCurrentThread()!.ReleasePointerCapture();
 	}
 }
