@@ -13,30 +13,48 @@ using Uno.Logging;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
+	internal interface IDragEventSource
+	{
+		long Id { get; }
+
+		uint FrameId { get; }
+
+		//bool IsExternal { get; }
+
+		(Point location, DragDropModifiers modifier) GetState();
+
+		Point GetPosition(object? relativeTo);
+	}
+
 	public partial class CoreDragInfo 
 	{
 		private ImmutableList<Action<DataPackageOperation>>? _completions = ImmutableList<Action<DataPackageOperation>>.Empty;
 		private int _result = -1;
+		private IDragEventSource _source;
 
 		internal CoreDragInfo(
+			IDragEventSource source,
 			DataPackageView data,
 			DataPackageOperation allowedOperations,
-			object? dragUI = null,
-			object? pointer = null)
+			object? dragUI = null)
 		{
+			_source = source;
+			(Position, Modifiers) = source.GetState();
+
 			Data = data;
 			AllowedOperations = allowedOperations;
 			DragUI = dragUI;
-			Pointer = pointer;
 		}
 
 		public DataPackageView Data { get; }
 
 		public DataPackageOperation AllowedOperations { get; }
 
-		public DragDropModifiers Modifiers { get; internal set; }
+		public DragDropModifiers Modifiers { get; private set; }
 
-		public Point Position { get; internal set; }
+		public Point Position { get; private set; }
+
+		internal Point GetPosition(object? relativeTo) => _source.GetPosition(relativeTo);
 
 		/// <summary>
 		/// If this drag operation has been initiated by the current application,
@@ -45,20 +63,20 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		internal object? DragUI { get; }
 
 		/// <summary>
-		/// If this drag operation has been initiated by the current application,
-		/// this is expected to be the Windows.UI.Xaml.Input.Pointer used to initiate this operation.
+		/// A unique identifier of the source that trigger those drag operation (Pointer.UniqueId for internal drag and drop)
 		/// </summary>
-		internal object? Pointer { get; }
+		internal long SourceId => _source.Id;
 
-		/// <summary>
-		/// This will contains the current Windows.UI.Xaml.Input.PointerRoutedEventArgs which is triggering an update
-		/// on <see cref="ICoreDropOperationTarget"/>.
-		/// This is going to be updated before the invocation of any method of the ICoreDropOperationTarget.
-		/// </summary>
-		/// <remarks>
-		/// This is a hack for the UIDropTarget which needs to known the location of the pointer for the Windows.UI.Xaml.DragEventArgs.
-		/// </remarks>
-		internal object? PointerRoutedEventArgs { get; set; }
+		internal void UpdateSource(IDragEventSource src)
+		{
+			if (src.Id != SourceId)
+			{
+				throw new InvalidOperationException("Cannot change the source id of pending drag operation");
+			}
+
+			_source = src;
+			(Position, Modifiers) = src.GetState();
+		}
 
 		internal void RegisterCompletedCallback(Action<DataPackageOperation> onCompleted)
 		{

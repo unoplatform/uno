@@ -490,7 +490,7 @@ namespace Windows.UI.Xaml
 
 				case RoutedEventFlag.DragEnter:
 				{
-					var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).Pointer;
+					var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
 					var wasDragOver = IsDragOver(pt);
 
 					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
@@ -508,7 +508,7 @@ namespace Windows.UI.Xaml
 				case RoutedEventFlag.DragOver:
 					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
 					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
-					SetIsDragOver(((global::Windows.UI.Xaml.DragEventArgs)args).Pointer, true);
+					SetIsDragOver(((global::Windows.UI.Xaml.DragEventArgs)args).SourceId, true);
 
 					if (!AllowDrop) // The Drag and Drop "routed" events are raised only on controls that opted-in
 					{
@@ -519,7 +519,7 @@ namespace Windows.UI.Xaml
 				case RoutedEventFlag.DragLeave:
 				case RoutedEventFlag.Drop:
 				{
-					var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).Pointer;
+					var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
 					var wasDragOver = IsDragOver(pt);
 
 					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
@@ -588,10 +588,10 @@ namespace Windows.UI.Xaml
 			result.Task.ContinueWith(OnDragCompleted, this, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.RunContinuationsAsynchronously);
 
 			var dragInfo = new CoreDragInfo(
-				routedArgs.Data.GetView(),
+				source: ptArgs,
+				data: routedArgs.Data.GetView(),
 				routedArgs.AllowedOperations,
-				dragUI: routedArgs.DragUI,
-				pointer: pointer.PointerDevice);
+				dragUI: routedArgs.DragUI);
 			dragInfo.RegisterCompletedCallback(result.SetResult);
 
 			CoreDragDropManager.GetForCurrentView()!.DragStarted(dragInfo);
@@ -622,18 +622,18 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseDragEnterOrOver(global::Windows.UI.Xaml.DragEventArgs args)
 		{
-			var evt = IsDragOver(args.Pointer)
+			var evt = IsDragOver(args.SourceId)
 				? DragOverEvent
 				: DragEnterEvent;
 
-			(_draggingOver ??= new HashSet<Pointer>()).Add(args.Pointer);
+			(_draggingOver ??= new HashSet<long>()).Add(args.SourceId);
 
 			SafeRaiseEvent(evt, args);
 		}
 
 		internal void RaiseDragLeave(global::Windows.UI.Xaml.DragEventArgs args)
 		{
-			if (_draggingOver?.Remove(args.Pointer) ?? false)
+			if (_draggingOver?.Remove(args.SourceId) ?? false)
 			{
 				SafeRaiseEvent(DragLeaveEvent, args);
 			}
@@ -641,7 +641,7 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseDrop(global::Windows.UI.Xaml.DragEventArgs args)
 		{
-			if (_draggingOver?.Remove(args.Pointer) ?? false)
+			if (_draggingOver?.Remove(args.SourceId) ?? false)
 			{
 				SafeRaiseEvent(DropEvent, args);
 			}
@@ -760,7 +760,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured);
 				if (_gestures.Value.IsDragging)
 				{
-					Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+					Window.Current.DragDrop.ProcessMoved(args);
 				}
 			}
 
@@ -791,7 +791,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), !isManagedBubblingEvent || isOverOrCaptured);
 				if (_gestures.Value.IsDragging)
 				{
-					Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+					Window.Current.DragDrop.ProcessMoved(args);
 				}
 			}
 
@@ -820,7 +820,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !isManagedBubblingEvent || isOverOrCaptured);
 				if (isDragging)
 				{
-					Window.Current.DragDrop.ProcessPointerReleased(args);
+					Window.Current.DragDrop.ProcessDropped(args);
 				}
 			}
 
@@ -847,7 +847,7 @@ namespace Windows.UI.Xaml
 
 			if (_gestures.IsValueCreated && _gestures.Value.IsDragging)
 			{
-				Window.Current.DragDrop.ProcessPointerMovedOverWindow(args);
+				Window.Current.DragDrop.ProcessMoved(args);
 			}
 
 			// We release the captures on exit when pointer if not pressed
@@ -892,7 +892,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.CompleteGesture();
 				if (_gestures.Value.IsDragging)
 				{
-					Window.Current.DragDrop.ProcessPointerCanceled(args);
+					Window.Current.DragDrop.ProcessAborted(args);
 				}
 			}
 
@@ -1247,7 +1247,7 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region Drag state (Updated by the RaiseDrag***, should not be updated externaly)
-		private HashSet<Pointer> _draggingOver;
+		private HashSet<long> _draggingOver;
 
 		/// <summary>
 		/// Gets a boolean which indicates if there is currently a Drag and Drop operation pending over this element.
@@ -1257,17 +1257,20 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="pointer">The pointer associated to the drag and drop operation</param>
 		internal bool IsDragOver(Pointer pointer)
-			=> _draggingOver?.Contains(pointer) ?? false;
+			=> _draggingOver?.Contains(pointer.UniqueId) ?? false;
 
-		private void SetIsDragOver(Pointer pointer, bool isOver)
+		internal bool IsDragOver(long sourceId)
+			=> _draggingOver?.Contains(sourceId) ?? false;
+
+		private void SetIsDragOver(long sourceId, bool isOver)
 		{
 			if (isOver)
 			{
-				(_draggingOver ??= new HashSet<Pointer>()).Add(pointer);
+				(_draggingOver ??= new HashSet<long>()).Add(sourceId);
 			}
 			else
 			{
-				_draggingOver?.Remove(pointer);
+				_draggingOver?.Remove(sourceId);
 			}
 		}
 

@@ -15,19 +15,16 @@ namespace Windows.UI.Xaml
 	public partial class DragEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
 		private readonly CoreDragInfo _info;
-		private readonly PointerRoutedEventArgs _pointer;
 
 		internal DragEventArgs(
 			UIElement originalSource,
 			CoreDragInfo info,
-			DragUIOverride uiOverride,
-			PointerRoutedEventArgs pointer)
+			DragUIOverride uiOverride)
 			: base(originalSource)
 		{
 			CanBubbleNatively = false;
 
 			_info = info;
-			_pointer = pointer;
 
 			DragUIOverride = uiOverride;
 		}
@@ -43,7 +40,7 @@ namespace Windows.UI.Xaml
 
 		public DragDropModifiers Modifiers => _info.Modifiers;
 
-		internal Pointer Pointer => _pointer.Pointer;
+		internal long SourceId => _info.SourceId;
 		#endregion
 
 		#region Properties that are expected to be updated by the handler
@@ -55,7 +52,7 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		public Point GetPosition(UIElement relativeTo)
-			=> _pointer.GetCurrentPoint(relativeTo).Position;
+			=> _info.GetPosition(relativeTo);
 
 		public DragOperationDeferral GetDeferral()
 			=> Deferral ??= new DragOperationDeferral();
