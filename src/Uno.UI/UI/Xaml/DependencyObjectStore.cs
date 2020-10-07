@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml
 
 		private static bool _validatePropertyOwner = Debugger.IsAttached;
 
-		private bool _isSettingAProperty;
+		private uint _propertySettingDepth;
 
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
@@ -435,7 +435,7 @@ namespace Windows.UI.Xaml
 			if (actualInstanceAlias != null)
 			{
 				ApplyPrecedenceOverride(ref precedence);
-				_isSettingAProperty = true;
+				_propertySettingDepth++;
 
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
 				try
@@ -486,7 +486,7 @@ namespace Windows.UI.Xaml
 				finally
 #endif
 				{
-					_isSettingAProperty = false;
+					_propertySettingDepth--;
 				}
 			}
 			else
@@ -599,24 +599,26 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ApplyPrecedenceOverride(ref DependencyPropertyValuePrecedences precedence)
 		{
-			if (_isSettingAProperty)
+			if(_precedenceOverride == DependencyPropertyValuePrecedences.ExplicitStyle)
+			{
+				// **WHEN OVERRIDE IS SET ON EXPLICIT STYLE**
+				// It means we need to propagate the "ExplicitStyle" precedence for the styling system to work well:
+				// we don't want style's setters to overwrite local values.
+			}
+			else if (!_precedenceOverride.HasValue || _propertySettingDepth > 0)
 			{
 				// We only want to override the precedence of properties set directly from a style. Nested sets (within property changed callbacks, etc)
-				// should be applied with the normal precedence.
+				// should be applied with the normal (usually "local") precedence.
+
 				return;
 			}
 
-			if (_precedenceOverride != null)
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug(
-						$"Overriding {precedence} precedence with {_precedenceOverride}."
-					);
-				}
-
-				precedence = _precedenceOverride.Value;
+				this.Log().Debug($"Overriding {precedence} precedence with {_precedenceOverride}.");
 			}
+
+			precedence = _precedenceOverride.Value;
 		}
 
 		/// <summary>

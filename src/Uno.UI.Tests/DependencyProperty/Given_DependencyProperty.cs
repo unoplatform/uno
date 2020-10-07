@@ -7,6 +7,7 @@ using Windows.UI.Xaml;
 using System.Threading;
 using Windows.UI.Xaml.Controls;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
@@ -1408,6 +1409,98 @@ namespace Uno.UI.Tests.BinderTests
 
 			var localContent = button.ReadLocalValue(Button.ContentProperty);
 			Assert.AreEqual("Frogurt", localContent);
+		}
+
+		[TestMethod]
+		public void When_Set_Style_Property()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { BorderThickness = new Thickness(100d) };
+
+			// Local value is 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "Before applying style");
+
+			sut.Style = style;
+
+			// Local value should stay 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "After applying style");
+
+			sut.ClearValue(Border.BorderThicknessProperty);
+
+			// Local value is cleared, fallback to style value
+			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
+		}
+
+		[TestMethod]
+		public void When_Set_Style_Property_PrecedenceInContext()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { BorderThickness = new Thickness(100d) };
+
+			using var registration1 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.BorderThicknessProperty,
+				(dependencyObject, args) =>
+				{
+					sut.Tag = args.NewPrecedence;
+				});
+
+			using var registration2 = sut.RegisterDisposablePropertyChangedCallback(
+				FrameworkElement.TagProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local);
+					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+				});
+
+			using var _ = new AssertionScope();
+
+			// Local value is 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "Before applying style");
+			sut.Tag.Should().BeNull("After applying style");
+
+			sut.Style = style;
+
+			// Local value should stay 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "After applying style");
+
+			sut.ClearValue(Border.BorderThicknessProperty);
+
+			// Local value is cleared, fallback to style value
+			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
+			sut.Tag.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle, "After applying style");
+
+			registration2.Dispose();
+
+			sut.ClearValue(Border.StyleProperty);
+
+			sut.BorderThickness.Should().Be(Thickness.Empty, "After removing style");
+			sut.Tag.Should().Be(DependencyPropertyValuePrecedences.DefaultValue, "After removing style");
+		}
+
+		[TestMethod]
+		public void When_Set_Style_MultipleProperty()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { BorderThickness = new Thickness(100d) };
+
+			// Local value is 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "Before applying style");
+
+			sut.Style = style;
+
+			// Local value should stay 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "After applying style");
+
+			sut.ClearValue(Border.BorderThicknessProperty);
+
+			// Local value is cleared, fallback to style value
+			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
 		}
 	}
 
