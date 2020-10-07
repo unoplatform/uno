@@ -1,6 +1,9 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.Storage.Streams;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -60,20 +63,31 @@ namespace Windows.UI.Xaml.Media.Imaging
 			PixelWidth = 0;
 			PixelHeight = 0;
 
-			Stream = streamSource;
+			var copy = new MemoryStream();
+			streamSource.CopyTo(copy);
+			copy.Position = 0;
+			Stream = copy;
+
+#if NETSTANDARD
+			InvalidateSource();
+#endif
 		}
 
 		public async Task SetSourceAsync(Stream streamSource)
 		{
-
 			if (streamSource != null)
 			{
 				PixelWidth = 0;
 				PixelHeight = 0;
 
-				MemoryStream copy = new MemoryStream();
+				var copy = new MemoryStream();
 				await streamSource.CopyToAsync(copy);
+				copy.Position = 0;
 				Stream = copy;
+
+#if NETSTANDARD
+				InvalidateSource();
+#endif
 			}
 			else
 			{
@@ -81,5 +95,13 @@ namespace Windows.UI.Xaml.Media.Imaging
 				throw new ArgumentException(nameof(streamSource));
 			}
 		}
+
+		public void SetSource(IRandomAccessStream streamSource)
+			// We prefer to use the SetSourceAsync here in order to make sure that the stream is copied ASYNChronously,
+			// which is important since we are using a stream wrapper of and <In|Out|RA>Stream which might freeze the UI thread / throw exception.
+			=> Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetSourceAsync(streamSource.GetInputStreamAt(0).AsStreamForRead()));
+
+		public IAsyncAction SetSourceAsync(IRandomAccessStream streamSource)
+			=> AsyncAction.FromTask(ct => SetSourceAsync(streamSource.GetInputStreamAt(0).AsStreamForRead()));
 	}
 }
