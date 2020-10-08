@@ -20,6 +20,10 @@ namespace Windows.Storage.Streams
 			{
 				return buffer;
 			}
+			else if (impl is null)
+			{
+				throw new ArgumentNullException(nameof(impl));
+			}
 			else
 			{
 				throw new NotSupportedException("This type of buffer is not supported.");
@@ -43,11 +47,15 @@ namespace Windows.Storage.Streams
 			Length = (uint)data.Length;
 		}
 
+		public uint Capacity => (uint)_data.Length;
+
+		public uint Length { get; set; }
+
 		internal Span<byte> Span => _data.Span;
 
-		internal byte GetByte(int index)
+		internal byte GetByte(uint index)
 		{
-			return _data.Span[index];
+			return _data.Span[(int)index];
 		}
 
 		/// <summary>
@@ -81,21 +89,27 @@ namespace Windows.Storage.Streams
 		/// <summary>
 		/// **CLONES** a part of the content of this buffer into a new byte[]
 		/// </summary>
-		internal byte[] ToArray(int start, int count)
+		internal byte[] ToArray(uint start, int count)
 		{
-			return _data.Slice(start, count).ToArray();
+			return _data.Slice((int)start, count).ToArray();
 		}
 
-		internal void CopyTo(int index, byte[] destination, int destinationIndex, int count)
+		internal void CopyTo(uint sourceIndex, byte[] destination, int destinationIndex, int count)
 		{
-			var src = _data.Slice(index, count);
+			var src = _data.Slice((int)sourceIndex, count);
 			var dst = new Memory<byte>(destination, destinationIndex, count);
 
 			src.CopyTo(dst);
 		}
 
-		public uint Capacity => (uint)_data.Length;
+		internal void CopyTo(uint sourceIndex, IBuffer destination, uint destinationIndex, uint count)
+		{
+			var dst = Cast(destination);
 
-		public uint Length { get; set; }
+			var srcMemory = _data.Slice((int)sourceIndex, (int)count);
+			var dstMemory = dst._data.Slice((int)destinationIndex, (int)count);
+
+			srcMemory.CopyTo(dstMemory);
+		}
 	}
 }

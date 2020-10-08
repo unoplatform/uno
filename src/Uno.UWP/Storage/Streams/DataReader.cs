@@ -298,12 +298,12 @@ namespace Windows.Storage.Streams
 
 		private byte ReadByteFromBuffer()
 		{
-			return _buffer.GetByte(_bufferPosition++);
+			return _buffer.GetByte((uint)(_bufferPosition++));
 		}
 
 		private void ReadBytesFromBuffer(byte[] data, int length)
 		{
-			_buffer.CopyTo(_bufferPosition, data, 0, length);
+			_buffer.CopyTo((uint)_bufferPosition, data, 0, length);
 			_bufferPosition += length;
 		}
 

@@ -8,17 +8,10 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 	public static class WindowsRuntimeBufferExtensions
 	{
 		public static IBuffer AsBuffer(this byte[] source)
-		{
-			if (source is null)
-			{
-				throw new ArgumentNullException(nameof(source));
-			}
-
-			return source.AsBuffer(0, source.Length);
-		}
-
-		public static IBuffer AsBuffer(this byte[] source, int offset, int length) =>
-			AsBuffer(source, offset, length, length);
+			=> source.AsBuffer(0, source.Length, source.Length);
+		
+		public static IBuffer AsBuffer(this byte[] source, int offset, int length)
+			=> AsBuffer(source, offset, length, length);
 
 		public static IBuffer AsBuffer(this byte[] source, int offset, int length, int capacity)
 		{
@@ -49,49 +42,44 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 
 		public static Stream AsStream(this IBuffer source)
 		{
-			if (source is null)
-			{
-				throw new ArgumentNullException(nameof(source));
-			}
-
 			var data = UwpBuffer.Cast(source).GetSegment();
 			var stream = new MemoryStream(data.Array!, data.Offset, data.Count);
 
 			return stream;
 		}
 
-		[Uno.NotImplemented]
-		public static void CopyTo(this byte[] source, IBuffer destination) { throw new NotImplementedException(); }
-		[Uno.NotImplemented]
-		public static void CopyTo(this IBuffer source, byte[] destination) { throw new NotImplementedException(); }
-		[Uno.NotImplemented]
-		public static void CopyTo(this IBuffer source, IBuffer destination) { throw new NotImplementedException(); }
-		[Uno.NotImplemented]
-		public static void CopyTo(this byte[] source, int sourceIndex, IBuffer destination, uint destinationIndex, int count) { throw new NotImplementedException(); }
-		[Uno.NotImplemented]
-		public static void CopyTo(this IBuffer source, uint sourceIndex, byte[] destination, int destinationIndex, int count) { throw new NotImplementedException(); }
-		[Uno.NotImplemented]
-		public static void CopyTo(this IBuffer source, uint sourceIndex, IBuffer destination, uint destinationIndex, uint count) { throw new NotImplementedException(); }
+		public static void CopyTo(this byte[] source, IBuffer destination)
+			=> source.CopyTo(0, destination, 0, source.Length);
 
-		public static byte GetByte(this IBuffer source, uint byteOffset) => source.ToArray()[byteOffset];
+		public static void CopyTo(this byte[] source, int sourceIndex, IBuffer destination, uint destinationIndex, int count)
+			=> Array.Copy(source, sourceIndex, UwpBuffer.Cast(destination).GetSegment().Array!, destinationIndex, count);
 
-		[Uno.NotImplemented]
-		public static IBuffer GetWindowsRuntimeBuffer(this MemoryStream underlyingStream) { throw new NotImplementedException(); }
-		[Uno.NotImplemented]
-		public static IBuffer GetWindowsRuntimeBuffer(this MemoryStream underlyingStream, int positionInStream, int length) { throw new NotImplementedException(); }
+		public static void CopyTo(this IBuffer source, byte[] destination)
+			=> UwpBuffer.Cast(source).CopyTo(0, destination, 0, destination.Length);
 
-		public static bool IsSameData(this IBuffer buffer, IBuffer otherBuffer) =>
-			buffer.ToArray().SequenceEqual(otherBuffer.ToArray());
+		public static void CopyTo(this IBuffer source, uint sourceIndex, byte[] destination, int destinationIndex, int count)
+			=> UwpBuffer.Cast(source).CopyTo(sourceIndex, destination, destinationIndex, count);
+
+		public static void CopyTo(this IBuffer source, IBuffer destination)
+			=> UwpBuffer.Cast(source).CopyTo(0, UwpBuffer.Cast(destination), 0, destination.Capacity);
+
+		public static void CopyTo(this IBuffer source, uint sourceIndex, IBuffer destination, uint destinationIndex, uint count)
+			=> UwpBuffer.Cast(source).CopyTo(sourceIndex, UwpBuffer.Cast(destination), destinationIndex, count);
+
+		public static byte GetByte(this IBuffer source, uint byteOffset)
+			=> UwpBuffer.Cast(source).GetByte(byteOffset);
+
+		public static IBuffer GetWindowsRuntimeBuffer(this MemoryStream underlyingStream)
+			=> underlyingStream.GetBuffer().AsBuffer();
+
+		public static IBuffer GetWindowsRuntimeBuffer(this MemoryStream underlyingStream, int positionInStream, int length)
+			=> underlyingStream.GetBuffer().AsBuffer(positionInStream, length);
+
+		public static bool IsSameData(this IBuffer buffer, IBuffer otherBuffer)
+			=> UwpBuffer.Cast(buffer).Span.SequenceEqual(UwpBuffer.Cast(otherBuffer).Span);
 
 		public static byte[] ToArray(this IBuffer source)
-		{
-			if (source is null)
-			{
-				throw new ArgumentNullException(nameof(source));
-			}
-
-			return UwpBuffer.Cast(source).ToArray();
-		}
+			=> UwpBuffer.Cast(source).ToArray();
 
 		public static byte[] ToArray(this IBuffer source, uint sourceIndex, int count)
 		{
