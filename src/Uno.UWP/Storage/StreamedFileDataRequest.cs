@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Appointments;
 using Windows.Foundation;
 using Windows.Storage.Streams;
@@ -11,14 +12,14 @@ namespace Windows.Storage
 {
 	public sealed partial class StreamedFileDataRequest : IOutputStream, IDisposable, IStreamedFileDataRequest
 	{
-		private readonly StreamedRandomAccessStream _owner;
+		private readonly StreamedCustomDataLoader _owner;
 		private readonly Stream _tempFile;
 		private readonly CancellationTokenSource _ct;
 
-		internal StreamedFileDataRequest(StreamedRandomAccessStream owner, Stream tempFile)
+		internal StreamedFileDataRequest(StreamedCustomDataLoader owner)
 		{
 			_owner = owner;
-			_tempFile = tempFile;
+			_tempFile = owner.File.OpenWeak(FileAccess.Write);
 			_ct = new CancellationTokenSource();
 		}
 
@@ -29,16 +30,19 @@ namespace Windows.Storage
 		public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer)
 			=> new AsyncOperationWithProgress<uint, uint>(async (ct, op) =>
 			{
-				var write = _tempFile.WriteAsyncOperation(buffer);
-				write.Progress = (snd, p) => op.NotifyProgress(p);
+				try
+				{
+					await _tempFile.WriteAsync(buffer, ct);
+					await _tempFile.FlushAsync(ct); // We make sure to write the data to the disk before allow read to access it
+				}
+				catch (IOException e)
+				{
+					throw new OperationCanceledException("The download of this file has been cancelled", e);
+				}
 
-				var written = await write.AsTask(ct);
+				_owner.ReportDataWritten(buffer.Capacity);
 
-				// We make sure to write the data to the disk before allow read to access it
-				_tempFile.FlushAsync(ct);
-				//_owner.OnDataLoadProgress(written);
-
-				return written;
+				return buffer.Capacity;
 			});
 
 		public IAsyncOperation<bool> FlushAsync()
@@ -46,13 +50,19 @@ namespace Windows.Storage
 
 		public void FailAndClose(StreamedFileFailureMode failureMode)
 		{
-			//_owner.OnDataLoadCompleted(failureMode);
+			_ct.Dispose();
+			_tempFile.Dispose();
+			_owner.ReportLoadCompleted(failureMode);
 		}
 
 		public void Dispose()
 		{
 			_ct.Dispose();
-			//_owner.OnDataLoadCompleted(default);
+			_tempFile.Dispose();
+			_owner.ReportLoadCompleted();
 		}
+
+		~StreamedFileDataRequest()
+			=> Dispose();
 	}
 }
