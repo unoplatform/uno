@@ -1,7 +1,9 @@
 ﻿#if __IOS__
+using System;
 using System.Threading.Tasks;
 using Foundation;
 using UIKit;
+using Windows.UI.Core;
 
 namespace Windows.ApplicationModel.DataTransfer
 {
@@ -11,18 +13,38 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static void SetContent(DataPackage content)
 		{
-			// Setting to null doesn't reset the clipboard like for Android
-			UIPasteboard.General.String = content?.Text ?? string.Empty;
+			if (content is null)
+			{
+				throw new ArgumentNullException(nameof(content));
+			}
+
+			CoreDispatcher.Main.RunAsync(
+				CoreDispatcherPriority.High,
+				async () =>
+				{
+					var data = content?.GetView(); // Freezes the DataPackage
+
+					if (data?.Contains(StandardDataFormats.Text) ?? false)
+					{
+						var text = await data.GetTextAsync();
+
+						// Setting to null doesn't reset the clipboard like for Android
+						UIPasteboard.General.String = text ?? string.Empty;
+					}
+				});
 		}
 
 		public static DataPackageView GetContent()
 		{
-			var dataPackageView = new DataPackageView();
-			if (UIPasteboard.General.String != null)
+			var dataPackage = new DataPackage();
+
+			var clipText = UIPasteboard.General.String;
+			if (clipText != null)
 			{
-				dataPackageView.SetFormatTask(StandardDataFormats.Text, Task.FromResult(UIPasteboard.General.String));
+				dataPackage.SetText(clipText);
 			}
-			return dataPackageView;
+
+			return dataPackage.GetView();
 		}
 
 		public static void Clear()
