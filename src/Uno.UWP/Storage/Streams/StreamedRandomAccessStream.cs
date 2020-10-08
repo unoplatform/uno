@@ -30,7 +30,7 @@ namespace Windows.Storage.Streams
 
 			if (loader is null && uploader is null)
 			{
-				throw new InvalidOperationException("You must provide at one valid access mode (read of write).");
+				throw new InvalidOperationException("You must provide at one valid access mode (read or write).");
 			}
 
 			var file = loader?.File ?? uploader!.File;

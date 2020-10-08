@@ -21,7 +21,7 @@ namespace Windows.Storage.Streams
 		{
 			_uri = uri;
 			_method = method ?? HttpMethod.Put;
-			_client = client ??new HttpClient();
+			_client = client ?? new HttpClient();
 			File = tempFile ?? new TemporaryFile();
 		}
 

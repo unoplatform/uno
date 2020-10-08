@@ -32,7 +32,7 @@ namespace Windows.Foundation
 			}
 		}
 
-		internal void NotifyProgress(TProgress progressInfo)
+		public void NotifyProgress(TProgress progressInfo)
 			=> Progress?.Invoke(this, progressInfo);
 
 		private static FuncAsync<AsyncOperation<TResult>, TResult> Wrap(FuncAsync<AsyncOperationWithProgress<TResult, TProgress>, TResult> taskBuilder)
