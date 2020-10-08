@@ -49,7 +49,7 @@ namespace Windows.UI.Popups
 				actualCommandOrder.Add(command);
 			}
 
-			return new AsyncOperation<IUICommand>(async ct =>
+			return AsyncOperation.FromTask<IUICommand>(async ct =>
 			{
 				var response = await alert.BeginSheetAsync(NSApplication.SharedApplication.KeyWindow);
 
