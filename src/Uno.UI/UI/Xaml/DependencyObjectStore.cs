@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml
 		private readonly SerialDisposable _inheritedProperties = new SerialDisposable();
 		private ManagedWeakReference? _parentRef;
 		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
-		private Stack<DependencyPropertyValuePrecedences?>? _overridenPrecedences;
+		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
 
 		private static long _propertyChangedToken = 0;
 		private readonly Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
@@ -314,22 +314,22 @@ namespace Windows.UI.Xaml
 		/// <returns>A disposable to dispose to cancel the override.</returns>
 		internal IDisposable? OverrideLocalPrecedence(DependencyPropertyValuePrecedences? precedence)
 		{
-			_overridenPrecedences ??= new Stack<DependencyPropertyValuePrecedences?>(2);
-			if (_overridenPrecedences.Count > 0 && _overridenPrecedences.Peek() == precedence)
+			_overriddenPrecedences ??= new Stack<DependencyPropertyValuePrecedences?>(2);
+			if (_overriddenPrecedences.Count > 0 && _overriddenPrecedences.Peek() == precedence)
 			{
 				return null; // this precedence is already set, no need to set a new one
 			}
 
-			_overridenPrecedences.Push(precedence);
+			_overriddenPrecedences.Push(precedence);
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"OverrideLocalPrecedence({precedence}) - stack is {string.Join(", ", _overridenPrecedences)}");
+				this.Log().Debug($"OverrideLocalPrecedence({precedence}) - stack is {string.Join(", ", _overriddenPrecedences)}");
 			}
 
 			return Disposable.Create(() =>
 			{
-				var popped = _overridenPrecedences.Pop();
+				var popped = _overriddenPrecedences.Pop();
 				if (popped != precedence)
 				{
 					throw new InvalidOperationException($"Error while unstacking precedence. Should be {precedence}, got {popped}.");
@@ -337,7 +337,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					var newPrecedence = _overridenPrecedences.Count == 0 ? "<none>" : _overridenPrecedences.Peek().ToString();
+					var newPrecedence = _overriddenPrecedences.Count == 0 ? "<none>" : _overriddenPrecedences.Peek().ToString();
 					this.Log().Debug($"OverrideLocalPrecedence({precedence}).Dispose() ==> new overriden precedence is {newPrecedence})");
 				}
 			});
@@ -595,9 +595,9 @@ namespace Windows.UI.Xaml
 		private IDisposable? ApplyPrecedenceOverride(ref DependencyPropertyValuePrecedences precedence)
 		{
 			var currentlyOverridenPrecedence =
-				_overridenPrecedences?.Count > 0
-					? _overridenPrecedences.Peek()
-					: default(DependencyPropertyValuePrecedences?);
+				_overriddenPrecedences?.Count > 0
+					? _overriddenPrecedences.Peek()
+					: default;
 
 			if (currentlyOverridenPrecedence is {} current)
 			{

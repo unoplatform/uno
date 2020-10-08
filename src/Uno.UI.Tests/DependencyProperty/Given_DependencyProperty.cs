@@ -1578,8 +1578,6 @@ namespace Uno.UI.Tests.BinderTests
 			sut.Tag.Should().BeNull("Before applying style");
 
 			sut.Tag = style;
-
-			sut.Style = style;
 		}
 
 		[TestMethod]
