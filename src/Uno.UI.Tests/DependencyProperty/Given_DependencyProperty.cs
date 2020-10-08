@@ -1502,6 +1502,98 @@ namespace Uno.UI.Tests.BinderTests
 			// Local value is cleared, fallback to style value
 			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
 		}
+
+		[TestMethod]
+		public void When_Set_With_Both_Style_And_LocalValue()
+		{
+			var style = new Style { TargetType = typeof(MyDependencyObject) };
+			style.Setters.Add(new Setter { Property = MyDependencyObject.PropAProperty, Value = "StyleValue" });
+			style.Setters.Add(new Setter { Property = MyDependencyObject.PropBProperty, Value = "StyleValueForB" });
+
+			var sut = new MyDependencyObject { PropA = "LocalValue" };
+
+			sut.PropA.Should().Be("LocalValue");
+			sut.PropB.Should().Be("LocalValue");
+
+			sut.ClearValue(MyDependencyObject.PropBProperty);
+			sut.PropB.Should().Be(null);
+
+			sut.Style = style;
+
+			// Here the call back of PropA should not be called, so PropB should be on the ExplicitStyle value
+			sut.PropA.Should().Be("LocalValue");
+			sut.PropB.Should().Be("StyleValueForB");
+
+#if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
+
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValue")
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, "LocalValue");
+
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValueForB")
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
+#endif
+			sut.ClearValue(MyDependencyObject.PropBProperty);
+			sut.PropB.Should().Be("StyleValueForB");
+
+			sut.ClearValue(MyDependencyObject.PropAProperty);
+
+			sut.PropA.Should().Be("StyleValue");
+			sut.PropB.Should().Be("StyleValue");
+
+			sut.ClearValue(MyDependencyObject.PropAProperty);
+			sut.PropA.Should().Be("StyleValue");
+			sut.ClearValue(MyDependencyObject.PropBProperty);
+			sut.PropB.Should().Be("StyleValueForB");
+
+			sut.ClearValue(FrameworkElement.StyleProperty);
+
+			sut.PropA.Should().Be(null);
+			sut.PropB.Should().Be(null);
+
+#if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
+
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
+
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, null); // because of the callback ;-)
+#endif
+		}
+
+		private class MyDependencyObject : FrameworkElement
+		{
+			internal static readonly DependencyProperty PropAProperty = DependencyProperty.Register(
+				"PropA", typeof(string), typeof(MyDependencyObject), new PropertyMetadata(default(string), OnPropAChanged));
+
+			private static void OnPropAChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+			{
+				(d as MyDependencyObject).PropB = e.NewValue as string; // should assign using a kind a "local" precedence
+			}
+
+			internal string PropA
+			{
+				get { return (string)GetValue(PropAProperty); }
+				set { SetValue(PropAProperty, value); }
+			}
+
+			public static readonly DependencyProperty PropBProperty = DependencyProperty.Register(
+				"PropB", typeof(string), typeof(MyDependencyObject), new PropertyMetadata(default(string)));
+
+			public string PropB
+			{
+				get { return (string)GetValue(PropBProperty); }
+				set { SetValue(PropBProperty, value); }
+			}
+		}
+
 	}
 
 	#region DependencyObjects
