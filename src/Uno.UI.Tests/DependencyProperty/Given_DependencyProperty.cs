@@ -6,6 +6,7 @@ using System.Linq;
 using Windows.UI.Xaml;
 using System.Threading;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Shapes;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.UI.Xaml;
@@ -1400,15 +1401,21 @@ namespace Uno.UI.Tests.BinderTests
 			var app = UnitTestsApp.App.EnsureApplication();
 
 			var button = new Button();
-			button.RegisterPropertyChangedCallback(Button.PaddingProperty, (o, e) =>
-			{
-				button.Content = "Frogurt";
-			});
+
+			using var r = button.RegisterDisposablePropertyChangedCallback(
+				Control.PaddingProperty,
+				(o, e) =>
+				{
+					e.BypassesPropagation.Should().BeFalse();
+					e.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ImplicitStyle);
+					button.Content = "Frogurt";
+				});
+
+			using var _ = new AssertionScope();
 
 			app.HostView.Children.Add(button); // Causes default style to be applied
 
-			var localContent = button.ReadLocalValue(Button.ContentProperty);
-			Assert.AreEqual("Frogurt", localContent);
+			button.ReadLocalValue(Button.ContentProperty).Should().Be("Frogurt");
 		}
 
 		[TestMethod]
@@ -1504,6 +1511,78 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		public void When_Set_Style_Property_PrecedenceInContext_No_Local()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { /*Don't set local BorderThickness*/ };
+
+			using var registration1 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.BorderThicknessProperty,
+				(dependencyObject, args) =>
+				{
+					sut.Tag = args.NewPrecedence;
+				});
+
+			using var registration2 = sut.RegisterDisposablePropertyChangedCallback(
+				FrameworkElement.TagProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local);
+					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+				});
+
+			using var _ = new AssertionScope();
+
+			sut.Tag.Should().BeNull("Before applying style");
+
+			sut.Style = style;
+		}
+
+		[TestMethod]
+		public void When_Set_Style_Property_FromCallback_PrecedenceInContext_No_Local()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { /*Don't set local BorderThickness*/ };
+
+			using var registration1 = sut.RegisterDisposablePropertyChangedCallback(
+				FrameworkElement.TagProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local, "Tag property");
+					sut.Style = args.NewValue as Style;
+				});
+
+			using var registration2 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.BorderThicknessProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+					args.NewValue.Should().Be(new Thickness(10d));
+					sut.Child = new Rectangle();
+				});
+
+			using var registration3 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.ChildProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local, "ChildProperty");
+					args.NewValue.Should().BeOfType<Rectangle>();
+				});
+
+			using var _ = new AssertionScope();
+
+			sut.Tag.Should().BeNull("Before applying style");
+
+			sut.Tag = style;
+
+			sut.Style = style;
+		}
+
+		[TestMethod]
 		public void When_Set_With_Both_Style_And_LocalValue()
 		{
 			var style = new Style { TargetType = typeof(MyDependencyObject) };
@@ -1525,7 +1604,6 @@ namespace Uno.UI.Tests.BinderTests
 			sut.PropB.Should().Be("StyleValueForB");
 
 #if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
-
 			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
 				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
 				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValue")
@@ -1536,6 +1614,7 @@ namespace Uno.UI.Tests.BinderTests
 				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValueForB")
 				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
 #endif
+
 			sut.ClearValue(MyDependencyObject.PropBProperty);
 			sut.PropB.Should().Be("StyleValueForB");
 
@@ -1555,7 +1634,6 @@ namespace Uno.UI.Tests.BinderTests
 			sut.PropB.Should().Be(null);
 
 #if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
-
 			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
 				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
 				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
