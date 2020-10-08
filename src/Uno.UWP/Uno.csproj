@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   
   <PropertyGroup>
     <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid10.0;net461;netstandard2.0</TargetFrameworks>
@@ -50,6 +50,7 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
@@ -66,6 +67,7 @@
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='xamarinmac20'">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
+		<Reference Include="System.Memory" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -73,5 +75,25 @@
 	</ItemGroup>
 	
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
+
+	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and $([MSBuild]::IsOsPlatform('OSX'))">
+		<!--
+				VS4Mac seems to process System.Memory differently, and removes
+				the System.Memory local reference if the package is transitively referenced.
+				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
+				is properly adding the local System.Memory to the Reference item group.
+		-->
+		<ItemGroup>
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<Reference Remove="@(_ReferenceToRemove)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+		<ItemGroup>
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<ReferencePath Remove="@(_ReferencePathToRemove)" />
+		</ItemGroup>
+	</Target>
 
 </Project>
