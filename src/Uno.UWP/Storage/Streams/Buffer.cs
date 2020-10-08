@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
 
@@ -52,9 +53,14 @@ namespace Windows.Storage.Streams
 		/// <summary>
 		/// Retrieve the underlying data array
 		/// </summary>
+		/// <remarks>
+		/// The <see cref="ArraySegment{T}.Array"/> of the return cannot be null.
+		/// This method will throw an <see cref="InvalidOperationException"/> in that case.
+		/// </remarks>
 		internal ArraySegment<byte> GetSegment()
 		{
-			if (MemoryMarshal.TryGetArray<byte>(_data, out var array))
+			if (MemoryMarshal.TryGetArray<byte>(_data, out var array)
+				&& array.Array != null)
 			{
 				return array;
 			}
