@@ -52,7 +52,7 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the pressure from 0-127.
 		/// </summary>
-		public byte Pressure => _buffer.GetByte(0);
+		public byte Pressure => _buffer.GetByte(1);
 
 		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.
