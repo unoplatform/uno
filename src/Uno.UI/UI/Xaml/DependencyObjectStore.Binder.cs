@@ -347,7 +347,11 @@ namespace Windows.UI.Xaml
 
 		public void SetResourceBinding(DependencyProperty dependencyProperty, object resourceKey, bool isTheme, object context)
 		{
-			var binding = new ResourceBinding(resourceKey, isTheme, context, _precedenceOverride ?? DependencyPropertyValuePrecedences.Local);
+			var precedence = _overriddenPrecedences?.Count > 0
+				? _overriddenPrecedences.Peek()
+				: default;
+
+			var binding = new ResourceBinding(resourceKey, isTheme, context, precedence ?? DependencyPropertyValuePrecedences.Local);
 			SetBinding(dependencyProperty, binding);
 		}
 

@@ -6,7 +6,9 @@ using System.Linq;
 using Windows.UI.Xaml;
 using System.Threading;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Shapes;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
@@ -1399,16 +1401,275 @@ namespace Uno.UI.Tests.BinderTests
 			var app = UnitTestsApp.App.EnsureApplication();
 
 			var button = new Button();
-			button.RegisterPropertyChangedCallback(Button.PaddingProperty, (o, e) =>
-			{
-				button.Content = "Frogurt";
-			});
+
+			using var r = button.RegisterDisposablePropertyChangedCallback(
+				Control.PaddingProperty,
+				(o, e) =>
+				{
+					e.BypassesPropagation.Should().BeFalse();
+					e.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ImplicitStyle);
+					button.Content = "Frogurt";
+				});
+
+			using var _ = new AssertionScope();
 
 			app.HostView.Children.Add(button); // Causes default style to be applied
 
-			var localContent = button.ReadLocalValue(Button.ContentProperty);
-			Assert.AreEqual("Frogurt", localContent);
+			button.ReadLocalValue(Button.ContentProperty).Should().Be("Frogurt");
 		}
+
+		[TestMethod]
+		public void When_Set_Style_Property()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { BorderThickness = new Thickness(100d) };
+
+			// Local value is 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "Before applying style");
+
+			sut.Style = style;
+
+			// Local value should stay 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "After applying style");
+
+			sut.ClearValue(Border.BorderThicknessProperty);
+
+			// Local value is cleared, fallback to style value
+			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
+		}
+
+		[TestMethod]
+		public void When_Set_Style_Property_PrecedenceInContext()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { BorderThickness = new Thickness(100d) };
+
+			using var registration1 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.BorderThicknessProperty,
+				(dependencyObject, args) =>
+				{
+					sut.Tag = args.NewPrecedence;
+				});
+
+			using var registration2 = sut.RegisterDisposablePropertyChangedCallback(
+				FrameworkElement.TagProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local);
+					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+				});
+
+			using var _ = new AssertionScope();
+
+			// Local value is 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "Before applying style");
+			sut.Tag.Should().BeNull("After applying style");
+
+			sut.Style = style;
+
+			// Local value should stay 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "After applying style");
+
+			sut.ClearValue(Border.BorderThicknessProperty);
+
+			// Local value is cleared, fallback to style value
+			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
+			sut.Tag.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle, "After applying style");
+
+			registration2.Dispose();
+
+			sut.ClearValue(Border.StyleProperty);
+
+			sut.BorderThickness.Should().Be(Thickness.Empty, "After removing style");
+			sut.Tag.Should().Be(DependencyPropertyValuePrecedences.DefaultValue, "After removing style");
+		}
+
+		[TestMethod]
+		public void When_Set_Style_MultipleProperty()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { BorderThickness = new Thickness(100d) };
+
+			// Local value is 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "Before applying style");
+
+			sut.Style = style;
+
+			// Local value should stay 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "After applying style");
+
+			sut.ClearValue(Border.BorderThicknessProperty);
+
+			// Local value is cleared, fallback to style value
+			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
+		}
+
+		[TestMethod]
+		public void When_Set_Style_Property_PrecedenceInContext_No_Local()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { /*Don't set local BorderThickness*/ };
+
+			using var registration1 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.BorderThicknessProperty,
+				(dependencyObject, args) =>
+				{
+					sut.Tag = args.NewPrecedence;
+				});
+
+			using var registration2 = sut.RegisterDisposablePropertyChangedCallback(
+				FrameworkElement.TagProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local);
+					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+				});
+
+			using var _ = new AssertionScope();
+
+			sut.Tag.Should().BeNull("Before applying style");
+
+			sut.Style = style;
+		}
+
+		[TestMethod]
+		public void When_Set_Style_Property_FromCallback_PrecedenceInContext_No_Local()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { /*Don't set local BorderThickness*/ };
+
+			using var registration1 = sut.RegisterDisposablePropertyChangedCallback(
+				FrameworkElement.TagProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local, "Tag property");
+					sut.Style = args.NewValue as Style;
+				});
+
+			using var registration2 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.BorderThicknessProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+					args.NewValue.Should().Be(new Thickness(10d));
+					sut.Child = new Rectangle();
+				});
+
+			using var registration3 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.ChildProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local, "ChildProperty");
+					args.NewValue.Should().BeOfType<Rectangle>();
+				});
+
+			using var _ = new AssertionScope();
+
+			sut.Tag.Should().BeNull("Before applying style");
+
+			sut.Tag = style;
+		}
+
+		[TestMethod]
+		public void When_Set_With_Both_Style_And_LocalValue()
+		{
+			var style = new Style { TargetType = typeof(MyDependencyObject) };
+			style.Setters.Add(new Setter { Property = MyDependencyObject.PropAProperty, Value = "StyleValue" });
+			style.Setters.Add(new Setter { Property = MyDependencyObject.PropBProperty, Value = "StyleValueForB" });
+
+			var sut = new MyDependencyObject { PropA = "LocalValue" };
+
+			sut.PropA.Should().Be("LocalValue");
+			sut.PropB.Should().Be("LocalValue");
+
+			sut.ClearValue(MyDependencyObject.PropBProperty);
+			sut.PropB.Should().Be(null);
+
+			sut.Style = style;
+
+			// Here the call back of PropA should not be called, so PropB should be on the ExplicitStyle value
+			sut.PropA.Should().Be("LocalValue");
+			sut.PropB.Should().Be("StyleValueForB");
+
+#if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValue")
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, "LocalValue");
+
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValueForB")
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
+#endif
+
+			sut.ClearValue(MyDependencyObject.PropBProperty);
+			sut.PropB.Should().Be("StyleValueForB");
+
+			sut.ClearValue(MyDependencyObject.PropAProperty);
+
+			sut.PropA.Should().Be("StyleValue");
+			sut.PropB.Should().Be("StyleValue");
+
+			sut.ClearValue(MyDependencyObject.PropAProperty);
+			sut.PropA.Should().Be("StyleValue");
+			sut.ClearValue(MyDependencyObject.PropBProperty);
+			sut.PropB.Should().Be("StyleValueForB");
+
+			sut.ClearValue(FrameworkElement.StyleProperty);
+
+			sut.PropA.Should().Be(null);
+			sut.PropB.Should().Be(null);
+
+#if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
+
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, null); // because of the callback ;-)
+#endif
+		}
+
+		private class MyDependencyObject : FrameworkElement
+		{
+			internal static readonly DependencyProperty PropAProperty = DependencyProperty.Register(
+				"PropA", typeof(string), typeof(MyDependencyObject), new PropertyMetadata(default(string), OnPropAChanged));
+
+			private static void OnPropAChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+			{
+				(d as MyDependencyObject).PropB = e.NewValue as string; // should assign using a kind a "local" precedence
+			}
+
+			internal string PropA
+			{
+				get { return (string)GetValue(PropAProperty); }
+				set { SetValue(PropAProperty, value); }
+			}
+
+			public static readonly DependencyProperty PropBProperty = DependencyProperty.Register(
+				"PropB", typeof(string), typeof(MyDependencyObject), new PropertyMetadata(default(string)));
+
+			public string PropB
+			{
+				get { return (string)GetValue(PropBProperty); }
+				set { SetValue(PropBProperty, value); }
+			}
+		}
+
 	}
 
 	#region DependencyObjects

@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml
 	{
 		private DependencyPropertyValuePrecedences _highestPrecedence = DependencyPropertyValuePrecedences.DefaultValue;
 		private BindingExpression _lastBindings;
-		private readonly static ArrayPool<object> _pool = ArrayPool<object>.Create(100, 100);
+		private static readonly ArrayPool<object> _pool = ArrayPool<object>.Create(100, 100);
 		private readonly object[] _stack;
 		private readonly bool _hasWeakStorage;
 		private readonly List<BindingExpression> _bindings = new List<BindingExpression>();
