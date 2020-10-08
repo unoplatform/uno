@@ -7,9 +7,11 @@
 
 To debug the SamplesApp in the Uno.UI solution, which includes an extensive set of samples and test cases for the controls supported by Uno.UI, as well as non-UI features:
 
-1. Open the solution filter in Visual Studio for the target platform you wish to run on, [as detailed here](building-uno-ui.md).
-2. Set `SamplesApp.[TargetPlatform]` as the selected Startup Project.
-3. Launch the samples app from Visual Studio.
+1. Clone the repo, and ensure using a short target path, e.g. _D:\uno_ etc.  
+This is due to limitations in the legacy .NET versions used by Xamarin projects. This issue has been addressed in .NET 5, and will come to the rest of the projects in the future.
+2. Open the solution filter in Visual Studio for the target platform you wish to run on, [as detailed here](building-uno-ui.md).
+3. Set `SamplesApp.[TargetPlatform]` as the selected Startup Project.
+4. Launch the samples app from Visual Studio.
 
 See [this article](working-with-the-samples-apps.md) for more information on working with the SamplesApp and authoring new samples.
 
