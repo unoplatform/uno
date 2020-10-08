@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Windows.Foundation
 {
@@ -16,10 +15,5 @@ namespace Windows.Foundation
 		AsyncActionWithProgressCompletedHandler<TProgress> Completed { get; set; }
 
 		void GetResults();
-	}
-
-	internal interface IAsyncActionWithProgressInternal<TProgress> : IAsyncActionWithProgress<TProgress>
-	{
-		Task Task { get; }
 	}
 }

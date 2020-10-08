@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace Windows.Foundation
 {
 	public partial interface IAsyncAction : IAsyncInfo
@@ -7,10 +5,5 @@ namespace Windows.Foundation
 		AsyncActionCompletedHandler Completed { get; set; }
 
 		void GetResults();
-	}
-
-	internal interface IAsyncActionInternal : IAsyncAction
-	{
-		Task Task { get; }
 	}
 }
