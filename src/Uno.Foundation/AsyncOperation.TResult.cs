@@ -16,8 +16,6 @@ namespace Windows.Foundation
 		public static AsyncOperation<TResult> FromTask(FuncAsync<AsyncOperation<TResult>, TResult> builder)
 			=> new AsyncOperation<TResult>(builder);
 
-		private static long _nextId;
-
 		private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 		private AsyncOperationCompletedHandler<TResult>? _onCompleted;
 		private AsyncStatus _status;
@@ -58,7 +56,7 @@ namespace Windows.Foundation
 			}
 		}
 
-		public uint Id { get; } = (uint)Interlocked.Increment(ref _nextId);
+		public uint Id { get; } = AsyncOperation.CreateId();
 
 		public Task<TResult> Task { get; }
 
