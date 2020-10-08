@@ -1,5 +1,7 @@
 ﻿// MUX Reference: TabViewListView.cpp, commit 46f9da3
 
+using System.Collections.Specialized;
+using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -48,6 +50,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				var internalTabView = tabView;
 				internalTabView.UpdateTabContent();
+			}
+		}
+
+
+		// Uno specific: ensure the items are updated for ItemsSource change as Items are not yet in sync with ItemsSource properly
+
+		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
+		{
+			base.OnItemsSourceSingleCollectionChanged(sender, args, section);
+
+			var tabView = SharedHelpers.GetAncestorOfType<TabView>(VisualTreeHelper.GetParent(this));
+			if (tabView != null)
+			{
+				var internalTabView = tabView;
+				var vectorChangedArgs = args.ToVectorChangedEventArgs();
+				internalTabView.OnItemsChanged(vectorChangedArgs);
 			}
 		}
 	}

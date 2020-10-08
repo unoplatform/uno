@@ -294,6 +294,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnTabItemsSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
+			// TODO: Uno Specific - we have replaced ItemsSource by TabItems, make sure to force update it here
+			// if ItemsSource is set
+			if (args.NewValue != null)
+			{
+				m_listView.ItemsSource = args.NewValue;
+			}
+
 			UpdateListViewItemContainerTransitions();
 		}
 
@@ -495,28 +502,42 @@ namespace Microsoft.UI.Xaml.Controls
 				var lvItems = listView.Items;
 				if (lvItems != null)
 				{
+					// TODO: Uno specific - Items collection is not yet in sync with ItemsSource
+					// this is a workaround
+
 					if (listView.ItemsSource == null)
 					{
-						// copy the list, because clearing lvItems may also clear TabItems
-						IList<object> itemList = new List<object>();
-
-						foreach (var item in TabItems)
+						var observableTabItems = new ObservableVector<object>();
+						foreach(var item in TabItems)
 						{
-							itemList.Add(item);
+							observableTabItems.Add(item);
 						}
-
-						lvItems.Clear();
-
-						foreach (var item in itemList)
-						{
-							// App put items in our Items collection; copy them over to ListView.Items
-							if (item != null)
-							{
-								lvItems.Add(item);
-							}
-						}
+						listView.ItemsSource = observableTabItems;
+						TabItems = observableTabItems;
 					}
-					TabItems = lvItems;
+					
+					//if (listView.ItemsSource == null)
+					//{
+					//	// copy the list, because clearing lvItems may also clear TabItems
+					//	IList<object> itemList = new List<object>();
+
+					//	foreach (var item in TabItems)
+					//	{
+					//		itemList.Add(item);
+					//	}
+
+					//	lvItems.Clear();
+
+					//	foreach (var item in itemList)
+					//	{
+					//		// App put items in our Items collection; copy them over to ListView.Items
+					//		if (item != null)
+					//		{
+					//			lvItems.Add(item);
+					//		}
+					//	}
+					//}
+					//TabItems = lvItems;
 				}
 
 				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue)
