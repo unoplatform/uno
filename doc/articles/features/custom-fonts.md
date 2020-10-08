@@ -16,7 +16,7 @@ The format is the same as Windows, as follows:
 
 ## Custom Fonts on iOS
 
-Fonts must be placed in the `Resources` folder of the head project, be marked as
+Fonts must be placed in the `Resources/Fonts` folder of the head project, be marked as
 `BundleResource` for the build type.
 
 Each custom font **must** then be specified in the `info.plist` file as follows:
@@ -24,9 +24,9 @@ Each custom font **must** then be specified in the `info.plist` file as follows:
 ```xml
 <key>UIAppFonts</key>
 <array>
-    <string>yourfont01.ttf</string>
-    <string>yourfonr02.ttf</string>
-    <string>yourfonr03.ttf</string>
+    <string>Fonts/yourfont01.ttf</string>
+    <string>Fonts/yourfont02.ttf</string>
+    <string>Fonts/yourfont03.ttf</string>
 </array>
 ```
 
