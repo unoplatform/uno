@@ -10,9 +10,9 @@ namespace Windows.Storage.Streams
 	{
 		private readonly Stream _stream;
 
-		internal FileOutputStream(string path, ulong position)
+		internal FileOutputStream(string path, FileShare fileShare, ulong position)
 		{
-			_stream = File.Open(path, FileMode.Open, FileAccess.Write, FileShare.Write);
+			_stream = File.Open(path, FileMode.Open, FileAccess.Write, fileShare);
 			_stream.Seek((long)position, SeekOrigin.Begin);
 		}
 
