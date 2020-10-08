@@ -173,8 +173,8 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			this.DropDetailsImage.Visibility = Visibility.Collapsed;
 
 			// Only one data format can be displayed at once.
-			// Therefore, a priority is used to determine which should be displayed.
-			// This is currently only alphabetical but may need to be smarter in the future.
+			// Therefore, the order/priority here is used to determine which should be displayed.
+			// It should be ordered most specific to least generally speaking.
 			if (args.DataView.Contains(StandardDataFormats.ApplicationLink))
 			{
 				title += " (ApplicationLink)";
