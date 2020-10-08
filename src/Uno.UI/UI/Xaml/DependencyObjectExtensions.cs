@@ -165,6 +165,23 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
+		/// The the value for all precedences.
+		/// </summary>
+		/// <remarks>
+		/// This should only be used for diagnostics and testing purposes.
+		/// </remarks>
+		internal static (object value, DependencyPropertyValuePrecedences precedence)[] GetValueForEachPrecedences(
+			this DependencyObject instance, DependencyProperty property)
+		{
+			var propertyDetails = GetStore(instance).GetPropertyDetails(property).ToList();
+
+			return Enum.GetValues(typeof(DependencyPropertyValuePrecedences))
+				.Cast<DependencyPropertyValuePrecedences>()
+				.Select(precedence => (propertyDetails[(int)precedence], precedence))
+				.ToArray();
+		}
+
+		/// <summary>
 		/// Clears the value for the specified dependency property on the specified instance.
 		/// </summary>
 		/// <param name="instance">The instance on which the property is attached</param>

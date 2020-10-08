@@ -846,6 +846,11 @@ namespace Windows.UI.Xaml
 			return stack.GetValueUnderPrecedence(precedence);
 		}
 
+		internal DependencyPropertyDetails GetPropertyDetails(DependencyProperty property)
+		{
+			return _properties.GetPropertyDetails(property);
+		}
+
 		// Keep a list of inherited properties that have been updated so they can be reset.
 		HashSet<DependencyProperty> _updatedProperties = new HashSet<DependencyProperty>(DependencyPropertyComparer.Default);
 
