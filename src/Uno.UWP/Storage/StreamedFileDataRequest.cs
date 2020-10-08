@@ -29,7 +29,7 @@ namespace Windows.Storage
 		public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer)
 			=> new AsyncOperationWithProgress<uint, uint>(async (ct, op) =>
 			{
-				var write = _tempFile.WriteAsync(buffer);
+				var write = _tempFile.WriteAsyncOperation(buffer);
 				write.Progress = (snd, p) => op.NotifyProgress(p);
 
 				var written = await write.AsTask(ct);
@@ -42,7 +42,7 @@ namespace Windows.Storage
 			});
 
 		public IAsyncOperation<bool> FlushAsync()
-			=> _tempFile.FlushAsyncOp(); // This is actually useless as we flush on each Write.
+			=> _tempFile.FlushAsyncOperation(); // This is actually useless as we flush on each Write.
 
 		public void FailAndClose(StreamedFileFailureMode failureMode)
 		{

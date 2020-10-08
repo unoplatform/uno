@@ -23,7 +23,7 @@ namespace Windows.Storage
 	//	{
 	//		method ??= HttpMethod.Get;
 	//		client ??= new HttpClient();
-			
+
 	//		return req => Task.Run(() => FetchAsync(req, uri, method, client, onReady, req.CancellationToken));
 	//	}
 
@@ -59,7 +59,7 @@ namespace Windows.Storage
 	//			if (response.Content is { } content)
 	//			{
 	//				var responseStream = await content.ReadAsStreamAsync();
-	//				await responseStream.CopyToAsync(req.AsStreamForWrite(), 8192, ct);
+	//				await responseStream.CopyToAsync(req.AsStreamForWrite(), global::Windows.Storage.Streams.Buffer.DefaultCapacity, ct);
 	//			}
 	//		}
 	//		catch (Exception e)

@@ -16,7 +16,7 @@ namespace Windows.Storage.Streams
 			_stream.Seek((long)position, SeekOrigin.Begin);
 		}
 
-		Stream IStreamWrapper.GetStream() => _stream;
+		Stream IStreamWrapper.FindStream() => _stream;
 
 		/// <inheritdoc />
 		public void Dispose()
@@ -24,6 +24,6 @@ namespace Windows.Storage.Streams
 
 		/// <inheritdoc />
 		public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)
-			=> _stream.ReadAsync(buffer, count, options);
+			=> _stream.ReadAsyncOperation(buffer, count, options);
 	}
 }

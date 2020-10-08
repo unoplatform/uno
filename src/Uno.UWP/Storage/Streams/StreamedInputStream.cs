@@ -70,7 +70,7 @@ namespace Windows.Storage.Streams
 					_initialPosition = null;
 				}
 
-				var read = _stream.ReadAsync(buffer, count, options);
+				var read = _stream.ReadAsyncOperation(buffer, count, options);
 				read.Progress = (_, progress) => op.NotifyProgress(progress);
 
 				return await read.AsTask(ct);

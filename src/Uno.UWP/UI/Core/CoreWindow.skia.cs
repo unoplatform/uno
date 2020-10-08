@@ -7,7 +7,9 @@ namespace Windows.UI.Core
 {
 	public interface ICoreWindowExtension
 	{
+		void ReleasePointerCapture();
 
+		void SetPointerCapture();
 	}
 
 	public partial class CoreWindow : ICoreWindowEvents
@@ -28,6 +30,12 @@ namespace Windows.UI.Core
 				throw new InvalidOperationException($"Unable to find ICoreWindowExtension extension");
 			}
 		}
+
+		public void SetPointerCapture()
+			=> _coreWindowExtension.SetPointerCapture();
+
+		public void ReleasePointerCapture()
+			=> _coreWindowExtension.ReleasePointerCapture();
 
 		void ICoreWindowEvents.RaisePointerEntered(PointerEventArgs args)
 			=> PointerEntered?.Invoke(this, args);

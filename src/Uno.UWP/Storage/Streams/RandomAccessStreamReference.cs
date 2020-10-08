@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,17 +26,17 @@ namespace Windows.Storage.Streams
 		public static RandomAccessStreamReference CreateFromStream(IRandomAccessStream stream)
 			=> new RandomAccessStreamReference(async ct =>
 			{
-				return new RandomAccessStreamWithContentType(stream.CloneStream());
+				return stream.TrySetContentType();
 			});
 
 		private readonly Func<IAsyncOperation<IRandomAccessStreamWithContentType>> _open;
 
-		private RandomAccessStreamReference(Func<IAsyncOperation<IRandomAccessStreamWithContentType>> open)
+		internal RandomAccessStreamReference(Func<IAsyncOperation<IRandomAccessStreamWithContentType>> open)
 		{
 			_open = open;
 		}
 
-		public RandomAccessStreamReference(Func<CancellationToken, Task<IRandomAccessStreamWithContentType>> open)
+		internal RandomAccessStreamReference(Func<CancellationToken, Task<IRandomAccessStreamWithContentType>> open)
 			: this(() => AsyncOperation.FromTask(open))
 		{
 		}

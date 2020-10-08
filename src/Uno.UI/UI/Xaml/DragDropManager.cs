@@ -3,20 +3,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
+using Uno.Foundation.Extensibility;
 
 namespace Windows.UI.Xaml
 {
-	internal class DragDropManager : CoreDragDropManager.IDragDropManager
+	internal sealed class DragDropManager : CoreDragDropManager.IDragDropManager
 	{
 		private readonly Window _window;
 		private readonly List<DragOperation> _dragOperations = new List<DragOperation>();
+		private readonly IDragDropExtension? _hostExtension;
+
+		private bool _areWindowEventsRegistered;
 
 		public DragDropManager(Window window)
 		{
 			_window = window;
+			if (ApiExtensibility.CreateInstance<IDragDropExtension>(this, out var extension))
+			{
+				_hostExtension = extension;
+			}
 		}
 
 		/// <inheritdoc />
@@ -43,69 +53,84 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			RegisterHandlers();
+			RegisterWindowHandlers();
 
-			var op = new DragOperation(_window, info, target);
+			var op = new DragOperation(_window, _hostExtension, info, target);
 
-			info.RegisterCompletedCallback(_ => _dragOperations.Remove(op));
 			_dragOperations.Add(op);
+			info.RegisterCompletedCallback(_ => _dragOperations.Remove(op));
 		}
 
-		private DragOperation? FindOperation(PointerRoutedEventArgs args)
-		{
-			var pointer = args.Pointer!;
-			var op = _dragOperations.FirstOrDefault(drag => pointer.Equals(drag.Pointer))
-				?? _dragOperations.FirstOrDefault(drag => drag.Pointer == null);
+		/// <summary>
+		/// This method is expected to be invoked each time a pointer involved in a drag operation is moved,
+		/// no matter if the drag operation has been initiated from this app or from an external app.
+		/// </summary>
+		/// <returns>
+		/// The last accepted operation.
+		/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
+		/// </returns>
+		public DataPackageOperation ProcessMoved(IDragEventSource src)
+			=> FindOperation(src)?.Moved(src) ?? DataPackageOperation.None;
 
-			return op;
-		}
+		/// <summary>
+		/// This method is expected to be invoked when pointer involved in a drag operation is released,
+		/// no matter if the drag operation has been initiated from this app or from an external app.
+		/// </summary>
+		/// <returns>
+		/// The last accepted operation.
+		/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
+		/// </returns>
+		public DataPackageOperation ProcessDropped(IDragEventSource src)
+			=> FindOperation(src)?.Dropped(src) ?? DataPackageOperation.None;
 
-		private bool _registered = false;
-		private void RegisterHandlers()
+		/// <summary>
+		/// This method is expected to be invoked when pointer involved in a drag operation
+		/// is lost for operation initiated by the current app,
+		/// or left the window (a.k.a. the "virtual pointer" is lost) for operation initiated by an other app.
+		/// </summary>
+		/// <returns>
+		/// The last accepted operation.
+		/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
+		/// </returns>
+		public DataPackageOperation ProcessAborted(IDragEventSource src)
+			=> FindOperation(src)?.Aborted(src) ?? DataPackageOperation.None;
+
+		private DragOperation? FindOperation(IDragEventSource src)
+			=> _dragOperations.FirstOrDefault(drag =>  drag.Info.SourceId == src.Id);
+
+		private void RegisterWindowHandlers()
 		{
-			if (_registered)
+			if (_areWindowEventsRegistered)
 			{
 				return;
 			}
 
+			// Those events are subscribed for safety, but they are usually useless as:
+			//
+			// # for internally initiated drag operation:
+			//		the pointer is (implicitly) captured by the GestureRecognizer when a Drag manipulation is detected;
+			//
+			// # for externally initiated drag operation:
+			//		the current app does not receive any pointer event, but instead receive platform specific drag events,
+			//		that are expected to be interpreted by the IDragDropExtension and forwarded to this manager using the Process* methods.
+
 			var root = _window.RootElement;
-			root.AddHandler(UIElement.PointerEnteredEvent, new PointerEventHandler(OnPointerEntered), handledEventsToo: true);
-			root.AddHandler(UIElement.PointerExitedEvent, new PointerEventHandler(OnPointerExited), handledEventsToo: true);
+			root.AddHandler(UIElement.PointerEnteredEvent, new PointerEventHandler(OnPointerMoved), handledEventsToo: true);
+			root.AddHandler(UIElement.PointerExitedEvent, new PointerEventHandler(OnPointerMoved), handledEventsToo: true);
 			root.AddHandler(UIElement.PointerMovedEvent, new PointerEventHandler(OnPointerMoved), handledEventsToo: true);
 			root.AddHandler(UIElement.PointerReleasedEvent, new PointerEventHandler(OnPointerReleased), handledEventsToo: true);
 			root.AddHandler(UIElement.PointerCanceledEvent, new PointerEventHandler(OnPointerCanceled), handledEventsToo: true);
 
-			_registered = true;
+			_areWindowEventsRegistered = true;
 		}
 
-		private static void OnPointerEntered(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop.ProcessPointerEnteredWindow(e);
-
-		private static void OnPointerExited(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop.ProcessPointerExitedWindow(e);
-
 		private static void OnPointerMoved(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop.ProcessPointerMovedOverWindow(e);
+			=> Window.Current.DragDrop.ProcessMoved(e);
 
 		private static void OnPointerReleased(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop.ProcessPointerReleased(e);
+			=> Window.Current.DragDrop.ProcessDropped(e);
 
 		private static void OnPointerCanceled(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop.ProcessPointerCanceled(e);
-
-		public void ProcessPointerEnteredWindow(PointerRoutedEventArgs args)
-			=> FindOperation(args)?.Entered(args);
-
-		public void ProcessPointerExitedWindow(PointerRoutedEventArgs args)
-			=> FindOperation(args)?.Exited(args);
-
-		public void ProcessPointerMovedOverWindow(PointerRoutedEventArgs args)
-			=> FindOperation(args)?.Moved(args);
-
-		public void ProcessPointerReleased(PointerRoutedEventArgs args)
-			=> FindOperation(args)?.Dropped(args);
-
-		public void ProcessPointerCanceled(PointerRoutedEventArgs args)
-			=> FindOperation(args)?.Aborted(args);
+			=> Window.Current.DragDrop.ProcessAborted(e);
 	}
 }

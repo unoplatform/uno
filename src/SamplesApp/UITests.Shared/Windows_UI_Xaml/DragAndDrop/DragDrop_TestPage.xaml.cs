@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI;
@@ -225,19 +226,12 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 						{
 							details += "Name: " + file.Name + Environment.NewLine;
 							details += "DisplayName: " + file.DisplayName + Environment.NewLine;
-							details += "DisplayType: " + file.DisplayType + Environment.NewLine;
+							//details += "DisplayType: " + file.DisplayType + Environment.NewLine;
 							details += "ContentType: " + file.ContentType + Environment.NewLine;
 							details += "Path: " + file.Path;
 						}
 					}
 				}
-			}
-			else if (args.DataView.Contains(StandardDataFormats.Text))
-			{
-				title += " (Text)";
-
-				var text = await args.DataView.GetTextAsync();
-				details = text;
 			}
 			else if (args.DataView.Contains(StandardDataFormats.UserActivityJsonArray))
 			{
@@ -259,6 +253,13 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 				var webLink = await args.DataView.GetWebLinkAsync();
 				details = webLink.ToString();
 			}
+			else if (args.DataView.Contains(StandardDataFormats.Text))
+			{
+				title += " (Text)";
+
+				var text = await args.DataView.GetTextAsync();
+				details = text;
+			}
 
 			// Determine the drop position
 			var pos = args.GetPosition(this.DropBorder);
@@ -276,15 +277,8 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		/// </summary>
 		private void DropBorder_DragEnter(object sender, global::Windows.UI.Xaml.DragEventArgs e)
 		{
-			// Accept everything possible
-			if (e.DataView.RequestedOperation != DataPackageOperation.None)
-			{
-				e.AcceptedOperation = e.DataView.RequestedOperation;
-			}
-			else
-			{
-				e.AcceptedOperation = DataPackageOperation.Copy | DataPackageOperation.Link | DataPackageOperation.Move;
-			}
+			// We accept only one operation
+			e.AcceptedOperation = DataPackageOperation.Copy;
 
 			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.DragEnter), e);
 			return;
