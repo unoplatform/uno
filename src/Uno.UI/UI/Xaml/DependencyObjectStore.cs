@@ -102,8 +102,6 @@ namespace Windows.UI.Xaml
 
 		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
 
-		private uint _propertySettingDepth;
-
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
 		/// </summary>
