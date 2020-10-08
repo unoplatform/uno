@@ -14,16 +14,15 @@ namespace Uno.Helpers
 {
 	public static class DrawableHelper
 	{
-		private static Dictionary<string, int> _drawablesLookup;
-		private static Type _drawables;		
-		
+		public static Dictionary<string, int> DrawableMap { get; set; }
+
+		private static Type _drawables;
 		public static Type Drawables
 		{
 			get => _drawables;
 			set
-			{				
+			{
 				_drawables = value;
-				InitializeDrawablesLookup();
 			}
 		}
 
@@ -32,26 +31,23 @@ namespace Uno.Helpers
 		/// </summary>
 		/// <param name="imageName">Name of the image</param>
 		/// <returns>Resource's id</returns>
+		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 		public static int? FindResourceId(string imageName)
 		{
 			var key = AndroidResourceNameEncoder.Encode(System.IO.Path.GetFileNameWithoutExtension(imageName));
-			if (_drawablesLookup == null)
-			{
-				throw new InvalidOperationException("Drawable resources were not initialized. "
-					+ "On Android, local assets are only available after App.InitializeComponent() has been called.");
-			}
-			var id = _drawablesLookup.UnoGetValueOrDefault(key, 0);
-			if (id == 0)
-			{
-				if (typeof(DrawableHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-				{
-					typeof(DrawableHelper).Log().Error("Couldn't find drawable with key: " + key);
-				}
+			return GetResourceId(key);
+		}
 
-				return null;
-			}
 
-			return id;
+		/// <summary>
+		/// Returns the Id of the bundled image.
+		/// </summary>
+		/// <param name="imagePath">Path of the image</param>
+		/// <returns>Resource's id</returns>
+		internal static int? FindResourceIdFromPath(string imagePath)
+		{
+			var key = System.IO.Path.GetFileNameWithoutExtension(AndroidResourceNameEncoder.EncodeDrawablePath(imagePath));
+			return GetResourceId(key);
 		}
 
 		/// <summary>
@@ -76,14 +72,27 @@ namespace Uno.Helpers
 			return drawable;
 		}
 
-		private static void InitializeDrawablesLookup()
+		private static int? GetResourceId(string resourceKey)
 		{
-			_drawablesLookup = _drawables
-				.GetFields(BindingFlags.Static | BindingFlags.Public)
-				.ToDictionary(
-					p => p.Name,
-					p => (int)p.GetValue(null)
-				);
+			if (Drawables == null)
+			{
+				throw new InvalidOperationException("Drawable resources were not initialized. "
+					+ "On Android, local assets are only available after App.InitializeComponent() has been called.");
+			}
+
+			var id = DrawableMap.UnoGetValueOrDefault(resourceKey);
+
+			if (id == 0)
+			{
+				if (typeof(DrawableHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					typeof(DrawableHelper).Log().Error($"Couldn't find drawable with key: {resourceKey}");
+				}
+
+				return null;
+			}
+
+			return id;
 		}
 	}
 }

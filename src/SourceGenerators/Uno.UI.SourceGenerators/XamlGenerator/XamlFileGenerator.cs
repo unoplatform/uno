@@ -458,6 +458,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineInvariant($"#if __ANDROID__");
 			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
+			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.DrawableMap = global::{_defaultNamespace}.Resource.Drawable.GetDrawableMap();");
 			writer.AppendLineInvariant($"#endif");
 
 			if (_isWasm)

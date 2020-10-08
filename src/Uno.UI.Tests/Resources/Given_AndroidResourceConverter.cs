@@ -10,28 +10,28 @@ namespace Uno.UI.Tests.Resources
 		private const string DefaultLanguage = "en";
 
 		[DataRow(@"drawable-nodpi\logo.png", @"logo.png", null, null, null)]
-		[DataRow(@"drawable-nodpi\logo.png", @"Assets\logo.png", null, null, null)]
-		[DataRow(@"drawable-nodpi\logo.png", @"Assets\logo.png", null, "en", null)]
-		[DataRow(@"drawable-fr-nodpi\logo.png", @"Assets\logo.png", null, "fr", null)]
-		[DataRow(@"drawable-fr-xhdpi\logo.png", @"Assets\logo.png", 200, "fr", null)]
-		[DataRow(@"drawable-fr-rCA-xhdpi\logo.png", @"Assets\logo.png", 200, "fr-CA", null)]
-		[DataRow(@"drawable-mdpi\logo.png", @"Assets\logo.png", 100, null, null)]
+		[DataRow(@"drawable-nodpi\Assets_logo.png", @"Assets\logo.png", null, null, null)]
+		[DataRow(@"drawable-nodpi\Assets_logo.png", @"Assets\logo.png", null, "en", null)]
+		[DataRow(@"drawable-fr-nodpi\Assets_logo.png", @"Assets\logo.png", null, "fr", null)]
+		[DataRow(@"drawable-fr-xhdpi\Assets_logo.png", @"Assets\logo.png", 200, "fr", null)]
+		[DataRow(@"drawable-fr-rCA-xhdpi\Assets_logo.png", @"Assets\logo.png", 200, "fr-CA", null)]
+		[DataRow(@"drawable-mdpi\Assets_logo.png", @"Assets\logo.png", 100, null, null)]
 		[DataRow(null, @"Assets\logo.png", 125, null, null)]
-		[DataRow(@"drawable-hdpi\logo.png", @"Assets\logo.png", 150, null, null)]
-		[DataRow(@"drawable-xhdpi\logo.png", @"Assets\logo.png", 200, null, null)]
-		[DataRow(@"drawable-xxhdpi\logo.png", @"Assets\logo.png", 300, null, null)]
-		[DataRow(@"drawable-xxxhdpi\logo.png", @"Assets\logo.png", 400, null, null)]
-		[DataRow(@"drawable-nodpi\logo.9.png", @"Assets\logo.9.png", null, null, null)]
-		[DataRow(@"drawable-nodpi\logo_.png", @"Assets\logo-.png", null, null, null)]
-		[DataRow(@"drawable-nodpi\logo_.png", @"Assets\logo@.png", null, null, null)]
-		[DataRow(@"drawable-nodpi\__2logo.png", @"Assets\2logo.png", null, null, null)]
-		[DataRow(@"drawable-nodpi\__2logo_test.png", @"Assets\2logo-test.png", null, null, null)]
-		[DataRow(@"drawable-nodpi\SmallTile_sdk_altform_unplated_targetsize_16.png", @"Assets\SmallTile-sdk.altform-unplated_targetsize-16.png", null, null, null)]
-		[DataRow(@"drawable-nodpi\SmallTile_sdk_targetsize_16.png", @"Assets\SmallTile-sdk.targetsize-16.png", null, null, null)]
-		[DataRow(@"drawable-nodpi\SmallTile_sdk_targetsize_16.9.png", @"Assets\SmallTile-sdk.targetsize-16.9.png", null, null, null)]
+		[DataRow(@"drawable-hdpi\Assets_logo.png", @"Assets\logo.png", 150, null, null)]
+		[DataRow(@"drawable-xhdpi\Assets_logo.png", @"Assets\logo.png", 200, null, null)]
+		[DataRow(@"drawable-xxhdpi\Assets_logo.png", @"Assets\logo.png", 300, null, null)]
+		[DataRow(@"drawable-xxxhdpi\Assets_logo.png", @"Assets\logo.png", 400, null, null)]
+		[DataRow(@"drawable-nodpi\Assets_logo.9.png", @"Assets\logo.9.png", null, null, null)]
+		[DataRow(@"drawable-nodpi\Assets_logo_.png", @"Assets\logo-.png", null, null, null)]
+		[DataRow(@"drawable-nodpi\Assets_logo_.png", @"Assets\logo@.png", null, null, null)]
+		[DataRow(@"drawable-nodpi\Assets___2logo.png", @"Assets\2logo.png", null, null, null)]
+		[DataRow(@"drawable-nodpi\Assets___2logo_test.png", @"Assets\2logo-test.png", null, null, null)]
+		[DataRow(@"drawable-nodpi\Assets_SmallTile_sdk_altform_unplated_targetsize_16.png", @"Assets\SmallTile-sdk.altform-unplated_targetsize-16.png", null, null, null)]
+		[DataRow(@"drawable-nodpi\Assets_SmallTile_sdk_targetsize_16.png", @"Assets\SmallTile-sdk.targetsize-16.png", null, null, null)]
+		[DataRow(@"drawable-nodpi\Assets_SmallTile_sdk_targetsize_16.9.png", @"Assets\SmallTile-sdk.targetsize-16.9.png", null, null, null)]
 		[DataRow(null, @"Assets\logo.png", null, null, "uwp")]
 		[DataRow(null, @"Assets\logo.png", null, null, "ios")]
-		[DataRow(@"drawable-nodpi\logo.png", @"Assets\logo.png", null, null, "android")]
+		[DataRow(@"drawable-nodpi\Assets_logo.png", @"Assets\logo.png", null, null, "android")]
 		[TestMethod]
 		public void When_Convert(string expectedPath, string logicalPath, int? scale, string language, string custom)
 		{
@@ -85,6 +85,20 @@ namespace Uno.UI.Tests.Resources
 		public void When_EncodeFileSystemPath(string input, string expected)
 		{
 			Assert.AreEqual(expected, AndroidResourceNameEncoder.EncodeFileSystemPath(input));
+		}
+
+		[TestMethod]
+
+		[DataRow(@"logo.png", @"logo.png")]
+		[DataRow(@"test/logo.png", @"test_logo.png")]
+		[DataRow(@"test/logo-1.png", @"test_logo_1.png")]
+		[DataRow(@"test/logo-1.png", @"test_logo_1.png")]
+		[DataRow(@"test/test2/logo-1.png", @"test_test2_logo_1.png")]
+		[DataRow(@"test/test2/test-3/logo-1.png", @"test_test2_test_3_logo_1.png")]
+		[DataRow(@"1test/logo-1.png", @"__1test_logo_1.png")]
+		public void When_EncodeDrawablePath(string input, string expected)
+		{
+			Assert.AreEqual(expected, AndroidResourceNameEncoder.EncodeDrawablePath(input));
 		}
 	}
 }

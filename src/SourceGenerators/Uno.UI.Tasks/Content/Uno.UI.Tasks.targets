@@ -1,106 +1,116 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <UnoUIMSBuildTasksPath Condition="'$(UnoUIMSBuildTasksPath)'==''">..\Uno.UI.Tasks</UnoUIMSBuildTasksPath>
-    <UmbrellaMSBuildTasksImported>true</UmbrellaMSBuildTasksImported>
-  </PropertyGroup>
+	<PropertyGroup>
+		<UnoUIMSBuildTasksPath Condition="'$(UnoUIMSBuildTasksPath)'==''">..\Uno.UI.Tasks</UnoUIMSBuildTasksPath>
+		<UmbrellaMSBuildTasksImported>true</UmbrellaMSBuildTasksImported>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <UnoSourceGeneratorBeforeTarget Condition="'$(XamarinProjectType)'=='android'" Include="UpdateAndroidAssets" />
-  </ItemGroup>
+	<Choose>
+		<When Condition="'$(BuildingInsideUnoSourceGenerator)'=='true'">
+			<PropertyGroup>
+				<AndroidUseManagedDesignTimeResourceGenerator>False</AndroidUseManagedDesignTimeResourceGenerator>
+			</PropertyGroup>
+			<ItemGroup>
+				<Compile Condition="'$(XamarinProjectType)'=='android'" Include="$(_AndroidResourceDesignerFile)" />
+			</ItemGroup>
+		</When>
+	</Choose>
 
-  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
-  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
+	<ItemGroup>
+		<UnoSourceGeneratorBeforeTarget Condition="'$(XamarinProjectType)'=='android'" Include="UpdateAndroidAssets" />
+	</ItemGroup>
 
-  <!--
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
+
+	<!--
   This task transforms all the Content files and PRIResources into resources files compatible for each platform.
 
   Note: For iOS and Android, it must be run early in the build process, but no publicly stable target is available
   to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
   -->
-  <Target Name="UnoResourcesGeneration"
-				  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent"
-                  DependsOnTargets="ResolveProjectReferences"
-				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
+	<Target Name="UnoResourcesGeneration"
+					BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent"
+					DependsOnTargets="ResolveProjectReferences">
 
-    <CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln'" />
+		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln'" />
 
-    <!-- String resources -->
-    <PropertyGroup>
-      <!-- LEGACY: Old projects define DefaultApplicationLanguage instead of DefaultLanguage -->
-      <DefaultLanguage Condition="'$(DefaultLanguage)'=='' and '$(DefaultApplicationLanguage)'!=''">$(DefaultApplicationLanguage)</DefaultLanguage>
-      <!-- Default to English if DefaultLanguage isn't set -->
-      <DefaultLanguage Condition="'$(DefaultLanguage)'==''">en</DefaultLanguage>
-      <XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
-    </PropertyGroup>
-    <ResourcesGenerationTask_v0 Resources="@(PRIResource)"
-							   TargetProjectDirectory="$(ProjectDir)"
-							   TargetPlatform="$(XamarinProjectType)"
-							   IntermediateOutputPath="$(IntermediateOutputPath)"
-							   DefaultLanguage="$(DefaultLanguage)">
-      <Output TaskParameter="GeneratedFiles"
-					  ItemName="GeneratedFiles" />
-    </ResourcesGenerationTask_v0>
-    <ItemGroup>
-      <BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='iOS'" Include="@(GeneratedFiles)" />
-      <AndroidResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
-      <EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
-    </ItemGroup>
-  </Target>
+		<!-- String resources -->
+		<PropertyGroup>
+			<!-- LEGACY: Old projects define DefaultApplicationLanguage instead of DefaultLanguage -->
+			<DefaultLanguage Condition="'$(DefaultLanguage)'=='' and '$(DefaultApplicationLanguage)'!=''">$(DefaultApplicationLanguage)</DefaultLanguage>
+			<!-- Default to English if DefaultLanguage isn't set -->
+			<DefaultLanguage Condition="'$(DefaultLanguage)'==''">en</DefaultLanguage>
+			<XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
+		</PropertyGroup>
+		<ResourcesGenerationTask_v0 Resources="@(PRIResource)"
+								   TargetProjectDirectory="$(ProjectDir)"
+								   TargetPlatform="$(XamarinProjectType)"
+								   IntermediateOutputPath="$(IntermediateOutputPath)"
+								   DefaultLanguage="$(DefaultLanguage)">
+			<Output TaskParameter="GeneratedFiles"
+							ItemName="GeneratedFiles" />
+		</ResourcesGenerationTask_v0>
+		<ItemGroup>
+			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='iOS'" Include="@(GeneratedFiles)" />
+			<AndroidResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
+			<EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
+		</ItemGroup>
+	</Target>
 
-  <Target Name="UnoAssetsGeneration"
-				  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent"
-                  DependsOnTargets="ResolveProjectReferences"
-				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
-    <!-- Assets -->
-    <PropertyGroup>
-      <UseHighDPIResources Condition="'$(UseHighDPIResources)'==''">True</UseHighDPIResources>
-    </PropertyGroup>
-    <RetargetAssets_v0 UseHighDPIResources="$(UseHighDPIResources)"
-						TargetPlatform="$(XamarinProjectType)"
-						DefaultLanguage="$(DefaultLanguage)"
-						ContentItems="@(Content)"
-						Condition="'$(XamarinProjectType)'!=''">
-      <Output TaskParameter="Assets"
-					  ItemName="Assets" />
-      <Output TaskParameter="RetargetedAssets"
-					  ItemName="RetargetedAssets" />
-    </RetargetAssets_v0>
-    <ItemGroup>
-      <Content Remove="@(Assets)" />
-    </ItemGroup>
-	<ItemGroup Condition="'$(XamarinProjectType)'=='ios'">
-	  <BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
-	  <BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(XamarinProjectType)'=='android'">
-	  <AndroidResource Condition="'%(RetargetedAssets.AssetType)' =='image'" Include="@(RetargetedAssets)" />
-	  <AndroidAsset Condition="'%(RetargetedAssets.AssetType)' =='generic'" Include="@(RetargetedAssets)" />
-	</ItemGroup>
-  </Target>
+	<Target Name="UnoAssetsGeneration"
+					BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent"
+					DependsOnTargets="ResolveProjectReferences"
+					Condition="('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
+		<!-- Assets -->
+		<PropertyGroup>
+			<UseHighDPIResources Condition="'$(UseHighDPIResources)'==''">True</UseHighDPIResources>
+		</PropertyGroup>
+		<RetargetAssets_v0 UseHighDPIResources="$(UseHighDPIResources)"
+							TargetPlatform="$(XamarinProjectType)"
+							DefaultLanguage="$(DefaultLanguage)"
+							ContentItems="@(Content)"
+							Condition="'$(XamarinProjectType)'!=''">
+			<Output TaskParameter="Assets"
+							ItemName="Assets" />
+			<Output TaskParameter="RetargetedAssets"
+							ItemName="RetargetedAssets" />
+		</RetargetAssets_v0>
+		<ItemGroup>
+			<Content Remove="@(Assets)" />
+		</ItemGroup>
+		<ItemGroup Condition="'$(XamarinProjectType)'=='ios'">
+			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
+			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
+		</ItemGroup>
+		<ItemGroup Condition="'$(XamarinProjectType)'=='android'">
+			<AndroidResource Condition="'%(RetargetedAssets.AssetType)' =='image'" Include="@(RetargetedAssets)" />
+			<AndroidAsset Condition="'%(RetargetedAssets.AssetType)' =='generic'" Include="@(RetargetedAssets)" />
+		</ItemGroup>
+	</Target>
 
-  <!--
+	<!--
     Warn when the task is executed in devenv.exe: https://github.com/dotnet/project-system/issues/4494
     -->
 
-  <UsingTask
-    TaskName="CheckForDevenv"
-    TaskFactory="CodeTaskFactory"
-    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
-    <ParameterGroup />
-    <Task>
-      <Reference Include="System.Xml"/>
-      <Using Namespace="System"/>
-      <Using Namespace="System.IO"/>
-      <Code Type="Fragment" Language="cs">
-        <![CDATA[  
+	<UsingTask
+	  TaskName="CheckForDevenv"
+	  TaskFactory="CodeTaskFactory"
+	  AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
+		<ParameterGroup />
+		<Task>
+			<Reference Include="System.Xml"/>
+			<Using Namespace="System"/>
+			<Using Namespace="System.IO"/>
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[  
             if (System.Diagnostics.Process.GetCurrentProcess().ProcessName.Equals("devenv", System.StringComparison.OrdinalIgnoreCase))
             {
               Log.LogWarning("The Uno.UI.Tasks build task is running under devenv.exe you will have to restart Visual Studio to rebuild it.");
             }
           ]]>
-      </Code>
-    </Task>
-  </UsingTask>
+			</Code>
+		</Task>
+	</UsingTask>
 
 </Project>
