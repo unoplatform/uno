@@ -337,7 +337,7 @@ namespace SamplesApp.UITests
 		/// <summary>
 		/// Get the center of <paramref name="rect"/> adjusted for the display scale, appropriate for screenshot analysis.
 		/// </summary>
-		internal PointF GetScaledCenter(IAppRect rect)
+		protected PointF GetScaledCenter(IAppRect rect)
 		{
 			var scale = (float)GetDisplayScreenScaling();
 			return new PointF(rect.CenterX * scale, rect.CenterY * scale);
@@ -347,7 +347,7 @@ namespace SamplesApp.UITests
 		/// Get centre of the bounds rect of element <paramref name="elementName"/> adjusted for the display scale, appropriate for
 		/// screenshot analysis.
 		/// </summary>
-		internal PointF GetRectCenterScaled(string elementName)
+		protected PointF GetRectCenterScaled(string elementName)
 		{
 			var rect = _app.GetRect(elementName);
 			return GetScaledCenter(rect);
@@ -371,5 +371,8 @@ namespace SamplesApp.UITests
 			var supportsRotation = currentPlatform == Platform.Android || currentPlatform == Platform.iOS;
 			return supportsRotation;
 		}
+
+		protected bool IsTouchInteraction
+			=> AppInitializer.TestEnvironment.CurrentPlatform == Platform.Android || AppInitializer.TestEnvironment.CurrentPlatform == Platform.iOS;
 	}
 }
