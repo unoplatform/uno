@@ -3067,6 +3067,11 @@
 		</Fields>
 	</IgnoreSet>
 	<IgnoreSet baseVersion="3.0.17">
+		<Types>
+			<Member 
+				fullName="Windows.Storage.StorageItem"
+				reason="Not part of the UWP API"/>
+		  </Types>
 		<Methods>
 			<Member 
 				fullName="System.Void Windows.System.UserProfile.UserProfilePersonalizationSettings..ctor()"
