@@ -24,9 +24,6 @@ namespace Windows.Storage
 		internal static StorageFile GetFileFromPath(string path)
 			=> new StorageFile(new Local(path));
 
-		internal static StorageFile GetFileFromLocalPath(string path)
-			=> new StorageFile(new Local(path));
-
 		[NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static IAsyncOperation<StorageFile> GetFileFromApplicationUriAsync(Uri uri)
 			=> AsyncOperation.FromTask(ct => GetFileFromApplicationUri(ct, uri));

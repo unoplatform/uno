@@ -132,7 +132,7 @@ namespace Windows.Storage
 					throw new FileNotFoundException(filePath);
 				}
 
-				return StorageFile.GetFileFromLocalPath(filePath);
+				return StorageFile.GetFileFromPath(filePath);
 			});
 
 		public IAsyncOperation<global::Windows.Storage.IStorageItem> GetItemAsync(string name) =>
