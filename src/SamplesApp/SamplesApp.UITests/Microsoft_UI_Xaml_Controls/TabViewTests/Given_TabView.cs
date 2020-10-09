@@ -7,7 +7,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
-	[ActivePlatforms()]
+	[Ignore("Tests are not yet stabilized")]
 	public class Given_TabView : SampleControlUITestBase
 	{
 		// Missing tests
