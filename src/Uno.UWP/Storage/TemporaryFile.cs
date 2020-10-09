@@ -23,24 +23,47 @@ namespace Windows.Storage
 		}
 
 		/// <summary>
-		/// Opens a stream to the loaded data
+		/// Gets a boolean which indicates if this temporary file is still available for read/write
+		/// </summary>
+		/// <remarks>
+		/// This is use-full essentially for weak streams that want to check if this temp file is still
+		/// active before reading or writing data in order to avoid exception.
+		/// </remarks>
+		public bool IsActive { get; private set; } = true;
+
+		/// <summary>
+		/// Opens a stream to the temporary file.
+		/// This temporary file will remain active (cf. <see cref="IsActive"/>) until the returned stream is being disposed.
 		/// </summary>
 		public Stream Open(FileAccess mode)
 		{
 			Interlocked.Increment(ref _users);
+			CheckIsActive();
 
-			return new TempFileStream(this, _file.Open(FileMode.OpenOrCreate, mode, FileShare.ReadWrite));
+			return new StrongStream(this, mode);
 		}
 
+		/// <summary>
+		/// Opens a stream to the temporary file.
+		/// This temporary file might become inactive (i.e. deleted - cf. <see cref="IsActive"/>) even if this stream has not been closed yet.
+		/// If the temporary file becomes inactive, attempt to read / write data on the resulting stream, will throw exception.
+		/// </summary>
 		public Stream OpenWeak(FileAccess mode)
 		{
-			return _file.Open(FileMode.OpenOrCreate, mode, FileShare.ReadWrite | FileShare.Delete);
+			CheckIsActive();
+
+			return new WeakStream(this, mode);
 		}
 
-		private void OnClose()
+		/// <inheritdoc />
+		public override string ToString()
+			=> "[TEMP]" + _file.FullName;
+
+		private void OnStrongStreamedClosed()
 		{
 			if (Interlocked.Decrement(ref _users) == 0)
 			{
+				IsActive = false;
 				if (_file.Exists)
 				{
 					try
@@ -55,51 +78,48 @@ namespace Windows.Storage
 			}
 		}
 
-		private class TempFileStream : Stream
+		private void CheckIsActive()
+		{
+			if (!IsActive)
+			{
+				throw new IOException("This temporary file has been deleted.");
+			}
+		}
+
+		private class StrongStream : Stream
 		{
 			private readonly TemporaryFile _tempFile;
 			private readonly Stream _stream;
-			private int _released = 0;
 
-			public TempFileStream(TemporaryFile tempFile, Stream stream)
+			private int _released;
+
+			public StrongStream(TemporaryFile tempFile, FileAccess mode)
 			{
 				_tempFile = tempFile;
-				_stream = stream;
+				_stream = tempFile._file.Open(FileMode.OpenOrCreate, mode, FileShare.ReadWrite);
 			}
 
 			public override void Close()
 			{
+				_stream.Close();
 				if (Interlocked.Exchange(ref _released, 1) == 0)
 				{
-					_tempFile.OnClose();
+					_tempFile.OnStrongStreamedClosed();
 				}
-				_stream.Close();
 				base.Close();
 			}
 
 			protected override void Dispose(bool disposing)
 			{
+				_stream.Dispose();
 				if (Interlocked.Exchange(ref _released, 1) == 0)
 				{
-					_tempFile.OnClose();
+					_tempFile.OnStrongStreamedClosed();
 				}
 				base.Dispose(disposing);
+
+				GC.SuppressFinalize(this);
 			}
-
-			public override void Flush()
-				=> _stream.Flush();
-
-			public override int Read(byte[] buffer, int offset, int count)
-				=> _stream.Read(buffer, offset, count);
-
-			public override long Seek(long offset, SeekOrigin origin)
-				=> _stream.Seek(offset, origin);
-
-			public override void SetLength(long value)
-				=> _stream.SetLength(value);
-
-			public override void Write(byte[] buffer, int offset, int count)
-				=> _stream.Write(buffer, offset, count);
 
 			public override bool CanRead => _stream.CanRead;
 
@@ -115,8 +135,79 @@ namespace Windows.Storage
 				set => _stream.Position = value;
 			}
 
-			~TempFileStream()
+			public override void SetLength(long value)
+				=> _stream.SetLength(value);
+
+			public override long Seek(long offset, SeekOrigin origin)
+				=> _stream.Seek(offset, origin);
+
+			public override int Read(byte[] buffer, int offset, int count)
+				=> _stream.Read(buffer, offset, count);
+
+			public override void Write(byte[] buffer, int offset, int count)
+				=> _stream.Write(buffer, offset, count);
+
+			public override void Flush()
+				=> _stream.Flush();
+
+			~StrongStream()
 				=> Dispose();
+		}
+
+		private class WeakStream : Stream
+		{
+			private readonly TemporaryFile _tempFile;
+			private readonly Stream _stream;
+
+			public WeakStream(TemporaryFile tempFile, FileAccess mode)
+			{
+				_tempFile = tempFile;
+				_stream = tempFile._file.Open(FileMode.OpenOrCreate, mode, FileShare.ReadWrite | FileShare.Delete);
+			}
+
+			public override bool CanRead => _tempFile.IsActive && _stream.CanRead;
+
+			public override bool CanSeek => _tempFile.IsActive && _stream.CanSeek;
+
+			public override bool CanWrite => _tempFile.IsActive && _stream.CanWrite;
+
+			public override long Length => _stream.Length;
+
+			public override long Position
+			{
+				get => _stream.Position;
+				set => _stream.Position = value;
+			}
+
+			public override void SetLength(long value)
+			{
+				_tempFile.CheckIsActive();
+				_stream.SetLength(value);
+			}
+
+			public override long Seek(long offset, SeekOrigin origin)
+			{
+				_tempFile.CheckIsActive();
+				return _stream.Seek(offset, origin);
+			}
+
+			public override int Read(byte[] buffer, int offset, int count)
+			{
+				_tempFile.CheckIsActive();
+				return _stream.Read(buffer, offset, count);
+			}
+
+			public override void Write(byte[] buffer, int offset, int count)
+			{
+				_tempFile.CheckIsActive();
+				_stream.Write(buffer, offset, count);
+			}
+
+			public override void Flush()
+			{
+				_tempFile.CheckIsActive();
+				_stream.Flush();
+			}
 		}
 	}
 }
