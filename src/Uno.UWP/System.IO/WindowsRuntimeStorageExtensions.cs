@@ -36,8 +36,8 @@ namespace System.IO
 			}
 			else
 			{
-				var writeTransaction = await windowsRuntimeFile.OpenTransactedWriteAsync();
-				return writeTransaction.AsAutoCommitStream();
+				var raStream = await windowsRuntimeFile.OpenAsync(FileAccessMode.ReadWrite);
+				return raStream.AsStreamForWrite();
 			}
 		}
 
