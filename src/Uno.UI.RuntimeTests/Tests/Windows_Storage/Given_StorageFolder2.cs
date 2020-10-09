@@ -16,8 +16,8 @@ namespace Uno.UI.RuntimeTests.Tests
 	public class Given_StorageFolder2
 	{
 
-		String[] _filenames = { "testfile1.txt", "testfile2.txt", "testfile3.txt", "testfile4.txt", "testfile5.txt" };
-		String[] _foldernames = { "testfolder1", "testfolder2", "testfolder3", "testfolder4", "testfolder5.555" };
+		readonly String[] _filenames = { "testfile1.txt", "testfile2.txt", "testfile3.txt", "testfile4.txt", "testfile5.txt" };
+		readonly String[] _foldernames = { "testfolder1", "testfolder2", "testfolder3", "testfolder4", "testfolder5.555" };
 		Windows.Storage.StorageFolder _folderForTestFiles;
 
 		[TestInitialize]
@@ -93,7 +93,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
-		public async void When_GetItems()
+		public async Task When_GetItems()
 		{
 
 			var realFileList = await _folderForTestFiles.GetFilesAsync();
