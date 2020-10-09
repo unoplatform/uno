@@ -34,7 +34,7 @@ namespace Windows.Storage.Streams
 		public ulong Size
 		{
 			get => (ulong)_stream.Length;
-			set => throw new NotSupportedException();
+			set => _stream.SetLength((long)value);
 		}
 
 		public IInputStream GetInputStreamAt(ulong position)

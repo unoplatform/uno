@@ -35,7 +35,7 @@ namespace Windows.Storage
 				=> File.Open(Path, FileMode.Open, ToFileAccess(accessMode), ToFileShare(options));
 
 			public override async Task<StorageStreamTransaction> OpenTransactedWrite(CancellationToken ct, StorageOpenOptions option)
-				=> new StorageStreamTransaction(Owner);
+				=> new StorageStreamTransaction(Owner, ToFileShare(option));
 
 			public override async Task Delete(CancellationToken ct, StorageDeleteOption options)
 				=> File.Delete(Path);

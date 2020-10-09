@@ -22,7 +22,7 @@ namespace Windows.Storage
 		private IDisposable? _fileLock;
 		private Stream? _tempFile;
 
-		public StorageStreamTransaction(StorageFile file)
+		internal StorageStreamTransaction(StorageFile file, FileShare share)
 		{
 			_file = file;
 			_gate = _file.Path; // Set the gate to the file path in order to prevent concurrent access (only for this process unfortunately)
@@ -48,6 +48,11 @@ namespace Windows.Storage
 		{
 			lock (_gate)
 			{
+				if (_fileLock is null)
+				{
+					throw new ObjectDisposedException(nameof(StorageStreamTransaction));
+				}
+
 				CloseFiles();
 				File.Replace(_file.Path + ".tmp", _file.Path, null);
 				OpenFiles();
@@ -56,8 +61,14 @@ namespace Windows.Storage
 
 		private void OpenFiles()
 		{
-			_fileLock = File.Open(_file.Path, FileMode.Open, FileAccess.Read, FileShare.None);
-			_tempFile = File.Open(_file.Path + ".tmp", FileMode.Create, FileAccess.Write, FileShare.None);
+			FileStream src, dst;
+			_fileLock = src = File.Open(_file.Path, FileMode.Open, FileAccess.Read, FileShare.None);
+			_tempFile = dst = File.Open(_file.Path + ".tmp", FileMode.Create, FileAccess.Write, FileShare.None);
+
+			// First we make sure to clone the content of the current file in the temp file,
+			// so user can seek to append content.
+			src.CopyTo(dst);
+			dst.Seek(0, SeekOrigin.Begin);
 
 			Stream = new TransactionRandomStream(_tempFile);
 		}
@@ -121,6 +132,8 @@ namespace Windows.Storage
 			private readonly StorageStreamTransaction _owner;
 			private readonly Stream _temp;
 
+			private int _isDisposed;
+
 			public AutoCommitStream(StorageStreamTransaction owner, Stream temp)
 			{
 				_owner = owner;
@@ -130,7 +143,12 @@ namespace Windows.Storage
 			/// <inheritdoc />
 			protected override void Dispose(bool disposing)
 			{
-				_owner.Commit();
+				if (Interlocked.Exchange(ref _isDisposed, 1) == 0)
+				{
+					_owner.Commit();
+					_owner.Dispose();
+				}
+
 				base.Dispose(disposing);
 			}
 				
