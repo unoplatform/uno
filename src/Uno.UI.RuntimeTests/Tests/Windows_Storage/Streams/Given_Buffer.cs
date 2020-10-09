@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using Windows.Storage.Streams;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Buffer = Windows.Storage.Streams.Buffer;
 
@@ -55,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			sut.CopyTo(0, copy, 0, copy.Length);
 
 			// Then if we change the content of the source, it does not change the copy
-			sut.Span.Fill(E);
+			sut.Fill(E);
 
 			Assert.AreEqual(E, sut.GetByte(10));
 			Assert.AreEqual(D, copy[10]);
@@ -86,7 +87,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			sut.CopyTo(0, copy, 0, copy.Capacity);
 
 			// Then if we change the content of the source, it does not change the copy
-			sut.Span.Fill(E);
+			sut.Fill(E);
 
 			Assert.AreEqual(E, sut.GetByte(10));
 			Assert.AreEqual(D, copy.GetByte(10));
@@ -121,8 +122,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		public void When_ToArray()
 		{
 			var sut = GetFilledBuffer();
-			var expected = new byte[42];
-			Array.Fill(expected, D);
+			var expected = GetFilledBytes();
 
 			var actual = sut.ToArray();
 
@@ -179,7 +179,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 
 			Assert.AreEqual(D, stream.ReadByte());
 
-			sut.Span.Fill(E);
+			sut.Fill(E);
 
 			Assert.AreEqual(E, stream.ReadByte());
 		}
@@ -192,9 +192,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 
 			var stream = sut.AsStream();
 
-			var data = new byte[21];
-			Array.Fill(data, E);
-			stream.Write(data);
+			var data = GetFilledBytes(21);
+			stream.Write(data, 0, data.Length);
 
 			Assert.AreEqual(21U, sut.Length);
 			Assert.AreEqual(21L, stream.Position);
@@ -203,8 +202,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		private static Buffer GetFilledBuffer(uint capacity = 42, uint length = 42, byte data = D)
 		{
 			var buffer = new Buffer(capacity) { Length = length };
-			buffer.Span.Slice(0, (int)length).Fill(data);
+			buffer.Fill(0, length, data);
 			return buffer;
+		}
+
+		private static byte[] GetFilledBytes(uint length = 42, byte data = D)
+		{
+			var buffer = new byte[length];
+			for (var i = 0; i < length; i++)
+			{
+				buffer[i] = data;
+			}
+
+			return buffer;
+		}
+	}
+
+	internal static class BufferExtensions
+	{
+#if NETFX_CORE
+		public static void Write(this IBuffer buffer, uint index, byte[] source, int sourceIndex, int count)
+			=> source.CopyTo(sourceIndex, buffer, index, count);
+#endif
+
+		public static void Fill(this Buffer buffer, byte data)
+			=> Fill(buffer, 0, buffer.Capacity, data);
+
+		public static void Fill(this Buffer buffer, uint index, uint count, byte data)
+		{
+			var d = new byte[count];
+			for (var i = 0; i < d.Length; i++)
+			{
+				d[i] = data;
+			}
+
+			buffer.Write(index, d, 0, d.Length);
 		}
 	}
 }
