@@ -30,8 +30,15 @@ namespace System.IO
 
 		public static async Task<Stream> OpenStreamForWriteAsync(this IStorageFile windowsRuntimeFile)
 		{
-			var writeTransaction = await windowsRuntimeFile.OpenTransactedWriteAsync();
-			return writeTransaction.AsAutoCommitStream();
+			if (windowsRuntimeFile is StorageFile file)
+			{
+				return await file.OpenStream(CancellationToken.None, FileAccessMode.ReadWrite, StorageOpenOptions.None);
+			}
+			else
+			{
+				var writeTransaction = await windowsRuntimeFile.OpenTransactedWriteAsync();
+				return writeTransaction.AsAutoCommitStream();
+			}
 		}
 
 		public static async Task<Stream> OpenStreamForWriteAsync(this IStorageFolder rootDirectory, string relativePath, CreationCollisionOption creationCollisionOption)

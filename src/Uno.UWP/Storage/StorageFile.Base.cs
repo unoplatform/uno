@@ -48,7 +48,7 @@ namespace Windows.Storage
 			public abstract Task<IRandomAccessStreamWithContentType> Open(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options);
 
 			public virtual async Task<Stream> OpenStream(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-				=> (await Open(ct, accessMode, options)).AsStream();
+				=> (await Open(ct, accessMode, options).AsTask(ct)).AsStream();
 
 			public abstract Task<StorageStreamTransaction> OpenTransactedWrite(CancellationToken ct, StorageOpenOptions option);
 
