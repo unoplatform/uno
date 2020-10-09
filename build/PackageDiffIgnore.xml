@@ -3068,9 +3068,9 @@
 	</IgnoreSet>
 	<IgnoreSet baseVersion="3.0.17">
 		<Methods>
-      		<Member 
-			  	fullName="System.Void Windows.System.UserProfile.UserProfilePersonalizationSettings..ctor()"
-           		reason="Parameter-less ctor does not exist in UWP"/>
+			<Member 
+				fullName="System.Void Windows.System.UserProfile.UserProfilePersonalizationSettings..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
@@ -3080,11 +3080,113 @@
 			<Member
 				fullName="System.Void Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member
+				fullName="System.Void Windows.Media.Capture.CapturedFrame.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.ImageStream.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceThumbnail.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Threading.Tasks.Task`1&lt;Windows.Storage.StorageFile&gt; Windows.Storage.StorageFile.GetFileFromPathAsync(System.String path)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Threading.Tasks.Task Windows.Storage.StorageFile.DeleteAsync(System.Threading.CancellationToken ct)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Threading.Tasks.Task`1&lt;System.IO.Stream&gt; Windows.Storage.StorageFile.OpenStreamForReadAsync(System.Threading.CancellationToken ct)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Threading.Tasks.Task`1&lt;Windows.Storage.StorageStreamTransaction&gt; Windows.Storage.StorageFile.OpenTransactedWriteAsync(System.Threading.CancellationToken ct)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Threading.Tasks.Task Windows.Storage.StorageFile.CopyAndReplaceAsync(System.Threading.CancellationToken ct, Windows.Storage.StorageFile destination)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Threading.Tasks.Task Windows.Storage.StorageFile.MoveAsync(System.Threading.CancellationToken ct, Windows.Storage.StorageFolder targetFolder)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Threading.Tasks.Task Windows.Storage.StorageFile.MoveAsync(System.Threading.CancellationToken ct, Windows.Storage.StorageFolder targetFolder, System.String desiredNewName)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Threading.Tasks.Task Windows.Storage.StorageFile.MoveAsync(System.Threading.CancellationToken ct, Windows.Storage.StorageFolder targetFolder, System.String desiredNewName, Windows.Storage.NameCollisionOption option)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Threading.Tasks.Task`1&lt;Windows.Storage.FileProperties.BasicProperties&gt; Windows.Storage.StorageFile.GetBasicPropertiesAsync(System.Threading.CancellationToken ct)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.StorageStreamTransaction..ctor(Windows.Storage.StorageFile file)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.IO.Stream Windows.Storage.StorageStreamTransaction.GetStream()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Threading.Tasks.Task Windows.Storage.StorageStreamTransaction.CommitAsync(System.Threading.CancellationToken ct)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.StreamedFileDataRequest..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Streams.FileInputStream..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Streams.FileOutputStream..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Streams.FileRandomAccessStream.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Streams.FileRandomAccessStream..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Streams.InMemoryRandomAccessStream.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Streams.InputStreamOverStream..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Streams.IRandomAccessStream.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Streams.OutputStreamOverStream..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Streams.RandomAccessStreamOverStream.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Streams.RandomAccessStreamOverStream..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Streams.RandomAccessStreamReference..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.FileProperties.StorageItemThumbnail.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Media.SpeechSynthesis.SpeechSynthesisStream.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Media.Capture.CapturedFrame.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.ImageStream.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceThumbnail.set_Size(System.UInt64 value)"
+				reason="Not part of the UWP API"/>
 		</Methods>
 		<Fields>
 			<Member
 				fullName="System.Int32 Windows.ApplicationModel.Contacts.ContactQuerySearchFields::value__"
 				reason="The enum is backed by uint" />
+			<Member
+				fullName="System.Int32 Windows.Storage.Streams.InputStreamOptions::value__"
+				reason="The enum is backed by uint"/>
+			<Member
+				fullName="System.Int32 Windows.Storage.Streams.InputStreamOptions::value__"
+				reason="The enum is backed by uint"/>
 		</Fields>
 	</IgnoreSet>
   </IgnoreSets>
