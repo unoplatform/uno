@@ -139,7 +139,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			var copy = sut.ToArray();
 
 			// Then if we change the content of the source, it does not change the copy
-			sut.Span.Fill(E);
+			sut.Fill(E);
 
 			Assert.AreEqual(E, sut.GetByte(10));
 			Assert.AreEqual(D, copy[10]);

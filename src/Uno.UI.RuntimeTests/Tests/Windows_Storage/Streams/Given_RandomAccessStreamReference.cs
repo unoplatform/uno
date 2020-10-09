@@ -24,6 +24,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			Assert.AreEqual(_unoStaticTestFileContent, actual);
 		}
 
+#if !NETFX_CORE
 		[TestMethod]
 		public async Task When_FromFile()
 		{
@@ -41,6 +42,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 
 			Assert.AreEqual(tempContent, actual);
 		}
+#endif
 
 		[TestMethod]
 		public async Task When_FromStream()
