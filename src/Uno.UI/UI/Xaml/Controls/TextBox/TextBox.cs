@@ -98,6 +98,7 @@ namespace Windows.UI.Xaml.Controls
 			OnTextWrappingChanged(CreateInitialValueChangerEventArgs(TextWrappingProperty, TextWrappingProperty.GetMetadata(GetType()).DefaultValue, TextWrapping));
 			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
 			OnVerticalContentAlignmentChanged(VerticalAlignment.Top, VerticalContentAlignment);
+			OnTextCharacterCasingChanged(CreateInitialValueChangerEventArgs(CharacterCasingProperty, CharacterCasingProperty.GetMetadata(GetType()).DefaultValue, CharacterCasing));
 
 			var buttonRef = _deleteButton?.GetTarget();
 
@@ -434,6 +435,35 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		#endregion
+
+#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+		public CharacterCasing CharacterCasing
+		{
+			get => (CharacterCasing)this.GetValue(CharacterCasingProperty);
+			set => this.SetValue(CharacterCasingProperty, value);
+		}
+
+#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+		public static DependencyProperty CharacterCasingProperty { get; } =
+			DependencyProperty.Register(
+				nameof(CharacterCasing),
+				typeof(CharacterCasing),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(
+						defaultValue: CharacterCasing.Normal,
+						propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextCharacterCasingChanged(e))
+				);
+
+		private void OnTextCharacterCasingChanged(DependencyPropertyChangedEventArgs e)
+		{
+			OnTextCharacterCasingChangedPartial(e);
+		}
+
+		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		#region IsReadOnly DependencyProperty
 

@@ -557,5 +557,78 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			multilineTextRect.Height.Should().Be(multilineReadonlyTextRect.Height, because: "toggling IsReadOnly should not affect AcceptsReturn=True(multiline) TextBox.Height");
 			normalTextRect.Height.Should().NotBe(multilineTextRect.Height, because: "toggling AcceptsReturn should not affect TextBox.Height");
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_CharacterCasingNormal_ShouldAcceptAllCasing_Test()
+		{
+			const string text = "Uno Platform";
+
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_CharacterCasing");
+
+			var normalCasingTextBox = _app.Marked("NormalCasingTextBox");
+
+			normalCasingTextBox.Tap();
+			normalCasingTextBox.ClearText();
+			normalCasingTextBox.EnterText(text);
+
+			Assert.AreEqual(text, normalCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_CharacterCasingDefault_ShouldAcceptAllCasing_Test()
+		{
+			const string text = "Uno Platform";
+
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_CharacterCasing");
+
+			var defaultCasingTextBox = _app.Marked("DefaultCasingTextBox");
+
+			defaultCasingTextBox.Tap();
+			defaultCasingTextBox.ClearText();
+			defaultCasingTextBox.EnterText(text);
+
+			Assert.AreEqual(text, defaultCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_CharacterCasingLower_ShouldBeAllLower_Test()
+		{
+			const string text = "Uno Platform";
+
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_CharacterCasing");
+
+			var lowerCasingTextBox = _app.Marked("LowerCasingTextBox");
+
+			lowerCasingTextBox.Tap();
+			lowerCasingTextBox.ClearText();
+			lowerCasingTextBox.EnterText(text);
+
+			Assert.AreEqual(text.ToLowerInvariant(), lowerCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_CharacterCasingUpper_ShouldBeAllUpper_Test()
+		{
+			const string text = "Uno Platform";
+
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_CharacterCasing");
+
+			var upperCasingTextBox = _app.Marked("UpperCasingTextBox");
+
+			upperCasingTextBox.Tap();
+			upperCasingTextBox.ClearText();
+			upperCasingTextBox.EnterText(text);
+
+			Assert.AreEqual(text.ToUpperInvariant(), upperCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
 	}
 }
