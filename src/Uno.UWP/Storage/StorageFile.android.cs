@@ -20,7 +20,7 @@ using Windows.Storage.Helpers;
 
 namespace Windows.Storage
 {
-	public partial class StorageFile : StorageItem, IStorageFile
+	partial class StorageFile
 	{
 		private static ConcurrentEntryManager _assetGate = new ConcurrentEntryManager();
 

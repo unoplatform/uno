@@ -12,7 +12,7 @@ using Buffer = Windows.Storage.Streams.Buffer;
 
 namespace Windows.Storage
 {
-	public sealed partial class StorageFile
+	partial class StorageFile
 	{
 		private abstract class ImplementationBase
 		{

@@ -8,7 +8,7 @@ using Foundation;
 
 namespace Windows.Storage
 {
-	public partial class StorageFile : StorageItem, IStorageFile
+	partial class StorageFile
 	{
 		private static async Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)
 		{

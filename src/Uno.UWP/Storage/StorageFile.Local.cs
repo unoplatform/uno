@@ -8,7 +8,7 @@ using Windows.Storage.Streams;
 
 namespace Windows.Storage
 {
-	public sealed partial class StorageFile
+	partial class StorageFile
 	{
 		private sealed class Local : ImplementationBase
 		{
