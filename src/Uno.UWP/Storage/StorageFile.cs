@@ -16,7 +16,7 @@ using Uno;
 
 namespace Windows.Storage
 {
-	public sealed partial class StorageFile : StorageItem, IStorageFile
+	public sealed partial class StorageFile : IStorageFile, IStorageFile2, IStorageItem, IStorageItem2
 	{
 		public static IAsyncOperation<StorageFile> GetFileFromPathAsync(string path)
 			=> AsyncOperation.FromTask(async ct => new StorageFile(new Local(path)));

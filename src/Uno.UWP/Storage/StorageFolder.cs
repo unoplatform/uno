@@ -18,7 +18,7 @@ using Foundation;
 
 namespace Windows.Storage
 {
-	public partial class StorageFolder : StorageItem, IStorageFolder
+	public partial class StorageFolder : IStorageFolder, IStorageItem, IStorageItem2
 	{
 		public string Path { get; private set; }
 		public string Name { get; private set; }

@@ -3162,6 +3162,9 @@
 				fullName="System.Void Windows.Storage.Streams.RandomAccessStreamReference..ctor()"
 				reason="Not part of the UWP API"/>
 			<Member
+				fullName="System.Void Windows.Storage.StorageItem..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
 				fullName="System.Void Windows.Storage.FileProperties.StorageItemThumbnail.set_Size(System.UInt64 value)"
 				reason="Not part of the UWP API"/>
 			<Member
