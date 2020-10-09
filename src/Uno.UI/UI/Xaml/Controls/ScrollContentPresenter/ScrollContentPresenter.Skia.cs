@@ -11,6 +11,7 @@ using System.Text;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using System.IO;
+using Windows.UI.Composition;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -158,6 +159,12 @@ namespace Windows.UI.Xaml.Controls
 		public ScrollContentPresenter()
 		{
 			PointerWheelChanged += ScrollContentPresenter_PointerWheelChanged;
+			LayoutUpdated += ScrollContentPresenter_LayoutUpdated;
+		}
+
+		private void ScrollContentPresenter_LayoutUpdated(object sender, object e)
+		{
+			Visual.Clip = Visual.Compositor.CreateInsetClip(0, 0, (float)RenderSize.Width, (float)RenderSize.Height);
 		}
 
 		private void ScrollContentPresenter_PointerWheelChanged(object sender, Input.PointerRoutedEventArgs e)

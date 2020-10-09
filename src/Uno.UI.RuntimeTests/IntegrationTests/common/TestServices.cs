@@ -30,17 +30,8 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForIdle()
 			{
-#if __WASM__
-				await Task.Yield();
-#else
-				await Task.Yield();
-				var tcs = new TaskCompletionSource<bool>();
-				await RootControl.Dispatcher.RunIdleAsync(_ => tcs.SetResult(true));
-				tcs = new TaskCompletionSource<bool>();
-				await RootControl.Dispatcher.RunIdleAsync(_ => tcs.SetResult(true));
-
-				await tcs.Task;
-#endif
+				await RootControl.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootControl.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 			}
 
 			/// <summary>
@@ -66,6 +57,21 @@ namespace Private.Infrastructure
 
 				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
 			}
+
+#if DEBUG
+			/// <summary>
+			/// This will wait. Forever. Useful when debugging a runtime test if you wish to visually inspect or interact with a view added
+			/// by the test. (To break out of the loop, just set 'shouldWait = false' via the Immediate Window.)
+			/// </summary>
+			internal static async Task WaitForever()
+			{
+				var shouldWait = true;
+				while (shouldWait)
+				{
+					await Task.Delay(1000);
+				}
+			}
+#endif
 
 			internal static void ShutdownXaml() { }
 			internal static void VerifyTestCleanup() { }

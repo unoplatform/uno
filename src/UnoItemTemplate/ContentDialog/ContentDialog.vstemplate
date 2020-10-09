@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>ContentDialog (Uno Platform UWP)</Name>
+    <Description>A ContentDialog control</Description>
+    <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4007" />
+    <TemplateID>Uno.CS.ContentDialog</TemplateID>
+    <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>
+    <ProjectType>CSharp</ProjectType>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>ContentDialog.xaml</DefaultName>
+    <SortOrder>40</SortOrder>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem OpenInEditor="true" ReplaceParameters="true" ItemType="Page" SubType="Designer" CustomTool="MSBuild:Compile" TargetFileName="$fileinputname$.xaml">ContentDialog.xaml</ProjectItem>
+    <ProjectItem ReplaceParameters="true" TargetFileName="$fileinputname$.xaml.cs">ContentDialog.xaml.cs</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

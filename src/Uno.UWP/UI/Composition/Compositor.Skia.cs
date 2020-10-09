@@ -14,6 +14,7 @@ namespace Windows.UI.Composition
 	{
 		private readonly Stack<float> _opacityStack = new Stack<float>();
 		private float _currentOpacity = 1.0f;
+		private bool _isDirty = false;
 
 		private OpacityDisposable PushOpacity(float opacity)
 		{
@@ -44,7 +45,7 @@ namespace Windows.UI.Composition
 
 		internal void Render(SKSurface surface, SKImageInfo info)
 		{
-			var sw = Stopwatch.StartNew();
+			_isDirty = false;
 
 			if (RootVisual != null)
 			{
@@ -53,15 +54,11 @@ namespace Windows.UI.Composition
 					RenderVisual(surface, info, visual);
 				}
 			}
-
-			sw.Stop();
-
-			// global::System.Console.WriteLine($"Render time {sw.Elapsed}");
 		}
 
 		private void RenderVisual(SKSurface surface, SKImageInfo info, Visual visual)
 		{
-			if (visual.Opacity != 0)
+			if (visual.Opacity != 0 && visual.IsVisible)
 			{
 				surface.Canvas.Save();
 
@@ -148,7 +145,11 @@ namespace Windows.UI.Composition
 
 		partial void InvalidateRenderPartial()
 		{
-			CoreWindow.QueueInvalidateRender();
+			if (!_isDirty)
+			{
+				_isDirty = true;
+				CoreWindow.QueueInvalidateRender();
+			}
 		}
 	}
 }

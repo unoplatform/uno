@@ -31,12 +31,12 @@ jobs:
 
     displayName: Install GTK3 runtime
 
-  #- script: |
-  #      set PATH=C:\Program Files\GTK3-Runtime Win64\bin;%PATH%
-  #      cd $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
-  #      SamplesApp.Skia.Gtk.exe --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
-  #
-  #  displayName: Run Skia UI Tests
+  - script: |
+        set PATH=C:\Program Files\GTK3-Runtime Win64\bin;%PATH%
+        cd $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
+        SamplesApp.Skia.Gtk.exe --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
+  
+    displayName: Run Skia UI Tests
 
   - task: PublishBuildArtifacts@1
     condition: always()

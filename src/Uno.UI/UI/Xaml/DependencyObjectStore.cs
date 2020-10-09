@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml
 	{
 		public static class TraceProvider
 		{
-			public readonly static Guid Id = Guid.Parse("{430FC851-E917-4587-AF7B-5A1CE5A1941D}");
+			public static readonly Guid Id = Guid.Parse("{430FC851-E917-4587-AF7B-5A1CE5A1941D}");
 			public const int GetValue = 1;
 			public const int SetValueStart = 2;
 			public const int SetValueStop = 3;
@@ -57,8 +57,7 @@ namespace Windows.UI.Xaml
 			public const int DataContextChangedStop = 6;
 		}
 
-		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-
+		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
 		/// <summary>
 		/// A global static counter that is used to uniquely identify objects.
@@ -90,20 +89,18 @@ namespace Windows.UI.Xaml
 		private ManagedWeakReference? _thisWeakRef;
 
 		private readonly Type _originalObjectType;
-		private SerialDisposable _inheritedProperties = new SerialDisposable();
+		private readonly SerialDisposable _inheritedProperties = new SerialDisposable();
 		private ManagedWeakReference? _parentRef;
-		private Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
-		private DependencyPropertyValuePrecedences? _precedenceOverride;
+		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
+		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
 
 		private static long _propertyChangedToken = 0;
-		private Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
+		private readonly Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
 
 		private bool _registeringInheritedProperties;
 		private bool _unregisteringInheritedProperties;
 
-		private static bool _validatePropertyOwner = Debugger.IsAttached;
-
-		private bool _isSettingAProperty;
+		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
 
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
@@ -307,48 +304,47 @@ namespace Windows.UI.Xaml
 			return _properties.GetPropertyDetails(property).CurrentHighestValuePrecedence;
 		}
 
-
 		/// <summary>
 		/// Creates a SetValue precedence scoped override. All calls to SetValue
 		/// on the specified instance will be set to the specified precedence.
 		/// </summary>
-		/// <param name="instance">The instance to override</param>
 		/// <param name="precedence">The precedence to set</param>
 		/// <returns>A disposable to dispose to cancel the override.</returns>
-		internal IDisposable? OverrideLocalPrecedence(DependencyPropertyValuePrecedences precedence)
+		internal IDisposable? OverrideLocalPrecedence(DependencyPropertyValuePrecedences? precedence)
 		{
-			if (_precedenceOverride != null)
+			_overriddenPrecedences ??= new Stack<DependencyPropertyValuePrecedences?>(2);
+			if (_overriddenPrecedences.Count > 0 && _overriddenPrecedences.Peek() == precedence)
 			{
-				// Keep the current precedence override, which affects application of styles
-				// with BasedOn set.
-				return null;
+				return null; // this precedence is already set, no need to set a new one
 			}
-			else
+
+			_overriddenPrecedences.Push(precedence);
+
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				this.Log().Debug($"OverrideLocalPrecedence({precedence}) - stack is {string.Join(", ", _overriddenPrecedences)}");
+			}
+
+			return Disposable.Create(() =>
+			{
+				var popped = _overriddenPrecedences.Pop();
+				if (popped != precedence)
 				{
-					this.Log().Debug($"OverrideLocalPrecedence({precedence})");
+					throw new InvalidOperationException($"Error while unstacking precedence. Should be {precedence}, got {popped}.");
 				}
 
-				_precedenceOverride = precedence;
-
-				return Disposable.Create(() =>
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-
-					_precedenceOverride = null;
-
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug("OverrideLocalPrecedence(None)");
-					}
-				});
-			}
+					var newPrecedence = _overriddenPrecedences.Count == 0 ? "<none>" : _overriddenPrecedences.Peek().ToString();
+					this.Log().Debug($"OverrideLocalPrecedence({precedence}).Dispose() ==> new overriden precedence is {newPrecedence})");
+				}
+			});
 		}
 
-		private static List<DependencyPropertyPath> _propagationBypass =
+		private static readonly List<DependencyPropertyPath> _propagationBypass =
 			new List<DependencyPropertyPath>();
 
-		private static Dictionary<DependencyPropertyPath, object> _propagationBypassed =
+		private static readonly Dictionary<DependencyPropertyPath, object> _propagationBypassed =
 			new Dictionary<DependencyPropertyPath, object>(DependencyPropertyPath.Comparer.Default);
 
 		internal static IDisposable? BypassPropagation(DependencyObject instance, DependencyProperty property)
@@ -434,8 +430,7 @@ namespace Windows.UI.Xaml
 
 			if (actualInstanceAlias != null)
 			{
-				ApplyPrecedenceOverride(ref precedence);
-				_isSettingAProperty = true;
+				var overrideDisposable = ApplyPrecedenceOverride(ref precedence);
 
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
 				try
@@ -449,7 +444,7 @@ namespace Windows.UI.Xaml
 					ValidatePropertyOwner(property);
 
 					// Resolve the stack once for the instance, for performance.
-					propertyDetails = propertyDetails ?? _properties.GetPropertyDetails(property);
+					propertyDetails ??= _properties.GetPropertyDetails(property);
 
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
@@ -486,7 +481,7 @@ namespace Windows.UI.Xaml
 				finally
 #endif
 				{
-					_isSettingAProperty = false;
+					overrideDisposable?.Dispose();
 				}
 			}
 			else
@@ -592,31 +587,26 @@ namespace Windows.UI.Xaml
 		/// Applies the precedence override that has been set through <seealso cref="OverrideLocalPrecedence(object, DependencyPropertyValuePrecedences)" />
 		/// Used to ambiently change the precedence specified when using standard DependencyProperty accessors, particularly when applying styles.
 		/// </summary>
-		/// <param name="property">The property being set</param>
-		/// <param name="value"></param>
 		/// <param name="precedence"></param>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void ApplyPrecedenceOverride(ref DependencyPropertyValuePrecedences precedence)
+		private IDisposable? ApplyPrecedenceOverride(ref DependencyPropertyValuePrecedences precedence)
 		{
-			if (_isSettingAProperty)
+			var currentlyOverridenPrecedence =
+				_overriddenPrecedences?.Count > 0
+					? _overriddenPrecedences.Peek()
+					: default;
+
+			if (currentlyOverridenPrecedence is {} current)
 			{
-				// We only want to override the precedence of properties set directly from a style. Nested sets (within property changed callbacks, etc)
-				// should be applied with the normal precedence.
-				return;
+				precedence = current;
+
+				// The ambient precedence is also set to "Local" for affected properties
+				// (that means if properties are set in any callback, this override won't apply)
+				return OverrideLocalPrecedence(null);
 			}
 
-			if (_precedenceOverride != null)
-			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug(
-						$"Overriding {precedence} precedence with {_precedenceOverride}."
-					);
-				}
-
-				precedence = _precedenceOverride.Value;
-			}
+			return null;
 		}
 
 		/// <summary>
@@ -660,9 +650,7 @@ namespace Windows.UI.Xaml
 
 		public void UnregisterPropertyChangedCallback(DependencyProperty property, long token)
 		{
-			IDisposable registration;
-
-			if (_propertyChangedTokens.TryGetValue(token, out registration))
+			if (_propertyChangedTokens.TryGetValue(token, out var registration))
 			{
 				registration.Dispose();
 
@@ -674,7 +662,7 @@ namespace Windows.UI.Xaml
 		{
 			var weakDelegate = CreateWeakDelegate(callback);
 
-			propertyDetails = propertyDetails ?? _properties.GetPropertyDetails(property);
+			propertyDetails ??= _properties.GetPropertyDetails(property);
 
 			var cookie = propertyDetails.CallbackManager.RegisterCallback(weakDelegate.callback);
 
@@ -844,6 +832,11 @@ namespace Windows.UI.Xaml
 			return stack.GetValueUnderPrecedence(precedence);
 		}
 
+		internal DependencyPropertyDetails GetPropertyDetails(DependencyProperty property)
+		{
+			return _properties.GetPropertyDetails(property);
+		}
+
 		// Keep a list of inherited properties that have been updated so they can be reset.
 		HashSet<DependencyProperty> _updatedProperties = new HashSet<DependencyProperty>(DependencyPropertyComparer.Default);
 
@@ -928,19 +921,19 @@ namespace Windows.UI.Xaml
 
 		private readonly struct InheritedPropertiesDisposable : IDisposable
 		{
-			private readonly IDisposable InheritedPropertiesCallback;
-			private readonly DependencyObjectStore Owner;
+			private readonly IDisposable _inheritedPropertiesCallback;
+			private readonly DependencyObjectStore _owner;
 
 			public InheritedPropertiesDisposable(DependencyObjectStore owner, IDisposable inheritedPropertiesCallback)
 			{
-				Owner = owner;
-				InheritedPropertiesCallback = inheritedPropertiesCallback;
+				_owner = owner;
+				_inheritedPropertiesCallback = inheritedPropertiesCallback;
 			}
 
 			public void Dispose()
 			{
-				InheritedPropertiesCallback.Dispose();
-				Owner.CleanupInheritedProperties();
+				_inheritedPropertiesCallback.Dispose();
+				_owner.CleanupInheritedProperties();
 			}
 		}
 
@@ -1056,26 +1049,26 @@ namespace Windows.UI.Xaml
 
 			var bindings = _resourceBindings.GetAllBindings().ToList(); //The original collection may be mutated during DP assignations
 
-			foreach (var tuple in bindings)
+			foreach (var (property, binding) in bindings)
 			{
 				try
 				{
 					var wasSet = false;
 					foreach (var dict in dictionariesInScope)
 					{
-						if (dict.TryGetValue(tuple.Binding.ResourceKey, out var value, shouldCheckSystem: false))
+						if (dict.TryGetValue(binding.ResourceKey, out var value, shouldCheckSystem: false))
 						{
 							wasSet = true;
-							SetValue(tuple.Property, BindingPropertyHelper.Convert(() => tuple.Property.Type, value), tuple.Binding.Precedence);
+							SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), binding.Precedence);
 							break;
 						}
 					}
 
-					if (!wasSet && isThemeChangedUpdate && tuple.Binding.IsThemeResourceExtension)
+					if (!wasSet && isThemeChangedUpdate && binding.IsThemeResourceExtension)
 					{
-						if (ResourceResolver.TryTopLevelRetrieval(tuple.Binding.ResourceKey, tuple.Binding.ParseContext, out var value))
+						if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
 						{
-							SetValue(tuple.Property, BindingPropertyHelper.Convert(() => tuple.Property.Type, value), tuple.Binding.Precedence);
+							SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), binding.Precedence);
 						}
 					}
 				}

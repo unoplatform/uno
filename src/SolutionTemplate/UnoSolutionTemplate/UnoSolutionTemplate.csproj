@@ -75,6 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Skia.WPF\Program.cs" />
     <None Include="Skia.WPF.Host\App.xaml.cs" />
     <None Include="Skia.WPF.Host\MainWindow.xaml.cs" />
     <None Include="Skia.WPF.Host\Properties\AssemblyInfo.cs" />
@@ -116,8 +117,8 @@
     <None Include="Skia.WPF.Host\App.config" />
     <None Include="Skia.WPF.Host\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.WPF.Host\Properties\Settings.settings" />
-    <None Include="Skia.WPF.Host\UnoQuickStart.Wpf.Host.csproj" />
-    <None Include="Skia.WPF\UnoQuickStart.Skia.WPF.csproj" />
+    <None Include="Skia.WPF.Host\UnoQuickStart.Skia.Wpf.Host.csproj" />
+    <None Include="Skia.WPF\UnoQuickStart.Skia.Wpf.csproj" />
     <None Include="Wasm\Program.cs" />
     <None Include="Droid\MainActivity.cs" />
     <None Include="Droid\Properties\AssemblyInfo.cs" />
@@ -227,6 +228,15 @@
     <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-512%402x.png" />
     <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-512.png" />
     <None Include="macOS\Assets.xcassets\unologo.imageset\unoplatform.jpg" />
+    <None Include="Skia.WPF.Host\SkiaWpfHost.vstemplate">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Skia.WPF\SkiaWpf.vstemplate">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Skia.Gtk\SkiaGtk.vstemplate">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="UWP\Assets\LockScreenLogo.scale-200.png" />
     <Content Include="UWP\Assets\SplashScreen.scale-200.png" />
     <Content Include="UWP\Assets\Square150x150Logo.scale-200.png" />
@@ -246,8 +256,8 @@
     <EmbeddedResource Include="Skia.WPF.Host\Properties\Resources.resx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Skia.WPF.Host\App.xaml"/>
-    <None Include="Skia.WPF.Host\MainWindow.xaml"/>
+    <None Include="Skia.WPF.Host\App.xaml" />
+    <None Include="Skia.WPF.Host\MainWindow.xaml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

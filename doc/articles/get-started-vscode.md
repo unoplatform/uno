@@ -1,8 +1,8 @@
-## VS Code
+# Getting Started on VS Code
 
 This guide will walk you through the set-up process for building WebAssembly apps with Uno under Windows, Linux, or macOS.
 
-### Prerequisites
+## Prerequisites
 
 * [**Visual Studio Code**](https://code.visualstudio.com/)
 
@@ -12,19 +12,19 @@ This guide will walk you through the set-up process for building WebAssembly app
 
     > Use `dotnet --version` from the terminal to get the version installed.
 
-### Create an Uno Platform project
+## Create an Uno Platform project
 
-#### Install Uno Platform Template
+### Install Uno Platform Template
 
 Launch Visual Studio Code and open a new terminal.
 
-In the terminal, type the following to install the Uno Platform templates:
+In the terminal, type the following to install the [Uno Platform templates](get-started-dotnet-new.md):
 
 ```bash
 dotnet new -i Uno.ProjectTemplates.Dotnet
 ```
 
-#### Create the project
+### Create the project
 
 In the terminal, type the following to create a new project:
 
@@ -36,7 +36,7 @@ dotnet new unoapp -o MyApp -ios=false -android=false -macos=false -uwp=false --v
 
 This will create a solution that only contains the WebAssembly platform support.
 
-### Prepare the WebAssembly application for debugging
+## Prepare the WebAssembly application for debugging
 
 1. In Visual Studio Code install these extensions:
 
@@ -56,7 +56,7 @@ This will create a solution that only contains the WebAssembly platform support.
 
 3. Visual Studio Code will ask to restore the NuGet packages.
 
-### Modify the template
+## Modify the template
 
 1. In `MainPage.xaml`, replace the Grid's content with the following:
 
@@ -81,7 +81,7 @@ This will create a solution that only contains the WebAssembly platform support.
     }
     ```
 
-### Run and Debug the application
+## Run and Debug the application
 
 1. Starting the app with the WebAssembly debugger is a two-step process. Move to the **Run** tab on Visual Studio Code and
 
@@ -93,7 +93,7 @@ This will create a solution that only contains the WebAssembly platform support.
 2. Place a breakpoint inside the `OnClick` method
 3. Click the button in the app, and the breakpoint will hit
 
-### Updating an existing application to work with VS Code
+## Updating an existing application to work with VS Code
 
 If you already have an Uno application, you can add some missing support files for VS Code to recognize your project.
 
@@ -113,6 +113,6 @@ Here's how to do this:
 
 You should now be in the same configuration as the generated template files.
 
-#### Video Tutorial
+### Video Tutorial
 
 [![Getting Started Visual Studio Code Video](Assets/vscode-cover.JPG)](http://www.youtube.com/watch?v=O9qgw1Q445M "")

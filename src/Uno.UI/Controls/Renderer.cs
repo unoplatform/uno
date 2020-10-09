@@ -18,7 +18,7 @@ namespace Uno.UI.Controls
 		private CompositeDisposable _subscriptions = new CompositeDisposable();
 		private readonly WeakReference _element;
 		private TNative _native;
-
+		private bool _isRendering;
 
 		public Renderer(TElement element)
 		{
@@ -71,9 +71,19 @@ namespace Uno.UI.Controls
 		public void Invalidate()
 		{
 			// We don't render anything if there's no rendering target
-			if (_native != null)
+			if (_native != null
+				// Prevent Render() being called reentrantly - this can happen when the Element's parent changes within the Render() method
+				&& !_isRendering)
 			{
-				Render();
+				try
+				{
+					_isRendering = true;
+					Render();
+				}
+				finally
+				{
+					_isRendering = false;
+				}
 			}
 		}
 

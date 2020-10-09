@@ -1227,6 +1227,8 @@ namespace Uno.UWPSyncGenerator
 					return "Windows.Foundation.TimeSpan";
 				case "System.Collections.Generic.KeyValuePair":
 					return "Windows.Foundation.Collections.IKeyValuePair";
+				case "System.Collections.Specialized.INotifyCollectionChanged":
+					return "Windows.UI.Xaml.Interop.INotifyCollectionChanged";
 				case "System.Type":
 					return BaseXamlNamespace + ".Interop.TypeName";
 				case "System.Uri":
@@ -1468,6 +1470,7 @@ namespace Uno.UWPSyncGenerator
 				//"global::Windows.Foundation.ICloseable" => "global::System.IDisposable",
 				"global::Windows.UI.Xaml.Input.ICommand" => "global::System.Windows.Input.ICommand",
 				"global::Microsoft.UI.Xaml.Input.ICommand" => "global::System.Windows.Input.ICommand",
+				"global::Microsoft.UI.Xaml.Interop.INotifyCollectionChanged" => "global::System.Collections.Specialized.INotifyCollectionChanged",
 				_ => typeName,
 			};
 		}

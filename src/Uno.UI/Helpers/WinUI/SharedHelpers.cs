@@ -890,7 +890,7 @@ namespace Uno.UI.Helpers.WinUI
 				}
 				if (string.IsNullOrEmpty(returnHString))
 				{
-					returnHString = obj.ToString() ?? returnHString;
+					returnHString = obj?.ToString() ?? returnHString;
 				}
 			}
 
