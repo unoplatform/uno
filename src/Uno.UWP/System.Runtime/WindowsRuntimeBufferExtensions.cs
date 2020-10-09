@@ -8,7 +8,7 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 	public static class WindowsRuntimeBufferExtensions
 	{
 		public static IBuffer AsBuffer(this byte[] source)
-			=> source.AsBuffer(0, source.Length, source.Length);
+			=> AsBuffer(source, 0, source.Length, source.Length);
 		
 		public static IBuffer AsBuffer(this byte[] source, int offset, int length)
 			=> AsBuffer(source, offset, length, length);
@@ -41,18 +41,13 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		}
 
 		public static Stream AsStream(this IBuffer source)
-		{
-			var data = UwpBuffer.Cast(source).GetSegment();
-			var stream = new MemoryStream(data.Array!, data.Offset, data.Count);
-
-			return stream;
-		}
+			=> new StreamOverBuffer(UwpBuffer.Cast(source));
 
 		public static void CopyTo(this byte[] source, IBuffer destination)
-			=> source.CopyTo(0, destination, 0, source.Length);
+			=> UwpBuffer.Cast(destination).Write(0, source, 0, source.Length);
 
 		public static void CopyTo(this byte[] source, int sourceIndex, IBuffer destination, uint destinationIndex, int count)
-			=> Array.Copy(source, sourceIndex, UwpBuffer.Cast(destination).GetSegment().Array!, destinationIndex, count);
+			=> UwpBuffer.Cast(destination).Write(destinationIndex, source, sourceIndex, count);
 
 		public static void CopyTo(this IBuffer source, byte[] destination)
 			=> UwpBuffer.Cast(source).CopyTo(0, destination, 0, destination.Length);
