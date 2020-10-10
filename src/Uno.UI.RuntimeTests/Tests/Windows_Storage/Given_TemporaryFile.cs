@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NETFX_CORE
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -48,3 +49,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		}
 	}
 }
+#endif
