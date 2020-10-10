@@ -102,16 +102,16 @@ namespace Windows.Storage
 			=> AsyncOperation.FromTask(_impl.GetBasicProperties);
 
 		public IAsyncOperation<IRandomAccessStreamWithContentType> OpenReadAsync()
-			=> AsyncOperation<IRandomAccessStreamWithContentType>.FromTask((ct, _) => _impl.Open(ct, FileAccessMode.Read, StorageOpenOptions.None));
+			=> AsyncOperation<IRandomAccessStreamWithContentType>.FromTask((ct, _) => _impl.Open(ct, FileAccessMode.Read, StorageOpenOptions.AllowReadersAndWriters));
 
 		public IAsyncOperation<IRandomAccessStream> OpenAsync(FileAccessMode accessMode)
-			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await _impl.Open(ct, accessMode, StorageOpenOptions.None));
+			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await _impl.Open(ct, accessMode, StorageOpenOptions.AllowReadersAndWriters));
 
 		public IAsyncOperation<IRandomAccessStream> OpenAsync(FileAccessMode accessMode, StorageOpenOptions options)
 			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await _impl.Open(ct, accessMode, options));
 
 		public IAsyncOperation<StorageStreamTransaction> OpenTransactedWriteAsync()
-			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => _impl.OpenTransactedWrite(ct, StorageOpenOptions.None));
+			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => _impl.OpenTransactedWrite(ct, StorageOpenOptions.AllowReadersAndWriters));
 
 		[NotImplemented] // The options is ignored, we implement this only to increase compatibility
 		public IAsyncOperation<StorageStreamTransaction> OpenTransactedWriteAsync(StorageOpenOptions options)

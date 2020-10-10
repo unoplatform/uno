@@ -26,7 +26,7 @@ namespace Windows.Storage.Streams
 			share |= readWriteAccess;
 
 			_share = share;
-			_source = File.Open(_path, FileMode.Open, access, share);
+			_source = File.Open(_path, FileMode.OpenOrCreate, access, share);
 		}
 
 		Stream IStreamWrapper.FindStream() => _source;
@@ -47,7 +47,7 @@ namespace Windows.Storage.Streams
 		{
 			if (!CanRead)
 			{
-				throw new InvalidOperationException("The file has been opened for read.");
+				throw new NotSupportedException("The file has been opened for read.");
 			}
 
 			return new FileInputStream(_path, _share, position);
@@ -57,7 +57,7 @@ namespace Windows.Storage.Streams
 		{
 			if (!CanWrite)
 			{
-				throw new InvalidOperationException("The file has been opened for write.");
+				throw new NotSupportedException("The file has been opened for write.");
 			}
 
 			return new FileOutputStream(_path, _share, position);

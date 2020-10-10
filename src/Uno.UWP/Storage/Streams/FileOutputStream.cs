@@ -12,7 +12,7 @@ namespace Windows.Storage.Streams
 
 		internal FileOutputStream(string path, FileShare fileShare, ulong position)
 		{
-			_stream = File.Open(path, FileMode.Open, FileAccess.Write, fileShare);
+			_stream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, fileShare);
 			_stream.Seek((long)position, SeekOrigin.Begin);
 		}
 
