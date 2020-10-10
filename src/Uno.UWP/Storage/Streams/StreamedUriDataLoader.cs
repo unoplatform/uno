@@ -89,6 +89,7 @@ namespace Windows.Storage.Streams
 				while ((read = await responseStream.ReadAsync(buffer, 0, Buffer.DefaultCapacity, ct)) > 0)
 				{
 					await file.WriteAsync(buffer, 0, read, ct);
+					await file.FlushAsync(ct); // We make sure to write the data to the disk before allow read to access it
 
 					_totalLoaded += (ulong)read;
 					DataUpdated?.Invoke(this, default);
