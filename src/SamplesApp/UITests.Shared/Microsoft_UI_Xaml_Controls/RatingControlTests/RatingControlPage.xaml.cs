@@ -117,7 +117,11 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 		}
 
 
-		protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+		protected
+#if !WINDOWS_UWP
+			internal
+#endif
+			override void OnNavigatingFrom(NavigatingCancelEventArgs e)
 		{
 			_dt.Tick -= DispatcherTimer_Tick; // prevent leaks since the dispatcher holds a pointer to this
 		}

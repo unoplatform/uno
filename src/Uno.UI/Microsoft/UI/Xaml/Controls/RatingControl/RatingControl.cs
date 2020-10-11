@@ -343,25 +343,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ApplyScaleExpressionAnimation(UIElement uiElement, int starIndex)
 		{
-			Visual uiElementVisual = ElementCompositionPreview.GetElementVisual(uiElement);
-			Compositor comp = uiElementVisual.Compositor;
+			//TODO: Uno Specific - Expression animations are not supported yet
 
-			// starsScaleFocalPoint is updated in OnPointerMovedOverBackgroundStackPanel.
-			// This expression uses the horizontal delta between pointer position and star center to calculate the star scale.
-			// Star gets larger when pointer is closer to its center, and gets smaller when pointer moves further away.
-			ExpressionAnimation ea = comp.CreateExpressionAnimation(
-			   "max( (-0.0005 * sharedPropertySet.pointerScalar * ((starCenterX - sharedPropertySet.starsScaleFocalPoint)*(starCenterX - sharedPropertySet.starsScaleFocalPoint))) + 1.0*sharedPropertySet.pointerScalar, 0.5)"
-		   );
-			var starCenter = (float)(CalculateStarCenter(starIndex));
-			ea.SetScalarParameter("starCenterX", starCenter);
-			ea.SetReferenceParameter("sharedPropertySet", m_sharedPointerPropertySet);
+			//Visual uiElementVisual = ElementCompositionPreview.GetElementVisual(uiElement);
+			//Compositor comp = uiElementVisual.Compositor;
 
-			uiElementVisual.StartAnimation("Scale.X", ea);
-			uiElementVisual.StartAnimation("Scale.Y", ea);
+			//// starsScaleFocalPoint is updated in OnPointerMovedOverBackgroundStackPanel.
+			//// This expression uses the horizontal delta between pointer position and star center to calculate the star scale.
+			//// Star gets larger when pointer is closer to its center, and gets smaller when pointer moves further away.
+			//ExpressionAnimation ea = comp.CreateExpressionAnimation(
+			//   "max( (-0.0005 * sharedPropertySet.pointerScalar * ((starCenterX - sharedPropertySet.starsScaleFocalPoint)*(starCenterX - sharedPropertySet.starsScaleFocalPoint))) + 1.0*sharedPropertySet.pointerScalar, 0.5)"
+			//);
+			//var starCenter = (float)(CalculateStarCenter(starIndex));
+			//ea.SetScalarParameter("starCenterX", starCenter);
+			//ea.SetReferenceParameter("sharedPropertySet", m_sharedPointerPropertySet);
 
-			// Star size = 16. 0.5 and 0.8 are just arbitrary center point chosen in design spec
-			// 32 = star size * 2 because of the rendering at double size we do
-			uiElementVisual.CenterPoint = new Vector3(c_defaultRatingFontSizeForRendering * c_horizontalScaleAnimationCenterPoint, c_defaultRatingFontSizeForRendering * c_verticalScaleAnimationCenterPoint, 0.0f);
+			//uiElementVisual.StartAnimation("Scale.X", ea);
+			//uiElementVisual.StartAnimation("Scale.Y", ea);
+
+			//// Star size = 16. 0.5 and 0.8 are just arbitrary center point chosen in design spec
+			//// 32 = star size * 2 because of the rendering at double size we do
+			//uiElementVisual.CenterPoint = new Vector3(c_defaultRatingFontSizeForRendering * c_horizontalScaleAnimationCenterPoint, c_defaultRatingFontSizeForRendering * c_verticalScaleAnimationCenterPoint, 0.0f);
 		}
 
 		private void PopulateStackPanelWithItems(string templateName, StackPanel stackPanel, RatingControlStates state)
