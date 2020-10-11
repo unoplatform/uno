@@ -130,6 +130,8 @@
     href: features\windows-applicationmodel-email.md
   - name: Windows.Devices.Enumeration
     href: features\windows-devices-enumeration.md
+  - name: Windows.Devices.Haptics
+    href: features\windows-devices-haptics.md
   - name: Windows.Devices.Lights
     href: features\windows-devices-lights.md
   - name: Windows.Devices.Midi
