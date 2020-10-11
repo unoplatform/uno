@@ -3086,6 +3086,18 @@
 				fullName="System.Void Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
 			<Member
+				fullName="System.Void Windows.Devices.Haptics.VibrationDevice..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member
+				fullName="System.Void Windows.Devices.Haptics.SimpleHapticsController..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member
+				fullName="System.Void Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member
+				fullName="System.Void Windows.Devices.Haptics.SimpleHapticsControllerFeedback..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member
 				fullName="System.Void Windows.Media.Capture.CapturedFrame.set_Size(System.UInt64 value)"
 				reason="Not part of the UWP API"/>
 			<Member

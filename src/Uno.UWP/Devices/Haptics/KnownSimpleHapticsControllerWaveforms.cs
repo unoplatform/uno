@@ -5,7 +5,7 @@
 	/// (based on the Haptic Usage Page HID specification).
 	/// </summary>
 	/// <remarks>Values based on manual test.</remarks>
-	public partial class KnownSimpleHapticsControllerWaveforms
+	public static partial class KnownSimpleHapticsControllerWaveforms
 	{
 		/// <summary>
 		/// Gets a buzz waveform that is generated continuously
