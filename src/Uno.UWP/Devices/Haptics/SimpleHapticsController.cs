@@ -6,7 +6,7 @@
 		{
 		}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 		public bool IsIntensitySupported => false;
 
 		public bool IsPlayCountSupported => false;
