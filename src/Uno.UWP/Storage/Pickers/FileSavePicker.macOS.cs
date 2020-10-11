@@ -18,7 +18,7 @@ namespace Windows.Storage.Pickers
 			var savePicker = new NSSavePanel();
 			savePicker.DirectoryUrl = new NSUrl(GetStartPath(), true);
 			savePicker.AllowedFileTypes = GetFileTypes();
-			if(SuggestedFileName != null)
+			if (SuggestedFileName != null)
 			{
 				savePicker.NameFieldStringValue = SuggestedFileName;
 			}
@@ -43,12 +43,11 @@ namespace Windows.Storage.Pickers
 				PickerLocationId.PicturesLibrary => Environment.SpecialFolder.MyPictures,
 				PickerLocationId.VideosLibrary => Environment.SpecialFolder.MyVideos,
 				_ => Environment.SpecialFolder.Personal
-
 			};
 
 			return Environment.GetFolderPath(specialFolder);
 		}
 
-		private string[] GetFileTypes() => FileTypeChoices.SelectMany(x => x.Value.Select(val=>val.TrimStart(new[] { '.' }))).ToArray();
+		private string[] GetFileTypes() => FileTypeChoices.SelectMany(x => x.Value.Select(val => val.TrimStart(new[] { '.' }))).ToArray();
 	}
 }
