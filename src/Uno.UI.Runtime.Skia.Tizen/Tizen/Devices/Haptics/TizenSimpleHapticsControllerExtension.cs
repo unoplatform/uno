@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using Android.App;
-using Android.Views;
 using Microsoft.Extensions.Logging;
+using Tizen.System;
 using Uno.Extensions;
-using Uno.UI;
+using Windows.Devices.Haptics;
 
-namespace Windows.Devices.Haptics
+namespace Uno.UI.Runtime.Skia.Tizen.Devices.Haptics
 {
-	public partial class SimpleHapticsController
+	public class TizenSimpleHapticsControllerExtension : ISimpleHapticsControllerExtension
 	{
+		private const string TapPattern = "Tap";
+		private const string HoldPattern = "Hold";
+
+		public TizenSimpleHapticsControllerExtension(object owner)
+		{
+		}
+
 		public IReadOnlyList<SimpleHapticsControllerFeedback> SupportedFeedback { get; } = new SimpleHapticsControllerFeedback[]
 		{
 			new SimpleHapticsControllerFeedback(KnownSimpleHapticsControllerWaveforms.Click, TimeSpan.FromMilliseconds(100)),
@@ -18,15 +24,14 @@ namespace Windows.Devices.Haptics
 
 		public void SendHapticFeedback(SimpleHapticsControllerFeedback feedback)
 		{
-			if (ContextHelper.Current == null)
-			{
-				throw new InvalidOperationException($"Context must be initialized before {nameof(SendHapticFeedback)} is called.");
-			}
 			try
 			{
-				var activity = (Activity)ContextHelper.Current;
-				var androidFeedback = FeedbackToAndroidFeedback(feedback);
-				activity.Window.DecorView.PerformHapticFeedback(androidFeedback);
+				var tizenFeedback = new Feedback();
+				var pattern = FeedbackToPattern(feedback);
+				if (tizenFeedback.IsSupportedPattern(FeedbackType.Vibration, pattern))
+				{
+					tizenFeedback.Play(FeedbackType.Vibration, pattern);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -37,15 +42,15 @@ namespace Windows.Devices.Haptics
 			}
 		}
 
-		private static FeedbackConstants FeedbackToAndroidFeedback(SimpleHapticsControllerFeedback feedback)
+		static string FeedbackToPattern(SimpleHapticsControllerFeedback feedback)
 		{
 			if (feedback.Waveform == KnownSimpleHapticsControllerWaveforms.Click)
 			{
-				return FeedbackConstants.ContextClick;
+				return TapPattern;
 			}
 			else if (feedback.Waveform == KnownSimpleHapticsControllerWaveforms.Press)
 			{
-				return FeedbackConstants.LongPress;
+				return HoldPattern;
 			}
 			else
 			{

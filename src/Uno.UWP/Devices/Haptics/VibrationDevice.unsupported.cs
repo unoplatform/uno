@@ -1,4 +1,4 @@
-﻿#if NET461 || __SKIA__ || __NETSTD_REFERENCE__
+﻿#if NET461 || __NETSTD_REFERENCE__
 
 using System.Threading.Tasks;
 

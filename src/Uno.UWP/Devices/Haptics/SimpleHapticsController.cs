@@ -4,9 +4,12 @@
 	{
 		internal SimpleHapticsController()
 		{
+			InitPlatform();
 		}
 
-#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
+		partial void InitPlatform();
+
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || __SKIA__
 		public bool IsIntensitySupported => false;
 
 		public bool IsPlayCountSupported => false;
