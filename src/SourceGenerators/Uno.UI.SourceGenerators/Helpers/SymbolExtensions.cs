@@ -53,6 +53,25 @@ namespace Microsoft.CodeAnalysis
 			} while (symbol.SpecialType != SpecialType.System_Object);
 		}
 
+		public static IEnumerable<ISymbol> GetAllMembersWithName(this ITypeSymbol symbol, string name)
+		{
+			do
+			{
+				foreach (var member in symbol.GetMembers(name))
+				{
+					yield return member;
+				}
+
+				symbol = symbol.BaseType;
+
+				if (symbol == null)
+				{
+					break;
+				}
+
+			} while (symbol.SpecialType != SpecialType.System_Object);
+		}
+
 		public static IEnumerable<IEventSymbol> GetEvents(INamedTypeSymbol symbol) => symbol.GetMembers().OfType<IEventSymbol>();
 
 		/// <summary>
@@ -123,35 +142,55 @@ namespace Microsoft.CodeAnalysis
 			);
 
 		public static IEnumerable<IMethodSymbol> GetMethods(this INamedTypeSymbol resolvedType)
-		{
-			return resolvedType.GetMembers().OfType<IMethodSymbol>();
-		}
+			=> resolvedType.GetMembers().OfType<IMethodSymbol>();
+
+		public static IEnumerable<IMethodSymbol> GetMethodsWithName(this INamedTypeSymbol resolvedType, string name)
+			=> resolvedType.GetMembers(name).OfType<IMethodSymbol>();
 
 		public static IEnumerable<IFieldSymbol> GetFields(this INamedTypeSymbol resolvedType)
+			=> resolvedType.GetMembers().OfType<IFieldSymbol>();
+
+		public static IEnumerable<IFieldSymbol> GetFieldsWithName(this INamedTypeSymbol resolvedType, string name)
+			=> resolvedType.GetMembers(name).OfType<IFieldSymbol>();
+
+		/// <summary>
+		/// Return fields of the current type and all of its ancestors
+		/// </summary>
+		/// <param name="symbol"></param>
+		/// <returns></returns>
+		public static IEnumerable<IFieldSymbol> GetAllFields(this INamedTypeSymbol symbol)
 		{
-			return resolvedType.GetMembers().OfType<IFieldSymbol>();
+			while (symbol != null)
+			{
+				foreach (var property in symbol.GetMembers().OfType<IFieldSymbol>())
+				{
+					yield return property;
+				}
+
+				symbol = symbol.BaseType;
+			}
 		}
 
-        /// <summary>
-        /// Return fields of the current type and all of its ancestors
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static IEnumerable<IFieldSymbol> GetAllFields(this INamedTypeSymbol symbol)
-        {
-            while (symbol != null)
-            {
-                foreach (var property in symbol.GetMembers().OfType<IFieldSymbol>())
-                {
-                    yield return property;
-                }
+		/// <summary>
+		/// Return fields of the current type and all of its ancestors
+		/// </summary>
+		/// <param name="symbol"></param>
+		/// <returns></returns>
+		public static IEnumerable<IFieldSymbol> GetAllFieldsWithName(this INamedTypeSymbol symbol, string name)
+		{
+			while (symbol != null)
+			{
+				foreach (var property in symbol.GetMembers(name).OfType<IFieldSymbol>())
+				{
+					yield return property;
+				}
 
-                symbol = symbol.BaseType;
-            }
-        }
+				symbol = symbol.BaseType;
+			}
+		}
 
 
-        public static IEnumerable<IFieldSymbol> GetFieldsWithAttribute(this ITypeSymbol resolvedType, string name)
+		public static IEnumerable<IFieldSymbol> GetFieldsWithAttribute(this ITypeSymbol resolvedType, string name)
 		{
 			return resolvedType
 				.GetMembers()
@@ -368,6 +407,24 @@ namespace Microsoft.CodeAnalysis
 			while (symbol != null)
 			{
 				foreach (var property in symbol.GetMembers().OfType<IPropertySymbol>())
+				{
+					yield return property;
+				}
+
+				symbol = symbol.BaseType;
+			}
+		}
+
+		/// <summary>
+		/// Return properties of the current type and all of its ancestors
+		/// </summary>
+		/// <param name="symbol"></param>
+		/// <returns></returns>
+		public static IEnumerable<IPropertySymbol> GetAllPropertiesWithName(this INamedTypeSymbol symbol, string name)
+		{
+			while (symbol != null)
+			{
+				foreach (var property in symbol.GetMembers(name).OfType<IPropertySymbol>())
 				{
 					yield return property;
 				}

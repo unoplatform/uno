@@ -228,7 +228,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_colorSymbol = GetType(XamlConstants.Types.Color);
 
 			_markupExtensionTypes = _metadataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
-			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith(XamlConstants.Types.CreateFromStringAttribute).ToList();
+			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith(GetType(XamlConstants.Types.CreateFromStringAttribute)).ToList();
 
 			_isWasm = isWasm;
 
@@ -2130,7 +2130,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var name = nameProperty.Value.Value.ToString();
 
-					return elementType?.GetAllProperties().FirstOrDefault(p => p.Name == name);
+					return elementType?.GetAllPropertiesWithName(name).FirstOrDefault();
 				}
 			}
 
@@ -3484,7 +3484,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var part in parts)
 			{
-				if (currentType.GetAllMembers().FirstOrDefault(m => m.Name == part) is ISymbol member)
+				if (currentType.GetAllMembersWithName(part).FirstOrDefault() is ISymbol member)
 				{
 					var propertySymbol = member as IPropertySymbol;
 					var fieldSymbol = member as IFieldSymbol;
@@ -4483,7 +4483,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var declaringType = member.DeclaringType;
 			var propertyName = member.Name;
-			var property = GetPropertyByName(declaringType, propertyName);
+			var property = GetPropertyWithName(declaringType, propertyName);
 
 			if (property?.Type is INamedTypeSymbol collectionType)
 			{
