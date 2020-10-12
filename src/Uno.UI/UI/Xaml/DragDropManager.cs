@@ -23,10 +23,16 @@ namespace Windows.UI.Xaml
 		public DragDropManager(Window window)
 		{
 			_window = window;
+
+#if __MACOS__
+			// Dependency injection not currently supported on macOS
+			_hostExtension = new MacOSDragDropExtension(this);
+#else
 			if (ApiExtensibility.CreateInstance<IDragDropExtension>(this, out var extension))
 			{
 				_hostExtension = extension;
 			}
+#endif
 		}
 
 		/// <inheritdoc />
