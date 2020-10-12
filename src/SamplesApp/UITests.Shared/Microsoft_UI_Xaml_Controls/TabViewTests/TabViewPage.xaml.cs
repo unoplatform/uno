@@ -16,11 +16,7 @@ using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
 using TabViewTabCloseRequestedEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs;
 using TabViewTabDragStartingEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs;
 using TabViewTabDragCompletedEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs;
-#if !HAS_UNO //TODO Uno - WinUI uses Microsoft.UI.Xaml.Controls
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
-#else
-using SymbolIconSource = Windows.UI.Xaml.Controls.SymbolIconSource;
-#endif
 using System.Collections.ObjectModel;
 using Windows.Devices.PointOfService;
 using Windows.ApplicationModel.DataTransfer;

@@ -2,14 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
-	public  partial class FontIconSource : global::Windows.UI.Xaml.Controls.IconSource
+#endif
+	public partial class FontIconSource : global::Windows.UI.Xaml.Controls.IconSource
 	{
-		#if false
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool MirroredWhenRightToLeft
+		public bool MirroredWhenRightToLeft
 		{
 			get
 			{
@@ -20,10 +20,10 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(MirroredWhenRightToLeftProperty, value);
 			}
 		}
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsTextScaleFactorEnabled
+		public bool IsTextScaleFactorEnabled
 		{
 			get
 			{
@@ -34,10 +34,10 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(IsTextScaleFactorEnabledProperty, value);
 			}
 		}
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Glyph
+		public string Glyph
 		{
 			get
 			{
@@ -48,10 +48,10 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(GlyphProperty, value);
 			}
 		}
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontWeight FontWeight
+		public global::Windows.UI.Text.FontWeight FontWeight
 		{
 			get
 			{
@@ -62,10 +62,10 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(FontWeightProperty, value);
 			}
 		}
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontStyle FontStyle
+		public global::Windows.UI.Text.FontStyle FontStyle
 		{
 			get
 			{
@@ -76,10 +76,10 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(FontStyleProperty, value);
 			}
 		}
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double FontSize
+		public double FontSize
 		{
 			get
 			{
@@ -90,10 +90,10 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(FontSizeProperty, value);
 			}
 		}
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.FontFamily FontFamily
+		public global::Windows.UI.Xaml.Media.FontFamily FontFamily
 		{
 			get
 			{
@@ -104,70 +104,70 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(FontFamilyProperty, value);
 			}
 		}
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FontFamilyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FontFamilyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FontFamily), typeof(global::Windows.UI.Xaml.Media.FontFamily), 
-			typeof(global::Windows.UI.Xaml.Controls.FontIconSource), 
+			nameof(FontFamily), typeof(global::Windows.UI.Xaml.Media.FontFamily),
+			typeof(global::Windows.UI.Xaml.Controls.FontIconSource),
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FontFamily)));
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FontSizeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FontSizeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FontSize), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.FontIconSource), 
+			nameof(FontSize), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.FontIconSource),
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FontStyleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FontStyleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FontStyle), typeof(global::Windows.UI.Text.FontStyle), 
-			typeof(global::Windows.UI.Xaml.Controls.FontIconSource), 
+			nameof(FontStyle), typeof(global::Windows.UI.Text.FontStyle),
+			typeof(global::Windows.UI.Xaml.Controls.FontIconSource),
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStyle)));
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FontWeightProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FontWeightProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FontWeight), typeof(global::Windows.UI.Text.FontWeight), 
-			typeof(global::Windows.UI.Xaml.Controls.FontIconSource), 
+			nameof(FontWeight), typeof(global::Windows.UI.Text.FontWeight),
+			typeof(global::Windows.UI.Xaml.Controls.FontIconSource),
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty GlyphProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty GlyphProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Glyph), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.FontIconSource), 
+			nameof(Glyph), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.FontIconSource),
 			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextScaleFactorEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.FontIconSource), 
+			nameof(IsTextScaleFactorEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.FontIconSource),
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MirroredWhenRightToLeftProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MirroredWhenRightToLeftProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MirroredWhenRightToLeft), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.FontIconSource), 
+			nameof(MirroredWhenRightToLeft), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.FontIconSource),
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FontIconSource() 
+		public FontIconSource()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.FontIconSource", "FontIconSource.FontIconSource()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.FontIconSource.FontIconSource()
 		// Forced skipping of method Windows.UI.Xaml.Controls.FontIconSource.Glyph.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.FontIconSource.Glyph.set

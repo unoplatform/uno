@@ -1,18 +1,12 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using System.Collections.ObjectModel;
-using Uno.UI.Samples.Controls;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
-#if !HAS_UNO
 using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
-#else
-using IconSource = Windows.UI.Xaml.Controls.IconSource;
-using SymbolIconSource = Windows.UI.Xaml.Controls.SymbolIconSource;
-#endif
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {

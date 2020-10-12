@@ -29,17 +29,17 @@ namespace Windows.UI.Xaml.Input
 			set => this.SetValue(IsEnabledProperty, value);
 		}
 
-		public static DependencyProperty IsEnabledProperty { get; } =
-			DependencyProperty.Register(nameof(IsEnabled), typeof(bool), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(bool)));
-
-		public static DependencyProperty KeyProperty { get; } =
-			DependencyProperty.Register(nameof(Key), typeof(VirtualKey), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(VirtualKey)));
+		public static DependencyProperty ScopeOwnerProperty { get; } =
+			DependencyProperty.Register(nameof(ScopeOwner), typeof(DependencyObject), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(DependencyObject), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty ModifiersProperty { get; } =
 			DependencyProperty.Register(nameof(Modifiers), typeof(VirtualKeyModifiers), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(VirtualKeyModifiers)));
 
-		public static DependencyProperty ScopeOwnerProperty { get; } =
-			DependencyProperty.Register(nameof(ScopeOwner), typeof(DependencyObject), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(DependencyObject), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+		public static DependencyProperty KeyProperty { get; } =
+			DependencyProperty.Register(nameof(Key), typeof(VirtualKey), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(VirtualKey)));
+
+		public static DependencyProperty IsEnabledProperty { get; } =
+			DependencyProperty.Register(nameof(IsEnabled), typeof(bool), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(bool)));
 
 		internal static string GetStringRepresentationForUIElement(UIElement uiElement)
 		{

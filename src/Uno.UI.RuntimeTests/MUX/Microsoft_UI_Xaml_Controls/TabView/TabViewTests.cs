@@ -27,11 +27,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 using Symbol = Windows.UI.Xaml.Controls.Symbol;
 
-#if !WINDOWS_UWP
-using SymbolIconSource = Windows.UI.Xaml.Controls.SymbolIconSource;
-#else
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
-#endif
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {

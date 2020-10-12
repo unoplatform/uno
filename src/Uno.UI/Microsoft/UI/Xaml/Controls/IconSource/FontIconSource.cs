@@ -1,8 +1,9 @@
 using Windows.UI.Text;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using FontStyle = Windows.UI.Text.FontStyle;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FontIconSource : IconSource
 	{

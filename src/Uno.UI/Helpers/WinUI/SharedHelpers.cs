@@ -642,9 +642,9 @@ namespace Uno.UI.Helpers.WinUI
 			return false;
 		}
 
-		public static IconElement MakeIconElementFrom(IconSource iconSource)
+		public static IconElement MakeIconElementFrom(Microsoft.UI.Xaml.Controls.IconSource iconSource)
 		{
-			if (iconSource is FontIconSource fontIconSource)
+			if (iconSource is Microsoft.UI.Xaml.Controls.FontIconSource fontIconSource)
 			{
 				FontIcon fontIcon = new FontIcon();
 
@@ -663,14 +663,14 @@ namespace Uno.UI.Helpers.WinUI
 
 				return fontIcon;
 			}
-			else if (iconSource is SymbolIconSource symbolIconSource)
+			else if (iconSource is Microsoft.UI.Xaml.Controls.SymbolIconSource symbolIconSource)
 			{
 				SymbolIcon symbolIcon = new SymbolIcon();
 				symbolIcon.Symbol = symbolIconSource.Symbol;
 
 				return symbolIcon;
 			}
-			else if (iconSource is BitmapIconSource bitmapIconSource)
+			else if (iconSource is Microsoft.UI.Xaml.Controls.BitmapIconSource bitmapIconSource)
 			{
 				BitmapIcon bitmapIcon = new BitmapIcon();
 
@@ -686,7 +686,7 @@ namespace Uno.UI.Helpers.WinUI
 
 				return bitmapIcon;
 			}
-			else if (iconSource is PathIconSource pathIconSource)
+			else if (iconSource is Microsoft.UI.Xaml.Controls.PathIconSource pathIconSource)
 			{
 				PathIcon pathIcon = new PathIcon();
 
@@ -844,7 +844,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static FrameworkElement FindInVisualTree(FrameworkElement parent, Func<FrameworkElement, bool> isMatch)
 		{
-			//TODO: Uno Specific - generalized to work with DependencyObject - needed for NativeScrollContentPresenter
+			// Uno Specific - generalized to work with DependencyObject - needed for NativeScrollContentPresenter
 			FrameworkElement FindInVisualTreeInner(DependencyObject parent, Func<FrameworkElement, bool> isMatch)
 			{
 				int numChildren = VisualTreeHelper.GetChildrenCount(parent);

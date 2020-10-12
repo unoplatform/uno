@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 
-		// Uno specific: ensure the items are updated for ItemsSource change as Items are not yet in sync with ItemsSource properly
+		// TODO Uno specific: ensure the items are updated for ItemsSource change as Items are not yet in sync with ItemsSource properly
 
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
 		{
