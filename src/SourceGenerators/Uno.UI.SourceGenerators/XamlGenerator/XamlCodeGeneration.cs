@@ -240,11 +240,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var filesQuery = files
 					.ToArray();
 
-				IEnumerable<XamlFileDefinition> filesToProcess = filesQuery;
+				var filesToProcess = filesQuery.AsParallel();
 
-				if (!Debugger.IsAttached)
+				if (Debugger.IsAttached)
 				{
-					filesToProcess = filesToProcess.AsParallel();
+					filesToProcess = filesToProcess
+						.WithDegreeOfParallelism(1);
 				}
 
 				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, string>(
