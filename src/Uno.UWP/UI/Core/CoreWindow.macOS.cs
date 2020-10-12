@@ -13,7 +13,8 @@ namespace Windows.UI.Core
 {
 	public partial class CoreWindow 
 	{
-        private readonly NSWindow _window;
+		// HACK: TODO: Find a better way to get this reference
+		public readonly NSWindow _window;
 
 		private bool _cursorHidden = false;
 		private CoreCursor _pointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
