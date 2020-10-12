@@ -17,7 +17,7 @@ namespace XamlGenerationTests.Shared
     }
 
 	[ContentProperty(Name = nameof(TabItems))]
-	public partial class TestTabControl : DependencyObject
+	public partial class TestTabControl : Control
 	{
 		public IList<object> TabItems
 		{
