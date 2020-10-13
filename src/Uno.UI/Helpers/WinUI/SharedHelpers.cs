@@ -344,12 +344,26 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			if (s_isThemeShadowAvailable == null)
 			{
+				//TODO: Uno specific - had to change condition, as VanadiumOrHigher is available, but Theme Shadow is not implemented in Uno
 				s_isThemeShadowAvailable =
-					IsSystemDll() ||
-					IsVanadiumOrHigher() ||
+					(IsSystemDll() ||
+					IsVanadiumOrHigher()) &&
 					ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow");
 			}
 			return s_isThemeShadowAvailable.Value;
+		}
+
+		static bool? s_IsIsLoadedAvailable;
+		static public bool IsIsLoadedAvailable()
+		{
+			if (s_IsIsLoadedAvailable == null)
+			{
+				s_IsIsLoadedAvailable =
+					IsSystemDll() ||
+					IsRS5OrHigher() ||
+					ApiInformation.IsPropertyPresent("Windows.UI.Xaml.FrameworkElement", "IsLoaded");
+			}
+			return s_IsIsLoadedAvailable.Value;
 		}
 
 		static bool isAPIContractVxAvailableInitialized = false;
@@ -628,9 +642,9 @@ namespace Uno.UI.Helpers.WinUI
 			return false;
 		}
 
-		public static IconElement MakeIconElementFrom(IconSource iconSource)
+		public static IconElement MakeIconElementFrom(Microsoft.UI.Xaml.Controls.IconSource iconSource)
 		{
-			if (iconSource is FontIconSource fontIconSource)
+			if (iconSource is Microsoft.UI.Xaml.Controls.FontIconSource fontIconSource)
 			{
 				FontIcon fontIcon = new FontIcon();
 
@@ -649,14 +663,14 @@ namespace Uno.UI.Helpers.WinUI
 
 				return fontIcon;
 			}
-			else if (iconSource is SymbolIconSource symbolIconSource)
+			else if (iconSource is Microsoft.UI.Xaml.Controls.SymbolIconSource symbolIconSource)
 			{
 				SymbolIcon symbolIcon = new SymbolIcon();
 				symbolIcon.Symbol = symbolIconSource.Symbol;
 
 				return symbolIcon;
 			}
-			else if (iconSource is BitmapIconSource bitmapIconSource)
+			else if (iconSource is Microsoft.UI.Xaml.Controls.BitmapIconSource bitmapIconSource)
 			{
 				BitmapIcon bitmapIcon = new BitmapIcon();
 
@@ -672,7 +686,7 @@ namespace Uno.UI.Helpers.WinUI
 
 				return bitmapIcon;
 			}
-			else if (iconSource is PathIconSource pathIconSource)
+			else if (iconSource is Microsoft.UI.Xaml.Controls.PathIconSource pathIconSource)
 			{
 				PathIcon pathIcon = new PathIcon();
 
@@ -801,12 +815,71 @@ namespace Uno.UI.Helpers.WinUI
 			}
 		}
 
+		public static object FindResource(string resource, ResourceDictionary resources, object defaultValue)
+		{
+			var boxedResource = resource;
+			return resources.HasKey(boxedResource) ? resources.Lookup(boxedResource) : defaultValue;
+		}
+
+		public static object FindInApplicationResources(string resource, object defaultValue)
+		{
+			return FindResource(resource, Application.Current.Resources, defaultValue);
+		}
+
+		public static FrameworkElement FindInVisualTreeByName(FrameworkElement parent, string name)
+		{
+			return FindInVisualTree(
+				parent,
+				element => element.Name == name);
+		}
+
+		public static T FindInVisualTreeByType<T>(FrameworkElement parent)
+			where T : class
+		{
+			var element = FindInVisualTree(
+				parent,
+				element => element is T);
+			return element as T;
+		}
+
+		public static FrameworkElement FindInVisualTree(FrameworkElement parent, Func<FrameworkElement, bool> isMatch)
+		{
+			// Uno Specific - generalized to work with DependencyObject - needed for NativeScrollContentPresenter
+			FrameworkElement FindInVisualTreeInner(DependencyObject parent, Func<FrameworkElement, bool> isMatch)
+			{
+				int numChildren = VisualTreeHelper.GetChildrenCount(parent);
+
+				FrameworkElement foundElement = parent as FrameworkElement;
+				if (foundElement != null && isMatch(foundElement))
+				{
+					return foundElement;
+				}
+
+				for (int i = 0; i < numChildren; i++)
+				{
+					var dp = VisualTreeHelper.GetChild(parent, i);
+					if (dp != null)
+					{
+						foundElement = FindInVisualTreeInner(dp, isMatch);
+						if (foundElement != null)
+						{
+							return foundElement;
+						}
+					}
+				}
+
+				return null;
+			}
+
+			return FindInVisualTreeInner(parent, isMatch);
+		}
+
 		// Sometimes we want to get a string representation from an arbitrary object. E.g. for constructing a UIA Name
 		// from an automation peer. There is no guarantee that an arbitrary object is convertable to a string, so
 		// this function may return an empty string.
 		public static string TryGetStringRepresentationFromObject(object obj)
 		{
-			string returnHString = null;
+			string returnHString = "";
 
 			if (obj != null)
 			{
@@ -817,7 +890,7 @@ namespace Uno.UI.Helpers.WinUI
 				}
 				if (string.IsNullOrEmpty(returnHString))
 				{
-					returnHString = obj as string ?? returnHString;
+					returnHString = obj?.ToString() ?? returnHString;
 				}
 			}
 
