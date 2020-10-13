@@ -37,10 +37,11 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
+		<Border Grid.Row="1" BorderBrush="Yellow" BorderThickness="4"/>
 		<CommandBar Content="{Binding Text, ElementName=Content2}"
-				Visibility="{Binding Text, ElementName=cbVisibility}"
-				Opacity="{Binding Value, ElementName=sliderOpacity}"
-				Style="{Binding IsChecked, ElementName=native, Converter={StaticResource nativeTemplateConverter}}">
+		            Visibility="{Binding Text, ElementName=cbVisibility}"
+		            Opacity="{Binding Value, ElementName=sliderOpacity}"
+		            Style="{Binding IsChecked, ElementName=native, Converter={StaticResource nativeTemplateConverter}}">
 			<CommandBar.Foreground>
 				<SolidColorBrush Color="{Binding SelectedItem, ElementName=ForegroundColor}"
 						 Opacity="{Binding Value, ElementName=ForegroundOpacity}" />
@@ -164,17 +165,20 @@
 			</StackPanel>
 		</ScrollViewer>
 		<StackPanel Grid.RowSpan="2" IsHitTestVisible="False" Orientation="Horizontal" Width="200">
-			<Border Background="#80ff8000" Height="30" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top">
-				<TextBlock Text="30 px" FontWeight="Bold" />
+			<Border Background="#90ff8000" Height="24" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top">
+				<TextBlock FontSize="8" Text="24" FontWeight="Bold" Margin="2"/>
 			</Border>
-			<Border Background="#80ffff00" Height="40" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top">
-				<TextBlock Text="40 px" FontWeight="Bold" />
+			<Border Background="#90ffff00" Height="32" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top">
+				<TextBlock FontSize="8" Text="32" FontWeight="Bold" Margin="2" />
 			</Border>
-			<Border Background="#80ff8000" Height="50" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top">
-				<TextBlock Text="50 px" FontWeight="Bold" />
+			<Border Background="#90ff8000" Height="40" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top">
+				<TextBlock FontSize="8" Text="40" FontWeight="Bold" Margin="2" />
 			</Border>
-			<Border Background="#80ffff00" Height="60" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top">
-				<TextBlock Text="60 px" FontWeight="Bold" />
+			<Border Background="#90ffff00" Height="44" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top">
+				<TextBlock FontSize="8" Text="44" FontWeight="Bold" Margin="2" />
+			</Border>
+			<Border Background="#90ff8000" Height="50" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top">
+				<TextBlock FontSize="8" Text="50" FontWeight="Bold" Margin="2" />
 			</Border>
 		</StackPanel>
 	</Grid>
