@@ -4,6 +4,8 @@ using System.Text;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.UI.Controls;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -14,6 +16,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private double _compactHeight;
 		private double _minimalHeight;
+		private bool _isNativeTemplate;
 
 		public AppBar()
 		{
@@ -130,6 +133,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateTemplateSettings();
 
+			_isNativeTemplate = this.FindFirstChild<NativeCommandBarPresenter>() != null;
 		}
 
 		private void UpdateTemplateSettings()
@@ -152,6 +156,11 @@ namespace Windows.UI.Xaml.Controls
 #if __IOS__ || __MACOS__
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			if (_isNativeTemplate)
+			{
+				return base.MeasureOverride(availableSize);
+			}
+
 			// On WinUI the CommandBar does not constraints its children (it only clips them)
 			// (It's the responsibility of each child to constraint itself)
 			// Note: This override is used only for the XAML command bar, not the native!
