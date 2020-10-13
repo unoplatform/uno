@@ -133,7 +133,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				do
 				{
-					if (type.GetAllProperties().Any(property => property.Name == propertyName))
+					if (type.GetAllPropertiesWithName(propertyName).Any())
 					{
 						return true;
 					}
@@ -268,8 +268,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (propertyOwner != null)
 			{
-				var propertyDependencyPropertyQuery = propertyOwner.GetAllProperties().Where(p => p.Name == name + "Property");
-				var fieldDependencyPropertyQuery = propertyOwner.GetAllFields().Where(p => p.Name == name + "Property");
+				var propertyDependencyPropertyQuery = propertyOwner.GetAllPropertiesWithName(name + "Property");
+				var fieldDependencyPropertyQuery = propertyOwner.GetAllFieldsWithName(name + "Property");
 
 				return propertyDependencyPropertyQuery.Any() || fieldDependencyPropertyQuery.Any();
 			}
@@ -381,7 +381,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var resolvedType = type;
 
-					var property = resolvedType.GetAllProperties().FirstOrDefault(p => p.Name == propertyName);
+					var property = resolvedType.GetAllPropertiesWithName(propertyName).FirstOrDefault();
 					var setMethod = resolvedType.GetMethods().FirstOrDefault(p => p.Name == "Set" + propertyName);
 
 					if (property != null)
@@ -512,7 +512,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			do
 			{
-				var property = type.GetAllProperties().FirstOrDefault(p => p.Name == name);
+				var property = type.GetAllPropertiesWithName(name).FirstOrDefault();
 				var setMethod = type.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
 
 				if (property != null && property.GetMethod.IsStatic)
@@ -583,7 +583,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool IsInitializableCollection(XamlType declaringType, string propertyName)
 		{
-			var property = GetPropertyByName(declaringType, propertyName);
+			var property = GetPropertyWithName(declaringType, propertyName);
 
 			if (property != null && IsInitializableProperty(property))
 			{
@@ -665,11 +665,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Gets the 
 		/// </summary>
-		private IPropertySymbol GetPropertyByName(XamlType declaringType, string propertyName)
+		private IPropertySymbol GetPropertyWithName(XamlType declaringType, string propertyName)
 		{
 			var type = FindType(declaringType);
-
-			return type?.GetAllProperties().FirstOrDefault(p => p.Name == propertyName);
+			return type?.GetAllPropertiesWithName(propertyName).FirstOrDefault();
 		}
 
 		private static bool IsDouble(string typeName)
