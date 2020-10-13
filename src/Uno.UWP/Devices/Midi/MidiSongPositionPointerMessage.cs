@@ -45,7 +45,7 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the song position pointer encoded in a 14-bit value from 0-16383.
 		/// </summary>
-		public ushort Beats => MidiHelpers.GetBeats(_buffer.Data[1], _buffer.Data[2]);
+		public ushort Beats => MidiHelpers.GetBeats(_buffer.GetByte(1), _buffer.GetByte(2));
 
 		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.

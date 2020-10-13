@@ -1,58 +1,159 @@
+#nullable enable
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
 using System;
 using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
+using Uno;
 
 namespace Windows.Storage
 {
-	public partial class StorageFile : StorageItem, IStorageFile
+	public sealed partial class StorageFile : IStorageFile, IStorageFile2, IStorageItem, IStorageItem2
 	{
-		private Uri _fileUri;
+		public static IAsyncOperation<StorageFile> GetFileFromPathAsync(string path)
+			=> AsyncOperation.FromTask(async ct => new StorageFile(new Local(path)));
 
-		private string Scheme => _fileUri.Scheme.ToUpperInvariant();
+		internal static StorageFile GetFileFromPath(string path)
+			=> new StorageFile(new Local(path));
 
-		public string Path => _fileUri.LocalPath;
+		[NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static IAsyncOperation<StorageFile> GetFileFromApplicationUriAsync(Uri uri)
+			=> AsyncOperation.FromTask(ct => GetFileFromApplicationUri(ct, uri));
 
-		public string Name => global::System.IO.Path.GetFileName(Path);
+#if NET461 || __SKIA__ || __NETSTD_REFERENCE__
+		private static Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)
+			=> throw new NotImplementedException();
+#endif
 
-		public string DisplayName => global::System.IO.Path.GetFileNameWithoutExtension(Path);
+		private readonly ImplementationBase _impl;
 
-		public static async Task<StorageFile> GetFileFromPathAsync(string path)
+		private StorageFile(ImplementationBase impl)
 		{
-			return new StorageFile(new Uri("file://" + path));
+			_impl = impl;
+			_impl.InitOwner(this);
 		}
 
-		private StorageFile(Uri uri)
-		{
-			_fileUri = uri;
-		}
+		public string Path => _impl.Path;
 
-		public IAsyncAction DeleteAsync() =>
-			AsyncAction.FromTask(async ct =>
-			{
-				await DeleteAsync(CancellationToken.None);
-			});
-			
-		public async Task DeleteAsync(CancellationToken ct)
-		{
-			if (Scheme != "FILE")
-			{
-				throw new InvalidOperationException("Cannot delete a file on a non local storage.");
-			}
+		public string FileType => _impl.FileType;
 
-			var fileInfo = new FileInfo(Path);
+		public string Name => _impl.Name;
 
-			fileInfo.Delete();
-		}
+		public string DisplayName => _impl.DisplayName;
 
-		public global::System.DateTimeOffset DateCreated => File.GetCreationTime(Path);
+		public string ContentType => _impl.ContentType;
+
+		public DateTimeOffset DateCreated => _impl.DateCreated;
+
+		public bool IsOfType(StorageItemTypes type)
+			=> type == StorageItemTypes.File;
+
+		public bool IsEqual(IStorageItem item)
+			=> _impl.IsEqual(item);
+
+		#region internal API (Task)
+		internal Task<StorageFolder> GetParent(CancellationToken ct)
+			=> _impl.GetParent(ct);
+
+		internal Task<BasicProperties> GetBasicProperties(CancellationToken ct)
+			=> _impl.GetBasicProperties(ct);
+
+		internal Task<IRandomAccessStreamWithContentType> Open(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+			=> _impl.Open(ct, accessMode, options);
+
+		internal Task<Stream> OpenStream(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+			=> _impl.OpenStream(ct, accessMode, options);
+
+		internal Task<StorageStreamTransaction> OpenTransactedWrite(CancellationToken ct, StorageOpenOptions option)
+			=> _impl.OpenTransactedWrite(ct, option);
+
+		internal Task Delete(CancellationToken ct, StorageDeleteOption options)
+			=> _impl.Delete(ct, options);
+
+		internal Task Rename(CancellationToken ct, string desiredName, NameCollisionOption option)
+			=> _impl.Rename(ct, desiredName, option);
+
+		internal Task<StorageFile> Copy(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
+			=> _impl.Copy(ct, destinationFolder, desiredNewName, option);
+
+		internal Task CopyAndReplace(CancellationToken ct, IStorageFile target)
+			=> _impl.CopyAndReplace(ct, target);
+
+		internal Task Move(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
+			=> _impl.Move(ct, destinationFolder, desiredNewName, option);
+
+		internal Task MoveAndReplace(CancellationToken ct, IStorageFile target)
+			=> _impl.MoveAndReplace(ct, target);
+		#endregion
+
+		#region public API (IAsync<Action|Operation>)
+		public IAsyncOperation<StorageFolder> GetParentAsync()
+			=> AsyncOperation.FromTask(_impl.GetParent);
+
+		public IAsyncOperation<BasicProperties> GetBasicPropertiesAsync()
+			=> AsyncOperation.FromTask(_impl.GetBasicProperties);
+
+		public IAsyncOperation<IRandomAccessStreamWithContentType> OpenReadAsync()
+			=> AsyncOperation<IRandomAccessStreamWithContentType>.FromTask((ct, _) => _impl.Open(ct, FileAccessMode.Read, StorageOpenOptions.AllowReadersAndWriters));
+
+		public IAsyncOperation<IRandomAccessStream> OpenAsync(FileAccessMode accessMode)
+			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await _impl.Open(ct, accessMode, StorageOpenOptions.AllowReadersAndWriters));
+
+		public IAsyncOperation<IRandomAccessStream> OpenAsync(FileAccessMode accessMode, StorageOpenOptions options)
+			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await _impl.Open(ct, accessMode, options));
+
+		public IAsyncOperation<StorageStreamTransaction> OpenTransactedWriteAsync()
+			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => _impl.OpenTransactedWrite(ct, StorageOpenOptions.AllowReadersAndWriters));
+
+		[NotImplemented] // The options is ignored, we implement this only to increase compatibility
+		public IAsyncOperation<StorageStreamTransaction> OpenTransactedWriteAsync(StorageOpenOptions options)
+			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => _impl.OpenTransactedWrite(ct, options));
+
+		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder)
+			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.Copy(ct, destinationFolder, global::System.IO.Path.GetFileName(Path), NameCollisionOption.FailIfExists));
+
+		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder, string desiredNewName)
+			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.Copy(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
+
+		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
+			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.Copy(ct, destinationFolder, desiredNewName, option));
+
+		public IAsyncAction CopyAndReplaceAsync(IStorageFile fileToReplace)
+			=> AsyncAction.FromTask(ct => _impl.CopyAndReplace(ct, fileToReplace));
+
+		public IAsyncAction RenameAsync(string desiredName)
+			=> AsyncAction.FromTask(ct => _impl.Rename(ct, desiredName, NameCollisionOption.FailIfExists));
+
+		public IAsyncAction RenameAsync(string desiredName, NameCollisionOption option)
+			=> AsyncAction.FromTask(ct => _impl.Rename(ct, desiredName, option));
+
+		public IAsyncAction MoveAsync(IStorageFolder destinationFolder)
+			=> AsyncAction.FromTask(ct => _impl.Move(ct, destinationFolder, Name, NameCollisionOption.FailIfExists));
+
+		public IAsyncAction MoveAsync(IStorageFolder destinationFolder, string desiredNewName)
+			=> AsyncAction.FromTask(ct => _impl.Move(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
+
+		public IAsyncAction MoveAsync(IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
+			=> AsyncAction.FromTask(ct => _impl.Move(ct, destinationFolder, desiredNewName, option));
+
+		public IAsyncAction MoveAndReplaceAsync(IStorageFile fileToReplace)
+			=> AsyncAction.FromTask(ct => _impl.MoveAndReplace(ct, fileToReplace));
+
+		public IAsyncAction DeleteAsync()
+			=> AsyncAction.FromTask(ct => _impl.Delete(ct, StorageDeleteOption.Default));
+
+		[NotImplemented] // The options is ignored, we implement this only to increase compatibility
+		public IAsyncAction DeleteAsync(StorageDeleteOption option)
+			=> AsyncAction.FromTask(ct => _impl.Delete(ct, option));
+		#endregion
 
 #if false
 		public async Task<Stream> GetThumbnailAsync(CancellationToken ct, ThumbnailMode mode, int size)
@@ -90,142 +191,117 @@ namespace Windows.Storage
 		}
 #endif
 
-		[Uno.NotImplemented]
-        public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenAsync(global::Windows.Storage.FileAccessMode accessMode)
-        {
-            throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> StorageFile.OpenAsync(FileAccessMode accessMode) is not implemented in Uno.");
-        }
-
-        private class FileRandomAccessStream : Windows.Storage.Streams.IRandomAccessStream
-        {
-            private readonly string _path;
-            private readonly FileAccessMode _accessMode;
-            private readonly Stream _source;
-
-            public FileRandomAccessStream(string path, global::Windows.Storage.FileAccessMode accessMode)
-            {
-                _path = path;
-                _accessMode = accessMode;
-                _source = File.OpenRead(path);
-            }
-
-            public bool CanRead => _source.CanRead;
-
-            public bool CanWrite => _source.CanWrite;
-
-            public ulong Position => (ulong)_source.Position;
-
-            public ulong Size {
-                get => (ulong)_source.Length;
-                set => throw new NotSupportedException("Setting the stream size is not supported");
-            }
-
-            public IRandomAccessStream CloneStream() => new FileRandomAccessStream(_path, _accessMode);
-            public void Dispose() => _source.Dispose();
-            public IAsyncOperation<bool> FlushAsync() => AsyncOperation.FromTask(async ct => { await _source.FlushAsync(); return true; });
-            public IInputStream GetInputStreamAt(ulong position) => throw new NotImplementedException();
-            public IOutputStream GetOutputStreamAt(ulong position) => throw new NotImplementedException();
-            public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) => throw new NotImplementedException();
-            public void Seek(ulong position) => throw new NotImplementedException();
-            public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer) => throw new NotImplementedException();
-        }
-
-
-        public async Task<Stream> OpenStreamForReadAsync(CancellationToken ct)
-		{
-			switch (Scheme)
+		#region Helpers
+		private static FileAccess ToFileAccess(FileAccessMode accessMode)
+			=> accessMode switch
 			{
-				default:
-					return File.OpenRead(Path);
-			}
-		}
+				FileAccessMode.Read => FileAccess.Read,
+				FileAccessMode.ReadWrite => FileAccess.ReadWrite,
+				_ => throw new ArgumentOutOfRangeException(nameof(accessMode))
+			};
 
-		public async Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct)
-		{
-			if (Scheme != "FILE")
+		private static FileShare ToFileShare(StorageOpenOptions options)
+			=> options switch
 			{
-				throw new InvalidOperationException("Cannot write on a non local file.");
-			}
+				StorageOpenOptions.None => FileShare.None,
+				StorageOpenOptions.AllowOnlyReaders => FileShare.Read,
+				StorageOpenOptions.AllowReadersAndWriters => FileShare.ReadWrite,
+				_ => throw new ArgumentOutOfRangeException(nameof(options))
+			};
 
-			return new StorageStreamTransaction(this);
-		}
-
-		public async Task CopyAndReplaceAsync(CancellationToken ct, StorageFile destination)
+		private static async Task<StorageFile> CreateDestination(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
 		{
-			switch (Scheme)
+			var creationOption = option switch
 			{
-				default:
-					File.Copy(this.Name, destination.Name, true);
-					break;
-			}
+				NameCollisionOption.FailIfExists => CreationCollisionOption.FailIfExists,
+				NameCollisionOption.GenerateUniqueName => CreationCollisionOption.GenerateUniqueName,
+				NameCollisionOption.ReplaceExisting => CreationCollisionOption.ReplaceExisting,
+				_ => throw new ArgumentOutOfRangeException(nameof(option)),
+			};
+
+			return await destinationFolder.CreateFileAsync(desiredNewName, creationOption).AsTask(ct);
 		}
 
-		public async Task MoveAsync(CancellationToken ct, StorageFolder targetFolder)
-		{
-			await MoveAsync(ct, targetFolder, Name, NameCollisionOption.FailIfExists);
-		}
-
-		public async Task MoveAsync(CancellationToken ct, StorageFolder targetFolder, string desiredNewName)
-		{
-			await MoveAsync(ct, targetFolder, desiredNewName, NameCollisionOption.FailIfExists);
-		}
-
-		public async Task MoveAsync(CancellationToken ct, StorageFolder targetFolder, string desiredNewName, NameCollisionOption option)
-		{
-			// TODO: Check the _scheme of the target folder
-			var targetPath = global::System.IO.Path.Combine(targetFolder.Path, desiredNewName);
-
-			if (File.Exists(targetPath))
+		private static string GetContentTypeFromFileType(string fileType)
+			// https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+			=> fileType.ToLowerInvariant() switch
 			{
-				switch (option)
-				{
-					case NameCollisionOption.FailIfExists:
-						throw new IOException("File {0} already exists".InvariantCultureFormat(targetPath));
-
-					case NameCollisionOption.GenerateUniqueName:
-						var extension = global::System.IO.Path.GetExtension(desiredNewName);
-						desiredNewName = global::System.IO.Path.ChangeExtension(desiredNewName, Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture) + extension);
-						await MoveAsync(ct, targetFolder, desiredNewName, option);
-						return;
-
-					case NameCollisionOption.ReplaceExisting:
-						File.Delete(targetPath);
-						break;
-
-					default:
-						throw new ArgumentOutOfRangeException("option");
-				}
-			}
-
-			switch (Scheme)
-			{
-				default:
-					File.Move(Path, targetPath);
-					break;
-			}
-
-			_fileUri = new Uri("file://" + targetPath);
-		}
-
-		public IAsyncOperation<BasicProperties> GetBasicPropertiesAsync()
-			=> GetBasicPropertiesAsync(new CancellationToken()).AsAsyncOperation<BasicProperties>();
-
-		public async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
-		{
-			return new BasicProperties(this);
-		}
-
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileFromApplicationUriAsync( global::System.Uri uri)
-		{
-			return AsyncOperation.FromTask(ct => GetFileFromApplicationUriAsyncTask(ct, uri));
-		}
-
-#if NET461 || __SKIA__ || __NETSTD_REFERENCE__
-		private static Task<StorageFile> GetFileFromApplicationUriAsyncTask(CancellationToken ct, Uri uri)
-		{
-			throw new NotImplementedException();
-		}
-#endif
+				".aac" => "audio/aac",
+				".abw" => "application/x-abiword",
+				".arc" => "application/x-freearc",
+				".avi" => "video/x-msvideo",
+				".azw" => "application/vnd.amazon.ebook",
+				".bin" => "application/octet-stream",
+				".bmp" => "image/bmp",
+				".bz" => "application/x-bzip",
+				".bz2" => "application/x-bzip2",
+				".csh" => "application/x-csh",
+				".css" => "text/css",
+				".csv" => "text/csv",
+				".doc" => "application/msword",
+				".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+				".eot" => "application/vnd.ms-fontobject",
+				".epub" => "application/epub+zip",
+				".gz" => "application/gzip",
+				".gif" => "image/gif",
+				".htm" => "text/html",
+				".html" => "text/html",
+				".ico" => "image/vnd.microsoft.icon",
+				".ics" => "text/calendar",
+				".jar" => "application/java-archive",
+				".jpeg" => "image/jpeg",
+				".jpg" => "image/jpeg",
+				".js" => "text/javascript",
+				".json" => "application/json",
+				".jsonld" => "application/ld+json",
+				".mid" => "audio/midi",
+				".midi" => "audio/midi",
+				".mjs" => "text/javascript",
+				".mp3" => "audio/mpeg",
+				".mpeg" => "video/mpeg",
+				".mpkg" => "application/vnd.apple.installer+xml",
+				".odp" => "application/vnd.oasis.opendocument.presentation",
+				".ods" => "application/vnd.oasis.opendocument.spreadsheet",
+				".odt" => "application/vnd.oasis.opendocument.text",
+				".oga" => "audio/ogg",
+				".ogv" => "video/ogg",
+				".ogx" => "application/ogg",
+				".opus" => "audio/opus",
+				".otf" => "font/otf",
+				".png" => "image/png",
+				".pdf" => "application/pdf",
+				".php" => "application/x-httpd-php",
+				".ppt" => "application/vnd.ms-powerpoint",
+				".pptx" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+				".rar" => "application/vnd.rar",
+				".rtf" => "application/rtf",
+				".sh" => "application/x-sh",
+				".svg" => "image/svg+xml",
+				".swf" => "application/x-shockwave-flash",
+				".tar" => "application/x-tar",
+				".tif" => "image/tiff",
+				".tiff" => "image/tiff",
+				".ts" => "video/mp2t",
+				".ttf" => "font/ttf",
+				".txt" => "text/plain",
+				".vsd" => "application/vnd.visio",
+				".wav" => "audio/wav",
+				".weba" => "audio/webm",
+				".webm" => "video/webm",
+				".webp" => "image/webp",
+				".woff" => "font/woff",
+				".woff2" => "font/woff2",
+				".xhtml" => "application/xhtml+xml",
+				".xls" => "application/vnd.ms-excel",
+				".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+				".xml" => "application/xml",
+				".xul" => "application/vnd.mozilla.xul+xml",
+				".zip" => "application/zip",
+				".3gp" => "video/3gpp",
+				".3g2" => "video/3gpp2",
+				".7z" => "application/x-7z-compressed",
+				_ => "application/octet-stream",
+			};
+		#endregion
 	}
 }

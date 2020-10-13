@@ -1,5 +1,7 @@
-﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+﻿#nullable enable
+
 using System.Security;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -9,51 +11,40 @@ namespace System.IO
 	{
 		public static async Task<Stream> OpenStreamForReadAsync(this IStorageFile windowsRuntimeFile)
 		{
-			return File.OpenRead(windowsRuntimeFile.Path);
+			if (windowsRuntimeFile is StorageFile file)
+			{
+				return await file.OpenStream(CancellationToken.None, FileAccessMode.Read, StorageOpenOptions.None);
+			}
+			else
+			{
+				var raStream = await windowsRuntimeFile.OpenReadAsync();
+				return raStream.AsStreamForRead();
+			}
 		}
 
 		public static async Task<Stream> OpenStreamForReadAsync(this IStorageFolder rootDirectory, string relativePath)
 		{
-			return File.OpenRead(Path.Combine(rootDirectory.Path, relativePath));
+			var file = await rootDirectory.GetFileAsync(relativePath);
+			return await file.OpenStreamForReadAsync();
 		}
 
 		public static async Task<Stream> OpenStreamForWriteAsync(this IStorageFile windowsRuntimeFile)
 		{
-			return File.OpenWrite(windowsRuntimeFile.Path);
+			if (windowsRuntimeFile is StorageFile file)
+			{
+				return await file.OpenStream(CancellationToken.None, FileAccessMode.ReadWrite, StorageOpenOptions.None);
+			}
+			else
+			{
+				var raStream = await windowsRuntimeFile.OpenAsync(FileAccessMode.ReadWrite);
+				return raStream.AsStreamForWrite();
+			}
 		}
 
 		public static async Task<Stream> OpenStreamForWriteAsync(this IStorageFolder rootDirectory, string relativePath, CreationCollisionOption creationCollisionOption)
 		{
-			FileMode mode;
-			FileAccess access;
-
-			switch(creationCollisionOption)
-			{
-				case CreationCollisionOption.FailIfExists:
-					mode = FileMode.CreateNew;
-					access = FileAccess.Write;
-					break;
-
-				case CreationCollisionOption.GenerateUniqueName:
-					mode = FileMode.CreateNew;
-					access = FileAccess.Write;
-					break;
-
-				case CreationCollisionOption.OpenIfExists:
-					mode = FileMode.OpenOrCreate;
-					access = FileAccess.Write;
-					break;
-
-				case CreationCollisionOption.ReplaceExisting:
-					mode = FileMode.Truncate;
-					access = FileAccess.Write;
-					break;
-				default:
-					throw new NotSupportedException($"The {creationCollisionOption} CreationCollisionOption is not supported");
-			}
-
-			Directory.CreateDirectory(rootDirectory.Path);
-			return File.Open(Path.Combine(rootDirectory.Path, relativePath), mode, access);
+			var file = await rootDirectory.CreateFileAsync(relativePath, creationCollisionOption);
+			return await file.OpenStreamForWriteAsync();
 		}
 	}
 }

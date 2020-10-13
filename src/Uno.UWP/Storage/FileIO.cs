@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using System.Collections.Generic;
+using System.Threading;
 using Uno.Extensions;
 using UwpUnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
 using UwpBuffer = Windows.Storage.Streams.Buffer;
@@ -143,7 +144,7 @@ namespace Windows.Storage
 		/// <param name="buffer">The array of bytes to write.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction WriteBytesAsync(IStorageFile file, byte[] buffer) =>
-			WriteBytesTaskAsync(file, buffer).AsAsyncAction();
+			WriteBytesTaskAsync(file, buffer, 0, buffer.Length).AsAsyncAction();
 
 		/// <summary>
 		/// Reads the contents of the specified file and returns a buffer.
@@ -249,52 +250,53 @@ namespace Windows.Storage
 			await streamWriter.WriteAsync(contents);
 		}
 
-		private static async Task WriteBytesTaskAsync(IStorageFile file, byte[] buffer)
+		private static async Task WriteBytesTaskAsync(IStorageFile file, byte[] buffer, int index, int count)
 		{
 			if (file is null)
 			{
 				throw new ArgumentNullException(nameof(file));
 			}
 
-			using var fs = File.Create(file.Path);
+			using var fs = await file.OpenStreamForWriteAsync();
 			await fs.WriteAsync(buffer, 0, buffer.Length);
 		}
 
 		private static async Task<IBuffer> ReadBufferTaskAsync(IStorageFile file)
 		{
-			using var fs = File.OpenRead(file.Path);
+			using var fs = await file.OpenStreamForReadAsync();
 			var bytes = await fs.ReadBytesAsync();
+
 			return new UwpBuffer(bytes);
 		}
 
 		private static async Task WriteBufferTaskAsync(IStorageFile file, IBuffer buffer)
 		{
-			if (!(buffer is UwpBuffer inMemoryBuffer))
-			{
-				throw new NotSupportedException("The current implementation can only write a UwpBuffer");
-			}
-
-			await WriteBytesTaskAsync(file, inMemoryBuffer.Data);
+			var data = UwpBuffer.Cast(buffer).GetSegment();
+			await WriteBytesTaskAsync(file, data.Array!, data.Offset, data.Count);
 		}
 
 		private static async Task<Encoding> GetEncodingFromFileAsync(IStorageFile file)
 		{
-			if (File.Exists(file.Path))
+			// If the file has a local path, try to not create it
+			if (file.Path is {} path && !string.IsNullOrWhiteSpace(path) && !File.Exists(path))
 			{
-				using Stream fileStream = await file.OpenStreamForReadAsync();
-				var bytes = new byte[2];
-				if (await fileStream.ReadAsync(bytes, 0, bytes.Length) == 2)
+				return Encoding.UTF8;
+			}
+
+			using Stream fileStream = await file.OpenStreamForReadAsync();
+			var bytes = new byte[2];
+			if (await fileStream.ReadAsync(bytes, 0, bytes.Length) == 2)
+			{
+				if (bytes[0] == 0xff && bytes[1] == 0xfe)
 				{
-					if (bytes[0] == 0xff && bytes[1] == 0xfe)
-					{
-						return Encoding.Unicode;
-					}
-					else if (bytes[0] == 0xfe && bytes[1] == 0xff)
-					{
-						return Encoding.BigEndianUnicode;
-					}
+					return Encoding.Unicode;
+				}
+				else if (bytes[0] == 0xfe && bytes[1] == 0xff)
+				{
+					return Encoding.BigEndianUnicode;
 				}
 			}
+
 			return Encoding.UTF8;
 		}
 

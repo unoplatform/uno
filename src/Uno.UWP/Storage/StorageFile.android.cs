@@ -20,11 +20,11 @@ using Windows.Storage.Helpers;
 
 namespace Windows.Storage
 {
-	public partial class StorageFile : StorageItem, IStorageFile
+	partial class StorageFile
 	{
 		private static ConcurrentEntryManager _assetGate = new ConcurrentEntryManager();
 
-		private static async Task<StorageFile> GetFileFromApplicationUriAsyncTask(CancellationToken ct, Uri uri)
+		private static async Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)
 		{
 			if(uri.Scheme != "ms-appx")
 			{

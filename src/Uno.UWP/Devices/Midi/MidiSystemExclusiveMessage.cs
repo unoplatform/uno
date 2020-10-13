@@ -25,7 +25,7 @@ namespace Windows.Devices.Midi
 			}
 
 			if (rawData is Storage.Streams.Buffer inMemory &&
-				inMemory.Data[0] == (byte)MidiMessageType.EndSystemExclusive)
+				inMemory.GetByte(0) == (byte)MidiMessageType.EndSystemExclusive)
 			{
 				Type = MidiMessageType.EndSystemExclusive;
 			}

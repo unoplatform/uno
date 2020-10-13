@@ -4,6 +4,9 @@ Uno supports some of the APIs from the `Windows.Storage` namespace, such as `Win
 
 Both `Windows.Storage` and `System.IO` APIs are available, with some platform specifics defined below. In general, it is best to use `Windows.Storage` APIs when available, as their async nature allows for transparent interactions with the underlying file system implementations.
 
+Note that only `BasicProperties` are barely supported for now. 
+`FileAttributes` and all "advanced properties" (`StorageItemContentProperties`) related to the content of the file, including thumbnail, are not supported.
+
 ## WebAssembly support
 
 WebAssembly file system APIs are built using [emscripten's POSIX file system APIs](https://emscripten.org/docs/api_reference/Filesystem-API.html). The persistence is done through the use of browser APIs, such as IndexedDB through [emscripten's IDBFS](https://emscripten.org/docs/api_reference/Filesystem-API.html#filesystem-api-idbfs).
@@ -48,4 +51,8 @@ Given than in the project there's the following declaration:
 </ItemGroup>
 ```
 
+## Support for StorageFile.CreateStreamedFileAsync and StorageFile.CreateStreamedFileFromUriAsync
+
+Those methods are not supported yet, however Uno supports to create a `RandomAccessStreamReference` from an `Uri` (`RandomAccessStreamReference.CreateFromUri`), but note that on WASM downloading a file from a random server usually causes some issues with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). 
+Make sure to configure the server that hosts the file accordingly.
 
