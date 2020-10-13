@@ -100,7 +100,7 @@ namespace Uno.UI.Controls
 		/// </remarks>
 		/// <param name="info">Information about the dragging session from the sender.</param>
 		/// <returns>The accepted drag operation(s).</returns>
-		[Export("draggingEntered:")]
+		[Export("draggingEntered:")] // Do not remove
 		public virtual NSDragOperation DraggingEntered(NSDraggingInfo draggingInfo)
 		{
 			try
@@ -131,7 +131,7 @@ namespace Uno.UI.Controls
 		/// See remarks in <see cref="DraggingEntered(NSDraggingInfo)"/>
 		/// </remarks>
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
-		[Export("draggingUpdated:")]
+		[Export("draggingUpdated:")] // Do not remove
 		public virtual NSDragOperation DraggingUpdated(NSDraggingInfo draggingInfo)
 		{
 			try
@@ -161,7 +161,7 @@ namespace Uno.UI.Controls
 		/// See remarks in <see cref="DraggingEntered(NSDraggingInfo)"/>
 		/// </remarks>
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
-		[Export("draggingEnded:")]
+		[Export("draggingEnded:")] // Do not remove
 		public virtual void DraggingEnded(NSDraggingInfo draggingInfo)
 		{
 			// Not used in this context.
@@ -177,7 +177,7 @@ namespace Uno.UI.Controls
 		/// See remarks in <see cref="DraggingEntered(NSDraggingInfo)"/>
 		/// </remarks>
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
-		[Export("draggingExited:")]
+		[Export("draggingExited:")] // Do not remove
 		public virtual void DraggingExited(NSDraggingInfo draggingInfo)
 		{
 			return;
@@ -199,7 +199,7 @@ namespace Uno.UI.Controls
 		/// </summary>
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
 		/// <returns>True if the destination accepts the drag operation; otherwise, false. </returns>
-		[Export("prepareForDragOperation:")]
+		[Export("prepareForDragOperation:")] // Do not remove
 		public virtual bool PrepareForDragOperation(AppKit.NSDraggingInfo draggingInfo)
 		{
 			// Always return true as UWP doesn't really have an equivalent step.
@@ -212,7 +212,7 @@ namespace Uno.UI.Controls
 		/// </summary>
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
 		/// <returns>True if the destination accepts the data; otherwise, false.</returns>
-		[Export("performDragOperation:")]
+		[Export("performDragOperation:")] // Do not remove
 		public virtual bool PerformDragOperation(NSDraggingInfo draggingInfo)
 		{
 			try

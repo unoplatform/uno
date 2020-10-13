@@ -69,22 +69,56 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 
 		/// <summary>
-		/// Sets the contents of the <see cref="DataPackage"/> to the native drag and drop manager.
+		/// Creates new, native drag and drop data from the contents of the given <see cref="DataPackageView"/>.
 		/// </summary>
-		/// <param name="content">The contents to set to the native drag and drop manager.</param>
-		internal static void SetForNativeDragDrop(DataPackage content)
+		/// <param name="data">The content to create the native drag and drop data from.</param>
+		internal static async Task<NSDraggingItem[]> CreateNativeDragDropData(DataPackageView data)
 		{
-			return;
+			NSDraggingItem draggingItem;
+			var items = new List<NSDraggingItem>();
+
+			if (data?.Contains(StandardDataFormats.Html) ?? false)
+			{
+				var html = await data.GetHtmlFormatAsync();
+
+				if (!string.IsNullOrEmpty(html))
+				{
+
+				}
+			}
+
+			if (data?.Contains(StandardDataFormats.Rtf) ?? false)
+			{
+				var rtf = await data.GetRtfAsync();
+
+				if (!string.IsNullOrEmpty(rtf))
+				{
+					
+				}
+			}
+
+			if (data?.Contains(StandardDataFormats.Text) ?? false)
+			{
+				var text = await data.GetTextAsync();
+
+				if (!string.IsNullOrEmpty(text))
+				{
+					draggingItem = new NSDraggingItem((NSString)text);
+					draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+					items.Add(draggingItem);
+				}
+			}
+
+			return items.ToArray();
 		}
 
 		/// <summary>
-		/// Gets the contents of the native drag and drop manager.
+		/// Creates a new <see cref="DataPackageView"/> from the native drag and drop data.
 		/// </summary>
-		/// <returns>A new <see cref="DataPackageView"/> representing the native drag and drop manager contents.</returns>
-		internal static DataPackageView GetFromNativeDragDrop()
+		/// <returns>A new <see cref="DataPackageView"/> representing the native drag and drop data.</returns>
+		internal static DataPackageView CreateFromNativeDragDropData(NSDraggingInfo draggingInfo)
 		{
-			// More worked needed, signature may change
-			return (new DataPackage()).GetView();
+			return GetFromNative(draggingInfo.DraggingPasteboard);
 		}
 
 		private static void SetToNative(DataPackage content, NSPasteboard pasteboard)

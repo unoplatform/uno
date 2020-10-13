@@ -11,6 +11,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 using Point = Windows.Foundation.Point;
 using UIElement = Windows.UI.Xaml.UIElement;
 
@@ -18,15 +19,13 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
 	internal class MacOSDragDropExtension : IDragDropExtension
 	{
+		private readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 		private readonly DragDropManager _manager;
-		private NSWindow _nativeWindowHost;
 		private Uno.UI.Controls.Window _window;
 
 		public MacOSDragDropExtension(DragDropManager owner)
 		{
 			_manager = (DragDropManager)owner;
-
-			_nativeWindowHost = AppKit.NSApplication.SharedApplication.DangerousWindows[0];
 			_window = (Uno.UI.Controls.Window)CoreWindow.GetForCurrentThread()!._window;
 
 			_window.DraggingEnteredAction = OnDraggingEnteredEvent;
@@ -37,22 +36,36 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private NSDragOperation OnDraggingEnteredEvent(NSDraggingInfo draggingInfo)
 		{
+			var source = new DragEventSource(_fakePointerId, draggingInfo, _window);
+			var data = DataPackage.CreateFromNativeDragDropData(draggingInfo);
+			var allowedOperations = DataPackageOperation.Copy; // Should match with return value
+			var info = new CoreDragInfo(source, data, allowedOperations);
+
+			CoreDragDropManager.GetForCurrentView()?.DragStarted(info);
+
+			// Note: No need to _manager.ProcessMove, the DragStarted will actually have the same effect
+
+			// To allow the macOS drag to continue, we must assume drop is supported here.
+			// This will immediately be updated within the OnDraggingUpdated method.
 			return NSDragOperation.Copy;
 		}
 
 		private NSDragOperation OnDraggingUpdated(NSDraggingInfo draggingInfo)
 		{
-			return NSDragOperation.Copy;
+			var operation = _manager.ProcessMoved(new DragEventSource(_fakePointerId, draggingInfo, _window));
+			return ToNSDragOperation(operation);
 		}
 
 		private void OnDraggingExited(NSDraggingInfo draggingInfo)
 		{
+			_ = _manager.ProcessAborted(new DragEventSource(_fakePointerId, draggingInfo, _window));
 			return;
 		}
 
 		private bool OnPerformDragOperation(NSDraggingInfo draggingInfo)
 		{
-			return true;
+			var operation = _manager.ProcessDropped(new DragEventSource(_fakePointerId, draggingInfo, _window));
+			return (operation != DataPackageOperation.None);
 		}
 
 		public void StartNativeDrag(CoreDragInfo info)
@@ -63,12 +76,10 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 					NSDraggingSource source = new NSDraggingSource();
 					NSEvent sourceEvent = new NSEvent();
 
-					var text = await info.Data.GetTextAsync();
-
-					var draggingItem = new NSDraggingItem((NSString)text);
-					draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1);
-
-					//_nativeView?.BeginDraggingSession(new[] { draggingItem }, sourceEvent, source);
+					_window.ContentView.BeginDraggingSession(
+						await DataPackage.CreateNativeDragDropData(info.Data),
+						sourceEvent,
+						source);
 				}
 				catch (Exception e)
 				{
@@ -76,13 +87,46 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				}
 			});
 
+		/// <summary>
+		/// Converts the given UWP <see cref="DataPackageOperation"/> into the equivalent macOS
+		/// <see cref="NSDragOperation"/>.
+		/// </summary>
+		/// <param name="uwpOperation">The UWP <see cref="DataPackageOperation"/> to convert.</param>
+		/// <returns>The equivalent macOS <see cref="NSDragOperation"/>; otherwise, <see cref="NSDragOperation.None"/>.</returns>
+		private static NSDragOperation ToNSDragOperation(DataPackageOperation uwpOperation)
+		{
+			NSDragOperation result = NSDragOperation.None;
+
+			if (uwpOperation.HasFlag(DataPackageOperation.Copy))
+			{
+				result |= NSDragOperation.Copy;
+			}
+
+			if (uwpOperation.HasFlag(DataPackageOperation.Link))
+			{
+				result |= NSDragOperation.Link;
+			}
+
+			if (uwpOperation.HasFlag(DataPackageOperation.Move))
+			{
+				result |= NSDragOperation.Move;
+			}
+
+			return result;
+		}
+
 		private class DragEventSource : IDragEventSource
 		{
 			private static long _nextFrameId;
+			private readonly NSDraggingInfo _macOSDraggingInfo;
+			private	readonly NSWindow _window;
 
-			public DragEventSource(long pointerId)
+			public DragEventSource(long pointerId, NSDraggingInfo draggingInfo, NSWindow window)
 			{
 				Id = pointerId;
+
+				_macOSDraggingInfo = draggingInfo;
+				_window = window;
 			}
 
 			public long Id { get; }
@@ -92,13 +136,36 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			/// <inheritdoc />
 			public (Point location, DragDropModifiers modifier) GetState()
 			{
-				return (new Windows.Foundation.Point(0, 0), DragDropModifiers.None);
+				var windowLocation = _window.ContentView.ConvertPointFromView(_macOSDraggingInfo.DraggingLocation, null);
+				var location = new Windows.Foundation.Point(windowLocation.X, windowLocation.Y);
+
+				// macOS requires access to NSEvent.ModifierFlags to determine key press.
+				// This isn't available from the dragging info.
+				var mods = DragDropModifiers.None;
+
+				return (location, mods);
 			}
 
 			/// <inheritdoc />
 			public Point GetPosition(object? relativeTo)
 			{
-				return new Point(0, 0);
+				var windowLocation = _window.ContentView.ConvertPointFromView(_macOSDraggingInfo.DraggingLocation, null);
+				var rawPosition = new Point(windowLocation.X, windowLocation.Y);
+
+				if (relativeTo is null)
+				{
+					return rawPosition;
+				}
+
+				if (relativeTo is UIElement elt)
+				{
+					var eltToRoot = UIElement.GetTransform(elt, null);
+					Matrix3x2.Invert(eltToRoot, out var rootToElt);
+
+					return rootToElt.Transform(rawPosition);
+				}
+
+				throw new InvalidOperationException("The relative to must be a UIElement.");
 			}
 		}
 	}
