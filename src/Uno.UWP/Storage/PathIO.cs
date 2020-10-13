@@ -1,10 +1,11 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using UwpUnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
-using UwpBuffer = Windows.Storage.Streams.Buffer;
 
 namespace Windows.Storage
 {
@@ -85,7 +86,7 @@ namespace Windows.Storage
 			return await FileIO.ReadLinesAsync(file, encoding.Value).AsTask();
 		}
 
-		private static async Task WriteTextTaskAsync(string path, string contents, bool append, UwpUnicodeEncoding? encoding = null)
+		private static async Task WriteLinesTaskAsync(string path, IEnumerable<string> lines, UwpUnicodeEncoding? encoding = null)
 		{
 			if (path is null)
 			{
@@ -95,75 +96,99 @@ namespace Windows.Storage
 			var file = await StorageFile.GetFileFromPathAsync(path);
 			if (encoding == null)
 			{
-				return await FileIO.WriteTextAsync(file, contents, append).AsTask();
+				await FileIO.WriteLinesAsync(file, lines).AsTask();
 			}
-			return await FileIO.WriteTextAsync(file, contents, append, encoding).AsTask();
-		}
-
-		private static async Task WriteBytesTaskAsync(IStorageFile file, byte[] buffer)
-		{
-			if (file is null)
+			else
 			{
-				throw new ArgumentNullException(nameof(file));
+				await FileIO.WriteLinesAsync(file, lines, encoding.Value).AsTask();
 			}
-
-			using var fs = File.Create(file.Path);
-			await fs.WriteAsync(buffer, 0, buffer.Length);
 		}
 
-		private static async Task<IBuffer> ReadBufferTaskAsync(IStorageFile file)
+		private static async Task AppendLinesTaskAsync(string path, IEnumerable<string> lines, UwpUnicodeEncoding? encoding = null)
 		{
-			using var fs = File.OpenRead(file.Path);
-			var bytes = await fs.ReadBytesAsync();
-			return new UwpBuffer(bytes);
-		}
-
-		private static async Task WriteBufferTaskAsync(IStorageFile file, IBuffer buffer)
-		{
-			if (!(buffer is UwpBuffer inMemoryBuffer))
+			if (path is null)
 			{
-				throw new NotSupportedException("The current implementation can only write a UwpBuffer");
+				throw new ArgumentNullException(nameof(path));
 			}
 
-			await WriteBytesTaskAsync(file, inMemoryBuffer.Data);
+			var file = await StorageFile.GetFileFromPathAsync(path);
+			if (encoding == null)
+			{
+				await FileIO.WriteLinesTaskAsync(file, lines, append: true, recognizeEncoding: false);
+			}
+			else
+			{
+				await FileIO.WriteLinesTaskAsync(file, lines, append: true, recognizeEncoding: false, encoding.Value);
+			}
 		}
 
-		private static async Task<Encoding> GetEncodingFromFileAsync(IStorageFile file)
+		private static async Task WriteTextTaskAsync(string path, string contents, UwpUnicodeEncoding? encoding = null)
 		{
-			if (File.Exists(file.Path))
+			if (path is null)
 			{
-				using Stream fileStream = await file.OpenStreamForReadAsync();
-				var bytes = new byte[2];
-				if (await fileStream.ReadAsync(bytes, 0, bytes.Length) == 2)
-				{
-					if (bytes[0] == 0xff && bytes[1] == 0xfe)
-					{
-						return Encoding.Unicode;
-					}
-					else if (bytes[0] == 0xfe && bytes[1] == 0xff)
-					{
-						return Encoding.BigEndianUnicode;
-					}
-				}
+				throw new ArgumentNullException(nameof(path));
 			}
-			return Encoding.UTF8;
+
+			var file = await StorageFile.GetFileFromPathAsync(path);
+			if (encoding == null)
+			{
+				await FileIO.WriteTextAsync(file, contents).AsTask();
+			}
+			else
+			{
+				await FileIO.WriteTextAsync(file, contents, encoding.Value).AsTask();
+			}
 		}
 
-		private static string ConvertLinesToString(IEnumerable<string> lines) => string.Join(Environment.NewLine, lines);
-
-		private static Encoding UwpEncodingToSystemEncoding(UwpUnicodeEncoding encoding)
+		private static async Task AppendTextTaskAsync(string path, string contents, UwpUnicodeEncoding? encoding = null)
 		{
-			switch (encoding)
+			if (path is null)
 			{
-				case UwpUnicodeEncoding.Utf8:
-					return Encoding.UTF8;
-				case UwpUnicodeEncoding.Utf16LE:
-					return Encoding.Unicode;
-				case UwpUnicodeEncoding.Utf16BE:
-					return Encoding.BigEndianUnicode;
+				throw new ArgumentNullException(nameof(path));
 			}
 
-			return Encoding.UTF8;
+			var file = await StorageFile.GetFileFromPathAsync(path);
+			if (encoding == null)
+			{
+				await FileIO.WriteTextTaskAsync(file, contents, append: true, recognizeEncoding: false);
+			}
+			else
+			{
+				await FileIO.WriteTextTaskAsync(file, contents, append: true, recognizeEncoding: false, encoding.Value);
+			}
+		}
+
+		private static async Task WriteBytesTaskAsync(string path, byte[] buffer)
+		{
+			if (path is null)
+			{
+				throw new ArgumentNullException(nameof(path));
+			}
+
+			var file = await StorageFile.GetFileFromPathAsync(path);
+			await FileIO.WriteBytesAsync(file, buffer).AsTask();
+		}
+
+		private static async Task<IBuffer> ReadBufferTaskAsync(string path)
+		{
+			if (path is null)
+			{
+				throw new ArgumentNullException(nameof(path));
+			}
+
+			var file = await StorageFile.GetFileFromPathAsync(path);
+			return await FileIO.ReadBufferAsync(file).AsTask();
+		}
+
+		private static async Task WriteBufferTaskAsync(string path, IBuffer buffer)
+		{
+			if (path is null)
+			{
+				throw new ArgumentNullException(nameof(path));
+			}
+
+			var file = await StorageFile.GetFileFromPathAsync(path);
+			await FileIO.WriteBufferAsync(file, buffer).AsTask();
 		}
 	}
 }

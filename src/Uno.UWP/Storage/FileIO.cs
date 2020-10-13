@@ -67,7 +67,7 @@ namespace Windows.Storage
 		/// <param name="contents">The text to write.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction WriteTextAsync(IStorageFile file, string contents) =>
-			WriteTextTaskAsync(file, contents, append: false).AsAsyncAction();
+			WriteTextTaskAsync(file, contents, append: false, recognizeEncoding: true).AsAsyncAction();
 
 		/// <summary>
 		/// Writes text to the specified file using the specified character encoding.
@@ -77,7 +77,7 @@ namespace Windows.Storage
 		/// <param name="encoding">The character encoding of the file.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction WriteTextAsync(IStorageFile file, string contents, UwpUnicodeEncoding encoding) =>
-			WriteTextTaskAsync(file, contents, append: false, encoding).AsAsyncAction();
+			WriteTextTaskAsync(file, contents, append: false, recognizeEncoding: true, encoding).AsAsyncAction();
 
 		/// <summary>
 		/// Writes lines of text to the specified file.
@@ -86,7 +86,7 @@ namespace Windows.Storage
 		/// <param name="lines">The list of text strings to write as lines.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction WriteLinesAsync(IStorageFile file, IEnumerable<string> lines) =>
-			WriteTextAsync(file, ConvertLinesToString(lines));
+			WriteLinesTaskAsync(file, lines, append: false, recognizeEncoding: true).AsAsyncAction();
 
 		/// <summary>
 		/// Writes lines of text to the specified file using the specified character encoding.
@@ -96,7 +96,7 @@ namespace Windows.Storage
 		/// <param name="encoding">The character encoding of the file.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction WriteLinesAsync(IStorageFile file, IEnumerable<string> lines, UwpUnicodeEncoding encoding) =>
-			WriteTextAsync(file, ConvertLinesToString(lines), encoding);
+			WriteLinesTaskAsync(file, lines, append: false, recognizeEncoding: true, encoding).AsAsyncAction();
 
 		/// <summary>
 		/// Appends text to the specified file.
@@ -105,7 +105,7 @@ namespace Windows.Storage
 		/// <param name="contents">The text to append.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction AppendTextAsync(IStorageFile file, string contents) =>
-			WriteTextTaskAsync(file, contents, append: true).AsAsyncAction();
+			WriteTextTaskAsync(file, contents, append: true, recognizeEncoding: true).AsAsyncAction();
 
 		/// <summary>
 		/// Appends text to the specified file using the specified character encoding.
@@ -115,7 +115,7 @@ namespace Windows.Storage
 		/// <param name="encoding">The character encoding of the file.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction AppendTextAsync(IStorageFile file, string contents, UwpUnicodeEncoding encoding) =>
-			WriteTextTaskAsync(file, contents, append: true, encoding).AsAsyncAction();
+			WriteTextTaskAsync(file, contents, append: true, recognizeEncoding: true, encoding).AsAsyncAction();
 
 		/// <summary>
 		/// Appends lines of text to the specified file.
@@ -124,7 +124,7 @@ namespace Windows.Storage
 		/// <param name="lines">The list of text strings to append as lines.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction AppendLinesAsync(IStorageFile file, IEnumerable<string> lines) =>
-			AppendTextAsync(file, ConvertLinesToString(lines));
+			WriteLinesTaskAsync(file, lines, append: true, recognizeEncoding: true).AsAsyncAction();
 
 		/// <summary>
 		/// Appends lines of text to the specified file using the specified character encoding.
@@ -134,7 +134,7 @@ namespace Windows.Storage
 		/// <param name="encoding">The character encoding of the file.</param>
 		/// <returns>No object or value is returned when this method completes.</returns>
 		public static IAsyncAction AppendLinesAsync(IStorageFile file, IEnumerable<string> lines, UwpUnicodeEncoding encoding) =>
-			AppendTextAsync(file, ConvertLinesToString(lines), encoding);
+			WriteLinesTaskAsync(file, lines, append: true, recognizeEncoding: true, encoding).AsAsyncAction();
 
 
 		/// <summary>
@@ -203,7 +203,7 @@ namespace Windows.Storage
 			{
 				systemEncoding = UwpEncodingToSystemEncoding(encoding.Value);
 			}
-			
+
 			using Stream fileStream = await file.OpenStreamForReadAsync();
 			using StreamReader streamReader = new StreamReader(fileStream, systemEncoding);
 
@@ -217,7 +217,10 @@ namespace Windows.Storage
 			return lines;
 		}
 
-		private static async Task WriteTextTaskAsync(IStorageFile file, string contents, bool append, UwpUnicodeEncoding? encoding = null)
+		internal static async Task WriteLinesTaskAsync(IStorageFile file, IEnumerable<string> lines, bool append, bool recognizeEncoding, UwpUnicodeEncoding? encoding = null) =>
+			WriteTextTaskAsync(file, ConvertLinesToString(lines), append, recognizeEncoding, encoding);
+
+		internal static async Task WriteTextTaskAsync(IStorageFile file, string contents, bool append, bool recognizeEncoding, UwpUnicodeEncoding? encoding = null)
 		{
 			if (file is null)
 			{
@@ -227,7 +230,14 @@ namespace Windows.Storage
 			Encoding systemEncoding;
 			if (encoding == null)
 			{
-				systemEncoding = await GetEncodingFromFileAsync(file);
+				if (recognizeEncoding)
+				{
+					systemEncoding = await GetEncodingFromFileAsync(file);
+				}
+				else
+				{
+					systemEncoding = Encoding.Default;
+				}
 			}
 			else
 			{
@@ -248,6 +258,7 @@ namespace Windows.Storage
 
 			using StreamWriter streamWriter = new StreamWriter(fileStream, systemEncoding);
 			await streamWriter.WriteAsync(contents);
+			await streamWriter.FlushAsync();
 		}
 
 		private static async Task WriteBytesTaskAsync(IStorageFile file, byte[] buffer, int index, int count)
@@ -259,6 +270,7 @@ namespace Windows.Storage
 
 			using var fs = await file.OpenStreamForWriteAsync();
 			await fs.WriteAsync(buffer, 0, buffer.Length);
+			await fs.FlushAsync();
 		}
 
 		private static async Task<IBuffer> ReadBufferTaskAsync(IStorageFile file)
@@ -300,7 +312,7 @@ namespace Windows.Storage
 			return Encoding.UTF8;
 		}
 
-		private static string ConvertLinesToString(IEnumerable<string> lines) => string.Join(Environment.NewLine, lines);
+		private static string ConvertLinesToString(IEnumerable<string> lines) => string.Join(Environment.NewLine, lines) + Environment.NewLine;
 
 		private static Encoding UwpEncodingToSystemEncoding(UwpUnicodeEncoding encoding)
 		{
