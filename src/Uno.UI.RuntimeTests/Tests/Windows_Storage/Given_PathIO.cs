@@ -205,7 +205,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
-		public async Task When_AppendLinesAsyncRecognizesEncoding()
+		public async Task When_AppendLinesAsyncIgnoresEncoding()
 		{
 			StorageFile targetFile = null;
 			try
