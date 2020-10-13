@@ -63,7 +63,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(list.SelectedItem, 3);
 		}
 
-		// Requires access to MaterializedContainers
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task ContainerIndicesAreUpdated()
@@ -80,18 +79,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-#if HAS_UNO			
+#if HAS_UNO
 			var containerIndices = SUT.MaterializedContainers
 				.Select(container => container.GetValue(ItemsControl.IndexForItemContainerProperty))
 				.OfType<int>()
 				.OrderBy(index => index)
-				.ToArray();			
+				.ToArray();
+
 			CollectionAssert.AreEqual(new int[] { 0, 1 }, containerIndices);
 #endif
+  
 			var container0 = SUT.ContainerFromIndex(0);
 			var containerItem = SUT.ContainerFromItem("different");
 			Assert.AreEqual(container0, containerItem);
-
 		}
 
 		[TestMethod]

@@ -60,6 +60,8 @@ namespace Windows.UI.Xaml.Controls
 			SelectedItems = selectedItems;
 		}
 
+		public event TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> ContainerContentChanging;
+
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			if (!HasItems)
@@ -103,7 +105,18 @@ namespace Windows.UI.Xaml.Controls
 			try
 			{
 				_modifyingSelectionInternally = true;
-				SelectedItem = SelectedItems.Where(item => items.Contains(item)).FirstOrDefault();
+
+				var itemIndex = SelectedItems.Select(item => (int?)items.IndexOf(item)).FirstOrDefault(index => index > -1);
+				if (itemIndex != null)
+				{
+					SelectedItem = items.ElementAt(itemIndex.Value);
+					SelectedIndex = itemIndex.Value;
+				}
+				else
+				{
+					SelectedItem = null;
+					SelectedIndex = -1;
+				}
 
 				TryUpdateSelectorItemIsSelected(validRemovals, false);
 				TryUpdateSelectorItemIsSelected(validAdditions, true);
@@ -471,7 +484,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						this.Log().Debug($"Deleting {args.OldItems.Count} items starting at {args.OldStartingIndex}");
 					}
-										
+          
 					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
 					RepairIndices();
@@ -640,6 +653,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				ApplyMultiSelectState(selectorItem);
 			}
+		}
+
+		internal override void ContainerPreparedForItem(object item, SelectorItem itemContainer, int itemIndex)
+		{
+			base.ContainerPreparedForItem(item, itemContainer, itemIndex);
+
+			ContainerContentChanging?.Invoke(this, new ContainerContentChangingEventArgs(item, itemContainer, itemIndex));
 		}
 
 		/// <summary>

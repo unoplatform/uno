@@ -13,6 +13,7 @@
     </NuGetPackageImportStamp>
     <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <ProvisioningType>manual</ProvisioningType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
@@ -103,6 +104,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Content Include="LinkerExclusions.xml" />
+    <BundleResource Include="Resources\sound.mp3" />
     <None Include="Resources\Default-568h%402x.png" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />

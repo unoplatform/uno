@@ -284,5 +284,11 @@ namespace Windows.UI.Xaml
 				);
 			}
 		}
+
+		partial void ShowVisual()
+			=> Visual.IsVisible = true;
+
+		partial void HideVisual()
+			=> Visual.IsVisible = false;
 	}
 }

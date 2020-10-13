@@ -185,6 +185,9 @@
   <ItemGroup>
     <AndroidResource Include="Resources\values\Styles.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\sound.mp3" />
+  </ItemGroup>
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
@@ -197,7 +200,7 @@
 		<Target Name="AfterBuild">
 		</Target>
  -->
-	<PropertyGroup Condition="'$(UnoSampleAppDisableAPKGeneration)'=='True'">
-		<EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(UnoSampleAppDisableAPKGeneration)'=='True'">
+    <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
+  </PropertyGroup>
 </Project>

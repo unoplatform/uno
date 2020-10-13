@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 		internal bool OnKey(char key)
 		{
 			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey())
-			{ 
+			{
 				CanBubbleNatively = true
 			};
 

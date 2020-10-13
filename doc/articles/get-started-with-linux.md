@@ -21,7 +21,7 @@ Using VS 2019 16.6 or later:
     - You can change the used distribution with the `"distributionName": "Ubuntu-20.04"` launch profile parameter of the VS WSL 2 Extension.
     - If you have a insider preview of Windows 10, you may [use the wayland server](https://devblogs.microsoft.com/commandline/the-windows-subsystem-for-linux-build-2020-summary/#wsl-gui).
     - If you still want to use WSL 2 anyways, you can try [following those steps](https://skeptric.com/wsl2-xserver).
-- Install the `dotnet new` templates:
+- Install the [`dotnet new` templates](get-started-dotnet-new.md):
     ```
     dotnet new -i Uno.ProjectTemplates.Dotnet::3.1-dev*
     ```

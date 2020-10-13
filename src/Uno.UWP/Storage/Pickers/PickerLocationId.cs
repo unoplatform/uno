@@ -1,4 +1,4 @@
-﻿namespace Windows.Storage.Pickers
+namespace Windows.Storage.Pickers
 {
 	public enum PickerLocationId
 	{
@@ -11,6 +11,6 @@
 		PicturesLibrary,
 		VideosLibrary,
 		Objects3D,
-		Unspecified
+		Unspecified,
 	}
 }

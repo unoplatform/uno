@@ -2,40 +2,40 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-#if false || false || false || false || false || false || false
-#if false || false || false || false || false || false || false
+#if false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public enum PickerLocationId
 	{
-#if false || false || false || false || false || false || false
+#if false
 		DocumentsLibrary,
 #endif
-#if false || false || false || false || false || false || false
+#if false
 		ComputerFolder,
 #endif
-#if false || false || false || false || false || false || false
+#if false
 		Desktop,
 #endif
-#if false || false || false || false || false || false || false
+#if false
 		Downloads,
 #endif
-#if false || false || false || false || false || false || false
+#if false
 		HomeGroup,
 #endif
-#if false || false || false || false || false || false || false
+#if false
 		MusicLibrary,
 #endif
-#if false || false || false || false || false || false || false
+#if false
 		PicturesLibrary,
 #endif
-#if false || false || false || false || false || false || false
+#if false
 		VideosLibrary,
 #endif
-#if false || false || false || false || false || false || false
+#if false
 		Objects3D,
 #endif
-#if false || false || false || false || false || false || false
+#if false
 		Unspecified,
 #endif
 	}

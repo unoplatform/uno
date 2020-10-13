@@ -7,6 +7,9 @@
 		<PackageType>Template</PackageType>
 		<ContentTargetFolders>content</ContentTargetFolders>
 
+		<!-- required for .vsconfig -->
+		<NoDefaultExcludes>true</NoDefaultExcludes>
+		
 		<!-- Disable package generation for WinUI converted build -->
 		<IsPackable Condition="'$(UNO_UWP_BUILD)'=='false'">false</IsPackable>
 	</PropertyGroup>
@@ -37,8 +40,6 @@
 			<Pack>true</Pack>
 			<PackagePath>content/xamarinforms-wasm</PackagePath>
 		</Content>
-		<Content Include="content\unoapp\global.json" />
-		<Content Include="content\unoapp\UnoQuickStart.sln" />
 		<Content Include="content/xamarinforms-wasm/UnoXFQuickStart.Wasm/**/*.*">
 			<Pack>true</Pack>
 			<PackagePath>content/xamarinforms-wasm/UnoXFQuickStart.Wasm</PackagePath>
@@ -93,15 +94,6 @@
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\UnoLibraryTemplate.csproj" />
 
 		<_UnoLibTemplateFiles Include="..\UnoLibraryTemplate\**" Exclude="@(_UnoLibTemplateFilesExclude)" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="content\unolib-crossruntime\UnoCrossRuntimeLib\UnoCrossRuntimeLib.Skia.csproj" />
-	</ItemGroup>
-	
-	
-	<ItemGroup>
-	  <Folder Include="content\unoapp\UnoQuickStart\" />
 	</ItemGroup>
 
 	<Target Name="CopyUnoAppTemplate" BeforeTargets="Build">
@@ -160,6 +152,13 @@
 				<PackagePath>content/unoapp-winui</PackagePath>
 			</Content>
 		</ItemGroup>
+	</Target>
+
+	<Target Name="AlignVsConfig" BeforeTargets="Build;Pack">
+		<!-- The master file for the .vsconfig is located in the wizard project -->
+		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard\.vsconfig" DestinationFolder="content/unoapp"/>
+		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard\.vsconfig" DestinationFolder="content/unoapp-prism"/>
+		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard\.vsconfig" DestinationFolder="content/unoapp-winui"/>
 	</Target>
 
 	<UsingTask TaskName="ReplaceContent" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
