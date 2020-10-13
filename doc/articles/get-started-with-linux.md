@@ -77,3 +77,46 @@ Now let's run the application:
     cd MyUnoApp.Skia.Gtk
     dotnet run
     ```
+    
+    
+    
+Using ArchLinux 5.8.14 or later / Manjaro:
+- update system and packages
+    ```bash
+    pacman -Syu
+    ```
+- install the necessary dependencies
+    ```bash
+    sudo pacman -S gtk3 dotnet-targeting-pack dotnet-sdk dotnet-host dotnet-runtime mono python mono-msbuild ninja gn aspnet-runtime 
+    ```
+- Install the `dotnet new` templates:
+    ```bash
+    dotnet new -i Uno.ProjectTemplates.Dotnet::3.1-dev*
+    ```
+- Then create a new project using:
+    ```bash
+    dotnet new unoapp -o MyUnoApp
+    ```
+
+Now let's run the application:
+- Open the folder created by `dotnet new`
+- In the terminal, build and run the application:
+    ```bash
+    cd MyUnoApp.Skia.Gtk
+    dotnet run
+    ```
+Now let's try wasm
+    ```bash
+    cd .. 
+    cd MyUnoApp.Wasm
+    dotnet run
+    ```
+    
+turns on the browser and type
+```
+http://localhost:5000/
+```  
+    
+    
+    
+ 
