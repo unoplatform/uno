@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Windows.Graphics.Capture;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 
@@ -20,6 +21,7 @@ namespace Windows.Storage
 		public TemporaryFile()
 		{
 			_file = new FileInfo(Path.GetTempFileName());
+			_file.Directory?.Create();
 		}
 
 		/// <summary>
