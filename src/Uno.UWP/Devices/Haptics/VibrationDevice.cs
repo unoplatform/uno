@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Windows.Foundation;
 
 namespace Windows.Devices.Haptics
@@ -10,7 +12,7 @@ namespace Windows.Devices.Haptics
 		public static IAsyncOperation<VibrationAccessStatus> RequestAccessAsync() =>
 			RequestAccessTaskAsync().AsAsyncOperation();
 
-		public static IAsyncOperation<VibrationDevice> GetDefaultAsync() =>
+		public static IAsyncOperation<VibrationDevice?> GetDefaultAsync() =>
 			GetDefaultTaskAsync().AsAsyncOperation();
 	}
 }

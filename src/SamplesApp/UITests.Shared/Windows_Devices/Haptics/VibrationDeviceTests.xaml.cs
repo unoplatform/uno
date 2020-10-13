@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -25,7 +27,7 @@ namespace UITests.Windows_Devices.Haptics
 
 		private async void VibrationDeviceTests_Loaded(object sender, RoutedEventArgs e)
 		{
-			await Model.LoadAsync();
+			await Model!.LoadAsync();
 		}
 
 		private void VibrationDeviceTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
@@ -33,15 +35,15 @@ namespace UITests.Windows_Devices.Haptics
 			Model = args.NewValue as VibrationDeviceTestsViewModel;
 		}
 
-		public VibrationDeviceTestsViewModel Model { get; private set; }
+		public VibrationDeviceTestsViewModel? Model { get; private set; }
 	}
 
 	public class VibrationDeviceTestsViewModel : ViewModelBase
 	{
-		private string _status;
+		private string _status = string.Empty;
 		private bool _isAvailable;
 
-		private SimpleHapticsController _simpleHapticsController;
+		private SimpleHapticsController? _simpleHapticsController;
 
 		public VibrationDeviceTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -96,10 +98,10 @@ namespace UITests.Windows_Devices.Haptics
 
 		private void RunHapticFeedback(ushort waveform)
 		{
-			var feedback = FindFeedback(_simpleHapticsController, waveform);
+			var feedback = FindFeedback(_simpleHapticsController!, waveform);
 			if (feedback != null)
 			{
-				_simpleHapticsController.SendHapticFeedback(feedback);
+				_simpleHapticsController!.SendHapticFeedback(feedback);
 			}
 			else
 			{

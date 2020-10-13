@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using PhoneVibrationDevice = Windows.Phone.Devices.Notification.VibrationDevice;
 
@@ -16,6 +18,11 @@ namespace Windows.Devices.Haptics
 
 		public void SendHapticFeedback(SimpleHapticsControllerFeedback feedback)
 		{
+			if (feedback is null)
+			{
+				throw new ArgumentNullException(nameof(feedback));
+			}
+
 			if (_vibrationDevice == null)
 			{
 				throw new InvalidOperationException("Vibration is not supported");

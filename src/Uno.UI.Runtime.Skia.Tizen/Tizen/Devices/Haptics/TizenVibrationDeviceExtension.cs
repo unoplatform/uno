@@ -1,4 +1,6 @@
-﻿using Windows.Devices.Haptics;
+﻿#nullable enable
+
+using Windows.Devices.Haptics;
 using System.Linq;
 using Tizen.Applications;
 using Uno.Extensions.Specialized;

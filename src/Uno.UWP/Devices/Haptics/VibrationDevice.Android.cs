@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿#nullable enable
+
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content.PM;
 using AndroidX.Core.Content;
@@ -25,6 +27,7 @@ namespace Windows.Devices.Haptics
 			return Task.FromResult(VibrationAccessStatus.Allowed);
 		}
 
-		private static Task<VibrationDevice> GetDefaultTaskAsync() => Task.FromResult(new VibrationDevice());
+		private static Task<VibrationDevice?> GetDefaultTaskAsync() =>
+			Task.FromResult<VibrationDevice?>(new VibrationDevice());
 	}
 }

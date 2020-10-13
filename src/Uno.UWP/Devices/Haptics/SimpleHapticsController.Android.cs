@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using Android.App;
 using Android.Views;
@@ -18,6 +20,11 @@ namespace Windows.Devices.Haptics
 
 		public void SendHapticFeedback(SimpleHapticsControllerFeedback feedback)
 		{
+			if (feedback is null)
+			{
+				throw new ArgumentNullException(nameof(feedback));
+			}
+
 			if (ContextHelper.Current == null)
 			{
 				throw new InvalidOperationException($"Context must be initialized before {nameof(SendHapticFeedback)} is called.");
@@ -26,7 +33,7 @@ namespace Windows.Devices.Haptics
 			{
 				var activity = (Activity)ContextHelper.Current;
 				var androidFeedback = FeedbackToAndroidFeedback(feedback);
-				activity.Window.DecorView.PerformHapticFeedback(androidFeedback);
+				activity.Window?.DecorView.PerformHapticFeedback(androidFeedback);
 			}
 			catch (Exception ex)
 			{

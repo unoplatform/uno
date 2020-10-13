@@ -1,36 +1,39 @@
-﻿using System.Threading.Tasks;
+﻿#nullable enable
+
+using System.Threading.Tasks;
 using Uno.Foundation.Extensibility;
+#nullable enable
 
 namespace Windows.Devices.Haptics
 {
 	public partial class VibrationDevice
 	{
-		private static IVibrationDeviceExtension _vibrationDeviceExtensions;
+		private static IVibrationDeviceExtension? _vibrationDeviceExtension;
 
 		private static Task<VibrationAccessStatus> RequestAccessTaskAsync()
 		{
 			EnsureExtensionInitialized();
 
-			return Task.FromResult(_vibrationDeviceExtensions?.AccessStatus ?? VibrationAccessStatus.Allowed);
+			return Task.FromResult(_vibrationDeviceExtension?.AccessStatus ?? VibrationAccessStatus.Allowed);
 		}
 
-		private static Task<VibrationDevice> GetDefaultTaskAsync()
+		private static Task<VibrationDevice?> GetDefaultTaskAsync()
 		{
 			EnsureExtensionInitialized();
 
-			if (_vibrationDeviceExtensions?.IsAvailable == true)
+			if (_vibrationDeviceExtension?.IsAvailable == true)
 			{
-				return Task.FromResult(new VibrationDevice());
+				return Task.FromResult<VibrationDevice?>(new VibrationDevice());
 			}
 
-			return Task.FromResult<VibrationDevice>(null);
+			return Task.FromResult<VibrationDevice?>(null);
 		}
 
 		private static void EnsureExtensionInitialized()
 		{
-			if (_vibrationDeviceExtensions == null)
+			if (_vibrationDeviceExtension == null)
 			{
-				ApiExtensibility.CreateInstance(typeof(VibrationDevice), out _vibrationDeviceExtensions);
+				ApiExtensibility.CreateInstance(typeof(VibrationDevice), out _vibrationDeviceExtension);
 			}
 		}
 	}

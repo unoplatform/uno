@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Tizen.System;
@@ -24,6 +26,11 @@ namespace Uno.UI.Runtime.Skia.Tizen.Devices.Haptics
 
 		public void SendHapticFeedback(SimpleHapticsControllerFeedback feedback)
 		{
+			if (feedback is null)
+			{
+				throw new ArgumentNullException(nameof(feedback));
+			}
+
 			try
 			{
 				var tizenFeedback = new Feedback();

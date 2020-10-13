@@ -1,6 +1,10 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using UIKit;
+
+#nullable enable
 
 namespace Windows.Devices.Haptics
 {
@@ -14,6 +18,11 @@ namespace Windows.Devices.Haptics
 
 		public void SendHapticFeedback(SimpleHapticsControllerFeedback feedback)
 		{
+			if (feedback is null)
+			{
+				throw new ArgumentNullException(nameof(feedback));
+			}
+
 			var impactStyle = FeedbackToImpactStyle(feedback);
 			using var impact = new UIImpactFeedbackGenerator(impactStyle);
 			impact.Prepare();
