@@ -14,6 +14,12 @@ namespace Windows.Storage.Streams
 {
 	internal class StreamedUriDataLoader : IStreamedDataLoader, IDisposable
 	{
+#if __WASM__
+		private const string _errorMessage = "Failed to load content. Make sure that CORS has been properly configured on the server hosting the resource.";
+#else
+		private const string _errorMessage = "Failed to load content.";
+#endif
+
 		/// <summary>
 		/// Asynchronously creates a StreamedDataLoader.
 		/// </summary>
@@ -50,7 +56,7 @@ namespace Windows.Storage.Streams
 
 		private readonly CancellationTokenSource _ct;
 		private bool _isCompleted;
-		private bool _isFailed;
+		private Exception? _failure;
 		private ulong _totalLoaded;
 
 		private StreamedUriDataLoader(HttpResponseMessage response, TemporaryFile tempFile, CancellationTokenSource ct)
@@ -68,14 +74,14 @@ namespace Windows.Storage.Streams
 
 		public void CheckState()
 		{
-			if (_isFailed)
+			if (_failure is {})
 			{
-				throw new InvalidOperationException("Failed to load content");
+				throw new InvalidOperationException(_errorMessage, _failure);
 			}
 		}
 
 		public bool CanRead(ulong position)
-			=> _isCompleted || _isFailed || position <= _totalLoaded;
+			=> _isCompleted || _failure is {} || position <= _totalLoaded;
 
 		private async Task Download(HttpResponseMessage response, CancellationToken ct)
 		{
@@ -101,10 +107,10 @@ namespace Windows.Storage.Streams
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().LogWarning("Failed to load content", e);
+					this.Log().LogWarning(_errorMessage, e);
 				}
 
-				_isFailed = true;
+				_failure = e;
 			}
 			finally
 			{
