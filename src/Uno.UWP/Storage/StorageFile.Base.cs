@@ -32,7 +32,7 @@ namespace Windows.Storage
 
 			public virtual string DisplayName => global::System.IO.Path.GetFileNameWithoutExtension(Path);
 
-			public virtual string ContentType => GetContentTypeFromFileType(FileType);
+			public virtual string ContentType => MimeTypeService.GetFromFileExtension(FileType);
 
 			public abstract DateTimeOffset DateCreated { get; }
 
