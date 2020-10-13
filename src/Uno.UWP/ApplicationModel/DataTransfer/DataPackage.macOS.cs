@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AppKit;
 using Foundation;
+using Windows.Storage;
 using Windows.UI.Core;
 
 namespace Windows.ApplicationModel.DataTransfer
@@ -208,22 +210,58 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			var dataPackage = new DataPackage();
 
-			var clipHtml = pasteboard.GetStringForType(NSPasteboard.NSPasteboardTypeHTML);
-			if (clipHtml != null)
+			// Extract all the standard data format information from the pasteboard items.
+			// Each format can only be used once; therefore, the last occurrence of the format will be the one used.
+			foreach (NSPasteboardItem item in pasteboard.PasteboardItems)
 			{
-				dataPackage.SetHtmlFormat(clipHtml);
-			}
+				if (item.Types.Contains(NSPasteboard.NSPasteboardTypeHTML))
+				{
+					var html = item.GetStringForType(NSPasteboard.NSPasteboardTypeHTML);
+					if (html != null)
+					{
+						dataPackage.SetHtmlFormat(html);
+					}
+				}
 
-			var clipRtf = pasteboard.GetStringForType(NSPasteboard.NSPasteboardTypeRTF);
-			if (clipRtf != null)
-			{
-				dataPackage.SetRtf(clipRtf);
-			}
+				if (item.Types.Contains(NSPasteboard.NSPasteboardTypeRTF))
+				{
+					var rtf = item.GetStringForType(NSPasteboard.NSPasteboardTypeRTF);
+					if (rtf != null)
+					{
+						dataPackage.SetRtf(rtf);
+					}
+				}
 
-			var clipText = pasteboard.GetStringForType(NSPasteboard.NSPasteboardTypeString);
-			if (clipText != null)
-			{
-				dataPackage.SetText(clipText);
+				if (item.Types.Contains(NSPasteboard.NSPasteboardTypeFileUrl))
+				{
+					// Drag and drop will use temporary URL's similar to: file:///.file/id=1234567.1234567
+					var tempFileUrl = item.GetStringForType(NSPasteboard.NSPasteboardTypeFileUrl);
+
+					// Files may be very large, we never want to load them until they are needed.
+					// Therefore, create a data provider used to asyncronously fetch the file.
+					dataPackage.SetDataProvider(
+						StandardDataFormats.StorageItems,
+						async cancellationToken =>
+						{
+							// Convert rom a temp Url (see above example) into an absolute file path
+							var fileUrl = new NSUrl(tempFileUrl);
+							var file = await StorageFile.GetFileFromPathAsync(fileUrl.FilePathUrl.AbsoluteString);
+
+							var storageItems = new List<IStorageItem>();
+							storageItems.Add(file);
+
+							return storageItems.AsReadOnly();
+						});
+				}
+
+				if (item.Types.Contains(NSPasteboard.NSPasteboardTypeString))
+				{
+					var text = item.GetStringForType(NSPasteboard.NSPasteboardTypeString);
+					if (text != null)
+					{
+						dataPackage.SetText(text);
+					}
+				}
 			}
 
 			return dataPackage.GetView();
