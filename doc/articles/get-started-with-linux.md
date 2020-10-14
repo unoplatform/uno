@@ -98,7 +98,7 @@ Now let's run the application:
     dotnet new unoapp -o MyUnoApp
     ```
 
-Now let's run the application:
+Run the GTK based application:
 - Open the folder created by `dotnet new`
 - In the terminal, build and run the application:
     ```bash
