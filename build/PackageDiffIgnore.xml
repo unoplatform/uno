@@ -3196,6 +3196,12 @@
 			<Member
 				fullName="System.Void Windows.Devices.Enumeration.DeviceThumbnail.set_Size(System.UInt64 value)"
 				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.FileIO..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.PathIO..ctor()"
+				reason="Not part of the UWP API"/>
 		</Methods>
 		<Fields>
 			<Member

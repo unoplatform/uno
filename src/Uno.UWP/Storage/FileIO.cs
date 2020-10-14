@@ -16,7 +16,7 @@ namespace Windows.Storage
 	/// Provides helper methods for reading and writing files that
 	/// are represented by objects of type <see cref="IStorageFile" />.
 	/// </summary>
-	public partial class FileIO
+	public static partial class FileIO
 	{
 		/// <summary>
 		/// Reads the contents of the specified file and returns text.
