@@ -81,7 +81,7 @@ Now let's run the application:
     
     
 ## Setting up for ArchLinux 5.8.14 or later / Manjaro:
-- update system and packages
+- Update system and packages
     ```bash
     pacman -Syu
     ```
