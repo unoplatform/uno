@@ -14,28 +14,43 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
 			<ColumnDefinition />
+			<ColumnDefinition Width="20" />
 		</Grid.ColumnDefinitions>
 
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition />
-			<RowDefinition />
 		</Grid.RowDefinitions>
 
-		<TextBlock Text="Source" />
-		<Border Background="DeepPink" Width="300" Height="300" Grid.Column="0" Grid.Row="1" CanDrag="True" x:Name="_theCustomSource">
-			<Border x:Name="_theNestedCustomSource" Background="LightPink" Width="100" Height="100" CanDrag="True" />
+		<TextBlock Grid.Column="0" Text="Drag sources"  />
+		<Border
+			Background="DeepPink"
+			Grid.Column="0"
+			Grid.Row="1"
+			Padding="15">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="40" />
+					<RowDefinition Height="40" />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<Border Grid.Row="0" x:Name="BasicDragSource" Width="100" Height="100" CanDrag="True" Background="LightPink" />
+				<TextBlock Grid.Row="1" x:Name="TextDragSource" CanDrag="True" Text="Some text that can be dragged and dropped" />
+				<HyperlinkButton Grid.Row="2" x:Name="LinkDragSource" CanDrag="True" NavigateUri="https://platform.uno" Content="A link that can be dragged and dropped" />
+				<Image Grid.Row="3" x:Name="ImageDragSource" CanDrag="True" Source="https://picsum.photos/300/300" />
+			</Grid>
 		</Border>
 
-		<TextBlock Text="Target" Grid.Column="1" />
-		<Border Background="DeepSkyBlue" Width="300" Height="300" Grid.Column="1" Grid.Row="1" AllowDrop="True" x:Name="_theTarget">
-			<Border Background="DarkBlue" x:Name="_theNestedTarget" Width="100" Height="100" AllowDrop="True">
-				<TextBlock x:Name="_output" Foreground="White" TextWrapping="Wrap" />
-			</Border>
+		<TextBlock Grid.Column="1" Text="Drop target" />
+		<Border
+			Background="DeepSkyBlue"
+			Grid.Column="1"
+			Grid.Row="1"
+			AllowDrop="True"
+			x:Name="DropTarget">
+			<TextBlock x:Name="Output" Foreground="White" TextWrapping="Wrap" />
 		</Border>
-
-		<Image Source="https://picsum.photos/300/300" Grid.Column="0" Grid.Row="2" CanDrag="True" x:Name="_theImage" ManipulationMode="All" />
-
-		<TextBlock Grid.Column="1" Grid.Row="2" CanDrag="True" x:Name="_theText" Text="Some text that can be dragged and dropped" />
 	</Grid>
 </UserControl>
