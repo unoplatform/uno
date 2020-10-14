@@ -3066,7 +3066,7 @@
 			<!-- End Skia Import -->
 		</Fields>
 	</IgnoreSet>
-	<IgnoreSet baseVersion="3.1.0">
+	<IgnoreSet baseVersion="3.0.17">
 		<Types>
 			<Member 
 				fullName="Windows.Storage.StorageItem"
