@@ -3067,11 +3067,6 @@
 		</Fields>
 	</IgnoreSet>
 	<IgnoreSet baseVersion="3.0.17">
-		<Types>
-			<Member 
-				fullName="Windows.Storage.StorageItem"
-				reason="Not part of the UWP API"/>
-		  </Types>
 		<Methods>
 			<Member 
 				fullName="System.Void Windows.System.UserProfile.UserProfilePersonalizationSettings..ctor()"
@@ -3085,6 +3080,20 @@
 			<Member
 				fullName="System.Void Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
+		</Methods>
+		<Fields>
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Contacts.ContactQuerySearchFields::value__"
+				reason="The enum is backed by uint" />
+		</Fields>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="3.1.0">
+		<Types>
+			<Member 
+				fullName="Windows.Storage.StorageItem"
+				reason="Not part of the UWP API"/>
+		  </Types>
+		<Methods>
 			<Member
 				fullName="System.Void Windows.Media.Capture.CapturedFrame.set_Size(System.UInt64 value)"
 				reason="Not part of the UWP API"/>
@@ -3186,9 +3195,6 @@
 				reason="Not part of the UWP API"/>
 		</Methods>
 		<Fields>
-			<Member
-				fullName="System.Int32 Windows.ApplicationModel.Contacts.ContactQuerySearchFields::value__"
-				reason="The enum is backed by uint" />
 			<Member
 				fullName="System.Int32 Windows.Storage.Streams.InputStreamOptions::value__"
 				reason="The enum is backed by uint"/>
