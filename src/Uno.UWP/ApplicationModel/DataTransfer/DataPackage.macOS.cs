@@ -3,10 +3,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using AppKit;
 using Foundation;
+using ObjCRuntime;
 using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Core;
 
 namespace Windows.ApplicationModel.DataTransfer
@@ -76,7 +80,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 				if (!string.IsNullOrEmpty(html))
 				{
-
+					// TODO
 				}
 			}
 
@@ -86,7 +90,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 				if (!string.IsNullOrEmpty(rtf))
 				{
-					
+					// TODO
 				}
 			}
 
@@ -135,16 +139,18 @@ namespace Windows.ApplicationModel.DataTransfer
 
 					var declaredTypes = new List<string>();
 
-					// Note that order is somewhat important here.
-					//
-					// According to the docs:
-					//    "types should be ordered according to the preference of the source application,
-					//     with the most preferred type coming first"
-					// https://developer.apple.com/documentation/appkit/nspasteboard/1533561-declaretypes?language=objc
-					//
-					// This means we want to process certain types like HTML/RTF before general plain text
-					// as they are more specific.
-					// Types are also declared before setting
+					/* Note that order is somewhat important here.
+					 *
+					 * According to the docs:
+					 *    "types should be ordered according to the preference of the source application,
+					 *     with the most preferred type coming first"
+					 * https://developer.apple.com/documentation/appkit/nspasteboard/1533561-declaretypes?language=objc
+					 *
+					 * This means we want to process certain types like HTML/RTF before general plain text
+					 * as they are more specific.
+					 * 
+					 * Types are also declared before setting
+					 */
 
 					// Declare types
 					if (data?.Contains(StandardDataFormats.Html) ?? false)
@@ -198,9 +204,91 @@ namespace Windows.ApplicationModel.DataTransfer
 			var dataPackage = new DataPackage();
 
 			// Extract all the standard data format information from the pasteboard items.
-			// Each format can only be used once; therefore, the last occurrence of the format will be the one used.
+			// Each format can only be used once; therefore, the last occurrence of the format will be the one used (except for image).
 			foreach (NSPasteboardItem item in pasteboard.PasteboardItems)
 			{
+				if (item.Types.Contains(NSPasteboard.NSPasteboardTypeTIFF) ||
+					item.Types.Contains(NSPasteboard.NSPasteboardTypePNG))
+				{
+					// Images may be very large, we never want to load them until they are needed.
+					// Therefore, create a data provider used to asyncronously fetch the image.
+					dataPackage.SetDataProvider(
+						StandardDataFormats.Bitmap,
+						async cancellationToken =>
+						{
+							NSImage? image = null;
+
+							/* All tested apps, including Photos, don't appear to put image data in the pasteboard.
+							 * Instead, the image URL is provided although the type indicates it is an image.
+							 *
+							 * To get around this an image is read as follows:
+							 *   (1) If the pasteboard contains an image type then:
+							 *   (2) Attempt to read the image as an object (NSImage).
+							 *       This will likely fail as all tested apps provide a URL althouth declare an image.
+							 *   (3) If reading as an NSImage object fails, attempt to read the image from a file URL (local images)
+							 *   (4) If reading from a file URL fails, attempt to read the image from a URL (remote images)
+							 *
+							 * Reading as an NSImage object follows the docs here:
+							 *   https://docs.microsoft.com/en-us/xamarin/mac/app-fundamentals/copy-paste#add-an-nsdocument
+							 * However, since no app was found to place an image object in the pasteboard this code is untested.
+							 */
+
+							var classArray = new Class[] { new Class("NSImage") };
+							if (pasteboard.CanReadObjectForClasses(classArray, null))
+							{
+								NSObject[] objects = pasteboard.ReadObjectsForClasses(classArray, null);
+
+								if (objects.Length > 0)
+								{
+									// Only use the first image found
+									image = objects[0] as NSImage;
+								}
+							}
+
+							// In order to get here the pasteboard must have declared it had image types.
+							// However, if image is null, no objects were found and the image is likely a URL instead.
+							if (image == null &&
+								item.Types.Contains(NSPasteboard.NSPasteboardTypeFileUrl))
+							{
+								var url = item.GetStringForType(NSPasteboard.NSPasteboardTypeFileUrl);
+								image = new NSImage(new NSUrl(url));
+							}
+
+							if (image == null &&
+								item.Types.Contains(NSPasteboard.NSPasteboardTypeUrl))
+							{
+								var url = item.GetStringForType(NSPasteboard.NSPasteboardTypeUrl);
+								image = new NSImage(new NSUrl(url));
+							}
+
+							if (image != null)
+							{
+								// Thanks to: https://stackoverflow.com/questions/13305028/monomac-best-way-to-convert-bitmap-to-nsimage/13355747
+								using (var imageData = image.AsTiff())
+								{
+									var imgRep = NSBitmapImageRep.ImageRepFromData(imageData) as NSBitmapImageRep;
+									var data = imgRep!.RepresentationUsingTypeProperties(NSBitmapImageFileType.Png, null);
+
+									return new RandomAccessStreamReference(async ct =>
+									{
+										return data.AsStream().AsRandomAccessStream().TrySetContentType("image/png");
+									});
+								}
+							}
+							else
+							{
+								// Return an empty image
+								return new RandomAccessStreamReference(async ct =>
+								{
+									var stream = new MemoryStream();
+									stream.Position = 0;
+
+									return stream.AsRandomAccessStream().TrySetContentType("image/png");
+								});
+							}
+						});
+				}
+
 				if (item.Types.Contains(NSPasteboard.NSPasteboardTypeHTML))
 				{
 					var html = item.GetStringForType(NSPasteboard.NSPasteboardTypeHTML);
@@ -230,7 +318,7 @@ namespace Windows.ApplicationModel.DataTransfer
 						StandardDataFormats.StorageItems,
 						async cancellationToken =>
 						{
-							// Convert rom a temp Url (see above example) into an absolute file path
+							// Convert from a temp Url (see above example) into an absolute file path
 							var fileUrl = new NSUrl(tempFileUrl);
 							var file = await StorageFile.GetFileFromPathAsync(fileUrl.FilePathUrl.AbsoluteString);
 
@@ -247,6 +335,37 @@ namespace Windows.ApplicationModel.DataTransfer
 					if (text != null)
 					{
 						dataPackage.SetText(text);
+					}
+				}
+
+				if (item.Types.Contains(NSPasteboard.NSPasteboardTypeUrl))
+				{
+					var url = item.GetStringForType(NSPasteboard.NSPasteboardTypeUrl);
+					if (url != null)
+					{
+						// A macOS URL must be specially mapped for UWP as the UWP's direct equivalent 
+						// standard data format 'Uri' is deprecated.
+						//
+						// 1. WebLink is used if the URI has a scheme of http or https 
+						// 2. ApplicationLink is used if not #1
+						//
+						// For full compatibility, Uri is still populated regardless of #1 or #2.
+						url = url.Trim();
+						if (url != null)
+						{
+							if (url.StartsWith("http", StringComparison.InvariantCultureIgnoreCase) ||
+								url.StartsWith("https", StringComparison.InvariantCultureIgnoreCase))
+							{
+								dataPackage.SetWebLink(new Uri(url));
+							}
+							else
+							{
+								dataPackage.SetApplicationLink(new Uri(url));
+							}
+
+							// Deprecated but added for compatibility
+							dataPackage.SetUri(new Uri(url));
+						}
 					}
 				}
 			}
