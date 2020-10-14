@@ -182,6 +182,13 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 				var appLink = await args.DataView.GetApplicationLinkAsync();
 				details = appLink.ToString();
 			}
+			else if (args.DataView.Contains(StandardDataFormats.WebLink))
+			{
+				title += " (WebLink)";
+
+				var webLink = await args.DataView.GetWebLinkAsync();
+				details = webLink.ToString();
+			}
 			else if (args.DataView.Contains(StandardDataFormats.Bitmap))
 			{
 				title += " (Bitmap)";
@@ -237,21 +244,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			{
 				title += " (UserActivityJsonArray)";
 
-				// TODO
-			}
-			else if (args.DataView.Contains(StandardDataFormats.Uri))
-			{
-				title += " (Uri)";
-
-				var uri = await args.DataView.GetUriAsync();
-				details = uri.ToString();
-			}
-			else if (args.DataView.Contains(StandardDataFormats.WebLink))
-			{
-				title += " (WebLink)";
-
-				var webLink = await args.DataView.GetWebLinkAsync();
-				details = webLink.ToString();
+				// Not supported
 			}
 			else if (args.DataView.Contains(StandardDataFormats.Text))
 			{
@@ -259,6 +252,14 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 
 				var text = await args.DataView.GetTextAsync();
 				details = text;
+			}
+			// URI is deprecated so last in priority
+			else if (args.DataView.Contains(StandardDataFormats.Uri))
+			{
+				title += " (Uri)";
+
+				var uri = await args.DataView.GetUriAsync();
+				details = uri.ToString();
 			}
 
 			// Determine the drop position
