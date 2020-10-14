@@ -105,7 +105,7 @@ Now let's run the application:
     cd MyUnoApp.Skia.Gtk
     dotnet run
     ```
-Now let's try wasm
+Run the WebAssembly head with:
     ```bash
     cd .. 
     cd MyUnoApp.Wasm
