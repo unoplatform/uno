@@ -85,7 +85,7 @@ Now let's run the application:
     ```bash
     pacman -Syu
     ```
-- install the necessary dependencies
+- Install the necessary dependencies
     ```bash
     sudo pacman -S gtk3 dotnet-targeting-pack dotnet-sdk dotnet-host dotnet-runtime mono python mono-msbuild ninja gn aspnet-runtime 
     ```
