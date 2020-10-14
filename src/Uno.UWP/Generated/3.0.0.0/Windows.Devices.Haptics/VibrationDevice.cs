@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Haptics
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VibrationDevice 
@@ -17,7 +17,7 @@ namespace Windows.Devices.Haptics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Haptics.SimpleHapticsController SimpleHapticsController
 		{
@@ -29,7 +29,7 @@ namespace Windows.Devices.Haptics
 		#endif
 		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.Id.get
 		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.SimpleHapticsController.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Haptics.VibrationAccessStatus> RequestAccessAsync()
 		{
@@ -50,7 +50,7 @@ namespace Windows.Devices.Haptics
 			throw new global::System.NotImplementedException("The member IAsyncOperation<VibrationDevice> VibrationDevice.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Haptics.VibrationDevice> GetDefaultAsync()
 		{
