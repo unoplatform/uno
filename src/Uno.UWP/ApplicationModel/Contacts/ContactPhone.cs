@@ -4,6 +4,8 @@ namespace Windows.ApplicationModel.Contacts
 	{
 		public string Number { get; set; }
 
+		public string Description { get; set; }
+
 		public ContactPhoneKind Kind { get; set; }
 	}
 }
