@@ -285,6 +285,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Contacts\PickContact.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\DataTransfer\DataTransferManagerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4087,6 +4091,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\ClipboardTests.xaml.cs">
       <DependentUpon>ClipboardTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Contacts\PickContact.xaml.cs">
+      <DependentUpon>PickContact.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\DataTransfer\DataTransferManagerTests.xaml.cs">
       <DependentUpon>DataTransferManagerTests.xaml</DependentUpon>
