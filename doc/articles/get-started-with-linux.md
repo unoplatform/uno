@@ -80,7 +80,7 @@ Now let's run the application:
     
     
     
-Using ArchLinux 5.8.14 or later / Manjaro:
+## Setting up for ArchLinux 5.8.14 or later / Manjaro:
 - update system and packages
     ```bash
     pacman -Syu
