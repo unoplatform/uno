@@ -65,15 +65,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var dragSource = testName!.Split('_')[1];
 			var goAway = testName.Contains("And_GoAway");
 
+			var automated = _app.Marked("Automated");
 			var source = _app.Marked(dragSource);
 			var target = _app.Marked("DropTarget");
 			var output = _app.Marked("Output");
 
-			_app.WaitForElement(source);
+			_app.WaitForElement(automated);
 
+			var automatedBounds = _app.Query(automated).Single().Rect;
 			var sourceBounds = _app.Query(source).Single().Rect;
 			var targetBounds = _app.Query(target).Single().Rect;
 
+			_app.TapCoordinates(automatedBounds.X + 15, automatedBounds.CenterY);
 			_app.DragCoordinates(sourceBounds.CenterX, sourceBounds.CenterY, goAway ? targetBounds.Right + 10 : targetBounds.CenterX, targetBounds.CenterY);
 
 			TakeScreenshot("Result", ignoreInSnapshotCompare: true);

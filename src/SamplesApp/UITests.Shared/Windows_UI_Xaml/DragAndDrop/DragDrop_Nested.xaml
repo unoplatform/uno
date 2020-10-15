@@ -63,5 +63,11 @@
 		<ScrollViewer Grid.Column="1" Grid.RowSpan="5">
 			<TextBlock x:Name="Output" TextWrapping="Wrap" />
 		</ScrollViewer>
+
+		<CheckBox
+			x:Name="Automated"
+			Content="Automated"
+			IsChecked="False"
+			HorizontalAlignment="Right" />
 	</Grid>
 </Page>

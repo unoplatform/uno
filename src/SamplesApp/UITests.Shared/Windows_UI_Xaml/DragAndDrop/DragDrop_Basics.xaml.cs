@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
+using Windows.Devices.Input;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml.DragAndDrop
@@ -23,6 +27,19 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			helper.SubscribeDragEvents(ImageDragSource);
 
 			helper.SubscribeDropEvents(DropTarget);
+
+			AddHandler(PointerPressedEvent, new PointerEventHandler(SleepOnTouchDown), true); // handle too required for the hyperlink
+		}
+
+		private static void SleepOnTouchDown(object sender, PointerRoutedEventArgs e)
+		{
+			if ((((DragDrop_Basics)sender).Automated.IsChecked ?? false) && e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
+			{
+				// Ugly hack: The test engine does not allows us to perform a custom gesture (hold for 300 ms then drag)
+				// So we just freeze the UI thread enough to simulate the delay ...
+				const int holdDelay = 300 /* GestureRecognizer.DragWithTouchMinDelayTicks */ + 50 /* safety */;
+				Thread.Sleep(holdDelay);
+			}
 		}
 	}
 }
