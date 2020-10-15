@@ -204,11 +204,19 @@ namespace Windows.UI.Xaml
 
 		protected void SetCornerRadius(CornerRadius cornerRadius)
 		{
-			var borderRadius = cornerRadius == CornerRadius.None
-				? ""
-				: $"{cornerRadius.TopLeft}px {cornerRadius.TopRight}px {cornerRadius.BottomRight}px {cornerRadius.BottomLeft}px";
+			if (cornerRadius == CornerRadius.None)
+			{
+				ResetStyle("border-radius", "overflow");
+			}
+			else
+			{
+				var borderRadiusCssString =
+					$"{cornerRadius.TopLeft.ToStringInvariant()}px {cornerRadius.TopRight.ToStringInvariant()}px {cornerRadius.BottomRight.ToStringInvariant()}px {cornerRadius.BottomLeft.ToStringInvariant()}px";
+				SetStyle(
+					("border-radius", borderRadiusCssString),
+					("overflow", "hidden"));
+			}
 
-			SetStyle("border-radius", borderRadius);
 		}
 
 		protected void SetBorder(Thickness thickness, Brush brush)
