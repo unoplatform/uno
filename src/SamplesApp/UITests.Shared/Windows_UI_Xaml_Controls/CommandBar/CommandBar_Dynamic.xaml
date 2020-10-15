@@ -1,14 +1,13 @@
 ﻿<Page x:Class="Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Dynamic"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Uno.UI.Samples.Content.UITests.CommandBar"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:toolkit="using:Uno.UI.Toolkit"
-	xmlns:button="clr-namespace:UITests.Shared.Windows_UI_Xaml_Controls.Button"
+	xmlns:valueconverters="using:UITests.ValueConverters"
 	mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+	d:DesignHeight="300"
+	d:DesignWidth="400">
 
 	<UserControl.Resources>
 
@@ -25,23 +24,24 @@
 			<Setter Property="StepFrequency" Value="0.05" />
 		</Style>
 
-		<button:FromNullableBoolToCustomValueConverter
+		<valueconverters:FromNullableBoolToCustomValueConverter
 			x:Key="nativeTemplateConverter"
 			TrueValue="{StaticResource NativeDefaultCommandBar}"
 			NullOrFalseValue="{StaticResource XamlDefaultCommandBar}"/>
 
 	</UserControl.Resources>
 
-	<Grid toolkit:VisibleBoundsPadding.PaddingMask="All">
+	<Grid toolkit:VisibleBoundsPadding.PaddingMask="All" x:Name="RootPanel">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Border Grid.Row="1" BorderBrush="Yellow" BorderThickness="4"/>
 		<CommandBar Content="{Binding Text, ElementName=Content2}"
-		            Visibility="{Binding Text, ElementName=cbVisibility}"
-		            Opacity="{Binding Value, ElementName=sliderOpacity}"
-		            Style="{Binding IsChecked, ElementName=native, Converter={StaticResource nativeTemplateConverter}}">
+					Visibility="{Binding Text, ElementName=cbVisibility}"
+					Opacity="{Binding Value, ElementName=sliderOpacity}"
+					Style="{Binding IsChecked, ElementName=native, Converter={StaticResource nativeTemplateConverter}}"
+					x:Name="TheCommandBar">
 			<CommandBar.Foreground>
 				<SolidColorBrush Color="{Binding SelectedItem, ElementName=ForegroundColor}"
 						 Opacity="{Binding Value, ElementName=ForegroundOpacity}" />
@@ -109,9 +109,9 @@
 			<StackPanel Spacing="8" Margin="30,0">
 				<CheckBox x:Name="native" Content="NativeCommandBar" IsChecked="True" />
 				<ComboBox x:Name="cbVisibility"
-				          Header="Visibility"
-				          HorizontalAlignment="Stretch"
-				          Style="{StaticResource XamlDefaultComboBox}" />
+						  Header="Visibility"
+						  HorizontalAlignment="Stretch"
+						  Style="{StaticResource XamlDefaultComboBox}" />
 				<Slider
 					x:Name="sliderOpacity"
 					Header="Opacity"
