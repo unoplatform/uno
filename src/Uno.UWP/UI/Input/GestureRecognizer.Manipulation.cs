@@ -341,7 +341,7 @@ namespace Windows.UI.Input
 						// This means that this method is expected to be invoked on each move (until manipulation starts)
 						// in order to update the _isDraggingEnable state.
 
-						var isInHoldPhase = current.Timestamp - down.Timestamp > DragWithTouchMinDelayTicks;
+						var isInHoldPhase = current.Timestamp - down.Timestamp < DragWithTouchMinDelayTicks;
 						if (isInHoldPhase && isOutOfRange)
 						{
 							// The pointer moved out of range while in the hold phase, so we completely disable the drag manipulation
