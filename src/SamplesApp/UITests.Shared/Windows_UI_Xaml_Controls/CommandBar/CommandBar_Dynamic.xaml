@@ -36,7 +36,7 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<Border Grid.Row="1" BorderBrush="Yellow" BorderThickness="4"/>
+		<Border Grid.Row="1" BorderBrush="Yellow" BorderThickness="4" x:Name="TheBorder"/>
 		<CommandBar Content="{Binding Text, ElementName=Content2}"
 					Visibility="{Binding Text, ElementName=cbVisibility}"
 					Opacity="{Binding Value, ElementName=sliderOpacity}"
