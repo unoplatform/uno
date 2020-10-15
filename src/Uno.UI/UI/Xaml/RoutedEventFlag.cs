@@ -84,12 +84,13 @@ namespace Uno.UI.Xaml
 			  RoutedEventFlag.GotFocus
 			| RoutedEventFlag.LostFocus;
 
-		private const RoutedEventFlag _isDragAndDrop = (RoutedEventFlag)0b0000_0000_0000_0000___0000_0000_0001_1111___0000_0000_0000_0000___0000_0000_0000_0000;
-			//  RoutedEventFlag.DragEnter
-			//| RoutedEventFlag.DragLeave
-			//| RoutedEventFlag.DragOver
-			//| RoutedEventFlag.Drop
-			//| RoutedEventFlag.DropCompleted;
+		private const RoutedEventFlag _isDragAndDrop = // 0b0000_0000_0000_0000___0000_0000_0011_1111___0000_0000_0000_0000___0000_0000_0000_0000;
+			  RoutedEventFlag.DragStarting
+			| RoutedEventFlag.DragEnter
+			| RoutedEventFlag.DragLeave
+			| RoutedEventFlag.DragOver
+			| RoutedEventFlag.Drop
+			| RoutedEventFlag.DropCompleted;
 
 		private const RoutedEventFlag _isManipulation = // 0b0000_0000_0000_0000___0001_1111_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000
 			  RoutedEventFlag.ManipulationStarting
