@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if false || false || NET461 || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented("NET461")]
 	#endif
 	public  partial class DataProviderRequest 
 	{
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  global::System.DateTimeOffset Deadline
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  string FormatId
 		{
@@ -29,14 +29,14 @@ namespace Windows.ApplicationModel.DataTransfer
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataProviderRequest.FormatId.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataProviderRequest.Deadline.get
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  global::Windows.ApplicationModel.DataTransfer.DataProviderDeferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member DataProviderDeferral DataProviderRequest.GetDeferral() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  void SetData( object value)
 		{

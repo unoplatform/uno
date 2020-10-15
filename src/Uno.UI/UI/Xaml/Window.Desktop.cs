@@ -7,6 +7,7 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
 {
