@@ -66,6 +66,8 @@ namespace Windows.UI.Xaml.Controls
 			AdjustCornerRadius(canvas, CornerRadius);
 		}
 
+		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder(false);
+
 		private void UpdateBorder()
 		{
 			UpdateBorder(false);

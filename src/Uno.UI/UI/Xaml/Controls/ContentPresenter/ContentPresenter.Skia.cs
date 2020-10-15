@@ -43,6 +43,8 @@ namespace Windows.UI.Xaml.Controls
 			RemoveChild(ContentTemplateRoot);
 		}
 
+		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
+
 		private void UpdateBorder()
 		{
 			if (IsLoaded)

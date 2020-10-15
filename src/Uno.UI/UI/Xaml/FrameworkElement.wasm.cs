@@ -211,19 +211,14 @@ namespace Windows.UI.Xaml
 			SetStyle("border-radius", borderRadius);
 		}
 
-		protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
+		protected void SetBorder(Thickness thickness, Brush brush)
 		{
-			var borderRadius = cornerRadius == CornerRadius.None
-				? ""
-				: $"{cornerRadius.TopLeft}px {cornerRadius.TopRight}px {cornerRadius.BottomRight}px {cornerRadius.BottomLeft}px";
-
 			if (thickness == Thickness.Empty)
 			{
 				SetStyle(
 					("border-style", "none"),
 					("border-color", ""),
-					("border-width", ""),
-					("border-radius", borderRadius));
+					("border-width", ""));
 			}
 			else
 			{
@@ -236,8 +231,7 @@ namespace Windows.UI.Xaml
 							("border", ""),
 							("border-style", "solid"),
 							("border-color", borderColor.ToHexString()),
-							("border-width", borderWidth),
-							("border-radius", borderRadius));
+							("border-width", borderWidth));
 						break;
 					case GradientBrush gradientBrush:
 						var border = gradientBrush.ToCssString(RenderSize); // TODO: Reevaluate when size is changing
@@ -245,8 +239,7 @@ namespace Windows.UI.Xaml
 							("border-style", "solid"),
 							("border-color", ""),
 							("border-image", border),
-							("border-width", borderWidth),
-							("border-radius", borderRadius));
+							("border-width", borderWidth));
 						break;
 					case AcrylicBrush acrylicBrush:
 						var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
@@ -254,11 +247,10 @@ namespace Windows.UI.Xaml
 							("border", ""),
 							("border-style", "solid"),
 							("border-color", acrylicFallbackColor.ToHexString()),
-							("border-width", borderWidth),
-							("border-radius", borderRadius));
+							("border-width", borderWidth));
 						break;
 					default:
-						ResetStyle("border-style", "border-color", "border-image", "border-width", "border-radius");
+						ResetStyle("border-style", "border-color", "border-image", "border-width");
 						break;
 				}
 			}
