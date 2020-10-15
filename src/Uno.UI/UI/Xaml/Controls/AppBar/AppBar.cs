@@ -1,4 +1,4 @@
-﻿#if __IOS__ || __MACOS__
+﻿#if __IOS__
 #define HAS_NATIVE_COMMANDBAR
 #endif
 using System;
