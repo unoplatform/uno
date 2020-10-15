@@ -37,6 +37,11 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 			_picker.Mode = UIDatePickerMode.Time;
 
+			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+			{
+				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
+			}
+
 			_picker.ValueChanged += OnValueChanged;
 			
 			var parent = _picker.FindFirstParent<FrameworkElement>();
