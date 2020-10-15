@@ -48,8 +48,11 @@ namespace Uno.UI.Controls
 			}
 			set
 			{
-				_native = value;
-				OnNativeChanged();
+				if (!ReferenceEquals(_native, value))
+				{
+					_native = value;
+					OnNativeChanged();
+				}
 			}
 		}
 
