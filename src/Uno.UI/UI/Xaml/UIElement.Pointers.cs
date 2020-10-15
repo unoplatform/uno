@@ -493,7 +493,7 @@ namespace Windows.UI.Xaml
 					var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
 					var wasDragOver = IsDragOver(pt);
 
-					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
+					// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
 					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
 					SetIsDragOver(pt, true);
 
@@ -506,7 +506,7 @@ namespace Windows.UI.Xaml
 				}
 
 				case RoutedEventFlag.DragOver:
-					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
+					// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
 					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
 					SetIsDragOver(((global::Windows.UI.Xaml.DragEventArgs)args).SourceId, true);
 
@@ -522,7 +522,7 @@ namespace Windows.UI.Xaml
 					var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
 					var wasDragOver = IsDragOver(pt);
 
-					// As the IsDragOver is expected to reflect teh state of the current element **and the state of its children**,
+					// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
 					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
 					SetIsDragOver(pt, false);
 
@@ -536,14 +536,26 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		[ThreadStatic]
+		private static uint _lastDragStartFrameId;
+
 		private void OnDragStarting(DraggingEventArgs args)
 		{
 			if (args.DraggingState != DraggingState.Started // This UIElement is actually interested only by the starting
 				|| !CanDrag // Sanity ... should never happen!
-				|| !args.Pointer.Properties.IsLeftButtonPressed)
+				|| !args.Pointer.Properties.IsLeftButtonPressed
+
+				// As the pointer args are always bubbling (for to properly update pressed/over state and manipulations),
+				// if a parent is CanDrag == true, its gesture recognizer might (should) also trigger the DragStarting.
+				// But: (1.) on UWP only the top-most draggable element starts the drag operation;
+				// (2.) as CoreDragDropManager.AreConcurrentOperationsEnabled is false by default, the parent would cancel the drag of its child
+				// So here we allow only one "starting" per "FrameId".
+				|| args.Pointer.FrameId <= _lastDragStartFrameId) 
 			{
 				return;
 			}
+
+			_lastDragStartFrameId = args.Pointer.FrameId;
 
 			// Note: We do not provide the _pendingRaisedEvent.args since it has probably not been updated yet,
 			//		 but as we are in the handler of an event from the gesture recognizer,
