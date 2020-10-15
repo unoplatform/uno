@@ -13,19 +13,6 @@ using Uno.Logging;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
-	internal interface IDragEventSource
-	{
-		long Id { get; }
-
-		uint FrameId { get; }
-
-		//bool IsExternal { get; }
-
-		(Point location, DragDropModifiers modifier) GetState();
-
-		Point GetPosition(object? relativeTo);
-	}
-
 	public partial class CoreDragInfo 
 	{
 		private ImmutableList<Action<DataPackageOperation>>? _completions = ImmutableList<Action<DataPackageOperation>>.Empty;

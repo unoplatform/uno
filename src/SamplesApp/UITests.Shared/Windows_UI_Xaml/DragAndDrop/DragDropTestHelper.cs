@@ -40,7 +40,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			};
 
 			elt.DropCompleted += (snd, e)
-				=> _output.Text += $"[{GetName(snd)}] COMPLETED {e.DropResult}\r\n"; ;
+				=> _output.Text += $"[{GetName(snd)}] COMPLETED {e.DropResult}\r\n";
 		}
 
 		public void SubscribeDropEvents(FrameworkElement elt)

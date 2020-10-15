@@ -294,11 +294,13 @@ namespace Windows.UI.Xaml.Media
 				posRelToElement.X /= zoom;
 				posRelToElement.Y /= zoom;
 
-				// No needs to adjust the position:
-				// On Skia the scrolling is achieved using a RenderTransform on the content of the ScrollContentPresenter,
+				// No needs to adjust the position on Skia:
+				// the scrolling is achieved using a RenderTransform on the content of the ScrollContentPresenter,
 				// so it will already be taken in consideration by the case above.
-				//posRelToElement.X += sv.HorizontalOffset;
-				//posRelToElement.Y += sv.VerticalOffset;
+#if __SKIA__
+				posRelToElement.X += sv.HorizontalOffset;
+				posRelToElement.Y += sv.VerticalOffset;
+#endif
 
 				renderingBounds = new Rect(renderingBounds.Location, new Size(sv.ExtentWidth, sv.ExtentHeight));
 			}
@@ -396,7 +398,7 @@ namespace Windows.UI.Xaml.Media
 			return staleRoot;
 		}
 
-		#region Helpers
+#region Helpers
 		private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> Except(UIElement element)
 			=> children => children.Except(element);
 
@@ -420,9 +422,9 @@ namespace Windows.UI.Xaml.Media
 				yield return enumerator.Current;
 			}
 		}
-		#endregion
+#endregion
 
-		#region HitTest tracing
+#region HitTest tracing
 #if TRACE_HIT_TESTING
 		[ThreadStatic]
 		private static StringBuilder? _trace;
@@ -472,7 +474,7 @@ namespace Windows.UI.Xaml.Media
 			}
 #endif
 		}
-		#endregion
+#endregion
 
 		internal struct Branch
 		{
