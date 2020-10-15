@@ -1,4 +1,7 @@
-﻿using System;
+﻿#if __IOS__ || __MACOS__
+#define HAS_NATIVE_COMMANDBAR
+#endif
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
@@ -10,13 +13,15 @@ using Uno.UI.Extensions;
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
-#if __IOS__ || __MACOS__
+#if HAS_NATIVE_COMMANDBAR
 		, ICustomClippingElement
 #endif
 	{
 		private double _compactHeight;
 		private double _minimalHeight;
+#if HAS_NATIVE_COMMANDBAR
 		private bool _isNativeTemplate;
+#endif
 
 		public AppBar()
 		{
@@ -25,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 			SizeChanged += (s, e) => UpdateTemplateSettings();
 		}
 
-		#region IsSticky
+#region IsSticky
 
 		public bool IsSticky
 		{
@@ -41,9 +46,9 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(default(bool))
 			);
 
-		#endregion
+#endregion
 
-		#region IsOpen
+#region IsOpen
 
 		public bool IsOpen
 		{
@@ -59,9 +64,9 @@ namespace Windows.UI.Xaml.Controls
 			new FrameworkPropertyMetadata(default(bool))
 		);
 
-		#endregion
+#endregion
 
-		#region ClosedDisplayMode
+#region ClosedDisplayMode
 
 		public AppBarClosedDisplayMode ClosedDisplayMode
 		{
@@ -77,9 +82,9 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(AppBarClosedDisplayMode.Compact)
 			);
 
-		#endregion
+#endregion
 
-		#region LightDismissOverlayMode
+#region LightDismissOverlayMode
 
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -95,7 +100,7 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(default(LightDismissOverlayMode))
 			);
 
-		#endregion
+#endregion
 
 		public AppBarTemplateSettings TemplateSettings { get; }
 
@@ -133,7 +138,9 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateTemplateSettings();
 
-			_isNativeTemplate = this.FindFirstChild<NativeCommandBarPresenter>() != null;
+#if HAS_NATIVE_COMMANDBAR
+			 _isNativeTemplate = this.FindFirstChild<NativeCommandBarPresenter>() != null;
+#endif
 		}
 
 		private void UpdateTemplateSettings()
@@ -153,7 +160,7 @@ namespace Windows.UI.Xaml.Controls
 			TemplateSettings.NegativeHiddenVerticalDelta = contentHeight;
 		}
 
-#if __IOS__ || __MACOS__
+#if HAS_NATIVE_COMMANDBAR
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (_isNativeTemplate)
