@@ -280,6 +280,40 @@ namespace SamplesApp.UITests
 			}
 		}
 
+		private class PhysicalRect : IAppRect
+		{
+			public PhysicalRect(IAppRect logicalRect, double scaling)
+			{
+				var s = (float)scaling;
+				Bottom = logicalRect.Bottom * s;
+				Right = logicalRect.Right * s;
+				CenterY = logicalRect.CenterY * s;
+				CenterX = logicalRect.CenterX * s;
+				Y = logicalRect.Y * s;
+				X = logicalRect.X * s;
+				Height = logicalRect.Height * s;
+				Width = logicalRect.Width * s;
+			}
+
+			public float Width { get; }
+			public float Height { get; }
+			public float X { get; }
+			public float Y { get; }
+			public float CenterX { get; }
+			public float CenterY { get; }
+			public float Right { get; }
+			public float Bottom { get; }
+		}
+
+		public IAppRect ToPhysicalRect(IAppRect logicalRect)
+		{
+			if (logicalRect is PhysicalRect p)
+			{
+				return p;
+			}
+			return new PhysicalRect(logicalRect, GetDisplayScreenScaling());
+		}
+
 		internal double GetDisplayScreenScaling()
 		{
 			if (_scaling == null)

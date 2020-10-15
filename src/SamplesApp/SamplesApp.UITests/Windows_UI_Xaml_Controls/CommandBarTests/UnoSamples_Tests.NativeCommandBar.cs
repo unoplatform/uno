@@ -58,7 +58,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			{
 				var firstScreenShot = this.TakeScreenshot("FirstOrientation");
 
-				var firstCommandBarRect = _app.Marked("TheCommandBar").FirstResult().Rect;
+				var firstCommandBarRect = ToPhysicalRect(_app.Marked("TheCommandBar").FirstResult().Rect);
 
 				var x1 = firstCommandBarRect.X + (firstCommandBarRect.Width * 0.75f);
 				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarRect.Bottom - 1, Color.Red);
@@ -68,7 +68,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 				var secondScreenShot = this.TakeScreenshot("SecondOrientation");
 
-				var secondCommandBarRect = _app.Marked("TheCommandBar").FirstResult().Rect;
+				var secondCommandBarRect = ToPhysicalRect(_app.Marked("TheCommandBar").FirstResult().Rect);
 
 				var x2 = secondCommandBarRect.X + (secondCommandBarRect.Width * 0.75f);
 				ImageAssert.HasColorAt(secondScreenShot, x2, secondCommandBarRect.Bottom - 1, Color.Red);
@@ -78,7 +78,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 				var thirdScreenShot = this.TakeScreenshot("thirdOrientation");
 
-				var thirdCommandBarRect = _app.Marked("TheCommandBar").FirstResult().Rect;
+				var thirdCommandBarRect = ToPhysicalRect(_app.Marked("TheCommandBar").FirstResult().Rect);
 
 				var x3 = thirdCommandBarRect.X + (thirdCommandBarRect.Width * 0.75f);
 				ImageAssert.HasColorAt(thirdScreenShot, x3, thirdCommandBarRect.Bottom - 1, Color.Red);
