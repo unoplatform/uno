@@ -4,24 +4,132 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Windows_ApplicationModel.Contacts"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:DefaultBindMode="OneWay"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:contacts="using:Windows.ApplicationModel.Contacts"
+	x:DefaultBindMode="OneWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <StackPanel Padding="12" Spacing="8">
-        <TextBlock Text="{x:Bind Model.Status, Mode=OneWay}" />
-        <Button
-            Command="{x:Bind Model.PickCommand, Mode=OneWay}"
-            Content="Pick contact"
-            IsEnabled="{x:Bind Model.IsAvailable, Mode=OneWay}" />
-        <TextBlock>
-            <Run FontWeight="Bold">First name:</Run>
-            <Run Text="{x:Bind Model.Contact.FirstName}" />
-        </TextBlock>
-        <TextBlock>
-            <Run FontWeight="Bold">Last name:</Run>
-            <Run Text="{x:Bind Model.Contact.LastName}" />
-        </TextBlock>
-    </StackPanel>
+	<ScrollViewer Padding="12">
+		<StackPanel Spacing="8">
+			<TextBlock Text="{x:Bind Model.Status, Mode=OneWay}" />
+			<Button
+				Command="{x:Bind Model.PickCommand, Mode=OneWay}"
+				Content="Pick contact"
+				IsEnabled="{x:Bind Model.IsAvailable, Mode=OneWay}" />
+			<TextBlock>
+				<Run FontWeight="Bold">Honorific name prefix:</Run>
+				<Run Text="{x:Bind Model.Contact.HonorificNamePrefix}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">First name:</Run>
+				<Run Text="{x:Bind Model.Contact.FirstName}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">Middle name:</Run>
+				<Run Text="{x:Bind Model.Contact.MiddleName}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">Last name:</Run>
+				<Run Text="{x:Bind Model.Contact.LastName}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">Honorific name suffix:</Run>
+				<Run Text="{x:Bind Model.Contact.HonorificNameSuffix}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">Nickname:</Run>
+				<Run Text="{x:Bind Model.Contact.Nickname}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">Display name:</Run>
+				<Run Text="{x:Bind Model.Contact.DisplayName}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">Full name:</Run>
+				<Run Text="{x:Bind Model.Contact.FullName}" />
+			</TextBlock>
+			<ListView Header="Phones" Height="200" SelectionMode="None" ItemsSource="{x:Bind Model.Contact.Phones}">
+				<ListView.ItemTemplate>
+					<DataTemplate x:DataType="contacts:ContactPhone">
+						<Border BorderBrush="Black" BorderThickness="1" Padding="8" x:DefaultBindMode="OneWay">
+							<StackPanel>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Kind:" />
+									<Run Text="{x:Bind Kind}" />
+								</TextBlock>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Number:" />
+									<Run Text="{x:Bind Number}" />
+								</TextBlock>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Description:" />
+									<Run Text="{x:Bind Description}" />
+								</TextBlock>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+			<ListView Header="Addresses" Height="200" SelectionMode="None" ItemsSource="{x:Bind Model.Contact.Addresses}">
+				<ListView.ItemTemplate>
+					<DataTemplate x:DataType="contacts:ContactAddress">
+						<Border BorderBrush="Black" BorderThickness="1" Padding="8" x:DefaultBindMode="OneWay">
+							<StackPanel>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Kind:" />
+									<Run Text="{x:Bind Kind}" />
+								</TextBlock>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Street address:" />
+									<Run Text="{x:Bind StreetAddress}" />
+								</TextBlock>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Postal code:" />
+									<Run Text="{x:Bind PostalCode}" />
+								</TextBlock>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Locality:" />
+									<Run Text="{x:Bind Locality}" />
+								</TextBlock>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Region:" />
+									<Run Text="{x:Bind Region}" />
+								</TextBlock>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Country:" />
+									<Run Text="{x:Bind Country}" />
+								</TextBlock>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Description:" />
+									<Run Text="{x:Bind Description}" />
+								</TextBlock>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+			<ListView Header="Email" Height="200" SelectionMode="None" ItemsSource="{x:Bind Model.Contact.Emails}">
+				<ListView.ItemTemplate>
+					<DataTemplate x:DataType="contacts:ContactEmail">
+						<Border BorderBrush="Black" BorderThickness="1" Padding="8" x:DefaultBindMode="OneWay">
+							<StackPanel>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Kind:" />
+									<Run Text="{x:Bind Kind}" />
+								</TextBlock>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Address:" />
+									<Run Text="{x:Bind Address}" />
+								</TextBlock>
+								<TextBlock>
+									<Run FontWeight="Bold" Text="Description:" />
+									<Run Text="{x:Bind Description}" />
+								</TextBlock>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</StackPanel>
+	</ScrollViewer>
 </Page>
