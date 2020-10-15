@@ -44,11 +44,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			var contact = new Contact();
 
-			contact.HonorificNamePrefix = cnContact.NamePrefix;
-			contact.FirstName = cnContact.GivenName;
-			contact.MiddleName = cnContact.MiddleName;
-			contact.LastName = cnContact.FamilyName;
-			contact.HonorificNameSuffix = cnContact.NameSuffix;
+			contact.HonorificNamePrefix = cnContact.NamePrefix ?? string.Empty;
+			contact.FirstName = cnContact.GivenName ?? string.Empty;
+			contact.MiddleName = cnContact.MiddleName ?? string.Empty;
+			contact.LastName = cnContact.FamilyName ?? string.Empty;
+			contact.HonorificNameSuffix = cnContact.NameSuffix ?? string.Empty;
 
 			foreach (var phoneNumber in cnContact.PhoneNumbers)
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Contacts
 				{
 					contact.Phones.Add(new ContactPhone()
 					{
-						Number = phoneNumber.Value.StringValue,
+						Number = phoneNumber.Value.StringValue ?? string.Empty,
 						Kind = PhoneLabelToContactPhoneKind(phoneNumber.Label)
 					});
 				}
@@ -68,7 +68,7 @@ namespace Windows.ApplicationModel.Contacts
 				{
 					contact.Emails.Add(new ContactEmail()
 					{
-						Address = email.Value.ToString(),
+						Address = email.Value?.ToString() ?? string.Empty,
 						Kind = EmailLabelToContactEmailKind(email.Label)
 					});
 				}
@@ -80,9 +80,11 @@ namespace Windows.ApplicationModel.Contacts
 				{
 					contact.Addresses.Add(new ContactAddress()
 					{
-						Country = address.Value.Country,
-						PostalCode = address.Value.PostalCode,
-						StreetAddress = address.Value.Street,
+						Country = address.Value.Country ?? string.Empty,
+						PostalCode = address.Value.PostalCode ?? string.Empty,
+						StreetAddress = address.Value.Street ?? string.Empty,
+						Locality = address.Value.City ?? string.Empty,
+						Region = address.Value.State ?? string.Empty,
 						Kind = AddressLabelToContactAddressKind(address.Label)
 					});
 				}

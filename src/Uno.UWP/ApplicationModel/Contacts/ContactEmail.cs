@@ -1,15 +1,25 @@
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
-using Uno.Extensions;
+#nullable enable
 
 namespace Windows.ApplicationModel.Contacts
 {
+	/// <summary>
+	/// Represents an email address of a contact.
+	/// </summary>
 	public partial class ContactEmail
 	{
-		public ContactEmailKind Kind { get; set; }
+		/// <summary>
+		/// Gets and sets the kind of email address of a contact.
+		/// </summary>
+		public ContactEmailKind Kind { get; set; } = ContactEmailKind.Personal;
 
-		public string Description { get; set; }
+		/// <summary>
+		/// Gets and sets the email address of a contact.
+		/// </summary>
+		public string Address { get; set; } = string.Empty;
 
-		public string Address { get; set; }
+		/// <summary>
+		/// Gets and sets the description of an email address of a contact.
+		/// </summary>
+		public string Description { get; set; } = string.Empty;
 	}
 }
