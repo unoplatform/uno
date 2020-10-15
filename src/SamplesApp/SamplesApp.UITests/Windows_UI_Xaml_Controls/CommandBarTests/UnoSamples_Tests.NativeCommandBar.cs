@@ -30,6 +30,78 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 		[Test]
 		[AutoRetry]
+		public async Task NativeCommandBar_Size()
+		{
+			Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Dynamic");
+
+			var sampleRect = _app.Marked("RootPanel").FirstResult().Rect;
+			var isLandscape = sampleRect.Width > sampleRect.Height;
+			var currentModeIsLandscape = isLandscape;
+
+			async Task ToggleOrientation()
+			{
+				if (currentModeIsLandscape)
+				{
+					_app.SetOrientationPortrait();
+				}
+				else
+				{
+					_app.SetOrientationLandscape();
+				}
+
+				currentModeIsLandscape = !currentModeIsLandscape;
+
+				await Task.Delay(1200); // give time to device to rotate
+			}
+
+			try
+			{
+				var firstScreenShot = this.TakeScreenshot("FirstOrientation");
+
+				var firstCommandBarRect = _app.Marked("TheCommandBar").FirstResult().Rect;
+
+				var x1 = firstCommandBarRect.X + (firstCommandBarRect.Width * 0.75f);
+				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarRect.Bottom - 1, Color.Red);
+				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarRect.Bottom + 1, Color.Yellow);
+
+				await ToggleOrientation();
+
+				var secondScreenShot = this.TakeScreenshot("SecondOrientation");
+
+				var secondCommandBarRect = _app.Marked("TheCommandBar").FirstResult().Rect;
+
+				var x2 = secondCommandBarRect.X + (secondCommandBarRect.Width * 0.75f);
+				ImageAssert.HasColorAt(secondScreenShot, x2, secondCommandBarRect.Bottom - 1, Color.Red);
+				ImageAssert.HasColorAt(secondScreenShot, x2, secondCommandBarRect.Bottom + 1, Color.Yellow);
+
+				await ToggleOrientation();
+
+				var thirdScreenShot = this.TakeScreenshot("thirdOrientation");
+
+				var thirdCommandBarRect = _app.Marked("TheCommandBar").FirstResult().Rect;
+
+				var x3 = thirdCommandBarRect.X + (thirdCommandBarRect.Width * 0.75f);
+				ImageAssert.HasColorAt(thirdScreenShot, x3, thirdCommandBarRect.Bottom - 1, Color.Red);
+				ImageAssert.HasColorAt(thirdScreenShot, x3, thirdCommandBarRect.Bottom + 1, Color.Yellow);
+			}
+			finally
+			{
+				// Reset orientation to original value
+				if (isLandscape)
+				{
+					_app.SetOrientationLandscape();
+				}
+				else
+				{
+					_app.SetOrientationPortrait();
+				}
+
+				await Task.Delay(500); // give time to device to rotate before ending test
+			}
+		}
+
+		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Android)]
 		public void NativeCommandBar_Content_Alignment_Automated()
 		{
