@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Contacts
 			};
 
 			await controller.PresentViewControllerAsync(picker, true);
-			
+
 			var cnContact = await completionSource.Task;
 			if (cnContact != null)
 			{
@@ -41,24 +41,23 @@ namespace Windows.ApplicationModel.Contacts
 		}
 
 		private static Contact CNContactToContact(CNContact cnContact)
-		{			
+		{
 			var contact = new Contact();
 
 			contact.HonorificNamePrefix = cnContact.NamePrefix;
 			contact.FirstName = cnContact.GivenName;
 			contact.MiddleName = cnContact.MiddleName;
 			contact.LastName = cnContact.FamilyName;
-			contact.HonorificNameSuffix = cnContact.NameSuffix;			
+			contact.HonorificNameSuffix = cnContact.NameSuffix;
 
-			foreach (var item in cnContact.PhoneNumbers)
+			foreach (var phoneNumber in cnContact.PhoneNumbers)
 			{
-				if (item != null)
+				if (phoneNumber != null)
 				{
 					contact.Phones.Add(new ContactPhone()
 					{
-						Number = item.Value.StringValue,
-						Description = item.Label,
-						Kind = ContactTypeToContactPhoneKind(cnContact.ContactType)
+						Number = phoneNumber.Value.StringValue,
+						Kind = PhoneLabelToContactPhoneKind(phoneNumber.Label)
 					});
 				}
 			}
@@ -70,8 +69,7 @@ namespace Windows.ApplicationModel.Contacts
 					contact.Emails.Add(new ContactEmail()
 					{
 						Address = email.Value.ToString(),
-						Description = email.Label,
-						Kind = ContactTypeToContactEmailKind(cnContact.ContactType)
+						Kind = EmailLabelToContactEmailKind(email.Label)
 					});
 				}
 			}
@@ -85,6 +83,7 @@ namespace Windows.ApplicationModel.Contacts
 						Country = address.Value.Country,
 						PostalCode = address.Value.PostalCode,
 						StreetAddress = address.Value.Street,
+						Kind = AddressLabelToContactAddressKind(address.Label)
 					});
 				}
 			}
@@ -92,21 +91,71 @@ namespace Windows.ApplicationModel.Contacts
 			return contact;
 		}
 
-		private static ContactPhoneKind ContactTypeToContactPhoneKind(CNContactType type) =>
-			type switch
+		private static ContactPhoneKind PhoneLabelToContactPhoneKind(string? label)
+		{
+			if (CNLabelPhoneNumberKey.Mobile.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase) ||
+				CNLabelPhoneNumberKey.Main.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase) ||
+				CNLabelPhoneNumberKey.iPhone.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase))
 			{
-				CNContactType.Person => ContactPhoneKind.Mobile,
-				CNContactType.Organization => ContactPhoneKind.Company,
-				_ => ContactPhoneKind.Other,
-			};
+				return ContactPhoneKind.Mobile;
+			}
+			else if (CNLabelKey.Home.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return ContactPhoneKind.Home;
+			}
+			else if (CNLabelPhoneNumberKey.HomeFax.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return ContactPhoneKind.HomeFax;
+			}
+			else if (CNLabelKey.Work.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return ContactPhoneKind.Work;
+			}
+			else if (CNLabelPhoneNumberKey.WorkFax.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return ContactPhoneKind.BusinessFax;
+			}
+			else if (CNLabelPhoneNumberKey.Pager.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return ContactPhoneKind.Pager;
+			}
+			else
+			{
+				return ContactPhoneKind.Other;
+			}
+		}
 
-		private static ContactEmailKind ContactTypeToContactEmailKind(CNContactType type) =>
-			type switch
+		private static ContactEmailKind EmailLabelToContactEmailKind(string? label)
+		{
+			if (CNLabelKey.Home.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase))
 			{
-				CNContactType.Person => ContactEmailKind.Personal,
-				CNContactType.Organization => ContactEmailKind.Work,
-				_ => ContactEmailKind.Other
-			};
+				return ContactEmailKind.Personal;
+			}
+			else if (CNLabelKey.Work.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return ContactEmailKind.Work;
+			}
+			else
+			{
+				return ContactEmailKind.Other;
+			}
+		}
+
+		private static ContactAddressKind AddressLabelToContactAddressKind(string? label)
+		{
+			if (CNLabelKey.Home.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return ContactAddressKind.Home;
+			}
+			else if (CNLabelKey.Work.ToString().Equals(label, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return ContactAddressKind.Work;
+			}
+			else
+			{
+				return ContactAddressKind.Other;
+			}
+		}
 
 		private class ContactPickerDelegate : CNContactPickerDelegate
 		{

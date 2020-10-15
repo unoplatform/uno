@@ -15,6 +15,6 @@ namespace Windows.ApplicationModel.Contacts
 			IsSupportedTaskAsync().AsAsyncOperation();
 
 		public IAsyncOperation<Contact?> PickContactAsync() =>
-			PickContactTaskAsync().AsAsyncOperation()
+			PickContactTaskAsync().AsAsyncOperation();
 	}
 }
