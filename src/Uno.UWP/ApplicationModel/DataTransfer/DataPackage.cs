@@ -43,7 +43,8 @@ namespace Windows.ApplicationModel.DataTransfer
 				var deferral = request.GetDeferral();
 				try
 				{
-					await delayRenderer(request.CancellationToken);
+					var data = await delayRenderer(request.CancellationToken);
+					request.SetData(data);
 				}
 				catch (Exception e)
 				{
