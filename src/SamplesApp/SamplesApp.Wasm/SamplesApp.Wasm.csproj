@@ -5,7 +5,6 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
 		<NoWarn>NU1701,CS1998</NoWarn>
-		<LangVersion>8.0</LangVersion>
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>

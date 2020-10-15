@@ -14,7 +14,7 @@ namespace Uno.UI.SourceGenerators
 		internal static void Generate(IIndentedStringBuilder writer, string[] analyzerSuppressions)
 		{
 			var suppresses = from suppress in analyzerSuppressions
-							let parts = suppress.Split('|')
+							let parts = suppress.Split('|','-')
 							where parts.Length == 2
 							let category = parts[0]
 							let id = parts[1]

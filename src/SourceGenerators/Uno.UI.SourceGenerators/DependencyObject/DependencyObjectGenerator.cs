@@ -5,16 +5,32 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.SourceGeneration;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
+using Uno.Roslyn;
+using System.Diagnostics;
+using System.Reflection;
+using System.IO;
+
+#if NETFRAMEWORK
+using Uno.SourceGeneration;
+#endif
 
 namespace Uno.UI.SourceGenerators.DependencyObject
 {
-	public class DependencyObjectGenerator : SourceGenerator
+	[Generator]
+	public class DependencyObjectGenerator : ISourceGenerator
 	{
-		public override void Execute(SourceGeneratorContext context)
+		public void Initialize(GeneratorInitializationContext context)
 		{
+			// Debugger.Launch();
+			// No initialization required for this one
+
+		}
+
+		public void Execute(GeneratorExecutionContext context)
+		{
+			DependenciesInitializer.Init(context);
 			if (PlatformHelper.IsValidPlatform(context))
 			{
 				var visitor = new SerializationMethodsGenerator(context);
@@ -24,7 +40,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private class SerializationMethodsGenerator : SymbolVisitor
 		{
-			private readonly SourceGeneratorContext _context;
+			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol _dependencyObjectSymbol;
 			private readonly INamedTypeSymbol _unoViewgroupSymbol;
 			private readonly INamedTypeSymbol _iosViewSymbol;
@@ -37,7 +53,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol _iFrameworkElementSymbol;
 
 
-			public SerializationMethodsGenerator(SourceGeneratorContext context)
+			public SerializationMethodsGenerator(GeneratorExecutionContext context)
 			{
 				_context = context;
 
@@ -130,7 +146,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						}
 					}
 
-					_context.AddCompilationUnit(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
+					_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
 				}
 			}
 
@@ -310,7 +326,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 #if {implementsIFrameworkElement} //Is IFrameworkElement
 						OnLoading();
 						OnLoaded();
-#endif						
+#endif
 						_loadActions.ForEach(a => a.Item1());
 						BinderAttachedToWindow();
 					}}

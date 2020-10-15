@@ -65,6 +65,10 @@ jobs:
   parameters:
     vmImage: '$(linuxVMImage)'
 
+- template: build/ci/.azure-devops-wasm-cs9-preview-validation.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
 - template: build/ci/.azure-devops-macos.yml
   parameters:
     vmImage: '$(macOSVMImage)'

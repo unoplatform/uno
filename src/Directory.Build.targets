@@ -18,8 +18,8 @@
   <ItemGroup>
 	<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" />
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
-	<PackageReference Update="Uno.SourceGenerationTasks" Version="2.0.13" />
-	<PackageReference Update="Uno.SourceGeneration" Version="2.0.13" />
+	<PackageReference Update="Uno.SourceGenerationTasks" Version="3.0.0-dev.16" />
+	<PackageReference Update="Uno.SourceGeneration" Version="3.0.0-dev.16" />
 	<PackageReference Update="Uno.Core" Version="2.0.0" />
 	<PackageReference Update="Uno.Core.Build" Version="2.0.0" />
 	<PackageReference Update="Uno.Diagnostics.Eventing" Version="1.0.4" />
@@ -46,6 +46,14 @@
 	<PackageReference Update="SkiaSharp" Version="2.80.0" />
 	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.0" />
 	<PackageReference Update="GtkSharp" Version="3.22.25.128" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MicrosoftNetCompilerVersionOverride)'!=''">
+	<!-- This override is used to validate the user of specific version of the C# Compiler -->
+	<PackageReference Include="Microsoft.Net.Compilers" Version="$(MicrosoftNetCompilerVersionOverride)">
+	  <PrivateAssets>all</PrivateAssets>
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+	</PackageReference>
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">

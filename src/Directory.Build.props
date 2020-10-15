@@ -21,8 +21,6 @@
     <CreateHardLinksForAdditionalFilesIfPossible>true</CreateHardLinksForAdditionalFilesIfPossible>
     <CreateHardLinksForPublishFilesIfPossible>true</CreateHardLinksForPublishFilesIfPossible>
 
-    <LangVersion>8.0</LangVersion>
-
     <!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
     <Version>255.255.255.255</Version>
 
@@ -40,6 +38,17 @@
 	
 	<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
 	<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	<LangVersion>8.0</LangVersion>
+
+	<!--
+	Use this property to use either the Uno.SourceGeneration framework, or Roslyn's C# 9.0 generators.
+	If UnoUIUseRoslynSourceGenerators is not defined, the environment defines if Roslyn is used or not, see
+	Uno.UI.SourceGenerators.props for more details. Note that Roslyn generators required VS 16.8 Pre 3 or later.
+	-->
+	<UnoUIUseRoslynSourceGenerators>false</UnoUIUseRoslynSourceGenerators>
   </PropertyGroup>
 
   <!--

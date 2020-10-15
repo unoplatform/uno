@@ -1,12 +1,13 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<WarningsAsErrors>true</WarningsAsErrors>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.12.0" />
 		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
@@ -40,6 +41,20 @@
 		</PackageReference>
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.SourceGeneration" />
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
+			<Version>3.1.6</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.12.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis">
+			<Version>3.8.0-3.final</Version>
+		</PackageReference>
+		<PackageReference Include="Mono.Cecil">
+			<Version>0.10.1</Version>
+		</PackageReference>
+		<PackageReference Include="Uno.Core" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -108,4 +123,7 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
+	<Target Name="GetTargetPath" />
+	<Target Name="GetCopyToPublishDirectoryItems" />
 </Project>
