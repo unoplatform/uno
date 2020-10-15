@@ -32,5 +32,27 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 			ImageAssert.HasColorAt(screenshot, rect2.Right + 8, rect2.Y + 75, Color.Blue);
 			ImageAssert.HasColorAt(screenshot, rect2.X + 75, rect2.Bottom + 8, Color.Blue);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Clipped_Rounded_Corners()
+		{
+			Run("UITests.Windows_UI_Xaml.Clipping.Clipping4273");
+
+			_app.WaitForElement("RoundedGrid");
+
+			var rect = _app.GetRect("RoundedGrid");
+
+			var centre = GetScaledCenter(rect);
+			var scale = GetDisplayScreenScaling();
+			var offset = 5 * (float)scale;
+			var innerCornerX = rect.X + offset;
+			var innerCornerY = rect.Y + offset;
+
+			var screenshot = TakeScreenshot("ClippedCorners");
+			ImageAssert.HasColorAt(screenshot, centre.X, centre.Y, Color.Blue);
+			ImageAssert.HasColorAt(screenshot, innerCornerX, innerCornerY, Color.Red);
+
+		}
 	}
 }
