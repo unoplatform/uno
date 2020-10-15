@@ -541,12 +541,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var property = type.GetAllPropertiesWithName(name).FirstOrDefault();
 				var setMethod = type.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
 
-				if (property != null && property.GetMethod.IsStatic)
+				if (property?.GetMethod?.IsStatic ?? false)
 				{
 					return true;
 				}
 
-				if (setMethod != null && setMethod.IsStatic)
+				if (setMethod?.IsStatic ?? false)
 				{
 					return true;
 				}
