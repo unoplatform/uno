@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -34,6 +35,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 		{
 			Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Dynamic");
 
+			_app.WaitForElement("RootPanel");
+
 			var sampleRect = _app.Marked("RootPanel").FirstResult().Rect;
 			var isLandscape = sampleRect.Width > sampleRect.Height;
 			var currentModeIsLandscape = isLandscape;
@@ -56,33 +59,43 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			try
 			{
-				var firstScreenShot = this.TakeScreenshot("FirstOrientation");
+				var firstScreenShot = TakeScreenshot("FirstOrientation");
 
-				var firstCommandBarRect = ToPhysicalRect(_app.Marked("TheCommandBar").FirstResult().Rect);
+				var firstCommandBarRect = _app.GetRect("TheCommandBar");
+				var firstYellowBorderRect = _app.GetRect("TheBorder");
+				firstCommandBarRect.Bottom.Should().Be(firstYellowBorderRect.Y);
 
-				var x1 = firstCommandBarRect.X + (firstCommandBarRect.Width * 0.75f);
-				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarRect.Bottom - 1, Color.Red);
-				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarRect.Bottom + 1, Color.Yellow);
+				var firstCommandBarPhysicalRect = ToPhysicalRect(firstCommandBarRect);
 
-				await ToggleOrientation();
 
-				var secondScreenShot = this.TakeScreenshot("SecondOrientation");
-
-				var secondCommandBarRect = ToPhysicalRect(_app.Marked("TheCommandBar").FirstResult().Rect);
-
-				var x2 = secondCommandBarRect.X + (secondCommandBarRect.Width * 0.75f);
-				ImageAssert.HasColorAt(secondScreenShot, x2, secondCommandBarRect.Bottom - 1, Color.Red);
-				ImageAssert.HasColorAt(secondScreenShot, x2, secondCommandBarRect.Bottom + 1, Color.Yellow);
+				var x1 = firstCommandBarPhysicalRect.X + (firstCommandBarPhysicalRect.Width * 0.75f);
+				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarPhysicalRect.Bottom - 1, Color.Red);
 
 				await ToggleOrientation();
 
-				var thirdScreenShot = this.TakeScreenshot("thirdOrientation");
+				var secondScreenShot = TakeScreenshot("SecondOrientation");
 
-				var thirdCommandBarRect = ToPhysicalRect(_app.Marked("TheCommandBar").FirstResult().Rect);
+				var secondCommandBarRect = _app.GetRect("TheCommandBar");
+				var secondYellowBorderRect = _app.GetRect("TheBorder");
+				secondCommandBarRect.Bottom.Should().Be(secondYellowBorderRect.Y);
 
-				var x3 = thirdCommandBarRect.X + (thirdCommandBarRect.Width * 0.75f);
-				ImageAssert.HasColorAt(thirdScreenShot, x3, thirdCommandBarRect.Bottom - 1, Color.Red);
-				ImageAssert.HasColorAt(thirdScreenShot, x3, thirdCommandBarRect.Bottom + 1, Color.Yellow);
+				var secondCommandBarPhysicalRect = ToPhysicalRect(secondCommandBarRect);
+
+				var x2 = secondCommandBarPhysicalRect.X + (secondCommandBarPhysicalRect.Width * 0.75f);
+				ImageAssert.HasColorAt(secondScreenShot, x2, secondCommandBarPhysicalRect.Bottom - 1, Color.Red);
+
+				await ToggleOrientation();
+
+				var thirdScreenShot = TakeScreenshot("thirdOrientation");
+
+				var thirdCommandBarRect = _app.GetRect("TheCommandBar");
+				var thirdYellowBorderRect = _app.GetRect("TheBorder");
+				thirdCommandBarRect.Bottom.Should().Be(thirdYellowBorderRect.Y);
+
+				var thirdCommandBarPhysicalRect = ToPhysicalRect(thirdCommandBarRect);
+
+				var x3 = thirdCommandBarPhysicalRect.X + (thirdCommandBarPhysicalRect.Width * 0.75f);
+				ImageAssert.HasColorAt(thirdScreenShot, x3, thirdCommandBarPhysicalRect.Bottom - 1, Color.Red);
 			}
 			finally
 			{
