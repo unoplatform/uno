@@ -44,7 +44,7 @@ User inputs are usually propagated to the using `RoutedEvent`, see. Uno's [route
 Notes:
 
 1. **Focus** events:
-   * **iOS**: The concept of _focus_ is emulated because not supported by the platform, so this event is
+   * **iOS**: The concept of _focus_ is emulated because it's not supported by the platform, so this event is
      always bubbling in managed code.
    * **Wasm**: Current implementation is not totally reliable and doesn't support _lost focus_ most of the time.
 2. **Keyboard** events:
@@ -58,18 +58,18 @@ Notes:
 
 ## Pointer Events
 
-Those events are the base for all others pointing device related events (i.e. Manipulation, Gesture and drag and dop events).
+These events are the base for all other pointing device related events (i.e. Manipulation, Gesture and drag and dop events).
 They are directly linked to the native events of each platform:
 * `Touches[Began|Moved|Ended|Cancelled]` on iOS
 * `dispatchTouchEvent` and `dispatchGenericMotionEvent` on Android
 * `pointer[enter|leave|down|up|move|cancel]` on WebAssembly
 
-On skia however, they are fully managed events.
+On Skia however, they are fully managed events.
 
 ### Pointers events and the ScrollViewer
 
 Like on WinUI as soon as the system detects that the user wants to scroll, a control gets a `PointerCancelled` and that control won't receive
-any other pointer event until the user release the pointer. That behavior can be prevented by setting the `ManipulationMode` 
+any other pointer event until the user releases the pointer. That behavior can be prevented by setting the `ManipulationMode` 
 to something else than `System` on a control nested in the `ScrollViewer`. (cf. [Manipulation events](#Manipulation_Events))
 
 Be aware that on iOS this will set `DelaysContentTouches` to `false` so it means that it will slightly reduce the performance
@@ -101,10 +101,10 @@ As those events are tightly coupled to the native events, Uno has to make some c
   the element at the top will get the pointer events.
 * On WASM, iOS and Android, the `RoutedPointerEventArgs.FrameId` will be reset to 0 after 49 days of running time of the application.
 * Unlike on UWP, controls that are under a `Popup` won't receive the unhandled pointer events.
-* On non skia-based platforms, unlike UWP, it's impossible to receive a `PointerReleased` without getting a `PointerPressed` before.
+* On non Skia-based platforms, unlike UWP, it's impossible to receive a `PointerReleased` without getting a `PointerPressed` before.
   (For instance if a child control handled the pressed event but not the released event).
-  > On WASM as `TextElement` are `UIElement`, it means that unlike UWP `TextBlock` won't raise the 
-  > a `PointerReleased` when clicking on an `Hyperlink`.
+  > On WASM as `TextElement` inherits from `UIElement`, it means that unlike UWP `TextBlock` won't raise the 
+  > `PointerReleased` event when clicking on a `Hyperlink`.
 * Unlike UWP, on the `Hyperlink` the `Click` will be raised before the `PointerReleased`.
 * The property `PointerPointProperties.PointerUpdateKind` is not set on Android 5.x and lower (API level < 23)
 * On Firefox, pressed pointers are reported as fingers. This means you will receive events with `PointerDeviceType == Pen` only for hovering 
@@ -140,8 +140,8 @@ Without this key the current version of iPadOS reports mouse interaction as norm
 
 They are generated from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`) and are bubbling in managed only.
 
-Currently there is no intertia support, so the `IsInertial` will always be `false` and the `UIElement.ManipulationInertiaStarting` event 
-will never be fired. The `Velocities` properties of event args are not implemented neither.
+Currently there is no inertia support, so the `IsInertial` will always be `false` and the `UIElement.ManipulationInertiaStarting` event 
+will never be fired. The `Velocities` properties of event args are not implemented either.
 
 ## Gesture Events
 
@@ -160,7 +160,7 @@ Those events are also 100% managed events, built from the PointerXXX events (usi
 ### Intra-app drag and drop support
 
 A _drag and drop_ operation can be used to move content within an app, but it can also be used to **copy** / **move** / **link** between apps.
-While inter-app _drag and drop_ is supported on all platforms without limiations, intra-app _drag and drop_ requires platfrom specific support.
+While inter-app _drag and drop_ is supported on all platforms without limitations, intra-app _drag and drop_ requires platform specific support.
 
 |          | From uno app to external                         | From external app to uno                        |
 | -------- | ------------------------------------------------ | ------------------------                        |
