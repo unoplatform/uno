@@ -1,4 +1,4 @@
-﻿#nullable enable
+﻿#nullable disable // Not supported by WinUI yet
 
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static void Clear() => SetClipboardText(string.Empty);
 
-		public static void SetContent(DataPackage? content)
+		public static void SetContent(DataPackage/* ? */ content)
 		{
 			var data = content?.GetView(); // Freezes the DataPackage
 			if (data?.Contains(StandardDataFormats.Text) ?? false)
