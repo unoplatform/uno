@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using AppKit;
@@ -41,7 +40,32 @@ namespace Windows.ApplicationModel.DataTransfer
 		 *  WebLink                UTType.URL        NSPasteboard.NSPasteboardTypeUrl        NSPasteboard.NSUrlType 
 		 *  
 		 *  *1 : macOS 10.6 and later
-		 *  
+		 *
+		 * Below are more specific notes when converting types to/from macOS.
+		 *
+		 * --- UWP to macOS ---
+		 *
+		 * UWP has the following standard data formats that correspond with a macOS Url:
+		 *
+		 *  1. Uri, now deprecated in favor of:
+		 *  2. ApplicationLink and
+		 *  3. WebLink
+		 *
+		 * For maximum compatibility all are mapped to Url.
+		 * However, when applying data to the clipboard or drag/drop DataPackage, 
+		 * only one may be used at a time in the above defined priority. 
+		 * WebLink is considered more specific than ApplicationLink.
+		 *
+		 * --- macOS to UWP ---
+		 *
+		 * A macOS URL must be specially mapped for UWP as the UWP's direct equivalent 
+		 * standard data format 'Uri' is deprecated.
+		 *
+		 * 1. WebLink is used if the macOS URL has a scheme of http or https 
+		 * 2. ApplicationLink is used if not #1
+		 *
+		 * For full compatibility, Uri is still populated regardless of #1 or #2.
+		 *
 		 */
 
 		// An Uno-internal abstraction is used to simplify native drag/drop & clipboard integration
@@ -74,13 +98,54 @@ namespace Windows.ApplicationModel.DataTransfer
 			NSDraggingItem draggingItem;
 			var items = new List<NSDraggingItem>();
 
+			/* Note that NSDraggingItems are required by the BeginDraggingSession methods.
+			 * Therefore, that is what is constructed here instead of pasteboard items.
+			 * 
+			 * For several types such as NSString or NSImage, they implement the INSPasteboardWriting interface and
+			 * can therefore be used to directly construct an NSDraggingItem.
+			 * However, for other types (such as HTML) the full pasteboard item must be constructed first defining
+			 * both its type and string content.
+			 */
+
+			if (data?.Contains(StandardDataFormats.Bitmap) ?? false)
+			{
+				NSImage? image = null;
+				var stream = (await (await data.GetBitmapAsync()).OpenReadAsync()).AsStream();
+
+				if (stream != null)
+				{
+					using (MemoryStream ms = new MemoryStream())
+					{
+						await stream.CopyToAsync(ms);
+						ms.Flush();
+						ms.Position = 0;
+
+						image = NSImage.FromStream(ms);
+					}
+
+					stream.Close();
+				}	
+
+				if (image != null)
+				{
+					draggingItem = new NSDraggingItem(image);
+					draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+					items.Add(draggingItem);
+				}
+			}
+
 			if (data?.Contains(StandardDataFormats.Html) ?? false)
 			{
 				var html = await data.GetHtmlFormatAsync();
 
 				if (!string.IsNullOrEmpty(html))
 				{
-					// TODO
+					var pasteboardItem = new NSPasteboardItem();
+					pasteboardItem.SetStringForType(html ?? string.Empty, NSPasteboard.NSPasteboardTypeHTML);
+
+					draggingItem = new NSDraggingItem(pasteboardItem);
+					draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+					items.Add(draggingItem);
 				}
 			}
 
@@ -90,7 +155,23 @@ namespace Windows.ApplicationModel.DataTransfer
 
 				if (!string.IsNullOrEmpty(rtf))
 				{
-					// TODO
+					// Use `NSPasteboardTypeRTF` instead of `NSPasteboardTypeRTFD` for max compatiblity
+					var pasteboardItem = new NSPasteboardItem();
+					pasteboardItem.SetStringForType(rtf ?? string.Empty, NSPasteboard.NSPasteboardTypeRTF);
+
+					draggingItem = new NSDraggingItem(pasteboardItem);
+					draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+					items.Add(draggingItem);
+				}
+			}
+
+			if (data?.Contains(StandardDataFormats.StorageItems) ?? false)
+			{
+				var storageItems = await data.GetStorageItemsAsync();
+
+				if (storageItems.Count > 0)
+				{
+					// Not currently supported
 				}
 			}
 
@@ -104,6 +185,32 @@ namespace Windows.ApplicationModel.DataTransfer
 					draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
 					items.Add(draggingItem);
 				}
+			}
+
+			// See comments at beginning of document for URL handling
+			if (data?.Contains(StandardDataFormats.Uri) ?? false)
+			{
+				var uri = await data.GetUriAsync();
+
+				draggingItem = new NSDraggingItem(new NSUrl(uri.ToString()));
+				draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+				items.Add(draggingItem);
+			}
+			else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
+			{
+				var webLink = await data.GetWebLinkAsync();
+
+				draggingItem = new NSDraggingItem(new NSUrl(webLink.ToString()));
+				draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+				items.Add(draggingItem);
+			}
+			else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
+			{
+				var appLink = await data.GetApplicationLinkAsync();
+
+				draggingItem = new NSDraggingItem(new NSUrl(appLink.ToString()));
+				draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+				items.Add(draggingItem);
 			}
 
 			return items.ToArray();
@@ -169,6 +276,20 @@ namespace Windows.ApplicationModel.DataTransfer
 						declaredTypes.Add(NSPasteboard.NSPasteboardTypeString);
 					}
 
+					// See comments at beginning of document for URL handling
+					if (data?.Contains(StandardDataFormats.Uri) ?? false)
+					{
+						declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
+					}
+					else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
+					{
+						declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
+					}
+					else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
+					{
+						declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
+					}
+
 					pasteboard.DeclareTypes(declaredTypes.ToArray(), null);
 
 					// Set content
@@ -189,6 +310,23 @@ namespace Windows.ApplicationModel.DataTransfer
 						var text = await data.GetTextAsync();
 						pasteboard.SetStringForType(text ?? string.Empty, NSPasteboard.NSPasteboardTypeString);
 					}
+
+					// See comments at beginning of document for URL handling
+					if (data?.Contains(StandardDataFormats.Uri) ?? false)
+					{
+						var uri = await data.GetUriAsync();
+						pasteboard.SetStringForType(uri?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
+					}
+					else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
+					{
+						var webLink = await data.GetWebLinkAsync();
+						pasteboard.SetStringForType(webLink?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
+					}
+					else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
+					{
+						var appLink = await data.GetApplicationLinkAsync();
+						pasteboard.SetStringForType(appLink?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
+					}
 				});
 				
 			return;
@@ -204,7 +342,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			var dataPackage = new DataPackage();
 
 			// Extract all the standard data format information from the pasteboard items.
-			// Each format can only be used once; therefore, the last occurrence of the format will be the one used (except for image).
+			// Each format can only be used once; therefore, generally the last occurrence of the format will be the one used.
 			foreach (NSPasteboardItem item in pasteboard.PasteboardItems)
 			{
 				if (item.Types.Contains(NSPasteboard.NSPasteboardTypeTIFF) ||
@@ -218,19 +356,19 @@ namespace Windows.ApplicationModel.DataTransfer
 						{
 							NSImage? image = null;
 
-							/* All tested apps, including Photos, don't appear to put image data in the pasteboard.
+							/* Some apps, including Photos, don't appear to put image data in the pasteboard.
 							 * Instead, the image URL is provided although the type indicates it is an image.
 							 *
 							 * To get around this an image is read as follows:
 							 *   (1) If the pasteboard contains an image type then:
 							 *   (2) Attempt to read the image as an object (NSImage).
-							 *       This will likely fail as all tested apps provide a URL althouth declare an image.
+							 *       This may fail as some tested apps provide a URL althouth declare an image (Photos).
+							 *       With other apps (such as web browsers) an image will be read correctly here.
 							 *   (3) If reading as an NSImage object fails, attempt to read the image from a file URL (local images)
 							 *   (4) If reading from a file URL fails, attempt to read the image from a URL (remote images)
 							 *
 							 * Reading as an NSImage object follows the docs here:
 							 *   https://docs.microsoft.com/en-us/xamarin/mac/app-fundamentals/copy-paste#add-an-nsdocument
-							 * However, since no app was found to place an image object in the pasteboard this code is untested.
 							 */
 
 							var classArray = new Class[] { new Class("NSImage") };
@@ -343,13 +481,7 @@ namespace Windows.ApplicationModel.DataTransfer
 					var url = item.GetStringForType(NSPasteboard.NSPasteboardTypeUrl);
 					if (url != null)
 					{
-						// A macOS URL must be specially mapped for UWP as the UWP's direct equivalent 
-						// standard data format 'Uri' is deprecated.
-						//
-						// 1. WebLink is used if the URI has a scheme of http or https 
-						// 2. ApplicationLink is used if not #1
-						//
-						// For full compatibility, Uri is still populated regardless of #1 or #2.
+						// See comments at beginning of document for URL handling
 						url = url.Trim();
 						if (url != null)
 						{
