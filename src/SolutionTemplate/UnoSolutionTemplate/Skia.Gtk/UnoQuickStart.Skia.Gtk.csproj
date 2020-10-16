@@ -6,7 +6,7 @@
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="exists('..\$ext_safeprojectname$.UWP')">
 		<EmbeddedResource Include="..\$ext_safeprojectname$.UWP\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 		<Content Include="..\$ext_safeprojectname$.UWP\Assets\StoreLogo.png" Link="Assets\StoreLogo.png" />
 	</ItemGroup>
