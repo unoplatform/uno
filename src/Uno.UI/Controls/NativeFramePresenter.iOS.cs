@@ -704,6 +704,19 @@ namespace Uno.UI.Controls
 				}
 			}
 
+			public override void ViewWillDisappear(bool animated)
+			{
+				try
+				{
+					base.ViewWillDisappear(animated);
+					CommandBarHelper.PageWillDisappear(this);
+				}
+				catch (Exception e)
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
+			}
+
 			public override void ViewDidDisappear(bool animated)
 			{
 				try
