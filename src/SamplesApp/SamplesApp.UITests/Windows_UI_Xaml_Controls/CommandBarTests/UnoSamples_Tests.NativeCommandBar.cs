@@ -37,8 +37,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			_app.WaitForElement("RootPanel");
 
-			var sampleRect = _app.Marked("RootPanel").FirstResult().Rect;
-			var isLandscape = sampleRect.Width > sampleRect.Height;
+			bool GetIsLandscape()
+			{
+				var sampleRect = _app.GetRect("RootPanel");
+				var b = sampleRect.Width > sampleRect.Height;
+				return b;
+			}
+
+			var isLandscape = GetIsLandscape();
 			var currentModeIsLandscape = isLandscape;
 
 			async Task ToggleOrientation()
@@ -54,7 +60,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 				currentModeIsLandscape = !currentModeIsLandscape;
 
-				await Task.Delay(1200); // give time to device to rotate
+				_app.WaitFor(()=> GetIsLandscape() == currentModeIsLandscape);
+
+				await Task.Delay(125); // A delay ia required after rotation for the test to succeed
 			}
 
 			try
@@ -109,7 +117,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 					_app.SetOrientationPortrait();
 				}
 
-				await Task.Delay(500); // give time to device to rotate before ending test
+				_app.WaitFor(() => GetIsLandscape() == isLandscape);
 			}
 		}
 
