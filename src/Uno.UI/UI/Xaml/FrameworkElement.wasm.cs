@@ -214,7 +214,7 @@ namespace Windows.UI.Xaml
 					$"{cornerRadius.TopLeft.ToStringInvariant()}px {cornerRadius.TopRight.ToStringInvariant()}px {cornerRadius.BottomRight.ToStringInvariant()}px {cornerRadius.BottomLeft.ToStringInvariant()}px";
 				SetStyle(
 					("border-radius", borderRadiusCssString),
-					("overflow", "hidden"));
+					("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
 			}
 
 		}
