@@ -178,6 +178,10 @@ While inter-app _drag and drop_ is supported on all platforms without limitation
 
 ### Known issues for drag and drop events
 
-If you have 2 nested drop targets (i.e. element flagged with `AllowDrop = true`), 
-when the pointer leaves the deepest / top most element but not the parent, 
-the parent element will also raise `DragLeave` and immediatly after raise `DragEnter`.
+1. If you have 2 nested drop targets (i.e. element flagged with `AllowDrop = true`), 
+   when the pointer leaves the deepest / top most element but not the parent, 
+   the parent element will also raise `DragLeave` and immediatly after raise `DragEnter`.
+1. On UWP, the default UI will include a tooltip which indicates the accepted drop action,
+   and a "screenshot" of the dragged element.
+   Currently Uno will display only the tooltip.
+1. The accepted drop action displayed in the tooltip is not localized.
