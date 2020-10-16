@@ -823,13 +823,151 @@ namespace Uno.UI.Tests.Windows_UI_Input
 					.WithCumulative(tX: 0, tY: -75, angle: 90 /* ??? */, scale: 0, exp: -150F)
 			);
 		}
+
+		[TestMethod]
+		public void Drag_Started_Mouse_Immediate()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
+			var drags = new List<DraggingEventArgs>();
+			sut.Dragging += (snd, e) => drags.Add(e);
+
+			using var _ = Mouse();
+
+			// Start mouse dragging 
+			sut.ProcessDownEvent(25, 25, ts: 0);
+			var start = sut.ProcessMoveEvent(50, 50, ts: 1);
+
+			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
+		}
+
+		[TestMethod]
+		public void Drag_Started_Mouse_Hold()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
+			var drags = new List<DraggingEventArgs>();
+			sut.Dragging += (snd, e) => drags.Add(e);
+
+			using var _ = Mouse();
+
+			// Start mouse dragging 
+			sut.ProcessDownEvent(25, 25, ts: 0);
+			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
+			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
+
+			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
+		}
+
+		[TestMethod]
+		public void Drag_Started_Pen_Immediate()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
+			var drags = new List<DraggingEventArgs>();
+			sut.Dragging += (snd, e) => drags.Add(e);
+
+			using var _ = Pen();
+
+			sut.ProcessDownEvent(25, 25, ts: 0);
+			var start = sut.ProcessMoveEvent(50, 50, ts: 1);
+
+			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
+		}
+
+		[TestMethod]
+		public void Drag_Started_Pen_Hold()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
+			var drags = new List<DraggingEventArgs>();
+			sut.Dragging += (snd, e) => drags.Add(e);
+
+			using var _ = Pen();
+
+			sut.ProcessDownEvent(25, 25, ts: 0);
+			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
+			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
+
+			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
+		}
+
+		[TestMethod]
+		public void Drag_Started_Touch_Immediate()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
+			var drags = new List<DraggingEventArgs>();
+			sut.Dragging += (snd, e) => drags.Add(e);
+
+			using var _ = Touch();
+
+			sut.ProcessDownEvent(25, 25, ts: 0);
+			sut.ProcessMoveEvent(50, 50, ts: 1);
+
+			drags.Should().BeEmpty();
+		}
+
+		[TestMethod]
+		public void Drag_Started_Touch_Hold()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
+			var drags = new List<DraggingEventArgs>();
+			sut.Dragging += (snd, e) => drags.Add(e);
+
+			using var _ = Touch();
+
+			sut.ProcessDownEvent(25, 25, ts: 0);
+			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
+			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
+
+			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
+		}
+
+		[TestMethod]
+		public void Drag_Started_Touch_MovedTooFar()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
+			var drags = new List<DraggingEventArgs>();
+			sut.Dragging += (snd, e) => drags.Add(e);
+
+			using var _ = Touch();
+
+			sut.ProcessDownEvent(25, 25, ts: 0);
+			sut.ProcessMoveEvent(50, 50, ts: 1);
+			sut.ProcessMoveEvent(25, 25, ts: 2);
+			sut.ProcessMoveEvent(25, 25, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
+			sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
+
+			drags.Should().BeEmpty();
+		}
+
+		[TestMethod]
+		public void Drag_And_Holding_Touch()
+		{
+			var delay = (ulong)Math.Max(GestureRecognizer.DragWithTouchMinDelayTicks, GestureRecognizer.HoldMinDelayTicks);
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag | GestureSettings.Hold };
+			var drags = new List<DraggingEventArgs>();
+			var holds = new List<HoldingEventArgs>();
+			sut.Dragging += (snd, e) => drags.Add(e);
+			sut.Holding += (snd, e) => holds.Add(e);
+
+			using var _ = Touch();
+
+			sut.ProcessDownEvent(25, 25, ts: 0);
+			sut.ProcessMoveEvent(26, 26, ts: delay + 1);
+
+			holds.Should().BeEquivalentTo(Hold(25, 25, HoldingState.Started));
+
+			var start = sut.ProcessMoveEvent(50, 50, ts: delay + 2);
+
+			holds.Should().BeEquivalentTo(
+				Hold(25, 25, HoldingState.Started),
+				Hold(25, 25, HoldingState.Canceled));
+			drags.Should().AllBeEquivalentTo(Drag(start, DraggingState.Started));
+		}
 	}
 
 	internal class ManipulationRecorder
 	{
 		private readonly GestureRecognizer _recognizer;
 
-		private List<(GestureRecognizer snd, object args)> _result = new List<(GestureRecognizer, object)>();
+		private readonly List<(GestureRecognizer snd, object args)> _result = new List<(GestureRecognizer, object)>();
 
 		public ManipulationRecorder(GestureRecognizer recognizer)
 		{
@@ -1170,13 +1308,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var currentPointer = _currentPointer.Value;
 			var frameId = (uint)Interlocked.Increment(ref _frameId);
-			id = id ?? 1;
-			ts = ts ?? frameId;
+			id ??= 1;
+			ts ??= frameId;
 			var pointer = device.HasValue
 				? new PointerDevice(device.Value)
 				: (currentPointer.device ?? new PointerDevice(PointerDeviceType.Touch));
 			var location = new Windows.Foundation.Point(x, y);
-			properties = properties ?? currentPointer.properties ?? LeftButton;
+			properties ??= currentPointer.properties ?? LeftButton;
 
 			return new PointerPoint(frameId, ts.Value, pointer, id.Value, location, location, isInContact.GetValueOrDefault(), properties);
 		}
@@ -1187,7 +1325,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		public static RightTappedEventArgs RightTap(double x, double y, PointerDeviceType? device = null)
 			=> new RightTappedEventArgs(device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y));
 
-		public static void ProcessDownEvent(
+		public static HoldingEventArgs Hold(double x, double y, HoldingState state, PointerDeviceType? device = null, uint ? ptId = null)
+			=> new HoldingEventArgs(ptId ?? 1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), state);
+
+		public static DraggingEventArgs Drag(PointerPoint point, DraggingState state)
+			=> new DraggingEventArgs(point, state);
+
+		public static PointerPoint ProcessDownEvent(
 			this GestureRecognizer sut,
 			double x,
 			double y,
@@ -1196,9 +1340,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			PointerDeviceType ? device = null,
 			bool? isInContact = true,
 			PointerPointProperties properties = null)
-			=> sut.ProcessDownEvent(GetPoint(x, y, id, ts, device, isInContact, properties));
+		{
+			var pt = GetPoint(x, y, id, ts, device, isInContact, properties);
+			sut.ProcessDownEvent(pt);
+			return pt;
+		}
 
-		public static void ProcessMoveEvent(
+		public static PointerPoint ProcessMoveEvent(
 			this GestureRecognizer sut,
 			double x,
 			double y,
@@ -1207,12 +1355,19 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			PointerDeviceType? device = null,
 			bool? isInContact = true,
 			PointerPointProperties properties = null)
-			=> sut.ProcessMoveEvent(GetPoint(x, y, id, ts, device, isInContact, properties));
+		{
+			var pt = GetPoint(x, y, id, ts, device, isInContact, properties);
+			sut.ProcessMoveEvent(pt);
+			return pt;
+		}
 
-		public static void ProcessMoveEvent(this GestureRecognizer sut, PointerPoint point)
-			=> sut.ProcessMoveEvents(new[] { point });
+		public static PointerPoint ProcessMoveEvent(this GestureRecognizer sut, PointerPoint point)
+		{
+			sut.ProcessMoveEvents(new[] {point});
+			return point;
+		}
 
-		public static void ProcessUpEvent(
+		public static PointerPoint ProcessUpEvent(
 			this GestureRecognizer sut,
 			double x,
 			double y,
@@ -1221,6 +1376,10 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			PointerDeviceType? device = null,
 			bool? isInContact = true,
 			PointerPointProperties properties = null)
-			=> sut.ProcessUpEvent(GetPoint(x, y, id, ts, device, isInContact, properties));
+		{
+			var pt = GetPoint(x, y, id, ts, device, isInContact, properties);
+			sut.ProcessUpEvent(pt);
+			return pt;
+		}
 	}
 }

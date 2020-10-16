@@ -10,7 +10,7 @@ namespace Windows.UI.Input
 		// Skipping already declared property HoldingState
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint ContactCount
 		{
@@ -20,7 +20,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint CurrentContactCount
 		{
