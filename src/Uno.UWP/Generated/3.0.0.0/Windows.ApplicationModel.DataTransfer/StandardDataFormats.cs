@@ -19,7 +19,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		#endif
 		#if false || false || NET461 || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
-		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string Html
 		{
 			get

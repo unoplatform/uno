@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if false || false || NET461 || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented("NET461")]
 	#endif
 	public  partial class DataProviderDeferral 
 	{
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  void Complete()
 		{
