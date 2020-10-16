@@ -42,6 +42,7 @@ else
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Input.VisualState_Tests' or \
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests' or \
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.WUXProgressRingTests' or \
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests'
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '2' ];
