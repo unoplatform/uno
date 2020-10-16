@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Media
 			throw new NotSupportedException();
 		}
 
-		public static DependencyObject? GetChild(DependencyObject reference, int childIndex)
+		public static DependencyObject/* ? */ GetChild(DependencyObject reference, int childIndex)
 		{
 #if XAMARIN
 			return (reference as _ViewGroup)?
@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Media
 				.AsReadOnly();
 		}
 
-		public static DependencyObject? GetParent(DependencyObject reference)
+		public static DependencyObject/* ? */ GetParent(DependencyObject reference)
 		{
 #if XAMARIN
 			return (reference as _ViewGroup)?
@@ -202,7 +202,9 @@ namespace Windows.UI.Xaml.Media
 
 			return AdaptNative(view);
 		}
-		
+
+#nullable enable
+
 		private static readonly GetHitTestability _defaultGetTestability = elt => elt.GetHitTestVisibility();
 
 		internal static (UIElement? element, Branch? stale) HitTest(
@@ -398,7 +400,7 @@ namespace Windows.UI.Xaml.Media
 			return staleRoot;
 		}
 
-#region Helpers
+		#region Helpers
 		private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> Except(UIElement element)
 			=> children => children.Except(element);
 
@@ -422,9 +424,9 @@ namespace Windows.UI.Xaml.Media
 				yield return enumerator.Current;
 			}
 		}
-#endregion
+		#endregion
 
-#region HitTest tracing
+		#region HitTest tracing
 #if TRACE_HIT_TESTING
 		[ThreadStatic]
 		private static StringBuilder? _trace;
@@ -474,7 +476,7 @@ namespace Windows.UI.Xaml.Media
 			}
 #endif
 		}
-#endregion
+		#endregion
 
 		internal struct Branch
 		{

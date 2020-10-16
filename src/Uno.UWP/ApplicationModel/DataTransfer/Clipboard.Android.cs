@@ -133,11 +133,11 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			var clipData = manager.PrimaryClip;
 
-			Uri? clipApplicationLink = null;
-			string? clipHtml = null;
-			string? clipText = null;
-			Uri? clipUri = null;
-			Uri? clipWebLink = null;
+			Uri/* ? */ clipApplicationLink = null;
+			string/* ? */ clipHtml = null;
+			string/* ? */ clipText = null;
+			Uri/* ? */ clipUri = null;
+			Uri/* ? */ clipWebLink = null;
 
 			// Extract all the standard data format information from the clipboard.
 			// Each format can only be used once; therefore, the last occurrence of the format will be the one used.
