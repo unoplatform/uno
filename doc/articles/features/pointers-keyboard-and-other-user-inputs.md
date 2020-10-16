@@ -4,15 +4,15 @@
 
 User inputs are usually propagated to the using `RoutedEvent`, see. Uno's [routed events documentation](routed-events.md) to better understand their implementation on Uno.
 
-| Routed Event                  | Android | iOS     | Wasm    | MacOS | Skia WPF | Skia GtK | Tizen |    |
-| ----------------------------- | ------- | ------- | ------- | ----- | -------- | -------- | ----- |    |
-| _focus events_
+| Routed Event                  | Android | iOS     | Wasm    | MacOS | Skia WPF | Skia GtK | Tizen |     |
+| ----------------------------- | ------- | ------- | ------- | ----- | -------- | -------- | ----- | --- |
+| **_focus events_**
 | `GotFocus`                    | Yes     | Yes (1) | Yes (1) | ?     | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.gotfocus) |
 | `LostFocus`                   | Yes     | Yes (1) | Yes (1) | ?     | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.lostfocus) |
-| _keyboard events_
+| **_keyboard events_**
 | `KeyDown`           | Hardware Only (2) | Yes (2) | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keydown) |
 | `KeyUp`             | Hardware Only (2) | Yes (2) | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keyup) |
-| _pointer events_
+| **_pointer events_**
 | `PointerCanceled`             | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercanceled) |
 | `PointerCaptureLost`          | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercapturelost) |
 | `PointerEntered`              | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerentered) |
@@ -21,18 +21,18 @@ User inputs are usually propagated to the using `RoutedEvent`, see. Uno's [route
 | `PointerPressed`              | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerpressed) |
 | `PointerReleased`             | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerreleased) |
 | `PointerWheelChanged`         | No      | No      | Yes     | Yes   | Yes      | Yes      | No    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerwheelchanged) |
-| _manipulation events_
+| **_manipulation events_**
 | `ManipulationStarting`        | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationstarting) |
 | `ManipulationStarted`         | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationstarted) |
 | `ManipulationDelta`           | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationedelta) |
 | `ManipulationInertiaStarting` | No      | No      | No      | No    | No       | No       | No    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationinertiastarting) |
 | `ManipulationCompleted`       | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationcompleted) |
-| _gesture events_
+| **_gesture events_**
 | `Tapped`                      | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.tapped) |
 | `DoubleTapped`                | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.doubletapped) |
 | `RightTapped`                 | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.righttapped) |
 | `Holding`                     | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.holding) |
-| _drag and drop_
+| **_drag and drop_**
 | `DragStarting`                | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.dragstarting) |
 | `DragEnter`                   | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.dragenter) |
 | `DragOver`                    | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.dragover) |
