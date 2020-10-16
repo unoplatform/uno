@@ -28,7 +28,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				ApplyForeground();
 			}
+
+			TrySetNativeAnimating();
 		}
+
+		partial void TrySetNativeAnimating();
 
 		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{

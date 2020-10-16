@@ -30,21 +30,14 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnLoadedPartial() => TrySetNativeAnimating();
 
 		partial void OnUnloadedPartial() => TrySetNativeAnimating();
-
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
-		{
-			base.OnIsEnabledChanged(oldValue, newValue);
-
-			TrySetNativeAnimating();
-		}
-
+	
 		partial void OnIsActiveChangedPartial(bool _) => TrySetNativeAnimating();
 
-		private void TrySetNativeAnimating()
+		partial void TrySetNativeAnimating()
 		{
 			if (_native != null)
 			{
-				if (IsActive && IsEnabled && IsLoaded)
+				if (IsActive && IsLoaded)
 				{
 					_native.StartAnimating();
 				}
