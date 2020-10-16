@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 {
@@ -37,8 +38,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			_app.WaitForElement("RootPanel");
 
+			var currentPlatform = AppInitializer.GetLocalPlatform();
+			var supportsRotation = currentPlatform != Platform.Android && currentPlatform != Platform.iOS;
+
 			bool GetIsLandscape()
 			{
+				if (!supportsRotation)
+				{
+					return true;
+				}
+
 				var sampleRect = _app.GetRect("RootPanel");
 				var b = sampleRect.Width > sampleRect.Height;
 				return b;
@@ -46,6 +55,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			var isLandscape = GetIsLandscape();
 			var currentModeIsLandscape = isLandscape;
+
 
 			async Task ToggleOrientation()
 			{
@@ -78,6 +88,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 				var x1 = firstCommandBarPhysicalRect.X + (firstCommandBarPhysicalRect.Width * 0.75f);
 				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarPhysicalRect.Bottom - 1, Color.Red);
+
+				if(supportsRotation)
+				{
+					return; // We're on a platform not supporting rotations.
+				}
 
 				await ToggleOrientation();
 
