@@ -1,5 +1,5 @@
 ﻿#if __ANDROID__
-#nullable enable
+#nullable disable // Not supported by WinUI yet
 
 using Android.Content;
 using System;
@@ -15,7 +15,7 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		private const string ClipboardDataLabel = nameof(Clipboard);
 
-		public static void SetContent(DataPackage? content)
+		public static void SetContent(DataPackage/* ? */ content)
 		{
 			if (content is null)
 			{

@@ -1,4 +1,4 @@
-﻿#nullable enable
+﻿#nullable disable // Not supported by WinUI yet
 // #define TRACE_HIT_TESTING
 
 using System;
@@ -54,16 +54,16 @@ namespace Windows.UI.Xaml.Media
 			throw new NotSupportedException();
 		}
 
-		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Point intersectingPoint, UIElement subtree)
+		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Point intersectingPoint, UIElement/* ? */ subtree)
 			=> FindElementsInHostCoordinates(intersectingPoint, subtree, false);
 
 		[Uno.NotImplemented]
-		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Rect intersectingRect, UIElement subtree)
+		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Rect intersectingRect, UIElement/* ? */ subtree)
 		{
 			throw new NotSupportedException();
 		}
 
-		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Point intersectingPoint, UIElement? subtree, bool includeAllElements)
+		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Point intersectingPoint, UIElement/* ? */ subtree, bool includeAllElements)
 		{
 			if (subtree != null)
 			{
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		[Uno.NotImplemented]
-		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Rect intersectingRect, UIElement subtree, bool includeAllElements)
+		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Rect intersectingRect, UIElement/* ? */ subtree, bool includeAllElements)
 		{
 			throw new NotSupportedException();
 		}
