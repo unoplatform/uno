@@ -1,4 +1,4 @@
-﻿#if __IOS__
+﻿#if __IOS__ || __ANDROID__
 #define HAS_NATIVE_COMMANDBAR
 #endif
 using System;
@@ -139,7 +139,8 @@ namespace Windows.UI.Xaml.Controls
 			UpdateTemplateSettings();
 
 #if HAS_NATIVE_COMMANDBAR
-			 _isNativeTemplate = this.FindFirstChild<NativeCommandBarPresenter>() != null;
+			 _isNativeTemplate = Uno.UI.Extensions.DependencyObjectExtensions
+				 .FindFirstChild<NativeCommandBarPresenter>(this) != null;
 #endif
 		}
 
@@ -165,17 +166,33 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_isNativeTemplate)
 			{
-				return base.MeasureOverride(availableSize);
+				var size = base.MeasureOverride(availableSize);
+				return size;
 			}
 
 			// On WinUI the CommandBar does not constraints its children (it only clips them)
 			// (It's the responsibility of each child to constraint itself)
 			// Note: This override is used only for the XAML command bar, not the native!
 			var infinity = new Size(double.PositiveInfinity, double.PositiveInfinity);
-			return base.MeasureOverride(infinity);
+			var result = base.MeasureOverride(infinity);
+
+			var height = ClosedDisplayMode switch
+			{
+				AppBarClosedDisplayMode.Compact => _compactHeight,
+				AppBarClosedDisplayMode.Minimal => _minimalHeight,
+				_ => 0
+			};
+
+			return new Size(result.Width, height);
 		}
 
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var size = base.ArrangeOverride(finalSize);
+			return size;
+		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => !_isNativeTemplate;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 #endif
 	}
