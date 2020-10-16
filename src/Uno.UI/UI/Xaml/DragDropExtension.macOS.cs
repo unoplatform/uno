@@ -32,6 +32,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			_window.DraggingUpdatedAction = OnDraggingUpdated;
 			_window.DraggingExitedAction = OnDraggingExited;
 			_window.PerformDragOperationAction = OnPerformDragOperation;
+			_window.DraggingEndedAction = OnDraggingEnded;
 		}
 
 		private NSDragOperation OnDraggingEnteredEvent(NSDraggingInfo draggingInfo)
@@ -66,6 +67,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		{
 			var operation = _manager.ProcessDropped(new DragEventSource(_fakePointerId, draggingInfo, _window));
 			return (operation != DataPackageOperation.None);
+		}
+
+		private void OnDraggingEnded(NSDraggingInfo draggingInfo)
+		{
+			return;
 		}
 
 		public void StartNativeDrag(CoreDragInfo info)

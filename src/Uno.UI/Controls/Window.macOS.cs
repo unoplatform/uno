@@ -164,11 +164,24 @@ namespace Uno.UI.Controls
 		[Export("draggingEnded:")] // Do not remove
 		public virtual void DraggingEnded(NSDraggingInfo draggingInfo)
 		{
-			// Not used in this context.
-			// These methods within NSWindow are only used for external drop into Uno apps.
-			// If Uno doesn't accept and handle the drop it doesn't need to be aware of when it ends.
+			try
+			{
+				DraggingEndedAction.Invoke(draggingInfo);
+			}
+			catch { }
+
 			return;
 		}
+
+		/// <summary>
+		/// Code to execute when the <see cref="DraggingEnded(NSDraggingInfo)"/> method is invoked.
+		/// This can be used in a similar way to <see cref="UIElement.DropCompleted"/>.
+		/// </summary>
+		public Action<NSDraggingInfo> DraggingEndedAction { get; set; } =
+			(NSDraggingInfo draggingInfo) =>
+			{
+				return;
+			};
 
 		/// <summary>
 		/// Method invoked when a drag operation exited the <see cref="NSWindow"/>.
