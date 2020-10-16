@@ -36,24 +36,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 		{
 			Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Dynamic");
 
-			_app.WaitForElement("RootPanel");
+			const string rootElementName = "RootPanel";
+			_app.WaitForElement(rootElementName);
 
-			var currentPlatform = AppInitializer.GetLocalPlatform();
-			var supportsRotation = currentPlatform != Platform.Android && currentPlatform != Platform.iOS;
+			var supportsRotation = GetSupportsRotation();
 
-			bool GetIsLandscape()
-			{
-				if (!supportsRotation)
-				{
-					return true;
-				}
-
-				var sampleRect = _app.GetRect("RootPanel");
-				var b = sampleRect.Width > sampleRect.Height;
-				return b;
-			}
-
-			var isLandscape = GetIsLandscape();
+			var isLandscape = GetIsCurrentRotationLandscape(rootElementName);
 			var currentModeIsLandscape = isLandscape;
 
 
@@ -70,7 +58,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 				currentModeIsLandscape = !currentModeIsLandscape;
 
-				_app.WaitFor(()=> GetIsLandscape() == currentModeIsLandscape);
+				_app.WaitFor(()=> GetIsCurrentRotationLandscape(rootElementName) == currentModeIsLandscape);
 
 				await Task.Delay(125); // A delay ia required after rotation for the test to succeed
 			}
@@ -132,7 +120,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 					_app.SetOrientationPortrait();
 				}
 
-				_app.WaitFor(() => GetIsLandscape() == isLandscape);
+				_app.WaitFor(() => GetIsCurrentRotationLandscape(rootElementName) == isLandscape);
 			}
 		}
 

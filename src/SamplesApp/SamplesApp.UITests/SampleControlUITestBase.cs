@@ -352,5 +352,24 @@ namespace SamplesApp.UITests
 			var rect = _app.GetRect(elementName);
 			return GetScaledCenter(rect);
 		}
+
+		protected bool GetIsCurrentRotationLandscape(string elementName)
+		{
+			if (!GetSupportsRotation())
+			{
+				return true;
+			}
+
+			var sampleRect = _app.GetRect(elementName);
+			var b = sampleRect.Width > sampleRect.Height;
+			return b;
+		}
+
+		protected static bool GetSupportsRotation()
+		{
+			var currentPlatform = AppInitializer.GetLocalPlatform();
+			var supportsRotation = currentPlatform == Platform.Android || currentPlatform == Platform.iOS;
+			return supportsRotation;
+		}
 	}
 }
