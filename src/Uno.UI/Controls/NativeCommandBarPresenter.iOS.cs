@@ -22,7 +22,7 @@ namespace Uno.UI.Controls
 	{
 		private readonly SerialDisposable _statusBarSubscription = new SerialDisposable();
 		private readonly SerialDisposable _orientationSubscription = new SerialDisposable();
-		private CommandBar? _commandBar;
+		private WeakReference<CommandBar?>? _commandBar;
 
 		private UINavigationBar? _navigationBar;
 		private readonly bool _isPhone = UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone;
@@ -33,14 +33,19 @@ namespace Uno.UI.Controls
 
 			// TODO: Find a proper way to decide whether a CommandBar exists on canvas (within Page), or is mapped to the UINavigationController's NavigationBar.
 
-			if (_commandBar == null)
+			var commandBar = _commandBar?.Target;
+
+			if (commandBar == null)
 			{
-				_commandBar = TemplatedParent as CommandBar;
-				_navigationBar = _commandBar?.GetRenderer(RendererFactory).Native;
+				commandBar = TemplatedParent as CommandBar;
+				_commandBar = new WeakReference<CommandBar?>(commandBar);
+
+				_navigationBar = commandBar?.GetRenderer(RendererFactory).Native;
+
 			}
 			else
 			{
-				_navigationBar = _commandBar?.ResetRenderer(RendererFactory).Native;
+				_navigationBar = commandBar?.ResetRenderer(RendererFactory).Native;
 			}
 
 			if (_navigationBar == null)
@@ -75,7 +80,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		CommandBarRenderer RendererFactory() => new CommandBarRenderer(_commandBar!);
+		CommandBarRenderer RendererFactory() => new CommandBarRenderer(_commandBar?.Target);
 
 		protected override Size MeasureOverride(Size size)
 		{
