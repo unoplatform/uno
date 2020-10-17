@@ -217,7 +217,7 @@ namespace Windows.Storage
 			return lines;
 		}
 
-		internal static async Task WriteLinesTaskAsync(IStorageFile file, IEnumerable<string> lines, bool append, bool recognizeEncoding, UwpUnicodeEncoding? encoding = null) =>
+		internal static Task WriteLinesTaskAsync(IStorageFile file, IEnumerable<string> lines, bool append, bool recognizeEncoding, UwpUnicodeEncoding? encoding = null) =>
 			WriteTextTaskAsync(file, ConvertLinesToString(lines), append, recognizeEncoding, encoding);
 
 		internal static async Task WriteTextTaskAsync(IStorageFile file, string contents, bool append, bool recognizeEncoding, UwpUnicodeEncoding? encoding = null)
