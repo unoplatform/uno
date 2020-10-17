@@ -77,7 +77,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 				var x1 = firstCommandBarPhysicalRect.X + (firstCommandBarPhysicalRect.Width * 0.75f);
 				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarPhysicalRect.Bottom - 1, Color.Red);
 
-				if(supportsRotation)
+				if(!supportsRotation)
 				{
 					return; // We're on a platform not supporting rotations.
 				}
