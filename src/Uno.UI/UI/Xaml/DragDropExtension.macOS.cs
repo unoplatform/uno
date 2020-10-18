@@ -5,8 +5,6 @@ using System;
 using System.Numerics;
 using System.Threading;
 using AppKit;
-using Foundation;
-using MobileCoreServices;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Core;
@@ -83,7 +81,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 					NSEvent sourceEvent = new NSEvent();
 
 					_window.ContentView.BeginDraggingSession(
-						await DataPackage.CreateNativeDragDropData(info.Data),
+						await DataPackage.CreateNativeDragDropData(info.Data, info.GetPosition(null)),
 						sourceEvent,
 						source);
 				}

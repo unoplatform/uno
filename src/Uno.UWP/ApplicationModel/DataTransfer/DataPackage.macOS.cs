@@ -8,6 +8,7 @@ using System.Linq;
 using AppKit;
 using Foundation;
 using ObjCRuntime;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
@@ -93,10 +94,16 @@ namespace Windows.ApplicationModel.DataTransfer
 		/// Creates new, native drag and drop data from the contents of the given <see cref="DataPackageView"/>.
 		/// </summary>
 		/// <param name="data">The content to create the native drag and drop data from.</param>
-		internal static async Task<NSDraggingItem[]> CreateNativeDragDropData(DataPackageView data)
+		/// <param name="startPoint">The starting point of the drag in screen coordinates.
+		/// This is needed to ensure the dragging frame visual will be correctly placed at the start of a drag.</param>
+		internal static async Task<NSDraggingItem[]> CreateNativeDragDropData(
+			DataPackageView data,
+			Point startPoint)
 		{
 			NSDraggingItem draggingItem;
 			var items = new List<NSDraggingItem>();
+			double maxFrameDimension = 300.0; // May be adjusted
+			var defaultFrameRect = new CoreGraphics.CGRect(startPoint.X, startPoint.Y, 100, 30);
 
 			/* Note that NSDraggingItems are required by the BeginDraggingSession methods.
 			 * Therefore, that is what is constructed here instead of pasteboard items.
@@ -105,6 +112,17 @@ namespace Windows.ApplicationModel.DataTransfer
 			 * can therefore be used to directly construct an NSDraggingItem.
 			 * However, for other types (such as HTML) the full pasteboard item must be constructed first defining
 			 * both its type and string content.
+			 * 
+			 * The dragging frame is used to represent the visual of the item being dragged. This could be a
+			 * preview of the image or sample text. At minimum, macOS requires the DraggingFrame property of the 
+			 * NSDraggingItem to be set with a CGRect or the app will crash. It is however better to set both
+			 * the frame bounds and content at the same time with .SetDraggingFrame(). For caveats see:
+			 * https://developer.apple.com/documentation/appkit/nsdraggingitem/1528746-setdraggingframe
+			 * 
+			 * Because Uno does not currently support the DragUI, this code only generates a real drag visual
+			 * for images where a visual is already defined. For other types such as text, no visual will be
+			 * generated. In the future, when DragUI and its corresponding image is supported, this can change.
+			 * 
 			 */
 
 			if (data?.Contains(StandardDataFormats.Bitmap) ?? false)
@@ -129,7 +147,18 @@ namespace Windows.ApplicationModel.DataTransfer
 				if (image != null)
 				{
 					draggingItem = new NSDraggingItem(image);
-					draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+
+					// For an NSImage, we will use the image itself as the dragging visual.
+					// The visual should be no larger than the max dimension setting and is therefore scaled.
+					NSBitmapImageRep rep = new NSBitmapImageRep(image.CGImage);
+					int width = (int)rep.PixelsWide;
+					int height = (int)rep.PixelsHigh;
+					double scale = maxFrameDimension / Math.Max(width, height);
+
+					// Dragging frame must be set
+					draggingItem.SetDraggingFrame(
+						new CoreGraphics.CGRect(startPoint.X, startPoint.Y, width * scale, height * scale),
+						image);
 					items.Add(draggingItem);
 				}
 			}
@@ -144,7 +173,7 @@ namespace Windows.ApplicationModel.DataTransfer
 					pasteboardItem.SetStringForType(html ?? string.Empty, NSPasteboard.NSPasteboardTypeHTML);
 
 					draggingItem = new NSDraggingItem(pasteboardItem);
-					draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+					draggingItem.DraggingFrame = defaultFrameRect; // Must be set
 					items.Add(draggingItem);
 				}
 			}
@@ -160,7 +189,7 @@ namespace Windows.ApplicationModel.DataTransfer
 					pasteboardItem.SetStringForType(rtf ?? string.Empty, NSPasteboard.NSPasteboardTypeRTF);
 
 					draggingItem = new NSDraggingItem(pasteboardItem);
-					draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+					draggingItem.DraggingFrame = defaultFrameRect; // Must be set
 					items.Add(draggingItem);
 				}
 			}
@@ -182,7 +211,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				if (!string.IsNullOrEmpty(text))
 				{
 					draggingItem = new NSDraggingItem((NSString)text);
-					draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+					draggingItem.DraggingFrame = defaultFrameRect; // Must be set
 					items.Add(draggingItem);
 				}
 			}
@@ -193,7 +222,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				var uri = await data.GetUriAsync();
 
 				draggingItem = new NSDraggingItem(new NSUrl(uri.ToString()));
-				draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+				draggingItem.DraggingFrame = defaultFrameRect; // Must be set
 				items.Add(draggingItem);
 			}
 			else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
@@ -201,7 +230,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				var webLink = await data.GetWebLinkAsync();
 
 				draggingItem = new NSDraggingItem(new NSUrl(webLink.ToString()));
-				draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+				draggingItem.DraggingFrame = defaultFrameRect; // Must be set
 				items.Add(draggingItem);
 			}
 			else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
@@ -209,7 +238,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				var appLink = await data.GetApplicationLinkAsync();
 
 				draggingItem = new NSDraggingItem(new NSUrl(appLink.ToString()));
-				draggingItem.DraggingFrame = new CoreGraphics.CGRect(0, 0, 1, 1); // Must be set
+				draggingItem.DraggingFrame = defaultFrameRect; // Must be set
 				items.Add(draggingItem);
 			}
 
