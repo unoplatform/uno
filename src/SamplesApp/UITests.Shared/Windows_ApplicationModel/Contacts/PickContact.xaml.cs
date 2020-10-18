@@ -39,7 +39,7 @@ namespace UITests.Windows_ApplicationModel.Contacts
 	public class PickContactViewModel : ViewModelBase
 	{
 		private string _status = "";
-		private Contact _contact = null;
+		private Contact? _contact = null;
 
 		public PickContactViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -71,7 +71,7 @@ namespace UITests.Windows_ApplicationModel.Contacts
 			}
 		}
 
-		public Contact Contact
+		public Contact? Contact
 		{
 			get => _contact;
 			set
