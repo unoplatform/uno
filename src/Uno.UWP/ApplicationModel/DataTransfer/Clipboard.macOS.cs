@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AppKit;
 using Foundation;
 using Windows.UI.Core;
@@ -18,6 +19,9 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			DataPackage.SetToNativeClipboard(content);
 		}
+
+		internal static Task SetContentAsync(DataPackage content)
+			=> DataPackage.SetToNativeClipboardAsync(content);
 
 		public static DataPackageView GetContent()
 		{

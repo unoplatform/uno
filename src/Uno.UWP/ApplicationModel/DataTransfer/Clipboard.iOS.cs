@@ -20,18 +20,20 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				async () =>
-				{
-					var data = content?.GetView(); // Freezes the DataPackage
+				() => SetContentAsync(content));
+		}
 
-					if (data?.Contains(StandardDataFormats.Text) ?? false)
-					{
-						var text = await data.GetTextAsync();
+		internal static async Task SetContentAsync(DataPackage content)
+		{
+			var data = content?.GetView(); // Freezes the DataPackage
 
-						// Setting to null doesn't reset the clipboard like for Android
-						UIPasteboard.General.String = text ?? string.Empty;
-					}
-				});
+			if (data?.Contains(StandardDataFormats.Text) ?? false)
+			{
+				var text = await data.GetTextAsync();
+
+				// Setting to null doesn't reset the clipboard like for Android
+				UIPasteboard.General.String = text ?? string.Empty;
+			}
 		}
 
 		public static DataPackageView GetContent()

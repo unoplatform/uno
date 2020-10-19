@@ -30,95 +30,96 @@ namespace Windows.ApplicationModel.DataTransfer
 			//    before one or more of the data formats is ready.
 			CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				async () =>
+				() => SetContentAsync(content));
+		}
+
+		internal static async Task SetContentAsync(DataPackage content)
+		{
+			var data = content?.GetView();
+
+			var items = new List<ClipData.Item>();
+			var mimeTypes = new List<string>();
+
+			if (data?.Contains(StandardDataFormats.Text) ?? false)
+			{
+				var text = await data.GetTextAsync();
+
+				items.Add(new ClipData.Item(text));
+				mimeTypes.Add("text/plaintext");
+			}
+
+			// UWP has the following standard data formats that correspond with an Android Uri:
+			//
+			//  1. Uri, now deprecated in favor of:
+			//  2. ApplicationLink and
+			//  3. WebLink
+			//
+			// For maximum compatibility with Android all are mapped to Uri. However, only
+			// one may be used at a time in the above defined priority. WebLink is
+			// considered more specific than ApplicationLink.
+			if (data?.Contains(StandardDataFormats.Uri) ?? false)
+			{
+				var uri = await data.GetUriAsync();
+				AddAndroidUri(uri.ToString());
+			}
+			else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
+			{
+				var webLink = await data.GetWebLinkAsync();
+				AddAndroidUri(webLink.ToString());
+			}
+			else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
+			{
+				var appLink = await data.GetApplicationLinkAsync();
+				AddAndroidUri(appLink.ToString());
+			}
+
+			if (data?.Contains(StandardDataFormats.Html) ?? false)
+			{
+				var html = await data.GetHtmlFormatAsync();
+
+				// Matches all tags
+				Regex regex = new Regex("(<.*?>\\s*)+", RegexOptions.Singleline);
+				// Replace tags by spaces and trim
+				var plainText = regex.Replace(html, " ").Trim();
+
+				items.Add(new ClipData.Item(plainText, html));
+				mimeTypes.Add("text/html");
+			}
+
+			// Set all the data formats to the Android clipboard
+			if (items.Count > 0)
+			{
+				ClipData clipData = new ClipData(
+					new ClipDescription(ClipboardDataLabel, mimeTypes.ToArray()),
+					items[0]);
+
+				for (int itemIndex = 1; itemIndex < items.Count; itemIndex++)
 				{
-					var data = content?.GetView();
+					clipData.AddItem(items[itemIndex]);
+				}
 
-					var items = new List<ClipData.Item>();
-					var mimeTypes = new List<string>();
+				var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
+				if (manager is null)
+				{
+					return;
+				}
 
-					if (data?.Contains(StandardDataFormats.Text) ?? false)
-					{
-						var text = await data.GetTextAsync();
+				manager.PrimaryClip = clipData;
+			}
+			else
+			{
+				// Clear clipboard
+				Clear();
+			}
 
-						items.Add(new ClipData.Item(text));
-						mimeTypes.Add("text/plaintext");
-					}
+			// Local function to convert a UWP Uri for Android and add it to the items list
+			void AddAndroidUri(string uri)
+			{
+				var androidUri = Android.Net.Uri.Parse(uri);
 
-					// UWP has the following standard data formats that correspond with an Android Uri:
-					//
-					//  1. Uri, now deprecated in favor of:
-					//  2. ApplicationLink and
-					//  3. WebLink
-					//
-					// For maximum compatibility with Android all are mapped to Uri. However, only
-					// one may be used at a time in the above defined priority. WebLink is
-					// considered more specific than ApplicationLink.
-					if (data?.Contains(StandardDataFormats.Uri) ?? false)
-					{
-						var uri = await data.GetUriAsync();
-						AddAndroidUri(uri.ToString());
-					}
-					else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
-					{
-						var webLink = await data.GetWebLinkAsync();
-						AddAndroidUri(webLink.ToString());
-					}
-					else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
-					{
-						var appLink = await data.GetApplicationLinkAsync();
-						AddAndroidUri(appLink.ToString());
-					}
-
-					if (data?.Contains(StandardDataFormats.Html) ?? false)
-					{
-						var html = await data.GetHtmlFormatAsync();
-
-						// Matches all tags
-						Regex regex = new Regex("(<.*?>\\s*)+", RegexOptions.Singleline);
-						// Replace tags by spaces and trim
-						var plainText = regex.Replace(html, " ").Trim();
-
-						items.Add(new ClipData.Item(plainText, html));
-						mimeTypes.Add("text/html");
-					}
-
-					// Set all the data formats to the Android clipboard
-					if (items.Count > 0)
-					{
-						ClipData clipData = new ClipData(
-							new ClipDescription(ClipboardDataLabel, mimeTypes.ToArray()),
-							items[0]);
-
-						for (int itemIndex = 1; itemIndex < items.Count; itemIndex++)
-						{
-							clipData.AddItem(items[itemIndex]);
-						}
-
-						var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
-						if (manager is null)
-						{
-							return;
-						}
-						manager.PrimaryClip = clipData;
-					}
-					else
-					{
-						// Clear clipboard
-						Clear();
-					}
-
-					// Local function to convert a UWP Uri for Android and add it to the items list
-					void AddAndroidUri(string uri)
-					{
-						var androidUri = Android.Net.Uri.Parse(uri);
-
-						items.Add(new ClipData.Item(androidUri));
-						mimeTypes.Add("text/uri-list");
-					}
-				});
-
-			return;
+				items.Add(new ClipData.Item(androidUri));
+				mimeTypes.Add("text/uri-list");
+			}
 		}
 
 		public static DataPackageView GetContent()
