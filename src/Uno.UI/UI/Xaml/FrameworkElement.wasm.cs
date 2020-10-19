@@ -204,26 +204,29 @@ namespace Windows.UI.Xaml
 
 		protected void SetCornerRadius(CornerRadius cornerRadius)
 		{
-			var borderRadius = cornerRadius == CornerRadius.None
-				? ""
-				: $"{cornerRadius.TopLeft}px {cornerRadius.TopRight}px {cornerRadius.BottomRight}px {cornerRadius.BottomLeft}px";
+			if (cornerRadius == CornerRadius.None)
+			{
+				ResetStyle("border-radius", "overflow");
+			}
+			else
+			{
+				var borderRadiusCssString =
+					$"{cornerRadius.TopLeft.ToStringInvariant()}px {cornerRadius.TopRight.ToStringInvariant()}px {cornerRadius.BottomRight.ToStringInvariant()}px {cornerRadius.BottomLeft.ToStringInvariant()}px";
+				SetStyle(
+					("border-radius", borderRadiusCssString),
+					("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
+			}
 
-			SetStyle("border-radius", borderRadius);
 		}
 
-		protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
+		protected void SetBorder(Thickness thickness, Brush brush)
 		{
-			var borderRadius = cornerRadius == CornerRadius.None
-				? ""
-				: $"{cornerRadius.TopLeft}px {cornerRadius.TopRight}px {cornerRadius.BottomRight}px {cornerRadius.BottomLeft}px";
-
 			if (thickness == Thickness.Empty)
 			{
 				SetStyle(
 					("border-style", "none"),
 					("border-color", ""),
-					("border-width", ""),
-					("border-radius", borderRadius));
+					("border-width", ""));
 			}
 			else
 			{
@@ -236,8 +239,7 @@ namespace Windows.UI.Xaml
 							("border", ""),
 							("border-style", "solid"),
 							("border-color", borderColor.ToHexString()),
-							("border-width", borderWidth),
-							("border-radius", borderRadius));
+							("border-width", borderWidth));
 						break;
 					case GradientBrush gradientBrush:
 						var border = gradientBrush.ToCssString(RenderSize); // TODO: Reevaluate when size is changing
@@ -245,8 +247,7 @@ namespace Windows.UI.Xaml
 							("border-style", "solid"),
 							("border-color", ""),
 							("border-image", border),
-							("border-width", borderWidth),
-							("border-radius", borderRadius));
+							("border-width", borderWidth));
 						break;
 					case AcrylicBrush acrylicBrush:
 						var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
@@ -254,11 +255,10 @@ namespace Windows.UI.Xaml
 							("border", ""),
 							("border-style", "solid"),
 							("border-color", acrylicFallbackColor.ToHexString()),
-							("border-width", borderWidth),
-							("border-radius", borderRadius));
+							("border-width", borderWidth));
 						break;
 					default:
-						ResetStyle("border-style", "border-color", "border-image", "border-width", "border-radius");
+						ResetStyle("border-style", "border-color", "border-image", "border-width");
 						break;
 				}
 			}
