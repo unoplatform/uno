@@ -13,12 +13,18 @@ using TizenEmail = Tizen.Pims.Contacts.ContactsViews.Email;
 using TizenName = Tizen.Pims.Contacts.ContactsViews.Name;
 using TizenNumber = Tizen.Pims.Contacts.ContactsViews.Number;
 using TizenAddress = Tizen.Pims.Contacts.ContactsViews.Address;
+using TizenNote = Tizen.Pims.Contacts.ContactsViews.Note;
+using TizenNickname = Tizen.Pims.Contacts.ContactsViews.Nickname;
 
 namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts
 {
-	public class ContactPickerExtension : IContactPickerExtension
+	public class TizenContactPickerExtension : IContactPickerExtension
 	{
 		private const string ContactMimeType = "application/vnd.tizen.contact";
+
+		public TizenContactPickerExtension(object owner)
+		{
+		}
 
 		public Task<bool> IsSupportedAsync() => Task.FromResult(true);
 
@@ -30,6 +36,7 @@ namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts
 
 		private async Task<Contact[]> PickContactsAsync(bool pickMultiple)
 		{
+			PrivilegesHelper.EnsureDeclared(Privileges.AppManagerLaunch);
 			if (!await PrivilegesHelper.RequestAsync(Privileges.ContactsRead))
 			{
 				return Array.Empty<Contact>();
@@ -79,9 +86,11 @@ namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts
 		{
 			var contact = new Contact();
 
-			var recordName = contactsRecord.GetChildRecord(TizenContact.Name, 0);
-			if (recordName != null)
+			
+			if (contactsRecord.GetChildRecordCount(TizenContact.Name) > 0)
 			{
+				var recordName = contactsRecord.GetChildRecord(TizenContact.Name, 0);
+
 				contact.HonorificNamePrefix = recordName.Get<string>(TizenName.Prefix) ?? string.Empty;
 				contact.FirstName = recordName.Get<string>(TizenName.First) ?? string.Empty;
 				contact.MiddleName = recordName.Get<string>(TizenName.Addition) ?? string.Empty;
@@ -141,6 +150,20 @@ namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts
 					StreetAddress = street ?? string.Empty,
 					Kind = GetContactAddressKind(type)
 				});
+			}
+
+			if (contactsRecord.GetChildRecordCount(TizenContact.Note) > 0)
+			{
+				contact.Notes = contactsRecord
+					.GetChildRecord(TizenContact.Note, 0)?
+					.Get<string>(TizenNote.Contents) ?? string.Empty;
+			}
+
+			if (contactsRecord.GetChildRecordCount(TizenContact.Nickname) > 0)
+			{
+				contact.Nickname = contactsRecord
+					.GetChildRecord(TizenContact.Nickname, 0)?
+					.Get<string>(TizenNickname.Name) ?? string.Empty;
 			}
 
 			return contact;
