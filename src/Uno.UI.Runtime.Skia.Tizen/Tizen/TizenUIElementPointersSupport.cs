@@ -56,6 +56,15 @@ namespace Uno.UI.Runtime.Skia
 			SetupMomentumGesture();
 		}
 
+		/// <inheritdoc />
+		public void ReleasePointerCapture()
+			=> this.Log().Error("Pointer capture release is not supported on Tizen");
+
+		/// <inheritdoc />
+		public void SetPointerCapture()
+			=> this.Log().Error("Pointer capture is not supported on Tizen");
+
+
 		private void SetupTapGesture()
 		{
 			_gestureLayer.SetTapCallback(GestureLayer.GestureType.Tap, GestureLayer.GestureState.Start, OnTapStart);
@@ -170,6 +179,8 @@ namespace Uno.UI.Runtime.Skia
 			{
 				IsLeftButtonPressed = left,
 				IsRightButtonPressed = right,
+				IsPrimary = true,
+				IsInRange = true,
 			};
 	}
 }

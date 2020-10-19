@@ -1,9 +1,12 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Windows.Devices.Input;
+using Windows.Foundation;
 using Windows.System;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
@@ -18,7 +21,7 @@ namespace Windows.UI.Input
 		private class Gesture
 		{
 			private readonly GestureRecognizer _recognizer;
-			private DispatcherQueueTimer _holdingTimer;
+			private DispatcherQueueTimer? _holdingTimer;
 			private GestureSettings _settings;
 			private HoldingState? _holdingState;
 
@@ -28,7 +31,7 @@ namespace Windows.UI.Input
 
 			public PointerPoint Down { get; }
 
-			public PointerPoint Up { get; private set; }
+			public PointerPoint? Up { get; private set; }
 
 			public bool IsCompleted { get; private set; }
 
@@ -161,7 +164,7 @@ namespace Windows.UI.Input
 				{
 					// Note: Up cannot be 'null' here!
 
-					_recognizer._lastSingleTap = (PointerIdentifier, Up.Timestamp, Up.Position);
+					_recognizer._lastSingleTap = (PointerIdentifier, Up!.Timestamp, Up.Position);
 					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(PointerType, Down.Position, tapCount: 1));
 
 					return true;
@@ -201,7 +204,7 @@ namespace Windows.UI.Input
 				}
 			}
 
-			private void TryUpdateHolding(PointerPoint current = null, bool timeElapsed = false)
+			private void TryUpdateHolding(PointerPoint? current = null, bool timeElapsed = false)
 			{
 				Debug.Assert(timeElapsed || current != null);
 
@@ -218,8 +221,8 @@ namespace Windows.UI.Input
 					}
 				}
 				else if (SupportsHolding()
-					&& !_holdingState.HasValue
-					&& (timeElapsed || IsLongPress(this, current))
+					&& _holdingState is null
+					&& (timeElapsed || IsLongPress(Down, current!))
 					&& IsBeginningOfTapGesture(LeftButton, this))
 				{
 					StopHoldingTimer();
@@ -256,6 +259,7 @@ namespace Windows.UI.Input
 			{
 				// When possible we don't start a timer for the Holding event, instead we rely on the fact that
 				// we get a lot of small moves due to the lack of precision of the capture device (pen and touch).
+				// Note: We rely on the same side effect for Drag detection (cf. Manipulation.IsBeginningOfDragManipulation).
 
 				switch (PointerType)
 				{
@@ -287,6 +291,139 @@ namespace Windows.UI.Input
 				timer.Stop();
 				((Gesture)timer.State).TryUpdateHolding(timeElapsed: true);
 			}
+			#endregion
+
+			#region Gestures recognition (static helpers that defines the actual gestures behavior)
+
+			// The beginning of a Tap gesture is: 1 down -> * moves close to the down with same buttons pressed
+			private static bool IsBeginningOfTapGesture(CheckButton isExpectedButton, Gesture points)
+			{
+				if (!isExpectedButton(points.Down)) // We validate only the start as for other points we validate the full pointer identifier
+				{
+					return false;
+				}
+
+				// Validate tap gesture
+				// Note: There is no limit for the duration of the tap!
+				if (points.HasMovedOutOfTapRange || points.HasChangedPointerIdentifier)
+				{
+					return false;
+				}
+
+				return true;
+			}
+
+			// A Tap gesture is: 1 down -> * moves close to the down with same buttons pressed -> 1 up
+			private static bool IsTapGesture(CheckButton isExpectedButton, Gesture points)
+			{
+				if (points.Up == null) // no tap if no up!
+				{
+					return false;
+				}
+
+				// Validate that all the intermediates points are valid
+				if (!IsBeginningOfTapGesture(isExpectedButton, points))
+				{
+					return false;
+				}
+
+				// For the pointer up, we check only the distance, as it's expected that the pressed button changed!
+				if (IsOutOfTapRange(points.Down.Position, points.Up.Position))
+				{
+					return false;
+				}
+
+				return true;
+			}
+
+			public static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
+			{
+				if (previousTap.ts == 0) // i.s. no previous tap to compare with
+				{
+					return false;
+				}
+
+				var currentId = GetPointerIdentifier(down);
+				var currentTs = down.Timestamp;
+				var currentPosition = down.Position;
+
+				return previousTap.id == currentId
+					&& currentTs - previousTap.ts <= MultiTapMaxDelayTicks
+					&& !IsOutOfTapRange(previousTap.position, currentPosition);
+			}
+
+			private static bool IsRightTapGesture(Gesture points, out bool isLongPress)
+			{
+				switch (points.PointerType)
+				{
+					case PointerDeviceType.Touch:
+						var isLeftTap = IsTapGesture(LeftButton, points);
+						if (isLeftTap && IsLongPress(points.Down, points.Up!))
+						{
+							isLongPress = true;
+							return true;
+						}
+#if __IOS__
+						if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretForceTouchAsRightTap
+							&& isLeftTap
+							&& points.HasExceedMinHoldPressure)
+						{
+							isLongPress = true; // We handle the pressure exactly like a long press
+							return true;
+						}
+#endif
+						isLongPress = false;
+						return false;
+
+					case PointerDeviceType.Pen:
+						if (IsTapGesture(BarrelButton, points))
+						{
+							isLongPress = false;
+							return true;
+						}
+
+						// Some pens does not have a barrel button, so we also allow long press (and anyway it's the UWP behavior)
+						if (IsTapGesture(LeftButton, points) && IsLongPress(points.Down, points.Up!))
+						{
+							isLongPress = true;
+							return true;
+						}
+
+						isLongPress = false;
+						return false;
+
+					case PointerDeviceType.Mouse:
+						if (IsTapGesture(RightButton, points))
+						{
+							isLongPress = false;
+							return true;
+						}
+#if __ANDROID__
+						// On Android, usually the right button is mapped to back navigation. So, unlike UWP,
+						// we also allow a long press with the left button to be more user friendly.
+						if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap
+							&& IsTapGesture(LeftButton, points)
+							&& IsLongPress(points.Down, points.Up!))
+						{
+							isLongPress = true;
+							return true;
+						}
+#endif
+						isLongPress = false;
+						return false;
+
+					default:
+						isLongPress = false;
+						return false;
+				}
+			}
+
+			private static bool IsLongPress(PointerPoint down, PointerPoint current)
+				=> current.Timestamp - down.Timestamp > HoldMinDelayTicks;
+
+			public static bool IsOutOfTapRange(Point p1, Point p2)
+				=> Math.Abs(p1.X - p2.X) > TapMaxXDelta
+				|| Math.Abs(p1.Y - p2.Y) > TapMaxYDelta;
 			#endregion
 		}
 	}

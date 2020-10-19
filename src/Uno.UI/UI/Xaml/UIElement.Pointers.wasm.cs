@@ -263,30 +263,6 @@ namespace Windows.UI.Xaml
 			this.CoerceValue(HitTestVisibilityProperty);
 		}
 
-		private protected enum HitTestVisibility
-		{
-			/// <summary>
-			/// The element and its children can't be targeted by hit-testing.
-			/// </summary>
-			/// <remarks>
-			/// This occurs when IsHitTestVisible="False", IsEnabled="False", or Visibility="Collapsed".
-			/// </remarks>
-			Collapsed,
-
-			/// <summary>
-			/// The element can't be targeted by hit-testing.
-			/// </summary>
-			/// <remarks>
-			/// This usually occurs if an element doesn't have a Background/Fill.
-			/// </remarks>
-			Invisible,
-
-			/// <summary>
-			/// The element can be targeted by hit-testing.
-			/// </summary>
-			Visible,
-		}
-
 		/// <summary>
 		/// Represents the final calculated hit-test visibility of the element.
 		/// </summary>
@@ -296,10 +272,10 @@ namespace Windows.UI.Xaml
 		private static DependencyProperty HitTestVisibilityProperty { get ; } =
 			DependencyProperty.Register(
 				"HitTestVisibility",
-				typeof(HitTestVisibility),
+				typeof(HitTestability),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(
-					HitTestVisibility.Visible,
+					HitTestability.Visible,
 					FrameworkPropertyMetadataOptions.Inherits,
 					coerceValueCallback: (s, e) => CoerceHitTestVisibility(s, e),
 					propertyChangedCallback: (s, e) => OnHitTestVisibilityChanged(s, e)
@@ -315,43 +291,43 @@ namespace Windows.UI.Xaml
 			var element = (UIElement)dependencyObject;
 
 			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
-			var baseHitTestVisibility = (HitTestVisibility)baseValue;
+			var baseHitTestVisibility = (HitTestability)baseValue;
 
 			// If the parent is collapsed, we should be collapsed as well. This takes priority over everything else, even if we would be visible otherwise.
-			if (baseHitTestVisibility == HitTestVisibility.Collapsed)
+			if (baseHitTestVisibility == HitTestability.Collapsed)
 			{
-				return HitTestVisibility.Collapsed;
+				return HitTestability.Collapsed;
 			}
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
 			if (!element.IsLoaded || !element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
 			{
-				return HitTestVisibility.Collapsed;
+				return HitTestability.Collapsed;
 			}
 
 			// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
 			if (!element.IsViewHit())
 			{
-				return HitTestVisibility.Invisible;
+				return HitTestability.Invisible;
 			}
 
 			// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.
-			return HitTestVisibility.Visible;
+			return HitTestability.Visible;
 		}
 
 		private static void OnHitTestVisibilityChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			if (dependencyObject is UIElement element
-				&& args.OldValue is HitTestVisibility oldValue
-				&& args.NewValue is HitTestVisibility newValue)
+				&& args.OldValue is HitTestability oldValue
+				&& args.NewValue is HitTestability newValue)
 			{
 				element.OnHitTestVisibilityChanged(oldValue, newValue);
 			}
 		}
 
-		private protected virtual void OnHitTestVisibilityChanged(HitTestVisibility oldValue, HitTestVisibility newValue)
+		private protected virtual void OnHitTestVisibilityChanged(HitTestability oldValue, HitTestability newValue)
 		{
-			if (newValue == HitTestVisibility.Visible)
+			if (newValue == HitTestability.Visible)
 			{
 				// By default, elements have 'pointer-event' set to 'auto' (see Uno.UI.css .uno-uielement class).
 				// This means that they can be the target of hit-testing and will raise pointer events when interacted with.

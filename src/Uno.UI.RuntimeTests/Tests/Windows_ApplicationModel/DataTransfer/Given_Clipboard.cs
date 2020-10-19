@@ -28,7 +28,11 @@ namespace Uno.UI.RuntimeTests.Tests
 
 				var package = new DataPackage();
 				package.SetText(text);
+#if NETFX_CORE
 				Clipboard.SetContent(package);
+#else
+				await Clipboard.SetContentAsync(package);
+#endif
 
 				var clipboardView = Clipboard.GetContent();
 				var textFromClipboard = await clipboardView.GetTextAsync();
@@ -51,7 +55,11 @@ namespace Uno.UI.RuntimeTests.Tests
 				var uri = new Uri("https://platform.uno");
 				var package = new DataPackage();
 				package.SetUri(uri);
+#if NETFX_CORE
 				Clipboard.SetContent(package);
+#else
+				await Clipboard.SetContentAsync(package);
+#endif
 
 				var clipboardView = Clipboard.GetContent();
 				var uriFromClipboard = await clipboardView.GetUriAsync();

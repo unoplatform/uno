@@ -77,6 +77,12 @@ namespace Uno.UI.Skia.Platform
 			}
 		}
 
+		public void ReleasePointerCapture()
+			=> WpfHost.Current.ReleaseMouseCapture();
+
+		public void SetPointerCapture()
+			=> WpfHost.Current.CaptureMouse();
+
 		private static uint GetNextFrameId()
 			=> (uint)Interlocked.Increment(ref _currentFrameId);
 

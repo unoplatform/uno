@@ -1,5 +1,6 @@
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Uno;
 
 namespace Windows.UI.Input
 {
@@ -20,5 +21,11 @@ namespace Windows.UI.Input
 		public Point Position { get; }
 
 		public HoldingState HoldingState { get; }
+
+		[NotImplemented]
+		public uint ContactCount { get; } = 1;
+
+		[NotImplemented]
+		public uint CurrentContactCount => HoldingState == HoldingState.Started ? 1u : 0u;
 	}
 }

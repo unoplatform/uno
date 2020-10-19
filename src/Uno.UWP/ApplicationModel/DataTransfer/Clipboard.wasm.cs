@@ -1,6 +1,10 @@
-﻿using System;
+﻿#nullable disable // Not supported by WinUI yet
+
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Windows.UI.Core;
+using Uno.Extensions.Specialized;
 using Uno.Foundation;
 
 namespace Windows.ApplicationModel.DataTransfer
@@ -11,23 +15,48 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static void Clear() => SetClipboardText(string.Empty);
 
-		public static void SetContent(DataPackage content)
+		public static void SetContent(DataPackage/* ? */ content)
 		{
-			if (content?.Text != null)
+			CoreDispatcher.Main.RunAsync(
+				CoreDispatcherPriority.High,
+				() => SetContentAsync(content));
+		}
+
+		internal static async Task SetContentAsync(DataPackage/* ? */ content)
+		{
+			var data = content?.GetView(); // Freezes the DataPackage
+			if (data?.Contains(StandardDataFormats.Text) ?? false)
 			{
-				SetClipboardText(content.Text);
+				var text = await data.GetTextAsync();
+				SetClipboardText(text);
 			}
 		}
 
 		public static DataPackageView GetContent()
 		{
-			var dataPackageView = new DataPackageView();
+			var dataPackage = new DataPackage();
 
-			var command = $"{JsType}.getText()";
-			var getTextTask = WebAssemblyRuntime.InvokeAsync(command);
-			dataPackageView.SetFormatTask(StandardDataFormats.Text, getTextTask);
+			dataPackage.SetDataProvider(
+				StandardDataFormats.Text,
+				async ct =>
+				{
+					var text = string.Empty;
+					await CoreDispatcher.Main.RunAsync(
+						CoreDispatcherPriority.High,
+						async _ => text = await GetClipboardText());
+
+					return text;
+				});
 			
-			return dataPackageView;
+			return dataPackage.GetView();
+		}
+
+		private static async Task<string> GetClipboardText()
+		{
+			var command = $"{JsType}.getText();";
+			var text = await WebAssemblyRuntime.InvokeAsync(command);
+
+			return text;
 		}
 
 		private static void SetClipboardText(string text)

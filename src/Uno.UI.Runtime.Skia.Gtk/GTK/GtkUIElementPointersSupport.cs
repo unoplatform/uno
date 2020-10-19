@@ -33,6 +33,14 @@ namespace Uno.UI.Runtime.Skia
 			set => GtkHost.Window.Window.Cursor = value.ToCursor();
 		}
 
+		/// <inheritdoc />
+		public void ReleasePointerCapture()
+			=> this.Log().Error("Pointer capture release is not supported on GTK");
+
+		/// <inheritdoc />
+		public void SetPointerCapture()
+			=> this.Log().Error("Pointer capture is not supported on GTK");
+
 		public GtkUIElementPointersSupport(object owner)
 		{
 			_owner = (CoreWindow)owner;
