@@ -1,0 +1,45 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:u="using:Uno.UI.Controls"
+	xmlns:ios="http://uno.ui/ios"
+	xmlns:android="http://uno.ui/android"
+	xmlns:wasm="http://uno.ui/wasm"
+	xmlns:netstdref="http://uno.ui/netstdref"
+	xmlns:skia="http://uno.ui/skia"
+	xmlns:macos="http://uno.ui/macos"
+	xmlns:uBehaviors="using:Uno.UI.Behaviors"
+	mc:Ignorable="d ios android wasm netstdref macos skia">
+
+	<!-- Default style for Windows.UI.Xaml.Controls.ScrollViewer -->
+	<Style TargetType="DragView">
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="IsHitTestVisible" Value="False" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="DragView">
+					<Grid>
+						<Image Visibility="{TemplateBinding CaptionVisiblity}" Source="{TemplateBinding Content}" Opacity=".8" />
+						<StackPanel
+							Orientation="Horizontal"
+							BorderThickness="1"
+							BorderBrush="{StaticResource SystemControlForegroundChromeHighBrush}"
+							Background="{StaticResource SystemControlBackgroundChromeMediumLowBrush}"
+							Padding="2,5"
+							Visibility="{TemplateBinding TooltipVisibility}">
+							<TextBlock Visibility="{TemplateBinding GlyphVisiblity}" Text="{TemplateBinding Glyph}" Margin="3,0" />
+							<TextBlock Visibility="{TemplateBinding CaptionVisiblity}" Text="{TemplateBinding Caption}" Margin="3,0" />
+						</StackPanel>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+</ResourceDictionary>

@@ -1,13 +1,22 @@
-﻿using System;
+﻿#nullable disable // Not supported by WinUI yet
+// #define TRACE_HIT_TESTING
+
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 using Uno.Disposables;
 using Windows.Globalization.DateTimeFormatting;
+using Windows.UI.Core;
+using Uno.Logging;
 using Uno.UI.Extensions;
 
 #if XAMARIN_IOS
@@ -29,7 +38,7 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
-		private static List<WeakReference<IPopup>> _openPopups = new List<WeakReference<IPopup>>();
+		private static readonly List<WeakReference<IPopup>> _openPopups = new List<WeakReference<IPopup>>();
 
 		internal static IDisposable RegisterOpenPopup(IPopup popup)
 		{
@@ -45,16 +54,16 @@ namespace Windows.UI.Xaml.Media
 			throw new NotSupportedException();
 		}
 
-		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Point intersectingPoint, UIElement subtree)
+		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Point intersectingPoint, UIElement/* ? */ subtree)
 			=> FindElementsInHostCoordinates(intersectingPoint, subtree, false);
 
 		[Uno.NotImplemented]
-		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Rect intersectingRect, UIElement subtree)
+		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Rect intersectingRect, UIElement/* ? */ subtree)
 		{
 			throw new NotSupportedException();
 		}
 
-		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Point intersectingPoint, UIElement subtree, bool includeAllElements)
+		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Point intersectingPoint, UIElement/* ? */ subtree, bool includeAllElements)
 		{
 			if (subtree != null)
 			{
@@ -92,12 +101,12 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		[Uno.NotImplemented]
-		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Rect intersectingRect, UIElement subtree, bool includeAllElements)
+		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Rect intersectingRect, UIElement/* ? */ subtree, bool includeAllElements)
 		{
 			throw new NotSupportedException();
 		}
 
-		public static DependencyObject GetChild(DependencyObject reference, int childIndex)
+		public static DependencyObject/* ? */ GetChild(DependencyObject reference, int childIndex)
 		{
 #if XAMARIN
 			return (reference as _ViewGroup)?
@@ -136,7 +145,7 @@ namespace Windows.UI.Xaml.Media
 				.AsReadOnly();
 		}
 
-		public static DependencyObject GetParent(DependencyObject reference)
+		public static DependencyObject/* ? */ GetParent(DependencyObject reference)
 		{
 #if XAMARIN
 			return (reference as _ViewGroup)?
@@ -192,6 +201,327 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			return AdaptNative(view);
+		}
+
+#nullable enable
+
+		private static readonly GetHitTestability _defaultGetTestability = elt => elt.GetHitTestVisibility();
+
+		internal static (UIElement? element, Branch? stale) HitTest(
+			Point position,
+			GetHitTestability? getTestability = null,
+			Predicate<UIElement>? isStale = null
+#if TRACE_HIT_TESTING
+			, [CallerMemberName] string? caller = null)
+		{
+			using var _ = BEGIN_TRACE();
+			TRACE($"[{caller!.Replace("CoreWindow_Pointer", "").ToUpperInvariant()}] @{position.ToDebugString()}");
+#else
+			)
+		{
+#endif
+			if (Window.Current.RootElement is UIElement root)
+			{
+				return SearchDownForTopMostElementAt(position, root, getTestability ?? _defaultGetTestability, isStale);
+			}
+
+			return default;
+		}
+
+		private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
+			Point posRelToParent,
+			UIElement element,
+			GetHitTestability getVisibility,
+			Predicate<UIElement>? isStale = null,
+			Func<IEnumerable<UIElement>, IEnumerable<UIElement>>? childrenFilter = null)
+		{
+			var stale = default(Branch?);
+			var elementHitTestVisibility = getVisibility(element);
+
+#if TRACE_HIT_TESTING
+			using var _ = SET_TRACE_SUBJECT(element);
+			TRACE($"- hit test visibility: {elementHitTestVisibility}");
+#endif
+
+			// If the element is not hit testable, do not even try to validate it nor its children.
+			if (elementHitTestVisibility == HitTestability.Collapsed)
+			{
+				// Even if collapsed, if the element is stale, we search down for the real stale leaf
+				if (isStale?.Invoke(element) ?? false)
+				{
+					stale = SearchDownForStaleBranch(element, isStale);
+				}
+
+				TRACE($"> NOT FOUND (Element is HitTestability.Collapsed) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				return (default, stale);
+			}
+
+			// The region where the element was arrange by its parent.
+			// This is expressed in parent coordinate space
+			var layoutSlot = element.LayoutSlotWithMarginsAndAlignments;
+
+			// The maximum region where the current element and its children might draw themselves
+			// TODO: Get the real clipping rect! For now we assume no clipping.
+			// This is expressed in element coordinate space.
+			var clippingBounds = Rect.Infinite;
+
+			// The region where the current element draws itself.
+			// Be aware that children might be out of this rendering bounds if no clipping defined. TODO: .Intersect(clippingBounds)
+			// This is expressed in element coordinate space.
+			var renderingBounds = new Rect(new Point(), layoutSlot.Size);
+
+			// First compute the 'position' in the current element coordinate space
+			var posRelToElement = posRelToParent;
+
+			posRelToElement.X -= layoutSlot.X;
+			posRelToElement.Y -= layoutSlot.Y;
+
+			var renderTransform = element.RenderTransform;
+			if (renderTransform != null)
+			{
+				Matrix3x2.Invert(renderTransform.MatrixCore, out var parentToElement);
+
+				TRACE($"- renderTransform: [{parentToElement.M11:F2},{parentToElement.M12:F2} / {parentToElement.M21:F2},{parentToElement.M22:F2} / {parentToElement.M31:F2},{parentToElement.M32:F2}]");
+
+				posRelToElement = parentToElement.Transform(posRelToElement);
+				renderingBounds = parentToElement.Transform(renderingBounds);
+			}
+
+			if (element is ScrollViewer sv)
+			{
+				var zoom = sv.ZoomFactor;
+
+				TRACE($"- scroller: x={sv.HorizontalOffset} | y={sv.VerticalOffset} | zoom={zoom}");
+
+				posRelToElement.X /= zoom;
+				posRelToElement.Y /= zoom;
+
+				// No needs to adjust the position on Skia:
+				// the scrolling is achieved using a RenderTransform on the content of the ScrollContentPresenter,
+				// so it will already be taken in consideration by the case above.
+#if __SKIA__
+				posRelToElement.X += sv.HorizontalOffset;
+				posRelToElement.Y += sv.VerticalOffset;
+#endif
+
+				renderingBounds = new Rect(renderingBounds.Location, new Size(sv.ExtentWidth, sv.ExtentHeight));
+			}
+
+			TRACE($"- layoutSlot: {layoutSlot.ToDebugString()}");
+			TRACE($"- renderBounds (relative to element): {renderingBounds.ToDebugString()}");
+			TRACE($"- clippingBounds (relative to element): {clippingBounds.ToDebugString()}");
+			TRACE($"- position relative to element: {posRelToElement.ToDebugString()} | relative to parent: {posRelToParent.ToDebugString()}");
+
+			// Validate that the pointer is in the bounds of the element
+			if (!clippingBounds.Contains(posRelToElement))
+			{
+				// Even if out of bounds, if the element is stale, we search down for the real stale leaf
+				if (isStale?.Invoke(element) ?? false)
+				{
+					stale = SearchDownForStaleBranch(element, isStale);
+				}
+
+				TRACE($"> NOT FOUND (Out of the **clipped** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				return (default, stale);
+			}
+
+			// Validate if any child is an acceptable target
+			var children = childrenFilter is null ? element.GetChildren().OfType<UIElement>() : childrenFilter(element.GetChildren().OfType<UIElement>());
+			using var child = children.Reverse().GetEnumerator();
+			var isChildStale = isStale;
+			while (child.MoveNext())
+			{
+				var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current!, getVisibility, isChildStale);
+
+				// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
+				if (childResult.stale is { })
+				{
+					stale = childResult.stale;
+					isChildStale = null;
+				}
+
+				// If we found an acceptable element in the child's sub-tree, job is done!
+				if (childResult.element is { })
+				{
+					if (isChildStale is { }) // Also indicates that stale is null
+					{
+						// If we didn't find any stale root in previous children or in the child's sub tree,
+						// we continue to enumerate sibling children to detect a potential stale root.
+
+						while (child.MoveNext())
+						{
+							if (isChildStale(child.Current))
+							{
+								stale = SearchDownForStaleBranch(child.Current!, isChildStale);
+								break;
+							}
+						}
+					}
+
+					TRACE($"> found child: {childResult.element.GetDebugName()} | stale branch: {stale?.ToString() ?? "-- none --"}");
+					return (childResult.element, stale);
+				}
+			}
+
+			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestability.Invisible),
+			// and the position is in actual bounds (which might be different than the clipping bounds)
+			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(posRelToElement))
+			{
+				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				return (element, stale);
+			}
+			else
+			{
+				// If no stale element found yet, validate if the current is stale.
+				// Note: no needs to search down for stale child, we already did it!
+				if (isStale?.Invoke(element) ?? false)
+				{
+					stale = new Branch(element, stale?.Leaf ?? element);
+				}
+
+				TRACE($"> NOT FOUND (HitTestability.Invisible or out of the **render** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				return (default, stale);
+			}
+		}
+
+		private static Branch SearchDownForStaleBranch(UIElement staleRoot, Predicate<UIElement> isStale)
+			=> new Branch(staleRoot, SearchDownForStaleLeaf(staleRoot, isStale));
+
+		private static UIElement SearchDownForStaleLeaf(UIElement staleRoot, Predicate<UIElement> isStale)
+		{
+			foreach (var child in staleRoot.GetChildren().OfType<UIElement>().Reverse())
+			{
+				if (isStale(child))
+				{
+					return SearchDownForStaleLeaf(child, isStale);
+				}
+			}
+
+			return staleRoot;
+		}
+
+		#region Helpers
+		private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> Except(UIElement element)
+			=> children => children.Except(element);
+
+		private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> SkipUntil(UIElement element)
+			=> children => SkipUntilCore(element, children);
+
+		private static IEnumerable<UIElement> SkipUntilCore(UIElement element, IEnumerable<UIElement> children)
+		{
+			using var enumerator = children.GetEnumerator();
+			while (enumerator.MoveNext() && enumerator.Current != element)
+			{
+			}
+
+			if (!enumerator.MoveNext())
+			{
+				yield break;
+			}
+
+			while (enumerator.MoveNext())
+			{
+				yield return enumerator.Current;
+			}
+		}
+		#endregion
+
+		#region HitTest tracing
+#if TRACE_HIT_TESTING
+		[ThreadStatic]
+		private static StringBuilder? _trace;
+
+		[ThreadStatic]
+		private static UIElement? _traceSubject;
+
+		private static IDisposable BEGIN_TRACE()
+		{
+			_trace = new StringBuilder();
+
+			return Disposable.Create(() =>
+			{
+				Debug.WriteLine(_trace.ToString());
+				_trace = null;
+			});
+		}
+
+		private static IDisposable SET_TRACE_SUBJECT(UIElement element)
+		{
+			if (_trace is { })
+			{
+				var previous = _traceSubject;
+				_traceSubject = element;
+
+				_trace.Append(new string('\t', _traceSubject.Depth - 1));
+				_trace.Append($"[{element.GetDebugName()}]\r\n");
+
+				return Disposable.Create(() => _traceSubject = previous);
+			}
+			else
+			{
+				return Disposable.Empty;
+			}
+		}
+#endif
+
+		[Conditional("TRACE_HIT_TESTING")]
+		private static void TRACE(FormattableString msg)
+		{
+#if TRACE_HIT_TESTING
+			if (_trace is { })
+			{
+				_trace.Append(new string('\t', _traceSubject?.Depth ?? 0));
+				_trace.Append(msg.ToStringInvariant());
+				_trace.Append("\r\n");
+			}
+#endif
+		}
+		#endregion
+
+		internal struct Branch
+		{
+			public static Branch ToWindowRoot(UIElement leaf)
+				=> new Branch(Window.Current.RootElement, leaf);
+
+			public Branch(UIElement root, UIElement leaf)
+			{
+				Root = root;
+				Leaf = leaf;
+			}
+
+			public readonly UIElement Root;
+			public readonly UIElement Leaf;
+
+			public void Deconstruct(out UIElement root, out UIElement leaf)
+			{
+				root = Root;
+				leaf = Leaf;
+			}
+
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <remarks>This method will pass through native element but will enumerate only UIElements</remarks>
+			/// <returns></returns>
+			public IEnumerable<UIElement> EnumerateLeafToRoot()
+			{
+				var current = Leaf;
+
+				yield return Leaf;
+
+				while (current != Root)
+				{
+					var parentDo = GetParent(current);
+					while ((current = parentDo as UIElement) is null)
+					{
+						parentDo = GetParent(parentDo!);
+					}
+
+					yield return current;
+				} 
+			}
+
+			public override string ToString() => $"Root={Root.GetDebugName()} | Leaf={Leaf.GetDebugName()}";
 		}
 	}
 }

@@ -1,0 +1,6 @@
+---
+exclude_paths:
+  - '**/*.g.cs'
+  - 'src/SamplesApp/**'
+  - '**/tsBindings/*.ts'
+  - 'doc/**'

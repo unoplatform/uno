@@ -70,7 +70,6 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 	</PropertyGroup>
@@ -87,6 +86,9 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <EmbeddedResource Include="Windows_Data_Xml\DomTests\basictest.xml" />
+	  <EmbeddedResource Include="Windows_UI_XAML_Controls\UserControlTests\UserControl_WriteOnlyProperty_UserControl.xaml">
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -147,6 +149,9 @@
 		<None Update="ResourceLoader\Strings\fr\Resources.resw">
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 			<Generator>ResXFileCodeGenerator</Generator>
+		</None>
+		<None Update="Windows_UI_XAML_Controls\UserControlTests\UserControl_WriteOnlyProperty.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</None>
 	</ItemGroup>
 

@@ -4,22 +4,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Uno.SourceGeneration;
+using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
+
+#if NETFRAMEWORK
+using Uno.SourceGeneration;
+#endif
 
 namespace Uno.UI.SourceGenerators.NativeCtor
 {
-	public class NativeCtorsGenerator : SourceGenerator
+	[Generator]
+	public class NativeCtorsGenerator : ISourceGenerator
 	{
-		public override void Execute(SourceGeneratorContext context)
-		{ 
-			var visitor = new SerializationMethodsGenerator(context);
-			visitor.Visit(context.Compilation.SourceModule);
+		public void Initialize(GeneratorInitializationContext context)
+		{
+		}
+
+		public void Execute(GeneratorExecutionContext context)
+		{
+			if (!DesignTimeHelper.IsDesignTime(context))
+			{
+				DependenciesInitializer.Init(context);
+
+				var visitor = new SerializationMethodsGenerator(context);
+				visitor.Visit(context.Compilation.SourceModule);
+			}
 		}
 
 		private class SerializationMethodsGenerator : SymbolVisitor
 		{ 
-			private readonly SourceGeneratorContext _context; 
+			private readonly GeneratorExecutionContext _context; 
 			private readonly Compilation _comp;
 			private readonly INamedTypeSymbol _iosViewSymbol;
 			private readonly INamedTypeSymbol _macosViewSymbol;
@@ -73,7 +87,7 @@ namespace {0}
 }}
 ";
 
-			public SerializationMethodsGenerator(SourceGeneratorContext context)
+			public SerializationMethodsGenerator(GeneratorExecutionContext context)
 			{
 				_context = context;
 
@@ -132,7 +146,7 @@ namespace {0}
 					
 					if (nativeCtor == null)
 					{
-						_context.AddCompilationUnit(
+						_context.AddSource(
 							HashBuilder.BuildIDFromSymbol(typeSymbol), 
 							string.Format(
 								BaseClassFormat, 
@@ -155,7 +169,7 @@ namespace {0}
 
 					if (nativeCtor == null)
 					{
-						_context.AddCompilationUnit(
+						_context.AddSource(
 							HashBuilder.BuildIDFromSymbol(typeSymbol),
 							string.Format(
 								BaseClassFormat, 

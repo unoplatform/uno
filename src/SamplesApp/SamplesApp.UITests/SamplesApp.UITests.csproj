@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net47</TargetFramework>
-		<LangVersion>8.0</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup> 

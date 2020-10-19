@@ -545,7 +545,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 		{
-			UpdateBorder();
+			UpdateCornerRadius(newValue);
 		}
 
 		#endregion

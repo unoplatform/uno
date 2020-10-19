@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using Uno.Disposables;
 using System.Runtime.InteropServices;
+using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Controls;
 using Uno.Logging;
 
 namespace Windows.UI.Xaml
@@ -23,6 +25,7 @@ namespace Windows.UI.Xaml
 
 		private void InitializeCommon()
 		{
+			InitDragAndDrop();
 			if (Application.Current != null)
 			{
 				Application.Current.RaiseWindowCreated(this);
@@ -54,6 +57,14 @@ namespace Windows.UI.Xaml
 				InternalSetContent(value);
 			}
 		}
+
+		/// <summary>
+		/// This is the real root of the **managed** visual tree.
+		/// This means its the root panel which contains the <see cref="Content"/>
+		/// but also the PopupRoot, the DragRoot and all other internal UI elements.
+		/// On platforms like iOS and Android, we might still have few native controls above this.
+		/// </summary>
+		internal UIElement RootElement => InternalGetRootElement();
 
 		public Rect Bounds { get; private set; }
 
@@ -101,5 +112,52 @@ namespace Windows.UI.Xaml
 				action(this, windowSizeChangedEventArgs);
 			}
 		}
+
+		#region Drag and Drop
+		private DragRoot _dragRoot;
+
+		internal DragDropManager DragDrop { get; private set; }
+
+		private void InitDragAndDrop()
+		{
+			DragDrop = new DragDropManager(this);
+			CoreDragDropManager.SetForCurrentView(DragDrop);
+		}
+
+		internal IDisposable OpenDragAndDrop(DragView dragView)
+		{
+#if __WASM__ || __SKIA__
+			Grid rootElement = _window;
+#else
+			Grid rootElement = _main;
+#endif
+
+			if (rootElement is null)
+			{
+				return Disposable.Empty;
+			}
+
+			if (_dragRoot is null)
+			{
+				_dragRoot = new DragRoot();
+				rootElement.Children.Add(_dragRoot);
+			}
+
+			_dragRoot.Show(dragView);
+
+			return Disposable.Create(Remove);
+
+			void Remove()
+			{
+				_dragRoot.Hide(dragView);
+
+				if (_dragRoot.PendingDragCount == 0)
+				{
+					rootElement.Children.Remove(_dragRoot);
+					_dragRoot = null;
+				}
+			}
+		}
+		#endregion
 	}
 }

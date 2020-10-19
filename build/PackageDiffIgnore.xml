@@ -3202,6 +3202,48 @@
 			<Member
 				fullName="System.Void Windows.Storage.PathIO..ctor()"
 				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.DragEventArgs.get_Handled()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataPackageView..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataProviderDeferral..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataProviderRequest..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Input.DraggingEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.DragEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.DragEventArgs.set_Handled(System.Boolean value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.DragOperationDeferral..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.DragStartingEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.DragUIOverride..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.DropCompletedEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
 		</Methods>
 		<Fields>
 			<Member
@@ -3212,6 +3254,12 @@
 				reason="The enum is backed by uint"/>
 			<Member
 				fullName="System.Int32 Windows.Storage.Streams.InputStreamOptions::value__"
+				reason="The enum is backed by uint"/>
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.DataTransfer.DataPackageOperation::value__"
+				reason="The enum is backed by uint"/>
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers::value__"
 				reason="The enum is backed by uint"/>
 		</Fields>
 	</IgnoreSet>

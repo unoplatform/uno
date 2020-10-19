@@ -110,6 +110,8 @@
     href: features/working-with-themes.md
   - name: ToggleSwitch
     href: controls\ToggleSwitch.md
+  - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
+    href: features/pointers-keyboard-and-other-user-inputs.md
   - name: Routed Events
     href: features/routed-events.md
   - name: x:Bind

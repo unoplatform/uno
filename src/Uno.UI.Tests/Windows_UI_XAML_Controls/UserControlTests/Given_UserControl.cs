@@ -30,5 +30,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.xLoad
 			Assert.AreEqual(1, UserControl_TopLevelBinding_AttachedProperty.MyPropertyChangedCount);
 			Assert.AreEqual(42, UserControl_TopLevelBinding_AttachedProperty.GetMyProperty(uc01));
 		}
+
+		[TestMethod]
+		public void When_UserControl_WriteOnlyProperty_Binding()
+		{
+			var sut = new UserControl_WriteOnlyProperty();
+			sut.ForceLoaded();
+
+			var textBlock = sut.FindName("TextDisplay") as TextBlock;
+			var uc02 = sut.FindName("uc02") as UserControl_WriteOnlyProperty_UserControl;
+
+			Assert.AreEqual("Hello, World!", textBlock.Text);
+			uc02.Text = "Test";
+			Assert.AreEqual("Test", textBlock.Text);
+		}
 	}
 }
