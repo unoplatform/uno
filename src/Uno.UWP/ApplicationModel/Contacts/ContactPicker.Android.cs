@@ -88,8 +88,8 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static void ReadStructuredName(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var contactWhere = ContactsContract.ContactsColumns.LookupKey + " = ?";
-			var contactWhereParams = new[] { lookupKey };
+			var contactWhere = ContactsContract.ContactsColumns.LookupKey + " = ? AND " + ContactsContract.DataColumns.Mimetype + " = ?";
+			var contactWhereParams = new[] { lookupKey, ContactsContract.CommonDataKinds.StructuredName.ContentItemType };
 			if (ContactsContract.Data.ContentUri != null)
 			{
 				using var cursor = contentResolver.Query(
