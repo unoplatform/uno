@@ -157,10 +157,10 @@ Be aware that on some browser (Firefox), user can still request to get the "Cont
 
 Those events are also 100% managed events, built from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`)
 
-### Intra-app drag and drop support
+### Inter-app drag and drop support
 
 A _drag and drop_ operation can be used to move content within an app, but it can also be used to **copy** / **move** / **link** between apps.
-While inter-app _drag and drop_ is supported on all platforms without limitations, intra-app _drag and drop_ requires platform specific support.
+While intra-app _drag and drop_ is supported on all platforms without limitations, inter-app _drag and drop_ requires platform specific support.
 
 |          | From uno app to external                         | From external app to uno                        |
 | -------- | ------------------------------------------------ | ------------------------                        |
