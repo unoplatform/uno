@@ -29,7 +29,7 @@ namespace Uno.Roslyn
 		private readonly Func<INamedTypeSymbol, INamedTypeSymbol[]> _getAllDerivingTypes;
 		private readonly Func<INamedTypeSymbol, INamedTypeSymbol[]> _getAllTypesAttributedWith;
 		private readonly Dictionary<string, INamedTypeSymbol> _additionalTypesMap;
-		private readonly Dictionary<string, IEnumerable<INamedTypeSymbol>> _namedSymbolsLookup;
+		private readonly IReadOnlyDictionary<string, INamedTypeSymbol[]> _namedSymbolsLookup;
 		public Compilation Compilation { get; }
 
 		public string AssemblyName => Compilation.AssemblyName;
@@ -47,14 +47,7 @@ namespace Uno.Roslyn
 			_getAllTypesAttributedWith = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
 			_nullableSymbol = Compilation.GetTypeByMetadataName("System.Nullable`1");
 
-			var refs = from metadataReference in Compilation.References
-					   let assembly = Compilation.GetAssemblyOrModuleSymbol(metadataReference) as IAssemblySymbol
-					   where assembly != null
-					   from type in assembly.GlobalNamespace.GetNamespaceTypes()
-					   group type by type.Name into names
-					   select new { names.Key, names };
-
-			_namedSymbolsLookup = refs.ToDictionary(k => k.Key, p => p.names.AsEnumerable());
+			_namedSymbolsLookup = Compilation.GetSymbolNameLookup();
 		}
 
 		private Dictionary<string, INamedTypeSymbol> GenerateAdditionalTypesMap()
