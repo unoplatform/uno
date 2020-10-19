@@ -200,7 +200,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// UIElement / UIElementOverridesHelper
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
-			return new Automation.Peers.RatingControlAutomationPeer(this);
+			return new RatingControlAutomationPeer(this);
 		}
 
 		// private methods 
@@ -449,7 +449,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private string GetNextGlyphIfNull(string glyph, RatingControlStates fallbackType)
 		{
-			if (glyph.Length == 0)
+			if (string.IsNullOrEmpty(glyph))
 			{
 				if (fallbackType == RatingControlStates.Null)
 				{
