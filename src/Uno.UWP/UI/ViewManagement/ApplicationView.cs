@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Uno.Devices.Sensors;
 using Uno.Foundation.Extensibility;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace Windows.UI.ViewManagement
 {
@@ -46,7 +48,7 @@ namespace Windows.UI.ViewManagement
 			return true;
 		}
 
-		public Foundation.Rect VisibleBounds { get; internal set; }
+		public Foundation.Rect VisibleBounds { get; private set; }
 
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> VisibleBoundsChanged;
 
@@ -87,6 +89,21 @@ namespace Windows.UI.ViewManagement
 				{
 					_defaultSpanningRects = new List<Rect>(0);
 				}
+			}
+		}
+
+		internal void SetVisibleBounds(Rect newVisibleBounds)
+		{
+			if (newVisibleBounds != VisibleBounds)
+			{
+				VisibleBounds = newVisibleBounds;
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
+				}
+
+				VisibleBoundsChanged?.Invoke(this, null);
 			}
 		}
 	}

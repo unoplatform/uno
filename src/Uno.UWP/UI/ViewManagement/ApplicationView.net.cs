@@ -11,7 +11,7 @@ namespace Windows.UI.ViewManagement
 {
     partial class ApplicationView
 	{
-		internal IDisposable SetVisibleBounds(Rect newVisibleBounds)
+		internal IDisposable SetTemporaryVisibleBounds(Rect newVisibleBounds)
 		{
 			var old = VisibleBounds;
 			VisibleBounds = newVisibleBounds;
