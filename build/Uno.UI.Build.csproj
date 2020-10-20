@@ -252,6 +252,10 @@
 		<Move SourceFiles=".\uno.winui.targets" DestinationFiles=".\$(PackageNamePrefix).targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 		<XmlUpdate XmlFileName=".\Uno.WinUI.nuspec" XPath="/x:package/x:files/x:file[@src='Uno.WinUI.targets']/@src" Value="$(PackageNamePrefix).targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
+		<!-- Adjust build targets file for UAP -->
+		<XmlUpdate XmlFileName=".\Uno.WinUI.nuspec" XPath="/x:package/x:files/x:file[@target='buildTransitive\uap10.0.16299\uno.winui.targets']/@target" Value="buildTransitive\uap10.0.16299\$(PackageNamePrefix).targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlUpdate XmlFileName=".\Uno.WinUI.nuspec" XPath="/x:package/x:files/x:file[@target='buildTransitive\uap10.0.17763\uno.winui.targets']/@target" Value="buildTransitive\uap10.0.17763\$(PackageNamePrefix).targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+
 		<!-- Skia GTK targets/props-->
 		<Move SourceFiles=".\uno.winui.Skia.Gtk.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Gtk.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 		<Move SourceFiles=".\uno.winui.Skia.Gtk.props" DestinationFiles=".\$(PackageNamePrefix).Skia.Gtk.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
