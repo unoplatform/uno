@@ -13,8 +13,7 @@ namespace Windows.UI.Core
 {
 	public partial class CoreWindow 
 	{
-		// HACK: TODO: Find a better way to get this reference
-		public readonly NSWindow _window;
+		private readonly NSWindow _window;
 
 		private bool _cursorHidden = false;
 		private CoreCursor _pointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
@@ -23,6 +22,11 @@ namespace Windows.UI.Core
         {
             _window = window;			
         }
+
+		/// <summary>
+		/// Gets a reference to the native macOS Window behind the <see cref="CoreWindow"/> abstraction.
+		/// </summary>
+		internal NSWindow NativeWindow => _window;
 
 		public CoreCursor PointerCursor
 		{

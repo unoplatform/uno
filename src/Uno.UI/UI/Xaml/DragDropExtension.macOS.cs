@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		public MacOSDragDropExtension(DragDropManager owner)
 		{
 			_manager = (DragDropManager)owner;
-			_window = (Uno.UI.Controls.Window)CoreWindow.GetForCurrentThread()!._window;
+			_window = (Uno.UI.Controls.Window)CoreWindow.GetForCurrentThread()!.NativeWindow;
 
 			_window.DraggingEnteredAction = OnDraggingEnteredEvent;
 			_window.DraggingUpdatedAction = OnDraggingUpdated;
