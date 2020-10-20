@@ -4990,6 +4990,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									BuildComplexPropertyValue(innerWriter, def, closureName + ".", closureName);
 								}
 
+								if (nameMember != null)
+								{
+									innerWriter.AppendLineInvariant(
+										$"{closureName}.Name = \"{nameMember.Value}\";"
+									);
+
+									// Set the element name to the stub, then when the stub will be replaced
+									// the actual target control will override it.
+									innerWriter.AppendLineInvariant(
+										$"_{nameMember.Value}Subject.ElementInstance = {closureName};"
+									);
+								}
+
 								if (hasVisibilityMarkup)
 								{
 									var def = new XamlMemberDefinition(
@@ -5030,19 +5043,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											"{0}.Visibility = {1};",
 											closureName,
 											BuildLiteralValue(visibilityMember)
-										);
-									}
-
-									if (nameMember != null)
-									{
-										innerWriter.AppendLineInvariant(
-											$"{closureName}.Name = \"{nameMember.Value}\";"
-										);
-
-										// Set the element name to the stub, then when the stub will be replaced
-										// the actual target control will override it.
-										innerWriter.AppendLineInvariant(
-											$"_{nameMember.Value}Subject.ElementInstance = {closureName};"
 										);
 									}
 								}
