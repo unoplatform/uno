@@ -622,12 +622,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ViewportArrangeSize = finalSize;
 
-			var size = base.ArrangeOverride(finalSize);
+			return base.ArrangeOverride(finalSize);
+		}
+
+		/// <inheritdoc />
+		internal override void OnLayoutUpdated()
+		{
+			base.OnLayoutUpdated();
 
 			UpdateDimensionProperties();
 			UpdateZoomedContentAlignment();
-
-			return size;
 		}
 
 		private void UpdateDimensionProperties()
@@ -637,6 +641,17 @@ namespace Windows.UI.Xaml.Controls
 			)
 			{
 				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
+			}
+
+			if (ActualWidth == 0 || ActualHeight == 0)
+			{
+				// Do not update properties if we don't have any valid size yet.
+				// This is useful essentially for the first size changed on the Content,
+				// where it already have its final size while the SV doesn't.
+				// This would cause a Scrollable<Width|Height> greater than 0,
+				// which will cause the materialization of the managed scrollbar
+				// which might not be needed after next layout pass.
+				return;
 			}
 
 			ViewportHeight = ActualHeight;
