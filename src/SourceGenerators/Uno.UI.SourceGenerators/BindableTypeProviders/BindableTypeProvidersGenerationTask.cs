@@ -43,6 +43,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 		private INamedTypeSymbol _nonBindableSymbol;
 		private INamedTypeSymbol _resourceDictionarySymbol;
 		private IModuleSymbol _currentModule;
+		private IReadOnlyDictionary<string, INamedTypeSymbol[]> _namedSymbolsLookup;
 
 		public string[] AnalyzerSuppressions { get; set; }
 
@@ -65,6 +66,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					if (IsApplication(context))
 					{
 						_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
+						_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
 
 						_bindableAttributeSymbol = FindBindableAttributes(context);
 						_dependencyPropertySymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyProperty);
@@ -104,8 +106,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			}
 		}
 
-		private static INamedTypeSymbol[] FindBindableAttributes(GeneratorExecutionContext context) =>
-			context.Compilation.GetSymbolsWithName("BindableAttribute", SymbolFilter.Type).OfType<INamedTypeSymbol>().ToArray();
+		private INamedTypeSymbol[] FindBindableAttributes(GeneratorExecutionContext context) =>
+			_namedSymbolsLookup.TryGetValue("BindableAttribute", out var types) ? types : new INamedTypeSymbol[0];
 
 		private bool IsApplication(GeneratorExecutionContext context)
 		{
