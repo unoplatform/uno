@@ -6,8 +6,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 {
@@ -26,6 +28,100 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			myButton.Tap();
 
 			_app.WaitForText(result, "Clicked!");
+		}
+
+		[Test]
+		[AutoRetry]
+		public async Task NativeCommandBar_Size()
+		{
+			Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Dynamic");
+
+			const string rootElementName = "RootPanel";
+			_app.WaitForElement(rootElementName);
+
+			var supportsRotation = GetSupportsRotation();
+
+			var isLandscape = GetIsCurrentRotationLandscape(rootElementName);
+			var currentModeIsLandscape = isLandscape;
+
+
+			async Task ToggleOrientation()
+			{
+				if (currentModeIsLandscape)
+				{
+					_app.SetOrientationPortrait();
+				}
+				else
+				{
+					_app.SetOrientationLandscape();
+				}
+
+				currentModeIsLandscape = !currentModeIsLandscape;
+
+				_app.WaitFor(()=> GetIsCurrentRotationLandscape(rootElementName) == currentModeIsLandscape);
+
+				await Task.Delay(125); // A delay ia required after rotation for the test to succeed
+			}
+
+			try
+			{
+				var firstScreenShot = TakeScreenshot("FirstOrientation");
+
+				var firstCommandBarRect = _app.GetRect("TheCommandBar");
+				var firstYellowBorderRect = _app.GetRect("TheBorder");
+				firstCommandBarRect.Bottom.Should().Be(firstYellowBorderRect.Y);
+
+				var firstCommandBarPhysicalRect = ToPhysicalRect(firstCommandBarRect);
+
+
+				var x1 = firstCommandBarPhysicalRect.X + (firstCommandBarPhysicalRect.Width * 0.75f);
+				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarPhysicalRect.Bottom - 1, Color.Red);
+
+				if(!supportsRotation)
+				{
+					return; // We're on a platform not supporting rotations.
+				}
+
+				await ToggleOrientation();
+
+				var secondScreenShot = TakeScreenshot("SecondOrientation");
+
+				var secondCommandBarRect = _app.GetRect("TheCommandBar");
+				var secondYellowBorderRect = _app.GetRect("TheBorder");
+				secondCommandBarRect.Bottom.Should().Be(secondYellowBorderRect.Y);
+
+				var secondCommandBarPhysicalRect = ToPhysicalRect(secondCommandBarRect);
+
+				var x2 = secondCommandBarPhysicalRect.X + (secondCommandBarPhysicalRect.Width * 0.75f);
+				ImageAssert.HasColorAt(secondScreenShot, x2, secondCommandBarPhysicalRect.Bottom - 1, Color.Red);
+
+				await ToggleOrientation();
+
+				var thirdScreenShot = TakeScreenshot("thirdOrientation");
+
+				var thirdCommandBarRect = _app.GetRect("TheCommandBar");
+				var thirdYellowBorderRect = _app.GetRect("TheBorder");
+				thirdCommandBarRect.Bottom.Should().Be(thirdYellowBorderRect.Y);
+
+				var thirdCommandBarPhysicalRect = ToPhysicalRect(thirdCommandBarRect);
+
+				var x3 = thirdCommandBarPhysicalRect.X + (thirdCommandBarPhysicalRect.Width * 0.75f);
+				ImageAssert.HasColorAt(thirdScreenShot, x3, thirdCommandBarPhysicalRect.Bottom - 1, Color.Red);
+			}
+			finally
+			{
+				// Reset orientation to original value
+				if (isLandscape)
+				{
+					_app.SetOrientationLandscape();
+				}
+				else
+				{
+					_app.SetOrientationPortrait();
+				}
+
+				_app.WaitFor(() => GetIsCurrentRotationLandscape(rootElementName) == isLandscape);
+			}
 		}
 
 		[Test]

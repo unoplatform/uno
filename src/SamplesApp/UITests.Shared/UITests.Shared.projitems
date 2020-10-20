@@ -3616,6 +3616,7 @@
       <DependentUpon>ControlStateViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)ValueConverters\BoolNegationValueConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ValueConverters\FromNullableBoolToCustomValueConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ValueConverters\StringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Calls\PhoneCallManagerTests.xaml.cs">
       <DependentUpon>PhoneCallManagerTests.xaml</DependentUpon>

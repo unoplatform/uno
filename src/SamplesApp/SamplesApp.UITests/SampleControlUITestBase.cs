@@ -280,6 +280,40 @@ namespace SamplesApp.UITests
 			}
 		}
 
+		private class PhysicalRect : IAppRect
+		{
+			public PhysicalRect(IAppRect logicalRect, double scaling)
+			{
+				var s = (float)scaling;
+				Bottom = logicalRect.Bottom * s;
+				Right = logicalRect.Right * s;
+				CenterY = logicalRect.CenterY * s;
+				CenterX = logicalRect.CenterX * s;
+				Y = logicalRect.Y * s;
+				X = logicalRect.X * s;
+				Height = logicalRect.Height * s;
+				Width = logicalRect.Width * s;
+			}
+
+			public float Width { get; }
+			public float Height { get; }
+			public float X { get; }
+			public float Y { get; }
+			public float CenterX { get; }
+			public float CenterY { get; }
+			public float Right { get; }
+			public float Bottom { get; }
+		}
+
+		public IAppRect ToPhysicalRect(IAppRect logicalRect)
+		{
+			if (logicalRect is PhysicalRect p)
+			{
+				return p;
+			}
+			return new PhysicalRect(logicalRect, GetDisplayScreenScaling());
+		}
+
 		internal double GetDisplayScreenScaling()
 		{
 			if (_scaling == null)
@@ -317,6 +351,25 @@ namespace SamplesApp.UITests
 		{
 			var rect = _app.GetRect(elementName);
 			return GetScaledCenter(rect);
+		}
+
+		protected bool GetIsCurrentRotationLandscape(string elementName)
+		{
+			if (!GetSupportsRotation())
+			{
+				return true;
+			}
+
+			var sampleRect = _app.GetRect(elementName);
+			var b = sampleRect.Width > sampleRect.Height;
+			return b;
+		}
+
+		protected static bool GetSupportsRotation()
+		{
+			var currentPlatform = AppInitializer.GetLocalPlatform();
+			var supportsRotation = currentPlatform == Platform.Android || currentPlatform == Platform.iOS;
+			return supportsRotation;
 		}
 	}
 }

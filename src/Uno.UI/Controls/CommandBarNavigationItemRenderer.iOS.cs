@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +16,14 @@ using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Controls
 {
-	internal partial class CommandBarNavigationItemRenderer : Renderer<CommandBar, UINavigationItem>
+	internal partial class CommandBarNavigationItemRenderer : Renderer<CommandBar, UINavigationItem?>
 	{
 		private static DependencyProperty NavigationCommandProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "NavigationCommand");
 		private static DependencyProperty BackButtonTitleProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonTitle");
 
-		private TitleView _titleView;
+		private TitleView? _titleView;
 
-		private SerialDisposable _visibilitySubscriptions;
+		private readonly SerialDisposable _visibilitySubscriptions = new SerialDisposable();
 
 		public CommandBarNavigationItemRenderer(CommandBar element) : base(element) { }
 
@@ -30,24 +31,34 @@ namespace Uno.UI.Controls
 
 		protected override IEnumerable<IDisposable> Initialize()
 		{
-			_visibilitySubscriptions = new SerialDisposable();
-			yield return _visibilitySubscriptions;
+			var element = Element;
 
 			// Content
 			_titleView = new TitleView();
-			_titleView.SetParent(Element);
+			_titleView.SetParent(element);
 			_titleView.RegisterParentChangedCallback(this, OnTitleViewParentChanged);
-			yield return Disposable.Create(() => _titleView = null);
 
 			// Commands
-			VectorChangedEventHandler<ICommandBarElement> OnVectorChanged = (s, e) => RegisterCommandVisibilityAndInvalidate();
-			Element.PrimaryCommands.VectorChanged += OnVectorChanged;
-			Element.SecondaryCommands.VectorChanged += OnVectorChanged;
-			yield return Disposable.Create(() => Element.PrimaryCommands.VectorChanged -= OnVectorChanged);
-			yield return Disposable.Create(() => Element.SecondaryCommands.VectorChanged -= OnVectorChanged);
+			void OnVectorChanged(IObservableVector<ICommandBarElement> s, IVectorChangedEventArgs e)
+			{
+				RegisterCommandVisibilityAndInvalidate();
+			}
+
+			element.PrimaryCommands.VectorChanged += OnVectorChanged;
+			element.SecondaryCommands.VectorChanged += OnVectorChanged;
+
+			void Unregister()
+			{
+				_visibilitySubscriptions.Disposable = null;
+				_titleView = null;
+				element.PrimaryCommands.VectorChanged -= OnVectorChanged;
+				element.SecondaryCommands.VectorChanged -= OnVectorChanged;
+			}
+
+			yield return Disposable.Create(Unregister);
 
 			// Properties
-			yield return Element.RegisterDisposableNestedPropertyChangedCallback(
+			yield return element.RegisterDisposableNestedPropertyChangedCallback(
 				(s, e) => RegisterCommandVisibilityAndInvalidate(),
 				new[] { CommandBar.PrimaryCommandsProperty },
 				new[] { CommandBar.ContentProperty },
@@ -61,55 +72,65 @@ namespace Uno.UI.Controls
 
 		protected override void Render()
 		{
+			var native = Native;
+			var element = Element;
+
+			if (native == null)
+			{
+				throw new InvalidOperationException("Native should not be null.");
+			}
+
 			// Content
-			Native.Title = Element.Content as string;
-			Native.TitleView = Element.Content is UIElement
-				? _titleView
-				: null;
-			_titleView.Child = Element.Content as UIElement;
+			var content = element.Content;
+
+			native.Title = content as string;
+			native.TitleView = content is UIElement ? _titleView : null;
+			if (_titleView != null)
+			{
+				_titleView.Child = content as UIElement;
+			}
 
 			// PrimaryCommands
-			Native.RightBarButtonItems = Element
+			native.RightBarButtonItems = element
 				.PrimaryCommands
 				.OfType<AppBarButton>()
 				.Where(btn => btn.Visibility == Visibility.Visible && (((btn.Content as FrameworkElement)?.Visibility ?? Visibility.Visible) == Visibility.Visible))
-				.Do(appBarButton => appBarButton.SetParent(Element)) // This ensures that Behaviors expecting this button to be in the logical tree work. 
+				.Do(appBarButton => appBarButton.SetParent(element)) // This ensures that Behaviors expecting this button to be in the logical tree work. 
 				.Select(appBarButton => appBarButton.GetRenderer(() => new AppBarButtonRenderer(appBarButton)).Native)
 				.Reverse()
 				.ToArray();
 
 			// CommandBarExtensions.NavigationCommand
-			var navigationCommand = Element.GetValue(NavigationCommandProperty) as AppBarButton;
+			var navigationCommand = element.GetValue(NavigationCommandProperty) as AppBarButton;
 			if (navigationCommand?.Visibility == Visibility.Visible)
 			{
-				navigationCommand.SetParent(Element); // This ensures that Behaviors expecting this button to be in the logical tree work. 
-				Native.LeftBarButtonItem = navigationCommand.GetRenderer(() => new AppBarButtonRenderer(navigationCommand)).Native;
+				navigationCommand.SetParent(element); // This ensures that Behaviors expecting this button to be in the logical tree work. 
+				native.LeftBarButtonItem = navigationCommand.GetRenderer(() => new AppBarButtonRenderer(navigationCommand)).Native;
 			}
 			else
 			{
-				Native.LeftBarButtonItem = null;
+				native.LeftBarButtonItem = null;
 			}
 
 			// CommandBarExtensions.BackButtonText	
-			var backButtonText = Element.GetValue(BackButtonTitleProperty) as string;
-			if (backButtonText != null)
+			if (element.GetValue(BackButtonTitleProperty) is string backButtonText)
 			{
-				Native.BackBarButtonItem = new UIBarButtonItem(backButtonText, UIBarButtonItemStyle.Plain, null);
+				native.BackBarButtonItem = new UIBarButtonItem(backButtonText, UIBarButtonItemStyle.Plain, null);
 			}
 			else
 			{
-				Native.BackBarButtonItem = null;
+				native.BackBarButtonItem = null;
 			}
 		}
 
-		private void OnTitleViewParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		private void OnTitleViewParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs args)
 		{
 			// Even though we set the CommandBar as the parent of the TitleView,
 			// it will change to the native control when the view is added.
 			// This control is the visual parent but is not a DependencyObject and will not propagate the DataContext.
 			// In order to ensure the DataContext is propagated properly, we restore the CommandBar
 			// parent that can propagate the DataContext.
-			if (args.NewParent != Element && args.NewParent != null)
+			if (!ReferenceEquals(args.NewParent, Element) && args.NewParent != null)
 			{
 				_titleView.SetParent(Element);
 			}
