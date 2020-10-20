@@ -1,13 +1,11 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Database;
 using Android.Provider;
-using Uno.Extensions;
 using Uno.Helpers.Activities;
 using Uno.UI;
 using Windows.Extensions;
@@ -62,26 +60,12 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			var contact = new Contact();
 
-
 			ReadStructuredName(contact, lookupKey, contentResolver);
-
-			//var displayName = cursor.GetString(cursor.GetColumnIndex(ContactsContract.Contacts.InterfaceConsts.DisplayName));
-			//if (contact.DisplayName != displayName)
-			//{
-			//	contact.DisplayNameOverride = displayName ?? string.Empty;
-			//}
-
-			//contact.Notes = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.Note.ContentItemType)) ?? string.Empty;
-
-
-
-
-
-			//contact.Phones.AddRange(GetPhones(idQuery, contentResolver));
-
-			//contact.Emails.AddRange(GetEmails(idQuery, contentResolver));
-
-			//contact.Addresses.AddRange(GetAddresses(idQuery, contentResolver));			
+			ReadNickname(contact, lookupKey, contentResolver);
+			ReadNotes(contact, lookupKey, contentResolver);
+			ReadPhones(contact, lookupKey, contentResolver);
+			ReadEmails(contact, lookupKey, contentResolver);
+			ReadAddresses(contact, lookupKey, contentResolver);
 
 			return contact;
 		}
@@ -99,32 +83,97 @@ namespace Windows.ApplicationModel.Contacts
 					contactWhereParams,
 					null
 				);
+
 				if (cursor?.MoveToFirst() == true)
 				{
-					contact.HonorificNamePrefix = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredName.Prefix)) ?? string.Empty;
-					contact.FirstName = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredName.GivenName)) ?? string.Empty;
-					contact.MiddleName = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredName.MiddleName)) ?? string.Empty;
-					contact.LastName = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredName.FamilyName)) ?? string.Empty;
-					contact.HonorificNameSuffix = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredName.Suffix)) ?? string.Empty;
+					contact.HonorificNamePrefix = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.Prefix);
+					contact.FirstName = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.GivenName);
+					contact.MiddleName = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.MiddleName);
+					contact.LastName = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.FamilyName);
+					contact.HonorificNameSuffix = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.Suffix);
 
-					contact.YomiGivenName = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredName.PhoneticGivenName)) ?? string.Empty;
-					contact.YomiFamilyName = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredName.PhoneticFamilyName)) ?? string.Empty;
+					contact.YomiGivenName = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.PhoneticGivenName);
+					contact.YomiFamilyName = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.PhoneticFamilyName);
 				}
 			}
 		}
 
-		private static IEnumerable<ContactPhone> GetPhones(string[] idQuery, ContentResolver contentResolver)
+		private static void ReadNickname(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var contactPhones = new List<ContactPhone>();
-			var uri = ContactsContract.CommonDataKinds.Phone.ContentUri?.BuildUpon()?.AppendQueryParameter(ContactsContract.RemoveDuplicateEntries, "1")?.Build();
+			var nicknameWhere =
+			   ContactsContract.ContactsColumns.LookupKey + " = ? AND " +
+			   ContactsContract.DataColumns.Mimetype + " = ?";
+
+			var nicknameWhereParams = new[]
+			{
+				lookupKey,
+				ContactsContract.CommonDataKinds.Nickname.ContentItemType
+			};
+
+			if (ContactsContract.Data.ContentUri != null)
+			{
+				using var noteCursor = contentResolver.Query(
+					ContactsContract.Data.ContentUri,
+					null,
+					nicknameWhere,
+					nicknameWhereParams,
+					null
+				);
+				if (noteCursor?.MoveToFirst() == true)
+				{
+					contact.Nickname = GetColumn(noteCursor, ContactsContract.CommonDataKinds.Nickname.Name);
+				}
+			}
+		}
+
+		private static void ReadNotes(Contact contact, string lookupKey, ContentResolver contentResolver)
+		{
+			var noteWhere =
+				ContactsContract.ContactsColumns.LookupKey + " = ? AND " +
+				ContactsContract.DataColumns.Mimetype + " = ?";
+
+			var noteWhereParams = new[]
+			{
+				lookupKey,
+				ContactsContract.CommonDataKinds.Note.ContentItemType
+			};
+
+			if (ContactsContract.Data.ContentUri != null)
+			{
+				using var noteCursor = contentResolver.Query(
+					ContactsContract.Data.ContentUri,
+					null,
+					noteWhere,
+					noteWhereParams,
+					null
+				);
+				if (noteCursor?.MoveToFirst() == true)
+				{
+					contact.Notes = GetColumn(noteCursor, ContactsContract.CommonDataKinds.Note.NoteColumnId);
+				}
+			}
+		}
+
+		private static void ReadPhones(Contact contact, string lookupKey, ContentResolver contentResolver)
+		{
+			var phonesWhere = ContactsContract.ContactsColumns.LookupKey + " = ?";
+			var phonesWhereParams = new[]
+			{
+				lookupKey
+			};
+
+			var uri = ContactsContract.CommonDataKinds.Phone.ContentUri?
+				.BuildUpon()?
+				.AppendQueryParameter(ContactsContract.RemoveDuplicateEntries, "1")?
+				.Build();
 
 			if (uri != null)
 			{
 				using ICursor? cursor = contentResolver.Query(
 				   uri,
 				   null,
-				   ContactsContract.Contacts.InterfaceConsts.Id + "=?",
-				   idQuery,
+				   phonesWhere,
+				   phonesWhereParams,
 				   null);
 
 				if (cursor != null)
@@ -138,7 +187,7 @@ namespace Windows.ApplicationModel.Contacts
 							var phoneType = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.Phone.InterfaceConsts.Type));
 							var kind = TypeToContactPhoneKind(phoneType);
 
-							contactPhones.Add(new ContactPhone()
+							contact.Phones.Add(new ContactPhone()
 							{
 								Kind = kind,
 								Number = number ?? string.Empty
@@ -149,21 +198,28 @@ namespace Windows.ApplicationModel.Contacts
 					cursor.Close();
 				}
 			}
-			return contactPhones;
 		}
 
-		private static IEnumerable<ContactEmail> GetEmails(string[] idQuery, ContentResolver contentResolver)
+		private static void ReadEmails(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var contactEmails = new List<ContactEmail>();
-			var uri = ContactsContract.CommonDataKinds.Email.ContentUri?.BuildUpon()?.AppendQueryParameter(ContactsContract.RemoveDuplicateEntries, "1")?.Build();
+			var emailsWhere = ContactsContract.ContactsColumns.LookupKey + " = ?";
+			var emailsWhereParams = new[]
+			{
+				lookupKey
+			};
+
+			var uri = ContactsContract.CommonDataKinds.Email.ContentUri?
+				.BuildUpon()?
+				.AppendQueryParameter(ContactsContract.RemoveDuplicateEntries, "1")?
+				.Build();
 
 			if (uri != null)
 			{
 				using ICursor? cursor = contentResolver.Query(
 				   uri,
 				   null,
-				   ContactsContract.Contacts.InterfaceConsts.Id + "=?",
-				   idQuery,
+				   emailsWhere,
+				   emailsWhereParams,
 				   null);
 
 				if (cursor != null)
@@ -177,7 +233,7 @@ namespace Windows.ApplicationModel.Contacts
 							var emailType = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.Email.InterfaceConsts.Type));
 							var kind = TypeToContactEmailKind(emailType);
 
-							contactEmails.Add(new ContactEmail()
+							contact.Emails.Add(new ContactEmail()
 							{
 								Kind = kind,
 								Address = address ?? string.Empty
@@ -185,24 +241,30 @@ namespace Windows.ApplicationModel.Contacts
 						}
 						while (cursor.MoveToNext());
 					}
-					cursor.Close();
 				}
 			}
-			return contactEmails;
 		}
 
-		private static IEnumerable<ContactAddress> GetAddresses(string[] idQuery, ContentResolver contentResolver)
+		private static void ReadAddresses(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var contactAddresss = new List<ContactAddress>();
-			var uri = ContactsContract.CommonDataKinds.StructuredPostal.ContentUri?.BuildUpon()?.AppendQueryParameter(ContactsContract.RemoveDuplicateEntries, "1")?.Build();
+			var addressesWhere = ContactsContract.ContactsColumns.LookupKey + " = ?";
+			var addressesWhereParams = new[]
+			{
+				lookupKey
+			};
+
+			var uri = ContactsContract.CommonDataKinds.StructuredPostal.ContentUri?
+				.BuildUpon()?
+				.AppendQueryParameter(ContactsContract.RemoveDuplicateEntries, "1")?
+				.Build();
 
 			if (uri != null)
 			{
 				using ICursor? cursor = contentResolver.Query(
 				   uri,
 				   null,
-				   ContactsContract.Contacts.InterfaceConsts.Id + "=?",
-				   idQuery,
+				   addressesWhere,
+				   addressesWhereParams,
 				   null);
 
 				if (cursor != null)
@@ -211,23 +273,23 @@ namespace Windows.ApplicationModel.Contacts
 					{
 						do
 						{
-							var city = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.City));
-							var country = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.Country));
-							var postalCode = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.Postcode));
-							var region = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.Region));
-							var street = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.Street));
+							var city = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredPostal.City);
+							var country = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredPostal.Country);
+							var postalCode = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredPostal.Postcode);
+							var region = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredPostal.Region);
+							var street = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredPostal.Street);
 
-							var addressType = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.InterfaceConsts.Type));
+							var addressType = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredPostal.InterfaceConsts.Type);
 							var kind = TypeToContactAddressKind(addressType);
 
-							contactAddresss.Add(new ContactAddress()
+							contact.Addresses.Add(new ContactAddress()
 							{
 								Kind = kind,
-								Country = country ?? string.Empty,
-								Locality = city ?? string.Empty,
-								PostalCode = postalCode ?? string.Empty,
-								Region = region ?? string.Empty,
-								StreetAddress = street ?? string.Empty
+								Country = country,
+								Locality = city,
+								PostalCode = postalCode,
+								Region = region,
+								StreetAddress = street
 							});
 						}
 						while (cursor.MoveToNext());
@@ -235,7 +297,6 @@ namespace Windows.ApplicationModel.Contacts
 					cursor.Close();
 				}
 			}
-			return contactAddresss;
 		}
 
 		private static ContactPhoneKind TypeToContactPhoneKind(string? type)
@@ -301,6 +362,17 @@ namespace Windows.ApplicationModel.Contacts
 				}
 			}
 			return ContactAddressKind.Other;
+		}
+
+		private static string GetColumn(ICursor cursor, string? columnName)
+		{
+			if (columnName == null)
+			{
+				return string.Empty;
+			}
+
+			var columnIndex = cursor.GetColumnIndex(columnName);
+			return cursor.GetString(columnIndex) ?? string.Empty;
 		}
 	}
 }
