@@ -7889,7 +7889,7 @@
 							</VisualStateGroup>
 
 						</VisualStateManager.VisualStateGroups>
-						<Grid x:Name="HorizontalRoot" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
+						<Grid x:Name="HorizontalRoot" x:Load="False" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
 
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
@@ -7909,11 +7909,11 @@
 							<RepeatButton x:Name="HorizontalLargeIncrease" Opacity="0" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsTabStop="False" Interval="50" AllowFocusOnInteraction="False" Template="{StaticResource XamlDefaultScrollBar_RepeatButtonTemplate}" />
 							<RepeatButton x:Name="HorizontalSmallIncrease" Opacity="0" Grid.Column="4" MinHeight="{ThemeResource ScrollBarSize}" IsTabStop="False" Interval="50" Margin="0" Template="{StaticResource XamlDefaultScrollBar_HorizontalIncrementTemplate}" Width="{ThemeResource ScrollBarSize}" AllowFocusOnInteraction="False" VerticalAlignment="Center" />
 						</Grid>
-						<Grid x:Name="HorizontalPanningRoot" MinWidth="24" Visibility="Collapsed" Opacity="0">
+						<Grid x:Name="HorizontalPanningRoot" x:Load="False" MinWidth="24" Visibility="Collapsed" Opacity="0">
 							<Border x:Name="HorizontalPanningThumb" VerticalAlignment="Bottom" HorizontalAlignment="Left" Background="{ThemeResource ScrollBarPanningThumbBackground}" BorderThickness="0" Height="2" MinWidth="32" Margin="0,2,0,2" />
 
 						</Grid>
-						<Grid x:Name="VerticalRoot" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
+						<Grid x:Name="VerticalRoot" x:Load="False" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
 
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
@@ -7933,7 +7933,7 @@
 							<RepeatButton x:Name="VerticalLargeIncrease" Opacity="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsTabStop="False" Interval="50" Grid.Row="3" AllowFocusOnInteraction="False" Template="{StaticResource XamlDefaultScrollBar_RepeatButtonTemplate}" />
 							<RepeatButton x:Name="VerticalSmallIncrease" Opacity="0" Height="{ThemeResource ScrollBarSize}" MinWidth="{ThemeResource ScrollBarSize}" IsTabStop="False" Interval="50" Margin="0" Grid.Row="4" Template="{StaticResource XamlDefaultScrollBar_VerticalIncrementTemplate}" HorizontalAlignment="Center" />
 						</Grid>
-						<Grid x:Name="VerticalPanningRoot" MinHeight="24" Visibility="Collapsed" Opacity="0">
+						<Grid x:Name="VerticalPanningRoot" x:Load="False" MinHeight="24" Visibility="Collapsed" Opacity="0">
 							<Border x:Name="VerticalPanningThumb" VerticalAlignment="Top" HorizontalAlignment="Right" Background="{ThemeResource ScrollBarPanningThumbBackground}" BorderThickness="0" Width="2" MinHeight="32" Margin="2,0,2,0" />
 						</Grid>
 					</Grid>
