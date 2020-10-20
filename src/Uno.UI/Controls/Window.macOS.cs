@@ -168,7 +168,10 @@ namespace Uno.UI.Controls
 			{
 				DraggingEndedAction.Invoke(draggingInfo);
 			}
-			catch { }
+			catch
+			{
+				// Simply return if an error occured, it is unrecoverable
+			}
 
 			return;
 		}
@@ -180,7 +183,7 @@ namespace Uno.UI.Controls
 		public Action<NSDraggingInfo> DraggingEndedAction { get; set; } =
 			(NSDraggingInfo draggingInfo) =>
 			{
-				return;
+				// Available for use
 			};
 
 		/// <summary>
@@ -203,7 +206,7 @@ namespace Uno.UI.Controls
 		public Action<NSDraggingInfo> DraggingExitedAction { get; set; } =
 			(NSDraggingInfo draggingInfo) =>
 			{
-				return;
+				// Available for use
 			};
 
 		/// <summary>
