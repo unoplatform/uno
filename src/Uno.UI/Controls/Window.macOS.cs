@@ -94,7 +94,7 @@ namespace Uno.UI.Controls
 		///      give no examples.
 		/// 
 		/// The Export "method_name" attribute is fundamentally important to make this work, removing it will
-		/// break functionality and the method will never be called by macOS. Again, this seemly is because
+		/// break functionality and the method will never be called by macOS. Again, this seemingly is because
 		/// Xamarin.macOS is not aware of it.
 		/// 
 		/// </remarks>
@@ -170,7 +170,7 @@ namespace Uno.UI.Controls
 			}
 			catch
 			{
-				// Simply return if an error occured, it is unrecoverable
+				// Simply return if an error occurred, it is unrecoverable
 			}
 
 			return;
@@ -196,6 +196,15 @@ namespace Uno.UI.Controls
 		[Export("draggingExited:")] // Do not remove
 		public virtual void DraggingExited(NSDraggingInfo draggingInfo)
 		{
+			try
+			{
+				DraggingExitedAction.Invoke(draggingInfo);
+			}
+			catch
+			{
+				// Simply return if an error occurred, it is unrecoverable
+			}
+
 			return;
 		}
 
