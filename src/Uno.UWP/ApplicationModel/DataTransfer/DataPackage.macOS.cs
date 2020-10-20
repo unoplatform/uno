@@ -179,7 +179,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				if (!string.IsNullOrEmpty(html))
 				{
 					var pasteboardItem = new NSPasteboardItem();
-					pasteboardItem.SetStringForType(html ?? string.Empty, NSPasteboard.NSPasteboardTypeHTML);
+					pasteboardItem.SetStringForType(html, NSPasteboard.NSPasteboardTypeHTML);
 
 					draggingItem = new NSDraggingItem(pasteboardItem);
 					draggingItem.DraggingFrame = defaultFrameRect; // Must be set
@@ -195,7 +195,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				{
 					// Use `NSPasteboardTypeRTF` instead of `NSPasteboardTypeRTFD` for max compatiblity
 					var pasteboardItem = new NSPasteboardItem();
-					pasteboardItem.SetStringForType(rtf ?? string.Empty, NSPasteboard.NSPasteboardTypeRTF);
+					pasteboardItem.SetStringForType(rtf, NSPasteboard.NSPasteboardTypeRTF);
 
 					draggingItem = new NSDraggingItem(pasteboardItem);
 					draggingItem.DraggingFrame = defaultFrameRect; // Must be set
