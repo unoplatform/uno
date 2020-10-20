@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AppKit;
 using Foundation;
 using ObjCRuntime;
@@ -80,6 +81,14 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			SetToNative(content, NSPasteboard.GeneralPasteboard);
 		}
+
+		/// <summary>
+		/// Asynchronously sets the contents of the <see cref="DataPackage"/> to the native clipboard.
+		/// Any conversion between supported standard types is done automatically.
+		/// </summary>
+		/// <param name="content">The contents to set to the native cipboard.</param>
+		internal static Task SetToNativeClipboardAsync(DataPackage content)
+			=> SetToNativeAsync(content, NSPasteboard.GeneralPasteboard);
 
 		/// <summary>
 		/// Gets the contents of the native clipboard.
@@ -269,95 +278,103 @@ namespace Windows.ApplicationModel.DataTransfer
 			// See notes in Clipboard.Android.cs on async code usage here
 			CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				async () =>
-				{
-					var data = content?.GetView();
+				() => SetToNativeAsync(content, pasteboard));
 
-					var declaredTypes = new List<string>();
+			return;
+		}
 
-					/* Note that order is somewhat important here.
-					 *
-					 * According to the docs:
-					 *    "types should be ordered according to the preference of the source application,
-					 *     with the most preferred type coming first"
-					 * https://developer.apple.com/documentation/appkit/nspasteboard/1533561-declaretypes?language=objc
-					 *
-					 * This means we want to process certain types like HTML/RTF before general plain text
-					 * as they are more specific.
-					 * 
-					 * Types are also declared before setting
-					 */
+		private static async Task SetToNativeAsync(DataPackage content, NSPasteboard pasteboard)
+		{
+			if (pasteboard is null)
+			{
+				throw new ArgumentException(nameof(pasteboard));
+			}
 
-					// Declare types
-					if (data?.Contains(StandardDataFormats.Html) ?? false)
-					{
-						declaredTypes.Add(NSPasteboard.NSPasteboardTypeHTML);
-					}
+			var data = content?.GetView();
+			var declaredTypes = new List<string>();
 
-					if (data?.Contains(StandardDataFormats.Rtf) ?? false)
-					{
-						// Use `NSPasteboardTypeRTF` instead of `NSPasteboardTypeRTFD` for max compatiblity
-						declaredTypes.Add(NSPasteboard.NSPasteboardTypeRTF);
-					}
+			/* Note that order is somewhat important here.
+			 *
+			 * According to the docs:
+			 *    "types should be ordered according to the preference of the source application,
+			 *     with the most preferred type coming first"
+			 * https://developer.apple.com/documentation/appkit/nspasteboard/1533561-declaretypes?language=objc
+			 *
+			 * This means we want to process certain types like HTML/RTF before general plain text
+			 * as they are more specific.
+			 * 
+			 * Types are also declared before setting
+			 */
 
-					if (data?.Contains(StandardDataFormats.Text) ?? false)
-					{
-						declaredTypes.Add(NSPasteboard.NSPasteboardTypeString);
-					}
+			// Declare types
+			if (data?.Contains(StandardDataFormats.Html) ?? false)
+			{
+				declaredTypes.Add(NSPasteboard.NSPasteboardTypeHTML);
+			}
 
-					// See comments at beginning of document for URL handling
-					if (data?.Contains(StandardDataFormats.Uri) ?? false)
-					{
-						declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
-					}
-					else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
-					{
-						declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
-					}
-					else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
-					{
-						declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
-					}
+			if (data?.Contains(StandardDataFormats.Rtf) ?? false)
+			{
+				// Use `NSPasteboardTypeRTF` instead of `NSPasteboardTypeRTFD` for max compatiblity
+				declaredTypes.Add(NSPasteboard.NSPasteboardTypeRTF);
+			}
 
-					pasteboard.DeclareTypes(declaredTypes.ToArray(), null);
+			if (data?.Contains(StandardDataFormats.Text) ?? false)
+			{
+				declaredTypes.Add(NSPasteboard.NSPasteboardTypeString);
+			}
 
-					// Set content
-					if (data?.Contains(StandardDataFormats.Html) ?? false)
-					{
-						var html = await data.GetHtmlFormatAsync();
-						pasteboard.SetStringForType(html ?? string.Empty, NSPasteboard.NSPasteboardTypeHTML);
-					}
+			// See comments at beginning of document for URL handling
+			if (data?.Contains(StandardDataFormats.Uri) ?? false)
+			{
+				declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
+			}
+			else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
+			{
+				declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
+			}
+			else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
+			{
+				declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
+			}
 
-					if (data?.Contains(StandardDataFormats.Rtf) ?? false)
-					{
-						var rtf = await data.GetRtfAsync();
-						pasteboard.SetStringForType(rtf ?? string.Empty, NSPasteboard.NSPasteboardTypeRTF);
-					}
+			pasteboard.DeclareTypes(declaredTypes.ToArray(), null);
 
-					if (data?.Contains(StandardDataFormats.Text) ?? false)
-					{
-						var text = await data.GetTextAsync();
-						pasteboard.SetStringForType(text ?? string.Empty, NSPasteboard.NSPasteboardTypeString);
-					}
+			// Set content
+			if (data?.Contains(StandardDataFormats.Html) ?? false)
+			{
+				var html = await data.GetHtmlFormatAsync();
+				pasteboard.SetStringForType(html ?? string.Empty, NSPasteboard.NSPasteboardTypeHTML);
+			}
 
-					// See comments at beginning of document for URL handling
-					if (data?.Contains(StandardDataFormats.Uri) ?? false)
-					{
-						var uri = await data.GetUriAsync();
-						pasteboard.SetStringForType(uri?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
-					}
-					else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
-					{
-						var webLink = await data.GetWebLinkAsync();
-						pasteboard.SetStringForType(webLink?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
-					}
-					else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
-					{
-						var appLink = await data.GetApplicationLinkAsync();
-						pasteboard.SetStringForType(appLink?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
-					}
-				});
-				
+			if (data?.Contains(StandardDataFormats.Rtf) ?? false)
+			{
+				var rtf = await data.GetRtfAsync();
+				pasteboard.SetStringForType(rtf ?? string.Empty, NSPasteboard.NSPasteboardTypeRTF);
+			}
+
+			if (data?.Contains(StandardDataFormats.Text) ?? false)
+			{
+				var text = await data.GetTextAsync();
+				pasteboard.SetStringForType(text ?? string.Empty, NSPasteboard.NSPasteboardTypeString);
+			}
+
+			// See comments at beginning of document for URL handling
+			if (data?.Contains(StandardDataFormats.Uri) ?? false)
+			{
+				var uri = await data.GetUriAsync();
+				pasteboard.SetStringForType(uri?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
+			}
+			else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
+			{
+				var webLink = await data.GetWebLinkAsync();
+				pasteboard.SetStringForType(webLink?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
+			}
+			else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
+			{
+				var appLink = await data.GetApplicationLinkAsync();
+				pasteboard.SetStringForType(appLink?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
+			}
+
 			return;
 		}
 
