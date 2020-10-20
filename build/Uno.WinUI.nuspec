@@ -293,8 +293,8 @@
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\netstandard2.0" />
 
 	<!-- Force UAP to ignore netstandard 2.0 -->
-	<file src="_._" target="buildTransitive\uap10.0.16299" />
-	<file src="_._" target="buildTransitive\uap10.0.17763" />
+	<file src="uno.winui.uap.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />
+	<file src="uno.winui.uap.targets" target="buildTransitive\uap10.0.17763\uno.winui.targets" />
 
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />
   </files>
