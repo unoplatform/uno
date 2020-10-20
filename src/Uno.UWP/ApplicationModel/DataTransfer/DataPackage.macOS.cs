@@ -137,20 +137,20 @@ namespace Windows.ApplicationModel.DataTransfer
 			if (data?.Contains(StandardDataFormats.Bitmap) ?? false)
 			{
 				NSImage? image = null;
-				var stream = (await (await data.GetBitmapAsync()).OpenReadAsync()).AsStream();
 
-				if (stream != null)
+				using (var stream = (await (await data.GetBitmapAsync()).OpenReadAsync()).AsStream())
 				{
-					using (MemoryStream ms = new MemoryStream())
+					if (stream != null)
 					{
-						await stream.CopyToAsync(ms);
-						ms.Flush();
-						ms.Position = 0;
+						using (var ms = new MemoryStream())
+						{
+							await stream.CopyToAsync(ms);
+							ms.Flush();
+							ms.Position = 0;
 
-						image = NSImage.FromStream(ms);
+							image = NSImage.FromStream(ms);
+						}
 					}
-
-					stream.Close();
 				}	
 
 				if (image != null)
