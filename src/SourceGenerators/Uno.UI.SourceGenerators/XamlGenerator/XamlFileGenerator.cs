@@ -1567,7 +1567,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool HasMarkupExtension(XamlMemberDefinition valueNode)
 		{
 			// Return false if the Owner is a custom markup extension
-			if (IsCustomMarkupExtensionType(valueNode.Owner?.Type))
+			if (valueNode == null || IsCustomMarkupExtensionType(valueNode.Owner?.Type))
 			{
 				return false;
 			}
@@ -4948,10 +4948,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return null;
 				}
 
-				if (visibilityMember != null)
+				if (visibilityMember != null || loadElement?.Value != null)
 				{
 					var hasVisibilityMarkup = HasMarkupExtension(visibilityMember);
-					var isLiteralVisible = !hasVisibilityMarkup && (visibilityMember.Value?.ToString() == "Visible");
+					var isLiteralVisible = !hasVisibilityMarkup && (visibilityMember?.Value?.ToString() == "Visible");
 
 					var hasDataContextMarkup = dataContextMember != null && HasMarkupExtension(dataContextMember);
 
@@ -5019,11 +5019,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 								else
 								{
-									innerWriter.AppendLineInvariant(
-										"{0}.Visibility = {1};",
-										closureName,
-										BuildLiteralValue(visibilityMember)
-									);
+									if (visibilityMember != null)
+									{
+										innerWriter.AppendLineInvariant(
+											"{0}.Visibility = {1};",
+											closureName,
+											BuildLiteralValue(visibilityMember)
+										);
+									}
 
 									if (nameMember != null)
 									{
