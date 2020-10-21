@@ -595,43 +595,45 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return;
 			}
 
+			var prefix = IsFixedOrientation ? $"{Orientation}_" : "";
+
 			var scrollingIndicator = IndicatorMode;
 			var isEnabled = IsEnabled;
 			bool isSuccessful;
 			if (!isEnabled)
 			{
-				VisualStateManager.GoToState(this, "Disabled", bUseTransitions);
+				VisualStateManager.GoToState(this, prefix + "Disabled", bUseTransitions);
 			}
 			else if (m_isPointerOver)
 			{
-				isSuccessful = VisualStateManager.GoToState(this, "PointerOver", bUseTransitions);
+				isSuccessful = VisualStateManager.GoToState(this, prefix + "PointerOver", bUseTransitions);
 				//Default to Normal if PointerOver state isn't available.
 				if (!isSuccessful)
 				{
-					VisualStateManager.GoToState(this, "Normal", bUseTransitions);
+					VisualStateManager.GoToState(this, prefix + "Normal", bUseTransitions);
 				}
 			}
 			else
 			{
-				VisualStateManager.GoToState(this, "Normal", bUseTransitions);
+				VisualStateManager.GoToState(this, prefix + "Normal", bUseTransitions);
 			}
 
 			if (!m_blockIndicators && (!IsConscious() || scrollingIndicator == ScrollingIndicatorMode.MouseIndicator))
 			{
-				VisualStateManager.GoToState(this, "MouseIndicator", bUseTransitions);
+				VisualStateManager.GoToState(this, prefix + "MouseIndicator", bUseTransitions);
 			}
 			else if (!m_blockIndicators && scrollingIndicator == ScrollingIndicatorMode.TouchIndicator)
 			{
-				isSuccessful = VisualStateManager.GoToState(this, "TouchIndicator", bUseTransitions);
+				isSuccessful = VisualStateManager.GoToState(this, prefix + "TouchIndicator", bUseTransitions);
 				//Default to MouseActiveState if Panning state isn't available.
 				if (!isSuccessful)
 				{
-					VisualStateManager.GoToState(this, "MouseIndicator", bUseTransitions);
+					VisualStateManager.GoToState(this, prefix + "MouseIndicator", bUseTransitions);
 				}
 			}
 			else
 			{
-				VisualStateManager.GoToState(this, "NoIndicator", bUseTransitions);
+				VisualStateManager.GoToState(this, prefix + "NoIndicator", bUseTransitions);
 			}
 
 			// Expanded/Collapsed States were added in RS3 and ExpandedWithoutAnimation/CollapsedWithoutAnimation states
@@ -643,7 +645,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// animations are enabled. When animations are disabled, the framework does not run transitions.
 			if (!IsConscious())
 			{
-				VisualStateManager.GoToState(this, isEnabled ? "Expanded" : "Collapsed", true /* useTransitions */);
+				VisualStateManager.GoToState(this, prefix + (isEnabled ? "Expanded" : "Collapsed"), true /* useTransitions */);
 			}
 			else
 			{
@@ -653,22 +655,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					if (!animate)
 					{
-						isSuccessful = VisualStateManager.GoToState(this, "ExpandedWithoutAnimation", true /* useTransitions */);
+						isSuccessful = VisualStateManager.GoToState(this, prefix + "ExpandedWithoutAnimation", true /* useTransitions */);
 					}
 					if (!isSuccessful)
 					{
-						VisualStateManager.GoToState(this, "Expanded", true /* useTransitions */);
+						VisualStateManager.GoToState(this, prefix + "Expanded", true /* useTransitions */);
 					}
 				}
 				else
 				{
 					if (!animate)
 					{
-						isSuccessful = VisualStateManager.GoToState(this, "CollapsedWithoutAnimation", true /* useTransitions */);
+						isSuccessful = VisualStateManager.GoToState(this, prefix + "CollapsedWithoutAnimation", true /* useTransitions */);
 					}
 					if (!isSuccessful)
 					{
-						VisualStateManager.GoToState(this, "Collapsed", true /* useTransitions */);
+						VisualStateManager.GoToState(this, prefix + "Collapsed", true /* useTransitions */);
 					}
 				}
 			}
