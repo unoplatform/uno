@@ -291,8 +291,8 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			TextBlock tb = child as TextBlock;
 			this._secondTextBlockUI = tb;
 
-			SetupAnimatedValuesSpy();
-			SpyAnimatedValues();
+			//SetupAnimatedValuesSpy();
+			//SpyAnimatedValues();
 		}
 
 		private void DispatcherTimer_Tick(object sender, object e)
