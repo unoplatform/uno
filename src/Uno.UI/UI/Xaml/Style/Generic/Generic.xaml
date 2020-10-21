@@ -7573,6 +7573,8 @@
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal" />
+								<VisualState x:Name="Vertical_Normal" />
+								<VisualState x:Name="Horizontal_Normal" />
 
 								<VisualState x:Name="Disabled">
 									<VisualState.Setters>
@@ -7587,6 +7589,26 @@
 										<Setter Target="VerticalPanningThumb.Background" Value="{ThemeResource ScrollBarPanningThumbBackgroundDisabled}" />
 									</VisualState.Setters>
 								</VisualState>
+								<VisualState x:Name="Vertical_Disabled">
+									<VisualState.Setters>
+										<Setter Target="Root.Background" Value="{ThemeResource ScrollBarBackgroundDisabled}" />
+										<Setter Target="Root.BorderBrush" Value="{ThemeResource ScrollBarBorderBrushDisabled}" />
+										<Setter Target="Root.Opacity" Value="0.5" />
+										<Setter Target="VerticalTrackRect.Stroke" Value="{ThemeResource ScrollBarTrackStrokeDisabled}" />
+										<Setter Target="VerticalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillDisabled}" />
+										<Setter Target="VerticalPanningThumb.Background" Value="{ThemeResource ScrollBarPanningThumbBackgroundDisabled}" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Horizontal_Disabled">
+									<VisualState.Setters>
+										<Setter Target="Root.Background" Value="{ThemeResource ScrollBarBackgroundDisabled}" />
+										<Setter Target="Root.BorderBrush" Value="{ThemeResource ScrollBarBorderBrushDisabled}" />
+										<Setter Target="Root.Opacity" Value="0.5" />
+										<Setter Target="HorizontalTrackRect.Stroke" Value="{ThemeResource ScrollBarTrackStrokeDisabled}" />
+										<Setter Target="HorizontalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillDisabled}" />
+										<Setter Target="HorizontalPanningThumb.Background" Value="{ThemeResource ScrollBarPanningThumbBackgroundDisabled}" />
+									</VisualState.Setters>
+								</VisualState>
 
 							</VisualStateGroup>
 							<VisualStateGroup x:Name="ScrollingIndicatorStates">
@@ -7598,6 +7620,19 @@
 										<Setter Target="VerticalPanningRoot.Opacity" Value="1" />
 									</VisualState.Setters>
 								</VisualState>
+								<VisualState x:Name="Vertical_TouchIndicator">
+									<VisualState.Setters>
+										<Setter Target="VerticalRoot.Visibility" Value="Collapsed" />
+										<Setter Target="VerticalPanningRoot.Opacity" Value="1" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Horizontal_TouchIndicator">
+									<VisualState.Setters>
+										<Setter Target="VerticalRoot.Visibility" Value="Collapsed" />
+										<Setter Target="VerticalPanningRoot.Opacity" Value="1" />
+									</VisualState.Setters>
+								</VisualState>
+
 								<VisualState x:Name="MouseIndicator">
 									<VisualState.Setters>
 										<Setter Target="HorizontalPanningRoot.Visibility" Value="Collapsed" />
@@ -7608,6 +7643,21 @@
 										<Setter Target="VerticalThumb.Opacity" Value="1" />
 									</VisualState.Setters>
 								</VisualState>
+								<VisualState x:Name="Vertical_MouseIndicator">
+									<VisualState.Setters>
+										<Setter Target="VerticalPanningRoot.Visibility" Value="Collapsed" />
+										<Setter Target="VerticalRoot.IsHitTestVisible" Value="True" />
+										<Setter Target="VerticalThumb.Opacity" Value="1" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Horizontal_MouseIndicator">
+									<VisualState.Setters>
+										<Setter Target="HorizontalPanningRoot.Visibility" Value="Collapsed" />
+										<Setter Target="HorizontalRoot.IsHitTestVisible" Value="True" />
+										<Setter Target="HorizontalThumb.Opacity" Value="1" />
+									</VisualState.Setters>
+								</VisualState>
+
 								<netstdref:VisualState x:Name="NoIndicator">
 									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 									<VisualState.Setters>
@@ -7635,6 +7685,40 @@
 										<Setter Target="VerticalPanningRoot.Opacity" Value="0" />
 										<Setter Target="HorizontalPanningRoot.Visibility" Value="Collapsed" />
 										<Setter Target="VerticalPanningRoot.Visibility" Value="Collapsed" />
+									</VisualState.Setters>
+								</netstdref:VisualState>
+								<netstdref:VisualState x:Name="Vertical_NoIndicator">
+									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+									<VisualState.Setters>
+										<Setter Target="VerticalThumb.Background.Color" Value="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
+										<Setter Target="VerticalThumbTransform.ScaleX" Value="{ThemeResource SmallScrollThumbScale}" />
+										<Setter Target="VerticalThumbTransform.TranslateX" Value="{ThemeResource SmallScrollThumbOffset}" />
+										<Setter Target="VerticalSmallIncrease.Opacity" Value="0" />
+										<Setter Target="VerticalLargeIncrease.Opacity" Value="0" />
+										<Setter Target="VerticalLargeDecrease.Opacity" Value="0" />
+										<Setter Target="VerticalThumb.Opacity" Value="0" />
+										<Setter Target="VerticalSmallDecrease.Opacity" Value="0" />
+										<Setter Target="VerticalTrackRect.Opacity" Value="0" />
+										<Setter Target="VerticalRoot.Visibility" Value="Collapsed" />
+										<Setter Target="VerticalPanningRoot.Opacity" Value="0" />
+										<Setter Target="VerticalPanningRoot.Visibility" Value="Collapsed" />
+									</VisualState.Setters>
+								</netstdref:VisualState>
+								<netstdref:VisualState x:Name="Horizontal_NoIndicator">
+									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+									<VisualState.Setters>
+										<Setter Target="HorizontalThumb.Background.Color" Value="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
+										<Setter Target="HorizontalThumbTransform.ScaleY" Value="{ThemeResource SmallScrollThumbScale}" />
+										<Setter Target="HorizontalThumbTransform.TranslateY" Value="{ThemeResource SmallScrollThumbOffset}" />
+										<Setter Target="HorizontalSmallIncrease.Opacity" Value="0" />
+										<Setter Target="HorizontalLargeIncrease.Opacity" Value="0" />
+										<Setter Target="HorizontalLargeDecrease.Opacity" Value="0" />
+										<Setter Target="HorizontalThumb.Opacity" Value="0" />
+										<Setter Target="HorizontalSmallDecrease.Opacity" Value="0" />
+										<Setter Target="HorizontalTrackRect.Opacity" Value="0" />
+										<Setter Target="HorizontalRoot.Visibility" Value="Collapsed" />
+										<Setter Target="HorizontalPanningRoot.Opacity" Value="0" />
+										<Setter Target="HorizontalPanningRoot.Visibility" Value="Collapsed" />
 									</VisualState.Setters>
 								</netstdref:VisualState>
 								<not_netstdref:VisualState x:Name="NoIndicator">
@@ -7718,7 +7802,10 @@
 										</Storyboard>
 									</VisualTransition>
 								</not_netstdref:VisualStateGroup.Transitions>
+
 								<VisualState x:Name="Collapsed" />
+								<VisualState x:Name="Vertical_Collapsed" />
+								<VisualState x:Name="Horizontal_Collapsed" />
 
 								<netstdref:VisualState x:Name="Expanded">
 									<VisualState.Setters>
@@ -7741,6 +7828,42 @@
 										<Setter Target="VerticalLargeDecrease.Opacity" Value="1" />
 										<Setter Target="VerticalSmallDecrease.Opacity" Value="1" />
 										<Setter Target="VerticalTrackRect.Opacity" Value="1" />
+										<Setter Target="HorizontalSmallIncrease.Opacity" Value="1" />
+										<Setter Target="HorizontalLargeIncrease.Opacity" Value="1" />
+										<Setter Target="HorizontalLargeDecrease.Opacity" Value="1" />
+										<Setter Target="HorizontalSmallDecrease.Opacity" Value="1" />
+										<Setter Target="HorizontalTrackRect.Opacity" Value="1" />
+									</VisualState.Setters>
+								</netstdref:VisualState>
+								<netstdref:VisualState x:Name="Vertical_Expanded">
+									<VisualState.Setters>
+										<Setter Target="Root.Background" Value="{ThemeResource ScrollBarBackgroundPointerOver}" />
+										<Setter Target="Root.BorderBrush" Value="{ThemeResource ScrollBarBorderBrushPointerOver}" />
+										<Setter Target="VerticalTrackRect.Stroke" Value="{ThemeResource ScrollBarTrackStrokePointerOver}" />
+										<Setter Target="VerticalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
+
+										<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+										<Setter Target="VerticalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
+										<Setter Target="VerticalThumbTransform.ScaleX" Value="1.0" />
+										<Setter Target="VerticalThumbTransform.TranslateX" Value="0" />
+										<Setter Target="VerticalSmallIncrease.Opacity" Value="1" />
+										<Setter Target="VerticalLargeIncrease.Opacity" Value="1" />
+										<Setter Target="VerticalLargeDecrease.Opacity" Value="1" />
+										<Setter Target="VerticalSmallDecrease.Opacity" Value="1" />
+										<Setter Target="VerticalTrackRect.Opacity" Value="1" />
+									</VisualState.Setters>
+								</netstdref:VisualState>
+								<netstdref:VisualState x:Name="Horizontal_Expanded">
+									<VisualState.Setters>
+										<Setter Target="Root.Background" Value="{ThemeResource ScrollBarBackgroundPointerOver}" />
+										<Setter Target="Root.BorderBrush" Value="{ThemeResource ScrollBarBorderBrushPointerOver}" />
+										<Setter Target="HorizontalTrackRect.Stroke" Value="{ThemeResource ScrollBarTrackStrokePointerOver}" />
+										<Setter Target="HorizontalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
+
+										<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+										<Setter Target="HorizontalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
+										<Setter Target="HorizontalThumbTransform.ScaleY" Value="1.0" />
+										<Setter Target="HorizontalThumbTransform.TranslateY" Value="0" />
 										<Setter Target="HorizontalSmallIncrease.Opacity" Value="1" />
 										<Setter Target="HorizontalLargeIncrease.Opacity" Value="1" />
 										<Setter Target="HorizontalLargeDecrease.Opacity" Value="1" />
@@ -7777,6 +7900,7 @@
 										<DoubleAnimation Duration="{ThemeResource ScrollBarExpandDuration}" BeginTime="{ThemeResource ScrollBarExpandBeginTime}" Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Opacity" To="1" />
 									</Storyboard>
 								</not_netstdref:VisualState>
+
 								<netstdref:VisualState x:Name="ExpandedWithoutAnimation">
 									<VisualState.Setters>
 										<Setter Target="Root.Background" Value="{ThemeResource ScrollBarBackgroundPointerOver}" />
@@ -7804,6 +7928,42 @@
 										<Setter Target="HorizontalSmallDecrease.Opacity" Value="1" />
 										<Setter Target="HorizontalTrackRect.Opacity" Value="1" />
 
+									</VisualState.Setters>
+								</netstdref:VisualState>
+								<netstdref:VisualState x:Name="Vertical_ExpandedWithoutAnimation">
+									<VisualState.Setters>
+										<Setter Target="Root.Background" Value="{ThemeResource ScrollBarBackgroundPointerOver}" />
+										<Setter Target="Root.BorderBrush" Value="{ThemeResource ScrollBarBorderBrushPointerOver}" />
+										<Setter Target="VerticalTrackRect.Stroke" Value="{ThemeResource ScrollBarTrackStrokePointerOver}" />
+										<Setter Target="VerticalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
+
+										<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+										<Setter Target="VerticalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
+										<Setter Target="VerticalThumbTransform.ScaleX" Value="1.0" />
+										<Setter Target="VerticalThumbTransform.TranslateX" Value="0" />
+										<Setter Target="VerticalSmallIncrease.Opacity" Value="1" />
+										<Setter Target="VerticalLargeIncrease.Opacity" Value="1" />
+										<Setter Target="VerticalLargeDecrease.Opacity" Value="1" />
+										<Setter Target="VerticalSmallDecrease.Opacity" Value="1" />
+										<Setter Target="VerticalTrackRect.Opacity" Value="1" />
+									</VisualState.Setters>
+								</netstdref:VisualState>
+								<netstdref:VisualState x:Name="Horizontal_ExpandedWithoutAnimation">
+									<VisualState.Setters>
+										<Setter Target="Root.Background" Value="{ThemeResource ScrollBarBackgroundPointerOver}" />
+										<Setter Target="Root.BorderBrush" Value="{ThemeResource ScrollBarBorderBrushPointerOver}" />
+										<Setter Target="HorizontalTrackRect.Stroke" Value="{ThemeResource ScrollBarTrackStrokePointerOver}" />
+										<Setter Target="HorizontalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
+
+										<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+										<Setter Target="HorizontalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
+										<Setter Target="HorizontalThumbTransform.ScaleY" Value="1.0" />
+										<Setter Target="HorizontalThumbTransform.TranslateY" Value="0" />
+										<Setter Target="HorizontalSmallIncrease.Opacity" Value="1" />
+										<Setter Target="HorizontalLargeIncrease.Opacity" Value="1" />
+										<Setter Target="HorizontalLargeDecrease.Opacity" Value="1" />
+										<Setter Target="HorizontalSmallDecrease.Opacity" Value="1" />
+										<Setter Target="HorizontalTrackRect.Opacity" Value="1" />
 									</VisualState.Setters>
 								</netstdref:VisualState>
 								<not_netstdref:VisualState x:Name="ExpandedWithoutAnimation">
@@ -7837,6 +7997,7 @@
 										<DoubleAnimation Duration="0" BeginTime="{ThemeResource ScrollBarExpandBeginTime}" Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Opacity" To="1" />
 									</Storyboard>
 								</not_netstdref:VisualState>
+
 								<netstdref:VisualState x:Name="CollapsedWithoutAnimation">
 									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 
@@ -7855,6 +8016,40 @@
 										<Setter Target="VerticalLargeDecrease.Opacity" Value="0" />
 										<Setter Target="VerticalSmallDecrease.Opacity" Value="0" />
 										<Setter Target="VerticalTrackRect.Opacity" Value="0" />
+										<Setter Target="HorizontalSmallIncrease.Opacity" Value="0" />
+										<Setter Target="HorizontalLargeIncrease.Opacity" Value="0" />
+										<Setter Target="HorizontalLargeDecrease.Opacity" Value="0" />
+										<Setter Target="HorizontalSmallDecrease.Opacity" Value="0" />
+										<Setter Target="HorizontalTrackRect.Opacity" Value="0" />
+									</VisualState.Setters>
+								</netstdref:VisualState>
+								<netstdref:VisualState x:Name="Vertical_CollapsedWithoutAnimation">
+									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+
+									<!-- The storyboard below cannot be moved to a transition since transitions
+                                             will not be run by the framework when animations are disabled in the system -->
+
+									<VisualState.Setters>
+										<Setter Target="VerticalThumb.Background.Color" Value="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
+										<Setter Target="VerticalThumbTransform.ScaleX" Value="{ThemeResource SmallScrollThumbScale}" />
+										<Setter Target="VerticalThumbTransform.TranslateX" Value="{ThemeResource SmallScrollThumbOffset}" />
+										<Setter Target="VerticalSmallIncrease.Opacity" Value="0" />
+										<Setter Target="VerticalLargeIncrease.Opacity" Value="0" />
+										<Setter Target="VerticalLargeDecrease.Opacity" Value="0" />
+										<Setter Target="VerticalSmallDecrease.Opacity" Value="0" />
+										<Setter Target="VerticalTrackRect.Opacity" Value="0" />
+									</VisualState.Setters>
+								</netstdref:VisualState>
+								<netstdref:VisualState x:Name="Horizontal_CollapsedWithoutAnimation">
+									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+
+									<!-- The storyboard below cannot be moved to a transition since transitions
+                                             will not be run by the framework when animations are disabled in the system -->
+
+									<VisualState.Setters>
+										<Setter Target="HorizontalThumb.Background.Color" Value="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
+										<Setter Target="HorizontalThumbTransform.ScaleY" Value="{ThemeResource SmallScrollThumbScale}" />
+										<Setter Target="HorizontalThumbTransform.TranslateY" Value="{ThemeResource SmallScrollThumbOffset}" />
 										<Setter Target="HorizontalSmallIncrease.Opacity" Value="0" />
 										<Setter Target="HorizontalLargeIncrease.Opacity" Value="0" />
 										<Setter Target="HorizontalLargeDecrease.Opacity" Value="0" />
@@ -7889,7 +8084,7 @@
 							</VisualStateGroup>
 
 						</VisualStateManager.VisualStateGroups>
-						<Grid x:Name="HorizontalRoot" x:Load="False" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
+						<Grid x:Name="HorizontalRoot" x:Load="False" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
 
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
@@ -7913,7 +8108,7 @@
 							<Border x:Name="HorizontalPanningThumb" VerticalAlignment="Bottom" HorizontalAlignment="Left" Background="{ThemeResource ScrollBarPanningThumbBackground}" BorderThickness="0" Height="2" MinWidth="32" Margin="0,2,0,2" />
 
 						</Grid>
-						<Grid x:Name="VerticalRoot" x:Load="False" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
+						<Grid x:Name="VerticalRoot" x:Load="False" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
 
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
