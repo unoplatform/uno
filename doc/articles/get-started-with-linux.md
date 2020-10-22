@@ -63,7 +63,7 @@ Using Ubuntu 18.04 or later:
     ```
 - Install the `dotnet new` templates:
     ```
-    dotnet new -i Uno.ProjectTemplates.Dotnet::3.1-dev*
+    dotnet new -i Uno.ProjectTemplates.Dotnet
     ```
 - Then create a new project using:
     ```
