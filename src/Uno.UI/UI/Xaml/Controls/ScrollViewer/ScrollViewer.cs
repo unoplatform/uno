@@ -622,12 +622,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ViewportArrangeSize = finalSize;
 
-			var s =  base.ArrangeOverride(finalSize);
-
-			//UpdateDimensionProperties();
-			//UpdateZoomedContentAlignment();
-
-			return s;
+			return base.ArrangeOverride(finalSize);
 		}
 
 		internal override void OnLayoutUpdated()
