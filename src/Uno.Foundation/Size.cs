@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using Uno.Extensions;
 
@@ -46,6 +47,15 @@ namespace Windows.Foundation
 			sb.Append(Width.ToStringInvariant());
 			sb.Append(',');
 			sb.Append(Height.ToStringInvariant());
+			return sb.ToString();
+		}
+
+		internal string ToString(string format)
+		{
+			var sb = new StringBuilder(8);
+			sb.Append(Width.ToString(format, CultureInfo.InvariantCulture));
+			sb.Append(',');
+			sb.Append(Height.ToString(format, CultureInfo.InvariantCulture));
 			return sb.ToString();
 		}
 
