@@ -13,6 +13,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class ScrollBar
 	{
+		[ThreadStatic]
+		private static Orientation? _fixedOrientation;
+
+		internal static IDisposable MaterializingFixed(Orientation orientation)
+		{
+			_fixedOrientation = orientation;
+			return Disposable.Create(() => _fixedOrientation = null);
+		}
+
 		// Flag indicating whether the ScrollBar must react to user input or not.
 		bool m_isIgnoringUserInput;
 
@@ -21,7 +30,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		// Used to prevent GoToState(true /*bUseTransitions*/) calls while applying the template.
 		// We don't want to show the initial fade-out of the mouse/panning indicators.
-		bool m_suspendVisualStateUpdates;
+		bool m_suspendVisualStateUpdates = true; // = true: Visual state update are disabled until the template has been applied at least once!
 
 		// Value indicating how far the ScrollBar has beeen dragged.
 		double m_dragValue;
@@ -79,6 +88,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		static bool IsAnimationEnabled
 			=> Uno.UI.Helpers.WinUI.SharedHelpers.IsAnimationsEnabled();
 
+		/// <summary>
+		/// Indicates if this scrollbar supports to change its orientation once its template has been applied (cf. remarks).
+		/// This is false by default (which means that the ScrollBar will support dynamic orientation changes).
+		/// </summary>
+		/// <remarks>
+		/// This flag is for performance consideration, it allows ScrollBar to load only half of its template.
+		/// It's used by core controls (e.g. ScrollViewer) where the ScrollBar's orientation will never change.
+		/// It's required as, unlike UWP, a control which is Visibility = Collapsed will get its template applied anyway.
+		/// </remarks>
+		internal bool IsFixedOrientation { get; set; } = false;
+
 		// Initializes a new instance of the ScrollBar class.
 		public ScrollBar()
 		{
@@ -88,6 +108,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			m_dragValue = 0.0;
 			m_blockIndicators = false;
 			m_isUsingActualSizeAsExtent = false;
+
+			if (_fixedOrientation is Orientation fixedOrientation)
+			{
+				IsFixedOrientation = true;
+				Orientation = fixedOrientation;
+			}
 
 			Initialize();
 		}
@@ -104,28 +130,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Unloaded += DetachEvents;
 		}
 
-		/// <summary>
-		/// Indicates if this scrollbar supports to change its orientation once its template has been applied (cf. remarks).
-		/// This is false by default (which means that the ScrollBar will support dynamic orientation changes).
-		/// </summary>
-		/// <remarks>
-		/// This flag is for performance consideration, it allows ScrollBar to load only half of its template.
-		/// It's used by core controls (e.g. ScrollViewer) where the ScrollBar's orientation will never change.
-		/// It's required as, unlike UWP, a control which is Visibility = Collapsed will get its template applied anyway.
-		/// </remarks>
-		internal bool IsFixedOrientation { get; set; } = false;
-
 		// Update the visual states when the Visibility property is changed.
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
 			base.OnVisibilityChanged(oldValue, newValue);
 			var visibility = Visibility;
-			if (Visibility.Visible != visibility)
+			if (Visibility.Visible == visibility)
+			{
+				UpdateVisualState();
+			}
+			else
 			{
 				m_isPointerOver = false;
 			}
-
-			UpdateVisualState();
 		}
 
 		// Apply a template to the 
