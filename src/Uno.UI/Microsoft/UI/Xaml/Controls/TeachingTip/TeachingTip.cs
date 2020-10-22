@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Private.Controls;
+﻿using System;
+using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml;
@@ -10,14 +11,13 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TeachingTip : ContentControl
 	{
-		private long m_automationNameChangedRevoker;
-		private long m_automationIdChangedRevoker;
-
-		private bool m_actualThemeChangedAttached;
+		
 
 
 		public TeachingTip()
 		{
+			m_target = this;
+
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_TeachingTip);
 			DefaultStyleKey = typeof(TeachingTip);
 			EnsureProperties();

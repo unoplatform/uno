@@ -1,4 +1,8 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿// TODO comments MUX Reference TeachingTipAutomationPeer.cpp, commit 46f9da3
+
+#nullable enable
+
+using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -112,7 +116,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			}
 
 			// We only report as a window when light dismiss is enabled.
-			if ((GetTeachingTip()).IsLightDismissEnabled() &&
+			if ((GetTeachingTip()).IsLightDismissEnabled &&
 				AutomationPeer.ListenerExists(AutomationEvents.WindowOpened))
 			{
 				RaiseAutomationEvent(AutomationEvents.WindowOpened);

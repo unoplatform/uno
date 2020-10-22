@@ -1,8 +1,9 @@
 ﻿// MUX Reference TeachingTip.properties.cpp, commit de78834
 
+#nullable enable
+
 using System.Windows.Input;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -25,8 +26,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty ActionButtonCommandParameterProperty { get; } =
 			DependencyProperty.Register(nameof(ActionButtonCommandParameter), typeof(object), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
-
-
 
 		public object ActionButtonContent
 		{
