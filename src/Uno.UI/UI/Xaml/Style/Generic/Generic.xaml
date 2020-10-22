@@ -7628,8 +7628,8 @@
 								</VisualState>
 								<VisualState x:Name="Horizontal_TouchIndicator">
 									<VisualState.Setters>
-										<Setter Target="VerticalRoot.Visibility" Value="Collapsed" />
-										<Setter Target="VerticalPanningRoot.Opacity" Value="1" />
+										<Setter Target="HorizontalRoot.Visibility" Value="Collapsed" />
+										<Setter Target="HorizontalPanningRoot.Opacity" Value="1" />
 									</VisualState.Setters>
 								</VisualState>
 
