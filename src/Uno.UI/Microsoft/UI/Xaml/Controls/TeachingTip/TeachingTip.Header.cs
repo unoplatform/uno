@@ -1,8 +1,11 @@
 ﻿// MUX Reference TeachingTip.h, commit dfbe38b
 
+#nullable enable
+
 using System;
 using System.Numerics;
 using Windows.Foundation;
+using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Shapes;
@@ -13,10 +16,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private bool m_isIdle = true;
 		private FrameworkElement m_target;
-
-		private TeachingTipPlacementMode m_currentEffectiveTipPlacementMode = TeachingTipPlacementMode.Auto;
-		private TeachingTipPlacementMode m_currentEffectiveTailPlacementMode = TeachingTipPlacementMode.Auto;
-		private TeachingTipHeroContentPlacementMode m_currentHeroContentEffectivePlacementMode = TeachingTipHeroContentPlacementMode.Auto;
 
 		private Border m_container;
 		private Popup m_popup;
@@ -34,6 +33,20 @@ namespace Microsoft.UI.Xaml.Controls
 		private Grid m_tailEdgeBorder;
 		private UIElement m_titleTextBox;
 		private UIElement m_subtitleTextBox;
+
+		private WeakReference<DependencyObject> m_previouslyFocuesElement;
+
+		private KeyFrameAnimation m_expandAnimation;
+		private KeyFrameAnimation m_contractAnimation;
+		private KeyFrameAnimation m_expandElevationAnimation;
+		private KeyFrameAnimation m_contractElevationAnimation;
+		private CompositionEasingFunction m_expandEasingFunction;
+		private CompositionEasingFunction m_contractEasingFunction;
+
+		private TeachingTipPlacementMode m_currentEffectiveTipPlacementMode = TeachingTipPlacementMode.Auto;
+		private TeachingTipPlacementMode m_currentEffectiveTailPlacementMode = TeachingTipPlacementMode.Auto;
+		private TeachingTipHeroContentPlacementMode m_currentHeroContentEffectivePlacementMode = TeachingTipHeroContentPlacementMode.Auto;
+
 
 		private Rect m_currentBoundsInCoreWindowSpace = Rect.Empty;
 		private Rect m_currentTargetBoundsInCoreWindowSpace = Rect.Empty;

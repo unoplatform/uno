@@ -1,14 +1,11 @@
-﻿#nullable enable
-
-using System;
-// MUX Reference TeachingTipClosingEventArgs.cpp, commit 11df1aa
+﻿// MUX Reference TeachingTipClosingEventArgs.cpp, commit 11df1aa
 
 #nullable enable
 
-using Microsoft.UI.Xaml.Controls;
+using System;
 using Windows.Foundation;
 
-namespace Uno.UI.Microsoft.UI.Xaml.Controls.TeachingTip
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Provides data for the TeachingTip.Closing event.
@@ -19,9 +16,8 @@ namespace Uno.UI.Microsoft.UI.Xaml.Controls.TeachingTip
 
 		private int m_deferralCount;
 
-		internal TeachingTipClosingEventArgs()
-		{
-		}
+		internal TeachingTipClosingEventArgs(TeachingTipCloseReason reason) =>
+			Reason = reason;
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the Closing event should be canceled.
@@ -52,7 +48,7 @@ namespace Uno.UI.Microsoft.UI.Xaml.Controls.TeachingTip
 			return instance;
 		}
 
-		private void DecrementDeferralCount()
+		internal void DecrementDeferralCount()
 		{
 			if (m_deferralCount <= 0)
 			{
@@ -69,7 +65,7 @@ namespace Uno.UI.Microsoft.UI.Xaml.Controls.TeachingTip
 			}
 		}
 
-		private void IncrementDeferralCount()
+		internal void IncrementDeferralCount()
 		{
 			lock (_syncLock)
 			{
