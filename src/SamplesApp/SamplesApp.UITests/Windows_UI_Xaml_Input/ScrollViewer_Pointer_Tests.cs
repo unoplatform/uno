@@ -43,7 +43,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			Reset();
 
 			_app.DragCoordinates(centerLow, centerHigh);
-			if (IsTouchInteraction)
+			if (GetIsTouchInteraction())
 			{
 				WaitForUndragged(); // Interaction is swallowed by ScrollViewer in touch
 				TakeScreenshot("After drag on ScrollViewer - touch");

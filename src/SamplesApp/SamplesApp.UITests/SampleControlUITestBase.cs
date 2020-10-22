@@ -372,7 +372,10 @@ namespace SamplesApp.UITests
 			return supportsRotation;
 		}
 
-		protected bool IsTouchInteraction
-			=> AppInitializer.TestEnvironment.CurrentPlatform == Platform.Android || AppInitializer.TestEnvironment.CurrentPlatform == Platform.iOS;
+		protected static bool GetIsTouchInteraction()
+		{
+			var currentPlatform = AppInitializer.GetLocalPlatform();
+			return currentPlatform == Platform.Android || currentPlatform == Platform.iOS;
+		}
 	}
 }
