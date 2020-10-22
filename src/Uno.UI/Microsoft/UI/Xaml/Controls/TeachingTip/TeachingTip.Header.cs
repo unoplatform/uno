@@ -1,6 +1,11 @@
-﻿using System;
+﻿// MUX Reference TeachingTip.h, commit dfbe38b
+
+using System;
+using System.Numerics;
 using Windows.Foundation;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Shapes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -12,6 +17,23 @@ namespace Microsoft.UI.Xaml.Controls
 		private TeachingTipPlacementMode m_currentEffectiveTipPlacementMode = TeachingTipPlacementMode.Auto;
 		private TeachingTipPlacementMode m_currentEffectiveTailPlacementMode = TeachingTipPlacementMode.Auto;
 		private TeachingTipHeroContentPlacementMode m_currentHeroContentEffectivePlacementMode = TeachingTipHeroContentPlacementMode.Auto;
+
+		private Border m_container;
+		private Popup m_popup;
+		private Popup m_lightDismissIndicatorPopup;
+		private ContentControl m_popupContentControl;
+		private UIElement m_rootElement;
+		private Grid m_tailOcclusionGrid;
+		private Grid m_contentRootGrid;
+		private Grid m_nonHeroContentRootGrid;
+		private Border m_heroContentBorder;
+		private Button m_actionButton;
+		private Button m_alternateCloseButton;
+		private Button m_closeButton;
+		private Polygon m_tailPolygon;
+		private Grid m_tailEdgeBorder;
+		private UIElement m_titleTextBox;
+		private UIElement m_subtitleTextBox;
 
 		private Rect m_currentBoundsInCoreWindowSpace = Rect.Empty;
 		private Rect m_currentTargetBoundsInCoreWindowSpace = Rect.Empty;
@@ -45,87 +67,82 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private TeachingTipCloseReason m_lastCloseReason = TeachingTipCloseReason.Programmatic;
 
-		private static bool IsPlacementTop(TeachingTipPlacementMode placement)
-		{
-			return placement == TeachingTipPlacementMode.Top ||
-				placement == TeachingTipPlacementMode.TopLeft ||
-				placement == TeachingTipPlacementMode.TopRight;
-		}
-		static bool IsPlacementBottom(TeachingTipPlacementMode placement)
-		{
-			return placement == TeachingTipPlacementMode.Bottom ||
-				placement == TeachingTipPlacementMode.BottomLeft ||
-				placement == TeachingTipPlacementMode.BottomRight;
-		}
-		static bool IsPlacementLeft(TeachingTipPlacementMode placement)
-		{
-			return placement == TeachingTipPlacementMode.Left ||
-				placement == TeachingTipPlacementMode.LeftTop ||
-				placement == TeachingTipPlacementMode.LeftBottom;
-		}
-		static bool IsPlacementRight(TeachingTipPlacementMode placement)
-		{
-			return placement == TeachingTipPlacementMode.Right ||
-				placement == TeachingTipPlacementMode.RightTop ||
-				placement == TeachingTipPlacementMode.RightBottom;
-		}
+		private static bool IsPlacementTop(TeachingTipPlacementMode placement) =>
+			placement == TeachingTipPlacementMode.Top ||
+			placement == TeachingTipPlacementMode.TopLeft ||
+			placement == TeachingTipPlacementMode.TopRight;
+		static bool IsPlacementBottom(TeachingTipPlacementMode placement) =>
+			placement == TeachingTipPlacementMode.Bottom ||
+			placement == TeachingTipPlacementMode.BottomLeft ||
+			placement == TeachingTipPlacementMode.BottomRight;
+		static bool IsPlacementLeft(TeachingTipPlacementMode placement) =>
+			placement == TeachingTipPlacementMode.Left ||
+			placement == TeachingTipPlacementMode.LeftTop ||
+			placement == TeachingTipPlacementMode.LeftBottom;
+		static bool IsPlacementRight(TeachingTipPlacementMode placement) =>
+			placement == TeachingTipPlacementMode.Right ||
+			placement == TeachingTipPlacementMode.RightTop ||
+			placement == TeachingTipPlacementMode.RightBottom;
 
 		// These values are shifted by one because this is the 1px highlight that sits adjacent to the tip border.
-		inline winrt::Thickness BottomPlacementTopRightHighlightMargin(double width, double height) { return { (width / 2) + (TailShortSideLength() - 1.0f), 0, 3, 0 }; }
-		inline winrt::Thickness BottomRightPlacementTopRightHighlightMargin(double width, double height) { return { MinimumTipEdgeToTailEdgeMargin() + TailLongSideLength() - 1.0f, 0, 3, 0 }; }
-		inline winrt::Thickness BottomLeftPlacementTopRightHighlightMargin(double width, double height) { return { width - (MinimumTipEdgeToTailEdgeMargin() + 1.0f), 0, 3, 0 }; }
-		static inline winrt::Thickness constexpr OtherPlacementTopRightHighlightMargin(double width, double height) { return { 0, 0, 0, 0 }; }
+		private Thickness BottomPlacementTopRightHighlightMargin(double width, double height) => new Thickness((width / 2) + (TailShortSideLength() - 1.0f), 0, 3, 0);
+		private Thickness BottomRightPlacementTopRightHighlightMargin(double width, double height) => new Thickness(MinimumTipEdgeToTailEdgeMargin() + TailLongSideLength() - 1.0f, 0, 3, 0);
+		private Thickness BottomLeftPlacementTopRightHighlightMargin(double width, double height) => new Thickness(width - (MinimumTipEdgeToTailEdgeMargin() + 1.0f), 0, 3, 0);
+		static private Thickness OtherPlacementTopRightHighlightMargin(double width, double height) => new Thickness(0, 0, 0, 0);
 
-		inline winrt::Thickness BottomPlacementTopLeftHighlightMargin(double width, double height) { return { 3, 0, (width / 2) + (TailShortSideLength() - 1.0f), 0 }; }
-		inline winrt::Thickness BottomRightPlacementTopLeftHighlightMargin(double width, double height) { return { 3, 0, width - (MinimumTipEdgeToTailEdgeMargin() + 1.0f), 0 }; }
-		inline winrt::Thickness BottomLeftPlacementTopLeftHighlightMargin(double width, double height) { return { 3, 0, MinimumTipEdgeToTailEdgeMargin() + TailLongSideLength() - 1.0f, 0 }; }
-		static inline winrt::Thickness constexpr TopEdgePlacementTopLeftHighlightMargin(double width, double height) { return { 3, 1, 3, 0 }; }
+		private Thickness BottomPlacementTopLeftHighlightMargin(double width, double height) => new Thickness(3, 0, (width / 2) + (TailShortSideLength() - 1.0f), 0);
+		private Thickness BottomRightPlacementTopLeftHighlightMargin(double width, double height) => new Thickness(3, 0, width - (MinimumTipEdgeToTailEdgeMargin() + 1.0f), 0);
+		private Thickness BottomLeftPlacementTopLeftHighlightMargin(double width, double height) => new Thickness(3, 0, MinimumTipEdgeToTailEdgeMargin() + TailLongSideLength() - 1.0f, 0);
+		static private Thickness TopEdgePlacementTopLeftHighlightMargin(double width, double height) => new Thickness(3, 1, 3, 0);
 		// Shifted by one since the tail edge's border is not accounted for automatically.
-		static inline winrt::Thickness constexpr LeftEdgePlacementTopLeftHighlightMargin(double width, double height) { return { 3, 1, 2, 0 }; }
-		static inline winrt::Thickness constexpr RightEdgePlacementTopLeftHighlightMargin(double width, double height) { return { 2, 1, 3, 0 }; }
+		static private Thickness LeftEdgePlacementTopLeftHighlightMargin(double width, double height) => new Thickness(3, 1, 2, 0);
+		static private Thickness RightEdgePlacementTopLeftHighlightMargin(double width, double height) => new Thickness(2, 1, 3, 0);
 
-		static inline double constexpr UntargetedTipFarPlacementOffset(float farWindowCoordinateInCoreWindowSpace, double tipSize, double offset) { return farWindowCoordinateInCoreWindowSpace - (tipSize + s_untargetedTipWindowEdgeMargin + offset); }
-		static inline double constexpr UntargetedTipCenterPlacementOffset(float nearWindowCoordinateInCoreWindowSpace, float farWindowCoordinateInCoreWindowSpace, double tipSize, double nearOffset, double farOffset) { return ((nearWindowCoordinateInCoreWindowSpace + farWindowCoordinateInCoreWindowSpace) / 2) - (tipSize / 2) + nearOffset - farOffset; }
-		static inline double constexpr UntargetedTipNearPlacementOffset(float nearWindowCoordinateInCoreWindowSpace, double offset) { return s_untargetedTipWindowEdgeMargin + nearWindowCoordinateInCoreWindowSpace + offset; }
+		static private double UntargetedTipFarPlacementOffset(float farWindowCoordinateInCoreWindowSpace, double tipSize, double offset) =>
+			farWindowCoordinateInCoreWindowSpace - (tipSize + s_untargetedTipWindowEdgeMargin + offset);
 
-		static constexpr wstring_view s_scaleTargetName{ L"Scale"sv
-	};
-	static constexpr wstring_view s_translationTargetName{ L"Translation"sv
-};
+		static private double UntargetedTipCenterPlacementOffset(float nearWindowCoordinateInCoreWindowSpace, float farWindowCoordinateInCoreWindowSpace, double tipSize, double nearOffset, double farOffset) =>
+			((nearWindowCoordinateInCoreWindowSpace + farWindowCoordinateInCoreWindowSpace) / 2) - (tipSize / 2) + nearOffset - farOffset;
 
-static constexpr wstring_view s_containerName{ L"Container"sv };
-static constexpr wstring_view s_popupName{ L"Popup"sv };
-static constexpr wstring_view s_tailOcclusionGridName{ L"TailOcclusionGrid"sv };
-static constexpr wstring_view s_contentRootGridName{ L"ContentRootGrid"sv };
-static constexpr wstring_view s_nonHeroContentRootGridName{ L"NonHeroContentRootGrid"sv };
-static constexpr wstring_view s_shadowTargetName{ L"ShadowTarget"sv };
-static constexpr wstring_view s_heroContentBorderName{ L"HeroContentBorder"sv };
-static constexpr wstring_view s_titlesStackPanelName{ L"TitlesStackPanel"sv };
-static constexpr wstring_view s_titleTextBoxName{ L"TitleTextBlock"sv };
-static constexpr wstring_view s_subtitleTextBoxName{ L"SubtitleTextBlock"sv };
-static constexpr wstring_view s_alternateCloseButtonName{ L"AlternateCloseButton"sv };
-static constexpr wstring_view s_mainContentPresenterName{ L"MainContentPresenter"sv };
-static constexpr wstring_view s_actionButtonName{ L"ActionButton"sv };
-static constexpr wstring_view s_closeButtonName{ L"CloseButton"sv };
-static constexpr wstring_view s_tailPolygonName{ L"TailPolygon"sv };
-static constexpr wstring_view s_tailEdgeBorderName{ L"TailEdgeBorder"sv };
-static constexpr wstring_view s_topTailPolygonHighlightName{ L"TopTailPolygonHighlight"sv };
-static constexpr wstring_view s_topHighlightLeftName{ L"TopHighlightLeft"sv };
-static constexpr wstring_view s_topHighlightRightName{ L"TopHighlightRight"sv };
+		static private double UntargetedTipNearPlacementOffset(float nearWindowCoordinateInCoreWindowSpace, double offset) =>
+			s_untargetedTipWindowEdgeMargin + nearWindowCoordinateInCoreWindowSpace + offset;
 
-static constexpr wstring_view s_accentButtonStyleName{ L"AccentButtonStyle" };
-static constexpr wstring_view s_teachingTipTopHighlightBrushName{ L"TeachingTipTopHighlightBrush" };
+		private const string s_scaleTargetName = "Scale";
+		private const string s_translationTargetName = "Translation";
 
-static constexpr winrt::float2 s_expandAnimationEasingCurveControlPoint1{ 0.1f, 0.9f };
-static constexpr winrt::float2 s_expandAnimationEasingCurveControlPoint2{ 0.2f, 1.0f };
-static constexpr winrt::float2 s_contractAnimationEasingCurveControlPoint1{ 0.7f, 0.0f };
-static constexpr winrt::float2 s_contractAnimationEasingCurveControlPoint2{ 1.0f, 0.5f };
+		private const string s_containerName = "Container";
+		private const string s_popupName = "Popup";
+		private const string s_tailOcclusionGridName = "TailOcclusionGrid";
+		private const string s_contentRootGridName = "ContentRootGrid";
+		private const string s_nonHeroContentRootGridName = "NonHeroContentRootGrid";
+		private const string s_shadowTargetName = "ShadowTarget";
+		private const string s_heroContentBorderName = "HeroContentBorder";
+		private const string s_titlesStackPanelName = "TitlesStackPanel";
+		private const string s_titleTextBoxName = "TitleTextBlock";
+		private const string s_subtitleTextBoxName = "SubtitleTextBlock";
+		private const string s_alternateCloseButtonName = "AlternateCloseButton";
+		private const string s_mainContentPresenterName = "MainContentPresenter";
+		private const string s_actionButtonName = "ActionButton";
+		private const string s_closeButtonName = "CloseButton";
+		private const string s_tailPolygonName = "TailPolygon";
+		private const string s_tailEdgeBorderName = "TailEdgeBorder";
+		private const string s_topTailPolygonHighlightName = "TopTailPolygonHighlight";
+		private const string s_topHighlightLeftName = "TopHighlightLeft";
+		private const string s_topHighlightRightName = "TopHighlightRight";
 
-//It is possible this should be exposed as a property, but you can adjust what it does with margin.
-static constexpr float s_untargetedTipWindowEdgeMargin = 24;
-static constexpr float s_defaultTipHeightAndWidth = 320;
+		private const string s_accentButtonStyleName = "AccentButtonStyle";
+		private const string s_teachingTipTopHighlightBrushName = "TeachingTipTopHighlightBrush";
 
-//Ideally this would be computed from layout but it is difficult to do.
-static constexpr float s_tailOcclusionAmount = 2;
+		private static readonly Vector2 s_expandAnimationEasingCurveControlPoint1 = new Vector2(0.1f, 0.9f);
+		private static readonly Vector2 s_expandAnimationEasingCurveControlPoint2 = new Vector2(0.2f, 1.0f);
+		private static readonly Vector2 s_contractAnimationEasingCurveControlPoint1 = new Vector2(0.7f, 0.0f);
+		private static readonly Vector2 s_contractAnimationEasingCurveControlPoint2 = new Vector2(1.0f, 0.5f);
+
+		//It is possible this should be exposed as a property, but you can adjust what it does with margin.
+		private const float s_untargetedTipWindowEdgeMargin = 24;
+		private const float s_defaultTipHeightAndWidth = 320;
+
+		//Ideally this would be computed from layout but it is difficult to do.
+		private const float s_tailOcclusionAmount = 2;
 	}
 }

@@ -1278,11 +1278,11 @@ namespace Microsoft.UI.Xaml.Controls
 		//			}
 		//		}
 
-		//		void ClosePopupOnUnloadEvent(object &, RoutedEventArgs &)
-		//		{
-		//			IsOpen(false);
-		//			ClosePopup();
-		//		}
+		private void ClosePopupOnUnloadEvent(object sender, RoutedEventArgs args)
+		{
+			IsOpen = false;
+			ClosePopup();
+		}
 
 		//		void OnLightDismissIndicatorPopupClosed(object&, object&)
 		//		{
@@ -2458,6 +2458,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Uno specific - use a method instead of lambda to allow unhooking the event
+
+		private bool m_actualThemeChangedAttached = false;
+
 		private void OnActualThemeChanged(object sender, object args)
 		{
 			UpdatePopupRequestedTheme();
