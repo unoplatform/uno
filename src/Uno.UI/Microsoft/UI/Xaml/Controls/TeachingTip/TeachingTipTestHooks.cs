@@ -1,7 +1,10 @@
 ﻿// MUX Reference TeachingTip.properties.cpp, commit 956f1ec
 
+#nullable enable
+
 using System;
 using Microsoft.UI.Xaml.Controls;
+using Uno;
 using Windows.Foundation;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
@@ -122,9 +125,19 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		internal event EventHandler OpenedStatusChanged;
+		internal static void NotifyOpenedStatusChanged(TeachingTip sender)
+		{
+			s_testHooks.OpenedStatusChanged?.Invoke(sender, null);
+		}
 
-		internal event EventHandler IdleStatusChanged;
+		internal event EventHandler? OpenedStatusChanged;
+
+		internal static void NotifyIdleStatusChanged(TeachingTip sender)
+		{
+			s_testHooks.IdleStatusChanged?.Invoke(sender, null);
+		}
+
+		internal event EventHandler? IdleStatusChanged;
 
 		internal bool GetIsIdle(TeachingTip teachingTip)
 		{
@@ -133,6 +146,11 @@ namespace Microsoft.UI.Private.Controls
 				return teachingTip.GetIsIdle();
 			}
 			return true;
+		}
+
+		internal static void NotifyEffectivePlacementChanged(TeachingTip sender)
+		{
+			s_testHooks.EffectivePlacementChanged?.Invoke(sender, null);
 		}
 
 		internal TypedEventHandler<TeachingTip, object> EffectivePlacementChanged;
@@ -144,6 +162,11 @@ namespace Microsoft.UI.Private.Controls
 				return teachingTip.GetEffectivePlacement();
 			}
 			return TeachingTipPlacementMode.Auto;
+		}
+
+		internal static void NotifyEffectiveHeroContentPlacementChanged(TeachingTip sender)
+		{
+			s_testHooks.EffectiveHeroContentPlacementChanged?.Invoke(sender, null);
 		}
 
 		internal TypedEventHandler<TeachingTip, object> EffectiveHeroContentPlacementChanged;
@@ -163,20 +186,20 @@ namespace Microsoft.UI.Private.Controls
 
 		internal TypedEventHandler<TeachingTip, object> SubtitleVisibilityChanged;
 
-		internal double GetVerticalOf(TeachingTip teachingTip)
+		internal double GetVerticalOffset(TeachingTip teachingTip)
 		{
 			if (teachingTip != null)
 			{
-				return teachingTip.GetVerticalOf();
+				return teachingTip.GetVerticalOffset();
 			}
 			return 0.0;
 		}
 
-		internal double GetHorizontalOf(TeachingTip teachingTip)
+		internal double GetHorizontalOffset(TeachingTip teachingTip)
 		{
 			if (teachingTip != null)
 			{
-				return teachingTip.GetHorizontalOf();
+				return teachingTip.GetHorizontalOffset();
 			}
 			return 0.0;
 		}
