@@ -39,7 +39,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.Count();
 
 			Assert.IsTrue(buttons > 0); // We make sure that we really loaded the right template
-			Assert.IsTrue(buttons <= 8); // Ideally it should be 4
+			Assert.IsTrue(buttons <= 4);
 		}
 #endif
 	}
