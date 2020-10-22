@@ -50,6 +50,20 @@ namespace Windows.UI.ViewManagement
 
 		public Foundation.Rect VisibleBounds { get; private set; }
 
+		/// <summary>
+		/// All other platforms: equivalent to <see cref="VisibleBounds"/>.
+		///
+		/// Android: returns the visible bounds taking the status bar into account. The status bar is not removed from <see cref="VisibleBounds"/>
+		/// on Android when it's opaque, on the grounds that the root managed view is already arranged below the status bar in y-direction by
+		/// default (unlike iOS), but in some cases the correct total height is needed, hence this property.
+		/// </summary>
+		internal Rect TrueVisibleBounds =>
+#if __ANDROID__
+			_trueVisibleBounds;
+#else
+			VisibleBounds;
+#endif
+
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> VisibleBoundsChanged;
 
 		[global::Uno.NotImplemented]

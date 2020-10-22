@@ -48,6 +48,10 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
+		private Rect _trueVisibleBounds;
+
+		internal void SetTrueVisibleBounds(Rect trueVisibleBounds) => _trueVisibleBounds = trueVisibleBounds;
+
 		public bool TryEnterFullScreenMode()
 		{
 			CoreDispatcher.CheckThreadAccess();
