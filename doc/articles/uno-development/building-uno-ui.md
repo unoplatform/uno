@@ -35,6 +35,14 @@ Once you've built successfully, for the next steps, [consult the guide here](deb
 
 If you've followed the steps above, you have your environment set up with the listed prerequisites, and you still encounter errors when you try to build the solution, you can reach out to the core team on Uno's [Discord channel #uno-platform](https://discord.gg/eBHZSKG).
 
+### Windows and long paths issues
+If the build tells you that `LongPath` is not enabled, you may enable it on Windows 10 by using :
+```bash
+reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1
+```
+If for some reason you cannot modify the registry, you can disable this warning by adding `<UnoUIDisableLongPathWarning>false</UnoUIDisableLongPathWarning>` to the project.
+
+Note that long paths may be required when building Uno, and invalid paths errors may arise.
 
 ## Building Uno.UI for all available targets
 
