@@ -40,6 +40,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _configuration;
 		private readonly bool _isDebug;
+		private readonly string _projectDirectory;
 		private readonly bool _outputSourceComments = true;
 		private readonly RoslynMetadataHelper _metadataHelper;
 
@@ -74,8 +75,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			"Generic.xaml",
 			"Generic.Native.xaml",
 		};
+
+#if NETSTANDARD
+		private const string WinUIThemeResourcePathSuffix = "themeresources.xaml";
+		private const string WinUICompactPathSuffix = "DensityStyles/Compact.xaml";
+#else
 		private const string WinUIThemeResourcePathSuffix = "/themeresources.xaml";
 		private const string WinUICompactPathSuffix = "/DensityStyles/Compact.xaml";
+#endif
 
 		/// <summary>
 		/// ResourceDictionaries that aren't counted as default system resources (eg WinUI Fluent resources)
@@ -117,6 +124,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				?? throw new InvalidOperationException("The configuration property must be provided");
 
 			_isDebug = string.Equals(_configuration, "Debug", StringComparison.OrdinalIgnoreCase);
+
+			_projectDirectory = Path.GetDirectoryName(context.GetMSBuildPropertyValue("MSBuildProjectFullPath"));
 
 			var xamlItems = context.GetMSBuildItems("Page")
 				.Concat(context.GetMSBuildItems("ApplicationDefinition"));
@@ -160,7 +169,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			_targetPath = Path.Combine(
-				Path.GetDirectoryName(context.GetMSBuildPropertyValue("MSBuildProjectFullPath")),
+				_projectDirectory,
 				context.GetMSBuildPropertyValue("IntermediateOutputPath")
 			);
 
@@ -192,7 +201,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var value = projectItemInstance.GetMetadataValue("Link");
 
+#if NETSTANDARD
+			// Both Uno.SourceGeneration uses relative pathrs and Roslyn Generators provide
+			// full paths. Dependents need specific portions so adjust the paths here for now.
+
+			if (value.IsNullOrEmpty())
+			{
+				return Path.IsPathRooted(projectItemInstance.Identity)
+					? projectItemInstance.Identity.TrimStart(_projectDirectory).TrimStart(Path.DirectorySeparatorChar)
+					: projectItemInstance.Identity;
+			}
+
+			return value;
+#else
 			return value.IsNullOrEmpty() ? projectItemInstance.Identity : value;
+#endif
 		}
 
 		public KeyValuePair<string, string>[] Generate()
