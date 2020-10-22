@@ -1,339 +1,211 @@
-﻿namespace Microsoft.UI.Private.Controls
+﻿// MUX Reference TeachingTip.properties.cpp, commit 956f1ec
+
+using System;
+using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+
+namespace Microsoft.UI.Private.Controls
 {
 	internal class TeachingTipTestHooks
-    {
-//		com_ptr<TeachingTipTestHooks> EnsureGlobalTestHooks()
-//		{
-//			static bool s_initialized = []() {
-//				s_testHooks = make_self<TeachingTipTestHooks>();
-//				return true;
-//			} ();
-//			return s_testHooks;
-//		}
+	{
+		private static TeachingTipTestHooks s_testHooks = new TeachingTipTestHooks();
 
-//		void SetExpandEasingFunction(TeachingTip& teachingTip, CompositionEasingFunction& easingFunction)
-//		{
-//			if (teachingTip && easingFunction)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetExpandEasingFunction(easingFunction);
-//			}
-//		}
+		private static void EnsureGlobalTestHooks()
+		{
+			// Not needed in Uno, we are using static singleton.
+		}
 
-//		void SetContractEasingFunction(TeachingTip& teachingTip, CompositionEasingFunction& easingFunction)
-//		{
-//			if (teachingTip && easingFunction)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetContractEasingFunction(easingFunction);
-//			}
-//		}
+		internal void SetExpandEasingFunction(TeachingTip teachingTip, CompositionEasingFunction easingFunction)
+		{
+			if (teachingTip != null && easingFunction != null)
+			{
+				teachingTip.SetExpandEasingFunction(easingFunction);
+			}
+		}
 
-//		void SetTipShouldHaveShadow(TeachingTip& teachingTip, bool tipShouldHaveShadow)
-//		{
-//			if (teachingTip)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetTipShouldHaveShadow(tipShouldHaveShadow);
-//			}
-//		}
+		internal void SetContractEasingFunction(TeachingTip teachingTip, CompositionEasingFunction easingFunction)
+		{
+			if (teachingTip != null && easingFunction != null)
+			{
+				teachingTip.SetContractEasingFunction(easingFunction);
+			}
+		}
 
-//		void SetContentElevation(TeachingTip& teachingTip, float elevation)
-//		{
-//			if (teachingTip)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetContentElevation(elevation);
-//			}
-//		}
+		internal void SetTipShouldHaveShadow(TeachingTip teachingTip, bool tipShouldHaveShadow)
+		{
+			if (teachingTip != null)
+			{
+				teachingTip.SetTipShouldHaveShadow(tipShouldHaveShadow);
+			}
+		}
 
-//		void SetTailElevation(TeachingTip& teachingTip, float elevation)
-//		{
-//			if (teachingTip)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetTailElevation(elevation);
-//			}
-//		}
+		internal void SetContentElevation(TeachingTip teachingTip, float elevation)
+		{
+			if (teachingTip != null)
+			{
+				teachingTip.SetContentElevation(elevation);
+			}
+		}
 
-//		void SetUseTestWindowBounds(TeachingTip& teachingTip, bool useTestWindowBounds)
-//		{
-//			if (teachingTip)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetUseTestWindowBounds(useTestWindowBounds);
-//			}
-//		}
+		internal void SetTailElevation(TeachingTip teachingTip, float elevation)
+		{
+			if (teachingTip != null)
+			{
+				teachingTip.SetTailElevation(elevation);
+			}
+		}
 
-//		void SetTestWindowBounds(TeachingTip& teachingTip, Rect& testWindowBounds)
-//		{
-//			if (teachingTip)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetTestWindowBounds(testWindowBounds);
-//			}
-//		}
+		internal void SetUseTestWindowBounds(TeachingTip teachingTip, bool useTestWindowBounds)
+		{
+			if (teachingTip != null)
+			{
+				teachingTip.SetUseTestWindowBounds(useTestWindowBounds);
+			}
+		}
 
-//		void SetUseTestScreenBounds(TeachingTip& teachingTip, bool useTestScreenBounds)
-//		{
-//			if (teachingTip)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetUseTestScreenBounds(useTestScreenBounds);
-//			}
-//		}
+		void SetTestWindowBounds(TeachingTip teachingTip, Rect testWindowBounds)
+		{
+			if (teachingTip != null)
+			{
+				teachingTip.SetTestWindowBounds(testWindowBounds);
+			}
+		}
 
-//		void SetTestScreenBounds(TeachingTip& teachingTip, Rect& testScreenBounds)
-//		{
-//			if (teachingTip)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetTestScreenBounds(testScreenBounds);
-//			}
-//		}
+		void SetUseTestScreenBounds(TeachingTip teachingTip, bool useTestScreenBounds)
+		{
+			if (teachingTip != null)
+			{
+				teachingTip.SetUseTestScreenBounds(useTestScreenBounds);
+			}
+		}
 
-//		void SetTipFollowsTarget(TeachingTip& teachingTip, bool tipFollowsTarget)
-//		{
-//			if (teachingTip)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetTipFollowsTarget(tipFollowsTarget);
-//			}
-//		}
+		void SetTestScreenBounds(TeachingTip teachingTip, Rect testScreenBounds)
+		{
+			if (teachingTip != null)
+			{
+				teachingTip.SetTestScreenBounds(testScreenBounds);
+			}
+		}
 
-//		void SetReturnTopForOutOfWindowPlacement(TeachingTip& teachingTip, bool returnTopForOutOfWindowPlacement)
-//		{
-//			if (teachingTip)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetReturnTopForOutOfWindowPlacement(returnTopForOutOfWindowPlacement);
-//			}
-//		}
+		void SetTipFollowsTarget(TeachingTip teachingTip, bool tipFollowsTarget)
+		{
+			if (teachingTip != null)
+			{
+				teachingTip.SetTipFollowsTarget(tipFollowsTarget);
+			}
+		}
 
-//		void SetExpandAnimationDuration(TeachingTip& teachingTip, TimeSpan& expandAnimationDuration)
-//		{
-//			if (teachingTip)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetExpandAnimationDuration(expandAnimationDuration);
-//			}
-//		}
+		void SetReturnTopForOutOfWindowPlacement(TeachingTip teachingTip, bool returnTopForOutOfWindowPlacement)
+		{
+			if (teachingTip != null)
+			{
+				teachingTip.SetReturnTopForOutOfWindowPlacement(returnTopForOutOfWindowPlacement);
+			}
+		}
 
-//		void SetContractAnimationDuration(TeachingTip& teachingTip, TimeSpan& contractAnimationDuration)
-//		{
-//			if (teachingTip)
-//			{
-//				get_self<TeachingTip>(teachingTip).SetContractAnimationDuration(contractAnimationDuration);
-//			}
-//		}
+		void SetExpandAnimationDuration(TeachingTip teachingTip, TimeSpan expandAnimationDuration)
+		{
+			if (teachingTip != null)
+			{
+				teachingTip.SetExpandAnimationDuration(expandAnimationDuration);
+			}
+		}
 
-//		void NotifyOpenedStatusChanged(TeachingTip& sender)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			if (hooks.m_openedStatusChangedEventSource)
-//			{
-//				hooks.m_openedStatusChangedEventSource(sender, null);
-//			}
-//		}
+		void SetContractAnimationDuration(TeachingTip teachingTip, TimeSpan contractAnimationDuration)
+		{
+			if (teachingTip != null)
+			{
+				teachingTip.SetContractAnimationDuration(contractAnimationDuration);
+			}
+		}
 
-//		event_token OpenedStatusChanged(TypedEventHandler<TeachingTip, object> & value)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			return hooks.m_openedStatusChangedEventSource.add(value);
-//		}
+		internal event EventHandler OpenedStatusChanged;
 
-//		void OpenedStatusChanged(event_token & token)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			hooks.m_openedStatusChangedEventSource.remove(token);
-//		}
+		internal event EventHandler IdleStatusChanged;
 
-//		void NotifyIdleStatusChanged(TeachingTip& sender)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			if (hooks.m_idleStatusChangedEventSource)
-//			{
-//				hooks.m_idleStatusChangedEventSource(sender, null);
-//			}
-//		}
+		internal bool GetIsIdle(TeachingTip teachingTip)
+		{
+			if (teachingTip != null)
+			{
+				return teachingTip.GetIsIdle();
+			}
+			return true;
+		}
 
-//		event_token IdleStatusChanged(TypedEventHandler<TeachingTip, object> & value)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			return hooks.m_idleStatusChangedEventSource.add(value);
-//		}
+		internal TypedEventHandler<TeachingTip, object> EffectivePlacementChanged;
 
-//		void IdleStatusChanged(event_token & token)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			hooks.m_idleStatusChangedEventSource.remove(token);
-//		}
+		internal TeachingTipPlacementMode GetEffectivePlacement(TeachingTip teachingTip)
+		{
+			if (teachingTip != null)
+			{
+				return teachingTip.GetEffectivePlacement();
+			}
+			return TeachingTipPlacementMode.Auto;
+		}
 
+		internal TypedEventHandler<TeachingTip, object> EffectiveHeroContentPlacementChanged;
 
-//		bool GetIsIdle(TeachingTip& teachingTip)
-//		{
-//			if (teachingTip)
-//			{
-//				return get_self<TeachingTip>(teachingTip).GetIsIdle();
-//			}
-//			return true;
-//		}
+		internal TeachingTipHeroContentPlacementMode GetEffectiveHeroContentPlacement(TeachingTip teachingTip)
+		{
+			if (teachingTip != null)
+			{
+				return teachingTip.GetEffectiveHeroContentPlacement();
+			}
+			return TeachingTipHeroContentPlacementMode.Auto;
+		}
 
-//		void NotifyEffectivePlacementChanged(TeachingTip& sender)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			if (hooks.m_effectivePlacementChangedEventSource)
-//			{
-//				hooks.m_effectivePlacementChangedEventSource(sender, null);
-//			}
-//		}
+		internal TypedEventHandler<TeachingTip, object> OffsetChanged;
 
-//		event_token EffectivePlacementChanged(TypedEventHandler<TeachingTip, object> & value)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			return hooks.m_effectivePlacementChangedEventSource.add(value);
-//		}
+		internal TypedEventHandler<TeachingTip, object> TitleVisibilityChanged;
 
-//		void EffectivePlacementChanged(event_token & token)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			hooks.m_effectivePlacementChangedEventSource.remove(token);
-//		}
+		internal TypedEventHandler<TeachingTip, object> SubtitleVisibilityChanged;
 
-//		TeachingTipPlacementMode GetEffectivePlacement(TeachingTip& teachingTip)
-//		{
-//			if (teachingTip)
-//			{
-//				return get_self<TeachingTip>(teachingTip).GetEffectivePlacement();
-//			}
-//			return TeachingTipPlacementMode.Auto;
-//		}
+		internal double GetVerticalOf(TeachingTip teachingTip)
+		{
+			if (teachingTip != null)
+			{
+				return teachingTip.GetVerticalOf();
+			}
+			return 0.0;
+		}
 
-//		void NotifyEffectiveHeroContentPlacementChanged(TeachingTip& sender)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			if (hooks.m_effectiveHeroContentPlacementChangedEventSource)
-//			{
-//				hooks.m_effectiveHeroContentPlacementChangedEventSource(sender, null);
-//			}
-//		}
+		internal double GetHorizontalOf(TeachingTip teachingTip)
+		{
+			if (teachingTip != null)
+			{
+				return teachingTip.GetHorizontalOf();
+			}
+			return 0.0;
+		}
 
-//		event_token EffectiveHeroContentPlacementChanged(TypedEventHandler<TeachingTip, object> & value)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			return hooks.m_effectiveHeroContentPlacementChangedEventSource.add(value);
-//		}
+		internal Visibility GetTitleVisibility(TeachingTip teachingTip)
+		{
+			if (teachingTip != null)
+			{
+				return teachingTip.GetTitleVisibility();
+			}
+			return Visibility.Collapsed;
+		}
 
-//		void EffectiveHeroContentPlacementChanged(event_token & token)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			hooks.m_effectiveHeroContentPlacementChangedEventSource.remove(token);
-//		}
+		Visibility GetSubtitleVisibility(TeachingTip teachingTip)
+		{
+			if (teachingTip != null)
+			{
+				return teachingTip.GetSubtitleVisibility();
+			}
+			return Visibility.Collapsed;
+		}
 
-//		TeachingTipHeroContentPlacementMode GetEffectiveHeroContentPlacement(TeachingTip& teachingTip)
-//		{
-//			if (teachingTip)
-//			{
-//				return get_self<TeachingTip>(teachingTip).GetEffectiveHeroContentPlacement();
-//			}
-//			return TeachingTipHeroContentPlacementMode.Auto;
-//		}
-
-//		void NotifyOffsetChanged(TeachingTip& sender)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			if (hooks.m_offsetChangedEventSource)
-//			{
-//				hooks.m_offsetChangedEventSource(sender, null);
-//			}
-//		}
-
-//		event_token OffsetChanged(TypedEventHandler<TeachingTip, object> & value)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			return hooks.m_offsetChangedEventSource.add(value);
-//		}
-
-//		void OffsetChanged(event_token & token)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			hooks.m_offsetChangedEventSource.remove(token);
-//		}
-
-//		void NotifyTitleVisibilityChanged(TeachingTip& sender)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			if (hooks.m_titleVisibilityChangedEventSource)
-//			{
-//				hooks.m_titleVisibilityChangedEventSource(sender, null);
-//			}
-//		}
-
-//		event_token TitleVisibilityChanged(TypedEventHandler<TeachingTip, object> & value)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			return hooks.m_titleVisibilityChangedEventSource.add(value);
-//		}
-
-//		void TitleVisibilityChanged(event_token & token)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			hooks.m_titleVisibilityChangedEventSource.remove(token);
-//		}
-
-//		void NotifySubtitleVisibilityChanged(TeachingTip& sender)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			if (hooks.m_subtitleVisibilityChangedEventSource)
-//			{
-//				hooks.m_subtitleVisibilityChangedEventSource(sender, null);
-//			}
-//		}
-
-//		event_token SubtitleVisibilityChanged(TypedEventHandler<TeachingTip, object> & value)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			return hooks.m_subtitleVisibilityChangedEventSource.add(value);
-//		}
-
-//		void SubtitleVisibilityChanged(event_token & token)
-//		{
-//			var hooks = EnsureGlobalTestHooks();
-//			hooks.m_subtitleVisibilityChangedEventSource.remove(token);
-//		}
-
-//		double GetVerticalOf = TeachingTip & teachingTip
-//{
-//    if (teachingTip)
-//    {
-//        return get_self<TeachingTip>(teachingTip).GetVerticalOf = ;
-//    }
-//    return 0.0;
-//}
-
-//double GetHorizontalOf = TeachingTip & teachingTip
-//{
-//    if (teachingTip)
-//    {
-//	return get_self<TeachingTip>(teachingTip).GetHorizontalOf = ;
-//}
-//return 0.0;
-//}
-
-//Visibility GetTitleVisibility(TeachingTip& teachingTip)
-//{
-//	if (teachingTip)
-//	{
-//		return get_self<TeachingTip>(teachingTip).GetTitleVisibility();
-//	}
-//	return Visibility.Collapsed;
-//}
-
-//Visibility GetSubtitleVisibility(TeachingTip& teachingTip)
-//{
-//	if (teachingTip)
-//	{
-//		return get_self<TeachingTip>(teachingTip).GetSubtitleVisibility();
-//	}
-//	return Visibility.Collapsed;
-//}
-
-//Popup GetPopup(TeachingTip& teachingTip)
-//{
-//	if (teachingTip)
-//	{
-//		return get_self<TeachingTip>(teachingTip).m_popup;
-//	}
-//	return null;
-//}
-
-    }
+		internal Popup GetPopup(TeachingTip teachingTip)
+		{
+			if (teachingTip != null)
+			{
+				return teachingTip.m_popup;
+			}
+			return null;
+		}
+	}
 }
