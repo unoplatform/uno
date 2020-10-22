@@ -103,11 +103,10 @@ namespace Uno.UI.Controls
 
 		public static void PageWillDisappear(UIViewController pageController)
 		{
-			var topCommandBar = pageController.FindTopCommandBar();
-			if (topCommandBar != null)
+			if (pageController.FindTopCommandBar() is { } topCommandBar)
 			{
 				// Set the native navigation bar to null so it does not render when the page is not visible
-				SetNavigationBar(topCommandBar, null);
+				SetNavigationBar(topCommandBar, null!);
 			}
 		}
 
