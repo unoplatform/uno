@@ -946,15 +946,18 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_verticalScrollbar = (GetTemplateChild(Parts.WinUI3.VerticalScrollBar) ?? GetTemplateChild(Parts.Uwp.VerticalScrollBar)) as ScrollBar;
-			_isVerticalScrollBarMaterialized = true;
+			using (ScrollBar.MaterializingFixed(Orientation.Vertical))
+			{
+				_verticalScrollbar = (GetTemplateChild(Parts.WinUI3.VerticalScrollBar) ?? GetTemplateChild(Parts.Uwp.VerticalScrollBar)) as ScrollBar;
+				_isVerticalScrollBarMaterialized = true;
+			}
 
 			if (_verticalScrollbar is null)
 			{
 				return;
 			}
 
-			_verticalScrollbar.IsFixedOrientation = true;
+			_verticalScrollbar.IsFixedOrientation = true; // Redundant with ScrollBar.MaterializingFixed, but twice is safer
 			DetachScrollBars();
 			AttachScrollBars();
 		}
@@ -966,15 +969,18 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_horizontalScrollbar = (GetTemplateChild(Parts.WinUI3.HorizontalScrollBar) ?? GetTemplateChild(Parts.Uwp.HorizontalScrollBar)) as ScrollBar;
-			_isHorizontalScrollBarMaterialized = true;
+			using (ScrollBar.MaterializingFixed(Orientation.Horizontal))
+			{
+				_horizontalScrollbar = (GetTemplateChild(Parts.WinUI3.HorizontalScrollBar) ?? GetTemplateChild(Parts.Uwp.HorizontalScrollBar)) as ScrollBar;
+				_isHorizontalScrollBarMaterialized = true;
+			}
 
 			if (_horizontalScrollbar is null)
 			{
 				return;
 			}
 
-			_horizontalScrollbar.IsFixedOrientation = true;
+			_horizontalScrollbar.IsFixedOrientation = true; // Redundant with ScrollBar.MaterializingFixed, but twice is safer
 			DetachScrollBars();
 			AttachScrollBars();
 		}
