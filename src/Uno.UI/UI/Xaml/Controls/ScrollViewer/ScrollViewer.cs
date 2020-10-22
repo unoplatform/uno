@@ -475,7 +475,7 @@ namespace Windows.UI.Xaml.Controls
 				"ComputedHorizontalScrollBarVisibility",
 				typeof(Visibility),
 				typeof(ScrollViewer),
-				new PropertyMetadata(default(Visibility)));
+				new PropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
 
 		public Visibility ComputedHorizontalScrollBarVisibility
 		{
@@ -490,7 +490,7 @@ namespace Windows.UI.Xaml.Controls
 				"ComputedVerticalScrollBarVisibility",
 				typeof(Visibility),
 				typeof(ScrollViewer),
-				new PropertyMetadata(default(Visibility)));
+				new PropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
 
 		public Visibility ComputedVerticalScrollBarVisibility
 		{
@@ -573,8 +573,6 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning disable 649 // unused member for Unit tests
 		private IScrollContentPresenter _presenter;
 #pragma warning restore 649 // unused member for Unit tests
-		private ScrollBar _verticalScrollbar;
-		private ScrollBar _horizontalScrollbar;
 
 		/// <summary>
 		/// Gets the size of the Viewport used in the **CURRENT** (cf. remarks) or last measure
@@ -624,12 +622,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ViewportArrangeSize = finalSize;
 
-			var size = base.ArrangeOverride(finalSize);
+			return base.ArrangeOverride(finalSize);
+		}
+
+		internal override void OnLayoutUpdated()
+		{
+			base.OnLayoutUpdated();
 
 			UpdateDimensionProperties();
 			UpdateZoomedContentAlignment();
-
-			return size;
 		}
 
 		private void UpdateDimensionProperties()
@@ -639,6 +640,17 @@ namespace Windows.UI.Xaml.Controls
 			)
 			{
 				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
+			}
+
+			if (ActualWidth == 0 || ActualHeight == 0)
+			{
+				// Do not update properties if we don't have any valid size yet.
+				// This is useful essentially for the first size changed on the Content,
+				// where it already have its final size while the SV doesn't.
+				// This would cause a Scrollable<Width|Height> greater than 0,
+				// which will cause the materialization of the managed scrollbar
+				// which might not be needed after next layout pass.
+				return;
 			}
 
 			ViewportHeight = ActualHeight;
@@ -660,13 +672,24 @@ namespace Windows.UI.Xaml.Controls
 			var visibility = VerticalScrollBarVisibility;
 			var mode = VerticalScrollMode;
 
-			ComputedVerticalScrollBarVisibility = ComputeScrollBarVisibility(scrollable, visibility);
-			ComputedIsVerticalScrollEnabled = ComputeIsScrollEnabled(scrollable, visibility, mode);
+			var computedVisibility = ComputeScrollBarVisibility(scrollable, visibility);
+			var computedEnabled = ComputeIsScrollEnabled(scrollable, visibility, mode);
 
 			if (_presenter is null)
 			{
+				ComputedVerticalScrollBarVisibility = computedVisibility; // Retro-compatibility, probably useless
+				ComputedIsVerticalScrollEnabled = computedEnabled; // Retro-compatibility, probably useless
 				return; // Control not ready yet
 			}
+
+			// Note: We materialize the ScrollBar BEFORE setting the ComputedVisibility in order to avoid
+			//		 auto materialization due to databound visibility.
+			//		 This would cause materialization of both Vertical and Horizontal templates of the ScrollBar
+			//		 as we wouldn't have set the IsFixedOrientation flag yet.
+			MaterializeVerticalScrollBarIfNeeded(computedVisibility);
+
+			ComputedVerticalScrollBarVisibility = computedVisibility;
+			ComputedIsVerticalScrollEnabled = computedEnabled;
 
 			// Support for the native scroll bars (delegated to the native _presenter).
 			_presenter.VerticalScrollBarVisibility = ComputeNativeScrollBarVisibility(visibility, mode, _verticalScrollbar);
@@ -682,13 +705,24 @@ namespace Windows.UI.Xaml.Controls
 			var visibility = HorizontalScrollBarVisibility;
 			var mode = HorizontalScrollMode;
 
-			ComputedHorizontalScrollBarVisibility = ComputeScrollBarVisibility(scrollable, visibility);
-			ComputedIsHorizontalScrollEnabled = ComputeIsScrollEnabled(scrollable, visibility, mode);
+			var computedVisibility = ComputeScrollBarVisibility(scrollable, visibility);
+			var computedEnabled = ComputeIsScrollEnabled(scrollable, visibility, mode);
 
 			if (_presenter is null)
 			{
+				ComputedHorizontalScrollBarVisibility = computedVisibility; // Retro-compatibility, probably useless
+				ComputedIsHorizontalScrollEnabled = computedEnabled; // Retro-compatibility, probably useless
 				return; // Control not ready yet
 			}
+
+			// Note: We materialize the ScrollBar BEFORE setting the ComputedVisibility in order to avoid
+			//		 auto materialization due to databound visibility.
+			//		 This would cause materialization of both Vertical and Horizontal templates of the ScrollBar
+			//		 as we wouldn't have set the IsFixedOrientation flag yet.
+			MaterializeHorizontalScrollBarIfNeeded(computedVisibility);
+
+			ComputedHorizontalScrollBarVisibility = computedVisibility;
+			ComputedIsHorizontalScrollEnabled = computedEnabled;
 
 			// Support for the native scroll bars (delegated to the native _presenter).
 			_presenter.HorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(visibility, mode, _horizontalScrollbar);
@@ -729,7 +763,7 @@ namespace Windows.UI.Xaml.Controls
 				_ => ScrollBarVisibility.Hidden // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
 			};
 
-	/// <summary>
+		/// <summary>
 		/// Sets the content of the ScrollViewer
 		/// </summary>
 		/// <param name="view"></param>
@@ -750,12 +784,13 @@ namespace Windows.UI.Xaml.Controls
 			
 
 			base.OnApplyTemplate();
+			_isTemplateApplied = true;
 
 			// Load new template
-			_verticalScrollbar = (GetTemplateChild(Parts.WinUI3.VerticalScrollBar) ?? GetTemplateChild(Parts.Uwp.VerticalScrollBar)) as ScrollBar;
-			_horizontalScrollbar = (GetTemplateChild(Parts.WinUI3.HorizontalScrollBar) ?? GetTemplateChild(Parts.Uwp.HorizontalScrollBar)) as ScrollBar;
-
-			AttachScrollBars();
+			_verticalScrollbar = null;
+			_isVerticalScrollBarMaterialized = false;
+			_horizontalScrollbar = null;
+			_isHorizontalScrollBarMaterialized = false;
 
 			var scpTemplatePart = GetTemplateChild(Parts.WinUI3.Scroller) ?? GetTemplateChild(Parts.Uwp.ScrollContentPresenter);
 			_presenter = scpTemplatePart as IScrollContentPresenter;
@@ -852,6 +887,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)
 		{
+			// TODO HERE
 			if (!isCleanupRequired
 				&& Content is IFrameworkElement element)
 			{
@@ -892,6 +928,58 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Managed scroll bars support
+		private bool _isTemplateApplied;
+		private ScrollBar _verticalScrollbar;
+		private ScrollBar _horizontalScrollbar;
+		private bool _isVerticalScrollBarMaterialized;
+		private bool _isHorizontalScrollBarMaterialized;
+
+		private void MaterializeVerticalScrollBarIfNeeded(Visibility computedVisibility)
+		{
+			if (!_isTemplateApplied || _isVerticalScrollBarMaterialized || computedVisibility != Visibility.Visible)
+			{
+				return;
+			}
+
+			using (ScrollBar.MaterializingFixed(Orientation.Vertical))
+			{
+				_verticalScrollbar = (GetTemplateChild(Parts.WinUI3.VerticalScrollBar) ?? GetTemplateChild(Parts.Uwp.VerticalScrollBar)) as ScrollBar;
+				_isVerticalScrollBarMaterialized = true;
+			}
+
+			if (_verticalScrollbar is null)
+			{
+				return;
+			}
+
+			_verticalScrollbar.IsFixedOrientation = true; // Redundant with ScrollBar.MaterializingFixed, but twice is safer
+			DetachScrollBars();
+			AttachScrollBars();
+		}
+
+		private void MaterializeHorizontalScrollBarIfNeeded(Visibility computedVisibility)
+		{
+			if (!_isTemplateApplied || _isHorizontalScrollBarMaterialized || computedVisibility != Visibility.Visible)
+			{
+				return;
+			}
+
+			using (ScrollBar.MaterializingFixed(Orientation.Horizontal))
+			{
+				_horizontalScrollbar = (GetTemplateChild(Parts.WinUI3.HorizontalScrollBar) ?? GetTemplateChild(Parts.Uwp.HorizontalScrollBar)) as ScrollBar;
+				_isHorizontalScrollBarMaterialized = true;
+			}
+
+			if (_horizontalScrollbar is null)
+			{
+				return;
+			}
+
+			_horizontalScrollbar.IsFixedOrientation = true; // Redundant with ScrollBar.MaterializingFixed, but twice is safer
+			DetachScrollBars();
+			AttachScrollBars();
+		}
+
 		private static void DetachScrollBars(object sender, RoutedEventArgs e) // OnUnloaded
 			=> (sender as ScrollViewer)?.DetachScrollBars();
 

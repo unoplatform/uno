@@ -265,6 +265,7 @@
 
 							<netstdref:ScrollBar
 								x:Name="VerticalScrollBar"
+								x:Load="False"
 								Grid.Column="1"
 								IsTabStop="False"
 								Maximum="{TemplateBinding ScrollableHeight}"
@@ -277,6 +278,7 @@
 
 							<netstdref:ScrollBar
 								x:Name="HorizontalScrollBar"
+								x:Load="False"
 								IsTabStop="False"
 								Maximum="{TemplateBinding ScrollableWidth}"
 								Orientation="Horizontal"
