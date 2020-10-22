@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Controls
 			"DefaultButton", typeof(Controls.ContentDialogButton),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(
-				defaultValue: ContentDialogButton.Primary,
+				defaultValue: ContentDialogButton.None,
 				propertyChangedCallback: UpdateVisualState));
 
 		public static DependencyProperty PrimaryButtonStyleProperty { get; } =
