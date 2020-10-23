@@ -14,11 +14,13 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TeachingTip
 	{
-		private bool m_isIdle = true;
+		private XamlRoot m_xamlRoot;
+
+		internal bool m_isIdle = true;
 		private FrameworkElement m_target;
 
 		private Border m_container;
-		private Popup m_popup;
+		internal Popup m_popup;
 		private Popup m_lightDismissIndicatorPopup;
 		private ContentControl m_popupContentControl;
 		private UIElement m_rootElement;
@@ -34,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private UIElement m_titleTextBox;
 		private UIElement m_subtitleTextBox;
 
-		private WeakReference<DependencyObject> m_previouslyFocuesElement;
+		private WeakReference<DependencyObject> m_previouslyFocusedElement;
 
 		private KeyFrameAnimation m_expandAnimation;
 		private KeyFrameAnimation m_contractAnimation;
@@ -46,7 +48,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private TeachingTipPlacementMode m_currentEffectiveTipPlacementMode = TeachingTipPlacementMode.Auto;
 		private TeachingTipPlacementMode m_currentEffectiveTailPlacementMode = TeachingTipPlacementMode.Auto;
 		private TeachingTipHeroContentPlacementMode m_currentHeroContentEffectivePlacementMode = TeachingTipHeroContentPlacementMode.Auto;
-
 
 		private Rect m_currentBoundsInCoreWindowSpace = Rect.Empty;
 		private Rect m_currentTargetBoundsInCoreWindowSpace = Rect.Empty;

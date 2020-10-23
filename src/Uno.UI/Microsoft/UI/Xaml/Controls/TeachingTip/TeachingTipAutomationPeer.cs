@@ -93,7 +93,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			return true;
 		}
 
-		private void RaiseWindowClosedEvent()
+		internal void RaiseWindowClosedEvent()
 		{
 			// We only report as a window when light dismiss is enabled.
 			if (GetTeachingTip().IsLightDismissEnabled &&
@@ -103,7 +103,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			}
 		}
 
-		private void RaiseWindowOpenedEvent(string displayString)
+		internal void RaiseWindowOpenedEvent(string displayString)
 		{
 			AutomationPeer automationPeer7 = this;
 			if (automationPeer7 != null)
