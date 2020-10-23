@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel;
+using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.System;
@@ -14,21 +17,25 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TeachingTip : ContentControl
 	{
+		private long m_automationNameChangedRevoker;
+		private long m_automationIdChangedRevoker;
+
 		public TeachingTip()
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_TeachingTip);
 			DefaultStyleKey = typeof(TeachingTip);
-			EnsureProperties();
 			Unloaded += ClosePopupOnUnloadEvent;
 			m_automationNameChangedRevoker = RegisterPropertyChangedCallback(AutomationProperties.NameProperty, OnAutomationNameChanged);
 			m_automationIdChangedRevoker = RegisterPropertyChangedCallback(AutomationProperties.AutomationIdProperty, OnAutomationIdChanged);
-			SetValue(s_TemplateSettingsProperty, new TeachingTipTemplateSettings());
+			SetValue(TemplateSettingsProperty, new TeachingTipTemplateSettings());
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer()
@@ -38,18 +45,34 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
-			m_acceleratorKeyActivatedRevoker.revoke();
-			m_effectiveViewportChangedRevoker.revoke();
-			m_contentSizeChangedRevoker.revoke();
-			m_closeButtonClickedRevoker.revoke();
-			m_alternateCloseButtonClickedRevoker.revoke();
-			m_actionButtonClickedRevoker.revoke();
-			m_windowSizeChangedRevoker.revoke();
+			Dispatcher.AcceleratorKeyActivated -= OnF6AcceleratorKeyClicked;
+			EffectiveViewportChanged -= OnTargetLayoutUpdated;
+			if (m_tailOcclusionGrid != null)
+			{
+				m_tailOcclusionGrid.SizeChanged -= OnOcclusionContentChanged;
+			}
+			if (m_closeButton != null)
+			{
+				m_closeButton.Click -= OnCloseButtonClicked;
+			}
+			if (m_alternateCloseButton != null)
+			{
+				m_alternateCloseButton.Click -= OnCloseButtonClicked;
+			}
+			if (m_actionButton != null)
+			{
+				m_actionButton.Click -= OnActionButtonClicked;
+			}
+			var coreWindow = CoreWindow.GetForCurrentThread();
+			if (coreWindow != null)
+			{
+				coreWindow.SizeChanged -= WindowSizeChanged;
+			}
 
 			//IControlProtected controlProtected{ this };
 
 			m_container = (Border)GetTemplateChild(s_containerName);
-			m_rootElement = m_container.Child();
+			m_rootElement = m_container.Child;
 			m_tailOcclusionGrid = (Grid)GetTemplateChild(s_tailOcclusionGridName);
 			m_contentRootGrid = (Grid)GetTemplateChild(s_contentRootGridName);
 			m_nonHeroContentRootGrid = (Grid)GetTemplateChild(s_nonHeroContentRootGridName);
@@ -62,63 +85,45 @@ namespace Microsoft.UI.Xaml.Controls
 			m_titleTextBox = (UIElement)GetTemplateChild(s_titleTextBoxName);
 			m_subtitleTextBox = (UIElement)GetTemplateChild(s_subtitleTextBoxName);
 
-			if (var container = m_container)
-    {
-				container.Child(null);
+			var container = m_container;
+			if (container != null)
+			{
+				container.Child = null;
 			}
 
-			m_contentSizeChangedRevoker = [this]()
-
-
-	{
-				if (var tailOcclusionGrid = m_tailOcclusionGrid)
-        {
-					return tailOcclusionGrid.SizeChanged(auto_revoke, { this, &TeachingTip.OnContentSizeChanged });
-				}
-				return FrameworkElement.SizeChanged_revoker{ };
-			} ();
-
-			if (var contentRootGrid = m_contentRootGrid)
-    {
-				AutomationProperties.SetLocalizedLandmarkType(contentRootGrid, ResourceAccessor.GetLocalizedStringResource(SR_TeachingTipCustomLandmarkName));
+			var tailOcclusionGrid = m_tailOcclusionGrid;
+			if (tailOcclusionGrid != null)
+			{
+				tailOcclusionGrid.SizeChanged += OnContentSizeChanged;
 			}
 
-			m_closeButtonClickedRevoker = [this]()
+			var contentRootGrid = m_contentRootGrid;
+			if (contentRootGrid != null)
+			{
+				AutomationProperties.SetLocalizedLandmarkType(contentRootGrid, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TeachingTipCustomLandmarkName));
+			}
 
+			var closeButton = m_closeButton;
+			if (closeButton != null)
+			{
+				closeButton.Click += OnCloseButtonClicked;
+			}
 
-	{
-				if (var closeButton = m_closeButton)
-        {
-					return closeButton.Click(auto_revoke, { this, &TeachingTip.OnCloseButtonClicked });
-				}
-				return Button.Click_revoker{ };
-			} ();
+			var alternateCloseButton = m_alternateCloseButton;
+			if (alternateCloseButton != null)
+			{
+				AutomationProperties.SetName(alternateCloseButton, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TeachingTipAlternateCloseButtonName));
+				ToolTip tooltip = new ToolTip();
+				tooltip.Content = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TeachingTipAlternateCloseButtonTooltip);
+				ToolTipService.SetToolTip(alternateCloseButton, tooltip);
+				alternateCloseButton.Click += OnCloseButtonClicked;
+			}
 
-			m_alternateCloseButtonClickedRevoker = [this]()
-
-
-	{
-				if (var alternateCloseButton = m_alternateCloseButton)
-        {
-					AutomationProperties.SetName(alternateCloseButton, ResourceAccessor.GetLocalizedStringResource(SR_TeachingTipAlternateCloseButtonName));
-					ToolTip tooltip = ToolTip();
-					tooltip.ContentResourceAccessor.GetLocalizedStringResource(SR_TeachingTipAlternateCloseButtonTooltip));
-					ToolTipService.SetToolTip(alternateCloseButton, tooltip);
-					return alternateCloseButton.Click(auto_revoke, { this, &TeachingTip.OnCloseButtonClicked });
-				}
-				return Button.Click_revoker{ };
-			} ();
-
-			m_actionButtonClickedRevoker = [this]()
-
-
-	{
-				if (var actionButton = m_actionButton)
-        {
-					return actionButton.Click(auto_revoke, { this, &TeachingTip.OnActionButtonClicked });
-				}
-				return Button.Click_revoker{ };
-			} ();
+			var actionButton = m_actionButton;
+			if (actionButton != null)
+			{
+				actionButton.Click += OnActionButtonClicked;
+			}
 
 			UpdateButtonsState();
 			OnIsLightDismissEnabledChanged();
@@ -132,7 +137,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			DependencyProperty property = args.Property;
+			var property = args.Property;
 
 			if (property == IsOpenProperty)
 			{
@@ -141,17 +146,17 @@ namespace Microsoft.UI.Xaml.Controls
 			else if (property == TargetProperty)
 			{
 				// Unregister from old target if it exists
-				if (args.OldValue)
+				if (args.OldValue is FrameworkElement oldTarget)
 				{
-					m_TargetUnloadedRevoker.revoke();
+					oldTarget.Unloaded -= ClosePopupOnUnloadEvent;
 				}
 
 				// Register to new target if it exists
 				var value = args.NewValue;
 				if (value != null)
 				{
-					FrameworkElement newTarget = (FrameworkElement)value;
-					m_TargetUnloadedRevoker = newTarget.Unloaded(auto_revoke, { this,&TeachingTip.ClosePopupOnUnloadEvent });
+					var newTarget = (FrameworkElement)value;
+					newTarget.Unloaded += ClosePopupOnUnloadEvent;
 				}
 				OnTargetChanged();
 			}
@@ -194,19 +199,18 @@ namespace Microsoft.UI.Xaml.Controls
 			else if (property == TitleProperty)
 			{
 				SetPopupAutomationProperties();
-				if (ToggleVisibilityForEmptyContent(m_titleTextBox, Title()))
+				if (ToggleVisibilityForEmptyContent(m_titleTextBox, Title))
 				{
 					TeachingTipTestHooks.NotifyTitleVisibilityChanged(this);
 				}
 			}
 			else if (property == SubtitleProperty)
 			{
-				if (ToggleVisibilityForEmptyContent(m_subtitleTextBox, Subtitle()))
+				if (ToggleVisibilityForEmptyContent(m_subtitleTextBox, Subtitle))
 				{
 					TeachingTipTestHooks.NotifySubtitleVisibilityChanged(this);
 				}
 			}
-
 		}
 
 		private bool ToggleVisibilityForEmptyContent(UIElement element, string content)
@@ -233,7 +237,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return false;
 		}
 
-		private void OnContentChanged(object oldContent, object newContent)
+		private void OnOcclusionContentChanged(object oldContent, object newContent)
 		{
 			if (newContent != null)
 			{
@@ -290,7 +294,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var (placement, tipDoesNotFit) = DetermineEffectivePlacement();
 			m_currentEffectiveTailPlacementMode = placement;
 			var tailVisibility = TailVisibility;
-			if (tailVisibility == TeachingTipTailVisibility.Collapsed || (!m_target && tailVisibility != TeachingTipTailVisibility.Visible))
+			if (tailVisibility == TeachingTipTailVisibility.Collapsed || (m_target == null && tailVisibility != TeachingTipTailVisibility.Visible))
 			{
 				m_currentEffectiveTailPlacementMode = TeachingTipPlacementMode.Auto;
 			}
@@ -303,40 +307,41 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var nullableTailOcclusionGrid = m_tailOcclusionGrid;
 
-			var height = nullableTailOcclusionGrid ? (float)(nullableTailOcclusionGrid.ActualHeight()) : 0;
-			var width = nullableTailOcclusionGrid ? (float)(nullableTailOcclusionGrid.ActualWidth()) : 0;
+			var height = nullableTailOcclusionGrid?.ActualHeight ?? 0;
+			var width = nullableTailOcclusionGrid?.ActualWidth ?? 0;
 
-			var[firstColumnWidth, secondColumnWidth, nextToLastColumnWidth, lastColumnWidth] = [this, nullableTailOcclusionGrid]()
+			(float firstColumnWidth, float secondColumnWidth, float nextToLastColumnWidth, float lastColumnWidth) GetColumnWidths(Grid nullableTailOcclusionGrid)
+			{
+				var columnDefinitions = nullableTailOcclusionGrid?.ColumnDefinitions;
+				if (columnDefinitions != null)
+				{
+					var firstColumnWidth = columnDefinitions.Count > 0 ? (float)(columnDefinitions[0].ActualWidth) : 0.0f;
+					var secondColumnWidth = columnDefinitions.Count > 1 ? (float)(columnDefinitions[1].ActualWidth) : 0.0f;
+					var nextToLastColumnWidth = columnDefinitions.Count > 1 ? (float)(columnDefinitions[columnDefinitions.Count - 2].ActualWidth) : 0.0f;
+					var lastColumnWidth = columnDefinitions.Count > 0 ? (float)(columnDefinitions[columnDefinitions.Count - 1].ActualWidth) : 0.0f;
 
-
-	{
-				if (var columnDefinitions = nullableTailOcclusionGrid ? nullableTailOcclusionGrid.ColumnDefinitions() : null)
-        {
-					var firstColumnWidth = columnDefinitions.Size() > 0 ? (float)(columnDefinitions.GetAt(0).ActualWidth()) : 0.0f;
-					var secondColumnWidth = columnDefinitions.Size() > 1 ? (float)(columnDefinitions.GetAt(1).ActualWidth()) : 0.0f;
-					var nextToLastColumnWidth = columnDefinitions.Size() > 1 ? (float)(columnDefinitions.GetAt(columnDefinitions.Size() - 2).ActualWidth()) : 0.0f;
-					var lastColumnWidth = columnDefinitions.Size() > 0 ? (float)(columnDefinitions.GetAt(columnDefinitions.Size() - 1).ActualWidth()) : 0.0f;
-
-					return Tuple.Create(firstColumnWidth, secondColumnWidth, nextToLastColumnWidth, lastColumnWidth);
+					return (firstColumnWidth, secondColumnWidth, nextToLastColumnWidth, lastColumnWidth);
 				}
-				return Tuple.Create(0.0f, 0.0f, 0.0f, 0.0f);
-			} ();
+				return (0.0f, 0.0f, 0.0f, 0.0f);
+			}
 
-			var[firstRowHeight, secondRowHeight, nextToLastRowHeight, lastRowHeight] = [this, nullableTailOcclusionGrid]()
+			var (firstColumnWidth, secondColumnWidth, nextToLastColumnWidth, lastColumnWidth) = GetColumnWidths(nullableTailOcclusionGrid);
 
+			(float firstColumnHeight, float secondColumnHeight, float nextToLastColumnHeight, float lastColumnHeight) GetColumnHeights(Grid nullableTailOcclusionGrid)
+			{
+				var rowDefinitions = nullableTailOcclusionGrid?.RowDefinitions;
+				if (rowDefinitions != null)
+				{
+					var firstRowHeight = rowDefinitions.Count > 0 ? (float)(rowDefinitions[0].ActualHeight) : 0.0f;
+					var secondRowHeight = rowDefinitions.Count > 1 ? (float)(rowDefinitions[1].ActualHeight) : 0.0f;
+					var nextToLastRowHeight = rowDefinitions.Count > 1 ? (float)(rowDefinitions[rowDefinitions.Count - 2].ActualHeight) : 0.0f;
+					var lastRowHeight = rowDefinitions.Count > 0 ? (float)(rowDefinitions[rowDefinitions.Count - 1].ActualHeight) : 0.0f;
 
-	{
-				if (var rowDefinitions = nullableTailOcclusionGrid ? nullableTailOcclusionGrid.RowDefinitions() : null)
-        {
-					var firstRowHeight = rowDefinitions.Size() > 0 ? (float)(rowDefinitions.GetAt(0).ActualHeight()) : 0.0f;
-					var secondRowHeight = rowDefinitions.Size() > 1 ? (float)(rowDefinitions.GetAt(1).ActualHeight()) : 0.0f;
-					var nextToLastRowHeight = rowDefinitions.Size() > 1 ? (float)(rowDefinitions.GetAt(rowDefinitions.Size() - 2).ActualHeight()) : 0.0f;
-					var lastRowHeight = rowDefinitions.Size() > 0 ? (float)(rowDefinitions.GetAt(rowDefinitions.Size() - 1).ActualHeight()) : 0.0f;
-
-					return Tuple.Create(firstRowHeight, secondRowHeight, nextToLastRowHeight, lastRowHeight);
+					return (firstRowHeight, secondRowHeight, nextToLastRowHeight, lastRowHeight);
 				}
-				return Tuple.Create(0.0f, 0.0f, 0.0f, 0.0f);
-			} ();
+				return (0.0f, 0.0f, 0.0f, 0.0f);
+			}
+			var (firstRowHeight, secondRowHeight, nextToLastRowHeight, lastRowHeight) = GetColumnHeights(nullableTailOcclusionGrid);
 
 			UpdateSizeBasedTemplateSettings();
 
@@ -344,98 +349,98 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// An effective placement of var means the tip should not display a tail.
 				case TeachingTipPlacementMode.Auto:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { width / 2, height / 2, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3((float)width / 2, (float)height / 2, 0.0f));
 					UpdateDynamicHeroContentPlacementToTop();
 					VisualStateManager.GoToState(this, "Untargeted", false);
 					break;
 
 				case TeachingTipPlacementMode.Top:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { width / 2, height - lastRowHeight, 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { (width / 2) - firstColumnWidth, 0.0f, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3((float)width / 2, (float)height - lastRowHeight, 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3(((float)width / 2) - firstColumnWidth, 0.0f, 0.0f));
 					UpdateDynamicHeroContentPlacementToTop();
 					VisualStateManager.GoToState(this, "Top", false);
 					break;
 
 				case TeachingTipPlacementMode.Bottom:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { width / 2, firstRowHeight, 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { (width / 2) - firstColumnWidth, 0.0f, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3((float)width / 2, firstRowHeight, 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3(((float)width / 2) - firstColumnWidth, 0.0f, 0.0f));
 					UpdateDynamicHeroContentPlacementToBottom();
 					VisualStateManager.GoToState(this, "Bottom", false);
 					break;
 
 				case TeachingTipPlacementMode.Left:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { width - lastColumnWidth, (height / 2), 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { 0.0f, (height / 2) - firstRowHeight, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3((float)width - lastColumnWidth, ((float)height / 2), 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3(0.0f, ((float)height / 2) - firstRowHeight, 0.0f));
 					UpdateDynamicHeroContentPlacementToTop();
 					VisualStateManager.GoToState(this, "Left", false);
 					break;
 
 				case TeachingTipPlacementMode.Right:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { firstColumnWidth, height / 2, 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { 0.0f, (height / 2) - firstRowHeight, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3(firstColumnWidth, (float)height / 2, 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3(0.0f, ((float)height / 2) - firstRowHeight, 0.0f));
 					UpdateDynamicHeroContentPlacementToTop();
 					VisualStateManager.GoToState(this, "Right", false);
 					break;
 
 				case TeachingTipPlacementMode.TopRight:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { firstColumnWidth + secondColumnWidth + 1, height - lastRowHeight, 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { secondColumnWidth, 0.0f, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3(firstColumnWidth + secondColumnWidth + 1, (float)height - lastRowHeight, 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3(secondColumnWidth, 0.0f, 0.0f));
 					UpdateDynamicHeroContentPlacementToTop();
 					VisualStateManager.GoToState(this, "TopRight", false);
 					break;
 
 				case TeachingTipPlacementMode.TopLeft:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { width - (nextToLastColumnWidth + lastColumnWidth + 1), height - lastRowHeight, 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { width - (nextToLastColumnWidth + firstColumnWidth + lastColumnWidth), 0.0f, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3((float)width - (nextToLastColumnWidth + lastColumnWidth + 1), (float)height - lastRowHeight, 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3((float)width - (nextToLastColumnWidth + firstColumnWidth + lastColumnWidth), 0.0f, 0.0f));
 					UpdateDynamicHeroContentPlacementToTop();
 					VisualStateManager.GoToState(this, "TopLeft", false);
 					break;
 
 				case TeachingTipPlacementMode.BottomRight:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { firstColumnWidth + secondColumnWidth + 1, firstRowHeight, 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { secondColumnWidth, 0.0f, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3(firstColumnWidth + secondColumnWidth + 1, firstRowHeight, 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3(secondColumnWidth, 0.0f, 0.0f));
 					UpdateDynamicHeroContentPlacementToBottom();
 					VisualStateManager.GoToState(this, "BottomRight", false);
 					break;
 
 				case TeachingTipPlacementMode.BottomLeft:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { width - (nextToLastColumnWidth + lastColumnWidth + 1), firstRowHeight, 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { width - (nextToLastColumnWidth + firstColumnWidth + lastColumnWidth), 0.0f, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3((float)width - (nextToLastColumnWidth + lastColumnWidth + 1), firstRowHeight, 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3((float)width - (nextToLastColumnWidth + firstColumnWidth + lastColumnWidth), 0.0f, 0.0f));
 					UpdateDynamicHeroContentPlacementToBottom();
 					VisualStateManager.GoToState(this, "BottomLeft", false);
 					break;
 
 				case TeachingTipPlacementMode.LeftTop:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { width - lastColumnWidth,  height - (nextToLastRowHeight + lastRowHeight + 1), 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { 0.0f,  height - (nextToLastRowHeight + firstRowHeight + lastRowHeight), 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3((float)width - lastColumnWidth, (float)height - (nextToLastRowHeight + lastRowHeight + 1), 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3(0.0f, (float)height - (nextToLastRowHeight + firstRowHeight + lastRowHeight), 0.0f));
 					UpdateDynamicHeroContentPlacementToTop();
 					VisualStateManager.GoToState(this, "LeftTop", false);
 					break;
 
 				case TeachingTipPlacementMode.LeftBottom:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { width - lastColumnWidth, (firstRowHeight + secondRowHeight + 1), 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { 0.0f, secondRowHeight, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3((float)width - lastColumnWidth, (firstRowHeight + secondRowHeight + 1), 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3(0.0f, secondRowHeight, 0.0f));
 					UpdateDynamicHeroContentPlacementToBottom();
 					VisualStateManager.GoToState(this, "LeftBottom", false);
 					break;
 
 				case TeachingTipPlacementMode.RightTop:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { firstColumnWidth, height - (nextToLastRowHeight + lastRowHeight + 1), 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { 0.0f, height - (nextToLastRowHeight + firstRowHeight + lastRowHeight), 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3(firstColumnWidth, (float)height - (nextToLastRowHeight + lastRowHeight + 1), 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3(0.0f, (float)height - (nextToLastRowHeight + firstRowHeight + lastRowHeight), 0.0f));
 					UpdateDynamicHeroContentPlacementToTop();
 					VisualStateManager.GoToState(this, "RightTop", false);
 					break;
 
 				case TeachingTipPlacementMode.RightBottom:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { firstColumnWidth, (firstRowHeight + secondRowHeight + 1), 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { 0.0f, secondRowHeight, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3(firstColumnWidth, (firstRowHeight + secondRowHeight + 1), 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3(0.0f, secondRowHeight, 0.0f));
 					UpdateDynamicHeroContentPlacementToBottom();
 					VisualStateManager.GoToState(this, "RightBottom", false);
 					break;
 
 				case TeachingTipPlacementMode.Center:
-					TrySetCenterPoint(nullableTailOcclusionGrid, { width / 2, height - lastRowHeight, 0.0f });
-					TrySetCenterPoint(m_tailEdgeBorder, { (width / 2) - firstColumnWidth, 0.0f, 0.0f });
+					TrySetCenterPoint(nullableTailOcclusionGrid, new Vector3((float)width / 2, (float)height - lastRowHeight, 0.0f));
+					TrySetCenterPoint(m_tailEdgeBorder, new Vector3(((float)width / 2) - firstColumnWidth, 0.0f, 0.0f));
 					UpdateDynamicHeroContentPlacementToTop();
 					VisualStateManager.GoToState(this, "Center", false);
 					break;
@@ -447,10 +452,10 @@ namespace Microsoft.UI.Xaml.Controls
 			return tipDoesNotFit;
 		}
 
-		void PositionPopup()
+		private void PositionPopup()
 		{
 			bool tipDoesNotFit = false;
-			if (m_target)
+			if (m_target != null)
 			{
 				tipDoesNotFit = PositionTargetedPopup();
 			}
@@ -460,7 +465,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			if (tipDoesNotFit)
 			{
-				IsOpen(false);
+				IsOpen = false;
 			}
 
 			TeachingTipTestHooks.NotifyOffsetChanged(this);
@@ -930,7 +935,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			m_acceleratorKeyActivatedRevoker = Dispatcher.AcceleratorKeyActivated += OnF6AcceleratorKeyClicked;
+			Dispatcher.AcceleratorKeyActivated += OnF6AcceleratorKeyClicked;
 
 			// Make sure we are in the correct VSM state after ApplyTemplate and moving the template content from the Control to the Popup:
 			OnIsLightDismissEnabledChanged();
@@ -1110,68 +1115,67 @@ namespace Microsoft.UI.Xaml.Controls
 				args.VirtualKey == VirtualKey.F6 &&
 				args.EventType == CoreAcceleratorKeyEventType.KeyDown)
 			{
-				var hasFocusInSubtree = [this, args]()
-
-
-
-
-
-		{
-					var current = FocusManager.GetFocusedElement() as DependencyObject();
-					if (var rootElement = m_rootElement)
-            {
-						while (current)
+				bool GetHasFocusInSubtree(AcceleratorKeyEventArgs args)
+				{
+					var current = FocusManager.GetFocusedElement() as DependencyObject;
+					var rootElement = m_rootElement;
+					if (rootElement != null)
+					{
+						while (current != null)
 						{
-							if (current as UIElement() == rootElement)
-                    {
+							if ((current as UIElement) == rootElement)
+							{
 								return true;
 							}
 							current = VisualTreeHelper.GetParent(current);
 						}
 					}
 					return false;
-				} ();
+				}
+
+				var hasFocusInSubtree = GetHasFocusInSubtree(args);
 
 				if (hasFocusInSubtree)
 				{
-					bool setFocus = SetFocus(m_previouslyFocusedElement, FocusState.Programmatic);
-					m_previouslyFocusedElement = null;
-					args.Handled(setFocus);
+					if (m_previouslyFocusedElement.TryGetTarget(out var previouslyFocusedElement))
+					{
+						bool setFocus = CppWinRTHelpers.SetFocus(previouslyFocusedElement, FocusState.Programmatic);
+						m_previouslyFocusedElement = null;
+						args.Handled = setFocus;
+					}
 				}
 				else
 				{
-					Button f6Button = [this]().Button
-
-
-
-
-
-			{
+					Button GetF6Button()
+					{
 						var firstButton = m_closeButton;
 						var secondButton = m_alternateCloseButton;
 						//Prefer the close button to the alternate, except when there is no content.
-						if (!CloseButtonContent())
+						if (CloseButtonContent == null)
 						{
-							std.swap(firstButton, secondButton);
+							(secondButton, firstButton) = (firstButton, secondButton);
 						}
-						if (firstButton && firstButton.Visibility() == Visibility.Visible)
+						if (firstButton != null && firstButton.Visibility == Visibility.Visible)
 						{
 							return firstButton;
 						}
-						else if (secondButton && secondButton.Visibility() == Visibility.Visible)
+						else if (secondButton != null && secondButton.Visibility == Visibility.Visible)
 						{
 							return secondButton;
 						}
 						return null;
-					} ();
+					}
 
-					if (f6Button)
+					Button f6Button = GetF6Button();
+
+					if (f6Button != null)
 					{
-						var scopedRevoker = f6Button.GettingFocus(auto_revoke, [this](var &, var args) {
-							m_previouslyFocusedElement = make_weak(args.OldFocusedElement());
-						});
+						f6Button.GettingFocus += (sender, args) =>
+						{
+							m_previouslyFocusedElement = new WeakReference<DependencyObject>(args.OldFocusedElement);
+						};
 						bool setFocus = f6Button.Focus(FocusState.Keyboard);
-						args.Handled(setFocus);
+						args.Handled = setFocus;
 					}
 				}
 			}
@@ -1189,14 +1193,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnCloseButtonClicked(object sender, RoutedEventArgs args)
 		{
-			m_closeButtonClickEventSource(this, null);
+			CloseButtonClick?.Invoke(this, null);
 			m_lastCloseReason = TeachingTipCloseReason.CloseButton;
-			IsOpen(false);
+			IsOpen = false;
 		}
 
 		private void OnActionButtonClicked(object sender, RoutedEventArgs args)
 		{
-			m_actionButtonClickEventSource(this, null);
+			ActionButtonClick?.Invoke(this, null);
 		}
 
 		private void OnPopupOpened(object sender, object args)
@@ -1209,7 +1213,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					m_currentXamlRootSize = xamlRoot.Size;
 					m_xamlRoot = xamlRoot;
-					m_xamlRootChangedRevoker = xamlRoot.Changed += XamlRootChanged;
+					xamlRoot.Changed += XamlRootChanged;
 				}
 			}
 			else
@@ -1217,7 +1221,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var coreWindow = CoreWindow.GetForCurrentThread();
 				if (coreWindow != null)
 				{
-					m_windowSizeChangedRevoker = coreWindow.SizeChanged += WindowSizeChanged;
+					coreWindow.SizeChanged += WindowSizeChanged;
 				}
 			}
 
@@ -1256,14 +1260,14 @@ namespace Microsoft.UI.Xaml.Controls
 					if (!string.IsNullOrEmpty(appName))
 					{
 						return StringUtil.FormatString(
-							ResourceAccessor.GetLocalizedStringResource(SR_TeachingTipNotification),
+							ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TeachingTipNotification),
 							appName,
 							AutomationProperties.GetName(m_popup));
 					}
 					else
 					{
 						return StringUtil.FormatString(
-							ResourceAccessor.GetLocalizedStringResource(SR_TeachingTipNotificationWithoutAppName),
+							ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TeachingTipNotificationWithoutAppName),
 							AutomationProperties.GetName(m_popup));
 					}
 				};
@@ -1273,35 +1277,50 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		privatevoid OnPopupClosed(object sender, object args)
+		private void OnPopupClosed(object sender, object args)
 		{
-			m_windowSizeChangedRevoker.revoke();
-			m_xamlRootChangedRevoker.revoke();
+			var coreWindow = CoreWindow.GetForCurrentThread();
+			if (coreWindow != null)
+			{
+				coreWindow.SizeChanged -= WindowSizeChanged;
+			}
+			if (m_xamlRoot != null)
+			{
+				m_xamlRoot.Changed -= XamlRootChanged;
+			}
 			m_xamlRoot = null;
-			if (var lightDismissIndicatorPopup = m_lightDismissIndicatorPopup)
-    {
+
+			var lightDismissIndicatorPopup = m_lightDismissIndicatorPopup;
+			if (lightDismissIndicatorPopup != null)
+			{
 				lightDismissIndicatorPopup.IsOpen = false;
 			}
-			if (var popup = m_popup)
-    {
-				popup.Child(null);
-			}
-			var myArgs = make_self<TeachingTipClosedEventArgs>();
 
-			myArgs.Reason(m_lastCloseReason);
-			m_closedEventSource(this, *myArgs);
+			var popup = m_popup;
+			if (popup != null)
+			{
+				popup.Child = null;
+			}
+
+			var myArgs = new TeachingTipClosedEventArgs(m_lastCloseReason);
+
+			Closed?.Invoke(this, myArgs);
 
 			//If we were closed by the close button and we have tracked a previously focused element because F6 was used
 			//To give the tip focus, then we return focus when the popup closes.
 			if (m_lastCloseReason == TeachingTipCloseReason.CloseButton)
 			{
-				SetFocus(m_previouslyFocusedElement, FocusState.Programmatic);
+				if (m_previouslyFocusedElement.TryGetTarget(out var previouslyFocusedElement))
+				{
+					CppWinRTHelpers.SetFocus(previouslyFocusedElement, FocusState.Programmatic);
+				}
 			}
 			m_previouslyFocusedElement = null;
 
-			if (var teachingTipPeer = FrameworkElementAutomationPeer.FromElement(this) as TeachingTipAutomationPeer())
-    {
-				get_self<TeachingTipAutomationPeer>(teachingTipPeer).RaiseWindowClosedEvent();
+			var teachingTipPeer = FrameworkElementAutomationPeer.FromElement(this) as TeachingTipAutomationPeer;
+			if (teachingTipPeer != null)
+			{
+				teachingTipPeer.RaiseWindowClosedEvent();
 			}
 		}
 
@@ -1352,7 +1371,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void ClosePopupWithAnimationIfAvailable()
+		private void ClosePopupWithAnimationIfAvailable()
 		{
 			if (m_popup != null && m_popup.IsOpen)
 			{
@@ -1375,24 +1394,28 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void ClosePopup()
+		private void ClosePopup()
 		{
 			var popup = m_popup;
 			if (popup != null)
 			{
 				popup.IsOpen = false;
 			}
-			if (var lightDismissIndicatorPopup = m_lightDismissIndicatorPopup)
-    {
+
+			var lightDismissIndicatorPopup = m_lightDismissIndicatorPopup;
+			if (lightDismissIndicatorPopup != null)
+			{
 				lightDismissIndicatorPopup.IsOpen = false;
 			}
-			if (UIElement9  tailOcclusionGrid = m_tailOcclusionGrid)
-    {
+
+			UIElement tailOcclusionGrid = m_tailOcclusionGrid;
+			if (tailOcclusionGrid != null)
+			{
 				// A previous close animation may have left the rootGrid's scale at a very small value and if this teaching tip
 				// is shown again then its text would be rasterized at this small scale and blown up ~20x. To fix this we have to
 				// reset the scale after the popup has closed so that if the teaching tip is re-shown the render pass does not use the
 				// small scale.
-				tailOcclusionGrid.Scale({ 1.0f,1.0f,1.0f });
+				tailOcclusionGrid.Scale = new Vector3(1.0f, 1.0f, 1.0f);
 			}
 		}
 
@@ -1441,35 +1464,31 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnTargetChanged()
 		{
-			m_targetLayoutUpdatedRevoker.revoke();
-			m_targetEffectiveViewportChangedRevoker.revoke();
-			m_targetLoadedRevoker.revoke();
+			if (m_target != null)
+			{
+				m_target.LayoutUpdated -= OnTargetLayoutUpdated;
+				m_target.Loaded -= OnTargetLoaded;
+			}
+			EffectiveViewportChanged -= OnTargetLayoutUpdated;
 
 			var target = Target;
 			m_target = target;
 
-			if (target)
+			if (target != null)
 			{
-				m_targetLoadedRevoker = target.Loaded += OnTargetLoaded;
+				target.Loaded += OnTargetLoaded;
 			}
 
-			if (IsOpen())
+			if (IsOpen)
 			{
-				if (target)
+				if (target != null)
 				{
-					m_currentTargetBoundsInCoreWindowSpace = target.TransformToVisual(null).TransformBounds({
+					m_currentTargetBoundsInCoreWindowSpace = target.TransformToVisual(null).TransformBounds(new Rect(
 						0.0,
-                0.0,
-                (float)(target.ActualWidth()),
-                (float)(target.ActualHeight())
-
-
-
-
-
-
-			});
-					SetViewportChangedEvent(gsl.make_strict_not_null(target));
+						0.0,
+						(float)(target.ActualWidth),
+						(float)(target.ActualHeight)));
+					SetViewportChangedEvent(target);
 				}
 				PositionPopup();
 			}
@@ -1483,117 +1502,72 @@ namespace Microsoft.UI.Xaml.Controls
 				FrameworkElement targetAsFE7 = target;
 				if (targetAsFE7 != null)
 				{
-					m_targetEffectiveViewportChangedRevoker = targetAsFE7.EffectiveViewportChanged += OnTargetLayoutUpdated;
-					m_effectiveViewportChangedRevoker = this.EffectiveViewportChanged += OnTargetLayoutUpdated;
+					targetAsFE7.EffectiveViewportChanged += OnTargetLayoutUpdated;
+					EffectiveViewportChanged += OnTargetLayoutUpdated;
 				}
-
 				else
 				{
-					m_targetLayoutUpdatedRevoker = target.LayoutUpdated += OnTargetLayoutUpdated;
+					target.LayoutUpdated += OnTargetLayoutUpdated;
 				}
 			}
 		}
 
 		private void RevokeViewportChangedEvent()
 		{
-			m_targetEffectiveViewportChangedRevoker.revoke();
-			m_effectiveViewportChangedRevoker.revoke();
-			m_targetLayoutUpdatedRevoker.revoke();
+			if (m_target != null)
+			{
+				m_target.EffectiveViewportChanged -= OnTargetLayoutUpdated;
+				m_target.LayoutUpdated -= OnTargetLayoutUpdated;
+			}
+			EffectiveViewportChanged -= OnTargetLayoutUpdated;
 		}
 
-		private void WindowSizeChanged(CoreWindow&, WindowSizeChangedEventArgs&)
+		private void WindowSizeChanged(CoreWindow coreWindow, WindowSizeChangedEventArgs args)
 		{
 			// Reposition popup when target/window has finished determining sizes
-			SharedHelpers.QueueCallbackForCompositionRendering(
-
-
-
-
-
-
-
-
-
-
-
-
-
-				[strongThis = get_strong()](){
-				strongThis.RepositionPopup();
-			}
-    );
+			SharedHelpers.QueueCallbackForCompositionRendering(() => RepositionPopup());
 		}
 
 		private void XamlRootChanged(XamlRoot xamlRoot, XamlRootChangedEventArgs args)
 		{
 			// Reposition popup when target has finished determining its own position.
-			SharedHelpers.QueueCallbackForCompositionRendering(
-
-
-
-
-
-
-
-
-
-
-
-
-
-				[strongThis = get_strong(), xamlRootSize = xamlRoot.Size()](){
-				if (xamlRootSize != strongThis.m_currentXamlRootSize)
+			SharedHelpers.QueueCallbackForCompositionRendering(() =>
+			{
+				if (xamlRoot.Size != m_currentXamlRootSize)
 				{
-					strongThis.m_currentXamlRootSize = xamlRootSize;
-					strongThis.RepositionPopup();
+					m_currentXamlRootSize = xamlRoot.Size;
+					RepositionPopup();
 				}
-			}
-    );
-
+			});
 		}
 
 		void RepositionPopup()
 		{
 			if (IsOpen)
 			{
-				var newTargetBounds = [this]()
-
-
-
-
-
-
-		{
-					if (var target = m_target)
-            {
-						return target.TransformToVisual(null).TransformBounds({
-							0.0,
-                    0.0,
-                    (float)(target.as< FrameworkElement > ().ActualWidth()),
-                    (float)(target.as< FrameworkElement > ().ActualHeight())
-
-
-
-
-
-
-					});
+				Rect GetNewTargetBounds()
+				{
+					var target = m_target;
+					if (target != null)
+					{
+						return target.TransformToVisual(null).TransformBounds(
+							new Rect(
+								0.0,
+								0.0,
+								(float)(target.ActualWidth),
+								(float)(target.ActualHeight)));
 					}
-					return Rect{ };
-				} ();
+					return Rect.Empty;
+				}
 
-				var newCurrentBounds = this.TransformToVisual(null).TransformBounds({
-					0.0,
-0.0,
-(float)(this.ActualWidth()),
-(float)(this.ActualHeight())
+				var newTargetBounds = GetNewTargetBounds();
 
-
-
-
-
-
-			});
+				var newCurrentBounds = TransformToVisual(null).TransformBounds(
+					new Rect(
+						0.0,
+						0.0,
+						(float)(this.ActualWidth),
+						(float)(this.ActualHeight)));
 
 				if (newTargetBounds != m_currentTargetBoundsInCoreWindowSpace || newCurrentBounds != m_currentBoundsInCoreWindowSpace)
 				{
@@ -1604,12 +1578,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnTargetLoaded(object&, object&)
+		private void OnTargetLoaded(object sender, object args)
 		{
 			RepositionPopup();
 		}
 
-		private void OnTargetLayoutUpdated(object&, object&)
+		private void OnTargetLayoutUpdated(object sender, object args)
 		{
 			RepositionPopup();
 		}
@@ -1648,1002 +1622,944 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				expandAnimation.InsertExpressionKeyFrame(0.0f, "Vector3(Min(0.01, 20.0 / Width), Min(0.01, 20.0 / Height), 1.0)");
-				expandAnimation.InsertKeyFrame(1.0f, { 1.0f, 1.0f, 1.0f }, expandEasingFunction);
-			expandAnimation.Duration(m_expandAnimationDuration);
-			expandAnimation.Target(s_scaleTargetName);
-			return expandAnimation;
-		}
+				expandAnimation.InsertKeyFrame(1.0f, new Vector3(1.0f, 1.0f, 1.0f), expandEasingFunction);
+				expandAnimation.Duration = m_expandAnimationDuration;
+				expandAnimation.Target = s_scaleTargetName;
+				return expandAnimation;
+			}
 
-		m_expandAnimation = GetExpandAnimation(compositor, expandEasingFunction);
+			m_expandAnimation = GetExpandAnimation(compositor, expandEasingFunction);
 
-		m_expandElevationAnimation = [this, compositor, expandEasingFunction]
-		(
-
-
-
-
-
-
-	{
+			KeyFrameAnimation GetExpandElevationAnimation(Compositor compositor, CompositionEasingFunction expandEasingFunction)
+			{
 				var expandElevationAnimation = compositor.CreateVector3KeyFrameAnimation();
-		expandElevationAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(this.Target.Translation.X, this.Target.Translation.Y, contentElevation)", expandEasingFunction);
+				expandElevationAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(this.Target.Translation.X, this.Target.Translation.Y, contentElevation)", expandEasingFunction);
 				expandElevationAnimation.SetScalarParameter("contentElevation", m_contentElevation);
-				expandElevationAnimation.Duration(m_expandAnimationDuration);
-				expandElevationAnimation.Target(s_translationTargetName);
+				expandElevationAnimation.Duration = m_expandAnimationDuration;
+				expandElevationAnimation.Target = s_translationTargetName;
 				return expandElevationAnimation;
 			}
-	());
+
+			m_expandElevationAnimation = GetExpandElevationAnimation(compositor, expandEasingFunction);
 		}
 
-private void CreateContractAnimation()
-{
-	var compositor = Windows.UI.Xaml.Window.Current.Compositor;
-
-	CompositionEasingFunction GetContractEasingFunction(Compositor compositor)
-	{
-		if (m_contractEasingFunction == null)
+		private void CreateContractAnimation()
 		{
-			var easingFunction = compositor.CreateCubicBezierEasingFunction(s_contractAnimationEasingCurveControlPoint1, s_contractAnimationEasingCurveControlPoint2);
-			m_contractEasingFunction = easingFunction;
-			return easingFunction;
-		}
-		return m_contractEasingFunction;
-	}
-	var contractEasingFunction = GetContractEasingFunction(compositor);
+			var compositor = Windows.UI.Xaml.Window.Current.Compositor;
 
-	KeyFrameAnimation GetContractAnimation(Compositor compositor, CompositionEasingFunction contractEasingFunction)
-	{
-		var contractAnimation = compositor.CreateVector3KeyFrameAnimation();
-		var tailOcclusionGrid = m_tailOcclusionGrid;
-		if (tailOcclusionGrid != null)
+			CompositionEasingFunction GetContractEasingFunction(Compositor compositor)
+			{
+				if (m_contractEasingFunction == null)
+				{
+					var easingFunction = compositor.CreateCubicBezierEasingFunction(s_contractAnimationEasingCurveControlPoint1, s_contractAnimationEasingCurveControlPoint2);
+					m_contractEasingFunction = easingFunction;
+					return easingFunction;
+				}
+				return m_contractEasingFunction;
+			}
+			var contractEasingFunction = GetContractEasingFunction(compositor);
+
+			KeyFrameAnimation GetContractAnimation(Compositor compositor, CompositionEasingFunction contractEasingFunction)
+			{
+				var contractAnimation = compositor.CreateVector3KeyFrameAnimation();
+				var tailOcclusionGrid = m_tailOcclusionGrid;
+				if (tailOcclusionGrid != null)
+				{
+					contractAnimation.SetScalarParameter("Width", (float)(tailOcclusionGrid.ActualWidth));
+					contractAnimation.SetScalarParameter("Height", (float)(tailOcclusionGrid.ActualHeight));
+				}
+
+				else
+				{
+					contractAnimation.SetScalarParameter("Width", s_defaultTipHeightAndWidth);
+					contractAnimation.SetScalarParameter("Height", s_defaultTipHeightAndWidth);
+				}
+
+				contractAnimation.InsertKeyFrame(0.0f, new Vector3(1.0f, 1.0f, 1.0f));
+				contractAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(20.0 / Width, 20.0 / Height, 1.0)", contractEasingFunction);
+				contractAnimation.Duration = m_contractAnimationDuration;
+				contractAnimation.Target = s_scaleTargetName;
+				return contractAnimation;
+			}
+
+			m_contractAnimation = GetContractAnimation(compositor, contractEasingFunction);
+
+			KeyFrameAnimation GetContractElevationAnimation(Compositor compositor, CompositionEasingFunction contractEasingFunction)
+			{
+				var contractElevationAnimation = compositor.CreateVector3KeyFrameAnimation();
+				// animating to 0.01f instead of 0.0f as work around to internal issue 26001712 which was causing text clipping.
+				contractElevationAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(this.Target.Translation.X, this.Target.Translation.Y, 0.01f)", contractEasingFunction);
+				contractElevationAnimation.Duration = m_contractAnimationDuration;
+				contractElevationAnimation.Target = s_translationTargetName;
+				return contractElevationAnimation;
+			}
+
+			m_contractElevationAnimation = GetContractElevationAnimation(compositor, contractEasingFunction);
+		}
+
+		private void StartExpandToOpen()
 		{
-			contractAnimation.SetScalarParameter("Width", (float)(tailOcclusionGrid.ActualWidth));
-			contractAnimation.SetScalarParameter("Height", (float)(tailOcclusionGrid.ActualHeight));
+			if (m_expandAnimation == null)
+			{
+				CreateExpandAnimation();
+			}
+
+			CompositionScopedBatch CreateScopedBatch()
+			{
+				var scopedBatch = Windows.UI.Xaml.Window.Current.Compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
+
+				var expandAnimation = m_expandAnimation;
+				if (m_expandAnimation != null)
+				{
+					var tailOcclusionGrid = m_tailOcclusionGrid;
+					if (tailOcclusionGrid != null)
+					{
+						tailOcclusionGrid.StartAnimation(expandAnimation);
+						m_isExpandAnimationPlaying = true;
+					}
+					var tailEdgeBorder = m_tailEdgeBorder;
+					if (tailEdgeBorder != null)
+					{
+						tailEdgeBorder.StartAnimation(expandAnimation);
+						m_isExpandAnimationPlaying = true;
+					}
+				}
+				var expandElevationAnimation = m_expandElevationAnimation;
+				if (expandElevationAnimation != null)
+				{
+					var contentRootGrid = m_contentRootGrid;
+					if (contentRootGrid != null)
+					{
+						contentRootGrid.StartAnimation(expandElevationAnimation);
+						m_isExpandAnimationPlaying = true;
+					}
+				}
+				return scopedBatch;
+			}
+
+			var scopedBatch = CreateScopedBatch();
+
+			scopedBatch.End();
+
+			scopedBatch.Completed += (sender, args) =>
+			{
+				m_isExpandAnimationPlaying = false;
+				if (!m_isContractAnimationPlaying)
+				{
+					SetIsIdle(true);
+				}
+			};
+
+			// Under normal circumstances we would have launched an animation just now, if we did not then we should make sure that the idle state is correct
+			if (!m_isExpandAnimationPlaying && !m_isContractAnimationPlaying)
+			{
+				SetIsIdle(true);
+			}
 		}
 
-		else
+		private void StartContractToClose()
 		{
-			contractAnimation.SetScalarParameter("Width", s_defaultTipHeightAndWidth);
-			contractAnimation.SetScalarParameter("Height", s_defaultTipHeightAndWidth);
-		}
+			if (m_contractAnimation == null)
+			{
+				CreateContractAnimation();
+			}
 
-		contractAnimation.InsertKeyFrame(0.0f, new Vector3(1.0f, 1.0f, 1.0f));
-		contractAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(20.0 / Width, 20.0 / Height, 1.0)", contractEasingFunction);
-		contractAnimation.Duration = m_contractAnimationDuration;
-		contractAnimation.Target = s_scaleTargetName;
-		return contractAnimation;
-	}
+			CompositionScopedBatch CreateScopedBatch()
+			{
+				var scopedBatch = Windows.UI.Xaml.Window.Current.Compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
+				var contractAnimation = m_contractAnimation;
+				if (contractAnimation != null)
+				{
+					var tailOcclusionGrid = m_tailOcclusionGrid;
+					if (tailOcclusionGrid != null)
+					{
+						tailOcclusionGrid.StartAnimation(contractAnimation);
+						m_isContractAnimationPlaying = true;
+					}
+					var tailEdgeBorder = m_tailEdgeBorder;
+					if (tailEdgeBorder != null)
+					{
+						tailEdgeBorder.StartAnimation(contractAnimation);
+						m_isContractAnimationPlaying = true;
+					}
+				}
+				var contractElevationAnimation = m_contractElevationAnimation;
+				if (contractElevationAnimation != null)
+				{
+					var contentRootGrid = m_contentRootGrid;
+					if (contentRootGrid != null)
+					{
+						contentRootGrid.StartAnimation(contractElevationAnimation);
+						m_isContractAnimationPlaying = true;
+					}
+				}
+				return scopedBatch;
+			}
 
-	m_contractAnimation = GetContractAnimation(compositor, contractEasingFunction);
+			var scopedBatch = CreateScopedBatch();
 
-	KeyFrameAnimation GetContractElevationAnimation(Compositor compositor, CompositionEasingFunction contractEasingFunction)
-	{
-		var contractElevationAnimation = compositor.CreateVector3KeyFrameAnimation();
-		// animating to 0.01f instead of 0.0f as work around to internal issue 26001712 which was causing text clipping.
-		contractElevationAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(this.Target.Translation.X, this.Target.Translation.Y, 0.01f)", contractEasingFunction);
-		contractElevationAnimation.Duration = m_contractAnimationDuration;
-		contractElevationAnimation.Target = s_translationTargetName;
-		return contractElevationAnimation;
-	}
+			scopedBatch.End();
 
-	m_contractElevationAnimation = GetContractElevationAnimation(compositor, contractEasingFunction);
-}
-
-private void StartExpandToOpen()
-{
-	MUX_ASSERT_MSG(this as UIElement9(), "The contract and expand animations currently use facade's which were not available pre-RS5.");
-	if (!m_expandAnimation)
-	{
-		CreateExpandAnimation();
-	}
-
-	var scopedBatch = [this]()
-
-
-
-
-	{
-		var scopedBatch = Window.Current().Compositor().CreateScopedBatch(CompositionBatchTypes.Animation);
-
-		if (var expandAnimation = m_expandAnimation)
-        {
-	if (var tailOcclusionGrid = m_tailOcclusionGrid)
-            {
-		tailOcclusionGrid.StartAnimation(expandAnimation);
-		m_isExpandAnimationPlaying = true;
-	}
-	if (var tailEdgeBorder = m_tailEdgeBorder)
-            {
-		tailEdgeBorder.StartAnimation(expandAnimation);
-		m_isExpandAnimationPlaying = true;
-	}
-}
-if (var expandElevationAnimation = m_expandElevationAnimation)
-        {
-	if (var contentRootGrid = m_contentRootGrid)
-            {
-		contentRootGrid.StartAnimation(expandElevationAnimation);
-		m_isExpandAnimationPlaying = true;
-	}
-}
-return scopedBatch;
-			} ();
-scopedBatch.End();
-
-scopedBatch.Completed([strongThis = get_strong()](auto, auto)
-
-
-
-
-	{
-	strongThis.m_isExpandAnimationPlaying = false;
-	if (!strongThis.m_isContractAnimationPlaying)
-	{
-		strongThis.SetIsIdle(true);
-	}
-});
-
-// Under normal circumstances we would have launched an animation just now, if we did not then we should make sure that the idle state is correct
-if (!m_isExpandAnimationPlaying && !m_isContractAnimationPlaying)
-{
-	SetIsIdle(true);
-}
-		}
-
-		void StartContractToClose()
-{
-	MUX_ASSERT_MSG(this as UIElement9(), "The contract and expand animations currently use facade's which were not available pre RS5.");
-	if (!m_contractAnimation)
-	{
-		CreateContractAnimation();
-	}
-
-	var scopedBatch = [this]()
-
-
-
-	{
-		var scopedBatch = Window.Current().Compositor().CreateScopedBatch(CompositionBatchTypes.Animation);
-		if (var contractAnimation = m_contractAnimation)
-        {
-	if (var tailOcclusionGrid = m_tailOcclusionGrid)
-            {
-		tailOcclusionGrid.StartAnimation(contractAnimation);
-		m_isContractAnimationPlaying = true;
-	}
-	if (var tailEdgeBorder = m_tailEdgeBorder)
-            {
-		tailEdgeBorder.StartAnimation(contractAnimation);
-		m_isContractAnimationPlaying = true;
-	}
-}
-if (var contractElevationAnimation = m_contractElevationAnimation)
-        {
-	if (var contentRootGrid = m_contentRootGrid)
-            {
-		contentRootGrid.StartAnimation(contractElevationAnimation);
-		m_isContractAnimationPlaying = true;
-	}
-}
-return scopedBatch;
-			} ();
-scopedBatch.End();
-
-scopedBatch.Completed([strongThis = get_strong()](auto, auto)
-
-
-
-	{
-	strongThis.m_isContractAnimationPlaying = false;
-	strongThis.ClosePopup();
-	if (!strongThis.m_isExpandAnimationPlaying)
-	{
-		strongThis.SetIsIdle(true);
-	}
-});
+			scopedBatch.Completed += (sender, args) =>
+			{
+				m_isContractAnimationPlaying = false;
+				ClosePopup();
+				if (!m_isExpandAnimationPlaying)
+				{
+					SetIsIdle(true);
+				}
+			};
 		}
 
 		private Tuple<TeachingTipPlacementMode, bool> DetermineEffectivePlacement()
-{
-	// Because we do not have access to APIs to give us details about multi monitor scenarios we do not have the ability to correctly
-	// Place the tip in scenarios where we have an out of root bounds tip. Since this is the case we have decided to do no special
-	// calculations and return the provided value or top if var was set. This behavior can be removed via the
-	// SetReturnTopForOutOfWindowBounds test hook.
-	if (!ShouldConstrainToRootBounds && m_returnTopForOutOfWindowPlacement)
-	{
-		var placement = GetFlowDirectionAdjustedPlacement(PreferredPlacement);
-		if (placement == TeachingTipPlacementMode.Auto)
 		{
-			return Tuple.Create(TeachingTipPlacementMode.Top, false);
-		}
-		return Tuple.Create(placement, false);
-	}
-
-	if (IsOpen && m_currentEffectiveTipPlacementMode != TeachingTipPlacementMode.Auto)
-	{
-		return Tuple.Create(m_currentEffectiveTipPlacementMode, false);
-	}
-
-	var (contentHeight, contentWidth) = [this]()
-
-
-
-	{
-		if (var tailOcclusionGrid = m_tailOcclusionGrid)
-        {
-	double contentHeight = tailOcclusionGrid.ActualHeight();
-	double contentWidth = tailOcclusionGrid.ActualWidth();
-	return Tuple.Create(contentHeight, contentWidth);
-}
-return Tuple.Create(0.0, 0.0);
-			} ();
-
-if (m_target != null)
-{
-	return DetermineEffectivePlacementTargeted(contentHeight, contentWidth);
-}
-else
-{
-	return DetermineEffectivePlacementUntargeted(contentHeight, contentWidth);
-}
-		}
-
-		private Tuple<TeachingTipPlacementMode, bool> DetermineEffectivePlacementTargeted(double contentHeight, double contentWidth)
-{
-	// These variables will track which positions the tip will fit in. They all start true and are
-	// flipped to false when we find a display condition that is not met.
-	var availability = new Dictionary<TeachingTipPlacementMode, bool>();
-	availability[TeachingTipPlacementMode.Auto] = false;
-	availability[TeachingTipPlacementMode.Top] = true;
-	availability[TeachingTipPlacementMode.Bottom] = true;
-	availability[TeachingTipPlacementMode.Right] = true;
-	availability[TeachingTipPlacementMode.Left] = true;
-	availability[TeachingTipPlacementMode.TopLeft] = true;
-	availability[TeachingTipPlacementMode.TopRight] = true;
-	availability[TeachingTipPlacementMode.BottomLeft] = true;
-	availability[TeachingTipPlacementMode.BottomRight] = true;
-	availability[TeachingTipPlacementMode.LeftTop] = true;
-	availability[TeachingTipPlacementMode.LeftBottom] = true;
-	availability[TeachingTipPlacementMode.RightTop] = true;
-	availability[TeachingTipPlacementMode.RightBottom] = true;
-	availability[TeachingTipPlacementMode.Center] = true;
-
-	double tipHeight = contentHeight + TailShortSideLength();
-	double tipWidth = contentWidth + TailShortSideLength();
-
-	// We try to avoid having the tail touch the HeroContent so rule out positions where this would be required
-	if (HeroContent != null)
-	{
-		var heroContentBorder = m_heroContentBorder
-													if (heroContentBorder != null)
-		{
-			var nonHeroContentRootGrid = m_nonHeroContentRootGrid;
-			if (nonHeroContentRootGrid != null)
+			// Because we do not have access to APIs to give us details about multi monitor scenarios we do not have the ability to correctly
+			// Place the tip in scenarios where we have an out of root bounds tip. Since this is the case we have decided to do no special
+			// calculations and return the provided value or top if var was set. This behavior can be removed via the
+			// SetReturnTopForOutOfWindowBounds test hook.
+			if (!ShouldConstrainToRootBounds && m_returnTopForOutOfWindowPlacement)
 			{
-				if (heroContentBorder.ActualHeight > nonHeroContentRootGrid.ActualHeight - TailLongSideActualLength())
+				var placement = GetFlowDirectionAdjustedPlacement(PreferredPlacement);
+				if (placement == TeachingTipPlacementMode.Auto)
 				{
-					availability[TeachingTipPlacementMode.Left] = false;
-					availability[TeachingTipPlacementMode.Right] = false;
+					return Tuple.Create(TeachingTipPlacementMode.Top, false);
 				}
+				return Tuple.Create(placement, false);
+			}
+
+			if (IsOpen && m_currentEffectiveTipPlacementMode != TeachingTipPlacementMode.Auto)
+			{
+				return Tuple.Create(m_currentEffectiveTipPlacementMode, false);
+			}
+
+			(double contentHeight, double contentWidth) GetContentSize()
+			{
+				var tailOcclusionGrid = m_tailOcclusionGrid;
+				if (tailOcclusionGrid != null)
+				{
+					double contentHeight = tailOcclusionGrid.ActualHeight;
+					double contentWidth = tailOcclusionGrid.ActualWidth;
+					return (contentHeight, contentWidth);
+				}
+				return (0.0, 0.0);
+			}
+
+			var (contentHeight, contentWidth) = GetContentSize();
+
+			if (m_target != null)
+			{
+				return DetermineEffectivePlacementTargeted(contentHeight, contentWidth);
+			}
+			else
+			{
+				return DetermineEffectivePlacementUntargeted(contentHeight, contentWidth);
 			}
 		}
 
-		switch (HeroContentPlacement)
+		private Tuple<TeachingTipPlacementMode, bool> DetermineEffectivePlacementTargeted(double contentHeight, double contentWidth)
 		{
-			case TeachingTipHeroContentPlacementMode.Bottom:
+			// These variables will track which positions the tip will fit in. They all start true and are
+			// flipped to false when we find a display condition that is not met.
+			var availability = new Dictionary<TeachingTipPlacementMode, bool>();
+			availability[TeachingTipPlacementMode.Auto] = false;
+			availability[TeachingTipPlacementMode.Top] = true;
+			availability[TeachingTipPlacementMode.Bottom] = true;
+			availability[TeachingTipPlacementMode.Right] = true;
+			availability[TeachingTipPlacementMode.Left] = true;
+			availability[TeachingTipPlacementMode.TopLeft] = true;
+			availability[TeachingTipPlacementMode.TopRight] = true;
+			availability[TeachingTipPlacementMode.BottomLeft] = true;
+			availability[TeachingTipPlacementMode.BottomRight] = true;
+			availability[TeachingTipPlacementMode.LeftTop] = true;
+			availability[TeachingTipPlacementMode.LeftBottom] = true;
+			availability[TeachingTipPlacementMode.RightTop] = true;
+			availability[TeachingTipPlacementMode.RightBottom] = true;
+			availability[TeachingTipPlacementMode.Center] = true;
+
+			double tipHeight = contentHeight + TailShortSideLength();
+			double tipWidth = contentWidth + TailShortSideLength();
+
+			// We try to avoid having the tail touch the HeroContent so rule out positions where this would be required
+			if (HeroContent != null)
+			{
+				var heroContentBorder = m_heroContentBorder;
+				if (heroContentBorder != null)
+				{
+					var nonHeroContentRootGrid = m_nonHeroContentRootGrid;
+					if (nonHeroContentRootGrid != null)
+					{
+						if (heroContentBorder.ActualHeight > nonHeroContentRootGrid.ActualHeight - TailLongSideActualLength())
+						{
+							availability[TeachingTipPlacementMode.Left] = false;
+							availability[TeachingTipPlacementMode.Right] = false;
+						}
+					}
+				}
+
+				switch (HeroContentPlacement)
+				{
+					case TeachingTipHeroContentPlacementMode.Bottom:
+						availability[TeachingTipPlacementMode.Top] = false;
+						availability[TeachingTipPlacementMode.TopRight] = false;
+						availability[TeachingTipPlacementMode.TopLeft] = false;
+						availability[TeachingTipPlacementMode.RightTop] = false;
+						availability[TeachingTipPlacementMode.LeftTop] = false;
+						availability[TeachingTipPlacementMode.Center] = false;
+						break;
+					case TeachingTipHeroContentPlacementMode.Top:
+						availability[TeachingTipPlacementMode.Bottom] = false;
+						availability[TeachingTipPlacementMode.BottomLeft] = false;
+						availability[TeachingTipPlacementMode.BottomRight] = false;
+						availability[TeachingTipPlacementMode.RightBottom] = false;
+						availability[TeachingTipPlacementMode.LeftBottom] = false;
+						break;
+				}
+			}
+
+			// When ShouldConstrainToRootBounds is true clippedTargetBounds == availableBoundsAroundTarget
+			// We have to separate them because there are checks which care about both.
+			var (clippedTargetBounds, availableBoundsAroundTarget) = DetermineSpaceAroundTarget();
+
+			// If the edge of the target isn't in the window.
+			if (clippedTargetBounds.Left < 0)
+			{
+				availability[TeachingTipPlacementMode.LeftBottom] = false;
+				availability[TeachingTipPlacementMode.Left] = false;
+				availability[TeachingTipPlacementMode.LeftTop] = false;
+			}
+			// If the right edge of the target isn't in the window.
+			if (clippedTargetBounds.Right < 0)
+			{
+				availability[TeachingTipPlacementMode.RightBottom] = false;
+				availability[TeachingTipPlacementMode.Right] = false;
+				availability[TeachingTipPlacementMode.RightTop] = false;
+			}
+			// If the top edge of the target isn't in the window.
+			if (clippedTargetBounds.Top < 0)
+			{
+				availability[TeachingTipPlacementMode.TopLeft] = false;
+				availability[TeachingTipPlacementMode.Top] = false;
+				availability[TeachingTipPlacementMode.TopRight] = false;
+			}
+			// If the bottom edge of the target isn't in the window
+			if (clippedTargetBounds.Bottom < 0)
+			{
+				availability[TeachingTipPlacementMode.BottomLeft] = false;
+				availability[TeachingTipPlacementMode.Bottom] = false;
+				availability[TeachingTipPlacementMode.BottomRight] = false;
+			}
+
+			// If the horizontal midpoint is out of the window.
+			if (clippedTargetBounds.Left < -m_currentTargetBoundsInCoreWindowSpace.Width / 2 ||
+				clippedTargetBounds.Right < -m_currentTargetBoundsInCoreWindowSpace.Width / 2)
+			{
+				availability[TeachingTipPlacementMode.TopLeft] = false;
+				availability[TeachingTipPlacementMode.Top] = false;
+				availability[TeachingTipPlacementMode.TopRight] = false;
+				availability[TeachingTipPlacementMode.BottomLeft] = false;
+				availability[TeachingTipPlacementMode.Bottom] = false;
+				availability[TeachingTipPlacementMode.BottomRight] = false;
+				availability[TeachingTipPlacementMode.Center] = false;
+			}
+
+			// If the vertical midpoint is out of the window.
+			if (clippedTargetBounds.Top < -m_currentTargetBoundsInCoreWindowSpace.Height / 2 ||
+				clippedTargetBounds.Bottom < -m_currentTargetBoundsInCoreWindowSpace.Height / 2)
+			{
+				availability[TeachingTipPlacementMode.LeftBottom] = false;
+				availability[TeachingTipPlacementMode.Left] = false;
+				availability[TeachingTipPlacementMode.LeftTop] = false;
+				availability[TeachingTipPlacementMode.RightBottom] = false;
+				availability[TeachingTipPlacementMode.Right] = false;
+				availability[TeachingTipPlacementMode.RightTop] = false;
+				availability[TeachingTipPlacementMode.Center] = false;
+			}
+
+			// If the tip is too tall to fit between the top of the target and the top edge of the window or screen.
+			if (tipHeight > availableBoundsAroundTarget.Top)
+			{
 				availability[TeachingTipPlacementMode.Top] = false;
 				availability[TeachingTipPlacementMode.TopRight] = false;
 				availability[TeachingTipPlacementMode.TopLeft] = false;
+			}
+			// If the total tip is too tall to fit between the center of the target and the top of the window.
+			if (tipHeight > availableBoundsAroundTarget.Top + (m_currentTargetBoundsInCoreWindowSpace.Height / 2.0f))
+			{
+				availability[TeachingTipPlacementMode.Center] = false;
+			}
+			// If the tip is too tall to fit between the center of the target and the top edge of the window.
+			if (contentHeight - MinimumTipEdgeToTailCenter() > availableBoundsAroundTarget.Top + (m_currentTargetBoundsInCoreWindowSpace.Height / 2.0f))
+			{
 				availability[TeachingTipPlacementMode.RightTop] = false;
 				availability[TeachingTipPlacementMode.LeftTop] = false;
-				availability[TeachingTipPlacementMode.Center] = false;
-				break;
-			case TeachingTipHeroContentPlacementMode.Top:
+			}
+			// If the tip is too tall to fit in the window when the tail is centered vertically on the target and the tip.
+			if (contentHeight / 2.0f > availableBoundsAroundTarget.Top + (m_currentTargetBoundsInCoreWindowSpace.Height / 2.0f) ||
+				contentHeight / 2.0f > availableBoundsAroundTarget.Bottom + (m_currentTargetBoundsInCoreWindowSpace.Height / 2.0f))
+			{
+				availability[TeachingTipPlacementMode.Right] = false;
+				availability[TeachingTipPlacementMode.Left] = false;
+			}
+			// If the tip is too tall to fit between the center of the target and the bottom edge of the window.
+			if (contentHeight - MinimumTipEdgeToTailCenter() > availableBoundsAroundTarget.Bottom + (m_currentTargetBoundsInCoreWindowSpace.Height / 2.0f))
+			{
+				availability[TeachingTipPlacementMode.RightBottom] = false;
+				availability[TeachingTipPlacementMode.LeftBottom] = false;
+			}
+			// If the tip is too tall to fit between the bottom of the target and the bottom edge of the window.
+			if (tipHeight > availableBoundsAroundTarget.Bottom)
+			{
 				availability[TeachingTipPlacementMode.Bottom] = false;
 				availability[TeachingTipPlacementMode.BottomLeft] = false;
 				availability[TeachingTipPlacementMode.BottomRight] = false;
-				availability[TeachingTipPlacementMode.RightBottom] = false;
+			}
+
+			// If the tip is too wide to fit between the left edge of the target and the left edge of the window.
+			if (tipWidth > availableBoundsAroundTarget.Left)
+			{
+				availability[TeachingTipPlacementMode.Left] = false;
+				availability[TeachingTipPlacementMode.LeftTop] = false;
 				availability[TeachingTipPlacementMode.LeftBottom] = false;
-				break;
+			}
+			// If the tip is too wide to fit between the center of the target and the left edge of the window.
+			if (contentWidth - MinimumTipEdgeToTailCenter() > availableBoundsAroundTarget.Left + (m_currentTargetBoundsInCoreWindowSpace.Width / 2.0f))
+			{
+				availability[TeachingTipPlacementMode.TopLeft] = false;
+				availability[TeachingTipPlacementMode.BottomLeft] = false;
+			}
+			// If the tip is too wide to fit in the window when the tail is centered horizontally on the target and the tip.
+			if (contentWidth / 2.0f > availableBoundsAroundTarget.Left + (m_currentTargetBoundsInCoreWindowSpace.Width / 2.0f) ||
+				contentWidth / 2.0f > availableBoundsAroundTarget.Right + (m_currentTargetBoundsInCoreWindowSpace.Width / 2.0f))
+			{
+				availability[TeachingTipPlacementMode.Top] = false;
+				availability[TeachingTipPlacementMode.Bottom] = false;
+				availability[TeachingTipPlacementMode.Center] = false;
+			}
+			// If the tip is too wide to fit between the center of the target and the right edge of the window.
+			if (contentWidth - MinimumTipEdgeToTailCenter() > availableBoundsAroundTarget.Right + (m_currentTargetBoundsInCoreWindowSpace.Width / 2.0f))
+			{
+				availability[TeachingTipPlacementMode.TopRight] = false;
+				availability[TeachingTipPlacementMode.BottomRight] = false;
+			}
+			// If the tip is too wide to fit between the right edge of the target and the right edge of the window.
+			if (tipWidth > availableBoundsAroundTarget.Right)
+			{
+				availability[TeachingTipPlacementMode.Right] = false;
+				availability[TeachingTipPlacementMode.RightTop] = false;
+				availability[TeachingTipPlacementMode.RightBottom] = false;
+			}
+
+			var wantedDirection = GetFlowDirectionAdjustedPlacement(PreferredPlacement);
+			var priorities = GetPlacementFallbackOrder(wantedDirection);
+
+			foreach (var mode in priorities)
+			{
+				if (availability[mode])
+				{
+					return Tuple.Create(mode, false);
+				}
+			}
+			// The teaching tip wont fit anywhere, set tipDoesNotFit to indicate that we should not open.
+			return Tuple.Create(TeachingTipPlacementMode.Top, true);
 		}
-	}
 
-	// When ShouldConstrainToRootBounds is true clippedTargetBounds == availableBoundsAroundTarget
-	// We have to separate them because there are checks which care about both.
-	var (clippedTargetBounds, availableBoundsAroundTarget) = DetermineSpaceAroundTarget();
-
-	// If the edge of the target isn't in the window.
-	if (clippedTargetBounds.Left < 0)
-	{
-		availability[TeachingTipPlacementMode.LeftBottom] = false;
-		availability[TeachingTipPlacementMode.Left] = false;
-		availability[TeachingTipPlacementMode.LeftTop] = false;
-	}
-	// If the right edge of the target isn't in the window.
-	if (clippedTargetBounds.Right < 0)
-	{
-		availability[TeachingTipPlacementMode.RightBottom] = false;
-		availability[TeachingTipPlacementMode.Right] = false;
-		availability[TeachingTipPlacementMode.RightTop] = false;
-	}
-	// If the top edge of the target isn't in the window.
-	if (clippedTargetBounds.Top < 0)
-	{
-		availability[TeachingTipPlacementMode.TopLeft] = false;
-		availability[TeachingTipPlacementMode.Top] = false;
-		availability[TeachingTipPlacementMode.TopRight] = false;
-	}
-	// If the bottom edge of the target isn't in the window
-	if (clippedTargetBounds.Bottom < 0)
-	{
-		availability[TeachingTipPlacementMode.BottomLeft] = false;
-		availability[TeachingTipPlacementMode.Bottom] = false;
-		availability[TeachingTipPlacementMode.BottomRight] = false;
-	}
-
-	// If the horizontal midpoint is out of the window.
-	if (clippedTargetBounds.Left < -m_currentTargetBoundsInCoreWindowSpace.Width / 2 ||
-		clippedTargetBounds.Right < -m_currentTargetBoundsInCoreWindowSpace.Width / 2)
-	{
-		availability[TeachingTipPlacementMode.TopLeft] = false;
-		availability[TeachingTipPlacementMode.Top] = false;
-		availability[TeachingTipPlacementMode.TopRight] = false;
-		availability[TeachingTipPlacementMode.BottomLeft] = false;
-		availability[TeachingTipPlacementMode.Bottom] = false;
-		availability[TeachingTipPlacementMode.BottomRight] = false;
-		availability[TeachingTipPlacementMode.Center] = false;
-	}
-
-	// If the vertical midpoint is out of the window.
-	if (clippedTargetBounds.Top < -m_currentTargetBoundsInCoreWindowSpace.Height / 2 ||
-		clippedTargetBounds.Bottom < -m_currentTargetBoundsInCoreWindowSpace.Height / 2)
-	{
-		availability[TeachingTipPlacementMode.LeftBottom] = false;
-		availability[TeachingTipPlacementMode.Left] = false;
-		availability[TeachingTipPlacementMode.LeftTop] = false;
-		availability[TeachingTipPlacementMode.RightBottom] = false;
-		availability[TeachingTipPlacementMode.Right] = false;
-		availability[TeachingTipPlacementMode.RightTop] = false;
-		availability[TeachingTipPlacementMode.Center] = false;
-	}
-
-	// If the tip is too tall to fit between the top of the target and the top edge of the window or screen.
-	if (tipHeight > availableBoundsAroundTarget.Top)
-	{
-		availability[TeachingTipPlacementMode.Top] = false;
-		availability[TeachingTipPlacementMode.TopRight] = false;
-		availability[TeachingTipPlacementMode.TopLeft] = false;
-	}
-	// If the total tip is too tall to fit between the center of the target and the top of the window.
-	if (tipHeight > availableBoundsAroundTarget.Top + (m_currentTargetBoundsInCoreWindowSpace.Height / 2.0f))
-	{
-		availability[TeachingTipPlacementMode.Center] = false;
-	}
-	// If the tip is too tall to fit between the center of the target and the top edge of the window.
-	if (contentHeight - MinimumTipEdgeToTailCenter() > availableBoundsAroundTarget.Top + (m_currentTargetBoundsInCoreWindowSpace.Height / 2.0f))
-	{
-		availability[TeachingTipPlacementMode.RightTop] = false;
-		availability[TeachingTipPlacementMode.LeftTop] = false;
-	}
-	// If the tip is too tall to fit in the window when the tail is centered vertically on the target and the tip.
-	if (contentHeight / 2.0f > availableBoundsAroundTarget.Top + (m_currentTargetBoundsInCoreWindowSpace.Height / 2.0f) ||
-		contentHeight / 2.0f > availableBoundsAroundTarget.Bottom + (m_currentTargetBoundsInCoreWindowSpace.Height / 2.0f))
-	{
-		availability[TeachingTipPlacementMode.Right] = false;
-		availability[TeachingTipPlacementMode.Left] = false;
-	}
-	// If the tip is too tall to fit between the center of the target and the bottom edge of the window.
-	if (contentHeight - MinimumTipEdgeToTailCenter() > availableBoundsAroundTarget.Bottom + (m_currentTargetBoundsInCoreWindowSpace.Height / 2.0f))
-	{
-		availability[TeachingTipPlacementMode.RightBottom] = false;
-		availability[TeachingTipPlacementMode.LeftBottom] = false;
-	}
-	// If the tip is too tall to fit between the bottom of the target and the bottom edge of the window.
-	if (tipHeight > availableBoundsAroundTarget.Bottom)
-	{
-		availability[TeachingTipPlacementMode.Bottom] = false;
-		availability[TeachingTipPlacementMode.BottomLeft] = false;
-		availability[TeachingTipPlacementMode.BottomRight] = false;
-	}
-
-	// If the tip is too wide to fit between the left edge of the target and the left edge of the window.
-	if (tipWidth > availableBoundsAroundTarget.Left)
-	{
-		availability[TeachingTipPlacementMode.Left] = false;
-		availability[TeachingTipPlacementMode.LeftTop] = false;
-		availability[TeachingTipPlacementMode.LeftBottom] = false;
-	}
-	// If the tip is too wide to fit between the center of the target and the left edge of the window.
-	if (contentWidth - MinimumTipEdgeToTailCenter() > availableBoundsAroundTarget.Left + (m_currentTargetBoundsInCoreWindowSpace.Width / 2.0f))
-	{
-		availability[TeachingTipPlacementMode.TopLeft] = false;
-		availability[TeachingTipPlacementMode.BottomLeft] = false;
-	}
-	// If the tip is too wide to fit in the window when the tail is centered horizontally on the target and the tip.
-	if (contentWidth / 2.0f > availableBoundsAroundTarget.Left + (m_currentTargetBoundsInCoreWindowSpace.Width / 2.0f) ||
-		contentWidth / 2.0f > availableBoundsAroundTarget.Right + (m_currentTargetBoundsInCoreWindowSpace.Width / 2.0f))
-	{
-		availability[TeachingTipPlacementMode.Top] = false;
-		availability[TeachingTipPlacementMode.Bottom] = false;
-		availability[TeachingTipPlacementMode.Center] = false;
-	}
-	// If the tip is too wide to fit between the center of the target and the right edge of the window.
-	if (contentWidth - MinimumTipEdgeToTailCenter() > availableBoundsAroundTarget.Right + (m_currentTargetBoundsInCoreWindowSpace.Width / 2.0f))
-	{
-		availability[TeachingTipPlacementMode.TopRight] = false;
-		availability[TeachingTipPlacementMode.BottomRight] = false;
-	}
-	// If the tip is too wide to fit between the right edge of the target and the right edge of the window.
-	if (tipWidth > availableBoundsAroundTarget.Right)
-	{
-		availability[TeachingTipPlacementMode.Right] = false;
-		availability[TeachingTipPlacementMode.RightTop] = false;
-		availability[TeachingTipPlacementMode.RightBottom] = false;
-	}
-
-	var wantedDirection = GetFlowDirectionAdjustedPlacement(PreferredPlacement);
-	var priorities = GetPlacementFallbackOrder(wantedDirection);
-
-	foreach (var mode in priorities)
-	{
-		if (availability[mode])
+		Tuple<TeachingTipPlacementMode, bool> DetermineEffectivePlacementUntargeted(double contentHeight, double contentWidth)
 		{
-			return Tuple.Create(mode, false);
-		}
-	}
-	// The teaching tip wont fit anywhere, set tipDoesNotFit to indicate that we should not open.
-	return Tuple.Create(TeachingTipPlacementMode.Top, true);
-}
+			var windowBounds = GetWindowBounds();
+			if (!ShouldConstrainToRootBounds)
+			{
+				var screenBoundsInCoreWindowSpace = GetEffectiveScreenBoundsInCoreWindowSpace(windowBounds);
+				if (screenBoundsInCoreWindowSpace.Height > contentHeight && screenBoundsInCoreWindowSpace.Width > contentWidth)
+				{
+					return Tuple.Create(TeachingTipPlacementMode.Bottom, false);
+				}
+			}
+			else
+			{
+				var windowBoundsInCoreWindowSpace = GetEffectiveWindowBoundsInCoreWindowSpace(windowBounds);
+				if (windowBoundsInCoreWindowSpace.Height > contentHeight && windowBoundsInCoreWindowSpace.Width > contentWidth)
+				{
+					return Tuple.Create(TeachingTipPlacementMode.Bottom, false);
+				}
+			}
 
-Tuple<TeachingTipPlacementMode, bool> DetermineEffectivePlacementUntargeted(double contentHeight, double contentWidth)
-{
-	var windowBounds = GetWindowBounds();
-	if (!ShouldConstrainToRootBounds())
-	{
-		var screenBoundsInCoreWindowSpace = GetEffectiveScreenBoundsInCoreWindowSpace(windowBounds);
-		if (screenBoundsInCoreWindowSpace.Height > contentHeight && screenBoundsInCoreWindowSpace.Width > contentWidth)
+			// The teaching tip doesn't fit in the window/screen set tipDoesNotFit to indicate that we should not open.
+			return Tuple.Create(TeachingTipPlacementMode.Top, true);
+		}
+
+		private Tuple<Thickness, Thickness> DetermineSpaceAroundTarget()
 		{
-			return Tuple.Create(TeachingTipPlacementMode.Bottom, false);
+			var shouldConstrainToRootBounds = ShouldConstrainToRootBounds;
+
+			(Rect windowBoundsInCoreWindowSpace, Rect screenBoundsInCoreWindowSpace) GetBoundsInCoreWindowSpace()
+			{
+				var windowBounds = GetWindowBounds();
+				return
+					(GetEffectiveWindowBoundsInCoreWindowSpace(windowBounds),
+					GetEffectiveScreenBoundsInCoreWindowSpace(windowBounds));
+			}
+
+			var (windowBoundsInCoreWindowSpace, screenBoundsInCoreWindowSpace) = GetBoundsInCoreWindowSpace();
+
+
+			Thickness windowSpaceAroundTarget = new Thickness(
+				// Target.Left - Window.Left
+				m_currentTargetBoundsInCoreWindowSpace.X - /* 0 except with test window bounds */ windowBoundsInCoreWindowSpace.X,
+				// Target.Top - Window.Top
+				m_currentTargetBoundsInCoreWindowSpace.Y - /* 0 except with test window bounds */ windowBoundsInCoreWindowSpace.Y,
+				// Window.Right - Target.Right
+				(windowBoundsInCoreWindowSpace.X + windowBoundsInCoreWindowSpace.Width) - (m_currentTargetBoundsInCoreWindowSpace.X + m_currentTargetBoundsInCoreWindowSpace.Width),
+				// Screen.Right - Target.Right
+				(windowBoundsInCoreWindowSpace.Y + windowBoundsInCoreWindowSpace.Height) - (m_currentTargetBoundsInCoreWindowSpace.Y + m_currentTargetBoundsInCoreWindowSpace.Height));
+
+			Thickness GetScreenSpaceAroundTarget(Rect screenBoundsInCoreWindowSpace, Thickness windowSpaceAroundTarget)
+			{
+				if (!ShouldConstrainToRootBounds)
+				{
+					return new Thickness(
+						// Target.Left - Screen.Left
+						m_currentTargetBoundsInCoreWindowSpace.X - screenBoundsInCoreWindowSpace.X,
+						// Target.Top - Screen.Top
+						m_currentTargetBoundsInCoreWindowSpace.Y - screenBoundsInCoreWindowSpace.Y,
+						// Screen.Right - Target.Right
+						(screenBoundsInCoreWindowSpace.X + screenBoundsInCoreWindowSpace.Width) - (m_currentTargetBoundsInCoreWindowSpace.X + m_currentTargetBoundsInCoreWindowSpace.Width),
+						// Screen.Bottom - Target.Bottom
+						(screenBoundsInCoreWindowSpace.Y + screenBoundsInCoreWindowSpace.Height) - (m_currentTargetBoundsInCoreWindowSpace.Y + m_currentTargetBoundsInCoreWindowSpace.Height));
+				}
+				return windowSpaceAroundTarget;
+			}
+
+			Thickness screenSpaceAroundTarget = GetScreenSpaceAroundTarget(screenBoundsInCoreWindowSpace, windowSpaceAroundTarget);
+
+			return Tuple.Create(windowSpaceAroundTarget, screenSpaceAroundTarget);
 		}
-	}
-	else
-	{
-		var windowBoundsInCoreWindowSpace = GetEffectiveWindowBoundsInCoreWindowSpace(windowBounds);
-		if (windowBoundsInCoreWindowSpace.Height > contentHeight && windowBoundsInCoreWindowSpace.Width > contentWidth)
+
+		private Rect GetEffectiveWindowBoundsInCoreWindowSpace(Rect windowBounds)
 		{
-			return Tuple.Create(TeachingTipPlacementMode.Bottom, false);
+			if (m_useTestWindowBounds)
+			{
+				return m_testWindowBoundsInCoreWindowSpace;
+			}
+			else
+			{
+				return new Rect(0, 0, windowBounds.Width, windowBounds.Height);
+			}
+
 		}
-	}
 
-	// The teaching tip doesn't fit in the window/screen set tipDoesNotFit to indicate that we should not open.
-	return Tuple.Create(TeachingTipPlacementMode.Top, true);
-}
-
-Tuple<Thickness, Thickness> DetermineSpaceAroundTarget()
-{
-	var shouldConstrainToRootBounds = ShouldConstrainToRootBounds;
-
-	var (windowBoundsInCoreWindowSpace, screenBoundsInCoreWindowSpace) = [this]()
-
-
-
-
-
-
-
-	{
-		var windowBounds = GetWindowBounds();
-		return Tuple.Create(GetEffectiveWindowBoundsInCoreWindowSpace(windowBounds),
-							   GetEffectiveScreenBoundsInCoreWindowSpace(windowBounds));
-	} ();
-
-
-	Thickness windowSpaceAroundTarget{
-		// Target.Left - Window.Left
-		m_currentTargetBoundsInCoreWindowSpace.X - /* 0 except with test window bounds */ windowBoundsInCoreWindowSpace.X,
-        // Target.Top - Window.Top
-        m_currentTargetBoundsInCoreWindowSpace.Y - /* 0 except with test window bounds */ windowBoundsInCoreWindowSpace.Y,
-        // Window.Right - Target.Right
-        (windowBoundsInCoreWindowSpace.X + windowBoundsInCoreWindowSpace.Width) - (m_currentTargetBoundsInCoreWindowSpace.X + m_currentTargetBoundsInCoreWindowSpace.Width),
-        // Screen.Right - Target.Right
-        (windowBoundsInCoreWindowSpace.Y + windowBoundsInCoreWindowSpace.Height) - (m_currentTargetBoundsInCoreWindowSpace.Y + m_currentTargetBoundsInCoreWindowSpace.Height) };
-
-
-	Thickness screenSpaceAroundTarget = [this, screenBoundsInCoreWindowSpace, windowSpaceAroundTarget]()
-
-
-
-
-
-
-
-	{
-		if (!ShouldConstrainToRootBounds())
+		private Rect GetEffectiveScreenBoundsInCoreWindowSpace(Rect windowBounds)
 		{
-			return Thickness{
-				// Target.Left - Screen.Left
-				m_currentTargetBoundsInCoreWindowSpace.X - screenBoundsInCoreWindowSpace.X,
-                // Target.Top - Screen.Top
-                m_currentTargetBoundsInCoreWindowSpace.Y - screenBoundsInCoreWindowSpace.Y,
-                // Screen.Right - Target.Right
-                (screenBoundsInCoreWindowSpace.X + screenBoundsInCoreWindowSpace.Width) - (m_currentTargetBoundsInCoreWindowSpace.X + m_currentTargetBoundsInCoreWindowSpace.Width),
-                // Screen.Bottom - Target.Bottom
-                (screenBoundsInCoreWindowSpace.Y + screenBoundsInCoreWindowSpace.Height) - (m_currentTargetBoundsInCoreWindowSpace.Y + m_currentTargetBoundsInCoreWindowSpace.Height) };
+			if (!m_useTestScreenBounds && !ShouldConstrainToRootBounds)
+			{
+				if (m_returnTopForOutOfWindowPlacement)
+				{
+					throw new InvalidOperationException("When returnTopForOutOfWindowPlacement is true we will never need to get the screen bounds");
+				}
+
+				var displayInfo = DisplayInformation.GetForCurrentView();
+				var scaleFactor = displayInfo.RawPixelsPerViewPixel;
+				return new Rect(
+					-windowBounds.X,
+					-windowBounds.Y,
+					displayInfo.ScreenHeightInRawPixels / (float)(scaleFactor),
+					displayInfo.ScreenWidthInRawPixels / (float)(scaleFactor));
+			}
+			return m_testScreenBoundsInCoreWindowSpace;
 		}
-		return windowSpaceAroundTarget;
-	} ();
 
-	return Tuple.Create(windowSpaceAroundTarget, screenSpaceAroundTarget);
-}
-
-private Rect GetEffectiveWindowBoundsInCoreWindowSpace(Rect windowBounds)
-{
-	if (m_useTestWindowBounds)
-	{
-		return m_testWindowBoundsInCoreWindowSpace;
-	}
-	else
-	{
-		return new Rect(0, 0, windowBounds.Width, windowBounds.Height);
-	}
-
-}
-
-private Rect GetEffectiveScreenBoundsInCoreWindowSpace(Rect windowBounds)
-{
-	if (!m_useTestScreenBounds && !ShouldConstrainToRootBounds)
-	{
-		MUX_ASSERT_MSG(!m_returnTopForOutOfWindowPlacement, "When returnTopForOutOfWindowPlacement is true we will never need to get the screen bounds");
-		var displayInfo = DisplayInformation.GetForCurrentView();
-		var scaleFactor = displayInfo.RawPixelsPerViewPixel;
-		return new Rect(
-			-windowBounds.X,
-			-windowBounds.Y,
-			displayInfo.ScreenHeightInRawPixels / (float)(scaleFactor),
-			displayInfo.ScreenWidthInRawPixels / (float)(scaleFactor));
-	}
-	return m_testScreenBoundsInCoreWindowSpace;
-}
-
-private Rect GetWindowBounds()
-{
-	UIElement uiElement10 = this;
-	if (uiElement10 != null)
-	{
-		var xamlRoot = uiElement10.XamlRoot;
-		if (xamlRoot != null)
+		private Rect GetWindowBounds()
 		{
-			return new Rect(0, 0, xamlRoot.Size.Width, xamlRoot.Size.Height);
+			UIElement uiElement10 = this;
+			if (uiElement10 != null)
+			{
+				var xamlRoot = uiElement10.XamlRoot;
+				if (xamlRoot != null)
+				{
+					return new Rect(0, 0, xamlRoot.Size.Width, xamlRoot.Size.Height);
+				}
+			}
+			return Windows.UI.Xaml.Window.Current.CoreWindow.Bounds;
 		}
-	}
-	return Windows.UI.Xaml.Window.Current.CoreWindow.Bounds;
-}
 
-private TeachingTipPlacementMode[] GetPlacementFallbackOrder(TeachingTipPlacementMode preferredPlacement)
-{
-	var priorityList = new TeachingTipPlacementMode[13];
-	priorityList[0] = TeachingTipPlacementMode.Top;
-	priorityList[1] = TeachingTipPlacementMode.Bottom;
-	priorityList[2] = TeachingTipPlacementMode.Left;
-	priorityList[3] = TeachingTipPlacementMode.Right;
-	priorityList[4] = TeachingTipPlacementMode.TopLeft;
-	priorityList[5] = TeachingTipPlacementMode.TopRight;
-	priorityList[6] = TeachingTipPlacementMode.BottomLeft;
-	priorityList[7] = TeachingTipPlacementMode.BottomRight;
-	priorityList[8] = TeachingTipPlacementMode.LeftTop;
-	priorityList[9] = TeachingTipPlacementMode.LeftBottom;
-	priorityList[10] = TeachingTipPlacementMode.RightTop;
-	priorityList[11] = TeachingTipPlacementMode.RightBottom;
-	priorityList[12] = TeachingTipPlacementMode.Center;
+		private TeachingTipPlacementMode[] GetPlacementFallbackOrder(TeachingTipPlacementMode preferredPlacement)
+		{
+			var priorityList = new TeachingTipPlacementMode[13];
+			priorityList[0] = TeachingTipPlacementMode.Top;
+			priorityList[1] = TeachingTipPlacementMode.Bottom;
+			priorityList[2] = TeachingTipPlacementMode.Left;
+			priorityList[3] = TeachingTipPlacementMode.Right;
+			priorityList[4] = TeachingTipPlacementMode.TopLeft;
+			priorityList[5] = TeachingTipPlacementMode.TopRight;
+			priorityList[6] = TeachingTipPlacementMode.BottomLeft;
+			priorityList[7] = TeachingTipPlacementMode.BottomRight;
+			priorityList[8] = TeachingTipPlacementMode.LeftTop;
+			priorityList[9] = TeachingTipPlacementMode.LeftBottom;
+			priorityList[10] = TeachingTipPlacementMode.RightTop;
+			priorityList[11] = TeachingTipPlacementMode.RightBottom;
+			priorityList[12] = TeachingTipPlacementMode.Center;
 
 
-	if (IsPlacementBottom(preferredPlacement))
-	{
-		// Swap to bottom > top
-		(priorityList[1], priorityList[0]) = (priorityList[0], priorityList[1]);
-		(priorityList[6], priorityList[4]) = (priorityList[4], priorityList[6]);
-		(priorityList[7], priorityList[5]) = (priorityList[5], priorityList[7]);
-	}
-	else if (IsPlacementLeft(preferredPlacement))
-	{
-		// swap to lateral > vertical
-		(priorityList[2], priorityList[0]) = (priorityList[0], priorityList[2]);
-		(priorityList[3], priorityList[1]) = (priorityList[1], priorityList[3]);
-		(priorityList[8], priorityList[4]) = (priorityList[4], priorityList[8]);
-		(priorityList[9], priorityList[5]) = (priorityList[5], priorityList[9]);
-		(priorityList[10], priorityList[6]) = (priorityList[6], priorityList[10]);
-		(priorityList[11], priorityList[7]) = (priorityList[7], priorityList[11]);
-	}
-	else if (IsPlacementRight(preferredPlacement))
-	{
-		// swap to lateral > vertical
-		(priorityList[2], priorityList[0]) = (priorityList[0], priorityList[2]);
-		(priorityList[3], priorityList[1]) = (priorityList[1], priorityList[3]);
-		(priorityList[8], priorityList[4]) = (priorityList[4], priorityList[8]);
-		(priorityList[9], priorityList[5]) = (priorityList[5], priorityList[9]);
-		(priorityList[10], priorityList[6]) = (priorityList[6], priorityList[10]);
-		(priorityList[11], priorityList[7]) = (priorityList[7], priorityList[11]);
+			if (IsPlacementBottom(preferredPlacement))
+			{
+				// Swap to bottom > top
+				(priorityList[1], priorityList[0]) = (priorityList[0], priorityList[1]);
+				(priorityList[6], priorityList[4]) = (priorityList[4], priorityList[6]);
+				(priorityList[7], priorityList[5]) = (priorityList[5], priorityList[7]);
+			}
+			else if (IsPlacementLeft(preferredPlacement))
+			{
+				// swap to lateral > vertical
+				(priorityList[2], priorityList[0]) = (priorityList[0], priorityList[2]);
+				(priorityList[3], priorityList[1]) = (priorityList[1], priorityList[3]);
+				(priorityList[8], priorityList[4]) = (priorityList[4], priorityList[8]);
+				(priorityList[9], priorityList[5]) = (priorityList[5], priorityList[9]);
+				(priorityList[10], priorityList[6]) = (priorityList[6], priorityList[10]);
+				(priorityList[11], priorityList[7]) = (priorityList[7], priorityList[11]);
+			}
+			else if (IsPlacementRight(preferredPlacement))
+			{
+				// swap to lateral > vertical
+				(priorityList[2], priorityList[0]) = (priorityList[0], priorityList[2]);
+				(priorityList[3], priorityList[1]) = (priorityList[1], priorityList[3]);
+				(priorityList[8], priorityList[4]) = (priorityList[4], priorityList[8]);
+				(priorityList[9], priorityList[5]) = (priorityList[5], priorityList[9]);
+				(priorityList[10], priorityList[6]) = (priorityList[6], priorityList[10]);
+				(priorityList[11], priorityList[7]) = (priorityList[7], priorityList[11]);
 
-		// swap to right > left
-		(priorityList[1], priorityList[0]) = (priorityList[0], priorityList[1]);
-		(priorityList[6], priorityList[4]) = (priorityList[4], priorityList[6]);
-		(priorityList[7], priorityList[5]) = (priorityList[5], priorityList[7]);
-	}
+				// swap to right > left
+				(priorityList[1], priorityList[0]) = (priorityList[0], priorityList[1]);
+				(priorityList[6], priorityList[4]) = (priorityList[4], priorityList[6]);
+				(priorityList[7], priorityList[5]) = (priorityList[5], priorityList[7]);
+			}
 
-	//Switch the preferred placement to first.
-	var pivot = std.find_if(priorityList.begin(),
-		priorityList.end(),
+			//Switch the preferred placement to first.
+			var pivotPosition = priorityList.IndexOf(preferredPlacement);
 
+			if (pivotPosition > 0)
+			{
+				//TODO:MZ: Verify this logic
+				priorityList = priorityList
+					.Skip(pivotPosition)
+					.Concat(priorityList.Take(pivotPosition))
+					.ToArray();
+			}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		[preferredPlacement](TeachingTipPlacementMode mode). bool {
-		return mode == preferredPlacement;
-	});
-if (pivot != priorityList.end())
-{
-	std.rotate(priorityList.begin(), pivot, pivot + 1);
-}
-
-return priorityList;
+			return priorityList;
 		}
 
 
 		void EstablishShadows()
-{
-	UIElement m_contentRootGrid_uiElement10 = m_contentRootGrid;
-	if (m_contentRootGrid_uiElement10 != null)
-	{
-		if (m_tipShouldHaveShadow)
 		{
-			if (m_contentRootGrid_uiElement10.Shadow == null)
+			UIElement m_contentRootGrid_uiElement10 = m_contentRootGrid;
+			if (m_contentRootGrid_uiElement10 != null)
 			{
-				m_contentRootGrid_uiElement10.Shadow = new ThemeShadow();
+				if (m_tipShouldHaveShadow)
+				{
+					if (m_contentRootGrid_uiElement10.Shadow == null)
+					{
+						m_contentRootGrid_uiElement10.Shadow = new ThemeShadow();
+						var contentRootGrid = m_contentRootGrid;
+						if (contentRootGrid != null)
+						{
+							var contentRootGridTranslation = contentRootGrid.Translation;
+							contentRootGrid.Translation = new Vector3(contentRootGridTranslation.X, contentRootGridTranslation.Y, m_contentElevation);
+						}
+					}
+				}
+				else
+				{
+					m_contentRootGrid_uiElement10.Shadow = null;
+				}
+			}
+		}
+
+		private void TrySetCenterPoint(UIElement element, Vector3 centerPoint)
+		{
+			if (element != null)
+			{
+				element.CenterPoint = centerPoint;
+			}
+		}
+
+		private float TailLongSideActualLength()
+		{
+			var tailPolygon = m_tailPolygon;
+			if (tailPolygon != null)
+			{
+				return (float)(Math.Max(tailPolygon.ActualHeight, tailPolygon.ActualWidth));
+			}
+			return 0;
+		}
+
+		private float TailLongSideLength()
+		{
+			return (float)(TailLongSideActualLength() - (2 * s_tailOcclusionAmount));
+		}
+
+		private float TailShortSideLength()
+		{
+			var tailPolygon = m_tailPolygon;
+			if (tailPolygon != null)
+			{
+				return (float)(Math.Min(tailPolygon.ActualHeight, tailPolygon.ActualWidth) - s_tailOcclusionAmount);
+			}
+			return 0;
+		}
+
+		private float MinimumTipEdgeToTailEdgeMargin()
+		{
+			var tailOcclusionGrid = m_tailOcclusionGrid;
+			if (tailOcclusionGrid != null)
+			{
+				return tailOcclusionGrid.ColumnDefinitions.Count > 1 ?
+					(float)(tailOcclusionGrid.ColumnDefinitions[1].ActualWidth + s_tailOcclusionAmount)
+					: 0.0f;
+			}
+			return 0;
+		}
+
+		private float MinimumTipEdgeToTailCenter()
+		{
+			var tailOcclusionGrid = m_tailOcclusionGrid;
+			if (tailOcclusionGrid != null)
+			{
+				var tailPolygon = m_tailPolygon;
+				if (tailPolygon != null)
+				{
+					return tailOcclusionGrid.ColumnDefinitions.Count > 1 ?
+						(float)(tailOcclusionGrid.ColumnDefinitions[0].ActualWidth +
+							tailOcclusionGrid.ColumnDefinitions[1].ActualWidth +
+							(Math.Max(tailPolygon.ActualHeight, tailPolygon.ActualWidth) / 2))
+						: 0.0f;
+				}
+			}
+			return 0;
+		}
+
+		////////////////
+		// Test Hooks //
+		////////////////
+		internal void SetExpandEasingFunction(CompositionEasingFunction easingFunction)
+		{
+			m_expandEasingFunction = easingFunction;
+			CreateExpandAnimation();
+		}
+
+		internal void SetContractEasingFunction(CompositionEasingFunction easingFunction)
+		{
+			m_contractEasingFunction = easingFunction;
+			CreateContractAnimation();
+		}
+
+		internal void SetTipShouldHaveShadow(bool tipShouldHaveShadow)
+		{
+			if (m_tipShouldHaveShadow != tipShouldHaveShadow)
+			{
+				m_tipShouldHaveShadow = tipShouldHaveShadow;
+				EstablishShadows();
+			}
+		}
+
+		internal void SetContentElevation(float elevation)
+		{
+			m_contentElevation = elevation;
+			if (SharedHelpers.IsRS5OrHigher())
+			{
 				var contentRootGrid = m_contentRootGrid;
 				if (contentRootGrid != null)
 				{
 					var contentRootGridTranslation = contentRootGrid.Translation;
-					contentRootGrid.Translation = new Vector3(contentRootGridTranslation.X, contentRootGridTranslation.Y, m_contentElevation);
+					m_contentRootGrid.Translation = new Vector3(contentRootGridTranslation.X, contentRootGridTranslation.Y, m_contentElevation);
+				}
+				if (m_expandElevationAnimation != null)
+				{
+					m_expandElevationAnimation.SetScalarParameter("contentElevation", m_contentElevation);
 				}
 			}
 		}
-		else
+
+		internal void SetTailElevation(float elevation)
 		{
-			m_contentRootGrid_uiElement10.Shadow = null;
-		}
-	}
-}
-
-private void TrySetCenterPoint(UIElement element, Vector3 centerPoint)
-{
-	if (element != null)
-	{
-		element.CenterPoint = centerPoint;
-	}
-}
-
-private void OnPropertyChanged(
-	 DependencyObject sender,
-	 DependencyPropertyChangedEventArgs args)
-{
-	((TeachingTip)sender).OnPropertyChanged(args);
-}
-
-private float TailLongSideActualLength()
-{
-	var tailPolygon = m_tailPolygon;
-	if (tailPolygon != null)
-	{
-		return (float)(Math.Max(tailPolygon.ActualHeight, tailPolygon.ActualWidth));
-	}
-	return 0;
-}
-
-private float TailLongSideLength()
-{
-	return (float)(TailLongSideActualLength() - (2 * s_tailOcclusionAmount));
-}
-
-private float TailShortSideLength()
-{
-	var tailPolygon = m_tailPolygon;
-	if (tailPolygon != null)
-	{
-		return (float)(Math.Min(tailPolygon.ActualHeight, tailPolygon.ActualWidth) - s_tailOcclusionAmount);
-	}
-	return 0;
-}
-
-private float MinimumTipEdgeToTailEdgeMargin()
-{
-	var tailOcclusionGrid = m_tailOcclusionGrid;
-	if (tailOcclusionGrid != null)
-	{
-		return tailOcclusionGrid.ColumnDefinitions.Count > 1 ?
-			(float)(tailOcclusionGrid.ColumnDefinitions[1].ActualWidth + s_tailOcclusionAmount)
-			: 0.0f;
-	}
-	return 0;
-}
-
-private float MinimumTipEdgeToTailCenter()
-{
-	var tailOcclusionGrid = m_tailOcclusionGrid;
-	if (tailOcclusionGrid != null)
-	{
-		var tailPolygon = m_tailPolygon;
-		if (tailPolygon != null)
-		{
-			return tailOcclusionGrid.ColumnDefinitions.Count > 1 ?
-				(float)(tailOcclusionGrid.ColumnDefinitions[0].ActualWidth +
-					tailOcclusionGrid.ColumnDefinitions[1].ActualWidth +
-					(Math.Max(tailPolygon.ActualHeight, tailPolygon.ActualWidth) / 2))
-				: 0.0f;
-		}
-	}
-	return 0;
-}
-
-////////////////
-// Test Hooks //
-////////////////
-private void SetExpandEasingFunction(CompositionEasingFunction easingFunction)
-{
-	m_expandEasingFunction = easingFunction;
-	CreateExpandAnimation();
-}
-
-private void SetContractEasingFunction(CompositionEasingFunction easingFunction)
-{
-	m_contractEasingFunction = easingFunction;
-	CreateContractAnimation();
-}
-
-private void SetTipShouldHaveShadow(bool tipShouldHaveShadow)
-{
-	if (m_tipShouldHaveShadow != tipShouldHaveShadow)
-	{
-		m_tipShouldHaveShadow = tipShouldHaveShadow;
-		EstablishShadows();
-	}
-}
-
-private void SetContentElevation(float elevation)
-{
-	m_contentElevation = elevation;
-	if (SharedHelpers.IsRS5OrHigher())
-	{
-		var contentRootGrid = m_contentRootGrid;
-		if (contentRootGrid != null)
-		{
-			var contentRootGridTranslation = contentRootGrid.Translation;
-			m_contentRootGrid.Translation = new Vector3(contentRootGridTranslation.X, contentRootGridTranslation.Y, m_contentElevation);
-		}
-		if (m_expandElevationAnimation != null)
-		{
-			m_expandElevationAnimation.SetScalarParameter("contentElevation", m_contentElevation);
-		}
-	}
-}
-
-private void SetTailElevation(float elevation)
-{
-	m_tailElevation = elevation;
-	if (SharedHelpers.IsRS5OrHigher() && m_tailPolygon != null)
-	{
-		var tailPolygon = m_tailPolygon;
-		if (tailPolygon != null)
-		{
-			var tailPolygonTranslation = tailPolygon.Translation;
-			tailPolygon.Translation = new Vector3(tailPolygonTranslation.X, tailPolygonTranslation.Y, m_tailElevation);
-		}
-	}
-}
-
-private void SetUseTestWindowBounds(bool useTestWindowBounds)
-{
-	m_useTestWindowBounds = useTestWindowBounds;
-}
-
-private void SetTestWindowBounds(Rect testWindowBounds)
-{
-	m_testWindowBoundsInCoreWindowSpace = testWindowBounds;
-}
-
-private void SetUseTestScreenBounds(bool useTestScreenBounds)
-{
-	m_useTestScreenBounds = useTestScreenBounds;
-}
-
-private void SetTestScreenBounds(Rect testScreenBounds)
-{
-	m_testScreenBoundsInCoreWindowSpace = testScreenBounds;
-}
-
-private void SetTipFollowsTarget(bool tipFollowsTarget)
-{
-	if (m_tipFollowsTarget != tipFollowsTarget)
-	{
-		m_tipFollowsTarget = tipFollowsTarget;
-		if (tipFollowsTarget)
-		{
-			var target = m_target;
-			if (target != null)
+			m_tailElevation = elevation;
+			if (SharedHelpers.IsRS5OrHigher() && m_tailPolygon != null)
 			{
-				SetViewportChangedEvent(gsl.make_strict_not_null(target));
+				var tailPolygon = m_tailPolygon;
+				if (tailPolygon != null)
+				{
+					var tailPolygonTranslation = tailPolygon.Translation;
+					tailPolygon.Translation = new Vector3(tailPolygonTranslation.X, tailPolygonTranslation.Y, m_tailElevation);
+				}
 			}
 		}
-		else
+
+		internal void SetUseTestWindowBounds(bool useTestWindowBounds)
 		{
-			RevokeViewportChangedEvent();
+			m_useTestWindowBounds = useTestWindowBounds;
 		}
-	}
-}
 
-private void SetReturnTopForOutOfWindowPlacement(bool returnTopForOutOfWindowPlacement)
-{
-	m_returnTopForOutOfWindowPlacement = returnTopForOutOfWindowPlacement;
-}
+		internal void SetTestWindowBounds(Rect testWindowBounds)
+		{
+			m_testWindowBoundsInCoreWindowSpace = testWindowBounds;
+		}
 
-private void SetExpandAnimationDuration(TimeSpan expandAnimationDuration)
-{
-	m_expandAnimationDuration = expandAnimationDuration;
-	var expandAnimation = m_expandAnimation;
-	if (expandAnimation != null)
-	{
-		expandAnimation.Duration = m_expandAnimationDuration;
-	}
-	var expandElevationAnimation = m_expandElevationAnimation;
-	if (expandElevationAnimation != null)
-	{
-		expandElevationAnimation.Duration = m_expandAnimationDuration;
-	}
-}
+		internal void SetUseTestScreenBounds(bool useTestScreenBounds)
+		{
+			m_useTestScreenBounds = useTestScreenBounds;
+		}
 
-private void SetContractAnimationDuration(TimeSpan contractAnimationDuration)
-{
-	m_contractAnimationDuration = contractAnimationDuration;
-	var contractAnimation = m_contractAnimation;
-	if (contractAnimation != null)
-	{
-		contractAnimation.Duration = m_contractAnimationDuration;
-	}
-	var contractElevationAnimation = m_contractElevationAnimation;
-	if (contractElevationAnimation != null)
-	{
-		contractElevationAnimation.Duration = m_contractAnimationDuration;
-	}
-}
+		internal void SetTestScreenBounds(Rect testScreenBounds)
+		{
+			m_testScreenBoundsInCoreWindowSpace = testScreenBounds;
+		}
 
-private bool GetIsIdle()
-{
-	return m_isIdle;
-}
+		internal void SetTipFollowsTarget(bool tipFollowsTarget)
+		{
+			if (m_tipFollowsTarget != tipFollowsTarget)
+			{
+				m_tipFollowsTarget = tipFollowsTarget;
+				if (tipFollowsTarget)
+				{
+					var target = m_target;
+					if (target != null)
+					{
+						SetViewportChangedEvent(target);
+					}
+				}
+				else
+				{
+					RevokeViewportChangedEvent();
+				}
+			}
+		}
 
-private void SetIsIdle(bool isIdle)
-{
-	if (m_isIdle != isIdle)
-	{
-		m_isIdle = isIdle;
-		TeachingTipTestHooks.NotifyIdleStatusChanged(this);
-	}
-}
+		internal void SetReturnTopForOutOfWindowPlacement(bool returnTopForOutOfWindowPlacement)
+		{
+			m_returnTopForOutOfWindowPlacement = returnTopForOutOfWindowPlacement;
+		}
 
-private TeachingTipPlacementMode GetEffectivePlacement()
-{
-	return m_currentEffectiveTipPlacementMode;
-}
+		internal void SetExpandAnimationDuration(TimeSpan expandAnimationDuration)
+		{
+			m_expandAnimationDuration = expandAnimationDuration;
+			var expandAnimation = m_expandAnimation;
+			if (expandAnimation != null)
+			{
+				expandAnimation.Duration = m_expandAnimationDuration;
+			}
+			var expandElevationAnimation = m_expandElevationAnimation;
+			if (expandElevationAnimation != null)
+			{
+				expandElevationAnimation.Duration = m_expandAnimationDuration;
+			}
+		}
 
-private TeachingTipHeroContentPlacementMode GetEffectiveHeroContentPlacement()
-{
-	return m_currentHeroContentEffectivePlacementMode;
-}
+		internal void SetContractAnimationDuration(TimeSpan contractAnimationDuration)
+		{
+			m_contractAnimationDuration = contractAnimationDuration;
+			var contractAnimation = m_contractAnimation;
+			if (contractAnimation != null)
+			{
+				contractAnimation.Duration = m_contractAnimationDuration;
+			}
+			var contractElevationAnimation = m_contractElevationAnimation;
+			if (contractElevationAnimation != null)
+			{
+				contractElevationAnimation.Duration = m_contractAnimationDuration;
+			}
+		}
 
-private double GetHorizontalOffset()
-{
-	var popup = m_popup;
-	if (popup != null)
-	{
-		return popup.HorizontalOffset;
-	}
-	return 0.0;
-}
+		internal bool GetIsIdle()
+		{
+			return m_isIdle;
+		}
 
-private double GetVerticalOffset()
-{
-	var popup = m_popup;
-	if (popup != null)
-	{
-		return popup.VerticalOffset;
-	}
-	return 0.0;
-}
+		private void SetIsIdle(bool isIdle)
+		{
+			if (m_isIdle != isIdle)
+			{
+				m_isIdle = isIdle;
+				TeachingTipTestHooks.NotifyIdleStatusChanged(this);
+			}
+		}
 
-private Visibility GetTitleVisibility()
-{
-	var titleTextBox = m_titleTextBox;
-	if (titleTextBox != null)
-	{
-		return titleTextBox.Visibility;
-	}
-	return Visibility.Collapsed;
-}
+		internal TeachingTipPlacementMode GetEffectivePlacement()
+		{
+			return m_currentEffectiveTipPlacementMode;
+		}
 
-private Visibility GetSubtitleVisibility()
-{
-	var subtitleTextBox = m_subtitleTextBox;
-	if (subtitleTextBox != null)
-	{
-		return subtitleTextBox.Visibility;
-	}
-	return Visibility.Collapsed;
-}
+		internal TeachingTipHeroContentPlacementMode GetEffectiveHeroContentPlacement()
+		{
+			return m_currentHeroContentEffectivePlacementMode;
+		}
 
-//void UpdatePopupRequestedTheme()
-//{
-//	// The way that TeachingTip reparents its content tree breaks ElementTheme calculations. Hook up a listener to
-//	// ActualTheme on the TeachingTip and then set the Popup's RequestedTheme to match when it changes.
+		internal double GetHorizontalOffset()
+		{
+			var popup = m_popup;
+			if (popup != null)
+			{
+				return popup.HorizontalOffset;
+			}
+			return 0.0;
+		}
 
-//	if (FrameworkElement6 frameworkElement6 = this)
-//  {
-//		if (!m_actualThemeChangedRevoker)
-//		{
-//			m_actualThemeChangedRevoker = frameworkElement6.ActualThemeChanged(auto_revoke,
+		internal double GetVerticalOffset()
+		{
+			var popup = m_popup;
+			if (popup != null)
+			{
+				return popup.VerticalOffset;
+			}
+			return 0.0;
+		}
 
+		internal Visibility GetTitleVisibility()
+		{
+			var titleTextBox = m_titleTextBox;
+			if (titleTextBox != null)
+			{
+				return titleTextBox.Visibility;
+			}
+			return Visibility.Collapsed;
+		}
 
-//				[this](auto &&, auto &&) { UpdatePopupRequestedTheme(); });
-//		}
+		internal Visibility GetSubtitleVisibility()
+		{
+			var subtitleTextBox = m_subtitleTextBox;
+			if (subtitleTextBox != null)
+			{
+				return subtitleTextBox.Visibility;
+			}
+			return Visibility.Collapsed;
+		}
 
-//		if (var popup = m_popup)
-//      {
-//			popup.RequestedTheme(frameworkElement6.ActualTheme());
-//		}
-//	}
-//}
+		private void UpdatePopupRequestedTheme()
+		{
+			// The way that TeachingTip reparents its content tree breaks ElementTheme calculations. Hook up a listener to
+			// ActualTheme on the TeachingTip and then set the Popup's RequestedTheme to match when it changes.
+			FrameworkElement frameworkElement6 = this;
+			if (frameworkElement6 != null)
+			{
+				// Uno specific - instead of a revoker, use boolean flag to check if event handler was attached
+				if (!m_actualThemeChangedAttached)
+				{
+					frameworkElement6.ActualThemeChanged += OnActualThemeChanged;
+					m_actualThemeChangedAttached = true;
+				}
 
+				var popup = m_popup;
+				if (popup != null)
+				{
+					popup.RequestedTheme = frameworkElement6.ActualTheme;
+				}
+			}
+		}
 
-//private void UpdatePopupRequestedTheme()
-//{
-//	// The way that TeachingTip reparents its content tree breaks ElementTheme calculations. Hook up a listener to
-//	// ActualTheme on the TeachingTip and then set the Popup's RequestedTheme to match when it changes.
-//	FrameworkElement frameworkElement6 = this;
-//	if (frameworkElement6 != null)
-//	{
-//		// Uno specific - instead of a revoker, use boolean flag to check if event handler was attached
-//		if (!m_actualThemeChangedAttached)
-//		{
-//			frameworkElement6.ActualThemeChanged += OnActualThemeChanged;
-//			m_actualThemeChangedAttached = true;
-//		}
+		// Uno specific - use a method instead of lambda to allow unhooking the event
 
-//		var popup = m_popup;
-//		if (popup != null)
-//		{
-//			popup.RequestedTheme = frameworkElement6.ActualTheme;
-//		}
-//	}
-//}
+		private bool m_actualThemeChangedAttached = false;
 
-// Uno specific - use a method instead of lambda to allow unhooking the event
-
-private bool m_actualThemeChangedAttached = false;
-
-private void OnActualThemeChanged(object sender, object args)
-{
-	UpdatePopupRequestedTheme();
-}
+		private void OnActualThemeChanged(object sender, object args)
+		{
+			UpdatePopupRequestedTheme();
+		}
 	}
 }

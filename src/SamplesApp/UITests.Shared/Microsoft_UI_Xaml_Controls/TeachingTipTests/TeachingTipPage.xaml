@@ -1,7 +1,8 @@
-﻿<Page
+﻿<utilities:MUXTestPage
     x:Class="UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests.TeachingTipPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:utilities="using:MUXControlsTestApp.Utilities"
     xmlns:local="using:MUXControlsTestApp"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -275,8 +276,8 @@
 						<TextBlock Grid.Row="33" Grid.ColumnSpan="2" Text="----------Automation Properties----------" Foreground="Red"/>
 
 						<TextBlock Grid.Row="34" Text="AutomationName:" Foreground="Red"/>
-						<TextBlock Grid.Row="35" Grid.Column="0" Text="{x:Bind TeachingTipInVisualTree.(AutomationProperties.Name), Mode=OneWay}" FontSize="8"/>
-						<TextBlock Grid.Row="35" Grid.Column="1" Text="{x:Bind TeachingTipInResources.(AutomationProperties.Name), Mode=OneWay}" FontSize="8"/>
+						<!--<TextBlock Grid.Row="35" Grid.Column="0" Text="{x:Bind TeachingTipInVisualTree.(AutomationProperties.Name), Mode=OneWay}" FontSize="8"/>-->
+						<!--<TextBlock Grid.Row="35" Grid.Column="1" Text="{x:Bind TeachingTipInResources.(AutomationProperties.Name), Mode=OneWay}" FontSize="8"/>-->
 						<ComboBox x:Name="AutomationNameComboBox" AutomationProperties.Name="AutomationNameComboBox" Grid.Row="36" SelectedIndex="0">
 							<ComboBoxItem x:Name="AutomationNameVisualTree">TeachingTipInVisualTree</ComboBoxItem>
 							<ComboBoxItem x:Name="AutomationNameResources">TeachingTipInResources</ComboBoxItem>
@@ -610,4 +611,4 @@
 			</Button>
 		</Grid>
 	</Grid>
-</Page>
+</utilities:MUXTestPage>
