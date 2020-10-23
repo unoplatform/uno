@@ -29,7 +29,7 @@ using TeachingTipHeroContentPlacementMode = Microsoft.UI.Xaml.Controls.TeachingT
 using TeachingTipPlacementMode = Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode;
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 using Uno.UI.Samples.Controls;
-using Popup = Windows.UI.Xaml.Controls.Popup;
+using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
 using MUXControlsTestApp.Utilities;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests
