@@ -88,7 +88,7 @@ namespace Uno.UI.Controls
 		///      "Invoked when the mouse pointer enters the destination’s bounds rectangle (if it is a view object)
 		///       or its frame rectangle (if it is a window object). "
 		///      https://developer.apple.com/documentation/appkit/nsdraggingdestination/1416019-draggingentered
-		///  (4) In legacy macOS docs this is a little more explitly stated:
+		///  (4) In legacy macOS docs this is a little more explicitly stated:
 		///      https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/DragandDrop/Concepts/dragdestination.html#//apple_ref/doc/uid/20000977-BAJBJFBG
 		///  (5) Other macOS drag/drop articles and blogs refer to dragging/dropping directly from Window - although
 		///      give no examples.

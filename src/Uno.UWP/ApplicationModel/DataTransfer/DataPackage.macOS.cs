@@ -60,7 +60,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		 *
 		 * --- macOS to UWP ---
 		 *
-		 * A macOS URL must be specially mapped for UWP as the UWP's direct equivalent 
+		 * A macOS URL must be specially mapped for UWP as UWP's direct equivalent 
 		 * standard data format 'Uri' is deprecated.
 		 *
 		 * 1. WebLink is used if the macOS URL has a scheme of http or https 
@@ -76,7 +76,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		/// Sets the contents of the <see cref="DataPackage"/> to the native clipboard.
 		/// Any conversion between supported standard types is done automatically.
 		/// </summary>
-		/// <param name="content">The contents to set to the native cipboard.</param>
+		/// <param name="content">The contents to set to the native clipboard.</param>
 		internal static void SetToNativeClipboard(DataPackage content)
 		{
 			SetToNative(content, NSPasteboard.GeneralPasteboard);
@@ -86,7 +86,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		/// Asynchronously sets the contents of the <see cref="DataPackage"/> to the native clipboard.
 		/// Any conversion between supported standard types is done automatically.
 		/// </summary>
-		/// <param name="content">The contents to set to the native cipboard.</param>
+		/// <param name="content">The contents to set to the native clipboard.</param>
 		internal static Task SetToNativeClipboardAsync(DataPackage content)
 			=> SetToNativeAsync(content, NSPasteboard.GeneralPasteboard);
 
@@ -193,7 +193,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 				if (!string.IsNullOrEmpty(rtf))
 				{
-					// Use `NSPasteboardTypeRTF` instead of `NSPasteboardTypeRTFD` for max compatiblity
+					// Use `NSPasteboardTypeRTF` instead of `NSPasteboardTypeRTFD` for max compatibility
 					var pasteboardItem = new NSPasteboardItem();
 					pasteboardItem.SetStringForType(rtf, NSPasteboard.NSPasteboardTypeRTF);
 
@@ -314,7 +314,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			if (data?.Contains(StandardDataFormats.Rtf) ?? false)
 			{
-				// Use `NSPasteboardTypeRTF` instead of `NSPasteboardTypeRTFD` for max compatiblity
+				// Use `NSPasteboardTypeRTF` instead of `NSPasteboardTypeRTFD` for max compatibility
 				declaredTypes.Add(NSPasteboard.NSPasteboardTypeRTF);
 			}
 
@@ -395,7 +395,7 @@ namespace Windows.ApplicationModel.DataTransfer
 					item.Types.Contains(NSPasteboard.NSPasteboardTypePNG))
 				{
 					// Images may be very large, we never want to load them until they are needed.
-					// Therefore, create a data provider used to asyncronously fetch the image.
+					// Therefore, create a data provider used to asynchronously fetch the image.
 					dataPackage.SetDataProvider(
 						StandardDataFormats.Bitmap,
 						async cancellationToken =>
@@ -408,7 +408,7 @@ namespace Windows.ApplicationModel.DataTransfer
 							 * To get around this an image is read as follows:
 							 *   (1) If the pasteboard contains an image type then:
 							 *   (2) Attempt to read the image as an object (NSImage).
-							 *       This may fail as some tested apps provide a URL althouth declare an image (Photos).
+							 *       This may fail as some tested apps provide a URL although declare an image (Photos).
 							 *       With other apps (such as web browsers) an image will be read correctly here.
 							 *   (3) If reading as an NSImage object fails, attempt to read the image from a file URL (local images)
 							 *   (4) If reading from a file URL fails, attempt to read the image from a URL (remote images)
@@ -493,11 +493,11 @@ namespace Windows.ApplicationModel.DataTransfer
 
 				if (item.Types.Contains(NSPasteboard.NSPasteboardTypeFileUrl))
 				{
-					// Drag and drop will use temporary URL's similar to: file:///.file/id=1234567.1234567
+					// Drag and drop will use temporary URLs similar to: file:///.file/id=1234567.1234567
 					var tempFileUrl = item.GetStringForType(NSPasteboard.NSPasteboardTypeFileUrl);
 
 					// Files may be very large, we never want to load them until they are needed.
-					// Therefore, create a data provider used to asyncronously fetch the file.
+					// Therefore, create a data provider used to asynchronously fetch the file.
 					dataPackage.SetDataProvider(
 						StandardDataFormats.StorageItems,
 						async cancellationToken =>
