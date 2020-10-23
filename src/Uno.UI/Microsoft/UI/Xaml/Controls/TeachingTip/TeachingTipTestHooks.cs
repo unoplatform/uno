@@ -21,7 +21,7 @@ namespace Microsoft.UI.Private.Controls
 			// Not needed in Uno, we are using static singleton.
 		}
 
-		internal void SetExpandEasingFunction(TeachingTip teachingTip, CompositionEasingFunction easingFunction)
+		internal static void SetExpandEasingFunction(TeachingTip teachingTip, CompositionEasingFunction easingFunction)
 		{
 			if (teachingTip != null && easingFunction != null)
 			{
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		internal void SetContractEasingFunction(TeachingTip teachingTip, CompositionEasingFunction easingFunction)
+		internal static void SetContractEasingFunction(TeachingTip teachingTip, CompositionEasingFunction easingFunction)
 		{
 			if (teachingTip != null && easingFunction != null)
 			{
@@ -37,7 +37,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		internal void SetTipShouldHaveShadow(TeachingTip teachingTip, bool tipShouldHaveShadow)
+		internal static void SetTipShouldHaveShadow(TeachingTip teachingTip, bool tipShouldHaveShadow)
 		{
 			if (teachingTip != null)
 			{
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		internal void SetContentElevation(TeachingTip teachingTip, float elevation)
+		internal static void SetContentElevation(TeachingTip teachingTip, float elevation)
 		{
 			if (teachingTip != null)
 			{
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		internal void SetTailElevation(TeachingTip teachingTip, float elevation)
+		internal static void SetTailElevation(TeachingTip teachingTip, float elevation)
 		{
 			if (teachingTip != null)
 			{
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		internal void SetUseTestWindowBounds(TeachingTip teachingTip, bool useTestWindowBounds)
+		internal static void SetUseTestWindowBounds(TeachingTip teachingTip, bool useTestWindowBounds)
 		{
 			if (teachingTip != null)
 			{
@@ -69,7 +69,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		void SetTestWindowBounds(TeachingTip teachingTip, Rect testWindowBounds)
+		internal static void SetTestWindowBounds(TeachingTip teachingTip, Rect testWindowBounds)
 		{
 			if (teachingTip != null)
 			{
@@ -77,7 +77,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		void SetUseTestScreenBounds(TeachingTip teachingTip, bool useTestScreenBounds)
+		internal static void SetUseTestScreenBounds(TeachingTip teachingTip, bool useTestScreenBounds)
 		{
 			if (teachingTip != null)
 			{
@@ -85,7 +85,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		void SetTestScreenBounds(TeachingTip teachingTip, Rect testScreenBounds)
+		internal static void SetTestScreenBounds(TeachingTip teachingTip, Rect testScreenBounds)
 		{
 			if (teachingTip != null)
 			{
@@ -93,7 +93,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		void SetTipFollowsTarget(TeachingTip teachingTip, bool tipFollowsTarget)
+		internal static void SetTipFollowsTarget(TeachingTip teachingTip, bool tipFollowsTarget)
 		{
 			if (teachingTip != null)
 			{
@@ -101,7 +101,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		void SetReturnTopForOutOfWindowPlacement(TeachingTip teachingTip, bool returnTopForOutOfWindowPlacement)
+		internal static void SetReturnTopForOutOfWindowPlacement(TeachingTip teachingTip, bool returnTopForOutOfWindowPlacement)
 		{
 			if (teachingTip != null)
 			{
@@ -109,7 +109,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		void SetExpandAnimationDuration(TeachingTip teachingTip, TimeSpan expandAnimationDuration)
+		internal static void SetExpandAnimationDuration(TeachingTip teachingTip, TimeSpan expandAnimationDuration)
 		{
 			if (teachingTip != null)
 			{
@@ -117,7 +117,7 @@ namespace Microsoft.UI.Private.Controls
 			}
 		}
 
-		void SetContractAnimationDuration(TeachingTip teachingTip, TimeSpan contractAnimationDuration)
+		internal static void SetContractAnimationDuration(TeachingTip teachingTip, TimeSpan contractAnimationDuration)
 		{
 			if (teachingTip != null)
 			{
@@ -127,19 +127,19 @@ namespace Microsoft.UI.Private.Controls
 
 		internal static void NotifyOpenedStatusChanged(TeachingTip sender)
 		{
-			s_testHooks.OpenedStatusChanged?.Invoke(sender, null);
+			OpenedStatusChanged?.Invoke(sender, null);
 		}
 
-		internal event EventHandler? OpenedStatusChanged;
+		internal static event TypedEventHandler<TeachingTip, object?>? OpenedStatusChanged;
 
 		internal static void NotifyIdleStatusChanged(TeachingTip sender)
 		{
-			s_testHooks.IdleStatusChanged?.Invoke(sender, null);
+			IdleStatusChanged?.Invoke(sender, null);
 		}
 
-		internal event EventHandler? IdleStatusChanged;
+		internal static event TypedEventHandler<TeachingTip, object?>? IdleStatusChanged;
 
-		internal bool GetIsIdle(TeachingTip teachingTip)
+		internal static bool GetIsIdle(TeachingTip teachingTip)
 		{
 			if (teachingTip != null)
 			{
@@ -150,12 +150,12 @@ namespace Microsoft.UI.Private.Controls
 
 		internal static void NotifyEffectivePlacementChanged(TeachingTip sender)
 		{
-			s_testHooks.EffectivePlacementChanged?.Invoke(sender, null);
+			EffectivePlacementChanged?.Invoke(sender, null);
 		}
 
-		internal TypedEventHandler<TeachingTip, object> EffectivePlacementChanged;
+		internal static event TypedEventHandler<TeachingTip, object?>? EffectivePlacementChanged;
 
-		internal TeachingTipPlacementMode GetEffectivePlacement(TeachingTip teachingTip)
+		internal static TeachingTipPlacementMode GetEffectivePlacement(TeachingTip teachingTip)
 		{
 			if (teachingTip != null)
 			{
@@ -166,12 +166,12 @@ namespace Microsoft.UI.Private.Controls
 
 		internal static void NotifyEffectiveHeroContentPlacementChanged(TeachingTip sender)
 		{
-			s_testHooks.EffectiveHeroContentPlacementChanged?.Invoke(sender, null);
+			EffectiveHeroContentPlacementChanged?.Invoke(sender, null);
 		}
 
-		internal TypedEventHandler<TeachingTip, object> EffectiveHeroContentPlacementChanged;
+		internal static TypedEventHandler<TeachingTip, object?>? EffectiveHeroContentPlacementChanged;
 
-		internal TeachingTipHeroContentPlacementMode GetEffectiveHeroContentPlacement(TeachingTip teachingTip)
+		internal static TeachingTipHeroContentPlacementMode GetEffectiveHeroContentPlacement(TeachingTip teachingTip)
 		{
 			if (teachingTip != null)
 			{
@@ -180,13 +180,28 @@ namespace Microsoft.UI.Private.Controls
 			return TeachingTipHeroContentPlacementMode.Auto;
 		}
 
-		internal TypedEventHandler<TeachingTip, object> OffsetChanged;
+		internal static void NotifyOffsetChanged(TeachingTip sender)
+		{
+			OffsetChanged?.Invoke(sender, null);
+		}
 
-		internal TypedEventHandler<TeachingTip, object> TitleVisibilityChanged;
+		internal static TypedEventHandler<TeachingTip, object?>? OffsetChanged;
 
-		internal TypedEventHandler<TeachingTip, object> SubtitleVisibilityChanged;
+		internal static void NotifyTitleVisibilityChanged(TeachingTip sender)
+		{
+			TitleVisibilityChanged?.Invoke(sender, null);
+		}
 
-		internal double GetVerticalOffset(TeachingTip teachingTip)
+		internal static TypedEventHandler<TeachingTip, object?>? TitleVisibilityChanged;
+
+		internal static void NotifySubtitleVisibilityChanged(TeachingTip sender)
+		{
+			SubtitleVisibilityChanged?.Invoke(sender, null);
+		}
+
+		internal static TypedEventHandler<TeachingTip, object?>? SubtitleVisibilityChanged;
+
+		internal static double GetVerticalOffset(TeachingTip teachingTip)
 		{
 			if (teachingTip != null)
 			{
@@ -195,7 +210,7 @@ namespace Microsoft.UI.Private.Controls
 			return 0.0;
 		}
 
-		internal double GetHorizontalOffset(TeachingTip teachingTip)
+		internal static double GetHorizontalOffset(TeachingTip teachingTip)
 		{
 			if (teachingTip != null)
 			{
@@ -204,7 +219,7 @@ namespace Microsoft.UI.Private.Controls
 			return 0.0;
 		}
 
-		internal Visibility GetTitleVisibility(TeachingTip teachingTip)
+		internal static Visibility GetTitleVisibility(TeachingTip teachingTip)
 		{
 			if (teachingTip != null)
 			{
@@ -213,7 +228,7 @@ namespace Microsoft.UI.Private.Controls
 			return Visibility.Collapsed;
 		}
 
-		Visibility GetSubtitleVisibility(TeachingTip teachingTip)
+		internal static Visibility GetSubtitleVisibility(TeachingTip teachingTip)
 		{
 			if (teachingTip != null)
 			{
@@ -222,7 +237,7 @@ namespace Microsoft.UI.Private.Controls
 			return Visibility.Collapsed;
 		}
 
-		internal Popup GetPopup(TeachingTip teachingTip)
+		internal static Popup? GetPopup(TeachingTip teachingTip)
 		{
 			if (teachingTip != null)
 			{

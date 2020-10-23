@@ -29,6 +29,8 @@ using TeachingTipHeroContentPlacementMode = Microsoft.UI.Xaml.Controls.TeachingT
 using TeachingTipPlacementMode = Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode;
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 using Uno.UI.Samples.Controls;
+using Popup = Windows.UI.Xaml.Controls.Popup;
+using MUXControlsTestApp.Utilities;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests
 {
@@ -39,7 +41,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests
 	}
 
 	[Sample("TeachingTip", "WinUI")]
-	public sealed partial class TeachingTipPage : Page, INotifyPropertyChanged
+	public sealed partial class TeachingTipPage : MUXTestPage, INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 		private void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
@@ -98,7 +100,11 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests
 			}
 		}
 
-		protected override void OnNavigatedFrom(NavigationEventArgs e)
+		protected
+#if HAS_UNO
+			internal
+#endif
+			override void OnNavigatedFrom(NavigationEventArgs e)
 		{
 			if (testWindowBounds != null && testWindowBounds.IsOpen)
 			{
