@@ -588,40 +588,35 @@ namespace Windows.UI.Xaml
 				return Task.FromCanceled<DataPackageOperation>(CancellationToken.None);
 			}
 
-			if (!pointer.Properties.HasPressedButton)
-			{
-				// This is the UWP behavior: if no button is pressed, then the drag is completed immediately
-				var noneResult = Task.FromResult(DataPackageOperation.None);
-				OnDragCompleted(noneResult, this);
-				return noneResult;
-			}
-
-			var result = new TaskCompletionSource<DataPackageOperation>();
-			result.Task.ContinueWith(OnDragCompleted, this, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.RunContinuationsAsynchronously);
-
 			var dragInfo = new CoreDragInfo(
 				source: ptArgs,
 				data: routedArgs.Data.GetView(),
 				routedArgs.AllowedOperations,
 				dragUI: routedArgs.DragUI);
-			dragInfo.RegisterCompletedCallback(result.SetResult);
+
+			if (!pointer.Properties.HasPressedButton)
+			{
+				// This is the UWP behavior: if no button is pressed, then the drag is completed immediately
+				OnDropCompleted(dragInfo, DataPackageOperation.None);
+				return Task.FromResult(DataPackageOperation.None);
+			}
+
+			var asyncResult = new TaskCompletionSource<DataPackageOperation>();
+
+			dragInfo.RegisterCompletedCallback(result =>
+			{
+				OnDropCompleted(dragInfo, result);
+				asyncResult.SetResult(result);
+			});
 
 			CoreDragDropManager.GetForCurrentView()!.DragStarted(dragInfo);
 
-			return result.Task;
+			return asyncResult.Task;
 		}
 
-		private static void OnDragCompleted(Task<DataPackageOperation> resultTask, object snd)
-		{
-			var that = (UIElement)snd;
-			var result = resultTask.IsFaulted
-				? DataPackageOperation.None
-				: resultTask.Result;
+		private void OnDropCompleted(CoreDragInfo info, DataPackageOperation result)
 			// Note: originalSource = this => DropCompleted is not actually a routed event, the original source is always the sender
-			var args = new DropCompletedEventArgs(that, result); 
-
-			that.SafeRaiseEvent(DropCompletedEvent, args);
-		}
+			=> SafeRaiseEvent(DropCompletedEvent, new DropCompletedEventArgs(this, info, result));
 
 		/// <summary>
 		/// Provides ability to a control to fulfill the data that is going to be shared, by drag-and-drop for instance.

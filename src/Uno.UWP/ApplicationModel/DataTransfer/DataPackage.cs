@@ -18,6 +18,8 @@ namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class DataPackage
 	{
+		internal const string UnoPrivateDataPrefix = "__uno__private__data__";
+
 		public event TypedEventHandler<DataPackage, OperationCompletedEventArgs>? OperationCompleted;
 
 		private ImmutableDictionary<string, object> _data = ImmutableDictionary<string, object>.Empty;

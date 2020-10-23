@@ -25,6 +25,7 @@ using Uno.Disposables;
 using Uno.Client;
 using System.Threading.Tasks;
 using System.Threading;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Uno.UI;
 
@@ -655,11 +656,86 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private const string DragItemsFormatId = DataPackage.UnoPrivateDataPrefix + "__dragged__items__";
+
 		internal override void ContainerPreparedForItem(object item, SelectorItem itemContainer, int itemIndex)
 		{
 			base.ContainerPreparedForItem(item, itemContainer, itemIndex);
 
+			if (CanDragItems)
+			{
+				itemContainer.CanDrag = true;
+				itemContainer.DragStarting += OnItemContainerDragStarting;
+				itemContainer.DropCompleted += OnItemContainerDragCompleted;
+			}
+
 			ContainerContentChanging?.Invoke(this, new ContainerContentChangingEventArgs(item, itemContainer, itemIndex));
+		}
+
+		internal override void ContainerClearedForItem(object item, SelectorItem itemContainer)
+		{
+			itemContainer.DragStarting -= OnItemContainerDragStarting;
+			itemContainer.DropCompleted -= OnItemContainerDragCompleted;
+
+			base.ContainerClearedForItem(item, itemContainer);
+		}
+
+		public event DragItemsStartingEventHandler DragItemsStarting;
+		public event TypedEventHandler<ListViewBase, DragItemsCompletedEventArgs> DragItemsCompleted;
+
+		public static DependencyProperty CanReorderItemsProperty { get; } = DependencyProperty.Register(
+			nameof(CanReorderItems),
+			typeof(bool),
+			typeof(ListViewBase),
+			new FrameworkPropertyMetadata(default(bool)));
+
+		public bool CanReorderItems
+		{
+			get => (bool)GetValue(CanReorderItemsProperty);
+			set => SetValue(CanReorderItemsProperty, value);
+		}
+
+		public static DependencyProperty CanDragItemsProperty { get; } = DependencyProperty.Register(
+			nameof(CanDragItems),
+			typeof(bool),
+			typeof(ListViewBase),
+			new FrameworkPropertyMetadata(default(bool)));
+
+		public bool CanDragItems
+		{
+			get => (bool)GetValue(CanDragItemsProperty);
+			set => SetValue(CanDragItemsProperty, value);
+		}
+
+		private static void OnItemContainerDragStarting(UIElement sender, DragStartingEventArgs innerArgs)
+		{
+			if (ItemsControlFromItemContainer(sender) is ListViewBase that && that.CanDragItems)
+			{
+				var items = that.SelectedItems.ToList();
+				if (that.ItemFromContainer(sender) is {} draggedItem && !items.Contains(draggedItem))
+				{
+					items.Add(draggedItem);
+				}
+				var args = new DragItemsStartingEventArgs(innerArgs, items);
+
+				that.DragItemsStarting?.Invoke(that, args);
+
+				// The application has the ability to add some items in the list, so make sure to freeze it only after event has been raised.
+				args.Data.SetData(DragItemsFormatId, args.Items.ToList());
+			}
+		}
+
+		private static void OnItemContainerDragCompleted(UIElement sender, DropCompletedEventArgs innerArgs)
+		{
+			// Note: It's not the responsibility of the ListView to remove item from the source, not matter the AcceptedOperation.
+
+			if (ItemsControlFromItemContainer(sender) is ListViewBase that && that.CanDragItems)
+			{
+				var items = innerArgs.Info.Data.FindRawData(DragItemsFormatId) as IReadOnlyList<object> ?? new List<object>(0);
+				var args = new DragItemsCompletedEventArgs(innerArgs, items);
+
+				that.DragItemsCompleted?.Invoke(that, args);
+			}
 		}
 
 		/// <summary>
