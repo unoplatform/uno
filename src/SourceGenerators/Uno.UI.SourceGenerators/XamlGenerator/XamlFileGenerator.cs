@@ -2971,6 +2971,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var eventSource = ownerPrefix.HasValue() ? ownerPrefix : "this";
 
+					// x:Bind to second-level method generates invalid code
+					// sanitizing member.Value so that "ViewModel.SearchBreeds" becomes "ViewModel_SearchBreeds"
+					var sanitizedMemberValue = SanitizeResourceName(member.Value.ToString());
+
 					if (member.Objects.FirstOrDefault() is XamlObjectDefinition bind && bind.Type.Name == "Bind")
 					{
 						CurrentScope.XBindExpressions.Add(bind);
@@ -3026,9 +3030,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
 						// creation of a WeakReference.
 						//
-						writer.AppendLineInvariant($"var {member.Member.Name}_{member.Value}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
+						// using the sanitizedMemberValue fixes the following emitted code from:
+						//	 var QuerySubmitted_ViewModel.SearchBreeds_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
+						// to:
+						//   var QuerySubmitted_ViewModel_SearchBreeds_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
+						//
+						writer.AppendLineInvariant($"var {member.Member.Name}_{sanitizedMemberValue}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
 
-						writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{member.Value}_That.Target as {_className.className})?.{member.Value}({parms});");
+						//
+						// using the sanitizedMemberValue fixes the following emitted code from:
+						//	 c3.QuerySubmitted += (_sender,_args) => (QuerySubmitted_ViewModel.SearchBreeds_That.Target as MainPage)?.ViewModel.SearchBreeds();
+						// to:
+						//   c3.QuerySubmitted += (_sender,_args) => (QuerySubmitted_ViewModel_SearchBreeds_That.Target as MainPage)?.ViewModel.SearchBreeds();
+						//
+						writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{sanitizedMemberValue}_That.Target as {_className.className})?.{member.Value}({parms});");
 					}
 				}
 				else

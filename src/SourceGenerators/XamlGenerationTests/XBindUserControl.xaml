@@ -23,5 +23,9 @@
 		<Rectangle Style="{StaticResource rectangleStyle}" />
 		<TextBlock Text="{x:Bind Test}" />
 		<TextBlock Text="{x:Bind TypeProperty.Value, FallbackValue=42}" />
+		<Button Click="{x:Bind ViewModel.BoundMethodCallNoParameters}"/>
+		<CheckBox Name="MyCheckBox" IsChecked="True" />
+		<TextBlock Text="{x:Bind ViewModel.BoundMethodCallWithParameters(MyCheckBox.Name, MyCheckBox.IsChecked)}"/>
+		<TextBlock Text="{x:Bind ViewModel.ReadText(MyCheckBox.Name, MyCheckBox.IsChecked), BindBack=ViewModel.WriteText, Mode=TwoWay}"/>
 	</Grid>
 </UserControl>
