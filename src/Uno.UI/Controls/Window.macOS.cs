@@ -29,6 +29,10 @@ namespace Uno.UI.Controls
 	/// </summary>
 	public partial class Window : NSWindow
 	{
+		internal delegate NSDragOperation DraggingStage1Handler(NSDraggingInfo draggingInfo);
+		internal delegate void DraggingStage2Handler(NSDraggingInfo draggingInfo);
+		internal delegate bool PerformDragOperationHandler(NSDraggingInfo draggingInfo);
+
 		private static readonly WeakAttachedDictionary<NSView, string> _attachedProperties = new WeakAttachedDictionary<NSView, string>();
 		private const string NeedsKeyboardAttachedPropertyKey = "NeedsKeyboard";
 
@@ -101,7 +105,7 @@ namespace Uno.UI.Controls
 		/// <param name="info">Information about the dragging session from the sender.</param>
 		/// <returns>The accepted drag operation(s).</returns>
 		[Export("draggingEntered:")] // Do not remove
-		public virtual NSDragOperation DraggingEntered(NSDraggingInfo draggingInfo)
+		internal virtual NSDragOperation DraggingEntered(NSDraggingInfo draggingInfo)
 		{
 			try
 			{
@@ -117,7 +121,7 @@ namespace Uno.UI.Controls
 		/// Code to execute when the <see cref="DraggingEntered(NSDraggingInfo)"/> method is invoked.
 		/// This can be used in a similar way to <see cref="UIElement.DragEnter"/>.
 		/// </summary>
-		public Func<NSDraggingInfo, NSDragOperation> DraggingEnteredAction { get; set; } =
+		internal DraggingStage1Handler DraggingEnteredAction { get; set; } =
 			(NSDraggingInfo draggingInfo) =>
 			{
 				return NSDragOperation.None;
@@ -132,7 +136,7 @@ namespace Uno.UI.Controls
 		/// </remarks>
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
 		[Export("draggingUpdated:")] // Do not remove
-		public virtual NSDragOperation DraggingUpdated(NSDraggingInfo draggingInfo)
+		internal virtual NSDragOperation DraggingUpdated(NSDraggingInfo draggingInfo)
 		{
 			try
 			{
@@ -148,7 +152,7 @@ namespace Uno.UI.Controls
 		/// Code to execute when the <see cref="DraggingUpdated(NSDraggingInfo)"/> method is invoked.
 		/// This can be used in a similar way to <see cref="UIElement.DragOver"/>.
 		/// </summary>
-		public Func<NSDraggingInfo, NSDragOperation> DraggingUpdatedAction { get; set; } =
+		internal DraggingStage1Handler DraggingUpdatedAction { get; set; } =
 			(NSDraggingInfo draggingInfo) =>
 			{
 				return NSDragOperation.None;
@@ -162,7 +166,7 @@ namespace Uno.UI.Controls
 		/// </remarks>
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
 		[Export("draggingEnded:")] // Do not remove
-		public virtual void DraggingEnded(NSDraggingInfo draggingInfo)
+		internal virtual void DraggingEnded(NSDraggingInfo draggingInfo)
 		{
 			try
 			{
@@ -180,7 +184,7 @@ namespace Uno.UI.Controls
 		/// Code to execute when the <see cref="DraggingEnded(NSDraggingInfo)"/> method is invoked.
 		/// This can be used in a similar way to <see cref="UIElement.DropCompleted"/>.
 		/// </summary>
-		public Action<NSDraggingInfo> DraggingEndedAction { get; set; } =
+		internal DraggingStage2Handler DraggingEndedAction { get; set; } =
 			(NSDraggingInfo draggingInfo) =>
 			{
 				// Available for use
@@ -194,7 +198,7 @@ namespace Uno.UI.Controls
 		/// </remarks>
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
 		[Export("draggingExited:")] // Do not remove
-		public virtual void DraggingExited(NSDraggingInfo draggingInfo)
+		internal virtual void DraggingExited(NSDraggingInfo draggingInfo)
 		{
 			try
 			{
@@ -212,7 +216,7 @@ namespace Uno.UI.Controls
 		/// Code to execute when the <see cref="DraggingExited(NSDraggingInfo)"/> method is invoked.
 		/// This can be used in a similar way to <see cref="UIElement.DragLeave"/>.
 		/// </summary>
-		public Action<NSDraggingInfo> DraggingExitedAction { get; set; } =
+		internal DraggingStage2Handler DraggingExitedAction { get; set; } =
 			(NSDraggingInfo draggingInfo) =>
 			{
 				// Available for use
@@ -225,7 +229,7 @@ namespace Uno.UI.Controls
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
 		/// <returns>True if the destination accepts the drag operation; otherwise, false. </returns>
 		[Export("prepareForDragOperation:")] // Do not remove
-		public virtual bool PrepareForDragOperation(AppKit.NSDraggingInfo draggingInfo)
+		internal virtual bool PrepareForDragOperation(AppKit.NSDraggingInfo draggingInfo)
 		{
 			// Always return true as UWP doesn't really have an equivalent step.
 			// Drop is accepted within DraggingEntered (drag entered event in UWP).
@@ -238,7 +242,7 @@ namespace Uno.UI.Controls
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
 		/// <returns>True if the destination accepts the data; otherwise, false.</returns>
 		[Export("performDragOperation:")] // Do not remove
-		public virtual bool PerformDragOperation(NSDraggingInfo draggingInfo)
+		internal virtual bool PerformDragOperation(NSDraggingInfo draggingInfo)
 		{
 			try
 			{
@@ -254,7 +258,7 @@ namespace Uno.UI.Controls
 		/// Code to execute when the <see cref="PerformDragOperation(NSDraggingInfo)"/> method is invoked.
 		/// This can be used in a similar way to <see cref="UIElement.Drop"/>.
 		/// </summary>
-		public Func<NSDraggingInfo, bool> PerformDragOperationAction { get; set; } =
+		internal PerformDragOperationHandler PerformDragOperationAction { get; set; } =
 			(NSDraggingInfo draggingInfo) =>
 			{
 				return false;
