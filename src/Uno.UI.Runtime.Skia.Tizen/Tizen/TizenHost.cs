@@ -16,6 +16,8 @@ using Tizen.Applications;
 using Uno.UI.Runtime.Skia.Tizen;
 using Windows.Devices.Haptics;
 using Uno.UI.Runtime.Skia.Tizen.Devices.Haptics;
+using Windows.ApplicationModel;
+using Uno.UI.Runtime.Skia.Tizen.ApplicationModel;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -68,7 +70,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new TizenDisplayInformationExtension(o, _tizenApplication.Window));
 			ApiExtensibility.Register(typeof(IVibrationDeviceExtension), o => new TizenVibrationDeviceExtension(o));
 			ApiExtensibility.Register(typeof(ISimpleHapticsControllerExtension), o => new TizenSimpleHapticsControllerExtension(o));
-
+			ApiExtensibility.Register(typeof(IPackageIdExtension), o => new TizenPackageIdExtension(o));
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{
 				var app = _appBuilder();

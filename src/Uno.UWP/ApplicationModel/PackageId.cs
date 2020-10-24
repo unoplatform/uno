@@ -1,109 +1,45 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using Windows.System;
+
 namespace Windows.ApplicationModel
 {
-	public  partial class PackageId
+	public partial class PackageId
 	{
-		[global::Uno.NotImplemented]
-		public global::Windows.System.ProcessorArchitecture Architecture
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Architecture");
-				return System.ProcessorArchitecture.Unknown;
-			}
-		}
+		internal PackageId() => InitializePlatform();
 
-#if !__ANDROID__ && !__IOS__ && !__MACOS__
+		partial void InitializePlatform();
+
+		[Uno.NotImplemented]
+		public ProcessorArchitecture Architecture => ProcessorArchitecture.Unknown;
+
+#if !__ANDROID__ && !__IOS__ && !__MACOS__ && !__SKIA__
 		[global::Uno.NotImplemented]
-		public string FamilyName
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "FamilyName");
-				return "Unknown";
-			}
-		}
+		public string FamilyName => "Unknown";
 
 		[global::Uno.NotImplemented]
-		public string FullName
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "FullName");
-				return "Unknown";
-			}
-		}
+		public string FullName => "Unknown";
 
 		[global::Uno.NotImplemented]
-		public string Name
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Name");
-				return "Unknown";
-			}
-		}
+		public string Name => "Unknown";
 
 		[global::Uno.NotImplemented]
-		public global::Windows.ApplicationModel.PackageVersion Version
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Version");
-				return new PackageVersion();
-			}
-		}
+		public PackageVersion Version => new PackageVersion(Assembly.GetExecutingAssembly().GetVersionNumber())
 #endif
 
-		[global::Uno.NotImplemented]
-		public string Publisher
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Publisher");
-				return "Unknown";
-			}
-		}
+		[Uno.NotImplemented]
+		public string Publisher => "Unknown";
 
-		[global::Uno.NotImplemented]
-		public string PublisherId
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "PublisherId");
-				return "Unknown";
-			}
-		}
+		[Uno.NotImplemented]
+		public string PublisherId => "Unknown";
 
-		[global::Uno.NotImplemented]
-		public string ResourceId
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "ResourceId");
-				return "Unknown";
-			}
-		}
+		[Uno.NotImplemented]
+		public string ResourceId => "Unknown";
 
-		[global::Uno.NotImplemented]
-		public string Author
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Author");
-				return "Unknown";
-			}
-		}
+		[Uno.NotImplemented]
+		public string Author => "Unknown";
 
-		[global::Uno.NotImplemented]
-		public string ProductId
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "ProductId");
-				return "Unknown";
-			}
-		}
+		[Uno.NotImplemented]
+		public string ProductId => "Unknown";
 	}
 }
