@@ -161,18 +161,8 @@ namespace Windows.UI.Xaml
 
 		public XamlRoot XamlRoot
 		{
-			get
-			{
-				if (IsLoaded)
-				{
-					return _xamlRoot ?? XamlRoot.Current;
-				}
-				return null;
-			}
-			set
-			{
-				_xamlRoot = value;
-			}
+			get => _xamlRoot ?? XamlRoot.Current;
+			set => _xamlRoot = value;
 		}
 
 		public GeneralTransform TransformToVisual(UIElement visual)
