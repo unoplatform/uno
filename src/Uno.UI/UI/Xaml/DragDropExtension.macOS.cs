@@ -5,6 +5,8 @@ using System;
 using System.Numerics;
 using System.Threading;
 using AppKit;
+using CoreGraphics;
+using Foundation;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Core;
@@ -23,7 +25,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		public MacOSDragDropExtension(DragDropManager owner)
 		{
-			_manager = (DragDropManager)owner;
+			_manager = owner;
 			_window = (Uno.UI.Controls.Window)CoreWindow.GetForCurrentThread()!.NativeWindow;
 
 			_window.DraggingEnteredAction = OnDraggingEnteredEvent;
@@ -77,8 +79,16 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			{
 				try
 				{
-					NSDraggingSource source = new NSDraggingSource();
-					NSEvent sourceEvent = new NSEvent();
+					var sourceEvent = new NSEvent();
+					var source = new NSDraggingSource2();
+
+					source.DraggingSessionEndedAction =
+						(NSImage image, CGPoint screenPoint, NSDragOperation operation) =>
+						{
+							// The drop was completed externally
+							_manager.ProcessDropped(new DragEventSource(info.SourceId, _window));
+							return;
+						};
 
 					_window.ContentView.BeginDraggingSession(
 						await DataPackage.CreateNativeDragDropData(info.Data, info.GetPosition(null)),
@@ -119,11 +129,134 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			return result;
 		}
 
+		/// <summary>
+		/// Represents the source of a native macOS dragging operation.
+		/// </summary>
+		private class NSDraggingSource2 : NSDraggingSource
+		{
+			public delegate void DraggingSessionUpdatedHandler(NSImage image, CGPoint screenPoint);
+			public delegate void DraggingSessionEndedHandler(NSImage image, CGPoint screenPoint, NSDragOperation operation);
+
+			/* The following currently documented methods do not seem to work.
+			 * These methods also don't exist in the Xamarin macOS implementation.
+			 *   https://developer.apple.com/documentation/appkit/nsdraggingsource
+			 *
+			 *   [Export("draggingSession:willBeginAt:")]
+			 *   public void DraggingSessionWillBegin(NSDraggingSession session, CGPoint screenPoint)
+			 *
+			 *   [Export("draggingSession:movedTo:")]
+			 *   public void DraggingSessionMoved(NSDraggingSession session, CGPoint screenPoint)
+			 *
+			 *   [Export("draggingSession:endedAt:operation:")]
+			 *   public void DraggingSessionEnded(NSDraggingSession session, CGPoint screenPoint, NSDragOperation operation)
+			 *
+			 * Instead, what does work are the old methods - still present for backwards compatibility.
+			 * The signatures corresponding to the legacy docs here:
+			 *   https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/DragandDrop/Concepts/dragsource.html
+			 */
+
+			/// <summary>
+			/// Method invoked when a dragging session starts.
+			/// </summary>
+			/// <param name="image">The image being dragged.</param>
+			/// <param name="screenPoint">he origin point of the dragging image in screen coordinates.</param>
+			[Export("draggedImage:beganAt:")] // Do not remove
+			public virtual void DraggingSessionWillBegin(NSImage image, CGPoint screenPoint)
+			{
+				try
+				{
+					DraggingSessionWillBeginAction.Invoke(image, screenPoint);
+				}
+				catch
+				{
+					// Simply return if an error occurred, it is unrecoverable
+				}
+
+				return;
+			}
+
+			/// <summary>
+			/// Code to execute when the <see cref="DraggingSessionWillBegin(NSImage, CGPoint)"/> method is invoked.
+			/// </summary>
+			public DraggingSessionUpdatedHandler DraggingSessionWillBeginAction { get; set; } =
+				(NSImage image, CGPoint screenPoint) =>
+				{
+					// Available for use
+				};
+
+			/// <summary>
+			/// Method invoked when the pointer moves during a dragging session.
+			/// </summary>
+			/// <param name="image">The image being dragged.</param>
+			/// <param name="screenPoint">The origin point of the dragging image in screen coordinates.</param>
+			[Export("draggedImage:movedTo:")] // Do not remove
+			public virtual void DraggingSessionMoved(NSImage image, CGPoint screenPoint)
+			{
+				try
+				{
+					DraggingSessionMovedAction.Invoke(image, screenPoint);
+				}
+				catch
+				{
+					// Simply return if an error occurred, it is unrecoverable
+				}
+
+				return;
+			}
+
+			/// <summary>
+			/// Code to execute when the <see cref="DraggingSessionMoved(NSImage, CGPoint)"/> method is invoked.
+			/// </summary>
+			public DraggingSessionUpdatedHandler DraggingSessionMovedAction { get; set; } =
+				(NSImage image, CGPoint screenPoint) =>
+				{
+					// Available for use
+				};
+
+			/// <summary>
+			/// Method invoked when a dragging session ends.
+			/// </summary>
+			/// <param name="image">The image being dragged.</param>
+			/// <param name="screenPoint">The origin point of the dragging image in screen coordinates.</param>
+			/// <param name="operation">The completed drag operation.</param>
+			[Export("draggedImage:endedAt:operation:")] // Do not remove
+			public virtual void DraggingSessionEnded(NSImage image, CGPoint screenPoint, NSDragOperation operation)
+			{
+				try
+				{
+					DraggingSessionEndedAction.Invoke(image, screenPoint, operation);
+				}
+				catch
+				{
+					// Simply return if an error occurred, it is unrecoverable
+				}
+
+				return;
+			}
+
+			/// <summary>
+			/// Code to execute when the <see cref="DraggingSessionEnded(NSImage, CGPoint, NSDragOperation)"/> method is invoked.
+			/// </summary>
+			public DraggingSessionEndedHandler DraggingSessionEndedAction { get; set; } =
+				(NSImage image, CGPoint screenPoint, NSDragOperation operation) =>
+				{
+					// Available for use
+				};
+		}
+
 		private class DragEventSource : IDragEventSource
 		{
 			private static long _nextFrameId;
-			private readonly NSDraggingInfo _macOSDraggingInfo;
+			private readonly NSDraggingInfo? _macOSDraggingInfo;
 			private	readonly NSWindow _window;
+
+			public DragEventSource(long pointerId, NSWindow window)
+			{
+				Id = pointerId;
+
+				_macOSDraggingInfo = null;
+				_window = window;
+			}
 
 			public DragEventSource(long pointerId, NSDraggingInfo draggingInfo, NSWindow window)
 			{
@@ -140,7 +273,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			/// <inheritdoc />
 			public (Point location, DragDropModifiers modifier) GetState()
 			{
-				var windowLocation = _window.ContentView.ConvertPointFromView(_macOSDraggingInfo.DraggingLocation, null);
+				CGPoint windowLocation = new CGPoint(0.0, 0.0);
+				if (_macOSDraggingInfo != null)
+				{
+					windowLocation = _window.ContentView.ConvertPointFromView(_macOSDraggingInfo.DraggingLocation, null);
+				}
 				var location = new Windows.Foundation.Point(windowLocation.X, windowLocation.Y);
 
 				// macOS requires access to NSEvent.ModifierFlags to determine key press.
@@ -153,7 +290,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			/// <inheritdoc />
 			public Point GetPosition(object? relativeTo)
 			{
-				var windowLocation = _window.ContentView.ConvertPointFromView(_macOSDraggingInfo.DraggingLocation, null);
+				CGPoint windowLocation = new CGPoint(0.0, 0.0);
+				if (_macOSDraggingInfo != null)
+				{
+					windowLocation = _window.ContentView.ConvertPointFromView(_macOSDraggingInfo.DraggingLocation, null);
+				}
 				var rawPosition = new Point(windowLocation.X, windowLocation.Y);
 
 				if (relativeTo is null)
