@@ -57,10 +57,10 @@ namespace Windows.UI.Xaml
 		private protected virtual double GetActualHeight() => throw new NotSupportedException("Reference assembly");
 
 #pragma warning disable 67
-		private event RoutedEventHandler _loading;
+		private event TypedEventHandler<FrameworkElement, object> _loading;
 		private event RoutedEventHandler _loaded;
 		private event RoutedEventHandler _unloaded;
-		public event RoutedEventHandler Loading;
+		public event TypedEventHandler<FrameworkElement, object> Loading;
 		public event RoutedEventHandler Loaded;
 		public event RoutedEventHandler Unloaded;
 #pragma warning restore 67

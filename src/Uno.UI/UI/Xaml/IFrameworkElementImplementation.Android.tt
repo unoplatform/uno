@@ -44,7 +44,7 @@ namespace <#= mixin.NamespaceName #>
 
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
-		public event TypedEventHandler<DependencyObject, object> Loading;
+		public event TypedEventHandler<FrameworkElement, object> Loading;
 
 		public event RoutedEventHandler Loaded;
 

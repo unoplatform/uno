@@ -542,7 +542,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 					private BinderReferenceHolder _refHolder;
 
-					public event Windows.Foundation.TypedEventHandler<DependencyObject, DataContextChangedEventArgs> DataContextChanged;
+					public event Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
 
 					partial void InitializeBinder();
 
