@@ -66,19 +66,19 @@ namespace Windows.ApplicationModel.Calls
 			List<string> requestPermission = new List<string>();
 
 			// check what permission should be granted
-			if (! await Windows.Extensions.PermissionsHelper.CheckPermission(Android.Manifest.Permission.ReadCallLog))
+			if (! await Windows.Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadCallLog))
 			{
 				requestPermission.Add(Android.Manifest.Permission.ReadCallLog);
 			}
 
-			if (! await Windows.Extensions.PermissionsHelper.CheckPermission(Android.Manifest.Permission.ReadContacts))
+			if (! await Windows.Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadContacts))
 			{
 				requestPermission.Add(Android.Manifest.Permission.ReadContacts);
 			}
 
 			if (accessType == PhoneCallHistoryStoreAccessType.AllEntriesReadWrite)
 			{
-				if (!await Windows.Extensions.PermissionsHelper.CheckPermission(Android.Manifest.Permission.WriteCallLog))
+				if (!await Windows.Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.WriteCallLog))
 				{
 					requestPermission.Add(Android.Manifest.Permission.WriteCallLog);
 				}
