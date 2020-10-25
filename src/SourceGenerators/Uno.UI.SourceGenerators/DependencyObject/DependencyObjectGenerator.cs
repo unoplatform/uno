@@ -48,7 +48,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol? _androidFragmentSymbol;
 			private readonly INamedTypeSymbol? _bindableAttributeSymbol;
 			private readonly INamedTypeSymbol? _iFrameworkElementSymbol;
-
+			private readonly INamedTypeSymbol? _frameworkElementSymbol;
 
 			public SerializationMethodsGenerator(GeneratorExecutionContext context)
 			{
@@ -64,8 +64,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_javaObjectSymbol = comp.GetTypeByMetadataName("Java.Lang.Object");
 				_androidActivitySymbol = comp.GetTypeByMetadataName("Android.App.Activity");
 				_androidFragmentSymbol = comp.GetTypeByMetadataName("AndroidX.Fragment.App.Fragment");
-			    _bindableAttributeSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
+				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
 				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
+				_frameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
 			}
 
 			public override void VisitNamedType(INamedTypeSymbol type)
@@ -201,7 +202,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				WriteMacOSViewWillMoveToSuperview(typeSymbol, builder);
 
 				WriteDispose(typeSymbol, builder);
-
 				WriteBinderImplementation(typeSymbol, builder);
 			}
 
@@ -293,6 +293,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				else
 				{
 					builder.AppendLine($"// Skipped _macosViewSymbol: {typeSymbol.Is(_macosViewSymbol)}, hasNoViewWillMoveToSuperviewMethod: {hasNoWillMoveToSuperviewMethod}");
+					builder.AppendLine();
 				}
 			}
 
@@ -560,7 +561,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 					private BinderReferenceHolder _refHolder;
 
-					public event Windows.Foundation.TypedEventHandler<DependencyObject, DataContextChangedEventArgs> DataContextChanged;
+					public event Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
 
 					partial void InitializeBinder();
 
@@ -693,6 +694,25 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
+				string dataContextChangedInvokeArgument;
+				if (typeSymbol.Is(_frameworkElementSymbol))
+				{
+					// We can pass 'this' safely to a parameter of type FrameworkElement.
+					dataContextChangedInvokeArgument = "this";
+				}
+				else if (_frameworkElementSymbol.Is(typeSymbol))
+				{
+					// Example: Border -> FrameworkElement -> BindableView
+					// If we have a BindableView, it may or may not be FrameworkElement.
+					dataContextChangedInvokeArgument = "this as FrameworkElement";
+				}
+				else
+				{
+					// This can't be a FrameworkElement. Just pass null.
+					// Passing `this as FrameworkElement` will produce a compile-time error.
+					// error CS0039: Cannot convert type '{0}' to '{1}' via a reference conversion, boxing conversion, unboxing conversion, wrapping conversion, or null type conversion
+					dataContextChangedInvokeArgument = "null";
+				}
 
 				builder.AppendLine($@"
 
@@ -720,7 +740,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					{protectedModifier} {virtualModifier} void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 					{{
 						OnDataContextChangedPartial(e);
-						DataContextChanged?.Invoke(this, new DataContextChangedEventArgs(DataContext));
+						DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));
 					}}
 
 					#endregion
