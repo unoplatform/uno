@@ -8,7 +8,9 @@
     "Android",
     "iOS",
     "Windows",
-    "macOS"
+    "macOS",
+    "Linux",
+    "Tizen"
   ],
   "name": "Cross-Platform App (Uno Platform)",
   "identity": "Uno.Platform.UnoApp",
@@ -124,6 +126,12 @@
       "defaultValue": "true",
       "description": "Enables the Skia/GTK platform support project"
     },
+    "skia-tizen": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Skia/Tizen platform support project"
+    },
     "vscodeWasm": {
       "type": "parameter",
       "dataType": "bool",
@@ -157,15 +165,19 @@
     },
     {
       "condition": "skia-gtk",
-      "path": "UnoQuickStart.macOS\\UnoQuickStart.Skia.Gtk.csproj"
+      "path": "UnoQuickStart.Skia.Gtk\\UnoQuickStart.Skia.Gtk.csproj"
     },
     {
       "condition": "skia-wpf",
-      "path": "UnoQuickStart.macOS\\UnoQuickStart.Skia.WPF.csproj"
+      "path": "UnoQuickStart.Skia.WPF\\UnoQuickStart.Skia.WPF.csproj"
     },
     {
       "condition": "skia-wpf",
-      "path": "UnoQuickStart.macOS\\UnoQuickStart.Skia.WPF.Host.csproj"
+      "path": "UnoQuickStart.Skia.WPF.Host\\UnoQuickStart.Skia.WPF.Host.csproj"
+    },
+    {
+      "condition": "skia-tizen",
+      "path": "UnoQuickStart.Skia.Tizen\\UnoQuickStart.Skia.Tizen.csproj"
     }
   ],
   "sources": [
@@ -212,6 +224,12 @@
           "exclude": [
             "UnoQuickStart.Skia.WPF/**/*",
             "UnoQuickStart.Skia.WPF.Host/**/*"
+          ]
+        },
+        {
+          "condition": "(!skia-tizen)",
+          "exclude": [
+            "UnoQuickStart.Skia.Tizen/**/*"
           ]
         },
         {

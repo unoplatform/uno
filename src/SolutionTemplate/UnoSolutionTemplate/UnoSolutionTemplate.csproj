@@ -75,6 +75,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Skia.Tizen\Program.cs" />
+    <None Include="Skia.Tizen\UnoQuickStart.Skia.Tizen.csproj" />
     <None Include="Skia.WPF\Program.cs" />
     <None Include="Skia.WPF.Host\App.xaml.cs" />
     <None Include="Skia.WPF.Host\MainWindow.xaml.cs" />
@@ -237,6 +239,9 @@
     <None Include="Skia.Gtk\SkiaGtk.vstemplate">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Skia.Tizen\shared\res\Icon.png" />
+    <Content Include="Skia.Tizen\SkiaTizen.vstemplate" />
+    <Content Include="Skia.Tizen\tizen-manifest.xml" />
     <Content Include="UWP\Assets\LockScreenLogo.scale-200.png" />
     <Content Include="UWP\Assets\SplashScreen.scale-200.png" />
     <Content Include="UWP\Assets\Square150x150Logo.scale-200.png" />

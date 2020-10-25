@@ -20,6 +20,7 @@
 	<PlatformTag>Windows</PlatformTag>
 	<PlatformTag>macOS</PlatformTag>
 	<PlatformTag>web</PlatformTag>
+	<PlatformTag>Tizen</PlatformTag>
 	<ProjectTypeTag>mobile</ProjectTypeTag>
 	<ProjectTypeTag>UWP</ProjectTypeTag>
 	<ProjectTypeTag>WebAssembly</ProjectTypeTag>
@@ -37,6 +38,7 @@
 	  <ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf.Host" CopyParameters="true">Skia.Wpf.Host\SkiaWpfHost.vstemplate</ProjectTemplateLink>
 	  <ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf" CopyParameters="true">Skia.Wpf\SkiaWpf.vstemplate</ProjectTemplateLink>
 	  <ProjectTemplateLink ProjectName="$projectname$.Skia.Gtk" CopyParameters="true">Skia.Gtk\SkiaGtk.vstemplate</ProjectTemplateLink>
+	  <ProjectTemplateLink ProjectName="$projectname$.Skia.Tizen" CopyParameters="true">Skia.Tizen\SkiaTizen.vstemplate</ProjectTemplateLink>
 	</ProjectCollection>
   </TemplateContent>
   <WizardExtension>
