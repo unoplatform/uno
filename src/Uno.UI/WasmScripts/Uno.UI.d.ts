@@ -1114,6 +1114,11 @@ declare namespace Windows.System.Display {
         static deactivateScreenLock(): void;
     }
 }
+declare namespace Windows.System.Profile {
+    class AnalyticsInfo {
+        static getDeviceType(): string;
+    }
+}
 interface Window {
     opr: any;
     opera: any;
