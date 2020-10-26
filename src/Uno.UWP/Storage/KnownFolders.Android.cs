@@ -11,7 +11,10 @@ namespace Windows.Storage
 		internal static void AndroidQRemediationCheck()
 		{
 			// first, check if workaround is needed - if not, return 
-			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.Q)
+			// should be `if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.Q)`
+			// correct in VStudio/Intellisense, but CI reports
+			// Error CS0117: 'BuildVersionCodes' does not contain a definition for 'Q'
+			if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.P)
 			{
 				return;
 			}
@@ -23,10 +26,12 @@ namespace Windows.Storage
 			// check if workaround is "timeouted", as stated in documentation:
 			// https://developer.android.com/training/data-storage/use-cases#opt-out-scoped-storage
 			// After you update your app to target Android 11 (API level 30), the system ignores the requestLegacyExternalStorage attribute when your app is running on Android 11 devices
-			if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Q)
+			// should be `if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Q)`
+			if ((int)Android.OS.Build.VERSION.SdkInt > 29)
 			{ 
 				var apkSdkVers = apkInfo.ApplicationInfo.TargetSdkVersion;
-				if(apkSdkVers > Android.OS.BuildVersionCodes.Q)
+				// same as above, `if(apkSdkVers > Android.OS.BuildVersionCodes.Q)`
+				if ((int)apkSdkVers > 29)
 				{
 					// sorry, our workaround would not work
 					throw new UnauthorizedAccessException("KnownFolders: On apps targetting Android 11+, on Android 11+, requestLegacyExternalStorage doesn't work");
