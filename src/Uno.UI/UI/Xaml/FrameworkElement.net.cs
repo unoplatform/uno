@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml
 				OnPostLoading();
 				OnLoaded();
 
-				foreach (var child in _children.OfType<FrameworkElement>())
+				foreach (var child in _children.OfType<FrameworkElement>().ToArray())
 				{
 					child.IsLoaded = IsLoaded;
 					child.EnterTree();

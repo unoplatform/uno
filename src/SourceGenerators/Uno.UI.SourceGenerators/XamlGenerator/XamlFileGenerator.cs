@@ -1567,7 +1567,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool HasMarkupExtension(XamlMemberDefinition valueNode)
 		{
 			// Return false if the Owner is a custom markup extension
-			if (IsCustomMarkupExtensionType(valueNode.Owner?.Type))
+			if (valueNode == null || IsCustomMarkupExtensionType(valueNode.Owner?.Type))
 			{
 				return false;
 			}
@@ -4948,10 +4948,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return null;
 				}
 
-				if (visibilityMember != null)
+				if (visibilityMember != null || loadElement?.Value != null)
 				{
 					var hasVisibilityMarkup = HasMarkupExtension(visibilityMember);
-					var isLiteralVisible = !hasVisibilityMarkup && (visibilityMember.Value?.ToString() == "Visible");
+					var isLiteralVisible = !hasVisibilityMarkup && (visibilityMember?.Value?.ToString() == "Visible");
 
 					var hasDataContextMarkup = dataContextMember != null && HasMarkupExtension(dataContextMember);
 
@@ -4983,6 +4983,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									def.Objects.AddRange(dataContextMember.Objects);
 
 									BuildComplexPropertyValue(innerWriter, def, closureName + ".", closureName);
+								}
+
+								if (nameMember != null)
+								{
+									innerWriter.AppendLineInvariant(
+										$"{closureName}.Name = \"{nameMember.Value}\";"
+									);
+
+									// Set the element name to the stub, then when the stub will be replaced
+									// the actual target control will override it.
+									innerWriter.AppendLineInvariant(
+										$"_{nameMember.Value}Subject.ElementInstance = {closureName};"
+									);
 								}
 
 								if (hasVisibilityMarkup)
@@ -5019,22 +5032,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 								else
 								{
-									innerWriter.AppendLineInvariant(
-										"{0}.Visibility = {1};",
-										closureName,
-										BuildLiteralValue(visibilityMember)
-									);
-
-									if (nameMember != null)
+									if (visibilityMember != null)
 									{
 										innerWriter.AppendLineInvariant(
-											$"{closureName}.Name = \"{nameMember.Value}\";"
-										);
-
-										// Set the element name to the stub, then when the stub will be replaced
-										// the actual target control will override it.
-										innerWriter.AppendLineInvariant(
-											$"_{nameMember.Value}Subject.ElementInstance = {closureName};"
+											"{0}.Visibility = {1};",
+											closureName,
+											BuildLiteralValue(visibilityMember)
 										);
 									}
 								}
