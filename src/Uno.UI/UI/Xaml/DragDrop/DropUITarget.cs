@@ -20,17 +20,19 @@ namespace Windows.UI.Xaml
 {
 	internal class DropUITarget : ICoreDropOperationTarget
 	{
-		private static readonly GetHitTestability _getDropHitTestability = elt =>
+		private static GetHitTestability? _getDropHitTestability;
+		private static GetHitTestability GetDropHitTestability => _getDropHitTestability ??= (elt =>
 		{
 			var visiblity = elt.GetHitTestVisibility();
 			return visiblity switch
 			{
-				HitTestability.Collapsed => HitTestability.Collapsed,
-				_ when !elt.AllowDrop => HitTestability.Invisible,
-				_ => visiblity
+				HitTestability.Collapsed => (HitTestability.Collapsed, _getDropHitTestability!),
+				// Once we reached an element that AllowDrop, we only validate the hit testability for its children
+				_ when elt.AllowDrop => (visiblity, VisualTreeHelper.DefaultGetTestability),
+				_ => (HitTestability.Invisible, _getDropHitTestability!)
 			};
-		};
-			
+		});
+
 
 		// Note: As drag events are routed (so they may be received by multiple elements), we might not have an entry for each drop targets.
 		//		 We will instead have entry only for leaf (a.k.a. OriginalSource).
@@ -124,7 +126,7 @@ namespace Windows.UI.Xaml
 		{
 			var target = VisualTreeHelper.HitTest(
 				dragInfo.Position,
-				getTestability: _getDropHitTestability,
+				getTestability: GetDropHitTestability,
 				isStale: elt => elt.IsDragOver(dragInfo.SourceId));
 
 			// First raise the drag leave event on stale branch if any.

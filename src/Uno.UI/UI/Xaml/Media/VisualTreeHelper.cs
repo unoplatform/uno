@@ -250,7 +250,11 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
-		private static readonly GetHitTestability _defaultGetTestability = elt => elt.GetHitTestVisibility();
+		internal static readonly GetHitTestability DefaultGetTestability;
+		static VisualTreeHelper()
+		{
+			DefaultGetTestability = elt => (elt.GetHitTestVisibility(), DefaultGetTestability);
+		}
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
@@ -267,7 +271,7 @@ namespace Windows.UI.Xaml.Media
 #endif
 			if (Window.Current.RootElement is UIElement root)
 			{
-				return SearchDownForTopMostElementAt(position, root, getTestability ?? _defaultGetTestability, isStale);
+				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
 			}
 
 			return default;
@@ -281,7 +285,8 @@ namespace Windows.UI.Xaml.Media
 			Func<IEnumerable<UIElement>, IEnumerable<UIElement>>? childrenFilter = null)
 		{
 			var stale = default(Branch?);
-			var elementHitTestVisibility = getVisibility(element);
+			HitTestability elementHitTestVisibility;
+			(elementHitTestVisibility, getVisibility) = getVisibility(element);
 
 #if TRACE_HIT_TESTING
 			using var _ = SET_TRACE_SUBJECT(element);
