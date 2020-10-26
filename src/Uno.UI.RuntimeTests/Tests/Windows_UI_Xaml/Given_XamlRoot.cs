@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#if !WINDOWS_UWP
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -29,3 +26,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 	}
 }
+#endif
