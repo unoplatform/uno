@@ -12,6 +12,8 @@ using Uno.Storage.Pickers.Internal;
 using Uno.UI;
 using AndroidUri = Android.Net.Uri;
 
+// small, innocent change to force build restart.
+
 #pragma warning disable CS0618
 namespace Windows.Storage.Pickers
 {
