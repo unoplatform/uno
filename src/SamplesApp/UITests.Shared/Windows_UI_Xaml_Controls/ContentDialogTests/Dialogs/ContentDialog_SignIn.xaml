@@ -25,10 +25,6 @@
 				   TextWrapping="Wrap"
 				   Text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua">
 		</TextBlock>
-		<!--<Ellipse Fill="Maroon"
-				 Height="160"
-				 Width="110"
-				 HorizontalAlignment="Center" />-->
 	</StackPanel>
 
 
