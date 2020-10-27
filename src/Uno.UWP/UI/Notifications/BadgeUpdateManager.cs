@@ -1,4 +1,4 @@
-#if __IOS__ || __MACOS__
+#if __IOS__ || __MACOS__ || __SKIA__ || __WASM__ || __NETSTD_REFERENCE__
 using Windows.Data.Xml.Dom;
 
 namespace Windows.UI.Notifications
