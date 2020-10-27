@@ -495,6 +495,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant("using {0};", _defaultNamespace);
 			writer.AppendLineInvariant("");
 
+			// If a failure happens here, this means that the _isWasm was not properly set as the DefineConstants msbuild property
+			// was not populated. This can happen when the property is set through a target with the "CreateProperty" task, and the
+			// Uno.SourceGeneration tasks do not execute this task properly.
+			writer.AppendLineInvariant("#if __WASM__");
+			writer.AppendLineInvariant(_isWasm ? "" : "#error invalid internal source generator state. The __WASM__ DefineConstant was not propagated properly.");
+			writer.AppendLineInvariant("#endif");
+
 			using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 			{
 				writer.AppendLineInvariant("/// <summary>");
