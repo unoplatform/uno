@@ -43,31 +43,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		 *  
 		 *  *1 : macOS 10.6 and later
 		 *
-		 * Below are more specific notes when converting types to/from macOS.
-		 *
-		 * --- UWP to macOS ---
-		 *
-		 * UWP has the following standard data formats that correspond with a macOS Url:
-		 *
-		 *  1. Uri, now deprecated in favor of:
-		 *  2. ApplicationLink and
-		 *  3. WebLink
-		 *
-		 * For maximum compatibility all are mapped to Url.
-		 * However, when applying data to the clipboard or drag/drop DataPackage, 
-		 * only one may be used at a time in the above defined priority. 
-		 * WebLink is considered more specific than ApplicationLink.
-		 *
-		 * --- macOS to UWP ---
-		 *
-		 * A macOS URL must be specially mapped for UWP as UWP's direct equivalent 
-		 * standard data format 'Uri' is deprecated.
-		 *
-		 * 1. WebLink is used if the macOS URL has a scheme of http or https 
-		 * 2. ApplicationLink is used if not #1
-		 *
-		 * For full compatibility, Uri is still populated regardless of #1 or #2.
-		 *
 		 */
 
 		// An Uno-internal abstraction is used to simplify native drag/drop & clipboard integration

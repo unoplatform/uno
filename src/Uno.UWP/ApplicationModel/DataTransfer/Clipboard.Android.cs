@@ -48,29 +48,17 @@ namespace Windows.ApplicationModel.DataTransfer
 				mimeTypes.Add("text/plaintext");
 			}
 
-			// UWP has the following standard data formats that correspond with an Android Uri:
-			//
-			//  1. Uri, now deprecated in favor of:
-			//  2. ApplicationLink and
-			//  3. WebLink
-			//
-			// For maximum compatibility with Android all are mapped to Uri. However, only
-			// one may be used at a time in the above defined priority. WebLink is
-			// considered more specific than ApplicationLink.
-			if (data?.Contains(StandardDataFormats.Uri) ?? false)
+			if (data != null)
 			{
-				var uri = await data.GetUriAsync();
-				AddAndroidUri(uri.ToString());
-			}
-			else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
-			{
-				var webLink = await data.GetWebLinkAsync();
-				AddAndroidUri(webLink.ToString());
-			}
-			else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
-			{
-				var appLink = await data.GetApplicationLinkAsync();
-				AddAndroidUri(appLink.ToString());
+				var uri = DataPackage.CombineUri(
+					data.Contains(StandardDataFormats.WebLink) ? (await data.GetWebLinkAsync()).ToString() : null,
+					data.Contains(StandardDataFormats.ApplicationLink) ? (await data.GetApplicationLinkAsync()).ToString() : null,
+					data.Contains(StandardDataFormats.Uri) ? (await data.GetUriAsync()).ToString() : null);
+
+				var androidUri = Android.Net.Uri.Parse(uri);
+
+				items.Add(new ClipData.Item(androidUri));
+				mimeTypes.Add("text/uri-list");
 			}
 
 			if (data?.Contains(StandardDataFormats.Html) ?? false)
@@ -111,15 +99,6 @@ namespace Windows.ApplicationModel.DataTransfer
 				// Clear clipboard
 				Clear();
 			}
-
-			// Local function to convert a UWP Uri for Android and add it to the items list
-			void AddAndroidUri(string uri)
-			{
-				var androidUri = Android.Net.Uri.Parse(uri);
-
-				items.Add(new ClipData.Item(androidUri));
-				mimeTypes.Add("text/uri-list");
-			}
 		}
 
 		public static DataPackageView GetContent()
@@ -156,33 +135,21 @@ namespace Windows.ApplicationModel.DataTransfer
 							clipText = itemText;
 						}
 
-						// An Android Uri must be specially mapped for UWP as the UWP's direct equivalent 
-						// standard data format 'Uri' is deprecated.
-						//
-						// 1. WebLink is used if the URI has a scheme of http or https 
-						// 2. ApplicationLink is used if not #1
-						//
-						// For full compatibility, Uri is still populated regardless of #1 or #2.
-						var itemUri = item.Uri;
-						var itemUriStr = itemUri?.ToString();
+						var itemUriStr = item.Uri?.ToString();
 						if (itemUriStr != null)
 						{
-							if (itemUriStr.StartsWith("http", StringComparison.InvariantCultureIgnoreCase) ||
-								itemUriStr.StartsWith("https", StringComparison.InvariantCultureIgnoreCase))
-							{
-								clipWebLink = new Uri(itemUriStr);
-							}
-							else
-							{
-								clipApplicationLink = new Uri(itemUriStr);
-							}
+							DataPackage.SeparateUri(
+								itemUriStr,
+								out string webLink,
+								out string applicationLink);
 
-							// Deprecated but added for compatibility
-							clipUri = new Uri(itemUriStr);
+							clipWebLink         = webLink != null ? new Uri(webLink) : null;
+							clipApplicationLink = applicationLink != null ? new Uri(applicationLink) : null;
+							clipUri             = new Uri(itemUriStr); // Deprecated but still added for compatibility
 						}
 
 						var itemHtml = item.HtmlText;
-						if (itemText != null)
+						if (itemHtml != null)
 						{
 							clipHtml = itemHtml;
 						}
