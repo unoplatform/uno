@@ -66,6 +66,7 @@
 
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />
 	  </ItemGroup>
 
 	</When>
