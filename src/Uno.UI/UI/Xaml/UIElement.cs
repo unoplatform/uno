@@ -35,6 +35,7 @@ namespace Windows.UI.Xaml
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
+		private XamlRoot _xamlRoot = null;
 		private string _uid;
 
 		/// <summary>
@@ -157,6 +158,12 @@ namespace Windows.UI.Xaml
 			view._renderTransform?.UpdateOrigin(point);
 		}
 		#endregion
+
+		public XamlRoot XamlRoot
+		{
+			get => _xamlRoot ?? XamlRoot.Current;
+			set => _xamlRoot = value;
+		}
 
 		public GeneralTransform TransformToVisual(UIElement visual)
 			=> new MatrixTransform { Matrix = new Matrix(GetTransform(from: this, to: visual)) };
