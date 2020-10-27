@@ -6,6 +6,7 @@
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
+		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -94,7 +95,7 @@
 	<ItemGroup>
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
-	<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
+	<ItemGroup>
 		<Page Include="Windows_UI_Xaml\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Data\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Controls\**\*.xaml" />
