@@ -3244,6 +3244,12 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.DropCompletedEventArgs..ctor()"
 				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Package..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.PackageId..ctor()"
+				reason="Not part of the UWP API"/>
 		</Methods>
 		<Fields>
 			<Member
