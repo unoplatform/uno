@@ -141,6 +141,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Invalidate _ellipsize
 		partial void OnTextTrimmingChangedPartial() => _ellipsize = null;
+		partial void OnMaxLinesChangedPartial() => _ellipsize = null;
 
 		// Invalidate _layoutAlignment
 		partial void OnTextAlignmentChangedPartial() => _layoutAlignment = null;
@@ -156,6 +157,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateTextTrimming();
 			UpdateTextFormatted();
 			UpdatePaint();
+			UpdateMaxLines();
 		}
 
 		private void UpdateLayoutAlignment()
@@ -239,6 +241,22 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_textFormatted = GetTextFormatted();
+		}
+
+		/// <summary>
+		/// Sets ellipsize to truncateAt.END when a number of line is specified.
+		/// If ellipsize is another value, the text won't truncate.
+		/// </summary>
+		private void UpdateMaxLines()
+		{
+			if (_ellipsize != null)
+			{
+				return;
+			}
+
+			_ellipsize = this.IsLayoutConstrainedByMaxLines
+				? TruncateEnd
+				: null;
 		}
 
 		private Java.Lang.ICharSequence GetTextFormatted()

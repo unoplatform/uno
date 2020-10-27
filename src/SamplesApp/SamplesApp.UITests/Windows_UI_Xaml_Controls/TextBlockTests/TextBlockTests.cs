@@ -265,5 +265,65 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 				}
 			}
 		}
+
+		[Test]
+		[AutoRetry]
+		public void When_MaxLines_Changed_On_Stack_Container()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_Multiple_Containers");
+
+			var stackTextBlockName = "stackTextBlock";
+			var maxLineSlider = _app.Marked("slider");
+			
+			_app.WaitForElement(maxLineSlider);
+
+			var numberOfLines = 1;
+			maxLineSlider.SetDependencyPropertyValue("Value", $"{numberOfLines}");
+			var rectBefore = _app.GetRect(stackTextBlockName);
+			var lineHeight = rectBefore.Height;
+
+			numberOfLines = 3;
+			maxLineSlider.SetDependencyPropertyValue("Value", $"{numberOfLines}");
+
+			var rectAfter = _app.GetRect(stackTextBlockName);
+			var textBlockHeight = rectAfter.Height;
+
+			var actualNumberOfLines = (int)Math.Ceiling(textBlockHeight / lineHeight);
+			Assert.IsTrue(actualNumberOfLines == numberOfLines,
+				"Results \n" +
+				$"Expected Number of lines: {numberOfLines}. \n" +
+				$"Actual Number of lines:{actualNumberOfLines}. \n" +
+				$"Line height: {lineHeight}. \n");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_MaxLines_Changed_On_Grid_Container()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_Multiple_Containers");
+
+			var gridTextBlockName = "gridTextBlock";
+			var maxLineSlider = _app.Marked("slider");
+
+			_app.WaitForElement(maxLineSlider);
+
+			var numberOfLines = 1;
+			maxLineSlider.SetDependencyPropertyValue("Value", $"{numberOfLines}");
+			var rectBefore = _app.GetRect(gridTextBlockName);
+			var lineHeight = rectBefore.Height;
+
+			numberOfLines = 2;
+			maxLineSlider.SetDependencyPropertyValue("Value", $"{numberOfLines}");
+
+			var rectAfter = _app.GetRect(gridTextBlockName);
+			var textBlockHeight = rectAfter.Height;
+
+			var actualNumberOfLines = (int)Math.Ceiling(textBlockHeight / lineHeight);
+			Assert.IsTrue(actualNumberOfLines == numberOfLines,
+				"Results \n" +
+				$"Expected Number of lines: {numberOfLines}. \n" +
+				$"Actual Number of lines:{actualNumberOfLines}. \n" +
+				$"Line height: {lineHeight}. \n");
+		}
 	}
 }
