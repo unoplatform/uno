@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 
@@ -34,17 +35,26 @@ namespace Windows.ApplicationModel.Appointments
 			// using only AllCalendarsReadOnly, other: throw NotImplementedException
 
 			if (options != AppointmentStoreAccessType.AllCalendarsReadOnly)
+			{
 				throw new NotImplementedException("AppointmentManager:RequestStoreAsync - only AllCalendarsReadOnly is implemented");
+			}
 
-			bool granted = await global::Windows.Extensions.PermissionsHelper.AndroidPermissionAsync(Android.Manifest.Permission.ReadCalendar);
-			if (!granted)
+			string requiredPermission = Android.Manifest.Permission.ReadCalendar;
+
+			if (!Windows.Extensions.PermissionsHelper.IsDeclaredInManifest(requiredPermission))
 			{
-				return null;
+				throw new Exception("AppointmentManager:RequestStoreAsync - no ReadCalendar permission declared in Manifest");
 			}
-			else
+
+			if (!await Windows.Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, requiredPermission))
 			{
-				return new AppointmentStore();
+				if (!await Windows.Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, requiredPermission))
+				{
+					return null;
+				}
 			}
+
+			return new AppointmentStore();
 
 		}
 	}
