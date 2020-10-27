@@ -3244,6 +3244,9 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.DropCompletedEventArgs..ctor()"
 				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Foundation.GuidHelper..ctor()"
+				reason="Not part of the UWP API"/>				
 		</Methods>
 		<Fields>
 			<Member
