@@ -12,7 +12,7 @@ using System.Linq;
 namespace Uno.UI.RuntimeTests.Tests
 {
 	[TestClass]
-	public class Given_StorageFolder2
+	public class Given__StorageFolder_GetItems
 	{
 
 		readonly String[] _filenames = { "testfile1.txt", "testfile2.txt", "testfile3.txt", "testfile4.txt", "testfile5.txt" };
@@ -24,6 +24,10 @@ namespace Uno.UI.RuntimeTests.Tests
 		{
 			_folderForTestFiles = Windows.Storage.ApplicationData.Current.LocalFolder;
 			Assert.IsNotNull(_folderForTestFiles, "cannot get LocalFolder - error outside tested method");
+
+			_folderForTestFiles = await _folderForTestFiles.CreateFolderAsync("StorageFolder_GetItems");
+			Assert.IsNotNull(_folderForTestFiles, "cannot create folder for test files - error outside tested method");
+
 
 			foreach (var filename in _filenames)
 			{
@@ -89,6 +93,8 @@ namespace Uno.UI.RuntimeTests.Tests
 				}
 			}
 
+			await _folderForTestFiles.DeleteAsync();
+
 		}
 
 		[TestMethod]
@@ -97,11 +103,10 @@ namespace Uno.UI.RuntimeTests.Tests
 
 			var realFileList = await _folderForTestFiles.GetFilesAsync();
 
-			// I don't know if we can assume that the only files are files from our TestInitialize method
-			//if(fileList.Count != _filenames.Length)
-			//{
-			//	Assert.Fail("Number of files mismatch");
-			//}
+			if (realFileList.Count != _filenames.Length)
+			{
+				Assert.Fail("Number of files mismatch");
+			}
 
 			foreach (string requestedFilename in _filenames)
 			{
@@ -111,11 +116,10 @@ namespace Uno.UI.RuntimeTests.Tests
 
 			var realFolderList = await _folderForTestFiles.GetFoldersAsync();
 
-			// I don't know if we can assume that the only files are files from our TestInitialize method
-			//if(fileList.Count != _filenames.Length)
-			//{
-			//	Assert.Fail("Number of files mismatch");
-			//}
+			if (realFolderList.Count != _foldernames.Length)
+			{
+				Assert.Fail("Number of folders mismatch");
+			}
 
 			foreach (var requestedFoldername in _foldernames)
 			{
