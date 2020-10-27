@@ -55,10 +55,13 @@ namespace Windows.ApplicationModel.DataTransfer
 					data.Contains(StandardDataFormats.ApplicationLink) ? (await data.GetApplicationLinkAsync()).ToString() : null,
 					data.Contains(StandardDataFormats.Uri) ? (await data.GetUriAsync()).ToString() : null);
 
-				var androidUri = Android.Net.Uri.Parse(uri);
+				if (string.IsNullOrEmpty(uri) == false)
+				{
+					var androidUri = Android.Net.Uri.Parse(uri);
 
-				items.Add(new ClipData.Item(androidUri));
-				mimeTypes.Add("text/uri-list");
+					items.Add(new ClipData.Item(androidUri));
+					mimeTypes.Add("text/uri-list");
+				}
 			}
 
 			if (data?.Contains(StandardDataFormats.Html) ?? false)

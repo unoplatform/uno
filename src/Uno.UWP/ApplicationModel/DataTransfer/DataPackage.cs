@@ -121,9 +121,13 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 
 		/// <summary>
-		/// Separated a single URI/URL into separate URI's for WebLink and ApplicationLink (Uri format is deprecated).
+		/// Separates a single URI/URL into separate URI's for WebLink and ApplicationLink (Uri format is deprecated).
 		/// This is useful for converting a platform-specific URI/URL into formats supported by the <see cref="DataPackage"/>.
 		/// </summary>
+		/// <remarks>
+		/// This method is intended for use during integration with other platforms.
+		/// Therefore, it uses strings as the intermediate type instead of a Uri or native URL class.
+		/// </remarks>
 		/// <param name="uri">The platform-specific URI/URL.</param>
 		/// <param name="webLink">
 		/// The <see cref="StandardDataFormats.WebLink"/> format Uri intended for use in a <see cref="DataPackage"/>.
@@ -181,6 +185,10 @@ namespace Windows.ApplicationModel.DataTransfer
 		/// Combines separate URI's for WebLink, ApplicationLink and Uri (deprecated) into a single URI/URL.
 		/// This is useful for converting formats supported by the <see cref="DataPackage"/> into a platform-specific URI/URL.
 		/// </summary>
+		/// <remarks>
+		/// This method is intended for use during integration with other platforms.
+		/// Therefore, it uses strings as the intermediate type instead of a Uri or native URL class.
+		/// </remarks>
 		/// <param name="webLink">
 		/// Data from a <see cref="DataPackage"/> for the <see cref="StandardDataFormats.WebLink"/> format.
 		/// Set to null if this format does not exist in the package.
