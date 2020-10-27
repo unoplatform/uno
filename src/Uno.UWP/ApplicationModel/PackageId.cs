@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel
 		public string Name => "Unknown";
 
 		[global::Uno.NotImplemented]
-		public PackageVersion Version => new PackageVersion(Assembly.GetExecutingAssembly().GetVersionNumber())
+		public PackageVersion Version => new PackageVersion(Assembly.GetExecutingAssembly().GetVersionNumber());
 #endif
 
 		[Uno.NotImplemented]

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using Tizen.Applications;
+using Uno.ApplicationModel;
 using Windows.ApplicationModel;
 using Package = Tizen.Applications.Package;
 

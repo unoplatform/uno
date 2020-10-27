@@ -18,6 +18,7 @@ using Windows.Devices.Haptics;
 using Uno.UI.Runtime.Skia.Tizen.Devices.Haptics;
 using Windows.ApplicationModel;
 using Uno.UI.Runtime.Skia.Tizen.ApplicationModel;
+using Uno.ApplicationModel;
 
 namespace Uno.UI.Runtime.Skia
 {

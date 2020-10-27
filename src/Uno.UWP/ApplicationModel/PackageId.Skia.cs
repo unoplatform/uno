@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System.Reflection;
+using Uno.ApplicationModel;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 
@@ -23,16 +24,5 @@ namespace Windows.ApplicationModel
 
 		public PackageVersion Version => _packageIdExtension?.Version ??
 			new PackageVersion(Assembly.GetExecutingAssembly().GetVersionNumber());
-	}
-
-	internal interface IPackageIdExtension
-	{
-		string FamilyName { get; }
-
-		string FullName { get; }
-
-		string Name { get; }
-
-		PackageVersion Version { get; }
 	}
 }
