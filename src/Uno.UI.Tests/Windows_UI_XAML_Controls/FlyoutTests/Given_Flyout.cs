@@ -84,7 +84,7 @@ namespace Uno.UI.Tests.FlyoutTests
 
 			var visibleBounds = new Rect(0, 0, 410, 815);
 			var applicationView = ApplicationView.GetForCurrentView();
-			using (applicationView.SetVisibleBounds(visibleBounds))
+			using (applicationView.SetTemporaryVisibleBounds(visibleBounds))
 			{
 				panel.Measure(visibleBounds.Size);
 				panel.Arrange(visibleBounds);
@@ -125,7 +125,7 @@ namespace Uno.UI.Tests.FlyoutTests
 
 			var visibleBounds = new Rect(0, 0, 410, 815);
 			var applicationView = ApplicationView.GetForCurrentView();
-			using (applicationView.SetVisibleBounds(visibleBounds))
+			using (applicationView.SetTemporaryVisibleBounds(visibleBounds))
 			{
 				panel.Measure(visibleBounds.Size);
 				panel.Arrange(visibleBounds);
