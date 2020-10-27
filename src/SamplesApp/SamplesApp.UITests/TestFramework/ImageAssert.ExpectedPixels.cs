@@ -24,6 +24,13 @@ namespace SamplesApp.UITests.TestFramework
 		public ExpectedPixels Named(string name)
 			=> new ExpectedPixels(name, Location, SourceLocation, Values, Tolerance);
 
+		public ExpectedPixels Pixel(string color)
+		{
+			var colors = new [,] {{GetColorFromString(color)}};
+
+			return new ExpectedPixels(Name, Location, SourceLocation, colors, Tolerance);
+		}
+
 		public ExpectedPixels Pixels(string[,] pixels)
 		{
 			var colors = new Color[pixels.GetLength(0), pixels.GetLength(1)];
@@ -31,13 +38,16 @@ namespace SamplesApp.UITests.TestFramework
 			for (var px = 0; px < pixels.GetLength(1); px++)
 			{
 				var colorCode = pixels[py, px];
-				colors[py, px] = string.IsNullOrWhiteSpace(colorCode)
-					? Color.Empty
-					: ColorCodeParser.Parse(colorCode);
+				colors[py, px] = GetColorFromString(colorCode);
 			}
 
 			return new ExpectedPixels(Name, Location, SourceLocation, colors, Tolerance);
 		}
+
+		private static Color GetColorFromString(string colorCode) =>
+			string.IsNullOrWhiteSpace(colorCode)
+				? Color.Empty
+				: ColorCodeParser.Parse(colorCode);
 
 		public ExpectedPixels Pixels(Bitmap source, Rectangle rect)
 		{
@@ -145,8 +155,10 @@ namespace SamplesApp.UITests.TestFramework
 		public (uint x, uint y) DiscreteValidation { get; }
 
 		/// <inheritdoc />
-		public override string ToString()
-			=> $"Color {ColorKind} tolerance of {Color} | Location {OffsetKind} tolerance of {Offset.x},{Offset.y} pixels.";
+		public override string ToString() =>
+			Color > 0
+				? $"Color {ColorKind} tolerance of {Color} | Location {OffsetKind} tolerance of {Offset.x},{Offset.y} pixels."
+				: "No color tolerance";
 	}
 
 	public enum ColorToleranceKind
