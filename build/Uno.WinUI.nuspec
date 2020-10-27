@@ -23,6 +23,7 @@
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Fragment" version="1.1.0" />
 		<dependency id="Uno.SourceGenerationTasks" version="2.0.13" />
+		<dependency id="Xamarin.AndroidX.Activity" version="1.1.0" />
 		<dependency id="Uno.Core" version="2.0.0" />
 		<dependency id="Uno.Core.Build" version="2.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
@@ -34,6 +35,7 @@
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
 		<dependency id="Uno.SourceGenerationTasks" version="2.0.13" />
+		<dependency id="Xamarin.AndroidX.Activity" version="1.1.0" />
 		<dependency id="Uno.Core" version="2.0.0" />
 		<dependency id="Uno.Core.Build" version="2.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
