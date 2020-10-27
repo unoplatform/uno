@@ -12,6 +12,9 @@ This how-to will walk you through the process of creating a multi-platform appli
 
 Throughout the how-to there will be notes on recommended practices and tips that highlight resources for additional learning.
 
+> [!TIP]
+> The complete source code that goes along with this tutorial is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
+
 ## Prerequisites
 
 * [Visual Studio 2019 16.3 or later](http://www.visualstudio.com/downloads/)
@@ -1818,10 +1821,15 @@ In this how-to, you built a multi-platform application that leverages web servic
 * Built a XAML UI that utilizes the view-model
 * Tested the application in UWP and WASM (and optionally on iOS and Android)
 
+The full source code for this tutorial is available here - [Tutorial Source Code - TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
+
 ## References
 
 * Uno Platform:
   * [Using Uno - getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs.html)
+* Uno Platform Samples:
+  * [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples)
+  * [Tutorial Source Code - TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
 * Microsoft Documentation
   * [HttpClient class](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=netcore-3.1)
   * [REST Client tutorial](https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/console-webapiclient)
