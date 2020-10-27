@@ -178,7 +178,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			var rect = _app.GetRect("CommandBarTitleText");
 
 			Assert.Greater(rect.Height, 1);
+		}
 
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_Navigated_CommandBarShouldKeepColor_Native_Frame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.Background.CommandBar_Background_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateToPage2Button");
+			_app.FastTap("NavigateToPage2Button");
+
+			_app.WaitForElement("Page2CommandBar");
+
+			var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
+
+			_app.Wait(TimeSpan.FromMilliseconds(500));
+
+			var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
+
+			ImageAssert.AreEqual(initial, final);
 		}
 	}
 }

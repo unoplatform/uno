@@ -1,4 +1,4 @@
-﻿#if __IOS__
+#if __IOS__
 #nullable enable
 using System;
 using System.Linq;
@@ -93,6 +93,15 @@ namespace Uno.UI.Controls
 		/// </summary>
 		/// <param name="pageController">The controller of the page</param>
 		public static void PageDidDisappear(UIViewController pageController)
+		{
+			if (pageController.FindTopCommandBar() is { } topCommandBar)
+			{
+				// Set the native navigation bar to null so it does not render when the page is not visible
+				SetNavigationBar(topCommandBar, null!);
+			}
+		}
+
+		public static void PageWillDisappear(UIViewController pageController)
 		{
 			if (pageController.FindTopCommandBar() is { } topCommandBar)
 			{
