@@ -11,6 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
     public class Given_XamlRoot
 	{
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Loaded_Matches_Window_Root()
 		{
 			var border = new Border();
