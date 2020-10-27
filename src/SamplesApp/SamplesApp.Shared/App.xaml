@@ -76,7 +76,22 @@
                 <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="Padding" Value="8" />
             </Style>
-        </ResourceDictionary>
+
+			<!--Used by ContentDialog samples-->
+			<Style x:Key="RedBorderContentDialogStyle"
+				   TargetType="ContentDialog">
+				<Setter Property="BorderBrush"
+						Value="Red" />
+			</Style>
+			<Style x:Key="ContentDialogCloseButtonStyle"
+				   TargetType="Button">
+				<Setter Property="Foreground"
+						Value="DarkBlue" />
+				<Setter Property="Background"
+						Value="LightBlue" />
+			</Style>
+			
+		</ResourceDictionary>
 
     </Application.Resources>
 </Application>
