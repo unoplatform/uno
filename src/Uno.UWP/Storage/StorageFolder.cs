@@ -259,7 +259,7 @@ namespace Windows.Storage
 			return items.AsReadOnly();
 		}
 
-		public IAsyncOperation<IReadOnlyList<IStorageItem>> GetItemsAsync() => GetItemsTask().AsAsyncOperation<IReadOnlyList<IStorageItem>>();
+		public IAsyncOperation<IReadOnlyList<IStorageItem>> GetItemsAsync() => AsyncOperation.FromTask(ct => GetItemsTask(ct));
 
 		internal async Task<IReadOnlyList<StorageFile>> GetFilesTask(CancellationToken ct)
 		{
