@@ -1,17 +1,19 @@
 ﻿#nullable enable
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Uno.Foundation.Extensibility;
+using Uno.UI.Notifications;
 
 namespace Windows.UI.Notifications
 {
-    public partial class BadgeUpdater
+	public partial class BadgeUpdater
     {
-		partial void SetBadge(string? value) =>
-		{			
+		private IBadgeUpdaterExtension? _badgeUpdaterExtension;
+
+		partial void InitPlatform()
+		{
+			ApiExtensibility.CreateInstance(this, out _badgeUpdaterExtension);
 		}
+
+		partial void SetBadge(string? value) => _badgeUpdaterExtension?.SetBadge(value);
 	}
 }
