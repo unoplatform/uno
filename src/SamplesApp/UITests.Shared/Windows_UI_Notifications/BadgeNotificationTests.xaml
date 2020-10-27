@@ -9,7 +9,7 @@
     mc:Ignorable="d">
 
     <StackPanel Padding="20">
-        <TextBox x:Name="BadgeTextBox" />
+        <TextBox x:Name="BadgeTextBox" Text="42" />
         <Button Click="SetBadge_Click">Set badge</Button>
         <Button Click="ClearBadge_Click">Clear badge</Button>
     </StackPanel>
