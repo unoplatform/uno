@@ -242,18 +242,18 @@ namespace Windows.Storage
 				Directory.Delete(this.Path, true);
             });
 
-		internal async Task<IReadOnlyList<IStorageItem>> GetItemsTask()
+		internal async Task<IReadOnlyList<IStorageItem>> GetItemsTask(CancellationToken ct)
 		{
 			var items = new List<IStorageItem>();
 
-			foreach (var folder in Directory.GetDirectories(this.Path))
+			foreach (var folder in Directory.EnumerateDirectories(this.Path))
 			{
-				items.Add(await StorageFolder.GetFolderFromPathAsync(folder));
+				items.Add(await StorageFolder.GetFolderFromPathAsync(folder).AsTask(ct));
 			}
 
-			foreach (var folder in Directory.GetFiles(this.Path))
+			foreach (var folder in Directory.EnumerateFiles(this.Path))
 			{
-				items.Add(await StorageFile.GetFileFromPathAsync(folder));
+				items.Add(await StorageFile.GetFileFromPathAsync(folder).AsTask(ct));
 			}
 
 			return items.AsReadOnly();
@@ -261,31 +261,31 @@ namespace Windows.Storage
 
 		public IAsyncOperation<IReadOnlyList<IStorageItem>> GetItemsAsync() => GetItemsTask().AsAsyncOperation<IReadOnlyList<IStorageItem>>();
 
-		internal async Task<IReadOnlyList<StorageFile>> GetFilesTask()
+		internal async Task<IReadOnlyList<StorageFile>> GetFilesTask(CancellationToken ct)
 		{
 			var items = new List<StorageFile>();
 
-			foreach (var folder in Directory.GetFiles(this.Path))
+			foreach (var folder in Directory.EnumerateFiles(this.Path))
 			{
-				items.Add(await StorageFile.GetFileFromPathAsync(folder));
+				items.Add(await StorageFile.GetFileFromPathAsync(folder).AsTask(ct));
 			}
 			return items.AsReadOnly();
 		}
 
-		public IAsyncOperation<IReadOnlyList<StorageFile>> GetFilesAsync() => GetFilesTask().AsAsyncOperation<IReadOnlyList<StorageFile>>();
+		public IAsyncOperation<IReadOnlyList<StorageFile>> GetFilesAsync() => AsyncOperation.FromTask(ct => GetFilesTask(ct));
 
-		internal async Task<IReadOnlyList<StorageFolder>> GetFoldersTask()
+		internal async Task<IReadOnlyList<StorageFolder>> GetFoldersTask(CancellationToken ct)
 		{
 			var items = new List<StorageFolder>();
 
-			foreach (var folder in Directory.GetDirectories(this.Path))
+			foreach (var folder in Directory.EnumerateDirectories(this.Path))
 			{
-				items.Add(await StorageFolder.GetFolderFromPathAsync(folder));
+				items.Add(await StorageFolder.GetFolderFromPathAsync(folder).AsTask(ct));
 			}
 
 			return items.AsReadOnly();
 		}
 
-		public IAsyncOperation<IReadOnlyList<StorageFolder>> GetFoldersAsync() => GetFoldersTask().AsAsyncOperation<IReadOnlyList<StorageFolder>>();
+		public IAsyncOperation<IReadOnlyList<StorageFolder>> GetFoldersAsync() => AsyncOperation.FromTask(ct => GetFoldersTask(ct));
 	}
 }
