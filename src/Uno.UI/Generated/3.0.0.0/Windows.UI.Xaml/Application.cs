@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property Resources
 		// Skipping already declared property RequestedTheme
 		// Skipping already declared property DebugSettings
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.ApplicationRequiresPointerMode RequiresPointerMode
 		{

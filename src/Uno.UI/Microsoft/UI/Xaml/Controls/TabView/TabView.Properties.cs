@@ -111,7 +111,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public IList<object> TabItems
 		{
 			get => (IList<object>)GetValue(TabItemsProperty);
-			set => SetValue(TabItemsProperty, value);
+			private set => SetValue(TabItemsProperty, value);
 		}
 
 		public static DependencyProperty TabItemsProperty { get; } =

@@ -426,7 +426,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				}
 				else
 				{
-					throw new InvalidOperationException("Invalid collection");
+					throw new InvalidOperationException($"Unsupported collection type {propertyInfo.PropertyType} on {propertyInfo}");
 				}
 			}
 			else

@@ -3066,7 +3066,7 @@
 			<!-- End Skia Import -->
 		</Fields>
 	</IgnoreSet>
-	<IgnoreSet baseVersion="3.0.17">
+	<IgnoreSet baseVersion="3.1.6">
 		<Types>
 			<Member 
 				fullName="Windows.Storage.StorageItem"
@@ -3247,6 +3247,9 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.XamlRootChangedEventArgs..ctor()"
 				reason="Not part of the UWP API"/>
+      <Member
+			  fullName="System.Void Microsoft.UI.Xaml.Controls.TabView.set_TabItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)"
+			  reason="Not part of the UWP API"/>
 		</Methods>
 		<Fields>
 			<Member
