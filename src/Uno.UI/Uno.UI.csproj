@@ -33,7 +33,10 @@
 
 		<!-- Generate automation IDs in debug builds, use by UI tests. -->
     <IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
-  </PropertyGroup>
+
+		<!-- Disable WPF targets -->
+		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
@@ -45,10 +48,6 @@
 	<Choose>
 		<When Condition="'$(TargetFramework)'=='net461'">
 			<ItemGroup>
-				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
-				<Page Remove="@(Page)" />
-			</ItemGroup>
-			<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
 				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
 			</ItemGroup>
 		</When>
