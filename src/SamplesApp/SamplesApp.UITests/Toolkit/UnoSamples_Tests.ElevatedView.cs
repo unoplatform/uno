@@ -72,12 +72,12 @@ namespace SamplesApp.UITests.Toolkit
 					.Pixel(gray),
 				ExpectedPixels
 					.At("right-middle-shadow", elevationRect.Right + 1, elevationRect.CenterY)
-					.WithPixelTolerance(1, 1)
+					.WithPixelTolerance(5, 1)
 					.WithColorTolerance(22)
 					.Pixel(pink),
 				ExpectedPixels
 					.At("bottom-middle-shadow", elevationRect.CenterX, elevationRect.Bottom + 1)
-					.WithPixelTolerance(1, 1)
+					.WithPixelTolerance(1, 5)
 					.WithColorTolerance(22)
 					.Pixel(pink),
 				ExpectedPixels
