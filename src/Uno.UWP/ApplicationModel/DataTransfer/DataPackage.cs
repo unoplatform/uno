@@ -93,6 +93,146 @@ namespace Windows.ApplicationModel.DataTransfer
 				_data,
 				ResourceMap.ToImmutableDictionary(),
 				(id, op) => OperationCompleted?.Invoke(this, new OperationCompletedEventArgs(id, op)));
+
+		/// <summary>
+		/// Determines if the given URI/URL is considered a WebLink.
+		/// This determination is done based on whether the scheme starts with 'http' or 'https'.
+		/// </summary>
+		/// <remarks>
+		/// This method is intended for use during integration with other platforms.
+		/// Therefore, it uses a string instead of a Uri or native URL class.
+		/// </remarks>
+		/// <param name="uri">The URI to determine if it is a WebLink.</param>
+		/// <returns>True if the given URI/URL is considered a WebLink; otherwise, false.</returns>
+		internal static bool IsUriWebLink(string? uri)
+		{
+			uri = uri?.Trim();
+
+			if (string.IsNullOrEmpty(uri) == false)
+			{
+				if (uri!.StartsWith("http", StringComparison.InvariantCultureIgnoreCase) ||
+					uri!.StartsWith("https", StringComparison.InvariantCultureIgnoreCase))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Separated a single URI/URL into separate URI's for WebLink and ApplicationLink (Uri format is deprecated).
+		/// This is useful for converting a platform-specific URI/URL into formats supported by the <see cref="DataPackage"/>.
+		/// </summary>
+		/// <param name="uri">The platform-specific URI/URL.</param>
+		/// <param name="webLink">
+		/// The <see cref="StandardDataFormats.WebLink"/> format Uri intended for use in a <see cref="DataPackage"/>.
+		/// Null will be returned if the URI/URL is not in the <see cref="StandardDataFormats.WebLink"/> format.
+		/// </param>
+		/// <param name="applicationLink">
+		/// The <see cref="StandardDataFormats.ApplicationLink"/> format Uri intended for use in a <see cref="DataPackage"/>.
+		/// Null will be returned if the URI/URL is not in the <see cref="StandardDataFormats.ApplicationLink"/> format.
+		/// </param>
+		internal static void SeparateUri(string? uri, out string? webLink, out string? applicationLink)
+		{
+			/* UWP has the following standard data formats that correspond with a URI/URL:
+			 *
+			 *  1. Uri, now deprecated in favor of:
+			 *  2. WebLink and
+			 *  3. ApplicationLink
+			 *
+			 * Several platforms such as macOS/iOS/Android do not differentiate between them and
+			 * only use a single URI/URL class or string.
+			 * 
+			 * Therefore, this method is used to map between a native URI/URL and the equivalent
+			 * UWP data type (since UWP's direct equivalent standard data format 'Uri' is deprecated).
+			 * 
+			 * The mapping is as follows:
+			 * 
+			 * 1. WebLink is used if the given URL/URI has a scheme of "http" or "https"
+			 * 2. ApplicationLink is used if not #1
+			 *
+			 * For full compatibility, the Uri format within a DataPackage should still be populated
+			 * regardless of #1 or #2.
+			 */
+
+			uri = uri?.Trim();
+
+			if (string.IsNullOrEmpty(uri))
+			{
+				webLink = null;
+				applicationLink = null;
+			}
+			else if (IsUriWebLink(uri))
+			{
+				webLink = uri;
+				applicationLink = null;
+			}
+			else
+			{
+				webLink = null;
+				applicationLink = uri;
+			}
+
+			return;
+		}
+
+		/// <summary>
+		/// Combines separate URI's for WebLink, ApplicationLink and Uri (deprecated) into a single URI/URL.
+		/// This is useful for converting formats supported by the <see cref="DataPackage"/> into a platform-specific URI/URL.
+		/// </summary>
+		/// <param name="webLink">
+		/// Data from a <see cref="DataPackage"/> for the <see cref="StandardDataFormats.WebLink"/> format.
+		/// Set to null if this format does not exist in the package.
+		/// </param>
+		/// <param name="applicationLink">
+		/// Data from a <see cref="DataPackage"/> for the <see cref="StandardDataFormats.ApplicationLink"/> format.
+		/// Set to null if this format does not exist in the package.
+		/// </param>
+		/// <param name="uri">
+		/// Data from a <see cref="DataPackage"/> for the <see cref="StandardDataFormats.Uri"/> format.
+		/// Set to null if this format does not exist in the package.
+		/// </param>
+		/// <returns></returns>
+		internal static string CombineUri(string? webLink, string? applicationLink, string? uri)
+		{
+			/* UWP has the following standard data formats that correspond with a URI/URL:
+			 *
+			 *  1. Uri, now deprecated in favor of:
+			 *  2. WebLink and
+			 *  3. ApplicationLink
+			 *
+			 * Several platforms such as macOS/iOS/Android do not differentiate between them and
+			 * only use a single URI/URL class or string.
+			 *
+			 * When applying data to the native clipboard or drag/drop data from a DataPackage, 
+			 * only one URI/URL may be used. Therefore, all URI data formats are merged together
+			 * into a single URI using the above defined priority. 
+			 * 
+			 * WebLink is considered more specific than ApplicationLink.
+			 */
+
+			string combinedUri = string.Empty;
+
+			webLink = webLink?.Trim();
+			applicationLink = applicationLink?.Trim();
+			uri = uri?.Trim();
+
+			if (string.IsNullOrEmpty(uri) == false)
+			{
+				combinedUri = uri!;
+			}
+			else if (string.IsNullOrEmpty(webLink) == false)
+			{
+				combinedUri = webLink!;
+			}
+			else if (string.IsNullOrEmpty(applicationLink) == false)
+			{
+				combinedUri = applicationLink!;
+			}
+
+			return combinedUri;
+		}
 	}
 }
 #endif
