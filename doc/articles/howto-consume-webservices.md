@@ -475,7 +475,7 @@ In this task, you will create a number of classes that demonstrate how to use th
     }
     ```
 
-    You will now implement the Breed Search API service. This service will inherit from **WebApiBase** have single method **Search** that expects a search string.
+    You will now implement the Breed Search API service. This service will inherit from **WebApiBase** and have a single method named **Search** that expects a search string.
 
 1. To add a class for the Breed Search API service, in the **TheCatApiClient.Shared** project, right-click the **WebServices** folder, select **Add** and click **Class...**
 
@@ -642,7 +642,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     }
     ```
 
-    In XAML applications, control bindings should only be updated on UI thread. This method uses the **Dispatcher** to check to see if the code is currently running on the UI thread - if so, the callback is executed immediately. If not, the **Dispatcher.RunAsync** method is used to execute the callback asynchronously on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
+    In XAML applications, control bindings should only be updated on the UI thread. This method uses the **Dispatcher** to check to see if the code is currently running on the UI thread - if so, the callback is executed immediately. If not, the **Dispatcher.RunAsync** method is used to execute the callback asynchronously on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
 
 1. Once complete the base class will look similar to the following:
 
@@ -1127,7 +1127,7 @@ Congratulations - you now have a cross-platform application that interacts with 
 
 ## Task 8 - Add new services to support favorites
 
-In the previous tasks, you created a web service client and UI that performs a simple cat breed search. In this task you will add a service the leverages the favorites API. We will build a UI that will add a picture of a selected breed to your favorites when you click it in the search results, and will remove it from the favorites when you click it in the favorites list.
+In the previous tasks, you created a web service client and UI that performs a simple cat breed search. In this task you will add a service that leverages the favorites API. We will build a UI that will add a picture of a selected breed to your favorites when you click it in the search results, and will remove it from the favorites when you click it in the favorites list.
 
 To achieve this, the **WebApiBase** class will updated to include additional operations that support HTTP Post, Delete and Put verbs. You will then add two more services:
 
@@ -1469,7 +1469,7 @@ You will start by adding the data models.
     }
     ```
 
-    In order to add an image to your favorites, the api expects a JSON payload that contains the image ID and an optional **sub_id** value. The **Add** methods constructs this using a **Dictionary** that is then serialized to JSON and submitted as the payload. Rather than returning a **Favorite**, it returns a **Response** instance which contains the new Favorite ID.
+    In order to add an image to your favorites, the API expects a JSON payload that contains the image ID and an optional **sub_id** value. The **Add** methods constructs this using a **Dictionary** that is then serialized to JSON and submitted as the payload. Rather than returning a **Favorite**, it returns a **Response** instance which contains the new Favorite ID.
 
 1. To add support for adding an image to your favorites, locate the comment **// Insert Add below here** and replace it with the following code:
 
@@ -1607,7 +1607,7 @@ In this task you will add the favorites capability to the Main view-model.
     // Insert DeleteFavorite below here
     ```
 
-    This code creates the API services and the collection that will hold the users favorites.
+    This code creates the API services and the collection that will hold the user's favorites.
 
 1. To add the method that retrieves the current user favorites, locate the **// Insert LoadFavorites below here** comment and replace it with the following code:
 
@@ -1668,9 +1668,9 @@ In this task you will add the favorites capability to the Main view-model.
     }
     ```
 
-    There is a bit more going on in this method, but if follows a familiar pattern. If we have a **selectedBreed**, we set the **IsBusy** property and then use the **ImageApi** to retrieve a collection of images for the breed. If we find any (some breeds don't have images... you would show a message in a production app), we just grab the first image that is returned. We then call the **FavoritesApi** to add the image. We then check the **response** value and, if successful, use the ID that was returned via the **response** to retrieve the new **Favorite**. We then insert the favorite at the beginning of our **Favorites** collection.
+    There is a bit more going on in this method, but it follows a familiar pattern. If we have a **selectedBreed**, we set the **IsBusy** property and then use the **ImageApi** to retrieve a collection of images for the breed. If we find any (some breeds don't have images... you would show a message in a production app), we just grab the first image that is returned. We then call the **FavoritesApi** to add the image. We then check the **response** value and, if successful, use the ID that was returned via the **response** to retrieve the new **Favorite**. We then insert the favorite at the beginning of our **Favorites** collection.
 
-    You should notice the use of the `.ConfigureAwait(false)` code throughout to ensure the UI is not blocked. You will also notice the use of the **DispatchAsync** helper to ensure the **CollectionChanged** event raised by the insertion is raised on the UI thread so the control so any bound control updates correctly.
+    You should notice the use of the `.ConfigureAwait(false)` code throughout to ensure the UI is not blocked. You will also notice the use of the **DispatchAsync** helper to ensure the **CollectionChanged** event raised by the insertion is raised on the UI thread so any bound control updates correctly.
 
 
 1. Finally, to add support for deleting a favorite, locate the **// Insert AddFavorite below here** comment and replace it with the following code:
@@ -1752,7 +1752,7 @@ In this final task you will bring together the new **FavoritesApi** with the upd
     </GridView>
     ```
 
-    This **GridView** is configured in a similar way to the search results - item click is enabled with a code-behind handler, etc. The primary differences are that is bound to the **ViewModel.Favorites** property, the data template is bound to the **Favorite** data model and the template displays an image.
+    This **GridView** is configured in a similar way to the search results - item click is enabled with a code-behind handler, etc. The primary differences are that **ItemsSource** is bound to the **ViewModel.Favorites** property, the data template is bound to the **Favorite** data model and the template displays an image.
 
     That's it for the XAML. Now to update the code-behind.
 
@@ -1814,7 +1814,7 @@ In this how-to, you built a multi-platform application that leverages web servic
 * Created a simple Uno application
 * Registered and obtained a key for The Cat API web service.
 * Built a number of data models that utilize JSON serialization
-* Built a web service base class and supports REST service operations and then implemented a number of services that derived from it
+* Built a web service base class that supports REST service operations and then implemented a number of services that derived from it
   * You will have noted that WASM requires the use of `Uno.UI.Wasm.WasmHttpHandler()` rather than the default `HttpClientHandler`
 * Leveraged the services in a view-model
   * You built a base class that uses the dispatcher to ensure bound properties are updated on the UI thread
