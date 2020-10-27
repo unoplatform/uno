@@ -2971,10 +2971,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var eventSource = ownerPrefix.HasValue() ? ownerPrefix : "this";
 
-					// x:Bind to second-level method generates invalid code
-					// sanitizing member.Value so that "ViewModel.SearchBreeds" becomes "ViewModel_SearchBreeds"
-					var sanitizedMemberValue = SanitizeResourceName(member.Value.ToString());
-
 					if (member.Objects.FirstOrDefault() is XamlObjectDefinition bind && bind.Type.Name == "Bind")
 					{
 						CurrentScope.XBindExpressions.Add(bind);
@@ -3024,6 +3020,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
+						// x:Bind to second-level method generates invalid code
+						// sanitizing member.Value so that "ViewModel.SearchBreeds" becomes "ViewModel_SearchBreeds"
+						var sanitizedMemberValue = SanitizeResourceName(member.Value.ToString());
 
 						//
 						// Generate a weak delegate, so the owner is not being held onto by the delegate. We can

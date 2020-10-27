@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Globalization;
 
 namespace XamlGenerationTests.Shared
 {
@@ -30,12 +31,12 @@ namespace XamlGenerationTests.Shared
 
 		public string BoundMethodCallWithParameters(string value, bool? isChecked)
 		{
-			return $"{value} is {(isChecked.HasValue ? isChecked.Value.ToString() : "null")}";
+			return $"{value} is {(isChecked.HasValue ? isChecked.Value.ToString(CultureInfo.CurrentCulture) : "null")}";
 		}
 
 		public string ReadText(string value, bool? isChecked)
 		{
-			return $"{value} is {(isChecked.HasValue ? isChecked.Value.ToString() : "null")}";
+			return $"{value} is {(isChecked.HasValue ? isChecked.Value.ToString(CultureInfo.CurrentCulture) : "null")}";
 		}
 
 		public void WriteText(string text)
