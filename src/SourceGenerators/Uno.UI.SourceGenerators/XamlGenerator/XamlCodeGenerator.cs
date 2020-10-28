@@ -29,9 +29,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// No initialization required for this one
 			//if (!Process.GetCurrentProcess().ProcessName.Equals("devenv", StringComparison.OrdinalIgnoreCase))
-			{
-				// Debugger.Launch();
-			}
+			//{
+			//	Debugger.Launch();
+			//}
 
 			var gen = new XamlCodeGeneration(context);
 
@@ -42,12 +42,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				foreach (var tree in genereratedTrees)
 				{
 					context.AddSource(tree.Key, tree.Value);
-
-					// Uncomment to output the generated files to a separate folder
-					// var intermediatePath = context.GetMSBuildPropertyValue("IntermediateOutputPath");
-					// var path = Path.Combine(intermediatePath, "generated");
-					// Directory.CreateDirectory(path);
-					// File.WriteAllText(Path.Combine(path, tree.Key), tree.Value);
 				}
 			}
 		}

@@ -167,7 +167,7 @@ While intra-app _drag and drop_ is supported on all platforms without limitation
 | Android  | No _in progress_                                 | No _in progress_                                |
 | iOS      | No                                               | No                                              |
 | Wasm     | No                                               | No                                              |
-| MacOS    | No _in progress_                                 | No _in progress_                                |
+| MacOS    | Yes (Text, Link, Image, Html, Rtf)               | Yes (Text, Link, Image, File, Html, Rtf)        |
 | Skia WPF | Yes (Text, Link (1), Image (2), File, Html, Rtf) | Yes (Text, WebLink (1), Image, File, Html, Rtf) |
 | Skia GTK | No                                               | No                                              |
 

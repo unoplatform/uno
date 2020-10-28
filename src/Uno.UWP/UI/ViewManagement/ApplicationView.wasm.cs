@@ -11,21 +11,6 @@ namespace Windows.UI.ViewManagement
 	{
 		private const string ApplicationViewTsType = "Windows.UI.ViewManagement.ApplicationView";
 
-		internal void SetVisibleBounds(Rect newVisibleBounds)
-		{
-			if (newVisibleBounds != VisibleBounds)
-			{
-				VisibleBounds = newVisibleBounds;
-
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
-				}
-
-				VisibleBoundsChanged?.Invoke(this, null);
-			}
-		}
-
 		public string Title
 		{
 			get

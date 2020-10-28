@@ -100,7 +100,23 @@ namespace Uno.UI.Skia.Platform
 			{
 				if (Uri.IsWellFormedUriString(text, UriKind.Absolute))
 				{
-					dst.SetWebLink(new Uri(text!));
+					DataPackage.SeparateUri(
+						text,
+						out string webLink,
+						out string applicationLink);
+
+					if (webLink != null)
+					{
+						dst.SetWebLink(new Uri(webLink));
+					}
+
+					if (applicationLink != null)
+					{
+						dst.SetApplicationLink(new Uri(applicationLink));
+					}
+
+					// Deprecated but still added for compatibility
+					dst.SetUri(new Uri(text));
 				}
 				else
 				{
@@ -143,17 +159,23 @@ namespace Uno.UI.Skia.Platform
 		private static async Task<DataObject> ToDataObject(DataPackageView src, CancellationToken ct)
 		{
 			var dst = new DataObject();
+
+			// WPF has no format for URI therefore text is used for both
 			if (src.Contains(StandardDataFormats.Text))
 			{
 				dst.SetText(await src.GetTextAsync().AsTask(ct));
 			}
-			else if (src.Contains(StandardDataFormats.WebLink))
+			else
 			{
-				dst.SetText((await src.GetWebLinkAsync().AsTask(ct)).ToString());
-			}
-			else if (src.Contains(StandardDataFormats.ApplicationLink))
-			{
-				dst.SetText((await src.GetApplicationLinkAsync().AsTask(ct)).ToString());
+				var uri = DataPackage.CombineUri(
+					src.Contains(StandardDataFormats.WebLink) ? (await src.GetWebLinkAsync().AsTask(ct)).ToString() : null,
+					src.Contains(StandardDataFormats.ApplicationLink) ? (await src.GetApplicationLinkAsync().AsTask(ct)).ToString() : null,
+					src.Contains(StandardDataFormats.Uri) ? (await src.GetUriAsync().AsTask(ct)).ToString() : null);
+
+				if (string.IsNullOrEmpty(uri) == false)
+				{
+					dst.SetText(uri);
+				}
 			}
 
 			if (src.Contains(StandardDataFormats.Html))

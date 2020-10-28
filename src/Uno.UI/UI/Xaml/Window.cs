@@ -41,13 +41,18 @@ namespace Windows.UI.Xaml
 
 		public UIElement Content
 		{
-			get { return InternalGetContent(); }
+			get => InternalGetContent();
 			set
 			{
 				var oldContent = Content;
 				if (oldContent != null)
 				{
 					oldContent.IsWindowRoot = false;
+
+					if (oldContent is FrameworkElement oldRoot)
+					{
+						oldRoot.SizeChanged -= RootSizeChanged;
+					}
 				}
 				if (value != null)
 				{
@@ -55,6 +60,12 @@ namespace Windows.UI.Xaml
 				}
 
 				InternalSetContent(value);
+
+				if (value is FrameworkElement newRoot)
+				{
+					newRoot.SizeChanged += RootSizeChanged;
+				}
+				XamlRoot.Current.NotifyChanged();
 			}
 		}
 
@@ -100,6 +111,11 @@ namespace Windows.UI.Xaml
 				(h, s, e) =>
 					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (Windows.UI.Core.WindowSizeChangedEventArgs)e)
 			);
+		}
+
+		private void RootSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			XamlRoot.Current.NotifyChanged();
 		}
 
 		private void RaiseSizeChanged(Windows.UI.Core.WindowSizeChangedEventArgs windowSizeChangedEventArgs)
