@@ -3674,6 +3674,7 @@ var Windows;
         (function (Profile) {
             class AnalyticsInfo {
                 static getDeviceType() {
+                    // Logic based on https://github.com/barisaydinoglu/Detectizr
                     var ua = navigator.userAgent;
                     if (!ua || ua === '') {
                         // No user agent.
@@ -3683,7 +3684,7 @@ var Windows;
                         // if user agent is a smart TV - http://goo.gl/FocDk
                         return "Television";
                     }
-                    else if (ua.match(/Xbox|PLAYSTATION (3|4)|Wii/i)) {
+                    else if (ua.match(/Xbox|PLAYSTATION|Wii/i)) {
                         // if user agent is a TV Based Gaming Console
                         return "GameConsole";
                     }

@@ -2,6 +2,9 @@
 
 	export class AnalyticsInfo {
 		public static getDeviceType(): string {
+
+			// Logic based on https://github.com/barisaydinoglu/Detectizr
+
 			var ua = navigator.userAgent;
 
 			if (!ua || ua === '') {
@@ -11,7 +14,7 @@
 			if (ua.match(/GoogleTV|SmartTV|SMART-TV|Internet TV|NetCast|NETTV|AppleTV|boxee|Kylo|Roku|DLNADOC|hbbtv|CrKey|CE\-HTML/i)) {
 				// if user agent is a smart TV - http://goo.gl/FocDk
 				return "Television";
-			} else if (ua.match(/Xbox|PLAYSTATION (3|4)|Wii/i)) {
+			} else if (ua.match(/Xbox|PLAYSTATION|Wii/i)) {
 				// if user agent is a TV Based Gaming Console
 				return "GameConsole";
 			} else if (ua.match(/QtCarBrowser/i)) {
