@@ -10,7 +10,7 @@ namespace Uno.UI.Controls
 {
 	public static class CommandBarHelper
 	{
-		internal static void SetNavigationBar(CommandBar commandBar, UIKit.UINavigationBar navigationBar)
+		internal static void SetNavigationBar(CommandBar commandBar, UIKit.UINavigationBar? navigationBar)
 		{
 			commandBar.GetRenderer(() => new CommandBarRenderer(commandBar)).Native = navigationBar ?? throw new ArgumentNullException(nameof(navigationBar));
 		}
@@ -30,7 +30,7 @@ namespace Uno.UI.Controls
 			if (topCommandBar == null)
 			{
 				// The default CommandBar style contains information that might be relevant to all pages, including those without a CommandBar.
-				// For example the Uno.UI.Toolkit.CommandBarExtensions.BackButtonTitle attached property is often set globally to "" through 
+				// For example the Uno.UI.Toolkit.CommandBarExtensions.BackButtonTitle attached property is often set globally to "" through
 				// a default CommandBar style in order to remove the back button text throughout an entire application.
 				// In order to leverage this information, we create a new CommandBar instance that only exists to "render" the NavigationItem.
 				topCommandBar = new CommandBar();
@@ -97,7 +97,7 @@ namespace Uno.UI.Controls
 			if (pageController.FindTopCommandBar() is { } topCommandBar)
 			{
 				// Set the native navigation bar to null so it does not render when the page is not visible
-				SetNavigationBar(topCommandBar, null!);
+				SetNavigationBar(topCommandBar, null);
 			}
 		}
 
@@ -106,7 +106,7 @@ namespace Uno.UI.Controls
 			if (pageController.FindTopCommandBar() is { } topCommandBar)
 			{
 				// Set the native navigation bar to null so it does not render when the page is not visible
-				SetNavigationBar(topCommandBar, null!);
+				SetNavigationBar(topCommandBar, null);
 			}
 		}
 
