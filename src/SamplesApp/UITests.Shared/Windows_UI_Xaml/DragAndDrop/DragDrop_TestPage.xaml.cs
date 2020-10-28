@@ -175,14 +175,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			// Only one data format can be displayed at once.
 			// Therefore, the order/priority here is used to determine which should be displayed.
 			// It should be ordered most specific to least generally speaking.
-			if (args.DataView.Contains(StandardDataFormats.ApplicationLink))
-			{
-				title += " (ApplicationLink)";
-
-				var appLink = await args.DataView.GetApplicationLinkAsync();
-				details = appLink.ToString();
-			}
-			else if (args.DataView.Contains(StandardDataFormats.Bitmap))
+			if (args.DataView.Contains(StandardDataFormats.Bitmap))
 			{
 				title += " (Bitmap)";
 
@@ -195,6 +188,20 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 				this.DropDetailsImage.Visibility = Visibility.Visible;
 
 				this.DropDetailsTextBlock.Visibility = Visibility.Collapsed;
+			}
+			else if (args.DataView.Contains(StandardDataFormats.ApplicationLink))
+			{
+				title += " (ApplicationLink)";
+
+				var appLink = await args.DataView.GetApplicationLinkAsync();
+				details = appLink.ToString();
+			}
+			else if (args.DataView.Contains(StandardDataFormats.WebLink))
+			{
+				title += " (WebLink)";
+
+				var webLink = await args.DataView.GetWebLinkAsync();
+				details = webLink.ToString();
 			}
 			else if (args.DataView.Contains(StandardDataFormats.Html))
 			{
@@ -237,21 +244,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			{
 				title += " (UserActivityJsonArray)";
 
-				// TODO
-			}
-			else if (args.DataView.Contains(StandardDataFormats.Uri))
-			{
-				title += " (Uri)";
-
-				var uri = await args.DataView.GetUriAsync();
-				details = uri.ToString();
-			}
-			else if (args.DataView.Contains(StandardDataFormats.WebLink))
-			{
-				title += " (WebLink)";
-
-				var webLink = await args.DataView.GetWebLinkAsync();
-				details = webLink.ToString();
+				// Not supported
 			}
 			else if (args.DataView.Contains(StandardDataFormats.Text))
 			{
@@ -259,6 +252,14 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 
 				var text = await args.DataView.GetTextAsync();
 				details = text;
+			}
+			// URI is deprecated so last in priority
+			else if (args.DataView.Contains(StandardDataFormats.Uri))
+			{
+				title += " (Uri)";
+
+				var uri = await args.DataView.GetUriAsync();
+				details = uri.ToString();
 			}
 
 			// Determine the drop position
