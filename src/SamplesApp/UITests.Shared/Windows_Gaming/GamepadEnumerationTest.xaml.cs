@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_Gaming
 {
-	[SampleControlInfo("Gamepad", viewModelType: typeof(GamepadEnumerationViewModel))]
+	[SampleControlInfo("Windows.Gaming", Name = "Gamepad_Enumeration", ViewModelType = typeof(GamepadEnumerationViewModel))]
 	public sealed partial class GamepadEnumerationTest : Page
 	{
 		public GamepadEnumerationTest()
