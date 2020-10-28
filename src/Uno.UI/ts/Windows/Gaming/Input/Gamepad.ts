@@ -16,6 +16,37 @@
 			return result;
 		}
 
+		public static getReading(id: number): string {
+			var gamepad = navigator.getGamepads()[id];
+			if (!gamepad) {
+				return "";
+			}
+
+			var result = "";
+
+			result += gamepad.timestamp;
+
+			result += '*';
+
+			for (var axisId = 0; axisId < gamepad.axes.length; axisId++) {
+				if (axisId != 0) {
+					result += '|';
+				}
+				result += gamepad.axes[axisId];
+			}
+
+			result += '*';
+
+			for (var buttonId = 0; buttonId < gamepad.buttons.length; buttonId++) {
+				if (buttonId != 0) {
+					result += '|';
+				}
+				result += gamepad.buttons[buttonId].value;				
+			}
+
+			return result;
+		}
+
 		public static startGamepadAdded() {
 			window.addEventListener("gamepadconnected", Gamepad.onGamepadConnected);
 		}
@@ -32,7 +63,7 @@
 			window.removeEventListener("gamepaddisconnected", Gamepad.onGamepadDisconnected);
 		}
 
-		private static onGamepadConnected(e : any) {
+		private static onGamepadConnected(e: any) {
 			if (!Gamepad.dispatchGamepadAdded) {
 				Gamepad.dispatchGamepadAdded = (<any>Module).mono_bind_static_method(
 					"[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadAdded");
@@ -40,7 +71,7 @@
 			Gamepad.dispatchGamepadAdded(e.gamepad.index.toString());
 		}
 
-		private static onGamepadDisconnected(e : any) {
+		private static onGamepadDisconnected(e: any) {
 			if (!Gamepad.dispatchGamepadRemoved) {
 				Gamepad.dispatchGamepadRemoved = (<any>Module).mono_bind_static_method(
 					"[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadRemoved");

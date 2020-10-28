@@ -11,41 +11,42 @@
 
 	<StackPanel Spacing="8" Padding="8">
 		<Button Command="{x:Bind ViewModel.GetCurrentReadingCommand}">Get current reading</Button>
+		
 		<TextBlock>
 			<Run Text="Timestamp:" />
-			<Run Text="{x:Bind ViewModel.CurrentReading.Timestamp}" />
+			<Run Text="{x:Bind ViewModel.Timestamp}" />
 		</TextBlock>
 		
 		<TextBlock>
 			<Run Text="Left thumbstick X:" />
-			<Run Text="{x:Bind ViewModel.CurrentReading.LeftThumbstickX}" />
+			<Run Text="{x:Bind ViewModel.LeftThumbstickX}" />
 		</TextBlock>
 		<TextBlock>
 			<Run Text="Left thumbstick Y:" />
-			<Run Text="{x:Bind ViewModel.CurrentReading.LeftThumbstickY}" />
+			<Run Text="{x:Bind ViewModel.LeftThumbstickY}" />
 		</TextBlock>
 		
 		<TextBlock>
 			<Run Text="Right thumbstick X:" />
-			<Run Text="{x:Bind ViewModel.CurrentReading.RightThumbstickX}" />
+			<Run Text="{x:Bind ViewModel.RightThumbstickX}" />
 		</TextBlock>
 		<TextBlock>
 			<Run Text="Right thumbstick Y:" />
-			<Run Text="{x:Bind ViewModel.CurrentReading.RightThumbstickY}" />
+			<Run Text="{x:Bind ViewModel.RightThumbstickY}" />
 		</TextBlock>
 
 		<TextBlock>
 			<Run Text="Left trigger:" />
-			<Run Text="{x:Bind ViewModel.CurrentReading.LeftTrigger}" />
+			<Run Text="{x:Bind ViewModel.LeftTrigger}" />
 		</TextBlock>
 		<TextBlock>
 			<Run Text="Right trigger:" />
-			<Run Text="{x:Bind ViewModel.CurrentReading.RightTrigger}" />
+			<Run Text="{x:Bind ViewModel.RightTrigger}" />
 		</TextBlock>
 
 		<TextBlock>
 			<Run Text="Buttons:" />
-			<Run Text="{x:Bind ViewModel.CurrentReading.Buttons}" />
+			<Run Text="{x:Bind ViewModel.Buttons}" />
 		</TextBlock>
 	</StackPanel>
 </Page>

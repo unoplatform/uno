@@ -10,7 +10,6 @@ using Windows.UI.Xaml.Controls;
 namespace UITests.Windows_Gaming
 {
 	[Sample("Windows.Gaming", Name = "Gamepad_CurrentReading", ViewModelType = typeof(GamepadReadingTestViewModel))]
-
 	public sealed partial class GamepadReadingTest : Page
 	{
 		public GamepadReadingTest()
@@ -35,20 +34,48 @@ namespace UITests.Windows_Gaming
 
 		public ICommand GetCurrentReadingCommand => GetOrCreateCommand(GetCurrentReading);
 
+		public ulong Timestamp => CurrentReading.Timestamp;
+
+		public GamepadButtons Buttons => CurrentReading.Buttons;
+
+		public double LeftTrigger => CurrentReading.LeftTrigger;
+
+		public double RightTrigger => CurrentReading.RightTrigger;
+
+		public double LeftThumbstickX => CurrentReading.LeftThumbstickX;
+
+		public double LeftThumbstickY => CurrentReading.LeftThumbstickY;
+
+		public double RightThumbstickX => CurrentReading.RightThumbstickX;
+
+		public double RightThumbstickY => CurrentReading.RightThumbstickY;
+
 		public GamepadReading CurrentReading { get; set; }
 
 		private void GetCurrentReading()
 		{
 			var gamepad = Gamepad.Gamepads.FirstOrDefault();
 			if (gamepad != null)
-			{
+			{				
 				CurrentReading = gamepad.GetCurrentReading();
 			}
 			else
 			{
 				CurrentReading = new GamepadReading();
 			}
-			RaisePropertyChanged(nameof(CurrentReading));
+			Refresh();
+		}
+
+		private void Refresh()
+		{
+			RaisePropertyChanged(nameof(Timestamp));
+			RaisePropertyChanged(nameof(Buttons));
+			RaisePropertyChanged(nameof(LeftTrigger));
+			RaisePropertyChanged(nameof(RightTrigger));
+			RaisePropertyChanged(nameof(LeftThumbstickX));
+			RaisePropertyChanged(nameof(LeftThumbstickY));
+			RaisePropertyChanged(nameof(RightThumbstickX));
+			RaisePropertyChanged(nameof(RightThumbstickY));
 		}
 	}
 }

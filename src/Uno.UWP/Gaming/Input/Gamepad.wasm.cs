@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno;
@@ -9,22 +8,78 @@ using Uno.Foundation;
 namespace Windows.Gaming.Input
 {
 	public partial class Gamepad
-    {
+	{
 		private const string JsType = "Windows.Gaming.Input.Gamepad";
 		private const char IdSeparator = ';';
 
-		private readonly static Dictionary<string, Gamepad> _gamepadCache =
-			 new Dictionary<string, Gamepad>();
+		private readonly static Dictionary<long, Gamepad> _gamepadCache =
+			 new Dictionary<long, Gamepad>();
 
-		private readonly string _id;
+		private readonly long _id;
 
-		private Gamepad(string id)
+		private Gamepad(long id)
 		{
 			_id = id;
 		}
 
+		public GamepadReading GetCurrentReading()
+		{
+			var reading = new GamepadReading();
+			var result = WebAssemblyRuntime.InvokeJS($"{JsType}.getReading({_id})");
+			if (string.IsNullOrEmpty(result))
+			{
+				// Gamepad is not connected
+				return reading;
+			}
+
+			var parts = result.Split('*');
+			var timestampPart = parts[0];
+			var axesPart = parts[1];
+			var buttonsPart = parts[2];
+
+			var timestampDouble = double.Parse(timestampPart);
+			reading.Timestamp = (ulong)(timestampDouble * 1000); // JS timestamp is in milliseconds
+
+			var axes = axesPart.Split('|').Select(double.Parse).ToArray();
+
+			reading.LeftThumbstickX = GetGamepadValueIfExists(ref axes, 0);
+			reading.LeftThumbstickY = GetGamepadValueIfExists(ref axes, 1);
+			reading.RightThumbstickX = GetGamepadValueIfExists(ref axes, 2);
+			reading.RightThumbstickY = GetGamepadValueIfExists(ref axes, 3);
+
+			var buttons = buttonsPart.Split('|').Select(double.Parse).ToArray();
+
+			var pressedButtons = GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 0) ? GamepadButtons.A : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 1) ? GamepadButtons.B : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 2) ? GamepadButtons.X : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 3) ? GamepadButtons.Y : GamepadButtons.None;
+
+			pressedButtons |= IsButtonPressed(ref buttons, 4) ? GamepadButtons.LeftShoulder : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 5) ? GamepadButtons.RightShoulder : GamepadButtons.None;
+
+			pressedButtons |= IsButtonPressed(ref buttons, 8) ? GamepadButtons.View : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 9) ? GamepadButtons.Menu : GamepadButtons.None;
+
+			pressedButtons |= IsButtonPressed(ref buttons, 10) ? GamepadButtons.LeftThumbstick : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 11) ? GamepadButtons.RightThumbstick : GamepadButtons.None;
+
+			pressedButtons |= IsButtonPressed(ref buttons, 12) ? GamepadButtons.DPadUp : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 13) ? GamepadButtons.DPadDown : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 14) ? GamepadButtons.DPadLeft : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 15) ? GamepadButtons.DPadRight : GamepadButtons.None;
+
+			reading.Buttons = pressedButtons;
+
+			reading.LeftTrigger = GetGamepadValueIfExists(ref buttons, 6);
+			reading.RightTrigger = GetGamepadValueIfExists(ref buttons, 7);
+
+			return reading;
+		}
+
+
 		[Preserve]
-		public static int DispatchGamepadAdded(string id)
+		public static int DispatchGamepadAdded(long id)
 		{
 			Gamepad gamepad;
 			lock (_gamepadCache)
@@ -40,7 +95,7 @@ namespace Windows.Gaming.Input
 		}
 
 		[Preserve]
-		public static int DispatchGamepadRemoved(string id)
+		public static int DispatchGamepadRemoved(long id)
 		{
 			Gamepad gamepad;
 			lock (_gamepadCache)
@@ -55,18 +110,34 @@ namespace Windows.Gaming.Input
 			return 0;
 		}
 
+		private bool IsButtonPressed(ref double[] buttons, int index) =>
+			GetGamepadValueIfExists(ref buttons, index) > 0.5;
+
+		private double GetGamepadValueIfExists(ref double[] data, int index)
+		{
+			if (data.Length > index)
+			{
+				return data[index];
+			}
+			return 0.0;
+		}
+
 		private static IReadOnlyList<Gamepad> GetGamepadsInternal()
 		{
 			var getConnectedGamepadIdsCommand = $"{JsType}.getConnectedGamepadIds()";
 			var serializedIds = WebAssemblyRuntime.InvokeJS(getConnectedGamepadIdsCommand);
-			var connectedGamepadIds = serializedIds.Split(new[] { IdSeparator }, StringSplitOptions.RemoveEmptyEntries);
+			var connectedGamepadIds =
+				serializedIds
+					.Split(new[] { IdSeparator }, StringSplitOptions.RemoveEmptyEntries)
+					.Select(id => long.Parse(id))
+					.ToList();
 
 			lock (_gamepadCache)
 			{
-				var cachedGCControllers = _gamepadCache.Keys.ToArray();
-				
+				var cachedGamepads = _gamepadCache.Keys.ToArray();
+
 				//remove disconnected
-				var disconnectedDevices = cachedGCControllers.Except(connectedGamepadIds);
+				var disconnectedDevices = cachedGamepads.Except(connectedGamepadIds);
 				_gamepadCache.RemoveKeys(disconnectedDevices);
 
 				//add newly connected
@@ -108,4 +179,3 @@ namespace Windows.Gaming.Input
 		}
 	}
 }
-#endif

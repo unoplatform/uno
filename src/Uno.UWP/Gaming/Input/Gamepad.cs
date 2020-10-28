@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Windows.Gaming.Input
 {
-    public partial class Gamepad
+    public partial class Gamepad : IGameController
     {
 		private readonly static object _syncLock = new object();
 
@@ -68,7 +68,7 @@ namespace Windows.Gaming.Input
 					}
 				}
 			}
-		}
+		}		
 
 		internal static void OnGamepadAdded(Gamepad gamepad) =>
 			_gamepadAdded?.Invoke(null, gamepad);
