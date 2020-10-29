@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
@@ -53,6 +54,114 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 			ImageAssert.HasColorAt(screenshot, centre.X, centre.Y, Color.Blue);
 			ImageAssert.HasColorAt(screenshot, innerCornerX, innerCornerY, Color.Red);
 
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_CornerRadiusControls()
+		{
+			Run("UITests.Windows_UI_Xaml.Clipping.CornerRadiusControls");
+
+			_app.WaitForElement("TestRoot");
+
+			var snapshot = this.TakeScreenshot("validation", ignoreInSnapshotCompare: false);
+
+			using (new AssertionScope("Rounded corners"))
+			{
+				CheckRoundedCorners("ctl1");
+				CheckRoundedCorners("ctl2");
+				CheckRoundedCorners("ctl3");
+				CheckRoundedCorners("ctl4");
+				CheckRoundedCorners("ctl5");
+				CheckRoundedCorners("ctl6");
+				CheckRoundedCorners("ctl7");
+				CheckRoundedCorners("ctl8");
+			}
+			using (new AssertionScope("No Rounded corners"))
+			{
+				CheckNoRoundedCorners("ctl1_rect");
+				CheckNoRoundedCorners("ctl2_rect");
+				CheckNoRoundedCorners("ctl3_rect");
+			}
+
+			void CheckRoundedCorners(string s)
+			{
+				var rectCtl = _app.GetRect(s);
+
+				var green = "#FF008000";
+				var white = "#FFFFFFFF";
+
+				ImageAssert.HasPixels(
+					snapshot,
+					ExpectedPixels
+						.At("top-middle " + s, rectCtl.CenterX, rectCtl.Y + 2)
+						.WithPixelTolerance(1, 1)
+						.Pixel(green),
+					ExpectedPixels
+						.At("bottom-middle " + s, rectCtl.CenterX, rectCtl.Bottom - 2)
+						.WithPixelTolerance(1, 1)
+						.Pixel(green),
+					ExpectedPixels
+						.At("left-middle " + s, rectCtl.X + 2, rectCtl.CenterY)
+						.WithPixelTolerance(1, 1)
+						.Pixel(green),
+					ExpectedPixels
+						.At("right-middle " + s, rectCtl.Right - 2, rectCtl.CenterY)
+						.WithPixelTolerance(1, 1)
+						.Pixel(green),
+					ExpectedPixels
+						.At("top-left " + s, rectCtl.X + 1, rectCtl.Y + 1)
+						.Pixel(white),
+					ExpectedPixels
+						.At("top-right " + s, rectCtl.Right - 1, rectCtl.Y + 1)
+						.Pixel(white),
+					ExpectedPixels
+						.At("bottom-left " + s, rectCtl.X + 1, rectCtl.Bottom - 1)
+						.Pixel(white),
+					ExpectedPixels
+						.At("bottom-right " + s, rectCtl.Right - 1, rectCtl.Bottom - 1)
+						.Pixel(white)
+				);
+			}
+
+			void CheckNoRoundedCorners(string s)
+			{
+				var rectCtl = _app.GetRect(s);
+
+				var green = "#FF008000";
+
+				ImageAssert.HasPixels(
+					snapshot,
+					ExpectedPixels
+						.At("top-middle " + s, rectCtl.CenterX, rectCtl.Y + 2)
+						.WithPixelTolerance(1, 1)
+						.Pixel(green),
+					ExpectedPixels
+						.At("bottom-middle " + s, rectCtl.CenterX, rectCtl.Bottom - 2)
+						.WithPixelTolerance(1, 1)
+						.Pixel(green),
+					ExpectedPixels
+						.At("left-middle " + s, rectCtl.X + 2, rectCtl.CenterY)
+						.WithPixelTolerance(1, 1)
+						.Pixel(green),
+					ExpectedPixels
+						.At("right-middle " + s, rectCtl.Right - 2, rectCtl.CenterY)
+						.WithPixelTolerance(1, 1)
+						.Pixel(green),
+					ExpectedPixels
+						.At("top-left " + s, rectCtl.X + 1, rectCtl.Y + 1)
+						.Pixel(green),
+					ExpectedPixels
+						.At("top-right " + s, rectCtl.Right - 1, rectCtl.Y + 1)
+						.Pixel(green),
+					ExpectedPixels
+						.At("bottom-left " + s, rectCtl.X + 1, rectCtl.Bottom - 1)
+						.Pixel(green),
+					ExpectedPixels
+						.At("bottom-right " + s, rectCtl.Right - 1, rectCtl.Bottom - 1)
+						.Pixel(green)
+				);
+			}
 		}
 	}
 }
