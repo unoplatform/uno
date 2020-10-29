@@ -1,4 +1,6 @@
 ﻿#if !NET461
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +35,22 @@ namespace Windows.UI.Xaml.Controls
 	public abstract partial class VirtualizingPanelLayout : DependencyObject
 #endif
 	{
-		private _Panel OwnerPanel { get; set; }
-		private protected VirtualizingPanelGenerator Generator { get; private set; }
+		private _Panel? _ownerPanel;
+		private _Panel OwnerPanel
+		{
+			get => _ownerPanel ?? throw new InvalidOperationException($"{nameof(Initialize)}() was not called properly.");
+			set => _ownerPanel = value;
+		}
+		private VirtualizingPanelGenerator? _generator;
+		private protected VirtualizingPanelGenerator Generator
+		{
+			get => _generator ?? throw new InvalidOperationException($"{nameof(Initialize)}() was not called properly.");
+			private set => _generator = value;
+		}
 
-		private ScrollViewer ScrollViewer { get; set; }
-		internal ItemsControl ItemsControl { get; set; }
-		public ListViewBase XamlParent => ItemsControl as ListViewBase;
+		private ScrollViewer? ScrollViewer { get; set; }
+		internal ItemsControl? ItemsControl { get; set; }
+		public ListViewBase? XamlParent => ItemsControl as ListViewBase;
 
 		/// <summary>
 		/// Ordered record of all currently-materialized lines.
@@ -505,27 +517,43 @@ namespace Windows.UI.Xaml.Controls
 
 			if (ScrollOrientation == Orientation.Vertical)
 			{
-				ScrollViewer.ChangeView(null, ScrollViewer.VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+				ScrollViewer?.ChangeView(null, ScrollViewer.VerticalOffset + scrollAdjustment, null, disableAnimation: true);
 			}
 			else
 			{
-				ScrollViewer.ChangeView(ScrollViewer.HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+				ScrollViewer?.ChangeView(ScrollViewer.HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
 			}
 		}
 
 		/// <summary>
 		/// True if the scroll position is right at the start of the list.
 		/// </summary>
-		private bool IsScrolledToStart() => ScrollOrientation == Orientation.Vertical ?
-			ScrollViewer.VerticalOffset <= 0 :
-			ScrollViewer.HorizontalOffset <= 0;
+		private bool IsScrolledToStart()
+		{
+			if (ScrollViewer == null)
+			{
+				return true;
+			}
+
+			return ScrollOrientation == Orientation.Vertical ?
+				ScrollViewer.VerticalOffset <= 0 :
+				ScrollViewer.HorizontalOffset <= 0;
+		}
 
 		/// <summary>
 		/// True if the scroll position is all the way to the end of the list.
 		/// </summary>
-		private bool IsScrolledToEnd() => ScrollOrientation == Orientation.Vertical ?
-			ScrollViewer.VerticalOffset >= ScrollViewer.ScrollableHeight :
-			ScrollViewer.HorizontalOffset >= ScrollViewer.ScrollableWidth;
+		private bool IsScrolledToEnd()
+		{
+			if (ScrollViewer == null)
+			{
+				return true;
+			}
+
+			return ScrollOrientation == Orientation.Vertical ?
+				ScrollViewer.VerticalOffset >= ScrollViewer.ScrollableHeight :
+				ScrollViewer.HorizontalOffset >= ScrollViewer.ScrollableWidth;
+		}
 
 		/// <summary>
 		/// Estimate the 'correct' size of the panel.
@@ -571,7 +599,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			var lastItem = GetFlatItemIndex(lastIndexPath.Value);
 
-			var remainingItems = ItemsControl.NumberOfItems - lastItem - 1;
+			var remainingItems = (ItemsControl?.NumberOfItems - lastItem - 1) ?? 0;
 			UpdateAverageLineHeight();
 
 			int itemsPerLine = GetItemsPerLine();
@@ -688,7 +716,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem)
 		{
-			var lastItem = XamlParent.GetLastItem();
+			var lastItem = XamlParent?.GetLastItem();
 			if (lastItem == null ||
 				(firstVisibleItem != null && firstVisibleItem.Value > lastItem.Value)
 			)
@@ -744,7 +772,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected abstract int GetItemsPerLine();
 
-		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath) => ItemsControl.GetIndexFromIndexPath(indexPath);
+		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath) => ItemsControl?.GetIndexFromIndexPath(indexPath) ?? -1;
 
 		protected void AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
 		{
@@ -790,9 +818,9 @@ namespace Windows.UI.Xaml.Controls
 			view.Arrange(finalRect);
 		}
 
-		private Line GetFirstMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[0] : null;
+		private Line? GetFirstMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[0] : null;
 
-		private Line GetLastMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[_materializedLines.Count - 1] : null;
+		private Line? GetLastMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[_materializedLines.Count - 1] : null;
 
 		private Uno.UI.IndexPath? GetFirstMaterializedIndexPath() => GetFirstMaterializedLine()?.FirstItem;
 
@@ -862,7 +890,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private double GetDesiredBreadth(FrameworkElement view) => GetBreadth(view.DesiredSize);
 
-		private string GetMethodTag([CallerMemberName] string caller = null)
+		private string GetMethodTag([CallerMemberName] string? caller = null)
 		{
 			return $"{nameof(VirtualizingPanelLayout)}.{caller}()";
 		}
