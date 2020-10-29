@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
@@ -38,12 +40,12 @@ namespace Windows.UI.Xaml.Controls
 	[ContentProperty(Name = "Content")]
 	public partial class ContentControl : Control, IEnumerable
 	{
-		private View _contentTemplateRoot;
+		private View? _contentTemplateRoot;
 
 		/// <summary>
 		/// Will be set to either the result of ContentTemplateSelector or to ContentTemplate, depending on which is used
 		/// </summary>
-		private DataTemplate _dataTemplateUsedLastUpdate;
+		private DataTemplate? _dataTemplateUsedLastUpdate;
 
 		private bool _canCreateTemplateWithoutParent = false;
 
@@ -66,6 +68,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal bool IsContainerFromItemTemplate { get; set; }
 
+#nullable disable // Public members should stay nullable-oblivious for now to stay consistent with WinUI
 		public ContentControl()
 		{
 			DefaultStyleKey = typeof(ContentControl);
@@ -205,6 +208,7 @@ namespace Windows.UI.Xaml.Controls
 				// In case there's code that happen to be here.
 			}
 		}
+#nullable enable
 
 		private void SetUpdateTemplate()
 		{
@@ -218,6 +222,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UnregisterContentTemplateRoot();
 
+#nullable disable // Public members should stay nullable-oblivious for now to stay consistent with WinUI
 		public virtual View ContentTemplateRoot
 		{
 			get
@@ -258,6 +263,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ContentTransitionsProperty { get ; } =
 			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentControl), new FrameworkPropertyMetadata(null, OnContentTransitionsChanged));
+#nullable enable
 
 		private static void OnContentTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -274,7 +280,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		private void UpdateContentTransitions(TransitionCollection oldValue, TransitionCollection newValue)
+		private void UpdateContentTransitions(TransitionCollection? oldValue, TransitionCollection? newValue)
 		{
 			var contentRoot = this.ContentTemplateRoot as IFrameworkElement;
 
@@ -453,7 +459,7 @@ namespace Windows.UI.Xaml.Controls
 			Funcs.CreateMemoized((Type type) =>
 				Style.GetDefaultStyleForType(type) is Style defaultStyle
 					&& defaultStyle
-						.Flatten(s => s.BasedOn)
+						.Flatten(s => s.BasedOn!)
 						.SelectMany(s => s.Setters)
 						.OfType<Setter>()
 						.Any(s => s.Property == TemplateProperty && s.Value != null)
@@ -471,6 +477,7 @@ namespace Windows.UI.Xaml.Controls
 			};
 		}
 
+#nullable disable // Public members should stay nullable-oblivious for now to stay consistent with WinUI
 #if XAMARIN_ANDROID
 		// Support for the C# collection initializer style.
 		public void Add(View view)
@@ -505,5 +512,6 @@ namespace Windows.UI.Xaml.Controls
 					return null;
 			}
 		}
+#nullable enable
 	}
 }

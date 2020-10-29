@@ -310,11 +310,11 @@ namespace Windows.UI.Xaml.Controls
 
 			void SetContentPresenterBinding(DependencyProperty targetProperty, string sourcePropertyPath)
 			{
-				_contentPresenter.SetBinding(targetProperty, new Binding(sourcePropertyPath) { RelativeSource = RelativeSource.TemplatedParent });
+				_contentPresenter?.SetBinding(targetProperty, new Binding(sourcePropertyPath) { RelativeSource = RelativeSource.TemplatedParent });
 			}
 		}
 
-		private object GetSelectionContent()
+		private object? GetSelectionContent()
 		{
 			return SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
 		}
