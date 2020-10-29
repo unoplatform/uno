@@ -2,6 +2,8 @@
 #pragma warning disable CS0067
 #endif
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -571,7 +573,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
 
 #pragma warning disable 649 // unused member for Unit tests
-		private IScrollContentPresenter _presenter;
+		private IScrollContentPresenter? _presenter;
 #pragma warning restore 649 // unused member for Unit tests
 
 		/// <summary>
@@ -754,7 +756,7 @@ namespace Windows.UI.Xaml.Controls
 				&& visibility != ScrollBarVisibility.Disabled
 				&& mode != ScrollMode.Disabled;
 
-		private static ScrollBarVisibility ComputeNativeScrollBarVisibility(ScrollBarVisibility visibility, ScrollMode mode, ScrollBar managedScrollbar)
+		private static ScrollBarVisibility ComputeNativeScrollBarVisibility(ScrollBarVisibility visibility, ScrollMode mode, ScrollBar? managedScrollbar)
 			=> mode switch
 			{
 				ScrollMode.Disabled => ScrollBarVisibility.Disabled,
@@ -784,16 +786,17 @@ namespace Windows.UI.Xaml.Controls
 			
 
 			base.OnApplyTemplate();
-			_isTemplateApplied = true;
+
+			var scpTemplatePart = GetTemplateChild(Parts.WinUI3.Scroller) ?? GetTemplateChild(Parts.Uwp.ScrollContentPresenter);
+			_presenter = scpTemplatePart as IScrollContentPresenter;
+
+			_isTemplateApplied = _presenter != null;
 
 			// Load new template
 			_verticalScrollbar = null;
 			_isVerticalScrollBarMaterialized = false;
 			_horizontalScrollbar = null;
 			_isHorizontalScrollBarMaterialized = false;
-
-			var scpTemplatePart = GetTemplateChild(Parts.WinUI3.Scroller) ?? GetTemplateChild(Parts.Uwp.ScrollContentPresenter);
-			_presenter = scpTemplatePart as IScrollContentPresenter;
 
 #if __IOS__ || __MACOS__ || __ANDROID__
 			if (scpTemplatePart is ScrollContentPresenter scp)
@@ -805,11 +808,6 @@ namespace Windows.UI.Xaml.Controls
 				_presenter = nativeSCP;
 			}
 #endif
-
-			if (_presenter == null)
-			{
-				throw new InvalidOperationException("The template part ScrollContentPresenter could not be found or is not a ScrollContentPresenter");
-			}
 
 			// We update the scrollability properties here in order to make sure to set the right scrollbar visibility
 			// on the _presenter as soon as possible
@@ -878,7 +876,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 			
 			// Then explicitly propagate the Content to the _presenter
-			_presenter.Content = Content as View;
+			if (_presenter != null)
+			{
+				_presenter.Content = Content as View;
+			}
 
 			// Propagate the ScrollViewer's own templated parent, instead of 
 			// the scrollviewer itself (through ScrollContentPresenter)
@@ -903,7 +904,7 @@ namespace Windows.UI.Xaml.Controls
 				=> UpdateDimensionProperties();
 		}
 
-		internal protected override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnTemplatedParentChanged(e);
 
@@ -929,8 +930,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Managed scroll bars support
 		private bool _isTemplateApplied;
-		private ScrollBar _verticalScrollbar;
-		private ScrollBar _horizontalScrollbar;
+		private ScrollBar? _verticalScrollbar;
+		private ScrollBar? _horizontalScrollbar;
 		private bool _isVerticalScrollBarMaterialized;
 		private bool _isHorizontalScrollBarMaterialized;
 
@@ -1175,7 +1176,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation);
 
 		#region Scroll indicators visual states (Managed scroll bars only)
-		private DispatcherQueueTimer _indicatorResetTimer;
+		private DispatcherQueueTimer? _indicatorResetTimer;
 		private string _indicatorState;
 
 		private static void ShowScrollIndicator(object sender, PointerRoutedEventArgs e) // OnPointerMove
