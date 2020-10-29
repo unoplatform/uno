@@ -1382,10 +1382,11 @@ var Uno;
                 const elementStyle = element.style;
                 const elementClasses = element.className;
                 const originalStyleCssText = elementStyle.cssText;
+                const unconstrainedStyleCssText = this.createUnconstrainedStyle(elementStyle, maxWidth, maxHeight);
                 let parentElement = null;
                 let parentElementWidthHeight = null;
                 let unconnectedRoot = null;
-                let cleanupUnconnectedRoot = function (owner) {
+                let cleanupUnconnectedRoot = (owner) => {
                     if (unconnectedRoot !== null) {
                         owner.removeChild(unconnectedRoot);
                     }
@@ -1402,55 +1403,18 @@ var Uno;
                         }
                         this.containerElement.appendChild(unconnectedRoot);
                     }
-                    // As per W3C css-transform spec:
-                    // https://www.w3.org/TR/css-transforms-1/#propdef-transform
-                    //
-                    // > For elements whose layout is governed by the CSS box model, any value other than none
-                    // > for the transform property also causes the element to establish a containing block for
-                    // > all descendants.Its padding box will be used to layout for all of its
-                    // > absolute - position descendants, fixed - position descendants, and descendant fixed
-                    // > background attachments.
-                    //
-                    // We use this feature to allow an measure of text without being influenced by the bounds
-                    // of the viewport. We just need to temporary set both the parent width & height to a very big value.
-                    parentElement = element.parentElement;
-                    parentElementWidthHeight = { width: parentElement.style.width, height: parentElement.style.height };
-                    parentElement.style.width = WindowManager.MAX_WIDTH;
-                    parentElement.style.height = WindowManager.MAX_HEIGHT;
-                    const updatedStyles = {};
-                    for (let i = 0; i < elementStyle.length; i++) {
-                        const key = elementStyle[i];
-                        updatedStyles[key] = elementStyle.getPropertyValue(key);
-                    }
-                    if (updatedStyles.hasOwnProperty("width")) {
-                        delete updatedStyles.width;
-                    }
-                    if (updatedStyles.hasOwnProperty("height")) {
-                        delete updatedStyles.height;
-                    }
-                    // This is required for an unconstrained measure (otherwise the parents size is taken into account)
-                    updatedStyles.position = "fixed";
-                    updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "none";
-                    updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "none";
-                    let updatedStyleString = "";
-                    for (let key in updatedStyles) {
-                        if (updatedStyles.hasOwnProperty(key)) {
-                            updatedStyleString += key + ": " + updatedStyles[key] + "; ";
-                        }
-                    }
-                    // We use a string to prevent the browser to update the element between
-                    // each style assignation. This way, the browser will update the element only once.
-                    elementStyle.cssText = updatedStyleString;
                     if (element instanceof HTMLImageElement) {
+                        elementStyle.cssText = unconstrainedStyleCssText;
                         const imgElement = element;
                         return [imgElement.naturalWidth, imgElement.naturalHeight];
                     }
                     else if (element instanceof HTMLInputElement) {
+                        elementStyle.cssText = unconstrainedStyleCssText;
                         const inputElement = element;
                         cleanupUnconnectedRoot(this.containerElement);
                         // Create a temporary element that will contain the input's content
                         var textOnlyElement = document.createElement("p");
-                        textOnlyElement.style.cssText = updatedStyleString;
+                        textOnlyElement.style.cssText = unconstrainedStyleCssText;
                         textOnlyElement.innerText = inputElement.value;
                         textOnlyElement.className = elementClasses;
                         unconnectedRoot = textOnlyElement;
@@ -1465,10 +1429,12 @@ var Uno;
                         cleanupUnconnectedRoot(this.containerElement);
                         // Create a temporary element that will contain the input's content
                         var textOnlyElement = document.createElement("p");
-                        textOnlyElement.style.cssText = updatedStyleString;
+                        textOnlyElement.style.cssText = unconstrainedStyleCssText;
+                        textOnlyElement.style.whiteSpace = "pre"; // Make sure to preserve space for measure, especially the ending new line!
                         // If the input is null or empty, add a no-width character to force the paragraph to take up one line height
-                        textOnlyElement.innerText = !inputElement.value ? "\u200B" : inputElement.value;
-                        textOnlyElement.className = elementClasses;
+                        // The trailing new lines are going to be ignored for measure, so we also append no-width char at the end.
+                        textOnlyElement.innerText = inputElement.value ? (inputElement.value + "\u200B") : "\u200B";
+                        textOnlyElement.className = elementClasses; // Note: Here we will have the uno-textBoxView class name
                         unconnectedRoot = textOnlyElement;
                         this.containerElement.appendChild(unconnectedRoot);
                         var textSize = this.measureElement(textOnlyElement);
@@ -1478,6 +1444,22 @@ var Uno;
                         return [width, height];
                     }
                     else {
+                        elementStyle.cssText = unconstrainedStyleCssText;
+                        // As per W3C css-transform spec:
+                        // https://www.w3.org/TR/css-transforms-1/#propdef-transform
+                        //
+                        // > For elements whose layout is governed by the CSS box model, any value other than none
+                        // > for the transform property also causes the element to establish a containing block for
+                        // > all descendants.Its padding box will be used to layout for all of its
+                        // > absolute - position descendants, fixed - position descendants, and descendant fixed
+                        // > background attachments.
+                        //
+                        // We use this feature to allow an measure of text without being influenced by the bounds
+                        // of the viewport. We just need to temporary set both the parent width & height to a very big value.
+                        parentElement = element.parentElement;
+                        parentElementWidthHeight = { width: parentElement.style.width, height: parentElement.style.height };
+                        parentElement.style.width = WindowManager.MAX_WIDTH;
+                        parentElement.style.height = WindowManager.MAX_HEIGHT;
                         return this.measureElement(element);
                     }
                 }
@@ -1489,6 +1471,32 @@ var Uno;
                     }
                     cleanupUnconnectedRoot(this.containerElement);
                 }
+            }
+            createUnconstrainedStyle(elementStyle, maxWidth, maxHeight) {
+                const updatedStyles = {};
+                for (let i = 0; i < elementStyle.length; i++) {
+                    const key = elementStyle[i];
+                    updatedStyles[key] = elementStyle.getPropertyValue(key);
+                }
+                if (updatedStyles.hasOwnProperty("width")) {
+                    delete updatedStyles.width;
+                }
+                if (updatedStyles.hasOwnProperty("height")) {
+                    delete updatedStyles.height;
+                }
+                // This is required for an unconstrained measure (otherwise the parents size is taken into account)
+                updatedStyles.position = "fixed";
+                updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "none";
+                updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "none";
+                let updatedStyleString = "";
+                for (let key in updatedStyles) {
+                    if (updatedStyles.hasOwnProperty(key)) {
+                        updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+                    }
+                }
+                // We use a string to prevent the browser to update the element between
+                // each style assignation. This way, the browser will update the element only once.
+                return updatedStyleString;
             }
             scrollTo(pParams) {
                 const params = WindowManagerScrollToOptionsParams.unmarshal(pParams);
