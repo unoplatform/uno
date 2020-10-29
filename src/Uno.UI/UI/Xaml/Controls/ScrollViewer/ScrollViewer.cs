@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Occurs when manipulations such as scrolling and zooming have caused the view to change.
 		/// </summary>
-		public event EventHandler<ScrollViewerViewChangedEventArgs> ViewChanged;
+		public event EventHandler<ScrollViewerViewChangedEventArgs>? ViewChanged;
 
 		static ScrollViewer()
 		{
@@ -911,7 +911,7 @@ namespace Windows.UI.Xaml.Controls
 			SynchronizeContentTemplatedParent(e.NewValue as DependencyObject);
 		}
 
-		private void SynchronizeContentTemplatedParent(DependencyObject templatedParent)
+		private void SynchronizeContentTemplatedParent(DependencyObject? templatedParent)
 		{
 			if (Content is View && Content is IDependencyObjectStoreProvider provider)
 			{
@@ -1014,29 +1014,41 @@ namespace Windows.UI.Xaml.Controls
 
 		private void AttachScrollBars()
 		{
-			var hasManagedVerticalScrollBar = _verticalScrollbar != null;
-			var hasManagedHorizontalScrollBar = _horizontalScrollbar != null;
-			if (hasManagedVerticalScrollBar)
+			bool hasManagedVerticalScrollBar;
+			if (_verticalScrollbar is { } vertical)
 			{
-				_verticalScrollbar.Scroll += OnVerticalScrollBarScrolled;
-			}
+				vertical.Scroll += OnVerticalScrollBarScrolled;
+				hasManagedVerticalScrollBar = true;
 
-			if (hasManagedHorizontalScrollBar)
-			{
-				_horizontalScrollbar.Scroll += OnHorizontalScrollBarScrolled;
-			}
-
-			if (hasManagedVerticalScrollBar || hasManagedHorizontalScrollBar)
-			{
 				PointerMoved += ShowScrollIndicator;
+			}
+			else
+			{
+				hasManagedVerticalScrollBar = false;
+			}
 
-				if (hasManagedVerticalScrollBar && hasManagedHorizontalScrollBar)
+			bool hasManagedHorizontalScrollBar;
+			if (_horizontalScrollbar is {} horizontal)
+			{
+				horizontal.Scroll += OnHorizontalScrollBarScrolled;
+				hasManagedHorizontalScrollBar = true;
+
+				if (!hasManagedVerticalScrollBar)
 				{
-					_verticalScrollbar.PointerEntered += ShowScrollBarSeparator;
-					_horizontalScrollbar.PointerEntered += ShowScrollBarSeparator;
-					_verticalScrollbar.PointerExited += HideScrollBarSeparator;
-					_horizontalScrollbar.PointerExited += HideScrollBarSeparator;
+					PointerMoved += ShowScrollIndicator;
 				}
+			}
+			else
+			{
+				hasManagedHorizontalScrollBar = false;
+			}
+
+			if (hasManagedVerticalScrollBar && hasManagedHorizontalScrollBar)
+			{
+				_verticalScrollbar!.PointerEntered += ShowScrollBarSeparator;
+				_horizontalScrollbar!.PointerEntered += ShowScrollBarSeparator;
+				_verticalScrollbar!.PointerExited += HideScrollBarSeparator;
+				_horizontalScrollbar!.PointerExited += HideScrollBarSeparator;
 			}
 		}
 
@@ -1157,7 +1169,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (zoomFactorChanged)
 			{
-				ChangeViewZoom(zoomFactor.Value, disableAnimation);
+				ChangeViewZoom(zoomFactor ?? 1, disableAnimation);
 			}
 
 			return verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged;
@@ -1177,7 +1189,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Scroll indicators visual states (Managed scroll bars only)
 		private DispatcherQueueTimer? _indicatorResetTimer;
-		private string _indicatorState;
+		private string? _indicatorState;
 
 		private static void ShowScrollIndicator(object sender, PointerRoutedEventArgs e) // OnPointerMove
 			=> (sender as ScrollViewer)?.ShowScrollIndicator(e.Pointer.PointerDeviceType);

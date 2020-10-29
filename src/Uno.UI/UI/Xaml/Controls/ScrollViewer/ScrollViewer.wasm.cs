@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
