@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
 using System.Diagnostics.Contracts;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using Uno.Extensions;
 using Uno.Foundation.Interop;
@@ -15,37 +14,7 @@ using Uno.Logging;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-
-namespace WebAssembly
-{
-	[Obfuscation(Feature = "renaming", Exclude = true)]
-	internal sealed class Runtime
-	{
-		[MethodImpl(MethodImplOptions.InternalCall)]
-		private static extern string InvokeJS(string str, out int exceptional_result);
-
-		internal static string InvokeJS(string str)
-		{
-			var r = InvokeJS(str, out var exceptionResult);
-			if (exceptionResult != 0)
-			{
-				Console.Error.WriteLine($"Error #{exceptionResult} \"{r}\" executing javascript: \"{str}\"");
-			}
-			return r;
-		}
-	}
-
-	namespace JSInterop
-	{
-		internal static class InternalCalls
-		{
-			// Matches this signature:
-			// https://github.com/mono/mono/blob/f24d652d567c4611f9b4e3095be4e2a1a2ab23a4/sdks/wasm/driver.c#L21
-			[MethodImpl(MethodImplOptions.InternalCall)]
-			public static extern IntPtr InvokeJSUnmarshalled(out string exceptionMessage, string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
-		}
-	}
-}
+using Uno.Foundation.Runtime.WebAssembly.Interop;
 
 namespace Uno.Foundation
 {
@@ -55,12 +24,7 @@ namespace Uno.Foundation
 
 		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(WebAssemblyRuntime).Log());
 
-		
-		public static bool IsWebAssembly { get; }
-			// Origin of the value : https://github.com/mono/mono/blob/a65055dbdf280004c56036a5d6dde6bec9e42436/mcs/class/corlib/System.Runtime.InteropServices.RuntimeInformation/RuntimeInformation.cs#L115
-			= RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY")) // Legacy Value (Bootstrapper 1.2.0-dev.29 or earlier).
-			|| RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER"));
-
+		public static bool IsWebAssembly => PlatformHelper.IsWebAssembly;
 
 		public static class TraceProvider
 		{

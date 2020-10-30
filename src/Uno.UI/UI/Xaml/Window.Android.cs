@@ -95,49 +95,63 @@ namespace Windows.UI.Xaml
 
 			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, fullScreenMetrics.WidthPixels, fullScreenMetrics.HeightPixels));
 
-			var statusBarSizeExcluded = GetLogicalStatusBarSizeExcluded();
-			var navigationBarSizeExcluded = GetLogicalNavigationBarSizeExcluded();
+			var statusBarSize = GetLogicalStatusBarSize();
+
+			var statusBarSizeExcluded = IsStatusBarTranslucent() ?
+				// The real metrics excluded the StatusBar only if it is plain.
+				// We want to subtract it if it is translucent. Otherwise, it will be like we subtract it twice.
+				statusBarSize :
+				0;
+				var navigationBarSizeExcluded = GetLogicalNavigationBarSizeExcluded();
 
 			// Actually, we need to check visibility of nav bar and status bar since the insets don't
 			UpdateInsetsWithVisibilities();
 
-			var topHeightExcluded = Math.Max(Insets.Top, statusBarSizeExcluded);
-
 			var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
-			var newVisibleBounds = new Rect();
 
-			switch (orientation)
+			Rect CalculateVisibleBounds(double excludedStatusBarHeight)
 			{
-				// StatusBar on top, NavigationBar on right
-				case DisplayOrientations.Landscape:
-					newVisibleBounds = new Rect(
-						x: newBounds.X + Insets.Left,
-						y: newBounds.Y + topHeightExcluded,
-						width: newBounds.Width - (Insets.Left + Math.Max(Insets.Right, navigationBarSizeExcluded)),
-						height: newBounds.Height - topHeightExcluded - Insets.Bottom
-					);
-					break;
-				// StatusBar on top, NavigationBar on left
-				case DisplayOrientations.LandscapeFlipped:
-					newVisibleBounds = new Rect(
-						x: newBounds.X + Math.Max(Insets.Left, navigationBarSizeExcluded),
-						y: newBounds.Y + topHeightExcluded,
-						width: newBounds.Width - (Math.Max(Insets.Left, navigationBarSizeExcluded) + Insets.Right),
-						height: newBounds.Height - topHeightExcluded - Insets.Bottom
-					);
-					break;
-				// StatusBar on top, NavigationBar on bottom
-				default:
-					newVisibleBounds = new Rect(
-						x: newBounds.X + Insets.Left,
-						y: newBounds.Y + topHeightExcluded,
-						width: newBounds.Width - (Insets.Left + Insets.Right),
-						height: newBounds.Height - topHeightExcluded - Math.Max(Insets.Bottom, navigationBarSizeExcluded)
-					);
-					break;
+				var topHeightExcluded = Math.Max(Insets.Top, excludedStatusBarHeight);
+				var newVisibleBounds = new Rect();
+
+				switch (orientation)
+				{
+					// StatusBar on top, NavigationBar on right
+					case DisplayOrientations.Landscape:
+						newVisibleBounds = new Rect(
+							x: newBounds.X + Insets.Left,
+							y: newBounds.Y + topHeightExcluded,
+							width: newBounds.Width - (Insets.Left + Math.Max(Insets.Right, navigationBarSizeExcluded)),
+							height: newBounds.Height - topHeightExcluded - Insets.Bottom
+						);
+						break;
+					// StatusBar on top, NavigationBar on left
+					case DisplayOrientations.LandscapeFlipped:
+						newVisibleBounds = new Rect(
+							x: newBounds.X + Math.Max(Insets.Left, navigationBarSizeExcluded),
+							y: newBounds.Y + topHeightExcluded,
+							width: newBounds.Width - (Math.Max(Insets.Left, navigationBarSizeExcluded) + Insets.Right),
+							height: newBounds.Height - topHeightExcluded - Insets.Bottom
+						);
+						break;
+					// StatusBar on top, NavigationBar on bottom
+					default:
+						newVisibleBounds = new Rect(
+							x: newBounds.X + Insets.Left,
+							y: newBounds.Y + topHeightExcluded,
+							width: newBounds.Width - (Insets.Left + Insets.Right),
+							height: newBounds.Height - topHeightExcluded - Math.Max(Insets.Bottom, navigationBarSizeExcluded)
+						);
+						break;
+				}
+
+				return newVisibleBounds;
 			}
 
-			ApplicationView.GetForCurrentView()?.SetVisibleBounds(newVisibleBounds);
+			var visibleBounds = CalculateVisibleBounds(statusBarSizeExcluded);
+			var trueVisibleBounds = CalculateVisibleBounds(statusBarSize);
+			ApplicationView.GetForCurrentView()?.SetVisibleBounds(visibleBounds);
+			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
 
 			if (Bounds != newBounds)
 			{
@@ -194,13 +208,11 @@ namespace Windows.UI.Xaml
 			Insets = newInsets;
 		}
 
-		private double GetLogicalStatusBarSizeExcluded()
+		private double GetLogicalStatusBarSize()
 		{
 			var logicalStatusBarHeight = 0d;
 
-			// The real metrics excluded the StatusBar only if it is plain.
-			// We want to subtract it if it is translucent. Otherwise, it will be like we subtract it twice.
-			if (IsStatusBarVisible() && IsStatusBarTranslucent())
+			if (IsStatusBarVisible())
 			{
 				var resourceId = Android.Content.Res.Resources.System.GetIdentifier("status_bar_height", "dimen", "android");
 				if (resourceId > 0)

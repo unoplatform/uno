@@ -65,6 +65,8 @@ namespace Windows.UI.Xaml
 
 		public DebugSettings DebugSettings { get; } = new DebugSettings();
 
+		public ApplicationRequiresPointerMode RequiresPointerMode { get; set; } = ApplicationRequiresPointerMode.Auto;
+
 		public ApplicationTheme RequestedTheme
 		{
 			get

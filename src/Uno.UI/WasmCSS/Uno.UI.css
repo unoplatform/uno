@@ -200,4 +200,5 @@ embed.uno-frameworkelement.uno-unarranged {
 
 textarea {
   resize: none;
+  overflow: hidden; /* Scrolling is handled by the parent ScrollViewer */
 }

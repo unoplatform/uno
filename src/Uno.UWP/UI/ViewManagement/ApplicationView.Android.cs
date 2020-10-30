@@ -48,20 +48,9 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		internal void SetVisibleBounds(Rect newVisibleBounds)
-		{
-			if (newVisibleBounds != VisibleBounds)
-			{
-				VisibleBounds = newVisibleBounds;
+		private Rect _trueVisibleBounds;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
-				}
-
-				VisibleBoundsChanged?.Invoke(this, null);
-			}
-		}
+		internal void SetTrueVisibleBounds(Rect trueVisibleBounds) => _trueVisibleBounds = trueVisibleBounds;
 
 		public bool TryEnterFullScreenMode()
 		{

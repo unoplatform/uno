@@ -37,25 +37,25 @@ namespace Windows.UI.Xaml.Media
 		const string MsAppXScheme = "ms-appx";
 		const string MsAppDataScheme = "ms-appdata";
 
-        /// <summary>
-        /// The default downloader instance used by all the new instances of <see cref="ImageSource"/>.
-        /// </summary>
-        public static IImageSourceDownloader DefaultDownloader;
+		/// <summary>
+		/// The default downloader instance used by all the new instances of <see cref="ImageSource"/>.
+		/// </summary>
+		public static IImageSourceDownloader DefaultDownloader;
 
-        /// <summary>
-        /// The image downloader for the current instance.
-        /// </summary>
-        public IImageSourceDownloader Downloader;
+		/// <summary>
+		/// The image downloader for the current instance.
+		/// </summary>
+		public IImageSourceDownloader Downloader;
 
-        /// <summary>
-        /// Initializes the Uno image downloader.
-        /// </summary>
-        private void InitializeDownloader()
-        {
-            Downloader = DefaultDownloader;
-        }
+		/// <summary>
+		/// Initializes the Uno image downloader.
+		/// </summary>
+		private void InitializeDownloader()
+		{
+			Downloader = DefaultDownloader;
+		}
 
-        internal Stream Stream { get; set; }
+		internal Stream Stream { get; set; }
 
 		internal string FilePath { get; private set; }
 
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Media
 			}
 			else
 			{
-				if(this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("The uri [{0}] is not valid, skipping.", url);
 				}
@@ -139,10 +139,10 @@ namespace Windows.UI.Xaml.Media
 		{
 			return new BitmapImage(uri);
 		}
-        
+
 		static public implicit operator ImageSource(Stream stream)
 		{
-            throw new NotSupportedException("Implicit conversion from Stream to ImageSource is not supported");
+			throw new NotSupportedException("Implicit conversion from Stream to ImageSource is not supported");
 		}
 
 		partial void DisposePartial();
@@ -151,10 +151,10 @@ namespace Windows.UI.Xaml.Media
 			DisposePartial();
 		}
 
-        /// <summary>
-        /// Downloads an image from the provided Uri.
-        /// </summary>
-        /// <returns>n Uri containing a local path for the downloaded image.</returns>
+		/// <summary>
+		/// Downloads an image from the provided Uri.
+		/// </summary>
+		/// <returns>n Uri containing a local path for the downloaded image.</returns>
 		private async Task<Uri> Download(CancellationToken ct, Uri uri)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -162,14 +162,14 @@ namespace Windows.UI.Xaml.Media
 				this.Log().DebugFormat("Initiated download from {0}", uri);
 			}
 
-            if(Downloader != null)
-            {
-                return await Downloader.Download(ct, uri);
-            }
-            else
-            {
-                throw new InvalidOperationException("No Downloader has been specified for this ImageSource. An IImageSourceDownloader may be provided to enable image downloads.");
-            }
+			if (Downloader != null)
+			{
+				return await Downloader.Download(ct, uri);
+			}
+			else
+			{
+				throw new InvalidOperationException("No Downloader has been specified for this ImageSource. An IImageSourceDownloader may be provided to enable image downloads.");
+			}
 		}
 
 		private Uri _webUri;

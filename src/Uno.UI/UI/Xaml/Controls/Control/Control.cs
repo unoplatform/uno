@@ -1102,6 +1102,8 @@ namespace Windows.UI.Xaml.Controls
 		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control
 			=> DefaultStyleKey = typeof(TDerived);
 
+		private protected bool GoToState(bool useTransitions, string stateName) => VisualStateManager.GoToState(this, stateName, useTransitions);
+
 #if DEBUG
 #if !__IOS__
 		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
