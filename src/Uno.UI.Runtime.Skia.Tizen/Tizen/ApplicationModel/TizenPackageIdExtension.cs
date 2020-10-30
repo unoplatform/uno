@@ -4,6 +4,7 @@ using Tizen.Applications;
 using Uno.ApplicationModel;
 using Windows.ApplicationModel;
 using Package = Tizen.Applications.Package;
+using SystemVersion = System.Version;
 
 namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel
 {
@@ -25,7 +26,7 @@ namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel
 		{
 			get
 			{
-				if (System.Version.TryParse(GetNativeVersion(), out var userVersion))
+				if (SystemVersion.TryParse(GetNativeVersion(), out var userVersion))
 				{
 					return new PackageVersion(userVersion);
 				}
