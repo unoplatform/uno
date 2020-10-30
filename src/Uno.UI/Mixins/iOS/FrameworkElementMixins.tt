@@ -4,12 +4,9 @@
 <#@include file="..\..\UI\Xaml\IFrameworkElement.Partials.tt"#>
 <#
 	GenerateDefaultPartialClasses(
-		"Windows.UI.Xaml.Controls.Image",
 		"Windows.UI.Xaml.Controls.NativeListViewBase",
 		"Windows.UI.Xaml.Controls.MultilineTextBoxView",
 		"Windows.UI.Xaml.Controls.Picker",
-		"Windows.UI.Xaml.Controls.ProgressRing",
-		"Windows.UI.Xaml.Controls.ScrollContentPresenter",
 		"Windows.UI.Xaml.Controls.SinglelineTextBoxView"
 	);
 #>

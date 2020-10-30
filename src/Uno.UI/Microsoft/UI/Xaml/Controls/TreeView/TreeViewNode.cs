@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Controls
 					m_itemsDataSource.CollectionChanged -= OnItemsSourceChanged;
 				}
 				m_itemsSource = value;
-				m_itemsDataSource = value != null ? new ItemsSourceView(value) : null;
+				m_itemsDataSource = value != null ? new InspectingDataSource(value) : null;
 				if (m_itemsDataSource != null)
 				{
 					m_itemsDataSource.CollectionChanged += OnItemsSourceChanged;

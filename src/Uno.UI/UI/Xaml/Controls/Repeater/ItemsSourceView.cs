@@ -6,6 +6,9 @@ using System.Collections.Specialized;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Represents a standardized view of the supported interactions between a given ItemsSource object and an ItemsRepeater control.
+	/// </summary>
 	public class ItemsSourceView : INotifyCollectionChanged
 	{
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
