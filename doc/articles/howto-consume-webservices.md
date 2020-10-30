@@ -637,7 +637,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     #if __WASM__
             true;
     #else
-            Dispatcher.HasThreadAccess
+            Dispatcher.HasThreadAccess;
     #endif
 
         if (hasThreadAccess)
