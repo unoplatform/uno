@@ -15,7 +15,6 @@ using UIKit;
 using Foundation;
 #endif
 
-
 namespace Windows.Storage
 {
 	public partial class StorageFolder : IStorageFolder, IStorageItem, IStorageItem2
@@ -241,6 +240,52 @@ namespace Windows.Storage
 				await TryInitializeStorage();
 
 				Directory.Delete(this.Path, true);
-			});
+            });
+
+		internal async Task<IReadOnlyList<IStorageItem>> GetItemsTask(CancellationToken ct)
+		{
+			var items = new List<IStorageItem>();
+
+			foreach (var folder in Directory.EnumerateDirectories(this.Path))
+			{
+				items.Add(await StorageFolder.GetFolderFromPathAsync(folder).AsTask(ct));
+			}
+
+			foreach (var folder in Directory.EnumerateFiles(this.Path))
+			{
+				items.Add(await StorageFile.GetFileFromPathAsync(folder).AsTask(ct));
+			}
+
+			return items.AsReadOnly();
+		}
+
+		public IAsyncOperation<IReadOnlyList<IStorageItem>> GetItemsAsync() => AsyncOperation.FromTask(ct => GetItemsTask(ct));
+
+		internal async Task<IReadOnlyList<StorageFile>> GetFilesTask(CancellationToken ct)
+		{
+			var items = new List<StorageFile>();
+
+			foreach (var folder in Directory.EnumerateFiles(this.Path))
+			{
+				items.Add(await StorageFile.GetFileFromPathAsync(folder).AsTask(ct));
+			}
+			return items.AsReadOnly();
+		}
+
+		public IAsyncOperation<IReadOnlyList<StorageFile>> GetFilesAsync() => AsyncOperation.FromTask(ct => GetFilesTask(ct));
+
+		internal async Task<IReadOnlyList<StorageFolder>> GetFoldersTask(CancellationToken ct)
+		{
+			var items = new List<StorageFolder>();
+
+			foreach (var folder in Directory.EnumerateDirectories(this.Path))
+			{
+				items.Add(await StorageFolder.GetFolderFromPathAsync(folder).AsTask(ct));
+			}
+
+			return items.AsReadOnly();
+		}
+
+		public IAsyncOperation<IReadOnlyList<StorageFolder>> GetFoldersAsync() => AsyncOperation.FromTask(ct => GetFoldersTask(ct));
 	}
 }

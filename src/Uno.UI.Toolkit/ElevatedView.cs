@@ -25,20 +25,20 @@ namespace Uno.UI.Toolkit
 #endif
 	{
 		/*
-		 *  +-ElevatedView------------+
-		 *  |                         |
-		 *  |  +-Grid--------------+  |
-		 *  |  |                   |  |
-		 *  |  +-------------------+  |
-		 *  |  +-Border------------+  |
-		 *  |  |                   |  |
-		 *  |  |  +-Content-----+  |  |
-		 *  |  |  | (...)       |  |  |
-		 *  |  |  +-------------+  |  |
-		 *  |  |                   |  |
-		 *  |  +-------------------+  |
-		 *  |                         |
-		 *  +-------------------------+
+		 *  +-ElevatedView---------------------+
+		 *  |                                  |
+		 *  |  +-Canvas (PART_ShadowHost)---+  |
+		 *  |  |                            |  |
+		 *  |  +----------------------------+  |
+		 *  |  +-Border (PART_Border)-------+  |
+		 *  |  |                            |  |
+		 *  |  |  +-Content--------------+  |  |
+		 *  |  |  | (...)                |  |  |
+		 *  |  |  +----------------------+  |  |
+		 *  |  |                            |  |
+		 *  |  +----------------------------+  |
+		 *  |                                  |
+		 *  +----------------------------------+
 		 *
 		 * UWP - Grid is responsible for the shadow
 		 * Other Platforms - Elevated is responsible for the shadow
@@ -53,12 +53,11 @@ namespace Uno.UI.Toolkit
 #endif
 
 		private Border _border;
-		private Canvas _shadowHost;
+		private Panel _shadowHost;
 
 		public ElevatedView()
 		{
 			DefaultStyleKey = typeof(ElevatedView);
-			Background = new SolidColorBrush(Colors.Transparent);
 
 #if !NETFX_CORE
 			Loaded += (snd, evt) => SynchronizeContentTemplatedParent();
@@ -72,7 +71,7 @@ namespace Uno.UI.Toolkit
 		protected override void OnApplyTemplate()
 		{
 			_border = GetTemplateChild("PART_Border") as Border;
-			_shadowHost = GetTemplateChild("PART_ShadowHost") as Canvas;
+			_shadowHost = GetTemplateChild("PART_ShadowHost") as Panel;
 
 			UpdateElevation();
 		}
@@ -172,6 +171,8 @@ namespace Uno.UI.Toolkit
 #elif __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
+				// The elevation must be applied on the border, since
+				// it will get the right shape (with rounded corners)
 				_border.SetElevationInternal(Elevation, ShadowColor);
 #elif NETFX_CORE
 				(ElevatedContent as DependencyObject).SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);

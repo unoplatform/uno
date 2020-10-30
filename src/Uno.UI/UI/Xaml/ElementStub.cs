@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml
 				&& newValue == Visibility.Visible
 			)
 			{
-				Materialize();
+				Materialize(isVisibilityChanged: true);
 			}
 		}
 
@@ -52,12 +52,15 @@ namespace Windows.UI.Xaml
 		}
 
 		public void Materialize()
+			=> Materialize(isVisibilityChanged: false);
+
+		private void Materialize(bool isVisibilityChanged)
 		{
 			var newContent = MaterializeContent();
 
 			var targetDependencyObject = newContent as DependencyObject;
 
-			if (targetDependencyObject != null)
+			if (isVisibilityChanged && targetDependencyObject != null)
 			{
 				var visibilityProperty = GetVisibilityProperty(newContent);
 

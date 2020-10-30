@@ -471,6 +471,7 @@ declare namespace Uno.UI {
         private static MAX_HEIGHT;
         private measureElement;
         private measureViewInternal;
+        private createUnconstrainedStyle;
         scrollTo(pParams: number): boolean;
         rawPixelsToBase64EncodeImage(dataPtr: number, width: number, height: number): string;
         /**
@@ -1112,6 +1113,11 @@ declare namespace Windows.System.Display {
         private static activeScreenLockPromise;
         static activateScreenLock(): void;
         static deactivateScreenLock(): void;
+    }
+}
+declare namespace Windows.System.Profile {
+    class AnalyticsInfo {
+        static getDeviceType(): string;
     }
 }
 interface Window {
