@@ -132,6 +132,11 @@
 		public const string SR_TabViewScrollIncreaseButtonTooltip = "TabViewScrollIncreaseButtonTooltip";
 		public const string SR_NumberBoxUpSpinButtonName = "NumberBoxUpSpinButtonName";
 		public const string SR_NumberBoxDownSpinButtonName = "NumberBoxDownSpinButtonName";
+		public const string SR_InfoBarCloseButtonName = "InfoBarCloseButtonName";
+		public const string SR_InfoBarOpenedNotification = "InfoBarOpenedNotification";
+		public const string SR_InfoBarClosedNotification = "InfoBarClosedNotification";
+		public const string SR_InfoBarCustomLandmarkName = "InfoBarCustomLandmarkName";
+		public const string SR_InfoBarCloseButtonTooltip = "InfoBarCloseButtonTooltip";
 
 		public const string IR_NoiseAsset_256X256_PNG = "NoiseAsset_256X256_PNG";
 	}
