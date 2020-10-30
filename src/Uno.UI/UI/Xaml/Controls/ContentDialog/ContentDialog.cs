@@ -125,6 +125,7 @@ namespace Windows.UI.Xaml.Controls
 					_popup.IsOpen = false;
 					_popup.Child = null;
 					UpdateVisualState();
+					_tcs.SetResult(result);
 
 					Closed?.Invoke(this, new ContentDialogClosedEventArgs(result));
 				}
