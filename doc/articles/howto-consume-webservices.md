@@ -631,7 +631,16 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     // Insert DispatchAsync below here
     protected async Task DispatchAsync(DispatchedHandler callback)
     {
-        if (Dispatcher.HasThreadAccess)
+        // As WASM is currently single-threaded, and Dispatcher.HasThreadAccess always returns false for broader compatibility  reasons
+        // the following code ensures the app always directly invokes the callback on WASM.
+        var hasThreadAccess =
+    #if __WASM__
+            true;
+    #else
+            Dispatcher.HasThreadAccess
+    #endif
+
+        if (hasThreadAccess)
         {
             callback.Invoke();
         }
@@ -642,7 +651,10 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     }
     ```
 
-    In XAML applications, control bindings should only be updated on the UI thread. This method uses the **Dispatcher** to check to see if the code is currently running on the UI thread - if so, the callback is executed immediately. If not, the **Dispatcher.RunAsync** method is used to execute the callback asynchronously on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
+    > ![Note]
+    > As **WASM** is currently single-threaded, the **Uno.WASM** implementation of `Dispatcher.HasThreadAccess` always returns `false` by default. This default has been chosen to prevent live-locking for certain frameworks that expect a multi-threaded environment. This app overrides that default WASM behavior here via conditional compilation and always invokes the callback directly on WASM.
+
+    In XAML applications, control bindings should only be updated on the UI thread, therefore this code uses the value of **hasThreadAccess** to determine if the callback can be directly invoked. If not, the **Dispatcher.RunAsync** method is used to execute the callback asynchronously on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
 
 1. Once complete the base class will look similar to the following:
 
