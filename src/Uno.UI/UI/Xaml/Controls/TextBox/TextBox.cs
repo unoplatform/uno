@@ -130,9 +130,6 @@ namespace Windows.UI.Xaml.Controls
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
 				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-#elif __WASM__
-				// We disable horizontal scrolling because the inner single-line TextBoxView provides its own horizontal scrolling
-				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 #endif
 			}
 
@@ -750,7 +747,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_contentElement != null)
 			{
-				_contentElement.VerticalAlignment = newVerticalContentAlignment;
+				_contentElement.VerticalContentAlignment = newVerticalContentAlignment;
 			}
 
 			if (_placeHolder != null)

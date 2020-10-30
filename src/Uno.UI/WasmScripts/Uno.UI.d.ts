@@ -471,6 +471,7 @@ declare namespace Uno.UI {
         private static MAX_HEIGHT;
         private measureElement;
         private measureViewInternal;
+        private createUnconstrainedStyle;
         scrollTo(pParams: number): boolean;
         rawPixelsToBase64EncodeImage(dataPtr: number, width: number, height: number): string;
         /**
