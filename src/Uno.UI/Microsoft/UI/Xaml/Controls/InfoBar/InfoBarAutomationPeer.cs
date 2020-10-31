@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		internal void RaiseClosedEvent(InfoBarSeverity severity, string displayString)
 		{
-			AutomationNotificationProcessing processing = AutomationNotificationProcessing.CurrentThenMostRecent;
+			//AutomationNotificationProcessing processing = AutomationNotificationProcessing.CurrentThenMostRecent;
 
 			//if (IAutomationPeer7 automationPeer7 = this)
 			{

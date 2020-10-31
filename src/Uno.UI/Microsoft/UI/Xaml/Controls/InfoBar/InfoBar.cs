@@ -39,8 +39,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_applyTemplateCalled = true;
 
-			//IControlProtected controlProtected{ this };
-
 			var closeButton = GetTemplateChild<Button>(c_closeButtonName);
 			if (closeButton != null)
 			{
