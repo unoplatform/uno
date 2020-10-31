@@ -105,6 +105,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedView_CornerRadius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedView_Corners.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedView_Dimensions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3598,6 +3606,10 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedViewTests.xaml.cs">
       <DependentUpon>ElevatedViewTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedView_CornerRadius.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedView_Corners.xaml.cs">
+      <DependentUpon>ElevatedView_Corners.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedView_Dimensions.xaml.cs">
       <DependentUpon>ElevatedView_Dimensions.xaml</DependentUpon>
