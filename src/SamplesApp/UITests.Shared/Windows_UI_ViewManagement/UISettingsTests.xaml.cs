@@ -25,7 +25,7 @@ namespace UITests.Windows_UI_ViewManagement
 
 		public UISettingsTestsViewModel ViewModel { get; private set; }
 
-		private void UISettingsTests_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+		private void UISettingsTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
 			ViewModel = (UISettingsTestsViewModel)args.NewValue;
 		}

@@ -69,14 +69,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private ApplicationTheme GetDefaultSystemTheme() => _coreWindowExtension.GetDefaultSystemTheme();
-
 		internal void ForceSetRequestedTheme(ApplicationTheme theme) => _requestedTheme = theme;
-	}
-
-	internal interface IApplicationExtension
-	{
-		ApplicationTheme GetDefaultSystemTheme();
 	}
 
 	internal interface IApplicationEvents

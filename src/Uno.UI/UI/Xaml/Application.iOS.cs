@@ -161,19 +161,6 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 		}
-
-		private ApplicationTheme GetDefaultSystemTheme()
-		{
-			//Ensure the current device is running 12.0 or higher, because `TraitCollection.UserInterfaceStyle` was introduced in iOS 12.0
-			if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
-			{
-				if (UIScreen.MainScreen.TraitCollection.UserInterfaceStyle == UIUserInterfaceStyle.Dark)
-				{
-					return ApplicationTheme.Dark;
-				}
-			}
-			return ApplicationTheme.Light;
-		}
 	}
 }
 #endif

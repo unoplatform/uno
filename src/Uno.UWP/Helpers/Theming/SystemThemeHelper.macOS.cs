@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Uno.Helpers.Theming
+{
+	internal static partial class SystemThemeHelper
+	{
+		/// <summary>
+		/// Based on <see cref="https://forums.developer.apple.com/thread/118974" />
+		/// </summary>
+		/// <returns>System theme</returns>
+		private ApplicationTheme GetDefaultSystemTheme()
+		{
+			var version = DeviceHelper.OperatingSystemVersion;
+			if (version >= new Version(10, 14))
+			{
+				var app = NSAppearance.CurrentAppearance?.FindBestMatch(new string[]
+				{
+					NSAppearance.NameAqua,
+					NSAppearance.NameDarkAqua
+				});
+
+				if (app == NSAppearance.NameDarkAqua)
+				{
+					return ApplicationTheme.Dark;
+				}
+			}
+			return ApplicationTheme.Light;
+		}
+	}
+}

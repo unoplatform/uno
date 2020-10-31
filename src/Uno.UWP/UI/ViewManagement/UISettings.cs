@@ -2,6 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 using System.Collections.Concurrent;
 using Uno;
+using Uno.Helpers.Theming;
 using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement
@@ -47,7 +48,15 @@ namespace Windows.UI.ViewManagement
 
 		public Color GetColorValue(UIColorType desiredColor)
 		{
-			return Colors.Black;
+			var systemTheme = SystemThemeHelper.SystemTheme;
+			return desiredColor switch
+			{
+				UIColorType.Background =>
+					systemTheme == SystemTheme.Light ? Colors.White : Colors.Black,
+				UIColorType.Foreground =>
+					systemTheme == SystemTheme.Light ? Colors.Black : Colors.White,
+				_ => Colors.Transparent
+			};
 		}
 
 		[NotImplemented]

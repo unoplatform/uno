@@ -33,6 +33,8 @@ using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
+using Uno.Helpers.Theming;
+using Windows.UI.ViewManagement;
 #endif
 
 namespace Windows.UI.Xaml
@@ -160,6 +162,10 @@ namespace Windows.UI.Xaml
 		}
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
+
+		private ApplicationTheme GetDefaultSystemTheme() =>
+			SystemThemeHelper.SystemTheme == SystemTheme.Light ?
+				ApplicationTheme.Light : ApplicationTheme.Dark;
 
 		private IDisposable WritePhaseEventTrace(int startEventId, int stopEventId)
 		{
