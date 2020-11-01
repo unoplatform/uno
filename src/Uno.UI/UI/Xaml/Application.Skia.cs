@@ -19,7 +19,6 @@ namespace Windows.UI.Xaml
 	{
 		private static bool _startInvoked = false;
 		private static string[] _args;
-		private readonly IApplicationExtension _coreWindowExtension;
 
 		internal ISkiaHost Host { get; set; }
 
@@ -27,11 +26,6 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 			Package.SetEntryAssembly(this.GetType().Assembly);
-
-			if (!ApiExtensibility.CreateInstance(this, out _coreWindowExtension))
-			{
-				throw new InvalidOperationException($"Unable to find IApplicationExtension extension");
-			}
 
 			if (!_startInvoked)
 			{
