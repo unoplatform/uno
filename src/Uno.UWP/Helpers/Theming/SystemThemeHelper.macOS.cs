@@ -12,7 +12,7 @@ namespace Uno.Helpers.Theming
 		/// Based on <see cref="https://forums.developer.apple.com/thread/118974" />
 		/// </summary>
 		/// <returns>System theme</returns>
-		private ApplicationTheme GetDefaultSystemTheme()
+		private static SystemTheme GetSystemTheme()
 		{
 			var version = DeviceHelper.OperatingSystemVersion;
 			if (version >= new Version(10, 14))
@@ -25,10 +25,10 @@ namespace Uno.Helpers.Theming
 
 				if (app == NSAppearance.NameDarkAqua)
 				{
-					return ApplicationTheme.Dark;
+					return SystemTheme.Dark;
 				}
 			}
-			return ApplicationTheme.Light;
+			return SystemTheme.Light;
 		}
 	}
 }

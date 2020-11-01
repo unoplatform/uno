@@ -8,6 +8,8 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel;
+using Uno.Helpers.Theming;
+using Windows.UI.ViewManagement;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -21,7 +23,6 @@ using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
-using Windows.UI.ViewManagement;
 #elif XAMARIN_IOS
 using View = UIKit.UIView;	
 using ViewGroup = UIKit.UIView;	
@@ -33,8 +34,6 @@ using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
-using Uno.Helpers.Theming;
-using Windows.UI.ViewManagement;
 #endif
 
 namespace Windows.UI.Xaml

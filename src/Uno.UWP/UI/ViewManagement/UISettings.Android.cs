@@ -1,4 +1,8 @@
-﻿using Android.OS;
+﻿using System;
+using Android;
+using Android.OS;
+using Android.Util;
+using AndroidX.AppCompat.View;
 using Uno.UI;
 using Settings = Android.Provider.Settings;
 
@@ -13,7 +17,7 @@ namespace Windows.UI.ViewManagement
 				float duration, transition;
 				if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBeanMr1)
 				{
-					
+
 					duration = Settings.Global.GetFloat(
 								  ContextHelper.Current.ContentResolver,
 								  Settings.Global.AnimatorDurationScale, 1);
