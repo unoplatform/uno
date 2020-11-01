@@ -7,7 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
+using Uno.Helpers.Theming;
 using Uno.Logging;
+using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming;
 using Windows.UI.Xaml;
 using WUX = Windows.UI.Xaml;
 
@@ -34,7 +36,7 @@ namespace Uno.UI.Runtime.Skia
 			Gtk.Application.Init();			
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkUIElementPointersSupport(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
-			ApiExtensibility.Register(typeof(IApplicationExtension), o => new GtkApplicationExtension(o));
+			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
 
 			_window = new Gtk.Window("Uno Host");

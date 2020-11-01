@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#nullable enable
+
+using Uno.Foundation.Extensibility;
 
 namespace Uno.Helpers.Theming
 {
 	internal static partial class SystemThemeHelper
 	{
+		private static ISystemThemeHelperExtension? _systemThemeHelperExtension;
+
 		private static SystemTheme GetSystemTheme()
 		{
-		}
-	}
+			if (_systemThemeHelperExtension == null)
+			{
+				ApiExtensibility.CreateInstance(typeof(SystemThemeHelper), out _systemThemeHelperExtension);
+			}
 
-	internal interface ISystemThemeHelperExtension
-	{
-		SystemTheme GetDefaultSystemTheme();
+			return _systemThemeHelperExtension?.GetSystemTheme() ?? SystemTheme.Light;
+		}
 	}
 }
