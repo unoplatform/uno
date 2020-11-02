@@ -1,4 +1,5 @@
-﻿using Uno.Extensions;
+﻿#nullable enable
+using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -22,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		/// The <see cref="UIScrollView"/> which will actually scroll. Mostly this will be identical to <see cref="_presenter"/>, but if we're inside a
 		/// multi-line TextBox we set it to <see cref="MultilineTextBoxView"/>.
 		/// </summary>
-		private IUIScrollView _scrollableContainer;
+		private IUIScrollView? _scrollableContainer;
 
 		partial void OnApplyTemplatePartial()
 		{
@@ -142,7 +143,10 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				_presenter.ContentInset = new AppKit.NSEdgeInsets((nfloat)insetTop, (nfloat)insetLeft, 0, 0);
+				if (_presenter != null)
+				{
+					_presenter.ContentInset = new AppKit.NSEdgeInsets((nfloat)insetTop, (nfloat)insetLeft, 0, 0);
+				}
 			}
 		}
 
