@@ -40,19 +40,6 @@ namespace Windows.UI.Xaml
 			Suspending?.Invoke(this, new Windows.ApplicationModel.SuspendingEventArgs(new Windows.ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
 		}
 
-		private ApplicationTheme GetDefaultSystemTheme()
-		{		
-			if ((int)Build.VERSION.SdkInt >= 28)
-			{
-				var uiModeFlags = Android.App.Application.Context.Resources.Configuration.UiMode & UiMode.NightMask;
-				if (uiModeFlags == UiMode.NightYes)
-				{
-					return ApplicationTheme.Dark;
-				}				
-			}
-			return ApplicationTheme.Light;
-		}
-
 		public void Exit()
 		{
 			Android.OS.Process.KillProcess(Android.OS.Process.MyPid());

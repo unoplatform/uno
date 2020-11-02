@@ -8,6 +8,8 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel;
+using Uno.Helpers.Theming;
+using Windows.UI.ViewManagement;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -16,11 +18,11 @@ using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActiv
 #endif
 
 #if XAMARIN_ANDROID
-using View = Android.Views.View;	
-using ViewGroup = Android.Views.ViewGroup;	
-using Font = Android.Graphics.Typeface;	
-using Android.Graphics;	
-using DependencyObject = System.Object;	
+using View = Android.Views.View;
+using ViewGroup = Android.Views.ViewGroup;
+using Font = Android.Graphics.Typeface;
+using Android.Graphics;
+using DependencyObject = System.Object;
 #elif XAMARIN_IOS
 using View = UIKit.UIView;	
 using ViewGroup = UIKit.UIView;	
@@ -42,6 +44,7 @@ namespace Windows.UI.Xaml
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private ApplicationTheme? _requestedTheme;
 		private bool _themeSetExplicitly = false;
+		private bool _systemThemeChangesObserved = false;
 
 		static Application()
 		{
@@ -60,7 +63,7 @@ namespace Windows.UI.Xaml
 			public const int LauchedStart = 1;
 			public const int LauchedStop = 2;
 		}
-		
+
 		public static Application Current { get; private set; }
 
 		public DebugSettings DebugSettings { get; } = new DebugSettings();
@@ -75,7 +78,6 @@ namespace Windows.UI.Xaml
 				{
 					// just cache the theme, but do not notify about a change unnecessarily	
 					_requestedTheme = GetDefaultSystemTheme();
-					ObserveSystemThemeChanges();
 				}
 				return _requestedTheme.Value;
 			}
@@ -124,6 +126,8 @@ namespace Windows.UI.Xaml
 				var theme = GetDefaultSystemTheme();
 				SetRequestedTheme(theme);
 			}
+
+			UISettings.OnColorValuesChanged();
 		}
 
 #if !__ANDROID__ && !__MACOS__
@@ -147,9 +151,20 @@ namespace Windows.UI.Xaml
 
 		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
 
-		internal void InitializationCompleted() => _initializationComplete = true;
+		internal void InitializationCompleted()
+		{
+			if (!_systemThemeChangesObserved)
+			{
+				ObserveSystemThemeChanges();
+			}
+			_initializationComplete = true;
+		}
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
+
+		private ApplicationTheme GetDefaultSystemTheme() =>
+			SystemThemeHelper.SystemTheme == SystemTheme.Light ?
+				ApplicationTheme.Light : ApplicationTheme.Dark;
 
 		private IDisposable WritePhaseEventTrace(int startEventId, int stopEventId)
 		{
@@ -180,7 +195,7 @@ namespace Windows.UI.Xaml
 		{
 			var suspendingEventArgs = new SuspendingEventArgs(new SuspendingOperation(DateTime.Now.AddSeconds(30)));
 			CoreApplication.RaiseSuspending(suspendingEventArgs);
-			
+
 			OnSuspendingPartial();
 		}
 
