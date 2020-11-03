@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if HAS_UNO
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Helpers;
 using Windows.Devices.Sensors;
@@ -220,3 +221,4 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		}
 	}
 }
+#endif
