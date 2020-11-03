@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static void AddOrInsert<T>(this IList<T> collection, int index, T element)
 		{
-			if (index < collection.Count)
+			if (index >= collection.Count)
 			{
 				collection.Add(element);
 			}
@@ -108,8 +108,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// Sentinel. Create the element now since we need it.
 					int dataIndex = GetDataIndexFromRealizedRangeIndex(realizedIndex);
-					//TODO UNO
-					//REPEATER_TRACE_INFO("Creating element for sentinal with data index %d. \n", dataIndex);
+					REPEATER_TRACE_INFO("Creating element for sentinal with data index %d. \n", dataIndex);
 					element = m_context.GetOrCreateElementAt(dataIndex, ElementRealizationOptions.ForceCreate | ElementRealizationOptions.SuppressAutoRecycle);
 					m_realizedElements[realizedIndex] = element;
 				}
@@ -268,8 +267,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				MUX_ASSERT(IsDataIndexRealized(dataIndex));
-				// TODO UNO
-				// REPEATER_TRACE_INFO("%ls: \tCreated element for index %d. \n", layoutId.data(), dataIndex);
+				REPEATER_TRACE_INFO("%ls: \tCreated element for index %d. \n", layoutId, dataIndex);
 			}
 		}
 
