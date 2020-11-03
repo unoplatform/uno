@@ -506,6 +506,9 @@ namespace Windows.UI.Xaml.Controls
 					child.MinWidth = Combo.ActualWidth;
 					child.MaxHeight = maxHeight;
 					child.MaxWidth = visibleSize.Width;
+
+					child.HorizontalAlignment = HorizontalAlignment.Left;
+					child.VerticalAlignment = VerticalAlignment.Top;
 				}
 
 				child.Measure(visibleSize);
