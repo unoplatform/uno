@@ -23,15 +23,22 @@ using static Private.Infrastructure.TestServices;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	public class Given_ListViewBase
+	[RunsOnUIThread]
+	public partial class Given_ListViewBase
 	{
 		private ResourceDictionary _testsResources;
 
 		private Style BasicContainerStyle => _testsResources["BasicListViewContainerStyle"] as Style;
 
+		private Style ContainerMarginStyle => _testsResources["ListViewContainerMarginStyle"] as Style;
+
 		private DataTemplate TextBlockItemTemplate => _testsResources["TextBlockItemTemplate"] as DataTemplate;
 
 		private DataTemplate SelfHostingItemTemplate => _testsResources["SelfHostingItemTemplate"] as DataTemplate;
+
+		private DataTemplate FixedSizeItemTemplate => _testsResources["FixedSizeItemTemplate"] as DataTemplate;
+
+		private ItemsPanelTemplate NoCacheItemsStackPanel => _testsResources["NoCacheItemsStackPanel"] as ItemsPanelTemplate;
 
 		[TestInitialize]
 		public void Init()
