@@ -34,7 +34,6 @@ namespace Windows.UI.Xaml.Controls
 		private void InitializeScrollContentPresenter()
 		{
 			this.RegisterParentChangedCallback(this, OnParentChanged);
-			IFrameworkElementHelper.Initialize(this);
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)

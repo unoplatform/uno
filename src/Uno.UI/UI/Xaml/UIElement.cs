@@ -66,6 +66,12 @@ namespace Windows.UI.Xaml
 
 		partial void OnUidChangedPartial();
 
+		public XamlRoot XamlRoot
+		{
+			get => _xamlRoot ?? XamlRoot.Current;
+			set => _xamlRoot = value;
+		}
+
 		#region Clip DependencyProperty
 
 		public RectangleGeometry Clip
@@ -165,12 +171,6 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		public XamlRoot XamlRoot
-		{
-			get => _xamlRoot ?? XamlRoot.Current;
-			set => _xamlRoot = value;
-		}
-
 		public GeneralTransform TransformToVisual(UIElement visual)
 			=> new MatrixTransform { Matrix = new Matrix(GetTransform(from: this, to: visual)) };
 
@@ -221,7 +221,9 @@ namespace Windows.UI.Xaml
 					offsetY = layoutSlot.Y;
 				}
 
-#if !__SKIA__ // On Skia, the ScrollViewer is actually using RenderTransform on its child, so they it's already included.
+#if !__SKIA__
+				// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
+				// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
 				if (elt is ScrollViewer sv)
 				{
 					var zoom = sv.ZoomFactor;
@@ -239,12 +241,13 @@ namespace Windows.UI.Xaml
 						offsetY -= sv.VerticalOffset;
 					}
 				}
-				else if(elt.IsScrollPort) // Custom scroller
+				else
+#endif
+				if (elt.IsScrollPort) // Custom scroller
 				{
 					offsetX -= elt.ScrollOffsets.X;
 					offsetY -= elt.ScrollOffsets.Y;
 				}
-#endif
 
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
@@ -349,7 +352,7 @@ namespace Windows.UI.Xaml
 			{
 				rect = Clip.Rect;
 
-				//// Apply transform to clipping mask, if any
+				// Apply transform to clipping mask, if any
 				if (Clip.Transform != null)
 				{
 					rect = Clip.Transform.TransformBounds(rect);

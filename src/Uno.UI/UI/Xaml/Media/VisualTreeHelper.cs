@@ -287,24 +287,30 @@ namespace Windows.UI.Xaml.Media
 				renderingBounds = parentToElement.Transform(renderingBounds);
 			}
 
+#if !__SKIA__
+			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
+			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
 			if (element is ScrollViewer sv)
 			{
 				var zoom = sv.ZoomFactor;
 
 				TRACE($"- scroller: x={sv.HorizontalOffset} | y={sv.VerticalOffset} | zoom={zoom}");
 
+				// Note: This is probably wrong for skia as the zoom is probably also handled by the ScrollContentPresenter
 				posRelToElement.X /= zoom;
 				posRelToElement.Y /= zoom;
 
-				// No needs to adjust the position on Skia:
-				// the scrolling is achieved using a RenderTransform on the content of the ScrollContentPresenter,
-				// so it will already be taken in consideration by the case above.
-#if !__SKIA__
 				posRelToElement.X += sv.HorizontalOffset;
 				posRelToElement.Y += sv.VerticalOffset;
-#endif
 
 				renderingBounds = new Rect(renderingBounds.Location, new Size(sv.ExtentWidth, sv.ExtentHeight));
+			}
+			else
+#endif
+			if (element.IsScrollPort)
+			{
+				posRelToElement.X += element.ScrollOffsets.X;
+				posRelToElement.Y += element.ScrollOffsets.Y;
 			}
 
 			TRACE($"- layoutSlot: {layoutSlot.ToDebugString()}");

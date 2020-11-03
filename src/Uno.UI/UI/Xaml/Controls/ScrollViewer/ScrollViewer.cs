@@ -110,7 +110,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(ScrollViewer);
 
+#if !__SKIA__
+			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
+			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
+			// Note 2: This as direct consequences in UIElement.GetTransform and VisualTreeHelper.SearchDownForTopMostElementAt
 			UIElement.RegisterAsScrollPort(this);
+#endif
 
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
@@ -122,14 +127,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePartial();
 
-		#region -- Common DP callbacks --
+#region -- Common DP callbacks --
 		private static PropertyChangedCallback OnHorizontalScrollabilityPropertyChanged = (obj, _)
 			=> (obj as ScrollViewer)?.UpdateComputedHorizontalScrollability(invalidate: true);
 		private static PropertyChangedCallback OnVerticalScrollabilityPropertyChanged = (obj, _)
 			=> (obj as ScrollViewer)?.UpdateComputedVerticalScrollability(invalidate: true);
-		#endregion
+#endregion
 
-		#region HorizontalScrollBarVisibility (Attached DP - inherited)
+#region HorizontalScrollBarVisibility (Attached DP - inherited)
 		public static ScrollBarVisibility GetHorizontalScrollBarVisibility(DependencyObject obj)
 			=> (ScrollBarVisibility)obj.GetValue(HorizontalScrollBarVisibilityProperty);
 
@@ -153,9 +158,9 @@ namespace Windows.UI.Xaml.Controls
 					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
-		#endregion
+#endregion
 
-		#region VerticalScrollBarVisibility (Attached DP - inherited)
+#region VerticalScrollBarVisibility (Attached DP - inherited)
 		public static ScrollBarVisibility GetVerticalScrollBarVisibility(DependencyObject obj)
 			=> (ScrollBarVisibility)obj.GetValue(VerticalScrollBarVisibilityProperty);
 
@@ -179,9 +184,9 @@ namespace Windows.UI.Xaml.Controls
 					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
-		#endregion
+#endregion
 
-		#region HorizontalScrollMode (Attached DP - inherited)
+#region HorizontalScrollMode (Attached DP - inherited)
 		public static ScrollMode GetHorizontalScrollMode(DependencyObject obj)
 			=> (ScrollMode)obj.GetValue(HorizontalScrollModeProperty);
 
@@ -205,9 +210,9 @@ namespace Windows.UI.Xaml.Controls
 					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
-		#endregion
+#endregion
 
-		#region VerticalScrollMode (Attached DP - inherited)
+#region VerticalScrollMode (Attached DP - inherited)
 
 		public static ScrollMode GetVerticalScrollMode(DependencyObject obj)
 			=> (ScrollMode)obj.GetValue(VerticalScrollModeProperty);
@@ -233,9 +238,9 @@ namespace Windows.UI.Xaml.Controls
 					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
-		#endregion
+#endregion
 
-		#region BringIntoViewOnFocusChange (Attached DP - inherited)
+#region BringIntoViewOnFocusChange (Attached DP - inherited)
 #if __IOS__
 		[global::Uno.NotImplemented]
 #endif
@@ -275,9 +280,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnBringIntoViewOnFocusChangeChangedPartial(bool newValue);
-		#endregion
+#endregion
 
-		#region ZoomMode (Attached DP - inherited)
+#region ZoomMode (Attached DP - inherited)
 		public static ZoomMode GetZoomMode(DependencyObject element)
 			=> (ZoomMode)element.GetValue(ZoomModeProperty);
 
@@ -308,9 +313,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnZoomModeChangedPartial(ZoomMode zoomMode);
-		#endregion
+#endregion
 
-		#region MinZoomFactor (DP)
+#region MinZoomFactor (DP)
 		public float MinZoomFactor
 		{
 			get => (float)GetValue(MinZoomFactorProperty);
@@ -324,9 +329,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_presenter?.OnMinZoomFactorChanged((float)args.NewValue);
 		}
-		#endregion
+#endregion
 
-		#region MaxZoomFactor (DP)
+#region MaxZoomFactor (DP)
 		public float MaxZoomFactor
 		{
 			get => (float)GetValue(MaxZoomFactorProperty);
@@ -340,9 +345,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_presenter?.OnMaxZoomFactorChanged((float)args.NewValue);
 		}
-		#endregion
+#endregion
 
-		#region ZoomFactor (DP - readonly)
+#region ZoomFactor (DP - readonly)
 		public float ZoomFactor
 		{
 			get => (float)GetValue(ZoomFactorProperty);
@@ -351,9 +356,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ZoomFactorProperty { get; } =
 			DependencyProperty.Register("ZoomFactor", typeof(float), typeof(ScrollViewer), new FrameworkPropertyMetadata(1f));
-		#endregion
+#endregion
 
-		#region HorizontalSnapPointsType (DP)
+#region HorizontalSnapPointsType (DP)
 		public SnapPointsType HorizontalSnapPointsType
 		{
 			get => (SnapPointsType)this.GetValue(HorizontalSnapPointsTypeProperty);
@@ -366,9 +371,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(SnapPointsType),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(SnapPointsType)));
-		#endregion
+#endregion
 
-		#region HorizontalSnapPointsAlignment (DP)
+#region HorizontalSnapPointsAlignment (DP)
 		public SnapPointsAlignment HorizontalSnapPointsAlignment
 		{
 			get => (SnapPointsAlignment)this.GetValue(HorizontalSnapPointsAlignmentProperty);
@@ -381,9 +386,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(SnapPointsAlignment),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(SnapPointsAlignment)));
-		#endregion
+#endregion
 
-		#region VerticalSnapPointsType (DP)
+#region VerticalSnapPointsType (DP)
 		public SnapPointsType VerticalSnapPointsType
 		{
 			get => (SnapPointsType)this.GetValue(VerticalSnapPointsTypeProperty);
@@ -396,9 +401,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(SnapPointsType),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(SnapPointsType)));
-		#endregion
+#endregion
 
-		#region VerticalSnapPointsAlignment (DP)
+#region VerticalSnapPointsAlignment (DP)
 		public SnapPointsAlignment VerticalSnapPointsAlignment
 		{
 			get => (SnapPointsAlignment)this.GetValue(VerticalSnapPointsAlignmentProperty);
@@ -411,9 +416,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(SnapPointsAlignment),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(SnapPointsAlignment)));
-		#endregion
+#endregion
 
-		#region ExtentHeight (DP - readonly)
+#region ExtentHeight (DP - readonly)
 		public double ExtentHeight
 		{
 			get => (double)GetValue(ExtentHeightProperty);
@@ -426,9 +431,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
-		#endregion
+#endregion
 
-		#region ExtentWidth (DP - readonly)
+#region ExtentWidth (DP - readonly)
 		public double ExtentWidth
 		{
 			get => (double)GetValue(ExtentWidthProperty);
@@ -441,9 +446,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
-		#endregion
+#endregion
 
-		#region ViewportHeight (DP - readonly)
+#region ViewportHeight (DP - readonly)
 		public double ViewportHeight
 		{
 			get => (double)GetValue(ViewportHeightProperty);
@@ -456,9 +461,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
-		#endregion
+#endregion
 
-		#region ViewportWidth (DP - readonly)
+#region ViewportWidth (DP - readonly)
 		public double ViewportWidth
 		{
 			get => (double)GetValue(ViewportWidthProperty);
@@ -471,9 +476,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
-		#endregion
+#endregion
 
-		#region ComputedHorizontalScrollBarVisibility (DP - readonly)
+#region ComputedHorizontalScrollBarVisibility (DP - readonly)
 		public static DependencyProperty ComputedHorizontalScrollBarVisibilityProperty { get; } =
 			DependencyProperty.Register(
 				"ComputedHorizontalScrollBarVisibility",
@@ -486,9 +491,9 @@ namespace Windows.UI.Xaml.Controls
 			get => (Visibility)GetValue(ComputedHorizontalScrollBarVisibilityProperty);
 			private set => SetValue(ComputedHorizontalScrollBarVisibilityProperty, value);
 		}
-		#endregion
+#endregion
 
-		#region ComputedVerticalScrollBarVisibilityProperty (DP - readonly)
+#region ComputedVerticalScrollBarVisibilityProperty (DP - readonly)
 		public static DependencyProperty ComputedVerticalScrollBarVisibilityProperty { get; } =
 			DependencyProperty.Register(
 				"ComputedVerticalScrollBarVisibility",
@@ -501,9 +506,9 @@ namespace Windows.UI.Xaml.Controls
 			get => (Visibility)GetValue(ComputedVerticalScrollBarVisibilityProperty);
 			private set => SetValue(ComputedVerticalScrollBarVisibilityProperty, value);
 		}
-		#endregion
+#endregion
 
-		#region ScrollableHeight (DP - readonly)
+#region ScrollableHeight (DP - readonly)
 		public double ScrollableHeight
 		{
 			get => (double)GetValue(ScrollableHeightProperty);
@@ -516,9 +521,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
-		#endregion
+#endregion
 
-		#region ScrollableWidth (DP - readonly)
+#region ScrollableWidth (DP - readonly)
 		public double ScrollableWidth
 		{
 			get => (double)GetValue(ScrollableWidthProperty);
@@ -531,9 +536,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
-		#endregion
+#endregion
 
-		#region VerticalOffset (DP - readonly)
+#region VerticalOffset (DP - readonly)
 		public double VerticalOffset
 		{
 			get => (double)GetValue(VerticalOffsetProperty);
@@ -551,9 +556,9 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		#endregion
+#endregion
 
-		#region HorizontalOffset (DP - readonly)
+#region HorizontalOffset (DP - readonly)
 		public double HorizontalOffset
 		{
 			get => (double)GetValue(HorizontalOffsetProperty);
@@ -570,7 +575,7 @@ namespace Windows.UI.Xaml.Controls
 					propertyChangedCallback: null
 				)
 			);
-		#endregion
+#endregion
 
 		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
 
@@ -846,7 +851,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
+#region Content and TemplatedParent forwarding to the ScrollContentPresenter
 		protected override void OnContentChanged(object oldValue, object newValue)
 		{
 			base.OnContentChanged(oldValue, newValue);
@@ -931,9 +936,9 @@ namespace Windows.UI.Xaml.Controls
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
-		#endregion
+#endregion
 
-		#region Managed scroll bars support
+#region Managed scroll bars support
 		private bool _isTemplateApplied;
 		private ScrollBar? _verticalScrollbar;
 		private ScrollBar? _horizontalScrollbar;
@@ -1088,7 +1093,7 @@ namespace Windows.UI.Xaml.Controls
 
 			ChangeViewScroll(e.NewValue, null, disableAnimation: immediate);
 		} 
-		#endregion
+#endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
@@ -1145,9 +1150,11 @@ namespace Windows.UI.Xaml.Controls
 			HorizontalOffset = _pendingHorizontalOffset;
 			VerticalOffset = _pendingVerticalOffset;
 
+#if !__SKIA__
 			// Effective viewport support
 			ScrollOffsets = new Point(_pendingHorizontalOffset, _pendingVerticalOffset);
 			InvalidateViewport();
+#endif
 
 			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
 		}
