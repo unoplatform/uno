@@ -139,23 +139,23 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				if (XamlParent == null)
+				var stretchOwner =
+#if !__IOS__ && !__ANDROID__
+					IsInsidePopup ? (FrameworkElement)OwnerPanel :
+#endif
+					XamlParent;
+				if (stretchOwner == null)
 				{
 					return true;
 				}
 
-				if (IsInsidePopup)
-				{
-					return false;
-				}
-
 				if (ScrollOrientation == Orientation.Vertical)
 				{
-					return XamlParent.HorizontalAlignment == HorizontalAlignment.Stretch;
+					return stretchOwner.HorizontalAlignment == HorizontalAlignment.Stretch;
 				}
 				else
 				{
-					return XamlParent.VerticalAlignment == VerticalAlignment.Stretch;
+					return stretchOwner.VerticalAlignment == VerticalAlignment.Stretch;
 				}
 			}
 		}
