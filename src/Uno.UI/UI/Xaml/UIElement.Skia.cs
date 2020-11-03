@@ -245,6 +245,7 @@ namespace Windows.UI.Xaml
 				}
 
 				OnArrangeVisual(newRect, clip);
+				OnViewportUpdated(clippedFrame ?? Rect.Empty);
 			}
 			else
 			{
@@ -261,7 +262,6 @@ namespace Windows.UI.Xaml
 			Visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 
 			ApplyNativeClip(clip ?? Rect.Empty);
-
 		}
 
 		partial void ApplyNativeClip(Rect clip)
