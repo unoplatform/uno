@@ -9,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -593,9 +594,5 @@ namespace Microsoft.UI.Xaml.Controls
 
 		string GetLayoutId()
 			=> m_owner.Layout?.LayoutId;
-
-		[Conditional("TRACE")]
-		private static void REPEATER_TRACE_INFO(string text, params object[] args)
-			=> Console.WriteLine(text, args);
 	}
 }

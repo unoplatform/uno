@@ -16,6 +16,7 @@ using Uno;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -181,9 +182,9 @@ namespace Microsoft.UI.Xaml.Controls
 				var layoutContext = GetLayoutContext();
 
 				// Expensive operation, do it only in debug builds.
-#if DEBUG && false // TODO UNO
+#if DEBUG
 				var virtualContext = (VirtualizingLayoutContext) layoutContext;
-				virtualContext.Indent(Indent());
+				virtualContext.Indent = Indent();
 #endif
 
 				// Checking if we have an data template and it is empty
@@ -210,7 +211,7 @@ namespace Microsoft.UI.Xaml.Controls
 						virtInfo.AutoRecycleCandidate &&
 						!virtInfo.KeepAlive)
 					{
-						// TODO UNO REPEATER_TRACE_INFO("AutoClear - %d \n", virtInfo.Index);
+						REPEATER_TRACE_INFO("AutoClear - %d \n", virtInfo.Index);
 						ClearElementImpl(element);
 					}
 				}

@@ -4,6 +4,7 @@
 using System;
 using Windows.Foundation;
 using Windows.UI.Xaml;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -39,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void RecycleElementCore(UIElement element)
 		{
 			var owner = GetOwner();
-			// REPEATER_TRACE_INFO("RepeaterLayout - RecycleElement: %d \n", owner.GetElementIndex(element));
+			REPEATER_TRACE_INFO("RepeaterLayout - RecycleElement: %d \n", owner.GetElementIndex(element));
 			owner.ClearElementImpl(element);
 		}
 
