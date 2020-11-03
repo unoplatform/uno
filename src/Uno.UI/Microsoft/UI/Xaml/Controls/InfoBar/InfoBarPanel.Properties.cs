@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿// MUX reference InfoBarPanel.cpp, commit 3125489
+
+using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {

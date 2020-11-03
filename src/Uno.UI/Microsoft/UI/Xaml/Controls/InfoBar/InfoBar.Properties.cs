@@ -1,4 +1,9 @@
-﻿using System.Windows.Input;
+﻿// MUX reference InfoBar.properties.cpp, commit 3125489
+
+#nullable enable
+
+using System.Windows.Input;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 
@@ -6,6 +11,12 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class InfoBar
 	{
+		public event TypedEventHandler<InfoBar, object> CloseButtonClick;
+
+		public event TypedEventHandler<InfoBar, InfoBarClosingEventArgs> Closing;
+
+		public event TypedEventHandler<InfoBar, InfoBarClosedEventArgs> Closed;
+
 		public ButtonBase ActionButton
 		{
 			get => (ButtonBase)GetValue(ActionButtonProperty);

@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml.Automation.Peers;
+﻿// MUX reference InfoBar.cpp, commit 3125489
+
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;

@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+﻿// MUX reference InfoBarPanel.cpp, commit 3125489
+
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
