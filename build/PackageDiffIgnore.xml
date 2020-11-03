@@ -3074,6 +3074,9 @@
 		  </Types>
 		<Methods>
 			<Member 
+				fullName="System.Void Windows.UI.Notifications.TileUpdater..ctor()"
+				reason="No public ctor in UWP"/>
+			<Member 
 				fullName="System.Void Windows.System.UserProfile.UserProfilePersonalizationSettings..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
 			<Member
