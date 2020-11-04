@@ -45,7 +45,7 @@ namespace UnoSolutionTemplate.Wizard
 		}
 
 		private void OpenWelcomePage()
-			=> _dte?.ItemOperations.Navigate("https://platform.uno/docs/articles/getting-started-tutorial-1.html", vsNavigateOptions.vsNavigateOptionsNewWindow);
+			=> _dte?.ItemOperations.Navigate("https://platform.uno/docs/articles/get-started-wizard.html", vsNavigateOptions.vsNavigateOptionsNewWindow);
 
 		private void SetAsStartupProject()
 		{
