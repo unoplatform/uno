@@ -6,6 +6,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests._Utils;
 using Uno.UITest;
@@ -118,30 +120,28 @@ namespace SamplesApp.UITests.TestFramework
 				Assert.AreEqual(expectedRect.Size, actualRect.Size, WithContext("Compare rects don't have the same size"));
 			}
 
-			using (var expectedBitmap = new Bitmap(expected.File.FullName))
+			using var expectedBitmap = new Bitmap(expected.File.FullName);
+			if (expectedRect == FirstQuadrant && actualRect == FirstQuadrant)
 			{
-				if (expectedRect == FirstQuadrant && actualRect == FirstQuadrant)
-				{
-					var effectiveExpectedBitmapSize = new Size(
-						(int)(expectedBitmap.Size.Width * expectedToActualScale),
-						(int)(expectedBitmap.Size.Height * expectedToActualScale));
-					Assert.AreEqual(effectiveExpectedBitmapSize, actualBitmap.Size, WithContext("Screenshots don't have the same size"));
-				}
-
-				expectedRect = Normalize(expectedRect, expectedBitmap.Size);
-				actualRect = Normalize(actualRect, actualBitmap.Size);
-
-				var expectedPixels = ExpectedPixels
-					.At(actualRect.Location)
-					.Pixels(expectedBitmap, expectedRect)
-					.Named(expected.StepName)
-					.WithTolerance(tolerance);
-
-				var report = GetContext();
-				var result = Validate(expectedPixels, actualBitmap, expectedToActualScale, report);
-
-				return (result, report.ToString());
+				var effectiveExpectedBitmapSize = new Size(
+					(int)(expectedBitmap.Size.Width * expectedToActualScale),
+					(int)(expectedBitmap.Size.Height * expectedToActualScale));
+				Assert.AreEqual(effectiveExpectedBitmapSize, actualBitmap.Size, WithContext("Screenshots don't have the same size"));
 			}
+
+			expectedRect = Normalize(expectedRect, expectedBitmap.Size);
+			actualRect = Normalize(actualRect, actualBitmap.Size);
+
+			var expectedPixels = ExpectedPixels
+				.At(actualRect.Location)
+				.Pixels(expectedBitmap, expectedRect)
+				.Named(expected.StepName)
+				.WithTolerance(tolerance);
+
+			var report = GetContext();
+			var result = Validate(expectedPixels, actualBitmap, expectedToActualScale, report);
+
+			return (result, report.ToString());
 
 			StringBuilder GetContext()
 				=> new StringBuilder()
@@ -232,13 +232,14 @@ namespace SamplesApp.UITests.TestFramework
 
 				var pixel = bitmap.GetPixel(x, y);
 
-				if (!AreSameColor(expectedColor, pixel))
+				if (!AreSameColor(expectedColor, pixel, tolerance, out var difference))
 				{
 					Assert.Fail(WithContext(builder: builder => builder
 						.AppendLine($"Color at ({x},{y}) is not expected")
 						.AppendLine($"expected: {ToArgbCode(expectedColor)} {expectedColor}")
 						.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
 						.AppendLine($"tolerance: {tolerance}")
+						.AppendLine($"difference: {difference}")
 					));
 				}
 			}
@@ -274,13 +275,14 @@ namespace SamplesApp.UITests.TestFramework
 				}
 
 				var pixel = bitmap.GetPixel(x, y);
-				if (AreSameColor(excludedColor, pixel, tolerance))
+				if (AreSameColor(excludedColor, pixel, tolerance, out var difference))
 				{
 					Assert.Fail(WithContext(builder: builder => builder
 						.AppendLine($"Color at ({x},{y}) is not expected")
 						.AppendLine($"excluded: {ToArgbCode(excludedColor)} {excludedColor.Name}")
 						.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
 						.AppendLine($"tolerance: {tolerance}")
+						.AppendLine($"difference: {difference}")
 					));
 				}
 			}
@@ -301,27 +303,22 @@ namespace SamplesApp.UITests.TestFramework
 		#region HasPixels
 		public static void HasPixels(ScreenshotInfo actual, params ExpectedPixels[] expectations)
 		{
-			var isSuccess = true;
-			var result = new StringBuilder();
+			using var bitmap = new Bitmap(actual.File.FullName);
+			using var assertionScope = new AssertionScope("ImageAssert");
 
-			using (var bitmap = new Bitmap(actual.File.FullName))
+			foreach (var expectation in expectations)
 			{
-				foreach (var expectation in expectations)
+				var x = expectation.Location.X;
+				var y = expectation.Location.Y;
+
+				Assert.GreaterOrEqual(bitmap.Width, x);
+				Assert.GreaterOrEqual(bitmap.Height, y);
+
+				var result = new StringBuilder();
+				result.AppendLine(expectation.Name);
+				if (!Validate(expectation, bitmap, 1, result))
 				{
-					var x = expectation.Location.X;
-					var y = expectation.Location.Y;
-
-					Assert.GreaterOrEqual(bitmap.Width, x);
-					Assert.GreaterOrEqual(bitmap.Height, y);
-
-					result.AppendLine(expectation.Name);
-					isSuccess &= Validate(expectation, bitmap, 1, result);
-					result.AppendLine();
-				}
-
-				if (!isSuccess)
-				{
-					Assert.Fail(result.ToString());
+					assertionScope.FailWith(result.ToString());
 				}
 			}
 		}
@@ -405,7 +402,7 @@ namespace SamplesApp.UITests.TestFramework
 			}
 
 			var actualColor = actualBitmap.GetPixel(actualX, actualY);
-			if (AreSameColor(expectedColor, actualColor, expectation.Tolerance.Color, expectation.Tolerance.ColorKind))
+			if (AreSameColor(expectedColor, actualColor, expectation.Tolerance.Color, out var difference, expectation.Tolerance.ColorKind))
 			{
 				return true;
 			}
@@ -418,6 +415,9 @@ namespace SamplesApp.UITests.TestFramework
 					: "";
 
 				report.AppendLine($"{pixel.X},{pixel.Y}: expected: {expectedLocation}{ToArgbCode(expectedColor)} | actual: [{actualX},{actualY}] {ToArgbCode(actualColor)}");
+				report.AppendLine($"\ta tolerance of {difference} [{expectation.Tolerance.ColorKind}] would be required for this test to pass.");
+				report.AppendLine($"\tCurrent: {expectation.Tolerance}");
+
 			}
 
 			return false;
@@ -431,24 +431,32 @@ namespace SamplesApp.UITests.TestFramework
 				Math.Min(rect.Width, size.Width),
 				Math.Min(rect.Height, size.Height));
 
-		private static bool AreSameColor(Color a, Color b, byte tolerance = 0, ColorToleranceKind kind = ColorToleranceKind.Exclusive)
+		private static bool AreSameColor(Color a, Color b, byte tolerance, out int currentDifference, ColorToleranceKind kind = ColorToleranceKind.Exclusive)
 		{
 			switch (kind)
 			{
 				case ColorToleranceKind.Cumulative:
-					return
+				{
+					currentDifference =
 						Abs(a.A - b.A) +
 						Abs(a.R - b.R) +
 						Abs(a.G - b.G) +
-						Abs(a.B - b.B) < tolerance;
+						Abs(a.B - b.B);
+					return currentDifference < tolerance;
+				}
 
 				case ColorToleranceKind.Exclusive:
+				{
 					// comparing ARGB values, because 'named colors' are not considered equal to their unnamed equivalents(!)
-					return
-						Abs(a.A - b.A) <= tolerance &&
-						Abs(a.R - b.R) <= tolerance &&
-						Abs(a.G - b.G) <= tolerance &&
-						Abs(a.B - b.B) <= tolerance;
+					var va = Abs(a.A - b.A);
+					var vr = Abs(a.R - b.R);
+					var vg = Abs(a.G - b.G);
+					var vb = Abs(a.B - b.B);
+
+					currentDifference = Max(Max(va, vr), Max(vg, vb));
+
+					return currentDifference <= tolerance;
+				}
 
 				default: throw new ArgumentOutOfRangeException(nameof(kind));
 			}

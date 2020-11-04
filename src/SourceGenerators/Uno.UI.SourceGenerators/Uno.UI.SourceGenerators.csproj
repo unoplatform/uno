@@ -113,7 +113,8 @@
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
       <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(TargetFramework)'=='net461'">$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\uno-sourcegen</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(TargetFramework)'=='netstandard2.0'">$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\analyzers\dotnet\cs</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

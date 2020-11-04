@@ -289,7 +289,7 @@ namespace Windows.UI.Xaml.Controls
 					return false;
 				}
 
-				CurrentEntry?.Instance.OnNavigatingFrom(navigatingFromArgs);
+				CurrentEntry?.Instance?.OnNavigatingFrom(navigatingFromArgs);
 
 				if (navigatingFromArgs.Cancel)
 				{

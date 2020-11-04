@@ -1,8 +1,13 @@
-﻿using SkiaSharp;
+﻿#nullable enable
+
+using Microsoft.Extensions.Logging;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Uno;
+using Uno.Extensions;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Storage;
@@ -39,7 +44,25 @@ namespace Windows.UI.Composition
 			}
 			else
 			{
-				return SKTypeface.FromFamilyName(name, weight, width, slant);
+				if(string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
+				{
+					return SKTypeface.FromFamilyName(null, weight, width, slant);
+				}
+
+				var typeFace = SKTypeface.FromFamilyName(name, weight, width, slant);
+
+				// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
+				if (typeFace == null)
+				{
+					if (typeof(TextVisual).Log().IsEnabled(LogLevel.Warning))
+					{
+						typeof(TextVisual).Log().LogWarning($"The font {name} could not be found, using system default");
+					}
+
+					typeFace = SKTypeface.FromFamilyName(null, weight, width, slant);
+				}
+
+				return typeFace;
 			}
 		}
 

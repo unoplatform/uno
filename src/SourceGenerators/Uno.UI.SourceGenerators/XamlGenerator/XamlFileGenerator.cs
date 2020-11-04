@@ -1572,7 +1572,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool HasMarkupExtension(XamlMemberDefinition valueNode)
 		{
 			// Return false if the Owner is a custom markup extension
-			if (IsCustomMarkupExtensionType(valueNode.Owner?.Type))
+			if (valueNode == null || IsCustomMarkupExtensionType(valueNode.Owner?.Type))
 			{
 				return false;
 			}
@@ -2976,6 +2976,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						CurrentScope.XBindExpressions.Add(bind);
 
 						var eventTarget = XBindExpressionParser.RestoreSinglePath(bind.Members.First().Value?.ToString());
+						// x:Bind to second-level method generates invalid code
+						// sanitizing member.Member.Name so that "ViewModel.SearchBreeds" becomes "ViewModel_SearchBreeds"
+						var sanitizedEventTarget = SanitizeResourceName(eventTarget);
 
 						(string target, string weakReference, INamedTypeSymbol sourceType) buildTargetContext()
 						{
@@ -2986,7 +2989,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								var dataTypeSymbol = GetType(dataTypeObject.Value?.ToString());
 
 								return (
-									$"({member.Member.Name}_{eventTarget}_That.Target as {XamlConstants.Types.FrameworkElement})?.DataContext as {dataTypeSymbol}",
+									$"({member.Member.Name}_{sanitizedEventTarget}_That.Target as {XamlConstants.Types.FrameworkElement})?.DataContext as {dataTypeSymbol}",
 
 									// Use of __rootInstance is required to get the top-level DataContext, as it may be changed
 									// in the current visual tree by the user.
@@ -2997,7 +3000,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							else
 							{
 								return (
-									$"{member.Member.Name}_{eventTarget}_That.Target as {_className.className}",
+									$"{member.Member.Name}_{sanitizedEventTarget}_That.Target as {_className.className}",
 									$"({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
 									FindType(_className.className)
 								);
@@ -3014,21 +3017,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
 						// creation of a WeakReference.
 						//
-						writer.AppendLineInvariant($"var {member.Member.Name}_{eventTarget}_That = {targetContext.weakReference};");
+						writer.AppendLineInvariant($"var {member.Member.Name}_{sanitizedEventTarget}_That = {targetContext.weakReference};");
 
 						writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({targetContext.target})?.{eventTarget}({xBindParams});");
 					}
 					else
 					{
+						// x:Bind to second-level method generates invalid code
+						// sanitizing member.Value so that "ViewModel.SearchBreeds" becomes "ViewModel_SearchBreeds"
+						var sanitizedMemberValue = SanitizeResourceName(member.Value.ToString());
 
 						//
 						// Generate a weak delegate, so the owner is not being held onto by the delegate. We can
 						// use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
 						// creation of a WeakReference.
 						//
-						writer.AppendLineInvariant($"var {member.Member.Name}_{member.Value}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
+						writer.AppendLineInvariant($"var {member.Member.Name}_{sanitizedMemberValue}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
 
-						writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{member.Value}_That.Target as {_className.className})?.{member.Value}({parms});");
+						writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{sanitizedMemberValue}_That.Target as {_className.className})?.{member.Value}({parms});");
 					}
 				}
 				else
@@ -4953,10 +4959,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return null;
 				}
 
-				if (visibilityMember != null)
+				if (visibilityMember != null || loadElement?.Value != null)
 				{
 					var hasVisibilityMarkup = HasMarkupExtension(visibilityMember);
-					var isLiteralVisible = !hasVisibilityMarkup && (visibilityMember.Value?.ToString() == "Visible");
+					var isLiteralVisible = !hasVisibilityMarkup && (visibilityMember?.Value?.ToString() == "Visible");
 
 					var hasDataContextMarkup = dataContextMember != null && HasMarkupExtension(dataContextMember);
 
@@ -4988,6 +4994,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									def.Objects.AddRange(dataContextMember.Objects);
 
 									BuildComplexPropertyValue(innerWriter, def, closureName + ".", closureName);
+								}
+
+								if (nameMember != null)
+								{
+									innerWriter.AppendLineInvariant(
+										$"{closureName}.Name = \"{nameMember.Value}\";"
+									);
+
+									// Set the element name to the stub, then when the stub will be replaced
+									// the actual target control will override it.
+									innerWriter.AppendLineInvariant(
+										$"_{nameMember.Value}Subject.ElementInstance = {closureName};"
+									);
 								}
 
 								if (hasVisibilityMarkup)
@@ -5024,22 +5043,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 								else
 								{
-									innerWriter.AppendLineInvariant(
-										"{0}.Visibility = {1};",
-										closureName,
-										BuildLiteralValue(visibilityMember)
-									);
-
-									if (nameMember != null)
+									if (visibilityMember != null)
 									{
 										innerWriter.AppendLineInvariant(
-											$"{closureName}.Name = \"{nameMember.Value}\";"
-										);
-
-										// Set the element name to the stub, then when the stub will be replaced
-										// the actual target control will override it.
-										innerWriter.AppendLineInvariant(
-											$"_{nameMember.Value}Subject.ElementInstance = {closureName};"
+											"{0}.Visibility = {1};",
+											closureName,
+											BuildLiteralValue(visibilityMember)
 										);
 									}
 								}

@@ -122,6 +122,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Disabled on WASM: False failure: https://github.com/unoplatform/uno/issues/2739
 		public void When_InListViewWithoutItemClick()
 		{
 			Run(_xamlTestPage);

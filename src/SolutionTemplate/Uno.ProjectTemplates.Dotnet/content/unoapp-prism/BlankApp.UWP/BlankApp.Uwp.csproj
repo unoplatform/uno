@@ -15,10 +15,10 @@
     <PackageReference Include="Uno.Core" Version="2.0.0" />
 
     <!--#if (Container == "Unity") -->
-    <PackageReference Include="Prism.Unity.Uno" Version="8.0.0.1850-pre" />
+    <PackageReference Include="Prism.Unity.Uno" Version="8.0.0.1909" />
     <!--#endif -->
     <!--#if (Container == "DryIoc") -->
-    <PackageReference Include="Prism.DryIoc.Uno" Version="8.0.0.1850-pre" />
+    <PackageReference Include="Prism.DryIoc.Uno" Version="8.0.0.1909" />
     <!--#endif -->
   </ItemGroup>
   <PropertyGroup>

@@ -133,3 +133,15 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 Where:
  * 'Win' represents Windows, and
  * 'Droid' represents Android
+
+### XAML prefixes in cross-targeted libraries
+For Uno 3.0 and above, Xaml prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm in a library, since both platforms use the .NET Standard 2.0 target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library.
+
+The prefix `netstdref` is available and will include the objects or properties in both Skia and Wasm build. A prefix `not_nestdref` can also be used to exclude them. Since Skia and Wasm are similar, it is often not necessary to make the distinction. 
+
+In cases where it is needed (fonts are one example) then the XAML files must be placed directly in the platform specific project or a shared project.
+
+| Prefix          | Namespace                                                   | Put in `mc:Ignorable`? |
+|-----------------|-------------------------------------------------------------|------------------------|
+| `netstdref`     | `http:/uno.ui/netstdref`                                    | yes                    |
+| `not_netstdref` | `http:/uno.ui/not_netstdref`                                | yes                    |

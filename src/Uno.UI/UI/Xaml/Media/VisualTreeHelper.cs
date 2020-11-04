@@ -299,7 +299,7 @@ namespace Windows.UI.Xaml.Media
 				// No needs to adjust the position on Skia:
 				// the scrolling is achieved using a RenderTransform on the content of the ScrollContentPresenter,
 				// so it will already be taken in consideration by the case above.
-#if __SKIA__
+#if !__SKIA__
 				posRelToElement.X += sv.HorizontalOffset;
 				posRelToElement.Y += sv.VerticalOffset;
 #endif

@@ -62,15 +62,15 @@
   <ItemGroup>
     <PackageReference Include="Uno.UI" Version="3.0.5" />
     <PackageReference Include="Uno.UI.RemoteControl" Version="3.0.5" Condition="'$(Configuration)'=='Debug'" />
-    <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.32" />
+    <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.33" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 
     <!--#if (Container == "Unity") -->
-    <PackageReference Include="Prism.Unity.Uno" Version="8.0.0.1850-pre" />
+    <PackageReference Include="Prism.Unity.Uno" Version="8.0.0.1909" />
     <!--#endif -->
     <!--#if (Container == "DryIoc") -->
-    <PackageReference Include="Prism.DryIoc.Uno" Version="8.0.0.1850-pre" />
+    <PackageReference Include="Prism.DryIoc.Uno" Version="8.0.0.1909" />
     <!--#endif -->
   </ItemGroup>
   <ItemGroup>

@@ -16,6 +16,11 @@ using Tizen.Applications;
 using Uno.UI.Runtime.Skia.Tizen;
 using Windows.Devices.Haptics;
 using Uno.UI.Runtime.Skia.Tizen.Devices.Haptics;
+using Windows.System.Profile;
+using Uno.UI.Runtime.Skia.Tizen.System.Profile;
+using Windows.ApplicationModel;
+using Uno.UI.Runtime.Skia.Tizen.ApplicationModel;
+using Uno.ApplicationModel;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -52,7 +57,7 @@ namespace Uno.UI.Runtime.Skia
 				.GetCommandLineArgs()
 				.Skip(1)
 				.ToArray();
-			
+
 			Windows.UI.Core.CoreDispatcher.DispatchOverride
 				= (d) => EcoreMainloop.PostAndWakeUp(d);
 
@@ -64,10 +69,11 @@ namespace Uno.UI.Runtime.Skia
 		{
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new TizenUIElementPointersSupport(o, _tizenApplication.Canvas));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new TizenApplicationViewExtension(o, _tizenApplication.Window));
-			ApiExtensibility.Register(typeof(IApplicationExtension), o => new TizenApplicationExtension(o));
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new TizenDisplayInformationExtension(o, _tizenApplication.Window));
 			ApiExtensibility.Register(typeof(IVibrationDeviceExtension), o => new TizenVibrationDeviceExtension(o));
 			ApiExtensibility.Register(typeof(ISimpleHapticsControllerExtension), o => new TizenSimpleHapticsControllerExtension(o));
+			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new TizenAnalyticsInfoExtension(o));
+			ApiExtensibility.Register(typeof(IPackageIdExtension), o => new TizenPackageIdExtension(o));
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{
