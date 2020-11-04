@@ -137,7 +137,11 @@
 		public const string SR_InfoBarClosedNotification = "InfoBarClosedNotification";
 		public const string SR_InfoBarCustomLandmarkName = "InfoBarCustomLandmarkName";
 		public const string SR_InfoBarCloseButtonTooltip = "InfoBarCloseButtonTooltip";
+		public const string SR_DragViewLinkCaption = "DragViewLinkCaption";
+		public const string SR_DragViewCopyCaption = "DragViewCopyCaption";
+		public const string SR_DragViewMoveCaption = "DragViewMoveCaption";
 
 		public const string IR_NoiseAsset_256X256_PNG = "NoiseAsset_256X256_PNG";
+
 	}
 }
