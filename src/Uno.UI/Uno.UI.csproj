@@ -176,6 +176,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PRIResource Remove="UI\Xaml\DragView\Strings\en-GB\Resources.resw" />
+	  <PRIResource Remove="UI\Xaml\DragView\Strings\en-US\Resources.resw" />
+	  <PRIResource Remove="UI\Xaml\DragView\Strings\es-ES\Resources.resw" />
+	  <PRIResource Remove="UI\Xaml\DragView\Strings\es-MX\Resources.resw" />
+	  <PRIResource Remove="UI\Xaml\DragView\Strings\fr-CA\Resources.resw" />
+	  <PRIResource Remove="UI\Xaml\DragView\Strings\fr-FR\Resources.resw" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <UpToDateCheckInput Remove="UI\Xaml\Controls\Border\BorderLayerRenderer.Composition.cs" />
 	</ItemGroup>
 
