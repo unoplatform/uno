@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
@@ -190,6 +191,73 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			var heightAfter = rectAfter.Height;
 
 			Assert.IsTrue(heightAfter == heightBefore);
+		}
+
+		[Test]
+		[AutoRetry()]
+		public void When_Text_is_Constrained_Then_Clipping_is_Applied()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_ConstrainedByContainer");
+
+
+			// 1) Take a screenshot of the whole sample
+			// 2) Switch opacity of text to zero
+			// 3) Take new screenshot
+			// 4) Compare Right zone -- must be identical
+			// 5) Compare Bottom zone -- must be identical
+			// 6) Do the same for subsequent text block in sample (1 to 5)
+			//
+			// +-sampleRootPanel------------+--------------+
+			// |                            |              |
+			// |    +-borderX---------------+              |
+			// |    | [textX]Lorem ipsum... |              |
+			// |    +-----------------------+  Right zone  |
+			// |    |                       |              |
+			// |    |    Bottom zone        |              |
+			// |    |                       |              |
+			// +----+-----------------------+--------------+
+
+			// (1)
+			var sampleScreenshot = this.TakeScreenshot("fullSample", ignoreInSnapshotCompare: true);
+			var sampleRect = _app.GetRect("sampleRootPanel");
+
+			using var _ = new AssertionScope();
+
+			Test("text1", "border1");
+			Test("text2", "border2");
+			Test("text3", "border3");
+			Test("text4", "border4");
+			Test("text5", "border5");
+
+			void Test(string textControl, string borderControl)
+			{
+				var textRect = _app.GetRect(borderControl);
+
+				// (2)
+				_app.Marked(textControl).SetDependencyPropertyValue("Opacity", "0");
+
+				// (3)
+				var afterScreenshot = this.TakeScreenshot("sample-" + textControl, ignoreInSnapshotCompare: true);
+
+				// (4)
+				var rect1 = new AppRect(
+					x: textRect.Right,
+					y:sampleRect.X,
+					width: sampleRect.Right - textRect.Right,
+					height:sampleRect.Height);
+
+				ImageAssert.AreEqual(sampleScreenshot, rect1, afterScreenshot, rect1);
+
+				// (5)
+				var rect2 = new AppRect(
+					x: textRect.X,
+					y: textRect.Bottom,
+					width: textRect.Width,
+					height: sampleRect.Height - textRect.Bottom);
+
+				ImageAssert.AreEqual(sampleScreenshot, rect2, afterScreenshot, rect2);
+			}
+
 		}
 	}
 }

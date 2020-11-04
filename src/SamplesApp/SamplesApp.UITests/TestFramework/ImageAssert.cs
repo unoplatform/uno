@@ -1,6 +1,8 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -93,6 +95,11 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			[CallerLineNumber] int line = 0)
 		{
+			using var assertionScope = new AssertionScope($"{expected.StepName}<=={actual}");
+			assertionScope.AddReportable("expectedRect", expectedRect.ToString());
+			assertionScope.AddReportable("actualRect", actualRect.ToString());
+			assertionScope.AddReportable("expectedToActualScale", expectedToActualScale.ToString(NumberFormatInfo.InvariantInfo));
+
 			var (areEqual, context) = EqualityCheck(expected, expectedRect, actual, actualBitmap, actualRect, expectedToActualScale, tolerance, line);
 
 			if (areEqual)
@@ -101,7 +108,7 @@ namespace SamplesApp.UITests.TestFramework
 			}
 			else
 			{
-				Assert.Fail(context.ToString());
+				assertionScope.FailWithText(context);
 			}
 		}
 
