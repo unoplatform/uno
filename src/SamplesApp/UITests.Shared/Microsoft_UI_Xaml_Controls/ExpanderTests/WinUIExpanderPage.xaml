@@ -1,0 +1,92 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<UserControl
+    x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests.WinUIExpanderPage"
+    x:Name="ExpanderTestPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
+		<ScrollViewer Grid.Column="0" Height="Auto">
+            <StackPanel Orientation="Vertical">
+                <StackPanel.ChildrenTransitions>
+                    <TransitionCollection>
+                        <RepositionThemeTransition IsStaggeringEnabled="False" />
+                    </TransitionCollection>
+                </StackPanel.ChildrenTransitions>
+
+                <controls:Expander x:Name ="ExpandedExpander" AutomationProperties.Name="ExpandedExpander"  HorizontalContentAlignment="Left" IsExpanded="True">
+                    <controls:Expander.Header>
+                        <TextBlock Style="{StaticResource HeaderTextBlockStyle}" Text="This expander is expanded by default." />
+                    </controls:Expander.Header>
+                    <TextBlock AutomationProperties.AutomationId="ExpandedExpanderContent">Content</TextBlock>
+                </controls:Expander>
+                
+                <controls:Expander AutomationProperties.AutomationId="CollapsedExpander" AutomationProperties.Name="Expander2" HorizontalContentAlignment="Left" IsExpanded="False">
+                    <controls:Expander.Header>
+                        <TextBlock Style="{StaticResource HeaderTextBlockStyle}" Text="This expander is collapsed by default." />
+                    </controls:Expander.Header>
+                    <TextBlock AutomationProperties.AutomationId="CollapsedExpanderContent">Content</TextBlock>
+                </controls:Expander>
+                
+                <controls:Expander AutomationProperties.Name="ParentExpander" HorizontalContentAlignment="Left" IsExpanded="False">
+                    <controls:Expander.Header>
+                        <TextBlock Style="{StaticResource HeaderTextBlockStyle}" Text="This expander has an expander inside" />
+                    </controls:Expander.Header>
+                    <controls:Expander AutomationProperties.Name="NestedExpander" HorizontalContentAlignment="Left" IsExpanded="False" Margin="30,0,0,0" >
+                        <controls:Expander.Header>
+                            <TextBlock Style="{StaticResource HeaderTextBlockStyle}" Text="Nested expander" />
+                        </controls:Expander.Header>
+                        <StackPanel HorizontalAlignment="Left">
+                            <Button>Button1</Button>
+                            <Button>Button2</Button>
+                        </StackPanel>
+                    </controls:Expander>
+                </controls:Expander>
+                
+                <controls:Expander AutomationProperties.Name="ExpanderWithButtons" HorizontalContentAlignment="Left" IsExpanded="False">
+                    <controls:Expander.Header>
+                        <ToggleButton>This is a toggle button in the header</ToggleButton>
+                    </controls:Expander.Header>
+                    <StackPanel>
+                        <TextBlock>Content</TextBlock>
+                    </StackPanel>
+                </controls:Expander>
+
+                <controls:Expander AutomationProperties.Name="ExpanderWithUpwardsDirection" HorizontalContentAlignment="Left" ExpandDirection="Up" IsExpanded="False">
+                    <controls:Expander.Header>
+                        <TextBlock Style="{StaticResource HeaderTextBlockStyle}">This expander will expand upwards</TextBlock>
+                    </controls:Expander.Header>
+                    <StackPanel>
+                        <TextBlock>Content</TextBlock>
+                    </StackPanel>
+                </controls:Expander>
+
+                <controls:Expander IsEnabled="False" AutomationProperties.Name="ExpanderNotEnabled" HorizontalContentAlignment="Left" ExpandDirection="Down" IsExpanded="False">
+                    <controls:Expander.Header>
+                        <TextBlock Style="{StaticResource HeaderTextBlockStyle}">This expander is not enabled</TextBlock>
+                    </controls:Expander.Header>
+                    <StackPanel>
+                        <TextBlock>Content</TextBlock>
+                    </StackPanel>
+                </controls:Expander>
+
+                <local:TestControl IsTabStop="True" x:Name="CustomControl" AutomationProperties.Name="CustomControl">
+                    <controls:Expander x:Name="ExpanderWithCustomEventsSource"  HorizontalContentAlignment="Left" ExpandDirection="Down" IsExpanded="False">
+                        <controls:Expander.Header>
+                            <TextBlock Style="{StaticResource HeaderTextBlockStyle}">This expander has a custom events source</TextBlock>
+                        </controls:Expander.Header>
+                        <StackPanel>
+                            <TextBlock>Content</TextBlock>
+                        </StackPanel>
+                    </controls:Expander>
+                </local:TestControl>
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>
