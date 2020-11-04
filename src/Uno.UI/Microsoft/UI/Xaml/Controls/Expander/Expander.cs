@@ -46,10 +46,11 @@ namespace Microsoft.UI.Xaml.Controls
 					// 1. Set the events source of the toggle button peer to the expander's.
 					if (FrameworkElementAutomationPeer.FromElement(this) is AutomationPeer expanderPeer)
 					{
-						var expanderEventsSource = expanderPeer.EventsSource != null ?
-							expanderPeer.EventsSource :
-							expanderPeer;
-						toggleButtonPeer.EventsSource = expanderEventsSource;
+						// Uno Doc: EventSource is not implemented in the Uno Platform
+						//var expanderEventsSource = expanderPeer.EventsSource != null ?
+						//	expanderPeer.EventsSource :
+						//	expanderPeer;
+						//toggleButtonPeer.EventsSource = expanderEventsSource;
 					}
 
 					// 2. If the expander doesn't have any AutomationProperties.Name set,
@@ -58,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 					if (string.IsNullOrEmpty(AutomationProperties.GetName(this))
 						&& !string.IsNullOrEmpty(toggleButtonPeer.GetName()))
 					{
-						// Uno Doc: '.GetName()' substituted for '.GetNameCore()' here and above which may not always work
+						// Uno Doc: The equivalent '.GetName()' substituted for '.GetNameCore()' in WinUI
 						AutomationProperties.SetName(this, toggleButtonPeer.GetName());
 					}
 				}
@@ -68,17 +69,17 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateExpandDirection(false);
 		}
 
-		public void RaiseExpandingEvent(Expander container)
+		protected void RaiseExpandingEvent(Expander container)
 		{
 			Expanding?.Invoke(this, new ExpanderExpandingEventArgs()); // Uno Doc: We won't use null for args like WinUI
 		}
 
-		public void RaiseCollapsedEvent(Expander container)
+		protected void RaiseCollapsedEvent(Expander container)
 		{
 			Collapsed?.Invoke(this, new ExpanderCollapsedEventArgs()); // Uno Doc: We won't use null for args like WinUI
 		}
 
-		public void OnIsExpandedPropertyChanged(DependencyPropertyChangedEventArgs args)
+		protected void OnIsExpandedPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			if (IsExpanded)
 			{
@@ -91,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateExpandState(true);
 		}
 
-		public void OnExpandDirectionPropertyChanged(DependencyPropertyChangedEventArgs args)
+		protected void OnExpandDirectionPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateExpandDirection(true);
 		}
@@ -127,7 +128,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (FrameworkElementAutomationPeer.FromElement(this) is AutomationPeer peer)
 			{
 				var expanderPeer = peer as ExpanderAutomationPeer;
-				expanderPeer.RaiseExpandCollapseAutomationEvent(
+				expanderPeer?.RaiseExpandCollapseAutomationEvent(
 					isExpanded ?
 					ExpandCollapseState.Expanded :
 					ExpandCollapseState.Collapsed

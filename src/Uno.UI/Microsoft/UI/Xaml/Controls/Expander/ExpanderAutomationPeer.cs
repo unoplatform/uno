@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
@@ -134,15 +135,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void Collapse()
-		{
-			if (_owner is Expander expander)
-			{
-				expander.IsExpanded = false;
-				RaiseExpandCollapseAutomationEvent(ExpandCollapseState.Collapsed);
-			}
-		}
-
 		public void Expand()
 		{
 			if (_owner is Expander expander)
@@ -152,18 +144,31 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		public void Collapse()
+		{
+			if (_owner is Expander expander)
+			{
+				expander.IsExpanded = false;
+				RaiseExpandCollapseAutomationEvent(ExpandCollapseState.Collapsed);
+			}
+		}
+
 		public void RaiseExpandCollapseAutomationEvent(ExpandCollapseState newState)
 		{
-			if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
+			// Uno Doc: AutomationEvents not currently implemented so added an API check
+			if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Automation.Peers.AutomationEvents", nameof(AutomationEvents.PropertyChanged)))
 			{
-				ExpandCollapseState oldState = (newState == ExpandCollapseState.Expanded) ?
-					ExpandCollapseState.Collapsed :
-					ExpandCollapseState.Expanded;
+				if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
+				{
+					ExpandCollapseState oldState = (newState == ExpandCollapseState.Expanded) ?
+						ExpandCollapseState.Collapsed :
+						ExpandCollapseState.Expanded;
 
-				// if box_value(oldState) doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator unbox it.
-				RaisePropertyChangedEvent(ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
-					oldState,
-					newState);
+					// if box_value(oldState) doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator unbox it.
+					RaisePropertyChangedEvent(ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
+						oldState,
+						newState);
+				}
 			}
 		}
 
