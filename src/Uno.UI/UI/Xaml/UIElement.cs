@@ -186,9 +186,7 @@ namespace Windows.UI.Xaml
 			// to find an element in the parent hierarchy of the other element.
 			if (to is { } && from.Depth < to.Depth)
 			{
-				var toToFrom = GetTransform(to, from);
-				Matrix3x2.Invert(toToFrom, out var fromToTo);
-				return fromToTo;
+				return GetTransform(to, from).Inverse();
 			}
 #endif
 
@@ -259,7 +257,7 @@ namespace Windows.UI.Xaml
 				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
 				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
 				var toToRoot = GetTransform(to, null);
-				Matrix3x2.Invert(toToRoot, out var rootToTo);
+				var rootToTo = toToRoot.Inverse();
 
 				matrix *= rootToTo;
 			}

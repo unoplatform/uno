@@ -279,7 +279,7 @@ namespace Windows.UI.Xaml.Media
 			var renderTransform = element.RenderTransform;
 			if (renderTransform != null)
 			{
-				Matrix3x2.Invert(renderTransform.MatrixCore, out var parentToElement);
+				var parentToElement = renderTransform.MatrixCore.Inverse();
 
 				TRACE($"- renderTransform: [{parentToElement.M11:F2},{parentToElement.M12:F2} / {parentToElement.M21:F2},{parentToElement.M22:F2} / {parentToElement.M31:F2},{parentToElement.M32:F2}]");
 

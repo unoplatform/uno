@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml
 			var viewportInLocalCoordinates = viewport;
 #else
 			var viewportInLocalCoordinates = !viewport.IsEmpty && parent is UIElement parentElt
-				? GetTransform(this, parentElt).Transform(viewport)
+				? GetTransform(this, parentElt).Inverse().Transform(viewport)
 				: viewport;
 #endif
 
