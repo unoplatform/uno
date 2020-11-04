@@ -434,5 +434,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 				}
 			}
 		}
+
+		[Test]
+		[AutoRetry]
+		public void ContentDialog_Async()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Async");
+
+			var showDialogButton = _app.Marked("AsyncDialogButton");
+			var hideDialogButton = _app.Marked("HideButton");
+			var statusTextblock = _app.Marked("DidShowAsyncReturnTextBlock");
+
+			// open dialog
+			_app.WaitForElement(showDialogButton);
+			_app.FastTap(showDialogButton);
+
+			// hide dialog
+			_app.WaitForElement(hideDialogButton);
+			_app.WaitForDependencyPropertyValue(statusTextblock, "Text", "Not Returned"); // verify that the dialog didn't return yet
+			_app.FastTap(hideDialogButton);
+
+			// verify showAsync() returned
+			_app.WaitForDependencyPropertyValue(statusTextblock, "Text", "Returned");
+		}
 	}
 }

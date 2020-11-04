@@ -12,7 +12,7 @@
 		<StackPanel>
 			<TextBlock Text="ContentDialog Async tests"
 					   Margin="50" />
-			<Button x:Name="AsyncDialog"
+			<Button x:Name="AsyncDialogButton"
 					Content="Show Dialog"
 					Click="Button_Click" />
 			<TextBlock x:Name="DidShowAsyncReturnTextBlock"

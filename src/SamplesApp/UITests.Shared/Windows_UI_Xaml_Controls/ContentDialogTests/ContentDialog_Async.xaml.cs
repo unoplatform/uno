@@ -34,7 +34,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 			dialog = new ContentDialog();
 			_Button hideButton = new _Button()
 			{
-				Content = new TextBlock() { Text = "Hide" }
+				Content = new TextBlock() { Name = "HideButton", Text = "Hide" }
 			};
 			hideButton.Click += HideButton_Click;
 			dialog.Content = hideButton;
