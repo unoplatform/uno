@@ -3388,7 +3388,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Where(p => !p.StartsWith("global::"))  // Don't include paths that start with global:: (e.g. Enums)
 				.Select(p => $"\"{p}\"");
 
-			var pathsArray = propertyPaths.properties.Any()
+			var pathsArray = formattedPaths.Any()
 				? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 				: "";
 
@@ -3530,38 +3530,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsStaticMember(string fullMemberName)
 		{
 			fullMemberName = fullMemberName.TrimStart("global::");
-
 			var lastDotIndex = fullMemberName.LastIndexOf(".");
 
-			if (lastDotIndex != -1)
+			var isTopLevelMember = lastDotIndex == -1;
+
+			var className = isTopLevelMember
+				? _className.ns + "." + _className.className
+				: fullMemberName.Substring(0, lastDotIndex);
+
+			var memberName = isTopLevelMember
+				? fullMemberName
+				: fullMemberName.Substring(lastDotIndex + 1);
+
+			if (_metadataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol)
 			{
-				var className = lastDotIndex != -1 ? fullMemberName.Substring(0, lastDotIndex) : fullMemberName;
-				var memberName = lastDotIndex != -1 ? fullMemberName.Substring(lastDotIndex + 1) : fullMemberName;
+				var isStaticMethod = typeSymbol.GetMethods().Any(m => m.IsStatic && m.Name == memberName);
+				var isStaticProperty = typeSymbol.GetProperties().Any(m => m.Name == memberName && m.IsStatic);
+				var isStaticField = typeSymbol.GetFields().Any(m => m.Name == memberName && m.IsStatic);
+				var isEnum = typeSymbol.TypeKind == TypeKind.Enum;
 
-				if (_metadataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol)
-				{
-					var hasStaticMethod = typeSymbol.GetMethods().Any(m => m.IsStatic && m.Name == memberName);
-					var hasStaticProperty = typeSymbol.GetProperties().Any(m => m.Name == memberName && m.IsStatic);
-					var isEnum = typeSymbol.TypeKind == TypeKind.Enum;
-
-					return hasStaticMethod || hasStaticProperty || isEnum;
-				}
-
-				return false;
+				return isStaticMethod || isStaticProperty || isStaticField || (!isTopLevelMember && isEnum);
 			}
-			else
-			{
-				if (_metadataHelper.FindTypeByFullName(_className.ns + "." + _className.className) is INamedTypeSymbol typeSymbol)
-				{
-					var hasStaticMethod = typeSymbol.GetMethods().Any(m => m.IsStatic && m.Name == fullMemberName);
-					var isStaticProperty = typeSymbol.GetProperties().Any(m => m.Name == fullMemberName && m.IsStatic);
-					var isStaticField = typeSymbol.GetFields().Any(m => m.Name == fullMemberName && m.IsStatic);
 
-					return isStaticProperty || isStaticField || hasStaticMethod;
-				}
-
-				return false;
-			}
+			return false;
+			
 		}
 
 		private string RewriteNamespaces(string xamlString)
