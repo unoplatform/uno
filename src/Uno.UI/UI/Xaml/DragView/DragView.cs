@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
@@ -170,18 +171,17 @@ namespace Windows.UI.Xaml
 		private static string ToCaption(DataPackageOperation result)
 		{
 			// If multiple flags set (which should not!), the UWP precedence is Link > Copy > Move
-			// TODO: Localize
 			if (result.HasFlag(DataPackageOperation.Link))
 			{
-				return "Link";
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_DragViewLinkCaption);
 			}
 			else if (result.HasFlag(DataPackageOperation.Copy))
 			{
-				return "Copy";
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_DragViewCopyCaption);
 			}
 			else if (result.HasFlag(DataPackageOperation.Move))
 			{
-				return "Move";
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_DragViewMoveCaption);
 			}
 			else // None
 			{
