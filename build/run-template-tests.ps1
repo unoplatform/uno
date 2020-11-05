@@ -37,7 +37,7 @@ function Get-TemplateConfiguration(
     $f = If ($wasmVsCode) { $wasmVsCodeFlag } Else { $wasmVsCodeFlag + '=false' }
     $g = If ($skiaWpf)    { $skiaWpfFlag    } Else { $skiaWpfFlag    + '=false' }
     $h = If ($skiaGtk)    { $skiaGtkFlag    } Else { $skiaGtkFlag    + '=false' }
-    $i = If ($skiaTizen)  { $skiaTizenFlag  } Else { $skiaGtkTizen   + '=false' }
+    $i = If ($skiaTizen)  { $skiaTizenFlag  } Else { $skiaTizenFlag  + '=false' }
 
     @($a, $b, $c, $d, $e, $f, $g, $h, $i)
 }
