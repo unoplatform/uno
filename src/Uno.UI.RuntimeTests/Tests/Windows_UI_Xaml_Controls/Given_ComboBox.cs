@@ -35,12 +35,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForLoaded(SUT);
 
+				await WindowHelper.WaitFor(() => SUT.ActualWidth == minWidth); // Needed for iOS where ComboBox may be initially too wide, for some reason
+
 				SUT.IsDropDownOpen = true;
 
 				ComboBoxItem cbi = null;
 				foreach (var item in source)
 				{
 					await WindowHelper.WaitFor(() => (cbi = SUT.ContainerFromItem(item) as ComboBoxItem) != null);
+					await WindowHelper.WaitForLoaded(cbi); // Required on Android
 					Assert.AreEqual(expectedItemWidth, cbi.ActualWidth);
 				}
 			}
@@ -72,7 +75,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				WindowHelper.WindowContent = grid;
 
-				await WindowHelper.WaitForLoaded(grid);
+				await WindowHelper.WaitForLoaded(SUT);
 
 				SUT.IsDropDownOpen = true;
 
@@ -80,6 +83,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				foreach (var item in source)
 				{
 					await WindowHelper.WaitFor(() => (cbi = SUT.ContainerFromItem(item) as ComboBoxItem) != null);
+					await WindowHelper.WaitForLoaded(cbi); // Required on Android
 					Assert.AreEqual(expectedItemWidth, cbi.ActualWidth);
 				}
 			}

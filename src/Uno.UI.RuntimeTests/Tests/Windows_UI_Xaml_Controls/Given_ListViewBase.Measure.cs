@@ -22,6 +22,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_ListViewBase
 	{
 		[TestMethod]
+#if __IOS__ || __ANDROID__
+		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
+#endif
 		public async Task When_ListView_Parent_Unstretched()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -54,6 +57,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __IOS__ || __ANDROID__
+		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
+#endif
 		public async Task When_ListView_Parent_Unstretched_Scrolled()
 		{
 			var source = Enumerable.Range(0, 50).ToArray();
@@ -90,6 +96,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __IOS__ || __ANDROID__
+		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
+#endif
 		public async Task When_Item_Margins()
 		{
 			var SUT = new ListView
