@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.UI.Private.Controls;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -75,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// call the event at 60 frames per second
 				m_renderingToken = false;
 				Windows.UI.Xaml.Media.CompositionTarget.Rendering -= OnRendering;
-				// TODO UNO RepeaterTestHooks.NotifyBuildTreeCompleted();
+				RepeaterTestHooks.NotifyBuildTreeCompleted();
 			}
 
 			// Reset the timer so it snaps the time just before rendering

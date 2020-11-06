@@ -595,6 +595,8 @@ namespace Windows.UI.Xaml.Controls
 		/// <remarks>Unlike the LayoutInformation.GetLayoutSlot(), this property is set **BEFORE** arranging the children of the ScrollViewer</remarks>
 		internal Size ViewportArrangeSize { get; private set; }
 
+		// Note for implementers: Search for SharedHelpers.IsRS5OrHigher() in ItemsRepeaterScrollHost.cs
+		// => This should be re-enabled AND this class also gives the base implementation for the anchoring
 		[global::Uno.NotImplemented]
 		public UIElement CurrentAnchor => null;
 
