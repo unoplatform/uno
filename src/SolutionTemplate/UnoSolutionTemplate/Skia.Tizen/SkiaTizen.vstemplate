@@ -26,6 +26,7 @@
 	  	</Folder>
 	  </Folder>
 	  <ProjectItem TargetFileName="Program.cs" ReplaceParameters="true">Program.cs</ProjectItem>
+	  <ProjectItem TargetFileName="tizen-manifest.xml" ReplaceParameters="true">tizen-manifest.xml</ProjectItem>
 	</Project>
   </TemplateContent>
 </VSTemplate>
