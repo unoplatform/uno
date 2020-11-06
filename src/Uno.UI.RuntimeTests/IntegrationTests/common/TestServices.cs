@@ -53,7 +53,7 @@ namespace Private.Infrastructure
 				await WaitFor(IsLoaded, message: $"{element} loaded");
 				bool IsLoaded()
 				{
-					if (element.ActualHeight == 0)
+					if (element.ActualHeight == 0 || element.ActualWidth == 0)
 					{
 						return false;
 					}
