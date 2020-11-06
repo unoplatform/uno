@@ -11,12 +11,12 @@ namespace UITests.Microsoft_UI_Xaml_Controls.InfoBarTests
 {
 	[Sample("InfoBar", "WinUI")]
 	public sealed partial class InfoBarPage : Page
-    {
-        public InfoBarPage()
-        {
-            this.InitializeComponent();
-        }
-
+	{
+		public InfoBarPage()
+		{
+			this.InitializeComponent();
+		}
+#if HAS_UNO
 		private void SeverityComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			string severityName = e.AddedItems[0].ToString();
@@ -153,5 +153,6 @@ namespace UITests.Microsoft_UI_Xaml_Controls.InfoBarTests
 				TestInfoBar.Background = new SolidColorBrush(Colors.Transparent);
 			}
 		}
+#endif
 	}
 }
