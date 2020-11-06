@@ -582,7 +582,12 @@ namespace Windows.UI.Xaml.Data
 					_IsCurrentlyPushing = true;
 					// Get the source value and place it in the target property
 					var convertedValue = ConvertValue(v);
-					if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
+
+					if (convertedValue == DependencyProperty.UnsetValue)
+					{
+						ApplyFallbackValue();
+					}
+					else if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
 					{
 						SetTargetValue(ConvertValue(ParentBinding.TargetNullValue));
 					}
