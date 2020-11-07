@@ -12,11 +12,13 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<not_win:Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
-		<Style x:Name="CustomCloseButtonStyle" TargetType="Button" BasedOn="{StaticResource InfoBarCloseButtonStyle}">
-			<Style.Setters>
-				<Setter Property="Background" Value="Red"/>
-			</Style.Setters>
-		</Style>
+		<not_win:Grid.Resources>
+			<Style x:Name="CustomCloseButtonStyle" TargetType="Button" BasedOn="{StaticResource InfoBarCloseButtonStyle}">
+				<Style.Setters>
+					<Setter Property="Background" Value="Red"/>
+				</Style.Setters>
+			</Style>
+		</not_win:Grid.Resources>
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
