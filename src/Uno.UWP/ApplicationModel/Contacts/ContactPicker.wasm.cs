@@ -1,7 +1,8 @@
 ﻿#nullable enable
 
-using System.Diagnostics;
+using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,17 +23,70 @@ namespace Windows.ApplicationModel.Contacts
 
 		private async Task<Contact?> PickContactTaskAsync()
 		{
-			var pickResult = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickContacts(false)");
-			return new Contact() { FirstName = result?.ToString() ?? "N/A" };
+			var contacts = await PickContactsAsync(false);
+			return contacts.FirstOrDefault();
 		}
 
-		private ContactInfo[] DeserializePickResult(string pickResult)
+		private WasmContact[] DeserializePickResult(string pickResult)
 		{
 			using (var stream = new MemoryStream(Encoding.Default.GetBytes(pickResult)))
 			{
-				var serializer = new DataContractJsonSerializer(typeof(ContactInfo[]));
-				return (ContactInfo[])serializer.ReadObject(stream);
+				var serializer = new DataContractJsonSerializer(typeof(WasmContact[]));
+				return (WasmContact[])serializer.ReadObject(stream);
 			}
+		}
+
+		private async Task<Contact[]> PickContactsAsync(bool multiple)
+		{
+			var pickResult = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickContacts({(multiple ? "true" : "false")})");
+			if (string.IsNullOrEmpty(pickResult))
+			{
+				return Array.Empty<Contact>();
+			}
+
+			var contacts = DeserializePickResult(pickResult);
+			return contacts.Where(c => c != null).Select(c => ContactFromContactInfo(c)).ToArray();
+		}
+
+		private static Contact ContactFromContactInfo(WasmContact contactInfo)
+		{
+			var contact = new Contact();
+			contact.DisplayNameOverride = contactInfo.Name?.FirstOrDefault(n => n?.Length > 0) ?? "";
+			foreach (var phoneNumber in contactInfo.Tel?.Where(t => t?.Length > 0) ?? Array.Empty<string>())
+			{
+				var contactPhone = new ContactPhone()
+				{
+					Number = phoneNumber,
+					Kind = ContactPhoneKind.Other
+				};
+				contact.Phones.Add(contactPhone);
+			}
+
+			foreach (var email in contactInfo.Email?.Where(t => t?.Length > 0) ?? Array.Empty<string>())
+			{
+				var contactEmail = new ContactEmail()
+				{
+					Address = email,
+					Kind = ContactEmailKind.Other
+				};
+				contact.Emails.Add(contactEmail);
+			}
+
+			foreach (var address in contactInfo.Address?.Where(a => a != null) ?? Array.Empty<WasmContactAddress>())
+			{
+				var contactAddress = new ContactAddress()
+				{
+					StreetAddress = address.DependentLocality ?? "",
+					Country = address.Country ?? "",
+					Locality = address.City ?? "",
+					Region = address.Region ?? "",
+					PostalCode = address.PostalCode ?? "",
+					Kind = ContactAddressKind.Other
+				};
+				contact.Addresses.Add(contactAddress);
+			}
+
+			return contact;
 		}
 	}
 }

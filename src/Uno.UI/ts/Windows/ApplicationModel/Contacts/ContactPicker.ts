@@ -6,7 +6,6 @@
 	Tel = "tel"
 };
 
-
 declare class ContactInfo {
 	address: PaymentAddress[];
 	email: string[];
