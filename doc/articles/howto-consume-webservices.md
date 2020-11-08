@@ -1391,9 +1391,9 @@ You will start by adding the data models.
 
 1. To add a class for the Favorites API service, in the **TheCatApiClient.Shared** project, right-click the **WebServices** folder, select **Add** and click **Class...**
 
-1. On the **Add New Item** dialog, in the **Name** field, enter **FavoritesApi.cs**
+1. On the **Add New Item** dialog, in the **Name** field, enter **ImageApi.cs**
 
-1. In the editor, replace the content of the **FavoritesApi.cs** class with the following:
+1. In the editor, replace the content of the **ImageApi.cs** class with the following:
 
     ```csharp
     using System.Collections.Generic;
@@ -1485,7 +1485,7 @@ You will start by adding the data models.
 
     In order to add an image to your favorites, the API expects a JSON payload that contains the image ID and an optional **sub_id** value. The **Add** methods constructs this using a **Dictionary** that is then serialized to JSON and submitted as the payload. Rather than returning a **Favorite**, it returns a **Response** instance which contains the new Favorite ID.
 
-1. To add support for adding an image to your favorites, locate the comment **// Insert Delete below here** and replace it with the following code:
+1. To add support for deleting an image from your favorites, locate the comment **// Insert Delete below here** and replace it with the following code:
 
     ```csharp
     // Insert Delete below here
@@ -1503,6 +1503,8 @@ You will start by adding the data models.
         return null;
     }
     ```
+
+    In order to delete an image from your favorites, the API expects a JSON payload that contains the favorite ID value. The **Delete** method submits the favorite ID value in the url. The method returns a **Response** instance.
 
 1. The implementation of **FavoritesApi** should look similar to:
 
