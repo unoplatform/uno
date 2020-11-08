@@ -49,7 +49,7 @@
         <dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
         <dependency id="Newtonsoft.Json" version="12.0.2" />
-        <dependency id="Uno.Wasm.WebSockets" version="1.0.0-dev.30" />
+        <dependency id="Uno.Wasm.WebSockets" version="1.1.0" />
       </group>
     </dependencies>
 
