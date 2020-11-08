@@ -20,7 +20,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 {
-	public class Given_TabView : SampleControlUITestBase
+	public class Given_InfoBar : SampleControlUITestBase
 	{
 		// Tests which are not yet available
 		// LayoutTest, CloseTest
@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 		[SetUp]
 		public void TestSetup()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests.TreeViewPage");
+			Run("UITests.Microsoft_UI_Xaml_Controls.InfoBarTests.InfoBarPage");
 		}
 
 		[Test]
