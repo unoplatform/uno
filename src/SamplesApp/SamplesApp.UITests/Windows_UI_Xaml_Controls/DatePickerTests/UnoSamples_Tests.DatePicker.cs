@@ -83,6 +83,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void DatePicker_Header()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.DatePicker.DatePicker_Header", skipInitialScreenshot: true);
+
+			var headerContentTextBlock = _app.Marked("DatePickerHeaderContent");
+			_app.WaitForElement(headerContentTextBlock);
+
+			Assert.AreEqual("This is a DatePicker Header", headerContentTextBlock.GetDependencyPropertyValue("Text").ToString());
+		}
+
+		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
 		public void DatePickerFlyout_MinYearProperlySets()
 		{
