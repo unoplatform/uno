@@ -11,10 +11,14 @@ namespace Uno.Helpers.Theming
 		{
 			if ((int)Build.VERSION.SdkInt >= 28)
 			{
-				var uiModeFlags = Android.App.Application.Context.Resources.Configuration.UiMode & UiMode.NightMask;
-				if (uiModeFlags == UiMode.NightYes)
+				var configuration = Android.App.Application.Context?.Resources?.Configuration;
+				if (configuration != null)
 				{
-					return SystemTheme.Dark;
+					var uiModeFlags = configuration.UiMode & UiMode.NightMask;
+					if (uiModeFlags == UiMode.NightYes)
+					{
+						return SystemTheme.Dark;
+					}
 				}
 			}
 			return SystemTheme.Light;

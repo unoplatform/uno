@@ -1,15 +1,12 @@
-using Uno.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.Foundation;
+using Uno.Extensions;
 using Uno.UI;
+using Windows.Foundation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -34,15 +31,15 @@ namespace Windows.UI.Xaml.Controls
 
 		public DateTimeOffset Date
 		{
-			get { return (DateTimeOffset)this.GetValue(DateProperty); }
-			set { this.SetValue(DateProperty, value); }
+			get => (DateTimeOffset)this.GetValue(DateProperty);
+			set => this.SetValue(DateProperty, value);
 		}
 
 		//#18331 If the Date property of DatePickerFlyout is two way binded, the ViewModel receives the control's default value while the ViewModel sends its default value which desynchronizes the values
 		//Set initial value of DatePicker to DateTimeOffset.MinValue to avoid 2 way binding issue where the DatePicker reset Date(DateTimeOffset.MinValue) after the initial binding value.
 		//We assume that this is the view model who will set the initial value just the time to fix #18331
-		public static DependencyProperty DateProperty { get ; } =
-			DependencyProperty.Register("Date", typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(UnsetDateValue,
+		public static DependencyProperty DateProperty { get; } =
+			DependencyProperty.Register(nameof(Date), typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(UnsetDateValue,
 				(s, e) => ((DatePicker)s).OnDatePropertyChanged((DateTimeOffset)e.NewValue, (DateTimeOffset)e.OldValue)));
 
 		private void OnDatePropertyChanged(DateTimeOffset newValue, DateTimeOffset oldValue)
@@ -93,12 +90,12 @@ namespace Windows.UI.Xaml.Controls
 		#region DayVisibleProperty
 		public bool DayVisible
 		{
-			get { return (bool)this.GetValue(DayVisibleProperty); }
-			set { this.SetValue(DayVisibleProperty, value); }
+			get => (bool)this.GetValue(DayVisibleProperty);
+			set => this.SetValue(DayVisibleProperty, value);
 		}
 
-		public static DependencyProperty DayVisibleProperty { get ; } =
-			DependencyProperty.Register("DayVisible", typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
+		public static DependencyProperty DayVisibleProperty { get; } =
+			DependencyProperty.Register(nameof(DayVisible), typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnDayVisibleChangedPartial()));
 
 		partial void OnDayVisibleChangedPartial();
@@ -107,12 +104,12 @@ namespace Windows.UI.Xaml.Controls
 		#region MonthVisibleProperty
 		public bool MonthVisible
 		{
-			get { return (bool)this.GetValue(MonthVisibleProperty); }
-			set { this.SetValue(MonthVisibleProperty, value); }
+			get => (bool)this.GetValue(MonthVisibleProperty);
+			set => this.SetValue(MonthVisibleProperty, value);
 		}
 
-		public static DependencyProperty MonthVisibleProperty { get ; } =
-			DependencyProperty.Register("MonthVisible", typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
+		public static DependencyProperty MonthVisibleProperty { get; } =
+			DependencyProperty.Register(nameof(MonthVisible), typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMonthVisibleChangedPartial()));
 
 		partial void OnMonthVisibleChangedPartial();
@@ -121,12 +118,12 @@ namespace Windows.UI.Xaml.Controls
 		#region YearVisibleProperty
 		public bool YearVisible
 		{
-			get { return (bool)this.GetValue(YearVisibleProperty); }
-			set { this.SetValue(YearVisibleProperty, value); }
+			get => (bool)this.GetValue(YearVisibleProperty);
+			set => this.SetValue(YearVisibleProperty, value);
 		}
 
-		public static DependencyProperty YearVisibleProperty { get ; } =
-			DependencyProperty.Register("YearVisible", typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
+		public static DependencyProperty YearVisibleProperty { get; } =
+			DependencyProperty.Register(nameof(YearVisible), typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnYearVisibleChangedPartial()));
 
 		partial void OnYearVisibleChangedPartial();
@@ -135,12 +132,12 @@ namespace Windows.UI.Xaml.Controls
 		#region MaxYearProperty
 		public DateTimeOffset MaxYear
 		{
-			get { return (DateTimeOffset)this.GetValue(MaxYearProperty); }
-			set { this.SetValue(MaxYearProperty, value); }
+			get => (DateTimeOffset)this.GetValue(MaxYearProperty);
+			set => this.SetValue(MaxYearProperty, value);
 		}
 
-		public static DependencyProperty MaxYearProperty { get ; } =
-			DependencyProperty.Register("MaxYear", typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: DateTimeOffset.MaxValue,
+		public static DependencyProperty MaxYearProperty { get; } =
+			DependencyProperty.Register(nameof(MaxYear), typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: DateTimeOffset.MaxValue,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMaxYearChangedPartial()));
 
 		partial void OnMaxYearChangedPartial();
@@ -149,32 +146,63 @@ namespace Windows.UI.Xaml.Controls
 		#region MinYearProperty
 		public DateTimeOffset MinYear
 		{
-			get { return (DateTimeOffset)this.GetValue(MinYearProperty); }
-			set { this.SetValue(MinYearProperty, value); }
+			get => (DateTimeOffset)this.GetValue(MinYearProperty);
+			set => this.SetValue(MinYearProperty, value);
 		}
 
-		public static DependencyProperty MinYearProperty { get ; } =
-			DependencyProperty.Register("MinYear", typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: DateTimeOffset.MinValue,
+		public static DependencyProperty MinYearProperty { get; } =
+			DependencyProperty.Register(nameof(MinYear), typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: DateTimeOffset.MinValue,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMinYearChangedPartial()));
 
 		partial void OnMinYearChangedPartial();
 		#endregion
 
+		#region HeaderProperty
+
+		public object Header
+		{
+			get => GetValue(HeaderProperty);
+			set => SetValue(HeaderProperty, value);
+		}
+
+		public static DependencyProperty HeaderProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Header),
+				typeof(object),
+				typeof(DatePicker),
+				new FrameworkPropertyMetadata(null, (s, e) => ((DatePicker)s)?.OnHeaderChanged(e)));
+
+		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e) =>
+			UpdateHeaderVisibility();
+
+		#endregion
+
+		#region HeaderTemplateProperty
+
+		public DataTemplate HeaderTemplate
+		{
+			get => (DataTemplate)GetValue(HeaderTemplateProperty);
+			set => SetValue(HeaderTemplateProperty, value);
+		}
+
+		public static DependencyProperty HeaderTemplateProperty { get; } =
+			DependencyProperty.Register(
+				nameof(HeaderTemplate),
+				typeof(DataTemplate),
+				typeof(DatePicker),
+				new FrameworkPropertyMetadata(null));
+
+		#endregion
+
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
-			get
-			{
-				return (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
-			}
-			set
-			{
-				this.SetValue(LightDismissOverlayModeProperty, value);
-			}
+			get => (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
+			set => this.SetValue(LightDismissOverlayModeProperty, value);
 		}
 
 		public static DependencyProperty LightDismissOverlayModeProperty { get; } =
 		DependencyProperty.Register(
-			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
+			nameof(LightDismissOverlayMode), typeof(LightDismissOverlayMode),
 			typeof(DatePicker),
 			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
 
@@ -183,12 +211,12 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal Brush LightDismissOverlayBackground
 		{
-			get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
-			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
+			get => (Brush)GetValue(LightDismissOverlayBackgroundProperty);
+			set => SetValue(LightDismissOverlayBackgroundProperty, value);
 		}
 
-		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
-			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(DatePicker), new FrameworkPropertyMetadata(null));
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
+			DependencyProperty.Register(nameof(LightDismissOverlayBackground), typeof(Brush), typeof(DatePicker), new FrameworkPropertyMetadata(null));
 
 		#region Template parts
 		public const string DayTextBlockPartName = "DayTextBlock";
@@ -204,10 +232,15 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		private Button _flyoutButton;
-
+		private ContentPresenter _headerContentPresenter;
 		private TextBlock _dayTextBlock;
 		private TextBlock _monthTextBlock;
 		private TextBlock _yearTextBlock;
+		private ColumnDefinition _dayColumn;
+		private ColumnDefinition _monthColumn;
+		private ColumnDefinition _yearColumn;
+		private Grid _flyoutGrid;
+
 		private bool _isLoaded;
 		private bool _isViewReady;
 
@@ -229,6 +262,12 @@ namespace Windows.UI.Xaml.Controls
 					InitializeTextBlocks(flyoutContent);
 					UpdateDisplayedDate();
 				}
+			}
+
+			_headerContentPresenter = GetTemplateChild("HeaderContentPresenter") as ContentPresenter;
+			if (_headerContentPresenter != null)
+			{
+				UpdateHeaderVisibility();
 			}
 
 			_isViewReady = true;
@@ -257,6 +296,15 @@ namespace Windows.UI.Xaml.Controls
 			if (flyoutContent != null)
 			{
 				SetupFlyoutButton();
+			}
+		}
+
+		private void UpdateHeaderVisibility()
+		{
+			if (_headerContentPresenter != null)
+			{
+				_headerContentPresenter.Visibility =
+					Header != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
 
