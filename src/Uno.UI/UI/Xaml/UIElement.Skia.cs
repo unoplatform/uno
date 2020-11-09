@@ -290,5 +290,9 @@ namespace Windows.UI.Xaml
 
 		partial void HideVisual()
 			=> Visual.IsVisible = false;
+
+#if DEBUG
+		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);
+#endif
 	}
 }
