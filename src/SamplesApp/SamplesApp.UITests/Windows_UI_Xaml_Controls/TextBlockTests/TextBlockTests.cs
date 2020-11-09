@@ -242,7 +242,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 				// (4)
 				var rect1 = new AppRect(
 					x: textRect.Right,
-					y:sampleRect.X,
+						y: sampleRect.Y,
 					width: sampleRect.Right - textRect.Right,
 					height:sampleRect.Height);
 
