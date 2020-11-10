@@ -11,44 +11,44 @@ using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
-    public enum ScrollOrientation
-    {
-        Vertical,
-        Horizontal
-    }
+	public enum ScrollOrientation
+	{
+		Vertical,
+		Horizontal
+	}
 
-    public static class SharedHelpers
-    {
-        public static DataTemplate GetDataTemplate(string content)
-        {
-            return (DataTemplate)XamlReader.Load(
-                       string.Format(@"<DataTemplate  
-                            xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-                           {0}
-                        </DataTemplate>", content));
-        }
+	public static class SharedHelpers
+	{
+		public static DataTemplate GetDataTemplate(string content)
+		{
+			return (DataTemplate)XamlReader.Load(
+					   string.Format(@"<DataTemplate  
+							xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+						   {0}
+						</DataTemplate>", content));
+		}
 
-        public static void RunActionsWithWait(Action[] actions)
-        {
-            foreach (var action in actions)
-            {
-                RunOnUIThread.Execute(() =>
-                {
-                    action();
-                });
+		public static void RunActionsWithWait(Action[] actions)
+		{
+			foreach (var action in actions)
+			{
+				RunOnUIThread.Execute(() =>
+				{
+					action();
+				});
 
-                IdleSynchronizer.Wait();
-            }
-        }
+				IdleSynchronizer.Wait();
+			}
+		}
 
-        public static Orientation ToLayoutOrientation(this ScrollOrientation scrollOrientation)
-        {
-            return scrollOrientation == ScrollOrientation.Horizontal ? Orientation.Horizontal : Orientation.Vertical;
-        }
+		public static Orientation ToLayoutOrientation(this ScrollOrientation scrollOrientation)
+		{
+			return scrollOrientation == ScrollOrientation.Horizontal ? Orientation.Horizontal : Orientation.Vertical;
+		}
 
-        public static Orientation ToOrthogonalLayoutOrientation(this ScrollOrientation scrollOrientation)
-        {
-            return scrollOrientation == ScrollOrientation.Horizontal ? Orientation.Vertical : Orientation.Horizontal;
-        }
-    }
+		public static Orientation ToOrthogonalLayoutOrientation(this ScrollOrientation scrollOrientation)
+		{
+			return scrollOrientation == ScrollOrientation.Horizontal ? Orientation.Vertical : Orientation.Horizontal;
+		}
+	}
 }

@@ -13,24 +13,24 @@ using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutC
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks
 {
-    class MockVirtualizingLayout : VirtualizingLayout
-    {
-        public Func<Size, VirtualizingLayoutContext, Size> MeasureLayoutFunc { get; set; }
-        public Func<Size, VirtualizingLayoutContext, Size> ArrangeLayoutFunc { get; set; }
+	class MockVirtualizingLayout : VirtualizingLayout
+	{
+		public Func<Size, VirtualizingLayoutContext, Size> MeasureLayoutFunc { get; set; }
+		public Func<Size, VirtualizingLayoutContext, Size> ArrangeLayoutFunc { get; set; }
 
-        public new void InvalidateMeasure()
-        {
-            base.InvalidateMeasure();
-        }
+		public new void InvalidateMeasure()
+		{
+			base.InvalidateMeasure();
+		}
 
-        protected override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
-        {
-            return MeasureLayoutFunc != null ? MeasureLayoutFunc(availableSize, context) : default(Size);
-        }
+		protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
+		{
+			return MeasureLayoutFunc != null ? MeasureLayoutFunc(availableSize, context) : default(Size);
+		}
 
-        protected override Size ArrangeOverride(VirtualizingLayoutContext context, Size finalSize)
-        {
-            return ArrangeLayoutFunc != null ? ArrangeLayoutFunc(finalSize, context) : default(Size);
-        }
-    }
+		protected internal override Size ArrangeOverride(VirtualizingLayoutContext context, Size finalSize)
+		{
+			return ArrangeLayoutFunc != null ? ArrangeLayoutFunc(finalSize, context) : default(Size);
+		}
+	}
 }

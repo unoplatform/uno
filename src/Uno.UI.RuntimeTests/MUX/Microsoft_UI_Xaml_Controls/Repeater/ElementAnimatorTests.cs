@@ -33,156 +33,159 @@ using AnimationContext = Microsoft.UI.Xaml.Controls.AnimationContext;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
-    [TestClass]
-    public class ElementAnimatorTests : MUXApiTestBase
-    {
-        [TestMethod]
-        public void ValidateElementAnimator()
-        {
-            ItemsRepeater repeater = null;
-            ElementAnimatorDerived animator = null;
-            var data = new ObservableCollection<string>(Enumerable.Range(0, 10).Select(i => string.Format("Item #{0}", i)));
-            var renderingEvent = new ManualResetEvent(false);
+	[TestClass]
+	public class ElementAnimatorTests : MUXApiTestBase
+	{
+		[TestMethod]
+		public void ValidateElementAnimator()
+		{
+			ItemsRepeater repeater = null;
+			ElementAnimatorDerived animator = null;
+			var data = new ObservableCollection<string>(Enumerable.Range(0, 10).Select(i => string.Format("Item #{0}", i)));
+			var renderingEvent = new ManualResetEvent(false);
 
-            RunOnUIThread.Execute(() =>
-            {
-                var elementFactory = new RecyclingElementFactory();
-                elementFactory.RecyclePool = new RecyclePool();
-                elementFactory.Templates["Item"] = (DataTemplate)XamlReader.Load(
-                    @"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
-                          <TextBlock Text='{Binding}' Height='50' />
-                      </DataTemplate>");
+			RunOnUIThread.Execute(() =>
+			{
+				var elementFactory = new RecyclingElementFactory();
+				elementFactory.RecyclePool = new RecyclePool();
+				elementFactory.Templates["Item"] = (DataTemplate)XamlReader.Load(
+					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
+						  <TextBlock Text='{Binding}' Height='50' />
+					  </DataTemplate>");
 
-                CompositionTarget.Rendering += (sender, args) =>
-                {
-                    renderingEvent.Set();
-                };
+				CompositionTarget.Rendering += (sender, args) =>
+				{
+					renderingEvent.Set();
+				};
 
-                repeater = new ItemsRepeater()
-                {
-                    ItemsSource = data,
-                    ItemTemplate = elementFactory,
-                };
+				repeater = new ItemsRepeater()
+				{
+					ItemsSource = data,
+					ItemTemplate = elementFactory,
+				};
 
-                Content = new ItemsRepeaterScrollHost()
-                {
-                    Width = 400,
-                    Height = 800,
-                    ScrollViewer = new ScrollViewer
-                    {
-                        Content = repeater
-                    }
-                };
-            });
+				Content = new ItemsRepeaterScrollHost()
+				{
+					Width = 400,
+					Height = 800,
+					ScrollViewer = new ScrollViewer
+					{
+						Content = repeater
+					}
+				};
+			});
 
-            IdleSynchronizer.Wait();
-            Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			IdleSynchronizer.Wait();
+			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
 
-            List<CallInfo> showCalls = new List<CallInfo>();
-            List<CallInfo> hideCalls = new List<CallInfo>();
-            List<CallInfo> boundsChangeCalls = new List<CallInfo>();
-            RunOnUIThread.Execute(() =>
-            {
-                animator = new ElementAnimatorDerived()
-                {
-                    HasShowAnimationValue = true,
-                    HasHideAnimationValue = true,
-                    HasBoundsChangeAnimationValue = true,
-                    StartShowAnimationFunc = (UIElement element, AnimationContext context) =>
-                    {
-                        showCalls.Add(new CallInfo(repeater.GetElementIndex(element), context));
-                    },
+			List<CallInfo> showCalls = new List<CallInfo>();
+			List<CallInfo> hideCalls = new List<CallInfo>();
+			List<CallInfo> boundsChangeCalls = new List<CallInfo>();
+			RunOnUIThread.Execute(() =>
+			{
+				animator = new ElementAnimatorDerived()
+				{
+					HasShowAnimationValue = true,
+					HasHideAnimationValue = true,
+					HasBoundsChangeAnimationValue = true,
+					StartShowAnimationFunc = (UIElement element, AnimationContext context) =>
+					{
+						showCalls.Add(new CallInfo(repeater.GetElementIndex(element), context));
+					},
 
-                    StartHideAnimationFunc = (UIElement element, AnimationContext context) =>
-                    {
-                        hideCalls.Add(new CallInfo(repeater.GetElementIndex(element), context));
-                    },
+					StartHideAnimationFunc = (UIElement element, AnimationContext context) =>
+					{
+						hideCalls.Add(new CallInfo(repeater.GetElementIndex(element), context));
+					},
 
-                    StartBoundsChangeAnimationFunc = (UIElement element, AnimationContext context, Rect oldBounds, Rect newBounds) =>
-                    {
-                        boundsChangeCalls.Add(new CallInfo(repeater.GetElementIndex(element), context, oldBounds, newBounds));
-                    }
-                };
-                repeater.Animator = animator;
+					StartBoundsChangeAnimationFunc = (UIElement element, AnimationContext context, Rect oldBounds, Rect newBounds) =>
+					{
+						boundsChangeCalls.Add(new CallInfo(repeater.GetElementIndex(element), context, oldBounds, newBounds));
+					}
+				};
+				repeater.Animator = animator;
 
-                renderingEvent.Reset();
-                data.Insert(0, "new item");
-                data.RemoveAt(2);
-            });
+				renderingEvent.Reset();
+				data.Insert(0, "new item");
+				data.RemoveAt(2);
+			});
 
-            Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
-            IdleSynchronizer.Wait();
+			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			IdleSynchronizer.Wait();
 
-            Verify.AreEqual(1, showCalls.Count);
-            var call = showCalls[0];
-            Verify.AreEqual(0, call.Index);
-            Verify.AreEqual(AnimationContext.CollectionChangeAdd, call.Context);
+			Verify.AreEqual(1, showCalls.Count);
+			var call = showCalls[0];
+			Verify.AreEqual(0, call.Index);
+			Verify.AreEqual(AnimationContext.CollectionChangeAdd, call.Context);
 
-            Verify.AreEqual(1, hideCalls.Count);
-            call = hideCalls[0];
-            Verify.AreEqual(-1, call.Index); // not in the repeater anymore
-            Verify.AreEqual(AnimationContext.CollectionChangeRemove, call.Context);
+			Verify.AreEqual(1, hideCalls.Count);
+			call = hideCalls[0];
+			Verify.AreEqual(-1, call.Index); // not in the repeater anymore
+			Verify.AreEqual(AnimationContext.CollectionChangeRemove, call.Context);
 
-            Verify.AreEqual(1, boundsChangeCalls.Count);
-            call = boundsChangeCalls[0];
-            Verify.AreEqual(1, call.Index);
-            Verify.AreEqual(AnimationContext.CollectionChangeAdd | AnimationContext.CollectionChangeRemove, call.Context);
-            Verify.AreEqual(0, call.OldBounds.Y);
-            Verify.AreEqual(50, call.NewBounds.Y);
+			Verify.AreEqual(1, boundsChangeCalls.Count);
+			call = boundsChangeCalls[0];
+			Verify.AreEqual(1, call.Index);
+			Verify.AreEqual(AnimationContext.CollectionChangeAdd | AnimationContext.CollectionChangeRemove, call.Context);
+			Verify.AreEqual(0, call.OldBounds.Y);
+			Verify.AreEqual(50, call.NewBounds.Y);
 
-            showCalls.Clear();
-            hideCalls.Clear();
-            boundsChangeCalls.Clear();
+			showCalls.Clear();
+			hideCalls.Clear();
+			boundsChangeCalls.Clear();
 
-            // Hookup just for show animations and validate.
-            RunOnUIThread.Execute(() =>
-            {
-                animator.HasShowAnimationValue = true;
-                animator.HasHideAnimationValue = false;
-                animator.HasBoundsChangeAnimationValue = false;
+			// Hookup just for show animations and validate.
+			RunOnUIThread.Execute(() =>
+			{
+				animator.HasShowAnimationValue = true;
+				animator.HasHideAnimationValue = false;
+				animator.HasBoundsChangeAnimationValue = false;
 
-                renderingEvent.Reset();
-                data.Insert(0, "new item");
-                data.RemoveAt(2);
-            });
+				renderingEvent.Reset();
+				data.Insert(0, "new item");
+				data.RemoveAt(2);
+			});
 
-            Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
-            IdleSynchronizer.Wait();
+			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			IdleSynchronizer.Wait();
 
-            Verify.AreEqual(1, showCalls.Count);
-            call = showCalls[0];
-            Verify.AreEqual(0, call.Index);
-            Verify.AreEqual(AnimationContext.CollectionChangeAdd, call.Context);
+			Verify.AreEqual(1, showCalls.Count);
+			call = showCalls[0];
+			Verify.AreEqual(0, call.Index);
+			Verify.AreEqual(AnimationContext.CollectionChangeAdd, call.Context);
 
-            Verify.AreEqual(0, hideCalls.Count);
-            Verify.AreEqual(0, boundsChangeCalls.Count);
-        }
+			Verify.AreEqual(0, hideCalls.Count);
+			Verify.AreEqual(0, boundsChangeCalls.Count);
+		}
 
-        struct CallInfo
-        {
-            public CallInfo(int index, AnimationContext context)
-            {
-                Index = index;
-                Context = context;
-            }
+		struct CallInfo
+		{
+			public CallInfo(int index, AnimationContext context)
+			{
+				Index = index;
+				Context = context;
 
-            public CallInfo(int index, AnimationContext context, Rect oldBounds, Rect newBounds)
-            {
-                Index = index;
-                Context = context;
-                OldBounds = oldBounds;
-                NewBounds = newBounds;
-            }
+				OldBounds = default;
+				NewBounds = default;
+			}
 
-            public int Index { get; set; }
-            public AnimationContext Context { get; set; }
-            public Rect OldBounds { get; set; }
-            public Rect NewBounds { get; set; }
+			public CallInfo(int index, AnimationContext context, Rect oldBounds, Rect newBounds)
+			{
+				Index = index;
+				Context = context;
+				OldBounds = oldBounds;
+				NewBounds = newBounds;
+			}
 
-            public override string ToString()
-            {
-                return "Index:" + Index + " Context:" + Context + " OldBounds:" + OldBounds + " NewBounds" + NewBounds;
-            }
-        };
-    }
+			public int Index { get; set; }
+			public AnimationContext Context { get; set; }
+			public Rect OldBounds { get; set; }
+			public Rect NewBounds { get; set; }
+
+			public override string ToString()
+			{
+				return "Index:" + Index + " Context:" + Context + " OldBounds:" + OldBounds + " NewBounds" + NewBounds;
+			}
+		};
+	}
 }

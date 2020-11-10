@@ -32,158 +32,158 @@ using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHo
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
-    [TestClass]
-    public class RepeaterFocusTests : ApiTestBase
-    {
-        [TestMethod]
-        public void ValidateTabNavigation()
-        {
-            if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone2))
-            {
-                Log.Warning("Test is disabled on anything lower than RS3 because the GetChildrenInTabFocusOrder API is not available on previous versions.");
-                return;
-            }
+	[TestClass]
+	public class RepeaterFocusTests : MUXApiTestBase
+	{
+		[TestMethod]
+		public void ValidateTabNavigation()
+		{
+			if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone2))
+			{
+				Log.Warning("Test is disabled on anything lower than RS3 because the GetChildrenInTabFocusOrder API is not available on previous versions.");
+				return;
+			}
 
-            ItemsRepeater repeater = null;
-            ScrollViewer scrollViewer = null;
-            var data = new ObservableCollection<string>(Enumerable.Range(0, 50).Select(i => "Item #" + i));
-            var viewChangedEvent = new AutoResetEvent(false);
+			ItemsRepeater repeater = null;
+			ScrollViewer scrollViewer = null;
+			var data = new ObservableCollection<string>(Enumerable.Range(0, 50).Select(i => "Item #" + i));
+			var viewChangedEvent = new AutoResetEvent(false);
 
-            RunOnUIThread.Execute(() =>
-            {
-                var itemTemplate = (DataTemplate)XamlReader.Load(
-                        @"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-                            <Button Content='{Binding}' Height='100' />
-                        </DataTemplate>");
+			RunOnUIThread.Execute(() =>
+			{
+				var itemTemplate = (DataTemplate)XamlReader.Load(
+						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+							<Button Content='{Binding}' Height='100' />
+						</DataTemplate>");
 
-                var elementFactory = new RecyclingElementFactory()
-                {
-                    RecyclePool = new RecyclePool(),
-                    Templates =
-                    {
-                        { "itemTemplate", itemTemplate },
-                    }
-                };
+				var elementFactory = new RecyclingElementFactory()
+				{
+					RecyclePool = new RecyclePool(),
+					Templates =
+					{
+						{ "itemTemplate", itemTemplate },
+					}
+				};
 
-                Content = CreateAndInitializeRepeater
-                (
-                   data,
-                   new StackLayout(),
-                   elementFactory,
-                   ref repeater,
-                   ref scrollViewer
-                );
+				Content = CreateAndInitializeRepeater
+				(
+				   data,
+				   new StackLayout(),
+				   elementFactory,
+				   ref repeater,
+				   ref scrollViewer
+				);
 
-                scrollViewer.ViewChanged += (s, e) =>
-                {
-                    if (!e.IsIntermediate)
-                    {
-                        viewChangedEvent.Set();
-                    }
-                };
+				scrollViewer.ViewChanged += (s, e) =>
+				{
+					if (!e.IsIntermediate)
+					{
+						viewChangedEvent.Set();
+					}
+				};
 
-                repeater.TabFocusNavigation = KeyboardNavigationMode.Local;
-                Content.UpdateLayout();
-                ValidateTabNavigationOrder(repeater);
-            });
+				repeater.TabFocusNavigation = KeyboardNavigationMode.Local;
+				Content.UpdateLayout();
+				ValidateTabNavigationOrder(repeater);
+			});
 
-            IdleSynchronizer.Wait();
+			IdleSynchronizer.Wait();
 
-            RunOnUIThread.Execute(() =>
-            {
-                // Move window - disconnected
-                scrollViewer.ChangeView(null, 2000, null, true);
-            });
+			RunOnUIThread.Execute(() =>
+			{
+				// Move window - disconnected
+				scrollViewer.ChangeView(null, 2000, null, true);
+			});
 
-            Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTimeInMS), "Waiting for final ViewChanged event.");
-            IdleSynchronizer.Wait();
+			Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTimeInMS), "Waiting for final ViewChanged event.");
+			IdleSynchronizer.Wait();
 
-            RunOnUIThread.Execute(() =>
-            {
-                ValidateTabNavigationOrder(repeater);
+			RunOnUIThread.Execute(() =>
+			{
+				ValidateTabNavigationOrder(repeater);
 
-                // Delete a couple of elements and validate we
-                // ignore unrealized elements.
-                // First visible element is expected to be index 20.
-                while (data.Count > 21) { data.RemoveAt(21); }
+				// Delete a couple of elements and validate we
+				// ignore unrealized elements.
+				// First visible element is expected to be index 20.
+				while (data.Count > 21) { data.RemoveAt(21); }
 
-                repeater.UpdateLayout();
-                ValidateTabNavigationOrder(repeater);
-            });
-        }
+				repeater.UpdateLayout();
+				ValidateTabNavigationOrder(repeater);
+			});
+		}
 
-        private static void ValidateTabNavigationOrder(ItemsRepeater repeater)
-        {
-            var expectedSequence = GetRealizedRange(repeater);
+		private static void ValidateTabNavigationOrder(ItemsRepeater repeater)
+		{
+			var expectedSequence = GetRealizedRange(repeater);
 
-            expectedSequence.Last().Focus(FocusState.Keyboard);
-            Log.Comment("\n\nStart point: " + expectedSequence.Last().Content);
+			expectedSequence.Last().Focus(FocusState.Keyboard);
+			Log.Comment("\n\nStart point: " + expectedSequence.Last().Content);
 
-            Log.Comment("Validating forward tab navigation...");
+			Log.Comment("Validating forward tab navigation...");
 
-            foreach(var expectedElement in expectedSequence)
-            {
-                var actualElement = (Button)FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
+			foreach(var expectedElement in expectedSequence)
+			{
+				var actualElement = (Button)FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
 
-                // We need to ignore the toggle theme button, so lets set its tabstop to false and get next element.
-                if((string)actualElement.Content == "Toggle theme")
-                {
-                    actualElement.IsTabStop = false;
-                    actualElement = (Button)FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
-                }
-                Log.Comment("Expected: " + expectedElement.Content);
-                Log.Comment("Actual: " + actualElement.Content);
-                Verify.AreEqual(expectedElement, actualElement);
-                expectedElement.Focus(FocusState.Keyboard);
-            }
+				// We need to ignore the toggle theme button, so lets set its tabstop to false and get next element.
+				if((string)actualElement.Content == "Toggle theme")
+				{
+					actualElement.IsTabStop = false;
+					actualElement = (Button)FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
+				}
+				Log.Comment("Expected: " + expectedElement.Content);
+				Log.Comment("Actual: " + actualElement.Content);
+				Verify.AreEqual(expectedElement, actualElement);
+				expectedElement.Focus(FocusState.Keyboard);
+			}
 
-            Log.Comment("Validating backward tab navigation...");
+			Log.Comment("Validating backward tab navigation...");
 
-            foreach (var expectedElement in expectedSequence.Reverse().Skip(1))
-            {
-                var actualElement = (Button)FocusManager.FindNextFocusableElement(FocusNavigationDirection.Previous);
-                Log.Comment("Expected: " + expectedElement.Content);
-                Log.Comment("Actual: " + actualElement.Content);
-                Verify.AreEqual(expectedElement, actualElement);
-                expectedElement.Focus(FocusState.Keyboard);
-            }
-        }
+			foreach (var expectedElement in expectedSequence.Reverse().Skip(1))
+			{
+				var actualElement = (Button)FocusManager.FindNextFocusableElement(FocusNavigationDirection.Previous);
+				Log.Comment("Expected: " + expectedElement.Content);
+				Log.Comment("Actual: " + actualElement.Content);
+				Verify.AreEqual(expectedElement, actualElement);
+				expectedElement.Focus(FocusState.Keyboard);
+			}
+		}
 
-        private static Button[] GetRealizedRange(ItemsRepeater repeater)
-        {
-            return Enumerable.Range(0, VisualTreeHelper.GetChildrenCount(repeater))
-                .Select(i => (Button)VisualTreeHelper.GetChild(repeater, i))
-                .Where(e => repeater.GetElementIndex(e) >= 0)
-                .OrderBy(e => repeater.GetElementIndex(e))
-                .ToArray();
-        }
+		private static Button[] GetRealizedRange(ItemsRepeater repeater)
+		{
+			return Enumerable.Range(0, VisualTreeHelper.GetChildrenCount(repeater))
+				.Select(i => (Button)VisualTreeHelper.GetChild(repeater, i))
+				.Where(e => repeater.GetElementIndex(e) >= 0)
+				.OrderBy(e => repeater.GetElementIndex(e))
+				.ToArray();
+		}
 
-        private static ItemsRepeaterScrollHost CreateAndInitializeRepeater(
-           object itemsSource,
-           VirtualizingLayout layout,
-           ElementFactory elementFactory,
-           ref ItemsRepeater repeater,
-           ref ScrollViewer scrollViewer)
-        {
-            repeater = new ItemsRepeater()
-            {
-                ItemsSource = itemsSource,
-                Layout = layout,
-                ItemTemplate = elementFactory,
-                VerticalCacheLength = 0
-            };
+		private static ItemsRepeaterScrollHost CreateAndInitializeRepeater(
+		   object itemsSource,
+		   VirtualizingLayout layout,
+		   ElementFactory elementFactory,
+		   ref ItemsRepeater repeater,
+		   ref ScrollViewer scrollViewer)
+		{
+			repeater = new ItemsRepeater()
+			{
+				ItemsSource = itemsSource,
+				Layout = layout,
+				ItemTemplate = elementFactory,
+				VerticalCacheLength = 0
+			};
 
-            scrollViewer = new ScrollViewer()
-            {
-                Content = repeater
-            };
+			scrollViewer = new ScrollViewer()
+			{
+				Content = repeater
+			};
 
-            return new ItemsRepeaterScrollHost()
-            {
-                Width = 400,
-                Height = 400,
-                ScrollViewer = scrollViewer
-            };
-        }
-    }
+			return new ItemsRepeaterScrollHost()
+			{
+				Width = 400,
+				Height = 400,
+				ScrollViewer = scrollViewer
+			};
+		}
+	}
 }

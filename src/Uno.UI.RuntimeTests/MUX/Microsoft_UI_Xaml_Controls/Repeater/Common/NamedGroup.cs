@@ -6,14 +6,14 @@ using System.Collections.ObjectModel;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
-    public class NamedGroup<T> : ObservableCollection<T>
-    {
-        public string Name { get; private set; }
+	public class NamedGroup<T> : ObservableCollection<T>
+	{
+		public string Name { get; private set; }
 
-        public NamedGroup(string name, IEnumerable<T> collection)
-            : base(collection)
-        {
-            Name = name;
-        }
-    }
+		public NamedGroup(string name, IEnumerable<T> collection)
+			: base(collection)
+		{
+			Name = name;
+		}
+	}
 }

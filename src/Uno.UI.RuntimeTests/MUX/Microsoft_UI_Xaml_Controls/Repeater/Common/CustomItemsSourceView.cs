@@ -11,138 +11,138 @@ using IKeyIndexMapping = Microsoft.UI.Xaml.Controls.IKeyIndexMapping;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
-    public class CustomItemsSourceView :  IList, INotifyCollectionChanged
-    {
-        #region IList
+	public class CustomItemsSourceView :  IList, INotifyCollectionChanged
+	{
+		#region IList
 
-        public int Count
-        {
-            get
-            {
-                return GetSizeCore();
-            }
-        }
+		public int Count
+		{
+			get
+			{
+				return GetSizeCore();
+			}
+		}
 
-        public object this[int index]
-        {
-            get { return GetAtCore(index); }
-            set { throw new NotImplementedException(); }
-        }
-        
+		public object this[int index]
+		{
+			get { return GetAtCore(index); }
+			set { throw new NotImplementedException(); }
+		}
+		
 
-        public bool IsFixedSize
-        {
-            get { throw new NotImplementedException(); }
-        }
+		public bool IsFixedSize
+		{
+			get { throw new NotImplementedException(); }
+		}
 
-        public bool IsReadOnly
-        {
-            get { throw new NotImplementedException(); }
-        }
+		public bool IsReadOnly
+		{
+			get { throw new NotImplementedException(); }
+		}
 
-        public bool IsSynchronized
-        {
-            get { throw new NotImplementedException(); }
-        }
+		public bool IsSynchronized
+		{
+			get { throw new NotImplementedException(); }
+		}
 
-        public object SyncRoot
-        {
-            get { throw new NotImplementedException(); }
-        }
+		public object SyncRoot
+		{
+			get { throw new NotImplementedException(); }
+		}
 
-        public int Add(object value)
-        {
-            throw new NotImplementedException();
-        }
+		public int Add(object value)
+		{
+			throw new NotImplementedException();
+		}
 
-        public void Clear()
-        {
-            throw new NotImplementedException();
-        }
+		public void Clear()
+		{
+			throw new NotImplementedException();
+		}
 
-        public bool Contains(object value)
-        {
-            throw new NotImplementedException();
-        }
+		public bool Contains(object value)
+		{
+			throw new NotImplementedException();
+		}
 
-        public void CopyTo(Array array, int index)
-        {
-            throw new NotImplementedException();
-        }
+		public void CopyTo(Array array, int index)
+		{
+			throw new NotImplementedException();
+		}
 
-        public IEnumerator GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+		public IEnumerator GetEnumerator()
+		{
+			throw new NotImplementedException();
+		}
 
-        public int IndexOf(object value)
-        {
-            throw new NotImplementedException();
-        }
+		public int IndexOf(object value)
+		{
+			throw new NotImplementedException();
+		}
 
-        public void Insert(int index, object value)
-        {
-            throw new NotImplementedException();
-        }
+		public void Insert(int index, object value)
+		{
+			throw new NotImplementedException();
+		}
 
-        public void Remove(object value)
-        {
-            throw new NotImplementedException();
-        }
+		public void Remove(object value)
+		{
+			throw new NotImplementedException();
+		}
 
-        public void RemoveAt(int index)
-        {
-            throw new NotImplementedException();
-        }
+		public void RemoveAt(int index)
+		{
+			throw new NotImplementedException();
+		}
 
-        #endregion
+		#endregion
 
-        #region INotifyCollectionChanged
+		#region INotifyCollectionChanged
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
+		public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        #endregion
+		#endregion
 
-        protected virtual int GetSizeCore()
-        {
-            throw new NotImplementedException();
-        }
+		protected virtual int GetSizeCore()
+		{
+			throw new NotImplementedException();
+		}
 
-        protected virtual object GetAtCore(int index)
-        {
-            throw new NotImplementedException();
-        }
+		protected virtual object GetAtCore(int index)
+		{
+			throw new NotImplementedException();
+		}
 
-        protected void OnItemsSourceChanged(NotifyCollectionChangedEventArgs args)
-        {
-            CollectionChanged(this, args);
-        }
-    }
+		protected void OnItemsSourceChanged(NotifyCollectionChangedEventArgs args)
+		{
+			CollectionChanged?.Invoke(this, args);
+		}
+	}
 
-    public class CustomItemsSourceViewWithUniqueIdMapping: CustomItemsSourceView, IKeyIndexMapping
-    {
-        #region IKeyIndexMapping
+	public class CustomItemsSourceViewWithUniqueIdMapping: CustomItemsSourceView, IKeyIndexMapping
+	{
+		#region IKeyIndexMapping
 
-        public string KeyFromIndex(int index)
-        {
-            return KeyFromIndexCore(index);
-        }
+		public string KeyFromIndex(int index)
+		{
+			return KeyFromIndexCore(index);
+		}
 
-        public int IndexFromKey(string id)
-        {
-            return IndexFromKey(id);
-        }
+		public int IndexFromKey(string id)
+		{
+			return IndexFromKey(id);
+		}
 
-        #endregion
+		#endregion
 
-        protected virtual string KeyFromIndexCore(int index)
-        {
-            throw new NotImplementedException();
-        }
+		protected virtual string KeyFromIndexCore(int index)
+		{
+			throw new NotImplementedException();
+		}
 
-        protected virtual int IndexFromKeyCore(string id)
-        {
-            throw new NotImplementedException();
-        }
-    }
+		protected virtual int IndexFromKeyCore(string id)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }
