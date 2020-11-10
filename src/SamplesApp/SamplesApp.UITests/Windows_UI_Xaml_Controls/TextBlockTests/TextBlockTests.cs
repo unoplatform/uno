@@ -219,9 +219,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			// (1)
 			var sampleScreenshot = this.TakeScreenshot("fullSample", ignoreInSnapshotCompare: true);
-			var sampleRect = _app.GetRect("sampleRootPanel");
+			var sampleRect = _app.GetPhysicalRect("sampleRootPanel");
 
 			using var _ = new AssertionScope();
+
 
 			Test("text1", "border1");
 			Test("text2", "border2");
@@ -231,7 +232,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			void Test(string textControl, string borderControl)
 			{
-				var textRect = _app.GetRect(borderControl);
+				var textRect = _app.GetPhysicalRect(borderControl);
 
 				// (2)
 				_app.Marked(textControl).SetDependencyPropertyValue("Opacity", "0");
@@ -240,24 +241,29 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 				var afterScreenshot = this.TakeScreenshot("sample-" + textControl, ignoreInSnapshotCompare: true);
 
 				// (4)
-				var rect1 = new AppRect(
-					x: textRect.Right,
+				using (var s = new AssertionScope("Right zone"))
+				{
+					var rect1 = new AppRect(
+						x: textRect.Right,
 						y: sampleRect.Y,
-					width: sampleRect.Right - textRect.Right,
-					height:sampleRect.Height);
+						width: sampleRect.Right - textRect.Right,
+						height: sampleRect.Height);
 
-				ImageAssert.AreEqual(sampleScreenshot, rect1, afterScreenshot, rect1);
+					ImageAssert.AreEqual(sampleScreenshot, rect1, afterScreenshot, rect1);
+				}
 
 				// (5)
-				var rect2 = new AppRect(
-					x: textRect.X,
-					y: textRect.Bottom,
-					width: textRect.Width,
-					height: sampleRect.Height - textRect.Bottom);
+				using (var s = new AssertionScope("Bottom zone"))
+				{
+					var rect2 = new AppRect(
+						x: textRect.X,
+						y: textRect.Bottom,
+						width: textRect.Width,
+						height: sampleRect.Height - textRect.Bottom);
 
-				ImageAssert.AreEqual(sampleScreenshot, rect2, afterScreenshot, rect2);
+					ImageAssert.AreEqual(sampleScreenshot, rect2, afterScreenshot, rect2);
+				}
 			}
-
 		}
 	}
 }
