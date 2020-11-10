@@ -20,7 +20,9 @@ namespace Uno.UI
 
 			var path = cornerRadius.GetOutlinePath(rect);
 
+#pragma warning disable 618
 			outline.SetConvexPath(path);
+#pragma warning restore 618
 		}
 
 		private static CornerRadius GetCornerRadius(View view)

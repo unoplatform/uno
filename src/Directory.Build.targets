@@ -48,7 +48,7 @@
 	<PackageReference Update="GtkSharp" Version="3.22.25.128" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
 	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0" />
 	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.1.0" />
 	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0" />

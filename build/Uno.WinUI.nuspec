@@ -17,7 +17,7 @@
 	<dependencies>
 
 	  <!-- Android 9.0 -->
-	  <group targetFramework="MonoAndroid90">
+	  <group targetFramework="MonoAndroid11.0">
 		<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0" />
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
@@ -141,21 +141,21 @@
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit\**" target="lib\UAP\Uno.UI.Toolkit" />
 
 	<!-- Android 9.0 -->
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.dll" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.pdb" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.Foundation.dll" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.Foundation.pdb" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.UI.BindingHelper.Android.dll" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.UI.BindingHelper.Android.pdb" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.UI.dll" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.UI.pdb" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.Xaml.dll" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\Uno.Xaml.pdb" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid90\*.xml" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid90\Uno.UI.FluentTheme.dll" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid90\Uno.UI.FluentTheme.pdb" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid90\Uno.UI.Toolkit.dll" target="lib\MonoAndroid90" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid90\Uno.UI.Toolkit.pdb" target="lib\MonoAndroid90" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.dll" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.pdb" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.Foundation.dll" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.Foundation.pdb" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.UI.BindingHelper.Android.dll" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.UI.BindingHelper.Android.pdb" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.UI.dll" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.UI.pdb" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.Xaml.dll" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.Xaml.pdb" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\*.xml" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid11.0\Uno.UI.FluentTheme.dll" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid11.0\Uno.UI.FluentTheme.pdb" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid11.0\Uno.UI.Toolkit.dll" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid11.0\Uno.UI.Toolkit.pdb" target="lib\MonoAndroid11.0" />
 
 	<!-- Android 10.0 -->
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid10.0\Uno.dll" target="lib\MonoAndroid10.0" />

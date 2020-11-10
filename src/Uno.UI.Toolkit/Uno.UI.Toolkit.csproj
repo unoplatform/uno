@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid10.0;uap10.0.17763;xamarinios10;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0;uap10.0.17763;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;uap10.0.17763;xamarinios10;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;uap10.0.17763;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -46,7 +46,7 @@
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
 		<PackageReference Include="Xamarin.AndroidX.AppCompat"/>
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>

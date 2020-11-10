@@ -37,6 +37,13 @@ jobs:
       versionSpec: 4.9.1
       checkLatest: false
 
+  # Required to run the api comparison tool
+  - task: UseDotNet@2
+    displayName: 'Use .Net Core runtime 2.2.x'
+    inputs:
+      packageType: runtime
+      version: 2.2.x
+
   # Required for the Wasm uitests project
   - task: NodeTool@0
 
