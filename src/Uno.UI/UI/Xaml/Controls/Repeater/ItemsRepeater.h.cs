@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal UIElement SuggestedAnchor => m_viewportManager.SuggestedAnchor;
 		internal UIElement MadeAnchor => m_viewportManager.MadeAnchor;
 
-		public Point LayoutOrigin
+		internal Point LayoutOrigin
 		{
 			get => m_layoutOrigin;
 			set => m_layoutOrigin = value;

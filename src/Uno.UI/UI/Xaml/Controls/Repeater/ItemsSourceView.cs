@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public string KeyFromIndex(int index)
 			=> KeyFromIndexCore(index);
 
-		private int IndexOf(object value)
+		internal int IndexOf(object value)
 			=> IndexOfCore(value);
 		#endregion
 

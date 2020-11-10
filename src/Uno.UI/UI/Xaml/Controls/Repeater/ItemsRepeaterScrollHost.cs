@@ -9,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Private.Controls;
+using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
@@ -16,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsRepeaterScrollHost : FrameworkElement, IScrollAnchorProvider, IRepeaterScrollingSurface
 	{
-		List<CandidateInfo> m_candidates;
+		List<CandidateInfo> m_candidates = new List<CandidateInfo>();
 
 		UIElement m_anchorElement;
 
@@ -61,7 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 			public bool IsRelativeBoundsSet => RelativeBounds != InvalidBounds;
 		}
 
-		class BringIntoViewState
+		struct BringIntoViewState
 		{
 			public BringIntoViewState(
 				UIElement targetElement,
@@ -123,26 +124,27 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				m_scrollViewerViewChanging.Dispose();
-				m_scrollViewerViewChanged.Dispose();
-				m_scrollViewerSizeChanged.Dispose();
+				m_scrollViewerViewChanging?.Dispose();
+				m_scrollViewerViewChanged?.Dispose();
+				m_scrollViewerSizeChanged?.Dispose();
 
 				ClearChildren();
 				AddChild(value);
 
 				// We don't want to listen to events in RS5+ since this guy is a no-op.
-				//if (!SharedHelpers.IsRS5OrHigher())
-				//{
-				//	m_scrollViewerViewChanging = value.ViewChanging(auto_revoke,  {
-				//		this, &ItemsRepeaterScrollHost.OnScrollViewerViewChanging
-				//	});
-				//	m_scrollViewerViewChanged = value.ViewChanged(auto_revoke,  {
-				//		this, &ItemsRepeaterScrollHost.OnScrollViewerViewChanged
-				//	});
-				//	m_scrollViewerSizeChanged = value.SizeChanged(auto_revoke,  {
-				//		this, &ItemsRepeaterScrollHost.OnScrollViewerSizeChanged
-				//	});
-				//}
+#if SCROLLVIEWER_SUPPORTS_ANCHORING
+				if (!SharedHelpers.IsRS5OrHigher())
+#endif
+				{
+					value.ViewChanging += OnScrollViewerViewChanging;
+					m_scrollViewerViewChanging = Disposable.Create(() => value.ViewChanging -= OnScrollViewerViewChanging);
+
+					value.ViewChanged += OnScrollViewerViewChanged;
+					m_scrollViewerViewChanged = Disposable.Create(() => value.ViewChanged -= OnScrollViewerViewChanged);
+
+					value.SizeChanged += OnScrollViewerSizeChanged;
+					m_scrollViewerSizeChanged = Disposable.Create(() => value.SizeChanged -= OnScrollViewerSizeChanged);
+				}
 			}
 		}
 
@@ -165,12 +167,14 @@ namespace Microsoft.UI.Xaml.Controls
 			Size result = finalSize;
 			if (ScrollViewer is {} scrollViewer)
 			{
-				//if (SharedHelpers.IsRS5OrHigher())
-				//{
-				//	// No-op when running on RS5 and above. ScrollViewer can do anchoring on its own.
-				//	scrollViewer.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
-				//}
-				//else
+#if SCROLLVIEWER_SUPPORTS_ANCHORING
+				if (SharedHelpers.IsRS5OrHigher())
+				{
+					// No-op when running on RS5 and above. ScrollViewer can do anchoring on its own.
+					scrollViewer.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
+				}
+				else
+#endif
 				{
 					var shouldApplyPendingChangeView = scrollViewer != default && HasPendingBringIntoView && !m_pendingBringIntoView.ChangeViewCalled;
 
@@ -214,9 +218,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return result;
 		}
 
-		#endregion
+#endregion
 
-		#region IScrollAnchorProvider / IRepeaterScrollingSurface
+#region IScrollAnchorProvider / IRepeaterScrollingSurface
 
 		internal double HorizontalAnchorRatio { get; set; }
 
@@ -333,7 +337,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return default;
 		}
 
-		#endregion
+#endregion
 
 		private void ApplyPendingChangeView(ScrollViewer scrollViewer)
 		{

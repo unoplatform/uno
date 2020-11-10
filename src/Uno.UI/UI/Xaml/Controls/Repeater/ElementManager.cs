@@ -356,7 +356,11 @@ namespace Microsoft.UI.Xaml.Controls
 						break;
 
 					case NotifyCollectionChangedAction.Move:
-						throw new NotImplementedException();
+						// Move is not supported by default by ItemsRepeater (throw new NotImplementedException();)
+						// This is Uno specific
+						OnItemsRemoved(args.OldStartingIndex, args.OldItems.Count);
+						OnItemsAdded(args.NewStartingIndex, args.NewItems.Count);
+						break;
 				}
 			}
 		}

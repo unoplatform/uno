@@ -9,7 +9,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial class RecyclingElementFactory : ElementFactory
+	public partial class RecyclingElementFactory : ElementFactory
 	{
 		private RecyclePool m_recyclePool;
 		private IDictionary<string, DataTemplate> m_templates = new Dictionary<string, DataTemplate>();

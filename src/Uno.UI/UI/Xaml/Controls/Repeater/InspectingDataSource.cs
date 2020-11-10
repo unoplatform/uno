@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (source is IList<object> vector)
 			{
 				m_vector = vector;
-				ListenToCollectionChanges();
+				ListenToCollectionChanges(vector);
 			}
 			else
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (source is _IBindableVector bindableVector) // IList
 				{
 					m_vector = ListAdapter.ToGeneric(bindableVector);
-					ListenToCollectionChanges();
+					ListenToCollectionChanges(bindableVector);
 				}
 				else
 				{
@@ -130,11 +130,11 @@ namespace Microsoft.UI.Xaml.Controls
 			_collectionChangedListener?.Dispose();
 		}
 
-		void ListenToCollectionChanges()
+		void ListenToCollectionChanges(object vector)
 		{
 			global::System.Diagnostics.Debug.Assert(m_vector != null);
 
-			switch (m_vector)
+			switch (vector)
 			{
 				case INotifyCollectionChanged incc:
 					_collectionChangedListener = Disposable.Create(() => incc.CollectionChanged -= OnCollectionChanged);

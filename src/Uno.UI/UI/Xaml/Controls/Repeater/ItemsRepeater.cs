@@ -312,7 +312,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_viewManager.UpdatePin(element, false /* addPin */);
 		}
 
-		UIElement GetOrCreateElement(int index)
+		public UIElement GetOrCreateElement(int index)
 		{
 			return GetOrCreateElementImpl(index);
 		}
@@ -452,7 +452,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (property == ItemTemplateProperty)
 			{
-				OnItemTemplateChanged(args.OldValue as IElementFactory, args.NewValue as IElementFactory);
+				OnItemTemplateChanged(args.OldValue, args.NewValue);
 			}
 			else if (property == LayoutProperty)
 			{
@@ -584,7 +584,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (oldValue != null)
 			{
-				newValue.CollectionChanged -= OnItemsSourceViewChanged;
+				oldValue.CollectionChanged -= OnItemsSourceViewChanged;
 			}
 
 			if (newValue != null)
@@ -622,7 +622,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnItemTemplateChanged(IElementFactory oldValue, IElementFactory newValue)
+		void OnItemTemplateChanged(object oldValue, object newValue)
 		{
 			if (m_isLayoutInProgress && oldValue != null)
 			{
@@ -662,7 +662,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// Bug in framework's reference tracking causes crash during
 				// UIAffinityQueue cleanup. To avoid that bug, take a strong ref
-				m_itemTemplate = newValue;
+				m_itemTemplate = newValue as IElementFactory; // DataTemplate of DataTemplateSelector
 			}
 
 			// Clear flag for bug #776
@@ -672,7 +672,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// ItemTemplate set does not implement IElementFactoryShim. We also 
 				// want to support DataTemplate and DataTemplateSelectors automagically.
-				if (newValue is DataTemplate dataTemplate)
+				if (newValue is DataTemplate dataTemplate) // Implements IElementFactory but not IElementFactoryShim
 				{
 					m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
 					if (!(dataTemplate.LoadContent() is FrameworkElement))
@@ -681,7 +681,7 @@ namespace Microsoft.UI.Xaml.Controls
 						m_isItemTemplateEmpty = true;
 					}
 				}
-				else if (newValue is DataTemplateSelector selector)
+				else if (newValue is DataTemplateSelector selector) // Implements IElementFactory but not IElementFactoryShim
 				{
 					m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
 				}
