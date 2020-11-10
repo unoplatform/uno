@@ -329,6 +329,52 @@ namespace Windows.UI.Xaml
 
 		internal bool IsRenderingSuspended { get; set; }
 
+		[ThreadStatic]
+		private static bool _isInUpdateLayout;
+
+		private const int MaxLayoutIterations = 250;
+
+		public void UpdateLayout()
+		{
+			if (_isInUpdateLayout)
+			{
+				return;
+			}
+
+			var root = Window.Current.RootElement;
+			if (root is null)
+			{
+				return;
+			}
+
+			try
+			{
+				_isInUpdateLayout = true;
+
+				for (var i = 0; i < MaxLayoutIterations; i++)
+				{
+					if (root.IsMeasureDirty)
+					{
+						root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
+					}
+					else if (root.IsArrangeDirty)
+					{
+						root.Arrange(LayoutInformation.GetLayoutSlot(root));
+					}
+					else
+					{
+						return;
+					}
+				}
+
+				throw new InvalidOperationException("Layout cycle detected.");
+			}
+			finally
+			{
+				_isInUpdateLayout = false;
+			}
+		}
+
 		internal void ApplyClip()
 		{
 			Rect rect;
