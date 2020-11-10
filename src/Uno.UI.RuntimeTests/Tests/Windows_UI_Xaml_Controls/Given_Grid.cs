@@ -36,13 +36,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			double child6LeftExpected, double child6TopExpected, double child6WidthExpected, double child6HeightExpected
 			)
 		{
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				TestServices.WindowHelper.WindowContent = null;
 			});
 
 			Grid SUT = null;
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				SUT = new Grid
 				{
@@ -116,7 +116,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WaitForMeasure(SUT);
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var desiredSize = SUT.DesiredSize;
 				var data = $"({columnSpacing}, {rowSpacing}, {desiredSize.Width}, {desiredSize.Height}";
@@ -170,7 +170,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var stopwatch = Stopwatch.StartNew();
 			while (stopwatch.ElapsedMilliseconds < timeOutMs)
 			{
-				await RunOnUIThread.Execute(() =>
+				await RunOnUIThread.ExecuteAsync(() =>
 				{
 					isMeasured = view.DesiredSize != default(Size);
 				});
