@@ -25,7 +25,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 			var rect1 = grid1.FirstResult().Rect;
 			var rect2 = grid2.FirstResult().Rect;
 
-			var screenshot = TakeScreenshot("Clipping");
+			using var screenshot = TakeScreenshot("Clipping");
 
 			ImageAssert.HasColorAt(screenshot, rect1.Right + 8, rect1.Y + 75, Color.Blue);
 			ImageAssert.HasColorAt(screenshot, rect1.X + 75, rect1.Bottom + 8, Color.Blue);
@@ -42,16 +42,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 
 			_app.WaitForElement("RoundedGrid");
 
-			var rect = _app.GetRect("RoundedGrid");
+			var rect = _app.GetPhysicalRect("RoundedGrid");
 
-			var centre = GetScaledCenter(rect);
-			var scale = GetDisplayScreenScaling();
-			var offset = 5 * (float)scale;
+			var offset = LogicalToPhysical(5);
 			var innerCornerX = rect.X + offset;
 			var innerCornerY = rect.Y + offset;
 
-			var screenshot = TakeScreenshot("ClippedCorners");
-			ImageAssert.HasColorAt(screenshot, centre.X, centre.Y, Color.Blue);
+			using var screenshot = TakeScreenshot("ClippedCorners");
+			ImageAssert.HasColorAt(screenshot, rect.X, rect.Y, Color.Blue);
 			ImageAssert.HasColorAt(screenshot, innerCornerX, innerCornerY, Color.Red);
 
 		}
@@ -64,7 +62,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 
 			_app.WaitForElement("TestRoot");
 
-			var snapshot = this.TakeScreenshot("validation", ignoreInSnapshotCompare: false);
+			using var snapshot = this.TakeScreenshot("validation", ignoreInSnapshotCompare: false);
 
 			using (new AssertionScope("Rounded corners"))
 			{
@@ -86,7 +84,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 
 			void CheckRoundedCorners(string s)
 			{
-				var rectCtl = _app.GetRect(s);
+				var rectCtl = _app.GetPhysicalRect(s);
 
 				var green = "#FF008000";
 				var white = "#FFFFFFFF";
@@ -126,7 +124,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 
 			void CheckNoRoundedCorners(string s)
 			{
-				var rectCtl = _app.GetRect(s);
+				var rectCtl = _app.GetPhysicalRect(s);
 
 				var green = "#FF008000";
 

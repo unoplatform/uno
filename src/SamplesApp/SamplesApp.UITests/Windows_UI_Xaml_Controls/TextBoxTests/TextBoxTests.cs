@@ -252,23 +252,24 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.PasswordBox_Reveal_Scroll");
 
-			var passwordBox = _app.WaitForElement("MyPasswordBox").Single();
+			var passwordBox = _app.Marked("MyPasswordBox");
+			var passwordBoxRect = _app.GetRect(passwordBox);
 			_app.Wait(TimeSpan.FromMilliseconds(500)); // Make sure to show the status bar
-			var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
+			using var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 
 			// Focus the PasswordBox
-			_app.TapCoordinates(passwordBox.Rect.X + 10, passwordBox.Rect.Y);
+			passwordBox.Tap();
 
 			// Press the reveal button, and move up (so the ScrollViewer will kick in and cancel the pointer), then release
-			_app.DragCoordinates(passwordBox.Rect.X + 10, passwordBox.Rect.Right - 10, passwordBox.Rect.X - 100, passwordBox.Rect.Right - 10);
+			_app.DragCoordinates(passwordBoxRect.X + 10, passwordBoxRect.Right - 10, passwordBoxRect.X - 100, passwordBoxRect.Right - 10);
 
-			var result = TakeScreenshot("result", ignoreInSnapshotCompare: true);
+			using var result = TakeScreenshot("result", ignoreInSnapshotCompare: true);
 
 			ImageAssert.AreEqual(initial, result, new Rectangle(
-				(int)passwordBox.Rect.X + 8, // +8 : ignore borders (as we are still focused)
-				(int)passwordBox.Rect.Y + 8,
+				(int)passwordBoxRect.X + 8, // +8 : ignore borders (as we are still focused)
+				(int)passwordBoxRect.Y + 8,
 				100, // Ignore the reveal button on right (as we are still focused)
-				(int)passwordBox.Rect.Height - 16));
+				(int)passwordBoxRect.Height - 16));
 		}
 
 		[Test]
@@ -499,20 +500,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			// initial state
 			_app.WaitForElement(target);
-			var screenshot1 = TakeScreenshot("textbox readonly", ignoreInSnapshotCompare: true);
+			using var screenshot1 = TakeScreenshot("textbox readonly", ignoreInSnapshotCompare: true);
 
 			// remove readonly and focus textbox
 			readonlyToggle.Tap(); // now: unchecked
 			target.Tap();
 			_app.Wait(seconds: 1); // allow keyboard to fully open
-			var screenshot2 = TakeScreenshot("textbox focused with keyboard", ignoreInSnapshotCompare: true);
+			using var screenshot2 = TakeScreenshot("textbox focused with keyboard", ignoreInSnapshotCompare: true);
 
 			// reapply readonly and try focus textbox
 			readonlyToggle.Tap(); // now: checked
 			target.Tap();
 			_app.Wait(seconds: 1); // allow keyboard to fully open (if ever possible)
 			_app.WaitForElement(target);
-			var screenshot3 = TakeScreenshot("textbox readonly again", ignoreInSnapshotCompare: true);
+			using var screenshot3 = TakeScreenshot("textbox readonly again", ignoreInSnapshotCompare: true);
 
 			// the bottom half should only contains the keyboard and some blank space,
 			// but not the textbox nor the toggle buttons that needs to be excluded.

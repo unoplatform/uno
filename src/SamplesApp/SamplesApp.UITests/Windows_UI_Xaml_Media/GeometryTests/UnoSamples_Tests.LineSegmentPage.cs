@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 			_app.WaitForElement(path);
 
 			// Take an initial screenshot
-			TakeScreenshot("Initial State");
+			TakeScreenshot("Initial State", ignoreInSnapshotCompare: true);
 		}
 
 		[Test]
@@ -40,11 +40,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 
 			_app.WaitForElement(path);
 
-			var before = TakeScreenshot("Before point movement");
+			using var before = TakeScreenshot("Before point movement", ignoreInSnapshotCompare: true);
 
 			button.Tap();
 
-			var after = TakeScreenshot("After point movement");
+			using var after = TakeScreenshot("After point movement");
 
 			ImageAssert.AreNotEqual(before, after);
 		}

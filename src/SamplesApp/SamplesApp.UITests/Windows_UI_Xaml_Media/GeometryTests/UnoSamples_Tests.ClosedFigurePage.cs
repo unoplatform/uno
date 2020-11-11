@@ -23,7 +23,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 
 			// if closed path, there should be black color on left hand side
 
-			var screenshot = TakeScreenshot("Closed state");
+			using var screenshot = TakeScreenshot("Closed state");
 
 			ImageAssert.HasColorAt(screenshot, 50, 300, Color.Black);
 		}

@@ -122,7 +122,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 				picker.SetDependencyPropertyValue("Mode", "S" + i);
 				_app.WaitForDependencyPropertyValue(currentModeButton, "Content", (i * 16).ToString("00"));
 
-				base.TakeScreenshot("Mode-" + i);
+				TakeScreenshot("Mode-" + i);
 			}
 		}
 
@@ -139,11 +139,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			_app.WaitForElement("secondControl");
 
-			var bmp = TakeScreenshot("After");
+			using var bmp = TakeScreenshot("After");
 
-			var expectedRect = _app.GetRect("simpleImage");
-			var firstControlRect = _app.GetRect("firstControl");
-			var secondControlRect = _app.GetRect("secondControl");
+			var expectedRect = _app.GetPhysicalRect("simpleImage");
+			var firstControlRect = _app.GetPhysicalRect("firstControl");
+			var secondControlRect = _app.GetPhysicalRect("secondControl");
 
 			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, firstControlRect, permittedPixelError: 20);
 			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, secondControlRect, permittedPixelError: 20);
@@ -151,7 +151,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser)] // Images sometimes fail to load on iOS https://github.com/unoplatform/uno/issues/2295
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Images sometimes fail to load on iOS https://github.com/unoplatform/uno/issues/2295
 		public void Late_With_Fixed_Dimensions()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceFixedDimensions");
@@ -160,18 +160,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			_app.WaitForElement("lateImage");
 
-			var bmp = TakeScreenshot("Source set");
+			using var bmp = TakeScreenshot("Source set");
 
-			var expectedRect = _app.GetRect("refImage");
+			var expectedRect = _app.GetPhysicalRect("refImage");
 
-			var lateRect = _app.GetRect("lateImage");
+			var lateRect = _app.GetPhysicalRect("lateImage");
 
 			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 20);
 		}
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser)] // Images sometimes fail to load on iOS https://github.com/unoplatform/uno/issues/2295
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Images sometimes fail to load on iOS https://github.com/unoplatform/uno/issues/2295
 		public void Late_With_UniformToFill()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceUniformToFill");
@@ -180,11 +180,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			_app.WaitForElement("lateImage");
 
-			var bmp = TakeScreenshot("Source set");
+			using var bmp = TakeScreenshot("Source set");
 
-			var expectedRect = _app.GetRect("refImage");
+			var expectedRect = _app.GetPhysicalRect("refImage");
 
-			var lateRect = _app.GetRect("lateImage");
+			var lateRect = _app.GetPhysicalRect("lateImage");
 
 			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 20);
 		}
@@ -195,9 +195,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Margin_Large");
 
-			var bmp = TakeScreenshot("Ready");
+			using var bmp = TakeScreenshot("Ready");
 
-			var rect = _app.GetRect("outerBorder");
+			var rect = _app.GetPhysicalRect("outerBorder");
 
 			ImageAssert.DoesNotHaveColorAt(bmp, rect.CenterX, rect.CenterY, Color.Black);
 		}

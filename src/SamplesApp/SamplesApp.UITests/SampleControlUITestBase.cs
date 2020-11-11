@@ -317,24 +317,9 @@ namespace SamplesApp.UITests
 
 		internal float GetDisplayScreenScaling() => _app.GetDisplayScreenScaling();
 
-		/// <summary>
-		/// Get the center of <paramref name="rect"/> adjusted for the display scale, appropriate for screenshot analysis.
-		/// </summary>
-		protected PointF GetScaledCenter(IAppRect rect)
-		{
-			var scale = (float)GetDisplayScreenScaling();
-			return new PointF(rect.CenterX * scale, rect.CenterY * scale);
-		}
+		internal float LogicalToPhysical(float logical) => logical * GetDisplayScreenScaling();
 
-		/// <summary>
-		/// Get centre of the bounds rect of element <paramref name="elementName"/> adjusted for the display scale, appropriate for
-		/// screenshot analysis.
-		/// </summary>
-		protected PointF GetRectCenterScaled(string elementName)
-		{
-			var rect = _app.GetRect(elementName);
-			return GetScaledCenter(rect);
-		}
+		internal float PhysicalToLogical(float physical) => physical / GetDisplayScreenScaling();
 
 		protected bool GetIsCurrentRotationLandscape(string elementName)
 		{

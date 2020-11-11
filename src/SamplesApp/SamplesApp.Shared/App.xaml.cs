@@ -365,7 +365,10 @@ namespace SamplesApp
 			=> SampleControl.Presentation.SampleChooserViewModel.Instance.GetAllSamplesNames();
 
 		public static string GetDisplayScreenScaling(string displayId)
-			=> (DisplayInformation.GetForCurrentView().LogicalDpi * 100f / 96f).ToString(CultureInfo.InvariantCulture);
+		{
+			var screenScaling = Android.App.Application.Context.Resources.DisplayMetrics.Density * 100f;
+			return screenScaling.ToString(CultureInfo.InvariantCulture);
+		}
 
 		public static string RunTest(string metadataName)
 		{

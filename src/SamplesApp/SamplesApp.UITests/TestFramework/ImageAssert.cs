@@ -81,7 +81,7 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			[CallerLineNumber] int line = 0)
 		{
-			using var actualBitmap = new Bitmap(actual.File.FullName);
+			var actualBitmap = actual.GetBitmap();
 			AreEqualImpl(expected, expectedRect, actual, actualBitmap, actualRect, expectedToActualScale, tolerance, line);
 		}
 
@@ -122,7 +122,7 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			[CallerLineNumber] int line = 0)
 		{
-			using var expectedBitmap = new Bitmap(expected.File.FullName);
+			var expectedBitmap = expected.GetBitmap();
 
 			if (expectedRect != FirstQuadrant && actualRect != FirstQuadrant)
 			{
@@ -188,7 +188,7 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			int line)
 		{
-			using var actualBitmap = new Bitmap(actual.File.FullName);
+			var actualBitmap = actual.GetBitmap();
 			AreNotEqualImpl(expected, expectedRect, actual, actualBitmap, actualRect, expectedToActualScale, tolerance, line);
 		}
 
@@ -224,39 +224,31 @@ namespace SamplesApp.UITests.TestFramework
 
 		private static void HasColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color expectedColor, byte tolerance, int line)
 		{
-			var file = screenshot?.File;
-			if (file == null)
+			var bitmap = screenshot.GetBitmap();
+
+			if (bitmap.Width <= x || bitmap.Height <= y)
 			{
-				Assert.Fail("No file");
-				return;
+				Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Size}"));
 			}
 
-			using (var bitmap = new Bitmap(file.FullName))
+			var pixel = bitmap.GetPixel(x, y);
+
+			if (!AreSameColor(expectedColor, pixel, tolerance, out var difference))
 			{
-				if (bitmap.Width <= x || bitmap.Height <= y)
-				{
-					Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Size}"));
-				}
-
-				var pixel = bitmap.GetPixel(x, y);
-
-				if (!AreSameColor(expectedColor, pixel, tolerance, out var difference))
-				{
-					Assert.Fail(WithContext(builder: builder => builder
-						.AppendLine($"Color at ({x},{y}) is not expected")
-						.AppendLine($"expected: {ToArgbCode(expectedColor)} {expectedColor}")
-						.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
-						.AppendLine($"tolerance: {tolerance}")
-						.AppendLine($"difference: {difference}")
-					));
-				}
+				Assert.Fail(WithContext(builder: builder => builder
+					.AppendLine($"Color at ({x},{y}) is not expected")
+					.AppendLine($"expected: {ToArgbCode(expectedColor)} {expectedColor}")
+					.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
+					.AppendLine($"tolerance: {tolerance}")
+					.AppendLine($"difference: {difference}")
+				));
 			}
 
 			string WithContext(string message = null, Action<StringBuilder> builder = null)
 			{
 				return new StringBuilder()
 					.AppendLine($"ImageAssert.HasColorAt @ line {line}")
-					.AppendLine($"screenshot: {screenshot.StepName} ({file.Name})")
+					.AppendLine($"screenshot: {screenshot.StepName} ({screenshot.File.Name})")
 					.AppendLine("====================")
 					.ApplyIf(message != null, sb => sb.AppendLine(message))
 					.ApplyIf(builder != null, builder)
@@ -274,32 +266,29 @@ namespace SamplesApp.UITests.TestFramework
 
 		private static void DoesNotHaveColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color excludedColor, byte tolerance, int line)
 		{
-			var file = screenshot.File;
-			using (var bitmap = new Bitmap(file.FullName))
+			var bitmap = screenshot.GetBitmap();
+			if (bitmap.Width <= x || bitmap.Height <= y)
 			{
-				if (bitmap.Width <= x || bitmap.Height <= y)
-				{
-					Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Size}"));
-				}
+				Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Size}"));
+			}
 
-				var pixel = bitmap.GetPixel(x, y);
-				if (AreSameColor(excludedColor, pixel, tolerance, out var difference))
-				{
-					Assert.Fail(WithContext(builder: builder => builder
-						.AppendLine($"Color at ({x},{y}) is not expected")
-						.AppendLine($"excluded: {ToArgbCode(excludedColor)} {excludedColor.Name}")
-						.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
-						.AppendLine($"tolerance: {tolerance}")
-						.AppendLine($"difference: {difference}")
-					));
-				}
+			var pixel = bitmap.GetPixel(x, y);
+			if (AreSameColor(excludedColor, pixel, tolerance, out var difference))
+			{
+				Assert.Fail(WithContext(builder: builder => builder
+					.AppendLine($"Color at ({x},{y}) is not expected")
+					.AppendLine($"excluded: {ToArgbCode(excludedColor)} {excludedColor.Name}")
+					.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
+					.AppendLine($"tolerance: {tolerance}")
+					.AppendLine($"difference: {difference}")
+				));
 			}
 
 			string WithContext(string message = null, Action<StringBuilder> builder = null)
 			{
 				return new StringBuilder()
 					.AppendLine($"ImageAssert.DoesNotHaveColorAt @ line {line}")
-					.AppendLine($"screenshot: {screenshot.StepName} ({file.Name})")
+					.AppendLine($"screenshot: {screenshot.StepName} ({screenshot.File.Name})")
 					.AppendLine("====================")
 					.ApplyIf(message != null, sb => sb.AppendLine(message))
 					.ApplyIf(builder != null, builder)
@@ -311,7 +300,7 @@ namespace SamplesApp.UITests.TestFramework
 		#region HasPixels
 		public static void HasPixels(ScreenshotInfo actual, params ExpectedPixels[] expectations)
 		{
-			using var bitmap = new Bitmap(actual.File.FullName);
+			var bitmap = actual.GetBitmap();
 			using var assertionScope = new AssertionScope("ImageAssert");
 
 			foreach (var expectation in expectations)

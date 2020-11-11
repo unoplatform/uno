@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
@@ -130,9 +132,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			TakeScreenshot("after layout");
 
 			var heightStr = _app.GetText("HeightTextBlock");
-			var height = int.Parse(heightStr);
+			var height = float.Parse(heightStr, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
 
-			Assert.AreEqual(224, height);
+			height.Should().BeApproximately(224f, 0.5f);
 		}
 
 		[Test]
@@ -146,7 +148,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			TakeScreenshot("1 item");
 
 			var heightStrBefore = _app.GetText("HeightTextBlock");
-			var heightBefore = int.Parse(heightStrBefore);
+			var heightBefore = float.Parse(heightStrBefore, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
 
 			_app.FastTap("AddItemsButton");
 
@@ -155,7 +157,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			TakeScreenshot("3 items");
 
 			var heightStrAfter = _app.GetText("HeightTextBlock");
-			var heightAfter = int.Parse(heightStrAfter);
+			var heightAfter = float.Parse(heightStrAfter, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
 
 			Assert.Greater(heightBefore, 0);
 
@@ -173,16 +175,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBox);
 
 			// Save initial state(not expanded)
-			var screenshot1 = TakeScreenshot("Initial State");
+			using var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand and compare
 			ClickCheckBoxAt(0);
-			var screenshot2 = TakeScreenshot("Expanded State");
+			using var screenshot2 = TakeScreenshot("Expanded State");
 			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse and compare
 			ClickCheckBoxAt(0);
-			var screenshot3 = TakeScreenshot("Collapsed State");
+			using var screenshot3 = TakeScreenshot("Collapsed State");
 			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
@@ -197,20 +199,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBox);
 
 			// Save initial state(not expanded)
-			var screenshot1 = TakeScreenshot("Initial State");
+			using var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand multiple items and compare
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot2 = TakeScreenshot("Expanded State");
+			using var screenshot2 = TakeScreenshot("Expanded State");
 			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse all and compare 
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot3 = TakeScreenshot("Collapsed State");
+			using var screenshot3 = TakeScreenshot("Collapsed State");
 			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
@@ -311,16 +313,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBoxHeader);
 
 			// Save initial state(not expanded)
-			var screenshot1 = TakeScreenshot("Initial State");
+			using var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand and compare
 			checkBoxHeader.Tap();
-			var screenshot2 = TakeScreenshot("Expanded State");
+			using var screenshot2 = TakeScreenshot("Expanded State");
 			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse and compare 
 			checkBoxHeader.Tap();
-			var screenshot3 = TakeScreenshot("Collapsed State");
+			using var screenshot3 = TakeScreenshot("Collapsed State");
 			ImageAssert.AreAlmostEqual(screenshot1, screenshot3);
 		}
 
@@ -335,14 +337,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBoxHeader);
 
 			// Save initial state(not expanded)
-			var screenshot1 = TakeScreenshot("Initial State");
+			using var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand and compare
 			checkBoxHeader.Tap();
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot2 = TakeScreenshot("Expanded State");
+			using var screenshot2 = TakeScreenshot("Expanded State");
 			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse and compare
@@ -350,7 +352,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot3 = TakeScreenshot("Collapsed State");
+			using var screenshot3 = TakeScreenshot("Collapsed State");
 			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
@@ -365,18 +367,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBoxHeader);
 
 			// Save initial state(not expanded)
-			var screenshot1 = TakeScreenshot("Initial State");
+			using var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand multiple items, header and compare
 			checkBoxHeader.Tap();
 			ClickCheckBoxAt(0);
-			var screenshot2 = TakeScreenshot("Expanded State");
+			using var screenshot2 = TakeScreenshot("Expanded State");
 			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse all and compare 
 			checkBoxHeader.Tap();
 			ClickCheckBoxAt(0);
-			var screenshot3 = TakeScreenshot("Collapsed State");
+			using var screenshot3 = TakeScreenshot("Collapsed State");
 			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 

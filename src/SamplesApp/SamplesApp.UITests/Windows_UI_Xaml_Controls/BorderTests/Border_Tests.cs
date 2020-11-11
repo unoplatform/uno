@@ -20,13 +20,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			_app.WaitForElement("ClippedBorder");
 
-			var before = TakeScreenshot("Before property change");
+			using var before = TakeScreenshot("Before property change");
 
 			_app.FastTap("ClippedBorder");
 
 			_app.WaitForDependencyPropertyValue(_app.Marked("ClippedBorder"), "ManipulationMode", "None");
 
-			var after = TakeScreenshot("After property change");
+			using var after = TakeScreenshot("After property change");
 
 			ImageAssert.AreEqual(before, after);
 		}
@@ -42,13 +42,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			var verificationRect = _app.GetRect("SnapshotBorder");
 
-			var scrBefore = TakeScreenshot("No CornerRadius");
+			using var scrBefore = TakeScreenshot("No CornerRadius");
 
 			_app.FastTap("ToggleCornerRadiusButton");
 
 			_app.WaitForText("StatusTextBlock", "5");
 
-			var scrAfter = TakeScreenshot("CornerRadius=5");
+			using var scrAfter = TakeScreenshot("CornerRadius=5");
 
 			ImageAssert.AreAlmostEqual(scrBefore, scrAfter, verificationRect, permittedPixelError: 5);
 		}

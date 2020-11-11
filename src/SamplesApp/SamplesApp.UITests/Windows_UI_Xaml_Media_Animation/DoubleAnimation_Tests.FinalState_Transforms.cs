@@ -62,7 +62,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 			Run(_finalStateTransformsTestControl, skipInitialScreenshot: true);
 
-			var initial = TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
+			using var initial = TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
 			var initialLocation = _app.WaitForElement($"{type}AnimationHost_{fill}").Single().Rect;
 
 			var scale = ((int)initialLocation.Width) / 50;
@@ -73,7 +73,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			_app.WaitForDependencyPropertyValue(_app.Marked("Status"), "Text", "Completed");
 
 			// Assert
-			var final = TakeScreenshot("Final", ignoreInSnapshotCompare: true);
+			using var final = TakeScreenshot("Final", ignoreInSnapshotCompare: true);
 			var finalLocation = _app.WaitForElement($"{type}AnimationHost_{fill}").Single().Rect;
 			var actualDelta = finalLocation.Y - initialLocation.Y;
 
