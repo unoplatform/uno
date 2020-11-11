@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Windows.Devices.Input;
 using Windows.UI.Core;
 using Uno.Extensions;
@@ -16,10 +18,11 @@ using MouseDevice = System.Windows.Input.MouseDevice;
 using System.Reflection;
 using Windows.System;
 using Uno.UI.Skia.Platform.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.Skia.Platform
 {
-	public class WpfUIElementPointersSupport : ICoreWindowExtension
+	public partial class WpfCoreWindowExtension : ICoreWindowExtension
 	{
 		private readonly ICoreWindowEvents _ownerEvents;
 		private readonly WpfHost _host;
@@ -51,7 +54,7 @@ namespace Uno.UI.Skia.Platform
 		};
 
 
-		public WpfUIElementPointersSupport(object owner)
+		public WpfCoreWindowExtension(object owner)
 		{
 			_ownerEvents = (ICoreWindowEvents)owner;
 
@@ -71,6 +74,10 @@ namespace Uno.UI.Skia.Platform
 				_host.Loaded -= HookNative;
 
 				var win = Window.GetWindow(_host);
+
+				win.AddHandler(UIElement.KeyUpEvent, (KeyEventHandler)HostOnKeyUp, true);
+				win.AddHandler(UIElement.KeyDownEvent, (KeyEventHandler)HostOnKeyDown, true);
+
 				var fromDependencyObject = PresentationSource.FromDependencyObject(win);
 				_hwndSource = fromDependencyObject as HwndSource;
 				_hwndSource?.AddHook(OnWmMessage);

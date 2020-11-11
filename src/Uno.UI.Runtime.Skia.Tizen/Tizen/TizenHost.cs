@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -67,7 +69,7 @@ namespace Uno.UI.Runtime.Skia
 
 		public void Run()
 		{
-			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new TizenUIElementPointersSupport(o, _tizenApplication.Canvas));
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new TizenCoreWindowExtension(o, _tizenApplication.Canvas));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new TizenApplicationViewExtension(o, _tizenApplication.Window));
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new TizenDisplayInformationExtension(o, _tizenApplication.Window));
 			ApiExtensibility.Register(typeof(IVibrationDeviceExtension), o => new TizenVibrationDeviceExtension(o));

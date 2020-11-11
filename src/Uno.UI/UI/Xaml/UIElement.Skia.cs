@@ -34,6 +34,7 @@ namespace Windows.UI.Xaml
 
 			Initialize();
 			InitializePointers();
+			InitializeKeyboard();
 
 			RegisterPropertyChangedCallback(VisibilityProperty, OnVisibilityPropertyChanged);
 			RegisterPropertyChangedCallback(Controls.Canvas.LeftProperty, OnCanvasLeftChanged);
@@ -41,6 +42,7 @@ namespace Windows.UI.Xaml
 
 			UpdateHitTest();
 		}
+		partial void InitializeKeyboard();
 
 		private void OnCanvasTopChanged(DependencyObject sender, DependencyProperty dp)
 		{

@@ -21,7 +21,7 @@ using Windows.UI.Input;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public class GtkUIElementPointersSupport : ICoreWindowExtension
+	public partial class GtkCoreWindowExtension : ICoreWindowExtension
 	{
 		private readonly CoreWindow _owner;
 		private ICoreWindowEvents _ownerEvents;
@@ -41,7 +41,7 @@ namespace Uno.UI.Runtime.Skia
 		public void SetPointerCapture()
 			=> this.Log().Error("Pointer capture is not supported on GTK");
 
-		public GtkUIElementPointersSupport(object owner)
+		public GtkCoreWindowExtension(object owner)
 		{
 			_owner = (CoreWindow)owner;
 			_ownerEvents = (ICoreWindowEvents)owner;
@@ -57,7 +57,10 @@ namespace Uno.UI.Runtime.Skia
 			GtkHost.Window.EnterNotifyEvent += OnWindowEnterEvent;
 			GtkHost.Window.LeaveNotifyEvent += OnWindowLeaveEvent;
 			GtkHost.Window.ScrollEvent += OnWindowScrollEvent;
+
+			InitializeKeyboard();
 		}
+		partial void InitializeKeyboard();
 
 		private static uint GetNextFrameId() => (uint)Interlocked.Increment(ref _currentFrameId);
 

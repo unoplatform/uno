@@ -55,6 +55,7 @@ Notes:
      > won't work for keyboard events. **They won't bubble in managed code**.
    * **iOS**: `KeyDown` & `KeyUp` routed events are generated from only a `TextBox`. Only character-related keyboard events are generated.
      They are implemented as _Routed Events_ and they are **always bubbling in managed code**.
+   * **Skia**: Keyboard events are supported from `CoreWindow.KeyUp` and `CoreWindow.KeyDown` events, as well as `UIElement.KeyUp` and `UIElement.KeyDown` events for GTK, WPF and Tizen.
 
 ## Pointer Events
 
