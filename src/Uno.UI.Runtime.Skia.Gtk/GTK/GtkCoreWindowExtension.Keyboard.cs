@@ -24,7 +24,7 @@ using Windows.UI.Input;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public partial class GtkCoreWindowExtension : ICoreWindowExtension
+	partial class GtkCoreWindowExtension : ICoreWindowExtension
 	{
 		partial void InitializeKeyboard()
 		{

@@ -5,7 +5,7 @@ using TizenWindow = ElmSharp.Window;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public class TizenApplicationViewExtension : IApplicationViewExtension
+	internal class TizenApplicationViewExtension : IApplicationViewExtension
 	{
 		private readonly ApplicationView _owner;
 		private readonly IApplicationViewEvents _ownerEvents;

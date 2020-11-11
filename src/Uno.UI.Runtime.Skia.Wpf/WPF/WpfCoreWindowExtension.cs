@@ -22,7 +22,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.Skia.Platform
 {
-	public partial class WpfCoreWindowExtension : ICoreWindowExtension
+	internal partial class WpfCoreWindowExtension : ICoreWindowExtension
 	{
 		private readonly ICoreWindowEvents _ownerEvents;
 		private readonly WpfHost _host;

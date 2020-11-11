@@ -25,7 +25,7 @@ using Tizen.Uix.InputMethod;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public partial class TizenCoreWindowExtension : ICoreWindowExtension
+	partial class TizenCoreWindowExtension : ICoreWindowExtension
 	{
 		private void OnKeyDown(object sender, EvasKeyEventArgs args)
 		{

@@ -24,7 +24,7 @@ using Tizen.NUI;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public partial class TizenCoreWindowExtension : ICoreWindowExtension
+	internal partial class TizenCoreWindowExtension : ICoreWindowExtension
 	{
 		private static int _currentFrameId = 0;
 

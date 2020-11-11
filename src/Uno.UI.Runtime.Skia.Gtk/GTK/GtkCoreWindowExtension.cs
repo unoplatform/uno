@@ -21,7 +21,7 @@ using Windows.UI.Input;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public partial class GtkCoreWindowExtension : ICoreWindowExtension
+	internal partial class GtkCoreWindowExtension : ICoreWindowExtension
 	{
 		private readonly CoreWindow _owner;
 		private ICoreWindowEvents _ownerEvents;

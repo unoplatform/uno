@@ -22,7 +22,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.Skia.Platform	
 {
-	public partial class WpfCoreWindowExtension : ICoreWindowExtension
+	partial class WpfCoreWindowExtension : ICoreWindowExtension
 	{
 		private void HostOnKeyDown(object sender, System.Windows.Input.KeyEventArgs args)
 		{
