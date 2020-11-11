@@ -1063,7 +1063,7 @@ namespace Windows.UI.Xaml.Controls
 					containerAsContentControl.Style = styleFromItemsControl;
 				}
 
-				if (!containerAsContentControl.IsContainerFromItemTemplate)
+				if (!containerAsContentControl.IsContainerFromTemplateRoot)
 				{
 					containerAsContentControl.ContentTemplate = ItemTemplate;
 					containerAsContentControl.ContentTemplateSelector = ItemTemplateSelector;
@@ -1078,7 +1078,7 @@ namespace Windows.UI.Xaml.Controls
 					// the result of the fallback value of the binding set below.
 					containerAsContentControl.DataContext = GetContent();
 
-					if (!containerAsContentControl.IsContainerFromItemTemplate && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
+					if (!containerAsContentControl.IsContainerFromTemplateRoot && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
 					{
 						containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
 					}

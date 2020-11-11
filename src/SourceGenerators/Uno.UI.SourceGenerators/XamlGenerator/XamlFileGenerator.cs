@@ -21,6 +21,7 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
 
+
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlFileGenerator
@@ -1678,19 +1679,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
-		private bool IsCustomMarkupExtensionType(XamlType xamlType)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private INamedTypeSymbol? GetMarkupExtensionType(XamlType xamlType)
 		{
 			if (xamlType == null)
 			{
-				return false;
+				return null;
 			}
 
 			// Adjustment for Uno.Xaml parser which returns the namespace in the name
 			var xamlTypeName = xamlType.Name.Contains(':') ? xamlType.Name.Split(':').LastOrDefault() : xamlType.Name;
+			var extendedXamlTypeName = xamlTypeName + "Extension";
 
-			// Determine if the type is a custom markup extension
-			return _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlTypeName, StringComparison.InvariantCulture));
+			// return  the type of custom markup extension				
+			return _markupExtensionTypes.FirstOrDefault(ns => ns.Name.Equals(xamlTypeName, StringComparison.InvariantCulture)
+				|| ns.Name.Equals(extendedXamlTypeName, StringComparison.InvariantCulture));
 		}
+
+		private bool IsCustomMarkupExtensionType(XamlType xamlType) =>
+			// Determine if the type is a custom markup extension
+			GetMarkupExtensionType(xamlType) != null;
 
 		private bool IsXamlTypeConverter(INamedTypeSymbol symbol)
 		{
@@ -3604,24 +3612,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var markupTypeDef = member
 				.Objects
 				.FirstOrDefault(o => IsCustomMarkupExtensionType(o.Type));
-
+			var markupType = GetMarkupExtensionType(markupTypeDef.Type);
 			// Build a string of all its properties
 			var properties = markupTypeDef
 				.Members
 				.Select(m =>
 				{
-					var resourceName = GetSimpleStaticResourceRetrieval(m);
-
+					var propertyType = markupType.GetAllPropertiesWithName(m.Member.Name)?
+					 .FirstOrDefault()?.Type as INamedTypeSymbol;
+					var resourceName = GetSimpleStaticResourceRetrieval(m, propertyType);
 					var value = resourceName != null
 						? resourceName
-						: BuildLiteralValue(m, owner: member);
+						: BuildLiteralValue(m, propertyType: propertyType, owner: member);
 
 					return "{0} = {1}".InvariantCultureFormat(m.Member.Name, value);
 				})
 				.JoinBy(", ");
 
 			// Get the full globalized namespaces for the custom markup extension and also for IMarkupExtensionOverrides
-			var markupType = GetType(markupTypeDef.Type);
+
 			var markupTypeFullName = GetGlobalizedTypeName(markupType.GetFullName());
 			var xamlMarkupFullName = GetGlobalizedTypeName(XamlConstants.Types.IMarkupExtensionOverrides);
 
@@ -4105,6 +4114,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var originalType = propertyType;
 
 					propertyType = propertyType ?? FindPropertyType(member.Member);
+
+
 
 					if (propertyType != null)
 					{

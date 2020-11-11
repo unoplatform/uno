@@ -91,7 +91,9 @@ namespace Windows.UI.Xaml
 			var display = (ContextHelper.Current as Activity)?.WindowManager?.DefaultDisplay;
 			var fullScreenMetrics = new DisplayMetrics();
 
+#pragma warning disable 618
 			display?.GetMetrics(outMetrics: fullScreenMetrics);
+#pragma warning restore 618
 
 			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, fullScreenMetrics.WidthPixels, fullScreenMetrics.HeightPixels));
 
@@ -265,7 +267,9 @@ namespace Windows.UI.Xaml
 					throw new global::System.Exception("Cannot check NavigationBar visibility property. DecorView is not defined yet.");
 				}
 
-				return ((int)decorView.SystemUiVisibility & (int)SystemUiFlags.Fullscreen) == 0;
+#pragma warning disable 618
+			return ((int)decorView.SystemUiVisibility & (int)SystemUiFlags.Fullscreen) == 0;
+#pragma warning restore 618
 		}
 
 		public bool IsStatusBarTranslucent()
@@ -289,7 +293,9 @@ namespace Windows.UI.Xaml
 				throw new global::System.Exception("Cannot check NavigationBar visibility property. DecorView is not defined yet.");
 			}
 
+#pragma warning disable 618
 			var uiFlags = (int)decorView.SystemUiVisibility;
+#pragma warning restore 618
 			return (uiFlags & (int)SystemUiFlags.HideNavigation) == 0
 				|| (uiFlags & (int)SystemUiFlags.LayoutHideNavigation) == 0;
 		}

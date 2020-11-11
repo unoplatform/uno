@@ -508,7 +508,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					// The container has been created from a template and can be recycled, so we mark it as generated
 					contentControl.IsGeneratedContainer = true;
 
-					contentControl.IsContainerFromItemTemplate = true;
+					contentControl.IsContainerFromTemplateRoot = true;
 				}
 
 				return templateRoot as DependencyObject;

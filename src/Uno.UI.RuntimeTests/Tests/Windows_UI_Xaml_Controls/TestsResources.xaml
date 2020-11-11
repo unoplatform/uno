@@ -10,8 +10,8 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ListViewItem">
-					<ContentPresenter Content="{TemplateBinding Content}" 
-					ContentTemplate="{TemplateBinding ContentTemplate}" />
+					<ContentPresenter Content="{TemplateBinding Content}"
+									  ContentTemplate="{TemplateBinding ContentTemplate}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -25,5 +25,24 @@
 				<TextBlock Text="{Binding}" />
 			</Border>
 		</ListViewItem>
+	</DataTemplate>
+	<ItemsPanelTemplate x:Key="NoCacheItemsStackPanel">
+		<ItemsStackPanel CacheLength="0" />
+	</ItemsPanelTemplate>
+	<Style x:Key="ListViewContainerMarginStyle"
+		   TargetType="ListViewItem"
+		   BasedOn="{StaticResource BasicListViewContainerStyle}">
+		<Setter Property="Margin"
+				Value="14,6,22,9" />
+		<Setter Property="MinHeight"
+				Value="1" />
+	</Style>
+	<DataTemplate x:Key="FixedSizeItemTemplate">
+		<Border Width="152"
+				Height="29"
+				Background="LightSeaGreen">
+			<TextBlock Text="{Binding}"
+					   HorizontalAlignment="Center" />
+		</Border>
 	</DataTemplate>
 </ResourceDictionary>

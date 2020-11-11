@@ -764,6 +764,23 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		public void When_Source_String()
+		{
+			var source = "Test";
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Source = source
+				}
+			);
+
+			Assert.AreEqual(source, SUT.Tag);
+		}
+
+		[TestMethod]
 		public void When_Subject_Source_Complex()
 		{
 			var SUT = new Windows.UI.Xaml.Controls.Grid();

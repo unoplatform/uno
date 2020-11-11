@@ -1,6 +1,8 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -93,6 +95,11 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			[CallerLineNumber] int line = 0)
 		{
+			using var assertionScope = new AssertionScope($"{expected.StepName}<=={actual}");
+			assertionScope.AddReportable("expectedRect", expectedRect.ToString());
+			assertionScope.AddReportable("actualRect", actualRect.ToString());
+			assertionScope.AddReportable("expectedToActualScale", expectedToActualScale.ToString(NumberFormatInfo.InvariantInfo));
+
 			var (areEqual, context) = EqualityCheck(expected, expectedRect, actual, actualBitmap, actualRect, expectedToActualScale, tolerance, line);
 
 			if (areEqual)
@@ -101,7 +108,7 @@ namespace SamplesApp.UITests.TestFramework
 			}
 			else
 			{
-				Assert.Fail(context.ToString());
+				assertionScope.FailWithText(context);
 			}
 		}
 
@@ -115,12 +122,13 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			[CallerLineNumber] int line = 0)
 		{
+			using var expectedBitmap = new Bitmap(expected.File.FullName);
+
 			if (expectedRect != FirstQuadrant && actualRect != FirstQuadrant)
 			{
 				Assert.AreEqual(expectedRect.Size, actualRect.Size, WithContext("Compare rects don't have the same size"));
 			}
 
-			using var expectedBitmap = new Bitmap(expected.File.FullName);
 			if (expectedRect == FirstQuadrant && actualRect == FirstQuadrant)
 			{
 				var effectiveExpectedBitmapSize = new Size(
@@ -147,8 +155,8 @@ namespace SamplesApp.UITests.TestFramework
 				=> new StringBuilder()
 					.AppendLine($"ImageAssert.AreEqual @ line {line}")
 					.AppendLine("pixelTolerance: " + tolerance)
-					.AppendLine($"expected: {expected?.StepName} ({expected?.File.Name}){(expectedRect == FirstQuadrant ? null : $" in {expectedRect}")}")
-					.AppendLine($"actual  : {actual?.StepName ?? "--unknown--"} ({actual?.File.Name}){(actualRect == FirstQuadrant ? null : $" in {actualRect}")}")
+					.AppendLine($"expected: {expected?.StepName} ({expected?.File.Name} {expectedBitmap.Size}){(expectedRect == FirstQuadrant ? null : $" in {expectedRect}")}")
+					.AppendLine($"actual  : {actual?.StepName ?? "--unknown--"} ({actual?.File.Name} {actualBitmap.Size}){(actualRect == FirstQuadrant ? null : $" in {actualRect}")}")
 					.AppendLine("====================");
 
 			string WithContext(string message)
@@ -198,11 +206,11 @@ namespace SamplesApp.UITests.TestFramework
 
 			if (!result.areEqual)
 			{
-				Console.WriteLine(result.context.ToString());
+				Console.WriteLine(result.context);
 			}
 			else
 			{
-				Assert.Fail(result.context.ToString());
+				AssertionScope.Current.FailWithText(result.context);
 			}
 		}
 		#endregion
@@ -361,9 +369,20 @@ namespace SamplesApp.UITests.TestFramework
 			for (var offsetY = 0; offsetY <= expectation.Tolerance.Offset.y; offsetY++)
 			{
 				yield return (offsetX, offsetY);
-				if (offsetX > 0) yield return (-offsetX, offsetY);
-				if (offsetY > 0) yield return (offsetX, -offsetY);
-				if (offsetX > 0 && offsetY > 0) yield return (-offsetX, -offsetY);
+				if (offsetX > 0)
+				{
+					yield return (-offsetX, offsetY);
+				}
+
+				if (offsetY > 0)
+				{
+					yield return (offsetX, -offsetY);
+				}
+
+				if (offsetX > 0 && offsetY > 0)
+				{
+					yield return (-offsetX, -offsetY);
+				}
 			}
 		}
 

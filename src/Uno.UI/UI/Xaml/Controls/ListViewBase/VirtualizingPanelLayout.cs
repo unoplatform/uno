@@ -1,4 +1,6 @@
 ﻿#if !NET461
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,10 +37,10 @@ namespace Windows.UI.Xaml.Controls
 
 #pragma warning disable 67 // Unused member
 		[NotImplemented]
-		public event EventHandler<object> HorizontalSnapPointsChanged;
+		public event EventHandler<object>? HorizontalSnapPointsChanged;
 
 		[NotImplemented]
-		public event EventHandler<object> VerticalSnapPointsChanged;
+		public event EventHandler<object>? VerticalSnapPointsChanged;
 #pragma warning restore 67 // Unused member
 
 
@@ -80,6 +82,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
+				if (XamlParent == null)
+				{
+					return default;
+				}
+
 				if (ScrollOrientation == Orientation.Vertical)
 				{
 					return XamlParent.ScrollViewer.VerticalSnapPointsType;
@@ -96,6 +103,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
+				if (XamlParent == null)
+				{
+					return default;
+				}
+
 				if (ScrollOrientation == Orientation.Vertical)
 				{
 					return XamlParent.ScrollViewer.VerticalSnapPointsAlignment;
@@ -117,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(OrientationProperty, value); }
 		}
 
-		public static DependencyProperty OrientationProperty { get ; } =
+		public static DependencyProperty OrientationProperty { get; } =
 			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(VirtualizingPanelLayout), new FrameworkPropertyMetadata(Orientation.Vertical, (o, e) => ((VirtualizingPanelLayout)o).OnOrientationChanged((Orientation)e.NewValue)));
 
 		/// <summary>
@@ -127,28 +139,28 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				if (XamlParent == null)
+				var stretchOwner =
+#if !__IOS__ && !__ANDROID__
+					IsInsidePopup ? (FrameworkElement)OwnerPanel :
+#endif
+					XamlParent;
+				if (stretchOwner == null)
 				{
 					return true;
 				}
 
-				if (IsInsidePopup)
-				{
-					return false;
-				}
-
 				if (ScrollOrientation == Orientation.Vertical)
 				{
-					return XamlParent.HorizontalAlignment == HorizontalAlignment.Stretch;
+					return stretchOwner.HorizontalAlignment == HorizontalAlignment.Stretch;
 				}
 				else
 				{
-					return XamlParent.VerticalAlignment == VerticalAlignment.Stretch;
+					return stretchOwner.VerticalAlignment == VerticalAlignment.Stretch;
 				}
 			}
 		}
 
-		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
+		public IReadOnlyList<float>? GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{
 			if (orientation != ScrollOrientation)
 			{
@@ -169,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var snapPoints = GetIrregularSnapPoints(ScrollOrientation, SnapPointsAlignment);
 
-				if (snapPoints.Count == 0)
+				if (snapPoints == null || snapPoints.Count == 0)
 				{
 					return null;
 				}

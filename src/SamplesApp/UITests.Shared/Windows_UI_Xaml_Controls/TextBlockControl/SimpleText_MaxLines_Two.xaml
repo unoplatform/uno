@@ -14,6 +14,9 @@
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
-	<TextBlock Text="This is a very very very very long text that should *not* wrap even though it goes out of the screen" FontSize="20" MaxLines="2"  />
+	<TextBlock
+		Text="This is a very very very very long text that should *not* wrap even though it goes out of the screen. We're serious, this line of text is very long and it should not wrap at all, even on a tablet"
+		FontSize="25"
+		MaxLines="2"  />
 
 </UserControl>
