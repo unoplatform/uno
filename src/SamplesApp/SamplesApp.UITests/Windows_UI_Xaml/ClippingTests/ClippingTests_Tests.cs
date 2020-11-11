@@ -42,15 +42,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 
 			_app.WaitForElement("RoundedGrid");
 
-			var rect = _app.GetPhysicalRect("RoundedGrid");
-
 			var offset = LogicalToPhysical(5);
-			var innerCornerX = rect.X + offset;
-			var innerCornerY = rect.Y + offset;
+			var rect = _app.GetPhysicalRect("RoundedGrid").DeflateBy(offset);
 
-			using var screenshot = TakeScreenshot("ClippedCorners");
-			ImageAssert.HasColorAt(screenshot, rect.X, rect.Y, Color.Blue);
-			ImageAssert.HasColorAt(screenshot, innerCornerX, innerCornerY, Color.Red);
+			using var screenshot = TakeScreenshot("ClippedCorners", ignoreInSnapshotCompare: true);
+			ImageAssert.HasColorAt(screenshot, rect.CenterX, rect.CenterY, Color.Blue);
+			ImageAssert.HasColorAt(screenshot, rect.X, rect.Y, Color.Red);
 
 		}
 

@@ -48,14 +48,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			_app.WaitForElement(rightControls.Last());
 
+			using var _ = new AssertionScope();
+
 			for (var i = 0; i < leftControls.Length; i++)
 			{
-				var left = leftControls[i].FirstResult().Rect;
-				var right = rightControls[i].FirstResult().Rect;
+				var left = _app.GetLogicalRect(leftControls[i]);
+				var right = _app.GetLogicalRect(rightControls[i]);
 
-				left.Width.Should().Be(right.Width, "Width");
-				left.Height.Should().Be(right.Height, "Height");
-				left.Y.Should().Be(right.Y, "Y position");
+				using var __ = new AssertionScope("ctl" + i);
+
+				const float tolerance = 1f;
+				left.Width.Should().BeApproximately(right.Width, tolerance, "Width");
+				left.Height.Should().BeApproximately(right.Height, tolerance, "Height");
+				left.Y.Should().BeApproximately(right.Y, tolerance, "Y position");
 			}
 		}
 
@@ -252,7 +257,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 						x: textRect.Right,
 						y: sampleRect.Y,
 						width: sampleRect.Right - textRect.Right,
-						height: sampleRect.Height);
+						height: sampleRect.Height)
+						.DeflateBy(1f);
 
 					ImageAssert.AreEqual(sampleScreenshot, rect1, afterScreenshot, rect1);
 				}
@@ -264,7 +270,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 						x: textRect.X,
 						y: textRect.Bottom,
 						width: textRect.Width,
-						height: sampleRect.Height - textRect.Bottom);
+						height: sampleRect.Height - textRect.Bottom)
+						.DeflateBy(1f);
 
 					ImageAssert.AreEqual(sampleScreenshot, rect2, afterScreenshot, rect2);
 				}

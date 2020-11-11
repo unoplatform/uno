@@ -9,7 +9,7 @@
 	mc:Ignorable="d xamarin"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid>
+	<Grid MaxWidth="750" HorizontalAlignment="Left"> <!-- Max Width to force compact mode -->
 		<NavigationView Loaded="NavigationView_Loaded"
 						Margin="0,12,0,0"
 						SelectionChanged="NavigationView_SelectionChanged"

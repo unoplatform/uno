@@ -65,10 +65,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			try
 			{
-				using var firstScreenShot = TakeScreenshot("FirstOrientation");
+				var firstScreenShot = TakeScreenshot("FirstOrientation");
 
-				var firstCommandBarRect = _app.GetPhysicalRect("TheCommandBar");
-				var firstYellowBorderRect = _app.GetPhysicalRect("TheBorder");
+				var firstCommandBarRect = _app.GetRect("TheCommandBar");
+				var firstYellowBorderRect = _app.GetRect("TheBorder");
 				firstCommandBarRect.Bottom.Should().Be(firstYellowBorderRect.Y);
 
 				var firstCommandBarPhysicalRect = ToPhysicalRect(firstCommandBarRect);
@@ -84,10 +84,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 				await ToggleOrientation();
 
-				using var secondScreenShot = TakeScreenshot("SecondOrientation");
+				var secondScreenShot = TakeScreenshot("SecondOrientation");
 
-				var secondCommandBarRect = _app.GetPhysicalRect("TheCommandBar");
-				var secondYellowBorderRect = _app.GetPhysicalRect("TheBorder");
+				var secondCommandBarRect = _app.GetRect("TheCommandBar");
+				var secondYellowBorderRect = _app.GetRect("TheBorder");
 				secondCommandBarRect.Bottom.Should().Be(secondYellowBorderRect.Y);
 
 				var secondCommandBarPhysicalRect = ToPhysicalRect(secondCommandBarRect);
@@ -97,10 +97,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 				await ToggleOrientation();
 
-				using var thirdScreenShot = TakeScreenshot("thirdOrientation");
+				var thirdScreenShot = TakeScreenshot("thirdOrientation");
 
-				var thirdCommandBarRect = _app.GetPhysicalRect("TheCommandBar");
-				var thirdYellowBorderRect = _app.GetPhysicalRect("TheBorder");
+				var thirdCommandBarRect = _app.GetRect("TheCommandBar");
+				var thirdYellowBorderRect = _app.GetRect("TheBorder");
 				thirdCommandBarRect.Bottom.Should().Be(thirdYellowBorderRect.Y);
 
 				var thirdCommandBarPhysicalRect = ToPhysicalRect(thirdCommandBarRect);
@@ -195,11 +195,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			_app.WaitForElement("Page2CommandBar");
 
-			using var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
+			var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 
 			_app.Wait(TimeSpan.FromMilliseconds(500));
 
-			using var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
+			var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
 
 			ImageAssert.AreEqual(initial, final);
 		}

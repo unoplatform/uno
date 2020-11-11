@@ -35,8 +35,8 @@ namespace SamplesApp.UITests.Toolkit
 			// Take ScreenShot of with elevation
 			using var screenshot_WithElevation = TakeScreenshot("Elevation - With Elevation");
 
-			var img1 = screenshot_NoElevation.GetBitmap();
-			var img2 = screenshot_WithElevation.GetBitmap();
+			using var img1 = screenshot_NoElevation.GetBitmap();
+			using var img2 = screenshot_WithElevation.GetBitmap();
 
 			float diffPercentage = 0;
 			float diff = 0;

@@ -182,9 +182,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			using var bmp = TakeScreenshot("Source set");
 
-			var expectedRect = _app.GetPhysicalRect("refImage");
+			var borderThickness = LogicalToPhysical(3);
 
-			var lateRect = _app.GetPhysicalRect("lateImage");
+			var expectedRect = _app.GetPhysicalRect("refImage").DeflateBy(borderThickness);
+			var lateRect = _app.GetPhysicalRect("lateImage").DeflateBy(borderThickness);
 
 			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 20);
 		}
