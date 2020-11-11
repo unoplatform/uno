@@ -406,7 +406,9 @@ namespace Windows.UI.Xaml.Controls
 			Grid.SetColumn(_secondPickerSpacing, secondSeparatorColumnIndex);
 
 			// Hide first separator if it is the first column of the grid
-			if (firstSeparatorColumnIndex == 0)
+			// or if it is the pre-last column of the grid (before the second separator column)
+			if (firstSeparatorColumnIndex == 0 ||
+				firstSeparatorColumnIndex == _flyoutGrid.ColumnDefinitions.Count - 2)
 			{
 				_firstPickerSpacing.Visibility = Visibility.Collapsed;
 			}
