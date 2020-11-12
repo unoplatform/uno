@@ -213,5 +213,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 
 			ImageAssert.HasColorAt(_result, x, y, color ?? Color.White, tolerance: 25);
 		}
+
+		[TearDown]
+		public void TearDown()
+		{
+			_result?.Dispose();
+			_result = null;
+		}
 	}
 }

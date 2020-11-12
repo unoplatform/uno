@@ -121,10 +121,12 @@ namespace Uno.UI.Toolkit
 
 					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {color.ToCssString()}";
 					uiElement.SetStyle("box-shadow", str);
+					uiElement.SetCssClasses("noclip");
 				}
 				else
 				{
 					uiElement.ResetStyle("box-shadow");
+					uiElement.UnsetCssClasses("noclip");
 				}
 			}
 #elif NETFX_CORE

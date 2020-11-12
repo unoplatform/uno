@@ -9,15 +9,17 @@
 	mc:Ignorable="d xamarin"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid>
+	<Grid MaxWidth="850" BorderBrush="LightGray" BorderThickness="3"> <!-- Max Width to force compact mode -->
 		<NavigationView Loaded="NavigationView_Loaded"
 						Margin="0,12,0,0"
+						HorizontalAlignment="Stretch" 
 						SelectionChanged="NavigationView_SelectionChanged"
 						ItemInvoked="NvSample_ItemInvoked"
 						xamarin:BackRequested="NvSample_BackRequested"
 						x:Name="nvSample"
 						IsSettingsVisible="true"
 						IsTabStop="False"
+						CompactModeThresholdWidth="900"
 						Windows10version1803:IsBackButtonVisible="Visible"
 						Windows10version1803:PaneTitle="This the pane title"
 						Header="This is header text.">

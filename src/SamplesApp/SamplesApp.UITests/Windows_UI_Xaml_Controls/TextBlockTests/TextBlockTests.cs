@@ -48,14 +48,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			_app.WaitForElement(rightControls.Last());
 
+			using var _ = new AssertionScope();
+
 			for (var i = 0; i < leftControls.Length; i++)
 			{
-				var left = leftControls[i].FirstResult().Rect;
-				var right = rightControls[i].FirstResult().Rect;
+				var left = _app.GetLogicalRect(leftControls[i]);
+				var right = _app.GetLogicalRect(rightControls[i]);
 
-				left.Width.Should().Be(right.Width, "Width");
-				left.Height.Should().Be(right.Height, "Height");
-				left.Y.Should().Be(right.Y, "Y position");
+				using var __ = new AssertionScope("ctl" + i);
+
+				const float tolerance = 1f;
+				left.Width.Should().BeApproximately(right.Width, tolerance, "Width");
+				left.Height.Should().BeApproximately(right.Height, tolerance, "Height");
+				left.Y.Should().BeApproximately(right.Y, tolerance, "Y position");
 			}
 		}
 
@@ -67,13 +72,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			_app.WaitForText("FunnyTextBlock", "Look at me now");
 
-			var blueBefore = TakeScreenshot("Before - blue");
+			using var blueBefore = TakeScreenshot("Before - blue", ignoreInSnapshotCompare: true);
 
 			_app.FastTap("ChangeTextBlockButton");
 
-			var blackBefore = TakeScreenshot("Before - black");
+			using var blackBefore = TakeScreenshot("Before - black");
 
-			var textRect = _app.GetRect("FunnyTextBlock");
+			var textRect = _app.GetPhysicalRect("FunnyTextBlock");
 
 			ImageAssert.AreNotEqual(blueBefore, blackBefore, textRect);
 
@@ -85,7 +90,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			_app.WaitForElement("FunnyTextBlock");
 
-			var blueAfter = TakeScreenshot("After - blue");
+			using var blueAfter = TakeScreenshot("After - blue");
 
 			ImageAssert.AreEqual(blueBefore, blueAfter, textRect);
 		}
@@ -99,19 +104,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			var text01 = _app.Marked("text01");
 			var text02 = _app.Marked("text02");
 
-			var before = TakeScreenshot("Before");
+			using var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
 
 			text01.SetDependencyPropertyValue("TextDecorations", "1"); // Underline
 			text02.SetDependencyPropertyValue("TextDecorations", "2"); // Strikethrough
 
-			var after = TakeScreenshot("Updated");
+			using var after = TakeScreenshot("Updated");
 
 			ImageAssert.AreNotEqual(before, after);
 
 			text01.SetDependencyPropertyValue("TextDecorations", "0"); // None
 			text02.SetDependencyPropertyValue("TextDecorations", "0"); // None
 
-			var restored = TakeScreenshot("Restored");
+			using var restored = TakeScreenshot("Restored");
 
 			ImageAssert.AreEqual(before, restored);
 		}
@@ -125,17 +130,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			var testBlock = _app.Marked("testBlock");
 
 			testBlock.SetDependencyPropertyValue("FontWeight", "Thin");
-			var rectBefore = _app.GetRect("testBlock");
+			var rectBefore = _app.GetLogicalRect("testBlock");
 			var widthBefore = rectBefore.Width;
 			var heightBefore = rectBefore.Height;
 
 			testBlock.SetDependencyPropertyValue("FontWeight", "Heavy");
-			var rectAfter = _app.GetRect("testBlock");
+			var rectAfter = _app.GetLogicalRect("testBlock");
 			var widthAfter = rectAfter.Width;
 			var heightAfter = rectAfter.Height;
 
-			Assert.IsTrue(widthBefore < widthAfter);
-			Assert.IsTrue(heightBefore == heightAfter);
+			using var _ = new AssertionScope();
+			widthBefore.Should().BeLessThan(widthAfter);
+			heightBefore.Should().Be(heightAfter);
 		}
 
 		[Test]
@@ -146,16 +152,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			var textColor = _app.Marked("textColor");
 
-			var rectBefore = _app.GetRect("textResult");
-			var beforeColorChanged = TakeScreenshot("beforeColor");
+			var rect = _app.GetPhysicalRect("textResult");
+			var xCheck = rect.CenterX;
+			var yCheck = rect.CenterY;
+
+			using var beforeColorChanged = TakeScreenshot("beforeColor", ignoreInSnapshotCompare: true);
+			ImageAssert.HasColorAt(beforeColorChanged, xCheck, yCheck, Color.Red);
 
 			textColor.SetDependencyPropertyValue("Text", "Blue");
 
-			var afterColorChanged = TakeScreenshot("afterColor");
+			using var afterColorChanged = TakeScreenshot("afterColor");
+
 			ImageAssert.AreNotEqual(afterColorChanged, beforeColorChanged);
 
-			var scale = (float)GetDisplayScreenScaling();
-			ImageAssert.HasColorAt(afterColorChanged, (rectBefore.X + 10) * scale, (rectBefore.Y + 10) * scale, Color.Blue);
+			ImageAssert.HasColorAt(afterColorChanged, xCheck, yCheck, Color.Blue);
 		}
 
 		[Test]
@@ -165,14 +175,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.SimpleText_MaxLines_Different_Font_Size");
 			var maxLineContainer = _app.Marked("container3");
 
-			var rectBefore = _app.GetRect("container3");
+			var rectBefore = _app.GetLogicalRect("container3");
 			var heightBefore = rectBefore.Height;
 
 			maxLineContainer.SetDependencyPropertyValue("MaxLines", "2");
-			var rectAfter = _app.GetRect("container3");
+			var rectAfter = _app.GetLogicalRect("container3");
 			var heightAfter = rectAfter.Height;
 
-			Assert.IsTrue(heightAfter > heightBefore);
+			heightAfter.Should().BeGreaterThan(heightBefore);
 		}
 
 		[Test]
@@ -183,14 +193,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			var maxLineContainer = _app.Marked("container3");
 			maxLineContainer.SetDependencyPropertyValue("TextWrapping", "NoWrap");
 
-			var rectBefore = _app.GetRect("container3");
+			var rectBefore = _app.GetLogicalRect("container3");
 			var heightBefore = rectBefore.Height;
 
 			maxLineContainer.SetDependencyPropertyValue("MaxLines", "2");
-			var rectAfter = _app.GetRect("container3");
+			var rectAfter = _app.GetLogicalRect("container3");
 			var heightAfter = rectAfter.Height;
 
-			Assert.IsTrue(heightAfter == heightBefore);
+			heightAfter.Should().Be(heightBefore);
 		}
 
 		[Test]
@@ -218,7 +228,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			// +----+-----------------------+--------------+
 
 			// (1)
-			var sampleScreenshot = this.TakeScreenshot("fullSample", ignoreInSnapshotCompare: true);
+			using var sampleScreenshot = this.TakeScreenshot("fullSample", ignoreInSnapshotCompare: true);
 			var sampleRect = _app.GetPhysicalRect("sampleRootPanel");
 
 			using var _ = new AssertionScope();
@@ -238,7 +248,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 				_app.Marked(textControl).SetDependencyPropertyValue("Opacity", "0");
 
 				// (3)
-				var afterScreenshot = this.TakeScreenshot("sample-" + textControl, ignoreInSnapshotCompare: true);
+				using var afterScreenshot = this.TakeScreenshot("sample-" + textControl, ignoreInSnapshotCompare: true);
 
 				// (4)
 				using (var s = new AssertionScope("Right zone"))
@@ -247,7 +257,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 						x: textRect.Right,
 						y: sampleRect.Y,
 						width: sampleRect.Right - textRect.Right,
-						height: sampleRect.Height);
+						height: sampleRect.Height)
+						.DeflateBy(1f);
 
 					ImageAssert.AreEqual(sampleScreenshot, rect1, afterScreenshot, rect1);
 				}
@@ -259,11 +270,72 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 						x: textRect.X,
 						y: textRect.Bottom,
 						width: textRect.Width,
-						height: sampleRect.Height - textRect.Bottom);
+						height: sampleRect.Height - textRect.Bottom)
+						.DeflateBy(1f);
 
 					ImageAssert.AreEqual(sampleScreenshot, rect2, afterScreenshot, rect2);
 				}
 			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_MaxLines_Changed_On_Stack_Container()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_Multiple_Containers");
+
+			var stackTextBlockName = "stackTextBlock";
+			var maxLineSlider = _app.Marked("slider");
+			
+			_app.WaitForElement(maxLineSlider);
+
+			var numberOfLines = 1;
+			maxLineSlider.SetDependencyPropertyValue("Value", $"{numberOfLines}");
+			var rectBefore = _app.GetLogicalRect(stackTextBlockName);
+			var lineHeight = rectBefore.Height;
+
+			numberOfLines = 3;
+			maxLineSlider.SetDependencyPropertyValue("Value", $"{numberOfLines}");
+
+			var rectAfter = _app.GetLogicalRect(stackTextBlockName);
+			var textBlockHeight = rectAfter.Height;
+
+			var actualNumberOfLines = (int)Math.Ceiling(textBlockHeight / lineHeight);
+			Assert.IsTrue(actualNumberOfLines == numberOfLines,
+				"Results \n" +
+				$"Expected Number of lines: {numberOfLines}. \n" +
+				$"Actual Number of lines:{actualNumberOfLines}. \n" +
+				$"Line height: {lineHeight}. \n");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_MaxLines_Changed_On_Grid_Container()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_Multiple_Containers");
+
+			var gridTextBlockName = "gridTextBlock";
+			var maxLineSlider = _app.Marked("slider");
+
+			_app.WaitForElement(maxLineSlider);
+
+			var numberOfLines = 1;
+			maxLineSlider.SetDependencyPropertyValue("Value", $"{numberOfLines}");
+			var rectBefore = _app.GetLogicalRect(gridTextBlockName);
+			var lineHeight = rectBefore.Height;
+
+			numberOfLines = 2;
+			maxLineSlider.SetDependencyPropertyValue("Value", $"{numberOfLines}");
+
+			var rectAfter = _app.GetLogicalRect(gridTextBlockName);
+			var textBlockHeight = rectAfter.Height;
+
+			var actualNumberOfLines = (int)Math.Ceiling(textBlockHeight / lineHeight);
+			Assert.IsTrue(actualNumberOfLines == numberOfLines,
+				"Results \n" +
+				$"Expected Number of lines: {numberOfLines}. \n" +
+				$"Actual Number of lines:{actualNumberOfLines}. \n" +
+				$"Line height: {lineHeight}. \n");
 		}
 	}
 }
