@@ -184,6 +184,11 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringConvert(Type outputType, string input, ref object output)
 		{
+			if (FastStringToNumericConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
 			if (FastStringToVisibilityConvert(outputType, input, ref output))
 			{
 				return true;
@@ -329,6 +334,240 @@ namespace Uno.UI.DataBinding
 			{
 				output = Enum.Parse(outputType, input, true);
 				return true;
+			}
+
+			return false;
+		}
+
+		private static bool FastStringToNumericConvert(Type outputType, string input, ref object output)
+		{
+			const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.Float | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+
+			if (outputType == typeof(double))
+			{
+				if (input == "") // empty string is NaN when bound in XAML
+				{
+					output = double.NaN;
+					return true;
+				}
+
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-double.
+					// Often use in VisualStateManager to set double values (like opacity) to zero or one...
+					switch (input[0])
+					{
+						case '0':
+							output = 0d;
+							return true;
+						case '1':
+							output = 1d;
+							return true;
+						case '2':
+							output = 2d;
+							return true;
+						case '3':
+							output = 3d;
+							return true;
+						case '4':
+							output = 4d;
+							return true;
+						case '5':
+							output = 5d;
+							return true;
+						case '6':
+							output = 6d;
+							return true;
+						case '7':
+							output = 7d;
+							return true;
+						case '8':
+							output = 8d;
+							return true;
+						case '9':
+							output = 9d;
+							return true;
+					}
+				}
+
+				var trimmed = input.Trim();
+
+				if (trimmed.Equals("nan", StringComparison.InvariantCultureIgnoreCase)
+				    || trimmed.Equals("auto", StringComparison.OrdinalIgnoreCase))
+				{
+					output = double.NaN;
+					return true;
+				}
+
+				if (trimmed.Equals("-infinity", StringComparison.InvariantCultureIgnoreCase))
+				{
+					output = double.NegativeInfinity;
+					return true;
+				}
+
+				if (trimmed.Equals("infinity", StringComparison.InvariantCultureIgnoreCase))
+				{
+					output = double.PositiveInfinity;
+					return true;
+				}
+
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0;
+					return true;
+				}
+
+				if (double.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var d))
+				{
+					output = d;
+					return true;
+				}
+
+				return false;
+			}
+
+			if (outputType == typeof(float))
+			{
+				if (input == "") // empty string is NaN when bound in XAML
+				{
+					output = float.NaN;
+					return true;
+				}
+
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-float
+					switch (input[0])
+					{
+						case '0':
+							output = 0f;
+							return true;
+						case '1':
+							output = 1f;
+							return true;
+						case '2':
+							output = 2f;
+							return true;
+						case '3':
+							output = 3f;
+							return true;
+						case '4':
+							output = 4f;
+							return true;
+						case '5':
+							output = 5f;
+							return true;
+						case '6':
+							output = 6f;
+							return true;
+						case '7':
+							output = 7f;
+							return true;
+						case '8':
+							output = 8f;
+							return true;
+						case '9':
+							output = 9f;
+							return true;
+					}
+				}
+
+				var trimmed = input.Trim();
+
+				if (trimmed.Equals("nan", StringComparison.InvariantCultureIgnoreCase)) // "Auto" is for sizes, which are only of type double
+				{
+					output = float.NaN;
+					return true;
+				}
+
+				if (trimmed.Equals("-infinity", StringComparison.InvariantCultureIgnoreCase))
+				{
+					output = float.NegativeInfinity;
+					return true;
+				}
+
+				if (trimmed.Equals("infinity", StringComparison.InvariantCultureIgnoreCase))
+				{
+					output = float.PositiveInfinity;
+					return true;
+				}
+
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0f;
+					return true;
+				}
+
+				if (float.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var f))
+				{
+					output = f;
+					return true;
+				}
+
+				return false;
+			}
+
+			if (outputType == typeof(int))
+			{
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-float
+					switch (input[0])
+					{
+						case '0':
+							output = 0;
+							return true;
+						case '1':
+							output = 1;
+							return true;
+						case '2':
+							output = 2;
+							return true;
+						case '3':
+							output = 3;
+							return true;
+						case '4':
+							output = 4;
+							return true;
+						case '5':
+							output = 5;
+							return true;
+						case '6':
+							output = 6;
+							return true;
+						case '7':
+							output = 7;
+							return true;
+						case '8':
+							output = 8;
+							return true;
+						case '9':
+							output = 9;
+							return true;
+					}
+				}
+
+				var trimmed = input.Trim();
+
+				if (trimmed.Equals("nan", StringComparison.InvariantCultureIgnoreCase)) // "Auto" is for sizes, which are only of type double
+				{
+					output = float.NaN;
+					return true;
+				}
+
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0;
+					return true;
+				}
+
+				if (int.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var i))
+				{
+					output = i;
+					return true;
+				}
+
+				return false;
 			}
 
 			return false;
