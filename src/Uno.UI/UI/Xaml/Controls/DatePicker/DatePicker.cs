@@ -1,15 +1,13 @@
-using Uno.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.Foundation;
+using Uno.Extensions;
 using Uno.UI;
+using Windows.Foundation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -34,15 +32,15 @@ namespace Windows.UI.Xaml.Controls
 
 		public DateTimeOffset Date
 		{
-			get { return (DateTimeOffset)this.GetValue(DateProperty); }
-			set { this.SetValue(DateProperty, value); }
+			get => (DateTimeOffset)this.GetValue(DateProperty);
+			set => this.SetValue(DateProperty, value);
 		}
 
 		//#18331 If the Date property of DatePickerFlyout is two way binded, the ViewModel receives the control's default value while the ViewModel sends its default value which desynchronizes the values
 		//Set initial value of DatePicker to DateTimeOffset.MinValue to avoid 2 way binding issue where the DatePicker reset Date(DateTimeOffset.MinValue) after the initial binding value.
 		//We assume that this is the view model who will set the initial value just the time to fix #18331
-		public static DependencyProperty DateProperty { get ; } =
-			DependencyProperty.Register("Date", typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(UnsetDateValue,
+		public static DependencyProperty DateProperty { get; } =
+			DependencyProperty.Register(nameof(Date), typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(UnsetDateValue,
 				(s, e) => ((DatePicker)s).OnDatePropertyChanged((DateTimeOffset)e.NewValue, (DateTimeOffset)e.OldValue)));
 
 		private void OnDatePropertyChanged(DateTimeOffset newValue, DateTimeOffset oldValue)
@@ -93,13 +91,13 @@ namespace Windows.UI.Xaml.Controls
 		#region DayVisibleProperty
 		public bool DayVisible
 		{
-			get { return (bool)this.GetValue(DayVisibleProperty); }
-			set { this.SetValue(DayVisibleProperty, value); }
+			get => (bool)this.GetValue(DayVisibleProperty);
+			set => this.SetValue(DayVisibleProperty, value);
 		}
 
-		public static DependencyProperty DayVisibleProperty { get ; } =
-			DependencyProperty.Register("DayVisible", typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
-				propertyChangedCallback: (s, e) => ((DatePicker)s).OnDayVisibleChangedPartial()));
+		public static DependencyProperty DayVisibleProperty { get; } =
+			DependencyProperty.Register(nameof(DayVisible), typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
+				propertyChangedCallback: (s, e) => ((DatePicker)s).OnDayVisibleChanged()));
 
 		partial void OnDayVisibleChangedPartial();
 		#endregion
@@ -107,13 +105,13 @@ namespace Windows.UI.Xaml.Controls
 		#region MonthVisibleProperty
 		public bool MonthVisible
 		{
-			get { return (bool)this.GetValue(MonthVisibleProperty); }
-			set { this.SetValue(MonthVisibleProperty, value); }
+			get => (bool)this.GetValue(MonthVisibleProperty);
+			set => this.SetValue(MonthVisibleProperty, value);
 		}
 
-		public static DependencyProperty MonthVisibleProperty { get ; } =
-			DependencyProperty.Register("MonthVisible", typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
-				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMonthVisibleChangedPartial()));
+		public static DependencyProperty MonthVisibleProperty { get; } =
+			DependencyProperty.Register(nameof(MonthVisible), typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
+				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMonthVisibleChanged()));
 
 		partial void OnMonthVisibleChangedPartial();
 		#endregion
@@ -121,13 +119,13 @@ namespace Windows.UI.Xaml.Controls
 		#region YearVisibleProperty
 		public bool YearVisible
 		{
-			get { return (bool)this.GetValue(YearVisibleProperty); }
-			set { this.SetValue(YearVisibleProperty, value); }
+			get => (bool)this.GetValue(YearVisibleProperty);
+			set => this.SetValue(YearVisibleProperty, value);
 		}
 
-		public static DependencyProperty YearVisibleProperty { get ; } =
-			DependencyProperty.Register("YearVisible", typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
-				propertyChangedCallback: (s, e) => ((DatePicker)s).OnYearVisibleChangedPartial()));
+		public static DependencyProperty YearVisibleProperty { get; } =
+			DependencyProperty.Register(nameof(YearVisible), typeof(bool), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: true,
+				propertyChangedCallback: (s, e) => ((DatePicker)s).OnYearVisibleChanged()));
 
 		partial void OnYearVisibleChangedPartial();
 		#endregion
@@ -135,12 +133,12 @@ namespace Windows.UI.Xaml.Controls
 		#region MaxYearProperty
 		public DateTimeOffset MaxYear
 		{
-			get { return (DateTimeOffset)this.GetValue(MaxYearProperty); }
-			set { this.SetValue(MaxYearProperty, value); }
+			get => (DateTimeOffset)this.GetValue(MaxYearProperty);
+			set => this.SetValue(MaxYearProperty, value);
 		}
 
-		public static DependencyProperty MaxYearProperty { get ; } =
-			DependencyProperty.Register("MaxYear", typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: DateTimeOffset.MaxValue,
+		public static DependencyProperty MaxYearProperty { get; } =
+			DependencyProperty.Register(nameof(MaxYear), typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: DateTimeOffset.MaxValue,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMaxYearChangedPartial()));
 
 		partial void OnMaxYearChangedPartial();
@@ -149,32 +147,63 @@ namespace Windows.UI.Xaml.Controls
 		#region MinYearProperty
 		public DateTimeOffset MinYear
 		{
-			get { return (DateTimeOffset)this.GetValue(MinYearProperty); }
-			set { this.SetValue(MinYearProperty, value); }
+			get => (DateTimeOffset)this.GetValue(MinYearProperty);
+			set => this.SetValue(MinYearProperty, value);
 		}
 
-		public static DependencyProperty MinYearProperty { get ; } =
-			DependencyProperty.Register("MinYear", typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: DateTimeOffset.MinValue,
+		public static DependencyProperty MinYearProperty { get; } =
+			DependencyProperty.Register(nameof(MinYear), typeof(DateTimeOffset), typeof(DatePicker), new FrameworkPropertyMetadata(defaultValue: DateTimeOffset.MinValue,
 				propertyChangedCallback: (s, e) => ((DatePicker)s).OnMinYearChangedPartial()));
 
 		partial void OnMinYearChangedPartial();
 		#endregion
 
+		#region HeaderProperty
+
+		public object Header
+		{
+			get => GetValue(HeaderProperty);
+			set => SetValue(HeaderProperty, value);
+		}
+
+		public static DependencyProperty HeaderProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Header),
+				typeof(object),
+				typeof(DatePicker),
+				new FrameworkPropertyMetadata(null, (s, e) => ((DatePicker)s)?.OnHeaderChanged(e)));
+
+		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e) =>
+			UpdateHeaderVisibility();
+
+		#endregion
+
+		#region HeaderTemplateProperty
+
+		public DataTemplate HeaderTemplate
+		{
+			get => (DataTemplate)GetValue(HeaderTemplateProperty);
+			set => SetValue(HeaderTemplateProperty, value);
+		}
+
+		public static DependencyProperty HeaderTemplateProperty { get; } =
+			DependencyProperty.Register(
+				nameof(HeaderTemplate),
+				typeof(DataTemplate),
+				typeof(DatePicker),
+				new FrameworkPropertyMetadata(null));
+
+		#endregion
+
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
-			get
-			{
-				return (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
-			}
-			set
-			{
-				this.SetValue(LightDismissOverlayModeProperty, value);
-			}
+			get => (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
+			set => this.SetValue(LightDismissOverlayModeProperty, value);
 		}
 
 		public static DependencyProperty LightDismissOverlayModeProperty { get; } =
 		DependencyProperty.Register(
-			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
+			nameof(LightDismissOverlayMode), typeof(LightDismissOverlayMode),
 			typeof(DatePicker),
 			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
 
@@ -183,12 +212,12 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal Brush LightDismissOverlayBackground
 		{
-			get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
-			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
+			get => (Brush)GetValue(LightDismissOverlayBackgroundProperty);
+			set => SetValue(LightDismissOverlayBackgroundProperty, value);
 		}
 
-		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
-			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(DatePicker), new FrameworkPropertyMetadata(null));
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
+			DependencyProperty.Register(nameof(LightDismissOverlayBackground), typeof(Brush), typeof(DatePicker), new FrameworkPropertyMetadata(null));
 
 		#region Template parts
 		public const string DayTextBlockPartName = "DayTextBlock";
@@ -201,13 +230,25 @@ namespace Windows.UI.Xaml.Controls
 		public const string YearColumnPartName = "YearColumn";
 
 		public const string FlyoutButtonPartName = "FlyoutButton";
+
+		private const string FirstPickerSpacingPartName = "FirstPickerSpacing";
+		private const string SecondPickerSpacingPartName = "SecondPickerSpacing";
 		#endregion
 
 		private Button _flyoutButton;
-
+		private ContentPresenter _headerContentPresenter;
+		private Grid _flyoutGrid;
+		private ColumnDefinition _dayColumn;
+		private ColumnDefinition _firstSeparatorColumn;
+		private ColumnDefinition _monthColumn;
+		private ColumnDefinition _secondSeparatorColumn;
+		private ColumnDefinition _yearColumn;
 		private TextBlock _dayTextBlock;
 		private TextBlock _monthTextBlock;
 		private TextBlock _yearTextBlock;
+		private Rectangle _firstPickerSpacing;
+		private Rectangle _secondPickerSpacing;
+
 		private bool _isLoaded;
 		private bool _isViewReady;
 
@@ -217,18 +258,34 @@ namespace Windows.UI.Xaml.Controls
 
 			_flyoutButton = this.GetTemplateChild(FlyoutButtonPartName) as Button;
 
-			var flyoutContent = _flyoutButton?.Content as IFrameworkElement;
+			_flyoutGrid = _flyoutButton?.Content as Grid;
 
-			if (flyoutContent != null)
-			{
-				_dayTextBlock = flyoutContent.GetTemplateChild(DayTextBlockPartName) as TextBlock;
-				_monthTextBlock = flyoutContent.GetTemplateChild(MonthTextBlockPartName) as TextBlock;
-				_yearTextBlock = flyoutContent.GetTemplateChild(YearTextBlockPartName) as TextBlock;
+			if (_flyoutGrid != null)
+			{				
+				_dayColumn = _flyoutGrid.ColumnDefinitions[0];
+				_firstSeparatorColumn = _flyoutGrid.ColumnDefinitions[1];
+				_monthColumn = _flyoutGrid.ColumnDefinitions[2];
+				_secondSeparatorColumn = _flyoutGrid.ColumnDefinitions[3];
+				_yearColumn = _flyoutGrid.ColumnDefinitions[4];
+
+				_dayTextBlock = _flyoutGrid.GetTemplateChild(DayTextBlockPartName) as TextBlock;
+				_monthTextBlock = _flyoutGrid.GetTemplateChild(MonthTextBlockPartName) as TextBlock;
+				_yearTextBlock = _flyoutGrid.GetTemplateChild(YearTextBlockPartName) as TextBlock;
+
+				_firstPickerSpacing = _flyoutGrid.GetTemplateChild(FirstPickerSpacingPartName) as Rectangle;
+				_secondPickerSpacing = _flyoutGrid.GetTemplateChild(SecondPickerSpacingPartName) as Rectangle;
+
 				if (_dayTextBlock != null && _monthTextBlock != null && _yearTextBlock != null)
 				{
-					InitializeTextBlocks(flyoutContent);
+					ReassignColumns();
 					UpdateDisplayedDate();
 				}
+			}
+
+			_headerContentPresenter = GetTemplateChild("HeaderContentPresenter") as ContentPresenter;
+			if (_headerContentPresenter != null)
+			{
+				UpdateHeaderVisibility();
 			}
 
 			_isViewReady = true;
@@ -237,6 +294,7 @@ namespace Windows.UI.Xaml.Controls
 
 			OnApplyTemplatePartial();
 
+			OnDatePartVisibleChanged();
 			OnDayVisibleChangedPartial();
 			OnMonthVisibleChangedPartial();
 			OnYearVisibleChangedPartial();
@@ -257,6 +315,15 @@ namespace Windows.UI.Xaml.Controls
 			if (flyoutContent != null)
 			{
 				SetupFlyoutButton();
+			}
+		}
+
+		private void UpdateHeaderVisibility()
+		{
+			if (_headerContentPresenter != null)
+			{
+				_headerContentPresenter.Visibility =
+					Header != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
 
@@ -294,46 +361,112 @@ namespace Windows.UI.Xaml.Controls
 			this.Binding(propertyName, propertyName, _flyoutButton.Flyout, BindingMode.TwoWay);
 		}
 
-		private void InitializeTextBlocks(IFrameworkElement container)
+		private void ReassignColumns()
 		{
-			if (container.GetTemplateChild(FlyoutButtonGridPartName) is Grid grid)
+			if (_flyoutGrid == null)
 			{
-				/* DatePicker normally contains 3 textblocks meant for day/month/year with a different Grid.Column each.
-				 * We need to shuffle the columns with the order dictated by current culture, eg: yyyy/mm/dd vs mm/dd/yyyy...
-				 * Since we can't just "move" the column, we have to move the textblocks' column, and
-				 * swap the relevant properties (eg: ColumnDefinition.Width) from the old column to the new one. */
-				var items = GetOrderedTextBlocksForCulture(CultureInfo.CurrentCulture);
-				var oldColumnInfos = new[] { DayColumnPartName, MonthColumnPartName, YearColumnPartName }
-					// TODO: add safe-guard when GetTemplateChild(columnName) is implemented
-					.Select(x => GetColumnIndex(grid, x))
-					.Select(x => new { Column = x, grid.ColumnDefinitions.ElementAtOrDefault(x)?.Width })
-					.ToArray();
+				return;
+			}
+			/* DatePicker normally contains 3 textblocks meant for day/month/year with a different Grid.Column each.
+			 * We need to shuffle the columns with the order dictated by current culture, eg: yyyy/mm/dd vs mm/dd/yyyy...
+			 * Since we can't just "move" the column, we have to move the textblocks' column, and
+			 * swap the relevant properties (eg: ColumnDefinition.Width) from the old column to the new one. */
+			var orderedColumns = GetOrderedTextBlocksForCulture(CultureInfo.CurrentCulture);
 
-				// update TextBlocks' Grid.Column and their respective ColumnDefinition.Width
-				foreach (var item in items)
+			_flyoutGrid.ColumnDefinitions.Clear();
+
+			_flyoutGrid.ColumnDefinitions.Add(_firstSeparatorColumn);
+			_flyoutGrid.ColumnDefinitions.Add(_secondSeparatorColumn);
+
+			_firstPickerSpacing.Visibility = Visibility.Visible;
+			_secondPickerSpacing.Visibility = Visibility.Visible;
+
+			// Insert columns into the appropriate spaces in between separators
+			int missingColumns = 0;
+			for (var columnIndex = 0; columnIndex < orderedColumns.Length; columnIndex++)
+			{
+				var column = orderedColumns[columnIndex];
+
+				// Check if this column should be displayed based on the TextBlock visibility
+				if (column.Item.Visibility == Visibility.Visible)
 				{
-					if (grid.ColumnDefinitions.ElementAtOrDefault(oldColumnInfos[item.NewIndex].Column) is ColumnDefinition definition &&
-						oldColumnInfos[item.OldIndex].Width.HasValue)
-					{
-						definition.Width = oldColumnInfos[item.OldIndex].Width.Value;
-					}
-					Grid.SetColumn(item.Item, oldColumnInfos[item.NewIndex].Column);
+					var targetPosition = columnIndex * 2 - missingColumns; // Multiply by 2 to adjust for separators
+					_flyoutGrid.ColumnDefinitions.Insert(targetPosition, column.ColumnDefinition);
+					Grid.SetColumn(column.Item, targetPosition);
 				}
+				else
+				{
+					missingColumns++;
+				}
+			}
+
+			var firstSeparatorColumnIndex = _flyoutGrid.ColumnDefinitions.IndexOf(_firstSeparatorColumn);
+			Grid.SetColumn(_firstPickerSpacing, firstSeparatorColumnIndex);
+			var secondSeparatorColumnIndex = _flyoutGrid.ColumnDefinitions.IndexOf(_secondSeparatorColumn);
+			Grid.SetColumn(_secondPickerSpacing, secondSeparatorColumnIndex);
+
+			// Hide first separator if it is the first column of the grid
+			// or if it is the pre-last column of the grid (before the second separator column)
+			if (firstSeparatorColumnIndex == 0 ||
+				firstSeparatorColumnIndex == _flyoutGrid.ColumnDefinitions.Count - 2)
+			{
+				_firstPickerSpacing.Visibility = Visibility.Collapsed;
+			}
+
+			// Hide second separator if it is right next to first
+			// or if it is the last column of the grid
+			if ((firstSeparatorColumnIndex + 1 == secondSeparatorColumnIndex) ||
+				(secondSeparatorColumnIndex == _flyoutGrid.ColumnDefinitions.Count - 1))
+			{
+				_secondPickerSpacing.Visibility = Visibility.Collapsed;
 			}
 		}
 
-		private (TextBlock Item, int OldIndex, int NewIndex)[] GetOrderedTextBlocksForCulture(CultureInfo culture)
+		private void OnDayVisibleChanged()
+		{
+			OnDatePartVisibleChanged();
+			OnDayVisibleChangedPartial();
+		}
+
+		private void OnMonthVisibleChanged()
+		{
+			OnDatePartVisibleChanged();
+			OnMonthVisibleChangedPartial();
+		}
+
+		private void OnYearVisibleChanged()
+		{
+			OnDatePartVisibleChanged();
+			OnYearVisibleChangedPartial();
+		}
+
+		private void OnDatePartVisibleChanged()
+		{
+			if (_flyoutGrid == null)
+			{
+				// Template not applied yet
+				return;
+			}
+
+			_dayTextBlock.Visibility = DayVisible ? Visibility.Visible : Visibility.Collapsed;
+			_monthTextBlock.Visibility = MonthVisible ? Visibility.Visible : Visibility.Collapsed;
+			_yearTextBlock.Visibility = YearVisible ? Visibility.Visible : Visibility.Collapsed;
+
+			ReassignColumns();
+		}
+
+		private (TextBlock Item, int NewIndex, ColumnDefinition ColumnDefinition)[] GetOrderedTextBlocksForCulture(CultureInfo culture)
 		{
 			var currentDateFormat = culture.DateTimeFormat.ShortDatePattern;
 
-			return new (int Index, string SortKey, TextBlock Item)[]
+			return new (int Index, string SortKey, TextBlock Item, ColumnDefinition ColumnDefinition)[]
 				{
-					(0, "d", _dayTextBlock),
-					(1, "m", _monthTextBlock),
-					(2, "y", _yearTextBlock),
+					(0, "d", _dayTextBlock, _dayColumn),
+					(1, "m", _monthTextBlock, _monthColumn),
+					(2, "y", _yearTextBlock, _yearColumn),
 				}
 				.OrderBy(x => currentDateFormat.IndexOf(x.SortKey, StringComparison.InvariantCultureIgnoreCase))
-				.Select((x, i) => (x.Item, x.Index, i))
+				.Select((x, i) => (x.Item, i, x.ColumnDefinition))
 				.ToArray();
 		}
 
