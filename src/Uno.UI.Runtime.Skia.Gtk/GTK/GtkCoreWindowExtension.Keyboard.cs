@@ -227,7 +227,13 @@ namespace Uno.UI.Runtime.Skia
 				Gdk.Key.KP_7 => VirtualKey.NumberPad7,
 				Gdk.Key.KP_8 => VirtualKey.NumberPad8,
 				Gdk.Key.KP_9 => VirtualKey.NumberPad9,
+
+				Gdk.Key.plus => VirtualKey.Add,
+				Gdk.Key.minus => VirtualKey.Subtract,
 				Gdk.Key.multiply => VirtualKey.Multiply,
+				Gdk.Key.slash => VirtualKey.Divide,
+
+				Gdk.Key.KP_Multiply => VirtualKey.Multiply,
 				Gdk.Key.KP_Add => VirtualKey.Add,
 				Gdk.Key.KP_Separator => VirtualKey.Separator,
 				Gdk.Key.KP_Subtract => VirtualKey.Subtract,
