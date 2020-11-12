@@ -38,6 +38,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly ProjectInstance _projectInstance;
 		private readonly string _configuration;
 		private readonly bool _isDebug;
+		private readonly string _projectDirectory;
+		private readonly string _projectFullPath;
 		private readonly bool _outputSourceComments = true;
 
 		/// <summary>
@@ -66,18 +68,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			"Generic.xaml",
 			"Generic.Native.xaml",
 		};
-		private const string WinUIThemeResourcePathSuffix = "/themeresources.xaml";
-		private const string WinUICompactPathSuffix = "/DensityStyles/Compact.xaml";
-
-		/// <summary>
-		/// ResourceDictionaries that aren't counted as default system resources (eg WinUI Fluent resources)
-		/// </summary>
-		private static readonly string[] _nonSystemResources = new[]
-		{
-			WinUIThemeResourcePathSuffix,
-			WinUICompactPathSuffix,
-			"DensityStyles/CompactDatePickerTimePickerFlyout.xaml",
-		};
+		private const string WinUIThemeResourcePathSuffix = "themeresources.xaml";
+		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
 
 #pragma warning disable 649 // Unused member
 		private readonly bool _forceGeneration;
@@ -113,6 +105,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var xamlItems = msbProject.GetItems("Page")
 				.Concat(msbProject.GetItems("ApplicationDefinition"));
+
+			_projectFullPath = msbProject.GetProperty("MSBuildProjectFullPath")?.EvaluatedValue;
+			_projectDirectory = Path.GetDirectoryName(_projectFullPath);
 
 			_xamlSourceFiles = xamlItems.Select(d => d.EvaluatedInclude)
 				.ToArray();
@@ -202,12 +197,38 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private string GetSourceLink(ProjectItemInstance projectItemInstance)
 		{
-			if (projectItemInstance.HasMetadata("Link"))
+			var link = projectItemInstance.GetMetadataValue("Link");
+			var definingProjectFullPath = projectItemInstance.GetMetadataValue("DefiningProjectFullPath");
+			var fullPath = projectItemInstance.GetMetadataValue("FullPath");
+
+			// Reproduce the logic from https://github.com/dotnet/msbuild/blob/e70a3159d64f9ed6ec3b60253ef863fa883a99b1/src/Tasks/AssignLinkMetadata.cs
+			if (link.IsNullOrEmpty())
 			{
-				return projectItemInstance.GetMetadataValue("Link");
+				if (definingProjectFullPath.IsNullOrEmpty())
+				{
+					// Both Uno.SourceGeneration uses relative paths and Roslyn Generators provide
+					// full paths. Dependents need specific portions so adjust the paths here for now.
+					// For the case of Roslyn generators, DefiningProjectFullPath is not populated on purpose
+					// so that we can adjust paths properly.
+					if (link.IsNullOrEmpty())
+					{
+						return Path.IsPathRooted(projectItemInstance.EvaluatedInclude)
+							? projectItemInstance.EvaluatedInclude.TrimStart(_projectDirectory).TrimStart(Path.DirectorySeparatorChar)
+							: projectItemInstance.EvaluatedInclude;
+					}
+				}
+				else
+				{
+					var definingProjectDirectory = Path.GetDirectoryName(definingProjectFullPath) + Path.DirectorySeparatorChar;
+
+					if (fullPath.StartsWith(definingProjectDirectory, StringComparison.OrdinalIgnoreCase))
+					{
+						link = fullPath.Substring(definingProjectDirectory.Length);
+					}
+				}
 			}
 
-			return projectItemInstance.EvaluatedInclude;
+			return link;
 		}
 
 		public KeyValuePair<string, string>[] Generate()
@@ -549,7 +570,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								if (IsUnoAssembly && _xamlSourceFiles.Any())
 								{
 									// Build master dictionary
-									foreach (var dictProperty in map.GetAllDictionaryProperties(_baseResourceDependencies, _nonSystemResources))
+									foreach (var dictProperty in map.GetAllDictionaryProperties(_baseResourceDependencies))
 									{
 										writer.AppendLineInvariant("MasterDictionary.MergedDictionaries.Add({0});", dictProperty);
 									}
@@ -563,7 +584,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						using (writer.BlockInvariant("if(!_stylesRegistered)"))
 						{
 							writer.AppendLineInvariant("_stylesRegistered = true;");
-							foreach (var file in files.Where(f => IsIncludedResource(f, map)).Select(f => f.UniqueID).Distinct())
+							foreach (var file in files.Select(f => f.UniqueID).Distinct())
 							{
 								writer.AppendLineInvariant("RegisterDefaultStyles_{0}();", file);
 							}
@@ -583,17 +604,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								foreach (var file in files.Where(IsResourceDictionary))
 								{
 									var url = "{0}/{1}".InvariantCultureFormat(_metadataHelper.AssemblyName, map.GetSourceLink(file));
-									RegisterForFile(file, url);
+									RegisterForXamlFile(file, url);
 								}
 							}
-							else if (files.Any()) // The NETSTD reference assembly contains no Xaml files
+							else if (files.Any() && IsUnoFluentAssembly)
 							{
 								// For Uno assembly, we expose WinUI resources using same uri as on Windows
-								RegisterForFile(files.FirstOrDefault(f => map.GetSourceLink(f).EndsWith(WinUIThemeResourcePathSuffix)), XamlFilePathHelper.WinUIThemeResourceURL);
-								RegisterForFile(files.FirstOrDefault(f => map.GetSourceLink(f).EndsWith(WinUICompactPathSuffix)), XamlFilePathHelper.WinUICompactURL);
+								RegisterForFile(WinUIThemeResourcePathSuffix, XamlFilePathHelper.WinUIThemeResourceURL);
+								RegisterForFile(WinUICompactPathSuffix, XamlFilePathHelper.WinUICompactURL);
 							}
 
-							void RegisterForFile(XamlFileDefinition file, string url)
+							void RegisterForFile(string baseFilePath, string url)
+							{
+								var file = files.FirstOrDefault(f =>
+									f.FilePath.Substring(_projectDirectory.Length+1).Equals(baseFilePath, StringComparison.OrdinalIgnoreCase));
+
+								RegisterForXamlFile(file, url);
+							}
+
+							void RegisterForXamlFile(XamlFileDefinition file, string url)
 							{
 								if (file != null)
 								{
@@ -653,11 +682,5 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";
-
-		/// <summary>
-		/// Should this Xaml be included when defining default styles? Outside of Uno this is always true. In Uno, this excludes WinUI Fluent resources (which consumer code accesses via XamlControlsResources)
-		/// </summary>
-		private bool IsIncludedResource(XamlFileDefinition xamlFileDefinition, XamlGlobalStaticResourcesMap map) => !IsUnoAssembly
-			|| _nonSystemResources.None(s => map.GetSourceLink(xamlFileDefinition).EndsWith(s));
 	}
 }
