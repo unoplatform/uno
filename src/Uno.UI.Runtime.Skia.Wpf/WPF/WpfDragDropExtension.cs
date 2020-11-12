@@ -26,7 +26,7 @@ using Window = System.Windows.Window;
 
 namespace Uno.UI.Skia.Platform
 {
-	public class WpfDragDropExtension : IDragDropExtension
+	internal class WpfDragDropExtension : IDragDropExtension
 	{
 		private readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 		private readonly DragDropManager _manager;

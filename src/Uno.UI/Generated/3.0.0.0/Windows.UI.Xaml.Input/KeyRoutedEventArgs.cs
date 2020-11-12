@@ -9,16 +9,6 @@ namespace Windows.UI.Xaml.Input
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property Key
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Core.CorePhysicalKeyStatus KeyStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus KeyRoutedEventArgs.KeyStatus is not implemented in Uno.");
-			}
-		}
-		#endif
 		// Skipping already declared property OriginalKey
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
