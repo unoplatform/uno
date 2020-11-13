@@ -85,10 +85,9 @@ jobs:
         UITEST_TEST_MODE_NAME: Snapshots
         UITEST_SNAPSHOTS_ONLY: true
 
-      # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
-      # Android_10.0:
-      #   ANDROID_SIMULATOR_APILEVEL: 29
-      #   UITEST_TEST_MODE_NAME: Automated
+      Android_11.0:
+        ANDROID_SIMULATOR_APILEVEL: 30
+        UITEST_TEST_MODE_NAME: Automated
 
   steps:
   - checkout: self
