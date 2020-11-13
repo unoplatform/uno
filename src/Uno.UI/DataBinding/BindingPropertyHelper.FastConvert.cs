@@ -647,37 +647,10 @@ namespace Uno.UI.DataBinding
 				{
 					// Fast path for one digit string-to-double.
 					// Often use in VisualStateManager to set double values (like opacity) to zero or one...
-					switch (input[0])
+					var c = input[0];
+					if (c >= '0' && c <= '9')
 					{
-						case '0':
-							output = 0d;
-							return true;
-						case '1':
-							output = 1d;
-							return true;
-						case '2':
-							output = 2d;
-							return true;
-						case '3':
-							output = 3d;
-							return true;
-						case '4':
-							output = 4d;
-							return true;
-						case '5':
-							output = 5d;
-							return true;
-						case '6':
-							output = 6d;
-							return true;
-						case '7':
-							output = 7d;
-							return true;
-						case '8':
-							output = 8d;
-							return true;
-						case '9':
-							output = 9d;
+						output= (double)(c - '0');
 							return true;
 					}
 				}
@@ -734,37 +707,10 @@ namespace Uno.UI.DataBinding
                 if (input.Length == 1)
                 {
                     // Fast path for one digit string-to-float
-                    switch (input[0])
+					var c = input[0];
+					if (c >= '0' && c <= '9')
                     {
-                        case '0':
-                            output = 0f;
-                            return true;
-                        case '1':
-                            output = 1f;
-                            return true;
-                        case '2':
-                            output = 2f;
-                            return true;
-                        case '3':
-                            output = 3f;
-                            return true;
-                        case '4':
-                            output = 4f;
-                            return true;
-                        case '5':
-                            output = 5f;
-                            return true;
-                        case '6':
-                            output = 6f;
-                            return true;
-                        case '7':
-                            output = 7f;
-                            return true;
-                        case '8':
-                            output = 8f;
-                            return true;
-                        case '9':
-                            output = 9f;
+						output = (float)(c - '0');
                             return true;
                     }
                 }
@@ -814,37 +760,10 @@ namespace Uno.UI.DataBinding
 				if (input.Length == 1)
 				{
 					// Fast path for one digit string-to-float
-					switch (input[0])
+					var c = input[0];
+					if (c >= '0' && c <= '9')
 					{
-						case '0':
-							output = 0;
-							return true;
-						case '1':
-							output = 1;
-							return true;
-						case '2':
-							output = 2;
-							return true;
-						case '3':
-							output = 3;
-							return true;
-						case '4':
-							output = 4;
-							return true;
-						case '5':
-							output = 5;
-							return true;
-						case '6':
-							output = 6;
-							return true;
-						case '7':
-							output = 7;
-							return true;
-						case '8':
-							output = 8;
-							return true;
-						case '9':
-							output = 9;
+						output = (int)(c - '0');
 							return true;
 					}
 				}
