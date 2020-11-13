@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 		private UIDatePicker _picker;
 		private NSDate _initialValue;
 		private NSDate _newValue;
-		private readonly UIDatePickerStyle _iOS14DefaultStyle = UIDatePickerStyle.Inline;
+
 		private readonly UIDatePickerStyle _iOSDefaultStyle = UIDatePickerStyle.Wheels;
 
 		partial void InitPartial()
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_picker.PreferredDatePickerStyle = UIDevice.CurrentDevice.CheckSystemVersion(14, 0) && UsePlatformDefaultStyle
-						   ? _iOS14DefaultStyle
+						   ? UIDatePickerStyle.Inline
 						   : _iOSDefaultStyle;
 		}
 	}

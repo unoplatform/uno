@@ -14,7 +14,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TimePickerSelector
 	{
-		private readonly UIDatePickerStyle _iOS14DefaultStyle = UIDatePickerStyle.Inline;
 		private readonly UIDatePickerStyle _iOSDefaultStyle = UIDatePickerStyle.Wheels;
 
 		private UIDatePicker _picker;
@@ -193,7 +192,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_picker.PreferredDatePickerStyle = UIDevice.CurrentDevice.CheckSystemVersion(14, 0) && UsePlatformDefaultStyle
-						   ? _iOS14DefaultStyle
+						   ? UIDatePickerStyle.Inline
 						   : _iOSDefaultStyle;
 		}
 	}
