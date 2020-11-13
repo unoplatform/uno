@@ -650,35 +650,36 @@ namespace Uno.UI.DataBinding
 					var c = input[0];
 					if (c >= '0' && c <= '9')
 					{
-						output= (double)(c - '0');
-							return true;
+						output = (double)(c - '0');
+						return true;
 					}
 				}
 
 				var trimmed = input.Trim();
 
-				if (trimmed.Equals("nan", StringComparison.InvariantCultureIgnoreCase)
-					|| trimmed.Equals("auto", StringComparison.OrdinalIgnoreCase))
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0d;
+					return true;
+				}
+
+				trimmed = trimmed.ToLowerInvariant();
+
+				if (trimmed == "nan" || trimmed == "auto")
 				{
 					output = double.NaN;
 					return true;
 				}
 
-				if (trimmed.Equals("-infinity", StringComparison.InvariantCultureIgnoreCase))
+				if (trimmed == "-infinity")
 				{
 					output = double.NegativeInfinity;
 					return true;
 				}
 
-				if (trimmed.Equals("infinity", StringComparison.InvariantCultureIgnoreCase))
+				if (trimmed == "infinity")
 				{
 					output = double.PositiveInfinity;
-					return true;
-				}
-
-				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
-				{
-					output = 0;
 					return true;
 				}
 
@@ -694,59 +695,61 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToSingleConvert(Type outputType, string input, ref object output)
 		{
-            const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+			const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
 
-            if (outputType == typeof(float))
-            {
-                if (input == "") // empty string is NaN when bound in XAML
-                {
-                    output = float.NaN;
-                    return true;
-                }
+			if (outputType == typeof(float))
+			{
+				if (input == "") // empty string is NaN when bound in XAML
+				{
+					output = float.NaN;
+					return true;
+				}
 
-                if (input.Length == 1)
-                {
-                    // Fast path for one digit string-to-float
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-float
 					var c = input[0];
 					if (c >= '0' && c <= '9')
-                    {
+					{
 						output = (float)(c - '0');
-                            return true;
-                    }
-                }
+						return true;
+					}
+				}
 
-                var trimmed = input.Trim();
+				var trimmed = input.Trim();
 
-                if (trimmed.Equals("nan", StringComparison.InvariantCultureIgnoreCase)) // "Auto" is for sizes, which are only of type double
-                {
-                    output = float.NaN;
-                    return true;
-                }
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0f;
+					return true;
+				}
 
-                if (trimmed.Equals("-infinity", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    output = float.NegativeInfinity;
-                    return true;
-                }
+				trimmed = trimmed.ToLowerInvariant();
 
-                if (trimmed.Equals("infinity", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    output = float.PositiveInfinity;
-                    return true;
-                }
+				if (trimmed == "nan") // "Auto" is for sizes, which are only of type double
+				{
+					output = float.NaN;
+					return true;
+				}
 
-                if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
-                {
-                    output = 0f;
-                    return true;
-                }
+				if (trimmed == "-infinity")
+				{
+					output = float.NegativeInfinity;
+					return true;
+				}
 
-                if (float.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var f))
-                {
-                    output = f;
-                    return true;
-                }
-            }
+				if (trimmed == "infinity")
+				{
+					output = float.PositiveInfinity;
+					return true;
+				}
+
+				if (float.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var f))
+				{
+					output = f;
+					return true;
+				}
+			}
 
 			return false;
 		}
@@ -764,7 +767,7 @@ namespace Uno.UI.DataBinding
 					if (c >= '0' && c <= '9')
 					{
 						output = (int)(c - '0');
-							return true;
+						return true;
 					}
 				}
 
