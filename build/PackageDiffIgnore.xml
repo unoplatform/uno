@@ -3286,6 +3286,9 @@
 		<Member
 			fullName="System.Void Windows.UI.Core.KeyEventArgs..ctor()"
 			reason="Parameter-less ctor does not exist in UWP"/>
+		<Member
+			fullName="System.Void Windows.UI.Composition.CompositionClip..ctor(Windows.UI.Composition.Compositor compositor)"
+			reason="Parameter-less ctor does not exist in UWP"/>
 	  </Methods>
 	</IgnoreSet>
   </IgnoreSets>
