@@ -221,7 +221,7 @@
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
-	
+
 	<Import Project="MixinGeneration.targets" />
 
 </Project>

@@ -139,5 +139,6 @@
 		public const string SR_InfoBarCloseButtonTooltip = "InfoBarCloseButtonTooltip";
 
 		public const string IR_NoiseAsset_256X256_PNG = "NoiseAsset_256X256_PNG";
+
 	}
 }
