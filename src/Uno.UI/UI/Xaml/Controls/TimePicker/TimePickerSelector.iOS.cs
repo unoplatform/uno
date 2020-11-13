@@ -163,6 +163,10 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 		}
 
+		/// <summary>
+		/// Used to set whether or not we want to use the default <see cref="PreferredDatePickerStyle" /> specified for the os Version
+		/// Default value is False
+		/// </summary>
 		public bool UsePlatformDefaultStyle
 		{
 			get => (bool)GetValue(UsePlatformDefaultStyleProperty);

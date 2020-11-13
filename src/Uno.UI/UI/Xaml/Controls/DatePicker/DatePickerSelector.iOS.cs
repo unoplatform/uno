@@ -169,13 +169,16 @@ namespace Windows.UI.Xaml.Controls
 			return date;
 		}
 
+		/// <summary>
+		/// Used to set whether or not we want to use the default <see cref="PreferredDatePickerStyle" /> specified for the os Version
+		/// Default value is False
+		/// </summary>
 		public bool UsePlatformDefaultStyle
 		{
 			get => (bool)GetValue(UsePlatformDefaultStyleProperty);
 			set => SetValue(UsePlatformDefaultStyleProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for UseDefaultStyle. This enables styling, binding, etc...
 		public static DependencyProperty UsePlatformDefaultStyleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(UsePlatformDefaultStyle),
