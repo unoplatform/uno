@@ -162,7 +162,6 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(UsePlatformDefaultStyleProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for UseDefaultStyle. This enables styling, binding, etc...
 		public static DependencyProperty UsePlatformDefaultStyleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(UsePlatformDefaultStyle),
