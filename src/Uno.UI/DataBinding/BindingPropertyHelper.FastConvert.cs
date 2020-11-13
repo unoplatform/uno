@@ -199,22 +199,17 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
-			if (FastStringToSingleConvert(outputType, input, ref output))
-			{
-				return true;
-			}
-
-			if (FastStringToColorConvert(outputType, input, ref output))
-			{
-				return true;
-			}
-
 			if (FastStringToBrushConvert(outputType, input, ref output))
 			{
 				return true;
 			}
 
 			if (FastStringToDoubleConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToSingleConvert(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -230,6 +225,11 @@ namespace Uno.UI.DataBinding
 			}
 
 			if (FastStringToOrientationConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToColorConvert(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -250,6 +250,11 @@ namespace Uno.UI.DataBinding
 			}
 
 			if (FastStringToFontFamilyConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToIntegerConvert(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -628,12 +633,59 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToDoubleConvert(Type outputType, string input, ref object output)
 		{
+			const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+
 			if (outputType == typeof(double))
 			{
-				double result;
-				if (double.TryParse((string)input, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+				if (input == "") // empty string is NaN when bound in XAML
 				{
-					output = result;
+					output = double.NaN;
+					return true;
+				}
+
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-double.
+					// Often use in VisualStateManager to set double values (like opacity) to zero or one...
+					var c = input[0];
+					if (c >= '0' && c <= '9')
+					{
+						output = (double)(c - '0');
+						return true;
+					}
+				}
+
+				var trimmed = input.Trim();
+
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0d;
+					return true;
+				}
+
+				trimmed = trimmed.ToLowerInvariant();
+
+				if (trimmed == "nan" || trimmed == "auto")
+				{
+					output = double.NaN;
+					return true;
+				}
+
+				if (trimmed == "-infinity")
+				{
+					output = double.NegativeInfinity;
+					return true;
+				}
+
+				if (trimmed == "infinity")
+				{
+					output = double.PositiveInfinity;
+					return true;
+				}
+
+				if (double.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var d))
+				{
+					output = d;
 					return true;
 				}
 			}
@@ -643,12 +695,93 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToSingleConvert(Type outputType, string input, ref object output)
 		{
+			const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+
 			if (outputType == typeof(float))
 			{
-				float floatResult;
-				if (float.TryParse((string)input, NumberStyles.Any, CultureInfo.InvariantCulture, out floatResult))
+				if (input == "") // empty string is NaN when bound in XAML
 				{
-					output = floatResult;
+					output = float.NaN;
+					return true;
+				}
+
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-float
+					var c = input[0];
+					if (c >= '0' && c <= '9')
+					{
+						output = (float)(c - '0');
+						return true;
+					}
+				}
+
+				var trimmed = input.Trim();
+
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0f;
+					return true;
+				}
+
+				trimmed = trimmed.ToLowerInvariant();
+
+				if (trimmed == "nan") // "Auto" is for sizes, which are only of type double
+				{
+					output = float.NaN;
+					return true;
+				}
+
+				if (trimmed == "-infinity")
+				{
+					output = float.NegativeInfinity;
+					return true;
+				}
+
+				if (trimmed == "infinity")
+				{
+					output = float.PositiveInfinity;
+					return true;
+				}
+
+				if (float.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var f))
+				{
+					output = f;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static bool FastStringToIntegerConvert(Type outputType, string input, ref object output)
+		{
+			const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+
+			if (outputType == typeof(int))
+			{
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-float
+					var c = input[0];
+					if (c >= '0' && c <= '9')
+					{
+						output = (int)(c - '0');
+						return true;
+					}
+				}
+
+				var trimmed = input.Trim();
+
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0;
+					return true;
+				}
+
+				if (int.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var i))
+				{
+					output = i;
 					return true;
 				}
 			}
