@@ -56,7 +56,7 @@ If you wish to customise the overlay color, add the following to your top-level 
 		Color="Pink" />
 ```
 
-Since **iOS14** the native TimePicker changed the way it's presented. To keep consistency, the previous style (< iOS13) was defined as the default for this Control.
+Since **iOS14** the native `TimePicker` changed the way it's presented. To keep consistency, the previous style (earlier than iOS13) was defined as the default for this Control.
 If you want iOS14 devices to use the brand new looking **Picker** you just need to add the following at your top-level `App.Resources`:
 ```xaml
 <x:Boolean x:Key="TimePickerSelectorUsePlatformDefaultStyle">True</x:Boolean>
