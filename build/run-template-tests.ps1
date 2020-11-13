@@ -16,6 +16,7 @@ function Get-TemplateConfiguration(
     [bool]$wasm = $false,
     [bool]$skiaGtk = $false,
     [bool]$skiaWpf = $false,
+    [bool]$skiaTizen = $false,
     [bool]$wasmVsCode = $false)
 {
     $uwpFlag = '-uwp'
@@ -26,6 +27,7 @@ function Get-TemplateConfiguration(
     $wasmVsCodeFlag = '--vscodeWasm'
     $skiaWpfFlag = '--skia-wpf'
     $skiaGtkFlag = '--skia-gtk'
+    $skiaTizenFlag = '--skia-tizen'
 
     $a = If ($uwp)        { $uwpFlag }        Else { $uwpFlag        + '=false' }
     $b = If ($android)    { $androidFlag }    Else { $androidFlag    + '=false' }
@@ -35,8 +37,9 @@ function Get-TemplateConfiguration(
     $f = If ($wasmVsCode) { $wasmVsCodeFlag } Else { $wasmVsCodeFlag + '=false' }
     $g = If ($skiaWpf)    { $skiaWpfFlag    } Else { $skiaWpfFlag    + '=false' }
     $h = If ($skiaGtk)    { $skiaGtkFlag    } Else { $skiaGtkFlag    + '=false' }
+    $i = If ($skiaTizen)  { $skiaTizenFlag  } Else { $skiaTizenFlag  + '=false' }
 
-    @($a, $b, $c, $d, $e, $f, $g, $h)
+    @($a, $b, $c, $d, $e, $f, $g, $h, $i)
 }
 
 $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
@@ -59,6 +62,7 @@ $templateConfigurations =
     (Get-TemplateConfiguration -wasm 1),
     (Get-TemplateConfiguration -skiaGtk 1),
     (Get-TemplateConfiguration -skiaWpf 1)
+    (Get-TemplateConfiguration -skiaGtk 1)
 )
 
 $configurations =
