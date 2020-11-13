@@ -1,4 +1,4 @@
-#if XAMARIN_IOS
+﻿#if XAMARIN_IOS
 
 using Foundation;
 using System;
@@ -6,6 +6,7 @@ using System.Linq;
 using UIKit;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
 
@@ -19,6 +20,11 @@ namespace Windows.UI.Xaml.Controls
 		private UIDatePicker _picker;
 		private NSDate _initialTime;
 		private NSDate _newDate;
+
+		partial void InitPartial()
+		{
+			ResourceResolver.ApplyResource(this, UsePlatformDefaultStyleProperty, "TimePickerSelectorUsePlatformDefaultStyle", isThemeResourceExtension: false);
+		}
 
 		private protected override void OnLoaded()
 		{

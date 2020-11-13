@@ -7,6 +7,7 @@ using Uno.UI.Extensions;
 using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -17,6 +18,11 @@ namespace Windows.UI.Xaml.Controls
 		private NSDate _newValue;
 		private readonly UIDatePickerStyle _iOS14DefaultStyle = UIDatePickerStyle.Inline;
 		private readonly UIDatePickerStyle _iOSDefaultStyle = UIDatePickerStyle.Wheels;
+
+		partial void InitPartial()
+		{
+			ResourceResolver.ApplyResource(this, UsePlatformDefaultStyleProperty, "DatePickerSelectorUsePlatformDefaultStyle", isThemeResourceExtension: false);
+		}
 
 		private protected override void OnLoaded()
 		{

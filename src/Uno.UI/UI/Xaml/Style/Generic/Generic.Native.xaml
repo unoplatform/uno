@@ -23,6 +23,14 @@
 					xmlns:not_wasm="http://uno.ui/not_wasm"
 					mc:Ignorable="d xamarin ios android skia wasm not_wasm net461 macos">
 
+<!--iOS14 feature flag-->
+	<x:Boolean x:Key="DatePickerUsePlatformDefaultStyle">False</x:Boolean>
+	<x:Boolean x:Key="TimePickerUsePlatformDefaultStyle">False</x:Boolean>
+
+	<ios:StaticResource x:Key="DatePickerSelectorUsePlatformDefaultStyle" ResourceKey="DatePickerUsePlatformDefaultStyle" />
+	<ios:StaticResource x:Key="TimePickerSelectorUsePlatformDefaultStyle" ResourceKey="TimePickerUsePlatformDefaultStyle" />	
+<!--iOS14 feature flag-->
+
 	<!-- Default native Button styles -->
 	<android:Style x:Key="NativeDefaultButton"
 				   TargetType="Button">
