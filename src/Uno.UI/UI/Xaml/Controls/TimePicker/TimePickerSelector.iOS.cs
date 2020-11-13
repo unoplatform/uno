@@ -1,4 +1,4 @@
-﻿#if XAMARIN_IOS
+#if XAMARIN_IOS
 
 using Foundation;
 using System;
@@ -13,6 +13,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TimePickerSelector
 	{
+		private readonly UIDatePickerStyle _iOS14DefaultStyle = UIDatePickerStyle.Inline;
+		private readonly UIDatePickerStyle _iOSDefaultStyle = UIDatePickerStyle.Wheels;
+
 		private UIDatePicker _picker;
 		private NSDate _initialTime;
 		private NSDate _newDate;
@@ -37,10 +40,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 			_picker.Mode = UIDatePickerMode.Time;
 
-			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
-			{
-				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
-			}
+			UpdatePickerStyle();
 
 			_picker.ValueChanged += OnValueChanged;
 			
@@ -61,6 +61,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Initialize()
 		{
+			UpdatePickerStyle();
 			SetPickerClockIdentifier(ClockIdentifier);
 			SetPickerMinuteIncrement(MinuteIncrement);
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
@@ -147,6 +148,37 @@ namespace Windows.UI.Xaml.Controls
 			_picker.ValueChanged -= OnValueChanged;
 
 			base.OnUnloaded();
+		}
+
+		public bool UsePlatformDefaultStyle
+		{
+			get => (bool)GetValue(UsePlatformDefaultStyleProperty);
+			set => SetValue(UsePlatformDefaultStyleProperty, value);
+		}
+
+		// Using a DependencyProperty as the backing store for UseDefaultStyle. This enables styling, binding, etc...
+		public static DependencyProperty UsePlatformDefaultStyleProperty { get; } =
+			DependencyProperty.Register(
+				nameof(UsePlatformDefaultStyle),
+				typeof(bool),
+				typeof(TimePickerSelector),
+				new FrameworkPropertyMetadata(
+				 defaultValue: false,
+				 propertyChangedCallback: (s, e) => ((TimePickerSelector)s)?.OnUseDefaultStyleChanged()
+				));
+
+		private void OnUseDefaultStyleChanged() => UpdatePickerStyle();
+
+		private void UpdatePickerStyle()
+		{
+			if (_picker == null)
+			{
+				return;
+			}
+
+			_picker.PreferredDatePickerStyle = UIDevice.CurrentDevice.CheckSystemVersion(14, 0) && UsePlatformDefaultStyle
+						   ? _iOS14DefaultStyle
+						   : _iOSDefaultStyle;
 		}
 	}
 }

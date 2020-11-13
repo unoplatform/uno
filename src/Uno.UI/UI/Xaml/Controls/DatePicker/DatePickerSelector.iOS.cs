@@ -15,6 +15,8 @@ namespace Windows.UI.Xaml.Controls
 		private UIDatePicker _picker;
 		private NSDate _initialValue;
 		private NSDate _newValue;
+		private readonly UIDatePickerStyle _iOS14DefaultStyle = UIDatePickerStyle.Inline;
+		private readonly UIDatePickerStyle _iOSDefaultStyle = UIDatePickerStyle.Wheels;
 
 		private protected override void OnLoaded()
 		{
@@ -35,10 +37,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.TimeZone = NSTimeZone.LocalTimeZone;
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 
-			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
-			{
-				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
-			}
+			UpdatePickerStyle();
 
 			UpdatePickerValue(Date, animated: false);
 
@@ -162,6 +161,37 @@ namespace Windows.UI.Xaml.Controls
 			);
 
 			return date;
+		}
+
+		public bool UsePlatformDefaultStyle
+		{
+			get => (bool)GetValue(UsePlatformDefaultStyleProperty);
+			set => SetValue(UsePlatformDefaultStyleProperty, value);
+		}
+
+		// Using a DependencyProperty as the backing store for UseDefaultStyle. This enables styling, binding, etc...
+		public static DependencyProperty UsePlatformDefaultStyleProperty { get; } =
+			DependencyProperty.Register(
+				nameof(UsePlatformDefaultStyle),
+				typeof(bool),
+				typeof(DatePickerSelector),
+				new FrameworkPropertyMetadata(
+				 defaultValue:	false,
+				 propertyChangedCallback: (s, e) => ((DatePickerSelector)s)?.OnUseDefaultStyleChanged()
+				));
+
+		private void OnUseDefaultStyleChanged() => UpdatePickerStyle();
+
+		private void UpdatePickerStyle()
+		{
+			if (_picker == null)
+			{
+				return;
+			}
+
+			_picker.PreferredDatePickerStyle = UIDevice.CurrentDevice.CheckSystemVersion(14, 0) && UsePlatformDefaultStyle
+						   ? _iOS14DefaultStyle
+						   : _iOSDefaultStyle;
 		}
 	}
 }
