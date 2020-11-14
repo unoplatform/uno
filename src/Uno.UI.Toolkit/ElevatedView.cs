@@ -73,6 +73,13 @@ namespace Uno.UI.Toolkit
 			_border = GetTemplateChild("PART_Border") as Border;
 			_shadowHost = GetTemplateChild("PART_ShadowHost") as Panel;
 
+#if __IOS__ || __MACOS__
+			if (_border != null)
+			{
+				_border.BoundsPathUpdated += (s, e) => UpdateElevation();
+			}
+#endif
+
 			UpdateElevation();
 		}
 
@@ -109,7 +116,15 @@ namespace Uno.UI.Toolkit
 
 #if !NETFX_CORE
 		public new static DependencyProperty BackgroundProperty { get ; } = DependencyProperty.Register(
-			"Background", typeof(Brush), typeof(ElevatedView), new FrameworkPropertyMetadata(default(Brush), OnChanged));
+			"Background",
+			typeof(Brush),
+			typeof(ElevatedView),
+#if __IOS__ || __MACOS__
+			new FrameworkPropertyMetadata(default(Brush))
+#else
+			new FrameworkPropertyMetadata(default(Brush), OnChanged)
+#endif
+		);
 
 		public new Brush Background
 		{
@@ -118,7 +133,15 @@ namespace Uno.UI.Toolkit
 		}
 
 		public static DependencyProperty CornerRadiusProperty { get ; } = DependencyProperty.Register(
-			"CornerRadius", typeof(CornerRadius), typeof(ElevatedView), new FrameworkPropertyMetadata(default(CornerRadius), OnChanged));
+			"CornerRadius",
+			typeof(CornerRadius),
+			typeof(ElevatedView),
+#if __IOS__ || __MACOS__
+			new FrameworkPropertyMetadata(default(CornerRadius))
+#else
+			new FrameworkPropertyMetadata(default(CornerRadius), OnChanged)
+#endif
+		);
 
 		public CornerRadius CornerRadius
 		{
