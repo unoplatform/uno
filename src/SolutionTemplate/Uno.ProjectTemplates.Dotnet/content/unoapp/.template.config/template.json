@@ -12,7 +12,7 @@
     "Linux",
     "Tizen"
   ],
-  "name": "Cross-Platform App (Uno Platform)",
+  "name": "Cross-Platform App",
   "identity": "Uno.Platform.UnoApp",
   "groupIdentity": "Uno.Platform.Blank",
   "description": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly, Skia/WPF, and Skia/GTK for Linux.",
@@ -169,16 +169,17 @@
     },
     {
       "condition": "skia-wpf",
-      "path": "UnoQuickStart.Skia.WPF\\UnoQuickStart.Skia.WPF.csproj"
+      "path": "UnoQuickStart.Skia.WPF\\UnoQuickStart.Skia.Wpf.csproj"
     },
     {
       "condition": "skia-wpf",
-      "path": "UnoQuickStart.Skia.WPF.Host\\UnoQuickStart.Skia.WPF.Host.csproj"
+      "path": "UnoQuickStart.Skia.WPF.Host\\UnoQuickStart.Skia.Wpf.Host.csproj"
     },
     {
       "condition": "skia-tizen",
       "path": "UnoQuickStart.Skia.Tizen\\UnoQuickStart.Skia.Tizen.csproj"
     }
+
   ],
   "sources": [
     {

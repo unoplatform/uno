@@ -1,10 +1,10 @@
 ﻿{
   "$schema": "http://json.schemastore.org/vs-2017.3.host",
   "name": {
-    "text": "Cross-Platform App (WinUI)",
+    "text": "Cross-Platform App (Prism)"
   },
   "description": {
-    "text": "A project template for creating rich Cross Platform app using WinUI 3",
+    "text": "Solution template for creating a Prism Library enabled Cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly."
   },
   "order": 610,
   "icon": "uno-logo.png",
