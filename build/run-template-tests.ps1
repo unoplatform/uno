@@ -112,7 +112,7 @@ dotnet new unolib-crossruntime -n MyCrossRuntimeLib
 Assert-ExitCodeIsZero
 
 # WinUI - Default
-dotnet new unoapp-winui -n UnoAppWinUI
+dotnet new unoapp-winui -n UnoAppWinUI --winui-desktop=false
 & $msbuild $debug UnoAppWinUI\UnoAppWinUI.sln
 Assert-ExitCodeIsZero
 

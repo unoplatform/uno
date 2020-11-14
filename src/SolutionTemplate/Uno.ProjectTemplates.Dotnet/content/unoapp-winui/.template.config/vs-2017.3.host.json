@@ -17,6 +17,20 @@
   },
   "symbolInfo": [
     {
+      "id": "windowsPublisherName",
+      "name": {
+        "text": "Provides the value to use for the Windows head publisher"
+      },
+      "isVisible": "true"
+    },
+    {
+      "id": "WebAssembly",
+      "name": {
+        "text": "Enables the WebAssembly platform support project"
+      },
+      "isVisible": "true"
+    },
+    {
       "id": "UWP",
       "name": {
         "text": "Add support for UWP"
@@ -43,6 +57,27 @@
         "text": "Add support for macOS"
       },
       "isVisible": "true"
+    },
+    {
+      "id": "skia-wpf",
+      "name": {
+        "text": "Enables the Skia/WPF platform support project"
+      },
+      "isVisible": "true"
+    },
+    {
+      "id": "skia-gtk",
+      "name": {
+        "text": "Enables the Skia/GTK platform support project"
+      },
+      "isVisible": "true"
+    },
+    {
+      "id": "vscodeWasm",
+      "name": {
+        "text": "Adds the Visual Studio Code Debugging support files for WebAssembly"
+      },
+      "isVisible": "false"
     }
   ]
 }
