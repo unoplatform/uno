@@ -212,5 +212,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			// Dismiss the flyout
 			_app.Tap(x => x.Marked("AcceptButton"));
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void TimePicker_Header()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Header");
+
+			var headerContentTextBlock = _app.Marked("TimePickerHeaderContent");
+			_app.WaitForElement(headerContentTextBlock);
+
+			Assert.AreEqual("This is a TimePicker Header", headerContentTextBlock.GetDependencyPropertyValue("Text").ToString());
+		}
 	}
 }

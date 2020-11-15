@@ -24,15 +24,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GradientBrushTests
 
 			_app.WaitForElement(rectangle);
 
-			var screenRect = _app.GetRect(rectangle);
+			var screenRect = _app.GetPhysicalRect(rectangle);
 
-			var before = TakeScreenshot("Before");
+			using var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
 
 			_app.FastTap("ChangeBrushButton");
 
 			_app.WaitForText("StatusTextBlock", "Changed");
 
-			var after = TakeScreenshot("After");
+			using var after = TakeScreenshot("After");
 
 			ImageAssert.AreNotEqual(before, after, screenRect);
 		}

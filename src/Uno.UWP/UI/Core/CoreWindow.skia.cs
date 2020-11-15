@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using Uno.Foundation;
 using Uno.Foundation.Extensibility;
@@ -16,19 +18,27 @@ namespace Windows.UI.Core
 
 	public partial class CoreWindow : ICoreWindowEvents
 	{
-		private ICoreWindowExtension _coreWindowExtension;
+		private ICoreWindowExtension? _coreWindowExtension;
 
-		public event TypedEventHandler<CoreWindow, PointerEventArgs> PointerEntered;
-		public event TypedEventHandler<CoreWindow, PointerEventArgs> PointerExited;
-		public event TypedEventHandler<CoreWindow, PointerEventArgs> PointerMoved;
-		public event TypedEventHandler<CoreWindow, PointerEventArgs> PointerPressed;
-		public event TypedEventHandler<CoreWindow, PointerEventArgs> PointerReleased;
-		public event TypedEventHandler<CoreWindow, PointerEventArgs> PointerWheelChanged;
+		public event TypedEventHandler<CoreWindow, PointerEventArgs>? PointerEntered;
+		public event TypedEventHandler<CoreWindow, PointerEventArgs>? PointerExited;
+		public event TypedEventHandler<CoreWindow, PointerEventArgs>? PointerMoved;
+		public event TypedEventHandler<CoreWindow, PointerEventArgs>? PointerPressed;
+		public event TypedEventHandler<CoreWindow, PointerEventArgs>? PointerReleased;
+		public event TypedEventHandler<CoreWindow, PointerEventArgs>? PointerWheelChanged;
+		public event TypedEventHandler<CoreWindow, KeyEventArgs>? KeyDown;
+		public event TypedEventHandler<CoreWindow, KeyEventArgs>? KeyUp;
 
 		public CoreCursor PointerCursor
 		{
-			get => _coreWindowExtension.PointerCursor ?? new CoreCursor(CoreCursorType.Arrow, 0);
-			set => _coreWindowExtension.PointerCursor = value;
+			get => _coreWindowExtension?.PointerCursor ?? new CoreCursor(CoreCursorType.Arrow, 0);
+			set
+			{
+				if (_coreWindowExtension != null)
+				{
+					_coreWindowExtension.PointerCursor = value;
+				}
+			}
 		}
 
 		partial void InitializePartial()
@@ -40,10 +50,10 @@ namespace Windows.UI.Core
 		}
 
 		public void SetPointerCapture()
-			=> _coreWindowExtension.SetPointerCapture();
+			=> _coreWindowExtension?.SetPointerCapture();
 
 		public void ReleasePointerCapture()
-			=> _coreWindowExtension.ReleasePointerCapture();
+			=> _coreWindowExtension?.ReleasePointerCapture();
 
 		void ICoreWindowEvents.RaisePointerEntered(PointerEventArgs args)
 			=> PointerEntered?.Invoke(this, args);
@@ -56,12 +66,17 @@ namespace Windows.UI.Core
 
 		void ICoreWindowEvents.RaisePointerPressed(PointerEventArgs args)
 			=> PointerPressed?.Invoke(this, args);
-
 		void ICoreWindowEvents.RaisePointerReleased(PointerEventArgs args)
 			=> PointerReleased?.Invoke(this, args);
 
 		void ICoreWindowEvents.RaisePointerWheelChanged(PointerEventArgs args)
 			=> PointerWheelChanged?.Invoke(this, args);
+
+		void ICoreWindowEvents.RaiseKeyUp(KeyEventArgs args)
+			=> KeyUp?.Invoke(this, args);
+
+		void ICoreWindowEvents.RaiseKeyDown(KeyEventArgs args)
+			=> KeyDown?.Invoke(this, args);
 	}
 
 	public interface ICoreWindowEvents
@@ -72,5 +87,7 @@ namespace Windows.UI.Core
 		void RaisePointerPressed(PointerEventArgs args);
 		void RaisePointerReleased(PointerEventArgs args);
 		void RaisePointerWheelChanged(PointerEventArgs args);
+		void RaiseKeyUp(KeyEventArgs args);
+		void RaiseKeyDown(KeyEventArgs args);
 	}
 }

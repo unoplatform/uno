@@ -38,6 +38,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 				Assert.AreEqual(22.0, control.TestText9.FontSize);
 				Assert.AreEqual(3, control.TestText9.MaxLines);
 				Assert.IsInstanceOfType(control.TestText10.DataContext, typeof(TestEntityObject));
+				Assert.AreEqual("Just a simple ... fullname markup extension", control.TestText11.Text);
+				Assert.AreEqual("From a Resource String FullName markup extension", control.TestText12.Text);
+				Assert.AreEqual("String from attached property Fullname markup extension", control.TestText13.Text);
 			}
 			finally
 			{
@@ -47,7 +50,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 	}
 
 	[MarkupExtensionReturnType(ReturnType = typeof(string))]
-	public class SimpleMarkupExt : Windows.UI.Xaml.Markup.MarkupExtension
+	public class SimpleMarkupExtExtension : Windows.UI.Xaml.Markup.MarkupExtension
 	{
 		public string TextValue { get; set; }
 

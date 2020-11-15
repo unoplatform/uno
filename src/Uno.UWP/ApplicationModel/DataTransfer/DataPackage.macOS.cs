@@ -200,30 +200,19 @@ namespace Windows.ApplicationModel.DataTransfer
 				}
 			}
 
-			// See comments at beginning of document for URL handling
-			if (data?.Contains(StandardDataFormats.Uri) ?? false)
+			if (data != null)
 			{
-				var uri = await data.GetUriAsync();
+				var uri = DataPackage.CombineUri(
+					data.Contains(StandardDataFormats.WebLink) ? (await data.GetWebLinkAsync()).ToString() : null,
+					data.Contains(StandardDataFormats.ApplicationLink) ? (await data.GetApplicationLinkAsync()).ToString() : null,
+					data.Contains(StandardDataFormats.Uri) ? (await data.GetUriAsync()).ToString() : null);
 
-				draggingItem = new NSDraggingItem(new NSUrl(uri.ToString()));
-				draggingItem.DraggingFrame = defaultFrameRect; // Must be set
-				items.Add(draggingItem);
-			}
-			else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
-			{
-				var webLink = await data.GetWebLinkAsync();
-
-				draggingItem = new NSDraggingItem(new NSUrl(webLink.ToString()));
-				draggingItem.DraggingFrame = defaultFrameRect; // Must be set
-				items.Add(draggingItem);
-			}
-			else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
-			{
-				var appLink = await data.GetApplicationLinkAsync();
-
-				draggingItem = new NSDraggingItem(new NSUrl(appLink.ToString()));
-				draggingItem.DraggingFrame = defaultFrameRect; // Must be set
-				items.Add(draggingItem);
+				if (string.IsNullOrEmpty(uri) == false)
+				{
+					draggingItem = new NSDraggingItem(new NSUrl(uri));
+					draggingItem.DraggingFrame = defaultFrameRect; // Must be set
+					items.Add(draggingItem);
+				}
 			}
 
 			return items.ToArray();
@@ -267,6 +256,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			var data = content?.GetView();
 			var declaredTypes = new List<string>();
+			string? uri = null;
 
 			/* Note that order is somewhat important here.
 			 *
@@ -298,18 +288,17 @@ namespace Windows.ApplicationModel.DataTransfer
 				declaredTypes.Add(NSPasteboard.NSPasteboardTypeString);
 			}
 
-			// See comments at beginning of document for URL handling
-			if (data?.Contains(StandardDataFormats.Uri) ?? false)
+			if (data != null)
 			{
-				declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
-			}
-			else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
-			{
-				declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
-			}
-			else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
-			{
-				declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
+				uri = DataPackage.CombineUri(
+					data.Contains(StandardDataFormats.WebLink) ? (await data.GetWebLinkAsync()).ToString() : null,
+					data.Contains(StandardDataFormats.ApplicationLink) ? (await data.GetApplicationLinkAsync()).ToString() : null,
+					data.Contains(StandardDataFormats.Uri) ? (await data.GetUriAsync()).ToString() : null);
+
+				if (string.IsNullOrEmpty(uri) == false)
+				{
+					declaredTypes.Add(NSPasteboard.NSPasteboardTypeUrl);
+				}
 			}
 
 			pasteboard.DeclareTypes(declaredTypes.ToArray(), null);
@@ -333,21 +322,9 @@ namespace Windows.ApplicationModel.DataTransfer
 				pasteboard.SetStringForType(text ?? string.Empty, NSPasteboard.NSPasteboardTypeString);
 			}
 
-			// See comments at beginning of document for URL handling
-			if (data?.Contains(StandardDataFormats.Uri) ?? false)
+			if(string.IsNullOrEmpty(uri) == false)
 			{
-				var uri = await data.GetUriAsync();
-				pasteboard.SetStringForType(uri?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
-			}
-			else if (data?.Contains(StandardDataFormats.WebLink) ?? false)
-			{
-				var webLink = await data.GetWebLinkAsync();
-				pasteboard.SetStringForType(webLink?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
-			}
-			else if (data?.Contains(StandardDataFormats.ApplicationLink) ?? false)
-			{
-				var appLink = await data.GetApplicationLinkAsync();
-				pasteboard.SetStringForType(appLink?.ToString() ?? string.Empty, NSPasteboard.NSPasteboardTypeUrl);
+				pasteboard.SetStringForType(uri!.ToString(), NSPasteboard.NSPasteboardTypeUrl);
 			}
 
 			return;
@@ -502,23 +479,23 @@ namespace Windows.ApplicationModel.DataTransfer
 					var url = item.GetStringForType(NSPasteboard.NSPasteboardTypeUrl);
 					if (url != null)
 					{
-						// See comments at beginning of document for URL handling
-						url = url.Trim();
-						if (url != null)
-						{
-							if (url.StartsWith("http", StringComparison.InvariantCultureIgnoreCase) ||
-								url.StartsWith("https", StringComparison.InvariantCultureIgnoreCase))
-							{
-								dataPackage.SetWebLink(new Uri(url));
-							}
-							else
-							{
-								dataPackage.SetApplicationLink(new Uri(url));
-							}
+						DataPackage.SeparateUri(
+							url,
+							out string? webLink,
+							out string? applicationLink);
 
-							// Deprecated but added for compatibility
-							dataPackage.SetUri(new Uri(url));
+						if (webLink != null)
+						{
+							dataPackage.SetWebLink(new Uri(webLink));
 						}
+
+						if (applicationLink != null)
+						{
+							dataPackage.SetApplicationLink(new Uri(applicationLink));
+						}
+
+						// Deprecated but still added for compatibility
+						dataPackage.SetUri(new Uri(url));
 					}
 				}
 			}

@@ -55,6 +55,7 @@ Notes:
      > won't work for keyboard events. **They won't bubble in managed code**.
    * **iOS**: `KeyDown` & `KeyUp` routed events are generated from only a `TextBox`. Only character-related keyboard events are generated.
      They are implemented as _Routed Events_ and they are **always bubbling in managed code**.
+   * **Skia**: Keyboard events are supported from `CoreWindow.KeyUp` and `CoreWindow.KeyDown` events, as well as `UIElement.KeyUp` and `UIElement.KeyDown` events for GTK, WPF and Tizen.
 
 ## Pointer Events
 
@@ -161,20 +162,49 @@ Those events are also 100% managed events, built from the PointerXXX events (usi
 
 A _drag and drop_ operation can be used to move content within an app, but it can also be used to **copy** / **move** / **link** between apps.
 While intra-app _drag and drop_ is supported on all platforms without limitations, inter-app _drag and drop_ requires platform specific support.
+The table and sections below describe supported functionality and limitations for each platform.
 
 |          | From uno app to external                         | From external app to uno                        |
 | -------- | ------------------------------------------------ | ------------------------                        |
 | Android  | No _in progress_                                 | No _in progress_                                |
 | iOS      | No                                               | No                                              |
 | Wasm     | No                                               | No                                              |
-| MacOS    | Yes (Text, Link, Image, Html, Rtf)               | Yes (Text, Link, Image, File, Html, Rtf)        |
-| Skia WPF | Yes (Text, Link (1), Image (2), File, Html, Rtf) | Yes (Text, WebLink (1), Image, File, Html, Rtf) |
+| macOS    | Yes (Text, Link, Image, Html, Rtf)               | Yes (Text, Link, Image, File, Html, Rtf)        |
+| Skia WPF | Yes (Text, Link, Image, File, Html, Rtf)         | Yes (Text, Link, Image, File, Html, Rtf)        |
 | Skia GTK | No                                               | No                                              |
 
-1. There is not standard type for **WebLink** (nor **ApplicationLink**) on this platform. 
-   They are copied to the external app as raw **Text**, and converted back as **WebLink** from raw text from the external app 
+* "Link" may refer to WebLink, ApplicationLink or Uri formats
+
+#### macOS Limitations
+
+1. Dragging a File (StorageItem) from an Uno Platform App to an external destination is not currently supported.
+2. When receiving a drop within an Uno Platform App from an external source, key modifiers are not supported
+
+#### Skia Limitations
+
+1. There is no standard type for **WebLink** (nor **ApplicationLink**) on this platform. 
+   They are copied to the external app as raw **Text**, and converted back as **WebLink** or **ApplicationLink**) from raw text from the external app 
    when [`Uri.IsWellFormedUriString(text, UriKind.Absolute)](https://docs.microsoft.com/en-us/dotnet/api/system.uri.iswellformeduristring) returns true.
 2. The image content seems to not being readable by common apps, only another Uno app is able to read it properly.
+
+### Drag and Drop Data Format Considerations
+
+UWP has the following standard data formats that correspond with a URI/URL:
+
+1. Uri, now deprecated in favor of:
+2. WebLink and
+3. ApplicationLink
+
+Several platforms such as macOS/iOS/Android do not differentiate between them and only use a single URI/URL class or string.
+
+When applying data to the native clipboard or drag/drop data from a DataPackage, only one URI/URL may be used. Therefore, all URI data formats are merged together into a single URI using the above defined priority. WebLink is considered more specific than ApplicationLink.
+
+When pulling data from the native clipboard or drag/drop data, this single native URI/URL is separated into the equivalent UWP data format (since UWP's direct equivalent standard data format 'Uri' is deprecated). The mapping is as follows:
+
+1. WebLink is used if the given URL/URI has a scheme of "http" or "https"
+2. ApplicationLink is used if not #1
+
+For full compatibility, the Uri format within a DataPackage should still be populated regardless of #1 or #2.
 
 ### Known issues for drag and drop events
 

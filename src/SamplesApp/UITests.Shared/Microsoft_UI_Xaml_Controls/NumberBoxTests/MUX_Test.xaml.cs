@@ -25,12 +25,9 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		public MUX_Test()
 		{
 			this.InitializeComponent();
-#if HAS_UNO
 			TestNumberBox.RegisterPropertyChangedCallback(NumberBox.TextProperty, new DependencyPropertyChangedCallback(TextPropertyChanged));
-#endif
 		}
 
-#if HAS_UNO
 		private void SpinMode_Changed(object sender, RoutedEventArgs e)
 		{
 			if (TestNumberBox != null)
@@ -130,6 +127,5 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			TextTextBox.Text = TestNumberBox.Text;
 		}
-#endif
 	}
 }

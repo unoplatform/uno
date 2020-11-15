@@ -19,7 +19,7 @@
       	Available build targets and corresponding solution filters:
 								uap10.0.17763 (Windows) - Uno.UI-Windows-only.slnf
 								xamarinios10 (iOS) - Uno.UI-iOS-only.slnf
-								MonoAndroid10.0 (Android 10.0) - Uno.UI-Android-only.slnf
+								MonoAndroid11.0 (Android 11.0) - Uno.UI-Android-only.slnf
 								netstandard2.0 (WebAssembly, Skia) - Uno.UI-Wasm-only.slnf, Uno.UI-Skia-only.slnf
 								xamarinmac20 (macOS) - Uno.UI-macOS-only.slnf (Visual Studio for Windows), Uno.UI-vs4mac-macOS-only.sln (Visual Studio for Mac)
 								net461 (Uno.UI.Tests) - Uno.UI-UnitTests-only.slnf

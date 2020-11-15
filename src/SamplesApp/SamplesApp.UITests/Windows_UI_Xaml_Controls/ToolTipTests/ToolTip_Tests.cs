@@ -67,14 +67,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 			var upperRect = _app.GetRect("UpperLocator");
 			var lowerRect = _app.GetRect("LowerLocator");
 
-			var before = TakeScreenshot("Before");
+			using var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
 
 			var lowerHoverY = buttonRect.Bottom - buttonRect.Height / 10;
 			_app.TapCoordinates(buttonRect.CenterX, lowerHoverY);
 
 			_app.WaitForElement(BorderInsideToolTip);
 
-			var lowerToolTip = TakeScreenshot("Lower ToolTip");
+			using var lowerToolTip = TakeScreenshot("Lower ToolTip");
 
 			ImageAssert.AreEqual(before, lowerToolTip, lowerRect);
 			ImageAssert.AreEqual(before, lowerToolTip, upperRect); // ToolTip should be just above mouse, shouldn't extend above Button bounds
@@ -89,7 +89,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			_app.WaitForElement(BorderInsideToolTip);
 
-			var upperToolTip = TakeScreenshot("Upper ToolTip");
+			using var upperToolTip = TakeScreenshot("Upper ToolTip");
 
 			ImageAssert.AreEqual(before, upperToolTip, lowerRect);
 			ImageAssert.AreNotEqual(before, upperToolTip, upperRect); // Mouse is close to top of button, ToolTip should extend above Button bounds

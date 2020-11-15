@@ -34,6 +34,7 @@ namespace Windows.UI.Xaml
 
 			Initialize();
 			InitializePointers();
+			InitializeKeyboard();
 
 			RegisterPropertyChangedCallback(VisibilityProperty, OnVisibilityPropertyChanged);
 			RegisterPropertyChangedCallback(Controls.Canvas.LeftProperty, OnCanvasLeftChanged);
@@ -41,6 +42,7 @@ namespace Windows.UI.Xaml
 
 			UpdateHitTest();
 		}
+		partial void InitializeKeyboard();
 
 		private void OnCanvasTopChanged(DependencyObject sender, DependencyProperty dp)
 		{
@@ -290,5 +292,9 @@ namespace Windows.UI.Xaml
 
 		partial void HideVisual()
 			=> Visual.IsVisible = false;
+
+#if DEBUG
+		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);
+#endif
 	}
 }

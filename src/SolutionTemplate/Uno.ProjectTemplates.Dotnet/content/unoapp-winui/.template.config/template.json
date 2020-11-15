@@ -11,7 +11,7 @@
     "macOS",
     "WinUI"
   ],
-  "name": "Cross-Platform App (WinUI, Uno Platform)",
+  "name": "Cross-Platform App (WinUI)",
   "identity": "Uno.Platform.UnoApp.WinUI",
   "groupIdentity": "Uno.Platform.Blank.WinUI",
   "description": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets WinUI 3 for UWP, Android, iOS, macOS, and WebAssembly.",

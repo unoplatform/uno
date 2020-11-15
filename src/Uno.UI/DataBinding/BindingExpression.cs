@@ -347,13 +347,6 @@ namespace Windows.UI.Xaml.Data
 					this.Log().DebugFormat("Applying explicit source {0} on {1}", ExplicitSource?.GetType(), _view.Target?.GetType());
 				}
 
-				var resourceName = ExplicitSource as string;
-
-				if (resourceName.HasValue())
-				{
-					_dataContext = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, ResourceHelper.FindResource(resourceName));
-				}
-
 				ApplyBinding();
 			}
 		}

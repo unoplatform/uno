@@ -44,9 +44,9 @@ namespace SamplesApp.UITests.Toolkit
 
 			_app.WaitForElement("Elevation");
 
-			var elevationRect = _app.GetRect("Elevation");
+			var elevationRect = _app.GetPhysicalRect("Elevation");
 
-			var snapshot = this.TakeScreenshot("check", ignoreInSnapshotCompare: true);
+			using var snapshot = this.TakeScreenshot("check", ignoreInSnapshotCompare: true);
 
 			const string white = "#FFFFFF";
 			const string gray = "#A9A9A9"; // DarkGray

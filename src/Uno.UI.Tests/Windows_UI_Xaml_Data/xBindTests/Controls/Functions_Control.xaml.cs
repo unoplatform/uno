@@ -40,6 +40,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 
 		private static readonly int StaticPrivateReadonlyField = 45;
 
+		private const int PrivateConstField = 46;
+
 		public int InstanceDP
 		{
 			get => (int)GetValue(InstanceDPProperty);
@@ -80,7 +82,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 
 		private string _myproperty = "Initial";
 		private int _myIntProperty = -3;
-
+		public const int MyConst = -5;
 		public string MyProperty
 		{
 			get { return _myproperty; }
@@ -104,6 +106,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 
 	public static class StaticClass
 	{
-		public static int PublicStaticProperty => 46;
+		public static int PublicStaticProperty => 47;
+
+		public const int PublicConstField = 48;
 	}
 }

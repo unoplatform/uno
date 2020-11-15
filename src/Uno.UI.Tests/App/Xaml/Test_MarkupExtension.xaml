@@ -9,6 +9,7 @@
 
 	<UserControl.Resources>
 		<x:String x:Key="ResourceString">From a Resource String</x:String>
+		<x:String x:Key="ResourceStringFull">From a Resource String FullName</x:String>
 		<ex:TestEntityObject x:Key="TestEntity" />
 	</UserControl.Resources>
 
@@ -47,6 +48,16 @@
 
 		<TextBlock x:Name="Text10"
 				   DataContext="{ex:NoReturnTypeMarkupExt UseValue=UseValue1, Value1={StaticResource TestEntity}}" />
+
+		<TextBlock x:Name="Text11"
+				   Text="{ex:SimpleMarkupExtExtension TextValue='Just a simple ... fullname'}" />
+
+		<TextBlock x:Name="Text12"
+				   Text="{ex:SimpleMarkupExtExtension TextValue={StaticResource ResourceStringFull}}" />
+
+		<TextBlock x:Name="Text13"
+				   beh:AttachedPropertiesBehavior.CustomText="{ex:SimpleMarkupExtExtension TextValue='String from attached property Fullname'}" />
+
 	</StackPanel>
 
 </UserControl>

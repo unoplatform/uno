@@ -194,7 +194,9 @@ namespace Windows.Graphics.Display
 				var rotation = windowManager.DefaultDisplay.Rotation;
 				using (var displayMetrics = new DisplayMetrics())
 				{
+#pragma warning disable 618
 					windowManager.DefaultDisplay.GetMetrics(displayMetrics);
+#pragma warning restore 618
 
 					int width = displayMetrics.WidthPixels;
 					int height = displayMetrics.HeightPixels;

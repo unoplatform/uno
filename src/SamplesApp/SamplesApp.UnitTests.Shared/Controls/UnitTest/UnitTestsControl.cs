@@ -143,7 +143,8 @@ namespace Uno.UI.Samples.Tests
 
 				if (error != null)
 				{
-					testResultBlock.Inlines.Add(new Run { Text = "\n==>" + error.Message, Foreground = new SolidColorBrush(Colors.Red) });
+					var foreground = testResult != TestResult.Sucesss ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Yellow);
+					testResultBlock.Inlines.Add(new Run { Text = "\n==>" + error.Message, Foreground = foreground });
 
 					if (testResult == TestResult.Failed || testResult == TestResult.Error)
 					{

@@ -4,7 +4,7 @@ using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public class TizenDisplayInformationExtension : IDisplayInformationExtension
+	internal class TizenDisplayInformationExtension : IDisplayInformationExtension
 	{
 		private DisplayInformation _displayInformation;
 		private readonly string _profile;

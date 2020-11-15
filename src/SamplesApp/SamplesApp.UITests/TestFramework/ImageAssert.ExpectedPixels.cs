@@ -51,14 +51,21 @@ namespace SamplesApp.UITests.TestFramework
 
 		public ExpectedPixels Pixels(Bitmap source, Rectangle rect)
 		{
-			var colors = new Color[rect.Height, rect.Width];
-			for (var py = 0; py < rect.Height; py++)
-			for (var px = 0; px < rect.Width; px++)
+			try
 			{
-				colors[py, px] = source.GetPixel(rect.X + px, rect.Y + py);
+				var colors = new Color[rect.Height, rect.Width];
+				for (var py = 0; py < rect.Height; py++)
+				for (var px = 0; px < rect.Width; px++)
+				{
+					colors[py, px] = source.GetPixel(rect.X + px, rect.Y + py);
+				}
+
+				return new ExpectedPixels(Name, Location, rect.Location, colors, Tolerance);
 			}
-			
-			return new ExpectedPixels(Name, Location, rect.Location, colors, Tolerance);
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException($"Unable to create a pixel array of {rect.Width}x{rect.Height} (bitmap is {source.Width}x{source.Height}).");
+			}
 		}
 
 		public ExpectedPixels Pixels(Bitmap source)

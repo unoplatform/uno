@@ -279,7 +279,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					var b = new BindingPath(displayMemberPath, item) {DataContext = item};
+					var b = new BindingPath(displayMemberPath, item) { DataContext = item };
 					_contentPresenter.Content = b.Value;
 				}
 
@@ -310,11 +310,11 @@ namespace Windows.UI.Xaml.Controls
 
 			void SetContentPresenterBinding(DependencyProperty targetProperty, string sourcePropertyPath)
 			{
-				_contentPresenter.SetBinding(targetProperty, new Binding(sourcePropertyPath) { RelativeSource = RelativeSource.TemplatedParent });
+				_contentPresenter?.SetBinding(targetProperty, new Binding(sourcePropertyPath) { RelativeSource = RelativeSource.TemplatedParent });
 			}
 		}
 
-		private object GetSelectionContent()
+		private object? GetSelectionContent()
 		{
 			return SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
 		}
@@ -453,7 +453,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new FrameworkPropertyMetadata(null));
 
 		private class DropDownLayouter : PopupBase.IDynamicPopupLayouter
@@ -506,6 +506,15 @@ namespace Windows.UI.Xaml.Controls
 					child.MinWidth = Combo.ActualWidth;
 					child.MaxHeight = maxHeight;
 					child.MaxWidth = visibleSize.Width;
+
+					if (UsesManagedLayouting)
+					// This is a breaking change for Android/iOS in some specialised cases (see ComboBox_VisibleBounds sample), and
+					// since the layouting on those platforms is not yet as aligned with UWP as on WASM/Skia, and in particular
+					// virtualizing panels aren't used in the ComboBox yet (#556 and #1133), we skip it for now
+					{
+						child.HorizontalAlignment = HorizontalAlignment.Left;
+						child.VerticalAlignment = VerticalAlignment.Top;
+					}
 				}
 
 				child.Measure(visibleSize);

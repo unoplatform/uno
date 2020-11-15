@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
 using Uno.UITest.Helpers;
@@ -16,7 +17,7 @@ namespace SamplesApp.UITests
 	{
 		protected IApp _app;
 		private static int _totalTestFixtureCount;
-		private double? _scaling;
+		private float? _scaling;
 
 		public SampleControlUITestBase()
 		{
@@ -314,44 +315,11 @@ namespace SamplesApp.UITests
 			return new PhysicalRect(logicalRect, GetDisplayScreenScaling());
 		}
 
-		internal double GetDisplayScreenScaling()
-		{
-			if (_scaling == null)
-			{
-				var scalingRaw = _app.InvokeGeneric("browser:SampleRunner|GetDisplayScreenScaling", "0");
+		internal float GetDisplayScreenScaling() => _app.GetDisplayScreenScaling();
 
-				if (double.TryParse(scalingRaw?.ToString(), out var scaling))
-				{
-					Console.WriteLine($"Display Scaling: {scaling}");
-					_scaling = scaling / 100;
-				}
-				else
-				{
-					_scaling = 1;
-				}
-			}
+		internal float LogicalToPhysical(float logical) => logical * GetDisplayScreenScaling();
 
-			return _scaling.Value;
-		}
-
-		/// <summary>
-		/// Get the center of <paramref name="rect"/> adjusted for the display scale, appropriate for screenshot analysis.
-		/// </summary>
-		protected PointF GetScaledCenter(IAppRect rect)
-		{
-			var scale = (float)GetDisplayScreenScaling();
-			return new PointF(rect.CenterX * scale, rect.CenterY * scale);
-		}
-
-		/// <summary>
-		/// Get centre of the bounds rect of element <paramref name="elementName"/> adjusted for the display scale, appropriate for
-		/// screenshot analysis.
-		/// </summary>
-		protected PointF GetRectCenterScaled(string elementName)
-		{
-			var rect = _app.GetRect(elementName);
-			return GetScaledCenter(rect);
-		}
+		internal float PhysicalToLogical(float physical) => physical / GetDisplayScreenScaling();
 
 		protected bool GetIsCurrentRotationLandscape(string elementName)
 		{

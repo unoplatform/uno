@@ -23,15 +23,22 @@ using static Private.Infrastructure.TestServices;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	public class Given_ListViewBase
+	[RunsOnUIThread]
+	public partial class Given_ListViewBase
 	{
 		private ResourceDictionary _testsResources;
 
 		private Style BasicContainerStyle => _testsResources["BasicListViewContainerStyle"] as Style;
 
+		private Style ContainerMarginStyle => _testsResources["ListViewContainerMarginStyle"] as Style;
+
 		private DataTemplate TextBlockItemTemplate => _testsResources["TextBlockItemTemplate"] as DataTemplate;
 
 		private DataTemplate SelfHostingItemTemplate => _testsResources["SelfHostingItemTemplate"] as DataTemplate;
+
+		private DataTemplate FixedSizeItemTemplate => _testsResources["FixedSizeItemTemplate"] as DataTemplate;
+
+		private ItemsPanelTemplate NoCacheItemsStackPanel => _testsResources["NoCacheItemsStackPanel"] as ItemsPanelTemplate;
 
 		[TestInitialize]
 		public void Init()
@@ -435,6 +442,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 			Assert.AreEqual(list.SelectedIndex, -1);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Outer_ElementName_Binding()
+		{
+			var page = new ListViewPages.ListViewTemplateOuterBindingPage();
+
+			for (int _ = 0; _ < 5; _++)
+			{
+				WindowHelper.WindowContent = page;
+				await WindowHelper.WaitForIdle();
+
+				var list = page.FindFirstChild<ListView>();
+				Assert.IsNotNull(list);
+
+				for (int i = 0; i < 3; i++)
+				{
+					ListViewItem lvi = null;
+					await WindowHelper.WaitFor(() => (lvi = list.ContainerFromItem(i) as ListViewItem) != null);
+					var sp = lvi.FindFirstChild<StackPanel>();
+					var tb = sp?.FindFirstChild<TextBlock>();
+					Assert.IsNotNull(tb);
+					Assert.AreEqual("OuterContextText", tb.Text);
+				}
+
+				WindowHelper.WindowContent = null; // Unload page+list
+				await WindowHelper.WaitForIdle();
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
 		}
 	}
 }

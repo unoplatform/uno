@@ -34,7 +34,7 @@ namespace Uno.UI.Runtime.Skia
 		public void Run()
 		{
 			Gtk.Application.Init();			
-			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkUIElementPointersSupport(o));
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
@@ -93,6 +93,8 @@ namespace Uno.UI.Runtime.Skia
 				Gdk.EventMask.PointerMotionMask
 			 | Gdk.EventMask.ButtonPressMask
 			 | Gdk.EventMask.ButtonReleaseMask
+			 | Gdk.EventMask.KeyPressMask
+			 | Gdk.EventMask.KeyReleaseMask
 			));
 
 			_window.ShowAll();

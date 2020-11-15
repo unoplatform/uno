@@ -636,6 +636,11 @@ namespace Windows.UI.Xaml.Controls
 		private bool UseInlinesFastPath => _inlines == null;
 
 		/// <summary>
+		/// Returns if the TextBlock is constrained by a maximum number of lines.
+		/// </summary>
+		private bool IsLayoutConstrainedByMaxLines => MaxLines > 0;
+
+		/// <summary>
 		/// Gets the inlines which affect the typography of the TextBlock.
 		/// </summary>
 		private IEnumerable<(Inline inline, int start, int end)> GetEffectiveInlines()

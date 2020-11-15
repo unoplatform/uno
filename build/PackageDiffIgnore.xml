@@ -3278,5 +3278,15 @@
 				reason="The enum is backed by uint"/>
 		</Fields>
 	</IgnoreSet>
+
+	<IgnoreSet baseVersion="3.2.0">
+	  <Types>
+	  </Types>
+	  <Methods>
+		<Member
+			fullName="System.Void Windows.UI.Core.KeyEventArgs..ctor()"
+			reason="Parameter-less ctor does not exist in UWP"/>
+	  </Methods>
+	</IgnoreSet>
   </IgnoreSets>
 </DiffIgnore>

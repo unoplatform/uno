@@ -10,7 +10,7 @@
     "Windows",
     "macOS"
   ],
-  "name": "Cross-Platform Library (Uno Platform)",
+  "name": "Cross-Platform Library",
   "identity": "Uno.Platform.UnoLib",
   "groupIdentity": "Uno.Platform.BlankLibrary",
   "description": "Template for creating a cross-platform library with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly and Skia.",

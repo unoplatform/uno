@@ -2,7 +2,17 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+#if NETFX_CORE
+using Uno.UI.Extensions;
+#elif __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#else
+using Uno.UI;
+#endif
 
 namespace Private.Infrastructure
 {
@@ -32,6 +42,29 @@ namespace Private.Infrastructure
 			{
 				await RootControl.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 				await RootControl.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+			}
+
+			/// <summary>
+			/// Waits for <paramref name="element"/> to be loaded and measured in the visual tree.
+			/// </summary>
+			/// <remarks>On UWP, <see cref="WaitForIdle"/> may not always wait long enough for the control to be properly measured.</remarks>
+			internal static async Task WaitForLoaded(FrameworkElement element)
+			{
+				await WaitFor(IsLoaded, message: $"{element} loaded");
+				bool IsLoaded()
+				{
+					if (element.ActualHeight == 0 || element.ActualWidth == 0)
+					{
+						return false;
+					}
+
+					if (element is Control control && control.FindFirstChild<UIElement>(includeCurrent: false) == null)
+					{
+						return false;
+					}
+
+					return true;
+				}
 			}
 
 			/// <summary>

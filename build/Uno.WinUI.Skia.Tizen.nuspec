@@ -16,7 +16,7 @@
 
 	<dependencies>
 	  <dependency id="Uno.WinUI" version="1.0.0" />
-	  <dependency id="Uno.WinUI.Runtime.Skia.Tizen" version="1.0.0" />
+	  <dependency id="Uno.WinUI.Runtime.Skia.Tizen" version="1.0.0" exclude="none" />
     </dependencies>
   </metadata>
 

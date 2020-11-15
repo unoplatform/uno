@@ -78,7 +78,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			//Drag upward
 			_app.DragCoordinates(sut.Rect.CenterX, sut.Rect.CenterY, sut.Rect.CenterX, sut.Rect.CenterY - (sut.Rect.Height / 2));
 
-			var res = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+			using var res = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
 			ImageAssert.AreNotEqual(
 				expected: res,
