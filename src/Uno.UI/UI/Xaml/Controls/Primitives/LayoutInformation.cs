@@ -12,13 +12,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			=> element.LastAvailableSize;
 
 		internal static Size GetAvailableSize(object view)
-			=> view is IUIElementInternal iue
+			=> view is IUIElement iue
 				? iue.LastAvailableSize
 				: _layoutProperties.GetValue(view, "availablesize", () => default(Size));
 
 		internal static void SetAvailableSize(object view, Size value)
 		{
-			if (view is IUIElementInternal iue)
+			if (view is IUIElement iue)
 			{
 				iue.LastAvailableSize = value;
 			}
@@ -34,13 +34,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			=> element.LayoutSlot;
 
 		internal static Rect GetLayoutSlot(object view)
-			=> view is IUIElementInternal iue
+			=> view is IUIElement iue
 				? iue.LayoutSlot
 				: _layoutProperties.GetValue(view, "layoutslot", () => default(Rect));
 
 		internal static void SetLayoutSlot(object view, Rect value)
 		{
-			if (view is IUIElementInternal iue)
+			if (view is IUIElement iue)
 			{
 				iue.LayoutSlot = value;
 			}
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			switch (view)
 			{
-				case IUIElementInternal iue:
+				case IUIElement iue:
 					return iue.DesiredSize;
 				default:
 					return _layoutProperties.GetValue(view, "desiredSize", () => default(Size));
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			switch (view)
 			{
-				case IUIElementInternal iue:
+				case IUIElement iue:
 					iue.DesiredSize = desiredSize;
 					break;
 				default:

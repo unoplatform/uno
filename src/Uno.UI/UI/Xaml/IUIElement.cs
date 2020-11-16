@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 {
 	// This interface is intended to be renamed to IUIElement once the deprecated public one has been removed.
 	// Note: We do not inherit from IUIElement as we don't want to implement IDisposable!
-	internal interface IUIElementInternal 
+	internal interface IUIElement 
 	{
 		/// <summary>
 		/// The 'availableSize' provided for the last Measure

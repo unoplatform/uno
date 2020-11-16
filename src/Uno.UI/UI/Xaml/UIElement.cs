@@ -32,7 +32,7 @@ using UIKit;
 
 namespace Windows.UI.Xaml
 {
-	public partial class UIElement : DependencyObject, IXUidProvider, IUIElementInternal
+	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private XamlRoot _xamlRoot = null;
@@ -468,20 +468,20 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Backing property for <see cref="LayoutInformation.GetAvailableSize(UIElement)"/>
 		/// </summary>
-		Size IUIElementInternal.LastAvailableSize { get; set; }
+		Size IUIElement.LastAvailableSize { get; set; }
 		/// <summary>
 		/// Gets the 'availableSize' of the last Measure
 		/// </summary>
-		internal Size LastAvailableSize => ((IUIElementInternal)this).LastAvailableSize;
+		internal Size LastAvailableSize => ((IUIElement)this).LastAvailableSize;
 
 		/// <summary>
 		/// Backing property for <see cref="LayoutInformation.GetLayoutSlot(FrameworkElement)"/>
 		/// </summary>
-		Rect IUIElementInternal.LayoutSlot { get; set; }
+		Rect IUIElement.LayoutSlot { get; set; }
 		/// <summary>
 		/// Gets the 'finalSize' of the last Arrange
 		/// </summary>
-		internal Rect LayoutSlot => ((IUIElementInternal)this).LayoutSlot;
+		internal Rect LayoutSlot => ((IUIElement)this).LayoutSlot;
 
 		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
 
@@ -490,7 +490,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Backing property for <see cref="LayoutInformation.GetDesiredSize(UIElement)"/>
 		/// </summary>
-		Size IUIElementInternal.DesiredSize { get; set; }
+		Size IUIElement.DesiredSize { get; set; }
 
 #if !NETSTANDARD
 		/// <summary>
@@ -499,7 +499,7 @@ namespace Windows.UI.Xaml
 		/// <remarks>
 		/// DesiredSize INCLUDES MARGINS.
 		/// </remarks>
-		public Size DesiredSize => ((IUIElementInternal)this).DesiredSize;
+		public Size DesiredSize => ((IUIElement)this).DesiredSize;
 
 		/// <summary>
 		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)

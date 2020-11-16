@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml
 		private bool _isMeasureValid = false;
 		private bool _isArrangeValid = false;
 
-		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : ((IUIElementInternal)this).DesiredSize;
+		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : ((IUIElement)this).DesiredSize;
 
 		internal bool IsMeasureDirty => !_isMeasureValid;
 		internal bool IsArrangeDirty => !_isArrangeValid;
