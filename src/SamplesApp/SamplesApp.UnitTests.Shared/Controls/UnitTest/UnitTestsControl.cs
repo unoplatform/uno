@@ -364,7 +364,11 @@ namespace Uno.UI.Samples.Tests
 
 		private bool IsIgnored(MethodInfo testMethod, out string ignoreMessage)
 		{
-			var ignoreAttribute = testMethod.GetCustomAttribute<Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute>();
+			var ignoreAttribute = testMethod.GetCustomAttribute<IgnoreAttribute>();
+			if (ignoreAttribute == null)
+			{
+				ignoreAttribute = testMethod.DeclaringType.GetCustomAttribute<IgnoreAttribute>();
+			}
 
 			if (ignoreAttribute != null)
 			{
@@ -388,7 +392,7 @@ namespace Uno.UI.Samples.Tests
 			var ts = types.Select(t => t.FullName).ToArray();
 
 			return from type in types
-				   where type.GetTypeInfo().GetCustomAttribute(typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute)) != null
+				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
 				   orderby type.Name
 				   select BuildType(type);
 		}
