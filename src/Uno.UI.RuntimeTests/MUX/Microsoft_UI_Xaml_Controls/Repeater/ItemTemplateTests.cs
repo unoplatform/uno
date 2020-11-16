@@ -406,7 +406,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 							<TextBlock Text='{Binding}' Height='30' Width='50' />
 						</DataTemplate>");
 				var dataTemplateEven = (DataTemplate)XamlReader.Load(
-						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' />");
+						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><Border Height='0' /></DataTemplate>");
 				ItemsRepeater repeater = null;
 				const int numItems = 10;
 				var selector = new MySelector() {

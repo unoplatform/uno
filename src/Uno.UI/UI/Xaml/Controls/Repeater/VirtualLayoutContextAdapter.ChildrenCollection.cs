@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private class Iterator : IEnumerator<UIElement>
 		{
 			private readonly IReadOnlyList<UIElement> m_childCollection;
-			private int m_currentIndex = 0;
+			private int m_currentIndex = -1; // UNO:: This is 0 on WinUI
 
 			public Iterator(IReadOnlyList<UIElement> childCollection)
 			{

@@ -84,7 +84,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					// TODO UNO
+					// UNO: This is useless in managed code where we use a List which resizes itself
+
 					//// If we are initialized with a non-virtualizing context, make sure that
 					//// we have enough space to hold the bounds for all the elements.
 					//int count = m_context.ItemCount;

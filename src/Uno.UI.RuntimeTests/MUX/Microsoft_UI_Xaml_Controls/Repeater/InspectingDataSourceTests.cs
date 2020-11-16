@@ -134,6 +134,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					Verify.AreEqual(-1, dataSource.IndexOf(11));
 				}
 
+#if false // On Uno the underlying field is an IList which does support IndexOf
 				// Enumerabl.Range returns IEnumerable which does not provide IndexOf
 				var testingItemsSourceView = new InspectingDataSource(Enumerable.Range(0, 10));
 				var index = -1;
@@ -142,12 +143,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					index = testingItemsSourceView.IndexOf(0);
 				}catch(Exception){ }
 				Verify.AreEqual(-1, index);
-
+#endif
 
 				var nullContainingEnumerable = new CustomEnumerable();
-				testingItemsSourceView = new InspectingDataSource(nullContainingEnumerable);
+				var testingItemsSourceView2 = new InspectingDataSource(nullContainingEnumerable);
 
-				Verify.AreEqual(1,testingItemsSourceView.IndexOf(null));
+				Verify.AreEqual(1,testingItemsSourceView2.IndexOf(null));
 
 			});
 		}

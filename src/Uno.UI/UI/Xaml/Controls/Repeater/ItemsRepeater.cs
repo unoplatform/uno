@@ -762,6 +762,15 @@ namespace Microsoft.UI.Xaml.Controls
 				throw new InvalidOperationException("Changes in data source are not allowed during layout.");
 			}
 
+			if (args.Action == NotifyCollectionChangedAction.Move)
+			{
+				// As ItemsRepeater originally relied on VectorChange, internal structure does not support the Move action.
+				// So we decompose it as early as possible.
+				OnItemsSourceViewChanged(sender, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, args.OldItems, args.OldStartingIndex));
+				OnItemsSourceViewChanged(sender, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, args.NewItems, args.NewStartingIndex));
+				return;
+			}
+
 			if (IsProcessingCollectionChange)
 			{
 				throw new InvalidOperationException("Changes in the data source are not allowed during another change in the data source.");

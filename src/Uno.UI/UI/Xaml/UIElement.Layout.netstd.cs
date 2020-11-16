@@ -120,9 +120,14 @@ namespace Windows.UI.Xaml
 
 			if (!_isArrangeValid || finalRect != LayoutSlot)
 			{
-				ShowVisual(); 
-				ArrangeCore(finalRect);
+				ShowVisual();
+
+				// We must store the updated slot before natively arranging the element,
+				// so the updated value can be read by indirect code that is being invoked on arrange.
+				// For instance, the EffectiveViewPort computation reads that value to detect slot changes (cf. PropagateEffectiveViewportChange)
 				LayoutInformation.SetLayoutSlot(this, finalRect);
+
+				ArrangeCore(finalRect);
 				_isArrangeValid = true;
 			}
 		}

@@ -42,6 +42,9 @@ namespace Windows.UI.Xaml
 			=> element.IsScrollPort = true;
 
 		internal bool IsScrollPort { get; private set; }
+
+		// This are fulfilled by the ScrollViewer for the EffectiveViewport computation,
+		// but it should actually be computed based on clipping vs desired size.
 		internal Point ScrollOffsets { get; private protected set; }
 
 		/// <summary>
