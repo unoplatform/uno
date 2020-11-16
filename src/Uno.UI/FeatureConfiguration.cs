@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml;
@@ -449,6 +449,13 @@ namespace Uno.UI
 			[Obsolete("This flag is no longer used.")]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
+		}
+
+		public static class TimePicker
+		{
+#if __IOS__
+			public static bool UseLegacyStyle { get; set; } = false;
+#endif
 		}
 	}
 }
