@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml
 				: viewport;
 #endif
 
-			if (viewportInLocalCoordinates == _parentViewport)
+			if (!isInitial && viewportInLocalCoordinates == _parentViewport)
 			{
 				return;
 			}
@@ -238,7 +238,7 @@ namespace Windows.UI.Xaml
 				{
 					if (child is IFrameworkElement_EffectiveViewport childFwElt)
 					{
-						childFwElt.OnParentViewportChanged(this, viewport);
+						childFwElt.OnParentViewportChanged(this, viewport, isInitial: isInitial);
 					}
 				}
 			}
