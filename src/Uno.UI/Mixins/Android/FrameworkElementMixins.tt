@@ -11,6 +11,7 @@
 	GenerateDefaultPartialClasses(
 		"Windows.UI.Xaml.Controls.NativeListViewBase",
 		"Windows.UI.Xaml.Controls.NativePagedView",
+		"Windows.UI.Xaml.Controls.NativeScrollContentPresenter",
 		"Windows.UI.Xaml.Controls.TextBoxView"
 	);
 #>

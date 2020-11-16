@@ -34,8 +34,6 @@ namespace Windows.UI.Xaml.Controls
 			return view.DesiredSize;
 		}
 
-		Size ILayouter.GetDesiredSize(View view) => DesiredChildSize(view);
-
 		partial void SetDesiredChildSize(View view, Size size)
 		{
 			view.DesiredSize = size;

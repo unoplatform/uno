@@ -354,29 +354,28 @@ namespace Windows.UI.Xaml
 			{
 				_isInUpdateLayout = true;
 
+#if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
+				root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
+				root.Arrange(LayoutInformation.GetLayoutSlot(root));
+#else
 				for (var i = 0; i < MaxLayoutIterations; i++)
 				{
-#if !__MACOS__ && !__IOS__
 					if (root.IsMeasureDirty)
-#endif
 					{
 						root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
 					}
-#if !__MACOS__ && !__IOS__
 					else if (root.IsArrangeDirty)
-#endif
 					{
 						root.Arrange(LayoutInformation.GetLayoutSlot(root));
 					}
-#if !__MACOS__ && !__IOS__
 					else
-#endif
 					{
 						return;
 					}
 				}
 
 				throw new InvalidOperationException("Layout cycle detected.");
+#endif
 			}
 			finally
 			{
