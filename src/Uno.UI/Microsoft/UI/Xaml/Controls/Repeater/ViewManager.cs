@@ -519,8 +519,10 @@ namespace Microsoft.UI.Xaml.Controls
 					// running layout, we dont have to clear all the elements again.         
 					if (!m_isDataSourceStableResetPending)
 					{
+#if DEBUG
 						// There should be no elements in the reset pool at this time.
 						MUX_ASSERT(m_resetPool.IsEmpty);
+#endif
 
 						if (m_owner.ItemsSourceView.HasKeyIndexMapping)
 						{
@@ -586,7 +588,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		#region GetElement providers
+#region GetElement providers
 
 		// We optimize for the case where index is not realized to return null as quickly as we can.
 		// Flow layouts manage containers on their own and will never ask for an index that is already realized.
@@ -842,9 +844,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return element;
 		}
 
-		#endregion
+#endregion
 
-		#region ClearElement handlers
+#region ClearElement handlers
 
 		bool ClearElementToUniqueIdResetPool(UIElement element, VirtualizationInfo virtInfo)
 		{
@@ -898,7 +900,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return moveToPinnedPool;
 		}
 
-		#endregion
+#endregion
 
 		void UpdateFocusedElement()
 		{
