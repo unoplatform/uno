@@ -7,7 +7,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class VirtualizingLayoutContext : LayoutContext
+	public partial class VirtualizingLayoutContext : LayoutContext
 	{
 		private NonVirtualizingLayoutContext m_contextAdapter;
 

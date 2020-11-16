@@ -5,7 +5,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class ItemsRepeaterElementClearingEventArgs
+	public partial class ItemsRepeaterElementClearingEventArgs
 	{
 		internal ItemsRepeaterElementClearingEventArgs(UIElement element)
 		{

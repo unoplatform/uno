@@ -12,7 +12,7 @@ using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class Phaser
+	internal partial class Phaser
 	{
 		private readonly ItemsRepeater m_owner;
 		private List<ElementInfo> m_pendingElements = new List<ElementInfo>();

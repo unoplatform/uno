@@ -10,7 +10,7 @@ namespace Microsoft.UI.Private.Controls
 
 	internal delegate void ConfigurationChangedEventHandler(IRepeaterScrollingSurface sender);
 
-	internal interface IRepeaterScrollingSurface
+	internal partial interface IRepeaterScrollingSurface
 	{
 		bool IsHorizontallyScrollable { get; }
 		bool IsVerticallyScrollable { get; }

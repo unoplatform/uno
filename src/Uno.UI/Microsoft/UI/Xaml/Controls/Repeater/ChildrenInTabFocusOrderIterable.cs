@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class ChildrenInTabFocusOrderIterable : IEnumerable<DependencyObject>
+	internal partial class ChildrenInTabFocusOrderIterable : IEnumerable<DependencyObject>
 	{
 		private readonly ItemsRepeater m_repeater;
 

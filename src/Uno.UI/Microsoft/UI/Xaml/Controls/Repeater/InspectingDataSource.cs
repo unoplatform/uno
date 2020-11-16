@@ -16,7 +16,7 @@ using _IBindableIterable = System.Collections.IEnumerable;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class InspectingDataSource : ItemsSourceView
+	internal partial class InspectingDataSource : ItemsSourceView
 	{
 		private readonly IList<object> m_vector;
 		private readonly IKeyIndexMapping m_uniqueIdMaping;

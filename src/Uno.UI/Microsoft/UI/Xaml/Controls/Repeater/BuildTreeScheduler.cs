@@ -9,7 +9,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class BuildTreeScheduler
+	internal partial class BuildTreeScheduler
 	{
 		private const double m_budgetInMs = 40.0;
 

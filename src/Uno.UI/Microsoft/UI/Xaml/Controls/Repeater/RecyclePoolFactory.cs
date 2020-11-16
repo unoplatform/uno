@@ -5,7 +5,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial class RecyclePool
+	partial partial class RecyclePool
 	{
 		internal static DependencyProperty ReuseKeyProperty { get; } = DependencyProperty.RegisterAttached(
 			"ReuseKey",

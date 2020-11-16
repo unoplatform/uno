@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public VirtualizationInfo VirtualizationInfo => m_virtInfo;
 	};
 
-	internal class ViewManager
+	internal partial class ViewManager
 	{
 		private ItemsRepeater m_owner;
 

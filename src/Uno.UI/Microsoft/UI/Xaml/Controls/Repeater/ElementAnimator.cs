@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public delegate void ElementAnimationCompleted(ElementAnimator sender, UIElement element);
 
-	public class ElementAnimator
+	public partial class ElementAnimator
 	{
 		private enum AnimationTrigger
 		{

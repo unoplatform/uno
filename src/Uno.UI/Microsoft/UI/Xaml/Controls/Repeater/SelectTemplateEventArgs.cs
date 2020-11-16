@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public sealed class  SelectTemplateEventArgs
+	public sealed partial class SelectTemplateEventArgs
 	{
 		internal SelectTemplateEventArgs()
 		{

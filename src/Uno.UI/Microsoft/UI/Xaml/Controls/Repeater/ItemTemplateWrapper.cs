@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class ItemTemplateWrapper : IElementFactoryShim
+	internal partial class ItemTemplateWrapper : IElementFactoryShim
 	{
 		private DataTemplate m_dataTemplate;
 		private DataTemplateSelector m_dataTemplateSelector;

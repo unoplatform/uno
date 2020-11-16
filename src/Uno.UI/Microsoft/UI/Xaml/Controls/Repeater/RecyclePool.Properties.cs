@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial class RecyclePool
+	partial partial class RecyclePool
 	{
 		public static DependencyProperty PoolInstanceProperty { get; } = DependencyProperty.RegisterAttached(
 			"PoolInstance", typeof(RecyclePool), typeof(RecyclePool), new PropertyMetadata(default(RecyclePool)));

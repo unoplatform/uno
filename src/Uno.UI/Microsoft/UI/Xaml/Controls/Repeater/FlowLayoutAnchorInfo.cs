@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public struct FlowLayoutAnchorInfo
+	public partial struct FlowLayoutAnchorInfo
 	{
 		internal FlowLayoutAnchorInfo(in int index, in double offset)
 		{

@@ -9,7 +9,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal static class CollectionExtensions
+	internal static partial class CollectionExtensions
 	{
 		public static bool TryGetElementAt<T>(this IList<T> collection, int index, out T element)
 			where T : class

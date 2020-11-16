@@ -7,7 +7,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class FlowLayoutState
+	public partial class FlowLayoutState
 	{
 		private const int BufferSize = 100;
 

@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// This type exists for types that in metadata derive from FrameworkElement but internally want to derive from Panel
 	/// to get "protected" Children.
 	/// </remarks>
-	internal interface IPanel
+	internal partial interface IPanel
 	{
 		public UIElementCollection Children { get; }
 	}

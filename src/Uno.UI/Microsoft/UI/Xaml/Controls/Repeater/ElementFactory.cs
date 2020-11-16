@@ -6,7 +6,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class ElementFactory : IElementFactoryShim
+	public partial class ElementFactory : IElementFactoryShim
 	{
 		#region IElementFactory
 

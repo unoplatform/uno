@@ -9,7 +9,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class AnimationManager
+	internal partial class AnimationManager
 	{
 		ItemsRepeater m_owner;
 		ElementAnimator m_animator;

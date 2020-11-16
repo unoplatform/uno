@@ -5,7 +5,7 @@ using System;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class LayoutContext
+	public partial class LayoutContext
 	{
 		#region ILayoutContext
 		public object LayoutState

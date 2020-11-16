@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class ListAdapter
+	internal partial class ListAdapter
 	{
 		/// <summary>
 		/// Creates a typed list decorator that changes the type of the source list

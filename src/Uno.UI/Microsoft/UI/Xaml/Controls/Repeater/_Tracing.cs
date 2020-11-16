@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal static class _Tracing
+	internal static partial class _Tracing
 	{
 		[Conditional("TRACE")]
 		public static void REPEATER_TRACE_INFO(string text, params object[] parameters)

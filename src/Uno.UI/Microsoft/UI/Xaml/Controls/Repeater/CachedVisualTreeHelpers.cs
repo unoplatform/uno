@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class CachedVisualTreeHelpers
+	internal partial class CachedVisualTreeHelpers
 	{
 		public static Rect GetLayoutSlot(FrameworkElement element)
 			=> LayoutInformation.GetLayoutSlot(element);

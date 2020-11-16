@@ -7,7 +7,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class LayoutContextAdapter : VirtualizingLayoutContext
+	internal partial class LayoutContextAdapter : VirtualizingLayoutContext
 	{
 		private readonly WeakReference<NonVirtualizingLayoutContext> m_nonVirtualizingContext;
 

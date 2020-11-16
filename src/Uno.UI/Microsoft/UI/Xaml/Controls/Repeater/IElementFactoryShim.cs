@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public interface IElementFactoryShim
+	public partial interface IElementFactoryShim
 	{
 		UIElement GetElement(ElementFactoryGetArgs args);
 		void RecycleElement(ElementFactoryRecycleArgs args);

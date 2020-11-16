@@ -3,7 +3,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal abstract class ViewportManager
+	internal abstract partial class ViewportManager
 	{
 		public abstract UIElement SuggestedAnchor { get; }
 

@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Private.Controls
 {
-	internal class RepeaterTestHooks
+	internal partial class RepeaterTestHooks
 	{
 		public static event EventHandler BuildTreeCompleted;
 

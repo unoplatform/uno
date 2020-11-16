@@ -8,7 +8,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class UniqueIdElementPool : IEnumerable<KeyValuePair<string, UIElement>>
+	internal partial class UniqueIdElementPool : IEnumerable<KeyValuePair<string, UIElement>>
 	{
 		private Dictionary<string, UIElement> m_elementMap = new Dictionary<string, UIElement>();
 		private readonly ItemsRepeater m_owner;

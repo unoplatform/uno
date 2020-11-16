@@ -8,7 +8,7 @@ using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class VirtualizationInfo
+	internal partial class VirtualizationInfo
 	{
 		public const int PhaseNotSpecified = int.MinValue;
 		public const int PhaseReachedEnd = -1;

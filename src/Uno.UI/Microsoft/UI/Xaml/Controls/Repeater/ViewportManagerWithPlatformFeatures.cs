@@ -13,7 +13,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class ViewportManagerWithPlatformFeatures : ViewportManager
+	internal partial class ViewportManagerWithPlatformFeatures : ViewportManager
 	{
 
 		// Pixel delta by which to inflate the cache buffer on each side.  Rather than fill the entire

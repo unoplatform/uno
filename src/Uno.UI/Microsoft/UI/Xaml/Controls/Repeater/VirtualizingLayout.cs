@@ -7,7 +7,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class VirtualizingLayout : Layout
+	public partial class VirtualizingLayout : Layout
 	{
 		protected internal virtual void InitializeForContextCore(VirtualizingLayoutContext context)
 		{

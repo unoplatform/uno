@@ -8,7 +8,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class RepeaterLayoutContext : VirtualizingLayoutContext
+	internal partial class RepeaterLayoutContext : VirtualizingLayoutContext
 	{
 		private readonly WeakReference<ItemsRepeater> m_owner;
 
