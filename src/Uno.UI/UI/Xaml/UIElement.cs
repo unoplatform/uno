@@ -356,15 +356,21 @@ namespace Windows.UI.Xaml
 
 				for (var i = 0; i < MaxLayoutIterations; i++)
 				{
+#if !__MACOS__ && !__IOS__
 					if (root.IsMeasureDirty)
+#endif
 					{
 						root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
 					}
+#if !__MACOS__ && !__IOS__
 					else if (root.IsArrangeDirty)
+#endif
 					{
 						root.Arrange(LayoutInformation.GetLayoutSlot(root));
 					}
+#if !__MACOS__ && !__IOS__
 					else
+#endif
 					{
 						return;
 					}

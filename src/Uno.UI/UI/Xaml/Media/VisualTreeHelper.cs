@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Media
 #elif __IOS__ || __MACOS__
 			view.AddSubview(child);
 #elif NETSTANDARD
-			view.AddChild(item);
+			view.AddChild(child);
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
 #endif
