@@ -14,16 +14,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TimePickerSelector
 	{
-		private readonly UIDatePickerStyle _iOSDefaultStyle = UIDatePickerStyle.Wheels;
-
 		private UIDatePicker _picker;
 		private NSDate _initialTime;
 		private NSDate _newDate;
-
-		partial void InitPartial()
-		{
-			ResourceResolver.ApplyResource(this, UsePlatformDefaultStyleProperty, "TimePickerSelectorUsePlatformDefaultStyle", isThemeResourceExtension: false);
-		}
 
 		private protected override void OnLoaded()
 		{
@@ -162,28 +155,6 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 		}
 
-		/// <summary>
-		/// Used to set whether or not we want to use the default <see cref="PreferredDatePickerStyle" /> specified for the os Version
-		/// Default value is False
-		/// </summary>
-		public bool UsePlatformDefaultStyle
-		{
-			get => (bool)GetValue(UsePlatformDefaultStyleProperty);
-			set => SetValue(UsePlatformDefaultStyleProperty, value);
-		}
-
-		public static DependencyProperty UsePlatformDefaultStyleProperty { get; } =
-			DependencyProperty.Register(
-				nameof(UsePlatformDefaultStyle),
-				typeof(bool),
-				typeof(TimePickerSelector),
-				new FrameworkPropertyMetadata(
-				 defaultValue: false,
-				 propertyChangedCallback: (s, e) => ((TimePickerSelector)s)?.OnUseDefaultStyleChanged()
-				));
-
-		private void OnUseDefaultStyleChanged() => UpdatePickerStyle();
-
 		private void UpdatePickerStyle()
 		{
 			if (_picker == null)
@@ -191,9 +162,16 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_picker.PreferredDatePickerStyle = UIDevice.CurrentDevice.CheckSystemVersion(14, 0) && UsePlatformDefaultStyle
-						   ? UIDatePickerStyle.Inline
-						   : _iOSDefaultStyle;
+			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+			{
+				_picker.PreferredDatePickerStyle = FeatureConfiguration.TimePicker.UseLegacyStyle
+																			? UIDatePickerStyle.Wheels
+																			: UIDatePickerStyle.Inline;
+			}
+			else
+			{
+				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
+			}
 		}
 	}
 }

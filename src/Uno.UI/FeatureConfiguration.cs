@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml;
@@ -462,6 +462,7 @@ namespace Uno.UI
 			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
 		}
 
+<<<<<<< HEAD
 		public static class DatePicker
 		{
 #if __IOS__
@@ -469,6 +470,8 @@ namespace Uno.UI
 #endif
 		}
 
+=======
+>>>>>>> c332a25b2... feat(iOS): Add TimePicker Feature Flag
 		public static class TimePicker
 		{
 #if __IOS__

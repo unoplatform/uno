@@ -25,10 +25,8 @@
 
 	<!--iOS14 feature flag-->
 	<x:Boolean x:Key="DatePickerUsePlatformDefaultStyle">False</x:Boolean>
-	<x:Boolean x:Key="TimePickerUsePlatformDefaultStyle">False</x:Boolean>
 
 	<ios:StaticResource x:Key="DatePickerSelectorUsePlatformDefaultStyle" ResourceKey="DatePickerUsePlatformDefaultStyle" />
-	<ios:StaticResource x:Key="TimePickerSelectorUsePlatformDefaultStyle" ResourceKey="TimePickerUsePlatformDefaultStyle" />	
 	<!--iOS14 feature flag-->
 
 	<!-- Default native Button styles -->
