@@ -17,13 +17,6 @@ namespace Windows.UI.Xaml.Controls
 		private NSDate _initialValue;
 		private NSDate _newValue;
 
-		private readonly UIDatePickerStyle _iOSDefaultStyle = UIDatePickerStyle.Wheels;
-
-		partial void InitPartial()
-		{
-			ResourceResolver.ApplyResource(this, UsePlatformDefaultStyleProperty, "DatePickerSelectorUsePlatformDefaultStyle", isThemeResourceExtension: false);
-		}
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -169,28 +162,6 @@ namespace Windows.UI.Xaml.Controls
 			return date;
 		}
 
-		/// <summary>
-		/// Used to set whether or not we want to use the default <see cref="PreferredDatePickerStyle" /> specified for the os Version
-		/// Default value is False
-		/// </summary>
-		public bool UsePlatformDefaultStyle
-		{
-			get => (bool)GetValue(UsePlatformDefaultStyleProperty);
-			set => SetValue(UsePlatformDefaultStyleProperty, value);
-		}
-
-		public static DependencyProperty UsePlatformDefaultStyleProperty { get; } =
-			DependencyProperty.Register(
-				nameof(UsePlatformDefaultStyle),
-				typeof(bool),
-				typeof(DatePickerSelector),
-				new FrameworkPropertyMetadata(
-				 defaultValue:	false,
-				 propertyChangedCallback: (s, e) => ((DatePickerSelector)s)?.OnUseDefaultStyleChanged()
-				));
-
-		private void OnUseDefaultStyleChanged() => UpdatePickerStyle();
-
 		private void UpdatePickerStyle()
 		{
 			if (_picker == null)
@@ -198,9 +169,16 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_picker.PreferredDatePickerStyle = UIDevice.CurrentDevice.CheckSystemVersion(14, 0) && UsePlatformDefaultStyle
-						   ? UIDatePickerStyle.Inline
-						   : _iOSDefaultStyle;
+			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+			{
+				_picker.PreferredDatePickerStyle = FeatureConfiguration.DatePicker.UseLegacyStyle
+																			? UIDatePickerStyle.Wheels
+																			: UIDatePickerStyle.Inline;
+			}
+			else
+			{
+				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
+			}
 		}
 	}
 }
