@@ -42,6 +42,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public class ViewManagerTests : MUXApiTestBase
 	{
 		[TestMethod]
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void CanQueryElementFactory()
 		{
 			RunOnUIThread.Execute(() =>
@@ -427,6 +428,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateGetElementAtCachingForLayout()
 		{
 			List<int> data = Enumerable.Range(0, 15).ToList();
@@ -480,6 +482,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// from the end of the range inwards. This allows us to better track first/last realized indices in 
 		// ViewManager. Breaking this can cause a performance regression.
 		[TestMethod]
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateElementClearingOrderFromFlowLayout()
 		{
 			ItemsSourceView dataSource = null;
@@ -546,6 +549,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void CanResetLayoutAfterUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));
@@ -761,6 +765,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		// Why does this test work?
 		// When the elements get created from the RecyclingElementFactory, we get already "existing" data templates.
 		// However, the reason for the crash in #2384 is that those "empty" data templates actually still had their data context

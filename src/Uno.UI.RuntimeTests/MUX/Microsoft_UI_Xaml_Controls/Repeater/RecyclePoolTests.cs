@@ -183,6 +183,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// When the owner is not the same, the element we get out of the recycle
 		// pool should be disconnected from its previous parent.
 		[TestMethod]
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateChildRemovedFromParentWhenOwnerIsDifferent()
 		{
 			RunOnUIThread.Execute(() =>

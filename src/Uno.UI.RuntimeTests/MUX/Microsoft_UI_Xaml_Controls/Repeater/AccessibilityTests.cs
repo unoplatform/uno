@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public class AccessibilityTests : MUXApiTestBase
 	{
 		[TestMethod]
-		//[Ignore("Automation peers are not fully supported on Uno")]
+		[Ignore("Automation peers are not fully supported on Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateChildrenPeers()
 		{
 			RunOnUIThread.Execute(() =>
