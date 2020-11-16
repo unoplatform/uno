@@ -13,6 +13,9 @@ namespace Microsoft.CodeAnalysis
     /// </summary>
     internal static class SymbolExtensions
 	{
+		private static bool IsRoslyn34OrEalier { get; }
+			= typeof(INamedTypeSymbol).Assembly.GetVersionNumber() <= new Version("3.4");
+
 		public static IEnumerable<IPropertySymbol> GetProperties(this INamedTypeSymbol symbol) => symbol.GetMembers().OfType<IPropertySymbol>();
 
 		public static IEnumerable<IEventSymbol> GetAllEvents(this INamedTypeSymbol symbol)
@@ -460,6 +463,28 @@ namespace Microsoft.CodeAnalysis
 		public static IFieldSymbol FindField(this INamedTypeSymbol symbol, INamedTypeSymbol fieldType, string fieldName, StringComparison comparison = default)
 		{
 			return symbol.GetFields().FirstOrDefault(x => Equals(x.Type, fieldType) && x.Name.Equals(fieldName, comparison));
+		}
+
+		/// <summary>
+		/// Builds a fully qualified type string, including generic types.
+		/// </summary>
+		public static string GetFullyQualifiedType(this ITypeSymbol type)
+		{
+			if (IsRoslyn34OrEalier && type is INamedTypeSymbol namedTypeSymbol)
+			{
+				if (namedTypeSymbol.IsGenericType && !namedTypeSymbol.IsNullable())
+				{
+					var typeName = Microsoft.CodeAnalysis.CSharp.SymbolDisplay.ToDisplayString(type, format: new SymbolDisplayFormat(
+											globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
+											typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+											genericsOptions: SymbolDisplayGenericsOptions.None,
+											miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers));
+	
+					return typeName + "<" + string.Join(", ", namedTypeSymbol.TypeArguments.Select(GetFullyQualifiedType)) + ">";
+				}
+			}
+
+			return type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 		}
 	}
 }
