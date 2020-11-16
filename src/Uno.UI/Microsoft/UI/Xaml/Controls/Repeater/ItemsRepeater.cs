@@ -22,10 +22,28 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsRepeater : FrameworkElement, IPanel
 	{
+		internal IElementFactoryShim ItemTemplateShim => m_itemTemplateWrapper;
+
+		internal object LayoutState
+		{
+			get => m_layoutState;
+			set => m_layoutState = value;
+		}
+
+		internal Rect VisibleWindow => m_viewportManager.GetLayoutVisibleWindow();
+		internal Rect RealizationWindow => m_viewportManager.GetLayoutRealizationWindow();
+		internal UIElement SuggestedAnchor => m_viewportManager.SuggestedAnchor;
+		internal UIElement MadeAnchor => m_viewportManager.MadeAnchor;
+
+		internal Point LayoutOrigin
+		{
+			get => m_layoutOrigin;
+			set => m_layoutOrigin = value;
+		}
+
 		private readonly UIElementCollection _repeaterChildren;
 		UIElementCollection IPanel.Children => _repeaterChildren;
 		internal IList<UIElement> Children => _repeaterChildren;
-
 
 		// Change to 'true' to turn on debugging outputs in Output window
 		//private static bool s_IsDebugOutputEnabled = false;
@@ -34,8 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// A convention we use in the ItemsRepeater codebase for an invalid Rect value.
 		internal static Rect InvalidRect = new Rect(-1, -1, -1, -1);
-
-
 
 		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> ElementPrepared;
 		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementIndexChangedEventArgs> ElementIndexChanged;
