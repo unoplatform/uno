@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		/// <inheritdoc />
 		protected override IList<AutomationPeer> GetChildrenCore()
 		{
-			return Owner.GetChildren().Select(CreatePeerForElement).ToList();
+			return Owner.GetChildren().OfType<UIElement>().Select(CreatePeerForElement).ToList();
 		}
 
 		private string GetSimpleAccessibilityName()

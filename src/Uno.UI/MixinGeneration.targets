@@ -159,7 +159,12 @@
 	  that may not have the .cs files as explicit Compile items
 	  -->
 	  <Compile Remove="$(MSBuildThisFileDirectory)Mixins/**/*.cs" />
-	  <Compile Include="$(MSBuildThisFileDirectory)Mixins/**/*.cs" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\*.g.cs" Condition="$(IsMonoAndroid)" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\iOS\*.g.cs" Condition="$(IsXamarinIOS)" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\macOS\*.g.cs" Condition="$(IsXamarinMac)" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\Wasm\*.g.cs" Condition="'$(TargetFramework)'=='netstandard2.0'" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\net461\*.g.cs" Condition="'$(TargetFramework)'=='net461'" />
 	</ItemGroup>
   </Target>
 

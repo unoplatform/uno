@@ -344,7 +344,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var root = Window.Current.RootElement;
+			var root = Windows.UI.Xaml.Window.Current.RootElement;
 			if (root is null)
 			{
 				return;

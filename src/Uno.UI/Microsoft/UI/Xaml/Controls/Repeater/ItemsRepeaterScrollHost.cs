@@ -8,8 +8,10 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using Microsoft.UI.Private.Controls;
 using Uno.Disposables;
+using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
@@ -114,7 +116,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get
 			{
 				ScrollViewer value = null;
-				var children = GetChildren().ToList();
+				var children = VisualTreeHelper.GetChildren(this).ToList();
 				if (children.Count > 0)
 				{
 					value = children[0] as ScrollViewer;
@@ -128,8 +130,8 @@ namespace Microsoft.UI.Xaml.Controls
 				m_scrollViewerViewChanged?.Dispose();
 				m_scrollViewerSizeChanged?.Dispose();
 
-				ClearChildren();
-				AddChild(value);
+				VisualTreeHelper.ClearChildren(this);
+				VisualTreeHelper.AddChild(this, value);
 
 				// We don't want to listen to events in RS5+ since this guy is a no-op.
 #if SCROLLVIEWER_SUPPORTS_ANCHORING
@@ -220,7 +222,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #endregion
 
-#region IScrollAnchorProvider / IRepeaterScrollingSurface
+		#region IScrollAnchorProvider / IRepeaterScrollingSurface
 
 		internal double HorizontalAnchorRatio { get; set; }
 
@@ -257,7 +259,9 @@ namespace Microsoft.UI.Xaml.Controls
 			remove => _postArrange -= value;
 		}
 
+#pragma warning disable 67 // Event never invoked
 		private event ConfigurationChangedEventHandler _configurationChanged;
+#pragma warning restore 67
 		event ConfigurationChangedEventHandler IRepeaterScrollingSurface.ConfigurationChanged
 		{
 			add => _configurationChanged += value;
@@ -313,7 +317,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var elem = element;
 				bool hasLockedViewport = HasPendingBringIntoView;
-				var transformer = elem.TransformToVisual(hasLockedViewport ? scrollViewer.ContentTemplateRoot : scrollViewer);
+				var transformer = elem.TransformToVisual(hasLockedViewport ? (scrollViewer.ContentTemplateRoot as UIElement) : scrollViewer);
 				var zoomFactor = (double)(scrollViewer.ZoomFactor);
 				double viewportWidth = scrollViewer.ViewportWidth / zoomFactor;
 				double viewportHeight = scrollViewer.ViewportHeight / zoomFactor;
@@ -337,7 +341,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return default;
 		}
 
-#endregion
+		#endregion
 
 		private void ApplyPendingChangeView(ScrollViewer scrollViewer)
 		{
@@ -351,7 +355,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Arrange bounds are absolute.
 			var arrangeBounds = bringIntoView
 				.TargetElement
-				.TransformToVisual(scrollViewer.ContentTemplateRoot)
+				.TransformToVisual(scrollViewer.ContentTemplateRoot as UIElement)
 				.TransformBounds(new Rect(0, 0, layoutSlot.Width, layoutSlot.Height));
 
 			var scrollableArea = new Point(
@@ -383,7 +387,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private double TrackElement(UIElement element, Rect previousBounds, ScrollViewer scrollViewer)
 		{
 			var bounds = LayoutInformation.GetLayoutSlot(element as FrameworkElement);
-			var transformer = element.TransformToVisual(scrollViewer.ContentTemplateRoot);
+			var transformer = element.TransformToVisual(scrollViewer.ContentTemplateRoot as UIElement);
 			var newBounds = transformer.TransformBounds(new Rect(
 				0.0f,
 				0.0f,
@@ -465,7 +469,7 @@ namespace Microsoft.UI.Xaml.Controls
 						if (!candidate.IsRelativeBoundsSet)
 						{
 							var bounds = LayoutInformation.GetLayoutSlot(element as FrameworkElement);
-							var transformer = element.TransformToVisual(scrollViewer.ContentTemplateRoot);
+							var transformer = element.TransformToVisual(scrollViewer.ContentTemplateRoot as UIElement);
 							candidate.RelativeBounds = transformer.TransformBounds(new Rect(
 								0.0f,
 								0.0f,

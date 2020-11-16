@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty LayoutProperty { get; } = DependencyProperty.Register(
 			"Layout", typeof(Layout), typeof(ItemsRepeater), new PropertyMetadata(new StackLayout(), OnPropertyChanged));
 
-#if __ANDROID__
+#if __ANDROID__ || __MACOS__
 		public new Layout Layout
 #else
 		public Layout Layout
@@ -61,14 +61,18 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty AnimatorProperty { get; } = DependencyProperty.Register(
 			"Animator", typeof(ElementAnimator), typeof(ItemsRepeater), new PropertyMetadata(default(ElementAnimator), OnPropertyChanged));
 
+#if __MACOS__
+		public new ElementAnimator Animator
+#else
 		public ElementAnimator Animator
+#endif
 		{
 			get => (ElementAnimator)GetValue(AnimatorProperty);
 			set => SetValue(AnimatorProperty, value);
 		}
-		#endregion
+#endregion
 
-		#region HorizontalCacheLength (DP - With default callback)
+#region HorizontalCacheLength (DP - With default callback)
 		public static DependencyProperty HorizontalCacheLengthProperty { get; } = DependencyProperty.Register(
 			"HorizontalCacheLength", typeof(double), typeof(ItemsRepeater), new PropertyMetadata(2.0, OnPropertyChanged));
 
@@ -77,9 +81,9 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (double)GetValue(HorizontalCacheLengthProperty);
 			set => SetValue(HorizontalCacheLengthProperty, value);
 		}
-		#endregion
+#endregion
 
-		#region VerticalCacheLength (DP - With default callback)
+#region VerticalCacheLength (DP - With default callback)
 		public static DependencyProperty VerticalCacheLengthProperty { get; } = DependencyProperty.Register(
 			"VerticalCacheLength", typeof(double), typeof(ItemsRepeater), new PropertyMetadata(2.0, OnPropertyChanged));
 
@@ -88,11 +92,11 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (double)GetValue(VerticalCacheLengthProperty);
 			set => SetValue(VerticalCacheLengthProperty, value);
 		}
-		#endregion
+#endregion
 
-		#region VirtualizationInfo (DP - private attached)
+#region VirtualizationInfo (DP - private attached)
 		private static readonly DependencyProperty VirtualizationInfoProperty = DependencyProperty.RegisterAttached(
 			"VirtualizationInfo", typeof(VirtualizationInfo), typeof(ItemsRepeater), new PropertyMetadata(default(VirtualizationInfo))); 
-		#endregion
+#endregion
 	}
 }

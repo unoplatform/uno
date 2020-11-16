@@ -14,6 +14,7 @@ using System.Linq;
 using Uno.UI.Controls;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -196,7 +197,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (child != null)
 				{
-					var desiredChildSize = DesiredChildSize(child);
+					var desiredChildSize = LayoutInformation.GetDesiredSize(child);
 
 					var occludedPadding = ScrollContentPresenter._occludedRectPadding;
 					slotSize.Width -= occludedPadding.Left + occludedPadding.Right;

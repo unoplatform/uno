@@ -153,7 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		void OnCollectionChanged(object sender, global::System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
 			OnItemsSourceChanged(e);
 		}
@@ -165,32 +165,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void OnVectorChanged(IObservableVector<object> _, IVectorChangedEventArgs e)
 		{
-			// We need to build up NotifyCollectionChangedEventArgs here to raise the event.
+			// We need to build up global::System.Collections.Specialized.NotifyCollectionChangedEventArgs here to raise the event.
 			// There is opportunity to make this faster by caching the args if it does 
 			// show up as a perf issue.
 			// Also note that we do not access the data - we just add null. We just 
 			// need the count.
 
-			// UNO: We use the right NotifyCollectionChangedEventArgs as the provided action is
+			// UNO: We use the right global::System.Collections.Specialized.NotifyCollectionChangedEventArgs as the provided action is
 			//		restricted for each ctor overload.
 
 			switch (e.CollectionChange)
 			{
 				case CollectionChange.ItemInserted:
-					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new object[] {null}, (int)e.Index));
+					OnItemsSourceChanged(new global::System.Collections.Specialized.NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new object[] {null}, (int)e.Index));
 					break;
 				case CollectionChange.ItemRemoved:
-					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new object[] { null }, (int)e.Index));
+					OnItemsSourceChanged(new global::System.Collections.Specialized.NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new object[] { null }, (int)e.Index));
 					break;
 				case CollectionChange.ItemChanged:
-					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, new object[] { null }, new object[] { null }, (int)e.Index));
+					OnItemsSourceChanged(new global::System.Collections.Specialized.NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, new object[] { null }, new object[] { null }, (int)e.Index));
 					break;
 				case CollectionChange.Reset:
-					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+					OnItemsSourceChanged(new global::System.Collections.Specialized.NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 					break;
 				default:
 					global::System.Diagnostics.Debug.Assert(false);
-					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+					OnItemsSourceChanged(new global::System.Collections.Specialized.NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 					break;
 			}
 		}
