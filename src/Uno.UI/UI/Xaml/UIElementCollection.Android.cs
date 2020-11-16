@@ -98,7 +98,4 @@ namespace Windows.UI.Xaml.Controls
 			_owner.MoveViewTo((int)oldIndex, (int)newIndex);
 		}
 	}
-
-
 }
-#endif
