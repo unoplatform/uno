@@ -229,10 +229,17 @@
       href: uno-development\debugging-inspect-visual-tree.md
     - name: Guidelines for code style
       href: contributing\guidelines\code-style.md
-    - name: Guidelines for creating tests
-      href: contributing\guidelines\creating-tests.md
-    - name: Working with the samples applications
+    - name: Using the SamplesApp
       href: uno-development\working-with-the-samples-apps.md
+    - name: Guidelines for creating tests
+      topicHref: contributing\guidelines\creating-tests.md
+      items:
+        - name: Mocked unit tests (Uno.UI.Tests)
+          href: uno-development\creating-mocked-tests.md
+        - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
+          href: uno-development\creating-runtime-tests.md
+        - name: UI tests with Uno.UITest
+          href: uno-development\creating-ui-tests.md
     - name: Conventional Commits format
       href: uno-development\git-conventional-commits.md
     - name: Guidelines for pull-requests
