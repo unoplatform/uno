@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -23,7 +25,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 {
 	public sealed partial class MapPresenter : Control
 	{
-		private Grid _mapGrid, _layerGrid;
+		private Grid? _mapGrid, _layerGrid;
 
 		private MKMapView _internalMapView;
 		private readonly Dictionary<OverlayAlias, MKOverlayRenderer> _overlayRenderers = new Dictionary<OverlayAlias, MKOverlayRenderer>();
@@ -31,17 +33,12 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 		private readonly Dictionary<DependencyObject, MapControlAnnotation> _elements = new Dictionary<DependencyObject, MapControlAnnotation>();
 		private bool _changingCenter;
 
-		private MapControl _owner;
+		private MapControl? _owner;
 
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
-
-			_owner = TemplatedParent as MapControl;
-
-			_owner.RegisterPropertyChangedCallback(MapControl.CenterProperty, OnCenterChanged);
-			_owner.RegisterPropertyChangedCallback(MapControl.ZoomLevelProperty,  OnZoomLevelChanged);
-			(_owner.Children as DependencyObjectCollection).VectorChanged += OnChildrenCollectionChanged;
+			UpdateOwnerSubscriptions();
 
 			_mapGrid = GetTemplateChild("MapGrid") as Grid;
 			_layerGrid = GetTemplateChild("LayerGrid") as Grid;
@@ -70,6 +67,16 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			_internalMapView.GetViewForAnnotation = OnGetViewForAnnotation;
 		}
 
+		private IDisposable UpdateOwnerSubscriptions(MapControl owner)
+		{
+			var disposables = new CompositeDisposable();
+			owner.RegisterDisposablePropertyChangedCallback(MapControl.CenterProperty, OnCenterChanged).DisposeWith(disposables);
+			owner.RegisterDisposablePropertyChangedCallback(MapControl.ZoomLevelProperty, OnZoomLevelChanged).DisposeWith(disposables);
+
+			((DependencyObjectCollection)owner.Children).VectorChanged += OnChildrenCollectionChanged;
+			Disposable.Create(() => ((DependencyObjectCollection)owner.Children).VectorChanged -= OnChildrenCollectionChanged).DisposeWith(disposables);
+			return disposables;
+		}
 
 		private void OnRegionChanged(object sender, MKMapViewChangeEventArgs e)
 		{
@@ -79,7 +86,10 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 
 				try
 				{
-					_owner.Center = _internalMapView.Region.Center.ToGeopoint();
+					if (_owner != null)
+					{
+						_owner.Center = _internalMapView.Region.Center.ToGeopoint();
+					}
 					UpdateZoomLevel();
 				}
 				finally
@@ -93,11 +103,14 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 
 		private void UpdateZoomLevel()
 		{
-			_owner.ZoomLevel = 21 - Log2(_internalMapView.Region.Span.LongitudeDelta *
-			MapHelper.MercatorRadius * Math.PI / (180.0 * _internalMapView.Bounds.Size.Width));
+			if (_owner != null)
+			{
+				_owner.ZoomLevel = 21 - Log2(_internalMapView.Region.Span.LongitudeDelta *
+					MapHelper.MercatorRadius * Math.PI / (180.0 * _internalMapView.Bounds.Size.Width));
+			}
 		}
 
-		private void OnCenterChanged(DependencyObject sender, DependencyProperty dp)
+		private void OnCenterChanged(DependencyObject sender, object _)
 		{
 			if (!_changingCenter)
 			{
@@ -119,7 +132,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			}
 		}
 
-		private void OnZoomLevelChanged(DependencyObject sender, DependencyProperty dp)
+		private void OnZoomLevelChanged(DependencyObject sender, object _)
 		{
 			if (!_changingCenter)
 			{
@@ -141,9 +154,9 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			}
 		}
 
-		private void OnChildrenCollectionChanged(object sender, IVectorChangedEventArgs e)
+		private void OnChildrenCollectionChanged(object sender, IVectorChangedEventArgs? e)
 		{
-			if (_internalMapView != null)
+			if (_internalMapView != null && _owner != null)
 			{
 				var mapItemsControl = _owner.Children.OfType<MapItemsControl>();
 				var allItems = mapItemsControl.SelectMany(c => c.Items.OfType<UIElement>()).ToArray();
@@ -169,9 +182,12 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 
 		private void RefreshPosition()
 		{
-			var region = MapHelper.CreateRegion(_owner.Center, _owner.ZoomLevel, Bounds.Size);
+			if (_owner != null)
+			{
+				var region = MapHelper.CreateRegion(_owner.Center, _owner.ZoomLevel, Bounds.Size);
 
-			_internalMapView.SetRegion(region, true);
+				_internalMapView.SetRegion(region, true);
+			}
 		}
 
 		private void OnMapElementsChanged(DependencyPropertyChangedEventArgs e)
@@ -195,7 +211,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			return _overlayRenderers.GetValueOrDefault(overlay);
 		}
 
-		private MKAnnotationView OnGetViewForAnnotation(MKMapView mapView, AnnotationAlias annotation)
+		private MKAnnotationView? OnGetViewForAnnotation(MKMapView mapView, AnnotationAlias annotation)
 		{
 			if (annotation is MapControlAnnotation mapAnnotation)
 			{
@@ -226,7 +242,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 
 		private void UpdateMapPolygons()
 		{
-			if (_internalMapView != null)
+			if (_internalMapView != null && _owner != null)
 			{
 				_internalMapView.RemoveOverlays(_overlayRenderers.Keys.ToArray());
 
@@ -240,9 +256,9 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 
 				foreach (var polygon in _owner.MapElements)
 				{
-					if (polygon is MapPolyline)
+					if (polygon is MapPolyline mapPolyline)
 					{
-						AddPolyline(polygon as MapPolyline);
+						AddPolyline(mapPolyline);
 					}
 				}
 			}

@@ -3,15 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 using System;
 using System.Collections.Generic;
+using Uno;
 using Windows.Devices.Geolocation;
 
 namespace Windows.UI.Xaml.Controls.Maps
 {
+#if !__IOS__ && !__ANDROID__
+	[NotImplemented]
+#endif
 	public partial class MapControl : Controls.Control, IUnoMapControl
 	{
 		public MapControl()
 		{
 			Children = new DependencyObjectCollection(this);
+
+			Layers = new List<MapLayer>();
 
 			DefaultStyleKey = typeof(MapControl);
 		}
