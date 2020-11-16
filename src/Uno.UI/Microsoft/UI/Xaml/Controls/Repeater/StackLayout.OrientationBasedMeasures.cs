@@ -4,7 +4,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial partial class StackLayout : OrientationBasedMeasures
+	partial class StackLayout : OrientationBasedMeasures
 	{
 		private ScrollOrientation ScrollOrientation { get; set; }
 		ScrollOrientation OrientationBasedMeasures.ScrollOrientation

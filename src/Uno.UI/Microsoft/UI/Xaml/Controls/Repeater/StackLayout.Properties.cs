@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial partial class StackLayout
+	partial class StackLayout
 	{
 		private static void OnDependencyPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 			=> ((StackLayout)sender).OnPropertyChanged(args);

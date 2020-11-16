@@ -9,7 +9,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial partial class VirtualLayoutContextAdapter
+	internal partial class VirtualLayoutContextAdapter
 	{
 		private class ChildrenCollection : IReadOnlyList<UIElement>, IEnumerable<UIElement>
 		{
