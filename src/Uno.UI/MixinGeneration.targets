@@ -152,6 +152,15 @@
 
 	<!-- This allows for the mixins to generate in parallel -->
 	<MSBuild BuildInParallel="true" Projects="@(MixinDefinition)" StopOnFirstFailure="True" Targets="_InnerGenerateMixins" />
+	
+	<ItemGroup>
+	  <!--
+	  Restore the compile items for projects using globbing
+	  that may not have the .cs files as explicit Compile items
+	  -->
+	  <Compile Remove="$(MSBuildThisFileDirectory)Mixins/**/*.cs" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins/**/*.cs" />
+	</ItemGroup>
   </Target>
 
   <Target Name="_OptimizeT4Generator" Condition="$([MSBuild]::IsOSUnixLike())">
