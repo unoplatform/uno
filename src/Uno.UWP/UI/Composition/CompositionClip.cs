@@ -6,7 +6,7 @@ namespace Windows.UI.Composition
 {
 	public partial class CompositionClip : CompositionObject
 	{
-		public CompositionClip(Compositor compositor) : base(compositor)
+		internal CompositionClip(Compositor compositor) : base(compositor)
 		{
 
 		}

@@ -85,6 +85,8 @@ namespace Uno.UWPSyncGenerator
 						  where Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Foundation")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.System")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.ApplicationModel.Resources")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Graphics")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Networking.Connectivity.WwanContract")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract")
@@ -100,7 +102,10 @@ namespace Uno.UWPSyncGenerator
 				"Microsoft.UI.Xaml",
 				"Microsoft.UI.Composition",
 				"Microsoft.UI.Text",
-				"Microsoft.System"
+				"Microsoft.UI.Input",
+				"Microsoft.System",
+				"Microsoft.Graphics",
+				"Microsoft.ApplicationModel.Resources",
 #endif
 			};
 
@@ -180,6 +185,9 @@ namespace Uno.UWPSyncGenerator
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.System")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Text")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Input")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Graphics")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.ApplicationModel.Resources")
 #endif
 			))
 			{
@@ -1387,6 +1395,15 @@ namespace Uno.UWPSyncGenerator
 					case "XYFocusLeftProperty":
 					case "XYFocusDownProperty":
 					case "XYFocusUpProperty":
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "WebView2")
+			{
+				switch (property.Name)
+				{
+					case "CoreWebView2":
 						return true;
 				}
 			}

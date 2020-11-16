@@ -1,4 +1,4 @@
-﻿// MUX Reference InspectingDataSource.cpp, commit 37ade09
+// MUX Reference InspectingDataSource.cpp, commit 37ade09
 
 using System;
 using System.Collections;
@@ -247,7 +247,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Also note that we do not access the data - we just add nullptr. We just 
 			// need the count.
 
-			NotifyCollectionChangedAction action;
+			global::System.Collections.Specialized.NotifyCollectionChangedAction action;
 			int oldStartingIndex = -1;
 			int newStartingIndex = -1;
 
@@ -257,19 +257,19 @@ namespace Microsoft.UI.Xaml.Controls
 			switch (e.CollectionChange)
 			{
 				case CollectionChange.ItemInserted:
-					action = NotifyCollectionChangedAction.Add;
+					action = global::System.Collections.Specialized.NotifyCollectionChangedAction.Add;
 					newStartingIndex = (int)e.Index;
 					newItems.Add(null);
 					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(action, newItems, newStartingIndex));
 					break;
 				case CollectionChange.ItemRemoved:
-					action = NotifyCollectionChangedAction.Remove;
+					action = global::System.Collections.Specialized.NotifyCollectionChangedAction.Remove;
 					oldStartingIndex = (int)e.Index;
 					oldItems.Add(null);
 					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(action, oldItems, oldStartingIndex));
 					break;
 				case CollectionChange.ItemChanged:
-					action = NotifyCollectionChangedAction.Replace;
+					action = global::System.Collections.Specialized.NotifyCollectionChangedAction.Replace;
 					oldStartingIndex = (int)e.Index;
 					newStartingIndex = oldStartingIndex;
 					newItems.Add(null);
@@ -277,7 +277,7 @@ namespace Microsoft.UI.Xaml.Controls
 					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(action, newItems, oldItems, newStartingIndex));
 					break;
 				case CollectionChange.Reset:
-					action = NotifyCollectionChangedAction.Reset;
+					action = global::System.Collections.Specialized.NotifyCollectionChangedAction.Reset;
 					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(action));
 					break;
 				default:

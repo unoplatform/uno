@@ -37,6 +37,8 @@ namespace Uno.UWPSyncGenerator
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Text");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.System");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Graphics");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.ApplicationModel.Resources");
 #else
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
 #endif
@@ -48,6 +50,8 @@ namespace Uno.UWPSyncGenerator
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI");
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Text");
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.System");
+				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Graphics");
+				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.ApplicationModel.Resources");
 #else
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
 #endif
