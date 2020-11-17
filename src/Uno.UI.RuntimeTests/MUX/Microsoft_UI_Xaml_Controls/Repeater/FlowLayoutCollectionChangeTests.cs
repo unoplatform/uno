@@ -492,6 +492,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
+#if NETSTANDARD // https://github.com/unoplatform/uno/issues/4529
 		[TestMethod]
 		public void ValidateClear()
 		{
@@ -508,6 +509,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Verify.AreEqual(0, realized);
 			});
 		}
+#endif
 
 		private ItemsRepeater SetupRepeater(CustomItemsSource dataSource)
 		{

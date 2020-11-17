@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using static Microsoft.UI.Xaml.Controls._Tracing;
-#if NETSTANDARD2_0
+#if !XAMARIN
 using _Double = Uno.UI.LayoutHelper;
 #else
 using _Double = System.Double;

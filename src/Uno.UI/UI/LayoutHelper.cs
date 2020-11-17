@@ -261,7 +261,7 @@ namespace Uno.UI
 			);
 		}
 
-#if NETSTANDARD2_0
+#if !XAMARIN
 		[Pure]
 		internal static bool IsFinite(this double value)
 			=> !IsInfinity(value) && !IsNaN(value);

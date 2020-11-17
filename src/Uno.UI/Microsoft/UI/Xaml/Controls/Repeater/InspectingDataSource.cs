@@ -136,7 +136,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			switch (vector)
 			{
-				case INotifyCollectionChanged incc:
+				case global::System.Collections.Specialized.INotifyCollectionChanged incc:
 					_collectionChangedListener = Disposable.Create(() => incc.CollectionChanged -= OnCollectionChanged);
 					incc.CollectionChanged += OnCollectionChanged;
 					break;

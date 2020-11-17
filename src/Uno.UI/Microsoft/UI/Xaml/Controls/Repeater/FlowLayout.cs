@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static Microsoft.UI.Xaml.Controls._Tracing;
-#if NETSTANDARD2_0
+#if !XAMARIN
 using _Float = Uno.UI.LayoutHelper;
 #else
 using _Float = System.Single;

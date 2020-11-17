@@ -66,6 +66,8 @@
 		<PackageReference Include="Microsoft.UI.Xaml" Version="2.4.3" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+		<!--SkipMicrosoftUIXamlCheckTargetPlatformVersion is required for Microsoft.UI.Xaml as we only validate compilation here-->
+		<SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
 		<DefineConstants>$(DefineConstants);WINDOWS_UWP</DefineConstants>
 	</PropertyGroup>
 

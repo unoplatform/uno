@@ -649,6 +649,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
+#if NETSTANDARD // https://github.com/unoplatform/uno/issues/4529
 		[TestMethod]
 		public void VerifyNullTemplateGivesMeaningfullError()
 		{
@@ -679,6 +680,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content = null;
 			});
 		}
+#endif
+
 		private ItemsRepeaterScrollHost CreateAndInitializeRepeater(
 			object itemsSource,
 			Layout layout,

@@ -30,11 +30,9 @@ using _ViewGroup = AppKit.NSView;
 #elif __ANDROID__
 using _View = Android.Views.View;
 using _ViewGroup = Android.Views.ViewGroup;
-#elif NETSTANDARD
+#else
 using _View = Windows.UI.Xaml.UIElement;
 using _ViewGroup = Windows.UI.Xaml.UIElement;
-#else
-using _View = System.Object;
 #endif
 
 namespace Windows.UI.Xaml.Media
