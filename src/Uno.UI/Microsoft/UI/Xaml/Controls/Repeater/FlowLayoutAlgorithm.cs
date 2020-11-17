@@ -182,7 +182,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!IsVirtualizingContext)
 			{
 				// Non virtualizing host, start generating from the element 0
-				anchorIndex = context.ItemCountCore > 0 ? 0 : -1;
+				anchorIndex = context.ItemCount > 0 ? 0 : -1;
 			}
 			else
 			{

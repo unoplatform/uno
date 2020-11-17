@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region IVirtualizingLayoutContextOverrides
 
-		protected internal override int ItemCountCore => m_nonVirtualizingContext.TryGetTarget(out var context) ? context.Children.Count : 0;
+		protected override int ItemCountCore() => m_nonVirtualizingContext.TryGetTarget(out var context) ? context.Children.Count : 0;
 
 		protected override object GetItemAtCore(int index)
 			=> m_nonVirtualizingContext.TryGetTarget(out var context) ? context.Children[index] : null;
@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return -1;
 		}
 
-		protected override Rect RealizationRectCore => new Rect(0, 0, double.PositiveInfinity, double.PositiveInfinity);
+		protected override Rect RealizationRectCore() => new Rect(0, 0, double.PositiveInfinity, double.PositiveInfinity);
 
 		protected override int RecommendedAnchorIndexCore => -1;
 

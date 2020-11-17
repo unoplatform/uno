@@ -418,7 +418,7 @@ namespace Microsoft.UI.Xaml.Controls
 			double avgLineSize = 0;
 			avgCountInLine = 1;
 
-			MUX_ASSERT(context.ItemCountCore > 0);
+			MUX_ASSERT(context.ItemCount > 0);
 			if (flowState.TotalLinesMeasured == 0)
 			{
 				var tmpElement = context.GetOrCreateElementAt(0, ElementRealizationOptions.ForceCreate | ElementRealizationOptions.SuppressAutoRecycle);

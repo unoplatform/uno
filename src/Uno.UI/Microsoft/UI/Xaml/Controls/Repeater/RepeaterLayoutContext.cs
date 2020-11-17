@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region ILayoutContext
 
-		protected internal override int ItemCountCore => GetOwner().ItemsSourceView?.Count ?? 0;
+		protected override int ItemCountCore() => GetOwner().ItemsSourceView?.Count ?? 0;
 
 		protected override UIElement GetOrCreateElementAtCore(int index, ElementRealizationOptions options)
 		{
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 			owner.ClearElementImpl(element);
 		}
 
-		protected override Rect RealizationRectCore => GetOwner().RealizationWindow;
+		protected override Rect RealizationRectCore() => GetOwner().RealizationWindow;
 
 		protected override int RecommendedAnchorIndexCore
 		{

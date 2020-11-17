@@ -33,10 +33,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return view.DesiredSize;
 		}
-
-		partial void SetDesiredChildSize(View view, Size size)
-		{
-			view.DesiredSize = size;
-		}
 	}
 }
