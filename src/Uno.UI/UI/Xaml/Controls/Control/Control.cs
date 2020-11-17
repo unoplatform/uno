@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
@@ -724,7 +724,11 @@ namespace Windows.UI.Xaml.Controls
 			&& IsEnabled
 			&& IsTabStop;
 
-		public bool Focus(FocusState value)
+		public
+#if HAS_UNO_WINUI // Focus is moved to UIElement, avoid breaking binary compatibility.
+			new
+#endif
+			bool Focus(FocusState value)
 		{
 			if (value == FocusState.Unfocused)
 			{

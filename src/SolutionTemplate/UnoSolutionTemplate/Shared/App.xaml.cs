@@ -48,7 +48,15 @@ namespace $ext_safeprojectname$
 				// this.DebugSettings.EnableFrameRateCounter = true;
 			}
 #endif
-			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
+
+#if NET5_0 && WINDOWS
+			var window = new Window();
+			window.Activate();
+#else
+			var window = Windows.UI.Xaml.Window.Current;
+#endif
+
+			Frame rootFrame = window.Content as Frame;
 
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active
@@ -65,10 +73,12 @@ namespace $ext_safeprojectname$
 				}
 
 				// Place the frame in the current Window
-				Windows.UI.Xaml.Window.Current.Content = rootFrame;
+				window.Content = rootFrame;
 			}
 
+#if !(NET5_0 && WINDOWS)
 			if (e.PrelaunchActivated == false)
+#endif
 			{
 				if (rootFrame.Content == null)
 				{
@@ -78,7 +88,7 @@ namespace $ext_safeprojectname$
 					rootFrame.Navigate(typeof(MainPage), e.Arguments);
 				}
 				// Ensure the current window is active
-				Windows.UI.Xaml.Window.Current.Activate();
+				window.Activate();
 			}
 		}
 
