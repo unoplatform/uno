@@ -30,8 +30,8 @@ If you wish to customise the overlay color, add the following to your top-level 
 		Color="Pink" />
 ```
 
-Since **iOS14** the native DatePicker changed the way it's presented. To keep consistency, the previous style (< iOS13) was defined as the default for this Control.
-If you want iOS14 devices to use the brand new looking **Picker** you just need to add the following at your top-level `App.Resources`:
-```
-<x:Boolean x:Key="DatePickerSelectorUsePlatformDefaultStyle">True</x:Boolean>
+Since **iOS14** the native `DatePicker` changed the way it's presented. By default iOS14 devices will display this new style.  You can still force the previous style (the one found in iOS13 or earlier) by adding the following at your `App.xaml.cs` class:
+
+```csharp
+Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
 ```
