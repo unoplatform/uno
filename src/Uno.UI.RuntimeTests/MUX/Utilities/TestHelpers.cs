@@ -27,7 +27,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
+#if !WINDOWS_UWP
 using Popup = Windows.UI.Xaml.Controls.Popup; // Should be in Primitives!
+#endif
 
 namespace MUXControlsTestApp
 {
@@ -175,7 +177,11 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static IList<T> FindDescendents<T>(DependencyObject root)
+#if WINDOWS_UWP
+			where T : DependencyObject
+#else
 			where T : class, DependencyObject
+#endif
 		{
 			List<T> descendentsList = new List<T>();
 

@@ -64,9 +64,12 @@
 	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
 		<PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
 		<PackageReference Include="Microsoft.UI.Xaml" Version="2.4.3" />
+
+		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
+		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
-		<!--SkipMicrosoftUIXamlCheckTargetPlatformVersion is required for Microsoft.UI.Xaml as we only validate compilation here-->
+		<!--SkipMicrosoftUIXamlCheckTargetPlatformVersion is required for Microsoft.UI.Xaml as we only validate compilation on UAP-->
 		<SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
 		<DefineConstants>$(DefineConstants);WINDOWS_UWP</DefineConstants>
 	</PropertyGroup>

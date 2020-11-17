@@ -15,6 +15,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private int m_cachedSize  =  -1;
 
+		public ItemsSourceView(object source)
+		{
+			// The 'source' parameter is from the updated public API, but is not used
+			// (and actually not even present) in the C++ code that has been converted.
+		}
+
 		#region IDataSource
 
 		public int Count

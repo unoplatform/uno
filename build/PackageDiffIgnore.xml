@@ -3252,13 +3252,13 @@
 				reason="Not part of the UWP API"/>
 			<Member
 				fullName="System.Void Windows.Foundation.GuidHelper..ctor()"
-				reason="Not part of the UWP API"/>				
+				reason="Not part of the UWP API"/>
 			<Member
 				fullName="System.Void Windows.UI.Xaml.XamlRootChangedEventArgs..ctor()"
 				reason="Not part of the UWP API"/>
-      <Member
-			  fullName="System.Void Microsoft.UI.Xaml.Controls.TabView.set_TabItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)"
-			  reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Microsoft.UI.Xaml.Controls.TabView.set_TabItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)"
+				reason="Not part of the UWP API"/>
 		</Methods>
 		<Fields>
 			<Member
@@ -3280,16 +3280,32 @@
 	</IgnoreSet>
 
 	<IgnoreSet baseVersion="3.2.0">
-	  <Types>
-	  </Types>
-	  <Methods>
-		<Member
-			fullName="System.Void Windows.UI.Core.KeyEventArgs..ctor()"
-			reason="Parameter-less ctor does not exist in UWP"/>
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionClip..ctor(Windows.UI.Composition.Compositor compositor)"
-			reason="Parameter-less ctor does not exist in UWP"/>
-	  </Methods>
+		<Types>
+		</Types>
+		<Methods>
+			<Member
+				fullName="System.Void Windows.UI.Core.KeyEventArgs..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionClip..ctor(Windows.UI.Composition.Compositor compositor)"
+				reason="Parameter-less ctor does not exist in UWP"/>
+
+			<Member
+				fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsSourceView..ctor(System.Object source)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.EffectiveViewportChangedEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="Windows.UI.Xaml.Controls.UIElementCollection Windows.UI.Xaml.Controls.Panel.get_Children()"
+				reason="Diff tool issue: Has not been removed, but is now part of an internal interface."/>
+			<Member
+				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Media.VisualTreeHelper.AdaptNative(System.Object nativeView)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Media.VisualTreeHelper.TryAdaptNative(System.Object view)"
+				reason="Not part of the UWP API"/>
+		</Methods>
 	</IgnoreSet>
   </IgnoreSets>
 </DiffIgnore>

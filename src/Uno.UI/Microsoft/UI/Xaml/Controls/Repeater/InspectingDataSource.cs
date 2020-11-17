@@ -14,6 +14,12 @@ using Uno.Disposables;
 using _IBindableVector = System.Collections.IList;
 using _IBindableIterable = System.Collections.IEnumerable;
 
+// Conflicting types
+using NotifyCollectionChangedEventArgs = global::System.Collections.Specialized.NotifyCollectionChangedEventArgs;
+using NotifyCollectionChangedAction = global::System.Collections.Specialized.NotifyCollectionChangedAction;
+using INotifyCollectionChanged = global::System.Collections.Specialized.INotifyCollectionChanged;
+using CollectionChange = global::Windows.Foundation.Collections.CollectionChange;
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class InspectingDataSource : ItemsSourceView
@@ -24,6 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private IDisposable _collectionChangedListener;
 
 		public InspectingDataSource(object source)
+			: base(source)
 		{
 			if (source == null)
 			{
@@ -136,7 +143,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			switch (vector)
 			{
-				case global::System.Collections.Specialized.INotifyCollectionChanged incc:
+				case INotifyCollectionChanged incc:
 					_collectionChangedListener = Disposable.Create(() => incc.CollectionChanged -= OnCollectionChanged);
 					incc.CollectionChanged += OnCollectionChanged;
 					break;
@@ -153,7 +160,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnCollectionChanged(object sender, global::System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			OnItemsSourceChanged(e);
 		}
@@ -165,32 +172,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void OnVectorChanged(IObservableVector<object> _, IVectorChangedEventArgs e)
 		{
-			// We need to build up global::System.Collections.Specialized.NotifyCollectionChangedEventArgs here to raise the event.
+			// We need to build up NotifyCollectionChangedEventArgs here to raise the event.
 			// There is opportunity to make this faster by caching the args if it does 
 			// show up as a perf issue.
 			// Also note that we do not access the data - we just add null. We just 
 			// need the count.
 
-			// UNO: We use the right global::System.Collections.Specialized.NotifyCollectionChangedEventArgs as the provided action is
+			// UNO: We use the right NotifyCollectionChangedEventArgs as the provided action is
 			//		restricted for each ctor overload.
 
 			switch (e.CollectionChange)
 			{
 				case CollectionChange.ItemInserted:
-					OnItemsSourceChanged(new global::System.Collections.Specialized.NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new object[] {null}, (int)e.Index));
+					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new object[] {null}, (int)e.Index));
 					break;
 				case CollectionChange.ItemRemoved:
-					OnItemsSourceChanged(new global::System.Collections.Specialized.NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new object[] { null }, (int)e.Index));
+					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new object[] { null }, (int)e.Index));
 					break;
 				case CollectionChange.ItemChanged:
-					OnItemsSourceChanged(new global::System.Collections.Specialized.NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, new object[] { null }, new object[] { null }, (int)e.Index));
+					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, new object[] { null }, new object[] { null }, (int)e.Index));
 					break;
 				case CollectionChange.Reset:
-					OnItemsSourceChanged(new global::System.Collections.Specialized.NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 					break;
 				default:
 					global::System.Diagnostics.Debug.Assert(false);
-					OnItemsSourceChanged(new global::System.Collections.Specialized.NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 					break;
 			}
 		}
