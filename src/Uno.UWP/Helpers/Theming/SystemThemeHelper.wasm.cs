@@ -9,9 +9,16 @@ namespace Uno.Helpers.Theming
 {
 	internal static partial class SystemThemeHelper
 	{
+		private const string BaseUIXamlNamespace =
+#if HAS_UNO_WINUI
+			"Microsoft.UI.Xaml";
+#else
+			"Windows.UI.Xaml";
+#endif
+
         private static SystemTheme GetSystemTheme()
 		{
-			var serializedTheme = WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.getDefaultSystemTheme()");
+			var serializedTheme = WebAssemblyRuntime.InvokeJS(BaseUIXamlNamespace + ".Application.getDefaultSystemTheme()");
 
 			if (serializedTheme != null)
 			{
