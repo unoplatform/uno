@@ -815,7 +815,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// For Android/iOS/MacOS, ensure that the ScrollContentPresenter contains a native scroll viewer,
 				// which will handle the actual scrolling
-				var nativeSCP = new NativeScrollContentPresenter();
+				var nativeSCP = new NativeScrollContentPresenter(this);
 				scp.Content = nativeSCP;
 				_presenter = nativeSCP;
 			}
