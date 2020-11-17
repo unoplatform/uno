@@ -410,7 +410,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 					foreach (var property in properties)
 					{
-						var propertyTypeName = GetFullyQualifiedType(property.Type);
+						var propertyTypeName = property.Type.GetFullyQualifiedType();
 						var propertyName = property.Name;
 
 						if (IsStringIndexer(property))
@@ -505,23 +505,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			writer.AppendLine();
 		}
 
-		private object GetFullyQualifiedType(ITypeSymbol type)
-		{
-			if(type is INamedTypeSymbol namedTypeSymbol)
-			{
-				if (namedTypeSymbol.IsGenericType && !namedTypeSymbol.IsNullable())
-				{
-					return SymbolDisplay.ToDisplayString(type, format: new SymbolDisplayFormat(
-						globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
-						typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-						genericsOptions: SymbolDisplayGenericsOptions.None,
-						miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers))
-						+ "<" + string.Join(", ", namedTypeSymbol.TypeArguments.Select(GetFullyQualifiedType)) + ">";
-				}
-			}
-
-			return type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-		}
 
 		private static string ExpandType(INamedTypeSymbol ownerType)
 		{
