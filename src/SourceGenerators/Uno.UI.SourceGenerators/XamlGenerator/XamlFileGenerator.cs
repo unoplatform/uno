@@ -120,7 +120,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _setterSymbol;
 		private readonly INamedTypeSymbol _colorSymbol;
 
-		private readonly List<INamedTypeSymbol> _markupExtensionTypes;
 		private readonly List<INamedTypeSymbol> _xamlConversionTypes;
 
 		private readonly bool _isWasm;
@@ -232,7 +231,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_androidContentContextSymbol = FindType("Android.Content.Context");
 			_androidViewSymbol = FindType("Android.Views.View");
 
-			_markupExtensionTypes = _metadataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
 			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith(GetType(XamlConstants.Types.CreateFromStringAttribute)).ToList();
 
 			_isWasm = isWasm;
@@ -1680,20 +1678,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private INamedTypeSymbol? GetMarkupExtensionType(XamlType xamlType)
+		private INamedTypeSymbol GetMarkupExtensionType(XamlType xamlType)
 		{
 			if (xamlType == null)
 			{
 				return null;
 			}
 
-			// Adjustment for Uno.Xaml parser which returns the namespace in the name
-			var xamlTypeName = xamlType.Name.Contains(':') ? xamlType.Name.Split(':').LastOrDefault() : xamlType.Name;
-			var extendedXamlTypeName = xamlTypeName + "Extension";
+			var ns = GetTrimmedNamespace(xamlType.PreferredXamlNamespace); // No MarkupExtensions are defined in the framework, so we expect a user-defined namespace
+			var baseTypeString = $"{ns}.{xamlType.Name}";
+			var findType = FindType(baseTypeString);
+			findType ??= FindType(baseTypeString + "Extension"); // Support shortened syntax
+			if (findType?.Is(_markupExtensionSymbol) ?? false)
+			{
+				return findType;
+			}
 
-			// return  the type of custom markup extension				
-			return _markupExtensionTypes.FirstOrDefault(ns => ns.Name.Equals(xamlTypeName, StringComparison.InvariantCulture)
-				|| ns.Name.Equals(extendedXamlTypeName, StringComparison.InvariantCulture));
+			return null;
 		}
 
 		private bool IsCustomMarkupExtensionType(XamlType xamlType) =>
