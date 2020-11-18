@@ -3289,10 +3289,13 @@
 			<Member
 				fullName="System.Void Windows.UI.Composition.CompositionClip..ctor(Windows.UI.Composition.Compositor compositor)"
 				reason="Parameter-less ctor does not exist in UWP"/>
+		</Methods>
+	</IgnoreSet>
 
-			<Member
-				fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsSourceView..ctor(System.Object source)"
-				reason="Not part of the UWP API"/>
+	<IgnoreSet baseVersion="3.3.0">
+		<Types>
+		</Types>
+		<Methods>
 			<Member
 				fullName="System.Void Windows.UI.Xaml.EffectiveViewportChangedEventArgs..ctor()"
 				reason="Not part of the UWP API"/>
@@ -3301,11 +3304,12 @@
 				reason="Diff tool issue: Has not been removed, but is now part of an internal interface."/>
 			<Member
 				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Media.VisualTreeHelper.AdaptNative(System.Object nativeView)"
-				reason="Not part of the UWP API"/>
+				reason="Non UWP API - Has been updated to use UIElement instead of Object"/>
 			<Member
 				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Media.VisualTreeHelper.TryAdaptNative(System.Object view)"
-				reason="Not part of the UWP API"/>
+				reason="Non UWP API - Has been updated to use UIElement instead of Object"/>
 		</Methods>
 	</IgnoreSet>
+
   </IgnoreSets>
 </DiffIgnore>
