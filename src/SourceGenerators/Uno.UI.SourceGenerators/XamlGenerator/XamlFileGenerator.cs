@@ -760,7 +760,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var hasXBindExpressions = CurrentScope.XBindExpressions.Count != 0;
 			var hasResourceExtensions = CurrentScope.Components.Any(HasMarkupExtensionNeedingComponent);
 
-			if (hasXBindExpressions)
+			if (hasXBindExpressions || hasResourceExtensions)
 			{
 				writer.AppendLineInvariant($"Bindings = new {GetBindingsTypeNames(className).bindingsClassName}(this);");
 			}
@@ -824,7 +824,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildCompiledBindings(IndentedStringBuilder writer, string className)
 		{
-			if (CurrentScope.XBindExpressions.Count != 0)
+			var hasXBindExpressions = CurrentScope.XBindExpressions.Count != 0;
+			var hasResourceExtensions = CurrentScope.Components.Any(HasMarkupExtensionNeedingComponent);
+
+			if (hasXBindExpressions || hasResourceExtensions)
 			{
 				var (bindingsInterfaceName, bindingsClassName) = GetBindingsTypeNames(className);
 
@@ -1645,7 +1648,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// Bindings with ElementName properties needs to be resolved during Loading.
 						|| (o.Type.Name == "Binding" && o.Members.Any(m => m.Member.Name == "ElementName"))
 					)
-				);
+				)
+			|| (
+				objectDefinition.Type.Name == "ElementStub"
+			);
 
 		/// <summary>
 		/// Does this node or any nested nodes have markup extensions?
