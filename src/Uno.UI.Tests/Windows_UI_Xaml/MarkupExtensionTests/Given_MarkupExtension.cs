@@ -99,7 +99,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 
 		public object Value1 { get; set; }
 
-		public object Value2 { get; set; }
+		public int Value2 { get; set; }
 
 		protected override object ProvideValue()
 		{
