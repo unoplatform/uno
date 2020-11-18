@@ -838,12 +838,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (ns != null)
 				{
-					var nsName = ns.Namespace.TrimStart("using:");
-
-					if (nsName.StartsWith("clr-namespace:"))
-					{
-						nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
-					}
+					var nsName = GetTrimmedNamespace(ns.Namespace);
 
 					name = nsName + "." + fields[1];
 				}
@@ -881,6 +876,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Select(m => m())
 				.Trim()
 				.FirstOrDefault();
+		}
+
+		/// <summary>
+		/// Trim prefixes from namespace declaration
+		/// </summary>
+		private static string GetTrimmedNamespace(string nsNamespace)
+		{
+			var nsName = nsNamespace.TrimStart("using:");
+
+			if (nsName.StartsWith("clr-namespace:"))
+			{
+				nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
+			}
+
+			return nsName;
 		}
 
 		private IEnumerable<string> FindLocalizableProperties(XamlType xamlType)
