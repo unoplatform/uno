@@ -105,6 +105,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// Validate that if the pool has an element for the requested owner,
 		// then that is given preference over other elements.
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateRecycledElementOwnerAffinity()
 		{
 			RunOnUIThread.Execute(() =>

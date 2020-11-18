@@ -39,6 +39,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		const int expectedLastRealizedIndex = 8;
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidatePhaseInvokeAndOrdering()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone2))
@@ -117,6 +120,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateXBindWithoutPhasing()
 		{
 			ItemsRepeater repeater = null;

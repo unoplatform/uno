@@ -169,6 +169,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void CanRemoveItemsStartingInRealizedRange()
 		{
 			RunOnUIThread.Execute(() =>
@@ -197,6 +200,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		[TestMethod]
 		[TestProperty("Bug", "19259478")]
+#if __WASM__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void CanRemoveAndInsertItemsInRealizedRange()
 		{
 			RunOnUIThread.Execute(() =>
@@ -224,6 +230,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void CanRemoveItemsAfterRealizedRange()
 		{
 			RunOnUIThread.Execute(() =>
@@ -244,7 +253,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#if __WASM__
+		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void CanReplaceSingleItem()
 		{
 			CustomItemsSource dataSource = null;
@@ -308,6 +319,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void CanMoveItem()
 		{
 			CustomItemsSource dataSource = null;
@@ -407,6 +421,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #endif
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void EnsureReplaceOfAnchorDoesNotResetAllContainers()
 		{
 			CustomItemsSource dataSource = null;
@@ -452,6 +469,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateStableResets()
 		{
 			RunOnUIThread.Execute(() =>
@@ -473,6 +493,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateRegularResets()
 		{
 			RunOnUIThread.Execute(() =>
@@ -494,6 +517,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 #if NETSTANDARD // https://github.com/unoplatform/uno/issues/4529
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateClear()
 		{
 			RunOnUIThread.Execute(() =>

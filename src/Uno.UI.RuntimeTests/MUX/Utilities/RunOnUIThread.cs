@@ -33,7 +33,11 @@ namespace MUXControlsTestApp.Utilities
 		{
 			Exception exception = null;
 			var dispatcher = whichView.Dispatcher;
-			if (dispatcher.HasThreadAccess)
+			if (dispatcher.HasThreadAccess
+#if __WASM__
+				|| !dispatcher.IsThreadingSupported
+#endif
+				)
 			{
 				action();
 			}

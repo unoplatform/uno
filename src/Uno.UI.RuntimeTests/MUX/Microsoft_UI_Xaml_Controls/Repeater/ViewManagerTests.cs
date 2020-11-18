@@ -256,6 +256,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void CanChangeFocusAfterUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));
@@ -296,6 +299,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateElementEvents()
 		{
 			CustomItemsSource dataSource = null;
@@ -363,6 +369,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateElementIndexChangedEventOnStableReset()
 		{
 			CustomItemsSource dataSource = null;

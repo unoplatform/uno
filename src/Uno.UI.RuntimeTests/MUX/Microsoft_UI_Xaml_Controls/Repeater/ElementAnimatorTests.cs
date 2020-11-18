@@ -37,6 +37,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public class ElementAnimatorTests : MUXApiTestBase
 	{
 		[TestMethod]
+		[Ignore("UNO: ManualResetEvent not supported on WASM for now")]
 		public void ValidateElementAnimator()
 		{
 			ItemsRepeater repeater = null;
