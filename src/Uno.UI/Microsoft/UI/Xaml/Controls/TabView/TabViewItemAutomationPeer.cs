@@ -9,8 +9,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class TabViewItemAutomationPeer : ListViewItemAutomationPeer, ISelectionItemProvider
 	{
-		private IRawElementProviderSimple _selectionContainer;
-
 		public TabViewItemAutomationPeer(TabViewItem owner) : base(owner)
 		{
 		}
