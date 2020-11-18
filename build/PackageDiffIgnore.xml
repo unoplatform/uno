@@ -3293,9 +3293,18 @@
 	</IgnoreSet>
 
 	<IgnoreSet baseVersion="3.3.0">
-		<Types>
-		</Types>
+		<Properties>
+			<Member
+				fullName="System.Boolean Windows.UI.Core.CoreDispatcher::HasThreadAccessOverride()"
+				reason="Not part of the UWP API"/>
+		</Properties>
 		<Methods>
+			<Member
+				fullName="System.Boolean Windows.UI.Core.CoreDispatcher.get_HasThreadAccessOverride()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Core.CoreDispatcher.set_HasThreadAccessOverride(System.Boolean value)"
+				reason="Not part of the UWP API"/>
 			<Member
 				fullName="System.Void Windows.UI.Xaml.EffectiveViewportChangedEventArgs..ctor()"
 				reason="Not part of the UWP API"/>
@@ -3311,5 +3320,22 @@
 		</Methods>
 	</IgnoreSet>
 
+	<!--
+	Supported nodes (please at the bottom of this file):
+		<Types>
+		</Types>
+		
+		<Events>
+		</Events>
+		
+		<Fields>
+		</Fields>
+		
+		<Properties>
+		</Properties>
+		
+		<Methods>
+		</Methods>
+	-->
   </IgnoreSets>
 </DiffIgnore>
