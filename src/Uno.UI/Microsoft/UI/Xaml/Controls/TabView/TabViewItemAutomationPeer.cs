@@ -7,8 +7,10 @@ using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public partial class TabViewItemAutomationPeer : ListViewItemAutomationPeer
+	public partial class TabViewItemAutomationPeer : ListViewItemAutomationPeer, ISelectionItemProvider
 	{
+		private IRawElementProviderSimple _selectionContainer;
+
 		public TabViewItemAutomationPeer(TabViewItem owner) : base(owner)
 		{
 		}
@@ -51,41 +53,49 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 
 
-		private bool IsSelected()
+		public bool IsSelected
 		{
-			var tvi = Owner as TabViewItem;
-			if (tvi != null)
+			get
 			{
-				return tvi.IsSelected;
-			}
-			return false;
-		}
-
-		private IRawElementProviderSimple SelectionContainer()
-		{
-			var parent = GetParentTabView();
-			if (parent != null)
-			{
-				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(parent);
-				if (peer != null)
+				var tvi = Owner as TabViewItem;
+				if (tvi != null)
 				{
-					return ProviderFromPeer(peer);
+					return tvi.IsSelected;
 				}
+
+				return false;
 			}
-			return null;
 		}
 
-		private void AddToSelection()
+		public IRawElementProviderSimple SelectionContainer
+		{
+			get
+			{
+				var parent = GetParentTabView();
+				if (parent != null)
+				{
+					var peer = FrameworkElementAutomationPeer.CreatePeerForElement(parent);
+					if (peer != null)
+					{
+						return ProviderFromPeer(peer);
+					}
+				}
+
+				return null;
+			}
+		}
+
+		public void AddToSelection()
 		{
 			Select();
 		}
 
-		private void RemoveFromSelection()
+		public void RemoveFromSelection()
 		{
 			// Can't unselect in a TabView without knowing next selection
 		}
 
-		private void Select()
+		public void Select()
 		{
 			var owner = Owner as TabViewItem;
 			if (owner != null)
