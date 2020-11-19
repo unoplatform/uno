@@ -32,6 +32,14 @@ jobs:
         artifactName: ios-uitest-build
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - task: DownloadBuildArtifacts@0
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+        artifactName: uitests-failure-results
+        downloadPath: '$(build.sourcesdirectory)/build'
+
   - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml
@@ -68,14 +76,6 @@ jobs:
       testRunTitle: 'iOS Test Run ($(Agent.JobName))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
-      failTaskOnFailedTests: false
-
-  - task: PublishTestResults@2
-    condition: always()
-    inputs:
-      testRunTitle: 'iOS Test Run Retry Failed ($(Agent.JobName))'
-      testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-failed-rerun.xml'
       failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
@@ -83,4 +83,18 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
       ArtifactType: Container

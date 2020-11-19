@@ -145,6 +145,14 @@ jobs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - task: DownloadBuildArtifacts@0
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+        artifactName: uitests-failure-results
+        downloadPath: '$(build.sourcesdirectory)/build'
+
   - bash: |
       chmod +x $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
       $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
@@ -158,7 +166,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testResultsFiles: '$(build.sourcesdirectory)/build/wasm-uitest-binaries/TestResult.xml'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       testRunTitle: 'WebAssembly Test Run'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
@@ -169,4 +177,11 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
       ArtifactType: Container
