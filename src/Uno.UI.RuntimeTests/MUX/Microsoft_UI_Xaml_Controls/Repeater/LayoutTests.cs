@@ -43,6 +43,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public class LayoutTests : MUXApiTestBase
 	{
 		[TestMethod]
+#if __IOS__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateMappingAndAutoRecycling()
 		{
 			ItemsRepeater repeater = null;
@@ -96,6 +99,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateNonVirtualLayoutWithItemsRepeater()
 		{
 			RunOnUIThread.Execute(() =>
@@ -223,6 +229,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("UNO: Test does not pass yet with Uno (causes infinite layout cycle) https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateStackLayoutDisabledVirtualizationWithItemsRepeater()
 		{
 			RunOnUIThread.Execute(() =>
