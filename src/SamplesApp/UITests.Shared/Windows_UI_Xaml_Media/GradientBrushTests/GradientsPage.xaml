@@ -5,7 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:media="using:Microsoft.UI.Xaml.Media"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:not_win="http:/uno.ui/not_win"
+	xmlns:not_win="http://uno.ui/not_win"
 	mc:Ignorable="d not_win"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
