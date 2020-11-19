@@ -196,6 +196,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override void SetLayoutExtent(Rect extent)
 		{
+			// UNO specific
+			// On Uno (especially Android) the InvalidateArrange at the bottom of this method will actually cause an invalidate measure.
+			// But this SetLayoutExtent method is invoked on each measure ... so it will cause a layout cycle!
+			if (m_layoutExtent == extent)
+			{
+				return;
+			}
+
 			m_expectedViewportShift.X += m_layoutExtent.X - extent.X;
 			m_expectedViewportShift.Y += m_layoutExtent.Y - extent.Y;
 
