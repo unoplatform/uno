@@ -104,5 +104,25 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var border1 = SUT.FindName("border8");
 			Assert.AreEqual(SUT.border8, border1);
 		}
+
+		[TestMethod]
+		public void When_Deferred_Visibility_and_StaticResource()
+		{
+			var SUT = new When_xLoad_Multiple();
+			SUT.ForceLoaded();
+			SUT.Measure(new Size(42, 42));
+			SUT.DataContext = Visibility.Collapsed;
+
+			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			Assert.AreEqual(1, stubs.Count());
+
+			Assert.IsNull(SUT.border1);
+
+			var border1 = SUT.FindName("border1");
+			SUT.Measure(new Size(42, 42));
+
+			Assert.IsNotNull(SUT.border1);
+			Assert.AreEqual(SUT.border1, border1);
+		}
 	}
 }

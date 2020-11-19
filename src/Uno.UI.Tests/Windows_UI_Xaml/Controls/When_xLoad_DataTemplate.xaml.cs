@@ -17,11 +17,21 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.Controls
 {
-	public sealed partial class When_xLoad_Multiple : UserControl
+	public sealed partial class When_xLoad : UserControl
 	{
-		public When_xLoad_Multiple()
+		public When_xLoad()
 		{
 			this.InitializeComponent();
 		}
+
+		public bool MyVisibility
+		{
+			get { return (bool)GetValue(MyVisibilityProperty); }
+			set { SetValue(MyVisibilityProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for MyVisibility.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MyVisibilityProperty =
+			DependencyProperty.Register("MyVisibility", typeof(bool), typeof(When_xLoad), new PropertyMetadata(false));
 	}
 }
