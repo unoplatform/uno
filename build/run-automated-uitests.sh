@@ -33,7 +33,7 @@ else
     echo "--where \"$TEST_FILTERS\"" >> $UNO_TESTS_RESPONSE_FILE
 fi
 
-echo "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/test-bin/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
+echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
 
 ## Install NUnit
 mono $BUILD_SOURCESDIRECTORY/build/nuget/NuGet.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION

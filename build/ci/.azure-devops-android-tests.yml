@@ -49,7 +49,10 @@ jobs:
 
 - job: Android_Tests
   displayName: 'Android UI Tests (Run)'
-  dependsOn: Android_Build_For_Tests
+  dependsOn:
+  - Android_Build_For_Tests
+  - SamplesApp_UITests_Build
+
   timeoutInMinutes: 90
   variables:
     CI_Build: true
@@ -85,6 +88,12 @@ jobs:
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: uitests-android-build
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0

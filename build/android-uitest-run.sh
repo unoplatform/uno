@@ -48,9 +48,6 @@ nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x8
 
 export IsUiAutomationMappingEnabled=true
 
-# build the tests, while the emulator is starting
-msbuild /r /p:Configuration=$BUILDCONFIGURATION $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
-
 # Wait for the emulator to finish booting
 $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 
@@ -110,7 +107,7 @@ else
     echo "--where \"$TEST_FILTERS\"" >> $UNO_TESTS_RESPONSE_FILE
 fi
 
-echo "$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/$BUILDCONFIGURATION/net47/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
+echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
 
 ## Run NUnit tests
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \

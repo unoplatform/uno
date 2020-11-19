@@ -8,9 +8,6 @@ xcrun simctl list devices --json
 ## Preemptively start the simulator
 /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator &
 
-cd $BUILD_SOURCESDIRECTORY
-msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
-
 cd $BUILD_SOURCESDIRECTORY/build
 
 export NUNIT_VERSION=3.11.1
@@ -85,6 +82,7 @@ cd $UNO_UITEST_SCREENSHOT_PATH
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
+export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll
 
 ## Build the NUnit configuration file
 echo "--trace=Verbose" > $UNO_TESTS_RESPONSE_FILE
@@ -97,7 +95,12 @@ else
     echo "--where \"$TEST_FILTERS\"" >> $UNO_TESTS_RESPONSE_FILE
 fi
 
-echo "$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
+if [ -f "$UNO_TESTS_LOCAL_TESTS_FILE" ]; then
+	# used for local tests builds using the local-ios-uitest-run.sh script
+	echo "$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
+else
+	echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
+fi
 
 ## Run NUnit tests
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \

@@ -36,11 +36,6 @@ jobs:
 
     displayName: 'Build sample app'
 
-  - bash: |
-      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
-
-    displayName: 'Build Tests'
-
   - task: CopyFiles@2
     displayName: 'Publish Wasm Site'
     inputs:
@@ -51,16 +46,6 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
-  - task: CopyFiles@2
-    displayName: 'Publish Wasm UITest binaries'
-    inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.UITests/bin/Release/net47
-      Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/test-bin
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: false
-      
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
@@ -70,11 +55,14 @@ jobs:
 
 - job: Wasm_UITests_Snap
   displayName: 'WebAssembly UI Tests (Snapshots Run)'
-  dependsOn: Wasm_UITests_Build
+  dependsOn:
+  - Wasm_UITests_Build
+  - SamplesApp_UITests_Build
+
   container: nv-bionic-wasm
 
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-20.04'
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -86,6 +74,12 @@ jobs:
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: wasm-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/optimize-roslyn-mono.yml
@@ -124,11 +118,13 @@ jobs:
 
 - job: Wasm_UITests_Automated
   displayName: 'WebAssembly UI Tests (Automated Run)'
-  dependsOn: Wasm_UITests_Build
+  dependsOn:
+  - Wasm_UITests_Build
+  - SamplesApp_UITests_Build
   container: nv-bionic-wasm
 
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: ${{ parameters.vmImage }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -146,6 +142,12 @@ jobs:
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: wasm-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0
