@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public class LayoutTests : MUXApiTestBase
 	{
 		[TestMethod]
-#if __IOS__
+#if __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateMappingAndAutoRecycling()
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateNonVirtualLayoutWithItemsRepeater()

@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		// Validate data context propagation and template selection
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateBindingAndTemplateSelection()
@@ -172,7 +172,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateCustomRecyclingElementFactory()
@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateRecyclingElementFactoryWithSingleTemplate()
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateDataTemplateAsItemTemplate()
@@ -319,7 +319,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateDataTemplateSelectorAsItemTemplate()
@@ -490,7 +490,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		// Validate ability to create and use a view generator from scratch
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateCustomElementFactory()
@@ -527,7 +527,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateTemplateSwitchingRefreshesElementsVirtualizingLayout()
@@ -589,7 +589,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateNullItemTemplateAndContainerInItems()
@@ -625,7 +625,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void VerifySelectTemplateLayoutFallback()

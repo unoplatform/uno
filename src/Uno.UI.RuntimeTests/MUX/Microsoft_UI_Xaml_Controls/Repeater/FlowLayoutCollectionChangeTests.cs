@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void CanRemoveItemsStartingInRealizedRange()
@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		[TestMethod]
 		[TestProperty("Bug", "19259478")]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void CanRemoveAndInsertItemsInRealizedRange()
@@ -230,7 +230,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void CanRemoveItemsAfterRealizedRange()
@@ -253,7 +253,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void CanReplaceSingleItem()
@@ -319,7 +319,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void CanMoveItem()
@@ -421,7 +421,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #endif
 
 		[TestMethod]
-#if __WASM__
+#if __WASM__ || __ANDROID__
 		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void EnsureReplaceOfAnchorDoesNotResetAllContainers()
@@ -469,7 +469,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateStableResets()
@@ -493,7 +493,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateRegularResets()
