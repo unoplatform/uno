@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Linq;
+using FluentAssertions;
+using FluentAssertions.Execution;
+using FluentAssertions.Specialized;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SliderTests
 {
@@ -20,7 +25,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SliderTests
 
 			var slider = _app.Marked("VerticalSlider1");
 			_app.WaitForElement(slider);
-			
 			var sliderRect = slider.FirstResult().Rect;
 			_app.DragCoordinates(
 				sliderRect.CenterX,
@@ -28,11 +32,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SliderTests
 				sliderRect.CenterX,
 				sliderRect.CenterY - (sliderRect.Height * 0.6f));
 
-			var actualVerticalSliderThumbHeight = slider.Marked("VerticalThumb").FirstResult().Rect.Height;
-			var expectedVerticalSliderThumbHeight = slider.Marked("VerticalThumb").GetDependencyPropertyValue<double>("Height");
-			Assert.True(Math.Abs(actualVerticalSliderThumbHeight - expectedVerticalSliderThumbHeight) < Tolerance,
-				$"Expected thumb height: {expectedVerticalSliderThumbHeight} \n" +
-				$"Actual thumb height: {actualVerticalSliderThumbHeight}");
+			var sliderThumb = slider.Descendant().Marked("VerticalThumb");
+			var actualVerticalSliderThumbHeight = (double) _app.GetLogicalRect(sliderThumb).Height;
+			var expectedVerticalSliderThumbHeight = sliderThumb.GetDependencyPropertyValue<double>("Height");
+
+			actualVerticalSliderThumbHeight.Should().BeApproximately(expectedVerticalSliderThumbHeight, Tolerance);
 		}
 
 		[Test]
@@ -52,7 +56,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SliderTests
 				sliderRect.CenterX,
 				sliderRect.CenterY - Delta);
 
-			var actualVerticalSliderHeight =  _app.Marked("VerticalSlider2_MaxHeight").GetDependencyPropertyValue<double>("Text");
+			double actualVerticalSliderHeight;
+			if (AppInitializer.TestEnvironment.CurrentPlatform != Platform.Browser)
+			{
+				actualVerticalSliderHeight = new QueryEx(q => q.All().Marked("VerticalSlider2_MaxHeight")).GetDependencyPropertyValue<double>("Text");
+			}
+			else
+			{
+				actualVerticalSliderHeight = _app.Marked("VerticalSlider2_MaxHeight").GetDependencyPropertyValue<double>("Text");
+			}
 
 			Assert.True(Math.Abs(actualVerticalSliderHeight - expectedVerticalSliderHeight) < Tolerance,
 				$"Expected slider height: {expectedVerticalSliderHeight} \n" +
