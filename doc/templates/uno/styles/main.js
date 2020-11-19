@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function(){
+    var navbar = document.querySelector("header > .navbar");
     if (document.body.classList.contains("front-page")) {
         var last_known_scroll_position = 0;
         var ticking = false;
-        var navbar = document.querySelector("header > .navbar");
 
         function doSomething(scroll_pos) {
             if (scroll_pos >= 100) navbar.classList.add("scrolled");
