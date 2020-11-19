@@ -18,6 +18,7 @@ using Windows.System;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Uno.Core.Comparison;
+using Uno.Foundation.Runtime.WebAssembly.Interop;
 
 namespace Windows.UI.Xaml
 {
@@ -121,7 +122,7 @@ namespace Windows.UI.Xaml
 			{
 				if (_htmlElementAttribute == null)
 				{
-					_htmlElementAttribute = Assembly.Load("Uno.UI.Runtime.WebAssembly").GetType("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute", true);
+					_htmlElementAttribute = GetUnoUIRuntimeWebAssembly().GetType("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute", true);
 					_htmlTagAttributeTagGetter = _htmlElementAttribute.GetProperty("Tag");
 				}
 
@@ -671,6 +672,22 @@ namespace Windows.UI.Xaml
 			}
 
 			return new RoutedEventArgs(src);
+		}
+
+		private static Assembly GetUnoUIRuntimeWebAssembly()
+		{
+			const string UnoUIRuntimeWebAssemblyName = "Uno.UI.Runtime.WebAssembly";
+
+			if (PlatformHelper.IsNetCore)
+			{
+				// .NET Core fails to load assemblies property because of ALC issues: https://github.com/dotnet/runtime/issues/44269
+				return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == UnoUIRuntimeWebAssemblyName)
+					?? throw new InvalidOperationException($"Unable to find {UnoUIRuntimeWebAssemblyName} in the loaded assemblies");
+			}
+			else
+			{
+				return Assembly.Load(UnoUIRuntimeWebAssemblyName);
+			}
 		}
 	}
 }
