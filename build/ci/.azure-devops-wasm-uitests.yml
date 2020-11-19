@@ -3,6 +3,7 @@ parameters:
 
 jobs:
 - job: Wasm_UITests_Build
+  displayName: 'WebAssembly UI Tests (Build)'
   container: nv-bionic-wasm
 
   pool:
@@ -68,6 +69,7 @@ jobs:
 
 
 - job: Wasm_UITests_Snap
+  displayName: 'WebAssembly UI Tests (Snapshots Run)'
   dependsOn: Wasm_UITests_Build
   container: nv-bionic-wasm
 
@@ -121,6 +123,7 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
+  displayName: 'WebAssembly UI Tests (Automated Run)'
   dependsOn: Wasm_UITests_Build
   container: nv-bionic-wasm
 

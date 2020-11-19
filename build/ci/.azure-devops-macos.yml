@@ -6,6 +6,7 @@ parameters:
 jobs:
 
 - job: macOS
+  displayName: 'macOS Samples App Build'
 
   variables:
     CI_Build: true

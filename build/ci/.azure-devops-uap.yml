@@ -3,6 +3,7 @@ parameters:
 
 jobs:
 - job: UAP_Build
+  displayName: 'UWP Samples App'
 
   pool:
     vmImage: ${{ parameters.vmImage }}
