@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 					.AtLeastZero()
 					.AtMost(maxSize);
 
-				LayoutInformation.SetAvailableSize(this, frameworkAvailableSize);
+				LayoutInformation.SetAvailableSize(Panel, frameworkAvailableSize);
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 
 				_logDebug?.LogTrace($"{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
@@ -181,7 +181,9 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
 				}
 
-				var clippedArrangeSize = uiElement?.ClippedFrame?.Size ?? finalRect.Size;
+				var clippedArrangeSize = uiElement?.ClippedFrame is Rect clip && !uiElement.IsArrangeDirty
+					? clip.Size
+					: finalRect.Size;
 
 				bool allowClipToSlot;
 				bool needsClipToSlot;

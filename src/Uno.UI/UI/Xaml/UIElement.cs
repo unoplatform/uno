@@ -357,6 +357,20 @@ namespace Windows.UI.Xaml
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
 				root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
 				root.Arrange(LayoutInformation.GetLayoutSlot(root));
+#elif __ANDROID__
+				for (var i = 0; i < MaxLayoutIterations; i++)
+				{
+					// On Android, Measure and arrange are the same
+					if (root.IsMeasureDirty)
+					{
+						root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
+						root.Arrange(LayoutInformation.GetLayoutSlot(root));
+					}
+					else
+					{
+						return;
+					}
+				}
 #else
 				for (var i = 0; i < MaxLayoutIterations; i++)
 				{
@@ -548,8 +562,8 @@ namespace Windows.UI.Xaml
 		public void InvalidateArrange()
 		{
 			InvalidateMeasure();
-#if !__WASM__
-			ClippedFrame = null;
+#if __IOS__ || __MACOS__
+			IsArrangeDirty = true;
 #endif
 		}
 #endif
