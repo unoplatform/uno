@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 			view.Arranged = frame;
 			view.LayoutSlotWithMarginsAndAlignments = frame;
 
-			LayoutInformation.SetLayoutSlot(this, frame);
+			LayoutInformation.SetLayoutSlot(view, frame);
 		}
 
 		protected Size DesiredChildSize(View view)
