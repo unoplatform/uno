@@ -3,6 +3,7 @@ parameters:
 
 jobs:
 - job: VS_Latest
+  displayName: 'NuGet Packages'
   timeoutInMinutes: 90
 
   pool: ${{ parameters.poolName }}

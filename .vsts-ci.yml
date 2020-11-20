@@ -59,9 +59,13 @@ jobs:
   parameters:
     vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-docs.yml	
-  parameters:	
-    vmImage: '$(windowsHostedVMImage)'	
+- template: build/ci/.azure-devops-docs.yml
+  parameters:
+    vmImage: '$(windowsHostedVMImage)'
+
+- template: build/ci/.azure-devops-samplesapp-uitests-build.yml
+  parameters:
+    vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-wasm-uitests.yml
   parameters:
