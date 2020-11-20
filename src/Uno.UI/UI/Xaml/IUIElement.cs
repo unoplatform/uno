@@ -4,8 +4,6 @@ using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml
 {
-	// This interface is intended to be renamed to IUIElement once the deprecated public one has been removed.
-	// Note: We do not inherit from IUIElement as we don't want to implement IDisposable!
 	internal interface IUIElement 
 	{
 		/// <summary>
