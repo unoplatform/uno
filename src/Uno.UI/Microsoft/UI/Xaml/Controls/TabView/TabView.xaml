@@ -8,7 +8,9 @@
     xmlns:local="using:Microsoft.UI.Xaml.Controls"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives">
 
-	<!--<ResourceDictionary.MergedDictionaries> --><!-- TODO: MZ : SEE TODO BELOW! --><!--
+	<!-- TODO Uno: after #4259 is fixed, update ScrollViewer to use attached properties (see the original WinUI style) -->
+	
+	<!--<ResourceDictionary.MergedDictionaries> --><!-- TODO Uno: Referencing another XAML resource dictionarynot working currently --><!--
 		<ResourceDictionary Source="../Primitives/CornerRadius_themeresources.xaml" />
 	</ResourceDictionary.MergedDictionaries>-->
 	
@@ -64,6 +66,7 @@
                                 Grid.Column="2"
                                 x:Name="AddButton"
                                 Content="&#xE710;"
+								FontFamily="Segoe MDL2 Assets"
                                 VerticalAlignment="Stretch"
                                 IsTextScaleFactorEnabled="False"
                                 Command="{TemplateBinding AddTabButtonCommand}"
@@ -138,24 +141,24 @@
             <Setter.Value>
                 <ControlTemplate TargetType="primitives:TabViewListView">
                     <Border BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
-                        <ScrollViewer x:Name="ScrollViewer"
+						<ScrollViewer x:Name="ScrollViewer"
                             Grid.Column="1"
                             AutomationProperties.AccessibilityView="Raw"
-                            BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
-                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                            HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-                            IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                            IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-                            IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
-                            IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-                            IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
+                            BringIntoViewOnFocusChange="True"
+                            HorizontalScrollBarVisibility="Auto"
+                            HorizontalScrollMode="Enabled"
+                            IsDeferredScrollingEnabled="False"
+                            IsHorizontalRailEnabled="False"
+                            IsHorizontalScrollChainingEnabled="False"
+                            IsVerticalRailEnabled="False"
+                            IsVerticalScrollChainingEnabled="False"
                             TabNavigation="{TemplateBinding TabNavigation}"
-                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                            VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-                            ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
+                            VerticalScrollBarVisibility="Disabled"
+                            VerticalScrollMode="Disabled"
+                            ZoomMode="Disabled"
                             Style="{StaticResource TabScrollViewerStyle}">
 
-                            <ItemsPresenter x:Name="TabsItemsPresenter"
+							<ItemsPresenter x:Name="TabsItemsPresenter"
                                 Padding="{TemplateBinding Padding}" />
 
                         </ScrollViewer>
