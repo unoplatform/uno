@@ -73,6 +73,7 @@
 		<EmbeddedResource Update="WasmScripts\*.js" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Folder Include="Microsoft\UI\Xaml\Controls\Repeater\" />
 	  <Folder Include="tsBindings\" />
 	</ItemGroup>
 

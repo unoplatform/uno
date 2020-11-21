@@ -785,7 +785,7 @@ namespace Windows.UI.Xaml.Controls
 			var content = Content;
 			if (content != null)
 			{
-				content.LayoutSlot = frame;
+				LayoutInformation.SetLayoutSlot(content, frame);
 				content.LayoutSlotWithMarginsAndAlignments = frame;
 			}
 		}

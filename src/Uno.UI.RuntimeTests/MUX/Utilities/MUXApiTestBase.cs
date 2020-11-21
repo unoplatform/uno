@@ -35,24 +35,24 @@ namespace MUXControlsTestApp.Utilities
 			set { _host.Child = value; }
 		}
 
-		//[TestInitialize]
-		//public void Setup()
-		//{
-		//	//IdleSynchronizer.Wait();
-		//	var hostLoaded = new ManualResetEvent(false);
-		//	RunOnUIThread.Execute(() =>
-		//	{
-		//		_host = new Border();
-		//		_host.Loaded += delegate { hostLoaded.Set(); };
-		//		MUXControlsTestApp.App.TestContentRoot = _host;
-		//	});
-		//	Verify.IsTrue(hostLoaded.WaitOne(DefaultWaitTimeInMS), "Waiting for loaded event");
-		//}
+		[TestInitialize]
+		public void Setup()
+		{
+			IdleSynchronizer.Wait();
+			var hostLoaded = new ManualResetEvent(false);
+			RunOnUIThread.Execute(() =>
+			{
+				_host = new Border();
+				_host.Loaded += delegate { hostLoaded.Set(); };
+				MUXControlsTestApp.App.TestContentRoot = _host;
+			});
+			Verify.IsTrue(hostLoaded.WaitOne(DefaultWaitTimeInMS), "Waiting for loaded event");
+		}
 
-		//[TestCleanup]
-		//public void Cleanup()
-		//{
-		//	TestUtilities.ClearVisualTreeRoot();
-		//}
+		[TestCleanup]
+		public void Cleanup()
+		{
+			TestUtilities.ClearVisualTreeRoot();
+		}
 	}
 }

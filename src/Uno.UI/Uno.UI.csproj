@@ -43,6 +43,7 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;Themes\WinUI\Resources\**\*.xaml;" Visible="False" />
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+		<UpToDateCheckInput Include="**\*.tt" Exclude="bin\**\*.tt;obj\**\*.tt;" Visible="False" />
 	</ItemGroup>
 
 	<Choose>
@@ -92,6 +93,7 @@
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
+		<PackageReference Include="xamarin.build.download" Version="0.4.11" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
@@ -106,10 +108,6 @@
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
 		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="xamarin.build.download" Version="0.4.11" />
 	</ItemGroup>
 
 	<ItemGroup>

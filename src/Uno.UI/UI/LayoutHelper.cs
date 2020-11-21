@@ -261,6 +261,16 @@ namespace Uno.UI
 			);
 		}
 
+#if !XAMARIN
+		[Pure]
+		internal static bool IsFinite(this double value)
+			=> !IsInfinity(value) && !IsNaN(value);
+
+		[Pure]
+		internal static bool IsFinite(this float value)
+			=> !float.IsInfinity(value) && !float.IsNaN(value);
+#endif
+
 		[Pure]
 		internal static double FiniteOrDefault(this double value, double defaultValue)
 		{
@@ -276,6 +286,14 @@ namespace Uno.UI
 		}
 
 		[Pure]
+		internal static Point FiniteOrDefault(this Point value, Point defaultValue)
+		{
+			return new Point(
+				value.X.FiniteOrDefault(defaultValue.X),
+				value.Y.FiniteOrDefault(defaultValue.Y));
+		}
+
+		[Pure]
 		internal static Size FiniteOrDefault(this Size value, Size defaultValue)
 		{
 			return new Size(
@@ -283,6 +301,18 @@ namespace Uno.UI
 				value.Height.FiniteOrDefault(defaultValue.Height)
 			);
 		}
+
+		[Pure]
+		internal static Rect FiniteOrDefault(this Rect value, Rect defaultValue)
+		{
+			return new Rect(
+				value.X.FiniteOrDefault(defaultValue.X),
+				value.Y.FiniteOrDefault(defaultValue.Y),
+				value.Width.FiniteOrDefault(defaultValue.Width),
+				value.Height.FiniteOrDefault(defaultValue.Height));
+		}
+
+
 
 		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

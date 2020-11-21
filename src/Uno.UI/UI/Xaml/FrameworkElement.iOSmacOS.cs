@@ -25,20 +25,6 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize();
 
-		internal bool RequiresArrange { get; private set; }
-
-		internal bool RequiresMeasure { get; private set; }
-
-		/// <summary>
-		/// Determines if InvalidateMeasure has been called
-		/// </summary>
-		internal bool IsMeasureDirty => RequiresMeasure;
-
-		/// <summary>
-		/// Determines if InvalidateArrange has been called
-		/// </summary>
-		internal bool IsArrangeDirty => RequiresArrange;
-
 		public FrameworkElement()
 		{
 			Initialize();
@@ -49,7 +35,7 @@ namespace Windows.UI.Xaml
 			// If set layout has not been called, we can 
 			// return a previously cached result for the same available size.
 			if (
-				!RequiresMeasure
+				!IsMeasureDirty
 				&& _lastAvailableSize.HasValue
 				&& availableSize == _lastAvailableSize
 			)
@@ -58,7 +44,7 @@ namespace Windows.UI.Xaml
 			}
 
 			_lastAvailableSize = availableSize;
-			RequiresMeasure = false;
+			IsMeasureDirty = false;
 
 			var result = _layouter.Measure(SizeFromUISize(availableSize));
 

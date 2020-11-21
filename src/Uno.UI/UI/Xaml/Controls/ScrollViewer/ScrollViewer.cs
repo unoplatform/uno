@@ -110,6 +110,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(ScrollViewer);
 
+#if !__SKIA__
+			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
+			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
+			// Note 2: This as direct consequences in UIElement.GetTransform and VisualTreeHelper.SearchDownForTopMostElementAt
+			UIElement.RegisterAsScrollPort(this);
+#endif
+
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
 
@@ -588,6 +595,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <remarks>Unlike the LayoutInformation.GetLayoutSlot(), this property is set **BEFORE** arranging the children of the ScrollViewer</remarks>
 		internal Size ViewportArrangeSize { get; private set; }
 
+		// Note for implementers: Search for SharedHelpers.IsRS5OrHigher() in ItemsRepeaterScrollHost.cs
+		// => This should be re-enabled AND this class also gives the base implementation for the anchoring
+		[global::Uno.NotImplemented]
+		public UIElement? CurrentAnchor => null;
+
 		/// <summary>
 		/// Cached value of <see cref="Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty"/>,
 		/// in order to not access the DP on each scroll (perf considerations)
@@ -803,7 +815,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// For Android/iOS/MacOS, ensure that the ScrollContentPresenter contains a native scroll viewer,
 				// which will handle the actual scrolling
-				var nativeSCP = new NativeScrollContentPresenter();
+				var nativeSCP = new NativeScrollContentPresenter(this);
 				scp.Content = nativeSCP;
 				_presenter = nativeSCP;
 			}
@@ -1140,6 +1152,12 @@ namespace Windows.UI.Xaml.Controls
 			HorizontalOffset = _pendingHorizontalOffset;
 			VerticalOffset = _pendingVerticalOffset;
 
+#if !__SKIA__
+			// Effective viewport support
+			ScrollOffsets = new Point(_pendingHorizontalOffset, _pendingVerticalOffset);
+			InvalidateViewport();
+#endif
+
 			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
 		}
 
@@ -1187,7 +1205,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation);
 		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation);
 
-		#region Scroll indicators visual states (Managed scroll bars only)
+				#region Scroll indicators visual states (Managed scroll bars only)
 		private DispatcherQueueTimer? _indicatorResetTimer;
 		private string? _indicatorState;
 
@@ -1266,6 +1284,6 @@ namespace Windows.UI.Xaml.Controls
 				VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.Collapsed, true);
 			}
 		}
-		#endregion
+				#endregion
 	}
 }

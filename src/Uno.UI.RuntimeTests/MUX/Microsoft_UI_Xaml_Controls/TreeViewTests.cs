@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public async Task TreeViewNodeTest()
 		{
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				TreeViewNode treeViewNode1 = new TreeViewNode();
 				TreeViewNode treeViewNode2 = new TreeViewNode();
@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			TreeView treeView = null;
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				treeView = new TreeView();
 
@@ -126,7 +126,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
 				// Verify TreeViewNode::SetAt
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			TreeViewNode treeViewNode4 = null;
 			TreeViewNode treeViewNode5 = null;
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				treeViewNode1 = new TreeViewNode();
 				treeViewNode2 = new TreeViewNode();
@@ -228,7 +228,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 
 				var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
@@ -283,7 +283,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		public async Task VerifyTreeViewIsNotTabStop()
 		{
 			TreeView treeView = null;
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				treeView = new TreeView();
 				TestServices.WindowHelper.WindowContent = treeView;
@@ -291,7 +291,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Verify.IsFalse(treeView.IsTabStop);
 			});
@@ -304,7 +304,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			TreeView treeView = null;
 			TreeViewNode treeViewNode1 = null;
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				treeViewNode1 = new TreeViewNode();
 				treeView = new TreeView();
@@ -313,7 +313,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
 				treeView.RootNodes.Add(treeViewNode1);
@@ -382,7 +382,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			TreeView treeView = null;
 			ObservableCollection<int> collection = null;
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				treeView = new TreeView();
 				collection = new ObservableCollection<int>();
@@ -395,7 +395,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			TreeViewItem tvi = null;
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				tvi = (TreeViewItem)treeView.ContainerFromItem(5);
 				Verify.AreEqual(tvi.GlyphOpacity, 0.0);
@@ -404,7 +404,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Verify.AreEqual(tvi.GlyphOpacity, 1.0);
 			});
@@ -510,7 +510,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			TreeView treeView = null;
 			TreeViewNode node1 = null;
 			TreeViewNode node2 = null;
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				treeView = new TreeView();
 				treeView.SelectionMode = TreeViewSelectionMode.Multiple;
@@ -526,7 +526,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Verify.AreEqual(true, IsMultiSelectCheckBoxChecked(treeView, node1));
 				Verify.AreEqual(false, IsMultiSelectCheckBoxChecked(treeView, node2));
@@ -553,7 +553,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			TreeView treeView = null;
 			TreeViewSelectionChangedEventArgs selectionChangedEventArgs = null;
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				// input data:
 				// - 1
@@ -571,7 +571,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var tvi1 = (TreeViewItem)treeView.ContainerFromItem(1);
 				var tvi2 = (TreeViewItem)treeView.ContainerFromItem(2);
@@ -640,7 +640,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			TreeViewNode node21 = null;
 			TreeViewNode node3 = null;
 			TreeViewSelectionChangedEventArgs selectionChangedEventArgs = null;
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				treeView = new TreeView { SelectionMode = TreeViewSelectionMode.Multiple };
 				treeView.SelectionChanged += (s, e) => selectionChangedEventArgs = e;
@@ -667,7 +667,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var tvi1 = (TreeViewItem)treeView.ContainerFromItem(node1);
 				var tvi11 = (TreeViewItem)treeView.ContainerFromItem(node11);

@@ -159,8 +159,6 @@ namespace Windows.UI.Core
 		/// <remarks>Can only be invoked on the UI thread</remarks>
 		internal UIAsyncOperation RunAsync(CoreDispatcherPriority priority, CancellableDispatchedHandler handler)
 		{
-			CoreDispatcher.CheckThreadAccess();
-
 			UIAsyncOperation? operation = null;
 
 			void nonCancellableHandler()

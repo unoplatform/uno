@@ -65,6 +65,7 @@ namespace Windows.UI.Composition
 				var visualMatrix = surface.Canvas.TotalMatrix;
 
 				visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateTranslation(visual.Offset.X, visual.Offset.Y));
+				visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateTranslation(visual.AnchorPoint.X, visual.AnchorPoint.Y));
 
 				if (visual.RotationAngleInDegrees != 0)
 				{

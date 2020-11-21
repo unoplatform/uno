@@ -50,7 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		public Task When_ProgressRing_Collapsed() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new ProgressRing
 				{
