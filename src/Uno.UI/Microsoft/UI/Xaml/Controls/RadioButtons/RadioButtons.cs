@@ -9,10 +9,12 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	[ContentProperty(Name = nameof(Items))]
 	public partial class RadioButtons : Control
 	{
 		public RadioButtons()
@@ -555,7 +557,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualStateForIsEnabledChange();
 		}
 
-		private UIElement ContainerFromIndex(int index)
+		public UIElement ContainerFromIndex(int index)
 		{
 			var repeater = m_repeater;
 			if (repeater != null)
@@ -636,7 +638,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Test Hooks helpers, only function when m_testHooksEnabled == true
-		void SetTestHooksEnabled(bool enabled)
+		internal void SetTestHooksEnabled(bool enabled)
 		{
 			if (m_testHooksEnabled != enabled)
 			{
@@ -666,7 +668,7 @@ namespace Microsoft.UI.Xaml.Controls
 			RadioButtonsTestHooks.NotifyLayoutChanged(this);
 		}
 
-		private int GetRows()
+		internal int GetRows()
 		{
 			var layout = GetLayout();
 			if (layout != null)
@@ -676,7 +678,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return -1;
 		}
 
-		private int GetColumns()
+		internal int GetColumns()
 		{
 			var layout = GetLayout();
 			if (layout != null)
@@ -686,7 +688,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return -1;
 		}
 
-		private int GetLargerColumns()
+		internal int GetLargerColumns()
 		{
 			var layout = GetLayout();
 			if (layout != null)
