@@ -2,9 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
@@ -19,21 +17,30 @@ namespace Windows.Storage
 {
 	public partial class StorageFolder : IStorageFolder, IStorageItem, IStorageItem2
 	{
+		private readonly ImplementationBase _implementation;
+
 		public string Path { get; private set; }
 		public string Name { get; private set; }
 
 		internal StorageFolder(string fullPath)
+			: this(new Local(fullPath))
 		{
 			Path = fullPath;
 			Name = global::System.IO.Path.GetFileName(fullPath);
 		}
 
 		internal StorageFolder(string name, string path)
+			: this(new Local(path))
 		{
 			Path = path;
 			Name = name;
 		}
 
+		private StorageFolder(ImplementationBase implementation)
+		{
+			_implementation = implementation;
+		}
+ 
 #if !__WASM__
 		private static async Task TryInitializeStorage() { }
 #endif
@@ -56,57 +63,7 @@ namespace Windows.Storage
 
 		public IAsyncOperation<StorageFolder> CreateFolderAsync(string folderName) => CreateFolderAsync(folderName, CreationCollisionOption.FailIfExists);
 
-		public IAsyncOperation<StorageFolder> CreateFolderAsync(string folderName, CreationCollisionOption option) =>
-			AsyncOperation.FromTask(async ct =>
-			{
-				await TryInitializeStorage();
-
-				var path = global::System.IO.Path.Combine(Path, folderName);
-				DirectoryInfo di;
-				switch (option)
-				{
-					case CreationCollisionOption.ReplaceExisting:
-						if (Directory.Exists(path))
-						{
-							Directory.Delete(path, true);
-						}
-
-						di = Directory.CreateDirectory(path);
-						return new StorageFolder(di.Name, path);
-
-					case CreationCollisionOption.FailIfExists:
-						if (Directory.Exists(path))
-						{
-							throw new UnauthorizedAccessException();
-						}
-
-						di = Directory.CreateDirectory(path);
-						return new StorageFolder(di.Name, path);
-
-					case CreationCollisionOption.OpenIfExists:
-						if (Directory.Exists(path))
-						{
-							return new StorageFolder(folderName, path);
-						}
-
-						di = Directory.CreateDirectory(path);
-						return new StorageFolder(di.Name, path);
-
-					case CreationCollisionOption.GenerateUniqueName:
-						if (Directory.Exists(path))
-						{
-							di = Directory.CreateDirectory(path += Guid.NewGuid().ToStringInvariant());
-							return new StorageFolder(di.Name, path);
-						}
-						else
-						{
-							di = Directory.CreateDirectory(path);
-							return new StorageFolder(di.Name, path);
-						}
-				}
-
-				return null;
-			});
+		public IAsyncOperation<StorageFolder> CreateFolderAsync(string folderName, CreationCollisionOption option) => _implementation.CreateFolderAsync(folderName, option);
 
 		/// <summary>
 		/// WARNING This method should not be used because it doesn't match the StorageFile API

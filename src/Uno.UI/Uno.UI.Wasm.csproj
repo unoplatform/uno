@@ -146,6 +146,13 @@
 		</ProjectReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="ts\types\wicg-file-system-access\index.d.ts" />
+	  <UpToDateCheckInput Remove="ts\Windows\Guid.ts" />
+	  <UpToDateCheckInput Remove="ts\Windows\Storage\Pickers\FolderPicker.ts" />
+	  <UpToDateCheckInput Remove="ts\Windows\Storage\StorageFolder.Native.ts" />
+	</ItemGroup>
+
 	<Target Name="_UnoWasmOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>

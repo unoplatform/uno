@@ -37,6 +37,11 @@ declare namespace Windows.UI.Core {
         private static initMethods;
     }
 }
+declare namespace Uno.Utils {
+    class Guid {
+        static NewGuid(): string;
+    }
+}
 declare namespace Uno.UI {
     class HtmlDom {
         /**
@@ -965,6 +970,27 @@ declare namespace Windows.Storage.Pickers {
     }
 }
 declare namespace Windows.Storage {
+    class StorageFolderNative {
+        private static _folderMap;
+        static AddHandle(guid: string, handle: FileSystemDirectoryHandle): void;
+        static RemoveHandle(guid: string): void;
+        static GetHandle(guid: string): FileSystemDirectoryHandle;
+        /**
+         * Creates a new folder inside another folder.
+         * @param parentGuid The GUID of the folder to create in.
+         * @param folderName The name of the new folder.
+         */
+        static CreateFolderAsync(parentGuid: string, folderName: string): Promise<string>;
+        /**
+         * Gets a folder in the given parent folder by name.
+         * @param parentGuid The GUID of the parent folder to get.
+         * @param folderName The name of the folder to look for.
+         * @returns A GUID of the folder if found, other "notfound" literal.
+         */
+        static GetFolderAsync(parentGuid: string, folderName: string): Promise<string>;
+    }
+}
+declare namespace Windows.Storage {
     class StorageFolder {
         private static _isInit;
         private static dispatchStorageInitialized;
@@ -1094,6 +1120,11 @@ declare namespace Windows.Networking.Connectivity {
         static startStatusChanged(): void;
         static stopStatusChanged(): void;
         static networkStatusChanged(): void;
+    }
+}
+declare namespace Windows.Storage.Pickers {
+    class FolderPicker {
+        static ShowFolderPicker(): Promise<string>;
     }
 }
 interface Navigator {
