@@ -6,15 +6,12 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.System.Threading;
-using Windows.UI.Text;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
@@ -872,6 +869,15 @@ namespace Uno.UI.Helpers.WinUI
 			}
 
 			return FindInVisualTreeInner(parent, isMatch);
+		}
+
+		public static bool IsTrue(bool? nullableBool)
+		{
+			if (nullableBool != null)
+			{
+				return nullableBool.Value;
+			}
+			return false;
 		}
 
 		// Sometimes we want to get a string representation from an arbitrary object. E.g. for constructing a UIA Name
