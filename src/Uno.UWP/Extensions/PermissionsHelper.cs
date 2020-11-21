@@ -52,7 +52,7 @@ namespace Windows.Extensions
 
 
 		/// <summary>
-		/// Ensures that the given Android permissions are declared in manifest file.
+		/// Ensures that the given Android permissions are declared in manifest file, otherwise throw an exception.
 		/// </summary>
 		/// <param name="permission">Array of permissions.</param>
 		public static void EnsuresPermissionsAreDeclaredInManifest(string[] permissions)
@@ -87,20 +87,6 @@ namespace Windows.Extensions
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation</returns>
 		public static Task<bool> CheckPermissionAsync(string permissionIdentifier)
 			=> _checkPermission(CancellationToken.None, permissionIdentifier);
-
-		/// <summary>
-		/// Validate if a given permission was granted to the app and if not, request it to the user.
-		/// <remarks>
-		/// This operation is not cancellable.
-		/// This should not be invoked directly from the application code.
-		/// You should use the extension methods in <see cref="PermissionsServiceExtensions"/>.
-		/// </remarks>
-		/// </summary>
-		/// <param name="ct">Cancellation Token</param>
-		/// <param name="permissionIdentifier">A permission identifier defined in Manifest.Permission.</param>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation</returns>
-		public static Task<bool> TryGetPermission(CancellationToken ct, string permissionIdentifier)
-			=> _tryGetPermission(ct, permissionIdentifier);
 
 
 		/// <summary>
