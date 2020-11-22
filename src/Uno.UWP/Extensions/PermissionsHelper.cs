@@ -43,6 +43,20 @@ namespace Windows.Extensions
 		}
 
 		/// <summary>
+		/// Validate if a given permission was granted to the app and if not, request it to the user.
+		/// <remarks>
+		/// This operation is not cancellable.	
+		/// This should not be invoked directly from the application code.
+		/// You should use the extension methods in <see cref="PermissionsServiceExtensions"/>.
+		/// </remarks>			/// </remarks>
+		/// </summary>			/// </summary>
+		/// <param name="ct">Cancellation Token</param>	
+		/// <param name="permissionIdentifier">A permission identifier defined in Manifest.Permission.</param>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation</returns>
+		public static Task<bool> TryGetPermission(CancellationToken ct, string permissionIdentifier)
+			=> _tryGetPermission(ct, permissionIdentifier);
+
+		/// <summary>
 		/// Checks if the given Android permissions are declared the app manifest.
 		/// </summary>
 		/// <param name="permission">Array of permissions.</param>
@@ -75,19 +89,6 @@ namespace Windows.Extensions
 			}
 
 		}
-
-		/// <summary>
-		/// Validate if a given permission was granted to the app but not request it to the user
-		/// <remarks>
-		/// This should not be invoked directly from the application code.
-		/// You should use the extension methods in <see cref="PermissionsServiceExtensions"/>.
-		/// </remarks>
-		/// </summary>
-		/// <param name="permissionIdentifier">A permission identifier defined in Manifest.Permission.</param>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation</returns>
-		public static Task<bool> CheckPermissionAsync(string permissionIdentifier)
-			=> _checkPermission(CancellationToken.None, permissionIdentifier);
-
 
 		/// <summary>
 		/// Validate if a given permission was granted to the app but not request it to the user
