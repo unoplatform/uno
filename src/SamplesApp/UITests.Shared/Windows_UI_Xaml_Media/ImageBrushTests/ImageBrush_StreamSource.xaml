@@ -14,23 +14,77 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="Description for sample of ImageBrush_StreamSource">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate x:DataType="local:ImageBrush_StreamSource_Data">
-				<StackPanel>
-					<Border BorderBrush="Green"
-							BorderThickness="5"
-							CornerRadius="10"
-							Width="200"
-							Height="70">
-						<Border.Background>
-							<ImageBrush Stretch="Uniform"
-										AlignmentX="Left"
-										ImageSource="{x:Bind MySource}" />
-						</Border.Background>
-					</Border>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel Spacing="5">
+
+		<StackPanel Orientation="Horizontal" Spacing="5">
+			<Border BorderBrush="Green"
+			        BorderThickness="5"
+			        CornerRadius="10"
+			        Width="150"
+			        Height="80">
+				<Border.Background>
+					<ImageBrush Stretch="Uniform"
+								AlignmentX="Left"
+								ImageSource="{x:Bind MySource, Mode=OneWay}" />
+				</Border.Background>
+			</Border>
+			<Border BorderBrush="Green"
+			        BorderThickness="5"
+			        CornerRadius="10"
+			        Width="150"
+			        Height="80">
+				<Border.Background>
+					<ImageBrush Stretch="Uniform"
+					            AlignmentX="Center"
+					            ImageSource="{x:Bind MySource, Mode=OneWay}" />
+				</Border.Background>
+			</Border>
+			<Border BorderBrush="Green"
+			        BorderThickness="5"
+			        CornerRadius="10"
+			        Width="150"
+			        Height="80">
+				<Border.Background>
+					<ImageBrush Stretch="Uniform"
+					            AlignmentX="Right"
+					            ImageSource="{x:Bind MySource, Mode=OneWay}" />
+				</Border.Background>
+			</Border>
+		</StackPanel>
+		<StackPanel Orientation="Horizontal" Spacing="5">
+			<Border BorderBrush="Green"
+			        BorderThickness="5"
+			        CornerRadius="10"
+			        Width="150"
+			        Height="80">
+				<Border.Background>
+					<ImageBrush Stretch="UniformToFill"
+					            AlignmentY="Top"
+					            ImageSource="{x:Bind MySource, Mode=OneWay}" />
+				</Border.Background>
+			</Border>
+			<Border BorderBrush="Green"
+			        BorderThickness="5"
+			        CornerRadius="10"
+			        Width="150"
+			        Height="80">
+				<Border.Background>
+					<ImageBrush Stretch="UniformToFill"
+					            AlignmentY="Center"
+					            ImageSource="{x:Bind MySource, Mode=OneWay}" />
+				</Border.Background>
+			</Border>
+			<Border BorderBrush="Green"
+			        BorderThickness="5"
+			        CornerRadius="10"
+			        Width="150"
+			        Height="80">
+				<Border.Background>
+					<ImageBrush Stretch="UniformToFill"
+					            AlignmentY="Bottom"
+					            ImageSource="{x:Bind MySource, Mode=OneWay}" />
+				</Border.Background>
+			</Border>
+		</StackPanel>
+	</StackPanel>
 </UserControl>
