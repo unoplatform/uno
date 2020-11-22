@@ -279,8 +279,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_isNavigating = true;
 
-				SourcePageType = entry.SourcePageType;
-
 				// Navigating
 				var navigatingFromArgs = new NavigatingCancelEventArgs(
 					mode,
@@ -365,10 +363,11 @@ namespace Windows.UI.Xaml.Controls
 					null
 				);
 
+				SetValue(SourcePageTypeProperty, entry.SourcePageType);
+				SetValue(CurrentSourcePageTypeProperty, entry.SourcePageType);
+
 				previousEntry?.Instance.OnNavigatedFrom(navigationEvent);
 				CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
-
-				SetValue(CurrentSourcePageTypeProperty, entry.SourcePageType);
 
 				Navigated?.Invoke(this, navigationEvent);				
 

@@ -189,6 +189,10 @@ namespace Uno.UI.Tests.FrameTests
 
 			try
 			{
+				SourceTypePage.PageNavigatedFrom += OnPageNavigatedFrom;
+				SourceTypePage.PageNavigatingFrom += OnPageNavigatingFrom;
+				SourceTypePage.PageNavigatedTo += OnPageNavigatedTo;
+
 				Type navigatingSourcePageType = null;
 				Type navigatingCurrentSourcePageType = null;
 
@@ -216,7 +220,7 @@ namespace Uno.UI.Tests.FrameTests
 				navigatingCurrentSourcePageType = null;
 
 				navigatedSourcePageType = typeof(SourceTypePage1);
-				navigatingSourcePageType = typeof(SourceTypePage1);
+				navigatedCurrentSourcePageType = typeof(SourceTypePage1);
 
 				SUT.Navigate(typeof(SourceTypePage1));
 
@@ -229,7 +233,7 @@ namespace Uno.UI.Tests.FrameTests
 				navigatingCurrentSourcePageType = typeof(SourceTypePage1);
 
 				navigatedSourcePageType = typeof(SourceTypePage2);
-				navigatingSourcePageType = typeof(SourceTypePage2);
+				navigatedCurrentSourcePageType = typeof(SourceTypePage2);
 
 				SUT.Navigate(typeof(SourceTypePage2));
 
@@ -242,7 +246,7 @@ namespace Uno.UI.Tests.FrameTests
 				navigatingCurrentSourcePageType = typeof(SourceTypePage2);
 
 				navigatedSourcePageType = typeof(SourceTypePage1);
-				navigatingSourcePageType = typeof(SourceTypePage1);
+				navigatedCurrentSourcePageType = typeof(SourceTypePage1);
 
 				SUT.Navigate(typeof(SourceTypePage1));
 
