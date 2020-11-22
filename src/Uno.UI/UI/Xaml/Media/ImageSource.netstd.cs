@@ -17,6 +17,7 @@ using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Devices.Enumeration;
+using Microsoft.Extensions.Logging;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -66,16 +67,12 @@ namespace Windows.UI.Xaml.Media
 		#region Implementers API
 		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-#if __NETSTD_REFERENCE__
 			image = default;
 			return false;
-#else
-			// Unlike other platforms, on WASM all the legacy sources are handled synchronously.
-			return TryOpenSourceLegacy(out image);
-#endif
 		}
 
-		private protected virtual bool TryOpenSourceAsync(int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
+		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight,
+			out Task<ImageData> asyncImage)
 		{
 			asyncImage = default;
 			return false;
@@ -101,11 +98,14 @@ namespace Windows.UI.Xaml.Media
 				}
 				else
 				{
-					_opening.Disposable = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, ct => Open(ct, targetWidth, targetHeight));
+					_opening.Disposable = CoreDispatcher.Main.RunAsync(
+						CoreDispatcherPriority.Normal,
+						ct => Open(ct, targetWidth, targetHeight));
 				}
 			}
 			catch (Exception error)
 			{
+				this.Log().Error($"Error laading image: {error}");
 				OnOpened(new ImageData
 				{
 					Kind = ImageDataKind.Error,
@@ -122,7 +122,7 @@ namespace Windows.UI.Xaml.Media
 				{
 					OnOpened(img);
 				}
-				else if (TryOpenSourceAsync(targetWidth, targetHeight, out var asyncImg))
+				else if (TryOpenSourceAsync(ct, targetWidth, targetHeight, out var asyncImg))
 				{
 					OnOpened(await asyncImg);
 				}
@@ -145,7 +145,15 @@ namespace Windows.UI.Xaml.Media
 		{
 			_cache = data; // We should also cache the targetWidth and targetHeight
 
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info($"Image {this} opened with {data}");
+			}
+
 			var listeners = _subscriptions.ToList();
+
+			Console.WriteLine($"Image {this} opened with {data}. {listeners.Count} Listeners.");
+
 			foreach (var listener in listeners)
 			{
 				listener(data);

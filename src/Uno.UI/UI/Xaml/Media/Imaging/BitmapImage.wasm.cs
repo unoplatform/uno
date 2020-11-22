@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using Uno.Extensions;
 using Uno.Foundation;
 using Windows.Graphics.Display;
 
@@ -17,22 +19,63 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		internal ResolutionScale? ScaleOverride { get; set; }
 
-		private protected override bool TryOpenSourceAsync(int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
-		{
-			var uri = WebUri;
+		internal string ContentType { get; set; } = "application/octet-stream";
 
-			if (uri != null)
+		private protected override bool TryOpenSourceAsync(
+			CancellationToken ct,
+			int? targetWidth,
+			int? targetHeight,
+			out Task<ImageData> asyncImage)
+		{
+			return OpenSourceAsyncInner(ct, out asyncImage);
+		}
+
+		internal bool OpenSourceAsyncInner(CancellationToken ct, out Task<ImageData> asyncImage)
+		{
+			if (WebUri is {} uri)
 			{
 				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme == "file";
-				
+
 				// Local files are assumed as coming from the remote server
 				var newUri = hasFileScheme switch
 				{
 					true => new Uri(uri.PathAndQuery.TrimStart('/'), UriKind.Relative),
-					_	 => uri
+					_ => uri
 				};
 
 				asyncImage = AssetResolver.ResolveImageAsync(newUri, ScaleOverride);
+
+				return true;
+			}
+
+			if (Stream is { } stream)
+			{
+				async Task<ImageData> FetchImage()
+				{
+					try
+					{
+						stream.Position = 0;
+						RaiseDownloadProgress(0);
+						var bytes = await stream.ReadBytesAsync();
+						var encodedBytes = Convert.ToBase64String(bytes);
+
+						RaiseImageOpened();
+
+						return new ImageData
+						{
+							Kind = ImageDataKind.DataUri,
+							Value = "data:" + ContentType + ";base64," + encodedBytes
+						};
+					}
+					catch (Exception ex)
+					{
+						RaiseImageFailed(ex);
+						return new ImageData {Kind = ImageDataKind.Error, Error = ex};
+					}
+				}
+
+				asyncImage = FetchImage();
+
 				return true;
 			}
 
@@ -42,7 +85,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		internal static class AssetResolver
 		{
-			private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(() => GetAssets());
+			private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(GetAssets);
 
 			private static async Task<HashSet<string>> GetAssets()
 			{
@@ -62,22 +105,22 @@ namespace Windows.UI.Xaml.Media.Imaging
 					{
 						if (uri.Scheme == "http" || uri.Scheme == "https")
 						{
-							return new ImageData() { Kind = ImageDataKind.Url, Value = uri.AbsoluteUri };
+							return new ImageData { Kind = ImageDataKind.Url, Value = uri.AbsoluteUri };
 						}
 
 						// TODO: Implement ms-appdata
 						return new ImageData();
 					}
-					else
-					{
-						var assets = await _assets.Value;
 
-						return new ImageData() { Kind = ImageDataKind.Url, Value = GetScaledPath(uri.OriginalString, assets, scaleOverride) };
-					}
+					// POTENTIAL BUG HERE: if the "fetch" failed, the application
+					// will never retry to fetch it again.
+					var assets = await _assets.Value;
+
+					return new ImageData { Kind = ImageDataKind.Url, Value = GetScaledPath(uri.OriginalString, assets, scaleOverride) };
 				}
 				catch (Exception e)
 				{
-					return new ImageData() { Kind = ImageDataKind.Error, Error = e };
+					return new ImageData { Kind = ImageDataKind.Error, Error = e };
 				}
 			}
 

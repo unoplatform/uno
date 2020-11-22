@@ -55,7 +55,9 @@ namespace Windows.UI.Xaml.Media
 			Downloader = DefaultDownloader;
 		}
 
+#if !(__NETSTD__)
 		internal Stream Stream { get; set; }
+#endif
 
 		internal string FilePath { get; private set; }
 
@@ -125,31 +127,22 @@ namespace Windows.UI.Xaml.Media
 
 		partial void InitFromResource(Uri uri);
 
-		static public implicit operator ImageSource(string url)
+		public static implicit operator ImageSource(string url)
 		{
 			//This check is done in order to force a null to return if a empty string is passed.
-			if (url.IsNullOrWhiteSpace())
-			{
-				return null;
-			}
-			return new BitmapImage(url);
+			return url.IsNullOrWhiteSpace() ? null : new BitmapImage(url);
 		}
 
-		static public implicit operator ImageSource(Uri uri)
-		{
-			return new BitmapImage(uri);
-		}
+		public static implicit operator ImageSource(Uri uri) => new BitmapImage(uri);
 
-		static public implicit operator ImageSource(Stream stream)
+		public static implicit operator ImageSource(Stream stream)
 		{
 			throw new NotSupportedException("Implicit conversion from Stream to ImageSource is not supported");
 		}
 
 		partial void DisposePartial();
-		public void Dispose()
-		{
-			DisposePartial();
-		}
+
+		public void Dispose() => DisposePartial();
 
 		/// <summary>
 		/// Downloads an image from the provided Uri.

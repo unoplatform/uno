@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		#endregion
 
-		protected BitmapSource() { }
+		protected internal BitmapSource() { }
 
 		protected BitmapSource(Uri sourceUri) : base(sourceUri)
 		{

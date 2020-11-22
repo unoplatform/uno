@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Controls
 							_htmlImage.SetAttribute("src", "");
 							break;
 
-						case ImageDataKind.Base64:
+						case ImageDataKind.DataUri:
 						case ImageDataKind.Url:
 						default:
 							if (MonochromeColor != null)
@@ -108,13 +108,15 @@ namespace Windows.UI.Xaml.Controls
 							}
 							else
 							{
+								Console.WriteLine($"Setting img src to {img.Value}");
 								_htmlImage.SetAttribute("src", img.Value);
 							}
 							break;
 
 						case ImageDataKind.Error:
 							_htmlImage.SetAttribute("src", "");
-							_htmlImage.InternalDispatchEvent("error", EventArgs.Empty);
+							var errorArgs = new ExceptionRoutedEventArgs(this, img.Error?.ToString());
+							_htmlImage.InternalDispatchEvent("error", errorArgs);
 							break;
 					}
 				});

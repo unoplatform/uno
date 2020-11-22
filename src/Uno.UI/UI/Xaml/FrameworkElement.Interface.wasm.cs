@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml
 							ResetStyle("background-color", "background-image", "background-size");
 							break;
 
-						case ImageDataKind.Base64:
+						case ImageDataKind.DataUri:
 						case ImageDataKind.Url:
 						default:
 							SetStyle(

@@ -12,9 +12,14 @@ For most other assets, Uno.UI uses custom build tasks to lets you include assets
 
 At the moment, only the following image file types are supported:
 
-- `.png`
-- `.jpg` or `.jpeg`
-- `.gif`
+|             | .bmp (Win BMP) | .gif | .heic (Apple) | .jpg & .jpeg (JFIF) | .png | .webp | .pdf | .svg |
+| ----------- | -------------- | ---- | ------------- | ------------------- | ---- | ----- | ---- | ---- |
+| Windows UWP | ✔️              | ✔️    |               | ✔️                   | ✔️    | ✔️     | ❌    | ✔️    |
+| Android 10  | ✔️              | ✔️    | ✔️             | ✔️                   | ✔️    | ✔️     | ✔️    | ✔️    |
+| iOS 13      | ✔️              | ✔️    | ✔️             | ✔️                   | ✔️    | ❌     | ❌    | ❌    |
+| macOS       | ✔️              | ✔️    |               | ✔️                   | ✔️    |       |      |      |
+| Wasm        | ✔️              | ✔️    |               | ✔️                   | ✔️    | ✔️     | ❌    | ✔️    |
+| Skia WPF    | ✔️              | ✔️    |               | ✔️                   | ✔️    | ✔️     | ❌    | ❌    |
 
 ## Adding an asset to your project
 

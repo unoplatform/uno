@@ -32,26 +32,5 @@ namespace Windows.UI.Xaml.Media
 		{
 			WebUri = new Uri(uri.PathAndQuery.TrimStart("/"), UriKind.Relative);
 		}
-
-		// TODO: All those should be implemented by sub-classes in TryOpenSource<Sync|Async> overloads!
-		private bool TryOpenSourceLegacy(out ImageData img)
-		{
-			var stream = Stream;
-			if (stream != null)
-			{
-				stream.Position = 0;
-				var encodedBytes = Convert.ToBase64String(stream.ReadBytes());
-
-				img = new ImageData
-				{
-					Kind = ImageDataKind.Base64,
-					Value = "data:application/octet-stream;base64," + encodedBytes
-				};
-				return true;
-			}
-
-			img = default;
-			return false;
-		}
 	}
 }

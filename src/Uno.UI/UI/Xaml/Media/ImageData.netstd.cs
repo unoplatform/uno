@@ -18,5 +18,12 @@ namespace Windows.UI.Xaml.Media
 #elif __SKIA__
 		public SkiaCompositionSurface Value { get; set; }
 #endif
+		public override string ToString() =>
+			Kind switch
+			{
+				ImageDataKind.Empty => "Empty",
+				ImageDataKind.Error => $"Error[{Error}]",
+				_ => $"{Kind}: {Value}"
+			};
 	}
 }
