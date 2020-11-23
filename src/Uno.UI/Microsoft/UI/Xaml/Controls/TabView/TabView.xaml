@@ -65,8 +65,7 @@
                             <Button
                                 Grid.Column="2"
                                 x:Name="AddButton"
-                                Content="&#xE710;"
-								FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE710;"                                
                                 VerticalAlignment="Stretch"
                                 IsTextScaleFactorEnabled="False"
                                 Command="{TemplateBinding AddTabButtonCommand}"
@@ -193,7 +192,7 @@
                                 Background="{ThemeResource TabViewScrollButtonBackground}"
                                 BorderThickness="1"
                                 Delay="50"
-                                FontFamily="Segoe MDL2 Assets"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                 Interval="100"
                                 Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
                                 HighContrastAdjustment="None"
@@ -216,7 +215,7 @@
                                 Background="{ThemeResource TabViewScrollButtonBackground}"
                                 BorderThickness="1"
                                 Delay="50"
-                                FontFamily="Segoe MDL2 Assets"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                 Interval="100"
                                 HighContrastAdjustment="None"
                                 Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
@@ -235,7 +234,7 @@
         <Setter Property="Padding" Value="0"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+		<Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
@@ -301,7 +300,7 @@
 		<Setter Property="CornerRadius" Value="4,4,0,0" />
 		<!--TODO: ="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource TopCornerRadiusFilterConverter}}"/>-->
         <Setter Property="FontSize" Value="11"/>
-        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+		<Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>
         <Setter Property="Margin" Value="0,7,0,0"/>
         <Setter Property="Padding" Value="10,10,10,11"/>
@@ -700,7 +699,7 @@
                                 FontSize="{ThemeResource TabViewItemHeaderCloseFontSize}"
                                 Margin="{ThemeResource TabViewItemHeaderCloseMargin}"
                                 Content="&#xE711;"
-                                IsTextScaleFactorEnabled="False"
+                                IsTextScaleFactorEnabled="False"                                
                                 IsTabStop="False"
                                 Background="{ThemeResource TabViewItemHeaderCloseButtonBackground}"
                                 Foreground="{ThemeResource TabViewItemHeaderCloseButtonForeground}"
