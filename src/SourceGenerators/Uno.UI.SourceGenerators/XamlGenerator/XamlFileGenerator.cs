@@ -762,13 +762,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var hasXBindExpressions = CurrentScope.XBindExpressions.Count != 0;
 			var hasResourceExtensions = CurrentScope.Components.Any(HasMarkupExtensionNeedingComponent);
+			var isFrameworkElement = IsType(className, _frameworkElementSymbol);
 
 			if (hasXBindExpressions || hasResourceExtensions)
 			{
 				writer.AppendLineInvariant($"Bindings = new {GetBindingsTypeNames(className).bindingsClassName}(this);");
 			}
 
-			if (hasXBindExpressions || hasResourceExtensions)
+			if (isFrameworkElement && (hasXBindExpressions || hasResourceExtensions))
 			{
 				using (writer.BlockInvariant($"Loading += delegate"))
 				{
