@@ -897,7 +897,7 @@ var Uno;
                 return true;
             }
             registerPointerEventsOnView(pParams) {
-                const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+                const params = WindowManagerRegisterPointerEventsOnViewParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
                 element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
                 element.addEventListener("pointerleave", WindowManager.onPointerLeaveReceived);
