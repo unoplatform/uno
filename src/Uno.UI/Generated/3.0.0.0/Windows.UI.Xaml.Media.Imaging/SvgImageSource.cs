@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Skipping already declared property UriSourceProperty
 		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource()
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource()
-		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public SvgImageSource( global::System.Uri uriSource) 
 		{
