@@ -76,8 +76,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		partial void InitPartial();
 
+#pragma warning disable 67
 		public event Foundation.TypedEventHandler<SvgImageSource, SvgImageSourceFailedEventArgs>? OpenFailed;
 
 		public event Foundation.TypedEventHandler<SvgImageSource, SvgImageSourceOpenedEventArgs>? Opened;
+#pragma warning restore 67
 	}
 }

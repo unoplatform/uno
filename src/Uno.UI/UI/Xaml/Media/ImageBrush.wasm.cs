@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 using Windows.UI.Xaml.Wasm;
+using Uno.Disposables;
 using NotImplementedException = System.NotImplementedException;
 
 namespace Windows.UI.Xaml.Media
@@ -52,9 +53,9 @@ namespace Windows.UI.Xaml.Media
 			};
 			var alignY = AlignmentY switch
 			{
-				AlignmentY.Top => "yMin",
-				AlignmentY.Center => "yMid",
-				AlignmentY.Bottom => "yMax",
+				AlignmentY.Top => "YMin",
+				AlignmentY.Center => "YMid",
+				AlignmentY.Bottom => "YMax",
 				_ => ""
 			};
 
@@ -67,18 +68,31 @@ namespace Windows.UI.Xaml.Media
 					_ => "",
 				};
 
+			// Using this solution to set the viewBox/Size
+			// https://stackoverflow.com/a/13915777/1176099
+
 			pattern.SetAttribute(
 				("x", "0"),
 				("y", "0"),
 				("width", "1"),
 				("height", "1"),
+				("viewBox", "0 0 100 100"),
 				("preserveAspectRatio", alignX + alignY + " " + preserveAspectRatio));
 
-			var source = ImageSource;
+			var subscriptionDisposable = new SerialDisposable();
 
-			var subscription = source?.Subscribe(OnImageData);
+			var imageSourceChangedSubscription =
+				this.RegisterDisposablePropertyChangedCallback(ImageSourceProperty, OnImageSourceChanged);
 
-			void OnImageData(ImageData data)
+			void OnImageSourceChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
+			{
+				var newImageSource = (args.NewValue as ImageSource);
+				subscriptionDisposable.Disposable = newImageSource?.Subscribe(OnSourceOpened);
+			}
+
+			subscriptionDisposable.Disposable = ImageSource?.Subscribe(OnSourceOpened);
+
+			void OnSourceOpened(ImageData data)
 			{
 				switch (data.Kind)
 				{
@@ -87,12 +101,14 @@ namespace Windows.UI.Xaml.Media
 						break;
 					case ImageDataKind.DataUri:
 					case ImageDataKind.Url:
-						pattern.SetHtmlContent($"<image xlink:href=\"{data.Value}\" />");
+						pattern.SetHtmlContent($"<image width=\"100\" height=\"100\" xlink:href=\"{data.Value}\" />");
 						break;
 				}
 			}
 
-			return (pattern, subscription);
+			var subscriptions = new CompositeDisposable(imageSourceChangedSubscription, subscriptionDisposable);
+
+			return (pattern, subscriptions);
 		}
 	}
 }

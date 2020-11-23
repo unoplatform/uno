@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (e.NewValue is ImageSource source)
 			{
-				_sourceDisposable.Disposable = source.Subscribe(img =>
+				void OnSourceOpened(ImageData img)
 				{
 					switch (img.Kind)
 					{
@@ -101,16 +101,14 @@ namespace Windows.UI.Xaml.Controls
 						default:
 							if (MonochromeColor != null)
 							{
-								WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.setImageAsMonochrome("
-									+ _htmlImage.HtmlId + ", \""
-									+ img.Value + "\", \""
-									+ MonochromeColor.Value.ToHexString() + "\");");
+								WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.setImageAsMonochrome(" + _htmlImage.HtmlId + ", \"" + img.Value + "\", \"" + MonochromeColor.Value.ToHexString() + "\");");
 							}
 							else
 							{
 								Console.WriteLine($"Setting img src to {img.Value}");
 								_htmlImage.SetAttribute("src", img.Value);
 							}
+
 							break;
 
 						case ImageDataKind.Error:
@@ -119,7 +117,9 @@ namespace Windows.UI.Xaml.Controls
 							_htmlImage.InternalDispatchEvent("error", errorArgs);
 							break;
 					}
-				});
+				}
+
+				_sourceDisposable.Disposable = source.Subscribe(OnSourceOpened);
 			}
 			else
 			{

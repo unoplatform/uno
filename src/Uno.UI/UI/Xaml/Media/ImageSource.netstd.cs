@@ -152,7 +152,6 @@ namespace Windows.UI.Xaml.Media
 
 			var listeners = _subscriptions.ToList();
 
-			Console.WriteLine($"Image {this} opened with {data}. {listeners.Count} Listeners.");
 
 			foreach (var listener in listeners)
 			{
