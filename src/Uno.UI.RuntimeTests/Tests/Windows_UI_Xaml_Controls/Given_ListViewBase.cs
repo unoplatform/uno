@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ListViewPages;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -95,7 +96,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			CollectionAssert.AreEqual(new int[] { 0, 1 }, containerIndices);
 #endif
-  
+
 			var container0 = SUT.ContainerFromIndex(0);
 			var containerItem = SUT.ContainerFromItem("different");
 			Assert.AreEqual(container0, containerItem);
@@ -244,7 +245,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsNotNull(si2);
 			Assert.AreNotSame(si2, source[1]);
-			Assert.AreEqual("item 2", si2.Content); 
+			Assert.AreEqual("item 2", si2.Content);
 #if !NETFX_CORE
 			Assert.AreEqual("item 2", si2.DataContext);
 			Assert.IsTrue(si2.IsGeneratedContainer);
@@ -473,6 +474,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
 			}
+		}
+
+		[TestMethod]
+		public async Task When_CollectionViewSource_In_Xaml()
+		{
+			var page = new ListViewCollectionViewSourcePage();
+
+			Assert.AreEqual(0, page.SubjectListView.Items.Count);
+
+			page.CVS.Source = new[] { "One", "Two", "Three" };
+
+			WindowHelper.WindowContent = page;
+
+			await WindowHelper.WaitForLoaded(page.SubjectListView);
+
+			await WindowHelper.WaitForIdle();
+
+			//Assert.AreEqual(3, page.SubjectListView.Items.Count); // TODO
+			ListViewItem lvi = null;
+			await WindowHelper.WaitFor(() => (lvi = page.SubjectListView.ContainerFromItem("One") as ListViewItem) != null);
 		}
 	}
 }
