@@ -13,6 +13,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 		public TabViewListView()
 		{
+			// TODO: Uno specific - avoid stretching tabs vertically.
+			// Can be removed when #1133 is fixed.
+			ShouldApplyChildStretch = false;
+
 			this.DefaultStyleKey = typeof(TabViewListView);
 
 			ContainerContentChanging += OnContainerContentChanging;

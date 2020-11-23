@@ -160,6 +160,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		// TODO: This is a temporary workaround for TabView items stretching vertically
+		// Can be removed when #1133 is fixed.
+		internal bool ShouldApplyChildStretch { get; set; } = true;
+
 		public IReadOnlyList<float>? GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{
 			if (orientation != ScrollOrientation)
