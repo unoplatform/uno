@@ -12,14 +12,22 @@ For most other assets, Uno.UI uses custom build tasks to lets you include assets
 
 At the moment, only the following image file types are supported:
 
-|             | .bmp (Win BMP) | .gif | .heic (Apple) | .jpg & .jpeg (JFIF) | .png | .webp | .pdf | .svg |
-| ----------- | -------------- | ---- | ------------- | ------------------- | ---- | ----- | ---- | ---- |
-| Windows UWP | ✔️              | ✔️    |               | ✔️                   | ✔️    | ✔️     | ❌    | ✔️    |
-| Android 10  | ✔️              | ✔️    | ✔️             | ✔️                   | ✔️    | ✔️     | ✔️    | ✔️    |
-| iOS 13      | ✔️              | ✔️    | ✔️             | ✔️                   | ✔️    | ❌     | ❌    | ❌    |
-| macOS       | ✔️              | ✔️    |               | ✔️                   | ✔️    |       |      |      |
-| Wasm        | ✔️              | ✔️    |               | ✔️                   | ✔️    | ✔️     | ❌    | ✔️    |
-| Skia WPF    | ✔️              | ✔️    |               | ✔️                   | ✔️    | ✔️     | ❌    | ❌    |
+|             | .bmp (Win BMP) | .gif‡ | .heic (Apple) | .jpg & .jpeg (JFIF) | .png | .webp | .pdf | .svg |
+| ----------- | -------------- | ----- | ------------- | ------------------- | ---- | ----- | ---- | ---- |
+| Windows UWP | ✔️              | ✔️     | ❌             | ✔️                   | ✔️    | ✔️     | ❌    | ✔️    |
+| Android 10  | ✔️              | ✔️‡    | ✔️             | ✔️                   | ✔️    | ✔️     | ✔️    | ✔️    |
+| iOS 13      | ✔️              | ✔️‡    | ✔️             | ✔️                   | ✔️    | ❌     | ❌    | ❌    |
+| macOS       | ✔️              | ✔️‡    | ✔️             | ✔️                   | ✔️    | ❌     | ✔️    | ❌    |
+| Wasm†       | ✔️†             | ✔️‡    | ❌†            | ✔️                   | ✔️    | ❌†    | ❌†   | ✔️    |
+| Skia WPF    | ✔️              | ✔️‡    | ❌             | ✔️                   | ✔️    | ✔️     | ❌    | ❌    |
+
+† Notes:
+
+* Actual **Wasm image format support** is browser dependent. For example, `.webp` is not working on Safari on macOS, but works on Chromium-based browsers. Checkmarks ✔️ here indicates format use can safely expect to work on all browsers able to run Wasm applications.
+* **Gif animation support**:
+  * Play/Pause not implemented in Uno yet
+  * Always animated on Wasm
+  * Not animated on other Uno platforms
 
 ## Adding an asset to your project
 
