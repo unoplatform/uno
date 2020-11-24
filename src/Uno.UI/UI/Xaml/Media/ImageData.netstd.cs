@@ -23,7 +23,11 @@ namespace Windows.UI.Xaml.Media
 			{
 				ImageDataKind.Empty => "Empty",
 				ImageDataKind.Error => $"Error[{Error}]",
+#if __WASM__ || __SKIA__
 				_ => $"{Kind}: {Value}"
+#else
+				_ => $"{Kind}"
+#endif
 			};
 	}
 }
