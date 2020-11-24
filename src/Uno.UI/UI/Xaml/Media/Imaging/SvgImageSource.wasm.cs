@@ -20,15 +20,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 		partial void InitPartial()
 		{
 		}
-		private void RaiseImageFailed(SvgImageSourceLoadStatus loadStatus)
-		{
-			OpenFailed?.Invoke(this, new SvgImageSourceFailedEventArgs(loadStatus));
-		}
-
-		private void RaiseImageOpened()
-		{
-			Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
-		}
 
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
