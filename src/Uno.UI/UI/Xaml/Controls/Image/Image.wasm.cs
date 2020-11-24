@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml.Controls
 		private Size _lastMeasuredSize;
 
 		private static readonly Size _zeroSize = new Size(0d, 0d);
+		private ImageData _currentImg;
 
 		public Image()
 		{
@@ -48,6 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().Debug($"Image failed [{(Source as BitmapSource)?.WebUri}]");
 			}
+			_currentImg.Source?.ReportImageFailed();
 		}
 
 		private void OnImageOpened(object sender, RoutedEventArgs e)
@@ -63,6 +65,7 @@ namespace Windows.UI.Xaml.Controls
 				// (sometimes the measure 
 				InvalidateMeasure();
 			}
+			_currentImg.Source?.ReportImageLoaded();
 		}
 
 		public event RoutedEventHandler ImageOpened
@@ -90,6 +93,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				void OnSourceOpened(ImageData img)
 				{
+					_currentImg = img;
 					switch (img.Kind)
 					{
 						case ImageDataKind.Empty:

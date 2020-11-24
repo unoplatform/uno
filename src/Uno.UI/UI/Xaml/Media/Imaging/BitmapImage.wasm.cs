@@ -13,7 +13,7 @@ using Path = global::System.IO.Path;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	public sealed partial class BitmapImage : BitmapSource
+	public sealed partial class BitmapImage : BitmapSource, IImageSource
 	{
 		private static readonly string UNO_BOOTSTRAP_APP_BASE = Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
 
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 					_ => uri
 				};
 
-				asyncImage = AssetResolver.ResolveImageAsync(newUri, ScaleOverride);
+				asyncImage = AssetResolver.ResolveImageAsync(this, newUri, ScaleOverride);
 
 				return true;
 			}
@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"));
 			}
 
-			public static async Task<ImageData> ResolveImageAsync(Uri uri, ResolutionScale? scaleOverride)
+			public static async Task<ImageData> ResolveImageAsync(IImageSource source, Uri uri, ResolutionScale? scaleOverride)
 			{
 				try
 				{
@@ -105,7 +105,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 					{
 						if (uri.Scheme == "http" || uri.Scheme == "https")
 						{
-							return new ImageData { Kind = ImageDataKind.Url, Value = uri.AbsoluteUri };
+							return new ImageData
+							{
+								Kind = ImageDataKind.Url,
+								Value = uri.AbsoluteUri,
+								Source = source
+							};
 						}
 
 						// TODO: Implement ms-appdata
@@ -116,7 +121,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 					// will never retry to fetch it again.
 					var assets = await _assets.Value;
 
-					return new ImageData { Kind = ImageDataKind.Url, Value = GetScaledPath(uri.OriginalString, assets, scaleOverride) };
+					return new ImageData
+					{
+						Kind = ImageDataKind.Url,
+						Value = GetScaledPath(uri.OriginalString, assets, scaleOverride),
+						Source = source
+					};
 				}
 				catch (Exception e)
 				{
@@ -176,6 +186,16 @@ namespace Windows.UI.Xaml.Media.Imaging
 				(int)ResolutionScale.Scale450Percent,
 				(int)ResolutionScale.Scale500Percent
 			};
+		}
+
+		public void ReportImageLoaded()
+		{
+			RaiseImageOpened();
+		}
+
+		public void ReportImageFailed()
+		{
+			RaiseImageFailed(new Exception("Unable to load image"));
 		}
 	}
 }

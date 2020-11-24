@@ -11,7 +11,7 @@ using static Windows.UI.Xaml.Media.Imaging.BitmapImage;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	partial class SvgImageSource
+	partial class SvgImageSource : IImageSource
 	{
 		private static readonly string UNO_BOOTSTRAP_APP_BASE = Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
 
@@ -49,7 +49,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 				{
 					if (uri.Scheme == "http" || uri.Scheme == "https")
 					{
-						image = new ImageData { Kind = ImageDataKind.Url, Value = uri.AbsoluteUri };
+						image = new ImageData
+						{
+							Kind = ImageDataKind.Url,
+							Value = uri.AbsoluteUri,
+							Source = this
+						};
 					}
 
 					// TODO: Implement ms-appdata
@@ -57,7 +62,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 				else
 				{
 					var path = Path.Combine(UNO_BOOTSTRAP_APP_BASE, uri.OriginalString);
-					image = new ImageData { Kind = ImageDataKind.Url, Value = path };
+					image = new ImageData
+					{
+						Kind = ImageDataKind.Url,
+						Value = path,
+						Source = this
+					};
 				}
 
 				return image.Kind != default;
@@ -110,5 +120,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 			return false;
 
 		}
+
+		public void ReportImageLoaded() => RaiseImageOpened();
+
+		public void ReportImageFailed() => RaiseImageFailed(SvgImageSourceLoadStatus.Other);
 	}
 }
