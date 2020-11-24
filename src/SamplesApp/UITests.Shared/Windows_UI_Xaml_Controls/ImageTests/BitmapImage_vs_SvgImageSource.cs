@@ -14,20 +14,22 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
 	[Sample("Image")]
 
-	public sealed partial class Image_Svg : Page
+	public sealed partial class BitmapImage_vs_SvgImageSource : Page
 	{
-		public Image_Svg()
+		public BitmapImage_vs_SvgImageSource()
 		{
 			this.InitializeComponent();
 		}
 
 		private async void LoadClicked(object sender, RoutedEventArgs e)
 		{
-			img1.Source = null;
+			img.Source = null;
 
 			await Task.Yield();
 
 			log.Text = "";
+			isLoaded.IsChecked = false;
+			isError.IsChecked = false;
 			var uri = new Uri(url.Text);
 			ImageSource source = null;
 
@@ -52,8 +54,16 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 						await bitmapSource.SetSourceAsync(stream);
 					}
 					bitmapSource.DownloadProgress += (snd, evt) => Log($"Downloadind... {evt.Progress}%");
-					bitmapSource.ImageFailed += (snd, evt) => Log($"ERROR: {evt.ErrorMessage}");
-					bitmapSource.ImageOpened += (snd, evt) => Log($"LOADED from {evt.OriginalSource}");
+					bitmapSource.ImageFailed += (snd, evt) =>
+					{
+						isError.IsChecked = true;
+						Log($"ERROR: {evt.ErrorMessage}");
+					};
+					bitmapSource.ImageOpened += (snd, evt) =>
+					{
+						isLoaded.IsChecked = true;
+						Log($"LOADED from {evt.OriginalSource}");
+					};
 
 					source = bitmapSource;
 					break;
@@ -70,14 +80,22 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 						svgSource = new SvgImageSource();
 						await svgSource.SetSourceAsync(stream);
 					}
-					svgSource.OpenFailed += (snd, evt) => Log($"ERROR: {evt.Status}");
-					svgSource.Opened += (snd, evt) => Log("LOADED");
+					svgSource.OpenFailed += (snd, evt) =>
+					{
+						isError.IsChecked = true;
+						Log($"ERROR: {evt.Status}");
+					};
+					svgSource.Opened += (snd, evt) =>
+					{
+						isLoaded.IsChecked = true;
+						Log("LOADED");
+					};
 					source = svgSource;
 					break;
 				}
 				case "SvgImageSource2":
 				{
-					var border = img1.Parent as FrameworkElement;
+					var border = img.Parent as FrameworkElement;
 					SvgImageSource svgSource;
 					if (stream == null)
 					{
@@ -92,12 +110,20 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 					Log($"RasterizePixelWidth/Height: {border.ActualWidth}x{border.ActualHeight}");
 					svgSource.RasterizePixelWidth = border.ActualWidth;
 					svgSource.RasterizePixelHeight = border.ActualHeight;
-					svgSource.OpenFailed += (snd, evt) => Log($"ERROR: {evt.Status}");
-					svgSource.Opened += (snd, evt) => Log("LOADED");
+					svgSource.OpenFailed += (snd, evt) =>
+					{
+						isError.IsChecked = true;
+						Log($"ERROR: {evt.Status}");
+					};
+					svgSource.Opened += (snd, evt) =>
+					{
+						isLoaded.IsChecked = true;
+						Log("LOADED");
+					};
 					break;
 				}
 			}
-			img1.Source = source;
+			img.Source = source;
 
 			void Log(string msg)
 			{

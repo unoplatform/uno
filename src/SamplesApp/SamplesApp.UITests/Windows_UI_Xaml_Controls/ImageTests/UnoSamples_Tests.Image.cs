@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
@@ -201,6 +202,175 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var rect = _app.GetPhysicalRect("outerBorder");
 
 			ImageAssert.DoesNotHaveColorAt(bmp, rect.CenterX, rect.CenterY, Color.Black);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void BitmapImage_vs_SvgImageSource_BitmapRemote()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
+
+			var url = _app.Marked("url");
+			var btnBitmap = _app.Marked("btnBitmap");
+			var streamMode = _app.Marked("streamMode");
+			var showLow = _app.Marked("showLow");
+			var img = _app.Marked("img");
+
+			showLow.SetDependencyPropertyValue("IsCheked", "False");
+
+			// Load image from url
+			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.png");
+			streamMode.SetDependencyPropertyValue("IsChecked", "False");
+
+			btnBitmap.FastTap();
+
+			WaitForBitmapOrSvgLoaded();
+
+			using var screenshotDirect = TakeScreenshot("url_direct");
+
+			streamMode.SetDependencyPropertyValue("IsChecked", "True");
+
+			btnBitmap.FastTap();
+
+			WaitForBitmapOrSvgLoaded();
+
+			using var screenshotStream = TakeScreenshot("url_stream");
+
+			var rect = _app.GetPhysicalRect(img);
+
+			// Both images should be the same
+			ImageAssert.AreEqual(screenshotDirect, screenshotStream, rect, tolerance: PixelTolerance.Cummulative(2));
+		}
+
+		[Test]
+		[AutoRetry]
+		public void BitmapImage_vs_SvgImageSource_SvgRemote()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
+
+			var url = _app.Marked("url");
+			var btnSvg = _app.Marked("btnSvg");
+			var streamMode = _app.Marked("streamMode");
+			var showLow = _app.Marked("showLow");
+			var img = _app.Marked("img");
+
+			showLow.SetDependencyPropertyValue("IsCheked", "False");
+
+			// Load image from url
+			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.svg");
+			streamMode.SetDependencyPropertyValue("IsChecked", "False");
+
+			btnSvg.FastTap();
+
+			WaitForBitmapOrSvgLoaded();
+
+			using var screenshotDirect = TakeScreenshot("url_direct");
+
+			streamMode.SetDependencyPropertyValue("IsChecked", "True");
+
+			btnSvg.FastTap();
+
+			WaitForBitmapOrSvgLoaded();
+
+			using var screenshotStream = TakeScreenshot("url_stream");
+
+			var rect = _app.GetPhysicalRect(img);
+
+			// Both images should be the same
+			ImageAssert.AreEqual(screenshotDirect, screenshotStream, rect, tolerance: PixelTolerance.Cummulative(2));
+		}
+
+		[Test]
+		[AutoRetry]
+		public void BitmapImage_vs_SvgImageSource_BitmapLocal()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
+
+			var url = _app.Marked("url");
+			var btnBitmap = _app.Marked("btnBitmap");
+			var streamMode = _app.Marked("streamMode");
+			var showLow = _app.Marked("showLow");
+			var img = _app.Marked("img");
+
+			showLow.SetDependencyPropertyValue("IsCheked", "False");
+
+			// Load image from url
+			url.SetDependencyPropertyValue("Text", "ms-appx:///Assets/Formats/uno-overalls.png");
+			streamMode.SetDependencyPropertyValue("IsChecked", "False");
+
+			btnBitmap.FastTap();
+
+			WaitForBitmapOrSvgLoaded();
+
+			using var screenshotDirect = TakeScreenshot("url_local");
+
+			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.png");
+
+			btnBitmap.FastTap();
+
+			WaitForBitmapOrSvgLoaded();
+
+			using var screenshotStream = TakeScreenshot("url_remote");
+
+			var rect = _app.GetPhysicalRect(img);
+
+			// Both images should be the same
+			ImageAssert.AreEqual(screenshotDirect, screenshotStream, rect, tolerance: PixelTolerance.Exclusive(12));
+		}
+
+		[Test]
+		[AutoRetry]
+		public void BitmapImage_vs_SvgImageSource_SvgLocal()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
+
+			var url = _app.Marked("url");
+			var btnSvg = _app.Marked("btnSvg");
+			var streamMode = _app.Marked("streamMode");
+			var showLow = _app.Marked("showLow");
+			var img = _app.Marked("img");
+
+			showLow.SetDependencyPropertyValue("IsCheked", "False");
+
+			// Load image from url
+			url.SetDependencyPropertyValue("Text", "ms-appx:///Assets/Formats/uno-overalls.svg");
+			streamMode.SetDependencyPropertyValue("IsChecked", "False");
+
+			btnSvg.FastTap();
+
+			WaitForBitmapOrSvgLoaded();
+
+			using var screenshotDirect = TakeScreenshot("url_local");
+
+			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.svg");
+
+			btnSvg.FastTap();
+
+			WaitForBitmapOrSvgLoaded();
+
+			using var screenshotStream = TakeScreenshot("url_remote");
+
+			var rect = _app.GetPhysicalRect(img);
+
+			// Both images should be the same
+			ImageAssert.AreEqual(screenshotDirect, screenshotStream, rect, tolerance: PixelTolerance.Exclusive(12));
+		}
+
+		private void WaitForBitmapOrSvgLoaded()
+		{
+			var isLoaded = _app.Marked("isLoaded");
+			var isError = _app.Marked("isError");
+			var loadTimeout = TimeSpan.FromSeconds(10);
+
+			bool Predicate()
+			{
+				return isLoaded.GetDependencyPropertyValue<bool>("IsChecked")
+				       || isError.GetDependencyPropertyValue<bool>("IsChecked");
+			}
+
+			_app.WaitFor(Predicate, timeout: loadTimeout);
+
+			Thread.Sleep(200);
 		}
 	}
 }
