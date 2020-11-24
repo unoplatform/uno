@@ -123,6 +123,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
+				_sourceDisposable.Disposable = null;
 				_sourceDisposable.Disposable = source.Subscribe(OnSourceOpened);
 			}
 			else
