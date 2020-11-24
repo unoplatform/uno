@@ -206,6 +206,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
 		public void BitmapImage_vs_SvgImageSource_BitmapRemote()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
@@ -244,6 +245,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
 		public void BitmapImage_vs_SvgImageSource_SvgRemote()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
@@ -282,6 +284,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
 		public void BitmapImage_vs_SvgImageSource_BitmapLocal()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
@@ -320,6 +323,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
 		public void BitmapImage_vs_SvgImageSource_SvgLocal()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
