@@ -2,7 +2,6 @@
 using Windows.Foundation;
 using Windows.UI.Xaml.Wasm;
 using Uno.Disposables;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Windows.UI.Xaml.Media
 {

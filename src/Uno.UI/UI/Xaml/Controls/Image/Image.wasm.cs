@@ -109,7 +109,6 @@ namespace Windows.UI.Xaml.Controls
 							}
 							else
 							{
-								Console.WriteLine($"Setting img src to {img.Value}");
 								_htmlImage.SetAttribute("src", img.Value);
 							}
 
