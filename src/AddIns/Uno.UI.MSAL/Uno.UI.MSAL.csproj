@@ -71,7 +71,9 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.MSAL\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.MSAL\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
@@ -120,7 +122,7 @@
 			<TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)" />
 			<TfmSpecificPackageFile Include="@(FilteredTfmSpecificPackageFile)" />
 		</ItemGroup>
-		
+
 	</Target>
 
 	<!-- Run on windows only to get the nuget package built properly (Mono 6.10 crashes with this on OSX) -->
