@@ -12,9 +12,42 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Helpers.WinUI
 {
+	internal class VisualStateUtil
+	{
+		public static VisualStateGroup GetVisualStateGroup(FrameworkElement control, string groupName)
+		{
+			VisualStateGroup group = null;
+			var visualStateGroups = VisualStateManager.GetVisualStateGroups(control);
+			foreach (var visualStateGroup in visualStateGroups)
+			{
+				if (visualStateGroup.Name == groupName)
+				{
+					group = visualStateGroup;
+					return group;
+				}
+			}
+			return group;
+		}
+
+		public static bool VisualStateGroupExists(FrameworkElement control, string groupName)
+		{
+			return GetVisualStateGroup(control, groupName) != null;
+		}
+
+		public static void GoToStateIfGroupExists(Control control, string groupName, string stateName, bool useTransitions)
+		{
+			var visualStateGroup = GetVisualStateGroup(control, groupName);
+			if (visualStateGroup != null)
+			{
+				VisualStateManager.GoToState(control, stateName, useTransitions);
+			}
+		}
+	}
+
 	internal class LayoutUtils
 	{
 		public static double MeasureAndGetDesiredWidthFor(UIElement element, Size availableSize)

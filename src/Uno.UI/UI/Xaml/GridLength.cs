@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml
 
 		public bool IsStar { get { return GridUnitType == Xaml.GridUnitType.Star; } }
 
-		public double Value { get; private set; }
+		public double Value { get; internal set; }
 
 		public static implicit operator GridLength(string value)
 			=> FromString(value);
