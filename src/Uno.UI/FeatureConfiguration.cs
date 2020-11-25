@@ -472,7 +472,8 @@ namespace Uno.UI
 		public static class TimePicker
 		{
 #if __IOS__
-			public static bool UseLegacyStyle { get; set; } = false;
+			//TODO: Setting the default to true because of this: https://github.com/unoplatform/uno/issues/4611
+			public static bool UseLegacyStyle { get; set; } = true;
 #endif
 		}
 	}
