@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly IList<object> _inner = new List<object>();
 
-		private IList _itemsSource = null;
+		private IList<object> _itemsSource = null;
 		private readonly SerialDisposable _itemsSourceCollectionChangeDisposable = new SerialDisposable();
 
 		public event VectorChangedEventHandler<object> VectorChanged;
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				return _itemsSource.OfType<object>().GetEnumerator();
+				return _itemsSource.GetEnumerator();
 			}
 		}
 
@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void SetItemsSource(object itemsSource)
+		internal void SetItemsSource(IEnumerable itemsSource)
 		{
 			if (_itemsSource == itemsSource)
 			{
@@ -158,30 +158,31 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				var unwrappedSource = UnwrapItemsSource(itemsSource);
-
-				if (unwrappedSource is IList itemsSourceList)
+				object listSource = null;
+				if (itemsSource is IList<object> itemsSourceGenericList)
 				{
-					_itemsSource = itemsSourceList;
+					listSource = itemsSourceGenericList;
+					_itemsSource = itemsSourceGenericList;
 				}
-				else if (unwrappedSource is IEnumerable itemsSourceEnumerable)
+				else if (itemsSource is IList itemsSourceList)
 				{
-					_itemsSource = itemsSourceEnumerable.ToObjectArray();
+					listSource = itemsSourceList;
+					_itemsSource = new UntypedListWrapper(itemsSourceList);
 				}
 				else
 				{
-					throw new InvalidOperationException("Only IList- or IEnumerable-based ItemsSource is supported.");
+					_itemsSource = itemsSource.ToObjectArray();
 				}
 
-				ObserveCollectionChanged();
+				ObserveCollectionChanged(listSource);
 			}
 
 			VectorChanged?.Invoke(this, new VectorChangedEventArgs(CollectionChange.Reset, 0));
 		}
 
-		private void ObserveCollectionChanged()
+		private void ObserveCollectionChanged(object itemsSource)
 		{
-			if (_itemsSource is INotifyCollectionChanged existingObservable)
+			if (itemsSource is INotifyCollectionChanged existingObservable)
 			{
 				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
 				// remove the handler.
@@ -191,7 +192,7 @@ namespace Windows.UI.Xaml.Controls
 				);
 				existingObservable.CollectionChanged += handler;
 			}
-			else if (_itemsSource is IObservableVector<object> observableVector)
+			else if (itemsSource is IObservableVector<object> observableVector)
 			{
 				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
 				// remove the handler.
@@ -201,7 +202,7 @@ namespace Windows.UI.Xaml.Controls
 				);
 				observableVector.VectorChanged += handler;
 			}
-			else if (_itemsSource is IObservableVector genericObservableVector)
+			else if (itemsSource is IObservableVector genericObservableVector)
 			{
 				VectorChangedEventHandler handler = OnItemsSourceVectorChanged;
 				_itemsSourceCollectionChangeDisposable.Disposable = Disposable.Create(() =>
@@ -233,7 +234,47 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private object UnwrapItemsSource(object itemsSource)
-			=> itemsSource is CollectionViewSource cvs ? (object)cvs.View : itemsSource;
+		private class UntypedListWrapper : IList<object>
+		{
+			private readonly IList _inner;
+
+			public IList Original => _inner;
+
+			public UntypedListWrapper(IList list)
+			{
+				_inner = list ?? throw new ArgumentNullException(nameof(list));
+			}
+
+			public object this[int index] { get => _inner[index]; set => _inner[index] = value; }
+
+			public int Count => _inner.Count;
+
+			public bool IsReadOnly => _inner.IsReadOnly;
+
+			public void Add(object item) => _inner.Add(item);
+			public void Clear() => _inner.Clear();
+			public bool Contains(object item) => _inner.Contains(item);
+			public void CopyTo(object[] array, int arrayIndex) => _inner.CopyTo(array, arrayIndex);
+			public IEnumerator<object> GetEnumerator()
+			{
+				var enumerator = _inner.GetEnumerator();
+				while (enumerator.MoveNext())
+				{
+					yield return enumerator.Current;
+				}
+			}
+
+			public int IndexOf(object item) => _inner.IndexOf(item);
+			public void Insert(int index, object item) => _inner.Insert(index, item);
+			public bool Remove(object item)
+			{
+				var initialCount = _inner.Count;
+				_inner.Remove(item);
+				return _inner.Count < initialCount;
+			}
+
+			public void RemoveAt(int index) => _inner.RemoveAt(index);
+			IEnumerator IEnumerable.GetEnumerator() => _inner.GetEnumerator();
+		}
 	}
 }

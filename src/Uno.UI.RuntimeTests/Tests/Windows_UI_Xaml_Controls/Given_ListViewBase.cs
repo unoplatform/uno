@@ -491,7 +491,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-			//Assert.AreEqual(3, page.SubjectListView.Items.Count); // TODO
+#if NETFX_CORE // TODO: subscribe to changes to Source property
+			Assert.AreEqual(3, page.SubjectListView.Items.Count);
+#endif
 			ListViewItem lvi = null;
 			await WindowHelper.WaitFor(() => (lvi = page.SubjectListView.ContainerFromItem("One") as ListViewItem) != null);
 		}

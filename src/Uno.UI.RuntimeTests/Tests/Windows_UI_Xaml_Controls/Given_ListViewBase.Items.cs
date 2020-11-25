@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Windows.Foundation.Collections;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -18,12 +19,13 @@ using Uno.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	[Ignore("Items-ItemsSource sync not implemented yet")]
+	[RunsOnUIThread]
 	public partial class Given_ListViewBase_Items
 	{
 		[TestMethod]
@@ -173,7 +175,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_ItemsSource_ObservableCollection_Modified_VectorChange_Not_Triggered()
+		public async Task When_ItemsSource_ObservableCollection_Modified_VectorChange_Triggered()
 		{
 			var listView = new ListView();
 			var items = new ObservableCollection<int>() { 1 };
@@ -285,5 +287,194 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			items.Add(2, "World");
 			Assert.AreEqual(1, listView.Items.Count);
 		}
+
+		[TestMethod]
+		public void When_ItemsSource_Is_CollectionViewSource_Ungrouped_Observable()
+		{
+			var listView = new ListView();
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 10));
+
+			var cvs = new CollectionViewSource { Source = source };
+			listView.ItemsSource = cvs.View;
+
+			Assert.AreEqual(10, listView.Items.Count);
+
+			var timesRaised = 0;
+			CollectionChange change = default;
+			var index = -1;
+			listView.Items.VectorChanged += (o, e) =>
+			{
+				timesRaised++; //1
+				change = e.CollectionChange; //insert
+				index = (int)e.Index;
+			};
+
+			source.Add(10);
+
+#if NETFX_CORE // CollectionView doesn't implement VectorChanged
+			Assert.AreEqual(11, listView.Items.Count);
+			Assert.AreEqual(1, timesRaised);
+			Assert.AreEqual(CollectionChange.ItemInserted, change);
+			Assert.AreEqual(10, index);
+#endif
+		}
+
+		[TestMethod]
+		public void When_ItemsSource_Grouped_Simple()
+		{
+			var listView = new ListView();
+			var source = CountriesABC.GroupBy(s => s[0].ToString()).ToArray();
+
+			var cvs = new CollectionViewSource
+			{
+				Source = source,
+				IsSourceGrouped = true
+			};
+			listView.ItemsSource = cvs.View;
+
+			Assert.AreEqual(CountriesABC.Length, listView.Items.Count);
+
+			var sourceFlattened = source.SelectMany(g => g).ToArray();
+			CollectionAssert.AreEqual(sourceFlattened, listView.Items.ToArray());
+		}
+
+		[TestMethod]
+		public void When_ItemsSource_Grouped_Observables_Inner_Groups_Modified()
+		{
+			var listView = new ListView();
+			var source = GetGroupedObservable(CountriesABC, s => s[0].ToString());
+
+			var cvs = new CollectionViewSource
+			{
+				Source = source,
+				IsSourceGrouped = true
+			};
+			listView.ItemsSource = cvs.View;
+
+			Assert.AreEqual(CountriesABC.Length, listView.Items.Count);
+
+			var timesRaised = 0;
+			CollectionChange change = default;
+			var index = -1;
+			listView.Items.VectorChanged += (o, e) =>
+			  {
+				  timesRaised++; //1
+				  change = e.CollectionChange; //insert
+				  index = (int)e.Index; //11
+			  };
+
+			var a = source.Single(g => g.Key == "A");
+			a.Add("Arendelle");
+
+#if NETFX_CORE // CollectionView doesn't implement VectorChanged
+			Assert.AreEqual(CountriesABC.Length + 1, listView.Items.Count);
+			Assert.AreEqual(1, timesRaised);
+			Assert.AreEqual(CollectionChange.ItemInserted, change);
+			Assert.AreEqual(11, index);
+#endif
+		}
+
+		[TestMethod]
+		public void When_ItemsSource_Grouped_Observables_Outer_Modified()
+		{
+			var listView = new ListView();
+			var source = GetGroupedObservable(CountriesABC, s => s[0].ToString());
+
+			var cvs = new CollectionViewSource
+			{
+				Source = source,
+				IsSourceGrouped = true
+			};
+			listView.ItemsSource = cvs.View;
+
+			Assert.AreEqual(CountriesABC.Length, listView.Items.Count);
+
+			var timesRaised = 0;
+			var changeWasExpected = true;
+			var expectedIndex = 49;
+			var indexWasExpected = true;
+			listView.Items.VectorChanged += (o, e) =>
+			{
+				timesRaised++;
+				changeWasExpected &= e.CollectionChange == CollectionChange.ItemInserted;
+				var index = (int)e.Index; //49, 48, 47, 46
+				indexWasExpected &= index == expectedIndex;
+				expectedIndex--;
+			};
+
+			var d = new GroupingObservableCollection<string, string>("D", CountriesD);
+			source.Add(d);
+
+#if NETFX_CORE // CollectionView doesn't implement VectorChanged
+			Assert.AreEqual(CountriesABC.Length + CountriesD.Length, listView.Items.Count);
+			Assert.AreEqual(4, timesRaised);
+			Assert.IsTrue(changeWasExpected);
+			Assert.IsTrue(indexWasExpected);
+#endif
+		}
+
+		private static ObservableCollection<GroupingObservableCollection<TKey, TElement>> GetGroupedObservable<TKey, TElement>(IEnumerable<TElement> source, Func<TElement, TKey> keySelector)
+		{
+			var observables = source.GroupBy(keySelector).Select(g => new GroupingObservableCollection<TKey, TElement>(g.Key, g));
+			return new ObservableCollection<GroupingObservableCollection<TKey, TElement>>(observables);
+		}
+
+		private readonly string[] CountriesABC = new[]
+{
+			"ALGERIA",
+			"ANDORRA",
+			"AZERBAIJAN",
+			"BRUNEI",
+			"CENTRAL AFRICAN REPUBLIC",
+			"CHINA",
+			"BELIZE",
+			"COLOMBIA",
+			"BRAZIL",
+			"CONGO, REPUBLIC OF THE",
+			"BARBADOS",
+			"BELGIUM",
+			"ARGENTINA",
+			"BURUNDI",
+			"AUSTRALIA",
+			"BANGLADESH",
+			"BOTSWANA",
+			"CUBA",
+			"AFGHANISTAN",
+			"CONGO, DEMOCRATIC REPUBLIC OF THE",
+			"ANGOLA",
+			"BAHRAIN",
+			"BELARUS",
+			"COMOROS",
+			"BAHAMAS, THE",
+			"CHAD",
+			"CYPRUS",
+			"CANADA",
+			"BURKINA FASO",
+			"CAMBODIA",
+			"BENIN",
+			"CZECH REPUBLIC",
+			"CABO VERDE",
+			"ANTIGUA AND BARBUDA",
+			"COSTA RICA",
+			"CHILE",
+			"BOSNIA AND HERZEGOVINA",
+			"BULGARIA",
+			"BOLIVIA",
+			"BHUTAN",
+			"ALBANIA",
+			"AUSTRIA",
+			"CÔTE D'IVOIRE ",
+			"CAMEROON",
+			"ARMENIA",
+			"CROATIA",
+		};
+
+		private readonly string[] CountriesD = new[]
+		{
+			"DENMARK",
+			"DJIBOUTI",
+			"DOMINICA",
+			"DOMINICAN REPUBLIC"
+		};
 	}
 }
