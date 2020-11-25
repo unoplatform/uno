@@ -36,16 +36,15 @@ namespace Windows.Storage.Pickers
 		{
 			var specialFolder = SuggestedStartLocation switch
 			{
-				PickerLocationId.DocumentsLibrary => Environment.SpecialFolder.Personal,
-				PickerLocationId.ComputerFolder => Environment.SpecialFolder.MyComputer,
-				PickerLocationId.Desktop => Environment.SpecialFolder.Desktop,
-				PickerLocationId.MusicLibrary => Environment.SpecialFolder.MyMusic,
-				PickerLocationId.PicturesLibrary => Environment.SpecialFolder.MyPictures,
-				PickerLocationId.VideosLibrary => Environment.SpecialFolder.MyVideos,
-				_ => Environment.SpecialFolder.Personal
+				PickerLocationId.DocumentsLibrary =>  NSSearchPathDirectory.DocumentDirectory,
+				PickerLocationId.Desktop => NSSearchPathDirectory.DesktopDirectory,
+				PickerLocationId.MusicLibrary => NSSearchPathDirectory.MusicDirectory,
+				PickerLocationId.PicturesLibrary => NSSearchPathDirectory.PicturesDirectory,
+				PickerLocationId.VideosLibrary => NSSearchPathDirectory.MoviesDirectory,
+				_ => NSSearchPathDirectory.UserDirectory
 			};
 
-			return Environment.GetFolderPath(specialFolder);
+			return NSFileManager.DefaultManager.GetUrls(specialFolder, NSSearchPathDomain.User)[0].AbsoluteString;
 		}
 
 		private string[] GetFileTypes() => FileTypeChoices.SelectMany(x => x.Value.Select(val => val.TrimStart(new[] { '.' }))).ToArray();
