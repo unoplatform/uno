@@ -31,10 +31,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private DataTemplate TextBlockItemTemplate => _testsResources["TextBlockItemTemplate"] as DataTemplate;
 
+		private Style CounterItemsControlContainerStyle => _testsResources["CounterItemsControlContainerStyle"] as Style;
+
+		private DataTemplate CounterItemTemplate => _testsResources["CounterItemTemplate"] as DataTemplate;
+
 		[TestInitialize]
 		public void Init()
 		{
 			_testsResources = new TestsResources();
+
+			CounterGrid.Reset();
+			CounterGrid2.Reset();
 		}
 
 
@@ -179,5 +186,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(tb);
 			Assert.AreEqual("Item 1", tb.Text);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_Creation_Count_ItemsSource_Before_Load()
+		{
+			var source = new[] { "Zero", "One", "Two", "Three" };
+
+			var SUT = new ContentControlItemsControl
+			{
+				ItemContainerStyle = CounterItemsControlContainerStyle,
+				ItemTemplate = CounterItemTemplate,
+				ItemsSource = source
+			};
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, CounterGrid.CreationCount);
+			Assert.AreEqual(0, CounterGrid2.CreationCount);
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(4, CounterGrid.CreationCount);
+			Assert.AreEqual(4, CounterGrid2.CreationCount);
+			Assert.AreEqual(4, CounterGrid.BindCount);
+			Assert.AreEqual(4, CounterGrid2.BindCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_Creation_Count_ItemsSource_After_Load()
+		{
+			var SUT = new ContentControlItemsControl
+			{
+				ItemContainerStyle = CounterItemsControlContainerStyle,
+				ItemTemplate = CounterItemTemplate
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, CounterGrid.CreationCount);
+			Assert.AreEqual(0, CounterGrid2.CreationCount);
+
+			var source = new[] { "Zero", "One", "Two", "Three" };
+
+			SUT.ItemsSource = source;
+
+			ContentControl cc = null;
+			await WindowHelper.WaitFor(() => (cc = SUT.ContainerFromItem(source[0]) as ContentControl) != null);
+
+			Assert.AreEqual(4, CounterGrid.CreationCount);
+			Assert.AreEqual(4, CounterGrid2.CreationCount);
+			Assert.AreEqual(4, CounterGrid.BindCount);
+			Assert.AreEqual(4, CounterGrid2.BindCount);
+		}
+
+	}
+	internal partial class ContentControlItemsControl : ItemsControl
+	{
+		protected override DependencyObject GetContainerForItemOverride() => new ContentControl();
 	}
 }

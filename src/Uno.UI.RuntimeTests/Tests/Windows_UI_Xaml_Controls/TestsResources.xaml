@@ -16,6 +16,19 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<Style x:Key="CounterItemsControlContainerStyle"
+		   TargetType="ContentControl">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ContentControl">
+					<local:CounterGrid2>
+						<ContentPresenter Content="{TemplateBinding Content}"
+										  ContentTemplate="{TemplateBinding ContentTemplate}" />
+					</local:CounterGrid2>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 	<DataTemplate x:Key="TextBlockItemTemplate">
 		<TextBlock Text="{Binding}" />
 	</DataTemplate>
@@ -44,5 +57,10 @@
 			<TextBlock Text="{Binding}"
 					   HorizontalAlignment="Center" />
 		</Border>
+	</DataTemplate>
+	<DataTemplate x:Key="CounterItemTemplate">
+		<local:CounterGrid>
+			<TextBlock Text="{Binding}" />
+		</local:CounterGrid>
 	</DataTemplate>
 </ResourceDictionary>
