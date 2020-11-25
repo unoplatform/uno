@@ -82,7 +82,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var SUT = new ItemsControl
 			{
-				ItemTemplate = TextBlockItemTemplate,
 				DisplayMemberPath = "DisplayName"
 			};
 
@@ -99,12 +98,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.ItemsSource = source;
 
-
 			async Task Assert(int index, string s)
 			{
 				ContentPresenter cp = null;
 				await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[index]) as ContentPresenter) != null);
+#if !NETFX_CORE // This is an Uno implementation detail
 				cp.Content.Should().Be(s, $"ContainerFromItem() at index {index}");
+#endif
 
 				var tb = cp.FindFirstChild<TextBlock>();
 				tb.Should().NotBeNull($"Item at index {index}");
