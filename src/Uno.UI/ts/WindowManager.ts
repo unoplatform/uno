@@ -778,7 +778,7 @@ namespace Uno.UI {
 		}
 
 		public registerPointerEventsOnView(pParams: number): void {
-			const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+			const params = WindowManagerRegisterPointerEventsOnViewParams.unmarshal(pParams);
 			const element = this.getView(params.HtmlId);
 
 			element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
