@@ -19,6 +19,9 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 		public BitmapImage_vs_SvgImageSource()
 		{
 			this.InitializeComponent();
+
+			img.ImageOpened += (snd, evt) => imgIsLoaded.IsChecked = true;
+			img.ImageFailed += (snd, evt) => imgIsError.IsChecked = true;
 		}
 
 		private async void LoadClicked(object sender, RoutedEventArgs e)
@@ -28,8 +31,12 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 			await Task.Yield();
 
 			log.Text = "";
+
 			isLoaded.IsChecked = false;
 			isError.IsChecked = false;
+			imgIsLoaded.IsChecked = false;
+			imgIsError.IsChecked = false;
+
 			var uri = new Uri(url.Text);
 			ImageSource source = null;
 

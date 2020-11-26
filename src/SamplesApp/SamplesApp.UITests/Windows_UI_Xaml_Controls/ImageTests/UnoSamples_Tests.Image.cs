@@ -363,18 +363,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		private void WaitForBitmapOrSvgLoaded()
 		{
 			var isLoaded = _app.Marked("isLoaded");
-			var isError = _app.Marked("isError");
+			var imgIsLoaded = _app.Marked("imgIsLoaded");
 			var loadTimeout = TimeSpan.FromSeconds(10);
 
 			bool Predicate()
 			{
 				return isLoaded.GetDependencyPropertyValue<bool>("IsChecked")
-				       || isError.GetDependencyPropertyValue<bool>("IsChecked");
+				       || imgIsLoaded.GetDependencyPropertyValue<bool>("IsChecked");
 			}
 
 			_app.WaitFor(Predicate, timeout: loadTimeout);
 
-			Thread.Sleep(200);
+			Thread.Sleep(350);
 		}
 	}
 }

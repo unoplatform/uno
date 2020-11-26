@@ -18,7 +18,7 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<StackPanel Spacing="8" Margin="15" VerticalAlignment="Top">
+		<StackPanel Spacing="5" Margin="15" VerticalAlignment="Top">
 			<TextBox x:Name="url" Header="Image Url" Text="https://nv-assets.azurewebsites.net/tests/images/uno-overalls.svg" />
 			<StackPanel Orientation="Horizontal" Spacing="6">
 				<CheckBox x:Name="streamMode">Use streaming mode instead of url</CheckBox>
@@ -28,8 +28,12 @@
 				<Button x:Name="btnBitmap"  Click="LoadClicked" Tag="BitmapImage">Load w/BitmapImage</Button>
 				<Button x:Name="btnSvg"  Click="LoadClicked" Tag="SvgImageSource">Load w/SvgImageSource</Button>
 				<Button x:Name="btnSvg2"  Click="LoadClicked" Tag="SvgImageSource2">Load w/SvgImageSource +size</Button>
-				<CheckBox x:Name="isLoaded" IsEnabled="False">Loaded</CheckBox>
-				<CheckBox x:Name="isError" IsEnabled="False">Error</CheckBox>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Spacing="6">
+				<CheckBox x:Name="isLoaded" IsEnabled="False">Source Loaded</CheckBox>
+				<CheckBox x:Name="isError" IsEnabled="False">Source Error</CheckBox>
+				<CheckBox x:Name="imgIsLoaded" IsEnabled="False">Img Loaded</CheckBox>
+				<CheckBox x:Name="imgIsError" IsEnabled="False">Img Error</CheckBox>
 			</StackPanel>
 		</StackPanel>
 		<Border BorderBrush="DarkGreen" BorderThickness="1" Grid.Row="1" Padding="20" Background="Firebrick">
