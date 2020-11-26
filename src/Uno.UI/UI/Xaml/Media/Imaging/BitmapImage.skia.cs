@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			return base.TryOpenSourceSync(targetWidth, targetHeight, out image);
 		}
 
-		private static int[] KnownScales =
+		private static readonly int[] KnownScales =
 		{
 			(int)ResolutionScale.Scale100Percent,
 			(int)ResolutionScale.Scale120Percent,
