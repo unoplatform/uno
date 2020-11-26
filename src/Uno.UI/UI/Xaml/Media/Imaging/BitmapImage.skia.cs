@@ -15,6 +15,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
+		private const int MIN_DIMENSION_SYNC_LOADING = 100;
+
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
 			asyncImage = TryOpenSourceAsync(ct, targetWidth, targetHeight);
@@ -49,9 +51,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 						return OpenFromStream(targetWidth, targetHeight, surface, fileStream);
 					}
 				}
-				else if (Stream != null)
+				else if (_stream != null)
 				{
-					return OpenFromStream(targetWidth, targetHeight, surface, Stream);
+					return OpenFromStream(targetWidth, targetHeight, surface, _stream.AsStream());
 				}
 			}
 			catch (Exception e)
@@ -78,11 +80,14 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-			if(Stream != null &&
-				targetWidth is int width && targetHeight is int height && height < 100 && width < 100)
+			if(_stream != null &&
+				targetWidth is { } width &&
+				targetHeight is { } height &&
+				height < MIN_DIMENSION_SYNC_LOADING &&
+				width < MIN_DIMENSION_SYNC_LOADING)
 			{
 				var surface = new SkiaCompositionSurface();
-				image = OpenFromStream(targetWidth, targetHeight, surface, Stream);
+				image = OpenFromStream(targetWidth, targetHeight, surface, _stream.AsStream());
 				return image.Value != null;
 			}
 

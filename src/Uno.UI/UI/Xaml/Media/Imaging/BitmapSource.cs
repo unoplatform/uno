@@ -95,13 +95,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				_stream = streamSource.CloneStream();
 
+#if __NETSTD__
 				var tcs = new TaskCompletionSource<object>();
 
 				using var x = Subscribe(OnChanged);
 
-#if __NETSTD__
 				InvalidateSource();
-#endif
 
 				await tcs.Task;
 
@@ -109,9 +108,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 				{
 					tcs.TrySetResult(null);
 				}
+#endif
 			}
 
 			return AsyncAction.FromTask(SetSourceAsync);
+
 		}
 
 		public override string ToString()

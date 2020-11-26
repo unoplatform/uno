@@ -67,13 +67,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 				_stream = streamSource.CloneStream();
 				_lastStatus = null;
 
+#if __NETSTD__
 				var tcs = new TaskCompletionSource<SvgImageSourceLoadStatus>();
 
 				using var x = Subscribe(OnChanged);
 
-#if __NETSTD__
 				InvalidateSource();
-#endif
 
 				return await tcs.Task;
 
@@ -81,6 +80,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 				{
 					tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
 				}
+#else
+				return SvgImageSourceLoadStatus.Success;
+#endif
 			}
 
 			return AsyncOperation<SvgImageSourceLoadStatus>.FromTask(SetSourceAsync);
@@ -101,9 +103,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 #pragma warning disable 67
-		public event TypedEventHandler<SvgImageSource, SvgImageSourceFailedEventArgs>? OpenFailed;
+		public event TypedEventHandler<SvgImageSource, SvgImageSourceFailedEventArgs> OpenFailed;
 
-		public event TypedEventHandler<SvgImageSource, SvgImageSourceOpenedEventArgs>? Opened;
+		public event TypedEventHandler<SvgImageSource, SvgImageSourceOpenedEventArgs> Opened;
 #pragma warning restore 67
 	}
 }
