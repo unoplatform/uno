@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Media
 		}
 #endregion
 
-		private protected async Task RequestOpen(int? targetWidth = null, int? targetHeight = null)
+		private protected void RequestOpen(int? targetWidth = null, int? targetHeight = null)
 		{
 			try
 			{
@@ -99,11 +99,10 @@ namespace Windows.UI.Xaml.Media
 				else
 				{
 					_opening.Disposable = null;
-					var t = CoreDispatcher.Main.RunAsync(
+
+					_opening.Disposable = CoreDispatcher.Main.RunAsync(
 						CoreDispatcherPriority.Normal,
 						ct => Open(ct, targetWidth, targetHeight));
-					_opening.Disposable = t;
-					await t;
 				}
 			}
 			catch (Exception error)

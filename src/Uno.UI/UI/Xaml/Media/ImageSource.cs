@@ -88,11 +88,6 @@ namespace Windows.UI.Xaml.Media
 			InitFromUri(uri);
 		}
 
-		public ImageSource(Stream stream) : this()
-		{
-			throw new NotSupportedException("ImageSource does not support direct Stream assignment");
-		}
-
 		internal void InitFromUri(Uri uri)
 		{
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")

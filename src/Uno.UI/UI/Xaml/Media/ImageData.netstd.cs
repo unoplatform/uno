@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Media
 		public Exception Error { get; set; }
 
 #if __WASM__
-		internal IImageSource Source { get; set; }
+		internal ImageSource Source { get; set; }
 
 		public string Value { get; set; }
 #elif __SKIA__

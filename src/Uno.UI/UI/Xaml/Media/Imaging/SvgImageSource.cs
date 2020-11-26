@@ -1,7 +1,7 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage.Streams;
@@ -13,6 +13,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 	public partial class SvgImageSource : ImageSource
 	{
 		private SvgImageSourceLoadStatus? _lastStatus;
+
+		private IRandomAccessStream _stream;
 
 		public Uri UriSource
 		{
@@ -50,36 +52,39 @@ namespace Windows.UI.Xaml.Media.Imaging
 			InitPartial();
 		}
 
-		internal async Task<SvgImageSourceLoadStatus> SetSourceAsync(Stream streamSource)
+		public IAsyncOperation<SvgImageSourceLoadStatus> SetSourceAsync(IRandomAccessStream streamSource)
 		{
-			if (streamSource == null)
+			async Task<SvgImageSourceLoadStatus> SetSourceAsync(
+				CancellationToken ct,
+				AsyncOperation<SvgImageSourceLoadStatus> _)
 			{
-				//Same behavior as windows, although the documentation does not mention it!!!
-				throw new ArgumentException(nameof(streamSource));
+				if (streamSource == null)
+				{
+					//Same behavior as windows, although the documentation does not mention it!!!
+					throw new ArgumentException(nameof(streamSource));
+				}
+
+				_stream = streamSource.CloneStream();
+				_lastStatus = null;
+
+				var tcs = new TaskCompletionSource<SvgImageSourceLoadStatus>();
+
+				using var x = Subscribe(OnChanged);
+
+#if __NETSTD__
+				InvalidateSource();
+#endif
+
+				return await tcs.Task;
+
+				void OnChanged(ImageData data)
+				{
+					tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
+				}
 			}
 
-			var copy = new MemoryStream();
-			await streamSource.CopyToAsync(copy);
-			copy.Position = 0;
-			Stream = copy;
-
-			_lastStatus = null;
-
-#if NETSTANDARD
-			await RequestOpen();
-#else
-			// TODO: assign _lastStatus somewhere
-#endif
-			return _lastStatus ?? SvgImageSourceLoadStatus.Other;
+			return AsyncOperation<SvgImageSourceLoadStatus>.FromTask(SetSourceAsync);
 		}
-
-		public void SetSource(IRandomAccessStream streamSource)
-			// We prefer to use the SetSourceAsync here in order to make sure that the stream is copied ASYNChronously,
-			// which is important since we are using a stream wrapper of and <In|Out|RA>Stream which might freeze the UI thread / throw exception.
-			=> Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetSourceAsync(streamSource.GetInputStreamAt(0).AsStreamForRead()));
-
-		public IAsyncOperation<SvgImageSourceLoadStatus> SetSourceAsync(IRandomAccessStream streamSource) =>
-			AsyncOperation<SvgImageSourceLoadStatus>.FromTask((ct, _) => SetSourceAsync(streamSource.GetInputStreamAt(0).AsStreamForRead()));
 
 		partial void InitPartial();
 

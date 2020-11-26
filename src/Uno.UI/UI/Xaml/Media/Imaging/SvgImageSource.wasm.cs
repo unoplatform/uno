@@ -11,7 +11,7 @@ using static Windows.UI.Xaml.Media.Imaging.BitmapImage;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	partial class SvgImageSource : IImageSource
+	partial class SvgImageSource
 	{
 		private static readonly string UNO_BOOTSTRAP_APP_BASE = Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
 
@@ -74,35 +74,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 			int? targetHeight,
 			out Task<ImageData> asyncImage)
 		{
-			if (Stream is { } stream)
+			if (_stream is { } stream)
 			{
-				stream.Position = 0;
+				var streamWithContentType = stream.TrySetContentType(ContentType);
 
-				async Task<ImageData> FetchImage()
-				{
-					try
-					{
-						stream.Position = 0;
-						var bytes = await stream.ReadBytesAsync();
-						var encodedBytes = Convert.ToBase64String(bytes);
-
-						RaiseImageOpened();
-
-						return new ImageData
-						{
-							Kind = ImageDataKind.DataUri,
-							Value = "data:" + ContentType + ";base64," + encodedBytes
-						};
-					}
-					catch (Exception ex)
-					{
-						RaiseImageFailed(SvgImageSourceLoadStatus.NetworkError);
-
-						return new ImageData {Kind = ImageDataKind.Error, Error = ex};
-					}
-				}
-
-				asyncImage = FetchImage();
+				asyncImage = OpenFromStream(streamWithContentType, null, ct);
 
 				return true;
 			}
@@ -112,8 +88,23 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		}
 
-		public void ReportImageLoaded() => RaiseImageOpened();
+		internal override void ReportImageLoaded() => RaiseImageOpened();
 
-		public void ReportImageFailed() => RaiseImageFailed(SvgImageSourceLoadStatus.Other);
+		internal override void ReportImageFailed(string errorMessage) => RaiseImageFailed(SvgImageSourceLoadStatus.Other);
+
+		public override string ToString()
+		{
+			if (WebUri is { } uri)
+			{
+				return $"{GetType().Name}/{uri}";
+			}
+
+			if (_stream is { } stream)
+			{
+				return $"{GetType().Name}/{stream.GetType()}";
+			}
+
+			return $"{GetType().Name}/-empty-";
+		}
 	}
 }

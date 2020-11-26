@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -8,12 +9,12 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation;
 using Windows.Graphics.Display;
-
+using Windows.Storage.Streams;
 using Path = global::System.IO.Path;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	public sealed partial class BitmapImage : BitmapSource, IImageSource
+	public sealed partial class BitmapImage : BitmapSource
 	{
 		private static readonly string UNO_BOOTSTRAP_APP_BASE = Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
 
@@ -47,37 +48,24 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				return true;
 			}
-
-			if (Stream is { } stream)
+			if (_stream is { } stream)
 			{
-				async Task<ImageData> FetchImage()
+				void OnProgress(ulong position, ulong? length)
 				{
-					try
+					if (position > 0 && length is { } actualLength)
 					{
-						stream.Position = 0;
-						RaiseDownloadProgress(0);
-						var bytes = await stream.ReadBytesAsync();
-						var encodedBytes = Convert.ToBase64String(bytes);
-
-						RaiseImageOpened();
-
-						return new ImageData
-						{
-							Kind = ImageDataKind.DataUri,
-							Value = "data:" + ContentType + ";base64," + encodedBytes
-						};
-					}
-					catch (Exception ex)
-					{
-						RaiseImageFailed(ex);
-						return new ImageData {Kind = ImageDataKind.Error, Error = ex};
+						var percent = (int)((position / (float)actualLength) * 100);
+						RaiseDownloadProgress(percent);
 					}
 				}
 
-				asyncImage = FetchImage();
+				var streamWithContentType = stream.TrySetContentType(ContentType);
+
+				asyncImage = OpenFromStream(streamWithContentType, OnProgress, ct);
 
 				return true;
 			}
+
 
 			asyncImage = default;
 			return false;
@@ -96,7 +84,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"));
 			}
 
-			public static async Task<ImageData> ResolveImageAsync(IImageSource source, Uri uri, ResolutionScale? scaleOverride)
+			internal static async Task<ImageData> ResolveImageAsync(ImageSource source, Uri uri, ResolutionScale? scaleOverride)
 			{
 				try
 				{
@@ -188,14 +176,14 @@ namespace Windows.UI.Xaml.Media.Imaging
 			};
 		}
 
-		public void ReportImageLoaded()
+		internal override void ReportImageLoaded()
 		{
 			RaiseImageOpened();
 		}
 
-		public void ReportImageFailed()
+		internal override void ReportImageFailed(string errorMessage)
 		{
-			RaiseImageFailed(new Exception("Unable to load image"));
+			RaiseImageFailed(new Exception("Unable to load image: " + errorMessage));
 		}
 	}
 }

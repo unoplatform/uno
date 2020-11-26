@@ -43,13 +43,14 @@ namespace Windows.UI.Xaml.Controls
 			AddChild(_htmlImage);
 		}
 
-		private void OnImageFailed(object sender, RoutedEventArgs e)
+		private void OnImageFailed(object sender, ExceptionRoutedEventArgs e)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"Image failed [{(Source as BitmapSource)?.WebUri}]");
+				this.Log().Debug($"Image failed [{_currentImg.Source}]: {e.ErrorMessage}");
 			}
-			_currentImg.Source?.ReportImageFailed();
+
+			_currentImg.Source?.ReportImageFailed(e.ErrorMessage);
 		}
 
 		private void OnImageOpened(object sender, RoutedEventArgs e)
