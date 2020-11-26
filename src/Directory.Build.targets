@@ -63,6 +63,11 @@
 	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.2" />
   </ItemGroup>
 
+  <Target Name="ValidateSolutionPath" BeforeTargets="Build">
+	<Error Condition="$(MSBuildThisFileDirectory.Contains(' '))"
+		 Text="The Uno.UI Solution cannot build with a space in the path. Consider changing to a path without spaces."/>
+  </Target>
+
   <!-- Import the override as the nuget tooling in VS is skipping ItemGroup conditions for legacy projects -->
   <Import Project="roslyn-override.targets" Condition="'$(MicrosoftNetCompilerVersionOverride)'!=''"/>
 </Project>
