@@ -1,5 +1,7 @@
 # Welcome to Uno Platform!
 
+## Please read important installation information below.
+
 Congratulations, you've just created a new project using the [Uno Platform](https://platform.uno/) project templates!
 
 * You can give the [Single Page app getting started guide](https://platform.uno/docs/articles/getting-started-tutorial-1.html) a try
