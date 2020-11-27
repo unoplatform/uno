@@ -638,11 +638,11 @@ namespace Windows.UI.Xaml
 			SafeRaiseEvent(evt, args);
 		}
 
-		internal void RaiseDragLeave(global::Windows.UI.Xaml.DragEventArgs args)
+		internal void RaiseDragLeave(global::Windows.UI.Xaml.DragEventArgs args, UIElement upTo = null)
 		{
 			if (_draggingOver?.Remove(args.SourceId) ?? false)
 			{
-				SafeRaiseEvent(DragLeaveEvent, args);
+				SafeRaiseEvent(DragLeaveEvent, args, BubblingContext.BubbleUpTo(upTo));
 			}
 		}
 

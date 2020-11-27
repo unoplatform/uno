@@ -564,11 +564,11 @@ namespace Windows.UI.Xaml
 			SubscribedToHandledEventsToo = subscribedToHandledEventsToo;
 		}
 
-		internal bool SafeRaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args)
+		internal bool SafeRaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args, BubblingContext ctx = default)
 		{
 			try
 			{
-				return RaiseEvent(routedEvent, args);
+				return RaiseEvent(routedEvent, args, ctx);
 			}
 			catch (Exception e)
 			{
@@ -588,10 +588,7 @@ namespace Windows.UI.Xaml
 		/// <remarks>
 		/// Return true if event is handled in managed code (shouldn't bubble natively)
 		/// </remarks>
-		internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args)
-			=> RaiseEvent(routedEvent, args, BubblingMode.Bubble);
-
-		private bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args, BubblingMode mode)
+		internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args, BubblingContext ctx = default)
 		{
 #if TRACE_ROUTED_EVENT_BUBBLING
 			Debug.Write(new string('\t', Depth) + $"[{routedEvent.Name.Trim().ToUpperInvariant()}] {this.GetDebugName()}\r\n");
@@ -604,7 +601,7 @@ namespace Windows.UI.Xaml
 
 			// [3] Any local handlers?
 			var isHandled = IsHandled(args);
-			if (!mode.HasFlag(BubblingMode.IgnoreElement)
+			if (!ctx.Mode.HasFlag(BubblingMode.IgnoreElement)
 				&& _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
 				&& handlers.Any())
 			{
@@ -638,7 +635,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (mode.HasFlag(BubblingMode.IgnoreParents))
+			if (ctx.Mode.HasFlag(BubblingMode.IgnoreParents))
 			{
 				return isHandled;
 			}
@@ -670,15 +667,28 @@ namespace Windows.UI.Xaml
 			}
 
 			// [13] Raise on parent
-			return RaiseOnParent(routedEvent, args, parent);
+			return RaiseOnParent(routedEvent, args, parent, ctx);
 		}
 
 		// This method is a workaround for https://github.com/mono/mono/issues/12981
 		// It can be inlined in RaiseEvent when fixed.
-		private static bool RaiseOnParent(RoutedEvent routedEvent, RoutedEventArgs args, UIElement parent)
+		private static bool RaiseOnParent(RoutedEvent routedEvent, RoutedEventArgs args, UIElement parent, BubblingContext ctx)
 		{
 			var mode = parent.PrepareManagedEventBubbling(routedEvent, args, out args);
-			var handledByAnyParent = parent.RaiseEvent(routedEvent, args, mode);
+
+			// If we have reached the requested root element on which this event should bubble,
+			// we make sure to not allow bubbling on parents.
+			if (parent == ctx.Root)
+			{
+				mode |= BubblingMode.IgnoreParents;
+			}
+			ctx = new BubblingContext
+			{
+				Mode = mode,
+				Root = ctx.Root
+			};
+			
+			var handledByAnyParent = parent.RaiseEvent(routedEvent, args, ctx);
 
 			return handledByAnyParent;
 		}
@@ -722,8 +732,27 @@ namespace Windows.UI.Xaml
 		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
 		partial void PrepareManagedDragAndDropEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
 
+		internal struct BubblingContext
+		{
+			public static readonly BubblingContext Bubble = default;
+
+			public static BubblingContext BubbleUpTo(UIElement root)
+				=> new BubblingContext {Root = root};
+
+			/// <summary>
+			/// The mode to use for bubbling
+			/// </summary>
+			public BubblingMode Mode { get; set; }
+
+			/// <summary>
+			/// An optional root element on which the bubbling should stop.
+			/// </summary>
+			/// <remarks>It's expected that the event is raised on this Root element.</remarks>
+			public UIElement Root { get; set; }
+		}
+
 		[Flags]
-		private enum BubblingMode
+		internal enum BubblingMode
 		{
 			/// <summary>
 			/// The event should bubble normally in this element and its parent

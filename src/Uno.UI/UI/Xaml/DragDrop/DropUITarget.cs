@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml
 
 		// Note: As drag events are routed (so they may be received by multiple elements), we might not have an entry for each drop targets.
 		//		 We will instead have entry only for leaf (a.k.a. OriginalSource).
-		//		 This is valid as UWP does clear the UIOverride as soon as a DragLeave is raised.
+		//		 This is valid as UWP does clear the UIOverride as soon as a DragLeave is raised, no matter the number of drop target under pointer.
 		private readonly Dictionary<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> _pendingDropTargets
 			= new Dictionary<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)>();
 
@@ -132,28 +132,23 @@ namespace Windows.UI.Xaml
 			// First raise the drag leave event on stale branch if any.
 			if (target.stale is { } staleBranch)
 			{
-				var leftElements = staleBranch
+				// We need to find the actual leaf drop target to fulfill the leaveArgs
+				var leafTarget = staleBranch
 					.EnumerateLeafToRoot()
 					.Select(elt => (isDragOver: _pendingDropTargets.TryGetValue(staleBranch.Leaf, out var dragState), elt, dragState))
-					.Where(t => t.isDragOver)
-					.ToArray();
+					.FirstOrDefault(t => t.isDragOver);
 
-				Debug.Assert(leftElements.Length > 0);
+				var leaveArgs = leafTarget.elt is null // Might happen if the element has been unloaded
+					? new DragEventArgs(staleBranch.Leaf, dragInfo, new DragUIOverride(new CoreDragUIOverride()))
+					: new DragEventArgs(leafTarget.elt, dragInfo, leafTarget.dragState.uiOverride);
 
-				if (leftElements.Length > 0)
+				// We raise the event only up to the stale branch root.
+				// This is important for ListView reordering where a Leave would cancel the reordering.
+				staleBranch.Leaf.RaiseDragLeave(leaveArgs, upTo: staleBranch.Root);
+
+				if (leaveArgs.Deferral is { } deferral)
 				{
-					// TODO: We should raise the event only from the Leaf to the Root of the branch, not the whole tree like that
-					//		 This is acceptable as a MVP as we usually have only one Drop target par app.
-					//		 Anyway if we Leave a bit too much, we will Enter again below
-					var leaf = leftElements.First();
-					var leaveArgs = new DragEventArgs(leaf.elt, dragInfo, leaf.dragState.uiOverride);
-
-					staleBranch.Leaf.RaiseDragLeave(leaveArgs);
-
-					if (leaveArgs.Deferral is { } deferral)
-					{
-						await deferral.Completed(ct);
-					}
+					await deferral.Completed(ct);
 				}
 			}
 
