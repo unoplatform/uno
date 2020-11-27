@@ -6,6 +6,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
+using Uno.Collections;
+using Uno.Disposables;
 using Uno.Extensions;
 
 namespace Uno.UI.UI.Xaml.Documents
@@ -141,8 +143,15 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 		}
 
+		private static WeakAttachedDictionary<UIElement, string> _imageBrushSubscription =
+			new WeakAttachedDictionary<UIElement, string>();
+
 		internal static void SetForeground(this UIElement element, object localValue)
 		{
+			var brushSubscription = _imageBrushSubscription.GetValue(element, "foreground", () => new SerialDisposable());
+
+			brushSubscription.Disposable = null;
+
 			switch (localValue)
 			{
 				case SolidColorBrush scb:
@@ -156,6 +165,38 @@ namespace Uno.UI.UI.Xaml.Documents
 					);
 					break;
 
+				case ImageBrush imageBrush:
+					brushSubscription.Disposable = imageBrush.Subscribe(img =>
+					{
+						switch (img.Kind)
+						{
+							case ImageDataKind.Empty:
+							case ImageDataKind.Error:
+								element.ResetStyle(
+									"background-color",
+									"background-image",
+									"background-size");
+								element.SetStyle(
+									("color", "transparent"),
+									("background-clip", "text"));
+								break;
+
+							case ImageDataKind.DataUri:
+							case ImageDataKind.Url:
+							default:
+								element.SetStyle(
+									("color", "transparent"),
+									("background-clip", "text"),
+									("background-color", ""),
+									("background-origin", "content-box"),
+									("background-position", imageBrush.ToCssPosition()),
+									("background-size", imageBrush.ToCssBackgroundSize()),
+									("background-image", "url(" + img.Value + ")")
+								);
+								break;
+						}
+					});
+					break;
 				case AcrylicBrush acrylic:
 					acrylic.Apply(element);
 					element.SetStyle("background-clip", "text");

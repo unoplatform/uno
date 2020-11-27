@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Windows.Storage.Streams;
 using Uno.UI.Samples.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
@@ -33,35 +26,23 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 
 		private async void OnLoaded(object sender, RoutedEventArgs e)
 		{
-            Stream stream;
-#if !NETFX_CORE
-			using (var client = new WebClient())
-			{
-				stream = await client.OpenReadTaskAsync(_imageUrl);
-			}
-#else
-			var request = WebRequest.CreateHttp(_imageUrl);
-			var response = await request.GetResponseAsync();
-			stream = response.GetResponseStream();
-#endif
-			using (stream) //Test that SetSourceAsync does not depend on the lifetime of this stream
-			{
-				var bitmap = new BitmapImage();
-#if !NETFX_CORE
-				await bitmap.SetSourceAsync(stream);
-#else
-				var memStream = new MemoryStream();
-				await stream.CopyToAsync(memStream);
-				memStream.Position = 0;
-				using (memStream)
-				{
-					await bitmap.SetSourceAsync(memStream.AsRandomAccessStream());
-				}
+			using var stream = await GetStream(_imageUrl);
 
-#endif
-				MyImage.Source = bitmap;
+			var bitmap = new BitmapImage();
+			await bitmap.SetSourceAsync(stream).AsTask();
+			MyImage.Source = bitmap;
+		}
 
-			}
+		private static async Task<IRandomAccessStream> GetStream(string url)
+		{
+#if __WASM__
+			using var httpClient = new HttpClient(new Uno.UI.Wasm.WasmHttpHandler());
+#else
+			using var httpClient = new HttpClient();
+#endif
+			var data = await httpClient.GetByteArrayAsync(url);
+
+			return new MemoryStream(data).AsRandomAccessStream();
 
 		}
 	}

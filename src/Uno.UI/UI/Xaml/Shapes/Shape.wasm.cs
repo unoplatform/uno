@@ -84,7 +84,12 @@ namespace Windows.UI.Xaml.Shapes
 					_fillBrushSubscription.Disposable = null;
 					break;
 				case ImageBrush ib:
-					_fillBrushSubscription.Disposable = null;
+					var (imageFill, subscription) = ib.ToSvgElement();
+					var imageFillId = imageFill.HtmlId;
+					GetDefs().Add(imageFill);
+					svgElement.SetStyle("fill", $"url(#{imageFillId})");
+					var removeDef = new DisposableAction(() => GetDefs().Remove(imageFill));
+					_fillBrushSubscription.Disposable = new CompositeDisposable(removeDef, subscription);
 					break;
 				case GradientBrush gb:
 					var gradient = gb.ToSvgElement();
@@ -121,6 +126,14 @@ namespace Windows.UI.Xaml.Shapes
 				case SolidColorBrush scb:
 					svgElement.SetStyle("stroke", scb.ColorWithOpacity.ToHexString());
 					_strokeBrushSubscription.Disposable = null;
+					break;
+				case ImageBrush ib:
+					var (imageFill, subscription) = ib.ToSvgElement();
+					var imageFillId = imageFill.HtmlId;
+					GetDefs().Add(imageFill);
+					svgElement.SetStyle("stroke", $"url(#{imageFillId})");
+					var removeDef = new DisposableAction(() => GetDefs().Remove(imageFill));
+					_fillBrushSubscription.Disposable = new CompositeDisposable(removeDef, subscription);
 					break;
 				case GradientBrush gb:
 					var gradient = gb.ToSvgElement();
