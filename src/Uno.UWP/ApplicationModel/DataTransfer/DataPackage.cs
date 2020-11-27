@@ -18,6 +18,10 @@ namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class DataPackage
 	{
+		/// <summary>
+		/// FormatId prefix for internal data that won't be visible to the application
+		/// (cf. <see cref="DataPackageView.AvailableFormats"/>).
+		/// </summary>
 		internal const string UnoPrivateDataPrefix = "__uno__private__data__";
 
 		public event TypedEventHandler<DataPackage, OperationCompletedEventArgs>? OperationCompleted;
