@@ -33,10 +33,10 @@ variables:
   windowsScaledPool: 'Windows2019-20200920-1'
   linuxVMImage: 'ubuntu-latest'
   macOSVMImage: 'macOS-10.15'
-  xCodeRoot: '/Applications/Xcode_12.app'
-  XamarinSDKVersion: 6_12_3
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_12.app'
-  XamarinSDKVersion_iOS_UITests: 6_12_3
+  xCodeRoot: '/Applications/Xcode_12.2.app'
+  XamarinSDKVersion: 6_12_2
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_12.2.app'
+  XamarinSDKVersion_iOS_UITests: 6_12_2
 
 jobs:
 - template: build/ci/.azure-devops-windows.yml
