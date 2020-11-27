@@ -1,9 +1,13 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Logging;
@@ -80,6 +84,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (ItemsControlFromItemContainer(sender) is ListViewBase that)
 			{
+				that.DragEnter -= OnReorderUpdated;
+				that.DragOver -= OnReorderUpdated;
+				that.DragLeave -= OnReorderCompleted;
+				that.Drop -= OnReorderCompleted;
+
 				if (that.CanDragItems)
 				{
 					var items = innerArgs.Info.Data.FindRawData(DragItemsFormatId) as IReadOnlyList<object> ?? new List<object>(0);
@@ -87,11 +96,6 @@ namespace Windows.UI.Xaml.Controls
 
 					that.DragItemsCompleted?.Invoke(that, args);
 				}
-
-				that.DragEnter -= OnReorderUpdated;
-				that.DragOver -= OnReorderUpdated;
-				that.DragLeave -= OnReorderCompleted;
-				that.Drop -= OnReorderCompleted;
 			}
 		}
 
@@ -127,26 +131,17 @@ namespace Windows.UI.Xaml.Controls
 			var updatedIndex = default(IndexPath?);
 			that.CompleteReordering(container, item, ref updatedIndex);
 
-			if (!that.IsGrouping
-				&& updatedIndex.HasValue
-				&& dragEventArgs.DataView.FindRawData(DragItemsFormatId) is List<object> movedItems)
+			if (that.IsGrouping
+				|| !updatedIndex.HasValue
+				|| !(dragEventArgs.DataView.FindRawData(DragItemsFormatId) is List<object> movedItems))
 			{
-				if (that.UnwrapItemsSource() is {} unwrappedSource)
-				{
-					// The UWP ListView seems to automatically push back changes only if the ItemsSource inherits from ObservableCollection
-					var srcType = unwrappedSource.GetType();
-					if (srcType.IsGenericType
-						&& srcType.GetGenericTypeDefinition() == typeof(ObservableCollection<>)
-						&& srcType.GetMethod(nameof(ObservableCollection<object>.Move), new[] {typeof(int), typeof(int)}) is {} mv)
-					{
-						ProcessMove(
-							((ICollection)unwrappedSource).Count,
-							((ICollection)unwrappedSource).IndexOf,
-							(oldIndex, newIndex) => mv.Invoke(unwrappedSource, new object[] {oldIndex, newIndex}));
-					}
-				}
-				else // The ListView was created with items defined in XAML
-				{
+				return;
+			}
+
+			var unwrappedSource = that.UnwrapItemsSource();
+			switch (unwrappedSource)
+			{
+				case null: // The ListView was created with items defined in XAML
 					var items = that.Items;
 					ProcessMove(
 						items.Count,
@@ -164,52 +159,86 @@ namespace Windows.UI.Xaml.Controls
 								items.Insert(newIndex, item);
 							}
 						});
-				}
+					break;
 
-				void ProcessMove(
-					int count,
-					Func<object, int> indexOf,
-					Action<int, int> mv)
-				{
-					var indexOfDraggedItem = indexOf(item);
-					if (indexOfDraggedItem < 0)
+				case IObservableVector vector:
+					ProcessMove(
+						vector.Count,
+						vector.IndexOf,
+						(oldIndex, newIndex) =>
+						{
+							var item = vector[oldIndex];
+							vector.RemoveAt(oldIndex);
+							if (newIndex >= vector.Count)
+							{
+								vector.Add(item);
+							}
+							else
+							{
+								vector.Insert(newIndex, item);
+							}
+						});
+					break;
+
+				default:
+					// The UWP ListView seems to automatically push back changes only if the ItemsSource inherits from ObservableCollection
+					var srcType = unwrappedSource.GetType();
+					if (srcType.IsGenericType
+						&& srcType.GetGenericTypeDefinition() == typeof(ObservableCollection<>)
+						&& srcType.GetMethod(nameof(ObservableCollection<object>.Move), new[] { typeof(int), typeof(int) }) is { } mv)
 					{
+						ProcessMove(
+							((ICollection)unwrappedSource).Count,
+							((ICollection)unwrappedSource).IndexOf,
+							(oldIndex, newIndex) => mv.Invoke(unwrappedSource, new object[] { oldIndex, newIndex }));
 						return;
 					}
+					break;
+			}
 
-					int newIndex;
-					if (updatedIndex.Value.Row == int.MaxValue)
+			void ProcessMove(
+				int count,
+				Func<object, int> indexOf,
+				Action<int, int> mv)
+			{
+				var indexOfDraggedItem = indexOf(item);
+				if (indexOfDraggedItem < 0)
+				{
+					return;
+				}
+
+				int newIndex;
+				if (updatedIndex.Value.Row == int.MaxValue)
+				{
+					// I.e. we are at the end, there is no items below
+					newIndex = count - 1;
+				}
+				else
+				{
+					newIndex = that.GetIndexFromIndexPath(updatedIndex.Value);
+					if (indexOfDraggedItem < newIndex)
 					{
-						// I.e. we are at the end, there is no items below
-						newIndex = count - 1;
+						// If we've moved items down, we have to take in consideration that the updatedIndex
+						// is already assuming that the item has been removed, so it's offsetted by 1.
+						newIndex--;
 					}
-					else
+				}
+
+				for (var i = 0; i < movedItems.Count; i++)
+				{
+					var movedItem = movedItems[i];
+					var oldIndex = indexOf(movedItem);
+
+					if (oldIndex < 0 || oldIndex == newIndex)
 					{
-						newIndex = that.GetIndexFromIndexPath(updatedIndex.Value);
-						if (indexOfDraggedItem < newIndex)
-						{
-							// If we've moved items down, we have to take in consideration that the updatedIndex
-							// is already assuming that the item has been removed, so it's offsetted by 1.
-							newIndex--;
-						}
+						continue; // Item removed or already at the right place, nothing to do.
 					}
 
-					for (var i = 0; i < movedItems.Count; i++)
+					mv(oldIndex, newIndex);
+
+					if (oldIndex > newIndex)
 					{
-						var movedItem = movedItems[i];
-						var oldIndex = indexOf(movedItem);
-
-						if (oldIndex < 0 || oldIndex == newIndex)
-						{
-							continue; // Item removed or already at the right place, nothing to do.
-						}
-
-						mv(oldIndex, newIndex);
-
-						if (oldIndex > newIndex)
-						{
-							newIndex++;
-						}
+						newIndex++;
 					}
 				}
 			}
