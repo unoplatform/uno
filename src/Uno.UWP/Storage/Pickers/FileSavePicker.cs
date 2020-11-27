@@ -12,6 +12,6 @@ namespace Windows.Storage.Pickers
 
 		public string CommitButtonText { get; set; }
 
-		public IDictionary<string, IList<string>> FileTypeChoices { get; set; } = new Dictionary<string, IList<string>>();
+		public IDictionary<string, IList<string>> FileTypeChoices { get; private set; } = new Dictionary<string, IList<string>>();
 	}
 }
