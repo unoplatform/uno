@@ -14,7 +14,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 		private SvgImageSourceLoadStatus? _lastStatus;
 
+#if __NETSTD__
 		private IRandomAccessStream _stream;
+#endif
 
 		public Uri UriSource
 		{
@@ -35,7 +37,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				UnloadImageData();
 			}
 			InitFromUri(e.NewValue as Uri);
-#if NETSTANDARD
+#if __NETSTD__
 			InvalidateSource();
 #endif
 		}
@@ -64,10 +66,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 					throw new ArgumentException(nameof(streamSource));
 				}
 
-				_stream = streamSource.CloneStream();
 				_lastStatus = null;
 
 #if __NETSTD__
+				_stream = streamSource.CloneStream();
+
 				var tcs = new TaskCompletionSource<SvgImageSourceLoadStatus>();
 
 				using var x = Subscribe(OnChanged);
@@ -81,6 +84,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 					tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
 				}
 #else
+				Stream = streamSource.CloneStream().AsStream();
 				return SvgImageSourceLoadStatus.Success;
 #endif
 			}

@@ -47,7 +47,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		#endregion
 
+#if __NETSTD__
 		protected IRandomAccessStream _stream;
+#endif
 
 		protected BitmapSource() { }
 
@@ -93,9 +95,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 				PixelWidth = 0;
 				PixelHeight = 0;
 
+#if __NETSTD__
 				_stream = streamSource.CloneStream();
 
-#if __NETSTD__
 				var tcs = new TaskCompletionSource<object>();
 
 				using var x = Subscribe(OnChanged);
@@ -108,6 +110,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 				{
 					tcs.TrySetResult(null);
 				}
+#else
+				Stream = streamSource.CloneStream().AsStream();
 #endif
 			}
 
@@ -122,10 +126,17 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return $"{GetType().Name}/{uri}";
 			}
 
+#if __NETSTD__
 			if (_stream is { } stream)
 			{
 				return $"{GetType().Name}/{stream.GetType()}";
 			}
+#else
+			if (Stream is { } stream)
+			{
+				return $"{GetType().Name}/{stream.GetType()}";
+			}
+#endif
 
 			return $"{GetType().Name}/-empty-";
 		}
