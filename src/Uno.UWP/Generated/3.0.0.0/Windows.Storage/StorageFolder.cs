@@ -85,13 +85,6 @@ namespace Windows.Storage
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFolderAsync(string, Windows.Storage.CreationCollisionOption)
 		// Skipping already declared method Windows.Storage.StorageFolder.GetFileAsync(string)
 		// Skipping already declared method Windows.Storage.StorageFolder.GetFolderAsync(string)
-		#if __ANDROID__ || __IOS__ || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction GetFolderAsync(string name)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StorageFolder.GetFolderAsync(string name) is not implemented in Uno.");
-		}
-		#endif
 		// Skipping already declared method Windows.Storage.StorageFolder.GetItemAsync(string)
 		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

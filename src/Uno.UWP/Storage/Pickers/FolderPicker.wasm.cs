@@ -20,15 +20,16 @@ namespace Windows.Storage.Pickers
 
 		private async Task<StorageFolder> PickSingleFolderImplAsync()
 		{
-			// Not tested, probably isn't the path.
 			var returnValue = await WebAssemblyRuntime.InvokeAsync($"{JsType}.ShowFolderPicker()");
 
 			if (returnValue is null)
+			{
 				return null;
+			}
 
 			var guid = new Guid(returnValue);
 
-			return StorageFolder.CreateNativeHandler("", guid);
+			return StorageFolder.GetFolderFromNativePathAsync("", guid);
 		}
 	}
 }
