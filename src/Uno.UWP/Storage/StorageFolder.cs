@@ -39,6 +39,7 @@ namespace Windows.Storage
 		private StorageFolder(ImplementationBase implementation)
 		{
 			_implementation = implementation;
+			_implementation.InitOwner(this);
 		}
  
 #if !__WASM__
