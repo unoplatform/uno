@@ -27,11 +27,6 @@
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
-
-	<ItemGroup>
-	  <None Remove="Storage\Pickers\FolderPicker.wasm.cs" />
-	  <None Remove="Storage\StorageFolder.native.wasm.cs" />
-	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
