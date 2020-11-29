@@ -18,8 +18,8 @@
   <ItemGroup>
 	<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" />
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
-	<PackageReference Update="Uno.SourceGenerationTasks" Version="2.0.13" />
-	<PackageReference Update="Uno.SourceGeneration" Version="2.0.13" />
+	<PackageReference Update="Uno.SourceGenerationTasks" Version="3.0.0-dev.18" />
+	<PackageReference Update="Uno.SourceGeneration" Version="3.0.0-dev.18" />
 	<PackageReference Update="Uno.Core" Version="2.0.0" />
 	<PackageReference Update="Uno.Core.Build" Version="2.0.0" />
 	<PackageReference Update="Uno.Diagnostics.Eventing" Version="1.0.4" />
@@ -30,7 +30,7 @@
 	<PackageReference Update="MSTest.TestFramework" Version="2.1.1" />
 	<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
 	<PackageReference Update="System.Memory" Version="4.5.4" />
-	<PackageReference Update="Uno.Wasm.WebSockets" Version="1.0.0-dev.28" />
+	<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 	<PackageReference Update="Microsoft.TypeScript.Compiler" Version="3.1.5" />
 	<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="3.1.5" />
 	<PackageReference Update="NUnit" Version="3.12.0" />
@@ -48,7 +48,7 @@
 	<PackageReference Update="GtkSharp" Version="3.22.25.128" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
 	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0" />
 	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.1.0" />
 	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0" />
@@ -63,4 +63,11 @@
 	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.2" />
   </ItemGroup>
 
+  <Target Name="ValidateSolutionPath" BeforeTargets="Build">
+	<Error Condition="$(MSBuildThisFileDirectory.Contains(' '))"
+		 Text="The Uno.UI Solution cannot build with a space in the path. Consider changing to a path without spaces."/>
+  </Target>
+
+  <!-- Import the override as the nuget tooling in VS is skipping ItemGroup conditions for legacy projects -->
+  <Import Project="roslyn-override.targets" Condition="'$(MicrosoftNetCompilerVersionOverride)'!=''"/>
 </Project>

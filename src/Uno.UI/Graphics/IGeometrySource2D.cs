@@ -4,7 +4,7 @@ using Windows.Foundation.Metadata;
 
 namespace Microsoft.Graphics
 {
-	public interface IGeometrySource2D
+	public partial interface IGeometrySource2D
 	{
 	}
 }

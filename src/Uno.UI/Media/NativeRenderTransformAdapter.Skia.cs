@@ -17,7 +17,7 @@ namespace Uno.UI.Media
 
 		partial void Apply(bool isSizeChanged, bool isOriginChanged)
 		{
-			Owner.Visual.TransformMatrix = new Matrix4x4(Transform.ToMatrix(new Windows.Foundation.Point(CurrentOrigin.X * CurrentSize.Width, CurrentOrigin.Y * CurrentSize.Height)));
+			Owner.Visual.TransformMatrix = new Matrix4x4(Transform.ToMatrix(CurrentOrigin, CurrentSize));
 		}
 
 		partial void Cleanup()

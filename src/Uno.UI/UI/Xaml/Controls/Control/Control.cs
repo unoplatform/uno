@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
@@ -275,6 +275,26 @@ namespace Windows.UI.Xaml.Controls
 			if (implementedEvents.HasFlag(RoutedEventFlag.RightTapped))
 			{
 				RightTapped += OnRightTappedHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.DragEnter))
+			{
+				DragEnter += OnDragEnterHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.DragOver))
+			{
+				DragOver += OnDragOverHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.DragLeave))
+			{
+				DragLeave += OnDragLeaveHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.Drop))
+			{
+				Drop += OnDropHandler;
 			}
 
 			if (implementedEvents.HasFlag(RoutedEventFlag.Holding))
@@ -704,7 +724,11 @@ namespace Windows.UI.Xaml.Controls
 			&& IsEnabled
 			&& IsTabStop;
 
-		public bool Focus(FocusState value)
+		public
+#if HAS_UNO_WINUI // Focus is moved to UIElement, avoid breaking binary compatibility.
+			new
+#endif
+			bool Focus(FocusState value)
 		{
 			if (value == FocusState.Unfocused)
 			{
@@ -809,6 +833,10 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnDoubleTapped(DoubleTappedRoutedEventArgs e) { }
 		protected virtual void OnRightTapped(RightTappedRoutedEventArgs e) { }
 		protected virtual void OnHolding(HoldingRoutedEventArgs e) { }
+		protected virtual void OnDragEnter(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragOver(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragLeave(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDrop(global::Windows.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnKeyDown(KeyRoutedEventArgs args) { }
 		protected virtual void OnKeyUp(KeyRoutedEventArgs args) { }
 		protected virtual void OnGotFocus(RoutedEventArgs e) { }
@@ -865,6 +893,18 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly HoldingEventHandler OnHoldingHandler =
 			(object sender, HoldingRoutedEventArgs args) => ((Control)sender).OnHolding(args);
 
+		private static readonly DragEventHandler OnDragEnterHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragEnter(args);
+
+		private static readonly DragEventHandler OnDragOverHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragOver(args);
+
+		private static readonly DragEventHandler OnDragLeaveHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragLeave(args);
+
+		private static readonly DragEventHandler OnDropHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
+
 		private static readonly KeyEventHandler OnKeyDownHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyDown(args);
 
@@ -885,6 +925,7 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Type[] _doubleTappedArgsType = new[] { typeof(DoubleTappedRoutedEventArgs) };
 		private static readonly Type[] _rightTappedArgsType = new[] { typeof(RightTappedRoutedEventArgs) };
 		private static readonly Type[] _holdingArgsType = new[] { typeof(HoldingRoutedEventArgs) };
+		private static readonly Type[] _dragArgsType = new[] { typeof(global::Windows.UI.Xaml.DragEventArgs) };
 		private static readonly Type[] _keyArgsType = new[] { typeof(KeyRoutedEventArgs) };
 		private static readonly Type[] _routedArgsType = new[] { typeof(RoutedEventArgs) };
 		private static readonly Type[] _manipStartingArgsType = new[] { typeof(ManipulationStartingRoutedEventArgs) };
@@ -996,6 +1037,26 @@ namespace Windows.UI.Xaml.Controls
 				result |= RoutedEventFlag.Holding;
 			}
 
+			if (GetIsEventOverrideImplemented(type, nameof(OnDragEnter), _dragArgsType))
+			{
+				result |= RoutedEventFlag.DragEnter;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnDragOver), _dragArgsType))
+			{
+				result |= RoutedEventFlag.DragOver;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnDragLeave), _dragArgsType))
+			{
+				result |= RoutedEventFlag.DragLeave;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnDrop), _dragArgsType))
+			{
+				result |= RoutedEventFlag.Drop;
+			}
+
 			if (GetIsEventOverrideImplemented(type, nameof(OnKeyDown), _keyArgsType))
 			{
 				result |= RoutedEventFlag.KeyDown;
@@ -1044,6 +1105,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </remarks>
 		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control
 			=> DefaultStyleKey = typeof(TDerived);
+
+		private protected bool GoToState(bool useTransitions, string stateName) => VisualStateManager.GoToState(this, stateName, useTransitions);
 
 #if DEBUG
 #if !__IOS__

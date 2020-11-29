@@ -156,18 +156,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			// initial state
 			_app.WaitForElement(testableFlyoutButtons.First().Value);
-			var initialScreenshot = TakeScreenshot($"{majorStepIndex++} Initial State", ignoreInSnapshotCompare: true);
+			using var initialScreenshot = TakeScreenshot($"{majorStepIndex++} Initial State", ignoreInSnapshotCompare: true);
 
 			var dismissArea = GetDismissAreaCenter();
 			foreach (var button in testableFlyoutButtons)
 			{
 				// show flyout
 				button.Value.Tap();
-				var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
+				using var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
 
 				// dismiss flyout
 				_app.TapCoordinates(dismissArea.X, dismissArea.Y);
-				var flyoutDismissedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 1 Dismissed", ignoreInSnapshotCompare: true);
+				using var flyoutDismissedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 1 Dismissed", ignoreInSnapshotCompare: true);
 
 				// compare
 				ImageAssert.AreNotEqual(flyoutOpenedScreenshot, initialScreenshot);
@@ -184,10 +184,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				 * [FullOverlayFlyoutButton]
 				 *         (dismiss area)
 				 *       [WithOffsetFlyoutButton margin=100] */
-				var rect1 = _app.GetRect("FullOverlayFlyoutButton");
-				var rect2 = _app.GetRect("WithOffsetFlyoutButton");
+				var rect1 = _app.GetPhysicalRect("FullOverlayFlyoutButton");
+				var rect2 = _app.GetPhysicalRect("WithOffsetFlyoutButton");
 
-				return (rect2.CenterX, (rect1.Bottom + rect2.Y) / 2);
+				return (rect2.CenterX + rect2.Width, (rect1.Bottom + rect2.Y) / 2);
 			}
 		}
 

@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Shapes
 		{
 		}
 
-		private protected override void OnHitTestVisibilityChanged(HitTestVisibility oldValue, HitTestVisibility newValue)
+		private protected override void OnHitTestVisibilityChanged(HitTestability oldValue, HitTestability newValue)
 		{
 			// We don't invoke the base, so we stay at the default "pointer-events: none" defined in Uno.UI.css in class svg.uno-uielement.
 			// This is required to avoid this SVG element (which is actually only a collection) to stoll pointer events.
@@ -84,7 +84,12 @@ namespace Windows.UI.Xaml.Shapes
 					_fillBrushSubscription.Disposable = null;
 					break;
 				case ImageBrush ib:
-					_fillBrushSubscription.Disposable = null;
+					var (imageFill, subscription) = ib.ToSvgElement();
+					var imageFillId = imageFill.HtmlId;
+					GetDefs().Add(imageFill);
+					svgElement.SetStyle("fill", $"url(#{imageFillId})");
+					var removeDef = new DisposableAction(() => GetDefs().Remove(imageFill));
+					_fillBrushSubscription.Disposable = new CompositeDisposable(removeDef, subscription);
 					break;
 				case GradientBrush gb:
 					var gradient = gb.ToSvgElement();
@@ -121,6 +126,14 @@ namespace Windows.UI.Xaml.Shapes
 				case SolidColorBrush scb:
 					svgElement.SetStyle("stroke", scb.ColorWithOpacity.ToHexString());
 					_strokeBrushSubscription.Disposable = null;
+					break;
+				case ImageBrush ib:
+					var (imageFill, subscription) = ib.ToSvgElement();
+					var imageFillId = imageFill.HtmlId;
+					GetDefs().Add(imageFill);
+					svgElement.SetStyle("stroke", $"url(#{imageFillId})");
+					var removeDef = new DisposableAction(() => GetDefs().Remove(imageFill));
+					_fillBrushSubscription.Disposable = new CompositeDisposable(removeDef, subscription);
 					break;
 				case GradientBrush gb:
 					var gradient = gb.ToSvgElement();

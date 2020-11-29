@@ -20,6 +20,10 @@ namespace Uno.UI.DataBinding
 			PropertyType = property.Type;
 		}
 
+
+		/// <summary>
+		/// This ctor is available for backward compatibility. On newer versions of Uno.UI, the BindableTypeProvidersSourceGenerator uses the single-parameter ctor
+		/// </summary>
 		public BindableProperty(Type propertyType, PropertyGetterHandler getter, PropertySetterHandler? setter)
 		{
 			Getter = getter;

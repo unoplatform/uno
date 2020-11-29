@@ -22,21 +22,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SplitViewTests
 
 			_app.WaitForElement("Split");
 
-			var targetGridRectangle = _app.GetRect("TargetRect");
+			var targetGridRectangle = _app.GetPhysicalRect("TargetRect");
 
-			var compactScreenshot = TakeScreenshot("Compact");
+			using var compactScreenshot = TakeScreenshot("Compact", ignoreInSnapshotCompare: true);
 			// Compact pane is 48 pixels wide
 			ImageAssert.HasColorAt(compactScreenshot, targetGridRectangle.Right - 4, targetGridRectangle.CenterY, Color.Blue);
 
 			var toggleButton = _app.Marked("PaneToggle");
 			toggleButton.Tap();
 
-			var expandedScreenshot = TakeScreenshot("Expanded");
+			using var expandedScreenshot = TakeScreenshot("Expanded");
 			ImageAssert.HasColorAt(expandedScreenshot, targetGridRectangle.Right - 4, targetGridRectangle.CenterY, Color.Red);
 
 			toggleButton.Tap();
 
-			var compactAgainScreenshot = TakeScreenshot("Compact again");
+			using var compactAgainScreenshot = TakeScreenshot("Compact again");
 			ImageAssert.HasColorAt(compactAgainScreenshot, targetGridRectangle.Right - 4, targetGridRectangle.CenterY, Color.Blue);
 		}
 	}

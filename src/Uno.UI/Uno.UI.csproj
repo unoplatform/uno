@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid10.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -33,22 +33,22 @@
 
 		<!-- Generate automation IDs in debug builds, use by UI tests. -->
     <IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
-  </PropertyGroup>
+
+		<!-- Disable WPF targets -->
+		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;Themes\WinUI\Resources\**\*.xaml;" Visible="False" />
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+		<UpToDateCheckInput Include="**\*.tt" Exclude="bin\**\*.tt;obj\**\*.tt;" Visible="False" />
 	</ItemGroup>
 
 	<Choose>
 		<When Condition="'$(TargetFramework)'=='net461'">
 			<ItemGroup>
-				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
-				<Page Remove="@(Page)" />
-			</ItemGroup>
-			<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
 				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
 			</ItemGroup>
 		</When>
@@ -86,16 +86,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" Version="2.0.0" />
 		<PackageReference Include="Uno.Core.Build" Version="2.0.0" />
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
+		<PackageReference Include="xamarin.build.download" Version="0.4.11" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
@@ -110,10 +111,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="xamarin.build.download" Version="0.4.11" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
@@ -121,7 +118,7 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid90' or '$(TargetFramework)' == 'MonoAndroid10.0'">
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'MonoAndroid10.0'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 	</ItemGroup>
@@ -146,7 +143,6 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 	</PropertyGroup>
 
@@ -223,7 +219,7 @@
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
-	
+
 	<Import Project="MixinGeneration.targets" />
 
 </Project>

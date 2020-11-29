@@ -1,0 +1,35 @@
+﻿<Project Sdk="Tizen.NET.Sdk/1.0.9">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>tizen50</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<DefineConstants>$(DefineConstants);__TIZEN__;</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Folder Include="lib\" />
+		<Folder Include="res\" />
+	</ItemGroup>
+
+	<ItemGroup Condition="exists('..\$ext_safeprojectname$.UWP')">
+		<EmbeddedResource Include="..\$ext_safeprojectname$.UWP\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+		<Content Include="..\$ext_safeprojectname$.UWP\Assets\StoreLogo.png" Link="Assets\StoreLogo.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<UpToDateCheckInput Include="..\$ext_safeprojectname$.Shared\**\*.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Note that for WebAssembly version 1.1.1 of the console logger required -->
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+		<PackageReference Include="SkiaSharp.Views" Version="2.80.2" />
+		<PackageReference Include="Uno.UI.Skia.Tizen" Version="3.0.0-dev.1447" />
+		<PackageReference Include="Uno.UI.RemoteControl" Version="3.0.0-dev.1447" Condition="'$(Configuration)'=='Debug'" />
+	</ItemGroup>
+
+	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
+
+</Project>

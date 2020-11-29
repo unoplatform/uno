@@ -35,17 +35,7 @@ namespace Windows.UI.ViewManagement
 				height: windowBounds.Height - inset.Top - inset.Bottom
 			);
 
-			if (VisibleBounds != newVisibleBounds)
-			{
-				VisibleBounds = newVisibleBounds;
-
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"Updated visible bounds {VisibleBounds}, SafeAreaInsets: {inset}");
-				}
-
-				VisibleBoundsChanged?.Invoke(this, null);
-			}
+			SetVisibleBounds(newVisibleBounds);
 		}
 
 		public bool TryEnterFullScreenMode()

@@ -1,6 +1,10 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.Storage.Streams;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -43,6 +47,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		#endregion
 
+#if __NETSTD__
+		protected IRandomAccessStream _stream;
+#endif
+
 		protected BitmapSource() { }
 
 		protected BitmapSource(Uri sourceUri) : base(sourceUri)
@@ -55,31 +63,82 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		}
 
+		/// <summary>
+		/// Helper for Uno... not part of UWP contract
+		/// </summary>
 		public void SetSource(Stream streamSource)
 		{
-			PixelWidth = 0;
-			PixelHeight = 0;
-
-			Stream = streamSource;
+			SetSource(streamSource.AsRandomAccessStream());
 		}
 
+		/// <summary>
+		/// Helper for Uno... not part of UWP contract
+		/// </summary>
 		public async Task SetSourceAsync(Stream streamSource)
-		{
+			=> await SetSourceAsync(streamSource.AsRandomAccessStream());
 
-			if (streamSource != null)
+		public void SetSource(IRandomAccessStream streamSource)
+			// We prefer to use the SetSourceAsync here in order to make sure that the stream is copied ASYNChronously,
+			// which is important since we are using a stream wrapper of and <In|Out|RA>Stream which might freeze the UI thread / throw exception.
+			=> Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetSourceAsync(streamSource));
+
+		public IAsyncAction SetSourceAsync(IRandomAccessStream streamSource)
+		{
+			async Task SetSourceAsync(CancellationToken ct)
 			{
+				if (streamSource == null)
+				{
+					//Same behavior as windows, although the documentation does not mention it!!!
+					throw new ArgumentException(nameof(streamSource));
+				}
+
 				PixelWidth = 0;
 				PixelHeight = 0;
 
-				MemoryStream copy = new MemoryStream();
-				await streamSource.CopyToAsync(copy);
-				Stream = copy;
+#if __NETSTD__
+				_stream = streamSource.CloneStream();
+
+				var tcs = new TaskCompletionSource<object>();
+
+				using var x = Subscribe(OnChanged);
+
+				InvalidateSource();
+
+				await tcs.Task;
+
+				void OnChanged(ImageData data)
+				{
+					tcs.TrySetResult(null);
+				}
+#else
+				Stream = streamSource.CloneStream().AsStream();
+#endif
 			}
-			else
+
+			return AsyncAction.FromTask(SetSourceAsync);
+
+		}
+
+		public override string ToString()
+		{
+			if (WebUri is { } uri)
 			{
-				//Same behavior as windows, although the documentation does not mention it!!!
-				throw new ArgumentException(nameof(streamSource));
+				return $"{GetType().Name}/{uri}";
 			}
+
+#if __NETSTD__
+			if (_stream is { } stream)
+			{
+				return $"{GetType().Name}/{stream.GetType()}";
+			}
+#else
+			if (Stream is { } stream)
+			{
+				return $"{GetType().Name}/{stream.GetType()}";
+			}
+#endif
+
+			return $"{GetType().Name}/-empty-";
 		}
 	}
 }

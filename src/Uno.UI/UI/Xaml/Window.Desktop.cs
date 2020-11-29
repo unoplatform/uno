@@ -7,12 +7,14 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
 		private static Window _current;
+		private Grid _main = null;
 		private bool _isActive;
 		private UIElement _content;
 
@@ -42,6 +44,8 @@ namespace Windows.UI.Xaml
 		}
 
 		private UIElement InternalGetContent() => _content;
+
+		private UIElement InternalGetRootElement() => _content;
 
 		private static Window InternalGetCurrentWindow()
 		{

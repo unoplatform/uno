@@ -3,6 +3,7 @@ parameters:
 
 jobs:
 - job: Documentation
+  displayName: 'Documentation WebSite'
 
   pool:
     vmImage: ${{ parameters.vmImage }}

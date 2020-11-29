@@ -1,4 +1,5 @@
 #nullable enable
+
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -11,6 +12,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Composition;
@@ -44,6 +46,7 @@ namespace Windows.UI.Xaml
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow();
 			CoreWindow.SetInvalidateRender(QueueInvalidateRender);
+			InitDragAndDrop();
 		}
 
 		internal static Action InvalidateRender = () => { };
@@ -103,8 +106,6 @@ namespace Windows.UI.Xaml
 						}
 					});
 				}
-
-				
 			}
 		}
 
@@ -128,9 +129,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-        public Compositor Compositor { get; }
-
-		internal Grid RootElement => _window!;
+		public Compositor Compositor { get; }
 
 		partial void InternalActivate()
 		{
@@ -146,7 +145,13 @@ namespace Windows.UI.Xaml
 
 				_window = new Grid
 				{
-					Children = {_rootBorder, _popupRoot}
+					Children =
+					{
+						_rootBorder,
+						_popupRoot
+						// Message Dialog => Those are currently using Popup, but they be upper
+						// Drag and drop => Those are added only when needed (they are actually not part of the WinUI visual tree and would have a negative perf impact)
+					}
 				};
 
 				UIElement.LoadingRootElement(_window);
@@ -163,6 +168,8 @@ namespace Windows.UI.Xaml
 		}
 
 		private UIElement InternalGetContent() => _content!;
+
+		private UIElement InternalGetRootElement() => _window!;
 
 		private static Window InternalGetCurrentWindow()
 		{

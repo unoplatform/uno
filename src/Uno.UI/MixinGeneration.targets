@@ -21,34 +21,17 @@
 	</ProjectReference>
   </ItemGroup>
 
-  <Choose>
-	<When Condition="'$(_IsUnoUIProjectForMixins)'=='true'">
-	  <ItemGroup>
-		<Compile Remove="$(MSBuildThisFileDirectory)Mixins\**\*.cs"/>
-		<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.cs" />
-		<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.tt" />
-	  </ItemGroup>
-	</When>
-	<Otherwise>
-	  <ItemGroup>
-		<Compile Remove="$(MSBuildThisFileDirectory)Mixins\**\*.cs"/>
-		<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.cs" Link="Mixins\%(RecursiveDir)%(FileName)%(Extension)"  />
-		<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.tt" Link="Mixins\%(RecursiveDir)%(FileName)%(Extension)"  />
-	  </ItemGroup>
-	</Otherwise>
-  </Choose>
-
   <ItemGroup>
+	<Compile Remove="$(MSBuildThisFileDirectory)Mixins\**\*.cs"/>
+	<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.cs" />
+	<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.tt" />
+
 	<Compile Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.g.cs" Condition="$(IsMonoAndroid)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.g.cs" Condition="$(IsMonoAndroid)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\VisualStatesMixins.g.cs" Condition="$(IsMonoAndroid)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinIOS)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\iOS\VisualStatesMixins.g.cs" Condition="$(IsXamarinIOS)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinMac)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\macOS\VisualStatesMixins.g.cs" Condition="$(IsXamarinMac)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\Wasm\VisualStatesMixins.g.cs" Condition="'$(TargetFramework)'=='netstandard2.0'" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\net461\VisualStatesMixins.g.cs" Condition="'$(TargetFramework)'=='net461'" />
+	<Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\*.g.cs" Condition="$(IsMonoAndroid)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Mixins\iOS\*.g.cs" Condition="$(IsXamarinIOS)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Mixins\macOS\*.g.cs" Condition="$(IsXamarinMac)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Mixins\Wasm\*.g.cs" Condition="'$(TargetFramework)'=='netstandard2.0'" />
+	<Compile Include="$(MSBuildThisFileDirectory)Mixins\net461\*.g.cs" Condition="'$(TargetFramework)'=='net461'" />
 
 	<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.cs" />
 	<Compile Remove="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.cs" />
@@ -81,16 +64,16 @@
 	</When>
 	<Otherwise>
 	  <ItemGroup>
-		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.tt" Link="Mixins\%(RecursiveDir)%(FileName)%(Extension)">
+		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.tt">
 		  <Generator>TextTemplatingFileGenerator</Generator>
 		  <LastGenOutput>%(RecursiveDir)%(Filename).g.cs</LastGenOutput>
 		</None>
-		<Compile Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs" Link="Mixins\%(RecursiveDir)%(FileName)%(Extension)">
+		<Compile Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
 		  <DesignTime>True</DesignTime>
 		  <AutoGen>True</AutoGen>
 		  <DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
 		</Compile>
-		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs" Link="Mixins\%(RecursiveDir)%(FileName)%(Extension)">
+		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
 		  <DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
 		</None>
 	  </ItemGroup>
@@ -169,14 +152,19 @@
 
 	<!-- This allows for the mixins to generate in parallel -->
 	<MSBuild BuildInParallel="true" Projects="@(MixinDefinition)" StopOnFirstFailure="True" Targets="_InnerGenerateMixins" />
-
+	
 	<ItemGroup>
 	  <!--
 	  Restore the compile items for projects using globbing
 	  that may not have the .cs files as explicit Compile items
 	  -->
 	  <Compile Remove="$(MSBuildThisFileDirectory)Mixins/**/*.cs" />
-	  <Compile Include="$(MSBuildThisFileDirectory)Mixins/**/*.cs" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\*.g.cs" Condition="$(IsMonoAndroid)" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\iOS\*.g.cs" Condition="$(IsXamarinIOS)" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\macOS\*.g.cs" Condition="$(IsXamarinMac)" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\Wasm\*.g.cs" Condition="'$(TargetFramework)'=='netstandard2.0'" />
+	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\net461\*.g.cs" Condition="'$(TargetFramework)'=='net461'" />
 	</ItemGroup>
   </Target>
 

@@ -1,4 +1,5 @@
-﻿using Android.Views;
+﻿#nullable enable
+using Android.Views;
 using Android.Widget;
 using Uno.Extensions;
 using Uno.Logging;
@@ -49,11 +50,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (disableAnimation)
 			{
-				_presenter.ScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
+				_presenter?.ScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
 			}
 			else
 			{
-				_presenter.SmoothScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
+				_presenter?.SmoothScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
 			}
 		}
 
@@ -76,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 				float pivotX, pivotY;
 
 				var scaledWidth = ZoomFactor * view.Width;
-				var viewPortWidth = (this as View).Width;
+				var viewPortWidth = (this as View)?.Width ?? 0f;
 
 				if (viewPortWidth <= scaledWidth)
 				{
@@ -102,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var scaledHeight = ZoomFactor * view.Height;
-				var viewportHeight = (this as View).Height;
+				var viewportHeight = (this as View)?.Height ?? 0f;
 
 				if (viewportHeight < scaledHeight)
 				{

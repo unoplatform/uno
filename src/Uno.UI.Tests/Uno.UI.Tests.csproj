@@ -6,6 +6,7 @@
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
+		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -26,14 +27,14 @@
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
 		<PackageReference Include="MSTest.TestAdapter" />
     <PackageReference Include="MSTest.TestFramework" />
     <PackageReference Include="FluentAssertions">
       <Version>5.10.3</Version>
     </PackageReference>
     <PackageReference Include="Moq">
-      <Version>4.14.6</Version>
+      <Version>4.15.1</Version>
     </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
       <Version>1.7.0</Version>
@@ -70,7 +71,6 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 	</PropertyGroup>
@@ -87,12 +87,15 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <EmbeddedResource Include="Windows_Data_Xml\DomTests\basictest.xml" />
+	  <EmbeddedResource Include="Windows_UI_XAML_Controls\UserControlTests\UserControl_WriteOnlyProperty_UserControl.xaml">
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
 	</ItemGroup>
 	
 	<ItemGroup>
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
-	<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
+	<ItemGroup>
 		<Page Include="Windows_UI_Xaml\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Data\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Controls\**\*.xaml" />
@@ -147,6 +150,9 @@
 		<None Update="ResourceLoader\Strings\fr\Resources.resw">
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 			<Generator>ResXFileCodeGenerator</Generator>
+		</None>
+		<None Update="Windows_UI_XAML_Controls\UserControlTests\UserControl_WriteOnlyProperty.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</None>
 	</ItemGroup>
 

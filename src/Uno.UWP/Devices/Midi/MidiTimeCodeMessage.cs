@@ -47,12 +47,12 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the value of the frame type from 0-7.
 		/// </summary>
-		public byte FrameType => MidiHelpers.GetFrame(_buffer.Data[1]);
+		public byte FrameType => MidiHelpers.GetFrame(_buffer.GetByte(1));
 
 		/// <summary>
 		/// Gets the time code value from 0-15.
 		/// </summary>
-		public byte Values => MidiHelpers.GetFrameValues(_buffer.Data[1]);
+		public byte Values => MidiHelpers.GetFrameValues(_buffer.GetByte(1));
 
 		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.

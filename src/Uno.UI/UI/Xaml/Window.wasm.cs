@@ -180,10 +180,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private UIElement InternalGetContent()
-		{
-			return _content;
-		}
+		private UIElement InternalGetContent() => _content;
+
+		private UIElement InternalGetRootElement() => _window!;
 
 		private static Window InternalGetCurrentWindow()
 		{

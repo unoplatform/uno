@@ -21,5 +21,13 @@
       "longName": "macos",
       "shortName": "macos"
     },
+    "skia-wpf": {
+      "longName": "skia-wpf",
+      "shortName": "skia-wpf"
+    },
+    "skia-gtk": {
+      "longName": "skia-gtk",
+      "shortName": "skia-gtk"
+    }
   }
 }

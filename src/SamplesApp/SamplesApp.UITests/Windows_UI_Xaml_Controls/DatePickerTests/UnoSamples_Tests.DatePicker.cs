@@ -17,7 +17,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
+		[ActivePlatforms(Platform.iOS)] // DatePicker not supported on Wasm; test not applicable to Android, which uses native Android.App.DatePickerDialog, which has no DataContext
 		public void DatePickerFlyout_HasDataContextTest()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", skipInitialScreenshot: true);
@@ -79,6 +79,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			TakeScreenshot("DatePicker - Flyout", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Status bar appears with clock*/);
 
 			_app.TapCoordinates(20, 20);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void DatePicker_Header()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.DatePicker.DatePicker_Header", skipInitialScreenshot: true);
+
+			var headerContentTextBlock = _app.Marked("DatePickerHeaderContent");
+			_app.WaitForElement(headerContentTextBlock);
+
+			Assert.AreEqual("This is a DatePicker Header", headerContentTextBlock.GetDependencyPropertyValue("Text").ToString());
 		}
 
 		[Test]

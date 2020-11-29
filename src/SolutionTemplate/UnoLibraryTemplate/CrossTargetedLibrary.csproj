@@ -5,7 +5,7 @@
 	-->
 
   <PropertyGroup>
-    <TargetFrameworks>uap10.0.17763;netstandard2.0;xamarinios10;xamarinmac20;MonoAndroid90;monoandroid10.0</TargetFrameworks>
+    <TargetFrameworks>uap10.0.17763;netstandard2.0;xamarinios10;xamarinmac20;MonoAndroid11.0;monoandroid10.0</TargetFrameworks>
 
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>

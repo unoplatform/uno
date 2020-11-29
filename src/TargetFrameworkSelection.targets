@@ -12,6 +12,9 @@
     <_OverrideTargetFrameworksDependency Include="_AddPriFileToPackBuildOutput" />
     <_OverrideTargetFrameworksDependency Include="PrepareForBuild" />
 
+	<!-- this target has been introduced in VS16.7 -->
+    <_OverrideTargetFrameworksDependency Include="_SdkTargetFrameworkNormalizedFromComputeTargetFrameworkItems" />
+
     <!-- Used when restoring packages in VS15.2 -->
     <_OverrideTargetFrameworksDependency Include="GetRestoreProjectFrameworks" />
 

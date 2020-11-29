@@ -897,7 +897,7 @@ var Uno;
                 return true;
             }
             registerPointerEventsOnView(pParams) {
-                const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+                const params = WindowManagerRegisterPointerEventsOnViewParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
                 element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
                 element.addEventListener("pointerleave", WindowManager.onPointerLeaveReceived);
@@ -1382,10 +1382,11 @@ var Uno;
                 const elementStyle = element.style;
                 const elementClasses = element.className;
                 const originalStyleCssText = elementStyle.cssText;
+                const unconstrainedStyleCssText = this.createUnconstrainedStyle(elementStyle, maxWidth, maxHeight);
                 let parentElement = null;
                 let parentElementWidthHeight = null;
                 let unconnectedRoot = null;
-                let cleanupUnconnectedRoot = function (owner) {
+                let cleanupUnconnectedRoot = (owner) => {
                     if (unconnectedRoot !== null) {
                         owner.removeChild(unconnectedRoot);
                     }
@@ -1402,55 +1403,18 @@ var Uno;
                         }
                         this.containerElement.appendChild(unconnectedRoot);
                     }
-                    // As per W3C css-transform spec:
-                    // https://www.w3.org/TR/css-transforms-1/#propdef-transform
-                    //
-                    // > For elements whose layout is governed by the CSS box model, any value other than none
-                    // > for the transform property also causes the element to establish a containing block for
-                    // > all descendants.Its padding box will be used to layout for all of its
-                    // > absolute - position descendants, fixed - position descendants, and descendant fixed
-                    // > background attachments.
-                    //
-                    // We use this feature to allow an measure of text without being influenced by the bounds
-                    // of the viewport. We just need to temporary set both the parent width & height to a very big value.
-                    parentElement = element.parentElement;
-                    parentElementWidthHeight = { width: parentElement.style.width, height: parentElement.style.height };
-                    parentElement.style.width = WindowManager.MAX_WIDTH;
-                    parentElement.style.height = WindowManager.MAX_HEIGHT;
-                    const updatedStyles = {};
-                    for (let i = 0; i < elementStyle.length; i++) {
-                        const key = elementStyle[i];
-                        updatedStyles[key] = elementStyle.getPropertyValue(key);
-                    }
-                    if (updatedStyles.hasOwnProperty("width")) {
-                        delete updatedStyles.width;
-                    }
-                    if (updatedStyles.hasOwnProperty("height")) {
-                        delete updatedStyles.height;
-                    }
-                    // This is required for an unconstrained measure (otherwise the parents size is taken into account)
-                    updatedStyles.position = "fixed";
-                    updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "none";
-                    updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "none";
-                    let updatedStyleString = "";
-                    for (let key in updatedStyles) {
-                        if (updatedStyles.hasOwnProperty(key)) {
-                            updatedStyleString += key + ": " + updatedStyles[key] + "; ";
-                        }
-                    }
-                    // We use a string to prevent the browser to update the element between
-                    // each style assignation. This way, the browser will update the element only once.
-                    elementStyle.cssText = updatedStyleString;
                     if (element instanceof HTMLImageElement) {
+                        elementStyle.cssText = unconstrainedStyleCssText;
                         const imgElement = element;
                         return [imgElement.naturalWidth, imgElement.naturalHeight];
                     }
                     else if (element instanceof HTMLInputElement) {
+                        elementStyle.cssText = unconstrainedStyleCssText;
                         const inputElement = element;
                         cleanupUnconnectedRoot(this.containerElement);
                         // Create a temporary element that will contain the input's content
                         var textOnlyElement = document.createElement("p");
-                        textOnlyElement.style.cssText = updatedStyleString;
+                        textOnlyElement.style.cssText = unconstrainedStyleCssText;
                         textOnlyElement.innerText = inputElement.value;
                         textOnlyElement.className = elementClasses;
                         unconnectedRoot = textOnlyElement;
@@ -1465,10 +1429,12 @@ var Uno;
                         cleanupUnconnectedRoot(this.containerElement);
                         // Create a temporary element that will contain the input's content
                         var textOnlyElement = document.createElement("p");
-                        textOnlyElement.style.cssText = updatedStyleString;
+                        textOnlyElement.style.cssText = unconstrainedStyleCssText;
+                        textOnlyElement.style.whiteSpace = "pre"; // Make sure to preserve space for measure, especially the ending new line!
                         // If the input is null or empty, add a no-width character to force the paragraph to take up one line height
-                        textOnlyElement.innerText = !inputElement.value ? "\u200B" : inputElement.value;
-                        textOnlyElement.className = elementClasses;
+                        // The trailing new lines are going to be ignored for measure, so we also append no-width char at the end.
+                        textOnlyElement.innerText = inputElement.value ? (inputElement.value + "\u200B") : "\u200B";
+                        textOnlyElement.className = elementClasses; // Note: Here we will have the uno-textBoxView class name
                         unconnectedRoot = textOnlyElement;
                         this.containerElement.appendChild(unconnectedRoot);
                         var textSize = this.measureElement(textOnlyElement);
@@ -1478,6 +1444,22 @@ var Uno;
                         return [width, height];
                     }
                     else {
+                        elementStyle.cssText = unconstrainedStyleCssText;
+                        // As per W3C css-transform spec:
+                        // https://www.w3.org/TR/css-transforms-1/#propdef-transform
+                        //
+                        // > For elements whose layout is governed by the CSS box model, any value other than none
+                        // > for the transform property also causes the element to establish a containing block for
+                        // > all descendants.Its padding box will be used to layout for all of its
+                        // > absolute - position descendants, fixed - position descendants, and descendant fixed
+                        // > background attachments.
+                        //
+                        // We use this feature to allow an measure of text without being influenced by the bounds
+                        // of the viewport. We just need to temporary set both the parent width & height to a very big value.
+                        parentElement = element.parentElement;
+                        parentElementWidthHeight = { width: parentElement.style.width, height: parentElement.style.height };
+                        parentElement.style.width = WindowManager.MAX_WIDTH;
+                        parentElement.style.height = WindowManager.MAX_HEIGHT;
                         return this.measureElement(element);
                     }
                 }
@@ -1489,6 +1471,32 @@ var Uno;
                     }
                     cleanupUnconnectedRoot(this.containerElement);
                 }
+            }
+            createUnconstrainedStyle(elementStyle, maxWidth, maxHeight) {
+                const updatedStyles = {};
+                for (let i = 0; i < elementStyle.length; i++) {
+                    const key = elementStyle[i];
+                    updatedStyles[key] = elementStyle.getPropertyValue(key);
+                }
+                if (updatedStyles.hasOwnProperty("width")) {
+                    delete updatedStyles.width;
+                }
+                if (updatedStyles.hasOwnProperty("height")) {
+                    delete updatedStyles.height;
+                }
+                // This is required for an unconstrained measure (otherwise the parents size is taken into account)
+                updatedStyles.position = "fixed";
+                updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "none";
+                updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "none";
+                let updatedStyleString = "";
+                for (let key in updatedStyles) {
+                    if (updatedStyles.hasOwnProperty(key)) {
+                        updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+                    }
+                }
+                // We use a string to prevent the browser to update the element between
+                // each style assignation. This way, the browser will update the element only once.
+                return updatedStyleString;
             }
             scrollTo(pParams) {
                 const params = WindowManagerScrollToOptionsParams.unmarshal(pParams);
@@ -3664,6 +3672,86 @@ var Windows;
             }
             Display.DisplayRequest = DisplayRequest;
         })(Display = System.Display || (System.Display = {}));
+    })(System = Windows.System || (Windows.System = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var System;
+    (function (System) {
+        var Profile;
+        (function (Profile) {
+            class AnalyticsInfo {
+                static getDeviceType() {
+                    // Logic based on https://github.com/barisaydinoglu/Detectizr
+                    var ua = navigator.userAgent;
+                    if (!ua || ua === '') {
+                        // No user agent.
+                        return "unknown";
+                    }
+                    if (ua.match(/GoogleTV|SmartTV|SMART-TV|Internet TV|NetCast|NETTV|AppleTV|boxee|Kylo|Roku|DLNADOC|hbbtv|CrKey|CE\-HTML/i)) {
+                        // if user agent is a smart TV - http://goo.gl/FocDk
+                        return "Television";
+                    }
+                    else if (ua.match(/Xbox|PLAYSTATION|Wii/i)) {
+                        // if user agent is a TV Based Gaming Console
+                        return "GameConsole";
+                    }
+                    else if (ua.match(/QtCarBrowser/i)) {
+                        // if the user agent is a car
+                        return "Car";
+                    }
+                    else if (ua.match(/iP(a|ro)d/i) || (ua.match(/tablet/i) && !ua.match(/RX-34/i)) || ua.match(/FOLIO/i)) {
+                        // if user agent is a Tablet
+                        return "Tablet";
+                    }
+                    else if (ua.match(/Linux/i) && ua.match(/Android/i) && !ua.match(/Fennec|mobi|HTC Magic|HTCX06HT|Nexus One|SC-02B|fone 945/i)) {
+                        // if user agent is an Android Tablet
+                        return "Tablet";
+                    }
+                    else if (ua.match(/Kindle/i) || (ua.match(/Mac OS/i) && ua.match(/Silk/i)) || (ua.match(/AppleWebKit/i) && ua.match(/Silk/i) && !ua.match(/Playstation Vita/i))) {
+                        // if user agent is a Kindle or Kindle Fire
+                        return "Tablet";
+                    }
+                    else if (ua.match(/GT-P10|SC-01C|SHW-M180S|SGH-T849|SCH-I800|SHW-M180L|SPH-P100|SGH-I987|zt180|HTC( Flyer|_Flyer)|Sprint ATP51|ViewPad7|pandigital(sprnova|nova)|Ideos S7|Dell Streak 7|Advent Vega|A101IT|A70BHT|MID7015|Next2|nook/i) || (ua.match(/MB511/i) && ua.match(/RUTEM/i))) {
+                        // if user agent is a pre Android 3.0 Tablet
+                        return "Tablet";
+                    }
+                    else if (ua.match(/BOLT|Fennec|Iris|Maemo|Minimo|Mobi|mowser|NetFront|Novarra|Prism|RX-34|Skyfire|Tear|XV6875|XV6975|Google Wireless Transcoder/i) && !ua.match(/AdsBot-Google-Mobile/i)) {
+                        // if user agent is unique phone User Agent
+                        return "Mobile";
+                    }
+                    else if (ua.match(/Opera/i) && ua.match(/Windows NT 5/i) && ua.match(/HTC|Xda|Mini|Vario|SAMSUNG\-GT\-i8000|SAMSUNG\-SGH\-i9/i)) {
+                        // if user agent is an odd Opera User Agent - http://goo.gl/nK90K
+                        return "Mobile";
+                    }
+                    else if ((ua.match(/Windows( )?(NT|XP|ME|9)/) && !ua.match(/Phone/i)) && !ua.match(/Bot|Spider|ia_archiver|NewsGator/i) || ua.match(/Win( ?9|NT)/i) || ua.match(/Go-http-client/i)) {
+                        // if user agent is Windows Desktop
+                        return "Desktop";
+                    }
+                    else if (ua.match(/Macintosh|PowerPC/i) && !ua.match(/Silk|moatbot/i)) {
+                        // if agent is Mac Desktop
+                        return "Desktop";
+                    }
+                    else if (ua.match(/Linux/i) && ua.match(/X11/i) && !ua.match(/Charlotte|JobBot/i)) {
+                        // if user agent is a Linux Desktop
+                        return "Desktop";
+                    }
+                    else if (ua.match(/CrOS/)) {
+                        // if user agent is a Chrome Book
+                        return "Desktop";
+                    }
+                    else if (ua.match(/Solaris|SunOS|BSD/i)) {
+                        // if user agent is a Solaris, SunOS, BSD Desktop
+                        return "Desktop";
+                    }
+                    else {
+                        // Otherwise returning the unknown type configured
+                        return "Unknown";
+                    }
+                }
+            }
+            Profile.AnalyticsInfo = AnalyticsInfo;
+        })(Profile = System.Profile || (System.Profile = {}));
     })(System = Windows.System || (Windows.System = {}));
 })(Windows || (Windows = {}));
 var Windows;

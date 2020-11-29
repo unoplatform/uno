@@ -6,7 +6,7 @@ using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public class GtkApplicationViewExtension : IApplicationViewExtension
+	internal class GtkApplicationViewExtension : IApplicationViewExtension
 	{
 		private readonly ApplicationView _owner;
 		private readonly IApplicationViewEvents _ownerEvents;

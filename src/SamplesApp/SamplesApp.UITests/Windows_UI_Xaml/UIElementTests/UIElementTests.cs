@@ -45,7 +45,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml
 			_app.WaitForElement("SpacerBorder");
 			var spacerRect = _app.GetRect("SpacerBorder");
 
-			var scrn = TakeScreenshot("Ready");
+			using var scrn = TakeScreenshot("Ready");
 
 			ImageAssert.HasColorAt(scrn, spacerRect.X, spacerRect.Y, Color.Red);
 		}

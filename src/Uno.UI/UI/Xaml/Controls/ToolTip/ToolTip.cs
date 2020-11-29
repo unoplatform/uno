@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var spPopup = Popup;
 
-			var lastPointerEnteredPoint = CoreWindow.GetForCurrentThread().PointerPosition;
+			var lastPointerEnteredPoint = CoreWindow.GetForCurrentThread()!.PointerPosition;
 
 			left = lastPointerEnteredPoint.X;
 			top = lastPointerEnteredPoint.Y;
@@ -446,7 +446,7 @@ namespace Windows.UI.Xaml.Controls
 				var lastPointerEnteredPoint = default(Point);
 
 				// UNO TODO: PointerPoint.GetCurrentPoint(uint pointerId)
-				lastPointerEnteredPoint = CoreWindow.GetForCurrentThread().PointerPosition;
+				lastPointerEnteredPoint = CoreWindow.GetForCurrentThread()!.PointerPosition;
 
 				rcDockTo.X = lastPointerEnteredPoint.X;
 				rcDockTo.Y = lastPointerEnteredPoint.Y;

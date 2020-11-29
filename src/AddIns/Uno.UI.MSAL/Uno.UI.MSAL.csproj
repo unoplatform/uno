@@ -1,9 +1,9 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworks>
-		<TargetFrameworksCI>xamarinmac20;MonoAndroid90;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworksCI>
-		<NoWarn>$(NoWarn);NU1701;NU5100;NU5118</NoWarn>
+		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworks>
+		<TargetFrameworksCI>xamarinmac20;MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworksCI>
+		<NoWarn>$(NoWarn);NU1701;NU5100;NU5118;NU5128</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
@@ -71,7 +71,9 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.MSAL\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.MSAL\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
@@ -120,7 +122,7 @@
 			<TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)" />
 			<TfmSpecificPackageFile Include="@(FilteredTfmSpecificPackageFile)" />
 		</ItemGroup>
-		
+
 	</Target>
 
 	<!-- Run on windows only to get the nuget package built properly (Mono 6.10 crashes with this on OSX) -->

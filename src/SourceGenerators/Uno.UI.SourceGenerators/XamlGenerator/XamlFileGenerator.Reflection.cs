@@ -119,10 +119,48 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						break;
 					}
 
-				} while (type.Name != "Object");
+				} while (!Equals(type, _objectSymbol));
 			}
 
 			return false;
+		}
+
+		private bool IsType(XamlType xamlType, ISymbol typeSymbol)
+		{
+			var type = FindType(xamlType);
+
+			return IsType(type, typeSymbol);
+		}
+
+		private bool IsType(INamedTypeSymbol namedTypeSymbol, ISymbol typeSymbol)
+		{
+			if (namedTypeSymbol != null)
+			{
+				do
+				{
+					if (Equals(namedTypeSymbol, typeSymbol))
+					{
+						return true;
+					}
+
+					namedTypeSymbol = namedTypeSymbol.BaseType;
+
+					if (namedTypeSymbol == null)
+					{
+						break;
+					}
+
+				} while (!Equals(namedTypeSymbol, _objectSymbol));
+			}
+
+			return false;
+		}
+
+		private bool IsType(string stringType, ISymbol typeSymbol)
+		{
+			var type = FindType(stringType);
+
+			return IsType(type, typeSymbol);
 		}
 
 		public bool HasProperty(XamlType xamlType, string propertyName)
@@ -373,7 +411,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var type = FindType(ownerType);
 
-			if (type != null)
+			if (type != null && !string.IsNullOrEmpty(propertyName))
 			{
 				do
 				{
@@ -515,12 +553,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var property = type.GetAllPropertiesWithName(name).FirstOrDefault();
 				var setMethod = type.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
 
-				if (property != null && property.GetMethod.IsStatic)
+				if (property?.GetMethod?.IsStatic ?? false)
 				{
 					return true;
 				}
 
-				if (setMethod != null && setMethod.IsStatic)
+				if (setMethod?.IsStatic ?? false)
 				{
 					return true;
 				}
@@ -732,12 +770,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (type != null)
 			{
+				// Search first using the explicit XML namespace in known namespaces
+
+				// Remove the namespace conditionals declaration
+				var trimmedNamespace = type.PreferredXamlNamespace.Split('?').First();
+				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(trimmedNamespace, new string[0]);
+
+				foreach (var clrNamespace in clrNamespaces)
+				{
+					if(_findType(clrNamespace + "." + type.Name) is { } result)
+					{
+						return result;
+					}
+				}
+
+				// Then use fuzzy lookup
 				var ns = _fileDefinition
 					.Namespaces
 					// Ensure that prefixless declaration (generally xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation") is considered first, otherwise PreferredXamlNamespace matching can go awry
 					.OrderByDescending(n => n.Prefix.IsNullOrEmpty())
 					.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
-				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
 
 				if (
 					type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
@@ -747,6 +799,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return _findType(XamlConstants.Namespaces.Data + ".Binding");
 				}
 
+				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
 				var fullName = isKnownNamespace ? ns.Prefix + ":" + type.Name : type.Name;
 
 				return _findType(fullName);
@@ -797,12 +850,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (ns != null)
 				{
-					var nsName = ns.Namespace.TrimStart("using:");
-
-					if (nsName.StartsWith("clr-namespace:"))
-					{
-						nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
-					}
+					var nsName = GetTrimmedNamespace(ns.Namespace);
 
 					name = nsName + "." + fields[1];
 				}
@@ -840,6 +888,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Select(m => m())
 				.Trim()
 				.FirstOrDefault();
+		}
+
+		/// <summary>
+		/// Trim prefixes from namespace declaration
+		/// </summary>
+		private static string GetTrimmedNamespace(string nsNamespace)
+		{
+			var nsName = nsNamespace.TrimStart("using:");
+
+			if (nsName.StartsWith("clr-namespace:"))
+			{
+				nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
+			}
+
+			return nsName;
 		}
 
 		private IEnumerable<string> FindLocalizableProperties(XamlType xamlType)

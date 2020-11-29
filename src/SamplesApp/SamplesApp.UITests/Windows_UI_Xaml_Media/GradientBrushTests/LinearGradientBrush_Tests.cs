@@ -15,7 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GradientBrushTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // This should be enabled for WASM once it no longer uses the LEGACY_SHAPE_MEASURE code path
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // This should be enabled for WASM once it no longer uses the LEGACY_SHAPE_MEASURE code path - https://github.com/unoplatform/uno/issues/2983
 		public void When_GradientStops_Changed()
 		{
 			Run("UITests.Windows_UI_Xaml_Media.GradientBrushTests.LinearGradientBrush_Change_Stops");
@@ -24,15 +24,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GradientBrushTests
 
 			_app.WaitForElement(rectangle);
 
-			var screenRect = _app.GetRect(rectangle);
+			var screenRect = _app.GetPhysicalRect(rectangle);
 
-			var before = TakeScreenshot("Before");
+			using var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
 
 			_app.FastTap("ChangeBrushButton");
 
 			_app.WaitForText("StatusTextBlock", "Changed");
 
-			var after = TakeScreenshot("After");
+			using var after = TakeScreenshot("After");
 
 			ImageAssert.AreNotEqual(before, after, screenRect);
 		}

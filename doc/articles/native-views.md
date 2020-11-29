@@ -22,6 +22,7 @@ An example:
 			<RatingBar />
 		</android:Grid>
 	</StackPanel>
+```
 
 ## Adding native views in code
 

@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml
 							ResetStyle("background-color", "background-image", "background-size");
 							break;
 
-						case ImageDataKind.Base64:
+						case ImageDataKind.DataUri:
 						case ImageDataKind.Url:
 						default:
 							SetStyle(
@@ -159,13 +159,11 @@ namespace Windows.UI.Xaml
 			{
 				case SolidColorBrush solidColorBrush:
 					var color = solidColorBrush.ColorWithOpacity;
-					SetStyle("background-color", color.ToHexString());
-					ResetStyle("background-image");
+					SetStyle(("background-color", color.ToHexString()), ("background-image", ""));
 					RecalculateBrushOnSizeChanged(false);
 					break;
 				case GradientBrush gradientBrush:
-					ResetStyle("background-color");
-					SetStyle("background-image", gradientBrush.ToCssString(RenderSize));
+					SetStyle(("background-color", ""), ("background-image", gradientBrush.ToCssString(RenderSize)));
 					RecalculateBrushOnSizeChanged(true);
 					break;
 				default:

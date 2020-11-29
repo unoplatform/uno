@@ -33,6 +33,19 @@
 				   x:FieldModifier="public"
 				   Text="{x:Bind local:StaticClass.PublicStaticProperty}" />
 
+		<!-- const fields -->
+		<TextBlock x:Name="_StaticPrivateConstField"
+		   x:FieldModifier="public"
+		   Text="{x:Bind PrivateConstField}" />
+		
+		<TextBlock x:Name="_StaticClass_PublicConstField"
+		   x:FieldModifier="public"
+		   Text="{x:Bind local:StaticClass.PublicConstField}" />
+
+		<TextBlock x:Name="_InnerConstField"
+		   x:FieldModifier="public"
+		   Text="{x:Bind local:MyxBindClass.MyConst, Mode=OneWay}" />
+
 		<!-- functions --> 
 		<TextBlock x:Name="_InstanceFunction_Parameterless"
 				   x:FieldModifier="public"

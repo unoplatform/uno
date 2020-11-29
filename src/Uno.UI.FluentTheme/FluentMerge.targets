@@ -45,10 +45,6 @@
   <Choose>
 	<When Condition="'$(TargetFramework)'=='net461'">
 	  <ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
-		<Page Remove="@(Page)" />
-	  </ItemGroup>
-	  <ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
 		<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
 	  </ItemGroup>
 	</When>
@@ -73,7 +69,6 @@
 
 
   <PropertyGroup>
-	<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
   </PropertyGroup>
 

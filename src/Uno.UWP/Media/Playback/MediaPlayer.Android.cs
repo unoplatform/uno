@@ -250,7 +250,10 @@ namespace Windows.Media.Playback
 
 		private void StartPlayingHandler()
 		{
+#pragma warning disable 618
 			var handler = new Handler();
+#pragma warning restore 618
+
 			var runnable = new Runnable(() => { handler.Post(OnPlaying); });
 			if (!_executorService.IsShutdown)
 			{

@@ -5,6 +5,7 @@ parameters:
 
 jobs:
 - job: iOS_Build
+  displayName: 'iOS Samples App UI Tests (Build)'
 
   pool:
     vmImage: ${{ parameters.vmImage }}

@@ -46,14 +46,12 @@ namespace Windows.UI.Xaml.Controls
 					(Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImage);
 				}
 
-				BoundsPath = _borderRenderer.UpdateLayer(
-					this,
-					Background,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					backgroundImage
-				);
+				if (_borderRenderer.UpdateLayer(this, Background, BorderThickness, BorderBrush, CornerRadius, backgroundImage)
+					is CGPath updated) // UpdateLayer may return null if there is no update
+				{
+					BoundsPath = updated;
+					BoundsPathUpdated?.Invoke(this, default);
+				}
 			}
 
 			this.SetNeedsDisplay();
@@ -114,6 +112,7 @@ namespace Windows.UI.Xaml.Controls
         bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
         bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 
+		internal event EventHandler BoundsPathUpdated;
 		internal CGPath BoundsPath { get; private set; }
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Uno.Extensions;
+﻿#nullable enable
+using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Uno.UI.Extensions;
@@ -17,7 +18,7 @@ using CoreGraphics;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollViewer : ContentControl
+	public partial class ScrollViewer : ContentControl, ICustomClippingElement
 	{
 		/// <summary>
 		/// On iOS 10-, we set a flag on the view controller such that the CommandBar doesn't automatically affect ScrollViewer content 
@@ -29,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		/// The <see cref="UIScrollView"/> which will actually scroll. Mostly this will be identical to <see cref="_presenter"/>, but if we're inside a
 		/// multi-line TextBox we set it to <see cref="MultilineTextBoxView"/>.
 		/// </summary>
-		private IUIScrollView _scrollableContainer;
+		private IUIScrollView? _scrollableContainer;
 
 		partial void OnApplyTemplatePartial()
 		{
@@ -147,7 +148,10 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				_presenter.ContentInset = new UIEdgeInsets((nfloat)insetTop, (nfloat)insetLeft, 0, 0);
+				if (_presenter != null)
+				{
+					_presenter.ContentInset = new UIEdgeInsets((nfloat)insetTop, (nfloat)insetLeft, 0, 0);
+				}
 			}
 		}
 
@@ -156,5 +160,8 @@ namespace Windows.UI.Xaml.Controls
 			base.WillMoveToSuperview(newsuper);
 			UpdateSizeChangedSubscription(isCleanupRequired: newsuper == null);
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
 	}
 }

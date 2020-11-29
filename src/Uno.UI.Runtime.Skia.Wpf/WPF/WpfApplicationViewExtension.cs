@@ -7,7 +7,7 @@ using WpfWindow = System.Windows.Window;
 
 namespace Uno.UI.Skia.Platform
 {
-	public class WpfApplicationViewExtension : IApplicationViewExtension
+	internal class WpfApplicationViewExtension : IApplicationViewExtension
 	{
 		private readonly ApplicationView _owner;
 		private WpfWindow _mainWpfWindow;

@@ -16,6 +16,8 @@
 
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,8 +27,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core.Build" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
@@ -65,7 +67,6 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 
 		<CompileTypeScriptDependsOn>_UnoSourceGenerator; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
@@ -108,5 +109,4 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-
 </Project>

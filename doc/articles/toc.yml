@@ -42,6 +42,8 @@
       href: platform-specific-xaml.md
     - name: Feature flags
       href: feature-flags.md
+    - name: features/using-il-linker-webassembly.md
+      href: feature-flags.md
     - name: Uno.UI.Toolkit
       href: Uno.UI.Toolkit.md
     - name: Migrating from Previous Releases
@@ -60,6 +62,8 @@
       href: migrating-apps.md
     - name: Adding native views
       href: native-views.md
+    - name: How to consume a webservice
+      href: howto-consume-webservices.md
     - name: Adding Splash Screens
       href: splash-screen.md
 - name: Using Uno - features and controls
@@ -110,6 +114,8 @@
     href: features/working-with-themes.md
   - name: ToggleSwitch
     href: controls\ToggleSwitch.md
+  - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
+    href: features/pointers-keyboard-and-other-user-inputs.md
   - name: Routed Events
     href: features/routed-events.md
   - name: x:Bind
@@ -130,6 +136,8 @@
     href: features\windows-applicationmodel-email.md
   - name: Windows.Devices.Enumeration
     href: features\windows-devices-enumeration.md
+  - name: Windows.Devices.Haptics
+    href: features\windows-devices-haptics.md
   - name: Windows.Devices.Lights
     href: features\windows-devices-lights.md
   - name: Windows.Devices.Midi
@@ -221,10 +229,17 @@
       href: uno-development\debugging-inspect-visual-tree.md
     - name: Guidelines for code style
       href: contributing\guidelines\code-style.md
-    - name: Guidelines for creating tests
-      href: contributing\guidelines\creating-tests.md
-    - name: Working with the samples applications
+    - name: Using the SamplesApp
       href: uno-development\working-with-the-samples-apps.md
+    - name: Guidelines for creating tests
+      topicHref: contributing\guidelines\creating-tests.md
+      items:
+        - name: Mocked unit tests (Uno.UI.Tests)
+          href: uno-development\creating-mocked-tests.md
+        - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
+          href: uno-development\creating-runtime-tests.md
+        - name: UI tests with Uno.UITest
+          href: uno-development\creating-ui-tests.md
     - name: Conventional Commits format
       href: uno-development\git-conventional-commits.md
     - name: Guidelines for pull-requests

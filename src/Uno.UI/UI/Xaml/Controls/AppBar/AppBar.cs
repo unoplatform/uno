@@ -1,19 +1,27 @@
-﻿using System;
+﻿#if __IOS__ || __ANDROID__
+#define HAS_NATIVE_COMMANDBAR
+#endif
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.UI.Controls;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
-#if __IOS__ || __MACOS__
+#if HAS_NATIVE_COMMANDBAR
 		, ICustomClippingElement
 #endif
 	{
 		private double _compactHeight;
 		private double _minimalHeight;
+#if HAS_NATIVE_COMMANDBAR
+		private bool _isNativeTemplate;
+#endif
 
 		public AppBar()
 		{
@@ -22,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 			SizeChanged += (s, e) => UpdateTemplateSettings();
 		}
 
-		#region IsSticky
+#region IsSticky
 
 		public bool IsSticky
 		{
@@ -38,9 +46,9 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(default(bool))
 			);
 
-		#endregion
+#endregion
 
-		#region IsOpen
+#region IsOpen
 
 		public bool IsOpen
 		{
@@ -56,9 +64,9 @@ namespace Windows.UI.Xaml.Controls
 			new FrameworkPropertyMetadata(default(bool))
 		);
 
-		#endregion
+#endregion
 
-		#region ClosedDisplayMode
+#region ClosedDisplayMode
 
 		public AppBarClosedDisplayMode ClosedDisplayMode
 		{
@@ -74,9 +82,9 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(AppBarClosedDisplayMode.Compact)
 			);
 
-		#endregion
+#endregion
 
-		#region LightDismissOverlayMode
+#region LightDismissOverlayMode
 
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -92,7 +100,7 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(default(LightDismissOverlayMode))
 			);
 
-		#endregion
+#endregion
 
 		public AppBarTemplateSettings TemplateSettings { get; }
 
@@ -130,6 +138,10 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateTemplateSettings();
 
+#if HAS_NATIVE_COMMANDBAR
+			 _isNativeTemplate = Uno.UI.Extensions.DependencyObjectExtensions
+				 .FindFirstChild<NativeCommandBarPresenter>(this) != null;
+#endif
 		}
 
 		private void UpdateTemplateSettings()
@@ -149,9 +161,15 @@ namespace Windows.UI.Xaml.Controls
 			TemplateSettings.NegativeHiddenVerticalDelta = contentHeight;
 		}
 
-#if __IOS__ || __MACOS__
+#if HAS_NATIVE_COMMANDBAR
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			if (_isNativeTemplate)
+			{
+				var size = base.MeasureOverride(availableSize);
+				return size;
+			}
+
 			// On WinUI the CommandBar does not constraints its children (it only clips them)
 			// (It's the responsibility of each child to constraint itself)
 			// Note: This override is used only for the XAML command bar, not the native!
@@ -168,7 +186,13 @@ namespace Windows.UI.Xaml.Controls
 			return new Size(result.Width, height);
 		}
 
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var size = base.ArrangeOverride(finalSize);
+			return size;
+		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => !_isNativeTemplate;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 #endif
 	}

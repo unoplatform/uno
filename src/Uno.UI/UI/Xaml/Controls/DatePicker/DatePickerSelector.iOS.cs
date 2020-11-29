@@ -34,6 +34,12 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Mode = UIDatePickerMode.Date;
 			_picker.TimeZone = NSTimeZone.LocalTimeZone;
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+			{
+				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
+			}
+
 			UpdatePickerValue(Date, animated: false);
 
 			_picker.ValueChanged += OnPickerValueChanged;

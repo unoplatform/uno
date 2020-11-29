@@ -3,23 +3,33 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Text;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.SourceGeneration;
+using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
+#if NETFRAMEWORK
+using Uno.SourceGeneration;
+#endif
+
 namespace Uno.UI.SourceGenerators.DependencyObject
 {
-	public class DependencyPropertyGenerator : SourceGenerator
+	[Generator]
+	public class DependencyPropertyGenerator : ISourceGenerator
 	{
-		public override void Execute(SourceGeneratorContext context)
+		public void Initialize(GeneratorInitializationContext context)
 		{
+		}
+
+		public void Execute(GeneratorExecutionContext context)
+		{
+			DependenciesInitializer.Init(context);
+
 			if (PlatformHelper.IsValidPlatform(context))
 			{
 				var visitor = new SerializationMethodsGenerator(context);
@@ -29,12 +39,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private class SerializationMethodsGenerator : SymbolVisitor
 		{
-			private readonly SourceGeneratorContext _context;
+			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol _generatedDependencyPropertyAttributeSymbol;
 			private readonly INamedTypeSymbol _dependencyPropertyChangedEventArgsSymbol;
 			private readonly INamedTypeSymbol _dependencyObjectSymbol;
 
-			public SerializationMethodsGenerator(SourceGeneratorContext context)
+			public SerializationMethodsGenerator(GeneratorExecutionContext context)
 			{
 				_context = context;
 
@@ -153,7 +163,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 							}
 						}
 
-						_context.AddCompilationUnit(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
+						_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
 					}
 				}
 			}

@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,7 @@ namespace Windows.UI.Input
 {
 	public partial class GestureRecognizer
 	{
+		// Note: this is also responsible to handle "Drag manipulations"
 		internal class Manipulation
 		{
 			internal static readonly Thresholds StartTouch = new Thresholds { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
@@ -30,6 +33,7 @@ namespace Windows.UI.Input
 
 			private readonly GestureRecognizer _recognizer;
 			private readonly PointerDeviceType _deviceType;
+			private bool _isDraggingEnable; // Note: This might get disabled if user moves out of range while initial hold delay with finger
 			private readonly bool _isTranslateXEnabled;
 			private readonly bool _isTranslateYEnabled;
 			private readonly bool _isRotateEnabled;
@@ -41,7 +45,9 @@ namespace Windows.UI.Input
 			private ManipulationState _state = ManipulationState.Starting;
 			private Points _origins;
 			private Points _currents;
-			private ManipulationDelta _sumOfPublishedDelta = ManipulationDelta.Empty;
+			private ManipulationDelta _sumOfPublishedDelta = ManipulationDelta.Empty; // Note: not maintained for dragging manipulation
+
+			public bool IsDragManipulation { get; private set; }
 
 			public Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
 			{
@@ -73,14 +79,17 @@ namespace Windows.UI.Input
 				_recognizer.ManipulationStarting?.Invoke(_recognizer, args);
 
 				var settings = args.Settings;
-				_isTranslateXEnabled = (settings & (GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateRailsX)) != 0;
-				_isTranslateYEnabled = (settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
-				_isRotateEnabled = (settings & (GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia)) != 0;
-				_isScaleEnabled = (settings & (GestureSettings.ManipulationScale | GestureSettings.ManipulationScaleInertia)) != 0;
-
-				if ((settings & GestureSettingsHelper.Manipulations) == 0)
+				if ((settings & (GestureSettingsHelper.Manipulations | GestureSettingsHelper.DragAndDrop)) == 0)
 				{
 					_state = ManipulationState.Completed;
+				}
+				else
+				{
+					_isDraggingEnable = (settings & GestureSettings.Drag) != 0;
+					_isTranslateXEnabled = (settings & (GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateRailsX)) != 0;
+					_isTranslateYEnabled = (settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
+					_isRotateEnabled = (settings & (GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia)) != 0;
+					_isScaleEnabled = (settings & (GestureSettings.ManipulationScale | GestureSettings.ManipulationScaleInertia)) != 0;
 				}
 			}
 
@@ -128,8 +137,9 @@ namespace Windows.UI.Input
 			{
 				if (TryUpdate(removed))
 				{
-					// For now we complete the Manipulation as soon as a pointer was removed ...
-					// did not check the UWP behavior for that!
+					// For now we complete the Manipulation as soon as a pointer was removed.
+					// This is not the UWP behavior where for instance you can scale multiple times by releasing only one finger.
+					// It's however the right behavior in case of drag conflicting with manipulation (which is not supported by Uno).
 					Complete();
 				}
 			}
@@ -139,6 +149,14 @@ namespace Windows.UI.Input
 				// If the manipulation was not started, we just abort the manipulation without any event
 				switch (_state)
 				{
+					case ManipulationState.Started when IsDragManipulation:
+						_state = ManipulationState.Completed;
+
+						_recognizer.Dragging?.Invoke(
+							_recognizer,
+							new DraggingEventArgs(_currents.Pointer1, DraggingState.Completed));
+						break;
+
 					case ManipulationState.Started:
 						_state = ManipulationState.Completed;
 
@@ -179,7 +197,22 @@ namespace Windows.UI.Input
 
 				switch (_state)
 				{
-					case ManipulationState.Starting when pointerAdded:
+					case ManipulationState.Starting when IsBeginningOfDragManipulation():
+						// On UWP if the element was configured to allow both Drag and Manipulations,
+						// both events are going to be raised (... until the drag "content" is being render an captures all pointers).
+						// This results as a manipulation started which is never completed.
+						// If user uses double touch the manipulation will however start and complete when user adds / remove the 2nd finger.
+						// On Uno, as allowing both Manipulations and drop on the same element is really a stretch case (and is bugish on UWP),
+						// we accept as a known limitation that once dragging started no manipulation event would be fired.
+						_state = ManipulationState.Started;
+						IsDragManipulation = true;
+
+						_recognizer.Dragging?.Invoke(
+							_recognizer,
+							new DraggingEventArgs(_currents.Pointer1, DraggingState.Started));
+						break;
+					
+					case ManipulationState.Starting when pointerAdded: 
 						_state = ManipulationState.Started;
 						_sumOfPublishedDelta = cumulative;
 
@@ -207,6 +240,12 @@ namespace Windows.UI.Input
 							_recognizer,
 							new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, cumulative, cumulative, isInertial: false));
 
+						break;
+
+					case ManipulationState.Started when IsDragManipulation:
+						_recognizer.Dragging?.Invoke(
+							_recognizer,
+							new DraggingEventArgs(_currents.Pointer1, DraggingState.Continuing));
 						break;
 
 					case ManipulationState.Started:
@@ -274,6 +313,49 @@ namespace Windows.UI.Input
 				};
 			}
 
+			// For pen and mouse this only means down -> * moves out of tap range;
+			// For touch it means down -> * moves close to origin for DragUsingFingerMinDelayTicks -> * moves far from the origin 
+			private bool IsBeginningOfDragManipulation()
+			{
+				if (!_isDraggingEnable)
+				{
+					return false;
+				}
+
+				// Note: We use the TapRange and not the manipulation's start threshold as, for mouse and pen,
+				//		 those thresholds are lower than a Tap (and actually only 1px), which does not math the UWP behavior.
+				var down = _origins.Pointer1;
+				var current = _currents.Pointer1;
+				var isOutOfRange = Gesture.IsOutOfTapRange(down.Position, current.Position);
+
+				switch (_deviceType)
+				{
+					case PointerDeviceType.Mouse:
+					case PointerDeviceType.Pen:
+						return isOutOfRange;
+
+					default:
+					case PointerDeviceType.Touch:
+						// As for holding, here we rely on the fact that we get a lot of small moves due to the lack of precision
+						// of the touch device (cf. Gesture.NeedsHoldingTimer).
+						// This means that this method is expected to be invoked on each move (until manipulation starts)
+						// in order to update the _isDraggingEnable state.
+
+						var isInHoldPhase = current.Timestamp - down.Timestamp < DragWithTouchMinDelayTicks;
+						if (isInHoldPhase && isOutOfRange)
+						{
+							// The pointer moved out of range while in the hold phase, so we completely disable the drag manipulation
+							_isDraggingEnable = false;
+							return false;
+						}
+						else
+						{
+							// The drag should start only after the hold delay and if the pointer moved out of the range
+							return !isInHoldPhase && isOutOfRange;
+						}
+				}
+			}
+
 			internal struct Thresholds
 			{
 				public int TranslateX;
@@ -285,8 +367,8 @@ namespace Windows.UI.Input
 			// WARNING: This struct is ** MUTABLE **
 			private struct Points
 			{
-				private PointerPoint _pointer1;
-				private PointerPoint _pointer2;
+				public PointerPoint Pointer1;
+				private PointerPoint? _pointer2;
 
 				public Point Center; // This is the center in ** absolute ** coordinates spaces (i.e. relative to the screen)
 				public float Distance;
@@ -296,7 +378,7 @@ namespace Windows.UI.Input
 
 				public Points(PointerPoint point)
 				{
-					_pointer1 = point;
+					Pointer1 = point;
 					_pointer2 = default;
 
 					Center = point.RawPosition; // RawPosition => cf. Note in UpdateComputedValues().
@@ -305,8 +387,8 @@ namespace Windows.UI.Input
 				}
 
 				public bool ContainsPointer(uint pointerId)
-					=> _pointer1.PointerId == pointerId
-					|| (HasPointer2 && _pointer2.PointerId == pointerId);
+					=> Pointer1.PointerId == pointerId
+					|| (HasPointer2 && _pointer2!.PointerId == pointerId);
 
 				public void SetPointer2(PointerPoint point)
 				{
@@ -316,9 +398,9 @@ namespace Windows.UI.Input
 
 				public bool TryUpdate(PointerPoint point)
 				{
-					if (_pointer1.PointerId == point.PointerId)
+					if (Pointer1.PointerId == point.PointerId)
 					{
-						_pointer1 = point;
+						Pointer1 = point;
 						UpdateComputedValues();
 
 						return true;
@@ -344,13 +426,13 @@ namespace Windows.UI.Input
 
 					if (_pointer2 == null)
 					{
-						Center = _pointer1.RawPosition;
+						Center = Pointer1.RawPosition;
 						Distance = 0;
 						Angle = 0;
 					}
 					else
 					{
-						var p1 = _pointer1.RawPosition;
+						var p1 = Pointer1.RawPosition;
 						var p2 = _pointer2.RawPosition;
 
 						Center = new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);

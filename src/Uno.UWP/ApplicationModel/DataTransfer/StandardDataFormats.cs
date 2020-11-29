@@ -1,15 +1,19 @@
+#nullable enable
+
 #if !NET461
 namespace Windows.ApplicationModel.DataTransfer
 {
-	public partial class StandardDataFormats 
+	public partial class StandardDataFormats
 	{
-		public static string Text => "Text";
-
-#if __ANDROID__
-		public static string Html => "HTML Format";
-		public static string Uri => "UniformResourceLocatorW";
-		public static string WebLink => "UniformResourceLocatorW";
-#endif
+		public static string UserActivityJsonArray { get; } = "UserActivityJsonArray";
+		public static string WebLink               { get; } = "UniformResourceLocatorW";
+		public static string ApplicationLink       { get; } = "ApplicationLink";
+		public static string Text                  { get; } = "Text";
+		public static string Uri                   { get; } = "UniformResourceLocatorW";
+		public static string Html                  { get; } = "HTML Format";
+		public static string Rtf                   { get; } = "Rich Text Format";
+		public static string Bitmap                { get; } = "Bitmap";
+		public static string StorageItems		   { get; } = "Shell IDList Array";
 	}
 }
 #endif

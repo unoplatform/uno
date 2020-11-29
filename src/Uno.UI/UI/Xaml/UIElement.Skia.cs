@@ -13,6 +13,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml
 {
@@ -34,6 +35,7 @@ namespace Windows.UI.Xaml
 
 			Initialize();
 			InitializePointers();
+			InitializeKeyboard();
 
 			RegisterPropertyChangedCallback(VisibilityProperty, OnVisibilityPropertyChanged);
 			RegisterPropertyChangedCallback(Controls.Canvas.LeftProperty, OnCanvasLeftChanged);
@@ -41,6 +43,7 @@ namespace Windows.UI.Xaml
 
 			UpdateHitTest();
 		}
+		partial void InitializeKeyboard();
 
 		private void OnCanvasTopChanged(DependencyObject sender, DependencyProperty dp)
 		{
@@ -196,7 +199,7 @@ namespace Windows.UI.Xaml
 
 			if (newVisibility == Visibility.Collapsed)
 			{
-				_desiredSize = new Size(0, 0);
+				LayoutInformation.SetDesiredSize(this, new Size(0, 0));
 				_size = new Size(0, 0);
 			}
 		}
@@ -242,6 +245,7 @@ namespace Windows.UI.Xaml
 				}
 
 				OnArrangeVisual(newRect, clip);
+				OnViewportUpdated(clippedFrame ?? Rect.Empty);
 			}
 			else
 			{
@@ -258,7 +262,6 @@ namespace Windows.UI.Xaml
 			Visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 
 			ApplyNativeClip(clip ?? Rect.Empty);
-
 		}
 
 		partial void ApplyNativeClip(Rect clip)
@@ -290,5 +293,9 @@ namespace Windows.UI.Xaml
 
 		partial void HideVisual()
 			=> Visual.IsVisible = false;
+
+#if DEBUG
+		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);
+#endif
 	}
 }

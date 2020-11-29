@@ -20,6 +20,7 @@ namespace Windows.UI.Xaml
 			IsFocusEvent = flag.IsFocusEvent();
 			IsManipulationEvent = flag.IsManipulationEvent();
 			IsGestureEvent = flag.IsGestureEvent();
+			IsDragAndDropEvent = flag.IsDragAndDropEvent();
 		}
 
 		[Pure]
@@ -51,5 +52,7 @@ namespace Windows.UI.Xaml
 		internal bool IsManipulationEvent { get; }
 		[Pure]
 		internal bool IsGestureEvent { get; }
+		[Pure]
+		internal bool IsDragAndDropEvent { get; }
 	}
 }

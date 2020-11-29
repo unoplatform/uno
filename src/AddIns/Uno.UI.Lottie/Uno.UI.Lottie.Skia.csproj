@@ -15,7 +15,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />
@@ -25,17 +25,15 @@
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 	</ItemGroup>
 
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-	</PropertyGroup>
-
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<Target Name="_UnoUILottieOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.Lottie\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.Lottie\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

@@ -347,13 +347,6 @@ namespace Windows.UI.Xaml.Data
 					this.Log().DebugFormat("Applying explicit source {0} on {1}", ExplicitSource?.GetType(), _view.Target?.GetType());
 				}
 
-				var resourceName = ExplicitSource as string;
-
-				if (resourceName.HasValue())
-				{
-					_dataContext = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, ResourceHelper.FindResource(resourceName));
-				}
-
 				ApplyBinding();
 			}
 		}
@@ -582,7 +575,12 @@ namespace Windows.UI.Xaml.Data
 					_IsCurrentlyPushing = true;
 					// Get the source value and place it in the target property
 					var convertedValue = ConvertValue(v);
-					if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
+
+					if (convertedValue == DependencyProperty.UnsetValue)
+					{
+						ApplyFallbackValue();
+					}
+					else if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
 					{
 						SetTargetValue(ConvertValue(ParentBinding.TargetNullValue));
 					}

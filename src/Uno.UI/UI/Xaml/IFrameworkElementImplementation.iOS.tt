@@ -387,7 +387,7 @@ namespace <#= mixin.NamespaceName #>
 						// If this FrameworkElement has a native parent, then it probably wasn't measured prior to having its Frame changed.
 						// Set RequiresMeasure flag so that this branch of the visual tree will be measured before being arranged, this is
 						// required for some views (eg Image) to display correctly.
-						RequiresMeasure = true;
+						IsMeasureDirty = true;
 					}
 #endif
 				}

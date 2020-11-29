@@ -5,7 +5,6 @@
 		<TargetFramework>tizen50</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<DefineConstants>$(DefineConstants);__TIZEN__;</DefineConstants>
-		<LangVersion>8.0</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

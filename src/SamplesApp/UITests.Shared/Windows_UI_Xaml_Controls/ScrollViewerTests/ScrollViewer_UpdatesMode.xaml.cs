@@ -14,7 +14,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 	[SampleControlInfo("ScrollViewer", "ScrollViewer_UpdatesMode")]
 	public sealed partial class ScrollViewer_UpdatesMode : Page
 	{
-		public List<(bool isIntermediate, CoreDispatcherPriority priority)> ViewChangesOutput { get; } = new List<(bool isIntermediate, CoreDispatcherPriority priority)>();
+		private List<(bool isIntermediate, CoreDispatcherPriority priority)> ViewChangesOutput { get; } = new List<(bool isIntermediate, CoreDispatcherPriority priority)>();
 
 		public ScrollViewer_UpdatesMode()
 		{

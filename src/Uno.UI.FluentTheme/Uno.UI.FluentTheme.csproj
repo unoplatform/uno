@@ -1,8 +1,8 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	
   <PropertyGroup>
-    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid10.0;netstandard2.0</TargetFrameworks>
-    <TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid11.0;netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -30,6 +30,8 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		
+		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 	</PropertyGroup>
 
 	<ItemGroup>

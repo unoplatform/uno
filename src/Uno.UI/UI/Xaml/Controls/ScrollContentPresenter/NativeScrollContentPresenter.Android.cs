@@ -14,6 +14,7 @@ using System.Linq;
 using Uno.UI.Controls;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -21,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private static readonly List<View> _emptyList = new List<View>(0);
 
-		private ScrollViewer ScrollOwner => (Parent as FrameworkElement)?.TemplatedParent as ScrollViewer;
+		private ScrollViewer ScrollOwner => _scrollViewer.TryGetTarget(out var s) ? s : (Parent as FrameworkElement)?.TemplatedParent as ScrollViewer;
 
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		public ScrollBarVisibility VerticalScrollBarVisibility
@@ -46,6 +47,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private ILayouter _layouter;
+		private readonly WeakReference<ScrollViewer> _scrollViewer;
+
+		public NativeScrollContentPresenter(ScrollViewer scroller) : this()
+		{
+			_scrollViewer = new WeakReference<ScrollViewer>(scroller);
+		}
 
 		public NativeScrollContentPresenter()
 			: base(ContextHelper.Current)
@@ -55,6 +62,7 @@ namespace Windows.UI.Xaml.Controls
 			SetForegroundGravity(GravityFlags.Fill);
 
 			SetClipToPadding(false);
+			SetClipChildren(false);
 			ScrollBarStyle = ScrollbarStyles.OutsideOverlay; // prevents padding from affecting scrollbar position
 
 			_layouter = new ScrollViewerLayouter(this);
@@ -195,7 +203,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (child != null)
 				{
-					var desiredChildSize = DesiredChildSize(child);
+					var desiredChildSize = LayoutInformation.GetDesiredSize(child);
 
 					var occludedPadding = ScrollContentPresenter._occludedRectPadding;
 					slotSize.Width -= occludedPadding.Left + occludedPadding.Right;

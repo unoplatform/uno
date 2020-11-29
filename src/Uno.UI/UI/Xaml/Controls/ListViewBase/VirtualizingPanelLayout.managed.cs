@@ -1,4 +1,6 @@
 ﻿#if !NET461
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +35,22 @@ namespace Windows.UI.Xaml.Controls
 	public abstract partial class VirtualizingPanelLayout : DependencyObject
 #endif
 	{
-		private _Panel OwnerPanel { get; set; }
-		private protected VirtualizingPanelGenerator Generator { get; private set; }
+		private _Panel? _ownerPanel;
+		private _Panel OwnerPanel
+		{
+			get => _ownerPanel ?? throw new InvalidOperationException($"{nameof(Initialize)}() was not called properly.");
+			set => _ownerPanel = value;
+		}
+		private VirtualizingPanelGenerator? _generator;
+		private protected VirtualizingPanelGenerator Generator
+		{
+			get => _generator ?? throw new InvalidOperationException($"{nameof(Initialize)}() was not called properly.");
+			private set => _generator = value;
+		}
 
-		private ScrollViewer ScrollViewer { get; set; }
-		internal ItemsControl ItemsControl { get; set; }
-		public ListViewBase XamlParent => ItemsControl as ListViewBase;
+		private ScrollViewer? ScrollViewer { get; set; }
+		internal ItemsControl? ItemsControl { get; set; }
+		public ListViewBase? XamlParent => ItemsControl as ListViewBase;
 
 		/// <summary>
 		/// Ordered record of all currently-materialized lines.
@@ -240,6 +252,7 @@ namespace Windows.UI.Xaml.Controls
 				unappliedDelta = Max(0, unappliedDelta);
 				UpdateLayout(extentAdjustment: sign * -unappliedDelta);
 			}
+			ArrangeElements(_availableSize, ViewportSize);
 			UpdateCompleted();
 
 			_lastScrollOffset = ScrollOffset;
@@ -260,7 +273,7 @@ namespace Windows.UI.Xaml.Controls
 				return _averageLineHeight;
 			}
 
-			return GetExtent(incrementView);
+			return GetActualExtent(incrementView);
 		}
 
 		internal Size MeasureOverride(Size availableSize)
@@ -296,7 +309,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug("Measured without an ItemsControl: simply return size(0,0) for now...");
+					this.Log().LogDebug("Arranged without an ItemsControl: simply return size(0,0) for now...");
 				}
 
 				return new Size(0, 0);
@@ -309,9 +322,26 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_availableSize = finalSize;
-			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges);
+			var adjustedVisibleWindow = ViewportSize;
+			ArrangeElements(finalSize, adjustedVisibleWindow);
 
 			return EstimatePanelSize(isMeasure: false);
+		}
+
+		private void ArrangeElements(Size finalSize, Size adjustedVisibleWindow)
+		{
+			foreach (var line in _materializedLines)
+			{
+				var indexAdjustment = -1;
+				foreach (var view in line.ContainerViews)
+				{
+					indexAdjustment++;
+
+					var bounds = GetBoundsForElement(view);
+					var arrangedBounds = GetElementArrangeBounds(line.FirstItemFlat + indexAdjustment, bounds, adjustedVisibleWindow, finalSize);
+					view.Arrange(arrangedBounds);
+				}
+			}
 		}
 
 		/// <summary>
@@ -407,7 +437,7 @@ namespace Windows.UI.Xaml.Controls
 			void UnfillBackward()
 			{
 				var firstMaterializedLine = GetFirstMaterializedLine();
-				while (firstMaterializedLine != null && GetEnd(firstMaterializedLine.FirstView) < ExtendedViewportStart + extentAdjustment)
+				while (firstMaterializedLine != null && GetMeasuredEnd(firstMaterializedLine.FirstView) < ExtendedViewportStart + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
 					RecycleLine(firstMaterializedLine);
@@ -419,7 +449,7 @@ namespace Windows.UI.Xaml.Controls
 			void UnfillForward()
 			{
 				var lastMaterializedLine = GetLastMaterializedLine();
-				while (lastMaterializedLine != null && GetStart(lastMaterializedLine.FirstView) > ExtendedViewportEnd + extentAdjustment)
+				while (lastMaterializedLine != null && GetMeasuredStart(lastMaterializedLine.FirstView) > ExtendedViewportEnd + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
 					RecycleLine(lastMaterializedLine);
@@ -505,27 +535,43 @@ namespace Windows.UI.Xaml.Controls
 
 			if (ScrollOrientation == Orientation.Vertical)
 			{
-				ScrollViewer.ChangeView(null, ScrollViewer.VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+				ScrollViewer?.ChangeView(null, ScrollViewer.VerticalOffset + scrollAdjustment, null, disableAnimation: true);
 			}
 			else
 			{
-				ScrollViewer.ChangeView(ScrollViewer.HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+				ScrollViewer?.ChangeView(ScrollViewer.HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
 			}
 		}
 
 		/// <summary>
 		/// True if the scroll position is right at the start of the list.
 		/// </summary>
-		private bool IsScrolledToStart() => ScrollOrientation == Orientation.Vertical ?
-			ScrollViewer.VerticalOffset <= 0 :
-			ScrollViewer.HorizontalOffset <= 0;
+		private bool IsScrolledToStart()
+		{
+			if (ScrollViewer == null)
+			{
+				return true;
+			}
+
+			return ScrollOrientation == Orientation.Vertical ?
+				ScrollViewer.VerticalOffset <= 0 :
+				ScrollViewer.HorizontalOffset <= 0;
+		}
 
 		/// <summary>
 		/// True if the scroll position is all the way to the end of the list.
 		/// </summary>
-		private bool IsScrolledToEnd() => ScrollOrientation == Orientation.Vertical ?
-			ScrollViewer.VerticalOffset >= ScrollViewer.ScrollableHeight :
-			ScrollViewer.HorizontalOffset >= ScrollViewer.ScrollableWidth;
+		private bool IsScrolledToEnd()
+		{
+			if (ScrollViewer == null)
+			{
+				return true;
+			}
+
+			return ScrollOrientation == Orientation.Vertical ?
+				ScrollViewer.VerticalOffset >= ScrollViewer.ScrollableHeight :
+				ScrollViewer.HorizontalOffset >= ScrollViewer.ScrollableWidth;
+		}
 
 		/// <summary>
 		/// Estimate the 'correct' size of the panel.
@@ -571,7 +617,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			var lastItem = GetFlatItemIndex(lastIndexPath.Value);
 
-			var remainingItems = ItemsControl.NumberOfItems - lastItem - 1;
+			var remainingItems = (ItemsControl?.NumberOfItems - lastItem - 1) ?? 0;
 			UpdateAverageLineHeight();
 
 			int itemsPerLine = GetItemsPerLine();
@@ -589,12 +635,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateAverageLineHeight()
 		{
-			_averageLineHeight = _materializedLines.Count > 0 ? _materializedLines.Select(l => GetExtent(l.FirstView)).Average()
+			_averageLineHeight = _materializedLines.Count > 0 ? _materializedLines.Select(l => GetMeasuredExtent(l.FirstView)).Average()
 				: 0;
 		}
 
-		private double CalculatePanelMeasureBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
-					_materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault()
+		private double CalculatePanelMeasureBreadth() => _materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault()
 #if __WASM__
 			+ GetBreadth(XamlParent.ScrollViewer.ScrollBarSize)
 #endif
@@ -688,7 +733,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem)
 		{
-			var lastItem = XamlParent.GetLastItem();
+			var lastItem = XamlParent?.GetLastItem();
 			if (lastItem == null ||
 				(firstVisibleItem != null && firstVisibleItem.Value > lastItem.Value)
 			)
@@ -744,7 +789,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected abstract int GetItemsPerLine();
 
-		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath) => ItemsControl.GetIndexFromIndexPath(indexPath);
+		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath) => ItemsControl?.GetIndexFromIndexPath(indexPath) ?? -1;
 
 		protected void AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
 		{
@@ -768,31 +813,34 @@ namespace Windows.UI.Xaml.Controls
 				new Point(breadthOffset, extentOffset + extentOffsetAdjustment) :
 				new Point(extentOffset + extentOffsetAdjustment, breadthOffset);
 
-			var adjustedDesiredSize = ScrollOrientation == Orientation.Vertical
-				? new Size(
-					ShouldMeasuredBreadthStretch ? AvailableBreadth :
-					(_lastMeasuredSize != default ? GetBreadth(_lastMeasuredSize) : view.DesiredSize.Width),
-					view.DesiredSize.Height
-				)
-				: new Size(
-					view.DesiredSize.Width,
-					ShouldMeasuredBreadthStretch ? AvailableBreadth :
-					(_lastMeasuredSize != default ? GetBreadth(_lastMeasuredSize) : view.DesiredSize.Height)
-				);
-
-			var finalRect = new Rect(topLeft, adjustedDesiredSize);
+			// TODO: GetElementBounds()
+			var finalRect = new Rect(topLeft, view.DesiredSize);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"{GetMethodTag()} finalRect={finalRect} AvailableBreadth={AvailableBreadth} adjustedDesiredSize={adjustedDesiredSize} DC={view.DataContext}");
+				this.Log().LogDebug($"{GetMethodTag()} finalRect={finalRect} AvailableBreadth={AvailableBreadth} DesiredSize={view.DesiredSize} DC={view.DataContext}");
 			}
 
-			view.Arrange(finalRect);
+			SetBounds(view, finalRect);
 		}
 
-		private Line GetFirstMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[0] : null;
+		protected abstract Rect GetElementArrangeBounds(/*TODO ElementType, */int elementIndex, Rect containerBounds, Size windowConstraint, Size finalSize);
 
-		private Line GetLastMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[_materializedLines.Count - 1] : null;
+		private void SetBounds(FrameworkElement view, Rect bounds)
+		{
+			if (view is ContentControl container)
+			{
+				container.GetVirtualizationInformation().Bounds = bounds;
+			}
+			else if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"Non-ContentControl containers aren't supported for virtualizing panel types.");
+			}
+		}
+
+		private Line? GetFirstMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[0] : null;
+
+		private Line? GetLastMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[_materializedLines.Count - 1] : null;
 
 		private Uno.UI.IndexPath? GetFirstMaterializedIndexPath() => GetFirstMaterializedLine()?.FirstItem;
 
@@ -803,7 +851,7 @@ namespace Windows.UI.Xaml.Controls
 			var firstView = GetFirstMaterializedLine()?.FirstView;
 			if (firstView != null)
 			{
-				return GetStart(firstView);
+				return GetMeasuredStart(firstView);
 			}
 
 			return null;
@@ -814,7 +862,7 @@ namespace Windows.UI.Xaml.Controls
 			var lastView = GetLastMaterializedLine()?.LastView;
 			if (lastView != null)
 			{
-				return GetEnd(lastView);
+				return GetMeasuredEnd(lastView);
 			}
 
 			// This will be null except immediately after ScrapLayout(), when it will be the previous start of materialized items
@@ -825,36 +873,81 @@ namespace Windows.UI.Xaml.Controls
 
 		private double GetContentEnd() => GetItemsEnd() ?? 0;
 
-		private double GetStart(FrameworkElement child)
+		private double GetMeasuredStart(FrameworkElement child)
 		{
-			var offset = GetRelativePosition(child);
+			var bounds = GetBoundsForElement(child);
+
 			return ScrollOrientation == Orientation.Vertical ?
-				offset.Y - child.Margin.Top :
-				offset.X - child.Margin.Left;
+				bounds.Top :
+				bounds.Left;
 		}
 
-		private double GetEnd(FrameworkElement child)
+		private double GetMeasuredEnd(FrameworkElement child)
 		{
-			var offset = GetRelativePosition(child);
+			var bounds = GetBoundsForElement(child);
+
 			return ScrollOrientation == Orientation.Vertical ?
-				offset.Y + child.ActualHeight + child.Margin.Bottom :
-				offset.X + child.ActualWidth + child.Margin.Right;
+				bounds.Bottom :
+				bounds.Right;
 		}
 
-		private double GetExtent(FrameworkElement child)
+		private double GetMeasuredExtent(FrameworkElement child)
+		{
+			var bounds = GetBoundsForElement(child);
+
+			return ScrollOrientation == Orientation.Vertical ?
+				bounds.Height :
+				bounds.Width;
+
+		}
+
+		private double GetActualExtent(FrameworkElement child)
 		{
 			return ScrollOrientation == Orientation.Vertical ?
-				child.ActualHeight + child.Margin.Top + child.Margin.Bottom :
-				child.ActualWidth + child.Margin.Left + child.Margin.Right;
+				child.ActualHeight :
+				child.ActualWidth;
+		}
+
+		private Rect GetBoundsForElement(FrameworkElement child)
+		{
+			if (!(child is ContentControl container))
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning($"Non-ContentControl containers aren't supported for virtualizing panel types.");
+				}
+
+				return default;
+			}
+
+			return container.GetVirtualizationInformation().Bounds;
+
 		}
 
 		private double GetExtent(Size size) => ScrollOrientation == Orientation.Vertical ?
 			size.Height :
 			size.Width;
 
-		private double GetBreadth(Size size) => ScrollOrientation == Orientation.Vertical ?
+		protected double GetBreadth(Size size) => ScrollOrientation == Orientation.Vertical ?
 			size.Width :
 			size.Height;
+
+		protected double GetBreadth(Rect rect) => ScrollOrientation == Orientation.Vertical ?
+			rect.Width :
+			rect.Height;
+
+		protected void SetBreadth(ref Rect rect, double breadth)
+		{
+			if (ScrollOrientation == Orientation.Vertical)
+			{
+				rect.Width = breadth;
+			}
+			else
+			{
+				rect.Height = breadth;
+			}
+		}
+
 
 		private double GetActualBreadth(FrameworkElement view) => ScrollOrientation == Orientation.Vertical ?
 			view.ActualWidth :
@@ -862,7 +955,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private double GetDesiredBreadth(FrameworkElement view) => GetBreadth(view.DesiredSize);
 
-		private string GetMethodTag([CallerMemberName] string caller = null)
+		private string GetMethodTag([CallerMemberName] string? caller = null)
 		{
 			return $"{nameof(VirtualizingPanelLayout)}.{caller}()";
 		}

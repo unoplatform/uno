@@ -48,6 +48,16 @@ h3 {
     text-transform: none;
 }
 
+@media screen {
+    pre {
+        overflow: auto;
+
+        > code {
+            white-space: pre;
+        }
+    }
+}
+
 .body-content .article {
     margin-top: 120px;
     margin-right: 0;
@@ -178,7 +188,7 @@ h3 {
 
 .subnav {
     position: fixed;
-    top: 75px;
+    top: 57px;
     width: 100%;
     z-index: 999;
 }

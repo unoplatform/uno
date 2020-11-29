@@ -231,7 +231,7 @@ namespace Windows.UI.Xaml.Controls
 
 						// Ensure the item has a parent, since it's added to the native collection view
 						// which does not automatically sets the parent DependencyObject.
-						selectorItem.SetParent(Owner?.XamlParent?.InternalItemsPanelRoot);
+						selectorItem.SetParentOverride(Owner?.XamlParent?.InternalItemsPanelRoot);
 					}
 					else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
@@ -785,7 +785,7 @@ namespace Windows.UI.Xaml.Controls
 			var content = Content;
 			if (content != null)
 			{
-				content.LayoutSlot = frame;
+				LayoutInformation.SetLayoutSlot(content, frame);
 				content.LayoutSlotWithMarginsAndAlignments = frame;
 			}
 		}

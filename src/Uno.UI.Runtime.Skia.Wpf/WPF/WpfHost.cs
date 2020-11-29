@@ -1,4 +1,6 @@
-﻿using SkiaSharp;
+﻿#nullable enable
+
+using SkiaSharp;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -6,6 +8,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Uno.Foundation.Extensibility;
+using Uno.Helpers.Theming;
+using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
 using Windows.Graphics.Display;
 using WinUI = Windows.UI.Xaml;
 using WpfApplication = System.Windows.Application;
@@ -20,10 +24,11 @@ namespace Uno.UI.Skia.Platform
 
 		static WpfHost()
 		{
-			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfUIElementPointersSupport(o));
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
-			ApiExtensibility.Register(typeof(WinUI.IApplicationExtension), o => new WpfApplicationExtension(o));
+			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new WpfSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));
+			ApiExtensibility.Register(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new WpfDragDropExtension(o));
 		}
 
 		[ThreadStatic] private static WpfHost _current;
@@ -52,8 +57,8 @@ namespace Uno.UI.Skia.Platform
 				app.Host = this;
 			}
 
-			Windows.UI.Core.CoreDispatcher.DispatchOverride
-				= d => dispatcher.BeginInvoke(d);
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
+			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 
 			WinUI.Application.Start(CreateApp, args);
 

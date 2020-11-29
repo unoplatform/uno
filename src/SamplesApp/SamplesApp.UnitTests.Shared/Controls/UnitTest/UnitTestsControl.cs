@@ -64,7 +64,7 @@ namespace Uno.UI.Samples.Tests
 			}
 
 			testResults.Children.Clear();
-			_runner = Task.Run(async () => await RunTests(_cts.Token, filter));
+			_runner = Task.Run(async () => await RunTests(_cts.Token, filter?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)));
 		}
 
 		private void ReportMessage(string message, bool isRunning = true)
@@ -172,13 +172,13 @@ namespace Uno.UI.Samples.Tests
 				default:
 				case TestResult.Error:
 				case TestResult.Failed:
-					return "❌";
+					return "❌ (F)";
 
 				case TestResult.Ignored:
-					return "🚫";
+					return "🚫 (I)";
 
 				case TestResult.Sucesss:
-					return "✔️";
+					return "✔️ (S)";
 			}
 		}
 
@@ -199,7 +199,7 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		private async Task RunTests(CancellationToken ct, string filter)
+		private async Task RunTests(CancellationToken ct, string[] filters)
 		{
 			(int run, int ignored, int succeeded, int failed) counters = (0, 0, 0, 0);
 
@@ -214,7 +214,9 @@ namespace Uno.UI.Samples.Tests
 				foreach (var type in testTypes.Where(t => t.type != null))
 				{
 					var tests = type.tests
-						.Where(t => filter == null || t.DeclaringType.Name.Contains(filter, StrComp) || t.Name.Contains(filter, StrComp))
+						.Where(t => (filters?.None() ?? true)
+							|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
+							|| filters.Any(f => t.Name.Contains(f, StrComp)))
 						.ToArray();
 
 					if (tests.Length == 0)
@@ -363,7 +365,11 @@ namespace Uno.UI.Samples.Tests
 
 		private bool IsIgnored(MethodInfo testMethod, out string ignoreMessage)
 		{
-			var ignoreAttribute = testMethod.GetCustomAttribute<Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute>();
+			var ignoreAttribute = testMethod.GetCustomAttribute<IgnoreAttribute>();
+			if (ignoreAttribute == null)
+			{
+				ignoreAttribute = testMethod.DeclaringType.GetCustomAttribute<IgnoreAttribute>();
+			}
 
 			if (ignoreAttribute != null)
 			{
@@ -387,7 +393,7 @@ namespace Uno.UI.Samples.Tests
 			var ts = types.Select(t => t.FullName).ToArray();
 
 			return from type in types
-				   where type.GetTypeInfo().GetCustomAttribute(typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute)) != null
+				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
 				   orderby type.Name
 				   select BuildType(type);
 		}

@@ -3,34 +3,56 @@
 While it is easier to create apps using Uno on Windows, you can also create all but UWP apps on your Mac.
 
 ## Prerequisites
-* [**Visual Studio for Mac**](https://visualstudio.microsoft.com/vs/mac/)
+* [**Visual Studio for Mac 8.8**](https://visualstudio.microsoft.com/vs/mac/)
 * [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
-* .NET Core 3.1
+* [.NET Core SDK 3.1](https://dotnet.microsoft.com/download/dotnet-core/thank-you/sdk-3.1.404-macos-x64-installer)
+* [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
-## Modifying Existing Uno App
+## Installing the dotnet new templates
+- In order to create a new Uno Project, you'll need to install the [`dotnet new` Uno Platform templates](get-started-dotnet-new.md).
+- Once done, in Visual Studio for Mac, open the preference menu:
+  - On left side, open the **Other** then **Preview Features** menu
+  - Check the **Show all .NET Core templates in the New Project dialog**
 
-1. Open project in Visual Studio for Mac
- ![new-project](Assets/quick-start/vs-mac-open-project.png)
-Once open, you should see your folder structure set up like this:
+## Create a new project using the IDE
+1. To create a new project:
+    - Click the **New** button on the welcome screen
+    - Select **Cross Platform App (Uno Platform)**
+    - If presented with a list of options, uncheck **Skia/WPF**
+    - Choose a name then click create
+
+1. Once created, you should see your folder structure set up like this:
 ![folder-structure](Assets/quick-start/vs-mac-folder-structure.png)\
-If you have a warning symbol on your iOS project, make sure you have the minimum version of XCode.
+    - If you have a warning symbol on your iOS project, make sure you have the minimum version of Xcode installed.
 ![update-xcode](Assets/quick-start/xcode-version-warning.jpg)\
-To update, go to `Visual Studio > Preferences > Projects > SDK Locations > Apple` and select XCode 10.0 or higher.
+To update, go to `Visual Studio > Preferences > Projects > SDK Locations > Apple` and select Xcode 12 or higher.
 Restart Visual Studio.
-
-2. You can now run on iOS, Android, and WebAssembly by setting your startup project and running.
+1. If you did not get presented a list of options to create the project, as of Visual Studio for Mac 8.8, the Uno Platform template contains WPF projects that prevent NuGet restore to work properly. To fix this:
+    - Select the `MyProject.Skia.Wpf` and `MyProject.Skia.Wpf.Host`
+    - Right click to remove them from the solution.
+    - At the top of the tree, on the solution node, right click and select **Restore Nuget Packages**
+1. You can now run on iOS, Android, and macOS by setting your startup project and running.
 ![startup-projects](Assets/quick-start/vs-mac-build.png)
    
-Note: You will not be able to build the UWP project on a Mac. All changes to this project must be made on Windows.
+Note: You will not be able to build the UWP and WPF projects on a Mac. All changes to this project must be made on Windows.
 
-### Build for WASM
+## Create a new project using the command line
 
-Building for WebAssembly takes a few more steps than iOS and Android:
+You can create a new Uno Platfom solution with the following terminal command:
+    ```bash
+    dotnet new unoapp -o MyProject --skia-wpf=false
+    ```
+Once created, you can open it using the Visual Studio IDE.
 
-1. Set yourProject.Wasm to startup project
+
+### Build and Run for WebAssembly
+
+Building for WebAssembly takes a few more steps:
+
+1. Set `MyProject.Wasm` to startup project
 2. Build the project
-3. In the terminal, navigate to your build output. This will typically be: `yourProject.Wasm > bin > Debug > netstandard2.0 > dist > server.py` Run the `server.py` program.
+3. In the terminal, navigate to your build output. This will typically be: `MyProject.Wasm > bin > Debug > netstandard2.0 > dist > server.py` Run the `server.py` program.
 4. In your browser, open localhost:8000. 
 
 ### Video Tutorial

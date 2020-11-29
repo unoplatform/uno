@@ -7,7 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
+using Uno.Helpers.Theming;
 using Uno.Logging;
+using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming;
 using Windows.UI.Xaml;
 using WUX = Windows.UI.Xaml;
 
@@ -15,6 +17,9 @@ namespace Uno.UI.Runtime.Skia
 {
 	public class GtkHost : ISkiaHost
 	{
+		[ThreadStatic]
+		private static bool _isDispatcherThread = false;
+
 		private readonly string[] _args;
 		private readonly Func<WUX.Application> _appBuilder;
 		private static Gtk.Window _window;
@@ -32,11 +37,12 @@ namespace Uno.UI.Runtime.Skia
 		public void Run()
 		{
 			Gtk.Application.Init();			
-			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkUIElementPointersSupport(o));
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
-			ApiExtensibility.Register(typeof(IApplicationExtension), o => new GtkApplicationExtension(o));
+			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
 
+			_isDispatcherThread = true;
 			_window = new Gtk.Window("Uno Host");
 			_window.SetDefaultSize(1024, 800);
 			_window.SetPosition(Gtk.WindowPosition.Center);
@@ -72,6 +78,7 @@ namespace Uno.UI.Runtime.Skia
 					   return false;
 				   });
 			   };
+			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
 			_window.Realized += (s, e) =>
 			{
@@ -91,6 +98,8 @@ namespace Uno.UI.Runtime.Skia
 				Gdk.EventMask.PointerMotionMask
 			 | Gdk.EventMask.ButtonPressMask
 			 | Gdk.EventMask.ButtonReleaseMask
+			 | Gdk.EventMask.KeyPressMask
+			 | Gdk.EventMask.KeyReleaseMask
 			));
 
 			_window.ShowAll();

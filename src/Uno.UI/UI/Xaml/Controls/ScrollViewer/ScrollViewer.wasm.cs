@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
@@ -16,8 +17,8 @@ namespace Windows.UI.Xaml.Controls
 
 		// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
 		// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
 		{

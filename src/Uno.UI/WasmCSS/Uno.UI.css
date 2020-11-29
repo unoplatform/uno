@@ -39,6 +39,13 @@ body {
   transform: translate(0, 0);
 }
 
+.uno-uielement .noclip {
+  /* Used when we need to force the element to be unclipped.
+      --> Used by the toolkit for elevation
+  */
+  clip: auto !important;
+}
+
 svg.uno-uielement {
   /*
     The SVG elements are not intended to be a touch target (they are only a holder collection of child shapes),
@@ -200,4 +207,5 @@ embed.uno-frameworkelement.uno-unarranged {
 
 textarea {
   resize: none;
+  overflow: hidden; /* Scrolling is handled by the parent ScrollViewer */
 }

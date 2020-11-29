@@ -11,19 +11,21 @@
 		<Compile Include="..\Uno.UI.RemoteControl\Helpers\**\*.cs" Link="Helpers/%(Filename)" />
 		<Compile Include="..\Uno.UI.RemoteControl\Messages\**\*.cs" Link="Messages/%(Filename)" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.App" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="System.Reactive" Version="4.4.1" />
+		<PackageReference Include="System.Reactive" Version="5.0.0" />
 		<PackageReference Include="Unity" Version="5.11.7" />
 		<PackageReference Include="Uno.Core" Version="2.0.0" />
 	</ItemGroup>
-	
+
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\rc\host</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\rc\host</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)*.*" />
