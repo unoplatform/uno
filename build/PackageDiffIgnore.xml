@@ -3327,7 +3327,7 @@
 				fullName="System.Void Windows.UI.Xaml.Media.ImageSource..ctor(System.IO.Stream stream)"
 				reason="Not part of the UWP API"/>
 			<Member
-				fullName="System.Void Windows.Storage.Pickers.FileSavePicker.set_FileTypeChoices(System.Collections.Generic.IDictionary`2<System.String,System.Collections.Generic.IList`1<System.String>> value)"
+				fullName="System.Void Windows.Storage.Pickers.FileSavePicker.set_FileTypeChoices(System.Collections.Generic.IDictionary`2&lt;System.String,System.Collections.Generic.IList`1&lt;System.String&gt;&gt; value)"
 				reason="Not part of the UWP API"/>
 		</Methods>
 	</IgnoreSet>
