@@ -53,11 +53,11 @@ namespace Windows.UI.Xaml
 				//		 as on UWP, even if the event are RoutedEvents, PointerEntered and PointerExited
 				//		 are routed only in some particular cases (entering at once on multiple controls),
 				//		 it's easier to handle this in managed code.
-				RegisterEventHandler("pointerenter", (RawEventHandler)DispatchNativePointerEnter);
-				RegisterEventHandler("pointerleave", (RawEventHandler)DispatchNativePointerLeave);
-				RegisterEventHandler("pointerdown", (RawEventHandler)DispatchNativePointerDown);
-				RegisterEventHandler("pointerup", (RawEventHandler)DispatchNativePointerUp);
-				RegisterEventHandler("pointercancel", (RawEventHandler)DispatchNativePointerCancel); //https://www.w3.org/TR/pointerevents/#the-pointercancel-event
+				RegisterEventHandler("pointerenter", (RawEventHandler)DispatchNativePointerEnter, GenericEventHandlers.RaiseRawEventHandler);
+				RegisterEventHandler("pointerleave", (RawEventHandler)DispatchNativePointerLeave, GenericEventHandlers.RaiseRawEventHandler);
+				RegisterEventHandler("pointerdown", (RawEventHandler)DispatchNativePointerDown, GenericEventHandlers.RaiseRawEventHandler);
+				RegisterEventHandler("pointerup", (RawEventHandler)DispatchNativePointerUp, GenericEventHandlers.RaiseRawEventHandler);
+				RegisterEventHandler("pointercancel", (RawEventHandler)DispatchNativePointerCancel, GenericEventHandlers.RaiseRawEventHandler); //https://www.w3.org/TR/pointerevents/#the-pointercancel-event
 			}
 
 			switch (routedEvent.Flag)
@@ -75,6 +75,7 @@ namespace Windows.UI.Xaml
 					RegisterEventHandler(
 						"pointermove",
 						handler: (RawEventHandler)DispatchNativePointerMove,
+						invoker: GenericEventHandlers.RaiseRawEventHandler,
 						onCapturePhase: false,
 						eventExtractor: HtmlEventExtractor.PointerEventExtractor
 					);
@@ -90,6 +91,7 @@ namespace Windows.UI.Xaml
 					RegisterEventHandler(
 						"wheel",
 						handler: (RawEventHandler)DispatchNativePointerWheel,
+						invoker: GenericEventHandlers.RaiseRawEventHandler,
 						onCapturePhase: false,
 						eventExtractor: HtmlEventExtractor.PointerEventExtractor
 					);

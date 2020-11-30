@@ -160,7 +160,7 @@ return __f(element);
 		/// </summary>
 		public static void RegisterHtmlEventHandler(this UIElement element, string eventName, EventHandler handler)
 		{
-			element.RegisterEventHandler(eventName, handler);
+			element.RegisterEventHandler(eventName, handler, UIElement.GenericEventHandlers.RaiseEventHandler);
 		}
 
 		/// <summary>
@@ -168,7 +168,7 @@ return __f(element);
 		/// </summary>
 		public static void UnregisterHtmlEventHandler(this UIElement element, string eventName, EventHandler handler)
 		{
-			element.UnregisterEventHandler(eventName, handler);
+			element.UnregisterEventHandler(eventName, handler, UIElement.GenericEventHandlers.RaiseEventHandler);
 		}
 
 		/// <summary>
@@ -189,6 +189,7 @@ return __f(element);
 			element.RegisterEventHandler(
 				eventName,
 				handler,
+				RaiseCustomEventHandler,
 				eventExtractor: extractor,
 				payloadConverter: (_, s) => new HtmlCustomEventArgs(s));
 		}
@@ -198,7 +199,18 @@ return __f(element);
 		/// </summary>
 		public static void UnregisterHtmlCustomEventHandler(this UIElement element, string eventName, EventHandler<HtmlCustomEventArgs> handler)
 		{
-			element.UnregisterEventHandler(eventName, handler);
+			element.UnregisterEventHandler(eventName, handler, RaiseCustomEventHandler);
+		}
+
+		private static object RaiseCustomEventHandler(Delegate d, object sender, object args)
+		{
+			if (d is RoutedEventHandler handler && args is RoutedEventArgs routedEventArgs)
+			{
+				handler(sender, routedEventArgs);
+				return null;
+			}
+
+			throw new InvalidOperationException($"The parameters for invoking GenericEventHandlers.RaiseEventHandler with {d} are incorrect");
 		}
 	}
 }

@@ -71,8 +71,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public event RoutedEventHandler ImageOpened
 		{
-			add => _htmlImage.RegisterEventHandler("load", value);
-			remove => _htmlImage.UnregisterEventHandler("load", value);
+			add => _htmlImage.RegisterEventHandler("load", value, GenericEventHandlers.RaiseRoutedEventHandler);
+			remove => _htmlImage.UnregisterEventHandler("load", value, GenericEventHandlers.RaiseRoutedEventHandler);
 		}
 
 		private ExceptionRoutedEventArgs ImageFailedConverter(object sender, string e)
@@ -80,8 +80,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public event ExceptionRoutedEventHandler ImageFailed
 		{
-			add => _htmlImage.RegisterEventHandler("error", value, payloadConverter: ImageFailedConverter);
-			remove => _htmlImage.UnregisterEventHandler("error", value);
+			add => _htmlImage.RegisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler, payloadConverter: ImageFailedConverter);
+			remove => _htmlImage.UnregisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler);
 		}
 
 		partial void OnSourceChanged(DependencyPropertyChangedEventArgs e)

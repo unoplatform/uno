@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("loading", value);
+					RegisterEventHandler("loading", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("loading", value);
+					UnregisterEventHandler("loading", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("loaded", value);
+					RegisterEventHandler("loaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -162,7 +162,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("loaded", value);
+					UnregisterEventHandler("loaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
@@ -178,7 +178,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("unloaded", value);
+					RegisterEventHandler("unloaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -189,7 +189,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("unloaded", value);
+					UnregisterEventHandler("unloaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
