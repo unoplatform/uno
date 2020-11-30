@@ -6,14 +6,16 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml.DragAndDrop
 {
-	[Sample("DragAndDrop", "ListView")]
+	[Sample("DragAndDrop", "ListView",
+		Description = "This automated tests validate that items reordering in ListView is working properly.",
+		IgnoreInSnapshotTests = true)]
 	public sealed partial class DragDrop_ListView : Page
 	{
 		public DragDrop_ListView()
 		{
 			this.InitializeComponent();
 
-			Bla.ItemsSource = new ObservableCollection<string>
+			SUT.ItemsSource = new ObservableCollection<string>
 			{
 				"#FF0018",
 				"#FFA52C",

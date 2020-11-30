@@ -14,20 +14,12 @@
 			CanReorderItems="True"
 			AllowDrop="True"
 			MinHeight="300"
-			x:Name="Bla">
+			x:Name="SUT">
 			<ListView.ItemTemplate>
 				<DataTemplate>
 					<Rectangle Fill="{Binding}" Width="300" Height="100" />
 				</DataTemplate>
 			</ListView.ItemTemplate>
-
-			<!--<x:String>#FF0018</x:String>
-			<x:String>#FFA52C</x:String>
-			<x:String>#FFFF41</x:String>
-			<x:String>#008018</x:String>
-			<x:String>#0000F9</x:String>
-			<x:String>#86007D</x:String>-->
-
 		</ListView>
 	</Grid>
 </Page>
