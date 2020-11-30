@@ -1,5 +1,4 @@
 ﻿#nullable enable
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ListViewBase
+	partial class ListViewBase
 	{
 		private const string ReorderOwnerFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__";
 		private const string ReorderItemFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__item__";

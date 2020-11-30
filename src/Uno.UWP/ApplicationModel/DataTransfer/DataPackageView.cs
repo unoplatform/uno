@@ -1,6 +1,5 @@
 #nullable enable
 
-#if !NET461
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -124,4 +123,3 @@ namespace Windows.ApplicationModel.DataTransfer
 			=> _acceptedFormatId = formatId;
 	}
 }
-#endif
