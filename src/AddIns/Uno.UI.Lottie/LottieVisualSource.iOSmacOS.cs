@@ -22,7 +22,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public bool UseHardwareAcceleration { get; set; } = true;
 
-		private Uri _lastSource;
+		private Uri? _lastSource;
 		private (double fromProgress, double toProgress, bool looped)? _playState;
 
 		partial void InnerUpdate()
