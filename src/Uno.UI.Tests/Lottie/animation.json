@@ -1,4 +1,4 @@
-{
+﻿{
   "v": "5.5.7",
   "meta": {
     "g": "LottieFiles AE 0.1.20",
@@ -581,7 +581,7 @@
               "lj": 1,
               "ml": 10,
               "bm": 0,
-              "nm": "{ Color: var(Background) }",
+              "nm": "{ Color : var(Background) }",
               "mn": "ADBE Vector Graphic - Stroke",
               "hd": false
             },

@@ -74,6 +74,9 @@ var Uno;
                 return state;
             }
             static needNewPlayerAnimation(current, newProperties) {
+                if (current.cacheKey !== newProperties.cacheKey) {
+                    return true;
+                }
                 if (current.jsonPath !== newProperties.jsonPath) {
                     return true;
                 }

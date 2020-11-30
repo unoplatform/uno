@@ -89,6 +89,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 						void OnJsonChanged(string updatedJson, string updatedCacheKey)
 						{
 							_animation.SetAnimationFromJson(updatedJson, updatedCacheKey);
+
+							if (_playState != null)
+							{
+								var (fromProgress, toProgress, looped) = _playState.Value;
+								Play(fromProgress, toProgress, looped);
+							}
 						}
 					}
 					else

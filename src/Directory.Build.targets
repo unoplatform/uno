@@ -46,6 +46,7 @@
 	<PackageReference Update="SkiaSharp" Version="2.80.0" />
 	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.0" />
 	<PackageReference Update="GtkSharp" Version="3.22.25.128" />
+	<PackageReference Update="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
