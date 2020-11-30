@@ -15,10 +15,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		private static readonly string UNO_BOOTSTRAP_APP_BASE = global::System.Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
 
-		private AnimatedVisualPlayer _initializedPlayer;
+		private AnimatedVisualPlayer? _initializedPlayer;
 		private bool _isPlaying;
 		private Size _compositionSize = new Size(0, 0);
-		private Uri _loadedEmbeddedUri;
+		private Uri? _loadedEmbeddedUri;
 
 		private (double fromProgress, double toProgress, bool looped)? _playState;
 		private bool _isUpdating;
@@ -28,8 +28,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			var player = _player;
 			if(_initializedPlayer != player)
 			{
-				player.RegisterHtmlCustomEventHandler("lottie_state", OnStateChanged, isDetailJson: false);
 				_initializedPlayer = player;
+				player?.RegisterHtmlCustomEventHandler("lottie_state", OnStateChanged, isDetailJson: false);
+			}
+
+			if (player == null)
+			{
+				return;
 			}
 
 			string[] js;
@@ -112,6 +117,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private void ParseStateString(string stateString)
 		{
+			if (_player == null)
+			{
+				return;
+			}
+
 			var parts = stateString.Split('|');
 			double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var w);
 			double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var h);
@@ -145,6 +155,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				return;
 			}
+
 			var js = new[]
 			{
 				"Uno.UI.Lottie.play(",
@@ -164,10 +175,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		void IAnimatedVisualSource.Stop()
 		{
 			_playState = null;
+
 			if (_player == null)
 			{
 				return;
 			}
+
 			var js = new[]
 			{
 				"Uno.UI.Lottie.stop(",
@@ -184,6 +197,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				return;
 			}
+
 			var js = new[]
 			{
 				"Uno.UI.Lottie.pause(",
@@ -217,6 +231,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				return;
 			}
+
 			var js = new[]
 			{
 				"Uno.UI.Lottie.setProgress(",
@@ -254,11 +269,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		void IAnimatedVisualSource.Unload()
 		{
-			if (_player == null)
-			{
-				return;
-			}
-			if (!_isPlaying)
+			if (_player == null || !_isPlaying)
 			{
 				return;
 			}
