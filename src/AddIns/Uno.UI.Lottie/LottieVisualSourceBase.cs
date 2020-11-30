@@ -28,7 +28,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		public static DependencyProperty UriSourceProperty { get ; } = DependencyProperty.Register(
 			"UriSource",
 			typeof(Uri),
-			typeof(LottieVisualSource),
+			typeof(LottieVisualSourceBase),
 			new FrameworkPropertyMetadata(
 				default(Uri),
 				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
@@ -41,7 +41,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 		public static DependencyProperty OptionsProperty { get ; } = DependencyProperty.Register(
-			"Options", typeof(LottieVisualOptions), typeof(LottieVisualSource), new FrameworkPropertyMetadata(LottieVisualOptions.None));
+			"Options", typeof(LottieVisualOptions), typeof(LottieVisualSourceBase), new FrameworkPropertyMetadata(LottieVisualOptions.None));
 
 		[NotImplemented]
 		public LottieVisualOptions Options

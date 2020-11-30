@@ -35,7 +35,12 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
+<<<<<<< HEAD
 		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
+=======
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Newtonsoft.Json" />
+>>>>>>> c31c32ec6... feat(lottie): First implementation of theme properties for lottie files (custom colors)
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">

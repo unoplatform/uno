@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			RegisterPropertyChangedCallback(ForegroundProperty, OnForegroundPropertyChanged);
-			RegisterPropertyChangedCallback(BackgroundProperty, OnbackgroundPropertyChanged);
+			RegisterPropertyChangedCallback(BackgroundProperty, OnBackgroundPropertyChanged);
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer() => new ProgressRingAutomationPeer(progressRing: this);
@@ -48,6 +48,9 @@ namespace Microsoft.UI.Xaml.Controls
 			_player = GetTemplateChild("IndeterminateAnimatedVisualPlayer") as Windows.UI.Xaml.Controls.AnimatedVisualPlayer;
 			_layoutRoot = GetTemplateChild("LayoutRoot") as Panel;
 
+			OnForegroundPropertyChanged(this, ForegroundProperty);
+			OnBackgroundPropertyChanged(this, BackgroundProperty);
+
 			SetAnimatedVisualPlayerSource();
 
 			ChangeVisualState();
@@ -55,17 +58,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty dp)
 		{
-			if (Background is SolidColorBrush background)
+			if (_player?.Source is IDynamicAnimatedVisualSource source
+				&& Brush.TryGetColorWithOpacity(Foreground, out var foreground))
 			{
-				// TODO
+				source.SetColorProperty("Foreground", foreground);
 			}
 		}
 
-		private void OnbackgroundPropertyChanged(DependencyObject sender, DependencyProperty dp)
+		private void OnBackgroundPropertyChanged(DependencyObject sender, DependencyProperty dp)
 		{
-			if (Foreground is SolidColorBrush foreground)
+			if (_player?.Source is IDynamicAnimatedVisualSource source
+				&& Brush.TryGetColorWithOpacity(Background, out var background))
 			{
-				// TODO
+				source.SetColorProperty("Background", background);
 			}
 		}
 
@@ -78,7 +83,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_lottieProvider != null && _player != null)
 			{
-				var animatedVisualSource = _lottieProvider.CreateFromLottieAsset(FeatureConfiguration.ProgressRing.ProgressRingAsset);
+				var animatedVisualSource = _lottieProvider.CreateDynamicFromLottieAsset(FeatureConfiguration.ProgressRing.ProgressRingAsset);
 				_player.Source = animatedVisualSource;
 				ChangeVisualState();
 			}
