@@ -34,7 +34,7 @@
       <Version>5.10.3</Version>
     </PackageReference>
     <PackageReference Include="Moq">
-      <Version>4.15.1</Version>
+      <Version>4.15.2</Version>
     </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
       <Version>1.7.0</Version>
