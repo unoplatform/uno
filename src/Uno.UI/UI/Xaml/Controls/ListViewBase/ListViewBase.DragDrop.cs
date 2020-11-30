@@ -12,6 +12,7 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Logging;
 using Uno.UI;
+using _DragEventArgs = global::Windows.UI.Xaml.DragEventArgs;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -161,7 +162,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static void OnReorderUpdated(object sender, DragEventArgs dragEventArgs)
+		private static void OnReorderUpdated(object sender, _DragEventArgs dragEventArgs)
 		{
 			var that = sender as ListView;
 			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListView;
@@ -177,7 +178,7 @@ namespace Windows.UI.Xaml.Controls
 			that.UpdateReordering(dragEventArgs.GetPosition(that), container, item);
 		}
 
-		private static void OnReorderCompleted(object sender, DragEventArgs dragEventArgs)
+		private static void OnReorderCompleted(object sender, _DragEventArgs dragEventArgs)
 		{
 			var that = sender as ListView;
 			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListView;
