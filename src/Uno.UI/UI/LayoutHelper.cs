@@ -498,19 +498,20 @@ namespace Uno.UI
 #endif
 
 		[Pure]
-		internal static Rect GetBoundsRectRelativeTo(this UIElement element, UIElement relativeTo)
+		internal static Rect GetBoundsRectRelativeTo(this FrameworkElement element, FrameworkElement relativeTo)
 		{
 			var elementToTarget = element.TransformToVisual(relativeTo);
-			var elementRect = new Rect(default, element.RenderSize);
+			// Use ActualWidth/ActualHeight which may differ from RenderSize in some cases (notably, TextBlock)
+			var elementRect = new Rect(0, 0, element.ActualWidth, element.ActualHeight);
 			var elementRectRelToTarget = elementToTarget.TransformBounds(elementRect);
 
 			return elementRectRelToTarget;
 		}
 
 		[Pure]
-		internal static Rect GetAbsoluteBoundsRect(this UIElement element)
+		internal static Rect GetAbsoluteBoundsRect(this FrameworkElement element)
 		{
-			var root = Window.Current.Content;
+			var root = Window.Current.Content as FrameworkElement;
 			return GetBoundsRectRelativeTo(element, root);
 		}
 	}
