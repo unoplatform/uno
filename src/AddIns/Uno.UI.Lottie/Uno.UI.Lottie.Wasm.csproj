@@ -27,7 +27,7 @@
 	<ItemGroup>
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="System.Json" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />
