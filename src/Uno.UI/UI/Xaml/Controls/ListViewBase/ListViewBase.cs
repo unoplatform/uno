@@ -26,7 +26,6 @@ using Uno.Disposables;
 using Uno.Client;
 using System.Threading.Tasks;
 using System.Threading;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Uno.UI;
 
@@ -657,29 +656,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private const string ReorderOwnerFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__";
-		private const string ReorderItemFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__item__";
-		private const string ReorderContainerFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__container__";
-		private const string DragItemsFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__items__";
-
 		internal override void ContainerPreparedForItem(object item, SelectorItem itemContainer, int itemIndex)
 		{
 			base.ContainerPreparedForItem(item, itemContainer, itemIndex);
 
-			if (CanDragItems)
-			{
-				itemContainer.CanDrag = true;
-				itemContainer.DragStarting += OnItemContainerDragStarting;
-				itemContainer.DropCompleted += OnItemContainerDragCompleted;
-			}
+			PrepareContainerForDragDrop(itemContainer);
 
 			ContainerContentChanging?.Invoke(this, new ContainerContentChangingEventArgs(item, itemContainer, itemIndex));
 		}
 
 		internal override void ContainerClearedForItem(object item, SelectorItem itemContainer)
 		{
-			itemContainer.DragStarting -= OnItemContainerDragStarting;
-			itemContainer.DropCompleted -= OnItemContainerDragCompleted;
+			ClearContainerForDragDrop(itemContainer);
 
 			base.ContainerClearedForItem(item, itemContainer);
 		}

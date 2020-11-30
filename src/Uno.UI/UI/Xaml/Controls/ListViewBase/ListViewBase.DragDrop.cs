@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Uno.Extensions;
@@ -17,9 +18,15 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
+		private const string ReorderOwnerFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__";
+		private const string ReorderItemFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__item__";
+		private const string ReorderContainerFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__container__";
+		private const string DragItemsFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__items__";
+
 		public event DragItemsStartingEventHandler DragItemsStarting;
 		public event TypedEventHandler<ListViewBase, DragItemsCompletedEventArgs> DragItemsCompleted;
 
+		#region CanReorderItems (DP)
 		public static DependencyProperty CanReorderItemsProperty { get; } = DependencyProperty.Register(
 			nameof(CanReorderItems),
 			typeof(bool),
@@ -31,17 +38,67 @@ namespace Windows.UI.Xaml.Controls
 			get => (bool)GetValue(CanReorderItemsProperty);
 			set => SetValue(CanReorderItemsProperty, value);
 		}
+		#endregion
 
+		#region CanDragItems (DP)
 		public static DependencyProperty CanDragItemsProperty { get; } = DependencyProperty.Register(
 			nameof(CanDragItems),
 			typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(default(bool), OnCanDragItemsChanged));
 
 		public bool CanDragItems
 		{
 			get => (bool)GetValue(CanDragItemsProperty);
 			set => SetValue(CanDragItemsProperty, value);
+		}
+
+		private static void OnCanDragItemsChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
+		{
+			if (snd is ListViewBase that && args.NewValue is bool canDragItems)
+			{
+				var items = that.MaterializedContainers.OfType<UIElement>();
+				if (canDragItems)
+				{
+					items.ForEach(PrepareContainerForDragDropCore);
+				}
+				else
+				{
+					items.ForEach(ClearContainerForDragDrop);
+				}
+			}
+		} 
+		#endregion
+
+		private void PrepareContainerForDragDrop(UIElement itemContainer)
+		{
+			if (CanDragItems)
+			{
+				PrepareContainerForDragDropCore(itemContainer);
+			}
+		}
+
+		private static void PrepareContainerForDragDropCore(UIElement itemContainer)
+		{
+			// Known issue: the ContainerClearedForItem might not be invoked properly for all items on some platforms.
+			// This patch is acceptable as event handlers are static (so they won't leak).
+			itemContainer.DragStarting -= OnItemContainerDragStarting;
+			itemContainer.DropCompleted -= OnItemContainerDragCompleted;
+
+			itemContainer.CanDrag = true;
+			itemContainer.DragStarting += OnItemContainerDragStarting;
+			itemContainer.DropCompleted += OnItemContainerDragCompleted;
+		}
+
+		private static void ClearContainerForDragDrop(UIElement itemContainer)
+		{
+			itemContainer.DragStarting -= OnItemContainerDragStarting;
+			itemContainer.DropCompleted -= OnItemContainerDragCompleted;
+
+			itemContainer.DragEnter -= OnReorderUpdated;
+			itemContainer.DragOver -= OnReorderUpdated;
+			itemContainer.DragLeave -= OnReorderCompleted;
+			itemContainer.Drop -= OnReorderCompleted;
 		}
 
 		private static void OnItemContainerDragStarting(UIElement sender, DragStartingEventArgs innerArgs)
@@ -69,6 +126,12 @@ namespace Windows.UI.Xaml.Controls
 					args.Data.SetData(ReorderOwnerFormatId, that);
 					args.Data.SetData(ReorderItemFormatId, draggedItem);
 					args.Data.SetData(ReorderContainerFormatId, sender);
+
+					// For safety only, avoids double subscription
+					that.DragEnter -= OnReorderUpdated;
+					that.DragOver -= OnReorderUpdated;
+					that.DragLeave -= OnReorderCompleted;
+					that.Drop -= OnReorderCompleted;
 
 					that.DragEnter += OnReorderUpdated;
 					that.DragOver += OnReorderUpdated;
