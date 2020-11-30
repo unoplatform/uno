@@ -1007,6 +1007,67 @@ namespace Windows.UI.Xaml.Controls
 		private static Point GetRelativePosition(FrameworkElement child) => new Point(ViewHelper.PhysicalToLogicalPixels(child.Left), ViewHelper.PhysicalToLogicalPixels(child.Top));
 #endif
 
+		private (double offset, double breadth, object item, Uno.UI.IndexPath? index)? _pendingReorder;
+		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item)
+		{
+			_pendingReorder = Orientation == Orientation.Horizontal
+				? (location.X + ScrollOffset, element.ActualWidth, item, default(Uno.UI.IndexPath?))
+				: (location.Y + ScrollOffset, element.ActualHeight, item, default(Uno.UI.IndexPath?));
+
+			LightRefresh();
+		}
+
+		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item)
+		{
+			var updatedIndex = default(Uno.UI.IndexPath?);
+			if (_pendingReorder?.index is { } index)
+			{
+				var nextItem = _materializedLines
+					.SelectMany(line => line.Items)
+					.SkipWhile(i => i.index != index)
+					.Skip(1)
+					.FirstOrDefault();
+
+				updatedIndex = nextItem.container is null
+					? Uno.UI.IndexPath.FromRowSection(int.MaxValue, int.MaxValue) // There is no "nextItem", i.e. the item has been moved at the end.
+					: nextItem.index;
+			}
+			_pendingReorder = null;
+
+			// We need a full refresh to properly re-arrange all items at their right location,
+			// ignoring the temp location of the dragged / reordered item.
+			Refresh();
+
+			return updatedIndex;
+		}
+
+		protected bool ShouldInsertReorderingView(double extentOffset)
+			=> _pendingReorder is { } reorder && reorder.offset > extentOffset && reorder.offset <= extentOffset + reorder.breadth;
+
+		protected IndexPath? GetReorderingIndex()
+		{
+			if (_pendingReorder is { } reorder)
+			{
+				if (reorder.index is null)
+				{
+					reorder.index = XamlParent!.GetIndexPathFromItem(reorder.item);
+					_pendingReorder = reorder; // _pendingReorder is a struct!
+				}
+
+				return reorder.index;
+			}
+
+			return null;
+		}
+
+		private void ResetReorderingIndex()
+		{
+			if (_pendingReorder is { } reorder)
+			{
+				_pendingReorder = (reorder.offset, reorder.breadth, reorder.item, null);
+			}
+		}
+
 		/// <summary>
 		/// Represents a single row in a vertically-scrolling panel, or a column in a horizontally-scrolling panel.
 		/// </summary>

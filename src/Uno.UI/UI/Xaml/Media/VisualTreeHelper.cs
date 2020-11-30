@@ -253,7 +253,7 @@ namespace Windows.UI.Xaml.Media
 		internal static readonly GetHitTestability DefaultGetTestability;
 		static VisualTreeHelper()
 		{
-			DefaultGetTestability = elt => (elt.GetHitTestVisibility(), DefaultGetTestability);
+			DefaultGetTestability = elt => (elt.GetHitTestVisibility(), DefaultGetTestability!);
 		}
 
 		internal static (UIElement? element, Branch? stale) HitTest(
