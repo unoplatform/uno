@@ -1308,12 +1308,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		)
 		{
 			TryAnnotateWithGeneratorSource(writer);
+			writer.AppendLine();
+			if (namedResources.Any())
+			{
+				writer.AppendLineInvariant($"// Force materialization of x:Name resources, which will assign them to named property field.");
+				writer.AppendLineInvariant("object _ = null;");
+			}
 			foreach (var namedResource in namedResources)
 			{
 				BuildSourceLineInfo(writer, namedResource.Value);
 
-				BuildChild(writer, null, namedResource.Value);
-				writer.AppendLineInvariant(0, ";", namedResource.Value.Type);
+				writer.AppendLineInvariant("Resources.TryGetValue(\"{0}\", out _);", namedResource.Key);
 			}
 
 			bool IsGenerateUpdateResourceBindings(KeyValuePair<string, XamlObjectDefinition> nr)

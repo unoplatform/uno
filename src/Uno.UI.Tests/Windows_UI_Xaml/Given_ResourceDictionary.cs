@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
 using Uno.UI.Tests.ViewLibrary;
+using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 #if !NETFX_CORE
 using Uno.UI.Xaml;
 #endif
@@ -410,6 +411,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var app = UnitTestsApp.App.EnsureApplication();
 
 			AssertEx.AssertContainsColorBrushResource(app.Resources, "CadetColorBrush", Colors.CadetBlue);
+		}
+
+		[TestMethod]
+		public void When_xName_In_Dictionary_Reference_Equality()
+		{
+			var page = new When_xName_In_Dictionary_Reference_Equality();
+			Assert.IsTrue(page.Resources.ContainsKey("MutableBrush"));
+			Assert.AreEqual(page.MutableBrush, page.Resources["MutableBrush"]);
+			Assert.AreEqual(page.MutableBrush, page.TestBorder.Background);
+			Assert.AreEqual(Colors.Green, (page.TestBorder.Background as SolidColorBrush).Color);
 		}
 
 		[TestMethod]

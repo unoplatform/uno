@@ -47,7 +47,12 @@ namespace Private.Infrastructure
 			/// <summary>
 			/// Waits for <paramref name="element"/> to be loaded and measured in the visual tree.
 			/// </summary>
-			/// <remarks>On UWP, <see cref="WaitForIdle"/> may not always wait long enough for the control to be properly measured.</remarks>
+			/// <remarks>
+			/// On UWP, <see cref="WaitForIdle"/> may not always wait long enough for the control to be properly measured.
+			///
+			/// This method assumes that the control will have a non-zero size once loaded, so it's not appropriate for elements that are
+			/// collapsed, empty, etc.
+			/// </remarks>
 			internal static async Task WaitForLoaded(FrameworkElement element)
 			{
 				await WaitFor(IsLoaded, message: $"{element} loaded");
