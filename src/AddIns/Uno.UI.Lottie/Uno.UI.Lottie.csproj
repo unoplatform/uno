@@ -39,8 +39,12 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
 =======
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+<<<<<<< HEAD
 		<PackageReference Include="Newtonsoft.Json" />
 >>>>>>> c31c32ec6... feat(lottie): First implementation of theme properties for lottie files (custom colors)
+=======
+		<PackageReference Include="System.Json" />
+>>>>>>> 41af71055... chore(lottie): Removed the dependency to Newtownsoft's JSON.NET
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
