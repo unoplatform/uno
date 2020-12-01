@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var updatedIndex = default(IndexPath?);
+			var updatedIndex = default(Uno.UI.IndexPath?);
 			that.CompleteReordering(container, item, ref updatedIndex);
 
 			if (that.IsGrouping
@@ -319,6 +319,6 @@ namespace Windows.UI.Xaml.Controls
 		/// </remarks>
 		partial void UpdateReordering(Point location, FrameworkElement draggedContainer, object draggedItem);
 
-		partial void CompleteReordering(FrameworkElement draggedContainer, object draggedItem, ref IndexPath? updatedIndex);
+		partial void CompleteReordering(FrameworkElement draggedContainer, object draggedItem, ref Uno.UI.IndexPath? updatedIndex);
 	}
 }

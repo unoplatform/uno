@@ -1044,7 +1044,7 @@ namespace Windows.UI.Xaml.Controls
 		protected bool ShouldInsertReorderingView(double extentOffset)
 			=> _pendingReorder is { } reorder && reorder.offset > extentOffset && reorder.offset <= extentOffset + reorder.breadth;
 
-		protected IndexPath? GetReorderingIndex()
+		protected Uno.UI.IndexPath? GetReorderingIndex()
 		{
 			if (_pendingReorder is { } reorder)
 			{

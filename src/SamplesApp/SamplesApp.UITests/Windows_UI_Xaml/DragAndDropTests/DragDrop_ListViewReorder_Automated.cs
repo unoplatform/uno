@@ -81,3 +81,4 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		}
 	}
 }
+#endif
