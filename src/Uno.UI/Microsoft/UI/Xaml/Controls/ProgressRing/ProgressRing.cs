@@ -58,19 +58,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty dp)
 		{
-			if (_player?.Source is IDynamicAnimatedVisualSource source
+			if (_player?.Source is IThemableAnimatedVisualSource source
 				&& Brush.TryGetColorWithOpacity(Foreground, out var foreground))
 			{
-				source.SetColorProperty("Foreground", foreground);
+				source.SetColorThemeProperty("Foreground", foreground);
 			}
 		}
 
 		private void OnBackgroundPropertyChanged(DependencyObject sender, DependencyProperty dp)
 		{
-			if (_player?.Source is IDynamicAnimatedVisualSource source
+			if (_player?.Source is IThemableAnimatedVisualSource source
 				&& Brush.TryGetColorWithOpacity(Background, out var background))
 			{
-				source.SetColorProperty("Background", background);
+				source.SetColorThemeProperty("Background", background);
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_lottieProvider != null && _player != null)
 			{
-				var animatedVisualSource = _lottieProvider.CreateDynamicFromLottieAsset(FeatureConfiguration.ProgressRing.ProgressRingAsset);
+				var animatedVisualSource = _lottieProvider.CreateTheamableFromLottieAsset(FeatureConfiguration.ProgressRing.ProgressRingAsset);
 				_player.Source = animatedVisualSource;
 				ChangeVisualState();
 			}
