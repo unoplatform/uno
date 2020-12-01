@@ -625,6 +625,7 @@ namespace Windows.UI.Xaml
 			RegisterEventHandler(
 				domEventName,
 				handler: new RoutedEventHandlerWithHandled((snd, args) => RaiseEvent(routedEvent, args)),
+				invoker: GenericEventHandlers.RaiseRoutedEventHandlerWithHandled,
 				onCapturePhase: false,
 				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
 				payloadConverter: PayloadToKeyArgs
