@@ -1,5 +1,4 @@
-﻿#if !__ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -9,17 +8,31 @@ using Windows.UI.Xaml.Data;
 using Uno.Disposables;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Uno.UI.Lottie;
-using System.Linq;
-using System.Json;
 using Uno.Extensions;
+
+// **********************************************************
+// *                        ? WHY ?                         *
+// **********************************************************
+// *                                                        *
+// * This file exists only because there's a bug in the     *
+// * Xamarin Lottie Player as described in this GH issue:   *
+// * https://github.com/Baseflow/LottieXamarin/issues/303   *
+// *                                                        *
+// * Once this bug is resolved, it will be possible to      *
+// * remove this file and the dependency to Netwonsoft.Json *
+// * for the Android target of this project.                *
+// *                                                        *
+// **********************************************************
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	[Bindable]
 	public class DynamicReloadedLottieAnimatedVisualSource : LottieVisualSourceBase, IDynamicAnimatedVisualSource
 	{
-		private JsonValue? _currentDocument;
+		private JObject? _currentDocument;
 
 		private readonly Dictionary<string, ColorBinding> _colorsBindings
 			= new Dictionary<string, ColorBinding>(2);
@@ -29,13 +42,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void SetColorProperty(string propertyName, Color? color)
 		{
-			if(_colorsBindings.TryGetValue(propertyName, out var existing))
+			if (_colorsBindings.TryGetValue(propertyName, out var existing))
 			{
 				existing.NextValue = color;
 			}
 			else
 			{
-				_colorsBindings[propertyName] = new ColorBinding {NextValue = color};
+				_colorsBindings[propertyName] = new ColorBinding { NextValue = color };
 			}
 
 			if (_currentDocument == null)
@@ -50,22 +63,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 		protected override bool IsPayloadNeedsToBeUpdated => true;
-
-#if NETFRAMEWORK
-		public Task LoadForTests(
-			IInputStream sourceJson,
-			string sourceCacheKey,
-			UpdatedAnimation updateCallback)
-		{
-			_updateCallback = updateCallback;
-			return LoadAndUpdate(default, sourceCacheKey, sourceJson);
-		}
-
-		public string? GetJson()
-		{
-			return _currentDocument?.ToString();
-		}
-#endif
 
 		protected override IDisposable? LoadAndObserveAnimationData(
 			IInputStream sourceJson,
@@ -92,20 +89,17 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			_sourceCacheKey = sourceCacheKey;
 
-			// Note: we're using Newtownsoft JSON.NET here
+			// Note: we're using Newtonsoft JSON.NET here
 			// because System.Text.Json does not support changing the
 			// parsed document - it's read only.
 
 			// LOAD JSON
-			JsonObject? document;
+			JObject document;
 			using (var stream = sourceJson.AsStreamForRead(0))
 			{
-				document = JsonValue.Load(stream) as JsonObject;
-			}
-
-			if (document == null)
-			{
-				return;
+				using var streamReader = new StreamReader(stream);
+				using var reader = new JsonTextReader(streamReader);
+				document = JObject.Load(reader);
 			}
 
 			// PARSE JSON
@@ -118,7 +112,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			NotifyCallback();
 		}
 
-		private void ParseDocument(JsonObject document)
+		private void ParseDocument(JObject document)
 		{
 			_currentDocument = document;
 
@@ -127,27 +121,26 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				colorBinding.Value.Elements.Clear();
 			}
 
-			void ParseLayers(JsonArray layers)
+			void ParseLayers(JToken layersElement)
 			{
-				if (layers == null)
+				if (!(layersElement is JArray layers))
 				{
 					return; // potentially invalid lottie file
 				}
 
 				foreach (var layer in layers)
 				{
-					if (layer is JsonObject l)
+					if (layer is JObject l)
 					{
-						if (l.TryGetValue("shapes", out var shapesValue))
+						var shapesValue = l.GetValue("shapes");
+
+						if (shapesValue is JArray shapes)
 						{
-							if (shapesValue is JsonArray shapes)
+							foreach (var shape in shapes)
 							{
-								foreach (var shape in shapes)
+								if (shape is JObject s)
 								{
-									if (shape is JsonObject s)
-									{
-										ParseShape(s);
-									}
+									ParseShape(s);
 								}
 							}
 						}
@@ -155,33 +148,27 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 			}
 
-			void ParseShape(JsonObject shapeElement)
+			void ParseShape(JObject shapeElement)
 			{
-				if (!shapeElement.TryGetValue("ty", out var typeValue))
-				{
-					return; // potentially invalid lottie file
-				}
-				if (typeValue.JsonType != JsonType.String)
+				var typeValue = shapeElement.GetValue("ty");
+				if (typeValue.Type != JTokenType.String)
 				{
 					return; // potentially invalid lottie file
 				}
 
-				var shapeType = (string)typeValue;
+				var shapeType = typeValue.Value<string>();
 
 				if (shapeType != null && shapeType.Equals("gr"))
 				{
 					// That's a group
 
-					if (!shapeElement.TryGetValue("it", out var itemsProperty)
-						|| itemsProperty.JsonType != JsonType.Array)
-					{
-						return; // potentially invalid lottie file
-					}
-					if (itemsProperty is JsonArray items)
+					var itemsProperty = shapeElement.GetValue("it");
+
+					if (itemsProperty is JArray items)
 					{
 						foreach (var item in items)
 						{
-							if (item is JsonObject s)
+							if (item is JObject s)
 							{
 								ParseShape(s);
 							}
@@ -191,13 +178,14 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					return;
 				}
 
-				if(!shapeElement.TryGetValue("nm", out var nameProperty)
-					|| nameProperty.JsonType != JsonType.String)
+				var nameProperty = shapeElement.GetValue("nm");
+
+				if (nameProperty.Type != JTokenType.String)
 				{
 					return; // No name
 				}
 
-				var name = (string)nameProperty;
+				var name = nameProperty.Value<string>();
 
 				if (!string.IsNullOrWhiteSpace(name))
 				{
@@ -224,9 +212,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 			}
 
-			if (document.TryGetValue("layers", out var lyrs) && lyrs is JsonArray documentLayers)
+			if (document.TryGetValue("layers", out var layers))
 			{
-				ParseLayers(documentLayers);
+				ParseLayers(layers);
 			}
 		}
 
@@ -235,31 +223,28 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			var changed = false;
 			foreach (var colorBinding in _colorsBindings)
 			{
-				if (!(colorBinding.Value.NextValue is {} color))
+				if (!(colorBinding.Value.NextValue is { } color))
 				{
 					continue; // nothing to change
 				}
 
-				var colorComponents = new[] {color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f};
+				var colorComponents = new[] { color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f };
 
 				foreach (var element in colorBinding.Value.Elements)
 				{
-					if (element.TryGetValue("c", out var cElm)
-						&& cElm is JsonObject c
-						&& c.TryGetValue("k", out var kElm)
-						&& kElm is JsonArray k)
-					{
+					var k = (element.GetValue("c") as JObject)?.GetValue("k") as JArray;
 
+					if (k != null)
+					{
 						k.Clear();
-						k.Add(colorComponents[0]);
-						k.Add(colorComponents[1]);
-						k.Add(colorComponents[2]);
-						k.Add(colorComponents[3]);
+						k.Add(new JValue(colorComponents[0]));
+						k.Add(new JValue(colorComponents[1]));
+						k.Add(new JValue(colorComponents[2]));
+						k.Add(new JValue(colorComponents[3]));
 
 						changed = true;
 					}
 				}
-
 				colorBinding.Value.CurrentValue = colorBinding.Value.NextValue;
 				colorBinding.Value.NextValue = null;
 			}
@@ -269,9 +254,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private void NotifyCallback()
 		{
-			if (_updateCallback is {} callback)
+			if (_updateCallback is { } callback)
 			{
-				var json = _currentDocument?.ToString();
+				var json = _currentDocument?.ToString(Formatting.None);
 				if (json is { })
 				{
 					var propertiesKey = _colorsBindings
@@ -286,10 +271,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private class ColorBinding
 		{
-			internal List<JsonObject> Elements { get; } = new List<JsonObject>(1);
+			internal List<JObject> Elements { get; } = new List<JObject>(1);
 			internal Color? CurrentValue { get; set; }
 			internal Color? NextValue { get; set; }
 		}
 	}
 }
-#endif

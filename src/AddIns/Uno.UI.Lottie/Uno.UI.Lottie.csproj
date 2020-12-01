@@ -61,6 +61,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid90' or '$(TargetFramework)' == 'MonoAndroid10.0' ">
 		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="3.0.4" PrivateAssets="none" />
+		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'xamarinmac20'">
