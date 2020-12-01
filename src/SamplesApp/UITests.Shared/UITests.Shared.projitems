@@ -9,10 +9,6 @@
     <Import_RootNamespace>UITests</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Page Include="$(MSBuildThisFileDirectory)Lottie\LottieCustomThemeProperty.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Lottie\LottieEmbeddedJson.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3538,9 +3534,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\BindableBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UWPViewHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewModelBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Lottie\LottieCustomThemeProperty.xaml.cs">
-      <DependentUpon>LottieCustomThemeProperty.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Lottie\LottieEmbeddedJson.xaml.cs">
       <DependentUpon>LottieEmbeddedJson.xaml</DependentUpon>
     </Compile>
