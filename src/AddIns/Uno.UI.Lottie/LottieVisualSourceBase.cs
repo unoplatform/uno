@@ -127,7 +127,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private readonly Size CompositionSize = default;
 #endif
 
-		private SerialDisposable _updateDisposable = new SerialDisposable();
+		private readonly SerialDisposable _updateDisposable = new SerialDisposable();
 
 		public void Update(AnimatedVisualPlayer? player)
 		{
