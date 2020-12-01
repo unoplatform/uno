@@ -263,6 +263,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, XamlConstants.Types.FrameworkElement);
 		}
 
+		private bool IsDependencyObject(XamlType xamlType)
+		{
+			return IsType(xamlType, XamlConstants.Types.DependencyObject);
+		}
+
 		private bool IsAndroidView(XamlType xamlType)
 		{
 			return IsType(xamlType, "Android.Views.View");
