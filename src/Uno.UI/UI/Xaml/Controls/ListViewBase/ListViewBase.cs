@@ -659,7 +659,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.ContainerPreparedForItem(item, itemContainer, itemIndex);
 
+			PrepareContainerForDragDrop(itemContainer);
+
 			ContainerContentChanging?.Invoke(this, new ContainerContentChangingEventArgs(item, itemContainer, itemIndex));
+		}
+
+		internal override void ContainerClearedForItem(object item, SelectorItem itemContainer)
+		{
+			ClearContainerForDragDrop(itemContainer);
+
+			base.ContainerClearedForItem(item, itemContainer);
 		}
 
 		/// <summary>

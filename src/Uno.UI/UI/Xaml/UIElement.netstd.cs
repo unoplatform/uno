@@ -46,7 +46,11 @@ namespace Windows.UI.Xaml
 		internal bool IsLoading { get; private set; }
 #endif
 
-		private protected int Depth { get; private set; } = int.MinValue;
+		/// <summary>
+		/// Gets the element depth in the visual tree.
+		/// ** WARNING** This is set before the FrameworkElement loading event and cleared on unload.
+		/// </summary>
+		internal int Depth { get; private set; } = int.MinValue;
 
 		internal static void LoadingRootElement(UIElement visualTreeRoot)
 			=> visualTreeRoot.OnElementLoading(1);
