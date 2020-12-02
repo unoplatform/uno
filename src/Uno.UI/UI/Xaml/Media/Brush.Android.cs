@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Media
 		internal Paint GetFillPaint(Windows.Foundation.Rect destinationRect)
 		{
 			var paint = GetPaintInner(destinationRect);
-			paint.SetStyle(Paint.Style.Fill);
+			paint?.SetStyle(Paint.Style.Fill);
 			return paint;
 		}
 
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Media
 		internal Paint GetStrokePaint(Windows.Foundation.Rect destinationRect)
 		{
 			var paint = GetPaintInner(destinationRect);
-			paint.SetStyle(Paint.Style.Stroke);
+			paint?.SetStyle(Paint.Style.Stroke);
 			return paint;
 		}
 

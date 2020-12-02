@@ -3411,6 +3411,11 @@
 		 </Methods>
 	</IgnoreSet>
 	<IgnoreSet baseVersion="3.5.1">
+		<Types>
+			<Member
+				fullName="Windows.UI.Xaml.Shapes.ArbitraryShapeBase"
+				reason="Not part of the WinUI API." />
+		</Types>
 		<Methods>
 			<Member
 				fullName="System.Void Windows.Storage.Pickers.FileExtensionVector..ctor()"
@@ -3421,6 +3426,57 @@
 			<Member
 				fullName="System.Void Windows.Storage.Pickers.FilePickerSelectedFilesArray..ctor()"
 				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnFillChanged(Windows.UI.Xaml.Media.Brush newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnFillUpdated(Windows.UI.Xaml.Media.Brush newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeUpdated(Windows.UI.Xaml.Media.Brush newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStretchUpdated(Windows.UI.Xaml.Media.Stretch newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeThicknessUpdated(System.Double newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeDashArrayUpdated(Windows.UI.Xaml.Media.DoubleCollection newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="Windows.Foundation.Rect Windows.UI.Xaml.Shapes.Shape.GetDrawArea(Android.Graphics.Canvas canvas)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.DrawFill(Android.Graphics.Canvas canvas, Windows.Foundation.Rect fillArea, Android.Graphics.Path fillPath)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.DrawStroke(Android.Graphics.Canvas canvas, Windows.Foundation.Rect strokeArea, System.Action`3&lt;Android.Graphics.Canvas,Windows.Foundation.Rect,Android.Graphics.Paint&gt; drawingMethod)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.SetStrokeDashEffect(Android.Graphics.Paint strokePaint)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeDashArrayUpdated(Windows.UI.Xaml.Media.DoubleCollection newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="Windows.Foundation.Rect Windows.UI.Xaml.Shapes.Shape.GetDrawArea(Android.Graphics.Canvas canvas)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.DrawFill(Android.Graphics.Canvas canvas, Windows.Foundation.Rect fillArea, Android.Graphics.Path fillPath)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.DrawStroke(Android.Graphics.Canvas canvas, Windows.Foundation.Rect strokeArea, System.Action`3&lt;Android.Graphics.Canvas,Windows.Foundation.Rect,Android.Graphics.Paint&gt; drawingMethod)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.SetStrokeDashEffect(Android.Graphics.Paint strokePaint)"
+				reason="Not part of the WinUI API." />																																																						
 		</Methods>
 	</IgnoreSet>
 	<!--
