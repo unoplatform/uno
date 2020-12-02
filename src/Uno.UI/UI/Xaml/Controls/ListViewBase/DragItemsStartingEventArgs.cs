@@ -5,7 +5,7 @@ using Windows.ApplicationModel.DataTransfer;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class DragItemsStartingEventArgs 
+	public partial class DragItemsStartingEventArgs 
 	{
 		private readonly DragStartingEventArgs? _inner;
 

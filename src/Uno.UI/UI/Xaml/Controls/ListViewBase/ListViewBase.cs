@@ -19,7 +19,6 @@ using System.Collections.Specialized;
 using Uno.Extensions.Specialized;
 using System.Collections;
 using System.Linq;
-using System.Reflection;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Logging;
 using Uno.Disposables;

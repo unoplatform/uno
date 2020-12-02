@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// The current average line height based on materialized lines. Used to estimate scroll extent of unmaterialized items.
 		/// </summary>
-		protected double _averageLineHeight;
+		private double _averageLineHeight;
 
 		/// <summary>
 		/// The previous item to the old first visible item, used when a lightweight layout rebuild is called.
@@ -868,23 +868,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private double? GetItemsStart()
 		{
-			var firstView = GetFirstMaterializedLine()?.FirstView; // FUCK ICI IL FAUT QUE JE REPLACE MON ITEM AU BON ENDROIT ... le plus simple serait de déterminer le target "IndexPath"
-			//if (firstView == _pendingReorder?.element)
-			//{
-
-			//}
-
+			var firstView = GetFirstMaterializedLine()?.FirstView;
 			if (firstView != null)
 			{
 				return GetMeasuredStart(firstView);
 			}
-
-
-			//var halfLine = _averageLineHeight / 2;
-			//if (reorder.offset > extentOffset - halfLine && reorder.offset < extentOffset + halfLine)
-			//{
-			//	extentOffset += reorder.breadth;
-			//}
 
 			return null;
 		}

@@ -7,16 +7,16 @@
 		/// </summary>
 		event VectorChangedEventHandler UntypedVectorChanged;
 
-		public object this[int index] { get; }
+		object this[int index] { get; }
 
-		public int Count { get; }
+		int Count { get; }
 
-		public int IndexOf(object item);
+		int IndexOf(object item);
 
-		public void Add(object item);
+		void Add(object item);
 
-		public void Insert(int index, object item);
+		void Insert(int index, object item);
 
-		public void RemoveAt(int index);
+		void RemoveAt(int index);
 	}
 }

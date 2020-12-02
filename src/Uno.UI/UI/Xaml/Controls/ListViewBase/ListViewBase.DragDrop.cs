@@ -209,53 +209,23 @@ namespace Windows.UI.Xaml.Controls
 					ProcessMove(
 						items.Count,
 						items.IndexOf,
-						(oldIndex, newIndex) =>
-						{
-							var item = items[oldIndex];
-							items.RemoveAt(oldIndex);
-							if (newIndex >= items.Count)
-							{
-								items.Add(item);
-							}
-							else
-							{
-								items.Insert(newIndex, item);
-							}
-						});
+						(oldIndex, newIndex) => DoMove(items, oldIndex, newIndex));
 					break;
 
 				case IObservableVector vector:
 					ProcessMove(
 						vector.Count,
 						vector.IndexOf,
-						(oldIndex, newIndex) =>
-						{
-							var item = vector[oldIndex];
-							vector.RemoveAt(oldIndex);
-							if (newIndex >= vector.Count)
-							{
-								vector.Add(item);
-							}
-							else
-							{
-								vector.Insert(newIndex, item);
-							}
-						});
+						(oldIndex, newIndex) => DoMove(vector, oldIndex, newIndex));
 					break;
 
-				default:
+				case IList list when IsObservableCollection(list):
 					// The UWP ListView seems to automatically push back changes only if the ItemsSource inherits from ObservableCollection
-					var srcType = unwrappedSource.GetType();
-					if (srcType.IsGenericType
-						&& srcType.GetGenericTypeDefinition() == typeof(ObservableCollection<>)
-						&& srcType.GetMethod(nameof(ObservableCollection<object>.Move), new[] { typeof(int), typeof(int) }) is { } mv)
-					{
-						ProcessMove(
-							((ICollection)unwrappedSource).Count,
-							((ICollection)unwrappedSource).IndexOf,
-							(oldIndex, newIndex) => mv.Invoke(unwrappedSource, new object[] { oldIndex, newIndex }));
-						return;
-					}
+					// Note: UWP does not use the Move method on ObservableCollection!
+					ProcessMove(
+						list.Count,
+						list.IndexOf,
+						(oldIndex, newIndex) => DoMove(list, oldIndex, newIndex));
 					break;
 			}
 
@@ -320,5 +290,55 @@ namespace Windows.UI.Xaml.Controls
 		partial void UpdateReordering(Point location, FrameworkElement draggedContainer, object draggedItem);
 
 		partial void CompleteReordering(FrameworkElement draggedContainer, object draggedItem, ref Uno.UI.IndexPath? updatedIndex);
+
+		#region Helpers
+		private static bool IsObservableCollection(object src)
+		{
+			var srcType = src.GetType();
+			return srcType.IsGenericType && srcType.GetGenericTypeDefinition() == typeof(ObservableCollection<>);
+		}
+
+		private static void DoMove(ItemCollection items, int oldIndex, int newIndex)
+		{
+			var item = items[oldIndex];
+			items.RemoveAt(oldIndex);
+			if (newIndex >= items.Count)
+			{
+				items.Add(item);
+			}
+			else
+			{
+				items.Insert(newIndex, item);
+			}
+		}
+
+		private static void DoMove(IObservableVector vector, int oldIndex, int newIndex)
+		{
+			var item = vector[oldIndex];
+			vector.RemoveAt(oldIndex);
+			if (newIndex >= vector.Count)
+			{
+				vector.Add(item);
+			}
+			else
+			{
+				vector.Insert(newIndex, item);
+			}
+		}
+
+		private static void DoMove(IList list, int oldIndex, int newIndex)
+		{
+			var item = list[oldIndex];
+			list.RemoveAt(oldIndex);
+			if (newIndex >= list.Count)
+			{
+				list.Add(item);
+			}
+			else
+			{
+				list.Insert(newIndex, item);
+			}
+		}
+		#endregion
 	}
 }

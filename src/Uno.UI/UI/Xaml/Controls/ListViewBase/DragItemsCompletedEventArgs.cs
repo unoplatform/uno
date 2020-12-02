@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
 
-#nullable enable
-
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class DragItemsCompletedEventArgs
