@@ -1,64 +1,57 @@
 ﻿using System;
+using System.Threading;
 using Android.Animation;
 using Android.Widget;
 using Com.Airbnb.Lottie;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Android.Views;
+using Uno.Disposables;
 using Uno.UI;
 using ViewHelper = Uno.UI.ViewHelper;
+using System.Threading.Tasks;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
-	partial class LottieVisualSource
+	partial class LottieVisualSourceBase
 	{
-		private LottieAnimationView _animation;
+		private LottieAnimationView? _animation;
 
-		private LottieListener _listener;
+		private LottieListener? _listener;
 
 		private class LottieListener : AnimatorListenerAdapter
 		{
-			private readonly LottieVisualSource _lottieVisualSource;
+			private readonly LottieVisualSourceBase _lottieVisualSource;
 
-			public LottieListener(LottieVisualSource lottieVisualSource)
+			public LottieListener(LottieVisualSourceBase lottieVisualSource)
 			{
 				_lottieVisualSource = lottieVisualSource;
 			}
 
-			public override void OnAnimationCancel(Animator animation)
-			{
-				_lottieVisualSource.SetIsPlaying(false);
-			}
+			public override void OnAnimationCancel(Animator? animation) => _lottieVisualSource.SetIsPlaying(false);
 
-			public override void OnAnimationEnd(Animator animation)
-			{
-				_lottieVisualSource.SetIsPlaying(false);
-			}
+			public override void OnAnimationEnd(Animator? animation) => _lottieVisualSource.SetIsPlaying(false);
 
-			public override void OnAnimationPause(Animator animation)
-			{
-				_lottieVisualSource.SetIsPlaying(false);
-			}
+			public override void OnAnimationPause(Animator? animation) => _lottieVisualSource.SetIsPlaying(false);
 
-			public override void OnAnimationResume(Animator animation)
-			{
-				_lottieVisualSource.SetIsPlaying(true);
-			}
+			public override void OnAnimationResume(Animator? animation) => _lottieVisualSource.SetIsPlaying(true);
 
-			public override void OnAnimationStart(Animator animation)
-			{
-				_lottieVisualSource.SetIsPlaying(true);
-			}
+			public override void OnAnimationStart(Animator? animation) => _lottieVisualSource.SetIsPlaying(true);
 		}
 
 		public bool UseHardwareAcceleration { get; set; } = true;
 
-		private Uri _lastSource;
+		private Uri? _lastSource;
 		private (double fromProgress, double toProgress, bool looped)? _playState;
 
-		partial void InnerUpdate()
+		private readonly SerialDisposable _animationDataSubscription = new SerialDisposable();
+
+		async Task InnerUpdate(CancellationToken ct)
 		{
-			var player = _player;
+			if (!(_player is { } player))
+			{
+				return;
+			}
 
 			if (_animation == null)
 			{
@@ -69,48 +62,72 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				_animation.AddAnimatorListener(_listener);
 
-				SetProperties();
+				await SetProperties();
 
+				// Add the player after
 				player.AddView(_animation);
 			}
 			else
 			{
-				SetProperties();
+				await SetProperties();
 			}
 
-			void SetProperties()
+			async Task SetProperties()
 			{
-				var source = UriSource;
-				if(_lastSource == null || !_lastSource.Equals(source))
+				var sourceUri = UriSource;
+				if(_lastSource == null || !_lastSource.Equals(sourceUri))
 				{
-					_lastSource = source;
+					_lastSource = sourceUri;
 
-					if (TryLoadEmbeddedJson(source, out var json))
+					if ((await TryLoadDownloadJson(sourceUri, ct)) is { } jsonStream)
 					{
-						_animation.SetAnimationFromJson(json, source.OriginalString);
+						var first = true;
+
+						var cacheKey = sourceUri.OriginalString;
+						_animationDataSubscription.Disposable = null;
+						_animationDataSubscription.Disposable =
+							LoadAndObserveAnimationData(jsonStream, cacheKey, OnJsonChanged);
+
+						void OnJsonChanged(string updatedJson, string updatedCacheKey)
+						{
+							_animation.SetAnimationFromJson(updatedJson, updatedCacheKey);
+
+							if (_playState != null)
+							{
+								var (fromProgress, toProgress, looped) = _playState.Value;
+								Play(fromProgress, toProgress, looped);
+							}
+							else if (player.AutoPlay && first)
+							{
+								Play(0, 1, true);
+							}
+
+							first = false;
+							SetDuration();
+						}
 					}
 					else
 					{
-						var path = source?.PathAndQuery ?? "";
+						var path = sourceUri?.PathAndQuery ?? "";
 						if (path.StartsWith("/"))
 						{
 							path = path.Substring(1);
 						}
 
 						_animation.SetAnimation(path);
-					}
 
-					if (_playState != null)
-					{
-						var (fromProgress, toProgress, looped) = _playState.Value;
-						Play(fromProgress, toProgress, looped);
-					}
-					else if (player.AutoPlay)
-					{
-						Play(0, 1, true);
-					}
+						if (_playState != null)
+						{
+							var (fromProgress, toProgress, looped) = _playState.Value;
+							Play(fromProgress, toProgress, looped);
+						}
+						else if (player.AutoPlay)
+						{
+							Play(0, 1, true);
+						}
 
-					SetDuration();
+						SetDuration();
+					}
 				}
 
 				switch (player.Stretch)
@@ -137,7 +154,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			var physicalSize = size.LogicalToPhysicalPixels();
 
-			_animation.Measure(
+			_animation?.Measure(
 				ViewHelper.MakeMeasureSpec((int)physicalSize.Width, MeasureSpecMode.AtMost),
 				ViewHelper.MakeMeasureSpec((int)physicalSize.Height, MeasureSpecMode.AtMost)
 			);
@@ -145,9 +162,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private void SetDuration()
 		{
-			var duration = TimeSpan.FromMilliseconds(_animation.Duration);
-			_player?.SetValue(AnimatedVisualPlayer.DurationProperty, duration);
-			_player?.SetValue(AnimatedVisualPlayer.IsAnimatedVisualLoadedProperty, duration > TimeSpan.Zero);
+			if (_animation is { } animation)
+			{
+				var duration = TimeSpan.FromMilliseconds(animation.Duration);
+				_player?.SetValue(AnimatedVisualPlayer.DurationProperty, duration);
+				_player?.SetValue(AnimatedVisualPlayer.IsAnimatedVisualLoadedProperty, duration > TimeSpan.Zero);
+			}
 		}
 
 		public void Play(double fromProgress, double toProgress, bool looped)
@@ -158,14 +178,18 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return;
 			}
 			SetIsPlaying(true);
+			if (_animation is { } animation)
+			{
 #if __ANDROID_26__
-			_animation.RepeatCount = looped ? ValueAnimator.Infinite : 0; // Repeat count doesn't include first time.
+				animation.RepeatCount =
+					looped ? ValueAnimator.Infinite : 0; // Repeat count doesn't include first time.
 #else
-			_animation.Loop(looped);
+				animation.Loop(looped);
 #endif
-			_animation.SetMinProgress((float)fromProgress);
-			_animation.SetMaxProgress((float)toProgress);
-			_animation.PlayAnimation();
+				animation.SetMinProgress((float)fromProgress);
+				animation.SetMaxProgress((float)toProgress);
+				animation.PlayAnimation();
+			}
 		}
 
 		public void Stop()

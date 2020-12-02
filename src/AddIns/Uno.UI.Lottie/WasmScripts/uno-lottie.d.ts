@@ -8,6 +8,7 @@ declare namespace Uno.UI {
         autoplay: boolean;
         stretch: string;
         rate: number;
+        cacheKey: string;
     }
     interface RunningLottieAnimation {
         animation: Lottie.AnimationItem;

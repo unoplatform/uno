@@ -1,70 +1,97 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using Uno.Foundation;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using Uno.Extensions;
+using System.Threading.Tasks;
+using Uno.Disposables;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
-	public partial class LottieVisualSource
+	partial class LottieVisualSourceBase
 	{
 		private static readonly string UNO_BOOTSTRAP_APP_BASE = global::System.Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
 
-		private AnimatedVisualPlayer _initializedPlayer;
-		private bool _isPlaying;
+		private AnimatedVisualPlayer? _initializedPlayer;
 		private Size _compositionSize = new Size(0, 0);
-		private Uri _loadedEmbeddedUri;
 
 		private (double fromProgress, double toProgress, bool looped)? _playState;
 		private bool _isUpdating;
 
-		partial void InnerUpdate()
+		private readonly SerialDisposable _animationDataSubscription = new SerialDisposable();
+
+		async Task InnerUpdate(CancellationToken ct)
 		{
 			var player = _player;
 			if(_initializedPlayer != player)
 			{
-				player.RegisterHtmlCustomEventHandler("lottie_state", OnStateChanged, isDetailJson: false);
 				_initializedPlayer = player;
+				player?.RegisterHtmlCustomEventHandler("lottie_state", OnStateChanged, isDetailJson: false);
+			}
+
+			if (player == null || _isUpdating)
+			{
+				return;
 			}
 
 			string[] js;
 
-			var uri = UriSource;
+			var sourceUri = UriSource;
 
-			if (uri.Scheme == "embedded")
+			if ((await TryLoadDownloadJson(sourceUri, ct)) is { } jsonStream)
 			{
-				string jsonString;
+				var firstLoad = true;
 
-				if (!uri.Equals(_loadedEmbeddedUri) && TryLoadEmbeddedJson(uri, out jsonString))
-				{
-					_loadedEmbeddedUri = uri;
-				}
-				else
-				{
-					jsonString = "null";
-				}
+				var cacheKey = sourceUri.OriginalString;
+				_animationDataSubscription.Disposable = null;
+				_animationDataSubscription.Disposable =
+					LoadAndObserveAnimationData(jsonStream, cacheKey, OnJsonChanged);
 
-				js = new[]
+				void OnJsonChanged(string updatedJson, string updatedCacheKey)
 				{
-					"Uno.UI.Lottie.setAnimationProperties({",
-					"elementId:",
-					player.HtmlId.ToString(),
-					",jsonPath: null",
-					",autoplay:",
-					player.AutoPlay ? "true" : "false",
-					",stretch:\"",
-					player.Stretch.ToString(),
-					"\",rate:",
-					player.PlaybackRate.ToStringInvariant(),
-					"},",
-					jsonString,
-					");"
-				};
+					var play = _playState != null
+						|| (firstLoad && player.AutoPlay);
+
+					if (play && _playState == null)
+					{
+						_playState = (0, 1, true);
+					}
+					else if (!play)
+					{
+						_playState = null;
+					}
+
+					firstLoad = false;
+
+					js = new[]
+					{
+						"Uno.UI.Lottie.setAnimationProperties({",
+						"elementId:",
+						player.HtmlId.ToString(),
+						",jsonPath: null,autoplay:",
+						play ? "true" : "false",
+						",stretch:\"",
+						player.Stretch.ToString(),
+						"\",rate:",
+						player.PlaybackRate.ToStringInvariant(),
+						",cacheKey:\"",
+						updatedCacheKey,
+						"\"},",
+						updatedJson,
+						");"
+					};
+
+					ExecuteJs(js);
+
+					if (_playState != null)
+					{
+						var (fromProgress, toProgress, looped) = _playState.Value;
+						Play(fromProgress, toProgress, looped);
+					}
+				}
 			}
 			else
 			{
@@ -85,16 +112,32 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					player.Stretch.ToString(),
 					"\",rate:",
 					player.PlaybackRate.ToStringInvariant(),
-					"});"
+					",cacheKey:\"",
+					documentPath ?? "-n-",
+					"\"});"
 				};
+
+				ExecuteJs(js);
+
+				if (player.AutoPlay)
+				{
+					_playState = (0, 1, true);
+				}
+				else
+				{
+					_playState = null;
+				}
 			}
 
-			_isUpdating = true;
+			void ExecuteJs(string[] js)
+			{
+				_isUpdating = true;
 
-			WebAssemblyRuntime.InvokeJS(string.Concat(js));
-			_isPlaying = player.AutoPlay;
+				InvokeJs(js);
 
-			_isUpdating = false;
+				_isUpdating = false;
+			}
+
 
 			ApplyPlayState();
 		}
@@ -112,6 +155,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private void ParseStateString(string stateString)
 		{
+			if (_player == null)
+			{
+				return;
+			}
+
 			var parts = stateString.Split('|');
 			double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var w);
 			double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var h);
@@ -145,6 +193,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				return;
 			}
+
 			var js = new[]
 			{
 				"Uno.UI.Lottie.play(",
@@ -157,25 +206,27 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				looped ? "true" : "false",
 				");"
 			};
-			WebAssemblyRuntime.InvokeJS(string.Concat(js));
-			_isPlaying = true;
+
+			InvokeJs(js);
 		}
 
 		void IAnimatedVisualSource.Stop()
 		{
 			_playState = null;
+
 			if (_player == null)
 			{
 				return;
 			}
+
 			var js = new[]
 			{
 				"Uno.UI.Lottie.stop(",
 				_player.HtmlId.ToString(),
 				");"
 			};
-			WebAssemblyRuntime.InvokeJS(string.Concat(js));
-			_isPlaying = false;
+
+			InvokeJs(js);
 		}
 
 		void IAnimatedVisualSource.Pause()
@@ -184,14 +235,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				return;
 			}
+
 			var js = new[]
 			{
 				"Uno.UI.Lottie.pause(",
 				_player.HtmlId.ToString(),
 				");"
 			};
-			WebAssemblyRuntime.InvokeJS(string.Concat(js));
-			_isPlaying = false;
+
+			InvokeJs(js);
 		}
 
 		void IAnimatedVisualSource.Resume()
@@ -207,8 +259,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_player.HtmlId.ToString(),
 				");"
 			};
-			WebAssemblyRuntime.InvokeJS(string.Concat(js));
-			_isPlaying = true;
+
+			InvokeJs(js);
 		}
 
 		public void SetProgress(double progress)
@@ -217,6 +269,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				return;
 			}
+
 			var js = new[]
 			{
 				"Uno.UI.Lottie.setProgress(",
@@ -225,8 +278,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				progress.ToStringInvariant(),
 				");"
 			};
-			WebAssemblyRuntime.InvokeJS(string.Concat(js));
-			_isPlaying = true;
+
+			InvokeJs(js);
 		}
 
 		void IAnimatedVisualSource.Load()
@@ -236,12 +289,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return;
 			}
 
-			ApplyPlayState();
-
-			if (!_isPlaying)
+			if (_playState == null)
 			{
 				return;
 			}
+
+			ApplyPlayState();
 
 			var js = new[]
 			{
@@ -249,16 +302,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					_player.HtmlId.ToString(),
 					");"
 				};
-			WebAssemblyRuntime.InvokeJS(string.Concat(js));
+
+			InvokeJs(js);
 		}
+
+		private static string InvokeJs(string[] js) => WebAssemblyRuntime.InvokeJS(string.Concat(js));
 
 		void IAnimatedVisualSource.Unload()
 		{
-			if (_player == null)
-			{
-				return;
-			}
-			if (!_isPlaying)
+			if (_player == null || _playState == null)
 			{
 				return;
 			}
@@ -269,7 +321,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					_player.HtmlId.ToString(),
 					");"
 				};
-			WebAssemblyRuntime.InvokeJS(string.Concat(js));
+
+			InvokeJs(js);
 		}
 
 		private Size CompositionSize => _compositionSize;

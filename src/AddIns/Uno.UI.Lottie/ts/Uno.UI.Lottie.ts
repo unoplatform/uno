@@ -10,6 +10,7 @@ namespace Uno.UI {
 		autoplay: boolean;
 		stretch: string;
 		rate: number;
+		cacheKey: string;
 	}
 
 	export interface RunningLottieAnimation {
@@ -22,7 +23,9 @@ namespace Uno.UI {
 		private static _runningAnimations: { [id: number]: RunningLottieAnimation } = {};
 		private static _numberOfFrames: number;
 
-		public static setAnimationProperties(newProperties: LottieAnimationProperties, animationData?: AnimationData): string {
+		public static setAnimationProperties(
+			newProperties: LottieAnimationProperties,
+			animationData?: AnimationData): string {
 			const elementId = newProperties.elementId;
 
 			Lottie.withPlayer(p => {
@@ -117,6 +120,9 @@ namespace Uno.UI {
 
 		private static needNewPlayerAnimation(current: LottieAnimationProperties, newProperties: LottieAnimationProperties): boolean {
 
+			if (current.cacheKey !== newProperties.cacheKey) {
+				return true;
+			}
 			if (current.jsonPath !== newProperties.jsonPath) {
 				return true;
 			}

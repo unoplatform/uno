@@ -86,6 +86,7 @@
 		<EmbeddedResource Include="Windows_UI_Xaml_Markup\XamlReaderTests\*.xamltest" />
 	</ItemGroup>
 	<ItemGroup>
+	  <EmbeddedResource Include="Lottie\animation.json" />
 	  <EmbeddedResource Include="Windows_Data_Xml\DomTests\basictest.xml" />
 	  <EmbeddedResource Include="Windows_UI_XAML_Controls\UserControlTests\UserControl_WriteOnlyProperty_UserControl.xaml">
 	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
@@ -100,12 +101,14 @@
 		<Page Include="Windows_UI_Xaml_Data\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Controls\**\*.xaml" />
 		<Page Include="App\**\*.xaml" />
+		<None Remove="Lottie\animation.json" />
 		<Page Include="..\SamplesApp\UITests.Shared\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
