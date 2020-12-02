@@ -114,7 +114,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					player.PlaybackRate.ToStringInvariant(),
 					",cacheKey:\"",
 					documentPath ?? "-n-",
-					"\"};"
+					"\"});"
 				};
 
 				ExecuteJs(js);
