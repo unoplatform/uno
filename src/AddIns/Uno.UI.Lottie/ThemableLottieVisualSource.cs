@@ -104,7 +104,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			foreach (var colorBinding in _colorsBindings)
 			{
 				colorBinding.Value.Elements.Clear();
-				colorBinding.Value.NextValue = colorBinding.Value.CurrentValue;
+				colorBinding.Value.NextValue ??= colorBinding.Value.CurrentValue;
 			}
 
 			void ParseLayers(JsonArray layers)

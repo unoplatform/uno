@@ -58,7 +58,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 #if HAS_UNO_WINUI
 		[NotImplemented]
-		public IAnimatedVisual TryCreateAnimatedVisual(Compositor compositor, out object diagnostics)
+		public IAnimatedVisual TryCreateAnimatedVisual(Windows.UI.Composition.Compositor compositor, out object diagnostics)
 		{
 			throw new NotImplementedException();
 		}
@@ -141,6 +141,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				var t = InnerUpdate(cts.Token);
 			}
 		}
+
+#if __NETSTD__ && !__WASM__
+		private async Task InnerUpdate(CancellationToken ct)
+		{
+			throw new NotSupportedException("Lottie on this platform is not supported yet.");
+		}
+#endif
 
 		/// <summary>
 		/// If the payload needs to be altered before being feed to the player

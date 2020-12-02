@@ -13,12 +13,12 @@ using Uno.Threading;
 namespace Uno.UI.Tests.Lottie
 {
 	[TestClass]
-	public class Given_DynamicReloadedLottieAnimatedVisualSource
+	public class Given_ThemableLottieVisualSource
 	{
 		[TestMethod]
-		public async Task DynamicReloadedLottieAnimatedVisualSource_SimpleLoading()
+		public async Task ThemableLottieVisualSource_SimpleLoading()
 		{
-			var sut = new DynamicReloadedLottieAnimatedVisualSource();
+			var sut = new ThemableLottieVisualSource();
 
 			var results = new List<string>();
 
@@ -33,15 +33,17 @@ namespace Uno.UI.Tests.Lottie
 		}
 
 		[TestMethod]
-		public async Task DynamicReloadedLottieAnimatedVisualSource_ValueSet_BeforeLoading()
+		public async Task ThemableLottieVisualSource_ValueSet_BeforeLoading()
 		{
-			var reference = new DynamicReloadedLottieAnimatedVisualSource();
+			var reference = new ThemableLottieVisualSource();
 
 			await reference.LoadForTests(GetStream(), "cache-key", (x, y) => { });
 
-			var sut = new DynamicReloadedLottieAnimatedVisualSource();
+			var sut = new ThemableLottieVisualSource();
 
-			sut.SetColorProperty("Foreground", Color.FromArgb(1, 2, 3, 4));
+			var color = Color.FromArgb(1, 2, 3, 4);
+			sut.SetColorThemeProperty("Foreground", color);
+			sut.GetColorThemeProperty("Foreground").Should().Be(color);
 
 			var results = new List<string>();
 
@@ -56,16 +58,17 @@ namespace Uno.UI.Tests.Lottie
 
 			var jsonReference = reference.GetJson();
 			sut.GetJson().Should().NotBe(jsonReference);
+			sut.GetColorThemeProperty("Foreground").Should().Be(color);
 		}
 
 		[TestMethod]
-		public async Task DynamicReloadedLottieAnimatedVisualSource_ValueSet_AfterLoading()
+		public async Task ThemableLottieVisualSource_ValueSet_AfterLoading()
 		{
-			var reference = new DynamicReloadedLottieAnimatedVisualSource();
+			var reference = new ThemableLottieVisualSource();
 
 			await reference.LoadForTests(GetStream(), "cache-key", (x, y) => { });
 
-			var sut = new DynamicReloadedLottieAnimatedVisualSource();
+			var sut = new ThemableLottieVisualSource();
 
 			var results = new List<string>();
 
@@ -78,12 +81,15 @@ namespace Uno.UI.Tests.Lottie
 
 			results.Should().HaveCount(1);
 
-			sut.SetColorProperty("Foreground", Color.FromArgb(1, 2, 3, 4));
+			var color = Color.FromArgb(1, 2, 3, 4);
+			sut.SetColorThemeProperty("Foreground", color);
+			sut.GetColorThemeProperty("Foreground").Should().Be(color);
 
 			results.Should().HaveCount(2);
 
 			var jsonReference = reference.GetJson();
 			sut.GetJson().Should().NotBe(jsonReference);
+			sut.GetColorThemeProperty("Foreground").Should().Be(color);
 		}
 
 		private IInputStream GetStream(string name = "animation.json")
