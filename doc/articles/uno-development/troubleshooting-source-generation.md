@@ -1,5 +1,36 @@
 # Troubleshooting Source Generation
 
+Source Generation in Uno is done in one of two ways:
+- Using [C# 9.0 source generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/)
+- Using [Uno.SourceGeneration](https://github.com/unoplatform/uno.sourcegeneration) generators
+
+C# 9.0 generators are enabled automatically when using .NET 5 and up projects, otherwise Uno.SourceGeneration generators are used.
+
+It is possible to enable C# 9.0 generators for non .NET 5+ projects by adding this:
+```xml
+<PropertyGroup>
+  <LangVersion>9.0</LangVersion>
+  <UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
+</PropertyGroup>
+```
+Conversely, Uno.SourceGeneration generators can be used by setting this:
+```xml
+<PropertyGroup>
+  <UnoUIUseRoslynSourceGenerators>false</UnoUIUseRoslynSourceGenerators>
+</PropertyGroup>
+```
+
+## Debugging the XAML Source Generator
+It is possible to step into the XAML generator by adding the following property:
+```xml
+<PropertyGroup>
+  <UnoUISourceGeneratorDebuggerBreak>True</UnoUISourceGeneratorDebuggerBreak>
+</PropertyGroup>
+```
+Setting this property will popup a Debugger window allowing the selection of a visual studio instance, giving the ability to set breakpoints and trace the generator.
+
+## Troubleshooting Uno.SourceGeneration based generation
+
 When building, if you're having build error messages that looks like one of those:
 
 - `the targets [Microsoft.Build.Execution.TargetResult] failed to execute.`

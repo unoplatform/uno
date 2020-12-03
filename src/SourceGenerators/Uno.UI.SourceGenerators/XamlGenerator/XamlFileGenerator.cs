@@ -631,7 +631,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildLiteralProperties(blockWriter, topLevelControl, closure);
 				}
 
-				if (IsFrameworkElement(topLevelControl.Type))
+				if (IsDependencyObject(topLevelControl))
 				{
 					BuildExtendedProperties(writer, topLevelControl, isDirectUserControlChild, useGenericApply: true);
 				}
