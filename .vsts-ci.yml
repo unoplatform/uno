@@ -83,7 +83,8 @@ jobs:
 
 - template: build/ci/.azure-devops-android-tests.yml
   parameters:
-    vmImage: '$(macOSVMImage)'
+    vmWindowsImage: '$(windowsHostedVMImage)'
+    vmMacOSImage: '$(macOSVMImage)'
     xCodeRoot: '$(xCodeRoot)'
     XamarinSDKVersion: '$(XamarinSDKVersion)'
 
