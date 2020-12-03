@@ -16,12 +16,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
-<<<<<<< HEAD
 		<PackageReference Include="Uno.SourceGenerationTasks" Version="2.0.6" />
-=======
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="System.Json" />
->>>>>>> 41af71055... chore(lottie): Removed the dependency to Newtownsoft's JSON.NET
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />
