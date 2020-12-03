@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 				_sectionEnd[group] = GetExtentEnd(frame);
 
 				IncrementExtent(ref frame);
-				measuredBreadth = NMath.Max(measuredBreadth, GetBreadth(frame.Size));
+				measuredBreadth = NMath.Max(measuredBreadth, GetBreadthEnd(frame));
 			}
 			return measuredBreadth;
 		}

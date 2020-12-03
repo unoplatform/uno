@@ -1516,7 +1516,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private nfloat GetBreadthEnd(CGRect frame)
+		protected nfloat GetBreadthEnd(CGRect frame)
 		{
 			if (ScrollOrientation == Orientation.Vertical)
 			{
