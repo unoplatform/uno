@@ -248,8 +248,10 @@ namespace Windows.UI.Xaml.Media
 					this.Log().Debug($"Loading image from [{WebUri.OriginalString}]");
 				}
 
+#pragma warning disable CS0618
 				// fallback on the platform's loader
 				using (var data = NSData.FromUrl(url, NSDataReadingOptions.Coordinated, out error))
+#pragma warning restore CS0618
 				{
 					if (error != null)
 					{
