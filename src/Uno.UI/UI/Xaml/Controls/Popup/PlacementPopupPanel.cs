@@ -141,23 +141,23 @@ namespace Windows.UI.Xaml.Controls
 				{
 					case FlyoutBase.MajorPlacementMode.Top:
 						finalPosition = new Point(
-							x: Math.Max(anchorRect.Left + halfAnchorWidth - halfChildWidth, 0d),
-							y: Math.Max(anchorRect.Top - PopupPlacementTargetMargin - desiredSize.Height, 0d));
+							x: anchorRect.Left + halfAnchorWidth - halfChildWidth,
+							y: anchorRect.Top - PopupPlacementTargetMargin - desiredSize.Height);
 						break;
 					case FlyoutBase.MajorPlacementMode.Bottom:
 						finalPosition = new Point(
-							x: Math.Max(anchorRect.Left + halfAnchorWidth - halfChildWidth, 0d),
+							x: anchorRect.Left + halfAnchorWidth - halfChildWidth,
 							y: anchorRect.Bottom + PopupPlacementTargetMargin);
 						break;
 					case FlyoutBase.MajorPlacementMode.Left:
 						finalPosition = new Point(
-							x: Math.Max(anchorRect.Left - PopupPlacementTargetMargin - desiredSize.Width, 0d),
-							y: Math.Max(anchorRect.Top + halfAnchorHeight - halfChildHeight, 0d));
+							x: anchorRect.Left - PopupPlacementTargetMargin - desiredSize.Width,
+							y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
 						break;
 					case FlyoutBase.MajorPlacementMode.Right:
 						finalPosition = new Point(
 							x: anchorRect.Right + PopupPlacementTargetMargin,
-							y: Math.Max(anchorRect.Top + halfAnchorHeight - halfChildHeight, 0d));
+							y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
 						break;
 					case FlyoutBase.MajorPlacementMode.Full:
 						desiredSize = visibleBounds.Size.AtMost(maxSize);
