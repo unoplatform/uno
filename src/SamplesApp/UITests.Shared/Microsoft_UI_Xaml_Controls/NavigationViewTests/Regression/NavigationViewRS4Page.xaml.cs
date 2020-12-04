@@ -45,7 +45,11 @@ namespace MUXControlsTestApp
             IntegerItem.Content = 7; // Testing that boxed ints don't cause crashes in tooltips
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        protected
+#if HAS_UNO
+			internal
+#endif
+			override void OnNavigatedFrom(NavigationEventArgs e)
         {
             // Unset all override flags to avoid impacting subsequent tests
             //MaterialHelperTestApi.IgnoreAreEffectsFast = false;
@@ -365,7 +369,7 @@ namespace MUXControlsTestApp
             var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
             if (popups != null && popups.Count > 0)
             {
-                Popup popup = popups[0];
+                var popup = popups[0];
                 ToolTip toolTip = popup.Child as ToolTip;
                 ToolTipStatusTextBlock.Text = toolTip.Content.ToString();
             }

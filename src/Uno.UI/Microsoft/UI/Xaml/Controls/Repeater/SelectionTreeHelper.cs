@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var node = root;
 			for (int depth = 0; depth < path.GetSize(); depth++)
 			{
-				const int childIndex = path.GetAt(depth);
+				int childIndex = path.GetAt(depth);
 				nodeAction(node, path, depth, childIndex);
 
 				if (depth < path.GetSize() - 1)
@@ -58,9 +58,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			while (pendingNodes.Count > 0)
 			{
-				var nextNode = pendingNodes.back();
-				pendingNodes.pop_back();
-				const int count = realizeChildren ? nextNode.Node->DataCount() : nextNode.Node->ChildrenNodeCount();
+				var nextNode = pendingNodes[pendingNodes.Count - 1];
+				pendingNodes.RemoveAt(pendingNodes.Count - 1);
+				int count = realizeChildren ? nextNode.Node.DataCount : nextNode.Node.ChildrenNodeCount;
 				for (int i = count - 1; i >= 0; i--)
 				{
 					SelectionNode child = nextNode.Node.GetAt(i, realizeChildren);
@@ -94,43 +94,41 @@ namespace Microsoft.UI.Xaml.Controls
 				root,
 				start,
 				true, /* realizeChildren */
-
-
-				[&start, &end, &pendingNodes](std::shared_ptr < SelectionNode > node, const winrt::IndexPath&path, int depth, int childIndex)
-    {
-				var currentPath = StartPath(path, depth);
-				bool isStartPath = IsSubSet(start, currentPath);
-				bool isEndPath = IsSubSet(end, currentPath);
-
-				int startIndex = depth < start.GetSize() && isStartPath ? Math.Max(0, start.GetAt(depth)) : 0;
-				int endIndex = depth < end.GetSize() && isEndPath ? Math.Min(node.DataCount() - 1, end.GetAt(depth)) : node.DataCount() - 1;
-
-				for (int i = endIndex; i >= startIndex; i--)
+				(SelectionNode node, IndexPath path, int depth, int childIndex) =>
 				{
-					var child = node->GetAt(i, true /* realizeChild */);
-					if (child)
+					var currentPath = StartPath(path, depth);
+					bool isStartPath = IsSubSet(start, currentPath);
+					bool isEndPath = IsSubSet(end, currentPath);
+
+					int startIndex = depth < start.GetSize() && isStartPath ? Math.Max(0, start.GetAt(depth)) : 0;
+					int endIndex = depth < end.GetSize() && isEndPath ? Math.Min(node.DataCount - 1, end.GetAt(depth)) : node.DataCount - 1;
+
+					for (int i = endIndex; i >= startIndex; i--)
 					{
-						var childPath = currentPath.CloneWithChildIndex(i);
-						pendingNodes.Add(new TreeWalkNodeInfo(child, childPath, node));
+						var child = node.GetAt(i, true /* realizeChild */);
+						if (child != null)
+						{
+							var childPath = currentPath.CloneWithChildIndex(i);
+							pendingNodes.Add(new TreeWalkNodeInfo(child, childPath, node));
+						}
 					}
-				}
-			});
+				});
 
 			// From the start index path, do a depth first walk as long as the
 			// current path is less than the end path.
 			while (pendingNodes.Count > 0)
 			{
-				var info = pendingNodes.back();
-				pendingNodes.pop_back();
+				var info = pendingNodes[pendingNodes.Count - 1];
+				pendingNodes.RemoveAt(pendingNodes.Count - 1);
 				int depth = info.Path.GetSize();
 				bool isStartPath = IsSubSet(start, info.Path);
 				bool isEndPath = IsSubSet(end, info.Path);
 				int startIndex = depth < start.GetSize() && isStartPath ? start.GetAt(depth) : 0;
-				int endIndex = depth < end.GetSize() && isEndPath ? end.GetAt(depth) : info.Node->DataCount() - 1;
+				int endIndex = depth < end.GetSize() && isEndPath ? end.GetAt(depth) : info.Node.DataCount - 1;
 				for (int i = endIndex; i >= startIndex; i--)
 				{
-					var child = info.Node->GetAt(i, true /* realizeChild */);
-					if (child)
+					var child = info.Node.GetAt(i, true /* realizeChild */);
+					if (child != null)
 					{
 						var childPath = info.Path.CloneWithChildIndex(i);
 						pendingNodes.Add(new TreeWalkNodeInfo(child, childPath, info.Node));

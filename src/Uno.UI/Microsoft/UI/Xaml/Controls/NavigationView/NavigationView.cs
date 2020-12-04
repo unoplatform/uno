@@ -108,75 +108,77 @@ namespace Microsoft.UI.Xaml.Controls
 			return new NavigationViewAutomationPeer(this);
 		}
 
-		void UnhookEventsAndClearFields(bool isFromDestructor)
+		internal void UnhookEventsAndClearFields(bool isFromDestructor = false)
 		{
 			//TODO: MZ: Implement
 
-			//m_titleBarMetricsChangedRevoker.revoke();
-			//m_titleBarIsVisibleChangedRevoker.revoke();
-			//m_paneToggleButtonClickRevoker.revoke();
+			m_titleBarMetricsChangedRevoker.Disposable = null;
+			m_titleBarIsVisibleChangedRevoker.Disposable = null;
+			m_paneToggleButtonClickRevoker.Disposable = null;
 
-			//m_settingsItem = null;
+			m_settingsItem = null;
 
-			//m_paneSearchButtonClickRevoker.revoke();
-			//m_paneSearchButton = null;
+			m_paneSearchButtonClickRevoker.Disposable = null;
+			m_paneSearchButton = null;
 
-			//m_paneHeaderOnTopPane = null;
-			//m_paneTitleOnTopPane = null;
+			m_paneHeaderOnTopPane = null;
+			m_paneTitleOnTopPane = null;
 
-			//m_itemsContainerSizeChangedRevoker.revoke();
-			//m_paneTitleHolderFrameworkElementSizeChangedRevoker.revoke();
-			//m_paneTitleHolderFrameworkElement = null;
+			m_itemsContainerSizeChangedRevoker.Disposable = null;
+			m_paneTitleHolderFrameworkElementSizeChangedRevoker.Disposable = null;
+			m_paneTitleHolderFrameworkElement = null;
 
-			//m_paneTitleFrameworkElement = null;
-			//m_paneTitlePresenter = null;
+			m_paneTitleFrameworkElement = null;
+			m_paneTitlePresenter = null;
 
-			//m_paneHeaderCloseButtonColumn = null;
-			//m_paneHeaderToggleButtonColumn = null;
-			//m_paneHeaderContentBorderRow = null;
+			m_paneHeaderCloseButtonColumn = null;
+			m_paneHeaderToggleButtonColumn = null;
+			m_paneHeaderContentBorderRow = null;
 
-			//m_leftNavItemsRepeaterElementPreparedRevoker.revoke();
-			//m_leftNavItemsRepeaterElementClearingRevoker.revoke();
-			//m_leftNavRepeaterLoadedRevoker.revoke();
-			//m_leftNavRepeaterGettingFocusRevoker.revoke();
-			//m_leftNavRepeater = null;
+			m_leftNavItemsRepeaterElementPreparedRevoker.Disposable = null;
+			m_leftNavItemsRepeaterElementClearingRevoker.Disposable = null;
+			m_leftNavRepeaterLoadedRevoker.Disposable = null;
+			m_leftNavRepeaterGettingFocusRevoker.Disposable = null;
+			m_leftNavRepeater = null;
 
-			//m_topNavItemsRepeaterElementPreparedRevoker.revoke();
-			//m_topNavItemsRepeaterElementClearingRevoker.revoke();
-			//m_topNavRepeaterLoadedRevoker.revoke();
-			//m_topNavRepeaterGettingFocusRevoker.revoke();
-			//m_topNavRepeater = null;
+			m_topNavItemsRepeaterElementPreparedRevoker.Disposable = null;
+			m_topNavItemsRepeaterElementClearingRevoker.Disposable = null;
+			m_topNavRepeaterLoadedRevoker.Disposable = null;
+			m_topNavRepeaterGettingFocusRevoker.Disposable = null;
+			m_topNavRepeater = null;
 
-			//m_leftNavFooterMenuItemsRepeaterElementPreparedRevoker.revoke();
-			//m_leftNavFooterMenuItemsRepeaterElementClearingRevoker.revoke();
-			//m_leftNavFooterMenuRepeaterLoadedRevoker.revoke();
-			//m_leftNavFooterMenuRepeaterGettingFocusRevoker.revoke();
-			//m_leftNavFooterMenuRepeater = null;
+			m_leftNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = null;
+			m_leftNavFooterMenuItemsRepeaterElementClearingRevoker.Disposable = null;
+			m_leftNavFooterMenuRepeaterLoadedRevoker.Disposable = null;
+			m_leftNavFooterMenuRepeaterGettingFocusRevoker.Disposable = null;
+			m_leftNavFooterMenuRepeater = null;
 
-			//m_topNavFooterMenuItemsRepeaterElementPreparedRevoker.revoke();
-			//m_topNavFooterMenuItemsRepeaterElementClearingRevoker.revoke();
-			//m_topNavFooterMenuRepeaterLoadedRevoker.revoke();
-			//m_topNavFooterMenuRepeaterGettingFocusRevoker.revoke();
-			//m_topNavFooterMenuRepeater = null;
+			m_topNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = null;
+			m_topNavFooterMenuItemsRepeaterElementClearingRevoker.Disposable = null;
+			m_topNavFooterMenuRepeaterLoadedRevoker.Disposable = null;
+			m_topNavFooterMenuRepeaterGettingFocusRevoker.Disposable = null;
+			m_topNavFooterMenuRepeater = null;
 
-			//m_footerItemsCollectionChangedRevoker.revoke();
-			//m_menuItemsCollectionChangedRevoker.revoke();
+			m_footerItemsCollectionChangedRevoker.Disposable = null;
+			m_menuItemsCollectionChangedRevoker.Disposable = null;
 
-			//m_topNavOverflowItemsRepeaterElementPreparedRevoker.revoke();
-			//m_topNavOverflowItemsRepeaterElementClearingRevoker.revoke();
-			//m_topNavRepeaterOverflowView = null;
+			m_topNavOverflowItemsRepeaterElementPreparedRevoker.Disposable = null;
+			m_topNavOverflowItemsRepeaterElementClearingRevoker.Disposable = null;
+			m_topNavRepeaterOverflowView = null;
 
-			//m_topNavOverflowItemsCollectionChangedRevoker.revoke();
+			m_topNavOverflowItemsCollectionChangedRevoker.Disposable = null;
 
-			//if (isFromDestructor)
-			//{
-			//	m_selectionChangedRevoker.revoke();
-			//	m_autoSuggestBoxSuggestionChosenRevoker.revoke();
-			//}
+			if (isFromDestructor)
+			{
+				m_selectionChangedRevoker.Disposable = null;
+				m_autoSuggestBoxSuggestionChosenRevoker.Disposable = null;
+			}
 		}
 
 		public NavigationView()
 		{
+			// Uno specific - need to initialize here to be able to use "this"
+			m_topDataProvider = new TopNavigationViewDataProvider(this);
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_NavigationView);
 			SetValue(TemplateSettingsProperty, new NavigationViewTemplateSettings());
 			DefaultStyleKey = typeof(NavigationView);
@@ -207,18 +209,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_selectionModel.SingleSelect = true;
 			m_selectionModel.Source = m_selectionModelSource;
-			m_selectionChangedRevoker = m_selectionModel.SelectionChanged += OnSelectionModelSelectionChanged;
-			m_childrenRequestedRevoker = m_selectionModel.ChildrenRequested += OnSelectionModelChildrenRequested;
+			m_selectionModel.SelectionChanged += OnSelectionModelSelectionChanged;
+			m_selectionChangedRevoker.Disposable = Disposable.Create(() => m_selectionModel.SelectionChanged -= OnSelectionModelSelectionChanged);
+			m_selectionModel.ChildrenRequested += OnSelectionModelChildrenRequested;
+			m_childrenRequestedRevoker.Disposable = Disposable.Create(() => m_selectionModel.ChildrenRequested -= OnSelectionModelChildrenRequested);
 
 			m_navigationViewItemsFactory = new NavigationViewItemsFactory();
-
-			NavigationViewItemRevokersProperty =
-				InitializeDependencyProperty(
-					"NavigationViewItemRevokers",
-					name_of<object>(),
-					name_of<NavigationViewItem>(),
-					true /* isAttached */,
-					null /* defaultValue */);
 		}
 
 		private void OnSelectionModelChildrenRequested(SelectionModel selectionModel, SelectionModelChildrenRequestedEventArgs e)
@@ -242,7 +238,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnFooterItemsSourceCollectionChanged(object, object)
+		private void OnFooterItemsSourceCollectionChanged(object sender, object args)
 		{
 			UpdateFooterRepeaterItemsSource(false /*sourceCollectionReset*/, true /*sourceCollectionChanged*/);
 
@@ -250,9 +246,9 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdatePaneLayout();
 		}
 
-		void OnOverflowItemsSourceCollectionChanged(object, object)
+		private void OnOverflowItemsSourceCollectionChanged(object sender, object args)
 		{
-			if (m_topNavRepeaterOverflowView.ItemsSourceView().Count() == 0)
+			if (m_topNavRepeaterOverflowView.ItemsSourceView.Count == 0)
 			{
 				SetOverflowButtonVisibility(Visibility.Collapsed);
 			}
@@ -280,13 +276,13 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsTopNavigationView())
 			{
 				// If selectedIndex does not exist, means item is being deselected through API
-				var isInOverflow = (selectedIndex && selectedIndex.GetSize() > 1)
+				var isInOverflow = (selectedIndex != null && selectedIndex.GetSize() > 1)
 					? selectedIndex.GetAt(0) == c_mainMenuBlockIndex && !m_topDataProvider.IsItemInPrimaryList(selectedIndex.GetAt(1))
 					: false;
 				if (isInOverflow)
 				{
 					// We only want to close the overflow flyout and move the item on selection if it is a leaf node
-					bool GetItemShouldBeMoved(int selectedIndex)
+					bool GetItemShouldBeMoved(IndexPath selectedIndex)
 					{
 						var selectedContainer = GetContainerForIndexPath(selectedIndex);
 						if (selectedContainer != null)
@@ -365,7 +361,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			bool isInModeWithFlyout = GetIsInModeWithFlyout();
 
-			if (isInModeWithFlyout && selectedIndex && !DoesNavigationViewItemHaveChildren(selectedItem))
+			if (isInModeWithFlyout && selectedIndex != null && !DoesNavigationViewItemHaveChildren(selectedItem))
 			{
 				// Item selected is a leaf node, find top level parent and close flyout
 				var rootItem = GetContainerForIndex(selectedIndex.GetAt(1), selectedIndex.GetAt(0) == c_footerMenuBlockIndex /* inFooter */);
@@ -400,7 +396,8 @@ namespace Microsoft.UI.Xaml.Controls
 				if (paneToggleButton != null)
 				{
 					m_paneToggleButton = paneToggleButton;
-					m_paneToggleButtonClickRevoker = paneToggleButton.Click += OnPaneToggleButtonClick;
+					paneToggleButton.Click += OnPaneToggleButtonClick;
+					m_paneToggleButtonClickRevoker.Disposable = Disposable.Create(() => paneToggleButton.Click -= OnPaneToggleButtonClick);
 
 					SetPaneToggleButtonAutomationName();
 
@@ -426,16 +423,22 @@ namespace Microsoft.UI.Xaml.Controls
 				if (splitView != null)
 				{
 					m_rootSplitView = splitView;
-					m_splitViewIsPaneOpenChangedRevoker = splitView.RegisterPropertyChangedCallback(SplitView.IsPaneOpenProperty, OnSplitViewClosedCompactChanged);
+					var splitViewIsPaneOpenSubscription = splitView.RegisterPropertyChangedCallback(SplitView.IsPaneOpenProperty, OnSplitViewClosedCompactChanged);
+					m_splitViewIsPaneOpenChangedRevoker.Disposable = Disposable.Create(() => splitView.UnregisterPropertyChangedCallback(SplitView.IsPaneOpenProperty, splitViewIsPaneOpenSubscription));
 
-					m_splitViewDisplayModeChangedRevoker = splitView.RegisterPropertyChangedCallback(SplitView.DisplayModeProperty, OnSplitViewClosedCompactChanged);
+					var splitViewDisplayModeChangedSubscription = splitView.RegisterPropertyChangedCallback(SplitView.DisplayModeProperty, OnSplitViewClosedCompactChanged);
+					m_splitViewDisplayModeChangedRevoker.Disposable = Disposable.Create(() => splitView.UnregisterPropertyChangedCallback(SplitView.DisplayModeProperty, splitViewDisplayModeChangedSubscription));
 
 					if (SharedHelpers.IsRS3OrHigher()) // These events are new to RS3/v5 API
 					{
-						m_splitViewPaneClosedRevoker = splitView.PaneClosed += OnSplitViewPaneClosed;
-						m_splitViewPaneClosingRevoker = splitView.PaneClosing += OnSplitViewPaneClosing;
-						m_splitViewPaneOpenedRevoker = splitView.PaneOpened += OnSplitViewPaneOpened;
-						m_splitViewPaneOpeningRevoker = splitView.PaneOpening += OnSplitViewPaneOpening;
+						splitView.PaneClosed += OnSplitViewPaneClosed;
+						m_splitViewPaneClosedRevoker.Disposable = Disposable.Create(() => splitView.PaneClosed -= OnSplitViewPaneClosed);
+						splitView.PaneClosing += OnSplitViewPaneClosing;
+						m_splitViewPaneClosingRevoker.Disposable = Disposable.Create(() => splitView.PaneClosing -= OnSplitViewPaneClosing);
+						splitView.PaneOpened += OnSplitViewPaneOpened;
+						m_splitViewPaneOpenedRevoker.Disposable = Disposable.Create(() => splitView.PaneOpened -= OnSplitViewPaneOpened);
+						splitView.PaneOpening += OnSplitViewPaneOpening;
+						m_splitViewPaneOpeningRevoker.Disposable = Disposable.Create(() => splitView.PaneOpening -= OnSplitViewPaneOpening);
 					}
 
 					UpdateIsClosedCompact();
@@ -457,12 +460,16 @@ namespace Microsoft.UI.Xaml.Controls
 						stackLayoutImpl.DisableVirtualization = true;
 					}
 
-					m_leftNavItemsRepeaterElementPreparedRevoker = leftNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
-					m_leftNavItemsRepeaterElementClearingRevoker = leftNavRepeater.ElementClearing += OnRepeaterElementClearing;
+					leftNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
+					m_leftNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
+					leftNavRepeater.ElementClearing += OnRepeaterElementClearing;
+					m_leftNavItemsRepeaterElementClearingRevoker.Disposable = Disposable.Create(() => leftNavRepeater.ElementClearing -= OnRepeaterElementClearing);
 
-					m_leftNavRepeaterLoadedRevoker = leftNavRepeater.Loaded += OnRepeaterLoaded;
+					leftNavRepeater.Loaded += OnRepeaterLoaded;
+					m_leftNavRepeaterLoadedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.Loaded -= OnRepeaterLoaded);
 
-					m_leftNavRepeaterGettingFocusRevoker = leftNavRepeater.GettingFocus += OnRepeaterGettingFocus;
+					leftNavRepeater.GettingFocus += OnRepeaterGettingFocus;
+					m_leftNavRepeaterGettingFocusRevoker.Disposable = Disposable.Create(() => leftNavRepeater.GettingFocus -= OnRepeaterGettingFocus);
 
 					leftNavRepeater.ItemTemplate = m_navigationViewItemsFactory;
 				}
@@ -480,12 +487,16 @@ namespace Microsoft.UI.Xaml.Controls
 						stackLayoutImpl.DisableVirtualization = true;
 					}
 
-					m_topNavItemsRepeaterElementPreparedRevoker = topNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
-					m_topNavItemsRepeaterElementClearingRevoker = topNavRepeater.ElementClearing += OnRepeaterElementClearing;
+					topNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
+					m_topNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
+					topNavRepeater.ElementClearing += OnRepeaterElementClearing;
+					m_topNavItemsRepeaterElementClearingRevoker.Disposable = Disposable.Create(() => topNavRepeater.ElementClearing -= OnRepeaterElementClearing);
 
-					m_topNavRepeaterLoadedRevoker = topNavRepeater.Loaded += OnRepeaterLoaded;
+					topNavRepeater.Loaded += OnRepeaterLoaded;
+					m_topNavRepeaterLoadedRevoker.Disposable = Disposable.Create(() => topNavRepeater.Loaded -= OnRepeaterLoaded);
 
-					m_topNavRepeaterGettingFocusRevoker = topNavRepeater.GettingFocus += OnRepeaterGettingFocus;
+					topNavRepeater.GettingFocus += OnRepeaterGettingFocus;
+					m_topNavRepeaterGettingFocusRevoker.Disposable = Disposable.Create(() => topNavRepeater.GettingFocus -= OnRepeaterGettingFocus);
 
 					topNavRepeater.ItemTemplate = m_navigationViewItemsFactory;
 				}
@@ -501,11 +512,13 @@ namespace Microsoft.UI.Xaml.Controls
 					if (topNavListOverflowRepeater.Layout is StackLayout stackLayout)
 					{
 						var stackLayoutImpl = stackLayout;
-						stackLayoutImpl.DisableVirtualization(true);
+						stackLayoutImpl.DisableVirtualization = true;
 					}
 
-					m_topNavOverflowItemsRepeaterElementPreparedRevoker = topNavListOverflowRepeater.ElementPrepared += OnRepeaterElementPrepared;
-					m_topNavOverflowItemsRepeaterElementClearingRevoker = topNavListOverflowRepeater.ElementClearing += OnRepeaterElementClearing;
+					topNavListOverflowRepeater.ElementPrepared += OnRepeaterElementPrepared;
+					m_topNavOverflowItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.ElementPrepared -= OnRepeaterElementPrepared);
+					topNavListOverflowRepeater.ElementClearing += OnRepeaterElementClearing;
+					m_topNavOverflowItemsRepeaterElementClearingRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.ElementClearing -= OnRepeaterElementClearing);
 
 					topNavListOverflowRepeater.ItemTemplate = m_navigationViewItemsFactory;
 				}
@@ -515,7 +528,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					m_topNavOverflowButton = topNavOverflowButton;
 					AutomationProperties.SetName(topNavOverflowButton, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationOverflowButtonName));
-					topNavOverflowButton.Content = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationOverflowButtonText));
+					topNavOverflowButton.Content = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationOverflowButtonText);
 					var visual = ElementCompositionPreview.GetElementVisual(topNavOverflowButton);
 					CreateAndAttachHeaderAnimation(visual);
 
@@ -535,7 +548,8 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							topNavOverflowButtonAsFlyoutBase6.ShouldConstrainToRootBounds = false;
 						}
-						m_flyoutClosingRevoker = flyoutBase.Closing += OnFlyoutClosing;
+						flyoutBase.Closing += OnFlyoutClosing;
+						m_flyoutClosingRevoker.Disposable = Disposable.Create(() => flyoutBase.Closing -= OnFlyoutClosing);
 					}
 				}
 
@@ -553,12 +567,16 @@ namespace Microsoft.UI.Xaml.Controls
 						stackLayoutImpl.DisableVirtualization = true;
 					}
 
-					m_leftNavFooterMenuItemsRepeaterElementPreparedRevoker = leftFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
-					m_leftNavFooterMenuItemsRepeaterElementClearingRevoker = leftFooterMenuNavRepeater.ElementClearing += OnRepeaterElementClearing;
+					leftFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
+					m_leftNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
+					leftFooterMenuNavRepeater.ElementClearing += OnRepeaterElementClearing;
+					m_leftNavFooterMenuItemsRepeaterElementClearingRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.ElementClearing -= OnRepeaterElementClearing);
 
-					m_leftNavFooterMenuRepeaterLoadedRevoker = leftFooterMenuNavRepeater.Loaded += OnRepeaterLoaded;
+					leftFooterMenuNavRepeater.Loaded += OnRepeaterLoaded;
+					m_leftNavFooterMenuRepeaterLoadedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.Loaded -= OnRepeaterLoaded);
 
-					m_leftNavFooterMenuRepeaterGettingFocusRevoker = leftFooterMenuNavRepeater.GettingFocus += OnRepeaterGettingFocus;
+					leftFooterMenuNavRepeater.GettingFocus += OnRepeaterGettingFocus;
+					m_leftNavFooterMenuRepeaterGettingFocusRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.GettingFocus -= OnRepeaterGettingFocus);
 
 					leftFooterMenuNavRepeater.ItemTemplate = m_navigationViewItemsFactory;
 				}
@@ -574,15 +592,19 @@ namespace Microsoft.UI.Xaml.Controls
 					if (topFooterMenuNavRepeater.Layout is StackLayout stackLayout)
 					{
 						var stackLayoutImpl = stackLayout;
-						stackLayoutImpl.DisableVirtualization(true);
+						stackLayoutImpl.DisableVirtualization = true;
 					}
 
-					m_topNavFooterMenuItemsRepeaterElementPreparedRevoker = topFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
-					m_topNavFooterMenuItemsRepeaterElementClearingRevoker = topFooterMenuNavRepeater.ElementClearing += OnRepeaterElementClearing;
+					topFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
+					m_topNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
+					topFooterMenuNavRepeater.ElementClearing += OnRepeaterElementClearing;
+					m_topNavFooterMenuItemsRepeaterElementClearingRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.ElementClearing -= OnRepeaterElementClearing);
 
-					m_topNavFooterMenuRepeaterLoadedRevoker = topFooterMenuNavRepeater.Loaded += OnRepeaterLoaded;
+					topFooterMenuNavRepeater.Loaded += OnRepeaterLoaded;
+					m_topNavFooterMenuRepeaterLoadedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.Loaded -= OnRepeaterLoaded);
 
-					m_topNavFooterMenuRepeaterGettingFocusRevoker = topFooterMenuNavRepeater.GettingFocus += OnRepeaterGettingFocus;
+					topFooterMenuNavRepeater.GettingFocus += OnRepeaterGettingFocus;
+					m_topNavFooterMenuRepeaterGettingFocusRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.GettingFocus -= OnRepeaterGettingFocus);
 
 					topFooterMenuNavRepeater.ItemTemplate = m_navigationViewItemsFactory;
 				}
@@ -606,7 +628,8 @@ namespace Microsoft.UI.Xaml.Controls
 				if (paneTitleHolderFrameworkElement != null)
 				{
 					m_paneTitleHolderFrameworkElement = paneTitleHolderFrameworkElement;
-					m_paneTitleHolderFrameworkElementSizeChangedRevoker = paneTitleHolderFrameworkElement.SizeChanged += OnPaneTitleHolderSizeChanged;
+					paneTitleHolderFrameworkElement.SizeChanged += OnPaneTitleHolderSizeChanged;
+					m_paneTitleHolderFrameworkElementSizeChangedRevoker.Disposable = Disposable.Create(() => paneTitleHolderFrameworkElement.SizeChanged -= OnPaneTitleHolderSizeChanged);
 				}
 
 				// Set automation name on search button
@@ -614,7 +637,8 @@ namespace Microsoft.UI.Xaml.Controls
 				if (button != null)
 				{
 					m_paneSearchButton = button;
-					m_paneSearchButtonClickRevoker = button.Click += OnPaneSearchButtonClick;
+					button.Click += OnPaneSearchButtonClick;
+					m_paneSearchButtonClickRevoker.Disposable = Disposable.Create(() => button.Click -= OnPaneSearchButtonClick);
 
 					var searchButtonName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationViewSearchButtonName);
 					AutomationProperties.SetName(button, searchButtonName);
@@ -627,7 +651,8 @@ namespace Microsoft.UI.Xaml.Controls
 				if (backButton != null)
 				{
 					m_backButton = backButton;
-					m_backButtonClickedRevoker = backButton.Click += OnBackButtonClicked;
+					backButton.Click += OnBackButtonClicked;
+					m_backButtonClickedRevoker.Disposable = Disposable.Create(() => backButton.Click -= OnBackButtonClicked);
 
 					string navigationName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationBackButtonName);
 					AutomationProperties.SetName(backButton, navigationName);
@@ -638,8 +663,10 @@ namespace Microsoft.UI.Xaml.Controls
 				if (coreTitleBar != null)
 				{
 					m_coreTitleBar = coreTitleBar;
-					m_titleBarMetricsChangedRevoker = coreTitleBar.LayoutMetricsChanged += OnTitleBarMetricsChanged;
-					m_titleBarIsVisibleChangedRevoker = coreTitleBar.IsVisibleChanged += OnTitleBarIsVisibleChanged;
+					coreTitleBar.LayoutMetricsChanged += OnTitleBarMetricsChanged;
+					m_titleBarMetricsChangedRevoker.Disposable = Disposable.Create(() => coreTitleBar.LayoutMetricsChanged -= OnTitleBarMetricsChanged);
+					coreTitleBar.IsVisibleChanged += OnTitleBarIsVisibleChanged;
+					m_titleBarIsVisibleChangedRevoker.Disposable = Disposable.Create(() => coreTitleBar.IsVisibleChanged -= OnTitleBarIsVisibleChanged);
 
 					if (ShouldPreserveNavigationViewRS4Behavior())
 					{
@@ -659,7 +686,8 @@ namespace Microsoft.UI.Xaml.Controls
 				if (closeButton != null)
 				{
 					m_closeButton = closeButton;
-					m_closeButtonClickedRevoker = closeButton.Click += OnPaneToggleButtonClick;
+					closeButton.Click += OnPaneToggleButtonClick;
+					m_closeButtonClickedRevoker.Disposable = Disposable.Create(() => closeButton.Click -= OnPaneToggleButtonClick);
 
 					string navigationName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationCloseButtonName);
 					AutomationProperties.SetName(closeButton, navigationName);
@@ -677,11 +705,12 @@ namespace Microsoft.UI.Xaml.Controls
 				m_footerItemsScrollViewer = (FrameworkElement)GetTemplateChild(c_footerItemsScrollViewer);
 				m_visualItemsSeparator = (FrameworkElement)GetTemplateChild(c_visualItemsSeparator);
 
-				m_itemsContainerSizeChangedRevoker.revoke();
+				m_itemsContainerSizeChangedRevoker.Disposable = null;
 				var itemsContainerRow = GetTemplateChild(c_itemsContainer) as FrameworkElement;
 				if (itemsContainerRow != null)
 				{
-					m_itemsContainerSizeChangedRevoker = itemsContainerRow.SizeChanged += OnItemsContainerSizeChanged;
+					itemsContainerRow.SizeChanged += OnItemsContainerSizeChanged;
+					m_itemsContainerSizeChangedRevoker.Disposable = Disposable.Create(() => itemsContainerRow.SizeChanged -= OnItemsContainerSizeChanged);
 				}
 
 				if (SharedHelpers.IsRS2OrHigher())
@@ -702,7 +731,8 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				m_accessKeyInvokedRevoker = AccessKeyInvoked += OnAccessKeyInvoked;
+				AccessKeyInvoked += OnAccessKeyInvoked;
+				m_accessKeyInvokedRevoker.Disposable = Disposable.Create(() => AccessKeyInvoked -= OnAccessKeyInvoked);
 
 				UpdatePaneShadow();
 
@@ -749,9 +779,10 @@ namespace Microsoft.UI.Xaml.Controls
 				m_selectionModelSource[0] = itemsSource;
 			}
 
-			m_menuItemsCollectionChangedRevoker.revoke();
-			m_menuItemsSource = new ItemsSourceView(itemsSource);
-			m_menuItemsCollectionChangedRevoker = m_menuItemsSource.CollectionChanged += OnMenuItemsSourceCollectionChanged;
+			m_menuItemsCollectionChangedRevoker.Disposable = null;
+			m_menuItemsSource = new InspectingDataSource(itemsSource);
+			m_menuItemsSource.CollectionChanged += OnMenuItemsSourceCollectionChanged;
+			m_menuItemsCollectionChangedRevoker.Disposable = Disposable.Create(() => m_menuItemsSource.CollectionChanged -= OnMenuItemsSourceCollectionChanged);
 
 			if (IsTopNavigationView())
 			{
@@ -862,19 +893,20 @@ namespace Microsoft.UI.Xaml.Controls
 					m_settingsItem = new NavigationViewItem();
 					var settingsItem = m_settingsItem;
 					settingsItem.Name("SettingsItem");
-					m_navigationViewItemsFactory.SettingsItem = settingsItem;
+					m_navigationViewItemsFactory.SettingsItem(settingsItem);
 				}
 
 				if (sourceCollectionReset)
 				{
-					m_footerItemsCollectionChangedRevoker.revoke();
+					m_footerItemsCollectionChangedRevoker.Disposable = null;
 					m_footerItemsSource = null;
 				}
 
 				if (m_footerItemsSource == null)
 				{
-					m_footerItemsSource = new ItemsSourceView(itemsSource);
-					m_footerItemsCollectionChangedRevoker = m_footerItemsSource.CollectionChanged(auto_revoke, { this, &OnFooterItemsSourceCollectionChanged });
+					m_footerItemsSource = new InspectingDataSource(itemsSource);
+					m_footerItemsSource.CollectionChanged += OnFooterItemsSourceCollectionChanged;
+					m_footerItemsCollectionChangedRevoker.Disposable = Disposable.Create(() => m_footerItemsSource.CollectionChanged -= OnFooterItemsSourceCollectionChanged);
 				}
 
 				if (m_footerItemsSource != null)
@@ -971,7 +1003,7 @@ namespace Microsoft.UI.Xaml.Controls
 					var indexPath = GetIndexPathForContainer(nvi);
 					var indexPathFromModel = m_selectionModel.SelectedIndex;
 
-					if (indexPathFromModel && indexPath.CompareTo(indexPathFromModel) == 0)
+					if (indexPathFromModel != null && indexPath.CompareTo(indexPathFromModel) == 0)
 					{
 						m_selectionModel.DeselectAt(indexPath);
 					}
@@ -979,7 +1011,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (isSelectedInContainer)
 				{
-					nvi.IsChildSelected(false);
+					nvi.IsChildSelected = false;
 				}
 			}
 		}
@@ -1162,9 +1194,9 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (parent is ItemsRepeater parentIR)
 				{
-					if (child as UIElement childElement)
-		            {
-						path.insert(path.begin(), parentIR.GetElementIndex(childElement));
+					if (child is UIElement childElement)
+					{
+						path.Insert(0, parentIR.GetElementIndex(childElement));
 					}
 				}
 				child = parent;
@@ -1186,39 +1218,39 @@ namespace Microsoft.UI.Xaml.Controls
 			if (parent == m_topNavRepeaterOverflowView)
 			{
 				// Convert index of selected item in overflow to index in datasource
-				var containerIndex = m_topNavRepeaterOverflowView.GetElementIndex(child as UIElement());
-				var item = m_topDataProvider.GetOverflowItems().GetAt(containerIndex);
+				var containerIndex = m_topNavRepeaterOverflowView.GetElementIndex(child as UIElement);
+				var item = m_topDataProvider.GetOverflowItems()[containerIndex];
 				var indexAtRoot = m_topDataProvider.IndexOf(item);
-				path.insert(path.begin(), indexAtRoot);
+				path.Insert(0, indexAtRoot);
 			}
 			else if (parent == m_topNavRepeater)
 			{
 				// Convert index of selected item in overflow to index in datasource
-				var containerIndex = m_topNavRepeater.GetElementIndex(child as UIElement());
-				var item = m_topDataProvider.GetPrimaryItems().GetAt(containerIndex);
+				var containerIndex = m_topNavRepeater.GetElementIndex(child as UIElement);
+				var item = m_topDataProvider.GetPrimaryItems()[containerIndex];
 				var indexAtRoot = m_topDataProvider.IndexOf(item);
-				path.insert(path.begin(), indexAtRoot);
+				path.Insert(0, indexAtRoot);
 			}
-			else if (var parentIR = parent as ItemsRepeater())
-		    {
-				path.insert(path.begin(), parentIR.GetElementIndex(child as UIElement()));
+			else if (parent is ItemsRepeater parentIR)
+			{
+				path.Insert(0, parentIR.GetElementIndex(child as UIElement));
 			}
 
 			isInFooterMenu = parent == m_leftNavFooterMenuRepeater || parent == m_topNavFooterMenuRepeater;
 
-			path.insert(path.begin(), isInFooterMenu ? c_footerMenuBlockIndex : c_mainMenuBlockIndex);
+			path.Insert(0, isInFooterMenu ? c_footerMenuBlockIndex : c_mainMenuBlockIndex);
 
 			return IndexPath.CreateFromIndices(path);
 		}
 
-		private void OnRepeaterElementPrepared(ItemsRepeater ir, ItemsRepeaterElementPreparedEventArgs args)
+		internal void OnRepeaterElementPrepared(ItemsRepeater ir, ItemsRepeaterElementPreparedEventArgs args)
 		{
 			// This validation is only relevant outside of the Windows build where WUXC and MUXC have distinct types.
 			// Certain items are disallowed in a NavigationView's items list. Check for them.
-			//if (args.Element as Windows.UI.Xaml.Controls.NavigationViewItemBase)
-			//{
-			//	throw hresult_invalid_argument("MenuItems contains a Windows.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft.UI.Xaml.Controls.NavigationViewItem.");
-			//}
+			if (args.Element is Windows.UI.Xaml.Controls.NavigationViewItemBase)
+			{
+				throw new InvalidOperationException("MenuItems contains a Windows.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft.UI.Xaml.Controls.NavigationViewItem.");
+			}
 
 			if (args.Element is NavigationViewItemBase nvib)
 			{
@@ -1283,13 +1315,19 @@ namespace Microsoft.UI.Xaml.Controls
 					nvi.PropagateDepthToChildren(childDepth);
 
 					// Register for item events
-					var nviRevokers = make_self<NavigationViewItemRevokers>();
-					nviRevokers.tappedRevoker = nvi.Tapped(auto_revoke, { this, &OnNavigationViewItemTapped });
-					nviRevokers.keyDownRevoker = nvi.KeyDown(auto_revoke, { this, &OnNavigationViewItemKeyDown });
-					nviRevokers.gotFocusRevoker = nvi.GotFocus(auto_revoke, { this, &OnNavigationViewItemOnGotFocus });
-					nviRevokers.isSelectedRevoker = RegisterPropertyChanged(nvi, NavigationViewItemBase.IsSelectedProperty(), { this, &OnNavigationViewItemIsSelectedPropertyChanged });
-					nviRevokers.isExpandedRevoker = RegisterPropertyChanged(nvi, NavigationViewItem.IsExpandedProperty(), { this, &OnNavigationViewItemExpandedPropertyChanged });
-					nvi.SetValue(NavigationViewItemRevokersProperty, nviRevokers.as< object > ());
+					nvi.Tapped += OnNavigationViewItemTapped;
+					nvi.KeyDown += OnNavigationViewItemKeyDown;
+					nvi.GotFocus += OnNavigationViewItemOnGotFocus;
+					var isSelectedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, OnNavigationViewItemIsSelectedPropertyChanged);
+					var isExpandedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, OnNavigationViewItemExpandedPropertyChanged);
+					nvi.EventRevoker.Disposable = Disposable.Create(() =>
+					{
+						nvi.Tapped -= OnNavigationViewItemTapped;
+						nvi.KeyDown -= OnNavigationViewItemKeyDown;
+						nvi.GotFocus -= OnNavigationViewItemOnGotFocus;
+						nvi.UnregisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, isSelectedSubscription);
+						nvi.UnregisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, isExpandedSubscription);
+					});
 				}
 			}
 		}
@@ -1320,7 +1358,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnRepeaterElementClearing(ItemsRepeater ir, ItemsRepeaterElementClearingEventArgs args)
+		internal void OnRepeaterElementClearing(ItemsRepeater ir, ItemsRepeaterElementClearingEventArgs args)
 		{
 			if (args.Element is NavigationViewItemBase nvib)
 			{
@@ -1330,7 +1368,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (nvib is NavigationViewItem nvi)
 				{
 					// Revoke all the events that we were listing to on the item
-					nvi.SetValue(NavigationViewItemRevokersProperty, null);
+					nvi.EventRevoker.Disposable = null;
 				}
 			}
 		}
@@ -1350,7 +1388,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Do localization for settings item label and Automation Name
 			var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
 			AutomationProperties.SetName(settingsItem, localizedSettingsName);
-			settingsItem.Tag = localizedSettingsName);
+			settingsItem.Tag = localizedSettingsName;
 			UpdateSettingsItemToolTip();
 
 			// Add the name only in case of horizontal nav
@@ -1389,8 +1427,9 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			m_layoutUpdatedToken.revoke();
-			m_layoutUpdatedToken = LayoutUpdated += OnLayoutUpdated;
+			m_layoutUpdatedToken.Disposable = null;
+			LayoutUpdated += OnLayoutUpdated;
+			m_layoutUpdatedToken.Disposable = Disposable.Create(() => LayoutUpdated -= OnLayoutUpdated);
 
 			return base.MeasureOverride(availableSize);
 		}
@@ -1398,7 +1437,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnLayoutUpdated(object sender, object e)
 		{
 			// We only need to handle once after MeasureOverride, so revoke the token.
-			m_layoutUpdatedToken.revoke();
+			m_layoutUpdatedToken.Disposable = null;
 
 			// In topnav, when an item in overflow menu is clicked, the animation is delayed because that item is not move to primary list yet.
 			// And it depends on LayoutUpdated to re-play the animation. m_lastSelectedItemPendingAnimationInTopNav is the last selected overflow item.
@@ -1522,7 +1561,7 @@ namespace Microsoft.UI.Xaml.Controls
 						var paneFooter = m_leftNavFooterContentBorder;
 						if (paneFooter != null)
 						{
-							return paneContentRow.ActualHeight - 29 - paneFooter.ActualHeight();
+							return paneContentRow.ActualHeight - 29 - paneFooter.ActualHeight;
 						}
 						else
 						{
@@ -1662,7 +1701,7 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				m_isOpenPaneForInteraction = true;
-				IsPaneOpen(true);
+				IsPaneOpen = true;
 			}
 			finally
 			{
@@ -1678,7 +1717,7 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				m_isOpenPaneForInteraction = true;
-				IsPaneOpen(false); // the SplitView is two-way bound to this value 
+				IsPaneOpen = false; // the SplitView is two-way bound to this value 
 			}
 			finally
 			{
@@ -2022,10 +2061,10 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
-		float2 c_frame1point1 = float2(0.9f, 0.1f);
-		float2 c_frame1point2 = float2(1.0f, 0.2f);
-		float2 c_frame2point1 = float2(0.1f, 0.9f);
-		float2 c_frame2point2 = float2(0.2f, 1.0f);
+		private readonly Vector2 c_frame1point1 = new Vector2(0.9f, 0.1f);
+		private readonly Vector2 c_frame1point2 = new Vector2(1.0f, 0.2f);
+		private readonly Vector2 c_frame2point1 = new Vector2(0.1f, 0.9f);
+		private readonly Vector2 c_frame2point2 = new Vector2(0.2f, 1.0f);
 
 		private void AnimateSelectionChangedToItem(object selectedItem)
 		{
@@ -2103,6 +2142,7 @@ namespace Microsoft.UI.Xaml.Controls
 						areElementsAtSameDepth = prevPosPoint.X == nextPosPoint.X;
 					}
 
+#if !IS_UNO // disable animations for now
 					Visual visual = ElementCompositionPreview.GetElementVisual(this);
 					CompositionScopedBatch scopedBatch = visual.Compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
 
@@ -2149,15 +2189,20 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 
 					scopedBatch.End();
+#endif
 					m_prevIndicator = prevIndicator;
 					m_nextIndicator = nextIndicator;
 
+#if !IS_UNO // disable animations for now
 					void OnCompleted(object sender, CompositionBatchCompletedEventArgs args)
 					{
 						this.OnAnimationComplete(sender, args);
 						scopedBatch.Completed -= OnCompleted;
 					}
 					scopedBatch.Completed += OnCompleted;
+#else
+					OnAnimationComplete(null, null);
+#endif
 				}
 				else
 				{
@@ -2243,7 +2288,7 @@ namespace Microsoft.UI.Xaml.Controls
 				ScalarKeyFrameAnimation opacityAnim = comp.CreateScalarKeyFrameAnimation();
 				opacityAnim.InsertKeyFrame(0.0f, 1.0f);
 				opacityAnim.InsertKeyFrame(0.333f, 1.0f, singleStep);
-				opacityAnim.InsertKeyFrame(1.0f, 0.0, comp.CreateCubicBezierEasingFunction(c_frame2point1, c_frame2point2));
+				opacityAnim.InsertKeyFrame(1.0f, 0.0f, comp.CreateCubicBezierEasingFunction(c_frame2point1, c_frame2point2));
 				opacityAnim.Duration = TimeSpan.FromMilliseconds(600);
 
 				visual.StartAnimation("Opacity", opacityAnim);
@@ -2322,7 +2367,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var nvi = NavigationViewItemOrSettingsContentFromData(item);
 				if (nvi != null)
 				{
-					return !nvi.SelectsOnInvoked();
+					return !nvi.SelectsOnInvoked;
 				}
 			}
 
@@ -2524,8 +2569,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private void RaiseItemInvoked(
 			object item,
 			bool isSettings,
-			NavigationViewItemBase container,
-			NavigationRecommendedTransitionDirection recommendedDirection)
+			NavigationViewItemBase container = null,
+			NavigationRecommendedTransitionDirection recommendedDirection = NavigationRecommendedTransitionDirection.Default)
 		{
 			var invokedItem = item;
 			var invokedContainer = container;
@@ -2865,7 +2910,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// if focus change was invoked by tab key
 			// and there is selected item in ItemsRepeater that gatting focus
 			// we should put focus on selected item
-			if (m_TabKeyPrecedesFocusChange && args.InputDevice == FocusInputDeviceKind.Keyboard && m_selectionModel.SelectedIndex)
+			if (m_TabKeyPrecedesFocusChange && args.InputDevice == FocusInputDeviceKind.Keyboard && m_selectionModel.SelectedIndex != null)
 			{
 				var oldFocusedElement = args.OldFocusedElement;
 				if (oldFocusedElement != null)
@@ -3201,7 +3246,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return m_rootSplitView;
 		}
 
-		void TopNavigationViewItemContentChanged()
+		internal void TopNavigationViewItemContentChanged()
 		{
 			if (m_appliedTemplate)
 			{
@@ -3304,10 +3349,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateSingleSelectionFollowsFocusTemplateSetting()
 		{
-			GetTemplateSettings().SingleSelectionFollowsFocus(IsNavigationViewListSingleSelectionFollowsFocus());
+			GetTemplateSettings().SingleSelectionFollowsFocus = IsNavigationViewListSingleSelectionFollowsFocus();
 		}
 
-		private void OnMenuItemsSourceCollectionChanged(object, object)
+		private void OnMenuItemsSourceCollectionChanged(object sender, object args)
 		{
 			if (!IsTopNavigationView())
 			{
@@ -3322,7 +3367,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnSelectedItemPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-
 			var newItem = args.NewValue;
 			var oldItem = args.OldValue;
 
@@ -3330,7 +3374,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_appliedTemplate && IsTopNavigationView())
 			{
-				if (!m_layoutUpdatedToken ||
+				if (m_layoutUpdatedToken.Disposable == null ||
 					(newItem != null && m_topDataProvider.IndexOf(newItem) != itemNotFound && m_topDataProvider.IndexOf(newItem, NavigationViewSplitVectorID.PrimaryList) == itemNotFound)) // selection is in overflow
 				{
 					InvalidateTopNavPrimaryLayout();
@@ -3359,7 +3403,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// we may need to manually resolve a container for this in order to update the
 				// SelectionModel's selected IndexPath.
 				var ip = GetIndexPathOfItem(item);
-				if (ip && ip.GetSize() > 0)
+				if (ip != null && ip.GetSize() > 0)
 				{
 					// The SelectedItem property has already been updated. So we want to block any logic from executing
 					// in the SelectionModel selection changed callback.
@@ -3541,7 +3585,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void HandleTopNavigationMeasureOverrideNormal(Windows.Foundation.Size&availableSize)
+		private void HandleTopNavigationMeasureOverrideNormal(Windows.Foundation.Size availableSize)
 		{
 			var desiredWidth = MeasureTopNavigationViewDesiredWidth(c_infSize);
 			if (desiredWidth > availableSize.Width)
@@ -3550,7 +3594,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void HandleTopNavigationMeasureOverrideOverflow(Windows.Foundation.Size&availableSize)
+		private void HandleTopNavigationMeasureOverrideOverflow(Windows.Foundation.Size availableSize)
 		{
 			var desiredWidth = MeasureTopNavigationViewDesiredWidth(c_infSize);
 			if (desiredWidth > availableSize.Width)
@@ -3567,7 +3611,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					var movableItems = FindMovableItemsRecoverToPrimaryList(availableSize.Width - desiredWidth, { }/*includeItems*/);
+					var movableItems = FindMovableItemsRecoverToPrimaryList(availableSize.Width - desiredWidth, Array.Empty<int>()/*includeItems*/);
 					m_topDataProvider.MoveItemsToPrimaryList(movableItems);
 				}
 			}
@@ -3584,7 +3628,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var desiredWidthForOverflowButton = MeasureTopNavigationViewDesiredWidth(c_infSize);
 
 				MUX_ASSERT(desiredWidthForOverflowButton >= desiredWidth);
-				m_topDataProvider.OverflowButtonWidth(desiredWidthForOverflowButton - desiredWidth);
+				m_topDataProvider.OverflowButtonWidth = desiredWidthForOverflowButton - desiredWidth;
 
 				ShrinkTopNavigationSize(desiredWidthForOverflowButton, availableSize);
 			}
@@ -3594,7 +3638,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (visibility != TemplateSettings.OverflowButtonVisibility)
 			{
-				GetTemplateSettings().OverflowButtonVisibility(visibility);
+				GetTemplateSettings().OverflowButtonVisibility = visibility;
 			}
 		}
 
@@ -3640,13 +3684,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// calculate items to be removed from primary because a overflow item is selected. 
 				// SelectedItem is assumed to be removed from primary first, then added it back if it should not be removed
-				var itemsToBeRemoved = FindMovableItemsToBeRemovedFromPrimaryList(widthAtLeastToBeRemoved, { } /*excludeItems*/);
+				var itemsToBeRemoved = FindMovableItemsToBeRemovedFromPrimaryList(widthAtLeastToBeRemoved, Array.Empty<int>() /*excludeItems*/);
 
 				// calculate the size to be removed
 				var toBeRemovedItemWidth = m_topDataProvider.CalculateWidthForItems(itemsToBeRemoved);
 
 				var widthAvailableToRecover = toBeRemovedItemWidth - widthAtLeastToBeRemoved;
-				var itemsToBeAdded = FindMovableItemsRecoverToPrimaryList(widthAvailableToRecover, { selectedOverflowItemIndex }/*includeItems*/);
+				var itemsToBeAdded = FindMovableItemsRecoverToPrimaryList(widthAvailableToRecover, new int[] { selectedOverflowItemIndex }/*includeItems*/);
 
 				CollectionHelper.unique_push_back(itemsToBeAdded, selectedOverflowItemIndex);
 
@@ -3757,7 +3801,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return needRearrange;
 		}
 
-		private void ShrinkTopNavigationSize(float desiredWidth, Size availableSize)
+		private void ShrinkTopNavigationSize(double desiredWidth, Size availableSize)
 		{
 			UpdateTopNavigationWidthCache();
 
@@ -3779,7 +3823,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var widthAtLeastToBeRemoved = desiredWidth - availableSize.Width;
 			if (widthAtLeastToBeRemoved > 0)
 			{
-				var itemToBeRemoved = FindMovableItemsToBeRemovedFromPrimaryList(widthAtLeastToBeRemoved, { selectedItemIndex });
+				var itemToBeRemoved = FindMovableItemsToBeRemovedFromPrimaryList(widthAtLeastToBeRemoved, new int[] { selectedItemIndex });
 
 				// At least one item is kept on primary list
 				KeepAtLeastOneItemInPrimaryList(itemToBeRemoved, false/*shouldKeepFirst*/);
@@ -3807,12 +3851,12 @@ namespace Microsoft.UI.Xaml.Controls
 			int i = 0;
 			while (i < size && availableWidth > 0)
 			{
-				if (!m_topDataProvider.IsItemInPrimaryList(i) && !CollectionHelper.contains(includeItems, i))
+				if (!m_topDataProvider.IsItemInPrimaryList(i) && !includeItems.Contains(i))
 				{
 					var width = m_topDataProvider.GetWidthForItem(i);
 					if (availableWidth >= width)
 					{
-						toBeMoved.push_back(i);
+						toBeMoved.Add(i);
 						availableWidth -= width;
 					}
 					else
@@ -3825,14 +3869,14 @@ namespace Microsoft.UI.Xaml.Controls
 			// Keep at one item is not in primary list. Two possible reason: 
 			//  1, Most likely it's caused by m_topNavigationRecoveryGracePeriod
 			//  2, virtualization and it doesn't have cached width
-			if (i == size && !toBeMoved.empty())
+			if (i == size && toBeMoved.Count > 0)
 			{
-				toBeMoved.Add();
+				toBeMoved.Remove(toBeMoved.Count - 1);
 			}
 			return toBeMoved;
 		}
 
-		private IList<int> FindMovableItemsToBeRemovedFromPrimaryList(float widthAtLeastToBeRemoved, std.CalculatorList<int> &excludeItems)
+		private IList<int> FindMovableItemsToBeRemovedFromPrimaryList(double widthAtLeastToBeRemoved, IList<int> excludeItems)
 		{
 			List<int> toBeMoved = new List<int>();
 
@@ -3841,7 +3885,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (m_topDataProvider.IsItemInPrimaryList(i))
 				{
-					if (!CollectionHelper.contains(excludeItems, i))
+					if (!excludeItems.Contains(i))
 					{
 						var width = m_topDataProvider.GetWidthForItem(i);
 						toBeMoved.Add(i);
@@ -3921,12 +3965,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private double GetPaneToggleButtonWidth()
 		{
-			return (double)SharedHelpers.FindInApplicationResources("PaneToggleButtonWidth", c_paneToggleButtonWidth);
+			return Convert.ToDouble(SharedHelpers.FindInApplicationResources("PaneToggleButtonWidth", c_paneToggleButtonWidth));
 		}
 
 		private double GetPaneToggleButtonHeight()
 		{
-			return (double)SharedHelpers.FindInApplicationResources("PaneToggleButtonHeight", c_paneToggleButtonHeight);
+			return Convert.ToDouble(SharedHelpers.FindInApplicationResources("PaneToggleButtonHeight", c_paneToggleButtonHeight));
 		}
 
 		private void UpdateTopNavigationWidthCache()
@@ -3940,7 +3984,7 @@ namespace Microsoft.UI.Xaml.Controls
 					var container = ir.TryGetElement(i);
 					if (container != null)
 					{
-						if (container as UIElement is containerAsUIElement)
+						if (container is UIElement containerAsUIElement)
 						{
 							var width = containerAsUIElement.DesiredSize.Width;
 							m_topDataProvider.UpdateWidthForPrimaryItem(i, width);
@@ -4007,14 +4051,14 @@ namespace Microsoft.UI.Xaml.Controls
 					InvalidateTopNavPrimaryLayout();
 				}
 
-				if (g_IsTelemetryProviderEnabled && IsBackButtonVisible == NavigationViewBackButtonVisible.Collapsed)
-				{
-					//  Explicitly disabling BackUI on NavigationView
-					//[[gsl.suppress(con.4)]] TraceLoggingWrite(
-					//	g_hTelemetryProvider,
-					//	"NavigationView_DisableBackUI",
-					//	TraceLoggingDescription("Developer explicitly disables the BackUI on NavigationView"));
-				}
+				//if (g_IsTelemetryProviderEnabled && IsBackButtonVisible == NavigationViewBackButtonVisible.Collapsed)
+				//{
+				//  Explicitly disabling BackUI on NavigationView
+				//[[gsl.suppress(con.4)]] TraceLoggingWrite(
+				//	g_hTelemetryProvider,
+				//	"NavigationView_DisableBackUI",
+				//	TraceLoggingDescription("Developer explicitly disables the BackUI on NavigationView"));
+				//}
 				// Enabling back button shifts grid instead of resizing, so let's update the layout.
 				var backButton = m_backButton;
 				if (backButton != null)
@@ -4084,11 +4128,12 @@ namespace Microsoft.UI.Xaml.Controls
 				InvalidateTopNavPrimaryLayout();
 				if (args.OldValue != null)
 				{
-					m_autoSuggestBoxSuggestionChosenRevoker.revoke();
+					m_autoSuggestBoxSuggestionChosenRevoker.Disposable = null;
 				}
 				if (args.NewValue is AutoSuggestBox newAutoSuggestBox)
 				{
-					m_autoSuggestBoxSuggestionChosenRevoker = newAutoSuggestBox.SuggestionChosen += OnAutoSuggestBoxSuggestionChosen;
+					newAutoSuggestBox.SuggestionChosen += OnAutoSuggestBoxSuggestionChosen;
+					m_autoSuggestBoxSuggestionChosenRevoker.Disposable = Disposable.Create(() => newAutoSuggestBox.SuggestionChosen -= OnAutoSuggestBoxSuggestionChosen);
 				}
 			}
 			else if (property == SelectionFollowsFocusProperty)
@@ -4132,7 +4177,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				newItemTemplate = MenuItemTemplateSelector;
 			}
-			m_navigationViewItemsFactory.UserElementFactory = newItemTemplate;
+			m_navigationViewItemsFactory.UserElementFactory(newItemTemplate);
 		}
 
 		private void SyncItemTemplates()
@@ -4876,8 +4921,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// This method attaches the series of animations which are fired off dependent upon the amount 
 		// of space give and the length of the strings involved. It occurs upon re-rendering.
-		private void CreateAndAttachHeaderAnimation(Visual visual)
+		internal static void CreateAndAttachHeaderAnimation(Visual visual)
 		{
+#if !IS_UNO
 			var compositor = visual.Compositor;
 			var cubicFunction = compositor.CreateCubicBezierEasingFunction(new Vector2(0.0f, 0.35f), new Vector2(0.15f, 1.0f));
 			var moveAnimation = compositor.CreateVector3KeyFrameAnimation();
@@ -4888,6 +4934,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var collection = compositor.CreateImplicitAnimationCollection();
 			collection.Add("Offset", moveAnimation);
 			visual.ImplicitAnimations = collection;
+#endif
 		}
 
 		private bool IsFullScreenOrTabletMode()
@@ -5125,7 +5172,7 @@ namespace Microsoft.UI.Xaml.Controls
 					var newDataSource = childrenData as ItemsSourceView;
 					if (childrenData != null && newDataSource == null)
 					{
-						newDataSource = new ItemsSourceView(childrenData);
+						newDataSource = new InspectingDataSource(childrenData);
 					}
 
 					for (int i = 0; i < newDataSource.Count; i++)
@@ -5331,7 +5378,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
-		private NavigationViewItemBase GetContainerForIndexPath(IndexPath ip, bool lastVisible)
+		private NavigationViewItemBase GetContainerForIndexPath(IndexPath ip, bool lastVisible = false)
 		{
 			if (ip != null && ip.GetSize() > 0)
 			{
@@ -5415,7 +5462,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private ItemsRepeater LeftNavRepeater => m_leftNavRepeater;
 
-		private NavigationViewItem GetSelectedContainer()
+		internal NavigationViewItem GetSelectedContainer()
 		{
 			var selectedItem = SelectedItem;
 			if (selectedItem != null)
@@ -5464,7 +5511,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var indexIntoIndex = 1;
 			var selectedIndex = m_selectionModel.SelectedIndex;
-			if (selectedIndex && selectedIndex.GetSize() > 1)
+			if (selectedIndex != null && selectedIndex.GetSize() > 1)
 			{
 				var container = GetContainerForIndex(selectedIndex.GetAt(indexIntoIndex), selectedIndex.GetAt(0) == c_footerMenuBlockIndex /* inFooter */);
 				if (container != null)
@@ -5576,7 +5623,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						var nextContainerIndex = ip.GetAt(i);
 						var nviRepeater = nvi.GetRepeater();
-						if (nviRepeater && DoesRepeaterHaveRealizedContainers(nviRepeater))
+						if (nviRepeater != null && DoesRepeaterHaveRealizedContainers(nviRepeater))
 						{
 							var nextContainer = nviRepeater.TryGetElement(nextContainerIndex);
 							if (nextContainer != null)
@@ -5600,7 +5647,7 @@ namespace Microsoft.UI.Xaml.Controls
 								var newDataSource = childrenData as ItemsSourceView;
 								if (childrenData != null && newDataSource == null)
 								{
-									newDataSource = new ItemsSourceView(childrenData);
+									newDataSource = new InspectingDataSource(childrenData);
 								}
 
 								var data = newDataSource.GetAt(nextContainerIndex);
@@ -5644,13 +5691,13 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			var nvi = container as NavigationViewItem;
-			if (nvi != null)
+			var nvi2 = container as NavigationViewItem;
+			if (nvi2 != null)
 			{
-				var children = GetChildren(nvi);
+				var children = GetChildren(nvi2);
 				if (shouldRecycleContainer)
 				{
-					RecycleContainer(nvi);
+					RecycleContainer(nvi2);
 				}
 				return children;
 			}

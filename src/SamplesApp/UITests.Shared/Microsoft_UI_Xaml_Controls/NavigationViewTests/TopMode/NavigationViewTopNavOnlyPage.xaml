@@ -35,7 +35,7 @@
                 <muxcontrols:NavigationViewItem x:Name="MusicItem" Content="Music" Icon="Audio" />
                 <muxcontrols:NavigationViewItem x:Name="MoviesItem" Content="Movies" Icon="Video" />
                 <muxcontrols:NavigationViewItemHeader x:Name="HeaderTextItem2" Content="Header Text 2" />
-                <muxcontrols:NavigationViewItem x:Name="TVItem" Content="TV" Icon="Slideshow" />
+                <muxcontrols:NavigationViewItem x:Name="TVItem" Content="TV" Icon="SlideShow" />
                 <muxcontrols:NavigationViewItem x:Name="VolumeItem" AutomationProperties.Name="Volume" Icon="Volume">
                     <muxcontrols:NavigationViewItem.Content>
                         <TextBlock Text="Volume (don't click me)" />

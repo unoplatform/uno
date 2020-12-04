@@ -58,7 +58,11 @@ namespace MUXControlsTestApp
             NavViewIsTitleBarAutoPaddingEnabled.Text = NavView.IsTitleBarAutoPaddingEnabled.ToString();
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        protected
+#if HAS_UNO
+			internal
+#endif
+			override void OnNavigatedFrom(NavigationEventArgs e)
         {
             // Unset all override flags to avoid impacting subsequent tests
             //MaterialHelperTestApi.IgnoreAreEffectsFast = false;

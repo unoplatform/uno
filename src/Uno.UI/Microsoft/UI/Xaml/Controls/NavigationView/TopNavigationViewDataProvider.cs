@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 				ItemsSourceView dataSource = null;
 				if (rawData != null)
 				{
-					dataSource = new ItemsSourceView(rawData);
+					dataSource = new InspectingDataSource(rawData);
 				}
 				ChangeDataSource(dataSource);
 				m_rawDataSource = rawData;
@@ -182,7 +182,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return count;
 		}
 
-		private void UpdateWidthForPrimaryItem(int indexInPrimary, float width)
+		internal void UpdateWidthForPrimaryItem(int indexInPrimary, double width)
 		{
 			var vector = GetVector(NavigationViewSplitVectorID.PrimaryList);
 			if (vector != null)
@@ -192,7 +192,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private double WidthRequiredToRecoveryAllItemsToPrimary()
+		internal double WidthRequiredToRecoveryAllItemsToPrimary()
 		{
 			var width = 0.0;
 			for (int i = 0; i < Size(); i++)
@@ -245,14 +245,10 @@ namespace Microsoft.UI.Xaml.Controls
 			ResetAttachedData(-1.0f);
 		}
 
-		private double OverflowButtonWidth()
+		internal double OverflowButtonWidth
 		{
-			return m_overflowButtonCachedWidth;
-		}
-
-		private void OverflowButtonWidth(float width)
-		{
-			m_overflowButtonCachedWidth = width;
+			get => m_overflowButtonCachedWidth;
+			set => m_overflowButtonCachedWidth = value;
 		}
 
 		private bool IsItemSelectableInPrimaryList(object value)
@@ -261,7 +257,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return (index != -1);
 		}
 
-		private int IndexOf(object value, NavigationViewSplitVectorID vectorID)
+		internal int IndexOf(object value, NavigationViewSplitVectorID vectorID)
 		{
 			return IndexOfImpl(value, vectorID);
 		}

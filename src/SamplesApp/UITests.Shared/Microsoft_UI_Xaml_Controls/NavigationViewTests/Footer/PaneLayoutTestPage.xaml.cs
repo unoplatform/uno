@@ -46,26 +46,26 @@ namespace MUXControlsTestApp
 
         private void TestCaseSelectionChanged(object sender, Windows.UI.Xaml.Controls.SelectionChangedEventArgs e)
         {
-            if (sender is RadioButtons rb)
-            {
-                var caseTag = rb.SelectedIndex;
+            //if (sender is RadioButtons rb)
+            //{
+            //    var caseTag = rb.SelectedIndex;
 
-                switch (caseTag)
-                {
-                    case 0:
-                        RootNavigationView.MenuItemsSource = null;
-                        RootNavigationView.FooterMenuItemsSource = footerItems;
-                        break;
-                    case 1:
-                        RootNavigationView.MenuItemsSource = menuItems;
-                        RootNavigationView.FooterMenuItemsSource = null;
-                        break;
-                    case 2:
-                        RootNavigationView.MenuItemsSource = menuItems;
-                        RootNavigationView.FooterMenuItemsSource = footerItems;
-                        break;
-                }
-            }
+            //    switch (caseTag)
+            //    {
+            //        case 0:
+            //            RootNavigationView.MenuItemsSource = null;
+            //            RootNavigationView.FooterMenuItemsSource = footerItems;
+            //            break;
+            //        case 1:
+            //            RootNavigationView.MenuItemsSource = menuItems;
+            //            RootNavigationView.FooterMenuItemsSource = null;
+            //            break;
+            //        case 2:
+            //            RootNavigationView.MenuItemsSource = menuItems;
+            //            RootNavigationView.FooterMenuItemsSource = footerItems;
+            //            break;
+            //    }
+            //}
         }
 
         private void AddMenuItemButton_Click(object sender, RoutedEventArgs e)

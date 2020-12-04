@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SelectionModel : INotifyPropertyChanged, ICustomPropertyProvider
 	{
-		SelectionModel()
+		public SelectionModel()
 		{
 			// Parent is null for root node.
 			m_rootNode = new SelectionNode(this, null /* parent */);
@@ -491,7 +491,7 @@ namespace Microsoft.UI.Xaml.Controls
 			OnSelectionChanged();
 		}
 
-		private object ResolvePath(object data, IndexPath dataIndexPath)
+		internal object ResolvePath(object data, IndexPath dataIndexPath)
 		{
 			object resolved = null;
 			// Raise ChildrenRequested event if there is a handler

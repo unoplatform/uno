@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -11,7 +10,9 @@ namespace Microsoft.UI.Xaml.Controls
 	}
 
 	public partial class SelectionModel
-    {
+	{
+		internal SelectionNode SharedLeafNode => m_leafNode;
+
 		private SelectionNode m_rootNode = null;
 		private bool m_singleSelect = false;
 

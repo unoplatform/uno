@@ -13,11 +13,11 @@
     <muxc:NavigationView x:Name="RootNavigationView">
 
         <StackPanel>
-            <muxc:RadioButtons SelectionChanged="TestCaseSelectionChanged" SelectedIndex="2">
+            <!--<muxc:RadioButtons SelectionChanged="TestCaseSelectionChanged" SelectedIndex="2">
                 <RadioButton AutomationProperties.Name="NoItems">No items</RadioButton>
                 <RadioButton AutomationProperties.Name="NoFooter">No footer</RadioButton>
                 <RadioButton AutomationProperties.Name="Both">Both</RadioButton>
-            </muxc:RadioButtons>
+            </muxc:RadioButtons>-->
 
             <Button Click="AddMenuItemButton_Click" AutomationProperties.Name="AddMenuItemButton" Margin="0,4,0,0">Add menu item</Button>
             <Button Click="AddFooterItemButton_Click" AutomationProperties.Name="AddFooterItemButton">Add footer item</Button>

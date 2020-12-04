@@ -23,7 +23,7 @@
                 <muxc:NavigationViewItem Content="Should be green" Foreground="Green" Icon="Emoji"/>
                 <muxc:NavigationViewItem x:Name="MoviesItem" Content="Movies" Icon="Video"/>
                 <muxc:NavigationViewItemHeader x:Name="HeaderTextItem2" Content="Header Text 2" />
-                <muxc:NavigationViewItem x:Name="TVItem" Content="TV" Icon="Slideshow"/>
+                <muxc:NavigationViewItem x:Name="TVItem" Content="TV" Icon="SlideShow"/>
                 <muxc:NavigationViewItem x:Name="VolumeItem" AutomationProperties.Name="Volume" Icon="Volume">
                     <muxc:NavigationViewItem.Content>
                         <TextBlock Text="Volume (don't click me)" />

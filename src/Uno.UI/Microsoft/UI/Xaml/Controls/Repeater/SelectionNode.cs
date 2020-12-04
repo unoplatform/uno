@@ -8,18 +8,21 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class SelectionNode
 	{
-		//		SelectionNode(SelectionModel* manager, SelectionNode* parent) :
+		internal SelectionNode(SelectionModel manager, SelectionNode parent)
+		{
+			m_manager = manager;
+			m_parent = parent;
+			// TODO: MZ: What?
+			//m_source = manager;
+			//m_dataSource = manager;
+			m_source = null;
+			m_dataSource = null;
+		}
 
-		//	m_manager(manager), m_parent(parent), m_source(manager), m_dataSource(manager)
-		//		{
-		//			m_source = null;
-		//			m_dataSource = null;
-		//		}
-
-		//		SelectionNode.~SelectionNode()
-		//		{
-		//			UnhookCollectionChangedHandler();
-		//		}
+		~SelectionNode()
+		{
+			UnhookCollectionChangedHandler();
+		}
 
 		internal object Source
 		{
@@ -37,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 					var newDataSource = value as ItemsSourceView;
 					if (value != null && newDataSource == null)
 					{
-						newDataSource = new ItemsSourceView(value);
+						newDataSource = new InspectingDataSource(value);
 					}
 
 					m_dataSource = newDataSource;
@@ -52,11 +55,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal int DataCount => m_dataSource == null ? 0 : m_dataSource.Count;
 
-		private int ChildrenNodeCount => (int)(m_childrenNodes.Count);
+		internal int ChildrenNodeCount => (int)(m_childrenNodes.Count);
 
 		private int RealizedChildrenNodeCount() => m_realizedChildrenNodeCount;
 
-		internal int AnchorIndex { get; set; }
+		internal int AnchorIndex { get; set; } = -1;
 
 		private IndexPath IndexPath
 		{
@@ -68,11 +71,11 @@ namespace Microsoft.UI.Xaml.Controls
 				while (parent != null)
 				{
 					var childNodes = parent.m_childrenNodes;
-					var it = std.find_if(childNodes.cbegin(), childNodes.cend(), [&child](var item) { return item == child; });
-					var index = (int)(distance(childNodes.cbegin(), it));
+					var it = childNodes.IndexOf(child);
+					var index = it;
 					Debug.Assert(index >= 0);
 					// we are walking up to the parent, so the path will be backwards
-					path.insert(path.begin(), index);
+					path.Insert(0, index);
 					child = parent;
 					parent = parent.m_parent;
 				}
@@ -124,7 +127,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 					else
 					{
-						child = m_manager.SharedLeafNode();
+						child = m_manager.SharedLeafNode;
 					}
 
 					m_childrenNodes[index] = child;
@@ -175,10 +178,10 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_parent != null)
 			{
 				var parentsChildren = m_parent.m_childrenNodes;
-				var it = std.find_if(parentsChildren.cbegin(), parentsChildren.cend(), [this](std.SelectionNode & node) { return node == this; });
-				if (it != parentsChildren.end())
+				var it = parentsChildren.IndexOf(this);
+				if (it >= 0)
 				{
-					var myIndexInParent = (int)(it - parentsChildren.begin());
+					var myIndexInParent = it;
 					isSelected = m_parent.IsSelectedWithPartial(myIndexInParent);
 				}
 			}
@@ -197,7 +200,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_childrenNodes.Count == 0 || // no nodes realized
 				(int)(m_childrenNodes.Count) <= index || // target node is not realized 
 				m_childrenNodes[index] == null || // target node is not realized
-				m_childrenNodes[index] == m_manager.SharedLeafNode())  // target node is a leaf node.
+				m_childrenNodes[index] == m_manager.SharedLeafNode)  // target node is a leaf node.
 			{
 				// Ask parent if the target node is selected.
 				selectionState = IsSelected(index) ? SelectionState.Selected : SelectionState.NotSelected;
@@ -592,7 +595,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return selectionInvalidated;
 		}
 
-		bool OnItemsRemoved(int index, int count)
+		private bool OnItemsRemoved(int index, int count)
 		{
 			bool selectionInvalidated = false;
 			// Remove the items from the selection for leaf
@@ -639,7 +642,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							m_realizedChildrenNodeCount--;
 						}
-						m_childrenNodes.erase(m_childrenNodes.begin() + index);
+						m_childrenNodes.RemoveAt(index);
 					}
 				}
 

@@ -66,7 +66,7 @@ namespace MUXControlsTestApp.Utilities
         }
 
 		public static T FindVisualParentByType<T>(this DependencyObject element)
-			where T : DependencyObject
+			where T : class, DependencyObject
 		{
 			if (element is null)
 			{

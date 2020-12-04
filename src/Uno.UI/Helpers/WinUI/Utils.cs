@@ -22,6 +22,16 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			VisualStateGroup group = null;
 			var visualStateGroups = VisualStateManager.GetVisualStateGroups(control);
+			if (visualStateGroups == null && control is ContentControl contentControl)
+			{
+				visualStateGroups = VisualStateManager.GetVisualStateGroups(contentControl);
+			}
+
+			if (visualStateGroups == null)
+			{
+				return group;
+			}
+
 			foreach (var visualStateGroup in visualStateGroups)
 			{
 				if (visualStateGroup.Name == groupName)

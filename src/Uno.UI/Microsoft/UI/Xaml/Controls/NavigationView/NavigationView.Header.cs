@@ -23,6 +23,10 @@ namespace Microsoft.UI.Xaml.Controls
 			Default // Currently it's mapping to EntranceNavigationTransitionInfo and is subject to change.
 		}
 
+		internal TopNavigationViewDataProvider GetTopDataProvider() { return m_topDataProvider; }
+
+		internal NavigationViewItemsFactory GetNavigationViewItemsFactory() { return m_navigationViewItemsFactory; }
+
 		private bool m_InitialNonForcedModeUpdate = true;
 
 		// Cache these objects for the view as they are expensive to query via GetForCurrentView() calls.
@@ -87,17 +91,66 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private NavigationViewItem m_lastItemExpandedIntoFlyout;
 
+		// Event Tokens
+		private readonly SerialDisposable m_paneToggleButtonClickRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_paneSearchButtonClickRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_titleBarMetricsChangedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_titleBarIsVisibleChangedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_backButtonClickedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_closeButtonClickedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_splitViewIsPaneOpenChangedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_splitViewDisplayModeChangedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_splitViewPaneClosedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_splitViewPaneClosingRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_splitViewPaneOpenedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_splitViewPaneOpeningRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_layoutUpdatedToken = new SerialDisposable();
+		private readonly SerialDisposable m_accessKeyInvokedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_paneTitleHolderFrameworkElementSizeChangedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_itemsContainerSizeChangedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_autoSuggestBoxSuggestionChosenRevoker = new SerialDisposable();
 
-		private SerialDisposable m_topNavOverflowItemsCollectionChangedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_leftNavItemsRepeaterElementPreparedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_leftNavItemsRepeaterElementClearingRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_leftNavRepeaterLoadedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_leftNavRepeaterGettingFocusRevoker = new SerialDisposable();
+
+		private readonly SerialDisposable m_topNavItemsRepeaterElementPreparedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_topNavItemsRepeaterElementClearingRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_topNavRepeaterLoadedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_topNavRepeaterGettingFocusRevoker = new SerialDisposable();
+
+		private readonly SerialDisposable m_leftNavFooterMenuItemsRepeaterElementPreparedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_leftNavFooterMenuItemsRepeaterElementClearingRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_leftNavFooterMenuRepeaterLoadedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_leftNavFooterMenuRepeaterGettingFocusRevoker = new SerialDisposable();
+
+		private readonly SerialDisposable m_topNavFooterMenuItemsRepeaterElementPreparedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_topNavFooterMenuItemsRepeaterElementClearingRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_topNavFooterMenuRepeaterLoadedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_topNavFooterMenuRepeaterGettingFocusRevoker = new SerialDisposable();
+
+		private readonly SerialDisposable m_topNavOverflowItemsRepeaterElementPreparedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_topNavOverflowItemsRepeaterElementClearingRevoker = new SerialDisposable();
+
+		private readonly SerialDisposable m_selectionChangedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_childrenRequestedRevoker = new SerialDisposable();
+
+		private readonly SerialDisposable m_menuItemsCollectionChangedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_footerItemsCollectionChangedRevoker = new SerialDisposable();
+
+		private readonly SerialDisposable m_topNavOverflowItemsCollectionChangedRevoker = new SerialDisposable();
+
+		private readonly SerialDisposable m_flyoutClosingRevoker = new SerialDisposable();
 
 		private bool m_wasForceClosed = false;
 		private bool m_isClosedCompact = false;
 		private bool m_blockNextClosingEvent = false;
 		private bool m_initialListSizeStateSet = false;
 
-		private TopNavigationViewDataProvider m_topDataProvider = new TopNavigationViewDataProvider(this);
+		private TopNavigationViewDataProvider m_topDataProvider;
 
-		private SelectionModel m_selectionModel = null;
+		private SelectionModel m_selectionModel = new SelectionModel();
 		private IList<object> m_selectionModelSource = null;
 
 		private ItemsSourceView m_menuItemsSource = null;

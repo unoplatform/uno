@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// Stop UpdateVisualState before template is applied. Otherwise the visual may not the same as we expect
 			m_appliedTemplate = false;
-			NavigationViewItemBase.OnApplyTemplate();
+			base.OnApplyTemplate();
 
 			var rootGrid = GetTemplateChild(c_rootGrid) as Grid;
 			if (rootGrid != null)

@@ -209,7 +209,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			}
 		}
 
-		private void RaiseExpandCollapseAutomationEvent(ExpandCollapseState newState)
+		internal void RaiseExpandCollapseAutomationEvent(ExpandCollapseState newState)
 		{
 			if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
 			{
@@ -223,8 +223,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				   newState);
 			}
 		}
-
-
 
 		private NavigationView GetParentNavigationView()
 		{

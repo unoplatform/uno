@@ -17,9 +17,11 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+using Windows.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	[ContentProperty(Name = nameof(ItemTemplate))]
 	public partial class ItemsRepeater : FrameworkElement, IPanel
 	{
 		internal IElementFactoryShim ItemTemplateShim => m_itemTemplateWrapper;

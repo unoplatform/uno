@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO: can new cause issues?
 		private new void UpdateVisualState(bool useTransitions)
 		{
-			VisualStateManager.GoToState(this, m_isClosedCompact && IsTopLevelItem() ? "HeaderTextCollapsed" : "HeaderTextVisible", useTransitions);
+			VisualStateManager.GoToState(this, m_isClosedCompact && IsTopLevelItem ? "HeaderTextCollapsed" : "HeaderTextVisible", useTransitions);
 		}
 
 		protected override void OnNavigationViewItemBaseDepthChanged()
