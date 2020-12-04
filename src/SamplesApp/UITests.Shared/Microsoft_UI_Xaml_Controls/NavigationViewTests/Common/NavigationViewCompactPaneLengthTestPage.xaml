@@ -1,0 +1,121 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<local:TestPage
+    x:Class="MUXControlsTestApp.NavigationViewCompactPaneLengthTestPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MUXControlsTestApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <muxc:NavigationView x:Name="NavView" ItemInvoked="NavView_ItemInvoked">
+
+            <muxc:NavigationView.MenuItems>
+                <muxc:NavigationViewItem x:Name="HomeItem" AutomationProperties.Name="NavViewInvokeItem" Content="Home" Icon="Home"/>
+                <muxc:NavigationViewItem x:Name="AppsItem" Content="Apps" Icon="Shop" />
+                <muxc:NavigationViewItem x:Name="GamesItem" Content="Games" Icon="Emoji"/>
+                <muxc:NavigationViewItemSeparator />
+                <muxc:NavigationViewItemHeader x:Name="HeaderTextItem" Content="Header Text" />
+                <muxc:NavigationViewItem x:Name="MusicItem" Content="Music" Icon="Audio"/>
+                <muxc:NavigationViewItem Content="Should be green" Foreground="Green" Icon="Emoji"/>
+                <muxc:NavigationViewItem x:Name="MoviesItem" Content="Movies" Icon="Video"/>
+                <muxc:NavigationViewItemHeader x:Name="HeaderTextItem2" Content="Header Text 2" />
+                <muxc:NavigationViewItem x:Name="TVItem" Content="TV" Icon="Slideshow"/>
+                <muxc:NavigationViewItem x:Name="VolumeItem" AutomationProperties.Name="Volume" Icon="Volume">
+                    <muxc:NavigationViewItem.Content>
+                        <TextBlock Text="Volume (don't click me)" />
+                    </muxc:NavigationViewItem.Content>
+                </muxc:NavigationViewItem>
+                <muxc:NavigationViewItem x:Name="IntegerItem" AutomationProperties.Name="Integer" Icon="Accept"/>
+            </muxc:NavigationView.MenuItems>
+
+            <muxc:NavigationView.AutoSuggestBox>
+                <AutoSuggestBox QueryIcon="Find" AutomationProperties.Name="PaneAutoSuggestBox"/>
+            </muxc:NavigationView.AutoSuggestBox>
+
+            <muxc:NavigationView.PaneFooter>
+                <muxc:NavigationViewItem Content="Footer item"/>
+            </muxc:NavigationView.PaneFooter>
+            
+            <muxc:NavigationView.Content>
+                <StackPanel Padding="50" Orientation="Horizontal">
+                    <StackPanel Style="{ThemeResource StandardGroupingStackPanel}" Margin="0,0,16,0">
+                        <TextBlock Text="Options" Style="{ThemeResource StandardGroupHeader}"/>
+
+                        <CheckBox
+                            x:Name="IsPaneOpenCheckBox"
+                            AutomationProperties.Name="IsPaneOpenCheckBox"
+                            Content="IsPaneOpen"
+                            IsChecked="{Binding IsPaneOpen, ElementName=NavView, Mode=TwoWay}"
+                            Margin="5"/>
+                        
+                        <CheckBox
+                            x:Name="IsPaneVisibleCheckBox"
+                            AutomationProperties.Name="IsPaneVisibleCheckBox"
+                            Content="IsPaneVisible"
+                            IsChecked="{Binding IsPaneVisible, ElementName=NavView, Mode=TwoWay}"
+                            Margin="5"/>
+
+                        <ComboBox x:Name="CompactPaneLength" Header="Compact Pane Length" AutomationProperties.Name="CompactPaneLengthComboBox"
+                            SelectionChanged="CompactPaneLength_SelectionChanged"  Margin="5">
+                            <ComboBoxItem Content="0" Tag="0"/>
+                            <ComboBoxItem Content="40" Tag="40" IsSelected="True"/>
+                            <ComboBoxItem Content="48" Tag="48"/>
+                            <ComboBoxItem Content="96" Tag="96"/>
+                        </ComboBox>
+
+                        <ComboBox x:Name="OpenPaneLength" Header="Expanded Pane Length"
+                            SelectionChanged="OpenPaneLength_SelectionChanged" Margin="5">
+                            <ComboBoxItem Content="0" Tag="0"/>
+                            <ComboBoxItem Content="320" Tag="320" IsSelected="True"/>
+                            <ComboBoxItem Content="648" Tag="648"/>
+                        </ComboBox>
+
+                        <ComboBox x:Name="PaneDisplayModeCombobox"
+                                AutomationProperties.Name="PaneDisplayModeCombobox"
+                                Header="PaneDisplayMode"
+                                SelectionChanged="PaneDisplayModeCombobox_SelectionChanged"
+                                Margin="5">
+                            <ComboBoxItem Content="Auto" Tag="Auto"/>
+                            <ComboBoxItem Content="Left" Tag="Left" IsSelected="True"/>
+                            <ComboBoxItem Content="Top" Tag="Top"/>
+                            <ComboBoxItem Content="LeftCompact" Tag="LeftCompact"/>
+                            <ComboBoxItem Content="LeftMinimal" Tag="LeftMinimal"/>
+                        </ComboBox>
+
+                        <CheckBox x:Name="PaneToggleButtonVisiblityCheckbox" AutomationProperties.Name="PaneToggleButtonVisiblityCheckbox"
+                            Content="Show Hamburger Button" Checked="PaneToggleButtonVisiblityCheckbox_Checked" IsChecked="True"
+                            Unchecked="PaneToggleButtonVisiblityCheckbox_Unchecked" Margin="5"/>
+
+                        <CheckBox x:Name="BackButtonVisibilityCheckbox" AutomationProperties.Name="BackButtonVisibilityCheckbox"
+                            Checked="BackButtonVisibilityCheckbox_Checked" Content="Back Visible"
+                            Unchecked="BackButtonVisibilityCheckbox_Unchecked" IsChecked="True" Margin="5"/>
+                        <CheckBox x:Name="BackButtonEnabledCheckbox" AutomationProperties.Name="BackButtonEnabledCheckbox"
+                            Content="Back Enabled" Checked="BackButtonEnabledCheckbox_Checked"
+                            Unchecked="BackButtonEnabledCheckbox_Unchecked" Margin="5"/>
+
+                    </StackPanel>
+                    
+                    <StackPanel Style="{ThemeResource StandardGroupingStackPanel}">
+                        <TextBlock Text="Output" Style="{ThemeResource StandardGroupHeader}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Verify MenuItems offset" AutomationProperties.Name="CheckMenuItemsOffset"
+                                Click="CheckMenuItemsOffset_Click" Margin="0,0,8,0"/>
+                            <CheckBox x:Name="MenuItemsCorrectOffset" AutomationProperties.Name="MenuItemsCorrectOffset"
+                                Content="MenuItems correct offset"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Home item invoked count"/>
+                            <TextBlock x:Name="HomeItemInvokedCount" AutomationProperties.Name="HomeItemInvokedCount" Text="0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+                
+            </muxc:NavigationView.Content>
+        </muxc:NavigationView>
+    </Grid>
+</local:TestPage>

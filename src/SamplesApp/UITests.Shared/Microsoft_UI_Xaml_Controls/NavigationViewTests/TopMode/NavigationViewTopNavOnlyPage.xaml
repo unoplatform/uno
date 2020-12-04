@@ -1,0 +1,123 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<local:TestPage
+    x:Class="MUXControlsTestApp.NavigationViewTopNavOnlyPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MUXControlsTestApp"
+    xmlns:muxcontrols="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <TextBlock x:Name="AppTitle" 
+        Text="Hello" 
+        Style="{StaticResource CaptionTextBlockStyle}" 
+        IsHitTestVisible="False" 
+        Canvas.ZIndex="1" />
+
+        <muxcontrols:NavigationView 
+                Width="800"
+                IsBackButtonVisible="Visible"
+                Canvas.ZIndex="0"
+                x:Name="NavView" AutomationProperties.Name="NavView" AutomationProperties.AutomationId="NavView"
+                PaneTitle="NavView Test"
+                PaneDisplayMode="Top"
+                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                AccessKey="H">
+        <muxcontrols:NavigationView.MenuItems>
+                <muxcontrols:NavigationViewItem x:Name="HomeItem" Content="Home" Icon="Home"/>
+                <muxcontrols:NavigationViewItem x:Name="AppsItem" Icon="Shop" Tag="Apps" /> <!-- AppsItem only have Icon and no content -->
+                <muxcontrols:NavigationViewItem x:Name="SuppressSelection" Content="SuppressSelection" Icon="Emoji" SelectsOnInvoked="False" />
+                <muxcontrols:NavigationViewItem x:Name="GamesItem" Content="Games" Icon="Emoji"/>
+                <muxcontrols:NavigationViewItemSeparator />
+                <muxcontrols:NavigationViewItemHeader x:Name="HeaderTextItem" Content="Header Text" />
+                <muxcontrols:NavigationViewItem x:Name="MusicItem" Content="Music" Icon="Audio" />
+                <muxcontrols:NavigationViewItem x:Name="MoviesItem" Content="Movies" Icon="Video" />
+                <muxcontrols:NavigationViewItemHeader x:Name="HeaderTextItem2" Content="Header Text 2" />
+                <muxcontrols:NavigationViewItem x:Name="TVItem" Content="TV" Icon="Slideshow" />
+                <muxcontrols:NavigationViewItem x:Name="VolumeItem" AutomationProperties.Name="Volume" Icon="Volume">
+                    <muxcontrols:NavigationViewItem.Content>
+                        <TextBlock Text="Volume (don't click me)" />
+                    </muxcontrols:NavigationViewItem.Content>
+                </muxcontrols:NavigationViewItem>
+                <muxcontrols:NavigationViewItem x:Name="IntegerItem" AutomationProperties.Name="Integer" Icon="Accept" Content="7" />
+            </muxcontrols:NavigationView.MenuItems>
+
+            <ScrollViewer Margin="8,0,0,0">
+                <StackPanel>
+                    <Button x:Name="FlipOrientation" AutomationProperties.Name="FlipOrientationButton" Content="Flip Orientation" Click="FlipOrientation_Click" />
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox
+                                x:Name="IsPaneOpenCheckBox"
+                                AutomationProperties.Name="IsPaneOpenCheckBox"
+                                Content="IsPaneOpen"
+                                IsChecked="{Binding IsPaneOpen, ElementName=NavView, Mode=TwoWay}"
+                                Margin="5" />
+                        <CheckBox x:Name="BackButtonVisibilityCheckbox" AutomationProperties.Name="BackButtonVisibilityCheckbox" Content="Back Visible" Checked="BackButtonVisibilityCheckbox_Checked" Unchecked="BackButtonVisibilityCheckbox_Unchecked" IsChecked="True" Margin="5"/>
+                        <TextBlock VerticalAlignment="Center">BackButtonHolder width:</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox x:Name="PaneDisplayModeCombobox"
+                                    AutomationProperties.Name="PaneDisplayModeCombobox"
+                                    Header="PaneDisplayMode"
+                                    SelectionChanged="PaneDisplayModeCombobox_SelectionChanged"
+                                    Margin="5">
+                            <ComboBoxItem Content="Auto" Tag="Auto" />
+                            <ComboBoxItem Content="Left" Tag="Left" />
+                            <ComboBoxItem Content="Top" Tag="Top" />
+                            <ComboBoxItem Content="LeftCompact" Tag="LeftCompact" />
+                            <ComboBoxItem Content="LeftMinimal" Tag="LeftMinimal" />
+                        </ComboBox>
+
+                        <ComboBox x:Name="ShoulderNavigationEnabledSetter" AutomationProperties.Name="ShoulderNavigationEnabledSetter"
+                                SelectionChanged="ShoulderNavigationEnabledSetter_SelectionChanged"
+                                Header="ShoulderNavigationEnabled">
+                            <ComboBoxItem AutomationProperties.Name="ShoulderNavigationEnabledAlways">Always</ComboBoxItem>
+                            <ComboBoxItem AutomationProperties.Name="ShoulderNavigationEnabledWhenSelectionFollowsFocus">WhenSelectionFollowsFocus</ComboBoxItem>
+                            <ComboBoxItem AutomationProperties.Name="ShoulderNavigationEnabledNever">Never</ComboBoxItem>
+                        </ComboBox>
+
+                        <ComboBox x:Name="SelectionFollowsFocusSetter" AutomationProperties.Name="SelectionFollowsFocusSetter"
+                                SelectionChanged="SelectionFollowsFocusSetter_SelectionChanged"
+                                Header="SelectionFollowsFocus">
+                            <ComboBoxItem AutomationProperties.Name="SelectionFollowsFocusEnabled">Enabled</ComboBoxItem>
+                            <ComboBoxItem AutomationProperties.Name="SelectionFollowsFocusDisabled">Disabled</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="ChangeGamesContent" Click="ChangeGamesContent_Click" Content="ChangeGamesContent" />
+                        <Button x:Name="ClearNavItemContent" Click="ClearNavItemContent_Click" Content="ClearNavItemContent" />
+                        <Button x:Name="NavInvalidateMeasure" Click="NavInvalidateMeasure_Click" Content="NavInvalidateMeasure" />
+                    </StackPanel>
+                    <Button x:Name="AddLongNavItem" Click="AddLongNavItem_Click" Content="AddLongNavItem" />
+                    <Button x:Name="AddTenItems" Click="AddTenItems_Click" Content="AddTenItems" />
+                    <Button x:Name="ResetResult" AutomationProperties.Name="ResetResult" Content="Reset Result" Click="ResetResult_Click" />
+                    <Button x:Name="FlipExtendViewIntoTitleBar" Click="FlipExtendViewIntoTitleBar_Click" Content="Flip ExtendViewIntoTitleBar" />
+                    <Button x:Name="GetActiveVisualState" AutomationProperties.Name="GetActiveVisualState" Content="Get Active VisualState" Click="GetActiveVisualState_Click" />
+                    <Button x:Name="ChangeDataSource" Click="ChangeDataSource_Click" Content="Change Datasource" />
+                    <Button x:Name="AddRemoveContentOverlay" AutomationProperties.Name="AddRemoveContentOverlay" Content="Add/Remove Content Overlay (top nav)" Click="AddRemoveContentOverlay_Click" />
+                    <Button x:Name="ChangeTopNavVisibility" AutomationProperties.Name="ChangeTopNavVisibility" Content="Change Top Nav Visibility" Click="ChangeTopNavVisibility_Click" />
+                    <Button x:Name="ExpectNullSelectedItemInItemInvoke" AutomationProperties.Name="ExpectNullSelectedItemInItemInvoke" Content="Set SelectedItem=null in next ItemInvoke" Click="ExpectNullSelectedItemInItemInvoke_Click" />
+                    <Button x:Name="SetInvalidSelectedItem" AutomationProperties.Name="SetInvalidSelectedItem" Click="SetInvalidSelectedItem_Click" Content="Set Invalid SelectedItem" />
+                    <CheckBox x:Name="TestFrameCheckbox" AutomationProperties.Name="TestFrameCheckbox" Content="Show Test Frame" Checked="TestFrameCheckbox_Checked" Unchecked="TestFrameCheckbox_Unchecked" IsChecked="True"  Margin="5" />
+                    <CheckBox x:Name="ChangeOverflowLabelVisibility" AutomationProperties.Name="ChangeOverflowLabelVisibility" Content="Show/Hide OverflowButton Label" Checked="ChangeOverflowLabelVisibility_Checked" Unchecked="ChangeOverflowLabelVisibility_Unchecked" IsChecked="True"  Margin="5" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="ItemInvokedResult" AutomationProperties.Name="ItemInvokedResult" />
+                        <TextBox x:Name="InvokeRecommendedTransition" AutomationProperties.Name="InvokeRecommendedTransition" />
+                        <TextBox x:Name="SelectionChangedResult" AutomationProperties.Name="SelectionChangedResult"  />
+                        <TextBox x:Name="SelectionChangeRecommendedTransition" AutomationProperties.Name="SelectionChangeRecommendedTransition" />
+                    </StackPanel>
+                    <TextBox x:Name="TestResult" AutomationProperties.Name="TestResult"  />
+                    <TextBlock TextWrapping="Wrap" Margin="5">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a nisl tellus. Fusce imperdiet euismod lorem, a porttitor ipsum pretium sed. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Morbi euismod felis non ligula sagittis dignissim. Praesent iaculis elementum quam non convallis. Nullam ullamcorper bibendum elementum. Sed mauris velit, sollicitudin ut posuere pulvinar, porta et ligula. Fusce eget ullamcorper nulla. Nam aliquet odio ex, a condimentum felis porta quis. 
+Sed sit amet pellentesque risus. Donec gravida lacinia arcu at rhoncus. Aenean malesuada blandit eros, tempor viverra libero faucibus quis. Pellentesque sit amet risus placerat, dapibus lorem vel, porttitor lectus. Nam accumsan consequat lobortis. Sed luctus justo ante, id vulputate mauris dapibus eu. Quisque blandit malesuada felis eget venenatis. 
+Aliquam mattis sit amet turpis vitae mollis. Quisque interdum risus vel nunc tempus facilisis. Donec luctus bibendum felis, vitae feugiat nunc sodales in. Quisque ac laoreet metus. Fusce et viverra metus. Fusce et libero non orci feugiat imperdiet. In hac habitasse platea dictumst. 
+Maecenas fermentum velit sit amet leo mattis, ac eleifend enim sollicitudin. Sed ex felis, bibendum sit amet nisi sit amet, viverra euismod velit. In commodo congue tellus, at sodales dolor tristique ac. Nunc convallis pellentesque massa id dictum. Sed erat dui, euismod non elit a, maximus feugiat arcu. Nullam pharetra eros vel semper mollis. Nulla eu arcu blandit, rutrum purus eget, pretium metus. Cras facilisis, lorem nec pulvinar feugiat, eros sapien finibus felis, vel rhoncus ligula enim eget sapien. Suspendisse potenti. Pellentesque ultrices, nibh vitae gravida sollicitudin, dolor ex elementum purus, placerat placerat sapien lectus sed quam. Praesent faucibus maximus urna ac ornare. Phasellus pharetra a urna nec sagittis. Suspendisse eu eleifend libero, nec eleifend leo. Praesent quis iaculis massa, eu volutpat libero. 
+Proin ornare aliquam magna sit amet mollis. Suspendisse tempus non metus sit amet rutrum. Praesent cursus convallis fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec dignissim, ex et pulvinar lacinia, massa mauris vulputate velit, eu lobortis odio quam vitae ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In eu tempor ligula. Cras quis vehicula ante. Nullam sed ante a orci laoreet pellentesque.</TextBlock>
+                </StackPanel>
+            </ScrollViewer>
+        </muxcontrols:NavigationView>
+    </Grid>
+</local:TestPage>
