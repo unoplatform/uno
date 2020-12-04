@@ -1,12 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#include "precomp.h"
-#include "CalendarViewGeneratorYearViewHost.h"
-#include "CalendarView.g.h"
-#include "CalendarViewItem.g.h"
-#include "DateComparer.h"
-#include "AutomationProperties.h"
 
 using namespace DirectUI;
 using namespace DirectUISynonyms;
@@ -15,61 +9,57 @@ using namespace DirectUISynonyms;
 #undef max
 #undef min
 
-_Check_return_ HRESULT GetContainer(
-     IInspectable* pItem,
-     xaml.IDependencyObject* pRecycledContainer,
-    _Outptr_ CalendarViewBaseItem** ppContainer)
+private void GetContainer(
+     DependencyObject pItem,
+     xaml.IDependencyObject pRecycledContainer,
+    out  CalendarViewBaseItem* ppContainer)
 {
-    HRESULT hr = S_OK;
-    ctl.ComPtr<CalendarViewItem> spContainer;
+    CalendarViewItem spContainer;
 
-    IFC(ctl.new CalendarViewItem(&spContainer));
+    spContainer = ctl.new CalendarViewItem);
 
-    IFC(spContainer.CopyTo(ppContainer));
+    spContainer.CopyTo(ppContainer);
 
-Cleanup:
-    return hr;
 }
 
 
-_Check_return_ IFACEMETHODIMP PrepareItemContainer(
-     xaml.IDependencyObject* pContainer,
-     IInspectable* pItem)
+ private void PrepareItemContainer(
+     xaml.IDependencyObject pContainer,
+     DependencyObject pItem)
 {
-    HRESULT hr = S_OK;
-    wf.DateTime date;
-    ctl.ComPtr<CalendarViewItem> spContainer;
+    DateTime date;
+    CalendarViewItem spContainer;
 
-    spContainer = (CalendarViewItem*)(pContainer);
+    spContainer = (CalendarViewItem)(pContainer);
 
-    IFC(ctl.do_get_value(date, pItem));
-    IFC(GetCalendar().SetDateTime(date));
-    IFC(spContainer.put_Date(date));
+    ctl.do_get_value(date, pItem);
+    GetCalendar().SetDateTime(date);
+    spContainer.Date = date;
 
     // maintext
     {
-        wrl_wrappers.HString mainText;
-        wrl_wrappers.HString automationName;
+        string mainText;
+        string automationName;
 
         IFC(GetCalendar().MonthAsFullString(
-            automationName.GetAddressOf()));
+            automationName()));
 
-        IFC(AutomationProperties.SetNameStatic(spContainer.Cast<FrameworkElement>(), automationName.Get()));
+        AutomationProperties.SetNameStatic(spContainer as FrameworkElement, automationName);
 
         IFC(GetCalendar().MonthAsString(
-            0, /*idealLength, set to 0 to get the abbreviated string*/
-            mainText.GetAddressOf()));
+            0, /idealLength, set to 0 to get the abbreviated string/
+            mainText()));
 
-        IFC(spContainer.UpdateMainText(mainText.Get()));
+        spContainer.UpdateMainText(mainText);
     }
 
     // label text
     {
-        BOOLEAN isLabelVisible = FALSE;
+        bool isLabelVisible = false;
 
-        IFC(GetOwner().get_IsGroupLabelVisible(&isLabelVisible));
+        isLabelVisible = GetOwner().IsGroupLabelVisible;
 
-        IFC(UpdateLabel(spContainer.Get(), !!isLabelVisible));
+        UpdateLabel(spContainer, !!isLabelVisible);
     }
 
     // today state will be updated in CalendarViewGeneratorHost.PrepareItemContainer
@@ -81,118 +71,112 @@ _Check_return_ IFACEMETHODIMP PrepareItemContainer(
     // For YearView and DecadeView, we can't do the same because there is no template for MonthItem and YearItem
     {
         xaml.Thickness margin{ 1.0, 1.0, 1.0, 1.0 };
-        IFC(spContainer.put_Margin(margin));
+        spContainer.Margin = margin;
     }
 
     //This code enables the focus visuals on the CalendarViewItems in the Year Pane in the correct position.
     {
-        const xaml.Thickness focusMargin{ -2.0, -2.0, -2.0, -2.0 };
-        IFC(spContainer.put_FocusVisualMargin(focusMargin));
+         xaml.Thickness focusMargin{ -2.0, -2.0, -2.0, -2.0 };
+        spContainer.FocusVisualMargin = focusMargin;
 
-        IFC(spContainer.put_UseSystemFocusVisuals(TRUE));
+        spContainer.UseSystemFocusVisuals = true;
     }
 
-    IFC(CalendarViewGeneratorHost.PrepareItemContainer(pContainer, pItem));
+    CalendarViewGeneratorHost.PrepareItemContainer(pContainer, pItem);
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT UpdateLabel( CalendarViewBaseItem* pItem,  bool isLabelVisible)
+private void UpdateLabel( CalendarViewBaseItem pItem,  bool isLabelVisible)
 {
     bool showLabel = false;
     if (isLabelVisible)
     {
-        wf.DateTime date;
+        DateTime date;
         var pCalendar = GetCalendar();
         int month = 0;
         int firstMonthOfThisYear = 0;
 
         // TODO: consider caching the firstday flag because we also need this information when determining snap points 
         // (however Decadeview doesn't need this for Label).
-        IFC_RETURN(pItem.GetDate(&date));
-        IFC_RETURN(pCalendar.SetDateTime(date));
-        IFC_RETURN(pCalendar.get_FirstMonthInThisYear(&firstMonthOfThisYear));
-        IFC_RETURN(pCalendar.get_Month(&month));
+        date = pItem.GetDate);
+        pCalendar.SetDateTime(date);
+        firstMonthOfThisYear = pCalendar.FirstMonthInThisYear;
+        month = pCalendar.Month;
 
         showLabel = firstMonthOfThisYear == month;
 
         if (showLabel)
         {
-            wrl_wrappers.HString labelText;
-            IFC_RETURN(pCalendar.YearAsString(labelText.GetAddressOf()));
-            IFC_RETURN(pItem.UpdateLabelText(labelText.Get()));
+            string labelText;
+            pCalendar.YearAsString(labelText());
+            pItem.UpdateLabelText(labelText);
         }
     }
-    IFC_RETURN(pItem.ShowLabelText(showLabel));
-    return S_OK;
+    pItem.ShowLabelText(showLabel);
+    return;
 }
 
-_Check_return_ HRESULT GetIsFirstItemInScope( int index, out bool* pIsFirstItemInScope)
+private void GetIsFirstItemInScope( int index, out bool pIsFirstItemInScope)
 {
-    HRESULT hr = S_OK;
-
-    *pIsFirstItemInScope = false;
+    pIsFirstItemInScope = false;
     if (index == 0)
     {
-        *pIsFirstItemInScope = true;
+        pIsFirstItemInScope = true;
     }
     else
     {
-        wf.DateTime date = {};
+        DateTime date  = default;
         int month = 0;
         int firstMonth = 0;
 
-        IFC(GetDateAt(index, &date));
+        date = GetDateAt(index);
         var pCalendar = GetCalendar();
-        IFC(pCalendar.SetDateTime(date));
-        IFC(pCalendar.get_Month(&month));
-        IFC(pCalendar.get_FirstMonthInThisYear(&firstMonth));
-        *pIsFirstItemInScope = month == firstMonth;
+        pCalendar.SetDateTime(date);
+        month = pCalendar.Month;
+        firstMonth = pCalendar.FirstMonthInThisYear;
+        pIsFirstItemInScope = month == firstMonth;
     }
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT GetUnit(out int* pValue)
+private void GetUnit(out int pValue)
 {
     return GetCalendar().get_Month(pValue);
 }
 
-_Check_return_ HRESULT SetUnit( int value)
+private void SetUnit( int value)
 {
-    return GetCalendar().put_Month(value);
+    return GetCalendar().Month = value;
 }
 
-_Check_return_ HRESULT AddUnits( int value)
+private void AddUnits( int value)
 {
     return GetCalendar().AddMonths(value);
 }
 
-_Check_return_ HRESULT AddScopes( int value)
+private void AddScopes( int value)
 {
-    IFC_RETURN(GetCalendar().AddYears(value));
-    return S_OK;
+    GetCalendar().AddYears(value);
+    return;
 }
 
-_Check_return_ HRESULT GetFirstUnitInThisScope(out int* pValue)
+private void GetFirstUnitInThisScope(out int pValue)
 {
     return GetCalendar().get_FirstMonthInThisYear(pValue);
 }
-_Check_return_ HRESULT GetLastUnitInThisScope(out int* pValue)
+private void GetLastUnitInThisScope(out int pValue)
 {
     return GetCalendar().get_LastMonthInThisYear(pValue);
 }
 
-_Check_return_ HRESULT OnScopeChanged()
+private void OnScopeChanged()
 {
-    return GetOwner().FormatYearName(m_maxDateOfCurrentScope, m_pHeaderText.ReleaseAndGetAddressOf());
+    return GetOwner().FormatYearName(m_maxDateOfCurrentScope, m_pHeaderText.ReleaseAn());
 }
 
-_Check_return_ HRESULT GetPossibleItemStrings(_Outptr_ const std.vector<wrl_wrappers.HString>** ppStrings)
+private void GetPossibleItemStrings(out   std.CalculatorList<string>** ppStrings)
 {
-    *ppStrings = &m_possibleItemStrings;
+    ppStrings = &m_possibleItemStrings;
 
     if (m_possibleItemStrings.empty())
     {
@@ -213,50 +197,50 @@ _Check_return_ HRESULT GetPossibleItemStrings(_Outptr_ const std.vector<wrl_wrap
         // ThaiCalendar, maxLength = 12 @ index 1
         // UmAlQuraCalendar, maxLength = 12 @ index 0
         {
-            const int MaxNumberOfYearsToBeChecked = 3;
-            wf.DateTime longestYear;
+             int MaxNumberOfYearsToBeChecked = 3;
+            DateTime longestYear;
             int lengthOfLongestYear = 0;
             int numberOfMonths = 0;
             int month = 0;
 
             var pCalendar = GetCalendar();
 
-            IFC_RETURN(pCalendar.SetToMin());
+            pCalendar.SetToMin();
             for (int i = 0; i < MaxNumberOfYearsToBeChecked; i++)
             {
-                IFC_RETURN(pCalendar.get_NumberOfMonthsInThisYear(&numberOfMonths));
+                numberOfMonths = pCalendar.NumberOfMonthsInThisYear;
                 if (numberOfMonths > lengthOfLongestYear)
                 {
                     lengthOfLongestYear = numberOfMonths;
-                    IFC_RETURN(pCalendar.GetDateTime(&longestYear));
+                    longestYear = pCalendar.GetDateTime);
                 }
-                IFC_RETURN(pCalendar.AddYears(1));
+                pCalendar.AddYears(1);
             }
 
-            ASSERT(lengthOfLongestYear == 13 || lengthOfLongestYear == 12);
-            IFC_RETURN(pCalendar.SetDateTime(longestYear));
-            IFC_RETURN(pCalendar.get_FirstMonthInThisYear(&month));
-            IFC_RETURN(pCalendar.put_Month(month));
+            global::System.Diagnostics.Debug.Assert(lengthOfLongestYear == 13 || lengthOfLongestYear == 12);
+            pCalendar.SetDateTime(longestYear);
+            month = pCalendar.FirstMonthInThisYear;
+            pCalendar.Month = month;
 
             m_possibleItemStrings.reserve(lengthOfLongestYear);
 
             for (int i = 0; i < lengthOfLongestYear; i++)
             {
-                wrl_wrappers.HString string;
+                string string;
                 
                 IFC_RETURN(pCalendar.MonthAsString(
-                    0, /*idealLength, set to 0 to get the abbreviated string*/
-                    string.GetAddressOf()));
+                    0, /idealLength, set to 0 to get the abbreviated string/
+                    string()));
                 m_possibleItemStrings.emplace_back(std.move(string));
-                IFC_RETURN(pCalendar.AddMonths(1));
+                pCalendar.AddMonths(1);
             }
         }
     }
 
-    return S_OK;
+    return;
 }
 
-_Check_return_ HRESULT CompareDate( wf.DateTime lhs,  wf.DateTime rhs, out int* pResult)
+private void CompareDate( DateTime lhs,  DateTime rhs, out int pResult)
 {
     return GetOwner().GetDateComparer().CompareMonth(lhs, rhs, pResult);
 }

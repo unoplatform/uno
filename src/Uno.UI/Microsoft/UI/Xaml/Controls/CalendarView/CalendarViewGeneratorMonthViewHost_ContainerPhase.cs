@@ -1,15 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#include "precomp.h"
-#include "CalendarViewGeneratorMonthViewHost.h"
-#include "CalendarView.g.h"
-#include "CalendarViewItem.g.h"
-#include "CalendarViewDayItem_Partial.h"
-#include "CalendarViewDayItemChangingEventArgs.g.h"
-#include "CalendarPanel.g.h"
-#include "BuildTreeService.g.h"
-#include "BudgetManager.g.h"
 
 using namespace DirectUI;
 using namespace DirectUISynonyms;
@@ -23,22 +14,20 @@ using namespace DirectUISynonyms;
 // the CalendarView version removes UIPlaceHolder and handles blackout state.
 // Other logicals are still same as ListViewBase.
 
-_Check_return_ HRESULT CalendarViewGeneratorMonthViewHost.SetupContainerContentChangingAfterPrepare(
-     xaml.IDependencyObject* pContainer,
-     IInspectable* pItem,
-     INT itemIndex,
+private void CalendarViewGeneratorMonthViewHost.SetupContainerContentChangingAfterPrepare(
+     xaml.IDependencyObject pContainer,
+     DependencyObject pItem,
+     int itemIndex,
      wf.Size measureSize)
 {
-    HRESULT hr = S_OK;
-
     // this is being called by modern panels after the prepare has occurred.
     // we will setup information that we will need during the lifetime of this container
 
-    ctl.ComPtr<ICalendarViewDayItem> spContainer;
-    ctl.ComPtr<CalendarViewDayItemChangingEventArgs> spArgsConcrete;
+    ICalendarViewDayItem spContainer;
+    CalendarViewDayItemChangingEventArgs spArgsConcrete;
 
     // raw pointer, since we're not a refcounted object
-    UIElement.VirtualizationInformation* pVirtualizationInformation = null;
+    UIElement.VirtualizationInformation pVirtualizationInformation = null;
 
     spContainer = ctl.query_interface_cast<ICalendarViewDayItem>(pContainer);
 
@@ -46,68 +35,61 @@ _Check_return_ HRESULT CalendarViewGeneratorMonthViewHost.SetupContainerContentC
     {
         // is this a new style container? We can know by looking at the virtualizationInformation struct which is
         // a ModernCollectionBase concept
-        ctl.ComPtr<xaml_controls.ICalendarViewDayItemChangingEventArgs> spArgs;
+        xaml_controls.ICalendarViewDayItemChangingEventArgs spArgs;
 
-        pVirtualizationInformation = spContainer.AsOrNull<IUIElement>().Cast<UIElement>().GetVirtualizationInformation();
+        pVirtualizationInformation = spContainer as UIElement as UIElement.GetVirtualizationInformation();
 
-        ASSERT(pVirtualizationInformation);
+        global::System.Diagnostics.Debug.Assert(pVirtualizationInformation);
 
-        IFC(spContainer.Cast<CalendarViewDayItem>().GetBuildTreeArgs(&spArgs));
-        spArgsConcrete = spArgs.Cast<CalendarViewDayItemChangingEventArgs>();
+        spArgs = spContainer as CalendarViewDayItem.GetBuildTreeArgs);
+        spArgsConcrete = spArgs as CalendarViewDayItemChangingEventArgs;
     }
 
     // store the size we would measure with
     pVirtualizationInformation.SetMeasureSize(measureSize);
 
     // initialize values in the args
-    IFC(spArgsConcrete.put_WantsCallBack(FALSE));              // let them explicitly call-out if they want it
+    spArgsConcrete.WantsCallBack = false;              // let them explicitly call-out if they want it
 
-    IFC(spArgsConcrete.put_Item(spContainer.Get()));           // there is now a hard ref
-    IFC(spArgsConcrete.put_InRecycleQueue(FALSE));
-    IFC(spArgsConcrete.put_Phase(0));
+    spArgsConcrete.Item = spContainer;           // there is now a hard ref
+    spArgsConcrete.InRecycleQueue = false;
+    spArgsConcrete.Phase = 0;
 
     // raise the event. This is the synchronous version. we will raise it 'async' as well when we have time
     // but we guarantee calling it after prepare
     if (GetOwner().ShouldRaiseEvent(KnownEventIndex.CalendarView_CalendarViewDayItemChanging))   // app code hooks the event
     {
-        CalendarView.CalendarViewDayItemChangingEventSourceType* pEventSource = null;
+        CalendarView.CalendarViewDayItemChangingEventSourceType pEventSource = null;
 
-        IFC(GetOwner().GetCalendarViewDayItemChangingEventSourceNoRef(&pEventSource));
+        pEventSource = GetOwner().GetCalendarViewDayItemChangingEventSourceNoRef);
 
         // force measure. This will be no-op since content has not been set/changed
         // but we need it for the contenttemplateroot
-        IFC(spContainer.Cast<CalendarViewDayItem>().Measure(measureSize));
+        spContainer as CalendarViewDayItem.Measure(measureSize);
 
-        IFC(pEventSource.Raise(GetOwner(), spArgsConcrete.Get()));
+        pEventSource.Raise(GetOwner(), spArgsConcrete);
     }
 
-    IFC(RegisterWorkFromCICArgs(spArgsConcrete.Get()));
+    RegisterWorkFromCICArgs(spArgsConcrete);
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT CalendarViewGeneratorMonthViewHost.RegisterWorkForContainer(
-     xaml.IUIElement* pContainer)
+private void CalendarViewGeneratorMonthViewHost.RegisterWorkForContainer(
+     UIElement pContainer)
 {
-    HRESULT hr = S_OK;
-    ctl.ComPtr<xaml_controls.ICalendarViewDayItemChangingEventArgs> spArgs;
-    ctl.ComPtr<ICalendarViewDayItem> spContainer;
+    xaml_controls.ICalendarViewDayItemChangingEventArgs spArgs;
+    ICalendarViewDayItem spContainer;
 
-    IFC(ctl.do_query_interface<ICalendarViewDayItem>(spContainer, pContainer));
-    IFC(spContainer.Cast<CalendarViewDayItem>().GetBuildTreeArgs(&spArgs));
+    ctl.do_query_interface<ICalendarViewDayItem>(spContainer, pContainer);
+    spArgs = spContainer as CalendarViewDayItem.GetBuildTreeArgs);
 
-    IFC(RegisterWorkFromCICArgs(spArgs.Get()));
+    RegisterWorkFromCICArgs(spArgs);
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT
-CalendarViewGeneratorMonthViewHost.RemoveToBeClearedContainer( CalendarViewDayItem* pContainer)
+ HRESULT
+CalendarViewGeneratorMonthViewHost.RemoveToBeClearedContainer( CalendarViewDayItem pContainer)
 {
-    HRESULT hr = S_OK;
-
     // we might have been inserted into the list for deferred clear container calls.
     // the fact that we are now being prepared, means that we don't have to perform that clear call.
     // yay! that means we are going to not perform work that has quite a bit of perf overhead. 
@@ -117,19 +99,19 @@ CalendarViewGeneratorMonthViewHost.RemoveToBeClearedContainer( CalendarViewDayIt
 
     // special case the last element (since we push_back during when we called clear and we expect the next
     // action to be this prepare).
-    UINT toBeClearedContainerCount = 0;
-    IFC(EnsureToBeClearedContainers());
-    IFC(m_toBeClearedContainers.get_Size(&toBeClearedContainerCount));
+    Uint toBeClearedContainerCount = 0;
+    EnsureToBeClearedContainers();
+    toBeClearedContainerCount = m_toBeClearedContainers.Size;
 
-    for (UINT current = toBeClearedContainerCount - 1; current >= 0 && toBeClearedContainerCount > 0; --current)
+    for (Uint current = toBeClearedContainerCount - 1; current >= 0 && toBeClearedContainerCount > 0; --current)
     {
-        ctl.ComPtr<ICalendarViewDayItem> spCurrentContainer;
+        ICalendarViewDayItem spCurrentContainer;
         // go from back to front, since we're most likely in the back.
-        IFC(m_toBeClearedContainers.GetAt(current, &spCurrentContainer));
+        spCurrentContainer = m_toBeClearedContainers.GetAt(current);
 
-        if (spCurrentContainer.Get() == (ICalendarViewDayItem*)(pContainer))
+        if (spCurrentContainer == (ICalendarViewDayItem)(pContainer))
         {
-            IFC(m_toBeClearedContainers.RemoveAt(current));
+            m_toBeClearedContainers.RemoveAt(current);
             break;
         }
 
@@ -139,40 +121,37 @@ CalendarViewGeneratorMonthViewHost.RemoveToBeClearedContainer( CalendarViewDayIt
             break;
         }
     }
-Cleanup:
-    return hr;
 }
 
-IFACEMETHODIMP CalendarViewGeneratorMonthViewHost.get_IsRegisteredForCallbacks(out BOOLEAN* pValue)
+CalendarViewGeneratorMonthViewHost.get_IsRegisteredForCallbacks(out BOOLEAN pValue)
 {
-    *pValue = m_isRegisteredForCallbacks;
-    return S_OK;
+    pValue = m_isRegisteredForCallbacks;
+    return;
 }
 
-IFACEMETHODIMP CalendarViewGeneratorMonthViewHost.put_IsRegisteredForCallbacks( BOOLEAN value)
+CalendarViewGeneratorMonthViewHost.IsRegisteredForCallbacks =  bool value
 {
     m_isRegisteredForCallbacks = value;
-    return S_OK;
+    return;
 }
 
-_Check_return_ HRESULT CalendarViewGeneratorMonthViewHost.IsBuildTreeSuspended(out BOOLEAN* pReturnValue)
+private void CalendarViewGeneratorMonthViewHost.IsBuildTreeSuspended(out BOOLEAN pReturnValue)
 {
     var pOwner = GetOwner().GetHandle();
-    *pReturnValue = pOwner.IsCollapsed() || !pOwner.AreAllAncestorsVisible();
-    return S_OK;
+    pReturnValue = pOwner.IsCollapsed() || !pOwner.AreAllAncestorsVisible();
+    return;
 }
 
 // the async version of doWork that is being called by NWDrawTree
-IFACEMETHODIMP CalendarViewGeneratorMonthViewHost.BuildTree(out BOOLEAN* pWorkLeft)
+CalendarViewGeneratorMonthViewHost.BuildTree(out BOOLEAN pWorkLeft)
 {
-    HRESULT hr = S_OK;
-    INT timeElapsedInMS = 0;
-    ctl.ComPtr<BudgetManager> spBudget;
+    int timeElapsedInMS = 0;
+    BudgetManager spBudget;
 
-    *pWorkLeft = TRUE;
+    pWorkLeft = true;
 
-    IFC(DXamlCore.GetCurrent().GetBudgetManager(spBudget));
-    IFC(spBudget.GetElapsedMilliSecondsSinceLastUITick(&timeElapsedInMS));
+    DXamlCore.GetCurrent().GetBudgetManager(spBudget);
+    timeElapsedInMS = spBudget.GetElapsedMilliSecondsSinceLastUITick);
 
     if ((UINT)(timeElapsedInMS) <= m_budget)
     {
@@ -196,62 +175,58 @@ IFACEMETHODIMP CalendarViewGeneratorMonthViewHost.BuildTree(out BOOLEAN* pWorkLe
             // 1. process incremental visualization
             if (GetOwner().IsInLiveTree() && pCalendarPanel.IsInLiveTree())
             {
-                IFC(ProcessIncrementalVisualization(spBudget, pCalendarPanel));
+                ProcessIncrementalVisualization(spBudget, pCalendarPanel);
             }
 
             // 2. Clear containers
             // BUG#1331271 - make sure containers can be cleared even if CalendarView is not in live tree
-            IFC(ClearContainers(spBudget));
+            ClearContainers(spBudget);
 
-            UINT containersToClearCount = 0;
-            IFC(m_toBeClearedContainers.get_Size(&containersToClearCount));
+            Uint containersToClearCount = 0;
+            containersToClearCount = m_toBeClearedContainers.Size;
 
             // we have work left if we still have containers that need to finish their phases
             // or when we have containers that need to be cleared
-            *pWorkLeft = m_lowestPhaseInQueue != -1 || containersToClearCount > 0;
+            pWorkLeft = m_lowestPhaseInQueue != -1 || containersToClearCount > 0;
         }
     }
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ IFACEMETHODIMP CalendarViewGeneratorMonthViewHost.RaiseContainerContentChangingOnRecycle(
-     xaml.IUIElement* pContainer,
-     IInspectable* pItem)
+ CalendarViewGeneratorMonthViewHost.RaiseContainerContentChangingOnRecycle(
+     UIElement pContainer,
+     DependencyObject pItem)
 {
-    HRESULT hr = S_OK;
+    xaml_controls.ICalendarViewDayItemChangingEventArgs spArgs;
+    CalendarViewDayItemChangingEventArgs spArgsConcrete;
+    ICalendarViewDayItem spContainer;
 
-    ctl.ComPtr<xaml_controls.ICalendarViewDayItemChangingEventArgs> spArgs;
-    ctl.ComPtr<CalendarViewDayItemChangingEventArgs> spArgsConcrete;
-    ctl.ComPtr<ICalendarViewDayItem> spContainer;
-
-    IFC(ctl.do_query_interface(spContainer, pContainer));
-    IFC(spContainer.Cast<CalendarViewDayItem>().GetBuildTreeArgs(&spArgs));
-    spArgsConcrete = spArgs.Cast<CalendarViewDayItemChangingEventArgs>();
+    ctl.do_query_interface(spContainer, pContainer);
+    spArgs = spContainer as CalendarViewDayItem.GetBuildTreeArgs);
+    spArgsConcrete = spArgs as CalendarViewDayItemChangingEventArgs;
 
     if (GetOwner().ShouldRaiseEvent(KnownEventIndex.CalendarView_CalendarViewDayItemChanging))
     {
-        BOOLEAN wantCallback = FALSE;
-        CalendarView.CalendarViewDayItemChangingEventSourceType* pEventSource = null;
+        bool wantCallback = false;
+        CalendarView.CalendarViewDayItemChangingEventSourceType pEventSource = null;
 
-        IFC(GetOwner().GetCalendarViewDayItemChangingEventSourceNoRef(&pEventSource));
+        pEventSource = GetOwner().GetCalendarViewDayItemChangingEventSourceNoRef);
 
-        IFC(spArgsConcrete.put_InRecycleQueue(TRUE));
-        IFC(spArgsConcrete.put_Phase(0));
-        IFC(spArgsConcrete.put_WantsCallBack(FALSE));
-        IFC(spArgsConcrete.put_Callback(null));
-        IFC(spArgsConcrete.put_Item(spContainer.Get()));
+        spArgsConcrete.InRecycleQueue = true;
+        spArgsConcrete.Phase = 0;
+        spArgsConcrete.WantsCallBack = false;
+        spArgsConcrete.Callback = null;
+        spArgsConcrete.Item = spContainer;
 
-        IFC(pEventSource.Raise(GetOwner(), spArgs.Get()));
-        IFC(spArgs.Cast<CalendarViewDayItemChangingEventArgs>().get_WantsCallBack(&wantCallback));
+        pEventSource.Raise(GetOwner(), spArgs);
+        wantCallback = spArgs as CalendarViewDayItemChangingEventArgs.WantsCallBack;
 
         if (wantCallback)
         {
             if (m_lowestPhaseInQueue == -1)
             {
-                UINT phaseArgs = 0;
-                IFC(spArgs.Cast<CalendarViewDayItemChangingEventArgs>().get_Phase(&phaseArgs));
+                Uint phaseArgs = 0;
+                phaseArgs = spArgs as CalendarViewDayItemChangingEventArgs.Phase;
 
                 // there was nothing registered
                 m_lowestPhaseInQueue = phaseArgs;
@@ -260,37 +235,33 @@ _Check_return_ IFACEMETHODIMP CalendarViewGeneratorMonthViewHost.RaiseContainerC
                 // we can get called back to do some work
                 if (!m_isRegisteredForCallbacks)
                 {
-                    ctl.ComPtr<BuildTreeService> spBuildTree;
-                    IFC(DXamlCore.GetCurrent().GetBuildTreeService(spBuildTree));
-                    IFC(spBuildTree.RegisterWork(this));
+                    BuildTreeService spBuildTree;
+                    DXamlCore.GetCurrent().GetBuildTreeService(spBuildTree);
+                    spBuildTree.RegisterWork(this);
                 }
             }
         }
         else
         {
-            IFC(spArgsConcrete.ResetLifetime());
+            spArgsConcrete.ResetLifetime();
         }
     }
     else
     {
-        IFC(spArgsConcrete.ResetLifetime());
+        spArgsConcrete.ResetLifetime();
     }
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT
+ HRESULT
 CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
- const ctl.ComPtr<BudgetManager>& spBudget,
- CalendarPanel* pCalendarPanel)
+  BudgetManager& spBudget,
+ CalendarPanel pCalendarPanel)
 {
-    HRESULT hr = S_OK;
-
     if (m_lowestPhaseInQueue > -1)
     {
-        INT timeElapsedInMS = 0;
-        ctl.ComPtr<IItemContainerMapping> spMapping;
+        int timeElapsedInMS = 0;
+        IItemContainerMapping spMapping;
         // A block structure has been considered, but we do expect to continuously mutate the phase on containers, which would have 
         // cost us perf while reflecting that in the blocks. Instead, I keep an array of the size of the amount of containers i'm interested in.
         // The idea is that walking through that multiple times is still pretty darn fast.
@@ -302,23 +273,23 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
         // plain and simply wrong is when you collapse/remove a panel from the tree and start 
         // mutating the collection. Arrange will not get a chance to run after the mutation and
         // if we are still registered to do work, we will not be able to fetch the container.
-        INT cacheStart = -1;
-        INT visibleStart = -1;
-        INT visibleEnd = -1;
-        INT cacheEnd = -1;
+        int cacheStart = -1;
+        int visibleStart = -1;
+        int visibleEnd = -1;
+        int cacheEnd = -1;
 
-        IFC(pCalendarPanel.GetItemContainerMapping(&spMapping));
-        IFC(pCalendarPanel.get_FirstCacheIndexBase(&cacheStart));
-        IFC(pCalendarPanel.get_FirstVisibleIndexBase(&visibleStart));
-        IFC(pCalendarPanel.get_LastVisibleIndexBase(&visibleEnd));
-        IFC(pCalendarPanel.get_LastCacheIndexBase(&cacheEnd));
+        spMapping = pCalendarPanel.GetItemContainerMapping);
+        cacheStart = pCalendarPanel.FirstCacheIndexBase;
+        visibleStart = pCalendarPanel.FirstVisibleIndexBase;
+        visibleEnd = pCalendarPanel.LastVisibleIndexBase;
+        cacheEnd = pCalendarPanel.LastCacheIndexBase;
 
         // these four match the indices, except they are mapped into a lookup array.
         // notice however, that we understand how visibleindex could have been -1.
-        INT cacheStartInVector = -1;
-        INT visibleStartInVector = -1;
-        INT visibleEndInVector = -1;
-        INT cacheEndInVector = -1;
+        int cacheStartInVector = -1;
+        int visibleStartInVector = -1;
+        int visibleEndInVector = -1;
+        int cacheEndInVector = -1;
 
         // translate to array indices
         if (cacheEnd > -1)  // -1 means there is no thing.. no visible or cached containers
@@ -336,9 +307,9 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
         }
 
         // start off uninitialized
-        INT currentPositionInVector = -1;
+        int currentPositionInVector = -1;
 
-        IFC(pCalendarPanel.get_PanningDirectionBase(&direction));
+        direction = pCalendarPanel.PanningDirectionBase;
 
         // trying to find containers in this phase
         INT64 processingPhase = m_lowestPhaseInQueue;
@@ -351,8 +322,8 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
         // this method will help us do that
         var ProcessCurrentPosition = [&]()
         {
-            BOOLEAN increasePhase = FALSE;
-            BOOLEAN forward = direction != xaml_controls.PanelScrollingDirection.PanelScrollingDirection_Backward;
+            bool increasePhase = false;
+            bool forward = direction != xaml_controls.PanelScrollingDirection.PanelScrollingDirection_Backward;
 
             // initialize
             if (currentPositionInVector == -1)
@@ -383,7 +354,7 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
                     if (currentPositionInVector < 0)
                     {
                         currentPositionInVector = visibleStartInVector;
-                        increasePhase = TRUE;
+                        increasePhase = true;
                     }
                 }
                 else
@@ -406,7 +377,7 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
                     if (currentPositionInVector > cacheEndInVector)
                     {
                         currentPositionInVector = visibleEndInVector;
-                        increasePhase = TRUE;
+                        increasePhase = true;
                     }
                 }
 
@@ -432,11 +403,11 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
             && !lookup.empty())
         {
             INT64 phase = 0;
-            ctl.ComPtr<xaml.IDependencyObject> spContainer;
-            ctl.ComPtr<xaml_controls.ICalendarViewDayItem> spContainerAsCalendarViewDayItem;
-            UIElement.VirtualizationInformation* pVirtualizationInformation = null;
-            ctl.ComPtr<xaml_controls.ICalendarViewDayItemChangingEventArgs> spArgs;
-            ctl.ComPtr<CalendarViewDayItemChangingEventArgs> spArgsConcrete;
+            xaml.IDependencyObject spContainer;
+            xaml_controls.ICalendarViewDayItem spContainerAsCalendarViewDayItem;
+            UIElement.VirtualizationInformation pVirtualizationInformation = null;
+            xaml_controls.ICalendarViewDayItemChangingEventArgs spArgs;
+            CalendarViewDayItemChangingEventArgs spArgsConcrete;
             // always update the current position when done, except when the phase requested is lower than current phase
             bool shouldUpdateCurrentPosition = true;
 
@@ -445,9 +416,9 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
             if (phase == -1)
             {
                 // not initialized yet
-                UINT argsPhase = 0;
+                Uint argsPhase = 0;
 
-                IFC(spMapping.ContainerFromIndex(cacheStart + currentPositionInVector, &spContainer));
+                spContainer = spMapping.ContainerFromIndex(cacheStart + currentPositionInVector);
                 if (!spContainer)
                 {
                     // this is possible when mutations have occurred to the collection but we 
@@ -457,12 +428,12 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
                     continue;
                 }
 
-                IFC(spContainer.As(&spContainerAsCalendarViewDayItem));
+                spContainerAsCalendarViewDayItem = spContainer.As);
 
-                pVirtualizationInformation = spContainer.AsOrNull<IUIElement>().Cast<UIElement>().GetVirtualizationInformation();
-                IFC(spContainerAsCalendarViewDayItem.Cast<CalendarViewDayItem>().GetBuildTreeArgs(&spArgs));
+                pVirtualizationInformation = spContainer as UIElement as UIElement.GetVirtualizationInformation();
+                spArgs = spContainerAsCalendarViewDayItem as CalendarViewDayItem.GetBuildTreeArgs);
 
-                IFC(spArgs.get_Phase(&argsPhase));
+                argsPhase = spArgs.Phase;
                 phase = argsPhase;  // fits easily
 
                 lookup[currentPositionInVector] = phase;
@@ -471,57 +442,57 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
             if (!spArgs)
             {
                 // we might have skipped getting the args, let's do that now.
-                IFC(spMapping.ContainerFromIndex(cacheStart + currentPositionInVector, &spContainer));
+                spContainer = spMapping.ContainerFromIndex(cacheStart + currentPositionInVector);
 
-                IFC(spContainer.As(&spContainerAsCalendarViewDayItem));
-                pVirtualizationInformation = spContainer.AsOrNull<IUIElement>().Cast<UIElement>().GetVirtualizationInformation();
+                spContainerAsCalendarViewDayItem = spContainer.As);
+                pVirtualizationInformation = spContainer as UIElement as UIElement.GetVirtualizationInformation();
 
-                IFC(spContainerAsCalendarViewDayItem.Cast<CalendarViewDayItem>().GetBuildTreeArgs(&spArgs));
+                spArgs = spContainerAsCalendarViewDayItem as CalendarViewDayItem.GetBuildTreeArgs);
             }
 
             // guaranteed to have spArgs now
-            spArgsConcrete = spArgs.Cast<CalendarViewDayItemChangingEventArgs>();
+            spArgsConcrete = spArgs as CalendarViewDayItemChangingEventArgs;
 
             if (phase == processingPhase)
             {
                 // processing this guy
-                BOOLEAN wantsCallBack = FALSE;
-                wf.Size measureSize = {};
+                bool wantsCallBack = false;
+                wf.Size measureSize  = default;
 
-                ctl.ComPtr<wf.ITypedEventHandler<xaml_controls.CalendarView*, xaml_controls.CalendarViewDayItemChangingEventArgs*>> spCallback;
+                wf.ITypedEventHandler<xaml_controls.CalendarView, xaml_controls.CalendarViewDayItemChangingEventArgs> spCallback;
 
                 // guaranteed to have pVirtualizationInformation by now
 
-                ASSERT(pVirtualizationInformation);
+                global::System.Diagnostics.Debug.Assert(pVirtualizationInformation);
 
                 measureSize = pVirtualizationInformation.GetMeasureSize();
 
                 // did we store a callback
-                IFC(spArgsConcrete.get_Callback(&spCallback));
+                spCallback = spArgsConcrete.Callback;
 
                 // raise event
-                if (spCallback.Get())
+                if (spCallback)
                 {
-                    IFC(spArgsConcrete.put_WantsCallBack(FALSE));
+                    spArgsConcrete.WantsCallBack = false;
                     // clear out the delegate
-                    IFC(spArgsConcrete.put_Callback(null));
+                    spArgsConcrete.Callback = null;
 
-                    IFC(spCallback.Invoke(GetOwner(), spArgs.Get()));
+                    spCallback.Invoke(GetOwner(), spArgs);
 
                     // the invoke will cause them to call RegisterCallback which will overwrite the delegate (fine)
                     // and set the boolean below to true
-                    IFC(spArgsConcrete.get_WantsCallBack(&wantsCallBack));
+                    wantsCallBack = spArgsConcrete.WantsCallBack;
                 }
 
                 // the user might have changed elements. In order to keep the budget fair, we need to try and incur
                 // most of the cost right now.
-                IFC(spContainerAsCalendarViewDayItem.Cast<CalendarViewDayItem>().Measure(measureSize));
+                spContainerAsCalendarViewDayItem as CalendarViewDayItem.Measure(measureSize);
 
                 // register callback
                 if (wantsCallBack)
                 {
-                    UINT phaseFromArgs = 0;
-                    IFC(spArgsConcrete.get_Phase(&phaseFromArgs));
+                    Uint phaseFromArgs = 0;
+                    phaseFromArgs = spArgsConcrete.Phase;
                     phase = phaseFromArgs;
                     lookup[currentPositionInVector] = phase;
 
@@ -541,13 +512,13 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
                     else
                     {
                         // update the next lowest to the best of our current understanding
-                        nextLowest = Math.Min(nextLowest, (INT64)(phase));
+                        nextLowest = std.min(nextLowest, (INT64)(phase));
                     }
                 }
                 else
                 {
                     // won't be called again for the lifetime of this container
-                    IFC(spArgsConcrete.ResetLifetime());
+                    spArgsConcrete.ResetLifetime();
 
                     // we do not have to update the next lowest. We are still processing this phase and will
                     // continue to do so (procesingPhase is still valid).
@@ -557,14 +528,14 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
             {
                 // if we hit a container that is registered for a callback (so he wants to iterate over phases)
                 // but is currently at a different phase, we need to make sure that the next lowest is set.
-                BOOLEAN wantsCallBack = FALSE;
-                IFC(spArgsConcrete.get_WantsCallBack(&wantsCallBack));
+                bool wantsCallBack = false;
+                wantsCallBack = spArgsConcrete.WantsCallBack;
 
                 if (wantsCallBack)
                 {
-                    ASSERT(phase > processingPhase);
+                    global::System.Diagnostics.Debug.Assert(phase > processingPhase);
                     // update the next lowest, now that we have seen a phase that is higher than our current processing phase
-                    nextLowest = Math.Min(nextLowest, (INT64)(phase));
+                    nextLowest = std.min(nextLowest, (INT64)(phase));
                 }
             }
 
@@ -574,7 +545,7 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
                 ProcessCurrentPosition();
             }
             // updates the time
-            IFC(spBudget.GetElapsedMilliSecondsSinceLastUITick(&timeElapsedInMS));
+            timeElapsedInMS = spBudget.GetElapsedMilliSecondsSinceLastUITick);
         }
 
         if (processingPhase == std.numeric_limits<INT64>.max())
@@ -586,54 +557,47 @@ CalendarViewGeneratorMonthViewHost.ProcessIncrementalVisualization(
         {
             // we broke out of the loop for some other reason (policy)
             // should be safe at this point
-            ASSERT(processingPhase < std.numeric_limits<INT>.max());
+            global::System.Diagnostics.Debug.Assert(processingPhase < std.numeric_limits<INT>.max());
             m_lowestPhaseInQueue = (INT)(processingPhase);
         }
     }
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT CalendarViewGeneratorMonthViewHost.EnsureToBeClearedContainers()
+private void CalendarViewGeneratorMonthViewHost.EnsureToBeClearedContainers()
 {
-    HRESULT hr = S_OK;
-
     if (!m_toBeClearedContainers)
     {
-        ctl.ComPtr<TrackerCollection<xaml_controls.CalendarViewDayItem*>> spContainersForClear;
+        TrackerCollection<xaml_controls.CalendarViewDayItem> spContainersForClear;
 
-        IFC(ctl.make(&spContainersForClear));
-        SetPtrValue(m_toBeClearedContainers, std.move(spContainersForClear));
+        spContainersForClear = default;
+        m_toBeClearedContainers = std.move(spContainersForClear);
     }
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT CalendarViewGeneratorMonthViewHost.ClearContainers(
-     const ctl.ComPtr<BudgetManager>& spBudget)
+private void CalendarViewGeneratorMonthViewHost.ClearContainers(
+      BudgetManager& spBudget)
 {
-    HRESULT hr = S_OK;
-    UINT containersToClearCount = 0;
-    INT timeElapsedInMS = 0;
+    Uint containersToClearCount = 0;
+    int timeElapsedInMS = 0;
 
-    IFC(EnsureToBeClearedContainers());
+    EnsureToBeClearedContainers();
 
-    IFC(m_toBeClearedContainers.get_Size(&containersToClearCount));
-    for (UINT toClearIndex = containersToClearCount - 1; toClearIndex >= 0 && containersToClearCount > 0; --toClearIndex)
+    containersToClearCount = m_toBeClearedContainers.Size;
+    for (Uint toClearIndex = containersToClearCount - 1; toClearIndex >= 0 && containersToClearCount > 0; --toClearIndex)
     {
-        ctl.ComPtr<ICalendarViewDayItem> spContainer;
+        ICalendarViewDayItem spContainer;
 
-        IFC(spBudget.GetElapsedMilliSecondsSinceLastUITick(&timeElapsedInMS));
+        timeElapsedInMS = spBudget.GetElapsedMilliSecondsSinceLastUITick);
 
         if ((UINT)(timeElapsedInMS) > m_budget)
         {
             break;
         }
 
-        IFC(m_toBeClearedContainers.GetAt(toClearIndex, &spContainer));
-        IFC(m_toBeClearedContainers.RemoveAtEnd());
+        spContainer = m_toBeClearedContainers.GetAt(toClearIndex);
+        m_toBeClearedContainers.RemoveAtEnd();
 
         // execute the deferred work
         // apparently we were not going to reuse this container immediately again, so 
@@ -641,12 +605,12 @@ _Check_return_ HRESULT CalendarViewGeneratorMonthViewHost.ClearContainers(
 
         // we don't need the spItem because 1. we didn't save this information, 2. CalendarViewGeneratorHost.ClearContainerForItem is no-op for now
         // if we need this we could simple restore the spItem from the container.
-        IFC(CalendarViewGeneratorHost.ClearContainerForItem(spContainer.Cast<CalendarViewDayItem>(), null /*spItem*/));
+        CalendarViewGeneratorHost.ClearContainerForItem(spContainer as CalendarViewDayItem, null /spItem/);
 
         // potentially raise the event
         if (spContainer)
         {
-            IFC(RaiseContainerContentChangingOnRecycle(spContainer.AsOrNull<IUIElement>().Get(), null));
+            RaiseContainerContentChangingOnRecycle(spContainer as UIElement, null);
         }
 
         if (toClearIndex == 0)
@@ -656,31 +620,27 @@ _Check_return_ HRESULT CalendarViewGeneratorMonthViewHost.ClearContainers(
         }
     }
 
-Cleanup:
-    return hr;
 }
 
-IFACEMETHODIMP CalendarViewGeneratorMonthViewHost.ShutDownDeferredWork()
+CalendarViewGeneratorMonthViewHost.ShutDownDeferredWork()
 {
-    HRESULT hr = S_OK;
-
-    ctl.ComPtr<IItemContainerMapping> spMapping;
+    IItemContainerMapping spMapping;
 
     var pCalendarPanel = GetPanel();
 
     if (pCalendarPanel)
     {
         // go through everyone that might have work registered for a prepare
-        INT cacheStart, cacheEnd = 0;
-        IFC(pCalendarPanel.get_FirstCacheIndexBase(&cacheStart));
-        IFC(pCalendarPanel.get_LastCacheIndexBase(&cacheEnd));
-        IFC(pCalendarPanel.GetItemContainerMapping(&spMapping));
+        int cacheStart, cacheEnd = 0;
+        cacheStart = pCalendarPanel.FirstCacheIndexBase;
+        cacheEnd = pCalendarPanel.LastCacheIndexBase;
+        spMapping = pCalendarPanel.GetItemContainerMapping);
 
-        for (INT i = cacheStart; i < cacheEnd; ++i)
+        for (int i = cacheStart; i < cacheEnd; ++i)
         {
-            ctl.ComPtr<xaml.IDependencyObject> spContainer;
-            ctl.ComPtr<xaml_controls.ICalendarViewDayItemChangingEventArgs> spArgs;
-            IFC(spMapping.ContainerFromIndex(i, &spContainer));
+            xaml.IDependencyObject spContainer;
+            xaml_controls.ICalendarViewDayItemChangingEventArgs spArgs;
+            spContainer = spMapping.ContainerFromIndex(i);
 
             if (!spContainer)
             {
@@ -689,36 +649,32 @@ IFACEMETHODIMP CalendarViewGeneratorMonthViewHost.ShutDownDeferredWork()
                 continue;
             }
 
-            IFC(spContainer.Cast<CalendarViewDayItem>().GetBuildTreeArgs(&spArgs));
+            spArgs = spContainer as CalendarViewDayItem.GetBuildTreeArgs);
 
-            IFC(spArgs.Cast<CalendarViewDayItemChangingEventArgs>().ResetLifetime());
+            spArgs as CalendarViewDayItemChangingEventArgs.ResetLifetime();
         }
     }
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT CalendarViewGeneratorMonthViewHost.RegisterWorkFromCICArgs(
-     xaml_controls.ICalendarViewDayItemChangingEventArgs* pArgs)
+private void CalendarViewGeneratorMonthViewHost.RegisterWorkFromCICArgs(
+     xaml_controls.ICalendarViewDayItemChangingEventArgs pArgs)
 {
-    HRESULT hr = S_OK;
+    bool wantsCallback = false;
+    ICalendarViewDayItem spCalendarViewDayItem;
+    CalendarViewDayItemChangingEventArgs pConcreteArgsNoRef = (CalendarViewDayItemChangingEventArgs)(pArgs);
 
-    BOOLEAN wantsCallback = FALSE;
-    ctl.ComPtr<ICalendarViewDayItem> spCalendarViewDayItem;
-    CalendarViewDayItemChangingEventArgs* pConcreteArgsNoRef = (CalendarViewDayItemChangingEventArgs*)(pArgs);
-
-    IFC(pConcreteArgsNoRef.get_WantsCallBack(&wantsCallback));
-    IFC(pConcreteArgsNoRef.get_Item(&spCalendarViewDayItem));
+    wantsCallback = pConcreteArgsNoRef.WantsCallBack;
+    spCalendarViewDayItem = pConcreteArgsNoRef.Item;
 
     // we are going to want to be called back if:
     // 1. we are still showing the placeholder
     // 2. app code registered to be called back
     if (wantsCallback)
     {
-        UINT phase = 0;
+        Uint phase = 0;
 
-        IFC(pConcreteArgsNoRef.get_Phase(&phase));
+        phase = pConcreteArgsNoRef.Phase;
 
         // keep this state on the listviewbase
         if (m_lowestPhaseInQueue == -1)
@@ -730,12 +686,12 @@ _Check_return_ HRESULT CalendarViewGeneratorMonthViewHost.RegisterWorkFromCICArg
             // we can get called back to do some work
             if (!m_isRegisteredForCallbacks)
             {
-                ctl.ComPtr<BuildTreeService> spBuildTree;
-                IFC(DXamlCore.GetCurrent().GetBuildTreeService(spBuildTree));
-                IFC(spBuildTree.RegisterWork(this));
+                BuildTreeService spBuildTree;
+                DXamlCore.GetCurrent().GetBuildTreeService(spBuildTree);
+                spBuildTree.RegisterWork(this);
             }
 
-            ASSERT(m_isRegisteredForCallbacks);
+            global::System.Diagnostics.Debug.Assert(m_isRegisteredForCallbacks);
         }
         else if (m_lowestPhaseInQueue > phase)
         {
@@ -745,9 +701,7 @@ _Check_return_ HRESULT CalendarViewGeneratorMonthViewHost.RegisterWorkFromCICArg
     else
     {
         // well, app code doesn't want a callback so cleanup the args
-        IFC(pConcreteArgsNoRef.ResetLifetime());
+        pConcreteArgsNoRef.ResetLifetime();
     }
 
-Cleanup:
-    return hr;
 }

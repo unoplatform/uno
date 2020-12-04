@@ -1,15 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#include "precomp.h"
-#include "CalendarViewGeneratorHost.h"
-#include "CalendarView.g.h"
-#include "CalendarViewItem.g.h"
-#include "CalendarViewDayItem_Partial.h"
-#include "CalendarViewDayItemChangingEventArgs.g.h"
-#include "DateComparer.h"
-#include "CalendarPanel.g.h"
-#include "ScrollViewer.g.h"
 
 using namespace DirectUI;
 using namespace DirectUISynonyms;
@@ -20,151 +11,148 @@ using namespace DirectUISynonyms;
 
 // IGeneratorHost
 
-_Check_return_ IFACEMETHODIMP CalendarViewGeneratorHost.get_View(
-    _Outptr_ wfc.IList<IInspectable*>** ppView)
+ private void get_View(
+    out  wfc.IVector<DependencyObject>** ppView)
 {
-    ctl.ComPtr<CalendarViewGeneratorHost> spThis(this);
+    CalendarViewGeneratorHost spThis(this);
 
     return spThis.CopyTo(ppView);
 }
 
-_Check_return_ IFACEMETHODIMP CalendarViewGeneratorHost.get_CollectionView(
-    _Outptr_ xaml_data.ICollectionView** ppCollectionView)
+ private void get_CollectionView(
+    out  xaml_data.ICollectionView* ppCollectionView)
 {
     // return null so MCBP knows there is no group.
-    *ppCollectionView = null;
+    ppCollectionView = null;
 
-    return S_OK;
+    return;
 }
 
-_Check_return_ IFACEMETHODIMP IsItemItsOwnContainer(
-     IInspectable* pItem,
-    out BOOLEAN* pIsOwnContainer)
+ private void IsItemItsOwnContainer(
+     DependencyObject pItem,
+    out BOOLEAN pIsOwnContainer)
 {
     // our item is DateTime, not the container
-    *pIsOwnContainer = false;
-    return S_OK;
+    pIsOwnContainer = false;
+    return;
 }
 
-_Check_return_ IFACEMETHODIMP GetContainerForItem(
-     IInspectable* pItem,
-     xaml.IDependencyObject* pRecycledContainer,
-    _Outptr_ xaml.IDependencyObject** ppContainer)
+ private void GetContainerForItem(
+     DependencyObject pItem,
+     xaml.IDependencyObject pRecycledContainer,
+    out  xaml.IDependencyObject* ppContainer)
 {
-    HRESULT hr = S_OK;
-    ctl.ComPtr<CalendarViewBaseItem> spContainer;
+    CalendarViewBaseItem spContainer;
 
-    IFC(GetContainer(pItem, pRecycledContainer, &spContainer));
+    spContainer = GetContainer(pItem, pRecycledContainer);
     spContainer.SetParentCalendarView(GetOwner());
 
-    IFC(spContainer.MoveTo(ppContainer));
+    spContainer.MoveTo(ppContainer);
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ IFACEMETHODIMP PrepareItemContainer(
-     xaml.IDependencyObject* pContainer,
-     IInspectable* pItem)
+ private void PrepareItemContainer(
+     xaml.IDependencyObject pContainer,
+     DependencyObject pItem)
 {
     // All calendar items have same scope logical, handle it here:
-    ctl.ComPtr<CalendarViewItem> spContainer((CalendarViewItem*)(pContainer));
+    CalendarViewItem spContainer((CalendarViewItem)(pContainer));
 
-    IFC_RETURN(spContainer.SetIsOutOfScope(false));
+    spContainer.SetIsOutOfScope(false);
 
     // today state
     {
-        wf.DateTime date;
+        DateTime date;
         bool isToday = false;
         int result = 0;
 
-        IFC_RETURN(ctl.do_get_value(date, pItem));
+        ctl.do_get_value(date, pItem);
 
-        IFC_RETURN(CompareDate(date, GetOwner().GetToday(), &result));
+        result = CompareDate(date, GetOwner().GetToday());
         if (result == 0)
         {
-            BOOLEAN isTodayHighlighted = FALSE;
+            bool isTodayHighlighted = false;
 
-            IFC_RETURN(GetOwner().get_IsTodayHighlighted(&isTodayHighlighted));
+            isTodayHighlighted = GetOwner().IsTodayHighlighted;
 
             isToday = !!isTodayHighlighted;
         }
 
-        IFC_RETURN(spContainer.SetIsToday(isToday));
+        spContainer.SetIsToday(isToday);
     }
 
-    return S_OK;
+    return;
 }
 
-_Check_return_ IFACEMETHODIMP ClearContainerForItem(
-     xaml.IDependencyObject* pContainer,
-     IInspectable* pItem)
+ private void ClearContainerForItem(
+     xaml.IDependencyObject pContainer,
+     DependencyObject pItem)
 {
-    return S_OK;
+    return;
 }
 
-_Check_return_ IFACEMETHODIMP IsHostForItemContainer(
-     xaml.IDependencyObject* pContainer,
-    out BOOLEAN* pIsHost)
+ private void IsHostForItemContainer(
+     xaml.IDependencyObject pContainer,
+    out BOOLEAN pIsHost)
 {
-    return E_NOTIMPL;
+    throw new NotImplementedException();
 }
 
-_Check_return_ IFACEMETHODIMP GetGroupStyle(
-     xaml_data.ICollectionViewGroup* pGroup,
-     UINT level,
-    out xaml_controls.IGroupStyle** ppGroupStyle)
+ private void GetGroupStyle(
+     xaml_data.ICollectionViewGroup pGroup,
+     Uint level,
+    out xaml_controls.IGroupStyle* ppGroupStyle)
 {
     // The modern panel is always going to ask for a GroupStyle.
     // Fortunately, it's perfectly valid to return null
-    *ppGroupStyle = null;
-    return S_OK;
+    ppGroupStyle = null;
+    return;
 }
 
-_Check_return_ IFACEMETHODIMP SetIsGrouping(
-     BOOLEAN isGrouping)
+ private void SetIsGrouping(
+     bool isGrouping)
 {
-    ASSERT(!isGrouping);
-    return S_OK;
+    global::System.Diagnostics.Debug.Assert(!isGrouping);
+    return;
 }
 
 // we don't expose this publicly, there is an override for our own controls
 // to mirror the public api
-_Check_return_ IFACEMETHODIMP GetHeaderForGroup(
-     IInspectable* pGroup,
-    _Outptr_ xaml.IDependencyObject** ppContainer)
+ private void GetHeaderForGroup(
+     DependencyObject pGroup,
+    out  xaml.IDependencyObject* ppContainer)
 {
-    return E_NOTIMPL;
+    throw new NotImplementedException();
 }
 
-_Check_return_ IFACEMETHODIMP PrepareGroupContainer(
-     xaml.IDependencyObject* pContainer,
-     xaml_data.ICollectionViewGroup* pGroup)
+ private void PrepareGroupContainer(
+     xaml.IDependencyObject pContainer,
+     xaml_data.ICollectionViewGroup pGroup)
 {
-    return E_NOTIMPL;
+    throw new NotImplementedException();
 }
 
-_Check_return_ IFACEMETHODIMP ClearGroupContainerForGroup(
-     xaml.IDependencyObject* pContainer,
-     xaml_data.ICollectionViewGroup* pItem)
+ private void ClearGroupContainerForGroup(
+     xaml.IDependencyObject pContainer,
+     xaml_data.ICollectionViewGroup pItem)
 {
-    return E_NOTIMPL;
+    throw new NotImplementedException();
 }
 
-_Check_return_ IFACEMETHODIMP CanRecycleContainer(
-     xaml.IDependencyObject* pContainer,
-    out BOOLEAN* pCanRecycleContainer)
+ private void CanRecycleContainer(
+     xaml.IDependencyObject pContainer,
+    out BOOLEAN pCanRecycleContainer)
 {
-    *pCanRecycleContainer = TRUE;
-    return S_OK;
+    pCanRecycleContainer = true;
+    return;
 }
 
-_Check_return_ IFACEMETHODIMP SuggestContainerForContainerFromItemLookup(
-    _Outptr_ xaml.IDependencyObject** ppContainer)
+ private void SuggestContainerForContainerFromItemLookup(
+    out  xaml.IDependencyObject* ppContainer)
 {
     // CalendarViewGeneratorHost has no clue
-    *ppContainer = null;
-    return S_OK;
+    ppContainer = null;
+    return;
 }
 
 
@@ -177,24 +165,24 @@ CalendarViewGeneratorHost()
 
 CalendarViewGeneratorHost.~CalendarViewGeneratorHost()
 {
-    VERIFYHR(DetachScrollViewerFocusEngagedEvent());
-    VERIFYHR(DetachVisibleIndicesUpdatedEvent());
-    ctl.ComPtr<IModernCollectionBasePanel> panel;
+    /VERIFYHR/(DetachScrollViewerFocusEngagedEvent());
+    /VERIFYHR/(DetachVisibleIndicesUpdatedEvent());
+    IModernCollectionBasePanel panel;
     if (m_tpPanel.TryGetSafeReference(&panel))
     {
-        VERIFYHR(panel.Cast<CalendarPanel>().SetOwner(null));
-        VERIFYHR(panel.Cast<CalendarPanel>().SetSnapPointFilterFunction(null));
+        /VERIFYHR/(panel as CalendarPanel.SetOwner(null));
+        /VERIFYHR/(panel as CalendarPanel.SetSnapPointFilterFunction(null));
     }
 
-    ctl.ComPtr<IScrollViewer> scrollviewer;
+    IScrollViewer scrollviewer;
     if (m_tpScrollViewer.TryGetSafeReference(&scrollviewer))
     {
-        VERIFYHR(scrollviewer.Cast<ScrollViewer>().SetDirectManipulationStateChangeHandler(null));
+        /VERIFYHR/(scrollviewer as ScrollViewer.SetDirectManipulationStateChangeHandler(null));
     }
 }
 
 
-wg.ICalendar* GetCalendar()
+wg.ICalendar GetCalendar()
 {
     return GetOwner().GetCalendar();
 }
@@ -213,51 +201,45 @@ void ResetScope()
 }
 
 // compute how many items we have in this view, basically the number of items equals to the index of max date + 1
-_Check_return_ HRESULT ComputeSize()
+private void ComputeSize()
 {
-    HRESULT hr = S_OK;
     int index = 0;
 
     m_lastVisitedDateAndIndex.first = GetOwner().GetMinDate();
     m_lastVisitedDateAndIndex.second = 0;
 
-    ASSERT(!GetOwner().GetDateComparer().LessThan(GetOwner().GetMaxDate(), GetOwner().GetMinDate()));
+    global::System.Diagnostics.Debug.Assert(!GetOwner().GetDateComparer().LessThan(GetOwner().GetMaxDate(), GetOwner().GetMinDate()));
 
-    IFC(CalculateOffsetFromMinDate(GetOwner().GetMaxDate(), &index));
+    index = CalculateOffsetFromMinDate(GetOwner().GetMaxDate());
 
     m_size = (UINT)(index)+1;
 
-Cleanup:
-    return hr;
 }
 
 // Add scopes to the given date.
-_Check_return_ HRESULT AddScopes( wf.DateTime& date,  int scopes)
+private void AddScopes( DateTime& date,  int scopes)
 {
-    HRESULT hr = S_OK;
     var pCalendar = GetCalendar();
 
-    IFC(pCalendar.SetDateTime(date));
-    IFC(AddScopes(scopes));
-    IFC(pCalendar.GetDateTime(&date));
+    pCalendar.SetDateTime(date);
+    AddScopes(scopes);
+    date = pCalendar.GetDateTime);
 
     // We coerce and check if the date is in Calendar's limit where this gets called.
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT AddUnits( wf.DateTime& date,  int units)
+private void AddUnits( DateTime& date,  int units)
 {
     var pCalendar = GetCalendar();
 
-    IFC_RETURN(pCalendar.SetDateTime(date));
-    IFC_RETURN(AddUnits(units));
-    IFC_RETURN(pCalendar.GetDateTime(&date));
+    pCalendar.SetDateTime(date);
+    AddUnits(units);
+    date = pCalendar.GetDateTime);
 
     // We coerce and check if the date is in Calendar's limit where this gets called.
 
-    return S_OK;
+    return;
 }
 
 // AddDays/AddMonths/AddYears takes O(N) time but given that at most time we
@@ -265,21 +247,21 @@ _Check_return_ HRESULT AddUnits( wf.DateTime& date,  int units)
 // call AddUnits from the cache - this way N is small enough
 // time cost: amortized O(1)
 
-_Check_return_ HRESULT GetDateAt( UINT index, out wf.DateTime* pDate)
+private void GetDateAt( Uint index, out DateTime pDate)
 {
-    wf.DateTime date = {};
+    DateTime date  = default;
     var pCalendar = GetCalendar();
 
-    ASSERT(m_lastVisitedDateAndIndex.second != -1);
+    global::System.Diagnostics.Debug.Assert(m_lastVisitedDateAndIndex.second != -1);
 
-    IFC_RETURN(pCalendar.SetDateTime(m_lastVisitedDateAndIndex.first));
-    IFC_RETURN(AddUnits((int)(index) - m_lastVisitedDateAndIndex.second));
-    IFC_RETURN(pCalendar.GetDateTime(&date));
+    pCalendar.SetDateTime(m_lastVisitedDateAndIndex.first);
+    AddUnits((int)(index) - m_lastVisitedDateAndIndex.second);
+    date = pCalendar.GetDateTime);
     m_lastVisitedDateAndIndex.first = date;
     m_lastVisitedDateAndIndex.second = (int)(index);
     pDate.UniversalTime = date.UniversalTime;
 
-    return S_OK;
+    return;
 }
 
 // to get the distance of two days, here are the amortized O(1) method
@@ -289,27 +271,27 @@ _Check_return_ HRESULT GetDateAt( UINT index, out wf.DateTime* pDate)
 //   if this distance is still big, we can do step 1 and 2 one more time
 //4. Return the sum of results from step1 and step3.
 
-_Check_return_ HRESULT CalculateOffsetFromMinDate( wf.DateTime date, out int* pIndex)
+private void CalculateOffsetFromMinDate( DateTime date, out int pIndex)
 {
-    *pIndex = 0;
-    wf.DateTime estimatedDate = { m_lastVisitedDateAndIndex.first.UniversalTime };
+    pIndex = 0;
+    DateTime estimatedDate = { m_lastVisitedDateAndIndex.first.UniversalTime };
     var pCalendar = GetCalendar();
-    ASSERT(m_lastVisitedDateAndIndex.second != -1);
+    global::System.Diagnostics.Debug.Assert(m_lastVisitedDateAndIndex.second != -1);
 
     int estimatedOffset = 0;
     INT64 diffInUTC = 0;
     int diffInUnit = 0;
 
-    const int maxEstimationRetryCount = 3;  // the max times that we should estimate
-    const int maxReboundCount = 3;          // the max times that we should reduce the step when the estimation is over the boundary.
-    const int minDistanceToEstimate = 3;    // the min estimated distance that we should do estimation.
+     int maxEstimationRetryCount = 3;  // the max times that we should estimate
+     int maxReboundCount = 3;          // the max times that we should reduce the step when the estimation is over the boundary.
+     int minDistanceToEstimate = 3;    // the min estimated distance that we should do estimation.
 
-    IFC_RETURN(pCalendar.SetDateTime(estimatedDate));
+    pCalendar.SetDateTime(estimatedDate);
 
     // step 1: estimation. mostly we only need to up to 2 times, but if we are targeting the calendar's boundaries
     // we could need more times (uncommon scenario)
     var averageTicksPerUnit = GetAverageTicksPerUnit();
-#ifdef DBG
+#if DEBUG
     int estimationCount = 0;
 #endif
     while (true)
@@ -324,17 +306,17 @@ _Check_return_ HRESULT CalculateOffsetFromMinDate( wf.DateTime date, out int* pI
             // if two dates are close enough, we can start to check if a correction is needed.
             break;
         }
-#ifdef DBG
+#if DEBUG
         if (estimationCount++ > maxEstimationRetryCount)
         {
             IGNOREHR(DebugTrace(XCP_TRACE_WARNING, "CalendarViewGeneartorHost.CalculateOffsetFromMinDate[0x%p]:  estimationCount = %d.", this, estimationCount));
-            ASSERT(FALSE);
+            global::System.Diagnostics.Debug.Assert(false);
         }
 #endif
 
         // when we are targeting the calendar's boundaries, it is possible the estimation will
         // cross the boundary, in this case we should reduce the length of step.
-#ifdef DBG
+#if DEBUG
         int retryCount = 0;
 #endif
         while (true)
@@ -343,11 +325,11 @@ _Check_return_ HRESULT CalculateOffsetFromMinDate( wf.DateTime date, out int* pI
 
             if (SUCCEEDED(hr))
                 break;
-#ifdef DBG
+#if DEBUG
             if (retryCount++ > maxReboundCount)
             {
                 IGNOREHR(DebugTrace(XCP_TRACE_WARNING, "CalendarViewGeneartorHost.CalculateOffsetFromMinDate[0x%p]: over boundary, retryCount = %d.", this, retryCount));
-                ASSERT(FALSE);
+                global::System.Diagnostics.Debug.Assert(false);
             }
 #endif
             // we crossed the boundary! reduce the length and restart from estimatedDate
@@ -355,14 +337,14 @@ _Check_return_ HRESULT CalculateOffsetFromMinDate( wf.DateTime date, out int* pI
             // mostly a bad estimation could happen on two dates that have a huge difference (e.g. jump to 100 years ago),
             // to fix the estimation we only need to slightly reduce the diff.
 
-            IFC_RETURN(pCalendar.SetDateTime(estimatedDate));
+            pCalendar.SetDateTime(estimatedDate);
             diffInUnit = diffInUnit * 99 / 100;
-            ASSERT(diffInUnit != 0);
+            global::System.Diagnostics.Debug.Assert(diffInUnit != 0);
         } //while (true)
 
         estimatedOffset += diffInUnit;
 
-        IFC_RETURN(pCalendar.GetDateTime(&estimatedDate));
+        estimatedDate = pCalendar.GetDateTime);
     } //while (true)
 
     // step 2: after estimation, we'll check if a correction is needed or not.
@@ -373,7 +355,7 @@ _Check_return_ HRESULT CalculateOffsetFromMinDate( wf.DateTime date, out int* pI
     {
         int result = 0;
         int step = 1;
-        IFC_RETURN(CompareDate(estimatedDate, date, &result));
+        result = CompareDate(estimatedDate, date);
         if (result == 0)
         {
             // end the loop when meeting the target date
@@ -383,31 +365,30 @@ _Check_return_ HRESULT CalculateOffsetFromMinDate( wf.DateTime date, out int* pI
         {
             step = -1;
         }
-        IFC_RETURN(AddUnits(step));
+        AddUnits(step);
         offsetCorrection += step;
-        IFC_RETURN(pCalendar.GetDateTime(&estimatedDate));
+        estimatedDate = pCalendar.GetDateTime);
     }
 
     // base + estimatedDiff + correction
-    *pIndex = m_lastVisitedDateAndIndex.second + estimatedOffset + offsetCorrection;
+    pIndex = m_lastVisitedDateAndIndex.second + estimatedOffset + offsetCorrection;
 
-    return S_OK;
+    return;
 }
 
 // return the first date of next scope.
 // parameter dateOfFirstVisibleItem is the first visible item, it could be in
 // current scope, or in previous scope.
-_Check_return_ HRESULT GetFirstDateOfNextScope(
-     wf.DateTime dateOfFirstVisibleItem,
+private void GetFirstDateOfNextScope(
+     DateTime dateOfFirstVisibleItem,
      bool forward,
-    out wf.DateTime* pFirstDateOfNextScope)
+    out DateTime pFirstDateOfNextScope)
 {
-    HRESULT hr = S_OK;
     int adjustScopes = 0;
-    wf.DateTime firstDateOfNextScope = {};
+    DateTime firstDateOfNextScope  = default;
 
     // set to the first date of current scope
-    IFC(GetCalendar().SetDateTime(m_minDateOfCurrentScope));
+    GetCalendar().SetDateTime(m_minDateOfCurrentScope);
 
     if (!GetOwner().GetDateComparer().LessThan(m_minDateOfCurrentScope, dateOfFirstVisibleItem))
     {
@@ -425,75 +406,74 @@ _Check_return_ HRESULT GetFirstDateOfNextScope(
 
     if (adjustScopes != 0)
     {
-        IFC(AddScopes(adjustScopes));
+        AddScopes(adjustScopes);
 
         int firstUnit = 0;
-        GetFirstUnitInThisScope(&firstUnit);
+        firstUnit = GetFirstUnitInThisScope);
         SetUnit(firstUnit);
     }
 
-    IFC(GetCalendar().GetDateTime(&firstDateOfNextScope));
+    firstDateOfNextScope = GetCalendar().GetDateTime);
 
     // when the navigation button is enabled, we should always be able to navigate to the desired scope.
-    ASSERT(!GetOwner().GetDateComparer().LessThan(firstDateOfNextScope, GetOwner().GetMinDate()));
-    ASSERT(!GetOwner().GetDateComparer().LessThan(GetOwner().GetMaxDate(), firstDateOfNextScope));
+    global::System.Diagnostics.Debug.Assert(!GetOwner().GetDateComparer().LessThan(firstDateOfNextScope, GetOwner().GetMinDate()));
+    global::System.Diagnostics.Debug.Assert(!GetOwner().GetDateComparer().LessThan(GetOwner().GetMaxDate(), firstDateOfNextScope));
 
 Cleanup:
-    *pFirstDateOfNextScope = firstDateOfNextScope;
+    pFirstDateOfNextScope = firstDateOfNextScope;
     return hr;
 }
 
 
 // Give a date range (it may contain multiple scopes, the scope is a month for MonthView),
 // find the scope that has higher item coverage percentage, and use it as current scope.
-_Check_return_ HRESULT UpdateScope(
-     wf.DateTime firstDate,
-     wf.DateTime lastDate,
-    out bool* isScopeChanged)
+private void UpdateScope(
+     DateTime firstDate,
+     DateTime lastDate,
+    out bool isScopeChanged)
 {
-    HRESULT hr = S_OK;
-    wf.DateTime lastDateOfFirstScope;
-    wf.DateTime minDateOfCurrentScope;
-    wf.DateTime maxDateOfCurrentScope;
+    DateTime lastDateOfFirstScope;
+    DateTime minDateOfCurrentScope;
+    DateTime maxDateOfCurrentScope;
     int firstUnit = 0;
     int firstUnitOfFirstScope = 0;
     int lastUnitOfFirstScope = 0;
 
-    *isScopeChanged = false;
+    isScopeChanged = false;
     var pCalendar = GetCalendar();
 
-    ASSERT(!GetOwner().GetDateComparer().LessThan(lastDate, firstDate));
+    global::System.Diagnostics.Debug.Assert(!GetOwner().GetDateComparer().LessThan(lastDate, firstDate));
 
-    IFC(pCalendar.SetDateTime(firstDate));
-    IFC(GetUnit(&firstUnit));
-    IFC(AdjustToLastUnitInThisScope(&lastDateOfFirstScope, &lastUnitOfFirstScope));
+    pCalendar.SetDateTime(firstDate);
+    firstUnit = GetUnit);
+    lastUnitOfFirstScope = AdjustToLastUnitInThisScope(&lastDateOfFirstScope);
 
     if (!GetOwner().GetDateComparer().LessThan(lastDateOfFirstScope, lastDate))
     {
         // The given range has only one scope, so this is the current scope
         maxDateOfCurrentScope.UniversalTime = lastDateOfFirstScope.UniversalTime;
-        IFC(AdjustToFirstUnitInThisScope(&minDateOfCurrentScope));
+        minDateOfCurrentScope = AdjustToFirstUnitInThisScope);
     }
     else
     {
         // The given range has more than one scopes, let's check the first one and second one.
-        wf.DateTime lastDateOfSecondScope;
+        DateTime lastDateOfSecondScope;
         int itemCountOfFirstScope = lastUnitOfFirstScope - firstUnit + 1;
         int itemCountOfSecondScope = 0;
 
-        wf.DateTime dateToDetermineCurrentScope;   // we'll pick a date from first scope or second scope to determine the current scope.
+        DateTime dateToDetermineCurrentScope;   // we'll pick a date from first scope or second scope to determine the current scope.
         int firstUnitOfSecondScope = 0;
         int lastUnitOfSecondScope = 0;
 
-        IFC(GetFirstUnitInThisScope(&firstUnitOfFirstScope));
+        firstUnitOfFirstScope = GetFirstUnitInThisScope);
 
         // We are on the last unit of first scope, add 1 unit will move to the second scope
-        IFC(AddUnits(1));
+        AddUnits(1);
 
-        IFC(GetFirstUnitInThisScope(&firstUnitOfSecondScope));
+        firstUnitOfSecondScope = GetFirstUnitInThisScope);
 
         // Read the last date of second scope, check if it is inside the given range.
-        IFC(AdjustToLastUnitInThisScope(&lastDateOfSecondScope, &lastUnitOfSecondScope));
+        lastUnitOfSecondScope = AdjustToLastUnitInThisScope(&lastDateOfSecondScope);
 
         if (!GetOwner().GetDateComparer().LessThan(lastDate, lastDateOfSecondScope))
         {
@@ -504,8 +484,8 @@ _Check_return_ HRESULT UpdateScope(
         {
             // The given range has only a part of the 2nd scope
             int lastUnit = 0;
-            IFC(pCalendar.SetDateTime(lastDate));
-            IFC(GetUnit(&lastUnit));
+            pCalendar.SetDateTime(lastDate);
+            lastUnit = GetUnit);
             itemCountOfSecondScope = lastUnit - firstUnitOfSecondScope + 1;
         }
 
@@ -523,9 +503,9 @@ _Check_return_ HRESULT UpdateScope(
             dateToDetermineCurrentScope.UniversalTime = firstDate.UniversalTime;
         }
 
-        IFC(pCalendar.SetDateTime(dateToDetermineCurrentScope));
-        IFC(AdjustToFirstUnitInThisScope(&minDateOfCurrentScope));
-        IFC(AdjustToLastUnitInThisScope(&maxDateOfCurrentScope));
+        pCalendar.SetDateTime(dateToDetermineCurrentScope);
+        minDateOfCurrentScope = AdjustToFirstUnitInThisScope);
+        maxDateOfCurrentScope = AdjustToLastUnitInThisScope);
     }
 
     // in case we start from a day other than first day, we need to adjust the scope.
@@ -538,69 +518,67 @@ _Check_return_ HRESULT UpdateScope(
     {
         m_minDateOfCurrentScope = minDateOfCurrentScope;
         m_maxDateOfCurrentScope = maxDateOfCurrentScope;
-        *isScopeChanged = true;
+        isScopeChanged = true;
 
-        IFC(OnScopeChanged());
+        OnScopeChanged();
     }
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT AdjustToFirstUnitInThisScope(out wf.DateTime* pDate, _Out_opt_ int* pUnit /* = null */)
+private void AdjustToFirstUnitInThisScope(out DateTime pDate, _Out_opt_ int pUnit /* = null */)
 {
     int firstUnit = 0;
 
     if (pUnit)
     {
-        *pUnit = 0;
+        pUnit = 0;
     }
     pDate.UniversalTime = 0;
 
-    IFC_RETURN(GetFirstUnitInThisScope(&firstUnit));
-    IFC_RETURN(SetUnit(firstUnit));
-    IFC_RETURN(GetCalendar().GetDateTime(pDate));
+    firstUnit = GetFirstUnitInThisScope);
+    SetUnit(firstUnit);
+    GetCalendar().GetDateTime(pDate);
 
     if (pUnit)
     {
-        *pUnit = firstUnit;
+        pUnit = firstUnit;
     }
 
-    return S_OK;
+    return;
 }
 
-_Check_return_ HRESULT AdjustToLastUnitInThisScope(out wf.DateTime* pDate, _Out_opt_ int* pUnit /* = null */)
+private void AdjustToLastUnitInThisScope(out DateTime pDate, _Out_opt_ int pUnit /* = null */)
 {
     int lastUnit = 0;
 
     if (pUnit)
     {
-        *pUnit = 0;
+        pUnit = 0;
     }
     pDate.UniversalTime = 0;
 
-    IFC_RETURN(GetLastUnitInThisScope(&lastUnit));
-    IFC_RETURN(SetUnit(lastUnit));
-    IFC_RETURN(GetCalendar().GetDateTime(pDate));
+    lastUnit = GetLastUnitInThisScope);
+    SetUnit(lastUnit);
+    GetCalendar().GetDateTime(pDate);
 
     if (pUnit)
     {
-        *pUnit = lastUnit;
+        pUnit = lastUnit;
     }
 
-    return S_OK;
+    return;
 }
 
-_Check_return_ HRESULT NotifyStateChange(
+private void NotifyStateChange(
      DMManipulationState state,
      FLOAT xCumulativeTranslation,
      FLOAT yCumulativeTranslation,
      FLOAT zCumulativeFactor,
      FLOAT xCenter,
      FLOAT yCenter,
-     BOOLEAN isInertial,
-     BOOLEAN isTouchConfigurationActivated,
-     BOOLEAN isBringIntoViewportConfigurationActivated)
+     bool isInertial,
+     bool isTouchConfigurationActivated,
+     bool isBringIntoViewportConfigurationActivated)
 {
     switch (state)
     {
@@ -609,99 +587,99 @@ _Check_return_ HRESULT NotifyStateChange(
         // tapping to select an item also causes Manipulation starting, in this case we should not change scope state.
     case DirectUI.DMManipulationStarted:
         IFC_RETURN(GetOwner().UpdateItemsScopeState(this,
-            true, /*ignoreWhenIsOutOfScopeDisabled*/
-            false /*ignoreInDirectManipulation*/));
+            true, /ignoreWhenIsOutOfScopeDisabled/
+            false /ignoreInDirectManipulation/));
         break;
     case DirectUI.DMManipulationCompleted:
         IFC_RETURN(GetOwner().UpdateItemsScopeState(this,
-            false, /*ignoreWhenIsOutOfScopeDisabled*/ // in case we changed IsOutOfScopeEnabled to false during DManipulation
-            false /*ignoreInDirectManipulation*/));
+            false, /ignoreWhenIsOutOfScopeDisabled/ // in case we changed IsOutOfScopeEnabled to false during DManipulation
+            false /ignoreInDirectManipulation/));
         break;
     default:
         break;
     }
-    return S_OK;
+    return;
 }
 
-_Check_return_ HRESULT AttachVisibleIndicesUpdatedEvent()
+private void AttachVisibleIndicesUpdatedEvent()
 {
     if (m_tpPanel)
     {
-        IFC_RETURN(m_epVisibleIndicesUpdatedHandler.AttachEventHandler(m_tpPanel.Cast<CalendarPanel>(),
-            [this](IInspectable* pSender, IInspectable* pArgs)
+        IFC_RETURN(m_epVisibleIndicesUpdatedHandler.AttachEventHandler(m_tpPanel as CalendarPanel,
+            (DependencyObject pSender, DependencyObject pArgs) =>
         {
             return GetOwner().OnVisibleIndicesUpdated(this);
         }));
     }
-    return S_OK;
+    return;
 }
 
-_Check_return_ HRESULT DetachVisibleIndicesUpdatedEvent()
+private void DetachVisibleIndicesUpdatedEvent()
 {
     return DetachHandler(m_epVisibleIndicesUpdatedHandler, m_tpPanel);
 }
 
-_Check_return_ HRESULT AttachScrollViewerFocusEngagedEvent()
+private void AttachScrollViewerFocusEngagedEvent()
 {
     if (m_tpPanel)
     {
-        ctl.ComPtr<DirectUI.ScrollViewer> sv(m_tpScrollViewer.Cast<DirectUI.ScrollViewer>());
-        IFC_RETURN(m_epScrollViewerFocusEngagedEventHandler.AttachEventHandler(sv.AsOrNull<xaml_controls.IControl>().Get(),
-            [this]( xaml_controls.IControl* pSender,
-                 xaml_controls.IFocusEngagedEventArgs* pArgs)
+        DirectUI.ScrollViewer sv(m_tpScrollViewer as DirectUI.ScrollViewer);
+        IFC_RETURN(m_epScrollViewerFocusEngagedEventHandler.AttachEventHandler(sv as xaml_controls.IControl,
+            (xaml_controls.IControl pSender,
+                 xaml_controls.IFocusEngagedEventArgs pArgs) =>
         {
             return GetOwner().OnScrollViewerFocusEngaged(pArgs);
         }));
     }
-    return S_OK;
+    return;
 }
 
-_Check_return_ HRESULT DetachScrollViewerFocusEngagedEvent()
+private void DetachScrollViewerFocusEngagedEvent()
 {
     return DetachHandler(m_epScrollViewerFocusEngagedEventHandler, m_tpScrollViewer);
 }
 
-_Check_return_ HRESULT SetPanel( xaml_primitives.ICalendarPanel* pPanel)
+private void SetPanel( xaml_primitives.ICalendarPanel pPanel)
 {
     if (pPanel)
     {
-        SetPtrValue(m_tpPanel, pPanel);
-        IFC_RETURN(m_tpPanel.Cast<CalendarPanel>().SetOwner(this));
+        m_tpPanel = pPanel;
+        m_tpPanel as CalendarPanel.SetOwner(this);
     }
     else if (m_tpPanel)
     {
-        IFC_RETURN(m_tpPanel.Cast<CalendarPanel>().SetOwner(null));
+        m_tpPanel as CalendarPanel.SetOwner(null);
         m_tpPanel.Clear();
     }
-    return S_OK;
+    return;
 }
 
 
-_Check_return_ HRESULT SetScrollViewer( xaml_controls.IScrollViewer* pScrollViewer)
+private void SetScrollViewer( xaml_controls.IScrollViewer pScrollViewer)
 {
     if (pScrollViewer)
     {
-        SetPtrValue(m_tpScrollViewer, pScrollViewer);
+        m_tpScrollViewer = pScrollViewer;
     }
     else
     {
         m_tpScrollViewer.Clear();
     }
-    return S_OK;
+    return;
 }
 
 
-CalendarPanel* GetPanel()
+CalendarPanel GetPanel()
 {
-    return m_tpPanel.Cast<CalendarPanel>();
+    return m_tpPanel as CalendarPanel;
 }
 
-ScrollViewer* GetScrollViewer()
+ScrollViewer GetScrollViewer()
 {
-    return m_tpScrollViewer.Cast<ScrollViewer>();
+    return m_tpScrollViewer as ScrollViewer;
 }
 
-_Check_return_ HRESULT OnPrimaryPanelDesiredSizeChanged()
+private void OnPrimaryPanelDesiredSizeChanged()
 {
     return GetOwner().OnPrimaryPanelDesiredSizeChanged(this);
 }

@@ -1,12 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#include "precomp.h"
-#include "CalendarViewGeneratorHost.h"
-#include "CalendarView.g.h"
-#include "CalendarViewItem.g.h"
-#include "CalendarViewDayItem_Partial.h"
-#include "CalendarViewDayItemChangingEventArgs.g.h"
 
 using namespace DirectUI;
 using namespace DirectUISynonyms;
@@ -18,75 +12,68 @@ using namespace DirectUISynonyms;
 // DataVirtualization - to avoid creating large number of calendar items,
 // we only implement GetAt and get_Size.
 
-// IList<IInspectable*> implementation
-IFACEMETHODIMP CalendarViewGeneratorHost.GetAt( UINT index, _Outptr_ IInspectable** item)
+// IVector<DependencyObject> implementation
+CalendarViewGeneratorHost.GetAt( Uint index, out  DependencyObject item)
 {
-    HRESULT hr = S_OK;
-    wf.DateTime date;
+    DateTime date;
 
-    IFC(GetDateAt(index, &date));
+    date = GetDateAt(index);
 
-    IFC(PropertyValue.CreateFromDateTime(date, item));
+    PropertyValue.CreateFromDateTime(date, item);
 
-Cleanup:
-    return hr;
 }
 
-IFACEMETHODIMP CalendarViewGeneratorHost.get_Size(out UINT* value)
+CalendarViewGeneratorHost.get_Size(out UINT value)
 {
-    *value = m_size;
-    return S_OK;
+    value = m_size;
+    return;
 }
 
-IFACEMETHODIMP CalendarViewGeneratorHost.GetView(_Outptr_result_maybenull_ wfc.IVectorView<IInspectable*>** view)
+CalendarViewGeneratorHost.GetView(out result_maybenull_ wfc.IVectorView<DependencyObject>** view)
 {
-    HRESULT hr = S_OK;
-    ctl.ComPtr<wfc.IVectorView<IInspectable*>> spResult;
+    wfc.IVectorView<DependencyObject> spResult;
 
-    IFC(CheckThread());
+    CheckThread();
     ARG_VALIDRETURNPOINTER(view);
 
-    IFC(ctl.ComObject<TrackerView<IInspectable*>>.CreateInstance(spResult.ReleaseAndGetAddressOf()));
-    spResult.Cast<TrackerView<IInspectable*>>().SetCollection(this);
+    ctl.ComObject<TrackerView<DependencyObject>>.CreateInstance(spResult.ReleaseAn());
+    spResult as TrackerView<DependencyObject>.SetCollection(this);
 
-    *view = spResult.Detach();
+    view = spResult.Detach();
 
-Cleanup:
-
-    return hr;
 }
 
-IFACEMETHODIMP CalendarViewGeneratorHost.IndexOf( IInspectable* value, out UINT* index, out BOOLEAN* found)
+CalendarViewGeneratorHost.IndexOf( DependencyObject value, out UINT index, out BOOLEAN found)
 {
-    return E_NOTIMPL;
+    throw new NotImplementedException();
 }
 
-IFACEMETHODIMP CalendarViewGeneratorHost.SetAt( UINT index,  IInspectable* item)
+CalendarViewGeneratorHost.SetAt( Uint index,  DependencyObject item)
 {
-    return E_NOTIMPL;
+    throw new NotImplementedException();
 }
 
-IFACEMETHODIMP CalendarViewGeneratorHost.InsertAt( UINT index,  IInspectable* item)
+CalendarViewGeneratorHost.InsertAt( Uint index,  DependencyObject item)
 {
-    return E_NOTIMPL;
+    throw new NotImplementedException();
 }
 
-IFACEMETHODIMP CalendarViewGeneratorHost.RemoveAt( UINT index)
+CalendarViewGeneratorHost.RemoveAt( Uint index)
 {
-    return E_NOTIMPL;
+    throw new NotImplementedException();
 }
 
-IFACEMETHODIMP CalendarViewGeneratorHost.Append( IInspectable* item)
+CalendarViewGeneratorHost.Append( DependencyObject item)
 {
-    return E_NOTIMPL;
+    throw new NotImplementedException();
 }
 
-IFACEMETHODIMP CalendarViewGeneratorHost.RemoveAtEnd()
+CalendarViewGeneratorHost.RemoveAtEnd()
 {
-    return E_NOTIMPL;
+    throw new NotImplementedException();
 }
 
-IFACEMETHODIMP CalendarViewGeneratorHost.Clear()
+CalendarViewGeneratorHost.Clear()
 {
-    return E_NOTIMPL;
+    throw new NotImplementedException();
 }

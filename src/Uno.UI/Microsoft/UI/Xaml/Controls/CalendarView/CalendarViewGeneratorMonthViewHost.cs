@@ -1,15 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#include "precomp.h"
-#include "CalendarViewGeneratorMonthViewHost.h"
-#include "CalendarView.g.h"
-#include "CalendarViewItem.g.h"
-#include "CalendarViewDayItem_Partial.h"
-#include "CalendarViewDayItemChangingEventArgs.g.h"
-#include "DateComparer.h"
-#include "BuildTreeService.g.h"
-#include "BudgetManager.g.h"
 
 using namespace DirectUI;
 using namespace DirectUISynonyms;
@@ -26,59 +17,55 @@ CalendarViewGeneratorMonthViewHost()
 {
 }
 
-_Check_return_ HRESULT GetContainer(
-     IInspectable* pItem,
-     xaml.IDependencyObject* pRecycledContainer,
-    _Outptr_ CalendarViewBaseItem** ppContainer)
+private void GetContainer(
+     DependencyObject pItem,
+     xaml.IDependencyObject pRecycledContainer,
+    out  CalendarViewBaseItem* ppContainer)
 {
-    HRESULT hr = S_OK;
-    ctl.ComPtr<CalendarViewDayItem> spContainer;
+    CalendarViewDayItem spContainer;
 
-    IFC(ctl.new CalendarViewDayItem(&spContainer));
+    spContainer = ctl.new CalendarViewDayItem);
 
-    IFC(spContainer.CopyTo(ppContainer));
+    spContainer.CopyTo(ppContainer);
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ IFACEMETHODIMP PrepareItemContainer(
-     xaml.IDependencyObject* pContainer,
-     IInspectable* pItem)
+ private void PrepareItemContainer(
+     xaml.IDependencyObject pContainer,
+     DependencyObject pItem)
 {
-    HRESULT hr = S_OK;
-    wf.DateTime date;
-    ctl.ComPtr<CalendarViewDayItem> spContainer;
+    DateTime date;
+    CalendarViewDayItem spContainer;
 
-    spContainer = (CalendarViewDayItem*)(pContainer);
+    spContainer = (CalendarViewDayItem)(pContainer);
 
     // first let's check if this container is already in the tobecleared queue
     // the container might be already marked as to be cleared but not cleared yet, 
     // if we pick up this container we don't need to clear it up.
-    IFC(RemoveToBeClearedContainer(spContainer.Get()));
+    RemoveToBeClearedContainer(spContainer);
 
     // now prepare the container    
 
-    IFC(ctl.do_get_value(date, pItem));
-    IFC(GetCalendar().SetDateTime(date));
+    ctl.do_get_value(date, pItem);
+    GetCalendar().SetDateTime(date);
 
-    IFC(spContainer.put_Date(date));
+    spContainer.Date = date;
 
     // main text
     {
-        wrl_wrappers.HString mainText;
+        string mainText;
 
-        IFC(GetCalendar().DayAsString(mainText.GetAddressOf()));
-        IFC(spContainer.UpdateMainText(mainText.Get()));
+        GetCalendar().DayAsString(mainText());
+        spContainer.UpdateMainText(mainText);
     }
 
     // label text
     {
-        BOOLEAN isLabelVisible = FALSE;
+        bool isLabelVisible = false;
 
-        IFC(GetOwner().get_IsGroupLabelVisible(&isLabelVisible));
+        isLabelVisible = GetOwner().IsGroupLabelVisible;
 
-        IFC(UpdateLabel(spContainer.Get(), !!isLabelVisible));
+        UpdateLabel(spContainer, !!isLabelVisible);
     }
 
     // today state will be updated in CalendarViewGeneratorHost.PrepareItemContainer
@@ -92,70 +79,66 @@ _Check_return_ IFACEMETHODIMP PrepareItemContainer(
         // or we clear them in phase 0 (before CIC phase 0 event). the result is we do this to make the logical simple.
 
         // reset the blackout state
-        IFC(spContainer.put_IsBlackout(FALSE));
+        spContainer.IsBlackout = false;
 
         // set selection state.
         bool isSelected = false;
-        IFC(GetOwner().IsSelected(date, &isSelected));
-        IFC(spContainer.SetIsSelected(isSelected));
+        isSelected = GetOwner().IsSelected(date);
+        spContainer.SetIsSelected(isSelected);
     }
 
     // clear the density bar as well.
-    IFC(spContainer.SetDensityColors(null));
+    spContainer.SetDensityColors(null);
 
     // apply style to CalendarViewDayItem if any.
     {
-        ctl.ComPtr<IStyle> spStyle;
+        IStyle spStyle;
 
-        IFC(GetOwner().get_CalendarViewDayItemStyle(&spStyle));
-        CalendarView.SetDayItemStyle(spContainer.Get(), spStyle.Get());
+        spStyle = GetOwner().CalendarViewDayItemStyle;
+        CalendarView.SetDayItemStyle(spContainer, spStyle);
     }
 
-    IFC(CalendarViewGeneratorHost.PrepareItemContainer(pContainer, pItem));
+    CalendarViewGeneratorHost.PrepareItemContainer(pContainer, pItem);
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT UpdateLabel( CalendarViewBaseItem* pItem,  bool isLabelVisible)
+private void UpdateLabel( CalendarViewBaseItem pItem,  bool isLabelVisible)
 {
     bool showLabel = false;
     if (isLabelVisible)
     {
-        wf.DateTime date;
+        DateTime date;
         var pCalendar = GetCalendar();
         int day = 0;
         int firstDayInThisMonth = 0;
 
         // TODO: consider caching the firstday flag because we also need this information when determining snap points 
         // (however Decadeview doesn't need this for Label).
-        IFC_RETURN(pItem.GetDate(&date));
-        IFC_RETURN(pCalendar.SetDateTime(date));
-        IFC_RETURN(pCalendar.get_FirstDayInThisMonth(&firstDayInThisMonth));
-        IFC_RETURN(pCalendar.get_Day(&day));
+        date = pItem.GetDate);
+        pCalendar.SetDateTime(date);
+        firstDayInThisMonth = pCalendar.FirstDayInThisMonth;
+        day = pCalendar.Day;
         showLabel = firstDayInThisMonth == day;
 
         if (showLabel)
         {
-            wrl_wrappers.HString labelText;
+            string labelText;
             IFC_RETURN(pCalendar.MonthAsString(
-                0, /*idealLength, set to 0 to get the abbreviated string*/
-                labelText.GetAddressOf()));
-            IFC_RETURN(pItem.UpdateLabelText(labelText.Get()));
+                0, /idealLength, set to 0 to get the abbreviated string/
+                labelText()));
+            pItem.UpdateLabelText(labelText);
         }
     }
-    IFC_RETURN(pItem.ShowLabelText(showLabel));
-    return S_OK;
+    pItem.ShowLabelText(showLabel);
+    return;
 }
 
 // reset CIC event if the container is being cleared.
-_Check_return_ IFACEMETHODIMP ClearContainerForItem(
-     xaml.IDependencyObject* pContainer,
-     IInspectable* pItem)
+ private void ClearContainerForItem(
+     xaml.IDependencyObject pContainer,
+     DependencyObject pItem)
 {
-    HRESULT hr = S_OK;
-
-    ctl.ComPtr<CalendarViewDayItem> spContainer = (CalendarViewDayItem*)(pContainer);
+    CalendarViewDayItem spContainer = (CalendarViewDayItem)(pContainer);
 
     // There is much perf involved with doing a clear, and usually it is going to be
     // a waste of time since we are going to immediately follow up with a prepare. 
@@ -166,7 +149,7 @@ _Check_return_ IFACEMETHODIMP ClearContainerForItem(
 
     // also, do not defer items that are uielement. They need to be cleared straight away so that
     // they can be messed with again.
-    IFC(m_toBeClearedContainers.Append(spContainer.Get()));
+    m_toBeClearedContainers.Append(spContainer);
 
     // note that if we are being cleared, we are not going to be in the 
     // visible index, or the caches. And thus we will never be called in the 
@@ -174,81 +157,75 @@ _Check_return_ IFACEMETHODIMP ClearContainerForItem(
 
     if (!m_isRegisteredForCallbacks)
     {
-        ctl.ComPtr<BuildTreeService> spBuildTree;
-        IFC(DXamlCore.GetCurrent().GetBuildTreeService(spBuildTree));
-        IFC(spBuildTree.RegisterWork(this));
+        BuildTreeService spBuildTree;
+        DXamlCore.GetCurrent().GetBuildTreeService(spBuildTree);
+        spBuildTree.RegisterWork(this);
     }
-    ASSERT(m_isRegisteredForCallbacks);
+    global::System.Diagnostics.Debug.Assert(m_isRegisteredForCallbacks);
 
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT GetIsFirstItemInScope( int index, out bool* pIsFirstItemInScope)
+private void GetIsFirstItemInScope( int index, out bool pIsFirstItemInScope)
 {
-    HRESULT hr = S_OK;
-
-    *pIsFirstItemInScope = false;
+    pIsFirstItemInScope = false;
     if (index == 0)
     {
-        *pIsFirstItemInScope = true;
+        pIsFirstItemInScope = true;
     }
     else
     {
-        wf.DateTime date = {};
+        DateTime date  = default;
         int day = 0;
         int firstDay = 0;
 
-        IFC(GetDateAt(index, &date));
+        date = GetDateAt(index);
         var pCalendar = GetCalendar();
-        IFC(pCalendar.SetDateTime(date));
-        IFC(pCalendar.get_Day(&day));
-        IFC(pCalendar.get_FirstDayInThisMonth(&firstDay));
-        *pIsFirstItemInScope = day == firstDay;
+        pCalendar.SetDateTime(date);
+        day = pCalendar.Day;
+        firstDay = pCalendar.FirstDayInThisMonth;
+        pIsFirstItemInScope = day == firstDay;
     }
 
-Cleanup:
-    return hr;
 }
 
-_Check_return_ HRESULT GetUnit(out int* pValue)
+private void GetUnit(out int pValue)
 {
     return GetCalendar().get_Day(pValue);
 }
 
-_Check_return_ HRESULT SetUnit( int value)
+private void SetUnit( int value)
 {
-    return GetCalendar().put_Day(value);
+    return GetCalendar().Day = value;
 }
 
-_Check_return_ HRESULT AddUnits( int value)
+private void AddUnits( int value)
 {
     return GetCalendar().AddDays(value);
 }
 
-_Check_return_ HRESULT AddScopes( int value)
+private void AddScopes( int value)
 {
     return GetCalendar().AddMonths(value);
 }
 
-_Check_return_ HRESULT GetFirstUnitInThisScope(out int* pValue)
+private void GetFirstUnitInThisScope(out int pValue)
 {
     return GetCalendar().get_FirstDayInThisMonth(pValue);
 }
-_Check_return_ HRESULT GetLastUnitInThisScope(out int* pValue)
+private void GetLastUnitInThisScope(out int pValue)
 {
     return GetCalendar().get_LastDayInThisMonth(pValue);
 }
 
-_Check_return_ HRESULT OnScopeChanged()
+private void OnScopeChanged()
 {
-    return GetOwner().FormatMonthYearName(m_minDateOfCurrentScope, m_pHeaderText.ReleaseAndGetAddressOf());
+    return GetOwner().FormatMonthYearName(m_minDateOfCurrentScope, m_pHeaderText.ReleaseAn());
 }
 
-_Check_return_ HRESULT GetPossibleItemStrings(_Outptr_ const std.vector<wrl_wrappers.HString>** ppStrings)
+private void GetPossibleItemStrings(out   std.CalculatorList<string>** ppStrings)
 {
-    *ppStrings = &m_possibleItemStrings;
+    ppStrings = &m_possibleItemStrings;
 
     if (m_possibleItemStrings.empty())
     {
@@ -270,47 +247,47 @@ _Check_return_ HRESULT GetPossibleItemStrings(_Outptr_ const std.vector<wrl_wrap
         // UmAlQuraCalendar, maxLength = 30 @ index 1
 
         {
-            const int MaxNumberOfMonthsToBeChecked = 3;
-            wf.DateTime longestMonth;
+             int MaxNumberOfMonthsToBeChecked = 3;
+            DateTime longestMonth;
             int lengthOfLongestMonth = 0;
             int numberOfDays = 0;
             int day = 0;
 
             var pCalendar = GetCalendar();
 
-            IFC_RETURN(pCalendar.SetToMin());
+            pCalendar.SetToMin();
             for (int i = 0; i < MaxNumberOfMonthsToBeChecked; i++)
             {
-                IFC_RETURN(pCalendar.get_NumberOfDaysInThisMonth(&numberOfDays));
+                numberOfDays = pCalendar.NumberOfDaysInThisMonth;
                 if (numberOfDays > lengthOfLongestMonth)
                 {
                     lengthOfLongestMonth = numberOfDays;
-                    IFC_RETURN(pCalendar.GetDateTime(&longestMonth));
+                    longestMonth = pCalendar.GetDateTime);
                 }
-                IFC_RETURN(pCalendar.AddMonths(1));
+                pCalendar.AddMonths(1);
             }
 
-            ASSERT(lengthOfLongestMonth == 30 || lengthOfLongestMonth == 31);
-            IFC_RETURN(pCalendar.SetDateTime(longestMonth));
-            IFC_RETURN(pCalendar.get_FirstDayInThisMonth(&day));
-            IFC_RETURN(pCalendar.put_Day(day));
+            global::System.Diagnostics.Debug.Assert(lengthOfLongestMonth == 30 || lengthOfLongestMonth == 31);
+            pCalendar.SetDateTime(longestMonth);
+            day = pCalendar.FirstDayInThisMonth;
+            pCalendar.Day = day;
 
             m_possibleItemStrings.reserve(lengthOfLongestMonth);
 
             for (int i = 0; i < lengthOfLongestMonth; i++)
             {
-                wrl_wrappers.HString string;
-                IFC_RETURN(pCalendar.DayAsString(string.GetAddressOf()));
+                string string;
+                pCalendar.DayAsString(string());
                 m_possibleItemStrings.emplace_back(std.move(string));
-                IFC_RETURN(pCalendar.AddDays(1));
+                pCalendar.AddDays(1);
             }
         }
     }
 
-    return S_OK;
+    return;
 }
 
-_Check_return_ HRESULT CompareDate( wf.DateTime lhs,  wf.DateTime rhs, out int* pResult)
+private void CompareDate( DateTime lhs,  DateTime rhs, out int pResult)
 {
     return GetOwner().GetDateComparer().CompareDay(lhs, rhs, pResult);
 }
