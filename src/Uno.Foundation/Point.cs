@@ -11,7 +11,7 @@ using CoreGraphics;
 
 namespace Windows.Foundation
 {
-	[DebuggerDisplay("{X},{Y}")]
+	[DebuggerDisplay("{DebugDisplay,nq}")]
 	public partial struct Point
 	{
 		public Point(double x, double y)
@@ -85,5 +85,7 @@ namespace Windows.Foundation
 
 			return false;
 		}
+
+		private string DebugDisplay => $"{X:f1},{Y:f1}";
 	}
 }
