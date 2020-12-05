@@ -199,7 +199,7 @@ namespace <#= mixin.NamespaceName #>
 				return __disabledState;
 			}
 #if <#= mixin.HasCommonPressedState #>
-			else if (IsPointerPressed && IsPointerOver)
+			else if (IsPointerPressed)
 			{
 				return __pressedState;
 			}
