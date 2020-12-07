@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 			desiredSize.Width = Math.Min(desiredSize.Width, visibleBounds.Width);
 			desiredSize.Height = Math.Min(desiredSize.Height, visibleBounds.Height);
 
-			if(PositionInAnchorControl is Point point)
+			if (PositionInAnchorControl is Point point)
 			{
 				return new Rect(
 					x: anchorRect.X + point.X,
@@ -174,34 +174,37 @@ namespace Windows.UI.Xaml.Controls
 
 				var justification = FlyoutBase.GetJustificationFromPlacementMode(PopupPlacement);
 
-				bool fits;
-				if (IsPlacementModeVertical(placement))
+				var fits = true;
+				if (PopupPlacement != FlyoutPlacementMode.Full)
 				{
-					var controlXPos = finalPosition.X;
-					fits = TestAndCenterAlignWithinLimits(
-						anchorRect.X,
-						anchorRect.Width,
-						desiredSize.Width,
-						visibleBounds.Left,
-						visibleBounds.Right,
-						justification,
-						ref controlXPos
-					);
-					finalPosition.X = controlXPos;
-				}
-				else
-				{
-					var controlYPos = finalPosition.Y;
-					fits = TestAndCenterAlignWithinLimits(
-						anchorRect.Y,
-						anchorRect.Height,
-						desiredSize.Height,
-						visibleBounds.Top,
-						visibleBounds.Bottom,
-						justification,
-						ref controlYPos
-					);
-					finalPosition.Y = controlYPos;
+					if (IsPlacementModeVertical(placement))
+					{
+						var controlXPos = finalPosition.X;
+						fits = TestAndCenterAlignWithinLimits(
+							anchorRect.X,
+							anchorRect.Width,
+							desiredSize.Width,
+							visibleBounds.Left,
+							visibleBounds.Right,
+							justification,
+							ref controlXPos
+						);
+						finalPosition.X = controlXPos;
+					}
+					else
+					{
+						var controlYPos = finalPosition.Y;
+						fits = TestAndCenterAlignWithinLimits(
+							anchorRect.Y,
+							anchorRect.Height,
+							desiredSize.Height,
+							visibleBounds.Top,
+							visibleBounds.Bottom,
+							justification,
+							ref controlYPos
+						);
+						finalPosition.Y = controlYPos;
+					}
 				}
 
 				finalRect = new Rect(finalPosition, desiredSize);
