@@ -20,6 +20,8 @@
       href: get-started-vsmac.md
     - name: Getting Started on Visual Studio Code
       href: get-started-vscode.md
+    - name: Getting Started with Linux
+      href: get-started-with-linux.md
     - name: Getting Started on Rider
       href: get-started-rider.md
     - name: dotnet new templates for Uno Platform

@@ -18,7 +18,9 @@
     * **ASP**.**NET and web** workload installed, along with .NET Core 2.2 (for WASM development)
 
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
-    * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+    * **.NET Core SDK**
+        * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
+        * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
 
 For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 

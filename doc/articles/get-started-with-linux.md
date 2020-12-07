@@ -44,7 +44,7 @@ Now let's run the application:
 
 ## Setting up for Linux
 
-Using Ubuntu 18.04 or later:
+### Using Ubuntu 18.04 or later:
 - Install GTK3:
     ```
     sudo apt update
@@ -60,7 +60,30 @@ Using Ubuntu 18.04 or later:
     sudo apt-get -y install apt-transport-https
     sudo apt-get update
     sudo apt-get -y install dotnet-sdk-3.1
+    sudo apt-get -y install dotnet-sdk-5.0
     ```
+
+### Using Ubuntu 20.04 or later:
+- Install GTK3:
+    ```
+    sudo apt update
+    sudo apt install gtk+3.0
+    ```
+- Install dotnet core 3.1 and 5.0
+    ```
+    echo "Installing .NET Core"
+    wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+
+    sudo apt-get update; \
+      sudo apt-get install -y apt-transport-https && \
+      sudo apt-get update && \
+      sudo apt-get install -y dotnet-sdk-3.1 && \
+      sudo apt-get install -y dotnet-sdk-5.0
+    ```
+
+### Install the templates and create the application
+
 - Install the `dotnet new` templates:
     ```
     dotnet new -i Uno.ProjectTemplates.Dotnet
