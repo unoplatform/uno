@@ -845,5 +845,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return null;
 		}
+
+		#region Uno specific 
+
+		//TODO: Uno specific - remove when #4689 is fixed
+		internal event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> UnoBeforeElementPrepared;
+
+		internal void OnUnoBeforeElementPrepared(UIElement element, int index)
+		{
+			var args = new ItemsRepeaterElementPreparedEventArgs(element, index);
+			UnoBeforeElementPrepared?.Invoke(this, args);
+		}
+
+		#endregion
 	}
 }

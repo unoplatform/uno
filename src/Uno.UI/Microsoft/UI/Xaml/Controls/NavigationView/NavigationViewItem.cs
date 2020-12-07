@@ -67,6 +67,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
+			// TODO: Uno specific: NavigationView may not be set yet, wait for later #4689
+			if (GetNavigationView() is null)
+			{
+				// Postpone template application for later
+				return;
+			}
+
 			// Stop UpdateVisualState before template is applied. Otherwise the visuals may be unexpected
 			m_appliedTemplate = false;
 
@@ -214,7 +221,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var splitView = GetSplitView();
 			if (splitView != null)
 			{
-				SetValue(CompactPaneLengthProperty, PropertyValue.CreateDouble(splitView.CompactPaneLength));
+				SetValue(CompactPaneLengthProperty, splitView.CompactPaneLength); //PropertyValue.CreateDouble(splitView.CompactPaneLength));
 
 				// Only update when on left
 				var presenter = GetPresenter();
@@ -492,7 +499,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// TODO: Override?
-		private void UpdateVisualState(bool useTransitions)
+		private new void UpdateVisualState(bool useTransitions)
 		{
 			if (!m_appliedTemplate)
 				return;
@@ -594,7 +601,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void ShowHideChildren()
 		{
-			var repeater = m_repeater; if (repeater != null)
+			var repeater = m_repeater;
+			if (repeater != null)
 			{
 				bool shouldShowChildren = IsExpanded;
 				var visibility = shouldShowChildren ? Visibility.Visible : Visibility.Collapsed;
@@ -612,10 +620,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 						// There seems to be a race condition happening which sometimes
 						// prevents the opening of the flyout. Queue callback as a workaround.
-						SharedHelpers.QueueCallbackForCompositionRendering(() =>
-						{
+
+						// TODO: Uno specific - Queue callback for composition rendering is not implemented yet - #4690
+						//SharedHelpers.QueueCallbackForCompositionRendering(() =>
+						//{
 							FlyoutBase.ShowAttachedFlyout(m_rootGrid);
-						});
+						//});
 					}
 					else
 					{
@@ -638,7 +648,6 @@ namespace Microsoft.UI.Xaml.Controls
 					if (ShouldRepeaterShowInFlyout() && !m_isRepeaterParentedToFlyout)
 					{
 						// Reparent repeater to flyout
-						// TODO: Replace removeatend with something more specific
 						m_rootGrid.Children.RemoveAt(m_rootGrid.Children.Count - 1);
 						m_flyoutContentGrid.Children.Add(repeater);
 						m_isRepeaterParentedToFlyout = true;

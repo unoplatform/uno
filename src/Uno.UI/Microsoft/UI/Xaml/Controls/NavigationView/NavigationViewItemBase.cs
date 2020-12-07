@@ -1,5 +1,6 @@
 ﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -10,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get => m_position;
 			set
 			{
-				if ( m_position != value)
+				if (m_position != value)
 				{
 					m_position = value;
 					OnNavigationViewItemBasePositionChanged();
@@ -23,8 +24,12 @@ namespace Microsoft.UI.Xaml.Controls
 			return m_navigationView;
 		}
 
-		// TODO: no specific: existing Depth property inherited from base class
-		internal new int Depth
+		// TODO: MZ Uno specific: existing Depth property inherited from base class
+		internal
+#if !__ANDROID__ && !__IOS__
+			new
+#endif
+			int Depth
 		{
 			get => m_depth;
 			set
@@ -60,5 +65,14 @@ namespace Microsoft.UI.Xaml.Controls
 				OnNavigationViewItemBaseIsSelectedChanged();
 			}
 		}
+
+#if IS_UNO
+		// TODO: Uno specific: Remove when #4689 is fixed
+
+		internal void Reinitialize()
+		{
+			OnApplyTemplate();
+		}
+#endif
 	}
 }

@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class NavigationViewItemSeparator : NavigationViewItemBase
+	public partial class NavigationViewItemSeparator : NavigationViewItemBase
 	{
 		private bool m_appliedTemplate = false;
 		private bool m_isClosedCompact = false;
@@ -35,6 +35,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
+			// TODO: Uno specific: NavigationView may not be set yet, wait for later #4689
+			if (GetNavigationView() is null)
+			{
+				// Postpone template application for later
+				return;
+			}
+
 			// Stop UpdateVisualState before template is applied. Otherwise the visual may not the same as we expect
 			m_appliedTemplate = false;
 			base.OnApplyTemplate();

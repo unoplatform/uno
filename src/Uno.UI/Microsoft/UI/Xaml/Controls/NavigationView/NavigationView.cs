@@ -110,8 +110,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void UnhookEventsAndClearFields(bool isFromDestructor = false)
 		{
-			//TODO: MZ: Implement
-
 			m_titleBarMetricsChangedRevoker.Disposable = null;
 			m_titleBarIsVisibleChangedRevoker.Disposable = null;
 			m_paneToggleButtonClickRevoker.Disposable = null;
@@ -168,6 +166,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_topNavOverflowItemsCollectionChangedRevoker.Disposable = null;
 
+#if IS_UNO
+			//TODO: Uno specific - remove when #4689 is fixed
+			m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
+			m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
+			m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
+			m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
+			m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
+#endif
+
 			if (isFromDestructor)
 			{
 				m_selectionChangedRevoker.Disposable = null;
@@ -177,9 +184,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public NavigationView()
 		{
+#if IS_UNO
 			// Uno specific - need to initialize here to be able to use "this"
 			m_topDataProvider = new TopNavigationViewDataProvider(this);
-			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_NavigationView);
+#endif
 			SetValue(TemplateSettingsProperty, new NavigationViewTemplateSettings());
 			DefaultStyleKey = typeof(NavigationView);
 
@@ -460,6 +468,12 @@ namespace Microsoft.UI.Xaml.Controls
 						stackLayoutImpl.DisableVirtualization = true;
 					}
 
+#if IS_UNO
+					//TODO: Uno specific - remove when #4689 is fixed
+					leftNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
+					m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
+#endif
+
 					leftNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 					m_leftNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
 					leftNavRepeater.ElementClearing += OnRepeaterElementClearing;
@@ -486,6 +500,12 @@ namespace Microsoft.UI.Xaml.Controls
 						var stackLayoutImpl = stackLayout;
 						stackLayoutImpl.DisableVirtualization = true;
 					}
+
+#if IS_UNO
+					//TODO: Uno specific - remove when #4689 is fixed
+					topNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
+					m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
+#endif
 
 					topNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 					m_topNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -514,6 +534,12 @@ namespace Microsoft.UI.Xaml.Controls
 						var stackLayoutImpl = stackLayout;
 						stackLayoutImpl.DisableVirtualization = true;
 					}
+
+#if IS_UNO
+					//TODO: Uno specific - remove when #4689 is fixed
+					topNavListOverflowRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
+					m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
+#endif
 
 					topNavListOverflowRepeater.ElementPrepared += OnRepeaterElementPrepared;
 					m_topNavOverflowItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -567,6 +593,12 @@ namespace Microsoft.UI.Xaml.Controls
 						stackLayoutImpl.DisableVirtualization = true;
 					}
 
+#if IS_UNO
+					//TODO: Uno specific - remove when #4689 is fixed
+					leftFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
+					m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
+#endif
+
 					leftFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 					m_leftNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
 					leftFooterMenuNavRepeater.ElementClearing += OnRepeaterElementClearing;
@@ -594,6 +626,12 @@ namespace Microsoft.UI.Xaml.Controls
 						var stackLayoutImpl = stackLayout;
 						stackLayoutImpl.DisableVirtualization = true;
 					}
+
+#if IS_UNO
+					//TODO: Uno specific - remove when #4689 is fixed
+					topFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
+					m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
+#endif
 
 					topFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 					m_topNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -1329,6 +1367,9 @@ namespace Microsoft.UI.Xaml.Controls
 						nvi.UnregisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, isExpandedSubscription);
 					});
 				}
+
+				// TODO: Uno specific - remove when #4689 is fixed
+				nvibImpl.Reinitialize();
 			}
 		}
 
@@ -3492,8 +3533,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		//TODO MZ: Override?
-		private void UpdateVisualState(bool useTransitions)
+		private new void UpdateVisualState(bool useTransitions = false)
 		{
 			if (m_appliedTemplate)
 			{
@@ -5752,5 +5792,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return IsRootItemsRepeater(GetParentItemsRepeaterForContainer(nvib));
 		}
+
+		#region Uno specific
+
+		//TODO: Uno specific - remove when #4689 is fixed
+
+		private void OnRepeaterUnoBeforeElementPrepared(ItemsRepeater itemsRepeater, ItemsRepeaterElementPreparedEventArgs args) =>
+			OnRepeaterElementPrepared(itemsRepeater, args);
+
+		#endregion
 	}
 }

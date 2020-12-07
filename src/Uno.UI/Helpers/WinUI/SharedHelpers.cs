@@ -553,7 +553,7 @@ namespace Uno.UI.Helpers.WinUI
 				}
 				CompositionTarget.Rendering += OnRender;
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				// DirectUI.CompositionTarget.add_Rendering can fail with RPC_E_WRONG_THREAD if called while the Xaml Core is being shutdown,
 				// and there is evidence from Watson that such calls are made in real apps (see Bug 13554197).

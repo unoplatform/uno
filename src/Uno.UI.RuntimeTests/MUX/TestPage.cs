@@ -2,7 +2,7 @@
 
 namespace MUXControlsTestApp
 {
-	public class TestPage : MUXTestPage
+	public partial class TestPage : MUXTestPage
     {
         
     }

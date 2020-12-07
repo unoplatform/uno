@@ -392,7 +392,7 @@ namespace MUXControlsTestApp
 
         private void CopyGamesLabelButton_Click(object sender, RoutedEventArgs e)
         {
-            var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
+            var popups = VisualTreeHelper.GetOpenPopups(Windows.UI.Xaml.Window.Current);
             if (popups != null && popups.Count > 0)
             {
                 var popup = popups[0];
