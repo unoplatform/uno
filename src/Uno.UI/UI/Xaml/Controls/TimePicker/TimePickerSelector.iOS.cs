@@ -6,6 +6,7 @@ using System.Linq;
 using UIKit;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
 
@@ -37,10 +38,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 			_picker.Mode = UIDatePickerMode.Time;
 
-			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
-			{
-				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
-			}
+			UpdatePickerStyle();
 
 			_picker.ValueChanged += OnValueChanged;
 			
@@ -61,6 +59,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Initialize()
 		{
+			UpdatePickerStyle();
 			SetPickerClockIdentifier(ClockIdentifier);
 			SetPickerMinuteIncrement(MinuteIncrement);
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
@@ -147,6 +146,25 @@ namespace Windows.UI.Xaml.Controls
 			_picker.ValueChanged -= OnValueChanged;
 
 			base.OnUnloaded();
+		}
+
+		private void UpdatePickerStyle()
+		{
+			if (_picker == null)
+			{
+				return;
+			}
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+			{
+				_picker.PreferredDatePickerStyle = FeatureConfiguration.TimePicker.UseLegacyStyle
+																			? UIDatePickerStyle.Wheels
+																			: UIDatePickerStyle.Inline;
+			}
+			else
+			{
+				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
+			}
 		}
 	}
 }

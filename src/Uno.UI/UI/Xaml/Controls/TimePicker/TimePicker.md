@@ -27,29 +27,37 @@ There might be differences in the time picker on different platform since it wra
 
 #### Android
 
-Native time picker is wrapped in the flyout.
-Timepicker flyout appear centered to screen.
-You can change the flyout button by copying and modifying TimePickerFlyoutButtonStyle.
-You can change the flyout button by copying and modifying TimePickerFlyoutPresenterStyle.
-If 'MinuteIncrement` is more than 1, `TimePicker` will show in "spinner mode"
-In case clock mode still appear for some reason picked value will be rounded to minute increment intervals..
+- Native time picker is wrapped in the flyout.
+- Timepicker flyout appear centered to screen.
+- You can change the flyout button by copying and modifying TimePickerFlyoutButtonStyle.
+- You can change the flyout button by copying and modifying TimePickerFlyoutPresenterStyle.
+- If 'MinuteIncrement` is more than 1, `TimePicker` will show in "spinner mode"
+- In case clock mode still appear for some reason picked value will be rounded to minute increment intervals..
 
 #### iOS
-Native time picker is wrapped in the flyout.
-Set 'ios:FlyoutPlacement' property to change flyout docking placement
-Default 'ios:FlyoutPlacement' is 'Full' and will dock of the flyout at the bottom of the screen
-You can change the flyout button by copying and modifying TimePickerFlyoutButtonStyle.
-You can change the flyout button by copying and modifying TimePickerFlyoutPresenterStyle.
+- Native time picker is wrapped in the flyout.
+- Set 'ios:FlyoutPlacement' property to change flyout docking placement
+- Default 'ios:FlyoutPlacement' is 'Full' and will dock of the flyout at the bottom of the screen
+- You can change the flyout button by copying and modifying TimePickerFlyoutButtonStyle.
+- You can change the flyout button by copying and modifying TimePickerFlyoutPresenterStyle.
 
-Some ColorBrushes are specific to IOS and could be changed by copying and redoing the new style so they use your own color brushes  
- IOSTimePickerAcceptButtonForegroundBrush  Color="#055bb7"
- IOSTimePickerDismissButtonForegroundBrush  Color="#055bb7"
- IOSTimePickerHeaderBackgroundBrush  Color="{ThemeResource SystemListLowColor}" 
+Some `ColorBrushes` are specific to **iOS** and could be changed by copying and redoing the new style so they use your own color brushes:
 
+```
+IOSTimePickerAcceptButtonForegroundBrush  Color="#055bb7"
+IOSTimePickerDismissButtonForegroundBrush  Color="#055bb7"
+IOSTimePickerHeaderBackgroundBrush  Color="{ThemeResource SystemListLowColor}" 
+```
 If you want to show a dimmed overlay underneath the picker, set the `TimePicker.LightDismissOverlayMode` property to `On`.
 
 If you wish to customise the overlay color, add the following to your top-level `App.Resources`:
 ```xaml
-		<SolidColorBrush x:Key="TimePickerLightDismissOverlayBackground"
-						 Color="Pink" />
+<SolidColorBrush x:Key="TimePickerLightDismissOverlayBackground"
+		Color="Pink" />
+```
+
+Since **iOS14** the native `TimePicker` changed the way it's presented. By default iOS14 devices will display this new style.  You can still force the previous style (the one found in iOS13 or earlier) by adding the following at your `App.xaml.cs` class:
+
+```csharp
+Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
 ```

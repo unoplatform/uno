@@ -7,6 +7,7 @@ using Uno.UI.Extensions;
 using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -35,10 +36,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.TimeZone = NSTimeZone.LocalTimeZone;
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 
-			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
-			{
-				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
-			}
+			UpdatePickerStyle();
 
 			UpdatePickerValue(Date, animated: false);
 
@@ -162,6 +160,25 @@ namespace Windows.UI.Xaml.Controls
 			);
 
 			return date;
+		}
+
+		private void UpdatePickerStyle()
+		{
+			if (_picker == null)
+			{
+				return;
+			}
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+			{
+				_picker.PreferredDatePickerStyle = FeatureConfiguration.DatePicker.UseLegacyStyle
+																			? UIDatePickerStyle.Wheels
+																			: UIDatePickerStyle.Inline;
+			}
+			else
+			{
+				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
+			}
 		}
 	}
 }
