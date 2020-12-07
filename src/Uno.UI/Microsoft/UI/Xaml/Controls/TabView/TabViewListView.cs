@@ -1,7 +1,5 @@
-﻿// MUX Reference: TabViewListView.cpp, commit 46f9da3
+﻿// MUX Reference: TabViewListView.cpp, commit 309c88f
 
-using System.Collections.Specialized;
-using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -49,6 +47,29 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
+		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+		{
+			var itemContainer = (TabViewItem)element;
+			var tvi = itemContainer;
+
+			// Due to virtualization, a TabViewItem might be recycled to display a different tab data item.
+			// In that case, there is no need to set the TabWidthMode of the TabViewItem or its parent TabView
+			// as they are already set correctly here.
+			//
+			// We know we are currently looking at a TabViewItem being recycled if its parent TabView has already been set.
+			if (tvi.GetParentTabView() == null)
+			{
+				var tabView = SharedHelpers.GetAncestorOfType<TabView>(VisualTreeHelper.GetParent(this));
+				if (tabView != null)
+				{
+					tvi.OnTabViewWidthModeChanged(tabView.TabWidthMode);
+					tvi.SetParentTabView(tabView);
+				}
+			}
+
+			base.PrepareContainerForItemOverride(element, item);
+		}
+
 		private void OnContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
 		{
 			var tabView = SharedHelpers.GetAncestorOfType<TabView>(VisualTreeHelper.GetParent(this));
@@ -56,22 +77,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				var internalTabView = tabView;
 				internalTabView.UpdateTabContent();
-			}
-		}
-
-
-		// TODO Uno specific: ensure the items are updated for ItemsSource change as Items are not yet in sync with ItemsSource properly
-
-		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
-		{
-			base.OnItemsSourceSingleCollectionChanged(sender, args, section);
-
-			var tabView = SharedHelpers.GetAncestorOfType<TabView>(VisualTreeHelper.GetParent(this));
-			if (tabView != null)
-			{
-				var internalTabView = tabView;
-				var vectorChangedArgs = args.ToVectorChangedEventArgs();
-				internalTabView.OnItemsChanged(vectorChangedArgs);
 			}
 		}
 	}
