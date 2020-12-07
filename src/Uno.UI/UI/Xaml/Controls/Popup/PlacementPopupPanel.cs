@@ -268,10 +268,10 @@ namespace Windows.UI.Xaml.Controls
 				{
 					controlPos = anchorPos + (anchorSize - controlSize);
 				}
-				//else
-				//{
-				//	Assert(FALSE, L"Unsupported FlyoutBase.PreferredJustification");
-				//}
+				else
+				{
+					throw new InvalidOperationException("Unsupported FlyoutBase.PreferredJustification");
+				}
 
 				if (controlPos < lowLimit)
 				{
