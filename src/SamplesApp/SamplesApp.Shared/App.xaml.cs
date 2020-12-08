@@ -361,6 +361,10 @@ namespace SamplesApp
 #if !NETFX_CORE
 			Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStylesOverride[typeof(CommandBar)] = false;
 #endif
+#if __IOS__
+			Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
+			Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
+#endif
 		}
 
 

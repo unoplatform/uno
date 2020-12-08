@@ -35,8 +35,8 @@ variables:
   macOSVMImage: 'macOS-10.15'
   xCodeRoot: '/Applications/Xcode_12.3.app'
   XamarinSDKVersion: 6_12_2
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_11.5.app'
-  XamarinSDKVersion_iOS_UITests: 6_10_0
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_12.2.app'
+  XamarinSDKVersion_iOS_UITests: 6_12_2
 
 jobs:
 - template: build/ci/.azure-devops-windows.yml
