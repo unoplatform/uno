@@ -142,5 +142,45 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 				: "Item_3";
 			result.Element.Should().Be(expectedItem);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Nested()
+		{
+			Run(_xamlTestPage);
+
+			const string parentName = "Nested_Parent";
+			const string targetName = "Nested_Target";
+			const int tapX = 10, tapY = 10;
+
+			// Tap the target
+			var target = _app.WaitForElement(targetName).Single().Rect;
+			_app.TapCoordinates(target.X + tapX, target.Y + tapY);
+
+			var result = GestureResult.Get(_app.Marked("LastTapped"));
+			result.Element.Should().Be(parentName);
+			((int)result.X).Should().BeInRange(tapX - 1, tapX + 1);
+			((int)result.Y).Should().BeInRange(tapY - 1, tapY + 1);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Nested_And_Handling()
+		{
+			Run(_xamlTestPage);
+
+			const string parentName = "Nested_Handling_Parent";
+			const string targetName = "Nested_Handling_Target";
+			const int tapX = 10, tapY = 10;
+
+			// Tap the target
+			var target = _app.WaitForElement(targetName).Single().Rect;
+			_app.TapCoordinates(target.X + tapX, target.Y + tapY);
+
+			var result = GestureResult.Get(_app.Marked("LastTapped"));
+			result.Element.Should().Be(targetName);
+			((int)result.X).Should().BeInRange(tapX - 1, tapX + 1);
+			((int)result.Y).Should().BeInRange(tapY - 1, tapY + 1);
+		}
 	}
 }
