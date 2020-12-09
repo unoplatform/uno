@@ -757,6 +757,12 @@ namespace Windows.UI.Xaml.Controls
 			return false;
 		}
 
+		protected override void OnItemsChanged(object e)
+		{
+			Refresh(); // Ensure item views are updated correctly if Items collection is manipulated
+			base.OnItemsChanged(e);
+		}
+
 		/// <summary>
 		/// Try to fetch more items, if the ItemsSource supports <see cref="ISupportIncrementalLoading"/>.
 		/// </summary>
