@@ -366,7 +366,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									BuildNamedResources(writer, _namedResources);
 								}
 
-								BuildCompiledBindingsInitializer(writer, _className.className);
+								BuildCompiledBindingsInitializer(writer, _className.className, controlBaseType);
 
 								if (isDirectUserControlChild)
 								{
@@ -384,7 +384,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									writer.AppendLineInvariant("Content = (_View)GetContent();");
 
-									BuildCompiledBindingsInitializer(writer, _className.className);
+									BuildCompiledBindingsInitializer(writer, _className.className, controlBaseType);
 
 									if (_isDebug)
 									{
@@ -758,11 +758,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private (string bindingsInterfaceName, string bindingsClassName) GetBindingsTypeNames(string className)
 			=> ($"I{className}_Bindings", $"{className}_Bindings");
 
-		private void BuildCompiledBindingsInitializer(IndentedStringBuilder writer, string className)
+		private void BuildCompiledBindingsInitializer(IndentedStringBuilder writer, string className, INamedTypeSymbol controlBaseType)
 		{
 			var hasXBindExpressions = CurrentScope.XBindExpressions.Count != 0;
 			var hasResourceExtensions = CurrentScope.Components.Any(HasMarkupExtensionNeedingComponent);
-			var isFrameworkElement = IsType(className, _frameworkElementSymbol);
+			var isFrameworkElement =
+				IsType(className, _frameworkElementSymbol)				// The current type may not have a base type as it is defined in XAML,
+				|| IsType(controlBaseType, _frameworkElementSymbol);    // so look at the control base type extracted from the XAML.
 
 			if (hasXBindExpressions || hasResourceExtensions)
 			{
