@@ -8,7 +8,9 @@ This guide will walk you through the set-up process for building WebAssembly app
 
 * [**Mono**](https://www.mono-project.com/download/stable/)
 
-* [**.Net Core SDK**](https://dotnet.microsoft.com/download) (**version 3.1.8 (SDK 3.1.402)** or later)
+* **.NET Core SDK**
+    * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
+    * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
 
     > Use `dotnet --version` from the terminal to get the version installed.
 
