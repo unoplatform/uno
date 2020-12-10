@@ -22,6 +22,8 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 			var position = e.GetPosition(target).LogicalToPhysicalPixels();
 
 			LastTapped.Text = FormattableString.Invariant($"{target.Name}@{position.X:F2},{position.Y:F2}");
+
+			e.Handled = target.Name.Contains("Handling");
 		}
 
 		private void ItemTapped(object sender, TappedRoutedEventArgs e)
