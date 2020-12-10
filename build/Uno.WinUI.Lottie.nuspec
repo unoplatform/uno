@@ -24,22 +24,27 @@
 
 	  <group targetFramework="netstandard2.0">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+        <dependency id="System.Json" version="4.7.1" />
 	  </group>
 	  <group targetFramework="xamarinios10">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+        <dependency id="System.Json" version="4.7.1" />
 	  </group>
 	  <group targetFramework="xamarinmac20">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+        <dependency id="System.Json" version="4.7.1" />
 	  </group>
 	  <group targetFramework="MonoAndroid11.0">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
 	  </group>
 	  <group targetFramework="MonoAndroid10.0">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
 	  </group>
 
 	</dependencies>
