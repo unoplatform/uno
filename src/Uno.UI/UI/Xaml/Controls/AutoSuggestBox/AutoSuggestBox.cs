@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using System.Collections.Specialized;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #if __IOS__
 using UIKit;

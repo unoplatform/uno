@@ -13,6 +13,7 @@ using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml
@@ -314,7 +315,7 @@ namespace Windows.UI.Xaml
 		}
 #endregion
 
-		internal IDisposable OpenPopup(Popup popup)
+		internal IDisposable OpenPopup(Controls.Primitives.Popup popup)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
