@@ -7,11 +7,12 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using Uno;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	[ContentProperty(Name = "Child")]
-	public partial class Popup : PopupBase
+	public partial class Popup
 	{
 		/// <summary>
 		/// Overrides the default location of this popup (cf. Remarks)
@@ -114,17 +115,11 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnPopupPanelChangedPartial(PopupPanel oldHost, PopupPanel newHost);
 
-		protected override void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
-		{
-			base.OnVerticalOffsetChanged(oldVerticalOffset, newVerticalOffset);
-			PopupPanel?.InvalidateMeasure();
-		}
+		partial void OnVerticalOffsetChangedPartial(double oldVerticalOffset, double newVerticalOffset)
+			=> PopupPanel?.InvalidateMeasure();
 
-		protected override void OnHorizontalOffsetChanged(double oldHorizontalOffset, double newHorizontalOffset)
-		{
-			base.OnHorizontalOffsetChanged(oldHorizontalOffset, newHorizontalOffset);
-			PopupPanel?.InvalidateMeasure();
-		}
+		partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset)
+			=> PopupPanel?.InvalidateMeasure();
 
 		private static readonly PointerEventHandler _handleIfOpened = (snd, e) =>
 		{
@@ -234,8 +229,5 @@ namespace Windows.UI.Xaml.Controls
 
 		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(Popup), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
-
-		[Uno.NotImplemented]
-		public bool ShouldConstrainToRootBounds { get; set; }
 	}
 }

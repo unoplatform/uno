@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	#endif
 	public  partial class Popup : global::Windows.UI.Xaml.FrameworkElement
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double VerticalOffset
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsOpen
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsLightDismissEnabled
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double HorizontalOffset
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.UIElement Child
 		{
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ChildProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsLightDismissEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsOpenProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public Popup() : base()
 		{
@@ -230,7 +230,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Popup.VerticalOffsetProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Popup.ChildTransitionsProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabledProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::System.EventHandler<object> Closed
 		{
@@ -246,7 +246,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::System.EventHandler<object> Opened
 		{

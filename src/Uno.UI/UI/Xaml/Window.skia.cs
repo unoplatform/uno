@@ -19,6 +19,7 @@ using Windows.UI.Composition;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
@@ -186,7 +187,7 @@ namespace Windows.UI.Xaml
 			return _current;
 		}
 
-		internal IDisposable OpenPopup(Popup popup)
+		internal IDisposable OpenPopup(Controls.Primitives.Popup popup)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{

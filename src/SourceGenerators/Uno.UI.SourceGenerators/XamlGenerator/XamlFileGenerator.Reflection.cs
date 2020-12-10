@@ -785,6 +785,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var trimmedNamespace = type.PreferredXamlNamespace.Split('?').First();
 				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(trimmedNamespace, new string[0]);
 
+				if (
+					type.PreferredXamlNamespace == XamlConstants.PresentationXamlXmlNamespace
+					&& type.Name == "Popup"
+				   )
+				{
+					// Special case for the legacy type "Windows.UI.Xaml.Controls.Popup" where
+					// using "Popup" in XAML will always point to the Primitives version of the type.
+					return _findType(XamlConstants.Namespaces.Primitives + ".Popup");
+				}
+
 				foreach (var clrNamespace in clrNamespaces)
 				{
 					if(_findType!(clrNamespace + "." + type.Name) is { } result)
