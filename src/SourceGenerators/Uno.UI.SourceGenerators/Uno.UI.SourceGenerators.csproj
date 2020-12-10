@@ -5,8 +5,9 @@
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<WarningsAsErrors>true</WarningsAsErrors>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
-
+	
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.12.0" />
@@ -49,7 +50,7 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.12.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
-			<Version>3.8.0-3.final</Version>
+			<Version>3.8.0</Version>
 		</PackageReference>
 		<PackageReference Include="Mono.Cecil">
 			<Version>0.10.1</Version>

@@ -46,10 +46,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _outputSourceComments = true;
 		private readonly RoslynMetadataHelper _metadataHelper;
 
-#if NETFRAMEWORK
-		private readonly ProjectInstance _projectInstance;
-#endif
-
 		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
 		/// </summary>
