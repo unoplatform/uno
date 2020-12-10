@@ -114,12 +114,16 @@ namespace Uno.UI.SourceGenerators.Telemetry
 			{
 				var persistenceChannel = new PersistenceChannel.PersistenceChannel(sendersCount: _senderCount);
 				persistenceChannel.SendingInterval = TimeSpan.FromMilliseconds(1);
+#pragma warning disable CS0618 // Type or member is obsolete
 				TelemetryConfiguration.Active.TelemetryChannel = persistenceChannel;
+#pragma warning restore CS0618 // Type or member is obsolete
 
 				_commonProperties = new TelemetryCommonProperties().GetTelemetryCommonProperties();
 				_commonMeasurements = new Dictionary<string, double>();
 
+#pragma warning disable CS0618 // Type or member is obsolete
 				_client = new TelemetryClient();
+#pragma warning disable CS0618 // Type or member is obsolete
 				_client.InstrumentationKey = InstrumentationKey;
 				_client.Context.User.Id = _commonProperties[TelemetryCommonProperties.MachineId];
 				_client.Context.Session.Id = CurrentSessionId;

@@ -521,7 +521,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						let sym = _metadataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
 						where sym != null
 						from attribute in sym.GetAllAttributes()
-						where Equals(attribute.AttributeClass, apiExtensionAttributeSymbol)
+						where SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, apiExtensionAttributeSymbol)
 						select attribute.ConstructorArguments;
 
 			foreach (var registration in query)
@@ -886,7 +886,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private bool IsDependencyObject(XamlObjectDefinition component)
-			=> GetType(component.Type).GetAllInterfaces().Any(i => Equals(i, _dependencyObjectSymbol));
+			=> GetType(component.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol));
 
 		private string BuildControlInitializerDeclaration(string className, XamlObjectDefinition topLevelControl)
 		{
@@ -1189,7 +1189,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var targetType = GetType(targetTypeName);
 					var implicitKey = GetImplicitDictionaryResourceKey(style);
-					if (Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
+					if (SymbolEqualityComparer.Default.Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
 					{
 						var isNativeStyle = style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string == "True";
 						writer.AppendLineInvariant("global::Windows.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1}, /*isNativeStyle:*/{2});",
@@ -1328,12 +1328,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Styles are handled differently for now, and there's no variable generated
 				// for those entries. Skip the ApplyCompiledBindings for those. See
 				// ImportResourceDictionary handling of x:Name for more details.
-				if (type.Equals(_styleSymbol))
+				if (SymbolEqualityComparer.Default.Equals(type, _styleSymbol))
 				{
 					return false;
 				}
 
-				if (type.AllInterfaces.Any(i => i.Equals(_dependencyObjectSymbol)))
+				if (type.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
 				{
 					return true;
 				}
@@ -1720,7 +1720,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsXamlTypeConverter(INamedTypeSymbol symbol)
 		{
-			return _xamlConversionTypes.Any(ns => ns.Equals(symbol));
+			return _xamlConversionTypes.Any(ns => SymbolEqualityComparer.Default.Equals(ns, symbol));
 		}
 
 		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol symbol, string memberValue, bool includeQuotations)
@@ -2029,7 +2029,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 											// Explicitly instantiate the collection and set it using the content property
 											if (implicitContentChild.Objects.Count == 1
-												&& Equals(contentProperty.Type, FindType(implicitContentChild.Objects[0].Type)))
+												&& SymbolEqualityComparer.Default.Equals(contentProperty.Type, FindType(implicitContentChild.Objects[0].Type)))
 											{
 												writer.AppendFormatInvariant(contentProperty.Name + " = ");
 												BuildChild(writer, implicitContentChild, implicitContentChild.Objects[0]);
@@ -3119,7 +3119,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			if (
-				Equals(FindType(objectDefinition.Type), _contentPresenterSymbol)
+				SymbolEqualityComparer.Default.Equals(FindType(objectDefinition.Type), _contentPresenterSymbol)
 				&& member.Member.Name == "Content"
 			)
 			{
@@ -3295,8 +3295,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					TryAnnotateWithGeneratorSource(writer, suffix: "HasBindingOptions");
 					var isAttachedProperty = IsDependencyProperty(member.Member);
-					var isBindingType = Equals(FindPropertyType(member.Member), _dataBindingSymbol);
-					var isOwnerDependencyObject = member.Owner != null ? GetType(member.Owner.Type).GetAllInterfaces().Any(i => Equals(i, _dependencyObjectSymbol)) : false;
+					var isBindingType = SymbolEqualityComparer.Default.Equals(FindPropertyType(member.Member), _dataBindingSymbol);
+					var isOwnerDependencyObject = member.Owner != null ? GetType(member.Owner.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)) : false;
 
 					var bindEvalFunction = bindNode != null ? BuildXBindEvalFunction(member, bindNode) : "";
 
@@ -4000,13 +4000,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.GetMethods()
 					.Any(m =>
 						m.Name == "op_Implicit"
-						&& m.Parameters.FirstOrDefault().SelectOrDefault(p => Equals(p.Type, _stringSymbol))
+						&& m.Parameters.FirstOrDefault().SelectOrDefault(p => SymbolEqualityComparer.Default.Equals(p.Type, _stringSymbol))
 					);
 
 				if (hasImplictToString
 
 					// Can be an object (e.g. in case of Binding.ConverterParameter).
-					|| Equals(propertyType, _objectSymbol)
+					|| SymbolEqualityComparer.Default.Equals(propertyType, _objectSymbol)
 				)
 				{
 					return "@\"" + memberValue.ToString() + "\"";
@@ -4523,7 +4523,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var firstElementType = GetType(first.Type);
 
-					return !Equals(collectionType, firstElementType);
+					return !SymbolEqualityComparer.Default.Equals(collectionType, firstElementType);
 				}
 			}
 
@@ -4537,8 +4537,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsLocalizablePropertyType(INamedTypeSymbol propertyType)
 		{
-			return Equals(propertyType, _stringSymbol)
-				|| Equals(propertyType, _objectSymbol);
+			return SymbolEqualityComparer.Default.Equals(propertyType, _stringSymbol)
+				|| SymbolEqualityComparer.Default.Equals(propertyType, _objectSymbol);
 		}
 
 		private string GetObjectUid(XamlObjectDefinition objectDefinition)
@@ -5160,7 +5160,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var q = from m in type.Constructors
 							where m.Parameters.Count() == 1
-							where Equals(m.Parameters.First().Type, _androidContentContextSymbol)
+							where SymbolEqualityComparer.Default.Equals(m.Parameters.First().Type, _androidContentContextSymbol)
 							select m;
 
 					var hasContextConstructor = q.Any();
