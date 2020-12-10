@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal bool m_isPositionedAtPoint;
 
-		protected internal Windows.UI.Xaml.Controls.Popup _popup;
+		protected internal Popup _popup;
 		private bool _isLightDismissEnabled = true;
 		private FlyoutShowOptions _showOptions;
 
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true);
 
 				var child = CreatePresenter();
-				_popup = new Windows.UI.Xaml.Controls.Popup()
+				_popup = new Popup()
 				{
 					Child = child,
 					IsLightDismissEnabled = _isLightDismissEnabled,
@@ -355,7 +355,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			flyout?.ShowAt(flyoutOwner);
 		}
 
-		internal static Rect CalculateAvailableWindowRect(bool isMenuFlyout, Controls.Popup popup, object placementTarget, bool hasTargetPosition, Point positionPoint, bool isFull)
+		internal static Rect CalculateAvailableWindowRect(bool isMenuFlyout, Popup popup, object placementTarget, bool hasTargetPosition, Point positionPoint, bool isFull)
 		{
 			// UNO TODO: UWP also uses values coming from the input pane and app bars, if any.
 			// Make sure of migrate to XamlRoot: https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.xamlroot
