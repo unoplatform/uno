@@ -406,6 +406,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(list.SelectedItems.Count, 0);
 		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task NoItemSelectedSingle()
@@ -443,6 +444,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 			Assert.AreEqual(list.SelectedIndex, -1);
+		}
+
+		[TestMethod]
+		public async Task When_IsItsOwnItemContainer_Recycling()
+		{
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var oldTwo = new ListViewItem() { Content = "item 2" };
+			var source = new ObservableCollection<ListViewItem> {
+				new ListViewItem(){ Content = "item 1" },
+				oldTwo,
+			};
+
+			SUT.ItemsSource = source;
+
+			SelectorItem si = null;
+			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
+
+			Assert.AreEqual("item 1", si.Content);
+			Assert.AreEqual(2, GetPanelChildren(SUT).Length);
+
+			source.RemoveAt(1);
+
+			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 1);
+
+			var newTwo = new ListViewItem { Content = "item 2" };
+			Assert.AreNotEqual(oldTwo, newTwo);
+
+			source.Add(newTwo);
+
+			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 2);
+			Assert.AreEqual(newTwo, GetPanelChildren(SUT).Last());
 		}
 
 		[TestMethod]
@@ -496,6 +536,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			ListViewItem lvi = null;
 			await WindowHelper.WaitFor(() => (lvi = page.SubjectListView.ContainerFromItem("One") as ListViewItem) != null);
+		}
+
+		private static ContentControl[] GetPanelChildren(ListViewBase list) {
+#if __ANDROID__ || __IOS__
+			return list.GetItemsPanelChildren().OfType<ContentControl>().ToArray();
+#else
+			return list.ItemsPanelRoot
+				.Children
+				.OfType<ContentControl>()
+				.Where(c => c.Visibility == Visibility.Visible) // Managed ItemsStackPanel currently uses the dirty trick of leaving reyclable items attached to panel and collapsed
+				.ToArray();
+#endif
 		}
 	}
 }
