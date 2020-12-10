@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Controls;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -227,7 +228,7 @@ namespace Windows.UI.Xaml
 				// to better match Windows behaviour
 				var content =
 					(e as ContentControl)?.Content as IFrameworkElement ??
-					(e as PopupBase)?.Child as IFrameworkElement;
+					(e as Controls.Primitives.Popup)?.Child as IFrameworkElement;
 
 				if (content != null)
 				{

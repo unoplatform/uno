@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	/// <summary>
 	/// This is a base popup panel to calculate the placement near an anchor control.

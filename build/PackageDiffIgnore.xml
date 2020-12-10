@@ -3294,9 +3294,12 @@
 
 	<IgnoreSet baseVersion="3.3.0">
 		<Properties>
-			<Member
-				fullName="System.Boolean Windows.UI.Core.CoreDispatcher::HasThreadAccessOverride()"
-				reason="Not part of the UWP API"/>
+		  <Member
+			  fullName="System.Boolean Windows.UI.Core.CoreDispatcher::HasThreadAccessOverride()"
+			  reason="Not part of the UWP API"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Popup::PopupPanelProperty()"
+			  reason="Unused member with incorrect visibility"/>
 		</Properties>
 		<Methods>
 			<Member
@@ -3332,6 +3335,49 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.DragItemsCompletedEventArgs..ctor()"
 				reason="Not part of the UWP API"/>
+
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.add_Closed(System.EventHandler`1&lt;System.Object&gt; value)"
+			  reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.remove_Closed(System.EventHandler`1&lt;System.Object&gt; value)"
+			  reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.add_Opened(System.EventHandler`1&lt;System.Object&gt; value)"
+			  reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.remove_Opened(System.EventHandler`1&lt;System.Object&gt; value))"
+			  reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
+
+		  <Member
+			  fullName="System.Boolean Windows.UI.Xaml.Controls.PopupBase.get_IsOpen()"
+			  reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
+		  <Member
+			  fullName=" System.Void Windows.UI.Xaml.Controls.PopupBase.set_IsOpen(System.Boolean value)"
+			  reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
+
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.set_Child(Windows.UI.Xaml.UIElement value)"
+			  reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
+		  <Member
+			  fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.Controls.PopupBase.get_Child()"
+			  reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
+
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnIsOpenChanged(System.Boolean oldIsOpen, System.Boolean newIsOpen)"
+			  reason="Invalid property api"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnChildChanged(Windows.UI.Xaml.UIElement oldChild, Windows.UI.Xaml.UIElement newChild)"
+			  reason="Invalid property api"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnIsLightDismissEnabledChanged(System.Boolean oldIsLightDismissEnabled, System.Boolean newIsLightDismissEnabled)"
+			  reason="Invalid property api"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnHorizontalOffsetChanged(System.Double oldHorizontalOffset, System.Double newHorizontalOffset)"
+			  reason="Invalid property api"/>
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnVerticalOffsetChanged(System.Double oldVerticalOffset, System.Double newVerticalOffset)"
+			  reason="Invalid property api"/>
 		</Methods>
 	</IgnoreSet>
 
