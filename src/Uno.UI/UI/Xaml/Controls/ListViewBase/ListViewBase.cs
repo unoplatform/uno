@@ -759,7 +759,11 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnItemsChanged(object e)
 		{
-			Refresh(); // Ensure item views are updated correctly if Items collection is manipulated
+
+			if (ItemsSource == null) // We're only interested when Items is modified directly, ie iff ItemsSource is not set
+			{
+				Refresh(); // Ensure item views are updated correctly if Items collection is manipulated 
+			}
 			base.OnItemsChanged(e);
 		}
 
