@@ -52,7 +52,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(item2);
 
-			Assert.AreEqual(item2, panel.Children.Last());
+			var children =
+#if __ANDROID__ || __IOS__ // ItemsStackPanel is just a Xaml facade on Android/iOS, its Children list isn't populated
+				list.GetItemsPanelChildren();
+#else
+				panel.Children;
+#endif
+			Assert.AreEqual(item2, children.Last());
 		}
 
 	}
