@@ -146,5 +146,21 @@ namespace Windows.UI.Xaml.Controls
 
 			_popoverSubscription.Disposable = null;
         }
+
+		public new UIKit.UIView Anchor
+		{
+			get => (UIKit.UIView)this.GetValue(AnchorProperty);
+			set => SetValue(AnchorProperty, value);
+		}
+
+		public static DependencyProperty AnchorProperty { get; } =
+			DependencyProperty.Register(
+				name: "Anchor",
+				propertyType: typeof(UIKit.UIView),
+				ownerType: typeof(Popover),
+				typeMetadata: new FrameworkPropertyMetadata(
+					defaultValue: (UIKit.UIView)null,
+					options: FrameworkPropertyMetadataOptions.None)
+			);
 	}
 }

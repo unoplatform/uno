@@ -18,6 +18,7 @@ using Windows.Globalization.DateTimeFormatting;
 using Windows.UI.Core;
 using Uno.Logging;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #if __IOS__
 using UIKit;
@@ -137,11 +138,11 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
-		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
+		public static IReadOnlyList<Controls.Primitives.Popup> GetOpenPopups(Window window)
 		{
 			return _openPopups
 				.Select(WeakReferenceExtensions.GetTarget)
-				.OfType<Popup>()
+				.OfType<Controls.Primitives.Popup>()
 				.ToList()
 				.AsReadOnly();
 		}

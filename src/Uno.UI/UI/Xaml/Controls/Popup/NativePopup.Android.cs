@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Android.Views;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	[ContentProperty(Name = "Child")]
 	public partial class NativePopup : PopupBase
