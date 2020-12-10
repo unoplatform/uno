@@ -16,9 +16,9 @@ using CoreGraphics;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public partial class PopupBase : FrameworkElement, IPopup
+	public partial class Popup : FrameworkElement, IPopup
 	{
 		private IDisposable _openPopupRegistration;
 		private bool _childHasOwnDataContext;
@@ -34,8 +34,11 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnUnloaded()
 		{
 			IsOpen = false;
+			OnUnloadedPartial();
 			base.OnUnloaded();
 		}
+
+		partial void OnUnloadedPartial();
 
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
@@ -167,6 +170,30 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsLightDismissEnabledChangedPartial(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
 		{
+		}
+
+		event EventHandler<object> IPopup.Closed
+		{
+			add => Closed += value;
+			remove => Closed -= value;
+		}
+
+		event EventHandler<object> IPopup.Opened
+		{
+			add => Opened += value;
+			remove => Opened -= value;
+		}
+
+		bool IPopup.IsOpen
+		{
+			get => IsOpen;
+			set => IsOpen = value;
+		}
+
+		UIElement IPopup.Child
+		{
+			get => Child;
+			set => Child = value;
 		}
 	}
 }

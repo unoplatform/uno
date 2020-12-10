@@ -8,7 +8,7 @@ using Windows.UI.Core;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	/// <summary>
 	/// This is a base popup panel to calculate the placement near an anchor control.
