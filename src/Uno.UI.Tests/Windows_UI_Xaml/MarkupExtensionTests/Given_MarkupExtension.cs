@@ -47,6 +47,47 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 				Thread.CurrentThread.CurrentCulture = currentCulture;
 			}
 		}
+
+		[TestMethod]
+		public void When_Multiple_Extensions_Same_Name()
+		{
+			var currentCulture = Thread.CurrentThread.CurrentCulture;
+			try
+			{
+				Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+				var app = UnitTestsApp.App.EnsureApplication();
+
+				var control = new Test_MarkupExtension();
+				app.HostView.Children.Add(control);
+
+				Assert.AreEqual("**BaseNamespaceShiny**", control.BaseShinyTextBlock.Text);
+				Assert.AreEqual("~~NestedNamespaceShiny~~", control.NestedShinyTextBlock.Text);
+			}
+			finally
+			{
+				Thread.CurrentThread.CurrentCulture = currentCulture;
+			}
+		}
+
+		[TestMethod]
+		public void When_Shortened_Name_Overlaps_Type()
+		{
+			var currentCulture = Thread.CurrentThread.CurrentCulture;
+			try
+			{
+				Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+				var app = UnitTestsApp.App.EnsureApplication();
+
+				var control = new Test_MarkupExtension();
+				app.HostView.Children.Add(control);
+
+				Assert.AreEqual("TextBlockExtension value", control.TextBlockExtensionTextBlock.Text);
+			}
+			finally
+			{
+				Thread.CurrentThread.CurrentCulture = currentCulture;
+			}
+		}
 	}
 
 	[MarkupExtensionReturnType(ReturnType = typeof(string))]
@@ -99,7 +140,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 
 		public object Value1 { get; set; }
 
-		public object Value2 { get; set; }
+		public int Value2 { get; set; }
 
 		protected override object ProvideValue()
 		{
@@ -117,6 +158,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 		}
 	}
 
+	public class ShinyExtension : MarkupExtension
+	{
+		public object Wrapped { get; set; }
+
+		protected override object ProvideValue() => $"**{Wrapped}**";
+	}
+
+	// This should not be mistaken for a TextBlock
+	public class TextBlockExtension : MarkupExtension
+	{
+		protected override object ProvideValue() => "TextBlockExtension value";
+	}
+
 	public enum Values
 	{
 		UseValue1,
@@ -128,5 +182,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 		public string StringProperty { get; set; } = string.Empty;
 
 		public int IntProperty { get; set; }
+	}
+}
+
+namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests.Nested
+{
+
+	public class ShinyExtension : MarkupExtension
+	{
+		public object Wrapped { get; set; }
+
+		protected override object ProvideValue() => $"~~{Wrapped}~~";
 	}
 }
