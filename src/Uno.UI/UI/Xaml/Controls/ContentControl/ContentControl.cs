@@ -430,7 +430,7 @@ namespace Windows.UI.Xaml.Controls
 					if (ContentTemplateRoot is IDependencyObjectStoreProvider provider)
 					{
 						_localContentDataContextOverride = true;
-						provider.Store.SetValue(provider.Store.DataContextProperty, Content, DependencyPropertyValuePrecedences.Local);
+						provider.Store.SetValue(provider.Store.DataContextProperty, Content, DependencyPropertyValuePrecedences.Inheritance);
 					}
 				}
 			}
