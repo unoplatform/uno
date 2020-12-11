@@ -757,6 +757,16 @@ namespace Windows.UI.Xaml.Controls
 			return false;
 		}
 
+		protected override void OnItemsChanged(object e)
+		{
+
+			if (ItemsSource == null) // We're only interested when Items is modified directly, ie iff ItemsSource is not set
+			{
+				Refresh(); // Ensure item views are updated correctly if Items collection is manipulated 
+			}
+			base.OnItemsChanged(e);
+		}
+
 		/// <summary>
 		/// Try to fetch more items, if the ItemsSource supports <see cref="ISupportIncrementalLoading"/>.
 		/// </summary>
