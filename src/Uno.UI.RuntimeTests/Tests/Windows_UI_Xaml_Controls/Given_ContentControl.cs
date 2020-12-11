@@ -14,6 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public partial class Given_ContentControl
 	{
+#if !WINDOWS_UWP // Cannot create a DataTemplate on UWP
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Binding_Within_Control_Template()
@@ -51,5 +52,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public SignInViewModel SignIn { get; set; } = new SignInViewModel();
 		}
+#endif
 	}
 }
