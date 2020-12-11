@@ -12,7 +12,7 @@ namespace Uno.UI.Controls
 	{
 		internal static void SetNavigationBar(CommandBar commandBar, UIKit.UINavigationBar navigationBar)
 		{
-			commandBar.GetRenderer(() => new CommandBarRenderer(commandBar)).Native = navigationBar ?? throw new ArgumentNullException(nameof(navigationBar));
+			commandBar.GetRenderer(() => new CommandBarRenderer(commandBar)).Native = navigationBar;
 		}
 
 		internal static void SetNavigationItem(CommandBar commandBar, UIKit.UINavigationItem? navigationItem)
