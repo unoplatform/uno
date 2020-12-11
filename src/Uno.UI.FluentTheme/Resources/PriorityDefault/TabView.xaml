@@ -379,6 +379,8 @@
 
     <Style TargetType="local:TabViewItem">
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <!-- TODO: Uno specific: This is a temporary workaround for TabView items stretching vertically
+		Can be removed when #1133 is fixed.-->
 		<ios:Setter Property="MinHeight" Value="32"/>
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="Template">
