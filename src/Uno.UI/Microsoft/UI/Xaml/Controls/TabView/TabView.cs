@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI.Helpers.WinUI;
@@ -1029,23 +1030,29 @@ namespace Microsoft.UI.Xaml.Controls
 							{
 								tabColumn.Width = GridLengthHelper.FromPixels(availableWidth);
 								var listview = m_listView;
+								var tabListView = m_listView as TabViewListView;
 								if (listview != null)
 								{
-									ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Visible);
+									// TODO: Uno specific: Apply visibility directly to scroll viewer
+									// until attached property template binding is supported (issue #4259)
+									tabListView?.SetHorizontalScrollBarVisibility(ScrollBarVisibility.Visible);
 									UpdateScrollViewerDecreaseAndIncreaseButtonsViewState();
 								}
 							}
 							else
 							{
-								//TODO: Uno specific workaround - ListView stretches to full available width, even when it does not require it
-								//tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
+								// TODO: Uno specific workaround - ListView stretches to full available width, even when it does not require it
+								// tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
 								tabColumn.Width = GridLengthHelper.FromPixels(requiredWidth);
 								var listview = m_listView;
+								var tabListView = m_listView as TabViewListView;
 								if (listview != null)
 								{
 									if (shouldUpdateWidths && fillAllAvailableSpace)
 									{
-										ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Hidden);
+										// TODO: Uno specific: Apply visibility directly to scroll viewer
+										// until attached property template binding is supported (issue #4259)
+										tabListView?.SetHorizontalScrollBarVisibility(ScrollBarVisibility.Hidden);
 									}
 									else
 									{
@@ -1069,6 +1076,7 @@ namespace Microsoft.UI.Xaml.Controls
 							tabColumn.MaxWidth = availableWidth;
 							tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
 							var listview = m_listView;
+							var tabListView = m_listView as TabViewListView;
 							if (listview != null)
 							{
 								listview.MaxWidth = availableWidth;
@@ -1078,7 +1086,9 @@ namespace Microsoft.UI.Xaml.Controls
 								if (itemsPresenter != null)
 								{
 									var visible = itemsPresenter.ActualWidth > availableWidth;
-									ScrollViewer.SetHorizontalScrollBarVisibility(listview, visible
+									// TODO: Uno specific: Apply visibility directly to scroll viewer
+									// until attached property template binding is supported (issue #4259)
+									tabListView?.SetHorizontalScrollBarVisibility(visible
 										? ScrollBarVisibility.Visible
 										: ScrollBarVisibility.Hidden);
 									if (visible)
