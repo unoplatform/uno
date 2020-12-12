@@ -4688,6 +4688,10 @@ namespace Microsoft.UI.Xaml.Controls
 			if (paneHeaderContentBorderRow != null)
 			{
 				paneHeaderContentBorderRow.MinHeight = paneHeaderContentBorderRowMinHeight;
+
+#if IS_UNO
+				SetHeaderContentMinHeight(paneHeaderContentBorderRowMinHeight);
+#endif
 			}
 
 			var paneContentGridAsUIE = m_paneContentGrid;
@@ -5799,6 +5803,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnRepeaterUnoBeforeElementPrepared(ItemsRepeater itemsRepeater, ItemsRepeaterElementPreparedEventArgs args) =>
 			OnRepeaterElementPrepared(itemsRepeater, args);
+
+		//TODO: Uno specific - remove when #4727 is fixed
+
+		private Grid m_paneHeaderContentBorderWrapper;
+
+		private void SetHeaderContentMinHeight(double minHeight)
+		{
+			m_paneHeaderContentBorderWrapper ??= GetTemplateChild("PaneHeaderContentBorderWrapper") as Grid;
+			if (m_paneHeaderContentBorderWrapper != null)
+			{
+				m_paneHeaderContentBorderWrapper.MinHeight = minHeight;
+			}
+		}
 
 		#endregion
 	}

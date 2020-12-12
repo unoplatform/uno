@@ -345,8 +345,9 @@
                                         <Grid x:Name="ContentPaneTopPadding"
                                               Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.TopPadding}"/>
 
-                                        <Grid Grid.Row="2">
-                                            <Grid.RowDefinitions>
+										<Grid Grid.Row="2" x:Name="PaneHeaderContentBorderWrapper" MinHeight="{StaticResource NavigationViewPaneHeaderRowMinHeight}">
+											<!-- TODO: Uno specific: MinHeight and x:Name used here as RowDefinifiont.MinHeight does not work (issue #4727)-->
+											<Grid.RowDefinitions>
                                                 <RowDefinition x:Name="PaneHeaderContentBorderRow"/>
                                             </Grid.RowDefinitions>
 

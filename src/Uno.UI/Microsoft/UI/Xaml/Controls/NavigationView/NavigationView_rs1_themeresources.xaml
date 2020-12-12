@@ -369,6 +369,7 @@
                             <TextBlock
                                 x:Name="Icon"
                                 Text="&#xE700;"
+								FontFamily="{StaticResource SymbolThemeFontFamily}"
                                 FontSize="{TemplateBinding FontSize}"
                                 AutomationProperties.AccessibilityView="Raw"/>
 
