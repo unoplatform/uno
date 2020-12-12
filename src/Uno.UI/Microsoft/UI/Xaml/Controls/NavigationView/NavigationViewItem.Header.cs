@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml.Controls.Primitives;
+﻿// MUX reference NavigationViewItem.h, commit 4fe1fd5
+
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml;

@@ -15,8 +15,6 @@
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TeachingTip.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TeachingTip_themeresources.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\NavigationView.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\NavigationView_themeresources.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ProgressRing.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ScrollViewer.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ScrollViewer_themeresources.xaml" />

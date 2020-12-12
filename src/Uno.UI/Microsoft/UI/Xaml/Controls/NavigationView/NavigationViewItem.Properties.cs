@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// MUX reference NavigationViewItem.properties.cpp, commit 8f1a682
+
+using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 

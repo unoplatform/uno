@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿// MUX reference NavigationViewItemBase.properties.cpp, commit de78834
+
+using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {

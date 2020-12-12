@@ -1,4 +1,6 @@
-﻿using System;
+﻿// MUX Reference NavigationView.cpp, commit 426e54f
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Numerics;
@@ -21,8 +23,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
-
-//TODO: Ensure Append is not used instead of Add accidentally
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -94,7 +94,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private int itemNotFound = -1;
 
-		// TODO: MZ: PositiveInfinity or MaxValue?
 		private static Size c_infSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
 		~NavigationView()
@@ -1177,6 +1176,11 @@ namespace Microsoft.UI.Xaml.Controls
 			while (!IsRootItemsRepeater(parentIR))
 			{
 				currentNvib = GetParentNavigationViewItemForContainer(currentNvib);
+				if (currentNvib == null)
+				{
+					return null;
+				}
+
 				parentIR = GetParentItemsRepeaterForContainer(currentNvib);
 			}
 			return parentIR;

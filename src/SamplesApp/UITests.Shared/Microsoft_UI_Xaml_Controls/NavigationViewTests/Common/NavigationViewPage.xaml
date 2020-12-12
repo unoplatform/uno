@@ -1,4 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!-- MUX reference NavigationViewPage.xaml, commit 426e54f -->
 <local:TestPage
     x:Class="MUXControlsTestApp.NavigationViewPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -322,11 +323,11 @@ Nullam egestas, orci sed molestie aliquet, diam ex euismod risus, ac dapibus qua
 
             <muxcontrols:NavigationView.PaneFooter>
                 <StackPanel Background="Plum">
-                    <Button x:Name="PaneFooterButton" AutomationProperties.Name="PaneFooterButton" Content="PaneFooter Button" Margin="5"/>
-                    <muxcontrols:NavigationViewItem x:Name="PaneFooterNavigationViewItem"
+					<Button x:Name="PaneFooterButton" AutomationProperties.Name="PaneFooterButton" Content="PaneFooter Button" Margin="5"/>
+					<muxcontrols:NavigationViewItem x:Name="PaneFooterNavigationViewItem"
                                                     AutomationProperties.Name="PaneFooterNavigationViewItem"
-                                                    Content="NVI" /> 
-                </StackPanel>
+                                                    Content="NVI" />
+				</StackPanel>
             </muxcontrols:NavigationView.PaneFooter>
         </muxcontrols:NavigationView>
     </Grid>

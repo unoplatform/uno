@@ -1,4 +1,6 @@
-﻿#nullable enable
+﻿// MUX reference NavigationViewItemCollapsedEventArgs.cpp, commit 5ebf958
+
+#nullable enable
 
 namespace Microsoft.UI.Xaml.Controls
 {

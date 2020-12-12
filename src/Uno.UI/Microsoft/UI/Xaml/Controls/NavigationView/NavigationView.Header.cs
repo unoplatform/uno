@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// MUX reference NavigationView.h, commit acf949a
+
+using System.Collections.Generic;
 using Uno.Disposables;
 using Windows.ApplicationModel.Core;
 using Windows.UI.ViewManagement;

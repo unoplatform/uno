@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿// MUX reference NavigationViewItemHeader.cpp, commit de78834
+
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 
@@ -8,8 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private Grid m_rootGrid = null;
 		private bool m_isClosedCompact = false;
-		private long m_splitViewIsPaneOpenChangedRevoker;
-		private long m_splitViewDisplayModeChangedRevoker;
 		private const string c_rootGrid = "NavigationViewItemHeaderRootGrid";
 
 		public NavigationViewItemHeader()
@@ -29,11 +29,11 @@ namespace Microsoft.UI.Xaml.Controls
 			var splitView = GetSplitView();
 			if (splitView != null)
 			{
-				//TODO: MZ: Unsubscribe?
-				m_splitViewIsPaneOpenChangedRevoker = splitView.RegisterPropertyChangedCallback(
+				//TODO: MZ: Probably should be unsubscribed
+				splitView.RegisterPropertyChangedCallback(
 					SplitView.IsPaneOpenProperty,
 					OnSplitViewPropertyChanged);
-				m_splitViewDisplayModeChangedRevoker = splitView.RegisterPropertyChangedCallback(
+				splitView.RegisterPropertyChangedCallback(
 					SplitView.DisplayModeProperty,
 					OnSplitViewPropertyChanged);
 
@@ -51,6 +51,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var visual = ElementCompositionPreview.GetElementVisual(this);
 			NavigationView.CreateAndAttachHeaderAnimation(visual);
+
+			_fullyInitialized = true;
 		}
 
 		private void OnSplitViewPropertyChanged(DependencyObject sender, DependencyProperty args)
@@ -73,7 +75,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO: can new cause issues?
 		private new void UpdateVisualState(bool useTransitions)
 		{
 			VisualStateManager.GoToState(this, m_isClosedCompact && IsTopLevelItem ? "HeaderTextCollapsed" : "HeaderTextVisible", useTransitions);

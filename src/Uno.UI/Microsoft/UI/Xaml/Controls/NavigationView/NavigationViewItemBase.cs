@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿// MUX reference NavigationViewItemBase.cpp, commit f3da94f 
+
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
@@ -26,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// TODO: MZ Uno specific: existing Depth property inherited from base class
 		internal
-#if !__ANDROID__ && !__IOS__
+#if __NETSTD_REFERENCE__ || __SKIA__ || __WASM__
 			new
 #endif
 			int Depth
@@ -69,9 +71,14 @@ namespace Microsoft.UI.Xaml.Controls
 #if IS_UNO
 		// TODO: Uno specific: Remove when #4689 is fixed
 
+		protected bool _fullyInitialized = false;
+
 		internal void Reinitialize()
 		{
-			OnApplyTemplate();
+			if (!_fullyInitialized)
+			{
+				OnApplyTemplate();
+			}
 		}
 #endif
 	}

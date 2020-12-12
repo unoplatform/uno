@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿// MUX reference NavigationViewDisplayModeChangedEventArgs.cpp, commit 838a0cc
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Provides data for the NavigationView.DisplayModeChanged event.

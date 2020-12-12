@@ -1,7 +1,9 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿// MUX reference NavigationViewItemBase.h, commit c2d4b16
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NavigationViewItemBase
-    {
+	{
 		protected virtual void OnNavigationViewItemBasePositionChanged()
 		{
 		}

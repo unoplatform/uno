@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿// MUX reference NavigationViewHelper.h, commit 2ec9b1c
+
+using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -19,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 		TopFooter
 	}
 
-	public enum NavigationViewPropagateTarget
+	internal enum NavigationViewPropagateTarget
 	{
 		LeftListView,
 		TopListView,

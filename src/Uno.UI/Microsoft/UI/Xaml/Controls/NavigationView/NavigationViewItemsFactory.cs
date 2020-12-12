@@ -1,4 +1,6 @@
-﻿using System;
+﻿// MUX Reference NavigationViewItemPresenter.cpp, commit 5e503fa
+
+using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
