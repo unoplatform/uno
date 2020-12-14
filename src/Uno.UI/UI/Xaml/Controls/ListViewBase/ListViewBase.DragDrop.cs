@@ -105,7 +105,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (ItemsControlFromItemContainer(sender) is ListViewBase that && that.CanDragItems)
 			{
-				var items = that.SelectedItems.ToList();
+				var items = that.SelectionMode == ListViewSelectionMode.Multiple || that.SelectionMode == ListViewSelectionMode.Extended
+					? that.SelectedItems.ToList()
+					: new List<object>();
 				var draggedItem = that.ItemFromContainer(sender);
 				if (draggedItem is { } && !items.Contains(draggedItem))
 				{
@@ -267,7 +269,17 @@ namespace Windows.UI.Xaml.Controls
 						continue; // Item removed or already at the right place, nothing to do.
 					}
 
+					var restoreSelection = that.SelectedIndex == oldIndex;
+
 					mv(oldIndex, newIndex);
+
+					if (restoreSelection)
+					{
+						// This is a workaround for https://github.com/unoplatform/uno/issues/4741
+						container.SetValue(IndexForItemContainerProperty, newIndex);
+
+						that.SelectedIndex = newIndex;
+					}
 
 					if (oldIndex > newIndex)
 					{
