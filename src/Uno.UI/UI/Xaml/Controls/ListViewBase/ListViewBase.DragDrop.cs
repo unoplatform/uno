@@ -80,6 +80,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void PrepareContainerForDragDropCore(UIElement itemContainer)
 		{
+			if (itemContainer is null) // Even if flagged as impossible by nullable check, https://github.com/unoplatform/uno/issues/4725
+			{
+				return;
+			}
+
 			// Known issue: the ContainerClearedForItem might not be invoked properly for all items on some platforms.
 			// This patch is acceptable as event handlers are static (so they won't leak).
 			itemContainer.DragStarting -= OnItemContainerDragStarting;
@@ -92,6 +97,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void ClearContainerForDragDrop(UIElement itemContainer)
 		{
+			if (itemContainer is null) // Even if flagged as impossible by nullable check, https://github.com/unoplatform/uno/issues/4725
+			{
+				return;
+			}
+
 			itemContainer.DragStarting -= OnItemContainerDragStarting;
 			itemContainer.DropCompleted -= OnItemContainerDragCompleted;
 
