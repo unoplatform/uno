@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// The path defined by <see cref="SelectedValuePath"/>, if it is set, otherwise null. This may be reused multiple times for
 		/// checking <see cref="SelectedValue"/> candidates.
 		/// </summary>
-		private BindingPath _path;
+		private BindingPath _selectedValueBindingPath;
 		private bool _disableRaiseSelectionChanged;
 
 		/// <summary>
@@ -165,21 +165,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (SelectedValuePath.HasValue())
 			{
-				if (_path?.Path != SelectedValuePath)
+				if (_selectedValueBindingPath?.Path != SelectedValuePath)
 				{
-					_path = new Uno.UI.DataBinding.BindingPath(SelectedValuePath, null);
+					_selectedValueBindingPath = new Uno.UI.DataBinding.BindingPath(SelectedValuePath, null);
 				}
 			}
 			else
 			{
-				_path = null;
+				_selectedValueBindingPath = null;
 			}
 
 
-			if (_path != null)
+			if (_selectedValueBindingPath != null)
 			{
-				_path.DataContext = SelectedItem;
-				SelectedValue = _path.Value;
+				_selectedValueBindingPath.DataContext = SelectedItem;
+				SelectedValue = _selectedValueBindingPath.Value;
 			}
 			else
 			{
@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private static object SelectedValueCoerce(DependencyObject snd, object baseValue)
 		{
 			var selector = (Selector)snd;
-			if (selector?._path != null)
+			if (selector?._selectedValueBindingPath != null)
 			{
 				return baseValue; // Setting the SelectedValue won't update the index when a _path is used.
 			}
@@ -546,13 +546,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// Returns the selected value of an item using a path.
 		object GetSelectedValue(object pItem)
 		{
-			if (_path == null || pItem == null)
+			if (_selectedValueBindingPath == null || pItem == null)
 			{
 				return pItem;
 			}
 
-			_path.DataContext = pItem;
-			return _path.Value;
+			_selectedValueBindingPath.DataContext = pItem;
+			return _selectedValueBindingPath.Value;
 		}
 
 		private protected override void Refresh()
