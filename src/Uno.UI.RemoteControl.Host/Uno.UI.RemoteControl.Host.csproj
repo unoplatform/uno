@@ -18,7 +18,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="System.Reactive" Version="5.0.0" />
 		<PackageReference Include="Unity" Version="5.11.9" />
-		<PackageReference Include="Uno.Core" Version="2.0.0" />
+		<PackageReference Include="Uno.Core" Version="2.1.0" />
 	</ItemGroup>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
