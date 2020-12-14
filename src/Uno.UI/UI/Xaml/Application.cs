@@ -10,6 +10,7 @@ using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel;
 using Uno.Helpers.Theming;
 using Windows.UI.ViewManagement;
+using Uno.Extensions;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -42,8 +43,8 @@ namespace Windows.UI.Xaml
 	{
 		private bool _initializationComplete = false;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private ApplicationTheme? _requestedTheme;
 		private bool _themeSetExplicitly = false;
+		private ApplicationTheme? _requestedTheme;
 		private bool _systemThemeChangesObserved = false;
 
 		static Application()
@@ -74,12 +75,12 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				if (_requestedTheme == null)
+				if (InternalRequestedTheme == null)
 				{
 					// just cache the theme, but do not notify about a change unnecessarily	
-					_requestedTheme = GetDefaultSystemTheme();
+					InternalRequestedTheme = GetDefaultSystemTheme();
 				}
-				return _requestedTheme.Value;
+				return InternalRequestedTheme.Value;
 			}
 			set
 			{
@@ -90,6 +91,30 @@ namespace Windows.UI.Xaml
 				SetExplicitRequestedTheme(value);
 			}
 		}
+
+		private ApplicationTheme? InternalRequestedTheme
+		{
+			get => _requestedTheme;
+			set
+			{
+				_requestedTheme = value;
+				UpdateRequestedThemesForResources();
+			}
+		}
+
+		internal static void UpdateRequestedThemesForResources()
+		{
+			Current.RequestedThemeForResources =
+				(ApplicationHelper.RequestedCustomTheme, Current.RequestedTheme) switch
+				{
+					(var custom, _) when !custom.IsNullOrEmpty() => custom,
+					(_, ApplicationTheme.Light) => "Light",
+					(_, ApplicationTheme.Dark) => "Dark",
+					_ => throw new InvalidOperationException($"Theme {Application.Current.RequestedTheme} is not valid"),
+				};
+		}
+
+		internal string RequestedThemeForResources { get; private set; }
 
 		internal ElementTheme ActualElementTheme => (_themeSetExplicitly, RequestedTheme) switch
 		{
@@ -212,9 +237,9 @@ namespace Windows.UI.Xaml
 
 		private void SetRequestedTheme(ApplicationTheme requestedTheme)
 		{
-			if (requestedTheme != _requestedTheme)
+			if (requestedTheme != InternalRequestedTheme)
 			{
-				_requestedTheme = requestedTheme;
+				InternalRequestedTheme = requestedTheme;
 
 				OnRequestedThemeChanged();
 			}

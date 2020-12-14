@@ -100,6 +100,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, activeControls);
 		}
 
+		[TestMethod]
+		public void When_Control_Loaded_Then_HardReferences()
+		{
+			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
+			{
+				var root = new Grid();
+				var SUT = new Grid();
+				root.Children.Add(SUT);
+
+				Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+				Assert.IsNotNull(SUT.GetParent());
+
+				TestServices.WindowHelper.WindowContent = root;
+
+				Assert.IsTrue((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+				Assert.IsNotNull(SUT.GetParent());
+
+				root.Children.Clear();
+				Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+				Assert.IsNull(SUT.GetParent());
+			}
+		}
+
 		private class Holder
 		{
 			private readonly Action<int> _update;

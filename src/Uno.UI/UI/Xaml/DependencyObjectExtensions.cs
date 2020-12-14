@@ -64,6 +64,35 @@ namespace Windows.UI.Xaml
 			return GetStore(dependencyObject).Parent;
 		}
 
+		/// <summary>
+		/// Gets the parent dependency object, if any.
+		/// </summary>
+		/// <param name="dependencyObject"></param>
+		/// <returns></returns>
+		internal static object GetParent(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.Parent;
+
+		/// <summary>
+		/// Enables the use of hard references for internal variables to improve the performance
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
+		internal static void StoreTryEnableHardReferences(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.TryEnableHardReferences();
+
+		/// <summary>
+		/// Disables the use of hard references for internal variables to improve the performance
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
+		internal static void StoreDisableHardReferences(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.DisableHardReferences();
+
+		/// <summary>
+		/// Gets the implicit style for the current object
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
+		internal static Style StoreGetImplicitStyle(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.GetImplicitStyle();
+
 		internal static IEnumerable<object> GetParents(this object dependencyObject)
 		{
 			var parent = dependencyObject.GetParent();

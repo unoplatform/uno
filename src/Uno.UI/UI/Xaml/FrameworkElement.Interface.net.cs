@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void Initialize();
+		partial void OnUnloadedPartial();
 
 		public FrameworkElement()
 		{
@@ -49,6 +50,7 @@ namespace Windows.UI.Xaml
 		private protected virtual void OnUnloaded()
 		{
 			Unloaded?.Invoke(this, new RoutedEventArgs(this));
+			OnUnloadedPartial();
 		}
 
 		public event RoutedEventHandler Loaded;
