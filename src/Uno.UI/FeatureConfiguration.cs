@@ -113,6 +113,27 @@ namespace Uno.UI
 			public static bool UseLegacyTemplateSelectorOverload { get; set; } = false;
 		}
 
+
+		public static class DependencyObject
+		{
+			/// <summary>
+			/// When set to true, the <see cref="DependencyObjectStore"/> will create hard references
+			/// instead of weak references for some highly used fields, in common cases to improve the
+			/// overall performance.
+			/// </summary>
+			/// <remarks>
+			/// This feature is disabled on WebAssembly as it reveals or creates a memory corruption issue
+			/// in the garbage collector. This can be revisited when upgrading tests to .NET 5+.
+			/// See https://github.com/unoplatform/uno/issues/4730 for details.
+			/// </remarks>
+			public static bool IsStoreHardReferenceEnabled { get; set; }
+#if __WASM__
+				= false;
+#else
+				= true;
+#endif
+		}
+
 		public static class Font
 		{
 			/// <summary>

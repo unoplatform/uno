@@ -452,33 +452,7 @@ namespace Windows.UI.Xaml
 		private static class Themes
 		{
 			public const string Default = "Default";
-			public static string Active
-			{
-				get
-				{
-					if (Application.Current == null)
-					{
-						return "Light";
-					}
-
-					var custom = ApplicationHelper.RequestedCustomTheme;
-
-					if (!custom.IsNullOrEmpty())
-					{
-						return custom;
-					}
-
-					switch (Application.Current.RequestedTheme)
-					{
-						case ApplicationTheme.Light:
-							return "Light";
-						case ApplicationTheme.Dark:
-							return "Dark";
-						default:
-							throw new InvalidOperationException($"Theme {Application.Current.RequestedTheme} is not valid");
-					}
-				}
-			}
+			public static string Active => Application.Current?.RequestedThemeForResources ?? "Light";
 		}
 	}
 }

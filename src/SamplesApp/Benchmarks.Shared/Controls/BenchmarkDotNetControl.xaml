@@ -25,14 +25,22 @@
 				<TextBlock x:Name="runStatus"
 						   Text="Not initialized" />
 			</StackPanel>
-			<ScrollViewer Grid.Row="1"
-						  Background="Black"
-						  Padding="12">
+			<Grid Grid.Row="1">
+			  <Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			  </Grid.ColumnDefinitions>
+			  <ScrollViewer Grid.Column="0"
+							Background="Black"
+							Padding="12">
 				<TextBlock x:Name="runLogs"
+						   Grid.Column="1"
 						   FontFamily="Courier New"
 						   FontSize="12"
 						   IsTextSelectionEnabled="True" />
-			</ScrollViewer>
+			  </ScrollViewer>
+			  <ContentControl x:Name="testHost" />
+			</Grid>
 		</Grid>
 	</Grid>
 </UserControl>

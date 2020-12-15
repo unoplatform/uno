@@ -285,8 +285,15 @@ namespace Windows.UI.Xaml
 
 		partial void OnLoadingPartial()
 		{
+			this.StoreTryEnableHardReferences();
+
 			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
 			ApplyStyles();
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			this.StoreDisableHardReferences();
 		}
 
 		private protected void ApplyStyles()
@@ -376,7 +383,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private Style ResolveImplicitStyle() => (this as IDependencyObjectStoreProvider).Store.GetImplicitStyle();
+		private Style ResolveImplicitStyle() => this.StoreGetImplicitStyle();
 
 		#region Requested theme dependency property
 

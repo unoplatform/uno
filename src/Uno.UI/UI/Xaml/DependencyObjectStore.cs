@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml
 	{
 		public static class TraceProvider
 		{
-			public static readonly Guid Id = Guid.Parse("{430FC851-E917-4587-AF7B-5A1CE5A1941D}");
+			public static readonly Guid Id = new Guid(0x430FC851, 0xE917, 0x4587, 0xAF, 0x7B, 0x5A, 0x1C, 0xE5, 0xA1, 0x94, 0x1D);
 			public const int GetValue = 1;
 			public const int SetValueStart = 2;
 			public const int SetValueStop = 3;
@@ -80,6 +80,7 @@ namespace Windows.UI.Xaml
 		private ImmutableList<ParentChangedCallback> _parentChangedCallbacks = ImmutableList<ParentChangedCallback>.Empty;
 
 		private readonly ManagedWeakReference _originalObjectRef;
+		private DependencyObject? _hardOriginalObjectRef;
 
 		/// <summary>
 		/// This field is used to pass a reference to itself in the case
@@ -91,6 +92,7 @@ namespace Windows.UI.Xaml
 		private readonly Type _originalObjectType;
 		private readonly SerialDisposable _inheritedProperties = new SerialDisposable();
 		private ManagedWeakReference? _parentRef;
+		private object? _hardParentRef;
 		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
 		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
 
@@ -111,7 +113,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public object? Parent
 		{
-			get => _parentRef?.Target;
+			get => _hardParentRef ?? _parentRef?.Target;
 			set
 			{
 				if (
@@ -119,6 +121,8 @@ namespace Windows.UI.Xaml
 					|| (_parentRef != null && value is null)
 				)
 				{
+					DisableHardReferences();
+
 					var previousParent = _parentRef?.Target;
 
 					if (_parentRef != null)
@@ -1168,17 +1172,35 @@ namespace Windows.UI.Xaml
 			{
 				yield return containingDictionary;
 			}
+
 			var candidate = ActualInstance;
+			var candidateFE = candidate as FrameworkElement;
+
 			while (candidate != null)
 			{
-				if (candidate is FrameworkElement fe)
+				var parent = candidate.GetParent() as DependencyObject;
+
+				if (candidateFE != null)
 				{
-					yield return fe.Resources;
+					yield return candidateFE.Resources;
+
+					if (parent is FrameworkElement fe)
+					{
+						// If the parent is a framework element, cast only once and assign
+						// the result to both variables.
+						candidate = candidateFE = fe;
+					}
+					else
+					{
+						candidate = parent;
+					}
 				}
-
-				candidate = candidate.GetParent() as DependencyObject;
+				else
+				{
+					candidateFE = parent as FrameworkElement;
+					candidate = parent;
+				}
 			}
-
 			if (includeAppResources && Application.Current != null)
 			{
 				// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
@@ -1364,7 +1386,7 @@ namespace Windows.UI.Xaml
 		}
 
 		public DependencyObject? ActualInstance
-			=> _originalObjectRef.Target as DependencyObject;
+			=> _hardOriginalObjectRef ?? _originalObjectRef.Target as DependencyObject;
 
 		/// <summary>
 		/// Creates a weak delegate for the specified PropertyChangedCallback callback.
@@ -1656,6 +1678,40 @@ namespace Windows.UI.Xaml
 		internal IEnumerable<ResourceBinding> GetResourceBindingsForProperty(DependencyProperty dependencyProperty)
 			=> _resourceBindings?.GetBindingsForProperty(dependencyProperty)
 				?? Enumerable.Empty<ResourceBinding>();
+
+		/// <summary>
+		/// Enables hard references for internal fields for faster access
+		/// </summary>
+		/// <remarks>
+		/// Calling this method may cause memory leaks and must be used along with <see cref="DisableHardReferences"/>.
+		/// The use case is for FrameworkElement instances that can be Loaded and Unloaded, and for which the Unloaded
+		/// state is ensured to happen in such a way that memory leaks cannot happen.
+		/// </remarks>
+		internal void TryEnableHardReferences()
+		{
+			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
+			{
+				_hardParentRef = Parent;
+				_hardOriginalObjectRef = ActualInstance;
+			}
+		}
+
+		/// <summary>
+		/// Disables hard references for internal fields created by <see cref="EnableHardReferences"/>
+		/// </summary>
+		internal void DisableHardReferences()
+		{
+			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
+			{
+				_hardParentRef = null;
+				_hardOriginalObjectRef = null;
+			}
+		}
+
+		/// <summary>
+		/// Determines if <see cref="EnableHardReferences"/> has been called
+		/// </summary>
+		internal bool AreHardReferencesEnabled => _hardParentRef != null;
 
 		private class DependencyPropertyPath : IEquatable<DependencyPropertyPath?>
 		{

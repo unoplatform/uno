@@ -30,6 +30,8 @@ namespace Uno.UI
 						Application.Current.RequestedTheme = ApplicationTheme.Light;
 					}
 				}
+
+				Application.UpdateRequestedThemesForResources();
 			}
 		}
 	}
