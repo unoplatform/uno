@@ -549,5 +549,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.ToArray();
 #endif
 		}
+
+		[TestMethod]
+		public void When_Selection_SelectedValuePath_Set()
+		{
+			var SUT = new ListView();
+			var source = new Dictionary<int, string>
+			{
+				{0, "Zero" },
+				{1, "One" },
+				{2, "Two" }
+			};
+			SUT.ItemsSource = source;
+			SUT.SelectedValuePath = "Key";
+
+			Assert.AreEqual(null, SUT.SelectedValue);
+			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedValue = 1;
+
+			var item1 = source.First(kvp => kvp.Key == 1);
+			Assert.AreEqual(1, SUT.SelectedValue);
+			Assert.AreEqual(item1, SUT.SelectedItem);
+			Assert.AreEqual(1, SUT.SelectedIndex);
+
+			// Set invalid
+			SUT.SelectedValue = 4;
+
+			Assert.AreEqual(null, SUT.SelectedValue);
+			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+		}
+
+		[TestMethod]
+		public void When_Selection_SelectedValue_Path_Not_Set()
+		{
+			var SUT = new ListView();
+			var source = new List<string>
+			{
+				"Zero",
+				"One",
+				"Two",
+			};
+			SUT.ItemsSource = source;
+
+			Assert.AreEqual(null, SUT.SelectedValue);
+			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedValue = "Two";
+
+			Assert.AreEqual("Two", SUT.SelectedValue);
+			Assert.AreEqual("Two", SUT.SelectedItem);
+			Assert.AreEqual(2, SUT.SelectedIndex);
+
+			SUT.SelectedValue = "Eleventy";
+
+			Assert.AreEqual(null, SUT.SelectedValue);
+			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+		}
 	}
 }
