@@ -21,6 +21,11 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, Uno.UI.IndexPath nextVisibleItem)
 		{
+			if (ShouldInsertReorderingView(extentOffset))
+			{
+				nextVisibleItem = GetReorderingIndex().Value;
+			}
+
 			var item = GetFlatItemIndex(nextVisibleItem);
 			var view = Generator.DequeueViewForItem(item);
 
