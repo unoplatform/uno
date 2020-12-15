@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public class NavigationViewItemAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider
+	public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider
 	{
 		private enum AutomationOutput
 		{

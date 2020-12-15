@@ -4,6 +4,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public  partial class NavigationViewDisplayModeChangedEventArgs 
 	{
-		public global::Windows.UI.Xaml.Controls.NavigationViewDisplayMode DisplayMode { get; internal set; }
+		public NavigationViewDisplayMode DisplayMode { get; internal set; }
 	}
 }

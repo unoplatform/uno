@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.UI.Xaml.Controls
 {
-	public class SelectionModelSelectionChangedEventArgs
+	public partial class SelectionModelSelectionChangedEventArgs
     {
 		internal SelectionModelSelectionChangedEventArgs()
 		{

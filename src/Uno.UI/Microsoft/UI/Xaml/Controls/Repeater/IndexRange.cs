@@ -5,7 +5,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 namespace Microsoft.UI.Xaml.Controls
 {
 	// Struct in WinUI
-	internal class IndexRange
+	internal partial class IndexRange
 	{
 		// Invariant: m_end >= m_begin
 		private int m_begin = -1;

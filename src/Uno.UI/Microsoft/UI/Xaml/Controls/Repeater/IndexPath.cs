@@ -6,7 +6,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public sealed class IndexPath : IStringable
+	public sealed partial class IndexPath : IStringable
 	{
 		private readonly List<int> m_path = new List<int>();
 

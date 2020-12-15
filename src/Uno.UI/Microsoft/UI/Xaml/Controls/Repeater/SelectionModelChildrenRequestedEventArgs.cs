@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class SelectionModelChildrenRequestedEventArgs
+	public partial class SelectionModelChildrenRequestedEventArgs
 	{
 		private object m_source;
 		private IndexPath m_sourceIndexPath;

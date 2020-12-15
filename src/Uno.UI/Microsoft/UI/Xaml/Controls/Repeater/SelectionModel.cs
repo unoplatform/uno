@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Interop;
+using PropertyChangedEventHandler = System.ComponentModel.PropertyChangedEventHandler;
+using Type = System.Type;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class SelectionModel : INotifyPropertyChanged, ICustomPropertyProvider
+	public partial class SelectionModel : global::System.ComponentModel.INotifyPropertyChanged, ICustomPropertyProvider
 	{
 		public SelectionModel()
 		{
@@ -460,7 +462,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// No indexed properties exposed via ICustomPropertyProvider
-		ICustomProperty ICustomPropertyProvider.GetIndexedProperty(string name, System.Type type) => null;
+		ICustomProperty ICustomPropertyProvider.GetIndexedProperty(string name, Type type) => null;
 
 		string ICustomPropertyProvider.GetStringRepresentation() => "SelectionModel";
 

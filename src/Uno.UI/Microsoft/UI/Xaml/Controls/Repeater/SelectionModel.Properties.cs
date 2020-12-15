@@ -4,8 +4,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SelectionModel
     {
-		public TypedEventHandler<SelectionModel, SelectionModelChildrenRequestedEventArgs> ChildrenRequested;
+		public event TypedEventHandler<SelectionModel, SelectionModelChildrenRequestedEventArgs> ChildrenRequested;
 
-		public TypedEventHandler<SelectionModel, SelectionModelSelectionChangedEventArgs> SelectionChanged;
+		public event TypedEventHandler<SelectionModel, SelectionModelSelectionChangedEventArgs> SelectionChanged;
 	}
 }
