@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -196,10 +197,10 @@ namespace Microsoft.UI.Xaml.Controls
 			m_selectionModelSource.Add(null);
 			m_selectionModelSource.Add(null);
 
-			var items = new List<object>();
+			var items = new ObservableCollection<object>();
 			SetValue(MenuItemsProperty, items);
 
-			var footerItems = new List<object>();
+			var footerItems = new ObservableCollection<object>();
 			SetValue(FooterMenuItemsProperty, footerItems);
 
 			WeakReference<NavigationView> weakThis = new WeakReference<NavigationView>(this);
