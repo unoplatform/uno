@@ -203,7 +203,7 @@
   <PropertyGroup Condition="'$(UnoSampleAppDisableAPKGeneration)'=='True'">
     <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
   </PropertyGroup>
-  <Target Name="AfterBuildValidation" AfterTargets="Build">
+  <Target Name="ValidateNoDPIAndroidResource" AfterTargets="Build">
 		<ItemGroup>
 			<_myFilteredGroup Include="@(AndroidResource)"  Condition="'%(AndroidResource.FileName)'=='winui'" />
 		</ItemGroup>
