@@ -32,5 +32,13 @@ namespace Windows.System
 
 			return _current;
 		}
+		public bool TryEnqueue(DispatcherQueueHandler callback)
+		{
+			return TryEnqueue(DispatcherQueuePriority.Normal, callback);
+		}
+		public bool TryEnqueue(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
+		{
+			return TryEnqueueNative(priority, callback);
+		}
 	}
 }
