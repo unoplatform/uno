@@ -210,6 +210,6 @@
 		 <PropertyGroup>
 			<_MyMdpiAsset>%(_myFilteredGroup.LogicalName)</_MyMdpiAsset>
 		 </PropertyGroup>
-		<Error Condition="!$(_MyMdpiAsset.Contains('-nodpi'))" Text="File does not exist under drawable-nodpi directory" />
+		<Error Condition="!$(_MyMdpiAsset.Contains('-nodpi'))" Text="The file nodpi-validationresource.jpeg does not exist under drawable-nodpi directory" />
   </Target>
 </Project>
