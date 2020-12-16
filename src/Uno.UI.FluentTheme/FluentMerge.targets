@@ -13,8 +13,6 @@
   	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioButtons.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioButtons_themeresources.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TabView.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TabView_themeresources.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TeachingTip.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TeachingTip_themeresources.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\NavigationView.xaml" />

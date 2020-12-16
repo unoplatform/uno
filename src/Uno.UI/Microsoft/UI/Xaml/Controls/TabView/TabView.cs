@@ -1,4 +1,4 @@
-// MUX Reference: TabView.cpp, commit 542e6f9
+// MUX Reference: TabView.cpp, commit 309c88f
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI.Helpers.WinUI;
@@ -152,7 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var listView = GetTemplateChild("TabListView") as ListView;
 				if (listView != null)
 				{
-					listView.Loaded += OnListViewLoaded;					
+					listView.Loaded += OnListViewLoaded;
 					listView.SelectionChanged += OnListViewSelectionChanged;
 
 					listView.DragItemsStarting += OnListViewDragItemsStarting;
@@ -160,7 +161,7 @@ namespace Microsoft.UI.Xaml.Controls
 					listView.DragOver += OnListViewDragOver;
 					listView.Drop += OnListViewDrop;
 
-					listView.GettingFocus += OnListViewGettingFocus;					
+					listView.GettingFocus += OnListViewGettingFocus;
 
 					m_listViewCanReorderItemsPropertyChangedRevoker = listView.RegisterPropertyChangedCallback(ListView.CanReorderItemsProperty, OnListViewDraggingPropertyChanged);
 					m_listViewAllowDropPropertyChangedRevoker = listView.RegisterPropertyChangedCallback(UIElement.AllowDropProperty, OnListViewDraggingPropertyChanged);
@@ -294,13 +295,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnTabItemsSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			// TODO: Uno Specific - we have replaced ItemsSource by TabItems, make sure to force update it here
-			// if ItemsSource is set
-			if (args.NewValue != null)
-			{
-				m_listView.ItemsSource = args.NewValue;
-			}
-
 			UpdateListViewItemContainerTransitions();
 		}
 
@@ -502,42 +496,27 @@ namespace Microsoft.UI.Xaml.Controls
 				var lvItems = listView.Items;
 				if (lvItems != null)
 				{
-					// TODO: Uno specific - Items collection is not yet in sync with ItemsSource
-					// this is a workaround
-
 					if (listView.ItemsSource == null)
 					{
-						var observableTabItems = new ObservableVector<object>();
-						foreach(var item in TabItems)
+						var itemList = new List<object>();
+
+						foreach (var item in TabItems)
 						{
-							observableTabItems.Add(item);
+							itemList.Add(item);
 						}
-						listView.ItemsSource = observableTabItems;
-						TabItems = observableTabItems;
+
+						lvItems.Clear();
+
+						foreach (var item in itemList)
+						{
+							// App put items in our Items collection; copy them over to ListView.Items
+							if (item != null)
+							{
+								lvItems.Add(item);
+							}
+						}
 					}
-					
-					//if (listView.ItemsSource == null)
-					//{
-					//	// copy the list, because clearing lvItems may also clear TabItems
-					//	IList<object> itemList = new List<object>();
-
-					//	foreach (var item in TabItems)
-					//	{
-					//		itemList.Add(item);
-					//	}
-
-					//	lvItems.Clear();
-
-					//	foreach (var item in itemList)
-					//	{
-					//		// App put items in our Items collection; copy them over to ListView.Items
-					//		if (item != null)
-					//		{
-					//			lvItems.Add(item);
-					//		}
-					//	}
-					//}
-					//TabItems = lvItems;
+					TabItems = lvItems;
 				}
 
 				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue)
@@ -770,12 +749,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					var newItem = TabItems[(int)args.Index] as TabViewItem;
-					if (newItem != null)
-					{
-						newItem.OnTabViewWidthModeChanged(TabWidthMode);
-						newItem.SetParentTabView(this);
-					}
 					UpdateTabWidths();
 				}
 			}
@@ -1057,23 +1030,29 @@ namespace Microsoft.UI.Xaml.Controls
 							{
 								tabColumn.Width = GridLengthHelper.FromPixels(availableWidth);
 								var listview = m_listView;
+								var tabListView = m_listView as TabViewListView;
 								if (listview != null)
 								{
-									ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Visible);
+									// TODO: Uno specific: Apply visibility directly to scroll viewer
+									// until attached property template binding is supported (issue #4259)
+									tabListView?.SetHorizontalScrollBarVisibility(ScrollBarVisibility.Visible);
 									UpdateScrollViewerDecreaseAndIncreaseButtonsViewState();
 								}
 							}
 							else
 							{
-								//TODO: Uno specific workaround - ListView stretches to full available width, even when it does not require it
-								//tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
+								// TODO: Uno specific workaround - ListView stretches to full available width, even when it does not require it
+								// tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
 								tabColumn.Width = GridLengthHelper.FromPixels(requiredWidth);
 								var listview = m_listView;
+								var tabListView = m_listView as TabViewListView;
 								if (listview != null)
 								{
 									if (shouldUpdateWidths && fillAllAvailableSpace)
 									{
-										ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Hidden);
+										// TODO: Uno specific: Apply visibility directly to scroll viewer
+										// until attached property template binding is supported (issue #4259)
+										tabListView?.SetHorizontalScrollBarVisibility(ScrollBarVisibility.Hidden);
 									}
 									else
 									{
@@ -1097,6 +1076,7 @@ namespace Microsoft.UI.Xaml.Controls
 							tabColumn.MaxWidth = availableWidth;
 							tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
 							var listview = m_listView;
+							var tabListView = m_listView as TabViewListView;
 							if (listview != null)
 							{
 								listview.MaxWidth = availableWidth;
@@ -1106,7 +1086,9 @@ namespace Microsoft.UI.Xaml.Controls
 								if (itemsPresenter != null)
 								{
 									var visible = itemsPresenter.ActualWidth > availableWidth;
-									ScrollViewer.SetHorizontalScrollBarVisibility(listview, visible
+									// TODO: Uno specific: Apply visibility directly to scroll viewer
+									// until attached property template binding is supported (issue #4259)
+									tabListView?.SetHorizontalScrollBarVisibility(visible
 										? ScrollBarVisibility.Visible
 										: ScrollBarVisibility.Hidden);
 									if (visible)
@@ -1167,7 +1149,12 @@ namespace Microsoft.UI.Xaml.Controls
 			var listView = m_listView;
 			if (listView != null)
 			{
-				listView.SelectedIndex = SelectedIndex;
+				var selectedIndex = SelectedIndex;
+				// Ensure that the selected index is within range of the items
+				if (selectedIndex < listView.Items.Count)
+				{
+					listView.SelectedIndex = selectedIndex;
+				}
 			}
 		}
 
