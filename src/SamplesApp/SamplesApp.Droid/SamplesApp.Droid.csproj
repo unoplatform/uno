@@ -205,7 +205,7 @@
   </PropertyGroup>
   <Target Name="ValidateNoDPIAndroidResource" AfterTargets="Build">
 		<ItemGroup>
-			<_myFilteredGroup Include="@(AndroidResource)"  Condition="'%(AndroidResource.FileName)'=='winui'" />
+			<_myFilteredGroup Include="@(AndroidResource)"  Condition="'%(AndroidResource.FileName)'=='nodpi-validationresource'" />
 		</ItemGroup>
 		 <PropertyGroup>
 			<_MyMdpiAsset>%(_myFilteredGroup.LogicalName)</_MyMdpiAsset>
