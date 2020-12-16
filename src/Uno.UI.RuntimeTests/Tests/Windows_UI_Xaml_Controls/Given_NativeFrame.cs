@@ -1,4 +1,4 @@
-﻿#if __ANDROID__
+﻿
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,12 +12,14 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.FramePages;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	public class Given_NativeFrame
 	{
+#if __ANDROID__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_NavigateForward()
@@ -69,10 +71,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WaitForPages(1);
 		}
+#endif
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ContentIsNullAndNavigate()
+		{
+#if !NETFX_CORE
+			var style = Windows.UI.Xaml.Application.Current.Resources["NativeDefaultFrame"] as Style;
+			Assert.IsNotNull(style);
+
+			var SUT = new Frame()
+			{
+				Style = style
+			};
+#else
+			var SUT = new Frame();
+#endif
+
+			TestServices.WindowHelper.WindowContent = SUT;
+
+			SUT.Navigate(typeof(FirstPage));
+
+			var firstPage = SUT.Content as FirstPage;
+
+			Assert.IsNotNull(firstPage.FirstTextBlock);
+			Assert.AreEqual("Page The First", firstPage.FirstTextBlock.Text);
+
+			SUT.Content = null;
+			SUT.BackStack?.Clear();
+
+
+			SUT.Navigate(typeof(SecondPage));
+			var secondPage = SUT.Content as SecondPage;
+
+			Assert.IsNotNull(SUT.BackStack.FirstOrDefault());
+			Assert.AreEqual(typeof(FirstPage), SUT.BackStack.FirstOrDefault().SourcePageType);
+
+			Assert.IsNotNull(secondPage.SecondTextBlock);
+			Assert.AreEqual("Page The Second", secondPage.SecondTextBlock.Text);
+		}
 	}
 
 	partial class MyPage : Page
 	{
 	}
 }
-#endif
