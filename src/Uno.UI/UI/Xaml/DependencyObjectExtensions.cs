@@ -327,7 +327,7 @@ namespace Windows.UI.Xaml
 					}
 
 					var childDisposable = new SerialDisposable();
-					
+
 					childDisposable.Disposable = (instance.GetValue(property) as DependencyObject)?.RegisterDisposableNestedPropertyChangedCallback(callback, subProperties);
 
 					var disposable = instance.RegisterDisposablePropertyChangedCallback(property, (s, e) =>
@@ -377,6 +377,14 @@ namespace Windows.UI.Xaml
 			return GetStore(dependencyObject)
 				.GetCurrentHighestValuePrecedence(property) != DependencyPropertyValuePrecedences.DefaultValue;
 		}
+
+		/// <summary>
+		/// True if a value is set on the property with <see cref="DependencyPropertyValuePrecedences.Local"/> precedence or higher, false otherwise.
+		/// </summary>
+		/// <param name="dependencyObject">The instance on which the property is attached</param>
+		/// <param name="property">The dependency property to test</param>
+		internal static bool IsDependencyPropertyLocallySet(this DependencyObject dependencyObject, DependencyProperty property) =>
+			GetStore(dependencyObject).GetCurrentHighestValuePrecedence(property) <= DependencyPropertyValuePrecedences.Local;
 
 		internal static DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(this DependencyObject dependencyObject, DependencyProperty property)
 		{

@@ -63,4 +63,9 @@
 			<TextBlock Text="{Binding}" />
 		</local:CounterGrid>
 	</DataTemplate>
+	<DataTemplate x:Key="DataContextBindingDataTemplate">
+		<Grid DataContext="{Binding SignIn}">
+			<TextBlock Text="{Binding UserName}" />
+		</Grid>
+	</DataTemplate>
 </ResourceDictionary>
