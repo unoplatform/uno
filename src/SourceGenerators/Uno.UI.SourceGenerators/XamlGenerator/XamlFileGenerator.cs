@@ -1008,7 +1008,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							hasDefaultStyles = BuildDefaultStylesRegistration(writer, FindImplicitContentMember(topLevelControl));
 
 							writer.AppendLine();
-							writer.AppendLineInvariant("ResourceDictionary {0}.GetResourceDictionary() => {1}_ResourceDictionary;", DictionaryProviderInterfaceName, _fileUniqueId);
+							writer.AppendLineInvariant("global::Windows.UI.Xaml.ResourceDictionary {0}.GetResourceDictionary() => {1}_ResourceDictionary;", DictionaryProviderInterfaceName, _fileUniqueId);
 						}
 						writer.AppendLine();
 						writer.AppendLineInvariant("internal static global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary => {1}.Instance.{0}_ResourceDictionary;", _fileUniqueId, SingletonClassName);
