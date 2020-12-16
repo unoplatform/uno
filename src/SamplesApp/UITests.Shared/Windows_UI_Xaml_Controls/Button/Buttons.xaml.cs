@@ -19,7 +19,8 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 		{
 			this.InitializeComponent();
 
-			DataContext = _viewModel = new ButtonsViewModel();
+			Loading += (s, e) => DataContext = _viewModel = new ButtonsViewModel();
+			Unloaded += (s, e) => DataContext = _viewModel = null;
 		}
 
 		private void OnClick(object sender, RoutedEventArgs e) => _viewModel.Log($"{sender}.Click");

@@ -717,7 +717,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								BuildCompiledBindingsInitializerForTemplate(writer);
 
-								writer.AppendLineInvariant("if (__rootInstance is DependencyObject d) Windows.UI.Xaml.NameScope.SetNameScope(d, nameScope);");
+								using (writer.BlockInvariant("if (__rootInstance is DependencyObject d)", kvp.Value.ReturnType))
+								{
+									writer.AppendLineInvariant("global::Windows.UI.Xaml.NameScope.SetNameScope(d, nameScope);");
+									writer.AppendLineInvariant("global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);");
+								}
 
 								writer.AppendLineInvariant("return __rootInstance;");
 							}

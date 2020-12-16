@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.UI.Xaml;
 
@@ -11,6 +12,15 @@ namespace Uno.UI
 	/// </summary>
 	public static class FrameworkElementHelper
 	{
+		/// <summary>
+		/// Conditional table used in the context of Control and DataTemplates
+		/// to link the lifetime generated XAML classes that hold x:Name backing
+		/// fields to the top level UIElement of the template. This allows for
+		/// ElementNameSubject and TargetProperty path to only keep weak references
+		/// to their targets.
+		/// </summary>
+		private static ConditionalWeakTable<DependencyObject, object> _contextAssociation = new ConditionalWeakTable<DependencyObject, object>();
+
 		/// <summary>
 		/// Set the rendering phase, defined via x:Phase.
 		/// </summary>
@@ -43,6 +53,18 @@ namespace Uno.UI
 			{
 				fe.BaseUri = new Uri(uri);
 			}
+		}
+
+		/// <summary>
+		/// Associates an arbitrary object to the life time of the <paramref name="target"/> instance.
+		/// </summary>
+		/// <remarks>
+		/// This method is used by the XAML generator to keep x:Name generated
+		/// code alive alonside the top-level control of thete.
+		/// </remarks>
+		public static void AddObjectReference(DependencyObject target, object context)
+		{
+			_contextAssociation.Add(target, context);
 		}
 	}
 }

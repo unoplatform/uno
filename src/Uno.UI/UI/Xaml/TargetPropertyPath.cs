@@ -1,18 +1,34 @@
+#nullable enable
+
 using System;
 using System.Runtime.InteropServices;
+using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+
 namespace Windows.UI.Xaml
 {
 	public sealed partial class TargetPropertyPath
 	{
-		public object Target
+		private ManagedWeakReference? _targetRef;
+
+		public object? Target
 		{
-			get;
-			set;
+			get => _targetRef?.Target;
+			set
+			{
+				if (_targetRef != null)
+				{
+					WeakReferencePool.ReturnWeakReference(this, _targetRef);
+				}
+				else
+				{
+					_targetRef = WeakReferencePool.RentWeakReference(this, value);
+				}
+			}
 		}
 
-		public PropertyPath Path
+		public PropertyPath? Path
 		{
 			get;
 			set;
@@ -28,7 +44,7 @@ namespace Windows.UI.Xaml
 			Path = path;
 		}
 
-		internal string TargetName { get; }
+		internal string? TargetName { get; }
 
 		/// <summary>
 		/// Constructor used by the XamlReader, for target late-binding
