@@ -3297,6 +3297,12 @@
 			<Member
 				fullName="System.Boolean Windows.UI.Core.CoreDispatcher::HasThreadAccessOverride()"
 				reason="Not part of the UWP API"/>
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel::HorizontalMarginProperty()"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel::VerticalMarginProperty()"
+				reason="Renamed in WinUI" />
 		</Properties>
 		<Methods>
 			<Member
@@ -3332,6 +3338,24 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.DragItemsCompletedEventArgs..ctor()"
 				reason="Not part of the UWP API"/>
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Microsoft.UI.Xaml.Controls.InfoBarPanel.GetHorizontalMargin(Windows.UI.Xaml.DependencyObject obj)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBarPanel.SetHorizontalMargin(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Thickness value)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel.get_HorizontalMarginProperty()"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Microsoft.UI.Xaml.Controls.InfoBarPanel.GetVerticalMargin(Windows.UI.Xaml.DependencyObject obj)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBarPanel.SetVerticalMargin(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Thickness value)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel.get_VerticalMarginProperty()"
+				reason="Renamed in WinUI" />
 		</Methods>
 	</IgnoreSet>
 
