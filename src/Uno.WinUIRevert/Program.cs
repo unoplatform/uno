@@ -92,6 +92,7 @@ namespace UnoWinUIRevert
 			@"Uno.UWPSyncGenerator\Generator.cs",
 			@"src\Uno.UWP\",
 			@"src\Uno.UI\UI\Xaml\Controls\NavigationView\",
+			@"src\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\Given_NavigationView.cs",
 			@"\obj\",
 			@"\bin\",
 			@"\.git",

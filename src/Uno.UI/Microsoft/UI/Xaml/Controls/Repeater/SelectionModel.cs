@@ -4,6 +4,7 @@ using System.ComponentModel;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Interop;
 using PropertyChangedEventHandler = System.ComponentModel.PropertyChangedEventHandler;
+using PropertyChangedEventArgs = System.ComponentModel.PropertyChangedEventArgs;
 using Type = System.Type;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 

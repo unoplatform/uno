@@ -4,7 +4,7 @@ namespace Uno.UI.Helpers.WinUI
 {
 	internal static class CollectionHelper
 	{
-		internal static void unique_push_back<T>(IList<T> items, T newItem)
+		internal static void UniquePushBack<T>(IList<T> items, T newItem)
 		{
 			if (!items.Contains(newItem))
 			{

@@ -16,10 +16,22 @@ using AppKit;
 #else
 using Uno.UI;
 #endif
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using NavigationView = Windows.UI.Xaml.Controls.NavigationView;
+using NavigationViewItem = Windows.UI.Xaml.Controls.NavigationViewItem;
+using NavigationViewList = Windows.UI.Xaml.Controls.NavigationViewList;
+#else
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+#endif
+
 using static Private.Infrastructure.TestServices;
 using Uno.Extensions;
 
@@ -62,7 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 	}
-		public partial class MyNavigationView : NavigationView
+	public partial class MyNavigationView : NavigationView
 	{
 		public NavigationViewList MenuItemsHost { get; private set; }
 		protected override void OnApplyTemplate()

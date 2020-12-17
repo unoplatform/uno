@@ -65,6 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return newItem;
 			}
 
+#if !HAS_UNO_WINUI
 			// Accidentally adding a OS XAML NavigationViewItem to WinUI's NavigationView can cause unnecessary confusion for developers
 			// due to unexpected rendering, potentially without an easy way to understand what went wrong here. To help out developers,
 			// we are explicitly checking for this scenario here and throw a helpful error message so that they can quickly fix their app.
@@ -72,6 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				throw new InvalidOperationException("A NavigationView instance contains a Windows.UI.Xaml.Controls.NavigationViewItem. This control requires that its NavigationViewItems be of type Microsoft.UI.Xaml.Controls.NavigationViewItem.");
 			}
+#endif
 
 			// Get or create a wrapping container for the data
 			NavigationViewItem GetNavigationViewItem()

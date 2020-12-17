@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Math = System.Math;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -47,10 +48,9 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (double)GetValue(CompactModeThresholdWidthProperty);
 			set
 			{
-				//TODO: double coercedValue = value;
-				//static_cast<NavigationView*>(this)->CoerceToGreaterThanZero(coercedValue);
-				//static_cast<NavigationView*>(this)->SetValue(s_CompactModeThresholdWidthProperty, ValueHelper<double>::BoxValueIfNecessary(coercedValue));
-				SetValue(CompactModeThresholdWidthProperty, value);
+				var coercedValue = value;
+				CoerceToGreaterThanZero(ref coercedValue);
+				SetValue(CompactModeThresholdWidthProperty, coercedValue);
 			}
 		}
 
@@ -68,11 +68,9 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (double)GetValue(CompactPaneLengthProperty);
 			set
 			{
-				//TODO:
-				//double coercedValue = value;
-				//static_cast<NavigationView*>(this)->CoerceToGreaterThanZero(coercedValue);
-				//static_cast<NavigationView*>(this)->SetValue(s_CompactPaneLengthProperty, ValueHelper<double>::BoxValueIfNecessary(coercedValue));
-				SetValue(CompactPaneLengthProperty, value);
+				var coercedValue = value;
+				CoerceToGreaterThanZero(ref coercedValue);
+				SetValue(CompactPaneLengthProperty, coercedValue);
 			}
 		}
 
@@ -392,11 +390,9 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (double)GetValue(OpenPaneLengthProperty);
 			set
 			{
-				//TODO:
-				//double coercedValue = value;
-				//static_cast<NavigationView*>(this)->CoerceToGreaterThanZero(coercedValue);
-				//static_cast<NavigationView*>(this)->SetValue(s_OpenPaneLengthProperty, ValueHelper<double>::BoxValueIfNecessary(coercedValue));
-				SetValue(OpenPaneLengthProperty, value);
+				var coercedValue = value;
+				CoerceToGreaterThanZero(ref coercedValue);
+				SetValue(OpenPaneLengthProperty, coercedValue);
 			}
 		}
 
@@ -600,13 +596,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var value = (double)args.NewValue;
 			var coercedValue = value;
-			//TODO:
-			//winrt::get_self<NavigationView>(owner)->CoerceToGreaterThanZero(coercedValue);
-			//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-			//{
-			//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-			//	return;
-			//}
+			owner.CoerceToGreaterThanZero(ref coercedValue);
+			if (Math.Abs(coercedValue - value) > 0.1)
+			{
+				sender.SetValue(args.Property, coercedValue);
+				return;
+			}
 
 			owner.OnPropertyChanged(args);
 		}
@@ -619,13 +614,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var value = (double)args.NewValue;
 			var coercedValue = value;
-			//TODO:
-			//winrt::get_self<NavigationView>(owner)->CoerceToGreaterThanZero(coercedValue);
-			//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-			//{
-			//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-			//	return;
-			//}
+			owner.CoerceToGreaterThanZero(ref coercedValue);
+			if (Math.Abs(coercedValue - value) > 0.1)
+			{
+				sender.SetValue(args.Property, coercedValue);
+				return;
+			}
 
 			owner.OnPropertyChanged(args);
 		}
@@ -638,13 +632,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var value = (double)args.NewValue;
 			var coercedValue = value;
-			//TODO:
-			//winrt::get_self<NavigationView>(owner)->CoerceToGreaterThanZero(coercedValue);
-			//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-			//{
-			//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-			//	return;
-			//}
+			owner.CoerceToGreaterThanZero(ref coercedValue);
+			if (Math.Abs(coercedValue - value) > 0.1)
+			{
+				sender.SetValue(args.Property, coercedValue);
+				return;
+			}
 
 			owner.OnPropertyChanged(args);
 		}
@@ -657,13 +650,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var value = (double)args.NewValue;
 			var coercedValue = value;
-			//TODO:
-			//winrt::get_self<NavigationView>(owner)->CoerceToGreaterThanZero(coercedValue);
-			//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-			//{
-			//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-			//	return;
-			//}
+			owner.CoerceToGreaterThanZero(ref coercedValue);
+			if (Math.Abs(coercedValue - value) > 0.1)
+			{
+				sender.SetValue(args.Property, coercedValue);
+				return;
+			}
 
 			owner.OnPropertyChanged(args);
 		}

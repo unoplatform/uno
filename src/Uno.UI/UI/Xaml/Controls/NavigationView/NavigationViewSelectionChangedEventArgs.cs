@@ -15,14 +15,14 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class NavigationViewSelectionChangedEventArgs 
+	public partial class NavigationViewSelectionChangedEventArgs
 	{
-		public  bool IsSettingsSelected
+		public bool IsSettingsSelected
 		{
 			get; internal set;
 		}
 
-		public  object SelectedItem
+		public object SelectedItem
 		{
 			get; internal set;
 		}

@@ -145,8 +145,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				if (iconGridColumn != null)
 				{
 					var gridLength = iconGridColumn.Width;
-					gridLength.Value = compactPaneLength;
-					iconGridColumn.Width = gridLength;
+					var newGridLength = new GridLength(compactPaneLength, gridLength.GridUnitType);
+					iconGridColumn.Width = newGridLength;
 				}
 			}
 		}

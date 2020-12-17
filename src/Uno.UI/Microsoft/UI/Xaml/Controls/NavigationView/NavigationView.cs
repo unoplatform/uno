@@ -1288,12 +1288,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnRepeaterElementPrepared(ItemsRepeater ir, ItemsRepeaterElementPreparedEventArgs args)
 		{
+#if !HAS_UNO_WINUI
 			// This validation is only relevant outside of the Windows build where WUXC and MUXC have distinct types.
 			// Certain items are disallowed in a NavigationView's items list. Check for them.
 			if (args.Element is Windows.UI.Xaml.Controls.NavigationViewItemBase)
 			{
 				throw new InvalidOperationException("MenuItems contains a Windows.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft.UI.Xaml.Controls.NavigationViewItem.");
 			}
+#endif
 
 			if (args.Element is NavigationViewItemBase nvib)
 			{
@@ -1923,8 +1925,8 @@ namespace Microsoft.UI.Xaml.Controls
 					if (iconGridColumnElement is ColumnDefinition paneToggleButtonIconColumn)
 					{
 						var width = paneToggleButtonIconColumn.Width;
-						width.Value = newButtonWidths; //TODO: Verify
-						paneToggleButtonIconColumn.Width = width;
+						var newWidth = new GridLength(newButtonWidths, width.GridUnitType);
+						paneToggleButtonIconColumn.Width = newWidth;
 					}
 				}
 			}
@@ -3737,7 +3739,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var widthAvailableToRecover = toBeRemovedItemWidth - widthAtLeastToBeRemoved;
 				var itemsToBeAdded = FindMovableItemsRecoverToPrimaryList(widthAvailableToRecover, new int[] { selectedOverflowItemIndex }/*includeItems*/);
 
-				CollectionHelper.unique_push_back(itemsToBeAdded, selectedOverflowItemIndex);
+				CollectionHelper.UniquePushBack(itemsToBeAdded, selectedOverflowItemIndex);
 
 				// Keep track of the item being moved in order to know where to animate selection indicator
 				m_lastSelectedItemPendingAnimationInTopNav = itemBeingMoved;
