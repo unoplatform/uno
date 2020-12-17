@@ -260,7 +260,11 @@ namespace Windows.UI.Xaml
 				+ $"| isInitial: {isInitial} "
 				+ $"| local: {_localViewport.ToDebugString()} "
 				+ $"| parent: {_parentViewport.ToDebugString()} "
+#if IS_NATIVE_ELEMENT
+				+ $"| scroll: --none--(native) "
+#else
 				+ $"| scroll: {(IsScrollPort ? $"{ScrollOffsets.ToDebugString()}" : "--none--")} "
+#endif
 				+ $"| children: {_childrenInterestedInViewportUpdates}");
 
 			_lastEffectiveViewport = viewport;
@@ -305,7 +309,9 @@ namespace Windows.UI.Xaml
 		[Conditional("TRACE_EFFECTIVE_VIEWPORT")]
 		private void TRACE_EFFECTIVE_VIEWPORT(string text)
 		{
+#if TRACE_EFFECTIVE_VIEWPORT
 			Debug.Write($"{new string('\t', Math.Max(Depth, 0))} [{this.GetDebugName()}] {text}\r\n");
+#endif
 		}
 	}
 }
