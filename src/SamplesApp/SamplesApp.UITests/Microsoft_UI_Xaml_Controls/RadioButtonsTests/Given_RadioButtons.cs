@@ -12,6 +12,7 @@ using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
+using Query = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppQuery>;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
@@ -31,12 +32,12 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 				SelectByIndex(1);
 				VerifySelectedIndex(1);
-				var item1 = _app.Marked("Radio Button 1");
+				var item1 = QueryAll("Radio Button 1");
 				Assert.IsTrue(item1.GetDependencyPropertyValue<string>("IsChecked") == "True");
 
 				SelectByItem(3);
 				VerifySelectedIndex(3);
-				var item3 = _app.Marked("Radio Button 3");
+				var item3 = QueryAll("Radio Button 3");
 				Assert.IsTrue(item3.GetDependencyPropertyValue<string>("IsChecked") == "True");
 				Assert.IsFalse(item1.GetDependencyPropertyValue<string>("IsChecked") == "True");
 			}
@@ -46,21 +47,20 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			SetIndexToSelect(v);
 
-			var selectByIndexButton = _app.Marked("SelectByItemButton");
+			var selectByIndexButton = QueryAll("SelectByItemButton");
 			selectByIndexButton.FastTap();
 		}
 
 		private void VerifySelectedIndex(int v)
 		{
-			var selectedIndexTextBlock = _app.Marked("SelectedIndexTextBlock");
-			//var v2 = selectedIndexTextBlock.GetDependencyPropertyValue("Inlines");
+			var selectedIndexTextBlock = QueryAll("SelectedIndexTextBlock");
 			_app.WaitForText(selectedIndexTextBlock, v.ToString(CultureInfo.InvariantCulture));
 		}
 		private void SelectByIndex(int v)
 		{
 			SetIndexToSelect(v);
 
-			var selectByIndexButton = _app.Marked("SelectByIndexButton");
+			var selectByIndexButton = QueryAll("SelectByIndexButton");
 			selectByIndexButton.FastTap();
 		}
 
@@ -72,7 +72,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 		private void SetSource(RadioButtonsSourceLocation location)
 		{
-			var sourceComboBox = _app.Marked("SourceComboBox");
+			var sourceComboBox = QueryAll("SourceComboBox");
 
 			sourceComboBox.SetDependencyPropertyValue("SelectedIndex", "1");
 			sourceComboBox.SetDependencyPropertyValue("SelectedIndex", "0");
@@ -90,7 +90,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		}
 		private void SetItemType(RadioButtonsSourceType type)
 		{
-			var itemTypeComboBox = _app.Marked("ItemTypeComboBox");
+			var itemTypeComboBox = QueryAll("ItemTypeComboBox");
 
 			switch (type)
 			{
@@ -103,6 +103,16 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 					// elements.GetItemTypeComboBox().SelectItemByName("RadioButtonElementsComboBoxItem");
 					break;
 			}
+		}
+
+		private QueryEx QueryAll(string name)
+		{
+			IAppQuery AllQuery(IAppQuery query)
+				// TODO: .All() is not yet supported for wasm.
+				=> AppInitializer.GetLocalPlatform() == Platform.Browser ? query : query.All();
+
+			Query allQuery = q => AllQuery(q).Marked(name);
+			return new QueryEx(allQuery);
 		}
 
 		public enum RadioButtonsSourceType

@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_RadioButtons);
 
-			var items = new List<object>();
+			var items = new ObservableCollection<object>();
 			SetValue(ItemsProperty, items);
 
 			DefaultStyleKey = typeof(RadioButtons);
