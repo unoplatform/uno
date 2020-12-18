@@ -31,6 +31,7 @@ declare namespace Uno.UI {
         private static createAnimation;
         private static getStateString;
         private static raiseState;
+        private static raiseDataLoaded;
         private static getPlayerConfig;
         private static withPlayer;
     }

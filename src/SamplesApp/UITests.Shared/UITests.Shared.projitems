@@ -153,6 +153,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressRing\WinUIDeterminateProgressRing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewBasics.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3861,6 +3865,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressBar\DoubleToThicknessConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressBar\WinUIProgressBarSimple.xaml.cs">
       <DependentUpon>WinUIProgressBarSimple.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressRing\WinUIDeterminateProgressRing.xaml.cs">
+      <DependentUpon>WinUIDeterminateProgressRing.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressRing\WinUIProgressRingPage.xaml.cs">
       <DependentUpon>WinUIProgressRingPage.xaml</DependentUpon>
