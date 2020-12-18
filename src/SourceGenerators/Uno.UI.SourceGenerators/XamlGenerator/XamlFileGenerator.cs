@@ -403,8 +403,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							BuildCompiledBindings(writer, _className.className);
 						}
-
-						BuildInitializeXamlOwner(writer);
 					}
 				}
 			}
@@ -413,20 +411,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// var formattedCode = ReformatCode(writer.ToString());
 			return writer.ToString();
-		}
-
-		private void BuildInitializeXamlOwner(IndentedStringBuilder writer)
-		{
-			TryAnnotateWithGeneratorSource(writer);
-			using (writer.BlockInvariant("private void InitializeXamlOwner()"))
-			{
-				if (_hasLiteralEventsRegistration)
-				{
-					// We only propagate the xaml owner in the tree if there are event registrations in the file
-					// to avoid the performance impact of having a unused dependency property.
-					writer.AppendLineInvariant("global::Uno.UI.Xaml.XamlInfo.SetXamlInfo(this, new global::Uno.UI.Xaml.XamlInfo(this));");
-				}
-			}
 		}
 
 		private void BuildXamlApplyBlocks(IndentedStringBuilder writer)
@@ -640,7 +624,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant(";");
 
 			writer.AppendLineInvariant("OnInitializeCompleted();");
-			writer.AppendLineInvariant("InitializeXamlOwner();");
 			if (isDirectUserControlChild)
 			{
 				// For user controls, the Apply block is applied to the content, so we call CreationComplete() here
@@ -721,7 +704,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						using (writer.BlockInvariant($"{classAccessibility} class {className}"))
 						{
-							using (writer.BlockInvariant("public {0} Build()", kvp.Value.ReturnType))
+							using (writer.BlockInvariant("public {0} Build(object owner)", kvp.Value.ReturnType))
 							{
 								writer.AppendLineInvariant("var nameScope = new global::Windows.UI.Xaml.NameScope();");
 								writer.AppendLineInvariant($"{kvp.Value.ReturnType} __rootInstance = null;");
@@ -3077,16 +3060,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else if (_className.className != null)
 			{
-				_hasLiteralEventsRegistration = true;
-				writer.AppendLineInvariant($"{closureName}.RegisterPropertyChangedCallback(");
-				using (writer.BlockInvariant($"global::Uno.UI.Xaml.XamlInfo.XamlInfoProperty, (s, p) =>"))
-				{
-					using (writer.BlockInvariant($"if (global::Uno.UI.Xaml.XamlInfo.GetXamlInfo({closureName})?.Owner is {_className.className} owner)"))
-					{
-						writeEvent("owner");
-					}
-				}
-				writer.AppendLineInvariant($");");
+				writeEvent("owner");
 			}
 			else
 			{
@@ -4649,7 +4623,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (contentOwner != null)
 					{
-						writer.Append("() => ");
+						writer.Append("this, __owner => ");
 						// This case is to support the layout switching for the ListViewBaseLayout, which is not
 						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
 						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
@@ -5145,7 +5119,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			RegisterChildSubclass(subclassName, contentOwner, returnType);
 
-			writer.AppendLineInvariant($"new {namespacePrefix}{subclassName}().Build()");
+			writer.AppendLineInvariant($"new {namespacePrefix}{subclassName}().Build(__owner)");
 		}
 
 		private string GenerateConstructorParameters(XamlType xamlType)
