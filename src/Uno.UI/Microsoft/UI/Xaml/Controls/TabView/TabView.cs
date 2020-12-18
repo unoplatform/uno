@@ -1158,7 +1158,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private DependencyObject ContainerFromItem(object item)
+		public DependencyObject ContainerFromItem(object item)
 		{
 			var listView = m_listView;
 			if (listView != null)
@@ -1168,7 +1168,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
-		internal DependencyObject ContainerFromIndex(int index)
+		public DependencyObject ContainerFromIndex(int index)
 		{
 			var listView = m_listView;
 			if (listView != null)
