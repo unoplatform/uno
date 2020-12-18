@@ -1,6 +1,7 @@
 ﻿using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using System;
 using System.Collections;
@@ -31,6 +32,8 @@ namespace Windows.UI.Xaml.Controls
 			Notifications.ObserveDidLiveScroll(this, OnLiveScroll);
 
 			DrawsBackground = false;
+
+			IFrameworkElementHelper.Initialize(this);
 		}
 
 		public nfloat ZoomScale 

@@ -50,6 +50,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				ContentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.Never;
 			}
+
+			IFrameworkElementHelper.Initialize(this);
 		}
 
 		private void OnScrolled(object sender, EventArgs e)
