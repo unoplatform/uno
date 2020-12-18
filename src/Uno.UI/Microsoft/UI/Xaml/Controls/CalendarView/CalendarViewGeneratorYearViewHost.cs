@@ -1,253 +1,260 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
+using System.Collections.Generic;
+using Windows.UI.Xaml.Automation;
+using DirectUI;
+using Uno.Extensions;
+using DateTime = System.DateTimeOffset;
 
-using namespace DirectUI;
-using namespace DirectUISynonyms;
-
-// Work around disruptive max/min macros
-#undef max
-#undef min
-
-private void GetContainer(
-     DependencyObject pItem,
-     xaml.IDependencyObject pRecycledContainer,
-    out  CalendarViewBaseItem* ppContainer)
+namespace Windows.UI.Xaml.Controls
 {
-    CalendarViewItem spContainer;
+	partial class CalendarViewGeneratorYearViewHost
+	{
+		protected override CalendarViewBaseItem GetContainer(
+			object pItem,
+			DependencyObject pRecycledContainer)
+		{
+			CalendarViewItem spContainer;
 
-    spContainer = ctl.new CalendarViewItem);
+			spContainer = new CalendarViewItem();
 
-    spContainer.CopyTo(ppContainer);
+			return spContainer;
+		}
 
-}
+		internal override void PrepareItemContainer(
+			DependencyObject pContainer,
+			object pItem)
+		{
+			DateTime date;
+			CalendarViewItem spContainer;
 
+			spContainer = (CalendarViewItem)(pContainer);
 
- private void PrepareItemContainer(
-     xaml.IDependencyObject pContainer,
-     DependencyObject pItem)
-{
-    DateTime date;
-    CalendarViewItem spContainer;
+			date = (DateTime) pItem;
+			GetCalendar().SetDateTime(date);
+			spContainer.Date = date;
 
-    spContainer = (CalendarViewItem)(pContainer);
+			// maintext
+			{
+				string mainText;
+				string automationName;
 
-    ctl.do_get_value(date, pItem);
-    GetCalendar().SetDateTime(date);
-    spContainer.Date = date;
+				automationName = GetCalendar().MonthAsFullString();
 
-    // maintext
-    {
-        string mainText;
-        string automationName;
+				AutomationProperties.SetName(spContainer as FrameworkElement, automationName);
 
-        IFC(GetCalendar().MonthAsFullString(
-            automationName()));
+				mainText = GetCalendar().MonthAsString(
+					0  /* idealLength, set to 0 to get the abbreviated string */
+					);
 
-        AutomationProperties.SetNameStatic(spContainer as FrameworkElement, automationName);
+				spContainer.UpdateMainText(mainText);
+			}
 
-        IFC(GetCalendar().MonthAsString(
-            0, /idealLength, set to 0 to get the abbreviated string/
-            mainText()));
+			// label text
+			{
+				bool isLabelVisible = false;
 
-        spContainer.UpdateMainText(mainText);
-    }
+				isLabelVisible = Owner.IsGroupLabelVisible;
 
-    // label text
-    {
-        bool isLabelVisible = false;
+				UpdateLabel(spContainer, !isLabelVisible);
+			}
 
-        isLabelVisible = GetOwner().IsGroupLabelVisible;
+			// today state will be updated in CalendarViewGeneratorHost.PrepareItemContainer
 
-        UpdateLabel(spContainer, !!isLabelVisible);
-    }
+			// YearView doesn't have selection state
 
-    // today state will be updated in CalendarViewGeneratorHost.PrepareItemContainer
+			// Make a grid effect on YearView.
+			// For MonthView, we put a margin on CalendarViewDayItem in the template to achieve the grid effect.
+			// For YearView and DecadeView, we can't do the same because there is no template for MonthItem and YearItem
+			{
+				Thickness margin = new Thickness(
+					1.0, 1.0, 1.0, 1.0
+				);
+				spContainer.Margin = margin;
+			}
 
-    // YearView doesn't have selection state
-    
-    // Make a grid effect on YearView.
-    // For MonthView, we put a margin on CalendarViewDayItem in the template to achieve the grid effect.
-    // For YearView and DecadeView, we can't do the same because there is no template for MonthItem and YearItem
-    {
-        xaml.Thickness margin{ 1.0, 1.0, 1.0, 1.0 };
-        spContainer.Margin = margin;
-    }
+			//This code enables the focus visuals on the CalendarViewItems in the Year Pane in the correct position.
+			{
+				Thickness focusMargin = new Thickness(
+					- 2.0, -2.0, -2.0, -2.0
+				);
+				spContainer.FocusVisualMargin = focusMargin;
 
-    //This code enables the focus visuals on the CalendarViewItems in the Year Pane in the correct position.
-    {
-         xaml.Thickness focusMargin{ -2.0, -2.0, -2.0, -2.0 };
-        spContainer.FocusVisualMargin = focusMargin;
+				spContainer.UseSystemFocusVisuals = true;
+			}
 
-        spContainer.UseSystemFocusVisuals = true;
-    }
+			base.PrepareItemContainer(pContainer, pItem);
+		}
 
-    CalendarViewGeneratorHost.PrepareItemContainer(pContainer, pItem);
+		internal override void UpdateLabel(CalendarViewBaseItem pItem, bool isLabelVisible)
+		{
+			bool showLabel = false;
+			if (isLabelVisible)
+			{
+				DateTime date;
+				var pCalendar = GetCalendar();
+				int month = 0;
+				int firstMonthOfThisYear = 0;
 
-}
+				// TODO: consider caching the firstday flag because we also need this information when determining snap points 
+				// (however Decadeview doesn't need this for Label).
+				date = pItem.Date;
+				pCalendar.SetDateTime(date);
+				firstMonthOfThisYear = pCalendar.FirstMonthInThisYear;
+				month = pCalendar.Month;
 
-private void UpdateLabel( CalendarViewBaseItem pItem,  bool isLabelVisible)
-{
-    bool showLabel = false;
-    if (isLabelVisible)
-    {
-        DateTime date;
-        var pCalendar = GetCalendar();
-        int month = 0;
-        int firstMonthOfThisYear = 0;
+				showLabel = firstMonthOfThisYear == month;
 
-        // TODO: consider caching the firstday flag because we also need this information when determining snap points 
-        // (however Decadeview doesn't need this for Label).
-        date = pItem.GetDate);
-        pCalendar.SetDateTime(date);
-        firstMonthOfThisYear = pCalendar.FirstMonthInThisYear;
-        month = pCalendar.Month;
+				if (showLabel)
+				{
+					string labelText;
+					labelText = pCalendar.YearAsString();
+					pItem.UpdateLabelText(labelText);
+				}
+			}
 
-        showLabel = firstMonthOfThisYear == month;
+			pItem.ShowLabelText(showLabel);
+			return;
+		}
 
-        if (showLabel)
-        {
-            string labelText;
-            pCalendar.YearAsString(labelText());
-            pItem.UpdateLabelText(labelText);
-        }
-    }
-    pItem.ShowLabelText(showLabel);
-    return;
-}
+		internal override bool GetIsFirstItemInScope(int index)
+		{
+			var pIsFirstItemInScope = false;
+			if (index == 0)
+			{
+				pIsFirstItemInScope = true;
+			}
+			else
+			{
+				DateTime date = default;
+				int month = 0;
+				int firstMonth = 0;
 
-private void GetIsFirstItemInScope( int index, out bool pIsFirstItemInScope)
-{
-    pIsFirstItemInScope = false;
-    if (index == 0)
-    {
-        pIsFirstItemInScope = true;
-    }
-    else
-    {
-        DateTime date  = default;
-        int month = 0;
-        int firstMonth = 0;
+				date = GetDateAt((uint)index);
+				var pCalendar = GetCalendar();
+				pCalendar.SetDateTime(date);
+				month = pCalendar.Month;
+				firstMonth = pCalendar.FirstMonthInThisYear;
+				pIsFirstItemInScope = month == firstMonth;
+			}
 
-        date = GetDateAt(index);
-        var pCalendar = GetCalendar();
-        pCalendar.SetDateTime(date);
-        month = pCalendar.Month;
-        firstMonth = pCalendar.FirstMonthInThisYear;
-        pIsFirstItemInScope = month == firstMonth;
-    }
+			return pIsFirstItemInScope;
+		}
 
-}
+		protected override int GetUnit()
+		{
+			return GetCalendar().Month;
+		}
 
-private void GetUnit(out int pValue)
-{
-    return GetCalendar().get_Month(pValue);
-}
+		protected override void SetUnit(int value)
+		{
+			GetCalendar().Month = value;
+		}
+		protected override void AddUnits(int value)
+		{
+			GetCalendar().AddMonths(value);
+		}
 
-private void SetUnit( int value)
-{
-    return GetCalendar().Month = value;
-}
+		protected override void AddScopes(int value)
+		{
+			GetCalendar().AddYears(value);
+			return;
+		}
 
-private void AddUnits( int value)
-{
-    return GetCalendar().AddMonths(value);
-}
+		protected override int GetFirstUnitInThisScope()
+		{
+			return GetCalendar().FirstMonthInThisYear;
+		}
 
-private void AddScopes( int value)
-{
-    GetCalendar().AddYears(value);
-    return;
-}
+		protected override int GetLastUnitInThisScope()
+		{
+			return GetCalendar().LastMonthInThisYear;
+		}
 
-private void GetFirstUnitInThisScope(out int pValue)
-{
-    return GetCalendar().get_FirstMonthInThisYear(pValue);
-}
-private void GetLastUnitInThisScope(out int pValue)
-{
-    return GetCalendar().get_LastMonthInThisYear(pValue);
-}
+		protected override void OnScopeChanged()
+		{
+			m_pHeaderText = Owner.FormatYearName(m_maxDateOfCurrentScope);
+		}
 
-private void OnScopeChanged()
-{
-    return GetOwner().FormatYearName(m_maxDateOfCurrentScope, m_pHeaderText.ReleaseAn());
-}
+		internal override List<string> GetPossibleItemStrings()
+		{
+			var ppStrings = m_possibleItemStrings;
 
-private void GetPossibleItemStrings(out   std.CalculatorList<string>** ppStrings)
-{
-    ppStrings = &m_possibleItemStrings;
+			if (m_possibleItemStrings.Empty())
+			{
+				// for all known calendar identifiers so far (10 different calendar identifiers), we can find the longest year in no more than 3 years
+				// if we start from min date of this calendar.
 
-    if (m_possibleItemStrings.empty())
-    {
-        // for all known calendar identifiers so far (10 different calendar identifiers), we can find the longest year in no more than 3 years
-        // if we start from min date of this calendar.
+				// below are the longest year and the lowest index of that year we found for each calendar identifier. 
+				// we hope that any new calendar in the future don't break this rule.
 
-        // below are the longest year and the lowest index of that year we found for each calendar identifier. 
-        // we hope that any new calendar in the future don't break this rule.
+				// PersianCalendar, maxLength = 12 @ index 0
+				// GregorianCalendar, maxLength = 12 @ index 0
+				// HebrewCalendar, maxLength = 13 @ index 2
+				// HijriCalendar, maxLength = 12 @ index 0
+				// JapaneseCalendar, maxLength = 12 @ index 0
+				// JulianCalendar, maxLength = 12 @ index 0
+				// KoreanCalendar, maxLength = 12 @ index 0
+				// TaiwanCalendar, maxLength = 12 @ index 0
+				// ThaiCalendar, maxLength = 12 @ index 1
+				// UmAlQuraCalendar, maxLength = 12 @ index 0
+				{
+					int MaxNumberOfYearsToBeChecked = 3;
+					DateTime longestYear;
+					int lengthOfLongestYear = 0;
+					int numberOfMonths = 0;
+					int month = 0;
 
-        // PersianCalendar, maxLength = 12 @ index 0
-        // GregorianCalendar, maxLength = 12 @ index 0
-        // HebrewCalendar, maxLength = 13 @ index 2
-        // HijriCalendar, maxLength = 12 @ index 0
-        // JapaneseCalendar, maxLength = 12 @ index 0
-        // JulianCalendar, maxLength = 12 @ index 0
-        // KoreanCalendar, maxLength = 12 @ index 0
-        // TaiwanCalendar, maxLength = 12 @ index 0
-        // ThaiCalendar, maxLength = 12 @ index 1
-        // UmAlQuraCalendar, maxLength = 12 @ index 0
-        {
-             int MaxNumberOfYearsToBeChecked = 3;
-            DateTime longestYear;
-            int lengthOfLongestYear = 0;
-            int numberOfMonths = 0;
-            int month = 0;
+					var pCalendar = GetCalendar();
 
-            var pCalendar = GetCalendar();
+					pCalendar.SetToMin();
+					for (int i = 0; i < MaxNumberOfYearsToBeChecked; i++)
+					{
+						numberOfMonths = pCalendar.NumberOfMonthsInThisYear;
+						if (numberOfMonths > lengthOfLongestYear)
+						{
+							lengthOfLongestYear = numberOfMonths;
+							longestYear = pCalendar.GetDateTime();
+						}
 
-            pCalendar.SetToMin();
-            for (int i = 0; i < MaxNumberOfYearsToBeChecked; i++)
-            {
-                numberOfMonths = pCalendar.NumberOfMonthsInThisYear;
-                if (numberOfMonths > lengthOfLongestYear)
-                {
-                    lengthOfLongestYear = numberOfMonths;
-                    longestYear = pCalendar.GetDateTime);
-                }
-                pCalendar.AddYears(1);
-            }
+						pCalendar.AddYears(1);
+					}
 
-            global::System.Diagnostics.Debug.Assert(lengthOfLongestYear == 13 || lengthOfLongestYear == 12);
-            pCalendar.SetDateTime(longestYear);
-            month = pCalendar.FirstMonthInThisYear;
-            pCalendar.Month = month;
+					global::System.Diagnostics.Debug.Assert(lengthOfLongestYear == 13 || lengthOfLongestYear == 12);
+					pCalendar.SetDateTime(longestYear);
+					month = pCalendar.FirstMonthInThisYear;
+					pCalendar.Month = month;
 
-            m_possibleItemStrings.reserve(lengthOfLongestYear);
+					//m_possibleItemStrings.reserve(lengthOfLongestYear);
 
-            for (int i = 0; i < lengthOfLongestYear; i++)
-            {
-                string string;
-                
-                IFC_RETURN(pCalendar.MonthAsString(
-                    0, /idealLength, set to 0 to get the abbreviated string/
-                    string()));
-                m_possibleItemStrings.emplace_back(std.move(string));
-                pCalendar.AddMonths(1);
-            }
-        }
-    }
+					for (int i = 0; i < lengthOfLongestYear; i++)
+					{
+						string @string;
 
-    return;
-}
+						@string = pCalendar.MonthAsString(
+							0  /* idealLength, set to 0 to get the abbreviated string */
+							);
+						m_possibleItemStrings.Add(@string);
+						pCalendar.AddMonths(1);
+					}
+				}
+			}
 
-private void CompareDate( DateTime lhs,  DateTime rhs, out int pResult)
-{
-    return GetOwner().GetDateComparer().CompareMonth(lhs, rhs, pResult);
-}
+			return m_possibleItemStrings;
+		}
 
-INT64 GetAverageTicksPerUnit()
-{
-    // this is being used to estimate the distance between two dates,
-    // it doesn't need to be (and it can't be) the exact value
-    return CalendarConstants.s_ticksPerDay * 365 / 12;
+		internal override int CompareDate(DateTime lhs, DateTime rhs)
+		{
+			return Owner.DateComparer.CompareMonth(lhs, rhs);
+		}
+
+		protected override long GetAverageTicksPerUnit()
+		{
+			// this is being used to estimate the distance between two dates,
+			// it doesn't need to be (and it can't be) the exact value
+			return CalendarConstants.s_ticksPerDay * 365 / 12;
+		}
+	}
 }

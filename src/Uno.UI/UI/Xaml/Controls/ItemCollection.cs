@@ -12,7 +12,7 @@ using System.Collections.Specialized;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public sealed partial class ItemCollection : IList<object>, IEnumerable<object>, IObservableVector<object>
+	public sealed partial class ItemCollection : IList<object>, IEnumerable<object>, IObservableVector<object>, IObservableVector
 	{
 		private readonly IList<object> _inner = new List<object>();
 
@@ -20,6 +20,13 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _itemsSourceCollectionChangeDisposable = new SerialDisposable();
 
 		public event VectorChangedEventHandler<object> VectorChanged;
+
+		private event VectorChangedEventHandler _untypedVectorChanged;
+		event VectorChangedEventHandler IObservableVector.UntypedVectorChanged
+		{
+			add => _untypedVectorChanged += value;
+			remove => _untypedVectorChanged -= value;
+		}
 
 		public IEnumerator<object> GetEnumerator()
 		{
@@ -49,14 +56,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ThrowIfItemsSourceSet();
 			_inner.Add(item);
-			VectorChanged.TryRaiseInserted(this, _inner.Count - 1);
+			(VectorChanged, _untypedVectorChanged).TryRaiseInserted(this, _inner.Count - 1);
 		}
 
 		public void Clear()
 		{
 			ThrowIfItemsSourceSet();
 			_inner.Clear();
-			VectorChanged.TryRaiseReseted(this);
+			(VectorChanged, _untypedVectorChanged).TryRaiseReseted(this);
 		}
 
 		public bool Contains(object item)
@@ -91,8 +98,8 @@ namespace Windows.UI.Xaml.Controls
 		public bool Remove(object item)
 		{
 			ThrowIfItemsSourceSet();
-			var vectorChanged = VectorChanged;
-			if (vectorChanged == null)
+			var vectorChanged = (VectorChanged, _untypedVectorChanged);
+			if (vectorChanged == default)
 			{
 				return _inner.Remove(item);
 			}
@@ -102,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 				if (index >= 0
 					&& _inner.Remove(item))
 				{
-					VectorChanged.TryRaiseRemoved(this, index);
+					vectorChanged.TryRaiseRemoved(this, index);
 					return true;
 				}
 				else
@@ -124,14 +131,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ThrowIfItemsSourceSet();
 			_inner.Insert(index, item);
-			VectorChanged.TryRaiseInserted(this, index);
+			(VectorChanged, _untypedVectorChanged).TryRaiseInserted(this, index);
 		}
 
 		public void RemoveAt(int index)
 		{
 			ThrowIfItemsSourceSet();
 			_inner.RemoveAt(index);
-			VectorChanged.TryRaiseRemoved(this, index);
+			(VectorChanged, _untypedVectorChanged).TryRaiseRemoved(this, index);
 		}
 
 		public object this[int index]
@@ -178,7 +185,7 @@ namespace Windows.UI.Xaml.Controls
 				ObserveCollectionChanged(listSource);
 			}
 
-			VectorChanged?.Invoke(this, new VectorChangedEventArgs(CollectionChange.Reset, 0));
+			(VectorChanged, _untypedVectorChanged).TryRaiseReseted(this);
 		}
 
 		private void ObserveCollectionChanged(object itemsSource)
@@ -224,12 +231,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnItemsSourceVectorChanged(object sender, IVectorChangedEventArgs args)
 		{
-			VectorChanged?.Invoke(this, args);
+			(VectorChanged, _untypedVectorChanged).TryRaise(this, args);
 		}
 
 		private void OnItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
 		{
-			VectorChanged?.Invoke(this, args.ToVectorChangedEventArgs());
+			(VectorChanged, _untypedVectorChanged).TryRaise(this, args.ToVectorChangedEventArgs());
 		}
 
 		private void ThrowIfItemsSourceSet()

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
+using DateTime = System.DateTimeOffset;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public sealed class CalendarViewTemplateSettings : DependencyObject
+	public sealed partial class CalendarViewTemplateSettings : DependencyObject
 	{
 		/// <summary>Gets the minimum width of the view.</summary>
 		/// <returns>The minimum width of the view.</returns>

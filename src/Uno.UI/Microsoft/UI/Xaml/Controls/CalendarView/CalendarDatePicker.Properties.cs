@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using DateTime = System.DateTimeOffset;
 
 namespace Windows.UI.Xaml.Controls
 {

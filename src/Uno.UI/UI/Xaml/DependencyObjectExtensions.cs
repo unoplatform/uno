@@ -143,6 +143,21 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
+		/// Parts of the internal UWP API of DependencyObject
+		/// Determines if a DO is a parent of another DO
+		/// </summary>
+		internal static bool IsAncestorOf(this DependencyObject ancestor, DependencyObject descendant)
+		{
+			var current = descendant.GetParent();
+			while (current != null && ancestor != current)
+			{
+				current = current.GetParent();
+			}
+
+			return (ancestor == current);
+		}
+
+		/// <summary>
 		/// Creates a SetValue precedence scoped override. All calls to SetValue
 		/// on the specified instance will be set to the specified precedence.
 		/// </summary>

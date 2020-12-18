@@ -1,146 +1,160 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Windows.System;
+using Windows.UI.Input;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Printing;
+using DirectUI;
+using DateTime = System.DateTimeOffset;
+using CCalendarViewBaseItemChrome = Windows.UI.Xaml.Controls.CalendarViewBaseItem;
 
-using namespace DirectUI;
-using namespace DirectUISynonyms;
-
-
-// Handle the custom property changed event and call the OnPropertyChanged methods.
-private void OnPropertyChanged2(
-      PropertyChangedParams& args)
+namespace Windows.UI.Xaml.Controls
 {
-    CalendarViewDayItemGenerated.OnPropertyChanged2(args);
+	public partial class CalendarViewDayItem : CalendarViewBaseItem
+	{
+		private CalendarViewDayItemChangingEventArgs m_tpBuildTreeArgs;
 
-    if (args.m_pDP.GetIndex() == KnownPropertyIndex.CalendarViewDayItem_IsBlackout)
-    {
-        bool isBlackout = false;
+		// Handle the custom property changed event and call the OnPropertyChanged methods.
+		internal override void OnPropertyChanged2(
+			DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
 
-        isBlackout = (bool)args.NewValue;
+			//if (args.m_pDP.GetIndex() == KnownPropertyIndex.CalendarViewDayItem_IsBlackout)
+			if (args.Property == IsBlackoutProperty)
+			{
+				bool isBlackout = false;
 
-        SetIsBlackout(isBlackout);
+				isBlackout = (bool)args.NewValue;
 
-        // when setting an item to blackout, we need remove it from selectedDates (if it exists)
-        if (isBlackout)
-        {
-            CalendarView spParentCalendarView(GetParentCalendarView());
-            if (spParentCalendarView)
-            {
-                spParentCalendarView.OnDayItemBlackoutChanged(this, isBlackout);
-            }
-        }
-    }
+				IsBlackout = isBlackout;
 
-}
+				// when setting an item to blackout, we need remove it from selectedDates (if it exists)
+				if (isBlackout)
+				{
+					CalendarView spParentCalendarView = GetParentCalendarView();
+					if (spParentCalendarView is {})
+					{
+						spParentCalendarView.OnDayItemBlackoutChanged(this, isBlackout);
+					}
+				}
+			}
+		}
 
-private void SetDensityColorsImpl( wfc.IIterable<wu.Color>* pColors)
-{
-    return (CCalendarViewBaseItemChrome)(GetHandle()).SetDensityColors(pColors);
-}
+		private void SetDensityColorsImpl(IIterable<Color> pColors)
+		{
+			((CCalendarViewBaseItemChrome)(GetHandle())).SetDensityColors(pColors);
+		}
 
-private void GetBuildTreeArgs(out xaml_controls.ICalendarViewDayItemChangingEventArgs pspArgs)
-{
-    if (!m_tpBuildTreeArgs)
-    {
-        CalendarViewDayItemChangingEventArgs spArgs;
+		internal CalendarViewDayItemChangingEventArgs GetBuildTreeArgs()
+		{
+			CalendarViewDayItemChangingEventArgs pspArgs;
+			if (m_tpBuildTreeArgs is null)
+			{
+				CalendarViewDayItemChangingEventArgs spArgs;
 
-        spArgs = default;
-        m_tpBuildTreeArgs = spArgs;
-        pspArgs = std.move(spArgs);
-    }
-    else
-    {
-        pspArgs = m_tpBuildTreeArgs;
-    }
+				spArgs = default;
+				m_tpBuildTreeArgs = spArgs;
+				pspArgs = spArgs;
+			}
+			else
+			{
+				pspArgs = m_tpBuildTreeArgs;
+			}
 
-}
-
-
-
-// Called when a pointer makes a tap gesture on a CalendarViewBaseItem.
-private void OnTapped(
-     ITappedRoutedEventArgs pArgs)
-{
-    bool isHandled = false;
-
-    CalendarViewDayItemGenerated.OnTapped(pArgs);
-
-    isHandled = pArgs.Handled;
-
-    if (!isHandled)
-    {
-        CalendarView spParentCalendarView(GetParentCalendarView());
-
-        if (spParentCalendarView)
-        {
-            bool ignored = false;
-            ignored = FocusSelfOrChild(xaml.FocusState.FocusState_Pointer);
-            spParentCalendarView.OnSelectDayItem(this);
-            pArgs.Handled = true;
-
-            ElementSoundPlayerService soundPlayerService = DXamlCore.GetCurrent().GetElementSoundPlayerServiceNoRef();
-            soundPlayerService.RequestInteractionSoundForElement(xaml.ElementSoundKind_Invoke, this);
-        }
-    }
-
-}
+			return pspArgs;
+		}
 
 
-// Handles when a key is pressed down on the CalendarView.
-private void OnKeyDown(
-     xaml_input.IKeyRoutedEventArgs pArgs)
-{
-    bool isHandled = false;
 
-    CalendarViewDayItemGenerated.OnKeyDown(pArgs);
+		// Called when a pointer makes a tap gesture on a CalendarViewBaseItem.
+		protected override void OnTapped(
+			TappedRoutedEventArgs pArgs)
+		{
+			bool isHandled = false;
 
-    isHandled = pArgs.Handled;
+			base.OnTapped(pArgs);
 
-    if (!isHandled)
-    {
-        CalendarView spParentCalendarView(GetParentCalendarView());
+			isHandled = pArgs.Handled;
 
-        if (spParentCalendarView)
-        {
-            wsy.VirtualKey key = wsy.VirtualKey_None;
-            key = pArgs.Key;
+			if (!isHandled)
+			{
+				CalendarView spParentCalendarView = GetParentCalendarView();
 
-            if (key == wsy.VirtualKey_Space || key == wsy.VirtualKey_Enter)
-            {
-                spParentCalendarView.OnSelectDayItem(this);
-                pArgs.Handled = true;
-                SetIsKeyboardFocused(true);
+				if (spParentCalendarView is {})
+				{
+					bool ignored = false;
+					ignored = FocusSelfOrChild(FocusState.Pointer);
+					spParentCalendarView.OnSelectDayItem(this);
+					pArgs.Handled = true;
 
-                ElementSoundPlayerService soundPlayerService = DXamlCore.GetCurrent().GetElementSoundPlayerServiceNoRef();
-                soundPlayerService.RequestInteractionSoundForElement(xaml.ElementSoundKind_Invoke, this);
-            }
-            else
-            {
-                // let CalendarView handle this event and tell calendarview the event comes from a MonthYearItem
-                spParentCalendarView.SetKeyDownEventArgsFromCalendarItem(pArgs);
-            }
-        }
-    }
+					ElementSoundPlayerService soundPlayerService = DXamlCore.GetCurrent().GetElementSoundPlayerServiceNoRef();
+					soundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
+				}
+			}
 
-}
+		}
 
-#if DBG
-private void put_Date( DateTime value)
-{
-    SetDateForDebug(value);
-    CalendarViewDayItemGenerated.Date = value;
 
-}
+		// Handles when a key is pressed down on the CalendarView.
+		protected override void OnKeyDown(
+			KeyRoutedEventArgs pArgs)
+		{
+			bool isHandled = false;
+
+			base.OnKeyDown(pArgs);
+
+			isHandled = pArgs.Handled;
+
+			if (!isHandled)
+			{
+				CalendarView spParentCalendarView = GetParentCalendarView();
+
+				if (spParentCalendarView is {})
+				{
+					VirtualKey key = VirtualKey.None;
+					key = pArgs.Key;
+
+					if (key == VirtualKey.Space || key == VirtualKey.Enter)
+					{
+						spParentCalendarView.OnSelectDayItem(this);
+						pArgs.Handled = true;
+						SetIsKeyboardFocused(true);
+
+						ElementSoundPlayerService soundPlayerService = DXamlCore.GetCurrent().GetElementSoundPlayerServiceNoRef();
+						soundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
+					}
+					else
+					{
+						// let CalendarView handle this event and tell calendarview the event comes from a MonthYearItem
+						spParentCalendarView.SetKeyDownEventArgsFromCalendarItem(pArgs);
+					}
+				}
+			}
+
+		}
+
+#if DEBUG && false
+		private void put_Date( DateTime value)
+		{
+		    SetDateForDebug(value);
+		    CalendarViewDayItemGenerated.Date = value;
+
+		}
 #endif
 
-private void OnCreateAutomationPeer(out result_maybenull_ xaml_automation_peers.IAutomationPeer* ppAutomationPeer)
-{
-    IFCPTR_RETURN(ppAutomationPeer);
-    ppAutomationPeer = null;
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			AutomationPeer ppAutomationPeer = null;
 
-    CalendarViewDayItemAutomationPeer spAutomationPeer;
-    ActivationAPI.ActivateAutomationInstance(KnownTypeIndex.CalendarViewDayItemAutomationPeer, GetHandle(), spAutomationPeer());
-    spAutomationPeer.Owner = this;
-    ppAutomationPeer = spAutomationPeer.Detach();
-    return;
+			CalendarViewDayItemAutomationPeer spAutomationPeer;
+			spAutomationPeer = new CalendarViewDayItemAutomationPeer();
+			spAutomationPeer.Owner = this;
+			ppAutomationPeer = spAutomationPeer;
+			return ppAutomationPeer;
+		}
+	}
 }

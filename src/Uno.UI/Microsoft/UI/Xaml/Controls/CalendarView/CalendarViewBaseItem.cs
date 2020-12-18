@@ -1,362 +1,382 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
+using System.Runtime.CompilerServices;
+using Windows.Devices.Input;
+using Windows.UI.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using CCalendarViewBaseItemChrome = Windows.UI.Xaml.Controls.CalendarViewBaseItem;
+using DateTime = System.DateTimeOffset;
 
-using namespace DirectUI;
-using namespace DirectUISynonyms;
-
-// Called when the user presses a pointer down over the CalendarViewBaseItem.
-private void OnPointerPressed(
-     IPointerRoutedEventArgs pArgs)
+namespace Windows.UI.Xaml.Controls
 {
-    bool isHandled = false;
+	partial class CalendarViewBaseItem
+	{
+		// Called when the user presses a pointer down over the CalendarViewBaseItem.
+		protected override void OnPointerPressed(
+			PointerRoutedEventArgs pArgs)
+		{
+			bool isHandled = false;
 
-    CalendarViewBaseItemGenerated.OnPointerPressed(pArgs);
+			base.OnPointerPressed(pArgs);
 
-    isHandled = pArgs.Handled;
-    if (!isHandled)
-    {
-        SetIsPressed(true);
-        UpdateVisualStateInternal();
-    }
+			isHandled = pArgs.Handled;
+			if (!isHandled)
+			{
+				SetIsPressed(true);
+				UpdateVisualStateInternal();
+			}
 
-}
+		}
 
-// Called when the user releases a pointer over the CalendarViewBaseItem.
-private void OnPointerReleased(
-     xaml_input.IPointerRoutedEventArgs pArgs)
-{
-    bool isHandled = false;
+		// Called when the user releases a pointer over the CalendarViewBaseItem.
+		protected override void OnPointerReleased(
+			PointerRoutedEventArgs pArgs)
+		{
+			bool isHandled = false;
 
-    CalendarViewBaseItemGenerated.OnPointerReleased(pArgs);
+			base.OnPointerReleased(pArgs);
 
-    isHandled = pArgs.Handled;
-    if (!isHandled)
-    {
-        SetIsPressed(false);
-        UpdateVisualStateInternal();
-    }
+			isHandled = pArgs.Handled;
+			if (!isHandled)
+			{
+				SetIsPressed(false);
+				UpdateVisualStateInternal();
+			}
 
-}
+		}
 
-// Called when a pointer enters a CalendarViewBaseItem.
-private void OnPointerEntered(
-     IPointerRoutedEventArgs pArgs)
-{
-    IPointer spPointer;
-    wdei.PointerDeviceType pointerDeviceType = wdei.PointerDeviceType_Touch;
+		// Called when a pointer enters a CalendarViewBaseItem.
+		protected override void OnPointerEntered(
+			PointerRoutedEventArgs pArgs)
+		{
+			Pointer spPointer;
+			PointerDeviceType pointerDeviceType = PointerDeviceType.Touch;
 
-    CalendarViewBaseItemGenerated.OnPointerEntered(pArgs);
+			base.OnPointerEntered(pArgs);
 
-    // Only update hover state if the pointer type isn't touch
-    spPointer = pArgs.Pointer;
-    pointerDeviceType = spPointer.PointerDeviceType;
-    if (pointerDeviceType != wdei.PointerDeviceType_Touch)
-    {
-        SetIsHovered(true);
-        UpdateVisualStateInternal();
-    }
+			// Only update hover state if the pointer type isn't touch
+			spPointer = pArgs.Pointer;
+			pointerDeviceType = spPointer.PointerDeviceType;
+			if (pointerDeviceType != PointerDeviceType.Touch)
+			{
+				SetIsHovered(true);
+				UpdateVisualStateInternal();
+			}
 
-}
+		}
 
-// Called when a pointer leaves a CalendarViewBaseItem.
-private void OnPointerExited(
-     IPointerRoutedEventArgs pArgs)
-{
-    CalendarViewBaseItemGenerated.OnPointerExited(pArgs);
+		// Called when a pointer leaves a CalendarViewBaseItem.
+		protected override void OnPointerExited(
+			PointerRoutedEventArgs pArgs)
+		{
+			base.OnPointerExited(pArgs);
 
-    SetIsHovered(false);
-    SetIsPressed(false);
-    UpdateVisualStateInternal();
+			SetIsHovered(false);
+			SetIsPressed(false);
+			UpdateVisualStateInternal();
 
-}
+		}
 
-// Called when the CalendarViewBaseItem or its children lose pointer capture.
-private void OnPointerCaptureLost(
-     xaml_input.IPointerRoutedEventArgs pArgs)
-{
-    CalendarViewBaseItemGenerated.OnPointerCaptureLost(pArgs);
+		// Called when the CalendarViewBaseItem or its children lose pointer capture.
+		protected override void OnPointerCaptureLost(
+			PointerRoutedEventArgs pArgs)
+		{
+			base.OnPointerCaptureLost(pArgs);
 
-    SetIsHovered(false);
-    SetIsPressed(false);
-    UpdateVisualStateInternal();
+			SetIsHovered(false);
+			SetIsPressed(false);
+			UpdateVisualStateInternal();
 
-}
+		}
 
-// Called when the CalendarViewBaseItem receives focus.
-private void OnGotFocus(
-     IRoutedEventArgs pArgs)
-{
-    xaml.FocusState focusState = xaml.FocusState_Unfocused;
+		// Called when the CalendarViewBaseItem receives focus.
+		protected override void OnGotFocus(
+			RoutedEventArgs pArgs)
+		{
+			FocusState focusState = FocusState.Unfocused;
 
-    CalendarViewBaseItemGenerated.OnGotFocus(pArgs);
+			base.OnGotFocus(pArgs);
 
-    if (var pCalendarView = GetParentCalendarView())
-    {
-        pCalendarView.OnItemFocused(this);
-    }
+			var pCalendarView = GetParentCalendarView();
+			if (pCalendarView is {})
+			{
+				pCalendarView.OnItemFocused(this);
+			}
 
-    focusState = FocusState;
+			focusState = FocusState;
 
-    SetIsKeyboardFocused(focusState == xaml.FocusState_Keyboard);
+			SetIsKeyboardFocused(focusState == FocusState.Keyboard);
 
 
-}
+		}
 
-// Called when the CalendarViewBaseItem loses focus.
-private void OnLostFocus(
-     IRoutedEventArgs pArgs)
-{
-    CalendarViewBaseItemGenerated.OnLostFocus(pArgs);
+		// Called when the CalendarViewBaseItem loses focus.
+		protected override void OnLostFocus(
+			RoutedEventArgs pArgs)
+		{
+			base.OnLostFocus(pArgs);
 
-    // remove keyboard focused state
-    SetIsKeyboardFocused(false);
+			// remove keyboard focused state
+			SetIsKeyboardFocused(false);
 
-}
+		}
 
-private void OnRightTapped(
-     IRightTappedRoutedEventArgs pArgs)
-{
-    CalendarViewBaseItemGenerated.OnRightTapped(pArgs);
+		protected override void OnRightTapped(
+			RightTappedRoutedEventArgs pArgs)
+		{
+			base.OnRightTapped(pArgs);
 
-    bool isHandled = false;
+			bool isHandled = false;
 
-    isHandled = pArgs.Handled;
+			isHandled = pArgs.Handled;
 
-    if (!isHandled)
-    {
-        bool ignored = false;
-        ignored = FocusSelfOrChild(xaml.FocusState.FocusState_Pointer);
-        pArgs.Handled = true;
-    }
-    return;
-}
+			if (!isHandled)
+			{
+				bool ignored = false;
+				ignored = FocusSelfOrChild(FocusState.Pointer);
+				pArgs.Handled = true;
+			}
 
-private void OnIsEnabledChanged( IsEnabledChangedEventArgs pArgs)
-{
-    return UpdateTextBlockForeground();
-}
+			return;
+		}
 
-private void EnterImpl(
-     XBOOL bLive,
-     XBOOL bSkipNameRegistration,
-     XBOOL bCoercedIsEnabled,
-     XBOOL bUseLayoutRounding)
-{
-    CalendarViewBaseItemGenerated.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
+		{
+			UpdateTextBlockForeground();
+		}
 
-    if (bLive)
-    {
-        // In case any of the TextBlock properties have been updated while
-        // we were out of the visual tree, we should update them in order to ensure
-        // that we always have the most up-to-date values.
-        // An example where this can happen is if the theme changes while
-        // the flyout holding the CalendarView for a CalendarDatePicker is closed.
-        UpdateTextBlockForeground();
-        UpdateTextBlockFontProperties();
-        UpdateTextBlockAlignments();
-        UpdateVisualStateInternal();
-    }
+		// TODO UNO
+		//private void EnterImpl(
+		//	bool bLive,
+		//	bool bSkipNameRegistration,
+		//	bool bCoercedIsEnabled,
+		//	bool bUseLayoutRounding)
+		//{
+		//	base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
 
-    return;
-}
+		//	if (bLive)
+		//	{
+		//		// In case any of the TextBlock properties have been updated while
+		//		// we were out of the visual tree, we should update them in order to ensure
+		//		// that we always have the most up-to-date values.
+		//		// An example where this can happen is if the theme changes while
+		//		// the flyout holding the CalendarView for a CalendarDatePicker is closed.
+		//		UpdateTextBlockForeground();
+		//		UpdateTextBlockFontProperties();
+		//		UpdateTextBlockAlignments();
+		//		UpdateVisualStateInternal();
+		//	}
 
-void SetParentCalendarView( CalendarView pCalendarView)
-{
-    m_pParentCalendarView = pCalendarView;
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+		//	return;
+		//}
 
-    pChrome.SetOwner(pCalendarView ? (CCalendarView)(pCalendarView.GetHandle()) : null);
-}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private protected CCalendarViewBaseItemChrome GetHandle() => this;
 
-CalendarView GetParentCalendarView()
-{
-    return m_pParentCalendarView;
-}
+		internal void SetParentCalendarView(CalendarView pCalendarView)
+		{
+			m_pParentCalendarView = pCalendarView;
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
 
-private void UpdateMainText( string mainText)
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.UpdateMainText(mainText);
-}
+			pChrome.SetOwner(pCalendarView);
+		}
 
-private void UpdateLabelText( string labelText)
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.UpdateLabelText(labelText);
-}
+		internal CalendarView GetParentCalendarView()
+		{
+			return m_pParentCalendarView;
+		}
 
-private void ShowLabelText( bool showLabel)
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.ShowLabelText(showLabel);
-}
+		/* Chrome is a partial file in Uno, no needs to re-route methods
+		internal void UpdateMainText(string mainText)
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			return pChrome.UpdateMainText(mainText);
+		}
 
-private void GetMainText(out HSTRING pMainText)
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.GetMainText(pMainText);
-}
+		private void UpdateLabelText(string labelText)
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			return pChrome.UpdateLabelText(labelText);
+		}
 
-private void SetIsToday( bool state)
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.SetIsToday(state);
-}
+		private void ShowLabelText(bool showLabel)
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			return pChrome.ShowLabelText(showLabel);
+		}
 
-private void SetIsKeyboardFocused( bool state)
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.SetIsKeyboardFocused(state);
-}
+		private string GetMainText()
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			return pChrome.GetMainText(pMainText);
+		}
 
-private void SetIsSelected( bool state)
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.SetIsSelected(state);
-}
+		internal void SetIsToday(bool state)
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			return pChrome.SetIsToday(state);
+		}
 
-private void SetIsBlackout( bool state)
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.SetIsBlackout(state);
-}
+		protected void SetIsKeyboardFocused(bool state)
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			return pChrome.SetIsKeyboardFocused(state);
+		}
 
-private void SetIsHovered( bool state)
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.SetIsHovered(state);
-}
+		private void SetIsSelected(bool state)
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			return pChrome.SetIsSelected(state);
+		}
 
-private void SetIsPressed( bool state)
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.SetIsPressed(state);
-}
+		private void SetIsBlackout(bool state)
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			return pChrome.SetIsBlackout(state);
+		}
 
-private void SetIsOutOfScope( bool state)
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.SetIsOutOfScope(state);
-}
+		private void SetIsHovered(bool state)
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			return pChrome.SetIsHovered(state);
+		}
 
-// If this item is unfocused, sets focus on the CalendarViewBaseItem.
-// Otherwise, sets focus to whichever element currently has focus
-// (so focusState can be propagated).
-private void FocusSelfOrChild(
-     xaml.FocusState focusState,
-    out bool pFocused,
-     xaml_input.FocusNavigationDirection focusNavigationDirection)
-{
-    bool isItemAlreadyFocused = false;
-    DependencyObject spItemToFocus = NULL;
+		private void SetIsPressed(bool state)
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			return pChrome.SetIsPressed(state);
+		}
 
-    pFocused = false;
+		internal void SetIsOutOfScope(bool state)
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			return pChrome.SetIsOutOfScope(state);
+		}
+		*/
 
-    isItemAlreadyFocused = HasFocus);
-    if (isItemAlreadyFocused)
-    {
-        // Re-focus the currently focused item to propagate focusState (the item might be focused
-        // under a different FocusState value).
-        spItemToFocus = GetFocusedElement);
-    }
-    else
-    {
-        spItemToFocus = this;
-    }
+		// If this item is unfocused, sets focus on the CalendarViewBaseItem.
+		// Otherwise, sets focus to whichever element currently has focus
+		// (so focusState can be propagated).
+		internal bool FocusSelfOrChild(
+			FocusState focusState,
+			FocusNavigationDirection focusNavigationDirection = default)
+		{
+			bool isItemAlreadyFocused = false;
+			DependencyObject spItemToFocus = null;
 
-    if (spItemToFocus)
-    {
-        bool focused = false;
-        SetFocusedElementWithDirection(spItemToFocus, focusState, false /animateIfBringIntoView/, &focused, focusNavigationDirection);
-        pFocused = !!focused;
-    }
+			var pFocused = false;
 
-}
+			isItemAlreadyFocused = FocusState != FocusState.Unfocused;
+			if (isItemAlreadyFocused)
+			{
+				// Re-focus the currently focused item to propagate focusState (the item might be focused
+				// under a different FocusState value).
+				spItemToFocus = FocusManager.GetFocusedElement() as DependencyObject;
+			}
+			else
+			{
+				spItemToFocus = this;
+			}
 
-#if DBG
-// DateTime has an int64 member which is not intutive enough. This method will convert it
-// into numbers that we can easily read.
-private void SetDateForDebug( DateTime value)
-{
-    var pCalendarView = GetParentCalendarView();
-    if (pCalendarView)
-    {
-        var pCalendar = pCalendarView.GetCalendar();
-        pCalendar.SetDateTime(value);
-        m_eraForDebug = pCalendar.Era;
-        m_yearForDebug = pCalendar.Year;
-        m_monthForDebug = pCalendar.Month;
-        m_dayForDebug = pCalendar.Day;
-    }
+			if (spItemToFocus is {})
+			{
+				bool focused = false;
+				//FocusManager.SetFocusedElementWithDirection(spItemToFocus, focusState, false /* animateIfBringIntoView */, &focused, focusNavigationDirection);
+				FocusManager.SetFocusedElement(spItemToFocus, focusNavigationDirection, focusState);
+				pFocused = !focused;
+			}
 
-}
+			return pFocused;
+		}
+
+#if DEBUG
+		// DateTime has an int64 member which is not intutive enough. This method will convert it
+		// into numbers that we can easily read.
+		private protected void SetDateForDebug(DateTime value)
+		{
+		    var pCalendarView = GetParentCalendarView();
+		    if (pCalendarView is {})
+		    {
+		        var pCalendar = pCalendarView.Calendar;
+		        pCalendar.SetDateTime(value);
+		        m_eraForDebug = pCalendar.Era;
+		        m_yearForDebug = pCalendar.Year;
+		        m_monthForDebug = pCalendar.Month;
+		        m_dayForDebug = pCalendar.Day;
+		    }
+		}
 #endif
 
+		/* Chrome is a partial file in Uno, no needs to re-route methods
+		private void InvalidateRender()
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			pChrome.InvalidateRender();
+			return;
+		}*/
 
-private void InvalidateRender()
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    pChrome.InvalidateRender();
-    return;
-}
+		internal void UpdateTextBlockForeground()
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			pChrome.UpdateTextBlocksForeground();
+		}
+		
+		internal void UpdateTextBlockFontProperties()
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			pChrome.UpdateTextBlocksFontProperties();
+		}
 
-private void UpdateTextBlockForeground()
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.UpdateTextBlocksForeground();
-}
+		internal void UpdateTextBlockAlignments()
+		{
+			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			pChrome.UpdateTextBlocksAlignments();
+		}
 
-private void UpdateTextBlockFontProperties()
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.UpdateTextBlocksFontProperties();
-}
+		// Change to the correct visual state for the CalendarViewBaseItem.
+		private protected override void ChangeVisualState(
+			// true to use transitions when updating the visual state, false
+			// to snap directly to the new visual state.
+			bool bUseTransitions)
+		{
+			base.ChangeVisualState(bUseTransitions);
 
-private void UpdateTextBlockAlignments()
-{
-    CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    return pChrome.UpdateTextBlocksAlignments();
-}
+			CCalendarViewBaseItemChrome chrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			bool ignored = false;
+			bool isPointerOver = chrome.IsHovered();
+			bool isPressed = chrome.IsPressed();
 
-// Change to the correct visual state for the CalendarViewBaseItem.
-private void ChangeVisualState(
-    // true to use transitions when updating the visual state, false
-    // to snap directly to the new visual state.
-    bool bUseTransitions)
-{
-    CalendarViewBaseItemGenerated.ChangeVisualState(bUseTransitions);
+			// Common States Group
+			if (isPressed)
+			{
+				ignored = GoToState(bUseTransitions, "Pressed");
+			}
+			else if (isPointerOver)
+			{
+				ignored = GoToState(bUseTransitions, "PointerOver");
+			}
+			else
+			{
+				ignored = GoToState(bUseTransitions, "Normal");
+			}
 
-    CCalendarViewBaseItemChrome chrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    bool ignored = false;
-    bool isPointerOver = chrome.IsHovered();
-    bool isPressed = chrome.IsPressed();
+			return;
+		}
 
-    // Common States Group
-    if (isPressed)
-    {
-        ignored = GoToState(bUseTransitions, "Pressed");
-    }
-    else if (isPointerOver)
-    {
-        ignored = GoToState(bUseTransitions, "PointerOver");
-    }
-    else
-    {
-        ignored = GoToState(bUseTransitions, "Normal");
-    }
+		private void UpdateVisualStateInternal()
+		{
+			CCalendarViewBaseItemChrome chrome = (CCalendarViewBaseItemChrome)(GetHandle());
+			if (chrome.HasTemplateChild()) // If !HasTemplateChild, then there is no visual in ControlTemplate for CalendarViewDayItemStyle
+				// There should be no VisualStateGroup defined, so ignore UpdateVisualState
+			{
+				UpdateVisualState(false /* fUseTransitions */);
+			}
 
-    return;
-}
-
-private void UpdateVisualStateInternal()
-{
-    CCalendarViewBaseItemChrome chrome = (CCalendarViewBaseItemChrome)(GetHandle());
-    if (chrome.HasTemplateChild()) // If !HasTemplateChild, then there is no visual in ControlTemplate for CalendarViewDayItemStyle
-                                    // There should be no VisualStateGroup defined, so ignore UpdateVisualState
-    {
-        UpdateVisualState(false /* fUseTransitions */);
-    }
-
-    return;
+			return;
+		}
+	}
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
@@ -905,5 +906,9 @@ namespace Windows.UI.Xaml
 					break;
 			}
 		}
+
+		// Those methods are part of the internal UWP API
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal bool ShouldRaiseEvent(Delegate eventHandler) => eventHandler != null;
 	}
 }

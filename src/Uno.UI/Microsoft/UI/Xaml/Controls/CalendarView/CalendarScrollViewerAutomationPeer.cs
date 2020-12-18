@@ -1,80 +1,81 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Collections.Generic;
+using Windows.UI.Xaml.Automation.Peers;
 
-using namespace DirectUI;
-using namespace DirectUISynonyms;
-
-private void GetClassNameCore(out HSTRING pReturnValue)
+namespace Windows.UI.Xaml.Controls
 {
-    IFCPTR_RETURN(pReturnValue);
-    stringReference("CalendarScrollViewer").CopyTo(pReturnValue);
+	internal class CalendarScrollViewerAutomationPeer : AutomationPeer
+	{
+		protected override string GetClassNameCore()
+		{
+			return "CalendarScrollViewer";
+		}
 
-    return;
-}
+		protected override IList<AutomationPeer> GetChildrenCore()
+		{
+			IList<AutomationPeer> ppReturnValue = default;
 
-private void GetChildrenCore(out  wfc.IVector<xaml_automation_peers.AutomationPeer>** ppReturnValue)
-{
-    IFCPTR_RETURN(ppReturnValue);
+			UIElement spOwner;
+			FrameworkElement spOwnerAsFrameworkElement;
 
-    UIElement spOwner;
-    xaml.FrameworkElement spOwnerAsFrameworkElement;
+			spOwner = Owner;
+			spOwnerAsFrameworkElement = (FrameworkElement) spOwner;
 
-    spOwner = Owner;
-    spOwnerAsFrameworkElement = spOwner.As);
+			DependencyObject spTemplatedParent;
+			spTemplatedParent = (spOwnerAsFrameworkElement as FrameworkElement).TemplatedParent;
 
-    DependencyObject spTemplatedParent;
-    spTemplatedParent = (spOwnerAsFrameworkElement as FrameworkElement).TemplatedParent;
+			if (spTemplatedParent is {})
+			{
+				CalendarView spCalendarView = spTemplatedParent as CalendarView;
 
-    if (spTemplatedParent)
-    {
-        xaml_controls.ICalendarView
-            spCalendarView = spTemplatedParent as xaml_controls.ICalendarView;
+				if (spCalendarView is {})
+				{
+					CalendarViewGeneratorHost spGeneratorHost;
+					(spCalendarView as CalendarView).GetActiveGeneratorHost(out spGeneratorHost);
+					var pCalendarPanel = spGeneratorHost.Panel;
 
-        if (spCalendarView)
-        {
-            CalendarViewGeneratorHost spGeneratorHost;
-            spGeneratorHost = (spCalendarView as CalendarView).GetActiveGeneratorHost);
-            var pCalendarPanel = spGeneratorHost.GetPanel();
+					if (pCalendarPanel is {})
+					{
+						int firstIndex = -1;
+						int lastIndex = -1;
 
-            if (pCalendarPanel)
-            {
-                int firstIndex = -1;
-                int lastIndex = -1;
+						firstIndex = pCalendarPanel.FirstVisibleIndex;
+						lastIndex = pCalendarPanel.LastVisibleIndex;
 
-                firstIndex = pCalendarPanel.FirstVisibleIndex;
-                lastIndex = pCalendarPanel.LastVisibleIndex;
+						// This ScrollViewer automation peer ensures that for CalendarViews, accessible Items are restricted
+						// to visible Items. To go to next unit view, user scenario is to utilize next and previous button.
+						// Utilizing realized Items has a side effect due to bufferring, the first Item is a few months
+						// back then current Item leading to an awkward state.
+						if (firstIndex != -1 && lastIndex != -1)
+						{
+							List<AutomationPeer> spAPChildren;
+							spAPChildren = new List<AutomationPeer>();
 
-                // This ScrollViewer automation peer ensures that for CalendarViews, accessible Items are restricted
-                // to visible Items. To go to next unit view, user scenario is to utilize next and previous button.
-                // Utilizing realized Items has a side effect due to bufferring, the first Item is a few months
-                // back then current Item leading to an awkward state.
-                if (firstIndex != -1 && lastIndex != -1)
-                {
-                    TrackerCollection<xaml_automation_peers.AutomationPeer> spAPChildren;
-                    spAPChildren = ctl.new TrackerCollection<xaml_automation_peers.AutomationPeer>);
+							for (int index = firstIndex; index <= lastIndex; ++index)
+							{
+								DependencyObject spChildAsIDO;
+								CalendarViewBaseItem spChildAsItem;
+								spChildAsIDO = pCalendarPanel.ContainerFromIndex(index);
+								spChildAsItem = (CalendarViewBaseItem) spChildAsIDO;
 
-                    for (int index = firstIndex; index <= lastIndex; ++index)
-                    {
-                        IDependencyObject spChildAsIDO;
-                        ICalendarViewBaseItem spChildAsItem;
-                        spChildAsIDO = pCalendarPanel.ContainerFromIndex(index);
-                        spChildAsItem = spChildAsIDO.As);
+								AutomationPeer spAutomationPeer;
+								spAutomationPeer = (spChildAsItem as CalendarViewBaseItem).GetAutomationPeer();
 
-                        IAutomationPeer spAutomationPeer;
-                        spAutomationPeer = (spChildAsItem as CalendarViewBaseItem).GetOrCreateAutomationPeer);
+								if (spAutomationPeer is {})
+								{
+									spAPChildren.Add(spAutomationPeer);
+								}
+							}
 
-                        if (spAutomationPeer)
-                        {
-                            spAPChildren.Append(spAutomationPeer);
-                        }
-                    }
+							ppReturnValue = spAPChildren;
+						}
+					}
+				}
+			}
 
-                    spAPChildren.CopyTo(ppReturnValue);
-                }
-            }
-        }
-    }
-
-    return;
+			return ppReturnValue;
+		}
+	}
 }

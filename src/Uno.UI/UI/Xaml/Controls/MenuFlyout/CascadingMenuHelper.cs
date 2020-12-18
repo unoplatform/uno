@@ -949,16 +949,4 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 	}
-
-	internal class ElementSoundPlayerService
-	{
-		internal static ElementSoundMode GetEffectiveSoundMode(DependencyObject dependencyObject)
-		{
-			return ElementSoundMode.Off;
-		}
-
-		internal static void RequestInteractionSoundForElementStatic(ElementSoundKind invoke, DependencyObject ownerAsControl)
-		{
-		}
-	}
 }

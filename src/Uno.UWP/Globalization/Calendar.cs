@@ -392,6 +392,9 @@ namespace Windows.Globalization
 		public string YearAsPaddedString(int minDigits)
 			=> _time.Year.ToString(new string('0', minDigits), _resolvedCulture);
 
+		internal string MonthAsFullString()
+			=> MonthAsString();
+
 		public string MonthAsString()
 			=> _time.ToString("MMM", _resolvedCulture);
 
@@ -417,6 +420,9 @@ namespace Windows.Globalization
 
 		public string DayOfWeekAsString()
 			=> _time.ToString("dddd", _resolvedCulture);
+
+		internal string DayOfWeekAsFullString()
+			=> DayOfWeekAsString();
 
 		public string DayOfWeekAsString(int idealLength)
 			=> _time.ToString("dddd", _resolvedCulture);

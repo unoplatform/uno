@@ -1,439 +1,460 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
+using System.Linq;
+using Windows.Foundation.Collections;
+using Windows.UI.Xaml.Automation.Peers;
+using DirectUI;
+using Uno.Extensions;
+using DateTime = System.DateTimeOffset;
+using SelectedDatesChangedEventSourceType = Windows.Foundation.TypedEventHandler<Windows.UI.Xaml.Controls.CalendarView, Windows.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs>;
 
-using namespace DirectUI;
-using namespace DirectUISynonyms;
-
-#undef min
-#undef max
-
-private void CalendarView.GetContainerByDate(
-     DateTime datetime,
-    out result_maybenull_ CalendarViewDayItem* ppItem)
+namespace Windows.UI.Xaml.Controls
 {
-    ppItem = null;
+	partial class CalendarView
+	{
+		private CalendarViewDayItem GetContainerByDate(
+			DateTime datetime)
+		{
+			CalendarViewDayItem ppItem = null;
 
-    var pMonthpanel = m_tpMonthViewItemHost.GetPanel();
-    if (pMonthpanel)
-    {
-        int index = -1;
-        IDependencyObject spChildAsI;
+			var pMonthpanel = m_tpMonthViewItemHost.Panel;
+			if (pMonthpanel is {})
+			{
+				int index = -1;
+				DependencyObject spChildAsI;
 
-        index = m_tpMonthViewItemHost.CalculateOffsetFromMinDate(datetime);
+				index = m_tpMonthViewItemHost.CalculateOffsetFromMinDate(datetime);
 
-        if (index >= 0)
-        {
-            spChildAsI = pMonthpanel.ContainerFromIndex(index);
-            if (spChildAsI)
-            {
-                CalendarViewDayItem spContainer;
+				if (index >= 0)
+				{
+					spChildAsI = pMonthpanel.ContainerFromIndex(index);
+					if (spChildAsI is {})
+					{
+						CalendarViewDayItem spContainer;
 
-                spContainer = spChildAsI.As);
-                spContainer.MoveTo(ppItem);
-            }
-        }
-    }
+						spContainer = (CalendarViewDayItem) spChildAsI;
+						ppItem = spContainer;
+					}
+				}
+			}
 
-}
+			return ppItem;
+		}
 
-private void CalendarView.OnSelectDayItem( CalendarViewDayItem pItem)
-{
-    xaml_controls.CalendarViewSelectionMode selectionMode = xaml_controls.CalendarViewSelectionMode.CalendarViewSelectionMode_None;
+		internal void OnSelectDayItem(CalendarViewDayItem pItem)
+		{
+			CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
 
-    global::System.Diagnostics.Debug.Assert(m_tpMonthViewItemHost.GetPanel());
-    selectionMode = SelectionMode;
+			global::System.Diagnostics.Debug.Assert(m_tpMonthViewItemHost.Panel is {});
+			selectionMode = SelectionMode;
 
-    if (selectionMode != xaml_controls.CalendarViewSelectionMode.CalendarViewSelectionMode_None)
-    {
-        bool isBlackout = false;
+			if (selectionMode != CalendarViewSelectionMode.None)
+			{
+				bool isBlackout = false;
 
-        isBlackout = pItem.IsBlackout;
-        if (!isBlackout)    // can't select a blackout item.
-        {
-            unsigned size = 0;
-            DateTime date;
-            unsigned index = 0;
-            boolean found = false;
+				isBlackout = pItem.IsBlackout;
+				if (!isBlackout) // can't select a blackout item.
+				{
+					uint size = 0;
+					DateTime date;
+					uint index = 0;
+					bool found = false;
 
-            size = m_tpSelectedDates.Size;
+					size = m_tpSelectedDates.Size;
 
-            m_isSelectedDatesChangingInternally = true;
+					m_isSelectedDatesChangingInternally = true;
 
-            global::System.Diagnostics.Debug.Assert(size <= 1 || selectionMode == xaml_controls.CalendarViewSelectionMode.CalendarViewSelectionMode_Multiple);
+					global::System.Diagnostics.Debug.Assert(size <= 1 || selectionMode == CalendarViewSelectionMode.Multiple);
 
-            date = pItem.Date;
+					date = pItem.Date;
 
-            found = m_tpSelectedDates.IndexOf(date, &index);
-            if (found)
-            {
-                // when user deselect an item, we remove all equivalent dates from selectedDates.
-                // so the item will be unselected.
-                // (the opposite case is when developer removes a date from selectedDates,
-                // we only remove that date from selectedDates, so the corresponding item
-                // will be still selected until all equivalent dates are removed from selectedDates)
+					found = m_tpSelectedDates.IndexOf(date, out index);
+					if (found)
+					{
+						// when user deselect an item, we remove all equivalent dates from selectedDates.
+						// so the item will be unselected.
+						// (the opposite case is when developer removes a date from selectedDates,
+						// we only remove that date from selectedDates, so the corresponding item
+						// will be still selected until all equivalent dates are removed from selectedDates)
 
-                index = m_tpSelectedDates as TrackableDateCollection.RemoveAll(date);
-            }
-            else
-            {
-                if (selectionMode == xaml_controls.CalendarViewSelectionMode.CalendarViewSelectionMode_Single && size == 1)
-                {
-                    // there was one selected date, remove it.
-                    m_tpSelectedDates.Clear();
-                }
+						(m_tpSelectedDates as TrackableDateCollection).RemoveAll(date); // out index
+					}
+					else
+					{
+						if (selectionMode == CalendarViewSelectionMode.Single && size == 1)
+						{
+							// there was one selected date, remove it.
+							m_tpSelectedDates.Clear();
+						}
 
-                m_tpSelectedDates.Append(date);
-            }
+						m_tpSelectedDates.Append(date);
+					}
 
-            RaiseSelectionChangedEventIfChanged();
-        }
-    }
+					RaiseSelectionChangedEventIfChanged();
+				}
+			}
 
-Cleanup:
-    m_isSelectedDatesChangingInternally = false;
-    return hr;
-}
+			Cleanup:
+			m_isSelectedDatesChangingInternally = false;
+		}
 
-// when we select a monthitem or yearitem, we changed to the corresponding view.
-private void CalendarView.OnSelectMonthYearItem(
-     CalendarViewItem pItem,
-     xaml.FocusState focusState)
-{
-    DateTime date  = default;
+		// when we select a monthitem or yearitem, we changed to the corresponding view.
+		internal void OnSelectMonthYearItem(
+			CalendarViewItem pItem,
+			FocusState focusState)
+		{
+			DateTime date = default;
 
-    xaml_controls.CalendarViewDisplayMode displayMode = xaml_controls.CalendarViewDisplayMode_Month;
+			CalendarViewDisplayMode displayMode = CalendarViewDisplayMode.Month;
 
-    displayMode = DisplayMode;
-    date = pItem.GetDate);
+			displayMode = DisplayMode;
+			date = pItem.Date;
 
-    // after display mode changed, we'll focus a new item, we want that item to be focused by the specified state.
-    m_focusItemAfterDisplayModeChanged = true;
-    m_focusStateAfterDisplayModeChanged = focusState;
+			// after display mode changed, we'll focus a new item, we want that item to be focused by the specified state.
+			m_focusItemAfterDisplayModeChanged = true;
+			m_focusStateAfterDisplayModeChanged = focusState;
 
-    if (displayMode == xaml_controls.CalendarViewDisplayMode_Year && m_tpMonthViewItemHost.GetPanel())
-    {
-        // when we switch back to MonthView, we try to keep the same day and use the selected month and year (and era)
-        IFC(CopyDate(
-            displayMode,
-            date,
-            m_lastDisplayedDate));
-        put_DisplayMode(xaml_controls.CalendarViewDisplayMode_Month);
-    }
-    else if (displayMode == xaml_controls.CalendarViewDisplayMode_Decade && m_tpYearViewItemHost.GetPanel())
-    {
-        // when we switch back to YearView, we try to keep the same day and same month and use the selected year (and era)
-        IFC(CopyDate(
-            displayMode,
-            date,
-            m_lastDisplayedDate));
-        put_DisplayMode(xaml_controls.CalendarViewDisplayMode_Year);
-    }
-    else
-    {
-        global::System.Diagnostics.Debug.Assert(false);  // corresponding panel part is missing.
-    }
+			if (displayMode == CalendarViewDisplayMode.Year && m_tpMonthViewItemHost.Panel is {})
+			{
+				// when we switch back to MonthView, we try to keep the same day and use the selected month and year (and era)
+				CopyDate(
+					displayMode,
+					date,
+					ref m_lastDisplayedDate);
+				DisplayMode = CalendarViewDisplayMode.Month;
+			}
+			else if (displayMode == CalendarViewDisplayMode.Decade && m_tpYearViewItemHost.Panel is { })
+			{
+				// when we switch back to YearView, we try to keep the same day and same month and use the selected year (and era)
+				CopyDate(
+					displayMode,
+					date,
+					ref m_lastDisplayedDate);
+				DisplayMode = CalendarViewDisplayMode.Year;
+			}
+			else
+			{
+				global::System.Diagnostics.Debug.Assert(false); // corresponding panel part is missing.
+			}
 
-}
+		}
 
-private void CalendarView.OnSelectionModeChanged()
-{
-    xaml_controls.CalendarViewSelectionMode selectionMode = xaml_controls.CalendarViewSelectionMode.CalendarViewSelectionMode_None;
+		private void OnSelectionModeChanged()
+		{
+			CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
 
-    selectionMode = SelectionMode;
+			selectionMode = SelectionMode;
 
-    // when selection mode is changed, e.g. from Multiple . Single or from Single . None
-    // we need to deselect some or all items and raise SelectedDates changed event
-    m_isSelectedDatesChangingInternally = true;
+			try
+			{
+				// when selection mode is changed, e.g. from Multiple . Single or from Single . None
+				// we need to deselect some or all items and raise SelectedDates changed event
+				m_isSelectedDatesChangingInternally = true;
 
-    if (selectionMode == xaml_controls.CalendarViewSelectionMode.CalendarViewSelectionMode_None)
-    {
-        m_tpSelectedDates.Clear();
-    }
-    else if (selectionMode == xaml_controls.CalendarViewSelectionMode.CalendarViewSelectionMode_Single)
-    {
-        unsigned size = 0;
+				if (selectionMode == CalendarViewSelectionMode.None)
+				{
+					m_tpSelectedDates.Clear();
+				}
+				else if (selectionMode == CalendarViewSelectionMode.Single)
+				{
+					int size = 0;
 
-        // remove all but keep the first selected item.
-        size = m_tpSelectedDates.Size;
+					// remove all but keep the first selected item.
+					size = m_tpSelectedDates.Count;
 
-        while (size > 1)
-        {
-            m_tpSelectedDates.RemoveAt(size - 1);
-            size--;
-        }
-    }
+					while (size > 1)
+					{
+						m_tpSelectedDates.RemoveAt(size - 1);
+						size--;
+					}
+				}
 
-    RaiseSelectionChangedEventIfChanged();
+				RaiseSelectionChangedEventIfChanged();
+			}
+			finally
+			{
+				m_isSelectedDatesChangingInternally = false;
+			}
+		}
 
-Cleanup:
-    m_isSelectedDatesChangingInternally = false;
-    return hr;
-}
+		private void RaiseSelectionChangedEventIfChanged()
+		{
+			var lessThanComparer = m_dateComparer.LessThanComparer;
+			TrackableDateCollection.DateSetType addedDates = new TrackableDateCollection.DateSetType(lessThanComparer);
+			TrackableDateCollection.DateSetType removedDates = new TrackableDateCollection.DateSetType(lessThanComparer);
 
-private void CalendarView.RaiseSelectionChangedEventIfChanged()
-{
-    var lessThanComparer = m_dateComparer.GetLessThanComparer();
-    TrackableDateCollection.DateSetType addedDates(lessThanComparer);
-    TrackableDateCollection.DateSetType removedDates(lessThanComparer);
+			var pSelectedDates = m_tpSelectedDates as TrackableDateCollection;
 
-    var pSelectedDates = m_tpSelectedDates as TrackableDateCollection;
+			// grab all the changes since last time SelectedDates changed.
+			pSelectedDates.FetchAndResetChange(addedDates, removedDates);
 
-    // grab all the changes since last time SelectedDates changed.
-    pSelectedDates.FetchAndResetChange(addedDates, removedDates);
+			// we don't support extended selection mode, so we should have only up to one added date.
+			global::System.Diagnostics.Debug.Assert(addedDates.Count <= 1);
 
-    // we don't support extended selection mode, so we should have only up to one added date.
-    global::System.Diagnostics.Debug.Assert(addedDates.size() <= 1);
+			if (addedDates.Count == 1)
+			{
+				uint count = 0;
+				DateTime date = addedDates.First();
 
-    if (addedDates.size() == 1)
-    {
-        unsigned count = 0;
-        DateTime date = addedDates.begin();
+				pSelectedDates.CountOf(date, out count);
 
-        count = pSelectedDates.CountOf(date);
+				// given that we have one date in addedDates, so it must exist in SelectedDates.
+				global::System.Diagnostics.Debug.Assert(count >= 1);
 
-        // given that we have one date in addedDates, so it must exist in SelectedDates.
-        global::System.Diagnostics.Debug.Assert(count >= 1);
+				if (count > 1)
+				{
+					// we had this date in SelectedDates before, adding this date will not affect the
+					// selection state on this item, so actually we haven't added this date into SelectedDates.
+					addedDates.Remove(date);
+				}
+				else if (count == 1)
+				{
+					// this date doesn't exist in SelectedDates before,
+					// which means we change the selection state on this item from Not Selected to Selected.
+					CalendarViewDayItem spChild;
 
-        if (count > 1)
-        {
-            // we had this date in SelectedDates before, adding this date will not affect the
-            // selection state on this item, so actually we haven't added this date into SelectedDates.
-            addedDates.erase(addedDates.begin());
-        }
-        else if (count == 1)
-        {
-            // this date doesn't exist in SelectedDates before,
-            // which means we change the selection state on this item from Not Selected to Selected.
-            CalendarViewDayItem spChild;
-
-            spChild = GetContainerByDate(date);
-            if (spChild)
-            {
+					spChild = GetContainerByDate(date);
+					if (spChild is {})
+					{
 #if DEBUG
-                bool isBlackout = false;
+						bool isBlackout = false;
 
-                isBlackout = spChild.IsBlackout;
-                // we already handle blackout in CollectionChanging, so here the date must not be blackout.
-                global::System.Diagnostics.Debug.Assert(!isBlackout);
+						isBlackout = spChild.IsBlackout;
+						// we already handle blackout in CollectionChanging, so here the date must not be blackout.
+						global::System.Diagnostics.Debug.Assert(!isBlackout);
 
 #endif
-                spChild.SetIsSelected(true);
-            }
-            // else this item is not realized yet, we'll update the selection state when this item is prepared.
-        }
+						spChild.SetIsSelected(true);
+					}
 
-    }
+					// else this item is not realized yet, we'll update the selection state when this item is prepared.
+				}
 
-    // now handle removedDates
+			}
 
-    // we'll check all dates in RemovedDates, to see if there is still an equivalent date
-    // in SelectedDates, if yes, this date is still selected and actually not being removed,
-    // if no we need update selection state and raise selectedDatesChanged event.
+			// now handle removedDates
 
-    if (!removedDates.empty())
-    {
-        // removedDates is sorted and unique, so let's search all SelectedDates from removedDates. time cost O(M x lg(N))
-        unsigned size = 0;
-        size = pSelectedDates.Size;
+			// we'll check all dates in RemovedDates, to see if there is still an equivalent date
+			// in SelectedDates, if yes, this date is still selected and actually not being removed,
+			// if no we need update selection state and raise selectedDatesChanged event.
 
-        for (unsigned i = 0; i < size; ++i)
-        {
-            DateTime date{};
-            KeyValuePair<TrackableDateCollection.DateSetType.iterator, TrackableDateCollection.DateSetType.iterator> result;
+			if (removedDates.Count > 0)
+			{
+				// removedDates is sorted and unique, so let's search all SelectedDates from removedDates. time cost O(M x lg(N))
+				uint size = 0;
+				size = pSelectedDates.Size;
 
-            date = pSelectedDates.GetAt(i);
+				for (uint i = 0; i < size; ++i)
+				{
+					DateTime date = default;
+					//KeyValuePair<TrackableDateCollection.DateSetType.iterator, TrackableDateCollection.DateSetType.iterator> result;
 
-            // binary_search only tells us if the item exists or not, it doesn't tell us the position:(
-            result = removedDates.equal_range(date);
-            if (result.first != result.second)
-            {
-                // because removedDates is unique and sorted, so we should have only up to 1 record.
-                global::System.Diagnostics.Debug.Assert(std.distance(result.first, result.second) == 1);
-                removedDates.erase(result.first);
-            }
-        }
+					date = pSelectedDates.GetAt(i);
 
-        // now removedDates contains all the dates that we finally removed and we are going to
-        // mark them as un-selected (if they are realized)
+					//// binary_search only tells us if the item exists or not, it doesn't tell us the position:(
+					//result = removedDates.equal_range(date);
+					//if (result.first != result.second)
+					//{
+					//	// because removedDates is unique and sorted, so we should have only up to 1 record.
+					//	global::System.Diagnostics.Debug.Assert(std.distance(result.first, result.second) == 1);
+					//	removedDates.erase(result.first);
+					//}
+					removedDates.Remove(date);
+				}
 
-        foreach (var it in removedDates)
-        {
-            CalendarViewDayItem spChild;
+				// now removedDates contains all the dates that we finally removed and we are going to
+				// mark them as un-selected (if they are realized)
 
-            spChild = GetContainerByDate(it);
-            if (spChild)
-            {
-                spChild.SetIsSelected(false);
-            }
-        }
-    }
+				foreach (var it in removedDates)
+				{
+					CalendarViewDayItem spChild;
 
-    // developer could change SelectedDates in SelectedDatesChanged event
-    // it is the good time allow they do so now.
-    m_isSelectedDatesChangingInternally = false;
+					spChild = GetContainerByDate(it);
+					if (spChild is {})
+					{
+						spChild.SetIsSelected(false);
+					}
+				}
+			}
 
-    // now raise selectedDatesChanged event if there are any actual changes
-    if (!addedDates.empty() || !removedDates.empty())
-    {
-        SelectedDatesChangedEventSourceType pEventSource = null;
-        CalendarViewSelectedDatesChangedEventArgs spEventArgs;
-        ValueTypeCollection<DateTime> spAddedDates;
-        ValueTypeCollection<DateTime> spRemovedDates;
+			// developer could change SelectedDates in SelectedDatesChanged event
+			// it is the good time allow they do so now.
+			m_isSelectedDatesChangingInternally = false;
 
-        spAddedDates = default;
-        spRemovedDates = default;
+			// now raise selectedDatesChanged event if there are any actual changes
+			if (!addedDates.Empty() || !removedDates.Empty())
+			{
+				SelectedDatesChangedEventSourceType pEventSource = null;
+				CalendarViewSelectedDatesChangedEventArgs spEventArgs;
+				ValueTypeCollection<DateTime> spAddedDates;
+				ValueTypeCollection<DateTime> spRemovedDates;
 
-        foreach (var it in addedDates)
-        {
-            spAddedDates.Append(it);
-        }
+				spAddedDates = default;
+				spRemovedDates = default;
 
-        foreach (var it in removedDates)
-        {
-            spRemovedDates.Append(it);
-        }
+				foreach (var it in addedDates)
+				{
+					spAddedDates.Append(it);
+				}
 
-        spEventArgs = default;
-        spEventArgs.AddedDates = spAddedDates as wfc.IVectorView<DateTime>;
-        spEventArgs.RemovedDates = spRemovedDates as wfc.IVectorView<DateTime>;
-        pEventSource = GetSelectedDatesChangedEventSourceNoRef);
-        pEventSource.Raise(this, spEventArgs);
+				foreach (var it in removedDates)
+				{
+					spRemovedDates.Append(it);
+				}
+
+				spEventArgs = default;
+				spEventArgs.AddedDates = spAddedDates as IVectorView<DateTime>;
+				spEventArgs.RemovedDates = spRemovedDates as IVectorView<DateTime>;
+				GetSelectedDatesChangedEventSourceNoRef(out pEventSource);
+				pEventSource.Invoke(this, spEventArgs);
 
 
-        bool bAutomationListener = false;
-        bAutomationListener = AutomationPeer.ListenerExistsHelper(xaml_automation_peers.AutomationEvents_SelectionPatternOnInvalidated);
-        if (!bAutomationListener)
-        {
-            bAutomationListener = AutomationPeer.ListenerExistsHelper(xaml_automation_peers.AutomationEvents_SelectionItemPatternOnElementSelected);
-        }
-        if (!bAutomationListener)
-        {
-            bAutomationListener = AutomationPeer.ListenerExistsHelper(xaml_automation_peers.AutomationEvents_SelectionItemPatternOnElementAddedToSelection);
-        }
-        if (!bAutomationListener)
-        {
-            bAutomationListener = AutomationPeer.ListenerExistsHelper(xaml_automation_peers.AutomationEvents_SelectionItemPatternOnElementRemovedFromSelection);
-        }
-        if (bAutomationListener)
-        {
-            xaml_automation_peers.IAutomationPeer spAutomationPeer;
-            spAutomationPeer = GetOrCreateAutomationPeer);
-            if (spAutomationPeer)
-            {
-                spAutomationPeer as CalendarViewAutomationPeer.RaiseSelectionEvents(spEventArgs);
-            }
-        }
-    }
+				bool bAutomationListener = false;
+				// TODO UNO
+				//bAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.SelectionPatternOnInvalidated);
+				//if (!bAutomationListener)
+				//{
+				//	bAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.SelectionItemPatternOnElementSelected);
+				//}
 
-    return;
-}
+				//if (!bAutomationListener)
+				//{
+				//	bAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.SelectionItemPatternOnElementAddedToSelection);
+				//}
 
-private void CalendarView.OnDayItemBlackoutChanged( CalendarViewDayItem pItem,  bool isBlackOut)
-{
-    if (isBlackOut)
-    {
-        DateTime date;
-        unsigned index = 0;
-        boolean found = false;
+				//if (!bAutomationListener)
+				//{
+				//	bAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.SelectionItemPatternOnElementRemovedFromSelection);
+				//}
 
-        date = pItem.Date;
-        found = m_tpSelectedDates.IndexOf(date, &index);
+				if (bAutomationListener)
+				{
+					AutomationPeer spAutomationPeer;
+					spAutomationPeer = GetAutomationPeer();
+					if (spAutomationPeer is {})
+					{
+						(spAutomationPeer as CalendarViewAutomationPeer).RaiseSelectionEvents(spEventArgs);
+					}
+				}
+			}
 
-        if (found)
-        {
-            // this item is selected, remove the selection and raise event.
-            m_isSelectedDatesChangingInternally = true;
+			return;
+		}
 
-            index = m_tpSelectedDates as TrackableDateCollection.RemoveAll(date);
+		internal void OnDayItemBlackoutChanged(CalendarViewDayItem pItem, bool isBlackOut)
+		{
+			try
+			{
+				if (isBlackOut)
+				{
+					DateTime date;
+					uint index = 0;
+					bool found = false;
 
-            RaiseSelectionChangedEventIfChanged();
-        }
-    }
+					date = pItem.Date;
+					m_tpSelectedDates.IndexOf(date, out index, out found);
 
-Cleanup:
-    m_isSelectedDatesChangingInternally = false;
-    return hr;
-}
+					if (found)
+					{
+						// this item is selected, remove the selection and raise event.
+						m_isSelectedDatesChangingInternally = true;
 
-private void CalendarView.IsSelected( DateTime date, out bool pIsSelected)
-{
-    unsigned index = 0;
-    boolean found = false;
+						(m_tpSelectedDates as TrackableDateCollection).RemoveAll(date);
 
-    found = m_tpSelectedDates.IndexOf(date, &index);
+						RaiseSelectionChangedEventIfChanged();
+					}
+				}
+			}
+			finally
+			{
+				m_isSelectedDatesChangingInternally = false;
+			}
+		}
 
-    pIsSelected = !!found;
+		internal void IsSelected(DateTime date, out bool pIsSelected)
+		{
+			uint index = 0;
+			bool found = false;
 
-}
+			found = m_tpSelectedDates.IndexOf(date, out index);
 
-private void CalendarView.OnSelectedDatesChanged(
-     wfc.IObservableVector<DateTime>* pSender,
-     wfc.IVectorChangedEventArgs e)
-{
-    // only raise event for the changes from external.
-    if (!m_isSelectedDatesChangingInternally)
-    {
-        RaiseSelectionChangedEventIfChanged();
-    }
+			pIsSelected = !!found;
 
-    return;
-}
+		}
 
-private void CalendarView.OnSelectedDatesChanging(
-     TrackableDateCollection_CollectionChanging action,
-     DateTime addingDate)
-{
-    switch (action)
-    {
-    case DirectUI.TrackableDateCollection_CollectionChanging.ItemInserting:
-    {
-        // when inserting an item, we should verify the new adding date is not blackout.
-        // also we need to verify this adding operation doesn't break the limition of Selection mode.
-        ValidateSelectingDateIsNotBlackout(addingDate);
+		private void OnSelectedDatesChanged(
+			IObservableVector<DateTime> pSender,
+			IVectorChangedEventArgs e)
+		{
+			// only raise event for the changes from external.
+			if (!m_isSelectedDatesChangingInternally)
+			{
+				RaiseSelectionChangedEventIfChanged();
+			}
 
-        unsigned size = 0;
-        xaml_controls.CalendarViewSelectionMode selectionMode = xaml_controls.CalendarViewSelectionMode.CalendarViewSelectionMode_None;
+			return;
+		}
 
-        selectionMode = SelectionMode;
-        size = m_tpSelectedDates.Size;
+		private void OnSelectedDatesChanging(
+			TrackableDateCollection.CollectionChanging action,
+			DateTime addingDate)
+		{
+			switch (action)
+			{
+				case DirectUI.TrackableDateCollection.CollectionChanging.ItemInserting:
+				{
+					// when inserting an item, we should verify the new adding date is not blackout.
+					// also we need to verify this adding operation doesn't break the limition of Selection mode.
+					ValidateSelectingDateIsNotBlackout(addingDate);
 
-        // if we already have 1 item selected in Single mode, or the selection mode is None, we can't select any more dates.
-        if ((selectionMode == xaml_controls.CalendarViewSelectionMode_Single && size > 0)
-            || (selectionMode == xaml_controls.CalendarViewSelectionMode_None))
-        {
-            ErrorHelper.OriginateErrorUsingResourceID(E_FAIL, ERROR_CALENDAR_CANNOT_SELECT_MORE_DATES);
-        }
-    }
-        break;
-    case DirectUI.TrackableDateCollection_CollectionChanging.ItemChanging:
-        // when item is changing, we don't change the total number of selected dates, so we
-        // don't need to verify Selection mode. Here we only need to check if
-        // the new addingDate is blackout or not.
-        ValidateSelectingDateIsNotBlackout(addingDate);
-        break;
-    default:
-        break;
-    }
+					uint size = 0;
+					CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
 
-    return;
-}
+					selectionMode = SelectionMode;
+					size = (uint)m_tpSelectedDates.Count;
 
-private void CalendarView.ValidateSelectingDateIsNotBlackout( DateTime date)
-{
-    CalendarViewDayItem spChild;
+					// if we already have 1 item selected in Single mode, or the selection mode is None, we can't select any more dates.
+					if ((selectionMode == CalendarViewSelectionMode.Single && size > 0)
+						|| (selectionMode == CalendarViewSelectionMode.None))
+					{
+						//ErrorHelper.OriginateErrorUsingResourceID(E_FAIL, ERROR_CALENDAR_CANNOT_SELECT_MORE_DATES);
+						throw new InvalidOperationException("ERROR_CALENDAR_CANNOT_SELECT_MORE_DATES");
+					}
+				}
+					break;
+				case DirectUI.TrackableDateCollection.CollectionChanging.ItemChanging:
+					// when item is changing, we don't change the total number of selected dates, so we
+					// don't need to verify Selection mode. Here we only need to check if
+					// the new addingDate is blackout or not.
+					ValidateSelectingDateIsNotBlackout(addingDate);
+					break;
+				default:
+					break;
+			}
 
-    spChild = GetContainerByDate(date);
-    if (spChild)
-    {
-        bool isBlackout = false;
+			return;
+		}
 
-        isBlackout = spChild.IsBlackout;
-        if (isBlackout)
-        {
-            ErrorHelper.OriginateErrorUsingResourceID(E_FAIL, ERROR_CALENDAR_CANNOT_SELECT_BLACKOUT_DATE);
-        }
-    }
+		private void ValidateSelectingDateIsNotBlackout(DateTime date)
+		{
+			CalendarViewDayItem spChild;
 
-    return;
+			spChild = GetContainerByDate(date);
+			if (spChild is {})
+			{
+				bool isBlackout = false;
+
+				isBlackout = spChild.IsBlackout;
+				if (isBlackout)
+				{
+					//ErrorHelper.OriginateErrorUsingResourceID(E_FAIL, ERROR_CALENDAR_CANNOT_SELECT_BLACKOUT_DATE);
+					throw new InvalidOperationException("ERROR_CALENDAR_CANNOT_SELECT_BLACKOUT_DATE");
+				}
+			}
+
+			return;
+		}
+	}
 }

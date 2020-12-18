@@ -11,6 +11,17 @@ using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
+	internal partial class IsEnabledChangedEventArgs
+	{
+		public IsEnabledChangedEventArgs()
+		{
+		}
+
+		public bool OldValue { get; set; }
+
+		public bool NewValue { get; set; }
+	}
+
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
 		public T FindFirstParent<T>() where T : class => FindFirstParent<T>(includeCurrent: false);
@@ -78,8 +89,18 @@ namespace Windows.UI.Xaml
 		{
 			UpdateHitTest();
 
+			_isEnabledChangedEventArgs.OldValue = (bool)args.OldValue;
+			_isEnabledChangedEventArgs.NewValue = (bool)args.NewValue;
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
+
 			OnIsEnabledChanged((bool)args.OldValue, (bool)args.NewValue);
 			IsEnabledChanged?.Invoke(this, args);
+		}
+
+		// This is internal, so for perf consideration we reused the same instance of args every time.
+		private static readonly IsEnabledChangedEventArgs _isEnabledChangedEventArgs = new IsEnabledChangedEventArgs();
+		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
+		{
 		}
 
 		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)

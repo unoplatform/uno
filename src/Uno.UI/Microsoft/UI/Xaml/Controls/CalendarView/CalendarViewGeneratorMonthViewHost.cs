@@ -1,300 +1,315 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
+using System.Collections.Generic;
+using DirectUI;
+using Uno.Extensions;
+using DateTime = System.DateTimeOffset;
 
-using namespace DirectUI;
-using namespace DirectUISynonyms;
-
-// Work around disruptive max/min macros
-#undef max
-#undef min
-
-
-CalendarViewGeneratorMonthViewHost()
-    : m_lowestPhaseInQueue(-1)
-    , m_isRegisteredForCallbacks()
-    , m_budget(BUDGET_MANAGER_DEFAULT_LIMIT)
+namespace Windows.UI.Xaml.Controls
 {
-}
+	partial class CalendarViewGeneratorMonthViewHost
+	{
+		private const int BUDGET_MANAGER_DEFAULT_LIMIT = 40;
 
-private void GetContainer(
-     DependencyObject pItem,
-     xaml.IDependencyObject pRecycledContainer,
-    out  CalendarViewBaseItem* ppContainer)
-{
-    CalendarViewDayItem spContainer;
+		public CalendarViewGeneratorMonthViewHost()
+		{
+			m_lowestPhaseInQueue = -1;
+			m_isRegisteredForCallbacks = false;
+			m_budget = BUDGET_MANAGER_DEFAULT_LIMIT;
+		}
 
-    spContainer = ctl.new CalendarViewDayItem);
+		protected override CalendarViewBaseItem GetContainer(
+			object pItem,
+			DependencyObject pRecycledContainer)
+		{
+			CalendarViewDayItem spContainer;
 
-    spContainer.CopyTo(ppContainer);
+			spContainer = new CalendarViewDayItem();
 
-}
+			var ppContainer = spContainer;
 
- private void PrepareItemContainer(
-     xaml.IDependencyObject pContainer,
-     DependencyObject pItem)
-{
-    DateTime date;
-    CalendarViewDayItem spContainer;
+			return ppContainer;
+		}
 
-    spContainer = (CalendarViewDayItem)(pContainer);
+		internal override void PrepareItemContainer(
+			DependencyObject pContainer,
+			object pItem)
+		{
+			DateTime date;
+			CalendarViewDayItem spContainer;
 
-    // first let's check if this container is already in the tobecleared queue
-    // the container might be already marked as to be cleared but not cleared yet, 
-    // if we pick up this container we don't need to clear it up.
-    RemoveToBeClearedContainer(spContainer);
+			spContainer = (CalendarViewDayItem)(pContainer);
 
-    // now prepare the container    
+			// first let's check if this container is already in the tobecleared queue
+			// the container might be already marked as to be cleared but not cleared yet, 
+			// if we pick up this container we don't need to clear it up.
+			RemoveToBeClearedContainer(spContainer);
 
-    ctl.do_get_value(date, pItem);
-    GetCalendar().SetDateTime(date);
+			// now prepare the container    
 
-    spContainer.Date = date;
+			date = (DateTime)pItem;
+			GetCalendar().SetDateTime(date);
 
-    // main text
-    {
-        string mainText;
+			spContainer.Date = date;
 
-        GetCalendar().DayAsString(mainText());
-        spContainer.UpdateMainText(mainText);
-    }
+			// main text
+			{
+				string mainText;
 
-    // label text
-    {
-        bool isLabelVisible = false;
+				mainText = GetCalendar().DayAsString();
+				spContainer.UpdateMainText(mainText);
+			}
 
-        isLabelVisible = GetOwner().IsGroupLabelVisible;
+			// label text
+			{
+				bool isLabelVisible = false;
 
-        UpdateLabel(spContainer, !!isLabelVisible);
-    }
+				isLabelVisible = Owner.IsGroupLabelVisible;
 
-    // today state will be updated in CalendarViewGeneratorHost.PrepareItemContainer
+				UpdateLabel(spContainer, !isLabelVisible);
+			}
 
-    // clear the blackout state and set correct selection state.
-    {
-        // we don't have a copy of blackout items (that could be too many), instead developer needs to tell us
-        // about the blackout and densitybar properties when in CIC event. As both properties are on the container (not like selected dates) so when
-        // the container is being reused, we'll need to clear these properties and developer may set them again if they want.
-        // there is a discussion that who should clear the flags - the developer clear them in phase 0 (in CIC phase 0 event) 
-        // or we clear them in phase 0 (before CIC phase 0 event). the result is we do this to make the logical simple.
+			// today state will be updated in CalendarViewGeneratorHost.PrepareItemContainer
 
-        // reset the blackout state
-        spContainer.IsBlackout = false;
+			// clear the blackout state and set correct selection state.
+			{
+				// we don't have a copy of blackout items (that could be too many), instead developer needs to tell us
+				// about the blackout and densitybar properties when in CIC event. As both properties are on the container (not like selected dates) so when
+				// the container is being reused, we'll need to clear these properties and developer may set them again if they want.
+				// there is a discussion that who should clear the flags - the developer clear them in phase 0 (in CIC phase 0 event) 
+				// or we clear them in phase 0 (before CIC phase 0 event). the result is we do this to make the logical simple.
 
-        // set selection state.
-        bool isSelected = false;
-        isSelected = GetOwner().IsSelected(date);
-        spContainer.SetIsSelected(isSelected);
-    }
+				// reset the blackout state
+				spContainer.IsBlackout = false;
 
-    // clear the density bar as well.
-    spContainer.SetDensityColors(null);
+				// set selection state.
+				bool isSelected = false;
+				Owner.IsSelected(date, out isSelected);
+				spContainer.SetIsSelected(isSelected);
+			}
 
-    // apply style to CalendarViewDayItem if any.
-    {
-        IStyle spStyle;
+			// clear the density bar as well.
+			spContainer.SetDensityColors(null);
 
-        spStyle = GetOwner().CalendarViewDayItemStyle;
-        CalendarView.SetDayItemStyle(spContainer, spStyle);
-    }
+			// apply style to CalendarViewDayItem if any.
+			{
+				Style spStyle;
 
-    CalendarViewGeneratorHost.PrepareItemContainer(pContainer, pItem);
+				spStyle = Owner.CalendarViewDayItemStyle;
+				CalendarView.SetDayItemStyle(spContainer, spStyle);
+			}
 
-}
+			base.PrepareItemContainer(pContainer, pItem);
+		}
 
-private void UpdateLabel( CalendarViewBaseItem pItem,  bool isLabelVisible)
-{
-    bool showLabel = false;
-    if (isLabelVisible)
-    {
-        DateTime date;
-        var pCalendar = GetCalendar();
-        int day = 0;
-        int firstDayInThisMonth = 0;
+		internal override void UpdateLabel(CalendarViewBaseItem pItem, bool isLabelVisible)
+		{
+			bool showLabel = false;
+			if (isLabelVisible)
+			{
+				DateTime date;
+				var pCalendar = GetCalendar();
+				int day = 0;
+				int firstDayInThisMonth = 0;
 
-        // TODO: consider caching the firstday flag because we also need this information when determining snap points 
-        // (however Decadeview doesn't need this for Label).
-        date = pItem.GetDate);
-        pCalendar.SetDateTime(date);
-        firstDayInThisMonth = pCalendar.FirstDayInThisMonth;
-        day = pCalendar.Day;
-        showLabel = firstDayInThisMonth == day;
+				// TODO: consider caching the firstday flag because we also need this information when determining snap points 
+				// (however Decadeview doesn't need this for Label).
+				date = pItem.Date;
+				pCalendar.SetDateTime(date);
+				firstDayInThisMonth = pCalendar.FirstDayInThisMonth;
+				day = pCalendar.Day;
+				showLabel = firstDayInThisMonth == day;
 
-        if (showLabel)
-        {
-            string labelText;
-            IFC_RETURN(pCalendar.MonthAsString(
-                0, /idealLength, set to 0 to get the abbreviated string/
-                labelText()));
-            pItem.UpdateLabelText(labelText);
-        }
-    }
-    pItem.ShowLabelText(showLabel);
-    return;
-}
+				if (showLabel)
+				{
+					string labelText;
+					labelText = pCalendar.MonthAsString(
+						0  /* idealLength, set to 0 to get the abbreviated string */
+						);
+					pItem.UpdateLabelText(labelText);
+				}
+			}
 
-// reset CIC event if the container is being cleared.
- private void ClearContainerForItem(
-     xaml.IDependencyObject pContainer,
-     DependencyObject pItem)
-{
-    CalendarViewDayItem spContainer = (CalendarViewDayItem)(pContainer);
+			pItem.ShowLabelText(showLabel);
+			return;
+		}
 
-    // There is much perf involved with doing a clear, and usually it is going to be
-    // a waste of time since we are going to immediately follow up with a prepare. 
-    // Perf traces have found this to be about 8 to 12% during a full virtualization pass (!!)
-    // Although with other optimizations we would expect that to go down, it is unlikely to go 
-    // down to 0. Therefore we are deferring the impl work here to later.
-    // We have decided to do this only for the new panels.
+		// reset CIC event if the container is being cleared.
+		private void ClearContainerForItem(
+			DependencyObject pContainer,
+			object pItem)
+		{
+			CalendarViewDayItem spContainer = (CalendarViewDayItem)(pContainer);
 
-    // also, do not defer items that are uielement. They need to be cleared straight away so that
-    // they can be messed with again.
-    m_toBeClearedContainers.Append(spContainer);
+			// There is much perf involved with doing a clear, and usually it is going to be
+			// a waste of time since we are going to immediately follow up with a prepare. 
+			// Perf traces have found this to be about 8 to 12% during a full virtualization pass (!!)
+			// Although with other optimizations we would expect that to go down, it is unlikely to go 
+			// down to 0. Therefore we are deferring the impl work here to later.
+			// We have decided to do this only for the new panels.
 
-    // note that if we are being cleared, we are not going to be in the 
-    // visible index, or the caches. And thus we will never be called in the 
-    // prepare queuing part.
+			// also, do not defer items that are uielement. They need to be cleared straight away so that
+			// they can be messed with again.
+			m_toBeClearedContainers.Add(spContainer);
 
-    if (!m_isRegisteredForCallbacks)
-    {
-        BuildTreeService spBuildTree;
-        DXamlCore.GetCurrent().GetBuildTreeService(spBuildTree);
-        spBuildTree.RegisterWork(this);
-    }
-    global::System.Diagnostics.Debug.Assert(m_isRegisteredForCallbacks);
+			// note that if we are being cleared, we are not going to be in the 
+			// visible index, or the caches. And thus we will never be called in the 
+			// prepare queuing part.
+
+			if (!m_isRegisteredForCallbacks)
+			{
+				BuildTreeService spBuildTree;
+				spBuildTree = DXamlCore.GetCurrent().GetBuildTreeService();
+				spBuildTree.RegisterWork(this);
+			}
+
+			global::System.Diagnostics.Debug.Assert(m_isRegisteredForCallbacks);
 
 
-}
+		}
 
-private void GetIsFirstItemInScope( int index, out bool pIsFirstItemInScope)
-{
-    pIsFirstItemInScope = false;
-    if (index == 0)
-    {
-        pIsFirstItemInScope = true;
-    }
-    else
-    {
-        DateTime date  = default;
-        int day = 0;
-        int firstDay = 0;
+		internal override bool GetIsFirstItemInScope(int index)
+		{
+			var pIsFirstItemInScope = false;
+			if (index == 0)
+			{
+				pIsFirstItemInScope = true;
+			}
+			else
+			{
+				DateTime date = default;
+				int day = 0;
+				int firstDay = 0;
 
-        date = GetDateAt(index);
-        var pCalendar = GetCalendar();
-        pCalendar.SetDateTime(date);
-        day = pCalendar.Day;
-        firstDay = pCalendar.FirstDayInThisMonth;
-        pIsFirstItemInScope = day == firstDay;
-    }
+				date = GetDateAt((uint)index);
+				var pCalendar = GetCalendar();
+				pCalendar.SetDateTime(date);
+				day = pCalendar.Day;
+				firstDay = pCalendar.FirstDayInThisMonth;
+				pIsFirstItemInScope = day == firstDay;
+			}
 
-}
+			return pIsFirstItemInScope;
+		}
 
-private void GetUnit(out int pValue)
-{
-    return GetCalendar().get_Day(pValue);
-}
+		protected override int GetUnit()
+		{
+			var pValue = GetCalendar().Day;
 
-private void SetUnit( int value)
-{
-    return GetCalendar().Day = value;
-}
+			return pValue;
+		}
 
-private void AddUnits( int value)
-{
-    return GetCalendar().AddDays(value);
-}
+		protected override void SetUnit(int value)
+		{
+			GetCalendar().Day = value;
+		}
 
-private void AddScopes( int value)
-{
-    return GetCalendar().AddMonths(value);
-}
+		protected override void AddUnits(int value)
+		{
+			GetCalendar().AddDays(value);
+		}
 
-private void GetFirstUnitInThisScope(out int pValue)
-{
-    return GetCalendar().get_FirstDayInThisMonth(pValue);
-}
-private void GetLastUnitInThisScope(out int pValue)
-{
-    return GetCalendar().get_LastDayInThisMonth(pValue);
-}
+		protected override void AddScopes(int value)
+		{
+			GetCalendar().AddMonths(value);
+		}
 
-private void OnScopeChanged()
-{
-    return GetOwner().FormatMonthYearName(m_minDateOfCurrentScope, m_pHeaderText.ReleaseAn());
-}
+		protected override int GetFirstUnitInThisScope()
+		{
+			var pValue = GetCalendar().FirstDayInThisMonth;
 
-private void GetPossibleItemStrings(out   std.CalculatorList<string>** ppStrings)
-{
-    ppStrings = &m_possibleItemStrings;
+			return pValue;
+		}
 
-    if (m_possibleItemStrings.empty())
-    {
-        // for all known calendar identifiers so far (10 different calendar identifiers), we can find the longest month in no more than 3 months
-        // if we start from min date of this calendar.
+		protected override int GetLastUnitInThisScope()
+		{
+			int pValue = GetCalendar().LastDayInThisMonth;
 
-        // below are the longest month and the lowest index of that month we found for each calendar identifier. 
-        // we hope that any new calendar in the future don't break this rule.
+			return pValue;
+		}
 
-        // PersianCalendar, maxLength = 31 @ index 0
-        // GregorianCalendar, maxLength = 31 @ index 0
-        // HebrewCalendar, maxLength = 30 @ index 1
-        // HijriCalendar, maxLength = 30 @ index 0
-        // JapaneseCalendar, maxLength = 31 @ index 0
-        // JulianCalendar, maxLength = 31 @ index 2             
-        // KoreanCalendar, maxLength = 31 @ index 0
-        // TaiwanCalendar, maxLength = 31 @ index 0
-        // ThaiCalendar, maxLength = 31 @ index 0
-        // UmAlQuraCalendar, maxLength = 30 @ index 1
+		protected override void OnScopeChanged()
+		{
+			m_pHeaderText = Owner.FormatMonthYearName(m_minDateOfCurrentScope);
+		}
 
-        {
-             int MaxNumberOfMonthsToBeChecked = 3;
-            DateTime longestMonth;
-            int lengthOfLongestMonth = 0;
-            int numberOfDays = 0;
-            int day = 0;
+		internal override List<string> GetPossibleItemStrings()
+		{
+			var ppStrings = m_possibleItemStrings;
 
-            var pCalendar = GetCalendar();
+			if (m_possibleItemStrings.Empty())
+			{
+				// for all known calendar identifiers so far (10 different calendar identifiers), we can find the longest month in no more than 3 months
+				// if we start from min date of this calendar.
 
-            pCalendar.SetToMin();
-            for (int i = 0; i < MaxNumberOfMonthsToBeChecked; i++)
-            {
-                numberOfDays = pCalendar.NumberOfDaysInThisMonth;
-                if (numberOfDays > lengthOfLongestMonth)
-                {
-                    lengthOfLongestMonth = numberOfDays;
-                    longestMonth = pCalendar.GetDateTime);
-                }
-                pCalendar.AddMonths(1);
-            }
+				// below are the longest month and the lowest index of that month we found for each calendar identifier. 
+				// we hope that any new calendar in the future don't break this rule.
 
-            global::System.Diagnostics.Debug.Assert(lengthOfLongestMonth == 30 || lengthOfLongestMonth == 31);
-            pCalendar.SetDateTime(longestMonth);
-            day = pCalendar.FirstDayInThisMonth;
-            pCalendar.Day = day;
+				// PersianCalendar, maxLength = 31 @ index 0
+				// GregorianCalendar, maxLength = 31 @ index 0
+				// HebrewCalendar, maxLength = 30 @ index 1
+				// HijriCalendar, maxLength = 30 @ index 0
+				// JapaneseCalendar, maxLength = 31 @ index 0
+				// JulianCalendar, maxLength = 31 @ index 2             
+				// KoreanCalendar, maxLength = 31 @ index 0
+				// TaiwanCalendar, maxLength = 31 @ index 0
+				// ThaiCalendar, maxLength = 31 @ index 0
+				// UmAlQuraCalendar, maxLength = 30 @ index 1
 
-            m_possibleItemStrings.reserve(lengthOfLongestMonth);
+				{
+					int MaxNumberOfMonthsToBeChecked = 3;
+					DateTime longestMonth;
+					int lengthOfLongestMonth = 0;
+					int numberOfDays = 0;
+					int day = 0;
 
-            for (int i = 0; i < lengthOfLongestMonth; i++)
-            {
-                string string;
-                pCalendar.DayAsString(string());
-                m_possibleItemStrings.emplace_back(std.move(string));
-                pCalendar.AddDays(1);
-            }
-        }
-    }
+					var pCalendar = GetCalendar();
 
-    return;
-}
+					pCalendar.SetToMin();
+					for (int i = 0; i < MaxNumberOfMonthsToBeChecked; i++)
+					{
+						numberOfDays = pCalendar.NumberOfDaysInThisMonth;
+						if (numberOfDays > lengthOfLongestMonth)
+						{
+							lengthOfLongestMonth = numberOfDays;
+							longestMonth = pCalendar.GetDateTime();
+						}
 
-private void CompareDate( DateTime lhs,  DateTime rhs, out int pResult)
-{
-    return GetOwner().GetDateComparer().CompareDay(lhs, rhs, pResult);
-}
+						pCalendar.AddMonths(1);
+					}
 
-INT64 GetAverageTicksPerUnit()
-{
-    // this is being used to estimate the distance between two dates,
-    // it doesn't need to be (and it can't be) the exact value
-    return CalendarConstants.s_ticksPerDay;
+					global::System.Diagnostics.Debug.Assert(lengthOfLongestMonth == 30 || lengthOfLongestMonth == 31);
+					pCalendar.SetDateTime(longestMonth);
+					day = pCalendar.FirstDayInThisMonth;
+					pCalendar.Day = day;
+
+					//m_possibleItemStrings.reserve(lengthOfLongestMonth);
+
+					for (int i = 0; i < lengthOfLongestMonth; i++)
+					{
+						string @string;
+						@string = pCalendar.DayAsString();
+						m_possibleItemStrings.Add(@string);
+						pCalendar.AddDays(1);
+					}
+				}
+			}
+
+			return ppStrings;
+		}
+
+		internal override int CompareDate(DateTime lhs, DateTime rhs)
+		{
+			return Owner.DateComparer.CompareDay(lhs, rhs);
+		}
+
+		protected override long GetAverageTicksPerUnit()
+		{
+			// this is being used to estimate the distance between two dates,
+			// it doesn't need to be (and it can't be) the exact value
+			return CalendarConstants.s_ticksPerDay;
+		}
+	}
 }

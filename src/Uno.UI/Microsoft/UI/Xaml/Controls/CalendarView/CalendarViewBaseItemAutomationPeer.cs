@@ -1,124 +1,129 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
+using DateTime = System.DateTimeOffset;
 
-using namespace DirectUI;
-using namespace DirectUISynonyms;
-
-
-private void GetPatternCore( xaml_automation_peers.PatternInterface patternInterface, out  DependencyObject ppReturnValue)
+namespace Windows.UI.Xaml.Controls
 {
-    IFCPTR_RETURN(ppReturnValue);
-    ppReturnValue = null;
+	partial class CalendarViewBaseItem
+	{
+		internal class CalendarViewBaseItemAutomationPeer : AutomationPeer
+		{
+			protected override object GetPatternCore(PatternInterface patternInterface)
+			{
+				object ppReturnValue = null;
 
-    bool isItemVisible = false;
+				bool isItemVisible = false;
 
-    // For the GridItem pattern, make sure the item is visible otherwise we might end up returning a negative row value
-    // for it.  An item may not be visible if it has been scrolled out of view..
-    if (patternInterface == xaml_automation_peers.PatternInterface_GridItem && SUCCEEDED(IsItemVisible(isItemVisible)) && isItemVisible ||
-        patternInterface == xaml_automation_peers.PatternInterface_ScrollItem)
-    {
-        ppReturnValue = ctl.as_iinspectable(this);
-        ctl.addref_interface(this);
-    }
-    else
-    {
-        CalendarViewBaseItemAutomationPeerGenerated.GetPatternCore(patternInterface, ppReturnValue);
-    }
-    return;
-}
+				isItemVisible = IsItemVisible();
 
-private void GetNameCore(out HSTRING returnValue)
-{
-    IFCPTR_RETURN(returnValue);
-    CalendarViewBaseItemAutomationPeerGenerated.GetNameCore(returnValue);
-    if (returnValue == null)
-    {
-        UIElement spOwner;
-        spOwner = Owner;
-        spOwner as CalendarViewItem.GetMainText(returnValue);
-    }
-    return;
-}
+				// For the GridItem pattern, make sure the item is visible otherwise we might end up returning a negative row value
+				// for it.  An item may not be visible if it has been scrolled out of view..
+				if (patternInterface == PatternInterface.GridItem && isItemVisible ||
+					patternInterface == PatternInterface.ScrollItem)
+				{
+					ppReturnValue = this;
+				}
+				else
+				{
+					ppReturnValue = base.GetPatternCore(patternInterface);
+				}
 
-private void get_ColumnSpanImpl(out INT pValue)
-{
-    IFCPTR_RETURN(pValue);
-    pValue = 1;
-    return;
-}
+				return ppReturnValue;
+			}
 
-private void get_ContainingGridImpl(out result_maybenull_ xaml_automation.Provider.IIRawElementProviderSimple* ppValue)
-{
-    IFCPTR_RETURN(ppValue);
-    ppValue = false;
+			protected override string GetNameCore()
+			{
+				var returnValue = base.GetNameCore();
+				if (returnValue == null)
+				{
+					UIElement spOwner;
+					spOwner = Owner;
+					returnValue = (spOwner as CalendarViewItem).GetMainText();
+				}
 
-    UIElement spOwner;
-    spOwner = Owner;
-    
-    IAutomationPeer spAutomationPeer;
-    CalendarView pParent = spOwner as CalendarViewBaseItem.GetParentCalendarView();
-    IFCPTR_RETURN(pParent);
+				return returnValue;
+			}
 
-    spAutomationPeer = pParent.GetOrCreateAutomationPeer);
-    ProviderFromPeer(spAutomationPeer, ppValue);
-    return;
-}
+			private int ColumnSpanImpl()
+			{
+				var pValue = 1;
+				return pValue;
+			}
 
-private void get_RowSpanImpl(out INT pValue)
-{
-    IFCPTR_RETURN(pValue);
-    pValue = 1;
-    return;
-}
+			protected IRawElementProviderSimple ContainingGridImpl()
+			{
+				IRawElementProviderSimple ppValue = default;
 
-// Methods.
+				UIElement spOwner;
+				spOwner = Owner;
 
-private void ScrollIntoViewImpl()
-{
-    UIElement spOwner;
-    spOwner = Owner;
+				AutomationPeer spAutomationPeer;
+				CalendarView pParent = (spOwner as CalendarViewBaseItem).GetParentCalendarView();
 
-    DateTime date;
-    date = spOwner as CalendarViewItem.GetDate);
+				spAutomationPeer = pParent.GetAutomationPeer();
+				ppValue = ProviderFromPeer(spAutomationPeer);
+				return ppValue;
+			}
 
-    CalendarView pParent = spOwner as CalendarViewBaseItem.GetParentCalendarView();
-    IFCPTR_RETURN(pParent);
+			private int RowSpanImpl()
+			{
+				var pValue = 1;
+				return pValue;
+			}
 
-    pParent.SetDisplayDate(date);
-    
-    return;
-}
+			// Methods.
 
-private void IsItemVisible(bool& isVisible)
-{
-    isVisible = false;
+			private void ScrollIntoViewImpl()
+			{
+				UIElement spOwner;
+				spOwner = Owner;
 
-    UIElement owner;
-    owner = Owner;
+				DateTime date;
+				date = (spOwner as CalendarViewItem).Date;
 
-    var parent = owner as CalendarViewBaseItem.GetParentCalendarView();
+				CalendarView pParent = (spOwner as CalendarViewBaseItem).GetParentCalendarView();
 
-    CalendarViewGeneratorHost host;
-    host = parent.GetActiveGeneratorHost);
+				pParent.SetDisplayDate(date);
 
-    var calendarPanel = host.GetPanel();
-    if (calendarPanel)
-    {
-        DateTime date  = default;
-        date = owner as CalendarViewBaseItem.GetDate);
+				return;
+			}
 
-        int itemIndex = 0;
-        itemIndex = host.CalculateOffsetFromMinDate(date);
+			private bool IsItemVisible()
+			{
+				var isVisible = false;
 
-        int firstVisibleIndex = 0;
-        firstVisibleIndex = calendarPanel.FirstVisibleIndex;
+				UIElement owner;
+				owner = Owner;
 
-        int lastVisibleIndex = 0;
-        lastVisibleIndex = calendarPanel.LastVisibleIndex;
+				var parent = (owner as CalendarViewBaseItem).GetParentCalendarView();
 
-        isVisible = (itemIndex >= firstVisibleIndex && itemIndex <= lastVisibleIndex);
-    }
+				CalendarViewGeneratorHost host;
+				parent.GetActiveGeneratorHost(out host);
 
-    return;
+				var calendarPanel = host.Panel;
+				if (calendarPanel is {})
+				{
+					DateTime date = default;
+					date = (owner as CalendarViewBaseItem).Date;
+
+					int itemIndex = 0;
+					itemIndex = host.CalculateOffsetFromMinDate(date);
+
+					int firstVisibleIndex = 0;
+					firstVisibleIndex = calendarPanel.FirstVisibleIndex;
+
+					int lastVisibleIndex = 0;
+					lastVisibleIndex = calendarPanel.LastVisibleIndex;
+
+					isVisible = (itemIndex >= firstVisibleIndex && itemIndex <= lastVisibleIndex);
+				}
+
+				return isVisible;
+			}
+		}
+	}
 }

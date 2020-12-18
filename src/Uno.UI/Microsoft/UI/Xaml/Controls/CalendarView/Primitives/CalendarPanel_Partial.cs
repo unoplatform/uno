@@ -2,36 +2,23 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Windows.Foundation;
+using Windows.UI.Xaml.Media;
+using Uno.Extensions;
+using DateTime = System.DateTimeOffset;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public sealed partial class CalendarPanel : Panel
 	{
-		WeakReference<CalendarViewGeneratorHost> m_wrGeneartorHostOwner;
-
-		// primaryPanel will determine the whole CalendarView's size, e.g. MonthPanel
-		// secondaryPanels will not, e.g. YearPanel and DecadePanel.
-
-		// primaryPanel always reports it's real desired size to it's parent (SCP)
-		// secondaryPanels always reports (0,0) as it's desired size to it's parent (SCP)
-
-		private CalendarPanelType m_type;
-
-		private bool m_isBiggestItemSizeDetermined;
-
-		private Size m_biggestItemSize;
-
-		private int m_suggestedRows;
-		private int m_suggestedCols;
-
 		private void Initialize()
 		{
 			CalendarLayoutStrategy spCalendarLayoutStrategy;
 
 			// Initalize the base class first.
-			CalendarPanelGenerated.Initialize();
+			// base.Initialize();
 
 			spCalendarLayoutStrategy = new CalendarLayoutStrategy();
 			SetLayoutStrategyBase(spCalendarLayoutStrategy);
@@ -54,7 +41,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					{
 						Size biggestItemSize = default;
 
-						DetermineTheBiggestItemSize(spOwner(), availableSize, &biggestItemSize);
+						DetermineTheBiggestItemSize(spOwner, availableSize, out biggestItemSize);
 
 						if (biggestItemSize.Width != m_biggestItemSize.Width || biggestItemSize.Height != m_biggestItemSize.Height)
 						{
@@ -75,13 +62,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			// else CalendarPanel.SetPanelType has not been called yet.
 
-			CalendarPanelGenerated.MeasureOverride(availableSize, pDesired);
+			var pDesired = base.MeasureOverride(availableSize);
 
 			return pDesired;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			Size returnValue = default;
 			bool needsRemeasure = false;
 
 			if (m_type != CalendarPanelType.Invalid)
@@ -92,7 +80,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// When we begin to arrange, we are good to know the scrollviewer viewport size.
 				// We need to check if the viewport can perfectly fit Rows x Cols items,
 				// if not we need to change the items size and remeasure the panel.
-				ViewportSize viewportSize;
+				viewportSize = GetViewportSize();
 
 				Debug.Assert(viewportSize.Height != 0.0 && viewportSize.Width != 0.0);
 
@@ -108,15 +96,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					effectiveCols = Math.Max(1, Math.Min(effectiveCols, m_suggestedCols));
 					effectiveRows = Math.Max(1, Math.Min(effectiveRows, m_suggestedRows));
 
-					SetPanelDimension(effectiveCols, effectiveRows));
+					SetPanelDimension(effectiveCols, effectiveRows);
 				}
 
-				LayoutStrategy spCalendarLayoutStrategy;
+				spCalendarLayoutStrategy = LayoutStrategy;
 
 				// tell layout strategy that the new viewport size so it can compute the
 				// arrange bound for items correctly.
 
-				((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetViewportSize(viewportSize, needsRemeasure);
+				((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetViewportSize(viewportSize, out needsRemeasure);
 			}
 			// else CalendarPanel.SetPanelType has not been called yet.
 
@@ -127,22 +115,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				CalendarPanelGenerated.ArrangeOverride(finalSize, returnValue));
+				returnValue = base.ArrangeOverride(finalSize);
 			}
 
 			return returnValue;
 		}
 
 
-		private void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			CalendarPanelGenerated.OnPropertyChanged2(args);
+			base.OnPropertyChanged2(args);
 
-			switch (args.m_pDP.GetIndex())
+			switch (args.Property)
 			{
-				case KnownPropertyIndex.CalendarPanel_Orientation:
+				case DependencyProperty orientationProperty when orientationProperty == CalendarPanel.OrientationProperty:
 				{
-					Orientation orientation = (Orientation)(args.m_pNewValue);
+					Orientation orientation = (Orientation)(args.NewValue);
 					ILayoutStrategy spCalendarLayoutStrategy;
 
 					spCalendarLayoutStrategy = LayoutStrategy;
@@ -165,12 +153,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 					break;
 
-				case KnownPropertyIndex.CalendarPanel_Rows:
+				case DependencyProperty rowsProperty when rowsProperty == CalendarPanel.RowsProperty:
 				{
 					int rows = 0;
 					ILayoutStrategy spCalendarLayoutStrategy;
 
-					rows = (int)args.m_pNewValue;
+					rows = (int)args.NewValue;
 					spCalendarLayoutStrategy = LayoutStrategy;
 					Debug.Assert(rows > 0); // guaranteed to be positive number
 					((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetRows(rows);
@@ -178,37 +166,37 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 					break;
 
-				case KnownPropertyIndex.CalendarPanel_Cols:
+				case DependencyProperty colsProperty when colsProperty == CalendarPanel.ColsProperty:
 				{
 					int cols = 0;
 					ILayoutStrategy spCalendarLayoutStrategy;
 
-					cols = (int)args.m_pNew;
+					cols = (int)args.NewValue;
 					spCalendarLayoutStrategy = LayoutStrategy;
 					Debug.Assert(cols > 0); // guaranteed to be positive number
 					((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetCols(cols);
-					OnRowsOrColsChanged(Orientation.Horizontal));
+					OnRowsOrColsChanged(Orientation.Horizontal);
 				}
 					break;
 
-				case KnownPropertyIndex.CalendarPanel_CacheLength:
+				case DependencyProperty cacheLengthProperty when cacheLengthProperty == CalendarPanel.CacheLengthProperty:
 				{
-					double newCacheLength = args.m_pNewValue.Asdouble();
-					ModernCollectionBasePanel.put_CacheLengthBase(newCacheLength));
+					double newCacheLength = (double)args.NewValue;
+					CacheLengthBase = newCacheLength;
 				}
 					break;
 
-				case KnownPropertyIndex.CalendarPanel_StartIndex:
+				case DependencyProperty startIndexProperty when startIndexProperty == CalendarPanel.StartIndexProperty:
 				{
 					ILayoutStrategy spCalendarLayoutStrategy;
 					int startIndex = 0;
 
-					startIndex = (int)args.m_pNewValue;
+					startIndex = (int)args.NewValue;
 
 					Debug.Assert(startIndex >= 0);
 
 					spCalendarLayoutStrategy = LayoutStrategy;
-					var table = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).IndexCorrectionTable;
+					var table = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).GetIndexCorrectionTable();
 					table.SetCorrectionEntryForElementStartAt(startIndex);
 
 					InvalidateMeasure();
@@ -218,36 +206,35 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				default:
 					break;
 			}
-
-			Cleanup:
 		}
 
 		// Logical Orientation override
-		private void LogicalOrientation(
-			out Orientation pValue)
-		{
-		}
+		private Orientation LogicalOrientation => Orientation;
 
 		// Physical Orientation override
-		private void PhysicalOrientation(
-			out Orientation pValue)
+		private Orientation PhysicalOrientation
 		{
-			Orientation orientation = Orientation.Horizontal;
-
-			pValue = orientation;
-
-			if (orientation == Orientation.Vertical)
+			get
 			{
-				pValue = Orientation.Horizontal;
-			}
-			else
-			{
-				pValue = Orientation.Vertical;
+				Orientation orientation = Orientation.Horizontal;
+
+				var pValue = orientation;
+
+				if (orientation == Orientation.Vertical)
+				{
+					pValue = Orientation.Horizontal;
+				}
+				else
+				{
+					pValue = Orientation.Vertical;
+				}
+
+				return pValue;
 			}
 		}
 
 		// Virtual helper method to the ItemsPerPage that can be overridden by derived classes.
-		private voidItemsPerPageImpl(
+		protected /* override */ void ItemsPerPageImpl(
 			Rect window,
 			out double pItemsPerPage)
 		{
@@ -256,22 +243,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		#region Special elements overrides
 
-		private void NeedsSpecialItem(out bool pResult) /*override*/
+		protected /* override */ void NeedsSpecialItem(out bool pResult) /*override*/
 		{
 			ILayoutStrategy spCalendarLayoutStrategy;
 			pResult = false;
 
 			spCalendarLayoutStrategy = LayoutStrategy;
-			pResult = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).NeedsSpecialItem;
+			pResult = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).NeedsSpecialItem();
 		}
 
-		private void SpecialItemIndex(out int pResult) /*override*/
+		protected /* override */ void SpecialItemIndex(out int pResult) /*override*/
 		{
 			ILayoutStrategy spCalendarLayoutStrategy;
 			pResult = -1;
 
 			spCalendarLayoutStrategy = LayoutStrategy;
-			pResult = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).SpecialItemIndex;
+			pResult = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).GetSpecialItemIndex();
 		}
 
 		#endregion
@@ -279,12 +266,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private void DesiredViewportSize(out Size pSize)
 		{
 			ILayoutStrategy spCalendarLayoutStrategy;
+			pSize = default;
 
 			pSize.Width = 0;
 			pSize.Height = 0;
 
 			spCalendarLayoutStrategy = LayoutStrategy;
-			pSize = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).DesiredViewportSize;
+			pSize = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).GetDesiredViewportSize();
 		}
 
 		private void SetItemMinimumSize(Size size)
@@ -293,7 +281,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ILayoutStrategy spCalendarLayoutStrategy;
 
 			spCalendarLayoutStrategy = LayoutStrategy;
-			needsRemeasure = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetItemMinimumSize(size);
+			((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetItemMinimumSize(size, out needsRemeasure);
 
 			if (needsRemeasure)
 			{
@@ -301,13 +289,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private void SetSnapPointFilterFunction(
+		internal void SetSnapPointFilterFunction(
 			Func<int, bool> func)
 		{
 			ILayoutStrategy spCalendarLayoutStrategy;
 
 			spCalendarLayoutStrategy = LayoutStrategy;
-			((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetSnapPointFilterFunction(func));
+			((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetSnapPointFilterFunction(func);
 		}
 
 		// when Rows or Cols changed, we'll invalidate measure on panel itself.
@@ -330,7 +318,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					DependencyObject spParent;
 					ScrollContentPresenter spParentAsSCP;
 
-					VisualTreeHelper.GetParent(this, spParent);
+					spParent = VisualTreeHelper.GetParent(this);
 					spParentAsSCP = spParent as ScrollContentPresenter;
 					if (spParentAsSCP is {})
 					{
@@ -345,26 +333,23 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private CalendarViewGeneratorHost Owner
+		internal CalendarViewGeneratorHost Owner
 		{
 			set
 			{
-				m_wrGeneartorHostOwner = new WekReference<CalendarViewGeneratorHost>(value);
+				m_wrGeneartorHostOwner = new WeakReference<CalendarViewGeneratorHost>(value);
 			}
 			get
 			{
-				IGeneratorHost spOwner;
+				CalendarViewGeneratorHost spOwner;
 
-				ppOwner = null;
+				m_wrGeneartorHostOwner.TryGetTarget(out spOwner);
 
-				spOwner = m_wrGeneartorHostOwner;
-				ppOwner = (CalendarViewGeneratorHost)(spOwner.Detach());
-
-				return ppOwner;
+				return spOwner;
 			}
 		}
 
-		private void SetNeedsToDetermineBiggestItemSize()
+		internal void SetNeedsToDetermineBiggestItemSize()
 		{
 			m_isBiggestItemSizeDetermined = false;
 			InvalidateMeasure();
@@ -379,6 +364,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			CalendarViewBaseItem spItemAsI;
 			CalendarViewBaseItem spCalendarViewBaseItem;
 			string mainText;
+			pSize = default;
 			pSize.Height = 0.0;
 			pSize.Width = 0.0;
 
@@ -388,7 +374,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				Size ignored = default;
 				// no children yet, call base.MeasureOverride to generate at least one anchor item
-				ignored = CalendarPanelGenerated.MeasureOverride(availableSize);
+				ignored = base.MeasureOverride(availableSize);
 
 				spChildAsIDO = ContainerFromIndex(ContainerManager.StartOfContainerVisualSection());
 				Debug.Assert(spChildAsIDO is {});
@@ -396,16 +382,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			// there is at least one item in Panel, and the item has entered visual tree
 			// we are good to measure it to the desired size.
-			spItemAsI = spChildAsIDO as ICalendarViewBaseItem;
+			spItemAsI = spChildAsIDO as CalendarViewBaseItem;
 
 			if (spItemAsI is {})
 			{
 				spCalendarViewBaseItem = (CalendarViewBaseItem)spItemAsI;
 				// save the maintext
-				mainText = spCalendarViewBaseItem.MainText;
+				mainText = spCalendarViewBaseItem.GetMainText();
 
 				List<string> pStrings = null;
-				pStrings = pOwner.PossibleItemStrings;
+				pStrings = pOwner.GetPossibleItemStrings();
 
 				Debug.Assert(!pStrings.Empty());
 
@@ -427,43 +413,49 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private void SetPanelType(CalendarPanelType type)
+		internal CalendarPanelType PanelType
 		{
-			Debug.Assert(type != CalendarPanelType.Invalid);
-
-			if (m_type != type)
+			get => m_type;
+			set
 			{
-				// we don't allow the type to be changed dynamically, only expect if
-				// we change the type from Secondary_SelfAdaptive to Secondary.
-				// the scenario is: by default YearPanel and DecadePanel are Secondary_SelfAdaptive, but once
-				// developer calls SetYearDecadeDisplayDimensions, we'll change the type to Secondary (and never change back).
-				Debug.Assert(m_type == CalendarPanelType.Invalid ||
-					(m_type == CalendarPanelType.Secondary_SelfAdaptive &&
-						type == CalendarPanelType.Secondary));
+				var type = value;
 
-				m_type = type;
+				Debug.Assert(type != CalendarPanelType.Invalid);
 
-				if (m_type == CalendarPanelType.Primary || m_type == CalendarPanelType.Secondary)
+				if (m_type != type)
 				{
-					// for Primary and Secondary Panels, we don't need to adjust the dimension based on actual viewport size,
-					// so the suggested dimensions are the actual dimensions
+					// we don't allow the type to be changed dynamically, only expect if
+					// we change the type from Secondary_SelfAdaptive to Secondary.
+					// the scenario is: by default YearPanel and DecadePanel are Secondary_SelfAdaptive, but once
+					// developer calls SetYearDecadeDisplayDimensions, we'll change the type to Secondary (and never change back).
+					Debug.Assert(m_type == CalendarPanelType.Invalid ||
+						(m_type == CalendarPanelType.Secondary_SelfAdaptive &&
+							type == CalendarPanelType.Secondary));
 
-					if (m_suggestedCols != -1 && m_suggestedRows != -1)
+					m_type = type;
+
+					if (m_type == CalendarPanelType.Primary || m_type == CalendarPanelType.Secondary)
 					{
-						SetPanelDimension(m_suggestedCols, m_suggestedRows));
-					}
-				}
+						// for Primary and Secondary Panels, we don't need to adjust the dimension based on actual viewport size,
+						// so the suggested dimensions are the actual dimensions
 
-				// for Secondary_SelfAdaptive panel, we'll determine the exact dimension in Arrange pass whe we know the exact viewport size.
+						if (m_suggestedCols != -1 && m_suggestedRows != -1)
+						{
+							SetPanelDimension(m_suggestedCols, m_suggestedRows);
+						}
+					}
+
+					// for Secondary_SelfAdaptive panel, we'll determine the exact dimension in Arrange pass whe we know the exact viewport size.
+				}
 			}
 		}
 
-		private void SetSuggestedDimension( int cols, int rows)
+		internal void SetSuggestedDimension(int cols, int rows)
 		{
 			if (m_type == CalendarPanelType.Primary || m_type == CalendarPanelType.Secondary)
 			{
 				// for Primary or Secondary Panels, the suggested dimensions are the exact dimensions
-				SetPanelDimension(cols, rows));
+				SetPanelDimension(cols, rows);
 			}
 			else //if (m_type == CalendarPanelType.Invalid || m_type == CalendarPanelType.Secondary_SelfAdaptive)
 			{
@@ -497,7 +489,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					bool canPanelShowFullScope = false;
 
-					canPanelShowFullScope = CalendarView.CanPanelShowFullScope(spOwner);
+					CalendarView.CanPanelShowFullScope(spOwner, out canPanelShowFullScope);
 
 					// If the current dimension setting allows us to show a full scope,
 					// we'll have irregular snap point on each scope. Otherwise we'll
@@ -506,17 +498,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					if (!canPanelShowFullScope)
 					{
 						// We have not enough space, remove the customize function to default regular snap point behaivor.
-						SetSnapPointFilterFunction(null));
+						SetSnapPointFilterFunction(null);
 					}
 					else
 					{
 						// We have enough space, so we'll use irregular snap point
 						// and we use the customize function to filter the snap point
 						// so we only put a snap point on the first item of each scope.
-						var pHost = spOwner();
+						var pHost = spOwner;
 						SetSnapPointFilterFunction(itemIndex =>
 						{
-							return pHostIsFirstItemInScope(itemIndex);
+							return pHost.GetIsFirstItemInScope(itemIndex);
 						});
 					}
 				}

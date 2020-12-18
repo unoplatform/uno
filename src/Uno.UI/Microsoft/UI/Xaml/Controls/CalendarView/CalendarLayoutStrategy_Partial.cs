@@ -3,19 +3,22 @@
 
 using System;
 using Windows.Foundation;
+using DirectUI;
+using DateTime = System.DateTimeOffset;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class CalendarLayoutStrategy : Control
+	partial class CalendarLayoutStrategy
 	{
-		private CalendarLayoutStrategyImpl _layoutStrategyImpl;
-
-		private ILayoutDataInfoProvider _spDataInfoProvider;
-
-		private void SetLayoutDataInfoProviderImpl(ILayoutDataInfoProvider pProvider) /*override*/
+		// TODO UNO
+		public ILayoutDataInfoProvider GetLayoutDataInfoProviderImpl
 		{
-			_spDataInfoProvider = pProvider;
-			_layoutStrategyImpl.SetLayoutDataInfoProviderNoRef(pProvider);
+			get => _spDataInfoProvider;
+			set
+			{
+				_spDataInfoProvider = value;
+				_layoutStrategyImpl.GetLayoutDataInfoProviderNoRef = value;
+			}
 		}
 
 		#region Layout related methods
@@ -34,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		// itemIndex - indicates an index of valid item or -1 for general, non-special items
 		private void GetElementMeasureSizeImpl(ElementType elementType, int elementIndex, Rect windowConstraint, out Size pReturnValue) /*override*/
 		{
-			pReturnValue = null;
+			pReturnValue = default;
 			pReturnValue = _layoutStrategyImpl.GetElementMeasureSize(elementType, elementIndex, windowConstraint);
 		}
 
@@ -81,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			Rect windowToFill,
 			out bool pReturnValue) /*override*/
 		{
-			pReturnValue = null;
+			pReturnValue = default;
 			pReturnValue = !!_layoutStrategyImpl.ShouldContinueFillingUpSpace(
 				elementType,
 				elementIndex,
@@ -106,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 		private void GetVirtualizationDirectionImpl(
 			out Orientation pReturnValue)
 		{
-			pReturnValue = _layoutStrategyImpl.GetVirtualizationDirection();
+			pReturnValue = _layoutStrategyImpl.VirtualizationDirection;
 		}
 
 		private void EstimateElementIndexImpl(
@@ -117,14 +120,14 @@ namespace Windows.UI.Xaml.Controls
 			out Rect pTargetRect,
 			out int pReturnValue) /*override*/
 		{
-			pReturnValue = null;
+			pReturnValue = default;
 			_layoutStrategyImpl.EstimateElementIndex(
 				elementType,
 				headerReference,
 				containerReference,
 				window,
-				pTargetRect,
-				pReturnValue));
+				out pTargetRect,
+				out pReturnValue);
 
 			return;
 		}
@@ -145,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 				headerReference,
 				containerReference,
 				window,
-				pReturnValue);
+				out pReturnValue);
 		}
 
 		private void EstimatePanelExtentImpl(
@@ -154,12 +157,12 @@ namespace Windows.UI.Xaml.Controls
 			Rect windowConstraint,
 			out Size pExtent) /*override*/
 		{
-			pExtent = null;
+			pExtent = default;
 			_layoutStrategyImpl.EstimatePanelExtent(
 				lastHeaderReference,
 				lastContainerReference,
 				windowConstraint,
-				pExtent);
+				out pExtent);
 		}
 
 		#endregion
@@ -196,8 +199,8 @@ namespace Windows.UI.Xaml.Controls
 				elementIndex,
 				action,
 				windowConstraint,
-				targetElementType,
-				targetElementIndex);
+				out targetElementType,
+				out targetElementIndex);
 		}
 
 		// Determines whether or not the given item index
@@ -225,10 +228,10 @@ namespace Windows.UI.Xaml.Controls
 			out bool pHasRegularSnapPoints) /*override*/
 		{
 			pHasRegularSnapPoints = false;
-			pHasRegularSnapPoints = !!_layoutStrategyImpl.GetRegularSnapPoints(
-				pNearOffset,
-				pFarOffset,
-				pSpacing);
+			pHasRegularSnapPoints = !_layoutStrategyImpl.GetRegularSnapPoints(
+				out pNearOffset,
+				out pFarOffset,
+				out pSpacing);
 		}
 
 		private void HasIrregularSnapPointsImpl(
@@ -246,7 +249,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			returnValue = false;
 			bool result = false;
-			_layoutStrategyImpl.HasSnapPointOnElement(elementType, elementIndex, result));
+			_layoutStrategyImpl.HasSnapPointOnElement(elementType, elementIndex, out result);
 			returnValue = result;
 		}
 		#endregion
@@ -254,7 +257,7 @@ namespace Windows.UI.Xaml.Controls
 		private void GetIsWrappingStrategyImpl(out bool returnValue) /*override*/
 		{
 			returnValue = false;
-			returnValue = !!_layoutStrategyImpl.GetIsWrappingStrategy();
+			returnValue = !_layoutStrategyImpl.IsWrappingStrategy;
 		}
 
 		private void GetElementTransitionsBoundsImpl(
@@ -268,49 +271,34 @@ namespace Windows.UI.Xaml.Controls
 
 
 		#region Special elements methods
-
-		private bool NeedsSpecialItem()
+		internal bool NeedsSpecialItem()
 		{
 			return _layoutStrategyImpl.NeedsSpecialItem();
 		}
 
-		private int GetSpecialItemIndex()
+		internal int GetSpecialItemIndex()
 		{
 			return _layoutStrategyImpl.GetSpecialItemIndex();
 		}
 
 		#endregion
 
-
-		private Size GetDesiredViewportSize()
+		internal Size GetDesiredViewportSize()
 		{
 			return _layoutStrategyImpl.GetDesiredViewportSize();
 		}
 
-		private void SetSnapPointFilterFunction(Func<int, bool> func)
+		internal void SetSnapPointFilterFunction(Func<int, bool> func)
 		{
 			_layoutStrategyImpl.SetSnapPointFilterFunction(func);
 		}
 
-		Components.Moco.CalendarLayoutStrategyImpl.IndexCorrectionTable GetIndexCorrectionTable()
+		internal CalendarLayoutStrategyImpl.IndexCorrectionTable GetIndexCorrectionTable()
 		{
 			return _layoutStrategyImpl.GetIndexCorrectionTable();
 		}
 
-	}
 
-	internal enum ElementType
-	{
-		// Structural element that holds Inline elements.
-		Paragraph = 0,
 
-		// Formatting element that may hold other Inline elements.
-		Inline = 1,
-
-		// An explicit line break within a Paragraph.
-		LineBreak = 2,
-
-		// An embedded object (UIElement).
-		Object = 3,
 	}
 }
