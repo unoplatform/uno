@@ -193,7 +193,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			SizeChanged += OnSizeChanged;
 
-			m_selectionModelSource = new List<object>(2);
+			m_selectionModelSource = new ObservableCollection<object>();
 			m_selectionModelSource.Add(null);
 			m_selectionModelSource.Add(null);
 
