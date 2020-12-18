@@ -523,7 +523,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void UpdateViewport(Rect viewport)
 		{
-			global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
+			// Disabled for non-virtualizing layout in RadioButtons, may need to be revisited (https://github.com/unoplatform/uno/issues/4752)
+			// global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
+
 			var previousVisibleWindow = m_visibleWindow;
 			REPEATER_TRACE_INFO("%ls: \tEffective Viewport: (%.0f,%.0f,%.0f,%.0f).(%.0f,%.0f,%.0f,%.0f). \n",
 				GetLayoutId(),

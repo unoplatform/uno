@@ -22,13 +22,13 @@ namespace Microsoft.UI.Xaml.Controls
 			m_dataTemplateSelector = dataTemplateSelector;
 		}
 
-		DataTemplate Template
+		internal DataTemplate Template
 		{
 			get => m_dataTemplate;
 			set => m_dataTemplate = value;
 		}
 
-		DataTemplateSelector TemplateSelector
+		internal DataTemplateSelector TemplateSelector
 		{
 			get => m_dataTemplateSelector;
 			set => m_dataTemplateSelector = value;
