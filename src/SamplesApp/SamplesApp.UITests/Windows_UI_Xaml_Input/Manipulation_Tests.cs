@@ -27,10 +27,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			TakeScreenshot("Result");
 		}
 
-		[Test] [AutoRetry] public void ManipulateDelta_DragLeft() => ManipulationDelta_Dragging(dx: 100);
-		[Test] [AutoRetry] public void ManipulateDelta_DragUp() => ManipulationDelta_Dragging(dy: 100);
-		[Test] [AutoRetry] public void ManipulateDelta_DragRight() => ManipulationDelta_Dragging(dx: -100);
-		[Test] [AutoRetry] public void ManipulateDelta_DragDown() => ManipulationDelta_Dragging(dy: -100);
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void ManipulateDelta_DragLeft() => ManipulationDelta_Dragging(dx: 100);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void ManipulateDelta_DragUp() => ManipulationDelta_Dragging(dy: 100);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void ManipulateDelta_DragRight() => ManipulationDelta_Dragging(dx: -100);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void ManipulateDelta_DragDown() => ManipulationDelta_Dragging(dy: -100);
 
 		public void ManipulationDelta_Dragging(int dx = 0, int dy = 0)
 		{
