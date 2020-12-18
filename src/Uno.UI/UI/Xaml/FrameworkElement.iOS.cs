@@ -49,8 +49,8 @@ namespace Windows.UI.Xaml
 
 					OnBeforeArrange();
 
-					var size = SizeFromUISize(Bounds.Size);
-					_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
+					var finalRect = RectFromUIRect(Frame);
+					_layouter.Arrange(finalRect);
 
 					OnAfterArrange();
 				}
