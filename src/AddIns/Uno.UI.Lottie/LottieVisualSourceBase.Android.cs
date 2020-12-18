@@ -218,6 +218,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				return;
 			}
+
+			//If setting Progress directly, we should have the full range to choose from
+			//Will be overridden in the Play method
+			_animation.SetMinAndMaxProgress(0f, 1f);
 			_animation.Progress = (float)progress;
 		}
 

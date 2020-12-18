@@ -16,10 +16,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private static readonly string UNO_BOOTSTRAP_APP_BASE = global::System.Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
 
 		private AnimatedVisualPlayer? _initializedPlayer;
+		private Uri? _lastSource;
 		private Size _compositionSize = new Size(0, 0);
 
 		private (double fromProgress, double toProgress, bool looped)? _playState;
 		private bool _isUpdating;
+		private bool _domLoaded;
 
 		private readonly SerialDisposable _animationDataSubscription = new SerialDisposable();
 
@@ -30,6 +32,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				_initializedPlayer = player;
 				player?.RegisterHtmlCustomEventHandler("lottie_state", OnStateChanged, isDetailJson: false);
+				player?.RegisterHtmlCustomEventHandler("animation_dom_loaded", OnAnimationDomLoaded);
 			}
 
 			if (player == null || _isUpdating)
@@ -40,93 +43,99 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			string[] js;
 
 			var sourceUri = UriSource;
-
-			if ((await TryLoadDownloadJson(sourceUri, ct)) is { } jsonStream)
+			if (_lastSource == null || !_lastSource.Equals(sourceUri))
 			{
-				var firstLoad = true;
-
-				var cacheKey = sourceUri.OriginalString;
-				_animationDataSubscription.Disposable = null;
-				_animationDataSubscription.Disposable =
-					LoadAndObserveAnimationData(jsonStream, cacheKey, OnJsonChanged);
-
-				void OnJsonChanged(string updatedJson, string updatedCacheKey)
+				_lastSource = sourceUri;
+				
+				if ((await TryLoadDownloadJson(sourceUri, ct)) is { } jsonStream)
 				{
-					var play = _playState != null
-						|| (firstLoad && player.AutoPlay);
+					var firstLoad = true;
 
-					if (play && _playState == null)
-					{
-						_playState = (0, 1, true);
-					}
-					else if (!play)
-					{
-						_playState = null;
-					}
+					var cacheKey = sourceUri.OriginalString;
+					_animationDataSubscription.Disposable = null;
+					_animationDataSubscription.Disposable =
+						LoadAndObserveAnimationData(jsonStream, cacheKey, OnJsonChanged);
 
-					firstLoad = false;
+					void OnJsonChanged(string updatedJson, string updatedCacheKey)
+					{
+						var play = _playState != null || (firstLoad && player.AutoPlay);
+						_domLoaded = false;
+
+						if (play && _playState == null)
+						{
+							_playState = (0, 1, true);
+						}
+						else if (!play)
+						{
+							_playState = null;
+						}
+
+						firstLoad = false;
+
+						js = new[]
+						{
+							"Uno.UI.Lottie.setAnimationProperties({",
+							"elementId:",
+							player.HtmlId.ToString(),
+							",jsonPath: null,autoplay:",
+							play ? "true" : "false",
+							",stretch:\"",
+							player.Stretch.ToString(),
+							"\",rate:",
+							player.PlaybackRate.ToStringInvariant(),
+							",cacheKey:\"",
+							updatedCacheKey,
+							"\"},",
+							updatedJson,
+							");"
+						};
+						
+						ExecuteJs(js);
+
+						if (_playState != null && _domLoaded)
+						{
+							var (fromProgress, toProgress, looped) = _playState.Value;
+							Play(fromProgress, toProgress, looped);
+						}
+					}
+				}
+				else
+				{
+					var documentPath = string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE)
+						? UriSource?.PathAndQuery
+						: UNO_BOOTSTRAP_APP_BASE + UriSource?.PathAndQuery;
+					_domLoaded = false;
 
 					js = new[]
 					{
 						"Uno.UI.Lottie.setAnimationProperties({",
 						"elementId:",
 						player.HtmlId.ToString(),
-						",jsonPath: null,autoplay:",
-						play ? "true" : "false",
+						",jsonPath:\"",
+						documentPath ?? "",
+						"\",autoplay:",
+						player.AutoPlay ? "true" : "false",
 						",stretch:\"",
 						player.Stretch.ToString(),
 						"\",rate:",
 						player.PlaybackRate.ToStringInvariant(),
 						",cacheKey:\"",
-						updatedCacheKey,
-						"\"},",
-						updatedJson,
-						");"
+						documentPath ?? "-n-",
+						"\"});"
 					};
-
 					ExecuteJs(js);
 
-					if (_playState != null)
+					if (player.AutoPlay)
 					{
-						var (fromProgress, toProgress, looped) = _playState.Value;
-						Play(fromProgress, toProgress, looped);
+						_playState = (0, 1, true);
+					}
+					else
+					{
+						_playState = null;
 					}
 				}
-			}
-			else
-			{
-				var documentPath = string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE)
-					? UriSource?.PathAndQuery
-					: UNO_BOOTSTRAP_APP_BASE + UriSource?.PathAndQuery;
 
-				js = new[]
-				{
-					"Uno.UI.Lottie.setAnimationProperties({",
-					"elementId:",
-					player.HtmlId.ToString(),
-					",jsonPath:\"",
-					documentPath ?? "",
-					"\",autoplay:",
-					player.AutoPlay ? "true" : "false",
-					",stretch:\"",
-					player.Stretch.ToString(),
-					"\",rate:",
-					player.PlaybackRate.ToStringInvariant(),
-					",cacheKey:\"",
-					documentPath ?? "-n-",
-					"\"});"
-				};
-
-				ExecuteJs(js);
-
-				if (player.AutoPlay)
-				{
-					_playState = (0, 1, true);
-				}
-				else
-				{
-					_playState = null;
-				}
+				ApplyPlayState();
 			}
 
 			void ExecuteJs(string[] js)
@@ -137,9 +146,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				_isUpdating = false;
 			}
-
-
-			ApplyPlayState();
 		}
 
 		private void ApplyPlayState()
@@ -149,6 +155,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				var (fromProgress, toProgress, looped) = _playState.Value;
 				Play(fromProgress, toProgress, looped);
 			}
+		}
+
+		private void OnAnimationDomLoaded(object sender, HtmlCustomEventArgs e)
+		{
+			_domLoaded = true;
+			ApplyPlayState();
 		}
 
 		private void OnStateChanged(object sender, HtmlCustomEventArgs e) => ParseStateString(e.Detail);
@@ -165,11 +177,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var h);
 			var loaded = parts[2].Equals("true", StringComparison.Ordinal);
 			var paused = parts[3].Equals("true", StringComparison.Ordinal);
-
-			if (paused && !_isUpdating)
-			{
-				_playState = null;
-			}
 
 			_player.SetValue(AnimatedVisualPlayer.IsAnimatedVisualLoadedProperty, loaded);
 			_player.SetValue(AnimatedVisualPlayer.IsPlayingProperty, !paused);
@@ -189,7 +196,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			_playState = (fromProgress, toProgress, looped);
 
-			if (_player == null)
+			if (_player == null || !_domLoaded)
 			{
 				return;
 			}
