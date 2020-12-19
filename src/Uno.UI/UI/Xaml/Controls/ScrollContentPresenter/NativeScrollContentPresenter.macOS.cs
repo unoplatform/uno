@@ -32,8 +32,6 @@ namespace Windows.UI.Xaml.Controls
 			Notifications.ObserveDidLiveScroll(this, OnLiveScroll);
 
 			DrawsBackground = false;
-
-			IFrameworkElementHelper.Initialize(this);
 		}
 
 		public nfloat ZoomScale 
