@@ -126,7 +126,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
 #endif
 
-#if NET5_0
+#if NET5_0 || __IOS__
 			if (activeControls != 0)
 			{
 				var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).JoinBy(";");
