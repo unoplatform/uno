@@ -16,6 +16,7 @@ using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Windows.UI.Xaml.Controls;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -184,7 +185,7 @@ namespace Windows.UI.Xaml
 					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{IsPoolingEnabled}");
 				}
 
-				instance = template.LoadContent();
+				instance = template.LoadContent() ?? new Grid();
 
 				if (IsPoolingEnabled && instance is IFrameworkElement)
 				{

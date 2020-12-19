@@ -33,7 +33,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<INamedTypeSymbol, Dictionary<string, IEventSymbol>> _getEventsForType;
 		private Func<INamedTypeSymbol, string[]> _findLocalizableDeclaredProperties;
 		private (string ns, string className) _className;
-		private bool _hasLiteralEventsRegistration = false;
 		private string[] _clrNamespaces;
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
