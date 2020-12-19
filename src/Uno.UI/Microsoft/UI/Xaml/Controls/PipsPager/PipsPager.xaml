@@ -1,0 +1,119 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
+    
+    <Style TargetType="muxc:PipsPager">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="AutomationProperties.LandmarkType" Value="Navigation"/>
+        <Setter Property="PreviousButtonStyle" Value="{StaticResource PipsPagerPreviousPageButtonStyle}"/>
+        <Setter Property="NextButtonStyle" Value="{StaticResource PipsPagerNextPageButtonStyle}"/>
+        <Setter Property="SelectedIndicatorButtonStyle" Value="{StaticResource PipsPagerSelectedPipButtonStyle}"/>
+        <Setter Property="DefaultIndicatorButtonStyle" Value="{StaticResource PipsPagerDefaultPipButtonStyle}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="muxc:PipsPager">
+                    <StackPanel x:Name="RootPanel" Orientation="{TemplateBinding Orientation}" Background="{TemplateBinding Background}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="PreviousPageButtonVisibilityStates">
+                                <VisualState x:Name="PreviousPageButtonVisible"/>
+                                <VisualState x:Name="PreviousPageButtonHidden">
+                                    <VisualState.Setters>
+                                        <Setter Target="PreviousPageButton.Opacity" Value="0"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="PreviousPageButtonCollapsed">
+                                    <VisualState.Setters>
+                                        <Setter Target="PreviousPageButton.Visibility" Value="Collapsed"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+
+                            <VisualStateGroup x:Name="PreviousPageButtonIsEnabledStates">
+                                <VisualState x:Name="PreviousPageButtonEnabled"/>
+                                <VisualState x:Name="PreviousPageButtonDisabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="PreviousPageButton.IsEnabled" Value="False"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+
+                            <VisualStateGroup x:Name="NextPageButtonVisibilityStates">
+                                <VisualState x:Name="NextPageButtonVisible"/>
+                                <VisualState x:Name="NextPageButtonHidden">
+                                    <VisualState.Setters>
+                                        <Setter Target="NextPageButton.Opacity" Value="0"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="NextPageButtonCollapsed">
+                                    <VisualState.Setters>
+                                        <Setter Target="NextPageButton.Visibility" Value="Collapsed"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+
+                            <VisualStateGroup x:Name="NextPageButtonIsEnabledStates">
+                                <VisualState x:Name="NextPageButtonEnabled"/>
+                                <VisualState x:Name="NextPageButtonDisabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="NextPageButton.IsEnabled" Value="False"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+
+                            <VisualStateGroup x:Name="RootPanelOrientationStates">
+                                <VisualState x:Name="VerticalOrientationView"/>
+                                <VisualState x:Name="HorizontalOrientationView">
+                                    <VisualState.Setters>
+                                        <Setter Target="RootPanel.Orientation" Value="Horizontal"/>
+                                        <Setter Target="PreviousPageButton.RenderTransformOrigin" Value="0.5, 0.5"/>
+                                        <Setter Target="PreviousPageButton.RenderTransform">
+                                            <Setter.Value>
+                                                <RotateTransform Angle="-90"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Target="NextPageButton.RenderTransformOrigin" Value="0.5, 0.5"/>
+                                        <Setter Target="NextPageButton.RenderTransform">
+                                            <Setter.Value>
+                                                <RotateTransform Angle="-90"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <Button x:Name="PreviousPageButton"
+                                ToolTipService.ToolTip="{Binding ElementName=PreviousPageButton, Path=(AutomationProperties.Name)}"
+                                Style="{TemplateBinding PreviousButtonStyle}"/>
+
+                        <ScrollViewer x:Name="PipsPagerScrollViewer"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      VerticalScrollMode="Disabled"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      HorizontalScrollMode="Disabled">
+                            <muxc:ItemsRepeater x:Name="PipsPagerItemsRepeater"
+                                ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.PipsPagerItems}">
+                                <muxc:ItemsRepeater.Layout>
+                                    <muxc:StackLayout Orientation="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Orientation}"/>
+                                </muxc:ItemsRepeater.Layout>
+                                <muxc:ItemsRepeater.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button />
+                                    </DataTemplate>
+                                </muxc:ItemsRepeater.ItemTemplate>
+                            </muxc:ItemsRepeater>
+                        </ScrollViewer>
+
+                        <Button x:Name="NextPageButton"
+                                ToolTipService.ToolTip="{Binding ElementName=NextPageButton, Path=(AutomationProperties.Name)}"
+                                Style="{TemplateBinding NextButtonStyle}"/>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

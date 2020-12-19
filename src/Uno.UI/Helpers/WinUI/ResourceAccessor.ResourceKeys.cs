@@ -87,6 +87,10 @@
 		public const string SR_PagerControlPreviousPageButtonTextName = "PagerControlPreviousPageButtonText";
 		public const string SR_PagerControlNextPageButtonTextName = "PagerControlNextPageButtonText";
 		public const string SR_PagerControlLastPageButtonTextName = "PagerControlLastPageButtonText";
+		public const string SR_PipsPagerNameText = "PipsPagerNameText";
+		public const string SR_PipsPagerNextPageButtonText = "PipsPagerNextPageButtonText";
+		public const string SR_PipsPagerPreviousPageButtonText = "PipsPagerPreviousPageButtonText";
+		public const string SR_PipsPagerPageText = "PipsPagerPageText";
 		public const string SR_PlaceAfterString = "PlaceAfterString";
 		public const string SR_PlaceBeforeString = "PlaceBeforeString";
 		public const string SR_PlaceBetweenString = "PlaceBetweenString";
