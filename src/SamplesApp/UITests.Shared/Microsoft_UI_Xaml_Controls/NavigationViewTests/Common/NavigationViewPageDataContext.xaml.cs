@@ -21,7 +21,7 @@ using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", "WinUI")]
+	//[Sample("NavigationView", "WinUI")]
     public sealed partial class NavigationViewPageDataContext : TestPage, INotifyPropertyChanged
     {
 

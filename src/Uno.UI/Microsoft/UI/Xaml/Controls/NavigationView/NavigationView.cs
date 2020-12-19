@@ -5530,12 +5530,12 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
-		internal void Expand(NavigationViewItem item)
+		public void Expand(NavigationViewItem item)
 		{
 			ChangeIsExpandedNavigationViewItem(item, true /*isExpanded*/);
 		}
 
-		internal void Collapse(NavigationViewItem item)
+		public void Collapse(NavigationViewItem item)
 		{
 			ChangeIsExpandedNavigationViewItem(item, false /*isExpanded*/);
 		}
