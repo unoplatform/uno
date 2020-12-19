@@ -64,6 +64,11 @@ else
 			class = 'SamplesApp.UITests.Windows_UI_Xaml_Shapes.Basics_Shapes_Tests' or \
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests'
 		"
+	elif [ "$UITEST_AUTOMATED_GROUP" == '4' ];
+	then
+		export TEST_FILTERS=" \
+			class = 'SamplesApp.UITests.Runtime.RuntimeTests'
+		"
 	fi
 fi
 

@@ -126,15 +126,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
 #endif
 
-#if NET5_0 || __IOS__
+			var retainedMessage = "";
+
+#if NET5_0 || __IOS__ || __ANDROID__
 			if (activeControls != 0)
 			{
 				var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).JoinBy(";");
 				Console.WriteLine($"Retained types: {retainedTypes}");
+
+				retainedMessage = $"Retained types: {retainedTypes}";
 			}
 #endif
 
-			Assert.AreEqual(0, activeControls);
+			Assert.AreEqual(0, activeControls, retainedMessage);
 
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
