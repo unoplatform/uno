@@ -166,6 +166,7 @@ For *Apache*, please use the [`AddType` directive](https://httpd.apache.org/docs
 ```apache
 AddType application/wasm .wasm
 AddType application/octet-stream .clr
+AddType application/octet-stream .dat
 AddType application/octet-stream .pdb
 AddType application/font-woff .woff
 AddType application/font-woff .woff2
