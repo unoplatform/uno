@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal static partial class _Tracing
 	{
-		[Conditional("TRACE")]
+		[Conditional("REPEATER_TRACE_ENABLED")]
 		public static void REPEATER_TRACE_INFO(string text, params object[] parameters)
 		{
 			var builder = new StringBuilder();
@@ -48,7 +48,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Console.Write(builder.ToString(), parameters);
 		}
 
-		[Conditional("TRACE")]
+		[Conditional("REPEATER_TRACE_ENABLED")]
 		public static void REPEATER_TRACE_PERF(string text)
 			=> Console.WriteLine(text);
 
