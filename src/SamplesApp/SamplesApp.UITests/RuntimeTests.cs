@@ -19,7 +19,7 @@ namespace SamplesApp.UITests.Runtime
 		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(2);
 
 		[Test]
-		[AutoRetry]
+		[AutoRetry(tryCount: 1)]
 		[Timeout(600000)] // Adjust this timeout based on average test run duration
 		public async Task RunRuntimeTests()
 		{

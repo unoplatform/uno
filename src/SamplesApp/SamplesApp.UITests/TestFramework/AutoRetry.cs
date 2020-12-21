@@ -19,7 +19,7 @@ namespace SamplesApp.UITests.TestFramework
 		/// Construct a <see cref="RetryAttribute" />
 		/// </summary>
 		/// <param name="tryCount">The maximum number of times the test should be run if it fails</param>
-		public AutoRetryAttribute(int tryCount = 1) : base(tryCount)
+		public AutoRetryAttribute(int tryCount = 3) : base(tryCount)
 		{
 		}
 	}
