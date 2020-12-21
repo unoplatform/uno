@@ -14,9 +14,11 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+using Windows.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	[ContentProperty(Name = nameof(ScrollViewer))]
 	public partial class ItemsRepeaterScrollHost : FrameworkElement, IScrollAnchorProvider, IRepeaterScrollingSurface
 	{
 		List<CandidateInfo> m_candidates = new List<CandidateInfo>();

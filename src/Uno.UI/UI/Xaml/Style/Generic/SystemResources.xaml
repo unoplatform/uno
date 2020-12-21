@@ -1111,7 +1111,7 @@
 
 			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
 			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="White"></xamarin:SolidColorBrush>
+			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}" />
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
@@ -2392,7 +2392,7 @@
 
 			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
 			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="White"></xamarin:SolidColorBrush>
+			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></xamarin:SolidColorBrush> <!-- TODO: Uno specific - should fall back to SystemColorWindowColor in HighContrast-->
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
@@ -3684,7 +3684,7 @@
 
 			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
 			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="White"></xamarin:SolidColorBrush>
+			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></xamarin:SolidColorBrush>
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />

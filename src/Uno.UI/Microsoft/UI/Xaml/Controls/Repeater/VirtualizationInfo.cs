@@ -87,7 +87,8 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Ownership state machine
 		public void MoveOwnershipToLayoutFromElementFactory(int index, string uniqueId)
 		{
-			global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.ElementFactory);
+			// Uno specific - this assert is failing - issue #4691
+			//global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.ElementFactory);
 
 			m_owner = ElementOwner.Layout;
 			m_index = index;

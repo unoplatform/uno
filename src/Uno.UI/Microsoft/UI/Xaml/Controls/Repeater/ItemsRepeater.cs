@@ -17,9 +17,11 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+using Windows.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	[ContentProperty(Name = nameof(ItemTemplate))]
 	public partial class ItemsRepeater : FrameworkElement, IPanel
 	{
 		internal IElementFactoryShim ItemTemplateShim => m_itemTemplateWrapper;
@@ -843,5 +845,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return null;
 		}
+
+		#region Uno specific 
+
+		//TODO: Uno specific - remove when #4689 is fixed
+		internal event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> UnoBeforeElementPrepared;
+
+		internal void OnUnoBeforeElementPrepared(UIElement element, int index)
+		{
+			var args = new ItemsRepeaterElementPreparedEventArgs(element, index);
+			UnoBeforeElementPrepared?.Invoke(this, args);
+		}
+
+		#endregion
 	}
 }

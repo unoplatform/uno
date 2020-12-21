@@ -106,6 +106,8 @@ namespace MUXControlsTestApp
 			get => TestServices.WindowHelper.WindowContent;
 			set => TestServices.WindowHelper.WindowContent = value;
 		}
+
+		public static Application Current => Application.Current;
 	}
 }
 

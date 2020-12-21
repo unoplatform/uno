@@ -71,6 +71,12 @@ namespace Windows.UI.Xaml
 
 		public ApplicationRequiresPointerMode RequiresPointerMode { get; set; } = ApplicationRequiresPointerMode.Auto;
 
+		/// <summary>
+		/// Does not have any effect in Uno yet.
+		/// </summary>
+		[NotImplemented]
+		public FocusVisualKind FocusVisualKind { get; set; } = FocusVisualKind.HighVisibility;
+
 		public ApplicationTheme RequestedTheme
 		{
 			get
