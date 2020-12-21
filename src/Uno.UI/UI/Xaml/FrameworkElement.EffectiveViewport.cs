@@ -1,5 +1,8 @@
-﻿using System;
+﻿//#define TRACE_EFFECTIVE_VIEWPORT
+
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -7,6 +10,7 @@ using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Extensions;
 using _This = Windows.UI.Xaml.FrameworkElement;
 
 namespace Windows.UI.Xaml
@@ -30,7 +34,7 @@ namespace Windows.UI.Xaml
 		private event TypedEventHandler<_This, EffectiveViewportChangedEventArgs> _effectiveViewportChanged;
 		private int _childrenInterestedInViewportUpdates;
 		private IDisposable _parentViewportUpdatesSubscription;
-		private Rect _parentViewport = Rect.Empty;
+		private Rect _parentViewport = Rect.Empty; // WARNING: Stored in parent's coordinates on iOS, use GetParentViewport()
 		private Rect _localViewport = Rect.Empty; // i.e. the applied clipping, Empty if not clipped
 		private Rect _lastEffectiveSlot = new Rect();
 		private Rect _lastEffectiveViewport = new Rect();
@@ -70,6 +74,8 @@ namespace Windows.UI.Xaml
 			{
 				if (_parentViewportUpdatesSubscription == null)
 				{
+					TRACE_EFFECTIVE_VIEWPORT("Enabling effective viewport propagation.");
+
 					var parent = Parent;
 					if (parent is IFrameworkElement_EffectiveViewport parentFwElt)
 					{
@@ -84,15 +90,24 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
+					TRACE_EFFECTIVE_VIEWPORT("New child requested viewport propagation which has already been enabled. Force updating all children.");
+
 					// We are already subscribed, the parent won't send any update (and our _parentViewport is expected to be up-to-date).
 					// But if this "reconfigure" was made for a new child (child != null), we have to initialize its own _parentViewport.
-					child?.OnParentViewportChanged(this, GetEffectiveViewport(), isInitial: true);
+
+					var slot = LayoutInformation.GetLayoutSlot(this); // a.k.a. the implicit viewport to use if none was defined by any parent (usually only few elements at the top of the tree)
+					var parentViewport = GetParentViewport();
+					var viewport = GetEffectiveViewport(parentViewport, slot);
+
+					child?.OnParentViewportChanged(this, viewport, isInitial: true);
 				}
 			}
 			else
 			{
 				if (_parentViewportUpdatesSubscription != null)
 				{
+					TRACE_EFFECTIVE_VIEWPORT("Disabling effective viewport propagation.");
+
 					_parentViewportUpdatesSubscription.Dispose();
 					_parentViewportUpdatesSubscription = null;
 
@@ -134,20 +149,16 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-#if IS_NATIVE_ELEMENT // No RenderTransform on native elements
-			var viewportInLocalCoordinates = viewport;
-#else
-			var viewportInLocalCoordinates = !viewport.IsEmpty && parent is UIElement parentElt
-				? GetTransform(this, parentElt).Inverse().Transform(viewport)
-				: viewport;
+#if !__IOS__ // cf. GetParentViewport
+			viewport = ParentToLocalCoordinates(parent, viewport);
 #endif
 
-			if (!isInitial && viewportInLocalCoordinates == _parentViewport)
+			if (!isInitial && viewport == _parentViewport)
 			{
 				return;
 			}
 
-			_parentViewport = viewportInLocalCoordinates;
+			_parentViewport = viewport;
 			PropagateEffectiveViewportChange(isInitial);
 		}
 
@@ -168,14 +179,14 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		private Rect GetEffectiveViewport()
+		private Rect GetEffectiveViewport(Rect parentViewport, Rect slot)
 		{
 			Rect viewport;
 			if (_localViewport.IsEmpty)
 			{
 				// The local element does not clips its children (the common case),
 				// so we only propagate the parent viewport (adjusted in the local coordinate space)
-				viewport = _parentViewport;
+				viewport = parentViewport;
 			}
 			else
 			{
@@ -186,11 +197,35 @@ namespace Windows.UI.Xaml
 				//		 _parentViewport.X and Y are usually negative.
 				//		 If there isn't any parent that clipped us, then it will be empty [+∞,+∞,-∞,-∞],
 				//		 in that case make sure to ignore it (we assume that it's possible to be clipped only on one direction).
-				viewport = new Rect(
-					x: _localViewport.X + _parentViewport.X.FiniteOrDefault(0),
-					y: _localViewport.Y + _parentViewport.Y.FiniteOrDefault(0),
-					width: Math.Min(_localViewport.Width, _parentViewport.Width.FiniteOrDefault(double.PositiveInfinity)),
-					height: Math.Min(_localViewport.Height, _parentViewport.Height.FiniteOrDefault(double.PositiveInfinity)));
+
+				double x, y, width, height;
+				var parentWidth = parentViewport.Width.FiniteOrDefault(slot.Width);
+				if (_localViewport.Width < parentWidth)
+				{
+					// The local element is clipping vertically
+					x = _localViewport.X;
+					width = _localViewport.Width;
+				}
+				else
+				{
+					x = _localViewport.X + parentViewport.X.FiniteOrDefault(0);
+					width = Math.Min(_localViewport.Width, parentWidth);
+				}
+
+				var parentHeight = parentViewport.Height.FiniteOrDefault(slot.Height);
+				if (_localViewport.Height < parentHeight)
+				{
+					// The local element is clipping vertically
+					y = _localViewport.Y;
+					height = _localViewport.Height;
+				}
+				else
+				{
+					y = _localViewport.Y + parentViewport.Y.FiniteOrDefault(0);
+					height = Math.Min(_localViewport.Height, parentHeight);
+				}
+
+				viewport = new Rect(x, y, width, height);
 
 #if !IS_NATIVE_ELEMENT // Only true-UIElement can register as scroller.
 				// This element is also acting as scroller, so we also have to apply the local scroll offsets.
@@ -207,18 +242,59 @@ namespace Windows.UI.Xaml
 			return viewport;
 		}
 
+		private Rect GetParentViewport()
+#if __IOS__
+			// On iOS the Arrange is "async": When arranged an element only arrange its direct children (set their Frame)
+			// which then waits for their 'LayoutSubView' to arrange their own children.
+			//
+			// The issue is that after having arrange its children, the element will also apply its clipping,
+			// which will cause an update of the EffectiveViewport and more specifically invoke the OnParentViewportChanged
+			// on all children (direct and sub children), including children that might not be arranged yet.
+			//
+			// If we convert the viewport into local element coordinate space at this time (like on other platforms),
+			// we won't have a valid LayoutSlot (and LayoutSlotWithMarginsAndAlignment used in GetTransform).
+			//
+			// To avoid this we store the parentViewport in parent coordinates on iOS, and reconvert it every time.
+			=> ParentToLocalCoordinates(this.GetParent(), _parentViewport);
+#else
+			=> _parentViewport;
+#endif
+
+		private Rect ParentToLocalCoordinates(object parent, Rect viewport)
+#if IS_NATIVE_ELEMENT // No RenderTransform on native elements
+			=> viewport;
+#else
+			=> !viewport.IsEmpty && parent is UIElement parentElt
+				? GetTransform(this, parentElt).Inverse().Transform(viewport)
+				: viewport;
+#endif
+
 		private void PropagateEffectiveViewportChange(bool isInitial = false)
 		{
 			if (!IsEffectiveViewportEnabled)
 			{
+				TRACE_EFFECTIVE_VIEWPORT("Effective viewport disabled, stop propagation.");
 				return;
 			}
 
-			var viewport = GetEffectiveViewport();
 			var slot = LayoutInformation.GetLayoutSlot(this); // a.k.a. the implicit viewport to use if none was defined by any parent (usually only few elements at the top of the tree)
+			var parentViewport = GetParentViewport();
+			var viewport = GetEffectiveViewport(parentViewport, slot);
 
 			var isViewportUpdate = _lastEffectiveViewport != viewport;
 			var isSlotUpdate = _lastEffectiveSlot != slot;
+
+			TRACE_EFFECTIVE_VIEWPORT($"viewport: {viewport.ToDebugString()} (updated: {isViewportUpdate}) "
+				+ $"| slot: {slot.ToDebugString()} (updated: {isSlotUpdate}) "
+				+ $"| isInitial: {isInitial} "
+				+ $"| local: {_localViewport.ToDebugString()} "
+				+ $"| parent: {parentViewport.ToDebugString()} "
+#if IS_NATIVE_ELEMENT
+				+ $"| scroll: --none--(native) "
+#else
+				+ $"| scroll: {(IsScrollPort ? $"{ScrollOffsets.ToDebugString()}" : "--none--")} "
+#endif
+				+ $"| children: {_childrenInterestedInViewportUpdates}");
 
 			_lastEffectiveViewport = viewport;
 			_lastEffectiveSlot = slot;
@@ -258,5 +334,13 @@ namespace Windows.UI.Xaml
 			PropagateEffectiveViewportChange();
 		}
 #endif
+
+		[Conditional("TRACE_EFFECTIVE_VIEWPORT")]
+		private void TRACE_EFFECTIVE_VIEWPORT(string text)
+		{
+#if TRACE_EFFECTIVE_VIEWPORT
+			Debug.Write($"{new string('\t', Math.Max(Depth, 0))} [{this.GetDebugName()}] {text}\r\n");
+#endif
+		}
 	}
 }

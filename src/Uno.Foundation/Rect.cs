@@ -135,7 +135,7 @@ namespace Windows.Foundation
 		public override string ToString() => (string)this;
 
 		internal string ToDebugString()
-			=> FormattableString.Invariant($"{Width:F2},{Height:F2}@{Location.ToDebugString()}");
+			=> IsEmpty ? "--empty--" : FormattableString.Invariant($"{Width:F2},{Height:F2}@{Location.ToDebugString()}");
 
 		/// <summary>
 		/// Provides the size of this rectangle.

@@ -15,7 +15,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 #if !NET461
 	[RuntimeTests.RunsOnUIThread]
 #endif
-	public class Given_FrameworkElement
+	public partial class Given_FrameworkElement
 	{
 		[TestMethod]
 		public void When_LayoutUpdated()
