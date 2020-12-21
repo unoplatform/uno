@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>DEBUG;XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <EnableCodeSigning>false</EnableCodeSigning>
@@ -42,7 +42,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <EnableCodeSigning>false</EnableCodeSigning>
