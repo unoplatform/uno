@@ -19,7 +19,7 @@ steps:
 
   - task: gitversion/setup@0
     inputs:
-      versionSpec: '5.x'
+      versionSpec: '5.5.1'
 
   - task: gitversion/execute@0
     inputs:
