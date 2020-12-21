@@ -132,6 +132,11 @@ namespace Windows.UI.Xaml
 				throw new ArgumentException("An entry with the same key already exists.");
 			}
 
+			if(value is WeakResourceInitializer lazyResourceInitializer)
+			{
+				value = lazyResourceInitializer.Initializer;
+			}
+
 			if (value is ResourceInitializer resourceInitializer)
 			{
 				_hasUnmaterializedItems = true;
