@@ -780,6 +780,7 @@ description:
 				{
 					void Dispose(object snd, RoutedEventArgs e)
 					{
+						container.DataContext = null;
 						container.Unloaded -= Dispose;
 						disposable.Dispose();
 					}

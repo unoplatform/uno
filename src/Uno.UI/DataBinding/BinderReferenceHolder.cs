@@ -201,7 +201,7 @@ namespace Uno.UI.DataBinding
 						select System.Tuple.Create(types.Key, count, parents);
 
 				var sb = new StringBuilder();
-				sb.Append("Detailed binder references: \r\n");
+				sb.Append("Detailed DependencyObject references: \r\n");
 
 				foreach (var activref in q)
 				{
@@ -219,7 +219,7 @@ namespace Uno.UI.DataBinding
 		{
 			var newActiveStats = GetReferenceStats();
 
-			LogDiff(activeStats, newActiveStats, "Inactive");
+			LogDiff(activeStats, newActiveStats, "Active");
 		}
 
 		public static void LogInactiveViewReferencesStatsDiff(Tuple<Type, int>[] inactiveStats)
@@ -243,7 +243,7 @@ namespace Uno.UI.DataBinding
 					};
 
 			var sb = new StringBuilder();
-			sb.Append($"Detailed {referenceType} binder references delta: \r\n");
+			sb.Append($"Detailed {referenceType} DependencyObject references delta: \r\n");
 
 			foreach (var activref in q)
 			{
@@ -281,13 +281,13 @@ namespace Uno.UI.DataBinding
 			{
 				var sb = new StringBuilder();
 
-				sb.Append("Inactive binder references: \r\n");
+				sb.Append("Inactive DependencyObject references: \r\n");
 				foreach (var rs in GetInactiveViewReferencesStats())
 				{
 					sb.AppendFormatInvariant("\t{0}: {1}\r\n", rs.Item1, rs.Item2);
 				}
 
-				sb.Append("Active binder references: \r\n");
+				sb.Append("Active DependencyObject references: \r\n");
 				foreach (var rs in GetReferenceStats())
 				{
 					sb.AppendFormatInvariant("\t{0}: {1}\r\n", rs.Item1, rs.Item2);

@@ -29,7 +29,6 @@ using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-using Windows.UI.Xaml.Controls;
 using DependencyObject = System.Object;
 using UIKit;
 #elif __MACOS__

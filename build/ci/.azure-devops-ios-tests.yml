@@ -96,6 +96,18 @@ jobs:
 - template: .azure-devops-ios-tests-run.yml
   parameters:
     nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Automated_Tests_Runtime_Tests'
+    JobDisplayName: 'iOS Automated Runtime Tests'
+    JobTimeoutInMinutes: 40
+    vmImage: ${{ parameters.vmImage }}
+    UITEST_SNAPSHOTS_ONLY: false
+    UITEST_AUTOMATED_GROUP: 4
+    xCodeRoot: ${{ parameters.xCodeRootTest }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
+
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
     JobName: 'iOS_Snaphot_Tests_Group_01'
     JobDisplayName: 'iOS Snaphot Tests Group 01'
     JobTimeoutInMinutes: 45

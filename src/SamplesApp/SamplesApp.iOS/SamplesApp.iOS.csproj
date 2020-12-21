@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
-    <DefineConstants>DEBUG;XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>DEBUG;XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -35,7 +35,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
-    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchLink>None</MtouchLink>
@@ -48,7 +48,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhone\Debug</OutputPath>
-    <DefineConstants>DEBUG;XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>DEBUG;XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -59,7 +59,7 @@
     <MtouchExtraArgs>--xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
-    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\iPhone\Release</OutputPath>
@@ -72,7 +72,7 @@
     <MtouchExtraArgs>--xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
-    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <DebugType>none</DebugType>
     <Optimize>True</Optimize>
     <OutputPath>bin\iPhone\Ad-Hoc</OutputPath>
@@ -86,7 +86,7 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
-    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <DebugType>none</DebugType>
     <Optimize>True</Optimize>
     <OutputPath>bin\iPhone\AppStore</OutputPath>

@@ -10,7 +10,7 @@ using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
 
-namespace SamplesApp.UITests
+namespace SamplesApp.UITests.Runtime
 {
 	[TestFixture]
 	public partial class RuntimeTests : SampleControlUITestBase

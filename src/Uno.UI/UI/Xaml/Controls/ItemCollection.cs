@@ -155,6 +155,7 @@ namespace Windows.UI.Xaml.Controls
 			if (itemsSource == null)
 			{
 				_itemsSource = null;
+				ObserveCollectionChanged(null);
 			}
 			else
 			{
@@ -182,7 +183,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ObserveCollectionChanged(object itemsSource)
 		{
-			if (itemsSource is INotifyCollectionChanged existingObservable)
+			if (itemsSource is null)
+			{
+				// fast path for null
+				_itemsSourceCollectionChangeDisposable.Disposable = null;
+			}
+			else if (itemsSource is INotifyCollectionChanged existingObservable)
 			{
 				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
 				// remove the handler.
