@@ -312,6 +312,13 @@
             <x:Double x:Key="SmallScrollThumbScale">0.125</x:Double>
             <x:Double x:Key="SmallScrollThumbOffset">-2</x:Double>
             <x:Double x:Key="ScrollBarButtonArrowIconFontSize">8</x:Double>
+			
+			<x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
+			<x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
 
 			<!--
     ******************************************************************
@@ -1606,6 +1613,14 @@
             <x:Double x:Key="SmallScrollThumbScale">0.125</x:Double>
             <x:Double x:Key="SmallScrollThumbOffset">-2</x:Double>
             <x:Double x:Key="ScrollBarButtonArrowIconFontSize">8</x:Double>
+
+			<x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
+			<x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
+
 			<!--
     ******************************************************************
     DEFAULT COMMON CONTROL COLORS
@@ -2888,6 +2903,13 @@
             <x:Double x:Key="SmallScrollThumbScale">0.125</x:Double>
             <x:Double x:Key="SmallScrollThumbOffset">-2</x:Double>
             <x:Double x:Key="ScrollBarButtonArrowIconFontSize">8</x:Double>
+			
+			<x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
+			<x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
 
 			<!--
     ******************************************************************
