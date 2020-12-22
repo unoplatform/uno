@@ -155,7 +155,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			// to always go to zero during runtime tests. If the count of active objects
 			// is arbitrarily below the half of the number of top-level objects.
 			// created, we can assume that enough objects were collected entirely.
-			Assert.IsTrue(activeControls < count, retainedMessage);
+			Assert.IsTrue(activeControls < (count / 2), retainedMessage);
 #else
 			Assert.AreEqual(0, activeControls, retainedMessage);
 #endif
