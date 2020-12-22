@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 							}
 						}
 					}
-					catch (Exception e)
+					finally
 					{
 						ElementPhasingManager.ProcessedCalls.Clear();
 					}
