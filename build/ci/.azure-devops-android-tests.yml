@@ -10,7 +10,7 @@ jobs:
   displayName: 'Android UI Tests (Build)'
 
   pool:
-    vmImage: ${{ parameters.vmWindowsImage }}
+    vmImage: ${{ parameters.vmMacOSImage }}
 
   variables:
     CI_Build: true
@@ -31,7 +31,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true 
+      msbuildArguments: /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false
@@ -42,7 +42,7 @@ jobs:
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/bin/Release/
       Contents: 'uno.platform.unosampleapp-Signed.apk'
-      TargetFolder: $(build.artifactstagingdirectory)\android
+      TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
