@@ -145,7 +145,7 @@ namespace Microsoft.UI.Xaml.Controls
 			/* Extract default sizes and return in case the code above fails */
 			var pipHeight = (double)ResourceAccessor.ResourceLookup(this, c_pipsPagerButtonHeightPropertyName);
 			var pipWidth = (double)ResourceAccessor.ResourceLookup(this, c_pipsPagerButtonWidthPropertyName);
-			return { (float)(pipWidth), (float)(pipHeight) };
+			return new Size((float)(pipWidth), (float)(pipHeight));
 		}
 
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
@@ -275,25 +275,25 @@ namespace Microsoft.UI.Xaml.Controls
 			/* Vertical and Horizontal AligmentsRatio are not available until Win Version 1803 (sdk version 17134) */
 			if (SharedHelpers.IsBringIntoViewOptionsVerticalAlignmentRatioAvailable())
 			{
-				BringIntoViewOptions options;
-				options.VerticalAlignmentRatio(0.5);
-				options.HorizontalAlignmentRatio(0.5);
-				options.AnimationDesired(true);
+				var options = new BringIntoViewOptions();
+				options.VerticalAlignmentRatio = 0.5;
+				options.HorizontalAlignmentRatio = 0.5;
+				options.AnimationDesired = true;
 				sender.StartBringIntoView(options);
 			}
-			else if (var scrollViewer = m_pipsPagerScrollViewer)
-		    {
+			else if (m_pipsPagerScrollViewer is ScrollViewer scrollViewer)
+			{
 				double pipSize;
-				std.function < void(double &) > changeViewFunc;
-				if (Orientation() == Orientation.Horizontal)
+				Action<double> changeViewFunc;
+				if (Orientation == Orientation.Horizontal)
 				{
 					pipSize = m_defaultPipSize.Width;
-					changeViewFunc = [&](double & offset) { scrollViewer.ChangeView(offset, null, null); };
+					changeViewFunc = (double offset) => { scrollViewer.ChangeView(offset, null, null); };
 				}
 				else
 				{
 					pipSize = m_defaultPipSize.Height;
-					changeViewFunc = [&](double & offset) { scrollViewer.ChangeView(null, offset, null); };
+					changeViewFunc = (double offset) => { scrollViewer.ChangeView(null, offset, null); };
 				}
 				int maxVisualIndicators = MaxVisualIndicators;
 				/* This line makes sure that while having even # of indicators the scrolling will be done correctly */
@@ -319,7 +319,7 @@ namespace Microsoft.UI.Xaml.Controls
 					if (repeater.GetOrCreateElement(index) is Button selectedElement)
 					{
 						selectedElement.Style = SelectedIndicatorButtonStyle;
-						ScrollToCenterOfViewport(element, index);
+						ScrollToCenterOfViewport(selectedElement, index);
 					}
 				}
 			}
@@ -352,14 +352,14 @@ namespace Microsoft.UI.Xaml.Controls
 				if (Orientation == Orientation.Horizontal)
 				{
 					var scrollViewerWidth = CalculateScrollViewerSize(m_defaultPipSize.Width, m_selectedPipSize.Width, NumberOfPages, MaxVisualIndicators);
-					scrollViewer.MaxWidth(scrollViewerWidth);
-					scrollViewer.MaxHeight(std.max(m_defaultPipSize.Height, m_selectedPipSize.Height));
+					scrollViewer.MaxWidth = scrollViewerWidth;
+					scrollViewer.MaxHeight = Math.Max(m_defaultPipSize.Height, m_selectedPipSize.Height);
 				}
 				else
 				{
 					var scrollViewerHeight = CalculateScrollViewerSize(m_defaultPipSize.Height, m_selectedPipSize.Height, NumberOfPages, MaxVisualIndicators);
-					scrollViewer.MaxHeight(scrollViewerHeight);
-					scrollViewer.MaxWidth(std.max(m_defaultPipSize.Width, m_selectedPipSize.Width));
+					scrollViewer.MaxHeight = scrollViewerHeight;
+					scrollViewer.MaxWidth = Math.Max(m_defaultPipSize.Width, m_selectedPipSize.Width);
 				}
 			}
 		}
@@ -419,42 +419,23 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 
 					// Narrator says: Page 5, Button 5 of 30. Is it expected behavior?
-					AutomationProperties.SetName(pip, ResourceAccessor.GetLocalizedStringResource(SR_PipsPagerPageText) + " " + to_hstring(index + 1));
+					AutomationProperties.SetName(pip, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PipsPagerPageText) + " " + (index + 1));
 					AutomationProperties.SetPositionInSet(pip, index + 1);
 					AutomationProperties.SetSizeOfSet(pip, NumberOfPages);
 
-					var pciRevokers = make_selfPipsPagerViewItemRevokers > ();
-					pciRevokers.clickRevoker = pip.Click(auto_revoke,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-						[this, index](var sender, var args)
-
-
-
-
-
+					// TODO: This may leak - all buttons leave memory only with pager
+					pip.Click += (sender, args) =>
+					{
+						var repeater = m_pipsPagerRepeater;
+						if (repeater != null)
 						{
-						if (var repeater = m_pipsPagerRepeater) {
-							if (var button = sender as Button())
-		                        {
-								SelectedPageIndex(repeater.GetElementIndex(button));
+							var button = sender as Button;
+							if (button != null)
+							{
+								SelectedPageIndex = repeater.GetElementIndex(button);
 							}
 						}
-					}
-		            );
-					pip.SetValue(s_pipButtonHandlersProperty, pciRevokers.as< object > ());
+					};
 				}
 			}
 		}
@@ -465,7 +446,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (pip != null)
 			{
 				var newIndex = args.NewIndex;
-				AutomationProperties.SetName(pip, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PipsPagerPageText) + " " + to_hstring(newIndex + 1));
+				AutomationProperties.SetName(pip, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PipsPagerPageText) + " " + (newIndex + 1));
 				AutomationProperties.SetPositionInSet(pip, newIndex + 1);
 			}
 		}
@@ -605,7 +586,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (property == SelectedIndicatorButtonStyleProperty)
 				{
-					m_selectedPipSize = GetDesiredPipSize(SelectedIndicatorButtonStyle());
+					m_selectedPipSize = GetDesiredPipSize(SelectedIndicatorButtonStyle);
 					SetScrollViewerMaxSize();
 					UpdateSelectedPip(SelectedPageIndex);
 				}

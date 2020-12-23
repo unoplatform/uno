@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				var pipsPager = (PipsPager)Owner;
 				if (pipsPager != null)
 				{
-					name = SharedHelpers.TryGetStringRepresentationFromObject(pipsPager.GetValue(AutomationProperties.NameProperty()));
+					name = SharedHelpers.TryGetStringRepresentationFromObject(pipsPager.GetValue(AutomationProperties.NameProperty));
 				}
 			}
 

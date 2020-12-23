@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NextButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(NextButtonStyle), typeof(Style), typeof(PipsPager), new PropertyMetadata(0);
+			DependencyProperty.Register(nameof(NextButtonStyle), typeof(Style), typeof(PipsPager), new PropertyMetadata(0));
 
 		public PipsPagerButtonVisibility NextButtonVisibility
 		{
