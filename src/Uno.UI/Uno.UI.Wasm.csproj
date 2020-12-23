@@ -146,10 +146,6 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <None Remove="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingDeterminate.json" />
-	</ItemGroup>
-
 	<Target Name="_UnoWasmOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>

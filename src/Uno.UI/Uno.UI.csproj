@@ -175,10 +175,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingDeterminate.json" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
 	  <Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
 	  <Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
