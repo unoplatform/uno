@@ -25,7 +25,7 @@
 								   Margin="{TemplateBinding Padding}"
 								   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 								   VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-								<Border Background="Pink" Width="312">
+								<Border x:Name="PopupContent" Background="Pink" Width="312">
 									<TextBlock Margin="16">Asd</TextBlock>
 								</Border>
 							</Popup>
@@ -59,7 +59,7 @@
 								   Margin="{TemplateBinding Padding}"
 								   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 								   VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-								<Border Background="Pink" Width="312">
+								<Border x:Name="PopupContent" Background="Pink" Width="312">
 									<TextBlock Margin="16">Asd</TextBlock>
 								</Border>
 							</Popup>
@@ -88,22 +88,22 @@
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<ContentControl Grid.Row="0" Grid.Column="0" Content="HSVS" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="1" Grid.Column="0" Content="HSVT" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="2" Grid.Column="0" Content="HSVC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="3" Grid.Column="0" Content="HSVB" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="0" Grid.Column="1" Content="HLVS" HorizontalContentAlignment="Left" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="1" Grid.Column="1" Content="HLVT" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="2" Grid.Column="1" Content="HLVC" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="3" Grid.Column="1" Content="HLVB" HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="0" Grid.Column="2" Content="HCVS" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="1" Grid.Column="2" Content="HCVT" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="2" Grid.Column="2" Content="HCVC" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="3" Grid.Column="2" Content="HCVB" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="0" Grid.Column="3" Content="HRVS" HorizontalContentAlignment="Right" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="1" Grid.Column="3" Content="HRVT" HorizontalContentAlignment="Right" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="2" Grid.Column="3" Content="HRVC" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Row="3" Grid.Column="3" Content="HRVB" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HSVS" Grid.Row="0" Grid.Column="0" Content="HSVS" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HSVT" Grid.Row="1" Grid.Column="0" Content="HSVT" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HSVC" Grid.Row="2" Grid.Column="0" Content="HSVC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HSVB" Grid.Row="3" Grid.Column="0" Content="HSVB" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HLVS" Grid.Row="0" Grid.Column="1" Content="HLVS" HorizontalContentAlignment="Left" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HLVT" Grid.Row="1" Grid.Column="1" Content="HLVT" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HLVC" Grid.Row="2" Grid.Column="1" Content="HLVC" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HLVB" Grid.Row="3" Grid.Column="1" Content="HLVB" HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HCVS" Grid.Row="0" Grid.Column="2" Content="HCVS" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HCVT" Grid.Row="1" Grid.Column="2" Content="HCVT" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HCVC" Grid.Row="2" Grid.Column="2" Content="HCVC" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HCVB" Grid.Row="3" Grid.Column="2" Content="HCVB" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HRVS" Grid.Row="0" Grid.Column="3" Content="HRVS" HorizontalContentAlignment="Right" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HRVT" Grid.Row="1" Grid.Column="3" Content="HRVT" HorizontalContentAlignment="Right" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HRVC" Grid.Row="2" Grid.Column="3" Content="HRVC" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Default_HRVB" Grid.Row="3" Grid.Column="3" Content="HRVB" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
 			</Grid>
 
 			<TextBlock Text="with Margin=20 on Popup" />
@@ -115,10 +115,11 @@
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<ContentControl Grid.Column="0" Content="HSVS" Padding="20" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Column="1" Content="HLVT" Padding="20" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Column="2" Content="HCVC" Padding="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
-				<ContentControl Grid.Column="3" Content="HRVB" Padding="20" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Margin_HSVS" Grid.Column="0" Content="HSVS" Padding="20" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Margin_HLVT" Grid.Column="1" Content="HLVT" Padding="20" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Margin_HCVC" Grid.Column="2" Content="HCVC" Padding="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+				<ContentControl x:Name="Margin_HRVB" Grid.Column="3" Content="HRVB" Padding="20" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTest_ContentControlStyle}" />
+
 			</Grid>
 			
 			<TextBlock Text="with Height=Width=20 on Popup" />
@@ -130,10 +131,10 @@
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<ContentControl Grid.Column="0" Content="HSVS" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTestWithFixedSize_ContentControlStyle}" />
-				<ContentControl Grid.Column="1" Content="HLVT" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTestWithFixedSize_ContentControlStyle}" />
-				<ContentControl Grid.Column="2" Content="HCVC" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTestWithFixedSize_ContentControlStyle}" />
-				<ContentControl Grid.Column="3" Content="HRVB" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTestWithFixedSize_ContentControlStyle}" />
+				<ContentControl x:Name="Size_HSVS" Grid.Column="0" Content="HSVS" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource PopupPlacementTestWithFixedSize_ContentControlStyle}" />
+				<ContentControl x:Name="Size_HLVT" Grid.Column="1" Content="HLVT" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Style="{StaticResource PopupPlacementTestWithFixedSize_ContentControlStyle}" />
+				<ContentControl x:Name="Size_HCVC" Grid.Column="2" Content="HCVC" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Style="{StaticResource PopupPlacementTestWithFixedSize_ContentControlStyle}" />
+				<ContentControl x:Name="Size_HRVB" Grid.Column="3" Content="HRVB" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTestWithFixedSize_ContentControlStyle}" />
 			</Grid>
 
 		</StackPanel>
