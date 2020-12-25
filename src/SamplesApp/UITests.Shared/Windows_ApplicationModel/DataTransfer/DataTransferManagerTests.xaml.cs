@@ -36,6 +36,7 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 		private string _uriText = null;
 		private string _applicationLink = null;
 		private string _webLink = null;
+		private bool? _setDarkTheme = null;
 
 		public DataTransferManagerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -72,6 +73,16 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 			set
 			{
 				_description = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? SetDarkTheme
+		{
+			get => _setDarkTheme;
+			set
+			{
+				_setDarkTheme = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -116,7 +127,26 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 			}
 		}
 
-		private void ShowUI() => DataTransferManager.ShowShareUI();
+		private void ShowUI() => DataTransferManager.ShowShareUI(new ShareUIOptions()
+		{
+			Theme = GetTheme()
+		});
+
+		private ShareUITheme GetTheme()
+		{
+			if (SetDarkTheme == null)
+			{
+				return ShareUITheme.Default;
+			}
+			else if (SetDarkTheme == true)
+			{
+				return ShareUITheme.Dark;
+			}
+			else
+			{
+				return ShareUITheme.Light;
+			}
+		}
 
 		private void ClearEventLog() => EventLog.Clear();
 

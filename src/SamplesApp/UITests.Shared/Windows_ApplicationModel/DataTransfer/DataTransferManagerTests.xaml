@@ -13,9 +13,10 @@
 			<RowDefinition Height="*" />
 			<RowDefinition Height="300" />
 		</Grid.RowDefinitions>
-		<StackPanel>
+		<StackPanel Spacing="8">
 			<TextBox Header="Title" Text="{x:Bind ViewModel.Title, Mode=TwoWay}" />
 			<TextBox Header="Description" Text="{x:Bind ViewModel.Description, Mode=TwoWay}" />
+			<CheckBox x:Name="DarkThemeCheckBox" IsChecked="{x:Bind ViewModel.SetDarkTheme, Mode=TwoWay}" IsThreeState="True" Content="Dark theme" />
 
 			<TextBlock Text="Data" Style="{ThemeResource HeaderTextBlockStyle}" />
 			<TextBox Header="Text" Text="{x:Bind ViewModel.Text, Mode=TwoWay}" />

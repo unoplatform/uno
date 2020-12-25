@@ -110,6 +110,8 @@ namespace Windows.UI.Xaml
 			set
 			{
 				_requestedTheme = value;
+				// Sync with core application's theme
+				CoreApplication.RequestedTheme = value == ApplicationTheme.Dark ? SystemTheme.Dark : SystemTheme.Light;
 				UpdateRequestedThemesForResources();
 			}
 		}

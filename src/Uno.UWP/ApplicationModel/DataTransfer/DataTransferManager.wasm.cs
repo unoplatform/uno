@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading.Tasks;
 using Uno.Foundation;
 
 namespace Windows.ApplicationModel.DataTransfer
@@ -8,20 +9,12 @@ namespace Windows.ApplicationModel.DataTransfer
 	public partial class DataTransferManager
 	{
 		private const string JsType = "Windows.ApplicationModel.DataTransfer.DataTransferManager";
-
-		private static Lazy<DataTransferManager> _instance = new Lazy<DataTransferManager>(() => new DataTransferManager());
-
+		
 		public static bool IsSupported() => bool.TryParse(WebAssemblyRuntime.InvokeJS($"{JsType}.isSupported()"), out var result) && result;
 
-		public static DataTransferManager GetForCurrentView() => _instance.Value;
-
-		public static async void ShowShareUI()
+		private static async Task ShowShareUIAsync(ShareUIOptions options, DataPackage dataPackage)
 		{
-			var dataTransferManager = _instance.Value;
-			var args = new DataRequestedEventArgs();
-			dataTransferManager.DataRequested?.Invoke(dataTransferManager, args);
-			var dataPackage = args.Request.Data;
-			var dataPackageView = args.Request.Data.GetView();
+			var dataPackageView = dataPackage.GetView();
 
 			var title = dataPackage.Properties.Title != null ? $"\"{WebAssemblyRuntime.EscapeJs(dataPackage.Properties.Title)}\"" : null;
 
@@ -36,19 +29,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 			text = text != null ? $"\"{WebAssemblyRuntime.EscapeJs(text)}\"" : null;
 
-			Uri? uri = null;
-			if (dataPackageView.Contains(StandardDataFormats.Uri))
-			{
-				uri = await dataPackageView.GetUriAsync();
-			}
-			else if (dataPackageView.Contains(StandardDataFormats.WebLink))
-			{
-				uri = await dataPackageView.GetWebLinkAsync();
-			}
-			else if (dataPackageView.Contains(StandardDataFormats.ApplicationLink))
-			{
-				uri = await dataPackageView.GetApplicationLinkAsync();
-			}
+			var uri = await GetSharedUriAsync(dataPackageView);
 
 			var uriText = uri != null ? $"\"{WebAssemblyRuntime.EscapeJs(uri.ToString())}\"" : null;
 
