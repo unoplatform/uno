@@ -32,6 +32,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			RequestedOperation = requestedOperation;
 		}
 
+		public DataPackagePropertySetView Properties { get; } = new DataPackagePropertySetView();
+
 		public DataPackageOperation RequestedOperation { get; }
 
 		public IReadOnlyList<string> AvailableFormats => _data.Keys.Where(k => !k.StartsWith(DataPackage.UnoPrivateDataPrefix)).ToArray();

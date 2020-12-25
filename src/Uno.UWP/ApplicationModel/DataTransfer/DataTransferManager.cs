@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __ANDROID__
 using System;
 using Windows.Foundation;
 using Uno.Logging;
@@ -35,7 +35,15 @@ namespace Windows.ApplicationModel.DataTransfer
 				// Because showing the Share UI is a fire-and-forget operation
 				// and retrieving data from DataPackage requires async-await,
 				// this method must be async void.
-				await ShowShareUIAsync(options, dataPackage);
+				var result = await ShowShareUIAsync(options, dataPackage);
+				if (result)
+				{
+					dataPackage.OnShareCompleted();
+				}
+				else
+				{
+					dataPackage.OnShareCanceled();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -43,6 +51,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				{
 					dataTransferManager.Log().LogError($"Exception occurred trying to show share UI: {ex}");
 				}
+				dataPackage.OnShareCanceled();
 			}
 		}
 

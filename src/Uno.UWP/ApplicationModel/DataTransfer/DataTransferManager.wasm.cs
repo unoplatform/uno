@@ -12,7 +12,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		
 		public static bool IsSupported() => bool.TryParse(WebAssemblyRuntime.InvokeJS($"{JsType}.isSupported()"), out var result) && result;
 
-		private static async Task ShowShareUIAsync(ShareUIOptions options, DataPackage dataPackage)
+		private static async Task<bool> ShowShareUIAsync(ShareUIOptions options, DataPackage dataPackage)
 		{
 			var dataPackageView = dataPackage.GetView();
 
@@ -34,14 +34,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			var uriText = uri != null ? $"\"{WebAssemblyRuntime.EscapeJs(uri.ToString())}\"" : null;
 
 			var result = await WebAssemblyRuntime.InvokeAsync($"{JsType}.showShareUI({title ?? "null"},{text ?? "null"},{uriText ?? "null"})");
-			if (bool.TryParse(result, out var boolResult) && boolResult)
-			{
-				dataPackage.OnShareCompleted();
-			}
-			else
-			{
-				dataPackage.OnShareCanceled();
-			}
+			return bool.TryParse(result, out var boolResult) && boolResult;
 		}
 	}
 }

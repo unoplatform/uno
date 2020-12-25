@@ -1,4 +1,4 @@
-﻿#if !__WASM__ && !__IOS__
+﻿#if !__WASM__ && !__IOS__ && !__ANDROID__
 
 namespace Windows.ApplicationModel.DataTransfer
 {

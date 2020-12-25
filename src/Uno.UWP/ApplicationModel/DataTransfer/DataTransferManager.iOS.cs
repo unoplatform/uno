@@ -18,7 +18,7 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		public static bool IsSupported() => true;
 
-		private static async Task ShowShareUIAsync(ShareUIOptions options, DataPackage dataPackage)
+		private static async Task<bool> ShowShareUIAsync(ShareUIOptions options, DataPackage dataPackage)
 		{
 			var rootViewController = UIApplication.SharedApplication?.KeyWindow?.RootViewController;
 			if (rootViewController == null)
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				{
 					_instance.Value.Log().LogError("The Share API was called too early in the application lifecycle");
 				}
-				return;
+				return false;
 			}
 
 			var dataPackageView = dataPackage.GetView();
@@ -84,16 +84,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			await rootViewController.PresentViewControllerAsync(activityViewController, true);
 
-			var result = await completionSource.Task;
-
-			if (result)
-			{
-				dataPackage.OnShareCompleted();
-			}
-			else
-			{
-				dataPackage.OnShareCanceled();
-			}
+			return await completionSource.Task;
 		}
 
 		internal class DataActivityItemSource : UIActivityItemSource
