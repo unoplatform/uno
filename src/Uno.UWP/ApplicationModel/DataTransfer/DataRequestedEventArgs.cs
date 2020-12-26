@@ -2,6 +2,6 @@
 {
 	public partial class DataRequestedEventArgs
 	{
-		public DataRequest Request { get; }
+		public DataRequest Request { get; } = new DataRequest();
 	}
 }

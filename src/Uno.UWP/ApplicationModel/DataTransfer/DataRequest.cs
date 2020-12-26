@@ -4,7 +4,7 @@ namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class DataRequest
 	{
-		public DataPackage Data { get; set; }
+		public DataPackage Data { get; set; } = new DataPackage();
 
 		public DateTimeOffset Deadline { get; }
 

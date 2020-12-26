@@ -3240,6 +3240,43 @@ var Windows;
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
+    var ApplicationModel;
+    (function (ApplicationModel) {
+        var DataTransfer;
+        (function (DataTransfer) {
+            class DataTransferManager {
+                static isSupported() {
+                    var navigatorAny = navigator;
+                    return typeof navigatorAny.share === "function";
+                }
+                static showShareUI(title, text, url) {
+                    return __awaiter(this, void 0, void 0, function* () {
+                        var data = {};
+                        if (title) {
+                            data.title = title;
+                        }
+                        if (text) {
+                            data.text = text;
+                        }
+                        if (url) {
+                            data.url = url;
+                        }
+                        try {
+                            yield navigator.share(data);
+                            return "true";
+                        }
+                        catch (_a) {
+                            return "false";
+                        }
+                    });
+                }
+            }
+            DataTransfer.DataTransferManager = DataTransferManager;
+        })(DataTransfer = ApplicationModel.DataTransfer || (ApplicationModel.DataTransfer = {}));
+    })(ApplicationModel = Windows.ApplicationModel || (Windows.ApplicationModel = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
     var Devices;
     (function (Devices) {
         var Geolocation;
