@@ -107,7 +107,8 @@ namespace Windows.ApplicationModel.DataTransfer
 				RequestedOperation,
 				_data,
 				ResourceMap.ToImmutableDictionary(),
-				(id, op) => OperationCompleted?.Invoke(this, new OperationCompletedEventArgs(id, op)));
+				(id, op) => OperationCompleted?.Invoke(this, new OperationCompletedEventArgs(id, op)),
+				Properties);
 
 		/// <summary>
 		/// Determines if the given URI/URL is considered a WebLink.

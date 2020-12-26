@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Windows.Foundation.Collections;
 using Windows.Storage.Streams;
 using Windows.UI;
 
@@ -15,9 +16,16 @@ namespace Windows.ApplicationModel.DataTransfer
 	public partial class DataPackagePropertySet : IDictionary<string, object>, IEnumerable<KeyValuePair<string, object>>
 	{
 		private readonly Dictionary<string, object> _values = new Dictionary<string, object>();
-
+		private readonly Lazy<IList<string>> _fileTypes;
+		
 		internal DataPackagePropertySet()
 		{
+			_fileTypes = new Lazy<IList<string>>(() =>
+			{
+				var fileTypes = new NonNullList<string>();
+				SetValue(fileTypes, false, nameof(FileTypes));
+				return fileTypes;
+			});
 		}
 
 		/// <summary>
@@ -68,7 +76,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		/// <summary>
 		/// Specifies a vector object that contains the types of files stored in the DataPackage object.
 		/// </summary>
-		public IList<string> FileTypes { get; } = new List<string>();
+		public IList<string> FileTypes => _fileTypes.Value;
 
 		/// <summary>
 		/// Gets or sets the source app's logo.
