@@ -4,6 +4,7 @@ using Windows.Devices.Haptics;
 using System.Linq;
 using Tizen.Applications;
 using Uno.Extensions.Specialized;
+using Uno.UI.Runtime.Skia.Tizen.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Tizen.Devices.Haptics
 {
@@ -19,10 +20,7 @@ namespace Uno.UI.Runtime.Skia.Tizen.Devices.Haptics
 		{
 			get
 			{
-				var packageId = Application.Current.ApplicationInfo.PackageId;
-				var package = PackageManager.GetPackage(packageId);
-
-				if (package.Privileges.Any(p=> p == TizenPrivilege))
+				if (PrivilegeHelper.IsDeclared(TizenPrivilege))
 				{
 					return VibrationAccessStatus.Allowed;
 				}

@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
+#if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__ || __SKIA__
 using System;
 using Windows.Foundation;
 using Uno.Logging;
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 
-		private static async Task<Uri?> GetSharedUriAsync(DataPackageView view)
+		internal static async Task<Uri?> GetSharedUriAsync(DataPackageView view)
 		{
 			if (view.Contains(StandardDataFormats.Uri))
 			{

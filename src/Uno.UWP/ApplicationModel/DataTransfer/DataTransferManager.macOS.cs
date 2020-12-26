@@ -29,8 +29,6 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			var sharedData = new List<NSObject>();
 
-			var title = dataPackage.Properties.Title ?? string.Empty;
-
 			if (dataPackageView.Contains(StandardDataFormats.Text))
 			{
 				var text = await dataPackageView.GetTextAsync();
