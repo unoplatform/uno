@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 				_picker.MinuteInterval = minuteIncrement;
 			}
 		}
-		// prueba de git
+
 		private void SaveInitialTime() => _initialTime = _picker?.Date;
 
 		internal void SaveTime()
