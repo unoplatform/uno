@@ -110,23 +110,25 @@ namespace Windows.Foundation.Metadata
 		{
 			lock (_assemblies)
 			{
-				if (!_typeCache.TryGetValue(typeName, out var type))
+				if (_typeCache.TryGetValue(typeName, out var type))
 				{
-					foreach (var assembly in _assemblies)
+					return type;
+				}
+
+				foreach (var assembly in _assemblies)
+				{
+					type = assembly.GetType(typeName);
+
+					if (type != null)
 					{
-						type = assembly.GetType(typeName);
+						_typeCache[typeName] = type;
 
-						if (type != null)
-						{
-							_typeCache[typeName] = type;
-
-							return type;
-						}
+						return type;
 					}
 				}
-			}
 
-			return null;
+				return null;
+			}
 		}
 
 		internal static void TryRaiseNotImplemented(string type, string memberName)
