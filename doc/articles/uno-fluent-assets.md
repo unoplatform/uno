@@ -39,6 +39,13 @@ Simply replace the contents of Font.css in your app with those of the `Font.css`
 ## Known issues
 On iOS and macOS the indeterminate state for a CheckBox is not the right color.
 
+## Usage
+
+The symbol font is automatically used by built-in styles and templates. You can reference it in XAML using the `SymbolThemeFontFamily` resource. For example:
+
+```
+<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE117;"/>
+```
 
 ## Related Topics
 - [3011](https://github.com/unoplatform/uno/issues/3011)
