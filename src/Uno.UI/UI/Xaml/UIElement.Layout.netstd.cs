@@ -115,6 +115,7 @@ namespace Windows.UI.Xaml
 			{
 				LayoutInformation.SetLayoutSlot(this, finalRect);
 				HideVisual();
+				_isArrangeValid = true;
 				return;
 			}
 

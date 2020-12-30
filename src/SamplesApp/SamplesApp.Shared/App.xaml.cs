@@ -210,7 +210,10 @@ namespace SamplesApp
 					$"PreviousState - {e.PreviousExecutionState}, " +
 					$"Uri - {protocolActivatedEventArgs.Uri}",
 					"Application activated via protocol");
+#if !__SKIA__
+				// TODO: Re-enable when #4810 is closed
 				await dlg.ShowAsync();
+#endif
 			}
 		}
 
@@ -254,7 +257,10 @@ namespace SamplesApp
 			if (!string.IsNullOrEmpty(launchActivatedEventArgs.Arguments))
 			{
 				var dlg = new MessageDialog(launchActivatedEventArgs.Arguments, "Launch arguments");
+#if !__SKIA__
+				// TODO: Re-enable when #4810 is closed
 				await dlg.ShowAsync();
+#endif
 			}
 		}
 

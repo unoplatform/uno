@@ -12,7 +12,7 @@
     <Grid>
 		<mux:NavigationView x:Name="NavigationViewControl">
 			<mux:NavigationView.MenuItems>
-				<mux:NavigationViewItem Content="A" x:Name="A" />
+				<mux:NavigationViewItem IsSelected="True" Content="A" x:Name="A" />
 				<mux:NavigationViewItem Content="B" x:Name="B" />
 				<mux:NavigationViewItem Content="C" x:Name="C" />
 			</mux:NavigationView.MenuItems>
