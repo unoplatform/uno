@@ -43,7 +43,7 @@ On iOS and macOS the indeterminate state for a CheckBox is not the right color.
 
 The symbol font is automatically used by built-in styles and templates. You can reference it in XAML using the `SymbolThemeFontFamily` resource. For example:
 
-```
+```xaml
 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE117;"/>
 ```
 
