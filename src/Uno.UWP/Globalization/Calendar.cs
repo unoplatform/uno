@@ -373,10 +373,10 @@ namespace Windows.Globalization
 			=> throw new global::System.NotImplementedException("The member string Calendar.EraAsString(int idealLength) is not implemented in Uno.");
 
 		public string YearAsString()
-			=> DateTimeOffset.Now.Year.ToString(_resolvedCulture);
+			=> _time.Year.ToString(_resolvedCulture);
 
 		public string YearAsTruncatedString(int remainingDigits)
-			=> DateTimeOffset.Now.ToString("yy", _resolvedCulture);
+			=> _time.ToString("yy", _resolvedCulture);
 
 		public string YearAsPaddedString(int minDigits)
 			=> _time.Year.ToString(new string('0', minDigits), _resolvedCulture);
