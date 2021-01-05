@@ -9,110 +9,66 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<ScrollViewer>
-		<StackPanel Margin="0, 50, 0, 0">
-			<Grid>
-				<winui:ProgressRing Value="{Binding Value, ElementName=slider}" Height="200" Width="200" IsIndeterminate="False" />
-				<TextBlock FontSize="25" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Value, ElementName=slider}" />
-
-			</Grid>
-			<TextBlock FontSize="15" >Value:</TextBlock>
-			<Slider x:Name="slider" Background="Gray"  Width="400" HorizontalAlignment="Center" Minimum="0" Maximum="100" />
-
-
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-				</Grid.RowDefinitions>
-				<ComboBox x:Name="foreground"  Header="Fg:">
-					<ComboBox.Items>
-						<ComboBoxItem>Blue</ComboBoxItem>
-						<ComboBoxItem>Red</ComboBoxItem>
-						<ComboBoxItem>Green</ComboBoxItem>
-						<ComboBoxItem IsSelected="True">Yellow</ComboBoxItem>
-						<ComboBoxItem>Pink</ComboBoxItem>
-						<ComboBoxItem>Violet</ComboBoxItem>
-					</ComboBox.Items>
-				</ComboBox>
-				<ComboBox x:Name="background" Grid.Column="1" Header="Bg:">
-					<ComboBox.Items>
-						<ComboBoxItem>Blue</ComboBoxItem>
-						<ComboBoxItem IsSelected="True">Red</ComboBoxItem>
-						<ComboBoxItem>Green</ComboBoxItem>
-						<ComboBoxItem>Yellow</ComboBoxItem>
-						<ComboBoxItem>Pink</ComboBoxItem>
-						<ComboBoxItem>Violet</ComboBoxItem>
-					</ComboBox.Items>
-				</ComboBox>
-				<Grid Grid.Row="1">
-                    <winui:ProgressRing IsIndeterminate="False"
-                                Height="200"
-                                Width="200"
-                                Foreground="{Binding SelectedValue.Content, ElementName=foreground}"
-                                Background="{Binding SelectedValue.Content, ElementName=background}"/>
-                    <TextBlock Text="0" 
+	<StackPanel HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+		<ComboBox x:Name="ProgressValue"
+				  SelectionChanged="ProgressValue_SelectionChanged"
+				  SelectedIndex="0"
+				  AutomationProperties.Name="ProgressValue"
+				  Header="Value:">
+			<ComboBox.Items>
+				<x:String>0</x:String>
+				<x:String>25</x:String>
+				<x:String>50</x:String>
+				<x:String>75</x:String>
+				<x:String>100</x:String>
+			</ComboBox.Items>
+		</ComboBox>
+		<Grid Width="100"
+              Height="100">
+			<winui:ProgressRing IsIndeterminate="False"
+                                Height="100"
+                                Width="100"
+                                Value="{Binding SelectedValue.Content, ElementName=ProgressValue}"
+                                Foreground="Green"
+                                Background="Red"
+                                x:Name="ProgressRing"/>
+			<TextBlock Text="{Binding SelectedValue.Content, ElementName=ProgressValue}"
                        HorizontalAlignment="Center" 
                        VerticalAlignment="Center" 
                        FontSize="30"/>
-                </Grid>
-				<Grid Grid.Row="1"
-                            Grid.Column="1">
-					<winui:ProgressRing IsIndeterminate="False"
-                            Height="200"
-                            Width="200"
-                            Value="25"
-                            Foreground="{Binding SelectedValue.Content, ElementName=foreground}"
-                            Background="{Binding SelectedValue.Content, ElementName=background}"/>
-					<TextBlock Text="25" 
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Center" 
-                       FontSize="30" />
-				</Grid>
-				<Grid Grid.Row="2">
-                    <winui:ProgressRing IsIndeterminate="False"
-                            Height="200"
-                            Width="200"
-                            Value="50"
-                            Foreground="{Binding SelectedValue.Content, ElementName=foreground}"
-                            Background="{Binding SelectedValue.Content, ElementName=background}"/>
-                    <TextBlock Text="50" 
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Center" 
-                       FontSize="30" />
-                </Grid>
-                <Grid Grid.Row="2"
-                            Grid.Column="1">
-                    <winui:ProgressRing IsIndeterminate="False"
-                            Height="200"
-                            Width="200"
-                            Value="75"
-                            Foreground="{Binding SelectedValue.Content, ElementName=foreground}"
-                            Background="{Binding SelectedValue.Content, ElementName=background}"/>
-                    <TextBlock Text="75" 
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Center" 
-                       FontSize="30" />
-                </Grid>
-                <Grid Grid.Row="3">
-                    <winui:ProgressRing IsIndeterminate="False"
-                            Height="200"
-                            Width="200"
-                            Value="100"
-                            Foreground="{Binding SelectedValue.Content, ElementName=foreground}"
-                            Background="{Binding SelectedValue.Content, ElementName=background}"/>
-                    <TextBlock Text="100"
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Center" 
-                       FontSize="30" />
-                </Grid>
-			</Grid>
-		</StackPanel>
-	</ScrollViewer>
+			<Border BorderBrush="Blue"
+                        x:Name="TopLeftTarget"
+                        Margin="20"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        BorderThickness="1"
+                        Height="10"
+                        Width="10"/>
+			<Border BorderBrush="Blue" 
+                        x:Name="TopRightTarget"
+                        Margin="20"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        BorderThickness="1"
+                        Height="10"
+                        Width="10"/>
+			<Border BorderBrush="Blue"
+                        x:Name="BottomLeftTarget"
+                        Margin="20"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        BorderThickness="1"
+                        Height="10"
+                        Width="10"/>
+			<Border BorderBrush="Blue" 
+                        x:Name="BottomRightTarget"
+                        Margin="20"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        BorderThickness="1"
+                        Height="10"
+                        Width="10"/>
+		</Grid>
+	</StackPanel>
 </Page>
