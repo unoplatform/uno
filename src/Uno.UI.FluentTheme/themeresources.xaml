@@ -20177,7 +20177,8 @@
   <Style x:Name="TabViewButtonStyle" TargetType="Button">
     <Setter Property="Background" Value="{ThemeResource TabViewButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource TabViewButtonForeground}" />
-    <contract7Present:Setter Property="CornerRadius" Value="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource TopCornerRadiusFilterConverter}}" />
+    <contract7Present:Setter Property="CornerRadius" Value="4,4,0,0" />
+    <!--TODO: Uno enable when #4826 is fixed ="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource TopCornerRadiusFilterConverter}}"/>-->
     <Setter Property="FontSize" Value="11" />
     <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
     <Setter Property="VerticalAlignment" Value="Bottom" />
