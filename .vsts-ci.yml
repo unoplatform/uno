@@ -30,7 +30,7 @@ resources:
 
 variables:
   windowsHostedVMImage: 'windows-2019'
-  windowsScaledPool: 'Windows2019-20200920-1'
+  windowsScaledPool: 'Windows2019-20201210-0'
   linuxVMImage: 'ubuntu-latest'
   macOSVMImage: 'macOS-10.15'
   xCodeRoot: '/Applications/Xcode_12.2.app'
