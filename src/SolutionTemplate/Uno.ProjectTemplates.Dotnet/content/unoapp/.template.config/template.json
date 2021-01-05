@@ -10,7 +10,8 @@
     "Windows",
     "macOS",
     "Linux",
-    "Tizen"
+    "Tizen",
+    "dotnet-new"
   ],
   "name": "Cross-Platform App",
   "identity": "Uno.Platform.UnoApp",

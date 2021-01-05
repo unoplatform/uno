@@ -1,7 +1,12 @@
 ﻿{
   "$schema": "http://json.schemastore.org/template",
   "author": "Uno Platform",
-  "classifications": [ "Console" ],
+  "classifications": [
+    "Web",
+    "Uno Platform",
+    "WebAssembly",
+    "dotnet-new"
+  ],
   "name": "Uno Platform WebAssembly Head for Xamarin.Forms",
   "identity": "Uno.Platform.Wasm.XamarinForms",
   "groupIdentity": "Uno.Platform.XF",
