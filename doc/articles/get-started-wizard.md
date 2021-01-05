@@ -71,4 +71,4 @@ Unhandled exception. System.TypeInitializationException: The type initializer fo
 
 On Windows, you will need to install the [GTK+3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases). **Make sure to restart Visual Studio** for the changes to be used by Visual Studio.
 On Linux, you'll need to follow the [Uno Platform](get-started-with-linux.md#setting-up-for-linux) setup instructions.
-On macOS, you'll need to follow the [Uno Platform](get-started-with-vsmac.md) setup instructions.
+On macOS, you'll need to follow the [Uno Platform](get-started-vsmac.md) setup instructions.

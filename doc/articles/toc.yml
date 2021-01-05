@@ -58,10 +58,19 @@
       href: debugging-wasm.md
     - name: Build telemetry
       href: uno-toolchain-telemetry.md
-    - name: Migrating a class library to Uno
-      href: howto-migrate-existing-code.md
-    - name: Migrating existing UWP app to Uno
-      href: migrating-apps.md
+    - name: Migrating UWP-only code
+      topicHref: howto-migrate-existing-code.md
+      items:
+        - name: Checklist
+          href: migrating-before-you-start.md
+        - name: Applications
+          href: migrating-apps.md
+        - name: Class libraries
+          href: migrating-libraries.md
+        - name: General guidance
+          href: migrating-guidance.md
+    - name: Cross-targeted libraries
+      href: cross-targeted-libraries.md
     - name: Adding native views
       href: native-views.md
     - name: How to consume a webservice
