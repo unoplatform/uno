@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPasswordChanged(DependencyPropertyChangedEventArgs e)
 		{
-			Text = (string)e.NewValue;
+			SetValue(TextProperty, (string)e.NewValue);
 
 			PasswordChanged?.Invoke(this, new RoutedEventArgs(this));
 
@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnTextChanged(e);
 
-			Password = (string)e.NewValue;
+			SetValue(PasswordProperty, (string)e.NewValue);
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer()
