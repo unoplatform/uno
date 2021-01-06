@@ -9,7 +9,8 @@
     "iOS",
     "Windows",
     "macOS",
-    "WinUI"
+    "WinUI",
+    "dotnet-new"
   ],
   "name": "Cross-Platform App (WinUI)",
   "identity": "Uno.Platform.UnoApp.WinUI",

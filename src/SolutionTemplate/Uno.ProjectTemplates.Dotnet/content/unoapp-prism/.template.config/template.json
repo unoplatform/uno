@@ -1,7 +1,17 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "author": "Uno Platform",
-  "classifications": [ "Prism", "Xamarin", "Uno Platform", "WebAssembly", "iOS", "Android", "WinUI", "UWP" ],
+  "classifications": [
+    "Prism",
+    "Xamarin",
+    "Uno Platform",
+    "WebAssembly",
+    "iOS",
+    "Android",
+    "WinUI",
+    "UWP",
+    "dotnet-new"
+  ],
   "name": "Cross-Platform App (Prism)",
   "identity": "Uno.Platform.Prism.CSharp", // Unique name for this template
   "groupIdentity": "Uno.Platform.Prism",
