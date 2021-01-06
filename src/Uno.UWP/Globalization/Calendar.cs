@@ -260,6 +260,9 @@ namespace Windows.Globalization
 						AddHours(-12);
 						break;
 
+					case 2 when _clock == ClockIdentifiers.TwelveHour:
+						break;
+
 					case 2 when _clock == ClockIdentifiers.TwentyFourHour && _time.Hour < 12:
 						AddHours(12);
 						break;
