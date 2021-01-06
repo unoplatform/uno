@@ -7,6 +7,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
 
@@ -241,8 +242,23 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Opening?.Invoke(this, EventArgs.Empty);
 			Open();
 			_isOpen = true;
+
+#if __ANDROID__
+			// On Android, the Loaded event won't be triggered synchronously during the Open()
+			// method. So we need to requeue the OnOpened()
+			// More on this: https://github.com/unoplatform/uno/issues/3519
+			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				if (_isOpen)
+				{
+					OnOpened();
+					Opened?.Invoke(this, EventArgs.Empty);
+				}
+			});
+#else
 			OnOpened();
 			Opened?.Invoke(this, EventArgs.Empty);
+#endif
 		}
 
 		private protected virtual void OnOpening() { }
