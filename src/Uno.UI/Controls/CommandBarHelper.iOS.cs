@@ -1,4 +1,5 @@
-﻿#if __IOS__
+#if __IOS__
+#nullable enable
 using System;
 using System.Linq;
 using Windows.UI.Xaml;
@@ -14,7 +15,7 @@ namespace Uno.UI.Controls
 			commandBar.GetRenderer(() => new CommandBarRenderer(commandBar)).Native = navigationBar;
 		}
 
-		internal static void SetNavigationItem(CommandBar commandBar, UIKit.UINavigationItem navigationItem)
+		internal static void SetNavigationItem(CommandBar commandBar, UIKit.UINavigationItem? navigationItem)
 		{
 			commandBar.GetRenderer(() => new CommandBarNavigationItemRenderer(commandBar)).Native = navigationItem;
 		}
@@ -45,8 +46,7 @@ namespace Uno.UI.Controls
 		/// <param name="pageController">The controller of the page</param>
 		public static void PageDestroyed(UIViewController pageController)
 		{
-			var topCommandBar = pageController.FindTopCommandBar();
-			if (topCommandBar != null)
+			if (pageController.FindTopCommandBar() is { } topCommandBar)
 			{
 				SetNavigationItem(topCommandBar, null);
 			}
@@ -94,18 +94,26 @@ namespace Uno.UI.Controls
 		/// <param name="pageController">The controller of the page</param>
 		public static void PageDidDisappear(UIViewController pageController)
 		{
-			var topCommandBar = pageController.FindTopCommandBar();
-			if (topCommandBar != null)
+			if (pageController.FindTopCommandBar() is { } topCommandBar)
 			{
 				// Set the native navigation bar to null so it does not render when the page is not visible
-				SetNavigationBar(topCommandBar, null);
+				SetNavigationBar(topCommandBar, null!);
 			}
 		}
 
-		private static CommandBar FindTopCommandBar(this UIViewController controller)
+		public static void PageWillDisappear(UIViewController pageController)
+		{
+			if (pageController.FindTopCommandBar() is { } topCommandBar)
+			{
+				// Set the native navigation bar to null so it does not render when the page is not visible
+				SetNavigationBar(topCommandBar, null!);
+			}
+		}
+
+		private static CommandBar? FindTopCommandBar(this UIViewController controller)
 		{
 			return (controller.View as Page)?.TopAppBar as CommandBar
-				?? controller.View.FindFirstChild<CommandBar>();
+				?? controller.View.FindFirstChild<CommandBar?>();
 		}
 	}
 }

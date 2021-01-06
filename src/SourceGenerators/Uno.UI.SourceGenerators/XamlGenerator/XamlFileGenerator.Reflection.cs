@@ -373,7 +373,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var type = FindType(ownerType);
 
-			if (type != null)
+			if (type != null && !string.IsNullOrEmpty(propertyName))
 			{
 				do
 				{

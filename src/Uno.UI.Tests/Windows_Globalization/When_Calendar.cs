@@ -340,7 +340,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 			);
 		}
 
-
 		[TestMethod]
 		public void When_Gregorian_FixedDate_AddDay()
 		{
@@ -489,14 +488,16 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
-		public void When_Gregorian_FixedDate_Format_12h()
+		[DataRow(2020, "Thursday")]
+		[DataRow(2021, "Saturday")]
+		public void When_Gregorian_FixedDate_Format_12h(int year, string dayOfWeek)
 		{
 			ValidateFormat(culture: "en-US",
 				  calendar: WG.CalendarIdentifiers.GregorianValue,
 				  clock: WG.ClockIdentifiers.TwelveHour,
-				  date: new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
-				  yearAsPaddedString: "2020",
-				  yearAsString: "2020",
+				  date: new DateTimeOffset(year, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				  yearAsPaddedString: year.ToString(CultureInfo.InvariantCulture),
+				  yearAsString: year.ToString(CultureInfo.InvariantCulture),
 				  monthAsPaddedNumericString: "01",
 				  monthAsSoloString: "Jan",
 				  monthAsString: "Jan",
@@ -511,19 +512,21 @@ namespace Uno.UI.Tests.Windows_Globalization
 				  secondAsString: "5",
 				  nanosecondAsPaddedString: "00",
 				  nanosecondAsString: "0",
-				  dayOfWeekAsSoloString: "Thursday",
-				  dayOfWeekAsString: "Thursday");
+				  dayOfWeekAsSoloString: dayOfWeek,
+				  dayOfWeekAsString: dayOfWeek);
 		}
 
 		[TestMethod]
-		public void When_Gregorian_FixedDate_Format_24h()
+		[DataRow(2020, "Thursday")]
+		[DataRow(2021, "Saturday")]
+		public void When_Gregorian_FixedDate_Format_24h(int year, string dayOfWeek)
 		{
 			ValidateFormat(culture: "en-US",
 				  calendar: WG.CalendarIdentifiers.GregorianValue,
 				  clock: WG.ClockIdentifiers.TwentyFourHourValue,
-				  date: new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
-				  yearAsPaddedString: "2020",
-				  yearAsString: "2020",
+				  date: new DateTimeOffset(year, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				  yearAsPaddedString: year.ToString(CultureInfo.InvariantCulture),
+				  yearAsString: year.ToString(CultureInfo.InvariantCulture),
 				  monthAsPaddedNumericString: "01",
 				  monthAsSoloString: "Jan",
 				  monthAsString: "Jan",
@@ -538,8 +541,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 				  secondAsString: "5",
 				  nanosecondAsPaddedString: "00",
 				  nanosecondAsString: "0",
-				  dayOfWeekAsSoloString: "Thursday",
-				  dayOfWeekAsString: "Thursday");
+				  dayOfWeekAsSoloString: dayOfWeek,
+				  dayOfWeekAsString: dayOfWeek);
 		}
 
 		private void Validate(

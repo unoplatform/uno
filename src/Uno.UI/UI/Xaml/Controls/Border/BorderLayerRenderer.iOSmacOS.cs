@@ -40,13 +40,14 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="borderBrush">The border brush</param>
 		/// <param name="cornerRadius">The corner radius</param>
 		/// <param name="backgroundImage">The background image in case of a ImageBrush background</param>
+		/// <returns>An updated BoundsPath if the layer has been created or updated; null if there is no change.</returns>
 		public CGPath UpdateLayer(
 			_View owner,
 			Brush background,
 			Thickness borderThickness,
 			Brush borderBrush,
 			CornerRadius cornerRadius,
-			_Image backgroundImage)		
+			_Image backgroundImage)
 		{
 			// Bounds is captured to avoid calling twice calls below.
 			var bounds = owner.Bounds;

@@ -1377,7 +1377,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (child.Type.Name == "Setter")
 							{
-								var propertyNode = FindMember(child, "Property");
+								var propertyNode = FindMember(child, "Property") ?? FindMember(child, "Target");
 								var valueNode = FindMember(child, "Value");
 								var property = propertyNode?.Value.SelectOrDefault(p => p.ToString());
 

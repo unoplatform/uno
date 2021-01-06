@@ -14,6 +14,8 @@ function Get-TemplateConfiguration(
     [bool]$iOS = $false,
     [bool]$macOS = $false,
     [bool]$wasm = $false,
+    [bool]$skiaGtk = $false,
+    [bool]$skiaWpf = $false,
     [bool]$wasmVsCode = $false)
 {
     $uwpFlag = '-uwp'
@@ -22,6 +24,8 @@ function Get-TemplateConfiguration(
     $macOSFlag = '-macos'
     $wasmFlag = '-wasm'
     $wasmVsCodeFlag = '--vscodeWasm'
+    $skiaWpfFlag = '--skia-wpf'
+    $skiaGtkFlag = '--skia-gtk'
 
     $a = If ($uwp)        { $uwpFlag }        Else { $uwpFlag        + '=false' }
     $b = If ($android)    { $androidFlag }    Else { $androidFlag    + '=false' }
@@ -29,8 +33,10 @@ function Get-TemplateConfiguration(
     $d = If ($macOS)      { $macOSFlag }      Else { $macOSFlag      + '=false' }
     $e = If ($wasm)       { $wasmFlag }       Else { $wasmFlag       + '=false' }
     $f = If ($wasmVsCode) { $wasmVsCodeFlag } Else { $wasmVsCodeFlag + '=false' }
+    $g = If ($skiaWpf)    { $skiaWpfFlag    } Else { $skiaWpfFlag    + '=false' }
+    $h = If ($skiaGtk)    { $skiaGtkFlag    } Else { $skiaGtkFlag    + '=false' }
 
-    @($a, $b, $c, $d, $e, $f)
+    @($a, $b, $c, $d, $e, $f, $g, $h)
 }
 
 $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
@@ -50,7 +56,9 @@ $templateConfigurations =
     (Get-TemplateConfiguration -android 1),
     (Get-TemplateConfiguration -iOS 1),
     (Get-TemplateConfiguration -macOS 1),
-    (Get-TemplateConfiguration -wasm 1)
+    (Get-TemplateConfiguration -wasm 1),
+    (Get-TemplateConfiguration -skiaGtk 1),
+    (Get-TemplateConfiguration -skiaWpf 1)
 )
 
 $configurations =
@@ -76,9 +84,12 @@ for($i = 0; $i -lt $configurations.Length; $i++)
 }
 
 # VS Code
-dotnet new unoapp -n UnoAppVsCode (Get-TemplateConfiguration -wasm 1 -wasmVsCode 1)
-dotnet build -p:RestoreConfigFile=$env:NUGET_CI_CONFIG UnoAppVsCode\UnoAppVsCode.sln
-Assert-ExitCodeIsZero
+# Disabled because of ambient installation of .NET 5 in recent hosted agents.
+# This is fixed in uno.sourcegeneration 3.0+
+#
+# dotnet new unoapp -n UnoAppVsCode (Get-TemplateConfiguration -wasm 1 -wasmVsCode 1)
+# dotnet build -p:RestoreConfigFile=$env:NUGET_CI_CONFIG UnoAppVsCode\UnoAppVsCode.sln
+# Assert-ExitCodeIsZero
 
 # Namespace Tests
 dotnet new unoapp -n MyApp.Uno

@@ -19,6 +19,16 @@ using MUXControlsTestApp.Utilities;
 using UIKit;
 #endif
 
+#if XAMARIN_ANDROID
+using _View = Android.Views.View;
+#elif XAMARIN_IOS
+using _View = UIKit.UIView;
+#elif __MACOS__
+using _View = AppKit.NSView;
+#else
+using _View = Windows.UI.Xaml.UIElement;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
@@ -399,6 +409,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(1, loadingCount, "loading");
 			Assert.AreEqual(1, loadedCount, "loaded");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Native_Child_To_ElementCollection()
+		{
+			var panel = new Grid();
+			var tbNativeTyped = (_View)new TextBlock();
+			panel.Children.Add(tbNativeTyped);
+
+			Assert.AreEqual(1, panel.Children.Count);
 		}
 
 		[TestMethod]

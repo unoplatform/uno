@@ -59,6 +59,8 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
+		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
+
 		private void UpdateBorder()
 		{
 			if (IsLoaded)
