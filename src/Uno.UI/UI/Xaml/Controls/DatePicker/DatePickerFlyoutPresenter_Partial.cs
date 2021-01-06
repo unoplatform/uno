@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
@@ -457,20 +458,20 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!(_tpYearSource != null && _tpMonthSource != null && _tpDaySource != null))
 			{
-				List<object> spCollection;
+				IList<object> spCollection;
 				//IList<object> spCollectionAsInterface;
 
 				//wfci_.Vector<DependencyObject>.Make(spCollection);
-				spCollection = new List<object>();
+				spCollection = new ObservableCollection<object>();
 				//spCollection.As(spCollectionAsInterface);
 				//spCollectionAsInterface = spCollection;
 				_tpDaySource = spCollection;
 				//wfci_.Vector<DependencyObject>.Make(spCollection);
-				spCollection = new List<object>();
+				spCollection = new ObservableCollection<object>();
 				//spCollection.As(spCollectionAsInterface);
 				_tpMonthSource = spCollection;
 				//wfci_.Vector<DependencyObject>.Make(spCollection);
-				spCollection = new List<object>();
+				spCollection = new ObservableCollection<object>();
 				//spCollection.As(spCollectionAsInterface);
 				_tpYearSource = spCollection;
 			}
@@ -591,8 +592,8 @@ namespace Windows.UI.Xaml.Controls
 			_dayVisible = dayVisible;
 			_monthVisible = monthVisible;
 			_yearVisible = yearVisible;
-			_minYear = minYear.Date;
-			_maxYear = maxYear.Date;
+			_minYear = minYear.DateTime;
+			_maxYear = maxYear.DateTime;
 
 			_dayFormat = dayFormat;
 			_monthFormat = monthFormat;
@@ -633,7 +634,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// Date has its own handler since it can be set through multiple codepaths
-			SetDate(date.Date);
+			SetDate(date.DateTime);
 
 			return;
 		}
@@ -675,7 +676,7 @@ namespace Windows.UI.Xaml.Controls
 
 				calendar = CreateNewCalendar(_calendarIdentifier);
 				calendar.SetToNow();
-				newDate = calendar.GetDateTime().Date;
+				newDate = calendar.GetDateTime().DateTime;
 			}
 
 			if (newDate != _date)
@@ -811,14 +812,17 @@ namespace Windows.UI.Xaml.Controls
 			PreventReactionToSelectionChange();
 
 			GetIndices(out yearIndex, out monthIndex, out dayIndex);
-			ClearSelectors(refreshDay, refreshMonth, refreshYear);
+			//ClearSelectors(refreshDay, refreshMonth, refreshYear);
 			if (_tpYearPicker != null)
 			{
 				if (refreshYear)
 				{
 					GenerateYears();
 					//_tpYearPicker.Items = _tpYearSource;
-					_tpYearPicker.ItemsSource = _tpYearSource;
+					if (_tpYearPicker.ItemsSource != _tpYearSource)
+					{
+						_tpYearPicker.ItemsSource = _tpYearSource;
+					}
 				}
 
 				_tpYearPicker.SelectedIndex = yearIndex;
@@ -831,7 +835,10 @@ namespace Windows.UI.Xaml.Controls
 				{
 					GenerateMonths(yearIndex);
 					//_tpMonthPicker.Items = _tpMonthSource;
-					_tpMonthPicker.ItemsSource = _tpMonthSource;
+					if (_tpMonthPicker.ItemsSource != _tpMonthSource)
+					{
+						_tpMonthPicker.ItemsSource = _tpMonthSource;
+					}
 				}
 
 				_tpMonthPicker.SelectedIndex = monthIndex;
@@ -844,7 +851,10 @@ namespace Windows.UI.Xaml.Controls
 				{
 					GenerateDays(yearIndex, monthIndex);
 					//_tpDayPicker.Items = _tpDaySource;
-					_tpDayPicker.ItemsSource = _tpDaySource;
+					if (_tpDayPicker.ItemsSource != _tpDaySource)
+					{
+						_tpDayPicker.ItemsSource = _tpDaySource;
+					}
 				}
 
 				_tpDayPicker.SelectedIndex = dayIndex;
@@ -1082,7 +1092,7 @@ namespace Windows.UI.Xaml.Controls
 			_tpCalendar.Day = safeIndex;
 			var date = _tpCalendar.GetDateTime();
 
-			return date.Date;
+			return date.DateTime;
 		}
 
 		// Reacts to the changes in string typed properties. Reverts the property value to the last valid value,
@@ -1897,10 +1907,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Find the earliest and latest dates available for this calendar.
 				_tpCalendar.SetToMin();
-				minCalendarDate = _tpCalendar.GetDateTime().Date;
+				minCalendarDate = _tpCalendar.GetDateTime().DateTime;
 				//Find the latest date available for this calendar.
 				_tpCalendar.SetToMax();
-				maxCalendarDate = _tpCalendar.GetDateTime().Date;
+				maxCalendarDate = _tpCalendar.GetDateTime().DateTime;
 				minYearDate = ClampDate(_minYear, minCalendarDate, maxCalendarDate);
 				maxYearDate = ClampDate(_maxYear, minCalendarDate, maxCalendarDate);
 
@@ -1911,19 +1921,19 @@ namespace Windows.UI.Xaml.Controls
 				_tpCalendar.Month = month;
 				day = _tpCalendar.FirstDayInThisMonth;
 				_tpCalendar.Day = day;
-				minYearDate = _tpCalendar.GetDateTime().Date;
+				minYearDate = _tpCalendar.GetDateTime().DateTime;
 				_tpCalendar.SetDateTime(maxYearDate);
 				month = _tpCalendar.LastMonthInThisYear;
 				_tpCalendar.Month = month;
 				day = _tpCalendar.LastDayInThisMonth;
 				_tpCalendar.Day = day;
-				maxYearDate = _tpCalendar.GetDateTime().Date;
+				maxYearDate = _tpCalendar.GetDateTime().DateTime;
 				_tpCalendar.SetDateTime(minYearDate);
 				//Set our sentinel time to the start date as we will be using it while generating item sources, we do not need to do this for end date
 				_tpCalendar.Hour = DATEPICKER_SENTINELTIME_HOUR;
 				_tpCalendar.Minute = DATEPICKER_SENTINELTIME_MINUTE;
 				_tpCalendar.Second = DATEPICKER_SENTINELTIME_SECOND;
-				_startDate = _tpCalendar.GetDateTime().Date;
+				_startDate = _tpCalendar.GetDateTime().DateTime;
 				_endDate = maxYearDate;
 
 				// Find the number of years in our range
