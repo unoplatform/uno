@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 {
@@ -121,6 +122,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			SUT.PublicSuppressIsEnabled(false);
 			Assert.IsTrue(SUT.IsEnabled);
+		}
+
+		[TestMethod]
+		public void When_DP_IsEnabled_Null()
+		{
+			var grid = new UserControl();
+
+			grid.SetValue(FrameworkElement.IsEnabledProperty, null);
 		}
 	}
 

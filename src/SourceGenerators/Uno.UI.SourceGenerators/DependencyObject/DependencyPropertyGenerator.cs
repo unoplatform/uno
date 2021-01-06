@@ -382,7 +382,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				if (coerceCallback || propertySymbol.ContainingType.GetMethods().Any(m => m.Name == "Coerce" + propertyName))
 				{
-					builder.AppendLineInvariant($"\t\t, coerceValueCallback: (instance, baseValue) => (({containingTypeName})instance).Coerce{propertyName}(({propertyTypeName})baseValue)");
+					builder.AppendLineInvariant($"\t\t, coerceValueCallback: (instance, baseValue) => (({containingTypeName})instance).Coerce{propertyName}(baseValue)");
 				}
 
 				changedCallbackName ??= $"On{propertyName}Changed";
