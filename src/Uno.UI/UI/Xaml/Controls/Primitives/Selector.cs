@@ -480,7 +480,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (e is IVectorChangedEventArgs iVCE)
 			{
-				if (iVCE.CollectionChange == CollectionChange.ItemChanged || iVCE.CollectionChange == CollectionChange.ItemInserted)
+				if (iVCE.CollectionChange == CollectionChange.ItemChanged
+				    || (iVCE.CollectionChange == CollectionChange.ItemInserted && iVCE.Index < Items.Count))
 				{
 					var item = Items[(int)iVCE.Index];
 
