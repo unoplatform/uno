@@ -1375,8 +1375,12 @@ namespace Microsoft.UI.Xaml.Controls
 					});
 				}
 
+#if IS_UNO
 				// TODO: Uno specific - remove when #4689 is fixed
+				// This ensures the item is properly initialized and the selected item is displayed
 				nvibImpl.Reinitialize();
+				AnimateSelectionChanged(SelectedItem);
+#endif
 			}
 		}
 
@@ -5804,7 +5808,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return IsRootItemsRepeater(GetParentItemsRepeaterForContainer(nvib));
 		}
 
-		#region Uno specific
+#region Uno specific
 
 		//TODO: Uno specific - remove when #4689 is fixed
 
@@ -5824,6 +5828,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		#endregion
+#endregion
 	}
 }

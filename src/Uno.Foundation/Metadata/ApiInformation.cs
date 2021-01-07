@@ -49,13 +49,15 @@ namespace Windows.Foundation.Metadata
 		}
 
 		public static bool IsMethodPresent(string typeName, string methodName)
-			=> GetValidType(typeName)?.GetMethod(methodName) != null;
+			=> IsImplementedByUno(
+				GetValidType(typeName)
+				?.GetMethod(methodName));
 
 		public static bool IsMethodPresent(string typeName, string methodName, uint inputParameterCount)
-			=> GetValidType(typeName)
+			=> IsImplementedByUno(
+				GetValidType(typeName)
 				?.GetMethods()
-				?.Where(m => m.Name == methodName && m.GetParameters().Length == inputParameterCount)
-				.Any() ?? false;
+				?.FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == inputParameterCount));
 
 		public static bool IsEventPresent(string typeName, string eventName)
 			=> IsImplementedByUno(

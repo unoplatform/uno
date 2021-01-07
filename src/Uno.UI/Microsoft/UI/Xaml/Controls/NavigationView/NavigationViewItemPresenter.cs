@@ -39,6 +39,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			var navigationViewItem = GetNavigationViewItem();
 			if (navigationViewItem != null)
 			{
+#if IS_UNO
+				// TODO: Uno specific: We may be reapplying the template, in which case
+				// we need to unsubscribe the previous Tapped event handler.
+				// Can be removed when #4689.
+				if (m_expandCollapseChevron != null)
+				{
+					m_expandCollapseChevron.Tapped -= navigationViewItem.OnExpandCollapseChevronTapped;
+				}
+#endif
+
 				var expandCollapseChevron = GetTemplateChild(c_expandCollapseChevron) as Grid;
 				if (expandCollapseChevron != null)
 				{
@@ -87,7 +97,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal UIElement GetSelectionIndicator()
 		{
-			return m_helper.GetSelectionIndicator();
+#if IS_UNO
+			// TODO: Uno specific: This is done to ensure that the presenter
+			// was initialized properly - if helper is not null, but content grid
+			// is null, it means the presenter was not initialized correctly.
+			// Can be removed when #4809 is fixed.
+			if (m_contentGrid == null && m_helper != null)
+			{
+				// Reinitialize
+				OnApplyTemplate();
+			}
+#endif
+			// m_helper could be null here, if template was not yet applied
+			return m_helper?.GetSelectionIndicator();
 		}
 
 		protected override bool GoToElementStateCore(string state, bool useTransitions)
