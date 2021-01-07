@@ -9,6 +9,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
     public partial class Given_UIElement
 	{
+#if IS_UNO // Tests use IsArrangeDirty, which is an internal property
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Visible_InvalidateArrange()
@@ -45,5 +46,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsFalse(sut.IsArrangeDirty);
 		}
+#endif
 	}
 }
