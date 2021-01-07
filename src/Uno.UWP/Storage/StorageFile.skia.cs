@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 
 namespace Windows.Storage
 {
@@ -18,8 +19,7 @@ namespace Windows.Storage
 
 			var path = uri.PathAndQuery.TrimStart(new char[] { '/' });
 
-			var baseDir = global::System.IO.Path.GetDirectoryName(global::System.Reflection.Assembly.GetExecutingAssembly().Location);
-			var resourcePathname = global::System.IO.Path.Combine(baseDir, path);
+			var resourcePathname = global::System.IO.Path.Combine(Package.Current.InstalledLocation.Path, path);
 
 			if (resourcePathname != null)
 			{
