@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -9,6 +10,8 @@ using View = Android.Views.View;
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
+#elif NET461 || NETSTANDARD2_0
+using View = Windows.UI.Xaml.FrameworkElement;
 #else
 using View = System.Object;
 #endif
@@ -21,6 +24,32 @@ namespace Windows.UI.Xaml
 	/// <remarks>This control is added in the visual tree, in place of the original content.</remarks>
 	public partial class ElementStub : FrameworkElement
     {
+		private View _content;
+
+		public bool Load
+		{
+			get { return (bool)GetValue(LoadProperty); }
+			set { SetValue(LoadProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for Load.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty LoadProperty =
+			DependencyProperty.Register("Load", typeof(bool), typeof(ElementStub), new PropertyMetadata(
+				false, OnLoadChanged));
+
+		private static void OnLoadChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if ((bool)args.NewValue)
+			{
+				((ElementStub)dependencyObject).Materialize();
+			}
+			else
+			{
+				((ElementStub)dependencyObject).Dematerialize();
+			}
+		}
+
+
 		/// <summary>
 		/// A function that will create the actual view.
 		/// </summary>
@@ -56,13 +85,12 @@ namespace Windows.UI.Xaml
 
 		private void Materialize(bool isVisibilityChanged)
 		{
-			var newContent = MaterializeContent();
-
-			var targetDependencyObject = newContent as DependencyObject;
+			_content = SwapViews(oldView: this as View, newViewProvider: ContentBuilder);
+			var targetDependencyObject = _content as DependencyObject;
 
 			if (isVisibilityChanged && targetDependencyObject != null)
 			{
-				var visibilityProperty = GetVisibilityProperty(newContent);
+				var visibilityProperty = GetVisibilityProperty(_content);
 
 				// Set the visibility at the same precedence it was currently set with on the stub.
 				var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
@@ -71,9 +99,18 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		private void Dematerialize()
+		{
+			var newView = SwapViews(oldView: _content, newViewProvider: () => this as View);
+			if (newView != null)
+			{
+				_content = null;
+			}
+		}
+
 		private static DependencyProperty GetVisibilityProperty(View view)
 		{
-			if(view is FrameworkElement)
+			if (view is FrameworkElement)
 			{
 				return VisibilityProperty;
 			}

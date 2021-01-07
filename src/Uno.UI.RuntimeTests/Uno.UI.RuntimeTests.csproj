@@ -100,17 +100,27 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <None Remove="Tests\Windows_UI_Xaml\Controls\xLoad_Literal.xaml" />
+	  <None Remove="Tests\Windows_UI_Xaml\Controls\xLoad_xBind.xaml" />
 	  <None Remove="Tests\Windows_UI_Xaml_Controls\FramePages\FirstPage.xaml" />
 	  <None Remove="Tests\Windows_UI_Xaml_Controls\FramePages\SecondPage.xaml" />
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="Tests\Windows_UI_Xaml\Controls\xLoad_Literal.xaml" />
+	  <UpToDateCheckInput Remove="Tests\Windows_UI_Xaml\Controls\xLoad_xBind.xaml" />
 	  <UpToDateCheckInput Remove="Tests\Windows_UI_Xaml_Controls\FramePages\FirstPage.xaml" />
 	  <UpToDateCheckInput Remove="Tests\Windows_UI_Xaml_Controls\FramePages\SecondPage.xaml" />
 	</ItemGroup>
 	
 	<ItemGroup>
 	  <Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Page Update="Tests\Windows_UI_Xaml\Controls\xLoad_xBind.xaml">
+	    <SubType>Designer</SubType>
+	  </Page>
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

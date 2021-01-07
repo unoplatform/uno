@@ -14,28 +14,24 @@ namespace Windows.UI.Xaml
             Visibility = Visibility.Collapsed;
         }
 
-        private FrameworkElement MaterializeContent()
-        {
-            if(Parent is FrameworkElement parentElement)
-            {
-                var currentPosition = parentElement.GetChildren().IndexOf(this);
+		private FrameworkElement SwapViews(FrameworkElement oldView, Func<FrameworkElement> newViewProvider)
+		{
+			if (oldView?.Parent is FrameworkElement parentElement)
+			{
+				var currentPosition = parentElement.GetChildren().IndexOf(oldView);
 
-                if (currentPosition != -1)
-                {
-					// Create the instance first so that x:Bind constructs can be picked up by the
-					// Unload event of ElementStub. Not doing so does not fills up the generated variables
-					// too late and Binding.Update() does not refresh the available x:Bind instances.
-					var newContent = ContentBuilder() as UIElement;
+				if (currentPosition != -1)
+				{
+					var newView = newViewProvider();
 
-                    parentElement.RemoveChild(this);
+					parentElement.RemoveChild(oldView);
+					parentElement.AddChild(newView, currentPosition);
 
-                    parentElement.AddChild(newContent, currentPosition);
+					return newView;
+				}
+			}
 
-					return newContent as FrameworkElement;
-                }
-            }
-
-            return null;
-        }
-    }
+			return null;
+		}
+	}
 }
