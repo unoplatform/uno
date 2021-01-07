@@ -250,7 +250,11 @@ namespace <#= mixin.NamespaceName #>
 		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
 		public static DependencyProperty HorizontalAlignmentProperty { get ; } = CreateHorizontalAlignmentProperty();
 
-		public <#= mixin.IsUIControl #> HorizontalAlignment HorizontalAlignment
+		public 
+#if <#= mixin.IsUIControl #>
+		new
+#endif		
+		HorizontalAlignment HorizontalAlignment
 		{
             get => GetHorizontalAlignmentValue();
             set => SetHorizontalAlignmentValue(value);
@@ -262,7 +266,11 @@ namespace <#= mixin.NamespaceName #>
 		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
 		public static DependencyProperty VerticalAlignmentProperty { get ; } = CreateVerticalAlignmentProperty();
 
-		public <#= mixin.IsUIControl #> VerticalAlignment VerticalAlignment
+		public 
+#if <#= mixin.IsUIControl #>
+		new
+#endif
+		VerticalAlignment VerticalAlignment
 		{
             get => GetVerticalAlignmentValue();
             set => SetVerticalAlignmentValue(value);
@@ -1091,7 +1099,7 @@ namespace <#= mixin.NamespaceName #>
 				ClassName = className,
 				DefineSetNeedsLayout = defineSetNeedsLayout ? "true" : "false",
 				DefineLayoutSubviews = defineLayoutSubviews ? "true" : "false",
-				IsUIControl = isUIControl  ? "new" : "",
+				IsUIControl = isUIControl  ? "true" : "false",
 				HasAttachedToWindow = hasAttachedToWindow ? "true" : "false",
 				OverridesAttachedToWindow = overridesAttachedToWindow ? "true" : "false",
 				IsNewBackground = isNewBackground ? "new" : "",
