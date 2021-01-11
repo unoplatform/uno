@@ -68,7 +68,7 @@ We recommend including assets for each of these scales: `100`, `150`, `200`, `30
 
 \Assets\Images\scale-100\logo.png
 \Assets\Images\scale-200\logo.png
-\Assets\Images\scale\400\logo.png
+\Assets\Images\scale-400\logo.png
 ```
 
 ### Language
