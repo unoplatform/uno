@@ -21,8 +21,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePicker : Control
 	{
-		private readonly DatePickerFlyout _flyout = new DatePickerFlyout();
-		
 		public event EventHandler<DatePickerValueChangedEventArgs> DateChanged;
 		public event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> SelectedDateChanged;
 			   
@@ -191,18 +189,7 @@ namespace Windows.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(DatePicker);
 
-			Date = DateTime.Now.Date;
-
-			_flyout.DatePicked += (snd, evt) =>
-			{
-				SelectedDate = evt.NewDate;
-				Date = evt.NewDate;
-
-				if(evt.NewDate != evt.OldDate)
-				{
-					DateChanged?.Invoke(this, new DatePickerValueChangedEventArgs(evt.NewDate, evt.OldDate));
-				}	
-			};
+			InitPartial();
 		}
 
 		~DatePicker()
@@ -311,218 +298,226 @@ namespace Windows.UI.Xaml.Controls
 		// Get DatePicker template parts and create the sources if they are not already there
 		protected override void OnApplyTemplate()
 		{
-			Selector spDayPicker;
-			Selector spMonthPicker;
-			Selector spYearPicker;
-			Border spFirstPickerHost;
-			Border spSecondPickerHost;
-			Border spThirdPickerHost;
-			FrameworkElement spLayoutRoot;
-			UIElement spSpacingHolderOne;
-			UIElement spSpacingHolderTwo;
-			ButtonBase spFlyoutButton;
-			TextBlock spYearTextBlock;
-			TextBlock spMonthTextBlock;
-			TextBlock spDayTextBlock;
-			ColumnDefinition spDayColumn;
-			ColumnDefinition spMonthColumn;
-			ColumnDefinition spYearColumn;
-			ColumnDefinition spFirstSpacerColumn;
-			ColumnDefinition spSecondSpacerColumn;
-			Grid spFlyoutButtonContentGrid;
-
-			string strAutomationName;
-			string strParentAutomationName;
-			// string strComboAutomationName;
-
-			//Clean up existing parts
-			if (m_tpDayPicker != null)
+			try
 			{
-				m_epDaySelectionChangedHandler.Disposable = null;
-			}
+				Selector spDayPicker;
+				Selector spMonthPicker;
+				Selector spYearPicker;
+				Border spFirstPickerHost;
+				Border spSecondPickerHost;
+				Border spThirdPickerHost;
+				FrameworkElement spLayoutRoot;
+				UIElement spSpacingHolderOne;
+				UIElement spSpacingHolderTwo;
+				ButtonBase spFlyoutButton;
+				TextBlock spYearTextBlock;
+				TextBlock spMonthTextBlock;
+				TextBlock spDayTextBlock;
+				ColumnDefinition spDayColumn;
+				ColumnDefinition spMonthColumn;
+				ColumnDefinition spYearColumn;
+				ColumnDefinition spFirstSpacerColumn;
+				ColumnDefinition spSecondSpacerColumn;
+				Grid spFlyoutButtonContentGrid;
 
-			if (m_tpMonthPicker != null)
-			{
-				m_epMonthSelectionChangedHandler.Disposable = null;
-			}
+				string strAutomationName;
+				string strParentAutomationName;
+				// string strComboAutomationName;
 
-			if (m_tpYearPicker != null)
-			{
-				m_epYearSelectionChangedHandler.Disposable = null;
-			}
-
-			if (m_tpFlyoutButton != null && !CQuirksMode2.QuirkUseLegacyWindows8UI())
-			{
-				m_epFlyoutButtonClickHandler.Disposable = null;
-			}
-
-			m_tpDayPicker = null;
-			m_tpMonthPicker = null;
-			m_tpYearPicker = null;
-
-			m_tpFirstPickerHost = null;
-			m_tpSecondPickerHost = null;
-			m_tpThirdPickerHost = null;
-
-			m_tpDayColumn = null;
-			m_tpMonthColumn = null;
-			m_tpYearColumn = null;
-			m_tpFirstSpacerColumn = null;
-			m_tpSecondSpacerColumn = null;
-
-			m_tpFirstPickerSpacing = null;
-			m_tpSecondPickerSpacing = null;
-			m_tpLayoutRoot = null;
-			m_tpHeaderPresenter = null;
-
-			m_tpFlyoutButton = null;
-			m_tpFlyoutButtonContentGrid = null;
-
-			m_tpYearTextBlock = null;
-			m_tpMonthTextBlock = null;
-			m_tpDayTextBlock = null;
-
-			// UNO TODO
-			// DatePickerGenerated.OnApplyTemplate();
-
-			// Get selectors for day/month/year pickers
-			GetTemplatePart<Selector>("DayPicker", out spDayPicker);
-			GetTemplatePart<Selector>("MonthPicker", out spMonthPicker);
-			GetTemplatePart<Selector>("YearPicker", out spYearPicker);
-
-			// Get the borders which will be hosting the selectors
-			GetTemplatePart<Border>("FirstPickerHost", out spFirstPickerHost);
-			GetTemplatePart<Border>("SecondPickerHost", out spSecondPickerHost);
-			GetTemplatePart<Border>("ThirdPickerHost", out spThirdPickerHost);
-
-			GetTemplatePart<ColumnDefinition>("DayColumn", out spDayColumn);
-			GetTemplatePart<ColumnDefinition>("MonthColumn", out spMonthColumn);
-			GetTemplatePart<ColumnDefinition>("YearColumn", out spYearColumn);
-			GetTemplatePart<ColumnDefinition>("FirstSpacerColumn", out spFirstSpacerColumn);
-			GetTemplatePart<ColumnDefinition>("SecondSpacerColumn", out spSecondSpacerColumn);
-
-			GetTemplatePart<TextBlock>("YearTextBlock", out spYearTextBlock);
-			GetTemplatePart<TextBlock>("MonthTextBlock", out spMonthTextBlock);
-			GetTemplatePart<TextBlock>("DayTextBlock", out spDayTextBlock);
-
-			GetTemplatePart<Grid>("FlyoutButtonContentGrid", out spFlyoutButtonContentGrid);
-
-
-			// Get the spacing holders which will be acting as margins between the hosts
-			GetTemplatePart<UIElement>("FirstPickerSpacing", out spSpacingHolderOne);
-			GetTemplatePart<UIElement>("SecondPickerSpacing", out spSpacingHolderTwo);
-			GetTemplatePart<FrameworkElement>("LayoutRoot", out spLayoutRoot);
-
-			GetTemplatePart<ButtonBase>("FlyoutButton", out spFlyoutButton);
-
-			m_tpDayPicker = spDayPicker;
-			m_tpMonthPicker = spMonthPicker;
-			m_tpYearPicker = spYearPicker;
-
-			m_tpFirstPickerSpacing = spSpacingHolderOne;
-			m_tpSecondPickerSpacing = spSpacingHolderTwo;
-
-			m_tpFirstPickerHost = spFirstPickerHost;
-			m_tpSecondPickerHost = spSecondPickerHost;
-			m_tpThirdPickerHost = spThirdPickerHost;
-
-			m_tpDayColumn = spDayColumn;
-			m_tpMonthColumn = spMonthColumn;
-			m_tpYearColumn = spYearColumn;
-			m_tpFirstSpacerColumn = spFirstSpacerColumn;
-			m_tpSecondSpacerColumn = spSecondSpacerColumn;
-
-			m_tpLayoutRoot = spLayoutRoot;
-
-			m_tpYearTextBlock = spYearTextBlock;
-			m_tpMonthTextBlock = spMonthTextBlock;
-			m_tpDayTextBlock = spDayTextBlock;
-
-			m_tpFlyoutButton = spFlyoutButton;
-			m_tpFlyoutButtonContentGrid = spFlyoutButtonContentGrid;
-
-			UpdateHeaderPresenterVisibility();
-
-			strParentAutomationName = AutomationProperties.GetName(this);
-			if (string.IsNullOrEmpty(strParentAutomationName))
-			{
-				object spHeaderAsInspectable;
-				spHeaderAsInspectable = Header;
-				if (spHeaderAsInspectable != null)
+				//Clean up existing parts
+				if (m_tpDayPicker != null)
 				{
-					// UNO TODO
-					// (FrameworkElement.GetStringFromObject(spHeaderAsInspectable, strParentAutomationName));
+					m_epDaySelectionChangedHandler.Disposable = null;
 				}
-			}
-			// Hook up the selection changed events for selectors, we will be reacting to these events.
-			if (m_tpDayPicker != null)
-			{
-				m_tpDayPicker.SelectionChanged += OnSelectorSelectionChanged;
-				m_epDaySelectionChangedHandler.Disposable =
-					Disposable.Create(() => m_tpDayPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
-				strAutomationName = AutomationProperties.GetName(m_tpDayPicker);
-				if (strAutomationName == null)
+				if (m_tpMonthPicker != null)
 				{
-					// UNO TODO
-					//(DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_DAY, strAutomationName));
-					//strAutomationName += strParentAutomationName + strComboAutomationName;
-					//AutomationProperties.SetName(m_tpDayPicker as ComboBox, strComboAutomationName);
+					m_epMonthSelectionChangedHandler.Disposable = null;
 				}
-			}
-			if (m_tpMonthPicker != null)
-			{
-				m_tpMonthPicker.SelectionChanged += OnSelectorSelectionChanged;
-				m_epMonthSelectionChangedHandler.Disposable =
-					Disposable.Create(() => m_tpMonthPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
-				strAutomationName = AutomationProperties.GetName(m_tpMonthPicker as ComboBox);
-				if (strAutomationName == null)
+				if (m_tpYearPicker != null)
 				{
-					// UNO TODO
-					//(DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_MONTH, strAutomationName));
-					//strAutomationName += strParentAutomationName + strComboAutomationName;
-					//AutomationProperties.SetName(m_tpMonthPicker as ComboBox, strComboAutomationName));
+					m_epYearSelectionChangedHandler.Disposable = null;
 				}
-			}
-			if (m_tpYearPicker != null)
-			{
-				m_tpYearPicker.SelectionChanged += OnSelectorSelectionChanged;
-				m_epYearSelectionChangedHandler.Disposable =
-					Disposable.Create(() => m_tpYearPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
-				strAutomationName = AutomationProperties.GetName(m_tpYearPicker as ComboBox);
-				if (strAutomationName == null)
+				if (m_tpFlyoutButton != null && !CQuirksMode2.QuirkUseLegacyWindows8UI())
 				{
-					// UNO TODO
-					//DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_YEAR, strAutomationName);
-					//strAutomationName += strParentAutomationName + strComboAutomationName;
-					//AutomationProperties.SetName(m_tpYearPicker as ComboBox, strComboAutomationName);
+					m_epFlyoutButtonClickHandler.Disposable = null;
 				}
-			}
 
-			if (m_tpFlyoutButton != null)
-			{
-				if (!CQuirksMode2.QuirkUseLegacyWindows8UI())
+				m_tpDayPicker = null;
+				m_tpMonthPicker = null;
+				m_tpYearPicker = null;
+
+				m_tpFirstPickerHost = null;
+				m_tpSecondPickerHost = null;
+				m_tpThirdPickerHost = null;
+
+				m_tpDayColumn = null;
+				m_tpMonthColumn = null;
+				m_tpYearColumn = null;
+				m_tpFirstSpacerColumn = null;
+				m_tpSecondSpacerColumn = null;
+
+				m_tpFirstPickerSpacing = null;
+				m_tpSecondPickerSpacing = null;
+				m_tpLayoutRoot = null;
+				m_tpHeaderPresenter = null;
+
+				m_tpFlyoutButton = null;
+				m_tpFlyoutButtonContentGrid = null;
+
+				m_tpYearTextBlock = null;
+				m_tpMonthTextBlock = null;
+				m_tpDayTextBlock = null;
+
+				// UNO TODO
+				// DatePickerGenerated.OnApplyTemplate();
+
+				// Get selectors for day/month/year pickers
+				GetTemplatePart<Selector>("DayPicker", out spDayPicker);
+				GetTemplatePart<Selector>("MonthPicker", out spMonthPicker);
+				GetTemplatePart<Selector>("YearPicker", out spYearPicker);
+
+				// Get the borders which will be hosting the selectors
+				GetTemplatePart<Border>("FirstPickerHost", out spFirstPickerHost);
+				GetTemplatePart<Border>("SecondPickerHost", out spSecondPickerHost);
+				GetTemplatePart<Border>("ThirdPickerHost", out spThirdPickerHost);
+
+				GetTemplatePart<ColumnDefinition>("DayColumn", out spDayColumn);
+				GetTemplatePart<ColumnDefinition>("MonthColumn", out spMonthColumn);
+				GetTemplatePart<ColumnDefinition>("YearColumn", out spYearColumn);
+				GetTemplatePart<ColumnDefinition>("FirstSpacerColumn", out spFirstSpacerColumn);
+				GetTemplatePart<ColumnDefinition>("SecondSpacerColumn", out spSecondSpacerColumn);
+
+				GetTemplatePart<TextBlock>("YearTextBlock", out spYearTextBlock);
+				GetTemplatePart<TextBlock>("MonthTextBlock", out spMonthTextBlock);
+				GetTemplatePart<TextBlock>("DayTextBlock", out spDayTextBlock);
+
+				GetTemplatePart<Grid>("FlyoutButtonContentGrid", out spFlyoutButtonContentGrid);
+
+
+				// Get the spacing holders which will be acting as margins between the hosts
+				GetTemplatePart<UIElement>("FirstPickerSpacing", out spSpacingHolderOne);
+				GetTemplatePart<UIElement>("SecondPickerSpacing", out spSpacingHolderTwo);
+				GetTemplatePart<FrameworkElement>("LayoutRoot", out spLayoutRoot);
+
+				GetTemplatePart<ButtonBase>("FlyoutButton", out spFlyoutButton);
+
+				m_tpDayPicker = spDayPicker;
+				m_tpMonthPicker = spMonthPicker;
+				m_tpYearPicker = spYearPicker;
+
+				m_tpFirstPickerSpacing = spSpacingHolderOne;
+				m_tpSecondPickerSpacing = spSpacingHolderTwo;
+
+				m_tpFirstPickerHost = spFirstPickerHost;
+				m_tpSecondPickerHost = spSecondPickerHost;
+				m_tpThirdPickerHost = spThirdPickerHost;
+
+				m_tpDayColumn = spDayColumn;
+				m_tpMonthColumn = spMonthColumn;
+				m_tpYearColumn = spYearColumn;
+				m_tpFirstSpacerColumn = spFirstSpacerColumn;
+				m_tpSecondSpacerColumn = spSecondSpacerColumn;
+
+				m_tpLayoutRoot = spLayoutRoot;
+
+				m_tpYearTextBlock = spYearTextBlock;
+				m_tpMonthTextBlock = spMonthTextBlock;
+				m_tpDayTextBlock = spDayTextBlock;
+
+				m_tpFlyoutButton = spFlyoutButton;
+				m_tpFlyoutButtonContentGrid = spFlyoutButtonContentGrid;
+
+				UpdateHeaderPresenterVisibility();
+
+				strParentAutomationName = AutomationProperties.GetName(this);
+				if (string.IsNullOrEmpty(strParentAutomationName))
 				{
-					m_tpFlyoutButton.Click += OnFlyoutButtonClick;
-					m_epFlyoutButtonClickHandler.Disposable =
-						Disposable.Create(() => m_tpFlyoutButton.Click -= OnFlyoutButtonClick);
+					object spHeaderAsInspectable;
+					spHeaderAsInspectable = Header;
+					if (spHeaderAsInspectable != null)
+					{
+						// UNO TODO
+						// (FrameworkElement.GetStringFromObject(spHeaderAsInspectable, strParentAutomationName));
+					}
 				}
-				RefreshFlyoutButtonAutomationName();
-			}
+				// Hook up the selection changed events for selectors, we will be reacting to these events.
+				if (m_tpDayPicker != null)
+				{
+					m_tpDayPicker.SelectionChanged += OnSelectorSelectionChanged;
+					m_epDaySelectionChangedHandler.Disposable =
+						Disposable.Create(() => m_tpDayPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
-			// Create the collections that we will use as itemssources for the selectors.
-			if (m_tpYearSource == null && m_tpMonthSource == null && m_tpDaySource == null)
+					strAutomationName = AutomationProperties.GetName(m_tpDayPicker);
+					if (strAutomationName == null)
+					{
+						// UNO TODO
+						//(DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_DAY, strAutomationName));
+						//strAutomationName += strParentAutomationName + strComboAutomationName;
+						//AutomationProperties.SetName(m_tpDayPicker as ComboBox, strComboAutomationName);
+					}
+				}
+				if (m_tpMonthPicker != null)
+				{
+					m_tpMonthPicker.SelectionChanged += OnSelectorSelectionChanged;
+					m_epMonthSelectionChangedHandler.Disposable =
+						Disposable.Create(() => m_tpMonthPicker.SelectionChanged -= OnSelectorSelectionChanged);
+
+					strAutomationName = AutomationProperties.GetName(m_tpMonthPicker as ComboBox);
+					if (strAutomationName == null)
+					{
+						// UNO TODO
+						//(DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_MONTH, strAutomationName));
+						//strAutomationName += strParentAutomationName + strComboAutomationName;
+						//AutomationProperties.SetName(m_tpMonthPicker as ComboBox, strComboAutomationName));
+					}
+				}
+				if (m_tpYearPicker != null)
+				{
+					m_tpYearPicker.SelectionChanged += OnSelectorSelectionChanged;
+					m_epYearSelectionChangedHandler.Disposable =
+						Disposable.Create(() => m_tpYearPicker.SelectionChanged -= OnSelectorSelectionChanged);
+
+					strAutomationName = AutomationProperties.GetName(m_tpYearPicker as ComboBox);
+					if (strAutomationName == null)
+					{
+						// UNO TODO
+						//DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_YEAR, strAutomationName);
+						//strAutomationName += strParentAutomationName + strComboAutomationName;
+						//AutomationProperties.SetName(m_tpYearPicker as ComboBox, strComboAutomationName);
+					}
+				}
+
+				if (m_tpFlyoutButton != null)
+				{
+					if (!CQuirksMode2.QuirkUseLegacyWindows8UI())
+					{
+						m_tpFlyoutButton.Click += OnFlyoutButtonClick;
+						m_epFlyoutButtonClickHandler.Disposable =
+							Disposable.Create(() => m_tpFlyoutButton.Click -= OnFlyoutButtonClick);
+					}
+					RefreshFlyoutButtonAutomationName();
+				}
+
+				// Create the collections that we will use as itemssources for the selectors.
+				if (m_tpYearSource == null && m_tpMonthSource == null && m_tpDaySource == null)
+				{
+					m_tpYearSource = new ObservableCollection<string>();
+					m_tpMonthSource = new ObservableCollection<string>();
+					m_tpDaySource = new ObservableCollection<string>();
+				}
+
+				RefreshSetup();
+
+				// UpdateVisualState(false);
+
+			}
+			finally
 			{
-				m_tpYearSource = new ObservableCollection<string>();
-				m_tpMonthSource = new ObservableCollection<string>();
-				m_tpDaySource = new ObservableCollection<string>();
+				m_isInitializing = false;
 			}
-
-			RefreshSetup();
-
-			// UpdateVisualState(false);
 		}
 
 		private void GetTemplatePart<T>(string name, out T element) where T : class
@@ -585,7 +580,7 @@ namespace Windows.UI.Xaml.Controls
 
 			spCurrentCalendar.SetDateTime(ClampDate(currentDate.Value, m_startDate, m_endDate));
 			m_tpCalendar.SetDateTime(m_startDate);
-			GetYearDifference(m_tpCalendar, spCurrentCalendar, yearIndex);
+			GetYearDifference(m_tpCalendar, spCurrentCalendar, out yearIndex);
 
 			firstIndex = (spCurrentCalendar.FirstMonthInThisYear);
 			currentIndex = (spCurrentCalendar.Month);
@@ -629,7 +624,7 @@ namespace Windows.UI.Xaml.Controls
 				DateTimeOffset currentDate = default;
 				currentDate = Date;
 
-				if (currentDate.ToUniversalTime() != NullDateSentinelValue)
+				if (currentDate != NullDateSentinelValue)
 				{
 					int yearIndex = 0;
 					int monthIndex = 0;
@@ -644,7 +639,7 @@ namespace Windows.UI.Xaml.Controls
 					GetDateFromIndices(yearIndex, monthIndex, dayIndex, out date);
 					// We are checking to see if new value is different from the current one. This is because even if they are same,
 					// calling put_Date will break any Binding on Date (if there is any) that this DatePicker is target of.
-					if (currentDate.ToUniversalTime() != date.ToUniversalTime())
+					if (currentDate != date)
 					{
 						Date = date;
 					}
@@ -868,7 +863,16 @@ namespace Windows.UI.Xaml.Controls
 
 		void ShowPickerFlyout()
 		{
-			_flyout.ShowAt(this);
+
+			if (m_tpAsyncSelectionInfo == null)
+			{
+				var asyncOperation = _flyout.ShowAtAsync(this);
+				m_tpAsyncSelectionInfo = asyncOperation;
+				asyncOperation
+					.AsTask()
+					.ContinueWith((t, s) => OnGetDatePickerSelectionAsyncCompleted(t, asyncOperation.Status), asyncOperation);
+			}
+
 		//	if (!CQuirksMode2.QuirkUseLegacyWindows8UI() && m_tpAsyncSelectionInfo == null)
 		//	{
 		//		DependencyObject spAsyncAsInspectable;
@@ -1684,7 +1688,7 @@ namespace Windows.UI.Xaml.Controls
 		void GetYearDifference(
 			 Calendar pStartCalendar,
 			 Calendar pEndCalendar,
-			 int difference)
+			 out int difference)
 		{
 			int startEra = 0;
 			int endEra = 0;
@@ -1725,11 +1729,11 @@ namespace Windows.UI.Xaml.Controls
 			 DateTimeOffset minDate,
 			 DateTimeOffset maxDate)
 		{
-			if (date.ToUniversalTime() < minDate.ToUniversalTime())
+			if (date < minDate)
 			{
 				return minDate;
 			}
-			else if (date.ToUniversalTime() > maxDate.ToUniversalTime())
+			else if (date > maxDate)
 			{
 				return maxDate;
 			}
@@ -2181,7 +2185,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 				spCalendar.SetDateTime(m_endDate);
 
-				GetYearDifference(m_tpCalendar, spCalendar, m_numberOfYears);
+				GetYearDifference(m_tpCalendar, spCalendar, out m_numberOfYears);
 				m_numberOfYears++; //since we should include both start and end years
 			}
 			else

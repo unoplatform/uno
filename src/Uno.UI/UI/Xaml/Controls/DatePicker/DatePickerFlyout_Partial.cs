@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Windows.Globalization;
 using Windows.System;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+
+using DateTime = System.DateTimeOffset;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -22,10 +25,7 @@ namespace Windows.UI.Xaml.Controls
 			base.Placement = FlyoutPlacementMode.Right;
 			base.UsePickerFlyoutTheme = true;
 
-			_asyncOperationManager = new FlyoutAsyncOperationManager<DateTime>(this, () => default);
-
-			// As UWP, initial value is the current date
-			Date = DateTime.Now.Date;
+			_asyncOperationManager = new FlyoutAsyncOperationManager<DateTime?>(this, () => default);
 		}
 
 		protected override bool ShouldShowConfirmationButtons()
@@ -44,8 +44,8 @@ namespace Windows.UI.Xaml.Controls
 			//DependencyObject spBoxedDateTime;
 			//DateTime spBoxedDtAsReference;
 
-			oldDateTime = Date.Date;
-			newDateTime = ((DatePickerFlyoutPresenter)_tpPresenter).GetDate();
+			oldDateTime = Date;
+			newDateTime = _tpPresenter.GetDate();
 			Date = newDateTime;
 			//Private.ValueBoxer.CreateDateTime(newDateTime, &spBoxedDateTime);
 			//spBoxedDateTime.As(spBoxedDtAsReference);
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 			DatePickerFlyoutPresenter spFlyoutPresenter;
 			spFlyoutPresenter = new DatePickerFlyoutPresenter();
 			_tpPresenter = spFlyoutPresenter;
-			return _tpPresenter;
+			return _tpPresenter as Control;
 		}
 
 		private protected override void ShowAtCore(FrameworkElement placementTarget, FlyoutShowOptions showOptions)
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 			//_asyncOperationManager.Start(placementTarget);
 		} 
 
-		public IAsyncOperation<DateTime> ShowAtAsync(FrameworkElement pTarget)
+		public IAsyncOperation<DateTime?> ShowAtAsync(FrameworkElement pTarget)
 		{
 			_tpTarget = pTarget;
 			base.ShowAtCore(pTarget, null);
@@ -95,7 +95,8 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_tpPresenter == null)
 			{
-				throw new InvalidOperationException("Expected non-null presenter");
+				return;
+				//throw new InvalidOperationException("Expected non-null presenter");
 			}
 
 			//(wf.GetActivationFactory(
@@ -129,7 +130,7 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnOpened()
 		{
 			//wrl.ComPtr<UIElement> spFlyoutPresenterAsUIE;
-			Control spFlyoutPresenterAsControl = _tpPresenter;
+			Control spFlyoutPresenterAsControl = _tpPresenter as Control;
 			//wrl.ComPtr<xaml_controls.IControlProtected> spFlyoutPresenterAsControlProtected;
 			//wrl.ComPtr<xaml.IDependencyObject> spDismissButtonAsDO;
 			//wrl.ComPtr<UIElement> spDismissButtonAsUIE;
@@ -146,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 			//_tpPresenter.As(spFlyoutPresenterAsControl);
 			//_tpPresenter.As(spFlyoutPresenterAsControlProtected);
 
-			if (_tpTarget != null)
+			if (_tpTarget is {})
 			{
 				Point point;
 				FlyoutBase spFlyoutBase;
@@ -159,7 +160,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			//Hook up OnAcceptClick and OnDismissClick event handlers:
-			var spDismissButtonAsDO = _tpPresenter?.GetTemplateChild("DismissButton");
+			var spDismissButtonAsDO = spFlyoutPresenterAsControl?.GetTemplateChild("DismissButton");
 			if (spDismissButtonAsDO is ButtonBase spDismissButtonAsButtonBase)
 			{
 				//spDismissButtonAsDO.As(spDismissButtonAsUIE);
@@ -167,7 +168,7 @@ namespace Windows.UI.Xaml.Controls
 				_tpDismissButton = spDismissButtonAsButtonBase;
 			}
 
-			var spAcceptButtonAsDO = _tpPresenter?.GetTemplateChild("AcceptButton");
+			var spAcceptButtonAsDO = spFlyoutPresenterAsControl?.GetTemplateChild("AcceptButton");
 			if (spAcceptButtonAsDO is ButtonBase spAcceptButtonAsButtonBase)
 			{
 				//spAcceptButtonAsDO.As(spAcceptButtonAsUIE);
@@ -175,7 +176,7 @@ namespace Windows.UI.Xaml.Controls
 				_tpAcceptButton = spAcceptButtonAsButtonBase;
 			}
 
-			if (_tpAcceptButton != null)
+			if (_tpAcceptButton is {})
 			{
 				//global.System.Diagnostics.Debug.Assert(spAcceptButtonAsUIE);
 				//(_tpAcceptButton.add_Click(
@@ -189,7 +190,7 @@ namespace Windows.UI.Xaml.Controls
 				//spAutomationPropertiesStatics.SetName(spButtonAsDO, strAutomationName);
 			}
 
-			if (_tpDismissButton != null)
+			if (_tpDismissButton is {})
 			{
 				//global.System.Diagnostics.Debug.Assert(spDismissButtonAsUIE);
 				//(_tpDismissButton.add_Click(
@@ -209,7 +210,7 @@ namespace Windows.UI.Xaml.Controls
 			//	wrl.Callback<xaml_input.IKeyEventHandler>(this, &global::DatePickerFlyout.OnKeyDown),
 			//	&_keyDownToken));
 
-			_tpPresenter.KeyDown += OnKeyDown;
+			spFlyoutPresenterAsControl.KeyDown += OnKeyDown;
 		}
 
 
@@ -227,9 +228,9 @@ namespace Windows.UI.Xaml.Controls
 				_tpDismissButton = null;
 			}
 
-			if (_tpPresenter != null)
+			if (_tpPresenter is Control ctl)
 			{
-				_tpPresenter.KeyDown -= OnKeyDown;
+				ctl.KeyDown -= OnKeyDown;
 			}
 		}
 
@@ -297,28 +298,28 @@ namespace Windows.UI.Xaml.Controls
 			return "GregorianCalendar";
 		}
 
-		DateTime GetDefaultDate()
+		static DateTime GetDefaultDate()
 		{
 			DateTime currentDate = default;
 
 			EnsureCalendar();
 			s_spCalendar.SetToNow();
-			currentDate = s_spCalendar.GetDateTime().Date;
+			currentDate = s_spCalendar.GetDateTime();
 			return currentDate;
 		}
 
-		DateTime GetDefaultMinYear()
+		static DateTime GetDefaultMinYear()
 		{
 			DateTime minDate = default;
 
 			EnsureCalendar();
 			s_spCalendar.SetToNow();
 			s_spCalendar.AddYears(-_deltaYears);
-			minDate = s_spCalendar.GetDateTime().Date;
+			minDate = s_spCalendar.GetDateTime();
 			return minDate;
 		}
 
-		DateTime GetDefaultMaxYear()
+		static DateTime GetDefaultMaxYear()
 		{
 
 			DateTime maxDate = default;
@@ -326,26 +327,29 @@ namespace Windows.UI.Xaml.Controls
 			EnsureCalendar();
 			s_spCalendar.SetToNow();
 			s_spCalendar.AddYears(_deltaYears);
-			maxDate = s_spCalendar.GetDateTime().Date;
+			maxDate = s_spCalendar.GetDateTime();
 			return maxDate;
 		}
 
-		string GetDefaultDayFormat()
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		static string GetDefaultDayFormat()
 		{
 			return "day";
 		}
 
-		string GetDefaultMonthFormat()
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		static string GetDefaultMonthFormat()
 		{
 			return "{month.full}";
 		}
 
-		string GetDefaultYearFormat()
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		static string GetDefaultYearFormat()
 		{
 			return "year.full";
 		}
 
-		void EnsureCalendar()
+		static void EnsureCalendar()
 		{
 			if (s_spCalendar == null)
 			{

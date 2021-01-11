@@ -30,7 +30,12 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _presenterLoadedDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterUnloadedDisposable = new SerialDisposable();
 		private bool _isInitialized;
-		private NativeDatePickerFlyoutPresenter _presenter;
+
+		private NativeDatePickerFlyoutPresenter _presenter
+		{
+			get => _tpPresenter as NativeDatePickerFlyoutPresenter;
+			set => _tpPresenter = value;
+		}
 		private DatePickerSelector _selector;
 
 		public NativeDatePickerFlyout()
@@ -153,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateSelectorDate(Date);
 		}
 
-		private void Accept()
+		internal void Accept()
 		{
 			_selector.SaveValue();
 			Hide(false);

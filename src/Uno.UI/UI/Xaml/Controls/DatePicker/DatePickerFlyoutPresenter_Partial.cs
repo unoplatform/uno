@@ -14,6 +14,8 @@ using Windows.UI.Xaml.Input;
 using LoopingSelector = Windows.UI.Xaml.Controls.ListView;
 #endif
 
+using DateTime = System.DateTimeOffset;
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePickerFlyoutPresenter : Control
@@ -42,8 +44,8 @@ namespace Windows.UI.Xaml.Controls
 			_dayVisible = true;
 			_monthVisible = true;
 			_yearVisible = true;
-			_minYear = new DateTime();
-			_maxYear = new DateTime();
+			_minYear = new DateTimeOffset();
+			_maxYear = new DateTimeOffset();
 			_acceptDismissButtonsVisible = true;
 
 			DefaultStyleKey = typeof(DatePickerFlyoutPresenter);
@@ -477,7 +479,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			RefreshSetup();
-			SetAcceptDismissButtonsVisibility(_acceptDismissButtonsVisible);
+			((IDatePickerFlyoutPresenter)this).SetAcceptDismissButtonsVisibility(_acceptDismissButtonsVisible);
 			// Apply a shadow
 			bool isDefaultShadowEnabled;
 			isDefaultShadowEnabled = IsDefaultShadowEnabled;
@@ -507,7 +509,7 @@ namespace Windows.UI.Xaml.Controls
 		//	spDatePickerFlyoutPresenterAutomationPeer.CopyTo(returnValue);
 		//}
 
-		internal void PullPropertiesFromOwner(DatePickerFlyout pOwner)
+		void IDatePickerFlyoutPresenter.PullPropertiesFromOwner(DatePickerFlyout pOwner)
 		{
 			//wrl.ComPtr<IDatePickerFlyout>
 			//spOwner(pOwner);
@@ -592,8 +594,8 @@ namespace Windows.UI.Xaml.Controls
 			_dayVisible = dayVisible;
 			_monthVisible = monthVisible;
 			_yearVisible = yearVisible;
-			_minYear = minYear.DateTime;
-			_maxYear = maxYear.DateTime;
+			_minYear = minYear;
+			_maxYear = maxYear;
 
 			_dayFormat = dayFormat;
 			_monthFormat = monthFormat;
@@ -634,12 +636,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// Date has its own handler since it can be set through multiple codepaths
-			SetDate(date.DateTime);
+			SetDate(date);
 
 			return;
 		}
 
-		internal void SetAcceptDismissButtonsVisibility(bool isVisible)
+		void IDatePickerFlyoutPresenter.SetAcceptDismissButtonsVisibility(bool isVisible)
 		{
 			// If we have a named host grid for the buttons, we'll hide that.
 			// Otherwise, we'll just hide the buttons, since we shouldn't
@@ -659,7 +661,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		internal DateTime GetDate()
+		DateTime IDatePickerFlyoutPresenter.GetDate()
 		{
 			return _date;
 		}
@@ -676,7 +678,7 @@ namespace Windows.UI.Xaml.Controls
 
 				calendar = CreateNewCalendar(_calendarIdentifier);
 				calendar.SetToNow();
-				newDate = calendar.GetDateTime().DateTime;
+				newDate = calendar.GetDateTime();
 			}
 
 			if (newDate != _date)
@@ -873,13 +875,15 @@ namespace Windows.UI.Xaml.Controls
 			DateTimeOffset dateTime;
 
 			spPrimaryFormatter = GetYearFormatter(_calendarIdentifier);
-			_tpYearSource.Clear();
 			for (int yearOffset = 0; yearOffset < _numberOfYears; yearOffset++)
 			{
 				DatePickerFlyoutItem spItem;
 
 				_tpCalendar.SetDateTime(_startDate);
 				_tpCalendar.AddYears(yearOffset);
+				_tpCalendar.Hour = DATEPICKER_SENTINELTIME_HOUR;
+				_tpCalendar.Minute = DATEPICKER_SENTINELTIME_MINUTE;
+				_tpCalendar.Second = DATEPICKER_SENTINELTIME_SECOND;
 				dateTime = _tpCalendar.GetDateTime();
 				//wrl.MakeAndInitialize<DatePickerFlyoutItem>(spItem);
 				spItem = new DatePickerFlyoutItem();
@@ -887,7 +891,20 @@ namespace Windows.UI.Xaml.Controls
 				spItem.PrimaryText = strYear;
 				spItem.SecondaryText = "";
 				//spItem.As(spInspectable);
-				_tpYearSource.Add(spItem);
+
+				if(_tpYearSource.Count <= yearOffset)
+				{
+					_tpYearSource.Add(spItem);
+				}
+				else if(!(_tpYearSource[yearOffset]?.Equals(spItem) ?? true))
+				{
+					_tpYearSource[yearOffset] = spItem;
+				}
+			}
+
+			while (_tpYearSource.Count > _numberOfYears)
+			{
+				_tpYearSource.RemoveAt(_tpYearSource.Count - 1);
 			}
 		}
 
@@ -906,9 +923,12 @@ namespace Windows.UI.Xaml.Controls
 			spPrimaryFormatter = GetMonthFormatter(_calendarIdentifier);
 			_tpCalendar.SetDateTime(_startDate);
 			_tpCalendar.AddYears(yearOffset);
+			_tpCalendar.Hour = DATEPICKER_SENTINELTIME_HOUR;
+			_tpCalendar.Minute = DATEPICKER_SENTINELTIME_MINUTE;
+			_tpCalendar.Second = DATEPICKER_SENTINELTIME_SECOND;
 			numberOfMonths = _tpCalendar.NumberOfMonthsInThisYear;
 			firstMonthInThisYear = _tpCalendar.FirstMonthInThisYear;
-			_tpMonthSource.Clear();
+			//_tpMonthSource.Clear();
 			for (monthOffset = 0; monthOffset < numberOfMonths; monthOffset++)
 			{
 				DatePickerFlyoutItem spItem;
@@ -922,7 +942,20 @@ namespace Windows.UI.Xaml.Controls
 				strMonth = spPrimaryFormatter.Format(dateTime);
 				spItem.PrimaryText = strMonth;
 				//spItem.As(spInspectable);
-				_tpMonthSource.Add(spItem);
+
+				if (_tpMonthSource.Count <= numberOfMonths)
+				{
+					_tpMonthSource.Add(spItem);
+				}
+				else if (!(_tpMonthSource[monthOffset]?.Equals(spItem) ?? true))
+				{
+					_tpMonthSource[monthOffset] = spItem;
+				}
+			}
+
+			while (_tpMonthSource.Count > numberOfMonths)
+			{
+				_tpMonthSource.RemoveAt(_tpMonthSource.Count - 1);
 			}
 		}
 
@@ -949,6 +982,9 @@ namespace Windows.UI.Xaml.Controls
 			_tpCalendar.AddMonths(monthOffset);
 			numberOfDays = _tpCalendar.NumberOfDaysInThisMonth;
 			firstDayInThisMonth = _tpCalendar.FirstDayInThisMonth;
+			_tpCalendar.Hour = DATEPICKER_SENTINELTIME_HOUR;
+			_tpCalendar.Minute = DATEPICKER_SENTINELTIME_MINUTE;
+			_tpCalendar.Second = DATEPICKER_SENTINELTIME_SECOND;
 			_tpDaySource.Clear();
 			for (dayOffset = 0; dayOffset < numberOfDays; dayOffset++)
 			{
@@ -962,7 +998,20 @@ namespace Windows.UI.Xaml.Controls
 				strDay = spPrimaryFormatter.Format(dateTime);
 				spItem.PrimaryText = strDay;
 				//spItem.As(spInspectable);
-				_tpDaySource.Add(spItem);
+
+				if (_tpDaySource.Count <= dayOffset)
+				{
+					_tpDaySource.Add(spItem);
+				}
+				else if (!(_tpDaySource[dayOffset]?.Equals(spItem) ?? true))
+				{
+					_tpDaySource[dayOffset] = spItem;
+				}
+			}
+
+			while (_tpDaySource.Count > numberOfDays)
+			{
+				_tpDaySource.RemoveAt(_tpDaySource.Count - 1);
 			}
 		}
 
@@ -1092,7 +1141,7 @@ namespace Windows.UI.Xaml.Controls
 			_tpCalendar.Day = safeIndex;
 			var date = _tpCalendar.GetDateTime();
 
-			return date.DateTime;
+			return date;
 		}
 
 		// Reacts to the changes in string typed properties. Reverts the property value to the last valid value,
@@ -1907,10 +1956,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Find the earliest and latest dates available for this calendar.
 				_tpCalendar.SetToMin();
-				minCalendarDate = _tpCalendar.GetDateTime().DateTime;
+				minCalendarDate = _tpCalendar.GetDateTime();
 				//Find the latest date available for this calendar.
 				_tpCalendar.SetToMax();
-				maxCalendarDate = _tpCalendar.GetDateTime().DateTime;
+				maxCalendarDate = _tpCalendar.GetDateTime();
 				minYearDate = ClampDate(_minYear, minCalendarDate, maxCalendarDate);
 				maxYearDate = ClampDate(_maxYear, minCalendarDate, maxCalendarDate);
 
@@ -1921,19 +1970,19 @@ namespace Windows.UI.Xaml.Controls
 				_tpCalendar.Month = month;
 				day = _tpCalendar.FirstDayInThisMonth;
 				_tpCalendar.Day = day;
-				minYearDate = _tpCalendar.GetDateTime().DateTime;
+				minYearDate = _tpCalendar.GetDateTime();
 				_tpCalendar.SetDateTime(maxYearDate);
 				month = _tpCalendar.LastMonthInThisYear;
 				_tpCalendar.Month = month;
 				day = _tpCalendar.LastDayInThisMonth;
 				_tpCalendar.Day = day;
-				maxYearDate = _tpCalendar.GetDateTime().DateTime;
+				maxYearDate = _tpCalendar.GetDateTime();
 				_tpCalendar.SetDateTime(minYearDate);
 				//Set our sentinel time to the start date as we will be using it while generating item sources, we do not need to do this for end date
 				_tpCalendar.Hour = DATEPICKER_SENTINELTIME_HOUR;
 				_tpCalendar.Minute = DATEPICKER_SENTINELTIME_MINUTE;
 				_tpCalendar.Second = DATEPICKER_SENTINELTIME_SECOND;
-				_startDate = _tpCalendar.GetDateTime().DateTime;
+				_startDate = _tpCalendar.GetDateTime();
 				_endDate = maxYearDate;
 
 				// Find the number of years in our range

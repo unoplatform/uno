@@ -18,7 +18,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			RegisterPropertyChangedCallback(DateProperty, OnDateChanged);
 		}
-		internal protected override void Open()
+
+		protected internal override void Open()
 		{
 			// Note: Month needs to be -1 since on Android months go from 0-11
 			// http://developer.android.com/reference/android/app/DatePickerDialog.OnDateSetListener.html#onDateSet(android.widget.DatePicker, int, int, int)

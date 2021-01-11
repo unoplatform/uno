@@ -173,14 +173,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\DatePicker\DatePickerFlyout.Properties.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\Flyout\FlyoutAsyncOperationManager.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\Flyout\FlyoutBase.Pickers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\Flyout\PickerFlyoutAsyncOperation.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\Flyout\PickerFlyoutBaseFactory.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
 	  <Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
 	  <Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />

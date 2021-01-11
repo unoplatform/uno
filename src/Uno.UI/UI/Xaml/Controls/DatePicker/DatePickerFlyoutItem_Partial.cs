@@ -75,6 +75,32 @@ namespace Windows.UI.Xaml.Controls
 		//	type.Kind = wxaml_interop.TypeKind_Primitive;
 		//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Controls_DatePickerFlyoutItem).CopyTo(type.Name);
 		//}
+
+
+		public string SecondaryText
+		{
+			get => (string)GetValue(SecondaryTextProperty);
+			set => SetValue(SecondaryTextProperty, value);
+		}
+
+		public string PrimaryText
+		{
+			get => (string)GetValue(PrimaryTextProperty);
+			set => SetValue(PrimaryTextProperty, value);
+		}
+
+		public static global::Windows.UI.Xaml.DependencyProperty PrimaryTextProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.Register(
+				nameof(PrimaryText), typeof(string),
+				typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem),
+				new FrameworkPropertyMetadata(default(string)));
+
+		public static global::Windows.UI.Xaml.DependencyProperty SecondaryTextProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.Register(
+				nameof(SecondaryText), typeof(string),
+				typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem),
+				new FrameworkPropertyMetadata(default(string)));
+
 		public override string ToString()
 		{
 			var primaryText = PrimaryText;

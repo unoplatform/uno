@@ -172,7 +172,7 @@ namespace Windows.Globalization.DateTimeFormatting
 			var format = GetSystemTemplate();
 			try
 			{
-				return value.ToLocalTime().ToString(format, _info);
+				return value.ToString(format, _info);
 			}
 			catch (Exception e)
 			{

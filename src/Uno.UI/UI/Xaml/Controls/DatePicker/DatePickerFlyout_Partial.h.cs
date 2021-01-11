@@ -62,17 +62,14 @@ namespace Windows.UI.Xaml.Controls
 
 		// The number of years the default Max and Min year field will
 		// be set from the current year.
-		private static int _deltaYears = 50;
+		private const int _deltaYears = 50;
 		static Calendar s_spCalendar;
 
-		DatePickerFlyoutPresenter _tpPresenter;
+		private protected IDatePickerFlyoutPresenter _tpPresenter;
 		FrameworkElement _tpTarget;
-		FlyoutAsyncOperationManager<DateTime> _asyncOperationManager;
+		FlyoutAsyncOperationManager<DateTimeOffset?> _asyncOperationManager;
 
 		ButtonBase _tpAcceptButton;
 		ButtonBase _tpDismissButton;
 	};
-
-	//ActivatableClassWithFactory(DatePickerFlyout, DatePickerFlyoutFactory);
-
 }

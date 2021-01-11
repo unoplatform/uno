@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -9,6 +10,19 @@ namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 	[Sample]
 	public sealed partial class DatePicker_Features : Page
 	{
+		public static readonly DependencyProperty PickedDateProperty =
+			DependencyProperty.Register(
+				"PickedDate",
+				typeof(DateTimeOffset),
+				typeof(DatePicker_Features),
+				new PropertyMetadata(new DateTimeOffset(2021, 2, 2, 12, 0, 0, TimeSpan.Zero)));
+
+		public DateTimeOffset PickedDate
+		{
+			get => (DateTimeOffset)GetValue(PickedDateProperty);
+			set => SetValue(PickedDateProperty, value);
+		}
+
 		public DatePicker_Features()
 		{
 			this.InitializeComponent();
@@ -55,5 +69,43 @@ namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 			pickedDate.Text = DtString(picked);
 		}
 
+		private void AddYear(object sender, RoutedEventArgs e)
+		{
+			switch ((sender as FrameworkElement)?.Tag)
+			{
+				case DatePickerFlyout flyout:
+					flyout.Date = flyout.Date.AddYears(1);
+					break;
+				case Windows.UI.Xaml.Controls.DatePicker picker:
+					picker.Date = picker.Date.AddYears(1);
+					break;
+			}
+		}
+
+		private void AddMonth(object sender, RoutedEventArgs e)
+		{
+			switch ((sender as FrameworkElement)?.Tag)
+			{
+				case DatePickerFlyout flyout:
+					flyout.Date = flyout.Date.AddMonths(1);
+					break;
+				case Windows.UI.Xaml.Controls.DatePicker picker:
+					picker.Date = picker.Date.AddMonths(1);
+					break;
+			}
+		}
+
+		private void AddDay(object sender, RoutedEventArgs e)
+		{
+			switch ((sender as FrameworkElement)?.Tag)
+			{
+				case DatePickerFlyout flyout:
+					flyout.Date = flyout.Date.AddDays(1);
+					break;
+				case Windows.UI.Xaml.Controls.DatePicker picker:
+					picker.Date = picker.Date.AddDays(1);
+					break;
+			}
+		}
 	}
 }

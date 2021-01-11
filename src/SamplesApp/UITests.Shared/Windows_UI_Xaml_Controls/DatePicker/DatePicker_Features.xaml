@@ -4,9 +4,18 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="using:UITests.Windows_UI_Xaml_Controls.DatePicker"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:ios="http://uno.ui/ios"
+	xmlns:android="http://uno.ui/android"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
+	mc:Ignorable="d ios android"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Page.Resources>
+		<FromNullableBoolToCustomValueConverter x:Name="styleConverter"
+			FromNullableBoolToCustomValueConverter.TrueValue="{StaticResource }"
+			FromNullableBoolToCustomValueConverter.NullOrFalseValue="">
+		</FromNullableBoolToCustomValueConverter>
+	</Page.Resources>
 
 	<StackPanel Spacing="10" Margin="20">
 		<StackPanel Orientation="Horizontal" Spacing="4">
@@ -57,22 +66,27 @@
 		<StackPanel Orientation="Horizontal" Spacing="7">
 			<DatePicker
 				x:Name="picker"
+				Date="{x:Bind PickedDate, Mode=TwoWay}"
 				MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
 				MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
 				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
 				DayVisible="{Binding IsChecked, ElementName=dayVisible}"
 				MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
 				YearVisible="{Binding IsChecked, ElementName=yearVisible}" />
+			<Button x:Name="pickerYear" Click="AddYear" Tag="{Binding ElementName=picker}">Y++</Button>
+			<Button x:Name="pickerMonth" Click="AddMonth" Tag="{Binding ElementName=picker}">M++</Button>
+			<Button x:Name="pickerDay" Click="AddDay" Tag="{Binding ElementName=picker}">D++</Button>
 			<TextBlock>
 				DatePicker.Date: <Run Text="{x:Bind DtString(picker.Date), Mode=OneWay}" />
 			</TextBlock>
 		</StackPanel>
 		<TextBlock FontSize="16">DatePickerFlyout as a &lt;Button.Flyout&gt;</TextBlock>
 		<StackPanel Orientation="Horizontal" Spacing="7">
-			<Button x:Name="btlWithFlyout">
+			<Button x:Name="btnWithFlyout">
 				<Button.Flyout>
 					<DatePickerFlyout
 						x:Name="btnFlyout"
+						Date="{x:Bind PickedDate, Mode=TwoWay}"
 						MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
 						MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
 						CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
@@ -93,4 +107,90 @@
 			<Border Background="Pink">
 				<TextBlock x:Name="flyoutTarget">FLYOUT TARGET</TextBlock></Border>
 		</StackPanel>
-	</StackPanel></Page>
+		<TextBlock FontSize="16">DatePickerFlyout on changing date</TextBlock>
+		<StackPanel Orientation="Horizontal" Spacing="7">
+			<Button x:Name="btnWithFlyout2">
+				<Button.Flyout>
+					<DatePickerFlyout
+						x:Name="btnFlyout2"
+						Date="{x:Bind PickedDate, Mode=TwoWay}"
+						MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
+						MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
+						CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
+						DayVisible="{Binding IsChecked, ElementName=dayVisible}"
+						MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
+						YearVisible="{Binding IsChecked, ElementName=yearVisible}"/>
+				</Button.Flyout>
+				PICK DATE
+			</Button>
+			<Button x:Name="btnWithFlyout2Year" Click="AddYear" Tag="{Binding ElementName=btnFlyout2}">Y++</Button>
+			<Button x:Name="btnWithFlyout2Month" Click="AddMonth" Tag="{Binding ElementName=btnFlyout2}">M++</Button>
+			<Button x:Name="btnWithFlyout2Day" Click="AddDay" Tag="{Binding ElementName=btnFlyout2}">D++</Button>
+			<TextBlock>
+				DatePickerFlyout.Date: <Run Text="{x:Bind DtString(btnFlyout2.Date), Mode=OneWay}" />
+			</TextBlock>
+		</StackPanel>
+		<TextBlock FontSize="16">NativeDatePickerFlyout &amp; (iOS &amp; Android only)</TextBlock>
+		<StackPanel Orientation="Horizontal" Spacing="7">
+			<Button x:Name="btnWithNativeFlyout">
+				<Button.Flyout>
+					<android:NativeDatePickerFlyout
+						x:Name="btnNativeFlyout"
+						Date="{x:Bind PickedDate, Mode=TwoWay}"
+						MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
+						MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
+						CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
+						DayVisible="{Binding IsChecked, ElementName=dayVisible}"
+						MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
+						YearVisible="{Binding IsChecked, ElementName=yearVisible}" />
+					<ios:NativeDatePickerFlyout
+						x:Name="btnNativeFlyout"
+						Date="{x:Bind PickedDate, Mode=TwoWay}"
+						MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
+						MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
+						CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
+						DayVisible="{Binding IsChecked, ElementName=dayVisible}"
+						MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
+						YearVisible="{Binding IsChecked, ElementName=yearVisible}" />
+				</Button.Flyout>
+				PICK DATE (Flyout)
+			</Button>
+			<ios:TextBlock>
+				DatePickerFlyout.Date: <Run Text="{x:Bind DtString(btnNativeFlyout.Date), Mode=OneWay}" />
+			</ios:TextBlock>
+			<android:TextBlock>
+				DatePickerFlyout.Date: <Run Text="{x:Bind DtString(btnNativeFlyout.Date), Mode=OneWay}" />
+			</android:TextBlock>
+		</StackPanel>
+		<StackPanel Orientation="Horizontal" Spacing="7">
+			<ios:DatePicker
+				UseNativeStyle="True"
+				x:Name="nativeDatePicker"
+				Date="{x:Bind PickedDate, Mode=TwoWay}"
+				MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
+				MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
+				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
+				DayVisible="{Binding IsChecked, ElementName=dayVisible}"
+				MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
+				YearVisible="{Binding IsChecked, ElementName=yearVisible}" />
+			<android:DatePicker
+				UseNativeStyle="True"
+				x:Name="nativeDatePicker"
+				Date="{x:Bind PickedDate, Mode=TwoWay}"
+				MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
+				MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
+				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
+				DayVisible="{Binding IsChecked, ElementName=dayVisible}"
+				MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
+				YearVisible="{Binding IsChecked, ElementName=yearVisible}" />
+			<ios:TextBlock>
+				DatePicker.Date:
+				<Run Text="{x:Bind DtString(nativeDatePicker.Date), Mode=OneWay}" />
+			</ios:TextBlock>
+			<android:TextBlock>
+				DatePicker.Date:
+				<Run Text="{x:Bind DtString(nativeDatePicker.Date), Mode=OneWay}" />
+			</android:TextBlock>
+		</StackPanel>
+	</StackPanel>
+</Page>
