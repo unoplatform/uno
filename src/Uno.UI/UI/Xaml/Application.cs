@@ -46,6 +46,7 @@ namespace Windows.UI.Xaml
 		private bool _themeSetExplicitly = false;
 		private ApplicationTheme? _requestedTheme;
 		private bool _systemThemeChangesObserved = false;
+		private string _requestedThemeForResources;
 
 		static Application()
 		{
@@ -81,11 +82,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				if (InternalRequestedTheme == null)
-				{
-					// just cache the theme, but do not notify about a change unnecessarily	
-					InternalRequestedTheme = GetDefaultSystemTheme();
-				}
+				EnsureInternalRequestedTheme();
 				return InternalRequestedTheme.Value;
 			}
 			set
@@ -95,6 +92,15 @@ namespace Windows.UI.Xaml
 					throw new NotSupportedException("Operation not supported");
 				}
 				SetExplicitRequestedTheme(value);
+			}
+		}
+
+		private void EnsureInternalRequestedTheme()
+		{
+			if (InternalRequestedTheme == null)
+			{
+				// just cache the theme, but do not notify about a change unnecessarily	
+				InternalRequestedTheme = GetDefaultSystemTheme();
 			}
 		}
 
@@ -120,7 +126,16 @@ namespace Windows.UI.Xaml
 				};
 		}
 
-		internal string RequestedThemeForResources { get; private set; }
+		internal string RequestedThemeForResources
+		{
+			get
+			{
+				EnsureInternalRequestedTheme();
+				return _requestedThemeForResources;
+			}
+
+			private set => _requestedThemeForResources = value;
+		}
 
 		internal ElementTheme ActualElementTheme => (_themeSetExplicitly, RequestedTheme) switch
 		{
