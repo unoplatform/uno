@@ -16,7 +16,7 @@
 		<PackageReference Include="Microsoft.AppCenter" Version="4.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.153.0" />
 		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
-		<PackageReference Include="NUnit" Version="3.12.0" />
+		<PackageReference Include="NUnit" Version="3.13.0" />
 		<PackageReference Include="NUnit.Engine" Version="3.11.1" />
 		<PackageReference Include="Refit" Version="5.2.4" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
