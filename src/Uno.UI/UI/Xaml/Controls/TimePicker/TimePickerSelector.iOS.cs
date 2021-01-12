@@ -1,4 +1,4 @@
-﻿#if XAMARIN_IOS
+#if XAMARIN_IOS
 
 using Foundation;
 using System;
@@ -42,7 +42,8 @@ namespace Windows.UI.Xaml.Controls
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
 			SaveInitialTime();
 			_picker.ValueChanged += OnValueChanged;
-			
+			_picker.EditingDidBegin += OnEditingDidBegin;
+
 			var parent = _picker.FindFirstParent<FrameworkElement>();
 
 			//Removing the date picker and adding it is what enables the lines to appear. Seems to be a side effect of adding it as a view. 
@@ -52,7 +53,13 @@ namespace Windows.UI.Xaml.Controls
 				parent.AddSubview(_picker);
 			}
 		}
-		
+
+		private void OnEditingDidBegin(object sender, EventArgs e)
+		{
+			//We don't want the keyboard to be shown. https://github.com/unoplatform/uno/issues/4611
+			_picker?.ResignFirstResponder();
+		}
+
 		private void OnValueChanged(object sender, EventArgs e)
 		{
 			_newDate = _picker.Date;
