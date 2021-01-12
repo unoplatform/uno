@@ -161,6 +161,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TabViewTests\TabViewItemsSourceTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewBasics.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3900,6 +3904,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TabViewTests\TabViewBasicPage.xaml.cs">
       <DependentUpon>TabViewBasicPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TabViewTests\TabViewItemsSourceTests.xaml.cs">
+      <DependentUpon>TabViewItemsSourceTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TabViewTests\TabViewPage.xaml.cs">
       <DependentUpon>TabViewPage.xaml</DependentUpon>
