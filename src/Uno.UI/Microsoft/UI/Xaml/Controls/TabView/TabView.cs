@@ -869,6 +869,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 						tabContentPresenter.LosingFocus += OnTabContentPresenterLosingFocus;
 
+#if IS_UNO
+						// TODO: Uno specific - issue #4894 - in UWP the ContentPresenter does not become
+						// the parent of the Content. In Uno it does, so we need to make sure
+						// the inherited DataContext will match the TabViewItem.
+						tabContentPresenter.DataContext = tvi.DataContext;
+#endif
+
 						tabContentPresenter.Content = tvi.Content;
 						tabContentPresenter.ContentTemplate = tvi.ContentTemplate;
 						tabContentPresenter.ContentTemplateSelector = tvi.ContentTemplateSelector;
