@@ -504,7 +504,7 @@ namespace Uno.UI.DataBinding
 				{
 					if (DataContext != null)
 					{
-						return BindingPropertyHelper.GetPropertyType(_dataContextType, PropertyName);
+						return BindingPropertyHelper.GetPropertyType(_dataContextType, PropertyName, _allowPrivateMembers);
 					}
 					else
 					{
