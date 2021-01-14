@@ -53,9 +53,6 @@ namespace Windows.UI.Xaml
 
 		public global::System.Uri BaseUri { get; internal set; }
 
-		private protected virtual double GetActualWidth() => throw new NotSupportedException("Reference assembly");
-		private protected virtual double GetActualHeight() => throw new NotSupportedException("Reference assembly");
-
 #pragma warning disable 67
 		private event RoutedEventHandler _loading;
 		private event RoutedEventHandler _loaded;
