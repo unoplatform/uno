@@ -451,6 +451,11 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
 				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
 
+				if (this.TryGetPadding(out var padding))
+				{
+					UpdateDOMXamlProperty("Padding", padding);
+				}
+
 				base.UpdateDOMProperties();
 			}
 		}
