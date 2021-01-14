@@ -340,7 +340,7 @@ namespace <#= mixin.NamespaceName #>
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 
-#if !<#= mixin.IsUIControl #>
+#if !<#= mixin.IsFrameworkElement #>
 		private protected virtual double GetActualWidth() => _actualSize.Width;
 		private protected virtual double GetActualHeight() => _actualSize.Height;
 #endif
@@ -356,8 +356,6 @@ namespace <#= mixin.NamespaceName #>
 
 #if <#= mixin.IsFrameworkElement #>
 				RenderSize = _actualSize;
-#endif
-#if <#= mixin.IsUIControl #>
 				AssignedActualSize = _actualSize;
 #endif
 
