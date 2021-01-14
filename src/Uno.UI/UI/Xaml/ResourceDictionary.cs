@@ -58,12 +58,9 @@ namespace Windows.UI.Xaml
 			return value;
 		}
 
-		public bool HasKey(object key)
-		{
-			var keyName = key;
-
-			return _values.ContainsKey(keyName);
-		}
+		/// <remarks>This method does not exist in C# UWP API
+		/// and can be removed as breaking change later.</remarks>
+		public bool HasKey(object key) => ContainsKey(key);
 
 		/// <remarks>This method does not exist in C# UWP API
 		/// and can be removed as breaking change later.</remarks>
