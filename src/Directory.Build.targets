@@ -33,7 +33,7 @@
 	<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 	<PackageReference Update="Microsoft.TypeScript.Compiler" Version="3.1.5" />
 	<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="3.1.5" />
-	<PackageReference Update="NUnit" Version="3.12.0" />
+	<PackageReference Update="NUnit" Version="3.13.0" />
 	<PackageReference Update="NUnit3TestAdapter" Version="3.16.0" />
 	<PackageReference Update="Uno.UITest" Version="1.0.0" />
 	<PackageReference Update="Uno.UITest.Selenium" Version="1.0.0" />
