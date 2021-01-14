@@ -223,8 +223,4 @@
 
 	<Import Project="MixinGeneration.targets" />
 
-	<ItemGroup>
-	  <SourceGeneratorInput Remove="UI\Xaml\Controls\Flyout\PickerFlyoutAsyncOperation.cs" />
-	</ItemGroup>
-
 </Project>
