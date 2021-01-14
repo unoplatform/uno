@@ -10,21 +10,24 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<muxc:TabView Grid.Row="1"
-                          x:Name="tabView"
-                          VerticalAlignment="Stretch"
-                          HorizontalAlignment="Stretch"
-                          IsAddTabButtonVisible="False"
-                          TabWidthMode="SizeToContent"
-                          TabItemsSource="{x:Bind Path=DefaultViewModel.TabItems, Mode=OneWay}"
-                          Margin="10">
+                  x:Name="tabView"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  IsAddTabButtonVisible="False"
+                  TabWidthMode="SizeToContent"
+                  TabItemsSource="{x:Bind Path=DefaultViewModel.TabItems, Mode=OneWay}"
+                  Margin="10">
 		<muxc:TabView.TabStripHeader>
+		  <StackPanel Orientation="Horizontal">
 			<Button Click="OnAddTabViewItemButtonClick">Add TabViewItem</Button>
+			<Button Click="SelectItem" x:Name="SelectButton">Select second item</Button>
+		  </StackPanel>
 		</muxc:TabView.TabStripHeader>
 		<muxc:TabView.TabItemTemplate>
 			<DataTemplate x:DataType="local:TabItemViewModel">
 				<muxc:TabViewItem Header="{x:Bind Header, Mode=OneWay}"
                                           IsClosable="False">
-					<Button Margin="5"
+					<Button x:Name="ContentButton" Margin="5"
                                 Content="{x:Bind Header, Mode=OneWay}" />
 				</muxc:TabViewItem>
 			</DataTemplate>

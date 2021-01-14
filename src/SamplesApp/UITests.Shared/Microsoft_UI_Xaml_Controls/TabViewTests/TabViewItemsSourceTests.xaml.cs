@@ -23,6 +23,20 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 	[Sample("TabView", "WinUI")]
     public sealed partial class TabViewItemsSourceTests : Page
     {
+		public TabViewItemsSourceTests()
+		{
+			DemoViewModel defaultViewModel = new DemoViewModel();
+			// add Tabs as source for binding of TabView
+			defaultViewModel.TabItems.Add(new TabItemViewModel() { Header = "Tab 1" });
+			defaultViewModel.TabItems.Add(new TabItemViewModel() { Header = "Tab 2" });
+			defaultViewModel.TabItems.Add(new TabItemViewModel() { Header = "Tab 3" });
+			defaultViewModel.TabItems.Add(new TabItemViewModel() { Header = "Tab 4" });
+
+			this.DefaultViewModel = defaultViewModel;
+
+			this.InitializeComponent();
+		}
+
 		public DemoViewModel DefaultViewModel
 		{
 			get { return (DemoViewModel)GetValue(DefaultViewModelProperty); }
@@ -33,67 +47,28 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			nameof(DefaultViewModel),
 			typeof(DemoViewModel),
 			typeof(TabViewItemsSourceTests),
-			new PropertyMetadata(null));
-
-
-
-		public TabViewItemsSourceTests()
-		{
-			DemoViewModel defaultViewModel = new DemoViewModel(Dispatcher);
-			// add Tabs as source for binding of TabView
-			defaultViewModel.TabItems.Add(new TabItemViewModel(Dispatcher) { Header = "Tab 1" });
-			defaultViewModel.TabItems.Add(new TabItemViewModel(Dispatcher) { Header = "Tab 2" });
-			defaultViewModel.TabItems.Add(new TabItemViewModel(Dispatcher) { Header = "Tab 3" });
-			defaultViewModel.TabItems.Add(new TabItemViewModel(Dispatcher) { Header = "Tab 4" });
-
-			defaultViewModel.RibbonTabs.Add(new TabItemViewModel(Dispatcher) { Header = "File" });
-			defaultViewModel.RibbonTabs.Add(new TabItemViewModel(Dispatcher) { Header = "View" });
-
-			this.DefaultViewModel = defaultViewModel;
-
-			this.InitializeComponent();
-		}
+			new PropertyMetadata(null));		
 
 		private void OnAddTabViewItemButtonClick(object sender, RoutedEventArgs e)
 		{
-			this.DefaultViewModel.TabItems.Add(new TabItemViewModel(Dispatcher) { Header = $"Tab {this.DefaultViewModel.TabItems.Count + 1}" });
+			this.DefaultViewModel.TabItems.Add(new TabItemViewModel() { Header = $"Tab {this.DefaultViewModel.TabItems.Count + 1}" });
+		}
+
+		private void SelectItem(object sender, RoutedEventArgs e)
+		{
+			tabView.SelectedItem = DefaultViewModel.TabItems[1];
 		}
 	}
 
 	[System.ComponentModel.Bindable(BindableSupport.Yes)]
-	public class DemoViewModel : ViewModelBase
+	public class DemoViewModel
 	{
-		public DemoViewModel(CoreDispatcher dispatcher) : base(dispatcher)
-		{
-		}
-
 		public ObservableCollection<TabItemViewModel> TabItems { get; } = new ObservableCollection<TabItemViewModel>();
-		public ObservableCollection<TabItemViewModel> RibbonTabs { get; } = new ObservableCollection<TabItemViewModel>();
 	}
 
 	[System.ComponentModel.Bindable(BindableSupport.Yes)]
-	public class TabItemViewModel : ViewModelBase
+	public class TabItemViewModel
 	{
-		private string header;
-
-		public TabItemViewModel(CoreDispatcher dispatcher) : base(dispatcher)
-		{
-		}
-
-		public string Header
-		{
-			get
-			{
-				return this.header;
-			}
-			set
-			{
-				if (this.header != value)
-				{
-					this.header = value;
-					RaisePropertyChanged(nameof(Header));
-				}
-			}
-		}
+		public string Header { get; set; }
 	}
 }
