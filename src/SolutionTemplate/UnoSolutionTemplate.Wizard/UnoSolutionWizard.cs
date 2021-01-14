@@ -103,10 +103,6 @@ namespace UnoSolutionTemplate.Wizard
 				{
 				}
 			}
-			else
-			{
-				throw new InvalidOperationException();
-			}
 		}
 
 
