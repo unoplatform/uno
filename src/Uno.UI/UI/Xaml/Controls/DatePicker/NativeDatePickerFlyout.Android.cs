@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public NativeDatePickerFlyout()
 		{
-			RegisterPropertyChangedCallback(DateProperty, OnDateChanged);
+			this.RegisterPropertyChangedCallback(DateProperty, OnDateChanged);
 		}
 
 		protected internal override void Open()

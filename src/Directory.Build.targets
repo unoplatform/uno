@@ -34,10 +34,10 @@
 	<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.1.2" />
 	<PackageReference Update="NUnit" Version="3.13.1" />
 	<PackageReference Update="NUnit3TestAdapter" Version="3.16.0" />
-	<PackageReference Update="Uno.UITest" Version="1.0.0" />
-	<PackageReference Update="Uno.UITest.Selenium" Version="1.0.0" />
-	<PackageReference Update="Uno.UITest.Xamarin" Version="1.0.0" />
-	<PackageReference Update="Uno.UITest.Helpers" Version="1.0.0" />
+	<PackageReference Update="Uno.UITest" Version="1.1.0-dev.11" />
+	<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.11" />
+	<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.11" />
+	<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.11" />
 	<PackageReference Update="System.ValueTuple" Version="4.5.0" />
 	<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 	<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
@@ -46,6 +46,7 @@
 	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.0" />
 	<PackageReference Update="GtkSharp" Version="3.22.25.128" />
 	<PackageReference Update="System.Json" Version="4.7.1" />
+	<PackageReference Update="FluentAssertions" Version="5.10.3" />
 	<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 	<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 	<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />

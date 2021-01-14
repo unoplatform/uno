@@ -25,15 +25,9 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-		<PackageReference Include="MSTest.TestAdapter">
-      <Version>2.1.2</Version>
-    </PackageReference>
-    <PackageReference Include="MSTest.TestFramework">
-      <Version>2.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="FluentAssertions">
-      <Version>5.10.3</Version>
-    </PackageReference>
+		<PackageReference Include="MSTest.TestAdapter" />
+    <PackageReference Include="MSTest.TestFramework" />
+    <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Moq">
       <Version>4.16.0</Version>
     </PackageReference>

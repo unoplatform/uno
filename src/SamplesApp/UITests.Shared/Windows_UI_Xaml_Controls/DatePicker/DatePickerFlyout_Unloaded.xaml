@@ -5,7 +5,9 @@
     xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.DatePicker"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+	xmlns:ios="http://uno.ui/ios"
+	xmlns:android="http://uno.ui/android"
+    mc:Ignorable="d ios android"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
@@ -24,6 +26,17 @@
 				<DatePickerFlyout x:Name="TestDatePickerFlyout"
 							  MinYear="{x:Bind Date}"
 							  Date="{x:Bind Date}"/>
+			</Button.Flyout>
+		</Button>
+		<Button x:Name="TestNativeDatePickerFlyoutButton"
+		        Content="Open NativeDatePickerFlyout">
+			<Button.Flyout>
+				<ios:NativeDatePickerFlyout x:Name="TestNativeDatePickerFlyout"
+							  MinYear="{x:Bind Date}"
+							  Date="{x:Bind Date}" />
+				<android:NativeDatePickerFlyout x:Name="TestNativeDatePickerFlyout"
+							  MinYear="{x:Bind Date}"
+							  Date="{x:Bind Date}" />
 			</Button.Flyout>
 		</Button>
 		<TextBlock FontSize="16">
