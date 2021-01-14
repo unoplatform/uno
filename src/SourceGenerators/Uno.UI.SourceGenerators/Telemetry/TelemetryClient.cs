@@ -24,8 +24,9 @@ namespace Uno.UI.SourceGenerators.Telemetry
 		private TelemetryClient _client = null;
 		private Dictionary<string, string> _commonProperties = null;
 		private Dictionary<string, double> _commonMeasurements = null;
+		private TelemetryConfiguration _telemetryConfig;
 		private Task _trackEventTask = null;
-
+		private PersistenceChannel.PersistenceChannel _persistenceChannel;
 		private const string InstrumentationKey = "9a44058e-1913-4721-a979-9582ab8bedce";
 		private const string TelemetryOptout = "UNO_PLATFORM_TELEMETRY_OPTOUT";
 
@@ -99,6 +100,11 @@ namespace Uno.UI.SourceGenerators.Telemetry
 			_trackEventTask.Wait();
 		}
 
+		public void Dispose()
+		{
+			_persistenceChannel.Dispose();
+		}
+
 		public void ThreadBlockingTrackEvent(string eventName, IDictionary<string, string> properties, IDictionary<string, double> measurements)
 		{
 			if (!Enabled)
@@ -112,18 +118,14 @@ namespace Uno.UI.SourceGenerators.Telemetry
 		{
 			try
 			{
-				var persistenceChannel = new PersistenceChannel.PersistenceChannel(sendersCount: _senderCount);
-				persistenceChannel.SendingInterval = TimeSpan.FromMilliseconds(1);
-#pragma warning disable CS0618 // Type or member is obsolete
-				TelemetryConfiguration.Active.TelemetryChannel = persistenceChannel;
-#pragma warning restore CS0618 // Type or member is obsolete
+				_persistenceChannel = new PersistenceChannel.PersistenceChannel(sendersCount: _senderCount);
+				_persistenceChannel.SendingInterval = TimeSpan.FromMilliseconds(1);
 
 				_commonProperties = new TelemetryCommonProperties().GetTelemetryCommonProperties();
 				_commonMeasurements = new Dictionary<string, double>();
 
-#pragma warning disable CS0618 // Type or member is obsolete
-				_client = new TelemetryClient();
-#pragma warning disable CS0618 // Type or member is obsolete
+				_telemetryConfig = new TelemetryConfiguration { InstrumentationKey = InstrumentationKey };
+				_client = new TelemetryClient(_telemetryConfig);
 				_client.InstrumentationKey = InstrumentationKey;
 				_client.Context.User.Id = _commonProperties[TelemetryCommonProperties.MachineId];
 				_client.Context.Session.Id = CurrentSessionId;
