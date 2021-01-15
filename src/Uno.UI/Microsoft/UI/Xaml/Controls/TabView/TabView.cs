@@ -1026,7 +1026,8 @@ namespace Microsoft.UI.Xaml.Controls
 								}
 
 								// Use current size to update items to fill the currently occupied space
-								tabWidth = availableTabViewSpace / (double)(TabItems.Count);
+								var tabWidthUnclamped = availableTabViewSpace / (double)(TabItems.Count);
+								tabWidth = MathEx.Clamp(tabWidthUnclamped, minTabWidth, maxTabWidth);
 							}
 
 
