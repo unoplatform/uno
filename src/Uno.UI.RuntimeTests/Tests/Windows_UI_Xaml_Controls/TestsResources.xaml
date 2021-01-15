@@ -16,6 +16,23 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<Style x:Key="NoExtraSpaceListViewContainerStyle"
+		   TargetType="ListViewItem">
+		<Setter Property="Padding"
+				Value="0" />
+		<Setter Property="MinWidth"
+				Value="0" />
+		<Setter Property="MinHeight"
+				Value="1" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ListViewItem">
+					<ContentPresenter Content="{TemplateBinding Content}"
+									  ContentTemplate="{TemplateBinding ContentTemplate}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 	<Style x:Key="CounterItemsControlContainerStyle"
 		   TargetType="ContentControl">
 		<Setter Property="Template">

@@ -636,8 +636,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ViewportArrangeSize = finalSize;
 
-			return base.ArrangeOverride(finalSize);
+			var arrangeSize = base.ArrangeOverride(finalSize);
+			TrimOverscroll(Orientation.Horizontal);
+			TrimOverscroll(Orientation.Vertical);
+			return arrangeSize;
 		}
+
+		partial void TrimOverscroll(Orientation orientation);
 
 		internal override void OnLayoutUpdated()
 		{
@@ -795,7 +800,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Cleanup previous template
 			DetachScrollBars();
-			
 
 			base.OnApplyTemplate();
 
@@ -886,7 +890,7 @@ namespace Windows.UI.Xaml.Controls
 					provider.Store.SetValue(provider.Store.TemplatedParentProperty, null, DependencyPropertyValuePrecedences.Local);
 				}
 			}
-			
+
 			// Then explicitly propagate the Content to the _presenter
 			if (_presenter != null)
 			{
@@ -1040,7 +1044,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			bool hasManagedHorizontalScrollBar;
-			if (_horizontalScrollbar is {} horizontal)
+			if (_horizontalScrollbar is { } horizontal)
 			{
 				horizontal.Scroll += OnHorizontalScrollBarScrolled;
 				hasManagedHorizontalScrollBar = true;
@@ -1094,7 +1098,7 @@ namespace Windows.UI.Xaml.Controls
 			};
 
 			ChangeViewScroll(e.NewValue, null, disableAnimation: immediate);
-		} 
+		}
 		#endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
@@ -1152,6 +1156,8 @@ namespace Windows.UI.Xaml.Controls
 			HorizontalOffset = _pendingHorizontalOffset;
 			VerticalOffset = _pendingVerticalOffset;
 
+			UpdatePartial(isIntermediate);
+
 #if !__SKIA__
 			// Effective viewport support
 			ScrollOffsets = new Point(_pendingHorizontalOffset, _pendingVerticalOffset);
@@ -1160,6 +1166,8 @@ namespace Windows.UI.Xaml.Controls
 
 			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
 		}
+
+		partial void UpdatePartial(bool isIntermediate);
 
 		/// <summary>
 		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
@@ -1205,7 +1213,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation);
 		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation);
 
-				#region Scroll indicators visual states (Managed scroll bars only)
+		#region Scroll indicators visual states (Managed scroll bars only)
 		private DispatcherQueueTimer? _indicatorResetTimer;
 		private string? _indicatorState;
 
@@ -1255,7 +1263,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// We don't auto hide the indicators if the pointer is over it!
 				// Note: the pointer has to move over this ScrollViewer to exit the ScrollBar, so we will restart the reset timer!
-				return; 
+				return;
 			}
 
 			VisualStateManager.GoToState(this, VisualStates.ScrollingIndicator.None, true);
@@ -1284,6 +1292,6 @@ namespace Windows.UI.Xaml.Controls
 				VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.Collapsed, true);
 			}
 		}
-				#endregion
+		#endregion
 	}
 }
