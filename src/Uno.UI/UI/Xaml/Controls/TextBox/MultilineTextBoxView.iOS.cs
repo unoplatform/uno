@@ -37,6 +37,9 @@ namespace Windows.UI.Xaml.Controls
 			Delegate = _delegate = new MultilineTextBoxDelegate(_textBox);
 			BackgroundColor = UIColor.Clear;
 			TextContainer.LineFragmentPadding = 0;
+
+			// Reset the default margin of 8px at the top
+			TextContainerInset = new UIEdgeInsets();
 		}
 
 		public override string Text
