@@ -960,7 +960,14 @@ namespace Microsoft.UI.Xaml.Controls
 				var addButtonColumn = m_addButtonColumn;
 				if (addButtonColumn != null)
 				{
-					widthTaken += addButtonColumn.ActualWidth;
+					var addButtonColumnWidth = addButtonColumn.ActualWidth;
+					if (addButtonColumn.ActualWidth == 0 && m_addButton?.Visibility == Visibility.Visible && previousAvailableSize.Width > 0)
+					{
+						// 
+						m_addButton.Measure(previousAvailableSize);
+						addButtonColumnWidth = m_addButton.DesiredSize.Width;
+					}
+					widthTaken += addButtonColumnWidth;
 				}
 				var rightContentColumn = m_rightContentColumn;
 				if (rightContentColumn != null)
