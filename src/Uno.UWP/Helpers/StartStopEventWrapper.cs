@@ -58,7 +58,7 @@ namespace Uno.Helpers
 			{
 				if (Event != null)
 				{
-					Event = (TDelegate)Delegate.Remove(Event, handler);
+					Event = (TDelegate?)Delegate.Remove(Event, handler);
 					if (Event == null)
 					{
 						_onLast();

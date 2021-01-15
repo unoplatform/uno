@@ -1,6 +1,6 @@
 // #define LOG_LAYOUT
 
-#if !NETSTANDARD2_0
+#if !UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;

@@ -1,0 +1,13 @@
+steps:
+
+  - task: UseDotNet@2
+    displayName: 'Use .Net Core runtime 5.0.102'
+    inputs:
+      packageType: sdk
+      version: 5.0.102
+
+  - task: UseDotNet@2
+    displayName: 'Use .Net Core runtime 3.1.404'
+    inputs:
+      packageType: sdk
+      version: 3.1.404

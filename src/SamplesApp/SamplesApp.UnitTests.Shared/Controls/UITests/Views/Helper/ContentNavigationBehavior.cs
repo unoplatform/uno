@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
-#elif HAS_UNO || NETSTANDARD2_0
+#elif HAS_UNO || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 #else

@@ -152,7 +152,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public bool Remove(string key) => _values.Remove(key);
 
-		public bool TryGetValue(string key, out object value) => _values.TryGetValue(key, out value);
+		public bool TryGetValue(string key, out object value) => _values.TryGetValue(key, out value!);
 
 		public object this[string key]
 		{

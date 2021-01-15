@@ -115,7 +115,7 @@ namespace System.IO
 				throw new ArgumentOutOfRangeException(nameof(count), "Count is greater than the available space.");
 			}
 
-			buffer.Length = (uint)await stream.ReadAsync(data.Array, data.Offset, (int)count, ct);
+			buffer.Length = (uint)await stream.ReadAsync(data.Array!, data.Offset, (int)count, ct);
 		}
 
 		internal static IAsyncOperationWithProgress<uint, uint> WriteAsyncOperation(this Stream stream, IBuffer buffer)
@@ -130,7 +130,7 @@ namespace System.IO
 		{
 			var data = global::Windows.Storage.Streams.Buffer.Cast(buffer).GetSegment();
 
-			await stream.WriteAsync(data.Array, data.Offset, (int)buffer.Length, ct);
+			await stream.WriteAsync(data.Array!, data.Offset, (int)buffer.Length, ct);
 		}
 
 		public static IAsyncOperation<bool> FlushAsyncOperation(this Stream stream)

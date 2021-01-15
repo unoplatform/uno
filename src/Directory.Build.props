@@ -49,6 +49,12 @@
 	Uno.UI.SourceGenerators.props for more details. Note that Roslyn generators required VS 16.8 Pre 3 or later.
 	-->
 	<UnoUIUseRoslynSourceGenerators>false</UnoUIUseRoslynSourceGenerators>
+
+	<!--
+	Force the compilation using Roslyn Generators to avoid type nuget
+	restore issues in the lottie project when building on .NET 5+
+	-->
+	<UnoUIUseRoslynSourceGenerators Condition="'$(MSBuildRuntimeType)'=='Core'">true</UnoUIUseRoslynSourceGenerators>
   </PropertyGroup>
 
   <!--

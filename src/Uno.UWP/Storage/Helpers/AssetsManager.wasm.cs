@@ -24,7 +24,7 @@ namespace Windows.Storage.Helpers
 {
 	internal partial class AssetsManager
 	{
-		private static readonly string UNO_BOOTSTRAP_APP_BASE = Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
+		private static readonly string UNO_BOOTSTRAP_APP_BASE = Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE)) ?? "";
 
 		private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(() => GetAssets(CancellationToken.None));
 		private static readonly ConcurrentEntryManager _assetsGate = new ConcurrentEntryManager();
@@ -65,7 +65,11 @@ namespace Windows.Storage.Helpers
 							var buffer = new byte[length];
 							Marshal.Copy(ptr, buffer, 0, length);
 
-							Directory.CreateDirectory(Path.GetDirectoryName(localPath));
+							if (Path.GetDirectoryName(localPath) is { } path)
+							{
+								Directory.CreateDirectory(path);
+							}
+
 							File.WriteAllBytes(localPath, buffer);
 						}
 						finally

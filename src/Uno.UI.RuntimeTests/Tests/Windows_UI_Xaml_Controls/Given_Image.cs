@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,6 +46,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			outerGrid.Measure(new Size(1000, 1000));
 			var desiredContainer = innerGrid.DesiredSize;
+
+			// Workaround for image.Loaded being raised too early on WebAssembly
+			var sw = Stopwatch.StartNew();
+			do
+			{
+				await TestServices.WindowHelper.WaitForIdle();
+
+				if(Math.Round(desiredContainer.Width) != 0 || Math.Round(desiredContainer.Height) != 0)
+				{
+					break;
+				}
+			}
+			while (sw.Elapsed < TimeSpan.FromSeconds(5));
 
 			Assert.AreEqual(30, Math.Round(desiredContainer.Width));
 			Assert.AreEqual(30, Math.Round(desiredContainer.Height));

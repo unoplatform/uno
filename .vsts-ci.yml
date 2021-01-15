@@ -29,12 +29,13 @@ resources:
     image: unoplatform/wasm-build:3.0
 
 variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   windowsHostedVMImage: 'windows-2019'
   windowsScaledPool: 'Windows2019-20201210-0'
   linuxVMImage: 'ubuntu-latest'
   macOSVMImage: 'macOS-10.15'
   xCodeRoot: '/Applications/Xcode_12.3.app'
-  XamarinSDKVersion: 6_12_2
+  XamarinSDKVersion: 6_12_4
   xCodeRoot_iOS_UITests: '/Applications/Xcode_11.5.app'
   XamarinSDKVersion_iOS_UITests: 6_10_0
 

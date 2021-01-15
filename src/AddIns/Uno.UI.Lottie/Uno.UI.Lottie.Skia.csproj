@@ -1,7 +1,12 @@
 <Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../../netcore-build.props"/>
+	<Import Project="../../targetframework-override.props"/>
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
@@ -9,7 +14,7 @@
 		<AssemblyName>Uno.UI.Lottie</AssemblyName>
 		<RootNamespace>Uno.UI.Lottie</RootNamespace>
 
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>

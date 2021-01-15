@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml
 				return Matrix3x2.Identity;
 			}
 
-#if NETSTANDARD // Depth is defined properly only on WASM and Skia
+#if UNO_REFERENCE_API // Depth is defined properly only on WASM and Skia
 			// If possible we try to navigate the tree upward so we have a greater chance
 			// to find an element in the parent hierarchy of the other element.
 			if (to is { } && from.Depth < to.Depth)
@@ -457,7 +457,7 @@ namespace Windows.UI.Xaml
 
 				if (NeedsClipToSlot)
 				{
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 					rect = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
 #else
 					rect = ClippedFrame ?? Rect.Empty;
@@ -561,7 +561,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		Size IUIElement.DesiredSize { get; set; }
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
 		/// </summary>
@@ -579,7 +579,7 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		/// <summary>
 		/// This is the Frame that should be used as "available Size" for the Arrange phase.
 		/// </summary>

@@ -20,7 +20,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
-
+    
+  - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml

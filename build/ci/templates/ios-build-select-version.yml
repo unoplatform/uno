@@ -3,8 +3,19 @@ parameters:
   XamarinSDKVersion: ''
 
 steps:
-  - bash: >
+  - bash: |
+      echo "listing /Library/Frameworks/Xamarin.iOS.framework/Versions"
       /bin/bash -c "ls -la /Library/Frameworks/Xamarin.iOS.framework/Versions"
+      echo "listing /Library/Frameworks/Mono.framework/Versions"
+      /bin/bash -c "ls -la /Library/Frameworks/Mono.framework/Versions"
+      echo "listing /Library/Frameworks/Xamarin.Android.framework/Versions"
+      /bin/bash -c "ls -la /Library/Frameworks/Xamarin.Android.framework/Versions"
+      echo "listing /Library/Frameworks/Xamarin.Mac.framework/Versions"
+      /bin/bash -c "ls -la /Library/Frameworks/Xamarin.Mac.framework/Versions"
+
+    displayName: List existing frameworks
+
+  - bash: >
       /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh ${{parameters.XamarinSDKVersion}}"
 
     displayName: Select Xamarin Version

@@ -19,7 +19,7 @@ namespace UITests.Windows_UI_Xaml.Clipping
 
 		private async void DumpTree()
 		{
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 			await Task.Delay(1200);
 			var tree = this.ShowLocalVisualTree();
 			System.Diagnostics.Debug.WriteLine(tree);

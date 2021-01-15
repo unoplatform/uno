@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		public TextBlock()
 		{
 			IFrameworkElementHelper.Initialize(this);

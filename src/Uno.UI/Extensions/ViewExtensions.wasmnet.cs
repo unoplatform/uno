@@ -1,4 +1,4 @@
-#if NET461 || NETSTANDARD2_0
+#if NET461 || UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;
 using System.Linq;

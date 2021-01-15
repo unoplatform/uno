@@ -1,6 +1,6 @@
 ﻿<#@template language="C#"#>
 <#@output extension="g.cs" #>
-#if NETSTANDARD2_0
+#if UNO_REFERENCE_API
 <# 	
 	AddClass("Windows.UI.Xaml.Controls", "TextBox", hasCommonStates: true, hasCommonOverState: true, hasCommonFocusedState: true);
 	AddClass("Windows.UI.Xaml.Controls", "Button", hasCommonStates: true, hasCommonOverState: true, hasCommonPressedState: true);

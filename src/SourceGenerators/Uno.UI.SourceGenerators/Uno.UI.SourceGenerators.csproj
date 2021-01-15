@@ -50,6 +50,7 @@
 			<Version>3.1.6</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.16.0" />
+		<PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 			<Version>3.8.0</Version>
 		</PackageReference>

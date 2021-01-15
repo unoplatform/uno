@@ -32,7 +32,7 @@ namespace Windows.Storage.Pickers
 
 		public bool Remove(string key) => _items.Remove(key);
 
-		public bool TryGetValue(string key, out IList<string> value) => _items.TryGetValue(key, out value);
+		public bool TryGetValue(string key, out IList<string> value) => _items.TryGetValue(key, out value!);
 
 		public IList<string> this[string key]
 		{

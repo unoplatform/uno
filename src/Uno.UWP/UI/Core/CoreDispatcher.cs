@@ -207,7 +207,7 @@ namespace Windows.UI.Core
 					EventOpcode.Send,
 					new[] {
 						((int)priority).ToString(),
-						handler.Method.DeclaringType.FullName + "." + handler.Method.DeclaringType.Name
+						handler.Method.DeclaringType?.FullName + "." + handler.Method.DeclaringType?.Name
 					}
 				);
 			}

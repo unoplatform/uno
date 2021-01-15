@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml.Media
 			view.AddView(child);
 #elif __IOS__ || __MACOS__
 			view.AddSubview(child);
-#elif NETSTANDARD
+#elif UNO_REFERENCE_API
 			view.AddChild(child);
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
@@ -240,7 +240,7 @@ namespace Windows.UI.Xaml.Media
 			children.ForEach(v => v.RemoveFromSuperview());
 
 			return children; 
-#elif NETSTANDARD
+#elif UNO_REFERENCE_API
 			var children = GetChildren<_View>(view).ToList();
 			view.ClearChildren();
 

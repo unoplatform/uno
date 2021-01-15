@@ -84,7 +84,7 @@ namespace Uno.Foundation.Interop
 				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms, pReturnValue);
 
 				var returnValue = Marshal.PtrToStructure(pReturnValue, retStructType);
-				return returnValue;
+				return returnValue!;
 			}
 			catch (Exception e)
 			{

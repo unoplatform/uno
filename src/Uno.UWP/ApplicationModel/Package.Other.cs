@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			if (!string.IsNullOrEmpty(AppContext.BaseDirectory))
 			{
-				return global::System.IO.Path.GetDirectoryName(AppContext.BaseDirectory);
+				return global::System.IO.Path.GetDirectoryName(AppContext.BaseDirectory) ?? "";
 			}
 			else
 			{

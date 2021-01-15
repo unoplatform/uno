@@ -61,19 +61,19 @@
   - Constants for Xamarin backends and SDK versions: https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/platform-divergence-abstraction-divergent-implementation#conditional-compilation
   -->
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+  <PropertyGroup Condition="$(_IsNetStd)">
 	  <DefineConstants>$(DefineConstants);__NETSTD__</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
+  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
 	<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Skia'">
+  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'">
 	<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
+  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Reference'">
 	<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
   </PropertyGroup>
 

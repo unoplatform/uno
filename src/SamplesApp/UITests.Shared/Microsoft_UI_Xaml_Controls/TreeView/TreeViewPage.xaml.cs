@@ -1060,8 +1060,8 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		}
 		private void ReadBindingResult_Click(object sender, RoutedEventArgs e)
 		{
-			Results.Text = (TwoWayBoundButton.Content as TreeViewNode).Content as string
-				+ ";" + (TestTreeView.SelectedItem as TreeViewNode).Content as string;
+			Results.Text = ((TwoWayBoundButton.Content as TreeViewNode).Content as string)
+				+ ";" + ((TestTreeView.SelectedItem as TreeViewNode).Content as string);
 		}
 
 #region Uno specific

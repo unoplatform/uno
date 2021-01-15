@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -32,7 +36,7 @@
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
-			<_OutputFilesPDB Include="@(TargetPathWithTargetPlatformMoniker->'%(RecursiveDir)%(Filename).pdb)" />
+			<_OutputFilesPDB Include="@(TargetPathWithTargetPlatformMoniker-&gt;'%(RecursiveDir)%(Filename).pdb)" />
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 

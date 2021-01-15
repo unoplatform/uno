@@ -4,6 +4,8 @@
     <TargetFrameworks>net47;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
+	<Import Project="../netcore-build-windows.props"/>
+	
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Authors>nventive</Authors>
@@ -17,7 +19,7 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Wpf</PackageId>
 	
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		<UseWPF Condition="'$(TargetFramework)'=='netcoreapp3.1'">true</UseWPF>
+		<UseWPF Condition="'$(TargetFramework)'=='netcoreapp3.1' or '$(TargetFramework)'=='net5.0-windows'">true</UseWPF>
 	</PropertyGroup>
 	
 	<ItemGroup>
