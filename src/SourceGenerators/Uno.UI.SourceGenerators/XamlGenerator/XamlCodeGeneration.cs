@@ -301,6 +301,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			finally
 			{
 				_telemetry.Flush();
+				_telemetry.Dispose();
 			}
 		}
 
