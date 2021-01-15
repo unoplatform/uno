@@ -15,6 +15,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		internal override global::System.DateTimeOffset DateBase
+		{
+			get => Date;
+			set => Date = value;
+		}
 		public global::System.DateTimeOffset Date
 		{
 			get

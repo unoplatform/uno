@@ -78,6 +78,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <inheritdoc />
+		internal override DateTimeOffset DateBase { get; set; }
+
 #if DEBUG && false
 		public override DateTime Date
 		{

@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 			object pItem)
 		{
 			// All calendar items have same scope logical, handle it here:
-			CalendarViewItem spContainer = ((CalendarViewItem)(pContainer));
+			CalendarViewBaseItem spContainer = ((CalendarViewBaseItem)(pContainer));
 
 			spContainer.SetIsOutOfScope(false);
 

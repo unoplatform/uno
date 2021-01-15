@@ -10,20 +10,83 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 	partial class CalendarPanel : ILayoutDataInfoProvider
 	{
+		internal class ContainersCache : IItemContainerMapping
+		{
+			private readonly Dictionary<int, (object item, UIElement container)> _byIndex = new Dictionary<int, (object item, UIElement container)>();
+			private readonly Dictionary<object, (int index, UIElement container)> _byItem = new Dictionary<object, (int index, UIElement container)>();
+			private readonly Dictionary<UIElement, (int index, object item)> _byContainer = new Dictionary<UIElement, (int index, object item)>();
+
+			private CalendarViewGeneratorHost _host;
+
+			internal CalendarViewGeneratorHost Host
+			{
+				get => _host;
+				set
+				{
+					_host = value;
+					_byIndex.Clear();
+					_byIndex.Clear();
+					_byContainer.Clear();
+				}
+			}
+
+			internal (UIElement container, bool isNew) GetOrCreate(int index)
+			{
+				if (_byIndex.TryGetValue(index, out var cached))
+				{
+					return (cached.container, false);
+				}
+				else if (_host is null)
+				{
+					throw new InvalidOperationException("Host not set.");
+				}
+				else
+				{
+					var item = _host[index];
+					var container = (UIElement)_host.GetContainerForItem(item, null);
+
+					_byIndex[index] = (item, container);
+					_byItem[item] = (index, container);
+					_byContainer[container] = (index, item);
+
+					_host.PrepareItemContainer(container, item);
+
+					return (container, true);
+				}
+			}
+
+			/// <inheritdoc />
+			public object ItemFromContainer(DependencyObject container)
+				=> container is UIElement elt && _byContainer.TryGetValue(elt, out var cached) ? cached.item : default;
+
+			/// <inheritdoc />
+			public DependencyObject ContainerFromItem(object item)
+				=> _byItem.TryGetValue(item, out var cached) ? cached.container : default;
+
+			/// <inheritdoc />
+			public int IndexFromContainer(DependencyObject container)
+				=> container is UIElement elt && _byContainer.TryGetValue(elt, out var cached) ? cached.index : default;
+
+			/// <inheritdoc />
+			public DependencyObject ContainerFromIndex(int index)
+				=> _byIndex.TryGetValue(index, out var cached) ? cached.container : default;
+		}
+
 		internal event VisibleIndicesUpdatedEventCallback VisibleIndicesUpdated;
 
+		private readonly ContainersCache _cache = new ContainersCache();
 		private CalendarLayoutStrategy _layoutStrategy;
 		private CalendarViewGeneratorHost _host;
 
 		internal void RegisterItemsHost(CalendarViewGeneratorHost pHost)
 		{
 			_host = pHost;
+			_cache.Host = pHost;
+			ContainerManager.Host = pHost;
 		}
 
 		internal void DisconnectItemsHost()
-		{
-			_host = null;
-		}
+			=> RegisterItemsHost(null);
 
 		internal int FirstVisibleIndexBase { get; }
 		internal int LastVisibleIndexBase { get; }
@@ -33,14 +96,86 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[NotImplemented]
 		internal PanelScrollingDirection PanningDirectionBase { get; } = PanelScrollingDirection.None;
 
-		internal DependencyObject ContainerFromIndex(int firstVisibleIndex)
+		internal DependencyObject ContainerFromIndex(int index)
+			=> _cache.GetOrCreate(index).container;
+
+		private Size base_MeasureOverride(Size availableSize)
 		{
+			if (_host is null || _layoutStrategy is null)
+			{
+				return default;
+			}
 
-			
-			//_layoutStrategy.
-			//_host.GetContainerForItem()
+			// GOTO TO TODAY: EstimateElementIndex
 
-			return default;
+			_layoutStrategy.BeginMeasure();
+			ShouldInterceptInvalidate = true;
+			try
+			{
+				var index = -1;
+				var count = _host.Count;
+				var layout = new LayoutReference{RelativeLocation = ReferenceIdentity.AfterMe};
+				var window = new Rect(default, availableSize);
+
+				while (
+					++index < count
+					&& _layoutStrategy.ShouldContinueFillingUpSpace(ElementType.ItemContainer, index, layout, window))
+				{
+					var (container, isNew) = _cache.GetOrCreate(index);
+					if (isNew)
+					{
+						Children.Add((UIElement)container);
+					}
+					var itemsSize = _layoutStrategy.GetElementMeasureSize(ElementType.ItemContainer, index, window);
+					var itemBounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index, itemsSize, layout, window);
+
+					container.Measure(itemsSize);
+					layout.ReferenceBounds = itemBounds;
+				}
+			}
+			finally
+			{
+				ShouldInterceptInvalidate = false;
+				_layoutStrategy.EndMeasure();
+			}
+
+			//foreach (var item in _host)
+			//{
+
+			//}
+
+			//var s = _layoutStrategy.GetDesiredViewportSize();
+
+
+			//return s;
+
+			_layoutStrategy.EstimatePanelExtent(
+				default /* not used by CalendarLayoutStrategyImpl */,
+				default /* not used by CalendarLayoutStrategyImpl */,
+				default /* not used by CalendarLayoutStrategyImpl */,
+				out var desiredSize);
+
+			return desiredSize;
+		}
+
+		private Size base_ArrangeOverride(Size finalSize)
+		{
+			var layout = new LayoutReference(); // Empty layout which will actually drive the ShouldContinueFillingUpSpace to always return true
+			var window = new Rect(default, finalSize);
+
+			foreach (var child in Children)
+			{
+				var index = _cache.IndexFromContainer(child);
+
+
+				//var relativeSize = _layoutStrategy.GetElementMeasureSize(ElementType.ItemContainer, index, window);
+
+				// Note: We don't have the container bounds, so we don't use the GetElementArrangeBounds
+				var bounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index, child.DesiredSize, layout, window);
+				child.Arrange(bounds);
+			}
+
+			return finalSize;
 		}
 
 		[NotImplemented]
@@ -115,13 +250,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 	internal class ContainerManager
 	{
-		public int StartOfContainerVisualSection()
-		{
-			return 0;
-		}
+		// Required properties from WinUI code
+		public int StartOfContainerVisualSection() => 0;
 
-		public int TotalItemsCount { get; set; }
+		public int TotalItemsCount => Host?.Count ?? 0;
 
-		public int TotalGroupCount { get; set; }
+		public int TotalGroupCount = 0;
+
+		// Uno only
+		public CalendarViewGeneratorHost Host { get; set; }
 	}
 }

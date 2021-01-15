@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 
 			date = (DateTime)pItem;
 			spContainer = (CalendarViewItem)(pContainer);
-			spContainer.Date = date;
+			spContainer.DateBase = date;
 			GetCalendar().SetDateTime(date);
 
 			// main text

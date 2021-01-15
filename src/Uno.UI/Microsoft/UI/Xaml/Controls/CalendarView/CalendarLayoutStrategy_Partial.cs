@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Controls
 			out bool pReturnValue) /*override*/
 		{
 			pReturnValue = default;
-			pReturnValue = !!_layoutStrategyImpl.ShouldContinueFillingUpSpace(
+			pReturnValue = _layoutStrategyImpl.ShouldContinueFillingUpSpace(
 				elementType,
 				elementIndex,
 				referenceInformation,

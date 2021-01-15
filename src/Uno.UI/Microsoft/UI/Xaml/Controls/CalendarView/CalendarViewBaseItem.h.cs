@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using Windows.Foundation;
 using DateTime = System.DateTimeOffset;
 
 #pragma once
@@ -25,6 +26,8 @@ namespace Windows.UI.Xaml.Controls
 			m_dayForDebug = 0;
 #endif
 		}
+
+		
 
 		//protected:
 
@@ -114,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 		//private void GetMainText(out HSTRING pMainText);
 
 		// CalendarViewItem and CalendarViewDayItem will override this method.
-		internal virtual DateTime Date
+		internal virtual DateTime DateBase
 		{
 			get => throw new NotImplementedException();
 			set => throw new NotImplementedException(); // For debug purpose only

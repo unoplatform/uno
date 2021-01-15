@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 				spOwner = Owner;
 
 				DateTime date;
-				date = (spOwner as CalendarViewItem).Date;
+				date = (spOwner as CalendarViewItem).DateBase;
 
 				CalendarView pParent = (spOwner as CalendarViewBaseItem).GetParentCalendarView();
 
@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 				if (calendarPanel is {})
 				{
 					DateTime date = default;
-					date = (owner as CalendarViewBaseItem).Date;
+					date = (owner as CalendarViewBaseItem).DateBase;
 
 					int itemIndex = 0;
 					itemIndex = host.CalculateOffsetFromMinDate(date);

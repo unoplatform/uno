@@ -457,9 +457,9 @@
                                 <Button x:Name="NextButton" Grid.Column="2" Content="&#xE0E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" IsTabStop="True" Padding="1" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center" IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.HasMoreContentAfter}" Style="{StaticResource NavigationButtonStyle}" />
                             </Grid>
                             <Grid x:Name="Views" Grid.Row="1">
-                                <Grid.Clip>
+                                <!--<Grid.Clip>
                                     <RectangleGeometry Rect="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ClipRect}" />
-                                </Grid.Clip>
+                                </Grid.Clip>-->
                                 <Border x:Name="BackgroundLayer" Background="{TemplateBinding BorderBrush}">
                                     <Border.RenderTransform>
                                         <ScaleTransform x:Name="BackgroundTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
@@ -473,8 +473,8 @@
                                     <Grid.RenderTransform>
                                         <ScaleTransform x:Name="MonthViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
                                     </Grid.RenderTransform>
-                                    <Grid x:Name="WeekDayNames" Background="{TemplateBinding Background}">
-                                        <Grid.ColumnDefinitions>
+									<Grid x:Name="WeekDayNames" Background="{TemplateBinding Background}">
+										<Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="*" />
@@ -483,7 +483,7 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.WeekDay1}" x:Name="WeekDay1" Foreground="{TemplateBinding CalendarItemForeground}" Style="{StaticResource WeekDayNameStyle}" />
+										<TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.WeekDay1}" x:Name="WeekDay1" Foreground="{TemplateBinding CalendarItemForeground}" Style="{StaticResource WeekDayNameStyle}" />
                                         <TextBlock Grid.Column="1" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.WeekDay2}" x:Name="WeekDay2" Foreground="{TemplateBinding CalendarItemForeground}" Style="{StaticResource WeekDayNameStyle}" />
                                         <TextBlock Grid.Column="2" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.WeekDay3}" x:Name="WeekDay3" Foreground="{TemplateBinding CalendarItemForeground}" Style="{StaticResource WeekDayNameStyle}" />
                                         <TextBlock Grid.Column="3" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.WeekDay4}" x:Name="WeekDay4" Foreground="{TemplateBinding CalendarItemForeground}" Style="{StaticResource WeekDayNameStyle}" />

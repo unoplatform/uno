@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 				spOwner = Owner;
 
 				DateTime date;
-				date = (spOwner as CalendarViewItem).Date;
+				date = (spOwner as CalendarViewItem).DateBase;
 
 				CalendarView pParent = (spOwner as CalendarViewItem).GetParentCalendarView();
 
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 				spOwner = Owner;
 
 				DateTime date;
-				date = (spOwner as CalendarViewItem).Date;
+				date = (spOwner as CalendarViewItem).DateBase;
 
 				CalendarView pParent = (spOwner as CalendarViewItem).GetParentCalendarView();
 
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Controls
 				CalendarView pParent = item.GetParentCalendarView();
 
 				DateTime itemDate;
-				itemDate = item.Date;
+				itemDate = item.DateBase;
 
 				// Currently we only want this row header read in year mode, not in decade mode.
 				pParent.GetRowHeaderForItemAutomationPeer(itemDate, CalendarViewDisplayMode.Year, out pReturnValueCount, out ppReturnValue);

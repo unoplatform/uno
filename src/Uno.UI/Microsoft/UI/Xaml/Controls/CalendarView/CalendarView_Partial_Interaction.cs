@@ -290,7 +290,7 @@ namespace Windows.UI.Xaml.Controls
 			DateTime date;
 			CalendarViewDisplayMode mode = CalendarViewDisplayMode.Month;
 
-			date = pItem.Date;
+			date = pItem.DateBase;
 
 			mode = DisplayMode;
 

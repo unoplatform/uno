@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			// else CalendarPanel.SetPanelType has not been called yet.
 
-			var pDesired = base.MeasureOverride(availableSize);
+			var pDesired = base_MeasureOverride(availableSize);
 
 			return pDesired;
 		}
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				returnValue = base.ArrangeOverride(finalSize);
+				returnValue = base_ArrangeOverride(finalSize);
 			}
 
 			return returnValue;

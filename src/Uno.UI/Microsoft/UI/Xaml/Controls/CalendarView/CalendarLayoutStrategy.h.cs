@@ -172,7 +172,7 @@ namespace Windows.UI.Xaml.Controls
 		//     std.function<HRESULT( int itemIndex, out bool pHasSnapPoint)> func);
 
 		//private:
-		private CalendarLayoutStrategyImpl _layoutStrategyImpl;
+		private CalendarLayoutStrategyImpl _layoutStrategyImpl = new CalendarLayoutStrategyImpl();
 
 		private ILayoutDataInfoProvider _spDataInfoProvider;
 	}

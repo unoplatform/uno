@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 			CalendarViewDisplayMode displayMode = CalendarViewDisplayMode.Month;
 
 			displayMode = DisplayMode;
-			date = pItem.Date;
+			date = pItem.DateBase;
 
 			// after display mode changed, we'll focus a new item, we want that item to be focused by the specified state.
 			m_focusItemAfterDisplayModeChanged = true;

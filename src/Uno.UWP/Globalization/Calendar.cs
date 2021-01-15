@@ -425,7 +425,7 @@ namespace Windows.Globalization
 			=> DayOfWeekAsString();
 
 		public string DayOfWeekAsString(int idealLength)
-			=> _time.ToString("dddd", _resolvedCulture);
+			=> _time.ToString("ddd", _resolvedCulture);
 
 		public string DayOfWeekAsSoloString()
 			=> _time.ToString("dddd", _resolvedCulture);

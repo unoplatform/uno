@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UIElement spFirstChild;
 			// added in UIElement.GetFirstChild()
-			spFirstChild = GetFirstChild();
+			spFirstChild = _children.First();
 
 			// We overrode HasTemplateChild and AddTemplateChild to make sure
 			// the template child (if exists) will be always at index 0.
@@ -306,6 +306,12 @@ namespace Windows.UI.Xaml.Controls
 			return newFinalSize;
 		}
 
+		/// <inheritdoc />
+		internal override void OnArrangeVisual(Rect rect, Rect? clip)
+		{
+			base.OnArrangeVisual(rect, clip);
+		}
+
 		private void CreateTextBlock(
 			ref TextBlock spTextBlock)
 		{
@@ -340,7 +346,9 @@ namespace Windows.UI.Xaml.Controls
 				//DoPointerCast(pChildrenCollectionNoRef, value);
 
 				CreateTextBlock(ref spTextBlock);
-				pChildrenCollectionNoRef.Append((spTextBlock));
+				AddChild(spTextBlock);
+				// TODO UNO
+				//pChildrenCollectionNoRef.Append((spTextBlock));
 
 				UpdateTextBlockForeground(spTextBlock);
 				UpdateTextBlockForegroundOpacity(spTextBlock);
@@ -649,7 +657,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetOwner(CalendarView pOwner)
 		{
-			global::System.Diagnostics.Debug.Assert(!m_wrOwner.TryGetTarget(out _));
+			global::System.Diagnostics.Debug.Assert(!(m_wrOwner?.TryGetTarget(out _) ?? false));
 			m_wrOwner = new Uno.WeakReference<CalendarView>(pOwner);
 		}
 
@@ -857,7 +865,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateTextBlockForegroundOpacity(TextBlock pTextBlock)
 		{
-			float opacity = GetTextBlockForegroundOpacity();
+			double opacity = GetTextBlockForegroundOpacity();
 
 			global::System.Diagnostics.Debug.Assert(pTextBlock is { });
 
@@ -882,15 +890,15 @@ namespace Windows.UI.Xaml.Controls
 			{
 				object value;
 
-				pTextBlock.SetValue(TextBlock.FontSizeProperty, properties.fontSize);
+				pTextBlock.SetValue(TextBlock.FontSizeProperty, (double)properties.fontSize);
 
 				value = properties.fontStyle;
-				pTextBlock.SetValue(TextBlock.FontStyleProperty, value);
+				pTextBlock.SetValue(TextBlock.FontStyleProperty, (FontStyle)value);
 
 				value = properties.fontWeight;
-				pTextBlock.SetValue(TextBlock.FontWeightProperty, value);
+				pTextBlock.SetValue(TextBlock.FontWeightProperty, (FontWeight)value);
 
-				pTextBlock.SetValue(TextBlock.FontFamilyProperty, properties.pFontFamilyNoRef);
+				pTextBlock.SetValue(TextBlock.FontFamilyProperty, (FontFamily)properties.pFontFamilyNoRef);
 
 			}
 

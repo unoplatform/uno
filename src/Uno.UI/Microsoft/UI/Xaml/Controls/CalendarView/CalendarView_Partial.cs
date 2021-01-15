@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
+using Windows.UI.Text;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
@@ -93,8 +94,8 @@ namespace Windows.UI.Xaml.Controls
 		int m_monthViewStartIndex;
 
 		// dayOfWeekNames stores abbreviated names of each day of the week. dayOfWeekNamesFull stores the full name to be read aloud by accessibility.
-		List<string> m_dayOfWeekNames;
-		List<string> m_dayOfWeekNamesFull;
+		List<string> m_dayOfWeekNames = new List<string>();
+		List<string> m_dayOfWeekNamesFull = new List<string>();
 
 		IEnumerable<string> m_tpCalendarLanguages;
 
@@ -102,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 
 
 		// the keydown event args from CalendarItem.
-		WeakReference<KeyRoutedEventArgs> m_wrKeyDownEventArgsFromCalendarItem;
+		WeakReference<KeyRoutedEventArgs> m_wrKeyDownEventArgsFromCalendarItem = new WeakReference<KeyRoutedEventArgs>(default);
 
 		// the focus state we need to set on the calendaritem after we change the display mode.
 		FocusState m_focusStateAfterDisplayModeChanged;
@@ -147,6 +148,52 @@ namespace Windows.UI.Xaml.Controls
 
 		public CalendarView()
 		{
+			// Ctor from core\elements\CalendarView.cpp
+			m_pFocusBorderBrush = null;
+			m_pSelectedHoverBorderBrush = null;
+			m_pSelectedPressedBorderBrush = null;
+			m_pSelectedBorderBrush = null;
+			m_pHoverBorderBrush = null;
+			m_pPressedBorderBrush = null;
+			m_pCalendarItemBorderBrush = null;
+			m_pOutOfScopeBackground = null;
+			m_pCalendarItemBackground = null;
+			m_pPressedForeground = null;
+			m_pTodayForeground = null;
+			m_pBlackoutForeground = null;
+			m_pSelectedForeground = null;
+			m_pOutOfScopeForeground = null;
+			m_pCalendarItemForeground = null;
+			m_pDayItemFontFamily = /*null;*/ "XamlAutoFontFamily";
+			m_pDisabledForeground = null;
+			m_pTodaySelectedInnerBorderBrush = null;
+			m_pTodayHoverBorderBrush = null;
+			m_pTodayPressedBorderBrush = null;
+			m_pTodayBackground = null;
+			m_pTodayBlackoutBackground = null;
+			m_dayItemFontSize = 20.0f;
+			m_dayItemFontStyle = FontStyle.Normal;
+			m_dayItemFontWeight = FontWeights.Normal;
+			m_todayFontWeight = FontWeights.SemiBold;
+			m_pFirstOfMonthLabelFontFamily = /*null;*/ "XamlAutoFontFamily";
+			m_firstOfMonthLabelFontSize = 12.0f;
+			m_firstOfMonthLabelFontStyle = FontStyle.Normal;
+			m_firstOfMonthLabelFontWeight = FontWeights.Normal;
+			m_pMonthYearItemFontFamily = /*null;*/ "XamlAutoFontFamily";
+			m_monthYearItemFontSize = 20.0f;
+			m_monthYearItemFontStyle = FontStyle.Normal;
+			m_monthYearItemFontWeight = FontWeights.Normal;
+			m_pFirstOfYearDecadeLabelFontFamily = /*null;*/ "XamlAutoFontFamily";
+			m_firstOfYearDecadeLabelFontSize = 12.0f;
+			m_firstOfYearDecadeLabelFontStyle = FontStyle.Normal;
+			m_firstOfYearDecadeLabelFontWeight = FontWeights.Normal;
+			m_horizontalDayItemAlignment = HorizontalAlignment.Center;
+			m_verticalDayItemAlignment = VerticalAlignment.Center;
+			m_horizontalFirstOfMonthLabelAlignment = HorizontalAlignment.Center;
+			m_verticalFirstOfMonthLabelAlignment = VerticalAlignment.Top;
+			m_calendarItemBorderThickness = default;
+
+			// Ctor from lib\CalendarView_Partial.cpp
 			m_dateSourceChanged = true;
 			m_calendarChanged = false;
 			m_itemHostsConnected = false;
@@ -375,11 +422,11 @@ namespace Windows.UI.Xaml.Controls
 					break;
 				case DependencyProperty CalendarView_DisplayModeProperty when CalendarView_DisplayModeProperty == CalendarView.DisplayModeProperty:
 				{
-					uint oldDisplayMode = 0;
-					uint newDisplayMode = 0;
+					CalendarViewDisplayMode oldDisplayMode = 0;
+					CalendarViewDisplayMode newDisplayMode = 0;
 
-					oldDisplayMode = (uint)args.OldValue;
-					newDisplayMode = (uint)args.NewValue;
+					oldDisplayMode = (CalendarViewDisplayMode)args.OldValue;
+					newDisplayMode = (CalendarViewDisplayMode)args.NewValue;
 
 					OnDisplayModeChanged(
 						(CalendarViewDisplayMode)(oldDisplayMode),
@@ -1442,7 +1489,7 @@ namespace Windows.UI.Xaml.Controls
 					try
 					{
 						spChild = ((CalendarViewBaseItem)spChildAsI);
-						dateOfFirstVisibleItem = spChild.Date;
+						dateOfFirstVisibleItem = spChild.DateBase;
 						if (canPanelShowFullScope)
 						{
 							// if Panel can show a full scope, we navigate by a scope.
@@ -1757,13 +1804,13 @@ namespace Windows.UI.Xaml.Controls
 
 				spTempChildAsI = (CalendarViewBaseItem)spTempChildAsIDO;
 
-				firstDate = ((CalendarViewBaseItem)spTempChildAsI).Date;
+				firstDate = ((CalendarViewBaseItem)spTempChildAsI).DateBase;
 
 				spTempChildAsIDO = pCalendarPanel.ContainerFromIndex(lastVisibleIndex);
 
 				spTempChildAsI = (CalendarViewBaseItem)spTempChildAsIDO;
 
-				lastDate = ((CalendarViewBaseItem)spTempChildAsI).Date;
+				lastDate = ((CalendarViewBaseItem)spTempChildAsI).DateBase;
 
 				//now determine the current scope based on this date.
 				pHost.UpdateScope(firstDate, lastDate, out isScopeChanged);
@@ -1849,7 +1896,7 @@ namespace Windows.UI.Xaml.Controls
 					spChildAsI = (CalendarViewBaseItem) spChildAsIDO;
 
 					spChild = ((CalendarViewBaseItem)spChildAsI);
-					date = spChild.Date;
+					date = spChild.DateBase;
 
 					bool isOutOfScope = m_dateComparer.LessThan(date, pHost.GetMinDateOfCurrentScope()) || m_dateComparer.LessThan(pHost.GetMaxDateOfCurrentScope(), date);
 
@@ -2097,11 +2144,11 @@ namespace Windows.UI.Xaml.Controls
 
 				spChildAsIDO = pPreviousPanel.ContainerFromIndex(firstVisibleIndex);
 				spChildAsI = spChildAsIDO as CalendarViewBaseItem;
-				firstVisibleDate = ((CalendarViewBaseItem)spChildAsI).Date;
+				firstVisibleDate = ((CalendarViewBaseItem)spChildAsI).DateBase;
 
 				spChildAsIDO = pPreviousPanel.ContainerFromIndex(lastVisibleIndex);
 				spChildAsI = spChildAsIDO as CalendarViewBaseItem;
-				lastVisibleDate = ((CalendarViewBaseItem)spChildAsI).Date;
+				lastVisibleDate = ((CalendarViewBaseItem)spChildAsI).DateBase;
 
 				// check if last displayed Date is visible or not
 				bool isLastDisplayedDateVisible = false;

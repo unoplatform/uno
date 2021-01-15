@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml.Controls
 
 				// TODO: consider caching the firstday flag because we also need this information when determining snap points 
 				// (however Decadeview doesn't need this for Label).
-				date = pItem.Date;
+				date = pItem.DateBase;
 				pCalendar.SetDateTime(date);
 				firstDayInThisMonth = pCalendar.FirstDayInThisMonth;
 				day = pCalendar.Day;
