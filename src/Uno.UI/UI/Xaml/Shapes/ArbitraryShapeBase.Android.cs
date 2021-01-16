@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			// Draw the contour
-			if (stroke != null)
+			if (HasStroke)
 			{
 				using (var strokeBrush = new Paint(stroke.GetStrokePaint(drawArea)))
 				{

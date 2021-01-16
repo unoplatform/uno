@@ -160,15 +160,19 @@ namespace Windows.UI.Xaml.Shapes
 		partial void OnStrokeThicknessUpdatedPartial()
 		{
 			var svgElement = GetMainSvgElement();
+			var strokeThickness = ActualStrokeThickness;
 
-			var strokeThickness = StrokeThickness;
-			if (strokeThickness == default)
+			if (Stroke == null)
 			{
-				svgElement.ResetStyle("stroke-width");
+				svgElement.SetStyle("stroke-width", $"{DefaultStrokeThicknessWhenNoStrokeDefined}px");
+			}
+			else if (strokeThickness != 1.0d)
+			{
+				svgElement.SetStyle("stroke-width", $"{strokeThickness}px");
 			}
 			else
 			{
-				svgElement.SetStyle("stroke-width", $"{strokeThickness}px");
+				svgElement.ResetStyle("stroke-width");
 			}
 		}
 
