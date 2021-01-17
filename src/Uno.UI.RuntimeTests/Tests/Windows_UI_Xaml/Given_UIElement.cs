@@ -10,7 +10,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
     public partial class Given_UIElement
 	{
-#if IS_UNO // Tests use IsArrangeDirty, which is an internal property
+#if HAS_UNO // Tests use IsArrangeDirty, which is an internal property
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Visible_InvalidateArrange()
@@ -49,6 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
+#if HAS_UNO // Issue #2840 - ActualSize is available since 18362
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_TextBlock_ActualSize()
@@ -105,5 +106,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(rectangle.ActualWidth, rectangle.ActualSize.X, 0.01);
 			Assert.AreEqual(rectangle.ActualHeight, rectangle.ActualSize.Y, 0.01);
 		}
+#endif
 	}
 }
