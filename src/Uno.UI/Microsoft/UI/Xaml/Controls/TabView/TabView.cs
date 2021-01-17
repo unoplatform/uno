@@ -882,7 +882,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 						// It is not ideal to call UpdateLayout here, but it is necessary to ensure that the ContentPresenter has expanded its content
 						// into the live visual tree.
-						tabContentPresenter.UpdateLayout();
+#if IS_UNO
+						// TODO: Uno specific - issue #4925 - Calling UpdateLayout here causes another Measure of TabListView, which is already in progress
+						// if this tab was added by data binding. As a result, two copies of each tab would be constructed.
+						//tabContentPresenter.UpdateLayout();
+#endif
 
 						if (shouldMoveFocusToNewTab)
 						{
@@ -1144,20 +1148,21 @@ namespace Microsoft.UI.Xaml.Controls
 			var listView = m_listView;
 			if (listView != null)
 			{
-				var tvi = SelectedItem as TabViewItem;
-				if (tvi == null)
-				{
-					tvi = ContainerFromItem(SelectedItem) as TabViewItem;
-				}
+				listView.SelectedItem = SelectedItem;
+				//var tvi = SelectedItem as TabViewItem;
+				//if (tvi == null)
+				//{
+				//	tvi = ContainerFromItem(SelectedItem) as TabViewItem;
+				//}
 
-				if (tvi != null)
-				{
-					listView.SelectedItem = tvi;
+				//if (tvi != null)
+				//{
+				//	listView.SelectedItem = tvi;
 
-					// Setting ListView.SelectedItem will not work here in all cases.
-					// The reason why that doesn't work but this does is unknown.
-					tvi.IsSelected = true;
-				}
+				//	// Setting ListView.SelectedItem will not work here in all cases.
+				//	// The reason why that doesn't work but this does is unknown.
+				//	tvi.IsSelected = true;
+				//}
 			}
 		}
 
