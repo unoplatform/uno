@@ -7,7 +7,17 @@ namespace Windows.UI.Xaml
 	{
 		internal Path GetOutlinePath(RectF rect)
 		{
-			var radii = new float[]
+			var radii = GetRadii();
+
+			var path = new Path();
+			path.AddRoundRect(rect, radii, Path.Direction.Cw);
+
+			return path;
+		}
+
+		internal float[] GetRadii()
+		{
+			return new float[]
 			{
 				ViewHelper.LogicalToPhysicalPixels(TopLeft),
 				ViewHelper.LogicalToPhysicalPixels(TopLeft),
@@ -18,11 +28,6 @@ namespace Windows.UI.Xaml
 				ViewHelper.LogicalToPhysicalPixels(BottomLeft),
 				ViewHelper.LogicalToPhysicalPixels(BottomLeft)
 			};
-
-			var path = new Path();
-			path.AddRoundRect(rect, radii, Path.Direction.Cw);
-
-			return path;
 		}
 	}
 }
