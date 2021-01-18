@@ -115,31 +115,35 @@ namespace Windows.UI.Xaml.Controls
 			var disposables = new CompositeDisposable();
 
 			var physicalBorderThickness = borderThickness.LogicalToPhysicalPixels();
+
 			if (cornerRadius != 0)
 			{
-				var adjustedArea = drawArea.DeflateBy(physicalBorderThickness);
-
-				using (var backgroundPath = cornerRadius.GetOutlinePath(adjustedArea.ToRectF()))
+				var adjustedLineWidth = physicalBorderThickness.Top; // TODO: handle non-uniform BorderThickness correctly
+				var adjustedArea = drawArea;
+				adjustedArea.Inflate(-adjustedLineWidth / 2, -adjustedLineWidth / 2);
+				using (var path = cornerRadius.GetOutlinePath(adjustedArea.ToRectF()))
 				{
+					path.SetFillType(Path.FillType.EvenOdd);
+
 					//We only need to set a background if the drawArea is non-zero
 					if (!drawArea.HasZeroArea())
 					{
 						if (background is ImageBrush imageBrushBackground)
 						{
 							//Copy the path because it will be disposed when we exit the using block
-							var pathCopy = new Path(backgroundPath);
+							var pathCopy = new Path(path);
 							var setBackground = DispatchSetImageBrushAsBackground(view, imageBrushBackground, drawArea, onImageSet, pathCopy);
 							disposables.Add(setBackground);
 						}
 						else if (background is AcrylicBrush acrylicBrush)
 						{
-							var apply = acrylicBrush.Subscribe(view, drawArea, backgroundPath);
+							var apply = acrylicBrush.Subscribe(view, drawArea, path);
 							disposables.Add(apply);
 						}
 						else
 						{
 							var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
-							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath)));
+							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, path)));
 						}
 						disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 					}
@@ -148,15 +152,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						using (var strokePaint = new Paint(borderBrush.GetStrokePaint(drawArea)))
 						{
-							//Create the path for the outer and inner rectangles that will become our border shape
-							var borderPath = cornerRadius.GetOutlinePath(drawArea.ToRectF());
-							borderPath.AddRoundRect(adjustedArea.ToRectF(), cornerRadius.GetRadii(), Path.Direction.Ccw);
-
-							var overlay = GetOverlayDrawable(
-								strokePaint,
-								physicalBorderThickness,
-								new global::System.Drawing.Size((int)drawArea.Width, (int)drawArea.Height),
-								borderPath);
+							var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new global::System.Drawing.Size((int)drawArea.Width, (int)drawArea.Height), path);
 
 							if (overlay != null)
 							{
@@ -167,7 +163,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
-			else
+			else // No corner radius
 			{
 				//We only need to set a background if the drawArea is non-zero
 				if (!drawArea.HasZeroArea())
@@ -189,19 +185,19 @@ namespace Windows.UI.Xaml.Controls
 					}
 					disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 				}
-			}
 
-			if (borderBrush != null && !(borderBrush is ImageBrush))
-			{
-				//TODO: Handle case that BorderBrush is an ImageBrush
-				using (var strokePaint = borderBrush.GetStrokePaint(drawArea))
+				if (borderBrush != null && !(borderBrush is ImageBrush))
 				{
-					var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new global::System.Drawing.Size(view.Width, view.Height));
-
-					if (overlay != null)
+					//TODO: Handle case that BorderBrush is an ImageBrush
+					using (var strokePaint = borderBrush.GetStrokePaint(drawArea))
 					{
-						overlay.SetBounds(0, 0, view.Width, view.Height);
-						SetOverlay(view, disposables, overlay);
+						var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new global::System.Drawing.Size(view.Width, view.Height));
+
+						if (overlay != null)
+						{
+							overlay.SetBounds(0, 0, view.Width, view.Height);
+							SetOverlay(view, disposables, overlay);
+						}
 					}
 				}
 			}
@@ -307,30 +303,27 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static Drawable GetOverlayDrawable(
-			Paint strokePaint,
-			Thickness physicalBorderThickness,
-			global::System.Drawing.Size viewSize,
-			Path borderPath = null)
+		private static Drawable GetOverlayDrawable(Paint strokePaint, Thickness physicalBorderThickness, global::System.Drawing.Size viewSize, Path path = null)
 		{
 			if (strokePaint != null)
 			{
-				if (borderPath != null)
+				// Alias the stroke to reduce interop
+				var paintStyleStroke = Paint.Style.Stroke;
+
+				if (path != null)
 				{
-					borderPath.SetFillType(Path.FillType.EvenOdd);
 					var drawable = new PaintDrawable();
-					drawable.Shape = new PathShape(borderPath, viewSize.Width, viewSize.Height);
+					drawable.Shape = new PathShape(path, viewSize.Width, viewSize.Height);
 					var paint = drawable.Paint;
 					paint.Color = strokePaint.Color;
 					paint.SetShader(strokePaint.Shader);
-					paint.SetStyle(Paint.Style.FillAndStroke);
+					paint.StrokeWidth = (float)physicalBorderThickness.Top;
+					paint.SetStyle(paintStyleStroke);
 					paint.Alpha = strokePaint.Alpha;
 					return drawable;
 				}
 				else if (viewSize != null && !viewSize.IsEmpty)
 				{
-					// Alias the stroke to reduce interop
-					var paintStyleStroke = Paint.Style.Stroke;
 					var drawables = new List<Drawable>();
 
 					if (physicalBorderThickness.Top != 0)
