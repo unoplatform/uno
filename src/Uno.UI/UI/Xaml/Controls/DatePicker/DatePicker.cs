@@ -1533,6 +1533,14 @@ namespace Windows.UI.Xaml.Controls
 			//		strClock, /* Clock */
 			//		spFormatter));
 
+			spFormatter = new DateTimeFormatter(
+				strFormat,
+				spLanguages,
+				strGeographicRegion,
+				strCalendarIdentifier,
+				strClock
+			);
+
 			ppDateTimeFormatter = spFormatter;
 		}
 
