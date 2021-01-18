@@ -91,42 +91,31 @@ namespace Windows.UI.Xaml.Shapes
 			var disposables = new CompositeDisposable();
 			var sublayers = new List<CALayer>();
 
-			var heightOffset = ((float)borderThickness.Top / 2) + ((float)borderThickness.Bottom / 2);
-			var widthOffset = ((float)borderThickness.Left / 2) + ((float)borderThickness.Right / 2);
+			var adjustedLineWidth = borderThickness.Top;
+			var adjustedLineWidthOffset = adjustedLineWidth / 2;
+
 			var adjustedArea = area;
-			adjustedArea = adjustedArea.Shrink(
-				(nfloat)borderThickness.Left,
-				(nfloat)borderThickness.Top,
-				(nfloat)borderThickness.Right,
-				(nfloat)borderThickness.Bottom
-			);
+			adjustedArea = adjustedArea.Shrink((nfloat)adjustedLineWidthOffset);
 
 			if (cornerRadius != CornerRadius.None)
 			{
-				var maxRadius = Math.Max(0, Math.Min((float)area.Width / 2 - widthOffset, (float)area.Height / 2 - heightOffset));
+				var maxRadius = Math.Max(0, Math.Min((float)area.Width / 2 - adjustedLineWidthOffset, (float)area.Height / 2 - adjustedLineWidthOffset));
 				cornerRadius = new CornerRadius(
 					Math.Min(cornerRadius.TopLeft, maxRadius),
 					Math.Min(cornerRadius.TopRight, maxRadius),
 					Math.Min(cornerRadius.BottomRight, maxRadius),
 					Math.Min(cornerRadius.BottomLeft, maxRadius));
 
-				var outerLayer = new CAShapeLayer();
-				var innerLayer = new CAShapeLayer();
-				innerLayer.FillColor = null;
-				outerLayer.FillRule = CAShapeLayer.FillRuleEvenOdd;
-				outerLayer.LineWidth = 0;
+				CAShapeLayer layer = new CAShapeLayer();
+				layer.LineWidth = (nfloat)adjustedLineWidth;
+				layer.FillColor = null;
 
-				Brush.AssignAndObserveBrush(borderBrush, color =>
-					{
-						outerLayer.StrokeColor = color;
-						outerLayer.FillColor = color;
-					})
+
+				Brush.AssignAndObserveBrush(borderBrush, color => layer.StrokeColor = color)
 					.DisposeWith(disposables);
 
-				var path = GetRoundedRect(cornerRadius, area, adjustedArea);
-				var innerPath = GetRoundedPath(cornerRadius, adjustedArea);
-
-				
+				var path = GetRoundedPath(cornerRadius, adjustedArea);
+				var outerPath = GetRoundedPath(cornerRadius, area);
 
 				var insertionIndex = 0;
 
@@ -134,17 +123,19 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					var fillMask = new CAShapeLayer()
 					{
-						Path = innerPath,
+						Path = path,
 						Frame = area,
 						// We only use the fill color to create the mask area
 						FillColor = _Color.White.CGColor,
 					};
+					// We reduce the adjustedArea again so that the gradient is inside the border (like in Windows)
+					adjustedArea = adjustedArea.Shrink((nfloat)adjustedLineWidthOffset);
 
 					CreateGradientBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask);
 				}
 				else if (background is SolidColorBrush scbBackground)
 				{
-					Brush.AssignAndObserveBrush(scbBackground, color => innerLayer.FillColor = color)
+					Brush.AssignAndObserveBrush(scbBackground, color => layer.FillColor = color)
 						.DisposeWith(disposables);
 				}
 				else if (background is ImageBrush imgBackground)
@@ -154,11 +145,13 @@ namespace Windows.UI.Xaml.Shapes
 					{
 						var fillMask = new CAShapeLayer()
 						{
-							Path = innerPath,
+							Path = path,
 							Frame = area,
 							// We only use the fill color to create the mask area
 							FillColor = _Color.White.CGColor,
 						};
+						// We reduce the adjustedArea again so that the image is inside the border (like in Windows)
+						adjustedArea = adjustedArea.Shrink((nfloat)adjustedLineWidthOffset);
 
 						CreateImageBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask);
 					}
@@ -167,31 +160,30 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					var fillMask = new CAShapeLayer()
 					{
-						Path = innerPath,
+						Path = path,
 						Frame = area,
 						// We only use the fill color to create the mask area
 						FillColor = _Color.White.CGColor,
 					};
+					// We reduce the adjustedArea again so that the acrylic is inside the border (like in Windows)
+					adjustedArea = adjustedArea.Shrink((nfloat)adjustedLineWidthOffset);
 
 					acrylicBrush.Subscribe(owner, area, adjustedArea, parent, sublayers, ref insertionIndex, fillMask)
 						.DisposeWith(disposables);
 				}
 				else
 				{
-					innerLayer.FillColor = Colors.Transparent;
+					layer.FillColor = Colors.Transparent;
 				}
 
-				outerLayer.Path = path;
-				innerLayer.Path = innerPath;
+				layer.Path = path;
 
-				sublayers.Add(outerLayer);
-				sublayers.Add(innerLayer);
-				parent.InsertSublayer(outerLayer, insertionIndex++);
-				parent.InsertSublayer(innerLayer, insertionIndex);
+				sublayers.Add(layer);
+				parent.InsertSublayer(layer, insertionIndex);
 
 				parent.Mask = new CAShapeLayer()
 				{
-					Path = path,
+					Path = outerPath,
 					Frame = area,
 					// We only use the fill color to create the mask area
 					FillColor = _Color.White.CGColor,
@@ -355,19 +347,9 @@ namespace Windows.UI.Xaml.Shapes
 		/// <summary>
 		/// Creates a rounded-rectangle path from the nominated bounds and corner radius.
 		/// </summary>
-		private static CGPath GetRoundedRect(CornerRadius cornerRadius, CGRect area, CGRect insetArea)
+		private static CGPath GetRoundedPath(CornerRadius cornerRadius, CGRect area)
 		{
 			var path = new CGPath();
-
-			GetRoundedPath(cornerRadius, area, path);
-			GetRoundedPath(cornerRadius, insetArea, path);
-
-			return path;
-		}
-
-		private static CGPath GetRoundedPath(CornerRadius cornerRadius, CGRect area, CGPath path = null)
-		{
-			path ??= new CGPath();
 			// How AddArcToPoint works:
 			// http://www.twistedape.me.uk/blog/2013/09/23/what-arctopointdoes/
 
@@ -376,8 +358,8 @@ namespace Windows.UI.Xaml.Shapes
 			path.AddArcToPoint(area.Right, area.Bottom, area.GetMidX(), area.Bottom, (float)cornerRadius.BottomRight);
 			path.AddArcToPoint(area.Left, area.Bottom, area.Left, area.GetMidY(), (float)cornerRadius.BottomLeft);
 			path.AddArcToPoint(area.Left, area.Top, area.GetMidX(), area.Top, (float)cornerRadius.TopLeft);
-			path.AddLineToPoint(area.GetMidX(), area.Y);
 
+			path.CloseSubpath();
 			return path;
 		}
 
