@@ -22,5 +22,43 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
 		}
+
+		[TestMethod]
+		public void When_ElementName_In_Template_Resource()
+		{
+			var SUT = new Binding_ElementName_In_Template_Resource();
+
+			SUT.ForceLoaded();
+
+			var tb = SUT.FindName("innerTextBlock") as Windows.UI.Xaml.Controls.TextBlock;
+
+			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
+		}
+
+		[TestMethod]
+		public void When_ElementName_In_Template_Resource_In_Dictionary()
+		{
+			var SUT = new Binding_ElementName_In_Template_Resource_In_Dictionary();
+
+			SUT.ForceLoaded();
+
+			var tb = SUT.FindName("innerTextBlock") as Windows.UI.Xaml.Controls.TextBlock;
+
+			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
+		}
+		      
+		[TestMethod]
+		public void When_ElementName_In_Template_ItemsControl()
+		{
+			var SUT = new Binding_ElementName_In_Template_ItemsControl();
+
+			SUT.PrimaryActionsList.ItemsSource = new[] { "test" };
+
+			SUT.ForceLoaded();
+
+			var button = SUT.FindName("button") as Windows.UI.Xaml.Controls.Button;
+
+			Assert.AreEqual(SUT.PrimaryActionsList.Tag, button.Tag);
+		}
 	}
 }
