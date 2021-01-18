@@ -963,7 +963,9 @@ namespace Microsoft.UI.Xaml.Controls
 					var addButtonColumnWidth = addButtonColumn.ActualWidth;
 					if (addButtonColumn.ActualWidth == 0 && m_addButton?.Visibility == Visibility.Visible && previousAvailableSize.Width > 0)
 					{
-						// 
+						// Uno workaround: We may arrive here before the AddButton has been measured, and if there are enough tabs to take
+						// all the space, the Grid will not assign any to the button. As a workaround we measure the button directly and use
+						// its desired size.
 						m_addButton.Measure(previousAvailableSize);
 						addButtonColumnWidth = m_addButton.DesiredSize.Width;
 					}
