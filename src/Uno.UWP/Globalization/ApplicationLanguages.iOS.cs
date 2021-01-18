@@ -1,16 +1,11 @@
-﻿#if __IOS__
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Foundation;
 
 namespace Windows.Globalization
 {
 	public static partial class ApplicationLanguages
 	{
-		public static IReadOnlyList<string> Languages => NSBundle.MainBundle.PreferredLocalizations;
-
-		public static IReadOnlyList<string> ManifestLanguages => NSBundle.MainBundle.Localizations;
+		public static IReadOnlyList<string> ManifestLanguages { get; } = NSBundle.MainBundle.PreferredLocalizations.Concat(NSBundle.MainBundle.Localizations).Distinct().ToArray();
 	}
 }
-#endif
