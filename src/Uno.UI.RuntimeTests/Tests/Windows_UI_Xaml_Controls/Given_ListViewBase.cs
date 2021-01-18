@@ -639,8 +639,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (lastItem = list.ContainerFromItem(19) as ListViewItem) != null);
 			var secondLastItem = list.ContainerFromItem(18) as ListViewItem;
 
-			Assert.AreEqual(181, GetTop(lastItem), delta: 1);
-			Assert.AreEqual(152, GetTop(secondLastItem), delta: 1);
+			Assert.AreEqual(181, GetTop(lastItem), delta: 2);
+			Assert.AreEqual(152, GetTop(secondLastItem), delta: 2);
 
 			source.Remove(19);
 
@@ -655,6 +655,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 1;
+		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 	}
 }
