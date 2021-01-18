@@ -89,7 +89,7 @@ namespace Windows.Globalization
 
 		public Calendar()
 		{
-			_languages = new string[1] { CultureInfo.CurrentCulture.IetfLanguageTag };
+			_languages = ApplicationLanguages.Languages;
 			_resolvedCulture = CultureInfo.CurrentCulture;
 			_calendar = CultureInfo.CurrentCulture.Calendar;
 			_timeZone = TimeZoneInfo.Local;

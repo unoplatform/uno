@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Security.Principal;
+using System.Text.RegularExpressions;
+using Uno.Extensions;
 
 namespace Windows.Globalization.DateTimeFormatting
 {
 	public sealed partial class DateTimeFormatter
 	{
-		private static readonly IReadOnlyList<string> _defaultPatterns =
-			new List<string>
-			{
-				"‎{month.full}‎ ‎{day.integer}‎, ‎{year.full}",
-				"‎{day.integer}‎ ‎{month.full}‎, ‎{year.full}",
-			}.AsReadOnly();
+		private static readonly IReadOnlyList<string> _defaultPatterns;
 
-		private static readonly IReadOnlyList<string> _emptyLanguages =
-			new List<string>(0).AsReadOnly();
+		private static readonly IReadOnlyList<string> _emptyLanguages;
 
 		public string NumeralSystem { get; set; }
 
@@ -36,7 +34,7 @@ namespace Windows.Globalization.DateTimeFormatting
 
 		public YearFormat IncludeYear { get; }
 
-		public IReadOnlyList<string> Languages { get; } = _emptyLanguages;
+		public IReadOnlyList<string> Languages { get; } = ApplicationLanguages.Languages;
 
 		public string Calendar { get; }
 
@@ -48,13 +46,32 @@ namespace Windows.Globalization.DateTimeFormatting
 
 		public string Template { get; }
 
-		public static DateTimeFormatter LongDate { get; } = new DateTimeFormatter("longdate");
+		public static DateTimeFormatter LongDate { get; }
 
-		public static DateTimeFormatter LongTime { get; } = new DateTimeFormatter("longtime");
+		public static DateTimeFormatter LongTime { get; }
 
-		public static DateTimeFormatter ShortDate { get; } = new DateTimeFormatter("shortdate");
+		public static DateTimeFormatter ShortDate { get; }
 
-		public static DateTimeFormatter ShortTime { get; } = new DateTimeFormatter("shorttime");
+		public static DateTimeFormatter ShortTime { get; }
+
+		static DateTimeFormatter()
+		{
+			_map_cache = new Dictionary<string, IDictionary<string, string>>();
+			_patterns_cache = new Dictionary<(string language, string template), string>();
+
+			_defaultPatterns = new []
+			{
+				"{month.full}‎ ‎{day.integer}‎, ‎{year.full}",
+				"{day.integer}‎ ‎{month.full}‎, ‎{year.full}",
+			};
+
+			_emptyLanguages = new string[0];
+
+			LongDate = new DateTimeFormatter("longdate");
+			LongTime = new DateTimeFormatter("longtime");
+			ShortDate = new DateTimeFormatter("shortdate");
+			ShortTime = new DateTimeFormatter("shorttime");
+		}
 
 		public DateTimeFormatter(string formatTemplate)
 			:this(formatTemplate, languages: null)
@@ -66,12 +83,40 @@ namespace Windows.Globalization.DateTimeFormatting
 			IEnumerable<string> languages)
 		{
 			Template = formatTemplate ?? throw new ArgumentNullException(nameof(formatTemplate));
-			if (languages != null)
+
+			var languagesArray = languages?.Distinct().ToArray();
+
+			if (languagesArray == null || languagesArray.Length == 0)
 			{
-				Languages = new List<string>(languages).AsReadOnly();
+				var currentUiLanguage = CultureInfo.CurrentUICulture.Name;
+				var currentLanguage = CultureInfo.CurrentCulture.Name;
+
+				if (currentUiLanguage != currentLanguage)
+				{
+					Languages = languagesArray = new[]
+					{
+						currentUiLanguage,
+						currentLanguage
+					};
+				}
+				else
+				{
+					Languages = languagesArray = new[]
+					{
+						currentUiLanguage
+					};
+				}
+			}
+			else
+			{
+				Languages = languagesArray;
 			}
 
-			BuildLookup();
+			_firstCulture = new CultureInfo(languagesArray[0]);
+
+			_maps = languagesArray.SelectToArray(BuildLookup);
+
+			Patterns = BuildPatterns().ToArray();
 		}
 
 		public DateTimeFormatter(
@@ -122,28 +167,27 @@ namespace Windows.Globalization.DateTimeFormatting
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.DateTimeFormatting.DateTimeFormatter", "DateTimeFormatter.DateTimeFormatter(YearFormat yearFormat, MonthFormat monthFormat, DayFormat dayFormat, DayOfWeekFormat dayOfWeekFormat, HourFormat hourFormat, MinuteFormat minuteFormat, SecondFormat secondFormat, IEnumerable<string> languages, string geographicRegion, string calendar, string clock)");
 		}
 
-		private static void BuildLookup()
+		private IDictionary<string, string> BuildLookup(string language)
 		{
-			_info = DateTimeFormatInfo.CurrentInfo;
-			if (_info == _static_info)
+			if(_map_cache.TryGetValue(language, out var map))
 			{
-				_map = _static_map;
-				return;
+				return map;
 			}
 
-			_static_info = _info;
+			var info = new CultureInfo(language).DateTimeFormat;
 
-			_map = _static_map = new Dictionary<string, string>
+			map = new Dictionary<string, string>
 			{
-				{ "longdate"                             , _info.LongDatePattern } ,
-				{ "shortdate"                            , _info.ShortDatePattern } ,
-				{ "longtime"                             , _info.LongTimePattern } ,
-				{ "shorttime"                            , _info.ShortTimePattern } ,
-				{ "dayofweek day month year"             , "D" } ,
+				{ "longdate"                             , info.LongDatePattern } ,
+				{ "shortdate"                            , info.ShortDatePattern } ,
+				{ "longtime"                             , info.LongTimePattern } ,
+				{ "shorttime"                            , info.ShortTimePattern } ,
+				{ "dayofweek day month year"             , info.FullDateTimePattern } ,
 				{ "dayofweek day month"                  , "D" } ,
-				{ "day month year"                       , "MMMM dd, yyyy" } ,
-				{ "day month"                            , "MMMM dd" } ,
-				{ "month year"                           , "MMMM yyyy" } ,
+				{ "day month year"                       , info.ShortDatePattern } ,
+				{ "day month.full year"                  , info.ShortDatePattern } ,
+				{ "day month"                            , info.MonthDayPattern } ,
+				{ "month year"                           , info.YearMonthPattern } ,
 				{ "dayofweek.full"                       , "dddd" } ,
 				{ "dayofweek.abbreviated"                , "ddd" } ,
 				{ "month.full"                           , "MMMM" } ,
@@ -151,20 +195,22 @@ namespace Windows.Globalization.DateTimeFormatting
 				{ "month.numeric"                        , "%M" } ,
 				{ "year.abbreviated"                     , "yy" } ,
 				{ "year.full"                            , "yyyy" } ,
-				{ "hour minute second"                   , "T" },
-				{ "hour minute"                          , "t" },
+				{ "hour minute second"                   , info.LongTimePattern },
+				{ "hour minute"                          , info.ShortTimePattern },
 				{ "timezone.abbreviated"                 , "zz" },
 				{ "timezone.full"                        , "zzz" },
 				{ "dayofweek"                            , "dddd" } ,
 				{ "day"                                  , "%d" } ,
 				{ "month"                                , "MMMM" } ,
 				{ "year"                                 , "yyyy" } ,
-				{ "hour"                                 , "h tt" } ,
+				{ "hour"                                 , "H tt" } ,
 				{ "minute"                               , "m" },
 				{ "second"                               , "s" },
 				{ "timezone"                             , "%z" },
-                // { "year month day hour"                  , "" } ,
-            };
+				// { "year month day hour"                  , "" } ,
+			};
+
+			return _map_cache[language] = map;
 		}
 
 		public string Format(DateTimeOffset value)
@@ -172,7 +218,7 @@ namespace Windows.Globalization.DateTimeFormatting
 			var format = GetSystemTemplate();
 			try
 			{
-				return value.ToString(format, _info);
+				return value.ToString(format, _firstCulture.DateTimeFormat);
 			}
 			catch (Exception e)
 			{
@@ -180,22 +226,82 @@ namespace Windows.Globalization.DateTimeFormatting
 			}
 		}
 
-		private static DateTimeFormatInfo _static_info;
-		private static Dictionary<string, string> _static_map;
+		private static readonly IDictionary<string, IDictionary<string, string>> _map_cache;
+		private static readonly IDictionary<(string language, string template), string> _patterns_cache;
 
-		private static DateTimeFormatInfo _info;
-		private static Dictionary<string, string> _map;
+		private readonly CultureInfo _firstCulture;
+
+		private readonly IDictionary<string, string>[] _maps;
 
 		private string GetSystemTemplate()
 		{
 			var result = Template.Replace("{", "").Replace("}", "");
 
-			foreach (var p in _map)
+			var map = _maps[0];
+
+			foreach (var p in map)
 			{
 				result = result.Replace(p.Key, p.Value);
 			}
 
 			return result;
+		}
+
+		private static readonly (Regex pattern, string replacement)[] PatternsReplacements =
+			new (string pattern, string replacement)[]
+				{
+					(@"\bMMMM\b", "{month.full}"),
+					(@"\bMMM\b", "{month.abbreviated}"),
+					(@"\bMM\b", "{month.numeric}"),
+					(@"%M\b", "{month.numeric}"),
+					(@"\bM\b", "{month.numeric}"),
+					(@"\bdddd\b", "{dayofweek.full}"),
+					(@"\bddd\b", "{dayofweek.abbreviated}"),
+					(@"\byyyy\b", "{year.full}"),
+					(@"\byy\b", "{year.abbreviated}"),
+					(@"\b(z|zz)\b", "{timezone.abbreviated}"),
+					(@"\byyyy\b", "{year.full}"),
+					(@"\bMMMM\b", "{month.full}"),
+					(@"\bdd\b", "{day.integer(2)}"),
+					(@"%d\b", "{day.integer}"),
+					(@"\bd\b", "{day.integer}"),
+					(@"\bzzz\b", "{timezone.full}"),
+					(@"\bzz\b", "{timezone.abbreviated}"),
+					(@"%z\b", "{timezone}"),
+					(@"\b(HH|hh|H|h)\b", "{hour}"),
+					(@"\b(mm|m)\b", "{minute}"),
+					(@"\b(ss|s)\b", "{second}"),
+					(@"\btt\b", "{period.abbreviated}"),
+				}
+				.SelectToArray(x =>
+					(new Regex(x.pattern, RegexOptions.CultureInvariant | RegexOptions.Compiled),
+						x.replacement));
+
+		private IEnumerable<string> BuildPatterns()
+		{
+			var format = Template;
+
+			for (var i = 0; i < Languages.Count; i++)
+			{
+				var language = Languages[i];
+				if (_patterns_cache.TryGetValue((language, format), out var pattern))
+				{
+					yield return pattern;
+				}
+				else
+				{
+					var map = _maps[i];
+					if (map.TryGetValue(format, out var r))
+					{
+						foreach (var p in PatternsReplacements)
+						{
+							r = p.pattern.Replace(r, p.replacement);
+						}
+
+						yield return _patterns_cache[(language, format)] = r;
+					}
+				}
+			}
 		}
 	}
 }

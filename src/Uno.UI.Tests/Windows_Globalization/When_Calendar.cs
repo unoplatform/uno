@@ -598,43 +598,43 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 			using (new AssertionScope("Calendar Properties"))
 			{
-				SUT.Day.Should().Be(day, "day");
-				SUT.Month.Should().Be(month, "month");
-				SUT.Year.Should().Be(year, "year");
-				SUT.Hour.Should().Be(hours, "hours");
-				SUT.Minute.Should().Be(minutes, "minutes");
-				SUT.Second.Should().Be(seconds, "seconds");
-				SUT.Nanosecond.Should().Be(milliseconds * 1000, "milliseconds");
-				SUT.DayOfWeek.Should().Be(dayOfWeek, "dayOfWeek");
-				SUT.Era.Should().Be(era, "era");
-				SUT.FirstDayInThisMonth.Should().Be(firstDayInThisMonth, "firstDayInThisMonth");
-				SUT.FirstEra.Should().Be(firstEra, "firstEra");
-				SUT.FirstHourInThisPeriod.Should().Be(firstHourInThisPeriod, "firstHourInThisPeriod");
-				SUT.FirstMinuteInThisHour.Should().Be(firstMinuteInThisHour, "firstMinuteInThisHour");
-				SUT.FirstMonthInThisYear.Should().Be(firstMonthInThisYear, "firstMonthInThisYear");
-				SUT.FirstPeriodInThisDay.Should().Be(firstPeriodInThisDay, "firstPeriodInThisDay");
-				SUT.FirstSecondInThisMinute.Should().Be(firstSecondInThisMinute, "firstSecondInThisMinute");
-				SUT.FirstYearInThisEra.Should().Be(firstYearInThisEra, "firstYearInThisEra");
+				SUT.Day.Should().Be(day, nameof(day));
+				SUT.Month.Should().Be(month, nameof(month));
+				SUT.Year.Should().Be(year, nameof(year));
+				SUT.Hour.Should().Be(hours, nameof(hours));
+				SUT.Minute.Should().Be(minutes, nameof(minutes));
+				SUT.Second.Should().Be(seconds, nameof(seconds));
+				SUT.Nanosecond.Should().Be(milliseconds * 1000, nameof(milliseconds));
+				SUT.DayOfWeek.Should().Be(dayOfWeek, nameof(dayOfWeek));
+				SUT.Era.Should().Be(era, nameof(era));
+				SUT.FirstDayInThisMonth.Should().Be(firstDayInThisMonth, nameof(firstDayInThisMonth));
+				SUT.FirstEra.Should().Be(firstEra, nameof(firstEra));
+				SUT.FirstHourInThisPeriod.Should().Be(firstHourInThisPeriod, nameof(firstHourInThisPeriod));
+				SUT.FirstMinuteInThisHour.Should().Be(firstMinuteInThisHour, nameof(firstMinuteInThisHour));
+				SUT.FirstMonthInThisYear.Should().Be(firstMonthInThisYear, nameof(firstMonthInThisYear));
+				SUT.FirstPeriodInThisDay.Should().Be(firstPeriodInThisDay, nameof(firstPeriodInThisDay));
+				SUT.FirstSecondInThisMinute.Should().Be(firstSecondInThisMinute, nameof(firstSecondInThisMinute));
+				SUT.FirstYearInThisEra.Should().Be(firstYearInThisEra, nameof(firstYearInThisEra));
 				SUT.Languages.Should().HaveCount(1, "languages count");
-				SUT.Languages.Should().HaveElementAt(0, culture, "culture");
-				SUT.LastDayInThisMonth.Should().Be(lastDayInThisMonth, "lastDayInThisMonth");
-				SUT.LastEra.Should().Be(lastEra, "lastEra");
-				SUT.LastHourInThisPeriod.Should().Be(lastHourInThisPeriod, "lastHourInThisPeriod");
-				SUT.LastMinuteInThisHour.Should().Be(lastMinuteInThisHour, "lastMinuteInThisHour");
-				SUT.LastMonthInThisYear.Should().Be(lastMonthInThisYear, "lastMonthInThisYear");
-				SUT.LastPeriodInThisDay.Should().Be(lastPeriodInThisDay, "lastPeriodInThisDay");
-				SUT.LastSecondInThisMinute.Should().Be(lastSecondInThisMinute, "lastSecondInThisMinute");
-				SUT.LastYearInThisEra.Should().Be(lastYearInThisEra, "lastYearInThisEra");
-				SUT.NumberOfDaysInThisMonth.Should().Be(numberOfDaysInThisMonth, "numberOfDaysInThisMonth");
-				SUT.NumberOfEras.Should().Be(numberOfEras, "numberOfEras");
-				SUT.NumberOfHoursInThisPeriod.Should().Be(numberOfHoursInThisPeriod, "numberOfHoursInThisPeriod");
-				SUT.NumberOfMinutesInThisHour.Should().Be(numberOfMinutesInThisHour, "numberOfMinutesInThisHour");
-				SUT.NumberOfMonthsInThisYear.Should().Be(numberOfMonthsInThisYear, "numberOfMonthsInThisYear");
-				SUT.NumberOfPeriodsInThisDay.Should().Be(numberOfPeriodsInThisDay, "numberOfPeriodsInThisDay");
-				SUT.NumberOfSecondsInThisMinute.Should().Be(numberOfSecondsInThisMinute, "numberOfSecondsInThisMinute");
-				SUT.NumberOfYearsInThisEra.Should().Be(numberOfYearsInThisEra, "numberOfYearsInThisEra");
-				SUT.Period.Should().Be(period, "period");
-				SUT.ResolvedLanguage.Should().Be(culture, "culture");
+				SUT.Languages.Should().HaveElementAt(0, culture, nameof(culture));
+				SUT.LastDayInThisMonth.Should().Be(lastDayInThisMonth, nameof(lastDayInThisMonth));
+				SUT.LastEra.Should().Be(lastEra, nameof(lastEra));
+				SUT.LastHourInThisPeriod.Should().Be(lastHourInThisPeriod, nameof(lastHourInThisPeriod));
+				SUT.LastMinuteInThisHour.Should().Be(lastMinuteInThisHour, nameof(lastMinuteInThisHour));
+				SUT.LastMonthInThisYear.Should().Be(lastMonthInThisYear, nameof(lastMonthInThisYear));
+				SUT.LastPeriodInThisDay.Should().Be(lastPeriodInThisDay, nameof(lastPeriodInThisDay));
+				SUT.LastSecondInThisMinute.Should().Be(lastSecondInThisMinute, nameof(lastSecondInThisMinute));
+				SUT.LastYearInThisEra.Should().Be(lastYearInThisEra, nameof(lastYearInThisEra));
+				SUT.NumberOfDaysInThisMonth.Should().Be(numberOfDaysInThisMonth, nameof(numberOfDaysInThisMonth));
+				SUT.NumberOfEras.Should().Be(numberOfEras, nameof(numberOfEras));
+				SUT.NumberOfHoursInThisPeriod.Should().Be(numberOfHoursInThisPeriod, nameof(numberOfHoursInThisPeriod));
+				SUT.NumberOfMinutesInThisHour.Should().Be(numberOfMinutesInThisHour, nameof(numberOfMinutesInThisHour));
+				SUT.NumberOfMonthsInThisYear.Should().Be(numberOfMonthsInThisYear, nameof(numberOfMonthsInThisYear));
+				SUT.NumberOfPeriodsInThisDay.Should().Be(numberOfPeriodsInThisDay, nameof(numberOfPeriodsInThisDay));
+				SUT.NumberOfSecondsInThisMinute.Should().Be(numberOfSecondsInThisMinute, nameof(numberOfSecondsInThisMinute));
+				SUT.NumberOfYearsInThisEra.Should().Be(numberOfYearsInThisEra, nameof(numberOfYearsInThisEra));
+				SUT.Period.Should().Be(period, nameof(period));
+				SUT.ResolvedLanguage.Should().Be(culture, nameof(culture));
 
 				// Validation is disabled as timezone support is only using the current machine's timezone
 				// SUT.IsDaylightSavingTime.Should().Be(isDaylightSavingTime, "isDaylightSavingTime");
@@ -675,24 +675,24 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 			using (new AssertionScope("Calendar Format"))
 			{
-				SUT.YearAsPaddedString(2).Should().Be(yearAsPaddedString, "yearAsPaddedString");
-				SUT.YearAsString().Should().Be(yearAsString, "yearAsString");
-				SUT.MonthAsPaddedNumericString(2).Should().Be(monthAsPaddedNumericString, "monthAsPaddedNumericString");
-				SUT.MonthAsSoloString().Should().Be(monthAsSoloString, "monthAsSoloString");
-				SUT.MonthAsString().Should().Be(monthAsString, "monthAsString");
-				SUT.MonthAsNumericString().Should().Be(monthAsNumericString, "monthAsNumericString");
-				SUT.DayAsPaddedString(2).Should().Be(dayAsPaddedString, "dayAsPaddedString");
-				SUT.DayAsString().Should().Be(dayAsString, "dayAsString");
-				SUT.HourAsPaddedString(2).Should().Be(hourAsPaddedString, "hourAsPaddedString");
-				SUT.HourAsString().Should().Be(hourAsString, "hourAsString");
-				SUT.MinuteAsPaddedString(2).Should().Be(minuteAsPaddedString, "minuteAsPaddedString");
-				SUT.MinuteAsString().Should().Be(minuteAsString, "minuteAsString");
-				SUT.SecondAsPaddedString(2).Should().Be(secondAsPaddedString, "secondAsPaddedString");
-				SUT.SecondAsString().Should().Be(secondAsString, "secondAsString");
-				SUT.NanosecondAsPaddedString(2).Should().Be(nanosecondAsPaddedString, "nanosecondAsPaddedString");
-				SUT.NanosecondAsString().Should().Be(nanosecondAsString, "nanosecondAsString");
-				SUT.DayOfWeekAsSoloString().Should().Be(dayOfWeekAsSoloString, "dayOfWeekAsSoloString");
-				SUT.DayOfWeekAsString().Should().Be(dayOfWeekAsString, "dayOfWeekAsString");
+				SUT.YearAsPaddedString(2).Should().Be(yearAsPaddedString, nameof(yearAsPaddedString));
+				SUT.YearAsString().Should().Be(yearAsString, nameof(yearAsString));
+				SUT.MonthAsPaddedNumericString(2).Should().Be(monthAsPaddedNumericString, nameof(monthAsPaddedNumericString));
+				SUT.MonthAsSoloString().Should().Be(monthAsSoloString, nameof(monthAsSoloString));
+				SUT.MonthAsString().Should().Be(monthAsString, nameof(monthAsString));
+				SUT.MonthAsNumericString().Should().Be(monthAsNumericString, nameof(monthAsNumericString));
+				SUT.DayAsPaddedString(2).Should().Be(dayAsPaddedString, nameof(dayAsPaddedString));
+				SUT.DayAsString().Should().Be(dayAsString, nameof(dayAsString));
+				SUT.HourAsPaddedString(2).Should().Be(hourAsPaddedString, nameof(hourAsPaddedString));
+				SUT.HourAsString().Should().Be(hourAsString, nameof(hourAsString));
+				SUT.MinuteAsPaddedString(2).Should().Be(minuteAsPaddedString, nameof(minuteAsPaddedString));
+				SUT.MinuteAsString().Should().Be(minuteAsString, nameof(minuteAsString));
+				SUT.SecondAsPaddedString(2).Should().Be(secondAsPaddedString, nameof(secondAsPaddedString));
+				SUT.SecondAsString().Should().Be(secondAsString, nameof(secondAsString));
+				SUT.NanosecondAsPaddedString(2).Should().Be(nanosecondAsPaddedString, nameof(nanosecondAsPaddedString));
+				SUT.NanosecondAsString().Should().Be(nanosecondAsString, nameof(nanosecondAsString));
+				SUT.DayOfWeekAsSoloString().Should().Be(dayOfWeekAsSoloString, nameof(dayOfWeekAsSoloString));
+				SUT.DayOfWeekAsString().Should().Be(dayOfWeekAsString, nameof(dayOfWeekAsString));
 			}
 		}
 	}
