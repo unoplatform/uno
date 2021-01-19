@@ -135,7 +135,8 @@ namespace Uno.UI.Samples.Tests
 					{
 						Text = $"{testClass.Name} ({testClass.Assembly.GetName().Name})",
 						Foreground = new SolidColorBrush(Colors.White),
-						FontSize = 16d
+						FontSize = 16d,
+						IsTextSelectionEnabled = true
 					};
 
 					testResults.Children.Add(testResultBlock);
