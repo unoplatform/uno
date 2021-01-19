@@ -16,26 +16,17 @@
 	d:DesignWidth="400">
 
 	<StackPanel>
-		<Slider Minimum="10" Maximum="1600" Value="350" x:Name="slider">
-			<Slider.Header>
-				<TextBlock>Container Width <Run Text="{Binding Value, ElementName=slider}" /></TextBlock>
-			</Slider.Header>
-		</Slider>
-		<Slider Minimum="5" Maximum="300" Value="70" x:Name="sliderV">
-			<Slider.Header>
-				<TextBlock>Container Height <Run Text="{Binding Value, ElementName=sliderV}" /></TextBlock>
-			</Slider.Header>
-		</Slider>
-		<Slider Minimum="5" Maximum="170" Value="20" x:Name="fontsize">
-			<Slider.Header>
-				<TextBlock>Font Size <Run Text="{Binding Value, ElementName=fontsize}" /></TextBlock>
-			</Slider.Header>
-		</Slider>
-		<Slider Minimum="5" Maximum="170" Value="20" x:Name="lineheight">
-			<Slider.Header>
-				<TextBlock>Line Height <Run Text="{Binding Value, ElementName=lineheight}" /></TextBlock>
-			</Slider.Header>
-		</Slider>
+		<TextBlock>Container Width <Run Text="{Binding Value, ElementName=slider}" />:</TextBlock>
+		<Slider Minimum="10" Maximum="1600" Value="350" x:Name="slider" />
+
+		<TextBlock>Container Height <Run Text="{Binding Value, ElementName=sliderV}" />:</TextBlock>
+		<Slider Minimum="5" Maximum="300" Value="70" x:Name="sliderV" />
+
+		<TextBlock>Font Size <Run Text="{Binding Value, ElementName=fontsize}" />:</TextBlock>
+		<Slider Minimum="5" Maximum="170" Value="20" x:Name="fontsize" />
+
+		<TextBlock>Line Height <Run Text="{Binding Value, ElementName=lineheight}" />:</TextBlock>
+		<Slider Minimum="5" Maximum="170" Value="20" x:Name="lineheight" />
 
 		<wasm:TextBlock>
 			(WASM ONLY) Cache: Hits=
@@ -45,6 +36,7 @@
 
 		<Border Width="{Binding Value, ElementName=slider}" Height="{Binding Value, ElementName=sliderV}" Background="Cyan" Name="border1">
 			<TextBlock
+				x:Name="textwrap"
 				FontSize="{Binding Value, ElementName=fontsize}"
 				TextWrapping="Wrap"
 				LineHeight="{Binding Value, ElementName=lineheight}"
@@ -54,6 +46,7 @@
 		</Border>
 		<Border Width="{Binding Value, ElementName=slider}" Height="{Binding Value, ElementName=sliderV}" Background="Yellow" x:Name="border2">
 			<TextBlock
+				x:Name="textwrapwords"
 				FontSize="{Binding Value, ElementName=fontsize}"
 				TextWrapping="WrapWholeWords"
 				LineHeight="{Binding Value, ElementName=lineheight}"
@@ -64,6 +57,7 @@
 		<Border Width="{Binding Value, ElementName=slider}" Height="{Binding Value, ElementName=sliderV}" Background="Cyan" x:Name="border3">
 			<TextBlock
 				FontSize="{Binding Value, ElementName=fontsize}"
+				x:Name="textwrapellipsis"
 				TextWrapping="Wrap"
 				TextTrimming="CharacterEllipsis"
 				LineHeight="{Binding Value, ElementName=lineheight}"
@@ -74,6 +68,7 @@
 		<Border Width="{Binding Value, ElementName=slider}" Height="{Binding Value, ElementName=sliderV}" Background="Yellow" x:Name="border4">
 			<TextBlock
 				FontSize="{Binding Value, ElementName=fontsize}"
+				x:Name="textwrapwordsellipsis"
 				TextWrapping="WrapWholeWords"
 				TextTrimming="CharacterEllipsis"
 				LineHeight="{Binding Value, ElementName=lineheight}"
