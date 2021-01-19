@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	public partial class TabViewTests
 	{
-#if HAS_UNO
+#if HAS_UNO && !__IOS__
 		[TestMethod]
 		public void VerifyItemsAreCreatedOnlyOnce()
 		{

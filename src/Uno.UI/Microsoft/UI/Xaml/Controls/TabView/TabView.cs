@@ -1149,6 +1149,9 @@ namespace Microsoft.UI.Xaml.Controls
 			if (listView != null)
 			{
 				listView.SelectedItem = SelectedItem;
+
+				// TODO: Uno specific - this is currently commented out,
+				// possibly a WinUI bug - https://github.com/microsoft/microsoft-ui-xaml/issues/3969
 				//var tvi = SelectedItem as TabViewItem;
 				//if (tvi == null)
 				//{
