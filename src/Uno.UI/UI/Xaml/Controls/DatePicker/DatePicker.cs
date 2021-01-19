@@ -340,7 +340,7 @@ namespace Windows.UI.Xaml.Controls
 					m_epYearSelectionChangedHandler.Disposable = null;
 				}
 
-				if (m_tpFlyoutButton != null && !CQuirksMode2.QuirkUseLegacyWindows8UI())
+				if (m_tpFlyoutButton != null && !false)
 				{
 					m_epFlyoutButtonClickHandler.Disposable = null;
 				}
@@ -492,7 +492,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (m_tpFlyoutButton != null)
 				{
-					if (!CQuirksMode2.QuirkUseLegacyWindows8UI())
+					if (!false)
 					{
 						m_tpFlyoutButton.Click += OnFlyoutButtonClick;
 						m_epFlyoutButtonClickHandler.Disposable =
@@ -920,7 +920,7 @@ namespace Windows.UI.Xaml.Controls
 		   Task<DateTimeOffset?> getOperation,
 		   AsyncStatus status)
 		{
-			if (!CQuirksMode2.QuirkUseLegacyWindows8UI())
+			if (!false)
 			{
 				// CheckThread();
 
@@ -1098,7 +1098,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (pDP == DatePicker.DateProperty)
 			{
-				if (m_defaultDate.Value.ToUniversalTime() == NullDateSentinelValue && CQuirksMode2.QuirkDateTimePickerDefaultsToCurrentDateOrTime())
+				if (m_defaultDate.Value.ToUniversalTime() == NullDateSentinelValue && false)
 				{
 					GetTodaysDate(out m_defaultDate);
 				}
@@ -1646,7 +1646,7 @@ namespace Windows.UI.Xaml.Controls
 			// For the Threshold template we set the Day, Month and Year strings on separate TextBlocks:
 			if (m_tpYearTextBlock != null)
 			{
-				if (selectedDate != null || CQuirksMode2.QuirkSuppressDateTimePickerNullVisualizations())
+				if (selectedDate != null || false)
 				{
 					GetYearFormatter(YearFormat, strCalendarIdentifier, out spYearFormatter);
 					strYear = spYearFormatter.Format(date.Value);
@@ -1660,7 +1660,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (m_tpMonthTextBlock != null)
 			{
-				if (selectedDate != null || CQuirksMode2.QuirkSuppressDateTimePickerNullVisualizations())
+				if (selectedDate != null || false)
 				{
 					GetMonthFormatter(MonthFormat, strCalendarIdentifier, out spMonthFormatter);
 					strMonth = spMonthFormatter.Format(date.Value);
@@ -1674,7 +1674,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (m_tpDayTextBlock != null)
 			{
-				if (selectedDate != null || CQuirksMode2.QuirkSuppressDateTimePickerNullVisualizations())
+				if (selectedDate != null || false)
 				{
 					strDayFormat = DayFormat;
 					GetDayFormatter(strDayFormat, strCalendarIdentifier, out spDayFormatter);
