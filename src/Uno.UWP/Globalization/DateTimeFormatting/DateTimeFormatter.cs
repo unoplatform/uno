@@ -280,6 +280,7 @@ namespace Windows.Globalization.DateTimeFormatting
 		private IEnumerable<string> BuildPatterns()
 		{
 			var format = Template;
+			string sanitizedFormat = default;
 
 			for (var i = 0; i < Languages.Count; i++)
 			{
@@ -291,7 +292,10 @@ namespace Windows.Globalization.DateTimeFormatting
 				else
 				{
 					var map = _maps[i];
-					if (map.TryGetValue(format, out var r))
+					sanitizedFormat ??= format
+						.Replace("{", "")
+						.Replace("}", "");
+					if (map.TryGetValue(sanitizedFormat, out var r))
 					{
 						foreach (var p in PatternsReplacements)
 						{
