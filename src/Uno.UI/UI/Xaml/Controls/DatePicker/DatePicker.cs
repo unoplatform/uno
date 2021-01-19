@@ -1251,7 +1251,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// Create and populate the value changed event args
-			DatePickerValueChangedEventArgs valueChangedEventArgs = new DatePickerValueChangedEventArgs(oldValue, newValue);
+			DatePickerValueChangedEventArgs valueChangedEventArgs = new DatePickerValueChangedEventArgs(newValue, oldValue);
 
 			// Raise event
 			DateChanged?.Invoke(this, valueChangedEventArgs);
