@@ -466,5 +466,16 @@ namespace Windows.Globalization
 
 		public string TimeZoneAsString(int idealLength)
 			=> _time.ToString("zz", _resolvedCulture);
+
+		public static implicit operator DateTimeOffset(Calendar c)
+		{
+			return c.GetDateTime();
+		}
+		public static implicit operator Calendar(DateTimeOffset dto)
+		{
+			var calendar = new Calendar();
+			calendar.SetDateTime(dto);
+			return calendar;
+		}
 	}
 }
