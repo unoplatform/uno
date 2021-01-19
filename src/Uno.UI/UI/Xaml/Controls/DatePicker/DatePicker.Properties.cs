@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 //#endif
 
 			OnDateChangedPartial();
-			DateChanged?.Invoke(this, new DatePickerValueChangedEventArgs(newValue, oldValue));
+			//DateChanged?.Invoke(this, new DatePickerValueChangedEventArgs(newValue, oldValue));
 		}
 
 		partial void OnDateChangedPartial();
