@@ -687,6 +687,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(withoutSlash, withSlash);
 		}
+
+		[TestMethod]
+		public void When_SharedHelpers_FindResource()
+		{
+			var rdInner = new ResourceDictionary();
+			rdInner["Grin"] = new SolidColorBrush(Colors.DarkOliveGreen);
+
+			var rd = new ResourceDictionary();
+			rd.MergedDictionaries.Add(rdInner);
+
+			var brush = UI.Helpers.WinUI.SharedHelpers.FindResource("Grin", rd, null);
+
+			Assert.IsNotNull(brush);
+			Assert.AreEqual(Colors.DarkOliveGreen, (brush as SolidColorBrush).Color);
+		}
 #endif
 
 		[TestMethod]

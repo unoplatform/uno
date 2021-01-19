@@ -20,6 +20,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -32,6 +33,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private Style BasicContainerStyle => _testsResources["BasicListViewContainerStyle"] as Style;
 
 		private Style ContainerMarginStyle => _testsResources["ListViewContainerMarginStyle"] as Style;
+
+		private Style NoSpaceContainerStyle => _testsResources["NoExtraSpaceListViewContainerStyle"] as Style;
 
 		private DataTemplate TextBlockItemTemplate => _testsResources["TextBlockItemTemplate"] as DataTemplate;
 
@@ -538,7 +541,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (lvi = page.SubjectListView.ContainerFromItem("One") as ListViewItem) != null);
 		}
 
-		private static ContentControl[] GetPanelChildren(ListViewBase list) {
+		private static ContentControl[] GetPanelChildren(ListViewBase list)
+		{
 #if __ANDROID__ || __IOS__
 			return list.GetItemsPanelChildren().OfType<ContentControl>().ToArray();
 #else
@@ -610,5 +614,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(null, SUT.SelectedItem);
 			Assert.AreEqual(-1, SUT.SelectedIndex);
 		}
+
+		[TestMethod]
+		public async Task When_Scrolled_To_End_And_Last_Item_Removed()
+		{
+			var container = new Grid { Height = 210 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 20));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(list);
+
+			ScrollBy(list, 10000); // Scroll to end
+
+			ListViewItem lastItem = null;
+			await WindowHelper.WaitFor(() => (lastItem = list.ContainerFromItem(19) as ListViewItem) != null);
+			var secondLastItem = list.ContainerFromItem(18) as ListViewItem;
+
+			Assert.AreEqual(181, GetTop(lastItem), delta: 2);
+			Assert.AreEqual(152, GetTop(secondLastItem), delta: 2);
+
+			source.Remove(19);
+
+			await WindowHelper.WaitFor(() => list.Items.Count == 19);
+
+			await WindowHelper.WaitFor(() => ApproxEquals(181, GetTop(secondLastItem)), message: $"Expected 181 but got {GetTop(secondLastItem)}");
+
+			double GetTop(FrameworkElement element)
+			{
+				var transform = element.TransformToVisual(container);
+				return transform.TransformPoint(new Point()).Y;
+			}
+		}
+
+		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 	}
 }

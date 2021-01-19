@@ -960,7 +960,16 @@ namespace Microsoft.UI.Xaml.Controls
 				var addButtonColumn = m_addButtonColumn;
 				if (addButtonColumn != null)
 				{
-					widthTaken += addButtonColumn.ActualWidth;
+					var addButtonColumnWidth = addButtonColumn.ActualWidth;
+					if (addButtonColumn.ActualWidth == 0 && m_addButton?.Visibility == Visibility.Visible && previousAvailableSize.Width > 0)
+					{
+						// Uno workaround: We may arrive here before the AddButton has been measured, and if there are enough tabs to take
+						// all the space, the Grid will not assign any to the button. As a workaround we measure the button directly and use
+						// its desired size.
+						m_addButton.Measure(previousAvailableSize);
+						addButtonColumnWidth = m_addButton.DesiredSize.Width;
+					}
+					widthTaken += addButtonColumnWidth;
 				}
 				var rightContentColumn = m_rightContentColumn;
 				if (rightContentColumn != null)
@@ -1019,7 +1028,8 @@ namespace Microsoft.UI.Xaml.Controls
 								}
 
 								// Use current size to update items to fill the currently occupied space
-								tabWidth = availableTabViewSpace / (double)(TabItems.Count);
+								var tabWidthUnclamped = availableTabViewSpace / (double)(TabItems.Count);
+								tabWidth = MathEx.Clamp(tabWidthUnclamped, minTabWidth, maxTabWidth);
 							}
 
 

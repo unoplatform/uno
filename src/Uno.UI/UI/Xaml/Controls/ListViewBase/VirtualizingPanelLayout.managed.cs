@@ -251,7 +251,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				unappliedDelta -= scrollIncrement;
 				unappliedDelta = Max(0, unappliedDelta);
-				UpdateLayout(extentAdjustment: sign * -unappliedDelta);
+				UpdateLayout(extentAdjustment: sign * -unappliedDelta, isScroll: true);
 			}
 			ArrangeElements(_availableSize, ViewportSize);
 			UpdateCompleted();
@@ -299,7 +299,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateAverageLineHeight(); // Must be called before ScrapLayout(), or there won't be items to measure
 			ScrapLayout();
 			ApplyCollectionChanges();
-			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges);
+			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges, isScroll: false);
 
 			return _lastMeasuredSize = EstimatePanelSize(isMeasure: true);
 		}
@@ -349,7 +349,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Update the item container layout by removing no-longer-visible views and adding visible views.
 		/// </summary>
 		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
-		private void UpdateLayout(double? extentAdjustment)
+		private void UpdateLayout(double? extentAdjustment, bool isScroll)
 		{
 			ResetReorderingIndex();
 			OwnerPanel.ShouldInterceptInvalidate = true;
@@ -362,7 +362,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"Called {GetMethodTag()}, {GetDebugInfo()} extentAdjustment={extentAdjustment}");
 			}
 
-			if (!extentAdjustment.HasValue)
+			if (!isScroll)
 			{
 				UpdateCompleted();
 			}
@@ -511,7 +511,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var itemOffset = updatedValue.Row - dynamicSeedIndex.Row; // TODO: This will need to change when grouping is supported
 					var scrollAdjustment = itemOffset * _averageLineHeight; // TODO: not appropriate for ItemsWrapGrid
-					ApplyScrollAdjustment(scrollAdjustment);
+					ApplyScrollAdjustmentForCollectionChange(scrollAdjustment);
 				}
 				// TODO: handle the case where seed was removed
 			}
@@ -519,7 +519,10 @@ namespace Windows.UI.Xaml.Controls
 			_pendingCollectionChanges.Clear();
 		}
 
-		private void ApplyScrollAdjustment(double scrollAdjustment)
+		/// <summary>
+		/// Update scroll offset for changes in position from collection change operation
+		/// </summary>
+		private void ApplyScrollAdjustmentForCollectionChange(double scrollAdjustment)
 		{
 			if (scrollAdjustment == 0)
 			{
@@ -721,7 +724,7 @@ namespace Windows.UI.Xaml.Controls
 		private void ScrapLayout()
 		{
 			var firstVisibleItem = GetFirstMaterializedIndexPath();
-			if (GetReorderingIndex() is {} reorderIndex && reorderIndex == firstVisibleItem)
+			if (GetReorderingIndex() is { } reorderIndex && reorderIndex == firstVisibleItem)
 			{
 				firstVisibleItem = _materializedLines.SelectMany(line => line.Items).Skip(1).FirstOrDefault().index;
 			}
