@@ -533,22 +533,6 @@ namespace AppKit
 		}
 
 		/// <summary>
-		/// Gets an identifier that can be used for logging
-		/// </summary>
-		public static string GetDebugIdentifier(this _View element)
-		{
-			if (element == null)
-			{
-				return "--NULL--";
-			}
-
-			var name = (element as IFrameworkElement)?.Name;
-			return name.HasValue()
-				? element.GetType().Name + "_" + name + "_" + element.GetHashCode()
-				: element.GetType().Name + "_" + element.GetHashCode();
-		}
-
-		/// <summary>
 		/// Enumerates the children for the specified instance, either using _View.Subviews or using IShadowChildrenProvider.
 		/// </summary>
 		/// <param name="view"></param>

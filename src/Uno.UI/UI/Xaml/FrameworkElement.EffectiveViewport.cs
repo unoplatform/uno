@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno;
@@ -269,11 +270,18 @@ namespace Windows.UI.Xaml
 				: viewport;
 #endif
 
-		private void PropagateEffectiveViewportChange(bool isInitial = false)
+		private void PropagateEffectiveViewportChange(
+			bool isInitial = false
+#if TRACE_EFFECTIVE_VIEWPORT
+			, [CallerMemberName] string caller = null) {
+#else
+			)
 		{
+			const string caller = "--unavailable--";
+#endif
 			if (!IsEffectiveViewportEnabled)
 			{
-				TRACE_EFFECTIVE_VIEWPORT("Effective viewport disabled, stop propagation.");
+				TRACE_EFFECTIVE_VIEWPORT($"Effective viewport disabled, stop propagation (reason:{caller} | isInitial:{isInitial}).");
 				return;
 			}
 
@@ -294,6 +302,7 @@ namespace Windows.UI.Xaml
 #else
 				+ $"| scroll: {(IsScrollPort ? $"{ScrollOffsets.ToDebugString()}" : "--none--")} "
 #endif
+				+ $"| reason: {caller} "
 				+ $"| children: {_childrenInterestedInViewportUpdates}");
 
 			_lastEffectiveViewport = viewport;
@@ -339,7 +348,7 @@ namespace Windows.UI.Xaml
 		private void TRACE_EFFECTIVE_VIEWPORT(string text)
 		{
 #if TRACE_EFFECTIVE_VIEWPORT
-			Debug.Write($"{new string('\t', Math.Max(Depth, 0))} [{this.GetDebugName()}] {text}\r\n");
+			Debug.Write($"{this.GetDebugIdentifier()} {text}\r\n");
 #endif
 		}
 	}
