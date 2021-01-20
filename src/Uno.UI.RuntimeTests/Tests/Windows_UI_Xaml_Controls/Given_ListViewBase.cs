@@ -639,8 +639,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (lastItem = list.ContainerFromItem(19) as ListViewItem) != null);
 			var secondLastItem = list.ContainerFromItem(18) as ListViewItem;
 
-			Assert.AreEqual(181, GetTop(lastItem), delta: 2);
-			Assert.AreEqual(152, GetTop(secondLastItem), delta: 2);
+			await WindowHelper.WaitFor(() => ApproxEquals(181, GetTop(lastItem)), message: $"Expected 181 but got {GetTop(lastItem)}");
+			await WindowHelper.WaitFor(() => ApproxEquals(152, GetTop(secondLastItem)), message: $"Expected 152 but got {GetTop(secondLastItem)}");
 
 			source.Remove(19);
 

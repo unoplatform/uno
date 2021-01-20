@@ -873,9 +873,20 @@ namespace Microsoft.UI.Xaml.Controls
 						tabContentPresenter.ContentTemplate = tvi.ContentTemplate;
 						tabContentPresenter.ContentTemplateSelector = tvi.ContentTemplateSelector;
 
+#if IS_UNO
+						// TODO: Uno specific - issue #4894 - in UWP the ContentPresenter does not become
+						// the parent of the Content. In Uno it does, so we need to make sure
+						// the inherited DataContext will match the TabViewItem.
+						tabContentPresenter.DataContext = tvi.DataContext;
+#endif
+
 						// It is not ideal to call UpdateLayout here, but it is necessary to ensure that the ContentPresenter has expanded its content
 						// into the live visual tree.
-						tabContentPresenter.UpdateLayout();
+#if IS_UNO
+						// TODO: Uno specific - issue #4925 - Calling UpdateLayout here causes another Measure of TabListView, which is already in progress
+						// if this tab was added by data binding. As a result, two copies of each tab would be constructed.
+						//tabContentPresenter.UpdateLayout();
+#endif
 
 						if (shouldMoveFocusToNewTab)
 						{
@@ -1137,20 +1148,24 @@ namespace Microsoft.UI.Xaml.Controls
 			var listView = m_listView;
 			if (listView != null)
 			{
-				var tvi = SelectedItem as TabViewItem;
-				if (tvi == null)
-				{
-					tvi = ContainerFromItem(SelectedItem) as TabViewItem;
-				}
+				listView.SelectedItem = SelectedItem;
 
-				if (tvi != null)
-				{
-					listView.SelectedItem = tvi;
+				// TODO: Uno specific - this is currently commented out,
+				// possibly a WinUI bug - https://github.com/microsoft/microsoft-ui-xaml/issues/3969
+				//var tvi = SelectedItem as TabViewItem;
+				//if (tvi == null)
+				//{
+				//	tvi = ContainerFromItem(SelectedItem) as TabViewItem;
+				//}
 
-					// Setting ListView.SelectedItem will not work here in all cases.
-					// The reason why that doesn't work but this does is unknown.
-					tvi.IsSelected = true;
-				}
+				//if (tvi != null)
+				//{
+				//	listView.SelectedItem = tvi;
+
+				//	// Setting ListView.SelectedItem will not work here in all cases.
+				//	// The reason why that doesn't work but this does is unknown.
+				//	tvi.IsSelected = true;
+				//}
 			}
 		}
 
