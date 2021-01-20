@@ -1,4 +1,3 @@
-#if __IOS__
 #nullable enable
 using System;
 using System.Linq;
@@ -121,4 +120,3 @@ namespace Uno.UI.Controls
 		}
 	}
 }
-#endif
