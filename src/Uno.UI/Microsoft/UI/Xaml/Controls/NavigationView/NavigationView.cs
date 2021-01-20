@@ -1642,8 +1642,13 @@ namespace Microsoft.UI.Xaml.Controls
 								var menuItems = m_leftNavRepeater;
 								if (menuItems != null)
 								{
+#if __IOS__
+									var footersActualHeight = footerItemsRepeater.DesiredSize.Height;
+									var menuItemsActualHeight = menuItems.DesiredSize.Height;
+#else
 									var footersActualHeight = footerItemsRepeater.ActualHeight;
 									var menuItemsActualHeight = menuItems.ActualHeight;
+#endif
 									if (totalAvailableHeight > menuItemsActualHeight + footersActualHeight)
 									{
 										// We have enough space for two so let everyone get as much as they need.
