@@ -10,22 +10,31 @@ namespace Windows.UI.Xaml
 {
 	public sealed partial class TargetPropertyPath
 	{
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 		private ManagedWeakReference? _targetRef;
+#endif
 
 		public object? Target
 		{
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 			get => _targetRef?.Target;
 			set
 			{
 				if (_targetRef != null)
 				{
 					WeakReferencePool.ReturnWeakReference(this, _targetRef);
+					_targetRef = null;
 				}
-				else
+
+				if (!(value is null))
 				{
 					_targetRef = WeakReferencePool.RentWeakReference(this, value);
 				}
 			}
+#else
+			get;
+			set;
+#endif
 		}
 
 		public PropertyPath? Path
