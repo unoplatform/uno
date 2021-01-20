@@ -335,8 +335,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (topLevelControl.Type.Name == "ResourceDictionary")
 			{
-				BuildResourceDictionaryBackingClass(writer, topLevelControl);
+				_isTopLevelDictionary = true;
 
+				BuildResourceDictionaryBackingClass(writer, topLevelControl);
 				BuildTopLevelResourceDictionary(writer, topLevelControl);
 			}
 			else
@@ -912,7 +913,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildTopLevelResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			_isTopLevelDictionary = true;
 
 			using (Scope(Path.GetFileNameWithoutExtension(_fileDefinition.FilePath).Replace(".", "_") + "RD"))
 			{
@@ -2797,9 +2797,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else
 						{
+							var isMemberInsideResourceDictionary = IsMemberInsideResourceDictionary(objectDefinition);
+
 							if (
 								member.Member.Name == "Name"
-								&& !IsMemberInsideResourceDictionary(objectDefinition)
+								&& !isMemberInsideResourceDictionary.isInside
 							)
 							{
 								writer.AppendLineInvariant($@"nameScope.RegisterName(""{member.Value}"", {closureName});");
@@ -2808,7 +2810,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (
 								member.Member.Name == "Name"
 								&& !IsAttachedProperty(member)
-								&& !IsMemberInsideResourceDictionary(objectDefinition)
+								&& !isMemberInsideResourceDictionary.isInside
 							)
 							{
 								nameMember = member;
@@ -2944,9 +2946,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
-					if (!IsMemberInsideResourceDictionary(objectDefinition, maxDepth: null)
+					if (!_isTopLevelDictionary
 						&& (HasXBindMarkupExtension(objectDefinition) || HasMarkupExtensionNeedingComponent(objectDefinition)))
 					{
+						writer.AppendLineInvariant($"/* _isTopLevelDictionary:{_isTopLevelDictionary} */");
 						writer.AppendLineInvariant($"this._component_{CurrentScope.ComponentCount} = {closureName};");
 						CurrentScope.Components.Add(objectDefinition);
 					}
@@ -3715,8 +3718,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Select(n => IsMemberInside(xamlObject, n))
 				.FirstOrDefault(n => n.isInside);
 
-		private bool IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject, int? maxDepth = 1)
-			=> IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: maxDepth).isInside;
+		private (bool isInside, XamlObjectDefinition xamlObject) IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject, int? maxDepth = 1)
+			=> IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: maxDepth);
 
 		private static (bool isInside, XamlObjectDefinition xamlObject) IsMemberInside(XamlObjectDefinition xamlObject, string typeName, int? maxDepth = null)
 		{
@@ -5058,7 +5061,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									BuildComplexPropertyValue(innerWriter, def, closureName + ".", closureName);
 
-									if (!IsMemberInsideResourceDictionary(definition, maxDepth: null)
+									if (!_isTopLevelDictionary
 										&& (HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition)))
 									{
 										var componentName = $"_component_{ CurrentScope.ComponentCount}";

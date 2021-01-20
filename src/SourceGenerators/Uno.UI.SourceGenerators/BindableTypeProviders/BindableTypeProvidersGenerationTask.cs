@@ -59,7 +59,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			try
 			{
-
 				if (PlatformHelper.IsValidPlatform(context)
 					&& !DesignTimeHelper.IsDesignTime(context))
 				{
