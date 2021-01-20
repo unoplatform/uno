@@ -4,6 +4,7 @@ using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Shapes;
+using System;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -68,14 +69,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			border.UpdateLayout();
 
-			Assert.AreEqual(text.ActualWidth, text.ActualSize.X, 0.01);
-			Assert.AreEqual(text.ActualHeight, text.ActualSize.Y, 0.01);
+			await TestServices.WindowHelper.WaitFor(()=>Math.Abs(text.ActualWidth - text.ActualSize.X) < 0.01);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualHeight - text.ActualSize.Y) < 0.01);
 
 			text.Text = "This is a longer text";
 			border.UpdateLayout();
 
-			Assert.AreEqual(text.ActualWidth, text.ActualSize.X, 0.01);
-			Assert.AreEqual(text.ActualHeight, text.ActualSize.Y, 0.01);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualWidth - text.ActualSize.X) < 0.01);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualHeight - text.ActualSize.Y) < 0.01);
 		}
 
 		public async Task When_Rectangle_Set_ActualSize()
@@ -96,15 +97,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			border.UpdateLayout();
 
-			Assert.AreEqual(rectangle.ActualWidth, rectangle.ActualSize.X, 0.01);
-			Assert.AreEqual(rectangle.ActualHeight, rectangle.ActualSize.Y, 0.01);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(rectangle.ActualWidth - rectangle.ActualSize.X) < 0.01);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(rectangle.ActualHeight - rectangle.ActualSize.Y) < 0.01);
 
 			rectangle.Width = 16;
 			rectangle.Height = 32;
 			border.UpdateLayout();
 
-			Assert.AreEqual(rectangle.ActualWidth, rectangle.ActualSize.X, 0.01);
-			Assert.AreEqual(rectangle.ActualHeight, rectangle.ActualSize.Y, 0.01);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(rectangle.ActualWidth - rectangle.ActualSize.X) < 0.01);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(rectangle.ActualHeight - rectangle.ActualSize.Y) < 0.01);
 		}
 #endif
 	}
