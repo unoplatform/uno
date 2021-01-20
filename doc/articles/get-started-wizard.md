@@ -24,7 +24,12 @@ To work around this issue, close all XAML editors, open a C# file and select 'UW
 #### The XAML editor may be empty or "Empty path not legal"
 The XAML editor may be empty when the active editor project is not UWP.
 
-To work around this issue, close all XAML editors, open a C# file and select 'UWP' in the top left drop-down list of the text editor sector. Once selected, re-open the XAML file.
+To work around this issue:
+- Close all XAML editors
+- If you just created the project in the same Visual Studio 2019 instance:
+  - Close the solution and/or restart Visual Studio
+  - Reopen the solution
+- Open a C# file and select 'UWP' in the top left drop-down list of the text editor sector. Once selected, re-open the XAML file.
 
 #### `InitializeComponent` or `x:Name` variable is not available in code-behind
 Visual Studio 16.7 and earlier versions [do not refresh the intellisense cache ](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html)properly, causing variables to be incorrectly defined.
