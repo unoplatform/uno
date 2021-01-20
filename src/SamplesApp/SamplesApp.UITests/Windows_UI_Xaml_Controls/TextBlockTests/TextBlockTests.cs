@@ -8,6 +8,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -275,6 +276,64 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 					ImageAssert.AreEqual(sampleScreenshot, rect2, afterScreenshot, rect2);
 				}
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_MaxLines_Then_AlignmentPositionIsCorrect()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_Two_With_Wrap");
+
+			_app.Marked("fontsize").SetDependencyPropertyValue("Value", "5");
+			_app.Marked("slider").SetDependencyPropertyValue("Value", "375");
+			_app.Marked("sliderV").SetDependencyPropertyValue("Value", "50");
+
+			using var _ = new AssertionScope();
+
+			CheckAlignmentAndWidth("border1", "textwrap");
+			CheckAlignmentAndWidth("border2", "textwrapwords");
+			CheckAlignmentAndWidth("border3", "textwrapellipsis");
+			CheckAlignmentAndWidth("border4", "textwrapwordsellipsis");
+
+			void CheckAlignmentAndWidth(string borderName, string textName)
+			{
+				const float precision = 1.15f;
+
+				// Alignment=STRETCH
+				var (borderRect, textRect) = GetRects(borderName, textName);
+
+				textRect.X.Should().BeApproximately(borderRect.X, precision, "X - stretch");
+				textRect.Width.Should().BeApproximately(borderRect.Width, precision, "Width - stretch");
+
+				// Alignment=CENTER
+				_app.Marked(textName).SetDependencyPropertyValue("HorizontalAlignment", "Center");
+				(borderRect, textRect) = GetRects(borderName, textName);
+				textRect.X.Should()
+					.BeApproximately(
+						borderRect.X + (borderRect.Width - textRect.Width)/2f,
+						precision,
+						"X - center");
+				textRect.Width.Should().BeLessThan(borderRect.Width, "Width - center");
+
+				// Alignment=LEFT
+				_app.Marked(textName).SetDependencyPropertyValue("HorizontalAlignment", "Left");
+				(borderRect, textRect) = GetRects(borderName, textName);
+				textRect.X.Should().BeApproximately(borderRect.X, precision, "X - left");
+				textRect.Width.Should().BeLessThan(borderRect.Width, "Width - left");
+
+				// Alignment=RIGHT
+				_app.Marked(textName).SetDependencyPropertyValue("HorizontalAlignment", "Right");
+				(borderRect, textRect) = GetRects(borderName, textName);
+				textRect.Right.Should().BeApproximately(borderRect.Right, precision, "Right - right");
+				textRect.Width.Should().BeLessThan(borderRect.Width, "Width - right");
+			}
+
+			(IAppRect borderRect, IAppRect textRect) GetRects(string borderName, string textName)
+			{
+				var borderRect = _app.GetLogicalRect(borderName);
+				var textRect = _app.GetLogicalRect(textName);
+				return (borderRect, textRect);
 			}
 		}
 
