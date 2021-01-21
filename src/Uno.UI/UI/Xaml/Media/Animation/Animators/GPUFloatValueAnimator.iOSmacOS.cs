@@ -229,6 +229,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public event EventHandler AnimationCancel;
 
+		public event EventHandler AnimationFailed;
+
 		public void SetDuration(long duration)
 		{
 			_duration = duration;
@@ -420,7 +422,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			switch(completedInfo)
 			{
 				case UnoCoreAnimation.CompletedInfo.Sucesss: AnimationEnd?.Invoke(this, EventArgs.Empty); break;
-				case UnoCoreAnimation.CompletedInfo.Error: AnimationCancel?.Invoke(this, EventArgs.Empty); break;
+				case UnoCoreAnimation.CompletedInfo.Error: AnimationFailed?.Invoke(this, EventArgs.Empty); break;
 				default: throw new NotSupportedException($"{completedInfo} is not supported");
 			};
 

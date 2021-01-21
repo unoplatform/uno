@@ -71,6 +71,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public event EventHandler AnimationCancel;
 
+		public event EventHandler AnimationFailed;
+
 		public event EventHandler Update;
 
 		public long StartDelay { get; set; }
