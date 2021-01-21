@@ -21,6 +21,7 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					c.LineTo(new Point(coords[i].X, coords[i].Y), true, false);
 				}
+				c.LineTo(new Point(coords[0].X, coords[0].Y), true, false);
 			});
 
 			return streamGeometry.ToPath();
