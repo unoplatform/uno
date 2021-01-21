@@ -217,11 +217,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			_app.WaitForElement("NavigateToPage2Button");
 			_app.FastTap("NavigateToPage2Button");
 
-			_app.WaitForElement("Page2CommandBar");
+			_app.WaitForElement("BackButtonTitleButton");
 
-			var backButtonText = _app.Marked("Back").FirstResult();
+			_app.FastTap("BackButtonTitleButton");
 
-			Assert.IsNull(backButtonText);
+			_app.Wait(TimeSpan.FromMilliseconds(800));
+
+			var textblock = _app.Marked("InfoTextBlock");
+
+			Assert.AreEqual("PASSED", textblock.GetDependencyPropertyValue("Text"));
 		}
 	}
 }
