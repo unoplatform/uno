@@ -25,8 +25,10 @@
 			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:xamarin="http://nventive.com/xamarin"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ios="http://nventive.com/ios"
 			 xmlns:toolkit="using:Uno.UI.Toolkit"
+			 mc:Ignorable="ios"
 			 RequestedTheme="Light">
 	<Application.Resources>
 		<ResourceDictionary>
@@ -126,15 +128,14 @@
 			</Style>
 
 			<Style x:Key="DefaultCommandBarStyle"
-					TargetType="CommandBar"
-					xamarin:BasedOn="{StaticResource NativeDefaultCommandBar}">
+					TargetType="CommandBar">
 
-				<!-- Remove the back button title (and only leave the back arrow) -->
+				 <!--Remove the back button title (and only leave the back arrow)--> 
 				<ios:Setter Property="(toolkit:CommandBarExtensions.BackButtonTitle)"
 							Value="" />
 			</Style>
 
-			<!-- Default Style -->
+			 <!--Default Style--> 
 			<Style TargetType="CommandBar"
 					BasedOn="{StaticResource DefaultCommandBarStyle}" />
 

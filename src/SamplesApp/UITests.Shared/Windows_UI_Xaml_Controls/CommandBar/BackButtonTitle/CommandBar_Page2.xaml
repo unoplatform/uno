@@ -15,8 +15,19 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<CommandBar Content="Page 2"
-		            x:Name="Page2CommandBar" />
+	<CommandBar Content="Page 2"
+				x:Name="Page2CommandBar" />
+
+	<StackPanel Grid.Row="1"
+				VerticalAlignment="Center">
+				<Button x:Name="BackButtonTitleButton"
+						Content="Get Back Text"
+						Click="OnButtonClicked"
+						HorizontalAlignment="Center"/>
+
+				<TextBlock x:Name="InfoTextBlock"
+						   HorizontalAlignment="Center"/>
+	</StackPanel>
 
 	</Grid>
 </Page>
