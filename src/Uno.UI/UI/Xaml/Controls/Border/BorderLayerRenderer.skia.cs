@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Shapes
 				shapeVisual.Shapes.Add(borderShape);
 
 				sublayers.Add(shapeVisual);
-				parent.Children.InsertAtBottom(shapeVisual);
+				parent.Children.InsertAtTop(shapeVisual);
 
 				owner.ClippingIsSetByCornerRadius = cornerRadius != CornerRadius.None;
 				if (owner.ClippingIsSetByCornerRadius)

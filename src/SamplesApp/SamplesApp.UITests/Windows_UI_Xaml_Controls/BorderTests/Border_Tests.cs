@@ -108,6 +108,44 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 			}
 		}
 
+		[Test]
+		[AutoRetry]
+		public void Border_CornerRadius_Clipping()
+		{
+			const string red = "#FF0000";
+
+			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.Border_CornerRadius_Clipping");
+
+			_app.WaitForElement("MainBorder");
+
+			var topLeftTarget = _app.GetPhysicalRect("TopLeftTarget");
+			var topRightTarget = _app.GetPhysicalRect("TopRightTarget");
+			var bottomLeftTarget = _app.GetPhysicalRect("BottomLeftTarget");
+			var bottomRightTarget = _app.GetPhysicalRect("BottomRightTarget");
+
+			using var snapshot = TakeScreenshot("Screenshot");
+
+			ImageAssert.HasPixels(
+				snapshot,
+				ExpectedPixels
+					.At($"top-left", topLeftTarget.CenterX, topLeftTarget.CenterY)
+					.WithPixelTolerance(1, 1)
+					.Pixel(red),
+				ExpectedPixels
+					.At($"top-right", topRightTarget.CenterX, topRightTarget.CenterY)
+					.WithPixelTolerance(1, 1)
+					.Pixel(red),
+				ExpectedPixels
+					.At($"bottom-left", bottomLeftTarget.CenterX, bottomLeftTarget.CenterY)
+					.WithPixelTolerance(1, 1)
+					.Pixel(red),
+				ExpectedPixels
+					.At($"bottom-right", bottomRightTarget.CenterX, bottomRightTarget.CenterY)
+					.WithPixelTolerance(1, 1)
+					.Pixel(red)
+			);
+		}
+
 		private void SetBorderProperty(string borderName, string propertyName, string value)
 		{
 			Console.WriteLine($"Setting {borderName}'s {propertyName} to {value}");
