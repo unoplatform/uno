@@ -203,5 +203,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			ImageAssert.AreEqual(initial, final);
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_Navigated_CommandBarShouldHideBackButtonTitle_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonTitle.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateToPage2Button");
+			_app.FastTap("NavigateToPage2Button");
+
+			_app.WaitForElement("Page2CommandBar");
+
+			var backButtonText = _app.Marked("Back").FirstResult();
+
+			Assert.IsNull(backButtonText);
+		}
 	}
 }
