@@ -90,5 +90,49 @@ namespace Windows.UI.Core
 			});
 		}
 
+
+		internal static (IDisposable disposable, Func<object, object> handler) RegisterDelegate(object owner, Delegate handler, Func<Func<object, object>, object> invoke)
+		{
+			var wr = new WeakReference(handler);
+
+			Func<object, object> genericHandler = null;
+
+			// This weak reference ensure that the closure will not link
+			// the caller and the callee, in the same way "newValueActionWeak" 
+			// does not link the callee to the caller.
+			var instanceRef = new WeakReference(owner);
+
+			//Action removeHandler = () =>
+			//{
+			//	var thatList = instanceRef.Target;
+
+			//	if (thatList != null)
+			//	{
+			//		thatList.Remove(genericHandler);
+			//	}
+			//};
+
+			genericHandler = (instance) =>
+			{
+				var weakHandler = wr.Target as Delegate;
+
+				if (weakHandler != null)
+				{
+					return invoke(() => weakHandler);
+				}
+				else
+				{
+					return null;
+				}
+			};
+
+			return (
+				Disposable.Create(() =>
+				{
+					// Force a closure on the callback, to make its lifetime as long 
+					// as the subscription being held by the callee.
+					handler = null;
+				}), genericHandler);
+		}
 	}
 }

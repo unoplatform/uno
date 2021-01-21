@@ -10,7 +10,7 @@
     d:DesignWidth="400">
 
     <Grid>
-		<Border BorderBrush="Red" BorderThickness="1" Width="60" Height="60">
+		<Border x:Name="RedBorder" BorderBrush="Red" BorderThickness="1" Width="60" Height="60">
 			<Border x:Name="LoadBorder" Width="50" Height="50" Background="Green" x:Load="{x:Bind IsLoad, Mode=OneWay}" />
 		</Border>
 	</Grid>

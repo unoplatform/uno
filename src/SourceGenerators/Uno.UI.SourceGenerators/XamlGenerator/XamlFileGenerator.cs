@@ -20,6 +20,7 @@ using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
+using Uno.Disposables;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -2824,20 +2825,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									throw new InvalidOperationException($"Unable to find type {objectDefinition.Type}");
 								}
 
-								var currentResourceOwnerName = CurrentResourceOwner?.Name;
-								if (currentResourceOwnerName == null)
+								using (WithOwnerRef(writer, out var ownerName))
 								{
-									writer.AppendLineInvariant("this.{0} = {1};", value, closureName);
-								}
-								else
-								{
-									using (writer.BlockInvariant($"if ({currentResourceOwnerName} is global::Uno.UI.DataBinding.ManagedWeakReference mwr)"))
-									{
-										using (writer.BlockInvariant($"if (mwr.Target is {CurrentScope.ClassName} owner)"))
-										{
-											writer.AppendLineInvariant($"owner.{value} = {closureName};");
-										}
-									}
+									writer.AppendLineInvariant("{0}.{1} = {2};", ownerName, value, closureName);
+
 								}
 								RegisterBackingField(type, value, FindObjectFieldAccessibility(objectDefinition));
 							}
@@ -2964,7 +2955,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						&& (HasXBindMarkupExtension(objectDefinition) || HasMarkupExtensionNeedingComponent(objectDefinition)))
 					{
 						writer.AppendLineInvariant($"/* _isTopLevelDictionary:{_isTopLevelDictionary} */");
-						writer.AppendLineInvariant($"this._component_{CurrentScope.ComponentCount} = {closureName};");
+						using (WithOwnerRef(writer, out var ownerName))
+						{
+							writer.AppendLineInvariant($"{ownerName}._component_{CurrentScope.ComponentCount} = {closureName};");
+						}
+						
+						
 						CurrentScope.Components.Add(objectDefinition);
 					}
 
@@ -5081,18 +5077,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										&& (HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition)))
 									{
 										var componentName = $"_component_{ CurrentScope.ComponentCount}";
-										writer.AppendLineInvariant($"this.{componentName} = {closureName};");
-
-										using (writer.BlockInvariant($"void {componentName}_update(object sender, RoutedEventArgs e)"))
+										using (WithOwnerRef(writer, out var ownerName))
 										{
-											// Refresh the bindings when the ElementStub is unloaded. This assumes that
-											// ElementStub will be unloaded **after** the stubbed control has been created
-											// in order for the _component_XXX to be filled, and Bindings.Update() to do its work.
-											writer.AppendLineInvariant($"this.Bindings.Update();");
+											writer.AppendLineInvariant($"{ownerName}.{componentName} = {closureName};");
+										
+
+											writer.AppendLineInvariant($"var {componentName}_update_That = ({ownerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
+											using (writer.BlockInvariant($"void {componentName}_update(object sender, RoutedEventArgs e)"))
+											{
+												// Refresh the bindings when the ElementStub is unloaded. This assumes that
+												// ElementStub will be unloaded **after** the stubbed control has been created
+												// in order for the _component_XXX to be filled, and Bindings.Update() to do its work.
+												writer.AppendLineInvariant($"({componentName}_update_That.Target as {_className.className})?.Bindings.Update();");
+											}
+
+											writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_update;");
 										}
-
-										writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_update;");
-
 										var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition);
 										xamlObjectDef.Members.AddRange(members);
 										CurrentScope.Components.Add(xamlObjectDef);
@@ -5352,6 +5352,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					?.BaseType
 					?.ToDisplayString(),
 				XamlConstants.Types.UserControl);
+		}
+
+		private IDisposable WithOwnerRef(IIndentedStringBuilder writer, out string ownerRefName)
+		{
+			var currentResourceOwnerName = CurrentResourceOwner?.Name;
+			ownerRefName = $"ownerRef_{Guid.NewGuid().ToString().Replace("-", "")}";
+
+			if (string.IsNullOrWhiteSpace(currentResourceOwnerName))
+			{
+				writer.AppendLineInvariant($"var {ownerRefName} = this;");
+				return Disposable.Empty;
+			}
+			return writer.BlockInvariant($"if (({currentResourceOwnerName} as global::Uno.UI.DataBinding.ManagedWeakReference)?.Target is {CurrentScope.ClassName} {ownerRefName})");
 		}
 
 		private NameScope CurrentScope

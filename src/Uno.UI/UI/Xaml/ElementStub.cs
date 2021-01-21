@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Text;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Windows.UI.Core;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -27,7 +28,17 @@ namespace Windows.UI.Xaml
 	/// <remarks>This control is added in the visual tree, in place of the original content.</remarks>
 	public partial class ElementStub : FrameworkElement
     {
-		private View _content;
+		private ManagedWeakReference _contentRef;
+		private ManagedWeakReference _contentBuilderRef;
+
+		private View Content
+		{
+			get => _contentRef.Target as View;
+			set => _contentRef = WeakReferencePool.RentWeakReference(this, value);
+		}
+
+		private Func<View> ContentBuilder { get; set; }
+
 
 		public bool Load
 		{
@@ -40,16 +51,16 @@ namespace Windows.UI.Xaml
 			DependencyProperty.Register("Load", typeof(bool), typeof(ElementStub), new PropertyMetadata(
 				false, OnLoadChanged));
 
-		public ElementStub(object owner, Func<object, View> contentProviderWithOwner)
-		{
-			var ownerRef = WeakReferencePool.RentWeakReference(this, owner);
-			ContentBuilder = () => contentProviderWithOwner(ownerRef);
-		}
-
 
 		public ElementStub()
 		{
 			Visibility = Visibility.Collapsed;
+		}
+
+		public IDisposable SetContentProviderWithOwner(object owner, Func<object, View> contentProviderWithOwner)
+		{
+			var ownerRef = WeakReferencePool.RentWeakReference(this, owner);
+			(disposable, ContentBuilder) = WeakEventHelper.RegisterDelegate(this, contentProviderWithOwner(ownerRef.Target), );
 		}
 
 		private static void OnLoadChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -68,7 +79,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// A function that will create the actual view.
 		/// </summary>
-		public Func<View> ContentBuilder { get; set; }
+		//public Func<View> ContentBuilder { get; set; }
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
@@ -100,12 +111,13 @@ namespace Windows.UI.Xaml
 
 		private void Materialize(bool isVisibilityChanged)
 		{
-			_content = SwapViews(oldView: this as View, newViewProvider: ContentBuilder);
-			var targetDependencyObject = _content as DependencyObject;
+			Content = SwapViews(oldView: this as View, newViewProvider: ContentBuilder);
+
+			var targetDependencyObject = Content as DependencyObject;
 
 			if (isVisibilityChanged && targetDependencyObject != null)
 			{
-				var visibilityProperty = GetVisibilityProperty(_content);
+				var visibilityProperty = GetVisibilityProperty(Content);
 
 				// Set the visibility at the same precedence it was currently set with on the stub.
 				var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
@@ -116,10 +128,10 @@ namespace Windows.UI.Xaml
 
 		private void Dematerialize()
 		{
-			var newView = SwapViews(oldView: _content, newViewProvider: () => this as View);
+			var newView = SwapViews(oldView: Content, newViewProvider: () => this as View);
 			if (newView != null)
 			{
-				_content = null;
+				Content = null;
 			}
 		}
 
