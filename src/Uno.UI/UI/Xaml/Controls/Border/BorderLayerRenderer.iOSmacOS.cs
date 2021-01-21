@@ -184,7 +184,7 @@ namespace Windows.UI.Xaml.Shapes
 
 				sublayers.Add(outerLayer);
 				sublayers.Add(innerLayer);
-				parent.InsertSublayer(outerLayer, insertionIndex++);
+				parent.AddSublayer(outerLayer);
 				parent.InsertSublayer(innerLayer, insertionIndex);
 
 				parent.Mask = new CAShapeLayer()
