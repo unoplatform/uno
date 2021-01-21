@@ -21,7 +21,6 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
 
-
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlFileGenerator
@@ -2412,7 +2411,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private IDisposable BuildLazyResourceInitializer(IIndentedStringBuilder writer)
 		{
-			var currentScope = CurrentResourceOwner?.Name ?? "this";
+			var currentScope = CurrentResourceOwnerName;
 			var resourceOwnerScope = ResourceOwnerScope();
 			
 			writer.AppendLineInvariant($"new global::Uno.UI.Xaml.WeakResourceInitializer({currentScope}, {CurrentResourceOwner?.Name} => ");
@@ -2824,7 +2823,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									throw new InvalidOperationException($"Unable to find type {objectDefinition.Type}");
 								}
 
-								writer.AppendLineInvariant("this.{0} = {1};", value, closureName);
+								writer.AppendLineInvariant("(({0}){1}).{2} = {3};", _className.className, CurrentResourceOwnerName, value, closureName);
 								RegisterBackingField(type, value, FindObjectFieldAccessibility(objectDefinition));
 							}
 							else if (member.Member.Name == "Name"
@@ -4663,7 +4662,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (contentOwner != null)
 					{
-						var resourceOwner = CurrentResourceOwner?.Name ?? "this";
+						var resourceOwner = CurrentResourceOwnerName;
 
 						writer.Append($"{resourceOwner} , __owner => ");
 						// This case is to support the layout switching for the ListViewBaseLayout, which is not
@@ -5007,13 +5006,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var hasDataContextMarkup = dataContextMember != null && HasMarkupExtension(dataContextMember);
 
-					var disposable = writer.BlockInvariant($"new {XamlConstants.Types.ElementStub}()");
+					var currentOwnerName = CurrentResourceOwnerName;
 
-					writer.Append("ContentBuilder = () => ");
+					var currentResourceOwner = ResourceOwnerScope();
 
+					writer.AppendLineInvariant($"new {XamlConstants.Types.ElementStub}({currentOwnerName}, {CurrentResourceOwner.Name} => ");
+
+					var disposable = new DisposableAction(() =>
+					{
+						writer.AppendLine(")");
+						currentResourceOwner?.Dispose();
+					});
+					
 					return new DisposableAction(() =>
 						{
-							disposable.Dispose();
+							disposable?.Dispose();
 
 							string closureName;
 							using (var innerWriter = CreateApplyBlock(writer, GetType(XamlConstants.Types.ElementStub), out closureName))
@@ -5349,6 +5356,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private ResourceOwner CurrentResourceOwner
 			=> _resourceOwnerStack.Count != 0 ? _resourceOwnerStack.Peek() : null;
+
+		private string CurrentResourceOwnerName
+			=> CurrentResourceOwner?.Name ?? "this";
 
 		/// <summary>
 		/// Pushes a ResourceOwner variable name onto the stack

@@ -1,8 +1,10 @@
 ﻿#if IS_UNO
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using Uno.UI;
+using Uno.UI.DataBinding;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -18,6 +20,7 @@ using View = System.Object;
 
 namespace Windows.UI.Xaml
 {
+
 	/// <summary>
 	/// A support element for the DeferLoadStrategy Lazy Xaml directive.
 	/// </summary>
@@ -36,6 +39,18 @@ namespace Windows.UI.Xaml
 		public static readonly DependencyProperty LoadProperty =
 			DependencyProperty.Register("Load", typeof(bool), typeof(ElementStub), new PropertyMetadata(
 				false, OnLoadChanged));
+
+		public ElementStub(object owner, Func<object, View> contentProviderWithOwner)
+		{
+			var ownerRef = WeakReferencePool.RentWeakReference(this, owner);
+			ContentBuilder = () => contentProviderWithOwner(ownerRef);
+		}
+
+
+		public ElementStub()
+		{
+			Visibility = Visibility.Collapsed;
+		}
 
 		private static void OnLoadChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

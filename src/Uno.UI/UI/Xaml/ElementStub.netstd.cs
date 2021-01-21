@@ -9,11 +9,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class ElementStub
 	{
-        public ElementStub()
-        {
-            Visibility = Visibility.Collapsed;
-        }
-
 		private FrameworkElement SwapViews(FrameworkElement oldView, Func<FrameworkElement> newViewProvider)
 		{
 			if (oldView?.Parent is FrameworkElement parentElement)

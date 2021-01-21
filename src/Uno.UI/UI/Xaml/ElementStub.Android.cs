@@ -10,11 +10,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class ElementStub : FrameworkElement
 	{
-		public ElementStub()
-		{
-			Visibility = Visibility.Collapsed;
-		}
-
 		private View SwapViews(View oldView, Func<View> newViewProvider)
 		{
 			var parentViewGroup = oldView?.Parent as ViewGroup;

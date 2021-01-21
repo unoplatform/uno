@@ -14,11 +14,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class ElementStub : FrameworkElement
 	{
-		public ElementStub()
-		{
-			Visibility = Visibility.Collapsed;
-		}
-
 		private UIView SwapViews(UIView oldView, Func<UIView> newViewProvider)
 		{
 			var currentPosition = oldView?.Superview?.Subviews.IndexOf(oldView) ?? -1;
