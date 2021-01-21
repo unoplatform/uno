@@ -212,6 +212,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						link = fullPath.Substring(definingProjectDirectory.Length);
 					}
+					else
+					{
+						link = projectItemInstance.GetMetadataValue("Identity");
+					}
 				}
 			}
 
