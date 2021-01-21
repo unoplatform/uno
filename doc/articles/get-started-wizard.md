@@ -13,29 +13,52 @@ Congratulations, you've just created a new project using the [Uno Platform](http
 ## Common Issues
 The Uno Platform features and support is constantly evolving, but you may encounter some of the  issues below while building your application.
 
-#### XAML Hot Reload for the UWP head may not work properly in Visual Studio 2019 16.7 and earlier
-The [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) feature [does not work in Visual Studio 2019 16.7](https://developercommunity.visualstudio.com/content/problem/996417/xaml-hot-reload-hot-reload-is-not-working-in-share.html) and earlier for Uno projects. This will be fixed in 16.8 and later.
-
 #### The XAML editor shows `The type 'page' does not support direct content` message
 XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active project is not the UWP one. 
 
 To work around this issue, close all XAML editors, open a C# file and select 'UWP' in the top left drop-down list of the text editor sector. Once selected, re-open the XAML file.
 
-#### The XAML editor may be empty or "Empty path not legal"
+#### The XAML editor may be empty or "Empty path not legal" in Visual Studio 16.8 or earlier
+
 The XAML editor may be empty when the active editor project is not UWP.
 
-To work around this issue, close all XAML editors, open a C# file and select 'UWP' in the top left drop-down list of the text editor sector. Once selected, re-open the XAML file.
+To work around this issue:
+- Close all XAML editors
+- If you just created the project in the same Visual Studio 2019 instance:
+  - Close the solution and/or restart Visual Studio
+  - Reopen the solution
+- Open a C# file and select 'UWP' in the top left drop-down list of the text editor sector. Once selected, re-open the XAML file.
+
+> This issue has been fixed by Microsoft in VS 16.9 Preview 3.
 
 #### `InitializeComponent` or `x:Name` variable is not available in code-behind
-Visual Studio 16.7 and earlier versions [do not refresh the intellisense cache ](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html)properly, causing variables to be incorrectly defined.
+Visual Studio [does not refresh the intellisense cache](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html) properly, causing variables to be incorrectly defined.
 
 To fix this issue, build your project once, close the solution and reopen it.
+
+It is also important to note that Uno uses a multi-project structure, for which each project has to be build individually for errors to disapear from the **Error List** window (notice the **Project** column values).
+
+In order to clear the **Error List** window, build the whole solution completely once. Thereafter, build a specific project and prefer the use of the **Output** tool window (in the menu **View** -> **Output**), taking build messages by order of appearance.
 
 #### Event handler cannot be added automatically
 
 Event handlers [cannot be automatically](https://github.com/unoplatform/uno/issues/1348#issuecomment-520300471) added using the XAML editor. 
 
 A workaround is to use the [`x:Bind` to events feature](features/windows-ui-xaml-xbind.md#examples). This feature allows to use a simpler syntax like `<Button Click="{x:Bind MyClick}" />` and declare a simple method `private void MyClick() { }` in the code-behind.
+
+#### Build error `Failed to generate AOT layout`
+
+When building for WebAssembly with AOT mode enabled, the following error may appear:
+```
+Failed to generate AOT layout (More details are available in diagnostics mode or using the MSBuild /bl switch)
+```
+
+To troubleshoot this error, you can change the text output log level:
+  - Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
+  - Set **MSBuild project build output verbosity** to **Normal** or **Detailed**
+  - Build your project again and take a look at the additional output next to the `Failed to generate AOT layout` error
+
+You can get additional build [troubleshooting information here](uno-builds-troubleshooting.md).
 
 #### Runtime error `No parameterless constructor defined for XXXX`
 This error is generally caused by some missing [IL Linker](https://github.com/mono/linker/tree/master/docs) configuration on WebAssembly. You may need to add some of your application assemblies in the LinkerConfig.xml file of your project. You can find [additional information in the documentation](features/using-il-linker-webassembly.md).
@@ -72,3 +95,6 @@ Unhandled exception. System.TypeInitializationException: The type initializer fo
 On Windows, you will need to install the [GTK+3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases). **Make sure to restart Visual Studio** for the changes to be used by Visual Studio.
 On Linux, you'll need to follow the [Uno Platform](get-started-with-linux.md#setting-up-for-linux) setup instructions.
 On macOS, you'll need to follow the [Uno Platform](get-started-vsmac.md) setup instructions.
+
+#### XAML Hot Reload for the UWP head may not work properly in Visual Studio 2019 16.7 and earlier
+The [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) feature [does not work in Visual Studio 2019 16.7](https://developercommunity.visualstudio.com/content/problem/996417/xaml-hot-reload-hot-reload-is-not-working-in-share.html) and earlier for Uno projects. This will be fixed in 16.8 and later.
