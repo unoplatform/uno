@@ -8,12 +8,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class NameScope
 	{
-		public NameScope(string name)
+		public NameScope(string @namespace, string className)
 		{
-			this.Name = name;
+			Namespace = @namespace ?? string.Empty;
+			ClassName = className;
 		}
 
-		public string Name { get; private set; }
+		public string Name => $"{Namespace.Replace(".", "")}{ClassName}";
+		public string Namespace { get; private set; }
+		public string ClassName { get; private set; }
 
 		public List<BackingFieldDefinition> BackingFields { get; } = new List<BackingFieldDefinition>();
 

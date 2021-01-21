@@ -353,7 +353,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var isDirectUserControlChild = _skipUserControlsInVisualTree && IsUserControl(topLevelControl.Type, checkInheritance: false);
 
-						using (Scope("{0}{1}".InvariantCultureFormat(_className.ns.Replace(".", ""), _className.className)))
+						using (Scope(_className.ns, _className.className))
 						{
 							using (writer.BlockInvariant(BuildControlInitializerDeclaration(_className.className, topLevelControl)))
 							{
@@ -690,7 +690,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			_isInChildSubclass = true;
 			TryAnnotateWithGeneratorSource(writer);
-			var disposable = isTopLevel ? writer.BlockInvariant("namespace {0}.__Resources", _defaultNamespace) : null;
+			var ns = $"{_defaultNamespace}.__Resources";
+			var disposable = isTopLevel ? writer.BlockInvariant($"namespace {ns}") : null;
 
 			using (disposable)
 			{
@@ -699,7 +700,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var className = kvp.Key;
 					var contentOwner = kvp.Value.ContentOwner;
 
-					using (Scope(className))
+					using (Scope(ns, className))
 					{
 						var classAccessibility = isTopLevel ? "" : "private";
 
@@ -913,7 +914,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			TryAnnotateWithGeneratorSource(writer);
 
-			using (Scope(Path.GetFileNameWithoutExtension(_fileDefinition.FilePath).Replace(".", "_") + "RD"))
+			using (Scope(null, Path.GetFileNameWithoutExtension(_fileDefinition.FilePath).Replace(".", "_") + "RD"))
 			{
 				using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 				{
@@ -1247,7 +1248,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.className, GetGlobalizedTypeName(controlBaseType.ToDisplayString())))
 					{
-						using (Scope("{0}{1}".InvariantCultureFormat(className.ns.Replace(".", ""), className.className)))
+						using (Scope(className.ns, className.className))
 						{
 							using (writer.BlockInvariant("public void InitializeComponent()"))
 							{
@@ -2823,7 +2824,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									throw new InvalidOperationException($"Unable to find type {objectDefinition.Type}");
 								}
 
-								writer.AppendLineInvariant("(({0}){1}).{2} = {3};", _className.className, CurrentResourceOwnerName, value, closureName);
+								var currentResourceOwnerName = CurrentResourceOwner?.Name;
+								if (currentResourceOwnerName == null)
+								{
+									writer.AppendLineInvariant("this.{0} = {1};", value, closureName);
+								}
+								else
+								{
+									using (writer.BlockInvariant($"if ({currentResourceOwnerName} is global::Uno.UI.DataBinding.ManagedWeakReference mwr)"))
+									{
+										using (writer.BlockInvariant($"if (mwr.Target is {CurrentScope.ClassName} owner)"))
+										{
+											writer.AppendLineInvariant($"owner.{value} = {closureName};");
+										}
+									}
+								}
 								RegisterBackingField(type, value, FindObjectFieldAccessibility(objectDefinition));
 							}
 							else if (member.Member.Name == "Name"
@@ -5347,9 +5362,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private IDisposable Scope(string name)
+		private IDisposable Scope(string @namespace, string className)
 		{
-			_scopeStack.Push(new NameScope(name));
+			_scopeStack.Push(new NameScope(@namespace, className));
 
 			return new DisposableAction(() => _scopeStack.Pop());
 		}
