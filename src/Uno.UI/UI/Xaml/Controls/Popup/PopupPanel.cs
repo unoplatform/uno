@@ -9,6 +9,8 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+using Uno.UI.DataBinding;
+
 #if XAMARIN_IOS
 using UIKit;
 #elif __MACOS__
@@ -19,7 +21,17 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal partial class PopupPanel : Panel
 	{
-		public Popup Popup { get; }
+		private ManagedWeakReference _popup;
+
+		public Popup Popup
+		{
+			get => _popup?.Target as Popup;
+			set
+			{
+				WeakReferencePool.ReturnWeakReference(this, _popup);
+				_popup = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
 
 		public PopupPanel(Popup popup)
 		{
