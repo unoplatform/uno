@@ -735,5 +735,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var tb = page.ThemeDictionaryOnlyTextBlock;
 			Assert.AreEqual(Colors.MediumPurple, (tb.Foreground as SolidColorBrush).Color);
 		}
+
+		[TestMethod]
+		public void When_Source_And_Globbing_From_Included_File()
+		{
+			var ctrl = new When_Source_And_Globbing_From_Included_File();
+			var resources = ctrl.Resources;
+			Assert.IsTrue(resources.ContainsKey("GlobPropsMarginButtonStyle"));
+
+			var style = resources["GlobPropsMarginButtonStyle"] as Style;
+			var button = new Button();
+			button.Style = style;
+			Assert.AreEqual(new Thickness(99, 33, 7, 7), button.Margin);
+		}
 	}
 }
