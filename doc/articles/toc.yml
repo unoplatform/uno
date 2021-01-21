@@ -34,10 +34,14 @@
           href: getting-started-tutorial-2.md
     - name: Next steps
       href: get-started-next-steps.md
+    - name: Common issues
+      href: get-started-wizard.md
 - name: Using Uno
   items:
     - name: Developing with Uno.UI
       href: using-uno-ui.md
+    - name: Troubleshooting build errors
+      href: uno-builds-troubleshooting.md
     - name: Platform-specific C# code
       href: platform-specific-csharp.md
     - name: Platform-specific XAML markup
