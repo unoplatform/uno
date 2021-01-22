@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿// MUX reference PagerControlTemplateSettings.properties.cpp, commit a08f765
+
+using System.Collections.Generic;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class PagerControlTemplateSettings : DependencyObject
+	public partial class PagerControlTemplateSettings : DependencyObject
 	{
 		public PagerControlTemplateSettings()
 		{
