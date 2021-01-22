@@ -119,6 +119,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+			UpdateHeaderPresenterState();
+
 			if (GetTemplateChild(c_numberBoxTextBoxName) is TextBox textBox)
 			{
 				textBox.KeyDown += OnNumberBoxKeyDown;
