@@ -107,8 +107,14 @@ namespace Windows.Foundation
 			}
 
 			var parts = text
-				.Split(new[] { ',' })
+				.Split(new[] { ',', ' ' })
 				.SelectToArray(s => double.Parse(s, NumberFormatInfo.InvariantInfo));
+
+			if(parts.Length != 4)
+			{
+				throw new ArgumentException(
+					"Cannot create a Rect from " + text + ": needs 4 parts separated by a comma or a space.");
+			}
 
 			return new Rect
 			(
