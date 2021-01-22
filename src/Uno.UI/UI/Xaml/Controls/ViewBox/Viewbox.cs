@@ -18,6 +18,8 @@ namespace Windows.UI.Xaml.Controls
 	public partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement
 	{
 		private readonly Border _container;
+		internal double scaleX { get; private set; }
+		internal double scaleY { get; private set; }
 
 		public Viewbox()
 		{
@@ -45,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-			var (scaleX, scaleY) = GetScale(availableSize, measuredSize);
+			(scaleX, scaleY) = GetScale(availableSize, measuredSize);
 
 			return new Size(
 				Math.Min(availableSize.Width, measuredSize.Width * scaleX),
@@ -55,13 +57,26 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			if(finalSize.Width == 0 || finalSize.Height == 0)
+			{
+				return default;
+			}
+
 			var (scaleX, scaleY) = GetScale(finalSize, _container.DesiredSize);
 
-			_container.RenderTransform = new ScaleTransform()
+			if (Math.Abs(scaleX - 1d) < 0.001d && Math.Abs(scaleY - 1d) < 0.001d)
 			{
-				ScaleX = scaleX,
-				ScaleY = scaleY
-			};
+				_container.RenderTransform = null;
+			}
+			else
+			{
+				var transform = _container.RenderTransform as ScaleTransform ?? new ScaleTransform();
+				transform.ScaleX = scaleX;
+				transform.ScaleY = scaleY;
+				transform.CenterX = finalSize.Width / 2d;
+				transform.CenterY = finalSize.Height / 2d;
+				_container.RenderTransform = transform;
+			}
 
 			base.ArrangeElement(_container, new Rect(new Point(), _container.DesiredSize));
 
