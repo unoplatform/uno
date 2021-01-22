@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
