@@ -11,7 +11,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void NumberBox_Header()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.DatePicker.NumberBox_Header", skipInitialScreenshot: true);
+			Run("UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBox_Header", skipInitialScreenshot: true);
 
 			var headerContentTextBlock = _app.Marked("NumberBoxHeaderContent");
 			_app.WaitForElement(headerContentTextBlock);
