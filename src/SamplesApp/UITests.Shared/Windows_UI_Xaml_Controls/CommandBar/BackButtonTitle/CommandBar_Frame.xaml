@@ -18,9 +18,23 @@
 		<Frame x:Name="HostFrame"
 			   xamarin:Style="{StaticResource NativeDefaultFrame}" />
 
-		<Button x:Name="NavigateInitialButton"
-				Grid.Row="1"
-				Content="Navigate to first page"
-				Click="Navigate_Initial" />
+		<Grid Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Button x:Name="NavigateInitialButton"					
+					Content="Navigate to first page"
+					Click="Navigate_Initial" />
+			<Button x:Name="SetGlobalStyleButton"
+					Content="Set Global Style"
+					Grid.Column="1"
+					Click="AddGlobalStyle" />
+			<Button x:Name="UnsetGlobalStyleButton"					
+					Content="Remove Global Style"
+					Grid.Column="2"
+					Click="RemoveGlobalStyle" />
+		</Grid>
 	</Grid>
 </UserControl>
