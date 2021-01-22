@@ -40,6 +40,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdatePickerStyle();
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
+			SetPickerClockIdentifier(ClockIdentifier);
 			SaveInitialTime();
 			_picker.ValueChanged += OnValueChanged;
 			_picker.EditingDidBegin += OnEditingDidBegin;
