@@ -49,7 +49,8 @@ namespace Windows.UI.Xaml
 
 					OnBeforeArrange();
 
-					var finalRect = RectFromUIRect(Frame);
+					var finalRect = RectFromUIRect(Bounds);
+
 					_layouter.Arrange(finalRect);
 
 					OnAfterArrange();
