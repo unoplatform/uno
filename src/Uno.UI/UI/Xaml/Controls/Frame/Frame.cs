@@ -41,6 +41,17 @@ namespace Windows.UI.Xaml.Controls
 
 		internal PageStackEntry CurrentEntry { get; set; }
 
+		protected override void OnContentChanged(object oldValue, object newValue)
+		{
+			base.OnContentChanged(oldValue, newValue);
+
+			// Make sure we void CurrentEntry when someone sets Frame.Content = null;
+			if (newValue == null)
+			{
+				CurrentEntry = null;
+			}
+		}
+
 		#region BackStackDepth DependencyProperty
 
 		public int BackStackDepth
