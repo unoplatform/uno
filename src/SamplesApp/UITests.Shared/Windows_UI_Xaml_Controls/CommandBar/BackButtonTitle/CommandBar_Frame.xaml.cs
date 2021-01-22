@@ -27,6 +27,16 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonTitle
 			this.InitializeComponent();
 		}
 
+		private void AddGlobalStyle (object sender, RoutedEventArgs args)
+		{
+			Application.Current.Resources.Add(typeof(Windows.UI.Xaml.Controls.CommandBar), Application.Current.Resources["DefaultCommandBarStyle"]);
+		}
+
+		private void RemoveGlobalStyle(object sender, RoutedEventArgs args)
+		{
+			Application.Current.Resources.Remove(typeof(Windows.UI.Xaml.Controls.CommandBar));
+		}
+
 		private void Navigate_Initial(object sender, RoutedEventArgs args)
 		{
 			HostFrame.Navigate(typeof(CommandBar_Page1));

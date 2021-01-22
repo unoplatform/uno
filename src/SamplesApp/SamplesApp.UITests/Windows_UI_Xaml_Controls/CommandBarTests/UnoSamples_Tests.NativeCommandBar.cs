@@ -212,6 +212,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonTitle.CommandBar_Frame");
 
 			_app.WaitForElement("NavigateInitialButton");
+
+			// Will set the global style for the CommandBar to remove the Back Button Title
+			_app.FastTap("SetGlobalStyleButton");
+
 			_app.FastTap("NavigateInitialButton");
 
 			_app.WaitForElement("NavigateToPage2Button");
@@ -221,11 +225,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			_app.FastTap("BackButtonTitleButton");
 
-			_app.Wait(TimeSpan.FromMilliseconds(800));
-
 			var textblock = _app.Marked("InfoTextBlock");
 
-			Assert.AreEqual("PASSED", textblock.GetDependencyPropertyValue("Text"));
+			_app.WaitForDependencyPropertyValue(textblock, "Text", "PASSED");
+
+			// Removing the global style we added for the CommandBar preventing other UITest to fail
+			_app.FastTap("UnsetGlobalStyleButton");
 		}
 	}
 }

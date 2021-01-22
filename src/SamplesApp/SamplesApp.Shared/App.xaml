@@ -121,11 +121,6 @@
 				<ios:Setter Property="(toolkit:CommandBarExtensions.BackButtonTitle)"
 							Value="" />
 			</Style>
-
-			 <!--Default Style--> 
-			<Style TargetType="CommandBar"
-					BasedOn="{StaticResource DefaultCommandBarStyle}" />
-
 		</ResourceDictionary>
 
 	</Application.Resources>
