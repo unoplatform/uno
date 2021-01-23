@@ -1190,26 +1190,52 @@ namespace Windows.UI.Xaml.Controls
 		public object ItemFromContainer(DependencyObject container)
 		{
 			var index = IndexFromContainer(container);
-			var item = ItemFromIndex(index);
 
-			return item;
+			if (index > -1)
+			{
+				var item = ItemFromIndex(index);
+				return item;
+			}
+			else
+			{
+				// If the container is actually an item, we can return itself
+				if (Items.Contains(container))
+				{
+					return container;
+				}
+			}
+
+			return null;
 		}
 
 		public DependencyObject ContainerFromItem(object item)
 		{
 			if (IsItemItsOwnContainer(item))
 			{
+				// Verify whether the item is actually present.
+				var itemIndex = Items.IndexOf(item);
+				if (itemIndex < 0)
+				{
+					return null;
+				}
+
 				return item as DependencyObject;
 			}
 
 			var index = IndexFromItem(item);
-			var container = index == -1 ? null : MaterializedContainers.FirstOrDefault(container => Equals(IndexFromContainer(container), index));			
+			var container = index == -1 ? null : MaterializedContainers.FirstOrDefault(container => Equals(IndexFromContainer(container), index));
 			return container;
 		}
 
 		public int IndexFromContainer(DependencyObject container)
 		{
 			var index = IndexFromContainerInner(container);
+			if (index < 0)
+			{
+				// If the container is actually an item, we can return its index
+				return Items.IndexOf(container);
+			}
+
 			if (_inProgressVectorChange != null)
 			{
 				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
@@ -1231,6 +1257,20 @@ namespace Windows.UI.Xaml.Controls
 					{
 						// All items after the added item have a higher new index.
 						return index + 1;
+					}
+				}
+				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged)
+				{
+					// This is a tricky case, when we need to ensure that for the "old" container we
+					// return -1 but we return the correct index for the "new" container
+					var actualContainer = ContainerFromIndex(index);
+					if (Equals(actualContainer, container))
+					{
+						return index;
+					}
+					else
+					{
+						return -1;
 					}
 				}
 			}
