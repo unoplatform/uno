@@ -57,6 +57,14 @@ namespace Windows.UI.Xaml
 			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(0), DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
+		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());
+
+		internal Size AssignedActualSize { get; set; }
+
+		private protected virtual double GetActualWidth() => AssignedActualSize.Width;
+
+		private protected virtual double GetActualHeight() => AssignedActualSize.Height;
+
 		string IXUidProvider.Uid
 		{
 			get => _uid;

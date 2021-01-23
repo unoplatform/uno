@@ -93,8 +93,7 @@ namespace Windows.UI.Xaml
 		{
 			return Parent != null;
 		}
-
-		private Size _actualSize;
+		
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 
@@ -106,10 +105,7 @@ namespace Windows.UI.Xaml
 			_renderTransform?.UpdateSize(args.NewSize);
 		}
 
-		internal void SetActualSize(Size size) => _actualSize = size;
-
-		private protected virtual double GetActualWidth() => _actualSize.Width;
-		private protected virtual double GetActualHeight() => _actualSize.Height;
+		internal void SetActualSize(Size size) => AssignedActualSize = size;
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
