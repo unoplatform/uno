@@ -9,7 +9,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.PagerControlTests
 {
 	[Sample("PagerControl", "WinUI")]
 	public sealed partial class PagerControlPage : Page
-	{		
+	{
 		ComboBox pagerComboBox;
 		NumberBox pagerNumberBox;
 		ItemsRepeater pagerItemsRepeater;
@@ -22,9 +22,13 @@ namespace UITests.Microsoft_UI_Xaml_Controls.PagerControlTests
 		public PagerControlPage()
 		{
 			this.InitializeComponent();
+#if HAS_UNO
 			this.Loaded += OnLoad;
+#endif
+
 		}
 
+#if HAS_UNO
 		private void OnLoad(object sender, RoutedEventArgs args)
 		{
 			PagerDisplayModeComboBox.SelectionChanged += OnDisplayModeChanged;
@@ -250,5 +254,6 @@ namespace UITests.Microsoft_UI_Xaml_Controls.PagerControlTests
 
 			LastPageButtonVisibilityCheckBox.IsChecked = lastPageButton?.Visibility == Visibility.Visible && lastPageButton?.Opacity != 0;
 		}
+#endif
 	}
 }
