@@ -93,7 +93,9 @@ namespace Windows.UI.Xaml.Controls
 
 			_items.VectorChanged += (s, e) =>
 			{
+				_inProgressVectorChange = e;
 				OnItemsChanged(e);
+				_inProgressVectorChange = null;
 				SetNeedsUpdateItems();
 			};
 		}
@@ -216,6 +218,7 @@ namespace Windows.UI.Xaml.Controls
 					(s, e) => ((ItemsControl)s)?.OnItemTemplateSelectorChanged((DataTemplateSelector)e.OldValue, (DataTemplateSelector)e.NewValue)
 				)
 			);
+		private IVectorChangedEventArgs _inProgressVectorChange;
 
 		protected virtual void OnItemTemplateSelectorChanged(DataTemplateSelector oldItemTemplateSelector, DataTemplateSelector newItemTemplateSelector)
 		{
@@ -660,7 +663,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var unwrappedSource = UnwrapItemsSource();
 
-			if(unwrappedSource is null)
+			if (unwrappedSource is null)
 			{
 				_notifyCollectionChanged.Disposable = null;
 			}
@@ -1194,13 +1197,44 @@ namespace Windows.UI.Xaml.Controls
 
 		public DependencyObject ContainerFromItem(object item)
 		{
+			if (IsItemItsOwnContainer(item))
+			{
+				return item as DependencyObject;
+			}
+
 			var index = IndexFromItem(item);
-			return index == -1 ? null : MaterializedContainers.FirstOrDefault(container => Equals(IndexFromContainer(container), index));
+			var container = index == -1 ? null : MaterializedContainers.FirstOrDefault(container => Equals(IndexFromContainer(container), index));			
+			return container;
 		}
 
 		public int IndexFromContainer(DependencyObject container)
 		{
-			return IndexFromContainerInner(container);
+			var index = IndexFromContainerInner(container);
+			if (_inProgressVectorChange != null)
+			{
+				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
+				{
+					if (index == _inProgressVectorChange.Index)
+					{
+						// Removed item no longer exists.
+						return -1;
+					}
+					else if (index > _inProgressVectorChange.Index)
+					{
+						// All items after the removed item have a lower new index.
+						return index - 1;
+					}
+				}
+				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemInserted)
+				{
+					if (index >= _inProgressVectorChange.Index)
+					{
+						// All items after the added item have a higher new index.
+						return index + 1;
+					}
+				}
+			}
+			return index;
 		}
 
 		internal virtual int IndexFromContainerInner(DependencyObject container)
@@ -1215,7 +1249,39 @@ namespace Windows.UI.Xaml.Controls
 
 		internal virtual DependencyObject ContainerFromIndexInner(int index)
 		{
-			return MaterializedContainers.FirstOrDefault(container => Equals(container.GetValue(IndexForItemContainerProperty), index));
+			var item = ItemFromIndex(index);
+			if (IsItemItsOwnContainer(item))
+			{
+				return item as DependencyObject;
+			}
+
+			int adjustedIndex = index;
+			if (_inProgressVectorChange != null)
+			{
+				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
+				{
+					if (index >= _inProgressVectorChange.Index)
+					{
+						// All items after the removed item have still a higher index.
+						adjustedIndex = index + 1;
+					}
+				}
+				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemInserted)
+				{
+					if (index == _inProgressVectorChange.Index)
+					{
+						return null;
+					}
+					else if (index > _inProgressVectorChange.Index)
+					{
+						// All items after the added item have still a lower index.
+						adjustedIndex = index - 1;
+					}
+				}
+			}
+
+			var container = MaterializedContainers.FirstOrDefault(container => Equals(container.GetValue(IndexForItemContainerProperty), adjustedIndex));
+			return container;
 		}
 
 		/// <summary>
