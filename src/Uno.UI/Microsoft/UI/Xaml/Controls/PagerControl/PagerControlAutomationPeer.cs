@@ -55,6 +55,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			return AutomationControlType.Menu;
 		}
 
+		// TODO: Uno specific - workaround for #4259
 		protected override AutomationLandmarkType GetLandmarkTypeCore()
 		{
 			return AutomationLandmarkType.Navigation;

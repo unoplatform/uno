@@ -177,5 +177,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 				control.Focus(FocusState.Programmatic);
 			};
 		}
+
+		protected override AutomationLandmarkType GetLandmarkTypeCore() => AutomationProperties.GetLandmarkType(Owner);
 	}
 }
