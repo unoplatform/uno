@@ -1259,9 +1259,11 @@ namespace Windows.UI.Xaml.Controls
 						return index + 1;
 					}
 				}
-				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged)
+				else if (
+					(_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged && _inProgressVectorChange.Index == index) ||
+					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
 				{
-					// This is a tricky case, when we need to ensure that for the "old" container we
+					// In these cases, we need to ensure that for the "old" container we
 					// return -1 but we return the correct index for the "new" container
 					var actualContainer = ContainerFromIndex(index);
 					if (Equals(actualContainer, container))
