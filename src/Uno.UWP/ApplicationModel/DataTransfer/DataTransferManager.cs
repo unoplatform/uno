@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __WASM__ || __IOS__ || __ANDROID__
+#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
 using System;
 using Windows.Foundation;
 using Uno.Logging;

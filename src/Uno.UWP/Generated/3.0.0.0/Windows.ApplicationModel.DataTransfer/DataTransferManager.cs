@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.TargetApplicationChosen.remove
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.ShareProvidersRequested.add
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.ShareProvidersRequested.remove
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void ShowShareUI( global::Windows.ApplicationModel.DataTransfer.ShareUIOptions options)
 		{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			throw new global::System.NotImplementedException("The member bool DataTransferManager.IsSupported() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void ShowShareUI()
 		{
