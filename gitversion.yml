@@ -25,6 +25,7 @@ branches:
     source-branches: ['master']
 
   stable:
+    mode: ContinuousDelivery
     regex: ^release/stable/.*
     tag: ''
     increment: Patch
