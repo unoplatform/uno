@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Uno.UI;
 using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Automation
 {

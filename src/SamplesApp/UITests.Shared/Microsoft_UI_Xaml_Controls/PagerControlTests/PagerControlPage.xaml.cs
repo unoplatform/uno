@@ -1,9 +1,9 @@
 ﻿using System.Collections.Specialized;
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.PagerControlTests
 {
@@ -129,6 +129,10 @@ namespace UITests.Microsoft_UI_Xaml_Controls.PagerControlTests
 
 		private void OnSelectedIndexChanged(PagerControl sender, PagerControlSelectedIndexChangedEventArgs args)
 		{
+			if (PreviousPageTextBlock == null)
+			{
+				return;
+			}
 			UpdateNumberPanelContentTextBlock(this, null);
 			PreviousPageTextBlock.Text = args.PreviousPageIndex.ToString();
 			CurrentPageTextBlock.Text = args.NewPageIndex.ToString();
