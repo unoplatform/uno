@@ -3358,9 +3358,23 @@
 				reason="Renamed in WinUI" />
 		</Methods>
 	</IgnoreSet>
-	
 	<IgnoreSet baseVersion="3.4.0">
 		<Methods>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataPackagePropertySet..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataTransferManager..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.ShareTargetInfo..ctor()"
+				reason="Constructor not public in UWP" />
 			<Member
 				fullName="System.String UIKit.UIViewExtensions.GetDebugIdentifier(UIKit.UIView element)"
 				reason="Internal helper that should not be public" />

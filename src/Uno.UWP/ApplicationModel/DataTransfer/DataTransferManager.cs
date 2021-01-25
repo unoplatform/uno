@@ -24,12 +24,25 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static void ShowShareUI() => ShowShareUI(new ShareUIOptions());
 
-		public static async void ShowShareUI(ShareUIOptions options)
+		public static void ShowShareUI(ShareUIOptions options)
 		{
 			var dataTransferManager = _instance.Value;
-			var args = new DataRequestedEventArgs();
+			var args = new DataRequestedEventArgs((dataRequest)=>ContinueShowShareUI(options, dataRequest.Data));
 			dataTransferManager.DataRequested?.Invoke(dataTransferManager, args);
-			var dataPackage = args.Request.Data;
+
+			// Data retrieval may be done asynchronously, check for deferral use
+			if (!args.Request.IsDeferred)
+			{
+				ContinueShowShareUI(options, args.Request.Data);
+			}
+			else
+			{
+				args.Request.EventRaiseCompleted();
+			}
+		}
+
+		private static async void ContinueShowShareUI(ShareUIOptions options, DataPackage dataPackage)
+		{
 			try
 			{
 				// Because showing the Share UI is a fire-and-forget operation
