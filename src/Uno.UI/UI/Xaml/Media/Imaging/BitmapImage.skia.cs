@@ -36,16 +36,14 @@ namespace Windows.UI.Xaml.Media.Imaging
 					{
 						var client = new HttpClient();
 						var response = await client.GetAsync(UriSource, HttpCompletionOption.ResponseContentRead, ct);
-
 						var imageStream = await response.Content.ReadAsStreamAsync();
+
 						return OpenFromStream(targetWidth, targetHeight, surface, imageStream);
 					}
 					else if (UriSource.Scheme == "ms-appx")
 					{
 						var path = UriSource.PathAndQuery;
-
 						var filePath = GetScaledPath(path);
-
 						using var fileStream = File.OpenRead(filePath);
 
 						return OpenFromStream(targetWidth, targetHeight, surface, fileStream);

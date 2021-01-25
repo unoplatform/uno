@@ -28,11 +28,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 			int? targetHeight,
 			out Task<ImageData> asyncImage)
 		{
-			return OpenSourceAsyncInner(ct, out asyncImage);
-		}
-
-		internal bool OpenSourceAsyncInner(CancellationToken ct, out Task<ImageData> asyncImage)
-		{
 			if (WebUri is {} uri)
 			{
 				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme == "file";
@@ -48,7 +43,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				return true;
 			}
-			if (_stream is { } stream)
+
+			if (_stream is {} stream)
 			{
 				void OnProgress(ulong position, ulong? length)
 				{
@@ -65,8 +61,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				return true;
 			}
-
-
+			
 			asyncImage = default;
 			return false;
 		}

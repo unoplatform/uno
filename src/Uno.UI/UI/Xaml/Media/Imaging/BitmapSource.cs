@@ -67,56 +67,63 @@ namespace Windows.UI.Xaml.Media.Imaging
 		/// Helper for Uno... not part of UWP contract
 		/// </summary>
 		public void SetSource(Stream streamSource)
-		{
-			SetSource(streamSource.AsRandomAccessStream());
-		}
+			=> SetSourceCore(streamSource.AsRandomAccessStream());
 
 		/// <summary>
 		/// Helper for Uno... not part of UWP contract
 		/// </summary>
-		public async Task SetSourceAsync(Stream streamSource)
-			=> await SetSourceAsync(streamSource.AsRandomAccessStream());
+		public Task SetSourceAsync(Stream streamSource)
+		{
+			SetSourceCore(streamSource.AsRandomAccessStream());
+			return ForceLoad(CancellationToken.None);
+		}
 
 		public void SetSource(IRandomAccessStream streamSource)
-			// We prefer to use the SetSourceAsync here in order to make sure that the stream is copied ASYNChronously,
-			// which is important since we are using a stream wrapper of and <In|Out|RA>Stream which might freeze the UI thread / throw exception.
-			=> Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetSourceAsync(streamSource));
+			=> SetSourceCore(streamSource);
 
 		public IAsyncAction SetSourceAsync(IRandomAccessStream streamSource)
 		{
-			async Task SetSourceAsync(CancellationToken ct)
+			SetSourceCore(streamSource);
+			return AsyncAction.FromTask(ForceLoad);
+		}
+
+		private void SetSourceCore(IRandomAccessStream streamSource)
+		{
+			if (streamSource == null)
 			{
-				if (streamSource == null)
-				{
-					//Same behavior as windows, although the documentation does not mention it!!!
-					throw new ArgumentException(nameof(streamSource));
-				}
-
-				PixelWidth = 0;
-				PixelHeight = 0;
-
-#if __NETSTD__
-				_stream = streamSource.CloneStream();
-
-				var tcs = new TaskCompletionSource<object>();
-
-				using var x = Subscribe(OnChanged);
-
-				InvalidateSource();
-
-				await tcs.Task;
-
-				void OnChanged(ImageData data)
-				{
-					tcs.TrySetResult(null);
-				}
-#else
-				Stream = streamSource.CloneStream().AsStream();
-#endif
+				//Same behavior as windows, although the documentation does not mention it!!!
+				throw new ArgumentException(nameof(streamSource));
 			}
 
-			return AsyncAction.FromTask(SetSourceAsync);
+			PixelWidth = 0;
+			PixelHeight = 0;
 
+			// The source has to be cloned before leaving the "SetSource[Async]".
+			var clonedStreamSource = streamSource.CloneStream();
+
+#if __NETSTD__
+			_stream = clonedStreamSource;
+#else
+			Stream = clonedStreamSource.AsStream();
+#endif
+		}
+
+		private async Task ForceLoad(CancellationToken ct)
+		{
+#if __NETSTD__
+			var tcs = new TaskCompletionSource<object>();
+			using var r = ct.Register(() => tcs.TrySetCanceled());
+			using var s = Subscribe(OnChanged);
+
+			InvalidateSource();
+
+			await tcs.Task;
+
+			void OnChanged(ImageData data)
+			{
+				tcs.TrySetResult(null);
+			}
+#endif
 		}
 
 		public override string ToString()
