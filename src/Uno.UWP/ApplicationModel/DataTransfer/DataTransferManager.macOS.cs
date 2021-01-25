@@ -12,6 +12,9 @@ namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class DataTransferManager
 	{
+		private const int DefaultPickerWidth = 120;
+		private const int DefaultPickerHeight = 160;
+
 		public static bool IsSupported() => true;
 
 		private static async Task<bool> ShowShareUIAsync(ShareUIOptions options, DataPackage dataPackage)
@@ -41,8 +44,20 @@ namespace Windows.ApplicationModel.DataTransfer
 				sharedData.Add(NSUrl.FromString(uri.ToString()));
 			}
 
-			CGRect rect = options.SelectionRect ?? Rect.Empty;
-			rect.Y = view.Bounds.Height - rect.Bottom;
+			CGRect targetRect;
+			if (options.SelectionRect != null)
+			{
+				targetRect = options.SelectionRect.Value;
+			}
+			else
+			{
+				// Try to center the picker within the window
+				targetRect = new CGRect(
+					view.Bounds.Width / 2f - DefaultPickerWidth / 2,
+					view.Bounds.Height / 2 - DefaultPickerHeight / 2,
+					0,
+					0);
+			}
 
 			var picker = new NSSharingServicePicker(sharedData.ToArray());
 
@@ -53,7 +68,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				completionSource.SetResult(e.Service != null);
 			};
 
-			picker.ShowRelativeToRect(rect, view, NSRectEdge.MinYEdge);
+			picker.ShowRelativeToRect(targetRect, view, NSRectEdge.MinYEdge);
 
 			return await completionSource.Task;
 		}
