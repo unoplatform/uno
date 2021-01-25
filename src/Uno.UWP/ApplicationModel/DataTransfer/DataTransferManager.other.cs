@@ -1,4 +1,8 @@
-﻿#if !__WASM__ && !__IOS__ && !__ANDROID__ && !__MACOS__ && !__SKIA__
+﻿#nullable enable
+
+#if !__WASM__ && !__IOS__ && !__ANDROID__ && !__MACOS__ && !__SKIA__
+
+using System;
 
 namespace Windows.ApplicationModel.DataTransfer
 {
