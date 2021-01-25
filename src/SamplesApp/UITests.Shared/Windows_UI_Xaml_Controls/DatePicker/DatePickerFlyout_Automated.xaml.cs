@@ -12,9 +12,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 			InitializeComponent();
 
 			TestDatePickerFlyout.Date = new DateTimeOffset(new DateTime(2019, 3, 12));
-#if !DEBUG
-error TODO
-#endif
+
 			//TestDatePickerFlyout.DatePicked += (s, e) => selectedDate.Text = TestDatePickerFlyout.Date.ToString();
 		}
 	}

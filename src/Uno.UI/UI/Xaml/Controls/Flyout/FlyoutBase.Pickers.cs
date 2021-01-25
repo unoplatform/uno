@@ -4,9 +4,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	partial class FlyoutBase
 	{
-#if !DEBUG
-#error TODO
-#endif
 		internal bool UsePickerFlyoutTheme { get; set; }
 
 		internal void PlaceFlyoutForDateTimePicker(Point point)

@@ -13,15 +13,5 @@ namespace Uno.UI.Tests.DatePickerTests
 	[TestClass]
 	public class Given_DatePicker
 	{
-		[TestMethod]
-		public void Verify_LightDismissOverlayBackground()
-		{
-#if !DEBUG
-			var app = UnitTestsApp.App.EnsureApplication();
-			Assert.IsNotNull(app.Resources["DatePickerLightDismissOverlayBackground"]);
-			var dp = new DatePicker();
-			Assert.AreEqual(Windows.UI.Colors.Orchid, (dp.LightDismissOverlayBackground as SolidColorBrush)?.Color);
-#endif
-		}
 	}
 }
