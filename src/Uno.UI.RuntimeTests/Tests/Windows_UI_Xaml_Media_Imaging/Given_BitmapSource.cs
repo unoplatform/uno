@@ -57,6 +57,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			Assert.IsTrue(success);
 		}
 
+#if !WINDOWS_UWP
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_SetSource_Stream_Then_StreamClonedSynchronously()
@@ -96,6 +97,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			Assert.IsTrue(success);
 		}
+#endif
 
 		private class Given_BitmapSource_Exception : Exception
 		{
