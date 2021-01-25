@@ -53,8 +53,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private event EventHandler HtmlInput
 		{
-			add => RegisterEventHandler("input", value);
-			remove => UnregisterEventHandler("input", value);
+			add => RegisterEventHandler("input", value, GenericEventHandlers.RaiseEventHandler);
+			remove => UnregisterEventHandler("input", value, GenericEventHandlers.RaiseEventHandler);
 		}
 
 		internal bool IsMultiline { get; }

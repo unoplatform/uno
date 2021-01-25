@@ -10,6 +10,7 @@ namespace Uno.UI {
 		autoplay: boolean;
 		stretch: string;
 		rate: number;
+		cacheKey: string;
 	}
 
 	export interface RunningLottieAnimation {
@@ -22,7 +23,9 @@ namespace Uno.UI {
 		private static _runningAnimations: { [id: number]: RunningLottieAnimation } = {};
 		private static _numberOfFrames: number;
 
-		public static setAnimationProperties(newProperties: LottieAnimationProperties, animationData?: AnimationData): string {
+		public static setAnimationProperties(
+			newProperties: LottieAnimationProperties,
+			animationData?: AnimationData): string {
 			const elementId = newProperties.elementId;
 
 			Lottie.withPlayer(p => {
@@ -58,7 +61,9 @@ namespace Uno.UI {
 				const fromFrame = fromProgress * Lottie._numberOfFrames;
 				const toFrame = toProgress * Lottie._numberOfFrames;
 
-				a.playSegments([fromFrame, toFrame], false);
+				//Set forceFlag to true in order to force animation to start right away
+				//Ensures calling play multiple times in quick succession plays the animation properly
+				a.playSegments([fromFrame, toFrame], true);
 				Lottie.raiseState(a);
 			});
 
@@ -97,8 +102,12 @@ namespace Uno.UI {
 		public static setProgress(elementId: number, progress: number): string {
 			Lottie.withPlayer(p => {
 				const animation = Lottie._runningAnimations[elementId].animation;
-				const frames = animation.getDuration(true);
-				const frame = frames * progress;
+				var frame = Lottie._numberOfFrames * progress;
+				if (frame < (animation as any).firstFrame) {
+					frame = frame - (animation as any).firstFrame
+				} else {
+					frame = animation.getDuration(true) * progress;
+				}
 				animation.goToAndStop(frame, true);
 				Lottie.raiseState(animation);
 
@@ -117,6 +126,9 @@ namespace Uno.UI {
 
 		private static needNewPlayerAnimation(current: LottieAnimationProperties, newProperties: LottieAnimationProperties): boolean {
 
+			if (current.cacheKey !== newProperties.cacheKey) {
+				return true;
+			}
 			if (current.jsonPath !== newProperties.jsonPath) {
 				return true;
 			}
@@ -177,8 +189,14 @@ namespace Uno.UI {
 			(animation as any).addEventListener("data_ready", (e: any) => {
 				Lottie._numberOfFrames = animation.totalFrames;
 				Lottie.raiseState(animation);
+				Lottie.raiseDataLoaded(animation);
 			});
 
+			(animation as any).addEventListener("DOMLoaded", (e: any) => {
+				Lottie._numberOfFrames = animation.totalFrames;
+				Lottie.raiseState(animation);
+				Lottie.raiseDataLoaded(animation);
+			});
 			Lottie.raiseState(animation);
 
 			return runningAnimation;
@@ -197,6 +215,11 @@ namespace Uno.UI {
 			const state = Lottie.getStateString(animation);
 
 			element.dispatchEvent(new CustomEvent("lottie_state", { detail: state }));
+		}
+
+		private static raiseDataLoaded(animation: Lottie.AnimationItem) {
+			const element = animation.wrapper;
+			element.dispatchEvent(new CustomEvent("animation_dom_loaded"));
 		}
 
 		private static getPlayerConfig(properties: LottieAnimationProperties, animationData?: AnimationData): Lottie.AnimationConfig {

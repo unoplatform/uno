@@ -1,6 +1,9 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Data
 {
@@ -10,7 +13,7 @@ namespace Windows.UI.Xaml.Data
 	/// <remarks>Used internally by the Xaml generator to perform late ElementName binding.</remarks>
 	public class ElementNameSubject
 	{
-		private object _elementInstance;
+		private ManagedWeakReference? _elementInstanceRef;
 
 		public ElementNameSubject() { }
 
@@ -23,36 +26,41 @@ namespace Windows.UI.Xaml.Data
 		/// <summary>
 		/// An element name instance changed delegate.
 		/// </summary>
-		public delegate void ElementInstanceChangedHandler(object sender, object instance);
+		public delegate void ElementInstanceChangedHandler(object sender, object? instance);
 
 		/// <summary>
 		/// An event raised when the ElementInstance property has changed.
 		/// </summary>
-		public event ElementInstanceChangedHandler ElementInstanceChanged;
+		public event ElementInstanceChangedHandler? ElementInstanceChanged;
 
 		/// <summary>
 		/// The element name instance
 		/// </summary>
-		public object ElementInstance
+		public object? ElementInstance
 		{
 			// element stubs are not returned, are only materialized
 			// as part of FindName or Visibility binding
-			get => _elementInstance is ElementStub ? null : _elementInstance;
+			get => _elementInstanceRef?.Target switch {
+						ElementStub _ => null,
+						object o => o,
+						null => null,
+					};
 			set
 			{
-				_elementInstance = value;
+				_elementInstanceRef = WeakReferencePool.RentWeakReference(this, value);
 
-				if (!(_elementInstance is ElementStub))
+				var target = _elementInstanceRef?.Target;
+				if (!(target is ElementStub))
 				{
 					// In the case of element stubs, the XAML generator sets the subject as part of the
 					// materialization of the final element, raising this event.
 
-					ElementInstanceChanged?.Invoke(this, _elementInstance);
+					ElementInstanceChanged?.Invoke(this, target);
 				}
 			}
 		}
 
-		internal object ActualElementInstance => _elementInstance;
+		internal object? ActualElementInstance => _elementInstanceRef?.Target;
 
 		/// <summary>
 		/// Should the ElementName binding be applied when the view loads? True when the named element is not in local scope.
@@ -62,6 +70,6 @@ namespace Windows.UI.Xaml.Data
 		/// <summary>
 		/// The ElementName. 
 		/// </summary>
-		public string Name { get; set; }
+		public string? Name { get; set; }
 	}
 }

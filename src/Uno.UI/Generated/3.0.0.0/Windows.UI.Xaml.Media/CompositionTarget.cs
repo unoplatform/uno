@@ -29,8 +29,8 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || false || false || false || __MACOS__
+		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<object> Rendering
 		{
 			[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

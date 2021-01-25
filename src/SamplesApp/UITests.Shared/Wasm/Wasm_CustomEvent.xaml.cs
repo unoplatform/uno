@@ -2,6 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
+using Newtonsoft.Json.Linq;
 #if __WASM__
 using Uno.Foundation;
 using Uno.Extensions;
@@ -61,16 +62,40 @@ namespace UITests.Shared.Wasm
 		private void OnUnoEvent1(object sender, EventArgs e)
 		{
 			result.Text += $"Received generic event from {sender}\n.";
+			tapResult.Text = "Ok";
 		}
 
 		private void OnUnoEvent2(object sender, HtmlCustomEventArgs e)
 		{
 			result.Text += $"Received string event from {sender}: \"{e.Detail}\"\n.";
+
+			tapResult.Text =
+				e.Detail == "String detail from event."
+				? "Ok"
+				: "Error: received " + e.Detail;
 		}
 
 		private void OnUnoEvent3(object sender, HtmlCustomEventArgs e)
 		{
 			result.Text += $"Received json event from {sender}: {e.Detail}\n.";
+
+			try
+			{
+				var json = JToken.Parse(e.Detail);
+				if(json["msg"].Value<string>() == "msg" && json["int"].Value<int>() == 123 && json["txt"].Value<string>() == "it works!")
+				{
+					tapResult.Text = "Ok";
+				}
+				else
+				{
+					tapResult.Text = "Error: invalid json " + json.ToString(Newtonsoft.Json.Formatting.None);
+				}
+
+			}
+			catch(Exception ex)
+			{
+				tapResult.Text = "Error: " + ex.Message;
+			}
 		}
 #endif
 	}

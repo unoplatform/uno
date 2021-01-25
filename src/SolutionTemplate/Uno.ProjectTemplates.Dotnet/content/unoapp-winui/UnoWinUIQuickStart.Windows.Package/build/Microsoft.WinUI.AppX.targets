@@ -1,73 +1,73 @@
+<!--/-:msbuild-conditional:noEmit -->
 <!--
   Copyright (c) Microsoft Corporation. Licensed under the MIT License
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- 
+    <!-- 
       The _GetPathToWinUIRegistrations target returns the path to where the registrations xml file is.
       If invoked in the .wapproj, this will invoke the same target on referenced projects, where it will
       actually return the location to where the file is on disk in the nuget package.
     -->
-  <Target Name="_GetPathToWinUIRegistrations" Returns="$(WinUIClassRegistrationsDir)">
-	<!--
+    <Target Name="_GetPathToWinUIRegistrations" Returns="$(WinUIClassRegistrationsDir)">
+      <!--
         Invoke this target on the referenced project to get the path to where the registration xml is.
         This way we can pick up the path to the file from the nuget.
        -->
-	<MSBuild
-	  Projects="@(_MSBuildProjectReferenceExistent)"
-	  Condition="'$(MSBuildProjectExtension)' == '.wapproj'"
-	  Targets="_GetPathToWinUIRegistrations"
-	  SkipNonexistentTargets="true">
-	  <Output TaskParameter="TargetOutputs" PropertyName="WinUIClassRegistrationsDir" />
-	</MSBuild>
+      <MSBuild
+        Projects="@(_MSBuildProjectReferenceExistent)"
+        Condition="'$(MSBuildProjectExtension)' == '.wapproj'"
+        Targets="_GetPathToWinUIRegistrations"
+        SkipNonexistentTargets="true">
+          <Output TaskParameter="TargetOutputs" PropertyName="WinUIClassRegistrationsDir" />
+      </MSBuild>
+      
+      <PropertyGroup>
+        <!-- If  not in the .wapproj, then actually return the path to where the registration list is -->
+        <WinUIClassRegistrationsDir Condition="'$(WinUIClassRegistrationsDir)' == '' and '$(MSBuildProjectExtension)'!='.wapproj'">$(MSBuildThisFileDirectory)</WinUIClassRegistrationsDir>
 
-	<PropertyGroup>
-	  <!-- If  not in the .wapproj, then actually return the path to where the registration list is -->
-	  <WinUIClassRegistrationsDir Condition="'$(WinUIClassRegistrationsDir)' == '' and '$(MSBuildProjectExtension)'!='.wapproj'">$(MSBuildThisFileDirectory)</WinUIClassRegistrationsDir>
+        <!-- Technically you can have multiple .exe files in a single msix. Just trim the property down to a single value if that is the case -->
+        <WinUIClassRegistrationsDir Condition="$(WinUIClassRegistrationsDir.Contains(';'))">$(WinUIClassRegistrationsDir.Substring(0,$(WinUIClassRegistrationsDir.IndexOf(';'))))</WinUIClassRegistrationsDir>
+      </PropertyGroup>
 
-	  <!-- Technically you can have multiple .exe files in a single msix. Just trim the property down to a single value if that is the case -->
-	  <WinUIClassRegistrationsDir Condition="$(WinUIClassRegistrationsDir.Contains(';'))">$(WinUIClassRegistrationsDir.Substring(0,$(WinUIClassRegistrationsDir.IndexOf(';'))))</WinUIClassRegistrationsDir>
-	</PropertyGroup>
+      <Error Text="Unable to find WinRT class registrations for WinUI. Please ensure that the Microsoft.WinUI package restored successfully."
+             Condition="'$(WinUIClassRegistrationsDir)' == '' and '$(MSBuildProjectExtension)'=='.wapproj'"/>
+    </Target>
 
-	<Error Text="Unable to find WinRT class registrations for WinUI. Please ensure that the Microsoft.WinUI package restored successfully."
-		   Condition="'$(WinUIClassRegistrationsDir)' == '' and '$(MSBuildProjectExtension)'=='.wapproj'"/>
-  </Target>
+    <!-- Replaces AppxManifest WinRT registrations for Microsoft.UI.Xaml.dll, post-GenerateAppxManifest. -->
+    <!-- Target runs before manifest validation occurs. Requires output file to support incremental builds. -->
+    <Target
+        Name="_ReplaceMUXWinRTRegistrations"
+        BeforeTargets="_CreateFinalAppxManifestItem"
+        AfterTargets="_GenerateCurrentProjectAppxManifest"
+        DependsOnTargets="_GetPathToWinUIRegistrations"
+        Inputs="$(MSBuildAllProjects);@(_GenerateCurrentProjectAppxManifestInput)"
+        Outputs="$(FinalAppxManifestName).incremental" >
 
-  <!-- Replaces AppxManifest WinRT registrations for Microsoft.UI.Xaml.dll, post-GenerateAppxManifest. -->
-  <!-- Target runs before manifest validation occurs. Requires output file to support incremental builds. -->
-  <Target
-	  Name="_ReplaceMUXWinRTRegistrations"
-	  BeforeTargets="_CreateFinalAppxManifestItem"
-	  AfterTargets="_GenerateCurrentProjectAppxManifest"
-	  DependsOnTargets="_GetPathToWinUIRegistrations"
-	  Inputs="$(MSBuildAllProjects);@(_GenerateCurrentProjectAppxManifestInput)"
-	  Outputs="$(FinalAppxManifestName).incremental" >
-
-	<ReplaceMUXWinRTRegistrations
-		FullPathToAppxManifest="$(FinalAppxManifestName)"
-		FullPathToLiftedXAMLWinRTRegistrations="$(WinUIClassRegistrationsDir)LiftedWinRTClassRegistrations.xml"
-		PathToXAMLWinRTImplementations="$(PathToXAMLWinRTImplementations)"
+        <ReplaceMUXWinRTRegistrations
+            FullPathToAppxManifest="$(FinalAppxManifestName)"
+            FullPathToLiftedXAMLWinRTRegistrations="$(WinUIClassRegistrationsDir)LiftedWinRTClassRegistrations.xml"
+            PathToXAMLWinRTImplementations="$(PathToXAMLWinRTImplementations)"
          />
 
-	<Touch
-	   Files="$(FinalAppxManifestName).incremental"
-	   AlwaysCreate="true"
+         <Touch
+            Files="$(FinalAppxManifestName).incremental"
+            AlwaysCreate="true"
          />
-  </Target>
+    </Target>
 
-  <UsingTask TaskName="ReplaceMUXWinRTRegistrations" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
-	<ParameterGroup>
-	  <FullPathToAppxManifest ParameterType="System.String" Required="true" />
-	  <FullPathToLiftedXAMLWinRTRegistrations ParameterType="System.String" Required="true" />
-	  <PathToXAMLWinRTImplementations ParameterType="System.String" />
-	</ParameterGroup>
-	<Task>
-	  <Reference Include="System.Xml" />
-	  <Using Namespace="System.Xml" />
-	  <Using Namespace="System.Reflection" />
-	  <Using Namespace="System.Runtime.InteropServices.WindowsRuntime" />
-	  <Using Namespace="System.Collections.Generic" />
-	  <Code Type="Fragment" Language="cs">
-		<![CDATA[
+    <UsingTask TaskName="ReplaceMUXWinRTRegistrations" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+        <ParameterGroup>
+            <FullPathToAppxManifest ParameterType="System.String" Required="true" />
+            <FullPathToLiftedXAMLWinRTRegistrations ParameterType="System.String" Required="true" />
+            <PathToXAMLWinRTImplementations ParameterType="System.String" />
+        </ParameterGroup>
+        <Task>
+            <Reference Include="System.Xml" />
+            <Using Namespace="System.Xml" />
+            <Using Namespace="System.Reflection" />
+            <Using Namespace="System.Runtime.InteropServices.WindowsRuntime" />
+            <Using Namespace="System.Collections.Generic" />
+            <Code Type="Fragment" Language="cs"><![CDATA[
                 // Load AppxManifest.xml
                 XmlDocument appxManifest = new XmlDocument();
                 appxManifest.Load(FullPathToAppxManifest);
@@ -132,26 +132,25 @@
                 // Save the updated AppxManifest.xml file
                 appxManifest.Save(FullPathToAppxManifest);
 
-            ]]>
-	  </Code>
-	</Task>
-  </UsingTask>
+            ]]></Code>
+        </Task>
+    </UsingTask>
 
   <PropertyGroup>
-	<MSBuildWarningsAsMessages>
-	  $(MSBuildWarningsAsMessages);
+    <MSBuildWarningsAsMessages>
+       $(MSBuildWarningsAsMessages);
 
-	  <!-- We don't provide an implementation for Microsoft.winmd, but that's OK, since we're constructing
+       <!-- We don't provide an implementation for Microsoft.winmd, but that's OK, since we're constructing
             our own Extensions entries in AppxManifest.xml. As such, we'll suppress the warning that that would otherwise raise. -->
-	  APPX1707;
-	</MSBuildWarningsAsMessages>
-	<MSBuildWarningsAsMessages Condition="'$(MSBuildProjectExtension)' == '.wapproj'">
-	  $(MSBuildWarningsAsMessages);
+       APPX1707;
+    </MSBuildWarningsAsMessages>
+    <MSBuildWarningsAsMessages Condition="'$(MSBuildProjectExtension)' == '.wapproj'">
+       $(MSBuildWarningsAsMessages);
 
-	  <!-- WAP project files can have class libraries with WinMDs complain that they don't have requisite dependencies present -
+       <!-- WAP project files can have class libraries with WinMDs complain that they don't have requisite dependencies present -
             however, due to our custom packaging, they'll be present in the end, so we'll suppress this warning as well. -->
-	  MSB3268;
-	</MSBuildWarningsAsMessages>
+       MSB3268;
+    </MSBuildWarningsAsMessages>
   </PropertyGroup>
 
   <!-- Packing class libraries in a WAP project can erroneously raise a warning thinking that we've packaged multiple executables.
@@ -162,9 +161,9 @@
     Setting default project properties for .NET SDK-style projects
   -->
   <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
-	<SDKIdentifier>Windows</SDKIdentifier>
-	<SDKVersion>10.0</SDKVersion>
-	<DefaultLanguage Condition="'$(DefaultLanguage)'==''">en-US</DefaultLanguage>
+    <SDKIdentifier>Windows</SDKIdentifier>
+    <SDKVersion>10.0</SDKVersion>
+    <DefaultLanguage Condition="'$(DefaultLanguage)'==''">en-US</DefaultLanguage>
   </PropertyGroup>
 
   <!--
@@ -179,32 +178,32 @@
           BeforeTargets="_CopyFilesMarkedCopyLocal"
           AfterTargets="ResolveAssemblyReferences"
           Condition="'$(_AddWinUIAssembliesToReferenceCopyLocalPaths)' != 'true'">
-	<PropertyGroup Condition="'$(_MuxRuntimeIdentifier)' == ''">
-	  <_MuxRuntimeIdentifier Condition="'$(Platform)' == 'Win32'">win10-x86</_MuxRuntimeIdentifier>
-	  <_MuxRuntimeIdentifier Condition="'$(Platform)' != 'Win32'">win10-$(Platform)</_MuxRuntimeIdentifier>
-	</PropertyGroup>
-	<ItemGroup>
-	  <ReferenceCopyLocalPaths Update="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Microsoft.WinUI' and '%(Extension)' == '.mui'">
-		<DestinationSubDirectory>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory)..\runtimes\$(_MuxRuntimeIdentifier)\native\, %(RootDir)%(Directory)))</DestinationSubDirectory>
-	  </ReferenceCopyLocalPaths>
-	</ItemGroup>
+    <PropertyGroup Condition="'$(_MuxRuntimeIdentifier)' == ''">
+      <_MuxRuntimeIdentifier Condition="'$(Platform)' == 'Win32'">win10-x86</_MuxRuntimeIdentifier>
+      <_MuxRuntimeIdentifier Condition="'$(Platform)' != 'Win32'">win10-$(Platform)</_MuxRuntimeIdentifier>
+    </PropertyGroup>
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Update="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Microsoft.WinUI' and '%(Extension)' == '.mui'">
+        <DestinationSubDirectory>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory)..\runtimes\$(_MuxRuntimeIdentifier)\native\, %(RootDir)%(Directory)))</DestinationSubDirectory>
+      </ReferenceCopyLocalPaths>
+    </ItemGroup>
   </Target>
 
   <Target Name="_UpdateWapProjectPackageFiles"
         BeforeTargets="_CopyPackageFiles;_CopyUploadPackageFiles"
         AfterTargets="_ConvertItems"
         Condition="'$(MSBuildProjectExtension)' == '.wapproj'">
-	<ItemGroup>
-	  <!-- In the case of native projects, the TargetPath gets overwritten to remove the language-specific subfolders
+    <ItemGroup>
+      <!-- In the case of native projects, the TargetPath gets overwritten to remove the language-specific subfolders
        in the _ConvertItems target, so in the case where that's happened, we'll restore it from the
        DestinationSubDirectory item metadata. -->
-	  <WapProjPackageFile Update="@(WapProjPackageFile)" Condition="'%(WapProjPackageFile.DestinationSubDirectory)' != '' and '%(TargetPath)' == '%(Filename)%(Extension)'">
-		<TargetPath>%(WapProjPackageFile.DestinationSubDirectory)%(TargetPath)</TargetPath>
-	  </WapProjPackageFile>
-	  <UploadWapProjPackageFile Update="@(UploadWapProjPackageFile)" Condition="'%(UploadWapProjPackageFile.DestinationSubDirectory)' != '' and '%(TargetPath)' == '%(Filename)%(Extension)'">
-		<TargetPath>%(UploadWapProjPackageFile.DestinationSubDirectory)%(TargetPath)</TargetPath>
-	  </UploadWapProjPackageFile>
-	</ItemGroup>
+      <WapProjPackageFile Update="@(WapProjPackageFile)" Condition="'%(WapProjPackageFile.DestinationSubDirectory)' != '' and '%(TargetPath)' == '%(Filename)%(Extension)'">
+        <TargetPath>%(WapProjPackageFile.DestinationSubDirectory)%(TargetPath)</TargetPath>
+      </WapProjPackageFile>
+      <UploadWapProjPackageFile Update="@(UploadWapProjPackageFile)" Condition="'%(UploadWapProjPackageFile.DestinationSubDirectory)' != '' and '%(TargetPath)' == '%(Filename)%(Extension)'">
+        <TargetPath>%(UploadWapProjPackageFile.DestinationSubDirectory)%(TargetPath)</TargetPath>
+      </UploadWapProjPackageFile>
+    </ItemGroup>
   </Target>
 
   <!--
@@ -213,14 +212,14 @@
     condition the dependency.
    -->
   <ItemGroup Condition="'$(OutputType)' == 'AppContainerExe'">
-	<SDKReference Include="Microsoft.VCLibs, Version=14.0" />
+    <SDKReference Include="Microsoft.VCLibs, Version=14.0" />
   </ItemGroup>
 
   <!-- Packaged desktop apps need these framework package references -->
   <ItemGroup Condition="'$(MSBuildProjectExtension)'=='.wapproj'">
-	<SDKReference Include="Microsoft.VCLibs.Desktop, Version=14.0" />
-	<!-- Needed for ucrtbased.dll when running a debug build. -->
-	<SDKReference Include="Microsoft.VCLibs, Version=14.0" Condition="'$(Configuration)' == 'Debug'" />
+    <SDKReference Include="Microsoft.VCLibs.Desktop, Version=14.0" />
+    <!-- Needed for ucrtbased.dll when running a debug build. -->
+    <SDKReference Include="Microsoft.VCLibs, Version=14.0" Condition="'$(Configuration)' == 'Debug'" />
   </ItemGroup>
 
   <!--
@@ -229,10 +228,10 @@
     generation targets to write in the app entry point which causes UWP activation.
   -->
   <Target Name="UpdateTargetPlatformIdentifer" AfterTargets="SetProjectReferenceProperties" Returns="@(ProjectReferenceWithExtraMetadata)">
-	<ItemGroup>
-	  <ProjectReferenceWithExtraMetadata Update="@(ProjectReferenceWithExtraMetadata)" Condition="'%(WindowsAppContainer)'=='true'">
-		<TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-	  </ProjectReferenceWithExtraMetadata>
-	</ItemGroup>
+    <ItemGroup>
+      <ProjectReferenceWithExtraMetadata Update="@(ProjectReferenceWithExtraMetadata)" Condition="'%(WindowsAppContainer)'=='true'">
+        <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+      </ProjectReferenceWithExtraMetadata>
+    </ItemGroup>
   </Target>
 </Project>

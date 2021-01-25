@@ -33,11 +33,139 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewAnimationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewBlankPage1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewCompactPaneLengthTestPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewInitPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewIsPaneOpenPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewMenuItemStretchPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewMinimalPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewPageDataContext.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewSelectedItemEdgeCasePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewStretchPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\CustomResources\NavigationViewCustomThemeResourcesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\CustomResources\NavigationViewItemTemplatePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\DialogWithNavView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Footer\PaneLayoutTestPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Hierarchical\HierarchicalNavigationViewDataBinding.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Hierarchical\HierarchicalNavigationViewMarkup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\NavigationViewBasicPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\NavigationViewCaseBundle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Regression\NavigationViewRS3Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Regression\NavigationViewRS4Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\TopMode\NavigationViewTopNavOnlyPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\TopMode\NavigationViewTopNavOverflowButtonPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\TopMode\NavigationViewTopNavPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\TopMode\NavigationViewTopNavStorePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\MUX_Test.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\NumberBox_ExpressionTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\NumberBox_Header.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressRing\WinUIProgressRing_Slider.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RadioButtonsTests\RadioButtonsBasicPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RadioButtonsTests\RadioButtonsFocusPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RadioButtonsTests\RadioButtonsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressRing\WinUIDeterminateProgressRing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TabViewTests\TabViewItemsSourceTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -202,6 +330,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\Midi\MidiDeviceInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\OrientationTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -489,6 +621,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_ListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_Nested.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -705,6 +841,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_CornerRadius_BorderThickness.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_CornerRadius_Clipping.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_CornerRadius_Toggle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -917,6 +1061,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_Content_ThemeResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_Local.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_TemplatedParent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -937,6 +1089,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\BitmapImage_IsPlaying.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageAlignment2541.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -950,6 +1106,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageWithLateSourceUniformToFill.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Formats.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -986,6 +1146,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Stretch_Modes_Picker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\BitmapImage_vs_SvgImageSource.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1117,6 +1281,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_HVAlignments.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_Overlay_On.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1133,7 +1301,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\ItemsRepeater_Basics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\ItemsRepeater_Nested.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\MyItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollBar\ScrollBar_Simple.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_Add_Remove.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1154,6 +1338,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Slider\Slider_ThumbSize.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Slider\Slider_Header.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1206,6 +1394,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_HorizontalTextAlignment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_MeasureCache.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2989,6 +3181,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\ImageBrush_Formats.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\ImageBrush_WriteableBitmap.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3577,6 +3773,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\Shapes_Default_StrokeThickness.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\StretchPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3625,15 +3825,96 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\InfoBarTests\InfoBarPage.xaml.cs">
       <DependentUpon>InfoBarPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewAnimationPage.xaml.cs">
+      <DependentUpon>NavigationViewAnimationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewBlankPage1.xaml.cs">
+      <DependentUpon>NavigationViewBlankPage1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewCompactPaneLengthTestPage.xaml.cs">
+      <DependentUpon>NavigationViewCompactPaneLengthTestPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewInitPage.xaml.cs">
+      <DependentUpon>NavigationViewInitPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewIsPaneOpenPage.xaml.cs">
+      <DependentUpon>NavigationViewIsPaneOpenPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewMenuItemStretchPage.xaml.cs">
+      <DependentUpon>NavigationViewMenuItemStretchPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewMinimalPage.xaml.cs">
+      <DependentUpon>NavigationViewMinimalPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewPage.xaml.cs">
+      <DependentUpon>NavigationViewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewPageDataContext.xaml.cs">
+      <DependentUpon>NavigationViewPageDataContext.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewSelectedItemEdgeCasePage.xaml.cs">
+      <DependentUpon>NavigationViewSelectedItemEdgeCasePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewStretchPage.xaml.cs">
+      <DependentUpon>NavigationViewStretchPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\CustomResources\NavigationViewCustomThemeResourcesPage.xaml.cs">
+      <DependentUpon>NavigationViewCustomThemeResourcesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\CustomResources\NavigationViewItemTemplatePage.xaml.cs">
+      <DependentUpon>NavigationViewItemTemplatePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\DialogWithNavView.xaml.cs">
+      <DependentUpon>DialogWithNavView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Footer\PaneLayoutTestPage.xaml.cs">
+      <DependentUpon>PaneLayoutTestPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Hierarchical\HierarchicalNavigationViewDataBinding.xaml.cs">
+      <DependentUpon>HierarchicalNavigationViewDataBinding.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Hierarchical\HierarchicalNavigationViewMarkup.xaml.cs">
+      <DependentUpon>HierarchicalNavigationViewMarkup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\NavigationViewBasicPage.xaml.cs">
+      <DependentUpon>NavigationViewBasicPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\NavigationViewCaseBundle.xaml.cs">
+      <DependentUpon>NavigationViewCaseBundle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Regression\NavigationViewRS3Page.xaml.cs">
+      <DependentUpon>NavigationViewRS3Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Regression\NavigationViewRS4Page.xaml.cs">
+      <DependentUpon>NavigationViewRS4Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\TopMode\NavigationViewTopNavOnlyPage.xaml.cs">
+      <DependentUpon>NavigationViewTopNavOnlyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\TopMode\NavigationViewTopNavOverflowButtonPage.xaml.cs">
+      <DependentUpon>NavigationViewTopNavOverflowButtonPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\TopMode\NavigationViewTopNavPage.xaml.cs">
+      <DependentUpon>NavigationViewTopNavPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\TopMode\NavigationViewTopNavStorePage.xaml.cs">
+      <DependentUpon>NavigationViewTopNavStorePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\MUX_Test.xaml.cs">
       <DependentUpon>MUX_Test.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\NumberBox_ExpressionTest.xaml.cs">
       <DependentUpon>NumberBox_ExpressionTest.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\NumberBox_Header.xaml.cs">
+      <DependentUpon>NumberBox_Header.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressBar\DoubleToThicknessConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressBar\WinUIProgressBarSimple.xaml.cs">
       <DependentUpon>WinUIProgressBarSimple.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressRing\WinUIDeterminateProgressRing.xaml.cs">
+      <DependentUpon>WinUIDeterminateProgressRing.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressRing\WinUIProgressRingPage.xaml.cs">
       <DependentUpon>WinUIProgressRingPage.xaml</DependentUpon>
@@ -3641,11 +3922,26 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressBar\WinUIProgressBarPage.xaml.cs">
       <DependentUpon>WinUIProgressBarPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressRing\WinUIProgressRing_Slider.xaml.cs">
+      <DependentUpon>WinUIProgressRing_Slider.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RadioButtonsTests\RadioButtonsBasicPage.xaml.cs">
+      <DependentUpon>RadioButtonsBasicPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RadioButtonsTests\RadioButtonsFocusPage.xaml.cs">
+      <DependentUpon>RadioButtonsFocusPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RadioButtonsTests\RadioButtonsPage.xaml.cs">
+      <DependentUpon>RadioButtonsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\SplitButtonTests\SplitButtonPage.xaml.cs">
       <DependentUpon>SplitButtonPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TabViewTests\TabViewBasicPage.xaml.cs">
       <DependentUpon>TabViewBasicPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TabViewTests\TabViewItemsSourceTests.xaml.cs">
+      <DependentUpon>TabViewItemsSourceTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TabViewTests\TabViewPage.xaml.cs">
       <DependentUpon>TabViewPage.xaml</DependentUpon>
@@ -3760,6 +4056,9 @@
       <DependentUpon>MidiDeviceOutput.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\Midi\MidiDeviceWatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\OrientationTests.xaml.cs">
+      <DependentUpon>OrientationTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\PedometerTests.xaml.cs">
       <DependentUpon>PedometerTests.xaml</DependentUpon>
     </Compile>
@@ -3919,6 +4218,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_Basics.xaml.cs">
       <DependentUpon>DragDrop_Basics.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_ListView.xaml.cs">
+      <DependentUpon>DragDrop_ListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_Nested.xaml.cs">
       <DependentUpon>DragDrop_Nested.xaml</DependentUpon>
     </Compile>
@@ -4061,6 +4363,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_Clipped_Change_Property.xaml.cs">
       <DependentUpon>Border_Clipped_Change_Property.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_CornerRadius_BorderThickness.xaml.cs">
+      <DependentUpon>Border_CornerRadius_BorderThickness.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_CornerRadius_Clipping.xaml.cs">
+      <DependentUpon>Border_CornerRadius_Clipping.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_CornerRadius_Toggle.xaml.cs">
       <DependentUpon>Border_CornerRadius_Toggle.xaml</DependentUpon>
     </Compile>
@@ -4176,6 +4484,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePickerFlyout_Unloaded.xaml.cs">
       <DependentUpon>DatePickerFlyout_Unloaded.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_Content_ThemeResource.xaml.cs">
+      <DependentUpon>Flyout_Content_ThemeResource.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_Local.xaml.cs">
+      <DependentUpon>Flyout_Local.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_TemplatedParent.xaml.cs">
       <DependentUpon>Flyout_TemplatedParent.xaml</DependentUpon>
     </Compile>
@@ -4191,6 +4506,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridTestsControl\Grid_with_MinWidthColumns.xaml.cs">
       <DependentUpon>Grid_with_MinWidthColumns.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\BitmapImage_IsPlaying.xaml.cs">
+      <DependentUpon>BitmapImage_IsPlaying.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\BitmapImage_vs_SvgImageSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageAlignment2541.xaml.cs">
       <DependentUpon>ImageAlignment2541.xaml</DependentUpon>
     </Compile>
@@ -4202,6 +4521,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageWithLateSourceUniformToFill.xaml.cs">
       <DependentUpon>ImageWithLateSourceUniformToFill.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Formats.xaml.cs">
+      <DependentUpon>Image_Formats.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_ImageSource_PixelSize.xaml.cs">
       <DependentUpon>Image_ImageSource_PixelSize.xaml</DependentUpon>
@@ -4317,6 +4639,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\Pivot_CustomContent_Automated.xaml.cs">
       <DependentUpon>Pivot_CustomContent_Automated.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_HVAlignments.xaml.cs">
+      <DependentUpon>Popup_HVAlignments.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_Overlay_On.xaml.cs">
       <DependentUpon>Popup_Overlay_On.xaml</DependentUpon>
     </Compile>
@@ -4329,8 +4654,20 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RepeatButton\RepeatButton_Automated.xaml.cs">
       <DependentUpon>RepeatButton_Automated.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\ItemsRepeater_Basics.xaml.cs">
+      <DependentUpon>ItemsRepeater_Basics.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\ItemsRepeater_Nested.xaml.cs">
+      <DependentUpon>ItemsRepeater_Nested.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\MyItem.xaml.cs">
+      <DependentUpon>MyItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollBar\ScrollBar_Simple.xaml.cs">
       <DependentUpon>ScrollBar_Simple.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_Add_Remove.xaml.cs">
+      <DependentUpon>ScrollViewer_Add_Remove.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_Clipping.xaml.cs">
       <DependentUpon>ScrollViewer_Clipping.xaml</DependentUpon>
@@ -4343,6 +4680,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Slider\Slider_ThumbSize.xaml.cs">
       <DependentUpon>Slider_ThumbSize.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Slider\Slider_Header.xaml.cs">
+      <DependentUpon>Slider_Header.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SplitView\SplitViewClip.xaml.cs">
       <DependentUpon>SplitViewClip.xaml</DependentUpon>
@@ -4382,6 +4722,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_MultipleControls.xaml.cs">
       <DependentUpon>TextBlock_LineHeight_MultipleControls.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_MeasureCache.xaml.cs">
+      <DependentUpon>TextBlock_MeasureCache.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextWrapping_PR1954_EdgeCase.xaml.cs">
       <DependentUpon>TextBlock_TextWrapping_PR1954_EdgeCase.xaml</DependentUpon>
@@ -5226,6 +5569,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\GradientBrushTests\LinearGradientBrush_Change_Stops.xaml.cs">
       <DependentUpon>LinearGradientBrush_Change_Stops.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\ImageBrush_Formats.xaml.cs">
+      <DependentUpon>ImageBrush_Formats.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\ImageBrush_WriteableBitmap.xaml.cs">
       <DependentUpon>ImageBrush_WriteableBitmap.xaml</DependentUpon>
     </Compile>
@@ -5668,6 +6014,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\ShapeControlsPage.xaml.cs">
       <DependentUpon>ShapeControlsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\Shapes_Default_StrokeThickness.xaml.cs">
+      <DependentUpon>Shapes_Default_StrokeThickness.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\StretchPage.xaml.cs">
       <DependentUpon>StretchPage.xaml</DependentUpon>
@@ -6373,6 +6722,11 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\DropdownButton.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\FlipView.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\uno-fluentui-assets.ttf" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\animated.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.bmp" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\icon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\menu.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\search.png" />
@@ -6457,6 +6811,8 @@
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\Models\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PasswordBoxTests\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PersonPictureTests\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\WinUI\Images\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\WinUI\Samples\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\Model\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\Background\" />
   </ItemGroup>
@@ -6481,6 +6837,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.webp" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.heic" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.pdf" />
     <None Include="$(MSBuildThisFileDirectory)ItemExclusions.props" />
   </ItemGroup>
   <Import Project="ItemExclusions.props" />

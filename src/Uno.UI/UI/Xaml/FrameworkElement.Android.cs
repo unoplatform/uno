@@ -16,9 +16,6 @@ namespace Windows.UI.Xaml
 	public partial class FrameworkElement
 	{
 		private Size? _lastLayoutSize;
-		private Size _actualSize;
-
-		internal Size InternalActualSize => _actualSize;
 
 		/// <summary>
 		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).
@@ -269,8 +266,8 @@ namespace Windows.UI.Xaml
 					);
 				}
 
-				var previousSize = _actualSize;
-				_actualSize = newSize;
+				var previousSize = AssignedActualSize;
+				AssignedActualSize = newSize;
 
 				if (
 					// If the layout has changed, but the final size has not, this is just a translation.

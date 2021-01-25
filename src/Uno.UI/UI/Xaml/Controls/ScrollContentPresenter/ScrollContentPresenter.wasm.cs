@@ -129,13 +129,25 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			RegisterEventHandler("scroll", (EventHandler)OnScroll);
+			RestoreScroll();
+			RegisterEventHandler("scroll", (EventHandler)OnScroll, GenericEventHandlers.RaiseEventHandler);
+		}
+
+		private void RestoreScroll()
+		{
+			if (TemplatedParent is ScrollViewer sv)
+			{
+				if (sv.HorizontalOffset > 0 || sv.VerticalOffset > 0)
+				{
+					ScrollTo(sv.HorizontalOffset, sv.VerticalOffset, disableAnimation: true);
+				}
+			}
 		}
 
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-			UnregisterEventHandler("scroll", (EventHandler)OnScroll);
+			UnregisterEventHandler("scroll", (EventHandler)OnScroll, GenericEventHandlers.RaiseEventHandler);
 		}
 
 		public void ScrollTo(double? horizontalOffset, double? verticalOffset, bool disableAnimation)

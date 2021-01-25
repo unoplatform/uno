@@ -70,14 +70,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			var target2 = _app.Marked("target2");
 			var flyoutFull = _app.Marked("flyoutFull");
 
-			_app.WaitForElement(result);
+			_app.WaitForElement(result, timeoutMessage: $"Timed out waiting for element {nameof(result)}");
 
 			{
-				var target1Result = _app.WaitForElement(target1).First();
+				var target1Result = _app.WaitForElement(target1, timeoutMessage: $"Timed out waiting for element {nameof(target1)}").First();
 
 				_app.FastTap(target1);
 
-				var innerContentResult = _app.WaitForElement(innerContent).First();
+				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping target1").First();
 
 				Assert.IsTrue(target1Result.Rect.X <= innerContentResult.Rect.X);
 				Assert.IsTrue(target1Result.Rect.Width > innerContentResult.Rect.Width);
@@ -86,11 +86,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			}
 
 			{
-				var target2Result = _app.WaitForElement(target2).First();
+				var target2Result = _app.WaitForElement(target2, timeoutMessage: $"Timed out waiting for element {nameof(target2)}").First();
 
 				_app.FastTap(target2);
 
-				var innerContentResult = _app.WaitForElement(innerContent).First();
+				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping target2").First();
 
 				Assert.IsTrue(target2Result.Rect.X <= innerContentResult.Rect.X);
 				Assert.IsTrue(target2Result.Rect.Width > innerContentResult.Rect.Width);
@@ -101,7 +101,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			{
 				_app.FastTap(flyoutFull);
 
-				var innerContentResult = _app.WaitForElement(innerContent).First();
+				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping flyoutFull").First();
 
 				var rect = base.GetScreenDimensions();
 

@@ -101,8 +101,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void ProcessType(INamedTypeSymbol typeSymbol)
 			{
-				var isDependencyObject = typeSymbol.Interfaces.Any(t => Equals(t, _dependencyObjectSymbol))
-					&& (typeSymbol.BaseType?.GetAllInterfaces().None(t => Equals(t, _dependencyObjectSymbol)) ?? true);
+				var isDependencyObject = typeSymbol.Interfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol))
+					&& (typeSymbol.BaseType?.GetAllInterfaces().None(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol)) ?? true);
 
 				if (isDependencyObject && typeSymbol.TypeKind == TypeKind.Class)
 				{
@@ -284,7 +284,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var isAndroidActivity = typeSymbol.Is(_androidActivitySymbol);
 				var isAndroidFragment = typeSymbol.Is(_androidFragmentSymbol);
 				var isUnoViewGroup = typeSymbol.Is(_unoViewgroupSymbol);
-				var implementsIFrameworkElement = typeSymbol.Interfaces.Any(t => Equals(t, _iFrameworkElementSymbol));
+				var implementsIFrameworkElement = typeSymbol.Interfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, _iFrameworkElementSymbol));
 				var hasOverridesAttachedToWindowAndroid = isAndroidView &&
 					typeSymbol
 					.GetMethods()

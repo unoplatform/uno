@@ -20,7 +20,6 @@ using UIKit;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
-	[TestClass]
 	public partial class Given_UIElement
 	{
 		[TestMethod]
@@ -164,6 +163,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(154, result.X);
 			Assert.AreEqual(101, result.Y);
-		}
+		}		
 	}
 }

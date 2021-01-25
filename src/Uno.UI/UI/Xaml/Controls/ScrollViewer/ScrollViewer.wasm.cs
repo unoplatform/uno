@@ -4,6 +4,7 @@ using Windows.Foundation;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
 using Uno.UI.Xaml;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -17,8 +18,8 @@ namespace Windows.UI.Xaml.Controls
 
 		// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
 		// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
 		{
@@ -29,6 +30,15 @@ namespace Windows.UI.Xaml.Controls
 			else if (_log.IsEnabled(LogLevel.Warning))
 			{
 				_log.Warn("Cannot ChangeView as ScrollContentPresenter is not ready yet.");
+			}
+		}
+
+		partial void UpdatePartial(bool isIntermediate)
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMXamlProperty(nameof(HorizontalOffset), HorizontalOffset);
+				UpdateDOMXamlProperty(nameof(VerticalOffset), VerticalOffset);
 			}
 		}
 	}

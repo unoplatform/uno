@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ContentProperty, value); }
 		}
 
-		public static DependencyProperty ContentProperty { get ; } =
+		public static DependencyProperty ContentProperty { get; } =
 			DependencyProperty.Register(
 				"Content",
 				typeof(object),
@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for ContentTemplate.  This enables animation, styling, binding, etc...
-		public static DependencyProperty ContentTemplateProperty { get ; } =
+		public static DependencyProperty ContentTemplateProperty { get; } =
 			DependencyProperty.Register(
 				"ContentTemplate",
 				typeof(DataTemplate),
@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ContentTemplateSelectorProperty, value); }
 		}
 
-		public static DependencyProperty ContentTemplateSelectorProperty { get ; } =
+		public static DependencyProperty ContentTemplateSelectorProperty { get; } =
 			DependencyProperty.Register(
 				"ContentTemplateSelector",
 				typeof(DataTemplateSelector),
@@ -272,7 +272,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ContentTransitionsProperty, value); }
 		}
 
-		public static DependencyProperty ContentTransitionsProperty { get ; } =
+		public static DependencyProperty ContentTransitionsProperty { get; } =
 			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentControl), new FrameworkPropertyMetadata(null, OnContentTransitionsChanged));
 #nullable enable
 
@@ -427,7 +427,10 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					if (ContentTemplateRoot is IDependencyObjectStoreProvider provider)
+					if ((ContentTemplateRoot is IDependencyObjectStoreProvider provider) &&
+						// The DataContext may be set directly on the template root
+						(_localContentDataContextOverride || !(provider as DependencyObject).IsDependencyPropertyLocallySet(provider.Store.DataContextProperty))
+					)
 					{
 						_localContentDataContextOverride = true;
 						provider.Store.SetValue(provider.Store.DataContextProperty, Content, DependencyPropertyValuePrecedences.Local);

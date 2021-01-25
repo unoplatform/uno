@@ -174,12 +174,14 @@ namespace Windows.UI.Xaml.Shapes
 		private Rect GetBBoxWithStrokeThickness(UIElement element)
 		{
 			var bbox = element.GetBBox();
-			if (Stroke == null || StrokeThickness < double.Epsilon)
+			var strokeThickness = ActualStrokeThickness;
+
+			if (Stroke == null || strokeThickness < double.Epsilon)
 			{
 				return bbox;
 			}
 
-			var halfStrokeThickness = StrokeThickness / 2;
+			var halfStrokeThickness = strokeThickness / 2;
 
 			var x = Math.Min(bbox.X, bbox.Left - halfStrokeThickness);
 			var y = Math.Min(bbox.Y, bbox.Top - halfStrokeThickness);

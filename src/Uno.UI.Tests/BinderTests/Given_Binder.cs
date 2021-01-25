@@ -675,6 +675,34 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		public void When_Private_Field_And_xBind_Not_OneTime()
+		{
+			var source = new PrivateField(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			var binding = new Binding()
+			{
+				Path = "MyField",
+				Mode = BindingMode.OneWay,
+				CompiledSource = source
+			};
+			binding.SetBindingXBindProvider(
+					source,
+					(a) => "Test",
+					null,
+					new[] { "MyField" });
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				binding
+			);
+
+			SUT.ApplyXBind();
+
+			Assert.AreEqual("Test", SUT.Tag);
+		}
+
+		[TestMethod]
 		public void When_Public_Field_And_Binding()
 		{
 			var source = new PublicField(42);

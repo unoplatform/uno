@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public TimePicker()
 		{
-			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true);
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "TimePickerLightDismissOverlayBackground", isThemeResourceExtension: true);
 
 			DefaultStyleKey = typeof(TimePicker);
 		}

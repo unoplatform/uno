@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml
 
 		private void DispatchRaiseTick()
 		{
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, _ => RaiseTick());
+			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, RaiseTick);
 		}
 
 		private void StartNative(TimeSpan dueTime, TimeSpan interval)

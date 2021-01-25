@@ -16,6 +16,36 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<Style x:Key="NoExtraSpaceListViewContainerStyle"
+		   TargetType="ListViewItem">
+		<Setter Property="Padding"
+				Value="0" />
+		<Setter Property="MinWidth"
+				Value="0" />
+		<Setter Property="MinHeight"
+				Value="1" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ListViewItem">
+					<ContentPresenter Content="{TemplateBinding Content}"
+									  ContentTemplate="{TemplateBinding ContentTemplate}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="CounterItemsControlContainerStyle"
+		   TargetType="ContentControl">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ContentControl">
+					<local:CounterGrid2>
+						<ContentPresenter Content="{TemplateBinding Content}"
+										  ContentTemplate="{TemplateBinding ContentTemplate}" />
+					</local:CounterGrid2>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 	<DataTemplate x:Key="TextBlockItemTemplate">
 		<TextBlock Text="{Binding}" />
 	</DataTemplate>
@@ -44,5 +74,15 @@
 			<TextBlock Text="{Binding}"
 					   HorizontalAlignment="Center" />
 		</Border>
+	</DataTemplate>
+	<DataTemplate x:Key="CounterItemTemplate">
+		<local:CounterGrid>
+			<TextBlock Text="{Binding}" />
+		</local:CounterGrid>
+	</DataTemplate>
+	<DataTemplate x:Key="DataContextBindingDataTemplate">
+		<Grid DataContext="{Binding SignIn}">
+			<TextBlock Text="{Binding UserName}" />
+		</Grid>
 	</DataTemplate>
 </ResourceDictionary>

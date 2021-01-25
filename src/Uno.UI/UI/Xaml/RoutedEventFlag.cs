@@ -99,7 +99,7 @@ namespace Uno.UI.Xaml
 			| RoutedEventFlag.ManipulationInertiaStarting
 			| RoutedEventFlag.ManipulationCompleted;
 
-		private const RoutedEventFlag _isGesture = // 0b0000_0000_0001_1111___0000_0000_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000
+		private const RoutedEventFlag _isGesture = // 0b0000_0000_0000_1111___0000_0000_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000
 			RoutedEventFlag.Tapped
 			| RoutedEventFlag.DoubleTapped
 			| RoutedEventFlag.RightTapped

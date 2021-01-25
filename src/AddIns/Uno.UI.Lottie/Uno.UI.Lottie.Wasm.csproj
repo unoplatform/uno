@@ -11,6 +11,7 @@
 
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,10 +23,11 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.9.2" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="System.Json" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />
@@ -43,7 +45,9 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.Lottie\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.Lottie\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

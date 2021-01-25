@@ -8,6 +8,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -280,6 +281,64 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		public void When_MaxLines_Then_AlignmentPositionIsCorrect()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_Two_With_Wrap");
+
+			_app.Marked("fontsize").SetDependencyPropertyValue("Value", "5");
+			_app.Marked("slider").SetDependencyPropertyValue("Value", "375");
+			_app.Marked("sliderV").SetDependencyPropertyValue("Value", "50");
+
+			using var _ = new AssertionScope();
+
+			CheckAlignmentAndWidth("border1", "textwrap");
+			CheckAlignmentAndWidth("border2", "textwrapwords");
+			CheckAlignmentAndWidth("border3", "textwrapellipsis");
+			CheckAlignmentAndWidth("border4", "textwrapwordsellipsis");
+
+			void CheckAlignmentAndWidth(string borderName, string textName)
+			{
+				const float precision = 1.15f;
+
+				// Alignment=STRETCH
+				var (borderRect, textRect) = GetRects(borderName, textName);
+
+				textRect.X.Should().BeApproximately(borderRect.X, precision, "X - stretch");
+				textRect.Width.Should().BeApproximately(borderRect.Width, precision, "Width - stretch");
+
+				// Alignment=CENTER
+				_app.Marked(textName).SetDependencyPropertyValue("HorizontalAlignment", "Center");
+				(borderRect, textRect) = GetRects(borderName, textName);
+				textRect.X.Should()
+					.BeApproximately(
+						borderRect.X + (borderRect.Width - textRect.Width)/2f,
+						precision,
+						"X - center");
+				textRect.Width.Should().BeLessThan(borderRect.Width, "Width - center");
+
+				// Alignment=LEFT
+				_app.Marked(textName).SetDependencyPropertyValue("HorizontalAlignment", "Left");
+				(borderRect, textRect) = GetRects(borderName, textName);
+				textRect.X.Should().BeApproximately(borderRect.X, precision, "X - left");
+				textRect.Width.Should().BeLessThan(borderRect.Width, "Width - left");
+
+				// Alignment=RIGHT
+				_app.Marked(textName).SetDependencyPropertyValue("HorizontalAlignment", "Right");
+				(borderRect, textRect) = GetRects(borderName, textName);
+				textRect.Right.Should().BeApproximately(borderRect.Right, precision, "Right - right");
+				textRect.Width.Should().BeLessThan(borderRect.Width, "Width - right");
+			}
+
+			(IAppRect borderRect, IAppRect textRect) GetRects(string borderName, string textName)
+			{
+				var borderRect = _app.GetLogicalRect(borderName);
+				var textRect = _app.GetLogicalRect(textName);
+				return (borderRect, textRect);
+			}
+		}
+
+		[Test]
+		[AutoRetry]
 		public void When_MaxLines_Changed_On_Stack_Container()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_Multiple_Containers");
@@ -336,6 +395,40 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 				$"Expected Number of lines: {numberOfLines}. \n" +
 				$"Actual Number of lines:{actualNumberOfLines}. \n" +
 				$"Line height: {lineHeight}. \n");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
+		public void When_Padding_Is_Changed_Then_Cache_Is_Missed()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_MeasureCache");
+
+			_app.Marked("text").SetDependencyPropertyValue("Padding", "40");
+
+			_app.WaitForElement("text");
+
+			var w1 = _app.GetLogicalRect("textBorder").Width;
+			var misses1 = _app.Marked("misses").GetDependencyPropertyValue<int>("Text");
+
+			_app.Marked("text").SetDependencyPropertyValue("Padding", "10");
+
+			_app.WaitForElement("text");
+
+			var w2 = _app.GetLogicalRect("textBorder").Width;
+			var misses2 = _app.Marked("misses").GetDependencyPropertyValue<int>("Text");
+
+			_app.Marked("text").SetDependencyPropertyValue("Padding", "40");
+
+			_app.WaitForElement("text");
+
+			var w3 = _app.GetLogicalRect("textBorder").Width;
+			var misses3 = _app.Marked("misses").GetDependencyPropertyValue<int>("Text");
+
+			using var _ = new AssertionScope();
+
+			w1.Should().BeGreaterThan(w2);
+			w3.Should().Be(w1);
 		}
 	}
 }

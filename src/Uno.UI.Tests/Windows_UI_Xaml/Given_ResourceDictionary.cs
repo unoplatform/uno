@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
 using Uno.UI.Tests.ViewLibrary;
+using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 #if !NETFX_CORE
 using Uno.UI.Xaml;
 #endif
@@ -413,6 +414,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_xName_In_Dictionary_Reference_Equality()
+		{
+			var page = new When_xName_In_Dictionary_Reference_Equality();
+			Assert.IsTrue(page.Resources.ContainsKey("MutableBrush"));
+			Assert.AreEqual(page.MutableBrush, page.Resources["MutableBrush"]);
+			Assert.AreEqual(page.MutableBrush, page.TestBorder.Background);
+			Assert.AreEqual(Colors.Green, (page.TestBorder.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
 		public void When_Resource_Referencing_Resource()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -676,6 +687,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(withoutSlash, withSlash);
 		}
+
+		[TestMethod]
+		public void When_SharedHelpers_FindResource()
+		{
+			var rdInner = new ResourceDictionary();
+			rdInner["Grin"] = new SolidColorBrush(Colors.DarkOliveGreen);
+
+			var rd = new ResourceDictionary();
+			rd.MergedDictionaries.Add(rdInner);
+
+			var brush = UI.Helpers.WinUI.SharedHelpers.FindResource("Grin", rd, null);
+
+			Assert.IsNotNull(brush);
+			Assert.AreEqual(Colors.DarkOliveGreen, (brush as SolidColorBrush).Color);
+		}
 #endif
 
 		[TestMethod]
@@ -708,6 +734,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var page = new Test_Page_Other();
 			var tb = page.ThemeDictionaryOnlyTextBlock;
 			Assert.AreEqual(Colors.MediumPurple, (tb.Foreground as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public void When_Source_And_Globbing_From_Included_File()
+		{
+			var ctrl = new When_Source_And_Globbing_From_Included_File();
+			var resources = ctrl.Resources;
+			Assert.IsTrue(resources.ContainsKey("GlobPropsMarginButtonStyle"));
+
+			var style = resources["GlobPropsMarginButtonStyle"] as Style;
+			var button = new Button();
+			button.Style = style;
+			Assert.AreEqual(new Thickness(99, 33, 7, 7), button.Margin);
 		}
 	}
 }

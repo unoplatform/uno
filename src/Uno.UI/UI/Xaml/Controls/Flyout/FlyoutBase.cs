@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Uno.Disposables;
+using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
@@ -157,7 +159,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
 
 		public FrameworkElement Target { get; private set; }
@@ -229,7 +231,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			Target = placementTarget;
 
-			if(showOptions != null)
+			if (showOptions != null)
 			{
 				_popupPositionInTarget = showOptions.Position;
 			}
@@ -265,7 +267,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (_popup != null)
 			{
-				_popup.IsOpen = false; 
+				_popup.IsOpen = false;
 			}
 		}
 
@@ -335,5 +337,67 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal Control GetPresenter() => _popup?.Child as Control;
+
+		internal static PreferredJustification GetJustificationFromPlacementMode(FlyoutPlacementMode placement)
+		{
+			switch (placement)
+			{
+				case FlyoutPlacementMode.Full:
+				case FlyoutPlacementMode.Top:
+				case FlyoutPlacementMode.Bottom:
+				case FlyoutPlacementMode.Left:
+				case FlyoutPlacementMode.Right:
+					return PreferredJustification.Center;
+				case FlyoutPlacementMode.TopEdgeAlignedLeft:
+				case FlyoutPlacementMode.BottomEdgeAlignedLeft:
+					return PreferredJustification.Left;
+				case FlyoutPlacementMode.TopEdgeAlignedRight:
+				case FlyoutPlacementMode.BottomEdgeAlignedRight:
+					return PreferredJustification.Right;
+				case FlyoutPlacementMode.LeftEdgeAlignedTop:
+				case FlyoutPlacementMode.RightEdgeAlignedTop:
+					return PreferredJustification.Top;
+				case FlyoutPlacementMode.LeftEdgeAlignedBottom:
+				case FlyoutPlacementMode.RightEdgeAlignedBottom:
+					return PreferredJustification.Bottom;
+				default:
+					if (typeof(FlyoutBase).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(FlyoutBase).Log().LogError("Unsupported FlyoutPlacementMode");
+					}
+					return PreferredJustification.Center;
+			}
+		}
+
+		internal static MajorPlacementMode GetMajorPlacementFromPlacement(FlyoutPlacementMode placement)
+		{
+			switch (placement)
+			{
+				case FlyoutPlacementMode.Full:
+					return MajorPlacementMode.Full;
+				case FlyoutPlacementMode.Top:
+				case FlyoutPlacementMode.TopEdgeAlignedLeft:
+				case FlyoutPlacementMode.TopEdgeAlignedRight:
+					return MajorPlacementMode.Top;
+				case FlyoutPlacementMode.Bottom:
+				case FlyoutPlacementMode.BottomEdgeAlignedLeft:
+				case FlyoutPlacementMode.BottomEdgeAlignedRight:
+					return MajorPlacementMode.Bottom;
+				case FlyoutPlacementMode.Left:
+				case FlyoutPlacementMode.LeftEdgeAlignedTop:
+				case FlyoutPlacementMode.LeftEdgeAlignedBottom:
+					return MajorPlacementMode.Left;
+				case FlyoutPlacementMode.Right:
+				case FlyoutPlacementMode.RightEdgeAlignedTop:
+				case FlyoutPlacementMode.RightEdgeAlignedBottom:
+					return MajorPlacementMode.Right;
+				default:
+					if (typeof(FlyoutBase).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(FlyoutBase).Log().LogError("Unsupported FlyoutPlacementMode");
+					}
+					return MajorPlacementMode.Full;
+			}
+		}
 	}
 }

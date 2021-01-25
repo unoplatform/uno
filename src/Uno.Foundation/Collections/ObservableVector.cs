@@ -10,6 +10,7 @@ namespace Windows.Foundation.Collections
 	{
 		private readonly List<T> _list = new List<T>();
 
+		object IObservableVector.this[int index] => this[index];
 		public virtual T this[int index]
 		{
 			get { return _list[index]; }
@@ -33,6 +34,7 @@ namespace Windows.Foundation.Collections
 		public event VectorChangedEventHandler<T> VectorChanged;
 		public event VectorChangedEventHandler UntypedVectorChanged;
 
+		void IObservableVector.Add(object item) => Add((T)item);
 		public virtual void Add(T item)
 		{
 			_list.Add(item);
@@ -53,8 +55,10 @@ namespace Windows.Foundation.Collections
 
 		public virtual IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
 
+		int IObservableVector.IndexOf(object item) => item is T t ? IndexOf(t) : -1;
 		public int IndexOf(T item) => _list.IndexOf(item);
 
+		void IObservableVector.Insert(int index, object item) => Insert(index, (T)item);
 		public virtual void Insert(int index, T item)
 		{
 			_list.Insert(index, item);

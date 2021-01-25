@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Extensions;
@@ -14,40 +15,22 @@ namespace Uno.Foundation.Interop
 
 		public const UnmanagedType LPUTF8Str = (UnmanagedType)48;
 
-		/// <summary>
-		/// Prints the actual offsets of the structures present in <see cref="WindowManagerInterop"/> for debugging purposes.
-		/// </summary>
-		internal static void GenerateTSMarshallingLayouts()
-		{
-			// Uncomment this to troubshoot this field offsets.
-			//
-			// Console.WriteLine("Generating layouts");
-			// foreach (var p in typeof(WindowManagerInterop).GetNestedTypes(System.Reflection.BindingFlags.NonPublic).Where(t => t.IsValueType))
-			// {
-			// 		var sb = new StringBuilder();
-			   
-			// 		Console.WriteLine($"class {p.Name}:");
-			   
-			// 		foreach (var field in p.GetFields())
-			// 		{
-			// 			var fieldOffset = Marshal.OffsetOf(p, field.Name);
-			// 			Console.WriteLine($"\t{field.Name} : {fieldOffset}");
-			// 		}
-			// }
-		}
-
 		public static void InvokeJS<TParam>(
 			string methodName,
 			TParam paramStruct,
 			[System.Runtime.CompilerServices.CallerMemberName] string memberName = null
 		)
 		{
-			if (_logger.Value.IsEnabled(LogLevel.Debug))
+			var paramSize = MarshalSizeOf<TParam>.Size;
+
+			if (_logger.Value.IsEnabled(LogLevel.Trace))
 			{
-				_logger.Value.LogDebug($"InvokeJS for {memberName}/{typeof(TParam)}");
+				_logger.Value.LogTrace($"InvokeJS for {memberName}/{typeof(TParam)} (Alloc: {paramSize})");
 			}
 
-			var pParms = Marshal.AllocHGlobal(MarshalSizeOf<TParam>.Size);
+			var pParms = Marshal.AllocHGlobal(paramSize);
+
+			DumpStructureLayout<TParam>();
 
 			Marshal.StructureToPtr(paramStruct, pParms, false);
 
@@ -73,13 +56,19 @@ namespace Uno.Foundation.Interop
 			[System.Runtime.CompilerServices.CallerMemberName] string memberName = null
 		)
 		{
-			if (_logger.Value.IsEnabled(LogLevel.Debug))
+			var returnSize = MarshalSizeOf<TRet>.Size;
+			var paramSize = MarshalSizeOf<TParam>.Size;
+
+			if (_logger.Value.IsEnabled(LogLevel.Trace))
 			{
-				_logger.Value.LogDebug($"InvokeJS for {memberName}/{typeof(TParam)}/{typeof(TRet)}");
+				_logger.Value.LogTrace($"InvokeJS for {memberName}/{typeof(TParam)}/{typeof(TRet)} (paramSize: {paramSize}, returnSize: {returnSize}");
 			}
 
-			var pParms = Marshal.AllocHGlobal(MarshalSizeOf<TParam>.Size);
-			var pReturnValue = Marshal.AllocHGlobal(MarshalSizeOf<TRet>.Size);
+			DumpStructureLayout<TParam>();
+			DumpStructureLayout<TRet>();
+
+			var pParms = Marshal.AllocHGlobal(paramSize);
+			var pReturnValue = Marshal.AllocHGlobal(returnSize);
 
 			TRet returnValue = default;
 
@@ -109,6 +98,34 @@ namespace Uno.Foundation.Interop
 				Marshal.DestroyStructure(pReturnValue, typeof(TRet));
 				Marshal.FreeHGlobal(pReturnValue);
 			}
+		}
+
+#if TRACE_MEMORY_LAYOUT
+		private static HashSet<Type> _structureDump = new HashSet<Type>();
+#endif
+
+		[Conditional("DEBUG")]
+		private static void DumpStructureLayout<T>()
+		{
+#if TRACE_MEMORY_LAYOUT
+			if (typeof(T) == typeof(bool))
+			{
+				return;
+			}
+
+			if (!_structureDump.Contains(typeof(T)))
+			{
+				_structureDump.Add(typeof(T));
+
+				Console.WriteLine($"Dumping offsets for {typeof(T)} (Size: {MarshalSizeOf<T>.Size})");
+
+				foreach (var field in typeof(T).GetFields())
+				{
+					var offset = Marshal.OffsetOf<T>(field.Name);
+					Console.WriteLine($"  - {field.Name}: {offset}");
+				}
+			}
+#endif
 		}
 
 		private class MarshalSizeOf<T>

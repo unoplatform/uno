@@ -4,9 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.Xml;
-using System.Text;
-using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.TemplateWizard;
@@ -44,6 +41,7 @@ namespace UnoSolutionTemplate.Wizard
 
 			OpenWelcomePage();
 			SetStartupProject();
+			SetUWPAnyCPUBuildableAndDeployable();
 			SetDefaultConfiguration();
 		}
 
@@ -76,6 +74,34 @@ namespace UnoSolutionTemplate.Wizard
 			else
 			{
 				throw new InvalidOperationException();
+			}
+		}
+
+		private void SetUWPAnyCPUBuildableAndDeployable()
+		{
+			if (_dte?.Solution.SolutionBuild is SolutionBuild2 val)
+			{
+				try
+				{
+					var anyCpuConfig = val.SolutionConfigurations
+						.Cast<SolutionConfiguration2>()
+						.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "Any CPU");
+
+					foreach (SolutionConfiguration2 solutionConfiguration2 in val.SolutionConfigurations)
+					{
+						foreach (SolutionContext solutionContext in anyCpuConfig.SolutionContexts)
+						{
+							if (solutionContext.ProjectName.EndsWith(".UWP.csproj"))
+							{
+								solutionContext.ShouldBuild = true;
+								solutionContext.ShouldDeploy = true;
+							}
+						}
+					}
+				}
+				catch (Exception)
+				{
+				}
 			}
 		}
 

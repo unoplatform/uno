@@ -35,7 +35,7 @@ namespace Windows.System
 
 		private void DispatchRaiseTick()
 		{
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, _ => RaiseTick());
+			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => RaiseTick());
 		}
 
 		private void StopNative()

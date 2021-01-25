@@ -1,11 +1,11 @@
-﻿using System;
+using System;
+using System.Linq;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial interface IKeyIndexMapping
 	{
-		String KeyFromIndex(Int32 index);
-
-		Int32 IndexFromKey(String key);
+		string KeyFromIndex(int index);
+		int IndexFromKey(string key);
 	}
 }

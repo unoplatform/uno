@@ -146,6 +146,7 @@ namespace Windows.UI.Xaml.Controls
 			if (NativePanel != null)
 			{
 				return NativePanel.IndexPathsForVisibleItems
+						.OrderBy(p => p.ToIndexPath())
 						.Select(NativePanel.CellForItem)
 						.OfType<ListViewBaseInternalContainer>()
 						.Select(cell => cell.Content)

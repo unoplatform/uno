@@ -3,6 +3,7 @@ parameters:
 
 jobs:
 - job: Wasm_cs9_preview_Build
+  displayName: 'WebAssembly Build (C# 9.0 Compiler)'
   container: nv-bionic-wasm
 
   pool:

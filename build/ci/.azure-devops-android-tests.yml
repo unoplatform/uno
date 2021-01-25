@@ -1,14 +1,16 @@
 parameters:
-  vmImage: ''
+  vmMacOSImage: ''
+  vmWindowsImage: ''
   xCodeRoot: ''
   XamarinSDKVersion: ''
 
 jobs:
 
 - job: Android_Build_For_Tests
+  displayName: 'Android UI Tests (Build)'
 
   pool:
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmMacOSImage }}
 
   variables:
     CI_Build: true
@@ -19,25 +21,31 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/optimize-roslyn-mono.yml
-
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/ios-build-select-version.yml
-    parameters:
-      xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+  - task: MSBuild@1
+    inputs:
+      solution: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true
+      clean: false
+      maximumCpuCount: true
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
 
-  - bash: |
-      $(build.sourcesdirectory)/build/android-uitest-build.sh
-
-    displayName: Build Android Test Package
-
-    env:
-      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/bin/Release/
+      Contents: 'uno.platform.unosampleapp-Signed.apk'
+      TargetFolder: $(build.artifactstagingdirectory)/android
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -47,7 +55,11 @@ jobs:
       ArtifactType: Container
 
 - job: Android_Tests
-  dependsOn: Android_Build_For_Tests
+  displayName: 'Android UI Tests (Run)'
+  dependsOn:
+  - Android_Build_For_Tests
+  - SamplesApp_UITests_Build
+
   timeoutInMinutes: 90
   variables:
     CI_Build: true
@@ -55,7 +67,7 @@ jobs:
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
   pool:
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmMacOSImage }}
 
   strategy:
     matrix:
@@ -85,6 +97,20 @@ jobs:
         artifactName: uitests-android-build
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+        artifactName: uitests-failure-results
+        downloadPath: '$(build.sourcesdirectory)/build'
+
   - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/ios-build-select-version.yml
@@ -109,14 +135,6 @@ jobs:
       testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME) Test Run'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
-      failTaskOnFailedTests: false
-
-  - task: PublishTestResults@2
-    condition: always()
-    inputs:
-      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME) Test Re-Run'
-      testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-failed-rerun.xml'
       failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
@@ -124,4 +142,11 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
       ArtifactType: Container

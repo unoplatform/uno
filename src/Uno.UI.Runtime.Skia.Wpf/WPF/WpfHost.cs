@@ -57,8 +57,8 @@ namespace Uno.UI.Skia.Platform
 				app.Host = this;
 			}
 
-			Windows.UI.Core.CoreDispatcher.DispatchOverride
-				= d => dispatcher.BeginInvoke(d);
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
+			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 
 			WinUI.Application.Start(CreateApp, args);
 

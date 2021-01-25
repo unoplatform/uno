@@ -4,3 +4,4 @@ exclude_paths:
   - 'src/SamplesApp/**'
   - '**/tsBindings/*.ts'
   - 'doc/**'
+  - 'src/Uno.UI/Microsoft/UI/Xaml/Controls/Repeater/**'

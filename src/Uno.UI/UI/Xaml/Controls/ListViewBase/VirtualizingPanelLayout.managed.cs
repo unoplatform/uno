@@ -2,6 +2,7 @@
 #nullable enable
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -250,7 +251,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				unappliedDelta -= scrollIncrement;
 				unappliedDelta = Max(0, unappliedDelta);
-				UpdateLayout(extentAdjustment: sign * -unappliedDelta);
+				UpdateLayout(extentAdjustment: sign * -unappliedDelta, isScroll: true);
 			}
 			ArrangeElements(_availableSize, ViewportSize);
 			UpdateCompleted();
@@ -298,7 +299,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateAverageLineHeight(); // Must be called before ScrapLayout(), or there won't be items to measure
 			ScrapLayout();
 			ApplyCollectionChanges();
-			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges);
+			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges, isScroll: false);
 
 			return _lastMeasuredSize = EstimatePanelSize(isMeasure: true);
 		}
@@ -333,13 +334,13 @@ namespace Windows.UI.Xaml.Controls
 			foreach (var line in _materializedLines)
 			{
 				var indexAdjustment = -1;
-				foreach (var view in line.ContainerViews)
+				foreach (var item in line.Items)
 				{
 					indexAdjustment++;
 
-					var bounds = GetBoundsForElement(view);
+					var bounds = GetBoundsForElement(item.container);
 					var arrangedBounds = GetElementArrangeBounds(line.FirstItemFlat + indexAdjustment, bounds, adjustedVisibleWindow, finalSize);
-					view.Arrange(arrangedBounds);
+					item.container.Arrange(arrangedBounds);
 				}
 			}
 		}
@@ -348,8 +349,9 @@ namespace Windows.UI.Xaml.Controls
 		/// Update the item container layout by removing no-longer-visible views and adding visible views.
 		/// </summary>
 		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
-		private void UpdateLayout(double? extentAdjustment)
+		private void UpdateLayout(double? extentAdjustment, bool isScroll)
 		{
+			ResetReorderingIndex();
 			OwnerPanel.ShouldInterceptInvalidate = true;
 
 			UnfillLayout(extentAdjustment ?? 0);
@@ -360,7 +362,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"Called {GetMethodTag()}, {GetDebugInfo()} extentAdjustment={extentAdjustment}");
 			}
 
-			if (!extentAdjustment.HasValue)
+			if (!isScroll)
 			{
 				UpdateCompleted();
 			}
@@ -392,7 +394,14 @@ namespace Windows.UI.Xaml.Controls
 			{
 				FillBackward();
 			}
+
 			FillForward();
+
+			// Make sure that the reorder item has been rendered
+			if (GetReorderingIndex() is { } reorderIndex && _materializedLines.None(line => line.Contains(reorderIndex)))
+			{
+				AddLine(Forward, reorderIndex);
+			}
 
 			_dynamicSeedIndex = null;
 			_dynamicSeedStart = null;
@@ -404,7 +413,6 @@ namespace Windows.UI.Xaml.Controls
 					var nextItem = GetNextUnmaterializedItem(Backward, GetFirstMaterializedIndexPath());
 					while (nextItem != null && GetItemsStart() > ExtendedViewportStart + extentAdjustment)
 					{
-						// Fill gap at start with views
 						AddLine(Backward, nextItem.Value);
 						nextItem = GetNextUnmaterializedItem(Backward, GetFirstMaterializedIndexPath());
 					}
@@ -464,9 +472,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void RecycleLine(Line line)
 		{
-			for (int i = 0; i < line.ContainerViews.Length; i++)
+			for (int i = 0; i < line.Items.Length; i++)
 			{
-				Generator.RecycleViewForItem(line.ContainerViews[i], line.FirstItemFlat + i);
+				Generator.RecycleViewForItem(line.Items[i].container, line.FirstItemFlat + i);
 			}
 		}
 
@@ -475,9 +483,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void ScrapLine(Line line)
 		{
-			for (int i = 0; i < line.ContainerViews.Length; i++)
+			for (int i = 0; i < line.Items.Length; i++)
 			{
-				Generator.ScrapViewForItem(line.ContainerViews[i], line.FirstItemFlat + i);
+				Generator.ScrapViewForItem(line.Items[i].container, line.FirstItemFlat + i);
 			}
 		}
 
@@ -503,7 +511,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var itemOffset = updatedValue.Row - dynamicSeedIndex.Row; // TODO: This will need to change when grouping is supported
 					var scrollAdjustment = itemOffset * _averageLineHeight; // TODO: not appropriate for ItemsWrapGrid
-					ApplyScrollAdjustment(scrollAdjustment);
+					ApplyScrollAdjustmentForCollectionChange(scrollAdjustment);
 				}
 				// TODO: handle the case where seed was removed
 			}
@@ -511,7 +519,10 @@ namespace Windows.UI.Xaml.Controls
 			_pendingCollectionChanges.Clear();
 		}
 
-		private void ApplyScrollAdjustment(double scrollAdjustment)
+		/// <summary>
+		/// Update scroll offset for changes in position from collection change operation
+		/// </summary>
+		private void ApplyScrollAdjustmentForCollectionChange(double scrollAdjustment)
 		{
 			if (scrollAdjustment == 0)
 			{
@@ -675,7 +686,8 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Update the display of the panel without clearing caches.
 		/// </summary>
-		private void LightRefresh() => OwnerPanel?.InvalidateMeasure();
+		private void LightRefresh()
+			=> OwnerPanel?.InvalidateMeasure();
 
 		internal void Refresh()
 		{
@@ -712,6 +724,10 @@ namespace Windows.UI.Xaml.Controls
 		private void ScrapLayout()
 		{
 			var firstVisibleItem = GetFirstMaterializedIndexPath();
+			if (GetReorderingIndex() is { } reorderIndex && reorderIndex == firstVisibleItem)
+			{
+				firstVisibleItem = _materializedLines.SelectMany(line => line.Items).Skip(1).FirstOrDefault().index;
+			}
 
 			_dynamicSeedIndex = GetDynamicSeedIndex(firstVisibleItem);
 			_dynamicSeedStart = GetContentStart();
@@ -769,7 +785,6 @@ namespace Windows.UI.Xaml.Controls
 		private void AddLine(GeneratorDirection fillDirection, Uno.UI.IndexPath nextVisibleItem)
 		{
 			var extentOffset = fillDirection == Backward ? GetContentStart() : GetContentEnd();
-
 			var line = CreateLine(fillDirection, extentOffset, AvailableBreadth, nextVisibleItem);
 
 			if (fillDirection == Backward)
@@ -779,6 +794,14 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				_materializedLines.AddToBack(line);
+			}
+
+			// The layout might have decided to insert another item (pending reorder item), so make sure to add the requested item anyway.
+			// Note: We must ensure to add the requested item so the Get<First|Last>MaterializedLine()
+			//		 and Get<Content|Items><Start|End>() will still return a meaningful values.
+			if (!line.Contains(nextVisibleItem))
+			{
+				AddLine(fillDirection, nextVisibleItem);
 			}
 		}
 
@@ -975,32 +998,95 @@ namespace Windows.UI.Xaml.Controls
 		private static Point GetRelativePosition(FrameworkElement child) => new Point(ViewHelper.PhysicalToLogicalPixels(child.Left), ViewHelper.PhysicalToLogicalPixels(child.Top));
 #endif
 
+		private (double offset, double breadth, object item, Uno.UI.IndexPath? index)? _pendingReorder;
+		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item)
+		{
+			_pendingReorder = Orientation == Orientation.Horizontal
+				? (location.X + ScrollOffset, element.ActualWidth, item, default(Uno.UI.IndexPath?))
+				: (location.Y + ScrollOffset, element.ActualHeight, item, default(Uno.UI.IndexPath?));
+
+			LightRefresh();
+		}
+
+		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item)
+		{
+			var updatedIndex = default(Uno.UI.IndexPath?);
+			if (_pendingReorder?.index is { } index)
+			{
+				var nextItem = _materializedLines
+					.SelectMany(line => line.Items)
+					.SkipWhile(i => i.index != index)
+					.Skip(1)
+					.FirstOrDefault();
+
+				updatedIndex = nextItem.container is null
+					? Uno.UI.IndexPath.FromRowSection(int.MaxValue, int.MaxValue) // There is no "nextItem", i.e. the item has been moved at the end.
+					: nextItem.index;
+			}
+			_pendingReorder = null;
+
+			// We need a full refresh to properly re-arrange all items at their right location,
+			// ignoring the temp location of the dragged / reordered item.
+			Refresh();
+
+			return updatedIndex;
+		}
+
+		protected bool ShouldInsertReorderingView(double extentOffset)
+			=> _pendingReorder is { } reorder && reorder.offset > extentOffset && reorder.offset <= extentOffset + reorder.breadth;
+
+		protected Uno.UI.IndexPath? GetReorderingIndex()
+		{
+			if (_pendingReorder is { } reorder)
+			{
+				if (reorder.index is null)
+				{
+					reorder.index = XamlParent!.GetIndexPathFromItem(reorder.item);
+					_pendingReorder = reorder; // _pendingReorder is a struct!
+				}
+
+				return reorder.index;
+			}
+
+			return null;
+		}
+
+		private void ResetReorderingIndex()
+		{
+			if (_pendingReorder is { } reorder)
+			{
+				_pendingReorder = (reorder.offset, reorder.breadth, reorder.item, null);
+			}
+		}
+
 		/// <summary>
 		/// Represents a single row in a vertically-scrolling panel, or a column in a horizontally-scrolling panel.
 		/// </summary>
 		protected class Line
 		{
-			public FrameworkElement[] ContainerViews { get; }
+			public (FrameworkElement container, Uno.UI.IndexPath index)[] Items { get; }
 			public Uno.UI.IndexPath FirstItem { get; }
 			public Uno.UI.IndexPath LastItem { get; }
 			public int FirstItemFlat { get; }
 
-			public FrameworkElement FirstView => ContainerViews[0];
-			public FrameworkElement LastView => ContainerViews[ContainerViews.Length - 1];
+			public FrameworkElement FirstView => Items[0].container;
+			public FrameworkElement LastView => Items[Items.Length - 1].container;
 
-			public Line(FrameworkElement[] containerViews, Uno.UI.IndexPath firstItem, Uno.UI.IndexPath lastItem, int firstItemFlat)
+			public Line(int firstItemFlat, params (FrameworkElement container, Uno.UI.IndexPath index)[] items)
 			{
-				if (containerViews.Length == 0)
+				if (items.Length == 0)
 				{
 					throw new InvalidOperationException("Line must contain at least one view");
 				}
 
-				ContainerViews = containerViews;
-				FirstItem = firstItem;
-				LastItem = lastItem;
+				Items = items;
+				FirstItem = items[0].index;
+				LastItem = items.Last().index;
 				FirstItemFlat = firstItemFlat;
 			}
 
+			public bool Contains(Uno.UI.IndexPath index)
+				=> Items.Any(i => i.index == index);
 		}
 	}
 }

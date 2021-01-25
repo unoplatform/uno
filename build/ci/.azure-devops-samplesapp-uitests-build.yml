@@ -1,0 +1,39 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: SamplesApp_UITests_Build
+  displayName: 'SamplesApp UI Tests (Build)'
+  
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  variables:
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+
+  - task: MSBuild@1
+    displayName: 'Build UI Tests'
+    inputs:
+      solution: src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
+      msbuildArguments: /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm UITest binaries'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.UITests/bin/Release/net47
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+      
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: samplesapp-uitest-binaries
+      ArtifactType: Container

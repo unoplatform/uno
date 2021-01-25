@@ -73,7 +73,7 @@
 	</Target>
 
 	<!-- Workaround for https://github.com/unoplatform/uno/issues/986 -->
-	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml" Condition="'$(MSBuildVersion)' &lt; '16.8'">
+	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml" Condition="'$(MSBuildVersion)' &lt; '16.8' and !$([MSBuild]::IsOsPlatform(OSX))">
 
 		<!--
 		This is required to ensure the first pass of the BindingsGenerator task is

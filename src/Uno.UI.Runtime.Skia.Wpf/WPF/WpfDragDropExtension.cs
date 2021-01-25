@@ -289,7 +289,7 @@ namespace Uno.UI.Skia.Platform
 				if (relativeTo is UIElement elt)
 				{
 					var eltToRoot = UIElement.GetTransform(elt, null);
-					Matrix3x2.Invert(eltToRoot, out var rootToElt);
+					var rootToElt = eltToRoot.Inverse();
 
 					return rootToElt.Transform(rawPosition);
 				}

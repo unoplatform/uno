@@ -6,10 +6,11 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:xamarin="http://uno.ui/xamarin"
-    xmlns:local="using:Microsoft.UI.Xaml.Controls"
+    xmlns:local="using:Windows.UI.Xaml.Controls"
 	mc:Ignorable="d">
 
-    <Style x:Key="NavigationBackButtonNormalStyle" TargetType="Button">
+	<!-- Superseeded by the Microsoft.UI.XAML.NavigationView styles -->
+    <!--<Style x:Key="NavigationBackButtonNormalStyle" TargetType="Button">
         <Setter Property="Background" Value="{ThemeResource NavigationViewBackButtonBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
         <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
@@ -85,6 +86,6 @@
         <Setter Property="FontSize" Value="20" />
         <Setter Property="Height" Value="32" />
         <Setter Property="Width" Value="32" />
-    </Style>
+    </Style>-->
     
 </ResourceDictionary>

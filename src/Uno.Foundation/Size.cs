@@ -6,7 +6,7 @@ using Uno.Extensions;
 
 namespace Windows.Foundation
 {
-	[DebuggerDisplay("{Width}x{Height}")]
+	[DebuggerDisplay("{DebugDisplay,nq}")]
 	[TypeConverter(typeof(SizeConverter))]
 	public partial struct Size
 	{
@@ -62,5 +62,7 @@ namespace Windows.Foundation
 		public static bool operator ==(Size size1, Size size2) => size1.Equals(size2);
 
 		public static bool operator !=(Size size1, Size size2) => !size1.Equals(size2);
+
+		private string DebugDisplay => $"{Width:f1}x{Height:f1}";
 	}
 }

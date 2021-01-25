@@ -18,7 +18,7 @@
 			</controls:TabViewItem>
 			<controls:TabViewItem Header="Document 1">
 				<controls:TabViewItem.IconSource>
-					<controls:SymbolIconSource Symbol="Document" />
+					<controls:BitmapIconSource ShowAsMonochrome="False" UriSource="/Assets/ingredient1.png" />
 				</controls:TabViewItem.IconSource>
 			</controls:TabViewItem>
 			<controls:TabViewItem Header="Document 2">

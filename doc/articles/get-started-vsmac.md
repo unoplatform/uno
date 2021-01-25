@@ -6,7 +6,9 @@ While it is easier to create apps using Uno on Windows, you can also create all 
 * [**Visual Studio for Mac 8.8**](https://visualstudio.microsoft.com/vs/mac/)
 * [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
-* [.NET Core SDK 3.1](https://dotnet.microsoft.com/download/dotnet-core/thank-you/sdk-3.1.404-macos-x64-installer)
+* **.NET Core SDK**
+    * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
+    * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
 ## Installing the dotnet new templates

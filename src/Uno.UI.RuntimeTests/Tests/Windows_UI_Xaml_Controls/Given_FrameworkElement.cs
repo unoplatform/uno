@@ -42,7 +42,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// TODO Android does not handle measure invalidation properly
 		[TestMethod]
 		public Task When_Measure_Once() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MyControl01();
 
@@ -145,7 +145,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		public Task When_Measure_And_Invalidate() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MyControl01();
 
@@ -162,7 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		public Task MeasureWithNan() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MyControl01();
 
@@ -177,7 +177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		public Task MeasureOverrideWithNan() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 
 				var SUT = new MyControl01();
@@ -193,7 +193,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore] // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 #endif
 		public Task MeasureOverride_With_Nan_In_Grid() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var grid = new Grid();
 
@@ -211,7 +211,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// TODO Android does not handle measure invalidation properly
 		[TestMethod]
 		public Task When_Grid_Measure_And_Invalidate() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var grid = new Grid();
 				var SUT = new MyControl01();

@@ -1,9 +1,11 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Linq;
 
 namespace Windows.UI.Xaml
 {
-	internal delegate HitTestability GetHitTestability(UIElement element);
+	internal delegate (HitTestability elementTestability, GetHitTestability childrenGetHitTestability) GetHitTestability(UIElement element);
 
 	internal enum HitTestability
 	{

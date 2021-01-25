@@ -29,6 +29,8 @@ namespace Windows.UI.Xaml
 			// TODO: Use pointer ID for the predicates
 			private static readonly Predicate<UIElement> _isOver = e => e.IsPointerOver;
 
+			private readonly Dictionary<Pointer, UIElement> _pressedElements = new Dictionary<Pointer, UIElement>();
+
 			public PointerManager()
 			{
 				Window.Current.CoreWindow.PointerMoved += CoreWindow_PointerMoved;
@@ -95,6 +97,36 @@ namespace Windows.UI.Xaml
 				}
 			}
 
+			private void CoreWindow_PointerPressed(CoreWindow sender, PointerEventArgs args)
+			{
+				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
+
+				// Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Window.Current.Content;
+
+				if (originalSource is null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
+					}
+
+					return;
+				}
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
+				}
+
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+
+				_pressedElements[routedArgs.Pointer] = originalSource;
+				originalSource.OnNativePointerDown(routedArgs);
+			}
+
 			private void CoreWindow_PointerReleased(CoreWindow sender, PointerEventArgs args)
 			{
 				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
@@ -133,36 +165,18 @@ namespace Windows.UI.Xaml
 				{
 					originalSource.OnNativePointerUp(routedArgs);
 				}
+
+				if (_pressedElements.TryGetValue(routedArgs.Pointer, out var pressedLeaf))
+				{
+					// We must make sure to clear the pressed state on all elements that was flagged as pressed.
+					// This is required as the current originalSource might not be the same as when we pressed (pointer moved),
+					// ** OR ** the pointer has been captured by a parent element so we didn't raised to released on the sub elements.
+
+					_pressedElements.Remove(routedArgs.Pointer);
+					ClearPointerState(routedArgs, root: null, pressedLeaf, clearOver: false);
+				}
 			}
 
-			private void CoreWindow_PointerPressed(CoreWindow sender, PointerEventArgs args)
-			{
-				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
-
-				// Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
-				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-				originalSource ??= Window.Current.Content;
-
-				if (originalSource is null)
-				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
-					{
-						this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
-					}
-
-					return;
-				}
-
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
-				}
-
-				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
-
-				originalSource.OnNativePointerDown(routedArgs);
-			}
 
 			private void CoreWindow_PointerMoved(CoreWindow sender, PointerEventArgs args)
 			{
@@ -192,30 +206,9 @@ namespace Windows.UI.Xaml
 				// First raise the PointerExited events on the stale branch
 				if (staleBranch.HasValue)
 				{
-					routedArgs.CanBubbleNatively = true; // TODO: UGLY HACK TO AVOID BUBBLING: we should be able to request to bubble only up to a the root
-					var (root, stale) = staleBranch.Value;
+					var (root, leaf) = staleBranch.Value;
 
-					if (this.Log().IsEnabled(LogLevel.Trace))
-					{
-						this.Log().Trace($"Exiting branch from (root) {root.GetDebugName()} to (leaf) {stale.GetDebugName()}\r\n");
-					}
-
-					while (stale is { })
-					{
-						routedArgs.Handled = false;
-						stale.OnNativePointerExited(routedArgs);
-						// TODO: This differs of how we behave on iOS, macOS and Android which does have "implicit capture" while pressed.
-						//		 It should only impact the "Pressed" visual states of controls.
-						stale.SetPressed(routedArgs, isPressed: false, muteEvent: true);
-
-						if (stale == root)
-						{
-							break;
-						}
-
-						stale = stale.GetParent() as UIElement;
-					}
-					routedArgs.CanBubbleNatively = false;
+					ClearPointerState(routedArgs, root, leaf);
 				}
 
 				// Second (try to) raise the PointerEnter on the OriginalSource
@@ -238,6 +231,39 @@ namespace Windows.UI.Xaml
 					routedArgs.Handled = false;
 					originalSource.OnNativePointerMoveWithOverCheck(routedArgs, isOver: true);
 				}
+			}
+
+			// Clears the pointer state (over and pressed) only for a part of the visual tree
+			private void ClearPointerState(PointerRoutedEventArgs routedArgs, UIElement? root, UIElement leaf, bool clearOver = true)
+			{
+				var element = leaf;
+
+				routedArgs.CanBubbleNatively = true; // TODO: UGLY HACK TO AVOID BUBBLING: we should be able to request to bubble only up to a the root
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Exiting branch from (root) {root.GetDebugName()} to (leaf) {element.GetDebugName()}\r\n");
+				}
+
+				while (element is { })
+				{
+					routedArgs.Handled = false;
+					if (clearOver)
+					{
+						element.OnNativePointerExited(routedArgs);
+					}
+					// TODO: This differs of how we behave on iOS, macOS and Android which does have "implicit capture" while pressed.
+					//		 It should only impact the "Pressed" visual states of controls.
+					element.SetPressed(routedArgs, isPressed: false, muteEvent: true);
+
+					if (element == root)
+					{
+						break;
+					}
+
+					element = element.GetParent() as UIElement;
+				}
+
+				routedArgs.CanBubbleNatively = false;
 			}
 		}
 

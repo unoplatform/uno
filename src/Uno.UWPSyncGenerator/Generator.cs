@@ -843,7 +843,7 @@ namespace Uno.UWPSyncGenerator
 					allMembers.AppendIf(b);
 
 					var staticQualifier = eventMember.AddMethod.IsStatic ? "static" : "";
-					var declaration = $"{staticQualifier} event {SanitizeType(eventMember.Type)} {eventMember.Name}";
+					var declaration = $"{staticQualifier} event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventMember.Name}";
 
 					if (type.TypeKind == TypeKind.Interface)
 					{
@@ -1488,6 +1488,8 @@ namespace Uno.UWPSyncGenerator
 				"global::Windows.UI.Xaml.Input.ICommand" => "global::System.Windows.Input.ICommand",
 				"global::Microsoft.UI.Xaml.Input.ICommand" => "global::System.Windows.Input.ICommand",
 				"global::Microsoft.UI.Xaml.Interop.INotifyCollectionChanged" => "global::System.Collections.Specialized.INotifyCollectionChanged",
+				"global::Microsoft.UI.Xaml.Data.INotifyPropertyChanged" => "global::System.ComponentModel.INotifyPropertyChanged",
+				"global::Microsoft.UI.Xaml.Data.PropertyChangedEventHandler" => "global::System.ComponentModel.PropertyChangedEventHandler",
 				_ => typeName,
 			};
 		}

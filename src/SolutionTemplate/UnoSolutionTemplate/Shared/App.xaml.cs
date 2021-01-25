@@ -56,7 +56,7 @@ namespace $ext_safeprojectname$
 			var window = Windows.UI.Xaml.Window.Current;
 #endif
 
-			Frame rootFrame = window.Content as Frame;
+			var rootFrame = window.Content as Frame;
 
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active

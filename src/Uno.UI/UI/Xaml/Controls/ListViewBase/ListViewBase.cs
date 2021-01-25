@@ -659,7 +659,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.ContainerPreparedForItem(item, itemContainer, itemIndex);
 
+			PrepareContainerForDragDrop(itemContainer);
+
 			ContainerContentChanging?.Invoke(this, new ContainerContentChangingEventArgs(item, itemContainer, itemIndex));
+		}
+
+		internal override void ContainerClearedForItem(object item, SelectorItem itemContainer)
+		{
+			ClearContainerForDragDrop(itemContainer);
+
+			base.ContainerClearedForItem(item, itemContainer);
 		}
 
 		/// <summary>
@@ -746,6 +755,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return false;
+		}
+
+		protected override void OnItemsChanged(object e)
+		{
+
+			if (ItemsSource == null) // We're only interested when Items is modified directly, ie iff ItemsSource is not set
+			{
+				Refresh(); // Ensure item views are updated correctly if Items collection is manipulated 
+			}
+			base.OnItemsChanged(e);
 		}
 
 		/// <summary>

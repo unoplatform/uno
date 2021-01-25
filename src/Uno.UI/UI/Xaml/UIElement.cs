@@ -32,11 +32,20 @@ using UIKit;
 
 namespace Windows.UI.Xaml
 {
-	public partial class UIElement : DependencyObject, IXUidProvider
+	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private XamlRoot _xamlRoot = null;
 		private string _uid;
+
+		public static void RegisterAsScrollPort(UIElement element)
+			=> element.IsScrollPort = true;
+
+		internal bool IsScrollPort { get; private set; }
+
+		// This are fulfilled by the ScrollViewer for the EffectiveViewport computation,
+		// but it should actually be computed based on clipping vs desired size.
+		internal Point ScrollOffsets { get; private protected set; }
 
 		/// <summary>
 		/// Is this view set to Window.Current.Content?
@@ -47,6 +56,14 @@ namespace Windows.UI.Xaml
 		{
 			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(0), DependencyPropertyValuePrecedences.DefaultValue);
 		}
+
+		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());
+
+		internal Size AssignedActualSize { get; set; }
+
+		private protected virtual double GetActualWidth() => AssignedActualSize.Width;
+
+		private protected virtual double GetActualHeight() => AssignedActualSize.Height;
 
 		string IXUidProvider.Uid
 		{
@@ -59,6 +76,12 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void OnUidChangedPartial();
+
+		public XamlRoot XamlRoot
+		{
+			get => _xamlRoot ?? XamlRoot.Current;
+			set => _xamlRoot = value;
+		}
 
 		#region Clip DependencyProperty
 
@@ -159,12 +182,6 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		public XamlRoot XamlRoot
-		{
-			get => _xamlRoot ?? XamlRoot.Current;
-			set => _xamlRoot = value;
-		}
-
 		public GeneralTransform TransformToVisual(UIElement visual)
 			=> new MatrixTransform { Matrix = new Matrix(GetTransform(from: this, to: visual)) };
 
@@ -180,9 +197,7 @@ namespace Windows.UI.Xaml
 			// to find an element in the parent hierarchy of the other element.
 			if (to is { } && from.Depth < to.Depth)
 			{
-				var toToFrom = GetTransform(to, from);
-				Matrix3x2.Invert(toToFrom, out var fromToTo);
-				return fromToTo;
+				return GetTransform(to, from).Inverse();
 			}
 #endif
 
@@ -215,7 +230,9 @@ namespace Windows.UI.Xaml
 					offsetY = layoutSlot.Y;
 				}
 
-#if !__SKIA__ // On Skia, the ScrollViewer is actually using RenderTransform on its child, so they it's already included.
+#if !__SKIA__
+				// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
+				// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
 				if (elt is ScrollViewer sv)
 				{
 					var zoom = sv.ZoomFactor;
@@ -233,7 +250,13 @@ namespace Windows.UI.Xaml
 						offsetY -= sv.VerticalOffset;
 					}
 				}
+				else
 #endif
+				if (elt.IsScrollPort) // Custom scroller
+				{
+					offsetX -= elt.ScrollOffsets.X;
+					offsetY -= elt.ScrollOffsets.Y;
+				}
 
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
@@ -245,7 +268,7 @@ namespace Windows.UI.Xaml
 				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
 				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
 				var toToRoot = GetTransform(to, null);
-				Matrix3x2.Invert(toToRoot, out var rootToTo);
+				var rootToTo = toToRoot.Inverse();
 
 				matrix *= rootToTo;
 			}
@@ -317,6 +340,71 @@ namespace Windows.UI.Xaml
 
 		internal bool IsRenderingSuspended { get; set; }
 
+		[ThreadStatic]
+		private static bool _isInUpdateLayout;
+
+		private const int MaxLayoutIterations = 250;
+
+		public void UpdateLayout()
+		{
+			if (_isInUpdateLayout)
+			{
+				return;
+			}
+
+			var root = Windows.UI.Xaml.Window.Current.RootElement;
+			if (root is null)
+			{
+				return;
+			}
+
+			try
+			{
+				_isInUpdateLayout = true;
+
+#if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
+				root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
+				root.Arrange(LayoutInformation.GetLayoutSlot(root));
+#elif __ANDROID__
+				for (var i = 0; i < MaxLayoutIterations; i++)
+				{
+					// On Android, Measure and arrange are the same
+					if (root.IsMeasureDirty)
+					{
+						root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
+						root.Arrange(LayoutInformation.GetLayoutSlot(root));
+					}
+					else
+					{
+						return;
+					}
+				}
+#else
+				for (var i = 0; i < MaxLayoutIterations; i++)
+				{
+					if (root.IsMeasureDirty)
+					{
+						root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
+					}
+					else if (root.IsArrangeDirty)
+					{
+						root.Arrange(LayoutInformation.GetLayoutSlot(root));
+					}
+					else
+					{
+						return;
+					}
+				}
+
+				throw new InvalidOperationException("Layout cycle detected.");
+#endif
+			}
+			finally
+			{
+				_isInUpdateLayout = false;
+			}
+		}
+
 		internal void ApplyClip()
 		{
 			Rect rect;
@@ -338,7 +426,7 @@ namespace Windows.UI.Xaml
 			{
 				rect = Clip.Rect;
 
-				//// Apply transform to clipping mask, if any
+				// Apply transform to clipping mask, if any
 				if (Clip.Transform != null)
 				{
 					rect = Clip.Transform.TransformBounds(rect);
@@ -346,9 +434,11 @@ namespace Windows.UI.Xaml
 			}
 
 			ApplyNativeClip(rect);
+			OnViewportUpdated(rect);
 		}
 
 		partial void ApplyNativeClip(Rect rect);
+		private protected virtual void OnViewportUpdated(Rect viewport) { } // Not "Changed" as it might be the same as previous
 
 		internal static object GetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyName)
 		{
@@ -402,29 +492,41 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal Rect LayoutSlot { get; set; } = default;
+		/// <summary>
+		/// Backing property for <see cref="LayoutInformation.GetAvailableSize(UIElement)"/>
+		/// </summary>
+		Size IUIElement.LastAvailableSize { get; set; }
+		/// <summary>
+		/// Gets the 'availableSize' of the last Measure
+		/// </summary>
+		internal Size LastAvailableSize => ((IUIElement)this).LastAvailableSize;
+
+		/// <summary>
+		/// Backing property for <see cref="LayoutInformation.GetLayoutSlot(FrameworkElement)"/>
+		/// </summary>
+		Rect IUIElement.LayoutSlot { get; set; }
+		/// <summary>
+		/// Gets the 'finalSize' of the last Arrange
+		/// </summary>
+		internal Rect LayoutSlot => ((IUIElement)this).LayoutSlot;
 
 		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
 
 		internal bool NeedsClipToSlot { get; set; }
 
-#if !NETSTANDARD
 		/// <summary>
-		/// Backing property for <see cref="Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize(UIElement)"/>
+		/// Backing property for <see cref="LayoutInformation.GetDesiredSize(UIElement)"/>
 		/// </summary>
-		internal Size LastAvailableSize { get; set; }
+		Size IUIElement.DesiredSize { get; set; }
 
+#if !NETSTANDARD
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
 		/// </summary>
 		/// <remarks>
 		/// DesiredSize INCLUDES MARGINS.
 		/// </remarks>
-		public Size DesiredSize
-		{
-			get;
-			internal set;
-		}
+		public Size DesiredSize => ((IUIElement)this).DesiredSize;
 
 		/// <summary>
 		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
@@ -448,9 +550,7 @@ namespace Windows.UI.Xaml
 
 		public void InvalidateMeasure()
 		{
-			var frameworkElement = this as IFrameworkElement;
-
-			if (frameworkElement != null)
+			if (this is IFrameworkElement frameworkElement)
 			{
 				IFrameworkElementHelper.InvalidateMeasure(frameworkElement);
 			}
@@ -470,8 +570,8 @@ namespace Windows.UI.Xaml
 		public void InvalidateArrange()
 		{
 			InvalidateMeasure();
-#if !__WASM__
-			ClippedFrame = null;
+#if __IOS__ || __MACOS__
+			IsArrangeDirty = true;
 #endif
 		}
 #endif

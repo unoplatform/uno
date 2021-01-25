@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Data;
 namespace Windows.UI.Xaml
 {
 	public delegate object SetterValueProviderHandler();
+	public delegate object SetterValueProviderHandlerWithOwner(object? owner);
 
 	[DebuggerDisplay("{DebuggerDisplay}")]
 	public sealed partial class Setter : SetterBase
@@ -73,6 +74,14 @@ namespace Windows.UI.Xaml
 		{
 			Property = targetProperty;
 			_valueProvider = valueProvider;
+		}
+
+		public Setter(DependencyProperty targetProperty, object? owner, SetterValueProviderHandlerWithOwner valueProvider)
+		{
+			Property = targetProperty;
+
+			var ownerRef = WeakReferencePool.RentWeakReference(this, owner);
+			_valueProvider = () => valueProvider(ownerRef?.Target);
 		}
 
 		public Setter(TargetPropertyPath targetPath, object value)

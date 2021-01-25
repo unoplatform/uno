@@ -84,7 +84,12 @@ namespace Windows.UI.Xaml.Shapes
 					_fillBrushSubscription.Disposable = null;
 					break;
 				case ImageBrush ib:
-					_fillBrushSubscription.Disposable = null;
+					var (imageFill, subscription) = ib.ToSvgElement();
+					var imageFillId = imageFill.HtmlId;
+					GetDefs().Add(imageFill);
+					svgElement.SetStyle("fill", $"url(#{imageFillId})");
+					var removeDef = new DisposableAction(() => GetDefs().Remove(imageFill));
+					_fillBrushSubscription.Disposable = new CompositeDisposable(removeDef, subscription);
 					break;
 				case GradientBrush gb:
 					var gradient = gb.ToSvgElement();
@@ -122,6 +127,14 @@ namespace Windows.UI.Xaml.Shapes
 					svgElement.SetStyle("stroke", scb.ColorWithOpacity.ToHexString());
 					_strokeBrushSubscription.Disposable = null;
 					break;
+				case ImageBrush ib:
+					var (imageFill, subscription) = ib.ToSvgElement();
+					var imageFillId = imageFill.HtmlId;
+					GetDefs().Add(imageFill);
+					svgElement.SetStyle("stroke", $"url(#{imageFillId})");
+					var removeDef = new DisposableAction(() => GetDefs().Remove(imageFill));
+					_fillBrushSubscription.Disposable = new CompositeDisposable(removeDef, subscription);
+					break;
 				case GradientBrush gb:
 					var gradient = gb.ToSvgElement();
 					var gradientId = gradient.HtmlId;
@@ -147,15 +160,19 @@ namespace Windows.UI.Xaml.Shapes
 		partial void OnStrokeThicknessUpdatedPartial()
 		{
 			var svgElement = GetMainSvgElement();
+			var strokeThickness = ActualStrokeThickness;
 
-			var strokeThickness = StrokeThickness;
-			if (strokeThickness == default)
+			if (Stroke == null)
 			{
-				svgElement.ResetStyle("stroke-width");
+				svgElement.SetStyle("stroke-width", $"{DefaultStrokeThicknessWhenNoStrokeDefined}px");
+			}
+			else if (strokeThickness != 1.0d)
+			{
+				svgElement.SetStyle("stroke-width", $"{strokeThickness}px");
 			}
 			else
 			{
-				svgElement.SetStyle("stroke-width", $"{strokeThickness}px");
+				svgElement.ResetStyle("stroke-width");
 			}
 		}
 

@@ -16,8 +16,8 @@ namespace Windows.Foundation.Metadata
 			switch (contractName)
 			{
 				case "Windows.Foundation.UniversalApiContract":
-					// See https://docs.microsoft.com/en-us/uwp/extension-sdks/windows-universal-sdk
-					return majorVersion <= 6; // SDK 10.0.17134.1
+					// See C:\Program Files (x86)\Windows Kits\10\References\[version]\Windows.Foundation.UniversalApiContract
+					return majorVersion <= 10; // SDK 10.0.19041.1
 
 				case "Uno.WinUI":
 #if HAS_UNO_WINUI

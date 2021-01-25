@@ -621,12 +621,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"Calling OnItemsSourceChanged(), Old source={e.OldValue}, new source={e.NewValue}, NoOfItems={NumberOfItems}");
 			}
 
-			// Following line is commented out, since updating Items will trigger a call to SetNeedsUpdateItems() and causes unexpected results
-			// There is no effect to comment out this line, as 1) there is no sync up between Items and ItemsSource and 2) GetItems() will give precedence to ItemsSource
-			// Items?.Clear();
-
 			IsGrouping = (e.NewValue as ICollectionView)?.CollectionGroups != null;
-			SetNeedsUpdateItems();
+			Items.SetItemsSource(UnwrapItemsSource() as IEnumerable); // This will call SetNeedsUpdateItems() via Items.VectorChanged
 			ObserveCollectionChanged();
 			TryObserveCollectionViewSource(e.NewValue);
 		}
@@ -651,6 +647,12 @@ namespace Windows.UI.Xaml.Controls
 
 		internal int GetDisplayGroupCount(int displaySection) => IsGrouping ? GetGroupAtDisplaySection(displaySection).GroupItems.Count : 0;
 
+		// Supports the common usage (prescribed in the official doc) of ItemsSource="{Binding Source = {StaticResource SomeCollectionViewSource}}"
+		//
+		// Note: this is not correct, in that it's not actually possible on UWP to set ItemsControl.ItemsSource to a CollectionViewSource.
+		// What actually happens on UWP in the above case is that the *BindingExpression* 'unwraps' the CollectionViewSource and passes the
+		// CollectionViewSource.View to whatever is being bound to (ie the ItemsSource). This should be fixed at some point because it
+		// has observable consequences in some usages.
 		internal object UnwrapItemsSource()
 			=> ItemsSource is CollectionViewSource cvs ? (object)cvs.View : ItemsSource;
 
@@ -658,8 +660,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var unwrappedSource = UnwrapItemsSource();
 
+			if(unwrappedSource is null)
+			{
+				_notifyCollectionChanged.Disposable = null;
+			}
 			//Subscribe to changes on grouped source that is an observable collection
-			if (unwrappedSource is CollectionView collectionView && collectionView.CollectionGroups != null && collectionView.InnerCollection is INotifyCollectionChanged observableGroupedSource)
+			else if (unwrappedSource is CollectionView collectionView && collectionView.CollectionGroups != null && collectionView.InnerCollection is INotifyCollectionChanged observableGroupedSource)
 			{
 				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
 				// remove the handler.
@@ -947,6 +953,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void ClearContainerForItemOverride(DependencyObject element, object item) { }
 
+		internal virtual void ContainerClearedForItem(object item, SelectorItem itemContainer) { }
+
 		/// <summary>
 		/// Unset content of container. This should be called when the container is no longer going to be used.
 		/// </summary>
@@ -967,6 +975,7 @@ namespace Windows.UI.Xaml.Controls
 
 			}
 			ClearContainerForItemOverride(element, item);
+			ContainerClearedForItem(item, element as SelectorItem);
 
 			if (element is ContentPresenter presenter
 				&& (

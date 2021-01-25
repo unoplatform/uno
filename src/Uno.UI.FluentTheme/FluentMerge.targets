@@ -13,18 +13,13 @@
   	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioButtons.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioButtons_themeresources.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TabView.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TabView_themeresources.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TeachingTip.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TeachingTip_themeresources.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\NavigationView.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\NavigationView_themeresources.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ProgressRing.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ScrollViewer.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ScrollViewer_themeresources.xaml" />
 
-	  <!-- The excluded files can be restored as the types are made available in Uno. 
-		  Note: the NavigationView style can be restored once ItemsRepeater is available. https://github.com/unoplatform/uno/issues/3192
+	  <!-- The excluded files can be restored as the types are made available in Uno.		  
 		  Note: The ProgressRing style can be restored once determinate mode is implemented. https://github.com/unoplatform/uno/issues/3604 -->
 	  <WinUIStylePage
 		  Include="$(MSBuildThisFileDirectory)Resources\**\*.xaml" />

@@ -91,7 +91,7 @@ for screenshots taken for the past builds. Download this artifact and open the h
 have changed.
 
 ### Troubleshooting the tests
-It is possible to enable the chromium head using the configuration parameters in the [app.ts](src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
+It is possible to enable the chromium head using the configuration parameters in the [app.ts](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
 
 ## Creating performance benchmarks with BenchmarkDotNet
 

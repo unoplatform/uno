@@ -76,7 +76,7 @@ namespace Uno.UI
 				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
 
 				var uiElement = innerView as UIElement;
-				var desiredSize = uiElement?.DesiredSize.ToString() ?? "<native/unk>";
+				var desiredSize = uiElement?.DesiredSize.ToString("F1") ?? "<native/unk>";
 				var fe = innerView as IFrameworkElement;
 				var layoutSlot = innerView.LayoutSlot;
 
@@ -84,7 +84,7 @@ namespace Uno.UI
 					.Append(spacing)
 					.Append(innerView == viewOfInterest ? "*>" : ">")
 					.Append(innerView + namePart)
-					.Append($"-({layoutSlot.Width}x{layoutSlot.Height})@({layoutSlot.X},{layoutSlot.Y})")
+					.Append($"-({layoutSlot.Width:F1}x{layoutSlot.Height:F1})@({layoutSlot.X:F1},{layoutSlot.Y:F1})")
 					.Append($" d:{desiredSize}")
 #if __IOS__
 						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
@@ -93,7 +93,8 @@ namespace Uno.UI
 					.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
 					.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 					.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
-					.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}" : "")
+					.Append(fe != null && fe.Visibility != Visibility.Visible ? "Collapsed " : "")
+					.Append(fe!= null && fe.Opacity != 1 ? $"Opacity={fe.Opacity} " : "")
 					.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
 					.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
 					.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")

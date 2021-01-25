@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		protected bool HasStroke
 		{
-			get { return StrokeThickness > 0 && Stroke != null; }
+			get { return Stroke != null && ActualStrokeThickness > 0; }
 		}
 
 		internal double PhysicalStrokeThickness

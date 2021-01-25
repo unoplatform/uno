@@ -19,7 +19,7 @@ using Windows.UI.Core;
 using Uno.Logging;
 using Uno.UI.Extensions;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
 using _ViewGroup = UIKit.UIView;
@@ -27,11 +27,12 @@ using _ViewGroup = UIKit.UIView;
 using AppKit;
 using _View = AppKit.NSView;
 using _ViewGroup = AppKit.NSView;
-#elif XAMARIN_ANDROID
-using _ViewGroup = Android.Views.ViewGroup;
+#elif __ANDROID__
 using _View = Android.Views.View;
+using _ViewGroup = Android.Views.ViewGroup;
 #else
-using _View = System.Object;
+using _View = Windows.UI.Xaml.UIElement;
+using _ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml.Media
@@ -205,7 +206,55 @@ namespace Windows.UI.Xaml.Media
 
 #nullable enable
 
-		private static readonly GetHitTestability _defaultGetTestability = elt => elt.GetHitTestVisibility();
+		public static IEnumerable<T> GetChildren<T>(DependencyObject view)
+			=> (view as _ViewGroup)
+				?.GetChildren()
+				.OfType<T>()
+				?? Enumerable.Empty<T>();
+
+		public static IEnumerable<DependencyObject> GetChildren(DependencyObject view)
+			=> GetChildren<DependencyObject>(view);
+
+		internal static void AddChild(UIElement view, UIElement child)
+		{
+#if __ANDROID__
+			view.AddView(child);
+#elif __IOS__ || __MACOS__
+			view.AddSubview(child);
+#elif NETSTANDARD
+			view.AddChild(child);
+#else
+			throw new NotImplementedException("AddChild not implemented on this platform.");
+#endif
+		}
+
+		internal static IReadOnlyList<_View> ClearChildren(UIElement view)
+		{
+#if __ANDROID__
+			var children = GetChildren<_View>(view).ToList();
+			view.RemoveAllViews();
+
+			return children;
+#elif __IOS__ || __MACOS__
+			var children = view.ChildrenShadow.ToList();
+			children.ForEach(v => v.RemoveFromSuperview());
+
+			return children; 
+#elif NETSTANDARD
+			var children = GetChildren<_View>(view).ToList();
+			view.ClearChildren();
+
+			return children;
+#else
+			throw new NotImplementedException("ClearChildren not implemented on this platform.");
+#endif
+		}
+
+		internal static readonly GetHitTestability DefaultGetTestability;
+		static VisualTreeHelper()
+		{
+			DefaultGetTestability = elt => (elt.GetHitTestVisibility(), DefaultGetTestability!);
+		}
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
@@ -222,7 +271,7 @@ namespace Windows.UI.Xaml.Media
 #endif
 			if (Window.Current.RootElement is UIElement root)
 			{
-				return SearchDownForTopMostElementAt(position, root, getTestability ?? _defaultGetTestability, isStale);
+				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
 			}
 
 			return default;
@@ -236,7 +285,8 @@ namespace Windows.UI.Xaml.Media
 			Func<IEnumerable<UIElement>, IEnumerable<UIElement>>? childrenFilter = null)
 		{
 			var stale = default(Branch?);
-			var elementHitTestVisibility = getVisibility(element);
+			HitTestability elementHitTestVisibility;
+			(elementHitTestVisibility, getVisibility) = getVisibility(element);
 
 #if TRACE_HIT_TESTING
 			using var _ = SET_TRACE_SUBJECT(element);
@@ -279,7 +329,7 @@ namespace Windows.UI.Xaml.Media
 			var renderTransform = element.RenderTransform;
 			if (renderTransform != null)
 			{
-				Matrix3x2.Invert(renderTransform.MatrixCore, out var parentToElement);
+				var parentToElement = renderTransform.MatrixCore.Inverse();
 
 				TRACE($"- renderTransform: [{parentToElement.M11:F2},{parentToElement.M12:F2} / {parentToElement.M21:F2},{parentToElement.M22:F2} / {parentToElement.M31:F2},{parentToElement.M32:F2}]");
 
@@ -287,24 +337,30 @@ namespace Windows.UI.Xaml.Media
 				renderingBounds = parentToElement.Transform(renderingBounds);
 			}
 
+#if !__SKIA__
+			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
+			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
 			if (element is ScrollViewer sv)
 			{
 				var zoom = sv.ZoomFactor;
 
 				TRACE($"- scroller: x={sv.HorizontalOffset} | y={sv.VerticalOffset} | zoom={zoom}");
 
+				// Note: This is probably wrong for skia as the zoom is probably also handled by the ScrollContentPresenter
 				posRelToElement.X /= zoom;
 				posRelToElement.Y /= zoom;
 
-				// No needs to adjust the position on Skia:
-				// the scrolling is achieved using a RenderTransform on the content of the ScrollContentPresenter,
-				// so it will already be taken in consideration by the case above.
-#if !__SKIA__
 				posRelToElement.X += sv.HorizontalOffset;
 				posRelToElement.Y += sv.VerticalOffset;
-#endif
 
 				renderingBounds = new Rect(renderingBounds.Location, new Size(sv.ExtentWidth, sv.ExtentHeight));
+			}
+			else
+#endif
+			if (element.IsScrollPort)
+			{
+				posRelToElement.X += element.ScrollOffsets.X;
+				posRelToElement.Y += element.ScrollOffsets.Y;
 			}
 
 			TRACE($"- layoutSlot: {layoutSlot.ToDebugString()}");

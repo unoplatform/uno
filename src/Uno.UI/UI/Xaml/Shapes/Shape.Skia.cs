@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			if (_pathSpriteShape != null)
 			{
-				_pathSpriteShape.StrokeThickness = (float)StrokeThickness;
+				_pathSpriteShape.StrokeThickness = (float)ActualStrokeThickness;
 			}
 		}
 
