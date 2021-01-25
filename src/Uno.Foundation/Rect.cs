@@ -107,7 +107,7 @@ namespace Windows.Foundation
 			}
 
 			var parts = text
-				.Split(new[] { ',', ' ' })
+				.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
 				.SelectToArray(s => double.Parse(s, NumberFormatInfo.InvariantInfo));
 
 			if(parts.Length != 4)
