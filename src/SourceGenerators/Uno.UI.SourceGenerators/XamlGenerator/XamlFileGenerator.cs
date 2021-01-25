@@ -2689,7 +2689,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName + ".");
+								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName , ".");
 							}
 						}
 						else if (member.Objects.Any())
@@ -2989,16 +2989,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			// Local function used to build a property/value for any custom MarkupExtensions
-			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string prefix)
+			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string prefix, string memberSeparator)
 			{
-				Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
+				Func<string, string> formatLine = format => prefix + memberSeparator + format + (prefix.HasValue() ? ";\r\n" : "");
 
-				var propertyValue = GetCustomMarkupExtensionValue(member);
+				var propertyValue = GetCustomMarkupExtensionValue(writer, member, prefix);
 
 				if (propertyValue.HasValue())
 				{
 					var formatted = formatLine($"{member.Member.Name} = {propertyValue}");
-
 					writer.AppendLine(formatted);
 				}
 			}
@@ -3202,7 +3201,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var literalValue = isCustomMarkupExtension
-					? GetCustomMarkupExtensionValue(member)
+					? GetCustomMarkupExtensionValue(writer, member, closureName)
 					: BuildLiteralValue(member, propertyType: propertyType, owner: member, objectUid: objectUid);
 
 			writer.AppendLineInvariant(
@@ -3273,7 +3272,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return bindingNode
 						.Members
-						.Select(BuildMemberPropertyValue)
+						.Select(m => BuildMemberPropertyValue(writer, m, closureName, member))
 						.JoinBy(", ");
 
 				}
@@ -3282,7 +3281,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return bindNode
 						.Members
 						.Where(m => m.Member.Name != "_PositionalParameters" && m.Member.Name != "Path" && m.Member.Name != "BindBack")
-						.Select(BuildMemberPropertyValue)
+						.Select(m => BuildMemberPropertyValue(writer, m, closureName, member))
 						.Concat(bindNode.Members.Any(m => m.Member.Name == "Mode") ? "" : "Mode = BindingMode." + GetDefaultBindMode())
 						.JoinBy(", ");
 
@@ -3291,7 +3290,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return templateBindingNode
 						.Members
-						.Select(BuildMemberPropertyValue)
+						.Select(m => BuildMemberPropertyValue(writer, m, closureName, member))
    						.Concat("RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)")
 					 .JoinBy(", ");
 				}
@@ -3626,12 +3625,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string GetDefaultBindMode() => _currentDefaultBindMode.Peek();
 
-		private string BuildMemberPropertyValue(XamlMemberDefinition m)
+		private string BuildMemberPropertyValue(IIndentedStringBuilder writer,
+			XamlMemberDefinition m,
+			string targetName,
+			XamlMemberDefinition targetMember)
 		{
 			if (IsCustomMarkupExtensionType(m.Objects.FirstOrDefault()?.Type))
 			{
 				// If the member contains a custom markup extension, build the inner part first
-				var propertyValue = GetCustomMarkupExtensionValue(m);
+				var propertyValue = GetCustomMarkupExtensionValue(writer, m, targetName , targetMember);
 				return "{0} = {1}".InvariantCultureFormat(m.Member.Name, propertyValue);
 			}
 			else
@@ -3640,7 +3642,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string GetCustomMarkupExtensionValue(XamlMemberDefinition member)
+		private string GetCustomMarkupExtensionValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string targetObject, XamlMemberDefinition targetMember = null)
 		{
 			// Get the type of the custom markup extension
 			var markupTypeDef = member
@@ -3668,11 +3670,58 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var markupTypeFullName = GetGlobalizedTypeName(markupType.GetFullName());
 			var xamlMarkupFullName = GetGlobalizedTypeName(XamlConstants.Types.IMarkupExtensionOverrides);
 
+
+			// Check that the Custom MarkupExtension has a public property of object type named TargetObject
+		    var	hasTargetObject = markupType.GetAllProperties()
+				.Any(p => p.Name == "TargetObject"
+					&& p.IsReadOnly == false
+					&& p.DeclaredAccessibility == Accessibility.Public
+					&& SymbolEqualityComparer.Default.Equals(p.Type, _objectSymbol));
+			// Check that the Custom MarkupExtension has a public property of object type named TargetProperty
+			var hasTargetProperty = markupType.GetAllProperties()
+				.Any(p => p.Name == "TargetProperty"
+					&& p.IsReadOnly == false
+					&& p.DeclaredAccessibility == Accessibility.Public
+					&& SymbolEqualityComparer.Default.Equals(p.Type, _objectSymbol));
+
 			// Get the attribute from the custom markup extension class then get the return type specifed with MarkupExtensionReturnTypeAttribute
 			var attributeData = markupType.FindAttribute(XamlConstants.Types.MarkupExtensionReturnTypeAttribute);
 			var returnType = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "ReturnType").Value.Value;
 			var cast = string.Empty;
-			var provideValue = $"(({xamlMarkupFullName})(new {markupTypeFullName} {{ {properties} }})).ProvideValue()";
+			string provideValue = string.Empty;
+			var initializzer = string.Empty;
+
+			// if is valid targetObject and hasTargetObject hasTargetProperty
+			if ( string.IsNullOrWhiteSpace(targetObject) == false
+				&& (hasTargetObject || hasTargetProperty))
+			{
+				writer.AppendLine($"var mex = (new { markupTypeFullName } {{ { properties} }});");
+				writer.AppendLine(); // Workaround unoplatform/Uno.Roslyn#12
+
+				// if MarkupExtension have property named TargetObject assing value
+				if (hasTargetObject)
+				{
+					writer.AppendLine($"mex.TargetObject = {targetObject};");
+					writer.AppendLine(); // Workaround unoplatform/Uno.Roslyn#12
+				}
+				// if MarkupExtension have property named TargetProperty assing value
+				if (hasTargetProperty)
+				{
+					var tm = targetMember
+						?? member;
+					var parentType = IsAttachedProperty(tm)
+						? GetType(tm.Member.DeclaringType)
+						: GetType(tm.Owner.Type);
+					writer.AppendLine($"mex.TargetProperty = {GetGlobalizedTypeName(parentType.GetFullName())}.{tm.Member.Name}Property;");
+					writer.AppendLine(); // Workaround unoplatform/Uno.Roslyn#12
+				}
+				provideValue = $"((({ xamlMarkupFullName})mex).ProvideValue())";
+			}
+			else
+			{
+				provideValue = $"(({xamlMarkupFullName})(new {markupTypeFullName} {{ {properties} }})).ProvideValue()";
+			}
+			
 
 			if (returnType != null)
 			{
