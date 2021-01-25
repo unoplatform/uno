@@ -8,7 +8,7 @@
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid Background="Gray" HorizontalAlignment="Center" VeticalAlignment="Center">
+	<Grid Background="Gray" HorizontalAlignment="Center" VerticalAlignment="Center">
 		<Border Background="Blue" Width="200" Height="200">
 			<Border.Clip>
 				<RectangleGeometry Rect="25 25 150 150"/>
