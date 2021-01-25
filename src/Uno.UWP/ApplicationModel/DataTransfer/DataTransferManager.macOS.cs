@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			var uri = await GetSharedUriAsync(dataPackageView);
 			if (uri != null)
 			{
-				sharedData.Add(NSUrl.FromString(uri.ToString()));
+				sharedData.Add(NSUrl.FromString(uri.OriginalString));
 			}
 
 			CGRect targetRect;

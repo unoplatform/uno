@@ -67,7 +67,7 @@ If you need to prepare the data asynchronously, you can use a deferral:
 ```
 private async void DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
 {        
-    var deferral = args.GetDeferral();
+    var deferral = args.Request.GetDeferral();
 
     args.Request.Data.Properties.Title = "Sharing dialog title";
     args.Request.Data.Properties.Description = "Description";
@@ -80,3 +80,5 @@ private async void DataRequested(DataTransferManager sender, DataRequestedEventA
 ```
 
 To control the location where the sharing dialog shows up on iOS and macOS, use the `ShowShareUI(ShareUIOptions)` overload. `ShareUIOptions.SelectionRect` denotes the area the user is interacting with and will be taken into account by the OS. On iOS, you can also specify `ShareUIOptions.Theme` to make the dialog dark/light based on your app's preference. On other Uno targets, these properties have no effect.
+
+On Tizen, the `"http://tizen.org/privilege/appmanager.launch` privilege must be declared in the application manifest to allow sharing.

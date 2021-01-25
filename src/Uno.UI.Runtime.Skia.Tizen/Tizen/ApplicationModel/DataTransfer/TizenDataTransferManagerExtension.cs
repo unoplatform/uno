@@ -9,7 +9,7 @@ using Windows.ApplicationModel.DataTransfer;
 
 namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.DataTransfer
 {
-	public class TizenDataTransferManagerExtension : IDataTransferManagerExtension
+	internal class TizenDataTransferManagerExtension : IDataTransferManagerExtension
 	{
 		private const string LaunchAppPrivilege = "http://tizen.org/privilege/appmanager.launch";
 
@@ -46,7 +46,7 @@ namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.DataTransfer
 			var uri = await DataTransferManager.GetSharedUriAsync(dataPackageView);
 			if (uri != null)
 			{				
-				appControl.ExtraData.Add(AppControlData.Url, uri.ToString());
+				appControl.ExtraData.Add(AppControlData.Url, uri.OriginalString);
 			}
 
 			AppControl.SendLaunchRequest(appControl);

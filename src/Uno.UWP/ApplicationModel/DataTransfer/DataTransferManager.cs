@@ -60,9 +60,9 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 			catch (Exception ex)
 			{
-				if (dataTransferManager.Log().IsEnabled(LogLevel.Error))
+				if (_instance.Value.Log().IsEnabled(LogLevel.Error))
 				{
-					dataTransferManager.Log().LogError($"Exception occurred trying to show share UI: {ex}");
+					_instance.Value.Log().LogError($"Exception occurred trying to show share UI: {ex}");
 				}
 				dataPackage.OnShareCanceled();
 			}

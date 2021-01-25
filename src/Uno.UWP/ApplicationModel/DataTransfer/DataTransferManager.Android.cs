@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			var uri = await GetSharedUriAsync(dataPackageView);
 			if (uri != null)
 			{
-				items.Add(uri.ToString());
+				items.Add(uri.OriginalString);
 			}
 
 			var intent = new Intent(Intent.ActionSend);

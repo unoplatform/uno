@@ -19,11 +19,6 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		internal void EventRaiseCompleted() => _deferralManager?.EventRaiseCompleted();
 
-		public void FailWithDisplayText(string value)
-		{
-			throw new NotImplementedException();
-		}
-
 		public DataRequestDeferral GetDeferral()
 		{
 			if (_deferralManager == null)

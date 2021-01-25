@@ -25,13 +25,18 @@ namespace Windows.ApplicationModel.DataTransfer {
 				data.url = url;
 			}
 
-			try {
-				await navigator.share(data);
-				return "true";
+			if (navigator.share) {
+				try {
+					await navigator.share(data);
+					return "true";
+				}
+				catch (e) {
+					console.log("Sharing failed:" + e);
+					return "false";
+				}
 			}
-			catch {
-				return "false";
-			}
+			console.log("navigator.share API is not available in this browser");
+			return "false";
 		}
 	}
 }

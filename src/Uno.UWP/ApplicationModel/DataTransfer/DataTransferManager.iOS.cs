@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			var uri = await GetSharedUriAsync(dataPackageView);
 			if (uri != null)
 			{
-				sharedData.Add(new DataActivityItemSource(NSUrl.FromString(uri.ToString()), title));
+				sharedData.Add(new DataActivityItemSource(NSUrl.FromString(uri.OriginalString), title));
 			}
 
 			var activityViewController = new UIActivityViewController(sharedData.ToArray(), null);

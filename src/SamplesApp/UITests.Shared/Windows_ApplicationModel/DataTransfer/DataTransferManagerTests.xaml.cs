@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
@@ -150,9 +151,15 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 
 		private void ClearEventLog() => EventLog.Clear();
 
-		private void DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
+		private async void DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
 		{
+			var deferral = args.Request.GetDeferral();
+
 			LogEvent(nameof(DataTransferManager.DataRequested));
+
+			// arbitrary delay to verify deferral functionality
+			await Task.Delay(500);
+
 			args.Request.Data.ShareCompleted += Data_ShareCompleted;
 			args.Request.Data.ShareCanceled += Data_ShareCanceled;
 
@@ -185,6 +192,8 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 			{
 				args.Request.Data.SetApplicationLink(applicationLink);
 			}
+
+			deferral.Complete();
 		}
 
 		private void Data_ShareCanceled(DataPackage sender, object args)

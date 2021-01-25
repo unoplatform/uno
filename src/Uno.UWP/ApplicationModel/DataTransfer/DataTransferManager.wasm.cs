@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			var uri = await GetSharedUriAsync(dataPackageView);
 
-			var uriText = uri != null ? $"\"{WebAssemblyRuntime.EscapeJs(uri.ToString())}\"" : null;
+			var uriText = uri != null ? $"\"{WebAssemblyRuntime.EscapeJs(uri.OriginalString)}\"" : null;
 
 			var result = await WebAssemblyRuntime.InvokeAsync($"{JsType}.showShareUI({title ?? "null"},{text ?? "null"},{uriText ?? "null"})");
 			return bool.TryParse(result, out var boolResult) && boolResult;
