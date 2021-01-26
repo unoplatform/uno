@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			throw new global::System.NotImplementedException("The member DataTransferManager DataTransferManager.GetForCurrentView() is not implemented in Uno.");
 		}
 		#endif
-		#if false
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.DataTransfer.DataTransferManager, global::Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs> DataRequested
 		{

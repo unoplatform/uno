@@ -3384,6 +3384,18 @@
 			<Member
 				fullName="System.String Uno.UI.ViewExtensions.GetDebugIdentifier(Android.Views.View element)"
 				reason="Internal helper that should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequestDeferral..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequest..ctor()"
+				reason="Constructor not public in UWP" />																		
 		</Methods>
 	</IgnoreSet>
 
