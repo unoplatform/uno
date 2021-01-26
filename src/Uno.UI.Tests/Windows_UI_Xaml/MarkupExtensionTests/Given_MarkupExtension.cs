@@ -41,6 +41,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 				Assert.AreEqual("Just a simple ... fullname markup extension", control.TestText11.Text);
 				Assert.AreEqual("From a Resource String FullName markup extension", control.TestText12.Text);
 				Assert.AreEqual("String from attached property Fullname markup extension", control.TestText13.Text);
+				Assert.AreEqual("TextBlockExtensionGetTarget.Text", control.TextBlockExtensionGetTarget.Text);
+				Assert.AreEqual("TextBlockExtensionAttachedPropertiedGetTarget.(AttachedPropertiesBehavior.CustomText)", control.TextBlockExtensionAttachedPropertiedGetTarget.Text);
+				Assert.AreEqual("True", control.IsTextBlock.Text);
+				Assert.AreEqual("False", control.NotIsTextBlock.Text);
 			}
 			finally
 			{
@@ -163,6 +167,50 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 		public object Wrapped { get; set; }
 
 		protected override object ProvideValue() => $"**{Wrapped}**";
+	}
+	
+	public class GetTargetExtension : MarkupExtension
+	{
+		public object TargetObject { get; set; }
+		public object TargetProperty { get; set; }
+		protected override object ProvideValue()
+		{
+			var targetObject = "Unknown";
+			var targetProperty = "Unknown";
+
+			if (TargetObject is Windows.UI.Xaml.FrameworkElement fe)
+			{
+				targetObject = fe.Name ??
+					fe.GetType().Name;
+			}
+
+			if (TargetProperty is Windows.UI.Xaml.DependencyProperty dp)
+			{
+				targetProperty = dp.IsAttached
+					? $"({dp.OwnerType.Name}.{dp.Name})"
+					: dp.Name;
+			}
+			return $"{targetObject}.{targetProperty}";
+		}
+	}
+
+	[MarkupExtensionReturnType(ReturnType = typeof(IValueConverter))]
+	public class IsTextBlockExtension : MarkupExtension, IValueConverter
+	{
+		public object TargetObject { get; set; }
+		public object TargetProperty { get; set; }
+
+		protected override object ProvideValue() => this;
+
+		public object Convert(object value, Type targetType, object parameter, string language)
+		{
+			return TargetObject is Windows.UI.Xaml.Controls.TextBlock;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		{
+			return Windows.UI.Xaml.DependencyProperty.UnsetValue;
+		}
 	}
 
 	// This should not be mistaken for a TextBlock

@@ -59,8 +59,6 @@
 		<TextBlock x:Name="Text13"
 				   beh:AttachedPropertiesBehavior.CustomText="{ex:SimpleMarkupExtExtension TextValue='String from attached property Fullname'}" />
 
-
-
 		<TextBlock x:Name="BaseShinyTextBlock"
 				   x:FieldModifier="public"
 				   Text="{ex:Shiny Wrapped=BaseNamespaceShiny}" />
@@ -71,6 +69,18 @@
 				   x:FieldModifier="public"
 				   Text="{ex:TextBlock}" />
 
+		<TextBlock x:Name="TextBlockExtensionGetTarget"
+				   x:FieldModifier="public"
+				   Text="{ex:GetTarget}" />
+		<TextBlock x:Name="TextBlockExtensionAttachedPropertiedGetTarget"
+				   x:FieldModifier="public"
+				   beh:AttachedPropertiesBehavior.CustomText="{ex:GetTarget}" />
+		<TextBlock x:Name="IsTextBlock"
+				   x:FieldModifier="public"
+				   Text="{Binding ElementName=IsTextBlock, Converter={ex:IsTextBlockExtension}}" />
+		<TextBox x:Name="NotIsTextBlock"
+				 x:FieldModifier="public"
+				 Text="{Binding ElementName=NotIsTextBlock, Converter={ex:IsTextBlockExtension}}"/>
 		<Border>
 			<Border.Child>
 				<TextBlock Text="This should compile and not be confused with TextBlockExtension" />
