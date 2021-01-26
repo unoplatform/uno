@@ -63,6 +63,14 @@ You can get additional build [troubleshooting information here](uno-builds-troub
 #### Runtime error `No parameterless constructor defined for XXXX`
 This error is generally caused by some missing [IL Linker](https://github.com/mono/linker/tree/master/docs) configuration on WebAssembly. You may need to add some of your application assemblies in the LinkerConfig.xml file of your project. You can find [additional information in the documentation](features/using-il-linker-webassembly.md).
 
+### WebAssembly: Access to fetch at 'https://XXXX' from origin 'http://XXXX' has been blocked by CORS policy
+
+This is a security restriction from the Javascript `fetch` API, where the endpoint you're calling needs to provide [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) to work properly.
+
+If you control the API, you'll need to use the features from your framework to enable CORS, and if you don't you'll need to ask the maintainers of the endpoint to enable CORS.
+
+To test if CORS is really the issue, you can use [CORS Anywhere](https://cors-anywhere.herokuapp.com/) to proxy the queries.
+
 #### The path may be too long
 The project may fail to build if the path of any file in the project is [too long](https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation).
 
