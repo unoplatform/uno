@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -113,8 +113,9 @@ namespace Uno.UI.Controls
 
 			// CommandBarExtensions.BackButtonIcon
 			var backButtonIcon = Element.GetValue(BackButtonIconProperty) is BitmapIcon bitmapIcon
-				? UIImageHelper.FromUri(bitmapIcon.UriSource)
+				? UIImageHelper.FromUri(bitmapIcon.UriSource)?.ImageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
 				: null;
+
 			Native.BackIndicatorImage = backButtonIcon;
 			Native.BackIndicatorTransitionMaskImage = backButtonIcon;
 		}
