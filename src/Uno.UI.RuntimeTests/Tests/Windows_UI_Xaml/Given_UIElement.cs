@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Windows.Foundation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Shapes;
 using System;
 
@@ -108,6 +110,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await TestServices.WindowHelper.WaitFor(() => Math.Abs(rectangle.ActualWidth - rectangle.ActualSize.X) < 0.01);
 			await TestServices.WindowHelper.WaitFor(() => Math.Abs(rectangle.ActualHeight - rectangle.ActualSize.Y) < 0.01);
+		}
+#endif
+
+#if HAS_UNO // Cannot Set the LayoutInformation on UWP
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_UpdateLayout_Then_TreeNotMeasuredUsingCachedValue()
+		{
+			if (Window.Current.RootElement is Panel root)
+			{
+				var sut = new Grid();
+
+				var originalRootAvailableSize = LayoutInformation.GetAvailableSize(root);
+				var originalRootDesiredSize = LayoutInformation.GetDesiredSize(root);
+				var originalRootLayoutSlot = LayoutInformation.GetLayoutSlot(root);
+
+				Size availableSize, desiredSize;
+				Rect layoutSlot;
+				try
+				{
+					LayoutInformation.SetAvailableSize(root, default);
+					LayoutInformation.SetDesiredSize(root, default);
+					LayoutInformation.SetLayoutSlot(root, default);
+
+					root.Children.Add(sut);
+					sut.UpdateLayout();
+
+					availableSize = LayoutInformation.GetAvailableSize(sut);
+					desiredSize = LayoutInformation.GetDesiredSize(sut);
+					layoutSlot = LayoutInformation.GetLayoutSlot(sut);
+				}
+				finally
+				{
+					LayoutInformation.SetAvailableSize(root, originalRootAvailableSize);
+					LayoutInformation.SetDesiredSize(root, originalRootDesiredSize);
+					LayoutInformation.SetLayoutSlot(root, originalRootLayoutSlot);
+
+					root.Children.Remove(sut);
+					try { root.UpdateLayout(); } catch { } // Make sure to restore visual tree if test has failed!
+				}
+
+				Assert.AreNotEqual(default, availableSize);
+#if !__IOS__ // Measure arrange are async on iOS!
+				Assert.AreNotEqual(default, desiredSize);
+				Assert.AreNotEqual(default, layoutSlot);
+#endif
+			}
+			else
+			{
+				Assert.Inconclusive("The RootElement is not a Panel");
+			}
 		}
 #endif
 	}
