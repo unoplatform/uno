@@ -362,17 +362,31 @@ namespace Windows.UI.Xaml
 			{
 				_isInUpdateLayout = true;
 
+				// On UWP, the UpdateLayout method has an overload which accepts the desired size used by the window/app to layout the visual tree,
+				// then this overload without parameter is only using the internally cached last desired size.
+				// With Uno this method is not used for standard layouting passes, so we cannot properly internally cache the value,
+				// and we instead could use the LayoutInformation.GetLayoutSlot(root).
+				//
+				// The issue is that unlike UWP which will ends by requesting an UpdateLayout with the right window bounds,
+				// Uno instead exclusively relies on measure/arrange invalidation.
+				// So if we invoke the `UpdateLayout()` **before** the tree has been measured at least once
+				// (which is the case when using a MUX.NavigationView in the "MainPage" on iOS as OnApplyTemplate is invoked too early),
+				// then the whole tree will be measured at the last known value which is 0x0 and will never be invalidated.
+				//
+				// To avoid this we are instead using the Window Bounds as anyway they are the same as the root's slot.
+				var bounds = Windows.UI.Xaml.Window.Current.Bounds;
+
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
-				root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
-				root.Arrange(LayoutInformation.GetLayoutSlot(root));
+				root.Measure(bounds.Size);
+				root.Arrange(bounds);
 #elif __ANDROID__
 				for (var i = 0; i < MaxLayoutIterations; i++)
 				{
 					// On Android, Measure and arrange are the same
 					if (root.IsMeasureDirty)
 					{
-						root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
-						root.Arrange(LayoutInformation.GetLayoutSlot(root));
+						root.Measure(bounds.Size);
+						root.Arrange(bounds);
 					}
 					else
 					{
@@ -384,11 +398,11 @@ namespace Windows.UI.Xaml
 				{
 					if (root.IsMeasureDirty)
 					{
-						root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
+						root.Measure(bounds.Size);
 					}
 					else if (root.IsArrangeDirty)
 					{
-						root.Arrange(LayoutInformation.GetLayoutSlot(root));
+						root.Arrange(bounds);
 					}
 					else
 					{
