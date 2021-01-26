@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
@@ -58,6 +59,9 @@ namespace Windows.Foundation
 			sb.Append(Height.ToString(format, CultureInfo.InvariantCulture));
 			return sb.ToString();
 		}
+
+		internal string ToDebugString()
+			=> FormattableString.Invariant($"{Width:F2}x{Height:F2}");
 
 		public static bool operator ==(Size size1, Size size2) => size1.Equals(size2);
 
