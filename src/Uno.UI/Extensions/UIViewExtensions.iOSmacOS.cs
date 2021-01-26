@@ -651,7 +651,7 @@ namespace AppKit
 						.Append(uiElement != null ? $" AvailableSize={uiElement.LastAvailableSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
 						.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\" - {textBlock.FontFamily}/{textBlock.FontSize}" : "")
-						.Append(innerView is Viewbox viewBox ? $" Scale={viewBox.scaleX}x{viewBox.scaleY} - Stretch={viewBox.Stretch}/{viewBox.StretchDirection}" : "")
+						.Append(innerView is Viewbox viewBox ? $" Stretch={viewBox.Stretch}/{viewBox.StretchDirection}" : "")
 						.Append(" " + transforms)
 						.AppendLine();
 			}
