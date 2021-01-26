@@ -2,6 +2,9 @@
     x:Class="SamplesApp.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:ios="http://nventive.com/ios"
+			 mc:Ignorable="ios"
     RequestedTheme="Light">
     <Application.Resources>
         <ResourceDictionary>
@@ -76,7 +79,14 @@
                 <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="Padding" Value="8" />
             </Style>
-        </ResourceDictionary>
 
+			<Style x:Key="DefaultCommandBarStyle"
+					TargetType="CommandBar">
+
+				 <!--Remove the back button title (and only leave the back arrow)--> 
+				<ios:Setter Property="(toolkit:CommandBarExtensions.BackButtonTitle)"
+							Value="" />
+			</Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

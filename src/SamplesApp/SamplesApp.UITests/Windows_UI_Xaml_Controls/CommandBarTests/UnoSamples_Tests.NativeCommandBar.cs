@@ -203,5 +203,34 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			ImageAssert.AreEqual(initial, final);
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_Navigated_CommandBarShouldHideBackButtonTitle_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonTitle.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+
+			// Will set the global style for the CommandBar to remove the Back Button Title
+			_app.FastTap("SetGlobalStyleButton");
+
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateToPage2Button");
+			_app.FastTap("NavigateToPage2Button");
+
+			_app.WaitForElement("BackButtonTitleButton");
+
+			_app.FastTap("BackButtonTitleButton");
+
+			var textblock = _app.Marked("InfoTextBlock");
+
+			_app.WaitForDependencyPropertyValue(textblock, "Text", "PASSED");
+
+			// Removing the global style we added for the CommandBar preventing other UITest to fail
+			_app.FastTap("UnsetGlobalStyleButton");
+		}
 	}
 }
