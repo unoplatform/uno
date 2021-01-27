@@ -7,6 +7,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Shapes;
 using System;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -120,13 +121,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			if (Window.Current.RootElement is Panel root)
 			{
-				var sut = new Grid();
+				var sut = new Grid { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
 
 				var originalRootAvailableSize = LayoutInformation.GetAvailableSize(root);
 				var originalRootDesiredSize = LayoutInformation.GetDesiredSize(root);
 				var originalRootLayoutSlot = LayoutInformation.GetLayoutSlot(root);
 
-				Size availableSize, desiredSize;
+				Size availableSize;
 				Rect layoutSlot;
 				try
 				{
@@ -138,7 +139,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					sut.UpdateLayout();
 
 					availableSize = LayoutInformation.GetAvailableSize(sut);
-					desiredSize = LayoutInformation.GetDesiredSize(sut);
 					layoutSlot = LayoutInformation.GetLayoutSlot(sut);
 				}
 				finally
@@ -152,8 +152,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 
 				Assert.AreNotEqual(default, availableSize);
-#if !__IOS__ // Measure arrange are async on iOS!
-				Assert.AreNotEqual(default, desiredSize);
+#if !__IOS__ // Arrange is async on iOS!
 				Assert.AreNotEqual(default, layoutSlot);
 #endif
 			}
