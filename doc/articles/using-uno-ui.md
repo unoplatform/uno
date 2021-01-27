@@ -110,7 +110,7 @@ This behavior is a direct consequence of the ability to mix native and Uno.UI co
 
 ## Dependency Properties
 
-Uno.UI allows the sharing of [Dependency Property](https://msdn.microsoft.com/en-us/library/ms752914%28v=vs.110%29.aspx) declaration and code between Windows and Xamarin based platforms.
+Uno.UI allows the sharing of [Dependency Property](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/dependency-properties-overview) declaration and code between Windows and Xamarin based platforms.
 
 Declaring a dependency property in Uno UI requires a class to implement the interface `DependencyObject`, to gain access to the GetValue and SetValue methods.
 
