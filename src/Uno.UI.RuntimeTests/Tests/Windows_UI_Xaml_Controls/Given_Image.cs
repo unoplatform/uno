@@ -27,6 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var image = new Image { Height = 30, Stretch = Stretch.Uniform, Source = new BitmapImage(new Uri("ms-appx:///Assets/storelogo.png")) };
 			image.Loaded += (s, e) => imageLoaded.TrySetResult(true);
+			image.ImageFailed += (s, e) => imageLoaded.TrySetException(new Exception(e.ErrorMessage));
 
 			var innerGrid = new Grid { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center };
 			var outerGrid = new Grid { Height = 750, Width = 430 };
