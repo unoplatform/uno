@@ -105,10 +105,21 @@ namespace Windows.UI.Xaml
 					provider.Store.SetInheritedDataContext(inheritedValue);
 				}
 			}
-
 			for (int i = 0; i < _childrenBindable.Count; i++)
 			{
 				var child = _childrenBindable[i];
+				var parent = child?.GetParent();
+
+				//Do not propagate value if you are not this child's parent
+				//Covers case where a child may hold a binding to a view higher up the tree
+				//Example: Button A contains a Flyout with Button B inside of it
+				//	Button B has a binding to the Flyout itself
+				//	We should not propagate Button B's DataContext to the Flyout
+				//	since its real parent is actually Button A 
+				if (parent != null && parent != ActualInstance)
+				{
+					continue;
+				}
 
 				if (child is IDependencyObjectStoreProvider provider)
 				{
