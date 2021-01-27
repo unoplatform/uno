@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Text;
 using Windows.Foundation;
 
-namespace Uno.UI.Extensions
+namespace System.Numerics
 {
 	public static class VectorExtensions
 	{
