@@ -9,6 +9,9 @@ namespace Uno.UI.RuntimeTests.Helpers
 {
 	internal static class NumberAssert
 	{
+		/// <summary>
+		/// Asserts that <paramref name="arg1"/> is greater than <paramref name="arg2"/>.
+		/// </summary>
 		public static void Greater(double arg1, double arg2)
 		{
 			var isGreater = arg1 > arg2;
@@ -18,6 +21,9 @@ namespace Uno.UI.RuntimeTests.Helpers
 			}
 		}
 
+		/// <summary>
+		/// Asserts that <paramref name="arg1"/> is less than <paramref name="arg2"/>.
+		/// </summary>
 		public static void Less(double arg1, double arg2)
 		{
 			var isLess = arg1 < arg2;
