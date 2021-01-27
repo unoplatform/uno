@@ -14,7 +14,7 @@ As the Uno Platform provides all of the APIs of the complete UWP platform, any U
 
 **For designers**, XAML can provide a shared way to use pixel-perfect designs and use rich UI interactions.
 
-## Why Uno?
+## Why Uno Platform?
 Developing for Windows (phone, desktop, tablet, Xbox), iOS (tablet and phone), Android (tablet and phone) and the Web via WebAssembly at once can be a complex process, especially when it comes to the user interface. Each platform has its own ways of defining dynamic layouts, with some being more efficient, some more verbose, some more elegant, and some more performant than others.
 Yet, being able to master all these frameworks at once is a particularly difficult task because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
 With Xamarin, C# comes to all these platforms; however, it only provides transparent translations of the UI frameworks available for iOS and Android. Most non-UI code can be shared, but when it comes to the UI, almost nothing can be shared.
@@ -23,13 +23,16 @@ Uno.UI provides the ability for developers to reuse known layouts and coding tec
 
 
 ## Who makes Uno Platform?
-Uno Platform was developed by Team nventive over the past 4 years.
+Uno Platform was developed by Team nventive since 2013 for internal usage, and it has been open sourced by nventive since May 2018. 
 
 ## What makes Uno Platform unique?
-The Uno Platform is the only implementation of the UWP API that runs across iOS, Android and WebAssembly. 
+The Uno Platform is the only implementation of the UWP API that runs across iOS, Android, WebAssembly, Linux and macOS. 
 
 ## Is Uno Platform open source?
 Yes, the Uno Platform is open source, under the [Apache 2.0 license](https://github.com/unoplatform/uno/blob/master/License.md).
+
+## Is Uno Platform free?
+Yes, the Uno Platform is free.
 
 # Getting started
 ## How can I try Uno platform?
@@ -37,11 +40,11 @@ You can try the Uno Platform using the [Uno Platform Playground](https://playgro
 
 ## How experienced do I need to be to use Uno Platform?
 
-## What is the playground?
+## What is the Uno playground?
 The [Uno Platform Playground](https://playground.platform.uno) is a convenient way to experiment with the Uno platform, using only a WebAssembly compatible web browser.
 
 ## Where can I get support?
-Support is available through [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform), [Twitter account](https://twitter.com/unoplatform), and email [info@platform.uno](mailto:info@platform.uno).
+Support is available through [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform), [Twitter account](https://twitter.com/unoplatform), Discord www.platform.uno/discord - #uno-platform channel and email [info@platform.uno](mailto:info@platform.uno).
 
 ## How can I get involved?
 There are lots of ways to contribute to the Uno Platform and we appreciate the help from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions.
@@ -58,13 +61,13 @@ GitHub supports markdown, so when filing bugs make sure you check the formatting
 
 # Technology
 
-## What is UWP?
+## What is Universal Windows Platform (UWP)?
 
 Universal Windows Platform (UWP) is an API created by Microsoft and first introduced in Windows 10. The purpose of this platform is to help develop universal apps that run on Windows 10, Windows 10 Mobile, Xbox One and HoloLens without the need to be re-written for each. It supports Windows app development using C++, C#, VB.NET, and XAML. The API is implemented in C++, and supported in C++, VB.NET, C#, F# and JavaScript. Designed as an extension to the Windows Runtime platform first introduced in Windows Server 2012 and Windows 8, UWP allows developers to create apps that will potentially run on multiple types of devices.
 
 Visit Microsoft's documentation for a primer on UWP : https://docs.microsoft.com/en-us/windows/uwp/get-started/
 
-## How is Uno platform different from Xamarin forms or Avalonia?
+## How is Uno Platform different from Xamarin.Forms or Avalonia?
 Multiple techniques can be used to render UI, ranging from rendering pixels in a Frame Buffer (Avalonia), to rendering only using platform-provided controls (Xamarin.Forms). 
 
 While the former provides a high flexibility in terms of rendering fidelity and the ability to add new platforms, it has the drawback of not following the platform native behaviors. For instance, interactions with text boxes, has to be re-implemented completely in order to match the native behavior, and has to be updated regularly to follow platform updates. This approach also makes it very difficult to integrate native UI components "in-canvas", such as Map or Browser controls.
@@ -83,15 +86,15 @@ On the Web, the application is built using the standard .NET tooling. The applic
 WebAssembly is supported in 4 major browser engines, see the [WebAssembly official site](https://webassembly.org/roadmap/) for more details.
 
 ## Where can I deploy my Uno Platform based app?
-For iOS and Android, it can be deployed like any Xamarin-based application through the App Store and Play Store, respectively.
+For iOS and Android, it can be deployed like any Xamarin-based application through the App Store and Play Store, respectively. 
 
 For WebAssembly, it can be deployed using [GitHub Pages](https://pages.github.com/), Azure [Web Apps](https://azure.microsoft.com/en-us/services/app-service/web/), [Azure Static Web Sites](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website), or any other static web site hosting provider.
 
 ## Does Uno.UI support macOS?
-Not yet. We're still waiting for Apple's Marzipan cross macOS-iOS APIs to become available. We’ll see from there. 
+Yes. Please see https://platform.uno/uno-platform-for-macos/ 
 
 ## Does Uno.UI support Linux ?
-No, not at the moment. Our assumption for now is that the WebAssembly part of Uno.UI will be efficient enough to be a viable alternative. If you find that native support still is a viable scenario, please open a GitHub issue.
+Yes. Please see https://platform.uno/uno-platform-for-linux/
 
 ## Does Uno.UI support what WPF is calling CustomControls ? 
 
@@ -113,7 +116,7 @@ XAML stands for **eXtensible Application Markup Language**, and is used to provi
 For a good introduction to the use of XAML and MVVM patterns see [Microsoft's Laurent Bugnion presentation](https://twitter.com/LBugnion).
 
 ## What are the different flavors of XAML?
-Over the years, Microsoft has been working on different implementations that use XAML for defining User Interfaces, and currently, three main flavors co-exist: WPF, UWP, Xamarin.Forms and the legacy Silverlight.
+Over the years, Microsoft has been working on different implementations that use XAML for defining User Interfaces, and currently, three main flavors co-exist: WPF, UWP, Xamarin.Forms and the legacy Silverlight. The WinUI XAML uses the same flavor as UWP XAML. 
 
 All these implementations use the same base XAML definition language, with minor differences in terms of the interpretation of the XML namespaces (`clr-namespace` vs. `using:`), and major differences in terms of the APIs used by the XAML parser.
 
@@ -124,9 +127,9 @@ has [`Xamarin.Forms.StackLayout`](https://docs.microsoft.com/en-us/dotnet/api/Xa
 ## Why Mono?
 [Mono](https://github.com/mono/mono) is currently the best (and only) mobile-friendly implementation of .NET that targets iOS, Android and WebAssembly. It shares a lot -- and increasing -- of code from the BCL implementation with [.NET core](https://github.com/dotnet/core), making the runtime behavior very similar and in most cases, identical across platforms.
 
-## What do you mean by #UWPeverywhere?
+## What do you mean by #WinUIeverywhere?
 
-Our ultimate goal is to allow for the UWP api to run on all platforms, using Microsoft's own UWP implementation as a reference.
+Our ultimate goal is to allow for the WinUI and UWP api to run on all platforms, using Microsoft's own WinUI / UWP implementation as a reference.
 
 ## What is a bridge?
 
@@ -142,9 +145,9 @@ Microsoft describes it best in its [What is .NET](https://www.microsoft.com/net/
 
 ## Why build cross platform apps on the Microsoft stack?
 
-## Will the Uno platform make my app look and run the same way on iOS and Android?
+## Will the Uno Platform make my app look and run the same way on iOS and Android?
 
-## What are the advantages of using Uno platform over Flutter/React Native/Xamarin Forms?
+## What are the advantages of using Uno Platform over Flutter/React Native/Xamarin Forms?
 
 # Uno.UI Platforms Frequently Asked Questions
 
@@ -421,20 +424,20 @@ Yes, make sure to use the following project definition:
 </ItemGroup>
 ```
 
-## Does Uno offer a TreeView control?
+## Does Uno Platform offer a TreeView control?
 
 It's in the UWP API, but [not implemented yet](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/tree-view)
 We have an open Github [issue.](https://github.com/unoplatform/Uno/issues/3)
 
-## Is there a table of all UWP controls and their features compared to what's offered under Uno?
+## Is there a table of all UWP controls and their features compared to what's offered under Uno Platform?
 
 https://github.com/unoplatform/uno/blob/master/doc/articles/supported-features.md
 
-##  Is there an Uno template that is based on a portable class library?
+##  Is there an Uno Platform template that is based on a portable class library?
 
 No, but use the [Cross-Platform library template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) instead to achieve a similar goal.
 
-## Is there a Visual Studio template for Uno that incorporates the Prism library?
+## Is there a Visual Studio template for Uno Platform that incorporates the Prism library?
 
 No, but this sample can serve as a base: https://github.com/unoplatform/uno.Prism/tree/uno/Sandbox/Windows10/HelloWorld
 
@@ -443,11 +446,11 @@ No, but this sample can serve as a base: https://github.com/unoplatform/uno.Pris
 If you are using JSON.NET, you need [this](https://github.com/unoplatform/uno.Playground/blob/master/src/Uno.Playground.WASM/LinkerConfig.xml) 
 This file is referenced in the .csproj like [that](https://github.com/unoplatform/uno.Playground/blob/master/src/Uno.Playground.WASM/Uno.Playground.WASM.csproj#L43)
 
-## Is NavigationView supported in Uno?
+## Is NavigationView supported in Uno Platform?
 
-Yes, Uno now supports NavigationView , see [unoplatform/uno#4](https://github.com/unoplatform/Uno/issues/4) for more
+Yes, Uno Platform now supports NavigationView , see [unoplatform/uno#4](https://github.com/unoplatform/Uno/issues/4) for more
 
-## Is there any particular reason that Uno uses a shared project? and is it possible to use a netstandard project instead?
+## Is there any particular reason that Uno Platform uses a shared project? and is it possible to use a netstandard project instead?
 
 The view layer needs to be in a shared project because it has native dependencies.
 For your view models and business logic, it's fine to use a separate netstandard project.
@@ -477,7 +480,7 @@ you can specify a custom HTML template like [this](https://github.com/unoplatfor
 This has been fixed starting from Visual Studio 15.9 Preview 3
 Please see this [Developer Community thread.](https://developercommunity.visualstudio.com/content/problem/306764/debugging-a-published-nuget-package-break-the-xama.html)
 
-## Does Uno offer an `AutoSuggestBox`?
+## Does Uno Platform offer an `AutoSuggestBox`?
 
 [Yes](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/UI/Xaml/Controls/AutoSuggestBox/AutoSuggestBox.cs)
 
@@ -485,13 +488,13 @@ Please see this [Developer Community thread.](https://developercommunity.visuals
 
 Yes, and you can use this [WebAssembly SQLite provider](https://github.com/unoplatform/uno.SQLitePCLRaw.Wasm)
 
-## Are Popups/RichEditbox implemented in Uno?
+## Are Popups/RichEditbox implemented in Uno Platform?
 
 No. You can use Conditional XAML to work around it: https://github.com/unoplatform/uno/blob/master/doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files
 
-## Does Uno support all UWP animations?
+## Does Uno Platform support all UWP animations?
 
-We've implemented parts of the supported animations, there are others that are still stubbed.
+We've implemented parts of the supported animations, there are others that are still stubbed. If something you are looking for is not implemented, please open an issue. 
 
 ## Visual Studio is requiring Android API v26 but I want to test on an older device.
 
