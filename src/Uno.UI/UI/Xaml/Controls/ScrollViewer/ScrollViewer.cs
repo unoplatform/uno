@@ -774,11 +774,11 @@ namespace Windows.UI.Xaml.Controls
 				&& visibility != ScrollBarVisibility.Disabled
 				&& mode != ScrollMode.Disabled;
 
-		private static ScrollBarVisibility ComputeNativeScrollBarVisibility(ScrollBarVisibility visibility, ScrollMode mode, ScrollBar? managedScrollbar)
+		private ScrollBarVisibility ComputeNativeScrollBarVisibility(ScrollBarVisibility visibility, ScrollMode mode, ScrollBar? managedScrollbar)
 			=> mode switch
 			{
 				ScrollMode.Disabled => ScrollBarVisibility.Disabled,
-				_ when managedScrollbar is null => visibility,
+				_ when managedScrollbar is null && Uno.UI.Xaml.Controls.ScrollViewer.GetShouldFallBackToNativeScrollBars(this) => visibility,
 				_ when visibility == ScrollBarVisibility.Disabled => ScrollBarVisibility.Disabled,
 				_ => ScrollBarVisibility.Hidden // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
 			};

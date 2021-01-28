@@ -58,5 +58,32 @@ namespace Uno.UI.Xaml.Controls
 		/// <returns>The updates mode of the <paramref name="scrollViewer"/>.</returns>
 		public static ScrollViewerUpdatesMode GetUpdatesMode(Windows.UI.Xaml.Controls.ScrollViewer scrollViewer)
 			=> (ScrollViewerUpdatesMode)scrollViewer.GetValue(UpdatesModeProperty);
+
+		/// <summary>
+		/// Getter for ShouldFallBackToNativeScrollBars attached property. If true, and no <see cref="Windows.UI.Xaml.Primitives.ScrollBar"/> is
+		/// found in <paramref name="scrollViewer"/>'s template, then native scroll bars (for platforms where available) will be shown instead.
+		/// If false, no scroll bars will be shown. True by default, for backward-compatibility.
+		/// </summary>
+		/// <param name="scrollViewer"></param>
+		/// <returns></returns>
+		public static bool GetShouldFallBackToNativeScrollBars(Windows.UI.Xaml.Controls.ScrollViewer scrollViewer)
+		{
+			return (bool)scrollViewer.GetValue(ShouldFallBackToNativeScrollBarsProperty);
+		}
+
+		/// <summary>
+		/// Setter for ShouldFallBackToNativeScrollBars attached property. If true, and no <see cref="Windows.UI.Xaml.Primitives.ScrollBar"/> is
+		/// found in <paramref name="scrollViewer"/>'s template, then native scroll bars (for platforms where available) will be shown instead.
+		/// If false, no scroll bars will be shown. True by default, for backward-compatibility.
+		/// </summary>
+		public static void SetShouldFallBackToNativeScrollBars(Windows.UI.Xaml.Controls.ScrollViewer scrollViewer, bool value)
+		{
+			scrollViewer.SetValue(ShouldFallBackToNativeScrollBarsProperty, value);
+		}
+
+		public static readonly DependencyProperty ShouldFallBackToNativeScrollBarsProperty =
+			DependencyProperty.RegisterAttached("ShouldFallBackToNativeScrollBars", typeof(bool), typeof(ScrollViewer), new PropertyMetadata(true));
+
+
 	}
 }
