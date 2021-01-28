@@ -3358,6 +3358,20 @@
 				reason="Renamed in WinUI" />
 		</Methods>
 	</IgnoreSet>
+	
+	<IgnoreSet baseVersion="3.4.0">
+		<Methods>
+			<Member
+				fullName="System.String UIKit.UIViewExtensions.GetDebugIdentifier(UIKit.UIView element)"
+				reason="Internal helper that should not be public" />
+			<Member
+				fullName="System.String AppKit.UIViewExtensions.GetDebugIdentifier(AppKit.NSView element)"
+				reason="Internal helper that should not be public" />
+			<Member
+				fullName="System.String Uno.UI.ViewExtensions.GetDebugIdentifier(Android.Views.View element)"
+				reason="Internal helper that should not be public" />
+		</Methods>
+	</IgnoreSet>
 
 	<!--
 	Supported nodes (please keep at the bottom of this file):
