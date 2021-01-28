@@ -1,3 +1,5 @@
+// MUX Reference RatingItemImageInfo.properties.cpp, commit de78834
+
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
