@@ -120,7 +120,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 			public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
 			{
-				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
+				var isInsideCast = Helpers.IsInsideCast(node);
+				var isValidParent = !Helpers.IsInsideMethod(node).result
+					&& !Helpers.IsInsideMemberAccessExpression(node).result
+					&& !isInsideCast.result;
 
 				if (isValidParent && !_isStaticMember(node.ToFullString()))
 				{
@@ -230,6 +233,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					}
 
 					child = currentNode;
+					currentNode = currentNode.Parent;
+				}
+				while (currentNode != null);
+
+				return (false, null);
+			}
+
+			internal static (bool result, CastExpressionSyntax expression) IsInsideCast(SyntaxNode node)
+			{
+				var currentNode = node.Parent;
+
+				do
+				{
+					if (currentNode is CastExpressionSyntax cast)
+					{
+						return (true, cast);
+					}
+
 					currentNode = currentNode.Parent;
 				}
 				while (currentNode != null);
