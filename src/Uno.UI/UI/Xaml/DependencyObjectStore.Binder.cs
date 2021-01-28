@@ -427,7 +427,12 @@ namespace Windows.UI.Xaml
 		{
 			var property = DependencyProperty.GetProperty(_originalObjectType, propertyName);
 
-			if(property != null)
+			if(property == null && propertyName != null)
+			{
+				property = FindStandardProperty(_originalObjectType, propertyName, false);
+			}
+
+			if (property != null)
 			{
 				SetBindingValue(value, property);
 			}
