@@ -33,7 +33,7 @@ variables:
   windowsScaledPool: 'Windows2019-20201210-0'
   linuxVMImage: 'ubuntu-latest'
   macOSVMImage: 'macOS-10.15'
-  xCodeRoot: '/Applications/Xcode_12.2.app'
+  xCodeRoot: '/Applications/Xcode_12.3.app'
   XamarinSDKVersion: 6_12_2
   xCodeRoot_iOS_UITests: '/Applications/Xcode_11.5.app'
   XamarinSDKVersion_iOS_UITests: 6_10_0
