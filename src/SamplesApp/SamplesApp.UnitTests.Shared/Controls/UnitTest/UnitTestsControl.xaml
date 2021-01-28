@@ -23,8 +23,15 @@
 			<StackPanel Orientation="Horizontal">
 				<Button
 					x:Name="runButton"
-					Content="Run"
+					not_skia:Content="▶️ Run"
+					skia:Content="Run"
 					Click="OnRunTests" />
+				<Button
+					x:Name="stopButton"
+					IsEnabled="False"
+					not_skia:Content="⏹️ Stop"
+					skia:Content="Stop"
+					Click="OnStopTests" />
 				<TextBox x:Name="testFilter" PlaceholderText="Enter test filter here" Width="140" />
 			</StackPanel>
 
