@@ -672,8 +672,9 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			ViewportHeight = ActualHeight;
-			ViewportWidth = ActualWidth;
+			// The dimensions of the presenter (which are often but not always the same as the ScrollViewer) determine the viewport size
+			ViewportHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
+			ViewportWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
 
 			ExtentHeight = (Content as IFrameworkElement)?.ActualHeight ?? 0;
 			ExtentWidth = (Content as IFrameworkElement)?.ActualWidth ?? 0;
