@@ -40,6 +40,10 @@
 			<Pack>true</Pack>
 			<PackagePath>content/xamarinforms-wasm</PackagePath>
 		</Content>
+		<Content Include="content\unoapp-uitest\**\*">
+		  <PackagePath>content\unoapp-uitest</PackagePath>
+		  <Pack>true</Pack>
+		</Content>
 		<Content Include="content/xamarinforms-wasm/UnoXFQuickStart.Wasm/**/*.*">
 			<Pack>true</Pack>
 			<PackagePath>content/xamarinforms-wasm/UnoXFQuickStart.Wasm</PackagePath>
@@ -94,10 +98,6 @@
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\UnoLibraryTemplate.csproj" />
 
 		<_UnoLibTemplateFiles Include="..\UnoLibraryTemplate\**" Exclude="@(_UnoLibTemplateFilesExclude)" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="content\unoapp-winui\UnoWinUIQuickStart.Windows.Package\Package.appxmanifest" />
 	</ItemGroup>
 
 	<Target Name="CopyUnoAppTemplate" BeforeTargets="Build">

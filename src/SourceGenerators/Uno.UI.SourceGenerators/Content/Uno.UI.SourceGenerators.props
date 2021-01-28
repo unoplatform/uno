@@ -288,6 +288,7 @@
 	<UnoSourceGeneratorAdditionalProperty Include="UnoUIUseRoslynSourceGenerators" />
 	<UnoSourceGeneratorAdditionalProperty Include="ProjectTypeGuidsProperty" />
 	<UnoSourceGeneratorAdditionalProperty Include="DefineConstantsProperty" />
+	<UnoSourceGeneratorAdditionalProperty Include="IsUiAutomationMappingEnabled" />
   </ItemGroup>
 
   <Target Name="_FillSourceGeneratorItemGroups">

@@ -116,6 +116,11 @@ dotnet new unoapp-winui -n UnoAppWinUI --winui-desktop=false
 & $msbuild $debug UnoAppWinUI\UnoAppWinUI.sln
 Assert-ExitCodeIsZero
 
+# UI Tests template
+dotnet new unoapp-uitest -o UnoUITests01
+& $msbuild $debug UnoUITests01\UnoUITests01.csproj
+Assert-ExitCodeIsZero
+
 # XF - Default
 7z x build\assets\xfapp-uwp-4.8.0.1451.zip -oXFApp
 
