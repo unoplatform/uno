@@ -78,6 +78,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+		[Ignore("ComboBox version of the control is slow on Android/iOS (issue #3144)")]
 		public void VerifyComboBoxItemsListNormal()
 		{
 			PagerControl control = null;
@@ -114,6 +115,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+		[Ignore("ComboBox version of the control is slow on Android/iOS (issue #3144)")]
 		public void VerifyComboBoxItemsInfiniteItems()
 		{
 			PagerControl control = null;
