@@ -90,6 +90,10 @@ namespace Uno.Helpers
 				}
 
 				Console.WriteLine($"STEVE : Couldn't find drawable with key: {resourceKey}");
+				foreach (var key in DrawableMap.Keys)
+				{
+					Console.WriteLine($"STEVE : {key}");
+				}
 
 
 				return null;
