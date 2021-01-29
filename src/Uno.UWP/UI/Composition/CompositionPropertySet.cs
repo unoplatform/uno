@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Color = Windows.UI.Color;
 
 namespace Windows.UI.Composition
 {
