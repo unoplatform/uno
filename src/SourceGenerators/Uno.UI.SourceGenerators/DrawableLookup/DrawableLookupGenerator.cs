@@ -44,6 +44,13 @@ namespace Uno.UI.SourceGenerators.DrawableLookup
 
 			_rootNamespace = context.GetMSBuildPropertyValue("RootNamespace");
 			var resource = context.Compilation.GetTypeByMetadataName($"{_rootNamespace}.Resource");
+			this.Log().Warn($"Root Namespace is {_rootNamespace}");
+			this.Log().Warn($"Is Resource null? {resource == null}");
+
+			foreach (var typeMember in resource?.GetTypeMembers() ?? Enumerable.Empty<INamedTypeSymbol>())
+			{
+				this.Log().Warn($"Resource type member: {typeMember.Name}");
+			}
 
 			_drawableSymbols = resource?.GetTypeMembers()
 				.FirstOrDefault(x => x.Name == "Drawable")
