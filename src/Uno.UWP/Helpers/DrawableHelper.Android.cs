@@ -89,6 +89,9 @@ namespace Uno.Helpers
 					typeof(DrawableHelper).Log().Error($"Couldn't find drawable with key: {resourceKey}");
 				}
 
+				Console.WriteLine($"STEVE : Couldn't find drawable with key: {resourceKey}");
+
+
 				return null;
 			}
 
