@@ -21,10 +21,20 @@
 	<StackPanel Grid.Row="1"
 				Spacing="15"
 				VerticalAlignment="Center">
-			
+
 				<Image Style="{StaticResource ImageForCommandBarIcon}"
-					   x:Name="ArrowImage"
+					   x:Name="RefImage"
 					   HorizontalAlignment="Center" />
+
+				<Button x:Name="BackButtonImageLoaderButton"
+				        Content="Get BackButton Image"
+				        Click="OnButtonClicked"
+				        HorizontalAlignment="Center"/>
+
+				<Image x:Name="ExpectedImage"
+				       Width="41"
+				       Height="41"
+				       HorizontalAlignment="Center" />
 	</StackPanel>
 
 	</Grid>

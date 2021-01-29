@@ -13,7 +13,10 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
+#if __IOS__
+using UIKit;
+using Uno.UI.Controls;
+#endif
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage
@@ -23,6 +26,22 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage
         public CommandBar_Page2()
         {
             this.InitializeComponent();
+        }
+
+        public void OnButtonClicked(object sender, object args)
+        {
+#if __IOS__
+	        UIView parent = this;
+	        while (parent.HasParent())
+	        {
+		        parent = parent.Superview;
+	        }
+
+	        var navigationBar = parent.FindFirstChild<UnoNavigationBar>();
+
+	        var image = navigationBar.BackIndicatorImage;
+	        ExpectedImage.Source = image;
+#endif
         }
     }
 }
