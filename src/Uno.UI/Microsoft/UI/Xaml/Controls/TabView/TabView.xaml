@@ -174,8 +174,11 @@
         </Setter>
     </Style>
 
-    <Style x:Name="TabScrollViewerStyle" TargetType="ScrollViewer">
-        <Setter Property="Template">
+	<Style x:Name="TabScrollViewerStyle" TargetType="ScrollViewer">
+		<!--Uno workaround: ScrollBars are deliberately omitted from the style because they shouldn't appear-->
+		<Setter Property="uno:ScrollViewer.ShouldFallBackToNativeScrollBars"
+				Value="False"/>
+		<Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollViewer">
                     <Border x:Name="Root"
