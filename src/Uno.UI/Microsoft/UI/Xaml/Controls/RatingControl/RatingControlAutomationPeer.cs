@@ -14,8 +14,15 @@ using RatingControl = Microsoft.UI.Xaml.Controls.RatingControl;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
+	/// <summary>
+	/// Exposes RatingControl types to Microsoft UI Automation.
+	/// </summary>
 	public partial class RatingControlAutomationPeer : FrameworkElementAutomationPeer, IRangeValueProvider, IValueProvider
 	{
+		/// <summary>
+		/// Initializes a new instance of the RatingControlAutomationPeer class.
+		/// </summary>
+		/// <param name="owner">Rating control.</param>
 		public RatingControlAutomationPeer(RatingControl owner) : base(owner)
 		{
 		}

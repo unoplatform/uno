@@ -21,9 +21,14 @@ using RatingControlAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.RatingCon
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Represents a control that lets a user enter a star rating.
+	/// </summary>
 	public partial class RatingControl : Control
 	{
+#pragma warning disable IDE0051 // Remove unused private members
 		private const float c_horizontalScaleAnimationCenterPoint = 0.5f;
+#pragma warning restore IDE0051 // Remove unused private members
 		private const float c_verticalScaleAnimationCenterPoint = 0.8f;
 		private readonly Thickness c_focusVisualMargin = new Thickness(-8, -7, -8, 0);
 		private const int c_defaultRatingFontSizeForRendering = 32; // (32 = 2 * [default fontsize] -- because of double size rendering), remove when MSFT #10030063 is done
@@ -43,9 +48,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private DispatcherHelper m_dispatcherHelper;
 
 		// Private members
-		TextBlock m_captionTextBlock;
+		private TextBlock m_captionTextBlock;
 
-		CompositionPropertySet m_sharedPointerPropertySet;
+		private CompositionPropertySet m_sharedPointerPropertySet;
 
 		private StackPanel m_backgroundStackPanel;
 		private StackPanel m_foregroundStackPanel;
@@ -60,6 +65,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_shouldDiscardValue = true;
 		private long m_fontFamilyChangedToken;
 
+		/// <summary>
+		/// Initializes a new instance of the RatingControl class.
+		/// </summary>
 		public RatingControl()
 		{
 			m_dispatcherHelper = new DispatcherHelper(this);
@@ -73,8 +81,6 @@ namespace Microsoft.UI.Xaml.Controls
 			// We only need to use safe_get in the deruction loop
 			RecycleEvents(true /* useSafeGet */);
 		}
-
-		public event TypedEventHandler<RatingControl, object> ValueChanged;
 
 		private float RenderingRatingFontSize()
 		{

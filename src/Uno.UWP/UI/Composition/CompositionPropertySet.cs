@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using Color = Windows.UI.Color;
@@ -50,6 +52,7 @@ namespace Windows.UI.Composition
 		public CompositionGetValueStatus TryGetBoolean(string propertyName, out bool value) => TryGetValue(propertyName, out value);
 
 		private CompositionGetValueStatus TryGetValue<T>(string propertyName, out T value)
+			where T : struct
 		{
 			value = default;
 			if (_properties.TryGetValue(propertyName, out var objValue))
@@ -65,6 +68,7 @@ namespace Windows.UI.Composition
 		}
 
 		private void SetValue<T>(string propertyName, T value)
+			where T : struct
 		{
 			if (_properties.TryGetValue(propertyName, out var existingValue) && !(existingValue is T _))
 			{

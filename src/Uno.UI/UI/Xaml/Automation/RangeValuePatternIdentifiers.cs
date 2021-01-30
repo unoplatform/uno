@@ -1,4 +1,6 @@
-﻿using Uno;
+﻿#nullable enable
+
+using Uno;
 
 namespace Windows.UI.Xaml.Automation
 {
