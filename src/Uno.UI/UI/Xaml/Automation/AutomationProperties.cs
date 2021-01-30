@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Uno.UI;
-using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Automation.Peers;
 
 namespace Windows.UI.Xaml.Automation
 {
@@ -170,6 +168,36 @@ namespace Windows.UI.Xaml.Automation
 		public static void SetAutomationId(DependencyObject element, string value)
 			=> element.SetValue(AutomationIdProperty, value);
 		#endregion
+
+		public static int GetPositionInSet(global::Windows.UI.Xaml.DependencyObject element) => (int)element.GetValue(PositionInSetProperty);
+
+		public static void SetPositionInSet(DependencyObject element, int value) => element.SetValue(PositionInSetProperty, value);
+
+		public static DependencyProperty PositionInSetProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"PositionInSet", typeof(int),
+				typeof(AutomationProperties),
+				new FrameworkPropertyMetadata(default(int)));
+
+		public static int GetSizeOfSet(DependencyObject element) => (int)element.GetValue(SizeOfSetProperty);
+
+		public static void SetSizeOfSet(DependencyObject element, int value) => element.SetValue(SizeOfSetProperty, value);
+
+		public static DependencyProperty SizeOfSetProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"SizeOfSet", typeof(int),
+				typeof(AutomationProperties),
+				new FrameworkPropertyMetadata(default(int)));
+
+		public static AutomationLandmarkType GetLandmarkType(DependencyObject element) => (AutomationLandmarkType)element.GetValue(LandmarkTypeProperty);
+
+		public static void SetLandmarkType(DependencyObject element, AutomationLandmarkType value) => element.SetValue(LandmarkTypeProperty, value);
+
+		public static DependencyProperty LandmarkTypeProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"LandmarkType", typeof(AutomationLandmarkType),
+				typeof(AutomationProperties),
+				new FrameworkPropertyMetadata(default(AutomationLandmarkType)));
 
 #if __WASM__
 		private static string FindHtmlRole(UIElement uIElement) =>
