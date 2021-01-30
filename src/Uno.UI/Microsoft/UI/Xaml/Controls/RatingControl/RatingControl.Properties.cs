@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the Caption dependency property.
 		/// </summary>
 		public static DependencyProperty CaptionProperty { get; } =
-			DependencyProperty.Register(nameof(Caption), typeof(string), typeof(RatingControl), new PropertyMetadata(default(string), OnPropertyChanged));
+			DependencyProperty.Register(nameof(Caption), typeof(string), typeof(RatingControl), new PropertyMetadata(string.Empty, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the initial set rating value.
@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsReadOnly dependency property.
 		/// </summary>
 		public static DependencyProperty IsReadOnlyProperty { get; } =
-			DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(RatingControl), new PropertyMetadata(default(bool), OnPropertyChanged));
+			DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(RatingControl), new PropertyMetadata(false, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets info about the visual states of the items that represent a rating.
