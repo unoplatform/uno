@@ -7,7 +7,7 @@ namespace Windows.Foundation
 	/// <summary>
 	/// Represents a value in a property store (such as a PropertySet instance).
 	/// </summary>
-	public partial class PropertyValue
+	public static partial class PropertyValue
 	{
 		public static object? CreateEmpty() => null;
 
@@ -57,42 +57,42 @@ namespace Windows.Foundation
 
 		public static object CreateRect(Rect value) => value;
 
-		public static object CreateUInt8Array(byte[]? value) => value ?? Array.Empty<byte>();
+		public static object CreateUInt8Array(byte[] value) => value ?? Array.Empty<byte>();
 
-		public static object CreateInt16Array(short[]? value) => value ?? Array.Empty<short>();
+		public static object CreateInt16Array(short[] value) => value ?? Array.Empty<short>();
 
-		public static object CreateUInt16Array(ushort[]? value) => value ?? Array.Empty<ushort>();
+		public static object CreateUInt16Array(ushort[] value) => value ?? Array.Empty<ushort>();
 
-		public static object CreateInt32Array(int[]? value) => value ?? Array.Empty<int>();
+		public static object CreateInt32Array(int[] value) => value ?? Array.Empty<int>();
 
-		public static object CreateUInt32Array(uint[]? value) => value ?? Array.Empty<uint>();
+		public static object CreateUInt32Array(uint[] value) => value ?? Array.Empty<uint>();
 
-		public static object CreateInt64Array(long[]? value) => value ?? Array.Empty<long>();
+		public static object CreateInt64Array(long[] value) => value ?? Array.Empty<long>();
 
-		public static object CreateUInt64Array(ulong[]? value) => value ?? Array.Empty<ulong>();
+		public static object CreateUInt64Array(ulong[] value) => value ?? Array.Empty<ulong>();
 
-		public static object CreateSingleArray(float[]? value) => value ?? Array.Empty<float>();
+		public static object CreateSingleArray(float[] value) => value ?? Array.Empty<float>();
 
-		public static object CreateDoubleArray(double[]? value) => value ?? Array.Empty<double>();
+		public static object CreateDoubleArray(double[] value) => value ?? Array.Empty<double>();
 
-		public static object CreateChar16Array(char[]? value) => value ?? Array.Empty<char>();
+		public static object CreateChar16Array(char[] value) => value ?? Array.Empty<char>();
 
-		public static object CreateBooleanArray(bool[]? value) => value ?? Array.Empty<bool>();
+		public static object CreateBooleanArray(bool[] value) => value ?? Array.Empty<bool>();
 
-		public static object CreateStringArray(string[]? value) => value ?? Array.Empty<string>();
+		public static object CreateStringArray(string[] value) => value ?? Array.Empty<string>();
 
-		public static object CreateInspectableArray(object[]? value) => value ?? Array.Empty<object>();
+		public static object CreateInspectableArray(object[] value) => value ?? Array.Empty<object>();
 
-		public static object CreateGuidArray(Guid[]? value) => value ?? Array.Empty<Guid>();
+		public static object CreateGuidArray(Guid[] value) => value ?? Array.Empty<Guid>();
 
-		public static object CreateDateTimeArray(DateTimeOffset[]? value) => value ?? Array.Empty<DateTimeOffset>();
+		public static object CreateDateTimeArray(DateTimeOffset[] value) => value ?? Array.Empty<DateTimeOffset>();
 
-		public static object CreateTimeSpanArray(TimeSpan[]? value) => value ?? Array.Empty<TimeSpan>();
+		public static object CreateTimeSpanArray(TimeSpan[] value) => value ?? Array.Empty<TimeSpan>();
 
-		public static object CreatePointArray(Point[]? value) => value ?? Array.Empty<Point>();
+		public static object CreatePointArray(Point[] value) => value ?? Array.Empty<Point>();
 
-		public static object CreateSizeArray(Size[]? value) => value ?? Array.Empty<Size>();
+		public static object CreateSizeArray(Size[] value) => value ?? Array.Empty<Size>();
 
-		public static object CreateRectArray(Rect[]? value) => value ?? Array.Empty<Rect>();
+		public static object CreateRectArray(Rect[] value) => value ?? Array.Empty<Rect>();
 	}
 }

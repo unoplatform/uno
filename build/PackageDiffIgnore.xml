@@ -3370,6 +3370,12 @@
 			<Member
 				fullName="System.String Uno.UI.ViewExtensions.GetDebugIdentifier(Android.Views.View element)"
 				reason="Internal helper that should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionPropertySet..ctor()"
+				reason="Constructor is not public in UWP" />			
+			<Member
+				fullName="System.Void Windows.Foundation.PropertyValue..ctor()"
+				reason="Constructor is not public in UWP" />
 		</Methods>
 	</IgnoreSet>
 
