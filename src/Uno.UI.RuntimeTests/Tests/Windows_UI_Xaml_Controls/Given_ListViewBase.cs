@@ -671,6 +671,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
 
 			using var _ = new AssertionScope();
 
@@ -697,6 +698,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
 
 			// Item removal
 
@@ -751,6 +753,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
 
 			// Item removal
 
@@ -809,6 +812,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
 
 			// Item change
 			var oldItem = items[1];
@@ -867,6 +871,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
 
 			// Item change
 			var newItems = new ObservableCollection<ListViewItem>()
@@ -918,6 +923,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
 
 			using var _ = new AssertionScope();
 
@@ -946,6 +952,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
 
 			// Item removal
 
@@ -1001,6 +1008,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
 
 			// Item removal
 
@@ -1063,6 +1071,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
 
 			// Item change
 			var oldItem = items[1];
@@ -1132,6 +1141,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
 
 			// Item change
 			var newItems = new ObservableCollection<int>()

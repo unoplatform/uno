@@ -42,6 +42,8 @@ namespace Windows.UI.Xaml.Controls
 	[ContentProperty(Name = "Items")]
 	public partial class ItemsControl : Control, IItemsControl
 	{
+		protected IVectorChangedEventArgs _inProgressVectorChange;
+
 		private ItemsPresenter _itemsPresenter;
 
 		private readonly SerialDisposable _notifyCollectionChanged = new SerialDisposable();
@@ -230,7 +232,6 @@ namespace Windows.UI.Xaml.Controls
 					(s, e) => ((ItemsControl)s)?.OnItemTemplateSelectorChanged((DataTemplateSelector)e.OldValue, (DataTemplateSelector)e.NewValue)
 				)
 			);
-		private IVectorChangedEventArgs _inProgressVectorChange;
 
 		protected virtual void OnItemTemplateSelectorChanged(DataTemplateSelector oldItemTemplateSelector, DataTemplateSelector newItemTemplateSelector)
 		{
@@ -1294,18 +1295,31 @@ namespace Windows.UI.Xaml.Controls
 
 		public DependencyObject ContainerFromIndex(int index)
 		{
-			return ContainerFromIndexInner(index);
-		}
-
-		internal virtual DependencyObject ContainerFromIndexInner(int index)
-		{
 			var item = ItemFromIndex(index);
 			if (IsItemItsOwnContainer(item))
 			{
 				return item as DependencyObject;
 			}
 
+			int adjustedIndex = GetInProgressAdjustedIndex(index);
+
+			if (adjustedIndex < 0)
+			{
+				return null;
+			}
+
+			return ContainerFromIndexInner(adjustedIndex);
+		}
+
+		internal virtual DependencyObject ContainerFromIndexInner(int index)
+		{
+			return MaterializedContainers.FirstOrDefault(materializedContainer => Equals(materializedContainer.GetValue(IndexForItemContainerProperty), index));
+		}
+
+		protected int GetInProgressAdjustedIndex(int index)
+		{
 			int adjustedIndex = index;
+
 			if (_inProgressVectorChange != null)
 			{
 				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
@@ -1320,7 +1334,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					if (index == _inProgressVectorChange.Index)
 					{
-						return null;
+						return -1;
 					}
 					else if (index > _inProgressVectorChange.Index)
 					{
@@ -1334,11 +1348,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// In case the item is not its own container, the new one is not assigned
 					// yet and we return null.						
-					return null;
+					adjustedIndex = -1;
 				}
 			}
 
-			return MaterializedContainers.FirstOrDefault(materializedContainer => Equals(materializedContainer.GetValue(IndexForItemContainerProperty), adjustedIndex));
+			return adjustedIndex;
 		}
 
 		/// <summary>
