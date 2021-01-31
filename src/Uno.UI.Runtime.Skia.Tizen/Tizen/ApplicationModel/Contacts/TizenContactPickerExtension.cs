@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tizen.Applications;
 using Tizen.Pims.Contacts;
@@ -15,10 +14,11 @@ using TizenNumber = Tizen.Pims.Contacts.ContactsViews.Number;
 using TizenAddress = Tizen.Pims.Contacts.ContactsViews.Address;
 using TizenNote = Tizen.Pims.Contacts.ContactsViews.Note;
 using TizenNickname = Tizen.Pims.Contacts.ContactsViews.Nickname;
+using System.Threading;
 
 namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts
 {
-	public class TizenContactPickerExtension : IContactPickerExtension
+	internal class TizenContactPickerExtension : IContactPickerExtension
 	{
 		private const string ContactMimeType = "application/vnd.tizen.contact";
 
@@ -28,13 +28,7 @@ namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts
 
 		public Task<bool> IsSupportedAsync() => Task.FromResult(true);
 
-		public async Task<Contact?> PickContactAsync()
-		{
-			var results = await PickContactsAsync(false);
-			return results.FirstOrDefault();
-		}
-
-		private async Task<Contact[]> PickContactsAsync(bool pickMultiple)
+		public async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
 		{
 			PrivilegesHelper.EnsureDeclared(Privileges.AppManagerLaunch);
 			if (!await PrivilegesHelper.RequestAsync(Privileges.ContactsRead))
@@ -50,10 +44,15 @@ namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts
 				LaunchMode = AppControlLaunchMode.Single,
 				Mime = ContactMimeType
 			};
-			appControl.ExtraData.Add(AppControlData.SectionMode, pickMultiple ? "multiple" : "single");
+			appControl.ExtraData.Add(AppControlData.SectionMode, multiple ? "multiple" : "single");
 
 			AppControl.SendLaunchRequest(appControl, (request, reply, pickResult) =>
 			{
+				if (token.IsCancellationRequested)
+				{
+					completionSource.SetResult(Array.Empty<Contact>());
+				}
+
 				var results = new List<Contact>();
 
 				if (pickResult == AppControlReplyResult.Succeeded)
