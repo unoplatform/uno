@@ -91,13 +91,25 @@ namespace Windows.UI.Xaml.Controls
 		{
 			InitializePartial();
 
-			_items.VectorChanged += (s, e) =>
+			_items.VectorChanged += OnItemsVectorChanged;
+		}
+
+		private void OnItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs e)
+		{
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+			try
+#endif
 			{
 				_inProgressVectorChange = e;
 				OnItemsChanged(e);
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+			finally
+#endif
+			{
 				_inProgressVectorChange = null;
-				SetNeedsUpdateItems();
-			};
+			}
+			SetNeedsUpdateItems();
 		}
 
 		partial void InitializePartial();
@@ -1223,8 +1235,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var index = IndexFromItem(item);
-			var container = index == -1 ? null : MaterializedContainers.FirstOrDefault(container => Equals(IndexFromContainer(container), index));
-			return container;
+			return index == -1 ? null : MaterializedContainers.FirstOrDefault(materializedContainer => Equals(IndexFromContainer(materializedContainer), index));
 		}
 
 		public int IndexFromContainer(DependencyObject container)
@@ -1263,17 +1274,14 @@ namespace Windows.UI.Xaml.Controls
 					(_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged && _inProgressVectorChange.Index == index) ||
 					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
 				{
-					// In these cases, we need to ensure that for the "old" container we
-					// return -1 but we return the correct index for the "new" container
-					var actualContainer = ContainerFromIndex(index);
-					if (Equals(actualContainer, container))
+					// In these cases, we return the index only if the item is its own container
+					// and the container is in fact the new item, not the old one					
+					var item = ItemFromIndex(index);
+					if (IsItemItsOwnContainer(item) && Equals(item, container))
 					{
 						return index;
 					}
-					else
-					{
-						return -1;
-					}
+					return -1;
 				}
 			}
 			return index;
@@ -1320,10 +1328,17 @@ namespace Windows.UI.Xaml.Controls
 						adjustedIndex = index - 1;
 					}
 				}
+				else if (
+					(_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged && _inProgressVectorChange.Index == index) ||
+					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
+				{
+					// In case the item is not its own container, the new one is not assigned
+					// yet and we return null.						
+					return null;
+				}
 			}
 
-			var container = MaterializedContainers.FirstOrDefault(container => Equals(container.GetValue(IndexForItemContainerProperty), adjustedIndex));
-			return container;
+			return MaterializedContainers.FirstOrDefault(materializedContainer => Equals(materializedContainer.GetValue(IndexForItemContainerProperty), adjustedIndex));
 		}
 
 		/// <summary>

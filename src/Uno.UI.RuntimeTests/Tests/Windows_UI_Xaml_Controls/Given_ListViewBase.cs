@@ -237,8 +237,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.ItemsSource = source;
 
-			SelectorItem si = null;
-			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
+			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 2);
+			var si = SUT.ContainerFromItem(source[0]) as SelectorItem;
 			Assert.AreEqual("item 1", si.Content);
 			Assert.AreSame(si, source[0]);
 #if !NETFX_CORE
@@ -470,11 +470,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.ItemsSource = source;
 
-			SelectorItem si = null;
-			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
+			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 2);
 
+			var si = SUT.ContainerFromItem(source[0]) as SelectorItem;
 			Assert.AreEqual("item 1", si.Content);
-			Assert.AreEqual(2, GetPanelChildren(SUT).Length);
 
 			source.RemoveAt(1);
 
@@ -673,8 +672,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
 
-			// Containers/indices/items can be retrieved
 			using var _ = new AssertionScope();
+
+			// Containers/indices/items can be retrieved
 			Assert.AreEqual(items[1], list.ContainerFromItem(items[1]));
 			Assert.AreEqual(items[2], list.ContainerFromIndex(2));
 			Assert.AreEqual(3, list.IndexFromContainer(items[3]));
@@ -919,6 +919,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
 
+			using var _ = new AssertionScope();
+
 			// Containers/indices/items can be retrieved
 			var container2 = (ListViewItem)list.ContainerFromItem(2);
 			Assert.AreEqual(2, container2.Content);
@@ -950,6 +952,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var removedItem = items[1];
 			list.ItemsChangedAction = () =>
 			{
+				using var _ = new AssertionScope();
+
 				// Test container/index/item before removed
 				var container0 = (ListViewItem)list.ContainerFromItem(items[0]);
 				Assert.AreEqual(items[0], container0.Content);
@@ -1003,6 +1007,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var addedItem = new ListViewItem();
 			list.ItemsChangedAction = () =>
 			{
+				using var _ = new AssertionScope();
+
 				// Test container/index/item before added
 				var container0 = (ListViewItem)list.ContainerFromItem(items[0]);
 				Assert.AreEqual(items[0], container0.Content);
@@ -1064,6 +1070,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			list.ItemsChangedAction = () =>
 			{
+				using var _ = new AssertionScope();
+
 				// Test container/index/item before removed
 				var container0 = (ListViewItem)list.ContainerFromItem(items[0]);
 				Assert.AreEqual(items[0], container0.Content);
@@ -1077,15 +1085,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(null, list.ItemFromContainer(oldContainer));
 				Assert.AreEqual(-1, list.IndexFromContainer(oldContainer));
 
+#if HAS_UNO
 				// Test new container/index/item
 				// In UWP the container for the new item is returned, but its
 				// content is not yet set.
+				// We match the situation with Reset and return nulls.
 				var container1 = (ListViewItem)list.ContainerFromItem(items[1]);
-				Assert.IsNotNull(container1);
+				Assert.IsNull(container1);
 				var containerIndex1 = list.ContainerFromIndex(1);
-				Assert.AreEqual(container1, containerIndex1);
-				Assert.AreEqual(items[1], list.ItemFromContainer(container1));
-				Assert.AreEqual(1, list.IndexFromContainer(container1));
+				Assert.IsNull(containerIndex1);
+#endif
 
 				// Test container/index/item right after changed
 				var container2 = (ListViewItem)list.ContainerFromItem(items[2]);
@@ -1138,16 +1147,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			list.ItemsChangedAction = () =>
 			{
+				using var _ = new AssertionScope();
+
 				// Test container/index/item from old source
 				Assert.AreEqual(null, list.ContainerFromItem(oldItem));
 				Assert.AreEqual(null, list.ItemFromContainer(oldContainer));
 				Assert.AreEqual(-1, list.IndexFromContainer(oldContainer));
 
 				// Test container/index/item from new source
-				// UWP returns null/-1 here, which differs from "the same"
-				// situation in case of collection change. For simplicity
-				// we return the correct values here too. It should not have
-				// any adverse impact.
 				var container2 = (ListViewItem)list.ContainerFromItem(newItems[2]);
 				Assert.IsNull(container2);
 				var containerIndex2 = list.ContainerFromIndex(2);
@@ -1157,17 +1164,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = newItems;
 		}
 
-		public partial class OnItemsChangedListView : ListView
-		{
-			public Action ItemsChangedAction = null;
-
-			protected override void OnItemsChanged(object e)
-			{
-				base.OnItemsChanged(e);
-				ItemsChangedAction?.Invoke();
-			}
-		}
-
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
+	}
+
+	public partial class OnItemsChangedListView : ListView
+	{
+		public Action ItemsChangedAction = null;
+
+		protected override void OnItemsChanged(object e)
+		{
+			base.OnItemsChanged(e);
+			ItemsChangedAction?.Invoke();
+		}
 	}
 }
