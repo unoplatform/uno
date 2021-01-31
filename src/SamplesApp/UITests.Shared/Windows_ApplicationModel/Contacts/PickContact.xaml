@@ -16,39 +16,52 @@
 				Command="{x:Bind Model.PickCommand, Mode=OneWay}"
 				Content="Pick contact"
 				IsEnabled="{x:Bind Model.IsAvailable, Mode=OneWay}" />
+			<Button
+				Command="{x:Bind Model.PickMultipleCommand, Mode=OneWay}"
+				Content="Pick multiple contacts"
+				IsEnabled="{x:Bind Model.IsAvailable, Mode=OneWay}" />
+
+			<ComboBox ItemsSource="{x:Bind Model.PickedContacts, Mode=OneWay}" SelectedItem="{x:Bind Model.SelectedContact, Mode=TwoWay}">
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding DisplayName}" />
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+
 			<TextBlock>
 				<Run FontWeight="Bold">Honorific name prefix:</Run>
-				<Run Text="{x:Bind Model.Contact.HonorificNamePrefix}" />
+				<Run Text="{x:Bind Model.SelectedContact.HonorificNamePrefix}" />
 			</TextBlock>
 			<TextBlock>
 				<Run FontWeight="Bold">First name:</Run>
-				<Run Text="{x:Bind Model.Contact.FirstName}" />
+				<Run Text="{x:Bind Model.SelectedContact.FirstName}" />
 			</TextBlock>
 			<TextBlock>
 				<Run FontWeight="Bold">Middle name:</Run>
-				<Run Text="{x:Bind Model.Contact.MiddleName}" />
+				<Run Text="{x:Bind Model.SelectedContact.MiddleName}" />
 			</TextBlock>
 			<TextBlock>
 				<Run FontWeight="Bold">Last name:</Run>
-				<Run Text="{x:Bind Model.Contact.LastName}" />
+				<Run Text="{x:Bind Model.SelectedContact.LastName}" />
 			</TextBlock>
 			<TextBlock>
 				<Run FontWeight="Bold">Honorific name suffix:</Run>
-				<Run Text="{x:Bind Model.Contact.HonorificNameSuffix}" />
+				<Run Text="{x:Bind Model.SelectedContact.HonorificNameSuffix}" />
 			</TextBlock>
 			<TextBlock>
 				<Run FontWeight="Bold">Nickname:</Run>
-				<Run Text="{x:Bind Model.Contact.Nickname}" />
+				<Run Text="{x:Bind Model.SelectedContact.Nickname}" />
 			</TextBlock>
 			<TextBlock>
 				<Run FontWeight="Bold">Display name:</Run>
-				<Run Text="{x:Bind Model.Contact.DisplayName}" />
+				<Run Text="{x:Bind Model.SelectedContact.DisplayName}" />
 			</TextBlock>
 			<TextBlock>
 				<Run FontWeight="Bold">Full name:</Run>
-				<Run Text="{x:Bind Model.Contact.FullName}" />
+				<Run Text="{x:Bind Model.SelectedContact.FullName}" />
 			</TextBlock>
-			<ListView Header="Phones" Height="200" SelectionMode="None" ItemsSource="{x:Bind Model.Contact.Phones}">
+			<ListView Header="Phones" Height="200" SelectionMode="None" ItemsSource="{x:Bind Model.SelectedContact.Phones}">
 				<ListView.ItemTemplate>
 					<DataTemplate x:DataType="contacts:ContactPhone">
 						<Border BorderBrush="Black" BorderThickness="1" Padding="8" x:DefaultBindMode="OneWay">
@@ -70,7 +83,7 @@
 					</DataTemplate>
 				</ListView.ItemTemplate>
 			</ListView>
-			<ListView Header="Addresses" Height="200" SelectionMode="None" ItemsSource="{x:Bind Model.Contact.Addresses}">
+			<ListView Header="Addresses" Height="200" SelectionMode="None" ItemsSource="{x:Bind Model.SelectedContact.Addresses}">
 				<ListView.ItemTemplate>
 					<DataTemplate x:DataType="contacts:ContactAddress">
 						<Border BorderBrush="Black" BorderThickness="1" Padding="8" x:DefaultBindMode="OneWay">
@@ -108,7 +121,7 @@
 					</DataTemplate>
 				</ListView.ItemTemplate>
 			</ListView>
-			<ListView Header="Email" Height="200" SelectionMode="None" ItemsSource="{x:Bind Model.Contact.Emails}">
+			<ListView Header="Email" Height="200" SelectionMode="None" ItemsSource="{x:Bind Model.SelectedContact.Emails}">
 				<ListView.ItemTemplate>
 					<DataTemplate x:DataType="contacts:ContactEmail">
 						<Border BorderBrush="Black" BorderThickness="1" Padding="8" x:DefaultBindMode="OneWay">

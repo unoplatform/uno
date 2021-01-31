@@ -1,6 +1,10 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 
 namespace Windows.ApplicationModel.Contacts
@@ -24,6 +28,23 @@ namespace Windows.ApplicationModel.Contacts
 		/// <returns>The operation that launches the Contact Picker.</returns>
 		/// <remarks>Unsupported platforms only return null.</remarks>
 		public IAsyncOperation<Contact?> PickContactAsync() =>
-			PickContactTaskAsync().AsAsyncOperation();
+			AsyncOperation.FromTask(token => PickContactTaskAsync(token));
+
+		/// <summary>
+		/// Launches the Contact Picker for selecting multiple contacts.
+		/// </summary>
+		/// <returns>The operation that launches the contact picker.</returns>
+		/// <remarks>Unsupported platforms only return empty array.</remarks>
+		public IAsyncOperation<IList<Contact>> PickContactsAsync() =>
+			AsyncOperation.FromTask(token => PickContactsTaskAsync(token));
+
+		private async Task<Contact?> PickContactTaskAsync(CancellationToken token)
+		{
+			var contacts = await PickContactsAsync(false, token);
+			return contacts.FirstOrDefault();
+		}
+
+		private async Task<IList<Contact>> PickContactsTaskAsync(CancellationToken token) =>
+			await PickContactsAsync(true, token);
 	}
 }

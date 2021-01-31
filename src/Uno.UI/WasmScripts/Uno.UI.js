@@ -3268,7 +3268,8 @@ var Windows;
                             return JSON.stringify(contacts);
                         }
                         catch (ex) {
-                            return JSON.stringify(ex);
+                            console.log("Error occurred while picking contacts.");
+                            return null;
                         }
                     });
                 }

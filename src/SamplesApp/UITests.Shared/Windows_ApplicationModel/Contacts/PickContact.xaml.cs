@@ -1,7 +1,5 @@
-﻿#nullable enable
-
-using System;
-using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
 using System.Windows.Input;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
@@ -13,7 +11,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_ApplicationModel.Contacts
 {
-	[Sample("Windows.ApplicationModel", Name = "Contacts_PickContact", ViewModelType = typeof(PickContactViewModel))]
+	[Sample("Windows.ApplicationModel", Name = "Contacts_Pick", ViewModelType = typeof(PickContactViewModel))]
 	public sealed partial class PickContact : Page
 	{
 		public PickContact()
@@ -39,7 +37,8 @@ namespace UITests.Windows_ApplicationModel.Contacts
 	public class PickContactViewModel : ViewModelBase
 	{
 		private string _status = "";
-		private Contact? _contact = null;
+		private Contact[] _pickedContacts = Array.Empty<Contact>();
+		private Contact _selectedContact = null;
 
 		public PickContactViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -71,17 +70,29 @@ namespace UITests.Windows_ApplicationModel.Contacts
 			}
 		}
 
-		public Contact? Contact
+		public Contact[] PickedContacts
 		{
-			get => _contact;
+			get => _pickedContacts;
 			set
 			{
-				_contact = value;
+				_pickedContacts = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public Contact SelectedContact
+		{
+			get => _selectedContact;
+			set
+			{
+				_selectedContact = value;
 				RaisePropertyChanged();
 			}
 		}
 
 		public ICommand PickCommand => GetOrCreateCommand(Pick);
+
+		public ICommand PickMultipleCommand => GetOrCreateCommand(PickMultiple);
 
 		private async void Pick()
 		{
@@ -91,7 +102,28 @@ namespace UITests.Windows_ApplicationModel.Contacts
 			}
 
 			var picker = new ContactPicker();
-			Contact = await picker.PickContactAsync();
+			var contact = await picker.PickContactAsync();
+			if (contact != null)
+			{
+				PickedContacts = new[] { contact };
+				SelectedContact = contact;
+			}
+			else
+			{
+				PickedContacts = Array.Empty<Contact>();
+			}
+		}
+
+		private async void PickMultiple()
+		{
+			if (!IsAvailable)
+			{
+				return;
+			}
+
+			var picker = new ContactPicker();
+			PickedContacts = (await picker.PickContactsAsync()).ToArray();
+			SelectedContact = PickedContacts.FirstOrDefault();
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
@@ -16,7 +17,7 @@ namespace Windows.ApplicationModel.Contacts
 	{
 		private static Task<bool> IsSupportedTaskAsync() => Task.FromResult(true);
 
-		private async Task<Contact?> PickContactTaskAsync()
+		private async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
 		{
 			if (!await PermissionsHelper.CheckReadContactsPermission(default))
 			{
@@ -36,24 +37,29 @@ namespace Windows.ApplicationModel.Contacts
 			var activity = await AwaitableResultActivity.StartAsync();
 			var result = await activity.StartActivityForResultAsync(intent);
 
+			if (token.IsCancellationRequested)
+			{
+				return Array.Empty<Contact>();
+			}
+
 			if (result?.Intent?.Data is Android.Net.Uri contactUri)
 			{
 				using var contentResolver = Application.Context.ContentResolver;
 				if (contentResolver != null)
 				{
-					var projection = new string[] { ContactsContract.ContactsColumns.LookupKey };
+					var projection = new string[] { ContactsContract.IContactsColumns.LookupKey };
 					using ICursor? cursorLookUpKey = contentResolver.Query(contactUri, projection, null, null, null);
 					if (cursorLookUpKey?.MoveToFirst() == true)
 					{
 						var lookupKey = cursorLookUpKey.GetString(cursorLookUpKey.GetColumnIndex(projection[0]));
 						if (lookupKey != null)
 						{
-							return LookupToContact(lookupKey, contentResolver);
+							return new[] { LookupToContact(lookupKey, contentResolver) };
 						}
 					}
 				}
 			}
-			return null;
+			return Array.Empty<Contact>();
 		}
 
 		private static Contact LookupToContact(string lookupKey, ContentResolver contentResolver)
@@ -72,7 +78,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static void ReadStructuredName(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var contactWhere = ContactsContract.ContactsColumns.LookupKey + " = ? AND " + ContactsContract.DataColumns.Mimetype + " = ?";
+			var contactWhere = ContactsContract.IContactsColumns.LookupKey + " = ? AND " + "mimetype = ?";
 			var contactWhereParams = new[] { lookupKey, ContactsContract.CommonDataKinds.StructuredName.ContentItemType };
 			if (ContactsContract.Data.ContentUri != null)
 			{
@@ -101,8 +107,8 @@ namespace Windows.ApplicationModel.Contacts
 		private static void ReadNickname(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
 			var nicknameWhere =
-			   ContactsContract.ContactsColumns.LookupKey + " = ? AND " +
-			   ContactsContract.DataColumns.Mimetype + " = ?";
+			   ContactsContract.IContactsColumns.LookupKey + " = ? AND " +
+			   "mimetype = ?";
 
 			var nicknameWhereParams = new[]
 			{
@@ -129,8 +135,8 @@ namespace Windows.ApplicationModel.Contacts
 		private static void ReadNotes(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
 			var noteWhere =
-				ContactsContract.ContactsColumns.LookupKey + " = ? AND " +
-				ContactsContract.DataColumns.Mimetype + " = ?";
+				ContactsContract.IContactsColumns.LookupKey + " = ? AND " +
+				"mimetype = ?";
 
 			var noteWhereParams = new[]
 			{
@@ -156,7 +162,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static void ReadPhones(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var phonesWhere = ContactsContract.ContactsColumns.LookupKey + " = ?";
+			var phonesWhere = ContactsContract.IContactsColumns.LookupKey + " = ?";
 			var phonesWhereParams = new[]
 			{
 				lookupKey
@@ -202,7 +208,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static void ReadEmails(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var emailsWhere = ContactsContract.ContactsColumns.LookupKey + " = ?";
+			var emailsWhere = ContactsContract.IContactsColumns.LookupKey + " = ?";
 			var emailsWhereParams = new[]
 			{
 				lookupKey
@@ -247,7 +253,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static void ReadAddresses(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var addressesWhere = ContactsContract.ContactsColumns.LookupKey + " = ?";
+			var addressesWhere = ContactsContract.IContactsColumns.LookupKey + " = ?";
 			var addressesWhereParams = new[]
 			{
 				lookupKey

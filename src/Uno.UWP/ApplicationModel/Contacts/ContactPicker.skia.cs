@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Extensibility;
 
@@ -22,13 +24,13 @@ namespace Windows.ApplicationModel.Contacts
 			return _contactPickerExtension != null && await _contactPickerExtension.IsSupportedAsync();
 		}
 
-		private async Task<Contact?> PickContactTaskAsync()
+		private async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
 		{
 			if (_contactPickerExtension != null)
 			{
-				return await _contactPickerExtension.PickContactAsync();
+				return await _contactPickerExtension.PickContactsAsync(multiple, token);
 			}
-			return null;
+			return Array.Empty<Contact>();
 		}
 	}
 
@@ -36,6 +38,6 @@ namespace Windows.ApplicationModel.Contacts
 	{
 		Task<bool> IsSupportedAsync();
 
-		Task<Contact?> PickContactAsync();
+		Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token);
 	}
 }

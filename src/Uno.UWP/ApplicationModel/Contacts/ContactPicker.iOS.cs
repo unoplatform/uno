@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
 using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Contacts;
 using ContactsUI;
@@ -12,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 	{
 		private static Task<bool> IsSupportedTaskAsync() => Task.FromResult(true);
 
-		private async Task<Contact?> PickContactTaskAsync()
+		private async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
 		{
 			var window = UIApplication.SharedApplication.KeyWindow;
 			var controller = window.RootViewController;
@@ -23,21 +25,28 @@ namespace Windows.ApplicationModel.Contacts
 					$"API was called too early in the application lifecycle.");
 			}
 
-			var completionSource = new TaskCompletionSource<CNContact?>();
+			var completionSource = new TaskCompletionSource<CNContact[]>();
 
 			using var picker = new CNContactPickerViewController
 			{
-				Delegate = new ContactPickerDelegate(completionSource)
+				
+				Delegate = multiple ?
+					(ICNContactPickerDelegate)new MultipleContactPickerDelegate(completionSource) :
+					(ICNContactPickerDelegate)new SingleContactPickerDelegate(completionSource),
 			};
 
 			await controller.PresentViewControllerAsync(picker, true);
 
-			var cnContact = await completionSource.Task;
-			if (cnContact != null)
+			var cnContacts = await completionSource.Task;
+			if (token.IsCancellationRequested)
 			{
-				return CNContactToContact(cnContact);
+				return Array.Empty<Contact>();
 			}
-			return null;
+
+			return cnContacts
+				.Where(contact => contact != null)
+				.Select(contact => CNContactToContact(contact))
+				.ToArray();
 		}
 
 		private static Contact CNContactToContact(CNContact cnContact)
@@ -49,6 +58,11 @@ namespace Windows.ApplicationModel.Contacts
 			contact.MiddleName = cnContact.MiddleName ?? string.Empty;
 			contact.LastName = cnContact.FamilyName ?? string.Empty;
 			contact.HonorificNameSuffix = cnContact.NameSuffix ?? string.Empty;
+
+			if (string.IsNullOrWhiteSpace(contact.DisplayName) && !string.IsNullOrWhiteSpace(cnContact.OrganizationName))
+			{
+				contact.DisplayNameOverride = cnContact.OrganizationName;
+			} 
 
 			foreach (var phoneNumber in cnContact.PhoneNumbers)
 			{
@@ -159,36 +173,58 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 
-		private class ContactPickerDelegate : CNContactPickerDelegate
+		private class SingleContactPickerDelegate : CNContactPickerDelegate
 		{
-			private readonly TaskCompletionSource<CNContact?> _completionSource = null!;
+			private readonly TaskCompletionSource<CNContact[]> _completionSource = null!;
 
-			public ContactPickerDelegate(TaskCompletionSource<CNContact?> completionSource)
+			public SingleContactPickerDelegate(TaskCompletionSource<CNContact[]> completionSource)
 			{
 				_completionSource = completionSource;
 			}
 
-			public ContactPickerDelegate(IntPtr handle)
+			public SingleContactPickerDelegate(IntPtr handle)
 				: base(handle)
 			{
 			}
 
-			public Action<CNContact?> DidSelectContactHandler { get; } = null!;
-
 			public override void ContactPickerDidCancel(CNContactPickerViewController picker)
 			{
 				picker.DismissModalViewController(true);
-				_completionSource.SetResult(null);
+				_completionSource.SetResult(Array.Empty<CNContact>());
 			}
 
 			public override void DidSelectContact(CNContactPickerViewController picker, CNContact contact)
 			{
 				picker.DismissModalViewController(true);
-				_completionSource.SetResult(contact);
+				_completionSource.SetResult(new[] { contact });
+			}
+		}
+
+		private class MultipleContactPickerDelegate : CNContactPickerDelegate
+		{
+			private readonly TaskCompletionSource<CNContact[]> _completionSource = null!;
+
+			public MultipleContactPickerDelegate(TaskCompletionSource<CNContact[]> completionSource)
+			{
+				_completionSource = completionSource;
 			}
 
-			public override void DidSelectContactProperty(CNContactPickerViewController picker, CNContactProperty contactProperty) =>
+			public MultipleContactPickerDelegate(IntPtr handle)
+				: base(handle)
+			{
+			}
+
+			public override void ContactPickerDidCancel(CNContactPickerViewController picker)
+			{
 				picker.DismissModalViewController(true);
+				_completionSource.SetResult(Array.Empty<CNContact>());
+			}
+
+			public override void DidSelectContacts(CNContactPickerViewController picker, CNContact[] contacts)
+			{
+				picker.DismissModalViewController(true);
+				_completionSource.SetResult(contacts);
+			}
 		}
 	}
 }

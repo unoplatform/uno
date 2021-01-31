@@ -1,13 +1,19 @@
-﻿#if NET461 || __NETSTD_REFERENCE__
+﻿#if !__ANDROID__ && !__IOS__ && !__WASM__ && !__SKIA__
 #nullable enable
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Windows.ApplicationModel.Contacts
 {
 	public partial class ContactPicker
 	{
-		private static Task<bool> IsSupportedTaskAsync => Task.FromResult(false);
+		private static Task<bool> IsSupportedTaskAsync() =>
+			Task.FromResult(false);
 
-		private Task<Contact?> PickContactTaskAsync() => Task.FromResult<Contact?>(null);
+		private Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token) =>
+			Task.FromResult<Contact[]>(Array.Empty<Contact>());
 	}
 }
 #endif

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Uno.ApplicationModel.Contacts.Internal;
 using Uno.Foundation;
@@ -21,10 +22,16 @@ namespace Windows.ApplicationModel.Contacts
 			return Task.FromResult(bool.TryParse(isSupportedString, out var isSupported) && isSupported);
 		}
 
-		private async Task<Contact?> PickContactTaskAsync()
+		private async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
 		{
-			var contacts = await PickContactsAsync(false);
-			return contacts.FirstOrDefault();
+			var pickResult = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickContacts({(multiple ? "true" : "false")})");
+			if (string.IsNullOrEmpty(pickResult) || token.IsCancellationRequested)
+			{
+				return Array.Empty<Contact>();
+			}
+
+			var contacts = DeserializePickResult(pickResult);
+			return contacts.Where(c => c != null).Select(c => ContactFromContactInfo(c)).ToArray();
 		}
 
 		private WasmContact[] DeserializePickResult(string pickResult)
@@ -34,18 +41,6 @@ namespace Windows.ApplicationModel.Contacts
 				var serializer = new DataContractJsonSerializer(typeof(WasmContact[]));
 				return (WasmContact[])serializer.ReadObject(stream);
 			}
-		}
-
-		private async Task<Contact[]> PickContactsAsync(bool multiple)
-		{
-			var pickResult = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickContacts({(multiple ? "true" : "false")})");
-			if (string.IsNullOrEmpty(pickResult))
-			{
-				return Array.Empty<Contact>();
-			}
-
-			var contacts = DeserializePickResult(pickResult);
-			return contacts.Where(c => c != null).Select(c => ContactFromContactInfo(c)).ToArray();
 		}
 
 		private static Contact ContactFromContactInfo(WasmContact contactInfo)
