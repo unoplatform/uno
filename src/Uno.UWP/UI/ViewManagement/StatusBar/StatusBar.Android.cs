@@ -37,7 +37,9 @@ namespace Windows.UI.ViewManagement
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
 			{
 				var activity = ContextHelper.Current as Activity;
+#pragma warning disable 618
 				int uiVisibility = (int)activity.Window.DecorView.SystemUiVisibility;
+#pragma warning restore 618
 
 				var isForegroundDark = (int)SystemUiFlags.LightStatusBar == (uiVisibility & (int)SystemUiFlags.LightStatusBar);
 
@@ -107,6 +109,7 @@ namespace Windows.UI.ViewManagement
 
 		private void UpdateSystemUiVisibility()
 		{
+#pragma warning disable 618
 			var activity = ContextHelper.Current as Activity;
 			var decorView = activity.Window.DecorView;
 			var uiOptions = (int)decorView.SystemUiVisibility;
@@ -140,6 +143,7 @@ namespace Windows.UI.ViewManagement
 
 			decorView.SystemUiVisibility = (StatusBarVisibility)newUiOptions;
 			activity.OnConfigurationChanged(activity.Resources.Configuration);
+#pragma warning restore 618
 		}
 	}
 }

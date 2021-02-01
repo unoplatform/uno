@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Uno;
 using Uno.UI;
 using System.Linq;
@@ -119,7 +120,13 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 			return base.GetNameCore();
 		}
-		
+
+		/// <inheritdoc />
+		protected override IList<AutomationPeer> GetChildrenCore()
+		{
+			return Owner.GetChildren().OfType<UIElement>().Select(CreatePeerForElement).ToList();
+		}
+
 		private string GetSimpleAccessibilityName()
 		{
 			if (FeatureConfiguration.AutomationPeer.UseSimpleAccessibility
@@ -170,5 +177,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 				control.Focus(FocusState.Programmatic);
 			};
 		}
+
+		protected override AutomationLandmarkType GetLandmarkTypeCore() => AutomationProperties.GetLandmarkType(Owner);
 	}
 }

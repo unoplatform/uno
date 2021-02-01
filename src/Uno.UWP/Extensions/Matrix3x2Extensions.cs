@@ -55,6 +55,17 @@ namespace Uno.Extensions
 			return new Rect(point1, point2);
 		}
 
+		public static Matrix3x2 Inverse(this Matrix3x2 matrix)
+		{
+			if (matrix.IsIdentity)
+			{
+				return matrix;
+			}
+
+			Matrix3x2.Invert(matrix, out var result);
+			return result;
+		}
+
 		private static Point Min(Point point1, Point point2, Point point3, Point point4)
 		{
 			var x = point1.X;

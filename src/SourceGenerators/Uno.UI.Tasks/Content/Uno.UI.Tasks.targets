@@ -19,9 +19,9 @@
   to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
   -->
   <Target Name="UnoResourcesGeneration"
-				  BeforeTargets="PrepareForBuild;_CheckForContent"
+				  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent"
                   DependsOnTargets="ResolveProjectReferences"
-				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
+				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
 
     <CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln'" />
 
@@ -46,7 +46,12 @@
       <AndroidResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
       <EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
     </ItemGroup>
+  </Target>
 
+  <Target Name="UnoAssetsGeneration"
+				  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent"
+                  DependsOnTargets="ResolveProjectReferences"
+				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
     <!-- Assets -->
     <PropertyGroup>
       <UseHighDPIResources Condition="'$(UseHighDPIResources)'==''">True</UseHighDPIResources>
@@ -63,9 +68,15 @@
     </RetargetAssets_v0>
     <ItemGroup>
       <Content Remove="@(Assets)" />
-      <BundleResource Condition="'$(XamarinProjectType)'=='ios'" Include="@(RetargetedAssets)" />
-      <AndroidResource Condition="'$(XamarinProjectType)'=='android'" Include="@(RetargetedAssets)" />
     </ItemGroup>
+	<ItemGroup Condition="'$(XamarinProjectType)'=='ios'">
+	  <BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
+	  <BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(XamarinProjectType)'=='android'">
+	  <AndroidResource Condition="'%(RetargetedAssets.AssetType)' =='image'" Include="@(RetargetedAssets)" />
+	  <AndroidAsset Condition="'%(RetargetedAssets.AssetType)' =='generic'" Include="@(RetargetedAssets)" />
+	</ItemGroup>
   </Target>
 
   <!--

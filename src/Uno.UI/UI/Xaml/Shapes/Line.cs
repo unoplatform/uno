@@ -1,4 +1,4 @@
-﻿#if !__IOS__ && !__MACOS__
+﻿#if !__IOS__ && !__MACOS__ && !__SKIA__
 #define LEGACY_SHAPE_MEASURE
 #endif
 

@@ -2,15 +2,14 @@
 
 	<PropertyGroup>
 		<TargetFramework>net47</TargetFramework>
-		<LangVersion>7.3</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup> 
 		<PackageReference Include="FluentAssertions" Version="5.10.3" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" /> 
-		<PackageReference Include="Xamarin.UITest" Version="3.0.7" />
+		<PackageReference Include="Xamarin.UITest" Version="3.0.13" />
 		<PackageReference Include="Uno.UITest" />
 		<PackageReference Include="Uno.UITest.Selenium" />
 		<PackageReference Include="Uno.UITest.Xamarin" />

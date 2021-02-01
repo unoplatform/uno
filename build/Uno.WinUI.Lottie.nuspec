@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
+  <metadata minClientVersion="5.0">
 	<id>Uno.WinUI.Lottie</id>
 	<version>0.0.1</version>
 	<title>Uno.WinUI.Lottie</title>
@@ -24,22 +24,27 @@
 
 	  <group targetFramework="netstandard2.0">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+        <dependency id="System.Json" version="4.7.1" />
 	  </group>
 	  <group targetFramework="xamarinios10">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+        <dependency id="System.Json" version="4.7.1" />
 	  </group>
 	  <group targetFramework="xamarinmac20">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+        <dependency id="System.Json" version="4.7.1" />
 	  </group>
-	  <group targetFramework="MonoAndroid90">
+	  <group targetFramework="MonoAndroid11.0">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
 	  </group>
 	  <group targetFramework="MonoAndroid10.0">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
 	  </group>
 
 	</dependencies>
@@ -55,7 +60,7 @@
 	  <group targetFramework="xamarinmac20">
 		<reference file="Uno.UI.Lottie.dll" />
 	  </group>
-	  <group targetFramework="MonoAndroid90">
+	  <group targetFramework="MonoAndroid11.0">
 		<reference file="Uno.UI.Lottie.dll" />
 	  </group>
 	  <group targetFramework="MonoAndroid10.0">
@@ -68,17 +73,17 @@
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\netstandard2.0\Uno.UI.Lottie.dll" target="lib\netstandard2.0" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinios10\Uno.UI.Lottie.dll" target="lib\xamarinios10" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinmac20\Uno.UI.Lottie.dll" target="lib\xamarinmac20" />
-	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid90\Uno.UI.Lottie.dll" target="lib\MonoAndroid90" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid11.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid11.0" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid10.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid10.0" />
 
 	<!-- Build targets -->
 	<file src="..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />
 
 	<!-- netstandard2.0 WebAssembly -->
-	<file src="..\src\AddIns\Uno.UI.Lottie.Wasm\Bin\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\webassembly" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\webassembly" />
 
 	<!-- netstandard2.0 Skia -->
-	<file src="..\src\AddIns\Uno.UI.Lottie.Skia\Bin\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\skia" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\skia" />
 
   </files>
 </package>

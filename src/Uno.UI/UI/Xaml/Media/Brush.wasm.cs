@@ -51,6 +51,14 @@ namespace Windows.UI.Xaml.Media
 				return disposables;
 			}
 
+			if (b is AcrylicBrush ab)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException(
+					"AcrylicBrush is ** not ** supported by the AssignAndObserveBrush. "
+					+ "(Instead you have to use the AcrylicBrush.Subscribe().)"));
+				return Disposable.Empty;
+			}
+
 			if (b is ImageBrush)
 			{
 				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException(

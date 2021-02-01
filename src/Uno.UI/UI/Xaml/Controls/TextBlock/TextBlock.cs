@@ -366,7 +366,7 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 #if !__WASM__
-				if (Foreground is SolidColorBrush || Foreground is GradientBrush)
+				if (value is SolidColorBrush || value is GradientBrush || value is null)
 				{
 					SetValue(ForegroundProperty, value);
 				}
@@ -402,6 +402,8 @@ namespace Windows.UI.Xaml.Controls
 
 			_foregroundChanged.Disposable =
 				Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+
+			refreshForeground();
 		}
 
 		partial void OnForegroundChangedPartial();
@@ -632,6 +634,11 @@ namespace Windows.UI.Xaml.Controls
 		/// have not been initialized and don't need to be synchronized.
 		/// </summary>
 		private bool UseInlinesFastPath => _inlines == null;
+
+		/// <summary>
+		/// Returns if the TextBlock is constrained by a maximum number of lines.
+		/// </summary>
+		private bool IsLayoutConstrainedByMaxLines => MaxLines > 0;
 
 		/// <summary>
 		/// Gets the inlines which affect the typography of the TextBlock.
@@ -898,5 +905,12 @@ namespace Windows.UI.Xaml.Controls
 		// This approximates UWP behavior
 		private protected override double GetActualWidth() => DesiredSize.Width;
 		private protected override double GetActualHeight() => DesiredSize.Height;
+
+		internal override void UpdateThemeBindings()
+		{
+			base.UpdateThemeBindings();
+
+			SetDefaultForeground(ForegroundProperty);
+		}
 	}
 }

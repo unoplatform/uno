@@ -7,8 +7,8 @@ namespace Windows.System
 	#endif
 	public  partial class Launcher 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathAsync( string path)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFolderPathAsync(string path) is not implemented in Uno.");
@@ -91,8 +91,8 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LaunchUriResult> Launcher.LaunchUriForResultsForUserAsync(User user, Uri uri, LauncherOptions options, ValueSet inputData) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync( global::Windows.Storage.IStorageFile file)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFileAsync(IStorageFile file) is not implemented in Uno.");
@@ -113,8 +113,8 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchUriAsync(Uri uri, LauncherOptions options) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderAsync( global::Windows.Storage.IStorageFolder folder)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFolderAsync(IStorageFolder folder) is not implemented in Uno.");

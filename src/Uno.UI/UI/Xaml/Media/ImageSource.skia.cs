@@ -28,5 +28,12 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		internal void UnloadImageData() { }
+
+		// Must be implemented by sub-classes in TryOpenSource<Sync|Async> overloads!
+		private bool TryOpenSourceLegacy(out ImageData img)
+		{
+			img = default;
+			return false;
+		}
 	}
 }

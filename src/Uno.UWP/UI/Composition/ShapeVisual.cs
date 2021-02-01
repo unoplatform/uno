@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace Windows.UI.Composition
 {
 	public partial class ShapeVisual : global::Windows.UI.Composition.ContainerVisual
@@ -5,10 +7,10 @@ namespace Windows.UI.Composition
 		public ShapeVisual(Compositor compositor)
 			: base(compositor)
 		{
-			Shapes = new CompositionShapeCollection(this);
+			Shapes = new CompositionShapeCollection(compositor, this);
 		}
 
-		public CompositionViewBox ViewBox { get; set; }
+		public CompositionViewBox? ViewBox { get; set; }
 
 		public CompositionShapeCollection Shapes { get; }
 	}

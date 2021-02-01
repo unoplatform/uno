@@ -1,17 +1,19 @@
+#nullable enable
+
 using System;
 
 namespace Windows.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{
-		private CompositionBrush _brush;
+		private CompositionBrush? _brush;
 
 		public SpriteVisual(Compositor compositor) : base(compositor)
 		{
 
 		}
 
-		public CompositionBrush Brush
+		public CompositionBrush? Brush
 		{
 			get
 			{
@@ -28,6 +30,6 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		partial void OnBrushChangedPartial(CompositionBrush brush);
+		partial void OnBrushChangedPartial(CompositionBrush? brush);
 	}
 }

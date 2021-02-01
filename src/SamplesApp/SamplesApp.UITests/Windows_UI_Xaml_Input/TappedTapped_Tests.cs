@@ -34,8 +34,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			var result = GestureResult.Get(_app.Marked("LastTapped"));
 			result.Element.Should().Be(targetName);
-			((int)result.X).Should().Be(tapX);
-			((int)result.Y).Should().Be(tapY);
+			((int)result.X).Should().BeInRange(tapX - 1, tapX + 1);
+			((int)result.Y).Should().BeInRange(tapY - 1, tapY + 1);
 		}
 
 		[Test]
@@ -122,6 +122,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Disabled on WASM: False failure: https://github.com/unoplatform/uno/issues/2739
 		public void When_InListViewWithoutItemClick()
 		{
 			Run(_xamlTestPage);
@@ -140,6 +141,44 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 				? "Item_1" // We were not able to scroll on WASM!
 				: "Item_3";
 			result.Element.Should().Be(expectedItem);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Nested()
+		{
+			Run(_xamlTestPage);
+
+			const string parentName = "Nested_Parent";
+			const string targetName = "Nested_Target";
+			const int tapX = 10, tapY = 10;
+
+			// Tap the target
+			var target = _app.WaitForElement(targetName).Single().Rect;
+			_app.TapCoordinates(target.X + tapX, target.Y + tapY);
+
+			var result = GestureResult.Get(_app.Marked("LastTapped"));
+			result.Element.Should().Be(parentName);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Nested_And_Handling()
+		{
+			Run(_xamlTestPage);
+
+			const string parentName = "Nested_Handling_Parent";
+			const string targetName = "Nested_Handling_Target";
+			const int tapX = 10, tapY = 10;
+
+			// Tap the target
+			var target = _app.WaitForElement(targetName).Single().Rect;
+			_app.TapCoordinates(target.X + tapX, target.Y + tapY);
+
+			var result = GestureResult.Get(_app.Marked("LastTapped"));
+			result.Element.Should().Be(targetName);
+			((int)result.X).Should().BeInRange(tapX - 1, tapX + 1);
+			((int)result.Y).Should().BeInRange(tapY - 1, tapY + 1);
 		}
 	}
 }

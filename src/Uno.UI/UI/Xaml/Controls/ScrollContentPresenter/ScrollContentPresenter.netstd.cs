@@ -19,10 +19,10 @@ namespace Windows.UI.Xaml.Controls
 	{
 		protected override Size MeasureOverride(Size size)
 		{
-			var child = Content as UIElement;
-			if (child != null)
+			if (Content is UIElement child)
 			{
 				var slotSize = size;
+
 				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
 				{
 					slotSize.Height = double.PositiveInfinity;
@@ -45,11 +45,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var child = Content as UIElement;
-			if (child != null)
+			if (Content is UIElement child)
 			{
 				var slotSize = finalSize;
-
 				var desiredChildSize = child.DesiredSize;
 
 				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)

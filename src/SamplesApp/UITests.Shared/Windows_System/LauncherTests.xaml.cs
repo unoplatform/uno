@@ -8,6 +8,9 @@ using Windows.UI.Xaml.Controls;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
+using Windows.ApplicationModel;
+using System.IO;
+using Windows.Storage;
 
 namespace UITests.Shared.Windows_System
 {
@@ -65,6 +68,24 @@ namespace UITests.Shared.Windows_System
 		public ICommand QuerySupportCommand => GetOrCreateCommand(QuerySupport);
 
 		public ICommand LaunchCommand => GetOrCreateCommand(Launch);
+
+		public ICommand OpenFileCommand => GetOrCreateCommand(OpenFile);
+
+		private async void OpenFile()
+		{
+			var filePath = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, "Hello.txt");
+			File.WriteAllText(filePath, "Hello, world!");
+			var file = await StorageFile.GetFileFromPathAsync(filePath);
+			await Launcher.LaunchFileAsync(file);
+		}
+
+		public ICommand OpenFolderCommand => GetOrCreateCommand(OpenFolder);
+
+		private async void OpenFolder()
+		{
+			var path = ApplicationData.Current.LocalFolder.Path;
+			await Launcher.LaunchFolderPathAsync(path);
+		}
 
 		private async void Launch()
 		{

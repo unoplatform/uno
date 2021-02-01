@@ -1,29 +1,68 @@
-﻿#if NETFRAMEWORK
+﻿#nullable enable
+
 using SkiaSharp;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Uno.Foundation.Extensibility;
+using Uno.Helpers.Theming;
+using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
+using Windows.Graphics.Display;
 using WinUI = Windows.UI.Xaml;
+using WpfApplication = System.Windows.Application;
 
 namespace Uno.UI.Skia.Platform
 {
-	public class WpfHost : FrameworkElement
+	public class WpfHost : FrameworkElement, WinUI.ISkiaHost
 	{
 		private readonly bool designMode;
-		private readonly Func<WinUI.Application> _appBuilder;
 		private WriteableBitmap bitmap;
-		private bool ignorePixelScaling;
+		private bool ignorePixelScaling;		
 
-		public WpfHost(Func<WinUI.Application> appBuilder)
+		static WpfHost()
 		{
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
+			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
+			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new WpfSystemThemeHelperExtension(o));
+			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));
+			ApiExtensibility.Register(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new WpfDragDropExtension(o));
+		}
+
+		[ThreadStatic] private static WpfHost _current;
+		public static WpfHost Current => _current;
+
+		/// <summary>
+		/// Creates a WpfHost element to host a Uno-Skia into a WPF application.
+		/// </summary>
+		/// <remarks>
+		/// If args are omitted, those from Environment.GetCommandLineArgs() will be used.
+		/// </remarks>
+		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null)
+		{
+			_current = this;
+
+			args ??= Environment
+				.GetCommandLineArgs()
+				.Skip(1)
+				.ToArray();
+
 			designMode = DesignerProperties.GetIsInDesignMode(this);
-			_appBuilder = appBuilder;
 
-			WinUI.Application.Start(_ => appBuilder());
+			void CreateApp(WinUI.ApplicationInitializationCallbackParams _)
+			{
+				var app = appBuilder();
+				app.Host = this;
+			}
 
-			WinUI.Window.Current.InvalidateRender += () => InvalidateVisual();
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
+			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
+
+			WinUI.Application.Start(CreateApp, args);
+
+			WinUI.Window.InvalidateRender += () => InvalidateVisual();
 
 			SizeChanged += WpfHost_SizeChanged;
 			Loaded += WpfHost_Loaded;
@@ -76,9 +115,11 @@ namespace Uno.UI.Skia.Platform
 				return;
 			}
 
+			
 			int width, height;
-			double dpiScaleX = 1.0;
-			double dpiScaleY = 1.0;
+			var dpi = VisualTreeHelper.GetDpi(WpfApplication.Current.MainWindow);
+			double dpiScaleX = dpi.DpiScaleX;
+			double dpiScaleY = dpi.DpiScaleY;
 			if (IgnorePixelScaling)
 			{
 				width = (int)ActualWidth;
@@ -106,6 +147,7 @@ namespace Uno.UI.Skia.Platform
 			using (var surface = SKSurface.Create(info, bitmap.BackBuffer, bitmap.BackBufferStride))
 			{
 				surface.Canvas.Clear(SKColors.White);
+				surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 				WinUI.Window.Current.Compositor.Render(surface, info);
 			}
 
@@ -116,4 +158,3 @@ namespace Uno.UI.Skia.Platform
 		}
 	}
 }
-#endif

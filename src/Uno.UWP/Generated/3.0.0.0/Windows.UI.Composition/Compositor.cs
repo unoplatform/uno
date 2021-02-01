@@ -104,20 +104,6 @@ namespace Windows.UI.Composition
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.InsetClip CreateInsetClip()
-		{
-			throw new global::System.NotImplementedException("The member InsetClip Compositor.CreateInsetClip() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.InsetClip CreateInsetClip( float leftInset,  float topInset,  float rightInset,  float bottomInset)
-		{
-			throw new global::System.NotImplementedException("The member InsetClip Compositor.CreateInsetClip(float leftInset, float topInset, float rightInset, float bottomInset) is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.LinearEasingFunction CreateLinearEasingFunction()
 		{
 			throw new global::System.NotImplementedException("The member LinearEasingFunction Compositor.CreateLinearEasingFunction() is not implemented in Uno.");
@@ -140,20 +126,8 @@ namespace Windows.UI.Composition
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateScalarKeyFrameAnimation()
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateScopedBatch(Windows.UI.Composition.CompositionBatchTypes)
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateSpriteVisual()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionSurfaceBrush CreateSurfaceBrush()
-		{
-			throw new global::System.NotImplementedException("The member CompositionSurfaceBrush Compositor.CreateSurfaceBrush() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionSurfaceBrush CreateSurfaceBrush( global::Windows.UI.Composition.ICompositionSurface surface)
-		{
-			throw new global::System.NotImplementedException("The member CompositionSurfaceBrush Compositor.CreateSurfaceBrush(ICompositionSurface surface) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateSurfaceBrush()
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateSurfaceBrush(Windows.UI.Composition.ICompositionSurface)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionTarget CreateTargetForCurrentView()
@@ -413,20 +387,6 @@ namespace Windows.UI.Composition
 		public  global::Windows.Foundation.IAsyncAction RequestCommitAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction Compositor.RequestCommitAsync() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionGeometricClip CreateGeometricClip()
-		{
-			throw new global::System.NotImplementedException("The member CompositionGeometricClip Compositor.CreateGeometricClip() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionGeometricClip CreateGeometricClip( global::Windows.UI.Composition.CompositionGeometry geometry)
-		{
-			throw new global::System.NotImplementedException("The member CompositionGeometricClip Compositor.CreateGeometricClip(CompositionGeometry geometry) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

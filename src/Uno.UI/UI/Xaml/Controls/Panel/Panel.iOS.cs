@@ -69,10 +69,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				imgBrush.ImageChanged += OnBackgroundImageBrushChanged;
 			}
-			else
-			{
-				UpdateBackground();
-			}
+
+			UpdateBackground();
 		}
 
 		private void OnBackgroundImageBrushChanged(UIImage backgroundImage)

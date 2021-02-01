@@ -57,6 +57,11 @@ namespace Windows.UI.Xaml.Controls
 			_eventSubscriptions.Disposable = null;
 
 			_headerContentPresenter = GetTemplateChild("HeaderContentPresenter") as ContentPresenter;
+			if (_headerContentPresenter != null)
+			{
+				UpdateHeaderVisibility();
+			}
+
 			_horizontalThumb = GetTemplateChild("HorizontalThumb") as Thumb;
 			_verticalThumb = GetTemplateChild("VerticalThumb") as Thumb;
 
@@ -278,7 +283,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (_horizontalThumb != null && _horizontalDecreaseRect != null)
 				{
-					var maxWidth = ActualWidth - _horizontalThumb.ActualWidth;
+					var maxWidth = ActualWidth - GetHorizontalThumbWidth();
 					_horizontalDecreaseRect.Width = (float)((Value - Minimum) / (Maximum - Minimum)) * maxWidth;
 				}
 			}
@@ -286,10 +291,34 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (_verticalThumb != null && _verticalDecreaseRect != null)
 				{
-					var maxHeight = ActualHeight - _verticalThumb.ActualHeight;
+					var maxHeight = ActualHeight - GetVerticalThumbHeight();
 					_verticalDecreaseRect.Height = (float)((Value - Minimum) / (Maximum - Minimum)) * maxHeight;
 				}
 			}
+		}
+
+		private double GetHorizontalThumbWidth()
+		{
+			// In some cases, because of the timing of SizeChanged, this may be called before the thumb has been measured. If so, we rely on the fact
+			// that the dimensions are hard-coded by the UWP and Fluent styles.
+			if (_horizontalThumb.ActualWidth == 0 && !double.IsNaN(_horizontalThumb.Width))
+			{
+				return _horizontalThumb.Width;
+			}
+
+			return _horizontalThumb.ActualWidth;
+		}
+
+		private double GetVerticalThumbHeight()
+		{
+			// In some cases, because of the timing of SizeChanged, this may be called before the thumb has been measured. If so, we rely on the fact
+			// that the dimensions are hard-coded by the UWP and Fluent styles.
+			if (_verticalThumb.ActualHeight == 0 && !double.IsNaN(_verticalThumb.Height))
+			{
+				return _verticalThumb.Height;
+			}
+
+			return _verticalThumb.ActualHeight;
 		}
 
 		/// <summary>
@@ -366,6 +395,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ApplyValueToSlide();
 			Thumb?.CompleteDrag(args);
+		}
+
+		private void UpdateHeaderVisibility()
+		{
+			if (_headerContentPresenter != null)
+			{
+				_headerContentPresenter.Visibility =
+					Header != null ? Visibility.Visible : Visibility.Collapsed;
+			}
 		}
 
 		#region IsTrackerEnabled DependencyProperty
@@ -631,13 +669,8 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty HeaderProperty { get ; } =
 			DependencyProperty.Register("Header", typeof(object), typeof(Slider), new FrameworkPropertyMetadata(null, (s, e) => ((Slider)s)?.OnHeaderChanged(e)));
 
-		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e)
-		{
-			if (_headerContentPresenter != null)
-			{
-				_headerContentPresenter.Visibility = e.NewValue != null ? Visibility.Visible : Visibility.Collapsed;
-			}
-		}
+		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e) =>
+			UpdateHeaderVisibility();
 
 		#endregion
 	}

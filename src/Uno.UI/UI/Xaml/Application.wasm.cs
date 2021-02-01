@@ -39,7 +39,9 @@ namespace Windows.UI.Xaml
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
+
 			Current = this;
+			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
@@ -101,33 +103,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private ApplicationTheme GetDefaultSystemTheme()
-		{
-			var serializedTheme = WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.getDefaultSystemTheme()");
-
-			if (serializedTheme != null)
-			{
-				if (Enum.TryParse(serializedTheme, out ApplicationTheme theme))
-				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
-					{
-						this.Log().Info("Setting OS preferred theme: " + theme);
-					}
-					return theme;
-				}
-				else
-				{
-					throw new InvalidOperationException($"{serializedTheme} theme is not a supported OS theme");
-				}
-			}
-			//OS has no preference or API not implemented, use light as default
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
-			{
-				this.Log().Info("No preferred theme, using Light instead");
-			}
-			return ApplicationTheme.Light;
-		}
-
 		/// <summary>
 		/// Dispatch method from Javascript
 		/// </summary>
@@ -142,8 +117,9 @@ namespace Windows.UI.Xaml
 			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(0), () => completed = true);
 
 			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
+			operation.EventRaiseCompleted();
 
-			if(!completed && this.Log().IsEnabled(LogLevel.Warning))
+			if (!completed && this.Log().IsEnabled(LogLevel.Warning))
 			{
 				this.Log().LogWarning($"This platform does not support asynchronous Suspending deferral. Code executed after the of the method called by Suspending may not get executed.");
 			}

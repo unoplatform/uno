@@ -4,4 +4,14 @@
   <PropertyGroup>
   </PropertyGroup>
 
+  <!-- Copy Content files to the output folder like APPX packaging does. -->
+  <Target Name="_UnoBeforeCopyLocal" BeforeTargets="CopyFilesToOutputDirectory;_CopyFilesMarkedCopyLocal">
+	<ItemGroup>
+	  <ContentWithTargetPath
+		Update="@(ContentWithTargetPath)"
+		CopyToOutputDirectory="Always" />
+	</ItemGroup>
+  </Target>
+
+
 </Project>

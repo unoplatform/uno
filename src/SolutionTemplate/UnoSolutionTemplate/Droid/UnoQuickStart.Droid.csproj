@@ -62,7 +62,7 @@
 	<ItemGroup>
 		<PackageReference Include="Uno.UI" Version="2.2.0" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.32" />
+		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.33" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 	</ItemGroup>
@@ -72,7 +72,7 @@
 		<Compile Include="Main.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<AndroidAsset Include="Assets\Fonts\winjs-symbols.ttf" />
+		<AndroidAsset Include="Assets\Fonts\uno-fluentui-assets.ttf" />
 		<None Include="Resources\AboutResources.txt" />
 		<None Include="Assets\AboutAssets.txt" />
 	</ItemGroup>
@@ -93,4 +93,14 @@
 
 	<!-- This will force the generation of the APK when not building inside visual studio -->
 	<Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />
+
+	<Target Name="Issue3897Workaround"
+		Condition=" '$(ManagedDesignTimeBuild)' == 'True' "
+		AfterTargets="_RemoveLegacyDesigner">
+		<!-- See https://github.com/unoplatform/uno/issues/3897 and https://github.com/xamarin/xamarin-android/issues/5069 for more details -->
+		<ItemGroup>
+			<Compile Remove="$(_AndroidResourceDesignerFile)"/>
+		</ItemGroup>
+	</Target>
+
 </Project>

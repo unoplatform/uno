@@ -26,10 +26,7 @@ namespace SamplesApp.WPF
 		{
 			InitializeComponent();
 
-			Windows.UI.Core.CoreDispatcher.DispatchOverride
-				= d => Dispatcher.BeginInvoke(d);
-
-			root.Content = new WpfHost(() => new SamplesApp.App());
+			root.Content = new WpfHost(Dispatcher, () => new SamplesApp.App());
 		}
 	}
 }

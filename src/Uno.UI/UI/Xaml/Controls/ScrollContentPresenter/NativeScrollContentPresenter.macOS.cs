@@ -1,6 +1,7 @@
 ﻿using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using System;
 using System.Collections;
@@ -19,6 +20,13 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class NativeScrollContentPresenter : NSScrollView, IHasSizeThatFits
 	{
+		private readonly WeakReference<ScrollViewer> _scrollViewer;
+
+		public NativeScrollContentPresenter(ScrollViewer scroller) : this()
+		{
+			_scrollViewer = new WeakReference<ScrollViewer>(scroller);
+		}
+
 		public NativeScrollContentPresenter()
 		{
 			Notifications.ObserveDidLiveScroll(this, OnLiveScroll);
@@ -26,7 +34,8 @@ namespace Windows.UI.Xaml.Controls
 			DrawsBackground = false;
 		}
 
-		public nfloat ZoomScale {
+		public nfloat ZoomScale 
+		{
 			get => Magnification;
 			set => Magnification = value;
 		}
@@ -34,10 +43,6 @@ namespace Windows.UI.Xaml.Controls
 		public NSEdgeInsets ContentInset { get; set; }
 
 		public CGPoint UpperScrollLimit { get; }
-
-		public ScrollMode HorizontalScrollMode { get; set; }
-
-		public ScrollMode VerticalScrollMode { get; set; }
 
 		public float MinimumZoomScale { get; set; }
 
@@ -54,7 +59,6 @@ namespace Windows.UI.Xaml.Controls
 			get => HasHorizontalScroller;
 			set => HasHorizontalScroller = value;
 		}
-
 		public override bool NeedsLayout
 		{
 			get => base.NeedsLayout; set
@@ -80,13 +84,25 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnContentChanged(NSView previousView, NSView newView)
 		{
+			previousView?.SetParent(null);
+
 			DocumentView = newView;
+
+			// This is not needed on iOS/Android because the native ScrollViewer
+			// relies on the Children property, not on a `DocumentView` property.
+			newView?.SetParent(TemplatedParent);
 		}
 
 		private void OnLiveScroll(object sender, NSNotificationEventArgs e)
 		{
+			var scroller = _scrollViewer.TryGetTarget(out var s) ? s : TemplatedParent as ScrollViewer;
+			if (scroller is null)
+			{
+				return;
+			}
+
 			var offset = DocumentVisibleRect.Location;
-			(TemplatedParent as ScrollViewer)?.OnScrollInternal(offset.X, offset.Y, isIntermediate: false);
+			scroller.OnScrollInternal(offset.X, offset.Y, isIntermediate: false);
 		}
 
 		public Rect MakeVisible(UIElement visual, Rect rectangle) =>

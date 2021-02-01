@@ -1,5 +1,8 @@
 ﻿#if !NET461
+#nullable enable
+
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -33,12 +36,22 @@ namespace Windows.UI.Xaml.Controls
 	public abstract partial class VirtualizingPanelLayout : DependencyObject
 #endif
 	{
-		private _Panel OwnerPanel { get; set; }
-		private protected VirtualizingPanelGenerator Generator { get; private set; }
+		private _Panel? _ownerPanel;
+		private _Panel OwnerPanel
+		{
+			get => _ownerPanel ?? throw new InvalidOperationException($"{nameof(Initialize)}() was not called properly.");
+			set => _ownerPanel = value;
+		}
+		private VirtualizingPanelGenerator? _generator;
+		private protected VirtualizingPanelGenerator Generator
+		{
+			get => _generator ?? throw new InvalidOperationException($"{nameof(Initialize)}() was not called properly.");
+			private set => _generator = value;
+		}
 
-		private ScrollViewer ScrollViewer { get; set; }
-		internal ItemsControl ItemsControl { get; set; }
-		public ListViewBase XamlParent => ItemsControl as ListViewBase;
+		private ScrollViewer? ScrollViewer { get; set; }
+		internal ItemsControl? ItemsControl { get; set; }
+		public ListViewBase? XamlParent => ItemsControl as ListViewBase;
 
 		/// <summary>
 		/// Ordered record of all currently-materialized lines.
@@ -238,8 +251,9 @@ namespace Windows.UI.Xaml.Controls
 				}
 				unappliedDelta -= scrollIncrement;
 				unappliedDelta = Max(0, unappliedDelta);
-				UpdateLayout(extentAdjustment: sign * -unappliedDelta);
+				UpdateLayout(extentAdjustment: sign * -unappliedDelta, isScroll: true);
 			}
+			ArrangeElements(_availableSize, ViewportSize);
 			UpdateCompleted();
 
 			_lastScrollOffset = ScrollOffset;
@@ -260,7 +274,7 @@ namespace Windows.UI.Xaml.Controls
 				return _averageLineHeight;
 			}
 
-			return GetExtent(incrementView);
+			return GetActualExtent(incrementView);
 		}
 
 		internal Size MeasureOverride(Size availableSize)
@@ -285,7 +299,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateAverageLineHeight(); // Must be called before ScrapLayout(), or there won't be items to measure
 			ScrapLayout();
 			ApplyCollectionChanges();
-			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges);
+			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges, isScroll: false);
 
 			return _lastMeasuredSize = EstimatePanelSize(isMeasure: true);
 		}
@@ -296,7 +310,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug("Measured without an ItemsControl: simply return size(0,0) for now...");
+					this.Log().LogDebug("Arranged without an ItemsControl: simply return size(0,0) for now...");
 				}
 
 				return new Size(0, 0);
@@ -309,17 +323,35 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_availableSize = finalSize;
-			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges);
+			var adjustedVisibleWindow = ViewportSize;
+			ArrangeElements(finalSize, adjustedVisibleWindow);
 
 			return EstimatePanelSize(isMeasure: false);
+		}
+
+		private void ArrangeElements(Size finalSize, Size adjustedVisibleWindow)
+		{
+			foreach (var line in _materializedLines)
+			{
+				var indexAdjustment = -1;
+				foreach (var item in line.Items)
+				{
+					indexAdjustment++;
+
+					var bounds = GetBoundsForElement(item.container);
+					var arrangedBounds = GetElementArrangeBounds(line.FirstItemFlat + indexAdjustment, bounds, adjustedVisibleWindow, finalSize);
+					item.container.Arrange(arrangedBounds);
+				}
+			}
 		}
 
 		/// <summary>
 		/// Update the item container layout by removing no-longer-visible views and adding visible views.
 		/// </summary>
 		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
-		private void UpdateLayout(double? extentAdjustment)
+		private void UpdateLayout(double? extentAdjustment, bool isScroll)
 		{
+			ResetReorderingIndex();
 			OwnerPanel.ShouldInterceptInvalidate = true;
 
 			UnfillLayout(extentAdjustment ?? 0);
@@ -330,7 +362,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"Called {GetMethodTag()}, {GetDebugInfo()} extentAdjustment={extentAdjustment}");
 			}
 
-			if (!extentAdjustment.HasValue)
+			if (!isScroll)
 			{
 				UpdateCompleted();
 			}
@@ -362,7 +394,14 @@ namespace Windows.UI.Xaml.Controls
 			{
 				FillBackward();
 			}
+
 			FillForward();
+
+			// Make sure that the reorder item has been rendered
+			if (GetReorderingIndex() is { } reorderIndex && _materializedLines.None(line => line.Contains(reorderIndex)))
+			{
+				AddLine(Forward, reorderIndex);
+			}
 
 			_dynamicSeedIndex = null;
 			_dynamicSeedStart = null;
@@ -374,7 +413,6 @@ namespace Windows.UI.Xaml.Controls
 					var nextItem = GetNextUnmaterializedItem(Backward, GetFirstMaterializedIndexPath());
 					while (nextItem != null && GetItemsStart() > ExtendedViewportStart + extentAdjustment)
 					{
-						// Fill gap at start with views
 						AddLine(Backward, nextItem.Value);
 						nextItem = GetNextUnmaterializedItem(Backward, GetFirstMaterializedIndexPath());
 					}
@@ -407,7 +445,7 @@ namespace Windows.UI.Xaml.Controls
 			void UnfillBackward()
 			{
 				var firstMaterializedLine = GetFirstMaterializedLine();
-				while (firstMaterializedLine != null && GetEnd(firstMaterializedLine.FirstView) < ExtendedViewportStart + extentAdjustment)
+				while (firstMaterializedLine != null && GetMeasuredEnd(firstMaterializedLine.FirstView) < ExtendedViewportStart + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
 					RecycleLine(firstMaterializedLine);
@@ -419,7 +457,7 @@ namespace Windows.UI.Xaml.Controls
 			void UnfillForward()
 			{
 				var lastMaterializedLine = GetLastMaterializedLine();
-				while (lastMaterializedLine != null && GetStart(lastMaterializedLine.FirstView) > ExtendedViewportEnd + extentAdjustment)
+				while (lastMaterializedLine != null && GetMeasuredStart(lastMaterializedLine.FirstView) > ExtendedViewportEnd + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
 					RecycleLine(lastMaterializedLine);
@@ -434,9 +472,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void RecycleLine(Line line)
 		{
-			for (int i = 0; i < line.ContainerViews.Length; i++)
+			for (int i = 0; i < line.Items.Length; i++)
 			{
-				Generator.RecycleViewForItem(line.ContainerViews[i], line.FirstItemFlat + i);
+				Generator.RecycleViewForItem(line.Items[i].container, line.FirstItemFlat + i);
 			}
 		}
 
@@ -445,9 +483,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void ScrapLine(Line line)
 		{
-			for (int i = 0; i < line.ContainerViews.Length; i++)
+			for (int i = 0; i < line.Items.Length; i++)
 			{
-				Generator.ScrapViewForItem(line.ContainerViews[i], line.FirstItemFlat + i);
+				Generator.ScrapViewForItem(line.Items[i].container, line.FirstItemFlat + i);
 			}
 		}
 
@@ -473,7 +511,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var itemOffset = updatedValue.Row - dynamicSeedIndex.Row; // TODO: This will need to change when grouping is supported
 					var scrollAdjustment = itemOffset * _averageLineHeight; // TODO: not appropriate for ItemsWrapGrid
-					ApplyScrollAdjustment(scrollAdjustment);
+					ApplyScrollAdjustmentForCollectionChange(scrollAdjustment);
 				}
 				// TODO: handle the case where seed was removed
 			}
@@ -481,7 +519,10 @@ namespace Windows.UI.Xaml.Controls
 			_pendingCollectionChanges.Clear();
 		}
 
-		private void ApplyScrollAdjustment(double scrollAdjustment)
+		/// <summary>
+		/// Update scroll offset for changes in position from collection change operation
+		/// </summary>
+		private void ApplyScrollAdjustmentForCollectionChange(double scrollAdjustment)
 		{
 			if (scrollAdjustment == 0)
 			{
@@ -505,27 +546,43 @@ namespace Windows.UI.Xaml.Controls
 
 			if (ScrollOrientation == Orientation.Vertical)
 			{
-				ScrollViewer.ChangeView(null, ScrollViewer.VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+				ScrollViewer?.ChangeView(null, ScrollViewer.VerticalOffset + scrollAdjustment, null, disableAnimation: true);
 			}
 			else
 			{
-				ScrollViewer.ChangeView(ScrollViewer.HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+				ScrollViewer?.ChangeView(ScrollViewer.HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
 			}
 		}
 
 		/// <summary>
 		/// True if the scroll position is right at the start of the list.
 		/// </summary>
-		private bool IsScrolledToStart() => ScrollOrientation == Orientation.Vertical ?
-			ScrollViewer.VerticalOffset <= 0 :
-			ScrollViewer.HorizontalOffset <= 0;
+		private bool IsScrolledToStart()
+		{
+			if (ScrollViewer == null)
+			{
+				return true;
+			}
+
+			return ScrollOrientation == Orientation.Vertical ?
+				ScrollViewer.VerticalOffset <= 0 :
+				ScrollViewer.HorizontalOffset <= 0;
+		}
 
 		/// <summary>
 		/// True if the scroll position is all the way to the end of the list.
 		/// </summary>
-		private bool IsScrolledToEnd() => ScrollOrientation == Orientation.Vertical ?
-			ScrollViewer.VerticalOffset >= ScrollViewer.ScrollableHeight :
-			ScrollViewer.HorizontalOffset >= ScrollViewer.ScrollableWidth;
+		private bool IsScrolledToEnd()
+		{
+			if (ScrollViewer == null)
+			{
+				return true;
+			}
+
+			return ScrollOrientation == Orientation.Vertical ?
+				ScrollViewer.VerticalOffset >= ScrollViewer.ScrollableHeight :
+				ScrollViewer.HorizontalOffset >= ScrollViewer.ScrollableWidth;
+		}
 
 		/// <summary>
 		/// Estimate the 'correct' size of the panel.
@@ -571,7 +628,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			var lastItem = GetFlatItemIndex(lastIndexPath.Value);
 
-			var remainingItems = ItemsControl.NumberOfItems - lastItem - 1;
+			var remainingItems = (ItemsControl?.NumberOfItems - lastItem - 1) ?? 0;
 			UpdateAverageLineHeight();
 
 			int itemsPerLine = GetItemsPerLine();
@@ -589,12 +646,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateAverageLineHeight()
 		{
-			_averageLineHeight = _materializedLines.Count > 0 ? _materializedLines.Select(l => GetExtent(l.FirstView)).Average()
+			_averageLineHeight = _materializedLines.Count > 0 ? _materializedLines.Select(l => GetMeasuredExtent(l.FirstView)).Average()
 				: 0;
 		}
 
-		private double CalculatePanelMeasureBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
-					_materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault()
+		private double CalculatePanelMeasureBreadth() => _materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault()
 #if __WASM__
 			+ GetBreadth(XamlParent.ScrollViewer.ScrollBarSize)
 #endif
@@ -630,7 +686,8 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Update the display of the panel without clearing caches.
 		/// </summary>
-		private void LightRefresh() => OwnerPanel?.InvalidateMeasure();
+		private void LightRefresh()
+			=> OwnerPanel?.InvalidateMeasure();
 
 		internal void Refresh()
 		{
@@ -667,6 +724,10 @@ namespace Windows.UI.Xaml.Controls
 		private void ScrapLayout()
 		{
 			var firstVisibleItem = GetFirstMaterializedIndexPath();
+			if (GetReorderingIndex() is { } reorderIndex && reorderIndex == firstVisibleItem)
+			{
+				firstVisibleItem = _materializedLines.SelectMany(line => line.Items).Skip(1).FirstOrDefault().index;
+			}
 
 			_dynamicSeedIndex = GetDynamicSeedIndex(firstVisibleItem);
 			_dynamicSeedStart = GetContentStart();
@@ -688,7 +749,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem)
 		{
-			var lastItem = XamlParent.GetLastItem();
+			var lastItem = XamlParent?.GetLastItem();
 			if (lastItem == null ||
 				(firstVisibleItem != null && firstVisibleItem.Value > lastItem.Value)
 			)
@@ -724,7 +785,6 @@ namespace Windows.UI.Xaml.Controls
 		private void AddLine(GeneratorDirection fillDirection, Uno.UI.IndexPath nextVisibleItem)
 		{
 			var extentOffset = fillDirection == Backward ? GetContentStart() : GetContentEnd();
-
 			var line = CreateLine(fillDirection, extentOffset, AvailableBreadth, nextVisibleItem);
 
 			if (fillDirection == Backward)
@@ -735,6 +795,14 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_materializedLines.AddToBack(line);
 			}
+
+			// The layout might have decided to insert another item (pending reorder item), so make sure to add the requested item anyway.
+			// Note: We must ensure to add the requested item so the Get<First|Last>MaterializedLine()
+			//		 and Get<Content|Items><Start|End>() will still return a meaningful values.
+			if (!line.Contains(nextVisibleItem))
+			{
+				AddLine(fillDirection, nextVisibleItem);
+			}
 		}
 
 		/// <summary>
@@ -744,7 +812,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected abstract int GetItemsPerLine();
 
-		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath) => ItemsControl.GetIndexFromIndexPath(indexPath);
+		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath) => ItemsControl?.GetIndexFromIndexPath(indexPath) ?? -1;
 
 		protected void AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
 		{
@@ -768,31 +836,34 @@ namespace Windows.UI.Xaml.Controls
 				new Point(breadthOffset, extentOffset + extentOffsetAdjustment) :
 				new Point(extentOffset + extentOffsetAdjustment, breadthOffset);
 
-			var adjustedDesiredSize = ScrollOrientation == Orientation.Vertical
-				? new Size(
-					ShouldMeasuredBreadthStretch ? AvailableBreadth :
-					(_lastMeasuredSize != default ? GetBreadth(_lastMeasuredSize) : view.DesiredSize.Width),
-					view.DesiredSize.Height
-				)
-				: new Size(
-					view.DesiredSize.Width,
-					ShouldMeasuredBreadthStretch ? AvailableBreadth :
-					(_lastMeasuredSize != default ? GetBreadth(_lastMeasuredSize) : view.DesiredSize.Height)
-				);
-
-			var finalRect = new Rect(topLeft, adjustedDesiredSize);
+			// TODO: GetElementBounds()
+			var finalRect = new Rect(topLeft, view.DesiredSize);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"{GetMethodTag()} finalRect={finalRect} AvailableBreadth={AvailableBreadth} adjustedDesiredSize={adjustedDesiredSize} DC={view.DataContext}");
+				this.Log().LogDebug($"{GetMethodTag()} finalRect={finalRect} AvailableBreadth={AvailableBreadth} DesiredSize={view.DesiredSize} DC={view.DataContext}");
 			}
 
-			view.Arrange(finalRect);
+			SetBounds(view, finalRect);
 		}
 
-		private Line GetFirstMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[0] : null;
+		protected abstract Rect GetElementArrangeBounds(/*TODO ElementType, */int elementIndex, Rect containerBounds, Size windowConstraint, Size finalSize);
 
-		private Line GetLastMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[_materializedLines.Count - 1] : null;
+		private void SetBounds(FrameworkElement view, Rect bounds)
+		{
+			if (view is ContentControl container)
+			{
+				container.GetVirtualizationInformation().Bounds = bounds;
+			}
+			else if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"Non-ContentControl containers aren't supported for virtualizing panel types.");
+			}
+		}
+
+		private Line? GetFirstMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[0] : null;
+
+		private Line? GetLastMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[_materializedLines.Count - 1] : null;
 
 		private Uno.UI.IndexPath? GetFirstMaterializedIndexPath() => GetFirstMaterializedLine()?.FirstItem;
 
@@ -803,7 +874,7 @@ namespace Windows.UI.Xaml.Controls
 			var firstView = GetFirstMaterializedLine()?.FirstView;
 			if (firstView != null)
 			{
-				return GetStart(firstView);
+				return GetMeasuredStart(firstView);
 			}
 
 			return null;
@@ -814,7 +885,7 @@ namespace Windows.UI.Xaml.Controls
 			var lastView = GetLastMaterializedLine()?.LastView;
 			if (lastView != null)
 			{
-				return GetEnd(lastView);
+				return GetMeasuredEnd(lastView);
 			}
 
 			// This will be null except immediately after ScrapLayout(), when it will be the previous start of materialized items
@@ -825,36 +896,81 @@ namespace Windows.UI.Xaml.Controls
 
 		private double GetContentEnd() => GetItemsEnd() ?? 0;
 
-		private double GetStart(FrameworkElement child)
+		private double GetMeasuredStart(FrameworkElement child)
 		{
-			var offset = GetRelativePosition(child);
+			var bounds = GetBoundsForElement(child);
+
 			return ScrollOrientation == Orientation.Vertical ?
-				offset.Y - child.Margin.Top :
-				offset.X - child.Margin.Left;
+				bounds.Top :
+				bounds.Left;
 		}
 
-		private double GetEnd(FrameworkElement child)
+		private double GetMeasuredEnd(FrameworkElement child)
 		{
-			var offset = GetRelativePosition(child);
+			var bounds = GetBoundsForElement(child);
+
 			return ScrollOrientation == Orientation.Vertical ?
-				offset.Y + child.ActualHeight + child.Margin.Bottom :
-				offset.X + child.ActualWidth + child.Margin.Right;
+				bounds.Bottom :
+				bounds.Right;
 		}
 
-		private double GetExtent(FrameworkElement child)
+		private double GetMeasuredExtent(FrameworkElement child)
+		{
+			var bounds = GetBoundsForElement(child);
+
+			return ScrollOrientation == Orientation.Vertical ?
+				bounds.Height :
+				bounds.Width;
+
+		}
+
+		private double GetActualExtent(FrameworkElement child)
 		{
 			return ScrollOrientation == Orientation.Vertical ?
-				child.ActualHeight + child.Margin.Top + child.Margin.Bottom :
-				child.ActualWidth + child.Margin.Left + child.Margin.Right;
+				child.ActualHeight :
+				child.ActualWidth;
+		}
+
+		private Rect GetBoundsForElement(FrameworkElement child)
+		{
+			if (!(child is ContentControl container))
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning($"Non-ContentControl containers aren't supported for virtualizing panel types.");
+				}
+
+				return default;
+			}
+
+			return container.GetVirtualizationInformation().Bounds;
+
 		}
 
 		private double GetExtent(Size size) => ScrollOrientation == Orientation.Vertical ?
 			size.Height :
 			size.Width;
 
-		private double GetBreadth(Size size) => ScrollOrientation == Orientation.Vertical ?
+		protected double GetBreadth(Size size) => ScrollOrientation == Orientation.Vertical ?
 			size.Width :
 			size.Height;
+
+		protected double GetBreadth(Rect rect) => ScrollOrientation == Orientation.Vertical ?
+			rect.Width :
+			rect.Height;
+
+		protected void SetBreadth(ref Rect rect, double breadth)
+		{
+			if (ScrollOrientation == Orientation.Vertical)
+			{
+				rect.Width = breadth;
+			}
+			else
+			{
+				rect.Height = breadth;
+			}
+		}
+
 
 		private double GetActualBreadth(FrameworkElement view) => ScrollOrientation == Orientation.Vertical ?
 			view.ActualWidth :
@@ -862,7 +978,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private double GetDesiredBreadth(FrameworkElement view) => GetBreadth(view.DesiredSize);
 
-		private string GetMethodTag([CallerMemberName] string caller = null)
+		private string GetMethodTag([CallerMemberName] string? caller = null)
 		{
 			return $"{nameof(VirtualizingPanelLayout)}.{caller}()";
 		}
@@ -882,32 +998,95 @@ namespace Windows.UI.Xaml.Controls
 		private static Point GetRelativePosition(FrameworkElement child) => new Point(ViewHelper.PhysicalToLogicalPixels(child.Left), ViewHelper.PhysicalToLogicalPixels(child.Top));
 #endif
 
+		private (double offset, double breadth, object item, Uno.UI.IndexPath? index)? _pendingReorder;
+		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item)
+		{
+			_pendingReorder = Orientation == Orientation.Horizontal
+				? (location.X + ScrollOffset, element.ActualWidth, item, default(Uno.UI.IndexPath?))
+				: (location.Y + ScrollOffset, element.ActualHeight, item, default(Uno.UI.IndexPath?));
+
+			LightRefresh();
+		}
+
+		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item)
+		{
+			var updatedIndex = default(Uno.UI.IndexPath?);
+			if (_pendingReorder?.index is { } index)
+			{
+				var nextItem = _materializedLines
+					.SelectMany(line => line.Items)
+					.SkipWhile(i => i.index != index)
+					.Skip(1)
+					.FirstOrDefault();
+
+				updatedIndex = nextItem.container is null
+					? Uno.UI.IndexPath.FromRowSection(int.MaxValue, int.MaxValue) // There is no "nextItem", i.e. the item has been moved at the end.
+					: nextItem.index;
+			}
+			_pendingReorder = null;
+
+			// We need a full refresh to properly re-arrange all items at their right location,
+			// ignoring the temp location of the dragged / reordered item.
+			Refresh();
+
+			return updatedIndex;
+		}
+
+		protected bool ShouldInsertReorderingView(double extentOffset)
+			=> _pendingReorder is { } reorder && reorder.offset > extentOffset && reorder.offset <= extentOffset + reorder.breadth;
+
+		protected Uno.UI.IndexPath? GetReorderingIndex()
+		{
+			if (_pendingReorder is { } reorder)
+			{
+				if (reorder.index is null)
+				{
+					reorder.index = XamlParent!.GetIndexPathFromItem(reorder.item);
+					_pendingReorder = reorder; // _pendingReorder is a struct!
+				}
+
+				return reorder.index;
+			}
+
+			return null;
+		}
+
+		private void ResetReorderingIndex()
+		{
+			if (_pendingReorder is { } reorder)
+			{
+				_pendingReorder = (reorder.offset, reorder.breadth, reorder.item, null);
+			}
+		}
+
 		/// <summary>
 		/// Represents a single row in a vertically-scrolling panel, or a column in a horizontally-scrolling panel.
 		/// </summary>
 		protected class Line
 		{
-			public FrameworkElement[] ContainerViews { get; }
+			public (FrameworkElement container, Uno.UI.IndexPath index)[] Items { get; }
 			public Uno.UI.IndexPath FirstItem { get; }
 			public Uno.UI.IndexPath LastItem { get; }
 			public int FirstItemFlat { get; }
 
-			public FrameworkElement FirstView => ContainerViews[0];
-			public FrameworkElement LastView => ContainerViews[ContainerViews.Length - 1];
+			public FrameworkElement FirstView => Items[0].container;
+			public FrameworkElement LastView => Items[Items.Length - 1].container;
 
-			public Line(FrameworkElement[] containerViews, Uno.UI.IndexPath firstItem, Uno.UI.IndexPath lastItem, int firstItemFlat)
+			public Line(int firstItemFlat, params (FrameworkElement container, Uno.UI.IndexPath index)[] items)
 			{
-				if (containerViews.Length == 0)
+				if (items.Length == 0)
 				{
 					throw new InvalidOperationException("Line must contain at least one view");
 				}
 
-				ContainerViews = containerViews;
-				FirstItem = firstItem;
-				LastItem = lastItem;
+				Items = items;
+				FirstItem = items[0].index;
+				LastItem = items.Last().index;
 				FirstItemFlat = firstItemFlat;
 			}
 
+			public bool Contains(Uno.UI.IndexPath index)
+				=> Items.Any(i => i.index == index);
 		}
 	}
 }

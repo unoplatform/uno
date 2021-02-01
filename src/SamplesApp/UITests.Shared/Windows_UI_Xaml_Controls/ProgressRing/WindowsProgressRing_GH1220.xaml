@@ -11,10 +11,18 @@
 		<TextBlock FontSize="15">This is an illustration of GH bug #1220 - ProgressRing doesn't collapse on iOS.</TextBlock>
 		<TextBlock FontSize="15">The following ProgressRing should NOT be visible. If you see a ProgressRing, there's a problem.</TextBlock>
 
-		<ProgressRing Width="200" Height="200" Foreground="Red" IsActive="True" Visibility="Collapsed"/>
+		<ProgressRing Width="100" Height="100" Foreground="Red" IsActive="True" Visibility="Collapsed"/>
 
 		<TextBlock FontSize="15">Another ProgressRing, but visibility is dynamic:</TextBlock>
 		<ToggleButton x:Name="isVisible">IS VISIBLE</ToggleButton>
-		<ProgressRing Width="200" Height="200" Foreground="Red" IsActive="True" Visibility="{Binding IsChecked, ElementName=isVisible}"/>
+		<Border x:Name="collapsedTestBorder">
+			<ProgressRing x:Name="visibilityTest" Width="100" Height="100" Foreground="Red" IsActive="True" Visibility="{Binding IsChecked, ElementName=isVisible}"/>
+		</Border>
+
+		<TextBlock FontSize="15">Another ProgressRing, but IsEnabled is changing:</TextBlock>
+		<ToggleButton x:Name="isEnabled">IS ENABLED</ToggleButton>
+		<ProgressRing x:Name="isEnabledTest" Width="100" Height="100" Foreground="Red" IsActive="True" IsEnabled="{Binding IsChecked, ElementName=isEnabled}"/>
+
+		<Border x:Name="placeHolder" Width="100" Height="100" />
 	</StackPanel>
 </Page>

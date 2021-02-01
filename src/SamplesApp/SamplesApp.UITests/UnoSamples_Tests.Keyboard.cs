@@ -431,7 +431,7 @@ namespace SamplesApp.UITests
 
 			_app.WaitForElement(singleTextBox);
 
-			var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
+			using var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 
 			singleTextBox.FastTap();
 			_app.Wait(2);
@@ -444,7 +444,7 @@ namespace SamplesApp.UITests
 			_app.Wait(3);
 			_app.Back();
 
-			var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
+			using var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
 
 			// We only validate that the bottom of the screen is the same (so the keyboard is no longer visible).
 			// This is to avoid content offset if the status bar was opened by the keyboard or the message box.

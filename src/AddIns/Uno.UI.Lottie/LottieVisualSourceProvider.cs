@@ -21,5 +21,7 @@ namespace Uno.UI.Lottie
 		}
 
 		public IAnimatedVisualSource CreateFromLottieAsset(Uri sourceFile) => new LottieVisualSource {UriSource = sourceFile};
+
+		public IThemableAnimatedVisualSource CreateTheamableFromLottieAsset(Uri sourceFile) => new ThemableLottieVisualSource {UriSource = sourceFile};
 	}
 }

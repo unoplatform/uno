@@ -16,6 +16,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Frame : ContentControl
 	{
+		private bool _isNavigating = false;
+
 		private string _navigationState;
 
 		private static readonly PagePool _pool = new PagePool();
@@ -150,15 +152,10 @@ namespace Windows.UI.Xaml.Controls
 
 		#region CurrentSourcePageType DependencyProperty
 
-		public Type CurrentSourcePageType
-		{
-			get { return (Type)GetValue(CurrentSourcePageTypeProperty); }
-			private set { SetValue(CurrentSourcePageTypeProperty, value); }
-		}
+		public Type CurrentSourcePageType => (Type)GetValue(CurrentSourcePageTypeProperty);
 
-		// Using a DependencyProperty as the backing store for CurrentSourcePageType.  This enables animation, styling, binding, etc...
 		public static DependencyProperty CurrentSourcePageTypeProperty { get ; } =
-			DependencyProperty.Register("CurrentSourcePageType", typeof(Type), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnCurrentSourcePageTypeChanged(e)));
+			DependencyProperty.Register(nameof(CurrentSourcePageType), typeof(Type), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnCurrentSourcePageTypeChanged(e)));
 
 
 		private void OnCurrentSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
@@ -191,16 +188,24 @@ namespace Windows.UI.Xaml.Controls
 
 		public Type SourcePageType
 		{
-			get { return (Type)GetValue(SourcePageTypeProperty); }
-			private set { SetValue(SourcePageTypeProperty, value); }
+			get => (Type)GetValue(SourcePageTypeProperty);
+			set => SetValue(SourcePageTypeProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for SourcePageType.  This enables animation, styling, binding, etc...
 		public static DependencyProperty SourcePageTypeProperty { get ; } =
-			DependencyProperty.Register("SourcePageType", typeof(Type), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnSourcePageTypeChanged(e)));
+			DependencyProperty.Register(nameof(SourcePageType), typeof(Type), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnSourcePageTypeChanged(e)));
 
 		private void OnSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
 		{
+			if (!_isNavigating)
+			{
+				if (e.NewValue == null)
+				{
+					throw new InvalidOperationException(
+						"SourcePageType cannot be set to null. Set Content to null instead.");
+				}
+				Navigate((Type)e.NewValue);
+			}
 		}
 
 		#endregion
@@ -272,6 +277,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
+				_isNavigating = true;
+
 				// Navigating
 				var navigatingFromArgs = new NavigatingCancelEventArgs(
 					mode,
@@ -289,7 +296,7 @@ namespace Windows.UI.Xaml.Controls
 					return false;
 				}
 
-				CurrentEntry?.Instance.OnNavigatingFrom(navigatingFromArgs);
+				CurrentEntry?.Instance?.OnNavigatingFrom(navigatingFromArgs);
 
 				if (navigatingFromArgs.Cancel)
 				{
@@ -356,9 +363,13 @@ namespace Windows.UI.Xaml.Controls
 					null
 				);
 
+				SetValue(SourcePageTypeProperty, entry.SourcePageType);
+				SetValue(CurrentSourcePageTypeProperty, entry.SourcePageType);
+
 				previousEntry?.Instance.OnNavigatedFrom(navigationEvent);
 				CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
-				Navigated?.Invoke(this, navigationEvent);
+
+				Navigated?.Invoke(this, navigationEvent);				
 
 				VisualTreeHelper.CloseAllPopups();
 
@@ -374,6 +385,10 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				return false;
+			}
+			finally
+			{
+				_isNavigating = false;
 			}
 		}
 

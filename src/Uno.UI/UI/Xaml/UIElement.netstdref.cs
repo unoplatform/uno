@@ -11,6 +11,7 @@ namespace Windows.UI.Xaml
 	{
 		public UIElement()
 		{
+			_isFrameworkElement = this is FrameworkElement; // Avoids unused field error
 			Initialize();
 			InitializePointers();
 		}
@@ -33,14 +34,11 @@ namespace Windows.UI.Xaml
 
 		internal bool IsPointerCaptured { get; set; }
 
-		internal Size LastAvailableSize => Size.Empty;
-
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
-		{
-			throw new NotSupportedException();
-		}
-
-		internal void ClearChildren() { }
+		internal void AddChild(UIElement child, int? index = null) => throw new NotSupportedException("Reference assembly");
+		internal void MoveChildTo(int oldIndex, int newIndex) => throw new NotSupportedException("Reference assembly");
+		internal bool RemoveChild(UIElement child) => throw new NotSupportedException("Reference assembly");
+		internal void ClearChildren() => throw new NotSupportedException("Reference assembly");
+		internal void UpdateHitTest() => throw new NotSupportedException("Reference assembly");
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{

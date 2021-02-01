@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
+  <metadata minClientVersion="5.0">
 	<id>Uno.UI.WebAssembly</id>
 	<version>1.0.0.0</version>
 	<title>Uno.UI</title>
@@ -16,8 +16,8 @@
 
 	<dependencies>
 	  <dependency id="Uno.WinUI" version="1.0.0" />
-	  <dependency id="Uno.Foundation.Runtime.Wasm" version="1.0.0" />
-	  <dependency id="Uno.WinUI.Runtime.Wasm" version="1.0.0" />
+	  <dependency id="Uno.Foundation.Runtime.WebAssembly" version="1.0.0" />
+	  <dependency id="Uno.WinUI.Runtime.WebAssembly" version="1.0.0" />
     </dependencies>
 
   </metadata>

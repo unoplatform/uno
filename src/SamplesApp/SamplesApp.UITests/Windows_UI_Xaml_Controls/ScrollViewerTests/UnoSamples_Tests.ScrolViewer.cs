@@ -78,7 +78,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			//Drag upward
 			_app.DragCoordinates(sut.Rect.CenterX, sut.Rect.CenterY, sut.Rect.CenterX, sut.Rect.CenterY - (sut.Rect.Height / 2));
 
-			var res = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+			using var res = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
 			ImageAssert.AreNotEqual(
 				expected: res,
@@ -86,6 +86,37 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 				actual: res,
 				actualRect: new Rectangle((int)updateButtonRect.X, (int)updateButtonRect.Y, (int)updateButtonRect.Width, (int)updateButtonRect.Height)
 			);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ScrollViewer_Removed_And_Added()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Add_Remove");
+			_app.WaitForElement("ViewfinderRectangle");
+			var rect = _app.GetPhysicalRect("ViewfinderRectangle");
+			AssertCurrentColor("Initial", Color.Red);
+
+			AdvanceToStep(buttonName: "ScrollToBottomButton", stepName: "Scrolled");
+			AssertCurrentColor("Initial-Scrolled", Color.Indigo);
+
+			AdvanceToStep(buttonName: "YoinkButton", stepName: "Gone");
+			AssertCurrentColor("Gone", Color.Beige);
+
+			AdvanceToStep(buttonName: "YoinkButton", stepName: "Present");
+			AssertCurrentColor("Restored", Color.Indigo);
+
+			void AdvanceToStep(string buttonName, string stepName)
+			{
+				_app.FastTap(buttonName);
+				_app.WaitForText("ChildStatusTextBlock", stepName);
+			}
+
+			void AssertCurrentColor(string description, Color color)
+			{
+				var scrn = TakeScreenshot(description);
+				ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, color);
+			}
 		}
 	}
 }

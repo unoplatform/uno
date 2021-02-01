@@ -7,8 +7,8 @@ namespace Windows.UI.ViewManagement
 	#endif
 	public  partial class ApplicationView 
 	{
-		#if false || __IOS__ || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__NETSTD_REFERENCE__")]
 		public  string Title
 		{
 			get
@@ -219,15 +219,15 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.FullScreenSystemOverlayMode.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.FullScreenSystemOverlayMode.set
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.IsFullScreenMode.get
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  bool TryEnterFullScreenMode()
 		{
 			throw new global::System.NotImplementedException("The member bool ApplicationView.TryEnterFullScreenMode() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  void ExitFullScreenMode()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ExitFullScreenMode()");
@@ -240,15 +240,15 @@ namespace Windows.UI.ViewManagement
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ShowStandardSystemOverlays()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool TryResizeView( global::Windows.Foundation.Size value)
 		{
 			throw new global::System.NotImplementedException("The member bool ApplicationView.TryResizeView(Size value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  void SetPreferredMinSize( global::Windows.Foundation.Size minSize)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.SetPreferredMinSize(Size minSize)");

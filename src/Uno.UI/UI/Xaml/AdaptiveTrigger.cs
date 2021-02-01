@@ -15,10 +15,8 @@ namespace Windows.UI.Xaml
 			UpdateState();
 		}
 
-		private void OnCurrentWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
-		{
+		private void OnCurrentWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e) =>
 			UpdateState();
-		}
 
 		private void UpdateState()
 		{

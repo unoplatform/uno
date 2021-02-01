@@ -15,7 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 	[TestFixture]
 	public partial class ContentDialog_Tests : SampleControlUITestBase
 	{
-		private System.IO.FileInfo CurrentTestTakeScreenShot(string name) =>
+		private ScreenshotInfo CurrentTestTakeScreenShot(string name) =>
 			// Screenshot taking for this fixture is disabled on Android because of the
 			// presence of the status bar when native popups are opened, adding the clock
 			// (that is always changing :)).
@@ -433,6 +433,29 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 					return default;
 				}
 			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ContentDialog_Async()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Async");
+
+			var showDialogButton = _app.Marked("AsyncDialogButton");
+			var hideDialogButton = _app.Marked("HideButton");
+			var statusTextblock = _app.Marked("DidShowAsyncReturnTextBlock");
+
+			// open dialog
+			_app.WaitForElement(showDialogButton);
+			_app.FastTap(showDialogButton);
+
+			// hide dialog
+			_app.WaitForElement(hideDialogButton);
+			_app.WaitForDependencyPropertyValue(statusTextblock, "Text", "Not Returned"); // verify that the dialog didn't return yet
+			_app.FastTap(hideDialogButton);
+
+			// verify showAsync() returned
+			_app.WaitForDependencyPropertyValue(statusTextblock, "Text", "Returned");
 		}
 	}
 }

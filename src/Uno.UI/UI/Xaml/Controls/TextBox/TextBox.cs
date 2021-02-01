@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.Extensions.Logging;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -43,6 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ContentPresenter _header;
 		protected private bool _isButtonEnabled = true;
+		protected private bool CanShowButton => Text.HasValue() && FocusState != FocusState.Unfocused && !IsReadOnly && !AcceptsReturn && TextWrapping == TextWrapping.NoWrap;
 
 		public event TextChangedEventHandler TextChanged;
 		public event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextChanging;
@@ -95,12 +97,15 @@ namespace Windows.UI.Xaml.Controls
 			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, TextAlignmentProperty.GetMetadata(GetType()).DefaultValue, TextAlignment));
 			OnTextWrappingChanged(CreateInitialValueChangerEventArgs(TextWrappingProperty, TextWrappingProperty.GetMetadata(GetType()).DefaultValue, TextWrapping));
 			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
+			OnVerticalContentAlignmentChanged(VerticalAlignment.Top, VerticalContentAlignment);
+			OnTextCharacterCasingChanged(CreateInitialValueChangerEventArgs(CharacterCasingProperty, CharacterCasingProperty.GetMetadata(GetType()).DefaultValue, CharacterCasing));
 
 			var buttonRef = _deleteButton?.GetTarget();
 
 			if (buttonRef != null)
 			{
-				buttonRef.Command = new DelegateCommand(DeleteText);
+				var thisRef = (this as IWeakReferenceProvider).WeakReference;
+				buttonRef.Command = new DelegateCommand(() => (thisRef.Target as TextBox)?.DeleteText());
 			}
 
 			InitializePropertiesPartial();
@@ -125,9 +130,6 @@ namespace Windows.UI.Xaml.Controls
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
 				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-#elif __WASM__
-				// We disable horizontal scrolling because the inner single-line TextBoxView provides its own horizontal scrolling
-				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 #endif
 			}
 
@@ -431,6 +433,35 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+		public CharacterCasing CharacterCasing
+		{
+			get => (CharacterCasing)this.GetValue(CharacterCasingProperty);
+			set => this.SetValue(CharacterCasingProperty, value);
+		}
+
+#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+		public static DependencyProperty CharacterCasingProperty { get; } =
+			DependencyProperty.Register(
+				nameof(CharacterCasing),
+				typeof(CharacterCasing),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(
+						defaultValue: CharacterCasing.Normal,
+						propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextCharacterCasingChanged(e))
+				);
+
+		private void OnTextCharacterCasingChanged(DependencyPropertyChangedEventArgs e)
+		{
+			OnTextCharacterCasingChangedPartial(e);
+		}
+
+		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e);
+
 		#region IsReadOnly DependencyProperty
 
 		public bool IsReadOnly
@@ -651,19 +682,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateButtonStates()
+		protected virtual void UpdateButtonStates()
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug(nameof(UpdateButtonStates));
 			}
 
-			if (_isButtonEnabled
-				&& Text.HasValue()
-				&& FocusState != FocusState.Unfocused
-				&& !IsReadOnly
-				&& !AcceptsReturn
-				&& TextWrapping == TextWrapping.NoWrap
+			if (CanShowButton && _isButtonEnabled
 			// TODO (https://github.com/unoplatform/uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
 			)
 			{
@@ -714,5 +740,24 @@ namespace Windows.UI.Xaml.Controls
 		protected override AutomationPeer OnCreateAutomationPeer() => new TextBoxAutomationPeer(this);
 
 		public override string GetAccessibilityInnerText() => Text;
+
+		protected override void OnVerticalContentAlignmentChanged(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment)
+		{
+			base.OnVerticalContentAlignmentChanged(oldVerticalContentAlignment, newVerticalContentAlignment);
+
+			if (_contentElement != null)
+			{
+				_contentElement.VerticalContentAlignment = newVerticalContentAlignment;
+			}
+
+			if (_placeHolder != null)
+			{
+				_placeHolder.VerticalAlignment = newVerticalContentAlignment;
+			}
+
+			OnVerticalContentAlignmentChangedPartial(oldVerticalContentAlignment, newVerticalContentAlignment);
+		}
+
+		partial void OnVerticalContentAlignmentChangedPartial(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment);
 	}
 }

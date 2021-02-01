@@ -1,3 +1,5 @@
+#nullable enable
+
 using Windows.UI;
 
 namespace Windows.UI.Composition
@@ -33,19 +35,45 @@ namespace Windows.UI.Composition
 		public CompositionScopedBatch CreateScopedBatch(CompositionBatchTypes batchType)
 			=> new CompositionScopedBatch(this, batchType);
 
-		public global::Windows.UI.Composition.ShapeVisual CreateShapeVisual()
+		public ShapeVisual CreateShapeVisual()
 			=> new ShapeVisual(this);
 
-		public global::Windows.UI.Composition.CompositionSpriteShape CreateSpriteShape()
-			=> new CompositionSpriteShape();
+		public CompositionSpriteShape CreateSpriteShape()
+			=> new CompositionSpriteShape(this);
 
 		public CompositionSpriteShape CreateSpriteShape(CompositionGeometry geometry)
-			=> new CompositionSpriteShape(geometry);
+			=> new CompositionSpriteShape(this, geometry);
 
 		public CompositionPathGeometry CreatePathGeometry()
 			=> new CompositionPathGeometry(this);
 
-		public global::Windows.UI.Composition.CompositionPathGeometry CreatePathGeometry(global::Windows.UI.Composition.CompositionPath path)
+		public CompositionPathGeometry CreatePathGeometry(CompositionPath path)
 			=> new CompositionPathGeometry(this, path);
+
+		public CompositionSurfaceBrush CreateSurfaceBrush()
+			=> new CompositionSurfaceBrush(this);
+
+		public CompositionSurfaceBrush CreateSurfaceBrush(ICompositionSurface surface)
+			=> new CompositionSurfaceBrush(this, surface);
+
+		public CompositionGeometricClip CreateGeometricClip()
+			=> new CompositionGeometricClip(this);
+		public CompositionGeometricClip CreateGeometricClip(CompositionGeometry geometry)
+			=> new CompositionGeometricClip(this) { Geometry = geometry };
+
+		public InsetClip CreateInsetClip()
+			=> new InsetClip(this);
+
+		public InsetClip CreateInsetClip(float leftInset, float topInset, float rightInset, float bottomInset)
+			=> new InsetClip(this) {
+				LeftInset = leftInset,
+				TopInset = topInset,
+				RightInset = rightInset,
+				BottomInset = bottomInset
+			};
+
+		internal void InvalidateRender() => InvalidateRenderPartial();
+
+		partial void InvalidateRenderPartial();
 	}
 }

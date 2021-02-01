@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Diagnostics;
 using Windows.UI.Xaml.Data;
 using Uno.UI;
+using System.Collections;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -47,7 +48,7 @@ namespace Windows.UI.Xaml
 	{
 		public static class TraceProvider
 		{
-			public readonly static Guid Id = Guid.Parse("{430FC851-E917-4587-AF7B-5A1CE5A1941D}");
+			public static readonly Guid Id = new Guid(0x430FC851, 0xE917, 0x4587, 0xAF, 0x7B, 0x5A, 0x1C, 0xE5, 0xA1, 0x94, 0x1D);
 			public const int GetValue = 1;
 			public const int SetValueStart = 2;
 			public const int SetValueStop = 3;
@@ -56,8 +57,7 @@ namespace Windows.UI.Xaml
 			public const int DataContextChangedStop = 6;
 		}
 
-		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-
+		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
 		/// <summary>
 		/// A global static counter that is used to uniquely identify objects.
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private readonly DependencyPropertyDetails _dataContextPropertyDetails;
 		private readonly DependencyPropertyDetails _templatedParentPropertyDetails;
-		private Dictionary<DependencyProperty, ResourceBinding>? _resourceBindings;
+		private ResourceBindingCollection? _resourceBindings;
 
 		private DependencyProperty _parentTemplatedParentProperty = UIElement.TemplatedParentProperty;
 		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
@@ -78,9 +78,9 @@ namespace Windows.UI.Xaml
 		private ImmutableList<ExplicitPropertyChangedCallback> _genericCallbacks = ImmutableList<ExplicitPropertyChangedCallback>.Empty;
 		private ImmutableList<DependencyObjectStore> _childrenStores = ImmutableList<DependencyObjectStore>.Empty;
 		private ImmutableList<ParentChangedCallback> _parentChangedCallbacks = ImmutableList<ParentChangedCallback>.Empty;
-		private ImmutableList<Action> _compiledBindingsCallbacks = ImmutableList<Action>.Empty;
 
 		private readonly ManagedWeakReference _originalObjectRef;
+		private DependencyObject? _hardOriginalObjectRef;
 
 		/// <summary>
 		/// This field is used to pass a reference to itself in the case
@@ -90,21 +90,19 @@ namespace Windows.UI.Xaml
 		private ManagedWeakReference? _thisWeakRef;
 
 		private readonly Type _originalObjectType;
-		private SerialDisposable _inheritedProperties = new SerialDisposable();
-		private SerialDisposable _compiledBindings = new SerialDisposable();
+		private readonly SerialDisposable _inheritedProperties = new SerialDisposable();
 		private ManagedWeakReference? _parentRef;
-		private Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
-		private DependencyPropertyValuePrecedences? _precedenceOverride;
+		private object? _hardParentRef;
+		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
+		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
 
 		private static long _propertyChangedToken = 0;
-		private Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
+		private readonly Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
 
 		private bool _registeringInheritedProperties;
 		private bool _unregisteringInheritedProperties;
 
-		private static bool _validatePropertyOwner = Debugger.IsAttached;
-
-		private bool _isSettingAProperty;
+		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
 
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
@@ -115,7 +113,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public object? Parent
 		{
-			get => _parentRef?.Target;
+			get => _hardParentRef ?? _parentRef?.Target;
 			set
 			{
 				if (
@@ -123,6 +121,8 @@ namespace Windows.UI.Xaml
 					|| (_parentRef != null && value is null)
 				)
 				{
+					DisableHardReferences();
+
 					var previousParent = _parentRef?.Target;
 
 					if (_parentRef != null)
@@ -138,12 +138,10 @@ namespace Windows.UI.Xaml
 					}
 
 					_inheritedProperties.Disposable = null;
-					_compiledBindings.Disposable = null;
 
 					if (value is IDependencyObjectStoreProvider parentProvider)
 					{
 						TryRegisterInheritedProperties(parentProvider);
-						_compiledBindings.Disposable = RegisterCompiledBindingsUpdates();
 					}
 
 					OnParentChanged(previousParent, value);
@@ -310,48 +308,47 @@ namespace Windows.UI.Xaml
 			return _properties.GetPropertyDetails(property).CurrentHighestValuePrecedence;
 		}
 
-
 		/// <summary>
 		/// Creates a SetValue precedence scoped override. All calls to SetValue
 		/// on the specified instance will be set to the specified precedence.
 		/// </summary>
-		/// <param name="instance">The instance to override</param>
 		/// <param name="precedence">The precedence to set</param>
 		/// <returns>A disposable to dispose to cancel the override.</returns>
-		internal IDisposable? OverrideLocalPrecedence(DependencyPropertyValuePrecedences precedence)
+		internal IDisposable? OverrideLocalPrecedence(DependencyPropertyValuePrecedences? precedence)
 		{
-			if (_precedenceOverride != null)
+			_overriddenPrecedences ??= new Stack<DependencyPropertyValuePrecedences?>(2);
+			if (_overriddenPrecedences.Count > 0 && _overriddenPrecedences.Peek() == precedence)
 			{
-				// Keep the current precedence override, which affects application of styles
-				// with BasedOn set.
-				return null;
+				return null; // this precedence is already set, no need to set a new one
 			}
-			else
+
+			_overriddenPrecedences.Push(precedence);
+
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				this.Log().Debug($"OverrideLocalPrecedence({precedence}) - stack is {string.Join(", ", _overriddenPrecedences)}");
+			}
+
+			return Disposable.Create(() =>
+			{
+				var popped = _overriddenPrecedences.Pop();
+				if (popped != precedence)
 				{
-					this.Log().Debug($"OverrideLocalPrecedence({precedence})");
+					throw new InvalidOperationException($"Error while unstacking precedence. Should be {precedence}, got {popped}.");
 				}
 
-				_precedenceOverride = precedence;
-
-				return Disposable.Create(() =>
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-
-					_precedenceOverride = null;
-
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug("OverrideLocalPrecedence(None)");
-					}
-				});
-			}
+					var newPrecedence = _overriddenPrecedences.Count == 0 ? "<none>" : _overriddenPrecedences.Peek().ToString();
+					this.Log().Debug($"OverrideLocalPrecedence({precedence}).Dispose() ==> new overriden precedence is {newPrecedence})");
+				}
+			});
 		}
 
-		private static List<DependencyPropertyPath> _propagationBypass =
+		private static readonly List<DependencyPropertyPath> _propagationBypass =
 			new List<DependencyPropertyPath>();
 
-		private static Dictionary<DependencyPropertyPath, object> _propagationBypassed =
+		private static readonly Dictionary<DependencyPropertyPath, object> _propagationBypassed =
 			new Dictionary<DependencyPropertyPath, object>(DependencyPropertyPath.Comparer.Default);
 
 		internal static IDisposable? BypassPropagation(DependencyObject instance, DependencyProperty property)
@@ -437,8 +434,7 @@ namespace Windows.UI.Xaml
 
 			if (actualInstanceAlias != null)
 			{
-				ApplyPrecedenceOverride(ref precedence);
-				_isSettingAProperty = true;
+				var overrideDisposable = ApplyPrecedenceOverride(ref precedence);
 
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
 				try
@@ -451,13 +447,8 @@ namespace Windows.UI.Xaml
 
 					ValidatePropertyOwner(property);
 
-					if (precedence == DependencyPropertyValuePrecedences.Local)
-					{
-						TryRemoveResourceBinding(property);
-					}
-
 					// Resolve the stack once for the instance, for performance.
-					propertyDetails = propertyDetails ?? _properties.GetPropertyDetails(property);
+					propertyDetails ??= _properties.GetPropertyDetails(property);
 
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
@@ -494,7 +485,7 @@ namespace Windows.UI.Xaml
 				finally
 #endif
 				{
-					_isSettingAProperty = false;
+					overrideDisposable?.Dispose();
 				}
 			}
 			else
@@ -600,31 +591,26 @@ namespace Windows.UI.Xaml
 		/// Applies the precedence override that has been set through <seealso cref="OverrideLocalPrecedence(object, DependencyPropertyValuePrecedences)" />
 		/// Used to ambiently change the precedence specified when using standard DependencyProperty accessors, particularly when applying styles.
 		/// </summary>
-		/// <param name="property">The property being set</param>
-		/// <param name="value"></param>
 		/// <param name="precedence"></param>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void ApplyPrecedenceOverride(ref DependencyPropertyValuePrecedences precedence)
+		private IDisposable? ApplyPrecedenceOverride(ref DependencyPropertyValuePrecedences precedence)
 		{
-			if (_isSettingAProperty)
+			var currentlyOverridenPrecedence =
+				_overriddenPrecedences?.Count > 0
+					? _overriddenPrecedences.Peek()
+					: default;
+
+			if (currentlyOverridenPrecedence is {} current)
 			{
-				// We only want to override the precedence of properties set directly from a style. Nested sets (within property changed callbacks, etc)
-				// should be applied with the normal precedence.
-				return;
+				precedence = current;
+
+				// The ambient precedence is also set to "Local" for affected properties
+				// (that means if properties are set in any callback, this override won't apply)
+				return OverrideLocalPrecedence(null);
 			}
 
-			if (_precedenceOverride != null)
-			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug(
-						$"Overriding {precedence} precedence with {_precedenceOverride}."
-					);
-				}
-
-				precedence = _precedenceOverride.Value;
-			}
+			return null;
 		}
 
 		/// <summary>
@@ -655,14 +641,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		/// <summary>
-		/// The local value of this property is being overwritten, static resource resolution should no longer be applied.
-		/// </summary>
-		private void TryRemoveResourceBinding(DependencyProperty property)
-		{
-			_resourceBindings?.Remove(property);
-		}
-
 		public long RegisterPropertyChangedCallback(DependencyProperty property, DependencyPropertyChangedCallback callback)
 		{
 			_propertyChangedToken = Interlocked.Increment(ref _propertyChangedToken);
@@ -676,9 +654,7 @@ namespace Windows.UI.Xaml
 
 		public void UnregisterPropertyChangedCallback(DependencyProperty property, long token)
 		{
-			IDisposable registration;
-
-			if (_propertyChangedTokens.TryGetValue(token, out registration))
+			if (_propertyChangedTokens.TryGetValue(token, out var registration))
 			{
 				registration.Dispose();
 
@@ -690,7 +666,7 @@ namespace Windows.UI.Xaml
 		{
 			var weakDelegate = CreateWeakDelegate(callback);
 
-			propertyDetails = propertyDetails ?? _properties.GetPropertyDetails(property);
+			propertyDetails ??= _properties.GetPropertyDetails(property);
 
 			var cookie = propertyDetails.CallbackManager.RegisterCallback(weakDelegate.callback);
 
@@ -801,45 +777,6 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Register for changes all dependency properties changes notifications for the specified instance.
-		/// </summary>
-		/// <param name="instance">The instance for which to observe properties changes</param>
-		/// <param name="callback">The callback</param>
-		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		internal IDisposable RegisterCompiledBindingsUpdateCallback(Action handler)
-		{
-			var weakDelegate = CreateWeakDelegate(handler);
-
-			_compiledBindingsCallbacks = _compiledBindingsCallbacks.Add(weakDelegate.callback);
-
-			// This weak reference ensure that the closure will not link
-			// the caller and the callee, in the same way "newValueActionWeak"
-			// does not link the callee to the caller.
-			var instanceRef = ThisWeakReference;
-
-			return new DispatcherConditionalDisposable(
-				handler.Target,
-				instanceRef.CloneWeakReference(),
-				() =>
-				{
-					var that = instanceRef.Target as DependencyObjectStore;
-
-					if (that != null)
-					{
-						// Delegates integrate a null check when removing new delegates.
-						that._compiledBindingsCallbacks = that._compiledBindingsCallbacks.Remove(weakDelegate.callback);
-					}
-
-					weakDelegate.release.Dispose();
-
-					// Force a closure on the callback, to make its lifetime as long
-					// as the subscription being held by the callee.
-					handler = null!;
-				}
-			);
-		}
-
-		/// <summary>
 		/// Registers a parent changed callback for itself
 		/// </summary>
 		/// <param name="callback">A callback used to notified that the parent changed</param>
@@ -899,6 +836,11 @@ namespace Windows.UI.Xaml
 			return stack.GetValueUnderPrecedence(precedence);
 		}
 
+		internal DependencyPropertyDetails GetPropertyDetails(DependencyProperty property)
+		{
+			return _properties.GetPropertyDetails(property);
+		}
+
 		// Keep a list of inherited properties that have been updated so they can be reset.
 		HashSet<DependencyProperty> _updatedProperties = new HashSet<DependencyProperty>(DependencyPropertyComparer.Default);
 
@@ -946,7 +888,7 @@ namespace Windows.UI.Xaml
 					IsAutoPropertyInheritanceEnabled
 					|| force
 
-					// these two cases may be required in case the
+					// these cases may be required in case the
 					// graph is built in reverse (such as with the
 					// XamlReader)
 					|| _properties.HasBindings
@@ -983,19 +925,19 @@ namespace Windows.UI.Xaml
 
 		private readonly struct InheritedPropertiesDisposable : IDisposable
 		{
-			private readonly IDisposable InheritedPropertiesCallback;
-			private readonly DependencyObjectStore Owner;
+			private readonly IDisposable _inheritedPropertiesCallback;
+			private readonly DependencyObjectStore _owner;
 
 			public InheritedPropertiesDisposable(DependencyObjectStore owner, IDisposable inheritedPropertiesCallback)
 			{
-				Owner = owner;
-				InheritedPropertiesCallback = inheritedPropertiesCallback;
+				_owner = owner;
+				_inheritedPropertiesCallback = inheritedPropertiesCallback;
 			}
 
 			public void Dispose()
 			{
-				InheritedPropertiesCallback.Dispose();
-				Owner.CleanupInheritedProperties();
+				_inheritedPropertiesCallback.Dispose();
+				_owner.CleanupInheritedProperties();
 			}
 		}
 
@@ -1096,74 +1038,169 @@ namespace Windows.UI.Xaml
 			return (null, null);
 		}
 
-		private void InvokeCompiledBindingsCallbacks()
+		/// <summary>
+		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
+		/// </summary>
+		internal void UpdateResourceBindings(bool isThemeChangedUpdate, ResourceDictionary? containingDictionary = null)
 		{
-			for (var compiledBindingsCBIndex = 0; compiledBindingsCBIndex < _compiledBindingsCallbacks.Data.Length; compiledBindingsCBIndex++)
+			if (_resourceBindings == null || !_resourceBindings.HasBindings)
 			{
-				var callback = _compiledBindingsCallbacks.Data[compiledBindingsCBIndex];
-				callback.Invoke();
+				UpdateChildResourceBindings(isThemeChangedUpdate);
+				return;
+			}
+
+			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
+
+			var bindings = _resourceBindings.GetAllBindings().ToList(); //The original collection may be mutated during DP assignations
+
+			foreach (var (property, binding) in bindings)
+			{
+				try
+				{
+					var wasSet = false;
+					foreach (var dict in dictionariesInScope)
+					{
+						if (dict.TryGetValue(binding.ResourceKey, out var value, shouldCheckSystem: false))
+						{
+							wasSet = true;
+							SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), binding.Precedence);
+							break;
+						}
+					}
+
+					if (!wasSet && isThemeChangedUpdate && binding.IsThemeResourceExtension)
+					{
+						if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
+						{
+							SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), binding.Precedence);
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+					{
+						this.Log().Warn($"Failed to update binding, target may have been disposed", e);
+					}
+				}
+			}
+
+			UpdateChildResourceBindings(isThemeChangedUpdate);
+		}
+
+		private bool _isUpdatingChildResourceBindings;
+
+		private void UpdateChildResourceBindings(bool isThemeChangedUpdate)
+		{
+			if (_isUpdatingChildResourceBindings)
+			{
+				// Some DPs might be creating reference cycles, so we make sure not to enter an infinite loop.
+				return;
+			}
+			if (isThemeChangedUpdate)
+			{
+				try
+				{
+					_isUpdatingChildResourceBindings = true;
+					foreach (var child in GetChildrenDependencyObjects())
+					{
+						if (!(child is IFrameworkElement) && child is IDependencyObjectStoreProvider storeProvider)
+						{
+							storeProvider.Store.UpdateResourceBindings(isThemeChangedUpdate);
+						}
+					}
+				}
+				finally
+				{
+					_isUpdatingChildResourceBindings = false;
+				}
+
+				if (ActualInstance is IThemeChangeAware themeChangeAware)
+				{
+					// Call OnThemeChanged after bindings of descendants have been updated
+					themeChangeAware.OnThemeChanged();
+				}
 			}
 		}
 
 		/// <summary>
-		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
+		/// Returns all discoverable child dependency objects.
 		/// </summary>
-		internal void UpdateResourceBindings(bool isThemeChangedUpdate)
+		/// <remarks>
+		/// This method is potentially slow and should only be used where performance isn't a concern (eg updating resource bindings
+		/// when the app theme changes).
+		/// </remarks>
+		private IEnumerable<DependencyObject> GetChildrenDependencyObjects()
 		{
-			if (_resourceBindings == null || _resourceBindings.Count == 0)
+			var propertyValues = _properties.GetAllDetails()
+				.Except(_dataContextPropertyDetails, _templatedParentPropertyDetails)
+				.Select(d => GetValue(d));
+			foreach (var propertyValue in propertyValues)
 			{
-				return;
-			}
-
-			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false).ToArray();
-
-			var bindings = _resourceBindings.ToArray(); //The original dictionary may be mutated during DP assignations
-
-			foreach (var kvp in bindings)
-			{
-				var wasSet = false;
-				foreach (var dict in dictionariesInScope)
+				if (propertyValue is IEnumerable<DependencyObject> dependencyObjectCollection &&
+					// Try to avoid enumerating collections that shouldn't be enumerated, since we may be encountering user-defined values. This may need to be refined to somehow only consider values coming from the framework itself.
+					(propertyValue is ICollection || propertyValue is DependencyObjectCollectionBase)
+				)
 				{
-					if (dict.TryGetValue(kvp.Value.ResourceKey, out var value, shouldCheckSystem: false))
+					foreach (var innerValue in dependencyObjectCollection)
 					{
-						wasSet = true;
-						SetValue(kvp.Key, value);
-						break;
+						yield return innerValue;
 					}
 				}
 
-				if (!wasSet && isThemeChangedUpdate && kvp.Value.IsThemeResourceExtension)
+				if (propertyValue is IAdditionalChildrenProvider updateable)
 				{
-					if (ResourceResolver.TryTopLevelRetrieval(kvp.Value.ResourceKey, kvp.Value.ParseContext, out var value))
+					foreach (var innerValue in updateable.GetAdditionalChildObjects())
 					{
-						SetValue(kvp.Key, value);
+						yield return innerValue;
 					}
 				}
-			}
 
-			foreach (var kvp in bindings)
-			{
-				// TryRemoveResourceBinding() will have removed the entries - we just put them straight back again.
-				_resourceBindings[kvp.Key] = kvp.Value;
+				if (propertyValue is DependencyObject dependencyObject)
+				{
+					yield return dependencyObject;
+				}
 			}
 		}
 
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
 		/// </summary>
-		private IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources)
+		private IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources, ResourceDictionary? containingDictionary = null)
 		{
-			var candidate = ActualInstance;
-			while (candidate != null)
+			if (containingDictionary != null)
 			{
-				if (candidate is FrameworkElement fe)
-				{
-					yield return fe.Resources;
-				}
-
-				candidate = candidate.GetParent() as DependencyObject;
+				yield return containingDictionary;
 			}
 
+			var candidate = ActualInstance;
+			var candidateFE = candidate as FrameworkElement;
+
+			while (candidate != null)
+			{
+				var parent = candidate.GetParent() as DependencyObject;
+
+				if (candidateFE != null)
+				{
+					yield return candidateFE.Resources;
+
+					if (parent is FrameworkElement fe)
+					{
+						// If the parent is a framework element, cast only once and assign
+						// the result to both variables.
+						candidate = candidateFE = fe;
+					}
+					else
+					{
+						candidate = parent;
+					}
+				}
+				else
+				{
+					candidateFE = parent as FrameworkElement;
+					candidate = parent;
+				}
+			}
 			if (includeAppResources && Application.Current != null)
 			{
 				// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
@@ -1349,7 +1386,7 @@ namespace Windows.UI.Xaml
 		}
 
 		public DependencyObject? ActualInstance
-			=> _originalObjectRef.Target as DependencyObject;
+			=> _hardOriginalObjectRef ?? _originalObjectRef.Target as DependencyObject;
 
 		/// <summary>
 		/// Creates a weak delegate for the specified PropertyChangedCallback callback.
@@ -1369,7 +1406,7 @@ namespace Windows.UI.Xaml
 			var wr = WeakReferencePool.RentWeakReference(null, callback);
 
 			PropertyChangedCallback weakDelegate =
-				(s, e) => (wr.Target as PropertyChangedCallback)?.Invoke(s, e);
+				(s, e) => (!wr.IsDisposed ? wr.Target as PropertyChangedCallback : null)?.Invoke(s, e);
 
 			return (weakDelegate, Disposable.Create(() => WeakReferencePool.ReturnWeakReference(null, wr)));
 		}
@@ -1637,6 +1674,44 @@ namespace Windows.UI.Xaml
 
 		private ManagedWeakReference ThisWeakReference
 			=> _thisWeakRef ??= Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, this);
+
+		internal IEnumerable<ResourceBinding> GetResourceBindingsForProperty(DependencyProperty dependencyProperty)
+			=> _resourceBindings?.GetBindingsForProperty(dependencyProperty)
+				?? Enumerable.Empty<ResourceBinding>();
+
+		/// <summary>
+		/// Enables hard references for internal fields for faster access
+		/// </summary>
+		/// <remarks>
+		/// Calling this method may cause memory leaks and must be used along with <see cref="DisableHardReferences"/>.
+		/// The use case is for FrameworkElement instances that can be Loaded and Unloaded, and for which the Unloaded
+		/// state is ensured to happen in such a way that memory leaks cannot happen.
+		/// </remarks>
+		internal void TryEnableHardReferences()
+		{
+			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
+			{
+				_hardParentRef = Parent;
+				_hardOriginalObjectRef = ActualInstance;
+			}
+		}
+
+		/// <summary>
+		/// Disables hard references for internal fields created by <see cref="EnableHardReferences"/>
+		/// </summary>
+		internal void DisableHardReferences()
+		{
+			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
+			{
+				_hardParentRef = null;
+				_hardOriginalObjectRef = null;
+			}
+		}
+
+		/// <summary>
+		/// Determines if <see cref="EnableHardReferences"/> has been called
+		/// </summary>
+		internal bool AreHardReferencesEnabled => _hardParentRef != null;
 
 		private class DependencyPropertyPath : IEquatable<DependencyPropertyPath?>
 		{

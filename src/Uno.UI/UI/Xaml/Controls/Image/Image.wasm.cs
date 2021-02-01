@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 
-	partial class Image : FrameworkElement, ICustomClippingElement
+	partial class Image : FrameworkElement
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
 
@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml.Controls
 		private Size _lastMeasuredSize;
 
 		private static readonly Size _zeroSize = new Size(0d, 0d);
+		private ImageData _currentImg;
 
 		public Image()
 		{
@@ -42,12 +43,14 @@ namespace Windows.UI.Xaml.Controls
 			AddChild(_htmlImage);
 		}
 
-		private void OnImageFailed(object sender, RoutedEventArgs e)
+		private void OnImageFailed(object sender, ExceptionRoutedEventArgs e)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"Image failed [{(Source as BitmapSource)?.WebUri}]");
+				this.Log().Debug($"Image failed [{_currentImg.Source}]: {e.ErrorMessage}");
 			}
+
+			_currentImg.Source?.ReportImageFailed(e.ErrorMessage);
 		}
 
 		private void OnImageOpened(object sender, RoutedEventArgs e)
@@ -63,17 +66,13 @@ namespace Windows.UI.Xaml.Controls
 				// (sometimes the measure 
 				InvalidateMeasure();
 			}
+			_currentImg.Source?.ReportImageLoaded();
 		}
-
-		/// <summary>
-		/// When set, the resulting image is tentatively converted to Monochrome.
-		/// </summary>
-		internal Color? MonochromeColor { get; set; }
 
 		public event RoutedEventHandler ImageOpened
 		{
-			add => _htmlImage.RegisterEventHandler("load", value);
-			remove => _htmlImage.UnregisterEventHandler("load", value);
+			add => _htmlImage.RegisterEventHandler("load", value, GenericEventHandlers.RaiseRoutedEventHandler);
+			remove => _htmlImage.UnregisterEventHandler("load", value, GenericEventHandlers.RaiseRoutedEventHandler);
 		}
 
 		private ExceptionRoutedEventArgs ImageFailedConverter(object sender, string e)
@@ -81,22 +80,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public event ExceptionRoutedEventHandler ImageFailed
 		{
-			add => _htmlImage.RegisterEventHandler("error", value, payloadConverter: ImageFailedConverter);
-			remove => _htmlImage.UnregisterEventHandler("error", value);
+			add => _htmlImage.RegisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler, payloadConverter: ImageFailedConverter);
+			remove => _htmlImage.UnregisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler);
 		}
 
-		#region Source DependencyProperty
-
-		public ImageSource Source
-		{
-			get => (ImageSource)GetValue(SourceProperty);
-			set => SetValue(SourceProperty, value);
-		}
-
-		public static DependencyProperty SourceProperty { get ; } =
-			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new FrameworkPropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
-
-		private void OnSourceChanged(DependencyPropertyChangedEventArgs e)
+		partial void OnSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
 			UpdateHitTest();
 
@@ -104,60 +92,45 @@ namespace Windows.UI.Xaml.Controls
 
 			if (e.NewValue is ImageSource source)
 			{
-				_sourceDisposable.Disposable = source.Subscribe(img =>
+				void OnSourceOpened(ImageData img)
 				{
+					_currentImg = img;
 					switch (img.Kind)
 					{
 						case ImageDataKind.Empty:
 							_htmlImage.SetAttribute("src", "");
 							break;
 
-						case ImageDataKind.Base64:
+						case ImageDataKind.DataUri:
 						case ImageDataKind.Url:
 						default:
 							if (MonochromeColor != null)
 							{
-								WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.setImageAsMonochrome("
-									+ _htmlImage.HtmlId + ", \""
-									+ img.Value + "\", \""
-									+ MonochromeColor.Value.ToHexString() + "\");");
+								WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.setImageAsMonochrome(" + _htmlImage.HtmlId + ", \"" + img.Value + "\", \"" + MonochromeColor.Value.ToHexString() + "\");");
 							}
 							else
 							{
 								_htmlImage.SetAttribute("src", img.Value);
 							}
+
 							break;
 
 						case ImageDataKind.Error:
 							_htmlImage.SetAttribute("src", "");
-							_htmlImage.InternalDispatchEvent("error", EventArgs.Empty);
+							var errorArgs = new ExceptionRoutedEventArgs(this, img.Error?.ToString());
+							_htmlImage.InternalDispatchEvent("error", errorArgs);
 							break;
 					}
-				});
+				}
+
+				_sourceDisposable.Disposable = null;
+				_sourceDisposable.Disposable = source.Subscribe(OnSourceOpened);
 			}
 			else
 			{
 				_htmlImage.SetAttribute("src", "");
 			}
 		}
-		#endregion
-
-		public static DependencyProperty StretchProperty { get ; } =
-			DependencyProperty.Register(
-				"Stretch",
-				typeof(Stretch),
-				typeof(Image),
-				new FrameworkPropertyMetadata(
-					Media.Stretch.Uniform,
-					(s, e) => ((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
-
-		public Stretch Stretch
-		{
-			get => (Stretch)GetValue(StretchProperty);
-			set => SetValue(StretchProperty, value);
-		}
-
-		private void OnStretchChanged(Stretch newValue, Stretch oldValue) => InvalidateArrange();
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -204,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 			// Calculate the position of the image to follow stretch and alignment requirements
 			var finalPosition = this.ArrangeSource(finalSize, containerSize);
 
-			_htmlImage.ArrangeVisual(finalPosition, false, clipRect: null);
+			_htmlImage.ArrangeVisual(finalPosition, clipRect: null);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -214,11 +187,5 @@ namespace Windows.UI.Xaml.Controls
 			// Image has no direct child that needs to be arranged explicitly
 			return finalSize;
 		}
-
-		internal override bool IsViewHit() => Source != null || base.IsViewHit();
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 	}
 }

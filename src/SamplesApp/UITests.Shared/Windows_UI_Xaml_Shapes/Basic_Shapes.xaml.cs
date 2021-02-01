@@ -369,7 +369,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		{
 			var tcs = new TaskCompletionSource<object>();
 
-			using (var timeout = Debugger.IsAttached ? default : new CancellationTokenSource(TimeSpan.FromMilliseconds(1500)))
+			using (var timeout = Debugger.IsAttached ? default : new CancellationTokenSource(TimeSpan.FromMilliseconds(5000)))
 			using (var reg = Debugger.IsAttached ? default : timeout.Token.Register(() => tcs.TrySetCanceled()))
 			{
 				RunningTest = "";

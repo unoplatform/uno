@@ -24,12 +24,6 @@ namespace Windows.UI.Xaml
 	{
 		bool IFrameworkElementInternal.HasLayouter => true;
 
-		partial void OnLoadingPartial();
-
-		private protected virtual void OnPostLoading()
-		{
-		}
-
 		/*
 			About NativeOn** vs ManagedOn** methods:
 				The flag FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded will configure which set of methods will be used
@@ -40,36 +34,9 @@ namespace Windows.UI.Xaml
 				The propagation of this loaded state is also made by the UIElement.
 		 */
 
-		internal sealed override void ManagedOnLoading()
-		{
-			base.IsLoading = true;
-
-			OnLoadingPartial();
-			ApplyCompiledBindings();
-
-			try
-			{
-				// Raise event before invoking base in order to raise them top to bottom
-				_loading?.Invoke(this, new RoutedEventArgs(this));
-			}
-			catch (Exception error)
-			{
-				_log.Error("ManagedOnLoading failed in FrameworkElement", error);
-				Application.Current.RaiseRecoverableUnhandledException(error);
-			}
-
-			OnPostLoading();
-
-			// Explicit propagation of the loading even must be performed
-			// after the compiled bindings are applied (cf. OnLoading), as there may be altered
-			// properties that affect the visual tree.
-			base.ManagedOnLoading();
-		}
-
 		private void NativeOnLoading(object sender, RoutedEventArgs args)
 		{
 			OnLoadingPartial();
-			ApplyCompiledBindings();
 
 			// Explicit propagation of the loading even must be performed
 			// after the compiled bindings are applied, as there may be altered
@@ -80,34 +47,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal sealed override void ManagedOnLoaded(int depth)
-		{
-			if (!base.IsLoaded)
-			{
-				// Make sure to set the flag before raising the loaded event (duplicated with the base.ManagedOnLoaded)
-				base.IsLoaded = true;
-				base.IsLoading = false;
-
-				if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-				{
-					UpdateDOMProperties();
-				}
-
-				try
-				{
-					// Raise event before invoking base in order to raise them top to bottom
-					OnLoaded();
-					_loaded?.Invoke(this, new RoutedEventArgs(this));
-				}
-				catch (Exception error)
-				{
-					_log.Error("ManagedOnLoaded failed in FrameworkElement", error);
-					Application.Current.RaiseRecoverableUnhandledException(error);
-				}
-			}
-
-			base.ManagedOnLoaded(depth);
-		}
 
 		private void NativeOnLoaded(object sender, RoutedEventArgs args)
 		{
@@ -129,22 +68,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal sealed override void ManagedOnUnloaded()
-		{
-			base.ManagedOnUnloaded(); // Will set flag IsLoaded to false
-
-			try
-			{
-				// Raise event after invoking base in order to raise them bottom to top
-				OnUnloaded();
-				_unloaded?.Invoke(this, new RoutedEventArgs(this));
-			}
-			catch (Exception error)
-			{
-				_log.Error("ManagedOnUnloaded failed in FrameworkElement", error);
-				Application.Current.RaiseRecoverableUnhandledException(error);
-			}
-		}
 
 		private void NativeOnUnloaded(object sender, RoutedEventArgs args)
 		{
@@ -170,8 +93,7 @@ namespace Windows.UI.Xaml
 		{
 			return Parent != null;
 		}
-
-		private Size _actualSize;
+		
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 
@@ -183,10 +105,7 @@ namespace Windows.UI.Xaml
 			_renderTransform?.UpdateSize(args.NewSize);
 		}
 
-		internal void SetActualSize(Size size) => _actualSize = size;
-
-		private protected virtual double GetActualWidth() => _actualSize.Width;
-		private protected virtual double GetActualHeight() => _actualSize.Height;
+		internal void SetActualSize(Size size) => AssignedActualSize = size;
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
@@ -201,7 +120,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("loading", value);
+					RegisterEventHandler("loading", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -212,7 +131,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("loading", value);
+					UnregisterEventHandler("loading", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
@@ -228,7 +147,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("loaded", value);
+					RegisterEventHandler("loaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -239,7 +158,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("loaded", value);
+					UnregisterEventHandler("loaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
@@ -255,7 +174,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("unloaded", value);
+					RegisterEventHandler("unloaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -266,12 +185,10 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("unloaded", value);
+					UnregisterEventHandler("unloaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
-
-		public new bool IsLoaded => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible
 
 		private bool IsTopLevelXamlView() => throw new NotSupportedException();
 
@@ -283,26 +200,29 @@ namespace Windows.UI.Xaml
 
 		protected void SetCornerRadius(CornerRadius cornerRadius)
 		{
-			var borderRadius = cornerRadius == CornerRadius.None
-				? ""
-				: $"{cornerRadius.TopLeft}px {cornerRadius.TopRight}px {cornerRadius.BottomRight}px {cornerRadius.BottomLeft}px";
+			if (cornerRadius == CornerRadius.None)
+			{
+				ResetStyle("border-radius", "overflow");
+			}
+			else
+			{
+				var borderRadiusCssString =
+					$"{cornerRadius.TopLeft.ToStringInvariant()}px {cornerRadius.TopRight.ToStringInvariant()}px {cornerRadius.BottomRight.ToStringInvariant()}px {cornerRadius.BottomLeft.ToStringInvariant()}px";
+				SetStyle(
+					("border-radius", borderRadiusCssString),
+					("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
+			}
 
-			SetStyle("border-radius", borderRadius);
 		}
 
-		protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
+		protected void SetBorder(Thickness thickness, Brush brush)
 		{
-			var borderRadius = cornerRadius == CornerRadius.None
-				? ""
-				: $"{cornerRadius.TopLeft}px {cornerRadius.TopRight}px {cornerRadius.BottomRight}px {cornerRadius.BottomLeft}px";
-
 			if (thickness == Thickness.Empty)
 			{
 				SetStyle(
 					("border-style", "none"),
 					("border-color", ""),
-					("border-width", ""),
-					("border-radius", borderRadius));
+					("border-width", ""));
 			}
 			else
 			{
@@ -315,8 +235,7 @@ namespace Windows.UI.Xaml
 							("border", ""),
 							("border-style", "solid"),
 							("border-color", borderColor.ToHexString()),
-							("border-width", borderWidth),
-							("border-radius", borderRadius));
+							("border-width", borderWidth));
 						break;
 					case GradientBrush gradientBrush:
 						var border = gradientBrush.ToCssString(RenderSize); // TODO: Reevaluate when size is changing
@@ -324,11 +243,18 @@ namespace Windows.UI.Xaml
 							("border-style", "solid"),
 							("border-color", ""),
 							("border-image", border),
-							("border-width", borderWidth),
-							("border-radius", borderRadius));
+							("border-width", borderWidth));
+						break;
+					case AcrylicBrush acrylicBrush:
+						var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
+						SetStyle(
+							("border", ""),
+							("border-style", "solid"),
+							("border-color", acrylicFallbackColor.ToHexString()),
+							("border-width", borderWidth));
 						break;
 					default:
-						ResetStyle("border-style", "border-color", "border-image", "border-width", "border-radius");
+						ResetStyle("border-style", "border-color", "border-image", "border-width");
 						break;
 				}
 			}
@@ -520,6 +446,11 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(MaxWidth), MaxWidth);
 				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
 				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
+
+				if (this.TryGetPadding(out var padding))
+				{
+					UpdateDOMXamlProperty("Padding", padding);
+				}
 
 				base.UpdateDOMProperties();
 			}

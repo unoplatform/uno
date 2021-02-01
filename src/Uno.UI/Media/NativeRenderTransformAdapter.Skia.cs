@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Uno.Extensions;
+using Uno.Extensions.ValueType;
 
 namespace Uno.UI.Media
 {
@@ -16,19 +17,7 @@ namespace Uno.UI.Media
 
 		partial void Apply(bool isSizeChanged, bool isOriginChanged)
 		{
-			if (isSizeChanged)
-			{
-				// As we use the 'transform-origin', the transform matrix is independent of the size of the control
-			}
-			else if (isOriginChanged)
-			{
-				Owner.Visual.CenterPoint = new Vector3((float)CurrentOrigin.X, (float)CurrentOrigin.Y, 0);
-				return;
-			}
-			else
-			{
-				Owner.Visual.TransformMatrix = new Matrix4x4(Transform.MatrixCore);
-			}
+			Owner.Visual.TransformMatrix = new Matrix4x4(Transform.ToMatrix(CurrentOrigin, CurrentSize));
 		}
 
 		partial void Cleanup()

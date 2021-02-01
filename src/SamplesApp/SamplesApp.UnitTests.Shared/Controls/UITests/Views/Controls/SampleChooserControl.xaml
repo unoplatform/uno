@@ -437,6 +437,7 @@
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
 					<!-- Back Button -->
@@ -523,6 +524,12 @@
 									   HorizontalContentAlignment="Center"
 									   Margin="0,4,10,0" />
 					</Button>
+
+					<!-- Fluent styles check box -->
+					<CheckBox Content="FL"
+							  Grid.Column="8"
+							  IsChecked="{Binding UseFluentStyles, Mode=TwoWay}"
+							  Style="{x:Null}"/>
 				</Grid>
 
 				<!-- Sample Content -->

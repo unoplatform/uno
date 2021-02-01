@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+  </PropertyGroup>
+
+  <Target Name="_UnoSkiaWasmFeatureDefines"
+		  BeforeTargets="PrepareForBuild">
+
+	<PropertyGroup>
+	  <UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API;HAS_UNO_WASM;__WASM__</UnoDefineConstants>
+	</PropertyGroup>
+
+	<!-- Merge the UnoDefineConstants with the existing constants -->
+	<CreateProperty Value="$(DefineConstants);$(UnoDefineConstants)">
+	  <Output TaskParameter="Value" PropertyName="DefineConstants" />
+	</CreateProperty>
+  </Target>
+
+  <Target Name="_ForceUnoUIRuntimeWasm"
+	  BeforeTargets="BeforeCompile">
+
+	<PropertyGroup>
+	  <_unouiruntimewasm_keepalive>$(IntermediateOutputPath)/unouiruntimewasm_keepalive.g.cs</_unouiruntimewasm_keepalive>
+	</PropertyGroup>
+
+	<!--
+	Generate a class that will keep the Uno.UI.Runtime.WebAssembly assembly within the package.
+	-->
+	<WriteLinesToFile
+		Overwrite="true"
+		WriteOnlyWhenDifferent="true"
+		Lines="[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)] internal class __UnoUIRuntimeWasmKeepAlive : Uno.UI.Runtime.WebAssembly.CompileAnchor { }"
+		File="$(_unouiruntimewasm_keepalive)" />
+
+	<ItemGroup>
+	  <Compile Include="$(_unouiruntimewasm_keepalive)"/>
+	</ItemGroup>
+
+  </Target>
+
+
+</Project>

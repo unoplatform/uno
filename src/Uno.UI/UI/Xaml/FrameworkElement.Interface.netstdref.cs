@@ -13,9 +13,11 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
-		public T FindFirstParent<T>() where T : class
+		public T FindFirstParent<T>() where T : class => FindFirstParent<T>(includeCurrent: false);
+
+		public T FindFirstParent<T>(bool includeCurrent) where T : class
 		{
-			var view = this.Parent;
+			var view = includeCurrent ? (DependencyObject)this : this.Parent;
 			while (view != null)
 			{
 				var typed = view as T;
@@ -35,20 +37,22 @@ namespace Windows.UI.Xaml
 			Initialize();
 		}
 
-		private protected virtual void OnLoading()
+		#region Transitions Dependency Property
+
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		public static DependencyProperty TransitionsProperty { get; } = CreateTransitionsProperty();
+
+		public TransitionCollection Transitions
 		{
-			OnLoadingPartial();
+			get => GetTransitionsValue();
+			set => SetTransitionsValue(value);
 		}
 
-		private protected virtual void OnLoaded()
+		private void OnTransitionsChanged(DependencyPropertyChangedEventArgs args)
 		{
-		}
 
-		private protected virtual void OnUnloaded()
-		{
 		}
-
-		public TransitionCollection Transitions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+		#endregion
 
 		public void Dispose()
 		{

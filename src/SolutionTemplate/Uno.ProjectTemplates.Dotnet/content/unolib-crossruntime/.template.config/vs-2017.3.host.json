@@ -1,0 +1,17 @@
+﻿{
+  "$schema": "http://json.schemastore.org/vs-2017.3.host",
+  "name": {
+    "text": "Cross-Runtime Library",
+  },
+  "description": {
+    "text": "A project template for creating a Cross-Runtime Library",
+  },
+  "order": 610,
+  "icon": "uno-logo.png",
+  "learnMoreLink": "https://github.com/unoplatform/uno",
+  "uiFilters": [
+    "oneaspnet"
+  ],
+  "symbolInfo": [
+  ]
+}

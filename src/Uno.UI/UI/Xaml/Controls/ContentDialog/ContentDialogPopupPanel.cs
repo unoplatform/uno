@@ -1,9 +1,12 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -13,11 +16,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal partial class ContentDialogPopupPanel : PopupPanel
 	{
-		private readonly ContentDialog _dialog;
-
 		public ContentDialogPopupPanel(ContentDialog dialog) : base(dialog._popup)
 		{
-			_dialog = dialog;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private Rect CalculateDialogPlacement(Size desiredSize)
 		{
-			var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+			var visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
 
 			// Make sure the desiredSize fits in visibleBounds
 			if (desiredSize.Width > visibleBounds.Width)

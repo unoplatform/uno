@@ -1,127 +1,165 @@
+// MUX Reference PersonPicture.properties.cpp, commit de78834
+
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using Windows.System.UserProfile;
+using Windows.UI.Xaml.Media;
+using Windows.ApplicationModel.Contacts;
+using System;
+
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class PersonPicture : Controls.Control
+	public partial class PersonPicture : Control
 	{
-		public  Media.ImageSource ProfilePicture
+		public ImageSource ProfilePicture
 		{
-			get => (Media.ImageSource)this.GetValue(ProfilePictureProperty);
-			set => this.SetValue(ProfilePictureProperty, value);
+			get => (Media.ImageSource)GetValue(ProfilePictureProperty);
+			set => SetValue(ProfilePictureProperty, value);
 		}
 
-		public  bool PreferSmallImage
+		public bool PreferSmallImage
 		{
-			get => (bool)this.GetValue(PreferSmallImageProperty);
-			set => this.SetValue(PreferSmallImageProperty, value);
+			get => (bool)GetValue(PreferSmallImageProperty);
+			set => SetValue(PreferSmallImageProperty, value);
 		}
 
-		public  bool IsGroup
+		public bool IsGroup
 		{
-			get => (bool)this.GetValue(IsGroupProperty);
-			set => this.SetValue(IsGroupProperty, value);
+			get => (bool)GetValue(IsGroupProperty);
+			set => SetValue(IsGroupProperty, value);
 		}
 
-		public  string Initials
+		public string Initials
 		{
-			get => (string)this.GetValue(InitialsProperty);
-			set => this.SetValue(InitialsProperty, value);
+			get => (string)GetValue(InitialsProperty);
+			set => SetValue(InitialsProperty, value);
 		}
 
-		public  string DisplayName
+		public string DisplayName
 		{
-			get => (string)this.GetValue(DisplayNameProperty);
-			set => this.SetValue(DisplayNameProperty, value);
+			get => (string)GetValue(DisplayNameProperty);
+			set => SetValue(DisplayNameProperty, value);
 		}
 
-		public  global::Windows.ApplicationModel.Contacts.Contact Contact
+		public Contact Contact
 		{
-			get => (global::Windows.ApplicationModel.Contacts.Contact)this.GetValue(ContactProperty);
-			set => this.SetValue(ContactProperty, value);
+			get => (Contact)GetValue(ContactProperty);
+			set => SetValue(ContactProperty, value);
 		}
 
-		public  string BadgeText
+		public string BadgeText
 		{
-			get => (string)this.GetValue(BadgeTextProperty);
-			set => this.SetValue(BadgeTextProperty, value);
+			get => (string)GetValue(BadgeTextProperty);
+			set => SetValue(BadgeTextProperty, value);
 		}
 
-		public  int BadgeNumber
+		public int BadgeNumber
 		{
-			get => (int)this.GetValue(BadgeNumberProperty);
-			set => this.SetValue(BadgeNumberProperty, value);
+			get => (int)GetValue(BadgeNumberProperty);
+			set => SetValue(BadgeNumberProperty, value);
 		}
 
-		public  Media.ImageSource BadgeImageSource
+		public ImageSource BadgeImageSource
 		{
-			get => (Media.ImageSource)this.GetValue(BadgeImageSourceProperty);
-			set => this.SetValue(BadgeImageSourceProperty, value);
+			get => (ImageSource)GetValue(BadgeImageSourceProperty);
+			set => SetValue(BadgeImageSourceProperty, value);
 		}
 
-		public  string BadgeGlyph
+		public string BadgeGlyph
 		{
-			get => (string)this.GetValue(BadgeGlyphProperty);
-			set => this.SetValue(BadgeGlyphProperty, value);
+			get => (string)GetValue(BadgeGlyphProperty);
+			set => SetValue(BadgeGlyphProperty, value);
 		}
 
-		public static DependencyProperty BadgeGlyphProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"BadgeGlyph", typeof(string), 
-			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(""));
+		public PersonPictureTemplateSettings TemplateSettings
+		{
+			get => (PersonPictureTemplateSettings)GetValue(TemplateSettingsProperty);
+			internal set => SetValue(TemplateSettingsProperty, value);
+		}
 
-		public static DependencyProperty BadgeImageSourceProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"BadgeImageSource", typeof(Media.ImageSource), 
-			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(default(Media.ImageSource)));
+		public static DependencyProperty BadgeGlyphProperty { get; } =
+			DependencyProperty.Register(
+				nameof(BadgeGlyph),
+				typeof(string),
+				typeof(PersonPicture),
+				new FrameworkPropertyMetadata("", OnPropertyChanged));
 
-		public static DependencyProperty BadgeNumberProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"BadgeNumber", typeof(int), 
-			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(0));
+		public static DependencyProperty BadgeImageSourceProperty { get; } =
+			DependencyProperty.Register(
+				nameof(BadgeImageSource),
+				typeof(ImageSource),
+				typeof(PersonPicture),
+				new FrameworkPropertyMetadata(default(ImageSource), OnPropertyChanged));
 
-		public static DependencyProperty BadgeTextProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"BadgeText", typeof(string), 
-			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(default(string)));
+		public static DependencyProperty BadgeNumberProperty { get; } =
+			DependencyProperty.Register(
+				nameof(BadgeNumber),
+				typeof(int),
+				typeof(PersonPicture),
+				new FrameworkPropertyMetadata(0, OnPropertyChanged));
 
-		public static DependencyProperty ContactProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Contact", typeof(global::Windows.ApplicationModel.Contacts.Contact), 
-			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(default(global::Windows.ApplicationModel.Contacts.Contact)));
+		public static DependencyProperty BadgeTextProperty { get; } =
+			DependencyProperty.Register(
+				nameof(BadgeText),
+				typeof(string),
+				typeof(PersonPicture),
+				new FrameworkPropertyMetadata(default(string), OnPropertyChanged));
 
-		public static DependencyProperty DisplayNameProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"DisplayName", typeof(string), 
-			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(""));
+		public static DependencyProperty ContactProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Contact),
+				typeof(Contact),
+				typeof(PersonPicture),
+				new FrameworkPropertyMetadata(default(Contact), OnPropertyChanged));
 
-		public static DependencyProperty InitialsProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Initials", typeof(string), 
-			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(""));
+		public static DependencyProperty DisplayNameProperty { get; } =
+			DependencyProperty.Register(
+				nameof(DisplayName),
+				typeof(string),
+				typeof(PersonPicture),
+				new FrameworkPropertyMetadata("", OnPropertyChanged));
 
-		public static DependencyProperty IsGroupProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsGroup", typeof(bool), 
-			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(default(bool)));
+		public static DependencyProperty InitialsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Initials),
+				typeof(string),
+				typeof(PersonPicture),
+				new FrameworkPropertyMetadata("", OnPropertyChanged));
 
-		public static DependencyProperty PreferSmallImageProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PreferSmallImage", typeof(bool), 
-			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(default(bool)));
+		public static DependencyProperty IsGroupProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsGroup),
+				typeof(bool),
+				typeof(PersonPicture),
+				new FrameworkPropertyMetadata(default(bool), OnPropertyChanged));
 
-		public static DependencyProperty ProfilePictureProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ProfilePicture", typeof(Media.ImageSource), 
-			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(default(Media.ImageSource)));
+		public static DependencyProperty PreferSmallImageProperty { get; } =
+			DependencyProperty.Register(
+				nameof(PreferSmallImage),
+				typeof(bool),
+				typeof(PersonPicture),
+				new FrameworkPropertyMetadata(default(bool), OnPropertyChanged));
+
+		public static DependencyProperty ProfilePictureProperty { get; } =
+			DependencyProperty.Register(
+				nameof(ProfilePicture),
+				typeof(ImageSource),
+				typeof(PersonPicture),
+				new FrameworkPropertyMetadata(default(ImageSource), OnPropertyChanged));
+
+		internal static DependencyProperty TemplateSettingsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(TemplateSettings),
+				typeof(PersonPictureTemplateSettings),
+				typeof(PersonPicture),
+				new PropertyMetadata(default(PersonPictureTemplateSettings), OnPropertyChanged));
+
+		private static void OnPropertyChanged(
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
+		{
+			var owner = (PersonPicture)sender;
+			owner.OnPropertyChanged(args);
+		}
 	}
 }

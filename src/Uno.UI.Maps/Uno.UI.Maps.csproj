@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
-		<TargetFrameworks>MonoAndroid10.0;xamarinios10</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworks>MonoAndroid11.0;xamarinios10</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10</TargetFrameworksCI>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
 	
@@ -31,18 +31,18 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)"  TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks"/>
-		<PackageReference Include="Uno.Core"/>
-		<PackageReference Include="Uno.Core.Build"/>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core" />
+		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="71.1600.0" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1600.0" />
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
+		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="117.0.0" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="117.0.0" />
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />
 	</ItemGroup>
 
@@ -54,17 +54,15 @@
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-	</PropertyGroup>
-
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

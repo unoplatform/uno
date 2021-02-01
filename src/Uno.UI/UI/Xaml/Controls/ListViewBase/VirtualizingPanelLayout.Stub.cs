@@ -11,6 +11,8 @@ namespace Windows.UI.Xaml.Controls
 		public abstract Orientation ScrollOrientation { get; }
 
 		public Orientation Orientation { get; set; }
+
+		Uno.UI.IndexPath? GetReorderingIndex() => null;
 	}
 }
 #endif

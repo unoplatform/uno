@@ -40,7 +40,19 @@ namespace Windows.UI.Xaml.Controls
 			var flyout = dependencyObject as Flyout;
 			if (flyout._presenter != null)
 			{
-				flyout._presenter.Style = (Style)args.NewValue;
+				flyout.SetPresenterStyle();
+			}
+		}
+
+		private void SetPresenterStyle()
+		{
+			if (FlyoutPresenterStyle != null)
+			{
+				_presenter.Style = FlyoutPresenterStyle;
+			}
+			else
+			{
+				_presenter.ClearValue(FrameworkElement.StyleProperty);
 			}
 		}
 
@@ -103,11 +115,11 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Control CreatePresenter()
 		{
-			return _presenter = new FlyoutPresenter()
-			{
-				Style = FlyoutPresenterStyle,
-				Content = Content
-			};
+			_presenter = new FlyoutPresenter();
+			SetPresenterStyle();
+			_presenter.Content = Content;
+
+			return _presenter;
 		}
 	}
 }

@@ -6,14 +6,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno;
+using Windows.Foundation;
 
 namespace Windows.Graphics.Display
 {
-    public sealed partial class DisplayInformation
-    {
+	public sealed partial class DisplayInformation
+	{
+		private float _lastKnownDpi;
+		private DisplayOrientations _lastKnownOrientation;
+
+		private const float BaseDpi = 96.0f;
+
+		private static readonly Lazy<DisplayInformation> _lazyInstance = new Lazy<DisplayInformation>(() => new DisplayInformation());
+		private static readonly object _syncLock = new object();
+
 		private static DisplayOrientations _autoRotationPreferences;
 
-		private static DisplayInformation _instance;
+		private TypedEventHandler<DisplayInformation, object> _orientationChanged;
+		private TypedEventHandler<DisplayInformation, object> _dpiChanged;
 
 		private DisplayInformation()
 		{
@@ -22,73 +32,104 @@ namespace Windows.Graphics.Display
 
 		public static DisplayOrientations AutoRotationPreferences
 		{
-			get { return _autoRotationPreferences; }
+			get => _autoRotationPreferences;
 			set
 			{
 				_autoRotationPreferences = value;
 				SetOrientationPartial(_autoRotationPreferences);
 			}
-		}
-
-		public DisplayOrientations CurrentOrientation { get; private set; }
-
-		/// <summary>
-		//// Gets the native orientation of the display monitor, 
-		///  which is typically the orientation where the buttons
-		///  on the device match the orientation of the monitor.
-		/// </summary>
-		public DisplayOrientations NativeOrientation { get; private set; } = DisplayOrientations.None;
-
-		public uint ScreenHeightInRawPixels { get; private set; }
-
-		public uint ScreenWidthInRawPixels { get; private set; }
-
-		public float LogicalDpi { get; private set; }
-
-		/// <summary>
-		/// Diagonal size of the display in inches.
-		/// </summary>
-		/// <remarks>
-		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.diagonalsizeininches#property-value">Docs</see> 
-		/// defaults to null if not set
-		/// </remarks>
-		public double? DiagonalSizeInInches { get; private set; }
-
-        public double RawPixelsPerViewPixel { get; private set; }
-		
-		/// <summary>
-		/// Gets the raw dots per inch (DPI) along the x axis of the display monitor.
-		/// </summary>
-		/// <remarks>
-		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.rawdpix#remarks">Docs</see> 
-		/// defaults to 0 if not set
-		/// </remarks>
-		public float RawDpiX { get; private set; } = 0;
-
-		/// <summary>
-		/// Gets the raw dots per inch (DPI) along the y axis of the display monitor.
-		/// </summary>
-		/// <remarks>
-		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.rawdpiy#remarks">Docs</see> 
-		/// defaults to 0 if not set
-		/// </remarks>
-		public float RawDpiY { get; private set; } = 0;
+		}		
 
 		public bool StereoEnabled { get; private set; } = false;
 
-        public ResolutionScale ResolutionScale { get; private set; }
-		
-		public static DisplayInformation GetForCurrentView()
-		{
-			return _instance ?? (_instance = new DisplayInformation());
-		}
+		public static DisplayInformation GetForCurrentView() => _lazyInstance.Value;
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations);
 
 		partial void Initialize();
 
+		partial void StartOrientationChanged();
+
+		partial void StopOrientationChanged();
+
+		partial void StartDpiChanged();
+
+		partial void StopDpiChanged();
+
 #pragma warning disable CS0067
-		public event Foundation.TypedEventHandler<DisplayInformation, object> OrientationChanged;
+		public event TypedEventHandler<DisplayInformation, object> OrientationChanged
+		{
+			add
+			{
+				lock (_syncLock)
+				{
+					bool isFirstSubscriber = _orientationChanged == null;
+					_orientationChanged += value;
+					if (isFirstSubscriber)
+					{
+						StartOrientationChanged();
+					}
+				}
+			}
+			remove
+			{
+				lock (_syncLock)
+				{
+					_orientationChanged -= value;
+					if (_orientationChanged == null)
+					{
+						StopOrientationChanged();
+					}
+				}
+			}
+		}
+
+		public event TypedEventHandler<DisplayInformation, object> DpiChanged
+		{
+			add
+			{
+				lock (_syncLock)
+				{
+					bool isFirstSubscriber = _dpiChanged == null;
+					_dpiChanged += value;
+					if (isFirstSubscriber)
+					{
+						StartDpiChanged();
+					}
+				}
+			}
+			remove
+			{
+				lock (_syncLock)
+				{
+					_dpiChanged -= value;
+					if (_dpiChanged == null)
+					{
+						StopDpiChanged();
+					}
+				}
+			}
+		}
 #pragma warning restore CS0067
+
+		private void OnOrientationChanged() => _orientationChanged?.Invoke(this, null);
+
+		private void OnDpiChanged() => _dpiChanged?.Invoke(this, null);
+
+		private void OnDisplayMetricsChanged()
+		{
+			var newOrientation = CurrentOrientation;
+			var newDpi = LogicalDpi;
+			if (_lastKnownOrientation != newOrientation)
+			{
+				OnOrientationChanged();
+				_lastKnownOrientation = newOrientation;
+			}
+			if (Math.Abs(_lastKnownDpi - newDpi) > 0.01)
+			{
+				OnDpiChanged();
+				_lastKnownDpi = newDpi;
+			}
+		}
 	}
 }

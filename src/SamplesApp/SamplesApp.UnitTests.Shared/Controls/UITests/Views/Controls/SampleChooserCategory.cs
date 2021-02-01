@@ -7,7 +7,6 @@ using Uno;
 namespace SampleControl.Entities
 {
 	[Windows.UI.Xaml.Data.Bindable]
-	[GeneratedEquality]
 	public partial class SampleChooserCategory : IComparer<SampleChooserContent>, IComparable<SampleChooserCategory>
 	{
 		public SampleChooserCategory()
@@ -22,10 +21,19 @@ namespace SampleControl.Entities
 		}
 
 		public SortedSet<SampleChooserContent> SamplesContent { get; }
-		[EqualityKey]
+
 		public string Category { get; set; }
-		[EqualityIgnore]
+
 		public int Count => SamplesContent.Count;
+
+		public override bool Equals(object obj) =>
+			obj switch
+			{
+				SampleChooserCategory other => Equals(Category, other.Category),
+				_ => false
+			};
+
+		public override int GetHashCode() => Category?.GetHashCode() ?? 0;
 
 		public int Compare(SampleChooserContent x, SampleChooserContent y)
 			=> string.Compare(x.ControlName, y.ControlName, StringComparison.InvariantCultureIgnoreCase);

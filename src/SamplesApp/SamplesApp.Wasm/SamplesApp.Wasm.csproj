@@ -5,9 +5,9 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
 		<NoWarn>NU1701,CS1998</NoWarn>
-		<LangVersion>7.3</LangVersion>
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
-	<UseUnoXamlParser>true</UseUnoXamlParser>
+		<UseUnoXamlParser>true</UseUnoXamlParser>
+		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -22,7 +22,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Content Update="..\SamplesApp.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
-		<Content Update="Fonts\winjs-symbols.woff2" />
+		<Content Update="Fonts\uno-fluentui-assets.woff2" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
@@ -30,11 +30,11 @@
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
 		<UpToDateCheckInput Include="WasmScripts\**\*" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
 	</ItemGroup>
@@ -57,7 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Graph" Version="3.8.0" />
+		<PackageReference Include="Microsoft.Graph" Version="3.12.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
 		<PackageReference Include="Microsoft.TypeScript.Compiler" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
@@ -75,17 +75,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie.Wasm\Uno.UI.Lottie.Wasm.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL.Wasm\Uno.UI.MSAL.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.Foundation.Runtime.Wasm\Uno.Foundation.Runtime.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.Foundation.Wasm\Uno.Foundation.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.RemoteControl.Wasm\Uno.UI.RemoteControl.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.RuntimeTests.Wasm\Uno.UI.RuntimeTests.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Toolkit.Wasm\Uno.UI.Toolkit.Wasm.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Wasm.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Wasm.Tests\Uno.UI.Wasm.Tests.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Wasm\Uno.UI.Runtime.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Wasm\Uno.UI.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP.Wasm\Uno.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Wasm.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

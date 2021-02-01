@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 	public partial class Basics_Automated : SampleControlUITestBase
 	{
 		private IAppRect _sut;
-		private FileInfo _result;
+		private ScreenshotInfo _result;
 
 		[Test]
 		[AutoRetry]
@@ -212,6 +212,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 			y = y >= 0 ? _sut.Y + y + b : _sut.Bottom + y - (2 * b);
 
 			ImageAssert.HasColorAt(_result, x, y, color ?? Color.White, tolerance: 25);
+		}
+
+		[TearDown]
+		public void TearDown()
+		{
+			_result?.Dispose();
+			_result = null;
 		}
 	}
 }

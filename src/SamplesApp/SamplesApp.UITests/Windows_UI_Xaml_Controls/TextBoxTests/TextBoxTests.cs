@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -37,6 +38,44 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var recth = _app.Marked("recth").FirstResult().Rect;
 
 			sut.X.Should().Be(recth.X, "Invalid X position");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_UpdatedBinding_On_OneWay_Mode()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Bindings");
+
+			var textboxTwoWay = _app.Marked("textboxTwoWay");
+			var textboxOneWay = _app.Marked("textboxOneWay");
+			var textboxDefault = _app.Marked("textboxDefault");
+
+			var textblock = _app.Marked("textblock");
+
+			// Initial situation
+			textblock.GetDependencyPropertyValue("Text").Should().Be("", "Initial should be empty");
+
+			// Enter text in two-way text
+			textboxTwoWay.EnterText("TwoWay Content");
+			textboxOneWay.FastTap();
+
+			_app.WaitForText(textblock, "TwoWay Content");
+
+			// Enter text in one-way text
+			textboxOneWay.EnterText("OneWay Content");
+			textboxDefault.FastTap();
+
+			// Ensure bound valud didn't change
+			Thread.Sleep(120);
+			_app.WaitForText(textblock, "TwoWay Content");
+
+			// Enter text in one-way text
+			textboxDefault.EnterText("Default Content");
+			textboxTwoWay.FastTap();
+
+			// Ensure bound valud didn't change
+			Thread.Sleep(120);
+			_app.WaitForText(textblock, "TwoWay Content");
 		}
 
 		[Test]
@@ -213,23 +252,24 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.PasswordBox_Reveal_Scroll");
 
-			var passwordBox = _app.WaitForElement("MyPasswordBox").Single();
+			var passwordBox = _app.Marked("MyPasswordBox");
+			var passwordBoxRect = _app.GetRect(passwordBox);
 			_app.Wait(TimeSpan.FromMilliseconds(500)); // Make sure to show the status bar
-			var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
+			using var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 
 			// Focus the PasswordBox
-			_app.TapCoordinates(passwordBox.Rect.X + 10, passwordBox.Rect.Y);
+			passwordBox.Tap();
 
 			// Press the reveal button, and move up (so the ScrollViewer will kick in and cancel the pointer), then release
-			_app.DragCoordinates(passwordBox.Rect.X + 10, passwordBox.Rect.Right - 10, passwordBox.Rect.X - 100, passwordBox.Rect.Right - 10);
+			_app.DragCoordinates(passwordBoxRect.X + 10, passwordBoxRect.Right - 10, passwordBoxRect.X - 100, passwordBoxRect.Right - 10);
 
-			var result = TakeScreenshot("result", ignoreInSnapshotCompare: true);
+			using var result = TakeScreenshot("result", ignoreInSnapshotCompare: true);
 
 			ImageAssert.AreEqual(initial, result, new Rectangle(
-				(int)passwordBox.Rect.X + 8, // +8 : ignore borders (as we are still focused)
-				(int)passwordBox.Rect.Y + 8,
+				(int)passwordBoxRect.X + 8, // +8 : ignore borders (as we are still focused)
+				(int)passwordBoxRect.Y + 8,
 				100, // Ignore the reveal button on right (as we are still focused)
-				(int)passwordBox.Rect.Height - 16));
+				(int)passwordBoxRect.Height - 16));
 		}
 
 		[Test]
@@ -460,20 +500,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			// initial state
 			_app.WaitForElement(target);
-			var screenshot1 = TakeScreenshot("textbox readonly", ignoreInSnapshotCompare: true);
+			using var screenshot1 = TakeScreenshot("textbox readonly", ignoreInSnapshotCompare: true);
 
 			// remove readonly and focus textbox
 			readonlyToggle.Tap(); // now: unchecked
 			target.Tap();
 			_app.Wait(seconds: 1); // allow keyboard to fully open
-			var screenshot2 = TakeScreenshot("textbox focused with keyboard", ignoreInSnapshotCompare: true);
+			using var screenshot2 = TakeScreenshot("textbox focused with keyboard", ignoreInSnapshotCompare: true);
 
 			// reapply readonly and try focus textbox
 			readonlyToggle.Tap(); // now: checked
 			target.Tap();
 			_app.Wait(seconds: 1); // allow keyboard to fully open (if ever possible)
 			_app.WaitForElement(target);
-			var screenshot3 = TakeScreenshot("textbox readonly again", ignoreInSnapshotCompare: true);
+			using var screenshot3 = TakeScreenshot("textbox readonly again", ignoreInSnapshotCompare: true);
 
 			// the bottom half should only contains the keyboard and some blank space,
 			// but not the textbox nor the toggle buttons that needs to be excluded.
@@ -518,5 +558,78 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			multilineTextRect.Height.Should().Be(multilineReadonlyTextRect.Height, because: "toggling IsReadOnly should not affect AcceptsReturn=True(multiline) TextBox.Height");
 			normalTextRect.Height.Should().NotBe(multilineTextRect.Height, because: "toggling AcceptsReturn should not affect TextBox.Height");
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_CharacterCasingNormal_ShouldAcceptAllCasing_Test()
+		{
+			const string text = "Uno Platform";
+
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_CharacterCasing");
+
+			var normalCasingTextBox = _app.Marked("NormalCasingTextBox");
+
+			normalCasingTextBox.Tap();
+			normalCasingTextBox.ClearText();
+			normalCasingTextBox.EnterText(text);
+
+			Assert.AreEqual(text, normalCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_CharacterCasingDefault_ShouldAcceptAllCasing_Test()
+		{
+			const string text = "Uno Platform";
+
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_CharacterCasing");
+
+			var defaultCasingTextBox = _app.Marked("DefaultCasingTextBox");
+
+			defaultCasingTextBox.Tap();
+			defaultCasingTextBox.ClearText();
+			defaultCasingTextBox.EnterText(text);
+
+			Assert.AreEqual(text, defaultCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_CharacterCasingLower_ShouldBeAllLower_Test()
+		{
+			const string text = "Uno Platform";
+
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_CharacterCasing");
+
+			var lowerCasingTextBox = _app.Marked("LowerCasingTextBox");
+
+			lowerCasingTextBox.Tap();
+			lowerCasingTextBox.ClearText();
+			lowerCasingTextBox.EnterText(text);
+
+			Assert.AreEqual(text.ToLowerInvariant(), lowerCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_CharacterCasingUpper_ShouldBeAllUpper_Test()
+		{
+			const string text = "Uno Platform";
+
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_CharacterCasing");
+
+			var upperCasingTextBox = _app.Marked("UpperCasingTextBox");
+
+			upperCasingTextBox.Tap();
+			upperCasingTextBox.ClearText();
+			upperCasingTextBox.EnterText(text);
+
+			Assert.AreEqual(text.ToUpperInvariant(), upperCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
 	}
 }

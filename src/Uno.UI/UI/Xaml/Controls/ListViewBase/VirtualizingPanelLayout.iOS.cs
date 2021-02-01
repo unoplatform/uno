@@ -462,6 +462,9 @@ namespace Windows.UI.Xaml.Controls
 			return NMath.Abs(oldBreadth - newBreadth) > epsilon
 				// If the new measure size happens to have been used for the most recent arrange, we don't need to relayout
 				&& NMath.Abs(oldArrangeBreadth - newBreadth) > epsilon
+				// ShouldApplyChildStretch is currently set false only for TabView - we avoid triggering a layout on size change in this case
+				// because it gives the items messed-up frame offsets.
+				&& ShouldApplyChildStretch
 				// Skip recalculating layout for 0 size.
 				&& !newAvailableSize.IsEmpty;
 		}
@@ -1516,7 +1519,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private nfloat GetBreadthEnd(CGRect frame)
+		protected nfloat GetBreadthEnd(CGRect frame)
 		{
 			if (ScrollOrientation == Orientation.Vertical)
 			{
@@ -1656,5 +1659,7 @@ namespace Windows.UI.Xaml.Controls
 
 		CGRect[] AllItemFrames => AllItemLayoutAttributes?.Select(l => l.Frame).ToArray();
 #endif
+
+		Uno.UI.IndexPath? GetReorderingIndex() => null;
 	}
 }

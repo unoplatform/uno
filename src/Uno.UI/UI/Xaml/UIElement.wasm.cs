@@ -16,7 +16,9 @@ using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Uno.Core.Comparison;
+using Uno.Foundation.Runtime.WebAssembly.Interop;
 
 namespace Windows.UI.Xaml
 {
@@ -24,19 +26,7 @@ namespace Windows.UI.Xaml
 	{
 		internal const string DefaultHtmlTag = "div";
 
-		// Even if this a concept of FrameworkElement, the loaded state is handled by the UIElement in order to avoid
-		// to cast to FrameworkElement each time a child is added or removed.
-		internal bool IsLoaded;
-
-		/// <summary>
-		/// This flag is transiently set while element is 'loading' but not yet 'loaded'.
-		/// </summary>
-		internal bool IsLoading;
-
 		private readonly GCHandle _gcHandle;
-		private readonly bool _isFrameworkElement;
-
-		private protected int? Depth { get; private set; }
 
 		private static class UIElementNativeRegistrar
 		{
@@ -90,6 +80,9 @@ namespace Windows.UI.Xaml
 
 		public UIElement(string htmlTag, bool isSvg)
 		{
+			_log = this.Log();
+			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
+
 			Initialize();
 
 			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
@@ -119,7 +112,7 @@ namespace Windows.UI.Xaml
 		private static Dictionary<Type, string> _htmlTagCache = new Dictionary<Type, string>(FastTypeComparer.Default);
 		private static Type _htmlElementAttribute;
 		private static PropertyInfo _htmlTagAttributeTagGetter;
-		private static Assembly _unoUIAssembly = typeof(UIElement).Assembly;
+		private static readonly Assembly _unoUIAssembly = typeof(UIElement).Assembly;
 
 		private string GetHtmlTag(string htmlTag)
 		{
@@ -129,7 +122,7 @@ namespace Windows.UI.Xaml
 			{
 				if (_htmlElementAttribute == null)
 				{
-					_htmlElementAttribute = Assembly.Load("Uno.UI.Runtime.Wasm").GetType("Uno.UI.Runtime.Wasm.HtmlElementAttribute", true);
+					_htmlElementAttribute = GetUnoUIRuntimeWebAssembly().GetType("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute", true);
 					_htmlTagAttributeTagGetter = _htmlElementAttribute.GetProperty("Tag");
 				}
 
@@ -248,9 +241,8 @@ namespace Windows.UI.Xaml
 		/// Natively arranges and clips an element.
 		/// </summary>
 		/// <param name="rect">The dimensions to apply to the element</param>
-		/// <param name="clipToBounds">Whether the element should be clipped to its bounds</param>
 		/// <param name="clipRect">The Clip rect to set, if any</param>
-		protected internal void ArrangeVisual(Rect rect, bool clipToBounds, Rect? clipRect)
+		protected internal void ArrangeVisual(Rect rect, Rect? clipRect)
 		{
 			LayoutSlotWithMarginsAndAlignments =
 				VisualTreeHelper.GetParent(this) is UIElement parent
@@ -262,7 +254,8 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(LayoutSlotWithMarginsAndAlignments), LayoutSlotWithMarginsAndAlignments);
 			}
 
-			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipToBounds, clipRect);
+			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
+			OnViewportUpdated(clipRect ?? Rect.Empty);
 
 #if DEBUG
 			var count = ++_arrangeCount;
@@ -273,16 +266,11 @@ namespace Windows.UI.Xaml
 
 		protected internal void SetNativeTransform(Matrix3x2 matrix)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, matrix, requiresClipping: RequiresClipping);
+			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, matrix);
 		}
 
 		protected internal void ResetStyle(params string[] names)
 		{
-			if (names == null || names.Length == 0)
-			{
-				// nothing to do
-			}
-
 			Uno.UI.Xaml.WindowManagerInterop.ResetStyle(HtmlId, names);
 
 		}
@@ -339,10 +327,9 @@ namespace Windows.UI.Xaml
 
 		partial void ApplyNativeClip(Rect rect)
 		{
-
 			if (rect.IsEmpty)
 			{
-				SetStyle("clip", "");
+				ResetStyle("clip");
 				return;
 			}
 
@@ -351,12 +338,13 @@ namespace Windows.UI.Xaml
 
 			SetStyle(
 				"clip",
-				"rect("
-				+ Math.Floor(rect.Y) + "px,"
-				+ Math.Ceiling(rect.X + width) + "px,"
-				+ Math.Ceiling(rect.Y + height) + "px,"
-				+ Math.Floor(rect.X) + "px"
-				+ ")"
+				string.Concat(
+					"rect(",
+					Math.Floor(rect.Y).ToStringInvariant(), "px,",
+					Math.Ceiling(rect.X + width).ToStringInvariant(), "px,",
+					Math.Ceiling(rect.Y + height).ToStringInvariant(), "px,",
+					Math.Floor(rect.X).ToStringInvariant(), "px)"
+				)
 			);
 		}
 
@@ -374,7 +362,6 @@ namespace Windows.UI.Xaml
 
 		private Rect _arranged;
 		private string _name;
-		internal readonly IList<UIElement> _children = new MaterializableList<UIElement>();
 
 		public string Name
 		{
@@ -415,9 +402,6 @@ namespace Windows.UI.Xaml
 		}
 
 		public Func<Size, Size> DesiredSizeSelector { get; set; }
-
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
-			=> TransformToVisual(relativeTo).TransformPoint(position);
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
@@ -508,7 +492,15 @@ namespace Windows.UI.Xaml
 
 			OnAddingChild(child);
 
-			_children.Add(child);
+			if (index is { } i)
+			{
+				_children.Insert(i, child);
+			}
+			else
+			{
+				_children.Add(child);
+			}
+
 			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId, index);
 
 			OnChildAdded(child);
@@ -605,98 +597,6 @@ namespace Windows.UI.Xaml
 			InvalidateMeasure();
 		}
 
-		private void OnAddingChild(UIElement child)
-		{
-			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-				&& (IsLoaded || IsLoading)
-				&& child._isFrameworkElement)
-			{
-				if (child.IsLoaded)
-				{
-					this.Log().Error($"{this}: Inconsistent state: child {child} is already loaded (OnAddingChild)");
-				}
-				else
-				{
-					child.ManagedOnLoading();
-				}
-			}
-		}
-
-		private void OnChildAdded(UIElement child)
-		{
-			if (!FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-				|| !IsLoaded
-				|| !child._isFrameworkElement)
-			{
-				return;
-			}
-
-			if (child.IsLoaded)
-			{
-				this.Log().Error($"{this}: Inconsistent state: child {child} is already loaded (OnChildAdded)");
-			}
-			else
-			{
-				child.ManagedOnLoaded((Depth ?? int.MinValue) + 1);
-			}
-		}
-
-		private void OnChildRemoved(UIElement child)
-		{
-			if (!FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-				|| !IsLoaded
-				|| !child._isFrameworkElement)
-			{
-				return;
-			}
-
-			if (child.IsLoaded)
-			{
-				child.ManagedOnUnloaded();
-			}
-			else
-			{
-				this.Log().Error($"{this}: Inconsistent state: child {child} is not loaded (OnChildRemoved)");
-			}
-		}
-
-		internal virtual void ManagedOnLoading()
-		{
-			IsLoading = true;
-			
-			for (var i = 0; i < _children.Count; i++)
-			{
-				var child = _children[i];
-				child.ManagedOnLoading();
-			}
-		}
-
-		internal virtual void ManagedOnLoaded(int depth)
-		{
-			IsLoading = false;
-			IsLoaded = true;
-			Depth = depth;
-
-			for (var i = 0; i < _children.Count; i++)
-			{
-				var child = _children[i];
-				child.ManagedOnLoaded(depth + 1);
-			}
-		}
-
-		internal virtual void ManagedOnUnloaded()
-		{
-			IsLoading = false;
-			IsLoaded = false;
-			Depth = null;
-
-			for (var i = 0; i < _children.Count; i++)
-			{
-				var child = _children[i];
-				child.ManagedOnUnloaded();
-			}
-		}
-
 		// We keep track of registered routed events to avoid registering the same one twice (mainly because RemoveHandler is not implemented)
 		private RoutedEventFlag _registeredRoutedEvents;
 
@@ -725,6 +625,7 @@ namespace Windows.UI.Xaml
 			RegisterEventHandler(
 				domEventName,
 				handler: new RoutedEventHandlerWithHandled((snd, args) => RaiseEvent(routedEvent, args)),
+				invoker: GenericEventHandlers.RaiseRoutedEventHandlerWithHandled,
 				onCapturePhase: false,
 				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
 				payloadConverter: PayloadToKeyArgs
@@ -773,6 +674,22 @@ namespace Windows.UI.Xaml
 			}
 
 			return new RoutedEventArgs(src);
+		}
+
+		private static Assembly GetUnoUIRuntimeWebAssembly()
+		{
+			const string UnoUIRuntimeWebAssemblyName = "Uno.UI.Runtime.WebAssembly";
+
+			if (PlatformHelper.IsNetCore)
+			{
+				// .NET Core fails to load assemblies property because of ALC issues: https://github.com/dotnet/runtime/issues/44269
+				return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == UnoUIRuntimeWebAssemblyName)
+					?? throw new InvalidOperationException($"Unable to find {UnoUIRuntimeWebAssemblyName} in the loaded assemblies");
+			}
+			else
+			{
+				return Assembly.Load(UnoUIRuntimeWebAssemblyName);
+			}
 		}
 	}
 }

@@ -1,18 +1,32 @@
 # MapControl
 
-The `MapControl` is a control that allows you to display maps in your app.
+The `MapControl` is a control that allows you to display maps in your app. Currently Uno supports `MapControl` on iOS and Android.
 
 ## Architecture
 
-To be able to support multiple map providers, the map control renders its content in a `MapPresenter` control in the `Uno.UI.Maps` NuGet package. This separation is also required to avoid pulling dependencies in an application that does not need Maps.
+Although `MapControl` is defined in `Uno.UI`, to function it requires an additional package to be installed, `Uno.UI.Maps`, which supplies the actual implementation. This is done to avoid imposing an unnecessary dependency on applications that don't use maps, and also to allow alternative map providers (eg, Google Maps on iOS) to be easily supported in the future.
 
 The current implementation uses the native UIKit Map for iOS and the Google Play Services Map control for Android.
+
+## How to use MapControl in an Uno Platform app
+
+1. Ensure your app is targeting Uno 3.3 or later.
+2. Install the [Uno.UI.Maps NuGet package](https://www.nuget.org/packages/Uno.UI.Maps/) in the Android and/or iOS head projects of your app.
+3. Add the `MapResources` resource dictionary to `Application.Resources` in your `App.xaml` file:
+	```xaml
+	<Application.Resources>
+		<MapResources xmlns="using:Uno.UI.Maps"/>
+	</Application.Resources>
+	```
+4. (Windows and Android) Obtain an API key for your app, following the instructions below.
+5. (Android) Configure permissions in the manifest, following the instructions below.
+6. Add `MapControl` to your app (`<MapControl xmlns="using:Windows.UI.Xaml.Controls.Maps" />`).
 
 ## Sample Xaml
 
 Here's a complete sample: 
 
-```xml
+```xaml
 <Page x:Class="MapControlSample.MainPage"
 	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -100,13 +114,6 @@ The key will be set as the value for the parameter _MapServiceToken_ for the Map
 **Note:** For apps in production we suggest restricting the keys to be used only by your Android app. This is possible by using the SHA-1 fingerprint of your app.
 
 _For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Android application, please follow this link: https://developers.google.com/maps/documentation/android-api/signup#release-cert_
-
-## Install the Nuget Package
-
-For both **iOS** and **Android** you will need to install the [Uno.UI.Maps](https://www.nuget.org/packages/Uno.UI.Maps/) NuGet package. 
-
-**Note:** There's only a pre-release version of this package so make sure to check on the "Include prerelease" checkbox in Visual Studio.
-
 
 ## Configure your application.
 

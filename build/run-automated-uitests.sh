@@ -4,23 +4,46 @@ IFS=$'\n\t'
 
 cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries
 
-npm i chromedriver@74.0.0
-npm i puppeteer@1.13.0
-mono $BUILD_SOURCESDIRECTORY/build/nuget/NuGet.exe install NUnit.ConsoleRunner -Version 3.10.0
+npm i chromedriver@84.0.1
+npm i puppeteer@5.1.0
 
 export UNO_UITEST_TARGETURI=http://localhost:8000
 export UNO_UITEST_DRIVERPATH_CHROME=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/chromedriver/lib/chromedriver
-export UNO_UITEST_CHROME_BINARY_PATH=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/puppeteer/.local-chromium/linux-637110/chrome-linux/chrome
+export UNO_UITEST_CHROME_BINARY_PATH=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/puppeteer/.local-chromium/linux-768783/chrome-linux/chrome
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/wasm-automated
 export UNO_UITEST_PLATFORM=Browser
+export NUNIT_VERSION=3.11.1
+export TEST_FILTERS="namespace != 'SamplesApp.UITests.Snap'"
+export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-wasm-automated-chromium.txt
+export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
 ## The python server serves the current working directory, and may be changed by the nunit runner
 bash -c "cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site; python server.py &"
 
-export TEST_FILTERS="namespace != 'SamplesApp.UITests.Snap'"
+## Build the NUnit configuration file
+echo "--trace=Verbose" > $UNO_TESTS_RESPONSE_FILE
+echo "--result=$UNO_ORIGINAL_TEST_RESULTS" >> $UNO_TESTS_RESPONSE_FILE
 
-mono $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
-    --where "$TEST_FILTERS" \
-    $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/test-bin/SamplesApp.UITests.dll
+if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
+    echo "--testlist \"$UNO_TESTS_FAILED_LIST\"" >> $UNO_TESTS_RESPONSE_FILE
+else
+    echo "--where \"$TEST_FILTERS\"" >> $UNO_TESTS_RESPONSE_FILE
+fi
+
+echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
+
+## Install NUnit
+mono $BUILD_SOURCESDIRECTORY/build/nuget/NuGet.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
+
+## Run the tests
+mono $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
+    @$UNO_TESTS_RESPONSE_FILE || true
+
+## Export the failed tests list for reuse in a pipeline retry
+pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
+dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+popd

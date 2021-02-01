@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd /workspace/uno/src/Uno.UI.RemoteControl.Host
+pushd $GITPOD_REPO_ROOT/src/Uno.UI.RemoteControl.Host
 
 dotnet run --httpPort 53487
 

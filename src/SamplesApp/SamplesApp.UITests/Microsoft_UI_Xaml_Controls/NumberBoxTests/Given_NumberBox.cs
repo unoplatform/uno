@@ -13,7 +13,7 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	public class NumberBoxTests : SampleControlUITestBase
+	public partial class NumberBoxTests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

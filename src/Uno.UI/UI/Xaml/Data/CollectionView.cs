@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Data
 					observableCollection.CollectionChanged += OnCollectionChangedUpdateGroups;
 				}
 			}
-        }
+		}
 
 		public IEnumerable InnerCollection => _collection;
 
@@ -246,7 +246,9 @@ namespace Windows.UI.Xaml.Data
 
 		void ICollection<object>.CopyTo(object[] array, int arrayIndex)
 		{
-			if(_collection is ICollection<object> list)
+			//TODO: this is used by eg Linq.ToArray(), it should take grouping into account
+
+			if (_collection is ICollection<object> list)
 			{
 				list.CopyTo(array, arrayIndex);
 			}

@@ -1,0 +1,48 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+	
+  <PropertyGroup>
+    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid11.0;netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Uno.UI.FluentTheme</AssemblyName>
+		<RootNamespace>Uno.UI.FluentTheme</RootNamespace>
+
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
+
+		<!--
+		Disable source generation for Uno.UI.Fluent for netstandard2.0 so
+		that we don't generate the global static resources for the reference target.
+		This will allow for the Uno.UI.Fluent to be linked out if XamlControlsResources
+		is not referenced in the app.
+		-->
+		<BuildingInsideUnoSourceGenerator Condition="'$(UnoRuntimeIdentifier)'=='Reference'">true</BuildingInsideUnoSourceGenerator>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		
+		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+	</ItemGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+	<Import Project="FluentMerge.targets" />
+
+</Project>

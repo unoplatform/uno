@@ -20,6 +20,9 @@ namespace Windows.UI.Xaml
 			IsFocusEvent = flag.IsFocusEvent();
 			IsManipulationEvent = flag.IsManipulationEvent();
 			IsGestureEvent = flag.IsGestureEvent();
+			IsDragAndDropEvent = flag.IsDragAndDropEvent();
+
+			IsAlwaysBubbled = IsPointerEvent || IsGestureEvent || IsManipulationEvent || IsDragAndDropEvent;
 		}
 
 		[Pure]
@@ -35,11 +38,15 @@ namespace Windows.UI.Xaml
 		/// <remarks>
 		/// For some events like PointerEvent, we always needs to get the full events sequence to maintain the
 		/// internal state, so we always needs the handled events too.
+		/// 
 		/// This flag avoids the complex update of the SubscribedToHandledEventsToo property coercing and inheritance
 		/// for those kind of well-known events.
+		/// 
+		/// Basically all routed events that are implementing the 'PrepareManaged***EventBubbling' to maintain local
+		/// state should opt-in for that.
 		/// </remarks>
 		[Pure]
-		internal bool IsAlwaysBubbled => IsPointerEvent;
+		internal bool IsAlwaysBubbled { get; }
 
 		[Pure]
 		internal bool IsPointerEvent { get; }
@@ -51,5 +58,7 @@ namespace Windows.UI.Xaml
 		internal bool IsManipulationEvent { get; }
 		[Pure]
 		internal bool IsGestureEvent { get; }
+		[Pure]
+		internal bool IsDragAndDropEvent { get; }
 	}
 }

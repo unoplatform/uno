@@ -7,6 +7,7 @@ using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.Logging;
@@ -116,13 +117,16 @@ namespace Uno.UI.Toolkit
 					const double x = 0.25d;
 					const double y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
 					const double blur = 0.5f;
+					var color = Color.FromArgb((byte)(shadowColor.A * .35), shadowColor.R, shadowColor.G, shadowColor.B);
 
-					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {shadowColor.ToCssString()}";
+					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {color.ToCssString()}";
 					uiElement.SetStyle("box-shadow", str);
+					uiElement.SetCssClasses("noclip");
 				}
 				else
 				{
 					uiElement.ResetStyle("box-shadow");
+					uiElement.UnsetCssClasses("noclip");
 				}
 			}
 #elif NETFX_CORE
@@ -137,7 +141,7 @@ namespace Uno.UI.Toolkit
 					newSize = new Vector2((float)contentFE.ActualWidth, (float)contentFE.ActualHeight);
 				}
 
-				if (!(host is UIElement uiHost))
+				if (!(host is Canvas uiHost) || newSize == default)
 				{
 					return;
 				}
@@ -165,18 +169,31 @@ namespace Uno.UI.Toolkit
 
 					if (!cornerRadius.Equals(default))
 					{
-						// We'll need a better solution like https://stackoverflow.com/a/57274707/1176099
-
 						var averageRadius =
 							(cornerRadius.TopLeft +
 							cornerRadius.TopRight +
 							cornerRadius.BottomLeft +
 							cornerRadius.BottomRight) / 4f;
 
-						shadow.BlurRadius = (float)averageRadius * 3f;
+						// Create a rectangle with similar corner radius (average for now)
+						var rect = new Rectangle()
+						{
+							Fill = new SolidColorBrush(Colors.White),
+							Width = newSize.X,
+							Height = newSize.Y,
+							RadiusX = averageRadius,
+							RadiusY = averageRadius
+						};
+
+						uiHost.Children.Add(rect); // The rect need to be in th VisualTree for .GetAlphaMask() to work
+
+						shadow.Mask = rect.GetAlphaMask();
+
+						uiHost.Children.Remove(rect); // No need anymore, we can discard it.
 					}
 
 					shadow.Color = shadowColor;
+					shadow.Opacity = shadowColor.A/255f;
 					spriteVisual.Shadow = shadow;
 				}
 
@@ -194,7 +211,7 @@ namespace Uno.UI.Toolkit
 				return padding;
 			}
 
-			var property = uiElement.GetDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
+			var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
 			return property != null && uiElement.GetValue(property) is Thickness t ? t : default;
 		}
 
@@ -205,7 +222,7 @@ namespace Uno.UI.Toolkit
 				return true;
 			}
 
-			var property = uiElement.GetDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
+			var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
 			if (property != null)
 			{
 				uiElement.SetValue(property, padding);
@@ -274,15 +291,13 @@ namespace Uno.UI.Toolkit
 
 		private static Dictionary<(Type type, string property), DependencyProperty> _dependencyPropertyReflectionCache;
 
-		internal static DependencyProperty GetDependencyPropertyUsingReflection<TProperty>(this UIElement uiElement, string propertyName)
+		internal static DependencyProperty FindDependencyPropertyUsingReflection<TProperty>(this UIElement uiElement, string propertyName)
 		{
 			var type = uiElement.GetType();
 			var propertyType = typeof(TProperty);
 			var key = (ownerType: type, propertyName);
 
-			_dependencyPropertyReflectionCache =
-				_dependencyPropertyReflectionCache
-				?? new Dictionary<(Type, string), DependencyProperty>(2);
+			_dependencyPropertyReflectionCache ??= new Dictionary<(Type, string), DependencyProperty>(2);
 
 			if (_dependencyPropertyReflectionCache.TryGetValue(key, out var property))
 			{

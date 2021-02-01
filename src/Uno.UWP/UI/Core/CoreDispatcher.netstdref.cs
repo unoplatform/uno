@@ -8,9 +8,7 @@ namespace Windows.UI.Core
 {
 	public sealed partial class CoreDispatcher
 	{
-		public static bool HasThreadAccessOverride { get; set; } = true;
-		 
-		private bool GetHasThreadAccess() => HasThreadAccessOverride;
+		private bool GetHasThreadAccess() => throw new NotSupportedException("Ref assembly");
 
 		public static CoreDispatcher Main { get; } = new CoreDispatcher();
 

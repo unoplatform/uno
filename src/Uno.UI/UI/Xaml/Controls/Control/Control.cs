@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeControl()
 		{
-			SetDefaultForeground();
+			SetDefaultForeground(ForegroundProperty);
 			SubscribeToOverridenRoutedEvents();
 			OnIsFocusableChanged();
 
@@ -55,20 +55,12 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override bool IsSimpleLayout => true;
 
-		private void SetDefaultForeground()
-		{
-			//override the default value from dependency property based on application theme
-			this.SetValue(ForegroundProperty,
-				Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
-					? SolidColorBrushHelper.Black
-					: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
-		}
-
 		internal override void UpdateThemeBindings()
 		{
 			base.UpdateThemeBindings();
 
-			SetDefaultForeground();
+			//override the default value from dependency property based on application theme
+			SetDefaultForeground(ForegroundProperty);
 		}
 
 		private protected override Type GetDefaultStyleKey() => DefaultStyleKey as Type;
@@ -165,9 +157,25 @@ namespace Windows.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-						if (FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
+						if (
+#if NETSTANDARD
+							!IsLoading &&
+#endif
+							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
 						{
 							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
+
+							// Note: we however still allow if already 'IsLoading':
+							//
+							// If this child is added to its parent while this parent is 'IsLoading' itself (eg. loading its template),
+							// the parent will invoke the Loading on this child element (and the PostLoading which will "dequeue" the _applyTemplateShouldBeInvoked),
+							// which will set the 'IsLoading' flag.
+							//
+							// The parent will then apply its own style, which might set/change the template of this element (if data-bound or set using VisualState),
+							// which would end here and set this _applyTemplateShouldBeInvoked flag (if IsLoaded were not allowed!).
+							//
+							// The parent will then invoke the Loading on all its children, but as this child has already been flagged as 'IsLoading',
+							// it will be ignored and the 'PostLoading' won't be invokes a second time, driving the control to never "dequeue" the _applyTemplateShouldBeInvoked.
 							_applyTemplateShouldBeInvoked = true;
 						}
 						else
@@ -285,6 +293,26 @@ namespace Windows.UI.Xaml.Controls
 				RightTapped += OnRightTappedHandler;
 			}
 
+			if (implementedEvents.HasFlag(RoutedEventFlag.DragEnter))
+			{
+				DragEnter += OnDragEnterHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.DragOver))
+			{
+				DragOver += OnDragOverHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.DragLeave))
+			{
+				DragLeave += OnDragLeaveHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.Drop))
+			{
+				Drop += OnDropHandler;
+			}
+
 			if (implementedEvents.HasFlag(RoutedEventFlag.Holding))
 			{
 				Holding += OnHoldingHandler;
@@ -344,14 +372,25 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Finds a realized element in the control template
+		/// Finds a realized element in the control template.
 		/// </summary>
-		/// <param name="e">The framework element instance</param>
-		/// <param name="name">The name of the template part</param>
+		/// <param name="childName">The name of the template part.</param>
+		/// <returns>The first template part of the specified name; otherwise, null.</returns>
 		public DependencyObject GetTemplateChild(string childName)
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as DependencyObject
 				?? FindName(childName) as DependencyObject;
+		}
+
+		/// <summary>
+		/// Finds a realized element in the control template of the specified type.
+		/// </summary>
+		/// <typeparam name="T">The type of the template part.</typeparam>
+		/// <param name="childName">The name of the template part.</param>
+		/// <returns>The first template part of the specified name; otherwise, null.</returns>
+		internal T GetTemplateChild<T>(string childName) where T : class, DependencyObject
+		{
+			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as T ?? FindName(childName) as T;
 		}
 
 		private static object FindNameInScope(IFrameworkElement root, string name)
@@ -701,7 +740,11 @@ namespace Windows.UI.Xaml.Controls
 			&& IsEnabled
 			&& IsTabStop;
 
-		public bool Focus(FocusState value)
+		public
+#if HAS_UNO_WINUI // Focus is moved to UIElement, avoid breaking binary compatibility.
+			new
+#endif
+			bool Focus(FocusState value)
 		{
 			if (value == FocusState.Unfocused)
 			{
@@ -806,6 +849,10 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnDoubleTapped(DoubleTappedRoutedEventArgs e) { }
 		protected virtual void OnRightTapped(RightTappedRoutedEventArgs e) { }
 		protected virtual void OnHolding(HoldingRoutedEventArgs e) { }
+		protected virtual void OnDragEnter(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragOver(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragLeave(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDrop(global::Windows.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnKeyDown(KeyRoutedEventArgs args) { }
 		protected virtual void OnKeyUp(KeyRoutedEventArgs args) { }
 		protected virtual void OnGotFocus(RoutedEventArgs e) { }
@@ -862,6 +909,18 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly HoldingEventHandler OnHoldingHandler =
 			(object sender, HoldingRoutedEventArgs args) => ((Control)sender).OnHolding(args);
 
+		private static readonly DragEventHandler OnDragEnterHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragEnter(args);
+
+		private static readonly DragEventHandler OnDragOverHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragOver(args);
+
+		private static readonly DragEventHandler OnDragLeaveHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragLeave(args);
+
+		private static readonly DragEventHandler OnDropHandler =
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
+
 		private static readonly KeyEventHandler OnKeyDownHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyDown(args);
 
@@ -882,6 +941,7 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Type[] _doubleTappedArgsType = new[] { typeof(DoubleTappedRoutedEventArgs) };
 		private static readonly Type[] _rightTappedArgsType = new[] { typeof(RightTappedRoutedEventArgs) };
 		private static readonly Type[] _holdingArgsType = new[] { typeof(HoldingRoutedEventArgs) };
+		private static readonly Type[] _dragArgsType = new[] { typeof(global::Windows.UI.Xaml.DragEventArgs) };
 		private static readonly Type[] _keyArgsType = new[] { typeof(KeyRoutedEventArgs) };
 		private static readonly Type[] _routedArgsType = new[] { typeof(RoutedEventArgs) };
 		private static readonly Type[] _manipStartingArgsType = new[] { typeof(ManipulationStartingRoutedEventArgs) };
@@ -993,6 +1053,26 @@ namespace Windows.UI.Xaml.Controls
 				result |= RoutedEventFlag.Holding;
 			}
 
+			if (GetIsEventOverrideImplemented(type, nameof(OnDragEnter), _dragArgsType))
+			{
+				result |= RoutedEventFlag.DragEnter;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnDragOver), _dragArgsType))
+			{
+				result |= RoutedEventFlag.DragOver;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnDragLeave), _dragArgsType))
+			{
+				result |= RoutedEventFlag.DragLeave;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnDrop), _dragArgsType))
+			{
+				result |= RoutedEventFlag.Drop;
+			}
+
 			if (GetIsEventOverrideImplemented(type, nameof(OnKeyDown), _keyArgsType))
 			{
 				result |= RoutedEventFlag.KeyDown;
@@ -1034,8 +1114,15 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Duplicates the SetDefaultStyleKey() helper method from WinUI code.
 		/// </summary>
+		/// <remarks>
+		/// Note: Although this is usually called as 'SetDefaultStyleKey(this)' (per WinUI C++ code), we actually only use the compile-time
+		///  TDerived type and ignore the runtime derivedControl parameter, preserving the expected behaviour that DefaultStyleKey is 'fixed' 
+		/// under inheritance unless explicitly changed by an inheriting type.
+		/// </remarks>
 		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control
 			=> DefaultStyleKey = typeof(TDerived);
+
+		private protected bool GoToState(bool useTransitions, string stateName) => VisualStateManager.GoToState(this, stateName, useTransitions);
 
 #if DEBUG
 #if !__IOS__

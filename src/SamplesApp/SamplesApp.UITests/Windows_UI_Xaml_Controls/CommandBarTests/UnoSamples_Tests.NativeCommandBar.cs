@@ -6,8 +6,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 {
@@ -26,6 +28,100 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			myButton.Tap();
 
 			_app.WaitForText(result, "Clicked!");
+		}
+
+		[Test]
+		[AutoRetry]
+		public async Task NativeCommandBar_Size()
+		{
+			Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Dynamic");
+
+			const string rootElementName = "RootPanel";
+			_app.WaitForElement(rootElementName);
+
+			var supportsRotation = GetSupportsRotation();
+
+			var isLandscape = GetIsCurrentRotationLandscape(rootElementName);
+			var currentModeIsLandscape = isLandscape;
+
+
+			async Task ToggleOrientation()
+			{
+				if (currentModeIsLandscape)
+				{
+					_app.SetOrientationPortrait();
+				}
+				else
+				{
+					_app.SetOrientationLandscape();
+				}
+
+				currentModeIsLandscape = !currentModeIsLandscape;
+
+				_app.WaitFor(()=> GetIsCurrentRotationLandscape(rootElementName) == currentModeIsLandscape);
+
+				await Task.Delay(125); // A delay ia required after rotation for the test to succeed
+			}
+
+			try
+			{
+				var firstScreenShot = TakeScreenshot("FirstOrientation");
+
+				var firstCommandBarRect = _app.GetRect("TheCommandBar");
+				var firstYellowBorderRect = _app.GetRect("TheBorder");
+				firstCommandBarRect.Bottom.Should().Be(firstYellowBorderRect.Y);
+
+				var firstCommandBarPhysicalRect = ToPhysicalRect(firstCommandBarRect);
+
+
+				var x1 = firstCommandBarPhysicalRect.X + (firstCommandBarPhysicalRect.Width * 0.75f);
+				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarPhysicalRect.Bottom - 1, Color.Red);
+
+				if(!supportsRotation)
+				{
+					return; // We're on a platform not supporting rotations.
+				}
+
+				await ToggleOrientation();
+
+				var secondScreenShot = TakeScreenshot("SecondOrientation");
+
+				var secondCommandBarRect = _app.GetRect("TheCommandBar");
+				var secondYellowBorderRect = _app.GetRect("TheBorder");
+				secondCommandBarRect.Bottom.Should().Be(secondYellowBorderRect.Y);
+
+				var secondCommandBarPhysicalRect = ToPhysicalRect(secondCommandBarRect);
+
+				var x2 = secondCommandBarPhysicalRect.X + (secondCommandBarPhysicalRect.Width * 0.75f);
+				ImageAssert.HasColorAt(secondScreenShot, x2, secondCommandBarPhysicalRect.Bottom - 1, Color.Red);
+
+				await ToggleOrientation();
+
+				var thirdScreenShot = TakeScreenshot("thirdOrientation");
+
+				var thirdCommandBarRect = _app.GetRect("TheCommandBar");
+				var thirdYellowBorderRect = _app.GetRect("TheBorder");
+				thirdCommandBarRect.Bottom.Should().Be(thirdYellowBorderRect.Y);
+
+				var thirdCommandBarPhysicalRect = ToPhysicalRect(thirdCommandBarRect);
+
+				var x3 = thirdCommandBarPhysicalRect.X + (thirdCommandBarPhysicalRect.Width * 0.75f);
+				ImageAssert.HasColorAt(thirdScreenShot, x3, thirdCommandBarPhysicalRect.Bottom - 1, Color.Red);
+			}
+			finally
+			{
+				// Reset orientation to original value
+				if (isLandscape)
+				{
+					_app.SetOrientationLandscape();
+				}
+				else
+				{
+					_app.SetOrientationPortrait();
+				}
+
+				_app.WaitFor(() => GetIsCurrentRotationLandscape(rootElementName) == isLandscape);
+			}
 		}
 
 		[Test]
@@ -82,7 +178,59 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			var rect = _app.GetRect("CommandBarTitleText");
 
 			Assert.Greater(rect.Height, 1);
+		}
 
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_Navigated_CommandBarShouldKeepColor_Native_Frame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.Background.CommandBar_Background_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateToPage2Button");
+			_app.FastTap("NavigateToPage2Button");
+
+			_app.WaitForElement("Page2CommandBar");
+
+			var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
+
+			_app.Wait(TimeSpan.FromMilliseconds(500));
+
+			var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
+
+			ImageAssert.AreEqual(initial, final);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_Navigated_CommandBarShouldHideBackButtonTitle_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonTitle.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+
+			// Will set the global style for the CommandBar to remove the Back Button Title
+			_app.FastTap("SetGlobalStyleButton");
+
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateToPage2Button");
+			_app.FastTap("NavigateToPage2Button");
+
+			_app.WaitForElement("BackButtonTitleButton");
+
+			_app.FastTap("BackButtonTitleButton");
+
+			var textblock = _app.Marked("InfoTextBlock");
+
+			_app.WaitForDependencyPropertyValue(textblock, "Text", "PASSED");
+
+			// Removing the global style we added for the CommandBar preventing other UITest to fail
+			_app.FastTap("UnsetGlobalStyleButton");
 		}
 	}
 }

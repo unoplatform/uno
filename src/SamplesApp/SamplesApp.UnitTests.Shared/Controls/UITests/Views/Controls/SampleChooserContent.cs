@@ -9,12 +9,9 @@ namespace SampleControl.Entities
 {
 	[Windows.UI.Xaml.Data.Bindable]
 	[DebuggerDisplay("{" + nameof(ControlName) + "}")]
-	[GeneratedEquality]
 	public partial class SampleChooserContent : INotifyPropertyChanged
 	{
-		[EqualityKey]
 		public string ControlName { get; set; }
-		[EqualityHash]
 		public Type ViewModelType { get; set; }
 		public Type ControlType { get; set; }
 		public string[] Categories { get; set; }
@@ -39,5 +36,13 @@ namespace SampleControl.Entities
 
 		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
 			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+		public override bool Equals(object obj) =>
+			obj switch {
+				SampleChooserContent other => Equals(ControlName, other.ControlName),
+				_ => false
+			};
+
+		public override int GetHashCode() => ControlName.GetHashCode();
 	}
 }

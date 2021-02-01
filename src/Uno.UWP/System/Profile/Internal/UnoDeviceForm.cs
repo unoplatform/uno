@@ -10,5 +10,6 @@
 		Watch,
 		VirtualReality,
 		Desktop,
+		GameConsole,
 	}
 }

@@ -19,6 +19,7 @@ using AndroidMediaPlayer = Android.Media.MediaPlayer;
 using System.Collections.Generic;
 using Uno;
 using Uno.Helpers;
+using System.Linq;
 
 namespace Windows.Media.Playback
 {
@@ -134,20 +135,22 @@ namespace Windows.Media.Playback
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
 
-				if (Source is MediaPlaybackList)
+				Uri uri;
+				switch (Source)
 				{
-					_playlistItems = new List<Uri>();
-
-					var playlist = Source as MediaPlaybackList;
-					foreach (var mediaItem in playlist.Items)
-					{
-						_playlistItems.Add(mediaItem.Source.Uri);
-					}
+					case MediaPlaybackList playlist when playlist.Items.Count > 0:
+						SetPlaylistItems(playlist);
+						uri = _playlistItems[0];
+						break;
+					case MediaPlaybackItem item:
+						uri = item.Source.Uri;
+						break;
+					case MediaSource source:
+						uri = source.Uri;
+						break;
+					default:
+						throw new InvalidOperationException("Unsupported media source type");
 				}
-
-				var uri = _playlistItems?.Count > 0
-					? _playlistItems[0]
-					: ((MediaSource)Source).Uri;
 
 				SetVideoSource(uri);
 
@@ -159,6 +162,13 @@ namespace Windows.Media.Playback
 			{
 				OnMediaFailed(ex);
 			}
+		}
+
+		private void SetPlaylistItems(MediaPlaybackList playlist)
+		{
+			_playlistItems = playlist.Items
+				.Select(i => i.Source.Uri)
+				.ToList();
 		}
 
 		private void SetVideoSource(Uri uri)
@@ -240,7 +250,10 @@ namespace Windows.Media.Playback
 
 		private void StartPlayingHandler()
 		{
+#pragma warning disable 618
 			var handler = new Handler();
+#pragma warning restore 618
+
 			var runnable = new Runnable(() => { handler.Post(OnPlaying); });
 			if (!_executorService.IsShutdown)
 			{

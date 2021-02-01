@@ -34,16 +34,12 @@ namespace Windows.UI.Xaml.Controls
 		private void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
 			=> this.SetForeground(e.NewValue);
 
-		public TextBoxView(TextBox textBox, bool isMultiline) : base(isMultiline ? "textarea" : "input")
+		public TextBoxView(TextBox textBox, bool isMultiline)
+			: base(isMultiline ? "textarea" : "input")
 		{
 			IsMultiline = isMultiline;
 			_textBox = textBox;
 			SetTextNative(_textBox.Text);
-
-			SetStyle(
-				("overflow-x", "visible"),
-				("overflow-y", "visible")
-			);
 
 			if (FeatureConfiguration.TextBox.HideCaret)
 			{
@@ -57,8 +53,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private event EventHandler HtmlInput
 		{
-			add => RegisterEventHandler("input", value);
-			remove => UnregisterEventHandler("input", value);
+			add => RegisterEventHandler("input", value, GenericEventHandlers.RaiseEventHandler);
+			remove => UnregisterEventHandler("input", value, GenericEventHandlers.RaiseEventHandler);
 		}
 
 		internal bool IsMultiline { get; }
@@ -93,7 +89,8 @@ namespace Windows.UI.Xaml.Controls
 			InvalidateMeasure();
 		}
 
-		internal void SetTextNative(string text) => SetProperty("value", text);
+		internal void SetTextNative(string text)
+			=> SetProperty("value", text);
 
 		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
 

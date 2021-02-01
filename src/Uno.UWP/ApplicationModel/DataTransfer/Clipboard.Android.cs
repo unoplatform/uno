@@ -1,11 +1,12 @@
 ﻿#if __ANDROID__
+#nullable disable // Not supported by WinUI yet
+
 using Android.Content;
-using Android.Text.Method;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 using Uno.UI;
 
 namespace Windows.ApplicationModel.DataTransfer
@@ -14,53 +15,86 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		private const string ClipboardDataLabel = nameof(Clipboard);
 
-		public static void SetContent(DataPackage content)
+		public static void SetContent(DataPackage/* ? */ content)
 		{
 			if (content is null)
 			{
 				throw new ArgumentNullException(nameof(content));
 			}
 
+			// Notes:
+			// 1. We don't want to change the SetContent signature to async so
+			//    async code is run on the CoreDispatcher.
+			// 2. All async code is run in the same task to avoid potential threading concerns.
+			//    Otherwise, it would be possible to set the OS clipboard data (code at the end)
+			//    before one or more of the data formats is ready.
+			CoreDispatcher.Main.RunAsync(
+				CoreDispatcherPriority.High,
+				() => SetContentAsync(content));
+		}
+
+		internal static async Task SetContentAsync(DataPackage content)
+		{
+			var data = content?.GetView();
+
 			var items = new List<ClipData.Item>();
 			var mimeTypes = new List<string>();
-			if (content.Text != null)
+
+			if (data?.Contains(StandardDataFormats.Text) ?? false)
 			{
-				items.Add(new ClipData.Item(content.Text));
+				var text = await data.GetTextAsync();
+
+				items.Add(new ClipData.Item(text));
 				mimeTypes.Add("text/plaintext");
 			}
-			
-			if (content.Uri != null)
+
+			if (data != null)
 			{
-				var androidUri = Android.Net.Uri.Parse(content.Uri.ToString());
-				items.Add(new ClipData.Item(androidUri));
-				mimeTypes.Add("text/uri-list");
+				var uri = DataPackage.CombineUri(
+					data.Contains(StandardDataFormats.WebLink) ? (await data.GetWebLinkAsync()).ToString() : null,
+					data.Contains(StandardDataFormats.ApplicationLink) ? (await data.GetApplicationLinkAsync()).ToString() : null,
+					data.Contains(StandardDataFormats.Uri) ? (await data.GetUriAsync()).ToString() : null);
+
+				if (string.IsNullOrEmpty(uri) == false)
+				{
+					var androidUri = Android.Net.Uri.Parse(uri);
+
+					items.Add(new ClipData.Item(androidUri));
+					mimeTypes.Add("text/uri-list");
+				}
 			}
-			
-			if (content.Html != null)
+
+			if (data?.Contains(StandardDataFormats.Html) ?? false)
 			{
+				var html = await data.GetHtmlFormatAsync();
+
 				// Matches all tags
 				Regex regex = new Regex("(<.*?>\\s*)+", RegexOptions.Singleline);
 				// Replace tags by spaces and trim
-				var plainText = regex.Replace(content.Html, " ").Trim();
+				var plainText = regex.Replace(html, " ").Trim();
 
-				items.Add(new ClipData.Item(plainText, content.Html));
+				items.Add(new ClipData.Item(plainText, html));
 				mimeTypes.Add("text/html");
 			}
 
+			// Set all the data formats to the Android clipboard
 			if (items.Count > 0)
 			{
 				ClipData clipData = new ClipData(
 					new ClipDescription(ClipboardDataLabel, mimeTypes.ToArray()),
 					items[0]);
+
 				for (int itemIndex = 1; itemIndex < items.Count; itemIndex++)
 				{
 					clipData.AddItem(items[itemIndex]);
 				}
+
 				var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
 				if (manager is null)
 				{
 					return;
 				}
+
 				manager.PrimaryClip = clipData;
 			}
 			else
@@ -72,55 +106,88 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static DataPackageView GetContent()
 		{
+			var dataPackage = new DataPackage();
+
 			var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
 			if (manager is null)
 			{
-				return null;
+				return dataPackage.GetView();
 			}
 
 			var clipData = manager.PrimaryClip;
 
-			string clipText = null;
-			Uri clipUri = null;
-			string clipHtml = null;
-			for (int itemIndex = 0; itemIndex < clipData.ItemCount; itemIndex++)
+			Uri/* ? */ clipApplicationLink = null;
+			string/* ? */ clipHtml = null;
+			string/* ? */ clipText = null;
+			Uri/* ? */ clipUri = null;
+			Uri/* ? */ clipWebLink = null;
+
+			// Extract all the standard data format information from the clipboard.
+			// Each format can only be used once; therefore, the last occurrence of the format will be the one used.
+			if (clipData != null)
 			{
-				var itemText = clipData.GetItemAt(itemIndex).Text;
-				if (itemText != null)
+				for (int itemIndex = 0; itemIndex < clipData.ItemCount; itemIndex++)
 				{
-					clipText = itemText;
-				}
-				var itemUri = clipData.GetItemAt(itemIndex).Uri;
-				if (itemUri != null)
-				{
-					clipUri = new Uri(itemUri.ToString());
-				}
-				var itemHtml = clipData.GetItemAt(itemIndex).HtmlText;
-				if (itemText != null)
-				{
-					clipHtml = itemHtml;
+					var item = clipData.GetItemAt(itemIndex);
+
+					if (item != null)
+					{
+						var itemText = item.Text;
+						if (itemText != null)
+						{
+							clipText = itemText;
+						}
+
+						var itemUriStr = item.Uri?.ToString();
+						if (itemUriStr != null)
+						{
+							DataPackage.SeparateUri(
+								itemUriStr,
+								out string webLink,
+								out string applicationLink);
+
+							clipWebLink         = webLink != null ? new Uri(webLink) : null;
+							clipApplicationLink = applicationLink != null ? new Uri(applicationLink) : null;
+							clipUri             = new Uri(itemUriStr); // Deprecated but still added for compatibility
+						}
+
+						var itemHtml = item.HtmlText;
+						if (itemHtml != null)
+						{
+							clipHtml = itemHtml;
+						}
+					}
 				}
 			}
 
-			var clipView = new DataPackageView();
-
-			if (clipText != null)
+			// Add standard data formats to the data package.
+			// This can be done synchronously on Android since the data is already available from above.
+			if (clipApplicationLink != null)
 			{
-				clipView.SetFormatTask(StandardDataFormats.Text, Task.FromResult(clipText));
+				dataPackage.SetApplicationLink(clipApplicationLink);
 			}
 
 			if (clipHtml != null)
 			{
-				clipView.SetFormatTask(StandardDataFormats.Html, Task.FromResult(clipHtml));
+				dataPackage.SetHtmlFormat(clipHtml);
+			}
+
+			if (clipText != null)
+			{
+				dataPackage.SetText(clipText);
 			}
 
 			if (clipUri != null)
 			{
-				clipView.SetFormatTask(StandardDataFormats.Uri, Task.FromResult(clipUri));
-				clipView.SetFormatTask(StandardDataFormats.WebLink, Task.FromResult(clipUri));
+				dataPackage.SetUri(clipUri);
 			}
 
-			return clipView;
+			if (clipWebLink != null)
+			{
+				dataPackage.SetWebLink(clipWebLink);
+			}
+
+			return dataPackage.GetView();
 		}
 
 		public static void Clear()
@@ -130,7 +197,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				var clipData = ClipData.NewPlainText("", "");
 				manager.PrimaryClip = clipData;
 			}
-		}		
+		}
 
 		private static void StartContentChanged()
 		{

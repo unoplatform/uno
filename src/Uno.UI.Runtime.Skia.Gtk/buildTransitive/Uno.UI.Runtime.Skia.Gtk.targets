@@ -5,10 +5,10 @@
   </PropertyGroup>
   
   <Target Name="_UnoSkiaGtkFeatureDefines"
-		  BeforeTargets="BeforeCompile">
+		  BeforeTargets="PrepareForBuild">
 
 	<PropertyGroup>
-	  <UnoDefineConstants>$(UnoDefineConstants);HAS_UNO_SKIA;HAS_UNO_SKIA_GTK</UnoDefineConstants>
+	  <UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_GTK</UnoDefineConstants>
 	</PropertyGroup>
 
 	<!-- Merge the UnoDefineConstants with the existing constants -->

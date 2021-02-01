@@ -21,6 +21,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private const int CacheLimit = 10;
 		private const int NoTemplateItemId = -1;
+		private const int IsOwnContainerItemId = -2;
 		private readonly _VirtualizingPanelLayout _owner;
 		/// <summary>
 		/// Recycled item containers that can be reused as needed. This is actually multiple caches indexed by template id.
@@ -79,6 +80,12 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private FrameworkElement TryDequeueCachedContainer(int id)
 		{
+			if (id == IsOwnContainerItemId)
+			{
+				// If item is its own container, we shouldn't try to recycle another container
+				return null;
+			}
+
 			if (_itemContainerCache.TryGetValue(id, out var cache))
 			{
 				if (cache.Count > 0)
@@ -116,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var id = GetItemId(index);
 
-			if (!(_owner.XamlParent?.IsIndexItsOwnContainer(index) ?? false))
+			if (id != IsOwnContainerItemId) //If container was the item, it shouldn't be reycled
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
@@ -245,7 +252,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 			var item = ItemsControl?.GetItemFromIndex(index);
 			var template = ItemsControl?.ResolveItemTemplate(item);
-			var id = template?.GetHashCode() ?? NoTemplateItemId;
+			var isOwnContainer = ItemsControl?.IsItemItsOwnContainer(item) ?? false;
+			var id = isOwnContainer ? IsOwnContainerItemId
+				: template?.GetHashCode() ?? NoTemplateItemId;
 			_idCache.Add(index, id);
 
 			return id;

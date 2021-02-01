@@ -8,6 +8,9 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel;
+using Uno.Helpers.Theming;
+using Windows.UI.ViewManagement;
+using Uno.Extensions;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -16,11 +19,11 @@ using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActiv
 #endif
 
 #if XAMARIN_ANDROID
-using View = Android.Views.View;	
-using ViewGroup = Android.Views.ViewGroup;	
-using Font = Android.Graphics.Typeface;	
-using Android.Graphics;	
-using DependencyObject = System.Object;	
+using View = Android.Views.View;
+using ViewGroup = Android.Views.ViewGroup;
+using Font = Android.Graphics.Typeface;
+using Android.Graphics;
+using DependencyObject = System.Object;
 #elif XAMARIN_IOS
 using View = UIKit.UIView;	
 using ViewGroup = UIKit.UIView;	
@@ -40,8 +43,16 @@ namespace Windows.UI.Xaml
 	{
 		private bool _initializationComplete = false;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private ApplicationTheme? _requestedTheme;
 		private bool _themeSetExplicitly = false;
+		private ApplicationTheme? _requestedTheme;
+		private bool _systemThemeChangesObserved = false;
+		private string _requestedThemeForResources;
+
+		static Application()
+		{
+			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
+		}
 
 		[Preserve]
 		public static class TraceProvider
@@ -54,22 +65,25 @@ namespace Windows.UI.Xaml
 			public const int LauchedStart = 1;
 			public const int LauchedStop = 2;
 		}
-		
+
 		public static Application Current { get; private set; }
 
 		public DebugSettings DebugSettings { get; } = new DebugSettings();
+
+		public ApplicationRequiresPointerMode RequiresPointerMode { get; set; } = ApplicationRequiresPointerMode.Auto;
+
+		/// <summary>
+		/// Does not have any effect in Uno yet.
+		/// </summary>
+		[NotImplemented]
+		public FocusVisualKind FocusVisualKind { get; set; } = FocusVisualKind.HighVisibility;
 
 		public ApplicationTheme RequestedTheme
 		{
 			get
 			{
-				if (_requestedTheme == null)
-				{
-					// just cache the theme, but do not notify about a change unnecessarily	
-					_requestedTheme = GetDefaultSystemTheme();
-					ObserveSystemThemeChanges();
-				}
-				return _requestedTheme.Value;
+				EnsureInternalRequestedTheme();
+				return InternalRequestedTheme.Value;
 			}
 			set
 			{
@@ -77,13 +91,68 @@ namespace Windows.UI.Xaml
 				{
 					throw new NotSupportedException("Operation not supported");
 				}
-				// this flag makes sure the app will not respond to OS events	
-				_themeSetExplicitly = true;
-				SetRequestedTheme(value);
+				SetExplicitRequestedTheme(value);
 			}
 		}
 
-		public ResourceDictionary Resources { get; } = new ResourceDictionary();
+		private void EnsureInternalRequestedTheme()
+		{
+			if (InternalRequestedTheme == null)
+			{
+				// just cache the theme, but do not notify about a change unnecessarily	
+				InternalRequestedTheme = GetDefaultSystemTheme();
+			}
+		}
+
+		private ApplicationTheme? InternalRequestedTheme
+		{
+			get => _requestedTheme;
+			set
+			{
+				_requestedTheme = value;
+				UpdateRequestedThemesForResources();
+			}
+		}
+
+		internal static void UpdateRequestedThemesForResources()
+		{
+			Current.RequestedThemeForResources =
+				(ApplicationHelper.RequestedCustomTheme, Current.RequestedTheme) switch
+				{
+					(var custom, _) when !custom.IsNullOrEmpty() => custom,
+					(_, ApplicationTheme.Light) => "Light",
+					(_, ApplicationTheme.Dark) => "Dark",
+					_ => throw new InvalidOperationException($"Theme {Application.Current.RequestedTheme} is not valid"),
+				};
+		}
+
+		internal string RequestedThemeForResources
+		{
+			get
+			{
+				EnsureInternalRequestedTheme();
+				return _requestedThemeForResources;
+			}
+
+			private set => _requestedThemeForResources = value;
+		}
+
+		internal ElementTheme ActualElementTheme => (_themeSetExplicitly, RequestedTheme) switch
+		{
+			(true, ApplicationTheme.Light) => ElementTheme.Light,
+			(true, ApplicationTheme.Dark) => ElementTheme.Dark,
+			_ => ElementTheme.Default
+		};
+
+		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
+		{
+			// this flag makes sure the app will not respond to OS events
+			_themeSetExplicitly = explicitTheme.HasValue;
+			var theme = explicitTheme ?? GetDefaultSystemTheme();
+			SetRequestedTheme(theme);
+		}
+
+		public ResourceDictionary Resources { get; set; } = new ResourceDictionary();
 
 #pragma warning disable CS0067 // The event is never used
 		public event EventHandler<object> Resuming;
@@ -103,9 +172,11 @@ namespace Windows.UI.Xaml
 				var theme = GetDefaultSystemTheme();
 				SetRequestedTheme(theme);
 			}
+
+			UISettings.OnColorValuesChanged();
 		}
 
-#if !__ANDROID__
+#if !__ANDROID__ && !__MACOS__
 		[NotImplemented]
 		public void Exit()
 		{
@@ -126,9 +197,20 @@ namespace Windows.UI.Xaml
 
 		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
 
-		internal void InitializationCompleted() => _initializationComplete = true;
+		internal void InitializationCompleted()
+		{
+			if (!_systemThemeChangesObserved)
+			{
+				ObserveSystemThemeChanges();
+			}
+			_initializationComplete = true;
+		}
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
+
+		private ApplicationTheme GetDefaultSystemTheme() =>
+			SystemThemeHelper.SystemTheme == SystemTheme.Light ?
+				ApplicationTheme.Light : ApplicationTheme.Dark;
 
 		private IDisposable WritePhaseEventTrace(int startEventId, int stopEventId)
 		{
@@ -157,7 +239,8 @@ namespace Windows.UI.Xaml
 
 		internal void OnSuspending()
 		{
-			CoreApplication.RaiseSuspending(new SuspendingEventArgs(new SuspendingOperation(DateTime.Now.AddSeconds(30))));
+			var suspendingEventArgs = new SuspendingEventArgs(new SuspendingOperation(DateTime.Now.AddSeconds(30)));
+			CoreApplication.RaiseSuspending(suspendingEventArgs);
 
 			OnSuspendingPartial();
 		}
@@ -173,11 +256,11 @@ namespace Windows.UI.Xaml
 			OnWindowCreated(new WindowCreatedEventArgs(window));
 		}
 
-		internal void SetRequestedTheme(ApplicationTheme requestedTheme)
+		private void SetRequestedTheme(ApplicationTheme requestedTheme)
 		{
-			if (requestedTheme != _requestedTheme)
+			if (requestedTheme != InternalRequestedTheme)
 			{
-				_requestedTheme = requestedTheme;
+				InternalRequestedTheme = requestedTheme;
 
 				OnRequestedThemeChanged();
 			}
@@ -185,13 +268,20 @@ namespace Windows.UI.Xaml
 
 		private void OnRequestedThemeChanged()
 		{
-			if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
+			if (GetTreeRoot() is FrameworkElement root)
 			{
+				// Update theme bindings in application resources
+				Resources?.UpdateThemeBindings();
+
+				// Update theme bindings in system resources
+				ResourceResolver.UpdateSystemThemeBindings();
+
 				PropagateThemeChanged(root);
 			}
 
 			void PropagateThemeChanged(object instance)
 			{
+
 				// Update ThemeResource references that have changed
 				if (instance is FrameworkElement fe)
 				{
@@ -213,6 +303,19 @@ namespace Windows.UI.Xaml
 						PropagateThemeChanged(o);
 					}
 				}
+			}
+
+			// On some platforms, the user-set root is not the topmost FrameworkElement
+			FrameworkElement GetTreeRoot()
+			{
+				var current = Windows.UI.Xaml.Window.Current.Content as FrameworkElement;
+				var parent = current?.GetVisualTreeParent();
+				while (parent is FrameworkElement feParent)
+				{
+					current = feParent;
+					parent = current?.GetVisualTreeParent();
+				}
+				return current;
 			}
 		}
 	}

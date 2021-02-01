@@ -5,7 +5,13 @@
 // This file is a C# translation of the NavigationViewHeader.cpp file from WinUI controls.
 //
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Hosting;
+#else
 using Windows.UI.Xaml.Hosting;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {

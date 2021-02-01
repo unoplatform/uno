@@ -113,16 +113,39 @@ namespace Uno.UI
 			public static bool UseLegacyTemplateSelectorOverload { get; set; } = false;
 		}
 
+
+		public static class DependencyObject
+		{
+			/// <summary>
+			/// When set to true, the <see cref="DependencyObjectStore"/> will create hard references
+			/// instead of weak references for some highly used fields, in common cases to improve the
+			/// overall performance.
+			/// </summary>
+			/// <remarks>
+			/// This feature is disabled on WebAssembly as it reveals or creates a memory corruption issue
+			/// in the garbage collector. This can be revisited when upgrading tests to .NET 5+.
+			/// See https://github.com/unoplatform/uno/issues/4730 for details.
+			/// </remarks>
+			public static bool IsStoreHardReferenceEnabled { get; set; }
+#if __WASM__
+				= false;
+#else
+				= true;
+#endif
+		}
+
 		public static class Font
 		{
 			/// <summary>
 			/// Defines the default font to be used when displaying symbols, such as in SymbolIcon.
 			/// </summary>
 			public static string SymbolsFont { get; set; } =
-#if !__ANDROID__
+#if __SKIA__
+				"ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
+#elif !__ANDROID__
 				"Symbols";
 #else
-				"ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols";
+				"ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
 #endif
 			/// <summary>
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.
@@ -205,6 +228,7 @@ namespace Uno.UI
 		public static class ProgressRing
 		{
 			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
+			public static Uri DeterminateProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json");
 		}
 
 		public static class ListViewBase
@@ -269,6 +293,8 @@ namespace Uno.UI
 			/// <summary>
 			/// Determines if Uno.UI should be using native styles for controls that have
 			/// a native counterpart. (e.g. Button, Slider, ComboBox, ...)
+			///
+			/// By default this is true.
 			/// </summary>
 			public static bool UseUWPDefaultStyles { get; set; } = true;
 
@@ -281,6 +307,28 @@ namespace Uno.UI
 			/// appearance/comportment for a few particular controls, or vice versa.
 			/// </remarks>
 			public static IDictionary<Type, bool> UseUWPDefaultStylesOverride { get; } = new Dictionary<Type, bool>();
+
+			/// <summary>
+			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>
+			/// and <see cref="AppBarButton"/>) to use their native styles.
+			/// </summary>
+			public static void ConfigureNativeFrameNavigation()
+			{
+				SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
+				SetUWPDefaultStylesOverride<CommandBar>(useUWPDefaultStyle: false);
+				SetUWPDefaultStylesOverride<AppBarButton>(useUWPDefaultStyle: false);
+			}
+
+			/// <summary>
+			/// Override the native styles useage for control type <typeparamref name="TControl"/>.
+			/// </summary>
+			/// <typeparam name="TControl"></typeparam>
+			/// <param name="useUWPDefaultStyle">
+			/// Whether instances of <typeparamref name="TControl"/> should use the UWP default style.
+			/// If false, the native default style (if one exists) will be used.
+			/// </param>
+			public static void SetUWPDefaultStylesOverride<TControl>(bool useUWPDefaultStyle) where TControl : Windows.UI.Xaml.Controls.Control
+				=> UseUWPDefaultStylesOverride[typeof(TControl)] = useUWPDefaultStyle;
 		}
 
 		public static class TextBlock
@@ -343,6 +391,17 @@ namespace Uno.UI
 			public static int ShowDelay { get; set; } = 1000;
 
 			public static int ShowDuration { get; set; } = 7000;
+		}
+
+		public static class NativeFramePresenter
+		{
+#if __ANDROID__
+			/// <summary>
+			/// Determines if pages in the backstack are kept in the visual tree.
+			/// Defaults to false for performance considerations.
+			/// </summary>
+			public static bool AndroidUnloadInactivePages { get; set; } = false;
+#endif
 		}
 
 		public static class UIElement
@@ -423,6 +482,20 @@ namespace Uno.UI
 			[Obsolete("This flag is no longer used.")]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
+		}
+
+		public static class DatePicker
+		{
+#if __IOS__
+			public static bool UseLegacyStyle { get; set; } = false;
+#endif
+		}
+
+		public static class TimePicker
+		{
+#if __IOS__
+			public static bool UseLegacyStyle { get; set; } = false;
+#endif
 		}
 	}
 }

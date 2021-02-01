@@ -13,9 +13,13 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Uno;
+using Uno.Disposables;
 using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -34,8 +38,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints, IDependencyObjectParse
 	{
-		public
-			static class TraceProvider
+		public static class TraceProvider
 		{
 			public readonly static Guid Id = Guid.Parse("{DDDCCA61-5CB7-4585-95D7-58C5528AABE6}");
 
@@ -51,14 +54,14 @@ namespace Windows.UI.Xaml
 #else
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
-
+		
 		private bool _constraintsChanged;
 		private bool _suppressIsEnabled;
 
 		private bool _defaultStyleApplied = false;
 		private protected bool IsDefaultStyleApplied => _defaultStyleApplied;
 		/// <summary>
-		/// The current user-determined 'active Style'.
+		/// The current user-determined 'active Style'. This will either be the explicitly-set Style, if there is one, or otherwise the resolved implicit Style (either in the view hierarchy or in Application.Resources).
 		/// </summary>
 		private Style _activeStyle = null;
 
@@ -79,6 +82,25 @@ namespace Windows.UI.Xaml
 		/// Indicates that this view can participate in layout optimizations using the simplest logic.
 		/// </summary>
 		protected virtual bool IsSimpleLayout => false;
+
+		#region Tag Dependency Property
+
+#if __IOS__ || __MACOS__ || __ANDROID__
+#pragma warning disable 114 // Error CS0114: 'FrameworkElement.Tag' hides inherited member 'UIView.Tag'
+#endif
+		public object Tag
+		{
+			get => GetTagValue();
+			set => SetTagValue(value);
+		}
+#pragma warning restore 114 // Error CS0114: 'FrameworkElement.Tag' hides inherited member 'UIView.Tag'
+
+		[GeneratedDependencyProperty(DefaultValue = null)]
+		public static DependencyProperty TagProperty { get; } = CreateTagProperty();
+
+		#endregion
+
+		
 
 		partial void Initialize()
 		{
@@ -139,10 +161,6 @@ namespace Windows.UI.Xaml
 		/// <returns>The size that this object determines it needs during layout, based on its calculations of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
 		protected virtual Size MeasureOverride(Size availableSize)
 		{
-#if !NETSTANDARD2_0
-			LastAvailableSize = availableSize;
-#endif
-
 			var child = this.FindFirstChild();
 			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
 		}
@@ -238,7 +256,7 @@ namespace Windows.UI.Xaml
 		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
 		protected void ArrangeElement(View view, Rect finalRect)
 		{
-#if NETSTANDARD
+#if __WASM__
 			var adjust = GetBorderThickness();
 
 			// HTML moves the origin along with the border thickness.
@@ -246,6 +264,8 @@ namespace Windows.UI.Xaml
 			var rect = new Rect(finalRect.X - adjust.Left, finalRect.Y - adjust.Top, finalRect.Width, finalRect.Height);
 
 			view.Arrange(rect);
+#elif NETSTANDARD
+			view.Arrange(finalRect);
 #else
 			_layouter.ArrangeElement(view, finalRect);
 #endif
@@ -265,8 +285,15 @@ namespace Windows.UI.Xaml
 
 		partial void OnLoadingPartial()
 		{
+			this.StoreTryEnableHardReferences();
+
 			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
 			ApplyStyles();
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			this.StoreDisableHardReferences();
 		}
 
 		private protected void ApplyStyles()
@@ -301,7 +328,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#region Style DependencyProperty
+#region Style DependencyProperty
 
 		public Style Style
 		{
@@ -321,7 +348,7 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-		#endregion
+#endregion
 
 		private void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
@@ -356,7 +383,41 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private Style ResolveImplicitStyle() => (this as IDependencyObjectStoreProvider).Store.GetImplicitStyle();
+		private Style ResolveImplicitStyle() => this.StoreGetImplicitStyle();
+
+		#region Requested theme dependency property
+
+		public ElementTheme RequestedTheme
+		{
+			get => (ElementTheme)GetValue(RequestedThemeProperty);
+			set => SetValue(RequestedThemeProperty, value);
+		}
+
+		public static DependencyProperty RequestedThemeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(RequestedTheme),
+				typeof(ElementTheme),
+				typeof(FrameworkElement),
+				new PropertyMetadata(
+					ElementTheme.Default,
+					(o, e) => ((FrameworkElement)o).OnRequestedThemeChanged((ElementTheme)e.OldValue, (ElementTheme)e.NewValue)));
+
+		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
+		{
+			if (IsWindowRoot) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
+			{
+				// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
+				// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
+				Application.Current.SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(newValue));
+			}
+		}
+
+
+		#endregion
+
+		public ElementTheme ActualTheme => IsWindowRoot ?
+			Application.Current?.ActualElementTheme ?? ElementTheme.Default
+			: ElementTheme.Default;
 
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
@@ -607,11 +668,23 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal virtual void UpdateThemeBindings()
 		{
-			//TODO: should update bindings on non-UI DO children
+			Resources?.UpdateThemeBindings();
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
 		}
 
-		#region AutomationPeer
+		/// <summary>
+		/// Set correct default foreground for the current theme.
+		/// </summary>
+		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
+		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
+		{
+			(this).SetValue(foregroundProperty,
+							Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
+								? SolidColorBrushHelper.Black
+								: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
+		}
+
+#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
@@ -662,7 +735,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		#endregion
+#endregion
 
 #if !NETSTANDARD
 		private class FrameworkElementLayouter : Layouter

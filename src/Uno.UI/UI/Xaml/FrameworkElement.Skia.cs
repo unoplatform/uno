@@ -13,70 +13,37 @@ using View = Windows.UI.Xaml.UIElement;
 using System.Collections;
 using Microsoft.Extensions.Logging;
 using Uno.UI.Xaml;
+using System.Numerics;
 
 namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
-		private Size _actualSize;
-
 		private readonly static Thickness _thicknessCache = Thickness.Empty;
 
 		public FrameworkElement()
 		{
-			_log = this.Log();
-			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 			Initialize();
-		}
-
-		public new bool IsLoaded
-		{
-			get => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible
-			set => base.IsLoaded = value;
 		}
 
 		bool IFrameworkElementInternal.HasLayouter => true;
 
 		partial void Initialize();
 
-		protected internal readonly ILogger _log;
-		private protected readonly ILogger _logDebug;
 
-		partial void OnLoadingPartial();
-		private protected virtual void OnPostLoading()
-		{
-		}
 		public bool HasParent()
 		{
 			return Parent != null;
 		}
 
-		internal void SetActualSize(Size size) => _actualSize = size;
+		internal void SetActualSize(Size size) => AssignedActualSize = size;
 
 		public double ActualWidth => GetActualWidth();
-		public double ActualHeight => GetActualHeight();
 
-		private protected virtual double GetActualWidth() => _actualSize.Width;
-		private protected virtual double GetActualHeight() => _actualSize.Height;
+		public double ActualHeight => GetActualHeight();
 
 		partial void OnMeasurePartial(Size slotSize)
 		{
-		}
-
-		internal override void OnElementLoaded()
-		{
-			base.OnElementLoaded();
-			OnLoadingPartial();
-			_loading?.Invoke(this, new RoutedEventArgs());
-
-			OnLoaded();
-			_loaded?.Invoke(this, new RoutedEventArgs());
-		}
-
-		internal void OnElementUnloaded()
-		{
-			OnUnloaded();
-			_unloaded?.Invoke(this, new RoutedEventArgs());
 		}
 
 		public int InvalidateMeasureCallCount { get; private set; }

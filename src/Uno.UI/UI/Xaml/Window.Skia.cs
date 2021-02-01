@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -10,10 +12,12 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Composition;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
@@ -22,12 +26,13 @@ namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
-		private static Window _current;
-		private Grid _window;
+		private static Window? _current;
+		private Grid? _window;
 		// private PopupRoot _popupRoot;
 		// private ScrollViewer _rootScrollViewer;
-		private Border _rootBorder;
-		private UIElement _content;
+		private Border? _rootBorder;
+		private PopupRoot? _popupRoot;
+		private UIElement? _content;
 
 		public Window()
 		{
@@ -40,15 +45,23 @@ namespace Windows.UI.Xaml
 		{
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow();
+			CoreWindow.SetInvalidateRender(QueueInvalidateRender);
+			InitDragAndDrop();
 		}
 
-		internal Action InvalidateRender;
+		internal static Action InvalidateRender = () => { };
+		private bool _renderQueued = false;
 
 		internal void QueueInvalidateRender()
 		{
-			if (!_isMeasuring)
+			if (!_isMeasuring && !_renderQueued)
 			{
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => { InvalidateRender(); });
+				_renderQueued = true;
+
+				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => {
+					_renderQueued = false;
+					InvalidateRender();
+				});
 			}
 		}
 
@@ -93,8 +106,6 @@ namespace Windows.UI.Xaml
 						}
 					});
 				}
-
-				
 			}
 		}
 
@@ -112,13 +123,15 @@ namespace Windows.UI.Xaml
 				Bounds = newBounds;
 
 				InvalidateMeasure();
-				RaiseSizeChanged(new WindowSizeChangedEventArgs(size));
+				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
+
+				ApplicationView.GetForCurrentView().SetVisibleBounds(newBounds);
 			}
 		}
 
-        public Compositor Compositor { get; }
+		public Compositor Compositor { get; }
 
-        partial void InternalActivate()
+		partial void InternalActivate()
 		{
 			// WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.activate();");
 		}
@@ -128,37 +141,35 @@ namespace Windows.UI.Xaml
 			if (_window == null)
 			{
 				_rootBorder = new Border();
-				//_rootScrollViewer = new ScrollViewer()
-				//{
-				//	VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
-				//	HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-				//	VerticalScrollMode = ScrollMode.Disabled,
-				//	HorizontalScrollMode = ScrollMode.Disabled,
-				//	Content = _rootBorder
-				//};
-				//// _popupRoot = new PopupRoot();
-				//_window = new Grid()
-				//{
-				//	Visual = Compositor.CreateContainerVisual(),
-				//	Children =
-				//	{
-				//		_rootScrollViewer,
-				//		// , _popupRoot
-				//	}
-				//};
+				_popupRoot = new PopupRoot();
 
-				_window = new Grid {
-					IsLoaded = true,
-					Children = { _rootBorder }
+				_window = new Grid
+				{
+					Children =
+					{
+						_rootBorder,
+						_popupRoot
+						// Message Dialog => Those are currently using Popup, but they be upper
+						// Drag and drop => Those are added only when needed (they are actually not part of the WinUI visual tree and would have a negative perf impact)
+					}
 				};
 
+				UIElement.LoadingRootElement(_window);
+
 				Compositor.RootVisual = _window.Visual;
+
+				UIElement.RootElementLoaded(_window);
 			}
 
-			_rootBorder.Child = _content = content;
+			if (_rootBorder != null)
+			{
+				_rootBorder.Child = _content = content;
+			}
 		}
 
-		private UIElement InternalGetContent() => _content;
+		private UIElement InternalGetContent() => _content!;
+
+		private UIElement InternalGetRootElement() => _window!;
 
 		private static Window InternalGetCurrentWindow()
 		{
@@ -176,22 +187,28 @@ namespace Windows.UI.Xaml
 			{
 				this.Log().Debug($"Creating popup");
 			}
-			
-			var popupChild = popup.Child;
-			//_popupRoot.Children.Add(popupChild);
 
-			return new CompositeDisposable(
-				Disposable.Create(() => {
+			if (_popupRoot != null)
+			{
+				var popupPanel = popup.PopupPanel;
+				_popupRoot.Children.Add(popupPanel);
 
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				return new CompositeDisposable(
+					Disposable.Create(() =>
 					{
-						this.Log().Debug($"Closing popup");
-					}
 
-					//_popupRoot.Children.Remove(popupChild);
-				}),
-				VisualTreeHelper.RegisterOpenPopup(popup)
-			);
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"Closing popup");
+						}
+
+						_popupRoot.Children.Remove(popupPanel);
+					}),
+					VisualTreeHelper.RegisterOpenPopup(popup)
+				);
+			}
+
+			return new CompositeDisposable();
 		}
 	}
 }

@@ -54,7 +54,7 @@ namespace Windows.UI.Popups
 		{
 			var invokedCommand = new TaskCompletionSource<IUICommand>();
 
-			return new AsyncOperation<IUICommand>(async ct =>
+			return AsyncOperation.FromTask<IUICommand>(async ct =>
 			{
 				if (CoreDispatcher.Main.HasThreadAccess)
 				{

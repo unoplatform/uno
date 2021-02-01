@@ -3,6 +3,7 @@ parameters:
 
 jobs:
 - job: VS_Latest
+  displayName: 'NuGet Packages'
   timeoutInMinutes: 90
 
   pool: ${{ parameters.poolName }}
@@ -36,6 +37,13 @@ jobs:
     inputs:
       versionSpec: 4.9.1
       checkLatest: false
+
+  # Required to run the api comparison tool
+  - task: UseDotNet@2
+    displayName: 'Use .Net Core runtime 2.2.x'
+    inputs:
+      packageType: runtime
+      version: 2.2.x
 
   # Required for the Wasm uitests project
   - task: NodeTool@0
@@ -97,13 +105,22 @@ jobs:
       PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
       ArtifactName: uno-skia-artifacts
       ArtifactType: Container
+  
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Tizen Artifacts
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Tizen\bin\Release\tizen50
+      ArtifactName: uno-tizen-artifacts
+      ArtifactType: Container
 
   # Publish PR packages to local feed to enable canary testing from PR artifacts
-  - task: NuGetCommand@2
-    condition: and(eq(variables['System.PullRequest.IsFork'], 'False'), eq(variables['Build.Reason'], 'PullRequest'))
-    inputs:
-      command: 'push'
-      packagesToPush: '$(build.artifactstagingdirectory)/vslatest/**/*.nupkg'
-      nuGetFeedType: 'internal'
-      publishVstsFeed: '1dd81cbd-cb35-41de-a570-b0df3571a196/a70dae92-4e3d-4540-bf93-9b22ec98d19d'
-      allowPackageConflicts: true
+  # Temporarily disabled for quota considerations
+  #- task: NuGetCommand@2
+  #  condition: and(eq(variables['System.PullRequest.IsFork'], 'False'), eq(variables['Build.Reason'], 'PullRequest'))
+  #  inputs:
+  #    command: 'push'
+  #    packagesToPush: '$(build.artifactstagingdirectory)/vslatest/**/*.nupkg'
+  #    nuGetFeedType: 'internal'
+  #    publishVstsFeed: '1dd81cbd-cb35-41de-a570-b0df3571a196/a70dae92-4e3d-4540-bf93-9b22ec98d19d'
+  #    allowPackageConflicts: true

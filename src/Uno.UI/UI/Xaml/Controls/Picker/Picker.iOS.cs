@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Changes from IOS 9 doc.
 				// See following
-				// https://jira.appcelerator.org/browse/TIMOB-19203 
+				// https://jira.appcelerator.org/browse/TIMOB-19203
 				// https://developer.apple.com/library/prerelease/ios/releasenotes/General/RN-iOSSDK-9.0/
 				size = base.SizeThatFits(size);
 			}
@@ -148,11 +148,6 @@ namespace Windows.UI.Xaml.Controls
 					new[] { newSelectedItem }
 				)
 			);
-		}
-		
-		partial void OnDisplayMemberPathChangedPartial(string oldDisplayMemberPath, string newDisplayMemberPath)
-		{
-			this.UpdateItemTemplateSelectorForDisplayMemberPath(newDisplayMemberPath);
 		}
 	}
 }

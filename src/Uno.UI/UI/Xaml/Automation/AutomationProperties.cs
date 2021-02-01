@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Uno.UI;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Automation.Peers;
 
 namespace Windows.UI.Xaml.Automation
@@ -145,9 +144,20 @@ namespace Windows.UI.Xaml.Automation
 				view.ContentDescription = (string)args.NewValue;
 			}
 #elif __WASM__
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIElement uiElement)
+			if (dependencyObject is UIElement uiElement)
 			{
-				uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
+				if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+				{
+					uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
+				}
+
+				var role = FindHtmlRole(uiElement);
+				if (role != null)
+				{
+					uiElement.SetAttribute(
+						("aria-label", (string)args.NewValue),
+						("role", role));
+				}
 			}
 #endif
 		}
@@ -158,5 +168,50 @@ namespace Windows.UI.Xaml.Automation
 		public static void SetAutomationId(DependencyObject element, string value)
 			=> element.SetValue(AutomationIdProperty, value);
 		#endregion
+
+		public static int GetPositionInSet(global::Windows.UI.Xaml.DependencyObject element) => (int)element.GetValue(PositionInSetProperty);
+
+		public static void SetPositionInSet(DependencyObject element, int value) => element.SetValue(PositionInSetProperty, value);
+
+		public static DependencyProperty PositionInSetProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"PositionInSet", typeof(int),
+				typeof(AutomationProperties),
+				new FrameworkPropertyMetadata(default(int)));
+
+		public static int GetSizeOfSet(DependencyObject element) => (int)element.GetValue(SizeOfSetProperty);
+
+		public static void SetSizeOfSet(DependencyObject element, int value) => element.SetValue(SizeOfSetProperty, value);
+
+		public static DependencyProperty SizeOfSetProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"SizeOfSet", typeof(int),
+				typeof(AutomationProperties),
+				new FrameworkPropertyMetadata(default(int)));
+
+		public static AutomationLandmarkType GetLandmarkType(DependencyObject element) => (AutomationLandmarkType)element.GetValue(LandmarkTypeProperty);
+
+		public static void SetLandmarkType(DependencyObject element, AutomationLandmarkType value) => element.SetValue(LandmarkTypeProperty, value);
+
+		public static DependencyProperty LandmarkTypeProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"LandmarkType", typeof(AutomationLandmarkType),
+				typeof(AutomationProperties),
+				new FrameworkPropertyMetadata(default(AutomationLandmarkType)));
+
+#if __WASM__
+		private static string FindHtmlRole(UIElement uIElement) =>
+			uIElement switch
+			{
+				Button _ => "button",
+				RadioButton _ => "radio",
+				CheckBox _ => "checkbox",
+				TextBlock _ => "label",
+				TextBox _ => "textbox",
+				Slider _ => "slider",
+				_ => null
+			};
+#endif
+
 	}
 }

@@ -7,8 +7,8 @@ namespace Windows.UI.Xaml.Documents
 	#endif
 	public  partial class InlineCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Documents.Inline>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Documents.Inline>
 	{
-		#if false || false || false || __WASM__ || false || false || false
-		[global::Uno.NotImplemented("__WASM__")]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint Size
 		{
 			get

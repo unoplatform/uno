@@ -147,8 +147,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			control.InlineTemplateControl.ApplyTemplate();
 			control.TemplateFromResourceControl.ApplyTemplate();
 
-			control.ForceLoaded();
-
 			var text1InlineBefore = control.InlineTemplateControl.TextBlock1.Text;
 			var text1ResourceTemplateBefore = control.TemplateFromResourceControl.TextBlock1.Text;
 
@@ -470,6 +468,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var tx = page.myExtTextBox;
 			AssertEx.AssertHasColor(tx.Foreground, (Color)Colors.Honeydew);
 			AssertEx.AssertHasColor(tx.Background, (Color)Colors.AntiqueWhite);
+		}
+
+		[TestMethod]
+		public void When_Explicit_And_TargetProperty()
+		{
+			var page = new Test_SetterTarget();
+			Assert.AreEqual(page.myButton.Width, 42.0);
+			Assert.AreEqual(page.myButton.Height, 42.0);
 		}
 	}
 }

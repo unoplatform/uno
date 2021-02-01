@@ -18,7 +18,7 @@ namespace Uno.UI.Controls
 		private CompositeDisposable _subscriptions = new CompositeDisposable();
 		private readonly WeakReference _element;
 		private TNative _native;
-
+		private bool _isRendering;
 
 		public Renderer(TElement element)
 		{
@@ -48,8 +48,11 @@ namespace Uno.UI.Controls
 			}
 			set
 			{
-				_native = value;
-				OnNativeChanged();
+				if (!ReferenceEquals(_native, value))
+				{
+					_native = value;
+					OnNativeChanged();
+				}
 			}
 		}
 
@@ -71,9 +74,19 @@ namespace Uno.UI.Controls
 		public void Invalidate()
 		{
 			// We don't render anything if there's no rendering target
-			if (_native != null)
+			if (_native != null
+				// Prevent Render() being called reentrantly - this can happen when the Element's parent changes within the Render() method
+				&& !_isRendering)
 			{
-				Render();
+				try
+				{
+					_isRendering = true;
+					Render();
+				}
+				finally
+				{
+					_isRendering = false;
+				}
 			}
 		}
 
@@ -89,12 +102,17 @@ namespace Uno.UI.Controls
 
 	internal static class RendererHelper
 	{
-		private static WeakAttachedDictionary<DependencyObject, Type> _renderers = new WeakAttachedDictionary<DependencyObject, Type>();
+		private static readonly WeakAttachedDictionary<DependencyObject, Type> _renderers = new WeakAttachedDictionary<DependencyObject, Type>();
 
 		public static TRenderer GetRenderer<TElement, TRenderer>(this TElement element, Func<TRenderer> rendererFactory)
 			where TElement : DependencyObject
 		{
 			return _renderers.GetValue(element, typeof(TRenderer), rendererFactory);
 		}
+        public static TRenderer ResetRenderer<TElement, TRenderer>(this TElement element, Func<TRenderer> rendererFactory)
+            where TElement : DependencyObject
+        {
+            return _renderers.GetValue(element, typeof(TRenderer), rendererFactory);
+        }
 	}
 }

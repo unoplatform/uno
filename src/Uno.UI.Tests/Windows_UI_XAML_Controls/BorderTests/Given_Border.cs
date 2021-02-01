@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿#if !NETFX_CORE
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno;
 using Uno.Extensions;
 using Uno.Logging;
@@ -299,3 +300,4 @@ namespace Uno.UI.Tests.BorderTests
 		}
 	}
 }
+#endif

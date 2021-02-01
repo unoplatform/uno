@@ -501,10 +501,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			);
 		}
 
-		private (Rectangle host, float scale, FileInfo half, FileInfo final) BeginTransformGroupTest(string elementName)
+		private (Rectangle host, float scale, ScreenshotInfo half, ScreenshotInfo final) BeginTransformGroupTest(string elementName)
 		{
 			Run(_transformGroupTestControl, skipInitialScreenshot: true);
-			TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
 
 			var status = _app.Marked("Status");
 			var host = _app.GetRect(elementName);
@@ -517,13 +516,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			_app.Marked("StartButton").Tap();
 			_app.WaitForDependencyPropertyValue(status, "Text", "Paused");
 
-			var half = TakeScreenshot("half", ignoreInSnapshotCompare: true);
+			using var half = TakeScreenshot("half", ignoreInSnapshotCompare: true);
 
 			// Complete the animation
 			_app.Marked("ResumeButton").Tap();
 			_app.WaitForDependencyPropertyValue(status, "Text", "Completed");
 
-			var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
+			using var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
 
 			return (immutableHostRect, scale, half, final);
 		}

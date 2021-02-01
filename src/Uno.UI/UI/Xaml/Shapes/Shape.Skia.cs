@@ -12,6 +12,9 @@ using Uno.Extensions;
 using Windows.UI.Composition;
 using Uno.Disposables;
 using System.IO.Compression;
+using SkiaSharp;
+using Windows.Devices.Usb;
+using System.Numerics;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -31,56 +34,31 @@ namespace Windows.UI.Xaml.Shapes
 			InitCommonShapeProperties();
 		}
 
-		internal virtual SkiaGeometrySource2D GetGeometry(Size finalSize)
-		{
-			throw new NotSupportedException($"Path.GetGeometry must be implemented");
-		}
+		private Rect GetPathBoundingBox(SkiaGeometrySource2D path)
+			=> path.Geometry.Bounds.ToRect();
+
+		private bool IsFinite(double value) => !double.IsInfinity(value);
 
 		private void InitCommonShapeProperties() { }
 
-		protected override Size MeasureOverride(Size availableSize)
+		private protected void Render(Windows.UI.Composition.SkiaGeometrySource2D path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
 		{
-			var geometrySource = GetGeometry(availableSize);
-
-			return new Size(geometrySource.Geometry.Bounds.Width, geometrySource.Geometry.Bounds.Height);
-		}
-
-		protected override Size ArrangeOverride(Size finalSize)
-		{
-			var area = new Rect(0, 0, finalSize.Width, finalSize.Height);
-
-			switch (Stretch)
-			{
-				default:
-				case Stretch.None:
-					break;
-				case Stretch.Fill:
-					area = new Rect(0, 0, finalSize.Width, finalSize.Height);
-					break;
-				case Stretch.Uniform:
-					area = (area.Height > area.Width)
-						? (new Rect((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width))
-						: (new Rect((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height));
-					break;
-				case Stretch.UniformToFill:
-					area = (area.Height > area.Width)
-						? (new Rect((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height))
-						: (new Rect((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width));
-					break;
-			}
-
-			var shrinkValue = -ActualStrokeThickness / 2;
-			if (area != Rect.Empty)
-			{
-				area.Inflate(shrinkValue, shrinkValue);
-			}
-
-			var geometrySource = GetGeometry(finalSize);
-			var compositionPath = new CompositionPath(geometrySource);
+			var compositionPath = new CompositionPath(path);
 			var pathGeometry = Visual.Compositor.CreatePathGeometry();
 			pathGeometry.Path = compositionPath;
 
 			_pathSpriteShape = Visual.Compositor.CreateSpriteShape(pathGeometry);
+
+			if (scaleX != null && scaleY != null)
+			{
+				_pathSpriteShape.Scale = new Vector2((float)scaleX.Value, (float)scaleY.Value);
+			}
+			else
+			{
+				_pathSpriteShape.Scale = new Vector2(1, 1);
+			}
+
+			_pathSpriteShape.Offset = LayoutRound(new Vector2((float)(renderOriginX ?? 0), (float)(renderOriginY ?? 0)));
 
 			_rectangleVisual.Shapes.Clear();
 			_rectangleVisual.Shapes.Add(_pathSpriteShape);
@@ -88,47 +66,6 @@ namespace Windows.UI.Xaml.Shapes
 			UpdateFill();
 			UpdateStroke();
 			UpdateStrokeThickness();
-			return finalSize; // geometrySource.Geometry.Bounds.Size.ToSize();
-		}
-
-		partial void OnStrokeUpdatedPartial()
-		{
-			UpdateStroke();
-
-			InvalidateMeasure();
-		}
-
-
-		partial void OnFillUpdatedPartial()
-		{
-			UpdateFill();
-
-			InvalidateMeasure();
-		}
-
-		partial void OnStrokeThicknessUpdatedPartial()
-		{
-			if (StrokeThickness > 0 && StrokeThickness < 1)
-			{
-				StrokeThickness = 1;
-				return;
-			}
-
-			UpdateStrokeThickness();
-
-			InvalidateMeasure();
-		}
-
-		partial void OnStrokeDashArrayUpdatedPartial()
-		{
-			// _rectangleLayer.LineDashPattern = newValue.Safe().Select(d => new NSNumber(d)).ToArray();
-
-			InvalidateMeasure();
-		}
-
-		partial void OnStretchUpdatedPartial()
-		{
-			InvalidateMeasure();
 		}
 
 		private void UpdateFill()
@@ -156,7 +93,7 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			if (_pathSpriteShape != null)
 			{
-				_pathSpriteShape.StrokeThickness = (float)StrokeThickness;
+				_pathSpriteShape.StrokeThickness = (float)ActualStrokeThickness;
 			}
 		}
 

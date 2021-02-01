@@ -6,6 +6,8 @@ using System;
 using System.Linq;
 using Uno.UI.Extensions;
 using AppKit;
+using CoreAnimation;
+using CoreGraphics;
 
 namespace Windows.UI.Xaml
 {
@@ -15,8 +17,18 @@ namespace Windows.UI.Xaml
 		{
 			Initialize();
 			InitializePointers();
-		}		
-		
+		}
+
+		/// <summary>
+		/// Determines if InvalidateMeasure has been called
+		/// </summary>
+		internal bool IsMeasureDirty { get; private protected set; }
+
+		/// <summary>
+		/// Determines if InvalidateArrange has been called
+		/// </summary>
+		internal bool IsArrangeDirty { get; private protected set; }
+
 		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
@@ -121,6 +133,35 @@ namespace Windows.UI.Xaml
 			RaiseEvent(KeyUpEvent, args);
 
 			base.OnNativeKeyUp(evt);
+		}
+
+		partial void ApplyNativeClip(Rect rect)
+		{
+			if (rect.IsEmpty
+				|| double.IsPositiveInfinity(rect.X)
+				|| double.IsPositiveInfinity(rect.Y)
+				|| double.IsPositiveInfinity(rect.Width)
+				|| double.IsPositiveInfinity(rect.Height)
+			)
+			{
+				if (!ClippingIsSetByCornerRadius)
+				{
+					if (Layer != null)
+					{
+						this.Layer.Mask = null;
+					}
+				}
+				return;
+			}
+
+			WantsLayer = true;
+			if (Layer != null)
+			{ 
+				this.Layer.Mask = new CAShapeLayer
+				{
+					Path = CGPath.FromRect(rect.ToCGRect())
+				};
+			}
 		}
 	}
 }

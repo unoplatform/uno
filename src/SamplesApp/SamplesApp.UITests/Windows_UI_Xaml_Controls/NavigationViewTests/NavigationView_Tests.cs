@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
@@ -33,7 +34,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 			_app.WaitForDependencyPropertyValue(selectedItemText, "Text", "Save");
 		}
 
-
 		[Test]
 		[AutoRetry()]
 		public void NavigateBackAndForthBetweenMenuItemsAndSettings()
@@ -62,7 +62,38 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 			firstMenuItem.FastTap();
 
 			_app.WaitForElement("Page1NavViewContent");
+		}
 
+		[Test]
+		[AutoRetry()]
+		public void NavigationView_OnLightDismiss_TogglePaneButton_IsSizedCorrectly()
+		{
+			Run("SamplesApp.Samples.NavigationViewSample.NavigationViewSample");
+
+			var descendants = _app.Marked("nvSample").Descendant();
+
+			var lightDismissLayer = descendants.Marked("LightDismissLayer");
+			var dismissRect = _app.GetLogicalRect(lightDismissLayer);
+
+			var paneRoot = descendants.Marked("PaneRoot");
+			var paneRootRect = _app.GetLogicalRect(paneRoot);
+			var togglePaneButton = descendants.Marked("TogglePaneButton");
+
+			var togglePaneRect = _app.GetLogicalRect(togglePaneButton);
+			paneRootRect.Width.Should().Be(togglePaneRect.Width, "when NavigationView is opened, PaneRoot and TogglePaneButton should shared the same width");
+
+			// to light-dismiss the flyout, we need to tap the right side of LightDismissLayer that isnt occupied by PaneRoot
+			var dismissibleArea = new
+			{
+				CenterX = (paneRootRect.GetRight() + dismissRect.GetRight()) / 2,
+				CenterY = dismissRect.CenterY,
+			};
+			_app.TapCoordinates(dismissibleArea.CenterX, dismissibleArea.CenterY);
+
+			// refresh because FirstResult snapshots values
+			togglePaneRect = _app.GetLogicalRect(togglePaneButton);
+
+			togglePaneRect.Width.Should().BeLessThan(paneRootRect.Width, "when NavigationView is closed, TogglePaneButton should not take the width of PaneRoot");
 		}
 	}
 }

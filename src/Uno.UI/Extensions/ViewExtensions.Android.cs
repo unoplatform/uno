@@ -18,6 +18,7 @@ using System.Drawing;
 using Windows.UI.Core;
 using System.Threading.Tasks;
 using Android.Views.Animations;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI
 {
@@ -45,6 +46,15 @@ namespace Uno.UI
 			return view.Parent != null;
 		}
 
+		/// <summary>
+		/// Return First parent of the view of specified T type.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="view"></param>
+		/// <returns>First parent of the view of specified T type.</returns>
+		public static T FindFirstParent<T>(this IViewParent view) where T : class => FindFirstParent<T>(view, includeCurrent: false);
+
+		public static T FindFirstParent<T>(this IViewParent view, bool includeCurrent) where T : class => FindFirstParentOfView<T>(view as View, includeCurrent);
 
 		/// <summary>
 		/// Return First parent of the view of specified T type.
@@ -52,18 +62,13 @@ namespace Uno.UI
 		/// <typeparam name="T"></typeparam>
 		/// <param name="view"></param>
 		/// <returns>First parent of the view of specified T type.</returns>
-		public static T FindFirstParent<T>(this IViewParent view) where T : class => FindFirstParentOfView<T>(view as View);
+		public static T FindFirstParentOfView<T>(this View childView) where T : class => FindFirstParentOfView<T>(childView, includeCurrent: false);
 
-		/// <summary>
-		/// Return First parent of the view of specified T type.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="view"></param>
-		/// <returns>First parent of the view of specified T type.</returns>
-		public static T FindFirstParentOfView<T>(this View childView)
+		public static T FindFirstParentOfView<T>(this View childView, bool includeCurrent)
 			where T : class
 		{
-			var view = childView?.Parent;
+			var view = includeCurrent ? childView as IViewParent : null;
+			view ??= childView?.Parent;
 
 			while (view != null)
 			{
@@ -547,22 +552,6 @@ namespace Uno.UI
 			return Disposable.Create(() => view.RunIfNativeInstanceAvailable(v => v.Click -= handler));
 		}
 
-		/// <summary>
-		/// Gets an identifier that can be used for logging
-		/// </summary>
-		public static string GetDebugIdentifier(this View element)
-		{
-			if (element == null)
-			{
-				return "--NULL--";
-			}
-
-			var name = (element as IFrameworkElement)?.Name;
-			return name.HasValue()
-				? element.GetType().Name + "_" + name + "_" + element.GetHashCode()
-				: element.GetType().Name + "_" + element.GetHashCode();
-		}
-
 		public static Task AnimateAsync(this View view, Animation animation)
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -641,17 +630,19 @@ namespace Uno.UI
 					.Append(s)
 					.Append(innerView == viewOfInterest ? "*>" : ">")
 					.Append(innerView.ToString() + namePart)
-					.Append($"-({ViewHelper.PhysicalToLogicalPixels(innerView.Width)}x{ViewHelper.PhysicalToLogicalPixels(innerView.Height)})@({ViewHelper.PhysicalToLogicalPixels(innerView.Left)},{ViewHelper.PhysicalToLogicalPixels(innerView.Top)})")
+					.Append($"-({ViewHelper.PhysicalToLogicalPixels(innerView.Width):F1}x{ViewHelper.PhysicalToLogicalPixels(innerView.Height):F1})@({ViewHelper.PhysicalToLogicalPixels(innerView.Left):F1},{ViewHelper.PhysicalToLogicalPixels(innerView.Top):F1})")
 					.Append($"  {innerView.Visibility}")
 					.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
 					.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
 					.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 					.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
-					.Append(u != null ? $" DesiredSize={u.DesiredSize}" : "")
+					.Append(u != null ? $" DesiredSize={u.DesiredSize.ToString("F1")}" : "")
 					.Append(u != null && u.NeedsClipToSlot ? "CLIPPED_TO_SLOT" : "")
 					.Append(u != null && u.RenderTransform != null ? $"RENDER_TRANSFORM({u.RenderTransform.MatrixCore})" : "")
 					.Append(u?.Clip != null ? $" Clip={u.Clip.Rect}" : "")
 					.Append(u == null && vg != null ? $" ClipChildren={vg.ClipChildren}" : "")
+					.Append($" IsLayoutRequested={innerView.IsLayoutRequested}")
+					.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
 					.AppendLine();
 			}
 		}

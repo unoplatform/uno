@@ -10,13 +10,53 @@
     d:DesignWidth="400">
 
 	<StackPanel>
-		<TextBlock Text="Should show [OuterContentPresenter Tag]" />
+		<TextBlock Text="Should show [OuterContentPresenter Tag] 2 times" />
+
+		<ContentControl Tag="OuterContentPresenter Tag" Margin="0,20">
+			<ContentControl.Template>
+				<ControlTemplate TargetType="ContentControl">
+					<Border>
+						<ScrollViewer Tag="ScrollViewer Tag">
+							<ScrollViewer.Template>
+								<ControlTemplate TargetType="ScrollViewer">
+									<Border
+										BorderBrush="{TemplateBinding BorderBrush}"
+										BorderThickness="{TemplateBinding BorderThickness}"
+										CornerRadius="{TemplateBinding CornerRadius}"
+										Background="{TemplateBinding Background}">
+										<ScrollContentPresenter
+											x:Name="ScrollContentPresenter"
+											Margin="{TemplateBinding Padding}" />
+									</Border>
+								</ControlTemplate>
+							</ScrollViewer.Template>
+							<ContentPresenter Content="{TemplateBinding Tag}" x:Name="SUT_1" />
+						</ScrollViewer>
+					</Border>
+				</ControlTemplate>
+			</ContentControl.Template>
+		</ContentControl>
+
 		<ContentControl Tag="OuterContentPresenter Tag">
 			<ContentControl.Template>
 				<ControlTemplate TargetType="ContentControl">
 					<Border>
 						<ScrollViewer Tag="ScrollViewer Tag">
-							<ContentPresenter Content="{TemplateBinding Tag}" />
+							<ScrollViewer.Template>
+								<ControlTemplate TargetType="ScrollViewer">
+									<Border
+										BorderBrush="{TemplateBinding BorderBrush}"
+										BorderThickness="{TemplateBinding BorderThickness}"
+										CornerRadius="{TemplateBinding CornerRadius}"
+										Background="{TemplateBinding Background}">
+										<ScrollContentPresenter
+											x:Name="ScrollContentPresenter"
+											Margin="{TemplateBinding Padding}"
+											Content="{TemplateBinding Content}" />
+									</Border>
+								</ControlTemplate>
+							</ScrollViewer.Template>
+							<ContentPresenter Content="{TemplateBinding Tag}" x:Name="SUT_2" />
 						</ScrollViewer>
 					</Border>
 				</ControlTemplate>

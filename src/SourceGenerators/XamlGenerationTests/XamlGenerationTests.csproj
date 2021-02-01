@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid10.0;xamarinios10;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0;xamarinios10;netstandard2.0</TargetFrameworksCI>
+		<TargetFrameworks>MonoAndroid11.0;xamarinios10;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;netstandard2.0</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -21,7 +21,7 @@
 		<DefineConstants>$(DefineConstants);UNO_REFERENCE_API</DefineConstants>
 	</PropertyGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
 		<PackageReference Include="Xamarin.AndroidX.AppCompat"/>
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
@@ -58,10 +58,6 @@
 	<ItemGroup>
 		<PackageReference Include="xamarin.build.download" />
 	</ItemGroup>
-
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-	</PropertyGroup>
 
 	<ItemGroup Condition="$(IsMonoAndroid)">
 		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />

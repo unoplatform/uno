@@ -21,6 +21,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ThumbTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Test fails with Chrome 84")] // https://github.com/unoplatform/uno/issues/4097
 		public void When_DragAndDrop()
 		{
 			Run(_sample);
@@ -51,7 +52,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ThumbTests
 
 			if (!result.Success)
 			{
-				throw new InvalidOperationException("Cannot parse result: " + result);
+				throw new InvalidOperationException("Cannot parse result: " + raw);
 			}
 
 			return GetValues().ToDictionary(x => x.name, x => x.value);

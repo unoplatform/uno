@@ -7,34 +7,35 @@ using System.Text;
 using System.Linq;
 using Windows.UI.Composition;
 using System.Numerics;
+using Windows.Foundation.Metadata;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		// Even if this a concept of FrameworkElement, the loaded state is handled by the UIElement in order to avoid
-		// to cast to FrameworkElement each time a child is added or removed.
-		internal bool IsLoaded;
-
 		internal Size _unclippedDesiredSize;
 		internal Point _visualOffset;
-		internal List<UIElement> _children = new List<UIElement>();
 		private ContainerVisual _visual;
 		private Visibility _visibilityCache;
 		internal double _canvasTop;
 		internal double _canvasLeft;
 		private Rect _currentFinalRect;
 
-		private protected int? Depth { get; private set; }
-
 		public UIElement()
 		{
+			_log = this.Log();
+			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
+			_isFrameworkElement = this is FrameworkElement;
+
 			Initialize();
 			InitializePointers();
+			InitializeKeyboard();
 
 			RegisterPropertyChangedCallback(VisibilityProperty, OnVisibilityPropertyChanged);
 			RegisterPropertyChangedCallback(Controls.Canvas.LeftProperty, OnCanvasLeftChanged);
@@ -42,6 +43,7 @@ namespace Windows.UI.Xaml
 
 			UpdateHitTest();
 		}
+		partial void InitializeKeyboard();
 
 		private void OnCanvasTopChanged(DependencyObject sender, DependencyProperty dp)
 		{
@@ -58,6 +60,21 @@ namespace Windows.UI.Xaml
 			UpdateHitTest();
 
 			_visibilityCache = (Visibility)GetValue(VisibilityProperty);
+		}
+
+		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
+		{
+			UpdateOpacity();
+		}
+
+		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
+		{
+			UpdateHitTest();
+		}
+
+		private void UpdateOpacity()
+		{
+			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
 		}
 
 		internal ContainerVisual Visual
@@ -78,6 +95,8 @@ namespace Windows.UI.Xaml
 		/// The origin of the view's bounds relative to its parent.
 		/// </summary>
 		internal Point RelativePosition => _visualOffset;
+
+		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
 
 		public void AddChild(UIElement child, int? index = null)
 		{
@@ -107,90 +126,57 @@ namespace Windows.UI.Xaml
 			child.SetParent(this);
 			OnAddingChild(child);
 
-			_children.Add(child);
+			if (index is int actualIndex && actualIndex != _children.Count)
+			{
+				var currentVisual = _children[actualIndex];
+				_children.Insert(actualIndex, child);
+				Visual.Children.InsertAbove(child.Visual, currentVisual.Visual);
+			}
+			else
+			{
+				_children.Add(child);
+				Visual.Children.InsertAtTop(child.Visual);
+			}
 
-			UpdateChildVisual(child);
 			OnChildAdded(child);
 
 			InvalidateMeasure();
 		}
 
-		private void OnChildAdded(UIElement child)
+		internal void MoveChildTo(int oldIndex, int newIndex)
 		{
-
+			ApiInformation.TryRaiseNotImplemented("UIElement", "MoveChildTo");
 		}
 
-		internal virtual void OnElementLoaded()
+		internal bool RemoveChild(UIElement child)
 		{
-			IsLoaded = true;
-			foreach (var innerChild in _children)
+			if (_children.Remove(child))
 			{
-				innerChild.OnElementLoaded();
+				InnerRemoveChild(child);
+				return true;
 			}
-		}
-
-		private bool IsParentLoaded()
-		{
-			var root = Window.Current.Content;
-
-			var current = this.GetParent();
-
-			while (current != null && current != root)
+			else
 			{
-				current = this.GetParent();
+				return false;
 			}
-
-			return current == root;
-		}
-
-		private void OnAddingChild(UIElement child)
-		{
-			if (IsLoaded)
-			{
-				child.OnElementLoaded();
-			}
-		}
-
-		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
-		{
-			UpdateOpacity();
-		}
-
-		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
-		{
-			UpdateHitTest();
-		}
-
-		private void UpdateOpacity() => Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
-
-		private void UpdateChildVisual(UIElement child)
-		{
-			Visual.Children.InsertAtTop(child.Visual);
-		}
-
-		internal UIElement RemoveChild(UIElement child)
-		{
-			_children.Remove(child);
-			child.SetParent(null);
-
-			if (Visual != null)
-			{
-				Visual.Children.Remove(child.Visual);
-			}
-
-			return child;
 		}
 
 		internal void ClearChildren()
 		{
-			foreach (var child in _children)
+			foreach (var child in _children.ToArray())
 			{
-				child.SetParent(null);
-				// OnChildRemoved(child);
+				InnerRemoveChild(child);
 			}
 
 			_children.Clear();
 			InvalidateMeasure();
+		}
+
+		private void InnerRemoveChild(UIElement child)
+		{
+			child.SetParent(null);
+			Visual?.Children.Remove(child.Visual);
+			OnChildRemoved(child);
 		}
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
@@ -207,18 +193,13 @@ namespace Windows.UI.Xaml
 
 		public IntPtr Handle { get; set; }
 
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
-		{
-			throw new NotSupportedException();
-		}
-
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
 			UpdateOpacity();
 
 			if (newVisibility == Visibility.Collapsed)
 			{
-				_desiredSize = new Size(0, 0);
+				LayoutInformation.SetDesiredSize(this, new Size(0, 0));
 				_size = new Size(0, 0);
 			}
 		}
@@ -227,7 +208,7 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-		internal void ArrangeVisual(Rect finalRect, bool clipToBounds, Rect? clippedFrame = default)
+		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments =
 				VisualTreeHelper.GetParent(this) is UIElement parent
@@ -253,23 +234,18 @@ namespace Windows.UI.Xaml
 					throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 				}
 
-				Rect? getClip()
+				Rect? clip;
+				if (this is Controls.ScrollViewer)
 				{
-					// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
-					// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
-					if (this is Controls.ScrollViewer)
-					{
-						return null;
-					}
-					else if (Clip != null)
-					{
-						return Clip.Rect;
-					}
-
-					return new Rect(0, 0, newRect.Width, newRect.Height);
+					clip = (Rect?)null;
+				}
+				else
+				{
+					clip = clippedFrame;
 				}
 
-				OnArrangeVisual(newRect, getClip());
+				OnArrangeVisual(newRect, clip);
+				OnViewportUpdated(clippedFrame ?? Rect.Empty);
 			}
 			else
 			{
@@ -279,22 +255,47 @@ namespace Windows.UI.Xaml
 
 		internal virtual void OnArrangeVisual(Rect rect, Rect? clip)
 		{
-			Visual.Offset = new Vector3((float)rect.X, (float)rect.Y, 0);
-			Visual.Size = new Vector2((float)rect.Width, (float)rect.Height);
+			var roundedRect = LayoutRound(rect);
 
-			if (clip is Rect rectClip)
+			Visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0);
+			Visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
+			Visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
+
+			ApplyNativeClip(clip ?? Rect.Empty);
+		}
+
+		partial void ApplyNativeClip(Rect clip)
+		{
+			if (ClippingIsSetByCornerRadius)
 			{
-				Visual.Clip = new InsetClip() {
-					TopInset = (float)rectClip.Top,
-					LeftInset = (float)rectClip.Left,
-					BottomInset = (float)rectClip.Bottom,
-					RightInset = (float)rectClip.Right,
-				};
+				return; // already applied
 			}
-			else
+
+			if (clip.IsEmpty)
 			{
 				Visual.Clip = null;
 			}
+			else
+			{
+				var roundedRectClip = LayoutRound(clip);
+
+				Visual.Clip = Visual.Compositor.CreateInsetClip(
+					topInset: (float)roundedRectClip.Top,
+					leftInset: (float)roundedRectClip.Left,
+					bottomInset: (float)roundedRectClip.Bottom,
+					rightInset: (float)roundedRectClip.Right
+				);
+			}
 		}
+
+		partial void ShowVisual()
+			=> Visual.IsVisible = true;
+
+		partial void HideVisual()
+			=> Visual.IsVisible = false;
+
+#if DEBUG
+		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);
+#endif
 	}
 }

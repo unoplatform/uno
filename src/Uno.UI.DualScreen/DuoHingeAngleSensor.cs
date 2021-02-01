@@ -58,11 +58,17 @@ namespace Uno.UI.DualScreen
 				.AddMilliseconds(timestamp / 1000000.0);
 		}
 
-		private void StartReading() =>
+		private void StartReading()
+		{
 			_hingeSensor.OnSensorChanged += OnSensorChanged;
+			_hingeSensor.StartListening();
+		}
 
-		private void StopReading() =>
+		private void StopReading()
+		{
 			_hingeSensor.OnSensorChanged -= OnSensorChanged;
+			_hingeSensor.StopListening();
+		}
 
 		private void OnSensorChanged(object sender, HingeSensor.HingeSensorChangedEventArgs e) =>
 			_readingChanged?.Invoke(this, new NativeHingeAngleReading(e.HingeAngle, TimestampToDateTimeOffset(e.SensorEvent.Timestamp)));

@@ -1,3 +1,5 @@
+// MUX Reference PersonPicture.cpp, commit de78834
+
 using System;
 using System.Threading.Tasks;
 using Uno.UI.Helpers.WinUI;
@@ -13,7 +15,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class PersonPicture : Controls.Control
+	public partial class PersonPicture : Controls.Control
 	{
 		/// <summary>
 		/// XAML Element for the first TextBlock matching x:Name of InitialsTextBlock.
@@ -64,21 +66,6 @@ namespace Windows.UI.Xaml.Controls
 		/// The ImageSource from the Contact property.
 		/// </summary>
 		ImageSource m_contactImageSource;
-		private readonly string SR_GroupName				= "GroupName";
-		private readonly string SR_PersonName				= "PersonName";
-		private readonly string SR_BadgeItemTextOverride	= "BadgeItemTextOverride";
-		private readonly string SR_BadgeIconTextOverride	= "BadgeIconTextOverride";
-		private readonly string SR_BadgeIcon				= "BadgeIcon";
-		private readonly string SR_BadgeItemSingular		= "BadgeItemSingular";
-		private readonly string SR_BadgeItemPlural7			= "BadgeItemPlural7";
-		private readonly string SR_BadgeItemPlural2			= "BadgeItemPlural2";
-		private readonly string SR_BadgeItemPlural5			= "BadgeItemPlural5";
-		private readonly string SR_BadgeItemPlural6			= "BadgeItemPlural6";
-		private readonly string SR_BadgeItemPlural1			= "BadgeItemPlural1";
-		private readonly string SR_BadgeItemPlural3			= "BadgeItemPlural3";
-		private readonly string SR_BadgeItemPlural4			= "BadgeItemPlural4";
-
-		public PersonPictureTemplateSettings TemplateSettings { get; private set; }
 
 		public PersonPicture()
 		{
@@ -88,8 +75,6 @@ namespace Windows.UI.Xaml.Controls
 
 			Unloaded += OnUnloaded;
 			SizeChanged += OnSizeChanged;
-
-			this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
 		}
 
 		async Task<BitmapImage> LoadImageAsync(IRandomAccessStreamReference thumbStreamReference)
@@ -279,7 +264,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (m_badgeGlyphIcon != null)
 				{
-						m_badgeGlyphIcon.Glyph = "";
+					m_badgeGlyphIcon.Glyph = "";
 				}
 			}
 
@@ -372,7 +357,7 @@ namespace Windows.UI.Xaml.Controls
 			// if none exist, it defaults to "Person"
 			if (IsGroup)
 			{
-				contactName = ResourceLoader.GetForCurrentView().GetString(SR_GroupName);
+				contactName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_GroupName);
 			}
 			else if (contact != null && !string.IsNullOrEmpty(contact.DisplayName))
 			{
@@ -388,7 +373,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				contactName = ResourceLoader.GetForCurrentView().GetString(SR_PersonName);
+				contactName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PersonName);
 			}
 
 			// BadgeInformation portion of the AutomationName is set to 'n items' if there is a BadgeNumber,
@@ -399,7 +384,7 @@ namespace Windows.UI.Xaml.Controls
 				if (!string.IsNullOrEmpty(BadgeText))
 				{
 					automationName = StringUtil.FormatString(
-						ResourceLoader.GetForCurrentView().GetString(SR_BadgeItemTextOverride),
+						ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemTextOverride),
 						contactName,
 						BadgeNumber,
 						BadgeText);
@@ -417,14 +402,14 @@ namespace Windows.UI.Xaml.Controls
 				if (!string.IsNullOrEmpty(BadgeText))
 				{
 					automationName = StringUtil.FormatString(
-						ResourceLoader.GetForCurrentView().GetString(SR_BadgeIconTextOverride),
+						ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeIconTextOverride),
 						contactName,
 						BadgeText);
 				}
 				else
 				{
 					automationName = StringUtil.FormatString(
-						ResourceLoader.GetForCurrentView().GetString(SR_BadgeIcon),
+						ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeIcon),
 						contactName);
 				}
 			}
@@ -436,42 +421,42 @@ namespace Windows.UI.Xaml.Controls
 			AutomationProperties.SetName(this, automationName);
 		}
 
-		string GetLocalizedPluralBadgeItemStringResource(int  numericValue)
+		string GetLocalizedPluralBadgeItemStringResource(int numericValue)
 		{
 			int valueMod10 = numericValue % 10;
 			string value;
 
 			if (numericValue == 1)  // Singular
 			{
-				value = ResourceLoader.GetForCurrentView().GetString(SR_BadgeItemSingular);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemSingular);
 			}
 			else if (numericValue == 2) // 2
 			{
-				value = ResourceLoader.GetForCurrentView().GetString(SR_BadgeItemPlural7);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural7);
 			}
 			else if (numericValue == 3 || numericValue == 4) // 3,4
 			{
-				value = ResourceLoader.GetForCurrentView().GetString(SR_BadgeItemPlural2);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural2);
 			}
 			else if (numericValue >= 5 && numericValue <= 10) // 5-10
 			{
-				value = ResourceLoader.GetForCurrentView().GetString(SR_BadgeItemPlural5);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural5);
 			}
 			else if (numericValue >= 11 && numericValue <= 19) // 11-19
 			{
-				value = ResourceLoader.GetForCurrentView().GetString(SR_BadgeItemPlural6);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural6);
 			}
 			else if (valueMod10 == 1) // 21, 31, 41, etc.
 			{
-				value = ResourceLoader.GetForCurrentView().GetString(SR_BadgeItemPlural1);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural1);
 			}
 			else if (valueMod10 >= 2 && valueMod10 <= 4) // 22-24, 32-34, 42-44, etc.
 			{
-				value = ResourceLoader.GetForCurrentView().GetString(SR_BadgeItemPlural3);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural3);
 			}
 			else // Everything else... 0, 20, 25-30, 35-40, etc.
 			{
-				value = ResourceLoader.GetForCurrentView().GetString(SR_BadgeItemPlural4);
+				value = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemPlural4);
 			}
 
 			return value;
@@ -682,7 +667,7 @@ namespace Windows.UI.Xaml.Controls
 				m_badgingEllipse.Height = newSize * 0.5;
 				m_badgingEllipse.Width = newSize * 0.5;
 				m_badgingBackgroundEllipse.Height = newSize * 0.5;
-				m_badgingBackgroundEllipse.Width =newSize * 0.5;
+				m_badgingBackgroundEllipse.Width = newSize * 0.5;
 				m_badgeNumberTextBlock.FontSize = Math.Max(1.0, m_badgingEllipse.Height * 0.6);
 				m_badgeGlyphIcon.FontSize = Math.Max(1.0, m_badgingEllipse.Height * 0.6);
 			}

@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,7 +10,8 @@ namespace Windows.UI.Composition
 		private List<CompositionShape> _shapes = new List<CompositionShape>();
 		private ShapeVisual shapeVisual;
 
-		internal CompositionShapeCollection(ShapeVisual shapeVisual) => this.shapeVisual = shapeVisual;
+		internal CompositionShapeCollection(Compositor compositor, ShapeVisual shapeVisual) : base(compositor)
+			=> this.shapeVisual = shapeVisual;
 
 		public int Count => _shapes.Count;
 

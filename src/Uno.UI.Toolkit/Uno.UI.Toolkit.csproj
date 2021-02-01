@@ -1,9 +1,9 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid10.0;uap10.0.17763;xamarinios10;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0;uap10.0.17763;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;uap10.0.17763;xamarinios10;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;uap10.0.17763;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
-	
+
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
@@ -13,14 +13,17 @@
 		<RootNamespace>Uno.UI.Toolkit</RootNamespace>
 		<Product>$(AssemblyName) ($(TargetFramework))</Product>
 		<DefaultLanguage>en-US</DefaultLanguage>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
 
-	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions. 
+	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions.
 	(Introduced with support libraries 28.0.0.1) -->
 	<PropertyGroup>
 		<XamarinAndroidSupportSkipVerifyVersions>true</XamarinAndroidSupportSkipVerifyVersions>
@@ -37,13 +40,13 @@
     <PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
-	
+
   <ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
 		<PackageReference Include="Xamarin.AndroidX.AppCompat"/>
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
@@ -89,6 +92,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Page Remove="Themes\Generic.xaml" />
 		<Page Include="Themes\Generic.xaml" />
 	</ItemGroup>
 
@@ -96,24 +100,25 @@
 		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
 
 		<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
-		<Page Remove="@(Page)" />
+		<PageToRemove Remove="@(Page)" />
+		<Page Remove="@(PageToRemove)" />
 	</ItemGroup>
 
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) or '$(TargetFramework)'=='netstandard2.0'" />
 
 	<Import Project="..\Common.targets" />
-	
+
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_OverrideTargetFramework Condition="'$(_OverrideTargetFramework)' == 'uap10.0.17763'">UAP</_OverrideTargetFramework>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

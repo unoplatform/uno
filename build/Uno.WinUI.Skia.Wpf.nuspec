@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
+  <metadata minClientVersion="5.0">
 	<id>Uno.WinUI.Skia.Wpf</id>
 	<version>1.0.0.0</version>
 	<title>Uno.UI</title>

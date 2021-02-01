@@ -1,4 +1,4 @@
-﻿#if !__IOS__ && !__MACOS__
+﻿#if !__IOS__ && !__MACOS__ && !__SKIA__
 #define LEGACY_SHAPE_MEASURE
 #endif
 
@@ -31,7 +31,15 @@ namespace Windows.UI.Xaml.Shapes
 				defaultValue: default(PointCollection),
 			    options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
 #if LEGACY_SHAPE_MEASURE
-				propertyChangedCallback: (s, e) => ((Polyline)s).OnPointsChanged()
+				propertyChangedCallback: (s, e) =>
+				{
+					var polyline = (Polyline)s;
+					polyline.OnPointsChanged();
+#if __WASM__
+					(e.OldValue as PointCollection)?.UnRegisterChangedListener(polyline.OnPointsChanged);
+					(e.NewValue as PointCollection)?.RegisterChangedListener(polyline.OnPointsChanged);
+#endif
+				}
 #else
 				propertyChangedCallback: (s, e) =>
 				{

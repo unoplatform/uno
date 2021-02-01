@@ -146,19 +146,13 @@ namespace Windows.UI.Xaml
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
 		public void ApplyCompiledBindings()
-		{
-			_properties.ApplyCompiledBindings();
-			InvokeCompiledBindingsCallbacks();
-			UpdateResourceBindings(isThemeChangedUpdate: false);
-		}
+			=> _properties.ApplyCompiledBindings();
 
-		private IDisposable? RegisterCompiledBindingsUpdates()
-			// Compiled bindings propagation is performed through all non-FrameworkElement providers
-			// to avoid executing this code twice because all FrameworkElement instances call 
-			// ApplyCompiledBindings when FrameworkElement.Loading is raised.
-			=> ActualInstance is IFrameworkElement 
-				? null 
-				: DependencyObjectExtensions.RegisterCompiledBindingsUpdateCallback(Parent, ApplyCompiledBindings);
+		/// <summary>
+		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
+		/// </summary>
+		internal void ApplyElementNameBindings()
+			=> _properties.ApplyElementNameBindings();
 
 		private string GetOwnerDebugString()
 			=> ActualInstance?.GetType().ToString() ?? "[collected]";
@@ -342,13 +336,23 @@ namespace Windows.UI.Xaml
 			}
 			else if (binding is ResourceBinding resourceBinding)
 			{
-				_resourceBindings = _resourceBindings ?? new Dictionary<DependencyProperty, ResourceBinding>();
-				_resourceBindings[dependencyProperty] = resourceBinding;
+				_resourceBindings = _resourceBindings ?? new ResourceBindingCollection();
+				_resourceBindings.Add(dependencyProperty, resourceBinding);
 			}
 			else
 			{
 				throw new NotSupportedException("Only Windows.UI.Xaml.Data.Binding is supported for bindings.");
 			}
+		}
+
+		public void SetResourceBinding(DependencyProperty dependencyProperty, object resourceKey, bool isTheme, object context)
+		{
+			var precedence = _overriddenPrecedences?.Count > 0
+				? _overriddenPrecedences.Peek()
+				: default;
+
+			var binding = new ResourceBinding(resourceKey, isTheme, context, precedence ?? DependencyPropertyValuePrecedences.Local);
+			SetBinding(dependencyProperty, binding);
 		}
 
 		public void SetBinding(string dependencyProperty, BindingBase binding)
@@ -370,7 +374,7 @@ namespace Windows.UI.Xaml
 			if (fullBinding != null)
 			{
 				var boundProperty = DependencyProperty.GetProperty(_originalObjectType, dependencyProperty) 
-					?? FindStandardProperty(_originalObjectType, dependencyProperty);
+					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.CompiledSource != null);
 
 				if (boundProperty != null)
 				{
@@ -386,9 +390,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Finds a DependencyProperty for the specified C# property
 		/// </summary>
-		private DependencyProperty? FindStandardProperty(Type originalObjectType, string dependencyProperty)
+		private DependencyProperty? FindStandardProperty(Type originalObjectType, string dependencyProperty, bool allowPrivateMembers)
 		{
-			var propertyType = BindingPropertyHelper.GetPropertyType(originalObjectType, dependencyProperty);
+			var propertyType = BindingPropertyHelper.GetPropertyType(originalObjectType, dependencyProperty, allowPrivateMembers);
 
 			if (propertyType != null)
 			{
@@ -423,7 +427,12 @@ namespace Windows.UI.Xaml
 		{
 			var property = DependencyProperty.GetProperty(_originalObjectType, propertyName);
 
-			if(property != null)
+			if(property == null && propertyName != null)
+			{
+				property = FindStandardProperty(_originalObjectType, propertyName, false);
+			}
+
+			if (property != null)
 			{
 				SetBindingValue(value, property);
 			}

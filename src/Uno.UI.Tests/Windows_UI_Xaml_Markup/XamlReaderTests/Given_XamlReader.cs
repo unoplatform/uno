@@ -715,6 +715,24 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual("Result is 42", r.Resources["myString"]);
 		}
 
+		[TestMethod]
+		public void When_IList_TabView()
+		{
+			var s = GetContent(nameof(When_IList_TabView));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var tabView1 = r.FindName("tabView1") as Microsoft.UI.Xaml.Controls.TabView;
+
+			Assert.AreEqual(2, tabView1.TabItems.Count);
+		}
+
+		[TestMethod]
+		public void When_StateTrigger_PropertyPath()
+		{
+			var s = GetContent(nameof(When_StateTrigger_PropertyPath));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;

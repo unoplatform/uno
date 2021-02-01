@@ -38,15 +38,15 @@ echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emu
 
 echo $ANDROID_HOME/emulator/emulator -list-avds
 
+echo "Checking for hardware acceleration"
+$ANDROID_HOME/emulator/emulator -accel-check
+
 echo "Starting emulator"
 
 # Start emulator in background
 nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x800 -memory 2048 -no-audio -no-snapshot -netfast -qemu > /dev/null 2>&1 &
 
 export IsUiAutomationMappingEnabled=true
-
-# build the tests, while the emulator is starting
-msbuild /r /p:Configuration=$BUILDCONFIGURATION $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
 # Wait for the emulator to finish booting
 $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
@@ -75,6 +75,12 @@ export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$S
 export UNO_UITEST_PLATFORM=Android
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/uitests-android-build/android/uno.platform.unosampleapp-Signed.apk
 
+export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME.txt
+export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
+
+cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
+
 cd $BUILD_SOURCESDIRECTORY/build
 
 export NUNIT_VERSION=3.11.1
@@ -86,18 +92,32 @@ mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 # required by Xamarin.UITest
 cd $UNO_UITEST_SCREENSHOT_PATH
 
+## Build the NUnit configuration file
+echo "--trace=Verbose" > $UNO_TESTS_RESPONSE_FILE
+echo "--framework=mono" >> $UNO_TESTS_RESPONSE_FILE
+echo "--inprocess" >> $UNO_TESTS_RESPONSE_FILE
+echo "--agents=1" >> $UNO_TESTS_RESPONSE_FILE
+echo "--workers=1" >> $UNO_TESTS_RESPONSE_FILE
+echo "--result=$UNO_ORIGINAL_TEST_RESULTS" >> $UNO_TESTS_RESPONSE_FILE
+echo "--timeout=120000" >> $UNO_TESTS_RESPONSE_FILE
+
+if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
+    echo "--testlist \"$UNO_TESTS_FAILED_LIST\"" >> $UNO_TESTS_RESPONSE_FILE
+else
+    echo "--where \"$TEST_FILTERS\"" >> $UNO_TESTS_RESPONSE_FILE
+fi
+
+echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
+
+## Run NUnit tests
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
-	--trace=Verbose \
-	--framework=mono \
-	--inprocess \
-	--agents=1 \
-	--workers=1 \
-	--result=$BUILD_SOURCESDIRECTORY/build/TestResult.xml \
-	--timeout=120000 \
-	--where "$TEST_FILTERS" \
-	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/$BUILDCONFIGURATION/net47/SamplesApp.UITests.dll \
-	|| true
+    @$UNO_TESTS_RESPONSE_FILE || true
 
-$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log.txt
+## Dump the emulator's system log
+$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log.1.txt
 
-cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
+## Export the failed tests list for reuse in a pipeline retry
+pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
+dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+popd

@@ -5,39 +5,44 @@
 // This file is a C# translation of the NavigationViewTemplateSettings.cpp file from WinUI controls.
 //
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class NavigationViewTemplateSettings : global::Windows.UI.Xaml.DependencyObject
+	public  partial class NavigationViewTemplateSettings : DependencyObject
 	{
-		public  global::Windows.UI.Xaml.Visibility BackButtonVisibility
+		public Visibility BackButtonVisibility
 		{
-			get => (global::Windows.UI.Xaml.Visibility)GetValue(BackButtonVisibilityProperty);
+			get => (Visibility)GetValue(BackButtonVisibilityProperty);
 			internal set => SetValue(BackButtonVisibilityProperty, value);
 		}
 
-		public  global::Windows.UI.Xaml.Visibility LeftPaneVisibility
+		public Visibility LeftPaneVisibility
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Visibility)GetValue(LeftPaneVisibilityProperty);
+				return (Visibility)GetValue(LeftPaneVisibilityProperty);
 			}
 			internal set => SetValue(LeftPaneVisibilityProperty, value);
 		}
 
-		public  global::Windows.UI.Xaml.Visibility OverflowButtonVisibility
+		public Visibility OverflowButtonVisibility
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Visibility)GetValue(OverflowButtonVisibilityProperty);
+				return (Visibility)GetValue(OverflowButtonVisibilityProperty);
 			}
 			internal set => SetValue(OverflowButtonVisibilityProperty, value);
 		}
 
-		public  global::Windows.UI.Xaml.Visibility PaneToggleButtonVisibility
+		public Visibility PaneToggleButtonVisibility
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Visibility)GetValue(PaneToggleButtonVisibilityProperty);
+				return (Visibility)GetValue(PaneToggleButtonVisibilityProperty);
 			}
 			internal set => SetValue(PaneToggleButtonVisibilityProperty, value);
 		}
@@ -60,55 +65,55 @@ namespace Windows.UI.Xaml.Controls
 			internal set => SetValue(TopPaddingProperty, value);
 		}
 
-		public  global::Windows.UI.Xaml.Visibility TopPaneVisibility
+		public Visibility TopPaneVisibility
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Visibility)GetValue(TopPaneVisibilityProperty);
+				return (Visibility)GetValue(TopPaneVisibilityProperty);
 			}
 			internal set => SetValue(TopPaneVisibilityProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty BackButtonVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"BackButtonVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
+		public static DependencyProperty BackButtonVisibilityProperty { get; } =
+		DependencyProperty.Register(
+			"BackButtonVisibility", typeof(Visibility), 
+			typeof(NavigationViewTemplateSettings), 
 			new FrameworkPropertyMetadata(Visibility.Collapsed));
 
-		public static global::Windows.UI.Xaml.DependencyProperty LeftPaneVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"LeftPaneVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
+		public static DependencyProperty LeftPaneVisibilityProperty { get; } =
+		DependencyProperty.Register(
+			"LeftPaneVisibility", typeof(Visibility), 
+			typeof(NavigationViewTemplateSettings), 
 			new FrameworkPropertyMetadata(Visibility.Visible));
 
-		public static global::Windows.UI.Xaml.DependencyProperty OverflowButtonVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"OverflowButtonVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
+		public static DependencyProperty OverflowButtonVisibilityProperty { get; } =
+		DependencyProperty.Register(
+			"OverflowButtonVisibility", typeof(Visibility), 
+			typeof(NavigationViewTemplateSettings), 
 			new FrameworkPropertyMetadata(Visibility.Collapsed));
 
-		public static global::Windows.UI.Xaml.DependencyProperty PaneToggleButtonVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PaneToggleButtonVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
+		public static DependencyProperty PaneToggleButtonVisibilityProperty { get; } =
+		DependencyProperty.Register(
+			"PaneToggleButtonVisibility", typeof(Visibility), 
+			typeof(NavigationViewTemplateSettings), 
 			new FrameworkPropertyMetadata(Visibility.Visible));
 
-		public static global::Windows.UI.Xaml.DependencyProperty SingleSelectionFollowsFocusProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
+		public static DependencyProperty SingleSelectionFollowsFocusProperty { get; } =
+		DependencyProperty.Register(
 			"SingleSelectionFollowsFocus", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
+			typeof(NavigationViewTemplateSettings), 
 			new FrameworkPropertyMetadata(false));
 
-		public static global::Windows.UI.Xaml.DependencyProperty TopPaddingProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
+		public static DependencyProperty TopPaddingProperty { get; } =
+		DependencyProperty.Register(
 			"TopPadding", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
+			typeof(NavigationViewTemplateSettings), 
 			new FrameworkPropertyMetadata(0.0));
 
-		public static global::Windows.UI.Xaml.DependencyProperty TopPaneVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TopPaneVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
+		public static DependencyProperty TopPaneVisibilityProperty { get; } =
+		DependencyProperty.Register(
+			"TopPaneVisibility", typeof(Visibility), 
+			typeof(NavigationViewTemplateSettings), 
 			new FrameworkPropertyMetadata(Visibility.Collapsed));
 	}
 }

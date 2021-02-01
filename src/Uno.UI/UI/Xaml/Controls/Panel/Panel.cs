@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -21,7 +22,7 @@ using View = MonoTouch.UIKit.UIView;
 namespace Windows.UI.Xaml.Controls
 {
 	[Markup.ContentProperty(Name = "Children")]
-	public partial class Panel : FrameworkElement, ICustomClippingElement
+	public partial class Panel : FrameworkElement, ICustomClippingElement, IPanel
 	{
 #if NET461 || NETSTANDARD2_0
 		private new UIElementCollection _children;
@@ -34,8 +35,6 @@ namespace Windows.UI.Xaml.Controls
 		partial void Initialize()
 		{
 			_children = new UIElementCollection(this);
-
-			IFrameworkElementHelper.Initialize(this);
 		}
 
 		private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -80,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public UIElementCollection Children => _children;
 
-#region ChildrenTransitions Dependency Property
+		#region ChildrenTransitions Dependency Property
 
 		public TransitionCollection ChildrenTransitions
 		{
@@ -143,7 +142,7 @@ namespace Windows.UI.Xaml.Controls
 
 #endregion
 
-#region BorderThickness DependencyProperty
+		#region BorderThickness DependencyProperty
 
 		public Thickness BorderThickness
 		{
@@ -163,9 +162,9 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-#endregion
+		#endregion
 
-#region BorderBrush Dependency Property
+		#region BorderBrush Dependency Property
 
 #if XAMARIN_ANDROID
 		private Brush _borderBrushStrongReference;
@@ -195,9 +194,9 @@ namespace Windows.UI.Xaml.Controls
 					propertyChangedCallback: (s, e) => ((Panel)s).OnBorderBrushChanged((Brush)e.OldValue, (Brush)e.NewValue)
 				)
 			);
-#endregion
+		#endregion
 
-#region CornerRadius DependencyProperty
+		#region CornerRadius DependencyProperty
 
 		public CornerRadius CornerRadius
 		{
@@ -217,9 +216,9 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-#endregion
+		#endregion
 
-#region IsItemsHost DependencyProperty
+		#region IsItemsHost DependencyProperty
 		public static DependencyProperty IsItemsHostProperty { get ; } = DependencyProperty.Register(
 			"IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(default(bool)));
 

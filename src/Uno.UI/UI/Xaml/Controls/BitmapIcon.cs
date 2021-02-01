@@ -15,7 +15,6 @@ namespace Windows.UI.Xaml.Controls
 		public BitmapIcon()
 		{
 			this.SetValue(ForegroundProperty, SolidColorBrushHelper.Black, DependencyPropertyValuePrecedences.Inheritance);
-
 		}
 
 		protected override Size MeasureOverride(Size availableSize)

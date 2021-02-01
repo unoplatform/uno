@@ -3,6 +3,7 @@ parameters:
 
 jobs:
 - job: Wasm_UITests_Build
+  displayName: 'WebAssembly UI Tests (Build)'
   container: nv-bionic-wasm
 
   pool:
@@ -35,11 +36,6 @@ jobs:
 
     displayName: 'Build sample app'
 
-  - bash: |
-      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
-
-    displayName: 'Build Tests'
-
   - task: CopyFiles@2
     displayName: 'Publish Wasm Site'
     inputs:
@@ -50,16 +46,6 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
-  - task: CopyFiles@2
-    displayName: 'Publish Wasm UITest binaries'
-    inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.UITests/bin/Release/net47
-      Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/test-bin
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: false
-      
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
@@ -68,11 +54,15 @@ jobs:
 
 
 - job: Wasm_UITests_Snap
-  dependsOn: Wasm_UITests_Build
+  displayName: 'WebAssembly UI Tests (Snapshots Run)'
+  dependsOn:
+  - Wasm_UITests_Build
+  - SamplesApp_UITests_Build
+
   container: nv-bionic-wasm
 
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-20.04'
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -84,6 +74,12 @@ jobs:
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: wasm-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/optimize-roslyn-mono.yml
@@ -121,11 +117,14 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  dependsOn: Wasm_UITests_Build
+  displayName: 'WebAssembly UI Tests (Automated Run)'
+  dependsOn:
+  - Wasm_UITests_Build
+  - SamplesApp_UITests_Build
   container: nv-bionic-wasm
 
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: ${{ parameters.vmImage }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -145,6 +144,20 @@ jobs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+        artifactName: uitests-failure-results
+        downloadPath: '$(build.sourcesdirectory)/build'
+
   - bash: |
       chmod +x $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
       $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
@@ -158,7 +171,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testResultsFiles: '$(build.sourcesdirectory)/build/wasm-uitest-binaries/TestResult.xml'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       testRunTitle: 'WebAssembly Test Run'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
@@ -169,4 +182,11 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
       ArtifactType: Container

@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private protected override bool TryOpenSourceSync(out _NativeImage image)
 		{
 			// Convert RGB colorspace.
-			var bgraBuffer = _buffer.Data;
+			var bgraBuffer = _buffer.ToArray();
 			var rgbaBuffer = new byte[bgraBuffer.Length];
 
 			for (var i = 0; i < bgraBuffer.Length; i += 4)

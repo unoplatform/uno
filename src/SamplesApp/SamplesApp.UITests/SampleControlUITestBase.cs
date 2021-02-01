@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
 using Uno.UITest.Helpers;
@@ -16,7 +17,7 @@ namespace SamplesApp.UITests
 	{
 		protected IApp _app;
 		private static int _totalTestFixtureCount;
-		private double? _scaling;
+		private float? _scaling;
 
 		public SampleControlUITestBase()
 		{
@@ -127,7 +128,7 @@ namespace SamplesApp.UITests
 			}
 		}
 
-		public FileInfo TakeScreenshot(string stepName, bool? ignoreInSnapshotCompare = null)
+		public ScreenshotInfo TakeScreenshot(string stepName, bool? ignoreInSnapshotCompare = null)
 			=> TakeScreenshot(
 				stepName,
 				ignoreInSnapshotCompare != null
@@ -135,7 +136,7 @@ namespace SamplesApp.UITests
 					: null
 			);
 
-		public FileInfo TakeScreenshot(string stepName, ScreenshotOptions options)
+		public ScreenshotInfo TakeScreenshot(string stepName, ScreenshotOptions? options)
 		{
 			if(_app == null)
 			{
@@ -177,7 +178,7 @@ namespace SamplesApp.UITests
 				SetOptions(fileInfo, options);
 			}
 
-			return fileInfo;
+			return new ScreenshotInfo(fileInfo, stepName) ;
 		}
 
 		public void SetOptions(FileInfo screenshot, ScreenshotOptions options)
@@ -280,24 +281,69 @@ namespace SamplesApp.UITests
 			}
 		}
 
-		internal double GetDisplayScreenScaling()
+		private class PhysicalRect : IAppRect
 		{
-			var scalingRaw = _app.InvokeGeneric("browser:SampleRunner|GetDisplayScreenScaling", "0");
-
-			if (_scaling == null)
+			public PhysicalRect(IAppRect logicalRect, double scaling)
 			{
-				if (double.TryParse(scalingRaw?.ToString(), out var scaling))
-				{
-					Console.WriteLine($"Display Scaling: {scaling}");
-					_scaling = scaling / 100;
-				}
-				else
-				{
-					_scaling = 1;
-				}
+				var s = (float)scaling;
+				Bottom = logicalRect.Bottom * s;
+				Right = logicalRect.Right * s;
+				CenterY = logicalRect.CenterY * s;
+				CenterX = logicalRect.CenterX * s;
+				Y = logicalRect.Y * s;
+				X = logicalRect.X * s;
+				Height = logicalRect.Height * s;
+				Width = logicalRect.Width * s;
 			}
 
-			return _scaling.Value;
+			public float Width { get; }
+			public float Height { get; }
+			public float X { get; }
+			public float Y { get; }
+			public float CenterX { get; }
+			public float CenterY { get; }
+			public float Right { get; }
+			public float Bottom { get; }
+		}
+
+		public IAppRect ToPhysicalRect(IAppRect logicalRect)
+		{
+			if (logicalRect is PhysicalRect p)
+			{
+				return p;
+			}
+			return new PhysicalRect(logicalRect, GetDisplayScreenScaling());
+		}
+
+		internal float GetDisplayScreenScaling() => _app.GetDisplayScreenScaling();
+
+		internal float LogicalToPhysical(float logical) => logical * GetDisplayScreenScaling();
+
+		internal float PhysicalToLogical(float physical) => physical / GetDisplayScreenScaling();
+
+		protected bool GetIsCurrentRotationLandscape(string elementName)
+		{
+			if (!GetSupportsRotation())
+			{
+				return true;
+			}
+
+			var sampleRect = _app.GetRect(elementName);
+			var b = sampleRect.Width > sampleRect.Height;
+			return b;
+		}
+
+		protected static bool GetSupportsRotation()
+		{
+			var currentPlatform = AppInitializer.GetLocalPlatform();
+			var supportsRotation = currentPlatform == Platform.Android || currentPlatform == Platform.iOS;
+			return supportsRotation;
+		}
+
+		protected static bool GetIsTouchInteraction()
+		{
+			var currentPlatform = AppInitializer.GetLocalPlatform();
+			return currentPlatform == Platform.Android || currentPlatform == Platform.iOS;
 		}
 	}
 }

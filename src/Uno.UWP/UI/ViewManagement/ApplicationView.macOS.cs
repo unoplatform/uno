@@ -6,11 +6,15 @@ using System.Runtime.CompilerServices;
 using AppKit;
 using Uno.Extensions;
 using Uno.Logging;
+using Windows.Foundation;
+using CoreGraphics;
 
 namespace Windows.UI.ViewManagement
 {
     partial class ApplicationView
-	{
+    {
+	    private string _title = string.Empty;
+
 		internal void SetCoreBounds(NSWindow keyWindow, Foundation.Rect windowBounds)
 		{
             VisibleBounds = windowBounds;
@@ -25,15 +29,15 @@ namespace Windows.UI.ViewManagement
 
 		public string Title
 		{
-			get
-			{
-				VerifyKeyWindowInitialized();
-				return NSApplication.SharedApplication.KeyWindow.Title;
-			}
+			get => IsKeyWindowInitialized() ? NSApplication.SharedApplication.KeyWindow.Title : _title;
 			set
 			{
-				VerifyKeyWindowInitialized();
-				NSApplication.SharedApplication.KeyWindow.Title = value;
+				if (IsKeyWindowInitialized())
+				{
+					NSApplication.SharedApplication.KeyWindow.Title = value;
+				}
+
+				_title = value;
 			}
 		}
 
@@ -64,13 +68,43 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
+
+		public bool TryResizeView(Size value)
+		{
+			VerifyKeyWindowInitialized();
+
+			var window = NSApplication.SharedApplication.KeyWindow;
+			var frame = window.Frame;
+			frame.Size = value;
+			window.SetFrame(frame, true, true);
+			return true;
+		}
+
+		public void SetPreferredMinSize(Size minSize)
+		{
+			VerifyKeyWindowInitialized();
+
+			var window = NSApplication.SharedApplication.KeyWindow;
+			window.MinSize = new CGSize(minSize.Width, minSize.Height);
+		}
+
+		internal void SyncTitleWithWindow(NSWindow window)
+		{
+			if (!string.IsNullOrWhiteSpace(_title))
+			{
+				window.Title = _title;
+			}
+		}
+
 		private void VerifyKeyWindowInitialized([CallerMemberName]string propertyName = null)
 		{
-			if (NSApplication.SharedApplication.KeyWindow == null)
+			if (!IsKeyWindowInitialized())
 			{
 				throw new InvalidOperationException($"{propertyName} API must be used after KeyWindow is set");
 			}
 		}
-	}
+
+		private bool IsKeyWindowInitialized() => NSApplication.SharedApplication.KeyWindow != null;
+    }
 }
 #endif

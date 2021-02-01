@@ -19,10 +19,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		private ScrollBarVisibility _horizotalScrollBarVisibility;
-		private ScrollMode _horizontalScrollMode1;
-		private ScrollMode _verticalScrollMode1;
-
-		private static readonly string[] HorizontalModeClasses = { "scrollmode-x-disabled", "scrollmode-x-enabled", "scrollmode-x-auto" };
 
 		internal Size ScrollBarSize
 		{
@@ -97,28 +93,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ScrollMode HorizontalScrollMode
-		{
-			get => _horizontalScrollMode1;
-			set
-			{
-				_horizontalScrollMode1 = value;
-				SetClasses(HorizontalModeClasses, (int)value);
-			}
-		}
-
-		private static readonly string[] VerticalModeClasses = { "scrollmode-y-disabled", "scrollmode-y-enabled", "scrollmode-y-auto" };
-
-		public ScrollMode VerticalScrollMode
-		{
-			get => _verticalScrollMode1;
-			set
-			{
-				_verticalScrollMode1 = value;
-				SetClasses(VerticalModeClasses, (int)value);
-			}
-		}
-
 		public float MinimumZoomScale { get; private set; }
 
 		public float MaximumZoomScale { get; private set; }
@@ -130,8 +104,11 @@ namespace Windows.UI.Xaml.Controls
 			get { return _verticalScrollBarVisibility; }
 			set
 			{
-				_verticalScrollBarVisibility = value;
-				SetClasses(VerticalVisibilityClasses, (int)value);
+				if (_verticalScrollBarVisibility != value)
+				{
+					_verticalScrollBarVisibility = value;
+					SetClasses(VerticalVisibilityClasses, (int)value);
+				}
 			}
 		}
 		private static readonly string[] HorizontalVisibilityClasses = { "scroll-x-auto", "scroll-x-disabled", "scroll-x-hidden", "scroll-x-visible" };
@@ -141,21 +118,36 @@ namespace Windows.UI.Xaml.Controls
 			get { return _horizotalScrollBarVisibility; }
 			set
 			{
-				_horizotalScrollBarVisibility = value;
-				SetClasses(HorizontalVisibilityClasses, (int)value);
+				if (_horizotalScrollBarVisibility != value)
+				{
+					_horizotalScrollBarVisibility = value;
+					SetClasses(HorizontalVisibilityClasses, (int)value);
+				}
 			}
 		}
 
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			RegisterEventHandler("scroll", (EventHandler)OnScroll);
+			RestoreScroll();
+			RegisterEventHandler("scroll", (EventHandler)OnScroll, GenericEventHandlers.RaiseEventHandler);
+		}
+
+		private void RestoreScroll()
+		{
+			if (TemplatedParent is ScrollViewer sv)
+			{
+				if (sv.HorizontalOffset > 0 || sv.VerticalOffset > 0)
+				{
+					ScrollTo(sv.HorizontalOffset, sv.VerticalOffset, disableAnimation: true);
+				}
+			}
 		}
 
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-			UnregisterEventHandler("scroll", (EventHandler)OnScroll);
+			UnregisterEventHandler("scroll", (EventHandler)OnScroll, GenericEventHandlers.RaiseEventHandler);
 		}
 
 		public void ScrollTo(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
