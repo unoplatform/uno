@@ -264,22 +264,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsDependencyObject(XamlType xamlType)
 		{
-			return IsType(xamlType, XamlConstants.Types.DependencyObject);
+			return IsType(xamlType, _dependencyObjectSymbol);
 		}
 
 		private bool IsAndroidView(XamlType xamlType)
 		{
-			return IsType(xamlType, "Android.Views.View");
+			return IsType(xamlType, _androidViewSymbol);
 		}
 
 		private bool IsIOSUIView(XamlType xamlType)
 		{
-			return IsType(xamlType, "UIKit.UIView");
+			return IsType(xamlType, _iOSViewSymbol);
 		}
 
 		private bool IsMacOSNSView(XamlType xamlType)
 		{
-			return IsType(xamlType, "AppKit.NSView");
+			return IsType(xamlType, _appKitViewSymbol);
 		}
 
 		/// <summary>

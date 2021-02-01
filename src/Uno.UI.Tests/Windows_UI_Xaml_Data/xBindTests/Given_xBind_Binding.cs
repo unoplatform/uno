@@ -693,6 +693,39 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_xLoad_DataTemplate()
+		{
+			var SUT = new Binding_xLoad_DataTemplate();
+
+			SUT.ForceLoaded();
+
+			var data = new Binding_xLoad_DataTemplate_Data()
+			{
+				InnerText = "Salsepareille"
+			};
+
+			SUT.root.Content = data;
+
+			var innerRoot = SUT.FindName("innerRoot") as Grid;
+			Assert.IsNotNull(innerRoot);
+
+			Assert.AreEqual(1, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+
+			data.TopLevelVisiblity = true;
+
+			Assert.AreEqual(0, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+
+			var innerTextBlock = SUT.FindName("innerTextBlock") as TextBlock;
+			Assert.IsNotNull(innerTextBlock);
+			Assert.AreEqual(data.InnerText, innerTextBlock.Text);
+
+			data.TopLevelVisiblity = false;
+
+			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
+			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
+		}
+
+		[TestMethod]
 		public void When_PropertyChanged_Empty()
 		{
 			var SUT = new Binding_PropertyChangedAll();
