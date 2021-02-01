@@ -501,13 +501,20 @@ namespace Microsoft.UI.Xaml.Controls
 					parent = CachedVisualTreeHelpers.GetParent(parent);
 				}
 
+				/*
+				Uno workaround:
+					This a workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/2349.
+					While this bugs occurs only for `Popup` on WinUI, it might occurs even in the "main" visual tree on uno.
+					The reason is that they do have a `ScrollViewer` at the root of the app on WinUI (to support the SIP), but we don't in Uno.
+
 				if (m_scroller == null)
 				{
 					// We usually update the viewport in the post arrange handler. But, since we don't have
 					// a scroller, let's do it now.
 					UpdateViewport(new Rect( ));
 				}
-				else if (!m_managingViewportDisabled)
+				else*/
+				if (!m_managingViewportDisabled)
 				{
 					m_effectiveViewportChangedRevoker = Disposable.Create(() =>
 					{
