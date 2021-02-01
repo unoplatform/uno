@@ -589,8 +589,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					container.Style = style;
 				}
-
-				container.ContentTemplate = dataTemplate;
+				
+				if (!container.IsContainerFromTemplateRoot)
+				{
+					container.ContentTemplate = dataTemplate;
+				}
 				try
 				{
 					// Attach templated container to visual tree while measuring. This works around the bug that default Style is not 
