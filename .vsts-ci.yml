@@ -45,7 +45,8 @@ jobs:
 
 - template: build/ci/.azure-devops-project-template-tests.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    vmImageWindows: '$(windowsHostedVMImage)'
+    vmImageLinux: '$(linuxVMImage)'
 
 - template: build/ci/.azure-devops-uap.yml
   parameters:
