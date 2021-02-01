@@ -49,29 +49,7 @@ namespace Windows.UI.Xaml
 			{
 				_app.InitializationCompleted();
 
-				var handled = false;
-				if (_lastHandledIntent != activity.Intent)
-				{
-					_lastHandledIntent = activity.Intent;
-					if (activity.Intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
-					{
-						_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, activity.Intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
-						handled = true;
-					}
-					else if (activity.Intent.Data != null)
-					{
-						if (Uri.TryCreate(activity.Intent.Data.ToString(), UriKind.Absolute, out var uri))
-						{
-							_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
-							handled = true;
-						}
-						else
-						{
-							// log error and fall back to normal launch
-							this.Log().LogError($"Activation URI {activity.Intent.Data} could not be parsed");
-						}
-					}
-				}
+				var handled = TryHandleIntent(activity.Intent);
 
 				// default to normal launch
 				if (!handled && !_isRunning)
@@ -80,6 +58,35 @@ namespace Windows.UI.Xaml
 				}
 				_isRunning = true;
 			}
+		}
+
+		internal bool TryHandleIntent(Intent intent)
+		{
+			var handled = false;
+			if (_lastHandledIntent != intent)
+			{
+				_lastHandledIntent = intent;
+				if (intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
+				{
+					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
+					handled = true;
+				}
+				else if (intent.Data != null)
+				{
+					if (Uri.TryCreate(intent.Data.ToString(), UriKind.Absolute, out var uri))
+					{
+						_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
+						handled = true;
+					}
+					else
+					{
+						// log error and fall back to normal launch
+						this.Log().LogError($"Activation URI {intent.Data} could not be parsed");
+					}
+				}
+			}
+
+			return handled;
 		}
 
 		/// <summary>
