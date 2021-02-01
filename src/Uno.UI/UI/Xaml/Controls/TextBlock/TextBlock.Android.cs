@@ -582,7 +582,6 @@ namespace Windows.UI.Xaml.Controls
 
 				var shouldRemoveUnfitLines = _ellipsize != null;
 
-				//if (shouldRemoveUnfitLines && maxHeight != null && measuredHeight > maxHeight)
 				if (shouldRemoveUnfitLines && maxHeight != null && measuredHeight > maxHeight)
 				{
 					var lineAtHeight = Layout.GetLineForOffset(maxHeight.Value) + 1;
