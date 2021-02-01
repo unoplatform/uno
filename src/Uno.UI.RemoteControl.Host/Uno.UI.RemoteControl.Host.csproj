@@ -17,7 +17,7 @@
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="System.Reactive" Version="5.0.0" />
-		<PackageReference Include="Unity" Version="5.11.9" />
+		<PackageReference Include="Unity" Version="5.11.10" />
 		<PackageReference Include="Uno.Core" Version="2.0.0" />
 	</ItemGroup>
 
