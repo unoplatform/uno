@@ -430,5 +430,58 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			w1.Should().BeGreaterThan(w2);
 			w3.Should().Be(w1);
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser | Platform.Android)] // Test timed-out on iOS
+		public void When_TextAlignment_Then_Layout_Is_Correct()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_LayoutAlignment");
+
+			using var snapshot = this.TakeScreenshot("normal", ignoreInSnapshotCompare: true);
+
+			for (var i = 1; i <= 10; i++)
+			{
+				for (var j = 1; j <= 4; j++)
+				{
+					_app.Marked($"txt{i}_{j}").SetDependencyPropertyValue("Visibility", "Collapsed");
+				}
+			}
+
+			using var snapshotTextHidden = this.TakeScreenshot("text_hidden", ignoreInSnapshotCompare: true);
+
+			// This test will ensure the text "stays" in their designated zone.
+			// Any overflow would indicate a problem in the text layout engine.
+
+			for (var i = 1; i <= 10; i++)
+			{
+				for (var j = 1; j <= 4; j++)
+				{
+					using var _ = new AssertionScope($"Text {i}_{j}");
+
+					var gridRect = _app.GetPhysicalRect($"grid{i}_{j}");
+					var textRect = _app.GetPhysicalRect($"rect{i}_{j}");
+
+					// Top
+					CheckRect(gridRect.X, gridRect.Y, gridRect.Width, textRect.Y - gridRect.Y);
+
+					// Bottom
+					CheckRect(gridRect.X, textRect.Bottom, gridRect.Width, gridRect.Bottom - textRect.Bottom);
+
+					// Left
+					CheckRect(gridRect.X, gridRect.Y, textRect.X - gridRect.X, gridRect.Height);
+
+					// Right
+					CheckRect(textRect.Right, gridRect.Y, gridRect.Right - textRect.Right, gridRect.Height);
+				}
+			}
+
+			void CheckRect(float x, float y, float w, float h)
+			{
+				var r = new AppRect(x, y, w, h);
+
+				ImageAssert.AreEqual(snapshotTextHidden, r, snapshot, r);
+			}
+		}
 	}
 }
