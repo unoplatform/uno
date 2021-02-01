@@ -302,14 +302,18 @@
 	</Target>
 
 	<Target Name="BuildNuGetPackage">
-			<!-- Create the packages -->
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.RemoteControl.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Gtk.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Tizen.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Wpf.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.WebAssembly.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
+		<PropertyGroup>
+			<NuSpecProperties>NoWarn=NU5100,NU5105,NU5131;branch=$(GITVERSION_BranchName);commitid=$(GITVERSION_VersionSourceSha)</NuSpecProperties>
+		</PropertyGroup>
+		
+		<!-- Create the packages -->
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.RemoteControl.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Gtk.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Tizen.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Wpf.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.WebAssembly.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 	</Target>
 
 	<Target Name="ValidatePackage" AfterTargets="UnoBuild" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(UNO_UWP_BUILD)'=='true'">
