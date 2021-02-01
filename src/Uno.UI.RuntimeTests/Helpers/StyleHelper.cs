@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Disposables;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Helpers
@@ -47,6 +48,17 @@ namespace Uno.UI.RuntimeTests.Helpers
 
 			return disposable;
 #endif
+		}
+
+		/// <summary>
+		/// Adds <paramref name="resources"/> to <see cref="Application.Resources"/> for the duration of the test, then removes it.
+		/// </summary>
+		public static IDisposable UseAppLevelResources(ResourceDictionary resources)
+		{
+			var appResources = Application.Current.Resources;
+			appResources.MergedDictionaries.Add(resources);
+
+			return Disposable.Create(() => appResources.MergedDictionaries.Remove(resources));
 		}
 	}
 }
