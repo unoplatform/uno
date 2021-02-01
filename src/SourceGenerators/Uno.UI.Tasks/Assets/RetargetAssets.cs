@@ -43,7 +43,7 @@ namespace Uno.UI.Tasks.Assets
 
 		public override bool Execute()
 		{
-			LogExtensionPoint.AmbientLoggerFactory.AddProvider(new TaskLoggerProvider(Log));
+			using var logger = TaskLoggerProvider.Register(Log);
 
 			this.Log().Info($"Retargeting UWP assets to {TargetPlatform}.");
 
