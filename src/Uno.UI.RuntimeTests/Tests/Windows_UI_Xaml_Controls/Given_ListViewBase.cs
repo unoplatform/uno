@@ -621,6 +621,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("Test is flaky on iOS")]
+#endif
 		public async Task When_Scrolled_To_End_And_Last_Item_Removed()
 		{
 			var container = new Grid { Height = 210 };
@@ -651,7 +654,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitFor(() => list.Items.Count == 19);
 
-			await WindowHelper.WaitFor(() => GetTop(secondLastItem), 181, comparer: ApproxEquals);
+			await WindowHelper.WaitForEqual(181, () => GetTop(list.ContainerFromItem(18) as ListViewItem), tolerance: 2);
 
 			double GetTop(FrameworkElement element)
 			{
