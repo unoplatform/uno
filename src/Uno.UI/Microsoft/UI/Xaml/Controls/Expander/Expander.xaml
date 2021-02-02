@@ -28,17 +28,22 @@
                                 <VisualState x:Name="Expanded">
                                     <VisualState.Storyboard>
                                         <Storyboard>
-                                            <PopInThemeAnimation x:Name="PopIn" TargetName="ExpanderContent" FromVerticalOffset="-50" FromHorizontalOffset="0"/>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ExpanderContent" Storyboard.TargetProperty="Visibility">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
+											<!-- Animations removed due to issue #5101 -->
+											<!--<PopInThemeAnimation x:Name="PopIn" TargetName="ExpanderContent" FromVerticalOffset="-50" FromHorizontalOffset="0"/>-->
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ExpanderContent" Storyboard.TargetProperty="Visibility">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+											</ObjectAnimationUsingKeyFrames>
+										</Storyboard>
                                     </VisualState.Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Collapsed">
                                     <VisualState.Storyboard>
                                         <Storyboard>
-                                            <PopOutThemeAnimation TargetName="ExpanderContent" />
+											<!-- Animations removed due to issue #5101 -->
+                                            <!--<PopOutThemeAnimation TargetName="ExpanderContent" />-->
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ExpanderContent" Storyboard.TargetProperty="Visibility">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+											</ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualState.Storyboard>
                                 </VisualState>
@@ -52,7 +57,7 @@
                                         <Setter Target="ExpanderContent.(Grid.Row)" Value="0" />
                                         <Setter Target="Row0.Height" Value="*" />
                                         <Setter Target="Row1.Height" Value="Auto" />
-                                        <Setter Target="PopIn.FromVerticalOffset" Value="{ThemeResource ExpanderPopinVerticalOffset}"/>
+                                        <!--<Setter Target="PopIn.FromVerticalOffset" Value="{ThemeResource ExpanderPopinVerticalOffset}"/>-->
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
