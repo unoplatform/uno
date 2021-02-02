@@ -752,10 +752,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildCompiledBindingsInitializer(IndentedStringBuilder writer, string className, INamedTypeSymbol controlBaseType)
 		{
+			TryAnnotateWithGeneratorSource(writer);
 			var hasXBindExpressions = CurrentScope.XBindExpressions.Count != 0;
 			var hasResourceExtensions = CurrentScope.Components.Any(HasMarkupExtensionNeedingComponent);
 			var isFrameworkElement =
-				IsType(className, _frameworkElementSymbol)				// The current type may not have a base type as it is defined in XAML,
+				IsType(className, _frameworkElementSymbol)              // The current type may not have a base type as it is defined in XAML,
 				|| IsType(controlBaseType, _frameworkElementSymbol);    // so look at the control base type extracted from the XAML.
 
 			if (hasXBindExpressions || hasResourceExtensions)
@@ -788,6 +789,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildCompiledBindingsInitializerForTemplate(IIndentedStringBuilder writer)
 		{
+			TryAnnotateWithGeneratorSource(writer);
 			var hasResourceExtensions = CurrentScope.Components.Any(HasMarkupExtensionNeedingComponent);
 
 			if (hasResourceExtensions)
@@ -2404,7 +2406,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// If value declaration contains no markup, we can safely create it eagerly. Otherwise, we will wrap it in a lazy initializer
 			// to be able to handle lexically-forward resource references correctly.
-			return HasDescendantsWithMarkupExtension(resource);			
+			return HasDescendantsWithMarkupExtension(resource);
 		}
 
 		/// <summary>
@@ -2414,7 +2416,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var currentScope = CurrentResourceOwner?.Name ?? "this";
 			var resourceOwnerScope = ResourceOwnerScope();
-			
+
 			writer.AppendLineInvariant($"new global::Uno.UI.Xaml.WeakResourceInitializer({currentScope}, {CurrentResourceOwner?.Name} => ");
 
 			var indent = writer.Indent();
@@ -2946,12 +2948,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
-					if (!_isTopLevelDictionary
-						&& (HasXBindMarkupExtension(objectDefinition) || HasMarkupExtensionNeedingComponent(objectDefinition)))
+					if (HasXBindMarkupExtension(objectDefinition) || HasMarkupExtensionNeedingComponent(objectDefinition))
 					{
 						writer.AppendLineInvariant($"/* _isTopLevelDictionary:{_isTopLevelDictionary} */");
-						writer.AppendLineInvariant($"this._component_{CurrentScope.ComponentCount} = {closureName};");
-						CurrentScope.Components.Add(objectDefinition);
+						if (!_isTopLevelDictionary)
+						{
+							writer.AppendLineInvariant($"this._component_{CurrentScope.ComponentCount} = {closureName};");
+							CurrentScope.Components.Add(objectDefinition);
+						}
+						else if (isFrameworkElement && HasMarkupExtensionNeedingComponent(objectDefinition))
+						{
+							// Register directly for binding updates on the resource referencer itself, since we're inside a top-level ResourceDictionary
+							using (writer.BlockInvariant("{0}.Loading += (obj, args) =>", closureName))
+							{
+								writer.AppendLineInvariant("((DependencyObject)obj).UpdateResourceBindings();", closureName);
+							}
+							writer.AppendLineInvariant(";");
+						}
 					}
 
 					if (_isDebug && IsFrameworkElement(objectDefinition.Type))
@@ -3595,7 +3608,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return false;
-			
+
 		}
 
 		private string RewriteNamespaces(string xamlString)
