@@ -20,7 +20,7 @@ namespace SamplesApp.UITests.Runtime
 
 		[Test]
 		[AutoRetry(tryCount: 1)]
-		[Timeout(700000)] // Adjust this timeout based on average test run duration
+		[Timeout(800000)] // Adjust this timeout based on average test run duration
 		public async Task RunRuntimeTests()
 		{
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");
