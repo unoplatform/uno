@@ -7,6 +7,7 @@ using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Microsoft.Extensions.Logging;
 using Uno.UI;
 using static System.Math;
@@ -111,7 +112,7 @@ namespace Windows.UI.Xaml
 				.AtLeastZero();
 
 			// DesiredSize must include margins
-			SetDesiredSize(clippedDesiredSize);
+			LayoutInformation.SetDesiredSize(this, clippedDesiredSize);
 
 			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {clippedDesiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
 		}
@@ -301,19 +302,7 @@ namespace Windows.UI.Xaml
 				throw new InvalidOperationException($"{FormatDebugName()}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 			}
 
-			Rect? getClip()
-			{
-				// Clip transform not supported yet on Wasm/Skia
-
-				var clip = Clip;
-				if (clip == null)
-				{
-					return !needsClipToSlot ? (Rect?) null : clippedFrame;
-				}
-				return clip.Rect;
-			}
-
-			var clipRect = getClip();
+			var clipRect = Clip?.Rect ?? (needsClipToSlot ? clippedFrame : default(Rect?));
 
 			_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}.ArrangeElementNative({newRect}, clip={clipRect} (NeedsClipToSlot={NeedsClipToSlot})");
 

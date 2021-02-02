@@ -23,6 +23,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.Foundation.Metadata;
 using Uno.Logging;
 using Windows.Graphics.Display;
 using System.Globalization;
@@ -49,7 +50,7 @@ namespace SamplesApp
 			// Fix language for UI tests
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
-			
+
 			ConfigureFilters(LogExtensionPoint.AmbientLoggerFactory);
 			ConfigureFeatureFlags();
 
@@ -210,7 +211,10 @@ namespace SamplesApp
 					$"PreviousState - {e.PreviousExecutionState}, " +
 					$"Uri - {protocolActivatedEventArgs.Uri}",
 					"Application activated via protocol");
-				await dlg.ShowAsync();
+				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog", nameof(MessageDialog.ShowAsync)))
+				{
+					await dlg.ShowAsync();
+				}
 			}
 		}
 
@@ -254,7 +258,10 @@ namespace SamplesApp
 			if (!string.IsNullOrEmpty(launchActivatedEventArgs.Arguments))
 			{
 				var dlg = new MessageDialog(launchActivatedEventArgs.Arguments, "Launch arguments");
-				await dlg.ShowAsync();
+				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog", nameof(MessageDialog.ShowAsync)))
+				{
+					await dlg.ShowAsync();
+				}
 			}
 		}
 

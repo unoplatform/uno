@@ -54,6 +54,8 @@ namespace Benchmarks.Shared.Controls
 			{
 				var config = new CoreConfig(_logger);
 
+				BenchmarkUIHost.Root = FindName("testHost") as ContentControl;
+
 				await SetStatus("Discovering benchmarks in " + BenchmarksBaseNamespace);
 				var types = EnumerateBenchmarks(config).ToArray();
 
@@ -65,10 +67,14 @@ namespace Benchmarks.Shared.Controls
 
 				await SetStatus($"Done.");
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				await SetStatus($"Failed {e?.Message}");
 				_logger.WriteLine(LogKind.Error, e?.ToString());
+			}
+			finally
+			{
+				BenchmarkUIHost.Root = null;
 			}
 		}
 

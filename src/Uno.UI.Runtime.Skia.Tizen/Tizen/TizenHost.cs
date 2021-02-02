@@ -59,9 +59,9 @@ namespace Uno.UI.Runtime.Skia
 				.GetCommandLineArgs()
 				.Skip(1)
 				.ToArray();
-
-			Windows.UI.Core.CoreDispatcher.DispatchOverride
-				= (d) => EcoreMainloop.PostAndWakeUp(d);
+			
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = (d) => EcoreMainloop.PostAndWakeUp(d);
+			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => EcoreMainloop.IsMainThread;
 
 			_tizenApplication = new TizenApplication(this);
 			_tizenApplication.Run(_args);

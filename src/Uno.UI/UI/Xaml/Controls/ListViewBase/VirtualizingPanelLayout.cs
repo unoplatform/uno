@@ -160,6 +160,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		// TODO: This is a temporary workaround for TabView items stretching vertically
+		// Can be removed when #1133 is fixed.
+		internal bool ShouldApplyChildStretch { get; set; } = true;
+
 		public IReadOnlyList<float>? GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{
 			if (orientation != ScrollOrientation)
@@ -225,7 +229,17 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		protected Uno.UI.IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection, Uno.UI.IndexPath? currentMaterializedItem)
 		{
-			return XamlParent?.GetNextItemIndex(currentMaterializedItem, fillDirection == GeneratorDirection.Forward ? 1 : -1);
+			var direction = fillDirection == GeneratorDirection.Forward ? 1 : -1;
+			var index = XamlParent?.GetNextItemIndex(currentMaterializedItem, direction);
+
+			// We consider the pending reorder item as non materializable and we ignore it while filling the layout.
+			// It's then the responsibility of the layout to render it at the appropriate slot
+			if (index is {} && GetReorderingIndex() is {} reorderIndex && index == reorderIndex)
+			{
+				index = XamlParent?.GetNextItemIndex(index, direction);
+			}
+
+			return index;
 		}
 
 		// Note that Item1 is used instead of Item to work around an issue

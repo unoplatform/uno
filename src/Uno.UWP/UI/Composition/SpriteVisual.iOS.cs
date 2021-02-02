@@ -80,7 +80,7 @@ namespace Windows.UI.Composition
 			);
 		}
 
-		private void FinalizeAnimation() { }
+		private void FinalizeAnimation(UnoCoreAnimation.CompletedInfo info) { }
 	}
 }
 #endif

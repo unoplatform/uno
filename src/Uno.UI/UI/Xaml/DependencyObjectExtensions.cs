@@ -64,6 +64,35 @@ namespace Windows.UI.Xaml
 			return GetStore(dependencyObject).Parent;
 		}
 
+		/// <summary>
+		/// Gets the parent dependency object, if any.
+		/// </summary>
+		/// <param name="dependencyObject"></param>
+		/// <returns></returns>
+		internal static object GetParent(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.Parent;
+
+		/// <summary>
+		/// Enables the use of hard references for internal variables to improve the performance
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
+		internal static void StoreTryEnableHardReferences(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.TryEnableHardReferences();
+
+		/// <summary>
+		/// Disables the use of hard references for internal variables to improve the performance
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
+		internal static void StoreDisableHardReferences(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.DisableHardReferences();
+
+		/// <summary>
+		/// Gets the implicit style for the current object
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
+		internal static Style StoreGetImplicitStyle(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.GetImplicitStyle();
+
 		internal static IEnumerable<object> GetParents(this object dependencyObject)
 		{
 			var parent = dependencyObject.GetParent();
@@ -298,7 +327,7 @@ namespace Windows.UI.Xaml
 					}
 
 					var childDisposable = new SerialDisposable();
-					
+
 					childDisposable.Disposable = (instance.GetValue(property) as DependencyObject)?.RegisterDisposableNestedPropertyChangedCallback(callback, subProperties);
 
 					var disposable = instance.RegisterDisposablePropertyChangedCallback(property, (s, e) =>
@@ -348,6 +377,14 @@ namespace Windows.UI.Xaml
 			return GetStore(dependencyObject)
 				.GetCurrentHighestValuePrecedence(property) != DependencyPropertyValuePrecedences.DefaultValue;
 		}
+
+		/// <summary>
+		/// True if a value is set on the property with <see cref="DependencyPropertyValuePrecedences.Local"/> precedence or higher, false otherwise.
+		/// </summary>
+		/// <param name="dependencyObject">The instance on which the property is attached</param>
+		/// <param name="property">The dependency property to test</param>
+		internal static bool IsDependencyPropertyLocallySet(this DependencyObject dependencyObject, DependencyProperty property) =>
+			GetStore(dependencyObject).GetCurrentHighestValuePrecedence(property) <= DependencyPropertyValuePrecedences.Local;
 
 		internal static DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(this DependencyObject dependencyObject, DependencyProperty property)
 		{

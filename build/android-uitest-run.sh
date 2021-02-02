@@ -48,9 +48,6 @@ nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x8
 
 export IsUiAutomationMappingEnabled=true
 
-# build the tests, while the emulator is starting
-msbuild /r /p:Configuration=$BUILDCONFIGURATION $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
-
 # Wait for the emulator to finish booting
 $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 
@@ -79,8 +76,8 @@ export UNO_UITEST_PLATFORM=Android
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/uitests-android-build/android/uno.platform.unosampleapp-Signed.apk
 
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
-export UNO_RERUN_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-failed-rerun.xml
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/failed-tests.txt
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME.txt
+export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 
 cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
 
@@ -95,46 +92,32 @@ mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 # required by Xamarin.UITest
 cd $UNO_UITEST_SCREENSHOT_PATH
 
-mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
-	--trace=Verbose \
-	--framework=mono \
-	--inprocess \
-	--agents=1 \
-	--workers=1 \
-	--result=$UNO_ORIGINAL_TEST_RESULTS \
-	--timeout=120000 \
-	--where "$TEST_FILTERS" \
-	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/$BUILDCONFIGURATION/net47/SamplesApp.UITests.dll \
-	|| true
+## Build the NUnit configuration file
+echo "--trace=Verbose" > $UNO_TESTS_RESPONSE_FILE
+echo "--framework=mono" >> $UNO_TESTS_RESPONSE_FILE
+echo "--inprocess" >> $UNO_TESTS_RESPONSE_FILE
+echo "--agents=1" >> $UNO_TESTS_RESPONSE_FILE
+echo "--workers=1" >> $UNO_TESTS_RESPONSE_FILE
+echo "--result=$UNO_ORIGINAL_TEST_RESULTS" >> $UNO_TESTS_RESPONSE_FILE
+echo "--timeout=120000" >> $UNO_TESTS_RESPONSE_FILE
 
-$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log.1.txt
-
-pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
-popd
-
-if [ -n "`cat $UNO_TESTS_FAILED_LIST`" ]; then
-	# Rerun failed tests
-	echo Retrying failed tests
-
-	# Restart the emulator to avoid lingering emulator state isses
-	$ANDROID_HOME/platform-tools/adb reboot
-
-	# Wait for the emulator to finish booting
-	$BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
-
-	mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
-		--trace=Verbose \
-		--framework=mono \
-		--inprocess \
-		--agents=1 \
-		--workers=1 \
-		--result=$UNO_RERUN_TEST_RESULTS \
-		--timeout=300000 \
-		--testlist $UNO_TESTS_FAILED_LIST \
-		$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/$BUILDCONFIGURATION/net47/SamplesApp.UITests.dll \
-		|| true
+if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
+    echo "--testlist \"$UNO_TESTS_FAILED_LIST\"" >> $UNO_TESTS_RESPONSE_FILE
+else
+    echo "--where \"$TEST_FILTERS\"" >> $UNO_TESTS_RESPONSE_FILE
 fi
 
-$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log.2.txt
+echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
 
+## Run NUnit tests
+mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
+    @$UNO_TESTS_RESPONSE_FILE || true
+
+## Dump the emulator's system log
+$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log.1.txt
+
+## Export the failed tests list for reuse in a pipeline retry
+pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
+dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+popd

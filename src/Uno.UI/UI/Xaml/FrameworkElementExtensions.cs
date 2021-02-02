@@ -243,6 +243,14 @@ namespace Windows.UI.Xaml
 				case Panel p:
 					padding = p.Padding;
 					return true;
+
+				case ItemsPresenter ip:
+					padding = ip.Padding;
+					return true;
+
+				case TextBlock tb:
+					padding = tb.Padding;
+					return true;
 			}
 
 			padding = default;

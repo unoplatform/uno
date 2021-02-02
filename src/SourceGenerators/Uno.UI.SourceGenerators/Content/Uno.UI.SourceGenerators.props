@@ -66,7 +66,8 @@
 
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
-		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Identity" />
 	  </ItemGroup>
 
 	</When>
@@ -287,6 +288,7 @@
 	<UnoSourceGeneratorAdditionalProperty Include="UnoUIUseRoslynSourceGenerators" />
 	<UnoSourceGeneratorAdditionalProperty Include="ProjectTypeGuidsProperty" />
 	<UnoSourceGeneratorAdditionalProperty Include="DefineConstantsProperty" />
+	<UnoSourceGeneratorAdditionalProperty Include="IsUiAutomationMappingEnabled" />
   </ItemGroup>
 
   <Target Name="_FillSourceGeneratorItemGroups">

@@ -97,11 +97,10 @@ namespace Windows.UI.Xaml.Media
 				else
 				{
 					// The Inverse transform is not expected to reflect future changes on this transform
-					// It means that it's  acceptable to capture the current 'Matrix'
-					Matrix3x2.Invert(matrix, out var inverse);
+					// It means that it's acceptable to capture the current 'Matrix'
 					return new MatrixTransform
 					{
-						Matrix = new Matrix(inverse)
+						Matrix = new Matrix(matrix.Inverse())
 					};
 				}
 			}

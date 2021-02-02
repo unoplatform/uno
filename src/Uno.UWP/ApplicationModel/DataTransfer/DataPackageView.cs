@@ -1,6 +1,5 @@
 #nullable enable
 
-#if !NET461
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -35,7 +34,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public DataPackageOperation RequestedOperation { get; }
 
-		public IReadOnlyList<string> AvailableFormats => _data.Keys.ToArray();
+		public IReadOnlyList<string> AvailableFormats => _data.Keys.Where(k => !k.StartsWith(DataPackage.UnoPrivateDataPrefix)).ToArray();
 
 		public IAsyncOperation<IReadOnlyDictionary<string, RandomAccessStreamReference>> GetResourceMapAsync()
 			=> Task.FromResult(_resourceMap as IReadOnlyDictionary<string, RandomAccessStreamReference>).AsAsyncOperation();
@@ -50,7 +49,11 @@ namespace Windows.ApplicationModel.DataTransfer
 			return _data.ContainsKey(formatId);
 		}
 
+		internal object? FindRawData(string formatId)
+			=> _data.TryGetValue(formatId, out var data) ? data : null;
+
 		public IAsyncOperation<object> GetDataAsync(string formatId)
+			// Note: Using this, application can gain access to the data prefixed with DataPackage.UnoPrivateDataKey ... which is acceptable
 			=> GetData<object>(formatId);
 
 		public IAsyncOperation<Uri> GetWebLinkAsync()
@@ -120,4 +123,3 @@ namespace Windows.ApplicationModel.DataTransfer
 			=> _acceptedFormatId = formatId;
 	}
 }
-#endif

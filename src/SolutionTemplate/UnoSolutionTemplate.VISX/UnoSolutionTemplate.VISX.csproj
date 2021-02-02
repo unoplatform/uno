@@ -3,10 +3,6 @@
   <PropertyGroup>
     <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
     <OldToolsVersion>14.0</OldToolsVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -24,6 +20,10 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
+    <UseCodebase>true</UseCodebase>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(DevEnvDir)\devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <UseCodebase>true</UseCodebase>
@@ -166,7 +166,7 @@
     <PackageReference Include="Microsoft.VisualStudio.CoreUtility" version="15.6.27740" />
     <PackageReference Include="Microsoft.VisualStudio.ImageCatalog" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Imaging" version="15.9.28307" />
-    <PackageReference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime" version="14.3.26930" />
+    <PackageReference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime" version="14.3.26931" />
     <PackageReference Include="Microsoft.VisualStudio.OLE.Interop" version="7.10.6071" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem">
       <Version>16.0.374-pre</Version>
@@ -174,7 +174,7 @@
     <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" version="15.0.16" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.15.0" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Framework" version="15.9.28307" />
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop" version="7.10.6072" />
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop" version="7.10.6073" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.10.0" version="10.0.30320" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.11.0" version="11.0.61031" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.12.0" version="12.0.30111" />

@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void Initialize();
+		partial void OnUnloadedPartial();
 
 		public FrameworkElement()
 		{
@@ -49,6 +50,7 @@ namespace Windows.UI.Xaml
 		private protected virtual void OnUnloaded()
 		{
 			Unloaded?.Invoke(this, new RoutedEventArgs(this));
+			OnUnloadedPartial();
 		}
 
 		public event RoutedEventHandler Loaded;
@@ -73,24 +75,14 @@ namespace Windows.UI.Xaml
 
 		#region IsEnabled DependencyProperty
 
+		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
+
 		public bool IsEnabled
 		{
-			get { return (bool)GetValue(IsEnabledProperty); }
-			set { SetValue(IsEnabledProperty, value); }
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
 		}
-
-		// Using a DependencyProperty as the backing store for Enabled.  This enables animation, styling, binding, etc...
-		public static DependencyProperty IsEnabledProperty { get ; } =
-			DependencyProperty.Register(
-				"IsEnabled",
-				typeof(bool),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: true,
-					propertyChangedCallback: (s, e) => ((FrameworkElement)s)?.OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue),
-					coerceValueCallback: (s, v) => (s as FrameworkElement)?.CoerceIsEnabled(v)
-				)
-			);
 
 		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
 		{

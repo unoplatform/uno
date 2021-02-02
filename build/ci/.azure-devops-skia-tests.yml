@@ -3,7 +3,8 @@ parameters:
 
 jobs:
 - job: Skia_UI_Tests
-  timeoutInMinutes: 30
+  displayName: 'Skia Samples App Unit Tests'
+  timeoutInMinutes: 60
 
   pool:
     vmImage: ${{ parameters.vmImage }}

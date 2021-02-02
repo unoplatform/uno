@@ -13,6 +13,9 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Uno;
+using Uno.Disposables;
 using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
@@ -35,8 +38,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints, IDependencyObjectParse
 	{
-		public
-			static class TraceProvider
+		public static class TraceProvider
 		{
 			public readonly static Guid Id = Guid.Parse("{DDDCCA61-5CB7-4585-95D7-58C5528AABE6}");
 
@@ -96,7 +98,9 @@ namespace Windows.UI.Xaml
 		[GeneratedDependencyProperty(DefaultValue = null)]
 		public static DependencyProperty TagProperty { get; } = CreateTagProperty();
 
-#endregion
+		#endregion
+
+		
 
 		partial void Initialize()
 		{
@@ -157,10 +161,6 @@ namespace Windows.UI.Xaml
 		/// <returns>The size that this object determines it needs during layout, based on its calculations of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
 		protected virtual Size MeasureOverride(Size availableSize)
 		{
-#if !NETSTANDARD2_0
-			LastAvailableSize = availableSize;
-#endif
-
 			var child = this.FindFirstChild();
 			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
 		}
@@ -285,8 +285,15 @@ namespace Windows.UI.Xaml
 
 		partial void OnLoadingPartial()
 		{
+			this.StoreTryEnableHardReferences();
+
 			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
 			ApplyStyles();
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			this.StoreDisableHardReferences();
 		}
 
 		private protected void ApplyStyles()
@@ -376,7 +383,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private Style ResolveImplicitStyle() => (this as IDependencyObjectStoreProvider).Store.GetImplicitStyle();
+		private Style ResolveImplicitStyle() => this.StoreGetImplicitStyle();
 
 		#region Requested theme dependency property
 

@@ -66,7 +66,26 @@ namespace Windows.Storage.Streams
 
 		/// <inheritdoc />
 		public IRandomAccessStream CloneStream()
-			=> throw new NotSupportedException($"Cannot clone a {nameof(RandomAccessStreamOverStream)}");
+		{
+			if(_stream is MemoryStream memStream)
+			{
+				var bytes = memStream.ToArray();
+				return new MemoryStream(bytes).AsRandomAccessStream();
+			}
+
+			var previousPosition = _stream.Position;
+			try
+			{
+				var memoryStream = new MemoryStream((int)Size);
+				_stream.Position = 0;
+				_stream.CopyTo(memoryStream);
+				return memoryStream.AsRandomAccessStream();
+			}
+			finally
+			{
+				_stream.Position = previousPosition;
+			}
+		}
 
 		/// <inheritdoc />
 		public virtual void Dispose()

@@ -374,7 +374,7 @@ namespace Windows.UI.Xaml
 			if (fullBinding != null)
 			{
 				var boundProperty = DependencyProperty.GetProperty(_originalObjectType, dependencyProperty) 
-					?? FindStandardProperty(_originalObjectType, dependencyProperty);
+					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.CompiledSource != null);
 
 				if (boundProperty != null)
 				{
@@ -390,9 +390,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Finds a DependencyProperty for the specified C# property
 		/// </summary>
-		private DependencyProperty? FindStandardProperty(Type originalObjectType, string dependencyProperty)
+		private DependencyProperty? FindStandardProperty(Type originalObjectType, string dependencyProperty, bool allowPrivateMembers)
 		{
-			var propertyType = BindingPropertyHelper.GetPropertyType(originalObjectType, dependencyProperty);
+			var propertyType = BindingPropertyHelper.GetPropertyType(originalObjectType, dependencyProperty, allowPrivateMembers);
 
 			if (propertyType != null)
 			{
@@ -427,7 +427,12 @@ namespace Windows.UI.Xaml
 		{
 			var property = DependencyProperty.GetProperty(_originalObjectType, propertyName);
 
-			if(property != null)
+			if(property == null && propertyName != null)
+			{
+				property = FindStandardProperty(_originalObjectType, propertyName, false);
+			}
+
+			if (property != null)
 			{
 				SetBindingValue(value, property);
 			}

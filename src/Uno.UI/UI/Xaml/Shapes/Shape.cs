@@ -20,14 +20,14 @@ namespace Windows.UI.Xaml.Shapes
 		private readonly SerialDisposable _brushChanged = new SerialDisposable();
 
 		/// <summary>
-		/// Returns StrokeThickness or 0.0 if Stroke is <c>null</c>
+		/// Returns 0.0 if Stroke is <c>null</c>, otherwise, StrokeThickness
 		/// </summary>
-		private protected double ActualStrokeThickness
-		{
-			//Path does not need to define a stroke, in that case StrokeThickness should just return 0
-			//Other shapes like Ellipse and Polygon will not draw if Stroke is null so returning 0 will have no effect
-			get => Stroke == null ? DefaultStrokeThicknessWhenNoStrokeDefined : LayoutRound(StrokeThickness);
-		}
+		/// <remarks>Path does not need to define a stroke, in that case StrokeThickness should just return 0.
+		/// Other shapes like Ellipse and Polygon will not draw if Stroke is null so returning 0 will have no effect
+		///</remarks>
+		private protected double ActualStrokeThickness => Stroke == null
+			? DefaultStrokeThicknessWhenNoStrokeDefined
+			: LayoutRound(StrokeThickness);
 
 		#region Fill Dependency Property
 		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)

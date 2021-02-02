@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ListViewPages;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -19,6 +20,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -31,6 +33,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private Style BasicContainerStyle => _testsResources["BasicListViewContainerStyle"] as Style;
 
 		private Style ContainerMarginStyle => _testsResources["ListViewContainerMarginStyle"] as Style;
+
+		private Style NoSpaceContainerStyle => _testsResources["NoExtraSpaceListViewContainerStyle"] as Style;
 
 		private DataTemplate TextBlockItemTemplate => _testsResources["TextBlockItemTemplate"] as DataTemplate;
 
@@ -95,7 +99,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			CollectionAssert.AreEqual(new int[] { 0, 1 }, containerIndices);
 #endif
-  
+
 			var container0 = SUT.ContainerFromIndex(0);
 			var containerItem = SUT.ContainerFromItem("different");
 			Assert.AreEqual(container0, containerItem);
@@ -244,7 +248,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsNotNull(si2);
 			Assert.AreNotSame(si2, source[1]);
-			Assert.AreEqual("item 2", si2.Content); 
+			Assert.AreEqual("item 2", si2.Content);
 #if !NETFX_CORE
 			Assert.AreEqual("item 2", si2.DataContext);
 			Assert.IsTrue(si2.IsGeneratedContainer);
@@ -405,6 +409,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(list.SelectedItems.Count, 0);
 		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task NoItemSelectedSingle()
@@ -445,6 +450,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_IsItsOwnItemContainer_Recycling()
+		{
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var oldTwo = new ListViewItem() { Content = "item 2" };
+			var source = new ObservableCollection<ListViewItem> {
+				new ListViewItem(){ Content = "item 1" },
+				oldTwo,
+			};
+
+			SUT.ItemsSource = source;
+
+			SelectorItem si = null;
+			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
+
+			Assert.AreEqual("item 1", si.Content);
+			Assert.AreEqual(2, GetPanelChildren(SUT).Length);
+
+			source.RemoveAt(1);
+
+			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 1);
+
+			var newTwo = new ListViewItem { Content = "item 2" };
+			Assert.AreNotEqual(oldTwo, newTwo);
+
+			source.Add(newTwo);
+
+			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 2);
+			Assert.AreEqual(newTwo, GetPanelChildren(SUT).Last());
+		}
+
+		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Outer_ElementName_Binding()
 		{
@@ -474,5 +518,143 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				GC.WaitForPendingFinalizers();
 			}
 		}
+
+		[TestMethod]
+		public async Task When_CollectionViewSource_In_Xaml()
+		{
+			var page = new ListViewCollectionViewSourcePage();
+
+			Assert.AreEqual(0, page.SubjectListView.Items.Count);
+
+			page.CVS.Source = new[] { "One", "Two", "Three" };
+
+			WindowHelper.WindowContent = page;
+
+			await WindowHelper.WaitForLoaded(page.SubjectListView);
+
+			await WindowHelper.WaitForIdle();
+
+#if NETFX_CORE // TODO: subscribe to changes to Source property
+			Assert.AreEqual(3, page.SubjectListView.Items.Count);
+#endif
+			ListViewItem lvi = null;
+			await WindowHelper.WaitFor(() => (lvi = page.SubjectListView.ContainerFromItem("One") as ListViewItem) != null);
+		}
+
+		private static ContentControl[] GetPanelChildren(ListViewBase list)
+		{
+#if __ANDROID__ || __IOS__
+			return list.GetItemsPanelChildren().OfType<ContentControl>().ToArray();
+#else
+			return list.ItemsPanelRoot
+				.Children
+				.OfType<ContentControl>()
+				.Where(c => c.Visibility == Visibility.Visible) // Managed ItemsStackPanel currently uses the dirty trick of leaving reyclable items attached to panel and collapsed
+				.ToArray();
+#endif
+		}
+
+		[TestMethod]
+		public void When_Selection_SelectedValuePath_Set()
+		{
+			var SUT = new ListView();
+			var source = new Dictionary<int, string>
+			{
+				{0, "Zero" },
+				{1, "One" },
+				{2, "Two" }
+			};
+			SUT.ItemsSource = source;
+			SUT.SelectedValuePath = "Key";
+
+			Assert.AreEqual(null, SUT.SelectedValue);
+			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedValue = 1;
+
+			var item1 = source.First(kvp => kvp.Key == 1);
+			Assert.AreEqual(1, SUT.SelectedValue);
+			Assert.AreEqual(item1, SUT.SelectedItem);
+			Assert.AreEqual(1, SUT.SelectedIndex);
+
+			// Set invalid
+			SUT.SelectedValue = 4;
+
+			Assert.AreEqual(null, SUT.SelectedValue);
+			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+		}
+
+		[TestMethod]
+		public void When_Selection_SelectedValue_Path_Not_Set()
+		{
+			var SUT = new ListView();
+			var source = new List<string>
+			{
+				"Zero",
+				"One",
+				"Two",
+			};
+			SUT.ItemsSource = source;
+
+			Assert.AreEqual(null, SUT.SelectedValue);
+			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedValue = "Two";
+
+			Assert.AreEqual("Two", SUT.SelectedValue);
+			Assert.AreEqual("Two", SUT.SelectedItem);
+			Assert.AreEqual(2, SUT.SelectedIndex);
+
+			SUT.SelectedValue = "Eleventy";
+
+			Assert.AreEqual(null, SUT.SelectedValue);
+			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+		}
+
+		[TestMethod]
+		public async Task When_Scrolled_To_End_And_Last_Item_Removed()
+		{
+			var container = new Grid { Height = 210 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 20));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(list);
+
+			ScrollBy(list, 10000); // Scroll to end
+
+			ListViewItem lastItem = null;
+			await WindowHelper.WaitFor(() => (lastItem = list.ContainerFromItem(19) as ListViewItem) != null);
+			var secondLastItem = list.ContainerFromItem(18) as ListViewItem;
+
+			await WindowHelper.WaitFor(() => ApproxEquals(181, GetTop(lastItem)), message: $"Expected 181 but got {GetTop(lastItem)}");
+			await WindowHelper.WaitFor(() => ApproxEquals(152, GetTop(secondLastItem)), message: $"Expected 152 but got {GetTop(secondLastItem)}");
+
+			source.Remove(19);
+
+			await WindowHelper.WaitFor(() => list.Items.Count == 19);
+
+			await WindowHelper.WaitFor(() => ApproxEquals(181, GetTop(secondLastItem)), message: $"Expected 181 but got {GetTop(secondLastItem)}");
+
+			double GetTop(FrameworkElement element)
+			{
+				var transform = element.TransformToVisual(container);
+				return transform.TransformPoint(new Point()).Y;
+			}
+		}
+
+		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 	}
 }

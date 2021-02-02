@@ -44,7 +44,7 @@ Now let's run the application:
 
 ## Setting up for Linux
 
-Using Ubuntu 18.04 or later:
+### Using Ubuntu 18.04 or later:
 - Install GTK3:
     ```
     sudo apt update
@@ -60,7 +60,30 @@ Using Ubuntu 18.04 or later:
     sudo apt-get -y install apt-transport-https
     sudo apt-get update
     sudo apt-get -y install dotnet-sdk-3.1
+    sudo apt-get -y install dotnet-sdk-5.0
     ```
+
+### Using Ubuntu 20.04 or later:
+- Install GTK3:
+    ```
+    sudo apt update
+    sudo apt install libgtk-3-dev
+    ```
+- Install dotnet core 3.1 and 5.0
+    ```
+    echo "Installing .NET Core"
+    wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+
+    sudo apt-get update; \
+      sudo apt-get install -y apt-transport-https && \
+      sudo apt-get update && \
+      sudo apt-get install -y dotnet-sdk-3.1 && \
+      sudo apt-get install -y dotnet-sdk-5.0
+    ```
+
+### Install the templates and create the application
+
 - Install the `dotnet new` templates:
     ```
     dotnet new -i Uno.ProjectTemplates.Dotnet
@@ -77,3 +100,42 @@ Now let's run the application:
     cd MyUnoApp.Skia.Gtk
     dotnet run
     ```
+    
+    
+    
+## Setting up for ArchLinux 5.8.14 or later / Manjaro:
+- Update system and packages
+    ```bash
+    pacman -Syu
+    ```
+- Install the necessary dependencies
+    ```bash
+    sudo pacman -S gtk3 dotnet-targeting-pack dotnet-sdk dotnet-host dotnet-runtime mono python mono-msbuild ninja gn aspnet-runtime 
+    ```
+- Install the `dotnet new` templates:
+    ```bash
+    dotnet new -i Uno.ProjectTemplates.Dotnet::3.1-dev*
+    ```
+- Then create a new project using:
+    ```bash
+    dotnet new unoapp -o MyUnoApp
+    ```
+
+Run the GTK based application:
+- Open the folder created by `dotnet new`
+- In the terminal, build and run the application:
+    ```bash
+    cd MyUnoApp.Skia.Gtk
+    dotnet run
+    ```
+Run the WebAssembly head with:
+    ```bash
+    cd .. 
+    cd MyUnoApp.Wasm
+    dotnet run
+    ```
+    
+turns on the browser and type
+```
+http://localhost:5000/
+```  

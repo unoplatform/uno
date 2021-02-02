@@ -21,8 +21,8 @@ namespace Windows.UI.Xaml
 				base.SetNeedsLayout();
 			}
 
-			RequiresMeasure = true;
-			RequiresArrange = true;
+			IsMeasureDirty = true;
+			IsArrangeDirty = true;
 
 			SetSuperviewNeedsLayout();
 		}
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml
 				{
 					_inLayoutSubviews = true;
 
-					if (RequiresMeasure)
+					if (IsMeasureDirty)
 					{
 						// Add back the Margin (which is normally 'outside' the view's bounds) - the layouter will subtract it again
 						XamlMeasure(Bounds.Size.Add(Margin));
@@ -49,15 +49,15 @@ namespace Windows.UI.Xaml
 
 					OnBeforeArrange();
 
-					var size = SizeFromUISize(Bounds.Size);
-					_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
+					var finalRect = RectFromUIRect(Frame);
+					_layouter.Arrange(finalRect);
 
 					OnAfterArrange();
 				}
 				finally
 				{
 					_inLayoutSubviews = false;
-					RequiresArrange = false;
+					IsArrangeDirty = false;
 				}
 			}
 			catch (Exception e)

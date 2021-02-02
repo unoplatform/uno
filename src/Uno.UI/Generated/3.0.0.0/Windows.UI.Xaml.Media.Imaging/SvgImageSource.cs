@@ -2,25 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SvgImageSource : global::Windows.UI.Xaml.Media.ImageSource
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Uri UriSource
-		{
-			get
-			{
-				return (global::System.Uri)this.GetValue(UriSourceProperty);
-			}
-			set
-			{
-				this.SetValue(UriSourceProperty, value);
-			}
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double RasterizePixelWidth
@@ -65,24 +51,16 @@ namespace Windows.UI.Xaml.Media.Imaging
 			typeof(global::Windows.UI.Xaml.Media.Imaging.SvgImageSource), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty UriSourceProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(UriSource), typeof(global::System.Uri), 
-			typeof(global::Windows.UI.Xaml.Media.Imaging.SvgImageSource), 
-			new FrameworkPropertyMetadata(default(global::System.Uri)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SvgImageSource() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.SvgImageSource", "SvgImageSource.SvgImageSource()");
-		}
-		#endif
+		// Skipping already declared property UriSource
+		// Skipping already declared property RasterizePixelWidth
+		// Skipping already declared property RasterizePixelHeight
+		// Skipping already declared property RasterizePixelHeightProperty
+		// Skipping already declared property RasterizePixelWidthProperty
+		// Skipping already declared property UriSourceProperty
+		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource()
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public SvgImageSource( global::System.Uri uriSource) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.SvgImageSource", "SvgImageSource.SvgImageSource(Uri uriSource)");
@@ -99,47 +77,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.Opened.remove
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.OpenFailed.add
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.OpenFailed.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Xaml.Media.Imaging.SvgImageSourceLoadStatus> SetSourceAsync( global::Windows.Storage.Streams.IRandomAccessStream streamSource)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SvgImageSourceLoadStatus> SvgImageSource.SetSourceAsync(IRandomAccessStream streamSource) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SetSourceAsync(Windows.Storage.Streams.IRandomAccessStream)
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.UriSourceProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.RasterizePixelWidthProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.RasterizePixelHeightProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Media.Imaging.SvgImageSource, global::Windows.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs> OpenFailed
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.SvgImageSource", "event TypedEventHandler<SvgImageSource, SvgImageSourceFailedEventArgs> SvgImageSource.OpenFailed");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.SvgImageSource", "event TypedEventHandler<SvgImageSource, SvgImageSourceFailedEventArgs> SvgImageSource.OpenFailed");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Media.Imaging.SvgImageSource, global::Windows.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs> Opened
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.SvgImageSource", "event TypedEventHandler<SvgImageSource, SvgImageSourceOpenedEventArgs> SvgImageSource.Opened");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.SvgImageSource", "event TypedEventHandler<SvgImageSource, SvgImageSourceOpenedEventArgs> SvgImageSource.Opened");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Media.Imaging.SvgImageSource.OpenFailed
+		// Skipping already declared event Windows.UI.Xaml.Media.Imaging.SvgImageSource.Opened
 	}
 }

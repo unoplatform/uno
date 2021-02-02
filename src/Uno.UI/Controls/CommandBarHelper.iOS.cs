@@ -1,4 +1,3 @@
-#if __IOS__
 #nullable enable
 using System;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace Uno.UI.Controls
 	{
 		internal static void SetNavigationBar(CommandBar commandBar, UIKit.UINavigationBar? navigationBar)
 		{
-			commandBar.GetRenderer(() => new CommandBarRenderer(commandBar)).Native = navigationBar ?? throw new ArgumentNullException(nameof(navigationBar));
+			commandBar.GetRenderer(() => new CommandBarRenderer(commandBar)).Native = navigationBar;
 		}
 
 		internal static void SetNavigationItem(CommandBar commandBar, UIKit.UINavigationItem? navigationItem)
@@ -33,7 +32,11 @@ namespace Uno.UI.Controls
 				// For example the Uno.UI.Toolkit.CommandBarExtensions.BackButtonTitle attached property is often set globally to "" through
 				// a default CommandBar style in order to remove the back button text throughout an entire application.
 				// In order to leverage this information, we create a new CommandBar instance that only exists to "render" the NavigationItem.
-				topCommandBar = new CommandBar();
+				// Since Uno 3.0 objects which are not part of the Visualtree does not get the Global Styles applied. Hence the fact we are manually applying it here.
+				topCommandBar = new CommandBar
+				{
+					Style = Application.Current.Resources[typeof(CommandBar)] as Style
+				};
 			}
 
 			// Hook CommandBar to NavigationItem
@@ -117,4 +120,3 @@ namespace Uno.UI.Controls
 		}
 	}
 }
-#endif

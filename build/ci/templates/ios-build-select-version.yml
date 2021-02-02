@@ -4,6 +4,7 @@ parameters:
 
 steps:
   - bash: >
+      /bin/bash -c "ls -la /Library/Frameworks/Xamarin.iOS.framework/Versions"
       /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh ${{parameters.XamarinSDKVersion}}"
 
     displayName: Select Xamarin Version

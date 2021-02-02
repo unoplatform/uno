@@ -43,16 +43,34 @@ namespace Uno.UI.Controls
 
 		internal List<UIView>.Enumerator GetChildrenEnumerator() => _shadowChildren.Materialized.GetEnumerator();
 
+		public override void AddSubview(UIView view)
+		{
+			// As iOS will invoke the MovedToWindow on the 'view' (which will invoke the Loaded event)
+			// ** before ** invoking the SubviewAdded on its parent (i.e. this element),
+			// we cannot rely only on the cloned collection made in that SubviewAdded callback.
+			// Instead we have to pre-update the _shadowChildren so handlers of the Loaded event will be able
+			// to properly walk the tree up and down (cf. EffectiveViewport).
+			_shadowChildren.Add(view);
+			base.AddSubview(view);
+		}
+
+		public override void InsertSubview(UIView view, nint atIndex)
+		{
+			// cf. AddSubview comment!
+			_shadowChildren.Insert((int)atIndex, view);
+			base.InsertSubview(view, atIndex);
+		}
+
 		public override void WillRemoveSubview(UIView uiview)
 		{
-			base.WillRemoveSubview(uiview);
-
-			var position = _shadowChildren.IndexOf(uiview, ReferenceEqualityComparer<UIView>.Default);
-
-			if(position != -1)
+			// cf. AddSubview comment!
+			var index = _shadowChildren.IndexOf(uiview, ReferenceEqualityComparer<UIView>.Default);
+			if (index != -1)
 			{
-				_shadowChildren.RemoveAt(position);
+				_shadowChildren.RemoveAt(index);
 			}
+
+			base.WillRemoveSubview(uiview);
 		}
 
 		public BindableUIView()

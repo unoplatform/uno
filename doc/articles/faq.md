@@ -234,12 +234,9 @@ as a base for your cross-targeted library.
 
 # Is it possible to make http web requests using the WASM target?
 
-Yes it is possible, but you need to use the provided HttpHandler by Uno.UI.WebAssembly like what we did in the Uno.UI Playground:
+Yes, `HttpClient` works out of the box on .NET 5+ (Uno.Wasm.Bootstrap 2.0.0).
 
-```csharp
-var handler = new Wasm.WasmHttpHandler();
-var httpClient = new HttpClient(handler);
-```
+On older versions, you need to use the HttpHandler provided by Uno.UI.WebAssembly. See [example](https://github.com/unoplatform/Uno.Samples/blob/546aeea0a9ab40e1baab760439b9973f4401ea8f/UI/TheCatApiClient/TheCatApiClient/TheCatApiClient.Shared/WebServices/WebApiBase.cs#L18).
 
 ## How do you choose which APIs are being implemented ?
 

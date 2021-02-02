@@ -24,6 +24,10 @@ Clearly understanding how shared projects work is important to using Uno effecti
 
 It's important to be aware that the code in a shared-project file is compiled separately for each platform head. This gives a great deal of flexibility, but it also means that shared code may work for one platform, but not another.
 
+## Handling dependencies
+
+Since a shared project is just a list of files, it can't depend on other projects, NuGet packages, or system assemblies. Instead those dependencies must be added to the projects that are referencing the shared project.
+
 For example, we decide we need to use the `Json.NET` library in our app. We install the NuGet package in our `HelloWorld.Droid` head, and add a class to our `HelloWorld.Shared` project:
 
 ```csharp

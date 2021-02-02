@@ -21,9 +21,9 @@
 		</Folder>
 	  </Folder>
 	  <Folder Name="shared" TargetFolderName="shared">
-	  	<Folder Name="res" TargetFolderName="res">
-          <ProjectItem ReplaceParameters="false" TargetFileName="Icon.png">Icon.png</ProjectItem>
-	  	</Folder>
+		<Folder Name="res" TargetFolderName="res">
+		  <ProjectItem ReplaceParameters="false" TargetFileName="Icon.png">Icon.png</ProjectItem>
+		</Folder>
 	  </Folder>
 	  <ProjectItem TargetFileName="Program.cs" ReplaceParameters="true">Program.cs</ProjectItem>
 	  <ProjectItem TargetFileName="tizen-manifest.xml" ReplaceParameters="true">tizen-manifest.xml</ProjectItem>

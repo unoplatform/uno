@@ -1,4 +1,4 @@
-﻿<Project Sdk="Tizen.NET.Sdk/1.0.9">
+﻿<Project Sdk="Tizen.NET.Sdk/1.1.6">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>

@@ -1,4 +1,4 @@
-﻿// MUX reference InfoBarPanel.cpp, commit 3125489
+﻿// MUX reference InfoBarPanel.cpp, commit 533c6b1
 
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -24,7 +24,9 @@ namespace Microsoft.UI.Xaml.Controls
 			var parent = this.Parent as FrameworkElement;
 			float minHeight = parent == null ? 0.0f : (float)(parent.MinHeight - (Margin.Top + Margin.Bottom));
 
-			foreach (UIElement child in Children)
+			var children = Children;
+			var childCount = (int)children.Count;
+			foreach (UIElement child in children)
 			{
 				child.Measure(availableSize);
 				var childDesiredSize = child.DesiredSize;
@@ -32,12 +34,19 @@ namespace Microsoft.UI.Xaml.Controls
 				if (childDesiredSize.Width != 0 && childDesiredSize.Height != 0)
 				{
 					// Add up the width of all items if they were laid out horizontally
-					var horizontalMargin = GetHorizontalMargin(child);
+					var horizontalMargin = GetHorizontalOrientationMargin(child);
 					totalWidth += childDesiredSize.Width + (nItems > 0 ? (float)horizontalMargin.Left : 0) + (float)horizontalMargin.Right;
+					// Ignore left margin of first and right margin of last child
+					totalWidth += childDesiredSize.Width +
+						(nItems > 0 ? (float)horizontalMargin.Left : 0) +
+						(nItems < childCount - 1 ? (float)horizontalMargin.Right : 0);
 
 					// Add up the height of all items if they were laid out vertically
-					var verticalMargin = GetVerticalMargin(child);
-					totalHeight += childDesiredSize.Height + (nItems > 0 ? (float)verticalMargin.Top : 0) + (float)verticalMargin.Bottom;
+					var verticalMargin = GetVerticalOrientationMargin(child);
+					// Ignore top margin of first and bottom margin of last child
+					totalHeight += childDesiredSize.Height +
+						(nItems > 0 ? (float)verticalMargin.Top : 0) +
+						(nItems < childCount - 1 ? (float)verticalMargin.Bottom : 0);
 
 					if (childDesiredSize.Width > widthOfWidest)
 					{
@@ -66,18 +75,18 @@ namespace Microsoft.UI.Xaml.Controls
 			if (nItems == 1 || totalWidth > availableSize.Width || (minHeight > 0 && heightOfTallestInHorizontal > minHeight))
 			{
 				m_isVertical = true;
-				var verticalMargin = GetVerticalMargin(this);
+				var verticalPadding = VerticalOrientationPadding;
 
-				desiredSize.Width = widthOfWidest;
-				desiredSize.Height = totalHeight + (float)verticalMargin.Top + (float)verticalMargin.Bottom;
+				desiredSize.Width = widthOfWidest + (float)verticalPadding.Left + (float)verticalPadding.Right;
+				desiredSize.Height = totalHeight + (float)verticalPadding.Top + (float)verticalPadding.Bottom;
 			}
 			else
 			{
 				m_isVertical = false;
-				var horizontalMargin = GetHorizontalMargin(this);
+				var horizontalPadding = HorizontalOrientationPadding;
 
-				desiredSize.Width = totalWidth + (float)horizontalMargin.Left + (float)horizontalMargin.Right;
-				desiredSize.Height = heightOfTallest;
+				desiredSize.Width = totalWidth + (float)horizontalPadding.Left + (float)horizontalPadding.Right;
+				desiredSize.Height = heightOfTallest + (float)horizontalPadding.Top + (float)horizontalPadding.Bottom;
 			}
 
 			return desiredSize;
@@ -90,7 +99,9 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_isVertical)
 			{
 				// Layout elements vertically
-				double verticalOffset = (float)GetVerticalMargin(this).Top;
+				var verticalOrientationPadding = VerticalOrientationPadding;
+				double verticalOffset = verticalOrientationPadding.Top;
+
 				bool hasPreviousElement = false;
 				foreach (UIElement child in Children)
 				{
@@ -100,10 +111,10 @@ namespace Microsoft.UI.Xaml.Controls
 						var desiredSize = child.DesiredSize;
 						if (desiredSize.Width != 0 && desiredSize.Height != 0)
 						{
-							var verticalMargin = GetVerticalMargin(child);
+							var verticalMargin = GetVerticalOrientationMargin(child);
 
 							verticalOffset += hasPreviousElement ? (float)verticalMargin.Top : 0;
-							child.Arrange(new Rect((float)verticalMargin.Left, verticalOffset, desiredSize.Width, desiredSize.Height));
+							child.Arrange(new Rect(verticalOrientationPadding.Left + verticalMargin.Left, verticalOffset, desiredSize.Width, desiredSize.Height));
 							verticalOffset += desiredSize.Height + (float)verticalMargin.Bottom;
 
 							hasPreviousElement = true;
@@ -114,7 +125,9 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				// Layout elements horizontally
-				double horizontalOffset = (float)GetHorizontalMargin(this).Left;
+				var horizontalOrientationPadding = HorizontalOrientationPadding;
+				double horizontalOffset = horizontalOrientationPadding.Left;
+
 				bool hasPreviousElement = false;
 				foreach (UIElement child in Children)
 				{
@@ -124,10 +137,10 @@ namespace Microsoft.UI.Xaml.Controls
 						var desiredSize = child.DesiredSize;
 						if (desiredSize.Width != 0 && desiredSize.Height != 0)
 						{
-							var horizontalMargin = GetHorizontalMargin(child);
+							var horizontalMargin = GetHorizontalOrientationMargin(child);
 
 							horizontalOffset += hasPreviousElement ? (float)horizontalMargin.Left : 0;
-							child.Arrange(new Rect(horizontalOffset, (float)horizontalMargin.Top, desiredSize.Width, finalSize.Height));
+							child.Arrange(new Rect(horizontalOffset, (float)horizontalOrientationPadding.Top + (float)horizontalMargin.Top, desiredSize.Width, desiredSize.Height));
 							horizontalOffset += desiredSize.Width + (float)horizontalMargin.Right;
 
 							hasPreviousElement = true;

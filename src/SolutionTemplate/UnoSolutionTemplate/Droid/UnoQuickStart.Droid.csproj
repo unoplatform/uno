@@ -93,8 +93,8 @@
 
 	<!-- This will force the generation of the APK when not building inside visual studio -->
 	<Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />
-	
-	<Target Name="Issue3897Workaround" 
+
+	<Target Name="Issue3897Workaround"
 		Condition=" '$(ManagedDesignTimeBuild)' == 'True' "
 		AfterTargets="_RemoveLegacyDesigner">
 		<!-- See https://github.com/unoplatform/uno/issues/3897 and https://github.com/xamarin/xamarin-android/issues/5069 for more details -->

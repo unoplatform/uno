@@ -552,22 +552,6 @@ namespace Uno.UI
 			return Disposable.Create(() => view.RunIfNativeInstanceAvailable(v => v.Click -= handler));
 		}
 
-		/// <summary>
-		/// Gets an identifier that can be used for logging
-		/// </summary>
-		public static string GetDebugIdentifier(this View element)
-		{
-			if (element == null)
-			{
-				return "--NULL--";
-			}
-
-			var name = (element as IFrameworkElement)?.Name;
-			return name.HasValue()
-				? element.GetType().Name + "_" + name + "_" + element.GetHashCode()
-				: element.GetType().Name + "_" + element.GetHashCode();
-		}
-
 		public static Task AnimateAsync(this View view, Animation animation)
 		{
 			var tcs = new TaskCompletionSource<object>();

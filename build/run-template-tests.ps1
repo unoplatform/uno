@@ -61,8 +61,8 @@ $templateConfigurations =
     (Get-TemplateConfiguration -macOS 1),
     (Get-TemplateConfiguration -wasm 1),
     (Get-TemplateConfiguration -skiaGtk 1),
-    (Get-TemplateConfiguration -skiaWpf 1)
-    (Get-TemplateConfiguration -skiaGtk 1)
+    (Get-TemplateConfiguration -skiaWpf 1),
+    (Get-TemplateConfiguration -skiaTizen 1)
 )
 
 $configurations =
@@ -71,7 +71,10 @@ $configurations =
     @($templateConfigurations[1], $release),
     @($templateConfigurations[2], $releaseIPhone),
     @($templateConfigurations[3], $releaseIPhoneSimulator),
-    @($templateConfigurations[4], $release)
+    @($templateConfigurations[4], $release),
+    @($templateConfigurations[5], $release),
+    @($templateConfigurations[6], $release),
+    @($templateConfigurations[7], $release)
 )
 
 # Default
@@ -112,8 +115,13 @@ dotnet new unolib-crossruntime -n MyCrossRuntimeLib
 Assert-ExitCodeIsZero
 
 # WinUI - Default
-dotnet new unoapp-winui -n UnoAppWinUI
+dotnet new unoapp-winui -n UnoAppWinUI --winui-desktop=false
 & $msbuild $debug UnoAppWinUI\UnoAppWinUI.sln
+Assert-ExitCodeIsZero
+
+# UI Tests template
+dotnet new unoapp-uitest -o UnoUITests01
+& $msbuild $debug UnoUITests01\UnoUITests01.csproj
 Assert-ExitCodeIsZero
 
 # XF - Default

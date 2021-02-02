@@ -130,13 +130,16 @@ namespace Uno.UI.Controls
 						await newPage.AnimateAsync(GetEnterAnimation());
 						newPage.ClearAnimation();
 					}
-					if (oldPage != null)
+					if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages && oldPage != null)
 					{
 						_pageStack.Children.Remove(oldPage);
 					}
 					break;
 				case NavigationMode.Back:
-					_pageStack.Children.Insert(0, newPage);
+					if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
+					{
+						_pageStack.Children.Insert(0, newPage);
+					}
 					if (GetIsAnimated(oldEntry))
 					{
 						await oldPage.AnimateAsync(GetExitAnimation());

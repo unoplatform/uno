@@ -283,6 +283,8 @@ namespace Uno.UI.Skia.Platform
 				// System.Windows.Input.Key.DbeEnterDialogConversionMode => VirtualKey.DbeEnterDialogConversionMode,
 				// System.Windows.Input.Key.OemClear => VirtualKey.OemClear,
 				// System.Windows.Input.Key.DeadCharProcessed => VirtualKey.DeadCharProcessed,
+
+				_ => VirtualKey.None
 			};
 		}
 	}

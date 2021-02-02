@@ -10,20 +10,31 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Numerics;
 using Uno.Disposables;
-using Uno.Collections;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Composition;
+using Windows.UI.ViewManagement;
+using Uno.UI;
 using Windows.UI.Core;
+#if HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using WindowsWindow = Microsoft.UI.Xaml.Window;
+#else
+using Windows.UI.Composition;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
@@ -31,9 +42,8 @@ using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
-using Uno.Extensions.Specialized;
-using Windows.UI.ViewManagement;
-using Uno.UI;
+using WindowsWindow = Windows.UI.Xaml.Window;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -3275,7 +3285,7 @@ namespace Windows.UI.Xaml.Controls
 
 					// Only add extra padding if the NavView is the "root" of the app,
 					// but not if the app is expanding into the titlebar
-					UIElement root = Windows.UI.Xaml.Window.Current.Content;
+					UIElement root = WindowsWindow.Current.Content;
 					GeneralTransform gt = TransformToVisual(root);
 					Point pos = gt.TransformPoint(new Point(0.0f, 0.0f));
 					if (pos.Y != 0.0f)

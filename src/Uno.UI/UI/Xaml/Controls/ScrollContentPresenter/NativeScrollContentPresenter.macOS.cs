@@ -1,6 +1,7 @@
 ﻿using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using System;
 using System.Collections;
@@ -19,6 +20,13 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class NativeScrollContentPresenter : NSScrollView, IHasSizeThatFits
 	{
+		private readonly WeakReference<ScrollViewer> _scrollViewer;
+
+		public NativeScrollContentPresenter(ScrollViewer scroller) : this()
+		{
+			_scrollViewer = new WeakReference<ScrollViewer>(scroller);
+		}
+
 		public NativeScrollContentPresenter()
 		{
 			Notifications.ObserveDidLiveScroll(this, OnLiveScroll);
@@ -87,8 +95,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnLiveScroll(object sender, NSNotificationEventArgs e)
 		{
+			var scroller = _scrollViewer.TryGetTarget(out var s) ? s : TemplatedParent as ScrollViewer;
+			if (scroller is null)
+			{
+				return;
+			}
+
 			var offset = DocumentVisibleRect.Location;
-			(TemplatedParent as ScrollViewer)?.OnScrollInternal(offset.X, offset.Y, isIntermediate: false);
+			scroller.OnScrollInternal(offset.X, offset.Y, isIntermediate: false);
 		}
 
 		public Rect MakeVisible(UIElement visual, Rect rectangle) =>

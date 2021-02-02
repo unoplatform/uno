@@ -1,5 +1,7 @@
-﻿#if HAS_UNO
+﻿using System;
 using System.Collections.Generic;
+using Uno.Extensions;
+using Uno.Logging;
 using Uno.UI.Samples.Controls;
 using Windows.Devices.Geolocation;
 using Windows.UI.Xaml.Controls;
@@ -12,13 +14,20 @@ namespace Uno.UI.Samples.Content.UITests.MapControl
 {
 	[SampleControlInfo("Map", "MapControl")]
 	public sealed partial class MapControl : UserControl
-    {
+	{
 		public Geopoint PinPoint { get; set; }
 
 		public MapControl()
-        {
-            this.InitializeComponent();
-			AddMapIcon();
+		{
+			this.InitializeComponent();
+			try
+			{
+				AddMapIcon();
+			}
+			catch (Exception e)
+			{
+				this.Log().Error("Map initialization failed to complete", e);
+			}
 		}
 
 		private void AddMapIcon()
@@ -44,4 +53,3 @@ namespace Uno.UI.Samples.Content.UITests.MapControl
 		}
 	}
 }
-#endif

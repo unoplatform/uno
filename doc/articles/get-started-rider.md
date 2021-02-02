@@ -1,10 +1,41 @@
 # Getting Started on JetBrains Rider
 
 ## Prerequisites
-* [**Rider Version 2020.2 Early Access**](https://www.jetbrains.com/rider/nextversion/)
-* [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/)
+* [**Rider Version 2020.2+**](https://www.jetbrains.com/rider/download/)
+* [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) (you may install it directly from Rider)
+
+## Rider Platforms support
+
+|                       | Windows (UWP/WinUI) | Android | iOS  | Wasm | macOS | Skia-GTK | Skia-WPF |
+| --------------------- | ------------------- | ------- | ---- | ---- | ----- | -------- | -------- |
+| **Rider for Linux**   | ❌                   | ✔️       | ❌    | ✔️†   | ❌     | ✔️        | ❌        |
+| **Rider for Mac**     | ❌                   | ✔️       | ✔️    | ✔️†   | ✔️     | ✔️†       | ❌        |
+| **Rider for Windows** | ✔️                   | ✔️       | ✔️†   | ✔️†   | ❌     | ✔️        | ✔️        |
+
+† Notes:
+
+* **Wasm**: debugging from the IDE is not available yet on Rider.  But you can use the [Chromium in-browser debugger](https://github.com/unoplatform/Uno.Wasm.Bootstrap#how-to-use-the-browser-debugger) instead.
+
+  To start the app from the IDE (using the "Run" button), **dotnet core 3.1** must be installed on the machine:
+
+  ``` bash
+  # dotnet 3.1 sdk is required to launch Wasm app from Rider
+  # For Ubuntu, use apt install like that:
+  sudo apt install dotnet-sdk-3.1
+  ```
+
+  For Mac, you should install it [from here](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-aspnetcore-3.1.10-macos-x64-binaries).
+
+* **Skia-GTK** on Mac: you need to make sure to install `gtk+3` package using the following command line:
+  
+  ```bash
+  brew install gtk+3
+  ```
+
+* **iOS** on Windows: An attached Mac is needed, the iOS simulator will open on the Mac.
 
 ## Creating a new Uno project
+
 At this time, there isn't a template for the Rider IDE like there is for Visual Studio, so you can create a new project
 [using dotnet new](get-started-dotnet-new.md) by following these steps:
 
@@ -51,4 +82,5 @@ You will be able to build the UWP project, however, Rider currently does not sup
 
 
 ### Video Tutorial
-[![Getting Started Rider Video](Assets/rider-cover.JPG)](http://www.youtube.com/watch?v=HgwL0al5bfo "")
+
+[![Getting Started Rider Video](Assets/rider-cover.JPG)](http://www.youtube.com/watch?v=HgwL0al5bfo)

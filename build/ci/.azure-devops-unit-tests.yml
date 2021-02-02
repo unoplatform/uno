@@ -3,6 +3,7 @@ parameters:
 
 jobs:
 - job: Unit_Tests
+  displayName: 'Unit Tests'
   timeoutInMinutes: 90
 
   pool:

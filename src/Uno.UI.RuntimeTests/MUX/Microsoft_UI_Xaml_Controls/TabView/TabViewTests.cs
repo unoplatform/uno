@@ -33,10 +33,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 
 	[TestClass]
-	public class TabViewTests
+	public partial class TabViewTests
 	{
-
 		[TestMethod]
+		[Ignore("Automation peers are not fully supported on Uno https://github.com/unoplatform/uno/issues/4558")]
 		public void VerifyCompactTabWidthVisualStates()
 		{
 			TabView tabView = null;
@@ -54,6 +54,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				(tabView.SelectedItem as TabViewItem).IsSelected = true;
 				Verify.AreEqual("Item 0", (tabView.SelectedItem as TabViewItem).Header);
 				//TestServices.WindowHelper.WindowContent.UpdateLayout();
+				tabView.UpdateLayout();
 			});
 			// Waiting for layout
 			TestServices.WindowHelper.WaitForIdle();
@@ -116,6 +117,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+		[Ignore("Automation peers are not fully supported on Uno https://github.com/unoplatform/uno/issues/4558")]
 		public void VerifyTabViewItemUIABehavior()
 		{
 			TabView tabView = null;

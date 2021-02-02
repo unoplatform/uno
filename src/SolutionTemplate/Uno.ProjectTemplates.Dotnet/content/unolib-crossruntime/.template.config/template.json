@@ -8,7 +8,8 @@
     "Android",
     "iOS",
     "Windows",
-    "macOS"
+    "macOS",
+    "dotnet-new"
   ],
   "name": "Cross-Runtime Library",
   "identity": "Uno.Platform.UnoCrossRuntimeLib",

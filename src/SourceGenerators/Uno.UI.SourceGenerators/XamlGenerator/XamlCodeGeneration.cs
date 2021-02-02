@@ -12,6 +12,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.Telemetry;
 using Uno.UI.Xaml;
+using System.Drawing;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -44,10 +45,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectFullPath;
 		private readonly bool _outputSourceComments = true;
 		private readonly RoslynMetadataHelper _metadataHelper;
-
-#if NETFRAMEWORK
-		private readonly ProjectInstance _projectInstance;
-#endif
 
 		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
@@ -87,13 +84,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
 			// To easily debug XAML code generation:
-			// 1. Uncomment the line below
-			// 2. Build Uno.UI.SourceGenerators and override local files (following instructions here: doc/articles/uno-development/debugging-uno-ui.md#debugging-unoui)
-			// 3. Build project containing your XAML. When prompted to attach a Visual Studio instance:
-			//		- if it's in an external solution, attach the VS instance running Uno.UI
-			//		- if you're debugging XAML generation inside the Uno solution, opt to create a new VS instance
-			//
-			// Debugger.Launch();
+			// Add <UnoUISourceGeneratorDebuggerBreak>True</UnoUISourceGeneratorDebuggerBreak> to your project
+
+			if (!Helpers.DesignTimeHelper.IsDesignTime(context)
+				&& (context.GetMSBuildPropertyValue("UnoUISourceGeneratorDebuggerBreak")?.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false))
+			{
+				Debugger.Launch();
+			}
+
 			_generatorContext = context;
 			InitTelemetry(context);
 
@@ -214,6 +212,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						link = fullPath.Substring(definingProjectDirectory.Length);
 					}
+					else
+					{
+						link = projectItemInstance.GetMetadataValue("Identity");
+					}
 				}
 			}
 
@@ -303,6 +305,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			finally
 			{
 				_telemetry.Flush();
+				_telemetry.Dispose();
 			}
 		}
 

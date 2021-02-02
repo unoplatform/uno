@@ -979,7 +979,7 @@
 		<Assemblies>
 			<Member fullName="Uno.UI.Wasm" reason="Moved to another package" />
 		</Assemblies>
-		
+
 		<Types>
 			<Member
 				fullName="Windows.Gaming.UI.GameMonitor"
@@ -1195,10 +1195,10 @@
 				fullName="System.Object Windows.UI.Xaml.ResourceDictionary.Lookup(System.Object key)"
 				reason="Not a public WinUI method (in the .NET projection)"/>
 			<!-- ^^ Styles overhaul -->
-			<Member 
+			<Member
 				fullName="System.Void Windows.UI.Text.FontWeight..ctor(System.Int32 weight)"
 				reason="Changed from int to ushort to replicate uwp definition"/>
-			<Member 
+			<Member
 				fullName="System.Int32 Windows.UI.Text.FontWeight.get_Weight()"
 				reason="Changed from int to ushort to replicate uwp definition"/>
 			<Member
@@ -1218,7 +1218,7 @@
 				reason="Constructor not part of UWP API" />
 			<Member
 				fullName="System.Void Windows.Devices.Sensors.Magnetometer..ctor()"
-				reason="Constructor not part of UWP API" />															
+				reason="Constructor not part of UWP API" />
 
 			<!-- INPC on base view removal -->
 		  <Member
@@ -1257,7 +1257,7 @@
 				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition" />
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.MediaTransportControls.set_FastPlayFallbackBehaviour(System.Boolean value)"
-				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition" />				
+				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition" />
 
 			<!-- Begin OnLoaded/OnUnloaded removal -->
 			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
@@ -1761,7 +1761,7 @@
 				reason="UWP does not have this ctor" />
 			<Member
 				fullName="System.Void Windows.Devices.Midi.MidiInPort..ctor()"
-				reason="UWP does not have this ctor" />	
+				reason="UWP does not have this ctor" />
 			<Member
 				fullName="System.Void Windows.Devices.Enumeration.DeviceInformation..ctor()"
 				reason="UWP does not have this ctor" />
@@ -1782,13 +1782,13 @@
 				reason="UWP does not have this method" />
 			<Member
 				fullName="System.Void Windows.Storage.Streams.InMemoryBuffer.set_Length(System.UInt32 value)"
-				reason="UWP does not have this method" />	   
+				reason="UWP does not have this method" />
 			<Member
 				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs..ctor()"
 				reason="This ctor does not exist in UWP"/>
 			<Member
 				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationManagerPreview..ctor()"
-				reason="This ctor does not exist in UWP"/> 
+				reason="This ctor does not exist in UWP"/>
 			<Member
 				fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.get_HorizontalScrollMode()"
 				reason="Not part of WinUI API"/>
@@ -1827,9 +1827,9 @@
 				fullName="Windows.UI.Xaml.Style Windows.UI.Xaml.Controls.NativePage::Style()"
 				reason="Removed unused non-standard property"/>
 			<!-- ^^ Styles overhaul -->
-			<Member 
+			<Member
 				fullName="System.Int32 Windows.UI.Text.FontWeight::Weight()"
-				reason="Changed from int to ushort to replicate uwp definition"/>	
+				reason="Changed from int to ushort to replicate uwp definition"/>
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.Controls.MediaTransportControls::FastPlayFallbackBehaviour()"
 				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition"/>
@@ -1893,7 +1893,7 @@
 			<Member
 				fullName="AppKit.NSView Windows.UI.Xaml.Controls.PopupBase::Child()"
 				reason="Removed references to native view"/>
-				
+
 			<Member
 				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Controls.PopupBase::Child()"
 				reason="Property type corrected from FrameworkElement to UIElement as part of native views clean-up"/>
@@ -3068,12 +3068,12 @@
 	</IgnoreSet>
 	<IgnoreSet baseVersion="3.1.6">
 		<Types>
-			<Member 
+			<Member
 				fullName="Windows.Storage.StorageItem"
 				reason="Not part of the UWP API"/>
 		  </Types>
 		<Methods>
-			<Member 
+			<Member
 				fullName="System.Void Windows.System.UserProfile.UserProfilePersonalizationSettings..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
 			<Member
@@ -3252,13 +3252,13 @@
 				reason="Not part of the UWP API"/>
 			<Member
 				fullName="System.Void Windows.Foundation.GuidHelper..ctor()"
-				reason="Not part of the UWP API"/>				
+				reason="Not part of the UWP API"/>
 			<Member
 				fullName="System.Void Windows.UI.Xaml.XamlRootChangedEventArgs..ctor()"
 				reason="Not part of the UWP API"/>
-      <Member
-			  fullName="System.Void Microsoft.UI.Xaml.Controls.TabView.set_TabItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)"
-			  reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Microsoft.UI.Xaml.Controls.TabView.set_TabItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)"
+				reason="Not part of the UWP API"/>
 		</Methods>
 		<Fields>
 			<Member
@@ -3280,13 +3280,115 @@
 	</IgnoreSet>
 
 	<IgnoreSet baseVersion="3.2.0">
-	  <Types>
-	  </Types>
-	  <Methods>
-		<Member
-			fullName="System.Void Windows.UI.Core.KeyEventArgs..ctor()"
-			reason="Parameter-less ctor does not exist in UWP"/>
-	  </Methods>
+		<Types>
+		</Types>
+		<Methods>
+			<Member
+				fullName="System.Void Windows.UI.Core.KeyEventArgs..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionClip..ctor(Windows.UI.Composition.Compositor compositor)"
+				reason="Parameter-less ctor does not exist in UWP"/>
+		</Methods>
 	</IgnoreSet>
+
+	<IgnoreSet baseVersion="3.3.0">
+		<Properties>
+			<Member
+				fullName="System.Boolean Windows.UI.Core.CoreDispatcher::HasThreadAccessOverride()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel::HorizontalMarginProperty()"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel::VerticalMarginProperty()"
+				reason="Renamed in WinUI" />
+		</Properties>
+		<Methods>
+			<Member
+				fullName="System.Boolean Windows.UI.Core.CoreDispatcher.get_HasThreadAccessOverride()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Core.CoreDispatcher.set_HasThreadAccessOverride(System.Boolean value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.EffectiveViewportChangedEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="Windows.UI.Xaml.Controls.UIElementCollection Windows.UI.Xaml.Controls.Panel.get_Children()"
+				reason="Diff tool issue: Has not been removed, but is now part of an internal interface."/>
+			<Member
+				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Media.VisualTreeHelper.AdaptNative(System.Object nativeView)"
+				reason="Non UWP API - Has been updated to use UIElement instead of Object"/>
+			<Member
+				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Media.VisualTreeHelper.TryAdaptNative(System.Object view)"
+				reason="Non UWP API - Has been updated to use UIElement instead of Object"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.ImageSource..ctor(System.IO.Stream stream)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Pickers.FileSavePicker.set_FileTypeChoices(System.Collections.Generic.IDictionary`2&lt;System.String,System.Collections.Generic.IList`1&lt;System.String&gt;&gt; value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.DragItemsCompletedEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Microsoft.UI.Xaml.Controls.InfoBarPanel.GetHorizontalMargin(Windows.UI.Xaml.DependencyObject obj)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBarPanel.SetHorizontalMargin(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Thickness value)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel.get_HorizontalMarginProperty()"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Microsoft.UI.Xaml.Controls.InfoBarPanel.GetVerticalMargin(Windows.UI.Xaml.DependencyObject obj)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBarPanel.SetVerticalMargin(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Thickness value)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel.get_VerticalMarginProperty()"
+				reason="Renamed in WinUI" />
+		</Methods>
+	</IgnoreSet>
+	
+	<IgnoreSet baseVersion="3.4.0">
+		<Methods>
+			<Member
+				fullName="System.String UIKit.UIViewExtensions.GetDebugIdentifier(UIKit.UIView element)"
+				reason="Internal helper that should not be public" />
+			<Member
+				fullName="System.String AppKit.UIViewExtensions.GetDebugIdentifier(AppKit.NSView element)"
+				reason="Internal helper that should not be public" />
+			<Member
+				fullName="System.String Uno.UI.ViewExtensions.GetDebugIdentifier(Android.Views.View element)"
+				reason="Internal helper that should not be public" />
+		</Methods>
+	</IgnoreSet>
+
+	<!--
+	Supported nodes (please keep at the bottom of this file):
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+		</Methods>
+	-->
   </IgnoreSets>
 </DiffIgnore>

@@ -16,6 +16,7 @@ using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Windows.UI.Xaml.Controls;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -28,7 +29,6 @@ using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-using Windows.UI.Xaml.Controls;
 using DependencyObject = System.Object;
 using UIKit;
 #elif __MACOS__
@@ -36,7 +36,6 @@ using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
-using Windows.UI.Xaml.Controls;
 using DependencyObject = System.Object;
 using AppKit;
 #elif METRO
@@ -184,7 +183,7 @@ namespace Windows.UI.Xaml
 					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{IsPoolingEnabled}");
 				}
 
-				instance = template.LoadContent();
+				instance = template.LoadContent() ?? new Grid();
 
 				if (IsPoolingEnabled && instance is IFrameworkElement)
 				{

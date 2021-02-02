@@ -1,11 +1,13 @@
 parameters:
-  vmImage: ''
+  vmImageWindows: ''
+  vmImageLinux: ''
 
 jobs:
 - job: Dotnet_Template_Tests
+  displayName: 'dotnet new Templates Tests'
 
   pool:
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageWindows }}
 
   dependsOn: VS_Latest
 
@@ -24,3 +26,34 @@ jobs:
     displayName: Run Project Templates Tests
     env:
       NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.config
+
+- job: Dotnet_Template_Tests_Linux
+  displayName: 'dotnet new Templates Tests - Linux'
+
+  pool:
+    vmImage: ${{ parameters.vmImageLinux }}
+
+  container: unoplatform/wasm-build:2.3
+
+  dependsOn: VS_Latest
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: NugetPackages
+
+  - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+    displayName: Copy Artifacts to PackageCache
+
+  - task: UseDotNet@2
+    inputs:
+      packageType: sdk
+      version: 5.0.102
+
+  - script: dotnet new -i $(System.ArtifactsDirectory)/NugetPackages/vslatest/Uno.ProjectTemplates.Dotnet*.nupkg
+    displayName: Install Project Templates
+
+  - pwsh: build/run-template-tests-linux.ps1
+    displayName: Run Project Templates Tests
+    env:
+      NUGET_CI_CONFIG: $(Build.SourcesDirectory)/src/nuget.ci.config

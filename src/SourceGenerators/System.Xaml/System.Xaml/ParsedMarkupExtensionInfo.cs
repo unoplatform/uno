@@ -81,7 +81,7 @@ namespace Uno.Xaml
 				throw Error("Failed to parse type name '{0}'", name);
 			}
 
-			var xt = sctx.GetXamlType(xtn) ?? new XamlType(nsResolver.GetNamespace(""), name, null, sctx);
+			var xt = sctx.GetXamlType(xtn) ?? new XamlType(xtn.Namespace, xtn.Name, null, sctx);
 			ret.Type = xt;
 
 			if (idx < 0)

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
@@ -6,7 +7,7 @@ using Uno.Extensions;
 
 namespace Windows.Foundation
 {
-	[DebuggerDisplay("{Width}x{Height}")]
+	[DebuggerDisplay("{DebugDisplay,nq}")]
 	[TypeConverter(typeof(SizeConverter))]
 	public partial struct Size
 	{
@@ -59,8 +60,13 @@ namespace Windows.Foundation
 			return sb.ToString();
 		}
 
+		internal string ToDebugString()
+			=> FormattableString.Invariant($"{Width:F2}x{Height:F2}");
+
 		public static bool operator ==(Size size1, Size size2) => size1.Equals(size2);
 
 		public static bool operator !=(Size size1, Size size2) => !size1.Equals(size2);
+
+		private string DebugDisplay => $"{Width:f1}x{Height:f1}";
 	}
 }

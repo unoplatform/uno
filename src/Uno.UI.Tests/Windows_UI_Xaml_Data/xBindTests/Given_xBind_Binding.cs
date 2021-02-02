@@ -479,7 +479,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("TwoWay updated 5", SUT.Default_TwoWay_OneWay_Property);
 			Assert.AreEqual("TwoWay updated 9", SUT.Default_TwoWay_TwoWay_Property);
 		}
-
+		
 		[TestMethod]
 		public void When_DefaultBindingMode_Nested()
 		{
@@ -690,6 +690,44 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.TopLevelVisiblity = false;
 			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
+		}
+
+		[TestMethod]
+		public void When_PropertyChanged_Empty()
+		{
+			var SUT = new Binding_PropertyChangedAll();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(SUT.Model.Value.ToString(), SUT.ValueView.Text);
+			Assert.AreEqual(SUT.Model.Text, SUT.TextView.Text);
+
+			SUT.Model.Value = 42;
+			SUT.Model.Text = "World";
+
+			SUT.Model.RaisePropertyChanged(string.Empty);
+
+			Assert.AreEqual(SUT.Model.Value.ToString(), SUT.ValueView.Text);
+			Assert.AreEqual(SUT.Model.Text, SUT.TextView.Text);
+		}
+
+		[TestMethod]
+		public void When_PropertyChanged_Null()
+		{
+			var SUT = new Binding_PropertyChangedAll();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(SUT.Model.Value.ToString(), SUT.ValueView.Text);
+			Assert.AreEqual(SUT.Model.Text, SUT.TextView.Text);
+
+			SUT.Model.Value = 42;
+			SUT.Model.Text = "World";
+
+			SUT.Model.RaisePropertyChanged(null);
+
+			Assert.AreEqual(SUT.Model.Value.ToString(), SUT.ValueView.Text);
+			Assert.AreEqual(SUT.Model.Text, SUT.TextView.Text);
 		}
 	}
 }

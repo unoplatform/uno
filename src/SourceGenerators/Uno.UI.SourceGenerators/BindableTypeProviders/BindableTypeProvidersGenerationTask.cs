@@ -59,7 +59,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			try
 			{
-
 				if (PlatformHelper.IsValidPlatform(context)
 					&& !DesignTimeHelper.IsDesignTime(context))
 				{
@@ -319,13 +318,13 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			var propertyDependencyProperties =
 				from property in ownerType.GetProperties()
 				where property.IsStatic
-					&& Equals(property.Type, _dependencyPropertySymbol)
+					&& SymbolEqualityComparer.Default.Equals(property.Type, _dependencyPropertySymbol)
 				select property.Name;
 
 			var fieldDependencyProperties =
 				from field in ownerType.GetFields()
 				where field.IsStatic
-					&& Equals(field.Type, _dependencyPropertySymbol)
+					&& SymbolEqualityComparer.Default.Equals(field.Type, _dependencyPropertySymbol)
 				select field.Name;
 
 			var dependencyProperties = fieldDependencyProperties
@@ -410,7 +409,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 					foreach (var property in properties)
 					{
-						var propertyTypeName = GetFullyQualifiedType(property.Type);
+						var propertyTypeName = property.Type.GetFullyQualifiedType();
 						var propertyName = property.Name;
 
 						if (IsStringIndexer(property))
@@ -505,23 +504,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			writer.AppendLine();
 		}
 
-		private object GetFullyQualifiedType(ITypeSymbol type)
-		{
-			if(type is INamedTypeSymbol namedTypeSymbol)
-			{
-				if (namedTypeSymbol.IsGenericType && !namedTypeSymbol.IsNullable())
-				{
-					return SymbolDisplay.ToDisplayString(type, format: new SymbolDisplayFormat(
-						globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
-						typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-						genericsOptions: SymbolDisplayGenericsOptions.None,
-						miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers))
-						+ "<" + string.Join(", ", namedTypeSymbol.TypeArguments.Select(GetFullyQualifiedType)) + ">";
-				}
-			}
-
-			return type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-		}
 
 		private static string ExpandType(INamedTypeSymbol ownerType)
 		{
@@ -573,9 +555,9 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				var ignoredByConfig = IsIgnoredType(type.BaseType);
 
 				// These types are know to not be bindable, so ignore them by default.
-				var isKnownBaseType = Equals(type.BaseType, _objectSymbol)
-					|| Equals(type.BaseType, _javaObjectSymbol)
-					|| Equals(type.BaseType, _nsObjectSymbol);
+				var isKnownBaseType = SymbolEqualityComparer.Default.Equals(type.BaseType, _objectSymbol)
+					|| SymbolEqualityComparer.Default.Equals(type.BaseType, _javaObjectSymbol)
+					|| SymbolEqualityComparer.Default.Equals(type.BaseType, _nsObjectSymbol);
 
 				if(!ignoredByConfig && !isKnownBaseType)
 				{
@@ -602,7 +584,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			return property.IsIndexer
 				&& property.GetMethod.IsLocallyPublic(_currentModule)
 				&& property.Parameters.Length == 1
-				&& property.Parameters.Any(p => Equals(p.Type, _stringSymbol));
+				&& property.Parameters.Any(p => SymbolEqualityComparer.Default.Equals(p.Type, _stringSymbol));
 		}
 
 		private bool IsNonBindable(IPropertySymbol property) => property.FindAttributeFlattened(_nonBindableSymbol) != null;

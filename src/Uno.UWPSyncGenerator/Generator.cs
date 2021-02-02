@@ -85,6 +85,8 @@ namespace Uno.UWPSyncGenerator
 						  where Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Foundation")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.System")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.ApplicationModel.Resources")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Graphics")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Networking.Connectivity.WwanContract")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract")
@@ -100,7 +102,10 @@ namespace Uno.UWPSyncGenerator
 				"Microsoft.UI.Xaml",
 				"Microsoft.UI.Composition",
 				"Microsoft.UI.Text",
-				"Microsoft.System"
+				"Microsoft.UI.Input",
+				"Microsoft.System",
+				"Microsoft.Graphics",
+				"Microsoft.ApplicationModel.Resources",
 #endif
 			};
 
@@ -180,6 +185,9 @@ namespace Uno.UWPSyncGenerator
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.System")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Text")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Input")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Graphics")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.ApplicationModel.Resources")
 #endif
 			))
 			{
@@ -835,7 +843,7 @@ namespace Uno.UWPSyncGenerator
 					allMembers.AppendIf(b);
 
 					var staticQualifier = eventMember.AddMethod.IsStatic ? "static" : "";
-					var declaration = $"{staticQualifier} event {SanitizeType(eventMember.Type)} {eventMember.Name}";
+					var declaration = $"{staticQualifier} event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventMember.Name}";
 
 					if (type.TypeKind == TypeKind.Interface)
 					{
@@ -1391,6 +1399,15 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 
+			if (property.ContainingType.Name == "WebView2")
+			{
+				switch (property.Name)
+				{
+					case "CoreWebView2":
+						return true;
+				}
+			}
+
 			if (property.ContainingType.Name == "UIElement")
 			{
 				switch (property.Name)
@@ -1471,6 +1488,8 @@ namespace Uno.UWPSyncGenerator
 				"global::Windows.UI.Xaml.Input.ICommand" => "global::System.Windows.Input.ICommand",
 				"global::Microsoft.UI.Xaml.Input.ICommand" => "global::System.Windows.Input.ICommand",
 				"global::Microsoft.UI.Xaml.Interop.INotifyCollectionChanged" => "global::System.Collections.Specialized.INotifyCollectionChanged",
+				"global::Microsoft.UI.Xaml.Data.INotifyPropertyChanged" => "global::System.ComponentModel.INotifyPropertyChanged",
+				"global::Microsoft.UI.Xaml.Data.PropertyChangedEventHandler" => "global::System.ComponentModel.PropertyChangedEventHandler",
 				_ => typeName,
 			};
 		}

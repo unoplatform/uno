@@ -22,7 +22,6 @@
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.csproj",
-      "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
       "Uno.UI\\Uno.UI.csproj",

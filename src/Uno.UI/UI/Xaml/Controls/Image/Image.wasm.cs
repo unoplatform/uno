@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml.Controls
 		private Size _lastMeasuredSize;
 
 		private static readonly Size _zeroSize = new Size(0d, 0d);
+		private ImageData _currentImg;
 
 		public Image()
 		{
@@ -42,12 +43,14 @@ namespace Windows.UI.Xaml.Controls
 			AddChild(_htmlImage);
 		}
 
-		private void OnImageFailed(object sender, RoutedEventArgs e)
+		private void OnImageFailed(object sender, ExceptionRoutedEventArgs e)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"Image failed [{(Source as BitmapSource)?.WebUri}]");
+				this.Log().Debug($"Image failed [{_currentImg.Source}]: {e.ErrorMessage}");
 			}
+
+			_currentImg.Source?.ReportImageFailed(e.ErrorMessage);
 		}
 
 		private void OnImageOpened(object sender, RoutedEventArgs e)
@@ -63,12 +66,13 @@ namespace Windows.UI.Xaml.Controls
 				// (sometimes the measure 
 				InvalidateMeasure();
 			}
+			_currentImg.Source?.ReportImageLoaded();
 		}
 
 		public event RoutedEventHandler ImageOpened
 		{
-			add => _htmlImage.RegisterEventHandler("load", value);
-			remove => _htmlImage.UnregisterEventHandler("load", value);
+			add => _htmlImage.RegisterEventHandler("load", value, GenericEventHandlers.RaiseRoutedEventHandler);
+			remove => _htmlImage.UnregisterEventHandler("load", value, GenericEventHandlers.RaiseRoutedEventHandler);
 		}
 
 		private ExceptionRoutedEventArgs ImageFailedConverter(object sender, string e)
@@ -76,8 +80,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public event ExceptionRoutedEventHandler ImageFailed
 		{
-			add => _htmlImage.RegisterEventHandler("error", value, payloadConverter: ImageFailedConverter);
-			remove => _htmlImage.UnregisterEventHandler("error", value);
+			add => _htmlImage.RegisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler, payloadConverter: ImageFailedConverter);
+			remove => _htmlImage.UnregisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler);
 		}
 
 		partial void OnSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -88,36 +92,39 @@ namespace Windows.UI.Xaml.Controls
 
 			if (e.NewValue is ImageSource source)
 			{
-				_sourceDisposable.Disposable = source.Subscribe(img =>
+				void OnSourceOpened(ImageData img)
 				{
+					_currentImg = img;
 					switch (img.Kind)
 					{
 						case ImageDataKind.Empty:
 							_htmlImage.SetAttribute("src", "");
 							break;
 
-						case ImageDataKind.Base64:
+						case ImageDataKind.DataUri:
 						case ImageDataKind.Url:
 						default:
 							if (MonochromeColor != null)
 							{
-								WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.setImageAsMonochrome("
-									+ _htmlImage.HtmlId + ", \""
-									+ img.Value + "\", \""
-									+ MonochromeColor.Value.ToHexString() + "\");");
+								WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.setImageAsMonochrome(" + _htmlImage.HtmlId + ", \"" + img.Value + "\", \"" + MonochromeColor.Value.ToHexString() + "\");");
 							}
 							else
 							{
 								_htmlImage.SetAttribute("src", img.Value);
 							}
+
 							break;
 
 						case ImageDataKind.Error:
 							_htmlImage.SetAttribute("src", "");
-							_htmlImage.InternalDispatchEvent("error", EventArgs.Empty);
+							var errorArgs = new ExceptionRoutedEventArgs(this, img.Error?.ToString());
+							_htmlImage.InternalDispatchEvent("error", errorArgs);
 							break;
 					}
-				});
+				}
+
+				_sourceDisposable.Disposable = null;
+				_sourceDisposable.Disposable = source.Subscribe(OnSourceOpened);
 			}
 			else
 			{

@@ -6,9 +6,11 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Controls
-{
+{	
+	[ContentProperty(Name = nameof(Content))]
 	public partial class InfoBar : Control
 	{
 		private const string c_closeButtonName = "CloseButton";

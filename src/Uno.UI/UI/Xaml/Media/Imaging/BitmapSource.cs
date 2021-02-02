@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage.Streams;
@@ -46,6 +47,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		#endregion
 
+#if __NETSTD__
+		protected IRandomAccessStream _stream;
+#endif
+
 		protected BitmapSource() { }
 
 		protected BitmapSource(Uri sourceUri) : base(sourceUri)
@@ -58,50 +63,89 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		}
 
+		/// <summary>
+		/// Helper for Uno... not part of UWP contract
+		/// </summary>
 		public void SetSource(Stream streamSource)
+			=> SetSourceCore(streamSource.AsRandomAccessStream());
+
+		/// <summary>
+		/// Helper for Uno... not part of UWP contract
+		/// </summary>
+		public Task SetSourceAsync(Stream streamSource)
 		{
-			PixelWidth = 0;
-			PixelHeight = 0;
-
-			var copy = new MemoryStream();
-			streamSource.CopyTo(copy);
-			copy.Position = 0;
-			Stream = copy;
-
-#if NETSTANDARD
-			InvalidateSource();
-#endif
+			SetSourceCore(streamSource.AsRandomAccessStream());
+			return ForceLoad(CancellationToken.None);
 		}
 
-		public async Task SetSourceAsync(Stream streamSource)
+		public void SetSource(IRandomAccessStream streamSource)
+			=> SetSourceCore(streamSource);
+
+		public IAsyncAction SetSourceAsync(IRandomAccessStream streamSource)
 		{
-			if (streamSource != null)
-			{
-				PixelWidth = 0;
-				PixelHeight = 0;
+			SetSourceCore(streamSource);
+			return AsyncAction.FromTask(ForceLoad);
+		}
 
-				var copy = new MemoryStream();
-				await streamSource.CopyToAsync(copy);
-				copy.Position = 0;
-				Stream = copy;
-
-#if NETSTANDARD
-				InvalidateSource();
-#endif
-			}
-			else
+		private void SetSourceCore(IRandomAccessStream streamSource)
+		{
+			if (streamSource == null)
 			{
 				//Same behavior as windows, although the documentation does not mention it!!!
 				throw new ArgumentException(nameof(streamSource));
 			}
+
+			PixelWidth = 0;
+			PixelHeight = 0;
+
+			// The source has to be cloned before leaving the "SetSource[Async]".
+			var clonedStreamSource = streamSource.CloneStream();
+
+#if __NETSTD__
+			_stream = clonedStreamSource;
+#else
+			Stream = clonedStreamSource.AsStream();
+#endif
 		}
 
-		public void SetSource(IRandomAccessStream streamSource)
-			// We prefer to use the SetSourceAsync here in order to make sure that the stream is copied ASYNChronously,
-			// which is important since we are using a stream wrapper of and <In|Out|RA>Stream which might freeze the UI thread / throw exception.
-			=> Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetSourceAsync(streamSource.GetInputStreamAt(0).AsStreamForRead()));
+		private async Task ForceLoad(CancellationToken ct)
+		{
+#if __NETSTD__
+			var tcs = new TaskCompletionSource<object>();
+			using var r = ct.Register(() => tcs.TrySetCanceled());
+			using var s = Subscribe(OnChanged);
 
-		public IAsyncAction SetSourceAsync(IRandomAccessStream streamSource)
-			=> AsyncAction.FromTask(ct => SetSourceAsync(streamSource.GetInputStreamAt(0).AsStreamForRead()));
+			InvalidateSource();
+
+			await tcs.Task;
+
+			void OnChanged(ImageData data)
+			{
+				tcs.TrySetResult(null);
+			}
+#endif
+		}
+
+		public override string ToString()
+		{
+			if (WebUri is { } uri)
+			{
+				return $"{GetType().Name}/{uri}";
+			}
+
+#if __NETSTD__
+			if (_stream is { } stream)
+			{
+				return $"{GetType().Name}/{stream.GetType()}";
+			}
+#else
+			if (Stream is { } stream)
+			{
+				return $"{GetType().Name}/{stream.GetType()}";
+			}
+#endif
+
+			return $"{GetType().Name}/-empty-";
+		}
 	}
 }

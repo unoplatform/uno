@@ -58,12 +58,9 @@ namespace Windows.UI.Xaml
 			return value;
 		}
 
-		public bool HasKey(object key)
-		{
-			var keyName = key;
-
-			return _values.ContainsKey(keyName);
-		}
+		/// <remarks>This method does not exist in C# UWP API
+		/// and can be removed as breaking change later.</remarks>
+		public bool HasKey(object key) => ContainsKey(key);
 
 		/// <remarks>This method does not exist in C# UWP API
 		/// and can be removed as breaking change later.</remarks>
@@ -130,6 +127,11 @@ namespace Windows.UI.Xaml
 			if (throwIfPresent && _values.ContainsKey(key))
 			{
 				throw new ArgumentException("An entry with the same key already exists.");
+			}
+
+			if(value is WeakResourceInitializer lazyResourceInitializer)
+			{
+				value = lazyResourceInitializer.Initializer;
 			}
 
 			if (value is ResourceInitializer resourceInitializer)
@@ -452,33 +454,7 @@ namespace Windows.UI.Xaml
 		private static class Themes
 		{
 			public const string Default = "Default";
-			public static string Active
-			{
-				get
-				{
-					if (Application.Current == null)
-					{
-						return "Light";
-					}
-
-					var custom = ApplicationHelper.RequestedCustomTheme;
-
-					if (!custom.IsNullOrEmpty())
-					{
-						return custom;
-					}
-
-					switch (Application.Current.RequestedTheme)
-					{
-						case ApplicationTheme.Light:
-							return "Light";
-						case ApplicationTheme.Dark:
-							return "Dark";
-						default:
-							throw new InvalidOperationException($"Theme {Application.Current.RequestedTheme} is not valid");
-					}
-				}
-			}
+			public static string Active => Application.Current?.RequestedThemeForResources ?? "Light";
 		}
 	}
 }

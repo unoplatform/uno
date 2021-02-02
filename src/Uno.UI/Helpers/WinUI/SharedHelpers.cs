@@ -6,15 +6,12 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.System.Threading;
-using Windows.UI.Text;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
@@ -544,27 +541,27 @@ namespace Uno.UI.Helpers.WinUI
 		//	return stream;
 		//}
 
-		//void QueueCallbackForCompositionRendering(Action callback)
-		//{
-		//	try
-		//	{
-		//		auto renderingEventToken = std.make_shared<event_token>();
-		//		*renderingEventToken = Xaml.Media.CompositionTarget.Rendering([renderingEventToken, callback](auto&, auto&) {
-
-		//			// Detach event or Rendering will keep calling us back.
-		//			Xaml.Media.CompositionTarget.Rendering(*renderingEventToken);
-
-		//			callback();
-		//		});
-		//	}
-		//	catch (hresult_error &e)
-		//	{
-		//		// DirectUI.CompositionTarget.add_Rendering can fail with RPC_E_WRONG_THREAD if called while the Xaml Core is being shutdown,
-		//		// and there is evidence from Watson that such calls are made in real apps (see Bug 13554197).
-		//		// Since the core is being shutdown, we no longer care about whatever work we wanted to defer to CT.Rendering, so ignore this error.
-		//		if (e.to_abi() != RPC_E_WRONG_THREAD) { throw; }
-		//	}
-		//}
+		public static void QueueCallbackForCompositionRendering(Action callback)
+		{
+			try
+			{
+				void OnRender(object sender, object e)
+				{
+					// Detach event or Rendering will keep calling us back.
+					CompositionTarget.Rendering -= OnRender;
+					callback();
+				}
+				CompositionTarget.Rendering += OnRender;
+			}
+			catch (Exception)
+			{
+				// DirectUI.CompositionTarget.add_Rendering can fail with RPC_E_WRONG_THREAD if called while the Xaml Core is being shutdown,
+				// and there is evidence from Watson that such calls are made in real apps (see Bug 13554197).
+				// Since the core is being shutdown, we no longer care about whatever work we wanted to defer to CT.Rendering, so ignore this error.
+				//if (e.to_abi() != RPC_E_WRONG_THREAD) { throw; }
+				throw;
+			}
+		}
 
 		// Rect helpers
 
@@ -702,12 +699,34 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		public static void SetBinding(
+			string pathString,
+			DependencyObject target,
+			DependencyProperty targetProperty)
+		{
+			Binding binding = new Binding();
+			RelativeSource relativeSource = new RelativeSource();
+			relativeSource.Mode = RelativeSourceMode.TemplatedParent;
+			binding.RelativeSource = relativeSource;
+
+			binding.Path = new PropertyPath(pathString);
+
+			BindingOperations.SetBinding(target, targetProperty, binding);
+		}
+
+		// Be cautious: this function may introduce memory leak because Source holds strong reference to target too
+		// There’s an intermediary object – the BindingExpression when BindingOperations::SetBinding
+		// For example, if source is NavigationView and target is content control,
+		// and there is strong reference: NavigationView -> ContentControl
+		// BindingExpression.Source also make a strong reference to NavigationView
+		// and it introduces the cycle: ContentControl -> BindingExpression -> NavigationView -> ContentControl
+		// Prefer to use RelativeSource version of SetBinding if possible.
+		public static void SetBinding(
 			object source,
 			string pathString,
 			DependencyObject target,
 			DependencyProperty targetProperty,
-			IValueConverter converter,
-			BindingMode mode)
+			IValueConverter converter = null,
+			BindingMode mode = BindingMode.OneWay)
 		{
 			Binding binding = new Binding();
 
@@ -872,6 +891,15 @@ namespace Uno.UI.Helpers.WinUI
 			}
 
 			return FindInVisualTreeInner(parent, isMatch);
+		}
+
+		public static bool IsTrue(bool? nullableBool)
+		{
+			if (nullableBool != null)
+			{
+				return nullableBool.Value;
+			}
+			return false;
 		}
 
 		// Sometimes we want to get a string representation from an arbitrary object. E.g. for constructing a UIA Name

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using Uno.Extensions;
 using Uno.Foundation;
 using Windows.Graphics.Display;
-
+using Windows.Storage.Streams;
 using Path = global::System.IO.Path;
 
 namespace Windows.UI.Xaml.Media.Imaging
@@ -17,32 +20,55 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		internal ResolutionScale? ScaleOverride { get; set; }
 
-		private protected override bool TryOpenSourceAsync(int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
-		{
-			var uri = WebUri;
+		internal string ContentType { get; set; } = "application/octet-stream";
 
-			if (uri != null)
+		private protected override bool TryOpenSourceAsync(
+			CancellationToken ct,
+			int? targetWidth,
+			int? targetHeight,
+			out Task<ImageData> asyncImage)
+		{
+			if (WebUri is {} uri)
 			{
 				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme == "file";
-				
+
 				// Local files are assumed as coming from the remote server
 				var newUri = hasFileScheme switch
 				{
 					true => new Uri(uri.PathAndQuery.TrimStart('/'), UriKind.Relative),
-					_	 => uri
+					_ => uri
 				};
 
-				asyncImage = AssetResolver.ResolveImageAsync(newUri, ScaleOverride);
+				asyncImage = AssetResolver.ResolveImageAsync(this, newUri, ScaleOverride);
+
 				return true;
 			}
 
+			if (_stream is {} stream)
+			{
+				void OnProgress(ulong position, ulong? length)
+				{
+					if (position > 0 && length is { } actualLength)
+					{
+						var percent = (int)((position / (float)actualLength) * 100);
+						RaiseDownloadProgress(percent);
+					}
+				}
+
+				var streamWithContentType = stream.TrySetContentType(ContentType);
+
+				asyncImage = OpenFromStream(streamWithContentType, OnProgress, ct);
+
+				return true;
+			}
+			
 			asyncImage = default;
 			return false;
 		}
 
 		internal static class AssetResolver
 		{
-			private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(() => GetAssets());
+			private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(GetAssets);
 
 			private static async Task<HashSet<string>> GetAssets()
 			{
@@ -53,7 +79,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"));
 			}
 
-			public static async Task<ImageData> ResolveImageAsync(Uri uri, ResolutionScale? scaleOverride)
+			internal static async Task<ImageData> ResolveImageAsync(ImageSource source, Uri uri, ResolutionScale? scaleOverride)
 			{
 				try
 				{
@@ -62,22 +88,32 @@ namespace Windows.UI.Xaml.Media.Imaging
 					{
 						if (uri.Scheme == "http" || uri.Scheme == "https")
 						{
-							return new ImageData() { Kind = ImageDataKind.Url, Value = uri.AbsoluteUri };
+							return new ImageData
+							{
+								Kind = ImageDataKind.Url,
+								Value = uri.AbsoluteUri,
+								Source = source
+							};
 						}
 
 						// TODO: Implement ms-appdata
 						return new ImageData();
 					}
-					else
-					{
-						var assets = await _assets.Value;
 
-						return new ImageData() { Kind = ImageDataKind.Url, Value = GetScaledPath(uri.OriginalString, assets, scaleOverride) };
-					}
+					// POTENTIAL BUG HERE: if the "fetch" failed, the application
+					// will never retry to fetch it again.
+					var assets = await _assets.Value;
+
+					return new ImageData
+					{
+						Kind = ImageDataKind.Url,
+						Value = GetScaledPath(uri.OriginalString, assets, scaleOverride),
+						Source = source
+					};
 				}
 				catch (Exception e)
 				{
-					return new ImageData() { Kind = ImageDataKind.Error, Error = e };
+					return new ImageData { Kind = ImageDataKind.Error, Error = e };
 				}
 			}
 
@@ -133,6 +169,16 @@ namespace Windows.UI.Xaml.Media.Imaging
 				(int)ResolutionScale.Scale450Percent,
 				(int)ResolutionScale.Scale500Percent
 			};
+		}
+
+		internal override void ReportImageLoaded()
+		{
+			RaiseImageOpened();
+		}
+
+		internal override void ReportImageFailed(string errorMessage)
+		{
+			RaiseImageFailed(new Exception("Unable to load image: " + errorMessage));
 		}
 	}
 }

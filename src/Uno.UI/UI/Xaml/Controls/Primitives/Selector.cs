@@ -21,7 +21,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public event SelectionChangedEventHandler SelectionChanged;
 
 		private readonly SerialDisposable _collectionViewSubscription = new SerialDisposable();
-		private BindingPath _path;
+		/// <summary>
+		/// The path defined by <see cref="SelectedValuePath"/>, if it is set, otherwise null. This may be reused multiple times for
+		/// checking <see cref="SelectedValue"/> candidates.
+		/// </summary>
+		private BindingPath _selectedValueBindingPath;
 		private bool _disableRaiseSelectionChanged;
 
 		/// <summary>
@@ -63,7 +67,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ChangeSelectedItem(item, oldIsSelected, newIsSelected);
 		}
 
-		internal virtual void ChangeSelectedItem(object item, bool oldIsSelected, bool newIsSelected) {
+		internal virtual void ChangeSelectedItem(object item, bool oldIsSelected, bool newIsSelected)
+		{
 			if (ReferenceEquals(SelectedItem, item) && !newIsSelected)
 			{
 				SelectedItem = null;
@@ -160,21 +165,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (SelectedValuePath.HasValue())
 			{
-				if (_path?.Path != SelectedValuePath)
+				if (_selectedValueBindingPath?.Path != SelectedValuePath)
 				{
-					_path = new Uno.UI.DataBinding.BindingPath(SelectedValuePath, null);
+					_selectedValueBindingPath = new Uno.UI.DataBinding.BindingPath(SelectedValuePath, null);
 				}
 			}
 			else
 			{
-				_path = null;
+				_selectedValueBindingPath = null;
 			}
 
 
-			if (_path != null)
+			if (_selectedValueBindingPath != null)
 			{
-				_path.DataContext = SelectedItem;
-				SelectedValue = _path.Value;
+				_selectedValueBindingPath.DataContext = SelectedItem;
+				SelectedValue = _selectedValueBindingPath.Value;
 			}
 			else
 			{
@@ -200,7 +205,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		// Using a DependencyProperty as the backing store for SelectedIndex.  This enables animation, styling, binding, etc...
-		public static DependencyProperty SelectedIndexProperty { get ; } =
+		public static DependencyProperty SelectedIndexProperty { get; } =
 			DependencyProperty.Register("SelectedIndex", typeof(int), typeof(Selector), new FrameworkPropertyMetadata(-1,
 				(s, e) => (s as Selector).OnSelectedIndexChanged((int)e.OldValue, (int)e.NewValue)
 			)
@@ -248,23 +253,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			name: nameof(SelectedValue),
 			propertyType: typeof(object),
 			ownerType: typeof(Selector),
-			typeMetadata: new FrameworkPropertyMetadata(null, SelectedValueChanged, SelectedValueCoerce)
+			typeMetadata: new FrameworkPropertyMetadata(null, (s, e) => (s as Selector).OnSelectedValueChanged(e.OldValue, e.NewValue), SelectedValueCoerce)
 		);
 
-		private static void SelectedValueChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
+		private void OnSelectedValueChanged(object oldValue, object newValue)
 		{
-			var selector = (Selector)snd;
-			if (selector?._path != null)
-			{
-				return; // Setting the SelectedValue won't update the index when a _path is used.
-			}
-			selector.SelectedIndex = selector.GetItems()?.IndexOf(args.NewValue) ?? -1;
+
+			var (indexOfItemWithValue, itemWithValue) = FindIndexOfItemWithValue(newValue);
+			SelectedIndex = indexOfItemWithValue;
 		}
 
 		private static object SelectedValueCoerce(DependencyObject snd, object baseValue)
 		{
 			var selector = (Selector)snd;
-			if (selector?._path != null)
+			if (selector?._selectedValueBindingPath != null)
 			{
 				return baseValue; // Setting the SelectedValue won't update the index when a _path is used.
 			}
@@ -473,7 +475,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal void OnItemClicked(SelectorItem selectorItem) => OnItemClicked(IndexFromContainer(selectorItem));
 
 		internal virtual void OnItemClicked(int clickedIndex) { }
-		
+
 		protected override void OnItemsChanged(object e)
 		{
 			if (e is IVectorChangedEventArgs iVCE)
@@ -521,6 +523,36 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			return null;
+		}
+
+		/// Finds the index of the first item with a given property path value.
+		(int Index, object ItemWithValue) FindIndexOfItemWithValue(object value)
+		{
+			var nCount = NumberOfItems;
+
+			for (int cnt = 0; cnt < nCount; cnt++)
+			{
+				var item = GetItemFromIndex(cnt);
+				var itemValue = GetSelectedValue(item);
+				if (Equals(value, itemValue))
+				{
+					return (cnt, itemValue);
+				}
+			}
+
+			return (-1, null);
+		}
+
+		/// Returns the selected value of an item using a path.
+		object GetSelectedValue(object pItem)
+		{
+			if (_selectedValueBindingPath == null || pItem == null)
+			{
+				return pItem;
+			}
+
+			_selectedValueBindingPath.DataContext = pItem;
+			return _selectedValueBindingPath.Value;
 		}
 
 		private protected override void Refresh()

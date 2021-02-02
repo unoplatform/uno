@@ -99,12 +99,12 @@ The pre-defined prefixes are listed below:
 | Prefix        | Included platforms                 | Excluded platforms                 | Namespace                                                   | Put in `mc:Ignorable`? |
 |---------------|------------------------------------|------------------------------------|-------------------------------------------------------------|------------------------|
 | `win`         | Windows                            | Android, iOS, web, macOS, Skia     | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `xamarin`     | Android, iOS, web, macOS, Skia     | Windows                            | `http:/uno.ui/xamarin`                                      | yes                    |
-| `not_win`     | Android, iOS, web, macOS, Skia     | Windows                            | `http:/uno.ui/not_win`                                      | yes                    |
-| `android`     | Android                            | Windows, iOS, web, macOS, Skia     | `http:/uno.ui/android`                                      | yes                    |
-| `ios`         | iOS                                | Windows, Android, web, macOS, Skia | `http:/uno.ui/ios`                                          | yes                    |
-| `wasm`        | web                                | Windows, Android, iOS, macOS, Skia | `http:/uno.ui/wasm`                                         | yes                    |
-| `macos`       | macOS                              | Windows, Android, iOS, web, Skia   | `http:/uno.ui/macos`                                        | yes                    |
+| `xamarin`     | Android, iOS, web, macOS, Skia     | Windows                            | `http://uno.ui/xamarin`                                      | yes                    |
+| `not_win`     | Android, iOS, web, macOS, Skia     | Windows                            | `http://uno.ui/not_win`                                      | yes                    |
+| `android`     | Android                            | Windows, iOS, web, macOS, Skia     | `http://uno.ui/android`                                      | yes                    |
+| `ios`         | iOS                                | Windows, Android, web, macOS, Skia | `http://uno.ui/ios`                                          | yes                    |
+| `wasm`        | web                                | Windows, Android, iOS, macOS, Skia | `http://uno.ui/wasm`                                         | yes                    |
+| `macos`       | macOS                              | Windows, Android, iOS, web, Skia   | `http://uno.ui/macos`                                        | yes                    |
 | `skia`        | Skia                               | Windows, Android, iOS, web, macOs  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_android` | Windows, iOS, web, macOS, Skia     | Android                            | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_ios`     | Windows, Android, web, macOS, Skia | iOS                                | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
@@ -143,5 +143,5 @@ In cases where it is needed (fonts are one example) then the XAML files must be 
 
 | Prefix          | Namespace                                                   | Put in `mc:Ignorable`? |
 |-----------------|-------------------------------------------------------------|------------------------|
-| `netstdref`     | `http:/uno.ui/netstdref`                                    | yes                    |
-| `not_netstdref` | `http:/uno.ui/not_netstdref`                                | yes                    |
+| `netstdref`     | `http://uno.ui/netstdref`                                   | yes                    |
+| `not_netstdref` | `http://uno.ui/not_netstdref`                               | yes                    |

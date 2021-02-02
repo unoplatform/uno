@@ -203,4 +203,13 @@
   <PropertyGroup Condition="'$(UnoSampleAppDisableAPKGeneration)'=='True'">
     <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
   </PropertyGroup>
+  <Target Name="ValidateNoDPIAndroidResource" AfterTargets="Build">
+		<ItemGroup>
+			<_myFilteredGroup Include="@(AndroidResource)"  Condition="'%(AndroidResource.FileName)'=='nodpi-validationresource'" />
+		</ItemGroup>
+		 <PropertyGroup>
+			<_MyMdpiAsset>%(_myFilteredGroup.LogicalName)</_MyMdpiAsset>
+		 </PropertyGroup>
+		<Error Condition="!$(_MyMdpiAsset.Contains('-nodpi'))" Text="The file nodpi-validationresource.jpeg does not exist under drawable-nodpi directory" />
+  </Target>
 </Project>

@@ -141,7 +141,7 @@ namespace {0}
 				{
 					var nativeCtor = typeSymbol
 						.GetMethods()
-						.Where(m => m.MethodKind == MethodKind.Constructor && Equals(m.Parameters.FirstOrDefault()?.Type, _intPtrSymbol))
+						.Where(m => m.MethodKind == MethodKind.Constructor && SymbolEqualityComparer.Default.Equals(m.Parameters.FirstOrDefault()?.Type, _intPtrSymbol))
 						.FirstOrDefault();
 					
 					if (nativeCtor == null)

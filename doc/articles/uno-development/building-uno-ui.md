@@ -29,7 +29,9 @@ This is due to limitations in the legacy .NET versions used by Xamarin projects.
 4. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`
 5. Set the build target inside ``<UnoTargetFrameworkOverride></UnoTargetFrameworkOverride>`` to the identifier for the target platform you wish to build for. (Identifiers for each platform are listed in the file.) Save the file.
 6. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf`, and open it.
-7. To confirm that everything works, you can right-click on the `Uno.UI` project in the Solution Explorer and 'Build'. (The project will be `Uno.UI.Wasm` or `Uno.UI.Skia` if you're targeting Wasm or Skia.)
+7. To confirm that everything works:
+  - For iOS/Android/macOS you can right-click on the `Uno.UI` project in the Solution Explorer and 'Build'. 
+  - For WebAssembly and Skia you can right-click on the `Uno.UI.Runtime.WebAssembly` or `Uno.UI.Runtime.Skia.[Gtk|Wpf]` project in the Solution Explorer and 'Build'.
 
 Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.
 
