@@ -52,6 +52,7 @@
     "disableGitFeatures": false,
     "globalMetadata": {
       "_appLogoPath": "images/UnoLogoSmall.png",
+      "_enableSearch": "true",
       "_appFaviconPath": "images/UnoLogoSmall.png"
     }
   }
