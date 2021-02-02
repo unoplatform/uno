@@ -128,7 +128,8 @@ namespace Windows.UI.Xaml
 
 				if (!_htmlTagCache.TryGetValue(currentType, out var htmlTagOverride))
 				{
-					htmlTagOverride = DefaultHtmlTag;
+					// Set the tag of the parent class to default.
+					htmlTagOverride = htmlTag;
 
 					if (currentType.GetCustomAttribute(_htmlElementAttribute) is Attribute attr)
 					{
