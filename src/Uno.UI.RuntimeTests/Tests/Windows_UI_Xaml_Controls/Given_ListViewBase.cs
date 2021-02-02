@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
 using Windows.Foundation;
+using FluentAssertions.Execution;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -236,8 +237,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.ItemsSource = source;
 
-			SelectorItem si = null;
-			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
+			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 2);
+			var si = SUT.ContainerFromItem(source[0]) as SelectorItem;
 			Assert.AreEqual("item 1", si.Content);
 			Assert.AreSame(si, source[0]);
 #if !NETFX_CORE
@@ -469,11 +470,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.ItemsSource = source;
 
-			SelectorItem si = null;
-			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
+			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 2);
 
+			var si = SUT.ContainerFromItem(source[0]) as SelectorItem;
 			Assert.AreEqual("item 1", si.Content);
-			Assert.AreEqual(2, GetPanelChildren(SUT).Length);
 
 			source.RemoveAt(1);
 
@@ -655,6 +655,536 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Their_Own_Container()
+		{
+			var list = new OnItemsChangedListView();
+			var items = new ObservableCollection<ListViewItem>()
+			{
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+
+			using var _ = new AssertionScope();
+
+			// Containers/indices/items can be retrieved
+			Assert.AreEqual(items[1], list.ContainerFromItem(items[1]));
+			Assert.AreEqual(items[2], list.ContainerFromIndex(2));
+			Assert.AreEqual(3, list.IndexFromContainer(items[3]));
+			Assert.AreEqual(items[1], list.ItemFromContainer(items[1]));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Their_Own_Container_In_OnItemsChanged_Removal()
+		{
+			var list = new OnItemsChangedListView();
+			var items = new ObservableCollection<ListViewItem>()
+			{
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+
+			// Item removal
+
+			var removedItem = items[1];
+			list.ItemsChangedAction = () =>
+			{
+				using var _ = new AssertionScope();
+
+				// Test container/index/item before removed
+				Assert.AreEqual(items[0], list.ContainerFromItem(items[0]));
+				Assert.AreEqual(items[0], list.ContainerFromIndex(0));
+				Assert.AreEqual(items[0], list.ItemFromContainer(items[0]));
+				Assert.AreEqual(0, list.IndexFromContainer(items[0]));
+
+				// Test removed container/index/item
+				Assert.AreEqual(null, list.ContainerFromItem(removedItem));
+				// In UWP, the Item is returned even though it is already removed
+				// This is a weird behavior and doesn't seem too useful anyway, so we currently
+				// ignore it
+				// Assert.AreEqual(removedItem, list.ItemFromContainer(removedItem));
+				Assert.AreEqual(-1, list.IndexFromContainer(removedItem));
+
+				// Test container/index/item right after removed
+				Assert.AreEqual(items[1], list.ContainerFromItem(items[1]));
+				Assert.AreEqual(items[1], list.ContainerFromIndex(1));
+				Assert.AreEqual(items[1], list.ItemFromContainer(items[1]));
+				Assert.AreEqual(1, list.IndexFromContainer(items[1]));
+
+				// Test container/index/item after removed
+				Assert.AreEqual(items[2], list.ContainerFromItem(items[2]));
+				Assert.AreEqual(items[2], list.ContainerFromIndex(2));
+				Assert.AreEqual(items[2], list.ItemFromContainer(items[2]));
+				Assert.AreEqual(2, list.IndexFromContainer(items[2]));
+			};
+
+			items.Remove(removedItem);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Their_Own_Container_In_OnItemsChanged_Addition()
+		{
+			var list = new OnItemsChangedListView();
+			var items = new ObservableCollection<ListViewItem>()
+			{
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+
+			// Item removal
+
+			var addedItem = new ListViewItem();
+			list.ItemsChangedAction = () =>
+			{
+				using var _ = new AssertionScope();
+
+				// Test container/index/item before added
+				Assert.AreEqual(items[0], list.ContainerFromItem(items[0]));
+				Assert.AreEqual(items[0], list.ContainerFromIndex(0));
+				Assert.AreEqual(items[0], list.ItemFromContainer(items[0]));
+				Assert.AreEqual(0, list.IndexFromContainer(items[0]));
+
+				// Test added container/index/item
+#if HAS_UNO
+				// UWP returns null/-1 here, which differs from "the same"
+				// situation in case of collection change. For simplicity
+				// we return the correct values here too. It should not have
+				// any adverse impact.
+				Assert.AreEqual(addedItem, list.ContainerFromItem(addedItem));
+				Assert.AreEqual(addedItem, list.ContainerFromIndex(1));
+				Assert.AreEqual(addedItem, list.ItemFromContainer(addedItem));
+				Assert.AreEqual(1, list.IndexFromContainer(addedItem));
+#endif
+
+				// Test container/index/item right after added
+				Assert.AreEqual(items[2], list.ContainerFromItem(items[2]));
+				Assert.AreEqual(items[2], list.ContainerFromIndex(2));
+				Assert.AreEqual(items[2], list.ItemFromContainer(items[2]));
+				Assert.AreEqual(2, list.IndexFromContainer(items[2]));
+
+				// Test container/index/item after removed
+				Assert.AreEqual(items[3], list.ContainerFromItem(items[3]));
+				Assert.AreEqual(items[3], list.ContainerFromIndex(3));
+				Assert.AreEqual(items[3], list.ItemFromContainer(items[3]));
+				Assert.AreEqual(3, list.IndexFromContainer(items[3]));
+			};
+
+			items.Insert(1, addedItem);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Their_Own_Container_In_OnItemsChanged_Change()
+		{
+			var list = new OnItemsChangedListView();
+			var items = new ObservableCollection<ListViewItem>()
+			{
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+
+			// Item change
+			var oldItem = items[1];
+			var newItem = new ListViewItem();
+
+			list.ItemsChangedAction = () =>
+			{
+				using var _ = new AssertionScope();
+
+				// Test container/index/item before removed
+				Assert.AreEqual(items[0], list.ContainerFromItem(items[0]));
+				Assert.AreEqual(items[0], list.ContainerFromIndex(0));
+				Assert.AreEqual(items[0], list.ItemFromContainer(items[0]));
+				Assert.AreEqual(0, list.IndexFromContainer(items[0]));
+
+				// Test old container/index/item
+				Assert.AreEqual(null, list.ContainerFromItem(oldItem));
+				Assert.AreEqual(null, list.ItemFromContainer(oldItem));
+				Assert.AreEqual(-1, list.IndexFromContainer(oldItem));
+
+				// Test new container/index/item
+				Assert.AreEqual(newItem, list.ContainerFromItem(newItem));
+				Assert.AreEqual(newItem, list.ContainerFromIndex(1));
+				Assert.AreEqual(newItem, list.ItemFromContainer(newItem));
+				Assert.AreEqual(1, list.IndexFromContainer(newItem));
+
+				// Test container/index/item right after changed
+				Assert.AreEqual(items[2], list.ContainerFromItem(items[2]));
+				Assert.AreEqual(items[2], list.ContainerFromIndex(2));
+				Assert.AreEqual(items[2], list.ItemFromContainer(items[2]));
+				Assert.AreEqual(2, list.IndexFromContainer(items[2]));
+
+				// Test container/index/item after changed
+				Assert.AreEqual(items[3], list.ContainerFromItem(items[3]));
+				Assert.AreEqual(items[3], list.ContainerFromIndex(3));
+				Assert.AreEqual(items[3], list.ItemFromContainer(items[3]));
+				Assert.AreEqual(3, list.IndexFromContainer(items[3]));
+			};
+
+			items[1] = newItem;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Their_Own_Container_In_OnItemsChanged_Reset()
+		{
+			var list = new OnItemsChangedListView();
+			var items = new ObservableCollection<ListViewItem>()
+			{
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+
+			// Item change
+			var newItems = new ObservableCollection<ListViewItem>()
+			{
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+				new ListViewItem(),
+			};
+
+			list.ItemsChangedAction = () =>
+			{
+				using var _ = new AssertionScope();
+
+				// Test container/index/item from old source
+				Assert.AreEqual(null, list.ContainerFromItem(items[1]));
+				Assert.AreEqual(null, list.ItemFromContainer(items[1]));
+				Assert.AreEqual(-1, list.IndexFromContainer(items[1]));
+
+				// Test container/index/item from new source
+#if HAS_UNO
+				// UWP returns null/-1 here, which differs from "the same"
+				// situation in case of collection change. For simplicity
+				// we return the correct values here too. It should not have
+				// any adverse impact.
+				Assert.AreEqual(newItems[1], list.ContainerFromItem(newItems[1]));
+				Assert.AreEqual(newItems[1], list.ContainerFromIndex(1));
+				Assert.AreEqual(newItems[1], list.ItemFromContainer(newItems[1]));
+				Assert.AreEqual(1, list.IndexFromContainer(newItems[1]));
+#endif
+			};
+
+			list.ItemsSource = newItems;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Not_Their_Own_Container()
+		{
+			var list = new OnItemsChangedListView();
+			var items = new ObservableCollection<int>()
+			{
+				1,
+				2,
+				3,
+				4,
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+
+			using var _ = new AssertionScope();
+
+			// Containers/indices/items can be retrieved
+			var container2 = (ListViewItem)list.ContainerFromItem(2);
+			Assert.AreEqual(2, container2.Content);
+			var container3 = (ListViewItem)list.ContainerFromIndex(2);
+			Assert.AreEqual(3, container3.Content);			
+			Assert.AreEqual(2, list.IndexFromContainer(container3));
+			Assert.AreEqual(2, list.ItemFromContainer(container2));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Not_Their_Own_Container_In_OnItemsChanged_Removal()
+		{
+			var list = new OnItemsChangedListView();
+			var items = new ObservableCollection<int>()
+			{
+				1,
+				2,
+				3,
+				4,
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+
+			// Item removal
+
+			var removedItem = items[1];
+			list.ItemsChangedAction = () =>
+			{
+				using var _ = new AssertionScope();
+
+				// Test container/index/item before removed
+				var container0 = (ListViewItem)list.ContainerFromItem(items[0]);
+				Assert.AreEqual(items[0], container0.Content);
+				var containerIndex0 = list.ContainerFromIndex(0);
+				Assert.AreEqual(container0, containerIndex0);
+				Assert.AreEqual(items[0], list.ItemFromContainer(container0));
+				Assert.AreEqual(0, list.IndexFromContainer(container0));
+
+				// Test removed container/index/item
+				Assert.AreEqual(null, list.ContainerFromItem(removedItem));
+
+				// Test container/index/item right after removed
+				var container1 = (ListViewItem)list.ContainerFromItem(items[1]);
+				Assert.AreEqual(items[1], container1.Content);
+				var containerIndex1 = list.ContainerFromIndex(1);
+				Assert.AreEqual(container1, containerIndex1);
+				Assert.AreEqual(items[1], list.ItemFromContainer(container1));
+				Assert.AreEqual(1, list.IndexFromContainer(container1));
+
+				// Test container/index/item after removed
+				var container2 = (ListViewItem)list.ContainerFromItem(items[2]);
+				Assert.AreEqual(items[2], container2.Content);
+				var containerIndex2 = list.ContainerFromIndex(2);
+				Assert.AreEqual(container2, containerIndex2);
+				Assert.AreEqual(items[2], list.ItemFromContainer(container2));
+				Assert.AreEqual(2, list.IndexFromContainer(container2));
+			};
+
+			items.Remove(removedItem);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Not_Their_Own_Container_In_OnItemsChanged_Addition()
+		{
+			var list = new OnItemsChangedListView();
+			var items = new ObservableCollection<int>()
+			{
+				1,
+				2,
+				3,
+				4,
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+
+			// Item removal
+
+			var addedItem = new ListViewItem();
+			list.ItemsChangedAction = () =>
+			{
+				using var _ = new AssertionScope();
+
+				// Test container/index/item before added
+				var container0 = (ListViewItem)list.ContainerFromItem(items[0]);
+				Assert.AreEqual(items[0], container0.Content);
+				var containerIndex0 = list.ContainerFromIndex(0);
+				Assert.AreEqual(container0, containerIndex0);
+				Assert.AreEqual(items[0], list.ItemFromContainer(container0));
+				Assert.AreEqual(0, list.IndexFromContainer(container0));
+
+				// Test added container/index/item
+				// UWP returns null/-1 here, which differs from "the same"
+				// situation in case of collection change. For simplicity
+				// we return the correct values here too. It should not have
+				// any adverse impact.
+				var container1 = (ListViewItem)list.ContainerFromItem(42);
+				Assert.IsNull(container1);
+				var containerIndex1 = (ListViewItem)list.ContainerFromIndex(1);
+				Assert.IsNull(containerIndex1);
+
+				// Test container/index/item right after added
+				var container2 = (ListViewItem)list.ContainerFromItem(items[2]);
+				Assert.AreEqual(items[2], container2.Content);
+				var containerIndex2 = list.ContainerFromIndex(2);
+				Assert.AreEqual(container2, containerIndex2);
+				Assert.AreEqual(items[2], list.ItemFromContainer(container2));
+				Assert.AreEqual(2, list.IndexFromContainer(container2));
+
+				// Test container/index/item after removed
+				var container3 = (ListViewItem)list.ContainerFromItem(items[3]);
+				Assert.AreEqual(items[3], container3.Content);
+				var containerIndex3 = list.ContainerFromIndex(3);
+				Assert.AreEqual(container3, containerIndex3);
+				Assert.AreEqual(items[3], list.ItemFromContainer(container3));
+				Assert.AreEqual(3, list.IndexFromContainer(container3));
+			};
+
+			items.Insert(1, 42);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Not_Their_Own_Container_In_OnItemsChanged_Change()
+		{
+			var list = new OnItemsChangedListView();
+			var items = new ObservableCollection<int>()
+			{
+				1,
+				2,
+				3,
+				4,
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+
+			// Item change
+			var oldItem = items[1];
+			var oldContainer = list.ContainerFromItem(items[1]);
+
+			list.ItemsChangedAction = () =>
+			{
+				using var _ = new AssertionScope();
+
+				// Test container/index/item before removed
+				var container0 = (ListViewItem)list.ContainerFromItem(items[0]);
+				Assert.AreEqual(items[0], container0.Content);
+				var containerIndex0 = list.ContainerFromIndex(0);
+				Assert.AreEqual(container0, containerIndex0);
+				Assert.AreEqual(items[0], list.ItemFromContainer(container0));
+				Assert.AreEqual(0, list.IndexFromContainer(container0));
+
+				// Test old container/index/item
+				Assert.AreEqual(null, list.ContainerFromItem(oldItem));
+				Assert.AreEqual(null, list.ItemFromContainer(oldContainer));
+				Assert.AreEqual(-1, list.IndexFromContainer(oldContainer));
+
+#if HAS_UNO
+				// Test new container/index/item
+				// In UWP the container for the new item is returned, but its
+				// content is not yet set.
+				// We match the situation with Reset and return nulls.
+				var container1 = (ListViewItem)list.ContainerFromItem(items[1]);
+				Assert.IsNull(container1);
+				var containerIndex1 = list.ContainerFromIndex(1);
+				Assert.IsNull(containerIndex1);
+#endif
+
+				// Test container/index/item right after changed
+				var container2 = (ListViewItem)list.ContainerFromItem(items[2]);
+				Assert.AreEqual(items[2], container2.Content);
+				var containerIndex2 = list.ContainerFromIndex(2);
+				Assert.AreEqual(container2, containerIndex2);
+				Assert.AreEqual(items[2], list.ItemFromContainer(container2));
+				Assert.AreEqual(2, list.IndexFromContainer(container2));
+
+				// Test container/index/item after removed
+				var container3 = (ListViewItem)list.ContainerFromItem(items[3]);
+				Assert.AreEqual(items[3], container3.Content);
+				var containerIndex3 = list.ContainerFromIndex(3);
+				Assert.AreEqual(container3, containerIndex3);
+				Assert.AreEqual(items[3], list.ItemFromContainer(container3));
+				Assert.AreEqual(3, list.IndexFromContainer(container3));
+			};
+
+			items[1] = 42;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Not_Their_Own_Container_In_OnItemsChanged_Reset()
+		{
+			var list = new OnItemsChangedListView();
+			var items = new ObservableCollection<int>()
+			{
+				1,
+				2,
+				3,
+				4,
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+
+			// Item change
+			var newItems = new ObservableCollection<int>()
+			{
+				5,
+				6,
+				7,
+				8,
+			};
+
+			var oldItem = items[1];
+			var oldContainer = list.ContainerFromIndex(1);
+
+			list.ItemsChangedAction = () =>
+			{
+				using var _ = new AssertionScope();
+
+				// Test container/index/item from old source
+				Assert.AreEqual(null, list.ContainerFromItem(oldItem));
+				Assert.AreEqual(null, list.ItemFromContainer(oldContainer));
+				Assert.AreEqual(-1, list.IndexFromContainer(oldContainer));
+
+				// Test container/index/item from new source
+				var container2 = (ListViewItem)list.ContainerFromItem(newItems[2]);
+				Assert.IsNull(container2);
+				var containerIndex2 = list.ContainerFromIndex(2);
+				Assert.IsNull(containerIndex2);				
+			};
+
+			list.ItemsSource = newItems;
+		}
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
+	}
+
+	public partial class OnItemsChangedListView : ListView
+	{
+		public Action ItemsChangedAction = null;
+
+		protected override void OnItemsChanged(object e)
+		{
+			base.OnItemsChanged(e);
+			ItemsChangedAction?.Invoke();
+		}
 	}
 }

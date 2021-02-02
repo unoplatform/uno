@@ -9,33 +9,24 @@ namespace Windows.UI.Xaml
 {
 	public partial class ElementStub
 	{
-        public ElementStub()
-        {
-            Visibility = Visibility.Collapsed;
-        }
+		private FrameworkElement SwapViews(FrameworkElement oldView, Func<object> newViewProvider)
+		{
+			if (oldView?.Parent is FrameworkElement parentElement)
+			{
+				var currentPosition = parentElement.GetChildren().IndexOf(oldView);
 
-        private FrameworkElement MaterializeContent()
-        {
-            if(Parent is FrameworkElement parentElement)
-            {
-                var currentPosition = parentElement.GetChildren().IndexOf(this);
+				if (currentPosition != -1)
+				{
+					var newView = (FrameworkElement)newViewProvider();
 
-                if (currentPosition != -1)
-                {
-					// Create the instance first so that x:Bind constructs can be picked up by the
-					// Unload event of ElementStub. Not doing so does not fills up the generated variables
-					// too late and Binding.Update() does not refresh the available x:Bind instances.
-					var newContent = ContentBuilder() as UIElement;
+					parentElement.RemoveChild(oldView);
+					parentElement.AddChild(newView, currentPosition);
 
-                    parentElement.RemoveChild(this);
+					return newView;
+				}
+			}
 
-                    parentElement.AddChild(newContent, currentPosition);
-
-					return newContent as FrameworkElement;
-                }
-            }
-
-            return null;
-        }
-    }
+			return null;
+		}
+	}
 }

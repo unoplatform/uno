@@ -1203,7 +1203,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
-		private object ItemFromContainer(DependencyObject container)
+		public object ItemFromContainer(DependencyObject container)
 		{
 			var listView = m_listView;
 			if (listView != null)

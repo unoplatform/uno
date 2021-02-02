@@ -336,7 +336,7 @@ namespace Windows.UI.Xaml.Controls
 				var isSameWidth = _measureLayout.AvailableSize.Width == arrangeSize.Width;
 
 				// If the requested height is the same
-				var isSameHeight = _measureLayout.AvailableSize.Height == arrangeSize.Width;
+				var isSameHeight = _measureLayout.AvailableSize.Height == arrangeSize.Height;
 
 				// If the measured height is exactly the same
 				var isSameMeasuredHeight = _measureLayout.MeasuredSize.Height == arrangeSize.Height;
@@ -582,7 +582,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var shouldRemoveUnfitLines = _ellipsize != null;
 
-				if (shouldRemoveUnfitLines && maxHeight != null && measuredHeight >= maxHeight)
+				if (shouldRemoveUnfitLines && maxHeight != null && measuredHeight > maxHeight)
 				{
 					var lineAtHeight = Layout.GetLineForOffset(maxHeight.Value) + 1;
 					measuredHeight = Layout.GetLineTop(lineAtHeight);

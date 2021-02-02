@@ -25,11 +25,21 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public event TypedEventHandler<DataPackage, OperationCompletedEventArgs>? OperationCompleted;
 
+#pragma warning disable CS0067
+		public event TypedEventHandler<DataPackage, object?>? Destroyed;
+
+		public event TypedEventHandler<DataPackage, object?>? ShareCanceled;
+
+		public event TypedEventHandler<DataPackage, ShareCompletedEventArgs>? ShareCompleted;
+#pragma warning restore CS00067
+
 		private ImmutableDictionary<string, object> _data = ImmutableDictionary<string, object>.Empty;
 
 		public DataPackageOperation RequestedOperation { get; set; }
 
 		public IDictionary<string, RandomAccessStreamReference> ResourceMap { get; } = new Dictionary<string, RandomAccessStreamReference>();
+
+		public DataPackagePropertySet Properties { get; } = new DataPackagePropertySet();
 
 		public void SetData(string formatId, object value)
 		{
@@ -97,7 +107,8 @@ namespace Windows.ApplicationModel.DataTransfer
 				RequestedOperation,
 				_data,
 				ResourceMap.ToImmutableDictionary(),
-				(id, op) => OperationCompleted?.Invoke(this, new OperationCompletedEventArgs(id, op)));
+				(id, op) => OperationCompleted?.Invoke(this, new OperationCompletedEventArgs(id, op)),
+				Properties);
 
 		/// <summary>
 		/// Determines if the given URI/URL is considered a WebLink.
@@ -246,5 +257,9 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			return combinedUri;
 		}
+
+		internal void OnShareCompleted() => ShareCompleted?.Invoke(this, new ShareCompletedEventArgs());
+
+		internal void OnShareCanceled() => ShareCanceled?.Invoke(this, null);
 	}
 }

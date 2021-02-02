@@ -61,8 +61,8 @@ $templateConfigurations =
     (Get-TemplateConfiguration -macOS 1),
     (Get-TemplateConfiguration -wasm 1),
     (Get-TemplateConfiguration -skiaGtk 1),
-    (Get-TemplateConfiguration -skiaWpf 1)
-    (Get-TemplateConfiguration -skiaGtk 1)
+    (Get-TemplateConfiguration -skiaWpf 1),
+    (Get-TemplateConfiguration -skiaTizen 1)
 )
 
 $configurations =
@@ -71,7 +71,10 @@ $configurations =
     @($templateConfigurations[1], $release),
     @($templateConfigurations[2], $releaseIPhone),
     @($templateConfigurations[3], $releaseIPhoneSimulator),
-    @($templateConfigurations[4], $release)
+    @($templateConfigurations[4], $release),
+    @($templateConfigurations[5], $release),
+    @($templateConfigurations[6], $release),
+    @($templateConfigurations[7], $release)
 )
 
 # Default

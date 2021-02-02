@@ -65,7 +65,7 @@
 ### Runtime Performance
 
 - CoreDispatcher Priority support (Large UIs performance)
-- `x:DeferLoadStrategy="Lazy"` and `x:Load="false"` support (responsive design performance)
+- `x:DeferLoadStrategy="Lazy"`, `x:Load="false"` and `x:Load="{x:Bind ...}" support (responsive design performance)
 - Image explicit size support (performance)
 - Event tracing (sub-millisecond [ETL performance profiling](Assets/diagnostics.PNG))
 - Internal logging

@@ -9,24 +9,20 @@ namespace Windows.UI.Xaml
 {
 	public partial class ElementStub
 	{
-		public ElementStub()
+		private FrameworkElement SwapViews(FrameworkElement oldView, Func<object> newViewProvider)
 		{
-			Visibility = Visibility.Collapsed;
-		}
-
-		private FrameworkElement MaterializeContent()
-		{
-			if (Parent is FrameworkElement parentElement)
+			if (oldView?.Parent is FrameworkElement parentElement)
 			{
-				var currentPosition = parentElement.GetChildren().IndexOf(this);
+				var currentPosition = parentElement.GetChildren().IndexOf(oldView);
 
 				if (currentPosition != -1)
 				{
-					var newContent = ContentBuilder() as UIElement;
+					var newView = (FrameworkElement)newViewProvider();
+					parentElement.RemoveChild(oldView);
 
-					parentElement.RemoveChild(this);
+					parentElement.AddChild(newView, currentPosition);
 
-					parentElement.AddChild(newContent, currentPosition);
+					return newView;
 				}
 			}
 
