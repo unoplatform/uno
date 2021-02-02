@@ -25,6 +25,12 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage
 		public CommandBar_Frame()
 		{
 			this.InitializeComponent();
+			this.Unloaded += OnUnloaded;
+		}
+
+		private void OnUnloaded(object sender, RoutedEventArgs e)
+		{
+			RemoveGlobalStyle(sender, e);
 		}
 
 		private void AddGlobalStyle (object sender, RoutedEventArgs args)
