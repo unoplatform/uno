@@ -605,7 +605,18 @@ namespace Microsoft.UI.Xaml.Controls
 				// we don't invalidate measure in UpdateViewport if the view is changing to
 				// avoid layout cycles.
 				REPEATER_TRACE_INFO("%ls: \tInvalidating measure due to viewport change. \n", GetLayoutId());
+#if __ANDROID__
+				// Uno workaround:
+				// This method is mainly used by the UpdateViewport but also the OnLayoutUpdated.
+				// Both are usually being invoked while in the Arrange phase, but on Android we cannot invalidate the layout while arranging it,
+				// we have to defer the invalidate.
+				// Note: We use RunAnimation to get it as soon as possible.
+				// Note: UpdateViewport might also be invoked on Load, but in that case we expect either the viewport to not change,
+				//		 either the layout is pending anyway, so we should not have an extra useless layout pass.
+				m_owner.Dispatcher.RunAnimation(() => m_owner.InvalidateMeasure());
+#else
 				m_owner.InvalidateMeasure();
+#endif
 			}
 		}
 
