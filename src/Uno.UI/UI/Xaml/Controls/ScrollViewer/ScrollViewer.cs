@@ -652,7 +652,12 @@ namespace Windows.UI.Xaml.Controls
 			UpdateZoomedContentAlignment();
 		}
 
-		private void UpdateDimensionProperties()
+#if __IOS__
+		internal
+#else
+		private
+#endif
+			void UpdateDimensionProperties()
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug)
 				&& (ActualHeight != ViewportHeight || ActualWidth != ViewportWidth)
@@ -858,7 +863,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
+#region Content and TemplatedParent forwarding to the ScrollContentPresenter
 		protected override void OnContentChanged(object oldValue, object newValue)
 		{
 			base.OnContentChanged(oldValue, newValue);
@@ -943,9 +948,9 @@ namespace Windows.UI.Xaml.Controls
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
-		#endregion
+#endregion
 
-		#region Managed scroll bars support
+#region Managed scroll bars support
 		private bool _isTemplateApplied;
 		private ScrollBar? _verticalScrollbar;
 		private ScrollBar? _horizontalScrollbar;
@@ -1100,7 +1105,7 @@ namespace Windows.UI.Xaml.Controls
 
 			ChangeViewScroll(e.NewValue, null, disableAnimation: immediate);
 		}
-		#endregion
+#endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
@@ -1214,7 +1219,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation);
 		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation);
 
-		#region Scroll indicators visual states (Managed scroll bars only)
+#region Scroll indicators visual states (Managed scroll bars only)
 		private DispatcherQueueTimer? _indicatorResetTimer;
 		private string? _indicatorState;
 
@@ -1293,6 +1298,6 @@ namespace Windows.UI.Xaml.Controls
 				VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.Collapsed, true);
 			}
 		}
-		#endregion
+#endregion
 	}
 }
