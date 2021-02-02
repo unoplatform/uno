@@ -121,6 +121,39 @@
 				<ios:Setter Property="(toolkit:CommandBarExtensions.BackButtonTitle)"
 							Value="" />
 			</Style>
+
+			<Style x:Key="CustomIconCommandBarStyle"
+					TargetType="CommandBar">
+
+				 <!--Remove the back button title (and only leave the back arrow)--> 
+				<ios:Setter Property="(toolkit:CommandBarExtensions.BackButtonTitle)"
+							Value="" />
+
+				<ios:Setter Property="(toolkit:CommandBarExtensions.BackButtonIcon)">
+					<ios:Setter.Value>
+						<BitmapIcon Foreground="Transparent"
+									ShowAsMonochrome="False"
+									Height="41"
+									Width="41"
+									UriSource="ms-appx:///Assets/BackArrow.png" />
+					</ios:Setter.Value>
+				</ios:Setter>
+			</Style>
+
+			<!--
+				These value should be the same Image as the ones used
+				for the CustomIconCommandBarStyle.BackButtonIcon
+			-->
+			<Style x:Key="ImageForCommandBarIcon"
+					TargetType="Image">
+				<ios:Setter Property="Source"
+							Value="ms-appx:///Assets/BackArrow.png" />
+				<ios:Setter Property="Height"
+							Value="41" />
+				<ios:Setter Property="Width"
+							Value="41" />
+			</Style>
+
 		</ResourceDictionary>
 
 	</Application.Resources>
