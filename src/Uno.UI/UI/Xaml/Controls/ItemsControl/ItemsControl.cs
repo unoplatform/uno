@@ -42,6 +42,8 @@ namespace Windows.UI.Xaml.Controls
 	[ContentProperty(Name = "Items")]
 	public partial class ItemsControl : Control, IItemsControl
 	{
+		protected IVectorChangedEventArgs _inProgressVectorChange;
+
 		private ItemsPresenter _itemsPresenter;
 
 		private readonly SerialDisposable _notifyCollectionChanged = new SerialDisposable();
@@ -91,11 +93,25 @@ namespace Windows.UI.Xaml.Controls
 		{
 			InitializePartial();
 
-			_items.VectorChanged += (s, e) =>
+			_items.VectorChanged += OnItemsVectorChanged;
+		}
+
+		private void OnItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs e)
+		{
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+			try
+#endif
 			{
+				_inProgressVectorChange = e;
 				OnItemsChanged(e);
-				SetNeedsUpdateItems();
-			};
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+			finally
+#endif
+			{
+				_inProgressVectorChange = null;
+			}
+			SetNeedsUpdateItems();
 		}
 
 		partial void InitializePartial();
@@ -660,7 +676,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var unwrappedSource = UnwrapItemsSource();
 
-			if(unwrappedSource is null)
+			if (unwrappedSource is null)
 			{
 				_notifyCollectionChanged.Disposable = null;
 			}
@@ -1187,20 +1203,89 @@ namespace Windows.UI.Xaml.Controls
 		public object ItemFromContainer(DependencyObject container)
 		{
 			var index = IndexFromContainer(container);
-			var item = ItemFromIndex(index);
 
-			return item;
+			if (index > -1)
+			{
+				var item = ItemFromIndex(index);
+				return item;
+			}
+			else
+			{
+				// If the container is actually an item, we can return itself
+				if (Items.Contains(container))
+				{
+					return container;
+				}
+			}
+
+			return null;
 		}
 
 		public DependencyObject ContainerFromItem(object item)
 		{
+			if (IsItemItsOwnContainer(item))
+			{
+				// Verify whether the item is actually present.
+				var itemIndex = Items.IndexOf(item);
+				if (itemIndex < 0)
+				{
+					return null;
+				}
+
+				return item as DependencyObject;
+			}
+
 			var index = IndexFromItem(item);
-			return index == -1 ? null : MaterializedContainers.FirstOrDefault(container => Equals(IndexFromContainer(container), index));
+			return index == -1 ? null : MaterializedContainers.FirstOrDefault(materializedContainer => Equals(IndexFromContainer(materializedContainer), index));
 		}
 
 		public int IndexFromContainer(DependencyObject container)
 		{
-			return IndexFromContainerInner(container);
+			var index = IndexFromContainerInner(container);
+			if (index < 0)
+			{
+				// If the container is actually an item, we can return its index
+				return Items.IndexOf(container);
+			}
+
+			if (_inProgressVectorChange != null)
+			{
+				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
+				{
+					if (index == _inProgressVectorChange.Index)
+					{
+						// Removed item no longer exists.
+						return -1;
+					}
+					else if (index > _inProgressVectorChange.Index)
+					{
+						// All items after the removed item have a lower new index.
+						return index - 1;
+					}
+				}
+				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemInserted)
+				{
+					if (index >= _inProgressVectorChange.Index)
+					{
+						// All items after the added item have a higher new index.
+						return index + 1;
+					}
+				}
+				else if (
+					(_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged && _inProgressVectorChange.Index == index) ||
+					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
+				{
+					// In these cases, we return the index only if the item is its own container
+					// and the container is in fact the new item, not the old one					
+					var item = ItemFromIndex(index);
+					if (IsItemItsOwnContainer(item) && Equals(item, container))
+					{
+						return index;
+					}
+					return -1;
+				}
+			}
+			return index;
 		}
 
 		internal virtual int IndexFromContainerInner(DependencyObject container)
@@ -1210,12 +1295,64 @@ namespace Windows.UI.Xaml.Controls
 
 		public DependencyObject ContainerFromIndex(int index)
 		{
-			return ContainerFromIndexInner(index);
+			var item = ItemFromIndex(index);
+			if (IsItemItsOwnContainer(item))
+			{
+				return item as DependencyObject;
+			}
+
+			int adjustedIndex = GetInProgressAdjustedIndex(index);
+
+			if (adjustedIndex < 0)
+			{
+				return null;
+			}
+
+			return ContainerFromIndexInner(adjustedIndex);
 		}
 
 		internal virtual DependencyObject ContainerFromIndexInner(int index)
 		{
-			return MaterializedContainers.FirstOrDefault(container => Equals(container.GetValue(IndexForItemContainerProperty), index));
+			return MaterializedContainers.FirstOrDefault(materializedContainer => Equals(materializedContainer.GetValue(IndexForItemContainerProperty), index));
+		}
+
+		protected int GetInProgressAdjustedIndex(int index)
+		{
+			int adjustedIndex = index;
+
+			if (_inProgressVectorChange != null)
+			{
+				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
+				{
+					if (index >= _inProgressVectorChange.Index)
+					{
+						// All items after the removed item have still a higher index.
+						adjustedIndex = index + 1;
+					}
+				}
+				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemInserted)
+				{
+					if (index == _inProgressVectorChange.Index)
+					{
+						return -1;
+					}
+					else if (index > _inProgressVectorChange.Index)
+					{
+						// All items after the added item have still a lower index.
+						adjustedIndex = index - 1;
+					}
+				}
+				else if (
+					(_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged && _inProgressVectorChange.Index == index) ||
+					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
+				{
+					// In case the item is not its own container, the new one is not assigned
+					// yet and we return null.						
+					adjustedIndex = -1;
+				}
+			}
+
+			return adjustedIndex;
 		}
 
 		/// <summary>
