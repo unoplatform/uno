@@ -3,10 +3,11 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class Expander : Control
+	public partial class Expander : ContentControl
     {
 		private readonly string c_expanderHeader = "ExpanderHeader";
 
