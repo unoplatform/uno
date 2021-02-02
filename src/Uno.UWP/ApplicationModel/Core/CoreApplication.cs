@@ -1,6 +1,7 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 using System.Collections.Generic;
+using Uno.Helpers.Theming;
 
 namespace Windows.ApplicationModel.Core
 {
@@ -48,5 +49,11 @@ namespace Windows.ApplicationModel.Core
 				return _views;
 			}
 		}
+
+		/// <summary>
+		/// This property is kept in sync with the Application.RequestedTheme to enable
+		/// native UI elements in non Uno.UWP to resolve the currently set Application theme.
+		/// </summary>
+		internal static SystemTheme RequestedTheme { get; set; }
 	}
 }

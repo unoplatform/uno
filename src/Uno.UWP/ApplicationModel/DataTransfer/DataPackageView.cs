@@ -24,13 +24,17 @@ namespace Windows.ApplicationModel.DataTransfer
 			DataPackageOperation requestedOperation,
 			ImmutableDictionary<string, object> data,
 			ImmutableDictionary<string, RandomAccessStreamReference> resourceMap,
-			Action<string?, DataPackageOperation> reportCompleted)
+			Action<string?, DataPackageOperation> reportCompleted,
+			DataPackagePropertySet properties)
 		{
 			_data = data;
 			_resourceMap = resourceMap;
 			_reportCompleted = reportCompleted;
 			RequestedOperation = requestedOperation;
+			Properties = new DataPackagePropertySetView(properties);
 		}
+
+		public DataPackagePropertySetView Properties { get; }
 
 		public DataPackageOperation RequestedOperation { get; }
 

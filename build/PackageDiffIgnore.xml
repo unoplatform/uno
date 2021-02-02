@@ -3358,9 +3358,23 @@
 				reason="Renamed in WinUI" />
 		</Methods>
 	</IgnoreSet>
-	
 	<IgnoreSet baseVersion="3.4.0">
 		<Methods>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataPackagePropertySet..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataTransferManager..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.ShareTargetInfo..ctor()"
+				reason="Constructor not public in UWP" />
 			<Member
 				fullName="System.String UIKit.UIViewExtensions.GetDebugIdentifier(UIKit.UIView element)"
 				reason="Internal helper that should not be public" />
@@ -3370,6 +3384,18 @@
 			<Member
 				fullName="System.String Uno.UI.ViewExtensions.GetDebugIdentifier(Android.Views.View element)"
 				reason="Internal helper that should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequestDeferral..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequest..ctor()"
+				reason="Constructor not public in UWP" />																		
 		</Methods>
 	</IgnoreSet>
 

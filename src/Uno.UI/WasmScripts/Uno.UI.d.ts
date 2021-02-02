@@ -987,6 +987,17 @@ declare namespace Windows.Storage {
         private static synchronizeFileSystem;
     }
 }
+interface NavigatorDataTransferManager {
+    share(data: any): Promise<void>;
+}
+interface Navigator extends NavigatorDataTransferManager {
+}
+declare namespace Windows.ApplicationModel.DataTransfer {
+    class DataTransferManager {
+        static isSupported(): boolean;
+        static showShareUI(title: string, text: string, url: string): Promise<string>;
+    }
+}
 declare namespace Windows.Devices.Geolocation {
     class Geolocator {
         private static dispatchAccessRequest;
