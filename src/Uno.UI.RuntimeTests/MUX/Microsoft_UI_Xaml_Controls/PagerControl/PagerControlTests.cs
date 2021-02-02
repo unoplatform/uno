@@ -50,7 +50,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		[Ignore("ItemsRepeater-based version of the control is not working yet (issue #5030)")]
 		public void VerifyNumberPanelButtonUIABehavior()
 		{
 			RunOnUIThread.Execute(() => {
