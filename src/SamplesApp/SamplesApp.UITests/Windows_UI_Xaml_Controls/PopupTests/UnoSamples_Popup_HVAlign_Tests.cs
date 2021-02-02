@@ -12,21 +12,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 {
 	public class UnoSamples_Popup_HVAlign_Tests : PopupUITestBase
 	{
-		// disabled android tests due to #4761
-
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Browser)]
 		public void Popup_PlacementTest_1Default_HSVS() => Popup_PlacementTest("Default_HSVS", 0f, 0f);
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Browser)]
 		public void Popup_PlacementTest_2Default_HTVL() => Popup_PlacementTest("Default_HLVT", 0f, 0f);
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Browser)]
 		public void Popup_PlacementTest_3Default_HCVC() => Popup_PlacementTest("Default_HCVC", 0.5f, 0.5f);
 
 		[Test]
