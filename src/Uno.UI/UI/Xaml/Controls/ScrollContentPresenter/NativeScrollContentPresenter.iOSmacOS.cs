@@ -150,7 +150,7 @@ namespace Windows.UI.Xaml.Controls
 					UpdateDelayedTouches();
 #else
 					var size = AdjustContentSize(_content.Frame.Size + new CGSize(horizontalMargin, verticalMargin));
-					ContentView.Frame = new CGRect(new CGPoint(0, 0), size);
+					ContentView.Frame = new CGRect(_content.Frame.Location, size);
 #endif
 				}
 			}
@@ -199,7 +199,6 @@ namespace Windows.UI.Xaml.Controls
 					else
 					{
 						return (nfloat)child.Margin.Left;
-
 					}
 
 				default:
