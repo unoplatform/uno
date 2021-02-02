@@ -28,12 +28,14 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests
 		public WinUIExpanderPage()
 		{
 			this.InitializeComponent();
+#if !WINDOWS_UWP
 			var customControlPeer = FrameworkElementAutomationPeer.FromElement(CustomControl);
 			var expanderPeer = FrameworkElementAutomationPeer.FromElement(ExpanderWithCustomEventsSource);
 
 			// Commenting because of MuxTestInfra bug: 
 			// https://github.com/microsoft/microsoft-ui-xaml/issues/3491
 			//expanderPeer.EventsSource = customControlPeer;
+#endif
 		}
 	}
 }
