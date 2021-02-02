@@ -133,7 +133,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (captionTextBlock != null)
 			{
 				m_captionTextBlock = captionTextBlock;
-				captionTextBlock.SizeChanged += OnCaptionSizeChanged; //TODO:MZ:Unsubscribe when appropriate
+				captionTextBlock.SizeChanged += OnCaptionSizeChanged;
 				UpdateCaptionMargins();
 			}
 
@@ -141,7 +141,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (backgroundStackPanel != null)
 			{
 				m_backgroundStackPanel = backgroundStackPanel;
-				//TODO:MZ:Unsubscribe when appropriate
+				
 				backgroundStackPanel.PointerCanceled += OnPointerCancelledBackgroundStackPanel;
 				backgroundStackPanel.PointerCaptureLost += OnPointerCaptureLostBackgroundStackPanel;
 				backgroundStackPanel.PointerMoved += OnPointerMovedOverBackgroundStackPanel;
@@ -171,7 +171,6 @@ namespace Microsoft.UI.Xaml.Controls
 				FocusVisualMargin = c_focusVisualMargin;
 			}
 
-			//TODO:MZ:Unsubscribe when appropriate
 			IsEnabledChanged += OnIsEnabledChanged;
 			m_fontFamilyChangedToken = RegisterPropertyChangedCallback(Control.FontFamilyProperty, OnFontFamilyChanged);
 
@@ -213,7 +212,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// private methods 
 
-		// TODO: call me when font size changes, and stuff like that, glyph, etc
+		// TODO: MSFT: call me when font size changes, and stuff like that, glyph, etc
 		private void StampOutRatingItems()
 		{
 			if (m_backgroundStackPanel == null || m_foregroundStackPanel == null)
@@ -707,7 +706,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void OnIsReadOnlyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			// TODO: Colour changes - see spec
+			// TODO: MSFT Colour changes - see spec
 		}
 
 		private void OnItemInfoChanged(DependencyPropertyChangedEventArgs args)
@@ -815,7 +814,7 @@ namespace Microsoft.UI.Xaml.Controls
 						case PointerDeviceType.Touch:
 							m_sharedPointerPropertySet.InsertScalar("pointerScalar", c_touchOverScale);
 							break;
-						default: // mouse, TODO: distinguish pen later
+						default: // mouse, TODO: MSFT distinguish pen later
 							m_sharedPointerPropertySet.InsertScalar("pointerScalar", c_mouseOverScale);
 							break;
 					}
@@ -921,7 +920,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		double CalculateStarCenter(int starIndex)
 		{
-			// TODO: sub in real API DP values
+			// TODO: MSFT sub in real API DP values
 			// MSFT #10030063
 			// [real Rating Size * (starIndex + 0.5)] + (starIndex * itemSpacing)
 			return (ActualRatingFontSize() * (starIndex + 0.5)) + (starIndex * ItemSpacing());
@@ -929,7 +928,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private double CalculateActualRatingWidth()
 		{
-			// TODO: replace hardcoding
+			// TODO: MSFT replace hardcoding
 			// MSFT #10030063
 			// (max rating * rating size) + ((max rating - 1) * item spacing)
 			return (MaxRating * ActualRatingFontSize()) + ((MaxRating - 1) * ItemSpacing());
@@ -1169,6 +1168,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			UnregisterPropertyChangedCallback(Control.FontFamilyProperty, m_fontFamilyChangedToken);
+
+			IsEnabledChanged -= OnIsEnabledChanged;
 		}
 
 		private void OnTextScaleFactorChanged(UISettings setting, object args)

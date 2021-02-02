@@ -103,7 +103,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Identifies the UnsetGlyph dependency property.
 		/// </summary>
-		public static DependencyProperty UnsetGlyphProperty =
+		public static DependencyProperty UnsetGlyphProperty { get; } =
 			DependencyProperty.Register(nameof(UnsetGlyph), typeof(string), typeof(RatingItemFontInfo), new PropertyMetadata(null));
 	}
 }
