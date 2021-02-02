@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -11,6 +12,7 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -231,6 +233,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Test_Flyout_Binding()
+		{
+#if IS_UNO
+			var (flyout, content) = CreateFlyoutWithBinding();
+
+			var buttonA = new Button()
+			{
+				Content = "Button A",
+				Flyout = flyout,
+				DataContext = "My Data Context",
+			};
+
+			TestServices.WindowHelper.WindowContent = buttonA;
+
+			await TestServices.WindowHelper.WaitForLoaded(buttonA);
+
+			buttonA.RaiseClick();
+
+			await TestServices.WindowHelper.WaitForLoaded(content);
+
+			var stackPanel = content as StackPanel;
+			Assert.AreEqual("My Data Context", (stackPanel.Children[0] as TextBlock).Text);
+#endif
+		}
+
 		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, Border target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();
@@ -287,6 +316,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Content = content,
 				FlyoutPresenterStyle = GetSimpleFlyoutPresenterStyle()
 			};
+			return (flyout, content);
+		}
+
+		private (Flyout Flyout, FrameworkElement Content) CreateFlyoutWithBinding()
+		{
+
+			var flyout = new Flyout
+			{
+				FlyoutPresenterStyle = GetSimpleFlyoutPresenterStyle()
+			};
+
+			var content = new StackPanel
+			{
+				Children =
+				{
+					new TextBlock().Apply(x => x.SetBinding(TextBlock.TextProperty, new Binding())),
+					new Button
+					{
+						Content = "Button B",
+					}.Apply(x => x.SetBinding(Button.CommandParameterProperty, new Binding() { Source = flyout }))
+				}
+			};
+
+			flyout.Content = content;
 			return (flyout, content);
 		}
 
