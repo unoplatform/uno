@@ -82,6 +82,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			const double ButtonWidth = 29;
 			const double PresenterActualWidth = ScrollViewerWidth - 2 * ButtonWidth;
+			await WindowHelper.WaitForEqual(ScrollViewerWidth, () => SUT.ActualWidth);
 			Assert.AreEqual(PresenterActualWidth, SUT.ViewportWidth);
 			Assert.AreEqual(ContentWidth, SUT.ExtentWidth);
 			Assert.AreEqual(ContentWidth - PresenterActualWidth, SUT.ScrollableWidth);
