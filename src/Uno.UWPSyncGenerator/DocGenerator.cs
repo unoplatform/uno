@@ -32,7 +32,18 @@ namespace Uno.UWPSyncGenerator
 			_sb.AppendLine();
 
 			_views = new List<PlatformSymbols<INamedTypeSymbol>>();
-			base.Build(basePath, baseName, sourceAssembly);
+
+			try
+			{
+				base.Build(basePath, baseName, sourceAssembly);
+			}
+			catch (Exception e)
+			{
+				_sb.AppendComment($"Generation error: {e.Message}");
+#if !DEBUG
+				throw; 
+#endif
+			}
 
 			_viewsGrouped = GroupByNamespace(_views);
 			_kosherFrameworkViews = new HashSet<(string name, string namespaceString)>(_views.Select(ps => (ps.UAPSymbol.Name, ps.UAPSymbol.ContainingNamespace.ToDisplayString())));
@@ -203,6 +214,15 @@ namespace Uno.UWPSyncGenerator
 						tocSB.AppendLineInvariant($"  href: ../{GetImplementedMembersFilename(view.UAPSymbol)}");
 					}
 				}
+
+#if DEBUG
+				if (_views.None())
+				{
+					// Dummy TOC entry so that docfx doesn't fail
+					tocSB.AppendLineInvariant($"- name: Implemented views failed");
+					tocSB.AppendLineInvariant($"  href: doesntexist.md");
+				}
+#endif
 
 				using (var fileWriter = new StreamWriter(Path.Combine(DocPath, ImplementedPath, "toc.yml")))
 				{
