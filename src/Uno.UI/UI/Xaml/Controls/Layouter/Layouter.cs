@@ -77,15 +77,13 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>The size of the panel, in logical pixel.</returns>
 		public Size Measure(Size availableSize)
 		{
-			IDisposable traceActivity = null;
-			if (_trace.IsEnabled)
-			{
-				traceActivity = _trace.WriteEventActivity(
+			using var traceActivity = _trace.IsEnabled
+				? _trace.WriteEventActivity(
 					FrameworkElement.TraceProvider.FrameworkElement_MeasureStart,
 					FrameworkElement.TraceProvider.FrameworkElement_MeasureStop,
-					new object[] { LoggingOwnerTypeName, Panel.GetDependencyObjectId() }
-				);
-			}
+					new object[] {LoggingOwnerTypeName, Panel.GetDependencyObjectId()}
+				)
+				: null;
 
 			if (Panel.Visibility == Visibility.Collapsed)
 			{
@@ -154,7 +152,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					UIElement.IsLayoutingVisualTreeRoot = false;
 				}
-				traceActivity?.Dispose();
 			}
 		}
 
@@ -178,15 +175,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			LayoutInformation.SetLayoutSlot(Panel, finalRect);
 
-			IDisposable traceActivity = null;
-			if (_trace.IsEnabled)
-			{
-				traceActivity = _trace.WriteEventActivity(
+			using var traceActivity = _trace.IsEnabled
+				? _trace.WriteEventActivity(
 					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStart,
 					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStop,
-					new object[] { LoggingOwnerTypeName, Panel.GetDependencyObjectId() }
-				);
-			}
+					new object[] {LoggingOwnerTypeName, Panel.GetDependencyObjectId()}
+				)
+				: null;
 
 			try
 			{
@@ -288,7 +283,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					UIElement.IsLayoutingVisualTreeRoot = false;
 				}
-				traceActivity?.Dispose();
 			}
 		}
 
