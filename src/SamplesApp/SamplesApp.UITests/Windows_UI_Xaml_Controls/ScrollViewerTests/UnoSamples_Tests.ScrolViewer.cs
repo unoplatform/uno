@@ -7,6 +7,8 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
@@ -116,6 +118,37 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			{
 				var scrn = TakeScreenshot(description);
 				ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, color);
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ScrollViewer_Margin()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Margin");
+
+			_app.Marked("size").SetDependencyPropertyValue("Value", "80");
+
+			_app.WaitForElement("ctl5");
+
+			using var screenshot = TakeScreenshot("test", ignoreInSnapshotCompare: true);
+
+			for(byte i=1; i<=5; i++)
+			{
+				using var _ = new AssertionScope();
+
+				var logicalRect = _app.GetLogicalRect($"ctl{i}");
+				logicalRect.Width.Should().Be(80);
+				logicalRect.Height.Should().Be(80);
+
+				var physicalRect = _app.GetPhysicalRect($"ctl{i}");
+
+				ImageAssert.HasColorAt(screenshot, physicalRect.CenterX, physicalRect.CenterY, Color.Red);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + 5, physicalRect.Y + 5, Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - 5, physicalRect.Y + 5, Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + 5, physicalRect.Bottom - 5, Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - 5, physicalRect.Bottom - 5, Color.Orange);
+
 			}
 		}
 	}
