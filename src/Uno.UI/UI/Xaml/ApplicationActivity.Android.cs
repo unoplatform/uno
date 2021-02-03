@@ -206,6 +206,9 @@ namespace Windows.UI.Xaml
 		{
 			base.OnNewIntent(intent);
 			this.Intent = intent;
+			// In case this activity is in SingleTask mode, we try to handle
+			// the intent (for protocol activation scenarios).
+			(Application as NativeApplication)?.TryHandleIntent(intent);
 		}
 
 		/// <summary>
