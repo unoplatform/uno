@@ -161,6 +161,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
 		public void When_TextBlock_Centred_Native_Frame()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Native_Frame");
@@ -175,7 +176,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			_app.FastTap("NavigateBackButton");
 
 			_app.WaitForElement("CommandBarTitleText");
-			var rect = _app.GetRect("CommandBarTitleText");
+			var rect = _app.GetLogicalRect("CommandBarTitleText");
 
 			Assert.Greater(rect.Height, 1);
 		}

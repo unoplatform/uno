@@ -21,6 +21,9 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
 using Windows.Foundation;
+using Windows.UI;
+using Windows.UI.Xaml.Media;
+using FluentAssertions;
 using FluentAssertions.Execution;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -92,13 +95,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 #if HAS_UNO
+			SUT.MaterializedContainers.Should().HaveCount(2);
+
 			var containerIndices = SUT.MaterializedContainers
 				.Select(container => container.GetValue(ItemsControl.IndexForItemContainerProperty))
 				.OfType<int>()
 				.OrderBy(index => index)
 				.ToArray();
 
-			CollectionAssert.AreEqual(new int[] { 0, 1 }, containerIndices);
+			containerIndices.Should().Equal(0, 1);
 #endif
 
 			var container0 = SUT.ContainerFromIndex(0);
@@ -639,14 +644,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (lastItem = list.ContainerFromItem(19) as ListViewItem) != null);
 			var secondLastItem = list.ContainerFromItem(18) as ListViewItem;
 
-			await WindowHelper.WaitFor(() => ApproxEquals(181, GetTop(lastItem)), message: $"Expected 181 but got {GetTop(lastItem)}");
-			await WindowHelper.WaitFor(() => ApproxEquals(152, GetTop(secondLastItem)), message: $"Expected 152 but got {GetTop(secondLastItem)}");
+			await WindowHelper.WaitFor(() => GetTop(lastItem), 181, comparer: ApproxEquals);
+			await WindowHelper.WaitFor(() => GetTop(secondLastItem), 152, comparer: ApproxEquals);
 
 			source.Remove(19);
 
 			await WindowHelper.WaitFor(() => list.Items.Count == 19);
 
-			await WindowHelper.WaitFor(() => ApproxEquals(181, GetTop(secondLastItem)), message: $"Expected 181 but got {GetTop(secondLastItem)}");
+			await WindowHelper.WaitFor(() => GetTop(secondLastItem), 181, comparer: ApproxEquals);
 
 			double GetTop(FrameworkElement element)
 			{

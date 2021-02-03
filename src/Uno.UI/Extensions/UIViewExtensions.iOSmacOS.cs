@@ -15,7 +15,7 @@ using Uno.Logging;
 using Windows.UI.Core;
 using Uno.UI.Controls;
 using Windows.UI.Xaml.Controls;
-
+using Windows.UI.Xaml.Media;
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
@@ -618,13 +618,26 @@ namespace AppKit
 				var uiElement = innerView as UIElement;
 				var desiredSize = uiElement?.DesiredSize.ToString() ?? "<native/unk>";
 				var fe = innerView as IFrameworkElement;
+				var transforms = GetTransforms(uiElement?.RenderTransform);
+
+				string GetTransforms(Transform transform)
+				{
+					return transform switch
+					{
+						TransformGroup group => $"Grp({@group.Children.Select(GetTransforms)})",
+						ScaleTransform scale => $"Scale({scale.ScaleX}, {scale.ScaleY} @{scale.CenterX},{scale.CenterY})",
+						MatrixTransform matrix => $"Matrix({matrix.Matrix.M11}, {matrix.Matrix.M12}, {matrix.Matrix.M21}, {matrix.Matrix.M22})",
+						TranslateTransform translate => $"Translate({translate.X}, {translate.Y})",
+						_ => ""
+					};
+				}
 
 				return sb
 						.Append(spacing)
 						.Append(innerView == viewOfInterest ? "*>" : ">")
 						.Append(innerView.ToString() + namePart)
 						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
-						.Append($" d:{desiredSize}")
+						.Append($" ds:{desiredSize}")
 #if __IOS__
 						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
@@ -635,9 +648,11 @@ namespace AppKit
 						.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
 						.Append(fe != null && fe.TryGetCornerRadius(out var cr) && cr != default ? $" CornerRadius={cr.ToStringCompact()}" : "")
 						.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
-						.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}, AvailableSize={uiElement.LastAvailableSize}" : "")
+						.Append(uiElement != null ? $" AvailableSize={uiElement.LastAvailableSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
-						.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
+						.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\" - {textBlock.FontFamily}/{textBlock.FontSize}" : "")
+						.Append(innerView is Viewbox viewBox ? $" Stretch={viewBox.Stretch}/{viewBox.StretchDirection}" : "")
+						.Append(" " + transforms)
 						.AppendLine();
 			}
 		}

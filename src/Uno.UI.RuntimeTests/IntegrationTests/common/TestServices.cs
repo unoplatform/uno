@@ -99,6 +99,40 @@ namespace Private.Infrastructure
 				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
 			}
 
+			internal static async Task WaitFor<T>(
+				Func<T> condition,
+				T expected,
+				Func<T, string> messageBuilder = null,
+				Func<T, T, bool> comparer = null,
+				int timeoutMS = 1000,
+				[CallerMemberName] string callerMemberName = null,
+				[CallerLineNumber] int lineNumber = 0)
+			{
+				comparer ??= (v1, v2) => Equals(v1, v2);
+
+				T value = condition();
+				if (comparer(value, expected))
+				{
+					return;
+				}
+
+				var stopwatch = Stopwatch.StartNew();
+				while (stopwatch.ElapsedMilliseconds < timeoutMS)
+				{
+					await WaitForIdle();
+					value = condition();
+					if (comparer(value, expected))
+					{
+						return;
+					}
+				}
+
+				var customMsg = messageBuilder != null ? messageBuilder(value) : $"Got {value}, expected {expected}";
+				var message = $"{callerMemberName}():{lineNumber} {customMsg}";
+
+				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
+			}
+
 #if DEBUG
 			/// <summary>
 			/// This will wait. Forever. Useful when debugging a runtime test if you wish to visually inspect or interact with a view added

@@ -49,7 +49,8 @@ namespace Windows.UI.Xaml
 
 					OnBeforeArrange();
 
-					var finalRect = RectFromUIRect(Frame);
+					var finalRect = Parent is UIElement ? LayoutSlotWithMarginsAndAlignments : RectFromUIRect(Frame);
+
 					_layouter.Arrange(finalRect);
 
 					OnAfterArrange();
