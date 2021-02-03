@@ -348,8 +348,18 @@ namespace Windows.UI.Xaml
 		[ThreadStatic]
 		private static bool _isInUpdateLayout; // Currently within the UpdateLayout() method (explicit managed layout request)
 
+#pragma warning disable CS0649 // Field not used on Desktop/Tests
 		[ThreadStatic]
-		private static bool _isLayoutingVisualTreeRoot; // Currenlty in Measure or Arrange of the element flagged with IsVisualTreeRoot (layout requested by the system)
+		private static bool _isLayoutingVisualTreeRoot; // Currently in Measure or Arrange of the element flagged with IsVisualTreeRoot (layout requested by the system)
+#pragma warning restore CS0649
+
+#if !__NETSTD__ // We need an internal accessor for the Layouter
+		internal static bool IsLayoutingVisualTreeRoot
+		{
+			get => _isLayoutingVisualTreeRoot;
+			set => _isLayoutingVisualTreeRoot = value;
+		}
+#endif
 
 		private const int MaxLayoutIterations = 250;
 

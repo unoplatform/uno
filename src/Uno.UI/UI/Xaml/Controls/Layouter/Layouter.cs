@@ -54,11 +54,14 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Size _unclippedDesiredSize;
 
+		private UIElement _elementAsUIElement;
+
 		public IFrameworkElement Panel { get; }
 
 		protected Layouter(IFrameworkElement element)
 		{
 			Panel = element;
+			_elementAsUIElement = element as UIElement;
 
 			var log = this.Log();
 			if (log.IsEnabled(LogLevel.Debug))
@@ -90,10 +93,14 @@ namespace Windows.UI.Xaml.Controls
 				return default;
 			}
 
-			using (traceActivity)
+			try
 			{
-				var (minSize, maxSize) = Panel.GetMinMax();
+				if (_elementAsUIElement?.IsVisualTreeRoot ?? false)
+				{
+					UIElement.IsLayoutingVisualTreeRoot = true;
+				}
 
+				var (minSize, maxSize) = Panel.GetMinMax();
 				var marginSize = Panel.GetMarginSize();
 
 				// NaN values are accepted as input here, particularly when coming from
@@ -141,6 +148,14 @@ namespace Windows.UI.Xaml.Controls
 				// We return "clipped" desiredSize to caller... the unclipped version stays internal
 				return clippedDesiredSize;
 			}
+			finally
+			{
+				if (_elementAsUIElement?.IsVisualTreeRoot ?? false)
+				{
+					UIElement.IsLayoutingVisualTreeRoot = false;
+				}
+				traceActivity?.Dispose();
+			}
 		}
 
 		[Pure]
@@ -163,8 +178,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			LayoutInformation.SetLayoutSlot(Panel, finalRect);
 
-			var uiElement = Panel as UIElement;
-
 			IDisposable traceActivity = null;
 			if (_trace.IsEnabled)
 			{
@@ -174,14 +187,20 @@ namespace Windows.UI.Xaml.Controls
 					new object[] { LoggingOwnerTypeName, Panel.GetDependencyObjectId() }
 				);
 			}
-			using (traceActivity)
+
+			try
 			{
+				if (_elementAsUIElement?.IsVisualTreeRoot ?? false)
+				{
+					UIElement.IsLayoutingVisualTreeRoot = true;
+				}
+
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
 				}
 
-				var clippedArrangeSize = uiElement?.ClippedFrame is Rect clip && !uiElement.IsArrangeDirty
+				var clippedArrangeSize = _elementAsUIElement?.ClippedFrame is Rect clip && !_elementAsUIElement.IsArrangeDirty
 					? clip.Size
 					: finalRect.Size;
 
@@ -247,11 +266,11 @@ namespace Windows.UI.Xaml.Controls
 
 				var renderSize = ArrangeOverride(arrangeSize);
 
-				if (uiElement != null)
+				if (_elementAsUIElement != null)
 				{
-					uiElement.RenderSize = renderSize.AtMost(maxSize);
-					uiElement.NeedsClipToSlot = needsClipToSlot;
-					uiElement.ApplyClip();
+					_elementAsUIElement.RenderSize = renderSize.AtMost(maxSize);
+					_elementAsUIElement.NeedsClipToSlot = needsClipToSlot;
+					_elementAsUIElement.ApplyClip();
 
 					if (Panel is FrameworkElement fe)
 					{
@@ -262,6 +281,14 @@ namespace Windows.UI.Xaml.Controls
 				{
 					evp.OnLayoutUpdated();
 				}
+			}
+			finally
+			{
+				if (_elementAsUIElement?.IsVisualTreeRoot ?? false)
+				{
+					UIElement.IsLayoutingVisualTreeRoot = true;
+				}
+				traceActivity?.Dispose();
 			}
 		}
 
