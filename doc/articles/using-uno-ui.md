@@ -110,7 +110,7 @@ This behavior is a direct consequence of the ability to mix native and Uno.UI co
 
 ## Dependency Properties
 
-Uno.UI allows the sharing of [Dependency Property](https://msdn.microsoft.com/en-us/library/ms752914%28v=vs.110%29.aspx) declaration and code between Windows and Xamarin based platforms.
+Uno.UI allows the sharing of [Dependency Property](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/dependency-properties-overview) declaration and code between Windows and Xamarin based platforms.
 
 Declaring a dependency property in Uno UI requires a class to implement the interface `DependencyObject`, to gain access to the GetValue and SetValue methods.
 
@@ -392,3 +392,7 @@ If a view needs to keep the keyboard opened when tapping on it, use the `Uno.UI.
 
 ## Creating/Using Android Activities
 At the root of every Android Uno app, lies a `BaseActivity` class that extends from `Android.Support.V7.App.AppCompatActivity` which is part of the [Android v7 AppCompat Support Library](https://developer.android.com/topic/libraries/support-library/features.html#v7-appcompat). If you ever need to create a new Activity within your app or within Uno you must be sure to extend `BaseActivity` and, if you need to apply a Theme to the activity, ensure that the Theme you set is a `Theme.AppCompat` theme (or descendant).
+
+### Using the ILLinker for WebAssembly
+
+For more information about using the IL Linker for WebAssembly, read this [article](features/using-il-linker-webassembly.md).

@@ -3,10 +3,19 @@ parameters:
 
 jobs:
 - job: Unit_Tests
+  displayName: 'Unit Tests'
   timeoutInMinutes: 90
 
   pool:
     vmImage: ${{ parameters.vmImage }}
+
+  strategy:
+    matrix:
+      Default_Compiler:
+        ADDITIONAL_FLAGS: ''
+
+      CSharp9:
+        ADDITIONAL_FLAGS: '/p:LangVersion=preview /p:UnoUIUseRoslynSourceGenerators=true /p:MicrosoftNetCompilerVersionOverride=3.8.0-3.final'
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -24,16 +33,11 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
-   
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.9.1
-      checkLatest: false
 
   - task: MSBuild@1
     inputs:
       solution: src/**/*.Tests.csproj
-      msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+      msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m $(ADDITIONAL_FLAGS) # /bl:$(build.artifactstagingdirectory)\build.binlog
 
   - task: VisualStudioTestPlatformInstaller@1
 
@@ -47,6 +51,7 @@ jobs:
         !**\*.RuntimeTests.dll
       vstestLocationMethod: version
       vsTestVersion: latest
+      testRunTitle: $(Agent.JobName)
       testSelector: testAssemblies
       batchingBasedOnAgentsOption: customBatchSize
       rerunFailedTests: 'true'

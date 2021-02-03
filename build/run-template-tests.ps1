@@ -14,6 +14,9 @@ function Get-TemplateConfiguration(
     [bool]$iOS = $false,
     [bool]$macOS = $false,
     [bool]$wasm = $false,
+    [bool]$skiaGtk = $false,
+    [bool]$skiaWpf = $false,
+    [bool]$skiaTizen = $false,
     [bool]$wasmVsCode = $false)
 {
     $uwpFlag = '-uwp'
@@ -22,6 +25,9 @@ function Get-TemplateConfiguration(
     $macOSFlag = '-macos'
     $wasmFlag = '-wasm'
     $wasmVsCodeFlag = '--vscodeWasm'
+    $skiaWpfFlag = '--skia-wpf'
+    $skiaGtkFlag = '--skia-gtk'
+    $skiaTizenFlag = '--skia-tizen'
 
     $a = If ($uwp)        { $uwpFlag }        Else { $uwpFlag        + '=false' }
     $b = If ($android)    { $androidFlag }    Else { $androidFlag    + '=false' }
@@ -29,8 +35,11 @@ function Get-TemplateConfiguration(
     $d = If ($macOS)      { $macOSFlag }      Else { $macOSFlag      + '=false' }
     $e = If ($wasm)       { $wasmFlag }       Else { $wasmFlag       + '=false' }
     $f = If ($wasmVsCode) { $wasmVsCodeFlag } Else { $wasmVsCodeFlag + '=false' }
+    $g = If ($skiaWpf)    { $skiaWpfFlag    } Else { $skiaWpfFlag    + '=false' }
+    $h = If ($skiaGtk)    { $skiaGtkFlag    } Else { $skiaGtkFlag    + '=false' }
+    $i = If ($skiaTizen)  { $skiaTizenFlag  } Else { $skiaTizenFlag  + '=false' }
 
-    @($a, $b, $c, $d, $e, $f)
+    @($a, $b, $c, $d, $e, $f, $g, $h, $i)
 }
 
 $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
@@ -50,7 +59,10 @@ $templateConfigurations =
     (Get-TemplateConfiguration -android 1),
     (Get-TemplateConfiguration -iOS 1),
     (Get-TemplateConfiguration -macOS 1),
-    (Get-TemplateConfiguration -wasm 1)
+    (Get-TemplateConfiguration -wasm 1),
+    (Get-TemplateConfiguration -skiaGtk 1),
+    (Get-TemplateConfiguration -skiaWpf 1),
+    (Get-TemplateConfiguration -skiaTizen 1)
 )
 
 $configurations =
@@ -59,7 +71,10 @@ $configurations =
     @($templateConfigurations[1], $release),
     @($templateConfigurations[2], $releaseIPhone),
     @($templateConfigurations[3], $releaseIPhoneSimulator),
-    @($templateConfigurations[4], $release)
+    @($templateConfigurations[4], $release),
+    @($templateConfigurations[5], $release),
+    @($templateConfigurations[6], $release),
+    @($templateConfigurations[7], $release)
 )
 
 # Default
@@ -89,7 +104,31 @@ dotnet new unoapp -n MyApp.Android (Get-TemplateConfiguration -android 1)
 & $msbuild $debug MyApp.Android\MyApp.Android.sln
 Assert-ExitCodeIsZero
 
+# Uno Library
+dotnet new unolib -n MyUnoLib
+& $msbuild $debug /t:Pack MyUnoLib\MyUnoLib.csproj
+Assert-ExitCodeIsZero
+
+# Uno Cross-Runtime Library
+dotnet new unolib-crossruntime -n MyCrossRuntimeLib
+& $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln
+Assert-ExitCodeIsZero
+
 # WinUI - Default
-# dotnet new unoapp-winui -n UnoAppWinUI
-# & $msbuild $debug UnoAppWinUI\UnoAppWinUI.sln
-# Assert-ExitCodeIsZero
+dotnet new unoapp-winui -n UnoAppWinUI --winui-desktop=false
+& $msbuild $debug UnoAppWinUI\UnoAppWinUI.sln
+Assert-ExitCodeIsZero
+
+# UI Tests template
+dotnet new unoapp-uitest -o UnoUITests01
+& $msbuild $debug UnoUITests01\UnoUITests01.csproj
+Assert-ExitCodeIsZero
+
+# XF - Default
+7z x build\assets\xfapp-uwp-4.8.0.1451.zip -oXFApp
+
+pushd XFApp
+dotnet new wasmxfhead
+& $msbuild /ds /r /p:Configuration=Debug XFApp.Wasm\XFApp.Wasm.csproj
+Assert-ExitCodeIsZero
+popd

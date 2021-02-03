@@ -21,6 +21,8 @@ namespace Windows.UI.Xaml.Shapes
 
 		private Size GetActualSize() => Size.Empty;
 
+		protected virtual void InvalidateShape() { }
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			// We make sure to invoke native methods while not in the visual tree
@@ -29,6 +31,8 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				return new Size();
 			}
+
+			InvalidateShape();
 
 			var measurements = GetMeasurements(availableSize);
 			var desiredSize = measurements.desiredSize;
@@ -170,12 +174,14 @@ namespace Windows.UI.Xaml.Shapes
 		private Rect GetBBoxWithStrokeThickness(UIElement element)
 		{
 			var bbox = element.GetBBox();
-			if (Stroke == null || StrokeThickness < double.Epsilon)
+			var strokeThickness = ActualStrokeThickness;
+
+			if (Stroke == null || strokeThickness < double.Epsilon)
 			{
 				return bbox;
 			}
 
-			var halfStrokeThickness = StrokeThickness / 2;
+			var halfStrokeThickness = strokeThickness / 2;
 
 			var x = Math.Min(bbox.X, bbox.Left - halfStrokeThickness);
 			var y = Math.Min(bbox.Y, bbox.Top - halfStrokeThickness);

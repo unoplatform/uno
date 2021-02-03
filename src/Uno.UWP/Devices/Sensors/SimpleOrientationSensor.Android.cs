@@ -60,8 +60,12 @@ namespace Windows.Devices.Sensors
 			_sensorManager = (SensorManager)Application.Context.GetSystemService(Context.SensorService);
 			var gravitySensor = _sensorManager.GetDefaultSensor(_gravitySensorType);
 
+			// Gravity sensor support seems to have been added in Nougat (Android 7), but not entirely functional.
+			// Therefore, only use it in Oreo+ 
+			var useGravitySensor = Build.VERSION.SdkInt >= BuildVersionCodes.O;
+
 			// If the the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
-			if (gravitySensor != null)
+			if (gravitySensor != null && useGravitySensor)
 			{
 				_sensorManager.RegisterListener(this, _sensorManager.GetDefaultSensor(_gravitySensorType), SensorDelay.Normal);
 			}

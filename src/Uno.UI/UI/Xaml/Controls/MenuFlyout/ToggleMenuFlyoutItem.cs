@@ -13,6 +13,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public ToggleMenuFlyoutItem()
 		{
+			DefaultStyleKey = typeof(ToggleMenuFlyoutItem);
 		}
 
 		#region IsChecked

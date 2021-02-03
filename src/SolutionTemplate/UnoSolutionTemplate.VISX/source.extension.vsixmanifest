@@ -3,7 +3,7 @@
     <Metadata>
         <Identity Id="UnoSolutionTemplate.b8e0806a-a194-4442-8634-474e089e479e" Version="1.43.0.657" Language="en-US" Publisher="nventive" />
         <DisplayName>Uno Platform Solution Templates</DisplayName>
-        <Description xml:space="preserve">A solution template for Uno Platform enabled projects.</Description>
+        <Description xml:space="preserve">Solution templates for Uno Platform enabled projects</Description>
         <MoreInfo>https://github.com/unoplatform/uno</MoreInfo>
         <GettingStartedGuide>https://github.com/unoplatform/uno/blob/master/doc/index.md</GettingStartedGuide>
         <Icon>logo.png</Icon>

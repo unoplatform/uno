@@ -227,7 +227,7 @@ namespace Windows.UI.Xaml
 			public bool ValidateAndUpdate(UIElement element, PointerRoutedEventArgs args, bool autoRelease)
 			{
 				if ((autoRelease && MostRecentDispatchedEventFrameId < args.FrameId)
-					|| !_nativeCaptureElement.IsHitTestVisibleCoalesced)
+					|| _nativeCaptureElement.GetHitTestVisibility() == HitTestability.Collapsed)
 				{
 					// If 'autoRelease' we want to release any previous capture that was not release properly no matter the reason.
 					// BUT we don't want to release a capture that was made by a child control (so LastDispatchedEventFrameId should already be equals to current FrameId).

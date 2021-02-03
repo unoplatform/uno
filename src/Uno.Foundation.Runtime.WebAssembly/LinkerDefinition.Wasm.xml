@@ -1,0 +1,4 @@
+﻿<linker>
+  <assembly fullname="Uno.Foundation.Runtime.WebAssembly" />
+</linker>
+

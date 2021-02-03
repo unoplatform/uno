@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Sets the visibility of the current view
 		/// </summary>
-		[GeneratedDependencyProperty(DefaultValue = Visibility.Visible, ChangedCallback = true)]
+		[GeneratedDependencyProperty(DefaultValue = Visibility.Visible, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty VisibilityProperty { get ; } = CreateVisibilityProperty();
 
 		public

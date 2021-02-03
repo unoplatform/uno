@@ -146,6 +146,7 @@ namespace Windows.UI.Xaml.Controls
 			if (NativePanel != null)
 			{
 				return NativePanel.IndexPathsForVisibleItems
+						.OrderBy(p => p.ToIndexPath())
 						.Select(NativePanel.CellForItem)
 						.OfType<ListViewBaseInternalContainer>()
 						.Select(cell => cell.Content)
@@ -213,8 +214,10 @@ namespace Windows.UI.Xaml.Controls
 				.ToArray();
 		}
 
-		private void Refresh()
+		private protected override void Refresh()
 		{
+			base.Refresh();
+
 			NativePanel?.Refresh();
 
 			if (ManagedVirtualizingPanel != null)

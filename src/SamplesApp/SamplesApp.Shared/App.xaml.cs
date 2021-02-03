@@ -23,10 +23,11 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.Foundation.Metadata;
 using Uno.Logging;
 using Windows.Graphics.Display;
 using System.Globalization;
-
+using Windows.UI.ViewManagement;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -46,6 +47,10 @@ namespace SamplesApp
 		/// </summary>
 		public App()
 		{
+			// Fix language for UI tests
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+
 			ConfigureFilters(LogExtensionPoint.AmbientLoggerFactory);
 			ConfigureFeatureFlags();
 
@@ -53,7 +58,6 @@ namespace SamplesApp
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
-
 		}
 
 		/// <summary>
@@ -95,9 +99,6 @@ namespace SamplesApp
 
 			LaunchiOSWatchDog();
 #endif
-#if NETFX_CORE
-			Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
-#endif
 
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
@@ -105,6 +106,8 @@ namespace SamplesApp
 				{
 					Console.WriteLine("Done loading " + sw.Elapsed);
 				});
+
+			ProcessEventArgs(e);
 
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
@@ -115,7 +118,37 @@ namespace SamplesApp
 			InitializeFrame(e.Arguments);
 			Windows.UI.Xaml.Window.Current.Activate();
 
+			ApplicationView.GetForCurrentView().Title = "Uno Samples";
+
 			DisplayLaunchArguments(e);
+		}
+
+		private static void ProcessEventArgs(LaunchActivatedEventArgs e)
+		{
+#if __SKIA__
+			var runAutoScreenshotsParam =
+			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
+
+			var screenshotsPath = runAutoScreenshotsParam?.Split('=').LastOrDefault();
+#endif
+
+			var sw = Stopwatch.StartNew();
+			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+				_ =>
+				{
+#if __SKIA__
+					if (!string.IsNullOrEmpty(screenshotsPath))
+					{
+						var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+							CoreDispatcherPriority.Normal,
+							async () =>
+							{
+								await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
+							}
+						);
+					}
+#endif
+				});
 		}
 
 #if __IOS__
@@ -178,7 +211,10 @@ namespace SamplesApp
 					$"PreviousState - {e.PreviousExecutionState}, " +
 					$"Uri - {protocolActivatedEventArgs.Uri}",
 					"Application activated via protocol");
-				await dlg.ShowAsync();
+				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog", nameof(MessageDialog.ShowAsync)))
+				{
+					await dlg.ShowAsync();
+				}
 			}
 		}
 
@@ -205,13 +241,14 @@ namespace SamplesApp
 				// When the navigation stack isn't restored navigate to the first page,
 				// configuring the new page by passing required information as a navigation
 				// parameter
+				var startingPageType = typeof(MainPage);
 				if (arguments != null)
 				{
-					rootFrame.Navigate(typeof(MainPage), arguments);
+					rootFrame.Navigate(startingPageType, arguments);
 				}
 				else
 				{
-					rootFrame.Navigate(typeof(MainPage));
+					rootFrame.Navigate(startingPageType);
 				}
 			}
 		}
@@ -221,7 +258,10 @@ namespace SamplesApp
 			if (!string.IsNullOrEmpty(launchActivatedEventArgs.Arguments))
 			{
 				var dlg = new MessageDialog(launchActivatedEventArgs.Arguments, "Launch arguments");
-				await dlg.ShowAsync();
+				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog", nameof(MessageDialog.ShowAsync)))
+				{
+					await dlg.ShowAsync();
+				}
 			}
 		}
 
@@ -332,7 +372,7 @@ namespace SamplesApp
 			=> SampleControl.Presentation.SampleChooserViewModel.Instance.GetAllSamplesNames();
 
 		public static string GetDisplayScreenScaling(string displayId)
-			=> DisplayInformation.GetForCurrentView().LogicalDpi.ToString(CultureInfo.InvariantCulture);
+			=> (DisplayInformation.GetForCurrentView().LogicalDpi * 100f / 96f).ToString(CultureInfo.InvariantCulture);
 
 		public static string RunTest(string metadataName)
 		{

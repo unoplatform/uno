@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
+  <metadata minClientVersion="5.0">
 	<id>Uno.WinUI.Skia.Wpf</id>
 	<version>1.0.0.0</version>
 	<title>Uno.UI</title>
@@ -12,7 +12,7 @@
 	<iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
 	<description>Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today. Open source and professionally supported.</description>
 	<copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</copyright>
-	<repository type="git" url="https://github.com/unoplatform/uno.git" />
+	<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
 	<dependencies>
 	  <dependency id="Uno.WinUI" version="1.0.0" />

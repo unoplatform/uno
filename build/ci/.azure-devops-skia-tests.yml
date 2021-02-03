@@ -1,0 +1,47 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: Skia_UI_Tests
+  displayName: 'Skia Samples App Unit Tests'
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+    GTK_RUNTIME_URL: https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases/download/2020-07-15/gtk3-runtime-3.24.20-2020-07-15-ts-win64.exe
+
+    # This is required to be able to use hard links as much as possible
+    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+  steps:
+   
+  - task: MSBuild@1
+    inputs:
+      solution: src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj
+      msbuildArguments: /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+
+  - powershell: |
+        $source = "$(GTK_RUNTIME_URL)"
+        $destination = "gtk3-runtime.exe"
+        Invoke-WebRequest $source -OutFile $destination
+        Start-Process -FilePath "gtk3-runtime.exe" -Wait -PassThru -ArgumentList /S
+
+    displayName: Install GTK3 runtime
+
+  - script: |
+        set PATH=C:\Program Files\GTK3-Runtime Win64\bin;%PATH%
+        cd $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
+        SamplesApp.Skia.Gtk.exe --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
+  
+    displayName: Run Skia UI Tests
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container

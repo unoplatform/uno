@@ -44,8 +44,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ScrollMode HorizontalScrollMode { get; set; }
-
 		public ScrollBarVisibility VerticalScrollBarVisibility
 		{
 			get
@@ -61,8 +59,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
-		public ScrollMode VerticalScrollMode { get; set; }
 
 		View IScrollContentPresenter.Content
 		{

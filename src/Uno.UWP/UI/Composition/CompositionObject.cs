@@ -1,5 +1,7 @@
+#nullable enable
 
 using System;
+using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 
 namespace Windows.UI.Composition
@@ -10,6 +12,8 @@ namespace Windows.UI.Composition
 
 		internal CompositionObject()
 		{
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "The compositor constructor is not available, as the type is not implemented");
+			Compositor = new Compositor();
 		}
 
 		internal CompositionObject(Compositor compositor)
@@ -32,6 +36,6 @@ namespace Windows.UI.Composition
 		{
 		}
 
-		public string Comment { get; set; }
+		public string? Comment { get; set; }
 	}
 }

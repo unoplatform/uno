@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests
 {
@@ -91,6 +92,25 @@ namespace Uno.UI.Tests
 
 			store.Parent = null;
 			Assert.AreEqual(null, store.Parent);
+		}
+
+		[TestMethod]
+		public void When_Control_Loaded_Then_HardReferences()
+		{
+			var root = new Grid();
+			var SUT = new Grid();
+			root.Children.Add(SUT);
+
+			Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+			Assert.IsNotNull(SUT.GetParent());
+
+			root.ForceLoaded();
+			Assert.IsTrue((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+			Assert.IsNotNull(SUT.GetParent());
+
+			root.Children.Clear();
+			Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+			Assert.IsNull(SUT.GetParent());
 		}
 
 		public partial class MyObject : DependencyObject

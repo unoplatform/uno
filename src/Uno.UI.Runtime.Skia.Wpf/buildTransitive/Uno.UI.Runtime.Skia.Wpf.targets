@@ -1,14 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
-  <PropertyGroup>
-  </PropertyGroup>
   
   <Target Name="_UnoSkiaWpfFeatureDefines"
-		  BeforeTargets="BeforeCompile">
+		  BeforeTargets="PrepareForBuild">
 
 	<PropertyGroup>
-	  <UnoDefineConstants>$(UnoDefineConstants);HAS_UNO_SKIA;HAS_UNO_SKIA_WPF</UnoDefineConstants>
+	  <UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WPF</UnoDefineConstants>
 	</PropertyGroup>
 
 	<!-- Merge the UnoDefineConstants with the existing constants -->

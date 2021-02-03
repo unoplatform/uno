@@ -24,6 +24,7 @@ namespace Uno.Media.Playback
 		/// </summary>
 		internal void Clear()
 		{
+#pragma warning disable 618
 			// The solution is as described here:
 			// https://stackoverflow.com/questions/25660994/clear-video-frame-from-surfaceview-on-video-complete
 			if (Holder?.Surface == null)
@@ -63,6 +64,7 @@ namespace Uno.Media.Playback
 			egl.EglMakeCurrent(display, EGL10.EglNoSurface, EGL10.EglNoSurface, EGL10.EglNoContext);
 			egl.EglDestroyContext(display, context);
 			egl.EglTerminate(display);
+#pragma warning restore 618
 		}
 	}
 }

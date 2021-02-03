@@ -27,6 +27,6 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>ATSApplicationFontsPath</key>
-	<string>Fonts/winjs-symbols.ttf</string>
+	<string>Fonts/uno-fluentui-assets.ttf</string>
 </dict>
 </plist>

@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
+using Uno.UI.Tests.ViewLibrary;
+using Uno.UI.Tests.Windows_UI_Xaml.Controls;
+#if !NETFX_CORE
 using Uno.UI.Xaml;
+#endif
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -115,29 +119,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(Colors.ForestGreen, ((SolidColorBrush)retrieved).Color);
 		}
 
-
-
-		[TestMethod]
-		public void When_Duplicates_Merged_And_Last_Is_Null()
-		{
-			var rd1 = new ResourceDictionary();
-			rd1["Grin"] = new SolidColorBrush(Colors.DarkOliveGreen);
-
-			var rd2 = new ResourceDictionary();
-			rd2["Grin"] = null;
-
-			var rd = new ResourceDictionary();
-			rd.MergedDictionaries.Add(rd1);
-			rd.MergedDictionaries.Add(rd2);
-
-			var retrieved = rd["Grin"];
-
-			//https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/resourcedictionary-and-xaml-resource-references#merged-resource-dictionaries
-			Assert.IsNull(retrieved);
-
-			Assert.IsTrue(rd.ContainsKey("Grin"));
-		}
-
 		[TestMethod]
 		public void When_Has_Themes()
 		{
@@ -242,13 +223,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 #if !NETFX_CORE //Not legal on UWP to change theme after app has launched
 			try
 			{
-				Application.Current.SetRequestedTheme(ApplicationTheme.Dark);
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
 				var retrieved2 = rd["Blu"];
 				Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved2).Color);
 			}
 			finally
 			{
-				Application.Current.SetRequestedTheme(ApplicationTheme.Light);
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
 			}
 #endif
 		}
@@ -433,6 +414,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_xName_In_Dictionary_Reference_Equality()
+		{
+			var page = new When_xName_In_Dictionary_Reference_Equality();
+			Assert.IsTrue(page.Resources.ContainsKey("MutableBrush"));
+			Assert.AreEqual(page.MutableBrush, page.Resources["MutableBrush"]);
+			Assert.AreEqual(page.MutableBrush, page.TestBorder.Background);
+			Assert.AreEqual(Colors.Green, (page.TestBorder.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
 		public void When_Resource_Referencing_Resource()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -468,6 +459,24 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.IsFalse(keys.Contains("eyes"));
 			Assert.IsTrue(rd.ContainsKey("eyes"));
+		}
+
+		[TestMethod]
+		public void When_Enumerated_With_StaticResource_Alias()
+		{
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			var light = xcr.ThemeDictionaries["Light"] as ResourceDictionary;
+			Assert.IsNotNull(light);
+			KeyValuePair<object, object> fromEnumeration = default;
+			foreach (var kvp in light)
+			{
+				if (kvp.Key.Equals("ButtonForeground"))
+				{
+					fromEnumeration = kvp;
+				}
+			}
+			Assert.IsNotNull(fromEnumeration);
+			Assert.IsInstanceOfType(fromEnumeration.Value, typeof(SolidColorBrush));
 		}
 
 		[TestMethod]
@@ -612,6 +621,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Nested_StaticResource()
+		{
+			var dict = new Subclassed_Dictionary();
+
+			var converter = dict["InnerResourceConverter"] as MyConverter;
+			var brush = dict["PerilousColorBrush"];
+			var text = dict["ProblemFreePhilosophy"];
+
+			Assert.IsNotNull(converter);
+			Assert.IsNotNull(brush);
+			Assert.AreEqual(brush, converter.Values[0].Value);
+			Assert.AreEqual(text, converter.Value);
+		}
+
+		[TestMethod]
 		public void When_By_Type_With_Template()
 		{
 			var dict = new Subclassed_Dictionary();
@@ -645,12 +669,84 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_External_Source_Miscased()
+		{
+			var page = new Test_Page_Other();
+
+			var foreground = page.CaseInsensitiveSourceTextBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(foreground);
+			Assert.AreEqual(Colors.SlateGray, foreground.Color);
+		}
+
+#if !NETFX_CORE
+		[TestMethod]
 		public void When_Relative_Path_With_Leading_Slash_From_Root()
 		{
 			var withSlash = XamlFilePathHelper.ResolveAbsoluteSource("App.xaml", "/App/Xaml/Test_Dictionary.xaml");
 			var withoutSlash = XamlFilePathHelper.ResolveAbsoluteSource("App.xaml", "App/Xaml/Test_Dictionary.xaml");
 
 			Assert.AreEqual(withoutSlash, withSlash);
+		}
+
+		[TestMethod]
+		public void When_SharedHelpers_FindResource()
+		{
+			var rdInner = new ResourceDictionary();
+			rdInner["Grin"] = new SolidColorBrush(Colors.DarkOliveGreen);
+
+			var rd = new ResourceDictionary();
+			rd.MergedDictionaries.Add(rdInner);
+
+			var brush = UI.Helpers.WinUI.SharedHelpers.FindResource("Grin", rd, null);
+
+			Assert.IsNotNull(brush);
+			Assert.AreEqual(Colors.DarkOliveGreen, (brush as SolidColorBrush).Color);
+		}
+#endif
+
+		[TestMethod]
+		public void When_XamlControlsResources()
+		{
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			Assert.IsTrue(xcr.ContainsKey(typeof(Button)));
+			Assert.IsInstanceOfType(xcr[typeof(Button)], typeof(Style));
+		}
+
+		[TestMethod]
+		public void When_Needs_Eager_Materialization()
+		{
+			Assert.IsFalse(TestInitializer.IsInitialized);
+			var control = new Test_Control_With_Initializer();
+			Assert.IsTrue(TestInitializer.IsInitialized);
+		}
+
+		[TestMethod]
+		public void When_Space_In_Key()
+		{
+			var page = new Test_Page_Other();
+			var border = page.SpaceInKeyBorder;
+			Assert.AreEqual(Colors.SlateBlue, (border.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public void When_Only_Theme_Dictionaries()
+		{
+			var page = new Test_Page_Other();
+			var tb = page.ThemeDictionaryOnlyTextBlock;
+			Assert.AreEqual(Colors.MediumPurple, (tb.Foreground as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public void When_Source_And_Globbing_From_Included_File()
+		{
+			var ctrl = new When_Source_And_Globbing_From_Included_File();
+			var resources = ctrl.Resources;
+			Assert.IsTrue(resources.ContainsKey("GlobPropsMarginButtonStyle"));
+
+			var style = resources["GlobPropsMarginButtonStyle"] as Style;
+			var button = new Button();
+			button.Style = style;
+			Assert.AreEqual(new Thickness(99, 33, 7, 7), button.Margin);
 		}
 	}
 }

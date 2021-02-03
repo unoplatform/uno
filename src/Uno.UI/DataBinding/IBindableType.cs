@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,12 +16,12 @@ namespace Uno.UI.DataBinding
 	/// <summary>
 	/// A delegate that gets the value of a indexer.
 	/// </summary>
-	public delegate object StringIndexerGetterDelegate(object instance, string name);
+	public delegate object? StringIndexerGetterDelegate(object instance, string name);
 
 	/// <summary>
 	/// A delegate that sets the value using an indexer.
 	/// </summary>
-	public delegate void StringIndexerSetterDelegate(object instance, string name, object value);
+	public delegate void StringIndexerSetterDelegate(object instance, string name, object? value);
 
 	/// <summary>
 	/// Defines a bindable type.
@@ -35,25 +37,25 @@ namespace Uno.UI.DataBinding
 		/// Gets a method that will create an instance of the currentype.
 		/// </summary>
 		/// <returns>An initialized instance.</returns>
-		ActivatorDelegate CreateInstance();
+		ActivatorDelegate? CreateInstance();
 
 		/// <summary>
 		/// Gets a bindable property for the current type.
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns>A bindable property instance, otherwise null.</returns>
-		IBindableProperty GetProperty(string name);
+		IBindableProperty? GetProperty(string name);
 
 		/// <summary>
 		/// Returns a function that can be called to get the indexer value. Func<instance, name, value>
 		/// </summary>
 		/// <returns>A bindable property instance, otherwise null.</returns>
-		StringIndexerGetterDelegate GetIndexerGetter();
+		StringIndexerGetterDelegate? GetIndexerGetter();
 
 		/// <summary>
 		/// Returns an action that can be called to set the indexer value. Action<instance, name, value>
 		/// </summary>
 		/// <returns></returns>
-		StringIndexerSetterDelegate GetIndexerSetter();
+		StringIndexerSetterDelegate? GetIndexerSetter();
 	}
 }

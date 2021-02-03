@@ -75,6 +75,10 @@ namespace Windows.UI.Xaml.Controls
 				typeof(Border),
 				new FrameworkPropertyMetadata(
 					null,
+					// Since this is a view, inheritance is handled through the visual tree, rather than via the property. We explicitly
+					// disable the property-based propagation here to support the case where the Parent property is overridden to simulate
+					// a different inheritance hierarchy, as is done for some controls with native styles.
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					(s, e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
 				)
 			);
@@ -283,6 +287,15 @@ namespace Windows.UI.Xaml.Controls
 					GradientBrush.OpacityProperty,
 					(s, _) => OnBorderBrushChangedPartial()
 				);
+			}
+			else if (newValue is AcrylicBrush ab)
+			{
+				_borderBrushColorChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.FallbackColorProperty,
+					(s, colorArg) => OnBorderBrushChangedPartial());
+				_borderBrushOpacityChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.OpacityProperty,
+					(s, arg) => OnBorderBrushChangedPartial());
 			}
 			else
 			{

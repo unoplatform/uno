@@ -1,74 +1,113 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using Windows.Foundation;
+using Windows.UI.Xaml.Wasm;
 using Uno.Disposables;
-using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Media
 {
-	public partial class ImageBrush
+	partial class ImageBrush
 	{
-		private readonly SerialDisposable _sourceSubscription = new SerialDisposable();
-		private readonly List<Action<ImageData>> _listeners = new List<Action<ImageData>>();
-
-		private ImageData? _cache;
-
-		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue)
+		internal string ToCssPosition()
 		{
-			_cache = default;
-			_sourceSubscription.Disposable = Disposable.Empty;
-
-			if (newValue != null && _listeners.Count > 0)
+			var x = AlignmentX switch
 			{
-				_sourceSubscription.Disposable = newValue.Subscribe(OnSourceOpened);
-			}
+				AlignmentX.Left => "left",
+				AlignmentX.Center => "center",
+				AlignmentX.Right => "right",
+				_ => ""
+			};
+
+			var y = AlignmentY switch
+			{
+				AlignmentY.Top=> "top",
+				AlignmentY.Center => "center",
+				AlignmentY.Bottom => "bottom",
+				_ => ""
+			};
+
+			return $"{x} {y}";
+		}
+		internal string ToCssBackgroundSize()
+		{
+			return Stretch switch
+			{
+				Stretch.Fill => "100% 100%",
+				Stretch.None => "auto",
+				Stretch.Uniform => "auto", // patch for now
+				Stretch.UniformToFill => "auto", // patch for now
+				_ => "auto"
+			};
 		}
 
-		internal IDisposable Subscribe(Action<ImageData> onUpdated)
+		internal (UIElement defElement, IDisposable subscription) ToSvgElement()
 		{
-			_listeners.Add(onUpdated);
+			var pattern = new SvgElement("pattern");
 
-			if (_cache.HasValue)
+			var alignX = AlignmentX switch
 			{
-				onUpdated(_cache.Value);
-			}
+				AlignmentX.Left => "xMin",
+				AlignmentX.Center => "xMid",
+				AlignmentX.Right => "xMax",
+				_ => ""
+			};
+			var alignY = AlignmentY switch
+			{
+				AlignmentY.Top => "YMin",
+				AlignmentY.Center => "YMid",
+				AlignmentY.Bottom => "YMax",
+				_ => ""
+			};
 
-			var source = ImageSource;
-			if (source != null && _listeners.Count == 1)
-			{
-				_sourceSubscription.Disposable = source.Subscribe(OnSourceOpened);
-			}
-
-			return Disposable.Create(() =>
-			{
-				_listeners.Remove(onUpdated);
-				if (_listeners.Count == 0)
+			var preserveAspectRatio = Stretch switch
 				{
-					_sourceSubscription.Disposable = Disposable.Empty;
+					Stretch.Fill => "none",
+					Stretch.None => "",
+					Stretch.Uniform => "meet",
+					Stretch.UniformToFill => "slice",
+					_ => "",
+				};
+
+			// Using this solution to set the viewBox/Size
+			// https://stackoverflow.com/a/13915777/1176099
+
+			pattern.SetAttribute(
+				("x", "0"),
+				("y", "0"),
+				("width", "1"),
+				("height", "1"),
+				("viewBox", "0 0 100 100"),
+				("preserveAspectRatio", alignX + alignY + " " + preserveAspectRatio));
+
+			var subscriptionDisposable = new SerialDisposable();
+
+			var imageSourceChangedSubscription =
+				this.RegisterDisposablePropertyChangedCallback(ImageSourceProperty, OnImageSourceChanged);
+
+			void OnImageSourceChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
+			{
+				var newImageSource = (args.NewValue as ImageSource);
+				subscriptionDisposable.Disposable = newImageSource?.Subscribe(OnSourceOpened);
+			}
+
+			subscriptionDisposable.Disposable = ImageSource?.Subscribe(OnSourceOpened);
+
+			void OnSourceOpened(ImageData data)
+			{
+				switch (data.Kind)
+				{
+					case ImageDataKind.Empty:
+						pattern.SetHtmlContent("");
+						break;
+					case ImageDataKind.DataUri:
+					case ImageDataKind.Url:
+						pattern.SetHtmlContent($"<image width=\"100\" height=\"100\" xlink:href=\"{data.Value}\" />");
+						break;
 				}
-			});
-		}
-
-		private void OnSourceOpened(ImageData image)
-		{
-			_cache = image;
-
-			var listeners = _listeners.ToList();
-			foreach (var listener in listeners)
-			{
-				listener(image);
 			}
 
-			if (image.Kind == ImageDataKind.Error)
-			{
-				// Note: On WASM, images are loaded by the platform (we only propagate the url),
-				//		 so the ImageFailed won't be raised if the url is invalid ...
-				OnImageFailed();
-			}
-			else
-			{
-				OnImageOpened();
-			}
+			var subscriptions = new CompositeDisposable(imageSourceChangedSubscription, subscriptionDisposable);
+
+			return (pattern, subscriptions);
 		}
 	}
 }

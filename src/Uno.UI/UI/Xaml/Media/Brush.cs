@@ -89,6 +89,9 @@ namespace Windows.UI.Xaml.Media
 				case GradientBrush gb:
 					color = gb.FallbackColorWithOpacity;
 					return true;
+				case XamlCompositionBrushBase ab:
+					color = ab.FallbackColorWithOpacity;
+					return true;
 				default:
 					color = default;
 					return false;

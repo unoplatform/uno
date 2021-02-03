@@ -13,7 +13,7 @@ using Windows.UI.Core;
 namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "Children")]
-	public sealed partial class Storyboard : Timeline, ITimeline
+	public sealed partial class Storyboard : Timeline, ITimeline, IAdditionalChildrenProvider, IThemeChangeAware
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private EventActivity _traceActivity;
@@ -321,6 +321,17 @@ namespace Windows.UI.Xaml.Media.Animation
 				{
 					child.Dispose();
 				}
+			}
+		}
+
+		IEnumerable<DependencyObject> IAdditionalChildrenProvider.GetAdditionalChildObjects() => Children;
+
+		void IThemeChangeAware.OnThemeChanged()
+		{
+			if (State == TimelineState.Filling)
+			{
+				// If we're filling, reapply the fill to reapply values that may have changed with the app theme
+				SkipToFill();
 			}
 		}
 	}

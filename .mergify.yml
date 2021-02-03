@@ -30,7 +30,10 @@ pull_request_rules:
         method: merge
         # https://doc.mergify.io/strict-workflow.html
         # https://doc.mergify.io/actions.html#label
-        strict: smart
+        
+        # Disable strict mode, as it's less costly to validate builds that may fail because
+        # it happens less often than rebuilding because of up-to-date checks.
+        strict: false 
 
   - name: automatic merge for allcontributors pull requests
     conditions:

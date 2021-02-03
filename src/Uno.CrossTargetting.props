@@ -20,6 +20,11 @@
 
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+	<!-- Add 0105 - WinUI build step tends to introduce duplicate usings where there were none in authored code -->
+	<NoWarn>$(NoWarn),1998,0105,4014,VSX1000,NU1701</NoWarn>
+  </PropertyGroup>
+
   <!---->
 
   <Target Name="SetNoWarn"
@@ -41,12 +46,31 @@
 	</CreateProperty>
   </Target>
 
+  <!--
+  List of known constants:
+  - __SKIA__: Used when building for the Skia backend
+  - __WASM__: Used when building for the WebAssembly backend
+  - UNO_REFERENCE_API: Used when the netstandard 2.0 Reference API is used.
+  - HAS_EXPENSIVE_TRYFINALLY: Used on WebAssembly until exceptions are supported by the WebAssembly specification
+  - __NETSTD_REFERENCE__: Used when building the reference assemblies for the netstandard 2.0 target
+  - UNO_HAS_UIELEMENT_IMPLICIT_PINNING: Used to mark targets that have specific constraints on
+										UIElements. On iOS, this means additional weak references
+										backed fields to handle opaque native reference pinning and avoid
+										memory leaks.
+  - UNO_HAS_ENHANCED_HIT_TEST_PROPERTY: Used to mark if the ENUM hit test property is present or not
+  - Constants for Xamarin backends and SDK versions: https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/platform-divergence-abstraction-divergent-implementation#conditional-compilation
+  -->
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+	  <DefineConstants>$(DefineConstants);__NETSTD__</DefineConstants>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
-	<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY</DefineConstants>
+	<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Skia'">
-	<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API</DefineConstants>
+	<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
@@ -54,7 +78,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsXamarinIOS)">
-	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED</DefineConstants>
+	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(IsXamarinMac)">
+	<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsMonoAndroid)">
@@ -64,6 +92,10 @@
 	<OutputPath>bin\$(Configuration)\$(TargetFramework)\</OutputPath>
 	<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\</IntermediateOutputPath>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.17763' ">
+	<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.17763' ">
@@ -121,4 +153,26 @@
 		  DestinationFiles="@(_OutputRefFiles->'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
+
+  <Target Name="CommonOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!='' and '$(UseCommonOverridePackage)'!=''">
+	<PropertyGroup>
+	  <_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+      <_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+	  <CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
+	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+	</PropertyGroup>
+	
+	<ItemGroup>
+	  <_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
+	</ItemGroup>
+	
+	<MakeDir Directories="$(_TargetNugetFolder)" />
+
+	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+	<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<Copy SourceFiles="@(_DebugSymbolsIntermediatePath)" DestinationFiles="@(_DebugSymbolsIntermediatePath->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
 </Project>

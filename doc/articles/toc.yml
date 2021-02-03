@@ -14,26 +14,46 @@
       href: faq.md
 - name: Using Uno - getting started
   items:
-    - name: Setting up the environment
-      href: get-started.md
+    - name: Getting Started on Visual Studio
+      href: get-started-vs.md
+    - name: Getting Started on Visual Studio for Mac
+      href: get-started-vsmac.md
+    - name: Getting Started on Visual Studio Code
+      href: get-started-vscode.md
+    - name: Getting Started with Linux
+      href: get-started-with-linux.md
+    - name: Getting Started on Rider
+      href: get-started-rider.md
+    - name: dotnet new templates for Uno Platform
+      href: get-started-dotnet-new.md
     - name: Creating an app - Tutorial
-      href: getting-started-tutorial-1.md
+      items:
+        - name: Getting Started Tutorial 1
+          href: getting-started-tutorial-1.md
+        - name: Getting Started Tutorial 2
+          href: getting-started-tutorial-2.md
     - name: Next steps
       href: get-started-next-steps.md
-    - name: Getting Started with VS Code and WebAssembly
-      href: get-started-vscode-wasm.md
+    - name: Common issues
+      href: get-started-wizard.md
 - name: Using Uno
   items:
     - name: Developing with Uno.UI
       href: using-uno-ui.md
+    - name: Troubleshooting build errors
+      href: uno-builds-troubleshooting.md
     - name: Platform-specific C# code
       href: platform-specific-csharp.md
     - name: Platform-specific XAML markup
       href: platform-specific-xaml.md
     - name: Feature flags
       href: feature-flags.md
+    - name: features/using-il-linker-webassembly.md
+      href: feature-flags.md
     - name: Uno.UI.Toolkit
       href: Uno.UI.Toolkit.md
+    - name: Migrating from Previous Releases
+      href: migrating-from-previous-releases.md
     - name: Uno app solution structure
       href: uno-app-solution-structure.md
     - name: Performance tips
@@ -42,10 +62,25 @@
       href: debugging-wasm.md
     - name: Build telemetry
       href: uno-toolchain-telemetry.md
-    - name: Migrating a class library to Uno
-      href: howto-migrate-existing-code.md
-    - name: Migrating existing UWP app to Uno
-      href: migrating-apps.md
+    - name: Migrating UWP-only code
+      topicHref: howto-migrate-existing-code.md
+      items:
+        - name: Checklist
+          href: migrating-before-you-start.md
+        - name: Applications
+          href: migrating-apps.md
+        - name: Class libraries
+          href: migrating-libraries.md
+        - name: General guidance
+          href: migrating-guidance.md
+    - name: Cross-targeted libraries
+      href: cross-targeted-libraries.md
+    - name: Adding native views
+      href: native-views.md
+    - name: How to consume a webservice
+      href: howto-consume-webservices.md
+    - name: Adding Splash Screens
+      href: splash-screen.md
 - name: Using Uno - features and controls
   items:
   - name: Accessibility
@@ -56,6 +91,8 @@
     href: features/working-with-assets.md
   - name: Lottie animations
     href: features/Lottie.md
+  - name: SignalR
+    href: signalr.md
   - name: ComboBox
     href: controls\ComboBox.md
   - name: CommandBar
@@ -64,6 +101,10 @@
     href: features/custom-fonts.md
   - name: ElevatedView
     href: features\ElevatedView.md
+  - name: Fluent styles
+    href: features\fluent-styles.md
+  - name: Fluent icon font
+    href: uno-fluent-assets.md
   - name: ListView and GridView
     href: controls\ListViewBase.md
   - name: MapControl
@@ -88,6 +129,8 @@
     href: features/working-with-themes.md
   - name: ToggleSwitch
     href: controls\ToggleSwitch.md
+  - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
+    href: features/pointers-keyboard-and-other-user-inputs.md
   - name: Routed Events
     href: features/routed-events.md
   - name: x:Bind
@@ -102,16 +145,32 @@
     href: features\windows-applicationmodel-calls.md
   - name: Windows.ApplicationModel.Chat
     href: features\windows-applicationmodel-chat.md
+  - name: Windows.ApplicationModel.DataTransfer
+    href: features\windows-applicationmodel-datatransfer.md
   - name: Windows.ApplicationModel.Email
     href: features\windows-applicationmodel-email.md
+  - name: Windows.Devices.Enumeration
+    href: features\windows-devices-enumeration.md
+  - name: Windows.Devices.Haptics
+    href: features\windows-devices-haptics.md
   - name: Windows.Devices.Lights
     href: features\windows-devices-lights.md
+  - name: Windows.Devices.Midi
+    href: features\windows-devices-midi.md
   - name: Windows.Devices.Sensors
     href: features\windows-devices-sensors.md
+  - name: Windows.Networking
+    href: features\windows-networking.md
   - name: Windows.Phone.Devices.Notification
     href: features\windows-phone-devices-notification-vibrationdevice.md
+  - name: Windows.UI.Core.Preview
+    href: features\windows-ui-core-preview.md
   - name: Windows.UI.StartScreen
     href: features\windows-ui-startscreen.md
+  - name: Windows.UI.Notifications
+    href: features\windows-ui-notifications.md
+  - name: Windows.UI.Xaml.Application
+    href: features\windows-ui-xaml-application.md
   - name: Windows.Devices.Geolocation
     href: features\windows-devices-geolocation.md
   - name: Windows.System
@@ -120,10 +179,14 @@
     href: features\windows-system-display.md
   - name: Windows.System.Profile
     href: features\windows-system-profile.md
+  - name: Windows.System.UserProfile
+    href: features\windows-system-userprofile.md
   - name: Windows.Storage
     href: features\windows-storage.md
   - name: Windows.UI.ViewManagement
     href: features\windows-ui-viewmanagement.md
+  - name: Windows Community Toolkit
+    href: uno-community-toolkit.md
   - name: XAML Hot Reload
     href: features\working-with-xaml-hot-reload.md
 - name: Using Uno - implemented views
@@ -137,11 +200,11 @@
       href: wasm-custom-events.md
     - name: Using Uno Platform Controls in Xamarin.Forms
       href: howto-use-uno-in-xamarin-forms.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 1
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 1
       href: interop/wasm-javascript-1.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 2
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 2
       href: interop/wasm-javascript-2.md
-      name: Embedding Existing JavaScript Components Into Uno-WASM - Part 3
+    - name: Embedding Existing JavaScript Components Into Uno-WASM - Part 3
       href: interop/wasm-javascript-3.md
 - name: Contributing to Uno
   topicHref: uno-development\contributing-intro.md
@@ -165,7 +228,13 @@
           href: uno-development\uno-internals-wasm.md
         - name: macOS
           href: uno-development\uno-internals-macos.md
-    - name: Building and debugging Uno.UI
+        - name: DependencyProperty backing generator
+          href: uno-development\Internal-DependencyProperty-Generator.md
+        - name: x:Bind in Uno Platform
+          href: uno-development\Uno-UI-xBind-architecture.md
+    - name: Building Uno.UI
+      href: uno-development\building-uno-ui.md
+    - name: Debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
     - name: Building Uno.UI for macOS using Visual Studio for Mac
       href: uno-development\building-uno-macos.md
@@ -175,10 +244,17 @@
       href: uno-development\debugging-inspect-visual-tree.md
     - name: Guidelines for code style
       href: contributing\guidelines\code-style.md
-    - name: Guidelines for creating tests
-      href: contributing\guidelines\creating-tests.md
-    - name: Working with the samples applications
+    - name: Using the SamplesApp
       href: uno-development\working-with-the-samples-apps.md
+    - name: Guidelines for creating tests
+      topicHref: contributing\guidelines\creating-tests.md
+      items:
+        - name: Mocked unit tests (Uno.UI.Tests)
+          href: uno-development\creating-mocked-tests.md
+        - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
+          href: uno-development\creating-runtime-tests.md
+        - name: UI tests with Uno.UITest
+          href: uno-development\creating-ui-tests.md
     - name: Conventional Commits format
       href: uno-development\git-conventional-commits.md
     - name: Guidelines for pull-requests
@@ -201,3 +277,9 @@
       href: uno-development\Internal-WeakEventHelper.md
     - name: Debugging Uno.UI Java code with Android studio
       href: uno-development\Uno-UI-Debugging-Android-Studio.md
+    - name: Converting the source tree to WinUI
+      href: uno-development\winui-conversion.md
+    - name: Troubleshooting Memory Issues
+      href: uno-development\troubleshooting-memory-issues.md
+    - name: Troubleshooting Source Generation
+      href: uno-development\troubleshooting-source-generation.md

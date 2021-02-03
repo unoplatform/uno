@@ -13,25 +13,20 @@ namespace Windows.UI.Core
 {
 	public partial class CoreWindow 
 	{
-        private readonly NSWindow _window;
+		private readonly NSWindow _window;
 
 		private bool _cursorHidden = false;
 		private CoreCursor _pointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
 
 		public CoreWindow(NSWindow window) : this()
         {
-            _window = window;
-			_window.DidBecomeMain += WindowDidBecomeMain;
+            _window = window;			
         }
 
-		private async void WindowDidBecomeMain(object sender, EventArgs e)
-		{
-			// Ensure custom cursor is reset after window activation.
-			// Artificial delay is necessary due to the fact that setting cursor
-			// immediately after window becoming main does not have any effect.
-			await Task.Delay(100);
-			CoreWindow.GetForCurrentThread().RefreshCursor();
-		}
+		/// <summary>
+		/// Gets a reference to the native macOS Window behind the <see cref="CoreWindow"/> abstraction.
+		/// </summary>
+		internal NSWindow NativeWindow => _window;
 
 		public CoreCursor PointerCursor
 		{

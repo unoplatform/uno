@@ -22,7 +22,14 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 	[SampleControlInfo("AutoSuggestBox", nameof(BasicAutoSuggestBox))]
 	public sealed partial class BasicAutoSuggestBox : UserControl
 	{
-		private ObservableCollection<string> _suggestions = new ObservableCollection<string>();
+		public class Suggestion
+		{
+			public string SuggestionText { get; }
+
+			public Suggestion(string t) { SuggestionText = t; }
+		}
+
+		private ObservableCollection<Suggestion> _suggestions = new ObservableCollection<Suggestion>();
 		int suggests = 0;
 		int querys = 0;
 		int textChangeds = 0;
@@ -51,8 +58,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 						_suggestions.Clear();
 					}
 
-					_suggestions.Add(sender.Text + "1");
-					_suggestions.Add(sender.Text + "2");
+					_suggestions.Add(new Suggestion(sender.Text + "1"));
+					_suggestions.Add(new Suggestion(sender.Text + "2"));
 					box1.ItemsSource = _suggestions;
 					break;
 				case AutoSuggestionBoxTextChangeReason.ProgrammaticChange:

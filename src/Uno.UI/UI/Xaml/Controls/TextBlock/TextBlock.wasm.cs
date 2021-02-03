@@ -45,6 +45,17 @@ namespace Windows.UI.Xaml.Controls
 			OnTextAlignmentChangedPartial();
 			OnTextWrappingChangedPartial();
 			OnIsTextSelectionEnabledChangedPartial();
+			InitializeDefaultValues();
+
+		}
+
+		/// <summary>
+		/// Set default properties to vertical top.
+		/// In wasm, this behavior is closer to the default textblock property than stretch.
+		/// </summary>
+		private void InitializeDefaultValues()
+		{
+			this.SetValue(VerticalAlignmentProperty, VerticalAlignment.Top, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
 		private void ConditionalUpdate(ref bool condition, Action action)
@@ -115,6 +126,32 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// When the control is constrained, it should only take it's desired size or
+		/// it will show all of it's content.
+		/// </summary>
+		/// <param name="finalSize"></param>
+		/// <returns></returns>
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			Size arrangeSize;
+			if (IsLayoutConstrainedByMaxLines)
+			{
+				arrangeSize = DesiredSize;
+
+				if (HorizontalAlignment == HorizontalAlignment.Stretch)
+				{
+					arrangeSize.Width = finalSize.Width;
+				}
+			}
+			else
+			{
+				arrangeSize = finalSize;
+			}
+
+			return base.ArrangeOverride(arrangeSize);
+		}
+
 		private int GetCharacterIndexAtPoint(Point point) => throw new NotSupportedException();
 
 		partial void OnFontStyleChangedPartial() => _fontStyleChanged = true;
@@ -163,7 +200,5 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextWrappingChangedPartial() => _textWrappingChanged = true;
 
 		partial void OnPaddingChangedPartial() => _paddingChangedChanged = true;
-
-		internal override bool IsViewHit() => Text != null || base.IsViewHit();
 	}
 }

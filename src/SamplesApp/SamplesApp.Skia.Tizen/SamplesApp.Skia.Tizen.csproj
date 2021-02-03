@@ -1,0 +1,39 @@
+﻿<Project Sdk="Tizen.NET.Sdk/1.1.6">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>tizen50</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<DefineConstants>$(DefineConstants);__TIZEN__;</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>None</DebugType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp.Views" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="lib\" />
+		<Folder Include="res\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Tizen\Uno.UI.Runtime.Skia.Tizen.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
+	</ItemGroup>
+
+	<Import Project="..\..\..\build\*.Skia.Tizen.props" />
+	<Import Project="..\..\..\build\*.Skia.Tizen.targets" />
+
+</Project>

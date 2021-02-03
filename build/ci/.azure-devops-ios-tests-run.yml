@@ -12,7 +12,9 @@ parameters:
 jobs:
 - job: ${{ parameters.JobName }}
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
-  dependsOn: iOS_Build
+  dependsOn:
+  - iOS_Build
+  - SamplesApp_UITests_Build
   displayName: ${{ parameters.JobDisplayName }}
 
   pool:
@@ -28,8 +30,23 @@ jobs:
     clean: true
 
   - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS Samples App'
     inputs:
         artifactName: ios-uitest-build
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+        artifactName: uitests-failure-results
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/optimize-roslyn-mono.yml
@@ -44,6 +61,12 @@ jobs:
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
   - bash: |
+      rm -f ${HOME}/Library/Preferences/Xamarin/Settings.plist
+
+    # https://github.com/actions/virtual-environments/issues/1932
+    displayName: Apply workaround for Azure Devops issue 1932
+
+  - bash: |
       $(build.sourcesdirectory)/build/ios-uitest-run.sh
 
     displayName: Run iOS Simulator Tests
@@ -53,6 +76,7 @@ jobs:
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
       UITEST_SNAPSHOTS_ONLY: "${{ parameters.UITEST_SNAPSHOTS_ONLY }}"
       UITEST_SNAPSHOTS_GROUP: "${{ parameters.UITEST_SNAPSHOTS_GROUP }}"
+      UITEST_AUTOMATED_GROUP: "${{ parameters.UITEST_AUTOMATED_GROUP }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
 
   - task: PublishTestResults@2
@@ -61,14 +85,6 @@ jobs:
       testRunTitle: 'iOS Test Run ($(Agent.JobName))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
-      failTaskOnFailedTests: false
-
-  - task: PublishTestResults@2
-    condition: always()
-    inputs:
-      testRunTitle: 'iOS Test Run Retry Failed ($(Agent.JobName))'
-      testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-failed-rerun.xml'
       failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
@@ -76,4 +92,18 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
       ArtifactType: Container

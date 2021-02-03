@@ -1,7 +1,19 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using System.Runtime.CompilerServices;
+#if NETFX_CORE
+using Uno.UI.Extensions;
+#elif __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#else
+using Uno.UI;
+#endif
 
 namespace Private.Infrastructure
 {
@@ -29,18 +41,112 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForIdle()
 			{
-#if __WASM__
-				await Task.Yield();
-#else
-				await Task.Yield();
-				var tcs = new TaskCompletionSource<bool>();
-				await RootControl.Dispatcher.RunIdleAsync(_ => tcs.SetResult(true));
-				tcs = new TaskCompletionSource<bool>();
-				await RootControl.Dispatcher.RunIdleAsync(_ => tcs.SetResult(true));
-
-				await tcs.Task;
-#endif
+				await RootControl.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootControl.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 			}
+
+			/// <summary>
+			/// Waits for <paramref name="element"/> to be loaded and measured in the visual tree.
+			/// </summary>
+			/// <remarks>
+			/// On UWP, <see cref="WaitForIdle"/> may not always wait long enough for the control to be properly measured.
+			///
+			/// This method assumes that the control will have a non-zero size once loaded, so it's not appropriate for elements that are
+			/// collapsed, empty, etc.
+			/// </remarks>
+			internal static async Task WaitForLoaded(FrameworkElement element)
+			{
+				await WaitFor(IsLoaded, message: $"{element} loaded");
+				bool IsLoaded()
+				{
+					if (element.ActualHeight == 0 || element.ActualWidth == 0)
+					{
+						return false;
+					}
+
+					if (element is Control control && control.FindFirstChild<UIElement>(includeCurrent: false) == null)
+					{
+						return false;
+					}
+
+					return true;
+				}
+			}
+
+			/// <summary>
+			/// Wait until a specified <paramref name="condition"/> is met. 
+			/// </summary>
+			/// <param name="timeoutMS">The maximum time to wait before failing the test, in milliseconds.</param>
+			internal static async Task WaitFor(Func<bool> condition, int timeoutMS = 1000, string message = null, [CallerMemberName] string callerMemberName = null, [CallerLineNumber] int lineNumber = 0)
+			{
+				if (condition())
+				{
+					return;
+				}
+
+				var stopwatch = Stopwatch.StartNew();
+				while (stopwatch.ElapsedMilliseconds < timeoutMS)
+				{
+					await WaitForIdle();
+					if (condition())
+					{
+						return;
+					}
+				}
+
+				message ??= $"{callerMemberName}():{lineNumber}";
+
+				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
+			}
+
+			internal static async Task WaitFor<T>(
+				Func<T> condition,
+				T expected,
+				Func<T, string> messageBuilder = null,
+				Func<T, T, bool> comparer = null,
+				int timeoutMS = 1000,
+				[CallerMemberName] string callerMemberName = null,
+				[CallerLineNumber] int lineNumber = 0)
+			{
+				comparer ??= (v1, v2) => Equals(v1, v2);
+
+				T value = condition();
+				if (comparer(value, expected))
+				{
+					return;
+				}
+
+				var stopwatch = Stopwatch.StartNew();
+				while (stopwatch.ElapsedMilliseconds < timeoutMS)
+				{
+					await WaitForIdle();
+					value = condition();
+					if (comparer(value, expected))
+					{
+						return;
+					}
+				}
+
+				var customMsg = messageBuilder != null ? messageBuilder(value) : $"Got {value}, expected {expected}";
+				var message = $"{callerMemberName}():{lineNumber} {customMsg}";
+
+				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
+			}
+
+#if DEBUG
+			/// <summary>
+			/// This will wait. Forever. Useful when debugging a runtime test if you wish to visually inspect or interact with a view added
+			/// by the test. (To break out of the loop, just set 'shouldWait = false' via the Immediate Window.)
+			/// </summary>
+			internal static async Task WaitForever()
+			{
+				var shouldWait = true;
+				while (shouldWait)
+				{
+					await Task.Delay(1000);
+				}
+			}
+#endif
 
 			internal static void ShutdownXaml() { }
 			internal static void VerifyTestCleanup() { }

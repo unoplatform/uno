@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 #if XAMARIN_IOS
 using CoreGraphics;
 using UIKit;
@@ -39,19 +40,15 @@ namespace Windows.UI.Xaml.Controls
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			// As the Child is NOT part of the visual tree, it does not have to be measured,
-			// and the result size of this Popup is always 0,0
-
-			return new Size();
+			// As the Child is NOT part of the visual tree, it does not have to be measured
+			return new Size(Width, Height).FiniteOrDefault(default);
 		}
 
 		/// <inheritdoc />
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			// As the Child is NOT part of the visual tree, it does not have to be arranged,
-			// and the result size of this Popup is always 0,0
-
-			return new Size();
+			// As the Child is NOT part of the visual tree, it does not have to be arranged
+			return finalSize;
 		}
 
 		partial void OnIsOpenChangedPartial(bool oldIsOpen, bool newIsOpen)

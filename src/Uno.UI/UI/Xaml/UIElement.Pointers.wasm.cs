@@ -53,11 +53,11 @@ namespace Windows.UI.Xaml
 				//		 as on UWP, even if the event are RoutedEvents, PointerEntered and PointerExited
 				//		 are routed only in some particular cases (entering at once on multiple controls),
 				//		 it's easier to handle this in managed code.
-				RegisterEventHandler("pointerenter", (RawEventHandler)DispatchNativePointerEnter);
-				RegisterEventHandler("pointerleave", (RawEventHandler)DispatchNativePointerLeave);
-				RegisterEventHandler("pointerdown", (RawEventHandler)DispatchNativePointerDown);
-				RegisterEventHandler("pointerup", (RawEventHandler)DispatchNativePointerUp);
-				RegisterEventHandler("pointercancel", (RawEventHandler)DispatchNativePointerCancel); //https://www.w3.org/TR/pointerevents/#the-pointercancel-event
+				RegisterEventHandler("pointerenter", (RawEventHandler)DispatchNativePointerEnter, GenericEventHandlers.RaiseRawEventHandler);
+				RegisterEventHandler("pointerleave", (RawEventHandler)DispatchNativePointerLeave, GenericEventHandlers.RaiseRawEventHandler);
+				RegisterEventHandler("pointerdown", (RawEventHandler)DispatchNativePointerDown, GenericEventHandlers.RaiseRawEventHandler);
+				RegisterEventHandler("pointerup", (RawEventHandler)DispatchNativePointerUp, GenericEventHandlers.RaiseRawEventHandler);
+				RegisterEventHandler("pointercancel", (RawEventHandler)DispatchNativePointerCancel, GenericEventHandlers.RaiseRawEventHandler); //https://www.w3.org/TR/pointerevents/#the-pointercancel-event
 			}
 
 			switch (routedEvent.Flag)
@@ -75,6 +75,7 @@ namespace Windows.UI.Xaml
 					RegisterEventHandler(
 						"pointermove",
 						handler: (RawEventHandler)DispatchNativePointerMove,
+						invoker: GenericEventHandlers.RaiseRawEventHandler,
 						onCapturePhase: false,
 						eventExtractor: HtmlEventExtractor.PointerEventExtractor
 					);
@@ -90,6 +91,7 @@ namespace Windows.UI.Xaml
 					RegisterEventHandler(
 						"wheel",
 						handler: (RawEventHandler)DispatchNativePointerWheel,
+						invoker: GenericEventHandlers.RaiseRawEventHandler,
 						onCapturePhase: false,
 						eventExtractor: HtmlEventExtractor.PointerEventExtractor
 					);
@@ -110,10 +112,10 @@ namespace Windows.UI.Xaml
 		//	we just ensure that the managed code won't try to bubble it by its own.
 		//	However, if the event is Handled in managed, it will then bubble while it should not! https://github.com/unoplatform/uno/issues/3007
 		private static bool DispatchNativePointerEnter(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerEnter(ToPointerArgs(target, args, isInContact: false, canBubble: true));
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerEnter(ToPointerArgs(target, args, isInContact: false));
 
 		private static bool DispatchNativePointerLeave(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerExited(ToPointerArgs(target, args, isInContact: false, canBubble: true));
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerExited(ToPointerArgs(target, args, isInContact: false));
 
 		private static bool DispatchNativePointerDown(UIElement target, string eventPayload)
 			=> TryParse(eventPayload, out var args) && target.OnNativePointerDown(ToPointerArgs(target, args, isInContact: true));
@@ -183,8 +185,7 @@ namespace Windows.UI.Xaml
 			UIElement snd,
 			NativePointerEventArgs args,
 			bool? isInContact,
-			(bool isHorizontalWheel, double delta) wheel = default,
-			bool canBubble = true)
+			(bool isHorizontalWheel, double delta) wheel = default)
 		{
 			var pointerId = (uint)args.pointerId;
 			var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
@@ -205,8 +206,7 @@ namespace Windows.UI.Xaml
 				keyModifiers,
 				args.pressure,
 				wheel,
-				src,
-				canBubble);
+				src);
 		}
 
 		private static PointerDeviceType ConvertPointerTypeString(string typeStr)
@@ -265,30 +265,6 @@ namespace Windows.UI.Xaml
 			this.CoerceValue(HitTestVisibilityProperty);
 		}
 
-		private protected enum HitTestVisibility
-		{
-			/// <summary>
-			/// The element and its children can't be targeted by hit-testing.
-			/// </summary>
-			/// <remarks>
-			/// This occurs when IsHitTestVisible="False", IsEnabled="False", or Visibility="Collapsed".
-			/// </remarks>
-			Collapsed,
-
-			/// <summary>
-			/// The element can't be targeted by hit-testing.
-			/// </summary>
-			/// <remarks>
-			/// This usually occurs if an element doesn't have a Background/Fill.
-			/// </remarks>
-			Invisible,
-
-			/// <summary>
-			/// The element can be targeted by hit-testing.
-			/// </summary>
-			Visible,
-		}
-
 		/// <summary>
 		/// Represents the final calculated hit-test visibility of the element.
 		/// </summary>
@@ -298,10 +274,10 @@ namespace Windows.UI.Xaml
 		private static DependencyProperty HitTestVisibilityProperty { get ; } =
 			DependencyProperty.Register(
 				"HitTestVisibility",
-				typeof(HitTestVisibility),
+				typeof(HitTestability),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(
-					HitTestVisibility.Visible,
+					HitTestability.Visible,
 					FrameworkPropertyMetadataOptions.Inherits,
 					coerceValueCallback: (s, e) => CoerceHitTestVisibility(s, e),
 					propertyChangedCallback: (s, e) => OnHitTestVisibilityChanged(s, e)
@@ -317,43 +293,43 @@ namespace Windows.UI.Xaml
 			var element = (UIElement)dependencyObject;
 
 			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
-			var baseHitTestVisibility = (HitTestVisibility)baseValue;
+			var baseHitTestVisibility = (HitTestability)baseValue;
 
 			// If the parent is collapsed, we should be collapsed as well. This takes priority over everything else, even if we would be visible otherwise.
-			if (baseHitTestVisibility == HitTestVisibility.Collapsed)
+			if (baseHitTestVisibility == HitTestability.Collapsed)
 			{
-				return HitTestVisibility.Collapsed;
+				return HitTestability.Collapsed;
 			}
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
-			if (!element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
+			if (!element.IsLoaded || !element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
 			{
-				return HitTestVisibility.Collapsed;
+				return HitTestability.Collapsed;
 			}
 
 			// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
 			if (!element.IsViewHit())
 			{
-				return HitTestVisibility.Invisible;
+				return HitTestability.Invisible;
 			}
 
 			// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.
-			return HitTestVisibility.Visible;
+			return HitTestability.Visible;
 		}
 
 		private static void OnHitTestVisibilityChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			if (dependencyObject is UIElement element
-				&& args.OldValue is HitTestVisibility oldValue
-				&& args.NewValue is HitTestVisibility newValue)
+				&& args.OldValue is HitTestability oldValue
+				&& args.NewValue is HitTestability newValue)
 			{
 				element.OnHitTestVisibilityChanged(oldValue, newValue);
 			}
 		}
 
-		private protected virtual void OnHitTestVisibilityChanged(HitTestVisibility oldValue, HitTestVisibility newValue)
+		private protected virtual void OnHitTestVisibilityChanged(HitTestability oldValue, HitTestability newValue)
 		{
-			if (newValue == HitTestVisibility.Visible)
+			if (newValue == HitTestability.Visible)
 			{
 				// By default, elements have 'pointer-event' set to 'auto' (see Uno.UI.css .uno-uielement class).
 				// This means that they can be the target of hit-testing and will raise pointer events when interacted with.

@@ -355,7 +355,7 @@ namespace Uno.UI.DataBinding
 
 				System.ComponentModel.PropertyChangedEventHandler handler = (s, args) =>
 				{
-					if (args.PropertyName == propertyName || args.PropertyName == string.Empty)
+					if (args.PropertyName == propertyName || string.IsNullOrEmpty(args.PropertyName))
 					{
 						if (typeof(BindingPath).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 						{
@@ -504,7 +504,7 @@ namespace Uno.UI.DataBinding
 				{
 					if (DataContext != null)
 					{
-						return BindingPropertyHelper.GetPropertyType(_dataContextType, PropertyName);
+						return BindingPropertyHelper.GetPropertyType(_dataContextType, PropertyName, _allowPrivateMembers);
 					}
 					else
 					{

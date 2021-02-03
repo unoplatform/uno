@@ -26,8 +26,10 @@ namespace Windows.ApplicationModel.Resources.Core
 
 				var language = GetLanguage(resourceCandidate.GetQualifierValue("language"), defaultLanguage);
 				var dpi = GetDpi(resourceCandidate.GetQualifierValue("scale"));
+				var theme = GetTheme(resourceCandidate.GetQualifierValue("theme"));
 				var fileName = AndroidResourceNameEncoder.Encode(Path.GetFileNameWithoutExtension(resourceCandidate.LogicalPath)) + Path.GetExtension(resourceCandidate.LogicalPath);
-				return Path.Combine($"drawable{language}{dpi}", fileName);
+				
+				return Path.Combine($"drawable{language}{theme}{dpi}", fileName);
 			}
 			catch (Exception ex)
 			{
@@ -65,6 +67,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			switch (scale)
 			{
 				case null:
+					return "-nodpi";
 				case "100":
 					return "-mdpi";
 				case "150":
@@ -76,6 +79,20 @@ namespace Windows.ApplicationModel.Resources.Core
 				case "400":
 					return "-xxxhdpi";
 				default: throw new NotSupportedException($"Scale {scale} is not supported on Android.");
+			}
+		}
+		
+		private static string GetTheme(string theme)
+		{
+			switch (theme)
+			{
+				case null:
+				case "light":
+					return "";
+				case "dark":
+					return "-night";
+				default: throw new NotSupportedException($"Theme {theme} is not supported on Android");
+
 			}
 		}
 	}

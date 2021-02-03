@@ -45,38 +45,48 @@ namespace Windows.UI.Xaml
 
 		private void OnActivityStarted(Activity activity)
 		{
-			_app.InitializationCompleted();
-
-			var handled = false;
-			if (_lastHandledIntent != activity.Intent)
+			if (activity is ApplicationActivity)
 			{
-				_lastHandledIntent = activity.Intent;
-				if (activity.Intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
+				_app.InitializationCompleted();
+
+				var handled = TryHandleIntent(activity.Intent);
+
+				// default to normal launch
+				if (!handled && !_isRunning)
 				{
-					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, activity.Intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
-					handled = true;					
+					_app.OnLaunched(new LaunchActivatedEventArgs());
 				}
-				else if (activity.Intent.Data != null)
+				_isRunning = true;
+			}
+		}
+
+		internal bool TryHandleIntent(Intent intent)
+		{
+			var handled = false;
+			if (_lastHandledIntent != intent)
+			{
+				_lastHandledIntent = intent;
+				if (intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
 				{
-					if (Uri.TryCreate(activity.Intent.Data.ToString(), UriKind.Absolute, out var uri))
+					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
+					handled = true;
+				}
+				else if (intent.Data != null)
+				{
+					if (Uri.TryCreate(intent.Data.ToString(), UriKind.Absolute, out var uri))
 					{
 						_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
-						handled = true;						
+						handled = true;
 					}
 					else
 					{
 						// log error and fall back to normal launch
-						this.Log().LogError($"Activation URI {activity.Intent.Data} could not be parsed");
+						this.Log().LogError($"Activation URI {intent.Data} could not be parsed");
 					}
 				}
 			}
 
-			// default to normal launch
-			if (!handled)
-			{
-				_app.OnLaunched(new LaunchActivatedEventArgs());
-			}
-			_isRunning = true;
+			return handled;
 		}
 
 		/// <summary>

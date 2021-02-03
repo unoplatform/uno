@@ -10,7 +10,10 @@
 					xmlns:xamarin="http://uno.ui/xamarin"
 					xmlns:android="http://uno.ui/android"
 					xmlns:ios="http://uno.ui/ios"
-					mc:Ignorable="d xamarin ios android">
+					xmlns:wasm="http://uno.ui/wasm"
+					xmlns:macos="http://uno.ui/macos"
+					xmlns:skia="http://uno.ui/skia"
+					mc:Ignorable="d xamarin ios android macos wasm skia">
 
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Default">
@@ -54,11 +57,14 @@
 			<x:Boolean x:Key="UseSystemFocusVisuals">true</x:Boolean>
 
 			<!-- 
-	The defaults styles map to symbol codes from this open-source font
-	https://github.com/Microsoft/fonts/tree/master/Symbols
-	-->
-			<not_android:FontFamily x:Key="SymbolThemeFontFamily">Symbols</not_android:FontFamily>
-			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</android:FontFamily>
+				The defaults styles map to symbol codes from this open-source font
+				https://github.com/Microsoft/fonts/tree/master/Symbols
+				-->
+			<ios:FontFamily x:Key="SymbolThemeFontFamily">Symbols</ios:FontFamily>
+			<macos:FontFamily x:Key="SymbolThemeFontFamily">Symbols</macos:FontFamily>
+			<wasm:FontFamily x:Key="SymbolThemeFontFamily">Symbols</wasm:FontFamily>
+			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</skia:FontFamily>
+			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</android:FontFamily>
 			<x:Double x:Key="CheckBoxBorderThemeThickness">2</x:Double>
 			<x:Double x:Key="CheckBoxCheckedStrokeThickness">0</x:Double>
 			<x:Double x:Key="ComboBoxArrowThemeFontSize">21</x:Double>
@@ -306,6 +312,13 @@
             <x:Double x:Key="SmallScrollThumbScale">0.125</x:Double>
             <x:Double x:Key="SmallScrollThumbOffset">-2</x:Double>
             <x:Double x:Key="ScrollBarButtonArrowIconFontSize">8</x:Double>
+			
+			<x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
+			<x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
 
 			<!--
     ******************************************************************
@@ -1025,11 +1038,11 @@
     -->
 			<SolidColorBrush x:Key="TextControlForeground"  Color="{StaticResource SystemBaseHighColor}" />
 			<SolidColorBrush x:Key="TextControlForegroundPointerOver"  Color="{StaticResource SystemBaseHighColor}" />
-			<SolidColorBrush x:Key="TextControlForegroundFocused" Color="{StaticResource SystemChromeBlackHighColor}" />
+			<SolidColorBrush x:Key="TextControlForegroundFocused" Color="{StaticResource SystemChromeWhiteColor}" />
 			<SolidColorBrush x:Key="TextControlForegroundDisabled" Color="{StaticResource SystemChromeDisabledLowColor}" />
 			<SolidColorBrush x:Key="TextControlBackground" Color="{StaticResource SystemAltMediumLowColor}" />
 			<SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="{StaticResource SystemAltMediumColor}" />
-			<SolidColorBrush x:Key="TextControlBackgroundFocused" Color="{StaticResource SystemChromeWhiteColor}" />
+			<SolidColorBrush x:Key="TextControlBackgroundFocused" Color="{StaticResource SystemAltMediumLowColor}" />
 			<SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="{StaticResource SystemBaseLowColor}" />
 			<SolidColorBrush x:Key="TextControlBorderBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 			<SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="{StaticResource SystemBaseMediumColor}"/>
@@ -1105,7 +1118,7 @@
 
 			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
 			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="White"></xamarin:SolidColorBrush>
+			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}" />
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
@@ -1349,8 +1362,11 @@
 	The defaults styles map to symbol codes from this open-source font
 	https://github.com/Microsoft/fonts/tree/master/Symbols
 	-->
-			<not_android:FontFamily x:Key="SymbolThemeFontFamily">Symbols</not_android:FontFamily>
-			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</android:FontFamily>
+			<ios:FontFamily x:Key="SymbolThemeFontFamily">Symbols</ios:FontFamily>
+			<macos:FontFamily x:Key="SymbolThemeFontFamily">Symbols</macos:FontFamily>
+			<wasm:FontFamily x:Key="SymbolThemeFontFamily">Symbols</wasm:FontFamily>
+			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</skia:FontFamily>
+			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</android:FontFamily>
 			<x:Double x:Key="CheckBoxBorderThemeThickness">2</x:Double>
 			<x:Double x:Key="CheckBoxCheckedStrokeThickness">0</x:Double>
 			<x:Double x:Key="ComboBoxArrowThemeFontSize">21</x:Double>
@@ -1597,6 +1613,14 @@
             <x:Double x:Key="SmallScrollThumbScale">0.125</x:Double>
             <x:Double x:Key="SmallScrollThumbOffset">-2</x:Double>
             <x:Double x:Key="ScrollBarButtonArrowIconFontSize">8</x:Double>
+
+			<x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
+			<x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
+
 			<!--
     ******************************************************************
     DEFAULT COMMON CONTROL COLORS
@@ -1700,6 +1724,7 @@
 			<SolidColorBrush x:Key="SystemControlHighlightListAccentMediumBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.6" />
 			<SolidColorBrush x:Key="SystemControlHighlightListMediumBrush" Color="{StaticResource SystemListMediumColor}"/>
 			<SolidColorBrush x:Key="SystemControlHighlightListLowBrush" Color="{StaticResource SystemListLowColor}"/>
+			<SolidColorBrush x:Key="SystemControlHighlightChromeWhiteBrush" Color="{StaticResource SystemChromeHighlightColor}" />
 			<SolidColorBrush x:Key="SystemControlHighlightTransparentBrush" Color="Transparent"/>
 			<SolidColorBrush x:Key="SystemControlHyperlinkTextBrush" Color="{ThemeResource SystemAccentColor}"/>
 			<SolidColorBrush x:Key="SystemControlHyperlinkBaseHighBrush" Color="{StaticResource SystemBaseHighColor}" />
@@ -2350,41 +2375,29 @@
 			<SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="{ThemeResource SystemAltMediumColor}" />
 
 			<!-- SplitView, NavigationView -->
-			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{StaticResource SystemBaseLowColor}" />
+			<SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+			<SolidColorBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
 
-			<win:RevealBorderBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="Transparent" />
+			<SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
 
-			<win:RevealBorderBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseMediumLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+			<SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" Color="{ThemeResource SystemColorHighlightColor}" />
 
-			<win:RevealBorderBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" Color="Transparent" />
+			<SolidColorBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" Color="{ThemeResource SystemColorHighlightColor}" />
 
-			<win:RevealBorderBrush x:Key="SystemControlTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlTransparentRevealBorderBrush" Color="Transparent" />
+			<SolidColorBrush x:Key="SystemControlTransparentRevealBorderBrush" Color="Transparent" />
 
-			<win:RevealBorderBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="Transparent" />
+			<SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+			<SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark3}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
+			<SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />			
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark2}" />
+			<SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{StaticResource SystemAccentColor}" />
+			<SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
+			<SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />
 
 
 			<StaticResource x:Key="SystemControlTransientBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
@@ -2394,7 +2407,7 @@
 
 			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
 			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="White"></xamarin:SolidColorBrush>
+			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></xamarin:SolidColorBrush> <!-- TODO: Uno specific - should fall back to SystemColorWindowColor in HighContrast-->
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
@@ -2636,11 +2649,14 @@
 			<x:Boolean x:Key="UseSystemFocusVisuals">true</x:Boolean>
 
 			<!-- 
-	The defaults styles map to symbol codes from this open-source font
-	https://github.com/Microsoft/fonts/tree/master/Symbols
-	-->
-			<not_android:FontFamily x:Key="SymbolThemeFontFamily">Symbols</not_android:FontFamily>
-			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</android:FontFamily>
+			The defaults styles map to symbol codes from this open-source font
+			https://github.com/Microsoft/fonts/tree/master/Symbols
+			-->
+			<ios:FontFamily x:Key="SymbolThemeFontFamily">Symbols</ios:FontFamily>
+			<macos:FontFamily x:Key="SymbolThemeFontFamily">Symbols</macos:FontFamily>
+			<wasm:FontFamily x:Key="SymbolThemeFontFamily">Symbols</wasm:FontFamily>
+			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</skia:FontFamily>
+			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</android:FontFamily>
 			<x:Double x:Key="CheckBoxBorderThemeThickness">2</x:Double>
 			<x:Double x:Key="CheckBoxCheckedStrokeThickness">0</x:Double>
 			<x:Double x:Key="ComboBoxArrowThemeFontSize">21</x:Double>
@@ -2887,6 +2903,13 @@
             <x:Double x:Key="SmallScrollThumbScale">0.125</x:Double>
             <x:Double x:Key="SmallScrollThumbOffset">-2</x:Double>
             <x:Double x:Key="ScrollBarButtonArrowIconFontSize">8</x:Double>
+			
+			<x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
+			<x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
 
 			<!--
     ******************************************************************
@@ -2990,6 +3013,7 @@
 			<SolidColorBrush x:Key="SystemControlHighlightListAccentMediumBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.6" />
 			<SolidColorBrush x:Key="SystemControlHighlightListMediumBrush" Color="{StaticResource SystemListMediumColor}"/>
 			<SolidColorBrush x:Key="SystemControlHighlightListLowBrush" Color="{StaticResource SystemListLowColor}"/>
+			<SolidColorBrush x:Key="SystemControlHighlightChromeWhiteBrush" Color="{StaticResource SystemChromeWhiteColor}" />
 			<SolidColorBrush x:Key="SystemControlHighlightTransparentBrush" Color="Transparent"/>
 			<SolidColorBrush x:Key="SystemControlHyperlinkTextBrush" Color="{ThemeResource SystemAccentColor}"/>
 			<SolidColorBrush x:Key="SystemControlHyperlinkBaseHighBrush" Color="{StaticResource SystemBaseHighColor}" />
@@ -3662,17 +3686,17 @@
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark3}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight3}" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
+			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorLight3}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark2}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight2}" FallbackColor="{ThemeResource SystemAccentColorLight2}" />
+			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorLight2}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{StaticResource SystemAccentColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight2}" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
+			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorLight3}" />
 
 
 			<StaticResource x:Key="SystemControlTransientBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
@@ -3682,7 +3706,7 @@
 
 			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
 			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="White"></xamarin:SolidColorBrush>
+			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></xamarin:SolidColorBrush>
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
@@ -3921,7 +3945,6 @@
 	<x:Double x:Key="DatePickerFlyoutPresenterAcceptDismissHostGridHeight">41</x:Double>
 	<x:Double x:Key="DatePickerFlyoutPresenterItemHeight">40</x:Double>
 
-	<x:Double x:Key="TreeViewItemMinHeight">32</x:Double>
 	<x:Double x:Key="TreeViewItemContentHeight">32</x:Double>
 	<x:Double x:Key="SliderPreContentMargin">15</x:Double>
 	<x:Double x:Key="SliderPostContentMargin">15</x:Double>
@@ -3944,5 +3967,8 @@
 	<x:Double x:Key="TextBoxLeftHeaderMaxWidth">296</x:Double>
 	<x:Double x:Key="TimePickerLeftHeaderMaxWidth">296</x:Double>
 	<x:Double x:Key="ToggleSwitchLeftHeaderMaxWidth">296</x:Double>
-	
+
+	<!-- These resources don't exist on UWP, we add them to support using the WinUI ColorPicker style when the rest of the Fluent style package isn't present -->
+	<x:Double x:Key="SliderHorizontalThumbHeight">24</x:Double>
+	<x:Double x:Key="SliderHorizontalThumbWidth">8</x:Double>	
 </ResourceDictionary>

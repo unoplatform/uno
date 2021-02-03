@@ -3,6 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 using System;
 using System.Collections.Generic;
+using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 
@@ -16,8 +17,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private protected override bool ShouldItemsControlManageChildren => !(ItemsPanelRoot is IVirtualizingPanel);
 
-		private void Refresh()
+		private protected override void Refresh()
 		{
+			base.Refresh();
+
 			if (VirtualizingPanel != null)
 			{
 				VirtualizingPanel.GetLayouter().Refresh();
@@ -70,6 +73,16 @@ namespace Windows.UI.Xaml.Controls
 		private void TryLoadMoreItems()
 		{
 			//TODO: ISupportIncrementalLoading
+		}
+
+		partial void UpdateReordering(Point location, FrameworkElement draggedContainer, object draggedItem)
+		{
+			VirtualizingPanel?.GetLayouter().UpdateReorderingItem(location, draggedContainer, draggedItem);
+		}
+
+		partial void CompleteReordering(FrameworkElement draggedContainer, object draggedItem, ref Uno.UI.IndexPath? updatedIndex)
+		{
+			updatedIndex = VirtualizingPanel?.GetLayouter().CompleteReorderingItem(draggedContainer, draggedItem);
 		}
 	}
 }

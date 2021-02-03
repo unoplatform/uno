@@ -1,4 +1,4 @@
-﻿#if !__IOS__ && !__MACOS__
+﻿#if !__IOS__ && !__MACOS__ && !__SKIA__
 #define LEGACY_SHAPE_MEASURE
 #endif
 
@@ -20,14 +20,14 @@ namespace Windows.UI.Xaml.Shapes
 		private readonly SerialDisposable _brushChanged = new SerialDisposable();
 
 		/// <summary>
-		/// Returns StrokeThickness or 0.0 if Stroke is <c>null</c>
+		/// Returns 0.0 if Stroke is <c>null</c>, otherwise, StrokeThickness
 		/// </summary>
-		private protected double ActualStrokeThickness
-		{
-			//Path does not need to define a stroke, in that case StrokeThickness should just return 0
-			//Other shapes like Ellipse and Polygon will not draw if Stroke is null so returning 0 will have no effect
-			get => Stroke == null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
-		}
+		/// <remarks>Path does not need to define a stroke, in that case StrokeThickness should just return 0.
+		/// Other shapes like Ellipse and Polygon will not draw if Stroke is null so returning 0 will have no effect
+		///</remarks>
+		private protected double ActualStrokeThickness => Stroke == null
+			? DefaultStrokeThicknessWhenNoStrokeDefined
+			: LayoutRound(StrokeThickness);
 
 		#region Fill Dependency Property
 		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Shapes
 				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnFillChanged((Brush)e.NewValue)
 #else
-				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.AffectsArrange,
+				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsArrange,
 				propertyChangedCallback: (s, e) => ((Shape)s)._brushChanged.Disposable = Brush.AssignAndObserveBrush((Brush)e.NewValue, _ => s.InvalidateArrange())
 #endif
 			)

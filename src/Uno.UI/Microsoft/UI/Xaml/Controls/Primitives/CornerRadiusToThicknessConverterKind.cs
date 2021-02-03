@@ -6,5 +6,13 @@
 		FilterTopAndBottomFromRight,
 		FilterLeftAndRightFromTop,
 		FilterLeftAndRightFromBottom,
+		FilterTopFromTopLeft,
+		FilterTopFromTopRight,
+		FilterRightFromTopRight,
+		FilterRightFromBottomRight,
+		FilterBottomFromBottomRight,
+		FilterBottomFromBottomLeft,
+		FilterLeftFromBottomLeft,
+		FilterLeftFromTopLeft,
 	};
 }

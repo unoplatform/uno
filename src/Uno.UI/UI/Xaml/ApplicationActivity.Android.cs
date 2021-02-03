@@ -100,7 +100,10 @@ namespace Windows.UI.Xaml
 
 		public void ExitFullscreen()
 		{
+#pragma warning disable 618
 			Window.DecorView.SystemUiVisibility = StatusBarVisibility.Visible;
+#pragma warning restore 618
+
 			Window.AddFlags(WindowManagerFlags.ForceNotFullscreen);
 			Window.ClearFlags(WindowManagerFlags.Fullscreen);
 		}
@@ -206,6 +209,9 @@ namespace Windows.UI.Xaml
 		{
 			base.OnNewIntent(intent);
 			this.Intent = intent;
+			// In case this activity is in SingleTask mode, we try to handle
+			// the intent (for protocol activation scenarios).
+			(Application as NativeApplication)?.TryHandleIntent(intent);
 		}
 
 		/// <summary>

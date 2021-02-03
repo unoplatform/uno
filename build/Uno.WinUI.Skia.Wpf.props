@@ -3,7 +3,7 @@
 
   <PropertyGroup>
 	<IsUnoHead>true</IsUnoHead>
-	<UnoRuntime>Skia</UnoRuntime>
+	<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
   </PropertyGroup>
 
 </Project>

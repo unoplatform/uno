@@ -4,6 +4,7 @@
 # Remove everything beginning with a dot
 .*/
 !.github/
+!.devcontainer/
 
 # operating system junk files
 thumbs.db

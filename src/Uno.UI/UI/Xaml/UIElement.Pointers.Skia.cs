@@ -1,16 +1,24 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Windows.Devices.Input;
-using Windows.UI.Input;
-using Windows.UI.Xaml.Input;
+using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Text;
 using Microsoft.Extensions.Logging;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
-using Uno.Foundation.Extensibility;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
 using Windows.UI.Core;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
@@ -18,6 +26,11 @@ namespace Windows.UI.Xaml
 	{
 		private class PointerManager
 		{
+			// TODO: Use pointer ID for the predicates
+			private static readonly Predicate<UIElement> _isOver = e => e.IsPointerOver;
+
+			private readonly Dictionary<Pointer, UIElement> _pressedElements = new Dictionary<Pointer, UIElement>();
+
 			public PointerManager()
 			{
 				Window.Current.CoreWindow.PointerMoved += CoreWindow_PointerMoved;
@@ -30,17 +43,42 @@ namespace Windows.UI.Xaml
 
 			private void CoreWindow_PointerWheelChanged(CoreWindow sender, PointerEventArgs args)
 			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
+				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
+
+				// Even if impossible for the Release, we are fallbacking on the RootElement for safety
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Window.Current.Content;
+
+				if (originalSource is null)
 				{
-					this.Log().Trace($"CoreWindow_PointerWheelChanged ({args.CurrentPoint.Position})");
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
+					}
+
+					return;
 				}
 
-				PropagateEvent(args, e =>
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-					var pointerArgs = new PointerRoutedEventArgs(args, pointer, e) { CanBubbleNatively = true };
-					TraverseAncestors(e, pointerArgs, e2 => e2.OnNativePointerWheel(pointerArgs));
-				});
+					this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
+				}
+
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+
+				// Second raise the event, either on the OriginalSource or on the capture owners if any
+				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+				{
+					foreach (var target in capture.Targets.ToArray())
+					{
+						target.Element.OnNativePointerWheel(routedArgs);
+					}
+				}
+				else
+				{
+					originalSource.OnNativePointerWheel(routedArgs);
+				}
 			}
 
 			private void CoreWindow_PointerEntered(CoreWindow sender, PointerEventArgs args)
@@ -57,168 +95,177 @@ namespace Windows.UI.Xaml
 				{
 					this.Log().Trace($"CoreWindow_PointerExited ({args.CurrentPoint.Position})");
 				}
-
-
-			}
-
-			private void CoreWindow_PointerReleased(CoreWindow sender, PointerEventArgs args)
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"CoreWindow_PointerReleased ({args.CurrentPoint.Position})");
-				}
-
-				var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-				if (UIElement.PointerCapture.TryGet(pointer, out var capture))
-				{
-					foreach(var target in capture.Targets)
-					{
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, target.Element) { CanBubbleNatively = true };
-						TraverseAncestors(target.Element, pointerArgs, e => e.OnNativePointerUp(pointerArgs));
-					}
-				}
-				else
-				{
-					PropagateEvent(args, e =>
-					{
-						// Console.WriteLine($"PointerManager.Released [{e}/{e.GetHashCode():X8}");
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, e) { CanBubbleNatively = true };
-						TraverseAncestors(e, pointerArgs, e2 => e2.OnNativePointerUp(pointerArgs));
-					});
-				}
 			}
 
 			private void CoreWindow_PointerPressed(CoreWindow sender, PointerEventArgs args)
 			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
+				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
+
+				// Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Window.Current.Content;
+
+				if (originalSource is null)
 				{
-					this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position})");
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
+					}
+
+					return;
 				}
 
-				PropagateEvent(args, e =>
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					// Console.WriteLine($"PointerManager.Pressed [{e}/{e.GetHashCode():X8}");
-					var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-					var pointerArgs = new PointerRoutedEventArgs(args, pointer, e) { CanBubbleNatively = true };
-					TraverseAncestors(e, pointerArgs, e2 => e2.OnNativePointerDown(pointerArgs));
-				});
+					this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
+				}
+
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+
+				_pressedElements[routedArgs.Pointer] = originalSource;
+				originalSource.OnNativePointerDown(routedArgs);
 			}
+
+			private void CoreWindow_PointerReleased(CoreWindow sender, PointerEventArgs args)
+			{
+				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
+
+				// Even if impossible for the Release, we are fallbacking on the RootElement for safety
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Window.Current.Content;
+
+				if (originalSource is null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
+					}
+
+					return;
+				}
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
+				}
+
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+
+				// Second raise the event, either on the OriginalSource or on the capture owners if any
+				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+				{
+					foreach (var target in capture.Targets.ToArray())
+					{
+						target.Element.OnNativePointerUp(routedArgs);
+					}
+				}
+				else
+				{
+					originalSource.OnNativePointerUp(routedArgs);
+				}
+
+				if (_pressedElements.TryGetValue(routedArgs.Pointer, out var pressedLeaf))
+				{
+					// We must make sure to clear the pressed state on all elements that was flagged as pressed.
+					// This is required as the current originalSource might not be the same as when we pressed (pointer moved),
+					// ** OR ** the pointer has been captured by a parent element so we didn't raised to released on the sub elements.
+
+					_pressedElements.Remove(routedArgs.Pointer);
+					ClearPointerState(routedArgs, root: null, pressedLeaf, clearOver: false);
+				}
+			}
+
 
 			private void CoreWindow_PointerMoved(CoreWindow sender, PointerEventArgs args)
 			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
+				var (originalSource, staleBranch) = VisualTreeHelper.HitTest(args.CurrentPoint.Position, isStale: _isOver);
+
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Window.Current.Content;
+
+				if (originalSource is null)
 				{
-					this.Log().Trace($"CoreWindow_PointerMoved ({args.CurrentPoint.Position})");
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerMoved ({args.CurrentPoint.Position}) **undispatched**");
+					}
+
+					return;
 				}
 
-				var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-
-				if (UIElement.PointerCapture.TryGet(pointer, out var capture))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					foreach (var target in capture.Targets)
-					{
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, target.Element) { CanBubbleNatively = true };
+					this.Log().Trace($"CoreWindow_PointerMoved [{originalSource.GetDebugName()}");
+				}
 
-						TraverseAncestors(target.Element, pointerArgs, e => e.OnNativePointerMove(pointerArgs));
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+
+				// First raise the PointerExited events on the stale branch
+				if (staleBranch.HasValue)
+				{
+					var (root, leaf) = staleBranch.Value;
+
+					ClearPointerState(routedArgs, root, leaf);
+				}
+
+				// Second (try to) raise the PointerEnter on the OriginalSource
+				// Note: This won't do anything if already over.
+				routedArgs.Handled = false;
+				originalSource.OnNativePointerEnter(routedArgs);
+
+				// Finally raise the event, either on the OriginalSource or on the capture owners if any
+				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+				{
+					foreach (var target in capture.Targets.ToArray())
+					{
+						routedArgs.Handled = false;
+						target.Element.OnNativePointerMove(routedArgs);
 					}
 				}
 				else
 				{
-					PropagateEvent(args, e =>
-					{
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, e) { CanBubbleNatively = true };
-						TraverseAncestors(e, pointerArgs, e2 => e2.OnNativePointerMove(pointerArgs));
-					});
+					// Note: We prefer to use the "WithOverCheck" overload as we already know that the pointer is effectively over
+					routedArgs.Handled = false;
+					originalSource.OnNativePointerMoveWithOverCheck(routedArgs, isOver: true);
 				}
 			}
 
-			private void TraverseAncestors(UIElement element, PointerRoutedEventArgs args, Action<UIElement> action)
+			// Clears the pointer state (over and pressed) only for a part of the visual tree
+			private void ClearPointerState(PointerRoutedEventArgs routedArgs, UIElement? root, UIElement leaf, bool clearOver = true)
 			{
-				action(element);
+				var element = leaf;
 
-				foreach(var parent in element.GetParents().OfType<UIElement>())
+				routedArgs.CanBubbleNatively = true; // TODO: UGLY HACK TO AVOID BUBBLING: we should be able to request to bubble only up to a the root
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					action(parent);
+					this.Log().Trace($"Exiting branch from (root) {root.GetDebugName()} to (leaf) {element.GetDebugName()}\r\n");
+				}
 
-					if (args.Handled)
+				while (element is { })
+				{
+					routedArgs.Handled = false;
+					if (clearOver)
+					{
+						element.OnNativePointerExited(routedArgs);
+					}
+					// TODO: This differs of how we behave on iOS, macOS and Android which does have "implicit capture" while pressed.
+					//		 It should only impact the "Pressed" visual states of controls.
+					element.SetPressed(routedArgs, isPressed: false, muteEvent: true);
+
+					if (element == root)
 					{
 						break;
 					}
-				}
-			}
 
-			private void PropagateEvent(PointerEventArgs args, Action<UIElement> raiseEvent)
-			{
-				if(Window.Current.Content is UIElement root)
-				{
-					PropagageEventRecursive(args, new Point(0, 0), root, raiseEvent);
-				}
-			}
-
-			private bool PropagageEventRecursive(PointerEventArgs args, Point root, UIElement element, Action<UIElement> raiseEvent)
-			{
-				bool raised = false;
-				var rect = element.LayoutSlotWithMarginsAndAlignments;
-				rect.X += root.X;
-				rect.Y += root.Y;
-
-				var position = args.CurrentPoint.Position;
-
-				if (element.RenderTransform != null)
-				{
-					position = element.RenderTransform.Inverse.TransformPoint(position);
+					element = element.GetParent() as UIElement;
 				}
 
-				if (position.X >= rect.X	
-					&& position.Y >= rect.Y
-					&& position.X <= rect.X + rect.Width
-					&& position.Y <= rect.Y + rect.Height)
-				{
-
-					foreach (var e in element.GetChildren().ToArray())
-					{
-						raised |= PropagageEventRecursive(args, rect.Location, e, raiseEvent);
-					}
-
-					var isHitTestVisible =
-						element.GetValue(HitTestVisibilityProperty) is HitTestVisibility hitTestVisibility
-						&& hitTestVisibility == HitTestVisibility.Visible;
-
-					if (!raised && isHitTestVisible)
-					{
-						if (!element._pointerEntered)
-						{
-							// Console.WriteLine($"PointerManager.Entered [{element}/{element.GetHashCode():X8}");
-							element._pointerEntered = true;
-
-							var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-
-							var pointerArgs = new PointerRoutedEventArgs(args, pointer, element);
-							TraverseAncestors(element, pointerArgs, e => e.OnNativePointerEnter(pointerArgs));
-						}
-
-						raiseEvent(element);
-						raised = true;
-					}
-				}
-				else
-				{
-					if (element._pointerEntered)
-					{
-						element._pointerEntered = false;
-						// Console.WriteLine($"PointerManager.Exited [{element}/{element.GetHashCode():X8}");
-
-						var pointer = new Pointer(args.CurrentPoint.PointerId, PointerDeviceType.Mouse, false, isInRange: true);
-						var pointerArgs = new PointerRoutedEventArgs(args, pointer, element);
-						TraverseAncestors(element, pointerArgs, e => e.OnNativePointerExited(pointerArgs));
-					}
-				}
-
-				return raised;
+				routedArgs.CanBubbleNatively = false;
 			}
 		}
-
-		private bool _pointerEntered;
 
 		// TODO Should be per CoreWindow
 		private static PointerManager _pointerManager;
@@ -231,40 +278,10 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
-		{
-
-		}
-
-
 		#region HitTestVisibility
 		internal void UpdateHitTest()
 		{
 			this.CoerceValue(HitTestVisibilityProperty);
-		}
-
-		private enum HitTestVisibility
-		{
-			/// <summary>
-			/// The element and its children can't be targeted by hit-testing.
-			/// </summary>
-			/// <remarks>
-			/// This occurs when IsHitTestVisible="False", IsEnabled="False", or Visibility="Collapsed".
-			/// </remarks>
-			Collapsed,
-
-			/// <summary>
-			/// The element can't be targeted by hit-testing.
-			/// </summary>
-			/// <remarks>
-			/// This usually occurs if an element doesn't have a Background/Fill.
-			/// </remarks>
-			Invisible,
-
-			/// <summary>
-			/// The element can be targeted by hit-testing.
-			/// </summary>
-			Visible,
 		}
 
 		/// <summary>
@@ -276,13 +293,13 @@ namespace Windows.UI.Xaml
 		private static readonly DependencyProperty HitTestVisibilityProperty =
 			DependencyProperty.Register(
 				"HitTestVisibility",
-				typeof(HitTestVisibility),
+				typeof(HitTestability),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(
-					HitTestVisibility.Visible,
+					HitTestability.Visible,
 					FrameworkPropertyMetadataOptions.Inherits,
-					coerceValueCallback: (s, e) => CoerceHitTestVisibility(s, e),
-					propertyChangedCallback: (s, e) => OnHitTestVisibilityChanged(s, e)
+					coerceValueCallback: CoerceHitTestVisibility,
+					propertyChangedCallback: OnHitTestVisibilityChanged
 				)
 			);
 
@@ -295,28 +312,28 @@ namespace Windows.UI.Xaml
 			var element = (UIElement)dependencyObject;
 
 			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
-			var baseHitTestVisibility = (HitTestVisibility)baseValue;
+			var baseHitTestVisibility = (HitTestability)baseValue;
 
 			// If the parent is collapsed, we should be collapsed as well. This takes priority over everything else, even if we would be visible otherwise.
-			if (baseHitTestVisibility == HitTestVisibility.Collapsed)
+			if (baseHitTestVisibility == HitTestability.Collapsed)
 			{
-				return HitTestVisibility.Collapsed;
+				return HitTestability.Collapsed;
 			}
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
-			if (!element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
+			if (!element.IsLoaded || !element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
 			{
-				return HitTestVisibility.Collapsed;
+				return HitTestability.Collapsed;
 			}
 
 			// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
 			if (!element.IsViewHit())
 			{
-				return HitTestVisibility.Invisible;
+				return HitTestability.Invisible;
 			}
 
 			// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.
-			return HitTestVisibility.Visible;
+			return HitTestability.Visible;
 		}
 
 		private static void OnHitTestVisibilityChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -324,5 +341,10 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
+		partial void CapturePointerNative(Pointer pointer)
+			=> CoreWindow.GetForCurrentThread()!.SetPointerCapture();
+
+		partial void ReleasePointerNative(Pointer pointer)
+			=> CoreWindow.GetForCurrentThread()!.ReleasePointerCapture();
 	}
 }

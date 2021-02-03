@@ -29,8 +29,7 @@ namespace Windows.UI.Xaml.Input
 			VirtualKeyModifiers keys,
 			double pressure,
 			(bool isHorizontalWheel, double delta) wheel,
-			UIElement source,
-			bool canBubbleNatively)
+			UIElement source)
 			: this()
 		{
 			_timestamp = timestamp;
@@ -44,7 +43,6 @@ namespace Windows.UI.Xaml.Input
 			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange: true);
 			KeyModifiers = keys;
 			OriginalSource = source;
-			CanBubbleNatively = canBubbleNatively;
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)

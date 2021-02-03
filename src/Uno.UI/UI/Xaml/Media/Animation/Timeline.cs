@@ -342,10 +342,10 @@ namespace Windows.UI.Xaml.Media.Animation
 
 					if (boundProperty.PropertyName.EndsWith("Opacity")
 						|| (boundProperty.DataContext is SolidColorBrush && boundProperty.PropertyName.EndsWith("Color"))
-						|| (boundProperty.DataContext is Transform)
+						|| (boundProperty.DataContext is Transform transform && transform.View != null)
 					)
 					{
-						//is not dependent if the target is opacity, the color property of a brush, or a Transform property
+						//is not dependent if the target is opacity, the color property of a brush, or a Transform property targeting a view as RenderTransform
 						return false;
 					}
 				}

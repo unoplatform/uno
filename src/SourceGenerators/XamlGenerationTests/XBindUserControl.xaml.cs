@@ -14,6 +14,8 @@ namespace XamlGenerationTests.Shared
 		public string Test { get; set; }
 
 		public MyType TypeProperty { get; set; }
+
+		public XBindViewModel ViewModel => new XBindViewModel();
 	}
 
 	public class MyType

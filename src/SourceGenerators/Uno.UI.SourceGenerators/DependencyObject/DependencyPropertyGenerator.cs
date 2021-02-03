@@ -3,23 +3,33 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Text;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.SourceGeneration;
+using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
+#if NETFRAMEWORK
+using Uno.SourceGeneration;
+#endif
+
 namespace Uno.UI.SourceGenerators.DependencyObject
 {
-	public class DependencyPropertyGenerator : SourceGenerator
+	[Generator]
+	public class DependencyPropertyGenerator : ISourceGenerator
 	{
-		public override void Execute(SourceGeneratorContext context)
+		public void Initialize(GeneratorInitializationContext context)
 		{
+		}
+
+		public void Execute(GeneratorExecutionContext context)
+		{
+			DependenciesInitializer.Init(context);
+
 			if (PlatformHelper.IsValidPlatform(context))
 			{
 				var visitor = new SerializationMethodsGenerator(context);
@@ -29,20 +39,23 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private class SerializationMethodsGenerator : SymbolVisitor
 		{
-			private readonly SourceGeneratorContext _context;
+			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol _generatedDependencyPropertyAttributeSymbol;
 			private readonly INamedTypeSymbol _dependencyPropertyChangedEventArgsSymbol;
 			private readonly INamedTypeSymbol _dependencyObjectSymbol;
 
-			public SerializationMethodsGenerator(SourceGeneratorContext context)
+			public SerializationMethodsGenerator(GeneratorExecutionContext context)
 			{
 				_context = context;
 
 				var comp = context.Compilation;
 
-				_dependencyObjectSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
-				_generatedDependencyPropertyAttributeSymbol = comp.GetTypeByMetadataName("Uno.UI.Xaml.GeneratedDependencyPropertyAttribute");
-				_dependencyPropertyChangedEventArgsSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.DependencyPropertyChangedEventArgs");
+				_dependencyObjectSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.DependencyObject)
+					?? throw new Exception("Unable to find " + XamlConstants.Types.DependencyObject);
+				_generatedDependencyPropertyAttributeSymbol = comp.GetTypeByMetadataName("Uno.UI.Xaml.GeneratedDependencyPropertyAttribute")
+					?? throw new Exception("Unable to find Uno.UI.Xaml.GeneratedDependencyPropertyAttribute");
+				_dependencyPropertyChangedEventArgsSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.DependencyPropertyChangedEventArgs")
+					?? throw new Exception("Unable to find Windows.UI.Xaml.DependencyPropertyChangedEventArgs");
 			}
 
 			public override void VisitNamedType(INamedTypeSymbol type)
@@ -75,7 +88,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void ProcessType(INamedTypeSymbol typeSymbol)
 			{
-				var isDependencyObject = typeSymbol.GetAllInterfaces().Any(t => Equals(t, _dependencyObjectSymbol));
+				var isDependencyObject = typeSymbol.GetAllInterfaces().Any(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol));
 
 				if ((isDependencyObject || typeSymbol.IsStatic) && typeSymbol.TypeKind == TypeKind.Class)
 				{
@@ -153,7 +166,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 							}
 						}
 
-						_context.AddCompilationUnit(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
+						_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
 					}
 				}
 			}
@@ -272,7 +285,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var propertyChangedMethod = propertyOwnerType.GetMethods().FirstOrDefault(m => m.Name == changedCallbackName);
 				if (changedCallback || propertyChangedMethod != null)
 				{
-					var isDPChangedEventArgsParam = Equals(propertyChangedMethod?.Parameters.ElementAtOrDefault(1)?.Type, _dependencyPropertyChangedEventArgsSymbol);
+					var isDPChangedEventArgsParam = SymbolEqualityComparer.Default.Equals(propertyChangedMethod?.Parameters.ElementAtOrDefault(1)?.Type, _dependencyPropertyChangedEventArgsSymbol);
 					if (isDPChangedEventArgsParam)
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(instance, args)");
@@ -369,7 +382,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				if (coerceCallback || propertySymbol.ContainingType.GetMethods().Any(m => m.Name == "Coerce" + propertyName))
 				{
-					builder.AppendLineInvariant($"\t\t, coerceValueCallback: (instance, baseValue) => (({containingTypeName})instance).Coerce{propertyName}(({propertyTypeName})baseValue)");
+					builder.AppendLineInvariant($"\t\t, coerceValueCallback: (instance, baseValue) => (({containingTypeName})instance).Coerce{propertyName}(baseValue)");
 				}
 
 				changedCallbackName ??= $"On{propertyName}Changed";
@@ -377,7 +390,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var propertyChangedMethod = propertySymbol.ContainingType.GetMethods().FirstOrDefault(m => m.Name == changedCallbackName);
 				if (changedCallback || propertyChangedMethod != null)
 				{
-					var isDPChangedEventArgsParam = Equals(propertyChangedMethod?.Parameters.FirstOrDefault()?.Type, _dependencyPropertyChangedEventArgsSymbol);
+					var isDPChangedEventArgsParam = SymbolEqualityComparer.Default.Equals(propertyChangedMethod?.Parameters.FirstOrDefault()?.Type, _dependencyPropertyChangedEventArgsSymbol);
 					if (isDPChangedEventArgsParam)
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(args)");
@@ -407,13 +420,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				if (propertySymbol.Locations.FirstOrDefault() is Location location)
 				{
-					var node = location.SourceTree.GetRoot().FindNode(location.SourceSpan);
-					var syntaxNodeContent = node.ToString();
-
-					if (!invocations.All(l => syntaxNodeContent.Contains(l, StringComparison.Ordinal)))
+					if (location.SourceTree != null)
 					{
-						var invocationsMessage = string.Join(", ", invocations);
-						builder.AppendLineInvariant("{0}", $"#error unable to find some of the following statements {invocationsMessage} in {propertySymbol}");
+						var node = location.SourceTree.GetRoot().FindNode(location.SourceSpan);
+						var syntaxNodeContent = node.ToString();
+
+						if (!invocations.All(l => syntaxNodeContent.Contains(l, StringComparison.Ordinal)))
+						{
+							var invocationsMessage = string.Join(", ", invocations);
+							builder.AppendLineInvariant("{0}", $"#error unable to find some of the following statements {invocationsMessage} in {propertySymbol}");
+						}
 					}
 				}
 			}
@@ -441,7 +457,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				builder.AppendLineInvariant($"\ttypeMetadata: new global::Windows.UI.Xaml.FrameworkPropertyMetadata(");
 
 				var defaultValueMethodName = $"Get{propertyName}DefaultValue()";
-				if (!string.IsNullOrEmpty(defaultValue.Value.Key))
+				if (defaultValue.HasValue && !string.IsNullOrEmpty(defaultValue.Value.Key))
 				{
 					if (ownerType.GetMethods().Any(m => m.Name == defaultValueMethodName))
 					{
@@ -476,7 +492,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol typeSymbol)
+			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
 			{
 				var disposables = new List<IDisposable>();
 

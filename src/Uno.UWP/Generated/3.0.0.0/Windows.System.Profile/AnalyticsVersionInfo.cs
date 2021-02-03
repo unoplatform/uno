@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Profile
 {
-	#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+	#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AnalyticsVersionInfo 
 	{
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  string DeviceFamily
 		{
@@ -17,7 +17,7 @@ namespace Windows.System.Profile
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  string DeviceFamilyVersion
 		{

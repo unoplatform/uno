@@ -3,6 +3,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,11 +13,24 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 #if __IOS__
 using UIKit;
+#endif
+
+#if XAMARIN_ANDROID
+using _View = Android.Views.View;
+#elif XAMARIN_IOS
+using _View = UIKit.UIView;
+#elif __MACOS__
+using _View = AppKit.NSView;
+#else
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -28,7 +42,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// TODO Android does not handle measure invalidation properly
 		[TestMethod]
 		public Task When_Measure_Once() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MyControl01();
 
@@ -42,8 +56,96 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow("Auto", "Auto", double.NaN, double.NaN)]
+		[DataRow("auto", "auto", double.NaN, double.NaN)]
+		[DataRow("   AUTO", "AUTO   ", double.NaN, double.NaN)]
+		[DataRow("auTo", "auTo", double.NaN, double.NaN)]
+		[DataRow("NaN", "	NaN			", double.NaN, double.NaN)]
+		[DataRow("NAN", "nAn", double.NaN, double.NaN)]
+		[DataRow("0", "-0", 0d, 0d)]
+		[DataRow("21", "42", 21d, 42d)]
+		[DataRow("+21", "+42", 21d, 42d)]
+#if NETFX_CORE // Those values only works on UWP, not on Uno
+		[DataRow("", "\n", double.NaN, double.NaN)]
+		[DataRow("abc", "0\n", double.NaN, 0d)]
+		[DataRow("∞", "-∞", double.NaN, double.NaN)]
+		[DataRow("21-----covfefe", "42 you're \"smart\"", 21d, 42d)]
+		[DataRow("		21\n", "\n42-", 21d, 42d)]
+#endif
+		public void When_Using_Nan_And_Auto_Sizes(string w, string h, double expectedW, double expectedH)
+		{
+			using var _ = new AssertionScope();
+
+			var sut1 = new ContentControl {Tag = w};
+
+			// Bind sut1.Width to sut1.Tag
+			sut1.SetBinding(
+				FrameworkElement.WidthProperty,
+				new Binding {Source = sut1, Path = new PropertyPath("Tag")});
+
+			sut1.Width.Should().Be(expectedW, "sut1: Width bound after setting value");
+
+			var sut2 = new ContentControl();
+
+			// Bind sut2.Width to sut2.Tag
+			sut2.SetBinding(
+				FrameworkElement.WidthProperty,
+				new Binding {Source = sut2, Path = new PropertyPath("Tag")});
+
+			// Set sut2.Tag AFTER the binding
+			sut2.Tag = w;
+
+			sut2.Width.Should().Be(expectedW, "sut2: Width bound before setting value");
+
+			var sut3 = new ContentControl {Tag = h};
+
+			// Bind sut3.Height to sut3.Tag
+			sut3.SetBinding(
+				FrameworkElement.HeightProperty,
+				new Binding {Source = sut3, Path = new PropertyPath("Tag")});
+
+			sut3.Height.Should().Be(expectedH, "sut3: Height bound after setting value");
+
+			var sut4 = new ContentControl();
+
+			// Bind sut4.Height to sut4.Tag
+			sut4.SetBinding(
+				FrameworkElement.HeightProperty,
+				new Binding {Source = sut4, Path = new PropertyPath("Tag")});
+
+			// Set sut4.Tag AFTER the binding
+			sut4.Tag = h;
+
+			sut4.Height.Should().Be(expectedH, "sut4: Height bound before setting value");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow("-42")]
+		[DataRow("Infinity")]
+		[DataRow("+Infinity")]
+		[DataRow("	Infinity")]
+		[DataRow("-Infinity ")]
+		[DataRow("	Infinity")]
+		[ExpectedException(typeof(ArgumentException))]
+#if !NETFX_CORE
+		[Ignore]
+#endif
+		public void When_Setting_Sizes_To_Invalid_Values_Then_Should_Throw(string variant)
+		{
+			using var _ = new AssertionScope();
+
+			var sut = new ContentControl { Tag = variant };
+
+			sut.SetBinding(
+				FrameworkElement.WidthProperty,
+				new Binding { Source = sut, Path = new PropertyPath("Tag") });
+		}
+
+		[TestMethod]
 		public Task When_Measure_And_Invalidate() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MyControl01();
 
@@ -60,7 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		public Task MeasureWithNan() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var SUT = new MyControl01();
 
@@ -75,7 +177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		public Task MeasureOverrideWithNan() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 
 				var SUT = new MyControl01();
@@ -91,7 +193,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore] // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 #endif
 		public Task MeasureOverride_With_Nan_In_Grid() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var grid = new Grid();
 
@@ -109,7 +211,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// TODO Android does not handle measure invalidation properly
 		[TestMethod]
 		public Task When_Grid_Measure_And_Invalidate() =>
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.ExecuteAsync(() =>
 			{
 				var grid = new Grid();
 				var SUT = new MyControl01();
@@ -380,6 +482,128 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0d, Math.Round(SUT.DesiredSize.Height));
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_Then_Load_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid();
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			int loadingCount = 0, loadedCount = 0;
+			sut.Loading += (snd, e) => loadingCount++;
+			sut.Loaded += (snd, e) => loadedCount++;
+
+			hostPanel.Children.Add(sut);
+
+			Assert.AreEqual(1, loadingCount, "loading");
+			Assert.AreEqual(1, loadedCount, "loaded");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Native_Child_To_ElementCollection()
+		{
+			var panel = new Grid();
+			var tbNativeTyped = (_View)new TextBlock();
+			panel.Children.Add(tbNativeTyped);
+
+			Assert.AreEqual(1, panel.Children.Count);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_Then_Unload_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid {Children = {sut}};
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var unloadCount = 0;
+			sut.Unloaded += (snd, e) => unloadCount++;
+
+			hostPanel.Children.Remove(sut);
+
+			Assert.AreEqual(1, unloadCount);
+#if NETSTANDARD2_0
+			Assert.IsFalse(hostPanel._children.Contains(sut));
+#endif
+		}
+
+#if NETSTANDARD2_0
+		// Those tests only validate the current behavior which should be reviewed by https://github.com/unoplatform/uno/issues/2895
+		// (cf. notes in the tests)
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_While_Parent_Loading_Then_Load_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid();
+
+			int loadingCount = 0, loadedCount = 0;
+			var success = false;
+			sut.Loading += (snd, e) => loadingCount++;
+			sut.Loaded += (snd, e) => loadedCount++;
+
+			hostPanel.Loading += (snd, e) =>
+			{
+				hostPanel.Children.Add(sut);
+
+				// Note: This is NOT the case on UWP. Loading and Loaded event are raised on the child (aka. 'sut'')
+				//		 only after the completion of the current handler.
+				Assert.AreEqual(1, loadingCount, "loading");
+				Assert.AreEqual(0, loadedCount, "loaded");
+				success = true;
+			};
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(success);
+			Assert.AreEqual(1, loadingCount, "loading");
+			Assert.AreEqual(1, loadedCount, "loaded");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Add_Element_While_Parent_Loaded_Then_Load_Raised()
+		{
+			var sut = new Border();
+			var hostPanel = new Grid();
+
+			int loadingCount = 0, loadedCount = 0;
+			var success = false;
+			sut.Loading += (snd, e) => loadingCount++;
+			sut.Loaded += (snd, e) => loadedCount++;
+
+			hostPanel.Loaded += (snd, e) =>
+			{
+				hostPanel.Children.Add(sut);
+
+				// Note: This is NOT the case on UWP. Loading and Loaded event are raised on the child (aka. 'sut'')
+				//		 only after the completion of the current handler.
+				// Note 2: On UWP, when adding a child to the parent while in the parent's loading event handler (i.e. this case)
+				//		   the child will receive the Loaded ** BEFORE ** the Loading event.
+				Assert.AreEqual(1, loadingCount, "loading");
+				Assert.AreEqual(1, loadedCount, "loaded");
+
+				success = true;
+			};
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(success);
+			Assert.AreEqual(1, loadingCount, "loading");
+			Assert.AreEqual(1, loadedCount, "loaded");
+		}
+#endif
 	}
 
 	public partial class MyControl01 : FrameworkElement

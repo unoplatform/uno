@@ -16,19 +16,19 @@
 	<TemplateContent>
 		<Project File="UnoQuickStart.Uwp.csproj" TargetFileName="$ext_safeprojectname$.Uwp.csproj" ReplaceParameters="true">
 			<Folder Name="Assets" TargetFolderName="Assets">
-			  <ProjectItem TargetFileName="lockscreenlogo.scale-200.png" ReplaceParameters="false">lockscreenlogo.scale-200.png</ProjectItem>
-			  <ProjectItem TargetFileName="splashscreen.scale-200.png" ReplaceParameters="false">splashscreen.scale-200.png</ProjectItem>
-			  <ProjectItem TargetFileName="square150x150logo.scale-200.png" ReplaceParameters="false">square150x150logo.scale-200.png</ProjectItem>
-			  <ProjectItem TargetFileName="square44x44logo.scale-200.png" ReplaceParameters="false">square44x44logo.scale-200.png</ProjectItem>
-			  <ProjectItem TargetFileName="storelogo.png" ReplaceParameters="false">storelogo.png</ProjectItem>
-			  <ProjectItem TargetFileName="wide310x150logo.scale-200.png" ReplaceParameters="false">wide310x150logo.scale-200.png</ProjectItem>
+				<ProjectItem TargetFileName="LockScreenLogo.scale-200.png" ReplaceParameters="false">LockScreenLogo.scale-200.png</ProjectItem>
+				<ProjectItem TargetFileName="SplashScreen.scale-200.png" ReplaceParameters="false">SplashScreen.scale-200.png</ProjectItem>
+				<ProjectItem TargetFileName="Square150x150Logo.scale-200.png" ReplaceParameters="false">Square150x150Logo.scale-200.png</ProjectItem>
+				<ProjectItem TargetFileName="Square44x44Logo.scale-200.png" ReplaceParameters="false">Square44x44Logo.scale-200.png</ProjectItem>
+				<ProjectItem TargetFileName="StoreLogo.png" ReplaceParameters="false">StoreLogo.png</ProjectItem>
+				<ProjectItem TargetFileName="Wide310x150Logo.scale-200.png" ReplaceParameters="false">Wide310x150Logo.scale-200.png</ProjectItem>
 			</Folder>
 			<Folder Name="Properties" TargetFolderName="Properties">
-				<ProjectItem TargetFileName="AssemblyInfo.cs" ReplaceParameters="true">assemblyinfo.cs</ProjectItem>
-				<ProjectItem TargetFileName="Default.rd.xml" ReplaceParameters="false">default.rd.xml</ProjectItem>
+				<ProjectItem TargetFileName="AssemblyInfo.cs" ReplaceParameters="true">AssemblyInfo.cs</ProjectItem>
+				<ProjectItem TargetFileName="Default.rd.xml" ReplaceParameters="false">Default.rd.xml</ProjectItem>
 			</Folder>
 			
-			<ProjectItem TargetFileName="Package.appxmanifest" ReplaceParameters="true">package.appxmanifest</ProjectItem>
+			<ProjectItem TargetFileName="Package.appxmanifest" ReplaceParameters="true">Package.appxmanifest</ProjectItem>
 			<ProjectItem TargetFileName="$ext_safeprojectname$.Uwp_temporarykey.pfx" ReplaceParameters="false">UnoQuickStart.Uwp_temporarykey.pfx</ProjectItem>
 		</Project>
 	</TemplateContent>

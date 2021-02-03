@@ -230,7 +230,7 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			Assert.AreEqual(null, SUT.DataContext);
 			Assert.AreEqual(0, parentCtxChanged);
 			Assert.AreEqual(1, SUTCtxChanged);
-			Assert.AreEqual(1, childCtxChanged);
+			Assert.AreEqual(0, childCtxChanged);
 		}
 
 		[TestMethod]

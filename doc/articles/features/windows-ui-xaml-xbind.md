@@ -1,6 +1,11 @@
 # Uno Support for x:Bind
 
-Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension) WinUI feature, which gives the ability the bind to normal fields and properties, static classes fields, functions with multiple parameters, and events.
+Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension) WinUI feature, which gives the ability to:
+- bind to normal fields and properties
+- static classes fields
+- functions with multiple parameters
+- events
+- `x:Bind` on _"Plain-old C# Objects"_ (POCO) created in XAML
 
 # Examples
 - Properties
@@ -77,5 +82,13 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
   public void OnUncheckedRaised(object sender, RoutedEventArgs args) { }
   ```
 
-# Not supported
-- Type casts 
+- Type casts
+  ```xaml
+  <TextBox FontFamily="{x:Bind (FontFamily)MyComboBox.SelectedValue}" />
+  ```
+
+- `x:Load` binding
+  ```xaml
+  <TextBox x:Load="{x:Bind IsMyControlVisible}" />
+  ```
+  See the [WinUI documentation](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-load-attribute) for more details.

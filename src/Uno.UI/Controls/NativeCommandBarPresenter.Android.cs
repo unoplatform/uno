@@ -1,4 +1,4 @@
-﻿#if __ANDROID__
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,4 +24,3 @@ namespace Uno.UI.Controls
 		}
 	}
 }
-#endif

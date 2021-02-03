@@ -12,6 +12,7 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Text.RegularExpressions;
 using Windows.Foundation.Metadata;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
+using System.Diagnostics;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -122,7 +123,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var targetLine = File.ReadLines(file, Encoding.UTF8).First(l => !l.Trim().StartsWith("<!") && !l.IsNullOrWhiteSpace());
 				if (targetLine.EndsWith(">"))
 				{
-					targetLine.TrimEnd(">");
+					targetLine = targetLine.TrimEnd(">");
 				}
 
 				var mcName = document.DocumentElement

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
@@ -55,7 +55,7 @@ namespace Uno.UI.RemoteControl.VS
 			_dte.Events.BuildEvents.OnBuildDone +=
 				(s, a) => BuildEvents_OnBuildDoneAsync(s, a);
 
-			_dte.Events.BuildEvents.OnBuildProjConfigBegin += 
+			_dte.Events.BuildEvents.OnBuildProjConfigBegin +=
 				(string project, string projectConfig, string platform, string solutionConfig) => BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
 
 			// Start the RC server early, as iOS and Android projects capture the globals early
@@ -185,7 +185,7 @@ namespace Uno.UI.RemoteControl.VS
 				var sb = new StringBuilder();
 
 				var hostBinPath = Path.Combine(_toolsPath, "host", "Uno.UI.RemoteControl.Host.dll");
-				string arguments = $"{hostBinPath} --httpPort {RemoteControlServerPort}";
+				string arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort}";
 				var pi = new ProcessStartInfo("dotnet", arguments)
 				{
 					UseShellExecute = false,
@@ -232,7 +232,7 @@ namespace Uno.UI.RemoteControl.VS
 
 			if (solutionProjectItems != null)
 			{
-				return EnumerateProjects(solutionProjectItems);				
+				return EnumerateProjects(solutionProjectItems);
 			}
 			else
 			{

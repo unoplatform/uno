@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project>
+  <PropertyGroup>
+	<ThemesExclusion>$(MSBuildThisFileDirectory)Resources\**\*.xaml</ThemesExclusion>
+  </PropertyGroup>
+  
+  <UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
+
+  <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
+  <Target Name="GenerateThemeResourceFile" BeforeTargets="BeforeBuild" Outputs="themeresources.xaml" Condition="'$(Configuration)'=='Debug'">
+
+	<ItemGroup>
+  	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioButtons.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioButtons_themeresources.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TeachingTip.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TeachingTip_themeresources.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ProgressRing.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ScrollViewer.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ScrollViewer_themeresources.xaml" />
+
+	  <!-- The excluded files can be restored as the types are made available in Uno.		  
+		  Note: The ProgressRing style can be restored once determinate mode is implemented. https://github.com/unoplatform/uno/issues/3604 -->
+	  <WinUIStylePage
+		  Include="$(MSBuildThisFileDirectory)Resources\**\*.xaml" />
+	  <WinUIStylePage
+		  Remove="@(ExcludedTemplates)" />
+	</ItemGroup>
+
+	<Message Importance="high" Text="Generating theme resources XAML file " />
+	<MakeDir Directories="$(IntermediateOutputPath)" />
+	<BatchMergeXaml
+	  Pages="@(WinUIStylePage)"
+	  MergedXamlFile="themeresources.xaml"
+	  TlogReadFilesOutputPath="$(IntermediateOutputPath)\GenerateThemeResourceFile.read.1u.tlog"
+	  TlogWriteFilesOutputPath="$(IntermediateOutputPath)\GenerateThemeResourceFile.write.1u.tlog" />
+	<Message Text="Theme resources XAML file was generated" />
+  </Target>
+
+  <Choose>
+	<When Condition="'$(TargetFramework)'=='net461'">
+	  <ItemGroup>
+		<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+	  </ItemGroup>
+	</When>
+	<When Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
+	  <ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+
+		<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
+		<Page Remove="@(Page)" />
+	  </ItemGroup>
+	</When>
+	<Otherwise>
+	  <ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+
+		<!-- remove files included by msbuild extras -->
+		<Page Remove="@(Page)" />
+		<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+	  </ItemGroup>
+	</Otherwise>
+  </Choose>
+
+
+  <PropertyGroup>
+	<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+  </PropertyGroup>
+
+  <Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+</Project>

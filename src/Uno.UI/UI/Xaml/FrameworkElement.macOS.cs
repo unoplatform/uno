@@ -45,14 +45,14 @@ namespace Windows.UI.Xaml
 			// a chain of multiple unneeded updates for the element and its parents. OnInvalidateMeasure
 			// sets NeedsLayout to true and propagates to the parent but NeedsLayout by itself does not.
 
-			if (!RequiresMeasure)
+			if (!IsMeasureDirty)
 			{
-				RequiresArrange = true;
-				RequiresMeasure = true;
+				IsArrangeDirty = true;
+				IsMeasureDirty = true;
 
 				if (Parent is FrameworkElement fe)
 				{
-					if (!fe.RequiresMeasure)
+					if (!fe.IsMeasureDirty)
 					{
 						fe.InvalidateMeasure();
 					}
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml
 			{
 				_inLayoutSubviews = true;
 
-				if (RequiresMeasure)
+				if (IsMeasureDirty)
 				{
 					XamlMeasure(Bounds.Size);
 				}
@@ -90,8 +90,8 @@ namespace Windows.UI.Xaml
 			finally
 			{
 				_inLayoutSubviews = false;
-				RequiresMeasure = false;
-				RequiresArrange = false;
+				IsMeasureDirty = false;
+				IsArrangeDirty = false;
 			}
 		}
 

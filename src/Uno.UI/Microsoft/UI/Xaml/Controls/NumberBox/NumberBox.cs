@@ -1,8 +1,10 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
+using System.Linq;
+using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
+using Windows.Foundation.Metadata;
 using Windows.Globalization.NumberFormatting;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -11,10 +13,6 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.Foundation.Metadata;
-using System.Globalization;
-using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -28,6 +26,8 @@ namespace Microsoft.UI.Xaml.Controls
 		TextBox m_textBox;
 		Windows.UI.Xaml.Controls.Primitives.Popup m_popup;
 
+		private ContentPresenter m_headerPresenter;
+
 		SerialDisposable _eventSubscriptions = new SerialDisposable();
 
 		static string c_numberBoxDownButtonName = "DownSpinButton";
@@ -37,6 +37,8 @@ namespace Microsoft.UI.Xaml.Controls
 		static string c_numberBoxPopupName = "UpDownPopup";
 		static string c_numberBoxPopupDownButtonName = "PopupDownSpinButton";
 		static string c_numberBoxPopupUpButtonName = "PopupUpSpinButton";
+
+		static string c_numberBoxHeaderName = "HeaderContentPresenter";
 		// UNO TODO static string c_numberBoxPopupContentRootName= "PopupContentRoot";
 
 		// UNO TODO static double c_popupShadowDepth = 16.0;
@@ -90,8 +92,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var registrations = new CompositeDisposable();
 
-			var spinDownName = ResourceAccessor.GetLocalizedStringResource("NumberBoxDownSpinButtonName");
-			var spinUpName = ResourceAccessor.GetLocalizedStringResource("NumberBoxUpSpinButtonName");
+			var spinDownName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NumberBoxDownSpinButtonName);
+			var spinUpName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NumberBoxUpSpinButtonName);
 
 			if (this.GetTemplateChild(c_numberBoxDownButtonName) is RepeatButton spinDown)
 			{
@@ -116,6 +118,8 @@ namespace Microsoft.UI.Xaml.Controls
 					AutomationProperties.SetName(spinUp, spinUpName);
 				}
 			}
+
+			UpdateHeaderPresenterState();
 
 			if (GetTemplateChild(c_numberBoxTextBoxName) is TextBox textBox)
 			{
@@ -281,6 +285,16 @@ namespace Microsoft.UI.Xaml.Controls
 				m_textBox.Text = Text;
 				ValidateInput();
 			}
+		}
+
+		private void OnHeaderPropertyChanged(DependencyPropertyChangedEventArgs args)
+		{
+			UpdateHeaderPresenterState();
+		}
+
+		private void OnHeaderTemplatePropertyChanged(DependencyPropertyChangedEventArgs args)
+		{
+			UpdateHeaderPresenterState();
 		}
 
 		private void OnValidationModePropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -597,6 +611,54 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool IsInBounds(double value)
 		{
 			return (value >= Minimum && value <= Maximum);
+		}
+
+		private void UpdateHeaderPresenterState()
+		{
+			bool shouldShowHeader = false;
+
+			// Load header presenter as late as possible
+
+			// To enable lightweight styling, collapse header presenter if there is no header specified
+			var header = Header;
+			if (header != null)
+			{
+				// Check if header is string or not
+				var headerAsString = header as string;
+				if (headerAsString != null)
+				{
+					if (headerAsString != string.Empty)
+					{
+						// Header is not empty string
+						shouldShowHeader = true;
+					}
+				}
+				else
+				{
+					// Header is not a string, so let's show header presenter
+					shouldShowHeader = true;
+				}
+			}
+			var headerTemplate = HeaderTemplate;
+			if (headerTemplate != null)
+			{
+				shouldShowHeader = true;
+			}
+
+			if (shouldShowHeader && m_headerPresenter == null)
+			{
+				var headerPresenter = GetTemplateChild<ContentPresenter>(c_numberBoxHeaderName);
+				if (headerPresenter != null)
+				{
+					// Set presenter to enable lightweight styling of the headers margin
+					m_headerPresenter = headerPresenter;
+				}
+			}
+
+			if (m_headerPresenter != null)
+			{
+				m_headerPresenter.Visibility = shouldShowHeader ? Visibility.Visible : Visibility.Collapsed;
+			}
 		}
 	}
 }

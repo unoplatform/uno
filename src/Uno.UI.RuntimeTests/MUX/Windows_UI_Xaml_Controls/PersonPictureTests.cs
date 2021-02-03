@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public async Task VerifyDefaultsAndBasicSetting()
 		{
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				PersonPicture personPicture = new PersonPicture();
 				Verify.IsNotNull(personPicture);
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public async Task VerifyAutomationName()
 		{
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				PersonPicture personPicture = new PersonPicture();
 				Verify.IsNotNull(personPicture);
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public async Task VerifyContactPropertyMetadata()
 		{
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Windows.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider provider = new Windows.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider();
 				var picturePersonType = provider.GetXamlType(typeof(PersonPicture).FullName);
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			PersonPicture personPicture = null;
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				personPicture = new PersonPicture();
 				global::Private.Infrastructure.TestServices.WindowHelper.WindowContent = personPicture;
@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			var sizeChangedEvent = new TaskCompletionSource<bool>();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				personPicture.SizeChanged += (sender, args) => sizeChangedEvent.TrySetResult(true);
 				personPicture.Width = 0.4;
@@ -176,7 +176,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			PersonPicture personPicture = null;
 			TextBlock initialsTextBlock = null;
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				personPicture = new PersonPicture();
 				global::Private.Infrastructure.TestServices.WindowHelper.WindowContent = personPicture;
@@ -184,7 +184,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				initialsTextBlock = (TextBlock)VisualTreeUtils.FindVisualChildByName(personPicture, "InitialsTextBlock");
 				personPicture.IsGroup = true;
@@ -192,7 +192,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Verify.AreEqual(initialsTextBlock.FontFamily.Source, "Segoe MDL2 Assets");
 				Verify.AreEqual(initialsTextBlock.Text, "\xE716");
@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 #if false
 				Verify.AreEqual(initialsTextBlock.FontFamily.Source, "Segoe UI");
@@ -215,7 +215,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Verify.AreEqual(initialsTextBlock.FontFamily.Source, "Segoe MDL2 Assets");
 				Verify.AreEqual(initialsTextBlock.Text, "\xE77B");
@@ -228,7 +228,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Verify.AreEqual(initialsTextBlock.FontFamily.Source, "Segoe UI Emoji");
 				Verify.AreEqual(initialsTextBlock.Text, "👍");
@@ -238,7 +238,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Verify.AreEqual(initialsTextBlock.FontFamily.Source, "Segoe MDL2 Assets");
 				Verify.AreEqual(initialsTextBlock.Text, "\xE716");

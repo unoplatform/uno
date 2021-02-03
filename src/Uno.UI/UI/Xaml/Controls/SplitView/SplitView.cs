@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -21,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private CompositeDisposable _subscriptions;
 		private readonly SerialDisposable _runningSubscription = new SerialDisposable();
-		private Button _lightDismissLayer;
+		private FrameworkElement _lightDismissLayer;
 		private bool _isViewReady;
 
 		public SplitView()
@@ -275,7 +276,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateTemplateSettings();
 
-			_lightDismissLayer = FindName("LightDismissLayer") as Button;
+			_lightDismissLayer = FindName("LightDismissLayer") as FrameworkElement;
 
 			_isViewReady = true;
 
@@ -339,11 +340,19 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_lightDismissLayer != null)
 			{
-				RoutedEventHandler handler = (s, e) => IsPaneOpen = false;
-
-				_lightDismissLayer.Click += handler;
-
-				_subscriptions.Add(() => _lightDismissLayer.Click -= handler);
+				if (_lightDismissLayer is ButtonBase button)
+				{
+					// PointerReleased isn't raised for buttons
+					RoutedEventHandler handler = (s, e) => IsPaneOpen = false;
+					button.Click += handler;
+					_subscriptions.Add(() => button.Click -= handler);
+				}
+				else
+				{
+					PointerEventHandler handler = (s, e) => IsPaneOpen = false;
+					_lightDismissLayer.PointerReleased += handler;
+					_subscriptions.Add(() => _lightDismissLayer.PointerReleased -= handler);
+				}
 			}
 		}
 

@@ -11,6 +11,8 @@ namespace Windows.UI.Xaml.Controls
 	internal partial class NativeImage : ImageView
 	{
 		private bool _skipLayoutRequest;
+		private bool _skipRecolor;
+		private bool NeedsRecolor => !_skipRecolor && Owner.MonochromeColor != null;
 
 		private Image Owner => Parent as Image;
 
@@ -32,6 +34,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_skipLayoutRequest = false;
 			}
+
+			TryRecolorMonochrome();
 		}
 
 		public override void SetImageResource(int resId)
@@ -51,6 +55,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				Owner.UpdateSourceImageSize(new Windows.Foundation.Size(Drawable.IntrinsicWidth, Drawable.IntrinsicHeight));
 			}
+
+			TryRecolorMonochrome();
 		}
 
 		public override void SetImageBitmap(Bitmap bm)
@@ -66,6 +72,11 @@ namespace Windows.UI.Xaml.Controls
 			try
 			{
 				_skipLayoutRequest = true;
+
+				if (NeedsRecolor)
+				{
+					bm = RecolorBitmapMonochrome(bm, Owner.MonochromeColor);
+				}
 
 				base.SetImageBitmap(bm);
 			}
@@ -105,6 +116,54 @@ namespace Windows.UI.Xaml.Controls
 			Owner.UpdateMatrix(frameSize);
 
 			return base.SetFrame(l, t, r, b);
+		}
+
+		private void TryRecolorMonochrome()
+		{
+			if (NeedsRecolor && Drawable is BitmapDrawable)
+			{
+				Bitmap source = ((BitmapDrawable)Drawable).Bitmap;
+				Bitmap target = RecolorBitmapMonochrome(source, Owner.MonochromeColor);
+
+				int actualWidth = Drawable.IntrinsicWidth, actualHeight = Drawable.IntrinsicHeight;
+				Bitmap rescaled = Bitmap.CreateScaledBitmap(target, actualWidth, actualHeight, false);
+
+				_skipRecolor = true;
+				SetImageBitmap(rescaled);
+				_skipRecolor = false;
+			}
+		}
+
+		private Bitmap RecolorBitmapMonochrome(Bitmap source, Color? color)
+		{
+			int width = source.Width, height = source.Height;
+
+			Bitmap.Config pixelFormat = Bitmap.Config.Argb8888;
+
+			Bitmap target = Bitmap.CreateBitmap(width, height, pixelFormat);
+
+			int[] sourcePixels = new int[width * height];
+			int[] targetPixels = new int[width * height];
+
+			int targetR = color.Value.R;
+			int targetG = color.Value.G;
+			int targetB = color.Value.B;
+
+			source.GetPixels(sourcePixels, 0, width, 0, 0, width, height);
+			for (int i = 0; i < sourcePixels.Length; ++i)
+			{
+				int sourceColor = sourcePixels[i];
+				int targetColor = sourceColor;
+				if (sourceColor != 0)
+				{
+					int sourceAlpha = Android.Graphics.Color.GetAlphaComponent(sourceColor);
+					targetColor = new Android.Graphics.Color(targetR, targetG, targetB, sourceAlpha);
+				}
+				targetPixels[i] = targetColor;
+			}
+			target.SetPixels(targetPixels, 0, width, 0, 0, width, height);
+
+			return target;
 		}
 	}
 }

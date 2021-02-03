@@ -13,6 +13,7 @@
     </NuGetPackageImportStamp>
     <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <ProvisioningType>manual</ProvisioningType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
@@ -20,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
-    <DefineConstants>DEBUG;XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>DEBUG;XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -34,7 +35,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
-    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchLink>None</MtouchLink>
@@ -47,7 +48,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhone\Debug</OutputPath>
-    <DefineConstants>DEBUG;XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>DEBUG;XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -58,7 +59,7 @@
     <MtouchExtraArgs>--xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
-    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\iPhone\Release</OutputPath>
@@ -71,7 +72,7 @@
     <MtouchExtraArgs>--xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
-    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <DebugType>none</DebugType>
     <Optimize>True</Optimize>
     <OutputPath>bin\iPhone\Ad-Hoc</OutputPath>
@@ -85,7 +86,7 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
-    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <DebugType>none</DebugType>
     <Optimize>True</Optimize>
     <OutputPath>bin\iPhone\AppStore</OutputPath>
@@ -103,11 +104,12 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Content Include="LinkerExclusions.xml" />
+    <BundleResource Include="Resources\sound.mp3" />
     <None Include="Resources\Default-568h%402x.png" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Entitlements.plist" />
-    <BundleResource Include="Resources\Fonts\winjs-symbols.ttf">
+    <BundleResource Include="Resources\Fonts\uno-fluentui-assets.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </BundleResource>
     <None Include="Resources\LaunchScreen.xib" />
@@ -123,16 +125,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Graph">
-      <Version>3.8.0</Version>
+      <Version>3.12.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Identity.Client">
       <Version>4.15.0</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="Uno.CodeGen">
-      <Version>1.32.0</Version>
     </PackageReference>
     <PackageReference Include="Uno.Core">
       <Version>2.0.0</Version>
@@ -142,7 +141,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
     <PackageReference Include="Xamarin.TestCloud.Agent">
-      <Version>0.21.9</Version>
+      <Version>0.22.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +152,10 @@
     <ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.csproj">
       <Project>{2569663D-293A-4A1D-BB84-AA8C7B4B7F92}</Project>
       <Name>Uno.UI.MSAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj">
+      <Project>{535339e2-6c01-4478-9889-f6e76b1c00f4}</Project>
+      <Name>Uno.UI.FluentTheme</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj">
       <Project>{80798130-cb7e-4968-b4f6-554cc0fc8feb}</Project>

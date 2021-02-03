@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
@@ -24,11 +26,25 @@ namespace Windows.UI.Xaml.Controls
 
 		internal const PlacementMode DefaultPlacementMode = PlacementMode.Top;
 
-		private readonly Popup _popup = new Popup { IsLightDismissEnabled = false };
+		private Popup? _popup;
 
-		private DependencyObject _owner;
+		private DependencyObject? _owner;
 
-		internal Popup Popup => _popup;
+		internal Popup Popup
+		{
+			get
+			{
+				if(_popup == null)
+				{
+					_popup = new Popup { IsLightDismissEnabled = false };
+					_popup.PopupPanel = new PopupPanel(_popup);
+					_popup.Opened += OnPopupOpened;
+					_popup.Closed += (sender, e) => IsOpen = false;
+				}
+
+				return _popup;
+			}
+		}
 
 #pragma warning disable CS0649
 #pragma warning disable CS0169
@@ -43,15 +59,12 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning restore CS0169
 #pragma warning restore CS0414
 
-		private FrameworkElement Target => _owner as FrameworkElement;
+		private FrameworkElement? Target => _owner as FrameworkElement;
 
 		public ToolTip()
 		{
 			DefaultStyleKey = typeof(ToolTip);
 
-			_popup.PopupPanel = new PopupPanel(_popup);
-			_popup.Opened += OnPopupOpened;
-			_popup.Closed += (sender, e) => IsOpen = false;
 			SizeChanged += OnToolTipSizeChanged;
 			Loading += (sender, e) => PerformPlacementInternal(); // Update placement on Loading, because this is the point at which Uno sets the default Style
 		}
@@ -102,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnOpenChanged(bool isOpen)
 		{
 			PerformPlacementInternal();
-			_popup.IsOpen = isOpen;
+			Popup.IsOpen = isOpen;
 			if (isOpen)
 			{
 				AttachToPopup();
@@ -121,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (Parent == null)
 			{
-				_popup.Child = this;
+				Popup.Child = this;
 			}
 			else if (!ReferenceEquals(Parent, _popup))
 			{
@@ -131,9 +144,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public void SetAnchor(UIElement element) => _owner = element;
 
-		public event RoutedEventHandler Closed;
+		public event RoutedEventHandler? Closed;
 
-		public event RoutedEventHandler Opened;
+		public event RoutedEventHandler? Opened;
 
 		// Sets the location of the ToolTip's Popup.
 		//
@@ -251,9 +264,9 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			var spPopup = _popup;
+			var spPopup = Popup;
 
-			var lastPointerEnteredPoint = CoreWindow.GetForCurrentThread().PointerPosition;
+			var lastPointerEnteredPoint = CoreWindow.GetForCurrentThread()!.PointerPosition;
 
 			left = lastPointerEnteredPoint.X;
 			top = lastPointerEnteredPoint.Y;
@@ -433,7 +446,7 @@ namespace Windows.UI.Xaml.Controls
 				var lastPointerEnteredPoint = default(Point);
 
 				// UNO TODO: PointerPoint.GetCurrentPoint(uint pointerId)
-				lastPointerEnteredPoint = CoreWindow.GetForCurrentThread().PointerPosition;
+				lastPointerEnteredPoint = CoreWindow.GetForCurrentThread()!.PointerPosition;
 
 				rcDockTo.X = lastPointerEnteredPoint.X;
 				rcDockTo.Y = lastPointerEnteredPoint.Y;
@@ -451,7 +464,7 @@ namespace Windows.UI.Xaml.Controls
 				getDockToRectFromTargetElement = true;
 			}
 
-			if (getDockToRectFromTargetElement)
+			if (getDockToRectFromTargetElement && Target != null)
 			{
 				var targetTopLeft = default(Point);
 				Target.TransformToVisual(null).TransformPoint(targetTopLeft);

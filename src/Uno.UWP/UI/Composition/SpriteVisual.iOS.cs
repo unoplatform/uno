@@ -1,3 +1,5 @@
+#nullable enable
+
 #if __IOS__
 using System;
 using System.Collections.Generic;
@@ -11,7 +13,7 @@ namespace Windows.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{
-		partial void OnBrushChangedPartial(CompositionBrush brush)
+		partial void OnBrushChangedPartial(CompositionBrush? brush)
 		{
 			if (brush is CompositionColorBrush b)
 			{
@@ -78,7 +80,7 @@ namespace Windows.UI.Composition
 			);
 		}
 
-		private void FinalizeAnimation() { }
+		private void FinalizeAnimation(UnoCoreAnimation.CompletedInfo info) { }
 	}
 }
 #endif

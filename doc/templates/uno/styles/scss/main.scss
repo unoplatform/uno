@@ -48,6 +48,16 @@ h3 {
     text-transform: none;
 }
 
+@media screen {
+    pre {
+        overflow: auto;
+
+        > code {
+            white-space: pre;
+        }
+    }
+}
+
 .body-content .article {
     margin-top: 120px;
     margin-right: 0;
@@ -183,10 +193,20 @@ h3 {
     z-index: 999;
 }
 
+
+
 #navbar {
     margin: 0;
     margin-left: auto;
     padding: 15px 0 0;
+
+    & > .navbar-nav {
+        display: block;
+
+        &.hidden {
+            display: none;
+        }
+    }
 
     .menu,
     .level1 {

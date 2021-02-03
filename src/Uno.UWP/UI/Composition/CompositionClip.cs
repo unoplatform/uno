@@ -1,9 +1,16 @@
+#nullable enable
+
 using System.Numerics;
 
 namespace Windows.UI.Composition
 {
 	public partial class CompositionClip : CompositionObject
 	{
+		internal CompositionClip(Compositor compositor) : base(compositor)
+		{
+
+		}
+
 		public Matrix3x2 TransformMatrix { get; set; }
 		public Vector2 Scale { get; set; }
 		public float RotationAngleInDegrees { get; set; }

@@ -29,14 +29,13 @@ namespace Windows.UI.Xaml.Media.Animation
 		private class Metadata : IJSObjectMetadata
 		{
 			public static Metadata Instance {get;} = new Metadata();
-			private Metadata() { }
 
-			private static long _handles = 0L;
+			private Metadata() { }
 
 			/// <inheritdoc />
 			public long CreateNativeInstance(IntPtr managedHandle)
 			{
-				var id = Interlocked.Increment(ref _handles);
+				var id = RenderingLoopAnimatorMetadataIdProvider.Next();
 				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopFloatAnimator.createInstance(\"{managedHandle}\", \"{id}\")");
 
 				return id;

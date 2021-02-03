@@ -8,7 +8,6 @@
 
 </prismIoc:PrismApplication>
 <!--#endif -->
-
 <!--#if (Container == "DryIoc") -->
 <prismIoc:PrismApplication
     x:Class="BlankApp.App"

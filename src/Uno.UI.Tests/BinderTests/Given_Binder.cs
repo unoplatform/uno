@@ -22,6 +22,7 @@ using Uno.Conversion;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls;
 using System.Threading;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -609,7 +610,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			);
 
-			SUT.ApplyCompiledBindings();
+			SUT.ApplyXBind();
 
 			Assert.AreEqual(42, SUT.Tag);
 		}
@@ -648,7 +649,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			);
 
-			SUT.ApplyCompiledBindings();
+			SUT.ApplyXBind();
 
 			Assert.AreEqual(42, SUT.Tag);
 		}
@@ -668,9 +669,37 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			);
 
-			SUT.ApplyCompiledBindings();
+			SUT.ApplyXBind();
 
 			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Private_Field_And_xBind_Not_OneTime()
+		{
+			var source = new PrivateField(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			var binding = new Binding()
+			{
+				Path = "MyField",
+				Mode = BindingMode.OneWay,
+				CompiledSource = source
+			};
+			binding.SetBindingXBindProvider(
+					source,
+					(a) => "Test",
+					null,
+					new[] { "MyField" });
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				binding
+			);
+
+			SUT.ApplyXBind();
+
+			Assert.AreEqual("Test", SUT.Tag);
 		}
 
 		[TestMethod]
@@ -760,6 +789,23 @@ namespace Uno.UI.Tests.BinderTests
 			);
 
 			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Source_String()
+		{
+			var source = "Test";
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Source = source
+				}
+			);
+
+			Assert.AreEqual(source, SUT.Tag);
 		}
 
 		[TestMethod]

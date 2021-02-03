@@ -10,20 +10,31 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Numerics;
 using Uno.Disposables;
-using Uno.Collections;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Composition;
+using Windows.UI.ViewManagement;
+using Uno.UI;
 using Windows.UI.Core;
+#if HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using WindowsWindow = Microsoft.UI.Xaml.Window;
+#else
+using Windows.UI.Composition;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
@@ -31,9 +42,8 @@ using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
-using Uno.Extensions.Specialized;
-using Windows.UI.ViewManagement;
-using Uno.UI;
+using WindowsWindow = Windows.UI.Xaml.Window;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -267,8 +277,8 @@ namespace Windows.UI.Xaml.Controls
 			if (GetTemplateChild(c_topNavOverflowButton) is Button topNavOverflowButton)
 			{
 				m_topNavOverflowButton = topNavOverflowButton;
-				AutomationProperties.SetName(topNavOverflowButton, ResourceAccessor.GetLocalizedStringResource("NavigationOverflowButtonText"));
-				topNavOverflowButton.Content = ResourceAccessor.GetLocalizedStringResource("NavigationOverflowButtonText");
+				AutomationProperties.SetName(topNavOverflowButton, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationOverflowButtonText));
+				topNavOverflowButton.Content = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationOverflowButtonText);
 				var visual = ElementCompositionPreview.GetElementVisual(topNavOverflowButton);
 				CreateAndAttachHeaderAnimation(visual);
 			}
@@ -302,7 +312,7 @@ namespace Windows.UI.Xaml.Controls
 				m_paneSearchButton = button;
 				button.Click += OnPaneSearchButtonClick;
 
-				var searchButtonName = ResourceAccessor.GetLocalizedStringResource("NavigationViewSearchButtonName");
+				var searchButtonName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationViewSearchButtonName);
 				AutomationProperties.SetName(button, searchButtonName);
 
 #if !IS_UNO // UNO TODO Missing Tooltop
@@ -317,13 +327,13 @@ namespace Windows.UI.Xaml.Controls
 				m_backButton = backButton;
 				backButton.Click += OnBackButtonClicked;
         
-				string navigationName = ResourceAccessor.GetLocalizedStringResource("NavigationBackButtonName");
+				string navigationName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationBackButtonName);
 				AutomationProperties.SetName(backButton, navigationName);
 			}
 
 			if (GetTemplateChild(c_navViewBackButtonToolTip) is ToolTip backButtonToolTip)
 			{
-				string navigationBackButtonToolTip = ResourceAccessor.GetLocalizedStringResource("NavigationBackButtonToolTip");
+				string navigationBackButtonToolTip = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationBackButtonToolTip);
 				backButtonToolTip.Content =  navigationBackButtonToolTip;
 			}
 
@@ -406,7 +416,7 @@ namespace Windows.UI.Xaml.Controls
 				d.Add(() => settingsItem.KeyUp -= OnSettingsKeyUp);
 
 				// Do localization for settings item label and Automation Name
-				var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource("SettingsButtonName");
+				var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
 				AutomationProperties.SetName(settingsItem, localizedSettingsName);
 				UpdateSettingsItemToolTip();
 
@@ -844,11 +854,11 @@ namespace Windows.UI.Xaml.Controls
 			string navigationName;
 			if (IsPaneOpen)
 			{
-				navigationName = ResourceAccessor.GetLocalizedStringResource("NavigationButtonOpenName");
+				navigationName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationButtonOpenName);
 			}
 			else
 			{
-				navigationName = ResourceAccessor.GetLocalizedStringResource("NavigationButtonClosedName");
+				navigationName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationButtonClosedName);
 			}
 
 			var paneToggleButton = m_paneToggleButton;
@@ -876,7 +886,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 
 #if !IS_UNO
-					var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource("SettingsButtonName");
+					var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
 					var toolTip = ToolTip;
 					toolTip.Content = localizedSettingsName;
 					ToolTipService.SetToolTip(settingsItem, toolTip);
@@ -2795,7 +2805,18 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
+
 			SetPaneToggleButtonAutomationName();
+
+			// ***************************** Uno only - begin
+			// When the OnSplitViewClosedCompactChanged callback is invoked (registered on SplitView.IsPaneOpen),
+			// the two-way binding between SplitView.IsOpen and NavView.IsPaneOpen has not been updated yet,
+			// the the local NavView.IsPaneOpen is still == true. (cf. https://github.com/unoplatform/uno/issues/3774)
+			// (Yeah ... there is 2 code path to track the IsPaneOpen of the SplitView: callback and 2-way binding :/)
+			// So we make sure to request an update of the back button visibility also when the local IsPaneOpen is being updated.
+			UpdateBackButtonVisibility();
+			// ***************************** Uno only - end
+
 			UpdatePaneTabFocusNavigation();
 			UpdateSettingsItemToolTip();
 		}
@@ -3017,7 +3038,7 @@ namespace Windows.UI.Xaml.Controls
 				var splitView = m_rootSplitView;
 				if (splitView != null)
 				{
-					var width = ResourceResolver.ResolveTopLevelResource<double>(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
+					var width = ResourceResolver.ResolveTopLevelResourceDouble(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
 					double togglePaneButtonWidth = width;
 
 					if (ShouldShowBackButton() && splitView.DisplayMode == SplitViewDisplayMode.Overlay)
@@ -3034,12 +3055,15 @@ namespace Windows.UI.Xaml.Controls
 
 					if (!m_isClosedCompact && PaneTitle?.Length > 0)
 					{
-						if (splitView.DisplayMode == SplitViewDisplayMode.Overlay && IsPaneOpen)
+						// if splitView.IsPaneOpen changed directly by SplitView,
+						// the two-way binding haven't sync'd up IsPaneOpen yet.
+						var isPaneOpen = m_isOpenPaneForInteraction ? IsPaneOpen : splitView.IsPaneOpen;
+						if (splitView.DisplayMode == SplitViewDisplayMode.Overlay && isPaneOpen)
 						{
 							width = OpenPaneLength;
 							togglePaneButtonWidth = OpenPaneLength - (ShouldShowBackButton() ? c_backButtonWidth : 0);
 						}
-						else if (!(splitView.DisplayMode == SplitViewDisplayMode.Overlay && !IsPaneOpen))
+						else if (!(splitView.DisplayMode == SplitViewDisplayMode.Overlay && !isPaneOpen))
 						{
 							width = OpenPaneLength;
 							togglePaneButtonWidth = OpenPaneLength;
@@ -3116,7 +3140,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				double width = 0;
 
-				var buttonSize = ResourceResolver.ResolveTopLevelResource<double>(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
+				var buttonSize = ResourceResolver.ResolveTopLevelResourceDouble(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
 
 				width += buttonSize;
 
@@ -3261,7 +3285,7 @@ namespace Windows.UI.Xaml.Controls
 
 					// Only add extra padding if the NavView is the "root" of the app,
 					// but not if the app is expanding into the titlebar
-					UIElement root = Windows.UI.Xaml.Window.Current.Content;
+					UIElement root = WindowsWindow.Current.Content;
 					GeneralTransform gt = TransformToVisual(root);
 					Point pos = gt.TransformPoint(new Point(0.0f, 0.0f));
 					if (pos.Y != 0.0f)

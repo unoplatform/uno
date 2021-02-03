@@ -122,5 +122,6 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-
+	<Style x:Key="StylesTestNullBasedOn" TargetType="Button" BasedOn="{x:Null}"/>
+	<Style x:Key="StylesTestBasedOn" TargetType="Button" BasedOn="{StaticResource ButtonStyleWithTemplates1}"/>
 </ResourceDictionary>

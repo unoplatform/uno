@@ -39,11 +39,12 @@ namespace Uno.UI.Xaml
 		// BringIntoViewRequested = 1UL << 29, => Reserved for future usage 
 
 		// Drag and drop
-		// DragEnter = 1UL << 32, => Reserved for future usage
-		// DragLeave = 1UL << 33, => Reserved for future usage
-		// DragOver = 1UL << 34, => Reserved for future usage
-		// Drop = 1UL << 35, => Reserved for future usage 
-		// DropCompleted = 1UL << 36, => Reserved for future use (even if it is not an actual standard RoutedEvent)
+		DragStarting = 1UL << 32, // this is actually not a RoutedEvent
+		DragEnter = 1UL << 33,
+		DragLeave = 1UL << 34,
+		DragOver = 1UL << 35,
+		Drop = 1UL << 36,
+		DropCompleted = 1UL << 37, // this is actually not a RoutedEvent
 
 		// Manipulations
 		ManipulationStarting = 1UL << 40,
@@ -83,12 +84,13 @@ namespace Uno.UI.Xaml
 			  RoutedEventFlag.GotFocus
 			| RoutedEventFlag.LostFocus;
 
-		private const RoutedEventFlag _isDragAndDrop = (RoutedEventFlag)0b0000_0000_0000_0000___0000_0000_0001_1111___0000_0000_0000_0000___0000_0000_0000_0000;
-			//  RoutedEventFlag.DragEnter
-			//| RoutedEventFlag.DragLeave
-			//| RoutedEventFlag.DragOver
-			//| RoutedEventFlag.Drop
-			//| RoutedEventFlag.DropCompleted;
+		private const RoutedEventFlag _isDragAndDrop = // 0b0000_0000_0000_0000___0000_0000_0011_1111___0000_0000_0000_0000___0000_0000_0000_0000;
+			  RoutedEventFlag.DragStarting
+			| RoutedEventFlag.DragEnter
+			| RoutedEventFlag.DragLeave
+			| RoutedEventFlag.DragOver
+			| RoutedEventFlag.Drop
+			| RoutedEventFlag.DropCompleted;
 
 		private const RoutedEventFlag _isManipulation = // 0b0000_0000_0000_0000___0001_1111_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000
 			  RoutedEventFlag.ManipulationStarting
@@ -97,7 +99,7 @@ namespace Uno.UI.Xaml
 			| RoutedEventFlag.ManipulationInertiaStarting
 			| RoutedEventFlag.ManipulationCompleted;
 
-		private const RoutedEventFlag _isGesture = // 0b0000_0000_0001_1111___0000_0000_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000
+		private const RoutedEventFlag _isGesture = // 0b0000_0000_0000_1111___0000_0000_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000
 			RoutedEventFlag.Tapped
 			| RoutedEventFlag.DoubleTapped
 			| RoutedEventFlag.RightTapped

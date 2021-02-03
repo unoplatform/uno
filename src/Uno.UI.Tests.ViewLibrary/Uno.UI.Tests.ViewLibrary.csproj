@@ -4,6 +4,7 @@
 		<NoWarn>1998;4014;67</NoWarn>
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -46,12 +47,7 @@
 		<Reference Include="WindowsBase" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Page Remove="@(Page)" />
-	</ItemGroup>
-
 	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 	</PropertyGroup>
@@ -63,11 +59,9 @@
 
 	<Import Project="..\Common.targets" />
 
-	<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
-		<Page Include="Themes\Generic.xaml" />
-		<Page Include="Themes\MyExtControl.xaml" />
-		<Page Include="Themes\More\Test_Dictionary_Abs.xaml" />
-		<Page Include="Themes\More\Test_Dictionary_Merged.xaml" />
+	<ItemGroup>
+		<Page Remove="@(Page)" />
+		<Page Include="Themes\**\*.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>

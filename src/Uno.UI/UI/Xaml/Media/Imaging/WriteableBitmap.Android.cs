@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out Bitmap image)
 		{
 			var drawableBuffer = new int[PixelWidth * PixelHeight];
-			var sourceBuffer = _buffer.Data;
+			var sourceBuffer = _buffer.ToArray();
 
 			// WriteableBitmap PixelBuffer is using BGRA format, Android's bitmap input buffer
 			// requires Argb8888, so we swap bytes to conform to this format.

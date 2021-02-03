@@ -49,6 +49,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isIncrementalLoadingInFlight;
 
+		private readonly Dictionary<DependencyObject, object> _containersForIndexRepair = new Dictionary<DependencyObject, object>();
+
 		protected internal ListViewBase()
 		{
 			Initialize();
@@ -57,6 +59,8 @@ namespace Windows.UI.Xaml.Controls
 			selectedItems.CollectionChanged += OnSelectedItemsCollectionChanged;
 			SelectedItems = selectedItems;
 		}
+
+		public event TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> ContainerContentChanging;
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
@@ -101,7 +105,18 @@ namespace Windows.UI.Xaml.Controls
 			try
 			{
 				_modifyingSelectionInternally = true;
-				SelectedItem = SelectedItems.Where(item => items.Contains(item)).FirstOrDefault();
+
+				var itemIndex = SelectedItems.Select(item => (int?)items.IndexOf(item)).FirstOrDefault(index => index > -1);
+				if (itemIndex != null)
+				{
+					SelectedItem = items.ElementAt(itemIndex.Value);
+					SelectedIndex = itemIndex.Value;
+				}
+				else
+				{
+					SelectedItem = null;
+					SelectedIndex = -1;
+				}
 
 				TryUpdateSelectorItemIsSelected(validRemovals, false);
 				TryUpdateSelectorItemIsSelected(validAdditions, true);
@@ -142,28 +157,44 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal override void OnSelectorItemIsSelectedChanged(SelectorItem container, bool oldIsSelected, bool newIsSelected)
+		internal override void ChangeSelectedItem(object item, bool oldIsSelected, bool newIsSelected)
 		{
 			if (!_modifyingSelectionInternally)
 			{
-				var item = ItemFromContainer(container);
 
-				if (!newIsSelected)
+				//Handle selection
+				switch (SelectionMode)
 				{
-					SelectedItems.Remove(item);
-				}
-				else
-				{
-					if (!SelectedItems.Contains(item))
-					{
-						if (!IsSelectionMultiple
-							&& SelectedItems.FirstOrDefault() is object selectedItem)
+					case ListViewSelectionMode.None:
+						break;
+					case ListViewSelectionMode.Single:
+						var index = IndexFromItem(item);
+						if (!newIsSelected)
 						{
-							SelectedItems.Remove(selectedItem);
+							if (SelectedIndex == index)
+							{
+								SelectedIndex = -1;
+							}
 						}
-
-						SelectedItems.Add(item);
-					}
+						else
+						{
+							SelectedIndex = index;
+						}
+						break;
+					case ListViewSelectionMode.Multiple:
+					case ListViewSelectionMode.Extended:
+						if (!newIsSelected)
+						{
+							SelectedItems.Remove(item);
+						}
+						else
+						{
+							if (!SelectedItems.Contains(item))
+							{
+								SelectedItems.Add(item);
+							}
+						}
+						break;
 				}
 			}
 		}
@@ -257,37 +288,6 @@ namespace Windows.UI.Xaml.Controls
 
 			//SetSelectedState(oldSelectedIndex, false);
 			//SetSelectedState(newSelectedIndex, true);
-		}
-
-		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnItemsSourceChanged(e);
-
-			Refresh();
-		}
-
-		protected override void OnItemContainerStyleChanged(Style oldItemContainerStyle, Style newItemContainerStyle)
-		{
-			base.OnItemContainerStyleChanged(oldItemContainerStyle, newItemContainerStyle);
-			Refresh();
-		}
-
-		protected override void OnItemContainerStyleSelectorChanged(StyleSelector oldItemContainerStyleSelector, StyleSelector newItemContainerStyleSelector)
-		{
-			base.OnItemContainerStyleSelectorChanged(oldItemContainerStyleSelector, newItemContainerStyleSelector);
-			Refresh();
-		}
-
-		protected override void OnItemTemplateSelectorChanged(DataTemplateSelector oldItemTemplateSelector, DataTemplateSelector newItemTemplateSelector)
-		{
-			base.OnItemTemplateSelectorChanged(oldItemTemplateSelector, newItemTemplateSelector);
-			Refresh();
-		}
-
-		protected override void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
-		{
-			base.OnItemTemplateChanged(oldItemTemplate, newItemTemplate);
-			Refresh();
 		}
 
 		public event ItemClickEventHandler ItemClick;
@@ -464,7 +464,13 @@ namespace Windows.UI.Xaml.Controls
 					{
 						this.Log().Debug($"Inserting {args.NewItems.Count} items starting at {args.NewStartingIndex}");
 					}
+
+					// Because new items are added, the containers for existing items with higher indices
+					// will be moved, and we must make sure to increase their indices
+					SaveContainersForIndexRepair(args.NewStartingIndex, args.NewItems.Count);
 					AddItems(args.NewStartingIndex, args.NewItems.Count, section);
+					RepairIndices();
+
 					break;
 				case NotifyCollectionChangedAction.Remove:
 					if (AreEmptyGroupsHidden && (sender as IEnumerable).None())
@@ -478,14 +484,20 @@ namespace Windows.UI.Xaml.Controls
 					{
 						this.Log().Debug($"Deleting {args.OldItems.Count} items starting at {args.OldStartingIndex}");
 					}
+          
+					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
+					RepairIndices();
+
 					break;
 				case NotifyCollectionChangedAction.Replace:
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Replacing {args.NewItems.Count} items starting at {args.NewStartingIndex}");
 					}
+
 					ReplaceItems(args.NewStartingIndex, args.NewItems.Count, section);
+
 					break;
 				case NotifyCollectionChangedAction.Move:
 					// TODO PBI #19974: Fully implement NotifyCollectionChangedActions and map them to the appropriate calls
@@ -506,6 +518,39 @@ namespace Windows.UI.Xaml.Controls
 				ObserveCollectionChanged();
 				base.OnItemsSourceSingleCollectionChanged(sender, args, section);
 			}
+		}
+
+		/// <summary>
+		/// Stores materialized containers starting a given index, so that their
+		/// ItemsControl.IndexForContainerProperty can be updated after the collection changes.		
+		/// </summary>
+		/// <param name="startingIndex">The minimum index of containers we care about.</param>
+		/// <param name="indexChange">How does the index change.</param>
+		private void SaveContainersForIndexRepair(int startingIndex, int indexChange)
+		{
+			_containersForIndexRepair.Clear();
+			foreach (var container in MaterializedContainers)
+			{
+				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+				if (currentIndex >= startingIndex)
+				{
+					// we store the index, that should be set after the collection change
+					_containersForIndexRepair.Add(container, currentIndex + indexChange);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the indices of stored materialized containers to the appropriate index after
+		/// collection change.
+		/// </summary>
+		private void RepairIndices()
+		{
+			foreach(var containerPair in _containersForIndexRepair)
+			{
+				containerPair.Key.SetValue(ItemsControl.IndexForItemContainerProperty, containerPair.Value);
+			}
+			_containersForIndexRepair.Clear();
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -599,12 +644,31 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
 		{
+			// Index will be repaired by virtue of ItemsControl
+			_containersForIndexRepair.Remove(element);
+
 			base.PrepareContainerForItemOverride(element, item);
 
 			if (element is SelectorItem selectorItem)
 			{
 				ApplyMultiSelectState(selectorItem);
 			}
+		}
+
+		internal override void ContainerPreparedForItem(object item, SelectorItem itemContainer, int itemIndex)
+		{
+			base.ContainerPreparedForItem(item, itemContainer, itemIndex);
+
+			PrepareContainerForDragDrop(itemContainer);
+
+			ContainerContentChanging?.Invoke(this, new ContainerContentChangingEventArgs(item, itemContainer, itemIndex));
+		}
+
+		internal override void ContainerClearedForItem(object item, SelectorItem itemContainer)
+		{
+			ClearContainerForDragDrop(itemContainer);
+
+			base.ContainerClearedForItem(item, itemContainer);
 		}
 
 		/// <summary>
@@ -693,6 +757,16 @@ namespace Windows.UI.Xaml.Controls
 			return false;
 		}
 
+		protected override void OnItemsChanged(object e)
+		{
+
+			if (ItemsSource == null) // We're only interested when Items is modified directly, ie iff ItemsSource is not set
+			{
+				Refresh(); // Ensure item views are updated correctly if Items collection is manipulated 
+			}
+			base.OnItemsChanged(e);
+		}
+
 		/// <summary>
 		/// Try to fetch more items, if the ItemsSource supports <see cref="ISupportIncrementalLoading"/>.
 		/// </summary>
@@ -774,5 +848,15 @@ namespace Windows.UI.Xaml.Controls
 				TryLoadMoreItems();
 			}
 		}
+
+		/// <summary>
+		/// Is the ListView.managed implementation used on this platform?
+		/// </summary>
+		internal static bool UsesManagedLayouting =>
+#if __IOS__ || __ANDROID__
+			false;
+#else
+			true;
+#endif
 	}
 }

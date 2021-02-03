@@ -29,7 +29,7 @@
 
   <Applications>
     <Application Id="App"
-      Executable="$ext_safeprojectname$.exe"
+      Executable="$targetnametoken$.exe"
       EntryPoint="$ext_safeprojectname$.App">
       <uap:VisualElements
         DisplayName="$ext_safeprojectname$"

@@ -3,7 +3,7 @@
 
   <PropertyGroup>
 	<IsUnoHead>true</IsUnoHead>
-	<UnoRuntime>WebAssembly</UnoRuntime>
+	<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
   </PropertyGroup>
 
 </Project>

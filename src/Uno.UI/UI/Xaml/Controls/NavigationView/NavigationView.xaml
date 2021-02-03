@@ -7,12 +7,12 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
-	xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
+	xmlns:primitives="using:Windows.UI.Xaml.Controls.Primitives"
     xmlns:local="using:Windows.UI.Xaml.Controls"
 	mc:Ignorable="d">
 
 	<Style TargetType="local:NavigationView">
-		<Setter Property="PaneToggleButtonStyle" Value="{StaticResource PaneToggleButtonStyle}" />
+		<Setter Property="PaneToggleButtonStyle" Value="{StaticResource LegacyPaneToggleButtonStyle}" />
 		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="CompactPaneLength" Value="{ThemeResource NavigationViewCompactPaneLength}" />
 		<Setter Property="Template">
@@ -137,7 +137,7 @@
 								<VisualState x:Name="OverflowButtonWithLabel" />
 								<VisualState x:Name="OverflowButtonNoLabel">
 									<VisualState.Setters>
-										<Setter Target="TopNavOverflowButton.Style" Value="{ThemeResource NavigationViewOverflowButtonNoLabelStyleWhenPaneOnTop}" />
+										<Setter Target="TopNavOverflowButton.Style" Value="{ThemeResource LegacyNavigationViewOverflowButtonNoLabelStyleWhenPaneOnTop}" />
 									</VisualState.Setters>
 								</VisualState>
 
@@ -231,7 +231,7 @@
                                         Grid.Column="4"
 
                                         Content="More"
-                                        Style="{StaticResource NavigationViewOverflowButtonStyleWhenPaneOnTop}"
+                                        Style="{StaticResource LegacyNavigationViewOverflowButtonStyleWhenPaneOnTop}"
                                         Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OverflowButtonVisibility}">
 
 										<Button.Flyout>
@@ -365,7 +365,7 @@
 											<Button
                                                 x:Name="PaneAutoSuggestButton"
                                                 Visibility="Collapsed" 
-                                                Style="{ThemeResource NavigationViewPaneSearchButtonStyle}"
+                                                Style="{ThemeResource LegacyNavigationViewPaneSearchButtonStyle}"
                                                 Width="{TemplateBinding CompactPaneLength}"/>
 										</Grid>
 

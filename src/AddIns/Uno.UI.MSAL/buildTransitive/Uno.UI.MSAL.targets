@@ -1,16 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
-  <!-- Target used to override the runtime for netstandard2.0 based targets -->
-  <Target Name="ReplaceUnoMSALRuntime"
-				  Condition="'$(UnoRuntime)'!='' and '$(IsUnoHead)'=='true'"
-				  BeforeTargets="_CopyFilesMarkedCopyLocal;CopyFilesToOutputDirectory">
-	<ItemGroup>
-	  <_ItemsFromUnoToRemove Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.NuGetPackageId)'=='Uno.UI.MSAL' or '%(RuntimeCopyLocalItems.NuGetPackageId)'=='Uno.WinUI.MSAL'" />
-	  <ReferenceCopyLocalPaths Remove="@(_ItemsFromUnoToRemove)" />
-
-	  <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)/../uno-runtime/$(UnoRuntime.ToLowerInvariant())/**" />
-	</ItemGroup>
-  </Target>
+  
+  <ItemGroup>
+	<UnoRuntimeEnabledPackage Include="Uno.UI.MSAL" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.msal.targets'" />
+	<UnoRuntimeEnabledPackage Include="Uno.WinUI.MSAL"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.msal.targets'"/>
+  </ItemGroup>
 
 </Project>

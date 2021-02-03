@@ -54,7 +54,12 @@ namespace Uno.ReferenceImplComparer
 
 				if(runtimeTypes.TryGetValue(referenceType.FullName, out var runtimeType))
 				{
-					if(referenceType.BaseType?.FullName != runtimeType.BaseType?.FullName)
+					if(
+						referenceType.BaseType?.FullName != runtimeType.BaseType?.FullName
+
+						// Ignored because ArbitraryShapeBase only contains non-public members
+						// and that the hierarchy will be adjusted for wasm to match skia.
+						&& referenceType.BaseType?.FullName != "Windows.UI.Xaml.Shapes.ArbitraryShapeBase")
 					{
 						Console.WriteLine($"{referenceType.FullName} base type is different {referenceType.BaseType?.FullName} in reference, {runtimeType.BaseType?.FullName} in {identifier}");
 						hasError = true;

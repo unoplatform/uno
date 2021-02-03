@@ -28,6 +28,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.EventsTests
 		}
 
 		[TestMethod]
+		public void When_DataTemplateEvent_OtherControl()
+		{
+			var SUT = new FrameworkElement_DataTemplate_Event_OtherControl();
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("Fired!", SUT.testControl.testTextBlock.Text);
+		}
+
+		[TestMethod]
 		public void When_ItemsPanelTemplateEvent()
 		{
 			var SUT = new FrameworkElement_ItemsPanelTemplate_Event();

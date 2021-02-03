@@ -1,0 +1,7 @@
+---
+exclude_paths:
+  - '**/*.g.cs'
+  - 'src/SamplesApp/**'
+  - '**/tsBindings/*.ts'
+  - 'doc/**'
+  - 'src/Uno.UI/Microsoft/UI/Xaml/Controls/Repeater/**'

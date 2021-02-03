@@ -116,6 +116,8 @@ namespace Windows.UI.Xaml
 
 		private UIElement InternalGetContent() => _content;
 
+		private UIElement InternalGetRootElement() => _main;
+
 		private static Window InternalGetCurrentWindow()
 		{
 			if (_current == null)
@@ -137,7 +139,7 @@ namespace Windows.UI.Xaml
 				Bounds = newBounds;
 
 				RaiseSizeChanged(
-					new WindowSizeChangedEventArgs(
+					new Windows.UI.Core.WindowSizeChangedEventArgs(
 						new Windows.Foundation.Size((float)size.Width, (float)size.Height)
 					)
 				);

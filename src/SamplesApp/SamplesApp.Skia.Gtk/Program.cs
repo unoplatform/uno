@@ -21,6 +21,8 @@ namespace SkiaSharpExample
 
 			var host = new GtkHost(() => new SamplesApp.App(), args);
 
+			SampleControl.Presentation.SampleChooserViewModel.TakeScreenShot = filePath => host.TakeScreenshot(filePath);
+
 			host.Run();
 		}
 	}

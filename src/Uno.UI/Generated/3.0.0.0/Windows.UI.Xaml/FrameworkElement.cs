@@ -35,20 +35,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  object Tag
-		{
-			get
-			{
-				return (object)this.GetValue(TagProperty);
-			}
-			set
-			{
-				this.SetValue(TagProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property Tag
 		// Skipping already declared property Style
 		// Skipping already declared property Resources
 		// Skipping already declared property Name
@@ -192,8 +179,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false
+		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.ElementTheme RequestedTheme
 		{
 			get
@@ -304,7 +291,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.ElementTheme ActualTheme
 		{
@@ -412,14 +399,7 @@ namespace Windows.UI.Xaml
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
 		// Skipping already declared property StyleProperty
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TagProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Tag), typeof(object), 
-			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(object)));
-		#endif
+		// Skipping already declared property TagProperty
 		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalAlignmentProperty { get; } = 
@@ -436,8 +416,7 @@ namespace Windows.UI.Xaml
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false
 		public static global::Windows.UI.Xaml.DependencyProperty RequestedThemeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(RequestedTheme), typeof(global::Windows.UI.Xaml.ElementTheme), 
@@ -584,7 +563,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.IsLoaded.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.EffectiveViewportChanged.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.EffectiveViewportChanged.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected  void InvalidateViewport()
 		{
@@ -664,7 +643,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, global::Windows.UI.Xaml.EffectiveViewportChangedEventArgs> EffectiveViewportChanged
 		{

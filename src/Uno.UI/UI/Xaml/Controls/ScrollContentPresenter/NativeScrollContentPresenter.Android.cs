@@ -14,6 +14,7 @@ using System.Linq;
 using Uno.UI.Controls;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -21,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private static readonly List<View> _emptyList = new List<View>(0);
 
-		private ScrollViewer ScrollOwner => (Parent as FrameworkElement)?.TemplatedParent as ScrollViewer;
+		private ScrollViewer ScrollOwner => _scrollViewer.TryGetTarget(out var s) ? s : (Parent as FrameworkElement)?.TemplatedParent as ScrollViewer;
 
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		public ScrollBarVisibility VerticalScrollBarVisibility
@@ -45,29 +46,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ScrollMode _horizontalScrollMode;
-		public ScrollMode HorizontalScrollMode
-		{
-			get { return _horizontalScrollMode; }
-			set
-			{
-				_horizontalScrollMode = value;
-				UpdateScrollSettings();
-			}
-		}
-
-		private ScrollMode _verticalScrollMode;
-		public ScrollMode VerticalScrollMode
-		{
-			get { return _verticalScrollMode; }
-			set
-			{
-				_verticalScrollMode = value;
-				UpdateScrollSettings();
-			}
-		}
-
 		private ILayouter _layouter;
+		private readonly WeakReference<ScrollViewer> _scrollViewer;
+
+		public NativeScrollContentPresenter(ScrollViewer scroller) : this()
+		{
+			_scrollViewer = new WeakReference<ScrollViewer>(scroller);
+		}
 
 		public NativeScrollContentPresenter()
 			: base(ContextHelper.Current)
@@ -77,6 +62,7 @@ namespace Windows.UI.Xaml.Controls
 			SetForegroundGravity(GravityFlags.Fill);
 
 			SetClipToPadding(false);
+			SetClipChildren(false);
 			ScrollBarStyle = ScrollbarStyles.OutsideOverlay; // prevents padding from affecting scrollbar position
 
 			_layouter = new ScrollViewerLayouter(this);
@@ -161,9 +147,9 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateScrollSettings()
 		{
 			var verticalScrollVisible = VerticalScrollBarVisibility == ScrollBarVisibility.Auto || VerticalScrollBarVisibility == ScrollBarVisibility.Visible;
-			var verticalScrollEnabled = VerticalScrollBarVisibility != ScrollBarVisibility.Disabled && VerticalScrollMode != ScrollMode.Disabled;
+			var verticalScrollEnabled = VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
 			var horizontalScrollVisible = HorizontalScrollBarVisibility == ScrollBarVisibility.Auto || HorizontalScrollBarVisibility == ScrollBarVisibility.Visible;
-			var horizontalScrollEnabled = HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled && HorizontalScrollMode != ScrollMode.Disabled;
+			var horizontalScrollEnabled = HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
 
 			VerticalScrollBarEnabled = verticalScrollVisible;
 			HorizontalScrollBarEnabled = horizontalScrollVisible;
@@ -217,7 +203,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (child != null)
 				{
-					var desiredChildSize = DesiredChildSize(child);
+					var desiredChildSize = LayoutInformation.GetDesiredSize(child);
 
 					var occludedPadding = ScrollContentPresenter._occludedRectPadding;
 					slotSize.Width -= occludedPadding.Left + occludedPadding.Right;

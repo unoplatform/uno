@@ -190,5 +190,40 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			// Dismiss the flyout
 			_app.TapCoordinates(10, 10);
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void TimePicker_Flyout_Reloaded()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Flyout_Automated_Reload", skipInitialScreenshot: true);
+
+			var picker = _app.Marked("TestTimePicker");
+
+			_app.WaitForElement(picker);
+
+			picker.FastTap();
+
+			// Wait for the picker to appear
+			_app.WaitForElement(x => x.Class("UIPickerView"));
+
+			TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
+
+			// Dismiss the flyout
+			_app.Tap(x => x.Marked("AcceptButton"));
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void TimePicker_Header()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Header");
+
+			var headerContentTextBlock = _app.Marked("TimePickerHeaderContent");
+			_app.WaitForElement(headerContentTextBlock);
+
+			Assert.AreEqual("This is a TimePicker Header", headerContentTextBlock.GetDependencyPropertyValue("Text").ToString());
+		}
 	}
 }

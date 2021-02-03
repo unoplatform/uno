@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MaximumProperty { get ; } =
-			DependencyProperty.Register("Maximum", typeof(double), typeof(NumberBox), new FrameworkPropertyMetadata(double.MaxValue, (s, e) => (s as NumberBox)?.OnMaximumPropertyChanged(e)));
+			DependencyProperty.Register(nameof(Maximum), typeof(double), typeof(NumberBox), new FrameworkPropertyMetadata(double.MaxValue, (s, e) => (s as NumberBox)?.OnMaximumPropertyChanged(e)));
 
 		public double Value
 		{
@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ValueProperty { get ; } =
-			DependencyProperty.Register("Value", typeof(double), typeof(NumberBox), new FrameworkPropertyMetadata(0.0, (s, e) => (s as NumberBox)?.OnValuePropertyChanged(e)));
+			DependencyProperty.Register(nameof(Value), typeof(double), typeof(NumberBox), new FrameworkPropertyMetadata(0.0, (s, e) => (s as NumberBox)?.OnValuePropertyChanged(e)));
 
 
 
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SmallChangeProperty { get ; } =
-			DependencyProperty.Register("SmallChange", typeof(double), typeof(NumberBox), new FrameworkPropertyMetadata(1.0, (s, e) => (s as NumberBox)?.OnSmallChangePropertyChanged(e)));
+			DependencyProperty.Register(nameof(SmallChange), typeof(double), typeof(NumberBox), new FrameworkPropertyMetadata(1.0, (s, e) => (s as NumberBox)?.OnSmallChangePropertyChanged(e)));
 
 		public double LargeChange
 		{
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LargeChangeProperty { get ; } =
-			DependencyProperty.Register("LargeChange", typeof(double), typeof(NumberBox), new FrameworkPropertyMetadata(10.0));
+			DependencyProperty.Register(nameof(LargeChange), typeof(double), typeof(NumberBox), new FrameworkPropertyMetadata(10.0));
 
 		public string Text
 		{
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TextProperty { get ; } =
-			DependencyProperty.Register("Text", typeof(string), typeof(NumberBox), new FrameworkPropertyMetadata("", (s, e) => (s as NumberBox)?.OnTextPropertyChanged(e)));
+			DependencyProperty.Register(nameof(Text), typeof(string), typeof(NumberBox), new FrameworkPropertyMetadata("", (s, e) => (s as NumberBox)?.OnTextPropertyChanged(e)));
 
 		// TextBox properties
 
@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderProperty { get ; } =
-			DependencyProperty.Register("Header", typeof(object), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(Header), typeof(object), typeof(NumberBox), new FrameworkPropertyMetadata(null, (s, e) => (s as NumberBox)?.OnHeaderPropertyChanged(e)));
 
 		public DataTemplate HeaderTemplate
 		{
@@ -99,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(NumberBox), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(NumberBox), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => (s as NumberBox)?.OnHeaderTemplatePropertyChanged(e)));
 
 		public string PlaceholderText
 		{
@@ -108,8 +108,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PlaceholderTextProperty { get ; } =
-			DependencyProperty.Register("PlaceholderText", typeof(string), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(PlaceholderText), typeof(string), typeof(NumberBox), new FrameworkPropertyMetadata(null));
 
+		[Uno.NotImplemented]
 		public FlyoutBase SelectionFlyout
 		{
 			get => (FlyoutBase)GetValue(SelectionFlyoutProperty);
@@ -117,7 +118,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectionFlyoutProperty { get ; } =
-			DependencyProperty.Register("SelectionFlyout", typeof(FlyoutBase), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(SelectionFlyout), typeof(FlyoutBase), typeof(NumberBox), new FrameworkPropertyMetadata(null));
 
 		public SolidColorBrush SelectionHighlightColor
 		{
@@ -126,7 +127,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectionHighlightColorProperty { get ; } =
-			DependencyProperty.Register("SelectionHighlightColor", typeof(SolidColorBrush), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(SelectionHighlightColor), typeof(SolidColorBrush), typeof(NumberBox), new FrameworkPropertyMetadata(null));
 
 		public TextReadingOrder TextReadingOrder
 		{
@@ -135,7 +136,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TextReadingOrderProperty { get ; } =
-			DependencyProperty.Register("TextReadingOrder", typeof(TextReadingOrder), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(TextReadingOrder), typeof(TextReadingOrder), typeof(NumberBox), new FrameworkPropertyMetadata(null));
 
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
@@ -144,7 +145,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get ; } =
-			DependencyProperty.Register("PreventKeyboardDisplayOnProgrammaticFocus", typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(null));
 
 		public new object Description
 		{
@@ -153,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DescriptionProperty { get ; } =
-			DependencyProperty.Register("Description", typeof(object), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(Description), typeof(object), typeof(NumberBox), new FrameworkPropertyMetadata(null));
 
 		public NumberBoxValidationMode ValidationMode
 		{
@@ -162,7 +163,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ValidationModeProperty { get ; } =
-			DependencyProperty.Register("ValidationMode", typeof(NumberBoxValidationMode), typeof(NumberBox), new FrameworkPropertyMetadata(NumberBoxValidationMode.InvalidInputOverwritten, (s, e) => (s as NumberBox)?.OnValidationModePropertyChanged(e)));
+			DependencyProperty.Register(nameof(ValidationMode), typeof(NumberBoxValidationMode), typeof(NumberBox), new FrameworkPropertyMetadata(NumberBoxValidationMode.InvalidInputOverwritten, (s, e) => (s as NumberBox)?.OnValidationModePropertyChanged(e)));
 
 		public NumberBoxSpinButtonPlacementMode SpinButtonPlacementMode
 		{
@@ -171,7 +172,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SpinButtonPlacementModeProperty { get ; } =
-			DependencyProperty.Register("SpinButtonPlacementMode", typeof(NumberBoxSpinButtonPlacementMode), typeof(NumberBox), new FrameworkPropertyMetadata(NumberBoxSpinButtonPlacementMode.Hidden, (s, e) => (s as NumberBox)?.OnSpinButtonPlacementModePropertyChanged(e)));
+			DependencyProperty.Register(nameof(SpinButtonPlacementMode), typeof(NumberBoxSpinButtonPlacementMode), typeof(NumberBox), new FrameworkPropertyMetadata(NumberBoxSpinButtonPlacementMode.Hidden, (s, e) => (s as NumberBox)?.OnSpinButtonPlacementModePropertyChanged(e)));
 
 		public bool IsWrapEnabled
 		{
@@ -180,7 +181,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsWrapEnabledProperty { get ; } =
-			DependencyProperty.Register("IsWrapEnabled", typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(false, (s, e) => (s as NumberBox)?.OnIsWrapEnabledPropertyChanged(e)));
+			DependencyProperty.Register(nameof(IsWrapEnabled), typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(false, (s, e) => (s as NumberBox)?.OnIsWrapEnabledPropertyChanged(e)));
 
 		public bool AcceptsExpression
 		{
@@ -189,7 +190,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty AcceptsExpressionProperty { get ; } =
-			DependencyProperty.Register("AcceptsExpression", typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(false /* ,UNO TODO (s, e) => (s as NumberBox)?.OnAcceptsExpressionPropertyChanged(e)*/));
+			DependencyProperty.Register(nameof(AcceptsExpression), typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(false /* ,UNO TODO (s, e) => (s as NumberBox)?.OnAcceptsExpressionPropertyChanged(e)*/));
 
 		public INumberFormatter2 NumberFormatter
 		{
@@ -198,7 +199,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NumberFormatterProperty { get ; } =
-			DependencyProperty.Register("NumberFormatter", typeof(INumberFormatter2), typeof(NumberBox), new FrameworkPropertyMetadata(null, (s, e) => (s as NumberBox)?.OnNumberFormatterPropertyChanged(e)));
+			DependencyProperty.Register(nameof(NumberFormatter), typeof(INumberFormatter2), typeof(NumberBox), new FrameworkPropertyMetadata(null, (s, e) => (s as NumberBox)?.OnNumberFormatterPropertyChanged(e)));
 
 		public event Windows.Foundation.TypedEventHandler<NumberBox, NumberBoxValueChangedEventArgs> ValueChanged;
 	}

@@ -1,9 +1,9 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworks>
-		<TargetFrameworksCI>xamarinmac20;MonoAndroid90;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworksCI>
-		<NoWarn>$(NoWarn);NU1701;NU5100</NoWarn>
+		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworks>
+		<TargetFrameworksCI>xamarinmac20;MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworksCI>
+		<NoWarn>$(NoWarn);NU1701;NU5100;NU5118;NU5128</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
@@ -65,12 +65,15 @@
 
 	<Import Project="..\..\Common.targets" />
 	<Import Project="..\..\Uno.CrossTargetting.props" />
+	<Import Project="..\..\..\build\uno.winui.cross-runtime.targets"/>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.MSAL\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.MSAL\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
@@ -83,6 +86,7 @@
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
+
 	<Target Name="IncludeRuntimeAssets" BeforeTargets="BeforeCompile">
 
 		<!--
@@ -90,19 +94,19 @@
 		This is required because this project is cross-targeted.
 		-->
 		<ItemGroup>
-			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL.Wasm\bin\$(Configuration)\netstandard2.0\Uno.UI.MSAL.dll">
+			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Wasm\$(Configuration)\netstandard2.0\Uno.UI.MSAL.dll">
 				<Pack>true</Pack>
 				<PackagePath>uno-runtime/webassembly</PackagePath>
 			</TfmSpecificPackageFile>
-			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL.Wasm\bin\$(Configuration)\netstandard2.0\Uno.UI.MSAL.pdb">
+			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Wasm\$(Configuration)\netstandard2.0\Uno.UI.MSAL.pdb">
 				<Pack>true</Pack>
 				<PackagePath>uno-runtime/webassembly</PackagePath>
 			</TfmSpecificPackageFile>
-			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL.Skia\bin\$(Configuration)\netstandard2.0\Uno.UI.MSAL.dll">
+			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Skia\$(Configuration)\netstandard2.0\Uno.UI.MSAL.dll">
 				<Pack>true</Pack>
 				<PackagePath>uno-runtime/skia</PackagePath>
 			</TfmSpecificPackageFile>
-			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL.Skia\bin\$(Configuration)\netstandard2.0\Uno.UI.MSAL.pdb">
+			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Skia\$(Configuration)\netstandard2.0\Uno.UI.MSAL.pdb">
 				<Pack>true</Pack>
 				<PackagePath>uno-runtime/skia</PackagePath>
 			</TfmSpecificPackageFile>
@@ -118,17 +122,17 @@
 			<TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)" />
 			<TfmSpecificPackageFile Include="@(FilteredTfmSpecificPackageFile)" />
 		</ItemGroup>
-		
+
 	</Target>
 
 	<!-- Run on windows only to get the nuget package built properly (Mono 6.10 crashes with this on OSX) -->
 	<ItemGroup Condition="'$(CI_Build)'=='true' and $([MSBuild]::IsOsPlatform('Windows'))">
-		<ProjectReference Include="..\Uno.UI.MSAL.Skia\Uno.UI.MSAL.Skia.csproj">
+		<ProjectReference Include="..\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
-		<ProjectReference Include="..\Uno.UI.MSAL.Wasm\Uno.UI.MSAL.Wasm.csproj">
+		<ProjectReference Include="..\Uno.UI.MSAL\Uno.UI.MSAL.Wasm.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>

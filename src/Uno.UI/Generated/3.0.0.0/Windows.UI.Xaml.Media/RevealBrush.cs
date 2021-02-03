@@ -81,13 +81,6 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.RevealBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ApplicationTheme)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected RevealBrush() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.RevealBrush", "RevealBrush.RevealBrush()");
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.RevealBrush.RevealBrush()
 		// Forced skipping of method Windows.UI.Xaml.Media.RevealBrush.Color.get
 		// Forced skipping of method Windows.UI.Xaml.Media.RevealBrush.Color.set

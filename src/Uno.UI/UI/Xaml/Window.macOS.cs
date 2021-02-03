@@ -42,15 +42,13 @@ namespace Windows.UI.Xaml
 
 			_mainController = ViewControllerGenerator?.Invoke() ?? new RootViewController();
 
-			_window.TitleVisibility = NSWindowTitleVisibility.Hidden;
-
 			ObserveOrientationAndSize();
 
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow(_window);
 
 			InitializeCommon();
-		}		
+		}
 
 		private void ObserveOrientationAndSize()
 		{
@@ -105,6 +103,8 @@ namespace Windows.UI.Xaml
 
 		private UIElement InternalGetContent() => _content;
 
+		private UIElement InternalGetRootElement() => _main;
+
 		private static Window InternalGetCurrentWindow()
 		{
 			if (_current == null)
@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml
 				}
 
 				RaiseSizeChanged(
-					new WindowSizeChangedEventArgs(
+					new Windows.UI.Core.WindowSizeChangedEventArgs(
 						new Windows.Foundation.Size((float)size.Width, (float)size.Height)
 					)
 				);
@@ -160,6 +160,6 @@ namespace Windows.UI.Xaml
 			{
 				applicationView.SetCoreBounds(_window, Bounds);
 			}
-		}		
+		}
 	}
 }

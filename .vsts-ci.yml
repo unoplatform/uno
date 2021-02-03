@@ -4,6 +4,7 @@ trigger:
       - master
       - release/beta/*
       - release/stable/*
+      - feature/*
 
 pr: 
   branches:
@@ -11,28 +12,41 @@ pr:
       - master
       - release/beta/*
       - release/stable/*
-      
+
+  paths:
+    include:
+    - '/'
+    exclude:
+    - .dependabot/
+    - .github/
+    - .editorconfig
+    - '*.md'
+    - .all-contributorsrc
+
 resources:
   containers:
   - container: nv-bionic-wasm
-    image: unoplatform/wasm-build:2.1.1
+    image: unoplatform/wasm-build:3.0
 
 variables:
   windowsHostedVMImage: 'windows-2019'
-  scaledPool: 'Windows2019-20200608'
-  linuxVMImage: 'ubuntu-16.04'
+  windowsScaledPool: 'Windows2019-20201210-0'
+  linuxVMImage: 'ubuntu-latest'
   macOSVMImage: 'macOS-10.15'
-  xCodeRoot: '/Applications/Xcode_11.5.app'
-  XamarinSDKVersion: 6_10_0
+  xCodeRoot: '/Applications/Xcode_12.3.app'
+  XamarinSDKVersion: 6_12_2
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_11.5.app'
+  XamarinSDKVersion_iOS_UITests: 6_10_0
 
 jobs:
 - template: build/ci/.azure-devops-windows.yml
   parameters:
-    poolName: '$(scaledPool)'
+    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-project-template-tests.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    vmImageWindows: '$(windowsHostedVMImage)'
+    vmImageLinux: '$(linuxVMImage)'
 
 - template: build/ci/.azure-devops-uap.yml
   parameters:
@@ -42,11 +56,23 @@ jobs:
   parameters:
     vmImage: '$(windowsHostedVMImage)'
 
+- template: build/ci/.azure-devops-skia-tests.yml
+  parameters:
+    vmImage: '$(windowsHostedVMImage)'
+
 - template: build/ci/.azure-devops-docs.yml
   parameters:
     vmImage: '$(windowsHostedVMImage)'
 
+- template: build/ci/.azure-devops-samplesapp-uitests-build.yml
+  parameters:
+    vmImage: '$(windowsHostedVMImage)'
+
 - template: build/ci/.azure-devops-wasm-uitests.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
+- template: build/ci/.azure-devops-wasm-cs9-preview-validation.yml
   parameters:
     vmImage: '$(linuxVMImage)'
 
@@ -58,15 +84,18 @@ jobs:
 
 - template: build/ci/.azure-devops-android-tests.yml
   parameters:
-    vmImage: '$(macOSVMImage)'
+    vmWindowsImage: '$(windowsHostedVMImage)'
+    vmMacOSImage: '$(macOSVMImage)'
     xCodeRoot: '$(xCodeRoot)'
     XamarinSDKVersion: '$(XamarinSDKVersion)'
 
 - template: build/ci/.azure-devops-ios-tests.yml
   parameters:
     vmImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot)'
-    XamarinSDKVersion: '$(XamarinSDKVersion)'
+    xCodeRootBuild: '$(xCodeRoot)'
+    XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
+    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+    XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
 - template: build/ci/.azure-devops-screenshot-compare.yml
   parameters:

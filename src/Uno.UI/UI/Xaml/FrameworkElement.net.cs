@@ -5,6 +5,7 @@ using Windows.Foundation;
 using View = Windows.UI.Xaml.UIElement;
 using System.Collections;
 using Uno.UI;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml
 {
@@ -49,6 +50,11 @@ namespace Windows.UI.Xaml
 			_children.Remove(child);
 			child.SetParent(null);
 
+			if (child is FrameworkElement fe)
+			{
+				fe.OnUnloaded();
+			}
+
 			return child;
 		}
 
@@ -80,12 +86,16 @@ namespace Windows.UI.Xaml
 
 			if (DesiredSizeSelector != null)
 			{
-				DesiredSize = DesiredSizeSelector(slotSize);
-				RequestedDesiredSize = DesiredSize;
+				var desiredSize = DesiredSizeSelector(slotSize);
+
+				LayoutInformation.SetDesiredSize(this, desiredSize);
+				RequestedDesiredSize = desiredSize;
 			}
 			else if (RequestedDesiredSize != null)
 			{
-				DesiredSize = RequestedDesiredSize.Value;
+				var desiredSize = RequestedDesiredSize.Value;
+
+				LayoutInformation.SetDesiredSize(this, desiredSize);
 			}
 		}
 
@@ -108,12 +118,11 @@ namespace Windows.UI.Xaml
 		{
 			if (IsLoaded)
 			{
-				ApplyCompiledBindings();
 				OnLoading();
 				OnPostLoading();
 				OnLoaded();
 
-				foreach (var child in _children.OfType<FrameworkElement>())
+				foreach (var child in _children.OfType<FrameworkElement>().ToArray())
 				{
 					child.IsLoaded = IsLoaded;
 					child.EnterTree();
@@ -138,7 +147,7 @@ namespace Windows.UI.Xaml
 
 		public global::System.Uri BaseUri { get; internal set; }
 
-		private protected virtual double GetActualWidth() => ActualWidth;
-		private protected virtual double GetActualHeight() => ActualHeight;
+		private protected override double GetActualWidth() => ActualWidth;
+		private protected override double GetActualHeight() => ActualHeight;
 	}
 }

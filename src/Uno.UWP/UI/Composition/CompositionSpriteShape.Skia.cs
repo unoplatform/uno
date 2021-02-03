@@ -1,5 +1,5 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
+#nullable enable
+
 using SkiaSharp;
 using System;
 
@@ -7,43 +7,38 @@ namespace Windows.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{
-		private SKPaint _strokePaint;
-		private SKPaint _fillPaint;
-
-		public CompositionSpriteShape()
-		{
-		}
+		private SKPaint? _strokePaint;
+		private SKPaint? _fillPaint;
 
 		internal override void Render(SKSurface surface, SKImageInfo info)
 		{
 			if (Geometry is CompositionPathGeometry cpg)
 			{
-				if (cpg.Path.GeometrySource is SkiaGeometrySource2D geometrySource)
+				if (cpg.Path?.GeometrySource is SkiaGeometrySource2D geometrySource)
 				{
 					if(FillBrush != null)
 					{
-						TryCreateFillPaint();
-
-						if (FillBrush is CompositionColorBrush fill)
-						{
-							_fillPaint.Color = fill.Color.ToSKColor();
-						}
+						FillBrush.UpdatePaint(TryCreateFillPaint());
 
 						surface.Canvas.DrawPath(geometrySource.Geometry, _fillPaint);
 					}
 
-					if (StrokeBrush != null)
+					if (StrokeBrush != null && StrokeThickness > 0)
 					{
-						TryCreateStrokePaint();
+						var strokePaint = TryCreateStrokePaint();
 
 						if (StrokeBrush is CompositionColorBrush stroke)
 						{
-							_strokePaint.StrokeWidth = StrokeThickness;
-							_strokePaint.Color = stroke.Color.ToSKColor();
+							strokePaint.StrokeWidth = StrokeThickness;
+							strokePaint.Color = stroke.Color.ToSKColor(Compositor.CurrentOpacity);
 						}
 
 						surface.Canvas.DrawPath(geometrySource.Geometry, _strokePaint);
 					}
+				}
+				else if(cpg.Path?.GeometrySource is null)
+				{
+
 				}
 				else
 				{
@@ -52,7 +47,8 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		private void TryCreateStrokePaint()
+
+		private SKPaint TryCreateStrokePaint()
 		{
 			if (_strokePaint == null)
 			{
@@ -61,8 +57,10 @@ namespace Windows.UI.Composition
 				_strokePaint.IsAntialias = true;
 				_strokePaint.IsAutohinted = true;
 			}
+
+			return _strokePaint;
 		}
-		private void TryCreateFillPaint()
+		private SKPaint TryCreateFillPaint()
 		{
 			if (_fillPaint == null)
 			{
@@ -71,6 +69,8 @@ namespace Windows.UI.Composition
 				_fillPaint.IsAntialias = true;
 				_fillPaint.IsAutohinted = true;
 			}
+
+			return _fillPaint;
 		}
 	}
 }

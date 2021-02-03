@@ -7,6 +7,8 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
@@ -78,7 +80,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			//Drag upward
 			_app.DragCoordinates(sut.Rect.CenterX, sut.Rect.CenterY, sut.Rect.CenterX, sut.Rect.CenterY - (sut.Rect.Height / 2));
 
-			var res = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+			using var res = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
 			ImageAssert.AreNotEqual(
 				expected: res,
@@ -86,6 +88,68 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 				actual: res,
 				actualRect: new Rectangle((int)updateButtonRect.X, (int)updateButtonRect.Y, (int)updateButtonRect.Width, (int)updateButtonRect.Height)
 			);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ScrollViewer_Removed_And_Added()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Add_Remove");
+			_app.WaitForElement("ViewfinderRectangle");
+			var rect = _app.GetPhysicalRect("ViewfinderRectangle");
+			AssertCurrentColor("Initial", Color.Red);
+
+			AdvanceToStep(buttonName: "ScrollToBottomButton", stepName: "Scrolled");
+			AssertCurrentColor("Initial-Scrolled", Color.Indigo);
+
+			AdvanceToStep(buttonName: "YoinkButton", stepName: "Gone");
+			AssertCurrentColor("Gone", Color.Beige);
+
+			AdvanceToStep(buttonName: "YoinkButton", stepName: "Present");
+			AssertCurrentColor("Restored", Color.Indigo);
+
+			void AdvanceToStep(string buttonName, string stepName)
+			{
+				_app.FastTap(buttonName);
+				_app.WaitForText("ChildStatusTextBlock", stepName);
+			}
+
+			void AssertCurrentColor(string description, Color color)
+			{
+				var scrn = TakeScreenshot(description);
+				ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, color);
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ScrollViewer_Margin()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Margin");
+
+			_app.Marked("size").SetDependencyPropertyValue("Value", "80");
+
+			_app.WaitForElement("ctl5");
+
+			using var screenshot = TakeScreenshot("test", ignoreInSnapshotCompare: true);
+
+			for(byte i=1; i<=5; i++)
+			{
+				using var _ = new AssertionScope();
+
+				var logicalRect = _app.GetLogicalRect($"ctl{i}");
+				logicalRect.Width.Should().Be(80);
+				logicalRect.Height.Should().Be(80);
+
+				var physicalRect = _app.GetPhysicalRect($"ctl{i}");
+
+				ImageAssert.HasColorAt(screenshot, physicalRect.CenterX, physicalRect.CenterY, Color.Red);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + 5, physicalRect.Y + 5, Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - 5, physicalRect.Y + 5, Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + 5, physicalRect.Bottom - 5, Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - 5, physicalRect.Bottom - 5, Color.Orange);
+
+			}
 		}
 	}
 }

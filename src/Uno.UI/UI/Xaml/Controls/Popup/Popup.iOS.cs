@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 						newPanel.TemplatedParent = TemplatedParent;
 					}
 
-					newPanel.AddSubview(Child);
+					RegisterPopupPanelChild();
 				}
 
 				newPanel.Background = GetPanelBackground();
@@ -77,6 +77,24 @@ namespace Windows.UI.Xaml.Controls
 			{
 				MainWindow.AddSubview(PopupPanel);
 			}
+
+			RegisterPopupPanelChild();
+		}
+
+		private void RegisterPopupPanelChild(bool force = false)
+		{
+			if ((IsLoaded || force) && Child != null)
+			{
+				if (!PopupPanel.Children.Contains(Child))
+				{
+					PopupPanel.Children.Add(Child);
+				}
+			}
+		}
+
+		private void UnregisterPopupPanelChild(UIElement child = null)
+		{
+			PopupPanel.Children.Remove(child ?? Child);
 		}
 
 		private protected override void OnUnloaded()
@@ -84,6 +102,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 
 			PopupPanel?.RemoveFromSuperview();
+			UnregisterPopupPanelChild();
 		}
 
 		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
@@ -94,19 +113,25 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (oldChild != null)
 				{
-					PopupPanel.RemoveChild(oldChild);
+					UnregisterPopupPanelChild(oldChild);
 				}
 
-				if (newChild != null)
-				{
-					PopupPanel.AddSubview(newChild);
-				}
+				RegisterPopupPanelChild();
 			}
 		}
 
 		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
 		{
 			base.OnIsOpenChanged(oldIsOpen, newIsOpen);
+
+			if (newIsOpen)
+			{
+				RegisterPopupPanelChild(force: true);
+			}
+			else
+			{
+				UnregisterPopupPanelChild();
+			}
 
 			UpdateLightDismissLayer(newIsOpen);
 

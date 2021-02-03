@@ -1,15 +1,13 @@
-using System;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ContentDialogClosingDeferral : IDeferral
+	public partial class ContentDialogClosingDeferral
 	{
-		private Action _deferralAction;
+		private readonly DeferralCompletedHandler _handler;
 
-		public ContentDialogClosingDeferral() { }
+		internal ContentDialogClosingDeferral(DeferralCompletedHandler handler) => _handler = handler;
 
-		Action IDeferral.DeferralAction { get => _deferralAction; set => _deferralAction = value; }
-
-		public void Complete() => _deferralAction?.Invoke();
+		public void Complete() => _handler?.Invoke();
 	}
 }

@@ -119,7 +119,10 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"FullSizeDesired", typeof(bool),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(default(bool), UpdateVisualState));
+
+		private static void UpdateVisualState(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs newValue)
+			=> (dependencyObject as ContentDialog).UpdateVisualState();
 
 		public static DependencyProperty IsPrimaryButtonEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -151,7 +154,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(
 				defaultValue: "",
-				propertyChangedCallback: (s, e) => (s as ContentDialog)?.OnPrimaryButtonTextChanged(e.OldValue as string, e.NewValue as string)));
+				propertyChangedCallback: UpdateVisualState));
 
 		public static DependencyProperty SecondaryButtonCommandParameterProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -171,19 +174,22 @@ namespace Windows.UI.Xaml.Controls
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(
 				defaultValue: "",
-				propertyChangedCallback: (s, e) => (s as ContentDialog)?.OnSecondayButtonTextChanged(e.OldValue as string, e.NewValue as string)));
+				propertyChangedCallback: UpdateVisualState));
 
 		public static DependencyProperty TitleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Title", typeof(object),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(default(object)));
+			new FrameworkPropertyMetadata(default(object), (PropertyChangedCallback)((o, e) => ((ContentDialog)o).UpdateTitleSpaceVisibility())));
 
 		public static DependencyProperty TitleTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"TitleTemplate", typeof(DataTemplate),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+			new FrameworkPropertyMetadata(default(DataTemplate),
+				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+				(PropertyChangedCallback)((o, e) => ((ContentDialog)o).UpdateTitleSpaceVisibility()))
+			);
 
 		public static DependencyProperty CloseButtonCommandParameterProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -209,7 +215,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(
 				defaultValue: "",
-				propertyChangedCallback: (s, e) => (s as ContentDialog)?.OnCloseButtonTextChanged(e.OldValue as string, e.NewValue as string)));
+				propertyChangedCallback: UpdateVisualState));
 
 
 		public static DependencyProperty DefaultButtonProperty { get; } =
@@ -217,8 +223,8 @@ namespace Windows.UI.Xaml.Controls
 			"DefaultButton", typeof(Controls.ContentDialogButton),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(
-				defaultValue: ContentDialogButton.Primary,
-				propertyChangedCallback: (s, e) => (s as ContentDialog)?.OnDefaultButtonChanged((ContentDialogButton)e.OldValue, (ContentDialogButton)e.NewValue)));
+				defaultValue: ContentDialogButton.None,
+				propertyChangedCallback: UpdateVisualState));
 
 		public static DependencyProperty PrimaryButtonStyleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(

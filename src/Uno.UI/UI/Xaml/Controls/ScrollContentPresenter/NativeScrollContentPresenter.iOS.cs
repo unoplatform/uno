@@ -20,13 +20,20 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class NativeScrollContentPresenter : UIScrollView, DependencyObject
 	{
+		private readonly WeakReference<ScrollViewer> _scrollViewer;
+
 		/// <summary>
 		/// Is the UIScrollView currently undergoing animated scrolling, either user-initiated or programmatic.
 		/// </summary>
 		private bool _isInAnimatedScroll;
 
-		internal CGPoint UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
-		CGPoint IUIScrollView.UpperScrollLimit { get { return UpperScrollLimit; } }
+		internal CGPoint UpperScrollLimit => (CGPoint)(ContentSize - Frame.Size);
+		CGPoint IUIScrollView.UpperScrollLimit => UpperScrollLimit;
+
+		internal NativeScrollContentPresenter(ScrollViewer scroller) : this()
+		{
+			_scrollViewer = new WeakReference<ScrollViewer>(scroller);
+		}
 
 		public NativeScrollContentPresenter()
 		{
@@ -43,6 +50,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				ContentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.Never;
 			}
+
+			IFrameworkElementHelper.Initialize(this);
 		}
 
 		private void OnScrolled(object sender, EventArgs e)
@@ -52,12 +61,17 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InvokeOnScroll()
 		{
-			var shouldReportNegativeOffsets = (TemplatedParent as ScrollViewer)?.ShouldReportNegativeOffsets ?? false;
+			var scroller = _scrollViewer.TryGetTarget(out var s) ? s : TemplatedParent as ScrollViewer;
+			if (scroller is null)
+			{
+				return;
+			}
+
 			// iOS can return, eg, negative values for offset, whereas Windows never will, even for 'elastic' scrolling
-			var clampedOffset = shouldReportNegativeOffsets ?
-				ContentOffset :
-				ContentOffset.Clamp(CGPoint.Empty, UpperScrollLimit);
-			(TemplatedParent as ScrollViewer)?.OnScrollInternal(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
+			var clampedOffset = scroller.ShouldReportNegativeOffsets
+				? ContentOffset
+				: ContentOffset.Clamp(CGPoint.Empty, UpperScrollLimit);
+			scroller.OnScrollInternal(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
 		}
 
 		// Called when user starts dragging
@@ -122,10 +136,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ScrollMode HorizontalScrollMode { get; set; }
-
-		public ScrollMode VerticalScrollMode { get; set; }
-
 		public override void SetNeedsLayout()
 		{
 			base.SetNeedsLayout();
@@ -172,8 +182,8 @@ namespace Windows.UI.Xaml.Controls
 			if (TouchesManager.Listeners == 0)
 			{
 				// This prevents unnecessary touch delays (which affects the pressed visual states of buttons) when user can't scroll.
-				var canScrollVertically = VerticalScrollMode != ScrollMode.Disabled && ContentSize.Height > Frame.Height;
-				var canScrollHorizontally = HorizontalScrollMode != ScrollMode.Disabled && ContentSize.Width > Frame.Width;
+				var canScrollVertically = VerticalScrollBarVisibility != ScrollBarVisibility.Disabled && ContentSize.Height > Frame.Height;
+				var canScrollHorizontally = HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled && ContentSize.Width > Frame.Width;
 				DelaysContentTouches = canScrollHorizontally || canScrollVertically;
 			}
 			else

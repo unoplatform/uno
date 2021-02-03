@@ -37,6 +37,10 @@ namespace Windows.UI.Xaml.Controls
 			RemoveChild(ContentTemplateRoot);
 		}
 
+		private void UpdateCornerRadius(CornerRadius radius)
+		{
+		}
+
 		private void UpdateBorder()
 		{
 		}

@@ -340,8 +340,10 @@ namespace <#= mixin.NamespaceName #>
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 
+#if !<#= mixin.IsFrameworkElement #>
 		private protected virtual double GetActualWidth() => _actualSize.Width;
 		private protected virtual double GetActualHeight() => _actualSize.Height;
+#endif
 
 		private Size _actualSize;
 		public override CGRect Frame
@@ -354,8 +356,8 @@ namespace <#= mixin.NamespaceName #>
 
 #if <#= mixin.IsFrameworkElement #>
 				RenderSize = _actualSize;
+				AssignedActualSize = _actualSize;
 #endif
-
 
 				CoreAnimation.CATransform3D? oldTransform = null;
 				if (Layer != null && !Layer.Transform.IsIdentity) 
@@ -541,7 +543,6 @@ namespace <#= mixin.NamespaceName #>
 			OnLoadingPartial();
 			Loading?.Invoke(this, null);
 			OnPostLoading();
-			ApplyCompiledBindings();
 		}
 
 		partial void OnLoadingPartial();
@@ -717,8 +718,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		#endregion
-#endif
-
+	
 		#region Tag Dependency Property
 
 		public new object Tag
@@ -735,7 +735,8 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		#endregion
-	
+#endif
+
 		#region Transitions Dependency Property
 
 		public TransitionCollection Transitions
@@ -1094,7 +1095,7 @@ namespace <#= mixin.NamespaceName #>
 				ClassName = className,
 				DefineSetNeedsLayout = defineSetNeedsLayout ? "true" : "false",
 				DefineLayoutSubviews = defineLayoutSubviews ? "true" : "false",
-				IsUIControl = isUIControl  ? "new" : "",
+				IsUIControl = isUIControl  ? "true" : "false",
 				HasAttachedToWindow = hasAttachedToWindow ? "true" : "false",
 				OverridesAttachedToWindow = overridesAttachedToWindow ? "true" : "false",
 				IsNewBackground = isNewBackground ? "new" : "",

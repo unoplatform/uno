@@ -10,7 +10,7 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(BuildingInsideVisualStudio)'==''">
-		<AppVersion>$(GITVERSION_FullSemVer)</AppVersion>
+		<AppVersion>$(GITVERSION_SemVer)</AppVersion>
 
 		<NuGetBin>.\nuget\NuGet.exe</NuGetBin>
 		<OutputDir>$(BUILD_ARTIFACTSTAGINGDIRECTORY)</OutputDir>
@@ -30,12 +30,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="docfx.console" Version="2.56.1" GeneratePathProperty="true" />
+		<PackageReference Include="docfx.console" Version="2.56.6" GeneratePathProperty="true" />
 		<PackageReference Include="MSBuildTasks">
 			<Version>1.5.0.235</Version>
 		</PackageReference>
 		<PackageReference Include="NUnit.Runners">
-			<Version>3.11.1</Version>
+			<Version>3.12.0</Version>
 		</PackageReference>
 	</ItemGroup>
 
@@ -45,7 +45,7 @@
 
 	<Target Name="UnoBuild" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 
-		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_FullSemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
+		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
 		
 		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage" Condition="$(_isWindows)" />
 
@@ -70,41 +70,53 @@
 			<_PackageToUpdate Include="Uno.UI" />
 			<_PackageToUpdate Include="Uno.UI.RemoteControl" />
 
+			<_legacyProject Include="..\src\SolutionTemplate\**\*.Uwp.csproj"/>
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.Droid.csproj"/>
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.iOS.csproj"/>
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.macOS.csproj"/>
+			<_legacyProject Include="..\src\SolutionTemplate\**\*.Wpf.Host.csproj"/>
 
 			<_sdkProject Include="..\src\SolutionTemplate\**\*.Wasm.csproj"/>
+			<_sdkProject Include="..\src\SolutionTemplate\**\*.Skia.*.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"/>
+			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"/>
+
+			<_sdkProject Include="..\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\content\unolib-crossruntime\UnoCrossRuntimeLib\*.csproj"/>
 		</ItemGroup>
 
 		<XmlUpdate XmlFileName="%(_legacyProject.Identity)"
 							 XPath="//x:PackageReference[@Include='Uno.UI.RemoteControl']/@Version"
-							 Value="$(GitVersion_FullSemVer)"
+							 Value="$(GitVersion_SemVer)"
 							 Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
 							 Prefix="x" />
 		
 		<XmlUpdate XmlFileName="%(_legacyProject.Identity)"
 							 XPath="//x:PackageReference[@Include='Uno.UI']/@Version"
-							 Value="$(GitVersion_FullSemVer)"
+							 Value="$(GitVersion_SemVer)"
 							 Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
 							 Prefix="x" />
 
 		<XmlUpdate XmlFileName="%(_sdkProject.Identity)"
 							 XPath="//PackageReference[@Include='Uno.UI']/@Version"
-							 Value="$(GitVersion_FullSemVer)" />
+							 Value="$(GitVersion_SemVer)" />
 		<XmlUpdate XmlFileName="%(_sdkProject.Identity)"
 							 XPath="//PackageReference[@Include='Uno.UI.RemoteControl']/@Version"
-							 Value="$(GitVersion_FullSemVer)" />
+							 Value="$(GitVersion_SemVer)" />
 		<XmlUpdate XmlFileName="%(_sdkProject.Identity)"
 							 XPath="//PackageReference[@Include='Uno.UI.WebAssembly']/@Version"
-							 Value="$(GitVersion_FullSemVer)" />
+							 Value="$(GitVersion_SemVer)" />
 		<XmlUpdate XmlFileName="%(_sdkProject.Identity)"
 							 XPath="//PackageReference[@Include='Uno.UI.Skia.Gtk']/@Version"
-							 Value="$(GitVersion_FullSemVer)" />
+							 Value="$(GitVersion_SemVer)" />
 		<XmlUpdate XmlFileName="%(_sdkProject.Identity)"
 							 XPath="//PackageReference[@Include='Uno.UI.Skia.Wpf']/@Version"
-							 Value="$(GitVersion_FullSemVer)" />
+							 Value="$(GitVersion_SemVer)" />
+		<XmlUpdate XmlFileName="%(_sdkProject.Identity)"
+							 XPath="//PackageReference[@Include='Uno.UI.Skia.Tizen']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlUpdate XmlFileName="%(_sdkProject.Identity)"
+							 XPath="//PackageReference[@Include='Uno.UI.Runtime.WebAssembly']/@Version"
+							 Value="$(GitVersion_SemVer)" />
 	</Target>
 
 	<Target Name="UpdateTasksSHA">
@@ -123,7 +135,7 @@
 	<Target Name="BuildCI">
 		<Exec Command="npm i" WorkingDirectory="..\src\SamplesApp\SamplesApp.Wasm.UITests" />
 
-		<MSBuild Properties="Configuration=Release_NoSamples;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(GITVERSION_FullSemVer)"
+		<MSBuild Properties="Configuration=Release_NoSamples;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(GITVERSION_SemVer)"
              Projects="..\src\Uno.UI.sln"
              Targets="Restore;Build"
              RebaseOutputs="false"
@@ -169,7 +181,7 @@
 
 	<Target Name="PublishVisx" Condition="'$(UNO_UWP_BUILD)'=='true'">
 		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.VSIX.vsix"
-					DestinationFiles="$(OutputDir)\vslatest\UnoPlatform-$(GITVERSION_FullSemVer).vsix" />
+					DestinationFiles="$(OutputDir)\vslatest\UnoPlatform-$(GITVERSION_SemVer).vsix" />
 	</Target>
 
 	<Target Name="PrepareNuGetPackage">
@@ -186,26 +198,30 @@
 			<_NuspecFiles Include=".\Uno.WinUI.RemoteControl.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.Skia.Gtk.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.Skia.Wpf.nuspec" />
+			<_NuspecFiles Include=".\Uno.WinUI.Skia.Tizen.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.WebAssembly.nuspec" />
 		</ItemGroup>
 
 		<!-- Update the package version -->
-		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies/x:dependency/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies/x:dependency/@version" Value="$(GITVERSION_SemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 
 		<!-- Update Uno.WinUI references version -->
-		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(GITVERSION_SemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 		
-		<!-- Update Uno.Foundation.Runtime.Wasm references version -->
-		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.Wasm']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
+		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(GITVERSION_SemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 
-		<!-- Update Uno.Foundation.Runtime.Wasm references version -->
-		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Wasm']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
+		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.WebAssembly']/@version" Value="$(GITVERSION_SemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 
 		<!-- Update Uno.WinUI.Runtime.Skia.Gtk references version -->
-		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Gtk']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Gtk']/@version" Value="$(GITVERSION_SemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 
 		<!-- Update Uno.WinUI.Runtime.Skia.Wpf references version -->
-		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Wpf']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Wpf']/@version" Value="$(GITVERSION_SemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
+
+		<!-- Update Uno.WinUI.Runtime.Skia.Tizen references version -->
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Tizen']/@version" Value="$(GITVERSION_SemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 
 		<!-- Update package ID based on WinUI / UWP source tree -->
 		<XmlUpdate XmlFileName=".\Uno.WinUI.nuspec" XPath="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix)" Namespace="$(NugetNamespace)" Prefix="x" />
@@ -213,6 +229,7 @@
 		<XmlUpdate XmlFileName=".\Uno.WinUI.RemoteControl.nuspec" XPath="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).RemoteControl" Namespace="$(NugetNamespace)" Prefix="x" />
 		<XmlUpdate XmlFileName=".\Uno.WinUI.Skia.Gtk.nuspec" XPath="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Skia.Gtk" Namespace="$(NugetNamespace)" Prefix="x" />
 		<XmlUpdate XmlFileName=".\Uno.WinUI.Skia.Wpf.nuspec" XPath="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Skia.Wpf" Namespace="$(NugetNamespace)" Prefix="x" />
+		<XmlUpdate XmlFileName=".\Uno.WinUI.Skia.Tizen.nuspec" XPath="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Skia.Tizen" Namespace="$(NugetNamespace)" Prefix="x" />
 		<XmlUpdate XmlFileName=".\Uno.WinUI.WebAssembly.nuspec" XPath="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).WebAssembly" Namespace="$(NugetNamespace)" Prefix="x" />
 
 		<!-- Update package Title based on WinUI / UWP source tree -->
@@ -221,17 +238,23 @@
 		<XmlUpdate XmlFileName=".\Uno.WinUI.RemoteControl.nuspec" XPath="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).RemoteControl" Namespace="$(NugetNamespace)" Prefix="x" />
 		<XmlUpdate XmlFileName=".\Uno.WinUI.Skia.Gtk.nuspec" XPath="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Skia.Gtk" Namespace="$(NugetNamespace)" Prefix="x" />
 		<XmlUpdate XmlFileName=".\Uno.WinUI.Skia.Wpf.nuspec" XPath="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Skia.Wpf" Namespace="$(NugetNamespace)" Prefix="x" />
+		<XmlUpdate XmlFileName=".\Uno.WinUI.Skia.Tizen.nuspec" XPath="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Skia.Tizen" Namespace="$(NugetNamespace)" Prefix="x" />
 		<XmlUpdate XmlFileName=".\Uno.WinUI.WebAssembly.nuspec" XPath="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).WebAssembly" Namespace="$(NugetNamespace)" Prefix="x" />
 
 		<!-- Rename dependencies -->
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@id" Value="$(PackageNamePrefix)" Namespace="$(NugetNamespace)" Prefix="x" />
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Gtk']/@id" Value="$(PackageNamePrefix).Runtime.Skia.Gtk" Namespace="$(NugetNamespace)" Prefix="x" />
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Wpf']/@id" Value="$(PackageNamePrefix).Runtime.Skia.Wpf" Namespace="$(NugetNamespace)" Prefix="x" />
-		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Wasm']/@id" Value="$(PackageNamePrefix).Runtime.Wasm" Namespace="$(NugetNamespace)" Prefix="x" />
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Tizen']/@id" Value="$(PackageNamePrefix).Runtime.Skia.Tizen" Namespace="$(NugetNamespace)" Prefix="x" />
+		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.WebAssembly']/@id" Value="$(PackageNamePrefix).Runtime.WebAssembly" Namespace="$(NugetNamespace)" Prefix="x" />
 
 		<!-- Adjust build targets file to match WinUI / UWP-->
 		<Move SourceFiles=".\uno.winui.targets" DestinationFiles=".\$(PackageNamePrefix).targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 		<XmlUpdate XmlFileName=".\Uno.WinUI.nuspec" XPath="/x:package/x:files/x:file[@src='Uno.WinUI.targets']/@src" Value="$(PackageNamePrefix).targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+
+		<!-- Adjust build targets file for UAP -->
+		<XmlUpdate XmlFileName=".\Uno.WinUI.nuspec" XPath="/x:package/x:files/x:file[@target='buildTransitive\uap10.0.16299\uno.winui.targets']/@target" Value="buildTransitive\uap10.0.16299\$(PackageNamePrefix).targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlUpdate XmlFileName=".\Uno.WinUI.nuspec" XPath="/x:package/x:files/x:file[@target='buildTransitive\uap10.0.17763\uno.winui.targets']/@target" Value="buildTransitive\uap10.0.17763\$(PackageNamePrefix).targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- Skia GTK targets/props-->
 		<Move SourceFiles=".\uno.winui.Skia.Gtk.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Gtk.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
@@ -239,6 +262,13 @@
 
 		<XmlUpdate XmlFileName=".\uno.winui.Skia.Gtk.nuspec" XPath="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Gtk.targets']/@src" Value="$(PackageNamePrefix).Skia.Gtk.targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 		<XmlUpdate XmlFileName=".\uno.winui.Skia.Gtk.nuspec" XPath="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Gtk.props']/@src" Value="$(PackageNamePrefix).Skia.Gtk.props" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+
+		<!-- Skia Tizen targets/props-->
+		<Move SourceFiles=".\uno.winui.Skia.Tizen.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Tizen.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<Move SourceFiles=".\uno.winui.Skia.Tizen.props" DestinationFiles=".\$(PackageNamePrefix).Skia.Tizen.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+
+		<XmlUpdate XmlFileName=".\uno.winui.Skia.Tizen.nuspec" XPath="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Tizen.targets']/@src" Value="$(PackageNamePrefix).Skia.Tizen.targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlUpdate XmlFileName=".\uno.winui.Skia.Tizen.nuspec" XPath="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Tizen.props']/@src" Value="$(PackageNamePrefix).Skia.Tizen.props" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- Skia Wpf targets/props-->
 		<Move SourceFiles=".\uno.winui.Skia.Wpf.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Wpf.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
@@ -263,20 +293,27 @@
 		<!-- Runtime package move files -->
 		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.Gtk\buildTransitive\Uno.UI.Runtime.Skia.Gtk.props" DestinationFiles="..\src\Uno.UI.Runtime.Skia.Gtk\buildTransitive\$(PackageNamePrefix).Runtime.Skia.Gtk.props" />
 		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.Gtk\buildTransitive\Uno.UI.Runtime.Skia.Gtk.targets" DestinationFiles="..\src\Uno.UI.Runtime.Skia.Gtk\buildTransitive\$(PackageNamePrefix).Runtime.Skia.Gtk.targets" />
+		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.Tizen\buildTransitive\Uno.UI.Runtime.Skia.Tizen.props" DestinationFiles="..\src\Uno.UI.Runtime.Skia.Tizen\buildTransitive\$(PackageNamePrefix).Runtime.Skia.Tizen.props" />
+		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.Tizen\buildTransitive\Uno.UI.Runtime.Skia.Tizen.targets" DestinationFiles="..\src\Uno.UI.Runtime.Skia.Tizen\buildTransitive\$(PackageNamePrefix).Runtime.Skia.Tizen.targets" />
 		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.Wpf\buildTransitive\Uno.UI.Runtime.Skia.Wpf.props" DestinationFiles="..\src\Uno.UI.Runtime.Skia.Wpf\buildTransitive\$(PackageNamePrefix).Runtime.Skia.Wpf.props" />
 		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.Wpf\buildTransitive\Uno.UI.Runtime.Skia.Wpf.targets" DestinationFiles="..\src\Uno.UI.Runtime.Skia.Wpf\buildTransitive\$(PackageNamePrefix).Runtime.Skia.Wpf.targets" />
-		<Move SourceFiles="..\src\Uno.UI.Runtime.Wasm\buildTransitive\Uno.UI.Runtime.Wasm.props" DestinationFiles="..\src\Uno.UI.Runtime.Wasm\buildTransitive\$(PackageNamePrefix).Runtime.Wasm.props" />
-		<Move SourceFiles="..\src\Uno.UI.Runtime.Wasm\buildTransitive\Uno.UI.Runtime.Wasm.targets" DestinationFiles="..\src\Uno.UI.Runtime.Wasm\buildTransitive\$(PackageNamePrefix).Runtime.Wasm.targets" />
+		<Move SourceFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\Uno.UI.Runtime.WebAssembly.props" DestinationFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\$(PackageNamePrefix).Runtime.WebAssembly.props" />
+		<Move SourceFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\Uno.UI.Runtime.WebAssembly.targets" DestinationFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\$(PackageNamePrefix).Runtime.WebAssembly.targets" />
 	</Target>
 
 	<Target Name="BuildNuGetPackage">
-			<!-- Create the packages -->
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.RemoteControl.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Gtk.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Wpf.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
-		<Exec Command="$(NuGetBin) pack Uno.WinUI.WebAssembly.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot; -Properties NoWarn=NU5100,NU5105,NU5131" />
+		<PropertyGroup>
+			<NuSpecProperties>NoWarn=NU5100,NU5105,NU5131;branch=$(GITVERSION_BranchName);commitid=$(GITVERSION_VersionSourceSha)</NuSpecProperties>
+		</PropertyGroup>
+		
+		<!-- Create the packages -->
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.RemoteControl.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Gtk.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Tizen.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Wpf.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.WebAssembly.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 	</Target>
 
 	<Target Name="ValidatePackage" AfterTargets="UnoBuild" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(UNO_UWP_BUILD)'=='true'">
@@ -286,7 +323,7 @@
 		</PropertyGroup>
 
 		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.0.0-dev.36" IgnoreExitCode="true" />
-		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
+		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_SemVer).md" />
 	</Target>
 	
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="UnoBuild">
@@ -295,7 +332,7 @@
 			<PackageNamePrefix Condition="'$(UNO_UWP_BUILD)'=='true'">Uno.UI</PackageNamePrefix>
 		</PropertyGroup>
 
-		<Exec Command="dotnet $(MSBuildThisFileDirectory)..\src\Uno.ReferenceImplComparer\bin\Release\Uno.ReferenceImplComparer.dll $(MSBuildThisFileDirectory)$(PackageNamePrefix).$(GITVERSION_FullSemVer).nupkg" />
+		<Exec Command="dotnet $(MSBuildThisFileDirectory)..\src\Uno.ReferenceImplComparer\bin\Release\Uno.ReferenceImplComparer.dll $(MSBuildThisFileDirectory)$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg" />
 	</Target>
 
 </Project>

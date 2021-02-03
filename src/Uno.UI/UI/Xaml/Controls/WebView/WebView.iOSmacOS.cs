@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Windows.UI.Core;
 using Uno.Logging;
+using Windows.Foundation;
 
 #if XAMARIN_IOS_UNIFIED
 using MessageUI;
@@ -71,6 +72,9 @@ namespace Windows.UI.Xaml.Controls
 			var argumentString = ConcatenateJavascriptArguments(arguments);
 			return await _nativeWebView.EvaluateJavascriptAsync(ct, string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\")", script, argumentString));
 		}
+
+		public IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
+			AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
 
 		partial void NavigateWithHttpRequestMessagePartial(HttpRequestMessage requestMessage)
 		{

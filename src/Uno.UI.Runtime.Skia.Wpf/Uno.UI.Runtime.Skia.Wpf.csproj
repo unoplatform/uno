@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>net47</TargetFrameworks>
+    <TargetFrameworks>net47;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
 	<PropertyGroup>
@@ -15,6 +15,9 @@
 		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Wpf</PackageId>
+	
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<UseWPF Condition="'$(TargetFramework)'=='netcoreapp3.1'">true</UseWPF>
 	</PropertyGroup>
 	
 	<ItemGroup>
@@ -35,9 +38,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Uno.Foundation.Skia\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-	  <ProjectReference Include="..\Uno.UI.Skia\Uno.UI.Skia.csproj" />
-	  <ProjectReference Include="..\Uno.UWP.Skia\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+	  <ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+	  <ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
+	  <ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>

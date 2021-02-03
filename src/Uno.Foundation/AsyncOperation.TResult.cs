@@ -1,33 +1,37 @@
-﻿using Uno.Diagnostics.Eventing;
+﻿#nullable enable
+
+using Uno.Diagnostics.Eventing;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using Uno;
 
 namespace Windows.Foundation
 {
-	internal class AsyncOperation<TResult> : IAsyncOperation<TResult>
+	internal class AsyncOperation<TResult> : IAsyncOperation<TResult>, IAsyncOperationInternal<TResult>
 	{
-		private CancellationTokenSource _cts = new CancellationTokenSource();
-		private AsyncOperationCompletedHandler<TResult> _onCompleted;
-		private Task<TResult> _task;
-		private AsyncStatus _status;
-		private uint _id = 0;
+		public static AsyncOperation<TResult> FromTask(FuncAsync<AsyncOperation<TResult>, TResult> builder)
+			=> new AsyncOperation<TResult>(builder);
 
-		public AsyncOperation(Func<CancellationToken, Task<TResult>> taskBuilder)
+		private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+		private AsyncOperationCompletedHandler<TResult>? _onCompleted;
+		private AsyncStatus _status;
+
+		public AsyncOperation(FuncAsync<AsyncOperation<TResult>, TResult> taskBuilder)
 		{
-			_task = BuildTaskAsync(taskBuilder);
+			Task = BuildTaskAsync(taskBuilder);
 		}
 
-		private async Task<TResult> BuildTaskAsync(Func<CancellationToken, Task<TResult>> taskBuilder)
+		private async Task<TResult> BuildTaskAsync(FuncAsync<AsyncOperation<TResult>, TResult> taskBuilder)
 		{
 			Status = AsyncStatus.Started;
 
 			try
 			{
-				var result = await taskBuilder(_cts.Token);
+				var result = await taskBuilder(_cts.Token, this);
 				Status = AsyncStatus.Completed;
 				return result;
 			}
@@ -39,23 +43,28 @@ namespace Windows.Foundation
 			}
 		}
 
-		public AsyncOperationCompletedHandler<TResult> Completed
+		public AsyncOperationCompletedHandler<TResult>? Completed
 		{
-			get { return _onCompleted; }
+			get => _onCompleted;
 			set
 			{
 				_onCompleted = value;
-				if (Status != AsyncStatus.Started) { value?.Invoke(this, Status); }
+				if (Status != AsyncStatus.Started)
+				{
+					value?.Invoke(this, Status);
+				}
 			}
 		}
 
-		public Exception ErrorCode { get; private set; }
+		public uint Id { get; } = AsyncOperation.CreateId();
 
-		public uint Id => _id;
+		public Task<TResult> Task { get; }
+
+		public Exception? ErrorCode { get; private set; }
 
 		public AsyncStatus Status
 		{
-			get { return _status; }
+			get => _status;
 			set
 			{
 				_status = value;
@@ -64,20 +73,12 @@ namespace Windows.Foundation
 		}
 
 		public void Cancel()
-		{
-			_cts.Cancel();
-		}
+			=> _cts.Cancel();
 
 		public void Close()
-		{
-			_cts.Cancel();
-		}
+			=> _cts.Cancel();
 
 		public TResult GetResults()
-		{
-			return _task.Result;
-		}
-
-		public Task<TResult> Task => _task;
+			=> Task.Result;
 	}
 }

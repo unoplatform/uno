@@ -70,14 +70,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			var target2 = _app.Marked("target2");
 			var flyoutFull = _app.Marked("flyoutFull");
 
-			_app.WaitForElement(result);
+			_app.WaitForElement(result, timeoutMessage: $"Timed out waiting for element {nameof(result)}");
 
 			{
-				var target1Result = _app.WaitForElement(target1).First();
+				var target1Result = _app.WaitForElement(target1, timeoutMessage: $"Timed out waiting for element {nameof(target1)}").First();
 
 				_app.FastTap(target1);
 
-				var innerContentResult = _app.WaitForElement(innerContent).First();
+				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping target1").First();
 
 				Assert.IsTrue(target1Result.Rect.X <= innerContentResult.Rect.X);
 				Assert.IsTrue(target1Result.Rect.Width > innerContentResult.Rect.Width);
@@ -86,11 +86,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			}
 
 			{
-				var target2Result = _app.WaitForElement(target2).First();
+				var target2Result = _app.WaitForElement(target2, timeoutMessage: $"Timed out waiting for element {nameof(target2)}").First();
 
 				_app.FastTap(target2);
 
-				var innerContentResult = _app.WaitForElement(innerContent).First();
+				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping target2").First();
 
 				Assert.IsTrue(target2Result.Rect.X <= innerContentResult.Rect.X);
 				Assert.IsTrue(target2Result.Rect.Width > innerContentResult.Rect.Width);
@@ -101,7 +101,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			{
 				_app.FastTap(flyoutFull);
 
-				var innerContentResult = _app.WaitForElement(innerContent).First();
+				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping flyoutFull").First();
 
 				var rect = base.GetScreenDimensions();
 
@@ -156,18 +156,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			// initial state
 			_app.WaitForElement(testableFlyoutButtons.First().Value);
-			var initialScreenshot = TakeScreenshot($"{majorStepIndex++} Initial State", ignoreInSnapshotCompare: true);
+			using var initialScreenshot = TakeScreenshot($"{majorStepIndex++} Initial State", ignoreInSnapshotCompare: true);
 
 			var dismissArea = GetDismissAreaCenter();
 			foreach (var button in testableFlyoutButtons)
 			{
 				// show flyout
 				button.Value.Tap();
-				var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
+				using var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
 
 				// dismiss flyout
 				_app.TapCoordinates(dismissArea.X, dismissArea.Y);
-				var flyoutDismissedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 1 Dismissed", ignoreInSnapshotCompare: true);
+				using var flyoutDismissedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 1 Dismissed", ignoreInSnapshotCompare: true);
 
 				// compare
 				ImageAssert.AreNotEqual(flyoutOpenedScreenshot, initialScreenshot);
@@ -184,10 +184,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				 * [FullOverlayFlyoutButton]
 				 *         (dismiss area)
 				 *       [WithOffsetFlyoutButton margin=100] */
-				var rect1 = _app.GetRect("FullOverlayFlyoutButton");
-				var rect2 = _app.GetRect("WithOffsetFlyoutButton");
+				var rect1 = _app.GetPhysicalRect("FullOverlayFlyoutButton");
+				var rect2 = _app.GetPhysicalRect("WithOffsetFlyoutButton");
 
-				return (rect2.CenterX, (rect1.Bottom + rect2.Y) / 2);
+				return (rect2.CenterX + rect2.Width, (rect1.Bottom + rect2.Y) / 2);
 			}
 		}
 

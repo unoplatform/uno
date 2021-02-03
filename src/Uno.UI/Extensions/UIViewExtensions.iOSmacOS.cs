@@ -15,7 +15,7 @@ using Uno.Logging;
 using Windows.UI.Core;
 using Uno.UI.Controls;
 using Windows.UI.Xaml.Controls;
-
+using Windows.UI.Xaml.Media;
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
@@ -103,10 +103,16 @@ namespace AppKit
 		/// <typeparam name="T"></typeparam>
 		/// <param name="view"></param>
 		/// <returns>First parent of the view of specified T type.</returns>
-		public static T FindFirstParent<T>(this _View view)
+		public static T FindFirstParent<T>(this _View view) where T : class
+			=> FindFirstParent<T>(view, includeCurrent: false);
+
+		public static T FindFirstParent<T>(this _View view, bool includeCurrent)
 			where T : class
 		{
-			view = view?.Superview;
+			if (!includeCurrent)
+			{
+				view = view?.Superview;
+			}
 			while (view != null)
 			{
 				var typed = view as T;
@@ -352,7 +358,7 @@ namespace AppKit
 		/// <param name="view">View</param>
 		/// <returns>First responder view</returns>
 		public static _View FindFirstResponder(this _View view) =>
-			Uno.Extensions.UIViewExtensions.FindFirstResponder(view);		
+			Uno.Extensions.UIViewExtensions.FindFirstResponder(view);
 
 		/// <summary>
 		/// Finds the nearest view controller for this _View.
@@ -527,22 +533,6 @@ namespace AppKit
 		}
 
 		/// <summary>
-		/// Gets an identifier that can be used for logging
-		/// </summary>
-		public static string GetDebugIdentifier(this _View element)
-		{
-			if (element == null)
-			{
-				return "--NULL--";
-			}
-
-			var name = (element as IFrameworkElement)?.Name;
-			return name.HasValue()
-				? element.GetType().Name + "_" + name + "_" + element.GetHashCode()
-				: element.GetType().Name + "_" + element.GetHashCode();
-		}
-
-		/// <summary>
 		/// Enumerates the children for the specified instance, either using _View.Subviews or using IShadowChildrenProvider.
 		/// </summary>
 		/// <param name="view"></param>
@@ -586,7 +576,7 @@ namespace AppKit
 
 			return null;
 		}
-		
+
 		/// <summary>
 		/// Returns the root of the view's local visual tree.
 		/// </summary>
@@ -628,23 +618,41 @@ namespace AppKit
 				var uiElement = innerView as UIElement;
 				var desiredSize = uiElement?.DesiredSize.ToString() ?? "<native/unk>";
 				var fe = innerView as IFrameworkElement;
+				var transforms = GetTransforms(uiElement?.RenderTransform);
+
+				string GetTransforms(Transform transform)
+				{
+					return transform switch
+					{
+						TransformGroup group => $"Grp({@group.Children.Select(GetTransforms)})",
+						ScaleTransform scale => $"Scale({scale.ScaleX}, {scale.ScaleY} @{scale.CenterX},{scale.CenterY})",
+						MatrixTransform matrix => $"Matrix({matrix.Matrix.M11}, {matrix.Matrix.M12}, {matrix.Matrix.M21}, {matrix.Matrix.M22})",
+						TranslateTransform translate => $"Translate({translate.X}, {translate.Y})",
+						_ => ""
+					};
+				}
 
 				return sb
 						.Append(spacing)
 						.Append(innerView == viewOfInterest ? "*>" : ">")
 						.Append(innerView.ToString() + namePart)
 						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
-						.Append($" d:{desiredSize}")
+						.Append($" ds:{desiredSize}")
 #if __IOS__
 						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
 						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+						.Append(fe != null && (!double.IsNaN(fe.Width) || !double.IsNaN(fe.Height)) ? $"FE.Width={fe.Width},FE.Height={fe.Height}" : "")
 						.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
 						.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 						.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
-						.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}" : "")
+						.Append(fe != null && fe.TryGetCornerRadius(out var cr) && cr != default ? $" CornerRadius={cr.ToStringCompact()}" : "")
+						.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
+						.Append(uiElement != null ? $" AvailableSize={uiElement.LastAvailableSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
-						.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
+						.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\" - {textBlock.FontFamily}/{textBlock.FontSize}" : "")
+						.Append(innerView is Viewbox viewBox ? $" Stretch={viewBox.Stretch}/{viewBox.StretchDirection}" : "")
+						.Append(" " + transforms)
 						.AppendLine();
 			}
 		}
@@ -679,6 +687,6 @@ namespace AppKit
 #elif __MACOS__
 			view.NeedsDisplay = true;
 #endif
-		} 
+		}
 	}
 }

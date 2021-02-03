@@ -1,5 +1,4 @@
-﻿#if XAMARIN
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentControl : ICustomClippingElement
 	{
-
+#if XAMARIN
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if(!IsContentPresenterBypassEnabled)
@@ -76,8 +75,30 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalSize;
 		}
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Content is UIElement ue) || ue.RenderTransform == null;
+#endif
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot
+		{
+			get
+			{
+				if (Content is UIElement ue && ue.RenderTransform != null)
+				{
+					// If the Content is a UIElement and defines a RenderTransform,
+					// no clipping should apply.
+
+					return false;
+				}
+				if (TemplatedRoot is UIElement tr && tr.RenderTransform != null)
+				{
+					// Same for TemplatedRoot
+
+					return false;
+				}
+
+				return true; // Clipping allowed
+			}
+		}
+
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }
-#endif

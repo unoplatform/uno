@@ -1,3 +1,5 @@
+#nullable enable
+
 
 namespace Windows.UI.Composition
 {

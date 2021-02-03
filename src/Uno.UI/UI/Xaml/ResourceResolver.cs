@@ -20,9 +20,14 @@ namespace Uno.UI
 		/// <summary>
 		/// The master system resources dictionary.
 		/// </summary>
-		private static ResourceDictionary MasterDictionary => Uno.UI.GlobalStaticResources.MasterDictionary;
+		private static ResourceDictionary MasterDictionary =>
+#if __NETSTD_REFERENCE__
+			throw new InvalidOperationException();
+#else
+			Uno.UI.GlobalStaticResources.MasterDictionary;
+#endif
 
-		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>();
+		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.InvariantCultureIgnoreCase);
 		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new Dictionary<string, ResourceDictionary>();
 
 		private static int _assemblyRef = -1;
@@ -55,7 +60,6 @@ namespace Uno.UI
 		/// <summary>
 		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
 		/// </summary>
-		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static T ResolveResourceStatic<T>(object key, object context = null)
 		{
@@ -67,6 +71,16 @@ namespace Uno.UI
 			return default(T);
 		}
 
+		/// <summary>
+		/// Performs a one-time resolution of a named resource, using Application.Resources.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static bool ResolveResourceStatic(object key, out object value, object context = null)
+			=> TryStaticRetrieval(key, context, out value);
+
+#if false
+		// disabled because of https://github.com/mono/mono/issues/20195
 		/// <summary>
 		/// Retrieve a resource from top-level resources (Application-level and system level).
 		/// </summary>
@@ -87,6 +101,50 @@ namespace Uno.UI
 
 			return fallbackValue;
 		}
+#endif
+
+		/// <summary>
+		/// Retrieve a resource from top-level resources (Application-level and system level).
+		/// </summary>
+		/// <typeparam name="T">The expected resource type</typeparam>
+		/// <param name="key">The resource key to search for</param>
+		/// <param name="fallbackValue">Fallback value to use if no resource is found</param>
+		/// <returns>The resource, is one of the given key and type is found, else <paramref name="fallbackValue"/></returns>
+		/// <remarks>
+		/// Use <see cref="ResolveTopLevelResource{T}(object, T)"/> when user-defined Application-level values should be considered (most
+		/// of the time), use <see cref="GetSystemResource{T}(object)"/> if they shouldn't
+		/// </remarks>
+		internal static double ResolveTopLevelResourceDouble(object key, double fallbackValue = default)
+		{
+			if (TryTopLevelRetrieval(key, context: null, out var value) && value is double tValue)
+			{
+				return tValue;
+			}
+
+			return fallbackValue;
+		}
+
+
+		/// <summary>
+		/// Retrieve a resource from top-level resources (Application-level and system level).
+		/// </summary>
+		/// <typeparam name="T">The expected resource type</typeparam>
+		/// <param name="key">The resource key to search for</param>
+		/// <param name="fallbackValue">Fallback value to use if no resource is found</param>
+		/// <returns>The resource, is one of the given key and type is found, else <paramref name="fallbackValue"/></returns>
+		/// <remarks>
+		/// Use <see cref="ResolveTopLevelResource{T}(object, T)"/> when user-defined Application-level values should be considered (most
+		/// of the time), use <see cref="GetSystemResource{T}(object)"/> if they shouldn't
+		/// </remarks>
+		internal static object ResolveTopLevelResource(object key, object fallbackValue = default)
+		{
+			if (TryTopLevelRetrieval(key, context: null, out var value) && value is object tValue)
+			{
+				return tValue;
+			}
+
+			return fallbackValue;
+		}
 
 		/// <summary>
 		/// Apply a StaticResource or ThemeResource assignment to a DependencyProperty of a DependencyObject. The assignment will be provisionally
@@ -95,6 +153,7 @@ namespace Uno.UI
 		/// <param name="owner">Owner of the property</param>
 		/// <param name="property">The property to assign</param>
 		/// <param name="resourceKey">Key to the resource</param>
+		/// <param name="isThemeResourceExtension">True for {ThemeResource Foo}, false for {StaticResource Foo}</param>
 		/// <param name="context">Optional parameter that provides parse-time context</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
@@ -111,7 +170,7 @@ namespace Uno.UI
 				}
 			}
 
-			(owner as IDependencyObjectStoreProvider).Store.SetBinding(property, new ResourceBinding(resourceKey, isThemeResourceExtension, context));
+			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, resourceKey, isThemeResourceExtension, context);
 		}
 
 		/// <summary>
@@ -327,5 +386,17 @@ namespace Uno.UI
 
 			return default(T);
 		}
+
+		/// <summary>
+		/// Supports the use of StaticResource alias with ResourceKey in Xaml markup.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static object ResolveStaticResourceAlias(string resourceKey, object parseContext)
+			=> ResourceDictionary.GetStaticResourceAliasPassthrough(resourceKey, parseContext as XamlParseContext);
+
+		internal static void UpdateSystemThemeBindings() => MasterDictionary.UpdateThemeBindings();
 	}
+
+
+
 }

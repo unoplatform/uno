@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			TestCommand command = null;
 			int parameter = 0;
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				flyout = new Flyout();
 				command = new TestCommand();
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				splitButton.CommandParameter = parameter;
 			});
 
-			await RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Verify.AreEqual(splitButton.Flyout, flyout);
 				Verify.AreEqual(splitButton.Command, command);

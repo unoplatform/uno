@@ -12,40 +12,47 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 {
 	public class Basics_Shapes_Tests : SampleControlUITestBase
 	{
+		private const int TestTimeout = 7 * 60 * 1000;
+
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
+		[Timeout(TestTimeout)]
 		public void When_Rectangle()
 			=> ValidateShape("Rectangle");
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
+		[Timeout(TestTimeout)]
 		public void When_Ellipse()
 			=> ValidateShape("Ellipse");
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
+		[Timeout(TestTimeout)]
 		public void When_Line()
 			=> ValidateShape("Line");
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
+		[Timeout(TestTimeout)]
 		public void When_Polyline()
 			=> ValidateShape("Polyline");
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
+		[Timeout(TestTimeout)]
 		public void When_Polygon()
 		{
 			// For Polygon, the junction between the begin and the end of the path is not as smooth as WinUI (on iOS),
 			// se we increase the pixel offset tolerance to ignore it.
 			var tolerance = new PixelTolerance()
 				.WithColor(132) // We are almost only trying to detect edges
-				.WithOffset(6, 6, LocationToleranceKind.PerPixel) 
+				.WithOffset(10, 10, LocationToleranceKind.PerPixel) 
 				.Discrete(2);
 				
 			ValidateShape("Polygon", tolerance);
@@ -54,6 +61,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
+		[Timeout(TestTimeout)]
 		public void When_Path()
 		{
 			// For Path, the junction between the begin and the end of the path is not as smooth as WinUI (on iOS),
@@ -94,7 +102,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			foreach (var testGroup in testGroups)
 			{
 				ctrl.SetDependencyPropertyValue("RunTest", string.Join(";", testGroup));
-				_app.WaitFor(() => !string.IsNullOrWhiteSpace(ctrl.GetDependencyPropertyValue<string>("TestResult")));
+				_app.WaitFor(() => !string.IsNullOrWhiteSpace(ctrl.GetDependencyPropertyValue<string>("TestResult")), timeout: TimeSpan.FromMinutes(1));
 				var testResultsRaw = ctrl.GetDependencyPropertyValue<string>("TestResult");
 
 				var testResults= testResultsRaw

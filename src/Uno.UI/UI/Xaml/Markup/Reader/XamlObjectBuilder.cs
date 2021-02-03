@@ -426,7 +426,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				}
 				else
 				{
-					throw new InvalidOperationException("Invalid collection");
+					throw new InvalidOperationException($"Unsupported collection type {propertyInfo.PropertyType} on {propertyInfo}");
 				}
 			}
 			else
@@ -496,7 +496,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 						return null;
 					})
-					.Concat(ResourceResolver.ResolveTopLevelResource<object>(keyName))
+					.Concat(ResourceResolver.ResolveTopLevelResource(keyName))
 					.Trim()
 					.FirstOrDefault();
 

@@ -30,6 +30,16 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
+		/// <summary>
+		/// Determines if InvalidateMeasure has been called
+		/// </summary>
+		internal bool IsMeasureDirty { get; private protected set; }
+
+		/// <summary>
+		/// Determines if InvalidateArrange has been called
+		/// </summary>
+		internal bool IsArrangeDirty { get; private protected set; }
+
 		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
 
 		partial void ApplyNativeClip(Rect rect)
@@ -291,7 +301,7 @@ namespace Windows.UI.Xaml
 
 		public string ShowDescendants() => UIViewExtensions.ShowDescendants(this);
 
-		public string ShowLocalVisualTree(int fromHeight) => UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
+		public string ShowLocalVisualTree(int fromHeight = 0) => UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
 
 		public IList<VisualStateGroup> VisualStateGroups => VisualStateManager.GetVisualStateGroups((this as Controls.Control).GetTemplateRoot());
 #endif

@@ -1,15 +1,19 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+		<WarningsAsErrors>true</WarningsAsErrors>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
-
-	<ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.12.0" />
+		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.16.0" />
 		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 			<Version>3.3.1</Version>
@@ -32,13 +36,27 @@
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
-			<Version>3.1.5</Version>
+			<Version>3.1.6</Version>
 		</PackageReference>
 		<PackageReference Include="Mono.Cecil">
 			<Version>0.10.1</Version>
 		</PackageReference>
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.SourceGeneration" />
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
+			<Version>3.1.6</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.16.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis">
+			<Version>3.8.0</Version>
+		</PackageReference>
+		<PackageReference Include="Mono.Cecil">
+			<Version>0.10.1</Version>
+		</PackageReference>
+		<PackageReference Include="Uno.Core" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -97,7 +115,8 @@
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
       <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(TargetFramework)'=='net461'">$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\uno-sourcegen</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(TargetFramework)'=='netstandard2.0'">$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\analyzers\dotnet\cs</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
@@ -107,4 +126,7 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
+	<Target Name="GetTargetPath" />
+	<Target Name="GetCopyToPublishDirectoryItems" />
 </Project>

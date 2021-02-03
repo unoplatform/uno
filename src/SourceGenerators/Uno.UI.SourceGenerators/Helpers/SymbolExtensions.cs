@@ -13,6 +13,9 @@ namespace Microsoft.CodeAnalysis
     /// </summary>
     internal static class SymbolExtensions
 	{
+		private static bool IsRoslyn34OrEalier { get; }
+			= typeof(INamedTypeSymbol).Assembly.GetVersionNumber() <= new Version("3.4");
+
 		public static IEnumerable<IPropertySymbol> GetProperties(this INamedTypeSymbol symbol) => symbol.GetMembers().OfType<IPropertySymbol>();
 
 		public static IEnumerable<IEventSymbol> GetAllEvents(this INamedTypeSymbol symbol)
@@ -39,6 +42,25 @@ namespace Microsoft.CodeAnalysis
 			do
 			{
 				foreach (var member in symbol.GetMembers())
+				{
+					yield return member;
+				}
+
+				symbol = symbol.BaseType;
+
+				if (symbol == null)
+				{
+					break;
+				}
+
+			} while (symbol.SpecialType != SpecialType.System_Object);
+		}
+
+		public static IEnumerable<ISymbol> GetAllMembersWithName(this ITypeSymbol symbol, string name)
+		{
+			do
+			{
+				foreach (var member in symbol.GetMembers(name))
 				{
 					yield return member;
 				}
@@ -90,7 +112,7 @@ namespace Microsoft.CodeAnalysis
 		{
 			do
 			{
-				if (symbol == other)
+				if (SymbolEqualityComparer.Default.Equals(symbol, other))
 				{
 					return true;
 				}
@@ -118,40 +140,60 @@ namespace Microsoft.CodeAnalysis
 			symbol.DeclaredAccessibility == Accessibility.Public
 			||
 			(
-				symbol.Locations.Any(l => l.MetadataModule == currentSymbol)
+				symbol.Locations.Any(l => SymbolEqualityComparer.Default.Equals(l.MetadataModule, currentSymbol))
 				&& symbol.DeclaredAccessibility == Accessibility.Internal
 			);
 
 		public static IEnumerable<IMethodSymbol> GetMethods(this INamedTypeSymbol resolvedType)
-		{
-			return resolvedType.GetMembers().OfType<IMethodSymbol>();
-		}
+			=> resolvedType.GetMembers().OfType<IMethodSymbol>();
+
+		public static IEnumerable<IMethodSymbol> GetMethodsWithName(this INamedTypeSymbol resolvedType, string name)
+			=> resolvedType.GetMembers(name).OfType<IMethodSymbol>();
 
 		public static IEnumerable<IFieldSymbol> GetFields(this INamedTypeSymbol resolvedType)
+			=> resolvedType.GetMembers().OfType<IFieldSymbol>();
+
+		public static IEnumerable<IFieldSymbol> GetFieldsWithName(this INamedTypeSymbol resolvedType, string name)
+			=> resolvedType.GetMembers(name).OfType<IFieldSymbol>();
+
+		/// <summary>
+		/// Return fields of the current type and all of its ancestors
+		/// </summary>
+		/// <param name="symbol"></param>
+		/// <returns></returns>
+		public static IEnumerable<IFieldSymbol> GetAllFields(this INamedTypeSymbol symbol)
 		{
-			return resolvedType.GetMembers().OfType<IFieldSymbol>();
+			while (symbol != null)
+			{
+				foreach (var property in symbol.GetMembers().OfType<IFieldSymbol>())
+				{
+					yield return property;
+				}
+
+				symbol = symbol.BaseType;
+			}
 		}
 
-        /// <summary>
-        /// Return fields of the current type and all of its ancestors
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static IEnumerable<IFieldSymbol> GetAllFields(this INamedTypeSymbol symbol)
-        {
-            while (symbol != null)
-            {
-                foreach (var property in symbol.GetMembers().OfType<IFieldSymbol>())
-                {
-                    yield return property;
-                }
+		/// <summary>
+		/// Return fields of the current type and all of its ancestors
+		/// </summary>
+		/// <param name="symbol"></param>
+		/// <returns></returns>
+		public static IEnumerable<IFieldSymbol> GetAllFieldsWithName(this INamedTypeSymbol symbol, string name)
+		{
+			while (symbol != null)
+			{
+				foreach (var property in symbol.GetMembers(name).OfType<IFieldSymbol>())
+				{
+					yield return property;
+				}
 
-                symbol = symbol.BaseType;
-            }
-        }
+				symbol = symbol.BaseType;
+			}
+		}
 
 
-        public static IEnumerable<IFieldSymbol> GetFieldsWithAttribute(this ITypeSymbol resolvedType, string name)
+		public static IEnumerable<IFieldSymbol> GetFieldsWithAttribute(this ITypeSymbol resolvedType, string name)
 		{
 			return resolvedType
 				.GetMembers()
@@ -166,12 +208,12 @@ namespace Microsoft.CodeAnalysis
 
 		public static AttributeData FindAttribute(this ISymbol property, INamedTypeSymbol attributeClassSymbol)
 		{
-			return property.GetAttributes().FirstOrDefault(a => a.AttributeClass == attributeClassSymbol);
+			return property.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeClassSymbol));
 		}
 
 		public static AttributeData FindAttributeFlattened(this ISymbol property, INamedTypeSymbol attributeClassSymbol)
 		{
-			return property.GetAllAttributes().FirstOrDefault(a => a.AttributeClass == attributeClassSymbol);
+			return property.GetAllAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeClassSymbol));
 		}
 
 		/// <summary>
@@ -377,6 +419,24 @@ namespace Microsoft.CodeAnalysis
 		}
 
 		/// <summary>
+		/// Return properties of the current type and all of its ancestors
+		/// </summary>
+		/// <param name="symbol"></param>
+		/// <returns></returns>
+		public static IEnumerable<IPropertySymbol> GetAllPropertiesWithName(this INamedTypeSymbol symbol, string name)
+		{
+			while (symbol != null)
+			{
+				foreach (var property in symbol.GetMembers(name).OfType<IPropertySymbol>())
+				{
+					yield return property;
+				}
+
+				symbol = symbol.BaseType;
+			}
+		}
+
+		/// <summary>
 		/// Converts declared accessibility on a symbol to a string usable in generated code.
 		/// </summary>
 		/// <param name="symbol">The symbol to get an accessibility string for.</param>
@@ -402,7 +462,29 @@ namespace Microsoft.CodeAnalysis
 
 		public static IFieldSymbol FindField(this INamedTypeSymbol symbol, INamedTypeSymbol fieldType, string fieldName, StringComparison comparison = default)
 		{
-			return symbol.GetFields().FirstOrDefault(x => x.Type == fieldType && x.Name.Equals(fieldName, comparison));
+			return symbol.GetFields().FirstOrDefault(x => SymbolEqualityComparer.Default.Equals(x.Type, fieldType) && x.Name.Equals(fieldName, comparison));
+		}
+
+		/// <summary>
+		/// Builds a fully qualified type string, including generic types.
+		/// </summary>
+		public static string GetFullyQualifiedType(this ITypeSymbol type)
+		{
+			if (IsRoslyn34OrEalier && type is INamedTypeSymbol namedTypeSymbol)
+			{
+				if (namedTypeSymbol.IsGenericType && !namedTypeSymbol.IsNullable())
+				{
+					var typeName = Microsoft.CodeAnalysis.CSharp.SymbolDisplay.ToDisplayString(type, format: new SymbolDisplayFormat(
+											globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
+											typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+											genericsOptions: SymbolDisplayGenericsOptions.None,
+											miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers));
+	
+					return typeName + "<" + string.Join(", ", namedTypeSymbol.TypeArguments.Select(GetFullyQualifiedType)) + ">";
+				}
+			}
+
+			return type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 		}
 	}
 }

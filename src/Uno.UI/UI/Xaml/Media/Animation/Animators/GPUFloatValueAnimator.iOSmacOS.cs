@@ -405,19 +405,25 @@ namespace Windows.UI.Xaml.Media.Animation
 			return NSValue.FromCATransform3D(CATransform3D.MakeFromAffine(matrix));
 		}
 
-		private void FinalizeAnimation()
+		private void FinalizeAnimation(UnoCoreAnimation.CompletedInfo completedInfo)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Finalizing animation for GPU Float value animator on property {0}.", _bindingPath.LastOrDefault().PropertyName);
 			}
 
-			if (_valueAnimator.IsRunning)
+			if (_valueAnimator?.IsRunning ?? false)
 			{
 				_valueAnimator.Cancel();
 			}
 
-			AnimationEnd?.Invoke(this, EventArgs.Empty);
+			switch(completedInfo)
+			{
+				case UnoCoreAnimation.CompletedInfo.Sucesss: AnimationEnd?.Invoke(this, EventArgs.Empty); break;
+				case UnoCoreAnimation.CompletedInfo.Error: AnimationCancel?.Invoke(this, EventArgs.Empty); break;
+				default: throw new NotSupportedException($"{completedInfo} is not supported");
+			};
+
 			ReleaseCoreAnimation();
 		}
 
