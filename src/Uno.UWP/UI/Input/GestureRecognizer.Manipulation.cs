@@ -269,6 +269,10 @@ namespace Windows.UI.Input
 			{
 				var translateX = _isTranslateXEnabled ? _currents.Center.X - _origins.Center.X : 0;
 				var translateY = _isTranslateYEnabled ? _currents.Center.Y - _origins.Center.Y : 0;
+#if __MACOS__
+				// correction for translateY being inverted (#4700)
+				translateY *= -1;
+#endif
 
 				double rotate;
 				float scale, expansion;
