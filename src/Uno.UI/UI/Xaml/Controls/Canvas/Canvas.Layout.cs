@@ -23,16 +23,21 @@ namespace Windows.UI.Xaml.Controls
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			double maxWidth = 0, maxHeight = 0;
+
 			MeasureOverridePartial();
-			// A canvas does not have dimensions and will always return zero even with a chidren collection.
 			foreach (var child in Children)
 			{
 				if (child is _View)
 				{
-					MeasureElement(child, new Size(double.PositiveInfinity, double.PositiveInfinity));
+					var measuredSize = MeasureElement(child, new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+					maxHeight = Math.Max(maxHeight, measuredSize.Height + GetTop(child as DependencyObject));
+					maxWidth = Math.Max(maxWidth, measuredSize.Width + GetLeft(child as DependencyObject));
 				}
 			}
-			return new Size(0, 0);
+			// It will not be arranged if always return zero.
+			return new Size(maxWidth, maxHeight);
 		}
 
 		partial void MeasureOverridePartial();
