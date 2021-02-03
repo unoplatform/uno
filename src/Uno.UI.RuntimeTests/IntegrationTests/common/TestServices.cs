@@ -73,6 +73,35 @@ namespace Private.Infrastructure
 				}
 			}
 
+			internal static async Task WaitForEqual(double expected, Func<double> actualFunc, double tolerance = 1.0, int timeoutMS = 1000)
+			{
+				if (actualFunc is null)
+				{
+					throw new ArgumentNullException(nameof(actualFunc));
+				}
+
+				var actual = actualFunc();
+				if (ApproxEquals(actual))
+				{
+					return;
+				}
+
+				var stopwatch = Stopwatch.StartNew();
+				while (stopwatch.ElapsedMilliseconds < timeoutMS)
+				{
+					await WaitForIdle();
+					actual = actualFunc();
+					if (ApproxEquals(actual))
+					{
+						return;
+					}
+				}
+
+				throw new AssertFailedException($"Timed out waiting for equality condition to be met. Expected {expected} but last received value was {actual}.");
+
+				bool ApproxEquals(double actualValue) => Math.Abs(expected - actualValue) < tolerance;
+			}
+
 			/// <summary>
 			/// Wait until a specified <paramref name="condition"/> is met. 
 			/// </summary>

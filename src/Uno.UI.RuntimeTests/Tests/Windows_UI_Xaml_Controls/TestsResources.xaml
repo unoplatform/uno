@@ -107,4 +107,45 @@
 			<TextBlock Text="{Binding UserName}" />
 		</Grid>
 	</DataTemplate>
+	<Style x:Key="ScrollViewerCrowdedTemplateStyle"
+		   TargetType="ScrollViewer">
+		<Setter Property="HorizontalScrollBarVisibility"
+				Value="Auto" />
+		<Setter Property="HorizontalScrollMode"
+				Value="Enabled" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ScrollViewer">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<RepeatButton x:Name="ScrollDecreaseButton"
+									  VerticalAlignment="Bottom"
+									  Width="29"
+									  Height="29"
+									  Delay="50"
+									  FontFamily="{ThemeResource SymbolThemeFontFamily}"
+									  Interval="100"
+									  Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+									  Content="&#xE76B;" />
+						<ScrollContentPresenter x:Name="ScrollContentPresenter"
+												Grid.Column="1" />
+						<RepeatButton x:Name="ScrollIncreaseButton"
+									  Grid.Column="2"
+									  VerticalAlignment="Bottom"
+									  Width="29"
+									  Height="29"
+									  Delay="50"
+									  FontFamily="{ThemeResource SymbolThemeFontFamily}"
+									  Interval="100"
+									  Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+									  Content="&#xE76C;" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 </ResourceDictionary>
