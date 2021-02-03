@@ -56,6 +56,7 @@ namespace Windows.UI.Xaml.Controls
 				newPanel.Background = GetPanelBackground();
 
 				RegisterPopupPanel();
+				RegisterPopupPanelChild();
 			}
 		}
 
@@ -64,6 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnLoaded();
 
 			RegisterPopupPanel();
+			RegisterPopupPanelChild();
 		}
 
 		private void RegisterPopupPanel()
@@ -77,14 +79,14 @@ namespace Windows.UI.Xaml.Controls
 			{
 				MainWindow.AddSubview(PopupPanel);
 			}
-
-			RegisterPopupPanelChild();
 		}
 
 		private void RegisterPopupPanelChild(bool force = false)
 		{
 			if ((IsLoaded || force) && Child != null)
 			{
+				RegisterPopupPanel();
+
 				if (!PopupPanel.Children.Contains(Child))
 				{
 					PopupPanel.Children.Add(Child);
