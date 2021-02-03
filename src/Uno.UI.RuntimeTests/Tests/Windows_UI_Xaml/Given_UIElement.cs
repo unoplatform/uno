@@ -162,5 +162,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_UpdateLayout_Then_ReentrancyNotAllowed()
+		{
+			var sut = new When_UpdateLayout_Then_ReentrancyNotAllowed_Element();
+
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(sut.Failed);
+		}
+
+		private class When_UpdateLayout_Then_ReentrancyNotAllowed_Element : FrameworkElement
+		{
+			private bool _isMeasuring, _isArranging;
+
+			public bool Failed { get; private set; }
+
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				Failed |= _isMeasuring;
+
+				if (!Failed)
+				{
+					_isMeasuring = true;
+					UpdateLayout();
+					_isMeasuring = false;
+				}
+
+				return base.MeasureOverride(availableSize);
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				Failed |= _isArranging;
+
+				if (!Failed)
+				{
+					_isArranging = true;
+					UpdateLayout();
+					_isArranging = false;
+				}
+
+				return base.ArrangeOverride(finalSize);
+			}
+		}
 	}
 }
