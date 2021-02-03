@@ -9,6 +9,11 @@ using Windows.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.UI.Extensions;
+
+#if WINDOWS_UWP
+using Windows.UI.Xaml.Controls.Primitives;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 {
@@ -25,7 +30,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			};
 			var popup = new Popup
 			{
-				Background = new SolidColorBrush(Colors.Red),
 				Child = new Grid
 				{
 					Width = 100,
@@ -43,11 +47,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			sut.UpdateLayout();
 
 			var second = sut
-				.EnumerateAllChildren()
+				.GetAllChildren()
 				.OfType<TextBlock>()
 				.FirstOrDefault(t => t.Text == "Item_2");
 
 			popup.IsOpen = false;
+			TestServices.WindowHelper.WindowContent = null;
 
 			Assert.IsNotNull(second);
 		}
