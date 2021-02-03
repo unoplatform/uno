@@ -286,7 +286,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (_elementAsUIElement?.IsVisualTreeRoot ?? false)
 				{
-					UIElement.IsLayoutingVisualTreeRoot = true;
+					UIElement.IsLayoutingVisualTreeRoot = false;
 				}
 				traceActivity?.Dispose();
 			}
