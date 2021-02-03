@@ -46,6 +46,25 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<Style x:Key="CounterComboBoxContainerStyle"
+		   TargetType="ComboBoxItem">
+		<Setter Property="Padding"
+				Value="0" />
+		<Setter Property="MinWidth"
+				Value="0" />
+		<Setter Property="MinHeight"
+				Value="55" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ComboBoxItem">
+					<local:CounterGrid2>
+						<ContentPresenter Content="{TemplateBinding Content}"
+										  ContentTemplate="{TemplateBinding ContentTemplate}" />
+					</local:CounterGrid2>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 	<DataTemplate x:Key="TextBlockItemTemplate">
 		<TextBlock Text="{Binding}" />
 	</DataTemplate>
@@ -58,6 +77,9 @@
 	</DataTemplate>
 	<ItemsPanelTemplate x:Key="NoCacheItemsStackPanel">
 		<ItemsStackPanel CacheLength="0" />
+	</ItemsPanelTemplate>
+	<ItemsPanelTemplate x:Key="MeasureCountCarouselPanel">
+		<local:MeasureCountCarouselPanel />
 	</ItemsPanelTemplate>
 	<Style x:Key="ListViewContainerMarginStyle"
 		   TargetType="ListViewItem"

@@ -12,6 +12,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public CarouselPanel()
 		{
 			_layout.Initialize(this);
+
+			// Set CacheLength small to somewhat resemble the UWP CarouselPanel. Note that CarouselPanel doesn't expose a configurable
+			// CacheLength - Uno's CarouselPanel is borrowing the ItemsStackPanel virtualization strategy.
+			_layout.CacheLength = 0.5;
 		}
 
 		protected override Size MeasureOverride(Size availableSize) => _layout.MeasureOverride(availableSize);
