@@ -151,5 +151,33 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 			}
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // Only applicable for mouse input since we're testing mouse-over state
+		public void ScrollViewer_Fluent_ScrollBar_Appears()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Fluent");
+
+			_app.WaitForElement("ScrollViewerVisibilityCheckBox");
+
+			_app.FastTap("ScrollViewerVisibilityCheckBox");
+
+			_app.WaitForText("ScrollViewerVisibilityTextBlock", "True");
+
+			var rect = _app.GetPhysicalRect("HostBorder");
+
+			var noScrollIndicator = TakeScreenshot("No scroll indicators");
+
+			_app.FastTap("ButtonInScrollViewer"); // Put pointer over ScrollViewer so scroll bars appear
+
+			_app.WaitForText("ButtonStatusTextBlock", "Clicked");
+
+			var scrollIndicator = TakeScreenshot("Scroll indicators visible"); // If this takes a *really* long time the scroll indicators might have
+																			   // disappeared already... hopefully that doesn't happen
+
+			ImageAssert.AreNotEqual(noScrollIndicator, scrollIndicator, rect);
+
+		}
 	}
 }
