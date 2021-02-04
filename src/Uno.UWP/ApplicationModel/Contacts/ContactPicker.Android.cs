@@ -27,11 +27,6 @@ namespace Windows.ApplicationModel.Contacts
 				}
 			}
 
-			if (ContextHelper.Current == null)
-			{
-				throw new InvalidOperationException("Context is not initialized yet, API called too early in application lifecycle.");
-			}
-
 			using var intent = new Intent(Intent.ActionPick);
 			intent.SetType(ContactsContract.CommonDataKinds.Phone.ContentType);
 			var activity = await AwaitableResultActivity.StartAsync();
