@@ -17291,7 +17291,7 @@
                 <VisualState x:Name="Initials" />
                 <VisualState x:Name="NoPhotoOrInitials">
                   <VisualState.Setters>
-                    <Setter Target="InitialsTextBlock.FontFamily" Value="Segoe MDL2 Assets" />
+                    <Setter Target="InitialsTextBlock.FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
                     <!-- Placeholder symbol for 'Contact' (https://docs.microsoft.com/en-us/windows/uwp/design/style/segoe-ui-symbol-font) -->
                     <Setter Target="InitialsTextBlock.Text" Value="&#xE77B;" />
                   </VisualState.Setters>
@@ -17299,7 +17299,7 @@
                 <!-- Visual State when in Group mode -->
                 <VisualState x:Name="Group">
                   <VisualState.Setters>
-                    <Setter Target="InitialsTextBlock.FontFamily" Value="Segoe MDL2 Assets" />
+                    <Setter Target="InitialsTextBlock.FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
                     <!-- Placeholder symbol for 'People' (https://docs.microsoft.com/en-us/windows/uwp/design/style/segoe-ui-symbol-font) -->
                     <Setter Target="InitialsTextBlock.Text" Value="&#xE716;" />
                   </VisualState.Setters>
