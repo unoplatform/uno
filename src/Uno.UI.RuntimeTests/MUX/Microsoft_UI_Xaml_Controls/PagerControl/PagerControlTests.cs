@@ -49,8 +49,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			});
 		}
 
+#if !__WASM__ // IdleSynchronizer.Wait(); is not supported on WASM
 		[TestMethod]
-		[Ignore("ItemsRepeater-based version of the control is not working yet (issue #5030)")]
 		public void VerifyNumberPanelButtonUIABehavior()
 		{
 			RunOnUIThread.Execute(() => {
@@ -76,6 +76,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				}
 			});
 		}
+#endif
 
 		[TestMethod]
 		[Ignore("ComboBox version of the control is slow on Android/iOS (issue #3144)")]
