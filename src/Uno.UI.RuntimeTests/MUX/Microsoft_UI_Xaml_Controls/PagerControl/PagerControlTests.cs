@@ -49,6 +49,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			});
 		}
 
+#if !__WASM__ // IdleSynchronizer.Wait(); is not supported on WASM
 		[TestMethod]
 		public void VerifyNumberPanelButtonUIABehavior()
 		{
@@ -75,6 +76,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				}
 			});
 		}
+#endif
 
 		[TestMethod]
 		[Ignore("ComboBox version of the control is slow on Android/iOS (issue #3144)")]
