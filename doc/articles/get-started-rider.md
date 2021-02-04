@@ -6,7 +6,7 @@
 
 ## Rider Platforms support
 
-|                       | Windows (UWP/WinUI) | Android | iOS  | Wasm | macOS | Skia-GTK | Skia-WPF |
+|                       | Windows (UWP/WinUI) | Android | iOS  | Wasm | macOS | Skia-GTK (Linux) | Skia-WPF |
 | --------------------- | ------------------- | ------- | ---- | ---- | ----- | -------- | -------- |
 | **Rider for Linux**   | ❌                   | ✔️       | ❌    | ✔️†   | ❌     | ✔️        | ❌        |
 | **Rider for Mac**     | ❌                   | ✔️       | ✔️    | ✔️†   | ✔️     | ✔️†       | ❌        |
@@ -34,7 +34,7 @@
 
 * **iOS** on Windows: An attached Mac is needed, the iOS simulator will open on the Mac.
 
-## Creating a new Uno project
+## Creating a new Uno Platform project
 
 At this time, there isn't a template for the Rider IDE like there is for Visual Studio, so you can create a new project
 [using dotnet new](get-started-dotnet-new.md) by following these steps:
