@@ -26,7 +26,7 @@ namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts
 		{
 		}
 
-		public Task<bool> IsSupportedAsync() => Task.FromResult(true);
+		public Task<bool> IsSupportedAsync(CancellationToken token) => Task.FromResult(true);
 
 		public async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
 		{

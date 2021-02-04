@@ -9,7 +9,7 @@ namespace Windows.ApplicationModel.Contacts
 {
 	public partial class ContactPicker
 	{
-		private static Task<bool> IsSupportedTaskAsync() =>
+		private static Task<bool> IsSupportedTaskAsync(CancellationToken token) =>
 			Task.FromResult(false);
 
 		private Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token) =>

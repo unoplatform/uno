@@ -19,9 +19,9 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 
-		private static async Task<bool> IsSupportedTaskAsync()
+		private static async Task<bool> IsSupportedTaskAsync(CancellationToken token)
 		{
-			return _contactPickerExtension != null && await _contactPickerExtension.IsSupportedAsync();
+			return _contactPickerExtension != null && await _contactPickerExtension.IsSupportedAsync(token);
 		}
 
 		private async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
@@ -36,7 +36,7 @@ namespace Windows.ApplicationModel.Contacts
 
 	internal interface IContactPickerExtension
 	{
-		Task<bool> IsSupportedAsync();
+		Task<bool> IsSupportedAsync(CancellationToken token);
 
 		Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token);
 	}

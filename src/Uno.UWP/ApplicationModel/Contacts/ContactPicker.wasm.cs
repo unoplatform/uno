@@ -16,7 +16,7 @@ namespace Windows.ApplicationModel.Contacts
 	{
 		private const string JsType = "Windows.ApplicationModel.Contacts.ContactPicker";
 
-		private static Task<bool> IsSupportedTaskAsync()
+		private static Task<bool> IsSupportedTaskAsync(CancellationToken token)
 		{
 			var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isSupported()");
 			return Task.FromResult(bool.TryParse(isSupportedString, out var isSupported) && isSupported);

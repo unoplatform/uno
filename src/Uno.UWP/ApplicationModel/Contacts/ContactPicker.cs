@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel.Contacts
 		/// <returns>A Boolean value indicating if the contact picker is supported on the current platform.</returns>
 		/// <remarks>Unsupported platforms return false.</remarks>
 		public static IAsyncOperation<bool> IsSupportedAsync() =>
-			IsSupportedTaskAsync().AsAsyncOperation();
+			AsyncOperation.FromTask(token => IsSupportedTaskAsync(token));
 
 		/// <summary>
 		/// Launches the Contact Picker to select a single contact.
