@@ -146,12 +146,15 @@ namespace Windows.UI.Xaml.Shapes
 				borderShape.Geometry = compositor.CreatePathGeometry(borderPath);
 				outerShape.Geometry = compositor.CreatePathGeometry(outerPath);
 
-				var shapeVisual = compositor.CreateShapeVisual();
-				shapeVisual.Shapes.Add(backgroundShape);
-				shapeVisual.Shapes.Add(borderShape);
+				var borderVisual = compositor.CreateShapeVisual();
+				var backgroundVisual = compositor.CreateShapeVisual();
+				backgroundVisual.Shapes.Add(backgroundShape);
+				borderVisual.Shapes.Add(borderShape);
 
-				sublayers.Add(shapeVisual);
-				parent.Children.InsertAtTop(shapeVisual);
+				sublayers.Add(backgroundVisual);
+				sublayers.Add(borderVisual);
+				parent.Children.InsertAtBottom(backgroundVisual);
+				parent.Children.InsertAtTop(borderVisual);
 
 				owner.ClippingIsSetByCornerRadius = cornerRadius != CornerRadius.None;
 				if (owner.ClippingIsSetByCornerRadius)
