@@ -52,6 +52,11 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool IsWindowRoot { get; set; }
 
+		/// <summary>
+		/// Is this view the top of the managed visual tree
+		/// </summary>
+		internal bool IsVisualTreeRoot { get; set; }
+
 		private void Initialize()
 		{
 			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(0), DependencyPropertyValuePrecedences.DefaultValue);
@@ -341,13 +346,26 @@ namespace Windows.UI.Xaml
 		internal bool IsRenderingSuspended { get; set; }
 
 		[ThreadStatic]
-		private static bool _isInUpdateLayout;
+		private static bool _isInUpdateLayout; // Currently within the UpdateLayout() method (explicit managed layout request)
+
+#pragma warning disable CS0649 // Field not used on Desktop/Tests
+		[ThreadStatic]
+		private static bool _isLayoutingVisualTreeRoot; // Currently in Measure or Arrange of the element flagged with IsVisualTreeRoot (layout requested by the system)
+#pragma warning restore CS0649
+
+#if !__NETSTD__ // We need an internal accessor for the Layouter
+		internal static bool IsLayoutingVisualTreeRoot
+		{
+			get => _isLayoutingVisualTreeRoot;
+			set => _isLayoutingVisualTreeRoot = value;
+		}
+#endif
 
 		private const int MaxLayoutIterations = 250;
 
 		public void UpdateLayout()
 		{
-			if (_isInUpdateLayout)
+			if (_isInUpdateLayout || _isLayoutingVisualTreeRoot)
 			{
 				return;
 			}

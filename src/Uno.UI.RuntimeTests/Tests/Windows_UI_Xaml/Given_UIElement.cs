@@ -12,18 +12,14 @@ using Windows.UI.Xaml.Media;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
-    public partial class Given_UIElement
+	public partial class Given_UIElement
 	{
 #if HAS_UNO // Tests use IsArrangeDirty, which is an internal property
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Visible_InvalidateArrange()
 		{
-			var sut = new Border()
-			{
-				Width = 100,
-				Height = 10
-			};
+			var sut = new Border() {Width = 100, Height = 10};
 
 			TestServices.WindowHelper.WindowContent = sut;
 			await TestServices.WindowHelper.WaitForIdle();
@@ -74,7 +70,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			border.UpdateLayout();
 
-			await TestServices.WindowHelper.WaitFor(()=>Math.Abs(text.ActualWidth - text.ActualSize.X) < 0.01);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualWidth - text.ActualSize.X) < 0.01);
 			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualHeight - text.ActualSize.Y) < 0.01);
 
 			text.Text = "This is a longer text";
@@ -102,15 +98,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			border.UpdateLayout();
 
-			await TestServices.WindowHelper.WaitFor(() => Math.Abs(rectangle.ActualWidth - rectangle.ActualSize.X) < 0.01);
-			await TestServices.WindowHelper.WaitFor(() => Math.Abs(rectangle.ActualHeight - rectangle.ActualSize.Y) < 0.01);
+			await TestServices.WindowHelper.WaitFor(() =>
+				Math.Abs(rectangle.ActualWidth - rectangle.ActualSize.X) < 0.01);
+			await TestServices.WindowHelper.WaitFor(() =>
+				Math.Abs(rectangle.ActualHeight - rectangle.ActualSize.Y) < 0.01);
 
 			rectangle.Width = 16;
 			rectangle.Height = 32;
 			border.UpdateLayout();
 
-			await TestServices.WindowHelper.WaitFor(() => Math.Abs(rectangle.ActualWidth - rectangle.ActualSize.X) < 0.01);
-			await TestServices.WindowHelper.WaitFor(() => Math.Abs(rectangle.ActualHeight - rectangle.ActualSize.Y) < 0.01);
+			await TestServices.WindowHelper.WaitFor(() =>
+				Math.Abs(rectangle.ActualWidth - rectangle.ActualSize.X) < 0.01);
+			await TestServices.WindowHelper.WaitFor(() =>
+				Math.Abs(rectangle.ActualHeight - rectangle.ActualSize.Y) < 0.01);
 		}
 #endif
 
@@ -121,7 +121,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			if (Window.Current.RootElement is Panel root)
 			{
-				var sut = new Grid { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+				var sut = new Grid
+				{
+					HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch
+				};
 
 				var originalRootAvailableSize = LayoutInformation.GetAvailableSize(root);
 				var originalRootDesiredSize = LayoutInformation.GetDesiredSize(root);
@@ -148,7 +151,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					LayoutInformation.SetLayoutSlot(root, originalRootLayoutSlot);
 
 					root.Children.Remove(sut);
-					try { root.UpdateLayout(); } catch { } // Make sure to restore visual tree if test has failed!
+					try { root.UpdateLayout(); }
+					catch { } // Make sure to restore visual tree if test has failed!
 				}
 
 				Assert.AreNotEqual(default, availableSize);
@@ -162,5 +166,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_UpdateLayout_Then_ReentrancyNotAllowed()
+		{
+			var sut = new When_UpdateLayout_Then_ReentrancyNotAllowed_Element();
+
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(sut.Failed);
+		}
+	}
+
+	internal partial class When_UpdateLayout_Then_ReentrancyNotAllowed_Element : FrameworkElement
+	{
+		private bool _isMeasuring, _isArranging;
+
+		public bool Failed { get; private set; }
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			Failed |= _isMeasuring;
+
+			if (!Failed)
+			{
+				_isMeasuring = true;
+				UpdateLayout();
+				_isMeasuring = false;
+			}
+
+			return base.MeasureOverride(availableSize);
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			Failed |= _isArranging;
+
+			if (!Failed)
+			{
+				_isArranging = true;
+				UpdateLayout();
+				_isArranging = false;
+			}
+
+			return base.ArrangeOverride(finalSize);
+		}
 	}
 }
