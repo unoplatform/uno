@@ -18456,7 +18456,10 @@
     <Setter Property="BorderBrush" Value="{ThemeResource ScrollBarBorderBrush}" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
-    <Setter Property="Template">
+    <!-- UNO TODO: Doesn't appear in ScrollViewer because default visual states are incompatible with Uno fixed-orientation optimizations
+             for performance. As of WinUI 2.5, seems visually very similar to previous ScrollBar template anyway. If this is restored, the 
+             modifications made to the base UWP style on performance grounds should also be made here. -->
+    <win:Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ScrollBar">
           <Grid x:Name="Root">
@@ -18991,7 +18994,7 @@
           </Grid>
         </ControlTemplate>
       </Setter.Value>
-    </Setter>
+    </win:Setter>
   </Style>
   <Thickness x:Key="SliderTopHeaderMargin">0,0,0,4</Thickness>
   <x:Double x:Key="SliderPreContentMargin">15</x:Double>
