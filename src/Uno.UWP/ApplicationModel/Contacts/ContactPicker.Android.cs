@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Contacts
 				using var contentResolver = Application.Context.ContentResolver;
 				if (contentResolver != null)
 				{
-					var projection = new string[] { ContactsContract.IContactsColumns.LookupKey };
+					var projection = new string[] { "lookup" };
 					using ICursor? cursorLookUpKey = contentResolver.Query(contactUri, projection, null, null, null);
 					if (cursorLookUpKey?.MoveToFirst() == true)
 					{
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static void ReadStructuredName(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var contactWhere = ContactsContract.IContactsColumns.LookupKey + " = ? AND " + "mimetype = ?";
+			var contactWhere = "lookup = ? AND " + "mimetype = ?";
 			var contactWhereParams = new[] { lookupKey, ContactsContract.CommonDataKinds.StructuredName.ContentItemType };
 			if (ContactsContract.Data.ContentUri != null)
 			{
@@ -102,7 +102,7 @@ namespace Windows.ApplicationModel.Contacts
 		private static void ReadNickname(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
 			var nicknameWhere =
-			   ContactsContract.IContactsColumns.LookupKey + " = ? AND " +
+			   "lookup = ? AND " +
 			   "mimetype = ?";
 
 			var nicknameWhereParams = new[]
@@ -130,7 +130,7 @@ namespace Windows.ApplicationModel.Contacts
 		private static void ReadNotes(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
 			var noteWhere =
-				ContactsContract.IContactsColumns.LookupKey + " = ? AND " +
+				"lookup = ? AND " +
 				"mimetype = ?";
 
 			var noteWhereParams = new[]
@@ -157,7 +157,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static void ReadPhones(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var phonesWhere = ContactsContract.IContactsColumns.LookupKey + " = ?";
+			var phonesWhere = "lookup = ?";
 			var phonesWhereParams = new[]
 			{
 				lookupKey
@@ -203,7 +203,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static void ReadEmails(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var emailsWhere = ContactsContract.IContactsColumns.LookupKey + " = ?";
+			var emailsWhere = "lookup = ?";
 			var emailsWhereParams = new[]
 			{
 				lookupKey
@@ -248,7 +248,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static void ReadAddresses(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var addressesWhere = ContactsContract.IContactsColumns.LookupKey + " = ?";
+			var addressesWhere = "lookup = ?";
 			var addressesWhereParams = new[]
 			{
 				lookupKey
