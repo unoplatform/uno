@@ -1,6 +1,6 @@
 # Getting Started on Visual Studio For Mac
 
-While it is easier to create apps using Uno on Windows, you can also create all but UWP apps on your Mac.
+While it is easier to create apps using Uno Platform on Windows, you can also create all but UWP/WinUI apps on your Mac.
 
 ## Prerequisites
 * [**Visual Studio for Mac 8.8**](https://visualstudio.microsoft.com/vs/mac/)
@@ -59,3 +59,7 @@ Building for WebAssembly takes a few more steps:
 
 ### Video Tutorial
 [![Getting Started Visual Studio Mac Video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
+
+### Getting Help
+
+If you have issues with Visual Studio and Uno Platform, please visit our [Discord](https://wwww.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 
