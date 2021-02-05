@@ -25,6 +25,7 @@ using Windows.UI.Xaml.Markup;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
+using System.Text;
 
 #if __IOS__
 using UIKit;
@@ -192,6 +193,9 @@ namespace Windows.UI.Xaml
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
+			var logInfoString = from.Log().IsEnabled(LogLevel.Information) ? new StringBuilder() : null;
+			logInfoString?.Append($"{nameof(GetTransform)}(from: {from}, to: {to?.ToString() ?? "<null>"}) Offsets: [");
+
 			if (from == to)
 			{
 				return Matrix3x2.Identity;
@@ -263,6 +267,7 @@ namespace Windows.UI.Xaml
 					offsetY -= elt.ScrollOffsets.Y;
 				}
 
+				logInfoString?.Append($"{elt}: ({offsetX}, {offsetY}), ");
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
@@ -278,6 +283,11 @@ namespace Windows.UI.Xaml
 				matrix *= rootToTo;
 			}
 
+			if (logInfoString != null)
+			{
+				logInfoString.Append($"], matrix: {matrix}");
+				from.Log().LogInformation(logInfoString.ToString());
+			}
 			return matrix;
 		}
 
