@@ -108,7 +108,7 @@ namespace Windows.ApplicationModel.Contacts
 		public string YomiFamilyName { get; set; } = "";
 
 		[NotImplemented]
-		public IRandomAccessStreamReference? Thumbnail { get; }
+		public IRandomAccessStreamReference? Thumbnail { get; set; }
 
 		[NotImplemented]
 		public IRandomAccessStreamReference? LargeDisplayPicture { get; }
@@ -117,6 +117,6 @@ namespace Windows.ApplicationModel.Contacts
 		public IRandomAccessStreamReference? SmallDisplayPicture { get; }
 
 		[NotImplemented]
-		public IRandomAccessStreamReference? SourceDisplayPicture { get; }
+		public IRandomAccessStreamReference? SourceDisplayPicture { get; set; }
 	}
 }
