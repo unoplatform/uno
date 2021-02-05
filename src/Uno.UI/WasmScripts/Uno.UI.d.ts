@@ -987,6 +987,31 @@ declare namespace Windows.Storage {
         private static synchronizeFileSystem;
     }
 }
+declare enum ContactProperty {
+    Address = "address",
+    Email = "email",
+    Icon = "icon",
+    Name = "name",
+    Tel = "tel"
+}
+declare class ContactInfo {
+    address: PaymentAddress[];
+    email: string[];
+    name: string;
+    tel: string;
+}
+declare class ContactsManager {
+    select(props: ContactProperty[], options: any): Promise<ContactInfo[]>;
+}
+interface Navigator {
+    contacts: ContactsManager;
+}
+declare namespace Windows.ApplicationModel.Contacts {
+    class ContactPicker {
+        static isSupported(): boolean;
+        static pickContacts(pickMultiple: boolean): Promise<string>;
+    }
+}
 interface NavigatorDataTransferManager {
     share(data: any): Promise<void>;
 }

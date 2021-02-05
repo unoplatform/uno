@@ -145,6 +145,8 @@
     href: features\windows-applicationmodel-calls.md
   - name: Windows.ApplicationModel.Chat
     href: features\windows-applicationmodel-chat.md
+  - name: Windows.ApplicationModel.Contacts
+    href: features\windows-applicationmodel-contacts.md
   - name: Windows.ApplicationModel.DataTransfer
     href: features\windows-applicationmodel-datatransfer.md
   - name: Windows.ApplicationModel.Email

@@ -23,6 +23,8 @@ using Uno.UI.Runtime.Skia.Tizen.System.Profile;
 using Windows.ApplicationModel;
 using Uno.UI.Runtime.Skia.Tizen.ApplicationModel;
 using Uno.ApplicationModel;
+using Windows.ApplicationModel.Contacts;
+using Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.UI.Runtime.Skia.Tizen.ApplicationModel.DataTransfer;
 
@@ -79,6 +81,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new TizenAnalyticsInfoExtension(o));
 			ApiExtensibility.Register(typeof(IPackageIdExtension), o => new TizenPackageIdExtension(o));
 			ApiExtensibility.Register(typeof(IDataTransferManagerExtension), o => new TizenDataTransferManagerExtension(o));
+			ApiExtensibility.Register(typeof(IContactPickerExtension), o => new TizenContactPickerExtension(o));
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{
