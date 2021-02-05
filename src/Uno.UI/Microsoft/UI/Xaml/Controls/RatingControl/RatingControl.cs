@@ -74,12 +74,22 @@ namespace Microsoft.UI.Xaml.Controls
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_RatingControl);
 
 			DefaultStyleKey = typeof(RatingControl);
+
+			Unloaded += RatingControl_Unloaded;
+		}
+
+		// Uno specific: Unsubscribing events here instead of the destructor to ensure
+		// it happens on the UI thread.
+		private void RatingControl_Unloaded(object sender, RoutedEventArgs e)
+		{
+			RecycleEvents(true /* useSafeGet */);
 		}
 
 		~RatingControl()
 		{
 			// We only need to use safe_get in the deruction loop
-			RecycleEvents(true /* useSafeGet */);
+			// We don't need to unload events
+			// RecycleEvents(true /* useSafeGet */);
 		}
 
 		private float RenderingRatingFontSize()
