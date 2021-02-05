@@ -26,7 +26,7 @@ namespace UITests.Windows_ApplicationModel.Contacts
 			Model?.Load();
 		}
 
-		public PickContactViewModel? Model { get; private set; }
+		public PickContactViewModel Model { get; private set; }
 
 		private void PickContact_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{

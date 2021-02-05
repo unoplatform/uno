@@ -2,7 +2,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Uno;
 using Windows.Foundation.Collections;
+using Windows.Storage.Streams;
 
 namespace Windows.ApplicationModel.Contacts
 {
@@ -11,6 +13,9 @@ namespace Windows.ApplicationModel.Contacts
 	/// </summary>
 	public partial class Contact
 	{
+		[NotImplemented]
+		public string? Id { get; set; }
+
 		/// <summary>
 		/// Gets the full name of the Contact.
 		/// </summary>
@@ -101,5 +106,17 @@ namespace Windows.ApplicationModel.Contacts
 		/// Gets the Yomi (phonetic Japanese equivalent) family name for a contact.
 		/// </summary>
 		public string YomiFamilyName { get; set; } = "";
+
+		[NotImplemented]
+		public IRandomAccessStreamReference? Thumbnail { get; }
+
+		[NotImplemented]
+		public IRandomAccessStreamReference? LargeDisplayPicture { get; }
+
+		[NotImplemented]
+		public IRandomAccessStreamReference? SmallDisplayPicture { get; }
+
+		[NotImplemented]
+		public IRandomAccessStreamReference? SourceDisplayPicture { get; }
 	}
 }
