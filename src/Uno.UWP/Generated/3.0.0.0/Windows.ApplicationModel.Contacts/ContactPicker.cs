@@ -7,7 +7,7 @@ namespace Windows.ApplicationModel.Contacts
 	#endif
 	public  partial class ContactPicker 
 	{
-		#if __ANDROID__ || fasle || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Contacts.ContactSelectionMode SelectionMode
 		{
