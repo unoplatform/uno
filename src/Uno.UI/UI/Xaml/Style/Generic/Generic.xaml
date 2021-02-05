@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:uwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6115,7 +6116,7 @@
 		</Setter>
 	</Style>
 
-	<Style TargetType="MediaPlayerElement">
+	<uwp:Style TargetType="MediaPlayerElement">
 		<Setter Property="HorizontalAlignment"
 				Value="Stretch" />
 		<Setter Property="VerticalAlignment"
@@ -6148,7 +6149,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>
+	</uwp:Style>
 
 	<Style x:Key="MTC_ButtonStyle"
 		   TargetType="Button">
@@ -6613,7 +6614,7 @@
 		</Setter>
 	</Style>
 
-	<Style TargetType="MediaTransportControls">
+	<uwp:Style TargetType="MediaTransportControls">
 		<Setter Property="IsTabStop"
 				Value="False" />
 		<Setter Property="Background"
@@ -7097,7 +7098,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>
+	</uwp:Style>
 
 	<Style x:Key="AccentButtonStyle" TargetType="Button">
 		<Setter Property="Foreground" Value="{ThemeResource AccentButtonForeground}" />

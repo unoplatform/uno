@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Automation.Peers;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public class InfoBarAutomationPeer : FrameworkElementAutomationPeer
+	public partial class InfoBarAutomationPeer : FrameworkElementAutomationPeer
 	{
 		public InfoBarAutomationPeer(InfoBar owner) : base(owner)
 		{
