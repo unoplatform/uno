@@ -28,6 +28,8 @@
   </TemplateData>
   <TemplateContent>
 	<ProjectCollection>
+	  <ProjectTemplateLink ProjectName="$projectname$.Shared" CopyParameters="true">Shared\Shared.vstemplate</ProjectTemplateLink>
+	  
 	  <SolutionFolder Name="Platforms">
 		<ProjectTemplateLink ProjectName="$projectname$.Droid" CopyParameters="true">Droid\Android.vstemplate</ProjectTemplateLink>
 		<ProjectTemplateLink ProjectName="$projectname$.iOS" CopyParameters="true">iOS\iOS.vstemplate</ProjectTemplateLink>
@@ -39,8 +41,6 @@
 		<ProjectTemplateLink ProjectName="$projectname$.Skia.Gtk" CopyParameters="true">Skia.Gtk\SkiaGtk.vstemplate</ProjectTemplateLink>
 		<ProjectTemplateLink ProjectName="$projectname$.Skia.Tizen" CopyParameters="true">Skia.Tizen\SkiaTizen.vstemplate</ProjectTemplateLink>
 	  </SolutionFolder>
-
-	  <ProjectTemplateLink ProjectName="$projectname$.Shared" CopyParameters="true">Shared\Shared.vstemplate</ProjectTemplateLink>
 	</ProjectCollection>
   </TemplateContent>
   <WizardExtension>
