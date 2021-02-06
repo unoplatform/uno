@@ -73,6 +73,27 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty MinimumProperty { get; } = DependencyProperty.Register(
 			nameof(Minimum), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(0d, (s, e) => (s as ProgressRing)?.OnMinimumPropertyChanged(e)));
 
+
+
+		public IAnimatedVisualSource DeterminateSource
+		{
+			get { return (IAnimatedVisualSource)GetValue(DeterminateSourceProperty); }
+			set { SetValue(DeterminateSourceProperty, value); }
+		}
+
+		public static readonly DependencyProperty DeterminateSourceProperty =
+			DependencyProperty.Register("DeterminateSource", typeof(IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnDeterminateSourcePropertyChanged(e)));
+
+
+		public IAnimatedVisualSource IndeterminateSource
+		{
+			get { return (IAnimatedVisualSource)GetValue(IndeterminateSourceProperty); }
+			set { SetValue(IndeterminateSourceProperty, value); }
+		}
+
+		public static readonly DependencyProperty IndeterminateSourceProperty =
+			DependencyProperty.Register("IndeterminateSource", typeof(IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnIndeterminateSourcePropertyChanged(e)));
+
 		public ProgressRing()
 		{
 			DefaultStyleKey = typeof(ProgressRing);
@@ -163,22 +184,52 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private void OnDeterminateSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
+		{
+			SetAnimatedVisualPlayerSource();
+		}
+
+		private void OnIndeterminateSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
+		{
+			SetAnimatedVisualPlayerSource();
+		}
+
 		private void SetAnimatedVisualPlayerSource()
 		{
 			if (_lottieProvider != null && _player != null)
 			{
 				var isIndeterminate = IsIndeterminate;
-				if (isIndeterminate && _currentSourceUri != FeatureConfiguration.ProgressRing.ProgressRingAsset)
+				if (isIndeterminate)
 				{
-					_currentSourceUri = FeatureConfiguration.ProgressRing.ProgressRingAsset;
-					var animatedVisualSource = _lottieProvider.CreateTheamableFromLottieAsset(_currentSourceUri);
-					_player.Source = animatedVisualSource;
+					var indeterminateSource = IndeterminateSource;
+					if (indeterminateSource == null)
+					{
+						_currentSourceUri = FeatureConfiguration.ProgressRing.ProgressRingAsset;
+						var animatedVisualSource = _lottieProvider.CreateTheamableFromLottieAsset(_currentSourceUri);
+						_player.Source = animatedVisualSource;
+					}
+					else
+					{
+						_player.Source = _lottieProvider.TryCreateThemableFromAnimatedVisualSource(indeterminateSource, out var themableSource)
+							? themableSource
+							: indeterminateSource;
+					}
 				}
-				else if (!isIndeterminate && _currentSourceUri != FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset)
+				else
 				{
-					_currentSourceUri = FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset;
-					var animatedVisualSource = _lottieProvider.CreateTheamableFromLottieAsset(_currentSourceUri);
-					_player.Source = animatedVisualSource;
+					var determinateSource = DeterminateSource;
+					if (determinateSource == null)
+					{
+						_currentSourceUri = FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset;
+						var animatedVisualSource = _lottieProvider.CreateTheamableFromLottieAsset(_currentSourceUri);
+						_player.Source = animatedVisualSource;
+					}
+					else
+					{
+						_player.Source = _lottieProvider.TryCreateThemableFromAnimatedVisualSource(determinateSource, out var themableSource)
+							? themableSource
+							: determinateSource;
+					}
 				}
 				
 			}
