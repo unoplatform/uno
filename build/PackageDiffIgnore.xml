@@ -3401,8 +3401,14 @@
 				reason="Constructor not public in UWP" />
 			<Member
 				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequest..ctor()"
-				reason="Constructor not public in UWP" />
-		</Methods>
+				reason="Constructor not public in UWP" />																		
+			<Member
+				fullName="System.Double Windows.UI.Xaml.Media.Animation.BounceEase.BounceEaseIn(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)"
+				reason="Constructor not public in UWP" />																		
+			<Member
+				fullName="System.Double Windows.UI.Xaml.Media.Animation.BounceEase.BounceEaseOut(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)"
+				reason="Constructor not public in UWP" />																		
+		 </Methods>
 	</IgnoreSet>
 
 	<!--

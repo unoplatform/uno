@@ -34,12 +34,12 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		public static double BounceEaseIn(double progress)
+		private static double BounceEaseIn(double progress)
 		{
 			return 1 - BounceEaseOut(1 - progress);
 		}
 
-		public static double BounceEaseOut(double progress)
+		private static double BounceEaseOut(double progress)
 		{
 			const double n1 = 7.5625;
 			const double d1 = 2.75;
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		public static double BounceEaseInOut(double progress)
+		private static double BounceEaseInOut(double progress)
 		{
 			return progress < 0.5
 				? (1 - BounceEaseOut(1 - 2 * progress)) / 2
