@@ -51,5 +51,62 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.VisualStateManagerTests
 			// The button should override the value set by VisualState's Setter.
 			_app.WaitForDependencyPropertyValue(rootGrid, "Background", "[SolidColorBrush [Color: 000000FF;00000000;00000000;000000FF]]");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Returns_To_Default_State()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml.VisualStateTests.VisualState_ReturnPreviousValue");
+
+			var rootGrid = _app.Marked("RootGrid");
+			_app.WaitForElement(rootGrid);
+
+			// Initially, the background should be green.
+			_app.WaitForDependencyPropertyValue(rootGrid, "Background", "[SolidColorBrush [Color: 000000FF;00000000;000000FF;00000000]]");
+
+			var changeBackgroundButton = _app.Marked("ChangeBackgroundButton");
+			var defaultStateButton = _app.Marked("DefaultStateButton");
+			var secondStateButton = _app.Marked("SecondStateButton");
+			var thirdStateButton = _app.Marked("ThirdStateButton");
+
+			// Switch to second state.
+			_app.FastTap(secondStateButton);
+
+			// The background should be red.
+			_app.WaitForDependencyPropertyValue(rootGrid, "Background", "[SolidColorBrush [Color: 000000FF;000000FF;00000000;00000000]]");
+
+			// Switch to third state.
+			_app.FastTap(thirdStateButton);
+
+			// The background should be blue.
+			_app.WaitForDependencyPropertyValue(rootGrid, "Background", "[SolidColorBrush [Color: 000000FF;00000000;00000000;000000FF]]");
+
+			// Switch to default state.
+			_app.FastTap(defaultStateButton);
+
+			// The background should be green.
+			_app.WaitForDependencyPropertyValue(rootGrid, "Background", "[SolidColorBrush [Color: 000000FF;00000000;000000FF;00000000]]");
+
+			// Go back to second state.
+			_app.FastTap(secondStateButton);
+
+			// And override the background locally.
+			_app.FastTap(changeBackgroundButton);
+
+			// The background should be white.
+			_app.WaitForDependencyPropertyValue(rootGrid, "Background", "[SolidColorBrush [Color: 000000FF;000000FF;000000FF;000000FF]]");
+
+			// Switch to third state.
+			_app.FastTap(thirdStateButton);
+
+			// The background should be blue.
+			_app.WaitForDependencyPropertyValue(rootGrid, "Background", "[SolidColorBrush [Color: 000000FF;00000000;00000000;000000FF]]");
+
+			// Finally, go back to default state.
+			_app.FastTap(defaultStateButton);
+
+			// The background should have the previously set white color.
+			_app.WaitForDependencyPropertyValue(rootGrid, "Background", "[SolidColorBrush [Color: 000000FF;000000FF;000000FF;000000FF]]");
+		}
 	}
 }
