@@ -19,8 +19,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 	[TestClass]
 	public class Given_ListViewBase
 	{
-		// Make sure to have a valid custom theme set, so it won't try to read it from the Application.Current(<<== null).RequestedTheme
-		[TestInitialize] public void Init() => global::Uno.UI.ApplicationHelper.RequestedCustomTheme = "HighContrast";
+		[TestInitialize] public void Init() => UnitTestsApp.App.EnsureApplication();
 
 		[TestMethod]
 		public void When_MultiSelectedItem()
