@@ -980,9 +980,17 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private static double GetAdjustmentForSpacing(int rowOrColumnSpan, double spacing) => spacing * (rowOrColumnSpan - 1);
 
-		private static Memory<ViewPosition> FindStarSizeChildren(Span<ViewPosition> positions, Memory<ViewPosition> pixelSizeChildren, List<ViewPosition> autoSizeChildren)
+		private ViewPosition[] _resCache;
+
+		private Memory<ViewPosition> FindStarSizeChildren(Span<ViewPosition> positions, Memory<ViewPosition> pixelSizeChildren, List<ViewPosition> autoSizeChildren)
 		{
-			var res = new Memory<ViewPosition>(new ViewPosition[positions.Length]);
+			if ((_resCache?.Length ?? -1) != positions.Length)
+			{
+				// As configuration of Grids are usually pretty stable, for perf consideration (Avoids GC) we try to re-use the same array
+				_resCache = new ViewPosition[positions.Length];
+			}
+
+			var res = new Memory<ViewPosition>(_resCache);
 			int count = 0;
 
 			// Use local function to avoid the use of Enumerable.Any. foreach on List<T> uses allocation less
