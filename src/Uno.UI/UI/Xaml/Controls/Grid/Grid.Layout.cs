@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using Uno.Disposables;
 using Uno.Collections;
 using Microsoft.Extensions.Logging;
+using Uno.Buffers;
 using Uno.UI.DataBinding;
 
 #if XAMARIN_ANDROID
@@ -43,6 +44,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private Memory<DoubleRange> _calculatedRows;
 		private Memory<DoubleRange> _calculatedColumns;
+
+		private static ArrayPool<ViewPosition> _resCachePool = ArrayPool<ViewPosition>.Create();
+		private ViewPosition[] _resCache;
 
 		private Memory<Column> GetColumns(bool considerStarAsAuto)
 		{
@@ -980,14 +984,18 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private static double GetAdjustmentForSpacing(int rowOrColumnSpan, double spacing) => spacing * (rowOrColumnSpan - 1);
 
-		private ViewPosition[] _resCache;
-
 		private Memory<ViewPosition> FindStarSizeChildren(Span<ViewPosition> positions, Memory<ViewPosition> pixelSizeChildren, List<ViewPosition> autoSizeChildren)
 		{
-			if ((_resCache?.Length ?? -1) != positions.Length)
+			// As configuration of Grids are usually pretty stable, for perf consideration (Avoids GC) we try to re-use the same array
+			// Note: Even if we use a pool for it, we still localy cache the "res" array to avoid multiple pool lookup for each layouting pass.
+			if (_resCache is null)
 			{
-				// As configuration of Grids are usually pretty stable, for perf consideration (Avoids GC) we try to re-use the same array
-				_resCache = new ViewPosition[positions.Length];
+				_resCache = _resCachePool.Rent(positions.Length);
+			}
+			else if (_resCache.Length < positions.Length)
+			{
+				_resCachePool.Return(_resCache, clearArray: false);
+				_resCache = _resCachePool.Rent(positions.Length);
 			}
 
 			var res = new Memory<ViewPosition>(_resCache);
@@ -1336,6 +1344,14 @@ namespace Windows.UI.Xaml.Controls
 						rowSpan
 					)
 				);
+			}
+		}
+
+		~Grid()
+		{
+			if (_resCache is { })
+			{
+				_resCachePool.Return(_resCache, clearArray: false);
 			}
 		}
 
