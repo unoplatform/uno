@@ -87,7 +87,7 @@
   <ItemGroup>
 
 	<ExcludeXamlNamespaces Include="win" />
-	<ExcludeXamlNamespaces Include="uwp" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+	<ExcludeXamlNamespaces Include="not_mux" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	
 	<!-- iOS -->
 	<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="android" />
