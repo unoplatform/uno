@@ -13,8 +13,5 @@ namespace Windows.UI.Xaml.Media
 		{
 			return null;
 		}
-
-		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
-		internal bool SupportsAssignAndObserveBrush => true;
 	}
 }
