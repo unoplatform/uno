@@ -62,7 +62,7 @@
 		<Setter Property="FontWeight"
 				Value="SemiBold" />
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="14" />
 		<Setter Property="TextTrimming"
 				Value="None" />
 		<Setter Property="TextWrapping"
@@ -3728,15 +3728,15 @@
 		<Setter Property="Background"
 				Value="{ThemeResource SystemControlForegroundAccentBrush}" />
 		<Setter Property="Template">
-			<Setter.Value>	
-				<ControlTemplate TargetType="Thumb">	
-					<Border Background="{TemplateBinding Background}"	
-							BorderBrush="{TemplateBinding BorderBrush}"	
-							BorderThickness="{TemplateBinding BorderThickness}"	
-							CornerRadius="4" />	
-				</ControlTemplate>	
-			</Setter.Value>	
-		</Setter>	
+			<Setter.Value>
+				<ControlTemplate TargetType="Thumb">
+					<Border Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="4" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
 	</xamarin:Style>
 
 	<Style x:Key="XamlDefaultSlider"
@@ -4224,7 +4224,7 @@
 		<Setter Property="Padding"
 				Value="{ThemeResource TextControlThemePadding}" />
 	<!-- macOS PasswordBox implemeentation will not display the RevealButton -->
-		<macos:Setter Property="IsPasswordRevealButtonEnabled" 
+		<macos:Setter Property="IsPasswordRevealButtonEnabled"
 					  Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
@@ -4582,7 +4582,7 @@
 
 	<Style TargetType="ProgressBar"
 		   BasedOn="{StaticResource XamlDefaultProgressBar}" />
-	
+
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ListViewHeaderItem -->
 	<Style TargetType="ListViewHeaderItem">
@@ -5747,7 +5747,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
+
 	<Style x:Name="AutoSuggestBoxDeleteButtonStyle" TargetType="Button">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -5809,7 +5809,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
+
 	<Style x:Name="AutoSuggestBoxQueryButtonStyle" TargetType="Button">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -6051,13 +6051,13 @@
 							Width="{TemplateBinding Height}"
 							VerticalAlignment="Stretch"
 							AutomationProperties.AccessibilityView="Raw"/>
-					
+
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
+
 	<!-- Default Style for AutoSuggestBox -->
 	<Style TargetType="AutoSuggestBox">
 		<Setter Property="VerticalAlignment" Value="Top" />
@@ -6109,7 +6109,7 @@
 								</ListView>
 							</Border>
 						</Popup>
-					
+
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
@@ -6209,7 +6209,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
+
 	<Style TargetType="ProgressBar"
 		   x:Key="MediaSliderProgressBarStyle">
 		<Setter Property="Height"
@@ -6602,13 +6602,13 @@
 					<Border Background="{TemplateBinding Background}"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch">
-						
+
 						<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  Content="{TemplateBinding Content}"
 										  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
 										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-					</Border>					
+					</Border>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -7977,7 +7977,7 @@
 										<Setter Target="VerticalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
 									</VisualState.Setters>
 									 <!-- The storyboard below cannot be moved to a transition since transitions
-											will not be run by the framework when animations are disabled in the system--> 
+											will not be run by the framework when animations are disabled in the system-->
 
 									<Storyboard>
 										<ColorAnimation Duration="0" BeginTime="{ThemeResource ScrollBarExpandBeginTime}" Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" To="{ThemeResource ScrollBarThumbBackgroundColor}" />
@@ -8061,7 +8061,7 @@
 								<not_netstdref:VisualState x:Name="CollapsedWithoutAnimation">
 								<!-- The storyboard below cannot be moved to a transition since transitions
                                              will not be run by the framework when animations are disabled in the system -->
-								
+
 									<Storyboard>
 										<ColorAnimation Duration="0" BeginTime="{ThemeResource ScrollBarContractBeginTime}" Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" To="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
 										<ColorAnimation Duration="0" BeginTime="{ThemeResource ScrollBarContractBeginTime}" Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" To="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
@@ -8396,7 +8396,7 @@
 			</Setter.Value>
 		</Setter>
 	</not_netstdref:Style>
-	
+
 	<Style x:Key="TextBlockButtonStyle" TargetType="ButtonBase">
         <Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource HyperlinkButtonForeground}" />
