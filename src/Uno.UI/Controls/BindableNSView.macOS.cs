@@ -52,6 +52,11 @@ namespace Uno.UI.Controls
 		public BindableNSView()
 		{
 			Initialize();
+			WantsLayer = true;
+			if (Layer != null)
+			{
+				Layer.MasksToBounds = false;
+			}
 		}
 
 		public BindableNSView(IntPtr handle)
