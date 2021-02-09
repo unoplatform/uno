@@ -170,6 +170,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected virtual void OnStrokeUpdated(Brush newValue)
 		{
+			_strokeBrushChanged.Disposable = null;
 			if (newValue?.SupportsAssignAndObserveBrush ?? false)
 			{
 
@@ -181,10 +182,7 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 				);
 			}
-			else
-			{
-				_strokeBrushChanged.Disposable = null;
-			}
+
 			OnStrokeUpdatedPartial();
 			RefreshShape();
 		}

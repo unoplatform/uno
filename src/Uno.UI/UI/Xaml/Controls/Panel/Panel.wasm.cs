@@ -46,13 +46,10 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
+			_borderBrushChanged.Disposable = null;
 			if (newValue?.SupportsAssignAndObserveBrush ?? false)
 			{
 				_borderBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => UpdateBorder());
-			}
-			else
-			{
-				_borderBrushChanged.Disposable = null;
 			}
 
 			UpdateBorder();
