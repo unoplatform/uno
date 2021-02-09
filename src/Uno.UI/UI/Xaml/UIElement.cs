@@ -798,7 +798,11 @@ namespace Windows.UI.Xaml
 				propertyName += "Property";
 			}
 			var propInfo = GetType().GetTypeInfo().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-			var dp = propInfo.GetValue(null) as DependencyProperty;
+			var dp = propInfo?.GetValue(null) as DependencyProperty;
+			if (dp == null)
+			{
+				return "[No such property]";
+			}
 			var bindings = (this as IDependencyObjectStoreProvider).Store.GetResourceBindingsForProperty(dp);
 			if (bindings.Any())
 			{
