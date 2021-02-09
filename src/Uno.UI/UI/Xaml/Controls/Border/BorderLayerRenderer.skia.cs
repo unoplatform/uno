@@ -133,6 +133,11 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					adjustedArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, adjustedArea, imgBackground);
 				}
+				else if (background is AcrylicBrush acrylicBrush)
+				{
+					Brush.AssignAndObserveBrush(acrylicBrush, color => backgroundShape.FillBrush = compositor.CreateColorBrush(color))
+						.DisposeWith(disposables);
+				}
 				else
 				{
 					backgroundShape.FillBrush = null;
@@ -196,6 +201,14 @@ namespace Windows.UI.Xaml.Shapes
 				else if (background is ImageBrush imgBackground)
 				{
 					backgroundArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, backgroundArea, imgBackground);
+				}
+				else if (background is AcrylicBrush acrylicBrush)
+				{
+					Brush.AssignAndObserveBrush(acrylicBrush, c => backgroundShape.FillBrush = compositor.CreateColorBrush(c))
+						.DisposeWith(disposables);
+
+					Disposable.Create(() => backgroundShape.FillBrush = null)
+						.DisposeWith(disposables);
 				}
 				else
 				{
