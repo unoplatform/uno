@@ -167,13 +167,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 			var rect = _app.GetPhysicalRect("HostBorder");
 
-			var noScrollIndicator = TakeScreenshot("No scroll indicators");
+			using var noScrollIndicator = TakeScreenshot("No scroll indicators");
 
 			_app.FastTap("ButtonInScrollViewer"); // Put pointer over ScrollViewer so scroll bars appear
 
 			_app.WaitForText("ButtonStatusTextBlock", "Clicked");
 
-			var scrollIndicator = TakeScreenshot("Scroll indicators visible"); // If this takes a *really* long time the scroll indicators might have
+			using var scrollIndicator = TakeScreenshot("Scroll indicators visible"); // If this takes a *really* long time the scroll indicators might have
 																			   // disappeared already... hopefully that doesn't happen
 
 			ImageAssert.AreNotEqual(noScrollIndicator, scrollIndicator, rect);
