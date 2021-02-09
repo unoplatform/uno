@@ -3,7 +3,7 @@
 using System;
 using Tizen.Applications;
 using System.Threading.Tasks;
-using Uno.System;
+using Uno.Extensions.System;
 using Uno.UI.Runtime.Skia.Tizen.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Tizen.System
