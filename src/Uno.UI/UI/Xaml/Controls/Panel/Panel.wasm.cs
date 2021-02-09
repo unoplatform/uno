@@ -20,8 +20,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private SerialDisposable _brushChanged = new SerialDisposable();
-		//private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly SerialDisposable _borderBrushChanged = new SerialDisposable();
 
 		public Panel()
 		{
@@ -47,6 +46,15 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
+			if (newValue?.SupportsAssignAndObserveBrush ?? false)
+			{
+				_borderBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => UpdateBorder());
+			}
+			else
+			{
+				_borderBrushChanged.Disposable = null;
+			}
+
 			UpdateBorder();
 		}
 
