@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				// The native control will ignore a value of null and retain an empty string. We coalesce the null to prevent a spurious empty string getting bounced back via two-way binding.
-				value = value ?? string.Empty;
+				value ??= string.Empty;
 				if (base.StringValue != value)
 				{
 					base.StringValue = value;
@@ -126,17 +126,31 @@ namespace Windows.UI.Xaml.Controls
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
 			var textBox = _textBox.GetTarget();
-			if (textBox != null)
-			{
-				var scb = newValue as SolidColorBrush;
 
-				if (scb != null)
+			if (textBox != null && Brush.TryGetColorWithOpacity(newValue, out var color))
+			{
+				this.TextColor = color;
+				UpdateCaretColor(color);
+			}
+			else
+			{
+				UpdateCaretColor();
+			}
+		}
+
+		private void UpdateCaretColor(Color? color = null)
+		{
+			if (CurrentEditor is NSTextView textField)
+			{
+				if (color != null)
 				{
-					this.TextColor = scb.Color;
+					textField.InsertionPointColor = color;
+				}
+				else if (Brush.TryGetColorWithOpacity(Foreground, out var foregroundColor))
+				{
+					textField.InsertionPointColor = foregroundColor;
 				}
 			}
-
-			UpdateCaretColor();
 		}
 
 		private void UpdateCaretColor()
