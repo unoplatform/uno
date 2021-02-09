@@ -163,5 +163,8 @@ namespace Windows.UI.Xaml.Media
 			paint.SetShader(fillPaint.Shader);
 			return drawable;
 		}
+
+		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
+		internal bool SupportsAssignAndObserveBrush => true;
 	}
 }

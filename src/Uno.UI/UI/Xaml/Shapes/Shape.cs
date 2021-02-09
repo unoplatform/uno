@@ -18,6 +18,7 @@ namespace Windows.UI.Xaml.Shapes
 		private const double DefaultStrokeThicknessWhenNoStrokeDefined = 0.0;
 
 		private readonly SerialDisposable _brushChanged = new SerialDisposable();
+		private readonly SerialDisposable _strokeBrushChanged = new SerialDisposable();
 
 		/// <summary>
 		/// Returns 0.0 if Stroke is <c>null</c>, otherwise, StrokeThickness
@@ -169,6 +170,21 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected virtual void OnStrokeUpdated(Brush newValue)
 		{
+			if (newValue?.SupportsAssignAndObserveBrush ?? false)
+			{
+
+				_strokeBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ =>
+#if __WASM__
+					OnStrokeUpdatedPartial()
+#else
+					RefreshShape(true)
+#endif
+				);
+			}
+			else
+			{
+				_strokeBrushChanged.Disposable = null;
+			}
 			OnStrokeUpdatedPartial();
 			RefreshShape();
 		}
