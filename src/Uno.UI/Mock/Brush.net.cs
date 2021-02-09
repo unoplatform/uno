@@ -7,7 +7,6 @@ using System.Drawing;
 
 namespace Windows.UI.Xaml.Media
 {
-	//Android partial for Brush
 	public abstract partial class Brush
 	{
 		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Color> colorSetter, Action imageBrushCallback = null)
@@ -15,5 +14,7 @@ namespace Windows.UI.Xaml.Media
 			return null;
 		}
 
+		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
+		internal bool SupportsAssignAndObserveBrush => true;
 	}
 }
