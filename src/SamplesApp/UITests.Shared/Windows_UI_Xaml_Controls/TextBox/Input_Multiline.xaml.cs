@@ -4,8 +4,8 @@ using Uno.UI.Samples.Presentation.SamplePages;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "Input_Multiline", typeof(TextBoxViewModel))]
-	public sealed partial class Input_Multiline : UserControl
+	[Sample("TextBox", ViewModelType = typeof(TextBoxViewModel))]
+	public sealed partial class Input_Multiline : Page
 	{
 		public Input_Multiline()
 		{

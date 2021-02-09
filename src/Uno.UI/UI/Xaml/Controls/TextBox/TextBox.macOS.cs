@@ -43,15 +43,11 @@ namespace Windows.UI.Xaml.Controls
 				else
 				{
 					_textBoxView.BecomeFirstResponder();
-
 				}
 			}
 		}
 
-		public override bool BecomeFirstResponder()
-		{
-			return (_textBoxView?.BecomeFirstResponder()).GetValueOrDefault(false);
-		}
+		public override bool BecomeFirstResponder() => _textBoxView?.BecomeFirstResponder() ?? false;
 
 		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
@@ -84,7 +80,13 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					_textBoxView = new TextBoxView(this) { UsesSingleLineMode = AcceptsReturn || TextWrapping != TextWrapping.NoWrap };
+					var textWrapping = TextWrapping;
+					var usesSingleLineMode = !(AcceptsReturn || textWrapping != TextWrapping.NoWrap);
+					_textBoxView = new TextBoxView(this)
+					{
+						UsesSingleLineMode = usesSingleLineMode,
+						LineBreakMode = textWrapping == TextWrapping.WrapWholeWords ? NSLineBreakMode.ByWordWrapping : NSLineBreakMode.CharWrapping,
+					};
 				}
 
 				_contentElement.Content = _textBoxView;
