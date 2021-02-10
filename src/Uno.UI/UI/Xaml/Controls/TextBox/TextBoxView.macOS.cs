@@ -83,6 +83,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private FrameworkElement _firstManagedParent;
+
 		private void OnTextChanged()
 		{
 			var textBox = _textBox?.GetTarget();
@@ -90,6 +92,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var text = textBox.ProcessTextInput(Text);
 				SetTextNative(text);
+
+				// Launch the invalidation of the measure + layout on the first _managed_ element
+				// Native elements will be relayouted correctly at the same time.
+				_firstManagedParent ??= this.FindFirstParent<FrameworkElement>();
+				_firstManagedParent?.InvalidateMeasure();
 			}
 		}
 
