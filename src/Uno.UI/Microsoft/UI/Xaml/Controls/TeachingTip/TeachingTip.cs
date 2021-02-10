@@ -7,8 +7,8 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel;
-using Windows.Devices.Sensors;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Composition;
@@ -45,7 +45,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
-			Dispatcher.AcceleratorKeyActivated -= OnF6AcceleratorKeyClicked;
+			// TODO: Uno specific - event not supported yet
+			if (ApiInformation.IsEventPresent("Windows.UI.Core.CoreDispatcher", nameof(CoreDispatcher.AcceleratorKeyActivated)))
+			{
+				Dispatcher.AcceleratorKeyActivated -= OnF6AcceleratorKeyClicked;
+			}
 			EffectiveViewportChanged -= OnTargetLayoutUpdated;
 			if (m_tailOcclusionGrid != null)
 			{
@@ -935,7 +939,10 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			Dispatcher.AcceleratorKeyActivated += OnF6AcceleratorKeyClicked;
+			if (ApiInformation.IsEventPresent("Windows.UI.Core.CoreDispatcher", nameof(CoreDispatcher.AcceleratorKeyActivated)))
+			{
+				Dispatcher.AcceleratorKeyActivated += OnF6AcceleratorKeyClicked;
+			}
 
 			// Make sure we are in the correct VSM state after ApplyTemplate and moving the template content from the Control to the Popup:
 			OnIsLightDismissEnabledChanged();
@@ -1590,111 +1597,119 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void CreateExpandAnimation()
 		{
-			var compositor = Windows.UI.Xaml.Window.Current.Compositor;
-
-			CompositionEasingFunction GetExpandEasingFunction(Compositor compositor)
+			// TODO: Uno specific - CompositionEasingFunction and related types not supported yet.
+			if (ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionEasingFunction"))
 			{
-				if (m_expandEasingFunction == null)
-				{
-					var easingFunction = compositor.CreateCubicBezierEasingFunction(s_expandAnimationEasingCurveControlPoint1, s_expandAnimationEasingCurveControlPoint2);
-					m_expandEasingFunction = easingFunction;
-					return (CompositionEasingFunction)(easingFunction);
-				}
-				return m_expandEasingFunction;
-			}
+				var compositor = Windows.UI.Xaml.Window.Current.Compositor;
 
-			var expandEasingFunction = GetExpandEasingFunction(compositor);
-
-			KeyFrameAnimation GetExpandAnimation(Compositor compositor, CompositionEasingFunction expandEasingFunction)
-			{
-				var expandAnimation = compositor.CreateVector3KeyFrameAnimation();
-				var tailOcclusionGrid = m_tailOcclusionGrid;
-				if (tailOcclusionGrid != null)
+				CompositionEasingFunction GetExpandEasingFunction(Compositor compositor)
 				{
-					expandAnimation.SetScalarParameter("Width", (float)(tailOcclusionGrid.ActualWidth));
-					expandAnimation.SetScalarParameter("Height", (float)(tailOcclusionGrid.ActualHeight));
+					if (m_expandEasingFunction == null)
+					{
+						var easingFunction = compositor.CreateCubicBezierEasingFunction(s_expandAnimationEasingCurveControlPoint1, s_expandAnimationEasingCurveControlPoint2);
+						m_expandEasingFunction = easingFunction;
+						return (CompositionEasingFunction)(easingFunction);
+					}
+					return m_expandEasingFunction;
 				}
 
-				else
+				var expandEasingFunction = GetExpandEasingFunction(compositor);
+
+				KeyFrameAnimation GetExpandAnimation(Compositor compositor, CompositionEasingFunction expandEasingFunction)
 				{
-					expandAnimation.SetScalarParameter("Width", s_defaultTipHeightAndWidth);
-					expandAnimation.SetScalarParameter("Height", s_defaultTipHeightAndWidth);
+					var expandAnimation = compositor.CreateVector3KeyFrameAnimation();
+					var tailOcclusionGrid = m_tailOcclusionGrid;
+					if (tailOcclusionGrid != null)
+					{
+						expandAnimation.SetScalarParameter("Width", (float)(tailOcclusionGrid.ActualWidth));
+						expandAnimation.SetScalarParameter("Height", (float)(tailOcclusionGrid.ActualHeight));
+					}
+
+					else
+					{
+						expandAnimation.SetScalarParameter("Width", s_defaultTipHeightAndWidth);
+						expandAnimation.SetScalarParameter("Height", s_defaultTipHeightAndWidth);
+					}
+
+					expandAnimation.InsertExpressionKeyFrame(0.0f, "Vector3(Min(0.01, 20.0 / Width), Min(0.01, 20.0 / Height), 1.0)");
+					expandAnimation.InsertKeyFrame(1.0f, new Vector3(1.0f, 1.0f, 1.0f), expandEasingFunction);
+					expandAnimation.Duration = m_expandAnimationDuration;
+					expandAnimation.Target = s_scaleTargetName;
+					return expandAnimation;
 				}
 
-				expandAnimation.InsertExpressionKeyFrame(0.0f, "Vector3(Min(0.01, 20.0 / Width), Min(0.01, 20.0 / Height), 1.0)");
-				expandAnimation.InsertKeyFrame(1.0f, new Vector3(1.0f, 1.0f, 1.0f), expandEasingFunction);
-				expandAnimation.Duration = m_expandAnimationDuration;
-				expandAnimation.Target = s_scaleTargetName;
-				return expandAnimation;
+				m_expandAnimation = GetExpandAnimation(compositor, expandEasingFunction);
+
+				KeyFrameAnimation GetExpandElevationAnimation(Compositor compositor, CompositionEasingFunction expandEasingFunction)
+				{
+					var expandElevationAnimation = compositor.CreateVector3KeyFrameAnimation();
+					expandElevationAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(this.Target.Translation.X, this.Target.Translation.Y, contentElevation)", expandEasingFunction);
+					expandElevationAnimation.SetScalarParameter("contentElevation", m_contentElevation);
+					expandElevationAnimation.Duration = m_expandAnimationDuration;
+					expandElevationAnimation.Target = s_translationTargetName;
+					return expandElevationAnimation;
+				}
+
+				m_expandElevationAnimation = GetExpandElevationAnimation(compositor, expandEasingFunction);
 			}
-
-			m_expandAnimation = GetExpandAnimation(compositor, expandEasingFunction);
-
-			KeyFrameAnimation GetExpandElevationAnimation(Compositor compositor, CompositionEasingFunction expandEasingFunction)
-			{
-				var expandElevationAnimation = compositor.CreateVector3KeyFrameAnimation();
-				expandElevationAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(this.Target.Translation.X, this.Target.Translation.Y, contentElevation)", expandEasingFunction);
-				expandElevationAnimation.SetScalarParameter("contentElevation", m_contentElevation);
-				expandElevationAnimation.Duration = m_expandAnimationDuration;
-				expandElevationAnimation.Target = s_translationTargetName;
-				return expandElevationAnimation;
-			}
-
-			m_expandElevationAnimation = GetExpandElevationAnimation(compositor, expandEasingFunction);
 		}
 
 		private void CreateContractAnimation()
 		{
-			var compositor = Windows.UI.Xaml.Window.Current.Compositor;
-
-			CompositionEasingFunction GetContractEasingFunction(Compositor compositor)
+			// TODO: Uno specific - CompositionEasingFunction and related types not supported yet.
+			if (ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionEasingFunction"))
 			{
-				if (m_contractEasingFunction == null)
+				var compositor = Windows.UI.Xaml.Window.Current.Compositor;
+
+				CompositionEasingFunction GetContractEasingFunction(Compositor compositor)
 				{
-					var easingFunction = compositor.CreateCubicBezierEasingFunction(s_contractAnimationEasingCurveControlPoint1, s_contractAnimationEasingCurveControlPoint2);
-					m_contractEasingFunction = easingFunction;
-					return easingFunction;
+					if (m_contractEasingFunction == null)
+					{
+						var easingFunction = compositor.CreateCubicBezierEasingFunction(s_contractAnimationEasingCurveControlPoint1, s_contractAnimationEasingCurveControlPoint2);
+						m_contractEasingFunction = easingFunction;
+						return easingFunction;
+					}
+					return m_contractEasingFunction;
 				}
-				return m_contractEasingFunction;
-			}
-			var contractEasingFunction = GetContractEasingFunction(compositor);
+				var contractEasingFunction = GetContractEasingFunction(compositor);
 
-			KeyFrameAnimation GetContractAnimation(Compositor compositor, CompositionEasingFunction contractEasingFunction)
-			{
-				var contractAnimation = compositor.CreateVector3KeyFrameAnimation();
-				var tailOcclusionGrid = m_tailOcclusionGrid;
-				if (tailOcclusionGrid != null)
+				KeyFrameAnimation GetContractAnimation(Compositor compositor, CompositionEasingFunction contractEasingFunction)
 				{
-					contractAnimation.SetScalarParameter("Width", (float)(tailOcclusionGrid.ActualWidth));
-					contractAnimation.SetScalarParameter("Height", (float)(tailOcclusionGrid.ActualHeight));
+					var contractAnimation = compositor.CreateVector3KeyFrameAnimation();
+					var tailOcclusionGrid = m_tailOcclusionGrid;
+					if (tailOcclusionGrid != null)
+					{
+						contractAnimation.SetScalarParameter("Width", (float)(tailOcclusionGrid.ActualWidth));
+						contractAnimation.SetScalarParameter("Height", (float)(tailOcclusionGrid.ActualHeight));
+					}
+
+					else
+					{
+						contractAnimation.SetScalarParameter("Width", s_defaultTipHeightAndWidth);
+						contractAnimation.SetScalarParameter("Height", s_defaultTipHeightAndWidth);
+					}
+
+					contractAnimation.InsertKeyFrame(0.0f, new Vector3(1.0f, 1.0f, 1.0f));
+					contractAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(20.0 / Width, 20.0 / Height, 1.0)", contractEasingFunction);
+					contractAnimation.Duration = m_contractAnimationDuration;
+					contractAnimation.Target = s_scaleTargetName;
+					return contractAnimation;
 				}
 
-				else
+				m_contractAnimation = GetContractAnimation(compositor, contractEasingFunction);
+
+				KeyFrameAnimation GetContractElevationAnimation(Compositor compositor, CompositionEasingFunction contractEasingFunction)
 				{
-					contractAnimation.SetScalarParameter("Width", s_defaultTipHeightAndWidth);
-					contractAnimation.SetScalarParameter("Height", s_defaultTipHeightAndWidth);
+					var contractElevationAnimation = compositor.CreateVector3KeyFrameAnimation();
+					// animating to 0.01f instead of 0.0f as work around to internal issue 26001712 which was causing text clipping.
+					contractElevationAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(this.Target.Translation.X, this.Target.Translation.Y, 0.01f)", contractEasingFunction);
+					contractElevationAnimation.Duration = m_contractAnimationDuration;
+					contractElevationAnimation.Target = s_translationTargetName;
+					return contractElevationAnimation;
 				}
 
-				contractAnimation.InsertKeyFrame(0.0f, new Vector3(1.0f, 1.0f, 1.0f));
-				contractAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(20.0 / Width, 20.0 / Height, 1.0)", contractEasingFunction);
-				contractAnimation.Duration = m_contractAnimationDuration;
-				contractAnimation.Target = s_scaleTargetName;
-				return contractAnimation;
+				m_contractElevationAnimation = GetContractElevationAnimation(compositor, contractEasingFunction);
 			}
-
-			m_contractAnimation = GetContractAnimation(compositor, contractEasingFunction);
-
-			KeyFrameAnimation GetContractElevationAnimation(Compositor compositor, CompositionEasingFunction contractEasingFunction)
-			{
-				var contractElevationAnimation = compositor.CreateVector3KeyFrameAnimation();
-				// animating to 0.01f instead of 0.0f as work around to internal issue 26001712 which was causing text clipping.
-				contractElevationAnimation.InsertExpressionKeyFrame(1.0f, "Vector3(this.Target.Translation.X, this.Target.Translation.Y, 0.01f)", contractEasingFunction);
-				contractElevationAnimation.Duration = m_contractAnimationDuration;
-				contractElevationAnimation.Target = s_translationTargetName;
-				return contractElevationAnimation;
-			}
-
-			m_contractElevationAnimation = GetContractElevationAnimation(compositor, contractEasingFunction);
 		}
 
 		private void StartExpandToOpen()
@@ -2539,7 +2554,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (frameworkElement6 != null)
 			{
 				// Uno specific - instead of a revoker, use boolean flag to check if event handler was attached
-				if (!m_actualThemeChangedAttached)
+				if (!m_actualThemeChangedAttached && ApiInformation.IsEventPresent("Windows.UI.Xaml.FrameworkElement", "ActualThemeChanged"))
 				{
 					frameworkElement6.ActualThemeChanged += OnActualThemeChanged;
 					m_actualThemeChangedAttached = true;
