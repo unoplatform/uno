@@ -638,6 +638,8 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsViewHit() => true;
 
+		internal virtual bool IsEnabledOverride() => true;
+
 		internal double LayoutRound(double value)
 		{
 #if __SKIA__
