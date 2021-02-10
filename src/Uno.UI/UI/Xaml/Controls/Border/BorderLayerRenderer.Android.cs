@@ -451,6 +451,7 @@ namespace Windows.UI.Xaml.Controls
 			public readonly ImageSource BackgroundImageSource;
 			public readonly Color? BackgroundColor;
 			public readonly Brush BorderBrush;
+			public readonly Color? BorderBrushColor;
 			public readonly Thickness BorderThickness;
 			public readonly CornerRadius CornerRadius;
 			public readonly Thickness Padding;
@@ -468,6 +469,7 @@ namespace Windows.UI.Xaml.Controls
 				BackgroundImageSource = imageBrushBackground?.ImageSource;
 
 				BackgroundColor = (Background as SolidColorBrush)?.Color;
+				BorderBrushColor = (BorderBrush as SolidColorBrush)?.Color;
 			}
 
 			public bool Equals(LayoutState other)
@@ -478,6 +480,7 @@ namespace Windows.UI.Xaml.Controls
 					&& other.BackgroundImageSource == BackgroundImageSource
 					&& other.BackgroundColor == BackgroundColor
 					&& other.BorderBrush == BorderBrush
+					&& other.BorderBrushColor == BorderBrushColor
 					&& other.BorderThickness == BorderThickness
 					&& other.CornerRadius == CornerRadius
 					&& other.Padding == Padding;
