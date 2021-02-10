@@ -150,7 +150,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RatingControlTests\RatingControlPage.xaml">
-	  <SubType>Designer</SubType>
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\NumberBox_Header.xaml">
@@ -498,6 +498,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\Capture.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\Enability.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4026,7 +4030,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RatingControlTests\RatingControlPage.xaml.cs">
       <DependentUpon>RatingControlPage.xaml</DependentUpon>
-   	</Compile>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressRing\WinUIProgressRing_CustomSources.xaml.cs">
       <DependentUpon>WinUIProgressRing_CustomSources.xaml</DependentUpon>
     </Compile>
@@ -4265,6 +4269,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\Capture.xaml.cs">
       <DependentUpon>Capture.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\Enability.xaml.cs">
+      <DependentUpon>Enability.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\HitTest_Image.xaml.cs">
       <DependentUpon>HitTest_Image.xaml</DependentUpon>
