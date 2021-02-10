@@ -14,6 +14,7 @@ using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Microsoft.Extensions.Logging;
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
@@ -525,23 +526,16 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region CornerRadius DependencyProperty
+		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty CornerRadiusProperty = CreateCornerRadiusProperty();
 
 		public CornerRadius CornerRadius
 		{
-			get { return (CornerRadius)GetValue(CornerRadiusProperty); }
-			set { SetValue(CornerRadiusProperty, value); }
+			get => GetCornerRadiusValue();
+			set => SetCornerRadiusValue(value);
 		}
-
-		public static DependencyProperty CornerRadiusProperty =
-			DependencyProperty.Register(
-				"CornerRadius",
-				typeof(CornerRadius),
-				typeof(ContentPresenter),
-				new FrameworkPropertyMetadata(
-					CornerRadius.None,
-					(s, e) => ((ContentPresenter)s)?.OnCornerRadiusChanged((CornerRadius)e.OldValue, (CornerRadius)e.NewValue)
-				)
-			);
 
 		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 		{

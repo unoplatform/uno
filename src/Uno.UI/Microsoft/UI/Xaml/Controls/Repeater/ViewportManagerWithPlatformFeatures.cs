@@ -255,7 +255,9 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_effectiveViewportChangedRevoker?.Dispose();
 			}
-			else if (m_effectiveViewportChangedRevoker == null)
+			else if (m_effectiveViewportChangedRevoker == null
+				// Uno workaround: [Perf] Do not listen for viewport update if nothing to render!
+				&& m_owner.ItemsSourceView?.Count > 0)
 			{
 				m_effectiveViewportChangedRevoker = Disposable.Create(() =>
 				{
@@ -489,6 +491,12 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ResetScrollers();
 
+				// Uno workaround: [Perf] Do not listen for viewport update if nothing to render!
+				if (m_owner.ItemsSourceView?.Count <= 0)
+				{
+					return;
+				}
+
 				var parent = CachedVisualTreeHelpers.GetParent(m_owner);
 				while (parent != null)
 				{
@@ -599,7 +607,9 @@ namespace Microsoft.UI.Xaml.Controls
 		void TryInvalidateMeasure()
 		{
 			// Don't invalidate measure if we have an invalid window.
-			if (m_visibleWindow != new Rect())
+			if (m_visibleWindow != new Rect()
+				// Uno workaround: [Perf] Do not invalidate measure if nothing to render!
+				&& m_owner.ItemsSourceView?.Count > 0)
 			{
 				// We invalidate measure instead of just invalidating arrange because
 				// we don't invalidate measure in UpdateViewport if the view is changing to
