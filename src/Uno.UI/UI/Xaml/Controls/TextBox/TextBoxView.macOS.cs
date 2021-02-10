@@ -1,6 +1,7 @@
 using CoreGraphics;
 using System;
 using Uno.Extensions;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Foundation;
@@ -157,6 +158,9 @@ namespace Windows.UI.Xaml.Controls
 		public override bool BecomeFirstResponder()
 		{
 			UpdateCaretColor();
+
+			_textBox.GetTarget()?.Focus(FocusState.Pointer);
+
 			return base.BecomeFirstResponder();
 		}
 
