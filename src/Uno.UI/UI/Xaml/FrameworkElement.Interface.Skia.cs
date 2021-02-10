@@ -76,6 +76,8 @@ namespace Windows.UI.Xaml
 
 		protected virtual void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
 		{
+			UpdateHitTest();
+
 			OnIsEnabledChanged((bool)args.OldValue, (bool)args.NewValue);
 			IsEnabledChanged?.Invoke(this, args);
 		}
