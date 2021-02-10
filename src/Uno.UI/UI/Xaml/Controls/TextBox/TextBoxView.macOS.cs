@@ -159,7 +159,6 @@ namespace Windows.UI.Xaml.Controls
 			if (textBox != null && Brush.TryGetColorWithOpacity(newValue, out var color))
 			{
 				this.TextColor = color;
-				//this.TextColor = Colors.Red;
 				UpdateCaretColor(color);
 			}
 			else

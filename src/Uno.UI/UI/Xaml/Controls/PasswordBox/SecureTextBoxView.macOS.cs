@@ -153,14 +153,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateCaretColor()
-		{
-			if (CurrentEditor is NSTextView textField && Foreground is SolidColorBrush scb)
-			{
-				textField.InsertionPointColor = scb.Color;
-			}
-		}
-
 		public void RefreshFont()
 		{
 			UpdateFont();
