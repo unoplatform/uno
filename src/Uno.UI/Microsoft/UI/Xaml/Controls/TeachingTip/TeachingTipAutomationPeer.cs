@@ -3,6 +3,7 @@
 #nullable enable
 
 using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -99,7 +100,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			if (GetTeachingTip().IsLightDismissEnabled &&
 				AutomationPeer.ListenerExists(AutomationEvents.WindowClosed))
 			{
-				RaiseAutomationEvent(AutomationEvents.WindowClosed);
+				// TODO: Uno specific - RaiseAutomationEvent not implemented yet.
+				if (ApiInformation.IsMethodPresent("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseAutomationEvent"))
+				{
+					RaiseAutomationEvent(AutomationEvents.WindowClosed);
+				}
 			}
 		}
 
@@ -108,11 +113,15 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			AutomationPeer automationPeer7 = this;
 			if (automationPeer7 != null)
 			{
-				automationPeer7.RaiseNotificationEvent(
-					AutomationNotificationKind.Other,
-					AutomationNotificationProcessing.CurrentThenMostRecent,
-					displayString,
-					"TeachingTipOpenedActivityId");
+				// TODO: Uno specific - RaiseNotificationEvent not implemented yet.
+				if (ApiInformation.IsMethodPresent("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseNotificationEvent"))
+				{
+					automationPeer7.RaiseNotificationEvent(
+						AutomationNotificationKind.Other,
+						AutomationNotificationProcessing.CurrentThenMostRecent,
+						displayString,
+						"TeachingTipOpenedActivityId");
+				}
 			}
 
 			// We only report as a window when light dismiss is enabled.
