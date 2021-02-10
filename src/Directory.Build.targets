@@ -18,10 +18,10 @@
   <ItemGroup>
 	<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" />
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
-	<PackageReference Update="Uno.SourceGenerationTasks" Version="3.0.0-dev.21" />
-	<PackageReference Update="Uno.SourceGeneration" Version="3.0.0-dev.21" />
-	<PackageReference Update="Uno.Core" Version="2.1.0" />
-	<PackageReference Update="Uno.Core.Build" Version="2.1.0" />
+	<PackageReference Update="Uno.SourceGenerationTasks" Version="3.0.0" />
+	<PackageReference Update="Uno.SourceGeneration" Version="3.0.0" />
+	<PackageReference Update="Uno.Core" Version="2.2.0" />
+	<PackageReference Update="Uno.Core.Build" Version="2.2.0" />
 	<PackageReference Update="Uno.Diagnostics.Eventing" Version="1.0.4" />
 	<PackageReference Update="Uno.Wasm.Bootstrap" Version="1.3.4" />
 	<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="1.3.4" />
