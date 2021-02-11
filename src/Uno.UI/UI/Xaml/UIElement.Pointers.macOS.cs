@@ -17,31 +17,36 @@ using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
 using Uno.UI;
 using AppKit;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableNSView
 	{
-		private NSTrackingArea _trackingArea;
+		private bool _hasRegisteredTrackingArea;
 
-		/// <summary>
-		/// Set up tracking area to be able to handle additional mouse events -
-		/// entered, existed, moved
-		/// </summary>
-		public override void UpdateTrackingAreas()
+		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
-			if (_trackingArea != null)
+			// Note: we are enabling tracking also for pressed and released in order to always maintain a coherent state.
+			const RoutedEventFlag needsTracking = RoutedEventFlag.PointerPressed
+				| RoutedEventFlag.PointerReleased
+				| RoutedEventFlag.PointerEntered
+				| RoutedEventFlag.PointerExited
+				| RoutedEventFlag.PointerMoved;
+
+			if (!_hasRegisteredTrackingArea
+				&& (routedEvent.Flag & needsTracking) != default)
 			{
-				RemoveTrackingArea(_trackingArea);
+				var options = NSTrackingAreaOptions.MouseEnteredAndExited
+					| NSTrackingAreaOptions.MouseMoved
+					| NSTrackingAreaOptions.ActiveInKeyWindow
+					| NSTrackingAreaOptions.EnabledDuringMouseDrag // We want enter/leave events even if the button is pressed
+					| NSTrackingAreaOptions.InVisibleRect; // Automagicaly syncs the bounds rect
+				var trackingArea = new NSTrackingArea(Bounds, options, this, null);
+
+				AddTrackingArea(trackingArea);
+				_hasRegisteredTrackingArea = true;
 			}
-
-			var options =
-				NSTrackingAreaOptions.MouseEnteredAndExited |
-				NSTrackingAreaOptions.MouseMoved |
-				NSTrackingAreaOptions.ActiveInKeyWindow;
-
-			_trackingArea = new NSTrackingArea(this.Bounds, options, this, null);
-			AddTrackingArea(_trackingArea);
 		}
 
 		public override void MouseDown(NSEvent evt)
@@ -55,7 +60,7 @@ namespace Windows.UI.Xaml
 			{
 				// evt.AllTouches raises a invalid selector exception
 				var args = new PointerRoutedEventArgs(null, evt, this);
-				 
+
 				var pointerEventIsHandledInManaged = OnNativePointerDown(args);
 
 				if (!pointerEventIsHandledInManaged)
@@ -80,7 +85,7 @@ namespace Windows.UI.Xaml
 			try
 			{
 				// evt.AllTouches raises a invalid selector exception
-				var args = new PointerRoutedEventArgs(null, evt, this);				
+				var args = new PointerRoutedEventArgs(null, evt, this);
 
 				var pointerEventIsHandledInManaged = OnNativePointerMove(args);
 
@@ -106,7 +111,7 @@ namespace Windows.UI.Xaml
 			try
 			{
 				var args = new PointerRoutedEventArgs(null, evt, this);
-				
+
 				var pointerEventIsHandledInManaged = OnNativePointerEnter(args);
 
 				if (!pointerEventIsHandledInManaged)
@@ -131,7 +136,7 @@ namespace Windows.UI.Xaml
 			try
 			{
 				// evt.AllTouches raises a invalid selector exception
-				var args = new PointerRoutedEventArgs(null, evt, this);				 
+				var args = new PointerRoutedEventArgs(null, evt, this);
 
 				var pointerEventIsHandledInManaged = OnNativePointerExited(args);
 
@@ -158,7 +163,7 @@ namespace Windows.UI.Xaml
 			{
 				// evt.AllTouches raises a invalid selector exception
 				var args = new PointerRoutedEventArgs(null, evt, this);
-				
+
 				var pointerEventIsHandledInManaged = OnNativePointerUp(args);
 
 				if (!pointerEventIsHandledInManaged)
@@ -170,7 +175,7 @@ namespace Windows.UI.Xaml
 			catch (Exception e)
 			{
 				Application.Current.RaiseRecoverableUnhandledException(e);
-			}			
+			}
 		}
 
 		public override void MouseDragged(NSEvent evt)
@@ -184,9 +189,9 @@ namespace Windows.UI.Xaml
 			{
 				// evt.AllTouches raises a invalid selector exception
 				var args = new PointerRoutedEventArgs(null, evt, this);
-				
+
 				var pointerEventIsHandledInManaged = OnNativePointerMoveWithOverCheck(args, evt.IsTouchInView(this));
-				
+
 				if (!pointerEventIsHandledInManaged)
 				{
 					// Bubble up the event natively
