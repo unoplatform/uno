@@ -12,12 +12,12 @@
 		<TextBlock TextWrapping="Wrap">
 			The red rectangle should be very close to orange dotted lines.
 			<LineBreak />First control is a &lt;TextBlock&gt;, second is a &lt;TextBox&gt;.
-			<LineBreak />Note: The height of the text is MORE IMPORTANT that its width which could vary according to the font.
+			<LineBreak />Note: The height of the text is MORE IMPORTANT than its width which could vary according to the font.
 		</TextBlock>
 		<ToggleButton x:Name="guides" IsChecked="True">Hide/Show Guides</ToggleButton>
 		<StackPanel Orientation="Horizontal" Spacing="20">
 			<Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Width="180" Margin="10">
-				<Grid BorderBrush="Red" BorderThickness="2" Margin="20">
+				<Grid BorderBrush="Red" BorderThickness="2" Margin="20" x:Name="textBlock">
 					<TextBlock Text="Aa" FontSize="120" />
 				</Grid>
 				<Rectangle Stroke="Blue"
@@ -44,7 +44,7 @@
 				<Line Stroke="Orange" Opacity="0.65" StrokeThickness="10" StrokeDashArray="1" Visibility="{Binding IsChecked, ElementName=guides}" X1="163" X2="163" Y1="0" Y2="210" />
 			</Canvas>
 			<Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Margin="10" Height="200">
-				<TextBox BorderBrush="Red" BorderThickness="2" Margin="20" Text="Aa" FontSize="120" Padding="0" />
+				<TextBox BorderBrush="Red" BorderThickness="2" Margin="20" Text="Aa" FontSize="120" Padding="0" x:Name="textBox" />
 				<Rectangle Stroke="Blue"
 						Opacity="0.65"
 						StrokeThickness="6"
