@@ -12,6 +12,8 @@ Already [completed the tutorial](getting-started-tutorial-1.md)? Ready to build 
 * Check out some code examples:
 
     * The [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) showcases many of the UI controls supported by Uno.
+    * The [Ch9 sample app](https://github.com/unoplatform/Uno.Ch9) (source code and real-world app) uses the publicly-available video feed from Microsoft's Channel 9 for content. 
+
 
     * With [Uno Calculator](https://calculator.platform.uno/) we took Microsoft's open-sourced Windows 10 Calculator, ported it to C#, and put it on Android, iOS, and WebAssembly. [Check out all the code here.](https://github.com/unoplatform/calculator)
 
