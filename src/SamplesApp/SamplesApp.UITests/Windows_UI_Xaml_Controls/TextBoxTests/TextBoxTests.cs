@@ -684,6 +684,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
 		public void TextBox_AutoGrow_Vertically_NoWrapping_Test()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Multiline_AutoHeight");
