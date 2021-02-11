@@ -288,7 +288,6 @@ namespace Uno.UI.UI.Xaml.Documents
 				switch (value)
 				{
 					case TextWrapping.NoWrap:
-						element.SetAttribute("wrap", "off");
 						element.SetStyle(
 							("white-space", "pre"),
 							("word-break", ""));
@@ -300,16 +299,14 @@ namespace Uno.UI.UI.Xaml.Documents
 						SetTextTrimming(element, textTrimming);
 						break;
 					case TextWrapping.Wrap:
-						element.SetAttribute("wrap", "soft");
 						element.SetStyle(
-							("white-space", ""),
+							("white-space", "pre-wrap"),
 							("word-break", "break-word"), // This is required to still wrap words that are longer than the ViewPort
 							("text-overflow", ""));
 						break;
 					case TextWrapping.WrapWholeWords:
-						element.SetAttribute("wrap", "soft");
 						element.SetStyle(
-							("white-space", ""),
+							("white-space", "pre-wrap"),
 							("word-break", "keep-all"), // This is required to still wrap words that are longer than the ViewPort
 							("text-overflow", ""));
 						break;
