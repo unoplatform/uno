@@ -59,10 +59,6 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		public string CommitButtonText { get; set; } = string.Empty;
 
-		public PickerViewMode[] ViewModes { get; } = Enum.GetValues(typeof(PickerViewMode)).OfType<PickerViewMode>().ToArray();
-
-		public PickerViewMode ViewMode { get; set; } = PickerViewMode.List;
-
 		public string ErrorMessage
 		{
 			get => _errorMessage;
@@ -120,8 +116,11 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			get => _selectedFileTypeChoice;
 			set
 			{
-				_selectedFileTypeChoice = value;
-				RaisePropertyChanged();
+				if (value != _selectedFileTypeChoice)
+				{
+					_selectedFileTypeChoice = value;
+					RaisePropertyChanged();
+				}
 			}
 		}
 
@@ -215,6 +214,10 @@ namespace UITests.Shared.Windows_Storage.Pickers
 				if (!string.IsNullOrEmpty(SuggestedFileName))
 				{
 					fileSavePicker.SuggestedFileName = SuggestedFileName;
+				}
+				if (SuggestedSaveFile != null)
+				{
+					fileSavePicker.SuggestedSaveFile = SuggestedSaveFile;
 				}
 				foreach (var fileTypeChoice in FileTypeChoices)
 				{

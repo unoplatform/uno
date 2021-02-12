@@ -17,11 +17,8 @@
                 Header="Suggested start location"
                 ItemsSource="{x:Bind ViewModel.SuggestedStartLocations, Mode=OneWay}"
                 SelectedItem="{x:Bind ViewModel.SuggestedStartLocation, Mode=TwoWay}" />
-            <ComboBox
-                Header="View mode"
-                ItemsSource="{x:Bind ViewModel.ViewModes, Mode=OneWay}"
-                SelectedItem="{x:Bind ViewModel.ViewMode, Mode=TwoWay}" />
-            <TextBox Header="Settings identifier" Text="{x:Bind ViewModel.SettingsIdentifier, Mode=TwoWay}" />
+
+			<TextBox Header="Settings identifier" Text="{x:Bind ViewModel.SettingsIdentifier, Mode=TwoWay}" />
             <TextBox Header="Commit button text" Text="{x:Bind ViewModel.CommitButtonText, Mode=TwoWay}" />
 
             <StackPanel Orientation="Horizontal" Spacing="4">
@@ -78,7 +75,7 @@
                 Padding="12"
                 HorizontalAlignment="Stretch"
                 Click="{x:Bind ViewModel.PickSaveFile}"
-                Content="Pick single file" />
+                Content="Pick file" />
 
             <TextBlock>
                 <Run Text="Folder name: " />
