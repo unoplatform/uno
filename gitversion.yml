@@ -24,6 +24,9 @@ branches:
     increment: none
     source-branches: ['master']
 
+  release:
+    regex: ^ignore
+
   stable:
     mode: ContinuousDelivery
     regex: ^release/stable/.*
