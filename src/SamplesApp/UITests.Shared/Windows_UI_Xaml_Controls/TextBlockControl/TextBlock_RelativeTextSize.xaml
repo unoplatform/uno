@@ -14,6 +14,7 @@
 			<LineBreak />First control is a &lt;TextBlock&gt;, second is a &lt;TextBox&gt;.
 			<LineBreak />Note: The height of the text is MORE IMPORTANT than its width which could vary according to the font.
 		</TextBlock>
+		<TextBlock x:Name="result" />
 		<ToggleButton x:Name="guides" IsChecked="True">Hide/Show Guides</ToggleButton>
 		<StackPanel Orientation="Horizontal" Spacing="20">
 			<Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Width="180" Margin="10">
