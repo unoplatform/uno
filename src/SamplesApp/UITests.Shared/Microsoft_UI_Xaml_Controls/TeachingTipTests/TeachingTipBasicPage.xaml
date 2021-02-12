@@ -2,22 +2,25 @@
     x:Class="UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests.TeachingTipBasicPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-	mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
     <Grid>
-		<Button x:Name="SaveButton" Click="ShowTip" Content="Save">
-			<Button.Resources>
-				<muxc:TeachingTip x:Name="AutoSaveTip"
-            Target="{x:Bind SaveButton}"
-            Title="Save automatically"
-            Subtitle="When you save your file to OneDrive, we save your changes as you go - so you never have to.">
-				</muxc:TeachingTip>
-			</Button.Resources>
-		</Button>
-	</Grid>
+        <Button
+            x:Name="SaveButton"
+            Click="ShowTip"
+            Content="Save">
+            <Button.Resources>
+                <muxc:TeachingTip
+                    x:Name="AutoSaveTip"
+                    Title="Save automatically"
+                    Subtitle="When you save your file to OneDrive, we save your changes as you go - so you never have to."
+                    Target="{x:Bind SaveButton}" />
+            </Button.Resources>
+        </Button>
+    </Grid>
 </Page>

@@ -9,14 +9,14 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TeachingTip
     {
-		public ICommand ActionButtonCommnad
+		public ICommand ActionButtonCommand
 		{
-			get => (ICommand)GetValue(ActionButtonCommnadProperty);
-			set => SetValue(ActionButtonCommnadProperty, value);
+			get => (ICommand)GetValue(ActionButtonCommandProperty);
+			set => SetValue(ActionButtonCommandProperty, value);
 		}
 
-		public static DependencyProperty ActionButtonCommnadProperty { get; } =
-			DependencyProperty.Register(nameof(ActionButtonCommnad), typeof(ICommand), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		public static DependencyProperty ActionButtonCommandProperty { get; } =
+			DependencyProperty.Register(nameof(ActionButtonCommand), typeof(ICommand), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
 
 		public object ActionButtonCommandParameter
 		{

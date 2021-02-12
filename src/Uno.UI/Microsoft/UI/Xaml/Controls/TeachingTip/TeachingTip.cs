@@ -1144,7 +1144,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (hasFocusInSubtree)
 				{
-					if (m_previouslyFocusedElement.TryGetTarget(out var previouslyFocusedElement))
+					DependencyObject previouslyFocusedElement = null;
+					if (m_previouslyFocusedElement?.TryGetTarget(out previouslyFocusedElement) == true)
 					{
 						bool setFocus = CppWinRTHelpers.SetFocus(previouslyFocusedElement, FocusState.Programmatic);
 						m_previouslyFocusedElement = null;
@@ -1317,7 +1318,8 @@ namespace Microsoft.UI.Xaml.Controls
 			//To give the tip focus, then we return focus when the popup closes.
 			if (m_lastCloseReason == TeachingTipCloseReason.CloseButton)
 			{
-				if (m_previouslyFocusedElement.TryGetTarget(out var previouslyFocusedElement))
+				DependencyObject previouslyFocusedElement = null;
+				if (m_previouslyFocusedElement?.TryGetTarget(out previouslyFocusedElement) == true)
 				{
 					CppWinRTHelpers.SetFocus(previouslyFocusedElement, FocusState.Programmatic);
 				}
@@ -2265,25 +2267,28 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void EstablishShadows()
 		{
-			UIElement m_contentRootGrid_uiElement10 = m_contentRootGrid;
-			if (m_contentRootGrid_uiElement10 != null)
+			if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow"))
 			{
-				if (m_tipShouldHaveShadow)
+				UIElement m_contentRootGrid_uiElement10 = m_contentRootGrid;
+				if (m_contentRootGrid_uiElement10 != null)
 				{
-					if (m_contentRootGrid_uiElement10.Shadow == null)
+					if (m_tipShouldHaveShadow)
 					{
-						m_contentRootGrid_uiElement10.Shadow = new ThemeShadow();
-						var contentRootGrid = m_contentRootGrid;
-						if (contentRootGrid != null)
+						if (m_contentRootGrid_uiElement10.Shadow == null)
 						{
-							var contentRootGridTranslation = contentRootGrid.Translation;
-							contentRootGrid.Translation = new Vector3(contentRootGridTranslation.X, contentRootGridTranslation.Y, m_contentElevation);
+							m_contentRootGrid_uiElement10.Shadow = new ThemeShadow();
+							var contentRootGrid = m_contentRootGrid;
+							if (contentRootGrid != null)
+							{
+								var contentRootGridTranslation = contentRootGrid.Translation;
+								contentRootGrid.Translation = new Vector3(contentRootGridTranslation.X, contentRootGridTranslation.Y, m_contentElevation);
+							}
 						}
 					}
-				}
-				else
-				{
-					m_contentRootGrid_uiElement10.Shadow = null;
+					else
+					{
+						m_contentRootGrid_uiElement10.Shadow = null;
+					}
 				}
 			}
 		}
