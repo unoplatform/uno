@@ -45,7 +45,9 @@
 				<Line Stroke="Orange" Opacity="0.65" StrokeThickness="10" StrokeDashArray="1" Visibility="{Binding IsChecked, ElementName=guides}" X1="163" X2="163" Y1="0" Y2="210" />
 			</Canvas>
 			<Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Margin="10" Height="200">
-				<TextBox BorderBrush="Red" BorderThickness="2" Margin="20" Text="Aa" FontSize="120" Padding="0" x:Name="textBox" />
+				<Border x:Name="textBox">
+					<TextBox BorderBrush="Red" BorderThickness="2" Margin="20" Text="Aa" FontSize="120" Padding="0" />
+				</Border>
 				<Rectangle Stroke="Blue"
 						Opacity="0.65"
 						StrokeThickness="6"

@@ -20,7 +20,9 @@ namespace UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 	[Sample("ContentDialog", IsManualTest = true, IgnoreInSnapshotTests = true)]
     public sealed partial class ContentDialog_TextBox : UserControl
     {
+#if __ANDROID__
 		private bool _initialEnableNativePopups;
+#endif
 
 		public ContentDialog_TextBox()
         {
