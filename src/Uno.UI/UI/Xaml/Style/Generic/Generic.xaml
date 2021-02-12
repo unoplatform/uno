@@ -118,7 +118,7 @@
 		<Setter Property="FontWeight"
 				Value="Normal" />
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="14" />
 	</xamarin:Style>
 	<xamarin:Style x:Key="CaptionTextBlockStyle"
 				   TargetType="TextBlock"
@@ -5098,7 +5098,7 @@
 		<Setter Property="FontWeight"
 				Value="SemiBold" />
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="14" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ContentControl">
