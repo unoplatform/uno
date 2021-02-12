@@ -20,6 +20,17 @@ namespace Uno.UI.RuntimeTests.Helpers
 				throw new AssertFailedException($"{nameof(arg1)}={arg1} was expected to be greater than {nameof(arg2)}={arg2}");
 			}
 		}
+		/// <summary>
+		/// Asserts that <paramref name="arg1"/> is greater than or equal to <paramref name="arg2"/>.
+		/// </summary>
+		public static void GreaterOrEqual(double arg1, double arg2)
+		{
+			var isGreater = arg1 >= arg2;
+			if (!isGreater)
+			{
+				throw new AssertFailedException($"{nameof(arg1)}={arg1} was expected to be greater than or equal to {nameof(arg2)}={arg2}");
+			}
+		}
 
 		/// <summary>
 		/// Asserts that <paramref name="arg1"/> is less than <paramref name="arg2"/>.
@@ -30,6 +41,18 @@ namespace Uno.UI.RuntimeTests.Helpers
 			if (!isLess)
 			{
 				throw new AssertFailedException($"{nameof(arg1)}={arg1} was expected to be less than {nameof(arg2)}={arg2}");
+			}
+		}
+
+		/// <summary>
+		/// Asserts that <paramref name="arg1"/> is less than or equal to <paramref name="arg2"/>.
+		/// </summary>
+		public static void LessOrEqual(double arg1, double arg2)
+		{
+			var isLess = arg1 <= arg2;
+			if (!isLess)
+			{
+				throw new AssertFailedException($"{nameof(arg1)}={arg1} was expected to be less than or equal to {nameof(arg2)}={arg2}");
 			}
 		}
 	}
