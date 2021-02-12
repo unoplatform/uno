@@ -9,11 +9,13 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -176,6 +178,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Too_Large_For_Any_Fallback()
+		{
+			var target = new TextBlock
+			{
+				Text = "Anchor",
+				VerticalAlignment = VerticalAlignment.Bottom
+			};
+
+			var stretchedTargetWrapper = new Border
+			{
+				MinHeight = 600,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Child = target
+			};
+
+			var windowHeight = ApplicationView.GetForCurrentView().VisibleBounds.Height;
+
+			var flyoutContent = new Ellipse
+			{
+				Width = 90,
+				Height = windowHeight * 1.5,
+				Fill = new SolidColorBrush(Colors.Tomato)
+			};
+
+			var presenterStyle = new Style
+			{
+				TargetType = typeof(FlyoutPresenter),
+				Setters =
+				{
+					new Setter(FrameworkElement.MaxHeightProperty, windowHeight*1.7)
+				}
+			};
+
+			var flyout = new Flyout
+			{
+				FlyoutPresenterStyle = presenterStyle,
+				Content = flyoutContent,
+				Placement = FlyoutPlacementMode.Top
+			};
+
+			TestServices.WindowHelper.WindowContent = stretchedTargetWrapper;
+
+			await TestServices.WindowHelper.WaitForLoaded(target);
+
+			try
+			{
+				FlyoutBase.SetAttachedFlyout(target, flyout);
+				FlyoutBase.ShowAttachedFlyout(target);
+
+				await TestServices.WindowHelper.WaitForLoaded(flyoutContent);
+
+				var contentScreenBounds = flyoutContent.GetOnScreenBounds();
+				var contentCenter = contentScreenBounds.GetCenter();
+				var targetScreenBounds = target.GetOnScreenBounds();
+				var targetCenter = targetScreenBounds.GetCenter();
+
+				var presenter = await TestServices.WindowHelper.WaitForNonNull(() => flyoutContent.FindFirstParent<FlyoutPresenter>());
+
+				VerifyRelativeContentPosition(HorizontalPosition.Center,
+					VerticalPosition.BeyondTop,
+					presenter, // The content itself is in a ScrollViewer and its bounds will exceed the visible area
+					0,
+					target
+				);
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+
+		}
+
+		[TestMethod]
 		[DataRow(FlyoutPlacementMode.Top, HorizontalPosition.Center, VerticalPosition.BeyondTop)]
 		[DataRow(FlyoutPlacementMode.Bottom, HorizontalPosition.Center, VerticalPosition.BeyondBottom)]
 		[DataRow(FlyoutPlacementMode.Left, HorizontalPosition.BeyondLeft, VerticalPosition.Center)]
@@ -260,7 +336,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
-		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, Border target)
+		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();
 			var contentCenter = contentScreenBounds.GetCenter();
@@ -272,7 +348,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			switch (horizontalPosition)
 			{
 				case HorizontalPosition.BeyondLeft:
-					NumberAssert.Less(contentScreenBounds.Right, targetScreenBounds.Left);
+					NumberAssert.LessOrEqual(contentScreenBounds.Right, targetScreenBounds.Left);
 					break;
 				case HorizontalPosition.LeftFlush:
 					Assert.AreEqual(targetScreenBounds.Left, contentScreenBounds.Left, delta: 2);
@@ -284,14 +360,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					Assert.AreEqual(targetScreenBounds.Right, contentScreenBounds.Right, delta: 2);
 					break;
 				case HorizontalPosition.BeyondRight:
-					NumberAssert.Greater(contentScreenBounds.Left, targetScreenBounds.Right);
+					NumberAssert.GreaterOrEqual(contentScreenBounds.Left, targetScreenBounds.Right);
 					break;
 			}
 
 			switch (verticalPosition)
 			{
 				case VerticalPosition.BeyondTop:
-					NumberAssert.Less(contentScreenBounds.Bottom, targetScreenBounds.Top);
+					NumberAssert.LessOrEqual(contentScreenBounds.Bottom, targetScreenBounds.Top);
 					break;
 				case VerticalPosition.TopFlush:
 					Assert.AreEqual(targetScreenBounds.Top, contentScreenBounds.Top, delta: 2);
@@ -303,7 +379,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					Assert.AreEqual(targetScreenBounds.Bottom, contentScreenBounds.Bottom, delta: 2);
 					break;
 				case VerticalPosition.BeyondBottom:
-					NumberAssert.Greater(contentScreenBounds.Top, targetScreenBounds.Bottom);
+					NumberAssert.GreaterOrEqual(contentScreenBounds.Top, targetScreenBounds.Bottom);
 					break;
 			}
 		}

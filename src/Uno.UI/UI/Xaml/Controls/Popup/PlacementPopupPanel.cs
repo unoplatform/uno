@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 					 FlyoutBase.MajorPlacementMode.Bottom,
 					 FlyoutBase.MajorPlacementMode.Left,
 					 FlyoutBase.MajorPlacementMode.Right,
-					 FlyoutBase.MajorPlacementMode.Full // last resort placement
+					 FlyoutBase.MajorPlacementMode.Top // use preferred choice if no others fit
 				 }},
 				 {FlyoutBase.MajorPlacementMode.Bottom, new []
 				 {
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 					 FlyoutBase.MajorPlacementMode.Top,
 					 FlyoutBase.MajorPlacementMode.Left,
 					 FlyoutBase.MajorPlacementMode.Right,
-					 FlyoutBase.MajorPlacementMode.Full // last resort placement
+					 FlyoutBase.MajorPlacementMode.Bottom // use preferred choice if no others fit
 				 }},
 				 {FlyoutBase.MajorPlacementMode.Left, new []
 				 {
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 					 FlyoutBase.MajorPlacementMode.Right,
 					 FlyoutBase.MajorPlacementMode.Top,
 					 FlyoutBase.MajorPlacementMode.Bottom,
-					 FlyoutBase.MajorPlacementMode.Full // last resort placement
+					 FlyoutBase.MajorPlacementMode.Left // use preferred choice if no others fit
 				 }},
 				 {FlyoutBase.MajorPlacementMode.Right, new []
 				 {
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 					 FlyoutBase.MajorPlacementMode.Left,
 					 FlyoutBase.MajorPlacementMode.Top,
 					 FlyoutBase.MajorPlacementMode.Bottom,
-					 FlyoutBase.MajorPlacementMode.Full // last resort placement
+					 FlyoutBase.MajorPlacementMode.Right // use preferred choice if no others fit
 				 }},
 			};
 
@@ -123,6 +123,11 @@ namespace Windows.UI.Xaml.Controls
 			var placementsToTry = PlacementsToTry.TryGetValue(preferredPlacement, out var p)
 				? p
 				: new[] { preferredPlacement };
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Calculating actual placement for preferredPlacement={preferredPlacement} with justification={FlyoutBase.GetJustificationFromPlacementMode(PopupPlacement)} from PopupPlacement={PopupPlacement}, for desiredSize={desiredSize}, maxSize={maxSize}");
+			}
 
 			var halfAnchorWidth = anchorRect.Width / 2;
 			var halfAnchorHeight = anchorRect.Height / 2;
@@ -211,10 +216,18 @@ namespace Windows.UI.Xaml.Controls
 
 				if (fits && RectHelper.Union(visibleBounds, finalRect).Equals(visibleBounds))
 				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Accepted placement {placement} (choice {i}) with finalRect={finalRect} in visibleBounds={visibleBounds}");
+					}
 					break; // this placement is acceptable
 				}
 			}
 
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Calculated placement, finalRect={finalRect}");
+			}
 			return finalRect;
 		}
 
