@@ -1,3 +1,4 @@
+#if !HAS_UNO_WINUI
 using System;
 using Android.Views;
 using Uno.Media.Playback;
@@ -49,3 +50,4 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
+#endif
